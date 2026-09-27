@@ -16,6 +16,7 @@ import '../data/daos/trail_pois_dao.dart';
 import '../data/daos/trail_gpx_tracks_dao.dart';
 import '../data/daos/trail_gpx_points_dao.dart';
 import '../models/download_progress.dart';
+import '../models/trail_manifest.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 
@@ -27,15 +28,12 @@ final _log = Logger(
 const _maxRetries = 3;
 
 /// Etapes d'insertion dans l'ordre des FK.
-const _insertionSteps = [
-  'trail_meta',
-  'itineraries',
-  'stages',
-  'accommodations',
-  'pois',
-  'gpx_tracks',
-  'gpx_points',
-];
+///
+/// UNE SEULE DEFINITION (tache 605) : cet ordre existait en TROIS copies dans le
+/// depot, et il n est pas arbitraire — un hebergement rattache a une etape pas
+/// encore posee echoue. Il vit desormais dans [MorceauxDeSentier.tous], ou il
+/// sert aussi d unite de versionnage.
+const _insertionSteps = MorceauxDeSentier.tous;
 
 /// Service de telechargement des donnees sentier depuis Firebase Storage.
 class TrailDownloadService {

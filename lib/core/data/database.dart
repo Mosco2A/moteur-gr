@@ -165,7 +165,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 26;
+  int get schemaVersion => 27;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -359,6 +359,91 @@ class AppDatabase extends _$AppDatabase {
               sessionTrackPoints.stageId,
             );
           }
+          // Migration v26 -> v27 : LE CATALOGUE DISTANT, ET LA REVISION PORTEE
+          // PAR CHAQUE DONNEE (StepWays tache 605, MUR N1 — decisions de
+          // Christophe des 27/09 19:57, 20:11 et 20:43).
+          //
+          // STRICTEMENT ADDITIVE, ET CE N EST PAS UN HASARD MAIS UN CHOIX :
+          // 8 colonnes NULLABLES ajoutees, aucune colonne existante touchee,
+          // supprimee ni reinterpretee. CETTE MIGRATION NE CASSE RIEN — une base
+          // en v26 monte en place, toutes ses lignes restent lisibles, et un
+          // sentier deja copie garde sa version locale.
+          //
+          //  * `trail_manifests.ficheJson` conserve le dernier catalogue distant
+          //    RECU. Sans lui, un sentier que le binaire ne connait pas
+          //    disparaitrait de l ecran du randonneur des qu il perd le reseau.
+          //
+          //  * `rev` sur les SEPT tables telechargeables porte la revision de
+          //    chaque enregistrement. L application demande « tout ce qui porte
+          //    un numero plus recent que le mien » : une seule question, et une
+          //    altitude corrigee fait redescendre UNE etape, pas sept tables.
+          //
+          // CE QUI A ETE ECARTE, ET POURQUOI. Une premiere version de ce lot
+          // creait une table `trail_piece_versions` (une version locale par
+          // famille de donnees). Elle est abandonnee sur la simplification de
+          // Christophe du 27/09 20:43 : la version vit DANS la donnee, et le
+          // telephone n a besoin que d UNE valeur par sentier — la revision
+          // jusqu ou il est a jour, soit `trail_manifests.localVersion`, qui
+          // existe deja. Une table en moins, un concept en moins.
+          //
+          // `localVersion` CHANGE DE METIER SANS CHANGER DE FORME : il est le
+          // REPERE DE REVISION du sentier (« je suis a jour jusqu a N »), et il
+          // est desormais REELLEMENT REECRIT apres une copie reussie — ce qui
+          // etait precisement le defaut mesure : personne ne l ecrivait, alors
+          // que `needsUpdate` s en sert pour decider, donc chaque ouverture
+          // retelechargeait tout.
+          if (from < 27) {
+            await _ajouterColonneSiAbsente(
+                migrator, trailManifests, trailManifests.ficheJson);
+            await _ajouterColonneSiAbsente(migrator, trailMeta, trailMeta.rev);
+            await _ajouterColonneSiAbsente(
+                migrator, trailItineraries, trailItineraries.rev);
+            await _ajouterColonneSiAbsente(
+                migrator, trailStages, trailStages.rev);
+            await _ajouterColonneSiAbsente(
+                migrator, trailAccommodations, trailAccommodations.rev);
+            await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.rev);
+            await _ajouterColonneSiAbsente(
+                migrator, trailGpxTracks, trailGpxTracks.rev);
+            await _ajouterColonneSiAbsente(
+                migrator, trailGpxPoints, trailGpxPoints.rev);
+          }
         },
       );
+
+  /// Ajoute une colonne SEULEMENT si la table ne la porte pas deja.
+  ///
+  /// POURQUOI CETTE PRECAUTION, ET ELLE N EST PAS COSMETIQUE. `ALTER TABLE ADD
+  /// COLUMN` echoue sur une colonne existante (« duplicate column name »), et une
+  /// migration qui echoue EMPECHE LA BASE DE S OUVRIR — l application ne demarre
+  /// plus, sur le telephone d un randonneur, sans recours. Deux situations
+  /// reelles y menent :
+  ///
+  ///  1. UNE MIGRATION INTERROMPUE. Si l application est tuee au milieu des huit
+  ///     ajouts de la v27, `user_version` reste a 26 : la prochaine ouverture
+  ///     rejoue la v27 et butte sur les colonnes deja posees.
+  ///
+  ///  2. UNE BASE AU SCHEMA COURANT REMBOBINEE. C est exactement ce que font les
+  ///     tests de migration du depot (`migration_v23_to_v24_test` et suivants) :
+  ///     ils creent la base au schema courant, ramenent `user_version` en
+  ///     arriere, puis rouvrent. Les migrations precedentes ne s en apercevaient
+  ///     pas parce qu elles creaient des TABLES (`createTable` est tolerant) ou
+  ///     ne touchaient qu une table que le test recreait lui-meme dans sa forme
+  ///     d origine. La v27 est la premiere a ajouter des colonnes a SEPT tables
+  ///     que ces tests ne reconstruisent pas : elle a donc rendu visible une
+  ///     fragilite qui existait deja.
+  ///
+  /// La verification passe par `PRAGMA table_info`, la seule source fiable de ce
+  /// que la table porte VRAIMENT — et non de ce que le code croit qu elle porte.
+  Future<void> _ajouterColonneSiAbsente(
+    Migrator migrator,
+    TableInfo<Table, dynamic> table,
+    GeneratedColumn<Object> colonne,
+  ) async {
+    final infos =
+        await customSelect('PRAGMA table_info(${table.actualTableName})').get();
+    final presentes = infos.map((r) => r.read<String>('name')).toSet();
+    if (presentes.contains(colonne.name)) return;
+    await migrator.addColumn(table, colonne);
+  }
 }

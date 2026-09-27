@@ -4420,6 +4420,15 @@ class $TrailMetaTable extends TrailMeta
     requiredDuringInsert: false,
     defaultValue: const Constant('active'),
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4427,6 +4436,7 @@ class $TrailMetaTable extends TrailMeta
     dataVersion,
     lastSync,
     status,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4476,6 +4486,12 @@ class $TrailMetaTable extends TrailMeta
         status.isAcceptableOrUnknown(data['status']!, _statusMeta),
       );
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -4505,6 +4521,10 @@ class $TrailMetaTable extends TrailMeta
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -4529,12 +4549,22 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
 
   /// Statut du sentier ('active', 'archived', 'draft')
   final String status;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailMetaData({
     required this.id,
     required this.code,
     required this.dataVersion,
     this.lastSync,
     required this.status,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4546,6 +4576,9 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
       map['last_sync'] = Variable<String>(lastSync);
     }
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
+    }
     return map;
   }
 
@@ -4558,6 +4591,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           ? const Value.absent()
           : Value(lastSync),
       status: Value(status),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -4572,6 +4606,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
       dataVersion: serializer.fromJson<int>(json['dataVersion']),
       lastSync: serializer.fromJson<String?>(json['lastSync']),
       status: serializer.fromJson<String>(json['status']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -4583,6 +4618,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
       'dataVersion': serializer.toJson<int>(dataVersion),
       'lastSync': serializer.toJson<String?>(lastSync),
       'status': serializer.toJson<String>(status),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -4592,12 +4628,14 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
     int? dataVersion,
     Value<String?> lastSync = const Value.absent(),
     String? status,
+    Value<int?> rev = const Value.absent(),
   }) => TrailMetaData(
     id: id ?? this.id,
     code: code ?? this.code,
     dataVersion: dataVersion ?? this.dataVersion,
     lastSync: lastSync.present ? lastSync.value : this.lastSync,
     status: status ?? this.status,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailMetaData copyWithCompanion(TrailMetaCompanion data) {
     return TrailMetaData(
@@ -4608,6 +4646,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           : this.dataVersion,
       lastSync: data.lastSync.present ? data.lastSync.value : this.lastSync,
       status: data.status.present ? data.status.value : this.status,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -4618,13 +4657,14 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           ..write('code: $code, ')
           ..write('dataVersion: $dataVersion, ')
           ..write('lastSync: $lastSync, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, code, dataVersion, lastSync, status);
+  int get hashCode => Object.hash(id, code, dataVersion, lastSync, status, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4633,7 +4673,8 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           other.code == this.code &&
           other.dataVersion == this.dataVersion &&
           other.lastSync == this.lastSync &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.rev == this.rev);
 }
 
 class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
@@ -4642,6 +4683,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
   final Value<int> dataVersion;
   final Value<String?> lastSync;
   final Value<String> status;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailMetaCompanion({
     this.id = const Value.absent(),
@@ -4649,6 +4691,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     this.dataVersion = const Value.absent(),
     this.lastSync = const Value.absent(),
     this.status = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailMetaCompanion.insert({
@@ -4657,6 +4700,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     required int dataVersion,
     this.lastSync = const Value.absent(),
     this.status = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        code = Value(code),
@@ -4667,6 +4711,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     Expression<int>? dataVersion,
     Expression<String>? lastSync,
     Expression<String>? status,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4675,6 +4720,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
       if (dataVersion != null) 'data_version': dataVersion,
       if (lastSync != null) 'last_sync': lastSync,
       if (status != null) 'status': status,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4685,6 +4731,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     Value<int>? dataVersion,
     Value<String?>? lastSync,
     Value<String>? status,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailMetaCompanion(
@@ -4693,6 +4740,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
       dataVersion: dataVersion ?? this.dataVersion,
       lastSync: lastSync ?? this.lastSync,
       status: status ?? this.status,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4715,6 +4763,9 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4729,6 +4780,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
           ..write('dataVersion: $dataVersion, ')
           ..write('lastSync: $lastSync, ')
           ..write('status: $status, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4848,6 +4900,15 @@ class $TrailItinerariesTable extends TrailItineraries
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4861,6 +4922,7 @@ class $TrailItinerariesTable extends TrailItineraries
     distanceKm,
     elevationGain,
     stageCount,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4962,6 +5024,12 @@ class $TrailItinerariesTable extends TrailItineraries
     } else if (isInserting) {
       context.missing(_stageCountMeta);
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -5015,6 +5083,10 @@ class $TrailItinerariesTable extends TrailItineraries
         DriftSqlType.int,
         data['${effectivePrefix}stage_count'],
       )!,
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -5057,6 +5129,15 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
 
   /// Nombre d'etapes
   final int stageCount;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailItinerary({
     required this.id,
     required this.trailId,
@@ -5069,6 +5150,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     required this.distanceKm,
     required this.elevationGain,
     required this.stageCount,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5084,6 +5166,9 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     map['distance_km'] = Variable<double>(distanceKm);
     map['elevation_gain'] = Variable<int>(elevationGain);
     map['stage_count'] = Variable<int>(stageCount);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
+    }
     return map;
   }
 
@@ -5100,6 +5185,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       distanceKm: Value(distanceKm),
       elevationGain: Value(elevationGain),
       stageCount: Value(stageCount),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -5120,6 +5206,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       distanceKm: serializer.fromJson<double>(json['distanceKm']),
       elevationGain: serializer.fromJson<int>(json['elevationGain']),
       stageCount: serializer.fromJson<int>(json['stageCount']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -5137,6 +5224,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       'distanceKm': serializer.toJson<double>(distanceKm),
       'elevationGain': serializer.toJson<int>(elevationGain),
       'stageCount': serializer.toJson<int>(stageCount),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -5152,6 +5240,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     double? distanceKm,
     int? elevationGain,
     int? stageCount,
+    Value<int?> rev = const Value.absent(),
   }) => TrailItinerary(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -5164,6 +5253,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     distanceKm: distanceKm ?? this.distanceKm,
     elevationGain: elevationGain ?? this.elevationGain,
     stageCount: stageCount ?? this.stageCount,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailItinerary copyWithCompanion(TrailItinerariesCompanion data) {
     return TrailItinerary(
@@ -5184,6 +5274,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       stageCount: data.stageCount.present
           ? data.stageCount.value
           : this.stageCount,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -5200,7 +5291,8 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
           ..write('nameEs: $nameEs, ')
           ..write('distanceKm: $distanceKm, ')
           ..write('elevationGain: $elevationGain, ')
-          ..write('stageCount: $stageCount')
+          ..write('stageCount: $stageCount, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -5218,6 +5310,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     distanceKm,
     elevationGain,
     stageCount,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -5233,7 +5326,8 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
           other.nameEs == this.nameEs &&
           other.distanceKm == this.distanceKm &&
           other.elevationGain == this.elevationGain &&
-          other.stageCount == this.stageCount);
+          other.stageCount == this.stageCount &&
+          other.rev == this.rev);
 }
 
 class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
@@ -5248,6 +5342,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
   final Value<double> distanceKm;
   final Value<int> elevationGain;
   final Value<int> stageCount;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailItinerariesCompanion({
     this.id = const Value.absent(),
@@ -5261,6 +5356,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     this.distanceKm = const Value.absent(),
     this.elevationGain = const Value.absent(),
     this.stageCount = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailItinerariesCompanion.insert({
@@ -5275,6 +5371,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     required double distanceKm,
     required int elevationGain,
     required int stageCount,
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        trailId = Value(trailId),
@@ -5299,6 +5396,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     Expression<double>? distanceKm,
     Expression<int>? elevationGain,
     Expression<int>? stageCount,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5313,6 +5411,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
       if (distanceKm != null) 'distance_km': distanceKm,
       if (elevationGain != null) 'elevation_gain': elevationGain,
       if (stageCount != null) 'stage_count': stageCount,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5329,6 +5428,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     Value<double>? distanceKm,
     Value<int>? elevationGain,
     Value<int>? stageCount,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailItinerariesCompanion(
@@ -5343,6 +5443,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
       distanceKm: distanceKm ?? this.distanceKm,
       elevationGain: elevationGain ?? this.elevationGain,
       stageCount: stageCount ?? this.stageCount,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5383,6 +5484,9 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     if (stageCount.present) {
       map['stage_count'] = Variable<int>(stageCount.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5403,6 +5507,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
           ..write('distanceKm: $distanceKm, ')
           ..write('elevationGain: $elevationGain, ')
           ..write('stageCount: $stageCount, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5586,6 +5691,15 @@ class $TrailStagesTable extends TrailStages
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5605,6 +5719,7 @@ class $TrailStagesTable extends TrailStages
     elevationLoss,
     durationMinutes,
     difficulty,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5766,6 +5881,12 @@ class $TrailStagesTable extends TrailStages
     } else if (isInserting) {
       context.missing(_difficultyMeta);
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -5843,6 +5964,10 @@ class $TrailStagesTable extends TrailStages
         DriftSqlType.string,
         data['${effectivePrefix}difficulty'],
       )!,
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -5903,6 +6028,15 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
 
   /// Difficulte (easy, moderate, hard, extreme)
   final String difficulty;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailStage({
     required this.id,
     required this.itineraryId,
@@ -5921,6 +6055,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     required this.elevationLoss,
     required this.durationMinutes,
     required this.difficulty,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5942,6 +6077,9 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     map['elevation_loss'] = Variable<int>(elevationLoss);
     map['duration_minutes'] = Variable<int>(durationMinutes);
     map['difficulty'] = Variable<String>(difficulty);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
+    }
     return map;
   }
 
@@ -5964,6 +6102,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       elevationLoss: Value(elevationLoss),
       durationMinutes: Value(durationMinutes),
       difficulty: Value(difficulty),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -5990,6 +6129,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       elevationLoss: serializer.fromJson<int>(json['elevationLoss']),
       durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
       difficulty: serializer.fromJson<String>(json['difficulty']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -6013,6 +6153,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       'elevationLoss': serializer.toJson<int>(elevationLoss),
       'durationMinutes': serializer.toJson<int>(durationMinutes),
       'difficulty': serializer.toJson<String>(difficulty),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -6034,6 +6175,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     int? elevationLoss,
     int? durationMinutes,
     String? difficulty,
+    Value<int?> rev = const Value.absent(),
   }) => TrailStage(
     id: id ?? this.id,
     itineraryId: itineraryId ?? this.itineraryId,
@@ -6052,6 +6194,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     elevationLoss: elevationLoss ?? this.elevationLoss,
     durationMinutes: durationMinutes ?? this.durationMinutes,
     difficulty: difficulty ?? this.difficulty,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailStage copyWithCompanion(TrailStagesCompanion data) {
     return TrailStage(
@@ -6086,6 +6229,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       difficulty: data.difficulty.present
           ? data.difficulty.value
           : this.difficulty,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -6108,7 +6252,8 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
           ..write('elevationGain: $elevationGain, ')
           ..write('elevationLoss: $elevationLoss, ')
           ..write('durationMinutes: $durationMinutes, ')
-          ..write('difficulty: $difficulty')
+          ..write('difficulty: $difficulty, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -6132,6 +6277,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     elevationLoss,
     durationMinutes,
     difficulty,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -6153,7 +6299,8 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
           other.elevationGain == this.elevationGain &&
           other.elevationLoss == this.elevationLoss &&
           other.durationMinutes == this.durationMinutes &&
-          other.difficulty == this.difficulty);
+          other.difficulty == this.difficulty &&
+          other.rev == this.rev);
 }
 
 class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
@@ -6174,6 +6321,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
   final Value<int> elevationLoss;
   final Value<int> durationMinutes;
   final Value<String> difficulty;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailStagesCompanion({
     this.id = const Value.absent(),
@@ -6193,6 +6341,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     this.elevationLoss = const Value.absent(),
     this.durationMinutes = const Value.absent(),
     this.difficulty = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailStagesCompanion.insert({
@@ -6213,6 +6362,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     required int elevationLoss,
     required int durationMinutes,
     required String difficulty,
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        itineraryId = Value(itineraryId),
@@ -6249,6 +6399,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     Expression<int>? elevationLoss,
     Expression<int>? durationMinutes,
     Expression<String>? difficulty,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -6269,6 +6420,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
       if (elevationLoss != null) 'elevation_loss': elevationLoss,
       if (durationMinutes != null) 'duration_minutes': durationMinutes,
       if (difficulty != null) 'difficulty': difficulty,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6291,6 +6443,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     Value<int>? elevationLoss,
     Value<int>? durationMinutes,
     Value<String>? difficulty,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailStagesCompanion(
@@ -6311,6 +6464,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
       elevationLoss: elevationLoss ?? this.elevationLoss,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       difficulty: difficulty ?? this.difficulty,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6369,6 +6523,9 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     if (difficulty.present) {
       map['difficulty'] = Variable<String>(difficulty.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6395,6 +6552,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
           ..write('elevationLoss: $elevationLoss, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('difficulty: $difficulty, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6561,6 +6719,15 @@ class $TrailAccommodationsTable extends TrailAccommodations
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6579,6 +6746,7 @@ class $TrailAccommodationsTable extends TrailAccommodations
     capacity,
     priceRange,
     bookingUrl,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6705,6 +6873,12 @@ class $TrailAccommodationsTable extends TrailAccommodations
         bookingUrl.isAcceptableOrUnknown(data['booking_url']!, _bookingUrlMeta),
       );
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -6778,6 +6952,10 @@ class $TrailAccommodationsTable extends TrailAccommodations
         DriftSqlType.string,
         data['${effectivePrefix}booking_url'],
       ),
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -6836,6 +7014,15 @@ class TrailAccommodation extends DataClass
 
   /// URL de reservation (nullable)
   final String? bookingUrl;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailAccommodation({
     required this.id,
     required this.stageId,
@@ -6853,6 +7040,7 @@ class TrailAccommodation extends DataClass
     this.capacity,
     this.priceRange,
     this.bookingUrl,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6884,6 +7072,9 @@ class TrailAccommodation extends DataClass
     }
     if (!nullToAbsent || bookingUrl != null) {
       map['booking_url'] = Variable<String>(bookingUrl);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
     }
     return map;
   }
@@ -6918,6 +7109,7 @@ class TrailAccommodation extends DataClass
       bookingUrl: bookingUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(bookingUrl),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -6943,6 +7135,7 @@ class TrailAccommodation extends DataClass
       capacity: serializer.fromJson<int?>(json['capacity']),
       priceRange: serializer.fromJson<String?>(json['priceRange']),
       bookingUrl: serializer.fromJson<String?>(json['bookingUrl']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -6965,6 +7158,7 @@ class TrailAccommodation extends DataClass
       'capacity': serializer.toJson<int?>(capacity),
       'priceRange': serializer.toJson<String?>(priceRange),
       'bookingUrl': serializer.toJson<String?>(bookingUrl),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -6985,6 +7179,7 @@ class TrailAccommodation extends DataClass
     Value<int?> capacity = const Value.absent(),
     Value<String?> priceRange = const Value.absent(),
     Value<String?> bookingUrl = const Value.absent(),
+    Value<int?> rev = const Value.absent(),
   }) => TrailAccommodation(
     id: id ?? this.id,
     stageId: stageId ?? this.stageId,
@@ -7002,6 +7197,7 @@ class TrailAccommodation extends DataClass
     capacity: capacity.present ? capacity.value : this.capacity,
     priceRange: priceRange.present ? priceRange.value : this.priceRange,
     bookingUrl: bookingUrl.present ? bookingUrl.value : this.bookingUrl,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailAccommodation copyWithCompanion(TrailAccommodationsCompanion data) {
     return TrailAccommodation(
@@ -7025,6 +7221,7 @@ class TrailAccommodation extends DataClass
       bookingUrl: data.bookingUrl.present
           ? data.bookingUrl.value
           : this.bookingUrl,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -7046,7 +7243,8 @@ class TrailAccommodation extends DataClass
           ..write('website: $website, ')
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
-          ..write('bookingUrl: $bookingUrl')
+          ..write('bookingUrl: $bookingUrl, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -7069,6 +7267,7 @@ class TrailAccommodation extends DataClass
     capacity,
     priceRange,
     bookingUrl,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -7089,7 +7288,8 @@ class TrailAccommodation extends DataClass
           other.website == this.website &&
           other.capacity == this.capacity &&
           other.priceRange == this.priceRange &&
-          other.bookingUrl == this.bookingUrl);
+          other.bookingUrl == this.bookingUrl &&
+          other.rev == this.rev);
 }
 
 class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
@@ -7109,6 +7309,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
   final Value<int?> capacity;
   final Value<String?> priceRange;
   final Value<String?> bookingUrl;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailAccommodationsCompanion({
     this.id = const Value.absent(),
@@ -7127,6 +7328,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailAccommodationsCompanion.insert({
@@ -7146,6 +7348,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        stageId = Value(stageId),
@@ -7174,6 +7377,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Expression<int>? capacity,
     Expression<String>? priceRange,
     Expression<String>? bookingUrl,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7193,6 +7397,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       if (capacity != null) 'capacity': capacity,
       if (priceRange != null) 'price_range': priceRange,
       if (bookingUrl != null) 'booking_url': bookingUrl,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7214,6 +7419,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Value<int?>? capacity,
     Value<String?>? priceRange,
     Value<String?>? bookingUrl,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailAccommodationsCompanion(
@@ -7233,6 +7439,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       capacity: capacity ?? this.capacity,
       priceRange: priceRange ?? this.priceRange,
       bookingUrl: bookingUrl ?? this.bookingUrl,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7288,6 +7495,9 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     if (bookingUrl.present) {
       map['booking_url'] = Variable<String>(bookingUrl.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7313,6 +7523,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
           ..write('bookingUrl: $bookingUrl, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7483,6 +7694,15 @@ class $TrailPoisTable extends TrailPois
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -7501,6 +7721,7 @@ class $TrailPoisTable extends TrailPois
     lat,
     lng,
     elevation,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -7642,6 +7863,12 @@ class $TrailPoisTable extends TrailPois
         elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta),
       );
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -7715,6 +7942,10 @@ class $TrailPoisTable extends TrailPois
         DriftSqlType.double,
         data['${effectivePrefix}elevation'],
       ),
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -7772,6 +8003,15 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
 
   /// Altitude en metres (nullable)
   final double? elevation;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailPoi({
     required this.id,
     required this.stageId,
@@ -7789,6 +8029,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     required this.lat,
     required this.lng,
     this.elevation,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -7820,6 +8061,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     map['lng'] = Variable<double>(lng);
     if (!nullToAbsent || elevation != null) {
       map['elevation'] = Variable<double>(elevation);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
     }
     return map;
   }
@@ -7854,6 +8098,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       elevation: elevation == null && nullToAbsent
           ? const Value.absent()
           : Value(elevation),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -7879,6 +8124,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
       elevation: serializer.fromJson<double?>(json['elevation']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -7901,6 +8147,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
       'elevation': serializer.toJson<double?>(elevation),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -7921,6 +8168,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     double? lat,
     double? lng,
     Value<double?> elevation = const Value.absent(),
+    Value<int?> rev = const Value.absent(),
   }) => TrailPoi(
     id: id ?? this.id,
     stageId: stageId ?? this.stageId,
@@ -7948,6 +8196,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
     elevation: elevation.present ? elevation.value : this.elevation,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailPoi copyWithCompanion(TrailPoisCompanion data) {
     return TrailPoi(
@@ -7977,6 +8226,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
       elevation: data.elevation.present ? data.elevation.value : this.elevation,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -7998,7 +8248,8 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           ..write('type: $type, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
-          ..write('elevation: $elevation')
+          ..write('elevation: $elevation, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -8021,6 +8272,7 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat,
     lng,
     elevation,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -8041,7 +8293,8 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           other.type == this.type &&
           other.lat == this.lat &&
           other.lng == this.lng &&
-          other.elevation == this.elevation);
+          other.elevation == this.elevation &&
+          other.rev == this.rev);
 }
 
 class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
@@ -8061,6 +8314,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
   final Value<double> lat;
   final Value<double> lng;
   final Value<double?> elevation;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailPoisCompanion({
     this.id = const Value.absent(),
@@ -8079,6 +8333,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
     this.elevation = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailPoisCompanion.insert({
@@ -8098,6 +8353,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     required double lat,
     required double lng,
     this.elevation = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        stageId = Value(stageId),
@@ -8126,6 +8382,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Expression<double>? lat,
     Expression<double>? lng,
     Expression<double>? elevation,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -8145,6 +8402,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
       if (elevation != null) 'elevation': elevation,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -8166,6 +8424,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Value<double>? lat,
     Value<double>? lng,
     Value<double?>? elevation,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailPoisCompanion(
@@ -8185,6 +8444,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       elevation: elevation ?? this.elevation,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -8240,6 +8500,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     if (elevation.present) {
       map['elevation'] = Variable<double>(elevation.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -8265,6 +8528,7 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8317,8 +8581,17 @@ class $TrailGpxTracksTable extends TrailGpxTracks
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
   @override
-  List<GeneratedColumn> get $columns => [id, itineraryId, name, sourceUrl];
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, itineraryId, name, sourceUrl, rev];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -8361,6 +8634,12 @@ class $TrailGpxTracksTable extends TrailGpxTracks
         sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta),
       );
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -8386,6 +8665,10 @@ class $TrailGpxTracksTable extends TrailGpxTracks
         DriftSqlType.string,
         data['${effectivePrefix}source_url'],
       ),
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -8407,11 +8690,21 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
 
   /// URL source du fichier GPX (nullable)
   final String? sourceUrl;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailGpxTrack({
     required this.id,
     required this.itineraryId,
     required this.name,
     this.sourceUrl,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8421,6 +8714,9 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || sourceUrl != null) {
       map['source_url'] = Variable<String>(sourceUrl);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
     }
     return map;
   }
@@ -8433,6 +8729,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       sourceUrl: sourceUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(sourceUrl),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -8446,6 +8743,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       itineraryId: serializer.fromJson<String>(json['itineraryId']),
       name: serializer.fromJson<String>(json['name']),
       sourceUrl: serializer.fromJson<String?>(json['sourceUrl']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -8456,6 +8754,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       'itineraryId': serializer.toJson<String>(itineraryId),
       'name': serializer.toJson<String>(name),
       'sourceUrl': serializer.toJson<String?>(sourceUrl),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -8464,11 +8763,13 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     String? itineraryId,
     String? name,
     Value<String?> sourceUrl = const Value.absent(),
+    Value<int?> rev = const Value.absent(),
   }) => TrailGpxTrack(
     id: id ?? this.id,
     itineraryId: itineraryId ?? this.itineraryId,
     name: name ?? this.name,
     sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailGpxTrack copyWithCompanion(TrailGpxTracksCompanion data) {
     return TrailGpxTrack(
@@ -8478,6 +8779,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           : this.itineraryId,
       name: data.name.present ? data.name.value : this.name,
       sourceUrl: data.sourceUrl.present ? data.sourceUrl.value : this.sourceUrl,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -8487,13 +8789,14 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           ..write('id: $id, ')
           ..write('itineraryId: $itineraryId, ')
           ..write('name: $name, ')
-          ..write('sourceUrl: $sourceUrl')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, itineraryId, name, sourceUrl);
+  int get hashCode => Object.hash(id, itineraryId, name, sourceUrl, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8501,7 +8804,8 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           other.id == this.id &&
           other.itineraryId == this.itineraryId &&
           other.name == this.name &&
-          other.sourceUrl == this.sourceUrl);
+          other.sourceUrl == this.sourceUrl &&
+          other.rev == this.rev);
 }
 
 class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
@@ -8509,12 +8813,14 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
   final Value<String> itineraryId;
   final Value<String> name;
   final Value<String?> sourceUrl;
+  final Value<int?> rev;
   final Value<int> rowid;
   const TrailGpxTracksCompanion({
     this.id = const Value.absent(),
     this.itineraryId = const Value.absent(),
     this.name = const Value.absent(),
     this.sourceUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailGpxTracksCompanion.insert({
@@ -8522,6 +8828,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     required String itineraryId,
     required String name,
     this.sourceUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        itineraryId = Value(itineraryId),
@@ -8531,6 +8838,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     Expression<String>? itineraryId,
     Expression<String>? name,
     Expression<String>? sourceUrl,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -8538,6 +8846,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
       if (itineraryId != null) 'itinerary_id': itineraryId,
       if (name != null) 'name': name,
       if (sourceUrl != null) 'source_url': sourceUrl,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -8547,6 +8856,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     Value<String>? itineraryId,
     Value<String>? name,
     Value<String?>? sourceUrl,
+    Value<int?>? rev,
     Value<int>? rowid,
   }) {
     return TrailGpxTracksCompanion(
@@ -8554,6 +8864,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
       itineraryId: itineraryId ?? this.itineraryId,
       name: name ?? this.name,
       sourceUrl: sourceUrl ?? this.sourceUrl,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -8573,6 +8884,9 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     if (sourceUrl.present) {
       map['source_url'] = Variable<String>(sourceUrl.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -8586,6 +8900,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
           ..write('itineraryId: $itineraryId, ')
           ..write('name: $name, ')
           ..write('sourceUrl: $sourceUrl, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8662,6 +8977,15 @@ class $TrailGpxPointsTable extends TrailGpxPoints
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _revMeta = const VerificationMeta('rev');
+  @override
+  late final GeneratedColumn<int> rev = GeneratedColumn<int>(
+    'rev',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -8670,6 +8994,7 @@ class $TrailGpxPointsTable extends TrailGpxPoints
     lng,
     elevation,
     sequenceIndex,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -8729,6 +9054,12 @@ class $TrailGpxPointsTable extends TrailGpxPoints
     } else if (isInserting) {
       context.missing(_sequenceIndexMeta);
     }
+    if (data.containsKey('rev')) {
+      context.handle(
+        _revMeta,
+        rev.isAcceptableOrUnknown(data['rev']!, _revMeta),
+      );
+    }
     return context;
   }
 
@@ -8762,6 +9093,10 @@ class $TrailGpxPointsTable extends TrailGpxPoints
         DriftSqlType.int,
         data['${effectivePrefix}sequence_index'],
       )!,
+      rev: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rev'],
+      ),
     );
   }
 
@@ -8789,6 +9124,15 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
 
   /// Index de sequence pour l'ordre des points
   final int sequenceIndex;
+
+  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
+  /// modifie pour la derniere fois (StepWays tache 605).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, et les donnees
+  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
+  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final int? rev;
   const TrailGpxPoint({
     required this.id,
     required this.trackId,
@@ -8796,6 +9140,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     required this.lng,
     required this.elevation,
     required this.sequenceIndex,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8806,6 +9151,9 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     map['lng'] = Variable<double>(lng);
     map['elevation'] = Variable<double>(elevation);
     map['sequence_index'] = Variable<int>(sequenceIndex);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(rev);
+    }
     return map;
   }
 
@@ -8817,6 +9165,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       lng: Value(lng),
       elevation: Value(elevation),
       sequenceIndex: Value(sequenceIndex),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -8832,6 +9181,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       lng: serializer.fromJson<double>(json['lng']),
       elevation: serializer.fromJson<double>(json['elevation']),
       sequenceIndex: serializer.fromJson<int>(json['sequenceIndex']),
+      rev: serializer.fromJson<int?>(json['rev']),
     );
   }
   @override
@@ -8844,6 +9194,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       'lng': serializer.toJson<double>(lng),
       'elevation': serializer.toJson<double>(elevation),
       'sequenceIndex': serializer.toJson<int>(sequenceIndex),
+      'rev': serializer.toJson<int?>(rev),
     };
   }
 
@@ -8854,6 +9205,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     double? lng,
     double? elevation,
     int? sequenceIndex,
+    Value<int?> rev = const Value.absent(),
   }) => TrailGpxPoint(
     id: id ?? this.id,
     trackId: trackId ?? this.trackId,
@@ -8861,6 +9213,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     lng: lng ?? this.lng,
     elevation: elevation ?? this.elevation,
     sequenceIndex: sequenceIndex ?? this.sequenceIndex,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailGpxPoint copyWithCompanion(TrailGpxPointsCompanion data) {
     return TrailGpxPoint(
@@ -8872,6 +9225,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       sequenceIndex: data.sequenceIndex.present
           ? data.sequenceIndex.value
           : this.sequenceIndex,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -8883,14 +9237,15 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
-          ..write('sequenceIndex: $sequenceIndex')
+          ..write('sequenceIndex: $sequenceIndex, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, trackId, lat, lng, elevation, sequenceIndex);
+      Object.hash(id, trackId, lat, lng, elevation, sequenceIndex, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8900,7 +9255,8 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.elevation == this.elevation &&
-          other.sequenceIndex == this.sequenceIndex);
+          other.sequenceIndex == this.sequenceIndex &&
+          other.rev == this.rev);
 }
 
 class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
@@ -8910,6 +9266,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
   final Value<double> lng;
   final Value<double> elevation;
   final Value<int> sequenceIndex;
+  final Value<int?> rev;
   const TrailGpxPointsCompanion({
     this.id = const Value.absent(),
     this.trackId = const Value.absent(),
@@ -8917,6 +9274,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     this.lng = const Value.absent(),
     this.elevation = const Value.absent(),
     this.sequenceIndex = const Value.absent(),
+    this.rev = const Value.absent(),
   });
   TrailGpxPointsCompanion.insert({
     this.id = const Value.absent(),
@@ -8925,6 +9283,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     required double lng,
     required double elevation,
     required int sequenceIndex,
+    this.rev = const Value.absent(),
   }) : trackId = Value(trackId),
        lat = Value(lat),
        lng = Value(lng),
@@ -8937,6 +9296,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     Expression<double>? lng,
     Expression<double>? elevation,
     Expression<int>? sequenceIndex,
+    Expression<int>? rev,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -8945,6 +9305,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
       if (lng != null) 'lng': lng,
       if (elevation != null) 'elevation': elevation,
       if (sequenceIndex != null) 'sequence_index': sequenceIndex,
+      if (rev != null) 'rev': rev,
     });
   }
 
@@ -8955,6 +9316,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     Value<double>? lng,
     Value<double>? elevation,
     Value<int>? sequenceIndex,
+    Value<int?>? rev,
   }) {
     return TrailGpxPointsCompanion(
       id: id ?? this.id,
@@ -8963,6 +9325,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
       lng: lng ?? this.lng,
       elevation: elevation ?? this.elevation,
       sequenceIndex: sequenceIndex ?? this.sequenceIndex,
+      rev: rev ?? this.rev,
     );
   }
 
@@ -8987,6 +9350,9 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     if (sequenceIndex.present) {
       map['sequence_index'] = Variable<int>(sequenceIndex.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(rev.value);
+    }
     return map;
   }
 
@@ -8998,7 +9364,8 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
-          ..write('sequenceIndex: $sequenceIndex')
+          ..write('sequenceIndex: $sequenceIndex, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -9094,6 +9461,17 @@ class $TrailManifestsTable extends TrailManifests
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _ficheJsonMeta = const VerificationMeta(
+    'ficheJson',
+  );
+  @override
+  late final GeneratedColumn<String> ficheJson = GeneratedColumn<String>(
+    'fiche_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     trailId,
@@ -9104,6 +9482,7 @@ class $TrailManifestsTable extends TrailManifests
     status,
     lastUpdated,
     localVersion,
+    ficheJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9188,6 +9567,12 @@ class $TrailManifestsTable extends TrailManifests
         ),
       );
     }
+    if (data.containsKey('fiche_json')) {
+      context.handle(
+        _ficheJsonMeta,
+        ficheJson.isAcceptableOrUnknown(data['fiche_json']!, _ficheJsonMeta),
+      );
+    }
     return context;
   }
 
@@ -9229,6 +9614,10 @@ class $TrailManifestsTable extends TrailManifests
         DriftSqlType.int,
         data['${effectivePrefix}local_version'],
       ),
+      ficheJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fiche_json'],
+      ),
     );
   }
 
@@ -9262,6 +9651,27 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
 
   /// Version telechargee localement (null = jamais telecharge)
   final int? localVersion;
+
+  /// LE DERNIER CATALOGUE DISTANT RECU, POUR QU IL SURVIVE AU HORS-LIGNE.
+  ///
+  /// Fiche d affichage du sentier (`TrailManifestFiche`) serialisee en JSON,
+  /// telle que le manifeste distant l a declaree. Null = le manifeste n a
+  /// jamais decrit ce sentier (entree de simple versionnement, ou base
+  /// anterieure a la migration v27).
+  ///
+  /// POURQUOI UNE COLONNE JSON ET PAS DOUZE COLONNES. La fiche est une donnee
+  /// SERVEUR que l on stocke pour la RELIRE telle quelle : le moteur ne la
+  /// requete jamais champ par champ, il la desserialise en entier pour en faire
+  /// une `TrailConfig`. Douze colonnes obligeraient a une migration a chaque
+  /// champ que Christophe voudra decrire a distance — exactement la
+  /// republication que ce lot supprime. C est aussi la forme du patron GR20,
+  /// qui stocke ses listes distantes en JSON dans Hive
+  /// (`remote_data_service.dart`).
+  ///
+  /// C EST LA COUCHE 2 DE L ORDRE DES SOURCES : distant, puis DERNIER DISTANT
+  /// RECU (cette colonne), puis compile. Sans elle, un randonneur hors ligne
+  /// perdrait de son catalogue tout sentier que le binaire ne connait pas.
+  final String? ficheJson;
   const TrailManifest({
     required this.trailId,
     required this.dataVersion,
@@ -9271,6 +9681,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     required this.status,
     required this.lastUpdated,
     this.localVersion,
+    this.ficheJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9284,6 +9695,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     map['last_updated'] = Variable<String>(lastUpdated);
     if (!nullToAbsent || localVersion != null) {
       map['local_version'] = Variable<int>(localVersion);
+    }
+    if (!nullToAbsent || ficheJson != null) {
+      map['fiche_json'] = Variable<String>(ficheJson);
     }
     return map;
   }
@@ -9300,6 +9714,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       localVersion: localVersion == null && nullToAbsent
           ? const Value.absent()
           : Value(localVersion),
+      ficheJson: ficheJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ficheJson),
     );
   }
 
@@ -9317,6 +9734,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       status: serializer.fromJson<String>(json['status']),
       lastUpdated: serializer.fromJson<String>(json['lastUpdated']),
       localVersion: serializer.fromJson<int?>(json['localVersion']),
+      ficheJson: serializer.fromJson<String?>(json['ficheJson']),
     );
   }
   @override
@@ -9331,6 +9749,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       'status': serializer.toJson<String>(status),
       'lastUpdated': serializer.toJson<String>(lastUpdated),
       'localVersion': serializer.toJson<int?>(localVersion),
+      'ficheJson': serializer.toJson<String?>(ficheJson),
     };
   }
 
@@ -9343,6 +9762,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     String? status,
     String? lastUpdated,
     Value<int?> localVersion = const Value.absent(),
+    Value<String?> ficheJson = const Value.absent(),
   }) => TrailManifest(
     trailId: trailId ?? this.trailId,
     dataVersion: dataVersion ?? this.dataVersion,
@@ -9352,6 +9772,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     status: status ?? this.status,
     lastUpdated: lastUpdated ?? this.lastUpdated,
     localVersion: localVersion.present ? localVersion.value : this.localVersion,
+    ficheJson: ficheJson.present ? ficheJson.value : this.ficheJson,
   );
   TrailManifest copyWithCompanion(TrailManifestsCompanion data) {
     return TrailManifest(
@@ -9369,6 +9790,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       localVersion: data.localVersion.present
           ? data.localVersion.value
           : this.localVersion,
+      ficheJson: data.ficheJson.present ? data.ficheJson.value : this.ficheJson,
     );
   }
 
@@ -9382,7 +9804,8 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           ..write('fileSize: $fileSize, ')
           ..write('status: $status, ')
           ..write('lastUpdated: $lastUpdated, ')
-          ..write('localVersion: $localVersion')
+          ..write('localVersion: $localVersion, ')
+          ..write('ficheJson: $ficheJson')
           ..write(')'))
         .toString();
   }
@@ -9397,6 +9820,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     status,
     lastUpdated,
     localVersion,
+    ficheJson,
   );
   @override
   bool operator ==(Object other) =>
@@ -9409,7 +9833,8 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           other.fileSize == this.fileSize &&
           other.status == this.status &&
           other.lastUpdated == this.lastUpdated &&
-          other.localVersion == this.localVersion);
+          other.localVersion == this.localVersion &&
+          other.ficheJson == this.ficheJson);
 }
 
 class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
@@ -9421,6 +9846,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
   final Value<String> status;
   final Value<String> lastUpdated;
   final Value<int?> localVersion;
+  final Value<String?> ficheJson;
   final Value<int> rowid;
   const TrailManifestsCompanion({
     this.trailId = const Value.absent(),
@@ -9431,6 +9857,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     this.status = const Value.absent(),
     this.lastUpdated = const Value.absent(),
     this.localVersion = const Value.absent(),
+    this.ficheJson = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailManifestsCompanion.insert({
@@ -9442,6 +9869,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     required String status,
     required String lastUpdated,
     this.localVersion = const Value.absent(),
+    this.ficheJson = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : trailId = Value(trailId),
        dataVersion = Value(dataVersion),
@@ -9459,6 +9887,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Expression<String>? status,
     Expression<String>? lastUpdated,
     Expression<int>? localVersion,
+    Expression<String>? ficheJson,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9470,6 +9899,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       if (status != null) 'status': status,
       if (lastUpdated != null) 'last_updated': lastUpdated,
       if (localVersion != null) 'local_version': localVersion,
+      if (ficheJson != null) 'fiche_json': ficheJson,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -9483,6 +9913,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Value<String>? status,
     Value<String>? lastUpdated,
     Value<int?>? localVersion,
+    Value<String?>? ficheJson,
     Value<int>? rowid,
   }) {
     return TrailManifestsCompanion(
@@ -9494,6 +9925,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       status: status ?? this.status,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       localVersion: localVersion ?? this.localVersion,
+      ficheJson: ficheJson ?? this.ficheJson,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9525,6 +9957,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     if (localVersion.present) {
       map['local_version'] = Variable<int>(localVersion.value);
     }
+    if (ficheJson.present) {
+      map['fiche_json'] = Variable<String>(ficheJson.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -9542,6 +9977,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
           ..write('status: $status, ')
           ..write('lastUpdated: $lastUpdated, ')
           ..write('localVersion: $localVersion, ')
+          ..write('ficheJson: $ficheJson, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -21473,6 +21909,7 @@ typedef $$TrailMetaTableCreateCompanionBuilder =
       required int dataVersion,
       Value<String?> lastSync,
       Value<String> status,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailMetaTableUpdateCompanionBuilder =
@@ -21482,6 +21919,7 @@ typedef $$TrailMetaTableUpdateCompanionBuilder =
       Value<int> dataVersion,
       Value<String?> lastSync,
       Value<String> status,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -21516,6 +21954,11 @@ class $$TrailMetaTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -21553,6 +21996,11 @@ class $$TrailMetaTableOrderingComposer
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailMetaTableAnnotationComposer
@@ -21580,6 +22028,9 @@ class $$TrailMetaTableAnnotationComposer
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailMetaTableTableManager
@@ -21618,6 +22069,7 @@ class $$TrailMetaTableTableManager
                 Value<int> dataVersion = const Value.absent(),
                 Value<String?> lastSync = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailMetaCompanion(
                 id: id,
@@ -21625,6 +22077,7 @@ class $$TrailMetaTableTableManager
                 dataVersion: dataVersion,
                 lastSync: lastSync,
                 status: status,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -21634,6 +22087,7 @@ class $$TrailMetaTableTableManager
                 required int dataVersion,
                 Value<String?> lastSync = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailMetaCompanion.insert(
                 id: id,
@@ -21641,6 +22095,7 @@ class $$TrailMetaTableTableManager
                 dataVersion: dataVersion,
                 lastSync: lastSync,
                 status: status,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -21681,6 +22136,7 @@ typedef $$TrailItinerariesTableCreateCompanionBuilder =
       required double distanceKm,
       required int elevationGain,
       required int stageCount,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailItinerariesTableUpdateCompanionBuilder =
@@ -21696,6 +22152,7 @@ typedef $$TrailItinerariesTableUpdateCompanionBuilder =
       Value<double> distanceKm,
       Value<int> elevationGain,
       Value<int> stageCount,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -21760,6 +22217,11 @@ class $$TrailItinerariesTableFilterComposer
 
   ColumnFilters<int> get stageCount => $composableBuilder(
     column: $table.stageCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -21827,6 +22289,11 @@ class $$TrailItinerariesTableOrderingComposer
     column: $table.stageCount,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailItinerariesTableAnnotationComposer
@@ -21876,6 +22343,9 @@ class $$TrailItinerariesTableAnnotationComposer
     column: $table.stageCount,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailItinerariesTableTableManager
@@ -21926,6 +22396,7 @@ class $$TrailItinerariesTableTableManager
                 Value<double> distanceKm = const Value.absent(),
                 Value<int> elevationGain = const Value.absent(),
                 Value<int> stageCount = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailItinerariesCompanion(
                 id: id,
@@ -21939,6 +22410,7 @@ class $$TrailItinerariesTableTableManager
                 distanceKm: distanceKm,
                 elevationGain: elevationGain,
                 stageCount: stageCount,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -21954,6 +22426,7 @@ class $$TrailItinerariesTableTableManager
                 required double distanceKm,
                 required int elevationGain,
                 required int stageCount,
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailItinerariesCompanion.insert(
                 id: id,
@@ -21967,6 +22440,7 @@ class $$TrailItinerariesTableTableManager
                 distanceKm: distanceKm,
                 elevationGain: elevationGain,
                 stageCount: stageCount,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22013,6 +22487,7 @@ typedef $$TrailStagesTableCreateCompanionBuilder =
       required int elevationLoss,
       required int durationMinutes,
       required String difficulty,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailStagesTableUpdateCompanionBuilder =
@@ -22034,6 +22509,7 @@ typedef $$TrailStagesTableUpdateCompanionBuilder =
       Value<int> elevationLoss,
       Value<int> durationMinutes,
       Value<String> difficulty,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -22128,6 +22604,11 @@ class $$TrailStagesTableFilterComposer
 
   ColumnFilters<String> get difficulty => $composableBuilder(
     column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -22225,6 +22706,11 @@ class $$TrailStagesTableOrderingComposer
     column: $table.difficulty,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailStagesTableAnnotationComposer
@@ -22300,6 +22786,9 @@ class $$TrailStagesTableAnnotationComposer
     column: $table.difficulty,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailStagesTableTableManager
@@ -22350,6 +22839,7 @@ class $$TrailStagesTableTableManager
                 Value<int> elevationLoss = const Value.absent(),
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String> difficulty = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailStagesCompanion(
                 id: id,
@@ -22369,6 +22859,7 @@ class $$TrailStagesTableTableManager
                 elevationLoss: elevationLoss,
                 durationMinutes: durationMinutes,
                 difficulty: difficulty,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -22390,6 +22881,7 @@ class $$TrailStagesTableTableManager
                 required int elevationLoss,
                 required int durationMinutes,
                 required String difficulty,
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailStagesCompanion.insert(
                 id: id,
@@ -22409,6 +22901,7 @@ class $$TrailStagesTableTableManager
                 elevationLoss: elevationLoss,
                 durationMinutes: durationMinutes,
                 difficulty: difficulty,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22454,6 +22947,7 @@ typedef $$TrailAccommodationsTableCreateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
@@ -22474,6 +22968,7 @@ typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -22563,6 +23058,11 @@ class $$TrailAccommodationsTableFilterComposer
 
   ColumnFilters<String> get bookingUrl => $composableBuilder(
     column: $table.bookingUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -22655,6 +23155,11 @@ class $$TrailAccommodationsTableOrderingComposer
     column: $table.bookingUrl,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailAccommodationsTableAnnotationComposer
@@ -22717,6 +23222,9 @@ class $$TrailAccommodationsTableAnnotationComposer
     column: $table.bookingUrl,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailAccommodationsTableTableManager
@@ -22778,6 +23286,7 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion(
                 id: id,
@@ -22796,6 +23305,7 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -22816,6 +23326,7 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion.insert(
                 id: id,
@@ -22834,6 +23345,7 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22883,6 +23395,7 @@ typedef $$TrailPoisTableCreateCompanionBuilder =
       required double lat,
       required double lng,
       Value<double?> elevation,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailPoisTableUpdateCompanionBuilder =
@@ -22903,6 +23416,7 @@ typedef $$TrailPoisTableUpdateCompanionBuilder =
       Value<double> lat,
       Value<double> lng,
       Value<double?> elevation,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -22992,6 +23506,11 @@ class $$TrailPoisTableFilterComposer
 
   ColumnFilters<double> get elevation => $composableBuilder(
     column: $table.elevation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -23084,6 +23603,11 @@ class $$TrailPoisTableOrderingComposer
     column: $table.elevation,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailPoisTableAnnotationComposer
@@ -23152,6 +23676,9 @@ class $$TrailPoisTableAnnotationComposer
 
   GeneratedColumn<double> get elevation =>
       $composableBuilder(column: $table.elevation, builder: (column) => column);
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailPoisTableTableManager
@@ -23198,6 +23725,7 @@ class $$TrailPoisTableTableManager
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
                 Value<double?> elevation = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion(
                 id: id,
@@ -23216,6 +23744,7 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23236,6 +23765,7 @@ class $$TrailPoisTableTableManager
                 required double lat,
                 required double lng,
                 Value<double?> elevation = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion.insert(
                 id: id,
@@ -23254,6 +23784,7 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -23284,6 +23815,7 @@ typedef $$TrailGpxTracksTableCreateCompanionBuilder =
       required String itineraryId,
       required String name,
       Value<String?> sourceUrl,
+      Value<int?> rev,
       Value<int> rowid,
     });
 typedef $$TrailGpxTracksTableUpdateCompanionBuilder =
@@ -23292,6 +23824,7 @@ typedef $$TrailGpxTracksTableUpdateCompanionBuilder =
       Value<String> itineraryId,
       Value<String> name,
       Value<String?> sourceUrl,
+      Value<int?> rev,
       Value<int> rowid,
     });
 
@@ -23321,6 +23854,11 @@ class $$TrailGpxTracksTableFilterComposer
 
   ColumnFilters<String> get sourceUrl => $composableBuilder(
     column: $table.sourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -23353,6 +23891,11 @@ class $$TrailGpxTracksTableOrderingComposer
     column: $table.sourceUrl,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxTracksTableAnnotationComposer
@@ -23377,6 +23920,9 @@ class $$TrailGpxTracksTableAnnotationComposer
 
   GeneratedColumn<String> get sourceUrl =>
       $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailGpxTracksTableTableManager
@@ -23416,12 +23962,14 @@ class $$TrailGpxTracksTableTableManager
                 Value<String> itineraryId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> sourceUrl = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailGpxTracksCompanion(
                 id: id,
                 itineraryId: itineraryId,
                 name: name,
                 sourceUrl: sourceUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23430,12 +23978,14 @@ class $$TrailGpxTracksTableTableManager
                 required String itineraryId,
                 required String name,
                 Value<String?> sourceUrl = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailGpxTracksCompanion.insert(
                 id: id,
                 itineraryId: itineraryId,
                 name: name,
                 sourceUrl: sourceUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -23471,6 +24021,7 @@ typedef $$TrailGpxPointsTableCreateCompanionBuilder =
       required double lng,
       required double elevation,
       required int sequenceIndex,
+      Value<int?> rev,
     });
 typedef $$TrailGpxPointsTableUpdateCompanionBuilder =
     TrailGpxPointsCompanion Function({
@@ -23480,6 +24031,7 @@ typedef $$TrailGpxPointsTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<double> elevation,
       Value<int> sequenceIndex,
+      Value<int?> rev,
     });
 
 class $$TrailGpxPointsTableFilterComposer
@@ -23518,6 +24070,11 @@ class $$TrailGpxPointsTableFilterComposer
 
   ColumnFilters<int> get sequenceIndex => $composableBuilder(
     column: $table.sequenceIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rev => $composableBuilder(
+    column: $table.rev,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -23560,6 +24117,11 @@ class $$TrailGpxPointsTableOrderingComposer
     column: $table.sequenceIndex,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxPointsTableAnnotationComposer
@@ -23590,6 +24152,9 @@ class $$TrailGpxPointsTableAnnotationComposer
     column: $table.sequenceIndex,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailGpxPointsTableTableManager
@@ -23631,6 +24196,7 @@ class $$TrailGpxPointsTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<double> elevation = const Value.absent(),
                 Value<int> sequenceIndex = const Value.absent(),
+                Value<int?> rev = const Value.absent(),
               }) => TrailGpxPointsCompanion(
                 id: id,
                 trackId: trackId,
@@ -23638,6 +24204,7 @@ class $$TrailGpxPointsTableTableManager
                 lng: lng,
                 elevation: elevation,
                 sequenceIndex: sequenceIndex,
+                rev: rev,
               ),
           createCompanionCallback:
               ({
@@ -23647,6 +24214,7 @@ class $$TrailGpxPointsTableTableManager
                 required double lng,
                 required double elevation,
                 required int sequenceIndex,
+                Value<int?> rev = const Value.absent(),
               }) => TrailGpxPointsCompanion.insert(
                 id: id,
                 trackId: trackId,
@@ -23654,6 +24222,7 @@ class $$TrailGpxPointsTableTableManager
                 lng: lng,
                 elevation: elevation,
                 sequenceIndex: sequenceIndex,
+                rev: rev,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -23690,6 +24259,7 @@ typedef $$TrailManifestsTableCreateCompanionBuilder =
       required String status,
       required String lastUpdated,
       Value<int?> localVersion,
+      Value<String?> ficheJson,
       Value<int> rowid,
     });
 typedef $$TrailManifestsTableUpdateCompanionBuilder =
@@ -23702,6 +24272,7 @@ typedef $$TrailManifestsTableUpdateCompanionBuilder =
       Value<String> status,
       Value<String> lastUpdated,
       Value<int?> localVersion,
+      Value<String?> ficheJson,
       Value<int> rowid,
     });
 
@@ -23751,6 +24322,11 @@ class $$TrailManifestsTableFilterComposer
 
   ColumnFilters<int> get localVersion => $composableBuilder(
     column: $table.localVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ficheJson => $composableBuilder(
+    column: $table.ficheJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -23803,6 +24379,11 @@ class $$TrailManifestsTableOrderingComposer
     column: $table.localVersion,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get ficheJson => $composableBuilder(
+    column: $table.ficheJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailManifestsTableAnnotationComposer
@@ -23843,6 +24424,9 @@ class $$TrailManifestsTableAnnotationComposer
     column: $table.localVersion,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get ficheJson =>
+      $composableBuilder(column: $table.ficheJson, builder: (column) => column);
 }
 
 class $$TrailManifestsTableTableManager
@@ -23886,6 +24470,7 @@ class $$TrailManifestsTableTableManager
                 Value<String> status = const Value.absent(),
                 Value<String> lastUpdated = const Value.absent(),
                 Value<int?> localVersion = const Value.absent(),
+                Value<String?> ficheJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion(
                 trailId: trailId,
@@ -23896,6 +24481,7 @@ class $$TrailManifestsTableTableManager
                 status: status,
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
+                ficheJson: ficheJson,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23908,6 +24494,7 @@ class $$TrailManifestsTableTableManager
                 required String status,
                 required String lastUpdated,
                 Value<int?> localVersion = const Value.absent(),
+                Value<String?> ficheJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion.insert(
                 trailId: trailId,
@@ -23918,6 +24505,7 @@ class $$TrailManifestsTableTableManager
                 status: status,
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
+                ficheJson: ficheJson,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -32,6 +32,7 @@ void main() {
     dao = TrailManifestsDao(db);
     final conn = FakeConnectivityMonitor();
     svc = DeltaUpdateService(
+      db: db,
       manifestService: ManifestService(dao: dao, connectivityMonitor: conn),
       trailManifestsDao: dao, trailMetaDao: TrailMetaDao(db),
       trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
@@ -70,9 +71,10 @@ void main() {
     });
   });
 
-  group('applyDelta', () {
+  group('appliquerRevisions', () {
     test('applique stages', () async {
-      await svc.applyDelta('sentier-volcans', {'stages': [
+      await svc.appliquerRevisions('sentier-volcans', revisionLocale: 0,
+        revisionCible: 1, {'stages': [
         {'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'Cal',
           'name_en': 'C', 'name_de': 'C', 'name_it': 'C', 'name_es': 'C',
           'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.4, 'end_lng': 3.0,
@@ -82,7 +84,8 @@ void main() {
       expect(stages.length, 1); expect(stages.first.nameFr, 'Cal');
     });
     test('respecte changedTables', () async {
-      await svc.applyDelta('sentier-volcans', {
+      await svc.appliquerRevisions('sentier-volcans', revisionLocale: 0,
+        revisionCible: 1, {
         'stages': [{'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'A',
           'name_en': 'A', 'name_de': 'A', 'name_it': 'A', 'name_es': 'A',
           'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.6, 'end_lng': 3.0,
@@ -91,7 +94,7 @@ void main() {
         'pois': [{'id': 'p1', 'stage_id': 's1', 'name_fr': 'S', 'name_en': 'S',
           'name_de': 'Q', 'name_it': 'S', 'name_es': 'F', 'type': 'water',
           'lat': 45.55, 'lng': 2.95}],
-      }, changedTables: ['stages']);
+      }, famillesLimitees: ['stages']);
       expect((await TrailStagesDao(db).getByItineraryId('i1')).length, 1);
       expect(await TrailPoisDao(db).getByStageId('s1'), isEmpty);
     });

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
@@ -9,6 +8,9 @@ import '../../../core/data/daos/trail_manifests_dao.dart';
 import '../../../core/data/daos/trail_meta_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/models/download_progress.dart';
+import '../../../core/data/revision_de_donnee.dart';
+import '../../treks/providers/entitlements_provider.dart';
+import '../domain/etat_du_sentier.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/manifest_service.dart';
@@ -296,18 +298,18 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       ref.read(downloadProgressProvider(trailId).notifier).setProgress(progress);
 
       if (progress.status == DownloadStatusValues.completed) {
-        // Marquer la version locale comme telechargee
-        await _manifestsDao.insertOrReplace(
-          TrailManifestsCompanion(
-            trailId: Value(manifestEntry.trailId),
-            dataVersion: Value(manifestEntry.dataVersion),
-            hash: Value(manifestEntry.hash),
-            filePath: Value(manifestEntry.filePath),
-            fileSize: Value(manifestEntry.fileSize),
-            status: Value(manifestEntry.status),
-            lastUpdated: Value(manifestEntry.lastUpdated),
-            localVersion: Value(manifestEntry.dataVersion),
-          ),
+        // LA COPIE EST COMPLETE : on le marque, et on marque AUSSI chaque
+        // morceau (point 1 + point 2 de Christophe, 27/09 20:11).
+        //
+        // Ce chemin telecharge le fichier COMPLET du sentier : les sept morceaux
+        // sont donc poses ensemble, et leurs versions locales valent la
+        // publication. Sans ces lignes, la table des versions unitaires resterait
+        // vide apres un premier telechargement et la mise a jour suivante
+        // reprendrait TOUT — c est-a-dire le defaut que le versionnage unitaire
+        // vient supprimer.
+        await _manifestsDao.inscrireRevision(
+          manifestEntry.trailId,
+          manifestEntry.dataVersion,
         );
         _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
       } else if (progress.status == DownloadStatusValues.error) {
@@ -316,28 +318,62 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     }
   }
 
-  /// Supprime les donnees locales d'un sentier.
-  Future<void> deleteTrailData(String trailId) async {
-    await _trailMetaDao.deleteById(trailId);
-
-    // Remettre localVersion a null dans le manifeste
-    final manifestEntry = await _manifestsDao.getByTrailId(trailId);
-    if (manifestEntry != null) {
-      await _manifestsDao.insertOrReplace(
-        TrailManifestsCompanion(
-          trailId: Value(manifestEntry.trailId),
-          dataVersion: Value(manifestEntry.dataVersion),
-          hash: Value(manifestEntry.hash),
-          filePath: Value(manifestEntry.filePath),
-          fileSize: Value(manifestEntry.fileSize),
-          status: Value(manifestEntry.status),
-          lastUpdated: Value(manifestEntry.lastUpdated),
-          localVersion: const Value(null),
-        ),
+  /// LE GESTE « SUPPRIMER » — ET SON INTERDICTION SUR UN SENTIER ACHETE.
+  ///
+  /// Regle de Christophe du 27/09 20:41, prise telle quelle : « on peut aussi le
+  /// supprimer sauf si on l a achete ». Le refus est RENDU, avec sa cause, pour
+  /// que l ecran puisse le DIRE — un bouton indisponible sans explication est
+  /// interdit.
+  ///
+  /// LE REFUS EST PORTE ICI, PAS SEULEMENT DANS L INTERFACE, et c est la
+  /// difference entre une regle et une decoration : un bouton masque protege le
+  /// randonneur qui regarde l ecran, une garde dans le notifier protege ses
+  /// donnees quel que soit l appelant (raccourci, test, geste futur).
+  ///
+  /// CE QUI N EST PAS CONCERNE, ET IL FAUT LE DIRE POUR QU ON NE LE CONFONDE PAS
+  /// AVEC UNE CONTRADICTION. Le modele economique (§6, #99412) prevoit qu un trek
+  /// REALISE, donc termine, LIBERE ses grosses cartes hors ligne — gardees tant
+  /// que le trek est EN COURS, retelechargeables s il refait le sentier. Ce sont
+  /// deux objets differents a deux moments differents : l interdiction ci-dessous
+  /// porte sur LES DONNEES DU SENTIER (etapes, points d interet, hebergements,
+  /// trace) d un sentier achete ; la liberation porte sur LES TUILES DE CARTE d un
+  /// trek deja fini. Aucune des deux ne touche a l objet de l autre.
+  Future<RefusDeSuppression?> deleteTrailData(String trailId) async {
+    final disponibilite = await disponibiliteDe(trailId);
+    final refus = disponibilite.refusDeSuppression;
+    if (refus != null) {
+      _log.w(
+        '[CatalogNotifier] Suppression de $trailId refusee : '
+        '${refus == RefusDeSuppression.sentierAchete ? "sentier ACHETE — ses "
+            "donnees ne peuvent pas etre effacees" : "rien a supprimer, le "
+            "sentier n est pas sur le telephone"}.',
       );
+      return refus;
     }
 
+    await _trailMetaDao.deleteById(trailId);
+    await _manifestsDao.oublierRevision(trailId);
     _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
+    return null;
+  }
+
+  /// L etat d un sentier et les gestes offerts (cf. [DisponibiliteDuSentier]).
+  ///
+  /// Les deux entrees sont lues a leur source respective et restent SEPAREES :
+  /// la presence des donnees dans `trail_manifests.localVersion`, le droit dans
+  /// les droits d achat. Telecharger n est pas acheter.
+  Future<DisponibiliteDuSentier> disponibiliteDe(String trailId) async {
+    final ligne = await _manifestsDao.getByTrailId(trailId);
+    final revisionLocale = ligne?.localVersion;
+    final possedes = await ref.read(ownedTrailIdsProvider.future);
+
+    return DisponibiliteDuSentier(
+      trailId: trailId,
+      copieComplete: revisionLocale != null &&
+          revisionLocale > RevisionDeDonnee.revisionInitiale &&
+          (ligne == null || revisionLocale >= ligne.dataVersion),
+      achete: possedes.contains(trailId),
+    );
   }
 
   /// Met a jour le statut d'une entree dans l'etat courant.

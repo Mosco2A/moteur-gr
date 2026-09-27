@@ -68,6 +68,7 @@ class FakeManifestService extends ManifestService {
 /// Fake DeltaUpdateService qui trace les appels.
 class FakeDeltaUpdateService extends DeltaUpdateService {
   FakeDeltaUpdateService({
+    required super.db,
     required super.manifestService,
     required super.trailManifestsDao,
     required super.trailMetaDao,
@@ -82,13 +83,21 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
 
   final DeltaUpdate? fakeDelta;
 
-  /// Tables effectivement demandees lors du dernier downloadAndApplyDelta.
-  List<String> lastChangedTables = [];
+  /// Bilan que la fausse synchronisation rendra.
+  ResultatSynchronisation bilan = const ResultatSynchronisation(
+    famillesTouchees: [],
+    ecrits: 0,
+    supprimes: 0,
+    revisionAtteinte: 0,
+  );
 
-  /// URL demandee lors du dernier downloadAndApplyDelta.
+  /// Revision cible demandee lors de la derniere synchronisation.
+  int? derniereRevisionCible;
+
+  /// URL demandee lors de la derniere synchronisation.
   String? lastDeltaUrl;
 
-  /// Nombre d appels a downloadAndApplyDelta.
+  /// Nombre d appels a synchroniser.
   int downloadCallCount = 0;
 
   @override
@@ -98,11 +107,16 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
   }
 
   @override
-  Future<void> downloadAndApplyDelta(String trailId, String deltaUrl,
-      {List<String> changedTables = const []}) async {
+  Future<ResultatSynchronisation> synchroniser(
+    String trailId,
+    String urlDonnees, {
+    required int revisionCible,
+    int? revisionLocaleConnue,
+  }) async {
     downloadCallCount++;
-    lastDeltaUrl = deltaUrl;
-    lastChangedTables = changedTables;
+    lastDeltaUrl = urlDonnees;
+    derniereRevisionCible = revisionCible;
+    return bilan;
   }
 }
 
@@ -144,12 +158,12 @@ void main() {
         ],
       );
 
-      // Delta: seulement stages + pois ont change (pas tout)
+      // Ecart de revision : le telephone est a la revision 2, le sentier est
+      // publie a la revision 5.
       const delta = DeltaUpdate(
         trailId: 'volcans',
         fromVersion: 2,
         toVersion: 5,
-        changedTables: ['stages', 'pois'],
         downloadSize: 10240,
       );
 
@@ -160,6 +174,7 @@ void main() {
       );
 
       final fakeDeltaService = FakeDeltaUpdateService(
+        db: db,
         manifestService: fakeManifestService,
         trailManifestsDao: dao,
         trailMetaDao: TrailMetaDao(db),
@@ -170,7 +185,16 @@ void main() {
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
         fakeDelta: delta,
-      );
+      )..bilan = const ResultatSynchronisation(
+          // SEULES CES DEUX FAMILLES ONT REELLEMENT BOUGE. Avant la tache 605,
+          // ces listes venaient de `_inferChangedTables` qui rendait les sept
+          // tables en dur : le rapport disait toujours 7/0. Elles viennent
+          // desormais du bilan de ce qui a ete pose.
+          famillesTouchees: ['stages', 'pois'],
+          ecrits: 3,
+          supprimes: 0,
+          revisionAtteinte: 5,
+        );
 
       final fakeChecker = FakeUpdateChecker(
         dao: dao,
@@ -223,8 +247,8 @@ void main() {
       // Verification: le service delta n a ete appele qu une fois
       expect(fakeDeltaService.downloadCallCount, 1);
 
-      // Verification: seules les tables changees ont ete passees
-      expect(fakeDeltaService.lastChangedTables, ['stages', 'pois']);
+      // Verification: la revision cible transmise est celle de la liste
+      expect(fakeDeltaService.derniereRevisionCible, 5);
 
       // Verification: l URL du delta est construite depuis la base
       // injectee + filePath du manifeste (pas de bucket code en dur)
@@ -243,6 +267,7 @@ void main() {
       );
 
       final fakeDeltaService = FakeDeltaUpdateService(
+        db: db,
         manifestService: fakeManifestService,
         trailManifestsDao: dao,
         trailMetaDao: TrailMetaDao(db),

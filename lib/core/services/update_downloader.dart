@@ -23,7 +23,7 @@ const _updateReadyNotifBaseId = 6000;
 const updateReadyChannel = 'update_ready';
 const updateReadyChannelDesc = 'Notifications de mise a jour prete';
 
-/// Resultat du telechargement delta pour un sentier.
+/// Resultat de la synchronisation d un sentier — MESURE, pas prevu.
 class UpdateDownloadResult {
   const UpdateDownloadResult({
     required this.trailId,
@@ -36,13 +36,13 @@ class UpdateDownloadResult {
   /// Identifiant du sentier mis a jour.
   final String trailId;
 
-  /// True si le delta a ete applique avec succes.
+  /// True si la synchronisation a abouti.
   final bool success;
 
-  /// Tables effectivement re-telechargees (delta).
+  /// Familles de donnees effectivement REECRITES (bilan reel).
   final List<String> tablesUpdated;
 
-  /// Tables ignorees (pas de changement).
+  /// Familles intactes : rien de plus recent que la revision locale.
   final List<String> tablesSkipped;
 
   /// Message d erreur si echec.
@@ -78,14 +78,13 @@ Future<void> _defaultTaskRunner(
 /// resolue par [TrailDataSource], seul endroit du moteur qui sait ou vivent les
 /// donnees, et surchargeable au build.
 
-/// Service de telechargement delta en arriere-plan (E4.11c).
+/// Service de synchronisation des donnees sentier en arriere-plan (E4.11c).
 ///
-/// Orchestre le pipeline : detection MAJ -> delta download -> notification.
-/// Seules les tables modifiees sont re-telechargees (delta, pas full).
-/// Le telechargement tourne en background via [BackgroundTaskRunner].
-/// Reutilise le DeltaUpdateService du moteur (zero duplication) ;
-/// l URL du delta est construite depuis [dataBaseUrl] + filePath du
-/// manifeste (aucune marque en dur).
+/// Orchestre le pipeline : detection d ecart de revision -> telechargement ->
+/// pose atomique -> notification. Seuls les enregistrements plus recents que la
+/// revision locale sont ecrits (cf. `RevisionDeDonnee`). Le travail tourne en
+/// arriere-plan via [BackgroundTaskRunner]. L URL est construite depuis
+/// [dataBaseUrl] + filePath du manifeste (aucune marque en dur).
 ///
 /// Dependances : E4.11b (UpdateChecker), E4.3 (manifest), E4.4a (download).
 class UpdateDownloader {
@@ -105,7 +104,19 @@ class UpdateDownloader {
   final UpdateChecker updateChecker;
   final DeltaUpdateService deltaUpdateService;
   final ManifestService manifestService;
+
+  /// Manifestes locaux — POUR LE MARQUEUR DE COMPLETUDE, et il etait mort.
+  ///
+  /// Ce champ etait injecte par [updateDownloaderProvider] et UTILISE NULLE PART
+  /// dans cette classe (mesure de la tache 605, confirmant Athena). Il avait ete
+  /// prevu pour ecrire `localVersion` apres une mise a jour reussie — l ecriture
+  /// n a jamais existe, et comme `TrailManifestsDao.needsUpdate` s en sert pour
+  /// decider s il faut telecharger, CHAQUE ouverture retelechargeait tout.
+  /// L ecriture se fait desormais dans la transaction du
+  /// `DeltaUpdateService.appliquerRevisions` (`inscrireRevision`), pour qu un
+  /// repere de revision ne puisse pas survivre a un retour arriere des donnees.
   final TrailManifestsDao dao;
+
   final ConnectivityMonitor connectivityMonitor;
 
   /// REMPLACEMENT optionnel de la base d URL des fichiers de donnees.
@@ -127,11 +138,12 @@ class UpdateDownloader {
   /// Telecharge les deltas pour tous les sentiers ayant une MAJ.
   ///
   /// Pipeline :
-  /// 1. [UpdateChecker.checkAllForUpdates] detecte les MAJ.
-  /// 2. Pour chaque MAJ, recupere le manifeste distant.
-  /// 3. [DeltaUpdateService.checkForUpdates] identifie les tables changees.
-  /// 4. Telecharge et applique UNIQUEMENT les tables delta.
-  /// 5. Notifie l utilisateur quand la MAJ est prete.
+  /// 1. [UpdateChecker.checkAllForUpdates] detecte les sentiers en retard.
+  /// 2. Pour chacun, recupere la liste distante.
+  /// 3. [DeltaUpdateService.checkForUpdates] mesure l ecart de revision.
+  /// 4. Telecharge, puis pose UNIQUEMENT ce qui est plus recent, en une
+  ///    transaction.
+  /// 5. Notifie l utilisateur quand c est pret.
   ///
   /// Retourne la liste des resultats (un par sentier traite).
   Future<List<UpdateDownloadResult>> downloadAllUpdates({
@@ -173,10 +185,9 @@ class UpdateDownloader {
     return results;
   }
 
-  /// Telecharge le delta pour un seul sentier.
+  /// Synchronise un seul sentier.
   ///
-  /// Ne re-telecharge que les tables qui ont change entre
-  /// la version locale et la version distante.
+  /// Ne reecrit que les enregistrements plus recents que la revision locale.
   Future<UpdateDownloadResult> downloadSingleUpdate({
     required String trailId,
     required String manifestUrl,
@@ -216,35 +227,32 @@ class UpdateDownloader {
     );
   }
 
-  /// Telecharge et applique le delta pour un sentier.
+  /// Synchronise un sentier : ce qui est plus recent que sa revision descend.
+  ///
+  /// LE RESULTAT EST MESURE, PLUS PREDIT (tache 605). [UpdateDownloadResult]
+  /// annoncait `tablesUpdated` / `tablesSkipped` depuis la liste rendue par
+  /// `DeltaUpdateService._inferChangedTables`, qui retournait les SEPT tables en
+  /// dur : le rapport disait donc invariablement « 7 mises a jour, 0 ignorees »,
+  /// quelle que soit la realite. Les deux listes viennent desormais du BILAN de ce
+  /// qui a ete pose — une altitude corrigee rend « stages » et rien d autre.
   Future<UpdateDownloadResult> _downloadDelta({
     required String trailId,
     required TrailManifest remoteManifest,
   }) async {
     try {
-      final delta = await deltaUpdateService.checkForUpdates(
+      final ecart = await deltaUpdateService.checkForUpdates(
         trailId,
         remoteManifest: remoteManifest,
       );
 
-      if (delta == null) {
-        _log.d('[UpdateDownloader] Pas de delta pour $trailId');
+      if (ecart == null) {
+        _log.d('[UpdateDownloader] $trailId deja a jour');
         return UpdateDownloadResult(
           trailId: trailId,
           success: true,
           tablesSkipped: allTables,
         );
       }
-
-      final changedTables = delta.changedTables;
-      final skippedTables =
-          allTables.where((t) => !changedTables.contains(t)).toList();
-
-      _log.d(
-        '[UpdateDownloader] Delta $trailId: '
-        '${changedTables.length} tables a MAJ, '
-        '${skippedTables.length} ignorees',
-      );
 
       final remoteEntry =
           remoteManifest.trails.where((t) => t.trailId == trailId).firstOrNull;
@@ -257,22 +265,33 @@ class UpdateDownloader {
         );
       }
 
-      await deltaUpdateService.downloadAndApplyDelta(
-        trailId,
-        urlDonnees(remoteEntry.filePath),
-        changedTables: changedTables,
+      _log.d(
+        '[UpdateDownloader] $trailId : '
+        '${ecart.premiereCopie ? "PREMIERE COPIE" : "mise a jour"} '
+        'v${ecart.fromVersion} -> v${ecart.toVersion}',
       );
 
-      _log.d('[UpdateDownloader] Delta applique pour $trailId');
+      // UN SEUL CHEMIN pour la premiere copie et pour la mise a jour : a la
+      // revision zero, tout est plus recent que la revision locale, donc tout
+      // descend. La revision locale est passee telle qu elle vient d etre lue,
+      // pour ne pas la relire entre-temps.
+      final bilan = await deltaUpdateService.synchroniser(
+        trailId,
+        urlDonnees(remoteEntry.filePath),
+        revisionCible: remoteEntry.dataVersion,
+        revisionLocaleConnue: ecart.fromVersion,
+      );
 
       return UpdateDownloadResult(
         trailId: trailId,
         success: true,
-        tablesUpdated: changedTables,
-        tablesSkipped: skippedTables,
+        tablesUpdated: bilan.famillesTouchees,
+        tablesSkipped: allTables
+            .where((t) => !bilan.famillesTouchees.contains(t))
+            .toList(),
       );
     } catch (e) {
-      _log.e('[UpdateDownloader] Erreur delta $trailId: $e');
+      _log.e('[UpdateDownloader] Erreur synchronisation $trailId: $e');
       return UpdateDownloadResult(
         trailId: trailId,
         success: false,
@@ -313,16 +332,14 @@ class UpdateDownloader {
     }
   }
 
-  /// Liste de toutes les tables possibles.
-  static const allTables = [
-    'trail_meta',
-    'itineraries',
-    'stages',
-    'accommodations',
-    'pois',
-    'gpx_tracks',
-    'gpx_points',
-  ];
+  /// Les sept familles de donnees d un sentier.
+  ///
+  /// UNE SEULE DEFINITION (tache 605) : cette liste etait la TROISIEME copie de
+  /// la meme enumeration (avec `_insertionSteps` de `TrailDownloadService` et le
+  /// retour en dur de `_inferChangedTables`). Trois copies d un ordre qui compte
+  /// — c est l ordre des cles etrangeres — dont deux pouvaient deriver en
+  /// silence. Elle delegue desormais a [MorceauxDeSentier.tous].
+  static const allTables = MorceauxDeSentier.tous;
 }
 
 /// Provider Riverpod pour le service de telechargement delta background.

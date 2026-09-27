@@ -83,7 +83,18 @@ class ManifestService {
   /// Met a jour dataVersion, hash, etc. depuis l'entree distante.
   /// Ne touche PAS a localVersion (qui est mis a jour apres
   /// le telechargement effectif du fichier de donnees).
+  ///
+  /// CONSERVE AUSSI LA FICHE D AFFICHAGE (tache 605), et c est ce qui fait
+  /// tenir la couche 2 de l ordre des sources. Sans cette ligne, le dernier
+  /// catalogue distant recu serait perdu au premier redemarrage hors ligne :
+  /// un sentier que le binaire ne connait pas disparaitrait de l ecran du
+  /// randonneur des qu il perd le reseau.
+  ///
+  /// Une entree SANS fiche n EFFACE PAS la fiche deja connue : `Value.absent()`
+  /// exclut la colonne du `UPDATE` (`insertOnConflictUpdate`). Une republication
+  /// de simple versionnement ne fait donc pas regresser la description.
   Future<void> saveLocalManifest(TrailManifestEntry entry) async {
+    final fiche = entry.fiche;
     await dao.insertOrReplace(
       TrailManifestsCompanion(
         trailId: Value(entry.trailId),
@@ -93,8 +104,28 @@ class ManifestService {
         fileSize: Value(entry.fileSize),
         status: Value(entry.status),
         lastUpdated: Value(entry.lastUpdated),
+        ficheJson: fiche == null
+            ? const Value.absent()
+            : Value(jsonEncode(fiche.toJson())),
       ),
     );
+  }
+
+  /// Relit une fiche d affichage conservee en base.
+  ///
+  /// Rend `null` sur une colonne vide comme sur un JSON illisible : une fiche
+  /// corrompue ne doit PAS faire disparaitre le catalogue, elle doit seulement
+  /// faire retomber ce sentier sur sa version compilee (ordre des sources).
+  static TrailManifestFiche? ficheDepuisJson(String? brut) {
+    if (brut == null || brut.isEmpty) return null;
+    try {
+      return TrailManifestFiche.fromJson(
+        jsonDecode(brut) as Map<String, dynamic>,
+      );
+    } catch (e) {
+      _log.w('[ManifestService] Fiche locale illisible, ignoree: $e');
+      return null;
+    }
   }
 }
 
