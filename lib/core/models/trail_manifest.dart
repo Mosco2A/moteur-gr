@@ -7,14 +7,16 @@ part 'trail_manifest.g.dart';
 ///
 /// Ces sept noms ne sont pas un choix : ce sont les sept clefs du fichier de
 /// donnees de sentier que le moteur sait deja lire (`TrailSeeder`,
-/// `TrailDownloadService`, `DeltaUpdateService`), c est-a-dire le schema
+/// `DeltaUpdateService`), c est-a-dire le schema
 /// MONOLITHE documente au §3.5 du MODOP 603. Les changer ici sans les changer
 /// la-bas casserait la copie.
 ///
 /// L ORDRE EST CELUI DES CLES ETRANGERES, et il n est pas decoratif : un
 /// hebergement rattache a une etape qui n existe pas encore echoue. Cet ordre
 /// existait en TROIS copies dans le depot (ici, `_insertionSteps`, et le retour
-/// en dur de l ancien `_inferChangedTables`) : il n en reste qu une.
+/// en dur de l ancien `_inferChangedTables`) : il n en reste qu une — les deux
+/// autres ont disparu avec leurs porteurs (`_inferChangedTables` en 605,
+/// `TrailDownloadService` en 606).
 ///
 /// CE QUE CETTE LISTE N EST PAS — ET C EST LA CORRECTION DU 27/09 20:43. Elle
 /// n est PAS une unite de version. Une premiere version de ce lot versionnait par

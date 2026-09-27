@@ -13,8 +13,8 @@ import '../../treks/providers/entitlements_provider.dart';
 import '../domain/etat_du_sentier.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/services/delta_update_service.dart';
 import '../../../core/services/manifest_service.dart';
-import '../../../core/services/trail_download_service.dart';
 
 final _log = Logger(
   printer: PrettyPrinter(methodCount: 0),
@@ -275,14 +275,41 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     state = await AsyncValue.guard(() => _loadCatalog());
   }
 
-  /// Lance le telechargement d'un sentier.
+  /// LE GESTE « TELECHARGER » — ET IL PASSE DESORMAIS PAR LE CHEMIN UNIQUE.
   ///
-  /// Met a jour le statut en 'downloading' immediatement,
-  /// puis ecoute le stream de progression du TrailDownloadService.
+  /// TROIS DEFAUTS MESURES DANS CE SEUL BLOC (tache 606), ET ILS AVAIENT TOUS LA
+  /// MEME CAUSE : le geste qui met un sentier sur le telephone emprunte un SECOND
+  /// chemin de descente, `TrailDownloadService`, que le lot 605 n a pas touche
+  /// parce qu il n avait corrige que `DeltaUpdateService`.
+  ///
+  ///  1. LE MODELE DE REVISION ETAIT IGNORE. `TrailDownloadService` ecrivait les
+  ///     sept familles sans lire un seul `rev` et sans en ecrire aucun : apres le
+  ///     PREMIER telechargement, toutes les donnees du sentier etaient en base
+  ///     avec `rev` a NULL. La premiere mise a jour suivante reprenait donc tout,
+  ///     c est-a-dire exactement le defaut que le versionnage unitaire supprime.
+  ///  2. LES MARQUEURS DE SUPPRESSION ETAIENT IGNORES. `supprime: true` est un
+  ///     champ de plus pour ce service : il inserait la pierre tombale comme une
+  ///     donnee. Un point d eau tari arrivait donc sur le telephone.
+  ///  3. LA COPIE N ETAIT PAS ATOMIQUE. L insertion se faisait famille par
+  ///     famille avec une file de reprise — donc un demi-sentier en base apres
+  ///     une coupure, ce que la garantie #C1 de Christophe interdit (« il faut la
+  ///     copie du sentier sur le tel »).
+  ///
+  /// ET UN QUATRIEME, PLUS SIMPLE : `dataUrl` valait `manifestEntry.filePath`,
+  /// c est-a-dire un chemin RELATIF (« gr_aubrac/v3.json ») passe a `Uri.parse`.
+  /// Le jour ou un fichier est reellement depose, cette requete ne peut pas
+  /// aboutir. L adresse est desormais resolue par [TrailDataSource], seul endroit
+  /// du moteur qui sait ou vivent les donnees, qui respecte aussi une URL absolue
+  /// (#O3).
+  ///
+  /// CE QUI REMPLACE : `DeltaUpdateService.synchroniser`, le chemin des mises a
+  /// jour. Premiere copie et mise a jour ne sont plus deux chemins mais un seul —
+  /// un sentier neuf est a la revision zero, donc tout depasse sa revision et tout
+  /// descend. La progression reste publiee pour l ecran, la revision locale est
+  /// inscrite DANS la transaction de la pose (plus apres, depuis l interface).
   Future<void> downloadTrail(String trailId) async {
     _updateEntryStatus(trailId, TrailLocalStatusValues.downloading);
 
-    final downloadService = ref.read(trailDownloadServiceProvider);
     final manifestEntry = await _manifestsDao.getByTrailId(trailId);
     if (manifestEntry == null) {
       _log.e('[CatalogNotifier] Pas de manifeste pour $trailId');
@@ -290,31 +317,50 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       return;
     }
 
-    final dataUrl = manifestEntry.filePath;
+    final progression = ref.read(downloadProgressProvider(trailId).notifier);
+    progression.setProgress(DownloadProgress(
+      trailId: trailId,
+      status: DownloadStatusValues.downloading,
+      bytesDownloaded: 0,
+      totalBytes: manifestEntry.fileSize,
+      currentStep: 'downloading',
+    ));
 
-    await for (final progress
-        in downloadService.downloadTrail(trailId, dataUrl)) {
-      // Mettre a jour le stream de progression
-      ref.read(downloadProgressProvider(trailId).notifier).setProgress(progress);
+    try {
+      final bilan = await ref.read(deltaUpdateServiceProvider).synchroniser(
+            trailId,
+            TrailDataSource.urlDonneesSentier(manifestEntry.filePath),
+            revisionCible: manifestEntry.dataVersion,
+          );
 
-      if (progress.status == DownloadStatusValues.completed) {
-        // LA COPIE EST COMPLETE : on le marque, et on marque AUSSI chaque
-        // morceau (point 1 + point 2 de Christophe, 27/09 20:11).
-        //
-        // Ce chemin telecharge le fichier COMPLET du sentier : les sept morceaux
-        // sont donc poses ensemble, et leurs versions locales valent la
-        // publication. Sans ces lignes, la table des versions unitaires resterait
-        // vide apres un premier telechargement et la mise a jour suivante
-        // reprendrait TOUT — c est-a-dire le defaut que le versionnage unitaire
-        // vient supprimer.
-        await _manifestsDao.inscrireRevision(
-          manifestEntry.trailId,
-          manifestEntry.dataVersion,
-        );
-        _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
-      } else if (progress.status == DownloadStatusValues.error) {
-        _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
-      }
+      _log.d(
+        '[CatalogNotifier] $trailId copie : ${bilan.ecrits} enregistrement(s) '
+        'ecrit(s), ${bilan.supprimes} retire(s), revision '
+        '${bilan.revisionAtteinte}.',
+      );
+
+      progression.setProgress(DownloadProgress(
+        trailId: trailId,
+        status: DownloadStatusValues.completed,
+        bytesDownloaded: manifestEntry.fileSize,
+        totalBytes: manifestEntry.fileSize,
+        currentStep: 'completed',
+      ));
+      _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
+    } catch (e) {
+      // RIEN N EST POSE, LA REVISION LOCALE N A PAS BOUGE : le sentier reste « a
+      // prendre » et l echec est DIT. C est la contrepartie de la copie atomique,
+      // et elle vaut mieux qu un demi-sentier presente comme disponible.
+      _log.e('[CatalogNotifier] Copie de $trailId echouee : $e');
+      progression.setProgress(DownloadProgress(
+        trailId: trailId,
+        status: DownloadStatusValues.error,
+        bytesDownloaded: 0,
+        totalBytes: manifestEntry.fileSize,
+        currentStep: 'downloading',
+        error: e.toString(),
+      ));
+      _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
     }
   }
 

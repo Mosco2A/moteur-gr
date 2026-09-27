@@ -1,11 +1,10 @@
 import '../../../core/config/trail_config.dart';
 import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_accommodations_dao.dart';
-import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_itineraries_dao.dart';
 import '../../../core/data/daos/trail_stages_dao.dart';
 import '../../../core/data/database.dart';
-import '../../../core/geo/geo_utils.dart';
+import '../../../core/geo/trace_du_sentier.dart';
 import '../../../core/geo/track_point.dart';
 import '../../../core/models/stage.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
@@ -32,31 +31,17 @@ class DriftTrailDataProvider implements TrailDataProvider {
     return rows.map(StageModel.fromDb).toList();
   }
 
+  /// Points de la trace [trackId], via le CHEMIN UNIQUE de lecture de trace.
+  ///
+  /// Cette methode portait sa propre conversion « lignes de la base ->
+  /// [TrackPoint] », accumulation de la distance comprise : une SECONDE
+  /// definition du meme calcul que celui de la carte, et elle n avait aucun
+  /// appelant dans `lib/` — donc rien ne l aurait signalee si elle avait derive.
+  /// Elle delegue desormais a [LecteurDeTrace], comme `gpxTrackProvider`
+  /// (tache 606).
   @override
-  Future<List<TrackPoint>> getTrackPoints(String stageId) async {
-    final dao = TrailGpxPointsDao(_db);
-    final rows = await dao.getByTrackId(stageId);
-
-    final points = <TrackPoint>[];
-    var cumulativeDistance = 0.0;
-
-    for (final row in rows) {
-      if (points.isNotEmpty) {
-        final prev = points.last;
-        cumulativeDistance += GeoUtils.haversineDistance(
-          prev.lat, prev.lng, row.lat, row.lng,
-        );
-      }
-
-      points.add(TrackPoint(
-        lat: row.lat,
-        lng: row.lng,
-        altitude: row.elevation,
-        distanceFromStart: cumulativeDistance,
-      ));
-    }
-
-    return points;
+  Future<List<TrackPoint>> getTrackPoints(String trackId) {
+    return LecteurDeTrace(db: _db).pointsDeLaTrace([trackId]);
   }
 
   @override

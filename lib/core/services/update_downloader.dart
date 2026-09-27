@@ -335,8 +335,9 @@ class UpdateDownloader {
   /// Les sept familles de donnees d un sentier.
   ///
   /// UNE SEULE DEFINITION (tache 605) : cette liste etait la TROISIEME copie de
-  /// la meme enumeration (avec `_insertionSteps` de `TrailDownloadService` et le
-  /// retour en dur de `_inferChangedTables`). Trois copies d un ordre qui compte
+  /// la meme enumeration (avec `_insertionSteps` de l ancien
+  /// `TrailDownloadService`, supprime en 606, et le retour en dur de
+  /// `_inferChangedTables`). Trois copies d un ordre qui compte
   /// — c est l ordre des cles etrangeres — dont deux pouvaient deriver en
   /// silence. Elle delegue desormais a [MorceauxDeSentier.tous].
   static const allTables = MorceauxDeSentier.tous;

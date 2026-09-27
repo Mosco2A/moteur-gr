@@ -15,7 +15,6 @@ import '../../../core/data/seed/trail_seeder.dart';
 import '../domain/models/track_point.dart' as trek;
 import 'gpx_parser.dart';
 import '../../../features/tips/domain/models/tip_card.dart';
-import 'track_simplifier.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -76,7 +75,13 @@ class SeedDataLoader {
     final gpxResult = GpxParser.parse(gpxContent);
     final allPoints = gpxResult.allTrackPoints;
 
-    // --- 3. Simplifier la trace via Douglas-Peucker ---
+    // --- 3. Convertir les points lus (AUCUNE simplification ici) ---
+    //
+    // La simplification Douglas-Peucker qui vivait a cette ligne a ete RETIREE
+    // (tache 606) : elle degradait la trace AVANT de la poser en base, et la
+    // base est desormais ce que la carte lit. Le rendu simplifie par zoom est
+    // inchange (`simplifiedTrackProvider`) — il travaillait deja sur une trace
+    // deja simplifiee, soit deux fois.
     final trekPoints = allPoints
         .map((p) => trek.TrackPoint(
               lat: p.lat,
@@ -84,8 +89,6 @@ class SeedDataLoader {
               elevation: p.altitude,
             ))
         .toList();
-
-    final simplified = DouglasPeucker.simplify(trekPoints);
 
     // --- 4. Batch insert stages ---
     final stagesDao = StagesDao(_db);
@@ -154,14 +157,24 @@ class SeedDataLoader {
     // insert awaite par point. Sur la DB in-memory de l'isolate UI, la boucle
     // serie bloquait le thread principal proportionnellement au nombre de
     // points (freeze visible au demarrage / a l'ouverture des ecrans data).
+    //
+    // LA TRACE POSEE EN BASE EST LA TRACE ENTIERE, PLUS LA TRACE SIMPLIFIEE, ET
+    // C EST UNE CORRECTION MESUREE (tache 606). Depuis que la carte lit la base
+    // avant l asset ([LecteurDeTrace]), ce que le semeur pose ICI est ce que le
+    // randonneur VOIT. Or il posait le resultat de Douglas-Peucker : sur
+    // `mare_a_mare_centre`, 48 points pour 53 lus — 5 POINTS PERDUS, donc un
+    // sentier embarque DEGRADE par le branchement, ce qui est exclu. La
+    // simplification n a pas disparu : elle reste ou elle a du sens, au RENDU,
+    // par niveau de zoom (`simplifiedTrackProvider`). Elle etait de toute facon
+    // appliquee DEUX FOIS sur ce chemin.
     final gpxPointsDao = TrailGpxPointsDao(_db);
     final gpxCompanions = <TrailGpxPointsCompanion>[
-      for (var i = 0; i < simplified.length; i++)
+      for (var i = 0; i < trekPoints.length; i++)
         TrailGpxPointsCompanion(
           trackId: Value(trailId),
-          lat: Value(simplified[i].lat),
-          lng: Value(simplified[i].lng),
-          elevation: Value(simplified[i].elevation),
+          lat: Value(trekPoints[i].lat),
+          lng: Value(trekPoints[i].lng),
+          elevation: Value(trekPoints[i].elevation),
           sequenceIndex: Value(i),
         ),
     ];
@@ -209,9 +222,8 @@ class SeedDataLoader {
     _log.i(
       'Seed termine: ${stageCompanions.length} etapes, '
       '${poiCompanions.length} POIs, '
-      '${simplified.length} points GPX '
-      '(${allPoints.length} bruts -> ${simplified.length} simplifies) '
-      'en ${sw.elapsedMilliseconds}ms',
+      '${trekPoints.length} points GPX (trace ENTIERE, la simplification est '
+      'au rendu) en ${sw.elapsedMilliseconds}ms',
     );
 
     return true;

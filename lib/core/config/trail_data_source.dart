@@ -20,10 +20,9 @@
 /// lit `data/version.json` par REFERENCE Firebase Storage, compare la version,
 /// telecharge, met en cache, et retombe proprement quand le reseau manque. On
 /// garde cette forme : chemins prefixes `data/`, version comparee, cache local
-/// qui fait foi hors ligne. Le transport reste HTTP (le moteur telecharge deja
-/// en HTTP avec reprise et progression — cf. `TrailDownloadService`), mais
-/// l URL est desormais construite depuis la reference Storage au lieu d etre
-/// devinee.
+/// qui fait foi hors ligne. Le transport reste HTTP avec reprise (cf.
+/// `SourceFichierEntier`), mais l URL est desormais construite depuis la
+/// reference Storage au lieu d etre devinee.
 library;
 
 /// Espace de stockage des donnees de sentier.

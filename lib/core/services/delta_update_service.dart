@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -18,6 +16,7 @@ import '../models/delta_update.dart';
 import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
+import 'source_de_donnees_sentier.dart';
 import 'package:drift/drift.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -67,8 +66,9 @@ class DeltaUpdateService {
     required this.trailPoisDao,
     required this.trailGpxTracksDao,
     required this.trailGpxPointsDao,
+    SourceDeDonneesSentier? source,
     http.Client? httpClient,
-  }) : _httpClient = httpClient ?? http.Client();
+  }) : source = source ?? SourceFichierEntier(httpClient: httpClient);
 
   /// La base, pour ouvrir la TRANSACTION qui rend la copie atomique.
   ///
@@ -85,7 +85,14 @@ class DeltaUpdateService {
   final TrailPoisDao trailPoisDao;
   final TrailGpxTracksDao trailGpxTracksDao;
   final TrailGpxPointsDao trailGpxPointsDao;
-  final http.Client _httpClient;
+
+  /// D OU VIENT CE QUI DEPASSE MA REVISION.
+  ///
+  /// Par defaut [SourceFichierEntier] : un fichier publie dans l espace de
+  /// stockage, lu en HTTP REST, trie a l arrivee. Injecter [SourceInterrogeable]
+  /// fait partir la question au serveur — le transfert devient unitaire et la
+  /// suite du code ne bouge pas.
+  final SourceDeDonneesSentier source;
 
   /// Y a-t-il quelque chose de plus recent que ma revision ?
   ///
@@ -205,13 +212,23 @@ class DeltaUpdateService {
     );
   }
 
-  /// Telecharge le fichier de donnees puis applique ce qui est plus recent.
+  /// DEMANDE CE QUI DEPASSE MA REVISION, PUIS LE POSE. CHEMIN UNIQUE.
   ///
-  /// C est le chemin reel, et il est UNIQUE : premiere copie comme correction
-  /// d altitude passent ici.
+  /// C est le seul chemin de descente des donnees d un sentier : premiere copie,
+  /// correction d altitude, suppression d un point d eau passent tous ici. Le
+  /// geste « telecharger » du catalogue y passe aussi depuis la tache 606 — il
+  /// empruntait jusque-la un SECOND chemin (`TrailDownloadService`) qui ignorait
+  /// les revisions, ignorait les marqueurs de suppression et posait famille par
+  /// famille hors transaction.
   ///
-  /// LE TELECHARGEMENT EST HORS TRANSACTION, deliberement. Le reseau ne doit
-  /// jamais tenir un verrou d ecriture SQLite : sur une liaison de montagne, une
+  /// LE TRANSFERT EST DELEGUE A [source], ET C EST LA TOUT LE LOT 606-X2. « Donne
+  /// moi tout ce qui a une revision superieure a la mienne » est une question,
+  /// pas un telechargement : sur un fichier entier elle se tranche a l arrivee,
+  /// sur une source interrogeable elle part au serveur. La POSE, elle, ne change
+  /// pas d une ligne — c est le signe que le modele de revision est le bon.
+  ///
+  /// LE TRANSFERT EST HORS TRANSACTION, deliberement. Le reseau ne doit jamais
+  /// tenir un verrou d ecriture SQLite : sur une liaison de montagne, une
   /// transaction ouverte pendant un transfert bloquerait la base pendant des
   /// minutes.
   Future<ResultatSynchronisation> synchroniser(
@@ -221,21 +238,18 @@ class DeltaUpdateService {
     int? revisionLocaleConnue,
   }) async {
     final locale = revisionLocaleConnue ?? await revisionLocale(trailId);
-    final donnees = await _telecharger(urlDonnees);
-    return appliquerRevisions(
+    final aPrendre = await source.depuisLaRevision(
       trailId,
-      donnees,
+      adresse: urlDonnees,
       revisionLocale: locale,
       revisionCible: revisionCible,
     );
-  }
-
-  Future<Map<String, dynamic>> _telecharger(String url) async {
-    final response = await _httpClient.get(Uri.parse(url));
-    if (response.statusCode != 200) {
-      throw Exception('HTTP ${response.statusCode}');
-    }
-    return jsonDecode(response.body) as Map<String, dynamic>;
+    return appliquerRevisions(
+      trailId,
+      aPrendre.parFamille,
+      revisionLocale: locale,
+      revisionCible: revisionCible,
+    );
   }
 
   /// Applique une famille : ecrit ce qui est plus recent, retire les tombes.
