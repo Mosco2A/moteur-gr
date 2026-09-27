@@ -1,15 +1,40 @@
-import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/feedback_queue_dao.dart';
-import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
+import '../data/feedback_service.dart';
+import '../data/firestore_feedback_sink.dart';
 
 /// Provider du DAO feedback
 final feedbackQueueDaoProvider = Provider<FeedbackQueueDao>((ref) {
   return FeedbackQueueDao(ref.watch(databaseProvider));
+});
+
+/// Destinataire des retours — `null` tant que le cloud n'est pas configure.
+///
+/// 596 C1 : c'est LA piece qui manquait. Tant qu'elle vaut `null`, l'appli sait
+/// qu'elle ne peut pas envoyer, et elle le DIT a l'utilisateur au lieu de le
+/// remercier pour un message qui ne partira pas.
+final feedbackSinkProvider = Provider<FeedbackSink?>((ref) {
+  final firebase = ref.watch(firebaseServiceProvider);
+  if (!firebase.isAvailable) return null;
+  return FirestoreFeedbackSink(firebaseService: firebase);
+});
+
+/// Service de feedback reel — UN SEUL chemin d'envoi pour toute l'appli.
+///
+/// Le notifier faisait sa propre « simulation d'envoi » dans son coin pendant
+/// que [FeedbackService] existait sans etre branche nulle part. Deux etages qui
+/// mentaient separement ; il n'y en a plus qu'un, et il dit la verite.
+final feedbackServiceProvider = Provider<FeedbackService>((ref) {
+  return FeedbackService(
+    dao: ref.watch(feedbackQueueDaoProvider),
+    connectivityMonitor: ref.watch(connectivityMonitorProvider),
+    sink: ref.watch(feedbackSinkProvider),
+  );
 });
 
 /// Types de feedback disponibles.
@@ -44,95 +69,108 @@ class FeedbackState {
   const FeedbackState({
     this.pendingCount = 0,
     this.isSubmitting = false,
-    this.lastSubmitSuccess,
+    this.derniereIssue,
+    this.envoiPossible = false,
   });
 
   final int pendingCount;
   final bool isSubmitting;
-  final bool? lastSubmitSuccess;
+
+  /// CE QUI EST REELLEMENT ARRIVE au dernier retour soumis (596 C1).
+  ///
+  /// Remplace `lastSubmitSuccess`, un booleen qui valait vrai des que
+  /// l'ECRITURE LOCALE avait reussi — et sur lequel l'ecran affichait
+  /// « Merci pour votre retour ! » pour un message qui ne partait nulle part.
+  final FeedbackIssue? derniereIssue;
+
+  /// Vrai si un destinataire est branche. Faux => l'appli doit annoncer
+  /// qu'elle garde les retours sur le telephone.
+  final bool envoiPossible;
 
   FeedbackState copyWith({
     int? pendingCount,
     bool? isSubmitting,
-    bool? lastSubmitSuccess,
+    FeedbackIssue? derniereIssue,
+    bool? envoiPossible,
   }) {
     return FeedbackState(
       pendingCount: pendingCount ?? this.pendingCount,
       isSubmitting: isSubmitting ?? this.isSubmitting,
-      lastSubmitSuccess: lastSubmitSuccess,
+      derniereIssue: derniereIssue,
+      envoiPossible: envoiPossible ?? this.envoiPossible,
     );
   }
 }
 
-/// Notifier pour gerer les feedbacks avec file d'attente offline
+/// Notifier des retours utilisateur — PLUS AUCUNE SIMULATION D'ENVOI (596 C1).
+///
+/// CE QUI ETAIT LA :
+/// ```dart
+/// Future<void> _trySendPending() async {
+///   for (final feedback in await _dao.getPending()) {
+///     // Simulation d'envoi (pas de backend Firebase)
+///     // En production, appeler l'API ici
+///     await _dao.markSent(feedback.id);
+///   }
+/// }
+/// ```
+/// Chaque retour etait declare envoye sans qu'aucun octet ne quitte le
+/// telephone, et l'ecran remerciait. Le notifier refaisait par ailleurs, en
+/// pire, le travail de [FeedbackService] — qui existait et n'etait branche
+/// nulle part. Il n'y a plus qu'UN chemin d'envoi, et il dit la verite.
 class FeedbackNotifier extends Notifier<FeedbackState> {
-  late FeedbackQueueDao _dao;
+  late FeedbackService _service;
   late String _trailId;
-  late ConnectivityStatus _connectivity;
 
   @override
   FeedbackState build() {
-    _dao = ref.read(feedbackQueueDaoProvider);
+    _service = ref.watch(feedbackServiceProvider);
     _trailId = ref.read(trailIdProvider);
-    _connectivity =
-        ref.watch(connectivityProvider.select((asyncVal) =>
-            asyncVal.value ?? ConnectivityStatusValues.offline));
+    // L'etat du reseau reconstruit le notifier : un retour garde hors ligne
+    // repart tout seul au retour de la connexion.
+    ref.watch(connectivityProvider.select(
+        (asyncVal) => asyncVal.value ?? ConnectivityStatusValues.offline));
     _loadPendingCount();
-    return const FeedbackState();
+    return FeedbackState(envoiPossible: _service.envoiPossible);
   }
 
   Future<void> _loadPendingCount() async {
-    final count = await _dao.countPending();
+    final count = await _service.pendingCount();
+    if (!ref.mounted) return;
     state = state.copyWith(pendingCount: count);
   }
 
-  /// Soumet un feedback (stocke localement, envoye quand en ligne)
-  Future<bool> submitFeedback({
+  /// Soumet un retour et rend CE QUI LUI EST REELLEMENT ARRIVE.
+  Future<FeedbackIssue> submitFeedback({
     required FeedbackType type,
     required String content,
     int? rating,
   }) async {
     state = state.copyWith(isSubmitting: true);
 
-    try {
-      await _dao.addFeedback(FeedbackQueueCompanion(
-        trailId: Value(_trailId),
-        feedbackType: Value(type),
-        content: Value(content),
-        rating: Value(rating),
-        createdAt: Value(DateTime.now()),
-      ));
+    final issue = await _service.submit(
+      trailId: _trailId,
+      category: type,
+      content: content,
+      rating: rating,
+    );
 
-      // Tenter l'envoi immediat si en ligne
-      if (_connectivity == ConnectivityStatusValues.online) {
-        await _trySendPending();
-      }
-
-      await _loadPendingCount();
-      state = state.copyWith(isSubmitting: false, lastSubmitSuccess: true);
-      return true;
-    } catch (_) {
-      state = state.copyWith(isSubmitting: false, lastSubmitSuccess: false);
-      return false;
-    }
+    if (!ref.mounted) return issue;
+    await _loadPendingCount();
+    if (!ref.mounted) return issue;
+    state = state.copyWith(isSubmitting: false, derniereIssue: issue);
+    return issue;
   }
 
-  /// Tente d'envoyer les feedbacks en attente
-  Future<void> _trySendPending() async {
-    final pending = await _dao.getPending();
-    for (final feedback in pending) {
-      // Simulation d'envoi (pas de backend Firebase)
-      // En production, appeler l'API ici
-      await _dao.markSent(feedback.id);
-    }
-  }
-
-  /// Force le renvoi des feedbacks en attente
-  Future<void> retrySendPending() async {
-    if (_connectivity == ConnectivityStatusValues.online) {
-      await _trySendPending();
-      await _loadPendingCount();
-    }
+  /// Force le renvoi des retours encore sur le telephone.
+  ///
+  /// Rend le nombre de retours REELLEMENT partis (zero quand aucun
+  /// destinataire n'est branche).
+  Future<int> retrySendPending() async {
+    final envoyes = await _service.flush();
+    if (!ref.mounted) return envoyes;
+    await _loadPendingCount();
+    return envoyes;
   }
 }
 

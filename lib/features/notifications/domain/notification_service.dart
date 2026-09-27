@@ -80,6 +80,13 @@ class NotificationService {
     return id;
   }
 
+  /// ANNULE le rappel du matin deja planifie (596 C3).
+  ///
+  /// Le reglage savait ALLUMER mais pas ETEINDRE : `toggleMorningReminder(false)`
+  /// ne retirait rien, la notification restait armee dans le systeme et le
+  /// randonneur la recevait quand meme apres l'avoir coupee.
+  Future<void> cancelMorningReminder() => cancel(_morningBaseId);
+
   Future<int> scheduleWeatherAlert({
     required DateTime dateTime,
     required String title,
@@ -237,7 +244,73 @@ class NotificationService {
     _log.d('[NotificationService] Notification $id annulee');
   }
 
-  Future<bool> checkPermissions() async => true;
+  /// DEMANDE REELLEMENT AU SYSTEME si l'appli a le droit de notifier (596 C3).
+  ///
+  /// AVANT : `Future<bool> checkPermissions() async => true;`. En dur. L'appli
+  /// croyait TOUJOURS avoir le droit de notifier, meme apres un refus du
+  /// randonneur dans les reglages du telephone. Un rappel de securite qu'on
+  /// croit arme et qui n'arrivera jamais est pire qu'un rappel absent : il
+  /// endort la vigilance.
+  ///
+  /// Le vrai etat est lu sur chaque plateforme (`areNotificationsEnabled` cote
+  /// Android, `checkPermissions().isEnabled` cote iOS/macOS). Aucune
+  /// initialisation du plugin n'est requise pour interroger le systeme.
+  ///
+  /// SEUL CAS OU L'ON REPOND OUI SANS DEMANDER : aucune implementation de
+  /// plateforme n'est branchee (bureau, environnement de test). On ne peut alors
+  /// ni autoriser ni refuser — on ne bloque pas l'appli et ON LE DIT dans les
+  /// journaux.
+  Future<bool> checkPermissions() async {
+    final androidPlugin = _sansLever(() => _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>());
+    if (androidPlugin != null) {
+      return _demander(() async => androidPlugin.areNotificationsEnabled());
+    }
+    final iosPlugin = _sansLever(() => _plugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>());
+    if (iosPlugin != null) {
+      return _demander(
+          () async => (await iosPlugin.checkPermissions())?.isEnabled);
+    }
+    final macPlugin = _sansLever(() => _plugin
+        .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin>());
+    if (macPlugin != null) {
+      return _demander(
+          () async => (await macPlugin.checkPermissions())?.isEnabled);
+    }
+    _log.d('[NotificationService] Aucune plateforme de notification branchee '
+        "(bureau ou test) — permission non verifiable, on n'empeche rien");
+    return true;
+  }
+
+  /// Resout l'implementation de plateforme SANS jamais lever.
+  ///
+  /// Hors appareil (bureau, suite de tests) `FlutterLocalNotificationsPlatform
+  /// .instance` peut n'avoir jamais ete posee : la lire leve alors une
+  /// `LateInitializationError`. Ce cas veut dire « aucune plateforme branchee »,
+  /// pas « permission refusee » — il ne doit surtout pas se traduire par un faux
+  /// refus a l'ecran.
+  T? _sansLever<T>(T? Function() resolution) {
+    try {
+      return resolution();
+    } on Object {
+      return null;
+    }
+  }
+
+  /// Interroge le systeme ; une plateforme branchee qui ne repond pas ou qui
+  /// echoue vaut NON — on ne pretend jamais avoir un droit qu'on n'a pas lu.
+  Future<bool> _demander(Future<bool?> Function() sonde) async {
+    try {
+      return await sonde() ?? false;
+    } on Object catch (e) {
+      _log.d('[NotificationService] Etat des permissions illisible: $e');
+      return false;
+    }
+  }
 
   Future<bool> requestPermissions() async {
     await _ensureInitialized();

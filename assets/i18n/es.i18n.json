@@ -807,7 +807,10 @@
     "schedulerCountdownTitle": "Tu trek se acerca!",
     "schedulerCountdownBody": "Salida en 2 días. Revisa tu checklist y el tiempo.",
     "schedulerDailyTitle": "Buen día de trek!",
-    "schedulerDailyBody": "Consulta el tiempo y prepara la etapa del día."
+    "schedulerDailyBody": "Consulta el tiempo y prepara la etapa del día.",
+    "permissionBlockedTitle": "Notificaciones bloqueadas",
+    "permissionBlockedBody": "Tu teléfono bloquea las notificaciones de la aplicación: no recibirás ningún recordatorio ni ninguna alerta.",
+    "permissionAsk": "Permitir las notificaciones"
   },
   "settings": {
     "title": "Ajustes",
@@ -852,7 +855,10 @@
     "thanks": "¡Gracias por tu comentario!",
     "pending": "pendiente",
     "emptyMessage": "Escribe tu mensaje antes de enviarlo.",
-    "sendFailed": "Tu mensaje no se ha podido guardar."
+    "sendFailed": "Tu mensaje no se ha podido guardar.",
+    "keptLocally": "Guardado en este teléfono. Tu comentario se enviará en cuanto el envío sea posible.",
+    "keptLocallyNotice": "El envío de comentarios aún no está abierto: tus mensajes se guardan en este teléfono.",
+    "sentThanks": "Gracias, tu comentario se ha enviado."
   },
   "auth": {
     "profile": "Perfil",
@@ -2214,7 +2220,9 @@
     "copy": "Copiar código",
     "copied": "Código copiado",
     "warning": "Nadie más puede leer tu caja fuerte, ni siquiera nosotros. Si pierdes este código, tus datos serán irrecuperables para siempre.",
-    "error": "No se puede generar el código en este momento."
+    "error": "No se puede generar el código en este momento.",
+    "noVaultTitle": "Todavía no hay caja fuerte que abrir",
+    "noVaultBody": "La copia de seguridad en línea no está activada en esta instalación: tus datos permanecen en este teléfono. Por tanto no hay ninguna caja fuerte que abrir en otro lugar, ni ningún código que anotar por ahora."
   },
   "common": {
     "cannotLoadStages": "No se pueden cargar las etapas",

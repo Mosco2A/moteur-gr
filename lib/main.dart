@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,8 +9,11 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/analytics/firebase_analytics_sink.dart';
+import 'core/config/firebase_config.dart';
 import 'core/config/mare_a_mare_centre_trail_config.dart';
 import 'core/config/trail_config.dart';
+import 'core/error/error_nets.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
@@ -27,6 +32,19 @@ import 'i18n/translations.g.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // LES FILETS D'ERREUR, POSES AVANT TOUT LE RESTE (596 C4).
+  //
+  // `FlutterError.onError`, `PlatformDispatcher.instance.onError` et
+  // `runZonedGuarded` avaient ZERO occurrence dans tout `lib/` : AUCUNE erreur
+  // de l'application n'etait collectee, nulle part. Firebase allume n'y aurait
+  // rien change — il n'y avait personne pour lui donner quoi que ce soit.
+  //
+  // Poses des la premiere ligne utile : une erreur survenue pendant l'amorce
+  // (lecture des prefs, dates, amorce du sentier) doit etre attrapee elle
+  // aussi. Sans rapporteur branche, elles partent dans les journaux locaux —
+  // ce qui est exactement le comportement attendu en mode local.
+  ErrorNets.installer();
 
   // OFFLINE-FIRST (fix cycle 3) : interdit tout fetch HTTP de police au runtime.
   // La typographie (Montserrat) est desormais EMBARQUEE comme famille Flutter
@@ -68,9 +86,30 @@ Future<void> main() async {
   // PARITE GR20 — LOT 1 (#99423) : la demo demarre sur Mare a Mare Centre
   // (sentier reel de StepWays), en tete du catalogue. Le moteur reste
   // generique : c'est une DONNEE (TrailConfig), aucune localite hardcodee ici.
+  //
+  // 596 C4 — L'IDENTIFIANT DE PROJET A ENFIN UN POINT D'ENTREE. Il n'etait
+  // renseigne dans AUCUNE configuration de sentier, et aucun moyen n'existait
+  // de le renseigner : `Firebase.initializeApp()` n'etait donc jamais execute,
+  // a 100 % des demarrages. Il est desormais injecte au build
+  // (`--dart-define=STEPWAYS_FIREBASE_PROJECT_ID=...`, cf. [FirebaseConfig]),
+  // jamais ecrit dans le depot. Absent => mode local, dit dans les journaux,
+  // et l'application demarre normalement.
   final firebaseService = await FirebaseService.initialize(
-    firebaseProjectId: mareAMareCentreTrailConfig.firebaseProjectId,
+    firebaseProjectId: FirebaseConfig.resoudre(
+      depuisLeSentier: mareAMareCentreTrailConfig.firebaseProjectId,
+    ),
   );
+
+  // Le rapporteur de plantage n'est branche QUE si le cloud a vraiment demarre.
+  // C'est le second verrou du meme defaut : la configuration presente ne suffit
+  // pas, encore faut-il que quelqu'un transmette les erreurs.
+  if (firebaseService.isAvailable) {
+    final crash = FirebaseCrashSink();
+    ErrorNets.brancherRapporteur(
+      (error, stack, {bool fatal = false}) =>
+          unawaited(crash.recordError(error, stack, fatal: fatal)),
+    );
+  }
 
   runApp(
     MoteurGrApp(

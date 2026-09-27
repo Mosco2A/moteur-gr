@@ -644,6 +644,9 @@ class _Translations$notifications$it extends Translations$notifications$fr {
 	@override String get schedulerCountdownBody => 'Partenza tra 2 giorni. Controlla la checklist e il meteo.';
 	@override String get schedulerDailyTitle => 'Buona giornata di trek!';
 	@override String get schedulerDailyBody => 'Controlla il meteo e prepara la tappa di oggi.';
+	@override String get permissionBlockedTitle => 'Notifiche bloccate';
+	@override String get permissionBlockedBody => 'Il tuo telefono blocca le notifiche dell\'app: non riceverai alcun promemoria né alcuna allerta.';
+	@override String get permissionAsk => 'Consenti le notifiche';
 }
 
 // Path: settings
@@ -703,6 +706,9 @@ class _Translations$feedback$it extends Translations$feedback$fr {
 	@override String get pending => 'in attesa';
 	@override String get emptyMessage => 'Scrivi il tuo messaggio prima di inviarlo.';
 	@override String get sendFailed => 'Il tuo messaggio non è stato salvato.';
+	@override String get keptLocally => 'Salvato su questo telefono. Il tuo riscontro partirà appena l\'invio sarà possibile.';
+	@override String get keptLocallyNotice => 'L\'invio dei riscontri non è ancora attivo: i tuoi messaggi restano su questo telefono.';
+	@override String get sentThanks => 'Grazie, il tuo riscontro è stato inviato.';
 }
 
 // Path: auth
@@ -1748,6 +1754,8 @@ class _Translations$recovery$it extends Translations$recovery$fr {
 	@override String get copied => 'Codice copiato';
 	@override String get warning => 'Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.';
 	@override String get error => 'Impossibile generare il codice in questo momento.';
+	@override String get noVaultTitle => 'Nessuna cassaforte da riaprire';
+	@override String get noVaultBody => 'Il backup online non è attivo su questa installazione: i tuoi dati restano su questo telefono. Non c\'è quindi alcuna cassaforte da riaprire altrove, né alcun codice da annotare per ora.';
 }
 
 // Path: common
@@ -4665,6 +4673,9 @@ extension on TranslationsIt {
 			'notifications.schedulerCountdownBody' => 'Partenza tra 2 giorni. Controlla la checklist e il meteo.',
 			'notifications.schedulerDailyTitle' => 'Buona giornata di trek!',
 			'notifications.schedulerDailyBody' => 'Controlla il meteo e prepara la tappa di oggi.',
+			'notifications.permissionBlockedTitle' => 'Notifiche bloccate',
+			'notifications.permissionBlockedBody' => 'Il tuo telefono blocca le notifiche dell\'app: non riceverai alcun promemoria né alcuna allerta.',
+			'notifications.permissionAsk' => 'Consenti le notifiche',
 			'settings.title' => 'Impostazioni',
 			'settings.language' => 'Lingua',
 			'settings.units' => 'Unità',
@@ -4706,6 +4717,9 @@ extension on TranslationsIt {
 			'feedback.pending' => 'in attesa',
 			'feedback.emptyMessage' => 'Scrivi il tuo messaggio prima di inviarlo.',
 			'feedback.sendFailed' => 'Il tuo messaggio non è stato salvato.',
+			'feedback.keptLocally' => 'Salvato su questo telefono. Il tuo riscontro partirà appena l\'invio sarà possibile.',
+			'feedback.keptLocallyNotice' => 'L\'invio dei riscontri non è ancora attivo: i tuoi messaggi restano su questo telefono.',
+			'feedback.sentThanks' => 'Grazie, il tuo riscontro è stato inviato.',
 			'auth.profile' => 'Profilo',
 			'auth.anonymous' => 'Escursionista senza account',
 			'auth.connectedVia' => 'Connesso tramite',
@@ -4982,14 +4996,14 @@ extension on TranslationsIt {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Incluso nel pacchetto « ${trail} ».',
 			'training.paywallSubtitle' => 'Piano adattato al tuo profilo e alla tua data di partenza.',
 			'training.unlock' => 'Sblocca',
+			_ => null,
+		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un piano progressivo di ${weeks} settimane per affrontare i ${km} km e circa ${elevation} m di dislivello.',
 			'training.countdown' => ({required Object days}) => 'Partenza tra ${days} giorni',
 			'training.planOverWeeks' => ({required Object n}) => 'Piano su ${n} settimane',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Settimane ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Obiettivo chiave',
 			'training.inviteSetDate' => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
 			'training.cautionVerdictNotice' => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× a settimana',
@@ -5496,14 +5510,14 @@ extension on TranslationsIt {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}g',
 			'fireRisk.fwiSource' => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI è l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Normativa',
 			'fireRisk.regulation.decreeLink' => 'Consulta le ordinanze prefettizie',
 			'fireRisk.levelsTitle' => 'Livelli di rischio',
 			'fireRisk.level.none' => 'Nessuno',
 			'fireRisk.level.low' => 'Basso',
 			'fireRisk.level.moderate' => 'Moderato',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Elevato',
 			'fireRisk.level.veryHigh' => 'Molto elevato',
 			'fireRisk.level.extreme' => 'Estremo',
@@ -5764,6 +5778,8 @@ extension on TranslationsIt {
 			'recovery.copied' => 'Codice copiato',
 			'recovery.warning' => 'Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.',
 			'recovery.error' => 'Impossibile generare il codice in questo momento.',
+			'recovery.noVaultTitle' => 'Nessuna cassaforte da riaprire',
+			'recovery.noVaultBody' => 'Il backup online non è attivo su questa installazione: i tuoi dati restano su questo telefono. Non c\'è quindi alcuna cassaforte da riaprire altrove, né alcun codice da annotare per ora.',
 			'common.cannotLoadStages' => 'Impossibile caricare le tappe',
 			'common.noStages' => 'Nessuna tappa disponibile',
 			'common.cannotLoadStage' => 'Impossibile caricare questa tappa',

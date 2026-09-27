@@ -37,6 +37,18 @@ class FeedbackQueueDao extends DatabaseAccessor<AppDatabase>
     ));
   }
 
+  /// Récupère les feedbacks dont un envoi a déjà échoué (596 C1).
+  ///
+  /// Ils n'étaient repris par personne : `getPending()` ne rend que les
+  /// `pending`, donc un retour passé en `failed` sur une coupure réseau restait
+  /// bloqué à vie sur le téléphone, sans jamais repartir.
+  Future<List<FeedbackQueueData>> getFailed() {
+    return (select(feedbackQueue)
+          ..where((t) => t.status.equals('failed'))
+          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+        .get();
+  }
+
   /// Marque un feedback comme échoué
   Future<int> markFailed(int feedbackId) {
     return (update(feedbackQueue)

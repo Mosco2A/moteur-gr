@@ -6,6 +6,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../firebase/cloud_indisponible.dart';
+import '../firebase/firebase_service.dart';
 import 'complaint_service.dart';
 
 /// Nom de la collection des plaintes (cf. firestore.rules D4C-02).
@@ -15,20 +17,35 @@ const String kModerationComplaintsCollection = 'moderation_complaints';
 class FirestoreComplaintSink implements ComplaintSink {
   FirestoreComplaintSink({
     required String Function() currentUidHash,
+    required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
   })  : _currentUidHash = currentUidHash,
+        _firebaseService = firebaseService,
         _firestore = firestore;
 
   /// Fournit l'UID hache de l'utilisateur authentifie (== auth.uid).
   final String Function() _currentUidHash;
 
+  /// 596 C4 — GARDE DE DISPONIBILITE. Ce puits touchait `FirebaseFirestore
+  /// .instance` sans jamais verifier que Firebase etait la. Il ne plantait que
+  /// parce que le cloud etait eteint partout ; il serait devenu un plantage
+  /// reel le jour de l'allumage.
+  final FirebaseService _firebaseService;
+
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init pour les tests).
-  FirebaseFirestore get _db => _firestore ??= FirebaseFirestore.instance;
+  FirebaseFirestore get _db {
+    if (!_firebaseService.isAvailable) {
+      throw const CloudIndisponibleException('depot d une plainte (art. 20)');
+    }
+    return _firestore ??= FirebaseFirestore.instance;
+  }
 
   @override
   Future<void> saveComplaint(ModerationComplaint complaint) async {
+    // On lit `_db` EN PREMIER : refuser avant de calculer quoi que ce soit.
+    final db = _db;
     final uidHash = _currentUidHash();
     if (uidHash.isEmpty) {
       // Pas d'utilisateur authentifie : la plainte serait refusee par les
@@ -42,6 +59,6 @@ class FirestoreComplaintSink implements ComplaintSink {
       'complainantUidHash': uidHash,
       ...complaint.toMap(),
     };
-    await _db.collection(kModerationComplaintsCollection).add(data);
+    await db.collection(kModerationComplaintsCollection).add(data);
   }
 }

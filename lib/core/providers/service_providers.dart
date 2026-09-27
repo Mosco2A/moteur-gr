@@ -8,6 +8,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/trek/data/widget_data_service.dart';
+import '../firebase/firebase_service.dart';
 import '../services/consent_service.dart';
 import '../services/demo_mode_service.dart';
 import '../services/monetization_service.dart';
@@ -77,7 +78,12 @@ final consentServiceReadyProvider = FutureProvider<ConsentService>((ref) async {
 /// Backend reel adosse a la collection `reports_moderation` (regles D4C-02).
 /// Overridable en test par un faux [ModerationStore] en memoire.
 final moderationStoreProvider = Provider<ModerationStore>(
-  (ref) => FirestoreModerationStore(),
+  // 596 C4 : le service Firebase est desormais injecte — le magasin refuse
+  // proprement (CloudIndisponibleException) au lieu de dereferencer
+  // `FirebaseFirestore.instance` a l'aveugle.
+  (ref) => FirestoreModerationStore(
+    firebaseService: ref.watch(firebaseServiceProvider),
+  ),
 );
 
 /// Provider du service de moderation hebergeur DSA art 16 (D4C-01).

@@ -5,6 +5,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/complaint_service.dart';
 import '../../../core/services/firestore_complaint_sink.dart';
@@ -88,6 +89,8 @@ final complaintSinkProvider = Provider<ComplaintSink>((ref) {
   final auth = ref.watch(authServiceProvider);
   return FirestoreComplaintSink(
     currentUidHash: () => auth.currentUser?.uid ?? '',
+    // 596 C4 : garde de disponibilite injectee (voir FirestoreComplaintSink).
+    firebaseService: ref.watch(firebaseServiceProvider),
   );
 });
 

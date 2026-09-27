@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/services/recovery_code_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -27,6 +28,49 @@ class RecoveryCodeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final tr = Translations.of(context);
+
+    // TACHE 596 (C2) — ON NE PROMET PLUS UN COFFRE VIDE.
+    //
+    // Tant que rien n'alimente le coffre (mesure declaree et verifiee par
+    // invariante, cf. [CoffreDeReconnexion]), cet ecran disait au randonneur
+    // que son code « ouvre son coffre sur un autre telephone » — c'etait faux :
+    // aucun code de production n'y ecrit, aucun ecran ne permet de saisir un
+    // code, et il n'existe meme pas de transport. Pire, afficher cet ecran
+    // FABRIQUAIT le code au passage, posant dans le coffre-fort du telephone un
+    // secret qui n'ouvre rien.
+    //
+    // Ici, on dit l'etat reel — et on ne lit meme pas `recoveryCodeProvider`,
+    // donc aucun code n'est cree.
+    if (!CoffreDeReconnexion.alimente) {
+      return Scaffold(
+        appBar: AppHeader(title: tr.recovery.title),
+        body: ListView(
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          children: [
+            AppCard(
+              padding: const EdgeInsets.all(AppTheme.spacingLg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr.recovery.noVaultTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Text(
+                    tr.recovery.noVaultBody,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Le code n'est LU (donc fabrique, `getOrCreate`) qu'une fois le coffre
+    // reellement alimente. C'est volontairement APRES la sortie ci-dessus.
     final codeAsync = ref.watch(recoveryCodeProvider);
 
     return Scaffold(

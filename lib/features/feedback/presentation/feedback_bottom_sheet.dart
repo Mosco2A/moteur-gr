@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/feedback_service.dart';
 import '../providers/feedback_provider.dart';
 
 /// Bottom sheet de feedback accessible partout dans l app.
@@ -91,6 +92,17 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 ),
                 const SizedBox(height: AppTheme.spacingLg),
 
+                // L'ENVOI N'EST PAS OUVERT — ET ON LE DIT AVANT (tache 596).
+                if (!feedbackState.envoiPossible)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+                    child: Text(
+                      t.feedback.keptLocallyNotice,
+                      style: theme.textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
                 // Categorie — 3 ChoiceChips (bug, suggestion, compliment)
                 Text(t.feedback.type, style: theme.textTheme.labelLarge),
                 const SizedBox(height: AppTheme.spacingSm),
@@ -170,15 +182,26 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                   onPressed: feedbackState.isSubmitting ? null : _submit,
                 ),
 
-                // Message de confirmation apres envoi reussi
-                if (feedbackState.lastSubmitSuccess == true)
+                // CE QUI EST REELLEMENT ARRIVE AU MESSAGE (tache 596, C1).
+                // Le merci ne s'affiche plus que pour un retour vraiment parti.
+                if (feedbackState.derniereIssue == FeedbackIssue.envoye)
                   Padding(
                     padding: const EdgeInsets.only(top: AppTheme.spacingBase),
                     child: Text(
-                      t.feedback.thanks,
+                      t.feedback.sentThanks,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppTheme.vertFacile,
                       ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (feedbackState.derniereIssue ==
+                    FeedbackIssue.gardeLocalement)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.spacingBase),
+                    child: Text(
+                      t.feedback.keptLocally,
+                      style: theme.textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                   ),

@@ -91,22 +91,51 @@ void main() {
   });
 
   group('AnalyticsService — opt-in (consentement)', () {
-    test('aucun evenement tant que le consentement n\'est pas accorde', () async {
+    // TACHE 596 (C4) — CES DEUX TESTS CONSACRAIENT LE TROISIEME VERROU.
+    //
+    // Ils EXIGEAIENT que le consentement de MESURE D'USAGE commande aussi la
+    // remontee des plantages. Comme `analyticsServiceProvider` appelle
+    // `setConsent(granted: false)` des sa construction (opt-in strict), le
+    // premier ecran qui lisait le service coupait Crashlytics pour toute la
+    // session : meme Firebase allume et les filets d'erreur poses, aucun
+    // rapport ne serait jamais parti. C'etait le verrou le plus vicieux des
+    // trois, parce qu'il annulait silencieusement la correction des deux
+    // autres — et un test vert le tenait en place.
+    //
+    // Mesurer l'usage d'un randonneur et savoir que l'appli a plante chez lui
+    // sont deux questions differentes, pour deux finalites differentes. Les
+    // deux interrupteurs sont desormais separes, dans les deux sens.
+
+    test('aucun EVENEMENT D USAGE tant que le consentement n\'est pas accorde',
+        () async {
       final a = _RecAnalytics();
       final c = _RecCrash();
       final service = AnalyticsService(analytics: a, crash: c);
 
-      // Pas de consentement : tout est inerte.
+      // Pas de consentement : la mesure d'usage est inerte.
       await service.logScreenView('map');
       await service.logTrekStarted(trailId: 'sentier-bleu');
-      await service.recordError(StateError('x'), null);
 
       expect(a.events, isEmpty);
       expect(a.screens, isEmpty);
-      expect(c.errors, isEmpty);
     });
 
-    test('setConsent bascule la collecte Analytics ET Crashlytics', () async {
+    test('un PLANTAGE remonte meme sans consentement de mesure d usage',
+        () async {
+      final a = _RecAnalytics();
+      final c = _RecCrash();
+      final service = AnalyticsService(analytics: a, crash: c);
+
+      await service.recordError(StateError('x'), null);
+
+      expect(c.errors, hasLength(1),
+          reason: 'une panne n est pas une mesure d usage : elle ne doit pas '
+              'etre retenue par le consentement analytics, sinon zero rapport '
+              'de plantage, pour toujours');
+      expect(a.events, isEmpty, reason: 'et rien n a fuite cote usage');
+    });
+
+    test('setConsent ne bascule QUE la collecte Analytics', () async {
       final a = _RecAnalytics();
       final c = _RecCrash();
       final service = AnalyticsService(analytics: a, crash: c);
@@ -114,11 +143,25 @@ void main() {
       await service.setConsent(granted: true);
       expect(service.isConsentGranted, isTrue);
       expect(a.collectionEnabled, isTrue);
-      expect(c.collectionEnabled, isTrue);
+      expect(c.collectionEnabled, isNull,
+          reason: 'setConsent ne doit plus toucher l interrupteur des '
+              'plantages, dans un sens comme dans l autre');
 
       await service.setConsent(granted: false);
       expect(a.collectionEnabled, isFalse);
-      expect(c.collectionEnabled, isFalse);
+      expect(c.collectionEnabled, isNull);
+    });
+
+    test('la remontee des plantages a son PROPRE interrupteur', () async {
+      final a = _RecAnalytics();
+      final c = _RecCrash();
+      final service = AnalyticsService(analytics: a, crash: c);
+
+      await service.setCrashCollection(enabled: true);
+      expect(c.collectionEnabled, isTrue);
+      expect(a.collectionEnabled, isNull,
+          reason: 'et reciproquement : allumer les plantages n allume pas la '
+              'mesure d usage');
     });
   });
 

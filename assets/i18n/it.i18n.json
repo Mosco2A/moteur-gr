@@ -807,7 +807,10 @@
     "schedulerCountdownTitle": "Il tuo trek si avvicina!",
     "schedulerCountdownBody": "Partenza tra 2 giorni. Controlla la checklist e il meteo.",
     "schedulerDailyTitle": "Buona giornata di trek!",
-    "schedulerDailyBody": "Controlla il meteo e prepara la tappa di oggi."
+    "schedulerDailyBody": "Controlla il meteo e prepara la tappa di oggi.",
+    "permissionBlockedTitle": "Notifiche bloccate",
+    "permissionBlockedBody": "Il tuo telefono blocca le notifiche dell'app: non riceverai alcun promemoria né alcuna allerta.",
+    "permissionAsk": "Consenti le notifiche"
   },
   "settings": {
     "title": "Impostazioni",
@@ -852,7 +855,10 @@
     "thanks": "Grazie per il tuo feedback!",
     "pending": "in attesa",
     "emptyMessage": "Scrivi il tuo messaggio prima di inviarlo.",
-    "sendFailed": "Il tuo messaggio non è stato salvato."
+    "sendFailed": "Il tuo messaggio non è stato salvato.",
+    "keptLocally": "Salvato su questo telefono. Il tuo riscontro partirà appena l'invio sarà possibile.",
+    "keptLocallyNotice": "L'invio dei riscontri non è ancora attivo: i tuoi messaggi restano su questo telefono.",
+    "sentThanks": "Grazie, il tuo riscontro è stato inviato."
   },
   "auth": {
     "profile": "Profilo",
@@ -2214,7 +2220,9 @@
     "copy": "Copia codice",
     "copied": "Codice copiato",
     "warning": "Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.",
-    "error": "Impossibile generare il codice in questo momento."
+    "error": "Impossibile generare il codice in questo momento.",
+    "noVaultTitle": "Nessuna cassaforte da riaprire",
+    "noVaultBody": "Il backup online non è attivo su questa installazione: i tuoi dati restano su questo telefono. Non c'è quindi alcuna cassaforte da riaprire altrove, né alcun codice da annotare per ora."
   },
   "common": {
     "cannotLoadStages": "Impossibile caricare le tappe",

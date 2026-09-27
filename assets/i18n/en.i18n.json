@@ -807,7 +807,10 @@
     "schedulerCountdownTitle": "Your trek is coming up!",
     "schedulerCountdownBody": "Departure in 2 days. Check your checklist and the weather.",
     "schedulerDailyTitle": "Have a great trek day!",
-    "schedulerDailyBody": "Check the weather and prepare today's stage."
+    "schedulerDailyBody": "Check the weather and prepare today's stage.",
+    "permissionBlockedTitle": "Notifications blocked",
+    "permissionBlockedBody": "Your phone is blocking notifications from the app: no reminder and no alert will reach you.",
+    "permissionAsk": "Allow notifications"
   },
   "settings": {
     "title": "Settings",
@@ -852,7 +855,10 @@
     "thanks": "Thank you for your feedback!",
     "pending": "pending",
     "emptyMessage": "Write your message before sending it.",
-    "sendFailed": "Your message could not be saved."
+    "sendFailed": "Your message could not be saved.",
+    "keptLocally": "Saved on this phone. Your feedback will be sent as soon as sending is possible.",
+    "keptLocallyNotice": "Feedback sending is not open yet: your messages are kept on this phone.",
+    "sentThanks": "Thank you, your feedback has been sent."
   },
   "auth": {
     "profile": "Profile",
@@ -2214,7 +2220,9 @@
     "copy": "Copy code",
     "copied": "Code copied",
     "warning": "No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.",
-    "error": "Unable to generate the code right now."
+    "error": "Unable to generate the code right now.",
+    "noVaultTitle": "No vault to unlock yet",
+    "noVaultBody": "Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now."
   },
   "common": {
     "cannotLoadStages": "Unable to load stages",

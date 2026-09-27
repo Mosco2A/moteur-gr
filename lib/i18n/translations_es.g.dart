@@ -644,6 +644,9 @@ class _Translations$notifications$es extends Translations$notifications$fr {
 	@override String get schedulerCountdownBody => 'Salida en 2 días. Revisa tu checklist y el tiempo.';
 	@override String get schedulerDailyTitle => 'Buen día de trek!';
 	@override String get schedulerDailyBody => 'Consulta el tiempo y prepara la etapa del día.';
+	@override String get permissionBlockedTitle => 'Notificaciones bloqueadas';
+	@override String get permissionBlockedBody => 'Tu teléfono bloquea las notificaciones de la aplicación: no recibirás ningún recordatorio ni ninguna alerta.';
+	@override String get permissionAsk => 'Permitir las notificaciones';
 }
 
 // Path: settings
@@ -703,6 +706,9 @@ class _Translations$feedback$es extends Translations$feedback$fr {
 	@override String get pending => 'pendiente';
 	@override String get emptyMessage => 'Escribe tu mensaje antes de enviarlo.';
 	@override String get sendFailed => 'Tu mensaje no se ha podido guardar.';
+	@override String get keptLocally => 'Guardado en este teléfono. Tu comentario se enviará en cuanto el envío sea posible.';
+	@override String get keptLocallyNotice => 'El envío de comentarios aún no está abierto: tus mensajes se guardan en este teléfono.';
+	@override String get sentThanks => 'Gracias, tu comentario se ha enviado.';
 }
 
 // Path: auth
@@ -1748,6 +1754,8 @@ class _Translations$recovery$es extends Translations$recovery$fr {
 	@override String get copied => 'Código copiado';
 	@override String get warning => 'Nadie más puede leer tu caja fuerte, ni siquiera nosotros. Si pierdes este código, tus datos serán irrecuperables para siempre.';
 	@override String get error => 'No se puede generar el código en este momento.';
+	@override String get noVaultTitle => 'Todavía no hay caja fuerte que abrir';
+	@override String get noVaultBody => 'La copia de seguridad en línea no está activada en esta instalación: tus datos permanecen en este teléfono. Por tanto no hay ninguna caja fuerte que abrir en otro lugar, ni ningún código que anotar por ahora.';
 }
 
 // Path: common
@@ -4665,6 +4673,9 @@ extension on TranslationsEs {
 			'notifications.schedulerCountdownBody' => 'Salida en 2 días. Revisa tu checklist y el tiempo.',
 			'notifications.schedulerDailyTitle' => 'Buen día de trek!',
 			'notifications.schedulerDailyBody' => 'Consulta el tiempo y prepara la etapa del día.',
+			'notifications.permissionBlockedTitle' => 'Notificaciones bloqueadas',
+			'notifications.permissionBlockedBody' => 'Tu teléfono bloquea las notificaciones de la aplicación: no recibirás ningún recordatorio ni ninguna alerta.',
+			'notifications.permissionAsk' => 'Permitir las notificaciones',
 			'settings.title' => 'Ajustes',
 			'settings.language' => 'Idioma',
 			'settings.units' => 'Unidades',
@@ -4706,6 +4717,9 @@ extension on TranslationsEs {
 			'feedback.pending' => 'pendiente',
 			'feedback.emptyMessage' => 'Escribe tu mensaje antes de enviarlo.',
 			'feedback.sendFailed' => 'Tu mensaje no se ha podido guardar.',
+			'feedback.keptLocally' => 'Guardado en este teléfono. Tu comentario se enviará en cuanto el envío sea posible.',
+			'feedback.keptLocallyNotice' => 'El envío de comentarios aún no está abierto: tus mensajes se guardan en este teléfono.',
+			'feedback.sentThanks' => 'Gracias, tu comentario se ha enviado.',
 			'auth.profile' => 'Perfil',
 			'auth.anonymous' => 'Senderista sin cuenta',
 			'auth.connectedVia' => 'Conectado vía',
@@ -4982,14 +4996,14 @@ extension on TranslationsEs {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Incluido en el pack « ${trail} ».',
 			'training.paywallSubtitle' => 'Plan adaptado a tu perfil y a tu fecha de salida.',
 			'training.unlock' => 'Desbloquear',
+			_ => null,
+		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progresivo de ${weeks} semanas para afrontar los ${km} km y unos ${elevation} m de desnivel.',
 			'training.countdown' => ({required Object days}) => 'Salida en ${days} días',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan de ${n} semanas',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semanas ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objetivo clave',
 			'training.inviteSetDate' => 'Fija tu fecha de salida en el Calendario para activar la cuenta atras.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Rellena tu ficha para adaptar el plan a tu perfil.',
 			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× por semana',
@@ -5496,14 +5510,14 @@ extension on TranslationsEs {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}d',
 			'fireRisk.fwiSource' => 'Índice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el índice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Normativa',
 			'fireRisk.regulation.decreeLink' => 'Consultar las órdenes prefectorales',
 			'fireRisk.levelsTitle' => 'Niveles de riesgo',
 			'fireRisk.level.none' => 'Ninguno',
 			'fireRisk.level.low' => 'Bajo',
 			'fireRisk.level.moderate' => 'Moderado',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Alto',
 			'fireRisk.level.veryHigh' => 'Muy alto',
 			'fireRisk.level.extreme' => 'Extremo',
@@ -5764,6 +5778,8 @@ extension on TranslationsEs {
 			'recovery.copied' => 'Código copiado',
 			'recovery.warning' => 'Nadie más puede leer tu caja fuerte, ni siquiera nosotros. Si pierdes este código, tus datos serán irrecuperables para siempre.',
 			'recovery.error' => 'No se puede generar el código en este momento.',
+			'recovery.noVaultTitle' => 'Todavía no hay caja fuerte que abrir',
+			'recovery.noVaultBody' => 'La copia de seguridad en línea no está activada en esta instalación: tus datos permanecen en este teléfono. Por tanto no hay ninguna caja fuerte que abrir en otro lugar, ni ningún código que anotar por ahora.',
 			'common.cannotLoadStages' => 'No se pueden cargar las etapas',
 			'common.noStages' => 'No hay etapas disponibles',
 			'common.cannotLoadStage' => 'No se puede cargar esta etapa',
