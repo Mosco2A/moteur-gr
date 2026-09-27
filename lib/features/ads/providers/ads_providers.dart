@@ -57,16 +57,22 @@ bool _pubPossible(Ref ref) => ref.watch(adsReadyProvider).value ?? false;
 /// abonnements posent un minuteur en se fermant, ce qui faisait échouer sur
 /// « Pending timers » des tests de structure qui ne parlent pas de publicité.
 /// Le symptôme était dans les tests, le gaspillage est réel en production.
+///
 /// SILENCIEUX AUSSI QUAND AUCUN TREK N'EST EN CONTEXTE. Sur le catalogue et les
-/// listes, l'emplacement passe [adContextHorsTrek] — la chaine vide. Aucun trek
-/// ne peut etre possede sous ce nom : observer la table des droits pour un
+/// listes, l'emplacement passe [adContextHorsTrek] — la chaîne vide. Aucun trek
+/// ne peut être possédé sous ce nom : observer la table des droits pour un
 /// identifiant qui n'existe pas ouvre un abonnement Drift qui ne dira jamais
-/// rien. Et il ne coute pas que des cycles : quitter l'ecran pendant qu'il
-/// s'ouvre fait disposer cette famille `autoDispose` au milieu d'un build, et le
-/// framework refuse alors de marquer le `ProviderScope` a reconstruire —
-/// « setState() called during build ». C'est le persona MALADROIT (double appui
-/// sur « Entrer » du catalogue) qui l'a trouve, des que le retrait de la garde
-/// « en mode trek » a rendu cette chaine vivante sur le catalogue.
+/// rien. C'est une économie, et rien de plus.
+///
+/// CE QUE CETTE LIGNE NE CORRIGE PAS, ET SON COMMENTAIRE L'A PRÉTENDU. Elle a
+/// été posée en cherchant la cause des « setState() called during build » du
+/// persona MALADROIT, et le commentaire d'alors la lui attribuait. LA MESURE A
+/// DIT LE CONTRAIRE : le défaut persiste avec la publicité intégralement coupée,
+/// donc il ne venait pas d'ici. Sa vraie cause était la BASCULE DE SENTIER, qui
+/// écrivait la sélection puis naviguait dans le même geste synchrone — corrigée
+/// par `choisirSentier` (voir sa documentation dans `trail_engine.dart`, qui
+/// porte la mécanique complète). On garde la garde parce qu'elle évite un
+/// abonnement inutile ; on ne lui laisse pas un mérite qu'elle n'a pas.
 final _trekDroitChangeProvider =
     StreamProvider.autoDispose.family<TrekEntitlement?, String>((ref, trailId) {
   if (trailId.isEmpty) return const Stream.empty();

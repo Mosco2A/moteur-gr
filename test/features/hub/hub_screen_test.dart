@@ -541,12 +541,16 @@ void main() {
 
     testWidgets('EN PHASE RANDO, le bas du cockpit appartient au SOS : aucun '
         'emplacement publicitaire n y est monte', (tester) async {
-      // « EN MODE TREK JAMAIS » (Chris, 27/09 10:31). La regle elle-meme vit
-      // dans la DECISION publicitaire — elle y couvre tous les ecrans a la fois,
-      // et `test/comportement/pub_v1_595_test.dart` (B6) la mesure en comptant
-      // les demandes parties a la regie.
+      // CE TEST NE PARLE PAS DE LA REGLE DE PUBLICITE, ET IL NE LE FAISAIT DEJA
+      // PAS — mais son commentaire renvoyait a une regle « EN MODE TREK JAMAIS »
+      // et a un groupe de tests (B6) qui n'existent plus ni l'un ni l'autre.
+      // Chris a retire cette garde le 27/09 14:41 : « TOUT PORTER LA PUB sauf si
+      // tu es abonne ou sur le trek que tu as achete .. Pas la peine de mettre
+      // plus de regles ». Un randonneur qui marche un sentier GRATUIT voit donc
+      // de la publicite — sauf sur CET ecran, et pour la raison ci-dessous, qui
+      // n'a rien a voir avec la monetisation.
       //
-      // CE QUE CE TEST-CI TIENT EST AUTRE CHOSE, ET C EST LA GEOMETRIE. En
+      // CE QUE CE TEST-CI TIENT, ET C EST LA GEOMETRIE. En
       // rando, le bas de l ecran appartient a la pastille SOS. On n y pose pas
       // un emplacement publicitaire, meme un emplacement qui ne demanderait
       // rien : un doigt qui vise le secours ne doit jamais rencontrer une regie.

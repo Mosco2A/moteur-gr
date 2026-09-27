@@ -128,9 +128,22 @@ class TrailConfig {
   /// Vrai si ce sentier est GRATUIT — son prix est nul.
   ///
   /// Gratuit par NATURE, pas par exemption : il n'y a rien à payer, donc rien
-  /// à débloquer. Corollaire assumé (modèle éco §2/§3) : n'ayant rien payé, il
-  /// relève du niveau gratuit côté publicité — hors mode trek, où la règle de
-  /// Chris « EN MODE TREK JAMAIS de publicité » prime sur tout.
+  /// à débloquer.
+  ///
+  /// COROLLAIRE ASSUMÉ CÔTÉ PUBLICITÉ, ET IL VAUT AUSSI PENDANT LA MARCHE.
+  /// N'ayant rien payé, un sentier gratuit relève du niveau gratuit du §2 du
+  /// modèle éco : il porte la pub. Décision de Christophe du **27/09 14:41**,
+  /// verbatim : « TOUT PORTER LA PUB sauf si tu es abonné ou sur le trek que tu
+  /// as acheté .. Pas la peine de mettre plus de règles ». Les seules
+  /// exceptions sont donc l'abonnement actif, le trek ACHETÉ, et la récompense
+  /// vidéo de 24 h déjà prévue au §3 (#99404).
+  ///
+  /// IL N'Y A PLUS DE RÈGLE « EN MODE TREK JAMAIS », et ce commentaire disait
+  /// le contraire jusqu'à la relecture de ce lot. Une garde de ce nom a vécu la
+  /// matinée du 27/09 et Christophe l'a retirée le même jour, en connaissance de
+  /// cause : le sentier gratuit est le SEUL endroit où l'on marche sans avoir
+  /// payé, donc le seul où la bannière peut apparaître en marchant. Ne pas la
+  /// remettre — ce serait ajouter la règle qui vient d'être enlevée.
   bool get isFreeTrail => priceInStages == 0;
 
   /// ID du projet Firebase (null = pas de backend Firebase)

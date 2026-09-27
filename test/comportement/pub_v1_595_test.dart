@@ -54,7 +54,11 @@
 //       deja. Ses six tests sont partis avec elle plutot que d'etre retournes :
 //       ils affirmaient l'inverse de la regle en vigueur. Le seul cas qu'ils
 //       couvraient vraiment — marcher sans avoir paye — n'existe plus que sur un
-//       sentier GRATUIT, et B7 le mesure en le disant.
+//       sentier GRATUIT, et B7 le mesure en le disant. CE QUI N'EST DONC PLUS
+//       MESURE NULLE PART, et il vaut mieux l'ecrire que le laisser croire : la
+//       FENETRE D'AMORCE (« tant que la base n'a pas parle »). Elle n'existe plus
+//       — la decision ne consulte plus l'etat de rando, donc elle ne peut plus
+//       repondre differemment selon qu'une base a repondu ou non.
 library;
 
 import 'dart:io';
@@ -78,10 +82,7 @@ import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/ads/data/banner_ad_presenter.dart';
 import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
-import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -126,8 +127,14 @@ class _ReseauEnLigne extends ConnectivityMonitor {
 
 /// Session de tracking FIGEE dans un etat donne (rando en cours, ou pas).
 ///
-/// Sert a mettre le monde du test « en mode trek » par le chemin de la session
-/// VIVANTE, sans faire tourner de GPS.
+/// Sert a mettre le monde du test EN RANDO par le chemin de la session VIVANTE,
+/// sans faire tourner de GPS.
+///
+/// A QUOI CA SERT ENCORE, puisque la decision publicitaire ne consulte plus
+/// l'etat de rando (Chris, 27/09 14:41) : a tenir la GARDE ANTI-RETOUR. Les
+/// tests de B7 declarent une rando en cours et exigent que la banniere soit LA
+/// sur un sentier gratuit. Si quelqu'un remet une garde de mode trek, ils
+/// tombent — c'est leur seule raison d'etre en rando.
 class _TrackingFige extends TrekSessionManagerNotifier {
   _TrackingFige(this._etat);
 
@@ -171,15 +178,21 @@ void main() {
   /// et c'est voulu : le premier dit si l'on a le DROIT de demander une pub,
   /// le second ce que la demande a le droit d'emporter.
   ///
-  /// `tracking` et `sessionPersistee` sont les DEUX chemins par lesquels
-  /// l'application se sait « en mode trek » (session vivante en memoire,
-  /// session encore ouverte en base apres un redemarrage). Par defaut : aucune
-  /// rando en cours.
+  /// `tracking` met le monde en RANDO par le chemin de la session vivante. Il ne
+  /// sert plus a la decision publicitaire, qui ne consulte plus l'etat de rando
+  /// du tout (Chris, 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu es abonne ou
+  /// sur le trek que tu as achete .. Pas la peine de mettre plus de regles »).
+  /// Il sert de GARDE ANTI-RETOUR : si quelqu'un remet une garde de mode trek,
+  /// les tests de B7 qui declarent une rando en cours tombent.
+  ///
+  /// LE SECOND CHEMIN A ETE RETIRE avec la garde. `sessionPersistee` surchargeait
+  /// `latestTrekSessionProvider`, que la decision publicitaire lisait via
+  /// `enModeTrekProvider` ; ni l'un ni l'autre n'existent plus, et une surcharge
+  /// que personne ne lit est un decor.
   Future<(ProviderContainer, MonetizationService)> monterLeMonde({
     bool pubAutorisee = true,
     bool? pubPersonnalisee,
     TrackingSessionStatus tracking = TrackingSessionStatus.idle,
-    TrekSession? sessionPersistee,
     Set<String> sentiersGratuits = const <String>{},
   }) async {
     final prefs = await SharedPreferences.getInstance();
@@ -219,21 +232,26 @@ void main() {
         adsReadyProvider.overrideWith((ref) async => pubAutorisee),
         bannerAdPresenterProvider.overrideWithValue(regie),
         consentServiceReadyProvider.overrideWith((ref) async => consentement),
-        // Les DEUX chemins du « mode trek » (cf. l'en-tete de cette fonction).
+        // Le monde est en rando, ou pas : lu par personne dans la decision
+        // publicitaire, et c'est le point (cf. l'en-tete de cette fonction).
         trekSessionManagerProvider.overrideWith(
           () => _TrackingFige(TrackingSessionState(status: tracking)),
         ),
-        latestTrekSessionProvider.overrideWith((ref) async => sessionPersistee),
       ],
     );
     addTearDown(container.dispose);
-    // LA BASE A PARLE AVANT QU'ON DEMANDE QUOI QUE CE SOIT. La decision
-    // publicitaire repond « en rando » tant que la session persistee est
-    // inconnue (doute tranche du cote du randonneur, cf. `enModeTrekProvider`).
-    // Un test qui ne laisserait pas cette lecture aboutir mesurerait donc la
-    // fenetre d'amorce et non la regle qu'il croit verifier. Cette fenetre a son
-    // propre test, dans B6.
-    await container.read(latestTrekSessionProvider.future);
+    // PLUS DE LECTURE DE BASE A ATTENDRE AVANT DE MESURER, ET IL FAUT LE DIRE
+    // FRANCHEMENT. Cette fonction attendait `latestTrekSessionProvider` parce
+    // que la decision publicitaire repondait « en rando » tant que la session
+    // persistee etait inconnue : ne pas laisser cette lecture aboutir revenait a
+    // mesurer la FENETRE D'AMORCE au lieu de la regle.
+    //
+    // CETTE FENETRE N'EXISTE PLUS, ET ELLE N'EST DONC PLUS MESUREE NULLE PART.
+    // Ce n'est pas un trou de couverture : la decision publicitaire ne consulte
+    // plus l'etat de rando, donc il n'y a plus d'instant ou elle repondrait
+    // autrement selon qu'une base a parle ou non. Le test qui la mesurait
+    // (« TANT QUE LA BASE N A PAS PARLE, aucune demande ne part », groupe B6) a
+    // ete supprime avec la garde qu'il gardait, et non remplace.
     return (container, monetisation);
   }
 

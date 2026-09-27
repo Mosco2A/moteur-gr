@@ -76,7 +76,8 @@ class StepPack {
 ///   - [free]       : trek PAYANT ni possédé ni couvert par un abo → démo
 ///                    bridée + pub ;
 ///   - [freeTrail]  : SENTIER GRATUIT (prix nul) → entièrement jouable, ET avec
-///                    pub, parce qu'il n'a rien payé ;
+///                    pub — y compris pendant la marche — parce qu'il n'a rien
+///                    payé ;
 ///   - [subscriber] : abo light actif → SANS PUB PARTOUT + cagnotte d'étapes,
 ///                    mais **ni les outils complets ni la réalisation** ;
 ///   - [owned]      : trek acheté → outils COMPLETS pour ce trek, réalisation,
@@ -122,10 +123,22 @@ enum TrailAccess {
   /// Pub en [free] ET en [freeTrail] : le sans-pub est la contrepartie d'avoir
   /// PAYÉ (§3, « trek acheté → sans pub sur ce trek »), pas d'être jouable. Un
   /// sentier gratuit n'a rien payé, il reste donc dans le niveau gratuit du §2,
-  /// « AVEC pub » — et la règle de Chris « EN MODE TREK JAMAIS de publicité »
-  /// s'applique par-dessus, pour lui comme pour tous les autres.
-  /// [subscriber] et [owned] sont sans-pub — c'est ce que l'abo light donne, et
-  /// c'est tout ce qu'il donne.
+  /// « AVEC pub ». [subscriber] et [owned] sont sans-pub — c'est ce que l'abo
+  /// light donne, et c'est tout ce qu'il donne.
+  ///
+  /// TROIS EXCEPTIONS, ET PAS UNE DE PLUS. Décision de Christophe du **27/09
+  /// 14:41**, verbatim : « TOUT PORTER LA PUB sauf si tu es abonné ou sur le
+  /// trek que tu as acheté .. Pas la peine de mettre plus de règles » — les
+  /// deux qu'il nomme, plus la récompense vidéo de 24 h déjà prévue au §3.
+  /// AUCUNE condition de mode trek : ce getter rend `true` pour un sentier
+  /// gratuit MÊME PENDANT LA MARCHE, et c'est voulu.
+  ///
+  /// CE COMMENTAIRE AFFIRMAIT L'INVERSE, ET IL L'ATTRIBUAIT À CHRISTOPHE. Il
+  /// annonçait une règle « EN MODE TREK JAMAIS » qui « s'applique par-dessus »,
+  /// alors qu'elle avait été retirée le jour même. C'est exactement le motif du
+  /// drapeau `isShowcaseTrail` : un commentaire qui survit à la décision qui
+  /// l'abroge et sert ensuite de justification. Il est corrigé ici, sur le getter
+  /// lui-même, parce que c'est là qu'on vient le lire avant de « réparer ».
   bool get showAds =>
       this == TrailAccess.free || this == TrailAccess.freeTrail;
 }

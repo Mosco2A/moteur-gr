@@ -10,8 +10,6 @@ import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
-import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Verifie le GATING de la banniere (source unique #99404 + consentement UMP).
@@ -69,18 +67,17 @@ void main() {
         monetizationServiceProvider.overrideWithValue(svc),
         monetizationReadyProvider.overrideWith((ref) async => svc),
         adsReadyProvider.overrideWith((ref) async => adsReady),
-        // AUCUNE RANDO EN COURS (tache 595). « EN MODE TREK JAMAIS » : la
-        // decision refuse toute publicite pendant une realisation, et elle
-        // repond « en rando » tant que la session persistee est INCONNUE (un
-        // doute se tranche du cote du randonneur, pas de la regie). Ce test
-        // parle de la regle sans-pub, pas du mode trek : il declare donc un
-        // monde au repos, et il LAISSE LA LECTURE ABOUTIR ci-dessous — sans
-        // quoi il mesurerait la fenetre d'amorce.
-        latestTrekSessionProvider.overrideWith((ref) async => null),
       ],
     );
     addTearDown(container.dispose);
-    await container.read(latestTrekSessionProvider.future);
+    // PLUS RIEN A DECLARER SUR LA RANDO EN COURS (tache 601). Ce monde
+    // surchargeait `latestTrekSessionProvider` et attendait sa lecture, parce que
+    // la decision publicitaire refusait toute publicite en realisation et
+    // repondait « en rando » tant que la base n'avait pas parle. Cette garde a
+    // ete retiree par Chris le 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu es
+    // abonne ou sur le trek que tu as achete .. Pas la peine de mettre plus de
+    // regles ». La decision ne consulte plus l'etat de rando du tout, donc la
+    // surcharge ne servait plus qu'a decorer.
     return container;
   }
 

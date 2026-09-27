@@ -17,8 +17,11 @@
 //  D4 — la demo ne donne AUCUN droit sur le vrai sentier, et la progression
 //       faite sur l une ne se melange pas avec celle de l autre.
 //  D5 — LA PUB. Un sentier gratuit n est pas un sentier ACHETE : il n herite
-//       donc PAS du sans-pub permanent reserve a l achat. Mais « EN MODE TREK
-//       JAMAIS » tient aussi sur lui.
+//       donc PAS du sans-pub permanent reserve a l achat. Et il la porte AUSSI
+//       PENDANT LA MARCHE — Chris, 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu
+//       es abonne ou sur le trek que tu as achete .. Pas la peine de mettre plus
+//       de regles ». Une garde « en mode trek jamais » a vecu la matinee du
+//       27/09 ; elle est retiree. Ne pas la remettre.
 //  D6 — ANNULER L ABONNEMENT : la pub revient PARTOUT SAUF sur les sentiers
 //       achetes (regle de Chris, 27/09 12:27). Le scenario complet n etait
 //       teste NULLE PART.
