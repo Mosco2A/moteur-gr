@@ -1229,7 +1229,7 @@ class _Translations$consent$it extends Translations$consent$fr {
 	@override String get settingsTitle => 'Privacy e consenso';
 	@override String get settingsIntro => 'Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.';
 	@override String get settingsEntry => 'Privacy e consenso';
-	@override String get settingsEntryDesc => 'Gestire le mie autorizzazioni (posizione, condivisione, salute)';
+	@override String get settingsEntryDesc => 'Gestire le mie autorizzazioni (posizione, condivisione, pubblicità, salute)';
 	@override late final _Translations$consent$purposes$it purposes = _Translations$consent$purposes$it._(_root);
 	@override String get healthBadge => 'Dato sensibile';
 	@override String get healthWarning => 'La frequenza cardiaca è un dato sulla salute (articolo 9 del GDPR). Questo consenso è richiesto separatamente e non viene mai raggruppato con gli altri. I tuoi dati sulla salute non vengono inviati ai nostri server.';
@@ -1241,10 +1241,11 @@ class _Translations$consent$it extends Translations$consent$fr {
 	@override String get notDecided => 'In attesa della tua scelta';
 	@override String get acceptSelected => 'Conferma le mie scelte';
 	@override String get declineAll => 'Rifiuta tutto';
-	@override String get declineAllNote => 'Rifiuta tutto revoca le tue quattro autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.';
+	@override String get declineAllNote => 'Rifiuta tutto revoca le tue cinque autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.';
 	@override String get declineAllCancel => 'Annulla';
 	@override String get continueLabel => 'Continua';
 	@override String get privacyPolicyLink => 'Leggi l\'informativa sulla privacy';
+	@override String get adsPrivacyOptions => 'Opzioni di privacy pubblicitaria';
 	@override String get reviewNeeded => 'La nostra politica è cambiata: rivedi le tue scelte.';
 	@override late final _Translations$consent$a11y$it a11y = _Translations$consent$a11y$it._(_root);
 	@override String get healthDataMorphoNote => 'Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.';
@@ -2969,6 +2970,8 @@ class _Translations$consent$purposes$it extends Translations$consent$purposes$fr
 	@override String get socialSharingDesc => 'Apparire nelle classifiche e nel feed della community, sotto pseudonimo.';
 	@override String get publicReporting => 'Segnalazioni pubbliche';
 	@override String get publicReportingDesc => 'Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.';
+	@override String get advertising => 'Pubblicità personalizzata';
+	@override String get advertisingDesc => 'Adattare gli annunci ai tuoi interessi. Senza questa autorizzazione l\'app gratuita mostra comunque annunci, ma non sono profilati e nessun dato di profilazione lascia il tuo dispositivo.';
 	@override String get healthData => 'Dati sulla salute';
 	@override String get healthDataDesc => 'Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo.';
 }
@@ -5283,13 +5286,15 @@ extension on TranslationsIt {
 			'consent.settingsTitle' => 'Privacy e consenso',
 			'consent.settingsIntro' => 'Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.',
 			'consent.settingsEntry' => 'Privacy e consenso',
-			'consent.settingsEntryDesc' => 'Gestire le mie autorizzazioni (posizione, condivisione, salute)',
+			'consent.settingsEntryDesc' => 'Gestire le mie autorizzazioni (posizione, condivisione, pubblicità, salute)',
 			'consent.purposes.locationNavigation' => 'Navigazione personale',
 			'consent.purposes.locationNavigationDesc' => 'Usare la tua posizione per la mappa e il monitoraggio della tappa. Resta sul tuo dispositivo.',
 			'consent.purposes.socialSharing' => 'Condivisione social',
 			'consent.purposes.socialSharingDesc' => 'Apparire nelle classifiche e nel feed della community, sotto pseudonimo.',
 			'consent.purposes.publicReporting' => 'Segnalazioni pubbliche',
 			'consent.purposes.publicReportingDesc' => 'Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.',
+			'consent.purposes.advertising' => 'Pubblicità personalizzata',
+			'consent.purposes.advertisingDesc' => 'Adattare gli annunci ai tuoi interessi. Senza questa autorizzazione l\'app gratuita mostra comunque annunci, ma non sono profilati e nessun dato di profilazione lascia il tuo dispositivo.',
 			'consent.purposes.healthData' => 'Dati sulla salute',
 			'consent.purposes.healthDataDesc' => 'Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo.',
 			'consent.healthBadge' => 'Dato sensibile',
@@ -5302,10 +5307,11 @@ extension on TranslationsIt {
 			'consent.notDecided' => 'In attesa della tua scelta',
 			'consent.acceptSelected' => 'Conferma le mie scelte',
 			'consent.declineAll' => 'Rifiuta tutto',
-			'consent.declineAllNote' => 'Rifiuta tutto revoca le tue quattro autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.',
+			'consent.declineAllNote' => 'Rifiuta tutto revoca le tue cinque autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.',
 			'consent.declineAllCancel' => 'Annulla',
 			'consent.continueLabel' => 'Continua',
 			'consent.privacyPolicyLink' => 'Leggi l\'informativa sulla privacy',
+			'consent.adsPrivacyOptions' => 'Opzioni di privacy pubblicitaria',
 			'consent.reviewNeeded' => 'La nostra politica è cambiata: rivedi le tue scelte.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}',
 			'consent.a11y.healthSection' => 'Sezione dati sulla salute, consenso rafforzato',
@@ -5569,6 +5575,8 @@ extension on TranslationsIt {
 			'fireRisk.regulation.title' => 'Normativa',
 			'fireRisk.regulation.decreeLink' => 'Consulta le ordinanze prefettizie',
 			'fireRisk.levelsTitle' => 'Livelli di rischio',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.level.none' => 'Nessuno',
 			'fireRisk.level.low' => 'Basso',
 			'fireRisk.level.moderate' => 'Moderato',

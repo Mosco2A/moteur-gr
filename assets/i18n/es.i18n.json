@@ -1544,7 +1544,7 @@
     "settingsTitle": "Privacidad y consentimiento",
     "settingsIntro": "Gestiona aquí cada permiso. Puedes retirar un consentimiento en cualquier momento, sin afectar al resto.",
     "settingsEntry": "Privacidad y consentimiento",
-    "settingsEntryDesc": "Gestionar mis permisos (ubicación, compartir, salud)",
+    "settingsEntryDesc": "Gestionar mis permisos (ubicación, compartir, publicidad, salud)",
     "purposes": {
       "locationNavigation": "Navegación personal",
       "locationNavigationDesc": "Usar tu ubicación para el mapa y el seguimiento de tu etapa. Permanece en tu dispositivo.",
@@ -1552,6 +1552,8 @@
       "socialSharingDesc": "Aparecer en las clasificaciones y en el feed de la comunidad, con un seudónimo.",
       "publicReporting": "Avisos públicos",
       "publicReportingDesc": "Publicar avisos (agua, peligro, condiciones) visibles para otros senderistas.",
+      "advertising": "Publicidad personalizada",
+      "advertisingDesc": "Adaptar los anuncios a tus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de tu dispositivo.",
       "healthData": "Datos de salud",
       "healthDataDesc": "Leer tu frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo."
     },
@@ -1565,10 +1567,11 @@
     "notDecided": "A la espera de tu elección",
     "acceptSelected": "Confirmar mis elecciones",
     "declineAll": "Rechazar todo",
-    "declineAllNote": "Rechazar todo retira tus cuatro permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.",
+    "declineAllNote": "Rechazar todo retira tus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.",
     "declineAllCancel": "Cancelar",
     "continueLabel": "Continuar",
     "privacyPolicyLink": "Leer la política de privacidad",
+    "adsPrivacyOptions": "Opciones de privacidad publicitaria",
     "reviewNeeded": "Nuestra política ha cambiado: revisa tus elecciones.",
     "a11y": {
       "purposeToggle": "$purpose, actualmente $state",

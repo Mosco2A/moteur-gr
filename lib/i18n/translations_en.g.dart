@@ -1229,7 +1229,7 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get settingsTitle => 'Privacy and consent';
 	@override String get settingsIntro => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.';
 	@override String get settingsEntry => 'Privacy and consent';
-	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, health)';
+	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, advertising, health)';
 	@override late final _Translations$consent$purposes$en purposes = _Translations$consent$purposes$en._(_root);
 	@override String get healthBadge => 'Sensitive data';
 	@override String get healthWarning => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.';
@@ -1241,10 +1241,11 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get notDecided => 'Awaiting your choice';
 	@override String get acceptSelected => 'Confirm my choices';
 	@override String get declineAll => 'Decline all';
-	@override String get declineAllNote => 'Decline all withdraws your four permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.';
+	@override String get declineAllNote => 'Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.';
 	@override String get declineAllCancel => 'Cancel';
 	@override String get continueLabel => 'Continue';
 	@override String get privacyPolicyLink => 'Read the privacy policy';
+	@override String get adsPrivacyOptions => 'Advertising privacy options';
 	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
 	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
 	@override String get healthDataMorphoNote => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.';
@@ -2969,6 +2970,8 @@ class _Translations$consent$purposes$en extends Translations$consent$purposes$fr
 	@override String get socialSharingDesc => 'Appear in leaderboards and the community feed, under a pseudonym.';
 	@override String get publicReporting => 'Public reporting';
 	@override String get publicReportingDesc => 'Post reports (water, hazard, conditions) visible to other hikers.';
+	@override String get advertising => 'Personalised advertising';
+	@override String get advertisingDesc => 'Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.';
 	@override String get healthData => 'Health data';
 	@override String get healthDataDesc => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.';
 }
@@ -5283,13 +5286,15 @@ extension on TranslationsEn {
 			'consent.settingsTitle' => 'Privacy and consent',
 			'consent.settingsIntro' => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.',
 			'consent.settingsEntry' => 'Privacy and consent',
-			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, health)',
+			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, advertising, health)',
 			'consent.purposes.locationNavigation' => 'Personal navigation',
 			'consent.purposes.locationNavigationDesc' => 'Use your location for the map and to track your stage. Stays on your device.',
 			'consent.purposes.socialSharing' => 'Social sharing',
 			'consent.purposes.socialSharingDesc' => 'Appear in leaderboards and the community feed, under a pseudonym.',
 			'consent.purposes.publicReporting' => 'Public reporting',
 			'consent.purposes.publicReportingDesc' => 'Post reports (water, hazard, conditions) visible to other hikers.',
+			'consent.purposes.advertising' => 'Personalised advertising',
+			'consent.purposes.advertisingDesc' => 'Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.',
 			'consent.purposes.healthData' => 'Health data',
 			'consent.purposes.healthDataDesc' => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.',
 			'consent.healthBadge' => 'Sensitive data',
@@ -5302,10 +5307,11 @@ extension on TranslationsEn {
 			'consent.notDecided' => 'Awaiting your choice',
 			'consent.acceptSelected' => 'Confirm my choices',
 			'consent.declineAll' => 'Decline all',
-			'consent.declineAllNote' => 'Decline all withdraws your four permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.',
+			'consent.declineAllNote' => 'Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.',
 			'consent.declineAllCancel' => 'Cancel',
 			'consent.continueLabel' => 'Continue',
 			'consent.privacyPolicyLink' => 'Read the privacy policy',
+			'consent.adsPrivacyOptions' => 'Advertising privacy options',
 			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
@@ -5569,6 +5575,8 @@ extension on TranslationsEn {
 			'fireRisk.regulation.title' => 'Regulations',
 			'fireRisk.regulation.decreeLink' => 'View prefectural orders',
 			'fireRisk.levelsTitle' => 'Risk levels',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.level.none' => 'None',
 			'fireRisk.level.low' => 'Low',
 			'fireRisk.level.moderate' => 'Moderate',

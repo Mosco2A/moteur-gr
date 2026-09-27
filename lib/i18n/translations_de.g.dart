@@ -1229,7 +1229,7 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get settingsTitle => 'Datenschutz und Einwilligung';
 	@override String get settingsIntro => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.';
 	@override String get settingsEntry => 'Datenschutz und Einwilligung';
-	@override String get settingsEntryDesc => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)';
+	@override String get settingsEntryDesc => 'Meine Berechtigungen verwalten (Standort, Teilen, Werbung, Gesundheit)';
 	@override late final _Translations$consent$purposes$de purposes = _Translations$consent$purposes$de._(_root);
 	@override String get healthBadge => 'Sensible Daten';
 	@override String get healthWarning => 'Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.';
@@ -1241,10 +1241,11 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get notDecided => 'Wartet auf Ihre Wahl';
 	@override String get acceptSelected => 'Meine Auswahl bestätigen';
 	@override String get declineAll => 'Alles ablehnen';
-	@override String get declineAllNote => 'Alles ablehnen widerruft Ihre vier Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.';
+	@override String get declineAllNote => 'Alles ablehnen widerruft Ihre fünf Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.';
 	@override String get declineAllCancel => 'Abbrechen';
 	@override String get continueLabel => 'Weiter';
 	@override String get privacyPolicyLink => 'Datenschutzerklärung lesen';
+	@override String get adsPrivacyOptions => 'Datenschutzoptionen für Werbung';
 	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
 	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
 	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
@@ -2969,6 +2970,8 @@ class _Translations$consent$purposes$de extends Translations$consent$purposes$fr
 	@override String get socialSharingDesc => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.';
 	@override String get publicReporting => 'Öffentliche Meldungen';
 	@override String get publicReportingDesc => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.';
+	@override String get advertising => 'Personalisierte Werbung';
+	@override String get advertisingDesc => 'Werbung an Ihre Interessen anpassen. Ohne diese Berechtigung zeigt die kostenlose App weiterhin Werbung, sie ist jedoch nicht zielgerichtet und es verlassen keine Targeting-Daten Ihr Gerät.';
 	@override String get healthData => 'Gesundheitsdaten';
 	@override String get healthDataDesc => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.';
 }
@@ -5283,13 +5286,15 @@ extension on TranslationsDe {
 			'consent.settingsTitle' => 'Datenschutz und Einwilligung',
 			'consent.settingsIntro' => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.',
 			'consent.settingsEntry' => 'Datenschutz und Einwilligung',
-			'consent.settingsEntryDesc' => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)',
+			'consent.settingsEntryDesc' => 'Meine Berechtigungen verwalten (Standort, Teilen, Werbung, Gesundheit)',
 			'consent.purposes.locationNavigation' => 'Persönliche Navigation',
 			'consent.purposes.locationNavigationDesc' => 'Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.',
 			'consent.purposes.socialSharing' => 'Soziales Teilen',
 			'consent.purposes.socialSharingDesc' => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.',
 			'consent.purposes.publicReporting' => 'Öffentliche Meldungen',
 			'consent.purposes.publicReportingDesc' => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.',
+			'consent.purposes.advertising' => 'Personalisierte Werbung',
+			'consent.purposes.advertisingDesc' => 'Werbung an Ihre Interessen anpassen. Ohne diese Berechtigung zeigt die kostenlose App weiterhin Werbung, sie ist jedoch nicht zielgerichtet und es verlassen keine Targeting-Daten Ihr Gerät.',
 			'consent.purposes.healthData' => 'Gesundheitsdaten',
 			'consent.purposes.healthDataDesc' => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.',
 			'consent.healthBadge' => 'Sensible Daten',
@@ -5302,10 +5307,11 @@ extension on TranslationsDe {
 			'consent.notDecided' => 'Wartet auf Ihre Wahl',
 			'consent.acceptSelected' => 'Meine Auswahl bestätigen',
 			'consent.declineAll' => 'Alles ablehnen',
-			'consent.declineAllNote' => 'Alles ablehnen widerruft Ihre vier Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.',
+			'consent.declineAllNote' => 'Alles ablehnen widerruft Ihre fünf Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.',
 			'consent.declineAllCancel' => 'Abbrechen',
 			'consent.continueLabel' => 'Weiter',
 			'consent.privacyPolicyLink' => 'Datenschutzerklärung lesen',
+			'consent.adsPrivacyOptions' => 'Datenschutzoptionen für Werbung',
 			'consent.reviewNeeded' => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
@@ -5569,6 +5575,8 @@ extension on TranslationsDe {
 			'fireRisk.regulation.title' => 'Vorschriften',
 			'fireRisk.regulation.decreeLink' => 'Präfektorale Erlasse ansehen',
 			'fireRisk.levelsTitle' => 'Risikostufen',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.level.none' => 'Keine',
 			'fireRisk.level.low' => 'Gering',
 			'fireRisk.level.moderate' => 'Mäßig',

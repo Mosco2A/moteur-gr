@@ -40,6 +40,45 @@ android {
 
     defaultConfig {
         applicationId = "com.only1cent.moteur_gr"
+
+        // ---------------------------------------------------------------
+        // ADMOB — L'APP ID ARRIVE DU BUILD, JAMAIS DU DEPOT (tache 595, B3)
+        // ---------------------------------------------------------------
+        // LE DEFAUT REPARE : l'App ID etait ecrit EN DUR dans
+        // AndroidManifest.xml, donc non injectable. Il n'existait AUCUN
+        // manifestPlaceholder dans ce fichier — produire un APK de production
+        // aurait exige de modifier un fichier versionne, avec une vraie cle
+        // dedans. Les emplacements publicitaires (ad-units), eux, etaient deja
+        // proprement injectes par `--dart-define` : l'App ID etait le seul
+        // maillon non prevu.
+        //
+        // TROIS SOURCES, DANS CET ORDRE :
+        //   1. propriete gradle  : -PADMOB_APP_ID_ANDROID=ca-app-pub-XXXX~YYYY
+        //      (ou une ligne dans ~/.gradle/gradle.properties, HORS DEPOT) ;
+        //   2. variable d'environnement ADMOB_APP_ID_ANDROID (CI/Codemagic) ;
+        //   3. a defaut, l'App ID de TEST PUBLIC officiel de Google.
+        //
+        // POURQUOI UN DEFAUT DE TEST ET PAS UNE ERREUR DE BUILD. Parce qu'un
+        // build sans identifiant DOIT rester possible et inoffensif : c'est le
+        // cas de tous les APK de recette. Le defaut est public, documente par
+        // Google et ne facture personne. Une valeur reelle, elle, n'entre
+        // JAMAIS dans ce depot — c'est ce que verrouille le test
+        // `test/comportement/pub_v1_595_test.dart` (B3).
+        val admobAppId: String =
+            (project.findProperty("ADMOB_APP_ID_ANDROID") as String?)
+                ?.takeIf { it.isNotBlank() }
+                ?: System.getenv("ADMOB_APP_ID_ANDROID")?.takeIf { it.isNotBlank() }
+                ?: "ca-app-pub-3940256099942544~3347511713"
+        manifestPlaceholders["admobAppId"] = admobAppId
+        if (!admobAppId.startsWith("ca-app-pub-3940256099942544")) {
+            logger.lifecycle("StepWays : App ID AdMob de PRODUCTION injecte.")
+        } else {
+            logger.lifecycle(
+                "StepWays : App ID AdMob de TEST (aucun identifiant de " +
+                    "production injecte). Pour un build vendable, fournir " +
+                    "ADMOB_APP_ID_ANDROID."
+            )
+        }
         // P1-3 audit #327 : bornes SDK epinglees explicitement (plus de
         // dependance aux defauts flutter.*). minSdk 23 = socle commun des
         // plugins (geolocator, firebase) ; targetSdk 35 = exigence Play.

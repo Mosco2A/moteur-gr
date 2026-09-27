@@ -44,10 +44,17 @@ class ConsentOnboardingScreen extends ConsumerWidget {
     final controller = ref.read(consentControllerProvider);
 
     // Finalites standard (hors sante, presentee a part en section renforcee).
+    //
+    // LA PUBLICITE EN FAIT PARTIE DEPUIS LA TACHE 595 (B4). Elle est demandee
+    // des l'accueil, au meme titre que les autres, et en opt-in strict : rien
+    // n'est pre-coche. Refuser ne supprime pas la publicite du niveau gratuit
+    // (c'en est la contrepartie) — cela empeche le CIBLAGE, donc la sortie des
+    // donnees de l'appareil.
     const standardPurposes = <ConsentPurpose>[
       ConsentPurpose.locationNavigation,
       ConsentPurpose.socialSharing,
       ConsentPurpose.publicReporting,
+      ConsentPurpose.advertising,
     ];
 
     return Scaffold(

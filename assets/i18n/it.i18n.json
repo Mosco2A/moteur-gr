@@ -1544,7 +1544,7 @@
     "settingsTitle": "Privacy e consenso",
     "settingsIntro": "Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.",
     "settingsEntry": "Privacy e consenso",
-    "settingsEntryDesc": "Gestire le mie autorizzazioni (posizione, condivisione, salute)",
+    "settingsEntryDesc": "Gestire le mie autorizzazioni (posizione, condivisione, pubblicità, salute)",
     "purposes": {
       "locationNavigation": "Navigazione personale",
       "locationNavigationDesc": "Usare la tua posizione per la mappa e il monitoraggio della tappa. Resta sul tuo dispositivo.",
@@ -1552,6 +1552,8 @@
       "socialSharingDesc": "Apparire nelle classifiche e nel feed della community, sotto pseudonimo.",
       "publicReporting": "Segnalazioni pubbliche",
       "publicReportingDesc": "Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.",
+      "advertising": "Pubblicità personalizzata",
+      "advertisingDesc": "Adattare gli annunci ai tuoi interessi. Senza questa autorizzazione l'app gratuita mostra comunque annunci, ma non sono profilati e nessun dato di profilazione lascia il tuo dispositivo.",
       "healthData": "Dati sulla salute",
       "healthDataDesc": "Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo."
     },
@@ -1565,10 +1567,11 @@
     "notDecided": "In attesa della tua scelta",
     "acceptSelected": "Conferma le mie scelte",
     "declineAll": "Rifiuta tutto",
-    "declineAllNote": "Rifiuta tutto revoca le tue quattro autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.",
+    "declineAllNote": "Rifiuta tutto revoca le tue cinque autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.",
     "declineAllCancel": "Annulla",
     "continueLabel": "Continua",
     "privacyPolicyLink": "Leggi l'informativa sulla privacy",
+    "adsPrivacyOptions": "Opzioni di privacy pubblicitaria",
     "reviewNeeded": "La nostra politica è cambiata: rivedi le tue scelte.",
     "a11y": {
       "purposeToggle": "$purpose, attualmente $state",

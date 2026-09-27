@@ -53,6 +53,29 @@ enum ConsentPurpose {
   /// Signalement public (contribution de signalements visibles par autrui).
   publicReporting,
 
+  /// PUBLICITE PERSONNALISEE (tache 595, B4).
+  ///
+  /// LE DEFAUT REPARE : le consentement publicitaire vivait A COTE de ce
+  /// dispositif. L'appli avait un consentement granulaire complet — horodate,
+  /// versionne, retractable, avec refus global et effacement de l'article 9 —
+  /// et la publicite, elle, n'etait gouvernee que par le CMP de Google, dans
+  /// un formulaire natif qui ne parle a aucun ecran de l'application. Deux
+  /// dispositifs pour une seule promesse (« gerez ici chaque autorisation »)
+  /// : le randonneur ne pouvait pas revoir son choix publicitaire la ou on lui
+  /// disait de le faire.
+  ///
+  /// CE QUE CETTE FINALITE GOUVERNE : le CIBLAGE, pas l'affichage. Le modele
+  /// economique dit « gratuit = avec publicite » — c'est la contrepartie du
+  /// niveau gratuit, pas un traitement soumis a consentement. Ce que le
+  /// randonneur tranche ici, c'est si ses donnees de ciblage quittent
+  /// l'appareil : refusee, la demande part `nonPersonalizedAds`, la banniere
+  /// reste. C'est exactement la question que pose le CMP, posee au meme
+  /// endroit que toutes les autres.
+  ///
+  /// PAS RENFORCEE : ce n'est pas une donnee de l'article 9. Seule la sante
+  /// l'est, et son isolement ne doit pas etre dilue par voisinage.
+  advertising,
+
   /// Donnees de SANTE (FC via ceinture BLE / lecture Health) — art 9 RGPD.
   ///
   /// Categorie particuliere : consentement explicite renforce, isole.

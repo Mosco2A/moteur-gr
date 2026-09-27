@@ -6,6 +6,7 @@ import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/routing/home_location_provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -56,6 +57,17 @@ class TrailCatalogScreen extends ConsumerWidget {
         title: t.catalog.title,
         homeLocation: HomeLocations.maison,
       ),
+      // --- LA BANNIERE PUBLICITAIRE, VOLET APP-WIDE (tache 595, B1/B2) ---
+      //
+      // Le catalogue n'a AUCUN trek en contexte — c'est justement l'ecran ou
+      // l'on choisit le sien. La regle d'or #99404 y garde malgre tout ses deux
+      // volets app-wide : un ABONNE ACTIF est sans pub PARTOUT tant qu'il paie,
+      // et une RECOMPENSE VIDEO couvre 24 h, partout aussi. Seul « trek achete
+      // = sans pub sur CE trek » n'a rien a dire ici, et c'est precisement ce
+      // que dit [BannerAdSlot.horsTrek].
+      //
+      // Aucun bouton d'urgence sur cet ecran : le SOS ne vit qu'en terrain.
+      bottomNavigationBar: const BannerAdSlot.horsTrek(),
       body: trails.isEmpty
           ? EmptyState(
               icon: Icons.explore_off,
