@@ -1236,7 +1236,7 @@
     "tooShortTitle": "Aucune préparation proposée",
     "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.",
     "demoBridledTitle": "Version d'essai",
-    "demoBridledBody": "La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s'ouvrent avec la randonnée.",
+    "demoBridledBody": "La première phase est jouable pour de faux : rien n'est conservé. Les phases suivantes s'ouvrent avec la randonnée.",
     "demoLockedPhase": "Débloquez la randonnée pour voir les séances"
   },
   "eta": {

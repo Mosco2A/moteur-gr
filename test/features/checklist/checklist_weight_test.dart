@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/checklist/data/checklist_template.dart';
 import 'package:moteur_gr/features/checklist/presentation/checklist_screen.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
@@ -140,6 +141,12 @@ void main() {
           overrides: [
             databaseProvider.overrideWithValue(db),
             trailConfigProvider.overrideWithValue(testTrail),
+            // LE SAC EST BRIDE EN DEMO (tache 594, A2c) : l ecran observe le droit
+            // d achat, qui arrive par un stream Drift. On le resout d office ici —
+            // ce fichier teste le sac, pas le verrou d achat — sinon l annulation
+            // de la souscription laisse un minuteur vivant a la destruction de
+            // l arbre. Le bridage a ses propres tests.
+            isDemoModeProvider.overrideWith((ref, trailId) async => false),
           ],
           // AppHeader (Ph5/L6b) utilise GoRouter -> GoRouter minimal (+ /my-treks).
           child: TranslationProvider(

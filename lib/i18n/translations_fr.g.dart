@@ -2130,8 +2130,8 @@ class Translations$training$fr {
 	/// fr: 'Version d'essai'
 	String get demoBridledTitle => 'Version d\'essai';
 
-	/// fr: 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s'ouvrent avec la randonnée.'
-	String get demoBridledBody => 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s\'ouvrent avec la randonnée.';
+	/// fr: 'La première phase est jouable pour de faux : rien n'est conservé. Les phases suivantes s'ouvrent avec la randonnée.'
+	String get demoBridledBody => 'La première phase est jouable pour de faux : rien n\'est conservé. Les phases suivantes s\'ouvrent avec la randonnée.';
 
 	/// fr: 'Débloquez la randonnée pour voir les séances'
 	String get demoLockedPhase => 'Débloquez la randonnée pour voir les séances';
@@ -8814,7 +8814,7 @@ extension on Translations {
 			'training.tooShortTitle' => 'Aucune préparation proposée',
 			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.',
 			'training.demoBridledTitle' => 'Version d\'essai',
-			'training.demoBridledBody' => 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s\'ouvrent avec la randonnée.',
+			'training.demoBridledBody' => 'La première phase est jouable pour de faux : rien n\'est conservé. Les phases suivantes s\'ouvrent avec la randonnée.',
 			'training.demoLockedPhase' => 'Débloquez la randonnée pour voir les séances',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',

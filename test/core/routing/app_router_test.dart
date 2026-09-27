@@ -39,7 +39,10 @@ void main() {
       // Finitions V1 (point 4) : ajout de '/recovery-code' (24 -> 25).
       // Refonte nav (hub-and-push pur) : la route '/more' (MoreScreen orphelin)
       // est SUPPRIMEE (25 -> 24).
-      expect(routes.whereType<GoRoute>().length, 24);
+      // V1 ARGENT (tache 594, A3) : ajout de '/wallet' (recharge du
+      // compte-etapes) et '/subscription' (abonnement sans pub) — les deux
+      // ecrans de paiement qui manquaient (24 -> 26).
+      expect(routes.whereType<GoRoute>().length, 26);
     });
 
     test('les 5 ex-onglets sont desormais des routes racine', () {
@@ -74,6 +77,9 @@ void main() {
         '/recovery-code',
         '/consent',
         '/profile',
+        // V1 ARGENT (tache 594, A3) : les deux ecrans de paiement.
+        '/wallet',
+        '/subscription',
         // StepWays L8 : la route de demo '/nav-pilote' (ecran-pilote refonte nav,
         // hors-shell) a ete RETIREE du routeur (fichier conserve dormant).
       ]);
@@ -110,6 +116,9 @@ void main() {
         'recovery-code',
         'consent',
         'profile',
+        // V1 ARGENT (tache 594, A3) : les deux ecrans de paiement.
+        'wallet',
+        'subscription',
         // StepWays L8 : 'nav-pilote' retiree (route de demo supprimee).
       ]);
     });
