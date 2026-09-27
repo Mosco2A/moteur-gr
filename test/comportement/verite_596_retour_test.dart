@@ -26,11 +26,18 @@ library;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/data/daos/feedback_queue_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/features/feedback/data/feedback_service.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
+
+import '../structurel/parcours_reel.dart';
+
+/// Textes francais attendus a l'ecran (l'appli reelle demarre en fr).
+final _tr = AppLocale.fr.buildSync();
 
 class FauxReseau extends ConnectivityMonitor {
   FauxReseau({this.statut = ConnectivityStatusValues.online})
@@ -177,6 +184,56 @@ void main() {
       expect(resultat, FeedbackIssue.gardeLocalement);
       expect(puits.recus, isEmpty);
       expect(await dao.getPending(), hasLength(1));
+    });
+  });
+
+  group('LOT 596 C1 — CE QUE L ECRAN DIT AU RANDONNEUR', () {
+    testWidgets(
+        '/trail/:id/feedback — l ecran annonce AVANT d ecrire que le retour '
+        'reste sur le telephone', (tester) async {
+      // L'APPLICATION REELLE, par sa vraie route (socle du LOT V). Sans
+      // configuration cloud, aucun destinataire n'est branche : l'ecran doit le
+      // dire d'entree, pas apres avoir remercie.
+      await monterAppliReelle(tester,
+          depart: '/trail/mare-a-mare-centre/feedback');
+
+      final textes = textesVisibles(tester);
+      expect(textes, contains(_tr.feedback.keptLocallyNotice),
+          reason: 'l utilisateur doit savoir AVANT d ecrire que son message ne '
+              'partira pas encore');
+      expect(textes, isNot(contains(_tr.feedback.thanks)),
+          reason: 'aucun merci ne doit s afficher avant meme un envoi');
+
+      await demonterAppli(tester);
+      erreursDeRendu(tester);
+    });
+
+    testWidgets(
+        '/trail/:id/feedback — apres envoi sans destinataire, l ecran dit '
+        '« garde ici » et JAMAIS merci', (tester) async {
+      await monterAppliReelle(tester,
+          depart: '/trail/mare-a-mare-centre/feedback');
+
+      await tester.enterText(
+          find.byType(TextField).first, 'La carte se fige au col');
+      await stabiliser(tester, coups: 4);
+
+      final bouton = find.widgetWithText(ElevatedButton, _tr.feedback.send);
+      expect(bouton, findsWidgets, reason: 'le bouton d envoi doit etre la');
+      await tester.tap(bouton.first, warnIfMissed: false);
+      await stabiliser(tester, coups: 12);
+
+      final textes = textesVisibles(tester);
+      expect(textes, contains(_tr.feedback.keptLocally),
+          reason: 'le retour est garde sur le telephone : l ecran doit le dire');
+      expect(textes, isNot(contains(_tr.feedback.thanks)),
+          reason: 'C EST LE DEFAUT CORRIGE : l ecran remerciait pour un '
+              'message que personne n allait jamais lire');
+      expect(textes, isNot(contains(_tr.feedback.sentThanks)),
+          reason: 'le merci d envoi est reserve a un message reellement parti');
+
+      await demonterAppli(tester);
+      erreursDeRendu(tester);
     });
   });
 }
