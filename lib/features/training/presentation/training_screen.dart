@@ -52,9 +52,9 @@ class TrainingScreen extends ConsumerWidget {
       body: SafeArea(
         child: isDemoAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => _LockedView(trail: trail, planAsync: planAsync),
+          error: (_, __) => _DemoBridledView(trail: trail, planAsync: planAsync),
           data: (isDemo) => isDemo
-              ? _LockedView(trail: trail, planAsync: planAsync)
+              ? _DemoBridledView(trail: trail, planAsync: planAsync)
               : _UnlockedView(trail: trail, planAsync: planAsync),
         ),
       ),
@@ -63,101 +63,167 @@ class TrainingScreen extends ConsumerWidget {
 }
 
 // ===========================================================================
-// ETAT VERROUILLE (pas de pack/abo) — teaser + paywall
+// ETAT DEMO BRIDEE (gratuit / abonne) — JOUABLE « pour de faux », puis grise
 // ===========================================================================
 
-/// Vue VERROUILLEE (spec etat « verrouille ») : intro effort (visible), apercu
-/// FLOUTE des phases (seances masquees), encart paywall + bouton « Debloquer ».
-/// L'ecran donne envie, il ne livre pas le detail.
-class _LockedView extends ConsumerWidget {
-  const _LockedView({required this.trail, required this.planAsync});
+/// Vue DEMO BRIDEE (modele eco §2, tache 594 A2c).
+///
+/// CE QUI EXISTAIT AVAIT LE SENS INVERSE. L'ecran servait un `_LockedView` :
+/// les titres de phases restaient lisibles, mais les seances etaient
+/// REMPLACEES par trois barres grises et un cadenas. Visible, oui ; jouable,
+/// non. Le modele eco demande exactement le contraire — « SAC A DOS + PREPA
+/// PHYSIQUE jouables *pour de faux* (version bridee) » : on doit pouvoir s'en
+/// servir, pas seulement le regarder.
+///
+/// CE QUE FAIT CETTE VUE :
+///   * les [kDemoTrainingPhasesPlayable] premieres phases sont SERVIES
+///     ENTIERES et COCHABLES, exactement comme en debloque ;
+///   * « pour de faux » est pris au mot : les coches vivent dans l'etat local
+///     de ce widget et ne sont PAS persistees — l'essai ne fabrique pas un
+///     suivi d'entrainement mensonger, et le bandeau le DIT ;
+///   * les phases suivantes restent VISIBLES et GRISEES, verrouillees, jamais
+///     cachees (leur titre et leurs semaines se lisent, leurs seances non) ;
+///   * l'encart paywall reste en bas : on dit toujours ou acheter.
+class _DemoBridledView extends ConsumerStatefulWidget {
+  const _DemoBridledView({required this.trail, required this.planAsync});
 
   final TrailConfig trail;
   final AsyncValue<TrainingPlan> planAsync;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final plan = planAsync.value;
+  ConsumerState<_DemoBridledView> createState() => _DemoBridledViewState();
+}
+
+class _DemoBridledViewState extends ConsumerState<_DemoBridledView> {
+  /// Coches de l'essai : LOCALES, jamais ecrites. « Pour de faux ».
+  final Set<String> _cocheesPourDeFaux = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
+    final plan = widget.planAsync.value;
+    final phases = plan?.phases ?? const <TrainingPhase>[];
+    final jouables = phases.take(kDemoTrainingPhasesPlayable).toList();
+    final grisees = phases.skip(kDemoTrainingPhasesPlayable).toList();
+
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
-        _IntroEffortCard(trail: trail, plan: plan),
+        _IntroEffortCard(trail: widget.trail, plan: plan),
         const SizedBox(height: AppTheme.spacingBase),
-        if (plan != null) _BlurredPhasesPreview(plan: plan),
-        const SizedBox(height: AppTheme.spacingBase),
-        _PaywallCard(trail: trail),
+        if (phases.isNotEmpty) ...[
+          const _DemoBridledBanner(),
+          const SizedBox(height: AppTheme.spacingBase),
+          for (final phase in jouables)
+            _PhaseBlock(
+              phase: phase,
+              isDone: _cocheesPourDeFaux.contains,
+              onToggle: (id) => setState(() {
+                if (!_cocheesPourDeFaux.remove(id)) _cocheesPourDeFaux.add(id);
+              }),
+            ),
+          for (final phase in grisees) _LockedPhaseRow(phase: phase),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
+        _PaywallCard(trail: widget.trail),
       ],
     );
   }
 }
 
-/// Apercu FLOUTE des phases (verrouille) : on montre les grandes phases, les
-/// seances restent masquees (flou + cadenas) — teaser de valeur.
-class _BlurredPhasesPreview extends StatelessWidget {
-  const _BlurredPhasesPreview({required this.plan});
-
-  final TrainingPlan plan;
+/// Bandeau d'essai : dit que c'est bride, et que les coches ne comptent pas.
+///
+/// Un essai muet passerait pour un plan reel : le randonneur cocherait ses
+/// seances pendant deux semaines avant de decouvrir que rien n'a ete garde.
+class _DemoBridledBanner extends StatelessWidget {
+  const _DemoBridledBanner();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AppCard(
+      key: const ValueKey('training-demo-banner'),
+      backgroundColor: theme.colorScheme.secondary.withAlpha(18),
+      borderColor: theme.colorScheme.secondary.withAlpha(80),
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ligne des phases (lisible : donne envie) ...
-          Wrap(
-            spacing: AppTheme.spacingMd,
-            runSpacing: AppTheme.spacingSm,
+          Row(
             children: [
-              for (final phase in plan.phases)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(_phaseIcon(phase.icon),
-                        size: 18, color: theme.colorScheme.primary),
-                    const SizedBox(width: AppTheme.spacingXs),
-                    Text(
-                      pickLocalized(
-                        fr: phase.titleFr,
-                        en: phase.titleEn,
-                        de: phase.titleDe,
-                        it: phase.titleIt,
-                        es: phase.titleEs,
-                      ),
-                      style: theme.textTheme.labelLarge,
-                    ),
-                  ],
+              Icon(Icons.science_outlined,
+                  size: 20, color: theme.colorScheme.secondary),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  t.training.demoBridledTitle,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
+              ),
             ],
           ),
-          const SizedBox(height: AppTheme.spacingMd),
-          // ... mais le detail des seances est FLOUTE (masque).
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              // Barres grisees simulant les seances masquees.
-              Column(
-                children: List.generate(
-                  3,
-                  (_) => Container(
-                    height: 14,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withAlpha(25),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            t.training.demoBridledBody,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(180),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Phase GRISEE : visible, verrouillee, jamais cachee (modele eco §2).
+///
+/// Le titre et les semaines se lisent — on sait ce qu'on n'a pas. Les seances,
+/// elles, ne sont pas servies : c'est la partie qui s'achete.
+class _LockedPhaseRow extends StatelessWidget {
+  const _LockedPhaseRow({required this.phase});
+
+  final TrainingPhase phase;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final grise = theme.colorScheme.onSurface.withAlpha(110);
+    final title = pickLocalized(
+      fr: phase.titleFr,
+      en: phase.titleEn,
+      de: phase.titleDe,
+      it: phase.titleIt,
+      es: phase.titleEs,
+    );
+    return AppCard(
+      key: ValueKey('training-demo-locked-${phase.id}'),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Row(
+        children: [
+          Icon(_phaseIcon(phase.icon), color: grise),
+          const SizedBox(width: AppTheme.spacingMd),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  t.training.phaseWeeks(
+                    start: phase.weekStart,
+                    end: phase.weekEnd,
+                    title: title,
                   ),
+                  style: theme.textTheme.titleSmall?.copyWith(color: grise),
                 ),
-              ),
-              Icon(
-                Icons.lock_outline,
-                color: theme.colorScheme.onSurface.withAlpha(120),
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  t.training.demoLockedPhase,
+                  style: theme.textTheme.labelSmall?.copyWith(color: grise),
+                ),
+              ],
+            ),
           ),
+          Icon(Icons.lock_outline, size: 18, color: grise),
         ],
       ),
     );
@@ -369,8 +435,17 @@ class _PlanContent extends ConsumerWidget {
         const SizedBox(height: AppTheme.spacingSm),
 
         // --- Blocs de phases depliables a seances cochables ---
+        //
+        // UNE CLE PAR PHASE, ET ELLE N'EST PAS DECORATIVE. Sans cle, les blocs
+        // etaient apparies par POSITION dans la liste : quand le bandeau
+        // « remplissez votre fiche » apparaissait ou disparaissait, tous les
+        // indices glissaient d'un cran et l'etat « deplie » restait sur la
+        // POSITION au lieu de suivre la PHASE — la phase ouverte se refermait,
+        // une autre s'ouvrait a sa place. Trouve en montant cet ecran avec
+        // trois phases (tache 594).
         for (final phase in plan.phases)
           _PhaseBlock(
+            key: ValueKey('training-phase-${phase.id}'),
             phase: phase,
             isDone: progress.isDone,
             onToggle: (id) =>
@@ -473,6 +548,7 @@ class _IntroEffortCard extends StatelessWidget {
 /// de preparation du tout, donc il n'y a plus rien a condenser.
 class _PhaseBlock extends StatelessWidget {
   const _PhaseBlock({
+    super.key,
     required this.phase,
     required this.isDone,
     required this.onToggle,

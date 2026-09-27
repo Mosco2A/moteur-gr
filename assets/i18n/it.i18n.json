@@ -610,7 +610,11 @@
     },
     "seasonalAdd": "Aggiungi",
     "seasonalAdded": "Aggiunto",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Versione di prova",
+    "demoBridledBody": "Le prime categorie sono giocabili per finta. Lo zaino completo, adattato all'escursione e alla stagione, si apre con l'escursione.",
+    "demoLockedCategory": "Sblocca l'escursione per questa categoria",
+    "demoUnlockCta": "Sblocca l'escursione"
   },
   "journal": {
     "title": "Diario di trekking",
@@ -1120,7 +1124,34 @@
     "rewardedUnavailable": "Nessun video disponibile al momento.",
     "walletTitle": "Conto tappe",
     "walletSubtitle": "Le tue tappe servono a sbloccare le escursioni",
-    "walletUnit": "tappe"
+    "walletUnit": "tappe",
+    "storeUnavailable": "Il pagamento non è disponibile al momento.",
+    "restoreUnavailable": "Ripristino impossibile: il pagamento non è disponibile al momento.",
+    "restoreRequested": "Ripristino richiesto. I tuoi acquisti torneranno tra poco.",
+    "restoreCta": "Ripristina i miei acquisti",
+    "restoreWhatItCovers": "Il ripristino riporta l'abbonamento e le ricariche. Le escursioni sbloccate con le tue tappe restano su questo dispositivo.",
+    "rechargeTitle": "Ricarica il mio conto tappe",
+    "rechargeSubtitle": "Le tappe servono a sbloccare le escursioni. Sono tue per sempre.",
+    "rechargeBalance": "Saldo attuale",
+    "packSteps": "$steps tappe",
+    "packPrice": "$price €",
+    "rechargeCta": "Ricarica",
+    "subscriptionTitle": "Abbonamento senza pubblicità",
+    "subscriptionSubtitle": "Nessuna pubblicità ovunque, finché l'abbonamento è attivo.",
+    "subscriptionIncludesNoAds": "Nessuna pubblicità in tutta l'app",
+    "subscriptionIncludesAllowance": "Un bonus di tappe a ogni periodo",
+    "subscriptionExcludes": "L'abbonamento non sblocca né gli strumenti completi né la realizzazione di un'escursione: per questo bisogna acquistare l'escursione.",
+    "subscriptionCta": "Abbonati",
+    "subscriptionActive": "Abbonamento attivo",
+    "subscriptionActiveUntil": "Attivo fino al $date",
+    "subscriptionInactive": "Nessun abbonamento attivo",
+    "subscriptionAllowancePending": "L'importo del bonus non è ancora stabilito.",
+    "realizationLockedTitle": "Questa escursione non è sbloccata",
+    "realizationLockedBody": "Per realizzare un'escursione bisogna averla sbloccata. La preparazione resta gratuita.",
+    "buyOutcomeOwned": "Escursione sbloccata. Buon cammino!",
+    "buyOutcomeAlreadyOwned": "Questa escursione è già sbloccata.",
+    "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
+    "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla."
   },
   "signalement": {
     "title": "Segnala",
@@ -1203,7 +1234,10 @@
     "freqSourceNotice": "Le frequenze non sono numeri inventati in casa: 3 sedute di endurance e 2 di rinforzo a settimana, 2 giorni di riposo, secondo REI (Conditioning for Backpacking), Terres d'Aventure e le raccomandazioni OMS 2020.",
     "noDateWhy": "Senza data di partenza questo piano non ha una fine: impossibile dire in quale settimana sei, né quando scaricare. Metti la tua data nel Calendario e il piano compare.",
     "tooShortTitle": "Nessuna preparazione proposta",
-    "tooShortWhy": "Restano $days giorni alla partenza, meno di $weeks settimane. Non ti viene proposta nessuna preparazione fisica: sotto le $weeks settimane non c'è progressione da costruire, e un programma compresso nel tempo che resta produce infortuni, non forma. Questo minimo di $weeks settimane è quello degli operatori di trek — Terres d'Aventure scrive « inizia ad allenarti almeno 2 mesi prima di partire ». Fino a quel momento cammina regolarmente e non cercare il sovraccarico."
+    "tooShortWhy": "Restano $days giorni alla partenza, meno di $weeks settimane. Non ti viene proposta nessuna preparazione fisica: sotto le $weeks settimane non c'è progressione da costruire, e un programma compresso nel tempo che resta produce infortuni, non forma. Questo minimo di $weeks settimane è quello degli operatori di trek — Terres d'Aventure scrive « inizia ad allenarti almeno 2 mesi prima di partire ». Fino a quel momento cammina regolarmente e non cercare il sovraccarico.",
+    "demoBridledTitle": "Versione di prova",
+    "demoBridledBody": "La prima fase è giocabile per finta: le tue spunte non vengono conservate. Le fasi successive si aprono con l'escursione.",
+    "demoLockedPhase": "Sblocca l'escursione per vedere le sedute"
   },
   "eta": {
     "title": "Tempo stimato",

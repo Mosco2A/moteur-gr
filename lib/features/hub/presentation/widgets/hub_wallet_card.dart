@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/monetization_service.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -30,58 +31,73 @@ class HubWalletCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final accent = CategoryIconColors.of(context).green;
 
+    // LA CARTE EST UNE PORTE (tache 594, A3). Elle affichait un solde et ne
+    // menait nulle part : il n'existait aucun ecran de recharge. Maintenant
+    // qu'il existe, c'est ici qu'on y entre — a l'endroit ou l'on constate
+    // qu'il manque des etapes.
     return AppCard(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingBase,
-        vertical: AppTheme.spacingMd,
-      ),
-      child: Semantics(
-        label: '${t.monetization.walletTitle} $solde ${t.monetization.walletUnit}',
-        excludeSemantics: true,
-        child: Row(
-          children: [
-            Icon(Icons.account_balance_wallet_outlined, color: accent),
-            const SizedBox(width: AppTheme.spacingMd),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t.monetization.walletTitle,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    t.monetization.walletSubtitle,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.grisTexteSecondaire,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppTheme.spacingSm),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+      padding: EdgeInsets.zero,
+      child: InkWell(
+        key: const ValueKey('hub-wallet-recharge'),
+        onTap: () => context.push('/wallet'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacingBase,
+            vertical: AppTheme.spacingMd,
+          ),
+          child: Semantics(
+            label:
+                '${t.monetization.walletTitle} $solde ${t.monetization.walletUnit}',
+            excludeSemantics: true,
+            child: Row(
               children: [
-                Text(
-                  '$solde',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: accent,
+                Icon(Icons.account_balance_wallet_outlined, color: accent),
+                const SizedBox(width: AppTheme.spacingMd),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t.monetization.walletTitle,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        t.monetization.walletSubtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppTheme.grisTexteSecondaire,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  t.monetization.walletUnit,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppTheme.grisTexteSecondaire,
-                  ),
+                const SizedBox(width: AppTheme.spacingSm),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '$solde',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: accent,
+                      ),
+                    ),
+                    Text(
+                      t.monetization.walletUnit,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(width: AppTheme.spacingXs),
+                const Icon(Icons.chevron_right,
+                    size: 18, color: AppTheme.grisTexteSecondaire),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

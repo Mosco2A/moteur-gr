@@ -610,7 +610,11 @@
     },
     "seasonalAdd": "Add",
     "seasonalAdded": "Added",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Trial version",
+    "demoBridledBody": "The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.",
+    "demoLockedCategory": "Unlock the hike for this category",
+    "demoUnlockCta": "Unlock the hike"
   },
   "journal": {
     "title": "Trek journal",
@@ -1120,7 +1124,34 @@
     "rewardedUnavailable": "No video available right now.",
     "walletTitle": "Step account",
     "walletSubtitle": "Your steps unlock hikes",
-    "walletUnit": "steps"
+    "walletUnit": "steps",
+    "storeUnavailable": "Payment is not available right now.",
+    "restoreUnavailable": "Cannot restore: payment is not available right now.",
+    "restoreRequested": "Restore requested. Your purchases will reappear shortly.",
+    "restoreCta": "Restore my purchases",
+    "restoreWhatItCovers": "Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.",
+    "rechargeTitle": "Top up my step account",
+    "rechargeSubtitle": "Steps unlock hikes. They are yours for life.",
+    "rechargeBalance": "Current balance",
+    "packSteps": "$steps steps",
+    "packPrice": "€$price",
+    "rechargeCta": "Top up",
+    "subscriptionTitle": "Ad-free subscription",
+    "subscriptionSubtitle": "No ads anywhere, as long as the subscription is active.",
+    "subscriptionIncludesNoAds": "No ads, across the whole app",
+    "subscriptionIncludesAllowance": "A step allowance every period",
+    "subscriptionExcludes": "The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.",
+    "subscriptionCta": "Subscribe",
+    "subscriptionActive": "Subscription active",
+    "subscriptionActiveUntil": "Active until $date",
+    "subscriptionInactive": "No active subscription",
+    "subscriptionAllowancePending": "The allowance amount has not been set yet.",
+    "realizationLockedTitle": "This hike is not unlocked",
+    "realizationLockedBody": "Hiking a route requires unlocking it first. Preparing stays free.",
+    "buyOutcomeOwned": "Hike unlocked. Enjoy the trail!",
+    "buyOutcomeAlreadyOwned": "This hike is already unlocked.",
+    "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
+    "buyOutcomeFailed": "The payment did not go through. Nothing was charged."
   },
   "signalement": {
     "title": "Report",
@@ -1203,7 +1234,10 @@
     "freqSourceNotice": "The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d'Aventure and the 2020 WHO guidelines.",
     "noDateWhy": "Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.",
     "tooShortTitle": "No preparation offered",
-    "tooShortWhy": "There are $days days left before departure, less than $weeks weeks. No physical preparation is offered to you: below $weeks weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This $weeks-week floor is the one trek operators use — Terres d'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload."
+    "tooShortWhy": "There are $days days left before departure, less than $weeks weeks. No physical preparation is offered to you: below $weeks weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This $weeks-week floor is the one trek operators use — Terres d'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.",
+    "demoBridledTitle": "Trial version",
+    "demoBridledBody": "The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.",
+    "demoLockedPhase": "Unlock the hike to see the sessions"
   },
   "eta": {
     "title": "Estimated time",

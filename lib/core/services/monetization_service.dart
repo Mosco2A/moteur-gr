@@ -72,34 +72,123 @@ class StepPack {
 
 /// Niveau d'accès d'un trek (StepWays LOT 1 — remplace le booléen par-trek).
 ///
-/// Trois niveaux (spec §2.4) :
-///   - [free]       : trek ni possédé ni couvert par un abo → démo + pub ;
-///   - [subscriber] : trek non possédé mais l'utilisateur a un abo actif
-///                    → jouable, SANS pub (l'abo débloque le sans-pub app-wide) ;
-///   - [owned]      : trek possédé (achat confirmé store) → jouable, sans pub.
+/// Trois niveaux (`MODELE_ECO.md` du 08/09, §2) :
+///   - [free]       : trek ni possédé ni couvert par un abo → démo bridée + pub ;
+///   - [subscriber] : abo light actif → SANS PUB PARTOUT + cagnotte d'étapes,
+///                    mais **ni les outils complets ni la réalisation** ;
+///   - [owned]      : trek acheté (ou vitrine) → outils COMPLETS pour ce trek,
+///                    réalisation, et sans pub sur ce trek.
 ///
 /// Un sentier VITRINE (parité GR20) est traité comme [owned] (jouable sans
 /// achat) — voir [MonetizationService.accessFor].
 enum TrailAccess {
-  /// Gratuit : démo + pub (trek non débloqué).
+  /// Gratuit : démo bridée + pub (trek non débloqué).
   free,
 
-  /// Débloqué par un abonnement actif (sans-pub app-wide).
+  /// Abo light actif : sans-pub app-wide + cagnotte. RIEN de plus.
   subscriber,
 
   /// Possédé (achat confirmé) ou vitrine.
   owned;
 
-  /// Le trek est-il JOUABLE (carte GPS, journal…) à ce niveau d'accès ?
+  /// Le trek est-il JOUABLE (outils complets, carte GPS, journal, réalisation) ?
   ///
-  /// Vrai pour [subscriber] et [owned] ; faux pour [free] (démo).
-  bool get isPlayable => this != TrailAccess.free;
+  /// UNIQUEMENT pour [owned]. **CORRIGE LA CONTRADICTION A2a (tâche 594)** :
+  /// cette règle rendait jouable tout ce qui n'était pas [free], donc l'abonné
+  /// — et un abonné light obtenait ainsi les outils complets ET la réalisation
+  /// de TOUS les treks sans en acheter un seul. L'arbitrage du 08/09 dit
+  /// exactement l'inverse, et il **prime sur #99405** : « l'abonné NE débloque
+  /// PAS les outils complets ni la réalisation — pour les outils complets d'un
+  /// trek, il faut l'acheter (comme le gratuit) ».
+  bool get isPlayable => this == TrailAccess.owned;
 
   /// Faut-il afficher la pub pour ce niveau ? (source unique #99404)
   ///
-  /// Pub UNIQUEMENT en [free]. [subscriber] et [owned] sont sans-pub.
+  /// Pub UNIQUEMENT en [free]. [subscriber] et [owned] sont sans-pub — c'est
+  /// ce que l'abo light donne, et c'est tout ce qu'il donne.
   bool get showAds => this == TrailAccess.free;
 }
+
+/// Issue d'un versement de la CAGNOTTE de l'abonné (modèle éco §2, A5).
+enum SubscriberAllowanceOutcome {
+  /// Aucun abonnement actif : rien à verser.
+  notSubscriber,
+
+  /// Abonnement actif, mais le MONTANT de la cagnotte n'est pas décidé
+  /// ([kSubscriberStepsAllowance] vaut `null`) → rien versé, décision attendue.
+  pendingDecision,
+
+  /// La cagnotte de la période courante a déjà été versée (anti double-crédit).
+  alreadyGranted,
+
+  /// Cagnotte versée au compte-étapes.
+  granted,
+}
+
+/// Ce qu'une demande de restauration d'achats a réellement pu faire.
+enum PurchaseRestoreStatus {
+  /// Le store a été sollicité : les achats restaurés arriveront par la boucle
+  /// de complétion (asynchrone).
+  requested,
+
+  /// L'achat in-app est indisponible sur cet appareil (ou kill-switch fermé) :
+  /// aucune restauration possible, et on le DIT.
+  storeUnavailable,
+}
+
+/// Résultat d'une restauration d'achats (ce qui a été sollicité, ce qui est
+/// redescendu). Sert à ne JAMAIS laisser le bouton « Restaurer » muet.
+class PurchaseRestoreOutcome {
+  const PurchaseRestoreOutcome({
+    required this.status,
+    this.itemsRestored = 0,
+  });
+
+  /// Ce que la demande a pu faire.
+  final PurchaseRestoreStatus status;
+
+  /// Nombre de droits redescendus de la sauvegarde (0 si aucune sauvegarde).
+  final int itemsRestored;
+
+  @override
+  String toString() => 'PurchaseRestoreOutcome($status, $itemsRestored)';
+}
+
+/// MONTANT DE LA CAGNOTTE DE L'ABONNÉ — **DÉCISION MANQUANTE (tâche 594, A5)**.
+///
+/// Le modèle éco du 08/09 dit que l'abo light donne « sans pub partout + une
+/// **cagnotte** d'étapes ». Le nombre d'étapes et la périodicité ne sont
+/// chiffrés NULLE PART : ni dans `MODELE_ECO.md`, ni dans le code (recherche
+/// `cagnotte`, `monthlyCredit`, `periodicCredit`, `subscriberCredit` : zéro
+/// résultat, constat de l'inventaire 593 §M4).
+///
+/// Un chiffre inventé dans un modèle économique est une faute, pas un défaut :
+/// le MÉCANISME est implémenté ([MonetizationService.grantSubscriberAllowance])
+/// et la VALEUR reste ici, en un seul point nommé, à `null` = **non décidé**.
+/// Tant qu'elle vaut `null`, aucune étape n'est versée et l'appel le signale
+/// ([SubscriberAllowanceOutcome.pendingDecision]).
+///
+/// Poser la décision = remplacer `null` par un nombre d'étapes. Rien d'autre.
+const int? kSubscriberStepsAllowance = null;
+
+/// Clé prefs : début de la période de cagnotte déjà versée (ISO-8601).
+const kSubscriberAllowanceGrantedAtPrefsKey =
+    'monetization.subscriberAllowanceGrantedAt';
+
+/// Nombre de PHASES du plan d'entraînement réellement jouables en démo bridée.
+///
+/// Modèle éco §2 : en gratuit, « SAC À DOS + PRÉPA PHYSIQUE jouables *pour de
+/// faux* (version bridée) ». Les phases au-delà restent VISIBLES et GRISÉES,
+/// jamais cachées. Point de réglage unique du bridage de la prépa physique.
+const int kDemoTrainingPhasesPlayable = 1;
+
+/// Nombre de CATÉGORIES du sac réellement jouables en démo bridée.
+///
+/// Même règle que [kDemoTrainingPhasesPlayable], côté sac à dos : les autres
+/// catégories restent visibles, grisées et verrouillées. Avant la tâche 594 le
+/// sac n'avait AUCUN bridage — il était intégralement gratuit et complet,
+/// contraire à la décision qui exige l'achat du trek (inventaire 593 §M7c).
+const int kDemoChecklistCategoriesPlayable = 2;
 
 /// Issue d'un achat de trek via [MonetizationService.buyTrail] (spec §2.5).
 ///
@@ -233,6 +322,22 @@ class TrailFeatures {
 
   /// Accès à la préparation du trek
   final bool hasPreparation;
+
+  /// Copie en changeant l'affichage de la pub (l'abonné light garde la démo
+  /// bridée mais n'a PAS de pub — modèle éco §2 + règle d'or #99404).
+  TrailFeatures withAds(bool showAds) {
+    if (showAds == hasAds) return this;
+    return TrailFeatures(
+      hasAds: showAds,
+      isDemo: isDemo,
+      hasGpsTracking: hasGpsTracking,
+      hasJournal: hasJournal,
+      hasDiploma: hasDiploma,
+      hasGoodies: hasGoodies,
+      freeFollowerSlots: freeFollowerSlots,
+      hasPreparation: hasPreparation,
+    );
+  }
 }
 
 /// Service de monétisation compte-étapes (StepWays LOT 1, ST4 — le CŒUR).
@@ -408,6 +513,29 @@ class MonetizationService {
     }
     if (await isSubscriberActive()) return TrailAccess.subscriber;
     return TrailAccess.free;
+  }
+
+  /// LE DROIT DE **RÉALISER** LE TREK [trailId] (tâche 594, A1).
+  ///
+  /// SOURCE UNIQUE du verrou de réalisation. Vrai UNIQUEMENT pour un trek
+  /// acheté (ou vitrine) : `accessFor == owned`.
+  ///
+  /// CE QUI MANQUAIT. Le modèle éco réserve la réalisation au trek acheté
+  /// (§2, « Trek acheté : outils COMPLETS … + réalisation »). Le code ne la
+  /// verrouillait nulle part : « Démarrer la randonnée » n'avait qu'une
+  /// condition de PRÉPARATION (itinéraire + date + programme), et le
+  /// démarrage de session n'interrogeait NI ce service NI les droits d'achat.
+  /// N'importe qui démarrait, enregistrait et terminait le parcours entier
+  /// sans payer — la contradiction la plus coûteuse de l'inventaire 593 (§M2),
+  /// et la seule atteignable en trois gestes depuis l'accueil.
+  ///
+  /// L'ABONNÉ N'EST PAS CONCERNÉ : l'abo light ne débloque pas la réalisation
+  /// (arbitrage du 08/09, qui prime sur #99405). Il faut acheter le trek.
+  ///
+  /// HORS-LIGNE : dérive des droits Drift LOCAUX, aucun appel réseau — un
+  /// payeur n'est jamais bloqué faute de réseau sur le sentier.
+  Future<bool> canRealizeTrail(String trailId) async {
+    return (await accessFor(trailId)) == TrailAccess.owned;
   }
 
   /// Nombre d'étapes déjà acquises pour [trailId] (base du non-repaiement).
@@ -597,14 +725,42 @@ class MonetizationService {
 
   /// Vrai si un abonnement sans-pub est ACTIF (source 'subscription' non expirée).
   ///
-  /// L'abo pose `expiresAt = null` tant qu'actif (#99404) ; une valeur non nulle
-  /// dans le passé = expiré.
+  /// **UNE ÉCHÉANCE EST DÉSORMAIS OBLIGATOIRE** (tâche 594, A2b). Une ligne
+  /// d'abo sans `expiresAt` n'est plus acceptée : c'était exactement le
+  /// « à vie » que la règle d'or #99404 interdit (« jamais à vie, toujours lié
+  /// à un état actif »). L'abo était posé avec `expiresAt = null`, rien ne
+  /// l'expirait jamais, `PurchaseStatus.canceled` ne faisait que journaliser,
+  /// et le DAO écrivait noir sur blanc que ces lignes n'étaient jamais purgées
+  /// (inventaire 593 §M5). Une fois posé, le sans-pub était acquis pour
+  /// toujours.
+  ///
+  /// L'échéance est repoussée à chaque confirmation du store (achat initial et
+  /// renouvellement) par [onSubscriptionValidated] ; elle est révoquée par
+  /// [onSubscriptionCanceled]. Sans renouvellement, elle tombe d'elle-même.
   Future<bool> isSubscriberActive() async {
     final now = _now();
     final states = await _noAdsDao.getAll();
     return states.any((s) =>
         s.source == 'subscription' &&
-        (s.expiresAt == null || s.expiresAt!.isAfter(now)));
+        s.expiresAt != null &&
+        s.expiresAt!.isAfter(now));
+  }
+
+  /// Échéance courante du sans-pub d'abonnement (null si aucun abo actif).
+  ///
+  /// Sert à l'écran d'abonnement : on affiche jusqu'à QUAND l'état est acquis,
+  /// plutôt qu'un « actif » sans horizon.
+  Future<DateTime?> subscriptionExpiresAt() async {
+    final now = _now();
+    final actifs = (await _noAdsDao.getAll())
+        .where((s) =>
+            s.source == 'subscription' &&
+            s.expiresAt != null &&
+            s.expiresAt!.isAfter(now))
+        .map((s) => s.expiresAt!)
+        .toList();
+    if (actifs.isEmpty) return null;
+    return actifs.reduce((a, b) => a.isAfter(b) ? a : b);
   }
 
   /// Lance la souscription à l'abonnement sans-pub (achat store).
@@ -613,23 +769,81 @@ class MonetizationService {
   /// boucle de complétion. Retourne true si initié (false en stub).
   Future<bool> subscribe() => _iap.buyNoAdsSubscription();
 
+  /// Vrai si l'achat in-app est réellement proposé (kill-switch ouvert).
+  ///
+  /// L'UI en a besoin pour ne PAS promettre un paiement qui n'aura pas lieu :
+  /// un bouton qui ne produit rien est un mensonge (règle du LOT X).
+  bool get purchaseEnabled => _iap.purchaseEnabled;
+
   /// Callback à appeler quand un abonnement est VALIDÉ (store/backend).
   ///
-  /// Pose une source sans-pub 'subscription' (expiresAt null tant qu'actif) et
-  /// resynchronise le cache [FeatureFlags]. Idempotent au sens métier : plusieurs
-  /// abos actifs restent équivalents à « sans-pub actif ».
+  /// Pose (ou REMPLACE) l'unique source sans-pub 'subscription', avec une
+  /// échéance à `now + `[kSubscriptionNoAdsWindow] — jamais `null`. Un
+  /// abonnement est un ÉTAT, pas une collection de lignes : chaque
+  /// confirmation remplace la précédente au lieu de s'empiler.
   Future<void> onSubscriptionValidated() async {
     final now = _now();
+    await _noAdsDao.deleteBySource('subscription');
     await _noAdsDao.insertState(
       NoAdsStateCompanion.insert(
         source: 'subscription',
         startedAt: now,
         updatedAt: now,
-        expiresAt: const Value(null),
+        expiresAt: Value(now.add(kSubscriptionNoAdsWindow)),
       ),
     );
     await _syncFeatureFlags();
-    _log.i('[Monetization] Abo sans-pub validé');
+    _log.i('[Monetization] Abo sans-pub validé jusqu au '
+        '${now.add(kSubscriptionNoAdsWindow)}');
+  }
+
+  /// Callback à appeler quand l'abonnement est ANNULÉ / expiré côté store.
+  ///
+  /// Révoque immédiatement la source sans-pub 'subscription'. Avant la tâche
+  /// 594, `PurchaseStatus.canceled` ne faisait que journaliser : l'annulation
+  /// ne retirait rien.
+  Future<void> onSubscriptionCanceled() async {
+    final supprimees = await _noAdsDao.deleteBySource('subscription');
+    if (supprimees > 0) {
+      _log.i('[Monetization] Abo sans-pub révoqué ($supprimees source(s))');
+    }
+  }
+
+  // --- Cagnotte de l'abonné (modèle éco §2 — MONTANT NON DÉCIDÉ) -----------
+
+  /// Verse la CAGNOTTE d'étapes de l'abonné pour la période courante (A5).
+  ///
+  /// Mécanisme complet : on ne verse qu'à un abonné ACTIF, une seule fois par
+  /// période (bornée par l'échéance de l'abo, clé prefs
+  /// [kSubscriberAllowanceGrantedAtPrefsKey] — une cagnotte versée deux fois
+  /// dans la même période serait un crédit gratuit).
+  ///
+  /// **LE MONTANT N'EST PAS DÉCIDÉ** : tant que [kSubscriberStepsAllowance]
+  /// vaut `null`, rien n'est versé et l'appel retourne
+  /// [SubscriberAllowanceOutcome.pendingDecision]. Voir la documentation de
+  /// cette constante : la valeur attend une décision de Christophe.
+  Future<SubscriberAllowanceOutcome> grantSubscriberAllowance() async {
+    if (!await isSubscriberActive()) {
+      return SubscriberAllowanceOutcome.notSubscriber;
+    }
+    const montant = kSubscriberStepsAllowance;
+    if (montant == null || montant <= 0) {
+      _log.w('[Monetization] Cagnotte abonné : montant NON DÉCIDÉ '
+          '(kSubscriberStepsAllowance == null) -> rien versé');
+      return SubscriberAllowanceOutcome.pendingDecision;
+    }
+    final prefs = await _preferences;
+    final periode = (await subscriptionExpiresAt())?.toIso8601String();
+    if (periode != null &&
+        prefs.getString(kSubscriberAllowanceGrantedAtPrefsKey) == periode) {
+      return SubscriberAllowanceOutcome.alreadyGranted;
+    }
+    await _wallet.credit(montant);
+    if (periode != null) {
+      await prefs.setString(kSubscriberAllowanceGrantedAtPrefsKey, periode);
+    }
+    _log.i('[Monetization] Cagnotte abonné : +$montant étapes');
+    return SubscriberAllowanceOutcome.granted;
   }
 
   // --- Reward sans-pub (24 h) ----------------------------------------------
@@ -732,12 +946,32 @@ class MonetizationService {
 
   // --- Restauration / reset -------------------------------------------------
 
-  /// Restaure les achats passés (abo) via le store.
+  /// Restaure les achats passés (abo, recharges) via le store, ET DIT CE QU'ELLE
+  /// A PU FAIRE (tâche 594, A3).
   ///
-  /// Délègue au [WalletIapService] (`restorePurchases`) ; les événements
-  /// arrivent en `restored` sur la boucle de complétion. No-op en mode stub.
-  Future<void> restorePurchases() async {
+  /// Délègue au [WalletIapService] ; les événements arrivent en `restored` sur
+  /// la boucle de complétion. Quand l'achat in-app est indisponible (mode stub,
+  /// kill-switch fermé, appareil sans store), on retourne
+  /// [PurchaseRestoreStatus.storeUnavailable] au lieu de ne rien faire en
+  /// silence — l'UI a de quoi expliquer le refus.
+  ///
+  /// CE QUE LA RESTAURATION NE RAMÈNE PAS ENCORE : les droits de trek achetés
+  /// avec le compte-étapes ne sont PAS des produits store, ils vivent dans la
+  /// base locale. Leur sauvegarde hors de l'appareil existe
+  /// (`CloudSyncService.syncWallet` / `restoreWallet`) mais exige une identité
+  /// de compte et un Firebase réel — verrous hors de ce lot. L'UI le dit.
+  Future<PurchaseRestoreOutcome> restorePurchases() async {
+    if (!await _iap.isAvailable()) {
+      _log.w('[Monetization] Restauration demandée mais achat in-app '
+          'indisponible');
+      return const PurchaseRestoreOutcome(
+        status: PurchaseRestoreStatus.storeUnavailable,
+      );
+    }
     await _iap.restorePurchases();
+    return const PurchaseRestoreOutcome(
+      status: PurchaseRestoreStatus.requested,
+    );
   }
 
   /// Réinitialise TOUT l'état monétisation (tests / support).
@@ -798,11 +1032,17 @@ class MonetizationService {
     );
   }
 
-  /// Features applicables pour un trek : premium si JOUABLE (owned/abo/vitrine),
-  /// sinon gratuit (démo + pub). Décision dérivée d'[accessFor] (source unique).
+  /// Features applicables pour un trek : premium si JOUABLE (trek acheté ou
+  /// vitrine), sinon démo bridée. Décision dérivée d'[accessFor].
+  ///
+  /// LA PUB EST DÉCIDÉE À PART (règle d'or #99404) : l'abonné light reste en
+  /// démo bridée — il n'a pas acheté le trek — mais il n'a PAS de pub. Les deux
+  /// axes viennent de la même source ([TrailAccess.isPlayable] et
+  /// [TrailAccess.showAds]), ils ne sont simplement plus confondus.
   Future<TrailFeatures> featuresForTrail(String trailId) async {
     final access = await accessFor(trailId);
-    return access.isPlayable ? getPremiumFeatures() : getTrialFeatures();
+    final base = access.isPlayable ? getPremiumFeatures() : getTrialFeatures();
+    return base.withAds(access.showAds);
   }
 
   /// Vrai si le trek est en mode démo (non jouable).

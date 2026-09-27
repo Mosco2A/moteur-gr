@@ -89,7 +89,16 @@ void main() {
   }
 
   group('TrainingScreen — verrou premium', () {
-    testWidgets('verrouille : teaser + bouton Debloquer, pas de seance cochable',
+    // RETOURNE PAR LA TACHE 594 (A2c) — LE SENS ETAIT INVERSE.
+    //
+    // Ce test verrouillait le contraire de la decision : il exigeait ZERO
+    // seance cochable en demo. Le modele eco du 08/09, source de verite unique,
+    // demande la prepa physique « jouable *pour de faux* (version bridee) ».
+    // Flouter n'est pas brider. Ce qui reste verrouille ici, c'est ce qui doit
+    // l'etre : les phases AU-DELA du bridage, visibles et grisees, et le
+    // chemin d'achat toujours present. Le detail est dans
+    // `test/comportement/demo_bridee_594_test.dart`.
+    testWidgets('demo bridee : jouable, borne, et on dit ou acheter',
         (tester) async {
       await tester.pumpWidget(wrap(isDemo: true));
       await tester.pumpAndSettle();
@@ -98,8 +107,11 @@ void main() {
       expect(find.text(t.training.title), findsWidgets);
       expect(find.text(t.training.unlock), findsOneWidget);
       expect(find.text(t.training.paywallTitle), findsOneWidget);
-      // Le detail (seances cochables) reste masque en verrouille.
-      expect(find.byType(CheckboxListTile), findsNothing);
+      // La part BRIDEE est jouable (la premiere phase, ses seances cochables).
+      expect(find.byType(CheckboxListTile), findsWidgets);
+      // Et la part payante reste verrouillee, visible, jamais cachee.
+      expect(find.byKey(const ValueKey('training-demo-locked-endurance')),
+          findsOneWidget);
     });
 
     testWidgets('debloque : plan cochable + objectif + progression',

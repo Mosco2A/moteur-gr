@@ -6,6 +6,7 @@ import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
+import '../../../core/services/monetization_service.dart';
 import '../../map/providers/track_position_provider.dart';
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
@@ -116,6 +117,10 @@ enum StartOutcome {
 
   /// Un autre trek etait en cours et l'utilisateur a ANNULE -> non demarre.
   cancelled,
+
+  /// LE TREK N'EST PAS ACHETE : la realisation lui est reservee (tache 594,
+  /// A1). L'UI doit DIRE pourquoi et OU acheter — jamais un bouton muet.
+  purchaseRequired,
 }
 
 /// Provider du TrekRecorder (E2.8a).
@@ -330,6 +335,30 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     String trailId, {
     required ActiveTrekConflictResolver resolve,
   }) async {
+    // 0. LE DROIT DE REALISER, AVANT TOUT LE RESTE (tache 594, A1).
+    //
+    // CE QUI MANQUAIT : rien, sur tout ce chemin, ne regardait si le trek
+    // avait ete achete. La seule condition du bouton « Demarrer la randonnee »
+    // portait sur la PREPARATION (itineraire + date + programme) et cette
+    // garde-ci ne verifiait que l'UNICITE de session. Un utilisateur gratuit
+    // demarrait, enregistrait et terminait le parcours entier — alors que le
+    // modele eco reserve la realisation au trek achete. C'est le trou le plus
+    // couteux de l'inventaire 593 (§M2), et le seul atteignable en trois
+    // gestes depuis l'accueil.
+    //
+    // ON REFUSE AVANT D'OUVRIR QUOI QUE CE SOIT : aucune session creee, aucun
+    // conflit resolu, aucune capture GPS demarree. Le refus est TYPE
+    // ([StartOutcome.purchaseRequired]) pour que l'UI dise pourquoi et ou
+    // acheter — un refus muet serait un geste mort (regle du LOT X).
+    //
+    // L'ABONNE EST REFUSE LUI AUSSI : l'abo light ne debloque pas la
+    // realisation (arbitrage du 08/09, qui prime sur #99405). La vitrine
+    // (parite GR20) passe, elle est resolue `owned` par `accessFor`.
+    final monetization = ref.read(monetizationServiceProvider);
+    if (!await monetization.canRealizeTrail(trailId)) {
+      return StartOutcome.purchaseRequired;
+    }
+
     final dao = ref.read(databaseProvider).trekSessionsDao;
     final ongoing = await dao.findActiveSessions();
 

@@ -93,6 +93,19 @@ class PaywallSheet extends ConsumerWidget {
             // largeur (theme = minimumSize infinie, le bouton remplissait deja
             // la Column du sheet). Le libelle bascule prix/CTA selon le nombre
             // d'etapes (iso). key preservee.
+            // LE BOUTON DIT CE QU'IL A FAIT (tache 594, A3).
+            //
+            // CE QU'IL FAISAIT : il appelait `buyTrail`, JETAIT le resultat et
+            // fermait la feuille — succes, echec, hors-ligne, complement non
+            // confirme, tout se terminait de la meme facon : la feuille se
+            // referme, rien n'a change, et l'utilisateur ne sait pas pourquoi.
+            // La boutique de packs de la MEME application dit son refus depuis
+            // le LOT X : deux honnetetes dans un seul produit.
+            //
+            // CE QU'IL FAIT : il nomme chacune des quatre issues, et il ne
+            // ferme la feuille QUE sur un succes — un echec laisse le chemin
+            // d'achat ouvert plutot que de renvoyer l'utilisateur d'ou il
+            // vient sans explication.
             AppButton(
               key: const Key('paywall-buy-button'),
               icon: Icons.lock_open,
@@ -102,10 +115,18 @@ class PaywallSheet extends ConsumerWidget {
                     )
                   : t.monetization.buyCta,
               onPressed: () async {
-                await ref
+                final messenger = ScaffoldMessenger.of(context);
+                final outcome = await ref
                     .read(monetizationServiceProvider)
                     .buyTrail(trailId, totalStages: totalStages);
-                if (context.mounted) Navigator.of(context).pop();
+                if (!context.mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(content: Text(_messagePour(outcome))),
+                );
+                if (outcome.isOwned ||
+                    outcome.status == PurchaseStatusResult.alreadyOwned) {
+                  Navigator.of(context).pop();
+                }
               },
             ),
             // StepWays L6/A6 : voie sans-pub 24 h par pub RECOMPENSEE (rewarded).
@@ -117,6 +138,23 @@ class PaywallSheet extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Traduit l'issue d'un achat en une phrase que l'utilisateur peut lire.
+///
+/// Les quatre issues de [PurchaseStatusResult] sont distinctes et se disent
+/// differemment : « c'est fait », « c'etait deja fait », « il faut du reseau »,
+/// « le paiement n'a pas abouti ». Les deux dernieres precisent que RIEN n'a
+/// ete debite — le service fait bien le rollback, il fallait encore le dire.
+String _messagePour(PurchaseOutcome outcome) {
+  final m = t.monetization;
+  return switch (outcome.status) {
+    PurchaseStatusResult.owned => m.buyOutcomeOwned,
+    PurchaseStatusResult.alreadyOwned => m.buyOutcomeAlreadyOwned,
+    PurchaseStatusResult.offlineComplementRequired =>
+      m.buyOutcomeOffline(steps: outcome.complementSteps),
+    PurchaseStatusResult.complementFailed => m.buyOutcomeFailed,
+  };
 }
 
 /// CTA « Regarder une pub → sans pub 24 h » (rewarded, StepWays L6/A6).

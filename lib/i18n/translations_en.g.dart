@@ -467,6 +467,10 @@ class _Translations$checklist$en extends Translations$checklist$fr {
 	@override String get seasonalAdd => 'Add';
 	@override String get seasonalAdded => 'Added';
 	@override String seasonalWeight({required Object g}) => '${g} g';
+	@override String get demoBridledTitle => 'Trial version';
+	@override String get demoBridledBody => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.';
+	@override String get demoLockedCategory => 'Unlock the hike for this category';
+	@override String get demoUnlockCta => 'Unlock the hike';
 }
 
 // Path: journal
@@ -917,6 +921,33 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get walletTitle => 'Step account';
 	@override String get walletSubtitle => 'Your steps unlock hikes';
 	@override String get walletUnit => 'steps';
+	@override String get storeUnavailable => 'Payment is not available right now.';
+	@override String get restoreUnavailable => 'Cannot restore: payment is not available right now.';
+	@override String get restoreRequested => 'Restore requested. Your purchases will reappear shortly.';
+	@override String get restoreCta => 'Restore my purchases';
+	@override String get restoreWhatItCovers => 'Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.';
+	@override String get rechargeTitle => 'Top up my step account';
+	@override String get rechargeSubtitle => 'Steps unlock hikes. They are yours for life.';
+	@override String get rechargeBalance => 'Current balance';
+	@override String packSteps({required Object steps}) => '${steps} steps';
+	@override String packPrice({required Object price}) => '€${price}';
+	@override String get rechargeCta => 'Top up';
+	@override String get subscriptionTitle => 'Ad-free subscription';
+	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
+	@override String get subscriptionIncludesNoAds => 'No ads, across the whole app';
+	@override String get subscriptionIncludesAllowance => 'A step allowance every period';
+	@override String get subscriptionExcludes => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.';
+	@override String get subscriptionCta => 'Subscribe';
+	@override String get subscriptionActive => 'Subscription active';
+	@override String subscriptionActiveUntil({required Object date}) => 'Active until ${date}';
+	@override String get subscriptionInactive => 'No active subscription';
+	@override String get subscriptionAllowancePending => 'The allowance amount has not been set yet.';
+	@override String get realizationLockedTitle => 'This hike is not unlocked';
+	@override String get realizationLockedBody => 'Hiking a route requires unlocking it first. Preparing stays free.';
+	@override String get buyOutcomeOwned => 'Hike unlocked. Enjoy the trail!';
+	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
+	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
+	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 }
 
 // Path: signalement
@@ -991,6 +1022,9 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get noDateWhy => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.';
 	@override String get tooShortTitle => 'No preparation offered';
 	@override String tooShortWhy({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.';
+	@override String get demoBridledTitle => 'Trial version';
+	@override String get demoBridledBody => 'The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.';
+	@override String get demoLockedPhase => 'Unlock the hike to see the sessions';
 }
 
 // Path: eta
@@ -4502,6 +4536,10 @@ extension on TranslationsEn {
 			'checklist.seasonalAdd' => 'Add',
 			'checklist.seasonalAdded' => 'Added',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
+			'checklist.demoBridledTitle' => 'Trial version',
+			'checklist.demoBridledBody' => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.',
+			'checklist.demoLockedCategory' => 'Unlock the hike for this category',
+			'checklist.demoUnlockCta' => 'Unlock the hike',
 			'journal.title' => 'Trek journal',
 			'journal.empty' => 'Your journal is empty',
 			'journal.emptySubtitle' => 'Write down your trek impressions and memories',
@@ -4932,6 +4970,33 @@ extension on TranslationsEn {
 			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
+			'monetization.storeUnavailable' => 'Payment is not available right now.',
+			'monetization.restoreUnavailable' => 'Cannot restore: payment is not available right now.',
+			'monetization.restoreRequested' => 'Restore requested. Your purchases will reappear shortly.',
+			'monetization.restoreCta' => 'Restore my purchases',
+			'monetization.restoreWhatItCovers' => 'Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.',
+			'monetization.rechargeTitle' => 'Top up my step account',
+			'monetization.rechargeSubtitle' => 'Steps unlock hikes. They are yours for life.',
+			'monetization.rechargeBalance' => 'Current balance',
+			'monetization.packSteps' => ({required Object steps}) => '${steps} steps',
+			'monetization.packPrice' => ({required Object price}) => '€${price}',
+			'monetization.rechargeCta' => 'Top up',
+			'monetization.subscriptionTitle' => 'Ad-free subscription',
+			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
+			'monetization.subscriptionIncludesNoAds' => 'No ads, across the whole app',
+			'monetization.subscriptionIncludesAllowance' => 'A step allowance every period',
+			'monetization.subscriptionExcludes' => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.',
+			'monetization.subscriptionCta' => 'Subscribe',
+			'monetization.subscriptionActive' => 'Subscription active',
+			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Active until ${date}',
+			'monetization.subscriptionInactive' => 'No active subscription',
+			'monetization.subscriptionAllowancePending' => 'The allowance amount has not been set yet.',
+			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
+			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
+			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
+			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
+			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
+			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -4957,6 +5022,8 @@ extension on TranslationsEn {
 			'hebergement.facilitatorNote' => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Round-trip detour: ${km} km',
 			'hebergement.openSite' => 'View website',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'Could not open this link on this device.',
 			'hebergement.empty' => 'No accommodation listed nearby for now.',
 			'hebergement.types.refuge' => 'Mountain hut',
@@ -4988,8 +5055,6 @@ extension on TranslationsEn {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Weeks ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Key objective',
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
 			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
@@ -4999,6 +5064,9 @@ extension on TranslationsEn {
 			'training.noDateWhy' => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.',
 			'training.tooShortTitle' => 'No preparation offered',
 			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.',
+			'training.demoBridledTitle' => 'Trial version',
+			'training.demoBridledBody' => 'The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.',
+			'training.demoLockedPhase' => 'Unlock the hike to see the sessions',
 			'eta.title' => 'Estimated time',
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
@@ -5468,6 +5536,8 @@ extension on TranslationsEn {
 			'nuitees.summary.done' => '{count} done',
 			'nuitees.summary.allBooked' => 'ALL NIGHTS BOOKED',
 			'nuitees.empty.title' => 'Set up your itinerary first',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.empty.message' => 'Choose your route and duration to plan your nights.',
 			'nuitees.empty.action' => 'SET UP ITINERARY',
 			'transport.title' => 'Transport',
@@ -5502,8 +5572,6 @@ extension on TranslationsEn {
 			'fireRisk.level.none' => 'None',
 			'fireRisk.level.low' => 'Low',
 			'fireRisk.level.moderate' => 'Moderate',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'High',
 			'fireRisk.level.veryHigh' => 'Very high',
 			'fireRisk.level.extreme' => 'Extreme',

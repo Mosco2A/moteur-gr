@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
@@ -12,6 +14,7 @@ import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';
 import '../widgets/checklist_category_section.dart';
+import '../widgets/checklist_demo_lock.dart';
 import '../widgets/checklist_descent_alert.dart';
 import '../widgets/checklist_preparation_section.dart';
 import '../widgets/checklist_recommendation_banner.dart';
@@ -82,6 +85,22 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     final state = ref.watch(checklistProvider);
     final shoppingCount = state.shoppingListCount;
 
+    // LE SAC EST BRIDE EN DEMO (tache 594, A2c). Il ne l'etait PAS DU TOUT :
+    // recherche `isDemo|PurchaseGate|paywall|demo` dans `lib/features/checklist/`
+    // = zero occurrence de monetisation (inventaire 593 §M7c). Le sac s'ouvrait
+    // entier, gratuit et complet, alors que le modele eco en fait un outil du
+    // trek ACHETE, jouable « pour de faux » en version bridee tant qu'on n'a
+    // pas achete.
+    //
+    // TANT QUE LE DROIT N'EST PAS CONNU, ON NE BRIDE PAS (`?? false`) : meme
+    // convention que le bandeau de demo existant — pas de clignotement du
+    // verrou pendant l'hydratation des droits. Le bridage est un affichage ;
+    // le verrou qui porte l'argent est celui de la REALISATION, et il vit dans
+    // le domaine, pas ici.
+    final trailId = ref.watch(trailIdProvider);
+    final totalStages = ref.watch(trailConfigProvider).totalStages;
+    final isDemo = ref.watch(isDemoModeProvider(trailId)).value ?? false;
+
     return Scaffold(
       // Ph5 (L6b) : AppHeader universel + actions conservees (i / liste de
       // courses avec badge / reinitialiser) — parite ecran, aucune action perdue.
@@ -137,10 +156,15 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
+            // --- BANDEAU D'ESSAI (tache 594, A2c) : le sac est BRIDE en demo.
+            if (isDemo) const ChecklistDemoBanner(),
             // --- Section SAC ADAPTATIF (LOT 5, B) : suggestions saison + trek,
             // ajoutables au sac (comptees dans la jauge). ADDITIVE : n'altere pas
             // la liste de base (parite GR20 intacte). Masquee si rien a adapter.
-            const ChecklistSeasonalSection(),
+            //
+            // MASQUEE EN DEMO : « liste materiel adaptee trek + saison » est
+            // precisement ce que le modele eco (§7) reserve au trek ACHETE.
+            if (!isDemo) const ChecklistSeasonalSection(),
             // --- Bandeau poids total + indicateur (pleine largeur, GR20) ---
             ChecklistWeightBanner(
               checkedWeightGrams: state.checkedWeightGrams,
@@ -177,24 +201,34 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final category in checklistCategories)
-                    ChecklistCategorySection(
-                      categoryKey: category,
-                      categoryName: _resolveCategoryName(category),
-                      items: state.items
-                          .where((i) => i.template.category == category)
-                          .toList(),
-                      onToggle: _handleToggle,
-                      onEditItem: _showEditItemDialog,
-                      onDeleteItem: _showDeleteItemDialog,
-                      onAddItem: () => _showAddItemDialog(category),
-                      onQuantityChanged: (itemId, newQty) => ref
-                          .read(checklistProvider.notifier)
-                          .setItemQuantity(itemId, newQty),
-                      onToggleShoppingList: (itemId) => ref
-                          .read(checklistProvider.notifier)
-                          .toggleShoppingList(itemId),
-                    ),
+                  for (final (index, category)
+                      in checklistCategories.indexed)
+                    if (!isDemo || index < kDemoChecklistCategoriesPlayable)
+                      ChecklistCategorySection(
+                        key: ValueKey('checklist-category-$category'),
+                        categoryKey: category,
+                        categoryName: _resolveCategoryName(category),
+                        items: state.items
+                            .where((i) => i.template.category == category)
+                            .toList(),
+                        onToggle: _handleToggle,
+                        onEditItem: _showEditItemDialog,
+                        onDeleteItem: _showDeleteItemDialog,
+                        onAddItem: () => _showAddItemDialog(category),
+                        onQuantityChanged: (itemId, newQty) => ref
+                            .read(checklistProvider.notifier)
+                            .setItemQuantity(itemId, newQty),
+                        onToggleShoppingList: (itemId) => ref
+                            .read(checklistProvider.notifier)
+                            .toggleShoppingList(itemId),
+                      )
+                    else
+                      ChecklistLockedCategory(
+                        categoryKey: category,
+                        categoryName: _resolveCategoryName(category),
+                        trailId: trailId,
+                        totalStages: totalStages,
+                      ),
                   // --- Preparation du sac ---
                   ChecklistPreparationSection(items: state.items),
                   // --- Checklist avant depart ---

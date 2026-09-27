@@ -610,7 +610,11 @@
     },
     "seasonalAdd": "Ajouter",
     "seasonalAdded": "Ajouté",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Version d'essai",
+    "demoBridledBody": "Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s'ouvre avec la randonnée.",
+    "demoLockedCategory": "Débloquez la randonnée pour cette catégorie",
+    "demoUnlockCta": "Débloquer la randonnée"
   },
   "journal": {
     "title": "Journal de randonnée",
@@ -1120,7 +1124,34 @@
     "rewardedUnavailable": "Aucune vidéo disponible pour le moment.",
     "walletTitle": "Compte-étapes",
     "walletSubtitle": "Vos étapes servent à débloquer les randonnées",
-    "walletUnit": "étapes"
+    "walletUnit": "étapes",
+    "storeUnavailable": "Le paiement n'est pas disponible pour le moment.",
+    "restoreUnavailable": "Restauration impossible : le paiement n'est pas disponible pour le moment.",
+    "restoreRequested": "Restauration demandée. Vos achats réapparaîtront dans un instant.",
+    "restoreCta": "Restaurer mes achats",
+    "restoreWhatItCovers": "La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.",
+    "rechargeTitle": "Recharger mon compte-étapes",
+    "rechargeSubtitle": "Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.",
+    "rechargeBalance": "Solde actuel",
+    "packSteps": "$steps étapes",
+    "packPrice": "$price €",
+    "rechargeCta": "Recharger",
+    "subscriptionTitle": "Abonnement sans publicité",
+    "subscriptionSubtitle": "Sans publicité partout, tant que l'abonnement est actif.",
+    "subscriptionIncludesNoAds": "Aucune publicité, sur toute l'application",
+    "subscriptionIncludesAllowance": "Une cagnotte d'étapes à chaque période",
+    "subscriptionExcludes": "L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.",
+    "subscriptionCta": "S'abonner",
+    "subscriptionActive": "Abonnement actif",
+    "subscriptionActiveUntil": "Actif jusqu'au $date",
+    "subscriptionInactive": "Aucun abonnement actif",
+    "subscriptionAllowancePending": "Le montant de la cagnotte n'est pas encore fixé.",
+    "realizationLockedTitle": "Cette randonnée n'est pas débloquée",
+    "realizationLockedBody": "Réaliser une randonnée demande de l'avoir débloquée. La préparation reste gratuite.",
+    "buyOutcomeOwned": "Randonnée débloquée. Bonne route !",
+    "buyOutcomeAlreadyOwned": "Cette randonnée est déjà débloquée.",
+    "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
+    "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité."
   },
   "signalement": {
     "title": "Signaler",
@@ -1203,7 +1234,10 @@
     "freqSourceNotice": "Les fréquences ne sont pas des chiffres maison : 3 séances d'endurance et 2 de renforcement par semaine, 2 jours de repos, d'après REI (Conditioning for Backpacking), Terres d'Aventure et les recommandations 2020 de l'OMS.",
     "noDateWhy": "Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s'affiche.",
     "tooShortTitle": "Aucune préparation proposée",
-    "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge."
+    "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.",
+    "demoBridledTitle": "Version d'essai",
+    "demoBridledBody": "La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s'ouvrent avec la randonnée.",
+    "demoLockedPhase": "Débloquez la randonnée pour voir les séances"
   },
   "eta": {
     "title": "Temps estimé",

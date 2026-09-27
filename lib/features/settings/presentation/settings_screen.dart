@@ -79,6 +79,14 @@ class SettingsScreen extends ConsumerWidget {
           _buildRecoverySection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
+          // --- Achats (V1 ARGENT, tache 594 A3) ---
+          // Les deux ecrans de paiement et la restauration se trouvent ICI,
+          // parce que c'est la que le randonneur cherche ce qui touche a son
+          // compte — et parce que les deux boutiques EXIGENT un chemin de
+          // restauration atteignable pour accepter une publication.
+          _buildPurchasesSection(context, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // --- Version ---
           _buildVersionSection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingXl),
@@ -478,6 +486,51 @@ class SettingsScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/recovery-code'),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section ACHATS : recharger le compte-etapes, s'abonner, restaurer.
+  ///
+  /// Trois portes qui n'existaient nulle part avant la tache 594 : la grille
+  /// des packs etait ecrite dans le code sans ecran, `subscribe()` n'avait
+  /// aucun appelant, et il n'y avait pas de bouton « Restaurer mes achats ».
+  Widget _buildPurchasesSection(
+    BuildContext context,
+    ThemeData theme,
+    Translations tr,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(
+          theme,
+          Icons.account_balance_wallet_outlined,
+          tr.monetization.walletTitle,
+        ),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              ListTile(
+                key: const ValueKey('reglages-recharge'),
+                leading: const Icon(Icons.add_circle_outline),
+                title: Text(tr.monetization.rechargeTitle),
+                subtitle: Text(tr.monetization.rechargeSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/wallet'),
+              ),
+              ListTile(
+                key: const ValueKey('reglages-abonnement'),
+                leading: const Icon(Icons.workspace_premium_outlined),
+                title: Text(tr.monetization.subscriptionTitle),
+                subtitle: Text(tr.monetization.subscriptionSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/subscription'),
+              ),
+            ],
           ),
         ),
       ],
