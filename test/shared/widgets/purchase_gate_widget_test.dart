@@ -13,6 +13,8 @@ import 'package:moteur_gr/shared/widgets/paywall_sheet.dart';
 import 'package:moteur_gr/shared/widgets/purchase_gate_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../structurel/regie_pub_absente.dart';
+
 /// Tests widget E4.17 / StepWays LOT 1 — purchase gate + ecran paywall.
 ///
 /// Verifie : bandeau demo en gratuit (free), contenu nu en jouable (owned),
@@ -20,6 +22,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// le trek quand le wallet couvre le prix.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // LE SEUL ROUGE QUE CE DEPOT PORTAIT, ET SA CAUSE EST TROUVEE (tache 595).
+  //
+  // Ce test echouait sur « A Timer is still pending even after the widget tree
+  // was disposed », un message qui n accuse rien et qu on a longtemps subi.
+  // La cause est la MEME que celle rencontree en branchant la banniere : la
+  // vitrine ([PaywallSheet]) observe `adsReadyProvider` pour savoir si elle peut
+  // proposer la video recompensee. Cela demarre l amorce du consentement
+  // publicitaire, qui appelle le SDK Google Mobile Ads. Dans un test, ce SDK n
+  // est branche a personne — et un canal muet ne rend pas `null`, il fait lever
+  // `MissingPluginException` a un endroit que le SDK n attrape pas : ni le
+  // callback de succes ni celui d echec ne sont appeles, et seul le garde-fou
+  // de SIX SECONDES de `AdsConsentService` rend la main. Six secondes de temps
+  // REEL, qu un test de widgets ne fait jamais s ecouler.
+  //
+  // L appareil de ce test declare donc honnetement qu il n a pas de regie
+  // publicitaire. Rien n est masque : ce que ce test verifie — le bandeau, la
+  // vitrine, l achat par le portefeuille — est intact, et la video recompensee
+  // ne s affiche simplement pas, ce qui est le comportement CORRECT sur un
+  // appareil sans regie.
+  setUp(brancherAucuneRegiePub);
 
   late AppDatabase db;
   late WalletStore wallet;

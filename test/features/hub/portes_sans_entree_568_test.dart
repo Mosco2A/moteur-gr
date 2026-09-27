@@ -14,6 +14,8 @@ import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
+import '../../structurel/regie_pub_absente.dart';
+
 /// Q4 (tache 568, LOT Q) — TROIS FONCTIONS ENTIERES SANS AUCUNE PORTE D ENTREE.
 ///
 /// LE CONSTAT, mesure sur 708b82c :
@@ -38,6 +40,15 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// la route des packs n'existait pas du tout.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // AUCUNE REGIE PUBLICITAIRE dans ce test (tache 595). L ecran monte ici
+  // porte desormais un emplacement de banniere : sans cette declaration, le
+  // test toucherait le SDK Google Mobile Ads, dont les canaux muets font
+  // pendre l amorce du consentement six secondes de temps reel (echec
+  // « Pending timers », sans rapport avec ce qui est verifie ici). La
+  // banniere a son propre test : test/comportement/pub_v1_595_test.dart.
+  setUp(brancherAucuneRegiePub);
+
 
   final String trailId = testTrailConfig.id;
 
