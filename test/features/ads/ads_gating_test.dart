@@ -10,6 +10,8 @@ import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
+import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart'
+    show latestTrekSessionProvider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Verifie le GATING de la banniere (source unique #99404 + consentement UMP).
@@ -67,9 +69,18 @@ void main() {
         monetizationServiceProvider.overrideWithValue(svc),
         monetizationReadyProvider.overrideWith((ref) async => svc),
         adsReadyProvider.overrideWith((ref) async => adsReady),
+        // AUCUNE RANDO EN COURS (tache 595). « EN MODE TREK JAMAIS » : la
+        // decision refuse toute publicite pendant une realisation, et elle
+        // repond « en rando » tant que la session persistee est INCONNUE (un
+        // doute se tranche du cote du randonneur, pas de la regie). Ce test
+        // parle de la regle sans-pub, pas du mode trek : il declare donc un
+        // monde au repos, et il LAISSE LA LECTURE ABOUTIR ci-dessous — sans
+        // quoi il mesurerait la fenetre d'amorce.
+        latestTrekSessionProvider.overrideWith((ref) async => null),
       ],
     );
     addTearDown(container.dispose);
+    await container.read(latestTrekSessionProvider.future);
     return container;
   }
 

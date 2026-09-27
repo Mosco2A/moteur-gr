@@ -183,14 +183,27 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // partout, par la meme source unique (#99404). Aucune regle n'est
       // recalculee ici.
       //
-      // PAS EN PHASE RANDO, ET CE N'EST PAS UNE COMMODITE. C'est la ou vit la
-      // pastille SOS ([SosButton] se masque lui-meme hors trek), et un bouton
-      // d'urgence ne se pose pas au-dessus d'une publicite : un doigt qui vise
-      // le secours ne doit jamais pouvoir ouvrir une regie. Le SOS ne porte
-      // AUCUNE publicite, nulle part — c'est la decision la mieux respectee du
-      // modele et elle le reste (test B5). Accessoirement, un trek en cours de
-      // realisation est un trek achete, donc sans pub de toute facon : la
-      // garde ne coute rien et elle ferme le cas ou les deux se croiseraient.
+      // PAS EN PHASE RANDO — ET CETTE LIGNE N'EST PAS CE QUI TIENT LA REGLE.
+      //
+      // « EN MODE TREK JAMAIS » (Chris, 27/09 10:31) vit dans la DECISION
+      // ([enModeTrekProvider], lu par `shouldShowBannerProvider`), donc sur
+      // tous les ecrans a la fois et pas seulement ici. Une regle enoncee
+      // « jamais » ne peut pas dependre d'une condition posee ecran par ecran :
+      // le prochain emplacement publicitaire ne l'heriterait pas.
+      //
+      // CE QUE CETTE LIGNE-CI TIENT, ET C'EST AUTRE CHOSE : LA GEOMETRIE. En
+      // phase rando, le bas de l'ecran appartient a la pastille SOS
+      // ([SosButton] se masque lui-meme hors trek). On n'y pose pas un
+      // emplacement publicitaire, meme un emplacement qui ne demandera rien : un
+      // doigt qui vise le secours ne doit jamais rencontrer une regie. Le SOS ne
+      // porte AUCUNE publicite, nulle part (test B5).
+      //
+      // CE QU'IL NE FAUT PAS CROIRE : que « un trek en cours de realisation est
+      // un trek achete, donc sans pub de toute facon ». C'est FAUX a cette
+      // heure — `TrekRecorder.start()` ne controle aucun droit, la realisation
+      // gratuite est encore ouverte, et c'est le lot 594 qui la ferme. La garde
+      // de la decision est donc aujourd'hui la SEULE qui tienne la regle pour un
+      // randonneur qui marche un trek qu'il n'a pas paye.
       bottomNavigationBar:
           showHike ? null : BannerAdSlot(trailId: trailId),
       body: SafeArea(

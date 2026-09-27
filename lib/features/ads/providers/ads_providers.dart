@@ -6,7 +6,10 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/services/monetization_service.dart';
+import '../../after/providers/adventure_recap_provider.dart'
+    show latestTrekSessionProvider;
 import '../../consent/providers/consent_ui_providers.dart';
+import '../../planning/providers/trek_edit_lock_provider.dart';
 import '../data/ads_consent_service.dart';
 import '../data/banner_ad_presenter.dart';
 import '../data/rewarded_ad_service.dart';
@@ -36,6 +39,39 @@ final rewardedAdServiceProvider = Provider<RewardedAdService>((ref) {
   final svc = RewardedAdService(enabled: ready);
   ref.onDispose(svc.dispose);
   return svc;
+});
+
+/// L'application est-elle EN MODE TREK — une réalisation en cours ?
+///
+/// LIT LA SOURCE QUI EXISTE DÉJÀ, n'en invente pas une quatrième.
+/// [trekEditLockProvider] agrège précisément les deux vues d'une rando en
+/// cours, et son en-tête le dit mot pour mot : « le trek est considéré DÉMARRÉ
+/// si le tracking enregistre/est en pause, ou si la session persistée est
+/// encore active/paused ». Les deux comptent, et le second n'est pas un luxe :
+/// après un redémarrage en pleine marche, la session vivante repart vide et
+/// seule la base se souvient. Sans elle, rallumer son téléphone sur le sentier
+/// ferait revenir la publicité.
+///
+/// SON NOM PARLE D'ÉDITION ET ON S'EN SERT POUR LA PUBLICITÉ : c'est assumé.
+/// Le prédicat est le même — « une rando est en cours » — et le dupliquer sous
+/// un plus joli nom créerait deux définitions de la même chose, donc un jour
+/// deux réponses. Ce provider-ci ne fait que NOMMER l'intention à l'endroit où
+/// elle sert.
+///
+/// DANS LE DOUTE, ON DIT « EN RANDO », ET CE N'EST PAS DE LA PRUDENCE DÉCORATIVE.
+/// [trekEditLockProvider] lit la session persistée en `.value` et retombe
+/// volontairement sur la seule vue vivante tant que la base n'a pas répondu :
+/// c'est le bon choix pour un écran d'édition, qui doit s'afficher tout de
+/// suite. Pour la publicité c'est le mauvais. Au démarrage, la vue vivante est
+/// VIDE et la base pas encore lue — l'application se croirait donc hors rando
+/// pendant une lecture de base, et c'est très exactement la fenêtre qu'il faut
+/// pour qu'une bannière part alors que le randonneur marche. Or c'est le cas de
+/// Chris : le téléphone rallumé en pleine marche. Tant que la base n'a pas
+/// parlé, on répond donc « en rando ». Un doute se tranche du côté du
+/// randonneur, jamais du côté de la régie.
+final enModeTrekProvider = Provider<bool>((ref) {
+  if (!ref.watch(latestTrekSessionProvider).hasValue) return true;
+  return ref.watch(trekEditLockProvider).trekStarted;
 });
 
 /// Vrai si une bannière est SEULEMENT POSSIBLE (le CMP l'autorise).
@@ -103,6 +139,30 @@ final _sansPubChangeProvider =
 /// toutes les minutes pour rallumer une publicité serait un mauvais échange.
 final shouldShowBannerProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, trailId) async {
+  // EN MODE TREK, JAMAIS DE PUBLICITE. Regle de Chris, 27/09 10:31, verbatim :
+  // « MAIS EN MODE TREK JAMAIS !!! Il paye FORCEMENT en mode trek !!! »
+  //
+  // PREMIER, ET AVANT MEME LE CMP : en mode trek on ne consulte pas le
+  // consentement publicitaire, on ne demande rien, on ne charge rien. C'est la
+  // regle la plus forte du modele sur la publicite, et la plus simple a tenir.
+  //
+  // ELLE EST ICI, DANS LA DECISION, ET PAS SUR UN ECRAN. Elle a d'abord vecu
+  // en condition ternaire au bas du cockpit : une ligne, sur UN ecran, que rien
+  // ne verrouillait et que le prochain emplacement publicitaire n'aurait pas
+  // heritee. Dans la decision, elle couvre le cockpit, le catalogue, et tout
+  // ecran qu'on branchera un jour — sans que personne y pense.
+  //
+  // ET ELLE NE S'APPUIE SUR AUCUNE PROPRIETE QUI N'EXISTE PAS ENCORE. On
+  // pourrait croire cette garde redondante : « un trek en cours de realisation
+  // est un trek achete, donc deja sans pub ». C'EST FAUX A CETTE HEURE.
+  // `TrekRecorder.start()` ne controle aucun droit : la realisation gratuite
+  // est encore ouverte, et c'est le lot 594 qui la ferme. Cette garde est donc
+  // aujourd'hui LA SEULE qui tienne la regle, pour un randonneur qui marche un
+  // trek qu'il n'a pas paye. Quand 594 aura atterri elle deviendra une seconde
+  // ligne — et elle restera utile a ce titre, parce qu'une regle enoncee
+  // « JAMAIS » ne se deduit pas, elle s'ecrit.
+  if (ref.watch(enModeTrekProvider)) return false;
+
   // SE BRANCHER SUR LES SIGNAUX VIVANTS AVANT TOUT `await`. Un `ref.watch`
   // pose APRES une suspension n'enregistre pas fiablement sa dependance : la
   // decision resterait figee, et c'est precisement ce qu'on repare ici.

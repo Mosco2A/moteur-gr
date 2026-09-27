@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
+import 'package:moteur_gr/features/safety/presentation/sos_button.dart';
 import 'package:moteur_gr/features/auth/domain/auth_service.dart';
 import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
@@ -536,6 +537,28 @@ void main() {
       // prend aucune place : sur cet appareil de test, aucune regie ne repond,
       // donc rien n'est affiche et rien n'est reserve.
       expect(tester.getSize(find.byType(BannerAdSlot)).height, 0);
+    });
+
+    testWidgets('EN PHASE RANDO, le bas du cockpit appartient au SOS : aucun '
+        'emplacement publicitaire n y est monte', (tester) async {
+      // « EN MODE TREK JAMAIS » (Chris, 27/09 10:31). La regle elle-meme vit
+      // dans la DECISION publicitaire — elle y couvre tous les ecrans a la fois,
+      // et `test/comportement/pub_v1_595_test.dart` (B6) la mesure en comptant
+      // les demandes parties a la regie.
+      //
+      // CE QUE CE TEST-CI TIENT EST AUTRE CHOSE, ET C EST LA GEOMETRIE. En
+      // rando, le bas de l ecran appartient a la pastille SOS. On n y pose pas
+      // un emplacement publicitaire, meme un emplacement qui ne demanderait
+      // rien : un doigt qui vise le secours ne doit jamais rencontrer une regie.
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(scaffold.bottomNavigationBar, isNull,
+          reason: 'en rando, rien du tout sous la pastille SOS');
+      expect(find.byType(BannerAdSlot), findsNothing);
+      // Et la pastille SOS, elle, est bien la : c est ce qui donne son sens a
+      // l assertion ci-dessus.
+      expect(find.byType(SosButton), findsOneWidget);
     });
 
     testWidgets('accordéon Préparer (D3) : DÉPLIÉ en préparation (cartes '
