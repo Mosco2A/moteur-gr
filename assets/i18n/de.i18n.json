@@ -610,7 +610,11 @@
     },
     "seasonalAdd": "Hinzufügen",
     "seasonalAdded": "Hinzugefügt",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Testversion",
+    "demoBridledBody": "Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.",
+    "demoLockedCategory": "Wanderung freischalten für diese Kategorie",
+    "demoUnlockCta": "Wanderung freischalten"
   },
   "journal": {
     "title": "Wandertagebuch",
@@ -1120,7 +1124,34 @@
     "rewardedUnavailable": "Derzeit kein Video verfügbar.",
     "walletTitle": "Etappenkonto",
     "walletSubtitle": "Mit Ihren Etappen schalten Sie Wanderungen frei",
-    "walletUnit": "Etappen"
+    "walletUnit": "Etappen",
+    "storeUnavailable": "Die Zahlung ist derzeit nicht verfügbar.",
+    "restoreUnavailable": "Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.",
+    "restoreRequested": "Wiederherstellung angefordert. Ihre Käufe erscheinen gleich wieder.",
+    "restoreCta": "Meine Käufe wiederherstellen",
+    "restoreWhatItCovers": "Die Wiederherstellung holt Ihr Abo und Ihre Aufladungen zurück. Mit Etappen freigeschaltete Wanderungen liegen auf diesem Gerät.",
+    "rechargeTitle": "Etappenkonto aufladen",
+    "rechargeSubtitle": "Etappen schalten Wanderungen frei. Sie gehören Ihnen auf Dauer.",
+    "rechargeBalance": "Aktueller Stand",
+    "packSteps": "$steps Etappen",
+    "packPrice": "$price €",
+    "rechargeCta": "Aufladen",
+    "subscriptionTitle": "Werbefreies Abo",
+    "subscriptionSubtitle": "Keine Werbung, solange das Abo aktiv ist.",
+    "subscriptionIncludesNoAds": "Keine Werbung in der gesamten App",
+    "subscriptionIncludesAllowance": "Ein Etappenguthaben in jedem Zeitraum",
+    "subscriptionExcludes": "Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.",
+    "subscriptionCta": "Abonnieren",
+    "subscriptionActive": "Abo aktiv",
+    "subscriptionActiveUntil": "Aktiv bis $date",
+    "subscriptionInactive": "Kein aktives Abo",
+    "subscriptionAllowancePending": "Die Höhe des Guthabens steht noch nicht fest.",
+    "realizationLockedTitle": "Diese Wanderung ist nicht freigeschaltet",
+    "realizationLockedBody": "Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.",
+    "buyOutcomeOwned": "Wanderung freigeschaltet. Gute Tour!",
+    "buyOutcomeAlreadyOwned": "Diese Wanderung ist bereits freigeschaltet.",
+    "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
+    "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht."
   },
   "signalement": {
     "title": "Melden",
@@ -1203,7 +1234,10 @@
     "freqSourceNotice": "Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d'Aventure und den WHO-Empfehlungen 2020.",
     "noDateWhy": "Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.",
     "tooShortTitle": "Keine Vorbereitung angeboten",
-    "tooShortWhy": "Bis zur Abreise bleiben $days Tage, also weniger als $weeks Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter $weeks Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von $weeks Wochen ist die der Trekkinganbieter — Terres d'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung."
+    "tooShortWhy": "Bis zur Abreise bleiben $days Tage, also weniger als $weeks Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter $weeks Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von $weeks Wochen ist die der Trekkinganbieter — Terres d'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung.",
+    "demoBridledTitle": "Testversion",
+    "demoBridledBody": "Die erste Phase ist zum Ausprobieren spielbar: Ihre Haken werden nicht gespeichert. Die weiteren Phasen öffnen sich mit der Wanderung.",
+    "demoLockedPhase": "Wanderung freischalten, um die Einheiten zu sehen"
   },
   "eta": {
     "title": "Geschätzte Zeit",

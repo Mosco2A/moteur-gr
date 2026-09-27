@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logger/logger.dart';
@@ -66,6 +67,68 @@ const Set<String> kWalletProductIds = {
   kWalletSubNoAdsMonthly,
 };
 
+/// DUREE DE VALIDITE LOCALE du sans-pub d'abonnement (tache 594, A2b).
+///
+/// REGLE D'OR #99404 : « jamais a vie, toujours lie a un etat actif ». L'abo
+/// etait pose avec `expiresAt = null` et rien ne l'expirait jamais : une fois
+/// pose, le sans-pub etait acquis pour toujours. Chaque confirmation du store
+/// (achat initial ET renouvellement) repousse desormais l'echeance de cette
+/// fenetre ; sans renouvellement elle tombe d'elle-meme.
+///
+/// VALEUR : un mois d'abonnement (30 j) + 1 jour de battement, pour ne pas
+/// couper le sans-pub d'un abonne entre son echeance et l'arrivee du recu de
+/// renouvellement. CE N'EST PAS UN PRIX NI UNE DUREE COMMERCIALE : c'est la
+/// duree pendant laquelle l'appareil accepte de croire un recu sans nouvelle
+/// preuve. Le suivi FIN (renouvellement/annulation en temps reel) passe par les
+/// notifications serveur des deux boutiques — donc un backend, hors de ce lot ;
+/// jusque-la, cette fenetre est le filet qui interdit le « a vie ».
+const Duration kSubscriptionNoAdsWindow = Duration(days: 31);
+
+/// Verdict de validation d'un recu store (tache 594, A3).
+///
+/// POINT D'EXTENSION du backend : une implementation branchee sur la Cloud
+/// Function O1C remplace [LocalSanityReceiptValidator] sans toucher au service.
+abstract class ReceiptValidator {
+  /// Le recu [purchase] est-il authentique et livrable ?
+  Future<bool> isValid(PurchaseDetails purchase);
+}
+
+/// Validation par defaut : controles locaux + REFUS tant qu'aucun serveur ne
+/// peut authentifier le recu.
+///
+/// CE QUI EXISTAIT : `_verify` retournait `true`, toujours, pour tout. Un recu
+/// vide, un produit inconnu, un achat en erreur : tout creditait le
+/// compte-etapes. La validation des recus « acceptait tout ».
+///
+/// CE QU'ELLE FAIT MAINTENANT, dans cet ordre :
+///   1. le statut doit etre `purchased` ou `restored` ;
+///   2. le productId doit etre un produit StepWays connu ;
+///   3. le jeton de verification serveur doit exister et ne pas etre vide ;
+///   4. et, sans validateur serveur ([serverValidationAvailable] faux), on
+///      REFUSE : on ne credite pas un compte sur la seule parole de
+///      l'appareil. C'est aussi ce que prescrit la procedure d'activation du
+///      kill-switch [kWalletIapRealModeEnabled] (etape 2 : implementer la
+///      verification reelle AVANT de passer le drapeau a `true`).
+class LocalSanityReceiptValidator implements ReceiptValidator {
+  const LocalSanityReceiptValidator({this.serverValidationAvailable = false});
+
+  /// Vrai quand un validateur serveur peut authentifier le recu.
+  final bool serverValidationAvailable;
+
+  @override
+  Future<bool> isValid(PurchaseDetails purchase) async {
+    if (purchase.status != PurchaseStatus.purchased &&
+        purchase.status != PurchaseStatus.restored) {
+      return false;
+    }
+    if (!kWalletProductIds.contains(purchase.productID)) return false;
+    if (purchase.verificationData.serverVerificationData.trim().isEmpty) {
+      return false;
+    }
+    return serverValidationAvailable;
+  }
+}
+
 /// Service IAP du compte-etapes StepWays + BOUCLE DE COMPLETION (LOT 1, ST3).
 ///
 /// Calque sur `iap_service.dart` (group) et `pack_purchase_service.dart`
@@ -91,16 +154,22 @@ class WalletIapService {
     required NoAdsDao noAdsDao,
     InAppPurchase? iapInstance,
     SharedPreferences? prefs,
+    ReceiptValidator? receiptValidator,
     this.testMode = true,
   })  : _walletStore = walletStore,
         _noAdsDao = noAdsDao,
         _iapOverride = iapInstance,
-        _prefs = prefs;
+        _prefs = prefs,
+        _receiptValidator =
+            receiptValidator ?? const LocalSanityReceiptValidator();
 
   final WalletStore _walletStore;
   final NoAdsDao _noAdsDao;
   final InAppPurchase? _iapOverride;
   SharedPreferences? _prefs;
+
+  /// Validation des recus (injectable : backend quand il existera).
+  final ReceiptValidator _receiptValidator;
 
   /// Mode test (defaut true, F6) : aucun appel reel au store.
   final bool testMode;
@@ -224,7 +293,14 @@ class WalletIapService {
           _log.e('[WalletIap] Achat en erreur: ${purchase.error}');
           break;
         case PurchaseStatus.canceled:
+          // UNE ANNULATION RETIRE LE DROIT (tache 594, A2b). Ce cas ne faisait
+          // que journaliser : un abonnement annule gardait son sans-pub, et
+          // comme rien ne l'expirait par ailleurs, il le gardait pour toujours.
           _log.w('[WalletIap] Achat annule: ${purchase.productID}');
+          if (purchase.productID == kWalletSubNoAdsMonthly) {
+            final retirees = await _noAdsDao.deleteBySource('subscription');
+            _log.i('[WalletIap] Abo annule -> sans-pub revoque ($retirees)');
+          }
           break;
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
@@ -257,18 +333,30 @@ class WalletIapService {
     }
   }
 
-  /// Verification de l'achat (VALIDATION ONLINE — STUB tant que backend absent).
+  /// Verification de l'achat, DELEGUEE au [ReceiptValidator] injecte.
   ///
-  /// POINT D'EXTENSION : brancher ici la Cloud Function O1C de validation des
-  /// recus (`purchase.verificationData.serverVerificationData`) quand le backend
-  /// sera pret. En attendant, stub permissif : tout achat non-stub est
-  /// considere valide. En mode stub complet, rien n'arrive jamais ici (stream
-  /// vide), donc le retour est sans effet.
+  /// Par defaut [LocalSanityReceiptValidator] : controles locaux puis REFUS
+  /// tant qu'aucun serveur ne peut authentifier le recu (tache 594, A3). Le
+  /// refus est JOURNALISE explicitement : un achat qui ne credite rien doit
+  /// laisser une trace lisible, pas disparaitre.
+  ///
+  /// POINT D'EXTENSION : injecter une implementation branchee sur la Cloud
+  /// Function O1C (`purchase.verificationData.serverVerificationData`) — c'est
+  /// l'etape 2 de la procedure d'activation de [kWalletIapRealModeEnabled].
   Future<bool> _verify(PurchaseDetails purchase) async {
-    // TODO(backend): validation online via Cloud Function O1C
-    // (purchase.verificationData). Stub permissif en attendant.
-    return true;
+    final ok = await _receiptValidator.isValid(purchase);
+    if (!ok) {
+      _log.e('[WalletIap] Recu REFUSE (${purchase.productID}, '
+          'statut=${purchase.status}) : aucun credit applique');
+    }
+    return ok;
   }
+
+  /// Entree de test de la boucle de completion (le `purchaseStream` reel est
+  /// vide en mode stub, on ne peut donc pas l'exercer autrement).
+  @visibleForTesting
+  Future<void> debugHandlePurchases(List<PurchaseDetails> purchases) =>
+      _handlePurchases(purchases);
 
   /// Applique la livraison selon le produit : credite le wallet (recharges) ou
   /// pose la source sans-pub (abo). Retourne true si quelque chose a ete livre.
@@ -281,17 +369,22 @@ class WalletIapService {
     }
     if (purchase.productID == kWalletSubNoAdsMonthly) {
       final now = DateTime.now();
-      // Abo sans-pub : expiresAt = null tant qu'actif (#99404). Le suivi fin de
-      // l'expiration reelle de l'abo releve de ST4 (MonetizationService).
+      // ABO SANS-PUB : UNE ECHEANCE, TOUJOURS (tache 594, A2b). Ce bloc posait
+      // `expiresAt = null` et renvoyait le suivi de l'expiration a « ST4 » —
+      // qui ne le faisait pas. Resultat : le sans-pub de l'abonne etait a vie,
+      // ce que la regle d'or #99404 interdit. Chaque recu (achat initial ou
+      // renouvellement) REMPLACE l'etat et repousse l'echeance.
+      await _noAdsDao.deleteBySource('subscription');
       await _noAdsDao.insertState(
         NoAdsStateCompanion.insert(
           source: 'subscription',
           startedAt: now,
           updatedAt: now,
-          expiresAt: const Value(null),
+          expiresAt: Value(now.add(kSubscriptionNoAdsWindow)),
         ),
       );
-      _log.i('[WalletIap] Abo sans-pub pose (${purchase.productID})');
+      _log.i('[WalletIap] Abo sans-pub pose jusqu au '
+          '${now.add(kSubscriptionNoAdsWindow)} (${purchase.productID})');
       return true;
     }
     _log.w('[WalletIap] ProductId inconnu, rien livre: ${purchase.productID}');

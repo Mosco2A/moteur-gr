@@ -864,6 +864,18 @@ class Translations$checklist$fr {
 
 	/// fr: '$g g'
 	String seasonalWeight({required Object g}) => '${g} g';
+
+	/// fr: 'Version d'essai'
+	String get demoBridledTitle => 'Version d\'essai';
+
+	/// fr: 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s'ouvre avec la randonnée.'
+	String get demoBridledBody => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.';
+
+	/// fr: 'Débloquez la randonnée pour cette catégorie'
+	String get demoLockedCategory => 'Débloquez la randonnée pour cette catégorie';
+
+	/// fr: 'Débloquer la randonnée'
+	String get demoUnlockCta => 'Débloquer la randonnée';
 }
 
 // Path: journal
@@ -1871,6 +1883,87 @@ class Translations$monetization$fr {
 
 	/// fr: 'étapes'
 	String get walletUnit => 'étapes';
+
+	/// fr: 'Le paiement n'est pas disponible pour le moment.'
+	String get storeUnavailable => 'Le paiement n\'est pas disponible pour le moment.';
+
+	/// fr: 'Restauration impossible : le paiement n'est pas disponible pour le moment.'
+	String get restoreUnavailable => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.';
+
+	/// fr: 'Restauration demandée. Vos achats réapparaîtront dans un instant.'
+	String get restoreRequested => 'Restauration demandée. Vos achats réapparaîtront dans un instant.';
+
+	/// fr: 'Restaurer mes achats'
+	String get restoreCta => 'Restaurer mes achats';
+
+	/// fr: 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.'
+	String get restoreWhatItCovers => 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.';
+
+	/// fr: 'Recharger mon compte-étapes'
+	String get rechargeTitle => 'Recharger mon compte-étapes';
+
+	/// fr: 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.'
+	String get rechargeSubtitle => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.';
+
+	/// fr: 'Solde actuel'
+	String get rechargeBalance => 'Solde actuel';
+
+	/// fr: '$steps étapes'
+	String packSteps({required Object steps}) => '${steps} étapes';
+
+	/// fr: '$price €'
+	String packPrice({required Object price}) => '${price} €';
+
+	/// fr: 'Recharger'
+	String get rechargeCta => 'Recharger';
+
+	/// fr: 'Abonnement sans publicité'
+	String get subscriptionTitle => 'Abonnement sans publicité';
+
+	/// fr: 'Sans publicité partout, tant que l'abonnement est actif.'
+	String get subscriptionSubtitle => 'Sans publicité partout, tant que l\'abonnement est actif.';
+
+	/// fr: 'Aucune publicité, sur toute l'application'
+	String get subscriptionIncludesNoAds => 'Aucune publicité, sur toute l\'application';
+
+	/// fr: 'Une cagnotte d'étapes à chaque période'
+	String get subscriptionIncludesAllowance => 'Une cagnotte d\'étapes à chaque période';
+
+	/// fr: 'L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.'
+	String get subscriptionExcludes => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.';
+
+	/// fr: 'S'abonner'
+	String get subscriptionCta => 'S\'abonner';
+
+	/// fr: 'Abonnement actif'
+	String get subscriptionActive => 'Abonnement actif';
+
+	/// fr: 'Actif jusqu'au $date'
+	String subscriptionActiveUntil({required Object date}) => 'Actif jusqu\'au ${date}';
+
+	/// fr: 'Aucun abonnement actif'
+	String get subscriptionInactive => 'Aucun abonnement actif';
+
+	/// fr: 'Le montant de la cagnotte n'est pas encore fixé.'
+	String get subscriptionAllowancePending => 'Le montant de la cagnotte n\'est pas encore fixé.';
+
+	/// fr: 'Cette randonnée n'est pas débloquée'
+	String get realizationLockedTitle => 'Cette randonnée n\'est pas débloquée';
+
+	/// fr: 'Réaliser une randonnée demande de l'avoir débloquée. La préparation reste gratuite.'
+	String get realizationLockedBody => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.';
+
+	/// fr: 'Randonnée débloquée. Bonne route !'
+	String get buyOutcomeOwned => 'Randonnée débloquée. Bonne route !';
+
+	/// fr: 'Cette randonnée est déjà débloquée.'
+	String get buyOutcomeAlreadyOwned => 'Cette randonnée est déjà débloquée.';
+
+	/// fr: 'Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.'
+	String buyOutcomeOffline({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.';
+
+	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
+	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
 }
 
 // Path: signalement
@@ -2033,6 +2126,15 @@ class Translations$training$fr {
 
 	/// fr: 'Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.'
 	String tooShortWhy({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.';
+
+	/// fr: 'Version d'essai'
+	String get demoBridledTitle => 'Version d\'essai';
+
+	/// fr: 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s'ouvrent avec la randonnée.'
+	String get demoBridledBody => 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s\'ouvrent avec la randonnée.';
+
+	/// fr: 'Débloquez la randonnée pour voir les séances'
+	String get demoLockedPhase => 'Débloquez la randonnée pour voir les séances';
 }
 
 // Path: eta
@@ -8183,6 +8285,10 @@ extension on Translations {
 			'checklist.seasonalAdd' => 'Ajouter',
 			'checklist.seasonalAdded' => 'Ajouté',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
+			'checklist.demoBridledTitle' => 'Version d\'essai',
+			'checklist.demoBridledBody' => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.',
+			'checklist.demoLockedCategory' => 'Débloquez la randonnée pour cette catégorie',
+			'checklist.demoUnlockCta' => 'Débloquer la randonnée',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
 			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
@@ -8613,6 +8719,33 @@ extension on Translations {
 			'monetization.walletTitle' => 'Compte-étapes',
 			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
+			'monetization.storeUnavailable' => 'Le paiement n\'est pas disponible pour le moment.',
+			'monetization.restoreUnavailable' => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.',
+			'monetization.restoreRequested' => 'Restauration demandée. Vos achats réapparaîtront dans un instant.',
+			'monetization.restoreCta' => 'Restaurer mes achats',
+			'monetization.restoreWhatItCovers' => 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.',
+			'monetization.rechargeTitle' => 'Recharger mon compte-étapes',
+			'monetization.rechargeSubtitle' => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.',
+			'monetization.rechargeBalance' => 'Solde actuel',
+			'monetization.packSteps' => ({required Object steps}) => '${steps} étapes',
+			'monetization.packPrice' => ({required Object price}) => '${price} €',
+			'monetization.rechargeCta' => 'Recharger',
+			'monetization.subscriptionTitle' => 'Abonnement sans publicité',
+			'monetization.subscriptionSubtitle' => 'Sans publicité partout, tant que l\'abonnement est actif.',
+			'monetization.subscriptionIncludesNoAds' => 'Aucune publicité, sur toute l\'application',
+			'monetization.subscriptionIncludesAllowance' => 'Une cagnotte d\'étapes à chaque période',
+			'monetization.subscriptionExcludes' => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.',
+			'monetization.subscriptionCta' => 'S\'abonner',
+			'monetization.subscriptionActive' => 'Abonnement actif',
+			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Actif jusqu\'au ${date}',
+			'monetization.subscriptionInactive' => 'Aucun abonnement actif',
+			'monetization.subscriptionAllowancePending' => 'Le montant de la cagnotte n\'est pas encore fixé.',
+			'monetization.realizationLockedTitle' => 'Cette randonnée n\'est pas débloquée',
+			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
+			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
+			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
+			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
+			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -8638,6 +8771,8 @@ extension on Translations {
 			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
 			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
 			'hebergement.openSite' => 'Voir le site',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'hebergement.empty' => 'Aucun hébergement répertorié à proximité pour le moment.',
 			'hebergement.types.refuge' => 'Refuge',
@@ -8669,8 +8804,6 @@ extension on Translations {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semaines ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objectif clé',
 			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
 			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× par semaine',
@@ -8680,6 +8813,9 @@ extension on Translations {
 			'training.noDateWhy' => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.',
 			'training.tooShortTitle' => 'Aucune préparation proposée',
 			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.',
+			'training.demoBridledTitle' => 'Version d\'essai',
+			'training.demoBridledBody' => 'La première phase est jouable pour de faux : vos coches ne sont pas conservées. Les phases suivantes s\'ouvrent avec la randonnée.',
+			'training.demoLockedPhase' => 'Débloquez la randonnée pour voir les séances',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',
 			'eta.toStageEnd' => 'Fin d\'étape',
@@ -9149,6 +9285,8 @@ extension on Translations {
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TOUTES LES NUITS RÉSERVÉES',
 			'nuitees.empty.title' => 'Configurez d\'abord votre itinéraire',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.empty.message' => 'Choisissez votre parcours et la durée pour préparer vos nuits.',
 			'nuitees.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'transport.title' => 'Transport',
@@ -9183,8 +9321,6 @@ extension on Translations {
 			'fireRisk.level.none' => 'Aucun',
 			'fireRisk.level.low' => 'Faible',
 			'fireRisk.level.moderate' => 'Modéré',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Élevé',
 			'fireRisk.level.veryHigh' => 'Très élevé',
 			'fireRisk.level.extreme' => 'Extrême',

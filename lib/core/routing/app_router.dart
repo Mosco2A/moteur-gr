@@ -44,6 +44,8 @@ import '../../features/safety/presentation/emergency_screen.dart';
 import '../../features/safety/presentation/health_info_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
+import '../../features/monetization/presentation/subscription_screen.dart';
+import '../../features/monetization/presentation/wallet_recharge_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/packs/presentation/pack_store_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
@@ -695,6 +697,24 @@ final appRouter = GoRouter(
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
     ),
+    // V1 ARGENT (tache 594, A3) — LES DEUX ECRANS DE PAIEMENT QUI MANQUAIENT.
+    //
+    // La grille des packs etait ecrite au centime dans le code et affichee
+    // nulle part ; l'abonnement n'avait aucun ecran et `subscribe()` n'avait
+    // aucun appelant. Donnees de COMPTE, pas de sentier : ces deux routes sont
+    // ajoutees aux chemins exclus du garde de sentier actif (voir
+    // [redirectForPath]) — on doit pouvoir recharger son compte-etapes sans
+    // avoir telecharge un sentier.
+    GoRoute(
+      path: '/wallet',
+      name: 'wallet',
+      builder: (context, state) => const WalletRechargeScreen(),
+    ),
+    GoRoute(
+      path: '/subscription',
+      name: 'subscription',
+      builder: (context, state) => const SubscriptionScreen(),
+    ),
     // StepWays L8 (RELEASE V1) : la route de DEMO/pilote '/nav-pilote'
     // (demonstrateur visuel JETABLE de la refonte navigation, methode D2) a
     // d'abord ete RETIREE du routeur. C'etait une porte d'entree temporaire pour
@@ -845,6 +865,10 @@ String? redirectForPath(String path) {
     // Finitions V1 (point 4) : code de reconnexion = donnee de compte, sans
     // sentier requis (atteignable depuis les reglages, meme sans trek actif).
     '/recovery-code',
+    // V1 ARGENT (tache 594) : compte-etapes et abonnement sont des donnees de
+    // COMPTE. On recharge et on s'abonne sans sentier actif.
+    '/wallet',
+    '/subscription',
   ];
   if (excludedPaths.contains(path)) return null;
 

@@ -467,6 +467,10 @@ class _Translations$checklist$de extends Translations$checklist$fr {
 	@override String get seasonalAdd => 'Hinzufügen';
 	@override String get seasonalAdded => 'Hinzugefügt';
 	@override String seasonalWeight({required Object g}) => '${g} g';
+	@override String get demoBridledTitle => 'Testversion';
+	@override String get demoBridledBody => 'Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.';
+	@override String get demoLockedCategory => 'Wanderung freischalten für diese Kategorie';
+	@override String get demoUnlockCta => 'Wanderung freischalten';
 }
 
 // Path: journal
@@ -917,6 +921,33 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get walletTitle => 'Etappenkonto';
 	@override String get walletSubtitle => 'Mit Ihren Etappen schalten Sie Wanderungen frei';
 	@override String get walletUnit => 'Etappen';
+	@override String get storeUnavailable => 'Die Zahlung ist derzeit nicht verfügbar.';
+	@override String get restoreUnavailable => 'Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.';
+	@override String get restoreRequested => 'Wiederherstellung angefordert. Ihre Käufe erscheinen gleich wieder.';
+	@override String get restoreCta => 'Meine Käufe wiederherstellen';
+	@override String get restoreWhatItCovers => 'Die Wiederherstellung holt Ihr Abo und Ihre Aufladungen zurück. Mit Etappen freigeschaltete Wanderungen liegen auf diesem Gerät.';
+	@override String get rechargeTitle => 'Etappenkonto aufladen';
+	@override String get rechargeSubtitle => 'Etappen schalten Wanderungen frei. Sie gehören Ihnen auf Dauer.';
+	@override String get rechargeBalance => 'Aktueller Stand';
+	@override String packSteps({required Object steps}) => '${steps} Etappen';
+	@override String packPrice({required Object price}) => '${price} €';
+	@override String get rechargeCta => 'Aufladen';
+	@override String get subscriptionTitle => 'Werbefreies Abo';
+	@override String get subscriptionSubtitle => 'Keine Werbung, solange das Abo aktiv ist.';
+	@override String get subscriptionIncludesNoAds => 'Keine Werbung in der gesamten App';
+	@override String get subscriptionIncludesAllowance => 'Ein Etappenguthaben in jedem Zeitraum';
+	@override String get subscriptionExcludes => 'Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.';
+	@override String get subscriptionCta => 'Abonnieren';
+	@override String get subscriptionActive => 'Abo aktiv';
+	@override String subscriptionActiveUntil({required Object date}) => 'Aktiv bis ${date}';
+	@override String get subscriptionInactive => 'Kein aktives Abo';
+	@override String get subscriptionAllowancePending => 'Die Höhe des Guthabens steht noch nicht fest.';
+	@override String get realizationLockedTitle => 'Diese Wanderung ist nicht freigeschaltet';
+	@override String get realizationLockedBody => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.';
+	@override String get buyOutcomeOwned => 'Wanderung freigeschaltet. Gute Tour!';
+	@override String get buyOutcomeAlreadyOwned => 'Diese Wanderung ist bereits freigeschaltet.';
+	@override String buyOutcomeOffline({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.';
+	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 }
 
 // Path: signalement
@@ -991,6 +1022,9 @@ class _Translations$training$de extends Translations$training$fr {
 	@override String get noDateWhy => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.';
 	@override String get tooShortTitle => 'Keine Vorbereitung angeboten';
 	@override String tooShortWhy({required Object days, required Object weeks}) => 'Bis zur Abreise bleiben ${days} Tage, also weniger als ${weeks} Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter ${weeks} Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von ${weeks} Wochen ist die der Trekkinganbieter — Terres d\'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung.';
+	@override String get demoBridledTitle => 'Testversion';
+	@override String get demoBridledBody => 'Die erste Phase ist zum Ausprobieren spielbar: Ihre Haken werden nicht gespeichert. Die weiteren Phasen öffnen sich mit der Wanderung.';
+	@override String get demoLockedPhase => 'Wanderung freischalten, um die Einheiten zu sehen';
 }
 
 // Path: eta
@@ -4502,6 +4536,10 @@ extension on TranslationsDe {
 			'checklist.seasonalAdd' => 'Hinzufügen',
 			'checklist.seasonalAdded' => 'Hinzugefügt',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
+			'checklist.demoBridledTitle' => 'Testversion',
+			'checklist.demoBridledBody' => 'Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.',
+			'checklist.demoLockedCategory' => 'Wanderung freischalten für diese Kategorie',
+			'checklist.demoUnlockCta' => 'Wanderung freischalten',
 			'journal.title' => 'Wandertagebuch',
 			'journal.empty' => 'Ihr Tagebuch ist leer',
 			'journal.emptySubtitle' => 'Notieren Sie Ihre Eindrücke und Erinnerungen',
@@ -4932,6 +4970,33 @@ extension on TranslationsDe {
 			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
+			'monetization.storeUnavailable' => 'Die Zahlung ist derzeit nicht verfügbar.',
+			'monetization.restoreUnavailable' => 'Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.',
+			'monetization.restoreRequested' => 'Wiederherstellung angefordert. Ihre Käufe erscheinen gleich wieder.',
+			'monetization.restoreCta' => 'Meine Käufe wiederherstellen',
+			'monetization.restoreWhatItCovers' => 'Die Wiederherstellung holt Ihr Abo und Ihre Aufladungen zurück. Mit Etappen freigeschaltete Wanderungen liegen auf diesem Gerät.',
+			'monetization.rechargeTitle' => 'Etappenkonto aufladen',
+			'monetization.rechargeSubtitle' => 'Etappen schalten Wanderungen frei. Sie gehören Ihnen auf Dauer.',
+			'monetization.rechargeBalance' => 'Aktueller Stand',
+			'monetization.packSteps' => ({required Object steps}) => '${steps} Etappen',
+			'monetization.packPrice' => ({required Object price}) => '${price} €',
+			'monetization.rechargeCta' => 'Aufladen',
+			'monetization.subscriptionTitle' => 'Werbefreies Abo',
+			'monetization.subscriptionSubtitle' => 'Keine Werbung, solange das Abo aktiv ist.',
+			'monetization.subscriptionIncludesNoAds' => 'Keine Werbung in der gesamten App',
+			'monetization.subscriptionIncludesAllowance' => 'Ein Etappenguthaben in jedem Zeitraum',
+			'monetization.subscriptionExcludes' => 'Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.',
+			'monetization.subscriptionCta' => 'Abonnieren',
+			'monetization.subscriptionActive' => 'Abo aktiv',
+			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Aktiv bis ${date}',
+			'monetization.subscriptionInactive' => 'Kein aktives Abo',
+			'monetization.subscriptionAllowancePending' => 'Die Höhe des Guthabens steht noch nicht fest.',
+			'monetization.realizationLockedTitle' => 'Diese Wanderung ist nicht freigeschaltet',
+			'monetization.realizationLockedBody' => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.',
+			'monetization.buyOutcomeOwned' => 'Wanderung freigeschaltet. Gute Tour!',
+			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
+			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
+			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'signalement.title' => 'Melden',
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
@@ -4957,6 +5022,8 @@ extension on TranslationsDe {
 			'hebergement.facilitatorNote' => 'StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.',
 			'hebergement.detourAR' => ({required Object km}) => 'Umweg hin und zurück: ${km} km',
 			'hebergement.openSite' => 'Website ansehen',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'Dieser Link konnte auf diesem Gerät nicht geöffnet werden.',
 			'hebergement.empty' => 'Derzeit keine Unterkünfte in der Nähe gelistet.',
 			'hebergement.types.refuge' => 'Berghütte',
@@ -4988,8 +5055,6 @@ extension on TranslationsDe {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Wochen ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Schlüsselziel',
 			'training.inviteSetDate' => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
 			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× pro Woche',
@@ -4999,6 +5064,9 @@ extension on TranslationsDe {
 			'training.noDateWhy' => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.',
 			'training.tooShortTitle' => 'Keine Vorbereitung angeboten',
 			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Bis zur Abreise bleiben ${days} Tage, also weniger als ${weeks} Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter ${weeks} Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von ${weeks} Wochen ist die der Trekkinganbieter — Terres d\'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung.',
+			'training.demoBridledTitle' => 'Testversion',
+			'training.demoBridledBody' => 'Die erste Phase ist zum Ausprobieren spielbar: Ihre Haken werden nicht gespeichert. Die weiteren Phasen öffnen sich mit der Wanderung.',
+			'training.demoLockedPhase' => 'Wanderung freischalten, um die Einheiten zu sehen',
 			'eta.title' => 'Geschätzte Zeit',
 			'eta.toNextWaypoint' => 'Nächster Punkt',
 			'eta.toStageEnd' => 'Etappenende',
@@ -5468,6 +5536,8 @@ extension on TranslationsDe {
 			'nuitees.summary.done' => '{count} erledigt',
 			'nuitees.summary.allBooked' => 'ALLE NÄCHTE GEBUCHT',
 			'nuitees.empty.title' => 'Richten Sie zuerst Ihre Route ein',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.empty.message' => 'Wählen Sie Strecke und Dauer, um Ihre Nächte zu planen.',
 			'nuitees.empty.action' => 'ROUTE EINRICHTEN',
 			'transport.title' => 'Anreise',
@@ -5502,8 +5572,6 @@ extension on TranslationsDe {
 			'fireRisk.level.none' => 'Keine',
 			'fireRisk.level.low' => 'Gering',
 			'fireRisk.level.moderate' => 'Mäßig',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Hoch',
 			'fireRisk.level.veryHigh' => 'Sehr hoch',
 			'fireRisk.level.extreme' => 'Extrem',

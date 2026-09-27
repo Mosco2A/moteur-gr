@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/background_tracking_rationale_dialog.dart';
+import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../../trek/providers/tracking_providers.dart';
 import '../../providers/cockpit_start_providers.dart';
@@ -134,10 +136,55 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
       if (!context.mounted) return;
       if (outcome == StartOutcome.started) {
         context.push('/map');
+        return;
+      }
+      // LE REFUS D'ACHAT DIT POURQUOI, ET OU ACHETER (tache 594, A1).
+      //
+      // Realiser une randonnee est reserve au trek achete. Le refus ne peut
+      // pas etre un bouton qui ne repond pas : on NOMME la raison, puis on
+      // ouvre le chemin d'achat avec son prix. C'est la regle du LOT X — un
+      // geste qui ne produit rien est un mensonge — appliquee au seul endroit
+      // ou l'application doit dire non pour etre vendable.
+      if (outcome == StartOutcome.purchaseRequired) {
+        await _direPourquoiEtOuAcheter(context);
       }
     } finally {
       if (mounted) setState(() => _starting = false);
     }
+  }
+
+  /// Explique le refus d'achat, puis ouvre le paywall du sentier.
+  ///
+  /// DEUX TEMPS, PAS UN. D'abord la raison — « realiser demande d'avoir
+  /// debloque, la preparation reste gratuite » — parce qu'un paywall qui
+  /// surgit sans phrase ressemble a une panne. Ensuite seulement le prix et le
+  /// bouton d'achat, si l'utilisateur veut aller plus loin.
+  Future<void> _direPourquoiEtOuAcheter(BuildContext context) async {
+    final continuer = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        key: const ValueKey('realisation-verrouillee'),
+        icon: const Icon(Icons.lock_outline),
+        title: Text(t.monetization.realizationLockedTitle),
+        content: Text(t.monetization.realizationLockedBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.navPilote.startCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(t.monetization.buyCta),
+          ),
+        ],
+      ),
+    );
+    if (continuer != true || !context.mounted) return;
+    await showPaywallSheet(
+      context,
+      trailId: widget.trailId,
+      totalStages: ref.read(trailConfigProvider).totalStages,
+    );
   }
 
   /// Dialog de secours « Démarrer quand même ? » (filet Q1). Message adapte :

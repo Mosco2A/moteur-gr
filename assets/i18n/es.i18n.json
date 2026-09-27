@@ -610,7 +610,11 @@
     },
     "seasonalAdd": "Añadir",
     "seasonalAdded": "Añadido",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Versión de prueba",
+    "demoBridledBody": "Las primeras categorías se pueden jugar de mentira. La mochila completa, adaptada a la ruta y a la temporada, se abre con la ruta.",
+    "demoLockedCategory": "Desbloquea la ruta para esta categoría",
+    "demoUnlockCta": "Desbloquear la ruta"
   },
   "journal": {
     "title": "Diario de trekking",
@@ -1120,7 +1124,34 @@
     "rewardedUnavailable": "No hay vídeo disponible ahora mismo.",
     "walletTitle": "Cuenta de etapas",
     "walletSubtitle": "Tus etapas sirven para desbloquear las rutas",
-    "walletUnit": "etapas"
+    "walletUnit": "etapas",
+    "storeUnavailable": "El pago no está disponible por ahora.",
+    "restoreUnavailable": "No se puede restaurar: el pago no está disponible por ahora.",
+    "restoreRequested": "Restauración solicitada. Tus compras volverán en un momento.",
+    "restoreCta": "Restaurar mis compras",
+    "restoreWhatItCovers": "La restauración recupera tu suscripción y tus recargas. Las rutas desbloqueadas con tus etapas están guardadas en este dispositivo.",
+    "rechargeTitle": "Recargar mi cuenta de etapas",
+    "rechargeSubtitle": "Las etapas sirven para desbloquear rutas. Son tuyas de por vida.",
+    "rechargeBalance": "Saldo actual",
+    "packSteps": "$steps etapas",
+    "packPrice": "$price €",
+    "rechargeCta": "Recargar",
+    "subscriptionTitle": "Suscripción sin publicidad",
+    "subscriptionSubtitle": "Sin publicidad en ningún sitio, mientras la suscripción esté activa.",
+    "subscriptionIncludesNoAds": "Sin publicidad en toda la aplicación",
+    "subscriptionIncludesAllowance": "Un bote de etapas en cada periodo",
+    "subscriptionExcludes": "La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.",
+    "subscriptionCta": "Suscribirse",
+    "subscriptionActive": "Suscripción activa",
+    "subscriptionActiveUntil": "Activa hasta el $date",
+    "subscriptionInactive": "Ninguna suscripción activa",
+    "subscriptionAllowancePending": "El importe del bote aún no está fijado.",
+    "realizationLockedTitle": "Esta ruta no está desbloqueada",
+    "realizationLockedBody": "Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.",
+    "buyOutcomeOwned": "Ruta desbloqueada. ¡Buen camino!",
+    "buyOutcomeAlreadyOwned": "Esta ruta ya está desbloqueada.",
+    "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
+    "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada."
   },
   "signalement": {
     "title": "Notificar",
@@ -1203,7 +1234,10 @@
     "freqSourceNotice": "Las frecuencias no son cifras de la casa: 3 sesiones de resistencia y 2 de refuerzo por semana, 2 días de descanso, según REI (Conditioning for Backpacking), Terres d'Aventure y las recomendaciones de la OMS de 2020.",
     "noDateWhy": "Sin fecha de salida este plan no tiene final: no se puede saber en qué semana estás ni cuándo afinar. Pon tu fecha en el Calendario y el plan aparece.",
     "tooShortTitle": "Ninguna preparación propuesta",
-    "tooShortWhy": "Quedan $days días para la salida, menos de $weeks semanas. No se te propone ninguna preparación física: por debajo de $weeks semanas no hay progresión que construir, y un programa apretado en el tiempo que queda produce lesiones, no forma. Este mínimo de $weeks semanas es el de los operadores de trek — Terres d'Aventure escribe « empieza a entrenar al menos 2 meses antes de partir ». Hasta entonces, camina con regularidad y no busques la sobrecarga."
+    "tooShortWhy": "Quedan $days días para la salida, menos de $weeks semanas. No se te propone ninguna preparación física: por debajo de $weeks semanas no hay progresión que construir, y un programa apretado en el tiempo que queda produce lesiones, no forma. Este mínimo de $weeks semanas es el de los operadores de trek — Terres d'Aventure escribe « empieza a entrenar al menos 2 meses antes de partir ». Hasta entonces, camina con regularidad y no busques la sobrecarga.",
+    "demoBridledTitle": "Versión de prueba",
+    "demoBridledBody": "La primera fase se puede jugar de mentira: tus marcas no se guardan. Las fases siguientes se abren con la ruta.",
+    "demoLockedPhase": "Desbloquea la ruta para ver las sesiones"
   },
   "eta": {
     "title": "Tiempo estimado",

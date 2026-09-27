@@ -467,6 +467,10 @@ class _Translations$checklist$es extends Translations$checklist$fr {
 	@override String get seasonalAdd => 'Añadir';
 	@override String get seasonalAdded => 'Añadido';
 	@override String seasonalWeight({required Object g}) => '${g} g';
+	@override String get demoBridledTitle => 'Versión de prueba';
+	@override String get demoBridledBody => 'Las primeras categorías se pueden jugar de mentira. La mochila completa, adaptada a la ruta y a la temporada, se abre con la ruta.';
+	@override String get demoLockedCategory => 'Desbloquea la ruta para esta categoría';
+	@override String get demoUnlockCta => 'Desbloquear la ruta';
 }
 
 // Path: journal
@@ -917,6 +921,33 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get walletTitle => 'Cuenta de etapas';
 	@override String get walletSubtitle => 'Tus etapas sirven para desbloquear las rutas';
 	@override String get walletUnit => 'etapas';
+	@override String get storeUnavailable => 'El pago no está disponible por ahora.';
+	@override String get restoreUnavailable => 'No se puede restaurar: el pago no está disponible por ahora.';
+	@override String get restoreRequested => 'Restauración solicitada. Tus compras volverán en un momento.';
+	@override String get restoreCta => 'Restaurar mis compras';
+	@override String get restoreWhatItCovers => 'La restauración recupera tu suscripción y tus recargas. Las rutas desbloqueadas con tus etapas están guardadas en este dispositivo.';
+	@override String get rechargeTitle => 'Recargar mi cuenta de etapas';
+	@override String get rechargeSubtitle => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.';
+	@override String get rechargeBalance => 'Saldo actual';
+	@override String packSteps({required Object steps}) => '${steps} etapas';
+	@override String packPrice({required Object price}) => '${price} €';
+	@override String get rechargeCta => 'Recargar';
+	@override String get subscriptionTitle => 'Suscripción sin publicidad';
+	@override String get subscriptionSubtitle => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.';
+	@override String get subscriptionIncludesNoAds => 'Sin publicidad en toda la aplicación';
+	@override String get subscriptionIncludesAllowance => 'Un bote de etapas en cada periodo';
+	@override String get subscriptionExcludes => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.';
+	@override String get subscriptionCta => 'Suscribirse';
+	@override String get subscriptionActive => 'Suscripción activa';
+	@override String subscriptionActiveUntil({required Object date}) => 'Activa hasta el ${date}';
+	@override String get subscriptionInactive => 'Ninguna suscripción activa';
+	@override String get subscriptionAllowancePending => 'El importe del bote aún no está fijado.';
+	@override String get realizationLockedTitle => 'Esta ruta no está desbloqueada';
+	@override String get realizationLockedBody => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.';
+	@override String get buyOutcomeOwned => 'Ruta desbloqueada. ¡Buen camino!';
+	@override String get buyOutcomeAlreadyOwned => 'Esta ruta ya está desbloqueada.';
+	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
+	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
 }
 
 // Path: signalement
@@ -991,6 +1022,9 @@ class _Translations$training$es extends Translations$training$fr {
 	@override String get noDateWhy => 'Sin fecha de salida este plan no tiene final: no se puede saber en qué semana estás ni cuándo afinar. Pon tu fecha en el Calendario y el plan aparece.';
 	@override String get tooShortTitle => 'Ninguna preparación propuesta';
 	@override String tooShortWhy({required Object days, required Object weeks}) => 'Quedan ${days} días para la salida, menos de ${weeks} semanas. No se te propone ninguna preparación física: por debajo de ${weeks} semanas no hay progresión que construir, y un programa apretado en el tiempo que queda produce lesiones, no forma. Este mínimo de ${weeks} semanas es el de los operadores de trek — Terres d\'Aventure escribe « empieza a entrenar al menos 2 meses antes de partir ». Hasta entonces, camina con regularidad y no busques la sobrecarga.';
+	@override String get demoBridledTitle => 'Versión de prueba';
+	@override String get demoBridledBody => 'La primera fase se puede jugar de mentira: tus marcas no se guardan. Las fases siguientes se abren con la ruta.';
+	@override String get demoLockedPhase => 'Desbloquea la ruta para ver las sesiones';
 }
 
 // Path: eta
@@ -4502,6 +4536,10 @@ extension on TranslationsEs {
 			'checklist.seasonalAdd' => 'Añadir',
 			'checklist.seasonalAdded' => 'Añadido',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
+			'checklist.demoBridledTitle' => 'Versión de prueba',
+			'checklist.demoBridledBody' => 'Las primeras categorías se pueden jugar de mentira. La mochila completa, adaptada a la ruta y a la temporada, se abre con la ruta.',
+			'checklist.demoLockedCategory' => 'Desbloquea la ruta para esta categoría',
+			'checklist.demoUnlockCta' => 'Desbloquear la ruta',
 			'journal.title' => 'Diario de trekking',
 			'journal.empty' => 'Tu diario está vacío',
 			'journal.emptySubtitle' => 'Anota tus impresiones y recuerdos de trekking',
@@ -4932,6 +4970,33 @@ extension on TranslationsEs {
 			'monetization.walletTitle' => 'Cuenta de etapas',
 			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
 			'monetization.walletUnit' => 'etapas',
+			'monetization.storeUnavailable' => 'El pago no está disponible por ahora.',
+			'monetization.restoreUnavailable' => 'No se puede restaurar: el pago no está disponible por ahora.',
+			'monetization.restoreRequested' => 'Restauración solicitada. Tus compras volverán en un momento.',
+			'monetization.restoreCta' => 'Restaurar mis compras',
+			'monetization.restoreWhatItCovers' => 'La restauración recupera tu suscripción y tus recargas. Las rutas desbloqueadas con tus etapas están guardadas en este dispositivo.',
+			'monetization.rechargeTitle' => 'Recargar mi cuenta de etapas',
+			'monetization.rechargeSubtitle' => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.',
+			'monetization.rechargeBalance' => 'Saldo actual',
+			'monetization.packSteps' => ({required Object steps}) => '${steps} etapas',
+			'monetization.packPrice' => ({required Object price}) => '${price} €',
+			'monetization.rechargeCta' => 'Recargar',
+			'monetization.subscriptionTitle' => 'Suscripción sin publicidad',
+			'monetization.subscriptionSubtitle' => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.',
+			'monetization.subscriptionIncludesNoAds' => 'Sin publicidad en toda la aplicación',
+			'monetization.subscriptionIncludesAllowance' => 'Un bote de etapas en cada periodo',
+			'monetization.subscriptionExcludes' => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.',
+			'monetization.subscriptionCta' => 'Suscribirse',
+			'monetization.subscriptionActive' => 'Suscripción activa',
+			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Activa hasta el ${date}',
+			'monetization.subscriptionInactive' => 'Ninguna suscripción activa',
+			'monetization.subscriptionAllowancePending' => 'El importe del bote aún no está fijado.',
+			'monetization.realizationLockedTitle' => 'Esta ruta no está desbloqueada',
+			'monetization.realizationLockedBody' => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.',
+			'monetization.buyOutcomeOwned' => 'Ruta desbloqueada. ¡Buen camino!',
+			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
+			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
+			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
 			'signalement.title' => 'Notificar',
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
@@ -4957,6 +5022,8 @@ extension on TranslationsEs {
 			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
 			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
 			'hebergement.openSite' => 'Ver el sitio',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'No se pudo abrir este enlace en este dispositivo.',
 			'hebergement.empty' => 'No hay alojamientos cerca por ahora.',
 			'hebergement.types.refuge' => 'Refugio',
@@ -4988,8 +5055,6 @@ extension on TranslationsEs {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semanas ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objetivo clave',
 			'training.inviteSetDate' => 'Fija tu fecha de salida en el Calendario para activar la cuenta atras.',
-			_ => null,
-		} ?? switch (path) {
 			'training.inviteFillProfile' => 'Rellena tu ficha para adaptar el plan a tu perfil.',
 			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× por semana',
@@ -4999,6 +5064,9 @@ extension on TranslationsEs {
 			'training.noDateWhy' => 'Sin fecha de salida este plan no tiene final: no se puede saber en qué semana estás ni cuándo afinar. Pon tu fecha en el Calendario y el plan aparece.',
 			'training.tooShortTitle' => 'Ninguna preparación propuesta',
 			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Quedan ${days} días para la salida, menos de ${weeks} semanas. No se te propone ninguna preparación física: por debajo de ${weeks} semanas no hay progresión que construir, y un programa apretado en el tiempo que queda produce lesiones, no forma. Este mínimo de ${weeks} semanas es el de los operadores de trek — Terres d\'Aventure escribe « empieza a entrenar al menos 2 meses antes de partir ». Hasta entonces, camina con regularidad y no busques la sobrecarga.',
+			'training.demoBridledTitle' => 'Versión de prueba',
+			'training.demoBridledBody' => 'La primera fase se puede jugar de mentira: tus marcas no se guardan. Las fases siguientes se abren con la ruta.',
+			'training.demoLockedPhase' => 'Desbloquea la ruta para ver las sesiones',
 			'eta.title' => 'Tiempo estimado',
 			'eta.toNextWaypoint' => 'Próximo punto',
 			'eta.toStageEnd' => 'Fin de etapa',
@@ -5468,6 +5536,8 @@ extension on TranslationsEs {
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TODAS LAS NOCHES RESERVADAS',
 			'nuitees.empty.title' => 'Configura primero tu itinerario',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.empty.message' => 'Elige tu ruta y duración para preparar tus noches.',
 			'nuitees.empty.action' => 'CONFIGURAR ITINERARIO',
 			'transport.title' => 'Transporte',
@@ -5502,8 +5572,6 @@ extension on TranslationsEs {
 			'fireRisk.level.none' => 'Ninguno',
 			'fireRisk.level.low' => 'Bajo',
 			'fireRisk.level.moderate' => 'Moderado',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Alto',
 			'fireRisk.level.veryHigh' => 'Muy alto',
 			'fireRisk.level.extreme' => 'Extremo',

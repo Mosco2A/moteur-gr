@@ -37,14 +37,28 @@ class NoAdsDao extends DatabaseAccessor<AppDatabase> with _$NoAdsDaoMixin {
     return select(noAdsState).watch();
   }
 
-  /// Purge les entrees expirees a la date [now] (reward passe).
+  /// Purge les entrees expirees a la date [now] (reward passe, abo echu).
   ///
-  /// Les lignes sans `expiresAt` (abonnement tant qu'actif) ne sont jamais
-  /// purgees par cette methode.
+  /// DEPUIS LA TACHE 594, UN ABO EXPIRE EST PURGE LUI AUSSI. Toute source
+  /// sans-pub porte desormais une echeance : l'abonnement est pose a
+  /// `now + kSubscriptionNoAdsWindow` et repousse a chaque confirmation du
+  /// store. Les lignes sans `expiresAt` etaient auparavant exemptees de purge
+  /// « abonnement tant qu'actif » — c'etait le « a vie » que la regle d'or
+  /// #99404 interdit. Il n'en est plus ecrit, et [MonetizationService.
+  /// isSubscriberActive] n'en accepte plus.
   Future<int> deleteExpired(DateTime now) {
     return (delete(noAdsState)
           ..where((t) => t.expiresAt.isSmallerThanValue(now)))
         .go();
+  }
+
+  /// Supprime toutes les sources sans-pub d'une [source] donnee.
+  ///
+  /// Sert a la REVOCATION d'un abonnement annule et au remplacement d'un
+  /// abonnement renouvele : un abonnement est un ETAT, pas une collection de
+  /// lignes qui s'empilent.
+  Future<int> deleteBySource(String source) {
+    return (delete(noAdsState)..where((t) => t.source.equals(source))).go();
   }
 
   /// Supprime toutes les sources sans-pub (reset complet).

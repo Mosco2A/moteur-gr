@@ -101,7 +101,14 @@ void main() {
       expect(await svc.isNoAdsActive('gr20'), isFalse);
     });
 
-    test('abo actif = subscriber (jouable, sans pub) sur trek non possede',
+    // CORRIGE PAR LA TACHE 594 (A2a). Ce test affirmait « abo actif =
+    // subscriber JOUABLE » : il avait ete ecrit contre #99405, que l'arbitrage
+    // du 08/09 a REMPLACE. Le modele eco, source de verite unique, dit mot pour
+    // mot que l'abo light « NE debloque PAS les outils complets ni la
+    // realisation — pour les outils complets d'un trek, il faut l'acheter
+    // (comme le gratuit) ». Ce que l'abo donne, il le donne toujours : le
+    // sans-pub partout. Le reste du test est inchange.
+    test('abo actif = subscriber : sans pub partout, mais PAS jouable',
         () async {
       final svc = await makeService();
       await svc.onSubscriptionValidated();
@@ -109,7 +116,7 @@ void main() {
       expect(await svc.isSubscriberActive(), isTrue);
       expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
       expect(TrailAccess.subscriber.showAds, isFalse);
-      expect(await svc.isDemoMode('gr20'), isFalse);
+      expect(await svc.isDemoMode('gr20'), isTrue);
       expect(await svc.isNoAdsActive('gr20'), isTrue);
     });
 
