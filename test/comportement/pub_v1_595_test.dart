@@ -11,7 +11,7 @@
 // verifie pas qu'une classe se compile : il verifie CE QUE VOIT LE RANDONNEUR,
 // et surtout ce qu'il NE VOIT PAS.
 //
-// LES CINQ CHOSES QU'IL TIENT :
+// LES SIX CHOSES QU'IL TIENT :
 //
 //  B1 — LA BANNIERE S'AFFICHE. Un trek libre, la pub consentie : quelque chose
 //       apparait, avec une hauteur reelle. C'est la seule facon de distinguer
@@ -44,6 +44,15 @@
 //  B5 — LE SOS NE PORTE AUCUNE PUBLICITE. C'est aujourd'hui la decision la
 //       mieux respectee du modele, et ce test est la pour qu'elle le reste
 //       quand quelqu'un, dans six mois, cherchera un emplacement de plus.
+//
+//  B6 — EN MODE TREK, JAMAIS. Regle de Chris, 27/09 10:31 : « MAIS EN MODE TREK
+//       JAMAIS !!! Il paye FORCEMENT en mode trek !!! » Elle tenait sur une
+//       condition ternaire au bas d'UN ecran, que rien ne verrouillait. Elle
+//       vit desormais dans la decision — donc partout — et ce groupe la mesure
+//       comme le reste : en comptant les demandes parties a la regie. Il met le
+//       trek en rando SANS droit d'achat, parce que la realisation gratuite est
+//       encore ouverte a cette heure : cette garde est la SEULE qui tienne la
+//       regle jusqu'a ce que le lot 594 atterrisse.
 library;
 
 import 'dart:io';
@@ -67,7 +76,12 @@ import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/ads/data/banner_ad_presenter.dart';
 import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
+import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart'
+    show latestTrekSessionProvider;
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
+import 'package:moteur_gr/features/planning/providers/trek_edit_lock_provider.dart';
+import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,6 +123,19 @@ class _ReseauEnLigne extends ConnectivityMonitor {
       ConnectivityStatusValues.online;
 }
 
+/// Session de tracking FIGEE dans un etat donne (rando en cours, ou pas).
+///
+/// Sert a mettre le monde du test « en mode trek » par le chemin de la session
+/// VIVANTE, sans faire tourner de GPS.
+class _TrackingFige extends TrekSessionManagerNotifier {
+  _TrackingFige(this._etat);
+
+  final TrackingSessionState _etat;
+
+  @override
+  TrackingSessionState build() => _etat;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -142,9 +169,16 @@ void main() {
   /// finalite locale du dispositif de consentement. Les deux sont distincts,
   /// et c'est voulu : le premier dit si l'on a le DROIT de demander une pub,
   /// le second ce que la demande a le droit d'emporter.
+  ///
+  /// `tracking` et `sessionPersistee` sont les DEUX chemins par lesquels
+  /// l'application se sait « en mode trek » (session vivante en memoire,
+  /// session encore ouverte en base apres un redemarrage). Par defaut : aucune
+  /// rando en cours.
   Future<(ProviderContainer, MonetizationService)> monterLeMonde({
     bool pubAutorisee = true,
     bool? pubPersonnalisee,
+    TrackingSessionStatus tracking = TrackingSessionStatus.idle,
+    TrekSession? sessionPersistee,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
@@ -183,9 +217,21 @@ void main() {
         adsReadyProvider.overrideWith((ref) async => pubAutorisee),
         bannerAdPresenterProvider.overrideWithValue(regie),
         consentServiceReadyProvider.overrideWith((ref) async => consentement),
+        // Les DEUX chemins du « mode trek » (cf. l'en-tete de cette fonction).
+        trekSessionManagerProvider.overrideWith(
+          () => _TrackingFige(TrackingSessionState(status: tracking)),
+        ),
+        latestTrekSessionProvider.overrideWith((ref) async => sessionPersistee),
       ],
     );
     addTearDown(container.dispose);
+    // LA BASE A PARLE AVANT QU'ON DEMANDE QUOI QUE CE SOIT. La decision
+    // publicitaire repond « en rando » tant que la session persistee est
+    // inconnue (doute tranche du cote du randonneur, cf. `enModeTrekProvider`).
+    // Un test qui ne laisserait pas cette lecture aboutir mesurerait donc la
+    // fenetre d'amorce et non la regle qu'il croit verifier. Cette fenetre a son
+    // propre test, dans B6.
+    await container.read(latestTrekSessionProvider.future);
     return (container, monetisation);
   }
 
@@ -600,6 +646,168 @@ void main() {
         reason: 'la publicite doit avoir sa bascule sur le MEME ecran que les '
             'autres finalites — c est ca, « en faire partie »',
       );
+    });
+  });
+
+  // =========================================================================
+  // B6 — EN MODE TREK, JAMAIS DE PUBLICITE
+  // =========================================================================
+  group('B6 — en mode trek, jamais', () {
+    // LA REGLE, DE CHRIS, VERBATIM (27/09 10:31) : « MAIS EN MODE TREK JAMAIS
+    // !!! Il paye FORCEMENT en mode trek !!! »
+    //
+    // POURQUOI CE GROUPE EXISTE ALORS QUE LE CODE RESPECTAIT DEJA LA REGLE. Le
+    // cockpit ne montait pas l'emplacement en phase rando — une condition
+    // ternaire, sur UN ecran, que rien ne verrouillait. La regle la plus forte
+    // du modele sur la publicite tenait donc sur une ligne que le prochain
+    // agent pouvait deplacer sans qu'aucun rouge n'apparaisse, et elle ne
+    // couvrait que le cockpit : un autre ecran porteur d'un emplacement aurait
+    // affiche de la publicite en pleine marche.
+    //
+    // ELLE VIT DESORMAIS DANS LA DECISION, donc partout a la fois, et ce
+    // groupe la mesure comme on mesure le reste du lot : en comptant LES
+    // DEMANDES PARTIES A LA REGIE. Chercher des pixels ne prouverait rien —
+    // une publicite chargee puis masquee a deja ete demandee.
+    //
+    // ET ELLE NE S'APPUIE SUR AUCUNE PROPRIETE QUI N'EXISTE PAS ENCORE. « Un
+    // trek en cours de realisation est un trek achete » n'est PAS vrai a cette
+    // heure : `TrekRecorder.start()` ne controle aucun droit, la realisation
+    // gratuite est encore ouverte (c'est le lot 594 qui la ferme). Les cas
+    // ci-dessous mettent donc le trek en rando SANS droit d'achat — c'est
+    // exactement la situation d'aujourd'hui, et c'est la seule qui prouve que
+    // cette garde tient la regle toute seule.
+
+    /// Une session ENCORE OUVERTE EN BASE : le cas du telephone rallume en
+    /// pleine marche. La session vivante repart vide, seule la base se souvient
+    /// qu'un trek est en cours. Sans ce deuxieme chemin, rallumer son telephone
+    /// sur le sentier ferait revenir la publicite.
+    TrekSession sessionOuverte() => TrekSession(
+          id: 'session-en-cours',
+          trailId: 'gr20',
+          startedAt: maintenant.subtract(const Duration(hours: 3)),
+        );
+
+    test('SESSION VIVANTE : aucune demande ne part a la regie, et le trek n est '
+        'meme pas achete', () async {
+      final (c, _) = await monterLeMonde(
+        tracking: TrackingSessionStatus.recording,
+      );
+
+      expect(await c.read(bannerAdProvider('gr20').future), isNull);
+      expect(regie.demandes, isEmpty,
+          reason: 'EN MODE TREK, JAMAIS. Le randonneur marche : il paie, ou il '
+              'marche gratuitement parce que la realisation gratuite n est pas '
+              'encore fermee — dans les deux cas il ne voit pas de publicite '
+              'sur le terrain.');
+    });
+
+    test('SESSION PERSISTEE (telephone rallume en pleine marche) : toujours '
+        'aucune demande', () async {
+      final (c, _) = await monterLeMonde(sessionPersistee: sessionOuverte());
+
+      expect(await c.read(bannerAdProvider('gr20').future), isNull);
+      expect(regie.demandes, isEmpty,
+          reason: 'la session vivante repart vide apres un redemarrage ; si la '
+              'garde ne lisait que celle-la, rallumer son telephone sur le '
+              'sentier ferait revenir la publicite');
+    });
+
+    test('LA REGLE VAUT PARTOUT, pas seulement sur le trek parcouru', () async {
+      final (c, _) = await monterLeMonde(
+        tracking: TrackingSessionStatus.recording,
+      );
+
+      // Le catalogue (aucun trek en contexte) et un AUTRE trek : en mode trek,
+      // aucun emplacement de l application ne demande quoi que ce soit.
+      expect(await c.read(bannerAdProvider(adContextHorsTrek).future), isNull);
+      expect(await c.read(bannerAdProvider('mare-a-mare').future), isNull);
+      expect(regie.demandes, isEmpty,
+          reason: 'c est le MODE qui interdit la publicite, pas le trek : '
+              'ouvrir le catalogue en pleine marche ne rouvre pas la regie');
+    });
+
+    test('HORS RANDO, la publicite revient : la garde ne coupe pas tout', () async {
+      // Le controle du controle. Une garde qui interdit toujours passerait les
+      // trois tests ci-dessus sans rien prouver.
+      final (c, _) = await monterLeMonde();
+
+      expect(await c.read(bannerAdProvider('gr20').future), isNotNull);
+      expect(regie.demandes, hasLength(1));
+    });
+
+    test('TANT QUE LA BASE N A PAS PARLE, aucune demande ne part', () async {
+      // LA FENETRE QUI AURAIT LAISSE PASSER LE CAS DE CHRIS. Au demarrage, la
+      // session vivante est VIDE et la session persistee pas encore lue. Si le
+      // doute se tranchait du cote de la regie, l application se croirait hors
+      // rando pendant une lecture de base — juste assez pour qu'une banniere
+      // part alors que le randonneur marche, telephone rallume sur le sentier.
+      //
+      // Ce test lit la decision SANS attendre la base, et exige le silence.
+      final prefs = await SharedPreferences.getInstance();
+      final iap = WalletIapService(
+        walletStore: portefeuille,
+        noAdsDao: db.noAdsDao,
+        testMode: true,
+      );
+      addTearDown(iap.stopListening);
+      final monetisation = MonetizationService(
+        walletStore: portefeuille,
+        entitlementsDao: db.trekEntitlementsDao,
+        noAdsDao: db.noAdsDao,
+        iapService: iap,
+        connectivityMonitor: _ReseauEnLigne(),
+        nowFn: () => maintenant,
+        prefs: prefs,
+        showcaseTrailIds: const <String>{},
+      );
+      await monetisation.load();
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          monetizationServiceProvider.overrideWithValue(monetisation),
+          monetizationReadyProvider.overrideWith((ref) async => monetisation),
+          adsReadyProvider.overrideWith((ref) async => true),
+          bannerAdPresenterProvider.overrideWithValue(regie),
+          trekSessionManagerProvider.overrideWith(
+            () => _TrackingFige(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            ),
+          ),
+          // La base met du temps a repondre, et elle finira par dire « aucune
+          // session » — mais la decision est prise AVANT.
+          latestTrekSessionProvider.overrideWith((ref) async {
+            await Future<void>.delayed(const Duration(milliseconds: 50));
+            return null;
+          }),
+        ],
+      );
+      addTearDown(c.dispose);
+
+      expect(c.read(enModeTrekProvider), isTrue,
+          reason: 'une situation inconnue se tranche du cote du randonneur');
+      expect(await c.read(bannerAdProvider('gr20').future), isNull);
+      expect(regie.demandes, isEmpty);
+    });
+
+    test('LA DECISION dit NON, et elle le dit en lisant la source qui existe',
+        () async {
+      // La garde ne se contente pas de rendre `null` : elle repond FAUX a la
+      // question « faut-il afficher », donc tout consommateur present ou futur
+      // de la decision est couvert, pas seulement l'emplacement.
+      //
+      // Et elle le lit sur la source EXISTANTE de « une rando est en cours »
+      // ([trekEditLockProvider]), pas sur une quatrieme definition maison : le
+      // test verifie les deux d'un coup, pour qu'un futur decouplage se voie.
+      final (c, _) = await monterLeMonde(
+        tracking: TrackingSessionStatus.recording,
+      );
+
+      expect(c.read(trekEditLockProvider).trekStarted, isTrue,
+          reason: 'le monde de ce test est bien en rando');
+      expect(c.read(enModeTrekProvider), isTrue);
+      expect(await c.read(shouldShowBannerProvider('gr20').future), isFalse,
+          reason: 'la decision doit dire NON avant meme qu un emplacement soit '
+              'monte');
     });
   });
 
