@@ -1909,8 +1909,8 @@ class Translations$monetization$fr {
 	/// fr: 'Débloquer cette randonnée — $price €'
 	String buyCtaWithPrice({required Object price}) => 'Débloquer cette randonnée — ${price} €';
 
-	/// fr: 'Regarder une pub (sans pub 24 h)'
-	String get rewardedCta => 'Regarder une pub (sans pub 24 h)';
+	/// fr: 'Un jour sans publicité — regarder une vidéo'
+	String get rewardedCta => 'Un jour sans publicité — regarder une vidéo';
 
 	/// fr: 'Merci ! Sans publicité pendant 24 h.'
 	String get rewardedEarned => 'Merci ! Sans publicité pendant 24 h.';
@@ -2007,6 +2007,9 @@ class Translations$monetization$fr {
 
 	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
 	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
+
+	/// fr: 'Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.'
+	String get buyOutcomeUnknownPrice => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.';
 
 	/// fr: '$price par mois'
 	String subscriptionPrice({required Object price}) => '${price} par mois';
@@ -8849,7 +8852,7 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer cette randonnée',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer cette randonnée — ${price} €',
-			'monetization.rewardedCta' => 'Regarder une pub (sans pub 24 h)',
+			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'monetization.walletTitle' => 'Compte-étapes',
@@ -8882,6 +8885,7 @@ extension on Translations {
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
+			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
 			'monetization.cancelCta' => 'Arrêter mon abonnement',

@@ -328,14 +328,15 @@ Future<void> _debloquerEntrainement(WidgetTester tester, String trailId) async {
     final service = await c
         .read(monetizationReadyProvider.future)
         .timeout(const Duration(seconds: 15));
-    final trail = c.read(trailConfigProvider);
     await service.rechargeWallet(const StepPack(
       steps: 999,
       priceEur: 0,
       productId: 'preuve_c1_interne',
     ));
-    final outcome =
-        await service.buyTrail(trailId, totalStages: trail.totalStages);
+    // LE PRIX N'EST PLUS PASSE (avenant 614) : le service le lit au catalogue
+    // effectif. Ce test lisait `trailConfigProvider.totalStages` pour le lui
+    // donner — c'est desormais exactement ce que le service fait lui-meme.
+    final outcome = await service.buyTrail(trailId);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     logStep(P, 'deblocage',
         'Entrainement debloque par le portefeuille : ${outcome.status.name}');

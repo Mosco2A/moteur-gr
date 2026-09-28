@@ -160,17 +160,19 @@ void main() {
   group('A3 — le bouton Debloquer n avale plus son echec', () {
     testWidgets('un achat qui echoue le dit et NE FERME PAS la feuille',
         (tester) async {
+      // TACHE 614 — ON OUVRE LA VITRINE PAR LE GESTE UNIQUE. `showPaywallSheet`
+      // etait publique et chaque ecran ouvrait sa propre vitrine avec son
+      // propre prix ; elle est devenue privee et son seul appelant est
+      // [acheterSentier]. Ce test emprunte donc le meme chemin que les trois
+      // points d'entree de l'application, au lieu d'un chemin de test a lui.
       await tester.pumpWidget(
         monter(
-          Builder(
-            builder: (context) => Scaffold(
+          Consumer(
+            builder: (context, ref, _) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => showPaywallSheet(
-                    context,
-                    trailId: 'gr20',
-                    totalStages: 16,
-                  ),
+                  onPressed: () =>
+                      acheterSentier(context, ref, trailId: 'gr20'),
                   child: const Text('ouvrir'),
                 ),
               ),

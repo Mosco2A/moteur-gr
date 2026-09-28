@@ -232,13 +232,13 @@ class _LockedPhaseRow extends StatelessWidget {
 
 /// Encart PAYWALL (spec) : cadenas + « inclus dans le pack <sentier> » + CTA
 /// « Debloquer » -> paywall. Le pack ouvre l'acces (pas le solde d'etapes).
-class _PaywallCard extends StatelessWidget {
+class _PaywallCard extends ConsumerWidget {
   const _PaywallCard({required this.trail});
 
   final TrailConfig trail;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final tr = t.training;
     return AppCard(
@@ -278,11 +278,7 @@ class _PaywallCard extends StatelessWidget {
           AppButton(
             icon: Icons.lock_open,
             label: tr.unlock,
-            onPressed: () => showPaywallSheet(
-              context,
-              trailId: trail.id,
-              totalStages: trail.totalStages,
-            ),
+            onPressed: () => acheterSentier(context, ref, trailId: trail.id),
           ),
         ],
       ),

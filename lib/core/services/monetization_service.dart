@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/feature_flags.dart';
 import '../config/trail_catalog.dart';
+import '../config/trail_selection.dart';
 import '../data/daos/no_ads_dao.dart';
 import '../data/daos/trek_entitlements_dao.dart';
 import '../data/database.dart';
@@ -303,6 +304,23 @@ enum PurchaseStatusResult {
 
   /// Complément store nécessaire mais échoué/annulé/non initié → wallet rollback.
   complementFailed,
+
+  /// PRIX INTROUVABLE : le sentier n'est pas au catalogue, donc invendable.
+  ///
+  /// LE SECOND VERROU DE L'AVENANT 614, et il ne fait pas doublon avec le
+  /// premier. Retirer `totalStages` de [MonetizationService.buyTrail] empêche un
+  /// APPELANT d'annoncer un prix nul ; il n'empêche pas le CATALOGUE de ne rien
+  /// savoir d'un identifiant. Un sentier absent du catalogue rend 0 étape, et 0
+  /// étape traverserait l'algorithme sans débit jusqu'à poser `owned` — le
+  /// sentier serait OFFERT. On refuse donc explicitement, et on le NOMME.
+  ///
+  /// UN SENTIER GRATUIT N'ARRIVE JAMAIS ICI, et c'est toute la différence. Sa
+  /// gratuité est lue au catalogue ([MonetizationService.isFreeTrail]) et
+  /// traitée AVANT ce refus, par [alreadyOwned] : il reste jouable sans débit,
+  /// conformément à la décision de Christophe du 27/09 sur le sentier démo.
+  /// « Prix nul parce que le catalogue le dit » et « prix nul parce qu'on ne
+  /// sait pas » sont deux choses, et ce statut n'existe que pour la seconde.
+  unknownPrice,
 }
 
 /// Devis d'achat/reprise d'un trek (spec §2.4/§2.5).
@@ -440,6 +458,7 @@ class MonetizationService {
     DateTime Function()? nowFn,
     SharedPreferences? prefs,
     Set<String>? freeTrailIds,
+    int Function(String trailId)? stagesOf,
   })  : _wallet = walletStore,
         _entitlementsDao = entitlementsDao,
         _noAdsDao = noAdsDao,
@@ -447,7 +466,8 @@ class MonetizationService {
         _connectivity = connectivityMonitor,
         _now = nowFn ?? DateTime.now,
         _prefs = prefs,
-        _freeTrailIds = freeTrailIds;
+        _freeTrailIds = freeTrailIds,
+        _stagesOf = stagesOf;
 
   final WalletStore _wallet;
   final TrekEntitlementsDao _entitlementsDao;
@@ -462,6 +482,15 @@ class MonetizationService {
 
   /// Sentiers GRATUITS (injectés en test, sinon dérivés du catalogue).
   final Set<String>? _freeTrailIds;
+
+  /// Nombre d'étapes d'un sentier — LE PRIX, résolu depuis le CATALOGUE.
+  ///
+  /// Injecté par [monetizationServiceProvider] sur le catalogue EFFECTIF
+  /// (distant > dernier reçu > compilé) ; `null` en test ou hors Riverpod, où
+  /// l'on retombe sur le catalogue COMPILÉ. Même forme d'injection que
+  /// [_freeTrailIds], et pour la même raison : le prix et la gratuité sont deux
+  /// lectures de la même donnée, jamais deux décisions.
+  final int Function(String trailId)? _stagesOf;
 
   Future<SharedPreferences> get _preferences async =>
       _prefs ??= await SharedPreferences.getInstance();
@@ -481,6 +510,40 @@ class MonetizationService {
   /// Dérive du PRIX porté par la donnée du catalogue, jamais d'un id de localité
   /// en dur ni d'un drapeau d'exemption (tâche 601).
   bool isFreeTrail(String trailId) => _gratuits.contains(trailId);
+
+  // --- LE PRIX D'UN SENTIER, ET PERSONNE D'AUTRE NE LE DÉCIDE (avenant 614) --
+
+  /// Nombre d'étapes du sentier [trailId] — SOURCE UNIQUE DU PRIX.
+  ///
+  /// LE TROU QUE CETTE MÉTHODE FERME. [buyTrail] prenait `totalStages` en
+  /// paramètre REQUIS : c'était l'APPELANT qui annonçait le prix. Un appelant
+  /// qui passait zéro sur un sentier payant traversait tout l'algorithme sans
+  /// rien débiter — `need = 0`, `fromWallet = 0`, `complément = 0` — et
+  /// atteignait la pose de `owned`. Autrement dit : il existait un chemin par
+  /// lequel un sentier PAYANT devenait GRATUIT, et il suffisait de se tromper
+  /// d'argument. C'est exactement le motif `isShowcaseTrail` du lot 601 sous un
+  /// autre nom : une exemption qui n'est écrite nulle part dans le modèle.
+  ///
+  /// LA CORRECTION EST DE RETIRER LE CHOIX, PAS DE LE SURVEILLER. Le prix d'un
+  /// sentier est une propriété de la DONNÉE du catalogue, comme sa gratuité
+  /// ([isFreeTrail]) et comme tout le reste du modèle éco §2 bis. Le service la
+  /// lit ; plus aucun appelant ne la déclare, donc plus aucun appelant ne peut
+  /// se tromper. Les six écrans qui passaient chacun leur montant n'ont plus
+  /// rien à passer.
+  ///
+  /// Rend 0 pour un sentier INCONNU du catalogue — et 0 n'est pas gratuit :
+  /// [buyTrail] refuse alors la vente par [PurchaseStatusResult.unknownPrice]
+  /// plutôt que d'offrir le sentier.
+  int stagesOfTrail(String trailId) =>
+      _stagesOf?.call(trailId) ?? TrailCatalog.byId(trailId)?.totalStages ?? 0;
+
+  /// Prix EUR du sentier [trailId], lu depuis le catalogue (affichage).
+  ///
+  /// Point d'entrée UNIQUE du prix affiché : la vitrine, le catalogue et le
+  /// cockpit l'appellent, et il repose sur la même lecture que le débit. Le
+  /// montant montré et le montant prélevé ne peuvent donc plus diverger.
+  double eurPriceForTrail(String trailId) =>
+      eurPriceForSteps(stagesOfTrail(trailId));
 
   // --- Boot / migration -----------------------------------------------------
 
@@ -657,11 +720,14 @@ class MonetizationService {
 
   /// Devis d'achat d'un trek : besoin, part wallet, complément store.
   ///
-  /// `need = totalStages − acquis` ; `fromWallet = min(wallet, need)` ;
+  /// `need = prix − acquis` ; `fromWallet = min(wallet, need)` ;
   /// `complément = need − fromWallet`. Le pack de complément est le plus petit
   /// couvrant le manque (reco §3.1). N'engage RIEN (lecture seule).
-  Future<TrailQuote> quoteTrail(String trailId, {required int totalStages}) {
-    return _quote(trailId, totalStages: totalStages, useAcquired: true);
+  ///
+  /// Le prix vient du catalogue ([stagesOfTrail]), plus de l'appelant
+  /// (avenant 614) : un devis et l'achat qui le suit lisent le MÊME nombre.
+  Future<TrailQuote> quoteTrail(String trailId) {
+    return _quote(trailId, totalStages: stagesOfTrail(trailId), useAcquired: true);
   }
 
   Future<TrailQuote> _quote(
@@ -701,10 +767,14 @@ class MonetizationService {
   /// `owned` n'est JAMAIS posé tant que le complément store n'est pas confirmé
   /// (spec §5). Jamais de wallet débité sans contrepartie : tout échec du
   /// complément rollback le débit.
-  Future<PurchaseOutcome> buyTrail(
-    String trailId, {
-    required int totalStages,
-  }) async {
+  ///
+  /// LE PRIX N'EST PLUS UN PARAMÈTRE (avenant 614). Il était `required`, donc
+  /// déclaré par l'appelant, et un zéro traversait l'algorithme sans débit
+  /// jusqu'à poser `owned` : un sentier payant devenait gratuit sur une erreur
+  /// d'argument. Il est désormais LU au catalogue ([stagesOfTrail]) — voir cette
+  /// méthode pour la mesure complète du trou et la raison de le fermer en
+  /// retirant le choix plutôt qu'en le surveillant.
+  Future<PurchaseOutcome> buyTrail(String trailId) async {
     if (await ownsTrail(trailId)) {
       return PurchaseOutcome(
         status: PurchaseStatusResult.alreadyOwned,
@@ -723,6 +793,26 @@ class MonetizationService {
     if (isFreeTrail(trailId)) {
       return PurchaseOutcome(
         status: PurchaseStatusResult.alreadyOwned,
+        trailId: trailId,
+      );
+    }
+
+    // LE PRIX VIENT DU CATALOGUE, ET S'IL N'Y EST PAS ON NE VEND PAS.
+    //
+    // L'ordre de ces trois gardes est le fond de l'affaire. « Déjà possédé » et
+    // « gratuit » sont traités AVANT : un sentier dont le catalogue dit que le
+    // prix est nul reste jouable sans débit (décision de Christophe du 27/09,
+    // modèle éco §2 bis — tout se déduit du prix). Ce qui tombe ICI est le cas
+    // opposé : un identifiant que le catalogue ne connaît pas, dont on ignore
+    // le prix. Zéro étape n'est alors pas une gratuité, c'est une ignorance —
+    // et l'offrir serait rejouer `isShowcaseTrail`, l'exemption qui a rendu le
+    // Mare a Mare invendable jusqu'à ce qu'un audit la trouve.
+    final totalStages = stagesOfTrail(trailId);
+    if (totalStages <= 0) {
+      _log.w('[Monetization] $trailId : prix introuvable au catalogue -> '
+          'vente REFUSEE (rien debite, aucun droit pose)');
+      return PurchaseOutcome(
+        status: PurchaseStatusResult.unknownPrice,
         trailId: trailId,
       );
     }
@@ -1036,21 +1126,19 @@ class MonetizationService {
   /// Devis de REPRISE : ne facture que les étapes non encore acquises.
   ///
   /// Identique à [quoteTrail] mais explicite sur l'intention de reprise : le
-  /// besoin = `totalStages − acquis` (les étapes déjà acquises ne sont pas
-  /// repayées, spec §2.5 « rachat du complément consommé »).
-  Future<TrailQuote> quoteResume(String trailId, {required int totalStages}) {
-    return _quote(trailId, totalStages: totalStages, useAcquired: true);
+  /// besoin = `prix − acquis` (les étapes déjà acquises ne sont pas repayées,
+  /// spec §2.5 « rachat du complément consommé »). Prix lu au catalogue.
+  Future<TrailQuote> quoteResume(String trailId) {
+    return _quote(trailId, totalStages: stagesOfTrail(trailId), useAcquired: true);
   }
 
   /// Reprend un trek abandonné : rachète UNIQUEMENT le complément restant.
   ///
   /// Même algo que [buyTrail] (wallet d'abord, complément store, rollback si
-  /// hors-ligne/échec), mais le besoin part des étapes déjà acquises.
-  Future<PurchaseOutcome> resumeTrail(
-    String trailId, {
-    required int totalStages,
-  }) {
-    return buyTrail(trailId, totalStages: totalStages);
+  /// hors-ligne/échec), mais le besoin part des étapes déjà acquises. Le prix
+  /// vient du catalogue, comme pour l'achat (avenant 614).
+  Future<PurchaseOutcome> resumeTrail(String trailId) {
+    return buyTrail(trailId);
   }
 
   // --- Restauration / reset -------------------------------------------------
@@ -1181,6 +1269,21 @@ final monetizationServiceProvider = Provider<MonetizationService>((ref) {
     noAdsDao: db.noAdsDao,
     iapService: ref.watch(walletIapServiceProvider),
     connectivityMonitor: ref.watch(connectivityMonitorProvider),
+    // LE PRIX VIENT DU CATALOGUE EFFECTIF (avenant 614), pas du catalogue
+    // compilé. La nuance est tout l'enjeu depuis la tâche 605 : un sentier
+    // décrit à DISTANCE n'a pas le nombre d'étapes du sentier compilé du même
+    // nom, et c'est précisément pour cela que laisser six écrans déclarer
+    // chacun leur montant était six occasions de vendre au mauvais prix.
+    //
+    // `ref.read` DANS la fonction, et non au-dessus : le nombre est lu À
+    // L'INSTANT DE L'ACHAT. Un manifeste distant reçu entre-temps est donc pris
+    // en compte, sans reconstruire le service ni invalider quoi que ce soit.
+    stagesOf: (trailId) {
+      for (final sentier in ref.read(availableTrailsProvider)) {
+        if (sentier.id == trailId) return sentier.totalStages;
+      }
+      return TrailCatalog.byId(trailId)?.totalStages ?? 0;
+    },
   );
 });
 

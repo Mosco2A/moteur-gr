@@ -211,6 +211,9 @@ void main() {
       nowFn: () => maintenant,
       prefs: prefs,
       freeTrailIds: sentiersGratuits,
+      // Catalogue declare : `buyTrail` lit le prix au lieu de le recevoir
+      // (avenant 614), et 'gr20' est un identifiant de test.
+      stagesOf: (_) => 10,
     );
     await monetisation.load();
 
@@ -695,6 +698,16 @@ void main() {
           'BannerAd(',
           'bannerAdProvider',
           'showPaywallSheet',
+          // TACHE 614 — LE NOM A CHANGE, LA GARDE SUIT. La vitrine ne s'ouvre
+          // plus par `showPaywallSheet` (devenue privee) mais par le geste
+          // unique `acheterSentier`. Sans cette ligne, la garde continuait de
+          // surveiller un nom que plus personne n'ecrit : exactement le defaut
+          // du lot 601, une garde morte qui rassure sans rien tenir. Et
+          // `RewardedNoAdsButton` est la pour la meme raison : proposer une
+          // video recompensee sur le chemin du secours serait de la
+          // monetisation sur le chemin du secours.
+          'acheterSentier',
+          'RewardedNoAdsButton',
         ]) {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');
         }
@@ -789,7 +802,7 @@ void main() {
         tracking: TrackingSessionStatus.recording,
       );
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+      expect((await monetisation.buyTrail('gr20')).isOwned,
           isTrue);
 
       expect(await c.read(bannerAdProvider('gr20').future), isNull,
@@ -819,7 +832,7 @@ void main() {
       final (c, monetisation) =
           await monterLeMonde(sentiersGratuits: {gratuit});
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+      expect((await monetisation.buyTrail('gr20')).isOwned,
           isTrue);
 
       expect(await c.read(bannerAdProvider('gr20').future), isNull,

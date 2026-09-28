@@ -930,7 +930,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Unlock this trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
-	@override String get rewardedCta => 'Watch an ad (24 h ad-free)';
+	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
 	@override String get walletTitle => 'Step account';
@@ -963,6 +963,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
 	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
+	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
 	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
 	@override String get cancelCta => 'Stop my subscription';
@@ -5026,7 +5027,7 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
-			'monetization.rewardedCta' => 'Watch an ad (24 h ad-free)',
+			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'monetization.walletTitle' => 'Step account',
@@ -5059,6 +5060,7 @@ extension on TranslationsEn {
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
+			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
 			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
 			'monetization.cancelCta' => 'Stop my subscription',

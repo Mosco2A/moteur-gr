@@ -930,7 +930,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero pubblicità';
 	@override String get buyCta => 'Sblocca questo trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
-	@override String get rewardedCta => 'Guarda una pub (24 h senza pubblicità)';
+	@override String get rewardedCta => 'Un giorno senza pubblicità — guarda un video';
 	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
 	@override String get rewardedUnavailable => 'Nessun video disponibile al momento.';
 	@override String get walletTitle => 'Conto tappe';
@@ -963,6 +963,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'Questa escursione è già sbloccata.';
 	@override String buyOutcomeOffline({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.';
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
+	@override String get buyOutcomeUnknownPrice => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mese';
 	@override String get subscriptionAllowanceForLife => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.';
 	@override String get cancelCta => 'Interrompere l’abbonamento';
@@ -5026,7 +5027,7 @@ extension on TranslationsIt {
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
-			'monetization.rewardedCta' => 'Guarda una pub (24 h senza pubblicità)',
+			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
 			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
 			'monetization.walletTitle' => 'Conto tappe',
@@ -5059,6 +5060,7 @@ extension on TranslationsIt {
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
+			'monetization.buyOutcomeUnknownPrice' => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mese',
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',

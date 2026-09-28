@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -72,13 +73,12 @@ class ChecklistDemoBanner extends StatelessWidget {
 ///
 /// On lit le NOM de la categorie (on sait ce qu'on n'a pas) ; on n'a pas ses
 /// articles. Le geste mene au paywall, jamais dans le vide (regle du LOT X).
-class ChecklistLockedCategory extends StatelessWidget {
+class ChecklistLockedCategory extends ConsumerWidget {
   const ChecklistLockedCategory({
     super.key,
     required this.categoryKey,
     required this.categoryName,
     required this.trailId,
-    required this.totalStages,
   });
 
   /// Cle technique de la categorie (sert a la cle de widget, donc aux tests).
@@ -90,11 +90,13 @@ class ChecklistLockedCategory extends StatelessWidget {
   /// Sentier a debloquer.
   final String trailId;
 
-  /// Nombre d'etapes du sentier (prix affiche par le paywall).
-  final int totalStages;
+  // PLUS DE `totalStages` ICI (avenant 614). Le prix est lu au catalogue par le
+  // service qui debite ([MonetizationService.stagesOfTrail]) ; un parametre que
+  // plus aucun calcul ne consulte est un mensonge d'interface, et c'est par ce
+  // genre de parametre qu'un zero finissait par offrir un sentier payant.
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final grise = theme.colorScheme.onSurface.withAlpha(110);
     return AppCard(
@@ -102,11 +104,7 @@ class ChecklistLockedCategory extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,
       child: InkWell(
-        onTap: () => showPaywallSheet(
-          context,
-          trailId: trailId,
-          totalStages: totalStages,
-        ),
+        onTap: () => acheterSentier(context, ref, trailId: trailId),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           child: Row(

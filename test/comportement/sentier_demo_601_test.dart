@@ -173,7 +173,7 @@ void main() {
     test('achete avec le compte-etapes, il devient possede et realisable',
         () async {
       final svc = await makeService(walletSteps: 7);
-      final outcome = await svc.buyTrail(kPayant, totalStages: 7);
+      final outcome = await svc.buyTrail(kPayant);
       expect(outcome.isOwned, isTrue,
           reason: '7 etapes au compte-etapes couvrent les 7 etapes du sentier');
       expect(await svc.accessFor(kPayant), TrailAccess.owned);
@@ -211,7 +211,7 @@ void main() {
 
     test('on ne VEND pas un sentier gratuit : rien n est debite', () async {
       final svc = await makeService(walletSteps: 5);
-      final outcome = await svc.buyTrail(kDemo, totalStages: 2);
+      final outcome = await svc.buyTrail(kDemo);
       expect(outcome.status, PurchaseStatusResult.alreadyOwned,
           reason: 'l acces est deja acquis : l appel est idempotent et le dit');
       expect(svc.walletSteps, 5,
@@ -240,7 +240,7 @@ void main() {
     test('acheter le vrai sentier ne change rien au statut de la demo',
         () async {
       final svc = await makeService(walletSteps: 7);
-      await svc.buyTrail(kPayant, totalStages: 7);
+      await svc.buyTrail(kPayant);
       expect(await svc.accessFor(kPayant), TrailAccess.owned);
       expect(await svc.accessFor(kDemo), TrailAccess.freeTrail,
           reason: 'la demo reste ce qu elle est : un sentier gratuit');
@@ -249,7 +249,7 @@ void main() {
     test('la progression ne se melange pas : etapes acquises par sentier',
         () async {
       final svc = await makeService(walletSteps: 7);
-      await svc.buyTrail(kPayant, totalStages: 7);
+      await svc.buyTrail(kPayant);
       expect(await svc.acquiredStagesFor(kPayant), 7);
       expect(await svc.acquiredStagesFor(kDemo), 0,
           reason: 'identifiants distincts = droits distincts = progressions '
@@ -258,7 +258,7 @@ void main() {
 
     test('les droits sont stockes sous des identifiants DISTINCTS', () async {
       final svc = await makeService(walletSteps: 7);
-      await svc.buyTrail(kPayant, totalStages: 7);
+      await svc.buyTrail(kPayant);
       final droits = await db.trekEntitlementsDao.owned();
       expect(droits, contains(kPayant));
       expect(droits, isNot(contains(kDemo)),
@@ -316,7 +316,7 @@ void main() {
       final svc = await makeService(walletSteps: 7);
 
       // 1. Le randonneur ACHETE le Mare a Mare.
-      expect((await svc.buyTrail(kPayant, totalStages: 7)).isOwned, isTrue);
+      expect((await svc.buyTrail(kPayant)).isOwned, isTrue);
 
       // 2. Il s abonne : sans pub PARTOUT.
       await svc.onSubscriptionValidated();
