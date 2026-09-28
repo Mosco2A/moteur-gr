@@ -8,6 +8,28 @@ import 'paywall_sheet.dart';
 
 /// Widget gate qui encapsule un ecran et verifie l'achat du trek (E4.17).
 ///
+/// ┌─────────────────────────────────────────────────────────────────────────┐
+/// │ ATTENTION — CE WIDGET N'EST MONTE NULLE PART DANS `lib/`.                │
+/// └─────────────────────────────────────────────────────────────────────────┘
+///
+/// MESURE DE LA TACHE 614 : recherche de `PurchaseGateWidget` dans tout `lib/`
+/// = sa propre definition, plus une mention en commentaire dans
+/// `monetization_service.dart`. AUCUN ecran ne l'encapsule. Il a pourtant
+/// quatre tests qui passent — ils montent le widget eux-memes. C'est donc un
+/// test qui rassure sans rien garder, exactement le defaut que le lot 601 a
+/// traque dans les commentaires.
+///
+/// ET C'EST LA CAUSE D'UN DEFAUT COMMERCIAL REEL, pas une coquetterie : c'est
+/// PARCE QUE ce bandeau n'etait monte nulle part que le cockpit de preparation
+/// n'avait AUCUN chemin d'achat avant la tache 614 — le seul existait sur le
+/// bouton de depart. Le chemin est desormais pose par [HubBuyTrekButton], qui
+/// lit la meme source ([isDemoModeProvider]) et ne depend pas de ce widget.
+///
+/// SON SORT EST UNE DECISION DE PRODUIT, PAS DE CODE, et elle est posee : soit
+/// il est monte quelque part et redevient un vrai garde, soit il part avec ses
+/// tests. En attendant, ce bandeau ne protege rien, et le prochain agent doit le
+/// savoir avant de croire qu'il tient le niveau gratuit.
+///
 /// Si le trek n'a pas ete achete, affiche un bandeau mode demo
 /// en haut de l'ecran (#81774 : gratuit = demo + pub). Le tap sur
 /// le bandeau ouvre l ecran paywall ([PaywallSheet]) qui propose
@@ -20,7 +42,6 @@ import 'paywall_sheet.dart';
 /// ```dart
 /// PurchaseGateWidget(
 ///   trailId: trailConfig.id,
-///   totalStages: trailConfig.totalStages,
 ///   child: MonEcranComplet(),
 /// )
 /// ```
@@ -29,7 +50,6 @@ class PurchaseGateWidget extends ConsumerWidget {
     super.key,
     required this.trailId,
     required this.child,
-    this.totalStages = 0,
     this.demoBannerText,
     this.onPurchaseTap,
   });
@@ -39,9 +59,6 @@ class PurchaseGateWidget extends ConsumerWidget {
 
   /// Contenu de l'ecran encapsule.
   final Widget child;
-
-  /// Nombre d etapes du trek (calcul du prix paywall, #81774).
-  final int totalStages;
 
   /// Texte personnalise du bandeau demo (defaut: t.monetization.demoBanner).
   final String? demoBannerText;
@@ -76,10 +93,11 @@ class PurchaseGateWidget extends ConsumerWidget {
 
   /// Ouvre l ecran paywall (deblocage premium du trek).
   ///
-  /// TACHE 614 — PASSE PAR LE GESTE UNIQUE [acheterSentier], qui resout le prix
-  /// lui-meme depuis le catalogue effectif. Le parametre [totalStages] de ce
-  /// widget n'entre donc plus dans le calcul : il reste pour ne pas casser ses
-  /// appelants, mais il ne peut plus faire diverger un prix.
+  /// TACHE 614 — PASSE PAR LE GESTE UNIQUE [acheterSentier]. Le prix n'est plus
+  /// transmis par personne : le service le lit au catalogue
+  /// ([MonetizationService.stagesOfTrail]). Le parametre `totalStages` de ce
+  /// widget a donc ete RETIRE plutot que laisse en decor — un parametre qui
+  /// n'influence plus rien est un mensonge d'interface.
   void _openPaywall(BuildContext context, WidgetRef ref) {
     acheterSentier(context, ref, trailId: trailId);
   }

@@ -962,6 +962,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'Questa escursione è già sbloccata.';
 	@override String buyOutcomeOffline({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.';
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
+	@override String get buyOutcomeUnknownPrice => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mese';
 	@override String get subscriptionAllowanceForLife => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.';
 	@override String get cancelCta => 'Interrompere l’abbonamento';
@@ -5057,6 +5058,7 @@ extension on TranslationsIt {
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
+			'monetization.buyOutcomeUnknownPrice' => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mese',
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',

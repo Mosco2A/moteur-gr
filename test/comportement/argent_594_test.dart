@@ -91,6 +91,11 @@ void main() {
       nowFn: () => now,
       prefs: prefs,
       freeTrailIds: showcase ?? const {},
+      // LE PRIX VIENT DU CATALOGUE (avenant 614) : `buyTrail` ne le
+      // recoit plus en argument, il le LIT. Ce test travaille sur un
+      // identifiant fictif, il declare donc son catalogue ici — meme
+      // forme d injection que `freeTrailIds`, et meme raison.
+      stagesOf: (id) => id == 'gr20' ? 16 : 0,
     );
     await svc.load();
     if (walletSteps > 0) await wallet.credit(walletSteps);
@@ -111,7 +116,7 @@ void main() {
 
     test('un trek achete peut etre realise', () async {
       final svc = await makeService(walletSteps: 16);
-      final outcome = await svc.buyTrail('gr20', totalStages: 16);
+      final outcome = await svc.buyTrail('gr20');
       expect(outcome.isOwned, isTrue);
       expect(await svc.canRealizeTrail('gr20'), isTrue);
     });

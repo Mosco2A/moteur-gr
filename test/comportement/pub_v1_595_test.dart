@@ -211,6 +211,9 @@ void main() {
       nowFn: () => maintenant,
       prefs: prefs,
       freeTrailIds: sentiersGratuits,
+      // Catalogue declare : `buyTrail` lit le prix au lieu de le recevoir
+      // (avenant 614), et 'gr20' est un identifiant de test.
+      stagesOf: (_) => 10,
     );
     await monetisation.load();
 
@@ -799,7 +802,7 @@ void main() {
         tracking: TrackingSessionStatus.recording,
       );
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+      expect((await monetisation.buyTrail('gr20')).isOwned,
           isTrue);
 
       expect(await c.read(bannerAdProvider('gr20').future), isNull,
@@ -829,7 +832,7 @@ void main() {
       final (c, monetisation) =
           await monterLeMonde(sentiersGratuits: {gratuit});
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+      expect((await monetisation.buyTrail('gr20')).isOwned,
           isTrue);
 
       expect(await c.read(bannerAdProvider('gr20').future), isNull,

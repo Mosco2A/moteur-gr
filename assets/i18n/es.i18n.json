@@ -1167,6 +1167,7 @@
     "buyOutcomeAlreadyOwned": "Esta ruta ya está desbloqueada.",
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
+    "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",

@@ -146,7 +146,6 @@ void main() {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
           trailId: 'gr-pyrenees',
-          totalStages: 12,
           child: Text('Contenu du trek'),
         ),
       ));
@@ -159,12 +158,11 @@ void main() {
     });
 
     testWidgets('trek achete : contenu nu, pas de bandeau', (tester) async {
-      await svc.buyTrail('gr-pyrenees', totalStages: 12);
+      await svc.buyTrail('gr-pyrenees');
 
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
           trailId: 'gr-pyrenees',
-          totalStages: 12,
           child: Text('Contenu du trek'),
         ),
       ));
@@ -182,7 +180,6 @@ void main() {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
           trailId: 'gr-pyrenees',
-          totalStages: 12,
           child: Text('Contenu du trek'),
         ),
       ));
@@ -192,7 +189,7 @@ void main() {
       expect(find.text(t.monetization.demoBanner), findsOneWidget);
 
       // L'achat aboutit PENDANT que le gate est monte (aucun remount du widget).
-      await svc.buyTrail('gr-pyrenees', totalStages: 12);
+      await svc.buyTrail('gr-pyrenees');
       await tester.pumpAndSettle();
 
       // isDemoModeProvider relance via le stream d'entitlements : bandeau parti.
@@ -207,7 +204,6 @@ void main() {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
           trailId: 'gr-pyrenees',
-          totalStages: 12,
           child: Text('Contenu du trek'),
         ),
       ));

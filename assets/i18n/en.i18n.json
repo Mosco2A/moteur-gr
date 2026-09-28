@@ -1167,6 +1167,7 @@
     "buyOutcomeAlreadyOwned": "This hike is already unlocked.",
     "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
     "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
+    "buyOutcomeUnknownPrice": "This trail is not on sale right now. Nothing was charged.",
     "subscriptionPrice": "$price per month",
     "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",

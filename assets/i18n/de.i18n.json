@@ -1167,6 +1167,7 @@
     "buyOutcomeAlreadyOwned": "Diese Wanderung ist bereits freigeschaltet.",
     "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
+    "buyOutcomeUnknownPrice": "Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.",
     "subscriptionPrice": "$price pro Monat",
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
     "cancelCta": "Abo beenden",

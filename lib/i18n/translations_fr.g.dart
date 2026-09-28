@@ -2007,6 +2007,9 @@ class Translations$monetization$fr {
 	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
 	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
 
+	/// fr: 'Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.'
+	String get buyOutcomeUnknownPrice => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.';
+
 	/// fr: '$price par mois'
 	String subscriptionPrice({required Object price}) => '${price} par mois';
 
@@ -8877,6 +8880,7 @@ extension on Translations {
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
+			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
 			'monetization.cancelCta' => 'Arrêter mon abonnement',

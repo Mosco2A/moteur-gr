@@ -1167,6 +1167,7 @@
     "buyOutcomeAlreadyOwned": "Questa escursione è già sbloccata.",
     "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
+    "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
     "subscriptionPrice": "$price al mese",
     "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.",
     "cancelCta": "Interrompere l’abbonamento",

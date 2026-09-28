@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/services/monetization_service.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
@@ -37,13 +36,12 @@ class HubBuyTrekButton extends ConsumerWidget {
     final achetable = ref.watch(isDemoModeProvider(trailId)).value ?? false;
     if (!achetable) return const SizedBox.shrink();
 
-    // LE PRIX VIENT DU SERVICE, pas d'une formule recopiee (meme raison que
-    // dans le catalogue : un seul achat, donc un seul montant).
+    // LE PRIX VIENT DU SERVICE, QUI LE LIT AU CATALOGUE (avenant 614). Cet
+    // ecran ne connait plus le nombre d'etapes du sentier et n'a pas a le
+    // connaitre : c'est celui qui debite qui compte, une seule fois.
     final monetisation = ref.watch(monetizationServiceProvider);
-    final etapes = ref.watch(trailConfigProvider.select((c) => c.totalStages));
-    final prix = monetisation.eurPriceForSteps(
-      monetisation.stepPriceForTrail(totalStages: etapes),
-    );
+    final etapes = monetisation.stagesOfTrail(trailId);
+    final prix = monetisation.eurPriceForTrail(trailId);
 
     // L'ESPACEMENT EST PORTE PAR L'ECRAN, pas par le bouton : quand il
     // s'efface, le cockpit ne doit pas garder un blanc de la taille d'un

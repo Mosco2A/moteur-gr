@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/config/trail_config.dart';
-import '../../core/config/trail_selection.dart';
-import '../../core/engine/trail_engine.dart';
 import '../../core/services/monetization_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../features/ads/presentation/rewarded_no_ads_button.dart';
@@ -28,47 +25,20 @@ import 'app_button.dart';
 /// `lib/` a ouvrir la vitrine, et un test structurel le tient. Trois
 /// implementations du meme achat auraient derive en trois prix.
 ///
-/// ET C'EST LUI QUI RESOUT LE PRIX, PAS L'APPELANT. Le prix d'un sentier se
-/// compte en etapes ; laisser chaque ecran passer son propre `totalStages`,
-/// c'est trois occasions de payer le mauvais montant — d'autant que le
-/// catalogue est desormais DISTANT (tache 605) et qu'un sentier recu par le
-/// reseau n'a pas le nombre d'etapes du sentier compile du meme nom. On lit
-/// donc le catalogue EFFECTIF ([availableTrailsProvider], resolu distant >
-/// dernier recu > compile), avec repli sur le sentier actif.
+/// ET LE PRIX N'EST PLUS DANS CE FICHIER NON PLUS (avenant 614). Le geste
+/// resolvait lui-meme le nombre d'etapes depuis le catalogue effectif, ce qui
+/// reglait les six ecrans — mais laissait `buyTrail` prendre un `totalStages`
+/// REQUIS, donc un chemin par lequel un sentier payant devenait gratuit sur une
+/// erreur d'argument. Le prix a donc descendu d'un etage : il est lu par le
+/// SERVICE ([MonetizationService.stagesOfTrail]), qui est aussi celui qui
+/// debite. Le montant affiche et le montant preleve ne peuvent plus diverger,
+/// et ce geste n'a plus rien a transmettre qu'un identifiant.
 Future<void> acheterSentier(
   BuildContext context,
   WidgetRef ref, {
   required String trailId,
 }) {
-  return _ouvrirLaVitrine(
-    context,
-    trailId: trailId,
-    totalStages: _etapesDe(ref, trailId),
-  );
-}
-
-/// Le nombre d'etapes du sentier [trailId] dans le catalogue EFFECTIF.
-///
-/// DEUX SOURCES, DANS CET ORDRE, ET AUCUNE TROISIEME :
-///  1. LE CATALOGUE EFFECTIF ([availableTrailsProvider]) — distant, puis
-///     dernier distant recu, puis compile. C'est le cas de TOUS les sentiers
-///     reels : le catalogue les liste, la preparation et le depart travaillent
-///     sur un sentier qui en vient.
-///  2. LE SENTIER ACTIF, en dernier recours. C'est exactement ce que faisaient
-///     DEJA cinq des six anciens appelants (`journal`, `entrainement`, la
-///     carte, le sac, la garde d'achat) : ils passaient `trailConfigProvider
-///     .totalStages` quel que soit le trek demande. On ne change donc rien pour
-///     eux — on centralise.
-///
-/// ON NE REND JAMAIS ZERO, et c'est la raison de ce repli. Un prix de zero
-/// etape traverse [MonetizationService.buyTrail] sans rien debiter et pose
-/// `owned` : le sentier serait OFFERT. Mieux vaut le nombre d'etapes du
-/// sentier actif — qui est ce que l'application avait deja — que gratuit.
-int _etapesDe(WidgetRef ref, String trailId) {
-  for (final TrailConfig sentier in ref.read(availableTrailsProvider)) {
-    if (sentier.id == trailId) return sentier.totalStages;
-  }
-  return ref.read(trailConfigProvider).totalStages;
+  return _ouvrirLaVitrine(context, trailId: trailId);
 }
 
 /// Ouvre l ecran paywall en bottom sheet (E4.17, StepWays LOT 1).
@@ -85,13 +55,12 @@ int _etapesDe(WidgetRef ref, String trailId) {
 Future<void> _ouvrirLaVitrine(
   BuildContext context, {
   required String trailId,
-  required int totalStages,
 }) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => PaywallSheet(trailId: trailId, totalStages: totalStages),
+    builder: (_) => PaywallSheet(trailId: trailId),
   );
 }
 
@@ -99,26 +68,24 @@ Future<void> _ouvrirLaVitrine(
 ///
 /// Gratuit = preparation avec pub + demo. Premium a la carte =
 /// trek complet sans pub. Textes via Slang (t.monetization.*).
+///
+/// IL NE RECOIT PLUS DE NOMBRE D'ETAPES (avenant 614) : il DEMANDE le prix au
+/// service, qui le lit au catalogue. C'est la meme lecture que celle du debit —
+/// une vitrine qui affiche un montant et un service qui en preleve un autre
+/// etait mecaniquement possible tant que les deux etaient passes separement.
 class PaywallSheet extends ConsumerWidget {
-  const PaywallSheet({
-    super.key,
-    required this.trailId,
-    required this.totalStages,
-  });
+  const PaywallSheet({super.key, required this.trailId});
 
   /// Trek a debloquer.
   final String trailId;
-
-  /// Nombre d etapes (prix = etapes x 1 EUR, #81774).
-  final int totalStages;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final monetization = ref.watch(monetizationServiceProvider);
-    // Prix EUR indicatif : nombre d'etapes x tarif palier (kStepTierEur).
-    final steps = monetization.stepPriceForTrail(totalStages: totalStages);
-    final price = monetization.eurPriceForSteps(steps);
+    // Prix EUR indicatif, lu au catalogue par la SOURCE UNIQUE du prix.
+    final totalStages = monetization.stagesOfTrail(trailId);
+    final price = monetization.eurPriceForTrail(trailId);
 
     return SafeArea(
       child: Padding(
@@ -187,7 +154,7 @@ class PaywallSheet extends ConsumerWidget {
                 final messenger = ScaffoldMessenger.of(context);
                 final outcome = await ref
                     .read(monetizationServiceProvider)
-                    .buyTrail(trailId, totalStages: totalStages);
+                    .buyTrail(trailId);
                 if (!context.mounted) return;
                 messenger.showSnackBar(
                   SnackBar(content: Text(_messagePour(outcome))),
@@ -217,10 +184,16 @@ class PaywallSheet extends ConsumerWidget {
 
 /// Traduit l'issue d'un achat en une phrase que l'utilisateur peut lire.
 ///
-/// Les quatre issues de [PurchaseStatusResult] sont distinctes et se disent
+/// Les CINQ issues de [PurchaseStatusResult] sont distinctes et se disent
 /// differemment : « c'est fait », « c'etait deja fait », « il faut du reseau »,
-/// « le paiement n'a pas abouti ». Les deux dernieres precisent que RIEN n'a
-/// ete debite — le service fait bien le rollback, il fallait encore le dire.
+/// « le paiement n'a pas abouti », « ce sentier n'est pas en vente ». Les trois
+/// dernieres precisent que RIEN n'a ete debite — le service fait bien le
+/// rollback (ou n'engage rien du tout), il fallait encore le dire.
+///
+/// LA CINQUIEME EST NEE DE L'AVENANT 614, et elle doit se DIRE plutot que de se
+/// taire : un sentier absent du catalogue n'a pas de prix, donc l'achat est
+/// refuse. Le refus silencieux aurait ete un bouton qui ne produit rien — et
+/// l'alternative, vendre a zero, aurait offert le sentier.
 String _messagePour(PurchaseOutcome outcome) {
   final m = t.monetization;
   return switch (outcome.status) {
@@ -229,6 +202,7 @@ String _messagePour(PurchaseOutcome outcome) {
     PurchaseStatusResult.offlineComplementRequired =>
       m.buyOutcomeOffline(steps: outcome.complementSteps),
     PurchaseStatusResult.complementFailed => m.buyOutcomeFailed,
+    PurchaseStatusResult.unknownPrice => m.buyOutcomeUnknownPrice,
   };
 }
 

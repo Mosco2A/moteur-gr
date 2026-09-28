@@ -962,6 +962,7 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'Esta ruta ya está desbloqueada.';
 	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
+	@override String get buyOutcomeUnknownPrice => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mes';
 	@override String get subscriptionAllowanceForLife => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.';
 	@override String get cancelCta => 'Cancelar mi suscripción';
@@ -5057,6 +5058,7 @@ extension on TranslationsEs {
 			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
+			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
 			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
 			'monetization.cancelCta' => 'Cancelar mi suscripción',

@@ -962,6 +962,7 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'Diese Wanderung ist bereits freigeschaltet.';
 	@override String buyOutcomeOffline({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
+	@override String get buyOutcomeUnknownPrice => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.';
 	@override String subscriptionPrice({required Object price}) => '${price} pro Monat';
 	@override String get subscriptionAllowanceForLife => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.';
 	@override String get cancelCta => 'Abo beenden';
@@ -5057,6 +5058,7 @@ extension on TranslationsDe {
 			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
+			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.',
 			'monetization.cancelCta' => 'Abo beenden',

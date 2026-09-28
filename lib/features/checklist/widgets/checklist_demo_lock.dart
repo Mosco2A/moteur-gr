@@ -79,7 +79,6 @@ class ChecklistLockedCategory extends ConsumerWidget {
     required this.categoryKey,
     required this.categoryName,
     required this.trailId,
-    required this.totalStages,
   });
 
   /// Cle technique de la categorie (sert a la cle de widget, donc aux tests).
@@ -91,11 +90,10 @@ class ChecklistLockedCategory extends ConsumerWidget {
   /// Sentier a debloquer.
   final String trailId;
 
-  /// Nombre d'etapes du sentier.
-  ///
-  /// N'entre plus dans le prix depuis la tache 614 : [acheterSentier] le resout
-  /// lui-meme depuis le catalogue effectif. Conserve pour les appelants.
-  final int totalStages;
+  // PLUS DE `totalStages` ICI (avenant 614). Le prix est lu au catalogue par le
+  // service qui debite ([MonetizationService.stagesOfTrail]) ; un parametre que
+  // plus aucun calcul ne consulte est un mensonge d'interface, et c'est par ce
+  // genre de parametre qu'un zero finissait par offrir un sentier payant.
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

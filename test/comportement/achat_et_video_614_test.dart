@@ -27,6 +27,14 @@
 // vient pour PAYER et pas la ou la publicite gene. Le bouton se pose donc SUR
 // la banniere, et son libelle dit ce qu on OBTIENT avant ce qu on fait.
 //
+// AVENANT — LE TROU QUE LE PREMIER COMMIT AVAIT CONTOURNE SANS LE FERMER.
+// `buyTrail` prenait encore le prix en parametre REQUIS, donc un appelant
+// pouvait passer zero sur un sentier payant et le rendre GRATUIT. Le groupe P
+// mesure sa fermeture : le prix est retire des parametres et lu au catalogue,
+// et un identifiant sans prix est refuse par un statut nomme au lieu d etre
+// offert. Le sentier GRATUIT, lui, reste jouable sans debit — la difference
+// n est pas le zero, c est d ou il vient.
+//
 // TESTS ECRITS AVANT LA CORRECTION.
 library;
 
@@ -367,13 +375,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final attendu = monetisation
-          .eurPriceForSteps(
-            monetisation.stepPriceForTrail(
-              totalStages: _sentierPayant.totalStages,
-            ),
-          )
-          .toStringAsFixed(2);
+      final attendu =
+          monetisation.eurPriceForTrail(_sentierPayant.id).toStringAsFixed(2);
       expect(
         find.text(t.monetization.buyCtaWithPrice(price: attendu)),
         findsOneWidget,
@@ -536,6 +539,170 @@ void main() {
                 'fait : « $libelle »');
       });
     }
+  });
+
+  // =========================================================================
+  // P — LE PRIX N EST PLUS UNE DECISION D APPELANT (avenant 614)
+  // =========================================================================
+  //
+  // LE TROU QUE CE GROUPE FERME, ET IL ETAIT ENCORE OUVERT APRES LE PREMIER
+  // COMMIT. `buyTrail` prenait `totalStages` en parametre REQUIS. Un appelant
+  // qui passait zero sur un sentier PAYANT traversait tout l algorithme sans
+  // rien debiter — besoin nul, part portefeuille nulle, complement nul — et
+  // atteignait la pose de `owned`. Autrement dit : il existait un chemin par
+  // lequel un sentier payant devenait GRATUIT, et il suffisait de se tromper
+  // d argument. Le geste unique le contournait ; le trou restait dans le mur,
+  // et le prochain appelant, dans six mois, ne saurait pas qu il doit passer
+  // par le geste.
+  //
+  // C EST LE MOTIF `isShowcaseTrail` SOUS UN AUTRE NOM : une exemption qui n
+  // est ecrite nulle part dans le modele et qui a rendu le Mare a Mare
+  // invendable jusqu a ce qu un audit la trouve (lot 601).
+  //
+  // ON FERME EN RETIRANT LE CHOIX, PAS EN LE SURVEILLANT.
+  group('P — le prix vient du catalogue, plus de l appelant', () {
+    test('AUCUN appelant de lib/ ne transmet de nombre d etapes a un achat',
+        () {
+      // La forme du defaut etait « un nombre passe a la caisse ». On verifie
+      // donc qu aucun fichier ne passe plus rien : ni a `buyTrail`, ni a
+      // `resumeTrail`, ni aux deux devis.
+      final fautifs = <String>[];
+      final motif = RegExp(
+        r'(buyTrail|resumeTrail|quoteTrail|quoteResume)\([^)]*totalStages',
+      );
+      for (final f in sourcesDeLib()) {
+        if (motif.hasMatch(f.readAsStringSync())) {
+          fautifs.add(f.path.replaceAll(r'\', '/'));
+        }
+      }
+      expect(fautifs, isEmpty,
+          reason: 'le prix est une propriete du catalogue, pas un argument. Un '
+              'appelant qui le transmet peut le transmettre a zero, et zero '
+              'offre le sentier.\n  ${fautifs.join('\n  ')}');
+    });
+
+    test('la signature de buyTrail ne porte PLUS de prix', () {
+      final source =
+          File('lib/core/services/monetization_service.dart').readAsStringSync();
+      expect(source, contains('Future<PurchaseOutcome> buyTrail(String trailId)'),
+          reason: 'buyTrail ne prend qu un identifiant : c est ce qui rend le '
+              'zero impossible a passer, plutot que penible a detecter');
+    });
+
+    test('un sentier INCONNU du catalogue ne se vend pas, et le DIT', () async {
+      final monetisation = await service();
+      await portefeuille.credit(50);
+
+      final issue = await monetisation.buyTrail('sentier-qui-n-existe-pas');
+
+      expect(issue.status, PurchaseStatusResult.unknownPrice,
+          reason: 'sans prix au catalogue, la vente est refusee — et nommee, '
+              'parce qu un refus muet serait un bouton qui ne produit rien');
+      expect(issue.isOwned, isFalse);
+      expect(await monetisation.ownsTrail('sentier-qui-n-existe-pas'), isFalse,
+          reason: 'LE COEUR DU TROU : zero etape posait `owned` sans debit');
+      expect(monetisation.walletSteps, 50,
+          reason: 'et rien n est debite non plus — on n engage rien du tout');
+    });
+
+    test('LE SENTIER GRATUIT N EST PAS VICTIME DE CETTE FERMETURE', () async {
+      // LA DIFFERENCE EST LA SOURCE DU ZERO, et elle decide de tout. Un sentier
+      // dont le CATALOGUE dit que le prix est nul reste jouable sans debit
+      // (decision de Christophe du 27/09, modele eco §2 bis). Un identifiant
+      // dont on IGNORE le prix est refuse. Les deux rendent zero etape ; une
+      // seule des deux est une gratuite.
+      final monetisation = await service();
+      await portefeuille.credit(5);
+
+      final issue = await monetisation.buyTrail(_sentierGratuit.id);
+
+      expect(issue.status, PurchaseStatusResult.alreadyOwned,
+          reason: 'l acces est deja acquis : idempotent, et surtout PAS refuse');
+      expect(issue.status, isNot(PurchaseStatusResult.unknownPrice),
+          reason: 'ne pas fermer la porte du gratuit en fermant celle du prix '
+              'nul frauduleux');
+      expect(monetisation.walletSteps, 5,
+          reason: 'un sentier gratuit ne coute RIEN');
+      expect(await monetisation.canRealizeTrail(_sentierGratuit.id), isTrue,
+          reason: 'et il reste JOUABLE — c est tout l objet de la decision');
+      expect(await monetisation.ownsTrail(_sentierGratuit.id), isFalse,
+          reason: 'sans devenir un sentier ACHETE pour autant (lot 601)');
+    });
+
+    test('un sentier PAYANT est debite au prix du CATALOGUE', () async {
+      final monetisation = await service();
+      // Exactement le prix du catalogue au portefeuille, pas un de plus.
+      await portefeuille.credit(_sentierPayant.totalStages);
+
+      final issue = await monetisation.buyTrail(_sentierPayant.id);
+
+      expect(issue.isOwned, isTrue,
+          reason: 'le prix lu au catalogue doit etre celui que le '
+              'portefeuille couvre exactement');
+      expect(monetisation.walletSteps, 0,
+          reason: 'le prix a REELLEMENT ete debite, et c est le bon');
+      expect(monetisation.stagesOfTrail(_sentierPayant.id),
+          _sentierPayant.totalStages,
+          reason: 'la source du prix est la donnee du sentier');
+    });
+
+    test('LE PRIX AFFICHE EST LE PRIX DEBITE — meme lecture, pas deux',
+        () async {
+      // Tant que la vitrine recevait son nombre d etapes et le service le sien,
+      // afficher un montant et prelever un autre etait MECANIQUEMENT possible.
+      final monetisation = await service();
+      final etapesAffichees = monetisation.stagesOfTrail(_sentierPayant.id);
+      await portefeuille.credit(etapesAffichees);
+
+      expect(
+        monetisation.eurPriceForTrail(_sentierPayant.id),
+        monetisation.eurPriceForSteps(etapesAffichees),
+        reason: 'le prix affiche derive de la meme lecture que le debit',
+      );
+      expect((await monetisation.buyTrail(_sentierPayant.id)).isOwned, isTrue);
+      expect(monetisation.walletSteps, 0,
+          reason: 'le montant preleve est exactement celui qui etait affiche');
+    });
+
+    test('le prix vient du catalogue EFFECTIF, pas seulement du compile',
+        () async {
+      // LA RAISON D ETRE DE L INJECTION. Depuis la tache 605 le catalogue est
+      // DISTANT : un sentier recu par le reseau n est pas dans le catalogue
+      // compile, et son prix ne peut donc pas en venir. Le service accepte un
+      // resolveur — c est celui que branche `monetizationServiceProvider` sur
+      // `availableTrailsProvider`. Ici on le simule sur un sentier que
+      // `TrailCatalog` ne connait pas.
+      const idDistant = 'sentier-venu-du-reseau';
+      expect(TrailCatalog.byId(idDistant), isNull,
+          reason: 'ce sentier ne doit PAS etre au catalogue compile, sinon le '
+              'test ne mesure pas ce qu il croit');
+
+      final prefs = await SharedPreferences.getInstance();
+      final iap = WalletIapService(
+        walletStore: portefeuille,
+        noAdsDao: db.noAdsDao,
+        testMode: true,
+      );
+      addTearDown(iap.stopListening);
+      final monetisation = MonetizationService(
+        walletStore: portefeuille,
+        entitlementsDao: db.trekEntitlementsDao,
+        noAdsDao: db.noAdsDao,
+        iapService: iap,
+        connectivityMonitor: _ReseauEnLigne(),
+        nowFn: () => maintenant,
+        prefs: prefs,
+        freeTrailIds: const <String>{},
+        stagesOf: (id) => id == idDistant ? 4 : 0,
+      );
+      await monetisation.load();
+      await portefeuille.credit(4);
+
+      expect(monetisation.stagesOfTrail(idDistant), 4);
+      expect((await monetisation.buyTrail(idDistant)).isOwned, isTrue,
+          reason: 'un sentier distant doit etre vendable a SON prix');
+      expect(monetisation.walletSteps, 0);
+    });
   });
 
   // =========================================================================

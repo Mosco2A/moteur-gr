@@ -160,9 +160,11 @@ class _AvailableTrailCard extends ConsumerWidget {
     // un sentier deja acquis ou gratuit serait un bouton qui ment, exactement
     // comme le bouton video sur une banniere qui n'existe pas.
     final achetable = ref.watch(isDemoModeProvider(trail.id)).value ?? false;
-    // LE PRIX SE DEMANDE AU SERVICE, il ne se recalcule pas ici. La vitrine
-    // l'obtient deja ainsi ([PaywallSheet]) : une seconde formule dans le
-    // catalogue serait la meme faute que trois chemins d'achat, sur le montant.
+    // LE PRIX SE DEMANDE AU SERVICE, il ne se recalcule pas ici — et depuis
+    // l'avenant 614 le service le LIT AU CATALOGUE, donc cet ecran ne lui
+    // transmet meme plus le nombre d'etapes du sentier. Une seconde formule
+    // dans le catalogue serait la meme faute que trois chemins d'achat, sur le
+    // montant ; un second NOMBRE l'etait tout autant.
     final monetisation = ref.watch(monetizationServiceProvider);
 
     // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base porte
@@ -292,11 +294,7 @@ class _AvailableTrailCard extends ConsumerWidget {
                 icon: Icons.lock_open,
                 label: t.monetization.buyCtaWithPrice(
                   price: monetisation
-                      .eurPriceForSteps(
-                        monetisation.stepPriceForTrail(
-                          totalStages: trail.totalStages,
-                        ),
-                      )
+                      .eurPriceForTrail(trail.id)
                       .toStringAsFixed(2),
                 ),
                 onPressed: () =>

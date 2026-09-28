@@ -85,6 +85,14 @@ void main() {
       nowFn: () => now,
       prefs: prefs,
       freeTrailIds: gratuits ?? const {},
+      // LE PRIX VIENT DU CATALOGUE (avenant 614). Ces tests utilisent des
+      // identifiants fictifs ('gr20', 'gratuit') : ils declarent donc le
+      // catalogue, exactement comme ils declarent la gratuite au-dessus.
+      stagesOf: (id) => switch (id) {
+        'gr20' => 10,
+        'gratuit' => 3,
+        _ => 0,
+      },
     );
     await svc.load();
     if (walletSteps > 0) await wallet.credit(walletSteps);
@@ -122,7 +130,7 @@ void main() {
 
     test('trek possede = owned (prioritaire sur l abo)', () async {
       final svc = await makeService(walletSteps: 10);
-      final outcome = await svc.buyTrail('gr20', totalStages: 10);
+      final outcome = await svc.buyTrail('gr20');
 
       expect(outcome.isOwned, isTrue);
       expect(await svc.ownsTrail('gr20'), isTrue);
@@ -169,13 +177,13 @@ void main() {
         () async {
       final svc = await makeService(walletSteps: 12);
 
-      final quote = await svc.quoteTrail('gr20', totalStages: 10);
+      final quote = await svc.quoteTrail('gr20');
       expect(quote.stepsNeeded, 10);
       expect(quote.stepsFromWallet, 10);
       expect(quote.complementSteps, 0);
       expect(quote.complementPack, isNull);
 
-      final outcome = await svc.buyTrail('gr20', totalStages: 10);
+      final outcome = await svc.buyTrail('gr20');
       expect(outcome.status, PurchaseStatusResult.owned);
       expect(outcome.stepsFromWallet, 10);
       expect(svc.walletSteps, 2, reason: '12 - 10 debitees');
@@ -184,10 +192,10 @@ void main() {
 
     test('deja possede : idempotent, rien debite', () async {
       final svc = await makeService(walletSteps: 20);
-      await svc.buyTrail('gr20', totalStages: 10);
+      await svc.buyTrail('gr20');
       final before = svc.walletSteps;
 
-      final again = await svc.buyTrail('gr20', totalStages: 10);
+      final again = await svc.buyTrail('gr20');
       expect(again.status, PurchaseStatusResult.alreadyOwned);
       expect(svc.walletSteps, before, reason: 'aucun re-debit');
     });
@@ -198,12 +206,12 @@ void main() {
         () async {
       final svc = await makeService(walletSteps: 4, online: false);
 
-      final quote = await svc.quoteTrail('gr20', totalStages: 10);
+      final quote = await svc.quoteTrail('gr20');
       expect(quote.stepsFromWallet, 4);
       expect(quote.complementSteps, 6);
       expect(quote.complementPack!.steps, 11);
 
-      final outcome = await svc.buyTrail('gr20', totalStages: 10);
+      final outcome = await svc.buyTrail('gr20');
       expect(outcome.status, PurchaseStatusResult.offlineComplementRequired);
       expect(outcome.complementSteps, 6);
       // Jamais de wallet debite sans contrepartie : le debit est annule.
@@ -215,7 +223,7 @@ void main() {
         () async {
       final svc = await makeService(walletSteps: 4, online: true);
 
-      final outcome = await svc.buyTrail('gr20', totalStages: 10);
+      final outcome = await svc.buyTrail('gr20');
       // Le complement store est asynchrone (boucle completion) : pas de
       // confirmation synchrone en stub -> rollback + echec, owned NON pose.
       expect(outcome.status, PurchaseStatusResult.complementFailed);
@@ -273,7 +281,7 @@ void main() {
         () async {
       // Achat initial couvert par le wallet : 10/10 acquis, owned.
       final svc = await makeService(walletSteps: 30);
-      await svc.buyTrail('gr20', totalStages: 10);
+      await svc.buyTrail('gr20');
       expect(await svc.acquiredStagesFor('gr20'), 10);
 
       // Abandon : owned retombe a false, acquis conserves comme base de rachat.
@@ -283,12 +291,12 @@ void main() {
       expect(FeatureFlags.isPremiumEnabled('gr20'), isFalse);
 
       // Devis de reprise : plus rien a payer (tout deja acquis).
-      final resumeQuote = await svc.quoteResume('gr20', totalStages: 10);
+      final resumeQuote = await svc.quoteResume('gr20');
       expect(resumeQuote.stepsNeeded, 0, reason: 'les 10 etapes sont acquises');
       expect(resumeQuote.complementSteps, 0);
 
       final walletBefore = svc.walletSteps;
-      final outcome = await svc.resumeTrail('gr20', totalStages: 10);
+      final outcome = await svc.resumeTrail('gr20');
       expect(outcome.status, PurchaseStatusResult.owned);
       expect(outcome.stepsFromWallet, 0, reason: 'rien re-debite a la reprise');
       expect(svc.walletSteps, walletBefore);
@@ -310,7 +318,7 @@ void main() {
         ),
       );
 
-      final quote = await svc.quoteResume('gr20', totalStages: 10);
+      final quote = await svc.quoteResume('gr20');
       expect(quote.acquiredStages, 4);
       expect(quote.stepsNeeded, 6, reason: '10 - 4 acquises');
     });
@@ -366,7 +374,7 @@ void main() {
     test('on ne lui vend rien : aucune etape debitee, aucun droit pose',
         () async {
       final svc = await makeService(walletSteps: 9, gratuits: {'gratuit'});
-      final outcome = await svc.buyTrail('gratuit', totalStages: 3);
+      final outcome = await svc.buyTrail('gratuit');
 
       expect(outcome.status, PurchaseStatusResult.alreadyOwned);
       expect(svc.walletSteps, 9, reason: 'son prix est nul');
@@ -380,7 +388,7 @@ void main() {
   group('ST4 reset', () {
     test('reset efface droits + sans-pub + cache FeatureFlags', () async {
       final svc = await makeService(walletSteps: 30);
-      await svc.buyTrail('gr20', totalStages: 10);
+      await svc.buyTrail('gr20');
       await svc.onSubscriptionValidated();
       await svc.grantRewardNoAds();
 
@@ -410,7 +418,7 @@ void main() {
     test('featuresForTrail suit accessFor (owned -> premium)', () async {
       final svc = await makeService(walletSteps: 10);
       expect((await svc.featuresForTrail('gr20')).isDemo, isTrue);
-      await svc.buyTrail('gr20', totalStages: 10);
+      await svc.buyTrail('gr20');
       expect((await svc.featuresForTrail('gr20')).isDemo, isFalse);
       expect((await svc.featuresForTrail('gr20')).hasGpsTracking, isTrue);
     });

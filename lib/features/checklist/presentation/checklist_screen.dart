@@ -98,7 +98,8 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     // le verrou qui porte l'argent est celui de la REALISATION, et il vit dans
     // le domaine, pas ici.
     final trailId = ref.watch(trailIdProvider);
-    final totalStages = ref.watch(trailConfigProvider).totalStages;
+    // Le nombre d'etapes n'est plus lu ici : le prix du deblocage est resolu par
+    // le service qui debite ([MonetizationService.stagesOfTrail], avenant 614).
     final isDemo = ref.watch(isDemoModeProvider(trailId)).value ?? false;
 
     return Scaffold(
@@ -227,7 +228,6 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                         categoryKey: category,
                         categoryName: _resolveCategoryName(category),
                         trailId: trailId,
-                        totalStages: totalStages,
                       ),
                   // --- Preparation du sac ---
                   ChecklistPreparationSection(items: state.items),
