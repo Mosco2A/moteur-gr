@@ -102,6 +102,34 @@ class TrailManifests extends Table {
   /// — la source de fichier telecharge le fichier entier de toute facon.
   TextColumn get niveauLocal => text().nullable()();
 
+  /// OU SONT LES TUILES DE CE SENTIER, CE QU ELLES PESENT, ET LEUR EMPREINTE
+  /// (tache 622).
+  ///
+  /// Miroir local de `TrailManifestEntry.tilesPath` / `tilesSize` / `tilesHash`.
+  /// Nulles quand la liste distante ne publie pas de carte pour ce sentier — ce qui
+  /// est un cas NORMAL, pas une anomalie.
+  ///
+  /// POURQUOI EN BASE, ET PAS LUES AU VOL DANS LA LISTE DISTANTE. Le geste
+  /// « telecharger » lit la LIGNE LOCALE (`CatalogNotifier.downloadTrail` ->
+  /// `getByTrailId`), jamais la reponse reseau : c est ce qui lui permet de partir
+  /// d un catalogue affiche depuis le dernier distant recu. Si l adresse des tuiles
+  /// n etait pas conservee ici, la descente des cartes exigerait une SECONDE lecture
+  /// du manifeste au moment du geste — donc un second chemin de resolution, avec sa
+  /// propre facon d echouer. Trois colonnes valent mieux que deux verites.
+  ///
+  /// ELLES NE DISENT RIEN DE CE QUI EST SUR LE TELEPHONE. Ce sont des faits
+  /// SERVEUR, comme [hash] et [fileSize] : « voila la carte publiee ». La presence
+  /// reelle du fichier se lit sur le systeme de fichiers (`MBTilesManager`), une
+  /// seule source, et pas dans une colonne qui pourrait mentir apres un effacement
+  /// de donnees d application.
+  TextColumn get tilesPath => text().nullable()();
+
+  /// Poids du fichier de tuiles publie, en octets. Null = aucune carte publiee.
+  IntColumn get tilesSize => integer().nullable()();
+
+  /// Empreinte SHA-256 du fichier de tuiles publie. Null = aucune carte publiee.
+  TextColumn get tilesHash => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {trailId};
 }

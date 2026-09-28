@@ -361,7 +361,41 @@ mixin _$TrailManifestEntry {
 ///    plus, l entree n est pas affichable et elle est ecartee avec un
 ///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
 ///    vide au catalogue.
- TrailManifestFiche? get fiche;
+ TrailManifestFiche? get fiche;/// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
+///
+/// CE QUI MANQUAIT, ET C EST LA MOITIE DU TROU DES CARTES HORS LIGNE. Le code
+/// qui descend un `.mbtiles` existait depuis des mois
+/// (`MBTilesManager.downloadMbtiles`) et n avait AUCUN APPELANT — mais meme
+/// branche, il n aurait rien eu a descendre : cette liste ne portait NI adresse,
+/// NI taille, NI empreinte pour les tuiles. Un randonneur qui preparait son
+/// sentier puis montait sans reseau n avait donc pas de fond de carte, quoi
+/// qu il fasse et quel que soit le niveau demande.
+///
+/// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
+/// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
+/// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+/// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
+///
+/// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
+/// publiee. Le moteur REFUSE alors la descente avec une cause nommee
+/// (`RefusDeDescente.aucuneCartePubliee`) au lieu de laisser croire que
+/// « realiser » rend le sentier marchable hors ligne.
+ String? get tilesPath;/// Taille du fichier de tuiles, en octets. Null si [tilesPath] est null.
+///
+/// C EST CE QUE LE RANDONNEUR DOIT VOIR AVANT DE DIRE OUI. Une descente de
+/// cartes fait des dizaines ou des centaines de megaoctets (260 Mo mesures en
+/// z10-16 par la tache 608) : annoncer le poids n est pas une politesse, c est
+/// la condition pour qu un randonneur en partage de connexion decide en
+/// connaissance de cause.
+ int? get tilesSize;/// Empreinte SHA-256 du fichier de tuiles. Null si [tilesPath] est null.
+///
+/// ELLE N EST PAS FACULTATIVE QUAND LES TUILES EXISTENT, pour la raison exacte
+/// qui a rendu [hash] obligatoire a la tache 607 : un `.mbtiles` est une base
+/// SQLite, et un fichier tronque reste un fichier. Une carte coupee a 80 %
+/// s ouvre parfois, puis echoue au premier carreau manquant — en montagne, sans
+/// reseau, sans recours. L empreinte se verifie AVANT que le fichier ne prenne
+/// son nom definitif.
+ String? get tilesHash;
 /// Create a copy of TrailManifestEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -374,16 +408,16 @@ $TrailManifestEntryCopyWith<TrailManifestEntry> get copyWith => _$TrailManifestE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailManifestEntry&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.dataVersion, dataVersion) || other.dataVersion == dataVersion)&&(identical(other.hash, hash) || other.hash == hash)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.fiche, fiche) || other.fiche == fiche));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailManifestEntry&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.dataVersion, dataVersion) || other.dataVersion == dataVersion)&&(identical(other.hash, hash) || other.hash == hash)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.fiche, fiche) || other.fiche == fiche)&&(identical(other.tilesPath, tilesPath) || other.tilesPath == tilesPath)&&(identical(other.tilesSize, tilesSize) || other.tilesSize == tilesSize)&&(identical(other.tilesHash, tilesHash) || other.tilesHash == tilesHash));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,trailId,dataVersion,hash,filePath,fileSize,status,lastUpdated,fiche);
+int get hashCode => Object.hash(runtimeType,trailId,dataVersion,hash,filePath,fileSize,status,lastUpdated,fiche,tilesPath,tilesSize,tilesHash);
 
 @override
 String toString() {
-  return 'TrailManifestEntry(trailId: $trailId, dataVersion: $dataVersion, hash: $hash, filePath: $filePath, fileSize: $fileSize, status: $status, lastUpdated: $lastUpdated, fiche: $fiche)';
+  return 'TrailManifestEntry(trailId: $trailId, dataVersion: $dataVersion, hash: $hash, filePath: $filePath, fileSize: $fileSize, status: $status, lastUpdated: $lastUpdated, fiche: $fiche, tilesPath: $tilesPath, tilesSize: $tilesSize, tilesHash: $tilesHash)';
 }
 
 
@@ -394,7 +428,7 @@ abstract mixin class $TrailManifestEntryCopyWith<$Res>  {
   factory $TrailManifestEntryCopyWith(TrailManifestEntry value, $Res Function(TrailManifestEntry) _then) = _$TrailManifestEntryCopyWithImpl;
 @useResult
 $Res call({
- String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche, String? tilesPath, int? tilesSize, String? tilesHash
 });
 
 
@@ -411,7 +445,7 @@ class _$TrailManifestEntryCopyWithImpl<$Res>
 
 /// Create a copy of TrailManifestEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? trailId = null,Object? dataVersion = null,Object? hash = null,Object? filePath = null,Object? fileSize = null,Object? status = null,Object? lastUpdated = null,Object? fiche = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? trailId = null,Object? dataVersion = null,Object? hash = null,Object? filePath = null,Object? fileSize = null,Object? status = null,Object? lastUpdated = null,Object? fiche = freezed,Object? tilesPath = freezed,Object? tilesSize = freezed,Object? tilesHash = freezed,}) {
   return _then(_self.copyWith(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,dataVersion: null == dataVersion ? _self.dataVersion : dataVersion // ignore: cast_nullable_to_non_nullable
@@ -421,7 +455,10 @@ as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,lastUpdated: null == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as String,fiche: freezed == fiche ? _self.fiche : fiche // ignore: cast_nullable_to_non_nullable
-as TrailManifestFiche?,
+as TrailManifestFiche?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
+as String?,tilesSize: freezed == tilesSize ? _self.tilesSize : tilesSize // ignore: cast_nullable_to_non_nullable
+as int?,tilesHash: freezed == tilesHash ? _self.tilesHash : tilesHash // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of TrailManifestEntry
@@ -518,10 +555,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
-return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
+return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
   return orElse();
 
 }
@@ -539,10 +576,10 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry():
-return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
+return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -559,10 +596,10 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
-return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
+return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
   return null;
 
 }
@@ -573,8 +610,8 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// @nodoc
 @JsonSerializable()
 
-class _TrailManifestEntry implements TrailManifestEntry {
-  const _TrailManifestEntry({required this.trailId, @HorodatageServeurJson() required this.dataVersion, required this.hash, required this.filePath, required this.fileSize, required this.status, required this.lastUpdated, this.fiche});
+class _TrailManifestEntry extends TrailManifestEntry {
+  const _TrailManifestEntry({required this.trailId, @HorodatageServeurJson() required this.dataVersion, required this.hash, required this.filePath, required this.fileSize, required this.status, required this.lastUpdated, this.fiche, this.tilesPath, this.tilesSize, this.tilesHash}): super._();
   factory _TrailManifestEntry.fromJson(Map<String, dynamic> json) => _$TrailManifestEntryFromJson(json);
 
 /// Identifiant unique du sentier (ex: 'gr10', 'tmb').
@@ -654,6 +691,43 @@ class _TrailManifestEntry implements TrailManifestEntry {
 ///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
 ///    vide au catalogue.
 @override final  TrailManifestFiche? fiche;
+/// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
+///
+/// CE QUI MANQUAIT, ET C EST LA MOITIE DU TROU DES CARTES HORS LIGNE. Le code
+/// qui descend un `.mbtiles` existait depuis des mois
+/// (`MBTilesManager.downloadMbtiles`) et n avait AUCUN APPELANT — mais meme
+/// branche, il n aurait rien eu a descendre : cette liste ne portait NI adresse,
+/// NI taille, NI empreinte pour les tuiles. Un randonneur qui preparait son
+/// sentier puis montait sans reseau n avait donc pas de fond de carte, quoi
+/// qu il fasse et quel que soit le niveau demande.
+///
+/// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
+/// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
+/// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+/// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
+///
+/// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
+/// publiee. Le moteur REFUSE alors la descente avec une cause nommee
+/// (`RefusDeDescente.aucuneCartePubliee`) au lieu de laisser croire que
+/// « realiser » rend le sentier marchable hors ligne.
+@override final  String? tilesPath;
+/// Taille du fichier de tuiles, en octets. Null si [tilesPath] est null.
+///
+/// C EST CE QUE LE RANDONNEUR DOIT VOIR AVANT DE DIRE OUI. Une descente de
+/// cartes fait des dizaines ou des centaines de megaoctets (260 Mo mesures en
+/// z10-16 par la tache 608) : annoncer le poids n est pas une politesse, c est
+/// la condition pour qu un randonneur en partage de connexion decide en
+/// connaissance de cause.
+@override final  int? tilesSize;
+/// Empreinte SHA-256 du fichier de tuiles. Null si [tilesPath] est null.
+///
+/// ELLE N EST PAS FACULTATIVE QUAND LES TUILES EXISTENT, pour la raison exacte
+/// qui a rendu [hash] obligatoire a la tache 607 : un `.mbtiles` est une base
+/// SQLite, et un fichier tronque reste un fichier. Une carte coupee a 80 %
+/// s ouvre parfois, puis echoue au premier carreau manquant — en montagne, sans
+/// reseau, sans recours. L empreinte se verifie AVANT que le fichier ne prenne
+/// son nom definitif.
+@override final  String? tilesHash;
 
 /// Create a copy of TrailManifestEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -668,16 +742,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailManifestEntry&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.dataVersion, dataVersion) || other.dataVersion == dataVersion)&&(identical(other.hash, hash) || other.hash == hash)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.fiche, fiche) || other.fiche == fiche));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailManifestEntry&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.dataVersion, dataVersion) || other.dataVersion == dataVersion)&&(identical(other.hash, hash) || other.hash == hash)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.fileSize, fileSize) || other.fileSize == fileSize)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.fiche, fiche) || other.fiche == fiche)&&(identical(other.tilesPath, tilesPath) || other.tilesPath == tilesPath)&&(identical(other.tilesSize, tilesSize) || other.tilesSize == tilesSize)&&(identical(other.tilesHash, tilesHash) || other.tilesHash == tilesHash));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,trailId,dataVersion,hash,filePath,fileSize,status,lastUpdated,fiche);
+int get hashCode => Object.hash(runtimeType,trailId,dataVersion,hash,filePath,fileSize,status,lastUpdated,fiche,tilesPath,tilesSize,tilesHash);
 
 @override
 String toString() {
-  return 'TrailManifestEntry(trailId: $trailId, dataVersion: $dataVersion, hash: $hash, filePath: $filePath, fileSize: $fileSize, status: $status, lastUpdated: $lastUpdated, fiche: $fiche)';
+  return 'TrailManifestEntry(trailId: $trailId, dataVersion: $dataVersion, hash: $hash, filePath: $filePath, fileSize: $fileSize, status: $status, lastUpdated: $lastUpdated, fiche: $fiche, tilesPath: $tilesPath, tilesSize: $tilesSize, tilesHash: $tilesHash)';
 }
 
 
@@ -688,7 +762,7 @@ abstract mixin class _$TrailManifestEntryCopyWith<$Res> implements $TrailManifes
   factory _$TrailManifestEntryCopyWith(_TrailManifestEntry value, $Res Function(_TrailManifestEntry) _then) = __$TrailManifestEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche, String? tilesPath, int? tilesSize, String? tilesHash
 });
 
 
@@ -705,7 +779,7 @@ class __$TrailManifestEntryCopyWithImpl<$Res>
 
 /// Create a copy of TrailManifestEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? trailId = null,Object? dataVersion = null,Object? hash = null,Object? filePath = null,Object? fileSize = null,Object? status = null,Object? lastUpdated = null,Object? fiche = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? trailId = null,Object? dataVersion = null,Object? hash = null,Object? filePath = null,Object? fileSize = null,Object? status = null,Object? lastUpdated = null,Object? fiche = freezed,Object? tilesPath = freezed,Object? tilesSize = freezed,Object? tilesHash = freezed,}) {
   return _then(_TrailManifestEntry(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,dataVersion: null == dataVersion ? _self.dataVersion : dataVersion // ignore: cast_nullable_to_non_nullable
@@ -715,7 +789,10 @@ as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,lastUpdated: null == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as String,fiche: freezed == fiche ? _self.fiche : fiche // ignore: cast_nullable_to_non_nullable
-as TrailManifestFiche?,
+as TrailManifestFiche?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
+as String?,tilesSize: freezed == tilesSize ? _self.tilesSize : tilesSize // ignore: cast_nullable_to_non_nullable
+as int?,tilesHash: freezed == tilesHash ? _self.tilesHash : tilesHash // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
