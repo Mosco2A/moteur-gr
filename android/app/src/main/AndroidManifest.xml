@@ -126,8 +126,20 @@
              dur dans ce fichier, donc NON injectable au build : impossible de
              produire un APK de production sans modifier un fichier versionne.
              C'etait d'autant plus incoherent que les EMPLACEMENTS publicitaires
-             (ad-units), eux, etaient deja proprement injectes par
-             `--dart-define` (`lib/core/config/ad_config.dart`). L'App ID
+             (ad-units), eux, etaient deja proprement injectes par l'option
+             `dart-define` de Flutter (`lib/core/config/ad_config.dart`).
+
+             TACHE 619 — LE NOM DE L'OPTION EST ECRIT SANS SES DEUX TIRETS DE
+             TETE, ET CE N'EST PAS UNE COQUILLE. Deux tirets colles forment une
+             suite INTERDITE dans un commentaire XML. Ecrite ici par la tache
+             595, elle rendait ce manifeste illisible par le fusionneur de
+             manifestes Android, et AUCUN paquet ne sortait — ni APK ni AAB, ni
+             debug ni release. La garde
+             test/structurel/ressources_xml_android_bien_formees_619_test.dart
+             balaye desormais tout l'arbre android/ pour que cela ne revienne
+             pas.
+
+             L'App ID
              arrive desormais du build via le `manifestPlaceholder` `admobAppId`
              (voir android/app/build.gradle.kts, qui documente l'injection et
              retombe sur l'App ID de TEST public de Google). -->

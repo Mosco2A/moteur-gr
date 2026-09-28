@@ -13,9 +13,9 @@
      n y va, dans aucun cas. Ici il s agit de la sauvegarde du telephone PAR
      GOOGLE, qui ne nous appartient pas et qui est ACTIVE PAR DEFAUT.
 
-     ------------------------------------------------------------------------
+     ========================================================================
      CE FICHIER NE LISTE PLUS CE QUI RESTE DEHORS : IL LISTE CE QUI PART
-     ------------------------------------------------------------------------
+     ========================================================================
 
      Les taches 612 et 613 declaraient des EXCLUSIONS. Une liste d exclusions
      doit etre tenue a jour : tout stockage ajoute plus tard part par defaut, en
@@ -67,9 +67,9 @@
      content ». Des donnees qui refusent le nuage mais passent par le cable n ont
      pas quitte le telephone : elles ont quitte CE telephone-la.
 
-     ------------------------------------------------------------------------
+     ========================================================================
      UNE OPTION EXAMINEE ET ECARTEE, POUR QUE CE NE SOIT PAS UN OUBLI
-     ------------------------------------------------------------------------
+     ========================================================================
 
      disableIfNoEncryptionCapabilities EXISTE, ET ON NE LE MET PAS. La
      documentation dit : « Your app can set the disableIfNoEncryptionCapabilities
@@ -86,9 +86,9 @@
      a consenti ; on honore son choix. A retourner si Christophe prefere l inverse,
      mais alors il faudra le DIRE dans le texte de la case.
 
-     ------------------------------------------------------------------------
+     ========================================================================
      CE QUE CE FICHIER NE FERME PAS, ET IL FAUT LE SAVOIR
-     ------------------------------------------------------------------------
+     ========================================================================
 
      LA TROISIEME SECTION MANQUE, DONC ELLE AUTORISE TOUT. Depuis Android 16 QPR2
      (API 36.1) il existe une section <cross-platform-transfer> pour les

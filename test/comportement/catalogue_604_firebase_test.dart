@@ -392,7 +392,8 @@ void main() {
   // 4. LA CONFIGURATION FIREBASE EST REELLEMENT LUE AU BUILD
   // --------------------------------------------------------------------
   group('604 — Firebase est branche, pas seulement declare', () {
-    test('LE GREFFON SANS LEQUEL RIEN N EST LU est declare', () {
+    test('LE GREFFON SANS LEQUEL RIEN N EST LU est declare, ET POSE DES QUE SA '
+        'CONFIGURATION EST LA', () {
       // `Firebase.initializeApp()` est appele SANS options : il attend les
       // ressources natives produites par ce greffon. Absent, l init echouait a
       // 100 % des demarrages Android — zero rapport de plantage, zero
@@ -401,9 +402,27 @@ void main() {
       expect(settings, contains('com.google.gms.google-services'));
       expect(settings, contains('com.google.firebase.crashlytics'));
 
+      // TACHE 619 — CE CONTROLE A CHANGE DE FORME, PAS DE FOND, ET VOICI
+      // POURQUOI. La tache 604 posait les deux greffons EN DUR dans le bloc
+      // `plugins`. Or `com.google.gms.google-services` refuse de fonctionner
+      // sans `android/app/google-services.json`, fichier exclu du depot et
+      // fourni par AUCUNE chaine : depuis ce lot, PLUS AUCUN BUILD ANDROID ne
+      // passait, ni en local ni sur la CI qui compile pourtant un APK debug.
+      // Les greffons sont desormais poses par `apply(plugin = ...)` SOUS
+      // CONDITION de presence du fichier — ce qui aligne le build sur le cote
+      // Dart, deja conditionnel (`FirebaseConfig.resoudre`).
+      //
+      // Ce que le controle exige donc maintenant : que les deux greffons soient
+      // toujours poses, et qu ils le soient exactement quand leur configuration
+      // est disponible. L exigence de la tache 604 — « Firebase branche, pas
+      // seulement declare » — est intacte.
       final app = File('android/app/build.gradle.kts').readAsStringSync();
-      expect(app, contains('id("com.google.gms.google-services")'));
-      expect(app, contains('id("com.google.firebase.crashlytics")'));
+      expect(app, contains('apply(plugin = "com.google.gms.google-services")'));
+      expect(
+          app, contains('apply(plugin = "com.google.firebase.crashlytics")'));
+      expect(app, contains('file("google-services.json")'),
+          reason: 'la pose des greffons doit dependre de la presence du '
+              'fichier de configuration, sinon le build casse sans lui');
     });
 
     // LES DEUX FICHIERS DE CONFIGURATION NATIFS NE SONT PAS VERSIONNES, et ce

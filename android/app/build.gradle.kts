@@ -6,9 +6,45 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
-    // TACHE 604 — greffons Firebase. Declares dans android/settings.gradle.kts.
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
+}
+
+// TACHE 619 — LES GREFFONS FIREBASE NE SONT POSES QUE SI LEUR FICHIER EST LA.
+//
+// CE QUI SE PASSAIT AVANT, ET C EST MESURE. La tache 604 a pose
+// `com.google.gms.google-services` en dur. Ce greffon REFUSE DE FONCTIONNER sans
+// `android/app/google-services.json` : il arrete le build avec
+// « File google-services.json is missing. The Google Services Plugin cannot
+// function without it. » Or ce fichier est exclu du depot (.gitignore) et AUCUNE
+// chaine ne le fournit — le fichier codemagic.yaml ne le mentionne nulle part.
+// Donc, depuis la tache 604, PLUS AUCUN BUILD ANDROID NE PASSAIT : ni en local,
+// ni sur le workflow `merge` qui compile pourtant un APK debug. Personne ne
+// l avait vu parce que personne n avait recompile Android depuis.
+//
+// POURQUOI LE RENDRE CONDITIONNEL EST LE BON GESTE, ET PAS UN CONTOURNEMENT.
+// Le cote Dart est DEJA conditionnel : `FirebaseService.initialize` ne part que
+// si un identifiant de projet lui est donne (`FirebaseConfig.resoudre`, alimente
+// par `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID`). L application sait donc
+// deja tourner sans Firebase — c est meme le cas nominal hors ligne. Le greffon
+// Gradle etait la SEULE piece a exiger ce que le reste du programme traite
+// comme facultatif.
+//
+// CE QUE CELA CHANGE POUR CHRISTOPHE. Avec `google-services.json` depose dans
+// `android/app/`, rien ne bouge : les greffons sont poses et Firebase marche
+// comme prevu. Sans lui, le paquet se construit quand meme et l application
+// s installe — le catalogue distant est simplement muet, et le repli sur les
+// sentiers compiles (acquis du lot 605) prend le relais.
+val fichierGoogleServices = file("google-services.json")
+if (fichierGoogleServices.exists()) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+    logger.lifecycle("Firebase : google-services.json trouve, greffons poses.")
+} else {
+    logger.warn(
+        "Firebase : google-services.json ABSENT — greffons NON poses. " +
+            "Le paquet se construit et s installe, mais le catalogue distant " +
+            "restera muet (repli sur les sentiers compiles). Deposer le fichier " +
+            "dans android/app/ pour activer Firebase."
+    )
 }
 
 // P1-3 audit #327 [B-2] — signature release hors depot.
