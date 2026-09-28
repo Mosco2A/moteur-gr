@@ -1545,17 +1545,7 @@
       "ackDone": "Consigli letti"
     },
     "localOnlyPriceTitle": "Cambiare telefono vuol dire riscriverla",
-    "localOnlyPrice": "Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove.",
-    "systemBackup": {
-      "title": "Backup di questo telefono",
-      "refuseGoogle": "Rifiuto il backup dei miei dati medici sul cloud Google",
-      "refuseApple": "Rifiuto il backup dei miei dati medici su iCloud",
-      "explainGoogle": "Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.",
-      "explainApple": "Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.",
-      "notOurServers": "Da non confondere : la tua scheda medica non arriva MAI ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.",
-      "confirm": "Ho capito",
-      "a11yCheckbox": "Rifiutare il backup dei miei dati medici da parte del sistema del telefono"
-    }
+    "localOnlyPrice": "Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove."
   },
   "trailSelection": {
     "title": "Cambia sentiero",
@@ -2302,5 +2292,17 @@
     "retry": "Riprova",
     "retrying": "Nuovo tentativo…",
     "retryFailed": "Il nuovo tentativo non è riuscito."
+  },
+  "systemBackup": {
+    "title": "I tuoi dati restano su questo telefono",
+    "refuseGoogle": "Rifiuto il backup dei miei dati sul cloud Google",
+    "refuseApple": "Rifiuto il backup dei miei dati su iCloud",
+    "explainGoogle": "Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.",
+    "explainApple": "Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.",
+    "cost": "Quanto costa, senza abbellire: se lasci questa casella spuntata e cambi telefono o reinstalli l'applicazione, ricominci da zero. I tuoi progressi, il tuo diario, i tuoi trek completati e le tue foto non torneranno. Un trek completato conserva la sua traccia e il suo taccuino a vita su questo telefono, l'applicazione non li cancella mai, ma non può farli riapparire su un altro dispositivo.",
+    "whatComesBack": "Se togli la spunta, una copia dei tuoi progressi, del tuo diario, dei tuoi trek completati e della tua scheda medica va nel backup, e torna sul tuo prossimo telefono. Le tue foto e le tue impostazioni non ci sono: copiare le foto raddoppierebbe lo spazio occupato sul telefono.",
+    "notOurServers": "Da non confondere: niente di quello che ci affidi arriva ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.",
+    "confirm": "Ho capito",
+    "a11yCheckbox": "Rifiutare il backup di tutti i miei dati da parte del sistema del telefono"
   }
 }

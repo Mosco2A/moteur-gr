@@ -457,8 +457,14 @@ const Map<String, List<String>> exceptionsParCle = <String, List<String>>{
   // Je refuse la sauvegarde sur le cloud google de mes donnees medicales, quand
   // il se connecte » (28/09 10:49). On n accentue pas un verbe pour faire
   // plaisir a une liste, et on ne reformule pas la phrase d une decision.
-  'fr|health.systemBackup.refuseGoogle': <String>['refuse'],
-  'fr|health.systemBackup.refuseApple': <String>['refuse'],
+  //
+  // TACHE 617 — LA CLE A CHANGE DE PLACE, PAS DE NATURE. La case ne gouverne plus
+  // la seule fiche medicale mais TOUT ce que le randonneur confie (regle generale
+  // de Christophe du 28/09 14:31), donc son noeud a quitte `health` pour la
+  // racine. Une exception laissee sur l ancien chemin ne protege plus rien : elle
+  // ne fait plus echouer ce test-ci, elle le fait echouer sur « Je refuse ».
+  'fr|systemBackup.refuseGoogle': <String>['refuse'],
+  'fr|systemBackup.refuseApple': <String>['refuse'],
 };
 
 /// Sequences qui trahissent un encodage casse.

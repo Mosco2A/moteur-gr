@@ -1545,17 +1545,7 @@
       "ackDone": "Advice read"
     },
     "localOnlyPriceTitle": "Switching phones means typing it in again",
-    "localOnlyPrice": "If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.",
-    "systemBackup": {
-      "title": "Backup of this phone",
-      "refuseGoogle": "I refuse to have my medical data backed up to the Google cloud",
-      "refuseApple": "I refuse to have my medical data backed up to iCloud",
-      "explainGoogle": "Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.",
-      "explainApple": "Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.",
-      "notOurServers": "Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.",
-      "confirm": "Got it",
-      "a11yCheckbox": "Refuse the backup of my medical data by the system of the phone"
-    }
+    "localOnlyPrice": "If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here."
   },
   "trailSelection": {
     "title": "Switch trail",
@@ -2302,5 +2292,17 @@
     "retry": "Try again",
     "retrying": "Trying again…",
     "retryFailed": "The new attempt did not work."
+  },
+  "systemBackup": {
+    "title": "Your data stays on this phone",
+    "refuseGoogle": "I refuse to have my data backed up to the Google cloud",
+    "refuseApple": "I refuse to have my data backed up to iCloud",
+    "explainGoogle": "Your phone backs its data up to Google. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.",
+    "explainApple": "Your phone backs its data up to iCloud. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.",
+    "cost": "What it costs, without sugar coating: if you leave this box ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. A completed trek keeps its track and its logbook for life on this phone, the app never deletes them, but it cannot make them reappear on another device.",
+    "whatComesBack": "If you untick it, a copy of your progress, your journal, your completed treks and your medical card goes into the backup, and it comes back on your next phone. Your photos and your settings are not in it: copying the photos would double the space taken on your phone.",
+    "notOurServers": "Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.",
+    "confirm": "Got it",
+    "a11yCheckbox": "Refuse the backup of all my data by the system of the phone"
   }
 }

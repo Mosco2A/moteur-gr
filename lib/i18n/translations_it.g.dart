@@ -108,6 +108,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$sos$it sos = _Translations$sos$it._(_root);
 	@override late final _Translations$recovery$it recovery = _Translations$recovery$it._(_root);
 	@override late final _Translations$common$it common = _Translations$common$it._(_root);
+	@override late final _Translations$systemBackup$it systemBackup = _Translations$systemBackup$it._(_root);
 }
 
 // Path: a11y
@@ -1220,7 +1221,6 @@ class _Translations$health$it extends Translations$health$fr {
 	@override late final _Translations$health$advice$it advice = _Translations$health$advice$it._(_root);
 	@override String get localOnlyPriceTitle => 'Cambiare telefono vuol dire riscriverla';
 	@override String get localOnlyPrice => 'Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove.';
-	@override late final _Translations$health$systemBackup$it systemBackup = _Translations$health$systemBackup$it._(_root);
 }
 
 // Path: trailSelection
@@ -1830,6 +1830,25 @@ class _Translations$common$it extends Translations$common$fr {
 	@override String get retry => 'Riprova';
 	@override String get retrying => 'Nuovo tentativo…';
 	@override String get retryFailed => 'Il nuovo tentativo non è riuscito.';
+}
+
+// Path: systemBackup
+class _Translations$systemBackup$it extends Translations$systemBackup$fr {
+	_Translations$systemBackup$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'I tuoi dati restano su questo telefono';
+	@override String get refuseGoogle => 'Rifiuto il backup dei miei dati sul cloud Google';
+	@override String get refuseApple => 'Rifiuto il backup dei miei dati su iCloud';
+	@override String get explainGoogle => 'Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.';
+	@override String get explainApple => 'Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.';
+	@override String get cost => 'Quanto costa, senza abbellire: se lasci questa casella spuntata e cambi telefono o reinstalli l\'applicazione, ricominci da zero. I tuoi progressi, il tuo diario, i tuoi trek completati e le tue foto non torneranno. Un trek completato conserva la sua traccia e il suo taccuino a vita su questo telefono, l\'applicazione non li cancella mai, ma non può farli riapparire su un altro dispositivo.';
+	@override String get whatComesBack => 'Se togli la spunta, una copia dei tuoi progressi, del tuo diario, dei tuoi trek completati e della tua scheda medica va nel backup, e torna sul tuo prossimo telefono. Le tue foto e le tue impostazioni non ci sono: copiare le foto raddoppierebbe lo spazio occupato sul telefono.';
+	@override String get notOurServers => 'Da non confondere: niente di quello che ci affidi arriva ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.';
+	@override String get confirm => 'Ho capito';
+	@override String get a11yCheckbox => 'Rifiutare il backup di tutti i miei dati da parte del sistema del telefono';
 }
 
 // Path: hub.trekCard
@@ -2968,23 +2987,6 @@ class _Translations$health$advice$it extends Translations$health$advice$fr {
 	@override String get paper => 'Tieni una copia su carta in una tasca dello zaino: la carta non resta mai senza batteria, non si rompe in una caduta e si legge sotto la pioggia.';
 	@override String get ackButton => 'Ho letto questi consigli';
 	@override String get ackDone => 'Consigli letti';
-}
-
-// Path: health.systemBackup
-class _Translations$health$systemBackup$it extends Translations$health$systemBackup$fr {
-	_Translations$health$systemBackup$it._(TranslationsIt root) : this._root = root, super.internal(root);
-
-	final TranslationsIt _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Backup di questo telefono';
-	@override String get refuseGoogle => 'Rifiuto il backup dei miei dati medici sul cloud Google';
-	@override String get refuseApple => 'Rifiuto il backup dei miei dati medici su iCloud';
-	@override String get explainGoogle => 'Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.';
-	@override String get explainApple => 'Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.';
-	@override String get notOurServers => 'Da non confondere : la tua scheda medica non arriva MAI ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.';
-	@override String get confirm => 'Ho capito';
-	@override String get a11yCheckbox => 'Rifiutare il backup dei miei dati medici da parte del sistema del telefono';
 }
 
 // Path: trailSelection.a11y
@@ -5336,14 +5338,6 @@ extension on TranslationsIt {
 			'health.advice.ackDone' => 'Consigli letti',
 			'health.localOnlyPriceTitle' => 'Cambiare telefono vuol dire riscriverla',
 			'health.localOnlyPrice' => 'Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove.',
-			'health.systemBackup.title' => 'Backup di questo telefono',
-			'health.systemBackup.refuseGoogle' => 'Rifiuto il backup dei miei dati medici sul cloud Google',
-			'health.systemBackup.refuseApple' => 'Rifiuto il backup dei miei dati medici su iCloud',
-			'health.systemBackup.explainGoogle' => 'Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.',
-			'health.systemBackup.explainApple' => 'Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.',
-			'health.systemBackup.notOurServers' => 'Da non confondere : la tua scheda medica non arriva MAI ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.',
-			'health.systemBackup.confirm' => 'Ho capito',
-			'health.systemBackup.a11yCheckbox' => 'Rifiutare il backup dei miei dati medici da parte del sistema del telefono',
 			'trailSelection.title' => 'Cambia sentiero',
 			'trailSelection.subtitle' => 'Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, pacchetti, guide) segue la tua selezione.',
 			'trailSelection.current' => 'Sentiero attivo',
@@ -5581,8 +5575,6 @@ extension on TranslationsIt {
 			'calendar.legend.start' => 'Partenza',
 			'calendar.legend.walk' => 'Cammino',
 			'calendar.legend.rest' => 'Riposo',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Arrivo',
 			'calendar.summary.totalDays' => 'Giorni totali',
 			'calendar.summary.walkDays' => 'Giorni cammino',
@@ -5591,6 +5583,8 @@ extension on TranslationsIt {
 			'calendar.noDate.message' => 'Il calendario del tuo trek apparirà automaticamente con i giorni di cammino e di riposo.',
 			'calendar.empty.title' => 'Configura prima il tuo itinerario',
 			'calendar.empty.message' => 'Scegli il percorso e la durata per poter configurare le tue date.',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'nuitees.title' => 'Pernottamenti',
 			'nuitees.guideTooltip' => 'Guida ai pernottamenti',
@@ -5926,6 +5920,16 @@ extension on TranslationsIt {
 			'common.retry' => 'Riprova',
 			'common.retrying' => 'Nuovo tentativo…',
 			'common.retryFailed' => 'Il nuovo tentativo non è riuscito.',
+			'systemBackup.title' => 'I tuoi dati restano su questo telefono',
+			'systemBackup.refuseGoogle' => 'Rifiuto il backup dei miei dati sul cloud Google',
+			'systemBackup.refuseApple' => 'Rifiuto il backup dei miei dati su iCloud',
+			'systemBackup.explainGoogle' => 'Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.',
+			'systemBackup.explainApple' => 'Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori tutto quello che ci affidi: il tuo profilo (età, altezza, peso), le tue escursioni passate, i tuoi progressi, il tuo diario, le tue foto e la tua scheda medica.',
+			'systemBackup.cost' => 'Quanto costa, senza abbellire: se lasci questa casella spuntata e cambi telefono o reinstalli l\'applicazione, ricominci da zero. I tuoi progressi, il tuo diario, i tuoi trek completati e le tue foto non torneranno. Un trek completato conserva la sua traccia e il suo taccuino a vita su questo telefono, l\'applicazione non li cancella mai, ma non può farli riapparire su un altro dispositivo.',
+			'systemBackup.whatComesBack' => 'Se togli la spunta, una copia dei tuoi progressi, del tuo diario, dei tuoi trek completati e della tua scheda medica va nel backup, e torna sul tuo prossimo telefono. Le tue foto e le tue impostazioni non ci sono: copiare le foto raddoppierebbe lo spazio occupato sul telefono.',
+			'systemBackup.notOurServers' => 'Da non confondere: niente di quello che ci affidi arriva ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.',
+			'systemBackup.confirm' => 'Ho capito',
+			'systemBackup.a11yCheckbox' => 'Rifiutare il backup di tutti i miei dati da parte del sistema del telefono',
 			_ => null,
 		};
 	}

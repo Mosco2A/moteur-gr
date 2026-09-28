@@ -86,6 +86,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/database.dart';
+import '../services/copie_sauvegardable_base_service.dart';
 
 /// Nom du fichier de la base, dans le repertoire de documents de l'application.
 ///
@@ -104,10 +105,28 @@ const String kFichierBaseStepWays = 'stepways.sqlite';
 /// prouve rien du chemin reel. Les tests de persistance simulent LE TELEPHONE
 /// (le canal de methode de `path_provider`, voir `flutter_test_config.dart`), si
 /// bien que cette fonction s'execute chez eux EXACTEMENT comme en production.
+///
+/// LA COPIE SAUVEGARDABLE EST ADOPTEE ICI, ET NULLE PART AILLEURS (tache 617).
+/// Depuis ce lot la base n'est plus sauvegardee par le telephone : si le
+/// randonneur a DECOCHE la case, c'est une COPIE qui est emportee
+/// ([CopieSauvegardableBaseService]) et c'est elle qui revient sur le nouveau
+/// telephone. Il faut donc la relire, sinon decocher n'aurait rien donne.
+///
+/// POURQUOI ICI ET PAS DANS L'AMORCE. C'est le seul endroit ou l'on est certain
+/// qu'aucune requete n'a encore cree un fichier de base vide : des que la base
+/// existe, l'adoption se refuse elle-meme (sa garde), et un appel depuis l'amorce
+/// aurait dependu de l'ordre des providers — c'est-a-dire de la vigilance de
+/// celui qui en ajoutera un demain.
 QueryExecutor ouvrirBaseDurable() {
   return LazyDatabase(() async {
     final base = await getApplicationDocumentsDirectory();
     if (!base.existsSync()) base.createSync(recursive: true);
+    // N'agit QUE si aucune base n'existe et que la copie est bien une base.
+    // Ne leve jamais : voir son en-tete.
+    await adopterCopieSiBaseAbsente(
+      documents: base,
+      support: await getApplicationSupportDirectory(),
+    );
     return NativeDatabase(File('${base.path}/$kFichierBaseStepWays'));
   });
 }

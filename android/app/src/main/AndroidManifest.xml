@@ -28,26 +28,37 @@
         android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- TACHE 612 — LA FICHE MEDICALE NE MONTE PAS CHEZ GOOGLE.
-         Decision de Christophe du 28/09 10:42, verbatim et en majuscules dans
-         son message : « NON ON NE TROUVERAIT RIEN !!! Les donnees medicales
-         RESTENT sur le tel !!! ».
+    <!-- TACHE 617 — AUCUNE DONNEE CONFIEE NE MONTE CHEZ GOOGLE PAR DEFAUT.
+         Regle generale de Christophe du 28/09 14:31, verbatim : « on ne partage
+         aucune donnee confiee sauf si le client decoche volontairement ». Elle
+         elargit a TOUTES les familles ce que la tache 612 avait fait pour la
+         seule fiche medicale, sur la decision du 28/09 10:42 : « NON ON NE
+         TROUVERAIT RIEN !!! Les donnees medicales RESTENT sur le tel !!! ».
 
-         MESURE DU 28/09 : ce manifeste ne declarait AUCUNE de ces trois
-         proprietes. Le defaut d Android est allowBackup="true" SANS regle, donc
-         tout le repertoire de donnees de l application montait chez Google des
-         que le randonneur avait la sauvegarde du telephone activee — ce qui est
-         le cas par defaut.
+         MESURE DU 28/09 (tache 612) : ce manifeste ne declarait AUCUNE de ces
+         trois proprietes. Le defaut d Android est allowBackup="true" SANS regle,
+         donc tout le repertoire de donnees de l application montait chez Google
+         des que le randonneur avait la sauvegarde du telephone activee — ce qui
+         est le cas par defaut.
 
-         allowBackup RESTE A VRAI, ET C EST VOULU : Christophe refuse la
-         sauvegarde de ses DONNEES MEDICALES, pas celle du reste. Ce sont les
-         deux fichiers de regles qui disent ce qui est exclu, et eux seuls.
+         allowBackup RESTE A VRAI, ET C EST PLUS QUE VOULU : C EST NECESSAIRE. Le
+         mettre a faux couperait aussi le dossier des COPIES que le randonneur
+         demande en decochant la case — decocher n aurait alors plus aucun effet.
+         Ce sont les deux fichiers de regles qui disent ce qui part, et eux seuls,
+         et depuis la tache 617 ils portent UNE SEULE INCLUSION : « If you specify
+         an <include> element, the system no longer includes any files by default
+         and backs up ONLY the files specified » (documentation Android, verifiee
+         le 28/09). Tout le reste — base, photos, preferences, paquets, tuiles,
+         fiche medicale — est donc dehors par defaut, et un stockage ajoute demain
+         l est aussi sans que personne n ait a y penser.
 
          DEUX FICHIERS PARCE QU ANDROID 12 A CHANGE DE FORMAT : dataExtractionRules
          au-dessus, fullBackupContent en dessous. Les deux portent les MEMES
-         exclusions, et une invariante Dart le verifie
-         (test/comportement/fiche_medicale_locale_612_test.dart) contre la source
-         unique de verite lib/core/services/sauvegarde_systeme.dart. -->
+         regles, et deux invariantes Dart le verifient
+         (test/comportement/aucune_donnee_confiee_ne_sort_617_test.dart pour les
+         inclusions, test/comportement/fiche_medicale_locale_612_test.dart pour
+         les exclusions) contre la source unique de verite
+         lib/core/services/sauvegarde_systeme.dart. -->
     <application
         android:label="StepWays"
         android:name="${applicationName}"

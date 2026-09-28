@@ -5,20 +5,31 @@
      POURQUOI DEUX FICHIERS. Android 12 a change de format : au-dessus c est
      dataExtractionRules (regles_sauvegarde_donnees.xml), en dessous c est
      fullBackupContent. Declarer le premier seulement laisserait les telephones
-     Android 11 et anterieurs sauvegarder la fiche medicale — et le randonneur
-     qui a le plus vieux telephone est exactement celui a qui on aurait promis le
-     contraire.
+     Android 11 et anterieurs tout sauvegarder — et le randonneur qui a le plus
+     vieux telephone est exactement celui a qui on aurait promis le contraire.
 
-     MEMES EXCLUSIONS QUE L AUTRE FICHIER, MEME SOURCE DE VERITE :
-     lib/core/services/sauvegarde_systeme.dart, champ « exclusions ». Une
-     invariante (test/comportement/fiche_medicale_locale_612_test.dart) exige que
-     LES DEUX fichiers et cette declaration disent la MEME chose. Deux listes qui
-     divergent, c est une porte qui se rouvre sur la moitie du parc.
+     TACHE 617 — MEME RENVERSEMENT QUE DANS L AUTRE FICHIER, MEME SOURCE DE
+     VERITE : lib/core/services/sauvegarde_systeme.dart, champs « inclusions » et
+     « exclusions ». Ce fichier ne liste plus ce qui reste dehors, il liste CE QUI
+     PART, et la liste tient en une ligne.
 
-     TACHE 613 — L EXCLUSION DU DOMAINE database A ETE RETIREE ICI AUSSI, pour les
-     memes raisons que dans l autre fichier : la fiche medicale a son propre
-     fichier sous files/medical/, et garder la base hors sauvegarde ferait perdre
-     la progression et le carnet au changement de telephone. -->
+     REGLE GENERALE DE CHRISTOPHE, 28/09 14:31 : « on ne partage aucune donnee
+     confiee sauf si le client decoche volontairement ». Une seule inclusion, le
+     dossier des copies que le randonneur a explicitement acceptees, VIDE tant
+     qu il n a pas decoche. Source Android verifiee, mot pour mot : « If you
+     specify an <include> element, the system no longer includes any files by
+     default and backs up ONLY the files specified. » Donc la base
+     (progression, journal, trace, treks realises, solde), les photos du journal,
+     le profil randonneur en preferences (age, taille, poids, randonnees
+     passees), les paquets, les tuiles et la fiche medicale sont tous dehors, y
+     compris ceux qu on n aurait pas pense a lister.
+
+     L EXCLUSION DE medical/ RESTE, comme second verrou pour le jour ou une
+     inclusion trop large serait ajoutee : « <exclude> takes precedence »
+     (documentation Android). Deux invariantes Dart exigent que ce fichier dise la
+     MEME chose que le code, dans les deux sens. Deux listes qui divergent, c est
+     une porte qui se rouvre sur la moitie du parc. -->
 <full-backup-content>
+    <include domain="file" path="sauvegarde_systeme/" />
     <exclude domain="file" path="medical/" />
 </full-backup-content>
