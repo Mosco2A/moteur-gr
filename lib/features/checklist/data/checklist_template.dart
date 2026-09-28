@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart' show IconData, Icons;
 import 'package:flutter/services.dart' show rootBundle;
 
 /// Niveau d'exigence d'un article (parite GR20 « Materiel & Sac »).
@@ -751,18 +752,32 @@ const List<ChecklistTemplateItem> defaultChecklistTemplate = [
 
 /// Icones par categorie (parite GR20 « Materiel & Sac »). Cle = cle i18n de la
 /// categorie. Vit ici (donnee de template) pour rester generique/multi-sentier.
-const Map<String, int> checklistCategoryIconCodepoints = {
-  // Material Icons codepoints (const IconData construits dans la couche UI).
-  'carrying': 0xe3b0, // luggage
-  'sleeping': 0xe0a6, // bed
-  'clothing': 0xea58, // checkroom
-  'cooking': 0xe56c, // restaurant
-  'foodWater': 0xe57a, // fastfood
-  'hygiene': 0xf1b6, // soap
-  'firstAid': 0xe95d, // medical_services
-  'electronics': 0xe1a3, // battery_charging_full
-  'women': 0xe310, // female
-  'men': 0xe58e, // male
-  'misc': 0xe619, // more_horiz
-  'dog': 0xe4a1, // pets
+///
+/// POURQUOI DES `IconData` CONST ET PLUS DES ENTIERS — C EST CE QUI EMPECHAIT
+/// L APPLICATION D ETRE COMPILEE EN RELEASE (mesure de la tache 619). Cette table
+/// rangeait des CODEPOINTS, et la couche UI en fabriquait l icone a l execution :
+/// `IconData(cp, fontFamily: 'MaterialIcons')`. Or la compilation release retire
+/// de la police d icones tous les glyphes qu elle ne voit pas utilises, et elle
+/// ne peut les voir que dans des `IconData` CONST. Devant une construction non
+/// constante, elle ne devine pas : elle ARRETE LE BUILD
+/// (« Avoid non-constant invocations of IconData »). Aucun paquet installable
+/// n en sortait — ni AAB pour Google, ni IPA pour Apple.
+///
+/// Le defaut etait ANCIEN et invisible : la seule chaine qui compile en debug
+/// (workflow `merge` de codemagic.yaml, « Build APK debug ») ne fait pas ce
+/// retrait, et les deux chaines release s arretent avant le build faute de
+/// secrets de signature. Personne n avait donc jamais atteint l etape qui echoue.
+const Map<String, IconData> checklistCategoryIcons = {
+  'carrying': Icons.luggage,
+  'sleeping': Icons.bed,
+  'clothing': Icons.checkroom,
+  'cooking': Icons.restaurant,
+  'foodWater': Icons.fastfood,
+  'hygiene': Icons.soap,
+  'firstAid': Icons.medical_services,
+  'electronics': Icons.battery_charging_full,
+  'women': Icons.female,
+  'men': Icons.male,
+  'misc': Icons.more_horiz,
+  'dog': Icons.pets,
 };

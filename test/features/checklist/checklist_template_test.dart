@@ -158,7 +158,7 @@ void main() {
 
     test('chaque categorie a une icone', () {
       for (final c in checklistCategories) {
-        expect(checklistCategoryIconCodepoints.containsKey(c), true,
+        expect(checklistCategoryIcons.containsKey(c), true,
             reason: 'Icone manquante pour $c');
       }
     });

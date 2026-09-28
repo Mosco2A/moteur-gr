@@ -48,11 +48,13 @@ class ChecklistCategorySection extends StatelessWidget {
   int get _checkedWeightGrams =>
       items.where((i) => i.isChecked).fold(0, (s, i) => s + i.totalWeightGrams);
 
-  IconData get _icon {
-    final cp = checklistCategoryIconCodepoints[categoryKey];
-    if (cp == null) return Icons.more_horiz;
-    return IconData(cp, fontFamily: 'MaterialIcons');
-  }
+  /// L icone de la categorie, prise TELLE QUELLE dans la table const.
+  ///
+  /// Elle n est plus FABRIQUEE ici a partir d un codepoint : une construction
+  /// `IconData(...)` non constante fait echouer la compilation release, qui doit
+  /// pouvoir voir chaque glyphe utilise pour alleger la police. Voir la table
+  /// [checklistCategoryIcons] (tache 619).
+  IconData get _icon => checklistCategoryIcons[categoryKey] ?? Icons.more_horiz;
 
   @override
   Widget build(BuildContext context) {
