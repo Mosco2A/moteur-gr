@@ -8,6 +8,7 @@ import '../../../core/data/daos/trail_manifests_dao.dart';
 import '../../../core/data/daos/trail_meta_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/models/download_progress.dart';
+import '../../../core/models/niveau_de_telechargement.dart';
 import '../../../core/data/revision_de_donnee.dart';
 import '../../treks/providers/entitlements_provider.dart';
 import '../domain/etat_du_sentier.dart';
@@ -311,7 +312,23 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   /// un sentier neuf est a la revision zero, donc tout depasse sa revision et tout
   /// descend. La progression reste publiee pour l ecran, la revision locale est
   /// inscrite DANS la transaction de la pose (plus apres, depuis l interface).
-  Future<void> downloadTrail(String trailId) async {
+  ///
+  /// ET DEPUIS LA TACHE 616, LE GESTE PORTE UN NIVEAU. [niveau] dit jusqu ou
+  /// descendre, et il est OBLIGATOIRE : l ecran qui propose de PREPARER et celui qui
+  /// prepare un DEPART ne demandent pas la meme chose, et un defaut a « realiser »
+  /// ferait descendre la trace et ses points a un randonneur qui veut seulement
+  /// calculer sa faisabilite — exactement ce que Christophe a interdit le 28/09
+  /// 11:27.
+  ///
+  /// PREPARER AVEC LA PUBLICITE ET PREPARER APRES AVOIR ACHETE PASSENT ICI AVEC LE
+  /// MEME NIVEAU, et c est la nuance a ne pas perdre : ce qui les distingue est la
+  /// publicite et le DROIT de realiser (`MonetizationService.canRealizeTrail`), pas
+  /// le volume des donnees. Ce notifier n a donc aucune raison de consulter l achat
+  /// pour decider ce qui descend — et il ne le consulte pas.
+  Future<void> downloadTrail(
+    String trailId, {
+    required NiveauDeTelechargement niveau,
+  }) async {
     _updateEntryStatus(trailId, TrailLocalStatusValues.downloading);
 
     final manifestEntry = await _manifestsDao.getByTrailId(trailId);
@@ -341,12 +358,15 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
             // precisement un second chemin de descente ajoute sans que rien ne
             // l oblige a respecter le modele.
             empreinteAttendue: manifestEntry.hash,
+            niveau: niveau,
           );
 
       _log.d(
-        '[CatalogNotifier] $trailId copie : ${bilan.ecrits} enregistrement(s) '
-        'ecrit(s), ${bilan.supprimes} retire(s), revision '
-        '${bilan.revisionAtteinte}.',
+        '[CatalogNotifier] $trailId copie au niveau « ${niveau.code} » : '
+        '${bilan.ecrits} enregistrement(s) ecrit(s), ${bilan.supprimes} '
+        'retire(s), revision ${bilan.revisionAtteinte}, '
+        '${bilan.ecartesHorsNiveau} enregistrement(s) descendu(s) puis ecarte(s) '
+        'comme hors niveau.',
       );
 
       progression.setProgress(DownloadProgress(

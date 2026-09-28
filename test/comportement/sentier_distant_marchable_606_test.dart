@@ -32,6 +32,7 @@ import 'package:moteur_gr/core/services/source_de_donnees_sentier.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../fixtures/horodatage_de_serveur.dart';
 
@@ -349,7 +350,8 @@ void main() {
 
       // --- 2. IL SE TELECHARGE, PAR LE CHEMIN UNIQUE ---
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac');
+      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac',
+          niveau: NiveauDeTelechargement.realiser);
 
       expect(await manifestes.needsUpdate('gr-aubrac'), isFalse,
           reason: 'la revision locale est inscrite DANS la transaction de la '
@@ -497,7 +499,7 @@ void main() {
       // Etat initial a la revision 3, par le chemin du fichier entier.
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailGpxPointsDao(db).getAll(), hasLength(5));
 
       // Revision 4 : SEULE l altitude de l etape a bouge. La source
@@ -515,7 +517,7 @@ void main() {
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
       );
 
       expect(aPrendre.transferes, 1,
@@ -536,7 +538,7 @@ void main() {
       final bilan = await serviceAvec(source: source).synchroniser(
         'gr-aubrac',
         'ignoree',
-        revisionCible: v(4),
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v(4),
         // UNE SOURCE INTERROGEABLE NE RECOIT PAS DE FICHIER : il n y a rien
         // dont l empreinte du fichier publie pourrait certifier l integrite, et
         // le dire vaut mieux que de l ignorer en silence.
@@ -565,7 +567,7 @@ void main() {
         'gr-aubrac',
         adresse: 'https://double/v4',
         revisionLocale: v(3),
-        revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
         empreinteAttendue: _empreinteServie('v4'),
       );
 
@@ -591,7 +593,7 @@ void main() {
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
       );
 
       expect(parRequete.parFamille.keys, parFichier.parFamille.keys,
@@ -608,11 +610,11 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       final bilan = await serviceAvec(servi: {'v3': _donneesAubrac()})
           .synchroniser('gr-aubrac', 'https://double/v3',
-              revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+              niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -623,7 +625,7 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
       final bilan = await serviceAvec(servi: {
@@ -634,7 +636,7 @@ void main() {
           ],
         ),
       }).synchroniser('gr-aubrac', 'https://double/v5',
-          revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
 
       expect(bilan.supprimes, 1);
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
@@ -650,7 +652,7 @@ void main() {
 
       await expectLater(
         svc.synchroniser('gr-aubrac', 'https://double/absent',
-            revisionCible: v(3),
+            niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
             empreinteAttendue:
                 EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac()))),
         throwsA(anything),
@@ -679,7 +681,8 @@ void main() {
       addTearDown(c.dispose);
 
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac');
+      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac',
+          niveau: NiveauDeTelechargement.realiser);
 
       // LA PREUVE QUE LE CHEMIN A CHANGE : `rev` est ECRIT sur chaque
       // enregistrement. L ancien `TrailDownloadService` n en ecrivait aucun,
@@ -703,7 +706,7 @@ void main() {
         'gr-aubrac',
         adresse: 'https://double/v3',
         revisionLocale: RevisionDeDonnee.revisionInitiale,
-        revisionCible: v(3),
+        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(3),
         empreinteAttendue: _empreinteServie('v3'),
       );
 
@@ -743,7 +746,8 @@ void main() {
       await enLigne.read(catalogStateProvider.future);
       await enLigne
           .read(catalogStateProvider.notifier)
-          .downloadTrail('gr-aubrac');
+          .downloadTrail('gr-aubrac',
+          niveau: NiveauDeTelechargement.realiser);
       enLigne.dispose();
 
       // Second passage HORS LIGNE, MEME base : rien n est demande au reseau.

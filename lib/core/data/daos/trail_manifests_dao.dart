@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+import '../../models/niveau_de_telechargement.dart';
 import '../database.dart';
 import '../revision_de_donnee.dart';
 import '../tables/trail_manifests_table.dart';
@@ -38,22 +39,33 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
     return select(trailManifests).get();
   }
 
-  /// LES SENTIERS QUE CE TELEPHONE POSSEDE — ceux dont il a une copie.
+  /// LES SENTIERS TELECHARGES SUR CE TELEPHONE — ceux dont il a une copie.
   ///
   /// LE PERIMETRE DE CHRISTOPHE, 28/09 : « on telecharge tout ce qui concerne SES
   /// sentiers ». Pas le catalogue, SES sentiers. Et la distinction n est pas
   /// theorique : [getAll] rend une ligne par sentier PUBLIE, parce que la lecture
   /// du catalogue les conserve toutes pour survivre au hors-ligne. Sur quarante
-  /// sentiers publies, un randonneur qui en possede un seul aurait vu la mise a
+  /// sentiers publies, un randonneur qui en a copie un seul aurait vu la mise a
   /// jour periodique en telecharger quarante.
   ///
   /// LE CRITERE EST `localVersion` NON NUL, c est-a-dire « une copie a reellement
   /// ete posee ici au moins une fois ». C est le meme fait que l ecran lit pour
   /// dire « telecharge », et il n y en a pas deux.
   ///
+  /// CETTE METHODE S APPELAIT `getPossedes`, ET LE NOM ETAIT FAUX (tache 616).
+  /// « Posseder » a un sens precis et DEJA PRIS dans ce depot : le DROIT de
+  /// realiser, acquis par achat (`ownedTrailIdsProvider`, table
+  /// `trek_entitlements`, `DisponibiliteDuSentier.achete`). Or ce filtre ne lit
+  /// aucun droit — il lit la PRESENCE DES DONNEES. Les deux sont deliberement
+  /// independants depuis la tache 606 : un sentier gratuit se telecharge sans etre
+  /// achete, et un sentier achete peut n etre pas encore telecharge. Un nom qui
+  /// melange les deux invite a brancher la mise a jour periodique sur les achats —
+  /// ce qui raterait les sentiers gratuits copies, et irait chercher les donnees de
+  /// sentiers payes mais absents du telephone.
+  ///
   /// LE FILTRE EST DANS LA REQUETE, pas apres la lecture : sur un catalogue qui
   /// grandit, on ne remonte pas quarante lignes pour en garder une.
-  Future<List<TrailManifest>> getPossedes() {
+  Future<List<TrailManifest>> getTelecharges() {
     return (select(trailManifests)
           ..where((t) => t.localVersion.isNotNull()))
         .get();
@@ -126,17 +138,44 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// etat honnete. Dans la vraie chaine la ligne existe toujours (la lecture du
   /// catalogue l ecrit), donc cette exception ne se declenche que sur un chemin
   /// mal cable — exactement ce qu on veut voir tomber.
+  ///
+  /// LE NIVEAU VOYAGE AVEC LE REPERE, DANS LA MEME ECRITURE (tache 616). Les deux
+  /// faits ne repondent pas a la meme question — [HorodatageServeur] dit JUSQU A
+  /// QUAND, [NiveauDeTelechargement] dit JUSQU OU — mais ils sont vrais ou faux
+  /// ENSEMBLE : « ce sentier est copie jusqu a l instant T, au niveau N ». Les
+  /// ecrire separement autoriserait l etat « a jour jusqu a T, niveau inconnu »,
+  /// qui est exactement celui dont on ne peut rien deduire : impossible de savoir
+  /// s il faut completer, et la regle de revision refuserait les familles jamais
+  /// descendues parce que leur date est anterieure a T.
   Future<int> inscrireRevision(
     String trailId,
-    HorodatageServeur revision,
-  ) async {
+    HorodatageServeur revision, {
+    required NiveauDeTelechargement niveau,
+  }) async {
     final lignes =
         await (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
-            .write(TrailManifestsCompanion(localVersion: Value(revision)));
+            .write(TrailManifestsCompanion(
+      localVersion: Value(revision),
+      niveauLocal: Value(niveau.code),
+    ));
     if (lignes == 0) {
       throw RepereNonInscriptible(trailId);
     }
     return lignes;
+  }
+
+  /// JUSQU OU CE SENTIER EST DESCENDU, ou `null` s il n a jamais ete copie.
+  ///
+  /// UN REPERE POSE SANS NIVEAU LISIBLE REND [NiveauDeTelechargement.regarder], et
+  /// ce repli est celui de `depuisLeCode` : ne rien savoir doit faire RECOPIER, pas
+  /// faire croire complet. Le cas existe sur une base montee depuis la v28, ou la
+  /// colonne vient d apparaitre — mais la v28 a justement remis tous les reperes a
+  /// nul, donc en pratique les deux sont nuls ensemble.
+  Future<NiveauDeTelechargement?> niveauDe(String trailId) async {
+    final ligne = await getByTrailId(trailId);
+    if (ligne == null || ligne.localVersion == null) return null;
+    return NiveauDeTelechargement.depuisLeCode(ligne.niveauLocal) ??
+        NiveauDeTelechargement.regarder;
   }
 
   /// Oublie la revision locale : le sentier redevient « a telecharger ».
@@ -144,8 +183,15 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// Remet le repere a zero (null), donc « tout est plus recent que ma revision »
   /// a la prochaine synchronisation. C est ce qui fait qu un sentier supprime puis
   /// repris redescend EN ENTIER, par le meme chemin de code que la premiere copie.
+  ///
+  /// LE NIVEAU S OUBLIE AVEC LUI (tache 616) : un niveau survivant a la suppression
+  /// des donnees dirait « realiser » sur un sentier vide, et la reprise croirait
+  /// n avoir qu une mise a jour a faire.
   Future<int> oublierRevision(String trailId) {
     return (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
-        .write(const TrailManifestsCompanion(localVersion: Value(null)));
+        .write(const TrailManifestsCompanion(
+      localVersion: Value(null),
+      niveauLocal: Value(null),
+    ));
   }
 }

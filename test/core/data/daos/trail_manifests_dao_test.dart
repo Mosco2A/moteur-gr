@@ -4,6 +4,7 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../../../fixtures/horodatage_de_serveur.dart';
 
@@ -199,7 +200,7 @@ void main() {
       expect(await dao.getAll(), hasLength(3),
           reason: 'les trois sont au catalogue, et c est voulu : c est ce qui '
               'fait survivre la liste au hors-ligne');
-      expect((await dao.getPossedes()).map((e) => e.trailId), ['copie']);
+      expect((await dao.getTelecharges()).map((e) => e.trailId), ['copie']);
     });
 
     test('un sentier supprime du telephone sort du perimetre', () async {
@@ -207,7 +208,7 @@ void main() {
           makeManifest(trailId: 'copie', localVersion: 3));
       await dao.oublierRevision('copie');
 
-      expect(await dao.getPossedes(), isEmpty,
+      expect(await dao.getTelecharges(), isEmpty,
           reason: 'le repere oublie, il n y a plus de copie a maintenir a jour');
     });
 
@@ -218,7 +219,8 @@ void main() {
       // retelechargeait tout a l ouverture suivante. Le mot « complet » de
       // Christophe l interdit.
       await expectLater(
-        dao.inscrireRevision('inexistant', v(3)),
+        dao.inscrireRevision('inexistant', v(3),
+            niveau: NiveauDeTelechargement.realiser),
         throwsA(isA<RepereNonInscriptible>()),
       );
     });

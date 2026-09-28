@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import '../../i18n/translations.g.dart';
 import '../config/trail_data_source.dart';
 import '../data/daos/trail_manifests_dao.dart';
+import '../models/niveau_de_telechargement.dart';
 import '../models/trail_manifest.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
@@ -31,6 +32,9 @@ class UpdateDownloadResult {
     this.tablesUpdated = const [],
     this.tablesSkipped = const [],
     this.error,
+    this.niveau,
+    this.enregistrementsRetenus = 0,
+    this.enregistrementsEcartesHorsNiveau = 0,
   });
 
   /// Identifiant du sentier mis a jour.
@@ -47,6 +51,21 @@ class UpdateDownloadResult {
 
   /// Message d erreur si echec.
   final String? error;
+
+  /// JUSQU OU LE SENTIER EST DESCENDU apres cette passe (tache 616).
+  final NiveauDeTelechargement? niveau;
+
+  /// Enregistrements retenus et poses. C est le compte que le test affirme.
+  final int enregistrementsRetenus;
+
+  /// Enregistrements descendus puis ECARTES parce que hors du niveau demande.
+  ///
+  /// Sur un sentier seulement prepare, ce compte est celui des points de trace que
+  /// le transport par fichier entier fait descendre pour rien. Il est REMONTE
+  /// jusqu ici au lieu de finir dans un journal : c est ainsi qu on prouve qu un
+  /// niveau ne pose pas plus que son perimetre, et qu on chiffre ce que le
+  /// transport actuel coute encore.
+  final int enregistrementsEcartesHorsNiveau;
 }
 
 /// Callback pour executer une tache en arriere-plan.
@@ -146,8 +165,22 @@ class UpdateDownloader {
   /// 5. Notifie l utilisateur quand c est pret.
   ///
   /// Retourne la liste des resultats (un par sentier traite).
+  ///
+  /// [niveauParSentier] DIT A QUEL NIVEAU RESYNCHRONISER CHAQUE SENTIER (tache
+  /// 616), et c est la garde qui empeche la cadence de trahir la demande du 28/09
+  /// 11:27. Un sentier absent de cette table descend au niveau
+  /// [NiveauDeTelechargement.regarder], c est-a-dire RIEN.
+  ///
+  /// LE REPLI LE PLUS BAS EST LE SEUL HONNETE, ET C EST L INVERSE DU REFLEXE. Ne
+  /// pas savoir jusqu ou un sentier est descendu ne doit jamais se traduire par
+  /// « descends tout » : ce serait faire arriver la trace, ses 10 000 points et les
+  /// tuiles sur un sentier seulement prepare, toutes les quatre heures, sans que le
+  /// randonneur l ait demande. `DeltaUpdateService.synchroniser` releve de toute
+  /// facon le niveau au plus haut des deux (demande / deja descendu), donc ce repli
+  /// ne peut pas DEGRADER un sentier deja complet — il peut seulement s abstenir.
   Future<List<UpdateDownloadResult>> downloadAllUpdates({
     required String manifestUrl,
+    Map<String, NiveauDeTelechargement> niveauParSentier = const {},
   }) async {
     final results = <UpdateDownloadResult>[];
 
@@ -173,6 +206,8 @@ class UpdateDownloader {
       final result = await _downloadDelta(
         trailId: update.trailId,
         remoteManifest: remoteManifest,
+        niveau: niveauParSentier[update.trailId] ??
+            NiveauDeTelechargement.regarder,
       );
       results.add(result);
     }
@@ -185,12 +220,16 @@ class UpdateDownloader {
     return results;
   }
 
-  /// Synchronise un seul sentier.
+  /// Synchronise un seul sentier, AU NIVEAU DEMANDE.
   ///
-  /// Ne reecrit que les enregistrements plus recents que la revision locale.
+  /// Ne reecrit que les enregistrements plus recents que la revision locale, et
+  /// seulement dans les familles que [niveau] porte. Le niveau est OBLIGATOIRE
+  /// ici — c est un appel nomme, pour un sentier nomme : l appelant sait ce qu il
+  /// veut, il le dit.
   Future<UpdateDownloadResult> downloadSingleUpdate({
     required String trailId,
     required String manifestUrl,
+    required NiveauDeTelechargement niveau,
   }) async {
     final status = await connectivityMonitor.checkStatus();
     if (status == ConnectivityStatusValues.offline) {
@@ -210,7 +249,11 @@ class UpdateDownloader {
       );
     }
 
-    return _downloadDelta(trailId: trailId, remoteManifest: remoteManifest);
+    return _downloadDelta(
+      trailId: trailId,
+      remoteManifest: remoteManifest,
+      niveau: niveau,
+    );
   }
 
   /// Lance le telechargement de toutes les MAJ en arriere-plan.
@@ -218,13 +261,32 @@ class UpdateDownloader {
   /// Utilise [BackgroundTaskRunner] pour executer le pipeline
   /// sans bloquer l UI. Par defaut, execute en foreground.
   /// En production, injecter un runner workmanager.
-  Future<void> scheduleBackgroundDownload({
+  ///
+  /// CETTE METHODE N ETAIT APPELEE PAR PERSONNE, ET C EST TOUT LE SECOND POINT DE
+  /// LA TACHE 616. La tache 610 l avait signale : la mecanique existait depuis
+  /// E4.11c, rien ne la reveillait. Elle est desormais le point d entree de
+  /// [OrdonnanceurDeSynchronisation] — au retour du reseau, puis toutes les quatre
+  /// heures — qui lui fournit le niveau de CHAQUE sentier telecharge.
+  ///
+  /// ELLE REND LES RESULTATS, ET LA LIMITE DE CE RETOUR EST DITE. Avec le runner
+  /// par defaut (foreground) les bilans reviennent, ce qui permet de les MESURER
+  /// — c est ce dont la tache 616 avait besoin pour compter les enregistrements
+  /// descendus par niveau. Avec un runner qui delegue vraiment a un ordonnanceur
+  /// systeme (workmanager), l appel rend la main AVANT que la tache ne tourne :
+  /// la liste revient alors VIDE, et cela ne signifie pas « rien n a ete fait ».
+  /// Le dire ici vaut mieux que de laisser un appelant futur conclure a un echec.
+  Future<List<UpdateDownloadResult>> scheduleBackgroundDownload({
     required String manifestUrl,
+    Map<String, NiveauDeTelechargement> niveauParSentier = const {},
   }) async {
-    await _backgroundRunner(
-      'update_download',
-      () => downloadAllUpdates(manifestUrl: manifestUrl),
-    );
+    var resultats = const <UpdateDownloadResult>[];
+    await _backgroundRunner('update_download', () async {
+      resultats = await downloadAllUpdates(
+        manifestUrl: manifestUrl,
+        niveauParSentier: niveauParSentier,
+      );
+    });
+    return resultats;
   }
 
   /// Synchronise un sentier : ce qui est plus recent que sa revision descend.
@@ -238,19 +300,48 @@ class UpdateDownloader {
   Future<UpdateDownloadResult> _downloadDelta({
     required String trailId,
     required TrailManifest remoteManifest,
+    required NiveauDeTelechargement niveau,
   }) async {
     try {
+      // NIVEAU « REGARDER » : ON N INTERROGE MEME PAS L ECART (tache 616). Il n y a
+      // rien a poser, donc rien a comparer — et surtout aucune liste de donnees a
+      // aller chercher. Sortir ici plutot que de laisser la source rendre un lot
+      // vide evite un aller-retour reseau par sentier et par passe de cadence.
+      if (niveau == NiveauDeTelechargement.regarder) {
+        _log.d(
+          '[UpdateDownloader] $trailId : niveau « regarder » — aucune donnee '
+          'demandee.',
+        );
+        return UpdateDownloadResult(
+          trailId: trailId,
+          success: true,
+          tablesSkipped: allTables,
+          niveau: niveau,
+        );
+      }
+
       final ecart = await deltaUpdateService.checkForUpdates(
         trailId,
         remoteManifest: remoteManifest,
       );
 
-      if (ecart == null) {
-        _log.d('[UpdateDownloader] $trailId deja a jour');
+      // « DEJA A JOUR » EST UNE REPONSE SUR LA DATE, PAS SUR LE NIVEAU — ET LE
+      // PIEGE SE REFERMAIT ICI (tache 616). `checkForUpdates` ne compare que les
+      // horodatages : un sentier copie au niveau « preparer » jusqu a l instant T,
+      // dont le serveur est toujours a T, rend un ecart NUL. On sortait donc en
+      // annoncant « deja a jour » et la demande de monter a « realiser » etait
+      // perdue en silence — le randonneur partait sans trace. La question complete
+      // est « suis-je a jour A CETTE DATE ET A CE NIVEAU ».
+      final niveauDeja = await dao.niveauDe(trailId);
+      final niveauCouvert = niveauDeja != null && niveauDeja.couvre(niveau);
+
+      if (ecart == null && niveauCouvert) {
+        _log.d('[UpdateDownloader] $trailId deja a jour au niveau ${niveau.code}');
         return UpdateDownloadResult(
           trailId: trailId,
           success: true,
           tablesSkipped: allTables,
+          niveau: niveauDeja,
         );
       }
 
@@ -267,14 +358,19 @@ class UpdateDownloader {
 
       _log.d(
         '[UpdateDownloader] $trailId : '
-        '${ecart.premiereCopie ? "PREMIERE COPIE" : "mise a jour"} '
-        '${ecart.fromVersion} -> ${ecart.toVersion}',
+        '${ecart == null ? "MONTEE DE NIVEAU" : ecart.premiereCopie ? "PREMIERE "
+            "COPIE" : "mise a jour"} '
+        '${ecart?.fromVersion ?? "(date inchangee)"} -> '
+        '${remoteEntry.dataVersion}, niveau ${niveauDeja?.code ?? "aucun"} -> '
+        '${niveau.code}',
       );
 
-      // UN SEUL CHEMIN pour la premiere copie et pour la mise a jour : a la
-      // revision zero, tout est plus recent que la revision locale, donc tout
-      // descend. La revision locale est passee telle qu elle vient d etre lue,
-      // pour ne pas la relire entre-temps.
+      // UN SEUL CHEMIN pour la premiere copie, la mise a jour et la montee de
+      // niveau : a la revision zero, tout est plus recent que la revision locale,
+      // donc tout descend. La revision locale est passee telle qu elle vient d etre
+      // lue, pour ne pas la relire entre-temps — sauf sur une montee de niveau sans
+      // nouvelle publication, ou il n y a pas d ecart a lire et ou
+      // `synchroniser` relit le repere lui-meme avant de repartir de l origine.
       final bilan = await deltaUpdateService.synchroniser(
         trailId,
         urlDonnees(remoteEntry.filePath),
@@ -282,7 +378,8 @@ class UpdateDownloader {
         // L empreinte vient de la liste DISTANTE, pas du cache local : c est
         // celle que le serveur annonce pour le fichier qu on va chercher.
         empreinteAttendue: remoteEntry.hash,
-        revisionLocaleConnue: ecart.fromVersion,
+        niveau: niveau,
+        revisionLocaleConnue: ecart?.fromVersion,
       );
 
       return UpdateDownloadResult(
@@ -292,6 +389,9 @@ class UpdateDownloader {
         tablesSkipped: allTables
             .where((t) => !bilan.famillesTouchees.contains(t))
             .toList(),
+        niveau: bilan.niveauAtteint,
+        enregistrementsRetenus: bilan.retenus,
+        enregistrementsEcartesHorsNiveau: bilan.ecartesHorsNiveau,
       );
     } catch (e) {
       _log.e('[UpdateDownloader] Erreur synchronisation $trailId: $e');

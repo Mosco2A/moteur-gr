@@ -28,6 +28,7 @@ import 'package:moteur_gr/features/trail/domain/etat_du_sentier.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/treks/providers/entitlements_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../fixtures/horodatage_de_serveur.dart';
 
@@ -519,7 +520,7 @@ void main() {
       final bilan = await svc.synchroniser(
         'gr-aubrac',
         'https://double/gr_aubrac/v3.json',
-        revisionCible: v(3),
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
         empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'),
       );
 
@@ -541,7 +542,7 @@ void main() {
       expect(await manifestes.needsUpdate('gr-aubrac'), isTrue);
 
       await svc.synchroniser('gr-aubrac', 'https://double/gr_aubrac/v3.json',
-          revisionCible: v(3),
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
           empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'));
 
       expect(await svc.revisionLocale('gr-aubrac'), v(3),
@@ -564,7 +565,7 @@ void main() {
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
       }).synchroniser('gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       // Revision 4 : SEULE l etape a bouge (denivele corrige). Le point
       // d interet est republie tel quel, avec son ancienne revision.
@@ -574,7 +575,7 @@ void main() {
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
       }).synchroniser('gr-aubrac', 'https://double/v4',
-          revisionCible: v(4), empreinteAttendue: _empreinteServie('v4'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(4), empreinteAttendue: _empreinteServie('v4'));
 
       expect(bilan.famillesTouchees, ['stages'],
           reason: 'AVANT : `_inferChangedTables(from, to)` rendait les sept '
@@ -598,11 +599,11 @@ void main() {
         },
       };
       await service(donnees).synchroniser('gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       final bilan = await service(donnees).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -617,7 +618,7 @@ void main() {
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
       }).synchroniser('gr-aubrac', 'https://double/v3',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
@@ -630,7 +631,7 @@ void main() {
           ],
         },
       }).synchroniser('gr-aubrac', 'https://double/v5',
-          revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
 
       expect(bilan.supprimes, 1);
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
@@ -656,7 +657,7 @@ void main() {
 
       await expectLater(
         svc.synchroniser('gr-aubrac', 'https://double/casse',
-            revisionCible: v(3), empreinteAttendue: _empreinteServie('casse')),
+            niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('casse')),
         throwsA(anything),
       );
 
@@ -677,7 +678,7 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800)],
         },
       }).synchroniser('gr-aubrac', 'https://double/sansrev',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('sansrev'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('sansrev'));
 
       expect(bilan.ecrits, 1);
       expect(
@@ -697,7 +698,7 @@ void main() {
           ],
         },
       }).synchroniser('gr-aubrac', 'https://double/inconnue',
-          revisionCible: v(3), empreinteAttendue: _empreinteServie('inconnue'));
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('inconnue'));
 
       expect(bilan.famillesTouchees, ['stages']);
     });

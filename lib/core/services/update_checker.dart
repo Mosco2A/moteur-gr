@@ -109,10 +109,21 @@ class UpdateChecker {
     }
   }
 
-  /// Verifie les mises a jour pour LES SENTIERS QUE CE TELEPHONE POSSEDE.
+  /// Verifie les mises a jour pour LES SENTIERS TELECHARGES SUR CE TELEPHONE.
   ///
   /// LE PERIMETRE EST CELUI DE CHRISTOPHE, 28/09 : « on telecharge tout ce qui
   /// concerne SES sentiers ». Pas le catalogue, SES sentiers.
+  ///
+  /// LE FILTRE S APPELAIT `getPossedes` ET LE NOM A ETE CORRIGE EN
+  /// `getTelecharges` (tache 616) : il mesure la PRESENCE DES DONNEES, pas le droit
+  /// d achat. Les deux sont deliberement independants, et un nom qui les melange
+  /// invite a brancher la cadence sur les achats — ce qui raterait les sentiers
+  /// gratuits copies et irait chercher les donnees de sentiers payes mais absents.
+  ///
+  /// CE QUE CETTE METHODE NE DIT PAS, ET C EST VOULU : A QUEL NIVEAU resynchroniser.
+  /// Elle repond « lesquels sont en retard ». Le niveau de chaque sentier est relu
+  /// en base par [OrdonnanceurDeSynchronisation], qui le passe a
+  /// [UpdateDownloader.downloadAllUpdates].
   ///
   /// LE DEFAUT QUE CE FILTRE FERME, ET IL ETAIT MESURE, PAS SUPPOSE. La lecture du
   /// catalogue distant ecrit une ligne de `trail_manifests` pour CHAQUE sentier
@@ -142,7 +153,7 @@ class UpdateChecker {
       return [];
     }
 
-    final localEntries = await dao.getPossedes();
+    final localEntries = await dao.getTelecharges();
     final results = <UpdateCheckResult>[];
 
     for (final entry in localEntries) {

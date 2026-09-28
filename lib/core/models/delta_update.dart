@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../data/revision_de_donnee.dart';
+import 'niveau_de_telechargement.dart';
 
 part 'delta_update.freezed.dart';
 part 'delta_update.g.dart';
@@ -80,6 +81,36 @@ abstract class ResultatSynchronisation with _$ResultatSynchronisation {
 
     /// L INSTANT atteint apres application : le nouveau repere du telephone.
     @HorodatageServeurJson() required HorodatageServeur revisionAtteinte,
+
+    /// JUSQU OU LE SENTIER EST DESCENDU apres cette passe (tache 616).
+    ///
+    /// `null` uniquement quand rien n a jamais ete copie et que la passe n a rien
+    /// copie non plus (niveau « regarder » sur un sentier neuf).
+    NiveauDeTelechargement? niveauAtteint,
+
+    /// ENREGISTREMENTS QUI ONT REELLEMENT TRAVERSE LE RESEAU.
+    ///
+    /// LES QUATRE COMPTEURS CI-DESSOUS REMONTENT DE LA SOURCE JUSQU ICI, ET C EST
+    /// LA DEMANDE DE MESURE DE LA TACHE 616. Ils etaient deja comptes par
+    /// `MorceauxAPrendre` mais s arretaient dans un journal : aucun appelant, aucun
+    /// test ne pouvait les affirmer. Or la seule facon de prouver qu un niveau ne
+    /// descend pas plus que son perimetre est de COMPTER — c est ainsi que la tache
+    /// 606 a prouve qu un enregistrement transitait au lieu de dix.
+    @Default(0) int transferes,
+
+    /// Enregistrements retenus : plus recents que le repere ET dans le niveau.
+    @Default(0) int retenus,
+
+    /// Enregistrements descendus puis ECARTES parce que hors du niveau demande.
+    ///
+    /// Non nul sur une source de fichier des qu on prepare un sentier dont la trace
+    /// est publiee : les octets ont traverse le reseau, on ne les ecrit pas. Nul sur
+    /// une source interrogeable, qui ne les demande pas. Le chiffre reste visible
+    /// meme quand il est genant — c est lui qui dit ou l economie est reelle.
+    @Default(0) int ecartesHorsNiveau,
+
+    /// Octets recus, quand la source peut les compter (0 = inconnu).
+    @Default(0) int octetsRecus,
   }) = _ResultatSynchronisation;
 
   /// Deserialisation depuis JSON
@@ -88,4 +119,16 @@ abstract class ResultatSynchronisation with _$ResultatSynchronisation {
 
   /// Vrai si rien n a bouge (tout etait deja a jour).
   bool get rienAFaire => ecrits == 0 && supprimes == 0;
+
+  /// PART INUTILE DU TRANSFERT : ce qui est descendu pour rien.
+  ///
+  /// Comprend [ecartesHorsNiveau] — un enregistrement hors niveau est descendu
+  /// pour rien au meme titre qu un enregistrement deja a jour.
+  int get transferesEnTrop => transferes - retenus;
+
+  /// Vrai si AUCUN octet n a ete demande au reseau.
+  ///
+  /// C est l affirmation exacte du niveau « regarder » : pas « peu de donnees »,
+  /// RIEN. Elle est verifiable, donc elle est verifiee.
+  bool get aucunTransport => transferes == 0 && octetsRecus == 0;
 }

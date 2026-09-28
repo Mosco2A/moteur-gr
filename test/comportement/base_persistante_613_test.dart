@@ -35,6 +35,7 @@ import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/trek/data/seed_data_loader.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../tool/publication/publicateur.dart';
@@ -556,7 +557,7 @@ void main() {
       ).synchroniser(
         'gr-monts-dore',
         'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
         empreinteAttendue: entree.hash,
       );
 

@@ -169,7 +169,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 28;
+  int get schemaVersion => 29;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -454,6 +454,21 @@ class AppDatabase extends _$AppDatabase {
           if (from < 28) {
             await _v28FicheMedicaleQuitteLaBase();
             await _v28RevisionDevientHorodatage();
+          }
+          // Migration v28 -> v29 : LE NIVEAU DESCENDU SE NOTE A COTE DU REPERE
+          // (tache 616). Une seule colonne, `trail_manifests.niveauLocal`, posee
+          // par la precaution habituelle du depot : `ALTER TABLE ADD COLUMN`
+          // echoue sur une colonne deja presente, et une migration qui echoue
+          // EMPECHE LA BASE DE S OUVRIR sur le telephone d un randonneur.
+          //
+          // ELLE RESTE NULLE SUR LES BASES EXISTANTES, ET C EST LE BON DEFAUT :
+          // la v28 vient de remettre tous les reperes a « rien de copie », donc
+          // aucun sentier ne pretend avoir un niveau. Un niveau nul face a un
+          // repere nul est coherent — le premier telechargement ecrira les deux
+          // dans la meme transaction.
+          if (from < 29) {
+            await _ajouterColonneSiAbsente(
+                migrator, trailManifests, trailManifests.niveauLocal);
           }
         },
       );

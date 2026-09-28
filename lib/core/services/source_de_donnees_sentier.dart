@@ -30,14 +30,16 @@ class MorceauxAPrendre {
     required this.transferes,
     required this.retenus,
     this.octetsRecus = 0,
+    this.ecartesHorsNiveau = 0,
   });
 
-  /// Rien a prendre : le telephone est deja a jour.
+  /// Rien a prendre : le telephone est deja a jour, ou le niveau ne demande rien.
   const MorceauxAPrendre.rien()
       : parFamille = const {},
         transferes = 0,
         retenus = 0,
-        octetsRecus = 0;
+        octetsRecus = 0,
+        ecartesHorsNiveau = 0;
 
   /// Les enregistrements a poser, par famille, dans la forme du fichier publie.
   final Map<String, dynamic> parFamille;
@@ -51,7 +53,23 @@ class MorceauxAPrendre {
   /// Octets recus, quand la source peut les compter (0 = inconnu).
   final int octetsRecus;
 
+  /// ENREGISTREMENTS DESCENDUS PUIS ECARTES PARCE QU ILS SONT HORS NIVEAU.
+  ///
+  /// C EST LE CHIFFRE QUE CHRISTOPHE A DEMANDE (28/09 11:27), ET IL DOIT RESTER
+  /// VISIBLE MEME QUAND IL EST GENANT. Sur [SourceFichierEntier] il est non nul
+  /// des qu on prepare un sentier dont la trace est publiee : les octets sont
+  /// descendus, on ne les ecrit pas, mais ils ont bien traverse le reseau. Le
+  /// masquer donnerait l illusion que les niveaux economisent du transport sur ce
+  /// transport-la, ce qui est faux. Sur [SourceInterrogeable] il vaut zero, parce
+  /// que les familles hors niveau ne sont pas meme interrogees — et c est la la
+  /// vraie economie.
+  final int ecartesHorsNiveau;
+
   /// Part inutile du transfert : ce qui est descendu pour rien.
+  ///
+  /// Elle comprend [ecartesHorsNiveau] : un enregistrement hors niveau est un
+  /// enregistrement descendu pour rien, au meme titre qu un enregistrement deja a
+  /// jour.
   int get transferesEnTrop => transferes - retenus;
 }
 
@@ -87,11 +105,21 @@ abstract interface class SourceDeDonneesSentier {
   /// DE FICHIER : c est la seule chose qui distingue un fichier complet d un
   /// fichier tronque mais syntaxiquement valide. Une source interrogeable, qui ne
   /// recoit pas de fichier, ne peut rien en faire et le dit.
+  ///
+  /// [famillesDemandees] EST LE NIVEAU, TRADUIT EN FAMILLES (tache 616). Il borne
+  /// ce que la source a le droit de rendre, et il n est PAS FACULTATIF : un
+  /// argument qu on peut omettre pour tout obtenir est exactement la faute que la
+  /// tache 607 a nommee a propos de l empreinte. Une liste VIDE signifie « rien » —
+  /// c est [NiveauDeTelechargement.regarder] — et une source qui recoit une liste
+  /// vide ne doit RIEN DEMANDER AU RESEAU : ni requete, ni telechargement de
+  /// fichier. C est la reponse directe a Christophe (28/09 11:27) : celui qui
+  /// regarde simplement si un sentier lui plait ne paie aucun transport.
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
     required HorodatageServeur revisionLocale,
     required HorodatageServeur revisionCible,
+    required List<String> famillesDemandees,
     String? empreinteAttendue,
   });
 }
@@ -181,8 +209,22 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     required String adresse,
     required HorodatageServeur revisionLocale,
     required HorodatageServeur revisionCible,
+    required List<String> famillesDemandees,
     String? empreinteAttendue,
   }) async {
+    // NIVEAU « REGARDER » : AUCUNE REQUETE RESEAU N EST EMISE (tache 616). C est
+    // la reponse la plus directe a Christophe : la fiche du catalogue est deja
+    // arrivee avec la liste distante, il n y a rien de plus a chercher pour
+    // decider. Le retour a zero est rendu AVANT `_telecharger`, donc avant la
+    // moindre connexion.
+    if (famillesDemandees.isEmpty) {
+      _log.d(
+        '[Source fichier] $trailId : niveau « regarder » — aucun transport, '
+        '0 enregistrement, 0 octet.',
+      );
+      return const MorceauxAPrendre.rien();
+    }
+
     final (donnees, octets) = await _telecharger(
       adresse,
       trailId: trailId,
@@ -192,10 +234,23 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     final parFamille = <String, dynamic>{};
     var transferes = 0;
     var retenus = 0;
+    var ecartes = 0;
 
     for (final famille in donnees.keys) {
       final tous = _Tri.enregistrements(donnees[famille]);
       transferes += tous.length;
+
+      // HORS NIVEAU : ECARTE A LA PORTE, PAS TRANSMIS A LA POSE. Sur ce transport
+      // les octets sont deja descendus — le fichier est global, c est sa limite,
+      // documentee plus haut — mais ils ne sont ni decodes plus loin, ni ecrits,
+      // ni comptes comme retenus. Le gaspillage est MESURE
+      // ([MorceauxAPrendre.transferesEnTrop]) au lieu d etre suppose, et il
+      // disparaitra de lui-meme sur [SourceInterrogeable], qui ne les demande pas.
+      if (!famillesDemandees.contains(famille) &&
+          MorceauxDeSentier.estConnu(famille)) {
+        ecartes += tous.length;
+        continue;
+      }
 
       if (!MorceauxDeSentier.estConnu(famille)) {
         // Famille inconnue : journalisee par la pose, pas fatale (#S10). On ne
@@ -221,7 +276,9 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     _log.d(
       '[Source fichier] $trailId $revisionLocale -> $revisionCible : '
       '$octets octets, $transferes enregistrement(s) descendus, $retenus '
-      'retenu(s) — ${transferes - retenus} transfere(s) pour rien.',
+      'retenu(s) — ${transferes - retenus} transfere(s) pour rien, dont '
+      '$ecartes hors du niveau demande '
+      '(${famillesDemandees.join(", ")}).',
     );
 
     return MorceauxAPrendre(
@@ -229,6 +286,7 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
       transferes: transferes,
       retenus: retenus,
       octetsRecus: octets,
+      ecartesHorsNiveau: ecartes,
     );
   }
 
@@ -355,13 +413,34 @@ class SourceInterrogeable implements SourceDeDonneesSentier {
     required String adresse,
     required HorodatageServeur revisionLocale,
     required HorodatageServeur revisionCible,
+    required List<String> famillesDemandees,
     String? empreinteAttendue,
   }) async {
+    // LE NIVEAU BORNE LES REQUETES, ET C EST ICI QUE L ECONOMIE EST REELLE (tache
+    // 616). Les familles hors niveau ne sont pas filtrees a l arrivee : elles ne
+    // sont PAS INTERROGEES. Preparer un sentier ne fait donc descendre aucun point
+    // de trace — pas un seul octet — la ou la source de fichier doit encore
+    // rapatrier le fichier entier.
+    //
+    // L INTERSECTION SE FAIT DANS L ORDRE DE [familles], jamais dans celui de
+    // l appelant : cet ordre est celui des cles etrangeres, et le perdre ferait
+    // echouer un hebergement pose avant son etape.
+    final aInterroger =
+        familles.where(famillesDemandees.contains).toList(growable: false);
+
+    if (aInterroger.isEmpty) {
+      _log.d(
+        '[Source interrogeable] $trailId : niveau « regarder » — aucune requete '
+        'emise, 0 enregistrement.',
+      );
+      return const MorceauxAPrendre.rien();
+    }
+
     final parFamille = <String, dynamic>{};
     var transferes = 0;
     var retenus = 0;
 
-    for (final famille in familles) {
+    for (final famille in aInterroger) {
       final List<Map<String, dynamic>> recus;
       try {
         recus = await interroger(trailId, famille, revisionLocale);

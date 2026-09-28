@@ -79,6 +79,29 @@ class TrailManifests extends Table {
   /// perdrait de son catalogue tout sentier que le binaire ne connait pas.
   TextColumn get ficheJson => text().nullable()();
 
+  /// JUSQU A QUEL NIVEAU CE SENTIER EST DESCENDU (tache 616).
+  ///
+  /// Code stable de [NiveauDeTelechargement] (`regarder`, `preparer`,
+  /// `realiser`). Null = jamais telecharge, comme [localVersion] null.
+  ///
+  /// POURQUOI CETTE COLONNE EST INDISPENSABLE ET PAS UN CONFORT — C EST LE PIEGE
+  /// QUE LES NIVEAUX OUVRENT. Le repere [localVersion] est UN SEUL instant pour
+  /// tout le sentier, et la regle de pose est « je prends ce qui est plus recent
+  /// que mon repere ». Un telephone qui aurait copie le sentier au niveau
+  /// « preparer » jusqu a l instant T, et qui demanderait ensuite « realiser »,
+  /// verrait ses points de trace REFUSES : ils portent une date anterieure a T,
+  /// donc la regle les declare deja a jour. Le randonneur partirait sans trace,
+  /// en croyant avoir tout telecharge, et AUCUNE mise a jour ulterieure n irait
+  /// jamais la chercher. Sans cette colonne, le defaut est silencieux et
+  /// definitif.
+  ///
+  /// CE QU ELLE PERMET, ET C EST LA SEULE CHOSE QU ELLE PERMET : comparer le
+  /// niveau DEMANDE au niveau DEJA DESCENDU. S il monte, la copie repart de
+  /// l origine pour ce sentier (`repartirDeZero`), ce qui est deja un chemin
+  /// eprouve du moteur et ne coute RIEN de plus en reseau sur le transport actuel
+  /// — la source de fichier telecharge le fichier entier de toute facon.
+  TextColumn get niveauLocal => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {trailId};
 }

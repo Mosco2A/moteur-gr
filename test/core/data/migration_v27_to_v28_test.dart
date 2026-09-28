@@ -169,7 +169,7 @@ void main() {
       // ET IL N EST PLUS COMPTE COMME POSSEDE PAR LA MISE A JOUR PERIODIQUE, tant
       // qu il n a pas ete recopie. C est coherent : son contenu local n est plus
       // certifie par aucun repere.
-      expect(await db.trailManifestsDao.getPossedes(), isEmpty);
+      expect(await db.trailManifestsDao.getTelecharges(), isEmpty);
     });
 
     test('la migration est REJOUABLE : la relancer ne casse rien', () async {

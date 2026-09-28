@@ -30,6 +30,7 @@ import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../../tool/publication/publicateur.dart';
 import '../../tool/publication/source_de_sentier.dart';
@@ -227,7 +228,8 @@ void main() {
 
       // --- 2. IL SE TELECHARGE ---
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-monts-dore');
+      await c.read(catalogStateProvider.notifier).downloadTrail('gr-monts-dore',
+          niveau: NiveauDeTelechargement.realiser);
 
       expect(await manifestes.needsUpdate('gr-monts-dore'), isFalse);
       expect(await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
@@ -259,7 +261,7 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
         empreinteAttendue: entree.hash,
       );
 
@@ -288,7 +290,7 @@ void main() {
         service(tronquerA: tronque).synchroniser(
           'gr-monts-dore',
           'https://double/${entree.filePath}',
-          revisionCible: entree.dataVersion,
+          niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
           empreinteAttendue: entree.hash,
         ),
         throwsA(isA<EmpreinteInvalide>()),
@@ -317,7 +319,7 @@ void main() {
         service(appels: appels, tronquerA: octets.length - 50).synchroniser(
           'gr-monts-dore',
           'https://double/${entree.filePath}',
-          revisionCible: entree.dataVersion,
+          niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
           empreinteAttendue: entree.hash,
         ),
         throwsA(isA<EmpreinteInvalide>()),
@@ -336,7 +338,7 @@ void main() {
           service().synchroniser(
             'gr-monts-dore',
             'https://double/${entree.filePath}',
-            revisionCible: entree.dataVersion,
+            niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
             empreinteAttendue: annoncee,
           ),
           throwsA(isA<EmpreinteInvalide>()),
@@ -355,7 +357,7 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
         empreinteAttendue: 'SHA256-${entree.hash.toUpperCase()}',
       );
       expect(bilan.ecrits, 19);
@@ -372,7 +374,7 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
 
@@ -383,7 +385,7 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v2.filePath}',
-        revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
@@ -409,7 +411,7 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
@@ -421,7 +423,7 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v2.filePath}',
-        revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
@@ -445,7 +447,7 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
@@ -488,7 +490,7 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${derniere.filePath}',
-        revisionCible: derniere.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: derniere.dataVersion,
         empreinteAttendue: derniere.hash,
       );
 
@@ -537,7 +539,7 @@ void main() {
       await service1.synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
 
@@ -551,7 +553,7 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${derniere.filePath}',
-        revisionCible: derniere.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: derniere.dataVersion,
         empreinteAttendue: derniere.hash,
       );
 

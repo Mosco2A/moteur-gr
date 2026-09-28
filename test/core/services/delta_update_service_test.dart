@@ -15,6 +15,7 @@ import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../../fixtures/horodatage_de_serveur.dart';
 
@@ -103,7 +104,7 @@ void main() {
     test('applique stages', () async {
       await svc.appliquerRevisions('sentier-volcans',
         revisionLocale: HorodatageServeur.origine,
-        revisionCible: ins(1), {'stages': [
+        niveau: NiveauDeTelechargement.realiser, revisionCible: ins(1), {'stages': [
         {'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'Cal',
           'name_en': 'C', 'name_de': 'C', 'name_it': 'C', 'name_es': 'C',
           'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.4, 'end_lng': 3.0,
@@ -112,10 +113,19 @@ void main() {
       final stages = await TrailStagesDao(db).getByItineraryId('i1');
       expect(stages.length, 1); expect(stages.first.nameFr, 'Cal');
     });
-    test('respecte changedTables', () async {
-      await svc.appliquerRevisions('sentier-volcans',
+    // CE TEST S APPELAIT « respecte changedTables » ET IL BORNAIT LA POSE PAR
+    // `famillesLimitees: ['stages']` (tache 616). Le parametre a disparu : le
+    // NIVEAU est desormais la seule borne, et il n a que trois valeurs emboitees
+    // au lieu d une liste libre qui autorisait n importe quelle combinaison — y
+    // compris des points de trace sans leur trace. Le sujet du test ne change
+    // pas — « la pose n ecrit que ce que la borne autorise » — il est simplement
+    // exprime avec la borne reelle, et sur la frontiere qui compte : le
+    // volumineux.
+    test('le niveau borne la pose : PREPARER n ecrit pas le volumineux',
+        () async {
+      final bilan = await svc.appliquerRevisions('sentier-volcans',
         revisionLocale: HorodatageServeur.origine,
-        revisionCible: ins(1), {
+        niveau: NiveauDeTelechargement.preparer, revisionCible: ins(1), {
         'stages': [{'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'A',
           'name_en': 'A', 'name_de': 'A', 'name_it': 'A', 'name_es': 'A',
           'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.6, 'end_lng': 3.0,
@@ -124,9 +134,28 @@ void main() {
         'pois': [{'id': 'p1', 'stage_id': 's1', 'name_fr': 'S', 'name_en': 'S',
           'name_de': 'Q', 'name_it': 'S', 'name_es': 'F', 'type': 'water',
           'lat': 45.55, 'lng': 2.95}],
-      }, famillesLimitees: ['stages']);
+        'gpx_tracks': [{'id': 't1', 'itinerary_id': 'i1', 'name': 'trace'}],
+        'gpx_points': [
+          for (var i = 0; i < 5; i++)
+            {'track_id': 't1', 'lat': 45.5, 'lng': 2.9, 'elevation': 1200.0,
+              'sequence_index': i},
+        ],
+      });
+
+      // CE QUI EST ECRIT : de quoi calculer la faisabilite et remplir le sac.
       expect((await TrailStagesDao(db).getByItineraryId('i1')).length, 1);
-      expect(await TrailPoisDao(db).getByStageId('s1'), isEmpty);
+      expect(await TrailPoisDao(db).getByStageId('s1'), hasLength(1));
+
+      // CE QUI N EST PAS ECRIT, ET C EST LA DEMANDE DE CHRISTOPHE DU 28/09 11:27.
+      // Les cinq points de trace etaient DANS les donnees posees : ils sont
+      // refuses par le niveau, pas absents de la source.
+      expect(await TrailGpxTracksDao(db).getAll(), isEmpty);
+      expect(await TrailGpxPointsDao(db).getAll(), isEmpty);
+
+      // ET LE BILAN LE COMPTE, au lieu de le laisser deviner.
+      expect(bilan.ecrits, 2, reason: '1 etape + 1 point d interet');
+      expect(bilan.famillesTouchees, ['stages', 'pois']);
+      expect(bilan.niveauAtteint, NiveauDeTelechargement.preparer);
     });
   });
 }

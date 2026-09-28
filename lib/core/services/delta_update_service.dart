@@ -13,6 +13,7 @@ import '../data/daos/trail_itineraries_dao.dart';
 import '../data/daos/trail_meta_dao.dart';
 import '../data/revision_de_donnee.dart';
 import '../models/delta_update.dart';
+import '../models/niveau_de_telechargement.dart';
 import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
@@ -156,13 +157,28 @@ class DeltaUpdateService {
   /// ([RevisionDeDonnee.exigeUneCopieComplete]). Sans l effacement, une
   /// suppression purgee du fichier publie resterait sur le telephone pour
   /// toujours.
+  ///
+  /// [niveau] BORNE LA POSE, ET C EST LA MEME BORNE QUE CELLE DU TRANSPORT (tache
+  /// 616). Il remplace l ancien parametre `famillesLimitees`, qui exprimait la meme
+  /// idee sans la NOMMER : une liste de familles libre laissait ecrire n importe
+  /// quelle combinaison, y compris des points de trace sans leur trace. Le niveau,
+  /// lui, n a que trois valeurs et elles sont emboitees. Deux mecanismes pour
+  /// limiter la meme chose, c est la faute que la tache 605 a du defaire sur
+  /// l ordre d insertion : il n en reste qu un.
+  ///
+  /// LA DEUXIEME BARRIERE EST VOULUE. La source a deja ecarte le hors-niveau ; on
+  /// re-filtre ici parce que `appliquerRevisions` est PUBLIQUE et posable depuis un
+  /// fichier deja en main (c est ce que font les tests et le semeur). Un niveau qui
+  /// ne serait applique qu au transport se contournerait en appelant la pose
+  /// directement — exactement le second chemin que la tache 606 a supprime.
   Future<ResultatSynchronisation> appliquerRevisions(
     String trailId,
     Map<String, dynamic> donnees, {
     required HorodatageServeur revisionLocale,
     required HorodatageServeur revisionCible,
-    List<String> famillesLimitees = const [],
+    required NiveauDeTelechargement niveau,
     bool repartirDeZero = false,
+    MorceauxAPrendre? mesure,
   }) async {
     final inconnues = donnees.keys
         .where((k) => !MorceauxDeSentier.estConnu(k))
@@ -176,10 +192,19 @@ class DeltaUpdateService {
     }
 
     final familles = MorceauxDeSentier.tous
-        .where((f) =>
-            donnees[f] != null &&
-            (famillesLimitees.isEmpty || famillesLimitees.contains(f)))
+        .where((f) => donnees[f] != null && niveau.porte(f))
         .toList();
+
+    final horsNiveau = MorceauxDeSentier.tous
+        .where((f) => donnees[f] != null && !niveau.porte(f))
+        .toList();
+    if (horsNiveau.isNotEmpty) {
+      _log.d(
+        '[Revision] $trailId : ${horsNiveau.join(", ")} presente(s) dans les '
+        'donnees mais HORS du niveau « ${niveau.code} » — rien n est ecrit pour '
+        'ces familles.',
+      );
+    }
 
     final touchees = <String>[];
     var ecrits = 0;
@@ -211,15 +236,25 @@ class DeltaUpdateService {
       // LE REPERE, ECRIT AVEC LES DONNEES QU IL CERTIFIE. Un repere qui
       // survivrait a un retour arriere des donnees serait pire que pas de repere :
       // le telephone se croirait a jour sur des donnees absentes.
+      //
+      // LE NIVEAU EST INSCRIT AVEC LE REPERE, DANS CETTE MEME TRANSACTION (tache
+      // 616) : « copie jusqu a l instant T, au niveau N » est UN seul fait. Les
+      // separer autoriserait l etat « a jour jusqu a T, niveau inconnu », dont on
+      // ne peut rien deduire.
       if (revisionCible > revisionLocale) {
-        await trailManifestsDao.inscrireRevision(trailId, revisionCible);
+        await trailManifestsDao.inscrireRevision(
+          trailId,
+          revisionCible,
+          niveau: niveau,
+        );
       }
     });
 
     _log.d(
-      '[Revision] $trailId : $revisionLocale -> $revisionCible, '
-      '$ecrits enregistrement(s) ecrit(s), $supprimes retire(s), '
-      'familles touchees : ${touchees.isEmpty ? "aucune" : touchees.join(", ")}',
+      '[Revision] $trailId : $revisionLocale -> $revisionCible, niveau '
+      '« ${niveau.code} », $ecrits enregistrement(s) ecrit(s), $supprimes '
+      'retire(s), familles touchees : '
+      '${touchees.isEmpty ? "aucune" : touchees.join(", ")}',
     );
 
     return ResultatSynchronisation(
@@ -229,6 +264,11 @@ class DeltaUpdateService {
       revisionAtteinte: revisionCible > revisionLocale
           ? revisionCible
           : revisionLocale,
+      niveauAtteint: niveau,
+      transferes: mesure?.transferes ?? 0,
+      retenus: mesure?.retenus ?? 0,
+      ecartesHorsNiveau: mesure?.ecartesHorsNiveau ?? 0,
+      octetsRecus: mesure?.octetsRecus ?? 0,
     );
   }
 
@@ -267,20 +307,68 @@ class DeltaUpdateService {
   /// morceaux laisserait DEFINITIVEMENT un point d eau tari ou un refuge ferme
   /// sur le telephone. On reprend donc tout depuis la revision zero, en effacant
   /// d abord — dans la meme transaction.
+  /// LE NIVEAU EST OBLIGATOIRE, ET LE PIEGE QU IL OUVRE EST FERME ICI (tache 616).
+  ///
+  /// [niveau] dit JUSQU OU descendre. Il n a PAS de valeur par defaut, pour la
+  /// meme raison que `empreinteAttendue` n en a pas depuis la tache 607 : un
+  /// appelant qui oublie l argument ne doit pas obtenir silencieusement la trace
+  /// entiere. Le niveau est une decision, elle se prend explicitement.
+  ///
+  /// LE PIEGE, ET IL EST SILENCIEUX ET DEFINITIF SI ON NE LE FERME PAS. Le repere
+  /// [HorodatageServeur] est UN SEUL instant pour tout le sentier, et la regle de
+  /// pose est « je prends ce qui est plus recent que mon repere ». Un telephone
+  /// copie au niveau « preparer » jusqu a l instant T, qui demanderait ensuite
+  /// « realiser », verrait ses points de trace REFUSES : ils portent une date
+  /// anterieure a T, donc la regle les declare deja a jour. Le randonneur partirait
+  /// sans trace en croyant avoir tout telecharge, et AUCUNE mise a jour ulterieure
+  /// n irait jamais la chercher.
+  ///
+  /// LA REPONSE EST DE REPARTIR DE L ORIGINE QUAND LE NIVEAU MONTE, et elle ne
+  /// coute rien de plus que ce que le moteur fait deja : `repartirDeZero` est un
+  /// chemin eprouve (le retard au-dela de la fenetre de retention l emprunte), et
+  /// sur le transport actuel le fichier descend en entier de toute facon — la
+  /// montee de niveau n ajoute donc AUCUN octet, seulement des ecritures. Ce qu on
+  /// refuse, c est un plancher de revision par famille : deux planchers, c est deux
+  /// verites sur « jusqu ou je suis a jour », et la tache 605 a montre ou menent
+  /// deux copies d une meme information.
+  ///
+  /// UN NIVEAU QUI BAISSE NE RETIRE RIEN. Le niveau effectif est le PLUS HAUT des
+  /// deux : ce qui est deja sur le telephone y reste, et la cadence continue de
+  /// l entretenir. Liberer de la place est un AUTRE geste, a un autre moment (§6 du
+  /// modele economique : les tuiles d un trek TERMINE), et il ne se deguise pas en
+  /// synchronisation.
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
     required HorodatageServeur revisionCible,
     required String? empreinteAttendue,
+    required NiveauDeTelechargement niveau,
     HorodatageServeur? revisionLocaleConnue,
   }) async {
     final locale = revisionLocaleConnue ?? await revisionLocale(trailId);
+    final dejaDescendu = await trailManifestsDao.niveauDe(trailId);
 
-    final copieComplete = RevisionDeDonnee.exigeUneCopieComplete(
+    // Le niveau effectif ne baisse jamais : on entretient ce qui est la.
+    final effectif = dejaDescendu != null && dejaDescendu.couvre(niveau)
+        ? dejaDescendu
+        : niveau;
+
+    final niveauMonte = dejaDescendu != null && !dejaDescendu.couvre(effectif);
+    if (niveauMonte) {
+      _log.w(
+        '[Revision] $trailId : le niveau monte de ${dejaDescendu.code} a '
+        '${effectif.code}. Les familles qui s ouvrent n ont JAMAIS ete posees ici '
+        'et leurs dates sont anterieures au repere local : la regle de revision '
+        'les refuserait une a une, en silence. COPIE COMPLETE depuis l origine, au '
+        'nouveau niveau.',
+      );
+    }
+
+    final retardTropGrand = RevisionDeDonnee.exigeUneCopieComplete(
       revisionLocale: locale,
       revisionCible: revisionCible,
     );
-    if (copieComplete) {
+    if (retardTropGrand) {
       final retard = Duration(
         milliseconds: revisionCible.millisecondesEpoch -
             locale.millisecondesEpoch,
@@ -293,6 +381,8 @@ class DeltaUpdateService {
         'depuis l origine, donnees locales du sentier effacees d abord.',
       );
     }
+
+    final copieComplete = niveauMonte || retardTropGrand;
     final depuis =
         copieComplete ? RevisionDeDonnee.revisionInitiale : locale;
 
@@ -301,14 +391,36 @@ class DeltaUpdateService {
       adresse: urlDonnees,
       revisionLocale: depuis,
       revisionCible: revisionCible,
+      famillesDemandees: effectif.familles,
       empreinteAttendue: empreinteAttendue,
     );
+
+    // NIVEAU « REGARDER » : ON NE TOUCHE NI AUX DONNEES NI AU REPERE. Poser un
+    // repere alors que rien n est descendu ferait croire le sentier telecharge —
+    // il entrerait dans le perimetre de la cadence (`getTelecharges`) et l ecran
+    // le dirait « telecharge » alors qu il est vide.
+    if (effectif == NiveauDeTelechargement.regarder) {
+      return ResultatSynchronisation(
+        famillesTouchees: const [],
+        ecrits: 0,
+        supprimes: 0,
+        revisionAtteinte: locale,
+        niveauAtteint: dejaDescendu,
+        transferes: aPrendre.transferes,
+        retenus: aPrendre.retenus,
+        ecartesHorsNiveau: aPrendre.ecartesHorsNiveau,
+        octetsRecus: aPrendre.octetsRecus,
+      );
+    }
+
     return appliquerRevisions(
       trailId,
       aPrendre.parFamille,
       revisionLocale: depuis,
       revisionCible: revisionCible,
+      niveau: effectif,
       repartirDeZero: copieComplete,
+      mesure: aPrendre,
     );
   }
 

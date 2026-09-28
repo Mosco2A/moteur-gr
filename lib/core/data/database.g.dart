@@ -9538,6 +9538,17 @@ class $TrailManifestsTable extends TrailManifests
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _niveauLocalMeta = const VerificationMeta(
+    'niveauLocal',
+  );
+  @override
+  late final GeneratedColumn<String> niveauLocal = GeneratedColumn<String>(
+    'niveau_local',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     trailId,
@@ -9549,6 +9560,7 @@ class $TrailManifestsTable extends TrailManifests
     lastUpdated,
     localVersion,
     ficheJson,
+    niveauLocal,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9619,6 +9631,15 @@ class $TrailManifestsTable extends TrailManifests
         ficheJson.isAcceptableOrUnknown(data['fiche_json']!, _ficheJsonMeta),
       );
     }
+    if (data.containsKey('niveau_local')) {
+      context.handle(
+        _niveauLocalMeta,
+        niveauLocal.isAcceptableOrUnknown(
+          data['niveau_local']!,
+          _niveauLocalMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -9667,6 +9688,10 @@ class $TrailManifestsTable extends TrailManifests
       ficheJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}fiche_json'],
+      ),
+      niveauLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}niveau_local'],
       ),
     );
   }
@@ -9754,6 +9779,29 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
   /// RECU (cette colonne), puis compile. Sans elle, un randonneur hors ligne
   /// perdrait de son catalogue tout sentier que le binaire ne connait pas.
   final String? ficheJson;
+
+  /// JUSQU A QUEL NIVEAU CE SENTIER EST DESCENDU (tache 616).
+  ///
+  /// Code stable de [NiveauDeTelechargement] (`regarder`, `preparer`,
+  /// `realiser`). Null = jamais telecharge, comme [localVersion] null.
+  ///
+  /// POURQUOI CETTE COLONNE EST INDISPENSABLE ET PAS UN CONFORT — C EST LE PIEGE
+  /// QUE LES NIVEAUX OUVRENT. Le repere [localVersion] est UN SEUL instant pour
+  /// tout le sentier, et la regle de pose est « je prends ce qui est plus recent
+  /// que mon repere ». Un telephone qui aurait copie le sentier au niveau
+  /// « preparer » jusqu a l instant T, et qui demanderait ensuite « realiser »,
+  /// verrait ses points de trace REFUSES : ils portent une date anterieure a T,
+  /// donc la regle les declare deja a jour. Le randonneur partirait sans trace,
+  /// en croyant avoir tout telecharge, et AUCUNE mise a jour ulterieure n irait
+  /// jamais la chercher. Sans cette colonne, le defaut est silencieux et
+  /// definitif.
+  ///
+  /// CE QU ELLE PERMET, ET C EST LA SEULE CHOSE QU ELLE PERMET : comparer le
+  /// niveau DEMANDE au niveau DEJA DESCENDU. S il monte, la copie repart de
+  /// l origine pour ce sentier (`repartirDeZero`), ce qui est deja un chemin
+  /// eprouve du moteur et ne coute RIEN de plus en reseau sur le transport actuel
+  /// — la source de fichier telecharge le fichier entier de toute facon.
+  final String? niveauLocal;
   const TrailManifest({
     required this.trailId,
     required this.dataVersion,
@@ -9764,6 +9812,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     required this.lastUpdated,
     this.localVersion,
     this.ficheJson,
+    this.niveauLocal,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9787,6 +9836,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     if (!nullToAbsent || ficheJson != null) {
       map['fiche_json'] = Variable<String>(ficheJson);
     }
+    if (!nullToAbsent || niveauLocal != null) {
+      map['niveau_local'] = Variable<String>(niveauLocal);
+    }
     return map;
   }
 
@@ -9805,6 +9857,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       ficheJson: ficheJson == null && nullToAbsent
           ? const Value.absent()
           : Value(ficheJson),
+      niveauLocal: niveauLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(niveauLocal),
     );
   }
 
@@ -9825,6 +9880,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
         json['localVersion'],
       ),
       ficheJson: serializer.fromJson<String?>(json['ficheJson']),
+      niveauLocal: serializer.fromJson<String?>(json['niveauLocal']),
     );
   }
   @override
@@ -9840,6 +9896,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       'lastUpdated': serializer.toJson<String>(lastUpdated),
       'localVersion': serializer.toJson<HorodatageServeur?>(localVersion),
       'ficheJson': serializer.toJson<String?>(ficheJson),
+      'niveauLocal': serializer.toJson<String?>(niveauLocal),
     };
   }
 
@@ -9853,6 +9910,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     String? lastUpdated,
     Value<HorodatageServeur?> localVersion = const Value.absent(),
     Value<String?> ficheJson = const Value.absent(),
+    Value<String?> niveauLocal = const Value.absent(),
   }) => TrailManifest(
     trailId: trailId ?? this.trailId,
     dataVersion: dataVersion ?? this.dataVersion,
@@ -9863,6 +9921,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     lastUpdated: lastUpdated ?? this.lastUpdated,
     localVersion: localVersion.present ? localVersion.value : this.localVersion,
     ficheJson: ficheJson.present ? ficheJson.value : this.ficheJson,
+    niveauLocal: niveauLocal.present ? niveauLocal.value : this.niveauLocal,
   );
   TrailManifest copyWithCompanion(TrailManifestsCompanion data) {
     return TrailManifest(
@@ -9881,6 +9940,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           ? data.localVersion.value
           : this.localVersion,
       ficheJson: data.ficheJson.present ? data.ficheJson.value : this.ficheJson,
+      niveauLocal: data.niveauLocal.present
+          ? data.niveauLocal.value
+          : this.niveauLocal,
     );
   }
 
@@ -9895,7 +9957,8 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           ..write('status: $status, ')
           ..write('lastUpdated: $lastUpdated, ')
           ..write('localVersion: $localVersion, ')
-          ..write('ficheJson: $ficheJson')
+          ..write('ficheJson: $ficheJson, ')
+          ..write('niveauLocal: $niveauLocal')
           ..write(')'))
         .toString();
   }
@@ -9911,6 +9974,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     lastUpdated,
     localVersion,
     ficheJson,
+    niveauLocal,
   );
   @override
   bool operator ==(Object other) =>
@@ -9924,7 +9988,8 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           other.status == this.status &&
           other.lastUpdated == this.lastUpdated &&
           other.localVersion == this.localVersion &&
-          other.ficheJson == this.ficheJson);
+          other.ficheJson == this.ficheJson &&
+          other.niveauLocal == this.niveauLocal);
 }
 
 class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
@@ -9937,6 +10002,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
   final Value<String> lastUpdated;
   final Value<HorodatageServeur?> localVersion;
   final Value<String?> ficheJson;
+  final Value<String?> niveauLocal;
   final Value<int> rowid;
   const TrailManifestsCompanion({
     this.trailId = const Value.absent(),
@@ -9948,6 +10014,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     this.lastUpdated = const Value.absent(),
     this.localVersion = const Value.absent(),
     this.ficheJson = const Value.absent(),
+    this.niveauLocal = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailManifestsCompanion.insert({
@@ -9960,6 +10027,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     required String lastUpdated,
     this.localVersion = const Value.absent(),
     this.ficheJson = const Value.absent(),
+    this.niveauLocal = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : trailId = Value(trailId),
        dataVersion = Value(dataVersion),
@@ -9978,6 +10046,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Expression<String>? lastUpdated,
     Expression<int>? localVersion,
     Expression<String>? ficheJson,
+    Expression<String>? niveauLocal,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9990,6 +10059,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       if (lastUpdated != null) 'last_updated': lastUpdated,
       if (localVersion != null) 'local_version': localVersion,
       if (ficheJson != null) 'fiche_json': ficheJson,
+      if (niveauLocal != null) 'niveau_local': niveauLocal,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10004,6 +10074,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Value<String>? lastUpdated,
     Value<HorodatageServeur?>? localVersion,
     Value<String?>? ficheJson,
+    Value<String?>? niveauLocal,
     Value<int>? rowid,
   }) {
     return TrailManifestsCompanion(
@@ -10016,6 +10087,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       lastUpdated: lastUpdated ?? this.lastUpdated,
       localVersion: localVersion ?? this.localVersion,
       ficheJson: ficheJson ?? this.ficheJson,
+      niveauLocal: niveauLocal ?? this.niveauLocal,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10054,6 +10126,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     if (ficheJson.present) {
       map['fiche_json'] = Variable<String>(ficheJson.value);
     }
+    if (niveauLocal.present) {
+      map['niveau_local'] = Variable<String>(niveauLocal.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -10072,6 +10147,7 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
           ..write('lastUpdated: $lastUpdated, ')
           ..write('localVersion: $localVersion, ')
           ..write('ficheJson: $ficheJson, ')
+          ..write('niveauLocal: $niveauLocal, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -24363,6 +24439,7 @@ typedef $$TrailManifestsTableCreateCompanionBuilder =
       required String lastUpdated,
       Value<HorodatageServeur?> localVersion,
       Value<String?> ficheJson,
+      Value<String?> niveauLocal,
       Value<int> rowid,
     });
 typedef $$TrailManifestsTableUpdateCompanionBuilder =
@@ -24376,6 +24453,7 @@ typedef $$TrailManifestsTableUpdateCompanionBuilder =
       Value<String> lastUpdated,
       Value<HorodatageServeur?> localVersion,
       Value<String?> ficheJson,
+      Value<String?> niveauLocal,
       Value<int> rowid,
     });
 
@@ -24434,6 +24512,11 @@ class $$TrailManifestsTableFilterComposer
     column: $table.ficheJson,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailManifestsTableOrderingComposer
@@ -24489,6 +24572,11 @@ class $$TrailManifestsTableOrderingComposer
     column: $table.ficheJson,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailManifestsTableAnnotationComposer
@@ -24534,6 +24622,11 @@ class $$TrailManifestsTableAnnotationComposer
 
   GeneratedColumn<String> get ficheJson =>
       $composableBuilder(column: $table.ficheJson, builder: (column) => column);
+
+  GeneratedColumn<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
+    builder: (column) => column,
+  );
 }
 
 class $$TrailManifestsTableTableManager
@@ -24578,6 +24671,7 @@ class $$TrailManifestsTableTableManager
                 Value<String> lastUpdated = const Value.absent(),
                 Value<HorodatageServeur?> localVersion = const Value.absent(),
                 Value<String?> ficheJson = const Value.absent(),
+                Value<String?> niveauLocal = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion(
                 trailId: trailId,
@@ -24589,6 +24683,7 @@ class $$TrailManifestsTableTableManager
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
                 ficheJson: ficheJson,
+                niveauLocal: niveauLocal,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -24602,6 +24697,7 @@ class $$TrailManifestsTableTableManager
                 required String lastUpdated,
                 Value<HorodatageServeur?> localVersion = const Value.absent(),
                 Value<String?> ficheJson = const Value.absent(),
+                Value<String?> niveauLocal = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion.insert(
                 trailId: trailId,
@@ -24613,6 +24709,7 @@ class $$TrailManifestsTableTableManager
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
                 ficheJson: ficheJson,
+                niveauLocal: niveauLocal,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

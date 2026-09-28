@@ -19,6 +19,7 @@ import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
+import 'core/services/ordonnanceur_de_synchronisation.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'features/ads/providers/ads_providers.dart';
@@ -318,6 +319,26 @@ class _BootstrapGate extends ConsumerWidget {
     // rendu dessus (best-effort) : l'app demarre meme si la pub echoue, et
     // aucune banniere ne s'affiche tant que le consentement n'est pas obtenu.
     ref.watch(adsReadyProvider);
+
+    // LA CADENCE DE SYNCHRONISATION EST ARMEE ICI (tache 616), ET RIEN NE L ARMAIT.
+    //
+    // Demande de Christophe du 28/09 09:32 : « quand l appli recupere du reseau (et
+    // ensuite toutes les 4 heures par exemple) elle vient verifier toutes les
+    // donnees superieures a sa date de MAJ ». La mecanique existait depuis la tache
+    // E4.11c (`UpdateDownloader.scheduleBackgroundDownload`) mais AUCUN code de
+    // production ne l'appelait : un sentier ne se mettait a jour que si le
+    // randonneur rouvrait le catalogue et appuyait lui-meme.
+    //
+    // POURQUOI ICI ET PAS DANS UN ECRAN. Cette garde vit au-dessus du `Navigator`
+    // et ne se demonte jamais ; Riverpod 3 met en PAUSE les abonnements d'un ecran
+    // qui n'est plus a l'avant-plan, donc une cadence branchee depuis le catalogue
+    // s'arreterait des qu'on en sort. C'est le meme raisonnement que pour
+    // [homeLocationProvider] ci-dessus.
+    //
+    // NON BLOQUANT : l'ordonnanceur arme une horloge et une ecoute de
+    // connectivite, il ne declenche aucune passe au demarrage et ne retarde donc
+    // pas le premier ecran.
+    ref.watch(ordonnanceurDemarreProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);

@@ -18,6 +18,7 @@ import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/update_checker.dart';
 import 'package:moteur_gr/core/services/update_downloader.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../../fixtures/horodatage_de_serveur.dart';
 
@@ -118,18 +119,26 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
   /// annonce pour le fichier qu on va chercher, pas celle du cache local.
   String? derniereEmpreinteAttendue;
 
+  /// Dernier niveau demande au service (tache 616).
+  ///
+  /// C est ce que le test affirme : la cadence resynchronise chaque sentier AU
+  /// NIVEAU OU IL EST DEJA DESCENDU, et ne monte jamais de niveau toute seule.
+  NiveauDeTelechargement? dernierNiveauDemande;
+
   @override
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
     required HorodatageServeur revisionCible,
     required String? empreinteAttendue,
+    required NiveauDeTelechargement niveau,
     HorodatageServeur? revisionLocaleConnue,
   }) async {
     downloadCallCount++;
     lastDeltaUrl = urlDonnees;
     derniereRevisionCible = revisionCible;
     derniereEmpreinteAttendue = empreinteAttendue;
+    dernierNiveauDemande = niveau;
     return bilan;
   }
 }
@@ -233,8 +242,18 @@ void main() {
         dataBaseUrl: 'https://data.example.org',
       );
 
+      // LE NIVEAU EST DIT, ET SANS LUI RIEN NE DESCEND (tache 616). Le repli de
+      // `downloadAllUpdates` est `NiveauDeTelechargement.regarder` : un sentier
+      // dont on ne connait pas le niveau ne fait descendre AUCUNE donnee. C est
+      // volontairement l inverse du reflexe — un repli a « realiser » ferait
+      // arriver la trace et ses points sur un sentier seulement prepare, toutes
+      // les quatre heures, sans que le randonneur l ait demande. Ce test exerce
+      // le sentier COMPLET, donc il le dit.
       final results = await downloader.downloadAllUpdates(
         manifestUrl: 'https://example.com/manifest.json',
+        niveauParSentier: const {
+          'volcans': NiveauDeTelechargement.realiser,
+        },
       );
 
       // Verification: 1 resultat, succes

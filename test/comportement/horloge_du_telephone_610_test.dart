@@ -21,6 +21,7 @@ import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 /// TACHE 610 — LA SYNCHRONISATION PASSE DU NUMERO A L HORODATAGE, ET LES QUATRE
 /// PIEGES DU MODELE SONT FERMES PAR UN TEST CHACUN.
@@ -223,7 +224,7 @@ void main() {
           instantAnnonce: instantServeur());
       await conserver(v1);
       await service().synchroniser('gr-test', 'https://double/v1.json',
-          revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
 
       // LE REPERE EST CELUI DU SERVEUR, A LA MILLISECONDE. Pas l heure de
       // l appareil, et pas non plus « quelque part entre les deux ».
@@ -250,7 +251,7 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-test',
         'https://double/v2.json',
-        revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
@@ -347,7 +348,7 @@ void main() {
       await conserver(v1);
 
       await service().synchroniser('gr-test', 'https://double/v1.json',
-          revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
 
       expect((await manifestes.getByTrailId('gr-test'))!.localVersion, borne,
           reason: 'le repere est la BORNE (07:00), pas le maximum des '
@@ -360,7 +361,7 @@ void main() {
           instantAnnonce: instantServeur());
       await conserver(v1);
       await service().synchroniser('gr-test', 'https://double/v1.json',
-          revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
 
       // Republication a la MEME date : rien n est « plus recent », rien ne bouge.
       final memeInstant = deposer(
@@ -372,7 +373,7 @@ void main() {
       final rien = await service().synchroniser(
         'gr-test',
         'https://double/meme.json',
-        revisionCible: memeInstant.dataVersion,
+        niveau: NiveauDeTelechargement.realiser, revisionCible: memeInstant.dataVersion,
         empreinteAttendue: memeInstant.hash,
       );
       expect(rien.rienAFaire, isTrue,
@@ -398,7 +399,7 @@ void main() {
           instantAnnonce: instantServeur());
       await conserver(v1);
       await service().synchroniser('gr-test', 'https://double/v1.json',
-          revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
       expect(await TrailPoisDao(db).getByStageId('test-s1'), hasLength(1));
 
       // La seconde est ABIMEE AU MILIEU : `itineraries` passe, `stages` leve. La
@@ -415,7 +416,7 @@ void main() {
 
       await expectLater(
         service().synchroniser('gr-test', 'https://double/v2.json',
-            revisionCible: v2.dataVersion, empreinteAttendue: v2.hash),
+            niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion, empreinteAttendue: v2.hash),
         throwsA(anything),
         reason: 'un echec de pose doit se DIRE : rendre un bilan vide se '
             'confondrait avec « deja a jour »',
@@ -451,7 +452,7 @@ void main() {
 
       await expectLater(
         service().synchroniser('gr-test', 'https://double/v1.json',
-            revisionCible: v1.dataVersion, empreinteAttendue: v1.hash),
+            niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash),
         throwsA(isA<RepereNonInscriptible>()),
       );
 

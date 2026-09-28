@@ -32,6 +32,14 @@ _ResultatSynchronisation _$ResultatSynchronisationFromJson(
   revisionAtteinte: const HorodatageServeurJson().fromJson(
     json['revisionAtteinte'],
   ),
+  niveauAtteint: $enumDecodeNullable(
+    _$NiveauDeTelechargementEnumMap,
+    json['niveauAtteint'],
+  ),
+  transferes: (json['transferes'] as num?)?.toInt() ?? 0,
+  retenus: (json['retenus'] as num?)?.toInt() ?? 0,
+  ecartesHorsNiveau: (json['ecartesHorsNiveau'] as num?)?.toInt() ?? 0,
+  octetsRecus: (json['octetsRecus'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$ResultatSynchronisationToJson(
@@ -43,4 +51,15 @@ Map<String, dynamic> _$ResultatSynchronisationToJson(
   'revisionAtteinte': const HorodatageServeurJson().toJson(
     instance.revisionAtteinte,
   ),
+  'niveauAtteint': _$NiveauDeTelechargementEnumMap[instance.niveauAtteint],
+  'transferes': instance.transferes,
+  'retenus': instance.retenus,
+  'ecartesHorsNiveau': instance.ecartesHorsNiveau,
+  'octetsRecus': instance.octetsRecus,
+};
+
+const _$NiveauDeTelechargementEnumMap = {
+  NiveauDeTelechargement.regarder: 'regarder',
+  NiveauDeTelechargement.preparer: 'preparer',
+  NiveauDeTelechargement.realiser: 'realiser',
 };
