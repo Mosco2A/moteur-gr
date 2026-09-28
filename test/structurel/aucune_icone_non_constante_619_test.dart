@@ -30,8 +30,11 @@ void main() {
       'sinon la compilation release s arrete et aucun paquet installable ne sort',
       () {
         final racine = Directory('lib');
-        expect(racine.existsSync(), isTrue,
-            reason: 'le test doit tourner a la racine du paquet Flutter');
+        expect(
+          racine.existsSync(),
+          isTrue,
+          reason: 'le test doit tourner a la racine du paquet Flutter',
+        );
 
         // `IconData(` precede d un caractere qui n est ni `const` ni un point :
         // on cherche les CONSTRUCTIONS, pas les mentions en commentaire ni les
@@ -74,7 +77,8 @@ void main() {
         expect(
           fautifs,
           isEmpty,
-          reason: 'Ces lignes construisent une icone a l execution. La '
+          reason:
+              'Ces lignes construisent une icone a l execution. La '
               'compilation release refusera de produire un paquet '
               '(« Avoid non-constant invocations of IconData »). Rangez '
               'l icone dans une table `const Map<String, IconData>` — voir '
@@ -85,21 +89,26 @@ void main() {
       },
     );
 
-    test(
-      'la table des icones de categorie porte bien des IconData const, '
-      'et plus des codepoints',
-      () {
-        final fichier =
-            File('lib/features/checklist/data/checklist_template.dart');
-        expect(fichier.existsSync(), isTrue);
+    test('la table des icones de categorie porte bien des IconData const, '
+        'et plus des codepoints', () {
+      final fichier = File(
+        'lib/features/checklist/data/checklist_template.dart',
+      );
+      expect(fichier.existsSync(), isTrue);
 
-        final source = fichier.readAsStringSync();
-        expect(source, contains('const Map<String, IconData> checklistCategoryIcons'),
-            reason: 'la table doit ranger des icones, pas des entiers');
-        expect(source, isNot(contains('checklistCategoryIconCodepoints')),
-            reason: 'la table de codepoints etait la source du defaut : '
-                'la laisser en place invite a la reutiliser');
-      },
-    );
+      final source = fichier.readAsStringSync();
+      expect(
+        source,
+        contains('const Map<String, IconData> checklistCategoryIcons'),
+        reason: 'la table doit ranger des icones, pas des entiers',
+      );
+      expect(
+        source,
+        isNot(contains('checklistCategoryIconCodepoints')),
+        reason:
+            'la table de codepoints etait la source du defaut : '
+            'la laisser en place invite a la reutiliser',
+      );
+    });
   });
 }

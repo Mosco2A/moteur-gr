@@ -1,10 +1,24 @@
 # Codemagic CI/CD pour Moteur GR (StepWays)
-# Workflows:
-#   pr_gate         — PR : analyze + tests + format + regles Firestore
-#   merge           — push main : gate + APK debug
-#   ios_compile     — push toute branche : COMPILE l iPhone, ne publie RIEN
-#   android_release — tag v* : AAB release signe (secrets wagon 3)
-#   ios_release     — tag v* : IPA App Store (secrets wagon 3)
+#
+# SIX workflows, dans l ordre ou ils apparaissent plus bas. Ce compte est verifie
+# a chaque relecture : un commentaire qui enumere faux est un commentaire menteur.
+#   1. pr_gate         — PR, toute branche : analyze + tests + format + regles
+#                        Firestore. Ne produit AUCUN artefact.
+#   2. merge           — push sur main SEULEMENT : gate + APK debug en artefact.
+#   3. android_test    — push, TOUTE branche : gate + APK debug EN ARTEFACT.
+#                        (tache 619) La seule chaine qui livre un installable
+#                        depuis une branche d integration, avant que main bouge.
+#                        Aucun groupe de variables, aucune valeur de signature.
+#   4. ios_compile     — push, TOUTE branche : COMPILE l iPhone sans signature et
+#                        ne livre RIEN (tache 618). Aucun artefact, par choix.
+#   5. android_release — etiquette v* : AAB release SIGNE (wagon 3).
+#   6. ios_release     — etiquette v* : IPA App Store (wagon 3).
+#
+# QUI LIVRE QUOI, PARCE QUE C EST LA QUESTION QU ON SE POSE VRAIMENT :
+#   - installable tout de suite, sans rien a remplir : android_test (APK debug) ;
+#   - preuve que le natif iPhone compile : ios_compile (rien a telecharger) ;
+#   - paquets publiables sur les magasins : les deux *_release, sur etiquette, et
+#     seulement quand les groupes de variables de signature sont remplis.
 #
 # P1-5 audit #327 : workflows release REECRITS depuis les specs (aucun
 # merge de la branche E5.6b pre-decontamination). Signature 100% par
@@ -116,6 +130,153 @@ workflows:
 
       - name: Build APK debug
         script: flutter build apk --debug
+
+    artifacts:
+      - build/**/outputs/**/*.apk
+
+  # ==========================================================================
+  # --- Workflow Android Test — LE SEUL QUI LIVRE UN INSTALLABLE (tache 619) --
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME. `merge` est la seule chaine qui fabriquait
+  # un APK, et elle est filtree sur `branch_patterns: main`. Or tout le travail
+  # des lots 605 a 618 vit sur des branches, et main n a pas bouge depuis
+  # 708b82c. Christophe n avait donc RIEN a telecharger : le travail existait,
+  # l installable n existait pas. Cette chaine produit un APK depuis N IMPORTE
+  # QUELLE branche, AVANT que main bouge — c est exactement le geste que
+  # `ios_compile` (tache 618) fait pour l iPhone, sauf qu ici on LIVRE le
+  # fichier au lieu de seulement prouver que ca compile. Un iPhone ne s installe
+  # pas depuis un artefact telecharge ; un Android, si.
+  #
+  # POURQUOI DEBUG ET NON RELEASE — DEUX RAISONS, ET AUCUNE N EST LA PARESSE.
+  #   1. AUCUN SECRET REQUIS. Un APK debug est signe par la cle de debogage que
+  #      Flutter fabrique lui-meme. Cette chaine n a donc besoin d aucun
+  #      `groups:`, d aucun keystore, d aucune valeur App Store Connect — elle
+  #      tourne des aujourd hui sans que personne ait rien a remplir.
+  #   2. AUCUN RISQUE DE MENTIR SUR CE QU ON LIVRE. Sans `android/key.properties`,
+  #      un build `--release` est signe avec les cles DEBUG (voir
+  #      android/app/build.gradle.kts, repli explicite P1-3) : on presenterait un
+  #      artefact non publiable sous l etiquette « release ». Dire debug et
+  #      livrer du debug, c est la seule version honnete de cette chaine. Le vrai
+  #      AAB signe reste le travail d `android_release`, sur etiquette de version.
+  #
+  # ELLE NE PUBLIE RIEN : aucun bloc `publishing:`, aucun `groups:`, aucun
+  # `android_signing:`. Elle DEPOSE un artefact — c est toute la difference, et
+  # c est tout son objet. Si un jour cette chaine se met a reclamer un groupe de
+  # variables, c est qu on s est trompe de chaine.
+  #
+  # POURQUOI LE CONTROLE DE FORMATAGE N ARRETE PAS CETTE CHAINE, ET C EST MESURE.
+  # `dart format --set-exit-if-changed lib/ test/` echoue sur CE DEPOT DEPUIS
+  # LONGTEMPS, main comprise : 654 fichiers sur 1041 seraient reformates sur
+  # 708b82c, 745 sur 1132 sur la branche du lot 616 (mesure du 28/09 avec le
+  # formateur de Flutter 3.41). La derive est anterieure a tout ce travail et
+  # vient du changement de style du formateur Dart, pas d un lot. Consequence
+  # qu il faut nommer : le controle de formatage de `pr_gate` et de `merge`
+  # ETAIT DEJA ROUGE, donc `merge` n a jamais depose son APK non plus.
+  # Recopier ici un controle rouge par avance produirait une chaine qui ne livre
+  # JAMAIS rien — exactement le probleme qu elle est censee resoudre. Le controle
+  # est donc EXECUTE et RAPPORTE A VOIX HAUTE, sans arreter la chaine. Les deux
+  # controles qui passent reellement, eux, restent bloquants : analyse statique
+  # et tests. `pr_gate` et `merge` ne sont PAS touches — leur version bloquante
+  # reste en place, rien n est affaibli ailleurs.
+  # POINT OUVERT NOMME, a trancher par Christophe : soit reformater le depot en
+  # un commit dedie et rendre le controle bloquant ici aussi, soit epingler la
+  # version du formateur. Tant que ce n est pas tranche, ce commentaire est la
+  # seule chose qui empeche de croire le depot propre.
+  android_test:
+    name: Android Test (APK debug, toute branche)
+    max_build_duration: 60
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    environment:
+      flutter: stable
+    scripts:
+      - name: Cette chaine ne doit voir AUCUN secret de publication
+        script: |
+          set -eu
+          fuites=""
+          for nom in CM_KEYSTORE CM_KEYSTORE_PASSWORD CM_KEY_ALIAS \
+                     CM_KEY_PASSWORD APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            eval "valeur=\${$nom:-}"
+            if [ -n "$valeur" ]; then fuites="$fuites $nom"; fi
+          done
+          if [ -n "$fuites" ]; then
+            echo "============================================================"
+            echo "ARRET — un groupe d environnement a ete ajoute a"
+            echo "'android_test'. Cette chaine livre un APK DEBUG : elle n a"
+            echo "besoin d AUCUN secret, et ne doit pouvoir s authentifier"
+            echo "nulle part. Variables vues :$fuites"
+            echo ""
+            echo "Un APK signe avec une vraie cle appartient a"
+            echo "'android_release', sur etiquette de version."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Aucun secret present — c est l etat attendu."
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze) — BLOQUANT
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test) — BLOQUANT
+        script: |
+          flutter test --reporter=expanded
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue"
+            exit 1
+          fi
+
+      - name: Verification formatage (dart format) — RAPPORTE, NE BLOQUE PAS
+        script: |
+          # Voir le commentaire d en-tete de cette chaine : la derive de
+          # formatage est anterieure a ce lot et touche main elle-meme. Bloquer
+          # ici empecherait la seule chaine qui livre un installable de livrer
+          # quoi que ce soit. On mesure et on le dit, sans arreter.
+          if dart format --output=none --set-exit-if-changed lib/ test/ \
+             >/dev/null 2>&1; then
+            echo "Formatage conforme."
+          else
+            echo "============================================================"
+            echo "AVERTISSEMENT — formatage non conforme (derive connue et"
+            echo "anterieure, main comprise). Cette chaine CONTINUE : son objet"
+            echo "est de livrer un APK installable. Detail :"
+            dart format --output=none --set-exit-if-changed lib/ test/ \
+              2>&1 | tail -5 || true
+            echo "============================================================"
+          fi
+
+      - name: Build APK debug
+        script: flutter build apk --debug
+
+      - name: Dire ou est le fichier a installer
+        script: |
+          set -eu
+          apk=$(find build -name '*.apk' -type f | head -1)
+          if [ -z "$apk" ]; then
+            echo "ERREUR: aucun APK produit — la chaine n a pas rempli son role."
+            exit 1
+          fi
+          echo "============================================================"
+          echo "APK pret a installer : $apk"
+          echo "Taille : $(du -h "$apk" | cut -f1)"
+          echo ""
+          echo "Il se telecharge depuis l onglet Artifacts de ce build."
+          echo "Sur le telephone : autoriser l installation depuis cette"
+          echo "source, puis ouvrir le fichier."
+          echo "============================================================"
 
     artifacts:
       - build/**/outputs/**/*.apk

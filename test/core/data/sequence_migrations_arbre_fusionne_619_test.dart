@@ -44,21 +44,31 @@ void main() {
       '— c est le chemin de la PREMIERE INSTALLATION sur le telephone',
       () async {
         final fichier = await fichierNeuf('gr_619_neuve_');
-        expect(await fichier.exists(), isFalse,
-            reason: 'le test doit partir d un fichier qui n existe pas');
+        expect(
+          await fichier.exists(),
+          isFalse,
+          reason: 'le test doit partir d un fichier qui n existe pas',
+        );
 
         final db = AppDatabase(NativeDatabase(fichier));
         // La premiere requete declenche l ouverture, donc onCreate.
         await db.customStatement('SELECT 1');
 
-        expect(await versionUtilisateur(db), db.schemaVersion,
-            reason: 'une base neuve doit etre posee directement a la version '
-                'courante, sans repasser par les marches');
+        expect(
+          await versionUtilisateur(db),
+          db.schemaVersion,
+          reason:
+              'une base neuve doit etre posee directement a la version '
+              'courante, sans repasser par les marches',
+        );
         expect(db.schemaVersion, 29);
 
         await db.close();
-        expect(await fichier.exists(), isTrue,
-            reason: 'la base doit vivre dans un FICHIER (acquis du lot 613)');
+        expect(
+          await fichier.exists(),
+          isTrue,
+          reason: 'la base doit vivre dans un FICHIER (acquis du lot 613)',
+        );
       },
     );
 
@@ -72,8 +82,9 @@ void main() {
         await db.customStatement('SELECT 1');
 
         Future<Set<String>> colonnesDe(String table) async {
-          final lignes =
-              await db.customSelect('PRAGMA table_info($table)').get();
+          final lignes = await db
+              .customSelect('PRAGMA table_info($table)')
+              .get();
           return lignes.map((l) => l.data['name'] as String).toSet();
         }
 
@@ -82,18 +93,21 @@ void main() {
         expect(manifests, contains('fiche_json'));
         expect(manifests, contains('local_version'));
         // v29 (lot 616) : jusqu ou le sentier est descendu sur ce telephone.
-        expect(manifests, contains('niveau_local'),
-            reason: 'sans cette colonne le randonneur part sans trace en '
-                'croyant avoir tout telecharge');
+        expect(
+          manifests,
+          contains('niveau_local'),
+          reason:
+              'sans cette colonne le randonneur part sans trace en '
+              'croyant avoir tout telecharge',
+        );
 
         // v27 (lot 607) : le repere de revision descend jusqu aux tables filles.
-        for (final table in [
-          'trail_meta',
-          'trail_stages',
-          'trail_pois',
-        ]) {
-          expect(await colonnesDe(table), contains('rev'),
-              reason: '$table doit porter son repere de revision');
+        for (final table in ['trail_meta', 'trail_stages', 'trail_pois']) {
+          expect(
+            await colonnesDe(table),
+            contains('rev'),
+            reason: '$table doit porter son repere de revision',
+          );
         }
       },
     );
@@ -125,101 +139,106 @@ void main() {
       return fichier;
     }
 
-    test(
-      'une base en v26 monte les TROIS marches d un coup et s ouvre — '
-      'c est la MISE A JOUR sur un telephone deja equipe',
-      () async {
-        final fichier = await baseEnV26AvecDonnees();
+    test('une base en v26 monte les TROIS marches d un coup et s ouvre — '
+        'c est la MISE A JOUR sur un telephone deja equipe', () async {
+      final fichier = await baseEnV26AvecDonnees();
 
-        final db = AppDatabase(NativeDatabase(fichier));
-        addTearDown(db.close);
-        // Si UNE SEULE des trois marches leve, cette ligne echoue et la base
-        // reste fermee — exactement ce qui se produirait sur le telephone.
-        await db.customStatement('SELECT 1');
+      final db = AppDatabase(NativeDatabase(fichier));
+      addTearDown(db.close);
+      // Si UNE SEULE des trois marches leve, cette ligne echoue et la base
+      // reste fermee — exactement ce qui se produirait sur le telephone.
+      await db.customStatement('SELECT 1');
 
-        expect(await versionUtilisateur(db), 29,
-            reason: 'le compteur doit avoir traverse v27, v28 et v29');
-      },
-    );
+      expect(
+        await versionUtilisateur(db),
+        29,
+        reason: 'le compteur doit avoir traverse v27, v28 et v29',
+      );
+    });
 
-    test(
-      'la donnee posee avant la migration est TOUJOURS LA apres — '
-      'une migration ne doit rien perdre en chemin',
-      () async {
-        final fichier = await baseEnV26AvecDonnees();
-        final db = AppDatabase(NativeDatabase(fichier));
-        addTearDown(db.close);
+    test('la donnee posee avant la migration est TOUJOURS LA apres — '
+        'une migration ne doit rien perdre en chemin', () async {
+      final fichier = await baseEnV26AvecDonnees();
+      final db = AppDatabase(NativeDatabase(fichier));
+      addTearDown(db.close);
 
-        final lignes = await db
-            .customSelect("SELECT trail_id, hash, file_size, local_version "
-                "FROM trail_manifests WHERE trail_id = 'gr20'")
-            .get();
+      final lignes = await db
+          .customSelect(
+            "SELECT trail_id, hash, file_size, local_version "
+            "FROM trail_manifests WHERE trail_id = 'gr20'",
+          )
+          .get();
 
-        expect(lignes, hasLength(1),
-            reason: 'le sentier inscrit avant la migration a disparu');
-        expect(lignes.single.data['hash'], 'empreinte-619');
-        expect(lignes.single.data['file_size'], 8192);
-      },
-    );
+      expect(
+        lignes,
+        hasLength(1),
+        reason: 'le sentier inscrit avant la migration a disparu',
+      );
+      expect(lignes.single.data['hash'], 'empreinte-619');
+      expect(lignes.single.data['file_size'], 8192);
+    });
 
-    test(
-      'rejouer la sequence sur une base DEJA migree ne leve pas — '
-      'c est le cas de l application tuee au milieu d une marche',
-      () async {
-        final fichier = await baseEnV26AvecDonnees();
+    test('rejouer la sequence sur une base DEJA migree ne leve pas — '
+        'c est le cas de l application tuee au milieu d une marche', () async {
+      final fichier = await baseEnV26AvecDonnees();
 
-        // Premier passage : la base monte de 26 a 29.
-        final premier = AppDatabase(NativeDatabase(fichier));
-        await premier.customStatement('SELECT 1');
-        expect(await versionUtilisateur(premier), 29);
-        await premier.close();
+      // Premier passage : la base monte de 26 a 29.
+      final premier = AppDatabase(NativeDatabase(fichier));
+      await premier.customStatement('SELECT 1');
+      expect(await versionUtilisateur(premier), 29);
+      await premier.close();
 
-        // On remet le compteur en arriere SANS defaire le schema : c est l etat
-        // qu une application tuee entre la derniere marche et l ecriture du
-        // compteur laisse derriere elle. Les marches vont se rejouer sur des
-        // colonnes DEJA POSEES.
-        final saboteur = AppDatabase(NativeDatabase(fichier));
-        await saboteur.customStatement('PRAGMA user_version = 26');
-        await saboteur.close();
+      // On remet le compteur en arriere SANS defaire le schema : c est l etat
+      // qu une application tuee entre la derniere marche et l ecriture du
+      // compteur laisse derriere elle. Les marches vont se rejouer sur des
+      // colonnes DEJA POSEES.
+      final saboteur = AppDatabase(NativeDatabase(fichier));
+      await saboteur.customStatement('PRAGMA user_version = 26');
+      await saboteur.close();
 
-        final second = AppDatabase(NativeDatabase(fichier));
-        addTearDown(second.close);
-        await second.customStatement('SELECT 1');
-        expect(await versionUtilisateur(second), 29,
-            reason: 'les marches doivent etre rejouables sans echouer');
-      },
-    );
+      final second = AppDatabase(NativeDatabase(fichier));
+      addTearDown(second.close);
+      await second.customStatement('SELECT 1');
+      expect(
+        await versionUtilisateur(second),
+        29,
+        reason: 'les marches doivent etre rejouables sans echouer',
+      );
+    });
   });
 
   group('619 — fermer et rouvrir ne perd rien (acquis du lot 613)', () {
-    test(
-      'ce qui est ecrit avant la fermeture est relu apres la reouverture, '
-      'sur l arbre FUSIONNE et non sur la seule branche du lot 613',
-      () async {
-        final fichier = await fichierNeuf('gr_619_cycle_');
+    test('ce qui est ecrit avant la fermeture est relu apres la reouverture, '
+        'sur l arbre FUSIONNE et non sur la seule branche du lot 613', () async {
+      final fichier = await fichierNeuf('gr_619_cycle_');
 
-        final premiere = AppDatabase(NativeDatabase(fichier));
-        await premiere.customStatement(
-          "INSERT INTO trail_manifests "
-          "(trail_id, data_version, hash, file_path, file_size, status, "
-          "last_updated, local_version) "
-          "VALUES ('survivant-619', 1759017600000, 'h-cycle', 'x/v1.json', "
-          "1024, 'active', '2026-09-28T00:00:00Z', 1759017600000)",
-        );
-        await premiere.close();
+      final premiere = AppDatabase(NativeDatabase(fichier));
+      await premiere.customStatement(
+        "INSERT INTO trail_manifests "
+        "(trail_id, data_version, hash, file_path, file_size, status, "
+        "last_updated, local_version) "
+        "VALUES ('survivant-619', 1759017600000, 'h-cycle', 'x/v1.json', "
+        "1024, 'active', '2026-09-28T00:00:00Z', 1759017600000)",
+      );
+      await premiere.close();
 
-        // Nouvelle instance, meme fichier : c est la reouverture de l application.
-        final seconde = AppDatabase(NativeDatabase(fichier));
-        addTearDown(seconde.close);
-        final lignes = await seconde
-            .customSelect("SELECT trail_id FROM trail_manifests "
-                "WHERE trail_id = 'survivant-619'")
-            .get();
+      // Nouvelle instance, meme fichier : c est la reouverture de l application.
+      final seconde = AppDatabase(NativeDatabase(fichier));
+      addTearDown(seconde.close);
+      final lignes = await seconde
+          .customSelect(
+            "SELECT trail_id FROM trail_manifests "
+            "WHERE trail_id = 'survivant-619'",
+          )
+          .get();
 
-        expect(lignes, hasLength(1),
-            reason: 'la base est retombee en memoire : tout disparait a la '
-                'fermeture, c est le defaut que le lot 613 avait ferme');
-      },
-    );
+      expect(
+        lignes,
+        hasLength(1),
+        reason:
+            'la base est retombee en memoire : tout disparait a la '
+            'fermeture, c est le defaut que le lot 613 avait ferme',
+      );
+    });
   });
 }
