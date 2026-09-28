@@ -117,8 +117,13 @@ class DeltaUpdateService {
     );
   }
 
-  /// Revision jusqu ou le telephone est a jour pour [trailId]. Zero si rien.
-  Future<int> revisionLocale(String trailId) async {
+  /// L INSTANT jusqu auquel le telephone est a jour pour [trailId].
+  /// [HorodatageServeur.origine] si rien n est copie.
+  ///
+  /// CETTE VALEUR VIENT DE LA BASE, DONC DU SERVEUR : c est la date qu il avait
+  /// annoncee lors de la derniere copie complete. L horloge de l appareil
+  /// n intervient a aucun moment, et le type l interdit.
+  Future<HorodatageServeur> revisionLocale(String trailId) async {
     final ligne = await trailManifestsDao.getByTrailId(trailId);
     return ligne?.localVersion ?? RevisionDeDonnee.revisionInitiale;
   }
@@ -154,8 +159,8 @@ class DeltaUpdateService {
   Future<ResultatSynchronisation> appliquerRevisions(
     String trailId,
     Map<String, dynamic> donnees, {
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
     List<String> famillesLimitees = const [],
     bool repartirDeZero = false,
   }) async {
@@ -212,7 +217,7 @@ class DeltaUpdateService {
     });
 
     _log.d(
-      '[Revision] $trailId : v$revisionLocale -> v$revisionCible, '
+      '[Revision] $trailId : $revisionLocale -> $revisionCible, '
       '$ecrits enregistrement(s) ecrit(s), $supprimes retire(s), '
       'familles touchees : ${touchees.isEmpty ? "aucune" : touchees.join(", ")}',
     );
@@ -265,9 +270,9 @@ class DeltaUpdateService {
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
-    required int revisionCible,
+    required HorodatageServeur revisionCible,
     required String? empreinteAttendue,
-    int? revisionLocaleConnue,
+    HorodatageServeur? revisionLocaleConnue,
   }) async {
     final locale = revisionLocaleConnue ?? await revisionLocale(trailId);
 
@@ -276,12 +281,16 @@ class DeltaUpdateService {
       revisionCible: revisionCible,
     );
     if (copieComplete) {
+      final retard = Duration(
+        milliseconds: revisionCible.millisecondesEpoch -
+            locale.millisecondesEpoch,
+      );
       _log.w(
-        '[Revision] $trailId : retard de ${revisionCible - locale} revisions, '
-        'au-dela de la fenetre de retention '
-        '(${RevisionDeDonnee.fenetreDeRetention}). Les marqueurs de suppression '
-        'de cette periode ne sont plus publies : COPIE COMPLETE depuis la '
-        'revision zero, donnees locales du sentier effacees d abord.',
+        '[Revision] $trailId : retard de ${retard.inDays} jour(s), au-dela de '
+        'la fenetre de retention '
+        '(${RevisionDeDonnee.fenetreDeRetention.inDays} jours). Les marqueurs de '
+        'suppression de cette periode ne sont plus publies : COPIE COMPLETE '
+        'depuis l origine, donnees locales du sentier effacees d abord.',
       );
     }
     final depuis =
@@ -360,8 +369,8 @@ class DeltaUpdateService {
   Future<_Bilan> _appliquerFamille(
     String famille,
     dynamic brut, {
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
   }) async {
     // `trail_meta` est un objet unique, les six autres des listes.
     final enregistrements = <Map<String, dynamic>>[
@@ -404,13 +413,14 @@ class DeltaUpdateService {
   Future<void> _ecrire(
     String famille,
     Map<String, dynamic> d,
-    int rev,
+    HorodatageServeur rev,
   ) async {
     switch (famille) {
       case MorceauxDeSentier.fiche:
         await trailMetaDao.insertOrReplace(TrailMetaCompanion(
           id: Value(d['id'] as String), code: Value(d['code'] as String),
-          dataVersion: Value(d['data_version'] as int? ?? rev),
+          dataVersion: Value(
+              HorodatageServeur.annonceParLeServeur(d['data_version']) ?? rev),
           lastSync: Value(DateTime.now().toIso8601String()),
           status: Value(d['status'] as String? ?? 'active'),
           rev: Value(rev)));

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../data/revision_de_donnee.dart';
+
 part 'delta_update.freezed.dart';
 part 'delta_update.g.dart';
 
@@ -31,11 +33,12 @@ abstract class DeltaUpdate with _$DeltaUpdate {
     /// Identifiant du sentier concerne
     required String trailId,
 
-    /// MA revision : jusqu ou ce telephone est a jour. `0` = rien n est copie.
-    required int fromVersion,
+    /// MON REPERE : jusqu a QUEL INSTANT ce telephone est a jour.
+    /// [HorodatageServeur.origine] = rien n est copie.
+    @HorodatageServeurJson() required HorodatageServeur fromVersion,
 
-    /// La revision COURANTE du sentier, telle que la liste distante la publie.
-    required int toVersion,
+    /// L INSTANT DE PUBLICATION du sentier, tel que la liste distante l annonce.
+    @HorodatageServeurJson() required HorodatageServeur toVersion,
 
     /// Taille du fichier de donnees en octets (pour annoncer le cout au
     /// randonneur qui paie son forfait).
@@ -48,10 +51,10 @@ abstract class DeltaUpdate with _$DeltaUpdate {
 
   /// Vrai a la PREMIERE copie : rien n est encore sur le telephone.
   ///
-  /// Ce n est pas un autre chemin de code, seulement un fait a afficher. A la
-  /// revision zero, « tout est plus recent que ma revision » et tout descend :
+  /// Ce n est pas un autre chemin de code, seulement un fait a afficher. A
+  /// l origine, « tout est plus recent que mon repere » et tout descend :
   /// premiere copie et mise a jour sont litteralement le meme code.
-  bool get premiereCopie => fromVersion <= 0;
+  bool get premiereCopie => fromVersion <= HorodatageServeur.origine;
 }
 
 /// CE QUI A REELLEMENT ETE FAIT — mesure, pas prevision.
@@ -75,8 +78,8 @@ abstract class ResultatSynchronisation with _$ResultatSynchronisation {
     /// Nombre d enregistrements RETIRES du telephone sur marqueur de suppression.
     required int supprimes,
 
-    /// Revision atteinte apres application.
-    required int revisionAtteinte,
+    /// L INSTANT atteint apres application : le nouveau repere du telephone.
+    @HorodatageServeurJson() required HorodatageServeur revisionAtteinte,
   }) = _ResultatSynchronisation;
 
   /// Deserialisation depuis JSON

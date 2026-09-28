@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../data/revision_de_donnee.dart';
+
 part 'trail_manifest.freezed.dart';
 part 'trail_manifest.g.dart';
 
@@ -107,19 +109,23 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     /// sentiers, c est le meme.
     required String trailId,
 
-    /// LA REVISION COURANTE DU SENTIER — le numero de la derniere revision
-    /// publiee.
+    /// L INSTANT DE LA DERNIERE PUBLICATION DU SENTIER, pose par le serveur.
     ///
     /// C est la moitie de l unique question que l application pose : « je suis a
-    /// la revision R (`trail_manifests.localVersion`), tu es a la revision
-    /// [dataVersion] ; donne-moi tout ce qui porte un numero superieur a R ».
+    /// jour jusqu a R (`trail_manifests.localVersion`), tu es publie a
+    /// [dataVersion] ; donne-moi tout ce qui porte une date plus recente que R ».
     /// L autre moitie est portee par chaque enregistrement
     /// (`RevisionDeDonnee.champRevision`).
     ///
-    /// A la premiere ouverture la revision locale vaut zero : tout est plus
-    /// recent, donc tout descend. Premiere copie et mise a jour sont le MEME
-    /// chemin de code.
-    required int dataVersion,
+    /// A la premiere ouverture le repere local vaut [HorodatageServeur.origine] :
+    /// tout est plus recent, donc tout descend. Premiere copie et mise a jour sont
+    /// le MEME chemin de code.
+    ///
+    /// LE TELEPHONE RETIENT CETTE VALEUR TELLE QUELLE, ET JAMAIS SA PROPRE
+    /// HORLOGE. C est la regle absolue du modele : une seule autorite de temps, le
+    /// serveur. Voir `revision_de_donnee.dart` pour ce que l autre choix aurait
+    /// coute — une perte definitive et silencieuse.
+    @HorodatageServeurJson() required HorodatageServeur dataVersion,
 
     /// Hash SHA-256 du fichier de donnees COMPLET du sentier.
     required String hash,
@@ -142,7 +148,16 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     /// Statut du sentier ('active', 'draft', 'archived')
     required String status,
 
-    /// Date de derniere mise a jour (ISO 8601)
+    /// Date de derniere mise a jour (ISO 8601).
+    ///
+    /// DEPUIS LA TACHE 610, CE CHAMP ET [dataVersion] DESIGNENT LE MEME INSTANT —
+    /// et deux noms pour un meme fait, c est deux autorites dont la plus
+    /// silencieuse gagne. Le lot ne le supprime pas (renommer ou retirer un champ
+    /// de la liste publiee depasse « seul le type de la comparaison change »),
+    /// mais il ferme la divergence par les deux bouts : l outil de publication les
+    /// ecrit depuis LA MEME horloge, et `verifier` refuse un depot ou ils ne
+    /// concordent pas. CELUI QUI DECIDE EST [dataVersion] — celui-ci est lisible,
+    /// pas normatif.
     required String lastUpdated,
 
     /// FICHE D AFFICHAGE DU SENTIER — LA PIECE QUI MANQUAIT AU MOTEUR.

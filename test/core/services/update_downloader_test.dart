@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_tracks_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_points_dao.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/models/delta_update.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
@@ -17,6 +18,11 @@ import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/update_checker.dart';
 import 'package:moteur_gr/core/services/update_downloader.dart';
+
+import '../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Fake ConnectivityMonitor pour les tests (toujours online).
 class FakeConnectivityMonitor extends ConnectivityMonitor {
@@ -88,11 +94,11 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
     famillesTouchees: [],
     ecrits: 0,
     supprimes: 0,
-    revisionAtteinte: 0,
+    revisionAtteinte: HorodatageServeur.origine,
   );
 
-  /// Revision cible demandee lors de la derniere synchronisation.
-  int? derniereRevisionCible;
+  /// L instant cible demande lors de la derniere synchronisation.
+  HorodatageServeur? derniereRevisionCible;
 
   /// URL demandee lors de la derniere synchronisation.
   String? lastDeltaUrl;
@@ -116,9 +122,9 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
-    required int revisionCible,
+    required HorodatageServeur revisionCible,
     required String? empreinteAttendue,
-    int? revisionLocaleConnue,
+    HorodatageServeur? revisionLocaleConnue,
   }) async {
     downloadCallCount++;
     lastDeltaUrl = urlDonnees;
@@ -151,12 +157,12 @@ void main() {
     test('delta download ne retelecharge que les tables changees, pas tout',
         () async {
       // Setup: manifeste avec sentier volcans v5
-      const manifest = TrailManifest(
+      final manifest = TrailManifest(
         schemaVersion: 1,
         trails: [
           TrailManifestEntry(
             trailId: 'volcans',
-            dataVersion: 5,
+            dataVersion: v(5),
             hash: 'new_hash',
             filePath: 'trails/volcans/data.json',
             fileSize: 524288,
@@ -168,10 +174,10 @@ void main() {
 
       // Ecart de revision : le telephone est a la revision 2, le sentier est
       // publie a la revision 5.
-      const delta = DeltaUpdate(
+      final delta = DeltaUpdate(
         trailId: 'volcans',
-        fromVersion: 2,
-        toVersion: 5,
+        fromVersion: v(2),
+        toVersion: v(5),
         downloadSize: 10240,
       );
 
@@ -193,15 +199,15 @@ void main() {
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
         fakeDelta: delta,
-      )..bilan = const ResultatSynchronisation(
+      )..bilan = ResultatSynchronisation(
           // SEULES CES DEUX FAMILLES ONT REELLEMENT BOUGE. Avant la tache 605,
           // ces listes venaient de `_inferChangedTables` qui rendait les sept
           // tables en dur : le rapport disait toujours 7/0. Elles viennent
           // desormais du bilan de ce qui a ete pose.
-          famillesTouchees: ['stages', 'pois'],
+          famillesTouchees: const ['stages', 'pois'],
           ecrits: 3,
           supprimes: 0,
-          revisionAtteinte: 5,
+          revisionAtteinte: v(5),
         );
 
       final fakeChecker = FakeUpdateChecker(
@@ -209,11 +215,11 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: firebase,
         fakeResults: [
-          const UpdateCheckResult(
+          UpdateCheckResult(
             trailId: 'volcans',
             hasUpdate: true,
-            localVersion: 2,
-            remoteVersion: 5,
+            localVersion: v(2),
+            remoteVersion: v(5),
           ),
         ],
       );
@@ -256,7 +262,7 @@ void main() {
       expect(fakeDeltaService.downloadCallCount, 1);
 
       // Verification: la revision cible transmise est celle de la liste
-      expect(fakeDeltaService.derniereRevisionCible, 5);
+      expect(fakeDeltaService.derniereRevisionCible, v(5));
 
       // Verification (tache 607) : l EMPREINTE ANNONCEE PAR LA LISTE DISTANTE
       // voyage avec l adresse. Sans elle, la source refuse la copie — le

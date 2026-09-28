@@ -39,9 +39,24 @@ void main() {
   });
   tearDown(() => bac.deleteSync(recursive: true));
 
-  Publicateur outil() => Publicateur(
+  /// L HORLOGE DE PUBLICATION, ET CHAQUE PUBLICATION A LA SIENNE (tache 610).
+  ///
+  /// Depuis que la revision est un INSTANT, deux publications doivent porter deux
+  /// instants distincts et croissants : c est ce qui fait qu un telephone deja a
+  /// jour prend la suite. Le numero de publication devient donc ici un NOMBRE DE
+  /// JOURS depuis un instant de reference FIXE — jamais `DateTime.now()`, qui
+  /// ferait dependre le test du jour ou il tourne.
+  DateTime horlogeAuJour(int jour) =>
+      DateTime.utc(2026, 9, 28, 0, 30).add(Duration(days: jour - 1));
+
+  /// L instant qu une publication faite au jour [jour] portera.
+  HorodatageServeur instantAuJour(int jour) =>
+      HorodatageServeur.annonceParLeServeur(
+          horlogeAuJour(jour).toIso8601String())!;
+
+  Publicateur outil({int jour = 1}) => Publicateur(
         sortie: publie,
-        horloge: DateTime.utc(2026, 9, 28, 0, 30),
+        horloge: horlogeAuJour(jour),
       );
 
   Map<String, dynamic> lireSource() =>
@@ -52,8 +67,13 @@ void main() {
         '$source/${SourceDeSentier.nomDuFichier}',
       ).writeAsStringSync(jsonEncode(contenu));
 
-  Map<String, dynamic> lirePublication(int revision) => jsonDecode(
-        File('$publie/gr_monts_dore/v$revision.json').readAsStringSync(),
+  /// LE NOM DU FICHIER PORTE L INSTANT, sous la forme qui tient dans un nom de
+  /// fichier Windows et dans une URL (l ISO 8601 porte des deux-points).
+  String cheminAuJour(int jour) =>
+      'gr_monts_dore/v${instantAuJour(jour).estampilleDeFichier}.json';
+
+  Map<String, dynamic> lirePublication(int jour) => jsonDecode(
+        File('$publie/${cheminAuJour(jour)}').readAsStringSync(),
       ) as Map<String, dynamic>;
 
   TrailManifestEntry lireLEntree() {
@@ -63,12 +83,14 @@ void main() {
     return TrailManifest.fromJson(brut).trails.single;
   }
 
-  int revisionDe(Map<String, dynamic> publication, String famille, String id) {
+  HorodatageServeur revisionDe(
+      Map<String, dynamic> publication, String famille, String id) {
     final brut = publication[famille];
     final donnee = brut is List
         ? brut.cast<Map<String, dynamic>>().firstWhere((e) => e['id'] == id)
         : brut as Map<String, dynamic>;
-    return donnee[RevisionDeDonnee.champRevision] as int;
+    return HorodatageServeur.annonceParLeServeur(
+        donnee[RevisionDeDonnee.champRevision])!;
   }
 
   // =========================================================================
@@ -77,8 +99,8 @@ void main() {
   group('607 — republier n incremente QUE le modifie', () {
     test('LA PREUVE EXIGEE : une altitude corrigee dans les sources, on '
         'republie, UN SEUL enregistrement change de revision', () async {
-      final premiere = outil().publier(source);
-      expect(premiere.revision, 1);
+      final premiere = outil(jour: 1).publier(source);
+      expect(premiere.revision, instantAuJour(1));
       expect(premiere.recalcul.nombreTouches, 19,
           reason: '1 fiche + 1 itineraire + 2 etapes + 2 hebergements + 2 POI '
               '+ 1 entete de trace + 10 points : a la premiere publication tout '
@@ -89,9 +111,9 @@ void main() {
       (contenu['stages'] as List)[0]['elevation_gain'] = 915;
       ecrireSource(contenu);
 
-      final seconde = outil().publier(source);
+      final seconde = outil(jour: 2).publier(source);
 
-      expect(seconde.revision, 2);
+      expect(seconde.revision, instantAuJour(2));
       expect(seconde.recalcul.nombreTouches, 1,
           reason: 'C EST TOUT L INTERET DU MODELE DE CHRISTOPHE. Si l outil '
               'reincrementait tout, chaque telephone retelechargerait les 19 '
@@ -100,17 +122,17 @@ void main() {
       expect(seconde.recalcul.modifies, ['stages/montsdore-s1']);
 
       final v2 = lirePublication(2);
-      expect(revisionDe(v2, 'stages', 'montsdore-s1'), 2);
-      expect(revisionDe(v2, 'stages', 'montsdore-s2'), 1,
-          reason: 'l autre etape n a pas bouge : elle GARDE son numero');
-      expect(revisionDe(v2, 'itineraries', 'montsdore-i1'), 1);
-      expect(revisionDe(v2, 'pois', 'montsdore-p1'), 1);
-      expect(revisionDe(v2, 'gpx_tracks', 'montsdore-t1'), 1);
+      expect(revisionDe(v2, 'stages', 'montsdore-s1'), instantAuJour(2));
+      expect(revisionDe(v2, 'stages', 'montsdore-s2'), instantAuJour(1),
+          reason: 'l autre etape n a pas bouge : elle GARDE sa date');
+      expect(revisionDe(v2, 'itineraries', 'montsdore-i1'), instantAuJour(1));
+      expect(revisionDe(v2, 'pois', 'montsdore-p1'), instantAuJour(1));
+      expect(revisionDe(v2, 'gpx_tracks', 'montsdore-t1'), instantAuJour(1));
       expect(
         (v2['gpx_points'] as List)
             .cast<Map<String, dynamic>>()
             .map((p) => p[RevisionDeDonnee.champRevision]),
-        everyElement(1),
+        everyElement(instantAuJour(1).iso8601),
         reason: 'les points de trace sont le gros du volume : ce sont eux qu il '
             'ne faut surtout pas faire redescendre pour une etape corrigee',
       );
@@ -118,18 +140,18 @@ void main() {
 
     test('LA FICHE DU SENTIER NE SE REINCREMENTE PAS TOUTE SEULE — '
         '`data_version` est du bookkeeping, pas du contenu', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
       final contenu = lireSource();
       (contenu['stages'] as List)[0]['elevation_gain'] = 915;
       ecrireSource(contenu);
-      outil().publier(source);
+      outil(jour: 2).publier(source);
 
       final v2 = lirePublication(2);
       final meta = v2['trail_meta'] as Map<String, dynamic>;
-      expect(meta['data_version'], 2,
-          reason: 'la revision courante du sentier suit : le semeur et la pose '
-              'la lisent');
-      expect(meta[RevisionDeDonnee.champRevision], 1,
+      expect(meta['data_version'], instantAuJour(2).iso8601,
+          reason: 'l instant courant du sentier suit : le semeur et la pose '
+              'le lisent');
+      expect(meta[RevisionDeDonnee.champRevision], instantAuJour(1).iso8601,
           reason: 'MESURE FAITE PENDANT LE LOT : tant que `data_version` entrait '
               'dans la comparaison de contenu, `trail_meta` descendait a CHAQUE '
               'republication — deux enregistrements pour une altitude corrigee '
@@ -140,34 +162,39 @@ void main() {
 
     test('LE STATUT, LUI, EST DU CONTENU : le passer a `archived` fait monter '
         'la revision de la fiche', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
       final contenu = lireSource()..['status'] = 'archived';
       ecrireSource(contenu);
 
-      final seconde = outil().publier(source);
+      final seconde = outil(jour: 2).publier(source);
 
       expect(seconde.recalcul.modifies, ['trail_meta/gr-monts-dore']);
-      expect(revisionDe(lirePublication(2), 'trail_meta', 'gr-monts-dore'), 2,
+      expect(revisionDe(lirePublication(2), 'trail_meta', 'gr-monts-dore'),
+          instantAuJour(2),
           reason: 'un sentier retire doit le DIRE aux telephones deja a jour');
     });
 
     test('RIEN N A CHANGE : aucun fichier reecrit, et la revision NE MONTE PAS',
         () async {
-      outil().publier(source);
-      final resultat = outil().publier(source);
+      outil(jour: 1).publier(source);
+      // MEME AVEC UNE HORLOGE QUI A AVANCE D UN JOUR, l instant du sentier ne
+      // bouge pas : rien n a change, donc il n y a rien a annoncer. C est plus
+      // fort qu avec un compteur, ou l on pouvait croire que la revision ne
+      // montait que faute d incrementation.
+      final resultat = outil(jour: 2).publier(source);
 
       expect(resultat.donneesReecrites, isFalse);
-      expect(resultat.revision, 1);
+      expect(resultat.revision, instantAuJour(1));
       expect(resultat.recalcul.aChange, isFalse);
-      expect(File('$publie/gr_monts_dore/v2.json').existsSync(), isFalse,
-          reason: 'incrementer pour rien ferait relire la liste a tous les '
-              'telephones, pour n avoir rien a prendre');
-      expect(lireLEntree().dataVersion, 1);
+      expect(File('$publie/${cheminAuJour(2)}').existsSync(), isFalse,
+          reason: 'faire avancer l instant pour rien ferait relire la liste a '
+              'tous les telephones, pour n avoir rien a prendre');
+      expect(lireLEntree().dataVersion, instantAuJour(1));
     });
 
     test('UN REORDONNANCEMENT DU FICHIER SOURCE NE FAIT MONTER AUCUNE '
         'REVISION — les clefs sont comparees triees', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
 
       final contenu = lireSource();
       final etapes = (contenu['stages'] as List).cast<Map<String, dynamic>>();
@@ -183,7 +210,7 @@ void main() {
       ];
       ecrireSource(contenu);
 
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 2).publier(source);
       expect(resultat.recalcul.aChange, isFalse,
           reason: '`820` et `820.0` designent le meme denivele : les distinguer '
               'ferait monter une revision pour une virgule, exactement le '
@@ -192,18 +219,51 @@ void main() {
 
     test('LE MEME SOURCE PRODUIT LES MEMES OCTETS — la publication est '
         'reproductible, donc son empreinte aussi', () async {
-      final premier = outil().publier(source);
+      final premier = outil(jour: 1).publier(source);
       final octets = File('$publie/${premier.cheminDonnees}').readAsBytesSync();
 
       final ailleurs = '${bac.path.replaceAll(r'\', '/')}/publie2';
       final second = Publicateur(
         sortie: ailleurs,
-        horloge: DateTime.utc(2026, 9, 28, 0, 30),
+        horloge: horlogeAuJour(1),
       ).publier(source);
 
       expect(second.empreinte, premier.empreinte);
       expect(File('$ailleurs/${second.cheminDonnees}').readAsBytesSync(),
           octets);
+    });
+
+    test('UNE HORLOGE DE SERVEUR QUI RECULE NE PRODUIT PAS UNE PUBLICATION '
+        'INVISIBLE — l instant avance quand meme, et le fait SE DIT (610)',
+        () async {
+      // LE SEUL CAS OU L AUTORITE DE TEMPS DOIT ETRE CORRIGEE, ET IL EST REEL :
+      // correction NTP, changement de machine, ou deux publications dans la meme
+      // milliseconde. Une publication portant un instant ANTERIEUR OU EGAL au
+      // precedent serait INVISIBLE pour tous les telephones deja a jour,
+      // definitivement, sans que rien ne le dise.
+      final premiere = outil(jour: 10).publier(source);
+      expect(premiere.revision, instantAuJour(10));
+      expect(premiere.horlogeCorrigee, isFalse);
+
+      final contenu = lireSource();
+      (contenu['stages'] as List)[0]['elevation_gain'] = 915;
+      ecrireSource(contenu);
+
+      // L horloge RECULE de neuf jours.
+      final seconde = outil(jour: 1).publier(source);
+
+      expect(seconde.revision > premiere.revision, isTrue,
+          reason: 'la monotonie est ce dont le modele a besoin : sans elle, cette '
+              'correction d altitude ne descendrait JAMAIS sur un telephone deja '
+              'a jour');
+      expect(seconde.revision.millisecondesEpoch,
+          premiere.revision.millisecondesEpoch + 1,
+          reason: 'on avance du plus petit ecart acceptable — une milliseconde — '
+              'plutot que d inventer une date');
+      expect(seconde.horlogeCorrigee, isTrue,
+          reason: 'ET CA DOIT SE DIRE : une horloge qui recule sur le serveur de '
+              'publication est un probleme d infrastructure, et tout le modele '
+              'repose sur elle. L avaler serait le cacher.');
     });
   });
 
@@ -213,20 +273,21 @@ void main() {
   group('607 — ce qui disparait, et jusqu a quand on le dit', () {
     test('UN POI RETIRE DES SOURCES DEVIENT UN MARQUEUR DE SUPPRESSION — un '
         'numero qui monte ne transmet pas une absence', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
 
       final contenu = lireSource();
       (contenu['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1');
       ecrireSource(contenu);
 
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 2).publier(source);
 
       expect(resultat.recalcul.retires, ['pois/montsdore-p1']);
       final marqueur = (lirePublication(2)['pois'] as List)
           .cast<Map<String, dynamic>>()
           .firstWhere((p) => p['id'] == 'montsdore-p1');
       expect(marqueur[RevisionDeDonnee.champSupprime], isTrue);
-      expect(marqueur[RevisionDeDonnee.champRevision], 2);
+      expect(marqueur[RevisionDeDonnee.champRevision],
+          instantAuJour(2).iso8601);
       expect(marqueur.keys, containsAll(['id', 'rev', 'supprime']));
       expect(marqueur.containsKey('name_fr'), isFalse,
           reason: 'un marqueur ne porte que son identite (#R7) : la donnee '
@@ -235,7 +296,7 @@ void main() {
 
     test('UN POINT DE TRACE RETIRE PORTE `track_id` ET `sequence_index` — il n a '
         'pas d identifiant propre (#R8)', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
 
       final contenu = lireSource();
       // La trace vient du GPX : on la remplace par une trace plus courte.
@@ -259,7 +320,7 @@ void main() {
       ];
       ecrireSource(contenu);
 
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 2).publier(source);
 
       expect(resultat.recalcul.retires,
           ['gpx_points/montsdore-t1#8', 'gpx_points/montsdore-t1#9']);
@@ -273,44 +334,68 @@ void main() {
       expect(marqueurs.first.containsKey('id'), isFalse);
     });
 
-    test('LA FENETRE DE RETENTION : un marqueur est conserve dix revisions puis '
-        'PURGE — et c est le meme nombre que celui sur lequel l application '
-        'exige une copie complete', () async {
-      outil().publier(source);
+    test('LA FENETRE DE RETENTION : un marqueur est conserve quatre-vingt-dix '
+        'jours puis PURGE — et c est la MEME duree que celle sur laquelle '
+        'l application exige une copie complete', () async {
+      // LA REGLE EST CELLE DU LOT 607, SON UNITE A CHANGE AVEC LE MODELE (610).
+      // Elle valait « dix revisions » quand la revision etait un compteur ; elle
+      // vaut quatre-vingt-dix jours maintenant qu elle est une date. La
+      // DEMONSTRATION, elle, est identique — et c est ce qui compte : un
+      // telephone dont le repere vaut L, face a un sentier publie a N, a besoin
+      // de tous les marqueurs de `]L, N]` ; le serveur garde ceux d instant
+      // `> N - fenetre` ; les deux ensembles coincident si et seulement si
+      // `N - L <= fenetre`.
+      outil(jour: 1).publier(source);
 
-      // Revision 2 : le POI disparait, son marqueur apparait.
+      // Jour 2 : le POI disparait, son marqueur apparait a cet instant.
       final sansPoi = lireSource();
       (sansPoi['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1');
       ecrireSource(sansPoi);
-      outil().publier(source);
+      outil(jour: 2).publier(source);
 
-      // Revisions 3 a 12 : une modification par revision, ailleurs.
-      for (var i = 3; i <= 12; i++) {
+      // Puis une modification tous les quinze jours, jusqu a franchir la fenetre.
+      // Le pas de quinze jours encadre la bascule : 77 - 2 = 75 jours (dedans),
+      // 92 - 2 = 90 jours (dehors, la borne est stricte).
+      for (final jour in const [17, 32, 47, 62, 77, 92, 107]) {
         final contenu = lireSource();
-        (contenu['stages'] as List)[0]['elevation_gain'] = 800 + i;
+        (contenu['stages'] as List)[0]['elevation_gain'] = 800 + jour;
         ecrireSource(contenu);
-        final resultat = outil().publier(source);
-        expect(resultat.revision, i);
+        final resultat = outil(jour: jour).publier(source);
+        expect(resultat.revision, instantAuJour(jour));
 
-        final marqueurs = (lirePublication(i)['pois'] as List)
+        final marqueurs = (lirePublication(jour)['pois'] as List)
             .cast<Map<String, dynamic>>()
             .where((p) => p[RevisionDeDonnee.champSupprime] == true);
 
-        if (i - 2 < RevisionDeDonnee.fenetreDeRetention) {
+        final dansLaFenetre = RevisionDeDonnee.marqueurAConserver(
+          rev: instantAuJour(2),
+          revisionCourante: instantAuJour(jour),
+        );
+
+        if (dansLaFenetre) {
           expect(marqueurs, hasLength(1),
-              reason: 'revision $i : le marqueur de la revision 2 est encore '
-                  'dans la fenetre de ${RevisionDeDonnee.fenetreDeRetention}, '
-                  'donc un telephone reste a la revision 1 le recevra');
-        } else {
-          expect(marqueurs, isEmpty,
-              reason: 'revision $i : le marqueur de la revision 2 sort de la '
-                  'fenetre. Un telephone encore a la revision 1 a desormais un '
-                  'retard de ${i - 1} revisions : il releve de la COPIE '
-                  'COMPLETE, pas du rattrapage par morceaux.');
+              reason: 'jour $jour : le marqueur du jour 2 est encore dans la '
+                  'fenetre de ${RevisionDeDonnee.fenetreDeRetention.inDays} '
+                  'jours, donc un telephone reste au jour 1 le recevra');
           expect(
             RevisionDeDonnee.exigeUneCopieComplete(
-              revisionLocale: 1,
-              revisionCible: i,
+              revisionLocale: instantAuJour(1),
+              revisionCible: instantAuJour(jour),
+            ),
+            isFalse,
+            reason: 'et tant que le marqueur est publie, le rattrapage par '
+                'morceaux suffit : les deux moities disent la meme chose',
+          );
+        } else {
+          expect(marqueurs, isEmpty,
+              reason: 'jour $jour : le marqueur du jour 2 sort de la fenetre. Un '
+                  'telephone encore au jour 1 a desormais ${jour - 1} jours de '
+                  'retard : il releve de la COPIE COMPLETE, pas du rattrapage '
+                  'par morceaux.');
+          expect(
+            RevisionDeDonnee.exigeUneCopieComplete(
+              revisionLocale: instantAuJour(1),
+              revisionCible: instantAuJour(jour),
             ),
             isTrue,
             reason: 'LES DEUX MOITIES DE LA REGLE SE REJOIGNENT : l outil purge '
@@ -324,19 +409,20 @@ void main() {
 
     test('UN ENREGISTREMENT QUI REVIENT APRES SA SUPPRESSION REPREND LA '
         'NOUVELLE REVISION — le telephone ne l a plus', () async {
-      outil().publier(source);
+      outil(jour: 1).publier(source);
       final complet = lireSource();
 
       final sansPoi = lireSource();
       (sansPoi['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1');
       ecrireSource(sansPoi);
-      outil().publier(source);
+      outil(jour: 2).publier(source);
 
       ecrireSource(complet);
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 3).publier(source);
 
       expect(resultat.recalcul.ajoutes, ['pois/montsdore-p1']);
-      expect(revisionDe(lirePublication(3), 'pois', 'montsdore-p1'), 3);
+      expect(revisionDe(lirePublication(3), 'pois', 'montsdore-p1'),
+          instantAuJour(3));
     });
   });
 
@@ -346,15 +432,19 @@ void main() {
   group('607 — l empreinte et la taille sont CALCULEES, puis VERIFIABLES', () {
     test('L ENTREE DE LISTE PORTE L EMPREINTE DES OCTETS REELLEMENT ECRITS, et '
         'la taille annoncee est la vraie', () async {
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 1).publier(source);
       final octets = File('$publie/${resultat.cheminDonnees}').readAsBytesSync();
       final entree = lireLEntree();
 
       expect(entree.hash, EmpreinteDePublication.de(octets));
       expect(entree.hash, hasLength(EmpreinteDePublication.longueurHex));
       expect(entree.fileSize, octets.length);
-      expect(entree.dataVersion, 1);
-      expect(entree.filePath, 'gr_monts_dore/v1.json');
+      expect(entree.dataVersion, instantAuJour(1));
+      expect(entree.filePath, cheminAuJour(1));
+      // `lastUpdated` ET `dataVersion` DISENT LE MEME INSTANT (tache 610) : deux
+      // noms pour un fait, c est deux autorites dont la plus silencieuse gagne.
+      // L outil les ecrit depuis la meme valeur, a un seul endroit.
+      expect(entree.lastUpdated, instantAuJour(1).iso8601);
       expect(entree.fiche, isNotNull,
           reason: 'SANS FICHE, UN SENTIER NEUF EST INVISIBLE (#M9) : c etait le '
               'mur du lot 605');
@@ -363,8 +453,8 @@ void main() {
 
     test('UN FICHIER TRONQUE APRES PUBLICATION EST DETECTE PAR `verifier` — '
         'avant le depot, ou il ne coute rien', () async {
-      final resultat = outil().publier(source);
-      expect(outil().verifier(), isEmpty);
+      final resultat = outil(jour: 1).publier(source);
+      expect(outil(jour: 1).verifier(), isEmpty);
 
       final fichier = File('$publie/${resultat.cheminDonnees}');
       final complet = fichier.readAsStringSync();
@@ -373,26 +463,27 @@ void main() {
       (ampute['gpx_points'] as List).removeLast();
       fichier.writeAsStringSync(jsonEncode(ampute));
 
-      final anomalies = outil().verifier();
+      final anomalies = outil(jour: 1).verifier();
       expect(anomalies, isNotEmpty);
       expect(anomalies.join('\n'), contains('EMPREINTE NON CONFORME'));
     });
 
     test('UNE ENTREE QUI POINTE SUR UN FICHIER ABSENT EST DETECTEE (#P1)',
         () async {
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 1).publier(source);
       File('$publie/${resultat.cheminDonnees}').deleteSync();
 
-      expect(outil().verifier().join('\n'), contains('absent du depot'));
+      expect(outil(jour: 1).verifier().join('\n'), contains('absent du depot'));
     });
 
     test('`verifier` REFUSE une liste dont la revision est inferieure a celle '
         'des enregistrements qu elle publie', () async {
-      final resultat = outil().publier(source);
+      final resultat = outil(jour: 1).publier(source);
       final fichier = File('$publie/${resultat.cheminDonnees}');
       final donnees = jsonDecode(fichier.readAsStringSync())
           as Map<String, dynamic>;
-      (donnees['stages'] as List)[0][RevisionDeDonnee.champRevision] = 9;
+      (donnees['stages'] as List)[0][RevisionDeDonnee.champRevision] =
+          instantAuJour(9).iso8601;
       final corps = jsonEncode(donnees);
       fichier.writeAsStringSync(corps);
 
@@ -405,9 +496,28 @@ void main() {
       (brut['trails'] as List)[0]['fileSize'] = utf8.encode(corps).length;
       liste.writeAsStringSync(jsonEncode(brut));
 
-      final anomalies = outil().verifier().join('\n');
-      expect(anomalies, contains('revision 9'));
+      final anomalies = outil(jour: 1).verifier().join('\n');
+      expect(anomalies, contains('date ${instantAuJour(9).iso8601}'));
       expect(anomalies, contains('ne le prendrait JAMAIS'));
+    });
+
+    test('`verifier` REFUSE une liste ou `lastUpdated` et `dataVersion` ne '
+        'designent pas le meme instant (tache 610)', () async {
+      // DEUX NOMS POUR UN MEME FAIT, C EST DEUX AUTORITES — et la plus
+      // silencieuse gagne. Depuis que la revision est une date, `lastUpdated` et
+      // `dataVersion` disent la meme chose ; l outil les ecrit depuis LA MEME
+      // valeur, donc il ne peut pas les faire diverger. Un fichier de liste
+      // retouche a la main, ou produit par un autre outil, le pourrait — et la
+      // divergence serait du mauvais cote : un humain lit `lastUpdated`,
+      // l application decide sur `dataVersion`.
+      outil(jour: 1).publier(source);
+      final liste = File('$publie/${Publicateur.nomDeLaListe}');
+      final brut = jsonDecode(liste.readAsStringSync()) as Map<String, dynamic>;
+      (brut['trails'] as List)[0]['lastUpdated'] = instantAuJour(30).iso8601;
+      liste.writeAsStringSync(jsonEncode(brut));
+
+      final anomalies = outil(jour: 1).verifier().join('\n');
+      expect(anomalies, contains('designent le MEME instant'));
     });
   });
 
@@ -420,7 +530,7 @@ void main() {
       abimer(contenu);
       ecrireSource(contenu);
       expect(
-        () => outil().publier(source),
+        () => outil(jour: 1).publier(source),
         throwsA(isA<Exception>().having((e) => e.toString(), 'motif', motif)),
       );
       expect(Directory(publie).existsSync(), isFalse,
@@ -457,7 +567,8 @@ void main() {
     test('une source qui porte elle-meme des revisions : deux autorites sur le '
         'meme numero, et la plus silencieuse gagne', () {
       refuse(
-        (c) => (c['stages'] as List)[0][RevisionDeDonnee.champRevision] = 7,
+        (c) => (c['stages'] as List)[0][RevisionDeDonnee.champRevision] =
+            instantAuJour(7).iso8601,
         contains('LA SOURCE NE PORTE PAS LES REVISIONS'),
       );
     });
@@ -566,7 +677,7 @@ void main() {
       expect(
         RevisionSelective.empreinteDeContenu(nue),
         RevisionSelective.empreinteDeContenu(
-          {...nue, 'rev': 7, 'supprime': false},
+          {...nue, 'rev': '2026-09-28T00:30:00.000Z', 'supprime': false},
         ),
       );
     });

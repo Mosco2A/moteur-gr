@@ -90,8 +90,8 @@ abstract interface class SourceDeDonneesSentier {
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
     String? empreinteAttendue,
   });
 }
@@ -105,8 +105,8 @@ abstract interface class SourceDeDonneesSentier {
 class _Tri {
   static List<Map<String, dynamic>> retenus(
     Iterable<Map<String, dynamic>> enregistrements, {
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
   }) {
     return enregistrements
         .where((e) => RevisionDeDonnee.aPrendre(
@@ -179,8 +179,8 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
     String? empreinteAttendue,
   }) async {
     final (donnees, octets) = await _telecharger(
@@ -219,7 +219,7 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     }
 
     _log.d(
-      '[Source fichier] $trailId v$revisionLocale -> v$revisionCible : '
+      '[Source fichier] $trailId $revisionLocale -> $revisionCible : '
       '$octets octets, $transferes enregistrement(s) descendus, $retenus '
       'retenu(s) — ${transferes - retenus} transfere(s) pour rien.',
     );
@@ -302,7 +302,14 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
 ///
 /// Rend les enregistrements de [famille] pour [trailId] dont `rev` depasse
 /// [revisionMinimale]. C est litteralement
-/// `collection('trails/$trailId/$famille').where('rev', '>', revisionMinimale)`.
+/// `collection('trails/$trailId/$famille').where('rev', '>', revisionMinimale)`,
+/// ou `revisionMinimale` part en `Timestamp` : un horodatage se compare
+/// NATIVEMENT cote serveur, ce qu un compteur entier ne savait faire qu au prix
+/// d une coordination entre producteurs.
+/// LE PERIMETRE EST LE SENTIER, ET IL EST DANS LA SIGNATURE : `trailId` est le
+/// premier parametre, donc la question ne peut pas partir sur tout le catalogue.
+/// Un randonneur qui possede un sentier ne telecharge pas les mises a jour des
+/// quarante autres (precision de Christophe, 28/09).
 /// Le moteur ne depend PAS de `cloud_firestore` pour cela : la dependance
 /// s arrete a cette signature, ce qui permet de l eprouver contre un double
 /// aujourd hui — aucun des deux services n est provisionne — et de la brancher le
@@ -310,7 +317,7 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
 typedef RequeteParRevision = Future<List<Map<String, dynamic>>> Function(
   String trailId,
   String famille,
-  int revisionMinimale,
+  HorodatageServeur revisionMinimale,
 );
 
 /// SOURCE INTERROGEABLE — FIRESTORE : LA QUESTION PART AU SERVEUR.
@@ -346,8 +353,8 @@ class SourceInterrogeable implements SourceDeDonneesSentier {
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
-    required int revisionLocale,
-    required int revisionCible,
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
     String? empreinteAttendue,
   }) async {
     final parFamille = <String, dynamic>{};
@@ -390,7 +397,7 @@ class SourceInterrogeable implements SourceDeDonneesSentier {
     }
 
     _log.d(
-      '[Source interrogeable] $trailId v$revisionLocale -> v$revisionCible : '
+      '[Source interrogeable] $trailId $revisionLocale -> $revisionCible : '
       '$transferes enregistrement(s) descendus, $retenus retenu(s) — le '
       'transfert est unitaire.',
     );

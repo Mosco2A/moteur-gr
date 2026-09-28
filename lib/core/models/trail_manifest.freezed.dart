@@ -297,19 +297,23 @@ mixin _$TrailManifestEntry {
 /// C EST LA CLE, et elle est la meme des deux cotes : un sentier present
 /// dans le catalogue compile ET dans le manifeste distant n est pas deux
 /// sentiers, c est le meme.
- String get trailId;/// LA REVISION COURANTE DU SENTIER — le numero de la derniere revision
-/// publiee.
+ String get trailId;/// L INSTANT DE LA DERNIERE PUBLICATION DU SENTIER, pose par le serveur.
 ///
 /// C est la moitie de l unique question que l application pose : « je suis a
-/// la revision R (`trail_manifests.localVersion`), tu es a la revision
-/// [dataVersion] ; donne-moi tout ce qui porte un numero superieur a R ».
+/// jour jusqu a R (`trail_manifests.localVersion`), tu es publie a
+/// [dataVersion] ; donne-moi tout ce qui porte une date plus recente que R ».
 /// L autre moitie est portee par chaque enregistrement
 /// (`RevisionDeDonnee.champRevision`).
 ///
-/// A la premiere ouverture la revision locale vaut zero : tout est plus
-/// recent, donc tout descend. Premiere copie et mise a jour sont le MEME
-/// chemin de code.
- int get dataVersion;/// Hash SHA-256 du fichier de donnees COMPLET du sentier.
+/// A la premiere ouverture le repere local vaut [HorodatageServeur.origine] :
+/// tout est plus recent, donc tout descend. Premiere copie et mise a jour sont
+/// le MEME chemin de code.
+///
+/// LE TELEPHONE RETIENT CETTE VALEUR TELLE QUELLE, ET JAMAIS SA PROPRE
+/// HORLOGE. C est la regle absolue du modele : une seule autorite de temps, le
+/// serveur. Voir `revision_de_donnee.dart` pour ce que l autre choix aurait
+/// coute — une perte definitive et silencieuse.
+@HorodatageServeurJson() HorodatageServeur get dataVersion;/// Hash SHA-256 du fichier de donnees COMPLET du sentier.
  String get hash;/// Chemin du fichier de donnees du sentier.
 ///
 /// LE TRANSPORT, ET SA LIMITE MESUREE. Le moteur telecharge ce fichier puis
@@ -322,7 +326,16 @@ mixin _$TrailManifestEntry {
 /// deux transports, et elle est en octets, pas en comportement.
  String get filePath;/// Taille du fichier de donnees complet, en octets.
  int get fileSize;/// Statut du sentier ('active', 'draft', 'archived')
- String get status;/// Date de derniere mise a jour (ISO 8601)
+ String get status;/// Date de derniere mise a jour (ISO 8601).
+///
+/// DEPUIS LA TACHE 610, CE CHAMP ET [dataVersion] DESIGNENT LE MEME INSTANT —
+/// et deux noms pour un meme fait, c est deux autorites dont la plus
+/// silencieuse gagne. Le lot ne le supprime pas (renommer ou retirer un champ
+/// de la liste publiee depasse « seul le type de la comparaison change »),
+/// mais il ferme la divergence par les deux bouts : l outil de publication les
+/// ecrit depuis LA MEME horloge, et `verifier` refuse un depot ou ils ne
+/// concordent pas. CELUI QUI DECIDE EST [dataVersion] — celui-ci est lisible,
+/// pas normatif.
  String get lastUpdated;/// FICHE D AFFICHAGE DU SENTIER — LA PIECE QUI MANQUAIT AU MOTEUR.
 ///
 /// CE QUI ETAIT CASSE, ET C EST LE MUR N1 (tache 605). Le manifeste ne
@@ -381,7 +394,7 @@ abstract mixin class $TrailManifestEntryCopyWith<$Res>  {
   factory $TrailManifestEntryCopyWith(TrailManifestEntry value, $Res Function(TrailManifestEntry) _then) = _$TrailManifestEntryCopyWithImpl;
 @useResult
 $Res call({
- String trailId, int dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
 });
 
 
@@ -402,7 +415,7 @@ class _$TrailManifestEntryCopyWithImpl<$Res>
   return _then(_self.copyWith(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,dataVersion: null == dataVersion ? _self.dataVersion : dataVersion // ignore: cast_nullable_to_non_nullable
-as int,hash: null == hash ? _self.hash : hash // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,hash: null == hash ? _self.hash : hash // ignore: cast_nullable_to_non_nullable
 as String,filePath: null == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
 as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -505,7 +518,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId,  int dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
@@ -526,7 +539,7 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId,  int dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry():
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
@@ -546,7 +559,7 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId,  int dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche)?  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche);case _:
@@ -561,7 +574,7 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 @JsonSerializable()
 
 class _TrailManifestEntry implements TrailManifestEntry {
-  const _TrailManifestEntry({required this.trailId, required this.dataVersion, required this.hash, required this.filePath, required this.fileSize, required this.status, required this.lastUpdated, this.fiche});
+  const _TrailManifestEntry({required this.trailId, @HorodatageServeurJson() required this.dataVersion, required this.hash, required this.filePath, required this.fileSize, required this.status, required this.lastUpdated, this.fiche});
   factory _TrailManifestEntry.fromJson(Map<String, dynamic> json) => _$TrailManifestEntryFromJson(json);
 
 /// Identifiant unique du sentier (ex: 'gr10', 'tmb').
@@ -570,19 +583,23 @@ class _TrailManifestEntry implements TrailManifestEntry {
 /// dans le catalogue compile ET dans le manifeste distant n est pas deux
 /// sentiers, c est le meme.
 @override final  String trailId;
-/// LA REVISION COURANTE DU SENTIER — le numero de la derniere revision
-/// publiee.
+/// L INSTANT DE LA DERNIERE PUBLICATION DU SENTIER, pose par le serveur.
 ///
 /// C est la moitie de l unique question que l application pose : « je suis a
-/// la revision R (`trail_manifests.localVersion`), tu es a la revision
-/// [dataVersion] ; donne-moi tout ce qui porte un numero superieur a R ».
+/// jour jusqu a R (`trail_manifests.localVersion`), tu es publie a
+/// [dataVersion] ; donne-moi tout ce qui porte une date plus recente que R ».
 /// L autre moitie est portee par chaque enregistrement
 /// (`RevisionDeDonnee.champRevision`).
 ///
-/// A la premiere ouverture la revision locale vaut zero : tout est plus
-/// recent, donc tout descend. Premiere copie et mise a jour sont le MEME
-/// chemin de code.
-@override final  int dataVersion;
+/// A la premiere ouverture le repere local vaut [HorodatageServeur.origine] :
+/// tout est plus recent, donc tout descend. Premiere copie et mise a jour sont
+/// le MEME chemin de code.
+///
+/// LE TELEPHONE RETIENT CETTE VALEUR TELLE QUELLE, ET JAMAIS SA PROPRE
+/// HORLOGE. C est la regle absolue du modele : une seule autorite de temps, le
+/// serveur. Voir `revision_de_donnee.dart` pour ce que l autre choix aurait
+/// coute — une perte definitive et silencieuse.
+@override@HorodatageServeurJson() final  HorodatageServeur dataVersion;
 /// Hash SHA-256 du fichier de donnees COMPLET du sentier.
 @override final  String hash;
 /// Chemin du fichier de donnees du sentier.
@@ -600,7 +617,16 @@ class _TrailManifestEntry implements TrailManifestEntry {
 @override final  int fileSize;
 /// Statut du sentier ('active', 'draft', 'archived')
 @override final  String status;
-/// Date de derniere mise a jour (ISO 8601)
+/// Date de derniere mise a jour (ISO 8601).
+///
+/// DEPUIS LA TACHE 610, CE CHAMP ET [dataVersion] DESIGNENT LE MEME INSTANT —
+/// et deux noms pour un meme fait, c est deux autorites dont la plus
+/// silencieuse gagne. Le lot ne le supprime pas (renommer ou retirer un champ
+/// de la liste publiee depasse « seul le type de la comparaison change »),
+/// mais il ferme la divergence par les deux bouts : l outil de publication les
+/// ecrit depuis LA MEME horloge, et `verifier` refuse un depot ou ils ne
+/// concordent pas. CELUI QUI DECIDE EST [dataVersion] — celui-ci est lisible,
+/// pas normatif.
 @override final  String lastUpdated;
 /// FICHE D AFFICHAGE DU SENTIER — LA PIECE QUI MANQUAIT AU MOTEUR.
 ///
@@ -662,7 +688,7 @@ abstract mixin class _$TrailManifestEntryCopyWith<$Res> implements $TrailManifes
   factory _$TrailManifestEntryCopyWith(_TrailManifestEntry value, $Res Function(_TrailManifestEntry) _then) = __$TrailManifestEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String trailId, int dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche
 });
 
 
@@ -683,7 +709,7 @@ class __$TrailManifestEntryCopyWithImpl<$Res>
   return _then(_TrailManifestEntry(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,dataVersion: null == dataVersion ? _self.dataVersion : dataVersion // ignore: cast_nullable_to_non_nullable
-as int,hash: null == hash ? _self.hash : hash // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,hash: null == hash ? _self.hash : hash // ignore: cast_nullable_to_non_nullable
 as String,filePath: null == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
 as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable

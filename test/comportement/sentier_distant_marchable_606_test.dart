@@ -33,6 +33,15 @@ import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
 
+import '../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
+///
+/// Les relations d ordre que ce fichier verifie sont inchangees : `v(3) < v(4)`
+/// dit exactement ce que `3 < 4` disait. Aucune assertion n est affaiblie.
+HorodatageServeur v(int n) => aJPlus(n);
+
+
 /// TACHE 606 — LA SECONDE MOITIE DU MUR N1 : UN SENTIER 100 % DISTANT EST
 /// MARCHABLE.
 ///
@@ -138,7 +147,7 @@ const _ficheAubrac = TrailManifestFiche(
 /// `tool/publier_sentier.dart`.
 final _entreeAubrac = TrailManifestEntry(
   trailId: 'gr-aubrac',
-  dataVersion: 3,
+  dataVersion: v(3),
   hash: EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac())),
   filePath: 'gr_aubrac/v3.json',
   fileSize: 4096,
@@ -170,7 +179,7 @@ Map<String, Object?> _etape({int elevationGain = 800, int rev = 3}) => {
       'elevation_loss': 210,
       'duration_minutes': 240,
       'difficulty': 'moyen',
-      'rev': rev,
+      'rev': v(rev).iso8601,
     };
 
 Map<String, Object?> _itineraire({int rev = 3}) => {
@@ -185,7 +194,7 @@ Map<String, Object?> _itineraire({int rev = 3}) => {
       'distance_km': 14.0,
       'elevation_gain': 800,
       'stage_count': 1,
-      'rev': rev,
+      'rev': v(rev).iso8601,
     };
 
 Map<String, Object?> _poi({
@@ -204,7 +213,7 @@ Map<String, Object?> _poi({
       'type': 'water',
       'lat': 44.65,
       'lng': 3.0,
-      if (rev > 0) 'rev': rev,
+      if (rev > 0) 'rev': v(rev).iso8601,
       if (supprime) 'supprime': true,
     };
 
@@ -213,7 +222,7 @@ Map<String, Object?> _trace({int rev = 3}) => {
       'id': 'aubrac-t1',
       'itinerary_id': 'aubrac-i1',
       'name': 'Trace Aubrac nord-sud',
-      'rev': rev,
+      'rev': v(rev).iso8601,
     };
 
 List<Map<String, Object?>> _pointsDeTrace({int nombre = 5, int rev = 3}) => [
@@ -224,7 +233,7 @@ List<Map<String, Object?>> _pointsDeTrace({int nombre = 5, int rev = 3}) => [
           'lat': 44.66 - i * 0.01,
           'lng': 3.04 - i * 0.01,
           'elevation': 1100.0 + i * 10,
-          'rev': rev,
+          'rev': v(rev).iso8601,
         },
     ];
 
@@ -238,9 +247,9 @@ Map<String, Object> _donneesAubrac({
       'trail_meta': {
         'id': 'gr-aubrac',
         'code': 'AUBRAC',
-        'data_version': revision,
+        'data_version': v(revision).iso8601,
         'status': 'active',
-        'rev': revision,
+        'rev': v(revision).iso8601,
       },
       'itineraries': [_itineraire()],
       'stages': [_etape(elevationGain: elevationGain, rev: revision)],
@@ -472,7 +481,7 @@ void main() {
     Future<void> poserLeManifeste({int revision = 3}) {
       return manifestes.insertOrReplace(TrailManifestsCompanion(
         trailId: const Value('gr-aubrac'),
-        dataVersion: Value(revision),
+        dataVersion: Value(v(revision)),
         hash: const Value('h'),
         filePath: const Value('gr_aubrac/v3.json'),
         fileSize: const Value(4096),
@@ -488,14 +497,14 @@ void main() {
       // Etat initial a la revision 3, par le chemin du fichier entier.
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
+          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailGpxPointsDao(db).getAll(), hasLength(5));
 
       // Revision 4 : SEULE l altitude de l etape a bouge. La source
       // interrogeable pose la question au serveur, famille par famille.
       final interrogees = <String>[];
       final source = SourceInterrogeable((trailId, famille, revMin) async {
-        interrogees.add('$famille>$revMin');
+        interrogees.add('$trailId/$famille>${revMin.iso8601}');
         if (famille != MorceauxDeSentier.etapes) return const [];
         return [
           Map<String, dynamic>.from(_etape(elevationGain: 915, rev: 4)),
@@ -505,8 +514,8 @@ void main() {
       final aPrendre = await source.depuisLaRevision(
         'gr-aubrac',
         adresse: 'ignoree',
-        revisionLocale: 3,
-        revisionCible: 4,
+        revisionLocale: v(3),
+        revisionCible: v(4),
       );
 
       expect(aPrendre.transferes, 1,
@@ -517,13 +526,17 @@ void main() {
       expect(aPrendre.transferesEnTrop, 0);
       expect(interrogees, hasLength(MorceauxDeSentier.tous.length),
           reason: 'une question par famille, toutes familles comprises');
-      expect(interrogees, contains('gpx_points>3'));
+      // LA QUESTION PORTE L INSTANT DU TELEPHONE, ET SON PERIMETRE EST LE
+      // SENTIER : `trailId` est le premier parametre de la requete, donc elle ne
+      // peut pas partir sur tout le catalogue (perimetre precise par Christophe,
+      // 28/09 — tache 610).
+      expect(interrogees, contains('gr-aubrac/gpx_points>${v(3).iso8601}'));
 
       // Et la POSE ne change pas d une ligne : c est le code du lot 605.
       final bilan = await serviceAvec(source: source).synchroniser(
         'gr-aubrac',
         'ignoree',
-        revisionCible: 4,
+        revisionCible: v(4),
         // UNE SOURCE INTERROGEABLE NE RECOIT PAS DE FICHIER : il n y a rien
         // dont l empreinte du fichier publie pourrait certifier l integrite, et
         // le dire vaut mieux que de l ignorer en silence.
@@ -551,8 +564,8 @@ void main() {
       final parFichier = await fichier.depuisLaRevision(
         'gr-aubrac',
         adresse: 'https://double/v4',
-        revisionLocale: 3,
-        revisionCible: 4,
+        revisionLocale: v(3),
+        revisionCible: v(4),
         empreinteAttendue: _empreinteServie('v4'),
       );
 
@@ -564,15 +577,21 @@ void main() {
           if (brut is List)
             ...brut.map((e) => Map<String, dynamic>.from(e as Map)),
         ];
+        // LE DOUBLE INTERROGEABLE COMPARE DES INSTANTS, comme le ferait
+        // `where('rev','>',Timestamp)` cote Firestore : un horodatage se compare
+        // NATIVEMENT, ce qu un compteur n obtenait qu au prix d une coordination
+        // entre producteurs (tache 610).
         return tous
-            .where((e) => (e['rev'] as int? ?? 4) > revMin)
+            .where((e) =>
+                (HorodatageServeur.annonceParLeServeur(e['rev']) ?? v(4)) >
+                revMin)
             .toList();
       });
       final parRequete = await interrogeable.depuisLaRevision(
         'gr-aubrac',
         adresse: 'ignoree',
-        revisionLocale: 3,
-        revisionCible: 4,
+        revisionLocale: v(3),
+        revisionCible: v(4),
       );
 
       expect(parRequete.parFamille.keys, parFichier.parFamille.keys,
@@ -589,11 +608,11 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
+          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       final bilan = await serviceAvec(servi: {'v3': _donneesAubrac()})
           .synchroniser('gr-aubrac', 'https://double/v3',
-              revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
+              revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -604,18 +623,18 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
+          revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
       final bilan = await serviceAvec(servi: {
         'v5': _donneesAubrac(
           revision: 3,
           pois: [
-            {'id': 'aubrac-p1', 'rev': 5, 'supprime': true},
+            {'id': 'aubrac-p1', 'rev': v(5).iso8601, 'supprime': true},
           ],
         ),
       }).synchroniser('gr-aubrac', 'https://double/v5',
-          revisionCible: 5, empreinteAttendue: _empreinteServie('v5'));
+          revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
 
       expect(bilan.supprimes, 1);
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
@@ -631,7 +650,7 @@ void main() {
 
       await expectLater(
         svc.synchroniser('gr-aubrac', 'https://double/absent',
-            revisionCible: 3,
+            revisionCible: v(3),
             empreinteAttendue:
                 EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac()))),
         throwsA(anything),
@@ -667,11 +686,11 @@ void main() {
       // donc la premiere mise a jour reprenait TOUT.
       final etape =
           (await TrailStagesDao(db).getByItineraryId('aubrac-i1')).single;
-      expect(etape.rev, 3,
+      expect(etape.rev, v(3),
           reason: 'le second chemin de descente ecrivait rev = NULL sur les '
               'sept familles : le versionnage unitaire etait donc mort des la '
               'premiere copie');
-      expect((await TrailGpxPointsDao(db).getAll()).first.rev, 3);
+      expect((await TrailGpxPointsDao(db).getAll()).first.rev, v(3));
       expect(await manifestes.needsUpdate('gr-aubrac'), isFalse);
     });
 
@@ -684,7 +703,7 @@ void main() {
         'gr-aubrac',
         adresse: 'https://double/v3',
         revisionLocale: RevisionDeDonnee.revisionInitiale,
-        revisionCible: 3,
+        revisionCible: v(3),
         empreinteAttendue: _empreinteServie('v3'),
       );
 

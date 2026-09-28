@@ -1,7 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
+
+import '../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT « REFERENCE + N JOURS » (tache 610).
+///
+/// Les assertions ne sont pas affaiblies : `v(1) < v(2)` dit exactement ce que
+/// `1 < 2` disait. Sur le fil, l instant s ecrit en ISO 8601 UTC (`v(n).iso8601`),
+/// ce qu un horodatage natif de base de donnees donne en JSON.
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Tests du modele TrailManifest (parsing JSON, fromJson/toJson round-trip).
 void main() {
@@ -9,7 +19,7 @@ void main() {
     test('fromJson deserialise correctement', () {
       final json = {
         'trailId': 'sentier-bleu',
-        'dataVersion': 3,
+        'dataVersion': v(3).iso8601,
         'hash': 'abc123def456',
         'filePath': 'trails/sentier-bleu/data.json',
         'fileSize': 524288,
@@ -19,7 +29,7 @@ void main() {
 
       final entry = TrailManifestEntry.fromJson(json);
       expect(entry.trailId, 'sentier-bleu');
-      expect(entry.dataVersion, 3);
+      expect(entry.dataVersion, v(3));
       expect(entry.hash, 'abc123def456');
       expect(entry.filePath, 'trails/sentier-bleu/data.json');
       expect(entry.fileSize, 524288);
@@ -28,9 +38,9 @@ void main() {
     });
 
     test('toJson serialise correctement', () {
-      const entry = TrailManifestEntry(
+      final entry = TrailManifestEntry(
         trailId: 'mare_a_mare',
-        dataVersion: 1,
+        dataVersion: v(1),
         hash: 'sha256hash',
         filePath: 'trails/mare_a_mare/data.json',
         fileSize: 102400,
@@ -40,7 +50,7 @@ void main() {
 
       final json = entry.toJson();
       expect(json['trailId'], 'mare_a_mare');
-      expect(json['dataVersion'], 1);
+      expect(json['dataVersion'], v(1).iso8601);
       expect(json['hash'], 'sha256hash');
       expect(json['fileSize'], 102400);
     });
@@ -48,7 +58,7 @@ void main() {
     test('roundtrip fromJson -> toJson', () {
       final original = {
         'trailId': 'tmb',
-        'dataVersion': 5,
+        'dataVersion': v(5).iso8601,
         'hash': 'roundtrip_hash_sha256',
         'filePath': 'trails/tmb/data.json',
         'fileSize': 256000,
@@ -69,13 +79,13 @@ void main() {
     });
 
     test('equality fonctionne avec freezed', () {
-      const a = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
+      final a = TrailManifestEntry(
+        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
-      const b = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
+      final b = TrailManifestEntry(
+        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
@@ -83,13 +93,13 @@ void main() {
     });
 
     test('copyWith modifie un champ', () {
-      const entry = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
+      final entry = TrailManifestEntry(
+        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
-      final modified = entry.copyWith(dataVersion: 2);
-      expect(modified.dataVersion, 2);
+      final modified = entry.copyWith(dataVersion: v(2));
+      expect(modified.dataVersion, v(2));
       expect(modified.trailId, 'sentier-bleu');
     });
   });
@@ -101,7 +111,7 @@ void main() {
         'trails': [
           {
             'trailId': 'sentier-bleu',
-            'dataVersion': 3,
+            'dataVersion': v(3).iso8601,
             'hash': 'abc123',
             'filePath': 'trails/sentier-bleu/data.json',
             'fileSize': 524288,
@@ -110,7 +120,7 @@ void main() {
           },
           {
             'trailId': 'mare_a_mare',
-            'dataVersion': 1,
+            'dataVersion': v(1).iso8601,
             'hash': 'def456',
             'filePath': 'trails/mare_a_mare/data.json',
             'fileSize': 102400,
@@ -139,12 +149,12 @@ void main() {
     });
 
     test('toJson serialise le manifeste complet', () {
-      const manifest = TrailManifest(
+      final manifest = TrailManifest(
         schemaVersion: 2,
         trails: [
           TrailManifestEntry(
             trailId: 'sentier-bleu',
-            dataVersion: 3,
+            dataVersion: v(3),
             hash: 'abc',
             filePath: 'p',
             fileSize: 100,
@@ -165,7 +175,7 @@ void main() {
         'trails': [
           {
             'trailId': 'sentier-bleu',
-            'dataVersion': 4,
+            'dataVersion': v(4).iso8601,
             'hash': 'sha256_full',
             'filePath': 'trails/sentier-bleu/v4.json',
             'fileSize': 600000,
@@ -185,7 +195,7 @@ void main() {
 
       expect(reParsed.schemaVersion, 1);
       expect(reParsed.trails.first.trailId, 'sentier-bleu');
-      expect(reParsed.trails.first.dataVersion, 4);
+      expect(reParsed.trails.first.dataVersion, v(4));
       expect(reParsed.trails.first.hash, 'sha256_full');
     });
   });

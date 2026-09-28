@@ -5,9 +5,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
+
+import '../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT « REFERENCE + N JOURS » (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Fake ConnectivityMonitor pour les tests (toujours online).
 class FakeConnectivityMonitor extends ConnectivityMonitor {
@@ -50,7 +56,7 @@ void main() {
           [
             {
               'trailId': 'sentier-volcans',
-              'dataVersion': 3,
+              'dataVersion': v(3).iso8601,
               'hash': 'abc123',
               'filePath': 'trails/sentier-volcans/data.json',
               'fileSize': 524288,
@@ -59,7 +65,7 @@ void main() {
             },
             {
               'trailId': 'sentier-cantal',
-              'dataVersion': 1,
+              'dataVersion': v(1).iso8601,
               'hash': 'def456',
               'filePath': 'trails/sentier-cantal/data.json',
               'fileSize': 102400,
@@ -76,7 +82,7 @@ void main() {
       expect(manifest.schemaVersion, 1);
       expect(manifest.trails.length, 2);
       expect(manifest.trails[0].trailId, 'sentier-volcans');
-      expect(manifest.trails[0].dataVersion, 3);
+      expect(manifest.trails[0].dataVersion, v(3));
       expect(manifest.trails[1].trailId, 'sentier-cantal');
     });
 
@@ -109,15 +115,15 @@ void main() {
     });
 
     test('retourne uniquement les trails a mettre a jour', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('sentier-volcans'),
-        dataVersion: Value(3),
-        hash: Value('abc123'),
-        filePath: Value('trails/sentier-volcans/data.json'),
-        fileSize: Value(524288),
-        status: Value('active'),
-        lastUpdated: Value('2026-05-26T12:00:00Z'),
-        localVersion: Value(3),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('sentier-volcans'),
+        dataVersion: Value(v(3)),
+        hash: const Value('abc123'),
+        filePath: const Value('trails/sentier-volcans/data.json'),
+        fileSize: const Value(524288),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-05-26T12:00:00Z'),
+        localVersion: Value(v(3)),
       ));
       final manifest = service.parseManifest(makeManifestJson());
       final updates = await service.checkForUpdates(manifest);
@@ -126,25 +132,25 @@ void main() {
     });
 
     test('retourne vide si tout est a jour', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('sentier-volcans'),
-        dataVersion: Value(3),
-        hash: Value('abc123'),
-        filePath: Value('p'),
-        fileSize: Value(100),
-        status: Value('active'),
-        lastUpdated: Value('2026-01-01T00:00:00Z'),
-        localVersion: Value(3),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('sentier-volcans'),
+        dataVersion: Value(v(3)),
+        hash: const Value('abc123'),
+        filePath: const Value('p'),
+        fileSize: const Value(100),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-01-01T00:00:00Z'),
+        localVersion: Value(v(3)),
       ));
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('sentier-cantal'),
-        dataVersion: Value(1),
-        hash: Value('def456'),
-        filePath: Value('p'),
-        fileSize: Value(100),
-        status: Value('active'),
-        lastUpdated: Value('2026-01-01T00:00:00Z'),
-        localVersion: Value(1),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('sentier-cantal'),
+        dataVersion: Value(v(1)),
+        hash: const Value('def456'),
+        filePath: const Value('p'),
+        fileSize: const Value(100),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-01-01T00:00:00Z'),
+        localVersion: Value(v(1)),
       ));
       final manifest = service.parseManifest(makeManifestJson());
       final updates = await service.checkForUpdates(manifest);
@@ -152,15 +158,15 @@ void main() {
     });
 
     test('detecte une nouvelle version distante', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('sentier-volcans'),
-        dataVersion: Value(2),
-        hash: Value('old_hash'),
-        filePath: Value('p'),
-        fileSize: Value(100),
-        status: Value('active'),
-        lastUpdated: Value('2026-01-01T00:00:00Z'),
-        localVersion: Value(2),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('sentier-volcans'),
+        dataVersion: Value(v(2)),
+        hash: const Value('old_hash'),
+        filePath: const Value('p'),
+        fileSize: const Value(100),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-01-01T00:00:00Z'),
+        localVersion: Value(v(2)),
       ));
       final manifest = service.parseManifest(makeManifestJson());
       final updates = await service.checkForUpdates(manifest);
@@ -179,9 +185,9 @@ void main() {
 
   group('saveLocalManifest', () {
     test('sauvegarde une entree en base', () async {
-      const entry = TrailManifestEntry(
+      final entry = TrailManifestEntry(
         trailId: 'sentier-volcans',
-        dataVersion: 3,
+        dataVersion: v(3),
         hash: 'abc123',
         filePath: 'trails/sentier-volcans/data.json',
         fileSize: 524288,
@@ -192,24 +198,24 @@ void main() {
       final result = await dao.getByTrailId('sentier-volcans');
       expect(result, isNotNull);
       expect(result!.trailId, 'sentier-volcans');
-      expect(result.dataVersion, 3);
+      expect(result.dataVersion, v(3));
       expect(result.hash, 'abc123');
       expect(result.localVersion, isNull);
     });
 
     test('met a jour une entree existante', () async {
-      const v1 = TrailManifestEntry(
+      final v1 = TrailManifestEntry(
         trailId: 'sentier-volcans',
-        dataVersion: 1,
+        dataVersion: v(1),
         hash: 'hash_v1',
         filePath: 'trails/sentier-volcans/v1.json',
         fileSize: 100,
         status: 'active',
         lastUpdated: '2026-05-20T00:00:00Z',
       );
-      const v2 = TrailManifestEntry(
+      final v2 = TrailManifestEntry(
         trailId: 'sentier-volcans',
-        dataVersion: 2,
+        dataVersion: v(2),
         hash: 'hash_v2',
         filePath: 'trails/sentier-volcans/v2.json',
         fileSize: 200,
@@ -219,7 +225,7 @@ void main() {
       await service.saveLocalManifest(v1);
       await service.saveLocalManifest(v2);
       final result = await dao.getByTrailId('sentier-volcans');
-      expect(result!.dataVersion, 2);
+      expect(result!.dataVersion, v(2));
       expect(result.hash, 'hash_v2');
       expect(result.fileSize, 200);
     });

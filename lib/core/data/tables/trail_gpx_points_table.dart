@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import '../revision_de_donnee.dart';
+
 /// Table des points GPX d'une trace (Phase 4 Drift v7).
 ///
 /// Points ordonnes par sequenceIndex pour reconstituer le trace.
@@ -21,12 +23,17 @@ class TrailGpxPoints extends Table {
 
   /// Index de sequence pour l'ordre des points
   IntColumn get sequenceIndex => integer()();
-  /// REVISION de cet enregistrement : le numero de la revision ou il a ete
-  /// modifie pour la derniere fois (StepWays tache 605).
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///
-  /// Nullable : les lignes anterieures a la migration v27, et les donnees
-  /// embarquees qui ne declarent pas de numero, n en ont pas. Le modele complet
-  /// — et pourquoi les suppressions exigent un marqueur — est explique dans
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
   /// `lib/core/data/revision_de_donnee.dart`.
-  IntColumn get rev => integer().nullable()();
+  IntColumn get rev =>
+      integer().nullable().map(const HorodatageServeurConverter())();
 }

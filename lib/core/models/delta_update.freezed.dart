@@ -16,9 +16,10 @@ T _$identity<T>(T value) => value;
 mixin _$DeltaUpdate {
 
 /// Identifiant du sentier concerne
- String get trailId;/// MA revision : jusqu ou ce telephone est a jour. `0` = rien n est copie.
- int get fromVersion;/// La revision COURANTE du sentier, telle que la liste distante la publie.
- int get toVersion;/// Taille du fichier de donnees en octets (pour annoncer le cout au
+ String get trailId;/// MON REPERE : jusqu a QUEL INSTANT ce telephone est a jour.
+/// [HorodatageServeur.origine] = rien n est copie.
+@HorodatageServeurJson() HorodatageServeur get fromVersion;/// L INSTANT DE PUBLICATION du sentier, tel que la liste distante l annonce.
+@HorodatageServeurJson() HorodatageServeur get toVersion;/// Taille du fichier de donnees en octets (pour annoncer le cout au
 /// randonneur qui paie son forfait).
  int get downloadSize;
 /// Create a copy of DeltaUpdate
@@ -53,7 +54,7 @@ abstract mixin class $DeltaUpdateCopyWith<$Res>  {
   factory $DeltaUpdateCopyWith(DeltaUpdate value, $Res Function(DeltaUpdate) _then) = _$DeltaUpdateCopyWithImpl;
 @useResult
 $Res call({
- String trailId, int fromVersion, int toVersion, int downloadSize
+ String trailId,@HorodatageServeurJson() HorodatageServeur fromVersion,@HorodatageServeurJson() HorodatageServeur toVersion, int downloadSize
 });
 
 
@@ -74,8 +75,8 @@ class _$DeltaUpdateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,fromVersion: null == fromVersion ? _self.fromVersion : fromVersion // ignore: cast_nullable_to_non_nullable
-as int,toVersion: null == toVersion ? _self.toVersion : toVersion // ignore: cast_nullable_to_non_nullable
-as int,downloadSize: null == downloadSize ? _self.downloadSize : downloadSize // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,toVersion: null == toVersion ? _self.toVersion : toVersion // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,downloadSize: null == downloadSize ? _self.downloadSize : downloadSize // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -161,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId,  int fromVersion,  int toVersion,  int downloadSize)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur fromVersion, @HorodatageServeurJson()  HorodatageServeur toVersion,  int downloadSize)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeltaUpdate() when $default != null:
 return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSize);case _:
@@ -182,7 +183,7 @@ return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId,  int fromVersion,  int toVersion,  int downloadSize)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur fromVersion, @HorodatageServeurJson()  HorodatageServeur toVersion,  int downloadSize)  $default,) {final _that = this;
 switch (_that) {
 case _DeltaUpdate():
 return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSize);case _:
@@ -202,7 +203,7 @@ return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId,  int fromVersion,  int toVersion,  int downloadSize)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur fromVersion, @HorodatageServeurJson()  HorodatageServeur toVersion,  int downloadSize)?  $default,) {final _that = this;
 switch (_that) {
 case _DeltaUpdate() when $default != null:
 return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSize);case _:
@@ -217,15 +218,16 @@ return $default(_that.trailId,_that.fromVersion,_that.toVersion,_that.downloadSi
 @JsonSerializable()
 
 class _DeltaUpdate extends DeltaUpdate {
-  const _DeltaUpdate({required this.trailId, required this.fromVersion, required this.toVersion, required this.downloadSize}): super._();
+  const _DeltaUpdate({required this.trailId, @HorodatageServeurJson() required this.fromVersion, @HorodatageServeurJson() required this.toVersion, required this.downloadSize}): super._();
   factory _DeltaUpdate.fromJson(Map<String, dynamic> json) => _$DeltaUpdateFromJson(json);
 
 /// Identifiant du sentier concerne
 @override final  String trailId;
-/// MA revision : jusqu ou ce telephone est a jour. `0` = rien n est copie.
-@override final  int fromVersion;
-/// La revision COURANTE du sentier, telle que la liste distante la publie.
-@override final  int toVersion;
+/// MON REPERE : jusqu a QUEL INSTANT ce telephone est a jour.
+/// [HorodatageServeur.origine] = rien n est copie.
+@override@HorodatageServeurJson() final  HorodatageServeur fromVersion;
+/// L INSTANT DE PUBLICATION du sentier, tel que la liste distante l annonce.
+@override@HorodatageServeurJson() final  HorodatageServeur toVersion;
 /// Taille du fichier de donnees en octets (pour annoncer le cout au
 /// randonneur qui paie son forfait).
 @override final  int downloadSize;
@@ -263,7 +265,7 @@ abstract mixin class _$DeltaUpdateCopyWith<$Res> implements $DeltaUpdateCopyWith
   factory _$DeltaUpdateCopyWith(_DeltaUpdate value, $Res Function(_DeltaUpdate) _then) = __$DeltaUpdateCopyWithImpl;
 @override @useResult
 $Res call({
- String trailId, int fromVersion, int toVersion, int downloadSize
+ String trailId,@HorodatageServeurJson() HorodatageServeur fromVersion,@HorodatageServeurJson() HorodatageServeur toVersion, int downloadSize
 });
 
 
@@ -284,8 +286,8 @@ class __$DeltaUpdateCopyWithImpl<$Res>
   return _then(_DeltaUpdate(
 trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
 as String,fromVersion: null == fromVersion ? _self.fromVersion : fromVersion // ignore: cast_nullable_to_non_nullable
-as int,toVersion: null == toVersion ? _self.toVersion : toVersion // ignore: cast_nullable_to_non_nullable
-as int,downloadSize: null == downloadSize ? _self.downloadSize : downloadSize // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,toVersion: null == toVersion ? _self.toVersion : toVersion // ignore: cast_nullable_to_non_nullable
+as HorodatageServeur,downloadSize: null == downloadSize ? _self.downloadSize : downloadSize // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -300,8 +302,8 @@ mixin _$ResultatSynchronisation {
 /// Familles de donnees effectivement touchees (`stages`, `pois`...).
  List<String> get famillesTouchees;/// Nombre d enregistrements ecrits ou mis a jour.
  int get ecrits;/// Nombre d enregistrements RETIRES du telephone sur marqueur de suppression.
- int get supprimes;/// Revision atteinte apres application.
- int get revisionAtteinte;
+ int get supprimes;/// L INSTANT atteint apres application : le nouveau repere du telephone.
+@HorodatageServeurJson() HorodatageServeur get revisionAtteinte;
 /// Create a copy of ResultatSynchronisation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -334,7 +336,7 @@ abstract mixin class $ResultatSynchronisationCopyWith<$Res>  {
   factory $ResultatSynchronisationCopyWith(ResultatSynchronisation value, $Res Function(ResultatSynchronisation) _then) = _$ResultatSynchronisationCopyWithImpl;
 @useResult
 $Res call({
- List<String> famillesTouchees, int ecrits, int supprimes, int revisionAtteinte
+ List<String> famillesTouchees, int ecrits, int supprimes,@HorodatageServeurJson() HorodatageServeur revisionAtteinte
 });
 
 
@@ -357,7 +359,7 @@ famillesTouchees: null == famillesTouchees ? _self.famillesTouchees : famillesTo
 as List<String>,ecrits: null == ecrits ? _self.ecrits : ecrits // ignore: cast_nullable_to_non_nullable
 as int,supprimes: null == supprimes ? _self.supprimes : supprimes // ignore: cast_nullable_to_non_nullable
 as int,revisionAtteinte: null == revisionAtteinte ? _self.revisionAtteinte : revisionAtteinte // ignore: cast_nullable_to_non_nullable
-as int,
+as HorodatageServeur,
   ));
 }
 
@@ -442,7 +444,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> famillesTouchees,  int ecrits,  int supprimes,  int revisionAtteinte)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> famillesTouchees,  int ecrits,  int supprimes, @HorodatageServeurJson()  HorodatageServeur revisionAtteinte)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ResultatSynchronisation() when $default != null:
 return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisionAtteinte);case _:
@@ -463,7 +465,7 @@ return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> famillesTouchees,  int ecrits,  int supprimes,  int revisionAtteinte)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> famillesTouchees,  int ecrits,  int supprimes, @HorodatageServeurJson()  HorodatageServeur revisionAtteinte)  $default,) {final _that = this;
 switch (_that) {
 case _ResultatSynchronisation():
 return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisionAtteinte);case _:
@@ -483,7 +485,7 @@ return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> famillesTouchees,  int ecrits,  int supprimes,  int revisionAtteinte)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> famillesTouchees,  int ecrits,  int supprimes, @HorodatageServeurJson()  HorodatageServeur revisionAtteinte)?  $default,) {final _that = this;
 switch (_that) {
 case _ResultatSynchronisation() when $default != null:
 return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisionAtteinte);case _:
@@ -498,7 +500,7 @@ return $default(_that.famillesTouchees,_that.ecrits,_that.supprimes,_that.revisi
 @JsonSerializable()
 
 class _ResultatSynchronisation extends ResultatSynchronisation {
-  const _ResultatSynchronisation({required final  List<String> famillesTouchees, required this.ecrits, required this.supprimes, required this.revisionAtteinte}): _famillesTouchees = famillesTouchees,super._();
+  const _ResultatSynchronisation({required final  List<String> famillesTouchees, required this.ecrits, required this.supprimes, @HorodatageServeurJson() required this.revisionAtteinte}): _famillesTouchees = famillesTouchees,super._();
   factory _ResultatSynchronisation.fromJson(Map<String, dynamic> json) => _$ResultatSynchronisationFromJson(json);
 
 /// Familles de donnees effectivement touchees (`stages`, `pois`...).
@@ -514,8 +516,8 @@ class _ResultatSynchronisation extends ResultatSynchronisation {
 @override final  int ecrits;
 /// Nombre d enregistrements RETIRES du telephone sur marqueur de suppression.
 @override final  int supprimes;
-/// Revision atteinte apres application.
-@override final  int revisionAtteinte;
+/// L INSTANT atteint apres application : le nouveau repere du telephone.
+@override@HorodatageServeurJson() final  HorodatageServeur revisionAtteinte;
 
 /// Create a copy of ResultatSynchronisation
 /// with the given fields replaced by the non-null parameter values.
@@ -550,7 +552,7 @@ abstract mixin class _$ResultatSynchronisationCopyWith<$Res> implements $Resulta
   factory _$ResultatSynchronisationCopyWith(_ResultatSynchronisation value, $Res Function(_ResultatSynchronisation) _then) = __$ResultatSynchronisationCopyWithImpl;
 @override @useResult
 $Res call({
- List<String> famillesTouchees, int ecrits, int supprimes, int revisionAtteinte
+ List<String> famillesTouchees, int ecrits, int supprimes,@HorodatageServeurJson() HorodatageServeur revisionAtteinte
 });
 
 
@@ -573,7 +575,7 @@ famillesTouchees: null == famillesTouchees ? _self._famillesTouchees : famillesT
 as List<String>,ecrits: null == ecrits ? _self.ecrits : ecrits // ignore: cast_nullable_to_non_nullable
 as int,supprimes: null == supprimes ? _self.supprimes : supprimes // ignore: cast_nullable_to_non_nullable
 as int,revisionAtteinte: null == revisionAtteinte ? _self.revisionAtteinte : revisionAtteinte // ignore: cast_nullable_to_non_nullable
-as int,
+as HorodatageServeur,
   ));
 }
 

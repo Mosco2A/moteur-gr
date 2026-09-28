@@ -114,7 +114,8 @@ void _direLaPublication(String dossier, ResultatDePublication r) {
 
   if (!r.donneesReecrites) {
     print('${r.trailId} — RIEN A PUBLIER : aucune donnee n a change.');
-    print('  Revision maintenue a ${r.revision}. Incrementer pour rien ferait '
+    print('  Instant maintenu a ${r.revision.iso8601}. Le faire avancer pour '
+        'rien ferait '
         'relire la liste a tous les telephones sans rien a prendre.');
     if (r.ficheRafraichie) {
       print('  (fiche ou statut rafraichis dans la liste, sans toucher aux '
@@ -124,9 +125,17 @@ void _direLaPublication(String dossier, ResultatDePublication r) {
   }
 
   final rc = r.recalcul;
-  print('${r.trailId} — revision ${r.revision}, ${r.octets} octets');
+  print('${r.trailId} — publie a ${r.revision.iso8601}, ${r.octets} octets');
+  if (r.horlogeCorrigee) {
+    print('  ATTENTION : l horloge de publication n avancait pas. L instant a ete '
+        'avance d une milliseconde pour rester posterieur a la publication '
+        'precedente. Une horloge qui recule sur le serveur de publication est un '
+        'probleme d infrastructure — tout le modele de synchronisation repose sur '
+        'elle.');
+  }
   print('  ${r.cheminDonnees}  sha256 ${r.empreinte}');
-  print('  ${rc.nombreTouches} enregistrement(s) a la revision ${r.revision} : '
+  print('  ${rc.nombreTouches} enregistrement(s) a l instant '
+      '${r.revision.iso8601} : '
       '${rc.modifies.length} modifie(s), ${rc.ajoutes.length} ajoute(s), '
       '${rc.retires.length} retire(s).');
   if (rc.modifies.isNotEmpty) print('  modifies : ${_extrait(rc.modifies)}');

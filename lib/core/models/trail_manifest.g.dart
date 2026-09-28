@@ -23,7 +23,7 @@ Map<String, dynamic> _$TrailManifestToJson(_TrailManifest instance) =>
 _TrailManifestEntry _$TrailManifestEntryFromJson(Map<String, dynamic> json) =>
     _TrailManifestEntry(
       trailId: json['trailId'] as String,
-      dataVersion: (json['dataVersion'] as num).toInt(),
+      dataVersion: const HorodatageServeurJson().fromJson(json['dataVersion']),
       hash: json['hash'] as String,
       filePath: json['filePath'] as String,
       fileSize: (json['fileSize'] as num).toInt(),
@@ -37,7 +37,7 @@ _TrailManifestEntry _$TrailManifestEntryFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$TrailManifestEntryToJson(_TrailManifestEntry instance) =>
     <String, dynamic>{
       'trailId': instance.trailId,
-      'dataVersion': instance.dataVersion,
+      'dataVersion': const HorodatageServeurJson().toJson(instance.dataVersion),
       'hash': instance.hash,
       'filePath': instance.filePath,
       'fileSize': instance.fileSize,
