@@ -695,6 +695,16 @@ void main() {
           'BannerAd(',
           'bannerAdProvider',
           'showPaywallSheet',
+          // TACHE 614 — LE NOM A CHANGE, LA GARDE SUIT. La vitrine ne s'ouvre
+          // plus par `showPaywallSheet` (devenue privee) mais par le geste
+          // unique `acheterSentier`. Sans cette ligne, la garde continuait de
+          // surveiller un nom que plus personne n'ecrit : exactement le defaut
+          // du lot 601, une garde morte qui rassure sans rien tenir. Et
+          // `RewardedNoAdsButton` est la pour la meme raison : proposer une
+          // video recompensee sur le chemin du secours serait de la
+          // monetisation sur le chemin du secours.
+          'acheterSentier',
+          'RewardedNoAdsButton',
         ]) {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');
         }

@@ -929,7 +929,7 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Keine Werbung';
 	@override String get buyCta => 'Diesen Trek freischalten';
 	@override String buyCtaWithPrice({required Object price}) => 'Diesen Trek freischalten — ${price} €';
-	@override String get rewardedCta => 'Werbung ansehen (24 h werbefrei)';
+	@override String get rewardedCta => 'Ein Tag ohne Werbung — Video ansehen';
 	@override String get rewardedEarned => 'Danke! 24 h werbefrei.';
 	@override String get rewardedUnavailable => 'Derzeit kein Video verfügbar.';
 	@override String get walletTitle => 'Etappenkonto';
@@ -5024,7 +5024,7 @@ extension on TranslationsDe {
 			'monetization.featureNoAds' => 'Keine Werbung',
 			'monetization.buyCta' => 'Diesen Trek freischalten',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
-			'monetization.rewardedCta' => 'Werbung ansehen (24 h werbefrei)',
+			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
 			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			'monetization.walletTitle' => 'Etappenkonto',

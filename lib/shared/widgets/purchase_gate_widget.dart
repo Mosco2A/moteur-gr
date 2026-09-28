@@ -67,7 +67,7 @@ class PurchaseGateWidget extends ConsumerWidget {
       children: [
         _DemoBanner(
           text: demoBannerText ?? t.monetization.demoBanner,
-          onTap: onPurchaseTap ?? () => _openPaywall(context),
+          onTap: onPurchaseTap ?? () => _openPaywall(context, ref),
         ),
         Expanded(child: child),
       ],
@@ -75,12 +75,13 @@ class PurchaseGateWidget extends ConsumerWidget {
   }
 
   /// Ouvre l ecran paywall (deblocage premium du trek).
-  void _openPaywall(BuildContext context) {
-    showPaywallSheet(
-      context,
-      trailId: trailId,
-      totalStages: totalStages,
-    );
+  ///
+  /// TACHE 614 — PASSE PAR LE GESTE UNIQUE [acheterSentier], qui resout le prix
+  /// lui-meme depuis le catalogue effectif. Le parametre [totalStages] de ce
+  /// widget n'entre donc plus dans le calcul : il reste pour ne pas casser ses
+  /// appelants, mais il ne peut plus faire diverger un prix.
+  void _openPaywall(BuildContext context, WidgetRef ref) {
+    acheterSentier(context, ref, trailId: trailId);
   }
 
   /// Verifie si un trek est en mode demo (statique, sans widget).

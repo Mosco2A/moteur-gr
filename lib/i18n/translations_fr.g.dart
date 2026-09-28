@@ -1908,8 +1908,8 @@ class Translations$monetization$fr {
 	/// fr: 'Débloquer cette randonnée — $price €'
 	String buyCtaWithPrice({required Object price}) => 'Débloquer cette randonnée — ${price} €';
 
-	/// fr: 'Regarder une pub (sans pub 24 h)'
-	String get rewardedCta => 'Regarder une pub (sans pub 24 h)';
+	/// fr: 'Un jour sans publicité — regarder une vidéo'
+	String get rewardedCta => 'Un jour sans publicité — regarder une vidéo';
 
 	/// fr: 'Merci ! Sans publicité pendant 24 h.'
 	String get rewardedEarned => 'Merci ! Sans publicité pendant 24 h.';
@@ -8844,7 +8844,7 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer cette randonnée',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer cette randonnée — ${price} €',
-			'monetization.rewardedCta' => 'Regarder une pub (sans pub 24 h)',
+			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'monetization.walletTitle' => 'Compte-étapes',

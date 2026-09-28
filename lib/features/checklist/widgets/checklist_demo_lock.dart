@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -72,7 +73,7 @@ class ChecklistDemoBanner extends StatelessWidget {
 ///
 /// On lit le NOM de la categorie (on sait ce qu'on n'a pas) ; on n'a pas ses
 /// articles. Le geste mene au paywall, jamais dans le vide (regle du LOT X).
-class ChecklistLockedCategory extends StatelessWidget {
+class ChecklistLockedCategory extends ConsumerWidget {
   const ChecklistLockedCategory({
     super.key,
     required this.categoryKey,
@@ -90,11 +91,14 @@ class ChecklistLockedCategory extends StatelessWidget {
   /// Sentier a debloquer.
   final String trailId;
 
-  /// Nombre d'etapes du sentier (prix affiche par le paywall).
+  /// Nombre d'etapes du sentier.
+  ///
+  /// N'entre plus dans le prix depuis la tache 614 : [acheterSentier] le resout
+  /// lui-meme depuis le catalogue effectif. Conserve pour les appelants.
   final int totalStages;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final grise = theme.colorScheme.onSurface.withAlpha(110);
     return AppCard(
@@ -102,11 +106,7 @@ class ChecklistLockedCategory extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,
       child: InkWell(
-        onTap: () => showPaywallSheet(
-          context,
-          trailId: trailId,
-          totalStages: totalStages,
-        ),
+        onTap: () => acheterSentier(context, ref, trailId: trailId),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           child: Row(

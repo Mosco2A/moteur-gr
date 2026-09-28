@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/engine/trail_engine.dart';
 import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -164,7 +163,8 @@ class _LockedJournalCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final trail = ref.watch(trailConfigProvider);
+    // Le sentier actif n'est plus lu ici : le prix du deblocage est resolu par
+    // le geste unique [acheterSentier] (tache 614), pas par l'appelant.
     return AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
@@ -194,11 +194,7 @@ class _LockedJournalCard extends ConsumerWidget {
           AppButton(
             icon: Icons.lock_open,
             label: t.journal.lockedUnlock,
-            onPressed: () => showPaywallSheet(
-              context,
-              trailId: trailId,
-              totalStages: trail.totalStages,
-            ),
+            onPressed: () => acheterSentier(context, ref, trailId: trailId),
           ),
         ],
       ),

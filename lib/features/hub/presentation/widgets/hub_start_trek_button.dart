@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
@@ -180,11 +179,10 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
       ),
     );
     if (continuer != true || !context.mounted) return;
-    await showPaywallSheet(
-      context,
-      trailId: widget.trailId,
-      totalStages: ref.read(trailConfigProvider).totalStages,
-    );
+    // LE TROISIEME POINT D'ENTREE DE L'ACHAT (tache 614) : le depart. Les deux
+    // autres sont le catalogue et la preparation, et tous trois empruntent
+    // CETTE fonction — un seul geste, un seul prix, une seule vitrine.
+    await acheterSentier(context, ref, trailId: widget.trailId);
   }
 
   /// Dialog de secours « Démarrer quand même ? » (filet Q1). Message adapte :

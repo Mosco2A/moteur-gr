@@ -929,7 +929,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero pubblicità';
 	@override String get buyCta => 'Sblocca questo trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
-	@override String get rewardedCta => 'Guarda una pub (24 h senza pubblicità)';
+	@override String get rewardedCta => 'Un giorno senza pubblicità — guarda un video';
 	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
 	@override String get rewardedUnavailable => 'Nessun video disponibile al momento.';
 	@override String get walletTitle => 'Conto tappe';
@@ -5024,7 +5024,7 @@ extension on TranslationsIt {
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
-			'monetization.rewardedCta' => 'Guarda una pub (24 h senza pubblicità)',
+			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
 			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
 			'monetization.walletTitle' => 'Conto tappe',

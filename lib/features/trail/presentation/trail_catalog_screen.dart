@@ -6,6 +6,7 @@ import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/home_location_provider.dart';
+import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -13,6 +14,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/paywall_sheet.dart';
 
 /// Ecran catalogue des sentiers disponibles.
 ///
@@ -133,17 +135,35 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// une ligne qui annonce ce qu'il contient. Le randonneur doit pouvoir choisir
 /// entre les DEUX entrees du Mare a Mare sans ouvrir ni l'une ni l'autre — c'est
 /// tout le sens de « il y a mare a mare ET mare a mare demo des le catalogue ».
-class _AvailableTrailCard extends StatelessWidget {
+///
+/// ET ON PEUT L'ACHETER D'ICI (tache 614, demande de Christophe du 28/09 11:41).
+/// La carte portait une seule action — « Entrer » — donc le randonneur qui
+/// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
+/// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
+/// enfin un refus qui lui proposait de payer. Le bouton d'achat est desormais
+/// sur la carte, a cote de « Entrer », et il emprunte le geste unique
+/// [acheterSentier] — le meme que la preparation et que le depart.
+class _AvailableTrailCard extends ConsumerWidget {
   const _AvailableTrailCard({required this.trail, required this.onEnter});
 
   final TrailConfig trail;
   final VoidCallback onEnter;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final nom = trailDisplayName(t, trail);
+    // ACHETABLE = « en mode demo » : ni possede, ni gratuit, ni couvert par un
+    // abonnement ([MonetizationService.isDemoMode], source unique et REACTIVE
+    // — un achat repeint la carte sans changer d'ecran). Un bouton d'achat sur
+    // un sentier deja acquis ou gratuit serait un bouton qui ment, exactement
+    // comme le bouton video sur une banniere qui n'existe pas.
+    final achetable = ref.watch(isDemoModeProvider(trail.id)).value ?? false;
+    // LE PRIX SE DEMANDE AU SERVICE, il ne se recalcule pas ici. La vitrine
+    // l'obtient deja ainsi ([PaywallSheet]) : une seconde formule dans le
+    // catalogue serait la meme faute que trois chemins d'achat, sur le montant.
+    final monetisation = ref.watch(monetizationServiceProvider);
 
     // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base porte
     // par AppCard (iso-rendu de la carte sentier du catalogue).
@@ -259,6 +279,31 @@ class _AvailableTrailCard extends StatelessWidget {
               ),
             ),
           ),
+          // ACHETER DEPUIS LE CATALOGUE (tache 614) — premier des trois points
+          // d'entree. Absent des que le sentier n'est plus a vendre : possede,
+          // gratuit, ou couvert par un abonnement.
+          if (achetable) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                key: ValueKey('catalog-buy-${trail.id}'),
+                variant: AppButtonVariant.outline,
+                icon: Icons.lock_open,
+                label: t.monetization.buyCtaWithPrice(
+                  price: monetisation
+                      .eurPriceForSteps(
+                        monetisation.stepPriceForTrail(
+                          totalStages: trail.totalStages,
+                        ),
+                      )
+                      .toStringAsFixed(2),
+                ),
+                onPressed: () =>
+                    acheterSentier(context, ref, trailId: trail.id),
+              ),
+            ),
+          ],
         ],
       ),
     );

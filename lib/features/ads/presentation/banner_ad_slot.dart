@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../providers/ads_providers.dart';
+import 'rewarded_no_ads_button.dart';
 
 /// L'EMPLACEMENT DE LA BANNIERE — la chose qui manquait (tache 595, B1).
 ///
@@ -32,6 +34,21 @@ import '../providers/ads_providers.dart';
 /// OU IL NE DOIT JAMAIS ETRE POSE : sur le chemin du secours. Le SOS ne porte
 /// aucune publicite, nulle part, jamais — c'est la decision la mieux respectee
 /// du modele et un test structurel la garde (`pub_v1_595_test.dart`, B5).
+///
+/// L'EMPLACEMENT PORTE DESORMAIS SA PROPRE SORTIE (tache 614). Christophe a
+/// demande « un bouton 1 jour sans pub : regarder la video », et le moteur
+/// existait en entier sans qu'aucun doigt puisse l'atteindre ailleurs qu'au
+/// fond de la vitrine d'achat. Le bouton se pose ICI, SUR la banniere, parce
+/// que c'est le seul endroit ou la proposition a du sens au moment ou elle se
+/// pose : la publicite gene, et juste au-dessus d'elle on peut l'eteindre pour
+/// la journee.
+///
+/// ET IL NE PEUT PAS MENTIR, PAR CONSTRUCTION. Le bouton vit DANS le meme
+/// `if` que la banniere : quand le sans-pub est actif — trek achete, abonne,
+/// recompense de 24 h en cours — [bannerAdProvider] rend `null`, ce widget
+/// rend un espace nul, et le bouton n'existe pas. Il n'y a aucune condition a
+/// tenir a jour, aucune regle recopiee : proposer « un jour sans publicite »
+/// n'est possible que la ou une publicite est reellement affichee.
 class BannerAdSlot extends ConsumerWidget {
   const BannerAdSlot({required this.trailId, super.key});
 
@@ -56,12 +73,30 @@ class BannerAdSlot extends ConsumerWidget {
 
     // La hauteur est celle que la regie a reellement rendue : on ne devine
     // jamais la taille d'une banniere, on la reserve exactement.
+    //
+    // `mainAxisSize: min` : cet emplacement sert de `bottomNavigationBar`, il
+    // ne doit prendre que la place de ce qu'il porte — la sortie, puis la
+    // publicite. La sortie est AU-DESSUS : elle se lit avant la publicite
+    // qu'elle propose d'eteindre, et le doigt ne la rencontre pas en visant
+    // la banniere.
     return SafeArea(
       top: false,
-      child: SizedBox(
-        height: banniere.height,
-        width: double.infinity,
-        child: Center(child: banniere.view),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingBase,
+              vertical: AppTheme.spacingXs,
+            ),
+            child: RewardedNoAdsButton(compact: true),
+          ),
+          SizedBox(
+            height: banniere.height,
+            width: double.infinity,
+            child: Center(child: banniere.view),
+          ),
+        ],
       ),
     );
   }

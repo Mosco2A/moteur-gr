@@ -929,7 +929,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Unlock this trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
-	@override String get rewardedCta => 'Watch an ad (24 h ad-free)';
+	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
 	@override String get walletTitle => 'Step account';
@@ -5024,7 +5024,7 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
-			'monetization.rewardedCta' => 'Watch an ad (24 h ad-free)',
+			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'monetization.walletTitle' => 'Step account',

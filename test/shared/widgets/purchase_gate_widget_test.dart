@@ -20,6 +20,16 @@ import '../../structurel/regie_pub_absente.dart';
 /// Verifie : bandeau demo en gratuit (free), contenu nu en jouable (owned),
 /// ouverture du paywall et achat via le compte-etapes (buyTrail) qui debloque
 /// le trek quand le wallet couvre le prix.
+///
+/// LE SENTIER DE CE TEST EST UN VRAI SENTIER DU CATALOGUE (tache 614). Il
+/// s appelait « volcans » — un identifiant qui n existe nulle part — et le
+/// nombre d etapes qui fixait le prix etait ECRIT A LA MAIN dans le test, a
+/// cote. Depuis que l achat passe par le geste unique [acheterSentier], le prix
+/// est resolu depuis le CATALOGUE : le nombre d etapes n est plus quelque chose
+/// qu un appelant declare, c est une propriete du sentier. On prend donc
+/// `gr-pyrenees`, qui porte exactement les 12 etapes que ce test attendait —
+/// le prix verifie (11,88 EUR) est le meme, mais il vient desormais de la
+/// donnee au lieu d un nombre recopie.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -135,7 +145,7 @@ void main() {
     testWidgets('trek non achete : bandeau demo affiche', (tester) async {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
-          trailId: 'volcans',
+          trailId: 'gr-pyrenees',
           totalStages: 12,
           child: Text('Contenu du trek'),
         ),
@@ -149,11 +159,11 @@ void main() {
     });
 
     testWidgets('trek achete : contenu nu, pas de bandeau', (tester) async {
-      await svc.buyTrail('volcans', totalStages: 12);
+      await svc.buyTrail('gr-pyrenees', totalStages: 12);
 
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
-          trailId: 'volcans',
+          trailId: 'gr-pyrenees',
           totalStages: 12,
           child: Text('Contenu du trek'),
         ),
@@ -171,7 +181,7 @@ void main() {
         '(reserve QA)', (tester) async {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
-          trailId: 'volcans',
+          trailId: 'gr-pyrenees',
           totalStages: 12,
           child: Text('Contenu du trek'),
         ),
@@ -182,7 +192,7 @@ void main() {
       expect(find.text(t.monetization.demoBanner), findsOneWidget);
 
       // L'achat aboutit PENDANT que le gate est monte (aucun remount du widget).
-      await svc.buyTrail('volcans', totalStages: 12);
+      await svc.buyTrail('gr-pyrenees', totalStages: 12);
       await tester.pumpAndSettle();
 
       // isDemoModeProvider relance via le stream d'entitlements : bandeau parti.
@@ -196,7 +206,7 @@ void main() {
         (tester) async {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
-          trailId: 'volcans',
+          trailId: 'gr-pyrenees',
           totalStages: 12,
           child: Text('Contenu du trek'),
         ),
@@ -222,8 +232,8 @@ void main() {
 
       // Trek debloque : paywall ferme, possede, cache premium actif.
       expect(find.byType(PaywallSheet), findsNothing);
-      expect(await svc.ownsTrail('volcans'), isTrue);
-      expect(FeatureFlags.isPremiumEnabled('volcans'), isTrue);
+      expect(await svc.ownsTrail('gr-pyrenees'), isTrue);
+      expect(FeatureFlags.isPremiumEnabled('gr-pyrenees'), isTrue);
       // ET L'ACHAT LE DIT (tache 594, A3) : le bouton jetait son resultat.
       expect(find.text(t.monetization.buyOutcomeOwned), findsOneWidget);
       // On laisse le message se retirer avant de demonter l'arbre.

@@ -12,6 +12,7 @@ import '../../trek/providers/tracking_providers.dart';
 import 'cockpit_phase.dart';
 import 'widgets/collapsible_prepare_section.dart';
 import 'widgets/finish_trek_button.dart';
+import 'widgets/hub_buy_trek_button.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_start_trek_button.dart';
 import 'widgets/hub_trek_card.dart';
@@ -242,7 +243,20 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             const SizedBox(height: AppTheme.spacingBase),
 
             const HubTrekCard(),
-            const SizedBox(height: AppTheme.spacingLg),
+            const SizedBox(height: AppTheme.spacingBase),
+
+            // ACHETER DEPUIS LA PREPARATION (tache 614) — le deuxieme des trois
+            // points d'entree de l'achat, demande de Christophe du 28/09 11:41.
+            //
+            // ICI, ET PAS EN BAS AVEC « Démarrer ». Le randonneur qui prepare
+            // depuis trois semaines et se decide un soir ne doit pas avoir a
+            // scroller tout le cockpit, ni a finir sa preparation, pour trouver
+            // comment payer : le bouton de depart est GRISE tant que les trois
+            // cartes coeur ne sont pas faites, il ne pouvait donc rien vendre a
+            // celui-la. Ce bouton-ci se lit des l'ouverture, juste sous la carte
+            // du trek, et il s'efface de lui-meme des que le sentier est acquis.
+            HubBuyTrekButton(trailId: trailId),
+            const SizedBox(height: AppTheme.spacingSm),
 
             // --- LE JOURNAL N'EXISTE PAS EN PHASE PREPARATION (tache 558) ---
             //
