@@ -169,7 +169,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 29;
+  int get schemaVersion => 30;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -469,6 +469,31 @@ class AppDatabase extends _$AppDatabase {
           if (from < 29) {
             await _ajouterColonneSiAbsente(
                 migrator, trailManifests, trailManifests.niveauLocal);
+          }
+          // Migration v29 -> v30 : LA LISTE DISTANTE DECLARE SES CARTES HORS LIGNE
+          // (tache 622). Trois colonnes nullables sur `trail_manifests` —
+          // `tilesPath`, `tilesSize`, `tilesHash` — posees par la meme precaution
+          // que les precedentes : `ALTER TABLE ADD COLUMN` echoue sur une colonne
+          // deja presente, et une migration qui echoue EMPECHE LA BASE DE S OUVRIR
+          // sur le telephone d un randonneur.
+          //
+          // ELLES RESTENT NULLES SUR LES BASES EXISTANTES, ET C EST EXACT : elles
+          // decrivent un fait SERVEUR (« voila la carte publiee pour ce sentier »),
+          // que seule la prochaine lecture du catalogue peut apporter. Nulles, elles
+          // signifient « aucune carte publiee », et la descente est alors refusee
+          // avec cette cause NOMMEE — jamais tentee a l aveugle sur une adresse
+          // devinee.
+          //
+          // AUCUNE CARTE DEJA PRESENTE N EST PERDUE : ces trois colonnes n ont
+          // jamais existe, et les tuiles qu un telephone porterait deja vivent dans
+          // des FICHIERS (`documents/mbtiles/`), hors de la base.
+          if (from < 30) {
+            await _ajouterColonneSiAbsente(
+                migrator, trailManifests, trailManifests.tilesPath);
+            await _ajouterColonneSiAbsente(
+                migrator, trailManifests, trailManifests.tilesSize);
+            await _ajouterColonneSiAbsente(
+                migrator, trailManifests, trailManifests.tilesHash);
           }
         },
       );

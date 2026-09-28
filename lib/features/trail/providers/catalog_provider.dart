@@ -7,6 +7,7 @@ import '../../../core/config/trail_data_source.dart';
 import '../../../core/data/daos/trail_manifests_dao.dart';
 import '../../../core/data/daos/trail_meta_dao.dart';
 import '../../../core/data/database.dart';
+import '../../../core/map/mbtiles_manager.dart';
 import '../../../core/models/download_progress.dart';
 import '../../../core/models/niveau_de_telechargement.dart';
 import '../../../core/data/revision_de_donnee.dart';
@@ -15,6 +16,7 @@ import '../domain/etat_du_sentier.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/delta_update_service.dart';
+import '../../../core/services/descente_des_cartes.dart';
 import '../../../core/services/manifest_service.dart';
 
 final _log = Logger(
@@ -325,9 +327,33 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   /// publicite et le DROIT de realiser (`MonetizationService.canRealizeTrail`), pas
   /// le volume des donnees. Ce notifier n a donc aucune raison de consulter l achat
   /// pour decider ce qui descend — et il ne le consulte pas.
+  ///
+  /// ET DEPUIS LA TACHE 622, LE NIVEAU « REALISER » EMPORTE AUSSI LES CARTES HORS
+  /// LIGNE. C etait le trou le plus couteux du produit : `MBTilesManager` savait
+  /// descendre un `.mbtiles` et AUCUN CODE DE PRODUCTION NE L APPELAIT, donc un
+  /// randonneur qui preparait puis montait sans reseau n avait pas de fond de carte —
+  /// sur le GR20 il n y a pas de reseau, et ce qui manque a ce moment-la manque
+  /// definitivement.
+  ///
+  /// LES CARTES VIENNENT APRES LES DONNEES, ET JAMAIS AVANT. Les donnees sont posees
+  /// en UNE transaction et decident du sort du sentier ; les tuiles sont un fichier a
+  /// cote. Descendre 260 Mo de tuiles pour ensuite echouer la copie des etapes
+  /// laisserait un fond de carte sans sentier dessus — l inverse (donnees posees,
+  /// carte a reprendre) est un etat utile et reprenable.
+  ///
+  /// L ECHEC DES CARTES NE DEFAIT PAS LA COPIE DES DONNEES, et c est un choix
+  /// explicite : le sentier reste telecharge, marchable avec sa trace, et la carte
+  /// se reprend. Annuler la copie parce que le fond de carte manque serait retirer au
+  /// randonneur ce qu il a deja.
+  ///
+  /// [confirmeHorsWifi] est la reponse du randonneur a la question « des dizaines de
+  /// megaoctets sur votre forfait, on continue ? ». Elle vaut `false` par defaut : un
+  /// appelant qui l oublie ne fait PAS payer le randonneur, il obtient un refus nomme
+  /// (`RefusDeDescente.confirmationHorsWifiRequise`).
   Future<void> downloadTrail(
     String trailId, {
     required NiveauDeTelechargement niveau,
+    bool confirmeHorsWifi = false,
   }) async {
     _updateEntryStatus(trailId, TrailLocalStatusValues.downloading);
 
@@ -346,6 +372,8 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       totalBytes: manifestEntry.fileSize,
       currentStep: 'downloading',
     ));
+
+    var donneesPosees = false;
 
     try {
       final bilan = await ref.read(deltaUpdateServiceProvider).synchroniser(
@@ -377,6 +405,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
         currentStep: 'completed',
       ));
       _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
+      donneesPosees = true;
     } catch (e) {
       // RIEN N EST POSE, LA REVISION LOCALE N A PAS BOUGE : le sentier reste « a
       // prendre » et l echec est DIT. C est la contrepartie de la copie atomique,
@@ -391,6 +420,56 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
         error: e.toString(),
       ));
       _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
+    }
+
+    // LES CARTES HORS LIGNE, APRES LES DONNEES ET HORS DE LEUR FILET (tache 622).
+    //
+    // CE BLOC EST DEHORS DU `try` PRECEDENT, ET CE N EST PAS UN DETAIL DE STYLE. Ce
+    // `catch` remet le sentier a « non telecharge » — c est sa raison d etre pour une
+    // copie atomique ratee. Si la descente des cartes y tombait, une carte
+    // indisponible (plugin absent, dossier documents injoignable) ferait declarer
+    // NON TELECHARGE un sentier dont les donnees sont POSEES et le repere ecrit en
+    // base. L ecran mentirait, et le randonneur retelechargerait tout.
+    //
+    // LE `if` N EST PAS LE GARDE-FOU — c est [DescenteDesCartes], qui reexamine TOUT
+    // (niveau, carte publiee, droit de realiser, reseau, confirmation) et refuse par
+    // une cause NOMMEE. Ce test evite seulement d ouvrir la base et d interroger les
+    // droits pour un niveau qui, par definition, ne descend aucune tuile : au niveau
+    // « preparer », ce chemin ne fait RIEN, et c est la demande de Christophe du
+    // 27/09.
+    if (!donneesPosees || !niveau.porteLesCartes) return;
+
+    try {
+      final bilanDesCartes = await ref
+          .read(controleurDesCartesProvider(trailId).notifier)
+          .demarrer(niveau: niveau, confirmeHorsWifi: confirmeHorsWifi);
+      if (bilanDesCartes.posee) {
+        _log.d(
+          '[CatalogNotifier] $trailId : carte hors ligne posee, '
+          '${ProgressionDeCarte.enMegaoctets(
+                bilanDesCartes.carte!.octetsSurLeTelephone,
+              ).toStringAsFixed(1)} Mo.',
+        );
+        return;
+      }
+      // LE SENTIER RESTE TELECHARGE, ET L ABSENCE DE CARTE EST DITE. Un refus (pas de
+      // carte publiee, forfait a confirmer, droit de realiser manquant) n est pas une
+      // panne : c est un etat que l ecran doit montrer. Un echec (coupure, place
+      // manquante) est reprenable et n a rien detruit — le nom definitif du fichier
+      // de carte n a jamais existe.
+      _log.w(
+        '[CatalogNotifier] $trailId : donnees posees, carte hors ligne NON posee — '
+        'refus « ${bilanDesCartes.refus?.name ?? "aucun"} », echec '
+        '« ${bilanDesCartes.echec?.name ?? "aucun"} ». Le sentier reste marchable '
+        'avec sa trace ; le fond de carte se reprend.',
+      );
+    } catch (e) {
+      // MEME UNE DEFAILLANCE IMPREVUE DE LA DESCENTE NE DEFAIT PAS LA COPIE. On le
+      // DIT, on ne le cache pas — et le sentier reste telecharge, ce qu il est.
+      _log.e(
+        '[CatalogNotifier] $trailId : descente des cartes en defaut — $e. Les '
+        'donnees du sentier restent posees.',
+      );
     }
   }
 

@@ -101,6 +101,11 @@ abstract class TrailManifest with _$TrailManifest {
 /// Entree individuelle du manifeste pour un sentier.
 @freezed
 abstract class TrailManifestEntry with _$TrailManifestEntry {
+  /// Constructeur prive : c est lui qui autorise les accesseurs calcules
+  /// ci-dessous ([aDesTuilesPubliees]). Sans lui, freezed refuse tout membre
+  /// ajoute au corps de la classe.
+  const TrailManifestEntry._();
+
   const factory TrailManifestEntry({
     /// Identifiant unique du sentier (ex: 'gr10', 'tmb').
     ///
@@ -186,7 +191,62 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     ///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
     ///    vide au catalogue.
     TrailManifestFiche? fiche,
+
+    /// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
+    ///
+    /// CE QUI MANQUAIT, ET C EST LA MOITIE DU TROU DES CARTES HORS LIGNE. Le code
+    /// qui descend un `.mbtiles` existait depuis des mois
+    /// (`MBTilesManager.downloadMbtiles`) et n avait AUCUN APPELANT — mais meme
+    /// branche, il n aurait rien eu a descendre : cette liste ne portait NI adresse,
+    /// NI taille, NI empreinte pour les tuiles. Un randonneur qui preparait son
+    /// sentier puis montait sans reseau n avait donc pas de fond de carte, quoi
+    /// qu il fasse et quel que soit le niveau demande.
+    ///
+    /// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
+    /// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
+    /// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+    /// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
+    ///
+    /// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
+    /// publiee. Le moteur REFUSE alors la descente avec une cause nommee
+    /// (`RefusDeDescente.aucuneCartePubliee`) au lieu de laisser croire que
+    /// « realiser » rend le sentier marchable hors ligne.
+    String? tilesPath,
+
+    /// Taille du fichier de tuiles, en octets. Null si [tilesPath] est null.
+    ///
+    /// C EST CE QUE LE RANDONNEUR DOIT VOIR AVANT DE DIRE OUI. Une descente de
+    /// cartes fait des dizaines ou des centaines de megaoctets (260 Mo mesures en
+    /// z10-16 par la tache 608) : annoncer le poids n est pas une politesse, c est
+    /// la condition pour qu un randonneur en partage de connexion decide en
+    /// connaissance de cause.
+    int? tilesSize,
+
+    /// Empreinte SHA-256 du fichier de tuiles. Null si [tilesPath] est null.
+    ///
+    /// ELLE N EST PAS FACULTATIVE QUAND LES TUILES EXISTENT, pour la raison exacte
+    /// qui a rendu [hash] obligatoire a la tache 607 : un `.mbtiles` est une base
+    /// SQLite, et un fichier tronque reste un fichier. Une carte coupee a 80 %
+    /// s ouvre parfois, puis echoue au premier carreau manquant — en montagne, sans
+    /// reseau, sans recours. L empreinte se verifie AVANT que le fichier ne prenne
+    /// son nom definitif.
+    String? tilesHash,
   }) = _TrailManifestEntry;
+
+  /// LES TUILES SONT-ELLES PUBLIEES POUR CE SENTIER, ENTIEREMENT ?
+  ///
+  /// Les trois champs vont ENSEMBLE ou pas du tout : une adresse sans empreinte
+  /// serait une descente non verifiable, une empreinte sans taille une descente dont
+  /// on ne peut pas annoncer le poids. Un depot incomplet est donc traite comme
+  /// « pas de carte publiee » — et le journal le dit, plutot que de descendre a
+  /// moitie a l aveugle.
+  bool get aDesTuilesPubliees =>
+      tilesPath != null &&
+      tilesPath!.isNotEmpty &&
+      tilesSize != null &&
+      tilesSize! > 0 &&
+      tilesHash != null &&
+      tilesHash!.isNotEmpty;
 
   /// Deserialisation depuis JSON
   factory TrailManifestEntry.fromJson(Map<String, dynamic> json) =>

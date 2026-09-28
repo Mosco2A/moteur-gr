@@ -9549,6 +9549,39 @@ class $TrailManifestsTable extends TrailManifests
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _tilesPathMeta = const VerificationMeta(
+    'tilesPath',
+  );
+  @override
+  late final GeneratedColumn<String> tilesPath = GeneratedColumn<String>(
+    'tiles_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tilesSizeMeta = const VerificationMeta(
+    'tilesSize',
+  );
+  @override
+  late final GeneratedColumn<int> tilesSize = GeneratedColumn<int>(
+    'tiles_size',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tilesHashMeta = const VerificationMeta(
+    'tilesHash',
+  );
+  @override
+  late final GeneratedColumn<String> tilesHash = GeneratedColumn<String>(
+    'tiles_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     trailId,
@@ -9561,6 +9594,9 @@ class $TrailManifestsTable extends TrailManifests
     localVersion,
     ficheJson,
     niveauLocal,
+    tilesPath,
+    tilesSize,
+    tilesHash,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9640,6 +9676,24 @@ class $TrailManifestsTable extends TrailManifests
         ),
       );
     }
+    if (data.containsKey('tiles_path')) {
+      context.handle(
+        _tilesPathMeta,
+        tilesPath.isAcceptableOrUnknown(data['tiles_path']!, _tilesPathMeta),
+      );
+    }
+    if (data.containsKey('tiles_size')) {
+      context.handle(
+        _tilesSizeMeta,
+        tilesSize.isAcceptableOrUnknown(data['tiles_size']!, _tilesSizeMeta),
+      );
+    }
+    if (data.containsKey('tiles_hash')) {
+      context.handle(
+        _tilesHashMeta,
+        tilesHash.isAcceptableOrUnknown(data['tiles_hash']!, _tilesHashMeta),
+      );
+    }
     return context;
   }
 
@@ -9692,6 +9746,18 @@ class $TrailManifestsTable extends TrailManifests
       niveauLocal: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}niveau_local'],
+      ),
+      tilesPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tiles_path'],
+      ),
+      tilesSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tiles_size'],
+      ),
+      tilesHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tiles_hash'],
       ),
     );
   }
@@ -9802,6 +9868,34 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
   /// eprouve du moteur et ne coute RIEN de plus en reseau sur le transport actuel
   /// — la source de fichier telecharge le fichier entier de toute facon.
   final String? niveauLocal;
+
+  /// OU SONT LES TUILES DE CE SENTIER, CE QU ELLES PESENT, ET LEUR EMPREINTE
+  /// (tache 622).
+  ///
+  /// Miroir local de `TrailManifestEntry.tilesPath` / `tilesSize` / `tilesHash`.
+  /// Nulles quand la liste distante ne publie pas de carte pour ce sentier — ce qui
+  /// est un cas NORMAL, pas une anomalie.
+  ///
+  /// POURQUOI EN BASE, ET PAS LUES AU VOL DANS LA LISTE DISTANTE. Le geste
+  /// « telecharger » lit la LIGNE LOCALE (`CatalogNotifier.downloadTrail` ->
+  /// `getByTrailId`), jamais la reponse reseau : c est ce qui lui permet de partir
+  /// d un catalogue affiche depuis le dernier distant recu. Si l adresse des tuiles
+  /// n etait pas conservee ici, la descente des cartes exigerait une SECONDE lecture
+  /// du manifeste au moment du geste — donc un second chemin de resolution, avec sa
+  /// propre facon d echouer. Trois colonnes valent mieux que deux verites.
+  ///
+  /// ELLES NE DISENT RIEN DE CE QUI EST SUR LE TELEPHONE. Ce sont des faits
+  /// SERVEUR, comme [hash] et [fileSize] : « voila la carte publiee ». La presence
+  /// reelle du fichier se lit sur le systeme de fichiers (`MBTilesManager`), une
+  /// seule source, et pas dans une colonne qui pourrait mentir apres un effacement
+  /// de donnees d application.
+  final String? tilesPath;
+
+  /// Poids du fichier de tuiles publie, en octets. Null = aucune carte publiee.
+  final int? tilesSize;
+
+  /// Empreinte SHA-256 du fichier de tuiles publie. Null = aucune carte publiee.
+  final String? tilesHash;
   const TrailManifest({
     required this.trailId,
     required this.dataVersion,
@@ -9813,6 +9907,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     this.localVersion,
     this.ficheJson,
     this.niveauLocal,
+    this.tilesPath,
+    this.tilesSize,
+    this.tilesHash,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9839,6 +9936,15 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     if (!nullToAbsent || niveauLocal != null) {
       map['niveau_local'] = Variable<String>(niveauLocal);
     }
+    if (!nullToAbsent || tilesPath != null) {
+      map['tiles_path'] = Variable<String>(tilesPath);
+    }
+    if (!nullToAbsent || tilesSize != null) {
+      map['tiles_size'] = Variable<int>(tilesSize);
+    }
+    if (!nullToAbsent || tilesHash != null) {
+      map['tiles_hash'] = Variable<String>(tilesHash);
+    }
     return map;
   }
 
@@ -9860,6 +9966,15 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       niveauLocal: niveauLocal == null && nullToAbsent
           ? const Value.absent()
           : Value(niveauLocal),
+      tilesPath: tilesPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesPath),
+      tilesSize: tilesSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesSize),
+      tilesHash: tilesHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesHash),
     );
   }
 
@@ -9881,6 +9996,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       ),
       ficheJson: serializer.fromJson<String?>(json['ficheJson']),
       niveauLocal: serializer.fromJson<String?>(json['niveauLocal']),
+      tilesPath: serializer.fromJson<String?>(json['tilesPath']),
+      tilesSize: serializer.fromJson<int?>(json['tilesSize']),
+      tilesHash: serializer.fromJson<String?>(json['tilesHash']),
     );
   }
   @override
@@ -9897,6 +10015,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       'localVersion': serializer.toJson<HorodatageServeur?>(localVersion),
       'ficheJson': serializer.toJson<String?>(ficheJson),
       'niveauLocal': serializer.toJson<String?>(niveauLocal),
+      'tilesPath': serializer.toJson<String?>(tilesPath),
+      'tilesSize': serializer.toJson<int?>(tilesSize),
+      'tilesHash': serializer.toJson<String?>(tilesHash),
     };
   }
 
@@ -9911,6 +10032,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     Value<HorodatageServeur?> localVersion = const Value.absent(),
     Value<String?> ficheJson = const Value.absent(),
     Value<String?> niveauLocal = const Value.absent(),
+    Value<String?> tilesPath = const Value.absent(),
+    Value<int?> tilesSize = const Value.absent(),
+    Value<String?> tilesHash = const Value.absent(),
   }) => TrailManifest(
     trailId: trailId ?? this.trailId,
     dataVersion: dataVersion ?? this.dataVersion,
@@ -9922,6 +10046,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     localVersion: localVersion.present ? localVersion.value : this.localVersion,
     ficheJson: ficheJson.present ? ficheJson.value : this.ficheJson,
     niveauLocal: niveauLocal.present ? niveauLocal.value : this.niveauLocal,
+    tilesPath: tilesPath.present ? tilesPath.value : this.tilesPath,
+    tilesSize: tilesSize.present ? tilesSize.value : this.tilesSize,
+    tilesHash: tilesHash.present ? tilesHash.value : this.tilesHash,
   );
   TrailManifest copyWithCompanion(TrailManifestsCompanion data) {
     return TrailManifest(
@@ -9943,6 +10070,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       niveauLocal: data.niveauLocal.present
           ? data.niveauLocal.value
           : this.niveauLocal,
+      tilesPath: data.tilesPath.present ? data.tilesPath.value : this.tilesPath,
+      tilesSize: data.tilesSize.present ? data.tilesSize.value : this.tilesSize,
+      tilesHash: data.tilesHash.present ? data.tilesHash.value : this.tilesHash,
     );
   }
 
@@ -9958,7 +10088,10 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           ..write('lastUpdated: $lastUpdated, ')
           ..write('localVersion: $localVersion, ')
           ..write('ficheJson: $ficheJson, ')
-          ..write('niveauLocal: $niveauLocal')
+          ..write('niveauLocal: $niveauLocal, ')
+          ..write('tilesPath: $tilesPath, ')
+          ..write('tilesSize: $tilesSize, ')
+          ..write('tilesHash: $tilesHash')
           ..write(')'))
         .toString();
   }
@@ -9975,6 +10108,9 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     localVersion,
     ficheJson,
     niveauLocal,
+    tilesPath,
+    tilesSize,
+    tilesHash,
   );
   @override
   bool operator ==(Object other) =>
@@ -9989,7 +10125,10 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           other.lastUpdated == this.lastUpdated &&
           other.localVersion == this.localVersion &&
           other.ficheJson == this.ficheJson &&
-          other.niveauLocal == this.niveauLocal);
+          other.niveauLocal == this.niveauLocal &&
+          other.tilesPath == this.tilesPath &&
+          other.tilesSize == this.tilesSize &&
+          other.tilesHash == this.tilesHash);
 }
 
 class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
@@ -10003,6 +10142,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
   final Value<HorodatageServeur?> localVersion;
   final Value<String?> ficheJson;
   final Value<String?> niveauLocal;
+  final Value<String?> tilesPath;
+  final Value<int?> tilesSize;
+  final Value<String?> tilesHash;
   final Value<int> rowid;
   const TrailManifestsCompanion({
     this.trailId = const Value.absent(),
@@ -10015,6 +10157,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     this.localVersion = const Value.absent(),
     this.ficheJson = const Value.absent(),
     this.niveauLocal = const Value.absent(),
+    this.tilesPath = const Value.absent(),
+    this.tilesSize = const Value.absent(),
+    this.tilesHash = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailManifestsCompanion.insert({
@@ -10028,6 +10173,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     this.localVersion = const Value.absent(),
     this.ficheJson = const Value.absent(),
     this.niveauLocal = const Value.absent(),
+    this.tilesPath = const Value.absent(),
+    this.tilesSize = const Value.absent(),
+    this.tilesHash = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : trailId = Value(trailId),
        dataVersion = Value(dataVersion),
@@ -10047,6 +10195,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Expression<int>? localVersion,
     Expression<String>? ficheJson,
     Expression<String>? niveauLocal,
+    Expression<String>? tilesPath,
+    Expression<int>? tilesSize,
+    Expression<String>? tilesHash,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -10060,6 +10211,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       if (localVersion != null) 'local_version': localVersion,
       if (ficheJson != null) 'fiche_json': ficheJson,
       if (niveauLocal != null) 'niveau_local': niveauLocal,
+      if (tilesPath != null) 'tiles_path': tilesPath,
+      if (tilesSize != null) 'tiles_size': tilesSize,
+      if (tilesHash != null) 'tiles_hash': tilesHash,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -10075,6 +10229,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Value<HorodatageServeur?>? localVersion,
     Value<String?>? ficheJson,
     Value<String?>? niveauLocal,
+    Value<String?>? tilesPath,
+    Value<int?>? tilesSize,
+    Value<String?>? tilesHash,
     Value<int>? rowid,
   }) {
     return TrailManifestsCompanion(
@@ -10088,6 +10245,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       localVersion: localVersion ?? this.localVersion,
       ficheJson: ficheJson ?? this.ficheJson,
       niveauLocal: niveauLocal ?? this.niveauLocal,
+      tilesPath: tilesPath ?? this.tilesPath,
+      tilesSize: tilesSize ?? this.tilesSize,
+      tilesHash: tilesHash ?? this.tilesHash,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -10129,6 +10289,15 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     if (niveauLocal.present) {
       map['niveau_local'] = Variable<String>(niveauLocal.value);
     }
+    if (tilesPath.present) {
+      map['tiles_path'] = Variable<String>(tilesPath.value);
+    }
+    if (tilesSize.present) {
+      map['tiles_size'] = Variable<int>(tilesSize.value);
+    }
+    if (tilesHash.present) {
+      map['tiles_hash'] = Variable<String>(tilesHash.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -10148,6 +10317,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
           ..write('localVersion: $localVersion, ')
           ..write('ficheJson: $ficheJson, ')
           ..write('niveauLocal: $niveauLocal, ')
+          ..write('tilesPath: $tilesPath, ')
+          ..write('tilesSize: $tilesSize, ')
+          ..write('tilesHash: $tilesHash, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -24440,6 +24612,9 @@ typedef $$TrailManifestsTableCreateCompanionBuilder =
       Value<HorodatageServeur?> localVersion,
       Value<String?> ficheJson,
       Value<String?> niveauLocal,
+      Value<String?> tilesPath,
+      Value<int?> tilesSize,
+      Value<String?> tilesHash,
       Value<int> rowid,
     });
 typedef $$TrailManifestsTableUpdateCompanionBuilder =
@@ -24454,6 +24629,9 @@ typedef $$TrailManifestsTableUpdateCompanionBuilder =
       Value<HorodatageServeur?> localVersion,
       Value<String?> ficheJson,
       Value<String?> niveauLocal,
+      Value<String?> tilesPath,
+      Value<int?> tilesSize,
+      Value<String?> tilesHash,
       Value<int> rowid,
     });
 
@@ -24517,6 +24695,21 @@ class $$TrailManifestsTableFilterComposer
     column: $table.niveauLocal,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get tilesPath => $composableBuilder(
+    column: $table.tilesPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tilesSize => $composableBuilder(
+    column: $table.tilesSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tilesHash => $composableBuilder(
+    column: $table.tilesHash,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailManifestsTableOrderingComposer
@@ -24577,6 +24770,21 @@ class $$TrailManifestsTableOrderingComposer
     column: $table.niveauLocal,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get tilesPath => $composableBuilder(
+    column: $table.tilesPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tilesSize => $composableBuilder(
+    column: $table.tilesSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tilesHash => $composableBuilder(
+    column: $table.tilesHash,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailManifestsTableAnnotationComposer
@@ -24627,6 +24835,15 @@ class $$TrailManifestsTableAnnotationComposer
     column: $table.niveauLocal,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get tilesPath =>
+      $composableBuilder(column: $table.tilesPath, builder: (column) => column);
+
+  GeneratedColumn<int> get tilesSize =>
+      $composableBuilder(column: $table.tilesSize, builder: (column) => column);
+
+  GeneratedColumn<String> get tilesHash =>
+      $composableBuilder(column: $table.tilesHash, builder: (column) => column);
 }
 
 class $$TrailManifestsTableTableManager
@@ -24672,6 +24889,9 @@ class $$TrailManifestsTableTableManager
                 Value<HorodatageServeur?> localVersion = const Value.absent(),
                 Value<String?> ficheJson = const Value.absent(),
                 Value<String?> niveauLocal = const Value.absent(),
+                Value<String?> tilesPath = const Value.absent(),
+                Value<int?> tilesSize = const Value.absent(),
+                Value<String?> tilesHash = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion(
                 trailId: trailId,
@@ -24684,6 +24904,9 @@ class $$TrailManifestsTableTableManager
                 localVersion: localVersion,
                 ficheJson: ficheJson,
                 niveauLocal: niveauLocal,
+                tilesPath: tilesPath,
+                tilesSize: tilesSize,
+                tilesHash: tilesHash,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -24698,6 +24921,9 @@ class $$TrailManifestsTableTableManager
                 Value<HorodatageServeur?> localVersion = const Value.absent(),
                 Value<String?> ficheJson = const Value.absent(),
                 Value<String?> niveauLocal = const Value.absent(),
+                Value<String?> tilesPath = const Value.absent(),
+                Value<int?> tilesSize = const Value.absent(),
+                Value<String?> tilesHash = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion.insert(
                 trailId: trailId,
@@ -24710,6 +24936,9 @@ class $$TrailManifestsTableTableManager
                 localVersion: localVersion,
                 ficheJson: ficheJson,
                 niveauLocal: niveauLocal,
+                tilesPath: tilesPath,
+                tilesSize: tilesSize,
+                tilesHash: tilesHash,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -67,16 +67,46 @@ enum NiveauDeTelechargement {
   /// hors ligne. C est le niveau du randonneur qui part : sur le GR20 il n y a pas
   /// de reseau, et ce qui manque a ce moment-la manque definitivement.
   ///
-  /// CE QUE CE NIVEAU DECLARE ET QUE LE MOTEUR NE FAIT PAS ENCORE — MESURE, PAS
-  /// SUPPOSE. Les cartes hors ligne appartiennent a ce niveau par decision, et le
-  /// telechargement existe (`MBTilesManager.downloadMbtiles`), mais AUCUN CODE DE
-  /// PRODUCTION NE L APPELLE et la liste distante ne porte AUCUN champ donnant
-  /// l adresse du fichier de tuiles d un sentier (`TrailManifestEntry` : ni URL ni
-  /// empreinte de tuiles). Les tuiles ne peuvent donc pas descendre aujourd hui,
-  /// quel que soit le niveau demande. Le dire ici vaut mieux que de laisser croire
-  /// que « realiser » rend un sentier marchable hors ligne : il rend sa TRACE
-  /// disponible hors ligne, pas son fond de carte.
+  /// LES CARTES DESCENDENT ICI, ET NULLE PART AILLEURS (tache 622). Le paragraphe
+  /// qui occupait cette place disait le contraire, et il avait raison de le dire :
+  /// « le telechargement existe (`MBTilesManager.downloadMbtiles`) mais AUCUN CODE
+  /// DE PRODUCTION NE L APPELLE, et la liste distante ne porte AUCUN champ donnant
+  /// l adresse du fichier de tuiles ». Les deux moities du trou sont fermees — la
+  /// liste distante declare desormais ses tuiles (`TrailManifestEntry.tilesPath`,
+  /// `tilesSize`, `tilesHash`) et un seul chemin les fait descendre
+  /// ([DescenteDesCartes]), depuis le geste qui demande CE niveau.
+  ///
+  /// CE NIVEAU NE SUFFIT PAS A LUI SEUL, et c est la seule nuance : il dit que les
+  /// cartes SONT de ce niveau, il ne dit pas que le randonneur y a droit. Realiser
+  /// est lie a avoir PAYE (modele economique §2), sauf le sentier gratuit dont le
+  /// prix est nul (§2 bis) — ce droit se lit une seule fois, dans
+  /// `MonetizationService.canRealizeTrail`, et [DescenteDesCartes] le consulte
+  /// AVANT d ouvrir la moindre connexion.
   realiser;
+
+  /// VRAI SI CE NIVEAU FAIT DESCENDRE LES CARTES HORS LIGNE (tache 622).
+  ///
+  /// UN SEUL ENDROIT DECIDE, ET C EST CELUI-CI. La question « faut-il les tuiles ? »
+  /// se posait a zero endroit avant ce lot (personne n appelait le telechargement) ;
+  /// elle pourrait maintenant se reposer dans le service de descente, dans l ecran
+  /// du catalogue et dans la cadence, avec trois reponses qui finiraient par
+  /// diverger — c est mot pour mot la lecon des trois copies de l ordre d insertion
+  /// que la tache 605 a du reduire a une, et celle des deux mecanismes de limitation
+  /// que la tache 616 a du reduire a un.
+  ///
+  /// POURQUOI [preparer] REPOND NON, ALORS QU ON POURRAIT DEJA AFFICHER UNE CARTE.
+  /// Demande de Christophe du 27/09, verbatim : « Attention de ne pas telecharger
+  /// les donnees inutile quand on prepare avec pub et quand on prepare en ayant
+  /// achete le sentier ». Preparer se fait sur les CHIFFRES des etapes ; la carte
+  /// affichee pendant la preparation est celle du reseau, qui est la par definition
+  /// — on prepare chez soi. Les 260 Mo mesures par la tache 608 ne servent qu a
+  /// marcher la ou il n y a pas de reseau, et c est [realiser].
+  ///
+  /// LES DEUX CAS DE PREPARATION REPONDENT PAREIL, ET C EST VOLONTAIRE : qu il ait
+  /// paye ou non, un randonneur qui PREPARE ne recoit aucune tuile. L achat ne
+  /// change pas le volume, il change le DROIT de realiser — la nuance est deja
+  /// ecrite en tete de cette enumeration, et ce getter ne l ouvre pas.
+  bool get porteLesCartes => this == NiveauDeTelechargement.realiser;
 
   /// LES FAMILLES DE DONNEES QUE CE NIVEAU FAIT DESCENDRE, DANS L ORDRE DES CLES
   /// ETRANGERES.

@@ -93,8 +93,32 @@ class ManifestService {
   /// Une entree SANS fiche n EFFACE PAS la fiche deja connue : `Value.absent()`
   /// exclut la colonne du `UPDATE` (`insertOnConflictUpdate`). Une republication
   /// de simple versionnement ne fait donc pas regresser la description.
+  ///
+  /// CONSERVE AUSSI LE DESCRIPTEUR DES CARTES HORS LIGNE (tache 622), et c est ce
+  /// qui rend la descente des tuiles possible depuis un catalogue affiche hors
+  /// ligne. Le geste « telecharger » lit la LIGNE LOCALE, jamais la reponse reseau :
+  /// sans ces trois colonnes, il faudrait relire le manifeste au moment du geste,
+  /// donc ouvrir un second chemin de resolution de l adresse.
+  ///
+  /// LES TROIS CHAMPS SUIVENT LA MEME REGLE QUE LA FICHE — MAIS ENSEMBLE. Une entree
+  /// qui ne declare AUCUNE tuile n effface pas celles deja connues (`Value.absent()`)
+  /// : une republication de simple versionnement ne doit pas faire disparaitre la
+  /// carte d un sentier. En revanche, des qu une entree declare un descripteur
+  /// COMPLET, les trois colonnes sont reecrites d un bloc — une adresse neuve avec
+  /// une ancienne empreinte serait une descente qui echoue a tous les coups.
   Future<void> saveLocalManifest(TrailManifestEntry entry) async {
     final fiche = entry.fiche;
+    final tuiles = entry.aDesTuilesPubliees;
+    if (!tuiles && entry.tilesPath != null) {
+      _log.w(
+        '[ManifestService] ${entry.trailId} : descripteur de cartes INCOMPLET '
+        '(chemin=${entry.tilesPath}, taille=${entry.tilesSize}, '
+        'empreinte=${entry.tilesHash == null ? "absente" : "presente"}) — ignore. '
+        'Les trois vont ensemble : sans taille on ne peut pas annoncer le poids, '
+        'sans empreinte on ne peut pas verifier une carte de plusieurs centaines '
+        'de megaoctets.',
+      );
+    }
     await dao.insertOrReplace(
       TrailManifestsCompanion(
         trailId: Value(entry.trailId),
@@ -107,6 +131,9 @@ class ManifestService {
         ficheJson: fiche == null
             ? const Value.absent()
             : Value(jsonEncode(fiche.toJson())),
+        tilesPath: tuiles ? Value(entry.tilesPath) : const Value.absent(),
+        tilesSize: tuiles ? Value(entry.tilesSize) : const Value.absent(),
+        tilesHash: tuiles ? Value(entry.tilesHash) : const Value.absent(),
       ),
     );
   }

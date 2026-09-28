@@ -32,6 +32,9 @@ _TrailManifestEntry _$TrailManifestEntryFromJson(Map<String, dynamic> json) =>
       fiche: json['fiche'] == null
           ? null
           : TrailManifestFiche.fromJson(json['fiche'] as Map<String, dynamic>),
+      tilesPath: json['tilesPath'] as String?,
+      tilesSize: (json['tilesSize'] as num?)?.toInt(),
+      tilesHash: json['tilesHash'] as String?,
     );
 
 Map<String, dynamic> _$TrailManifestEntryToJson(_TrailManifestEntry instance) =>
@@ -44,6 +47,9 @@ Map<String, dynamic> _$TrailManifestEntryToJson(_TrailManifestEntry instance) =>
       'status': instance.status,
       'lastUpdated': instance.lastUpdated,
       'fiche': instance.fiche?.toJson(),
+      'tilesPath': instance.tilesPath,
+      'tilesSize': instance.tilesSize,
+      'tilesHash': instance.tilesHash,
     };
 
 _TrailManifestFiche _$TrailManifestFicheFromJson(Map<String, dynamic> json) =>
