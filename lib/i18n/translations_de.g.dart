@@ -1218,6 +1218,9 @@ class _Translations$health$de extends Translations$health$fr {
 	@override late final _Translations$health$delete$de delete = _Translations$health$delete$de._(_root);
 	@override late final _Translations$health$consent$de consent = _Translations$health$consent$de._(_root);
 	@override late final _Translations$health$advice$de advice = _Translations$health$advice$de._(_root);
+	@override String get localOnlyPriceTitle => 'Ein neues Telefon bedeutet neu eintragen';
+	@override String get localOnlyPrice => 'Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen.';
+	@override late final _Translations$health$systemBackup$de systemBackup = _Translations$health$systemBackup$de._(_root);
 }
 
 // Path: trailSelection
@@ -1268,7 +1271,7 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
 	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
 	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
-	@override String get healthBackupNote => 'Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen.';
+	@override String get healthBackupNote => 'Diese Erlaubnis betrifft nicht dein medizinisches Blatt : das wird nie gesichert, weder bei uns noch anderswo, mit oder ohne Erlaubnis. Wenn du das Telefon wechselst, trägst du es neu ein. Das ist der Preis dafür, dass es dir allein gehört.';
 }
 
 // Path: erasure
@@ -1796,7 +1799,7 @@ class _Translations$recovery$de extends Translations$recovery$fr {
 	@override String get section => 'Konto und Wiederherstellung';
 	@override String get sectionDesc => 'Meinen Wiederherstellungscode anzeigen';
 	@override String get title => 'Mein Wiederherstellungscode';
-	@override String get intro => 'Dieser Code öffnet deinen Tresor (Profil, persönliche Angaben und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort.';
+	@override String get intro => 'Dieser Code öffnet deinen Tresor (Spitzname, Avatar und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort. Dein medizinisches Blatt ist NICHT darin : es verlässt dieses Telefon nie.';
 	@override String get codeLabel => 'Dein Code';
 	@override String get copy => 'Code kopieren';
 	@override String get copied => 'Code kopiert';
@@ -2965,6 +2968,23 @@ class _Translations$health$advice$de extends Translations$health$advice$fr {
 	@override String get paper => 'Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.';
 	@override String get ackButton => 'Ich habe diese Hinweise gelesen';
 	@override String get ackDone => 'Hinweise gelesen';
+}
+
+// Path: health.systemBackup
+class _Translations$health$systemBackup$de extends Translations$health$systemBackup$fr {
+	_Translations$health$systemBackup$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Sicherung dieses Telefons';
+	@override String get refuseGoogle => 'Ich lehne die Sicherung meiner medizinischen Daten in der Google Cloud ab';
+	@override String get refuseApple => 'Ich lehne die Sicherung meiner medizinischen Daten in iCloud ab';
+	@override String get explainGoogle => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.';
+	@override String get explainApple => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.';
+	@override String get notOurServers => 'Nicht verwechseln : dein medizinisches Blatt geht NIE an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.';
+	@override String get confirm => 'Verstanden';
+	@override String get a11yCheckbox => 'Die Sicherung meiner medizinischen Daten durch das System des Telefons ablehnen';
 }
 
 // Path: trailSelection.a11y
@@ -5314,6 +5334,16 @@ extension on TranslationsDe {
 			'health.advice.paper' => 'Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.',
 			'health.advice.ackButton' => 'Ich habe diese Hinweise gelesen',
 			'health.advice.ackDone' => 'Hinweise gelesen',
+			'health.localOnlyPriceTitle' => 'Ein neues Telefon bedeutet neu eintragen',
+			'health.localOnlyPrice' => 'Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen.',
+			'health.systemBackup.title' => 'Sicherung dieses Telefons',
+			'health.systemBackup.refuseGoogle' => 'Ich lehne die Sicherung meiner medizinischen Daten in der Google Cloud ab',
+			'health.systemBackup.refuseApple' => 'Ich lehne die Sicherung meiner medizinischen Daten in iCloud ab',
+			'health.systemBackup.explainGoogle' => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.',
+			'health.systemBackup.explainApple' => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.',
+			'health.systemBackup.notOurServers' => 'Nicht verwechseln : dein medizinisches Blatt geht NIE an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.',
+			'health.systemBackup.confirm' => 'Verstanden',
+			'health.systemBackup.a11yCheckbox' => 'Die Sicherung meiner medizinischen Daten durch das System des Telefons ablehnen',
 			'trailSelection.title' => 'Weg wechseln',
 			'trailSelection.subtitle' => 'Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.',
 			'trailSelection.current' => 'Aktiver Weg',
@@ -5359,7 +5389,7 @@ extension on TranslationsDe {
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
 			'consent.healthDataMorphoNote' => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.',
-			'consent.healthBackupNote' => 'Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen.',
+			'consent.healthBackupNote' => 'Diese Erlaubnis betrifft nicht dein medizinisches Blatt : das wird nie gesichert, weder bei uns noch anderswo, mit oder ohne Erlaubnis. Wenn du das Telefon wechselst, trägst du es neu ein. Das ist der Preis dafür, dass es dir allein gehört.',
 			'erasure.section' => 'Meine Daten',
 			'erasure.entry' => 'Meine Daten löschen',
 			'erasure.entryDesc' => 'Endgültig löschen, was die App über Sie speichert',
@@ -5551,6 +5581,8 @@ extension on TranslationsDe {
 			'calendar.legend.start' => 'Abreise',
 			'calendar.legend.walk' => 'Wandern',
 			'calendar.legend.rest' => 'Ruhe',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Ankunft',
 			'calendar.summary.totalDays' => 'Tage gesamt',
 			'calendar.summary.walkDays' => 'Wandertage',
@@ -5561,8 +5593,6 @@ extension on TranslationsDe {
 			'calendar.empty.message' => 'Wähle deine Route und Dauer, um deine Daten festzulegen.',
 			'calendar.empty.action' => 'ROUTE EINRICHTEN',
 			'nuitees.title' => 'Übernachtungen',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Übernachtungs-Ratgeber',
 			'nuitees.infoBar' => 'Buchen Sie jede Nacht in der Hochsaison im Voraus',
 			'nuitees.types.refuge' => 'Berghütte',
@@ -5874,7 +5904,7 @@ extension on TranslationsDe {
 			'recovery.section' => 'Konto und Wiederherstellung',
 			'recovery.sectionDesc' => 'Meinen Wiederherstellungscode anzeigen',
 			'recovery.title' => 'Mein Wiederherstellungscode',
-			'recovery.intro' => 'Dieser Code öffnet deinen Tresor (Profil, persönliche Angaben und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort.',
+			'recovery.intro' => 'Dieser Code öffnet deinen Tresor (Spitzname, Avatar und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort. Dein medizinisches Blatt ist NICHT darin : es verlässt dieses Telefon nie.',
 			'recovery.codeLabel' => 'Dein Code',
 			'recovery.copy' => 'Code kopieren',
 			'recovery.copied' => 'Code kopiert',

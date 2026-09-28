@@ -1218,6 +1218,9 @@ class _Translations$health$es extends Translations$health$fr {
 	@override late final _Translations$health$delete$es delete = _Translations$health$delete$es._(_root);
 	@override late final _Translations$health$consent$es consent = _Translations$health$consent$es._(_root);
 	@override late final _Translations$health$advice$es advice = _Translations$health$advice$es._(_root);
+	@override String get localOnlyPriceTitle => 'Cambiar de teléfono significa volver a escribirla';
+	@override String get localOnlyPrice => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.';
+	@override late final _Translations$health$systemBackup$es systemBackup = _Translations$health$systemBackup$es._(_root);
 }
 
 // Path: trailSelection
@@ -1268,7 +1271,7 @@ class _Translations$consent$es extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Nuestra política ha cambiado: revisa tus elecciones.';
 	@override late final _Translations$consent$a11y$es a11y = _Translations$consent$a11y$es._(_root);
 	@override String get healthDataMorphoNote => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.';
-	@override String get healthBackupNote => 'Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo.';
+	@override String get healthBackupNote => 'Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti.';
 }
 
 // Path: erasure
@@ -1796,7 +1799,7 @@ class _Translations$recovery$es extends Translations$recovery$fr {
 	@override String get section => 'Cuenta y recuperación';
 	@override String get sectionDesc => 'Ver mi código de recuperación';
 	@override String get title => 'Mi código de recuperación';
-	@override String get intro => 'Este código abre tu caja fuerte (perfil, ficha personal y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña.';
+	@override String get intro => 'Este código abre tu caja fuerte (apodo, avatar y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña. Tu ficha médica NO está dentro : nunca sale de este teléfono.';
 	@override String get codeLabel => 'Tu código';
 	@override String get copy => 'Copiar código';
 	@override String get copied => 'Código copiado';
@@ -2965,6 +2968,23 @@ class _Translations$health$advice$es extends Translations$health$advice$fr {
 	@override String get paper => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.';
 	@override String get ackButton => 'He leído estos consejos';
 	@override String get ackDone => 'Consejos leídos';
+}
+
+// Path: health.systemBackup
+class _Translations$health$systemBackup$es extends Translations$health$systemBackup$fr {
+	_Translations$health$systemBackup$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Copia de seguridad de este teléfono';
+	@override String get refuseGoogle => 'Rechazo la copia de seguridad de mis datos médicos en la nube de Google';
+	@override String get refuseApple => 'Rechazo la copia de seguridad de mis datos médicos en iCloud';
+	@override String get explainGoogle => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.';
+	@override String get explainApple => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.';
+	@override String get notOurServers => 'No hay que confundirlo : tu ficha médica NUNCA va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.';
+	@override String get confirm => 'Entendido';
+	@override String get a11yCheckbox => 'Rechazar la copia de seguridad de mis datos médicos por el sistema del teléfono';
 }
 
 // Path: trailSelection.a11y
@@ -5314,6 +5334,16 @@ extension on TranslationsEs {
 			'health.advice.paper' => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.',
 			'health.advice.ackButton' => 'He leído estos consejos',
 			'health.advice.ackDone' => 'Consejos leídos',
+			'health.localOnlyPriceTitle' => 'Cambiar de teléfono significa volver a escribirla',
+			'health.localOnlyPrice' => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.',
+			'health.systemBackup.title' => 'Copia de seguridad de este teléfono',
+			'health.systemBackup.refuseGoogle' => 'Rechazo la copia de seguridad de mis datos médicos en la nube de Google',
+			'health.systemBackup.refuseApple' => 'Rechazo la copia de seguridad de mis datos médicos en iCloud',
+			'health.systemBackup.explainGoogle' => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.',
+			'health.systemBackup.explainApple' => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.',
+			'health.systemBackup.notOurServers' => 'No hay que confundirlo : tu ficha médica NUNCA va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.',
+			'health.systemBackup.confirm' => 'Entendido',
+			'health.systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de mis datos médicos por el sistema del teléfono',
 			'trailSelection.title' => 'Cambiar de sendero',
 			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.',
 			'trailSelection.current' => 'Sendero activo',
@@ -5359,7 +5389,7 @@ extension on TranslationsEs {
 			'consent.a11y.healthSection' => 'Sección de datos de salud, consentimiento reforzado',
 			'consent.a11y.policyButton' => 'Abrir la política de privacidad',
 			'consent.healthDataMorphoNote' => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.',
-			'consent.healthBackupNote' => 'Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo.',
+			'consent.healthBackupNote' => 'Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti.',
 			'erasure.section' => 'Mis datos',
 			'erasure.entry' => 'Borrar mis datos',
 			'erasure.entryDesc' => 'Eliminar definitivamente lo que la aplicación guarda sobre ti',
@@ -5551,6 +5581,8 @@ extension on TranslationsEs {
 			'calendar.legend.start' => 'Salida',
 			'calendar.legend.walk' => 'Marcha',
 			'calendar.legend.rest' => 'Descanso',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Llegada',
 			'calendar.summary.totalDays' => 'Días total',
 			'calendar.summary.walkDays' => 'Días marcha',
@@ -5561,8 +5593,6 @@ extension on TranslationsEs {
 			'calendar.empty.message' => 'Elige tu ruta y la duración para poder configurar tus fechas.',
 			'calendar.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'nuitees.title' => 'Pernoctaciones',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Guía de pernoctaciones',
 			'nuitees.infoBar' => 'Reserva cada noche con antelación en temporada alta',
 			'nuitees.types.refuge' => 'Refugio',
@@ -5874,7 +5904,7 @@ extension on TranslationsEs {
 			'recovery.section' => 'Cuenta y recuperación',
 			'recovery.sectionDesc' => 'Ver mi código de recuperación',
 			'recovery.title' => 'Mi código de recuperación',
-			'recovery.intro' => 'Este código abre tu caja fuerte (perfil, ficha personal y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña.',
+			'recovery.intro' => 'Este código abre tu caja fuerte (apodo, avatar y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña. Tu ficha médica NO está dentro : nunca sale de este teléfono.',
 			'recovery.codeLabel' => 'Tu código',
 			'recovery.copy' => 'Copiar código',
 			'recovery.copied' => 'Código copiado',

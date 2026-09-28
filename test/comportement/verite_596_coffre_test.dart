@@ -5,11 +5,18 @@
 // Et l'onboarding le pousse a le noter. Or LE COFFRE N'A JAMAIS ETE ALIMENTE :
 //
 //   * `AccountVaultService.exportWithCode` — AUCUN appelant en production ;
-//   * `HealthBackupService.backupToCloud` — AUCUN appelant en production ;
-//   * `CloudSyncService.pushEncryptedBackup` — appele par le seul
-//     `backupToCloud`, lui-meme mort ;
+//   * `CloudSyncService.pushEncryptedBackup` — AUCUN appelant en production ;
 //   * `VaultEnvelope.serialize()` — sa sortie n'est ecrite NULLE PART ;
 //   * aucun ecran ne permet de SAISIR un code pour restaurer.
+//
+// TACHE 612 — UN QUATRIEME CHEMIN MORT FIGURAIT ICI ET IL N'EST PLUS MORT, IL
+// EST SUPPRIME : `HealthBackupService.backupToCloud`, qui chiffrait la fiche
+// medicale avec une clef derivee du code de reconnexion. Decision de Christophe
+// du 28/09 10:42 : les donnees medicales ne sortent jamais du telephone. La
+// fiche medicale ne fait donc plus partie du coffre, ni vide ni rempli, et le
+// compte ci-dessous ne la cherche plus. Ce que le coffre contiendra le jour ou
+// il sera alimente : le pseudonyme, l'avatar et le solde d'etapes. Rien de
+// medical.
 //
 // Le code que le randonneur note est la cle d'un coffre vide. Pire : l'ecran
 // l'affichait en le FABRIQUANT au passage (`getOrCreate`), donc en posant dans
@@ -54,7 +61,6 @@ List<File> _sourcesDeProduction() => Directory('lib')
 int _appelantsHorsChaine(String methode) {
   const chaineDuCoffre = [
     'features/auth/data/account_vault_service.dart',
-    'features/safety/data/health_backup_service.dart',
     'core/services/cloud_sync_service.dart',
     'core/services/secure_vault_service.dart',
   ];
@@ -80,8 +86,10 @@ void main() {
     });
 
     test('INVARIANTE : « alimente » et le code reel disent la MEME chose', () {
+      // `backupToCloud` ne figure plus dans ce compte : la methode n'existe
+      // plus (tache 612). La chercher aurait donne un zero rassurant qui ne
+      // mesurait rien.
       final ecrivains = _appelantsHorsChaine('exportWithCode') +
-          _appelantsHorsChaine('backupToCloud') +
           _appelantsHorsChaine('pushEncryptedBackup');
 
       if (CoffreDeReconnexion.alimente) {

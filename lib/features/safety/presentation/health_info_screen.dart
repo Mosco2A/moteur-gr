@@ -11,6 +11,8 @@
 // aucun texte ni couleur en dur (spec E57 AM-1 / RM-6). Donnee personnelle
 // independante du sentier (AM-6 : pas de trailId, pas de trailConfigProvider).
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +28,7 @@ import '../data/health_info_repository.dart';
 import '../domain/health_bounds.dart';
 import '../domain/models/health_info.dart';
 import '../providers/health_prepare_providers.dart';
+import '../providers/refus_sauvegarde_systeme_provider.dart';
 
 /// Provider du DAO sante (Drift).
 ///
@@ -152,6 +155,27 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     // fiche enregistree VIDE ne compte pas comme remplie — `hasData` tranche.
     await ref.read(healthPrepareStepsProvider.notifier).setFilled(info.hasData);
 
+    // LA COPIE SAUVEGARDABLE SUIT LA FICHE (tache 612). Elle n'existe que si le
+    // randonneur a DECOCHE le refus de sauvegarde systeme ; dans ce cas elle doit
+    // porter la fiche TELLE QU'ELLE EST MAINTENANT. Sans ce re-alignement, une
+    // copie fabriquee hier partirait chez Google avec un traitement que le
+    // randonneur vient d'arreter — une donnee de sante perimee est pire qu'une
+    // donnee absente le jour ou un secouriste s'y fie.
+    //
+    // ON NE L'ATTEND PAS, ET C'EST MESURE. Attendre place un appel de plugin
+    // (resolution du dossier de stockage) DANS le chemin qui confirme
+    // l'enregistrement. Mesure du 28/09 : trois tests d'ecran sont devenus rouges
+    // sur « pumpAndSettle timed out », parce qu'un canal de plateforme sans
+    // interlocuteur ne rend JAMAIS la main. Sur un telephone il repond en une
+    // fraction de milliseconde, mais le principe reste : la confirmation d'un
+    // enregistrement reussi ne doit dependre de RIEN d'autre que de
+    // l'enregistrement. Le trou eventuel (fermeture immediate) est bouche par le
+    // re-alignement d'ouverture ([RefusSauvegardeSystemeNotifier]), qui fait
+    // converger le disque a chaque lancement.
+    unawaited(
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLaCopie(),
+    );
+
     if (mounted) {
       setState(() {
         _isSaving = false;
@@ -217,6 +241,19 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     // REFERME (tache 568). Le signal suit la donnee, il ne lui survit pas — c'est
     // la meme exigence que les LOTS J a O sur le droit a l'effacement.
     await ref.read(healthPrepareStepsProvider.notifier).setFilled(false);
+
+    // ET LA COPIE SAUVEGARDABLE S'EN VA AVEC ELLE (tache 612). C'est le point le
+    // plus facile a oublier : effacer la fiche en laissant sa copie dans
+    // l'emplacement sauvegarde, c'est un effacement qui ne tient pas. Le
+    // changement de telephone la ferait revenir.
+    //
+    // MEME REGLE QUE L'ENREGISTREMENT : lance, pas attendu. La suppression du
+    // fichier est SYNCHRONE une fois le dossier connu, donc elle ne peut pas
+    // rester a moitie faite ; et si l'application meurt avant que le dossier soit
+    // resolu, le re-alignement d'ouverture la reprend au lancement suivant.
+    unawaited(
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLaCopie(),
+    );
 
     if (!mounted) return;
     setState(() {
@@ -290,6 +327,17 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: AppTheme.spacingMd),
+                      // LE PRIX DE LA PROMESSE, DIT ICI ET MAINTENANT (tache
+                      // 612). Le bandeau du dessus promet que la fiche ne quitte
+                      // pas le telephone ; celui-ci dit ce que cette promesse
+                      // coute. Christophe l'a assume en majuscules : changer de
+                      // telephone, c'est ressaisir son groupe sanguin, ses
+                      // allergies, ses traitements. Ce prix doit etre lu AU
+                      // MOMENT OU LA FICHE SE REMPLIT, pas decouvert le jour du
+                      // changement d'appareil — et il est place AVANT les champs
+                      // pour la meme raison que les conseils du LOT Q.
+                      const _LocalOnlyPrice(),
                       const SizedBox(height: AppTheme.spacingMd),
                       // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
                       // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
@@ -477,6 +525,69 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
           borderSide: BorderSide(color: colors.primary, width: 2),
         ),
+      ),
+    );
+  }
+}
+
+/// LE PRIX DE LA PROMESSE « CETTE FICHE NE QUITTE PAS CE TELEPHONE » (tache 612).
+///
+/// POURQUOI CE BLOC EXISTE. La decision de Christophe du 28/09 10:42 supprime
+/// toute sauvegarde distante de la fiche medicale. Elle a un prix, et il l'a
+/// assume en majuscules : changer de telephone, c'est ressaisir son groupe
+/// sanguin, ses allergies, ses traitements. Un prix qu'on decouvre le jour ou on
+/// change d'appareil est une mauvaise surprise ; un prix qu'on lit en remplissant
+/// est un choix. Il est donc dit ICI, et avant les champs.
+///
+/// IL NE SE CONFOND PAS AVEC LE BANDEAU DE CONFIANCE AU-DESSUS. Celui-la dit ce
+/// que nous ne faisons pas ; celui-ci dit ce que cela coute au randonneur. Les
+/// deux ensemble font une promesse tenable — l'un sans l'autre fait une promesse
+/// qui se retourne.
+class _LocalOnlyPrice extends StatelessWidget {
+  const _LocalOnlyPrice();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Container(
+      key: const ValueKey('health-local-only-price'),
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: colors.tertiaryContainer.withAlpha(90),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: colors.onSurface.withAlpha(45)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.phonelink_erase_outlined,
+            size: 20,
+            color: colors.onSurface.withAlpha(180),
+          ),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  t.health.localOnlyPriceTitle,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingXs),
+                Text(
+                  t.health.localOnlyPrice,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colors.onSurface.withAlpha(215),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1543,6 +1543,18 @@
       "paper": "Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.",
       "ackButton": "He leído estos consejos",
       "ackDone": "Consejos leídos"
+    },
+    "localOnlyPriceTitle": "Cambiar de teléfono significa volver a escribirla",
+    "localOnlyPrice": "Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.",
+    "systemBackup": {
+      "title": "Copia de seguridad de este teléfono",
+      "refuseGoogle": "Rechazo la copia de seguridad de mis datos médicos en la nube de Google",
+      "refuseApple": "Rechazo la copia de seguridad de mis datos médicos en iCloud",
+      "explainGoogle": "Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.",
+      "explainApple": "Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.",
+      "notOurServers": "No hay que confundirlo : tu ficha médica NUNCA va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.",
+      "confirm": "Entendido",
+      "a11yCheckbox": "Rechazar la copia de seguridad de mis datos médicos por el sistema del teléfono"
     }
   },
   "trailSelection": {
@@ -1599,7 +1611,7 @@
       "policyButton": "Abrir la política de privacidad"
     },
     "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.",
-    "healthBackupNote": "Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo."
+    "healthBackupNote": "Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti."
   },
   "erasure": {
     "section": "Mis datos",
@@ -2266,7 +2278,7 @@
     "section": "Cuenta y recuperación",
     "sectionDesc": "Ver mi código de recuperación",
     "title": "Mi código de recuperación",
-    "intro": "Este código abre tu caja fuerte (perfil, ficha personal y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña.",
+    "intro": "Este código abre tu caja fuerte (apodo, avatar y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña. Tu ficha médica NO está dentro : nunca sale de este teléfono.",
     "codeLabel": "Tu código",
     "copy": "Copiar código",
     "copied": "Código copiado",

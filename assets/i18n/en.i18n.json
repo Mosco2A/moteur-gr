@@ -1543,6 +1543,18 @@
       "paper": "Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.",
       "ackButton": "I have read this advice",
       "ackDone": "Advice read"
+    },
+    "localOnlyPriceTitle": "Switching phones means typing it in again",
+    "localOnlyPrice": "If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.",
+    "systemBackup": {
+      "title": "Backup of this phone",
+      "refuseGoogle": "I refuse to have my medical data backed up to the Google cloud",
+      "refuseApple": "I refuse to have my medical data backed up to iCloud",
+      "explainGoogle": "Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.",
+      "explainApple": "Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.",
+      "notOurServers": "Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.",
+      "confirm": "Got it",
+      "a11yCheckbox": "Refuse the backup of my medical data by the system of the phone"
     }
   },
   "trailSelection": {
@@ -1599,7 +1611,7 @@
       "policyButton": "Open the privacy policy"
     },
     "healthDataMorphoNote": "Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.",
-    "healthBackupNote": "Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device."
+    "healthBackupNote": "This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself."
   },
   "erasure": {
     "section": "My data",
@@ -2266,7 +2278,7 @@
     "section": "Account and recovery",
     "sectionDesc": "View my recovery code",
     "title": "My recovery code",
-    "intro": "This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.",
+    "intro": "This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.",
     "codeLabel": "Your code",
     "copy": "Copy code",
     "copied": "Code copied",

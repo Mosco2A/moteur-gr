@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../../safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
@@ -191,6 +192,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       return AppCard(
         padding: EdgeInsets.zero,
         child: ListTile(
+          key: const ValueKey('profil-connexion-google'),
           leading: const Icon(Icons.login),
           title: Text(i18n.auth.signInGoogle),
           subtitle: Text(i18n.auth.signInGoogleDesc),
@@ -198,6 +200,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           onTap: () async {
             final service = ref.read(authServiceProvider);
             await service.signInWithGoogleSilent();
+            // LA CASE PRE-COCHEE DE REFUS, ICI ET PAS AILLEURS (tache 612).
+            // Decision de Christophe du 28/09 10:49 : « quand il se connecte ».
+            // Posee APRES la connexion, parce qu'une question posee avant
+            // aurait ete posee aussi a qui renonce a se connecter — et il n'y a
+            // rien a lui demander, la protection s'applique deja pour lui.
+            // Elle ne se repose pas une fois tranchee.
+            if (context.mounted) {
+              await RefusSauvegardeSystemeDialog.poserSiNecessaire(context, ref);
+            }
           },
         ),
       );

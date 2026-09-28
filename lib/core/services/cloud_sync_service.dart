@@ -29,6 +29,47 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// hors-ligne (tache 561, J2).
 const String kSyncErrorHealthConsentMissing = 'health_consent_missing';
 
+/// Raison de refus : le document demande n'est PAS dans
+/// [DocumentsDuCoffreDistant.autorises] (tache 612).
+///
+/// Porte par [CloudSyncResult.error] avec un statut `idle`, pour la meme raison
+/// que ci-dessus : ce n'est pas une panne, c'est un refus, et il doit se
+/// diagnostiquer avec son propre mot.
+const String kSyncErrorDocumentNonAutorise = 'document_coffre_non_autorise';
+
+/// LES SEULS DOCUMENTS QUE LE COFFRE DISTANT PEUT PORTER — LISTE FERMEE,
+/// REFUS PAR DEFAUT (tache 612, decision de Christophe du 28/09 10:42).
+///
+/// DECISION, verbatim et en majuscules dans son message : « NON ON NE
+/// TROUVERAIT RIEN !!! Les donnees medicales RESTENT sur le tel !!! ». Version
+/// dure : pas de sauvegarde distante de la fiche medicale, meme chiffree, meme
+/// avec consentement, meme pour le bien de la personne. Si on ouvrait nos
+/// serveurs on ne trouverait RIEN, pas des octets illisibles, RIEN.
+///
+/// POURQUOI UNE LISTE FERMEE ET PAS UN INTERDIT NOMME. Interdire le mot
+/// « health » n'aurait rien protege : le prochain document se serait appele
+/// « sante », « medical » ou « fiche_v2 » et serait passe. Le transport
+/// n'accepte donc QUE ce qui est nomme ici, et tout le reste est refuse sans
+/// toucher au reseau. Ouvrir un nouveau chemin de sortie exige d'ecrire son nom
+/// dans cette liste, donc de croiser la decision ci-dessus, et une invariante
+/// (`test/comportement/fiche_medicale_locale_612_test.dart`) exige que la liste
+/// ne porte JAMAIS de document de sante.
+///
+/// CE QUI RESTE AUTORISE, ET POURQUOI. [compte] porte le pseudonyme, l'avatar
+/// et le solde d'etapes (`AccountVaultService`) : zero donnee de sante, zero
+/// nominatif. C'est le coffre de reconnexion de la decision #99784, et il n'est
+/// pas concerne par celle du 28/09 — les deux sujets sont distincts.
+abstract final class DocumentsDuCoffreDistant {
+  /// Profil (pseudonyme + avatar) et solde d'etapes. AUCUNE donnee de sante.
+  static const String compte = 'account';
+
+  /// La liste fermee elle-meme. Tout ce qui n'y est pas est refuse.
+  static const Set<String> autorises = {compte};
+
+  /// Vrai si [docKey] peut etre transporte vers le coffre distant.
+  static bool autorise(String docKey) => autorises.contains(docKey);
+}
+
 /// Statut d une operation de sync cloud.
 /// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
 typedef CloudSyncStatus = String;
@@ -630,22 +671,48 @@ class CloudSyncService {
   //
   // Transport d'un BLOB DEJA CHIFFRE (enveloppe [VaultEnvelope], produit par
   // SecureVaultService) vers le miroir anonyme `users/{hash}/secure_backup/{k}`.
-  // Le serveur ne voit QUE du chiffre : ni identite, ni contenu (fiche sante
-  // art. 9). La CLE reste cote client (derivee du code de reconnexion, ou
-  // keystore OS) — jamais transmise. On ne stocke pas de champ nominatif ; le
-  // doc ne contient que le blob + un timestamp. [userId] = hash anonyme.
+  // Le serveur ne voit QUE du chiffre : ni identite, ni contenu. La CLE reste
+  // cote client (derivee du code de reconnexion) — jamais transmise. On ne
+  // stocke pas de champ nominatif ; le doc ne contient que le blob + un
+  // timestamp. [userId] = hash anonyme.
   //
   // Cette couche ne CHIFFRE ni ne DECHIFFRE : elle ne fait que STOCKER/LIRE le
   // ciphertext (separation nette ; la crypto est dans SecureVaultService).
+  //
+  // CE COMMENTAIRE DISAIT « ni identite, ni contenu (fiche sante art. 9) », ET
+  // CETTE PARENTHESE EST MORTE LE 28/09 (tache 612). La fiche medicale ne
+  // transite plus par ici, et elle ne PEUT plus : le transport n'accepte que
+  // [DocumentsDuCoffreDistant.autorises]. Le chiffrement zero-knowledge etait un
+  // bon argument, il ne l'est plus — Christophe a tranche que nos serveurs ne
+  // devaient rien contenir du tout, pas meme de l'illisible.
 
   /// Depose le [encryptedBlob] (enveloppe chiffree serialisee) dans le miroir
   /// anonyme sous `users/{userId}/secure_backup/{docKey}`. GRACEFUL NO-OP si
   /// Firebase indisponible / hors-ligne. Retourne `success` si ecrit.
+  ///
+  /// REFUS PAR DEFAUT (tache 612) : si [docKey] n'est pas dans
+  /// [DocumentsDuCoffreDistant.autorises], la methode refuse AVANT le reseau et
+  /// avant toute lecture, avec la raison nommee
+  /// [kSyncErrorDocumentNonAutorise]. Le refus est un `idle` porteur d'une
+  /// raison, jamais une `error` : ce n'est pas une panne, c'est une decision, et
+  /// la confondre avec un hors-ligne la rendrait indebuggable (meme forme que la
+  /// garde article 9, tache 561).
   Future<CloudSyncResult> pushEncryptedBackup(
     String userId,
     String docKey,
     String encryptedBlob,
   ) async {
+    // EN PREMIER, AVANT TOUT : avant la disponibilite Firebase, avant le
+    // reseau, avant le blob. Un chemin de sortie de la fiche medicale ne doit
+    // pas dependre de l'etat du telephone pour etre refuse.
+    if (!DocumentsDuCoffreDistant.autorise(docKey)) {
+      _log.w("[CloudSync] Document « $docKey » hors coffre autorise -> REFUS");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+        error: kSyncErrorDocumentNonAutorise,
+      );
+    }
     if (!firebaseService.isAvailable) {
       return CloudSyncResult(
         status: CloudSyncStatusValues.idle,
@@ -688,7 +755,18 @@ class CloudSyncService {
   /// Lit le blob chiffre depose sous `users/{userId}/secure_backup/{docKey}`.
   /// Retourne le ciphertext serialise, ou `null` si absent/indisponible. Le
   /// dechiffrement (avec la cle cote client) est fait par l'appelant.
+  ///
+  /// REFUS PAR DEFAUT AUSSI DANS CE SENS (tache 612). Fermer la montee sans
+  /// fermer la descente laisserait un chemin ouvert vers un document depose par
+  /// une version anterieure de l'application : le telephone irait le chercher, et
+  /// une fiche medicale redescendrait d'un serveur qui n'aurait jamais du
+  /// l'avoir. Le refus est muet (`null`) parce que cette methode n'a pas de
+  /// canal de raison ; il est journalise.
   Future<String?> pullEncryptedBackup(String userId, String docKey) async {
+    if (!DocumentsDuCoffreDistant.autorise(docKey)) {
+      _log.w("[CloudSync] Lecture « $docKey » hors coffre autorise -> REFUS");
+      return null;
+    }
     if (!firebaseService.isAvailable) return null;
     final connectivity = await connectivityMonitor.checkStatus();
     if (connectivity == ConnectivityStatusValues.offline) return null;

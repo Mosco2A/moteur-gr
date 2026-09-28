@@ -2512,6 +2512,14 @@ class Translations$health$fr {
 	late final Translations$health$delete$fr delete = Translations$health$delete$fr.internal(_root);
 	late final Translations$health$consent$fr consent = Translations$health$consent$fr.internal(_root);
 	late final Translations$health$advice$fr advice = Translations$health$advice$fr.internal(_root);
+
+	/// fr: 'Changer de téléphone veut dire la ressaisir'
+	String get localOnlyPriceTitle => 'Changer de téléphone veut dire la ressaisir';
+
+	/// fr: 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C'est le prix de la promesse, et c'est pour cela que personne, nous compris, ne peut la lire ailleurs qu'ici.'
+	String get localOnlyPrice => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.';
+
+	late final Translations$health$systemBackup$fr systemBackup = Translations$health$systemBackup$fr.internal(_root);
 }
 
 // Path: trailSelection
@@ -2624,8 +2632,8 @@ class Translations$consent$fr {
 	/// fr: 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d'un trek. Donnée de santé, article 9 RGPD, gardée sur l'appareil.'
 	String get healthDataMorphoNote => 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d\'un trek. Donnée de santé, article 9 RGPD, gardée sur l\'appareil.';
 
-	/// fr: 'Sans cette autorisation, votre fiche de renseignement médical n'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.'
-	String get healthBackupNote => 'Sans cette autorisation, votre fiche de renseignement médical n\'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.';
+	/// fr: 'Cette autorisation ne concerne pas votre fiche médicale : celle-là n'est jamais sauvegardée, ni chez nous ni ailleurs, autorisation ou pas. Si vous changez de téléphone, vous la ressaisirez. C'est le prix de la garder pour vous.'
+	String get healthBackupNote => 'Cette autorisation ne concerne pas votre fiche médicale : celle-là n\'est jamais sauvegardée, ni chez nous ni ailleurs, autorisation ou pas. Si vous changez de téléphone, vous la ressaisirez. C\'est le prix de la garder pour vous.';
 }
 
 // Path: erasure
@@ -3781,8 +3789,8 @@ class Translations$recovery$fr {
 	/// fr: 'Mon code de reconnexion'
 	String get title => 'Mon code de reconnexion';
 
-	/// fr: 'Ce code ouvre votre coffre (profil, fiche de renseignement et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe.'
-	String get intro => 'Ce code ouvre votre coffre (profil, fiche de renseignement et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe.';
+	/// fr: 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.'
+	String get intro => 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.';
 
 	/// fr: 'Votre code'
 	String get codeLabel => 'Votre code';
@@ -6166,6 +6174,39 @@ class Translations$health$advice$fr {
 
 	/// fr: 'Conseils lus'
 	String get ackDone => 'Conseils lus';
+}
+
+// Path: health.systemBackup
+class Translations$health$systemBackup$fr {
+	Translations$health$systemBackup$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Sauvegarde de ce téléphone'
+	String get title => 'Sauvegarde de ce téléphone';
+
+	/// fr: 'Je refuse la sauvegarde de mes données médicales sur le cloud Google'
+	String get refuseGoogle => 'Je refuse la sauvegarde de mes données médicales sur le cloud Google';
+
+	/// fr: 'Je refuse la sauvegarde de mes données médicales sur iCloud'
+	String get refuseApple => 'Je refuse la sauvegarde de mes données médicales sur iCloud';
+
+	/// fr: 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.'
+	String get explainGoogle => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.';
+
+	/// fr: 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.'
+	String get explainApple => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.';
+
+	/// fr: 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.'
+	String get notOurServers => 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.';
+
+	/// fr: 'C'est noté'
+	String get confirm => 'C\'est noté';
+
+	/// fr: 'Refuser la sauvegarde de mes données médicales par le système du téléphone'
+	String get a11yCheckbox => 'Refuser la sauvegarde de mes données médicales par le système du téléphone';
 }
 
 // Path: trailSelection.a11y
@@ -9113,6 +9154,16 @@ extension on Translations {
 			'health.advice.paper' => 'Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.',
 			'health.advice.ackButton' => 'J\'ai lu ces conseils',
 			'health.advice.ackDone' => 'Conseils lus',
+			'health.localOnlyPriceTitle' => 'Changer de téléphone veut dire la ressaisir',
+			'health.localOnlyPrice' => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.',
+			'health.systemBackup.title' => 'Sauvegarde de ce téléphone',
+			'health.systemBackup.refuseGoogle' => 'Je refuse la sauvegarde de mes données médicales sur le cloud Google',
+			'health.systemBackup.refuseApple' => 'Je refuse la sauvegarde de mes données médicales sur iCloud',
+			'health.systemBackup.explainGoogle' => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.',
+			'health.systemBackup.explainApple' => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.',
+			'health.systemBackup.notOurServers' => 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.',
+			'health.systemBackup.confirm' => 'C\'est noté',
+			'health.systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de mes données médicales par le système du téléphone',
 			'trailSelection.title' => 'Changer de sentier',
 			'trailSelection.subtitle' => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, packs, guides) suit ta sélection.',
 			'trailSelection.current' => 'Sentier actif',
@@ -9158,7 +9209,7 @@ extension on Translations {
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
 			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
 			'consent.healthDataMorphoNote' => 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d\'un trek. Donnée de santé, article 9 RGPD, gardée sur l\'appareil.',
-			'consent.healthBackupNote' => 'Sans cette autorisation, votre fiche de renseignement médical n\'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.',
+			'consent.healthBackupNote' => 'Cette autorisation ne concerne pas votre fiche médicale : celle-là n\'est jamais sauvegardée, ni chez nous ni ailleurs, autorisation ou pas. Si vous changez de téléphone, vous la ressaisirez. C\'est le prix de la garder pour vous.',
 			'erasure.section' => 'Mes données',
 			'erasure.entry' => 'Effacer mes données',
 			'erasure.entryDesc' => 'Supprimer définitivement ce que l\'application garde sur vous',
@@ -9350,6 +9401,8 @@ extension on Translations {
 			'calendar.legend.start' => 'Départ',
 			'calendar.legend.walk' => 'Marche',
 			'calendar.legend.rest' => 'Repos',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Arrivée',
 			'calendar.summary.totalDays' => 'Jours total',
 			'calendar.summary.walkDays' => 'Jours marche',
@@ -9360,8 +9413,6 @@ extension on Translations {
 			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Guide des nuitées',
 			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',
 			'nuitees.types.refuge' => 'Refuge',
@@ -9673,7 +9724,7 @@ extension on Translations {
 			'recovery.section' => 'Compte et reconnexion',
 			'recovery.sectionDesc' => 'Voir mon code de reconnexion',
 			'recovery.title' => 'Mon code de reconnexion',
-			'recovery.intro' => 'Ce code ouvre votre coffre (profil, fiche de renseignement et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe.',
+			'recovery.intro' => 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.',
 			'recovery.codeLabel' => 'Votre code',
 			'recovery.copy' => 'Copier le code',
 			'recovery.copied' => 'Code copié',

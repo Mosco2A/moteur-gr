@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- REGLES D EXTRACTION DE DONNEES — ANDROID 12 ET AU-DELA (API 31+).
+     Referencees par android:dataExtractionRules dans AndroidManifest.xml.
+
+     TACHE 612 — decision de Christophe du 28/09 10:42, verbatim et en
+     majuscules dans son message : « NON ON NE TROUVERAIT RIEN !!! Les donnees
+     medicales RESTENT sur le tel !!! ».
+
+     CE FICHIER NE PARLE PAS DE NOS SERVEURS. La fiche medicale n y va jamais,
+     dans aucun cas : c est acquis par construction ailleurs. Ici il s agit de la
+     sauvegarde du telephone PAR GOOGLE, qui ne nous appartient pas et qui etait
+     ACTIVE PAR DEFAUT faute de declaration (mesure du 28/09 : le depot ne
+     declarait ni allowBackup, ni dataExtractionRules, ni fullBackupContent).
+
+     LA SOURCE DE VERITE DE CES EXCLUSIONS EST DANS LE CODE, PAS ICI :
+     lib/core/services/sauvegarde_systeme.dart, champ « exclusions ». Une
+     invariante (test/comportement/fiche_medicale_locale_612_test.dart) exige que
+     ce fichier et cette declaration disent la MEME chose, dans les deux sens.
+
+     POURQUOI LE DOMAINE database EST EXCLU EN ENTIER : la table health_info vit
+     dans la meme base que la progression du trek. Un fichier de base ne
+     s exclut pas table par table. Le cout est nul aujourd hui (la base est
+     ouverte en memoire) et il disparaitra quand la fiche aura son propre
+     stockage sous files/medical/.
+
+     LES DEUX SECTIONS SONT IDENTIQUES, ET C EST VOULU. cloud-backup gouverne la
+     montee chez Google ; device-transfer gouverne la copie directe d un
+     telephone a l autre. Une fiche medicale qui refuse le nuage mais passe par
+     le cable n aurait pas quitte le telephone : elle aurait quitte CE
+     telephone-la, ce qui est exactement ce que la decision interdit. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="medical/" />
+        <exclude domain="database" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="medical/" />
+        <exclude domain="database" />
+    </device-transfer>
+</data-extraction-rules>

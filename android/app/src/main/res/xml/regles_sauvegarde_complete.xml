@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- REGLES DE SAUVEGARDE COMPLETE — ANDROID 11 ET EN DESSOUS (API 30 et moins).
+     Referencees par android:fullBackupContent dans AndroidManifest.xml.
+
+     POURQUOI DEUX FICHIERS. Android 12 a change de format : au-dessus c est
+     dataExtractionRules (regles_sauvegarde_donnees.xml), en dessous c est
+     fullBackupContent. Declarer le premier seulement laisserait les telephones
+     Android 11 et anterieurs sauvegarder la fiche medicale — et le randonneur
+     qui a le plus vieux telephone est exactement celui a qui on aurait promis le
+     contraire.
+
+     MEMES EXCLUSIONS QUE L AUTRE FICHIER, MEME SOURCE DE VERITE :
+     lib/core/services/sauvegarde_systeme.dart, champ « exclusions ». Une
+     invariante (test/comportement/fiche_medicale_locale_612_test.dart) exige que
+     LES DEUX fichiers et cette declaration disent la MEME chose. Deux listes qui
+     divergent, c est une porte qui se rouvre sur la moitie du parc. -->
+<full-backup-content>
+    <exclude domain="file" path="medical/" />
+    <exclude domain="database" />
+</full-backup-content>

@@ -28,9 +28,32 @@
         android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
+    <!-- TACHE 612 — LA FICHE MEDICALE NE MONTE PAS CHEZ GOOGLE.
+         Decision de Christophe du 28/09 10:42, verbatim et en majuscules dans
+         son message : « NON ON NE TROUVERAIT RIEN !!! Les donnees medicales
+         RESTENT sur le tel !!! ».
+
+         MESURE DU 28/09 : ce manifeste ne declarait AUCUNE de ces trois
+         proprietes. Le defaut d Android est allowBackup="true" SANS regle, donc
+         tout le repertoire de donnees de l application montait chez Google des
+         que le randonneur avait la sauvegarde du telephone activee — ce qui est
+         le cas par defaut.
+
+         allowBackup RESTE A VRAI, ET C EST VOULU : Christophe refuse la
+         sauvegarde de ses DONNEES MEDICALES, pas celle du reste. Ce sont les
+         deux fichiers de regles qui disent ce qui est exclu, et eux seuls.
+
+         DEUX FICHIERS PARCE QU ANDROID 12 A CHANGE DE FORMAT : dataExtractionRules
+         au-dessus, fullBackupContent en dessous. Les deux portent les MEMES
+         exclusions, et une invariante Dart le verifie
+         (test/comportement/fiche_medicale_locale_612_test.dart) contre la source
+         unique de verite lib/core/services/sauvegarde_systeme.dart. -->
     <application
         android:label="StepWays"
         android:name="${applicationName}"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/regles_sauvegarde_donnees"
+        android:fullBackupContent="@xml/regles_sauvegarde_complete"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

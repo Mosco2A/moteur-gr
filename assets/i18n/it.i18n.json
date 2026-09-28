@@ -1543,6 +1543,18 @@
       "paper": "Tieni una copia su carta in una tasca dello zaino: la carta non resta mai senza batteria, non si rompe in una caduta e si legge sotto la pioggia.",
       "ackButton": "Ho letto questi consigli",
       "ackDone": "Consigli letti"
+    },
+    "localOnlyPriceTitle": "Cambiare telefono vuol dire riscriverla",
+    "localOnlyPrice": "Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove.",
+    "systemBackup": {
+      "title": "Backup di questo telefono",
+      "refuseGoogle": "Rifiuto il backup dei miei dati medici sul cloud Google",
+      "refuseApple": "Rifiuto il backup dei miei dati medici su iCloud",
+      "explainGoogle": "Il tuo telefono salva i suoi dati su Google. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.",
+      "explainApple": "Il tuo telefono salva i suoi dati su iCloud. Questa casella è già spuntata e tiene fuori la tua scheda medica. Togli la spunta solo se preferisci ritrovarla sul prossimo telefono.",
+      "notOurServers": "Da non confondere : la tua scheda medica non arriva MAI ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.",
+      "confirm": "Ho capito",
+      "a11yCheckbox": "Rifiutare il backup dei miei dati medici da parte del sistema del telefono"
     }
   },
   "trailSelection": {
@@ -1599,7 +1611,7 @@
       "policyButton": "Apri l'informativa sulla privacy"
     },
     "healthDataMorphoNote": "Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.",
-    "healthBackupNote": "Senza questo consenso la tua scheda di informazioni mediche non viene salvata: non potrai recuperarla su un altro telefono, né mostrarla ai soccorsi da un dispositivo nuovo."
+    "healthBackupNote": "Questo permesso non riguarda la tua scheda medica : quella non viene mai salvata, né da noi né altrove, con o senza permesso. Se cambi telefono la riscriverai. È il prezzo per tenerla solo per te."
   },
   "erasure": {
     "section": "I miei dati",
@@ -2266,7 +2278,7 @@
     "section": "Account e ripristino",
     "sectionDesc": "Vedi il mio codice di ripristino",
     "title": "Il mio codice di ripristino",
-    "intro": "Questo codice apre il tuo forziere (profilo, scheda informativa e saldo tappe) su un altro telefono. Annotalo e conservalo al sicuro: funziona come una password.",
+    "intro": "Questo codice apre il tuo forziere (soprannome, avatar e saldo tappe) su un altro telefono. Annotalo e conservalo al sicuro: funziona come una password. La tua scheda medica NON è dentro : non lascia mai questo telefono.",
     "codeLabel": "Il tuo codice",
     "copy": "Copia codice",
     "copied": "Codice copiato",

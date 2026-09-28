@@ -1218,6 +1218,9 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
 	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
 	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
+	@override String get localOnlyPriceTitle => 'Switching phones means typing it in again';
+	@override String get localOnlyPrice => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.';
+	@override late final _Translations$health$systemBackup$en systemBackup = _Translations$health$systemBackup$en._(_root);
 }
 
 // Path: trailSelection
@@ -1268,7 +1271,7 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
 	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
 	@override String get healthDataMorphoNote => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.';
-	@override String get healthBackupNote => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.';
+	@override String get healthBackupNote => 'This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself.';
 }
 
 // Path: erasure
@@ -1796,7 +1799,7 @@ class _Translations$recovery$en extends Translations$recovery$fr {
 	@override String get section => 'Account and recovery';
 	@override String get sectionDesc => 'View my recovery code';
 	@override String get title => 'My recovery code';
-	@override String get intro => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.';
+	@override String get intro => 'This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.';
 	@override String get codeLabel => 'Your code';
 	@override String get copy => 'Copy code';
 	@override String get copied => 'Code copied';
@@ -2965,6 +2968,23 @@ class _Translations$health$advice$en extends Translations$health$advice$fr {
 	@override String get paper => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.';
 	@override String get ackButton => 'I have read this advice';
 	@override String get ackDone => 'Advice read';
+}
+
+// Path: health.systemBackup
+class _Translations$health$systemBackup$en extends Translations$health$systemBackup$fr {
+	_Translations$health$systemBackup$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Backup of this phone';
+	@override String get refuseGoogle => 'I refuse to have my medical data backed up to the Google cloud';
+	@override String get refuseApple => 'I refuse to have my medical data backed up to iCloud';
+	@override String get explainGoogle => 'Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.';
+	@override String get explainApple => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.';
+	@override String get notOurServers => 'Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.';
+	@override String get confirm => 'Got it';
+	@override String get a11yCheckbox => 'Refuse the backup of my medical data by the system of the phone';
 }
 
 // Path: trailSelection.a11y
@@ -5314,6 +5334,16 @@ extension on TranslationsEn {
 			'health.advice.paper' => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.',
 			'health.advice.ackButton' => 'I have read this advice',
 			'health.advice.ackDone' => 'Advice read',
+			'health.localOnlyPriceTitle' => 'Switching phones means typing it in again',
+			'health.localOnlyPrice' => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.',
+			'health.systemBackup.title' => 'Backup of this phone',
+			'health.systemBackup.refuseGoogle' => 'I refuse to have my medical data backed up to the Google cloud',
+			'health.systemBackup.refuseApple' => 'I refuse to have my medical data backed up to iCloud',
+			'health.systemBackup.explainGoogle' => 'Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.',
+			'health.systemBackup.explainApple' => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.',
+			'health.systemBackup.notOurServers' => 'Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.',
+			'health.systemBackup.confirm' => 'Got it',
+			'health.systemBackup.a11yCheckbox' => 'Refuse the backup of my medical data by the system of the phone',
 			'trailSelection.title' => 'Switch trail',
 			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
 			'trailSelection.current' => 'Active trail',
@@ -5359,7 +5389,7 @@ extension on TranslationsEn {
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
 			'consent.healthDataMorphoNote' => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.',
-			'consent.healthBackupNote' => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.',
+			'consent.healthBackupNote' => 'This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself.',
 			'erasure.section' => 'My data',
 			'erasure.entry' => 'Erase my data',
 			'erasure.entryDesc' => 'Permanently delete what the app keeps about you',
@@ -5551,6 +5581,8 @@ extension on TranslationsEn {
 			'calendar.legend.start' => 'Departure',
 			'calendar.legend.walk' => 'Hiking',
 			'calendar.legend.rest' => 'Rest',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Arrival',
 			'calendar.summary.totalDays' => 'Total days',
 			'calendar.summary.walkDays' => 'Hiking days',
@@ -5561,8 +5593,6 @@ extension on TranslationsEn {
 			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Overnight stays guide',
 			'nuitees.infoBar' => 'Book each night in advance during peak season',
 			'nuitees.types.refuge' => 'Mountain hut',
@@ -5874,7 +5904,7 @@ extension on TranslationsEn {
 			'recovery.section' => 'Account and recovery',
 			'recovery.sectionDesc' => 'View my recovery code',
 			'recovery.title' => 'My recovery code',
-			'recovery.intro' => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.',
+			'recovery.intro' => 'This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.',
 			'recovery.codeLabel' => 'Your code',
 			'recovery.copy' => 'Copy code',
 			'recovery.copied' => 'Code copied',

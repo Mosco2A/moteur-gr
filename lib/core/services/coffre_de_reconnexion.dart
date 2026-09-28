@@ -6,10 +6,30 @@
 /// ligne, dans le code de production :
 ///
 ///   * [ecrivainAttendu] — aucun appelant ;
-///   * `HealthBackupService.backupToCloud` — aucun appelant ;
-///   * [transportAttendu] — appele par le seul `backupToCloud`, lui-meme mort ;
+///   * [transportAttendu] — aucun appelant ;
 ///   * `VaultEnvelope.serialize()` — sa sortie n'est ecrite nulle part ;
 ///   * [ecranDeSaisieAttendu] — n'existe pas : rien ne permet de SAISIR un code.
+///
+/// CE QUE CE COFFRE NE CONTIENDRA JAMAIS — LA FICHE MEDICALE (tache 612,
+/// decision de Christophe du 28/09 10:42, verbatim et en majuscules dans son
+/// message : « NON ON NE TROUVERAIT RIEN !!! Les donnees medicales RESTENT sur
+/// le tel !!! »). La liste ci-dessus comptait un quatrieme chemin mort,
+/// `HealthBackupService.backupToCloud`, qui chiffrait la fiche medicale avec une
+/// clef derivee du CODE DE RECONNEXION. Il n'est pas seulement mort, il est
+/// SUPPRIME — et le transport refuse desormais tout document absent de
+/// [DocumentsDuCoffreDistant.autorises].
+///
+/// POURQUOI CE RETRAIT EST PLUS SUR QU'IL N'EN A L'AIR. Christophe a assume le
+/// 28/09 10:38 que le code de reconnexion puisse etre PARTAGE par courriel par
+/// l'utilisateur lui-meme. Or ce meme code derivait la clef de la fiche de
+/// sante : un code dans une boite de courriel devenait la clef d'une donnee de
+/// l'article 9. En retirant la sauvegarde, ce risque disparait PAR
+/// CONSTRUCTION — c'est mieux que de separer les clefs.
+///
+/// A NE PAS CONFONDRE AVEC LA SAUVEGARDE DU TELEPHONE PAR SON PROPRE SYSTEME
+/// (Google ou Apple), qui ne nous appartient pas et que la case pre-cochee de
+/// refus gouverne (`SauvegardeSysteme`). Le present coffre est le NOTRE : la
+/// fiche medicale n'y entre dans aucun cas, case cochee ou non.
 ///
 /// Tout le chiffrement est pourtant complet et correct (AES-GCM-256, PBKDF2,
 /// restauration reelle cote [AccountVaultService] et [RestoreService]). Ce qui

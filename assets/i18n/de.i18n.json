@@ -1543,6 +1543,18 @@
       "paper": "Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.",
       "ackButton": "Ich habe diese Hinweise gelesen",
       "ackDone": "Hinweise gelesen"
+    },
+    "localOnlyPriceTitle": "Ein neues Telefon bedeutet neu eintragen",
+    "localOnlyPrice": "Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen.",
+    "systemBackup": {
+      "title": "Sicherung dieses Telefons",
+      "refuseGoogle": "Ich lehne die Sicherung meiner medizinischen Daten in der Google Cloud ab",
+      "refuseApple": "Ich lehne die Sicherung meiner medizinischen Daten in iCloud ab",
+      "explainGoogle": "Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.",
+      "explainApple": "Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.",
+      "notOurServers": "Nicht verwechseln : dein medizinisches Blatt geht NIE an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.",
+      "confirm": "Verstanden",
+      "a11yCheckbox": "Die Sicherung meiner medizinischen Daten durch das System des Telefons ablehnen"
     }
   },
   "trailSelection": {
@@ -1599,7 +1611,7 @@
       "policyButton": "Datenschutzerklärung öffnen"
     },
     "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.",
-    "healthBackupNote": "Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen."
+    "healthBackupNote": "Diese Erlaubnis betrifft nicht dein medizinisches Blatt : das wird nie gesichert, weder bei uns noch anderswo, mit oder ohne Erlaubnis. Wenn du das Telefon wechselst, trägst du es neu ein. Das ist der Preis dafür, dass es dir allein gehört."
   },
   "erasure": {
     "section": "Meine Daten",
@@ -2266,7 +2278,7 @@
     "section": "Konto und Wiederherstellung",
     "sectionDesc": "Meinen Wiederherstellungscode anzeigen",
     "title": "Mein Wiederherstellungscode",
-    "intro": "Dieser Code öffnet deinen Tresor (Profil, persönliche Angaben und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort.",
+    "intro": "Dieser Code öffnet deinen Tresor (Spitzname, Avatar und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort. Dein medizinisches Blatt ist NICHT darin : es verlässt dieses Telefon nie.",
     "codeLabel": "Dein Code",
     "copy": "Code kopieren",
     "copied": "Code kopiert",

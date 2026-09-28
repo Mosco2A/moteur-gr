@@ -444,6 +444,21 @@ const Map<String, List<String>> exceptionsParCle = <String, List<String>>{
   'es|checklist.ui.infoValidateBody': <String>['valida'],
   'es|fireRisk.fwiSource': <String>['meteo'],
   'fr|fireRisk.fwiSource': <String>['meteo'],
+  // TACHE 612 — « Je refuse » est le VERBE conjugue, pas le participe.
+  //
+  // Le dictionnaire associe « refuse » a « refuse » accentue, ce qui est juste
+  // pour le PARTICIPE (« un acces refuse ») et faux pour la premiere personne du
+  // present (« je refuse »). C est le meme genre de faux positif que « Hohe » en
+  // allemand ou « esta » en espagnol, deja nommes en tete de ce fichier : la
+  // forme est correcte, c est le dictionnaire qui ne distingue pas les deux
+  // emplois d un homographe.
+  //
+  // ET LE LIBELLE EST CELUI DE CHRISTOPHE, MOT POUR MOT : « option prechochee,
+  // Je refuse la sauvegarde sur le cloud google de mes donnees medicales, quand
+  // il se connecte » (28/09 10:49). On n accentue pas un verbe pour faire
+  // plaisir a une liste, et on ne reformule pas la phrase d une decision.
+  'fr|health.systemBackup.refuseGoogle': <String>['refuse'],
+  'fr|health.systemBackup.refuseApple': <String>['refuse'],
 };
 
 /// Sequences qui trahissent un encodage casse.

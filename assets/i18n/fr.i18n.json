@@ -1543,6 +1543,18 @@
       "paper": "Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.",
       "ackButton": "J'ai lu ces conseils",
       "ackDone": "Conseils lus"
+    },
+    "localOnlyPriceTitle": "Changer de téléphone veut dire la ressaisir",
+    "localOnlyPrice": "Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C'est le prix de la promesse, et c'est pour cela que personne, nous compris, ne peut la lire ailleurs qu'ici.",
+    "systemBackup": {
+      "title": "Sauvegarde de ce téléphone",
+      "refuseGoogle": "Je refuse la sauvegarde de mes données médicales sur le cloud Google",
+      "refuseApple": "Je refuse la sauvegarde de mes données médicales sur iCloud",
+      "explainGoogle": "Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.",
+      "explainApple": "Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.",
+      "notOurServers": "À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.",
+      "confirm": "C'est noté",
+      "a11yCheckbox": "Refuser la sauvegarde de mes données médicales par le système du téléphone"
     }
   },
   "trailSelection": {
@@ -1599,7 +1611,7 @@
       "policyButton": "Ouvrir la politique de confidentialité"
     },
     "healthDataMorphoNote": "Inclut votre morphologie (âge, taille, poids) pour la faisabilité d'un trek. Donnée de santé, article 9 RGPD, gardée sur l'appareil.",
-    "healthBackupNote": "Sans cette autorisation, votre fiche de renseignement médical n'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf."
+    "healthBackupNote": "Cette autorisation ne concerne pas votre fiche médicale : celle-là n'est jamais sauvegardée, ni chez nous ni ailleurs, autorisation ou pas. Si vous changez de téléphone, vous la ressaisirez. C'est le prix de la garder pour vous."
   },
   "erasure": {
     "section": "Mes données",
@@ -2266,7 +2278,7 @@
     "section": "Compte et reconnexion",
     "sectionDesc": "Voir mon code de reconnexion",
     "title": "Mon code de reconnexion",
-    "intro": "Ce code ouvre votre coffre (profil, fiche de renseignement et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe.",
+    "intro": "Ce code ouvre votre coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.",
     "codeLabel": "Votre code",
     "copy": "Copier le code",
     "copied": "Code copié",
