@@ -1,7 +1,8 @@
 # Codemagic CI/CD pour Moteur GR (StepWays)
 #
-# SIX workflows, dans l ordre ou ils apparaissent plus bas. Ce compte est verifie
-# a chaque relecture : un commentaire qui enumere faux est un commentaire menteur.
+# SEPT workflows, dans l ordre ou ils apparaissent plus bas. Ce compte est
+# verifie a chaque relecture : un commentaire qui enumere faux est un
+# commentaire menteur.
 #   1. pr_gate         — PR, toute branche : analyze + tests + format + regles
 #                        Firestore. Ne produit AUCUN artefact.
 #   2. merge           — push sur main SEULEMENT : gate + APK debug en artefact.
@@ -13,10 +14,20 @@
 #                        ne livre RIEN (tache 618). Aucun artefact, par choix.
 #   5. android_release — etiquette v* : AAB release SIGNE (wagon 3).
 #   6. ios_release     — etiquette v* : IPA App Store (wagon 3).
+#   7. ios_testflight  — A LA MAIN UNIQUEMENT, aucun declencheur : signe l IPA
+#                        et le DEPOSE sur TestFlight (tache 621). La SEULE
+#                        chaine du fichier qui publie quelque part. Inerte tant
+#                        que le groupe de variables de signature iPhone n est
+#                        pas rempli : arret propre des la premiere etape.
 #
 # QUI LIVRE QUOI, PARCE QUE C EST LA QUESTION QU ON SE POSE VRAIMENT :
 #   - installable tout de suite, sans rien a remplir : android_test (APK debug) ;
 #   - preuve que le natif iPhone compile : ios_compile (rien a telecharger) ;
+#   - installable sur un iPhone : ios_testflight, et ELLE SEULE. Apple
+#     n autorise AUCUNE installation hors magasin, donc telecharger l IPA
+#     depose par ios_release ne sert a rien sans machine Apple : il faut
+#     passer par TestFlight, donc par un bloc publishing, donc par cette
+#     chaine (mesure du lot 619 : aucune des six autres n en porte) ;
 #   - paquets publiables sur les magasins : les deux *_release, sur etiquette, et
 #     seulement quand les groupes de variables de signature sont remplis.
 #
@@ -636,5 +647,310 @@ workflows:
 
     artifacts:
       - build/ios/ipa/*.ipa
-    # Publication TestFlight/App Store : wagon 3 (bloc "publishing:
-    # app_store_connect:" a ajouter quand le compte est cree).
+    # PAS de bloc "publishing:" ICI, et ce n est plus un manque : le depot sur
+    # TestFlight est le travail de 'ios_testflight' ci-dessous (tache 621), qui
+    # se lance a la main. Cette chaine-ci reste ce qu elle est : un IPA en
+    # artefact, sur etiquette de version.
+
+  # ==========================================================================
+  # --- Workflow iOS TestFlight — LE SEUL CHEMIN VERS UN IPHONE (tache 621) ---
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME, ET POURQUOI IL N EST PAS DU MEME ORDRE QUE
+  # LES AUTRES. Apple n autorise AUCUNE installation hors magasin. Un APK se
+  # telecharge depuis la page d un build et s installe ; un IPA, non. Cote
+  # Android, `android_test` suffit donc a mettre l application dans la main de
+  # Christophe. Cote Apple il faut TestFlight, et pour atteindre TestFlight il
+  # faut un bloc `publishing:`. Le lot 619 a verifie les six chaines une par
+  # une : AUCUNE n en portait. `ios_release` produit bien un IPA mais elle le
+  # DEPOSE en artefact, et depuis Windows personne ne peut televerser un IPA —
+  # il faudrait une machine Apple. Consequence mesuree : tout le travail des
+  # lots 605 a 620 n a JAMAIS touche un iPhone. Cette chaine est le seul chemin
+  # qui existe, et c est le dernier verrou cote Apple.
+  #
+  # LANCABLE A LA MAIN, ET C EST UN CHOIX, PAS UN OUBLI. Il n y a AUCUN bloc
+  # `triggering:` ci-dessous. La documentation Codemagic le dit mot pour mot :
+  # « If no events are defined, you can start builds only manually. » Pourquoi :
+  #   - `ios_release` occupe deja l etiquette `v*`, et poser une etiquette de
+  #     version sur une branche d integration serait mentir sur ce qu on livre ;
+  #   - un depot consomme chez Apple un numero de build qui ne se reprend
+  #     jamais. Ca ne se declenche pas a chaque push.
+  # Christophe la choisit dans la liste des workflows, exactement comme il vient
+  # de le faire pour `android_test`.
+  #
+  # INERTE TANT QUE LA CLE N EST PAS DEPOSEE — C EST LE COEUR DE LA CHAINE. La
+  # premiere etape ne construit rien : elle regarde si les cinq valeurs
+  # attendues sont la et, s il en manque une seule, elle ARRETE en disant quoi
+  # creer et ou. Aucune etape suivante ne tourne, donc aucun IPA n existe, donc
+  # le bloc de publication n est jamais atteint : Codemagic ne publie qu apres
+  # un build reussi. C est la regle que l en-tete de ce fichier pose depuis
+  # l audit #327 — jamais d echec obscur, jamais d artefact non signe presente
+  # comme une release.
+  #
+  # AUCUNE VALEUR DE CONFIGURATION DANS LE DEPOT. Cinq NOMS de variables sont
+  # cites plus bas, zero valeur. Ce sont EXACTEMENT les cinq que `ios_release`
+  # attend deja, dans le MEME groupe `stepways_ios_signing` : Christophe remplit
+  # UN groupe et les deux chaines s allument ensemble. Le groupe doit exister
+  # dans Codemagic AVANT le premier lancement — le pas a pas le fait creer en
+  # premier, pour ne dependre d aucune supposition sur la facon dont Codemagic
+  # reagit a un groupe absent (ce point-la n est pas documente).
+  #
+  # IL Y A DEUX PAQUETS A SIGNER, ET PERSONNE NE LE VOIT VENIR. Le projet Xcode
+  # porte trois cibles, dont l extension `TrekWidgetExtension`. Une extension
+  # exige son PROPRE profil de provisioning, et les deux paquets reclament le
+  # meme groupe d applications dans leurs droits (ios/Runner/Runner.entitlements
+  # et ios/TrekWidget/TrekWidgetExtension.entitlements). Or la recuperation des
+  # fichiers de signature ne cree un identifiant manquant que si AUCUN ne
+  # correspond (verifie dans le code de l outil, methode
+  # _get_or_create_bundle_ids) : l identifiant principal existant deja au
+  # portail, celui du widget ne sera PAS cree tout seul. Il doit etre declare a
+  # la main, avec la capacite App Groups. L etape 2 ci-dessous le NOMME
+  # d avance, au lieu de laisser la signature echouer sur un message d Xcode.
+  #
+  # POURQUOI LE NUMERO DE BUILD VIENT DE CODEMAGIC ET NON DU pubspec. Apple
+  # refuse un numero de build deja vu pour la meme version, et le refus arrive
+  # par courriel APRES le build, minutes macOS depensees. Le pubspec est fixe :
+  # deux depots de suite echoueraient. PROJECT_BUILD_NUMBER est le compteur de
+  # Codemagic pour ce projet — il monte a chaque build et ne se reprend jamais.
+  #
+  # POURQUOI PAS DE CONTROLE DE FORMATAGE ICI. Il est rouge sur ce depot depuis
+  # longtemps, main comprise : voir le long commentaire d `android_test`. Les
+  # deux controles qui passent reellement, eux, restent BLOQUANTS — on ne depose
+  # pas chez un testeur une application dont l analyse ou les tests sont rouges.
+  #
+  # CE QU ELLE NE FAIT PAS : aucune etiquette, aucun contact avec main, aucune
+  # soumission a la revue de l App Store, aucun groupe de testeurs externes.
+  ios_testflight:
+    name: iOS TestFlight (a lancer a la main)
+    # 120 minutes = le maximum autorise par Codemagic. Ce n est pas de la marge
+    # gratuite : apres le televersement, la publication attend que le traitement
+    # d Apple se termine, et ce delai n est pas de notre cote.
+    max_build_duration: 120
+    # AUCUN bloc 'triggering:' — VOULU. Voir l en-tete de cette chaine.
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      groups:
+        - stepways_ios_signing
+    scripts:
+      - name: La cle App Store Connect est-elle deposee (sinon ARRET explicite)
+        script: |
+          manquantes=""
+          for nom in APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY \
+                     CERTIFICATE_PRIVATE_KEY \
+                     BUNDLE_ID; do
+            eval "valeur=\${$nom:-}"
+            if [ -z "$valeur" ]; then manquantes="$manquantes $nom"; fi
+          done
+          if [ -n "$manquantes" ]; then
+            echo "============================================================"
+            echo "ARRET — rien n a ete construit, et c est voulu."
+            echo ""
+            echo "Absent du groupe 'stepways_ios_signing' :$manquantes"
+            echo ""
+            echo "CE QU IL FAUT FAIRE, DANS CET ORDRE :"
+            echo ""
+            echo "1. App Store Connect > Users and Access > onglet"
+            echo "   Integrations > App Store Connect API (colonne de"
+            echo "   gauche) > onglet Team Keys > Generate API Key."
+            echo "   Sous Access, choisir App Manager."
+            echo "   Le fichier AuthKey_<KEYID>.p8 ne se telecharge QU UNE"
+            echo "   SEULE FOIS ; Apple n en garde aucune copie. Relever"
+            echo "   aussi l Issuer ID et le Key ID, qui eux restent"
+            echo "   affiches sur la page."
+            echo "   PIEGE : une cle INDIVIDUELLE ne convient PAS — Apple"
+            echo "   lui refuse les points d entree de provisioning, donc"
+            echo "   l etape 3 echouerait. Il faut une cle d EQUIPE,"
+            echo "   onglet Team Keys."
+            echo ""
+            echo "2. Codemagic > app settings > onglet Environment"
+            echo "   variables > groupe 'stepways_ios_signing' :"
+            echo "     APP_STORE_CONNECT_ISSUER_ID       Secure"
+            echo "     APP_STORE_CONNECT_KEY_IDENTIFIER  Secure"
+            echo "     APP_STORE_CONNECT_PRIVATE_KEY     Secure"
+            echo "        (le contenu ENTIER du fichier .p8)"
+            echo "     CERTIFICATE_PRIVATE_KEY           Secure"
+            echo "        (voir 3)"
+            echo "     BUNDLE_ID                         non secure"
+            echo ""
+            echo "3. CERTIFICATE_PRIVATE_KEY se fabrique en une commande,"
+            echo "   sur le poste, dans Git Bash :"
+            echo "     ssh-keygen -t rsa -b 2048 -m PEM \\"
+            echo "       -f ios_distribution_private_key -q -N \"\""
+            echo "   Coller le contenu ENTIER du fichier obtenu, lignes"
+            echo "   BEGIN et END comprises. C est a partir de lui que"
+            echo "   l etape 3 fabrique le certificat de distribution."
+            echo ""
+            echo "4. Chez Apple, AVANT tout depot : l application doit"
+            echo "   EXISTER dans App Store Connect (Apps > + > New App),"
+            echo "   sinon Apple refuse le paquet. Et l identifiant de"
+            echo "   l extension widget doit etre declare au portail"
+            echo "   developpeur avec la capacite App Groups."
+            echo ""
+            echo "PAS A PAS COMPLET, ECRAN PAR ECRAN :"
+            echo "  data/apport_stepways/MODOP_621_testflight_pas_a_pas.md"
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Les cinq valeurs attendues sont presentes — on continue."
+
+      - name: L identifiant annonce est-il celui du projet Xcode
+        script: |
+          set -eu
+          pbxproj="ios/Runner.xcodeproj/project.pbxproj"
+          # Une faute de frappe dans BUNDLE_ID ne se voit PAS : la
+          # recuperation des profils reussit sur un identifiant qui n est pas
+          # celui de l application, et c est la signature, dix minutes plus
+          # tard, qui rend un message d Xcode illisible. On la voit ici.
+          if ! grep -qF "PRODUCT_BUNDLE_IDENTIFIER = $BUNDLE_ID;" "$pbxproj"; then
+            echo "============================================================"
+            echo "ARRET — BUNDLE_ID ne correspond a AUCUNE cible du projet"
+            echo "Xcode. La variable annonce un identifiant que ce depot ne"
+            echo "porte pas : verifier sa valeur dans le groupe"
+            echo "'stepways_ios_signing' (Codemagic > app settings >"
+            echo "Environment variables), et cote Apple l identifiant"
+            echo "reellement declare au portail developpeur."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "BUNDLE_ID correspond bien a une cible du projet."
+
+          # Le second paquet. NON BLOQUANT : on nomme le piege au lieu de
+          # deviner l etat du portail Apple, que cette chaine ne lit pas.
+          widget="$BUNDLE_ID.TrekWidget"
+          if grep -qF "PRODUCT_BUNDLE_IDENTIFIER = $widget;" "$pbxproj"; then
+            echo "------------------------------------------------------------"
+            echo "AVIS — ce projet porte DEUX paquets a signer, pas un :"
+            echo "  l application, et l extension widget ($widget)."
+            echo "Chacun exige son propre profil, et tous deux reclament le"
+            echo "groupe d applications group.$BUNDLE_ID dans leurs droits."
+            echo "Si l identifiant du widget n est pas declare au portail"
+            echo "developpeur AVEC la capacite App Groups, l etape suivante"
+            echo "ne pourra pas fabriquer son profil et la signature"
+            echo "echouera. C est la cause la plus probable d un echec ici."
+            echo "------------------------------------------------------------"
+          fi
+
+      - name: Recuperer le certificat et les profils de distribution
+        script: |
+          set -eu
+          # `keychain initialize` puis `keychain add-certificates` : sans ces
+          # deux gestes, le certificat recupere reste un fichier sur le disque
+          # et xcodebuild ne trouve AUCUNE identite de signature.
+          keychain initialize
+          # PAS de --strict-match-identifier, VOLONTAIREMENT : sans lui,
+          # l identifiant de l application couvre aussi ceux qui le prolongent,
+          # donc le profil de l extension widget est recupere par le meme appel.
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze) — BLOQUANT
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes — pas de depot"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test) — BLOQUANT
+        script: |
+          flutter test
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue — rien ne part chez un testeur"
+            exit 1
+          fi
+
+      - name: Construire l IPA signe pour l App Store
+        script: |
+          flutter build ipa --release \
+            --build-number=$PROJECT_BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+
+      - name: L IPA existe, il est signe, et on dit ce qui va partir
+        script: |
+          set -eu
+          ipa=$(ls build/ios/ipa/*.ipa 2>/dev/null | head -n 1 || true)
+          if [ -z "$ipa" ]; then
+            echo "ARRET — aucun IPA dans build/ios/ipa/ : rien a deposer."
+            exit 1
+          fi
+
+          # Un IPA non signe se fabrique SANS erreur et se fait refuser par
+          # Apple apres coup, par courriel. On le verifie ICI, avant de
+          # televerser : la presence du profil embarque est la preuve qu une
+          # identite de distribution a bien ete appliquee.
+          travail=$(mktemp -d)
+          unzip -q "$ipa" -d "$travail"
+          app=$(ls -d "$travail"/Payload/*.app 2>/dev/null | head -n 1 || true)
+          if [ -z "$app" ]; then
+            echo "ARRET — $ipa ne contient aucune application."
+            exit 1
+          fi
+          if [ ! -f "$app/embedded.mobileprovision" ]; then
+            echo "ARRET — l application de $ipa n embarque aucun profil :"
+            echo "elle n est PAS signee pour la distribution. Apple"
+            echo "l aurait refusee apres coup. On ne depose rien."
+            exit 1
+          fi
+
+          # Chaque extension embarquee doit etre signee elle aussi, sinon le
+          # paquet entier est rejete.
+          for appex in "$app"/PlugIns/*.appex; do
+            [ -d "$appex" ] || continue
+            if [ ! -f "$appex/embedded.mobileprovision" ]; then
+              echo "ARRET — l extension $(basename "$appex") n embarque"
+              echo "aucun profil. Son identifiant est-il declare au portail"
+              echo "developpeur, avec la capacite App Groups ?"
+              exit 1
+            fi
+            echo "Extension signee : $(basename "$appex")"
+          done
+
+          version=$(/usr/libexec/PlistBuddy -c \
+            "Print :CFBundleShortVersionString" "$app/Info.plist")
+          numero=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" \
+            "$app/Info.plist")
+          echo "============================================================"
+          echo "Paquet pret a partir : $(basename "$ipa")"
+          echo "Taille  : $(du -h "$ipa" | cut -f1)"
+          echo "Version : $version (build $numero)"
+          echo ""
+          echo "Il part maintenant vers App Store Connect. Apple le traite"
+          echo "ensuite de quelques minutes a une demi-heure : tant que le"
+          echo "traitement dure, le build n apparait pas dans TestFlight."
+          echo "Sur l iPhone : application TestFlight, connecte avec le meme"
+          echo "identifiant Apple que celui de l equipe."
+          echo "============================================================"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      # Les journaux d Xcode : sans eux, un echec de signature au premier
+      # essai se lit sur une seule ligne de resume et ne se diagnostique pas.
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      # LE BLOC QUI MANQUAIT AUX SIX AUTRES CHAINES. C est lui, et lui seul,
+      # qui fait sortir l application du depot pour entrer dans un iPhone.
+      # Trois NOMS de variables, zero valeur.
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        # Le build est mis a disposition des testeurs INTERNES des qu Apple a
+        # fini de le traiter. AUCUN 'beta_groups:' : un groupe cite mais
+        # inexistant ferait echouer la publication, et un groupe EXTERNE passe
+        # par la revue TestFlight. Christophe est testeur interne de sa propre
+        # equipe — il n y a rien a faire reviser.
+        submit_to_testflight: true
+        # PAS de 'submit_to_app_store:' — on ne soumet RIEN a la revue de
+        # l App Store depuis une branche d integration.
