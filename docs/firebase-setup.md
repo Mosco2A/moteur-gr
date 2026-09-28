@@ -1,13 +1,22 @@
 # Configuration Firebase — StepWays
 
-> **ÉTAT AU 27/09/2026 (tâche 604, GO-69).** Les étapes 1, 2 et 2 bis sont
-> **FAITES ET VÉRIFIÉES**. Le projet existe, les deux applications existent,
-> leurs fichiers de configuration sont dans le dépôt et les greffons qui
-> les lisent sont posés. Ce qui reste exige la **console web** et n'est pas
-> automatisable : voir « Ce qu'il reste à faire à la main » en fin de
-> document. Tant que ce reste n'est pas fait, l'app tourne en **mode local**
-> (état explicite dans Réglages → Cloud, écrans follow/profil dégradés
-> proprement — voir `CloudUnavailableNotice`).
+> **ÉTAT AU 29/09/2026 (tâche 626, GO-73).** Le projet existe, les deux
+> applications existent, et les greffons qui lisent leur configuration sont
+> posés. **CE QUE CE DOCUMENT AFFIRMAIT DE FAUX, ET QUI A COÛTÉ DES JOURS :**
+> il écrivait que « leurs fichiers de configuration sont dans le dépôt » et
+> qu'ils étaient « présents depuis la tâche 604 ». C'était **faux depuis le
+> premier jour** — `.gitignore` les exclut explicitement (lignes 64-65) et
+> aucun des deux n'a jamais été suivi par git. C'est en lisant ce document
+> qu'on a cru Firebase branché alors qu'il était **muet sur les deux
+> téléphones**. Le tuyau est branché depuis la tâche 626 : les deux fichiers
+> arrivent **à la fabrication**, depuis des variables Codemagic, et ne sont
+> **jamais** dans le dépôt.
+>
+> Ce qui reste exige la **console web** et n'est pas automatisable : voir « Ce
+> qu'il reste à faire à la main » en fin de document. Tant que ce reste n'est
+> pas fait, l'app tourne en **mode local** (état explicite dans Réglages →
+> Cloud, écrans follow/profil dégradés proprement — voir
+> `CloudUnavailableNotice`).
 
 ## Règles non négociables
 
@@ -24,13 +33,20 @@
   les deux plateformes divergeaient (`com.only1cent.moteur_gr` sur Android,
   `com.only1cent.moteurGr` sur iOS) — c'est corrigé, et un test le garde.
 
-## État de la configuration versionnée
+## Où vit la configuration, et pourquoi elle n'est PAS dans le dépôt
 
-- **`android/app/google-services.json`** — présent depuis la tâche 604.
-  Porte l'identifiant et le numéro de projet, le nom de paquet, la clé
-  d'API cliente et le nom du bucket.
-- **`ios/Runner/GoogleService-Info.plist`** — présent depuis la tâche 604.
-  Les mêmes informations, côté iOS.
+- **`android/app/google-services.json`** — **hors dépôt**, exclu par
+  `.gitignore`. Porte l'identifiant et le numéro de projet, le nom de paquet,
+  la clé d'API cliente et le nom du bucket. Il arrive **à la fabrication**,
+  écrit par `scripts/ci/config_firebase.sh deposer android` depuis la variable
+  `STEPWAYS_GOOGLE_SERVICES_JSON` (tâche 626). Sans lui, les greffons Gradle ne
+  se posent pas (étape 2 bis) et Firebase est muet côté Android.
+- **`ios/Runner/GoogleService-Info.plist`** — **hors dépôt** lui aussi, mêmes
+  informations, même mécanisme (`deposer ios`, variable
+  `STEPWAYS_GOOGLE_SERVICE_INFO_PLIST`). Le projet Xcode le **référence** dans
+  la phase de copie des ressources de la cible `Runner` depuis la tâche 626 :
+  avant, il n'était référencé nulle part, donc même déposé à la main il
+  n'entrait pas dans le paquet et le SDK ne lisait rien.
 - **`lib/firebase_options.dart`** — **absent, et c'est voulu.**
   `FirebaseService.initialize()` appelle `Firebase.initializeApp()` **sans
   options** : sur Android et iOS le SDK lit alors les deux fichiers natifs
@@ -49,8 +65,15 @@ partent de toute façon dans l'APK et l'IPA : elles sont lisibles par
 quiconque décompresse le paquet publié. Ce qui protège réellement les
 données, ce sont les **règles de sécurité Firestore et Storage**, la
 restriction de la clé par nom de paquet et empreinte de signature, et App
-Check — pas la discrétion de ces fichiers. Les versionner est la pratique
-courante et ne crée aucune exposition nouvelle.
+Check — pas la discrétion de ces fichiers.
+
+> **CE QUI A ÉTÉ TRANCHÉ, ET QUI NE SE REDISCUTE PAS.** Les versionner serait
+> techniquement sans conséquence, et ce document l'a longtemps écrit. La règle
+> de Christophe est néanmoins **sans exception : aucune valeur de configuration
+> ni aucun identifiant en clair dans le dépôt.** Les deux fichiers restent donc
+> dans `.gitignore` et arrivent par variables d'environnement. Ce qui était
+> cassé n'était pas ce choix, c'était qu'**aucune chaîne ne les fournissait** —
+> le trou que la tâche 626 ferme.
 
 > À noter : ni l'un ni l'autre ne porte de `oauth_client` /
 > `REVERSED_CLIENT_ID`, parce qu'aucune empreinte SHA-1 n'est encore
@@ -128,6 +151,40 @@ Android et l'app repassait en mode local avec la raison
 >   --out ios/Runner/GoogleService-Info.plist
 > ```
 
+### 2 ter. La configuration arrive à la FABRICATION — FAIT (tâche 626)
+
+**C'était le mur, et il était devant tous les autres.** Les deux fichiers sont
+hors dépôt, et **aucune chaîne Codemagic ne les fournissait** : l'APK sortait,
+Firebase y dormait, et côté iPhone `GoogleService-Info.plist` n'était référencé
+nulle part dans `ios/Runner.xcodeproj/project.pbxproj`. Rien de ce que publie
+le collecteur serveur ne pouvait donc arriver sur un téléphone.
+
+Ce que la tâche 626 a posé :
+
+- **`scripts/ci/config_firebase.sh`** — écrit les fichiers depuis des variables
+  base64 (`deposer`), garantit l'existence du plist pour que la compilation
+  iPhone passe même sans configuration (`garantir-ios`), et dit l'état (`etat`).
+  Utilisable en local :
+
+  ```bash
+  scripts/ci/config_firebase.sh etat
+  ```
+
+- **la référence du plist dans le projet Xcode**, dans la phase de copie des
+  ressources de la cible `Runner`, plus une phase de script qui garantit le
+  fichier **avant** cette copie et le déclare en sortie — sans quoi xcodebuild
+  s'arrête sur « Build input file cannot be found » sur tout clone neuf.
+- **l'invariante** `test/structurel/firebase_branche_sur_les_deux_telephones_626_test.dart`,
+  qui suit la chaîne de renvois du `pbxproj` comme Xcode la suit (cible →
+  phases → PBXBuildFile → PBXFileReference) et **démontre** qu'elle devient
+  rouge quand on casse le projet.
+
+**Ce qui reste à insérer dans `codemagic.yaml`** (le lot 621 y travaillait en
+parallèle) : voir `docs/ci/626_etape_codemagic_config_firebase.md`, qui donne
+l'étape verbatim, son point d'insertion dans chaque chaîne, et la liste des
+variables à créer dans Codemagic. **Tant que cette insertion n'est pas faite,
+Firebase reste muet — sans régression, mais muet.**
+
 ### 3. Brancher l'init dans le code
 
 **Fait à la tâche 596 (C4) : le commutateur existe enfin.** Avant, aucune
@@ -152,10 +209,20 @@ configuration manquante. La cause est nommée dans
 fourni) ou `echecInitialisation` (fourni mais cassé) — ne pas confondre les deux
 est ce qui rend le diagnostic possible.
 
-**Ce point est clos depuis la tâche 604** : `Firebase.initializeApp()` est
-appelé sans options et les deux fichiers de configuration natifs sont en
-place, lus au build par les greffons de l'étape 2 bis. Il n'y a donc plus
-rien à écrire dans `firebase_service.dart`.
+**Il n'y a rien à écrire de plus dans `firebase_service.dart`** :
+`Firebase.initializeApp()` est appelé **sans options**, et le SDK lit alors les
+deux fichiers natifs. Ce document affirmait que ce point était « clos depuis la
+tâche 604 » parce que « les deux fichiers de configuration natifs sont en
+place » : ils ne l'étaient pas, et c'est l'étape 2 ter qui les met en place, à
+la fabrication.
+
+> **LE PIÈGE À CONNAÎTRE, ET IL N'EST PAS RATTRAPABLE EN DART.** Passer
+> `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID=...` **sans** le fichier de
+> configuration natif fait appeler `Firebase.initializeApp()` sur un SDK qui
+> n'a pas ses options : il lève une exception **native** que le `try/catch` de
+> `FirebaseService.initialize` ne rattrape pas, et l'application se ferme au
+> démarrage. `scripts/ci/config_firebase.sh` **arrête la fabrication** sur
+> cette combinaison, plutôt que de livrer un paquet qui se ferme.
 
 **Les filets d'erreur, eux, sont déjà posés** (`ErrorNets`, appelé en première
 ligne de `main()`) : dès que Firebase démarre, le rapporteur Crashlytics est
@@ -251,7 +318,10 @@ l'espace de stockage, et le catalogue distant reste vide.
    à l'application Android, dans les paramètres du projet. Sans elle,
    `google-services.json` ne contient aucun `oauth_client` et **la connexion
    Google ne fonctionne pas**. Après l'ajout, régénérer le fichier avec
-   `firebase apps:sdkconfig ANDROID <app-id> --out android/app/google-services.json`.
+   `firebase apps:sdkconfig ANDROID <app-id> --out android/app/google-services.json`,
+   **puis réencoder et remettre à jour la variable Codemagic**
+   `STEPWAYS_GOOGLE_SERVICES_JSON` : le fichier local ne part nulle part, c'est
+   la variable qui alimente la fabrication (étape 2 ter).
 
 5. **Politique TTL** des sessions de suivi (étape 5 ci-dessus) et
    **méthodes d'authentification** (étape 6) : console uniquement.
@@ -260,6 +330,12 @@ l'espace de stockage, et le catalogue distant reste vide.
 
 - Keystore Android réel + `android/key.properties` (P1-3, wagon 3).
 - Secrets de signature CI (codemagic.yaml, P1-5 — groupes d'env vars).
+- **L'insertion de l'étape de dépôt dans `codemagic.yaml`** : écrite verbatim
+  dans `docs/ci/626_etape_codemagic_config_firebase.md`, à insérer après le lot
+  621 qui éditait le même fichier.
+- **La création du groupe de variables `stepways_firebase` dans Codemagic** :
+  console Codemagic uniquement, trois variables, noms dans le document
+  ci-dessus.
 - AdMob réel / ATT / CMP (docs/rgpd/data-safety.md — prérequis stores).
 - Renommage du **nom Dart interne** du paquet (`pubspec name: moteur_gr`,
   417 fichiers `package:moteur_gr/`) : chantier à part, **ne bloque aucune
