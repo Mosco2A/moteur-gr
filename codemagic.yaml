@@ -2,6 +2,7 @@
 # Workflows:
 #   pr_gate         — PR : analyze + tests + format + regles Firestore
 #   merge           — push main : gate + APK debug
+#   ios_compile     — push toute branche : COMPILE l iPhone, ne publie RIEN
 #   android_release — tag v* : AAB release signe (secrets wagon 3)
 #   ios_release     — tag v* : IPA App Store (secrets wagon 3)
 #
@@ -118,6 +119,193 @@ workflows:
 
     artifacts:
       - build/**/outputs/**/*.apk
+
+  # ==========================================================================
+  # --- Workflow Compilation iPhone — LE FILET DU CODE NATIF (tache 618) ---
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME. Avant elle, AUCUNE chaine n appelait le
+  # compilateur iPhone en dehors d une publication : `pr_gate` et `merge`
+  # installent, analysent et testent du Dart — ils ne compilent aucun Swift —
+  # et la seule compilation iPhone vivait dans `ios_release`, declenchee par
+  # une ETIQUETTE DE VERSION. Verifier trois lignes de Swift exigeait donc de
+  # poser une etiquette de version, c est-a-dire de declencher une
+  # publication. Consequence mesuree : le canal natif de la tache 615
+  # (`ios/Runner/AppDelegate.swift`, exclusion iCloud de la fiche medicale)
+  # est arrive dans le depot SANS AVOIR JAMAIS ETE COMPILE. Un Swift qui ne
+  # compile pas ne dit rien : les tests Dart parlent a un canal espion et
+  # restent verts.
+  #
+  # CE QU ELLE FAIT, ET RIEN D AUTRE. Elle compile l application iPhone sur
+  # n importe quelle branche et echoue si le natif ne compile pas. Elle
+  # N ANALYSE PAS et NE LANCE PAS les tests Dart : `pr_gate` et `merge` le
+  # font deja, et les refaire ici doublerait la facture de minutes macOS sans
+  # apporter une seule information nouvelle.
+  #
+  # POURQUOI SANS SIGNATURE, ET POURQUOI C EST LA BONNE REPONSE.
+  # `flutter build ios --release --no-codesign` passe a xcodebuild
+  # CODE_SIGNING_ALLOWED=NO : Xcode compile TOUT (Swift, ObjC, podspecs des
+  # greffons) et ne signe rien. Donc :
+  #   - AUCUN identifiant Apple n est necessaire — ni cle App Store Connect,
+  #     ni certificat, ni profil, ni DEVELOPMENT_TEAM (il n en existe aucun
+  #     en dur dans le pbxproj, verifie) ;
+  #   - le groupe `stepways_ios_signing` n a PAS besoin d etre rempli, donc
+  #     cette chaine tourne des aujourd hui sans rien demander a personne ;
+  #   - les droits `com.apple.security.application-groups` de Runner et de
+  #     TrekWidgetExtension ne sont consommes qu A LA SIGNATURE : ne pas
+  #     signer ne les met pas en defaut.
+  # Les cinq valeurs du groupe de signature servent a produire un IPA
+  # INSTALLABLE. Ici on ne veut rien installer : on veut savoir si ca compile.
+  #
+  # POURQUOI `--release` ET PAS `--debug`. La configuration Release est celle
+  # que `ios_release` compile. Un vert ici predit donc reellement que l etape
+  # de compilation de `ios_release` passera. `--debug` serait ~2 min plus
+  # court mais laisserait dehors ce que seule la configuration Release
+  # compile (optimisation Swift par module entier, compilation AOT du Dart).
+  #
+  # ELLE NE PUBLIE RIEN, ET CE N EST PAS UNE INTENTION MAIS UNE MECANIQUE :
+  #   - aucun bloc `publishing:` — rien n est envoye nulle part ;
+  #   - aucun `groups:` — la chaine ne recoit AUCUN secret, elle ne PEUT donc
+  #     s authentifier nulle part, et la premiere etape ci-dessous le VERIFIE
+  #     pour que l ajout d un groupe par erreur arrete la chaine ;
+  #   - aucun bloc `artifacts:` — meme la page de build ne propose rien a
+  #     telecharger ;
+  #   - `--no-codesign` — l app produite est ininstallable par construction,
+  #     et l absence d IPA est verifiee a la fin.
+  ios_compile:
+    name: iOS Compile (sans signature, sans publication)
+    max_build_duration: 60
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Cette chaine ne doit voir AUCUN secret de publication
+        script: |
+          set -eu
+          fuites=""
+          for nom in APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY \
+                     CERTIFICATE_PRIVATE_KEY \
+                     CM_KEYSTORE; do
+            eval "valeur=\${$nom:-}"
+            if [ -n "$valeur" ]; then
+              fuites="$fuites $nom"
+            fi
+          done
+          if [ -n "$fuites" ]; then
+            echo "============================================================"
+            echo "ARRET — cette chaine a recu des secrets de PUBLICATION :"
+            echo "  $fuites"
+            echo ""
+            echo "Elle ne publie rien et n a donc besoin d aucun secret."
+            echo "Un groupe d environnement a ete ajoute a 'ios_compile' :"
+            echo "retirer le bloc 'groups:' de CE workflow. La publication"
+            echo "est le travail de 'ios_release', declenche par etiquette."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Aucun secret present — cette chaine ne peut rien publier."
+
+      - name: Le Swift de l app est-il DANS la phase Sources du projet Xcode
+        script: |
+          set -eu
+          pbxproj="ios/Runner.xcodeproj/project.pbxproj"
+          # On ne cherche PAS dans tout le fichier : on isole la section des
+          # phases « Sources » et on cherche DEDANS. Un fichier seulement
+          # reference ailleurs dans le pbxproj n est PAS compile.
+          phases=$(sed -n \
+            '/Begin PBXSourcesBuildPhase section/,/End PBXSourcesBuildPhase section/p' \
+            "$pbxproj")
+          if ! echo "$phases" | grep -q 'AppDelegate\.swift in Sources'; then
+            echo "============================================================"
+            echo "ARRET — AppDelegate.swift n est dans AUCUNE phase Sources."
+            echo ""
+            echo "Sans cette declaration le fichier n est PAS compile : le"
+            echo "canal d exclusion iCloud de la fiche medicale (tache 615)"
+            echo "serait muet, la fiche monterait dans iCloud, et tous les"
+            echo "tests Dart resteraient verts puisqu ils parlent a un canal"
+            echo "espion. La compilation ci-dessous ne verrait rien non plus :"
+            echo "elle reussirait sur un fichier jamais lu."
+            echo ""
+            echo "Meme invariante, cote Dart :"
+            echo "  test/comportement/exclusion_icloud_615_test.dart"
+            echo "============================================================"
+            exit 1
+          fi
+          echo "AppDelegate.swift est dans une phase Sources — il sera compile."
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Compiler l application iPhone SANS SIGNATURE
+        # C EST L ETAPE QUI TIENT TOUT LE LOT. Elle echoue des qu une ligne de
+        # Swift ou d ObjC du projet ou d un greffon ne compile pas, et elle
+        # n a besoin d aucun identifiant Apple pour le faire.
+        script: flutter build ios --release --no-codesign
+
+      - name: Preuve du natif compile, et aucun paquet installable produit
+        script: |
+          set -eu
+
+          # 1. L app existe et porte un binaire non vide. Une compilation qui
+          #    « reussit » sans rien produire serait un faux vert.
+          app=$(ls -d build/ios/iphoneos/*.app 2>/dev/null | head -n 1 || true)
+          if [ -z "$app" ]; then
+            echo "ARRET — aucune .app dans build/ios/iphoneos/ :"
+            echo "la compilation n a rien produit."
+            exit 1
+          fi
+          executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' \
+            "$app/Info.plist")
+          binaire="$app/$executable"
+          if [ ! -s "$binaire" ]; then
+            echo "ARRET — le binaire $binaire est absent ou vide."
+            exit 1
+          fi
+          echo "Compile : $binaire ($(du -h "$binaire" | cut -f1))"
+
+          # 2. RIEN D INSTALLABLE. Un IPA ici voudrait dire qu une signature
+          #    est entree dans cette chaine par un chemin imprevu.
+          if ls build/ios/ipa/*.ipa >/dev/null 2>&1; then
+            echo "ARRET — un IPA a ete produit. Cette chaine ne doit produire"
+            echo "aucun paquet installable : seule 'ios_release' le fait."
+            exit 1
+          fi
+          echo "Aucun IPA produit — rien d installable, rien a publier."
+
+          # 3. SONDE, VOLONTAIREMENT NON BLOQUANTE. Le nom du canal natif est
+          #    lu dans le Swift lui-meme (aucune troisieme copie a maintenir)
+          #    puis cherche dans le binaire. Present = le code de la tache 615
+          #    est entre dans l executable, pas seulement dans le depot.
+          #    Absent n arrete PAS la chaine : un litteral peut etre deduplique
+          #    ou depose autrement par le compilateur, et cette chaine ne doit
+          #    pas bloquer une branche sur une hypothese non verifiee. La
+          #    garantie, elle, est deja tenue deux fois : le fichier est dans
+          #    la phase Sources (etape 2) et la compilation ci-dessus echoue
+          #    si son Swift est casse.
+          canal=$(sed -n 's/.*canalExclusionSauvegarde = "\(.*\)".*/\1/p' \
+            ios/Runner/AppDelegate.swift | head -n 1)
+          if [ -z "$canal" ]; then
+            echo "SONDE — nom du canal illisible dans AppDelegate.swift."
+          elif strings -a "$binaire" | grep -q "$canal"; then
+            echo "SONDE OK — « $canal » est dans le binaire : le canal natif"
+            echo "de la tache 615 a bien ete compile dans l executable."
+          else
+            echo "SONDE — « $canal » introuvable dans le binaire."
+            echo "Ce n est PAS un echec : voir le commentaire de cette etape."
+          fi
+
+    # PAS de bloc 'artifacts:' et PAS de bloc 'publishing:' — VOULU. Cette
+    # chaine repond a une seule question (« est-ce que ca compile ? ») et ne
+    # met rien a disposition de personne, nulle part.
 
   # --- Workflow Android Release (AAB) ---
   # Declenche sur tag v* (ou lancement manuel).
