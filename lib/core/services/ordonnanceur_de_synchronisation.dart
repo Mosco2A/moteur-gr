@@ -223,7 +223,28 @@ class OrdonnanceurDeSynchronisation {
       // laisserait cette abstraction morte une seconde fois : le jour ou un
       // runner workmanager est injecte, c est ici que la cadence doit en
       // beneficier, sans qu on ait a recabler l ordonnanceur.
-      return downloader.scheduleBackgroundDownload(
+      //
+      // LE `await` N EST PAS COSMETIQUE, ET SON ABSENCE VIDAIT LES DEUX GARDES DE
+      // CETTE METHODE (tache 620, warning `unawaited_return_in_try_block` leve par
+      // la machine de fabrication). `scheduleBackgroundDownload` est une methode
+      // `async` qui attend REELLEMENT la fin du transport ; la rendre sans
+      // l attendre faisait sortir du `try` a l instant ou le transport DEMARRE, et
+      // non quand il finit. Deux consequences, toutes deux mesurables :
+      //
+      //  1. LE `finally` LIBERAIT `_enCours` PENDANT LE TRANSPORT. Le verrou juste
+      //     au-dessus se documente « une seule passe a la fois, et ce verrou n est
+      //     pas decoratif » — il l etait pourtant des que les deux reveils ne
+      //     tombaient pas dans le MEME tour de boucle d evenements : le retour du
+      //     reseau a l instant T et l echeance a T+1 ms trouvaient le drapeau deja
+      //     rabaisse et ouvraient la seconde transaction que ce verrou existe pour
+      //     interdire. Le test « deux passes ne se chevauchent pas » ne le voyait
+      //     pas parce qu il lance ses deux passes dans le meme tour.
+      //  2. LE `catch` NE RATTRAPAIT RIEN. Une erreur de transport ne passait plus
+      //     par le journal ci-dessous ; elle ressortait dans le futur rendu par
+      //     `_passer`, que `Timer.periodic` ne regarde pas — donc en erreur
+      //     asynchrone non traitee, exactement ce que « une passe qui echoue ne tue
+      //     pas l ordonnanceur » promet d empecher.
+      return await downloader.scheduleBackgroundDownload(
         manifestUrl: urlManifeste,
         niveauParSentier: niveaux,
       );
