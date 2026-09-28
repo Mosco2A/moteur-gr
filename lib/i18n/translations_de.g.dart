@@ -108,6 +108,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$sos$de sos = _Translations$sos$de._(_root);
 	@override late final _Translations$recovery$de recovery = _Translations$recovery$de._(_root);
 	@override late final _Translations$common$de common = _Translations$common$de._(_root);
+	@override late final _Translations$systemBackup$de systemBackup = _Translations$systemBackup$de._(_root);
 }
 
 // Path: a11y
@@ -1220,7 +1221,6 @@ class _Translations$health$de extends Translations$health$fr {
 	@override late final _Translations$health$advice$de advice = _Translations$health$advice$de._(_root);
 	@override String get localOnlyPriceTitle => 'Ein neues Telefon bedeutet neu eintragen';
 	@override String get localOnlyPrice => 'Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen.';
-	@override late final _Translations$health$systemBackup$de systemBackup = _Translations$health$systemBackup$de._(_root);
 }
 
 // Path: trailSelection
@@ -1830,6 +1830,25 @@ class _Translations$common$de extends Translations$common$fr {
 	@override String get retry => 'Erneut versuchen';
 	@override String get retrying => 'Neuer Versuch…';
 	@override String get retryFailed => 'Der neue Versuch hat nicht funktioniert.';
+}
+
+// Path: systemBackup
+class _Translations$systemBackup$de extends Translations$systemBackup$fr {
+	_Translations$systemBackup$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Deine Daten bleiben auf diesem Telefon';
+	@override String get refuseGoogle => 'Ich lehne die Sicherung meiner Daten in der Google Cloud ab';
+	@override String get refuseApple => 'Ich lehne die Sicherung meiner Daten in iCloud ab';
+	@override String get explainGoogle => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält alles heraus, was du uns anvertraust: dein Profil (Alter, Größe, Gewicht), deine früheren Wanderungen, deinen Fortschritt, dein Tagebuch, deine Fotos und dein medizinisches Blatt.';
+	@override String get explainApple => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält alles heraus, was du uns anvertraust: dein Profil (Alter, Größe, Gewicht), deine früheren Wanderungen, deinen Fortschritt, dein Tagebuch, deine Fotos und dein medizinisches Blatt.';
+	@override String get cost => 'Was das kostet, ohne Beschönigung: wenn du dieses Kästchen angekreuzt lässt und das Telefon wechselst oder die App neu installierst, fängst du bei null an. Dein Fortschritt, dein Tagebuch, deine abgeschlossenen Treks und deine Fotos kommen nicht zurück. Ein abgeschlossener Trek behält seine Spur und sein Logbuch ein Leben lang auf diesem Telefon, die App löscht sie nie, aber sie kann sie auf einem anderen Gerät nicht wieder erscheinen lassen.';
+	@override String get whatComesBack => 'Wenn du das Kreuz entfernst, geht eine Kopie deines Fortschritts, deines Tagebuchs, deiner abgeschlossenen Treks und deines medizinischen Blattes in die Sicherung, und sie kommt auf deinem nächsten Telefon zurück. Deine Fotos und deine Einstellungen sind nicht dabei: die Fotos zu kopieren würde den belegten Platz auf deinem Telefon verdoppeln.';
+	@override String get notOurServers => 'Nicht verwechseln: nichts, was du uns anvertraust, geht an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.';
+	@override String get confirm => 'Verstanden';
+	@override String get a11yCheckbox => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen';
 }
 
 // Path: hub.trekCard
@@ -2968,23 +2987,6 @@ class _Translations$health$advice$de extends Translations$health$advice$fr {
 	@override String get paper => 'Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.';
 	@override String get ackButton => 'Ich habe diese Hinweise gelesen';
 	@override String get ackDone => 'Hinweise gelesen';
-}
-
-// Path: health.systemBackup
-class _Translations$health$systemBackup$de extends Translations$health$systemBackup$fr {
-	_Translations$health$systemBackup$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Sicherung dieses Telefons';
-	@override String get refuseGoogle => 'Ich lehne die Sicherung meiner medizinischen Daten in der Google Cloud ab';
-	@override String get refuseApple => 'Ich lehne die Sicherung meiner medizinischen Daten in iCloud ab';
-	@override String get explainGoogle => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.';
-	@override String get explainApple => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.';
-	@override String get notOurServers => 'Nicht verwechseln : dein medizinisches Blatt geht NIE an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.';
-	@override String get confirm => 'Verstanden';
-	@override String get a11yCheckbox => 'Die Sicherung meiner medizinischen Daten durch das System des Telefons ablehnen';
 }
 
 // Path: trailSelection.a11y
@@ -5336,14 +5338,6 @@ extension on TranslationsDe {
 			'health.advice.ackDone' => 'Hinweise gelesen',
 			'health.localOnlyPriceTitle' => 'Ein neues Telefon bedeutet neu eintragen',
 			'health.localOnlyPrice' => 'Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen.',
-			'health.systemBackup.title' => 'Sicherung dieses Telefons',
-			'health.systemBackup.refuseGoogle' => 'Ich lehne die Sicherung meiner medizinischen Daten in der Google Cloud ab',
-			'health.systemBackup.refuseApple' => 'Ich lehne die Sicherung meiner medizinischen Daten in iCloud ab',
-			'health.systemBackup.explainGoogle' => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.',
-			'health.systemBackup.explainApple' => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält dein medizinisches Blatt davon fern. Entferne das Kreuz nur, wenn du das Blatt auf dem nächsten Telefon wiederfinden willst.',
-			'health.systemBackup.notOurServers' => 'Nicht verwechseln : dein medizinisches Blatt geht NIE an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.',
-			'health.systemBackup.confirm' => 'Verstanden',
-			'health.systemBackup.a11yCheckbox' => 'Die Sicherung meiner medizinischen Daten durch das System des Telefons ablehnen',
 			'trailSelection.title' => 'Weg wechseln',
 			'trailSelection.subtitle' => 'Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.',
 			'trailSelection.current' => 'Aktiver Weg',
@@ -5581,8 +5575,6 @@ extension on TranslationsDe {
 			'calendar.legend.start' => 'Abreise',
 			'calendar.legend.walk' => 'Wandern',
 			'calendar.legend.rest' => 'Ruhe',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Ankunft',
 			'calendar.summary.totalDays' => 'Tage gesamt',
 			'calendar.summary.walkDays' => 'Wandertage',
@@ -5591,6 +5583,8 @@ extension on TranslationsDe {
 			'calendar.noDate.message' => 'Dein Trek-Kalender wird automatisch mit Wander- und Ruhetagen angezeigt.',
 			'calendar.empty.title' => 'Richte zuerst deine Route ein',
 			'calendar.empty.message' => 'Wähle deine Route und Dauer, um deine Daten festzulegen.',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.empty.action' => 'ROUTE EINRICHTEN',
 			'nuitees.title' => 'Übernachtungen',
 			'nuitees.guideTooltip' => 'Übernachtungs-Ratgeber',
@@ -5926,6 +5920,16 @@ extension on TranslationsDe {
 			'common.retry' => 'Erneut versuchen',
 			'common.retrying' => 'Neuer Versuch…',
 			'common.retryFailed' => 'Der neue Versuch hat nicht funktioniert.',
+			'systemBackup.title' => 'Deine Daten bleiben auf diesem Telefon',
+			'systemBackup.refuseGoogle' => 'Ich lehne die Sicherung meiner Daten in der Google Cloud ab',
+			'systemBackup.refuseApple' => 'Ich lehne die Sicherung meiner Daten in iCloud ab',
+			'systemBackup.explainGoogle' => 'Dein Telefon sichert seine Daten bei Google. Dieses Kästchen ist vorab angekreuzt und hält alles heraus, was du uns anvertraust: dein Profil (Alter, Größe, Gewicht), deine früheren Wanderungen, deinen Fortschritt, dein Tagebuch, deine Fotos und dein medizinisches Blatt.',
+			'systemBackup.explainApple' => 'Dein Telefon sichert seine Daten in iCloud. Dieses Kästchen ist vorab angekreuzt und hält alles heraus, was du uns anvertraust: dein Profil (Alter, Größe, Gewicht), deine früheren Wanderungen, deinen Fortschritt, dein Tagebuch, deine Fotos und dein medizinisches Blatt.',
+			'systemBackup.cost' => 'Was das kostet, ohne Beschönigung: wenn du dieses Kästchen angekreuzt lässt und das Telefon wechselst oder die App neu installierst, fängst du bei null an. Dein Fortschritt, dein Tagebuch, deine abgeschlossenen Treks und deine Fotos kommen nicht zurück. Ein abgeschlossener Trek behält seine Spur und sein Logbuch ein Leben lang auf diesem Telefon, die App löscht sie nie, aber sie kann sie auf einem anderen Gerät nicht wieder erscheinen lassen.',
+			'systemBackup.whatComesBack' => 'Wenn du das Kreuz entfernst, geht eine Kopie deines Fortschritts, deines Tagebuchs, deiner abgeschlossenen Treks und deines medizinischen Blattes in die Sicherung, und sie kommt auf deinem nächsten Telefon zurück. Deine Fotos und deine Einstellungen sind nicht dabei: die Fotos zu kopieren würde den belegten Platz auf deinem Telefon verdoppeln.',
+			'systemBackup.notOurServers' => 'Nicht verwechseln: nichts, was du uns anvertraust, geht an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.',
+			'systemBackup.confirm' => 'Verstanden',
+			'systemBackup.a11yCheckbox' => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen',
 			_ => null,
 		};
 	}

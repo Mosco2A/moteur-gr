@@ -7,6 +7,7 @@ import '../../features/safety/presentation/health_info_screen.dart'
 import '../../features/trek/data/seed_data_loader.dart';
 import '../../features/trek/providers/session_recovery_provider.dart';
 import '../../features/trek/providers/stage_providers.dart';
+import '../services/garde_sauvegarde_ios.dart';
 import '../services/monetization_service.dart';
 import 'database_provider.dart';
 
@@ -53,6 +54,20 @@ import 'database_provider.dart';
 /// ELLE EST ATTENDUE, ET SANS RISQUE POUR LE DEMARRAGE : hors iPhone elle rend la
 /// main sans toucher au canal natif, sur iPhone elle est bornee par
 /// `ExclusionSauvegardeIcloud.delaiMax`, et elle ne leve jamais.
+///
+/// TACHE 617 — LE BALAYAGE COUVRE MAINTENANT TOUT LE STOCKAGE CONFIE, PAS SEULE
+/// LA FICHE MEDICALE, ET IL PASSE APRES L'OUVERTURE DE LA BASE. La regle generale
+/// de Christophe du 28/09 14:31 (« on ne partage aucune donnee confiee sauf si le
+/// client decoche volontairement ») vaut pour la progression, le journal, les
+/// photos et le profil. Cote Android une seule inclusion suffit et elle est
+/// declarative ; cote iPhone il faut poser l'attribut chemin par chemin
+/// ([GardeSauvegardeIos]).
+///
+/// L'ORDRE N'EST PAS INDIFFERENT : `ref.watch(databaseProvider)` puis une
+/// requete ouvrent le fichier de la base, et le balayage doit passer APRES pour
+/// que ce fichier existe deja et recoive son attribut. C'est pour cela que
+/// l'appel est place apres le seed et non au debut. Un balayage place avant
+/// laisserait la base hors de sa portee jusqu'au lancement suivant.
 final appBootstrapProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   final config = ref.watch(trailConfigProvider);
@@ -63,6 +78,11 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
 
   final loader = SeedDataLoader(db: db, prefs: prefs, trailConfig: config);
   await loader.seedIfNeeded();
+
+  // LE BALAYAGE IPHONE, ICI ET PAS PLUS HAUT : le seed vient d'ouvrir le fichier
+  // de la base, donc il existe et peut recevoir son attribut. Sans objet hors
+  // iPhone (il ne parcourt meme pas le disque), borne et non levant sur iPhone.
+  await ref.read(gardeSauvegardeIosProvider).balayer();
 
   // Synchronise le fil d'etapes sur le sentier seede. `currentTrailIdProvider`
   // derive deja de `trailConfigProvider.id` (defaut), mais on l'ecrit

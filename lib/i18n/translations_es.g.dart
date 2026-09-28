@@ -108,6 +108,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$sos$es sos = _Translations$sos$es._(_root);
 	@override late final _Translations$recovery$es recovery = _Translations$recovery$es._(_root);
 	@override late final _Translations$common$es common = _Translations$common$es._(_root);
+	@override late final _Translations$systemBackup$es systemBackup = _Translations$systemBackup$es._(_root);
 }
 
 // Path: a11y
@@ -1220,7 +1221,6 @@ class _Translations$health$es extends Translations$health$fr {
 	@override late final _Translations$health$advice$es advice = _Translations$health$advice$es._(_root);
 	@override String get localOnlyPriceTitle => 'Cambiar de teléfono significa volver a escribirla';
 	@override String get localOnlyPrice => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.';
-	@override late final _Translations$health$systemBackup$es systemBackup = _Translations$health$systemBackup$es._(_root);
 }
 
 // Path: trailSelection
@@ -1830,6 +1830,25 @@ class _Translations$common$es extends Translations$common$fr {
 	@override String get retry => 'Reintentar';
 	@override String get retrying => 'Nuevo intento…';
 	@override String get retryFailed => 'El nuevo intento no ha funcionado.';
+}
+
+// Path: systemBackup
+class _Translations$systemBackup$es extends Translations$systemBackup$fr {
+	_Translations$systemBackup$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Tus datos se quedan en este teléfono';
+	@override String get refuseGoogle => 'Rechazo la copia de seguridad de mis datos en la nube de Google';
+	@override String get refuseApple => 'Rechazo la copia de seguridad de mis datos en iCloud';
+	@override String get explainGoogle => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
+	@override String get explainApple => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
+	@override String get cost => 'Lo que cuesta, sin adornos: si dejas esta casilla marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. Un trek completado conserva su traza y su cuaderno de por vida en este teléfono, la aplicación nunca los borra, pero no puede hacerlos reaparecer en otro dispositivo.';
+	@override String get whatComesBack => 'Si la desmarcas, una copia de tu progreso, de tu diario, de tus treks completados y de tu ficha médica va a la copia de seguridad, y vuelve en tu próximo teléfono. Tus fotos y tus ajustes no están: copiar las fotos duplicaría el espacio ocupado en tu teléfono.';
+	@override String get notOurServers => 'No hay que confundirlo: nada de lo que nos confías va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.';
+	@override String get confirm => 'Entendido';
+	@override String get a11yCheckbox => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono';
 }
 
 // Path: hub.trekCard
@@ -2968,23 +2987,6 @@ class _Translations$health$advice$es extends Translations$health$advice$fr {
 	@override String get paper => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.';
 	@override String get ackButton => 'He leído estos consejos';
 	@override String get ackDone => 'Consejos leídos';
-}
-
-// Path: health.systemBackup
-class _Translations$health$systemBackup$es extends Translations$health$systemBackup$fr {
-	_Translations$health$systemBackup$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Copia de seguridad de este teléfono';
-	@override String get refuseGoogle => 'Rechazo la copia de seguridad de mis datos médicos en la nube de Google';
-	@override String get refuseApple => 'Rechazo la copia de seguridad de mis datos médicos en iCloud';
-	@override String get explainGoogle => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.';
-	@override String get explainApple => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.';
-	@override String get notOurServers => 'No hay que confundirlo : tu ficha médica NUNCA va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.';
-	@override String get confirm => 'Entendido';
-	@override String get a11yCheckbox => 'Rechazar la copia de seguridad de mis datos médicos por el sistema del teléfono';
 }
 
 // Path: trailSelection.a11y
@@ -5336,14 +5338,6 @@ extension on TranslationsEs {
 			'health.advice.ackDone' => 'Consejos leídos',
 			'health.localOnlyPriceTitle' => 'Cambiar de teléfono significa volver a escribirla',
 			'health.localOnlyPrice' => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.',
-			'health.systemBackup.title' => 'Copia de seguridad de este teléfono',
-			'health.systemBackup.refuseGoogle' => 'Rechazo la copia de seguridad de mis datos médicos en la nube de Google',
-			'health.systemBackup.refuseApple' => 'Rechazo la copia de seguridad de mis datos médicos en iCloud',
-			'health.systemBackup.explainGoogle' => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.',
-			'health.systemBackup.explainApple' => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja tu ficha médica fuera. Desmárcala solo si prefieres recuperarla en tu próximo teléfono.',
-			'health.systemBackup.notOurServers' => 'No hay que confundirlo : tu ficha médica NUNCA va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.',
-			'health.systemBackup.confirm' => 'Entendido',
-			'health.systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de mis datos médicos por el sistema del teléfono',
 			'trailSelection.title' => 'Cambiar de sendero',
 			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.',
 			'trailSelection.current' => 'Sendero activo',
@@ -5581,8 +5575,6 @@ extension on TranslationsEs {
 			'calendar.legend.start' => 'Salida',
 			'calendar.legend.walk' => 'Marcha',
 			'calendar.legend.rest' => 'Descanso',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Llegada',
 			'calendar.summary.totalDays' => 'Días total',
 			'calendar.summary.walkDays' => 'Días marcha',
@@ -5591,6 +5583,8 @@ extension on TranslationsEs {
 			'calendar.noDate.message' => 'El calendario de tu trek aparecerá automáticamente con los días de marcha y de descanso.',
 			'calendar.empty.title' => 'Configura primero tu itinerario',
 			'calendar.empty.message' => 'Elige tu ruta y la duración para poder configurar tus fechas.',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'nuitees.title' => 'Pernoctaciones',
 			'nuitees.guideTooltip' => 'Guía de pernoctaciones',
@@ -5926,6 +5920,16 @@ extension on TranslationsEs {
 			'common.retry' => 'Reintentar',
 			'common.retrying' => 'Nuevo intento…',
 			'common.retryFailed' => 'El nuevo intento no ha funcionado.',
+			'systemBackup.title' => 'Tus datos se quedan en este teléfono',
+			'systemBackup.refuseGoogle' => 'Rechazo la copia de seguridad de mis datos en la nube de Google',
+			'systemBackup.refuseApple' => 'Rechazo la copia de seguridad de mis datos en iCloud',
+			'systemBackup.explainGoogle' => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
+			'systemBackup.explainApple' => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
+			'systemBackup.cost' => 'Lo que cuesta, sin adornos: si dejas esta casilla marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. Un trek completado conserva su traza y su cuaderno de por vida en este teléfono, la aplicación nunca los borra, pero no puede hacerlos reaparecer en otro dispositivo.',
+			'systemBackup.whatComesBack' => 'Si la desmarcas, una copia de tu progreso, de tu diario, de tus treks completados y de tu ficha médica va a la copia de seguridad, y vuelve en tu próximo teléfono. Tus fotos y tus ajustes no están: copiar las fotos duplicaría el espacio ocupado en tu teléfono.',
+			'systemBackup.notOurServers' => 'No hay que confundirlo: nada de lo que nos confías va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.',
+			'systemBackup.confirm' => 'Entendido',
+			'systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono',
 			_ => null,
 		};
 	}

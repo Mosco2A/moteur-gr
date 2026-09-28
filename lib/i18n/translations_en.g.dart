@@ -108,6 +108,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$sos$en sos = _Translations$sos$en._(_root);
 	@override late final _Translations$recovery$en recovery = _Translations$recovery$en._(_root);
 	@override late final _Translations$common$en common = _Translations$common$en._(_root);
+	@override late final _Translations$systemBackup$en systemBackup = _Translations$systemBackup$en._(_root);
 }
 
 // Path: a11y
@@ -1220,7 +1221,6 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
 	@override String get localOnlyPriceTitle => 'Switching phones means typing it in again';
 	@override String get localOnlyPrice => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.';
-	@override late final _Translations$health$systemBackup$en systemBackup = _Translations$health$systemBackup$en._(_root);
 }
 
 // Path: trailSelection
@@ -1830,6 +1830,25 @@ class _Translations$common$en extends Translations$common$fr {
 	@override String get retry => 'Try again';
 	@override String get retrying => 'Trying again…';
 	@override String get retryFailed => 'The new attempt did not work.';
+}
+
+// Path: systemBackup
+class _Translations$systemBackup$en extends Translations$systemBackup$fr {
+	_Translations$systemBackup$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Your data stays on this phone';
+	@override String get refuseGoogle => 'I refuse to have my data backed up to the Google cloud';
+	@override String get refuseApple => 'I refuse to have my data backed up to iCloud';
+	@override String get explainGoogle => 'Your phone backs its data up to Google. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.';
+	@override String get explainApple => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.';
+	@override String get cost => 'What it costs, without sugar coating: if you leave this box ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. A completed trek keeps its track and its logbook for life on this phone, the app never deletes them, but it cannot make them reappear on another device.';
+	@override String get whatComesBack => 'If you untick it, a copy of your progress, your journal, your completed treks and your medical card goes into the backup, and it comes back on your next phone. Your photos and your settings are not in it: copying the photos would double the space taken on your phone.';
+	@override String get notOurServers => 'Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.';
+	@override String get confirm => 'Got it';
+	@override String get a11yCheckbox => 'Refuse the backup of all my data by the system of the phone';
 }
 
 // Path: hub.trekCard
@@ -2968,23 +2987,6 @@ class _Translations$health$advice$en extends Translations$health$advice$fr {
 	@override String get paper => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.';
 	@override String get ackButton => 'I have read this advice';
 	@override String get ackDone => 'Advice read';
-}
-
-// Path: health.systemBackup
-class _Translations$health$systemBackup$en extends Translations$health$systemBackup$fr {
-	_Translations$health$systemBackup$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Backup of this phone';
-	@override String get refuseGoogle => 'I refuse to have my medical data backed up to the Google cloud';
-	@override String get refuseApple => 'I refuse to have my medical data backed up to iCloud';
-	@override String get explainGoogle => 'Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.';
-	@override String get explainApple => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.';
-	@override String get notOurServers => 'Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.';
-	@override String get confirm => 'Got it';
-	@override String get a11yCheckbox => 'Refuse the backup of my medical data by the system of the phone';
 }
 
 // Path: trailSelection.a11y
@@ -5336,14 +5338,6 @@ extension on TranslationsEn {
 			'health.advice.ackDone' => 'Advice read',
 			'health.localOnlyPriceTitle' => 'Switching phones means typing it in again',
 			'health.localOnlyPrice' => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.',
-			'health.systemBackup.title' => 'Backup of this phone',
-			'health.systemBackup.refuseGoogle' => 'I refuse to have my medical data backed up to the Google cloud',
-			'health.systemBackup.refuseApple' => 'I refuse to have my medical data backed up to iCloud',
-			'health.systemBackup.explainGoogle' => 'Your phone backs its data up to Google. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.',
-			'health.systemBackup.explainApple' => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps your medical card out of it. Untick it only if you would rather find the card again on your next phone.',
-			'health.systemBackup.notOurServers' => 'Not to be confused: your medical card NEVER goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.',
-			'health.systemBackup.confirm' => 'Got it',
-			'health.systemBackup.a11yCheckbox' => 'Refuse the backup of my medical data by the system of the phone',
 			'trailSelection.title' => 'Switch trail',
 			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
 			'trailSelection.current' => 'Active trail',
@@ -5581,8 +5575,6 @@ extension on TranslationsEn {
 			'calendar.legend.start' => 'Departure',
 			'calendar.legend.walk' => 'Hiking',
 			'calendar.legend.rest' => 'Rest',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Arrival',
 			'calendar.summary.totalDays' => 'Total days',
 			'calendar.summary.walkDays' => 'Hiking days',
@@ -5591,6 +5583,8 @@ extension on TranslationsEn {
 			'calendar.noDate.message' => 'Your trek calendar will appear automatically with hiking and rest days.',
 			'calendar.empty.title' => 'Set up your itinerary first',
 			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',
 			'nuitees.guideTooltip' => 'Overnight stays guide',
@@ -5926,6 +5920,16 @@ extension on TranslationsEn {
 			'common.retry' => 'Try again',
 			'common.retrying' => 'Trying again…',
 			'common.retryFailed' => 'The new attempt did not work.',
+			'systemBackup.title' => 'Your data stays on this phone',
+			'systemBackup.refuseGoogle' => 'I refuse to have my data backed up to the Google cloud',
+			'systemBackup.refuseApple' => 'I refuse to have my data backed up to iCloud',
+			'systemBackup.explainGoogle' => 'Your phone backs its data up to Google. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.',
+			'systemBackup.explainApple' => 'Your phone backs its data up to iCloud. This box is ticked in advance and keeps out everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.',
+			'systemBackup.cost' => 'What it costs, without sugar coating: if you leave this box ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. A completed trek keeps its track and its logbook for life on this phone, the app never deletes them, but it cannot make them reappear on another device.',
+			'systemBackup.whatComesBack' => 'If you untick it, a copy of your progress, your journal, your completed treks and your medical card goes into the backup, and it comes back on your next phone. Your photos and your settings are not in it: copying the photos would double the space taken on your phone.',
+			'systemBackup.notOurServers' => 'Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.',
+			'systemBackup.confirm' => 'Got it',
+			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
 			_ => null,
 		};
 	}

@@ -176,7 +176,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     // re-alignement d'ouverture ([RefusSauvegardeSystemeNotifier]), qui fait
     // converger le disque a chaque lancement.
     unawaited(
-      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLaCopie(),
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLesCopies(),
     );
 
     if (mounted) {
@@ -255,7 +255,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     // rester a moitie faite ; et si l'application meurt avant que le dossier soit
     // resolu, le re-alignement d'ouverture la reprend au lancement suivant.
     unawaited(
-      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLaCopie(),
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLesCopies(),
     );
 
     if (!mounted) return;

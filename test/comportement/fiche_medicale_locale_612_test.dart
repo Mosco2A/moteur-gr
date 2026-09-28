@@ -359,12 +359,24 @@ void main() {
   // =========================================================================
   group('612 — l exclusion de la sauvegarde systeme est DECLAREE, et les XML '
       'disent la MEME chose que le code', () {
+    /// LE FICHIER DE REGLES, SANS SES COMMENTAIRES.
+    ///
+    /// TACHE 617 — POURQUOI LES COMMENTAIRES SONT RETIRES MAINTENANT. Ces
+    /// fichiers CITENT la documentation d Android mot pour mot, et cette
+    /// documentation parle de `<cloud-backup>`, de `<device-transfer>` et
+    /// d `<include>`. Un test qui cherche ces chaines dans le fichier ENTIER les
+    /// trouve donc dans la prose : celui d en dessous comptait trois sections
+    /// alors qu il y en a deux. C est la meme lecon que le helper `_codeSeul` de
+    /// ce fichier, a un autre etage : une garde qui force a effacer l histoire
+    /// pour rester verte est une mauvaise garde.
     String lire(String chemin) {
       final f = File(chemin);
       expect(f.existsSync(), isTrue,
           reason: 'le fichier de regles « $chemin » est declare par '
               'SauvegardeSysteme mais il n existe pas sur le disque');
-      return f.readAsStringSync();
+      return f
+          .readAsStringSync()
+          .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
     }
 
     /// Les exclusions REELLEMENT ecrites dans un fichier de regles Android.
@@ -674,7 +686,7 @@ void main() {
       });
 
       test('$langue : la case de refus existe dans ses DEUX formulations', () {
-        final sb = tr.health.systemBackup;
+        final sb = tr.systemBackup;
         expect(sb.refuseGoogle.trim(), isNotEmpty);
         expect(sb.refuseApple.trim(), isNotEmpty);
         expect(sb.refuseGoogle, isNot(sb.refuseApple),
@@ -684,7 +696,7 @@ void main() {
       });
 
       test('$langue : le texte DIT que nos serveurs ne sont pas concernes', () {
-        expect(tr.health.systemBackup.notOurServers.trim().length,
+        expect(tr.systemBackup.notOurServers.trim().length,
             greaterThan(80),
             reason: 'sans cette phrase, le randonneur qui decoche croira que '
                 'NOUS recuperons sa fiche. Nous ne l avons jamais.');
@@ -694,14 +706,14 @@ void main() {
         final textes = <String>[
           tr.health.localOnlyPriceTitle,
           tr.health.localOnlyPrice,
-          tr.health.systemBackup.title,
-          tr.health.systemBackup.refuseGoogle,
-          tr.health.systemBackup.refuseApple,
-          tr.health.systemBackup.explainGoogle,
-          tr.health.systemBackup.explainApple,
-          tr.health.systemBackup.notOurServers,
-          tr.health.systemBackup.confirm,
-          tr.health.systemBackup.a11yCheckbox,
+          tr.systemBackup.title,
+          tr.systemBackup.refuseGoogle,
+          tr.systemBackup.refuseApple,
+          tr.systemBackup.explainGoogle,
+          tr.systemBackup.explainApple,
+          tr.systemBackup.notOurServers,
+          tr.systemBackup.confirm,
+          tr.systemBackup.a11yCheckbox,
           tr.consent.healthBackupNote,
         ];
         for (final texte in textes) {
@@ -722,8 +734,8 @@ void main() {
             isNot(fr.health.localOnlyPrice),
             reason: '${entree.key} se rabat sur le francais : Slang le fait en '
                 'silence quand une cle manque');
-        expect(entree.value.health.systemBackup.refuseGoogle,
-            isNot(fr.health.systemBackup.refuseGoogle),
+        expect(entree.value.systemBackup.refuseGoogle,
+            isNot(fr.systemBackup.refuseGoogle),
             reason: '${entree.key} se rabat sur le francais');
       }
     });
@@ -865,9 +877,9 @@ void main() {
       final tr = _langues['fr']!;
       final textes = textesVisibles(tester);
 
-      expect(textes, contains(tr.health.systemBackup.refuseGoogle));
-      expect(textes, isNot(contains(tr.health.systemBackup.refuseApple)));
-      expect(textes, contains(tr.health.systemBackup.explainGoogle));
+      expect(textes, contains(tr.systemBackup.refuseGoogle));
+      expect(textes, isNot(contains(tr.systemBackup.refuseApple)));
+      expect(textes, contains(tr.systemBackup.explainGoogle));
     });
 
     testWidgets('sur iPhone elle parle d iCLOUD', (tester) async {
@@ -876,9 +888,9 @@ void main() {
       final tr = _langues['fr']!;
       final textes = textesVisibles(tester);
 
-      expect(textes, contains(tr.health.systemBackup.refuseApple));
-      expect(textes, isNot(contains(tr.health.systemBackup.refuseGoogle)));
-      expect(textes, contains(tr.health.systemBackup.explainApple));
+      expect(textes, contains(tr.systemBackup.refuseApple));
+      expect(textes, isNot(contains(tr.systemBackup.refuseGoogle)));
+      expect(textes, contains(tr.systemBackup.explainApple));
     });
 
     testWidgets('elle DIT que nos serveurs ne sont pas concernes, dans les deux '
@@ -888,7 +900,7 @@ void main() {
         await tester.pumpWidget(dialogue(plateforme));
         await tester.pumpAndSettle();
         expect(textesVisibles(tester),
-            contains(tr.health.systemBackup.notOurServers),
+            contains(tr.systemBackup.notOurServers),
             reason: 'sans cette phrase, decocher voudrait dire « StepWays '
                 'recupere ma fiche » dans la tete du randonneur, et ce serait '
                 'faux');
@@ -914,6 +926,19 @@ void main() {
       await tester.pumpWidget(dialogue(TargetPlatform.android));
       await tester.pumpAndSettle();
 
+      // TACHE 617 — IL FAUT AMENER LA CASE A L ECRAN AVANT DE L ATTEINDRE, ET CE
+      // N EST PAS UN CONTOURNEMENT DE TEST.
+      //
+      // Le texte de la case dit maintenant ce qu elle coûte (regle generale de
+      // Christophe du 28/09 14:31 : elle gouverne TOUTES les donnees confiees, pas
+      // la seule fiche medicale), donc le contenu du dialogue defile. MESURE du
+      // 28/09 dans un vrai dialogue : sur un Pixel 5 la case est atteignable sans
+      // rien faire ; sur un iPhone SE et un petit Android elle demande un petit
+      // defilement. Sans cet appel, `tap` viserait un point hors de la fenetre de
+      // defilement et ne changerait RIEN, ce qui est exactement le defaut que ce
+      // test doit attraper si un jour il revient pour de bon.
+      await tester.ensureVisible(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));

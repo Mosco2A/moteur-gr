@@ -25,6 +25,7 @@ import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
+import 'features/safety/presentation/porte_consentement_sauvegarde.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 
@@ -350,8 +351,24 @@ class _BootstrapGate extends ConsumerWidget {
       // awaite par `appBootstrapProvider` (donc immediatement disponible ici) ;
       // s'il a detecte une rando laissee par un arret brutal, on propose
       // Reprendre / Abandonner une seule fois au premier rendu.
-      data: (_) =>
-          OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+      //
+      // ET SOUS LA PORTE DU CONSENTEMENT DE SAUVEGARDE (tache 617). La question
+      // « je refuse la sauvegarde de mes donnees par le systeme du telephone »
+      // etait posee a la seule connexion Google depuis la tache 612, dont le
+      // bilan nommait le trou : le randonneur anonyme ne la voyait jamais. Elle
+      // est posee ICI, une fois, a tout le monde. La PROTECTION, elle, s'applique
+      // deja (refus par defaut) : poser la question n'est pas proteger, et c'est
+      // ce qui autorise a la poser apres le premier rendu plutot qu'a bloquer le
+      // demarrage.
+      //
+      // ORDRE DES DEUX PORTES : la reprise orpheline est la plus interieure, donc
+      // son dialogue s'ouvre en second et se retrouve AU-DESSUS. C'est voulu :
+      // reprendre une rando interrompue est un geste urgent, le consentement de
+      // sauvegarde ne l'est pas, et il sera repose au lancement suivant s'il est
+      // ignore.
+      data: (_) => PorteConsentementSauvegarde(
+        child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+      ),
       loading: loader,
       error: (error, _) => _BootstrapScaffold(
         child: Padding(

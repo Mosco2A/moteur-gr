@@ -109,6 +109,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$sos$fr sos = Translations$sos$fr.internal(_root);
 	late final Translations$recovery$fr recovery = Translations$recovery$fr.internal(_root);
 	late final Translations$common$fr common = Translations$common$fr.internal(_root);
+	late final Translations$systemBackup$fr systemBackup = Translations$systemBackup$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2518,8 +2519,6 @@ class Translations$health$fr {
 
 	/// fr: 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C'est le prix de la promesse, et c'est pour cela que personne, nous compris, ne peut la lire ailleurs qu'ici.'
 	String get localOnlyPrice => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.';
-
-	late final Translations$health$systemBackup$fr systemBackup = Translations$health$systemBackup$fr.internal(_root);
 }
 
 // Path: trailSelection
@@ -3863,6 +3862,45 @@ class Translations$common$fr {
 
 	/// fr: 'Le nouvel essai n'a pas abouti.'
 	String get retryFailed => 'Le nouvel essai n\'a pas abouti.';
+}
+
+// Path: systemBackup
+class Translations$systemBackup$fr {
+	Translations$systemBackup$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Tes données restent sur ce téléphone'
+	String get title => 'Tes données restent sur ce téléphone';
+
+	/// fr: 'Je refuse la sauvegarde de mes données sur le cloud Google'
+	String get refuseGoogle => 'Je refuse la sauvegarde de mes données sur le cloud Google';
+
+	/// fr: 'Je refuse la sauvegarde de mes données sur iCloud'
+	String get refuseApple => 'Je refuse la sauvegarde de mes données sur iCloud';
+
+	/// fr: 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
+	String get explainGoogle => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
+
+	/// fr: 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
+	String get explainApple => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
+
+	/// fr: 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.'
+	String get cost => 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l\'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.';
+
+	/// fr: 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n'y sont pas : copier les photos doublerait la place prise sur ton téléphone.'
+	String get whatComesBack => 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n\'y sont pas : copier les photos doublerait la place prise sur ton téléphone.';
+
+	/// fr: 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.'
+	String get notOurServers => 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.';
+
+	/// fr: 'C'est noté'
+	String get confirm => 'C\'est noté';
+
+	/// fr: 'Refuser la sauvegarde de toutes mes données par le système du téléphone'
+	String get a11yCheckbox => 'Refuser la sauvegarde de toutes mes données par le système du téléphone';
 }
 
 // Path: hub.trekCard
@@ -6174,39 +6212,6 @@ class Translations$health$advice$fr {
 
 	/// fr: 'Conseils lus'
 	String get ackDone => 'Conseils lus';
-}
-
-// Path: health.systemBackup
-class Translations$health$systemBackup$fr {
-	Translations$health$systemBackup$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Sauvegarde de ce téléphone'
-	String get title => 'Sauvegarde de ce téléphone';
-
-	/// fr: 'Je refuse la sauvegarde de mes données médicales sur le cloud Google'
-	String get refuseGoogle => 'Je refuse la sauvegarde de mes données médicales sur le cloud Google';
-
-	/// fr: 'Je refuse la sauvegarde de mes données médicales sur iCloud'
-	String get refuseApple => 'Je refuse la sauvegarde de mes données médicales sur iCloud';
-
-	/// fr: 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.'
-	String get explainGoogle => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.';
-
-	/// fr: 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.'
-	String get explainApple => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.';
-
-	/// fr: 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.'
-	String get notOurServers => 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.';
-
-	/// fr: 'C'est noté'
-	String get confirm => 'C\'est noté';
-
-	/// fr: 'Refuser la sauvegarde de mes données médicales par le système du téléphone'
-	String get a11yCheckbox => 'Refuser la sauvegarde de mes données médicales par le système du téléphone';
 }
 
 // Path: trailSelection.a11y
@@ -9156,14 +9161,6 @@ extension on Translations {
 			'health.advice.ackDone' => 'Conseils lus',
 			'health.localOnlyPriceTitle' => 'Changer de téléphone veut dire la ressaisir',
 			'health.localOnlyPrice' => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.',
-			'health.systemBackup.title' => 'Sauvegarde de ce téléphone',
-			'health.systemBackup.refuseGoogle' => 'Je refuse la sauvegarde de mes données médicales sur le cloud Google',
-			'health.systemBackup.refuseApple' => 'Je refuse la sauvegarde de mes données médicales sur iCloud',
-			'health.systemBackup.explainGoogle' => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.',
-			'health.systemBackup.explainApple' => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse ta fiche médicale dehors. Décoche-la seulement si tu préfères la retrouver sur ton prochain téléphone.',
-			'health.systemBackup.notOurServers' => 'À ne pas confondre : ta fiche médicale ne part JAMAIS vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.',
-			'health.systemBackup.confirm' => 'C\'est noté',
-			'health.systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de mes données médicales par le système du téléphone',
 			'trailSelection.title' => 'Changer de sentier',
 			'trailSelection.subtitle' => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, packs, guides) suit ta sélection.',
 			'trailSelection.current' => 'Sentier actif',
@@ -9401,8 +9398,6 @@ extension on Translations {
 			'calendar.legend.start' => 'Départ',
 			'calendar.legend.walk' => 'Marche',
 			'calendar.legend.rest' => 'Repos',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.legend.arrival' => 'Arrivée',
 			'calendar.summary.totalDays' => 'Jours total',
 			'calendar.summary.walkDays' => 'Jours marche',
@@ -9411,6 +9406,8 @@ extension on Translations {
 			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
 			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
 			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
 			'nuitees.guideTooltip' => 'Guide des nuitées',
@@ -9746,6 +9743,16 @@ extension on Translations {
 			'common.retry' => 'Réessayer',
 			'common.retrying' => 'Nouvel essai…',
 			'common.retryFailed' => 'Le nouvel essai n\'a pas abouti.',
+			'systemBackup.title' => 'Tes données restent sur ce téléphone',
+			'systemBackup.refuseGoogle' => 'Je refuse la sauvegarde de mes données sur le cloud Google',
+			'systemBackup.refuseApple' => 'Je refuse la sauvegarde de mes données sur iCloud',
+			'systemBackup.explainGoogle' => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
+			'systemBackup.explainApple' => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
+			'systemBackup.cost' => 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l\'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.',
+			'systemBackup.whatComesBack' => 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n\'y sont pas : copier les photos doublerait la place prise sur ton téléphone.',
+			'systemBackup.notOurServers' => 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.',
+			'systemBackup.confirm' => 'C\'est noté',
+			'systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de toutes mes données par le système du téléphone',
 			_ => null,
 		};
 	}
