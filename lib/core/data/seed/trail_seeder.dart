@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../database.dart';
+import '../revision_de_donnee.dart';
 import '../daos/trail_meta_dao.dart';
 import '../daos/trail_itineraries_dao.dart';
 import '../daos/trail_stages_dao.dart';
@@ -52,7 +53,13 @@ class TrailSeeder {
     await _metaDao.insertOrReplace(TrailMetaCompanion(
       id: Value(meta['id'] as String),
       code: Value(meta['code'] as String),
-      dataVersion: Value(meta['dataVersion'] as int),
+      // UN SENTIER EMBARQUE N A PAS D HORODATAGE DE SERVEUR, et on ne lui en
+      // invente pas : il vaut l ORIGINE. Consequence voulue — tout ce que le
+      // serveur publiera pour ce sentier lui sera posterieur, donc descendra.
+      // L ancienne valeur entiere (`meta['dataVersion']`) n est plus lue : lue
+      // comme un instant elle designerait 1970, ce qui est le meme fait dit moins
+      // clairement, et lue comme un compteur elle serait comparee a des dates.
+      dataVersion: const Value(HorodatageServeur.origine),
       status: Value(meta['status'] as String? ?? 'active'),
     ));
 

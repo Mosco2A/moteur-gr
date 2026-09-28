@@ -29,6 +29,18 @@ import 'source_de_sentier.dart';
 /// est ecrit AVANT la liste. La liste est la seule chose que l application
 /// interroge ; la publier en premier ouvre une fenetre ou un randonneur voit un
 /// sentier et echoue a le telecharger.
+/// L OUTIL EST L AUTORITE DE TEMPS, ET IL EST LA SEULE (tache 610).
+///
+/// Depuis la decision de Christophe du 28/09 09:32, la revision est un INSTANT. La
+/// regle qui rend ce modele juste est qu UNE SEULE machine le pose : le serveur.
+/// Cet outil EST le serveur du point de vue du modele — c est lui qui ecrit les
+/// fichiers que tous les telephones compareront. Aucun telephone ne pose jamais
+/// d horodatage ; le type `HorodatageServeur` le lui interdit a la compilation.
+///
+/// LE JOUR OU LA BASE SERVEUR EXISTERA, cet instant viendra de son horodatage
+/// natif (`serverTimestamp()` chez Firestore, `now()` chez Postgres) et
+/// [Publicateur] n aura plus a le poser lui-meme. Rien d autre ne changera : le
+/// reste du mecanisme ne connait que « l instant annonce ».
 class Publicateur {
   Publicateur({required this.sortie, DateTime? horloge})
       : _horloge = horloge ?? DateTime.now().toUtc();
@@ -43,6 +55,29 @@ class Publicateur {
   final String sortie;
 
   final DateTime _horloge;
+
+  /// Vrai si l horloge a du etre corrigee en avant pour rester monotone.
+  bool _horlogeCorrigee = false;
+
+  /// L INSTANT DE CETTE PUBLICATION, ET IL DOIT DEPASSER LE PRECEDENT.
+  ///
+  /// POURQUOI UNE GARDE SUR L HORLOGE DU SERVEUR LUI-MEME. Le modele exige que
+  /// chaque publication porte un instant STRICTEMENT posterieur a la precedente :
+  /// c est ce qui fait qu un telephone deja a jour prendra la suite. Une horloge
+  /// serveur peut pourtant reculer — correction NTP, changement de machine — ou
+  /// rendre deux fois la meme milliseconde sur deux publications rapprochees. Une
+  /// publication portant un instant anterieur ou egal au precedent serait
+  /// INVISIBLE pour tous les telephones deja a jour, definitivement, sans que rien
+  /// ne le dise.
+  ///
+  /// On avance donc d une milliseconde plutot que de refuser le depot, et le fait
+  /// est REMONTE dans [ResultatDePublication.horlogeCorrigee] — jamais avale.
+  HorodatageServeur _instantApres(HorodatageServeur precedent) {
+    final horloge = HorodatageServeur.poseeParLeServeur(_horloge);
+    final retenu = horloge.auMoinsApres(precedent);
+    if (retenu != horloge) _horlogeCorrigee = true;
+    return retenu;
+  }
 
   /// PUBLIE OU REPUBLIE LE SENTIER DECRIT PAR [dossierSource].
   ///
@@ -67,13 +102,13 @@ class Publicateur {
         liste: liste,
         precedente: precedente,
         revision: revisionPrecedente == RevisionDeDonnee.revisionInitiale
-            ? 1
+            ? _instantApres(RevisionDeDonnee.revisionInitiale)
             : revisionPrecedente,
       );
     }
 
     final publicationPrecedente = _lirePublication(precedente);
-    final nouvelleRevision = revisionPrecedente + 1;
+    final nouvelleRevision = _instantApres(revisionPrecedente);
 
     final recalcul = RevisionSelective.calculer(
       donneesSource: _avecLeStatut(source),
@@ -92,13 +127,15 @@ class Publicateur {
         chemin: precedente.filePath,
         empreinte: precedente.hash,
         octets: precedente.fileSize,
-        lastUpdated: precedente.lastUpdated,
       );
       final ficheChangee = entree != precedente;
       if (ficheChangee) {
-        liste[source.trailId] = entree.copyWith(
-          lastUpdated: _horloge.toIso8601String(),
-        );
+        // ET `lastUpdated` N AVANCE PAS ICI, alors qu il avancait avant la tache
+        // 610. C est le point : il designe le MEME instant que `dataVersion`, et
+        // les DONNEES n ont pas change. Le faire avancer seul recreerait la
+        // divergence que ce lot ferme — deux noms pour un fait, et le plus
+        // silencieux qui gagne.
+        liste[source.trailId] = entree;
         _ecrireLaListe(liste);
       }
       return ResultatDePublication(
@@ -110,11 +147,17 @@ class Publicateur {
         octets: precedente.fileSize,
         donneesReecrites: false,
         ficheRafraichie: ficheChangee,
+        horlogeCorrigee: _horlogeCorrigee,
       );
     }
 
     // 1. LE FICHIER DE DONNEES D ABORD (#P1).
-    final chemin = '${_dossierDe(source.trailId)}/v$nouvelleRevision.json';
+    // LE NOM DU FICHIER PORTE L INSTANT, PAS UN NUMERO — et sous une forme qui
+    // tient dans un nom de fichier Windows et dans une URL (l ISO 8601 porte des
+    // deux-points, interdits). Elle se trie dans l ordre chronologique, qui est
+    // aussi l ordre des publications.
+    final chemin = '${_dossierDe(source.trailId)}/'
+        'v${nouvelleRevision.estampilleDeFichier}.json';
     final corps =
         _encoder(_ordonner(recalcul.donnees, revision: nouvelleRevision));
     final octets = utf8.encode(corps);
@@ -130,7 +173,6 @@ class Publicateur {
       chemin: chemin,
       empreinte: empreinte,
       octets: octets.length,
-      lastUpdated: _horloge.toIso8601String(),
     );
     _ecrireLaListe(liste);
 
@@ -143,6 +185,7 @@ class Publicateur {
       octets: octets.length,
       donneesReecrites: true,
       ficheRafraichie: true,
+      horlogeCorrigee: _horlogeCorrigee,
     );
   }
 
@@ -157,7 +200,7 @@ class Publicateur {
     SourceDeSentier source, {
     required Map<String, TrailManifestEntry> liste,
     required TrailManifestEntry? precedente,
-    required int revision,
+    required HorodatageServeur revision,
   }) {
     final entree = _entree(
       source,
@@ -165,7 +208,6 @@ class Publicateur {
       chemin: precedente?.filePath ?? '',
       empreinte: precedente?.hash ?? '',
       octets: precedente?.fileSize ?? 0,
-      lastUpdated: _horloge.toIso8601String(),
     );
     liste[source.trailId] = entree;
     _ecrireLaListe(liste);
@@ -187,6 +229,7 @@ class Publicateur {
       donneesReecrites: false,
       ficheRafraichie: true,
       listeSeulement: true,
+      horlogeCorrigee: _horlogeCorrigee,
     );
   }
 
@@ -215,6 +258,7 @@ class Publicateur {
           'pas (#M9).',
         );
       }
+      anomalies.addAll(_verifierLaDateAnnoncee(entree));
       if (entree.filePath.isEmpty) {
         if (entree.status == 'active') {
           anomalies.add(
@@ -259,6 +303,24 @@ class Publicateur {
     return anomalies;
   }
 
+  /// `lastUpdated` ET `dataVersion` DESIGNENT LE MEME INSTANT — ON LE VERIFIE.
+  ///
+  /// Depuis la tache 610 ces deux champs disent la meme chose. L outil les ecrit
+  /// depuis la MEME valeur ([_entree]), donc ils ne peuvent pas diverger par son
+  /// fait ; mais un fichier de liste modifie a la main, ou produit par un autre
+  /// outil, le pourrait. Et une divergence serait du mauvais cote : un humain
+  /// lirait `lastUpdated`, l application deciderait sur `dataVersion`.
+  List<String> _verifierLaDateAnnoncee(TrailManifestEntry entree) {
+    if (entree.lastUpdated == entree.dataVersion.iso8601) return const [];
+    return [
+      '${entree.trailId} : « lastUpdated » annonce « ${entree.lastUpdated} » et '
+          '« dataVersion » l instant « ${entree.dataVersion.iso8601} ». Depuis la '
+          'tache 610 ces deux champs designent le MEME instant : deux valeurs, '
+          'c est deux autorites, et celle qui decide (dataVersion) n est pas celle '
+          'qu un humain lit.',
+    ];
+  }
+
   List<String> _verifierLesRevisions(TrailManifestEntry entree, List<int> octets) {
     final anomalies = <String>[];
     final Map<String, dynamic> donnees;
@@ -282,13 +344,17 @@ class Publicateur {
           sansRevision++;
           continue;
         }
-        final rev = RevisionDeDonnee.revisionDe(donnee, defaut: 0);
+        final rev = RevisionDeDonnee.revisionDe(
+          donnee,
+          defaut: RevisionDeDonnee.revisionInitiale,
+        );
         if (rev > maximum) maximum = rev;
         if (rev > entree.dataVersion) {
           anomalies.add(
             '${entree.trailId} : un enregistrement de « $famille » porte la '
-            'revision $rev alors que la liste annonce ${entree.dataVersion}. '
-            'Un telephone deja a jour ne le prendrait JAMAIS.',
+            'date ${rev.iso8601} alors que la liste annonce '
+            '${entree.dataVersion.iso8601}. Un telephone deja a jour ne le '
+            'prendrait JAMAIS.',
           );
         }
       }
@@ -297,16 +363,17 @@ class Publicateur {
     if (sansRevision > 0) {
       anomalies.add(
         '${entree.trailId} : $sansRevision enregistrement(s) sans « rev ». Ils '
-        'sont rattaches a la revision courante du sentier (#R6), donc ils '
-        'REDESCENDENT a chaque incrementation de `dataVersion`.',
+        'sont rattaches a l instant courant du sentier (#R6), donc ils '
+        'REDESCENDENT a chaque publication.',
       );
     }
     if (maximum > RevisionDeDonnee.revisionInitiale &&
         maximum != entree.dataVersion) {
       anomalies.add(
-        '${entree.trailId} : la liste annonce la revision ${entree.dataVersion} '
-        'et la plus haute revision publiee est $maximum. La revision courante '
-        'd un sentier est celle de sa derniere modification (#M2).',
+        '${entree.trailId} : la liste annonce l instant '
+        '${entree.dataVersion.iso8601} et le plus recent instant publie est '
+        '${maximum.iso8601}. L instant courant d un sentier est celui de sa '
+        'derniere modification (#M2).',
       );
     }
 
@@ -317,13 +384,21 @@ class Publicateur {
   // LECTURE / ECRITURE
   // -------------------------------------------------------------------------
 
+  /// UNE ENTREE DE LISTE — ET `lastUpdated` N EST PLUS UN PARAMETRE.
+  ///
+  /// Depuis la tache 610, `dataVersion` EST la date de derniere mise a jour :
+  /// laisser un second champ la redire, renseigne independamment, c etait deux
+  /// autorites sur un meme fait — et sur les deux, la plus silencieuse gagne.
+  /// `lastUpdated` est donc DERIVE de la revision, ici, a un seul endroit. Il reste
+  /// publie parce qu il est lisible et que le retirer de la liste depasserait
+  /// « seul le type de la comparaison change » ; mais il ne peut plus diverger, et
+  /// [verifier] refuse un depot ou il l aurait fait.
   TrailManifestEntry _entree(
     SourceDeSentier source, {
-    required int revision,
+    required HorodatageServeur revision,
     required String chemin,
     required String empreinte,
     required int octets,
-    required String lastUpdated,
   }) {
     return TrailManifestEntry(
       trailId: source.trailId,
@@ -332,7 +407,7 @@ class Publicateur {
       filePath: chemin,
       fileSize: octets,
       status: source.statut,
-      lastUpdated: lastUpdated,
+      lastUpdated: revision.iso8601,
       fiche: source.fiche,
     );
   }
@@ -394,7 +469,7 @@ class Publicateur {
   /// alphabetique se dechiffrent.
   Map<String, dynamic> _ordonner(
     Map<String, dynamic> donnees, {
-    required int revision,
+    required HorodatageServeur revision,
   }) {
     final meta = <String, dynamic>{
       ...?(donnees[MorceauxDeSentier.fiche] as Map<String, dynamic>?),
@@ -402,7 +477,7 @@ class Publicateur {
     // La revision courante du sentier, recopiee dans le fichier de donnees :
     // `TrailSeeder` et la pose la lisent. `rev`, lui, vient du calcul selectif et
     // n est PAS ecrase ici — c est tout l interet du lot.
-    meta['data_version'] = revision;
+    meta['data_version'] = revision.iso8601;
 
     return <String, dynamic>{
       MorceauxDeSentier.fiche: meta,
@@ -447,10 +522,13 @@ class ResultatDePublication {
     required this.donneesReecrites,
     required this.ficheRafraichie,
     this.listeSeulement = false,
+    this.horlogeCorrigee = false,
   });
 
   final String trailId;
-  final int revision;
+
+  /// L INSTANT de cette publication (tache 610).
+  final HorodatageServeur revision;
   final Recalcul recalcul;
   final String cheminDonnees;
   final String empreinte;
@@ -464,4 +542,13 @@ class ResultatDePublication {
 
   /// Vrai pour une entree de liste sans fichier de donnees (#M6, #M10).
   final bool listeSeulement;
+
+  /// VRAI QUAND L HORLOGE DU SERVEUR A DU ETRE CORRIGEE EN AVANT.
+  ///
+  /// L instant retenu n est alors pas exactement celui de l horloge : il a ete
+  /// avance d une milliseconde pour rester strictement posterieur a la publication
+  /// precedente. Ce n est pas grave en soi, mais ca DOIT se dire — une horloge qui
+  /// recule sur le serveur de publication est un probleme d infrastructure, et tout
+  /// le modele repose sur elle.
+  final bool horlogeCorrigee;
 }

@@ -124,12 +124,22 @@ void main() {
       final manifeste =
           await db.trailManifestsDao.getByTrailId('mare-a-mare-centre');
       expect(manifeste, isNotNull);
-      expect(manifeste!.localVersion, 4,
-          reason: 'LE POINT LE PLUS IMPORTANT DE CETTE MIGRATION : un sentier '
-              'deja copie garde son repere de revision. `localVersion` change de '
-              'METIER (il devient « je suis a jour jusqu a 4 ») sans changer de '
-              'forme ni de valeur — c est pour cela qu aucune reinterpretation '
-              'n etait necessaire.');
+      // CETTE ASSERTION A CHANGE A LA TACHE 610, ET C EST LA v28 QUI LA CHANGE,
+      // PAS LA v27. La v27 conservait la valeur 4 telle quelle, parce que
+      // `localVersion` changeait de METIER sans changer de forme. La v28 fait de ce
+      // repere une DATE : une valeur « 4 » lue comme un instant designerait le
+      // 1er janvier 1970, et la laisser s interpreter toute seule serait un pari.
+      // Elle est donc remise a « rien de copie », explicitement. Le sentier sera
+      // recopie une fois, par le chemin normal, avec un repere juste — ce qui est
+      // le seul comportement sur.
+      //
+      // La migration v26 -> v28 passe par les deux etapes d affilee : ce test ouvre
+      // la base au schema COURANT, donc il observe le resultat des deux.
+      expect(manifeste!.localVersion, isNull,
+          reason: 'LE POINT LE PLUS IMPORTANT DE LA v28 : un repere herite du '
+              'modele en compteur ne doit pas etre relu comme un instant. Il est '
+              'remis a zero, le sentier est recopie UNE fois, et le telephone '
+              'repart avec un repere juste (cf. migration_v27_to_v28_test).');
       expect(manifeste.ficheJson, isNull,
           reason: 'la fiche n a jamais ete recue : la colonne est nullable '
               'precisement pour que les lignes d avant restent lisibles');

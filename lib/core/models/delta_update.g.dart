@@ -8,16 +8,16 @@ part of 'delta_update.dart';
 
 _DeltaUpdate _$DeltaUpdateFromJson(Map<String, dynamic> json) => _DeltaUpdate(
   trailId: json['trailId'] as String,
-  fromVersion: (json['fromVersion'] as num).toInt(),
-  toVersion: (json['toVersion'] as num).toInt(),
+  fromVersion: const HorodatageServeurJson().fromJson(json['fromVersion']),
+  toVersion: const HorodatageServeurJson().fromJson(json['toVersion']),
   downloadSize: (json['downloadSize'] as num).toInt(),
 );
 
 Map<String, dynamic> _$DeltaUpdateToJson(_DeltaUpdate instance) =>
     <String, dynamic>{
       'trailId': instance.trailId,
-      'fromVersion': instance.fromVersion,
-      'toVersion': instance.toVersion,
+      'fromVersion': const HorodatageServeurJson().toJson(instance.fromVersion),
+      'toVersion': const HorodatageServeurJson().toJson(instance.toVersion),
       'downloadSize': instance.downloadSize,
     };
 
@@ -29,7 +29,9 @@ _ResultatSynchronisation _$ResultatSynchronisationFromJson(
       .toList(),
   ecrits: (json['ecrits'] as num).toInt(),
   supprimes: (json['supprimes'] as num).toInt(),
-  revisionAtteinte: (json['revisionAtteinte'] as num).toInt(),
+  revisionAtteinte: const HorodatageServeurJson().fromJson(
+    json['revisionAtteinte'],
+  ),
 );
 
 Map<String, dynamic> _$ResultatSynchronisationToJson(
@@ -38,5 +40,7 @@ Map<String, dynamic> _$ResultatSynchronisationToJson(
   'famillesTouchees': instance.famillesTouchees,
   'ecrits': instance.ecrits,
   'supprimes': instance.supprimes,
-  'revisionAtteinte': instance.revisionAtteinte,
+  'revisionAtteinte': const HorodatageServeurJson().toJson(
+    instance.revisionAtteinte,
+  ),
 };

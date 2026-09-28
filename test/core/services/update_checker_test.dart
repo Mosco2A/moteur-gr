@@ -3,9 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/update_checker.dart';
+
+import '../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT « REFERENCE + N JOURS » (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Fake ConnectivityMonitor pour les tests (toujours online).
 class FakeConnectivityMonitor extends ConnectivityMonitor {
@@ -56,10 +62,17 @@ class TestableUpdateChecker extends UpdateChecker {
       return UpdateCheckResult(trailId: trailId, hasUpdate: false);
     }
 
-    final remoteVersion = remoteData['data_version'] as int? ?? 0;
+    // CE DOUBLE REPRODUIT LA LOGIQUE DE `lib/`, DONC IL DOIT LA REPRODUIRE
+    // EXACTEMENT — horodatage compris. C est la faiblesse connue de ce fichier :
+    // `UpdateChecker.checkForUpdate` parle directement a `cloud_firestore`, qu on
+    // ne peut pas doubler ici, donc le test reecrit la decision. Il verifie la
+    // REGLE, pas le code qui l applique.
+    final remoteVersion =
+        HorodatageServeur.annonceParLeServeur(remoteData['data_version']) ??
+            HorodatageServeur.origine;
 
     final localEntry = await dao.getByTrailId(trailId);
-    final localVersion = localEntry?.localVersion ?? 0;
+    final localVersion = localEntry?.localVersion ?? HorodatageServeur.origine;
 
     final hasUpdate = remoteVersion > localVersion;
 
@@ -93,15 +106,15 @@ void main() {
 
   group('UpdateChecker.checkForUpdate', () {
     test('detecte une nouvelle version quand remote > local', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('volcans'),
-        dataVersion: Value(3),
-        hash: Value('abc123'),
-        filePath: Value('trails/volcans/data.json'),
-        fileSize: Value(524288),
-        status: Value('active'),
-        lastUpdated: Value('2026-05-26T12:00:00Z'),
-        localVersion: Value(2),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('volcans'),
+        dataVersion: Value(v(3)),
+        hash: const Value('abc123'),
+        filePath: const Value('trails/volcans/data.json'),
+        fileSize: const Value(524288),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-05-26T12:00:00Z'),
+        localVersion: Value(v(2)),
       ));
 
       final checker = TestableUpdateChecker(
@@ -109,28 +122,28 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: firebase,
         fakeRemoteData: {
-          'volcans': {'data_version': 5},
+          'volcans': {'data_version': v(5).iso8601},
         },
       );
 
       final result = await checker.checkForUpdate('volcans');
 
       expect(result.hasUpdate, isTrue);
-      expect(result.localVersion, 2);
-      expect(result.remoteVersion, 5);
+      expect(result.localVersion, v(2));
+      expect(result.remoteVersion, v(5));
       expect(result.trailId, 'volcans');
     });
 
     test('pas de MAJ si versions identiques', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('volcans'),
-        dataVersion: Value(3),
-        hash: Value('abc123'),
-        filePath: Value('p'),
-        fileSize: Value(100),
-        status: Value('active'),
-        lastUpdated: Value('2026-01-01T00:00:00Z'),
-        localVersion: Value(3),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('volcans'),
+        dataVersion: Value(v(3)),
+        hash: const Value('abc123'),
+        filePath: const Value('p'),
+        fileSize: const Value(100),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-01-01T00:00:00Z'),
+        localVersion: Value(v(3)),
       ));
 
       final checker = TestableUpdateChecker(
@@ -138,26 +151,26 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: firebase,
         fakeRemoteData: {
-          'volcans': {'data_version': 3},
+          'volcans': {'data_version': v(3).iso8601},
         },
       );
 
       final result = await checker.checkForUpdate('volcans');
       expect(result.hasUpdate, isFalse);
-      expect(result.localVersion, 3);
-      expect(result.remoteVersion, 3);
+      expect(result.localVersion, v(3));
+      expect(result.remoteVersion, v(3));
     });
 
     test('detecte MAJ si sentier jamais telecharge (localVersion null)',
         () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('sentier-bleu'),
-        dataVersion: Value(1),
-        hash: Value('def456'),
-        filePath: Value('p'),
-        fileSize: Value(100),
-        status: Value('active'),
-        lastUpdated: Value('2026-01-01T00:00:00Z'),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('sentier-bleu'),
+        dataVersion: Value(v(1)),
+        hash: const Value('def456'),
+        filePath: const Value('p'),
+        fileSize: const Value(100),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-01-01T00:00:00Z'),
       ));
 
       final checker = TestableUpdateChecker(
@@ -165,14 +178,14 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: firebase,
         fakeRemoteData: {
-          'sentier-bleu': {'data_version': 1},
+          'sentier-bleu': {'data_version': v(1).iso8601},
         },
       );
 
       final result = await checker.checkForUpdate('sentier-bleu');
       expect(result.hasUpdate, isTrue);
-      expect(result.localVersion, 0);
-      expect(result.remoteVersion, 1);
+      expect(result.localVersion, HorodatageServeur.origine);
+      expect(result.remoteVersion, v(1));
     });
 
     test('retourne hasUpdate false si Firebase non disponible', () async {
@@ -182,7 +195,7 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: offlineFirebase,
         fakeRemoteData: {
-          'volcans': {'data_version': 99},
+          'volcans': {'data_version': v(99).iso8601},
         },
       );
 
@@ -198,7 +211,7 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: firebase,
         fakeRemoteData: {
-          'volcans': {'data_version': 99},
+          'volcans': {'data_version': v(99).iso8601},
         },
       );
 
@@ -216,6 +229,82 @@ void main() {
 
       final result = await checker.checkForUpdate('volcans');
       expect(result.hasUpdate, isFalse);
+    });
+  });
+
+  /// LE PERIMETRE DE LA MISE A JOUR PERIODIQUE — « SES SENTIERS » (tache 610).
+  ///
+  /// Precision de Christophe du 28/09 : « on telecharge tout ce qui concerne SES
+  /// sentiers ». La lecture du catalogue distant ecrit une ligne de
+  /// `trail_manifests` par sentier PUBLIE, pour survivre au hors-ligne ; ces lignes
+  /// ont `localVersion` a NULL. Sans filtre, un randonneur qui possede UN sentier
+  /// declenchait la synchronisation de TOUS les sentiers du catalogue.
+  group('UpdateChecker.checkAllForUpdates — perimetre', () {
+    /// Une entree de catalogue : vue, pas copiee (`localVersion` nul).
+    Future<void> auCatalogue(String trailId) =>
+        dao.insertOrReplace(TrailManifestsCompanion(
+          trailId: Value(trailId),
+          dataVersion: Value(v(1)),
+          hash: const Value('h'),
+          filePath: const Value('p'),
+          fileSize: const Value(100),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-01-01T00:00:00Z'),
+        ));
+
+    /// Un sentier reellement copie sur ce telephone.
+    Future<void> possede(String trailId) =>
+        dao.insertOrReplace(TrailManifestsCompanion(
+          trailId: Value(trailId),
+          dataVersion: Value(v(1)),
+          hash: const Value('h'),
+          filePath: const Value('p'),
+          fileSize: const Value(100),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-01-01T00:00:00Z'),
+          localVersion: Value(v(1)),
+        ));
+
+    test('ne verifie QUE les sentiers copies sur ce telephone', () async {
+      await possede('volcans');
+      await auCatalogue('sentier-bleu');
+      await auCatalogue('cantal');
+      await auCatalogue('tmb');
+
+      final checker = TestableUpdateChecker(
+        dao: dao,
+        connectivityMonitor: connectivity,
+        firebaseService: firebase,
+        // Les quatre sentiers ont une publication plus recente cote serveur : sans
+        // le filtre de perimetre, les quatre remonteraient.
+        fakeRemoteData: {
+          'volcans': {'data_version': v(9).iso8601},
+          'sentier-bleu': {'data_version': v(9).iso8601},
+          'cantal': {'data_version': v(9).iso8601},
+          'tmb': {'data_version': v(9).iso8601},
+        },
+      );
+
+      final resultats = await checker.checkAllForUpdates();
+      expect(resultats.length, 1);
+      expect(resultats.single.trailId, 'volcans');
+    });
+
+    test('un telephone qui ne possede rien ne demande rien', () async {
+      await auCatalogue('sentier-bleu');
+      await auCatalogue('cantal');
+
+      final checker = TestableUpdateChecker(
+        dao: dao,
+        connectivityMonitor: connectivity,
+        firebaseService: firebase,
+        fakeRemoteData: {
+          'sentier-bleu': {'data_version': v(9).iso8601},
+          'cantal': {'data_version': v(9).iso8601},
+        },
+      );
+
+      expect(await checker.checkAllForUpdates(), isEmpty);
     });
   });
 }

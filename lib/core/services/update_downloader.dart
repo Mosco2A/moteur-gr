@@ -268,7 +268,7 @@ class UpdateDownloader {
       _log.d(
         '[UpdateDownloader] $trailId : '
         '${ecart.premiereCopie ? "PREMIERE COPIE" : "mise a jour"} '
-        'v${ecart.fromVersion} -> v${ecart.toVersion}',
+        '${ecart.fromVersion} -> ${ecart.toVersion}',
       );
 
       // UN SEUL CHEMIN pour la premiere copie et pour la mise a jour : a la

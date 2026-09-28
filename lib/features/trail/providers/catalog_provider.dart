@@ -51,12 +51,16 @@ class CatalogEntry {
   });
 
   final String trailId;
-  final int dataVersion;
+
+  /// L INSTANT de publication du sentier cote serveur (tache 610).
+  final HorodatageServeur dataVersion;
   final int fileSize;
   final String status;
   final String lastUpdated;
   final TrailLocalStatus localStatus;
-  final int? localVersion;
+
+  /// L INSTANT jusqu auquel ce telephone est a jour. Null = jamais copie.
+  final HorodatageServeur? localVersion;
 }
 
 /// POURQUOI LA LISTE DES SENTIERS N A PAS PU ETRE RAFRAICHIE (tache 604).

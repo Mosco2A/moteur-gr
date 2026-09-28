@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
@@ -40,6 +41,8 @@ void main() {
       final meta = jsonData['trail_meta'] as Map<String, dynamic>;
       expect(meta['id'], 'mare-a-mare-centre');
       expect(meta['code'], 'mam-centre');
+      // Le fichier embarque porte encore son ancien compteur : il est LU par le
+      // test comme une donnee du fichier, plus par le semeur (tache 610).
       expect(meta['dataVersion'], 1);
       expect(meta['status'], 'active');
     });
@@ -110,7 +113,11 @@ void main() {
       final meta = await metaDao.getById('mare-a-mare-centre');
       expect(meta, isNotNull);
       expect(meta!.code, 'mam-centre');
-      expect(meta.dataVersion, 1);
+      // UN SENTIER EMBARQUE N A PAS D HORODATAGE DE SERVEUR : il vaut l ORIGINE,
+      // donc tout ce que le serveur publiera pour lui sera plus recent et
+      // descendra. Le semeur ne recopie plus l ancien compteur, qui lu comme un
+      // instant designerait 1970 (tache 610).
+      expect(meta.dataVersion, HorodatageServeur.origine);
       expect(meta.status, 'active');
     });
 

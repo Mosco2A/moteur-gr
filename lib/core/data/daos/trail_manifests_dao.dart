@@ -1,9 +1,28 @@
 import 'package:drift/drift.dart';
 
 import '../database.dart';
+import '../revision_de_donnee.dart';
 import '../tables/trail_manifests_table.dart';
 
 part 'trail_manifests_dao.g.dart';
+
+/// LE REPERE N A PAS PU ETRE POSE — DONC LA COPIE N EST PAS COMPLETE.
+///
+/// Levee quand `inscrireRevision` ne trouve aucune ligne de liste locale a mettre
+/// a jour. Elle vit dans la transaction de la pose, donc elle l annule : mieux
+/// vaut un sentier « a prendre » qu un sentier pose sans repere, qui se
+/// retelechargerait entierement a chaque ouverture sans que rien ne le dise.
+class RepereNonInscriptible implements Exception {
+  const RepereNonInscriptible(this.trailId);
+
+  final String trailId;
+
+  @override
+  String toString() =>
+      'Repere de synchronisation non inscriptible pour « $trailId » : aucune '
+      'ligne dans `trail_manifests`. La copie est annulee — un repere absent '
+      'ferait retelecharger tout le sentier a chaque ouverture, en silence.';
+}
 
 /// DAO pour les manifestes de sentier.
 ///
@@ -17,6 +36,27 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// Recupere toutes les entrees du manifeste local
   Future<List<TrailManifest>> getAll() {
     return select(trailManifests).get();
+  }
+
+  /// LES SENTIERS QUE CE TELEPHONE POSSEDE — ceux dont il a une copie.
+  ///
+  /// LE PERIMETRE DE CHRISTOPHE, 28/09 : « on telecharge tout ce qui concerne SES
+  /// sentiers ». Pas le catalogue, SES sentiers. Et la distinction n est pas
+  /// theorique : [getAll] rend une ligne par sentier PUBLIE, parce que la lecture
+  /// du catalogue les conserve toutes pour survivre au hors-ligne. Sur quarante
+  /// sentiers publies, un randonneur qui en possede un seul aurait vu la mise a
+  /// jour periodique en telecharger quarante.
+  ///
+  /// LE CRITERE EST `localVersion` NON NUL, c est-a-dire « une copie a reellement
+  /// ete posee ici au moins une fois ». C est le meme fait que l ecran lit pour
+  /// dire « telecharge », et il n y en a pas deux.
+  ///
+  /// LE FILTRE EST DANS LA REQUETE, pas apres la lecture : sur un catalogue qui
+  /// grandit, on ne remonte pas quarante lignes pour en garder une.
+  Future<List<TrailManifest>> getPossedes() {
+    return (select(trailManifests)
+          ..where((t) => t.localVersion.isNotNull()))
+        .get();
   }
 
   /// Recupere une entree par son trailId
@@ -70,13 +110,33 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// l integralite des donnees du sentier.
   ///
   /// C est un `UPDATE`, pas un `INSERT` : sans ligne de manifeste il n y a aucune
-  /// revision a certifier, et la methode ne cree rien (retourne 0). L appel vit
-  /// dans la MEME transaction que la pose des donnees — un repere de revision qui
-  /// survivrait a un retour arriere des donnees ferait croire le telephone a jour
-  /// sur des donnees absentes, ce qui est pire que pas de repere du tout.
-  Future<int> inscrireRevision(String trailId, int revision) {
-    return (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
-        .write(TrailManifestsCompanion(localVersion: Value(revision)));
+  /// revision a certifier. L appel vit dans la MEME transaction que la pose des
+  /// donnees — un repere qui survivrait a un retour arriere des donnees ferait
+  /// croire le telephone a jour sur des donnees absentes, ce qui est pire que pas
+  /// de repere du tout.
+  ///
+  /// ET DEPUIS LA TACHE 610 IL LEVE QUAND L `UPDATE` NE TOUCHE AUCUNE LIGNE (#X10,
+  /// laisse ouvert par la tache 607). Le mot de Christophe est « le dernier
+  /// timestamp de MAJ COMPLET » : un repere qu on croit pose et qui ne l est pas
+  /// est un FAUX SUCCES, pas une petite imperfection. Sans ligne de liste locale,
+  /// l `UPDATE` rendait 0 EN SILENCE, la copie etait annoncee reussie, et le
+  /// telephone retelechargeait tout le sentier a l ouverture suivante — sans
+  /// jamais le dire. Comme l appel vit dans la transaction de la pose, lever ici
+  /// annule la copie entiere : le sentier reste « a prendre », ce qui est le seul
+  /// etat honnete. Dans la vraie chaine la ligne existe toujours (la lecture du
+  /// catalogue l ecrit), donc cette exception ne se declenche que sur un chemin
+  /// mal cable — exactement ce qu on veut voir tomber.
+  Future<int> inscrireRevision(
+    String trailId,
+    HorodatageServeur revision,
+  ) async {
+    final lignes =
+        await (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
+            .write(TrailManifestsCompanion(localVersion: Value(revision)));
+    if (lignes == 0) {
+      throw RepereNonInscriptible(trailId);
+    }
+    return lignes;
   }
 
   /// Oublie la revision locale : le sentier redevient « a telecharger ».

@@ -15,6 +15,13 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
+
+import '../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
+
 
 /// TACHE 604 — MUR-003 : LE CATALOGUE, SON ADRESSE, ET SON SILENCE.
 ///
@@ -73,9 +80,9 @@ class FakeManifestService extends ManifestService {
   String? derniereUrl;
 }
 
-const _entreeDistante = TrailManifestEntry(
+final _entreeDistante = TrailManifestEntry(
   trailId: 'mare-a-mare-centre',
-  dataVersion: 4,
+  dataVersion: v(4),
   hash: 'hash-v4',
   filePath: 'mare_a_mare_centre/v4.json',
   fileSize: 812_345,
@@ -201,15 +208,15 @@ void main() {
 
     test('HORS LIGNE NON NEGOCIABLE : les sentiers deja telecharges restent '
         'la, et rien ne se presente comme une panne', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('mare-a-mare-centre'),
-        dataVersion: Value(4),
-        hash: Value('hash-v4'),
-        filePath: Value('mare_a_mare_centre/v4.json'),
-        fileSize: Value(812345),
-        status: Value('active'),
-        lastUpdated: Value('2026-09-27T12:00:00Z'),
-        localVersion: Value(4),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('mare-a-mare-centre'),
+        dataVersion: Value(v(4)),
+        hash: const Value('hash-v4'),
+        filePath: const Value('mare_a_mare_centre/v4.json'),
+        fileSize: const Value(812345),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-09-27T12:00:00Z'),
+        localVersion: Value(v(4)),
       ));
 
       final c = conteneur(
@@ -250,7 +257,7 @@ void main() {
         () async {
       final c = conteneur(
         reseau: ConnectivityStatusValues.online,
-        manifeste: const TrailManifest(
+        manifeste: TrailManifest(
           schemaVersion: 1,
           trails: [_entreeDistante],
         ),
@@ -271,15 +278,15 @@ void main() {
 
     test('un echec laisse ce qui est deja telecharge visible — le repli ne '
         'sacrifie rien', () async {
-      await dao.insertOrReplace(const TrailManifestsCompanion(
-        trailId: Value('mare-a-mare-centre'),
-        dataVersion: Value(4),
-        hash: Value('hash-v4'),
-        filePath: Value('mare_a_mare_centre/v4.json'),
-        fileSize: Value(812345),
-        status: Value('active'),
-        lastUpdated: Value('2026-09-27T12:00:00Z'),
-        localVersion: Value(4),
+      await dao.insertOrReplace(TrailManifestsCompanion(
+        trailId: const Value('mare-a-mare-centre'),
+        dataVersion: Value(v(4)),
+        hash: const Value('hash-v4'),
+        filePath: const Value('mare_a_mare_centre/v4.json'),
+        fileSize: const Value(812345),
+        status: const Value('active'),
+        lastUpdated: const Value('2026-09-27T12:00:00Z'),
+        localVersion: Value(v(4)),
       ));
 
       final c = conteneur(

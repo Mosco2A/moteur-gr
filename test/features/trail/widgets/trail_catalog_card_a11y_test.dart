@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/trail/widgets/trail_catalog_card.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
+
+import '../../../fixtures/horodatage_de_serveur.dart';
+/// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
+
 
 /// Tests E5.3b — pas d'overflow a textScale 2x sur le catalogue (ecran principal).
 void main() {
   // Entree la plus "large" (badge MAJ disponible + bouton Mettre a jour).
-  const updateEntry = CatalogEntry(
+  final updateEntry = CatalogEntry(
     trailId: 'sentier-des-grands-causses-du-massif-central',
-    dataVersion: 5,
+    dataVersion: v(5),
     fileSize: 2097152,
     status: 'active',
     lastUpdated: '2026-05-25T10:00:00Z',
     localStatus: TrailLocalStatusValues.updateAvailable,
-    localVersion: 3,
+    localVersion: v(3),
   );
 
   Widget wrapAtScale(Widget child, double scale, {double width = 400}) {
@@ -31,7 +37,7 @@ void main() {
 
   testWidgets('TrailCatalogCard ne deborde pas a textScale 2x', (tester) async {
     await tester.pumpWidget(
-      wrapAtScale(const TrailCatalogCard(entry: updateEntry), 2.0),
+      wrapAtScale(TrailCatalogCard(entry: updateEntry), 2.0),
     );
     await tester.pump();
 
@@ -44,7 +50,7 @@ void main() {
   testWidgets('TrailCatalogCard ne deborde pas a textScale 2x sur ecran etroit',
       (tester) async {
     await tester.pumpWidget(
-      wrapAtScale(const TrailCatalogCard(entry: updateEntry), 2.0, width: 320),
+      wrapAtScale(TrailCatalogCard(entry: updateEntry), 2.0, width: 320),
     );
     await tester.pump();
 

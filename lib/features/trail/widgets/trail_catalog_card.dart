@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/data/revision_de_donnee.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -169,10 +170,21 @@ class TrailCatalogCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    'v${entry.dataVersion}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.grisTexteSecondaire,
+                  // FLEXIBLE PARCE QUE LE LIBELLE A GRANDI (tache 610). Il valait
+                  // « v5 », il vaut « 28/09/2026 » : a textScale 2x sur un ecran
+                  // de 320 points la ligne debordait de 6 points — mesure, pas
+                  // supposition, c est le test d accessibilite qui l a dit. Un
+                  // texte qui peut se raccourcir vaut mieux qu un debordement, et
+                  // mieux qu un libelle raccourci pour tout le monde a cause du
+                  // pire cas.
+                  Flexible(
+                    child: Text(
+                      _dateLisible(entry.dataVersion),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
                     ),
                   ),
                 ],
@@ -316,4 +328,23 @@ class _StatusBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+/// LA DATE DE PUBLICATION, TELLE QUE LE RANDONNEUR LA LIT.
+///
+/// CE QUE CE LIBELLE MONTRAIT AVANT LA TACHE 610, ET POURQUOI C EST MIEUX
+/// MAINTENANT. La carte affichait « v1 », « v2 » a cote d une icone de mise a
+/// jour : un numero interne de publication, qui ne disait RIEN au randonneur — il
+/// ne peut pas savoir si « v2 » date d hier ou de l an dernier. Le modele
+/// d horodatage rend ce numero lisible sans rien ajouter : la donnee PORTE sa date.
+///
+/// [HorodatageServeur.origine] designe un sentier embarque dans l application, qui
+/// n a jamais ete publie par un serveur : il n a donc pas de date de mise a jour a
+/// montrer, et on ecrit un tiret plutot que le 1er janvier 1970.
+String _dateLisible(HorodatageServeur instant) {
+  if (instant == HorodatageServeur.origine) return '—';
+  final d = instant.date.toLocal();
+  final jour = d.day.toString().padLeft(2, '0');
+  final mois = d.month.toString().padLeft(2, '0');
+  return '$jour/$mois/${d.year}';
 }

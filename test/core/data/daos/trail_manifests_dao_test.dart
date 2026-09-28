@@ -3,6 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
+
+import '../../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT « REFERENCE + N JOURS » (tache 610).
+///
+/// La bascule du compteur vers l horodatage ne change pas ce que ces tests
+/// verifient : des RELATIONS D ORDRE entre publications. `v(1) < v(2)` dit
+/// exactement ce que `1 < 2` disait, et aucune assertion n est affaiblie.
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Tests du DAO TrailManifests sur une base in-memory.
 void main() {
@@ -31,13 +41,13 @@ void main() {
   }) {
     return TrailManifestsCompanion(
       trailId: Value(trailId),
-      dataVersion: Value(dataVersion),
+      dataVersion: Value(v(dataVersion)),
       hash: Value(hash),
       filePath: Value(filePath),
       fileSize: Value(fileSize),
       status: Value(status),
       lastUpdated: Value(lastUpdated),
-      localVersion: Value(localVersion),
+      localVersion: Value(localVersion == null ? null : v(localVersion)),
     );
   }
 
@@ -48,7 +58,7 @@ void main() {
       final result = await dao.getByTrailId('sentier-bleu');
       expect(result, isNotNull);
       expect(result!.trailId, 'sentier-bleu');
-      expect(result.dataVersion, 1);
+      expect(result.dataVersion, v(1));
       expect(result.hash, 'test_hash_sha256');
       expect(result.status, 'active');
     });
@@ -80,7 +90,7 @@ void main() {
       ));
 
       final result = await dao.getByTrailId('sentier-bleu');
-      expect(result!.dataVersion, 2);
+      expect(result!.dataVersion, v(2));
       expect(result.hash, 'new_hash');
     });
 
@@ -116,8 +126,8 @@ void main() {
       ));
 
       final result = await dao.getByTrailId('sentier-bleu');
-      expect(result!.localVersion, 2);
-      expect(result.dataVersion, 3);
+      expect(result!.localVersion, v(2));
+      expect(result.dataVersion, v(3));
     });
   });
 
@@ -169,6 +179,48 @@ void main() {
 
       final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isFalse);
+    });
+  });
+
+  /// LE PERIMETRE : « SES SENTIERS », PAS LE CATALOGUE (tache 610).
+  ///
+  /// Precision de Christophe du 28/09 : « on telecharge tout ce qui concerne SES
+  /// sentiers ». [TrailManifestsDao.getAll] rend une ligne par sentier PUBLIE,
+  /// parce que la lecture du catalogue les conserve toutes pour survivre au
+  /// hors-ligne. Confondre les deux faisait telecharger les quarante sentiers du
+  /// catalogue a un randonneur qui en possede un.
+  group('TrailManifestsDao getPossedes', () {
+    test('ne rend QUE les sentiers dont une copie a ete posee ici', () async {
+      await dao.insertOrReplace(
+          makeManifest(trailId: 'copie', localVersion: 3));
+      await dao.insertOrReplace(makeManifest(trailId: 'vu-au-catalogue'));
+      await dao.insertOrReplace(makeManifest(trailId: 'vu-aussi'));
+
+      expect(await dao.getAll(), hasLength(3),
+          reason: 'les trois sont au catalogue, et c est voulu : c est ce qui '
+              'fait survivre la liste au hors-ligne');
+      expect((await dao.getPossedes()).map((e) => e.trailId), ['copie']);
+    });
+
+    test('un sentier supprime du telephone sort du perimetre', () async {
+      await dao.insertOrReplace(
+          makeManifest(trailId: 'copie', localVersion: 3));
+      await dao.oublierRevision('copie');
+
+      expect(await dao.getPossedes(), isEmpty,
+          reason: 'le repere oublie, il n y a plus de copie a maintenir a jour');
+    });
+
+    test('inscrireRevision LEVE quand aucune ligne de liste n existe (#X10)',
+        () async {
+      // LE FAUX SUCCES QUE CECI FERME. C est un `UPDATE` : sans ligne il rendait
+      // 0 EN SILENCE, la copie etait annoncee reussie et le telephone
+      // retelechargeait tout a l ouverture suivante. Le mot « complet » de
+      // Christophe l interdit.
+      await expectLater(
+        dao.inscrireRevision('inexistant', v(3)),
+        throwsA(isA<RepereNonInscriptible>()),
+      );
     });
   });
 }

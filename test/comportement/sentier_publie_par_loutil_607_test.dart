@@ -85,8 +85,21 @@ void main() {
     bac.deleteSync(recursive: true);
   });
 
-  Publicateur outil() =>
-      Publicateur(sortie: publie, horloge: DateTime.utc(2026, 9, 28));
+  /// CHAQUE PUBLICATION A SON INSTANT (tache 610).
+  ///
+  /// Depuis que la revision est une DATE, deux publications doivent porter deux
+  /// instants distincts et croissants. Le numero de publication devient donc un
+  /// NOMBRE DE JOURS depuis un instant de reference FIXE — jamais
+  /// `DateTime.now()`, qui ferait dependre le test du jour ou il tourne.
+  DateTime horlogeAuJour(int jour) =>
+      DateTime.utc(2026, 9, 28).add(Duration(days: jour - 1));
+
+  HorodatageServeur instantAuJour(int jour) =>
+      HorodatageServeur.annonceParLeServeur(
+          horlogeAuJour(jour).toIso8601String())!;
+
+  Publicateur outil(int jour) =>
+      Publicateur(sortie: publie, horloge: horlogeAuJour(jour));
 
   /// Publie l etat courant de la source et rend l entree de liste produite.
   ///
@@ -94,8 +107,8 @@ void main() {
   /// (`_conserver`) : c est cette ligne que la pose met a jour pour inscrire la
   /// revision locale. Sans elle, `inscrireRevision` — un UPDATE — ne touche
   /// aucune ligne et le telephone repart de zero a chaque fois.
-  Future<TrailManifestEntry> publier() async {
-    outil().publier(source);
+  Future<TrailManifestEntry> publier({int jour = 1}) async {
+    outil(jour).publier(source);
     final brut = jsonDecode(
       File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
     ) as Map<String, dynamic>;
@@ -190,7 +203,7 @@ void main() {
       // PREMISSE : le depot ne connait pas ce sentier. Sans cela le test ne
       // prouverait rien de l outil.
       expect(TrailCatalog.byId('gr-monts-dore'), isNull);
-      expect(entree.dataVersion, 1);
+      expect(entree.dataVersion, instantAuJour(1));
       expect(entree.hash, hasLength(EmpreinteDePublication.longueurHex),
           reason: 'l empreinte est CALCULEE par l outil : avant ce lot, rien ne '
               'la produisait et rien ne la verifiait (#X6)');
@@ -251,9 +264,9 @@ void main() {
       );
 
       expect((await TrailStagesDao(db).getByItineraryId('montsdore-i1'))
-          .map((e) => e.rev), everyElement(1));
+          .map((e) => e.rev), everyElement(instantAuJour(1)));
       expect((await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
-          everyElement(1));
+          everyElement(instantAuJour(1)));
     });
   });
 
@@ -364,8 +377,8 @@ void main() {
       );
 
       modifierLaSource((c) => (c['stages'] as List)[0]['elevation_gain'] = 915);
-      final v2 = await publier();
-      expect(v2.dataVersion, 2);
+      final v2 = await publier(jour: 2);
+      expect(v2.dataVersion, instantAuJour(2));
 
       final bilan = await service().synchroniser(
         'gr-monts-dore',
@@ -386,7 +399,7 @@ void main() {
         915,
       );
       expect((await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
-          everyElement(1),
+          everyElement(instantAuJour(1)),
           reason: 'la trace est le gros du volume, et elle n a pas bouge');
     });
 
@@ -403,7 +416,7 @@ void main() {
 
       modifierLaSource((c) =>
           (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'));
-      final v2 = await publier();
+      final v2 = await publier(jour: 2);
 
       final bilan = await service().synchroniser(
         'gr-monts-dore',
@@ -437,20 +450,21 @@ void main() {
       );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
 
-      // Revision 2 : un POI disparait cote serveur. Le telephone ne le sait pas.
+      // Jour 2 : un POI disparait cote serveur. Le telephone ne le sait pas.
       modifierLaSource((c) =>
           (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'));
-      await publier();
+      await publier(jour: 2);
 
-      // Revisions 3 a 13 : le serveur vit sa vie, et le marqueur de la revision
-      // 2 sort de la fenetre de retention.
+      // Puis le serveur vit sa vie pendant plus de trois mois, et le marqueur du
+      // jour 2 sort de la fenetre de retention (90 jours depuis la tache 610 —
+      // meme regle, meme demonstration, unite de temps au lieu d un compte).
       TrailManifestEntry derniere = v1;
-      for (var i = 3; i <= 13; i++) {
+      for (final jour in const [17, 32, 47, 62, 77, 92, 107]) {
         modifierLaSource(
-            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + i);
-        derniere = await publier();
+            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour);
+        derniere = await publier(jour: jour);
       }
-      expect(derniere.dataVersion, 13);
+      expect(derniere.dataVersion, instantAuJour(107));
 
       final publication = jsonDecode(
         File('$publie/${derniere.filePath}').readAsStringSync(),
@@ -460,14 +474,13 @@ void main() {
             .cast<Map<String, dynamic>>()
             .where((p) => p[RevisionDeDonnee.champSupprime] == true),
         isEmpty,
-        reason: 'le marqueur de la revision 2 a ete PURGE : le telephone, reste '
-            'a la revision 1, ne peut plus apprendre cette suppression par '
-            'morceaux',
+        reason: 'le marqueur du jour 2 a ete PURGE : le telephone, reste au '
+            'jour 1, ne peut plus apprendre cette suppression par morceaux',
       );
       expect(
         RevisionDeDonnee.exigeUneCopieComplete(
-          revisionLocale: 1,
-          revisionCible: 13,
+          revisionLocale: instantAuJour(1),
+          revisionCible: instantAuJour(107),
         ),
         isTrue,
       );
@@ -491,16 +504,17 @@ void main() {
           reason: 'tout le sentier est repose (19 enregistrements moins le POI '
               'supprime), et c est le prix assume du rattrapage');
       expect(await manifestes.getByTrailId('gr-monts-dore'), isNotNull);
-      expect((await manifestes.getByTrailId('gr-monts-dore'))!.localVersion, 13);
+      expect((await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
+          instantAuJour(107));
     });
 
     test('LA COPIE COMPLETE N EFFACE QUE LE SENTIER CONCERNE — les autres '
         'sentiers deja copies restent entiers', () async {
       // Un autre sentier deja en base, avec ses donnees.
-      await TrailMetaDao(db).insertOrReplace(const TrailMetaCompanion(
-        id: Value('gr-autre'),
-        code: Value('AUTRE'),
-        dataVersion: Value(1),
+      await TrailMetaDao(db).insertOrReplace(TrailMetaCompanion(
+        id: const Value('gr-autre'),
+        code: const Value('AUTRE'),
+        dataVersion: Value(instantAuJour(1)),
       ));
       await TrailItinerariesDao(db).insertOrReplace(
         const TrailItinerariesCompanion(
@@ -528,10 +542,10 @@ void main() {
       );
 
       TrailManifestEntry derniere = v1;
-      for (var i = 2; i <= 13; i++) {
+      for (final jour in const [17, 32, 47, 62, 77, 92, 107]) {
         modifierLaSource(
-            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + i);
-        derniere = await publier();
+            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour);
+        derniere = await publier(jour: jour);
       }
 
       await service().synchroniser(

@@ -36,6 +36,11 @@ import 'package:moteur_gr/core/models/trail_manifest.dart';
 /// revision — sans quoi un point d eau tari resterait a vie sur le telephone du
 /// randonneur.
 ///
+/// DEPUIS LA TACHE 610 LA REVISION EST UN INSTANT, ET LE CALCUL N A PAS BOUGE
+/// D UNE LIGNE — c est la meilleure preuve que le modele etait bon : la question
+/// « a-t-il change ? » se pose par une empreinte de CONTENU, et l instant se
+/// RECOPIE quand la reponse est non, exactement comme le numero se recopiait.
+///
 /// LES NOMBRES SONT COMPARES POUR LEUR VALEUR, PAS POUR LEUR ECRITURE. `14` et
 /// `14.0` designent la meme distance : les distinguer ferait monter une revision
 /// pour une virgule, et c est precisement le gaspillage que ce modele existe pour
@@ -137,8 +142,8 @@ abstract final class RevisionSelective {
   static Recalcul calculer({
     required Map<String, dynamic> donneesSource,
     required Map<String, dynamic>? publicationPrecedente,
-    required int revisionPrecedente,
-    required int nouvelleRevision,
+    required HorodatageServeur revisionPrecedente,
+    required HorodatageServeur nouvelleRevision,
   }) {
     final avant = _indexer(publicationPrecedente);
     final resultat = <String, dynamic>{};
@@ -237,12 +242,15 @@ abstract final class RevisionSelective {
   /// L enregistrement avec sa revision, `rev` en dernier pour la lisibilite.
   static Map<String, dynamic> _avecRevision(
     Map<String, dynamic> donnee,
-    int rev,
+    HorodatageServeur rev,
   ) {
     return <String, dynamic>{
       for (final e in donnee.entries)
         if (e.key != RevisionDeDonnee.champRevision) e.key: e.value,
-      RevisionDeDonnee.champRevision: rev,
+      // ECRIT EN ISO 8601 UTC, jamais en millisecondes brutes : le fichier publie
+      // est relu par des humains, et c est la forme qu un horodatage natif de base
+      // de donnees prend en JSON.
+      RevisionDeDonnee.champRevision: rev.iso8601,
     };
   }
 
@@ -254,19 +262,19 @@ abstract final class RevisionSelective {
   static Map<String, dynamic> _marqueur(
     String famille,
     Map<String, dynamic> ancien,
-    int rev,
+    HorodatageServeur rev,
   ) {
     if (famille == MorceauxDeSentier.pointsDeTrace) {
       return <String, dynamic>{
         'track_id': ancien['track_id'],
         'sequence_index': ancien['sequence_index'],
-        RevisionDeDonnee.champRevision: rev,
+        RevisionDeDonnee.champRevision: rev.iso8601,
         RevisionDeDonnee.champSupprime: true,
       };
     }
     return <String, dynamic>{
       'id': ancien['id'],
-      RevisionDeDonnee.champRevision: rev,
+      RevisionDeDonnee.champRevision: rev.iso8601,
       RevisionDeDonnee.champSupprime: true,
     };
   }

@@ -1,5 +1,9 @@
 import 'package:drift/drift.dart';
 
+// Le convertisseur d horodatage est utilise par le code GENERE (`database.g.dart`
+// est un `part` de ce fichier) : sans cet import, `HorodatageServeur` serait un
+// type inconnu dans la partie generee.
+import 'revision_de_donnee.dart';
 import 'tables/stages_table.dart';
 import 'tables/pois_table.dart';
 import 'tables/user_progress_table.dart';
@@ -165,7 +169,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -407,6 +411,55 @@ class AppDatabase extends _$AppDatabase {
                 migrator, trailGpxTracks, trailGpxTracks.rev);
             await _ajouterColonneSiAbsente(
                 migrator, trailGpxPoints, trailGpxPoints.rev);
+          }
+          // Migration v27 -> v28 : LA SYNCHRONISATION PASSE DU NUMERO A
+          // L HORODATAGE (StepWays tache 610 — decision de Christophe du
+          // 28/09 09:32, verbatim : « Pas besoin d une version mais d un
+          // timestamp de donnees »).
+          //
+          // ELLE NE TOUCHE AUCUNE STRUCTURE : ZERO `ALTER TABLE`. Les colonnes
+          // `rev`, `dataVersion` et `localVersion` posees par la v27 sont deja des
+          // `INTEGER` ; on y range desormais des MILLISECONDES DEPUIS L EPOCH au
+          // lieu d un compteur. Le type SQL ne bouge pas, donc rien ne peut echouer
+          // — et une migration qui echoue EMPECHE LA BASE DE S OUVRIR sur le
+          // telephone d un randonneur, sans recours.
+          //
+          // CE QU ELLE CASSE, ET C EST LE SEUL POINT : LES ANCIENNES VALEURS N ONT
+          // PLUS DE SENS. Un `localVersion` a 3 lu comme un instant designe le
+          // 1er janvier 1970. On ne le laisse PAS s interpreter tout seul : toutes
+          // les valeurs de l ancien modele sont remises a zero, explicitement.
+          //
+          // CONSEQUENCE POUR UN RANDONNEUR QUI A DEJA UN SENTIER SUR SON
+          // TELEPHONE : son repere retombe a « rien de copie », donc la prochaine
+          // synchronisation refait UNE copie complete de ce sentier — par le chemin
+          // normal, transactionnel, sans rien effacer d abord puisque la pose
+          // remplace enregistrement par enregistrement. Il paie un telechargement,
+          // UNE fois, et repart avec un repere juste. L ERREUR INVERSE ETAIT
+          // INACCEPTABLE : un repere conserve et mal interprete aurait pu se
+          // retrouver DANS LE FUTUR des donnees publiees, et le telephone aurait
+          // rate pour toujours tout ce qui arrive ensuite, en se croyant a jour.
+          //
+          // POURQUOI LA v28 EST REJOUABLE SANS DOMMAGE. Les tests de migration du
+          // depot rembobinent `user_version` sur une base creee au schema courant,
+          // puis rouvrent. Un `UPDATE` idempotent supporte ce traitement, la ou un
+          // `ALTER TABLE` echouerait — c est la fragilite que la v27 avait fait
+          // sortir, et cette migration ne la reveille pas.
+          if (from < 28) {
+            await customStatement(
+              'UPDATE trail_manifests SET data_version = 0, local_version = NULL',
+            );
+            await customStatement('UPDATE trail_meta SET data_version = 0');
+            for (final table in const [
+              'trail_meta',
+              'trail_itineraries',
+              'trail_stages',
+              'trail_accommodations',
+              'trail_pois',
+              'trail_gpx_tracks',
+              'trail_gpx_points',
+            ]) {
+              await customStatement('UPDATE $table SET rev = NULL');
+            }
           }
         },
       );

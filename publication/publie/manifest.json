@@ -3,12 +3,12 @@
   "trails": [
     {
       "trailId": "gr-pyrenees",
-      "dataVersion": 1,
+      "dataVersion": "2026-09-28T07:56:20.026Z",
       "hash": "",
       "filePath": "",
       "fileSize": 0,
       "status": "draft",
-      "lastUpdated": "2026-09-27T21:11:10.855480Z",
+      "lastUpdated": "2026-09-28T07:56:20.026Z",
       "fiche": {
         "name": "GR Pyrenees",
         "displayName": "Traversee des Pyrenees",
