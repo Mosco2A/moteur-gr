@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/health_bounds.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
@@ -20,9 +23,14 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// verifiee, bornee — et qu'une fiche incoherente n'est PAS enregistree.
 void main() {
   late AppDatabase db;
+  late Directory bacFiche;
+  late FicheMedicaleFichier fiche;
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
+    // TACHE 613 : la fiche a son propre fichier, hors de la base.
+    bacFiche = Directory.systemTemp.createTempSync('fiche613_validation');
+    fiche = FicheMedicaleFichier(dossierApplicatif: () async => bacFiche);
     // TACHE 568 (LOT Q) : l'ecran pose desormais un SIGNAL DE PREPARATION en
     // preferences (fiche remplie / conseils lus, cf. `health_prepare_providers`)
     // — c'est lui qui entre dans la porte de demarrage du trek. Sans magasin de
@@ -33,11 +41,15 @@ void main() {
 
   tearDown(() async {
     await db.close();
+    if (bacFiche.existsSync()) bacFiche.deleteSync(recursive: true);
   });
 
   Widget wrap() {
     return ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        ficheMedicaleFichierProvider.overrideWithValue(fiche),
+      ],
       child: TranslationProvider(
         child: MaterialApp.router(
           routerConfig: GoRouter(
@@ -120,7 +132,7 @@ void main() {
       expect(find.text(t.health.error.bloodType), findsOneWidget);
       // L'ecran n'est pas quitte et RIEN n'est enregistre.
       expect(find.byType(HealthInfoScreen), findsOneWidget);
-      final saved = await HealthInfoRepository(dao: db.healthInfoDao).get();
+      final saved = await HealthInfoRepository(fichier: fiche).get();
       expect(saved.bloodType, '');
     });
 
@@ -139,7 +151,7 @@ void main() {
       await tester.pumpAndSettle();
       await tapSave(tester);
 
-      final saved = await HealthInfoRepository(dao: db.healthInfoDao).get();
+      final saved = await HealthInfoRepository(fichier: fiche).get();
       expect(saved.bloodType, 'AB+');
     });
   });

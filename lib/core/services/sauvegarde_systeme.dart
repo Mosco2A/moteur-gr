@@ -49,26 +49,39 @@
 /// desormais ([reglesAndroid12EtPlus], [reglesAndroidAvant12]) et le manifeste
 /// les reference.
 ///
-/// [MESURE 2 — LA FICHE N'EST PAS ENCORE DURABLE] La base Drift de
-/// l'application est ouverte en memoire (`database_provider.dart` :
-/// `NativeDatabase.memory()`). La fiche medicale ne survit donc pas a la
-/// fermeture de l'application, et AUCUN fichier ne la contient aujourd'hui :
-/// elle ne montait donc pas chez Google, contrairement a ce que la premisse
-/// supposait — non parce qu'on la protegeait, mais parce qu'elle ne persistait
-/// pas. C'est une protection par accident, pas par decision, et elle tombera le
-/// jour ou la base deviendra durable. Les declarations ci-dessous sont donc
-/// POSEES D'AVANCE : le jour ou quelqu'un rend la base durable, la fiche est
-/// deja hors sauvegarde.
+/// [MESURE 2 — LA BASE EST DEVENUE DURABLE, ET CETTE MESURE A CHANGE DE SIGNE
+/// (tache 613)] La 612 avait mesure que la base etait ouverte EN MEMOIRE : la
+/// fiche medicale ne montait pas chez Google, non parce qu'on la protegeait mais
+/// parce qu'elle ne persistait pas. Protection par accident, dont la 612 avait
+/// ecrit qu'elle « tombera le jour ou la base deviendra durable ». Ce jour est
+/// arrive : la base vit dans un fichier depuis la tache 613. La protection n'est
+/// plus un accident — la fiche medicale a son PROPRE fichier sous [dossierExclu]
+/// (`FicheMedicaleFichier`), et plus une seule ligne de production n'ecrit de
+/// donnee medicale dans la base.
 ///
-/// [MESURE 3 — UNE SEULE BASE POUR TOUT] La table `health_info` vit dans la
-/// MEME base que la progression du trek, le journal et le solde d'etapes. Un
-/// fichier de base ne s'exclut pas table par table : ou il monte en entier, ou
-/// il ne monte pas. La regle exclut donc le domaine `database` TOUT ENTIER —
-/// c'est le minimum qui rend la promesse vraie, et son cout est nomme :
-/// aujourd'hui la base est volatile, donc ce cout est NUL ; le jour ou elle
-/// devient durable, la progression du trek ne sera pas sauvegardee non plus
-/// tant que la fiche medicale n'aura pas son propre stockage sous
-/// [dossierExclu].
+/// [MESURE 3 — L'EXCLUSION DU DOMAINE `database` EST RETIREE, POUR DEUX RAISONS
+/// QUI SE CUMULENT (tache 613)]
+///
+///  a. ELLE COUTAIT CE QUE LA 612 AVAIT ANNONCE. Son motif etait que la table
+///     `health_info` partageait le fichier de la progression et du journal. Ce
+///     motif a disparu : la fiche a son propre fichier. Le garder aurait fait
+///     perdre la progression et le carnet au changement de telephone, alors que
+///     le modele economique promet qu'un trek realise garde A VIE sa trace et son
+///     carnet. Une promesse a vie ne survit pas a un changement d'appareil si le
+///     fichier qui la porte est exclu de la sauvegarde.
+///
+///  b. ELLE NE PROTEGEAIT DE TOUTE FACON PAS CE QU'ON CROYAIT, ET C'EST MESURE.
+///     Le domaine `database` des regles Android designe
+///     `/data/data/<paquet>/databases/`, la ou Android range les bases ouvertes
+///     par son propre `SQLiteOpenHelper`. Une application Flutter n'y ecrit
+///     jamais : la base de StepWays vit sous le repertoire de documents
+///     (`app_flutter/`), donc dans le domaine `root`. L'exclusion portait sur un
+///     dossier vide. Elle aurait donne une fausse tranquillite le jour ou la
+///     base est devenue durable — exactement le jour ou on en avait besoin.
+///
+/// CE QUI EXCLUT REELLEMENT LA DONNEE MEDICALE est donc la premiere ligne, et
+/// elle seule : le dossier [dossierExclu] sous le stockage applicatif
+/// (`files/medical/` sur Android, domaine `file`).
 ///
 /// [MESURE 4 — IPHONE, ET CE N'EST PAS LA MEME MECANIQUE] Sur iOS l'exclusion
 /// de la sauvegarde iCloud n'est PAS declarative : elle se pose a l'execution,
@@ -77,10 +90,11 @@
 /// fichier declare pour iOS est donc une EXIGENCE nommee
 /// ([exigenceIosExclusion]), pas un fait acquis — sur le meme patron que
 /// [CoffreDeReconnexion] : on declare l'etat reel et on nomme ce qui manque,
-/// plutot que de laisser croire que c'est fait. AUJOURD'HUI L'ECART EST SANS
-/// CONSEQUENCE : rien de medical n'est persiste (mesure 2), et la copie
-/// sauvegardable n'existe que si le randonneur decoche. Il le deviendra le jour
-/// ou la base sera durable.
+/// plutot que de laisser croire que c'est fait. CET ECART EST DEVENU REEL AVEC LA
+/// TACHE 613 : un fichier medical durable existe desormais sous [dossierExclu],
+/// donc sur iPhone il monte aujourd'hui dans iCloud. C'est LE point ouvert de ce
+/// lot, il demande un canal de methode natif, et il est nomme ici pour ne pas
+/// etre perdu.
 ///
 /// ---------------------------------------------------------------------------
 /// UNE INVARIANTE TIENT TOUT CECI
@@ -95,7 +109,8 @@ library;
 /// Emplacements et regles de la sauvegarde systeme (Google / Apple).
 abstract final class SauvegardeSysteme {
   /// Sous-dossier du stockage applicatif DECLARE EXCLU de la sauvegarde
-  /// systeme. La fiche medicale y vit : elle ne part donc jamais.
+  /// systeme. La fiche medicale y vit REELLEMENT depuis la tache 613
+  /// (`FicheMedicaleFichier`, fichier `fiche.json`) : elle ne part donc jamais.
   ///
   /// Resolu sous `getApplicationSupportDirectory()`, ce qui donne
   /// `files/medical/` sur Android (domaine `file` des regles de sauvegarde) et
@@ -130,12 +145,15 @@ abstract final class SauvegardeSysteme {
   /// « le domaine tout entier ». Les deux fichiers de regles Android doivent
   /// porter EXACTEMENT ces exclusions, dans les deux sens (l'invariante le
   /// verifie).
+  /// UNE SEULE ENTREE, ET C'EST UN CHOIX DE LA TACHE 613 : tout ce qui est exclu
+  /// est medical, et tout ce qui est medical est ici. L'exclusion du domaine
+  /// `database` a ete RETIREE (mesure 3) — elle faisait perdre la progression et
+  /// le carnet au changement de telephone, et elle designeait un dossier ou une
+  /// application Flutter n'ecrit jamais.
   static const List<({String domaine, String chemin})> exclusions = [
-    // La fiche medicale, dans son dossier dedie (mesure 2 : pose d'avance).
+    // La fiche medicale, dans son dossier dedie. Elle y vit VRAIMENT depuis la
+    // tache 613 (`FicheMedicaleFichier`) : cette ligne n'est plus posee d'avance.
     (domaine: 'file', chemin: 'medical/'),
-    // La base de l'application TOUT ENTIERE (mesure 3 : la table de la fiche
-    // partage son fichier avec le reste, un fichier ne s'exclut pas par table).
-    (domaine: 'database', chemin: ''),
   ];
 
   /// L'EXIGENCE IPHONE, NOMMEE POUR ETRE ACTIONNABLE (mesure 4).

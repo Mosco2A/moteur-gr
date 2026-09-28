@@ -16,20 +16,34 @@ import 'database_provider.dart';
 /// de boot unique qui declenche le seed du sentier actif AVANT le rendu des
 /// ecrans data (voir la garde dans `main.dart`).
 ///
-/// DB in-memory (`NativeDatabase.memory()`, volatile) : le seed doit tourner
-/// A CHAQUE lancement. On force donc le seed en effacant d'abord le flag
-/// `data_seeded` (rendant `seedIfNeeded()` reellement idempotent DANS la session
-/// mais rejoue au demarrage suivant). Le moteur reste generique : le sentier
-/// seede est celui de `trailConfigProvider` (une donnee), aucune localite ici.
+/// LE SEED FORCE A CHAQUE LANCEMENT A ETE RETIRE (tache 613), ET C'ETAIT UN
+/// IMPERATIF, PAS UN NETTOYAGE. Cette amorce effacait le flag `data_seeded` a
+/// chaque demarrage parce que la base etait volatile : sans cela, le sentier
+/// embarque n'aurait ete seede qu'une fois et la carte serait restee vide au
+/// lancement suivant.
+///
+/// La base est desormais durable — et `seedIfNeeded()` INSERE sans jamais vider.
+/// Garder ce forcage aurait donc DUPLIQUE les etapes, les POI et la trace GPX
+/// ENTIERE a chaque ouverture de l'application : le randonneur aurait vu sa
+/// trace se doubler, se tripler, et la base grossir sans fin. Le flag n'est plus
+/// efface ; l'idempotence, qui n'etait vraie que « dans la session », devient
+/// vraie tout court.
+///
+/// ET LE DRAPEAU EN PREFERENCES A DISPARU, PAS ETE DEPLACE. Un drapeau global
+/// (`data_seeded`) suffisait quand il etait remis a zero a chaque lancement ;
+/// conserve, il aurait empeche le seed du DEUXIEME sentier embarque, puisque
+/// cette amorce se rejoue a chaque changement de sentier. Un drapeau PAR SENTIER
+/// aurait corrige cela sans corriger le fond : une preference ne peut pas
+/// repondre a une question qui porte sur la base, et elle peut mentir dans les
+/// deux sens (voir [SeedDataLoader.kDataSeededPrefsKey], qui nomme les deux cas
+/// reels). C'est donc la BASE qu'on interroge : « ce sentier est-il deja pose ? ».
+/// Le moteur reste generique : le sentier seede est celui de
+/// `trailConfigProvider` (une donnee), aucune localite ici.
 final appBootstrapProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   final config = ref.watch(trailConfigProvider);
 
   final prefs = await SharedPreferences.getInstance();
-
-  // DB volatile -> forcer un seed frais a chaque lancement : on repart d'un
-  // flag `data_seeded` a false pour que seedIfNeeded() recharge les assets.
-  await prefs.remove(SeedDataLoader.kDataSeededPrefsKey);
 
   final loader = SeedDataLoader(db: db, prefs: prefs, trailConfig: config);
   await loader.seedIfNeeded();

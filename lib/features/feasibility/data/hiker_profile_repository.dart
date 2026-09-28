@@ -38,12 +38,25 @@ const String kWalkTestResultPrefsKey = 'hiker.walkTestResult';
 
 /// Couche de persistance DUALE du profil randonneur (StepWays LOT 4, Ph1/Ph3).
 ///
-/// POURQUOI la double persistance : la base Drift tourne EN MEMOIRE
-/// (`database_provider.dart` = `NativeDatabase.memory()`, VOLATILE) — un profil
-/// stocke uniquement en Drift disparaitrait au redemarrage. La SOURCE DURABLE
-/// est donc SharedPreferences (JSON) ; Drift ([HikerProfile], [PastHikes],
-/// [HikerExperienceNote]) en est le MIROIR canonique, hydrate au boot depuis
-/// les prefs par [load]. Meme patron que `WalletStore` (LOT 1).
+/// POURQUOI la double persistance — ET LA RAISON D'ORIGINE N'EXISTE PLUS
+/// (tache 613). Ce commentaire disait que la base Drift tournait EN MEMOIRE
+/// (`NativeDatabase.memory()`, VOLATILE) et qu'un profil pose en Drift seul
+/// disparaitrait au redemarrage. C'etait vrai EN PRODUCTION : c'est l'un des trois
+/// endroits ou le code documentait le defaut sans que personne ne le rebranche. La
+/// base vit desormais dans un fichier.
+///
+/// LA SOURCE DURABLE RESTE SharedPreferences (JSON) ; Drift ([HikerProfile],
+/// [PastHikes], [HikerExperienceNote]) en reste le MIROIR canonique, hydrate au
+/// boot par [load]. Meme patron que `WalletStore` (LOT 1), et meme arbitrage : le
+/// miroir est devenu redondant, pas faux, et on ne renverse pas deux montages de
+/// persistance dans le lot qui vient d'en poser un. Point OUVERT, pas oubli.
+///
+/// UN POINT A ARBITRER, ANTERIEUR A CE LOT ET RENDU VISIBLE PAR LUI : cette fiche
+/// (age, taille, poids) est declaree au randonneur comme une donnee de sante, et
+/// SharedPreferences est INCLUS dans la sauvegarde du telephone par Google ou
+/// Apple (domaine `sharedpref`, que rien n'exclut). Contrairement a la fiche
+/// MEDICALE, elle n'a jamais ete protegee de cette montee. La tache 613 ne change
+/// rien a cet etat de fait : elle le NOMME, parce qu'il etait invisible.
 ///
 /// CONFIDENTIALITE : donnee SENSIBLE (morpho) — jamais nominative. Le miroir
 /// cloud anonyme (hash) + la restauration au changement de tel sont branches

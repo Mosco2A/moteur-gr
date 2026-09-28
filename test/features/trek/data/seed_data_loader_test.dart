@@ -99,8 +99,14 @@ void main() {
       expect(points.length, greaterThan(0));
       expect(points.length, lessThanOrEqualTo(63)); // 63 bruts max
 
-      // Flag SharedPreferences set
-      expect(prefs.getBool('data_seeded'), isTrue);
+      // TACHE 613 — PLUS AUCUN DRAPEAU EN PREFERENCES. La marque du seed est la
+      // PRESENCE DES ETAPES EN BASE, et rien d'autre : une preference et une base
+      // ne disparaissent pas ensemble, donc un drapeau peut mentir dans les deux
+      // sens (base vide apres restauration de preferences ; base pleine apres un
+      // effacement de compte, qui purge les preferences mais CONSERVE les tables
+      // de reference du sentier — un re-seed y dupliquerait tout).
+      expect(prefs.getBool(SeedDataLoader.kDataSeededPrefsKey), isNull,
+          reason: 'l ancienne cle globale n est plus posee, seulement nettoyee');
 
       // --- Act : deuxieme appel (idempotent) ---
       final result2 = await loader.seedIfNeeded();

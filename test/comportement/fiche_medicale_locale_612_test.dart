@@ -52,7 +52,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:drift/native.dart';
 
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
-import 'package:moteur_gr/core/data/daos/health_info_dao.dart';
 import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/daos/progress_dao.dart';
 import 'package:moteur_gr/core/data/daos/sync_queue_dao.dart';
@@ -62,6 +61,7 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/cloud_sync_service.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
 import 'package:moteur_gr/features/safety/data/copie_sauvegardable_fiche_service.dart';
+import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/safety/presentation/refus_sauvegarde_systeme_dialog.dart';
@@ -303,6 +303,12 @@ void main() {
       'HealthInfoRepository',
       'healthInfoRepositoryProvider',
       'HealthInfoDao',
+      // TACHE 613 : la fiche a change de stockage (son propre fichier, sous le
+      // dossier exclu). L invariante suit le DEPLACEMENT, sinon elle aurait
+      // continue a surveiller une porte qui ne mene plus nulle part.
+      'fiche_medicale_fichier.dart',
+      'FicheMedicaleFichier',
+      'ficheMedicaleFichierProvider',
     ];
     const sortieReseau = [
       'cloud_firestore',
@@ -425,13 +431,20 @@ void main() {
       expect(exclus, contains(SauvegardeSysteme.dossierExclu),
           reason: 'le dossier ou vit la fiche medicale doit figurer dans les '
               'exclusions, sinon la declaration ne protege rien');
+      // TACHE 613 — CETTE EXIGENCE A ETE RENVERSEE, ET LA RAISON EST ECRITE.
+      // Le lot 612 exigeait ici l exclusion du domaine `database` TOUT ENTIER,
+      // parce que la table de la fiche partageait le fichier de la progression.
+      // La fiche a desormais SON PROPRE FICHIER sous `medical/` : le motif a
+      // disparu, et garder l exclusion ferait perdre la progression et le carnet
+      // au changement de telephone — alors que le modele economique promet qu un
+      // trek realise garde A VIE sa trace et son carnet.
       expect(
           SauvegardeSysteme.exclusions
-              .any((e) => e.domaine == 'database' && e.chemin.isEmpty),
-          isTrue,
-          reason: 'la table de la fiche partage son FICHIER de base avec la '
-              'progression du trek : un fichier ne s exclut pas table par '
-              'table, donc le domaine entier doit l etre');
+              .any((e) => e.domaine == 'database'),
+          isFalse,
+          reason: 'la base ne contient plus rien de medical (tache 613) et doit '
+              'redevenir sauvegardable, sinon le randonneur perd sa progression '
+              'et son journal en changeant de telephone');
     });
 
     test('l emplacement de la COPIE sauvegardable n est PAS exclu, sinon la '
@@ -464,7 +477,6 @@ void main() {
 
   group('612 — LA CASE PILOTE LA PRESENCE D UNE COPIE, et le refus est le '
       'DEFAUT', () {
-    late AppDatabase db;
     late HealthInfoRepository fiche;
     late Directory racine;
     late CopieSauvegardableFicheService copie;
@@ -476,9 +488,14 @@ void main() {
     );
 
     setUp(() async {
-      db = AppDatabase(NativeDatabase.memory());
-      fiche = HealthInfoRepository(dao: HealthInfoDao(db));
       racine = await Directory.systemTemp.createTemp('sw612_');
+      // TACHE 613 : la fiche ne vit plus dans la base mais dans son propre
+      // fichier, sous le dossier declare exclu. Le depot est donc branche sur le
+      // meme bac temporaire que la copie sauvegardable — ce qui met les DEUX
+      // emplacements cote a cote dans ces tests, l exclu et le sauvegardable.
+      fiche = HealthInfoRepository(
+        fichier: FicheMedicaleFichier(dossierApplicatif: () async => racine),
+      );
       copie = CopieSauvegardableFicheService(
         healthRepository: fiche,
         baseDirProvider: () async => racine,
@@ -486,7 +503,6 @@ void main() {
     });
 
     tearDown(() async {
-      await db.close();
       if (racine.existsSync()) await racine.delete(recursive: true);
     });
 

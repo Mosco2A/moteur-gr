@@ -20,16 +20,37 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Chargement initial des donnees depuis les assets.
 ///
-/// Idempotent : ne fait rien si les donnees ont deja ete chargees
-/// (flag [_kDataSeeded] dans SharedPreferences).
+/// Idempotent : ne fait rien si les etapes de CE sentier sont deja en base — la
+/// base est la seule source de verite, voir [seedIfNeeded] et
+/// [SeedDataLoader.kDataSeededPrefsKey] pour la raison.
 ///
 /// Charge les stages (JSON), POIs (JSON), et GPX (parse + simplification
 /// Douglas-Peucker), puis insere en batch dans Drift.
 class SeedDataLoader {
-  /// Cle SharedPreferences du flag de seed.
+  /// ANCIENNE cle du drapeau de seed — ELLE N'EST PLUS LUE, SEULEMENT NETTOYEE.
   ///
-  /// Publique pour que l'amorce (`appBootstrapProvider`) puisse la reinitialiser
-  /// et forcer un re-seed a chaque lancement tant que la DB est in-memory.
+  /// LE DRAPEAU A ETE SUPPRIME A LA TACHE 613, ET LE REMPLACER PAR UN DRAPEAU PAR
+  /// SENTIER N'AURAIT PAS SUFFI : une preference et une base ne disparaissent pas
+  /// ensemble, donc un drapeau peut toujours mentir sur ce que la base contient,
+  /// DANS LES DEUX SENS.
+  ///
+  ///  * Il dit « deja seede » devant une base VIDE — preferences restaurees
+  ///    depuis une sauvegarde de telephone, ou drapeau pose par une version
+  ///    precedente de l'application dont la base etait en memoire. Resultat :
+  ///    l'application s'ouvre sur une carte sans etapes.
+  ///
+  ///  * Il dit « jamais seede » devant une base DEJA PEUPLEE. Ce n'est pas
+  ///    theorique : l'effacement du compte (art. 17) purge les preferences mais
+  ///    CONSERVE les tables de reference du sentier (`stages`, `pois`, la trace —
+  ///    voir `DataRetentionService.referenceTableNames`, et c'est voulu : effacer
+  ///    SES donnees ne doit pas lui retirer SON sentier). Le lancement suivant
+  ///    aurait re-seede par-dessus, et ce code INSERE sans jamais vider : etapes,
+  ///    points d'interet et trace GPX ENTIERE dupliques.
+  ///
+  /// LA BASE EST DONC LA SEULE SOURCE DE VERITE : on lui demande si le sentier
+  /// est deja pose. Une preference ne peut pas repondre a une question qui porte
+  /// sur la base. La cle n'est gardee ici que pour etre RETIREE des telephones
+  /// qui la portent encore, afin de ne pas laisser un residu de decision.
   static const String kDataSeededPrefsKey = 'data_seeded';
 
   SeedDataLoader({
@@ -51,18 +72,36 @@ class SeedDataLoader {
   ///
   /// Retourne true si le seed a ete effectue,
   /// false si les donnees etaient deja presentes.
+  ///
+  /// C'EST LA BASE QUI DECIDE, PAS UNE PREFERENCE (tache 613). La question posee
+  /// est « les etapes de CE sentier sont-elles deja en base ? », et elle est
+  /// posee a la base. Le drapeau en preferences qui tenait ce role a ete retire :
+  /// il pouvait mentir dans les deux sens, et les deux cas sont reels — voir
+  /// [kDataSeededPrefsKey], qui les nomme.
+  ///
+  /// Tant que la base etait en memoire, la question n'avait pas de sens : rien ne
+  /// survivait, et l'amorce effacait le drapeau a chaque lancement pour forcer le
+  /// seed. Sur une base durable, ce forcage aurait DOUBLE etapes, points
+  /// d'interet et trace a chaque ouverture — ce code INSERE, il ne vide jamais.
   Future<bool> seedIfNeeded() async {
-    if (_prefs.getBool(kDataSeededPrefsKey) == true) {
-      _log.d('Seed deja effectue, skip');
-      return false;
-    }
-
     final assetsBase = _trailConfig.seedAssetsBase;
     if (assetsBase == null) {
       _log.d('Pas de seed assets pour ce sentier, skip');
       return false;
     }
     final trailId = _trailConfig.id;
+
+    // Le residu de l'ancien drapeau : on l'oublie sans jamais s'y fier.
+    if (_prefs.containsKey(kDataSeededPrefsKey)) {
+      await _prefs.remove(kDataSeededPrefsKey);
+    }
+
+    final dejaEnBase = await StagesDao(_db).getByTrailId(trailId);
+    if (dejaEnBase.isNotEmpty) {
+      _log.d('Sentier $trailId deja en base '
+          '(${dejaEnBase.length} etapes), pas de seed');
+      return false;
+    }
 
     final sw = Stopwatch()..start();
 
@@ -215,8 +254,10 @@ class SeedDataLoader {
       }
     }
 
-    // --- 7. Marquer comme seed ---
-    await _prefs.setBool(kDataSeededPrefsKey, true);
+    // --- 7. RIEN A MARQUER (tache 613) ---
+    // Le drapeau en preferences a disparu : la presence des etapes en base EST
+    // la marque. Une marque qui vit ailleurs que la donnee qu'elle decrit finit
+    // toujours par ne plus la decrire.
 
     sw.stop();
     _log.i(

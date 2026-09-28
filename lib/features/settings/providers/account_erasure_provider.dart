@@ -29,7 +29,7 @@ import '../../planning/providers/planned_days_provider.dart'
 import '../../planning/providers/planning_provider.dart'
     show planningProvider, retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
-    show healthInfoRepositoryProvider;
+    show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
 import '../../safety/providers/health_prepare_providers.dart'
     show healthPrepareStepsProvider;
 import '../../share/providers/visibility_settings_provider.dart';
@@ -49,7 +49,15 @@ final dataRetentionServiceProvider =
     FutureProvider<DataRetentionService>((ref) async {
   final db = ref.watch(databaseProvider);
   final prefs = await SharedPreferences.getInstance();
-  return DataRetentionService(database: db, prefs: prefs);
+  return DataRetentionService(
+    database: db,
+    prefs: prefs,
+    // TACHE 613 : la fiche medicale n'est plus dans la base, elle a son propre
+    // fichier. L'effacement doit donc passer par LE MEME stockage que l'ecran,
+    // sinon il effacerait un fichier que personne ne lit pendant que celui que
+    // le randonneur voit resterait en place.
+    ficheMedicaleEraser: ref.watch(ficheMedicaleFichierProvider).effacer,
+  );
 });
 
 /// Signature de l'effacement du compte. Injectable : un ecran ne doit pas avoir

@@ -18,31 +18,32 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/data/daos/health_info_dao.dart';
-import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/fiche_medicale_fichier.dart';
 import '../data/health_info_repository.dart';
 import '../domain/health_bounds.dart';
 import '../domain/models/health_info.dart';
 import '../providers/health_prepare_providers.dart';
 import '../providers/refus_sauvegarde_systeme_provider.dart';
 
-/// Provider du DAO sante (Drift).
+/// Provider du stockage durable de la fiche medicale.
 ///
-/// Cablage LOT D/D1 : derive de [databaseProvider] (instance unique Drift).
-/// Le DAO est genere (`AppDatabase.healthInfoDao`). L'override par defaut
-/// pointe donc sur la vraie base ; les tests peuvent surcharger
-/// [databaseProvider] (DB in-memory) sans toucher a ce provider.
-final healthInfoDaoProvider = Provider<HealthInfoDao>(
-  (ref) => ref.watch(databaseProvider).healthInfoDao,
+/// TACHE 613 : il a remplace `healthInfoDaoProvider`, qui derivait de la base
+/// Drift commune. La fiche a desormais SON PROPRE FICHIER, sous le dossier
+/// declare exclu de la sauvegarde du telephone — la raison entiere est dans
+/// [FicheMedicaleFichier]. Les tests surchargent CE provider (repertoire
+/// temporaire) ; surcharger `databaseProvider` n'a plus d'effet sur la fiche,
+/// et c'est voulu : plus rien de medical ne passe par la base.
+final ficheMedicaleFichierProvider = Provider<FicheMedicaleFichier>(
+  (ref) => FicheMedicaleFichier(),
 );
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(
-  (ref) => HealthInfoRepository(dao: ref.watch(healthInfoDaoProvider)),
+  (ref) => HealthInfoRepository(fichier: ref.watch(ficheMedicaleFichierProvider)),
 );
 
 /// Provider des donnees sante actuelles.
@@ -54,8 +55,10 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
 /// E5.16 / E57 : Ecran formulaire informations de sante.
 ///
 /// Formulaire avec 5 champs modifiables + bouton sauvegarder.
-/// Les donnees sont stockees localement (Drift) et ne quittent
-/// JAMAIS le telephone (pas de Firestore, pas de cloud).
+/// Les donnees sont stockees localement — dans un FICHIER DEDIE sous le dossier
+/// declare exclu de la sauvegarde du telephone (tache 613, voir
+/// [FicheMedicaleFichier]) — et ne quittent JAMAIS le telephone (pas de
+/// Firestore, pas de cloud).
 class HealthInfoScreen extends ConsumerStatefulWidget {
   const HealthInfoScreen({super.key});
 
@@ -103,7 +106,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       // RE-SYNCHRONISATION DU SIGNAL DE PREPARATION (tache 568, LOT Q).
       //
       // La porte de demarrage du trek lit un signal en preferences
-      // ([HealthPrepStep.filled]) et non la base Drift (cf.
+      // ([HealthPrepStep.filled]) et non le fichier de la fiche (cf.
       // `health_prepare_providers.dart` : la porte est une vue SYNCHRONE). Ce
       // signal pourrait donc, en theorie, divergier de la donnee reelle — par
       // exemple une fiche remplie AVANT que ce signal existe, ou effacee par un

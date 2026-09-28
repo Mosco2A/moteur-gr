@@ -1,65 +1,43 @@
 // E5.16 — Repository informations sante LOCAL ONLY.
 //
-// Persistence locale via Drift (table health_info_entries).
-// JAMAIS de Firestore. Les donnees medicales restent exclusivement
-// sur le telephone. Fournit save/get/delete pour HealthInfoScreen.
+// Persistance locale dans un FICHIER DEDIE, sous le dossier declare exclu de la
+// sauvegarde du telephone (tache 613). JAMAIS de Firestore. Les donnees
+// medicales restent exclusivement sur le telephone.
+// Fournit save/get/delete pour HealthInfoScreen.
 
-import 'package:drift/drift.dart';
-
-import '../../../core/data/database.dart';
-import '../../../core/data/daos/health_info_dao.dart';
 import '../domain/models/health_info.dart';
+import 'fiche_medicale_fichier.dart';
 
 /// Repository LOCAL pour les informations de sante.
 ///
-/// Utilise Drift (table 'health_info_entries') pour stocker
-/// les donnees medicales du randonneur. Aucune synchronisation cloud.
+/// IL A CHANGE DE STOCKAGE A LA TACHE 613, ET LA RAISON EST ECRITE EN ENTIER
+/// DANS [FicheMedicaleFichier] : la fiche vivait dans la table `health_info` de
+/// la base commune, or cette base est devenue DURABLE et doit remonter dans la
+/// sauvegarde du telephone pour que la progression et le journal survivent au
+/// changement d'appareil. Un fichier de base ne s'exclut pas table par table :
+/// la fiche a donc son propre fichier, dans le dossier declare exclu.
 ///
-/// IMPORTANT : ces donnees ne quittent JAMAIS le telephone.
-/// Pas de Firestore, pas de Firebase, pas de sync.
+/// IMPORTANT : ces donnees ne quittent JAMAIS le telephone. Pas de Firestore,
+/// pas de Firebase, pas de sync.
 class HealthInfoRepository {
-  HealthInfoRepository({required this.dao});
+  HealthInfoRepository({required this.fichier});
 
-  /// DAO Drift pour les operations sur la table health_info.
-  final HealthInfoDao dao;
+  /// Le stockage durable de la fiche (un fichier sous `medical/`).
+  final FicheMedicaleFichier fichier;
 
   /// Sauvegarde les informations de sante en local.
   ///
   /// Ecrase les donnees precedentes (un seul profil).
-  Future<void> save(HealthInfo info) async {
-    // Supprimer l'ancien profil puis inserer le nouveau
-    await dao.deleteAll();
-    await dao.insertEntry(HealthInfoEntriesCompanion.insert(
-      bloodType: Value(info.bloodType),
-      allergies: Value(info.allergies),
-      treatments: Value(info.treatments),
-      doctorContact: Value(info.doctorContact),
-      insuranceNumber: Value(info.insuranceNumber),
-    ));
-  }
+  Future<void> save(HealthInfo info) => fichier.ecrire(info);
 
   /// Recupere les informations de sante depuis le stockage local.
   ///
   /// Retourne un [HealthInfo] vide (champs '') si aucune donnee
   /// n'a encore ete sauvegardee. Ne retourne JAMAIS null.
-  Future<HealthInfo> get() async {
-    final entry = await dao.getFirst();
-
-    if (entry == null) return const HealthInfo();
-
-    return HealthInfo(
-      bloodType: entry.bloodType,
-      allergies: entry.allergies,
-      treatments: entry.treatments,
-      doctorContact: entry.doctorContact,
-      insuranceNumber: entry.insuranceNumber,
-    );
-  }
+  Future<HealthInfo> get() => fichier.lire();
 
   /// Supprime toutes les informations de sante du telephone.
   ///
   /// Utilise en cas de deconnexion ou demande explicite de l'utilisateur.
-  Future<void> delete() async {
-    await dao.deleteAll();
-  }
+  Future<void> delete() => fichier.effacer();
 }

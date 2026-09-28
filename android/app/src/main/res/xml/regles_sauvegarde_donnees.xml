@@ -17,11 +17,18 @@
      invariante (test/comportement/fiche_medicale_locale_612_test.dart) exige que
      ce fichier et cette declaration disent la MEME chose, dans les deux sens.
 
-     POURQUOI LE DOMAINE database EST EXCLU EN ENTIER : la table health_info vit
-     dans la meme base que la progression du trek. Un fichier de base ne
-     s exclut pas table par table. Le cout est nul aujourd hui (la base est
-     ouverte en memoire) et il disparaitra quand la fiche aura son propre
-     stockage sous files/medical/.
+     TACHE 613 — L EXCLUSION DU DOMAINE database A ETE RETIREE, ET CE N EST PAS UN
+     RELACHEMENT. Elle existait parce que la table health_info partageait le
+     fichier de la progression et du journal ; la fiche medicale a desormais son
+     PROPRE fichier sous files/medical/, donc le motif a disparu. La garder aurait
+     fait perdre la progression et le carnet au changement de telephone, alors que
+     le produit promet qu un trek realise garde A VIE sa trace et son carnet. Elle
+     ne protegeait d ailleurs rien de reel : le domaine database designe
+     /data/data/<paquet>/databases/, la ou Android range les bases de son propre
+     SQLiteOpenHelper — une application Flutter n y ecrit jamais, la base de
+     StepWays vit sous app_flutter/, domaine root.
+
+     CE QUI EXCLUT LA DONNEE MEDICALE EST DONC LA SEULE LIGNE DE CHAQUE SECTION.
 
      LES DEUX SECTIONS SONT IDENTIQUES, ET C EST VOULU. cloud-backup gouverne la
      montee chez Google ; device-transfer gouverne la copie directe d un
@@ -31,10 +38,8 @@
 <data-extraction-rules>
     <cloud-backup>
         <exclude domain="file" path="medical/" />
-        <exclude domain="database" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="file" path="medical/" />
-        <exclude domain="database" />
     </device-transfer>
 </data-extraction-rules>

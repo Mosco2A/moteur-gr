@@ -427,7 +427,9 @@ class TrailFeatures {
 ///
 /// Injection intégrale (tests) : collaborateurs + horloge [nowFn] (reward 24 h)
 /// + `freeTrailIds`. La persistance durable reste SharedPreferences via
-/// [WalletStore] (DB volatile) ; ce service ne fait QUE la règle métier.
+/// [WalletStore] ; ce service ne fait QUE la règle métier. (La base n'est plus
+/// volatile depuis la tâche 613 — voir [WalletStore] pour l'arbitrage qui laisse
+/// les préférences en source durable du solde.)
 class MonetizationService {
   MonetizationService({
     required WalletStore walletStore,

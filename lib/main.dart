@@ -17,14 +17,12 @@ import 'core/error/error_nets.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
-import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
-import 'features/safety/presentation/health_info_screen.dart';
 import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
@@ -146,16 +144,15 @@ class MoteurGrApp extends StatelessWidget {
         // Seul firebaseServiceProvider reste surcharge (service initialise
         // au demarrage, hors graphe Riverpod pur).
         firebaseServiceProvider.overrideWithValue(firebaseService),
-        // E57 (LOT D/D1) : cablage explicite du DAO sante sur la base Drift
-        // unique (databaseProvider). Le provider auto-derive deja de
-        // databaseProvider ; l'override rend le point d'injection explicite au
-        // niveau racine (spec E57 RF-8). Donnees LOCAL ONLY (art. 9), jamais le
-        // cloud. NB : databaseProvider est en memoire (etat app-wide inchange,
-        // hors perimetre D1) -> persistance = duree de session, comme les
-        // autres features Drift aujourd'hui.
-        healthInfoDaoProvider.overrideWith(
-          (ref) => ref.watch(databaseProvider).healthInfoDao,
-        ),
+        // TACHE 613 — L'OVERRIDE DU DAO SANTE A ETE RETIRE, PAS OUBLIE. Il
+        // cablait la fiche medicale (E57 LOT D/D1) sur la base Drift commune.
+        // Cette base est desormais DURABLE et doit remonter dans la sauvegarde
+        // du telephone pour que la progression et le journal survivent au
+        // changement d'appareil ; un fichier de base ne s'excluant pas table par
+        // table, la fiche a recu son PROPRE fichier sous le dossier declare
+        // exclu (`FicheMedicaleFichier`, cable par
+        // `ficheMedicaleFichierProvider`). Plus rien de medical ne passe par
+        // `databaseProvider` : il n'y a donc plus rien a cabler ici.
       ],
       // Migration Riverpod 3 (INC-1) : NEUTRALISATION du retry automatique.
       // Riverpod 3 re-essaie par defaut tout provider Future/Stream qui leve
@@ -263,8 +260,10 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
 /// REACTIVE au changement de sentier).
 ///
 /// `ConsumerWidget` (sous le `ProviderScope`) : observe [appBootstrapProvider],
-/// qui force le seed du sentier actif (DB in-memory volatile -> re-seed a chaque
-/// lancement). Tant que le seed n'est pas resolu, affiche un ecran de chargement
+/// qui seede le sentier actif SI SES DONNEES NE SONT PAS DEJA EN BASE. Depuis la
+/// tache 613 la base est durable : le seed force a chaque lancement a ete retire,
+/// il aurait duplique etapes, POI et trace a chaque ouverture. Tant que le seed
+/// n'est pas resolu, affiche un ecran de chargement
 /// (i18n Slang) ; en cas d'echec, un ecran d'erreur discret. Une fois resolu, le
 /// [child] route (« Mes treks » puis le cockpit) s'affiche avec ses donnees deja
 /// en base.

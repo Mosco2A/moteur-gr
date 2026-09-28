@@ -165,14 +165,32 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
+  /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
+  ///
+  /// Ces vingt-sept marches existaient et etaient testees une par une, mais la
+  /// base etait ouverte EN MEMOIRE (`database_provider.dart`) : il n'y avait
+  /// jamais de fichier a migrer. A chaque lancement, Drift creait une base neuve
+  /// au schema courant et `onUpgrade` n'etait pas appele. Depuis la tache 613 la
+  /// base vit dans un fichier : ces marches vont VRAIMENT s'executer, sur le
+  /// telephone d'un randonneur, a la premiere mise a jour de l'application.
+  ///
+  /// D'OU LA REGLE POSEE ICI, ET ELLE VAUT POUR TOUTE MIGRATION FUTURE : tout
+  /// ajout de colonne passe par [_ajouterColonneSiAbsente]. `ALTER TABLE ADD
+  /// COLUMN` echoue sur une colonne deja presente, et UNE MIGRATION QUI ECHOUE
+  /// EMPECHE LA BASE DE S'OUVRIR — l'application ne demarre plus, sans recours.
+  /// Le cas n'est pas theorique : si l'application est tuee au milieu d'une
+  /// marche, `user_version` reste en arriere et la marche se rejoue sur des
+  /// colonnes deja posees. La v27 s'etait deja protegee ainsi ; les vingt-six
+  /// autres ne l'etaient pas, et elles le sont depuis la tache 613.
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (migrator, from, to) async {
           // Migration v1 -> v2 : ajout colonne totalTimeMinutes
           if (from < 2) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               userProgressEntries,
               userProgressEntries.totalTimeMinutes,
             );
@@ -261,7 +279,8 @@ class AppDatabase extends _$AppDatabase {
           // Migration v18 -> v19 : colonne weightGrams sur checklist_items
           // (PARITE GR20 « Materiel & Sac » : poids par article + total).
           if (from < 19) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               checklistItems,
               checklistItems.weightGrams,
             );
@@ -270,19 +289,23 @@ class AppDatabase extends _$AppDatabase {
           // integral (quantite par article, articles personnalises, liste de
           // courses, nom custom) sur checklist_items.
           if (from < 20) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               checklistItems,
               checklistItems.quantity,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               checklistItems,
               checklistItems.isCustom,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               checklistItems,
               checklistItems.inShoppingList,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               checklistItems,
               checklistItems.customName,
             );
@@ -292,7 +315,8 @@ class AppDatabase extends _$AppDatabase {
           // etape (duree estimee) alimente par les donnees du sentier
           // (stages.json, backend P4), affiche sur Itineraire et Programme.
           if (from < 21) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               stages,
               stages.estimatedDurationMinutes,
             );
@@ -309,11 +333,13 @@ class AppDatabase extends _$AppDatabase {
           // (stages.json, backend P4), affiches sur la sous-ligne « Depart ->
           // Arrivee » de la fiche etape.
           if (from < 23) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               stages,
               stages.departureName,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               stages,
               stages.arrivalName,
             );
@@ -346,15 +372,18 @@ class AppDatabase extends _$AppDatabase {
           // C'est ce qui permet d'arreter d'EFFACER le trace precedent au
           // demarrage d'une nouvelle randonnee.
           if (from < 26) {
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               sessionTrackPoints,
               sessionTrackPoints.sessionId,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               sessionTrackPoints,
               sessionTrackPoints.dayIndex,
             );
-            await migrator.addColumn(
+            await _ajouterColonneSiAbsente(
+              migrator,
               sessionTrackPoints,
               sessionTrackPoints.stageId,
             );
@@ -407,6 +436,29 @@ class AppDatabase extends _$AppDatabase {
                 migrator, trailGpxTracks, trailGpxTracks.rev);
             await _ajouterColonneSiAbsente(
                 migrator, trailGpxPoints, trailGpxPoints.rev);
+          }
+          // Migration v27 -> v28 : LA FICHE MEDICALE QUITTE LA BASE (tache 613).
+          //
+          // Elle a desormais son propre fichier, sous le dossier declare exclu de
+          // la sauvegarde du telephone (`FicheMedicaleFichier`). LA RAISON N'EST
+          // PAS COSMETIQUE : depuis la tache 613 la base est DURABLE, et pour que
+          // la progression et le journal survivent au changement de telephone —
+          // ce que le modele economique promet A VIE — ce fichier doit remonter
+          // dans la sauvegarde. Or un fichier de base ne s'exclut pas table par
+          // table. Tant que `health_info_entries` y vivait, il fallait choisir
+          // entre sauvegarder la progression et proteger la donnee de sante.
+          //
+          // CETTE MARCHE VIDE LA TABLE, ET C'EST UNE PRECAUTION, PAS UNE
+          // MIGRATION DE DONNEES. Il n'y a rien a transporter : la base n'ayant
+          // jamais eu de fichier, aucune fiche n'a jamais survecu a une
+          // fermeture. Mais si un binaire intermediaire avait ecrit une ligne
+          // ici, elle se retrouverait dans un fichier desormais sauvegarde. On ne
+          // laisse pas ce hasard decider : la table est videe, une fois, a la
+          // montee. Elle reste dans le schema (la retirer demanderait une
+          // regeneration du code pour un gain nul) et PLUS AUCUN CODE DE
+          // PRODUCTION NE L'ECRIT — l'invariante de la tache 613 le verifie.
+          if (from < 28) {
+            await customStatement('DELETE FROM health_info_entries');
           }
         },
       );

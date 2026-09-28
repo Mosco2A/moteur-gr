@@ -13,8 +13,11 @@ part 'hiker_profile_dao.g.dart';
 /// `insertOnConflictUpdate` (idempotent : chaque ecriture ecrase la ligne).
 ///
 /// Le schema Drift est CANONIQUE ; la SOURCE DURABLE reste SharedPreferences
-/// (DB volatile en memoire ; hydratation au boot par la couche repository, cf.
-/// `HikerProfileRepository`), comme le wallet.
+/// (hydratation au boot par la couche repository, cf. `HikerProfileRepository`),
+/// comme le wallet. LA RAISON D'ORIGINE A DISPARU A LA TACHE 613 : ce n'est plus
+/// « parce que la base est volatile » — elle vit dans un fichier — mais parce que
+/// renverser ce montage n'appartenait pas au lot qui a pose la persistance. Voir
+/// `HikerProfileRepository` pour l'arbitrage.
 @DriftAccessor(tables: [HikerProfile])
 class HikerProfileDao extends DatabaseAccessor<AppDatabase>
     with _$HikerProfileDaoMixin {

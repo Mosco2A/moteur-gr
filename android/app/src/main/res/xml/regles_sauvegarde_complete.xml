@@ -13,8 +13,12 @@
      lib/core/services/sauvegarde_systeme.dart, champ « exclusions ». Une
      invariante (test/comportement/fiche_medicale_locale_612_test.dart) exige que
      LES DEUX fichiers et cette declaration disent la MEME chose. Deux listes qui
-     divergent, c est une porte qui se rouvre sur la moitie du parc. -->
+     divergent, c est une porte qui se rouvre sur la moitie du parc.
+
+     TACHE 613 — L EXCLUSION DU DOMAINE database A ETE RETIREE ICI AUSSI, pour les
+     memes raisons que dans l autre fichier : la fiche medicale a son propre
+     fichier sous files/medical/, et garder la base hors sauvegarde ferait perdre
+     la progression et le carnet au changement de telephone. -->
 <full-backup-content>
     <exclude domain="file" path="medical/" />
-    <exclude domain="database" />
 </full-backup-content>

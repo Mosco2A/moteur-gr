@@ -13,11 +13,17 @@ import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 /// PARITE GR20 — LOT 1 (#99423) : preuve que le boot peuple reellement le fil
 /// d'etapes.
 ///
-/// On rejoue la chaine de production : [appBootstrapProvider] force le seed du
-/// sentier actif (assets reels Mare a Mare Centre) dans une base Drift
-/// in-memory partagee, puis [stagesProvider] doit renvoyer les 7 etapes seedees
+/// On rejoue la chaine de production : [appBootstrapProvider] seede le sentier
+/// actif (assets reels Mare a Mare Centre) dans une base Drift in-memory
+/// partagee, puis [stagesProvider] doit renvoyer les 7 etapes seedees
 /// (Ghisonaccia -> Porticcio). Sans le cablage du boot (garde dans main.dart),
 /// ce provider renvoyait une liste vide -> carte/etapes vides.
+///
+/// TACHE 613 : l'amorce ne FORCE plus le seed a chaque lancement. Elle le
+/// faisait parce que la base etait volatile ; sur une base durable cela aurait
+/// DOUBLE etapes, POI et trace a chaque ouverture (le semeur insere, il ne vide
+/// jamais). Elle seede desormais si les donnees ne sont pas deja la — ce que ce
+/// test exerce, en partant d'une base vide.
 void main() {
   // rootBundle.loadString (assets de seed) exige un binding initialise.
   TestWidgetsFlutterBinding.ensureInitialized();

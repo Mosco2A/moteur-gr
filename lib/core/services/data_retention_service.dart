@@ -13,7 +13,8 @@
 //
 //   2. DROIT A L'EFFACEMENT (art 17 RGPD) : [deleteAccountData] efface
 //      TOUTES les donnees personnelles locales (tables Drift utilisateur, fiche
-//      randonneur, caches, cles SharedPreferences, consentements) ET emet une
+//      randonneur, FICHIER de la fiche medicale depuis la tache 613, caches,
+//      cles SharedPreferences, consentements) ET emet une
 //      demande de suppression cote serveur (suppression des documents lies a
 //      l'UID hache). L'app etant anonyme-by-design (UID hache SHA-256, zero PII
 //      directe #85383), l'effacement est simple — mais il doit etre COMPLET et
@@ -50,6 +51,7 @@ import 'package:drift/drift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/feasibility/data/hiker_profile_repository.dart';
+import '../../features/safety/data/fiche_medicale_fichier.dart';
 import '../data/database.dart';
 import 'consent_service.dart';
 import 'secure_keystore_eraser.dart';
@@ -228,6 +230,18 @@ class DeletionReport {
 /// les DEUX etages de stockage de cette fiche (prefs durables + miroir Drift).
 typedef HikerFileEraser = Future<void> Function();
 
+/// Signature de l'effacement de la FICHE MEDICALE (art. 9), TACHE 613.
+///
+/// ELLE N'EST PLUS DANS LA BASE, DONC LA PURGE DES TABLES NE L'EMPORTE PLUS.
+/// Jusqu'a la tache 613 la fiche vivait dans la table `health_info_entries` et
+/// [_wipeAllUserTables] l'effacait sans qu'on ait a la nommer. Depuis qu'elle a
+/// son propre fichier (voir [FicheMedicaleFichier], et la raison : rendre la base
+/// sauvegardable sans emporter la donnee de sante), l'effacement DOIT la nommer —
+/// sans quoi la tache 613 aurait discretement defait le droit a l'effacement
+/// conquis aux lots J a O. Injectable pour les tests ; par defaut branchee sur le
+/// fichier REEL.
+typedef FicheMedicaleEraser = Future<void> Function();
+
 /// Signature de l'appel de suppression cote serveur.
 ///
 /// Recoit l'UID hache du compte a supprimer. L'implementation reelle
@@ -245,6 +259,7 @@ class DataRetentionService {
     ServerDeletionRequest? serverDeletion,
     RetentionPolicy policy = const RetentionPolicy(),
     HikerFileEraser? hikerFileEraser,
+    FicheMedicaleEraser? ficheMedicaleEraser,
     SecureKeystoreErasure? secureKeystoreErasure,
     DateTime Function()? now,
   })  : _db = database,
@@ -254,6 +269,8 @@ class DataRetentionService {
         _hikerFileEraser = hikerFileEraser ??
             HikerProfileRepository(db: database, prefs: prefs)
                 .eraseAllPersonalData,
+        _ficheMedicaleEraser =
+            ficheMedicaleEraser ?? FicheMedicaleFichier().effacer,
         _secureKeystoreErasure =
             secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
         _now = now ?? DateTime.now;
@@ -263,6 +280,11 @@ class DataRetentionService {
   final ServerDeletionRequest? _serverDeletion;
   final RetentionPolicy _policy;
   final HikerFileEraser _hikerFileEraser;
+
+  /// Effacement du FICHIER de la fiche medicale (tache 613). JAMAIS nul, meme
+  /// raison que le keystore : une etape d'effacement qu'on desactive en oubliant
+  /// un parametre n'efface rien.
+  final FicheMedicaleEraser _ficheMedicaleEraser;
 
   /// Effacement du keystore OS (tache 562, K2). JAMAIS nul : a defaut
   /// d'injection, il est branche sur le keystore REEL. Une etape d'effacement
@@ -465,6 +487,8 @@ class DataRetentionService {
   ///      erreur remonte (pas d'effacement partiel silencieux).
   ///   2. Effacement de la FICHE RANDONNEUR par la couche qui la possede
   ///      (donnee de sante art. 9, stockee sur DEUX etages).
+  ///   2 bis. Effacement du FICHIER de la FICHE MEDICALE (tache 613) : elle a
+  ///      quitte la base, donc la purge des tables ne l'emporte plus.
   ///   3. Purge de toutes les tables Drift a donnee utilisateur, DERIVEE du
   ///      schema (voir [userTables]).
   ///   4. Purge des cles SharedPreferences personnelles, DERIVEE du store reel
@@ -490,6 +514,15 @@ class DataRetentionService {
     //    les deux etages. Vider le miroir Drift sans les prefs ne servirait a
     //    rien — le boot suivant le re-hydrate depuis les prefs.
     await _hikerFileEraser();
+
+    // 2 bis. FICHE MEDICALE (art. 9), TACHE 613 : elle a QUITTE LA BASE pour son
+    //    propre fichier, sous le dossier exclu de la sauvegarde du telephone. La
+    //    purge des tables de l'etape 3 ne l'emporte donc plus. L'effacement la
+    //    nomme desormais explicitement — sinon rendre la base durable aurait
+    //    laisse la fiche sur le disque APRES que le randonneur a demande son
+    //    effacement, ce qui est exactement le defaut que les lots J a O ont
+    //    ferme.
+    await _ficheMedicaleEraser();
 
     // 3. Purge locale de toutes les tables a donnees utilisateur (derivee).
     final localRows = await _wipeAllUserTables();
