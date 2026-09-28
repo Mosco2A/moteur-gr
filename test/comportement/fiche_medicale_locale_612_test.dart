@@ -59,6 +59,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/cloud_sync_service.dart';
+import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
 import 'package:moteur_gr/features/safety/data/copie_sauvegardable_fiche_service.dart';
 import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
@@ -460,18 +461,27 @@ void main() {
       }
     });
 
-    test('l exigence iPhone est DECLAREE et ACTIONNABLE (elle n est pas un '
-        'acquis)', () {
+    test('l exigence iPhone est DECLAREE et ACTIONNABLE — et elle est TENUE '
+        'depuis la tache 615', () {
       // MESURE DU 28/09 : sur iOS, l exclusion de la sauvegarde iCloud n est PAS
       // declarative. Il n existe aucun equivalent de dataExtractionRules dans
       // Info.plist : elle se pose a l execution, fichier par fichier, avec
-      // NSURLIsExcludedFromBackupKey. On ne fait donc pas semblant : on declare
-      // l exigence en la NOMMANT, comme CoffreDeReconnexion nomme ce qui manque.
+      // NSURLIsExcludedFromBackupKey. Le lot 612 ne pouvait donc que NOMMER
+      // l exigence, comme CoffreDeReconnexion nomme ce qui manque.
+      //
+      // TACHE 615 : ELLE N EST PLUS SEULEMENT NOMMEE. Le canal natif existe
+      // (`ExclusionSauvegardeIcloud`) et l exclusion est reposee a CHAQUE
+      // ecriture, parce que l ecriture est atomique et qu un fichier remplace ne
+      // porte plus l attribut de celui qu il remplace. Cette verification-ci
+      // garde le CONTRAT ; `exclusion_icloud_615_test.dart` garde le MECANISME.
       const exigence = SauvegardeSysteme.exigenceIosExclusion;
       expect(exigence, contains('NSURLIsExcludedFromBackupKey'));
       expect(exigence, contains(SauvegardeSysteme.dossierExclu));
       expect(exigence.length, greaterThan(80),
           reason: 'une exigence trop courte pour etre suivie ne sera pas suivie');
+      expect(File(ExclusionSauvegardeIcloud.fichierNatif).existsSync(), isTrue,
+          reason: 'l exigence est devenue un CANAL : sans le fichier natif qui en '
+              'tient l autre bout, elle redeviendrait une intention');
     });
   });
 

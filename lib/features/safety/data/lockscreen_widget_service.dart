@@ -239,8 +239,23 @@ class LockscreenWidgetService {
     return securityPayload;
   }
 
-  /// Met a jour le widget iOS via UserDefaults.
-  /// E5.20a : inclut les donnees de secours.
+  /// COMPOSE LE PAQUET DU WIDGET iOS — ET NE L'ECRIT NULLE PART (mesure de la
+  /// tache 615).
+  ///
+  /// CETTE PHRASE DISAIT « Met a jour le widget iOS via UserDefaults », ET C'ETAIT
+  /// FAUX DANS LES DEUX SENS. Rien n'est ecrit dans `UserDefaults` : le paquet
+  /// reste dans [_lastIosWidgetData], en MEMOIRE, et disparait avec le processus.
+  /// Le widget `ios/TrekWidget/TrekWidget.swift`, lui, ne lit que la progression
+  /// du trek — il ne cherche AUCUN champ de sante. Le widget de secours iOS n'est
+  /// donc pas branche, et c'est un point ouvert du lot E5.20a, pas de celui-ci.
+  ///
+  /// POURQUOI CETTE CORRECTION APPARTIENT A LA TACHE 615. Ce lot devait confirmer
+  /// que la fiche medicale n'a QU'UN SEUL porteur durable. Un commentaire annoncant
+  /// une ecriture dans `UserDefaults` en designait un second — et `UserDefaults`
+  /// EST emporte par la sauvegarde iCloud. La verification a montre qu'il n'y a
+  /// rien : la phrase mentait, pas le code. Le jour ou quelqu'un branchera
+  /// vraiment ce widget, il devra decider ce qu'il fait de la donnee de sante, et
+  /// c'est pour cela que la question est ecrite ici plutot qu'effacee.
   Future<void> _updateIosWidget(List<EmergencyContact> contacts) async {
     _lastIosWidgetData = [buildIosSecurityPayload(contacts)];
   }

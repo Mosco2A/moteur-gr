@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../core/services/exclusion_sauvegarde_icloud.dart';
 import '../../../core/services/sauvegarde_systeme.dart';
 import '../presentation/health_info_screen.dart' show healthInfoRepositoryProvider;
 import 'health_info_repository.dart';
@@ -37,15 +38,29 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// ni d'un refus re-coche. C'est la meme exigence que celle des LOTS J a O sur le
 /// droit a l'effacement, et c'est la seule facon dont « je refuse » veuille dire
 /// quelque chose une fois que quelque chose a deja ete ecrit.
+///
+/// SUR IPHONE, IL FALLAIT AUSSI LE CHEMIN INVERSE (tache 615). L'exclusion iCloud
+/// n'est pas declarative : elle est posee A L'EXECUTION sur chaque fichier de la
+/// fiche ([ExclusionSauvegardeIcloud]). Cette copie-ci, elle, doit au contraire
+/// NE PAS la porter — c'est tout son objet. [ExclusionSauvegardeIcloud.inclure]
+/// la lui retire explicitement a chaque ecriture. Sans ce geste, une copie qui
+/// aurait herite de l'attribut par un changement futur du montage serait un FAUX
+/// SUCCES : la case se decocherait, la copie apparaitrait, et le randonneur
+/// retrouverait un telephone vide en croyant avoir choisi la commodite.
 class CopieSauvegardableFicheService {
   CopieSauvegardableFicheService({
     required HealthInfoRepository healthRepository,
     Future<Directory> Function()? baseDirProvider,
+    ExclusionSauvegardeIcloud? exclusionIcloud,
   })  : _health = healthRepository,
-        _baseDirProvider = baseDirProvider ?? getApplicationSupportDirectory;
+        _baseDirProvider = baseDirProvider ?? getApplicationSupportDirectory,
+        _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
 
   final HealthInfoRepository _health;
   final Future<Directory> Function() _baseDirProvider;
+
+  /// L'EXCLUSION iCLOUD, UTILISEE ICI A L'ENVERS : on la RETIRE de la copie.
+  final ExclusionSauvegardeIcloud _exclusion;
 
   /// Le fichier de la copie, dans l'emplacement INCLUS dans la sauvegarde.
   Future<File> _fichierCopie() async {
@@ -110,6 +125,10 @@ class CopieSauvegardableFicheService {
       final fichier = await _fichierCopie();
       fichier.parent.createSync(recursive: true);
       fichier.writeAsStringSync(jsonEncode(info.toJson()), flush: true);
+      // LE CHEMIN INVERSE DE LA TACHE 615, ET IL EST POSE A CHAQUE ECRITURE pour
+      // la meme raison que l'exclusion l'est a chaque ecriture de la fiche :
+      // l'attribut appartient au FICHIER, donc a celui qui existe MAINTENANT.
+      await _exclusion.inclure(fichier.path);
       _log.d('[CopieFiche] Copie sauvegardable ecrite (refus decoche)');
       return true;
     } catch (e) {

@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../engine/trail_engine.dart';
+import '../../features/safety/presentation/health_info_screen.dart'
+    show ficheMedicaleFichierProvider;
 import '../../features/trek/data/seed_data_loader.dart';
 import '../../features/trek/providers/session_recovery_provider.dart';
 import '../../features/trek/providers/stage_providers.dart';
@@ -39,9 +41,23 @@ import 'database_provider.dart';
 /// reels). C'est donc la BASE qu'on interroge : « ce sentier est-il deja pose ? ».
 /// Le moteur reste generique : le sentier seede est celui de
 /// `trailConfigProvider` (une donnee), aucune localite ici.
+/// L'EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE ICI, A CHAQUE DEMARRAGE
+/// (tache 615). Elle est posee a chaque ecriture de la fiche, ce qui protege ce
+/// que l'application ecrit ELLE-MEME — mais pas le telephone d'un randonneur qui
+/// avait deja rempli sa fiche avec la version de la tache 613 et met a jour :
+/// celui-la ne reecrira peut-etre plus jamais sa fiche, et son `fiche.json` est
+/// deja dans iCloud sans attribut. C'est l'amorce, et elle seule, qui repasse
+/// derriere lui. Meme discipline que le re-alignement de la copie sauvegardable :
+/// le disque converge vers la decision a chaque ouverture.
+///
+/// ELLE EST ATTENDUE, ET SANS RISQUE POUR LE DEMARRAGE : hors iPhone elle rend la
+/// main sans toucher au canal natif, sur iPhone elle est bornee par
+/// `ExclusionSauvegardeIcloud.delaiMax`, et elle ne leve jamais.
 final appBootstrapProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   final config = ref.watch(trailConfigProvider);
+
+  await ref.read(ficheMedicaleFichierProvider).garantirExclusion();
 
   final prefs = await SharedPreferences.getInstance();
 

@@ -21,14 +21,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// POURQUOI CES SIGNAUX VIVENT EN PREFERENCES ET PAS EN BASE. La porte de
 /// demarrage est une vue SYNCHRONE, relue a chaque frame par le bouton du
-/// cockpit ([HubStartTrekButton]). Y brancher la base Drift en ferait une vue
-/// asynchrone et l'attacherait a l'ouverture de la base. La DONNEE de sante
-/// reste evidemment en Drift, LOCAL ONLY (art. 9 RGPD) ; ce qui entre ici est un
-/// signal de PREPARATION, exactement de la meme nature que les etapes coeur
-/// (`prepare_core_steps_`) deja derivees d'ecrans ouverts. L'ecran de la fiche
-/// RE-SYNCHRONISE [HealthPrepStep.filled] a chaque ouverture depuis la base :
-/// le signal ne peut donc pas mentir durablement, et une fiche effacee referme
-/// la porte (verrouille par test).
+/// cockpit ([HubStartTrekButton]). Y brancher une lecture de disque en ferait une
+/// vue asynchrone.
+///
+/// CE QUI ENTRE ICI NE CONTIENT AUCUNE DONNEE MEDICALE — deux noms d'enum, pas un
+/// groupe sanguin —, et cette precision compte : les preferences, elles, sont
+/// emportees par la sauvegarde du telephone. C'est un signal de PREPARATION,
+/// exactement de la meme nature que les etapes coeur (`prepare_core_steps_`) deja
+/// derivees d'ecrans ouverts. L'ecran de la fiche RE-SYNCHRONISE
+/// [HealthPrepStep.filled] a chaque ouverture depuis la fiche elle-meme : le
+/// signal ne peut donc pas mentir durablement, et une fiche effacee referme la
+/// porte (verrouille par test).
+///
+/// CETTE PHRASE A ETE CORRIGEE A LA TACHE 615. Elle disait « la DONNEE de sante
+/// reste evidemment en Drift », ce qui est FAUX depuis la tache 613 : la fiche a
+/// quitte la base pour son propre fichier, sous le dossier exclu de la sauvegarde
+/// (`FicheMedicaleFichier`). Le motif des commentaires qui survivent a la regle
+/// qu'ils decrivent, mesure le 27/09, valait aussi pour celui-la.
 enum HealthPrepStep {
   /// La fiche medicale porte au moins une information ([HealthInfo.hasData]).
   filled,

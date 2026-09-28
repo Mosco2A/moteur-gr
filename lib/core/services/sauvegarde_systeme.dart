@@ -86,24 +86,40 @@
 /// [MESURE 4 — IPHONE, ET CE N'EST PAS LA MEME MECANIQUE] Sur iOS l'exclusion
 /// de la sauvegarde iCloud n'est PAS declarative : elle se pose a l'execution,
 /// fichier par fichier, avec `NSURLIsExcludedFromBackupKey` sur l'URL. Il n'y a
-/// aucun equivalent de `dataExtractionRules` dans `Info.plist`. Ce que ce
-/// fichier declare pour iOS est donc une EXIGENCE nommee
-/// ([exigenceIosExclusion]), pas un fait acquis — sur le meme patron que
-/// [CoffreDeReconnexion] : on declare l'etat reel et on nomme ce qui manque,
-/// plutot que de laisser croire que c'est fait. CET ECART EST DEVENU REEL AVEC LA
-/// TACHE 613 : un fichier medical durable existe desormais sous [dossierExclu],
-/// donc sur iPhone il monte aujourd'hui dans iCloud. C'est LE point ouvert de ce
-/// lot, il demande un canal de methode natif, et il est nomme ici pour ne pas
-/// etre perdu.
+/// aucun equivalent de `dataExtractionRules` dans `Info.plist`. La tache 612
+/// avait donc nomme ici une EXIGENCE ([exigenceIosExclusion]) plutot qu'un fait
+/// acquis, et la tache 613 a rendu l'ecart REEL en donnant a la fiche un fichier
+/// durable.
+///
+/// [MESURE 5 — CET ECART EST FERME (tache 615)] L'exigence n'est plus seulement
+/// nommee, elle est TENUE : `ExclusionSauvegardeIcloud` pose
+/// `NSURLIsExcludedFromBackupKey` par un canal de methode natif
+/// (`ios/Runner/AppDelegate.swift`), et elle le repose A CHAQUE ECRITURE de la
+/// fiche — parce que l'ecriture est ATOMIQUE et qu'un fichier remplace ne porte
+/// plus l'attribut de celui qu'il remplace. Le chemin inverse existe aussi : la
+/// copie ecrite quand le randonneur DECOCHE la case se voit explicitement RETIRER
+/// l'exclusion, sans quoi decocher n'aurait aucun effet sur iPhone.
+///
+/// LES DEUX PLATEFORMES NE SE PROTEGENT DONC PAS DE LA MEME FACON, et il ne faut
+/// pas chercher a les uniformiser : Android par DECLARATION (les deux XML, fixes
+/// a la compilation, verifies par l'invariante du lot 612), iPhone par ATTRIBUT
+/// POSE A L'EXECUTION (verifie par l'invariante du lot 615). La case pre-cochee
+/// du randonneur, elle, dit la meme chose des deux cotes.
 ///
 /// ---------------------------------------------------------------------------
-/// UNE INVARIANTE TIENT TOUT CECI
+/// DEUX INVARIANTES TIENNENT TOUT CECI
 /// ---------------------------------------------------------------------------
 ///
 /// `test/comportement/fiche_medicale_locale_612_test.dart` lit le manifeste et
 /// les deux fichiers de regles et exige qu'ils disent la MEME chose que ce
 /// fichier, dans les deux sens. Retirer une exclusion du XML sans la retirer
 /// ici echoue ; l'inverse aussi.
+///
+/// `test/comportement/exclusion_icloud_615_test.dart` fait le meme travail pour
+/// le cote iPhone : il lit `AppDelegate.swift`, exige qu'il porte le MEME nom de
+/// canal et les MEMES noms de methodes que le Dart, et verifie dans le pbxproj
+/// que ce fichier est bien COMPILE. Puis il prouve, sur un canal espion, que
+/// l'exclusion survit a l'ecriture atomique.
 library;
 
 /// Emplacements et regles de la sauvegarde systeme (Google / Apple).
@@ -156,13 +172,19 @@ abstract final class SauvegardeSysteme {
     (domaine: 'file', chemin: 'medical/'),
   ];
 
-  /// L'EXIGENCE IPHONE, NOMMEE POUR ETRE ACTIONNABLE (mesure 4).
+  /// L'EXIGENCE IPHONE — NOMMEE PAR LE LOT 612, TENUE PAR LE LOT 615.
   ///
-  /// Ce n'est pas un fait acquis : c'est ce qu'il faudra appeler le jour ou un
-  /// fichier medical durable apparaitra sous [dossierExclu].
+  /// Elle reste ecrite ici, et ce n'est pas un vestige : c'est le CONTRAT que
+  /// `ExclusionSauvegardeIcloud` doit honorer, et c'est le texte que l'invariante
+  /// du lot 612 continue de lire. Ce qui a change est la derniere phrase — « a sa
+  /// creation » ne suffisait pas, et le lot 615 l'a mesure : l'ecriture de la
+  /// fiche est ATOMIQUE, elle REMPLACE le fichier, et un fichier remplace ne
+  /// porte plus l'attribut de celui qu'il remplace. L'exclusion doit donc etre
+  /// REPOSEE a chaque ecriture.
   static const String exigenceIosExclusion =
       'poser NSURLIsExcludedFromBackupKey = true sur le dossier "$dossierExclu" '
-      'de Library/Application Support, a sa creation, via un canal de methode '
-      'natif — iOS n\'offre AUCUN equivalent declaratif de '
-      'android:dataExtractionRules dans Info.plist';
+      'de Library/Application Support ET sur le fichier de la fiche, A CHAQUE '
+      'creation OU remplacement, via un canal de methode natif — iOS n\'offre '
+      'AUCUN equivalent declaratif de android:dataExtractionRules dans '
+      'Info.plist, et une ecriture atomique fait perdre l\'attribut';
 }
