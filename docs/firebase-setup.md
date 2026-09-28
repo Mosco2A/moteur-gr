@@ -89,7 +89,7 @@ firebase apps:sdkconfig IOS <app-id-ios> --project stepways-app \
 > `firebase apps:list --project stepways-app` redonne les deux identifiants
 > d'application à tout moment — inutile de les recopier ailleurs.
 
-### 2 bis. Les greffons Gradle — FAIT (tâche 604)
+### 2 bis. Les greffons Gradle — FAIT (tâche 604), rendus CONDITIONNELS (tâche 619)
 
 **Sans eux, les fichiers ci-dessus ne sont JAMAIS lus.** Ils étaient
 absents : `Firebase.initializeApp()` échouait donc à 100 % des démarrages
@@ -98,6 +98,35 @@ Android et l'app repassait en mode local avec la raison
 `com.google.firebase.crashlytics` sont désormais déclarés dans
 `android/settings.gradle.kts` et appliqués dans
 `android/app/build.gradle.kts`.
+
+> **TÂCHE 619 — ils ne sont plus posés EN DUR, et voici ce que cela change pour
+> vous.** `com.google.gms.google-services` **refuse de fonctionner** sans
+> `android/app/google-services.json` : il arrête le build avec
+> *« File google-services.json is missing. The Google Services Plugin cannot
+> function without it. »* Or ce fichier est exclu du dépôt (`.gitignore`) et
+> **aucune** chaîne ne le fournit — `codemagic.yaml` ne le mentionne nulle part.
+> Résultat mesuré le 28/09 : **depuis la tâche 604, plus aucun build Android ne
+> passait**, ni en local ni sur le workflow `merge` qui compile pourtant un APK
+> debug. Personne ne l'avait vu parce que personne n'avait recompilé Android
+> depuis.
+>
+> Les deux greffons sont maintenant posés **sous condition de présence du
+> fichier**. Avec le fichier : rien ne change. Sans lui : le paquet se construit
+> quand même, l'application s'installe, et le catalogue distant reste muet — le
+> repli sur les sentiers compilés (acquis du lot 605) prend le relais. Gradle le
+> dit à voix haute au build (`logger.warn`).
+>
+> **Pour rétablir Firebase sur un poste neuf**, les applications existent déjà
+> côté console (étape 2 ci-dessus, `FAIT`) : il suffit de redemander leur
+> configuration.
+>
+> ```bash
+> firebase apps:list --project stepways-app
+> firebase apps:sdkconfig ANDROID <app-id-android> --project stepways-app \
+>   --out android/app/google-services.json
+> firebase apps:sdkconfig IOS <app-id-ios> --project stepways-app \
+>   --out ios/Runner/GoogleService-Info.plist
+> ```
 
 ### 3. Brancher l'init dans le code
 

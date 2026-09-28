@@ -100,7 +100,20 @@
      projet Xcode (DEVELOPMENT_TEAM absent du pbxproj). L inventer ferait une
      declaration decorative qui ne protege rien. POINT OUVERT NOMME, voir
      SauvegardeSysteme.trouCrossPlatformTransfer. -->
-<data-extraction-rules>
+<!-- TACHE 619 — POURQUOI LE CONTROLE `FullBackupContent` EST TU ICI, NOMMEMENT.
+     Lint refuse une exclusion qui ne tombe pas sous une inclusion :
+     « medical/ is not in an included path ». Il a raison sur le fait, et
+     l exclusion reste quand meme : elle est ecrite POUR LE JOUR ou une inclusion
+     plus large serait posee, ou « <exclude> takes precedence » la rendra
+     agissante. Deux invariantes Dart EXIGENT sa presence
+     (fiche_medicale_locale_612_test.dart) ; la retirer pour faire taire Lint
+     casserait les invariantes ET retirerait le verrou.
+     Ce n est pas un detail de style : Lint faisait ECHOUER la compilation
+     release (mesure du 28/09, « Lint found 3 errors »), donc aucun paquet
+     installable ne sortait du depot. On tait le controle par son nom, ici, et on
+     garde la declaration. -->
+<data-extraction-rules xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="FullBackupContent">
     <cloud-backup>
         <include domain="file" path="sauvegarde_systeme/" />
         <exclude domain="file" path="medical/" />

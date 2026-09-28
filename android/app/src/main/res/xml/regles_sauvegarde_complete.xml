@@ -29,7 +29,22 @@
      (documentation Android). Deux invariantes Dart exigent que ce fichier dise la
      MEME chose que le code, dans les deux sens. Deux listes qui divergent, c est
      une porte qui se rouvre sur la moitie du parc. -->
-<full-backup-content>
+<!-- TACHE 619 — POURQUOI LE CONTROLE `FullBackupContent` EST TU ICI, NOMMEMENT,
+     ET POURQUOI CE N'EST PAS UN CONTOURNEMENT DE CONFORT.
+     Le controle Lint d'Android refuse une exclusion qui ne tombe pas sous une
+     inclusion : « medical/ is not in an included path ». Il a raison SUR LE FAIT
+     : `medical/` n'est pas sous `sauvegarde_systeme/`, donc cette exclusion ne
+     retire rien aujourd'hui. Elle est ecrite POUR DEMAIN. Le jour ou quelqu'un
+     elargira l'inclusion, la regle « <exclude> takes precedence » la rendra
+     agissante sans que personne ait a y repenser. C'est le second verrou de la
+     decision du 28/09 10:42 sur les donnees medicales, et DEUX INVARIANTES DART
+     EXIGENT sa presence (fiche_medicale_locale_612_test.dart).
+     La retirer pour satisfaire Lint casserait ces invariantes ET retirerait le
+     verrou. Or Lint faisait echouer la compilation release : mesure du 28/09,
+     « Lint found 3 errors », aucun paquet produit, donc rien d'installable. On
+     garde l'exclusion et on tait le controle — ici seulement, et par son nom. -->
+<full-backup-content xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="FullBackupContent">
     <include domain="file" path="sauvegarde_systeme/" />
     <exclude domain="file" path="medical/" />
 </full-backup-content>
