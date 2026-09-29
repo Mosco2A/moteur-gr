@@ -5,11 +5,8 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
 import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/daos/progress_dao.dart';
-import 'package:moteur_gr/core/data/daos/sync_queue_dao.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
-import 'package:moteur_gr/core/services/background_sync_service.dart';
-import 'package:moteur_gr/core/services/cloud_sync_service.dart';
 import 'package:moteur_gr/core/services/restore_service.dart';
 
 /// Fake ConnectivityMonitor pour les tests.
@@ -20,7 +17,7 @@ class FakeConnectivityMonitor extends ConnectivityMonitor {
   Future<ConnectivityStatus> checkStatus() async => _status;
 }
 
-/// Tests E4.16 — sync auto background + restore nouveau telephone.
+/// Tests E4.16 — restauration sur un nouveau telephone.
 /// Fixtures neutres (sentier fictif volcans).
 void main() {
   // TACHE 565 (LOT N, N2) : `RestoreService` consulte desormais le MARQUEUR
@@ -36,7 +33,6 @@ void main() {
   late ProgressDao progressDao;
   late JournalDao journalDao;
   late ChecklistDao checklistDao;
-  late SyncQueueDao syncQueueDao;
   late FakeConnectivityMonitor connectivity;
 
   setUp(() {
@@ -45,66 +41,22 @@ void main() {
     progressDao = ProgressDao(db);
     journalDao = JournalDao(db);
     checklistDao = ChecklistDao(db);
-    syncQueueDao = SyncQueueDao(db);
     connectivity = FakeConnectivityMonitor();
   });
   tearDown(() async {
     await db.close();
   });
 
-  // ==========================================================
-  // E4.16 Test 1 : BackgroundSyncService lifecycle + intervalle
-  // ==========================================================
-  group('E4.16 BackgroundSyncService', () {
-    test('start avec Firebase indisponible ne demarre pas', () {
-      final cloudSync = CloudSyncService(
-        progressDao: progressDao,
-        journalDao: journalDao,
-        checklistDao: checklistDao,
-        syncQueueDao: syncQueueDao,
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: false),
-      );
-      final bgSync = BackgroundSyncService(
-        cloudSyncService: cloudSync,
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: false),
-        intervalMinutes: 30,
-      );
-
-      bgSync.start(userId: 'user1', trailId: 'volcans');
-      // Sans Firebase, le service ne demarre pas
-      expect(bgSync.isRunning, isFalse);
-      expect(bgSync.lastSyncTime, isNull);
-
-      // Intervalle par defaut = 30 min
-      expect(bgSync.intervalMinutes, 30);
-    });
-
-    test('syncNow retourne idle sans Firebase', () async {
-      final cloudSync = CloudSyncService(
-        progressDao: progressDao,
-        journalDao: journalDao,
-        checklistDao: checklistDao,
-        syncQueueDao: syncQueueDao,
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: false),
-      );
-      final bgSync = BackgroundSyncService(
-        cloudSyncService: cloudSync,
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: false),
-      );
-      bgSync.start(userId: 'user1', trailId: 'volcans');
-
-      final result = await bgSync.syncNow();
-      expect(result.status, CloudSyncStatusValues.idle);
-
-      // stop + dispose
-      bgSync.dispose();
-      expect(bgSync.isRunning, isFalse);
-    });
-  });
+  // LE SECOND ORDONNANCEUR A ETE RETIRE (tache 635)
+  //
+  // Ici vivaient deux tests de `BackgroundSyncService` : son cycle de vie et
+  // son `syncNow` sans Firebase. Le service lui-meme n avait AUCUN appelant
+  // dans `lib/` — pas plus que `SyncScheduler`, l autre ordonnanceur. Deux
+  // horloges mortes pour un seul travail : la montee en base a garde la
+  // premiere (`sync_scheduler.dart`, desormais branchee depuis `main.dart`) et
+  // supprime celle-ci. Ces deux tests prouvaient le bon fonctionnement d un
+  // objet que personne n utilisait ; ce qui compte se prouve maintenant dans
+  // `test/comportement/montee_en_base_635_test.dart`.
 
   // ==========================================================
   // E4.16 Test 2 : RestoreService checkAndRestore + merge LWW

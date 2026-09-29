@@ -7,12 +7,8 @@ import "package:logger/logger.dart";
 
 import "../data/database.dart";
 import "../data/daos/checklist_dao.dart";
-import "../data/daos/journal_dao.dart";
 import "../data/daos/progress_dao.dart";
 import "../data/daos/sync_queue_dao.dart";
-import "../data/daos/trek_entitlements_dao.dart";
-import "../data/daos/wallet_dao.dart";
-import "../data/daos/hiker_profile_dao.dart";
 import "../data/daos/past_hikes_dao.dart";
 import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
@@ -101,22 +97,46 @@ class CloudSyncResult {
   final String? error;
 }
 
-/// Service de synchronisation des donnees utilisateur vers Firestore.
+/// CE QUE LE TELEPHONE ECRIT AU SERVEUR — ET LA LISTE S EST RETRECIE (tache
+/// 635).
 ///
-/// Strategie last-write-wins : chaque document porte un updatedAt,
-/// le plus recent gagne. Les donnees locales restent la source primaire,
-/// la sync est un backup cloud.
+/// Strategie last-write-wins : chaque document porte un `updated_at`, le plus
+/// recent gagne. POUR CE QUE CE SERVICE PORTE, LE TELEPHONE EST LA SOURCE DE
+/// VERITE et le serveur en est la copie — c est l exact inverse du COMPTE, dont
+/// les droits ne font que DESCENDRE (`descente_des_droits.dart`, tache 631).
+///
+/// CE QUI MONTE, ET C EST TOUT : la progression d un sentier
+/// (`users/{uid}/trails/{trailId}/user_progress/current`), le sac
+/// (`.../checklist_items/{id}`) et les randos passees
+/// (`users/{uid}/past_hikes/{n}`, sous consentement art. 9).
+///
+/// CE QUI A ETE RETIRE DE LA MONTEE LE 29/09, ET POURQUOI. Decision de
+/// Christophe, verbatim : « je veux que tout soit en base ... seul la copie sur
+/// le tel », « Sauf les donnees persos ». Trois chemins de sortie de donnees
+/// personnelles ont donc ete FERMES, pas seulement laisses inutilises :
+///
+///   1. LE JOURNAL (`journal_entries`). Du texte libre ecrit par le randonneur,
+///      et le chemin des photos avec. C est le contenu le plus personnel de
+///      l application ; il reste sur le telephone.
+///   2. LA MORPHOLOGIE (`profile/hiker`) — age, taille, poids, sexe. Donnee de
+///      sante au sens de l article 9, et une donnee personnelle au sens de
+///      Christophe. Elle reste sur le telephone, comme la fiche medicale
+///      (tache 612).
+///   3. LE COMPTE (`syncWallet` : `wallet/current` + `entitlements/{trailId}`).
+///      Retire pour une raison differente et plus forte : depuis la tache 631
+///      les regles deployees repondent `allow write: if false` sur ces trois
+///      chemins. La methode ne pouvait plus produire QUE des refus. La garder
+///      aurait ete du code mort qui ment sur ce qu il sait faire.
+///
+/// Les trois sont verifies par `test/comportement/montee_en_base_635_test.dart`
+/// et par `test/core/services/cloud_sync_wallet_test.dart`.
 class CloudSyncService {
   CloudSyncService({
     required this.progressDao,
-    required this.journalDao,
     required this.checklistDao,
     required this.syncQueueDao,
     required this.connectivityMonitor,
     required this.firebaseService,
-    this.walletDao,
-    this.entitlementsDao,
-    this.hikerProfileDao,
     this.pastHikesDao,
     ConsentCheck? consentCheck,
     FirebaseFirestore? firestore,
@@ -124,24 +144,13 @@ class CloudSyncService {
         _firestore = firestore;
 
   final ProgressDao progressDao;
-  final JournalDao journalDao;
   final ChecklistDao checklistDao;
   final SyncQueueDao syncQueueDao;
   final ConnectivityMonitor connectivityMonitor;
   final FirebaseService firebaseService;
 
-  /// DAO du solde du compte-etapes (miroir cloud wallet, A5). Nullable pour
-  /// retro-compat des tests/instances qui ne syncent pas le wallet.
-  final WalletDao? walletDao;
-
-  /// DAO des droits par sentier (miroir cloud entitlements, A5).
-  final TrekEntitlementsDao? entitlementsDao;
-
-  /// DAO du profil randonneur (miroir cloud ANONYME, StepWays LOT 4). Nullable
-  /// pour retro-compat des instances/tests qui ne syncent pas le profil.
-  final HikerProfileDao? hikerProfileDao;
-
-  /// DAO des randos passees + note d'experience (miroir cloud ANONYME, LOT 4).
+  /// DAO des randos passees (miroir cloud ANONYME, LOT 4). Nullable pour
+  /// retro-compat des instances/tests qui ne montent pas les randos.
   final PastHikesDao? pastHikesDao;
 
   /// Verification de consentement utilisee par les gardes de ce service
@@ -216,25 +225,18 @@ class CloudSyncService {
           itemsSynced++;
         }
 
-        // --- 2. Sync journal entries ---
-        final journalEntries = await journalDao.getByTrailId(trailId);
-        for (final entry in journalEntries) {
-          final now = DateTime.now().toIso8601String();
-          final entryData = {
-            "stage_number": entry.stageNumber,
-            "content": entry.content,
-            "photo_path": entry.photoPath,
-            "photo_size_bytes": entry.photoSizeBytes,
-            "created_at": entry.createdAt.toIso8601String(),
-            "updated_at": entry.updatedAt?.toIso8601String() ?? now,
-          };
-
-          await _setWithLastWriteWins(
-            basePath.collection("journal_entries").doc("entry_${entry.id}"),
-            entryData,
-          );
-          itemsSynced++;
-        }
+        // --- 2. LE JOURNAL NE MONTE PLUS (tache 635) ---
+        //
+        // Il montait ici : `journal_entries/entry_{id}`, avec le TEXTE LIBRE du
+        // randonneur (`content`) et le chemin de ses photos (`photo_path`).
+        // C est la donnee la plus personnelle que porte l application, et elle
+        // partait sans que personne ne l ait decide — le bloc n avait de toute
+        // facon aucun appelant, donc rien n est perdu pour qui que ce soit.
+        //
+        // Decision de Christophe du 29/09 : « Sauf les donnees persos ». Le
+        // journal reste sur le telephone, comme la fiche medicale (tache 612).
+        // Le `JournalDao` a ete retire de ce service avec le bloc : garder la
+        // dependance aurait laisse croire qu il reste un chemin de sortie.
 
         // --- 3. Sync checklist items ---
         final checklistItems = await checklistDao.getByTrailId(trailId);
@@ -382,6 +384,16 @@ class CloudSyncService {
       final result = await syncUserData(uid, trailId, config: config);
       if (result.status == CloudSyncStatusValues.success) {
         totalSynced += result.itemsSynced;
+        // LA FILE SE VIDE, ET ELLE NE SE VIDAIT PAS (tache 635).
+        //
+        // DEFAUT MESURE : cette boucle relisait `getPending()` et ne marquait
+        // JAMAIS l action traitee. `syncUserData` ajoute bien une ligne
+        // `completed`, mais c est une LIGNE DE PLUS (`id` auto-incremente) —
+        // l originale restait `pending` pour toujours. Consequence : chaque
+        // retour de reseau rejouait tout l historique des attentes, et la file
+        // grossissait sans fin. Une file de rattrapage qui ne se vide pas n est
+        // pas un rattrapage, c est une fuite.
+        await syncQueueDao.markCompleted(action.id);
       }
     }
 
@@ -392,161 +404,55 @@ class CloudSyncService {
     );
   }
 
-  // --- Miroir cloud wallet (non nominatif, A5 / spec §5) -------------------
+  // --- LE COMPTE NE MONTE PLUS DU TOUT — IL NE FAIT QUE DESCENDRE (tache 635)
   //
-  // Backup cloud du compte-etapes + droits par sentier. V1 = LOCAL-AUTHORITATIVE
-  // : le local (prefs + Drift) fait foi, le cloud n'est qu'une sauvegarde
-  // last-write-wins (aucune relecture cloud -> local ici). CONFIDENTIALITE
-  // (directive) : ENTIERS + TIMESTAMPS + trailId UNIQUEMENT. Zero nominatif,
-  // zero euro, zero receipt store. [userId] est le hash anonymise
-  // (`anonymous_id_service`), jamais un identifiant en clair. Le ledger fin
-  // multi-device (anti double-credit) est hors LOT 1.
-
-  /// Payload NON NOMINATIF du solde wallet (`users/{uid}/wallet/current`).
-  ///
-  /// Uniquement des entiers + un timestamp : solde courant et cumuls de vie.
-  /// Aucun champ nominatif, aucun euro. Fonction pure (testable sans reseau).
-  Map<String, dynamic> buildWalletPayload(
-    WalletBalanceData wallet, {
-    String? updatedAt,
-  }) {
-    return {
-      "balance_steps": wallet.balanceSteps,
-      "lifetime_earned": wallet.lifetimeEarnedSteps,
-      "lifetime_spent": wallet.lifetimeSpentSteps,
-      "updated_at": updatedAt ?? wallet.updatedAt.toIso8601String(),
-    };
-  }
-
-  /// Payload NON NOMINATIF d'un droit de sentier
-  /// (`users/{uid}/entitlements/{trailId}`).
-  ///
-  /// trailId + entiers/bool + timestamp UNIQUEMENT. On ne pousse PAS
-  /// `purchaseSource` ni `purchasedAt` (non requis par le miroir A5 ; on reste
-  /// au strict minimum non nominatif). Fonction pure (testable sans reseau).
-  Map<String, dynamic> buildEntitlementPayload(
-    TrekEntitlement e, {
-    String? updatedAt,
-  }) {
-    return {
-      "owned": e.owned,
-      "acquired_steps": e.acquiredStages,
-      "consumed_complement_steps": e.consumedComplementSteps,
-      "updated_at": updatedAt ?? e.updatedAt.toIso8601String(),
-    };
-  }
-
-  /// Synchronise le miroir cloud wallet + entitlements pour [userId] (A5).
-  ///
-  /// [userId] = hash anonymise (`anonymous_id_service`). Ecrit
-  /// `users/{uid}/wallet/current` (solde) et une sous-collection
-  /// `users/{uid}/entitlements/{trailId}` (un doc par sentier connu), en
-  /// last-write-wins ([_setWithLastWriteWins], champ `updated_at`).
-  ///
-  /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAOs wallet non
-  /// injectes (retourne `idle` sans rien ecrire). Retro-compat : les instances
-  /// sans [walletDao]/[entitlementsDao] ignorent simplement ce bloc.
-  Future<CloudSyncResult> syncWallet(String userId) async {
-    if (walletDao == null || entitlementsDao == null) {
-      _log.d("[CloudSync] DAOs wallet non injectes, sync wallet ignoree");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.idle,
-        syncedAt: DateTime.now(),
-      );
-    }
-
-    if (!firebaseService.isAvailable) {
-      _log.d("[CloudSync] Firebase non disponible, sync wallet ignoree");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.idle,
-        syncedAt: DateTime.now(),
-      );
-    }
-
-    final connectivity = await connectivityMonitor.checkStatus();
-    if (connectivity == ConnectivityStatusValues.offline) {
-      _log.d("[CloudSync] Hors ligne, sync wallet reportee");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.idle,
-        syncedAt: DateTime.now(),
-      );
-    }
-
-    try {
-      int itemsSynced = 0;
-      final base = firestore.collection("users").doc(userId);
-
-      // --- 1. Solde wallet (singleton) ---
-      final wallet = await walletDao!.getByUserId(userId);
-      if (wallet != null) {
-        await _setWithLastWriteWins(
-          base.collection("wallet").doc("current"),
-          buildWalletPayload(wallet),
-        );
-        itemsSynced++;
-      }
-
-      // --- 2. Droits par sentier (sous-collection) ---
-      final entitlements = await entitlementsDao!.getAll();
-      for (final e in entitlements) {
-        await _setWithLastWriteWins(
-          base.collection("entitlements").doc(e.trailId),
-          buildEntitlementPayload(e),
-        );
-        itemsSynced++;
-      }
-
-      _log.d("[CloudSync] Miroir wallet synchronise: $itemsSynced items");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.success,
-        syncedAt: DateTime.now(),
-        itemsSynced: itemsSynced,
-      );
-    } catch (e) {
-      _log.e("[CloudSync] Erreur sync wallet: $e");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.error,
-        syncedAt: DateTime.now(),
-        error: e.toString(),
-      );
-    }
-  }
-
-  // --- Miroir cloud du PROFIL randonneur (ANONYME, StepWays LOT 4) ---------
+  // ICI VIVAIT `syncWallet`, qui ecrivait `users/{uid}/wallet/current` et
+  // `users/{uid}/entitlements/{trailId}`, avec ses deux constructeurs de charge
+  // utile. ELLE N ETAIT APPELEE DE NULLE PART — verifie dans tout `lib/` avant
+  // et apres le lot 631 — et depuis ce lot elle ne POUVAIT plus rien ecrire :
+  // `firestore.rules` repond `allow write: if false` sur wallet, entitlements
+  // et subscription.
   //
-  // Donnee morpho SENSIBLE (art. 9 RGPD). CONFIDENTIALITE (spec §3.1, FAI-D) :
-  // le miroir est rattache au HASH ANONYME (`anonymous_id_service`, comme le
-  // wallet), ZERO nom, ZERO e-mail -> anonymise cote serveur. Il sert AUSSI la
-  // restauration du profil au changement de telephone. Le local reste la
-  // source durable (last-write-wins via `updated_at`).
+  // C EST LA DECISION D ARCHITECTURE DE CHRISTOPHE DU 29/09 13:43, et elle
+  // n est pas remise en cause ici : « je veux que tout soit en base ... seul la
+  // copie sur le tel ». Le COMPTE fait foi AU SERVEUR ; le telephone le LIT
+  // (`descente_des_droits.dart`) et ne l ecrit jamais — sinon n importe qui se
+  // poserait `owned: true` sur un sentier payant.
   //
-  // GARDE-FOU consentement (tache 561, J2) : [syncHikerProfile] verifie
-  // ELLE-MEME `ConsentPurpose.healthData` avant de pousser quoi que ce soit.
-  //
-  // Ce commentaire disait auparavant « l'appelant DOIT verifier » — et aucune
-  // verification n'existait, ni ici ni chez un appelant (il n'y en a encore
-  // aucun en production). Une protection confiee a la discipline d'un appelant
-  // futur n'est pas une protection : la garde est donc DANS la methode, fermee
-  // par defaut. L'IMC n'est de toute facon jamais pousse (donnee derivee
-  // recalculable ; on ne stocke que la source : age/taille/poids).
+  // POURQUOI RETIRER PLUTOT QUE LAISSER DORMIR. Une methode dont chaque
+  // ecriture est refusee par le serveur est du code mort QUI MENT : le premier
+  // qui la rebranche croira monter un solde et ne recoltera que des refus
+  // silencieux. `test/core/services/cloud_sync_wallet_test.dart` tient
+  // desormais la garde : ce service n expose plus aucun chemin vers le compte.
 
-  /// Payload ANONYME du profil (`users/{uid}/profile/hiker`).
-  ///
-  /// Uniquement la morpho source + sexe/pays + timestamp. AUCUN nominatif,
-  /// AUCUN IMC (derive local). Fonction pure (testable sans reseau).
-  Map<String, dynamic> buildHikerProfilePayload(
-    HikerProfileData profile, {
-    String? updatedAt,
-  }) {
-    return {
-      "age": profile.age,
-      "height_cm": profile.heightCm,
-      "weight_kg": profile.weightKg,
-      "sex": profile.sex,
-      "country_iso": profile.countryIso,
-      "updated_at": updatedAt ?? profile.updatedAt.toIso8601String(),
-    };
-  }
+  // --- LES RANDOS PASSEES MONTENT, LA MORPHOLOGIE NON (tache 635) -----------
+  //
+  // CE BLOC MONTAIT TROIS CHOSES ET N EN MONTE PLUS QU UNE. Il ecrivait
+  // `users/{uid}/profile/hiker` (age, taille, poids, sexe, pays),
+  // `users/{uid}/past_hikes/{n}` et, jusqu a la tache 570,
+  // `users/{uid}/profile/experience_note`. Decision de Christophe du 29/09 :
+  // « Sauf les donnees persos ». LA MORPHOLOGIE EST UNE DONNEE PERSONNELLE — et
+  // une donnee de sante au sens de l article 9 — donc elle RESTE SUR LE
+  // TELEPHONE, au meme titre que la fiche medicale (tache 612). Seules les
+  // RANDOS PASSEES montent : des metriques d effort (jours, D+, distance,
+  // temps moyen), sans trace, sans lieu, sans rien qui dise qui.
+  //
+  // LA GARDE ART. 9 EST CONSERVEE, ET CE N EST PAS DE LA PRUDENCE DECORATIVE.
+  // Une rando passee decrit l effort physique d une personne ; croisee avec le
+  // reste elle se lit comme une donnee de forme. Sans consentement
+  // `healthData` EFFECTIF, rien ne part, et la methode ne lit meme pas la base
+  // locale ([kSyncErrorHealthConsentMissing]). CONSEQUENCE A CONNAITRE : tant
+  // que le randonneur n a pas accorde ce consentement, `past_hikes` reste vide
+  // au serveur — c est un REFUS assume, pas une panne.
+  //
+  // DEUX IDENTIFIANTS, ET ILS NE SONT PAS LE MEME. C est le defaut que ce lot a
+  // trouve en branchant : la version precedente passait UN SEUL identifiant, a
+  // la fois comme chemin Firestore et comme cle de lecture locale. Or les
+  // randos passees sont rangees en base sous une cle LOCALE (`kHikerLocalUserId`
+  // = « local »), tandis que `firestore.rules` exige que le chemin soit
+  // l identifiant d AUTHENTIFICATION. Avec un seul identifiant, soit la lecture
+  // locale ne trouvait rien, soit l ecriture distante se faisait refuser — dans
+  // les deux cas, zero rando au serveur, en silence.
 
   /// Payload ANONYME d'une rando passee (`users/{uid}/past_hikes/{n}`).
   ///
@@ -566,34 +472,35 @@ class CloudSyncService {
     };
   }
 
-  /// Synchronise le miroir cloud ANONYME du profil pour [userId] (hash).
+  /// Monte les randos passees sous `users/[uid]/past_hikes/hike_{n}`.
   ///
-  /// [userId] = hash anonymise (`anonymous_id_service`). Ecrit
-  /// `users/{uid}/profile/hiker` (morpho), une sous-collection
-  /// `users/{uid}/past_hikes/{n}` (randos) et
-  /// `users/{uid}/profile/experience_note` (texte libre global), en
-  /// last-write-wins ([_setWithLastWriteWins]).
+  /// [uid] = identifiant d AUTHENTIFICATION (le chemin Firestore).
+  /// [identifiantLocal] = la cle sous laquelle les randos sont rangees dans la
+  /// base du telephone (`kHikerLocalUserId` tant qu aucun compte n est lie).
   ///
   /// GARDE ART. 9 : sans consentement `healthData` EFFECTIF, la methode refuse
   /// et ne lit meme pas la donnee locale ([kSyncErrorHealthConsentMissing]).
   ///
-  /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAOs profil non
-  /// injectes (retourne `idle` sans rien ecrire). Retro-compat assuree.
-  Future<CloudSyncResult> syncHikerProfile(String userId) async {
+  /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAO non injecte
+  /// (retourne `idle` sans rien ecrire).
+  Future<CloudSyncResult> syncPastHikes(
+    String uid, {
+    String identifiantLocal = "local",
+  }) async {
     // GARDE ART. 9, EN PREMIER : avant les DAOs, avant le reseau, avant toute
-    // lecture de la donnee de sante. Un refus n'est pas une panne -> statut
-    // `idle`, mais avec une RAISON nommee (sinon il se confond avec un
-    // hors-ligne et devient indebuggable).
+    // lecture de la donnee. Un refus n'est pas une panne -> statut `idle`, mais
+    // avec une RAISON nommee (sinon il se confond avec un hors-ligne et devient
+    // indebuggable).
     if (!await consentCheck(ConsentPurpose.healthData)) {
-      _log.w("[CloudSync] Consentement sante absent -> miroir profil REFUSE");
+      _log.w("[CloudSync] Consentement sante absent -> randos passees REFUSEES");
       return CloudSyncResult(
         status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
         error: kSyncErrorHealthConsentMissing,
       );
     }
-    if (hikerProfileDao == null || pastHikesDao == null) {
-      _log.d("[CloudSync] DAOs profil non injectes, sync profil ignoree");
+    if (pastHikesDao == null) {
+      _log.d("[CloudSync] DAO randos non injecte, montee ignoree");
       return CloudSyncResult(
         status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
@@ -615,20 +522,9 @@ class CloudSyncService {
 
     try {
       int itemsSynced = 0;
-      final base = firestore.collection("users").doc(userId);
+      final base = firestore.collection("users").doc(uid);
 
-      // --- 1. Profil (singleton) ---
-      final profile = await hikerProfileDao!.getByUserId(userId);
-      if (profile != null) {
-        await _setWithLastWriteWins(
-          base.collection("profile").doc("hiker"),
-          buildHikerProfilePayload(profile),
-        );
-        itemsSynced++;
-      }
-
-      // --- 2. Randos passees (sous-collection) ---
-      final hikes = await pastHikesDao!.getByUserId(userId);
+      final hikes = await pastHikesDao!.getByUserId(identifiantLocal);
       for (var i = 0; i < hikes.length; i++) {
         await _setWithLastWriteWins(
           base.collection("past_hikes").doc("hike_${i + 1}"),
@@ -637,28 +533,14 @@ class CloudSyncService {
         itemsSynced++;
       }
 
-      // --- 3. Note d'experience globale : PLUS ENVOYEE (tache 570, S2) ---
-      //
-      // Le texte libre « difficultes » remontait ici sous
-      // `profile/experience_note` / `free_text_difficulties`. Il n'est plus
-      // collecte (champ retire de l'ecran, ecriture retiree du repository) :
-      // continuer a le televerser reviendrait a sortir du telephone une donnee
-      // personnelle que l'application ne demande plus et que personne ne lit.
-      // La minimisation (RGPD art. 5.1.c) vaut aussi pour la sauvegarde : ce
-      // qu'on ne collecte plus ne se sauvegarde plus.
-      //
-      // La restauration, elle, reste tolerante a un document deja present sur un
-      // compte existant (`restore_service.dart`) : on n'ecrit plus, on ne casse
-      // pas ce qui a ete ecrit hier.
-
-      _log.d("[CloudSync] Miroir profil synchronise: $itemsSynced items");
+      _log.d("[CloudSync] Randos passees montees: $itemsSynced items");
       return CloudSyncResult(
         status: CloudSyncStatusValues.success,
         syncedAt: DateTime.now(),
         itemsSynced: itemsSynced,
       );
     } catch (e) {
-      _log.e("[CloudSync] Erreur sync profil: $e");
+      _log.e("[CloudSync] Erreur montee randos passees: $e");
       return CloudSyncResult(
         status: CloudSyncStatusValues.error,
         syncedAt: DateTime.now(),
@@ -819,14 +701,10 @@ final cloudSyncServiceProvider = Provider<CloudSyncService>((ref) {
   final firebase = ref.watch(firebaseServiceProvider);
   return CloudSyncService(
     progressDao: ProgressDao(db),
-    journalDao: JournalDao(db),
     checklistDao: ChecklistDao(db),
     syncQueueDao: SyncQueueDao(db),
     connectivityMonitor: connectivity,
     firebaseService: firebase,
-    walletDao: db.walletDao,
-    entitlementsDao: db.trekEntitlementsDao,
-    hikerProfileDao: db.hikerProfileDao,
     pastHikesDao: db.pastHikesDao,
   );
 });

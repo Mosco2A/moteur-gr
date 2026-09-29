@@ -54,12 +54,10 @@ void main() {
 
   CloudSyncService makeSync({ConsentCheck? consent}) => CloudSyncService(
         progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
         checklistDao: ChecklistDao(db),
         syncQueueDao: SyncQueueDao(db),
         connectivityMonitor: connectivity,
         firebaseService: FirebaseService.testOnly(isAvailable: true),
-        hikerProfileDao: db.hikerProfileDao,
         pastHikesDao: db.pastHikesDao,
         consentCheck: consent,
       );
@@ -75,23 +73,30 @@ void main() {
         consentCheck: consent,
       );
 
-  Future<void> seedProfile() async {
-    await db.hikerProfileDao.upsert(HikerProfileCompanion.insert(
-      userId: 'hash-anon',
-      age: const Value(72),
-      heightCm: const Value(172),
-      weightKg: const Value(88),
-      updatedAt: DateTime.utc(2026, 6, 15),
+  Future<void> seedRandoPassee() async {
+    await db.pastHikesDao.insertHike(PastHikeEntriesCompanion.insert(
+      userId: 'local',
+      date: DateTime.utc(2026, 6, 15),
+      days: const Value(4),
+      totalElevationGain: const Value(3200),
+      totalDistanceKm: const Value(58),
+      updatedAt: DateTime.utc(2026, 6, 20),
     ));
   }
 
-  group('CloudSyncService.syncHikerProfile — garde art. 9 DANS la methode', () {
+  // LA GARDE A CHANGE DE PORTE, PAS DE NATURE (tache 635). Elle protegeait
+  // `syncHikerProfile`, qui poussait la MORPHOLOGIE. Cette montee n existe plus
+  // — la morphologie reste sur le telephone, decision de Christophe du 29/09 :
+  // « Sauf les donnees persos ». La garde tient desormais `syncPastHikes` : une
+  // rando passee decrit l effort physique d une personne, et sans consentement
+  // `healthData` EFFECTIF elle ne sort pas plus que le reste.
+  group('CloudSyncService.syncPastHikes — garde art. 9 DANS la methode', () {
     test('consentement sante ABSENT -> refus, aucune ecriture tentee',
         () async {
-      await seedProfile();
+      await seedRandoPassee();
       // Consentement jamais donne (prefs vides) : la garde par defaut lit le
       // stockage reel et doit refuser.
-      final result = await makeSync().syncHikerProfile('hash-anon');
+      final result = await makeSync().syncPastHikes('uid-auth');
 
       expect(result.status, CloudSyncStatusValues.idle);
       expect(result.itemsSynced, 0);
@@ -101,13 +106,13 @@ void main() {
 
     test('consentement sante REVOQUE -> refus (le retrait est immediat)',
         () async {
-      await seedProfile();
+      await seedRandoPassee();
       final prefs = await SharedPreferences.getInstance();
       final consent = ConsentService(prefs: prefs);
       await consent.grant(ConsentPurpose.healthData);
       await consent.revoke(ConsentPurpose.healthData);
 
-      final result = await makeSync().syncHikerProfile('hash-anon');
+      final result = await makeSync().syncPastHikes('uid-auth');
 
       expect(result.error, kSyncErrorHealthConsentMissing);
       consent.dispose();
@@ -115,13 +120,13 @@ void main() {
 
     test('une AUTRE finalite accordee n ouvre PAS la porte a la sante',
         () async {
-      await seedProfile();
+      await seedRandoPassee();
       final prefs = await SharedPreferences.getInstance();
       final consent = ConsentService(prefs: prefs);
       await consent.grant(ConsentPurpose.locationNavigation);
       await consent.grant(ConsentPurpose.socialSharing);
 
-      final result = await makeSync().syncHikerProfile('hash-anon');
+      final result = await makeSync().syncPastHikes('uid-auth');
 
       expect(result.error, kSyncErrorHealthConsentMissing,
           reason: 'art. 9 : consentement SEPARE, jamais groupe');
@@ -129,23 +134,23 @@ void main() {
     });
 
     test('la garde est FERMEE PAR DEFAUT si l etat est illisible', () async {
-      await seedProfile();
+      await seedRandoPassee();
       // Etat de consentement corrompu : impossible de conclure => on refuse.
       SharedPreferences.setMockInitialValues(<String, Object>{
         'consent_healthData': 'ceci n est pas du JSON',
       });
-      final result = await makeSync().syncHikerProfile('hash-anon');
+      final result = await makeSync().syncPastHikes('uid-auth');
       expect(result.error, kSyncErrorHealthConsentMissing,
           reason: 'un doute sur le consentement se tranche par le refus');
     });
 
     test('consentement ACCORDE -> la garde laisse passer', () async {
-      await seedProfile();
+      await seedRandoPassee();
       var checked = false;
       final result = await makeSync(consent: (purpose) async {
         checked = purpose == ConsentPurpose.healthData;
         return true;
-      }).syncHikerProfile('hash-anon');
+      }).syncPastHikes('uid-auth');
 
       expect(checked, isTrue,
           reason: 'la garde doit interroger la finalite SANTE');
@@ -199,10 +204,12 @@ void main() {
   // « l'accord a-t-il ete demande ? » mais « un chemin de sortie existe-t-il ? »,
   // et il devient ROUGE le jour ou quelqu'un en rouvre un de bonne foi.
   //
-  // CE QUI RESTE DANS CE FICHIER EST INTOUCHE : les gardes de
-  // `syncHikerProfile` et `restoreHikerProfile` ci-dessus portent la MORPHOLOGIE
-  // de la fiche randonneur (age, taille, poids), qui est une autre donnee et un
-  // autre sujet. Ne pas les confondre avec la fiche medicale.
+  // CE QUI RESTE DANS CE FICHIER : la garde de `syncPastHikes` (les randos
+  // passees, seule chose du profil qui monte encore depuis la tache 635) et
+  // celle de `restoreHikerProfile`, qui porte la MORPHOLOGIE dans l autre sens
+  // — le telephone ne l ENVOIE plus, mais il sait encore RECEVOIR celle qu un
+  // compte existant aurait deposee hier. Deux donnees, deux sujets : ne pas les
+  // confondre avec la fiche medicale.
 
   group('ConsentCheck par defaut — lecture du stockage reel', () {
     test('sans decision enregistree -> false', () async {

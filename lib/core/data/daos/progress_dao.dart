@@ -21,6 +21,18 @@ class ProgressDao extends DatabaseAccessor<AppDatabase>
         .getSingleOrNull();
   }
 
+  /// TOUTES les progressions connues, un sentier par ligne (tache 635).
+  ///
+  /// POURQUOI ELLE MANQUAIT, ET POURQUOI IL LA FAUT. La montee en base doit
+  /// pousser la progression de CHAQUE sentier commence, pas seulement celui qui
+  /// est affiche : un randonneur qui a prepare deux sentiers et regarde le
+  /// second ne doit pas voir le premier disparaitre du serveur. Il n existait
+  /// aucun moyen de demander « quels sentiers ce telephone connait-il ? » — on
+  /// ne savait interroger qu un sentier dont on avait deja le nom.
+  Future<List<UserProgressEntry>> getAll() {
+    return select(userProgressEntries).get();
+  }
+
   /// Cree ou met a jour la progression d'un sentier
   Future<void> upsert(UserProgressEntriesCompanion entry) async {
     final trailId = entry.trailId.value;
