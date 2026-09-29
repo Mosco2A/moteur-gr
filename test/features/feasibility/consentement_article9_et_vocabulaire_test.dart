@@ -13,6 +13,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/features/consent/providers/consent_ui_providers.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
+import 'package:moteur_gr/features/feasibility/data/profil_randonneur_fichier.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
 import 'package:moteur_gr/features/feasibility/presentation/hiker_profile_screen.dart';
@@ -60,6 +61,23 @@ void main() {
 
   HikerProfileRepository depot() =>
       HikerProfileRepository(db: db, prefs: prefs);
+
+  /// LE STOCKAGE REEL DU PROFIL, LU DIRECTEMENT — ET IL A DEMENAGE (tache 623).
+  ///
+  /// Les tests du LOT O ci-dessous lisaient `prefs.getString`, « la ou la mesure
+  /// avait ete faite » le 25/09. La source durable du profil est desormais un
+  /// FICHIER, dans le dossier protege de la fiche medicale, parce que
+  /// SharedPreferences ne peut pas etre exclu de la sauvegarde iCloud sur iPhone
+  /// (`SauvegardeSysteme.trouUserDefaultsIos`). Les lire dans les preferences
+  /// serait desormais une mesure VIDE : la cle y est toujours absente, donc les
+  /// tests passeraient sans rien prouver. Ils lisent le fichier, au meme titre.
+  Future<String?> profilStockeBrut() async {
+    final f = await ProfilRandonneurFichier().fichier();
+    if (!f.existsSync()) return null;
+    final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
+    final profil = doc[ProfilRandonneurFichier.clefProfil];
+    return profil == null ? null : json.encode(profil);
+  }
 
   /// Service de consentement lisant le MEME stockage que l'application sous
   /// test (SharedPreferences mockees) : ce qu'il voit est ce qui est ecrit.
@@ -361,8 +379,12 @@ void main() {
   // rester AUCUNE cle ; s'il y reste du non-article 9, la cle demeure, privee de
   // sa morphologie.
   //
-  // CES TESTS LISENT LE STOCKAGE, PAS LE REPOSITORY : `prefs.getString`, la ou
-  // la mesure a ete faite. Un `getProfile()` a zero ne les aurait pas vus.
+  // CES TESTS LISENT LE STOCKAGE, PAS LE REPOSITORY. Un `getProfile()` a zero ne
+  // les aurait pas vus. LE STOCKAGE A CHANGE D'ENDROIT (tache 623) : ce n'est
+  // plus `prefs.getString` mais le document de `ProfilRandonneurFichier`, dans
+  // le dossier protege de la fiche medicale — SharedPreferences ne peut pas etre
+  // exclu de la sauvegarde iCloud sur iPhone. La mesure est la meme, au nouvel
+  // endroit ; la lire encore dans les preferences ne prouverait plus rien.
   group('LOT O — un refus ne laisse AUCUNE trace dans le stockage', () {
     testWidgets('saisie refusee sans fiche prealable : la cle du profil n est '
         'meme pas CREEE', (tester) async {
@@ -373,9 +395,11 @@ void main() {
       await tester.tap(find.text(tp.save));
       await tester.pumpAndSettle();
 
+      expect(await profilStockeBrut(), isNull,
+          reason: 'l ecran promet « rien n est enregistre » : un document cree '
+              'et horodate est une trace de passage, meme vide de sante');
       expect(prefs.getString(kHikerProfilePrefsKey), isNull,
-          reason: 'l ecran promet « rien n est enregistre » : une cle creee et '
-              'horodatee est une trace de passage, meme vide de sante');
+          reason: 'et la cle heritee ne doit jamais revenir (tache 623)');
     });
 
     test('meme regle depuis les Reglages : une fiche qui ne contenait que de la '
@@ -385,8 +409,8 @@ void main() {
         heightCm: 172,
         weightKg: 88,
       ));
-      expect(prefs.getString(kHikerProfilePrefsKey), isNotNull,
-          reason: 'le test ne prouve rien si la cle n existait pas avant');
+      expect(await profilStockeBrut(), isNotNull,
+          reason: 'le test ne prouve rien si le document n existait pas avant');
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
 
@@ -400,9 +424,9 @@ void main() {
           .read(consentControllerProvider)
           .revoke(ConsentPurpose.healthData);
 
-      expect(prefs.getString(kHikerProfilePrefsKey), isNull,
-          reason: 'il ne restait que de l article 9 : la cle doit partir, pas '
-              'etre reecrite a zero');
+      expect(await profilStockeBrut(), isNull,
+          reason: 'il ne restait que de l article 9 : le document doit partir, '
+              'pas etre reecrit a zero');
     });
 
     test('le MIROIR Drift ne garde pas non plus une ligne a zero', () async {
@@ -433,7 +457,7 @@ void main() {
 
       await depot().eraseMorphology();
 
-      final brut = prefs.getString(kHikerProfilePrefsKey);
+      final brut = await profilStockeBrut();
       expect(brut, isNotNull,
           reason: 'le sexe et le pays ne relevent pas de l article 9 : les '
               'supprimer depasserait le refus que le randonneur a exprime');
@@ -451,7 +475,7 @@ void main() {
 
       await depot().eraseMorphology();
 
-      final brut = prefs.getString(kHikerProfilePrefsKey);
+      final brut = await profilStockeBrut();
       expect(brut, isNotNull);
       expect((json.decode(brut!) as Map<String, dynamic>)['countryIso'], 'IT');
     });

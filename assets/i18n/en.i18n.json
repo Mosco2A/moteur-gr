@@ -2155,6 +2155,7 @@
     "errorWeight": "Invalid weight (25 to 200 kg)",
     "errorCountry": "Invalid country code (e.g. FR)",
     "errorEmpty": "Empty profile: enter at least your age, height or weight.",
+    "errorSaveFailed": "Your details could not be saved. Nothing was changed: please try again.",
     "errorConsentRequired": "Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",

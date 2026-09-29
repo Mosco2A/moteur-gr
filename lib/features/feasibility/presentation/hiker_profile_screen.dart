@@ -217,6 +217,38 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
 
     if (!mounted) return;
     setState(() => _saving = false);
+
+    // L'ECHEC D'ECRITURE NE PEUT PLUS PASSER POUR UN SUCCES (tache 623).
+    //
+    // POURQUOI CE CONTROLE APPARAIT AVEC CE LOT, ET PAS AVANT. La fiche etait
+    // ecrite dans `SharedPreferences`, une ecriture qui n'echoue pratiquement
+    // jamais. Elle va maintenant dans un FICHIER du stockage protege
+    // (`ProfilRandonneurFichier`, le dossier de la fiche medicale), parce que les
+    // preferences ne peuvent PAS etre exclues de la sauvegarde iCloud sur iPhone.
+    // Une ecriture de fichier, elle, peut echouer : disque plein, droits refuses,
+    // dossier illisible.
+    //
+    // OR `HikerProfileNotifier.save` enferme l'ecriture dans `AsyncValue.guard` :
+    // l'exception ne remonte pas jusqu'ici, elle devient un ETAT D'ERREUR que
+    // personne ne regardait. Sans ce controle, l'ecran affichait « Fiche
+    // enregistree » et se fermait sur une ecriture qui n'avait pas eu lieu — un
+    // FAUX SUCCES, la meme famille de defaut que le lien de suivi mort en silence
+    // du meme lot, et sur une donnee que le randonneur remplit « pour sa
+    // securite ».
+    //
+    // ON NE DEPILE PAS L'ECRAN : sa saisie est encore la, il peut reessayer sans
+    // rien retaper. Meme discipline que le refus de consentement ci-dessus.
+    if (ref.read(hikerProfileProvider).hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.hikerProfile.errorSaveFailed),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(t.hikerProfile.saved),

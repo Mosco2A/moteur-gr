@@ -3482,6 +3482,9 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche vide : renseignez au moins l'âge, la taille ou le poids.'
 	String get errorEmpty => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.';
 
+	/// fr: 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.'
+	String get errorSaveFailed => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.';
+
 	/// fr: 'Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.'
 	String get errorConsentRequired => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.';
 
@@ -8895,9 +8898,9 @@ extension on Translations {
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
 			'signalement.types.eauASec' => 'Point d\'eau à sec',
-			'signalement.types.danger' => 'Danger',
 			_ => null,
 		} ?? switch (path) {
+			'signalement.types.danger' => 'Danger',
 			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
 			'signalement.confirm' => 'Confirmer le signalement',
 			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
@@ -9409,9 +9412,9 @@ extension on Translations {
 			'calendar.noDate.title' => 'Choisissez une date de départ',
 			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
 			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
-			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
 			_ => null,
 		} ?? switch (path) {
+			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
 			'nuitees.guideTooltip' => 'Guide des nuitées',
@@ -9627,6 +9630,7 @@ extension on Translations {
 			'hikerProfile.errorWeight' => 'Poids invalide (25 à 200 kg)',
 			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
 			'hikerProfile.errorEmpty' => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.',
+			'hikerProfile.errorSaveFailed' => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.',
 			'hikerProfile.errorConsentRequired' => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
 			'hikerProfile.sexFemale' => 'Femme',

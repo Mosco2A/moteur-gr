@@ -38,7 +38,9 @@ void main() {
         type: ShareLinkTypeValues.app,
       );
 
-      expect(link.sessionId, 'sess-001');
+      expect(link, isNotNull,
+          reason: 'le canal app est configure dans ce test : un lien doit sortir');
+      expect(link!.sessionId, 'sess-001');
       expect(link.type, ShareLinkTypeValues.app);
       expect(link.url, 'montrek://follow/XK9P2L');
       expect(link.id, isNotEmpty);
@@ -52,7 +54,8 @@ void main() {
         type: ShareLinkTypeValues.web,
       );
 
-      expect(link.type, ShareLinkTypeValues.web);
+      expect(link, isNotNull);
+      expect(link!.type, ShareLinkTypeValues.web);
       expect(link.url, 'https://montrek.example/follow/AB3C7D');
     });
 
@@ -63,7 +66,8 @@ void main() {
         type: ShareLinkTypeValues.companionApp,
       );
 
-      expect(link.type, ShareLinkTypeValues.companionApp);
+      expect(link, isNotNull);
+      expect(link!.type, ShareLinkTypeValues.companionApp);
       expect(link.url, 'https://montrek.example/companion/QR5T8W');
     });
 
@@ -74,7 +78,8 @@ void main() {
         type: 'canal-futur',
       );
 
-      expect(link.type, ShareLinkTypeValues.web);
+      expect(link, isNotNull);
+      expect(link!.type, ShareLinkTypeValues.web);
       expect(link.url, 'https://montrek.example/follow/ZZ9Y2X');
     });
 

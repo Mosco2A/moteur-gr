@@ -1666,6 +1666,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Invalid weight (25 to 200 kg)';
 	@override String get errorCountry => 'Invalid country code (e.g. FR)';
 	@override String get errorEmpty => 'Empty profile: enter at least your age, height or weight.';
+	@override String get errorSaveFailed => 'Your details could not be saved. Nothing was changed: please try again.';
 	@override String get errorConsentRequired => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.';
 	@override String get fieldSex => 'Sex (optional)';
 	@override String get sexFemale => 'Female';
@@ -5070,9 +5071,9 @@ extension on TranslationsEn {
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
 			'signalement.types.eauASec' => 'Dry water point',
-			'signalement.types.danger' => 'Danger',
 			_ => null,
 		} ?? switch (path) {
+			'signalement.types.danger' => 'Danger',
 			'signalement.latencyBanner' => 'Saved. Visible to other hikers once the network syncs.',
 			'signalement.confirm' => 'Confirm report',
 			'signalement.noLocation' => 'GPS position unavailable right now. Try again under open sky.',
@@ -5584,9 +5585,9 @@ extension on TranslationsEn {
 			'calendar.noDate.title' => 'Choose a departure date',
 			'calendar.noDate.message' => 'Your trek calendar will appear automatically with hiking and rest days.',
 			'calendar.empty.title' => 'Set up your itinerary first',
-			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
 			_ => null,
 		} ?? switch (path) {
+			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',
 			'nuitees.guideTooltip' => 'Overnight stays guide',
@@ -5802,6 +5803,7 @@ extension on TranslationsEn {
 			'hikerProfile.errorWeight' => 'Invalid weight (25 to 200 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.errorEmpty' => 'Empty profile: enter at least your age, height or weight.',
+			'hikerProfile.errorSaveFailed' => 'Your details could not be saved. Nothing was changed: please try again.',
 			'hikerProfile.errorConsentRequired' => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',

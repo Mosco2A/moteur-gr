@@ -10,6 +10,7 @@ import '../../../core/firebase/firebase_service.dart';
 import '../models/follow_session.dart';
 import '../models/follower_slot.dart';
 import '../models/share_link.dart';
+import 'verificateur_cible_suivi.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 const _codeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -18,6 +19,34 @@ const _codeLength = 6;
 /// Nombre de suiveurs gratuits par session (#81759).
 /// Au-dela, le suiveur voit de la publicite ou doit payer.
 const kMaxFreeFollowers = 2;
+
+/// CE QU'ON REMET AU RANDONNEUR QUAND IL PARTAGE — LE LIEN ET LE VERDICT
+/// ENSEMBLE, JAMAIS L'UN SANS L'AUTRE (tache 623).
+///
+/// POURQUOI LES DEUX SONT DANS LE MEME OBJET. Le defaut mesure par Skynet le
+/// 28/09 n'etait pas une mauvaise adresse : c'etait qu'un lien pouvait circuler
+/// SANS que personne n'ait verifie qu'il menait quelque part. Separer le lien de
+/// son verdict permettrait a un appelant de prendre le premier et d'ignorer le
+/// second — c'est-a-dire de reproduire le defaut exactement. Ici, obtenir le lien
+/// oblige a tenir le verdict dans la main.
+class PartageSuivi {
+  const PartageSuivi({required this.lien, required this.verdict});
+
+  /// Le lien a remettre aux proches, ou `null` quand il ne pourrait pas servir
+  /// (canal absent, cible qui repond non, reseau absent).
+  final ShareLink? lien;
+
+  /// Ce que la cible a repondu, et pourquoi.
+  final VerdictCibleSuivi verdict;
+
+  /// Vrai quand il y a un lien ET que la cible a repondu oui. C'est la SEULE
+  /// condition dans laquelle on peut dire au randonneur que ses proches pourront
+  /// le suivre.
+  bool get partageable => lien != null && verdict.joignable;
+
+  /// Ce que la cible a repondu, en un mot (raccourci de lecture).
+  DisponibiliteCibleSuivi get disponibilite => verdict.disponibilite;
+}
 
 /// Service de partage de position en temps reel (E4.11).
 ///
@@ -33,12 +62,22 @@ class FollowService {
     required this.firebaseService,
     this.linksConfig = const FollowLinksConfig(),
     FirebaseFirestore? firestore,
-  }) : _firestore = firestore;
+    VerificateurCibleSuivi? verificateurCible,
+  })  : _firestore = firestore,
+        verificateurCible = verificateurCible ?? VerificateurCibleSuivi();
 
   final FirebaseService firebaseService;
 
   /// Bases d URL des liens de partage (injectees, jamais en dur).
   final FollowLinksConfig linksConfig;
+
+  /// LA MESURE DE LA CIBLE, AU MOMENT DU PARTAGE (tache 623).
+  ///
+  /// Construit par defaut, mais il ne touche NI le reseau NI un greffon tant
+  /// qu'un canal n'a pas d'adresse — et le depot n'en porte aucune. Dans
+  /// `flutter test`, aucune mesure n'est donc emise par defaut, et un test de ce
+  /// lot le prouve.
+  final VerificateurCibleSuivi verificateurCible;
 
   FirebaseFirestore? _firestore;
   FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
@@ -196,21 +235,32 @@ class FollowService {
   /// [type] : ShareLinkTypeValues.app (deeplink), .web (page web),
   /// .companionApp (application complementaire). Valeur inconnue ->
   /// fallback web. Les bases d URL viennent de [linksConfig].
-  ShareLink generateShareLink({
+  ///
+  /// REND `null` QUAND LE CANAL N'A PAS D'ADRESSE DANS CE BUILD (tache 623), et
+  /// c'est le premier des deux verrous contre le lien mort en silence. Avant ce
+  /// lot, cette methode rendait TOUJOURS une chaine d'allure parfaite —
+  /// `https://<projet-inexistant>/follow/AB3C7D` — et c'est exactement ce qui a
+  /// permis au defaut de vivre : l'interface n'avait aucun moyen de savoir que
+  /// le lien qu'elle affichait ne menait nulle part. Un appelant doit desormais
+  /// traiter le `null`, et il ne peut plus afficher un lien fabrique a partir de
+  /// rien. Voir `FollowLinksConfig` pour la mesure du 28/09.
+  ///
+  /// ELLE NE MESURE PAS LA CIBLE : elle ne fait pas d'appel reseau et ne peut
+  /// donc pas savoir si l'adresse REPOND. C'est [preparerPartage] qu'il faut
+  /// appeler pour remettre un lien au randonneur.
+  ShareLink? generateShareLink({
     required String sessionId,
     required String shareCode,
     ShareLinkType type = ShareLinkTypeValues.web,
   }) {
     final resolvedType = ShareLinkTypeValues.fromString(type);
-    final String url;
-
-    switch (resolvedType) {
-      case ShareLinkTypeValues.app:
-        url = linksConfig.appLink(shareCode);
-      case ShareLinkTypeValues.companionApp:
-        url = linksConfig.companionLink(shareCode);
-      default:
-        url = linksConfig.webLink(shareCode);
+    final url = linksConfig.lien(canalDe(resolvedType), shareCode);
+    if (url == null) {
+      _log.w('[FollowService] Canal $resolvedType sans adresse dans ce build : '
+          'aucun lien produit (variables ${FollowLinksConfig.variableAppBase} / '
+          '${FollowLinksConfig.variableWebBase} / '
+          '${FollowLinksConfig.variableCompagnonBase})');
+      return null;
     }
 
     return ShareLink(
@@ -222,20 +272,89 @@ class FollowService {
     );
   }
 
-  /// Genere les liens de partage des 3 canaux d un coup (#81753).
+  /// Genere les liens de partage des canaux CONFIGURES (#81753).
+  ///
+  /// La liste ne contient plus systematiquement trois entrees : un canal sans
+  /// adresse dans ce build n'y figure pas du tout. Un canal absent est plus
+  /// honnete qu'un canal present avec un lien mort — et dans le depot, ou aucune
+  /// adresse n'est ecrite, cette liste est VIDE. C'est voulu : c'est l'etat reel.
   List<ShareLink> generateAllShareLinks({
     required String sessionId,
     required String shareCode,
   }) {
-    return [
-      for (final type in ShareLinkTypeValues.values)
+    final liens = <ShareLink>[];
+    for (final type in ShareLinkTypeValues.values) {
+      final lien = generateShareLink(
+        sessionId: sessionId,
+        shareCode: shareCode,
+        type: type,
+      );
+      if (lien != null) liens.add(lien);
+    }
+    return liens;
+  }
+
+  /// PREPARE UN PARTAGE : LE LIEN, ET CE QUE LA CIBLE A REPONDU (tache 623).
+  ///
+  /// C'EST LA METHODE QU'UNE INTERFACE DE PARTAGE DOIT APPELER, et pas
+  /// [generateShareLink] seule. La raison est le defaut mesure par Skynet le
+  /// 28/09 : l'adresse du canal web rendait 404, le randonneur partageait sa
+  /// position, personne ne pouvait le suivre, ET RIEN NE LE LUI DISAIT. Il ne
+  /// l'apprenait pas plus tard : il ne l'apprenait jamais.
+  ///
+  /// LE LIEN N'EST REMIS QUE S'IL PEUT SERVIR. Trois verdicts ne rendent AUCUN
+  /// lien, et chacun pour une raison differente qui doit etre dite au randonneur
+  /// dans des mots differents :
+  ///
+  ///  * `nonConfiguree` — ce canal n'existe pas dans cette version. Ce n'est pas
+  ///    une panne.
+  ///  * `injoignable` — la cible a repondu non. C'est l'etat mesure le 28/09.
+  ///  * `reseauIndisponible` — nous n'avons pas pu demander. Et rendre le lien
+  ///    quand meme n'aurait aucun sens ici, pour une raison MESUREE dans ce
+  ///    fichier et non par principe : [createSession] rend `null` et
+  ///    [publishPosition] rend `false` quand Firebase est indisponible. Un
+  ///    randonneur hors reseau n'a donc PAS de session a partager — il n'y a
+  ///    aucun `shareCode` a mettre dans un lien.
+  ///
+  /// `nonVerifiable` rend le lien AVEC son verdict : un lien profond n'est pas
+  /// interrogeable en HTTP, et l'appelant doit savoir que rien n'a ete verifie
+  /// plutot que de lire un succes qu'on n'a pas mesure.
+  Future<PartageSuivi> preparerPartage({
+    required String sessionId,
+    required String shareCode,
+    ShareLinkType type = ShareLinkTypeValues.web,
+  }) async {
+    final resolvedType = ShareLinkTypeValues.fromString(type);
+    final canal = canalDe(resolvedType);
+    final url = linksConfig.lien(canal, shareCode);
+
+    final verdict = await verificateurCible.verifier(canal: canal, url: url);
+
+    final lien = switch (verdict.disponibilite) {
+      DisponibiliteCibleSuivi.joignable ||
+      DisponibiliteCibleSuivi.nonVerifiable =>
         generateShareLink(
           sessionId: sessionId,
           shareCode: shareCode,
-          type: type,
+          type: resolvedType,
         ),
-    ];
+      _ => null,
+    };
+
+    return PartageSuivi(lien: lien, verdict: verdict);
   }
+
+  /// Le canal de suivi correspondant a un type de lien de partage.
+  ///
+  /// `ShareLinkType` est une chaine extensible (#81752) ; `CanalSuivi` est un
+  /// enum, parce qu'un VERDICT doit porter sur un canal dont la configuration a
+  /// ete verifiee. La traduction est faite ici, a un seul endroit.
+  static CanalSuivi canalDe(ShareLinkType type) =>
+      switch (ShareLinkTypeValues.fromString(type)) {
+        ShareLinkTypeValues.app => CanalSuivi.app,
+        ShareLinkTypeValues.companionApp => CanalSuivi.compagnon,
+        _ => CanalSuivi.web,
+      };
 
   /// Genere un shareCode unique de 6 caracteres alphanumeriques.
   ///

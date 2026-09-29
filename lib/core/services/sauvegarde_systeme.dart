@@ -93,10 +93,13 @@
 ///    `getApplicationSupportDirectory()` rend `files/`. Y vivent `medical/`
 ///    (fiche medicale, tache 613) et [dossierSauvegardable] (les copies).
 ///  * `sharedpref` (« the directory where SharedPreferences are stored ») — LE
-///    PROFIL RANDONNEUR Y VIT : `hiker.profile` (age, taille, poids),
+///    PROFIL RANDONNEUR Y VIVAIT : `hiker.profile` (age, taille, poids),
 ///    `hiker.pastHikes`, `hiker.walkTestResult`, plus le solde et les reglages.
 ///    `hiker_profile_repository.dart` le nommait lui-meme comme un trou ouvert
-///    depuis la tache 613.
+///    depuis la tache 613. LA TACHE 623 L'EN A SORTI : le profil vit maintenant
+///    dans un document sous `file/medical/`, et l'amorce migre les telephones
+///    deja installes. Il ne reste donc dans ce domaine que le solde et les
+///    reglages — voir [trouUserDefaultsIos], qui compte ce residu.
 ///  * `database` (« directories returned by getDatabasePath() ; databases
 ///    created with SQLiteOpenHelper are stored here ») — VIDE, et la mesure de
 ///    la tache 613 est CONFIRMEE : une application Flutter n'y ecrit jamais.
@@ -290,7 +293,8 @@ abstract final class SauvegardeSysteme {
       'non-Android. Elle exige platform-specific-params teamId, l\'identifiant '
       'd\'equipe Apple, absent du depot. A FERMER des que Christophe le fournit.';
 
-  /// LE SEUL STOCKAGE QUE L'IPHONE NE LAISSE PAS EXCLURE, MESURE ET NOMME.
+  /// LE STOCKAGE QUE L'IPHONE NE LAISSE PAS EXCLURE, MESURE ET NOMME — ET CE QUI
+  /// EN EST SORTI DEPUIS (tache 623).
   ///
   /// `NSUserDefaults` (ce que `SharedPreferences` utilise sur iOS) n'est pas un
   /// fichier que l'application possede : c'est un domaine de preferences gere
@@ -298,25 +302,41 @@ abstract final class SauvegardeSysteme {
   /// `NSURLIsExcludedFromBackupKey` s'applique a une URL de fichier ou de
   /// dossier ; les valeurs de `NSUserDefaults` ne peuvent pas en etre exclues,
   /// ni globalement ni cle par cle. La tache 615 l'avait deja mesure en marge ;
-  /// ce lot le confirme sur source externe et en tire la consequence.
+  /// la tache 617 l'a confirme sur source externe et en a tire la consequence.
   ///
-  /// CE QUI RESTE DONC DANS iCLOUD SUR IPHONE, AUJOURD'HUI, MALGRE CE LOT :
+  /// CE QUE LA TACHE 617 LAISSAIT DEDANS, ET CE QUE LA TACHE 623 EN A SORTI. Le
+  /// lot 617 nommait la seule facon de fermer ce trou : « faire SORTIR ces cles
+  /// de SharedPreferences vers un fichier, comme la tache 613 a fait sortir la
+  /// fiche medicale de la base ». C'est fait pour LE PROFIL DU RANDONNEUR —
   /// `hiker.profile` (age, taille, poids), `hiker.pastHikes`,
-  /// `hiker.walkTestResult`, le solde d'etapes et les reglages. Sur ANDROID ces
-  /// memes cles sont dehors depuis ce lot (domaine `sharedpref`, non inclus).
+  /// `hiker.walkTestResult` et la note de difficultes heritee vivent desormais
+  /// dans UN document, dans [dossierExclu], avec la meme exclusion iCloud que la
+  /// fiche medicale (`ProfilRandonneurFichier`). La migration des telephones deja
+  /// installes est faite par l'amorce, une fois, et les cles sont retirees.
   ///
-  /// LA SEULE FACON DE LE FERMER est de faire SORTIR ces cles de
-  /// `SharedPreferences` vers un fichier, comme la tache 613 a fait sortir la
-  /// fiche medicale de la base. Ce n'est pas fait ici : 28 fichiers de tests
-  /// ecrivent ces cles directement, et renverser la persistance du profil dans
-  /// le lot qui renverse celle de la sauvegarde ferait deux renversements a la
-  /// fois. Point OUVERT, chiffre, pas oubli.
+  /// CE QUI RESTE DANS iCLOUD SUR IPHONE, APRES LA TACHE 623 : le solde d'etapes
+  /// et les reglages. Sur ANDROID ils sont dehors depuis le lot 617 (domaine
+  /// `sharedpref`, non inclus).
+  ///
+  /// POURQUOI CE RESIDU N'EST PAS TRAITE EN MEME TEMPS, ET CE N'EST PAS UN OUBLI.
+  /// Christophe a nomme la famille a proteger : « on ne partage aucune donnee
+  /// confiee » en reponse a une question sur le POIDS et la TAILLE, et il a pose
+  /// que l'age, la taille et le poids sont des donnees de sante. Le solde
+  /// d'etapes n'est pas une donnee de la personne, c'est NOTRE comptabilite d'un
+  /// achat dont la transaction vit chez Google ou Apple (mesure de la tache 613 :
+  /// « le randonneur ne perdait pas son argent, il perdait tout ce qu'il avait
+  /// FAIT »), et les reglages ne disent rien de son corps. Les sortir demanderait
+  /// de renverser `WalletStore` et `SettingsService`, deux montages de
+  /// persistance de plus, pour une famille que la regle ne vise pas. Point
+  /// OUVERT, chiffre, a arbitrer par Christophe.
   static const String trouUserDefaultsIos =
       'sur iPhone, NSUserDefaults (SharedPreferences) ne peut PAS etre exclu de '
       'la sauvegarde iCloud : ce n\'est pas un fichier de l\'application mais un '
-      'domaine de preferences du systeme. Le profil randonneur (age, taille, '
-      'poids, randonnees passees, test de marche), le solde et les reglages y '
-      'vivent encore et montent donc dans iCloud sur iPhone. Sur Android ils '
-      'sont dehors (domaine sharedpref non inclus). A FERMER en sortant ces cles '
-      'vers un fichier, comme la tache 613 l\'a fait pour la fiche medicale.';
+      'domaine de preferences du systeme. LE PROFIL RANDONNEUR EN EST SORTI '
+      '(tache 623) : age, taille, poids, randonnees passees, test de marche et '
+      'note heritee vivent maintenant dans un document sous le dossier '
+      '"$dossierExclu", avec la meme exclusion iCloud que la fiche medicale, et '
+      'l\'amorce migre les telephones deja installes. IL Y RESTE le solde '
+      'd\'etapes et les reglages, qui ne relevent pas de la personne. Sur '
+      'Android tout cela est dehors (domaine sharedpref non inclus).';
 }

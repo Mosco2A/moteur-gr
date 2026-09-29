@@ -2155,6 +2155,7 @@
     "errorWeight": "Poids invalide (25 à 200 kg)",
     "errorCountry": "Code pays invalide (ex. FR)",
     "errorEmpty": "Fiche vide : renseignez au moins l'âge, la taille ou le poids.",
+    "errorSaveFailed": "La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.",
     "errorConsentRequired": "Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.",
     "fieldSex": "Sexe (optionnel)",
     "sexFemale": "Femme",
