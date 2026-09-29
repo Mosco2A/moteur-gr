@@ -31,10 +31,18 @@
 #
 # TROIS ACTIONS :
 #
-#   deposer <android|ios|tout>
+#   deposer <android|ios|tout> [exiger]
 #       Ecrit le ou les fichiers de configuration depuis les variables
 #       d environnement. A appeler AVANT `flutter build`, dans les chaines qui
 #       doivent produire un paquet ou Firebase parle.
+#
+#       Avec `exiger`, l absence de configuration ARRETE la chaine au lieu de
+#       prevenir. C est le bon reglage pour tout paquet qui part chez quelqu un
+#       — magasin ou testeur TestFlight : un paquet livre avec Firebase muet est
+#       un test pour rien, et personne ne s en apercoit avant de chercher le
+#       catalogue sur le telephone. Sans `exiger`, la chaine continue et ecrit
+#       dans son journal que Firebase sera muet : c est le bon reglage pour une
+#       chaine qui compile toute branche, ou le paquet sert a autre chose.
 #
 #   garantir-ios
 #       Garantit la seule chose dont Xcode a besoin : que le fichier EXISTE.
@@ -74,6 +82,7 @@ set -eu
 
 action="${1:-}"
 cible="${2:-tout}"
+exigence="${3:-}"
 
 racine=$(cd "$(dirname "$0")/../.." && pwd)
 fichier_android="$racine/android/app/google-services.json"
@@ -218,6 +227,28 @@ exiger_configuration() {
   exit 1
 }
 
+# Le refus quand la chaine a declare qu un paquet muet n avait pas de sens.
+exiger_tout() {
+  quoi="$1"
+  variable="$2"
+  echo "$barre"
+  echo "ARRET — cette chaine livre un paquet a quelqu un, et Firebase y serait"
+  echo "MUET. Manque : $variable."
+  echo ""
+  echo "Un paquet depose sur un magasin ou chez un testeur avec Firebase muet"
+  echo "est un test pour rien : le catalogue distant reste vide, et personne ne"
+  echo "s en apercoit avant de chercher les sentiers sur le telephone."
+  echo ""
+  echo "Remplir le groupe d environnement Codemagic 'stepways_firebase' :"
+  echo "  STEPWAYS_GOOGLE_SERVICES_JSON       ($quoi, Android)"
+  echo "  STEPWAYS_GOOGLE_SERVICE_INFO_PLIST  (iPhone)"
+  echo "  STEPWAYS_FIREBASE_PROJECT_ID        (le commutateur cote Dart)"
+  echo ""
+  echo "Le pas a pas est dans docs/firebase-setup.md, etape 2 ter."
+  echo "$barre"
+  exit 1
+}
+
 annoncer_muet() {
   echo "$barre"
   echo "AVERTISSEMENT — les fichiers de configuration sont en place mais"
@@ -236,7 +267,12 @@ annoncer_muet() {
 # --- Action : deposer -------------------------------------------------------
 deposer() {
   plateforme="$1"
+  exige="$2"
   fait=0
+
+  if [ "$exige" = "exiger" ] && [ -z "${STEPWAYS_FIREBASE_PROJECT_ID:-}" ]; then
+    exiger_tout "google-services.json" "STEPWAYS_FIREBASE_PROJECT_ID"
+  fi
 
   if [ "$plateforme" = "android" ] || [ "$plateforme" = "tout" ]; then
     if [ -n "${STEPWAYS_GOOGLE_SERVICES_JSON:-}" ]; then
@@ -347,8 +383,16 @@ etat() {
 
 case "$action" in
   deposer)
+    case "$exigence" in
+      ''|exiger) ;;
+      *)
+        echo "ARRET — troisieme argument inconnu : '$exigence'."
+        echo "Attendu : rien, ou 'exiger'."
+        exit 1
+        ;;
+    esac
     case "$cible" in
-      android|ios|tout) deposer "$cible" ;;
+      android|ios|tout) deposer "$cible" "$exigence" ;;
       *)
         echo "ARRET — cible inconnue : '$cible'. Attendu : android, ios, tout."
         exit 1
@@ -358,10 +402,13 @@ case "$action" in
   garantir-ios) garantir_ios ;;
   etat) etat ;;
   *)
-    echo "Usage : scripts/ci/config_firebase.sh <action> [cible]"
+    echo "Usage : scripts/ci/config_firebase.sh <action> [cible] [exiger]"
     echo ""
-    echo "  deposer <android|ios|tout>   ecrit la configuration depuis les"
-    echo "                               variables d environnement"
+    echo "  deposer <android|ios|tout> [exiger]"
+    echo "                               ecrit la configuration depuis les"
+    echo "                               variables d environnement ; 'exiger'"
+    echo "                               ARRETE au lieu de prevenir quand elle"
+    echo "                               manque"
     echo "  garantir-ios                 garantit que le plist iPhone existe"
     echo "  etat                         dit ce qui est present"
     exit 1

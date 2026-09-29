@@ -56,8 +56,10 @@ void main() {
   /// fermante, en comptant les accolades imbriquees — un decoupage sur la
   /// premiere `}` rencontree couperait au milieu d un `settings = { ... }`.
   String? objet(String source, String identifiant) {
-    final ancre = RegExp('^\\t\\t$identifiant [^=]*= \\{', multiLine: true)
-        .firstMatch(source);
+    final ancre = RegExp(
+      '^\\t\\t$identifiant [^=]*= \\{',
+      multiLine: true,
+    ).firstMatch(source);
     if (ancre == null) return null;
     var profondeur = 0;
     for (var i = ancre.end - 1; i < source.length; i++) {
@@ -76,10 +78,9 @@ void main() {
   List<String> liste(String corpsObjet, String champ) {
     final bloc = RegExp('$champ = \\(([^)]*)\\)').firstMatch(corpsObjet);
     if (bloc == null) return const [];
-    return RegExp(r'\b([0-9A-F]{24})\b')
-        .allMatches(bloc.group(1)!)
-        .map((m) => m.group(1)!)
-        .toList();
+    return RegExp(
+      r'\b([0-9A-F]{24})\b',
+    ).allMatches(bloc.group(1)!).map((m) => m.group(1)!).toList();
   }
 
   /// La chaine de renvois complete, telle que Xcode la suit.
@@ -89,10 +90,10 @@ void main() {
   /// c est le but.
   List<String> ressourcesCopieesPar(String source, String nomCible) {
     final cibles = section(source, 'PBXNativeTarget');
-    final ancreCible =
-        RegExp('^\\t\\t([0-9A-F]{24}) /\\* $nomCible \\*/ = \\{',
-                multiLine: true)
-            .firstMatch(cibles);
+    final ancreCible = RegExp(
+      '^\\t\\t([0-9A-F]{24}) /\\* $nomCible \\*/ = \\{',
+      multiLine: true,
+    ).firstMatch(cibles);
     if (ancreCible == null) return const [];
     final corpsCible = objet(cibles, ancreCible.group(1)!);
     if (corpsCible == null) return const [];
@@ -108,18 +109,23 @@ void main() {
       // La phase n est pas une phase Resources : ce n est pas une anomalie.
       if (corpsPhase == null) continue;
       for (final buildFile in liste(corpsPhase, 'files')) {
-        final ligne = RegExp('^\\t\\t$buildFile [^\\n]*\$', multiLine: true)
-            .firstMatch(sectionBuildFile);
+        final ligne = RegExp(
+          '^\\t\\t$buildFile [^\\n]*\$',
+          multiLine: true,
+        ).firstMatch(sectionBuildFile);
         if (ligne == null) continue;
-        final fileRef =
-            RegExp(r'fileRef = ([0-9A-F]{24})').firstMatch(ligne.group(0)!);
+        final fileRef = RegExp(
+          r'fileRef = ([0-9A-F]{24})',
+        ).firstMatch(ligne.group(0)!);
         if (fileRef == null) continue;
-        final ligneRef =
-            RegExp('^\\t\\t${fileRef.group(1)} [^\\n]*\$', multiLine: true)
-                .firstMatch(sectionFileRef);
+        final ligneRef = RegExp(
+          '^\\t\\t${fileRef.group(1)} [^\\n]*\$',
+          multiLine: true,
+        ).firstMatch(sectionFileRef);
         if (ligneRef == null) continue;
-        final chemin =
-            RegExp(r'path = "?([^";]+)"?;').firstMatch(ligneRef.group(0)!);
+        final chemin = RegExp(
+          r'path = "?([^";]+)"?;',
+        ).firstMatch(ligneRef.group(0)!);
         if (chemin != null) chemins.add(chemin.group(1)!.trim());
       }
     }
@@ -152,16 +158,18 @@ void main() {
         'fabrication le depose', () {
       final source = pbxprojFichier.readAsStringSync();
       final sectionGroup = section(source, 'PBXGroup');
-      final ancre = RegExp(r'^\t\t([0-9A-F]{24}) /\* Runner \*/ = \{',
-              multiLine: true)
-          .firstMatch(sectionGroup);
+      final ancre = RegExp(
+        r'^\t\t([0-9A-F]{24}) /\* Runner \*/ = \{',
+        multiLine: true,
+      ).firstMatch(sectionGroup);
       expect(ancre, isNotNull, reason: 'le groupe Runner a disparu du projet');
       final corps = objet(sectionGroup, ancre!.group(1)!)!;
 
       expect(
         corps,
         contains('path = Runner;'),
-        reason: 'le groupe Runner doit rester ancre sur le dossier Runner/ : '
+        reason:
+            'le groupe Runner doit rester ancre sur le dossier Runner/ : '
             'c est ce qui resout le chemin relatif du plist',
       );
 
@@ -169,11 +177,14 @@ void main() {
       final enfants = liste(corps, 'children');
       final cheminsDuGroupe = <String>[];
       for (final enfant in enfants) {
-        final ligne = RegExp('^\\t\\t$enfant [^\\n]*\$', multiLine: true)
-            .firstMatch(sectionFileRef);
+        final ligne = RegExp(
+          '^\\t\\t$enfant [^\\n]*\$',
+          multiLine: true,
+        ).firstMatch(sectionFileRef);
         if (ligne == null) continue;
-        final chemin =
-            RegExp(r'path = "?([^";]+)"?;').firstMatch(ligne.group(0)!);
+        final chemin = RegExp(
+          r'path = "?([^";]+)"?;',
+        ).firstMatch(ligne.group(0)!);
         if (chemin != null) cheminsDuGroupe.add(chemin.group(1)!.trim());
       }
       expect(
@@ -198,12 +209,16 @@ void main() {
         RegExp(r'\n\t\t\t\tE626F0000000000000000001 [^\n]*\n'),
         '\n',
       );
-      expect(sansCopie, isNot(source),
-          reason: 'la mutation n a rien change : le test ne prouve rien');
+      expect(
+        sansCopie,
+        isNot(source),
+        reason: 'la mutation n a rien change : le test ne prouve rien',
+      );
       expect(
         ressourcesCopieesPar(sansCopie, 'Runner'),
         isNot(contains(nomDuPlist)),
-        reason: 'LA GARDE EST VIDE. Elle resterait verte alors que le fichier '
+        reason:
+            'LA GARDE EST VIDE. Elle resterait verte alors que le fichier '
             'n est plus copie dans le paquet, ce qui est exactement le defaut '
             'que ce lot ferme.',
       );
@@ -214,30 +229,40 @@ void main() {
       // PBXResourcesBuildPhase entiere, resterait vert.
       const phaseDuWidget = 'E519B00000000000000000D4';
       final debutPhase = sansCopie.indexOf('$phaseDuWidget /* Resources */');
-      expect(debutPhase, isNot(-1),
-          reason: 'la phase Resources du widget a change d identifiant : cette '
-              'demonstration doit etre reecrite, pas supprimee');
+      expect(
+        debutPhase,
+        isNot(-1),
+        reason:
+            'la phase Resources du widget a change d identifiant : cette '
+            'demonstration doit etre reecrite, pas supprimee',
+      );
       final apresFiles =
           sansCopie.indexOf('files = (\n', debutPhase) + 'files = (\n'.length;
       final versLeWidget = sansCopie.replaceRange(
         apresFiles,
         apresFiles,
         '\t\t\t\tE626F0000000000000000001 '
-            '/* GoogleService-Info.plist in Resources */,\n',
+        '/* GoogleService-Info.plist in Resources */,\n',
       );
-      expect(versLeWidget, isNot(sansCopie),
-          reason: 'la mutation « deplacer vers la cible du widget » n a rien '
-              'change : le test ne prouve rien');
+      expect(
+        versLeWidget,
+        isNot(sansCopie),
+        reason:
+            'la mutation « deplacer vers la cible du widget » n a rien '
+            'change : le test ne prouve rien',
+      );
       expect(
         versLeWidget.contains('$nomDuPlist in Resources'),
         isTrue,
-        reason: 'la mutation garde bien la chaine dans le fichier — c est tout '
+        reason:
+            'la mutation garde bien la chaine dans le fichier — c est tout '
             'le point : un contains naif ne verrait rien',
       );
       expect(
         ressourcesCopieesPar(versLeWidget, 'Runner'),
         isNot(contains(nomDuPlist)),
-        reason: 'LA GARDE CONFOND LES CIBLES. Le plist copie par '
+        reason:
+            'LA GARDE CONFOND LES CIBLES. Le plist copie par '
             'TrekWidgetExtension n arrive pas dans le paquet de '
             'l application : Firebase resterait muet.',
       );
@@ -255,9 +280,10 @@ void main() {
       // L ordre compte litteralement : Xcode execute les phases dans l ordre
       // declare. Une garantie posee APRES la copie ne garantit rien.
       final cibles = section(source, 'PBXNativeTarget');
-      final ancre = RegExp(r'^\t\t([0-9A-F]{24}) /\* Runner \*/ = \{',
-              multiLine: true)
-          .firstMatch(cibles)!;
+      final ancre = RegExp(
+        r'^\t\t([0-9A-F]{24}) /\* Runner \*/ = \{',
+        multiLine: true,
+      ).firstMatch(cibles)!;
       final phases = liste(objet(cibles, ancre.group(1)!)!, 'buildPhases');
 
       final sectionScript = section(source, 'PBXShellScriptBuildPhase');
@@ -267,26 +293,35 @@ void main() {
         final corps = objet(sectionScript, p);
         return corps != null && corps.contains('garantir-ios');
       });
-      final indexCopie =
-          phases.indexWhere((p) => objet(sectionResources, p) != null);
+      final indexCopie = phases.indexWhere(
+        (p) => objet(sectionResources, p) != null,
+      );
 
-      expect(indexGarantie, isNot(-1),
-          reason:
-              'aucune phase de la cible Runner ne garantit le plist. Sur un '
-              'clone neuf le fichier est absent (il est exclu du depot) et '
-              'xcodebuild s arrete sur « Build input file cannot be found » : '
-              'la chaine ios_compile de la tache 618, qui compile sur TOUTE '
-              'branche, tomberait au rouge partout.');
+      expect(
+        indexGarantie,
+        isNot(-1),
+        reason:
+            'aucune phase de la cible Runner ne garantit le plist. Sur un '
+            'clone neuf le fichier est absent (il est exclu du depot) et '
+            'xcodebuild s arrete sur « Build input file cannot be found » : '
+            'la chaine ios_compile de la tache 618, qui compile sur TOUTE '
+            'branche, tomberait au rouge partout.',
+      );
       expect(indexCopie, isNot(-1));
-      expect(indexGarantie, lessThan(indexCopie),
-          reason: 'la garantie doit passer AVANT la copie des ressources, '
-              'sinon elle arrive apres l erreur qu elle doit eviter');
+      expect(
+        indexGarantie,
+        lessThan(indexCopie),
+        reason:
+            'la garantie doit passer AVANT la copie des ressources, '
+            'sinon elle arrive apres l erreur qu elle doit eviter',
+      );
 
       final corpsGarantie = objet(sectionScript, phases[indexGarantie])!;
       expect(
         corpsGarantie,
         contains(nomDuPlist),
-        reason: 'C EST LA LIGNE QUI EVITE L ERREUR DE PLANIFICATION. Xcode le '
+        reason:
+            'C EST LA LIGNE QUI EVITE L ERREUR DE PLANIFICATION. Xcode le '
             'dit lui-meme dans son message : « Did you forget to declare this '
             'file as an output of a script phase ». Sans outputPaths, Xcode '
             'refuse le projet avant meme de lancer la phase.',
@@ -295,25 +330,35 @@ void main() {
       expect(
         corpsGarantie,
         contains(scriptConfig),
-        reason: 'la phase doit appeler le script du depot, et non porter une '
+        reason:
+            'la phase doit appeler le script du depot, et non porter une '
             'copie de sa logique dans le pbxproj : une logique enfermee dans '
             'le pbxproj ne se relit pas, ne se teste pas et ne se corrige pas',
       );
     });
 
-    test('le script appele existe vraiment et sait repondre aux deux appels',
-        () {
-      final script = File(scriptConfig);
-      expect(script.existsSync(), isTrue,
-          reason: 'la phase Xcode appelle un script absent : toute '
-              'compilation iPhone echouerait');
-      final texte = script.readAsStringSync();
-      expect(texte, startsWith('#!/bin/sh'));
-      for (final appel in const ['deposer', 'garantir-ios', 'etat']) {
-        expect(texte, contains(appel),
-            reason: 'le script ne traite pas « $appel »');
-      }
-    });
+    test(
+      'le script appele existe vraiment et sait repondre aux deux appels',
+      () {
+        final script = File(scriptConfig);
+        expect(
+          script.existsSync(),
+          isTrue,
+          reason:
+              'la phase Xcode appelle un script absent : toute '
+              'compilation iPhone echouerait',
+        );
+        final texte = script.readAsStringSync();
+        expect(texte, startsWith('#!/bin/sh'));
+        for (final appel in const ['deposer', 'garantir-ios', 'etat']) {
+          expect(
+            texte,
+            contains(appel),
+            reason: 'le script ne traite pas « $appel »',
+          );
+        }
+      },
+    );
 
     test('le script nomme les trois variables de fabrication, et AUCUNE de '
         'leurs valeurs', () {
@@ -323,9 +368,13 @@ void main() {
         'STEPWAYS_GOOGLE_SERVICE_INFO_PLIST',
         'STEPWAYS_FIREBASE_PROJECT_ID',
       ]) {
-        expect(texte, contains(variable),
-            reason: 'une variable que personne ne peut deviner est une '
-                'variable que personne ne remplira : $variable');
+        expect(
+          texte,
+          contains(variable),
+          reason:
+              'une variable que personne ne peut deviner est une '
+              'variable que personne ne remplira : $variable',
+        );
       }
     });
   });
@@ -346,8 +395,13 @@ void main() {
         expect(accolades, greaterThanOrEqualTo(0));
         expect(parentheses, greaterThanOrEqualTo(0));
       }
-      expect(accolades, 0, reason: 'accolades desequilibrees : Xcode refusera '
-          'd ouvrir le projet, et cela ne se voit pas avant la compilation');
+      expect(
+        accolades,
+        0,
+        reason:
+            'accolades desequilibrees : Xcode refusera '
+            'd ouvrir le projet, et cela ne se voit pas avant la compilation',
+      );
       expect(parentheses, 0, reason: 'parentheses desequilibrees');
     });
 
@@ -365,37 +419,47 @@ void main() {
         'PBXCopyFilesBuildPhase',
         'PBXFrameworksBuildPhase',
       ]) {
-        for (final id in RegExp(r'\b([0-9A-F]{24})\b')
-            .allMatches(section(source, nomSection))
-            .map((m) => m.group(1)!)) {
+        for (final id in RegExp(
+          r'\b([0-9A-F]{24})\b',
+        ).allMatches(section(source, nomSection)).map((m) => m.group(1)!)) {
           // Les identifiants de phases eux-memes ne sont pas des build files :
           // on ne retient que ceux annonces « in <phase> », forme que le
           // pbxproj donne aux entrees de fichiers.
-          final ligne = RegExp('^\\t\\t\\t\\t$id [^\\n]*\$', multiLine: true)
-              .firstMatch(section(source, nomSection));
+          final ligne = RegExp(
+            '^\\t\\t\\t\\t$id [^\\n]*\$',
+            multiLine: true,
+          ).firstMatch(section(source, nomSection));
           if (ligne == null) continue;
-          final declaration =
-              RegExp('^\\t\\t$id [^\\n]*\$', multiLine: true)
-                  .firstMatch(sectionBuildFile);
+          final declaration = RegExp(
+            '^\\t\\t$id [^\\n]*\$',
+            multiLine: true,
+          ).firstMatch(sectionBuildFile);
           if (declaration == null) {
             orphelins.add('$id (aucun PBXBuildFile)');
             continue;
           }
-          final fileRef = RegExp(r'fileRef = ([0-9A-F]{24})')
-              .firstMatch(declaration.group(0)!);
+          final fileRef = RegExp(
+            r'fileRef = ([0-9A-F]{24})',
+          ).firstMatch(declaration.group(0)!);
           if (fileRef == null) {
             orphelins.add('$id (PBXBuildFile sans fileRef)');
             continue;
           }
           final ref = fileRef.group(1)!;
-          final connue = RegExp('^\\t\\t$ref ', multiLine: true)
-                  .hasMatch(sectionFileRef) ||
+          final connue =
+              RegExp(
+                '^\\t\\t$ref ',
+                multiLine: true,
+              ).hasMatch(sectionFileRef) ||
               RegExp('^\\t\\t$ref ', multiLine: true).hasMatch(sectionVariant);
           if (!connue) orphelins.add('$id -> $ref (reference inconnue)');
         }
       }
-      expect(orphelins, isEmpty,
-          reason: 'renvois casses dans le pbxproj : ${orphelins.join(' | ')}');
+      expect(
+        orphelins,
+        isEmpty,
+        reason: 'renvois casses dans le pbxproj : ${orphelins.join(' | ')}',
+      );
     });
 
     test('toute phase citee par une cible existe', () {
@@ -410,9 +474,10 @@ void main() {
       ].map((n) => section(source, n)).toList();
 
       final introuvables = <String>[];
-      for (final ancre in RegExp(r'^\t\t([0-9A-F]{24}) /\* ([^*]+) \*/ = \{',
-              multiLine: true)
-          .allMatches(cibles)) {
+      for (final ancre in RegExp(
+        r'^\t\t([0-9A-F]{24}) /\* ([^*]+) \*/ = \{',
+        multiLine: true,
+      ).allMatches(cibles)) {
         final corps = objet(cibles, ancre.group(1)!);
         if (corps == null) continue;
         for (final phase in liste(corps, 'buildPhases')) {
@@ -421,9 +486,13 @@ void main() {
           }
         }
       }
-      expect(introuvables, isEmpty,
-          reason: 'une cible cite une phase qui n existe pas : '
-              '${introuvables.join(' | ')}. Xcode refuse le projet.');
+      expect(
+        introuvables,
+        isEmpty,
+        reason:
+            'une cible cite une phase qui n existe pas : '
+            '${introuvables.join(' | ')}. Xcode refuse le projet.',
+      );
     });
   });
 
@@ -434,9 +503,13 @@ void main() {
       'ecrit dans le depot', () {
     test('les deux fichiers de configuration restent exclus du depot', () {
       final ignores = File('.gitignore').readAsStringSync();
-      expect(ignores, contains('**/google-services.json'),
-          reason: 'la regle de Christophe est sans exception : aucune valeur '
-              'de configuration dans le depot');
+      expect(
+        ignores,
+        contains('**/google-services.json'),
+        reason:
+            'la regle de Christophe est sans exception : aucune valeur '
+            'de configuration dans le depot',
+      );
       expect(ignores, contains('**/GoogleService-Info.plist'));
     });
 
@@ -448,13 +521,15 @@ void main() {
       final cleApi = RegExp(r'AIza[0-9A-Za-z_\-]{30,}');
       final appId = RegExp(r'1:\d{6,}:(ios|android):');
 
+      final docsCi = Directory('docs/ci');
       final aBalayer = <File>[
         File(scriptConfig),
         pbxprojFichier,
-        ...Directory('docs/ci')
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((f) => f.path.endsWith('.md')),
+        if (docsCi.existsSync())
+          ...docsCi
+              .listSync(recursive: true)
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.md')),
       ];
 
       final fautifs = <String>[];
@@ -465,10 +540,14 @@ void main() {
           fautifs.add(f.path);
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'valeur de configuration Firebase en clair dans : '
-              '${fautifs.join(', ')}. Elle doit passer par une variable '
-              'd environnement, jamais par le depot.');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'valeur de configuration Firebase en clair dans : '
+            '${fautifs.join(', ')}. Elle doit passer par une variable '
+            'd environnement, jamais par le depot.',
+      );
     });
 
     test('le fichier FACTICE du filet ne peut PAS servir de configuration, et '
@@ -479,19 +558,196 @@ void main() {
       // lui — c est exactement le comportement d avant ce lot (muet), a ceci
       // pres que la compilation passe.
       final texte = File(scriptConfig).readAsStringSync();
-      expect(texte, contains('STEPWAYS_CONFIGURATION_FIREBASE_ABSENTE'),
-          reason: 'le fichier factice doit etre reconnaissable, sinon personne '
-              'ne saura pourquoi Firebase est muet');
-      expect(texte.contains('API_KEY'), isFalse,
-          reason: 'le fichier factice ne doit porter AUCUNE cle, meme fausse : '
-              'avec une configuration d apparence valide, Firebase demarrerait '
-              'et parlerait dans le vide');
+      expect(
+        texte,
+        contains('STEPWAYS_CONFIGURATION_FIREBASE_ABSENTE'),
+        reason:
+            'le fichier factice doit etre reconnaissable, sinon personne '
+            'ne saura pourquoi Firebase est muet',
+      );
+      expect(
+        texte.contains('API_KEY'),
+        isFalse,
+        reason:
+            'le fichier factice ne doit porter AUCUNE cle, meme fausse : '
+            'avec une configuration d apparence valide, Firebase demarrerait '
+            'et parlerait dans le vide',
+      );
       expect(texte.contains('GOOGLE_APP_ID'), isFalse);
     });
   });
 
   // ------------------------------------------------------------------
-  // 5. L APPLICATION SANS FIREBASE RESTE LE CAS NOMINAL
+  // 5. LES CHAINES DE FABRICATION DEPOSENT VRAIMENT LA CONFIGURATION
+  // ------------------------------------------------------------------
+  group('626 — toute chaine qui fabrique un paquet depose la configuration '
+      'ET passe le commutateur', () {
+    /// Le bloc d une chaine de `codemagic.yaml`, de sa cle jusqu a la suivante.
+    ///
+    /// Meme decoupage que la garde de la tache 619 : s arreter a la cle
+    /// suivante SEULEMENT ferait avaler le long commentaire de la chaine
+    /// d apres, et le controle se croirait en faute.
+    String chaine(String nom) {
+      final lignes = File('codemagic.yaml').readAsLinesSync();
+      final debut = lignes.indexWhere((l) => l.startsWith('  $nom:'));
+      expect(debut, isNot(-1), reason: 'chaine $nom introuvable');
+      final corps = <String>[lignes[debut]];
+      for (var i = debut + 1; i < lignes.length; i++) {
+        if (RegExp(r'^  ([a-z0-9_]+:|#)').hasMatch(lignes[i])) break;
+        corps.add(lignes[i]);
+      }
+      return corps.join('\n');
+    }
+
+    // Les chaines qui produisent un paquet destine a un telephone. Celle qui
+    // livre a Christophe est `android_test` : c est de la que vient l APK qu il
+    // installe, et c est la que le silence de Firebase se voyait.
+    const quiFabriquentUnPaquet = [
+      'merge',
+      'android_test',
+      'android_release',
+      'ios_release',
+      'ios_testflight',
+    ];
+
+    for (final nom in quiFabriquentUnPaquet) {
+      test('$nom depose la configuration avant de construire', () {
+        final bloc = chaine(nom);
+        expect(
+          bloc,
+          contains('config_firebase.sh deposer'),
+          reason:
+              'sans cette etape, le paquet produit par $nom ne contient '
+              'AUCUNE configuration Firebase : le catalogue distant y est '
+              'muet, et rien de ce que publie le collecteur serveur '
+              'n arrive sur le telephone',
+        );
+
+        final posDepot = bloc.indexOf('config_firebase.sh deposer');
+        final posBuild = bloc.indexOf('flutter build');
+        expect(posBuild, isNot(-1));
+        expect(
+          posDepot,
+          lessThan(posBuild),
+          reason:
+              'deposer APRES la construction ne sert a rien : Gradle lit '
+              'le fichier a la configuration du build, et Xcode le copie '
+              'pendant',
+        );
+      });
+
+      test('$nom passe --dart-define, sans quoi le fichier ne sert a rien', () {
+        expect(
+          chaine(nom),
+          contains('--dart-define=${FirebaseConfig.variableDeBuild}'),
+          reason:
+              'C EST L AUTRE MOITIE, ET IL FAUT LES DEUX. Sans cette '
+              'variable, FirebaseConfig.resoudre() rend null et '
+              'Firebase.initializeApp() n est JAMAIS appele (tache 596) : le '
+              'paquet serait muet avec une configuration parfaitement valide '
+              'dedans.',
+        );
+      });
+    }
+
+    test('les chaines de branche N EXIGENT PAS le groupe, et la raison est '
+        'ecrite a sa place exacte', () {
+      // ON NE PARIE PAS SUR UN COMPORTEMENT NON DOCUMENTE. Le groupe
+      // `stepways_firebase` doit etre cree a la main dans la console Codemagic,
+      // et la documentation Codemagic ne dit PAS ce qu il arrive a une chaine
+      // qui reclame un groupe inexistant — build refuse a l initialisation, ou
+      // variables simplement vides. Les deux reponses circulent. Or
+      // `android_test` est la SEULE chaine qui livre un installable depuis une
+      // branche : elle ne doit pas dependre de cette inconnue. Les deux lignes
+      // sont donc ecrites en commentaire a leur place, a decommenter dans la
+      // meme session que la creation du groupe.
+      for (final nom in const ['merge', 'android_test']) {
+        final bloc = chaine(nom);
+        final reclameLeGroupe = bloc
+            .split('\n')
+            .any((l) => RegExp(r'^ {4,8}groups:\s*$').hasMatch(l));
+        expect(
+          reclameLeGroupe,
+          isFalse,
+          reason:
+              'CETTE GARDE TIENT UNE SEQUENCE, PAS UN INTERDIT. Le jour '
+              'ou le groupe existe dans Codemagic, les deux lignes se '
+              'decommentent dans $nom et CE test se retire — il n a plus '
+              'd objet. Le retirer AVANT, c est livrer une chaine qui peut '
+              'refuser de demarrer.',
+        );
+        expect(
+          bloc,
+          contains('stepways_firebase'),
+          reason:
+              'les deux lignes a ajouter doivent etre ecrites, en '
+              'commentaire, a leur place exacte dans $nom : sinon personne '
+              'ne saura quoi decommenter',
+        );
+      }
+    });
+
+    test('les chaines qui LIVRENT a quelqu un s ARRETENT plutot que de livrer '
+        'un paquet muet', () {
+      for (final nom in const [
+        'android_release',
+        'ios_release',
+        'ios_testflight',
+      ]) {
+        final bloc = chaine(nom);
+        expect(bloc, contains('config_firebase.sh deposer'), reason: nom);
+        expect(
+          bloc.split('\n').any((l) => l.trim() == '- stepways_firebase'),
+          isTrue,
+          reason:
+              'sans le groupe, $nom ne recevrait aucune variable Firebase et '
+              's arreterait a son etape de depot. Ces trois chaines sont deja '
+              'inertes aujourd hui — etiquette de version ou aucun '
+              'declencheur, et arret a leur premiere etape — le groupe y est '
+              'donc reclame sans risque, contrairement aux chaines de branche.',
+        );
+        expect(
+          bloc,
+          contains('exiger'),
+          reason:
+              'un paquet publie au magasin ou depose chez un testeur avec '
+              'Firebase muet est un test pour rien, et personne ne s en '
+              'apercoit avant de chercher les sentiers sur le telephone : '
+              '$nom doit s arreter, pas livrer ca',
+        );
+      }
+    });
+
+    test('ios_compile ne recoit RIEN, et c est ce qui la garde verte sur toute '
+        'branche', () {
+      final bloc = chaine('ios_compile');
+      // On cherche la CLE yaml, pas le mot : la premiere etape de la chaine
+      // ecrit « retirer le bloc 'groups:' de CE workflow » dans son message
+      // d arret, et un `contains` naif prendrait ce texte pour une declaration.
+      final declareUnGroupe = bloc
+          .split('\n')
+          .any((l) => RegExp(r'^ {4,8}groups:\s*$').hasMatch(l));
+      expect(
+        declareUnGroupe,
+        isFalse,
+        reason:
+            'sa premiere etape ARRETE la chaine si un secret de '
+            'publication apparait dans son environnement : lui ajouter un '
+            'groupe la ferait tomber au rouge sur toutes les branches',
+      );
+      expect(
+        bloc.contains('config_firebase.sh'),
+        isFalse,
+        reason:
+            'cette chaine repond a UNE question — est-ce que le natif '
+            'compile — et la phase du projet Xcode suffit a la garder verte '
+            'sans configuration Firebase',
+      );
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // 6. L APPLICATION SANS FIREBASE RESTE LE CAS NOMINAL
   // ------------------------------------------------------------------
   group('626 — brancher Firebase ne rend pas Firebase obligatoire', () {
     test('AUCUNE configuration de sentier ne porte d identifiant de projet '
@@ -508,21 +764,26 @@ void main() {
       // une valeur en dur : on ne cherche que les litteraux.
       final litteral = RegExp('''firebaseProjectId:\\s*['"]''');
       final fautifs = <String>[];
-      for (final f in Directory('lib')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.dart'))) {
+      for (final f
+          in Directory('lib')
+              .listSync(recursive: true)
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.dart'))) {
         final code = f
             .readAsLinesSync()
             .where((l) => !l.trimLeft().startsWith('//'))
             .join('\n');
         if (litteral.hasMatch(code)) fautifs.add(f.path);
       }
-      expect(fautifs, isEmpty,
-          reason: 'identifiant de projet Firebase en dur dans : '
-              '${fautifs.join(', ')}. Il doit arriver par '
-              '--dart-define=${FirebaseConfig.variableDeBuild}, jamais par une '
-              'donnee versionnee.');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'identifiant de projet Firebase en dur dans : '
+            '${fautifs.join(', ')}. Il doit arriver par '
+            '--dart-define=${FirebaseConfig.variableDeBuild}, jamais par une '
+            'donnee versionnee.',
+      );
     });
 
     test('sans injection de build et sans valeur de sentier, rien ne demarre '
@@ -532,12 +793,18 @@ void main() {
       // seul, sur la VRAIE classe — pas sur une copie de sa regle. Le paquet que
       // Christophe testera peut-etre AVANT l autre est justement celui-la :
       // sans Firebase, et parfaitement utilisable.
-      expect(FirebaseConfig.resoudre(), isNull,
-          reason: 'un paquet construit sans variable doit rester en mode local');
-      expect(FirebaseConfig.resoudre(depuisLeSentier: 'stepways-app'),
-          'stepways-app',
-          reason: 'le chemin de resolution doit rester fonctionnel : c est lui '
-              'que la chaine de fabrication alimente');
+      expect(
+        FirebaseConfig.resoudre(),
+        isNull,
+        reason: 'un paquet construit sans variable doit rester en mode local',
+      );
+      expect(
+        FirebaseConfig.resoudre(depuisLeSentier: 'stepways-app'),
+        'stepways-app',
+        reason:
+            'le chemin de resolution doit rester fonctionnel : c est lui '
+            'que la chaine de fabrication alimente',
+      );
     });
   });
 }

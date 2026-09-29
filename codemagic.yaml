@@ -9,7 +9,10 @@
 #   3. android_test    — push, TOUTE branche : gate + APK debug EN ARTEFACT.
 #                        (tache 619) La seule chaine qui livre un installable
 #                        depuis une branche d integration, avant que main bouge.
-#                        Aucun groupe de variables, aucune valeur de signature.
+#                        AUCUNE valeur de signature. Depuis la tache 626 elle
+#                        depose la configuration Firebase — et les deux lignes
+#                        qui lui donnent le groupe attendent que le groupe
+#                        existe (voir plus bas).
 #   4. ios_compile     — push, TOUTE branche : COMPILE l iPhone sans signature et
 #                        ne livre RIEN (tache 618). Aucun artefact, par choix.
 #   5. android_release — etiquette v* : AAB release SIGNE (wagon 3).
@@ -30,6 +33,34 @@
 #     chaine (mesure du lot 619 : aucune des six autres n en porte) ;
 #   - paquets publiables sur les magasins : les deux *_release, sur etiquette, et
 #     seulement quand les groupes de variables de signature sont remplis.
+#
+# LA CONFIGURATION FIREBASE ARRIVE ICI, ET JAMAIS PAR LE DEPOT (tache 626).
+# Firebase etait MUET sur les deux telephones : google-services.json est hors
+# depot et AUCUNE chaine ne le fournissait ; cote iPhone,
+# GoogleService-Info.plist n etait reference nulle part dans le projet Xcode.
+# Rien de ce que publie le collecteur serveur ne pouvait donc arriver chez
+# Christophe. Cinq chaines appellent desormais
+# `scripts/ci/config_firebase.sh deposer`, alimente par le groupe de variables
+# stepways_firebase — groupe SEPARE des groupes de signature, un groupe par
+# usage. Les chaines de branche continuent sans lui, en le disant dans leur
+# journal ; celles qui livrent un paquet a quelqu un (les deux *_release et
+# ios_testflight) passent `exiger` et s ARRETENT plutot que de livrer muet.
+# ios_compile et pr_gate ne recoivent rien : la premiere ne repond qu a « est-ce
+# que ca compile », la seconde ne construit aucun paquet.
+#
+# Il faut LES DEUX MOITIES : le fichier de configuration ET
+# --dart-define=STEPWAYS_FIREBASE_PROJECT_ID. Sans la seconde,
+# Firebase.initializeApp() n est jamais appele (tache 596) et le paquet est muet
+# avec un fichier parfaitement valide dedans.
+#
+# DEUX LIGNES RESTENT A AJOUTER, ET C EST VOLONTAIRE : le bloc `groups:` de
+# `merge` et de `android_test`. Le groupe n existe pas encore dans la console
+# Codemagic, et la documentation Codemagic ne dit PAS ce qu il arrive a une
+# chaine qui reclame un groupe inexistant. `android_test` etant la seule chaine
+# qui livre un installable depuis une branche, on ne parie pas : les deux lignes
+# sont ecrites en commentaire a leur place exacte, a decommenter dans la meme
+# session que la creation du groupe. Les trois chaines de livraison, elles, sont
+# DEJA inertes aujourd hui : le groupe y est reclame sans risque.
 #
 # P1-5 audit #327 : workflows release REECRITS depuis les specs (aucun
 # merge de la branche E5.6b pre-decontamination). Signature 100% par
@@ -111,6 +142,12 @@ workflows:
       xcode: latest
       android_signing:
         - moteur_gr_debug
+      # TACHE 626 — memes deux lignes que pour 'android_test', meme raison
+      # (le groupe n existe pas encore dans Codemagic, et le comportement d une
+      # chaine qui reclame un groupe inexistant n est pas documente) :
+      #
+      #   groups:
+      #     - stepways_firebase
     scripts:
       - name: Installer les dependances
         script: flutter pub get
@@ -139,8 +176,15 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — la configuration Firebase arrive a la fabrication, jamais
+      # par le depot. Souple ici comme dans 'android_test'.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android
+
       - name: Build APK debug
-        script: flutter build apk --debug
+        script: |
+          flutter build apk --debug \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="${STEPWAYS_FIREBASE_PROJECT_ID:-}"
 
     artifacts:
       - build/**/outputs/**/*.apk
@@ -205,6 +249,31 @@ workflows:
           include: true
     environment:
       flutter: stable
+      # TACHE 626 — DEUX LIGNES A AJOUTER ICI, ET PAS AVANT UN GESTE DE
+      # CHRISTOPHE. Pour que Firebase parle dans CET APK — celui que Christophe
+      # installe — cette chaine doit recevoir le groupe de variables :
+      #
+      #   groups:
+      #     - stepways_firebase
+      #
+      # POURQUOI CES DEUX LIGNES NE SONT PAS DEJA LA, ET C EST UN REFUS DE
+      # PARIER. Le groupe `stepways_firebase` n existe pas encore dans la console
+      # Codemagic : il est a creer a la main (trois variables, voir
+      # docs/ci/626_etape_codemagic_config_firebase.md). Or la documentation
+      # Codemagic NE DIT PAS ce qu il arrive a une chaine qui reclame un groupe
+      # inexistant — build refuse a l initialisation, ou variables simplement
+      # vides. Les deux reponses circulent, aucune n est documentee, et cette
+      # chaine est LA SEULE qui livre un installable depuis une branche. On ne
+      # joue pas ca a la devinette : les deux lignes s ajoutent au moment ou le
+      # groupe est cree, dans la meme session : geste 5 du mode operatoire.
+      #
+      # Ce n est PAS un groupe de signature : la garde ci-dessous refuse les
+      # secrets de PUBLICATION (CM_KEYSTORE, APP_STORE_CONNECT_*,
+      # CERTIFICATE_PRIVATE_KEY), et aucune variable Firebase n en fait partie.
+      # La distinction est reelle — une cle de signature permet de publier au nom
+      # de Christophe, une configuration Firebase cliente voyage dans CHAQUE APK
+      # distribue et se lit en decompressant le paquet. Ce qui protege les
+      # donnees, ce sont les regles de securite Firestore et Storage.
     scripts:
       - name: Cette chaine ne doit voir AUCUN secret de publication
         script: |
@@ -269,8 +338,25 @@ workflows:
             echo "============================================================"
           fi
 
+      # TACHE 626 — SANS CETTE ETAPE, L APK QUE CHRISTOPHE INSTALLE EST MUET.
+      # google-services.json est hors depot (.gitignore) et AUCUNE chaine ne le
+      # fournissait : les greffons Gradle, rendus conditionnels par la tache
+      # 619, ne se posaient donc jamais. Le paquet sortait, Firebase y dormait,
+      # et rien de ce que publie le collecteur serveur ne pouvait arriver sur le
+      # telephone. Ici PAS de 'exiger' : cette chaine compile TOUTE branche et
+      # doit rester verte meme quand le groupe n est pas rempli.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android
+
       - name: Build APK debug
-        script: flutter build apk --debug
+        # LES DEUX MOITIES, ET IL FAUT LES DEUX. Le fichier ci-dessus ne suffit
+        # pas : sans --dart-define, FirebaseConfig.resoudre() rend null et
+        # Firebase.initializeApp() n est JAMAIS appele (tache 596). Variable
+        # vide = chaine vide = absence, traitee comme telle : aucun 'if' a
+        # ecrire, et la chaine reste verte sans le groupe.
+        script: |
+          flutter build apk --debug \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="${STEPWAYS_FIREBASE_PROJECT_ID:-}"
 
       - name: Dire ou est le fichier a installer
         script: |
@@ -501,6 +587,13 @@ workflows:
       java: 17
       groups:
         - stepways_android_signing
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage. Il
+        # est reclame ICI et pas dans les chaines de branche parce que celle-ci
+        # est DEJA inerte aujourd hui : elle ne part que sur une etiquette de
+        # version et s arrete a sa premiere etape tant que le groupe de
+        # signature est vide. Reclamer un groupe qui n existe pas encore ne peut
+        # donc rien casser qui marche.
+        - stepways_firebase
     scripts:
       - name: Verifier les secrets de signature (arret propre sinon)
         script: |
@@ -555,8 +648,18 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — ICI 'exiger', et c est la difference avec les chaines de
+      # branche : un paquet publie au magasin avec Firebase muet serait livre a
+      # des inconnus, avec un catalogue vide et aucun moyen de le savoir avant
+      # qu ils cherchent leurs sentiers. La chaine s arrete plutot que de
+      # publier ca.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android exiger
+
       - name: Build AAB release signe
-        script: flutter build appbundle --release
+        script: |
+          flutter build appbundle --release \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
 
     artifacts:
       - build/app/outputs/bundle/release/*.aab
@@ -589,6 +692,11 @@ workflows:
       xcode: latest
       groups:
         - stepways_ios_signing
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage.
+        # Chaine DEJA inerte aujourd hui (etiquette de version + arret a la
+        # premiere etape tant que le groupe de signature est vide) : reclamer un
+        # groupe encore inexistant ne peut rien casser qui marche.
+        - stepways_firebase
     scripts:
       - name: Verifier les secrets de signature (arret propre sinon)
         script: |
@@ -640,10 +748,18 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — le plist iPhone arrive ici, et le projet Xcode le copie
+      # desormais dans le paquet (avant ce lot il n y etait reference nulle
+      # part : meme depose, le SDK ne le lisait pas). 'exiger' pour la meme
+      # raison que cote Android : un IPA de release muet n a pas de sens.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer ios exiger
+
       - name: Build IPA release signe
         script: |
           flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
 
     artifacts:
       - build/ios/ipa/*.ipa
@@ -733,6 +849,11 @@ workflows:
       cocoapods: default
       groups:
         - stepways_ios_signing
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage. Sans
+        # lui, le paquet depose chez un testeur aurait un catalogue vide. Chaine
+        # DEJA inerte aujourd hui (aucun declencheur + arret a la premiere
+        # etape) : reclamer un groupe encore inexistant ne casse rien.
+        - stepways_firebase
     scripts:
       - name: La cle App Store Connect est-elle deposee (sinon ARRET explicite)
         script: |
@@ -870,11 +991,18 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — 'exiger' : cette chaine est le SEUL chemin vers l iPhone de
+      # Christophe, et un paquet TestFlight avec Firebase muet serait un test
+      # pour rien — le catalogue distant est justement ce qu il doit verifier.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer ios exiger
+
       - name: Construire l IPA signe pour l App Store
         script: |
           flutter build ipa --release \
             --build-number=$PROJECT_BUILD_NUMBER \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
 
       - name: L IPA existe, il est signe, et on dit ce qui va partir
         script: |
