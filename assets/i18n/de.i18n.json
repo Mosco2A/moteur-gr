@@ -2155,6 +2155,7 @@
     "errorWeight": "Ungültiges Gewicht (25 bis 200 kg)",
     "errorCountry": "Ungültiger Ländercode (z. B. FR)",
     "errorEmpty": "Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.",
+    "errorSaveFailed": "Das Profil konnte nicht gespeichert werden. Es wurde nichts geändert – bitte erneut versuchen.",
     "errorConsentRequired": "Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.",
     "fieldSex": "Geschlecht (optional)",
     "sexFemale": "Weiblich",

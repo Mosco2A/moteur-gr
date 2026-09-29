@@ -1666,6 +1666,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Ungültiges Gewicht (25 bis 200 kg)';
 	@override String get errorCountry => 'Ungültiger Ländercode (z. B. FR)';
 	@override String get errorEmpty => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.';
+	@override String get errorSaveFailed => 'Das Profil konnte nicht gespeichert werden. Es wurde nichts geändert – bitte erneut versuchen.';
 	@override String get errorConsentRequired => 'Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.';
 	@override String get fieldSex => 'Geschlecht (optional)';
 	@override String get sexFemale => 'Weiblich';
@@ -5070,9 +5071,9 @@ extension on TranslationsDe {
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
 			'signalement.types.eauASec' => 'Trockene Wasserstelle',
-			'signalement.types.danger' => 'Gefahr',
 			_ => null,
 		} ?? switch (path) {
+			'signalement.types.danger' => 'Gefahr',
 			'signalement.latencyBanner' => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.',
 			'signalement.confirm' => 'Meldung bestätigen',
 			'signalement.noLocation' => 'GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.',
@@ -5584,9 +5585,9 @@ extension on TranslationsDe {
 			'calendar.noDate.title' => 'Wähle ein Abreisedatum',
 			'calendar.noDate.message' => 'Dein Trek-Kalender wird automatisch mit Wander- und Ruhetagen angezeigt.',
 			'calendar.empty.title' => 'Richte zuerst deine Route ein',
-			'calendar.empty.message' => 'Wähle deine Route und Dauer, um deine Daten festzulegen.',
 			_ => null,
 		} ?? switch (path) {
+			'calendar.empty.message' => 'Wähle deine Route und Dauer, um deine Daten festzulegen.',
 			'calendar.empty.action' => 'ROUTE EINRICHTEN',
 			'nuitees.title' => 'Übernachtungen',
 			'nuitees.guideTooltip' => 'Übernachtungs-Ratgeber',
@@ -5802,6 +5803,7 @@ extension on TranslationsDe {
 			'hikerProfile.errorWeight' => 'Ungültiges Gewicht (25 bis 200 kg)',
 			'hikerProfile.errorCountry' => 'Ungültiger Ländercode (z. B. FR)',
 			'hikerProfile.errorEmpty' => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.',
+			'hikerProfile.errorSaveFailed' => 'Das Profil konnte nicht gespeichert werden. Es wurde nichts geändert – bitte erneut versuchen.',
 			'hikerProfile.errorConsentRequired' => 'Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.',
 			'hikerProfile.fieldSex' => 'Geschlecht (optional)',
 			'hikerProfile.sexFemale' => 'Weiblich',

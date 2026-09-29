@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../engine/trail_engine.dart';
+import '../../features/feasibility/data/hiker_profile_repository.dart';
 import '../../features/safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider;
 import '../../features/trek/data/seed_data_loader.dart';
@@ -73,6 +74,31 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   final config = ref.watch(trailConfigProvider);
 
   await ref.read(ficheMedicaleFichierProvider).garantirExclusion();
+
+  // TACHE 623 — LE PROFIL DU RANDONNEUR QUITTE LES PREFERENCES ICI, ET C'EST LE
+  // SEUL ENDROIT QUI PUISSE LE FAIRE POUR UN TELEPHONE DEJA INSTALLE.
+  //
+  // Sur iPhone, `NSUserDefaults` (ce que `SharedPreferences` utilise) ne peut PAS
+  // etre exclu de la sauvegarde iCloud : ce n'est pas un fichier de
+  // l'application mais un domaine de preferences du systeme
+  // (`SauvegardeSysteme.trouUserDefaultsIos`). L'age, la taille et le poids
+  // montaient donc dans iCloud, contre la regle de Christophe du 27/09 en
+  // majuscules. La migration les transporte vers le MEME fichier protege que la
+  // fiche medicale, puis retire les cles.
+  //
+  // POURQUOI ICI ET PAS SEULEMENT A LA PREMIERE LECTURE DU PROFIL : on remplit sa
+  // fiche UNE fois, avant de partir. Un randonneur qui met a jour l'application
+  // et ne rouvre jamais l'ecran de faisabilite garderait son poids dans iCloud
+  // pour toujours. C'est le meme raisonnement que `garantirExclusion` ci-dessus
+  // (tache 615), et la migration est idempotente : sans cle heritee, elle ne fait
+  // rien. Elle ne leve jamais.
+  //
+  // ET L'EXCLUSION EST REPOSEE DANS LE MEME GESTE, pour la meme raison que pour
+  // la fiche : l'ecriture atomique remplace le fichier, et un fichier remplace ne
+  // porte plus l'attribut de celui qu'il remplace.
+  final profil = ref.read(hikerProfileRepositoryProvider);
+  await profil.migrerDepuisPreferences();
+  await profil.fichier.garantirExclusion();
 
   final prefs = await SharedPreferences.getInstance();
 

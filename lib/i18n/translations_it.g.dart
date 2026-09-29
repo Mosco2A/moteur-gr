@@ -1666,6 +1666,7 @@ class _Translations$hikerProfile$it extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Peso non valido (25 a 200 kg)';
 	@override String get errorCountry => 'Codice paese non valido (es. FR)';
 	@override String get errorEmpty => 'Scheda vuota: inserisca almeno l\'età, l\'altezza o il peso.';
+	@override String get errorSaveFailed => 'Non è stato possibile salvare la scheda. Nulla è stato modificato: riprova.';
 	@override String get errorConsentRequired => 'Senza il tuo consenso non viene salvato nulla: età, altezza e peso sono dati sanitari. Quanto era salvato è appena stato cancellato da questo dispositivo. Spunta l\'autorizzazione qui sopra e salva di nuovo.';
 	@override String get fieldSex => 'Sesso (opzionale)';
 	@override String get sexFemale => 'Donna';
@@ -5070,9 +5071,9 @@ extension on TranslationsIt {
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
 			'signalement.types.eauASec' => 'Punto d\'acqua a secco',
-			'signalement.types.danger' => 'Pericolo',
 			_ => null,
 		} ?? switch (path) {
+			'signalement.types.danger' => 'Pericolo',
 			'signalement.latencyBanner' => 'Salvato. Visibile agli altri escursionisti dopo la sincronizzazione di rete.',
 			'signalement.confirm' => 'Conferma segnalazione',
 			'signalement.noLocation' => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.',
@@ -5584,9 +5585,9 @@ extension on TranslationsIt {
 			'calendar.noDate.title' => 'Scegli una data di partenza',
 			'calendar.noDate.message' => 'Il calendario del tuo trek apparirà automaticamente con i giorni di cammino e di riposo.',
 			'calendar.empty.title' => 'Configura prima il tuo itinerario',
-			'calendar.empty.message' => 'Scegli il percorso e la durata per poter configurare le tue date.',
 			_ => null,
 		} ?? switch (path) {
+			'calendar.empty.message' => 'Scegli il percorso e la durata per poter configurare le tue date.',
 			'calendar.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'nuitees.title' => 'Pernottamenti',
 			'nuitees.guideTooltip' => 'Guida ai pernottamenti',
@@ -5802,6 +5803,7 @@ extension on TranslationsIt {
 			'hikerProfile.errorWeight' => 'Peso non valido (25 a 200 kg)',
 			'hikerProfile.errorCountry' => 'Codice paese non valido (es. FR)',
 			'hikerProfile.errorEmpty' => 'Scheda vuota: inserisca almeno l\'età, l\'altezza o il peso.',
+			'hikerProfile.errorSaveFailed' => 'Non è stato possibile salvare la scheda. Nulla è stato modificato: riprova.',
 			'hikerProfile.errorConsentRequired' => 'Senza il tuo consenso non viene salvato nulla: età, altezza e peso sono dati sanitari. Quanto era salvato è appena stato cancellato da questo dispositivo. Spunta l\'autorizzazione qui sopra e salva di nuovo.',
 			'hikerProfile.fieldSex' => 'Sesso (opzionale)',
 			'hikerProfile.sexFemale' => 'Donna',

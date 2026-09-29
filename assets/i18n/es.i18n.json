@@ -2155,6 +2155,7 @@
     "errorWeight": "Peso no válido (25 a 200 kg)",
     "errorCountry": "Código de país no válido (ej. FR)",
     "errorEmpty": "Ficha vacía: indique al menos la edad, la altura o el peso.",
+    "errorSaveFailed": "No se ha podido guardar la ficha. No se ha modificado nada: inténtalo de nuevo.",
     "errorConsentRequired": "Sin tu consentimiento no se guarda nada: edad, altura y peso son datos de salud. Lo que estaba guardado acaba de borrarse de este dispositivo. Marca la autorización de arriba y vuelve a guardar.",
     "fieldSex": "Sexo (opcional)",
     "sexFemale": "Mujer",

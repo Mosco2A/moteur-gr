@@ -2155,6 +2155,7 @@
     "errorWeight": "Peso non valido (25 a 200 kg)",
     "errorCountry": "Codice paese non valido (es. FR)",
     "errorEmpty": "Scheda vuota: inserisca almeno l'età, l'altezza o il peso.",
+    "errorSaveFailed": "Non è stato possibile salvare la scheda. Nulla è stato modificato: riprova.",
     "errorConsentRequired": "Senza il tuo consenso non viene salvato nulla: età, altezza e peso sono dati sanitari. Quanto era salvato è appena stato cancellato da questo dispositivo. Spunta l'autorizzazione qui sopra e salva di nuovo.",
     "fieldSex": "Sesso (opzionale)",
     "sexFemale": "Donna",
