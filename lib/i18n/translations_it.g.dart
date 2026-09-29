@@ -68,6 +68,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
 	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
 	@override late final _Translations$catalog$it catalog = _Translations$catalog$it._(_root);
+	@override late final _Translations$demo$it demo = _Translations$demo$it._(_root);
 	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
 	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
 	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
@@ -850,6 +851,23 @@ class _Translations$catalog$it extends Translations$catalog$fr {
 	@override String get staleNoticeOffline => 'Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete.';
 }
 
+// Path: demo
+class _Translations$demo$it extends Translations$demo$fr {
+	_Translations$demo$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get bandeau => 'MODALITÀ DEMO';
+	@override String get quitter => 'Esci';
+	@override String get boutonTitre => 'Prova la demo';
+	@override String get boutonSous => 'Scopri l\'app dall\'inizio alla fine, senza impegno';
+	@override String get rienNeCompte => 'Sei in modalità demo: nulla di ciò che fai qui viene salvato. Né tappe guadagnate, né diploma, né acquisto.';
+	@override String get simulerEtape => 'Simula la tappa successiva';
+	@override String get simulerFin => 'Simula l\'arrivo';
+	@override String get simulerRelancer => 'Ricomincia la demo';
+}
+
 // Path: updates
 class _Translations$updates$it extends Translations$updates$fr {
 	_Translations$updates$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -964,6 +982,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.';
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
 	@override String get buyOutcomeUnknownPrice => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.';
+	@override String get buyOutcomeDemo => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mese';
 	@override String get subscriptionAllowanceForLife => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.';
 	@override String get cancelCta => 'Interrompere l’abbonamento';
@@ -5088,6 +5107,14 @@ extension on TranslationsIt {
 			'catalog.loadFailedSubtitle' => 'Non è stato possibile recuperare l’elenco dei sentieri in questo momento. I sentieri già scaricati restano disponibili offline.',
 			'catalog.loadFailedRetry' => 'Riprova',
 			'catalog.staleNoticeOffline' => 'Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete.',
+			'demo.bandeau' => 'MODALITÀ DEMO',
+			'demo.quitter' => 'Esci',
+			'demo.boutonTitre' => 'Prova la demo',
+			'demo.boutonSous' => 'Scopri l\'app dall\'inizio alla fine, senza impegno',
+			'demo.rienNeCompte' => 'Sei in modalità demo: nulla di ciò che fai qui viene salvato. Né tappe guadagnate, né diploma, né acquisto.',
+			'demo.simulerEtape' => 'Simula la tappa successiva',
+			'demo.simulerFin' => 'Simula l\'arrivo',
+			'demo.simulerRelancer' => 'Ricomincia la demo',
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
@@ -5153,16 +5180,17 @@ extension on TranslationsIt {
 			'monetization.subscriptionInactive' => 'Nessun abbonamento attivo',
 			'monetization.subscriptionAllowancePending' => 'L\'importo del bonus non è ancora stabilito.',
 			'monetization.realizationLockedTitle' => 'Questa escursione non è sbloccata',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Per realizzare un\'escursione bisogna averla sbloccata. La preparazione resta gratuita.',
 			'monetization.buyOutcomeOwned' => 'Escursione sbloccata. Buon cammino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeUnknownPrice' => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.',
+			'monetization.buyOutcomeDemo' => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mese',
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',
 			'monetization.cancelExplains' => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.',
 			'monetization.cancelStoreUnavailable' => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.',
@@ -5666,6 +5694,8 @@ extension on TranslationsIt {
 			'programme.info.colors.title' => 'Colori',
 			'programme.info.colors.body' => 'Verde = facile, Arancione = medio, Rosso = difficile (distanza + dislivello).',
 			'programme.info.note' => 'Il profilo altimetrico in basso mostra il dislivello di ogni giorno.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => 'Capito!',
 			'programme.splitBlocked.single' => 'Impossibile dividere: questa giornata porta una sola tappa, non c\'è nulla da separare.',
 			'programme.splitBlocked.locked' => 'Giorno già percorso: non è più modificabile',
@@ -5675,8 +5705,6 @@ extension on TranslationsIt {
 			'programme.inTrek.doneSection' => 'Già percorso',
 			'programme.inTrek.upcomingSection' => 'A venire',
 			'programme.inTrek.doneBadge' => 'Fatto',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.lockedDay' => 'Giorno già percorso, bloccato',
 			'programme.inTrek.allDone' => 'Hai percorso tutti i tuoi giorni: non c\'è più nulla da adattare.',
 			'programme.inTrek.notStarted' => 'Questa schermata serve in cammino: avvia il trek per adattare il seguito.',

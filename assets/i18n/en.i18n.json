@@ -1095,6 +1095,16 @@
     "loadFailedRetry": "Try again",
     "staleNoticeOffline": "Offline: these are the trails you already downloaded. The full list will refresh once you are back online."
   },
+  "demo": {
+    "bandeau": "DEMO MODE",
+    "quitter": "Exit",
+    "boutonTitre": "Try the demo",
+    "boutonSous": "See the whole app end to end, with nothing at stake",
+    "rienNeCompte": "You are in demo mode: nothing you do here is saved. No stages earned, no diploma, no purchase.",
+    "simulerEtape": "Simulate the next stage",
+    "simulerFin": "Simulate the finish",
+    "simulerRelancer": "Restart the demo"
+  },
   "updates": {
     "readyTitle": "Update ready",
     "readyBodyOne": "One trail has been updated.",
@@ -1175,6 +1185,7 @@
     "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
     "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
     "buyOutcomeUnknownPrice": "This trail is not on sale right now. Nothing was charged.",
+    "buyOutcomeDemo": "You are in demo mode: no purchase is possible, and nothing was charged.",
     "subscriptionPrice": "$price per month",
     "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",

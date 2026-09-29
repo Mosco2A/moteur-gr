@@ -1095,6 +1095,16 @@
     "loadFailedRetry": "Reintentar",
     "staleNoticeOffline": "Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red."
   },
+  "demo": {
+    "bandeau": "MODO DEMO",
+    "quitter": "Salir",
+    "boutonTitre": "Probar la demo",
+    "boutonSous": "Descubra la aplicación de principio a fin, sin compromiso",
+    "rienNeCompte": "Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.",
+    "simulerEtape": "Simular la siguiente etapa",
+    "simulerFin": "Simular la llegada",
+    "simulerRelancer": "Reiniciar la demo"
+  },
   "updates": {
     "readyTitle": "Actualización lista",
     "readyBodyOne": "Un sendero ha sido actualizado.",
@@ -1175,6 +1185,7 @@
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
+    "buyOutcomeDemo": "Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",

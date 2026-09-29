@@ -53,10 +53,7 @@ Future<void> acheterSentier(
 /// EUR indicatif (etapes x [kStepTierEur]) + CTA. L'achat passe par le
 /// compte-etapes ([MonetizationService.buyTrail]) : wallet d'abord, complement
 /// store. En mode stub IAP, aucun paiement reel n'est declenche.
-Future<void> _ouvrirLaVitrine(
-  BuildContext context, {
-  required String trailId,
-}) {
+Future<void> _ouvrirLaVitrine(BuildContext context, {required String trailId}) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -200,10 +197,15 @@ String _messagePour(PurchaseOutcome outcome) {
   return switch (outcome.status) {
     PurchaseStatusResult.owned => m.buyOutcomeOwned,
     PurchaseStatusResult.alreadyOwned => m.buyOutcomeAlreadyOwned,
-    PurchaseStatusResult.offlineComplementRequired =>
-      m.buyOutcomeOffline(steps: outcome.complementSteps),
+    PurchaseStatusResult.offlineComplementRequired => m.buyOutcomeOffline(
+      steps: outcome.complementSteps,
+    ),
     PurchaseStatusResult.complementFailed => m.buyOutcomeFailed,
     PurchaseStatusResult.unknownPrice => m.buyOutcomeUnknownPrice,
+    // LA SIXIEME EST NEE DE LA TACHE 634 : en demo, rien ne s achete et rien
+    // n est debite. Le refus se DIT, la ou un echec muet aurait ressemble a une
+    // panne de la vitrine.
+    PurchaseStatusResult.refuseEnDemo => m.buyOutcomeDemo,
   };
 }
 
@@ -227,7 +229,11 @@ class _FeatureLine extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          const StepIcon(StepwaysIcons.cochePleine, size: 18, color: AppTheme.vertFacile),
+          const StepIcon(
+            StepwaysIcons.cochePleine,
+            size: 18,
+            color: AppTheme.vertFacile,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],

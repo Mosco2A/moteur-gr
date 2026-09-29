@@ -7,6 +7,7 @@ import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/home_location_provider.dart';
 import '../../../core/services/monetization_service.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -85,6 +86,14 @@ class TrailCatalogScreen extends ConsumerWidget {
                 bottom: AppTheme.spacingXl,
               ),
               children: [
+                // LE BOUTON DEMO, EN TETE (tache 634, DEM-260929-1123).
+                //
+                // Verbatim de Christophe : « il faut mettre demo en haut des
+                // sentiers juste un bouton "paasez en mode demo" », puis « UN
+                // BOUTON DEMO ORANGE TOUT BETE, au-dessus des sentiers non
+                // achetes : quand tu cliques dessus tu arrives a la demo Mare a
+                // Mare ». Il est ici, et il est orange.
+                const _BoutonDemo(),
                 for (final trail in trails)
                   _AvailableTrailCard(
                     trail: trail,
@@ -108,11 +117,111 @@ class TrailCatalogScreen extends ConsumerWidget {
   /// `push` d'ecran de detail — c'est un changement d'accueil contextuel, tout le
   /// contexte du sentier suit la selection (trailConfigProvider en derive).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
+    // UN SENTIER NON ACHETE NE S'OUVRE PLUS DU TOUT (tache 634, DEM-1123).
+    //
+    // CE QUI SE PASSAIT, MESURE. Cette methode n'avait AUCUNE garde d'acces :
+    // taper « Entrer » sur un sentier payant qu'on ne possede pas ouvrait son
+    // cockpit de preparation, avec la banniere publicitaire, sans un mot. Pas
+    // de bandeau, pas d'explication — le « mode demo » etait SUBI. Verbatim de
+    // Christophe : « MAIS NON !!! il s ouvre en mode prepa AVEC PUB !!! ».
+    //
+    // CE QUI SE PASSE MAINTENANT : un sentier qu'on ne peut pas jouer mene au
+    // PARCOURS DE DEBLOCAGE qui existait deja (la vitrine : etapes ou
+    // paiement). Pour DECOUVRIR l'application, il y a le bouton demo, en tete
+    // de cette liste — un mode qu'on choisit, pas un bridage qu'on subit.
+    final jouable = !(ref.read(isDemoModeProvider(trailId)).value ?? false);
+    if (!jouable) {
+      acheterSentier(context, ref, trailId: trailId);
+      return;
+    }
+
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
     // bascule est resolue avant la navigation ([choisirSentier] dit pourquoi :
     // sans cela, quatre « setState during build » par bascule).
     choisirSentier(ref, trailId);
     context.go('/home');
+  }
+}
+
+/// LE BOUTON DEMO ORANGE, EN TETE DU CATALOGUE (tache 634, DEM-260929-1123).
+///
+/// Verbatim de Christophe : « UN BOUTON DEMO ORANGE TOUT BETE, au-dessus des
+/// sentiers non achetes : quand tu cliques dessus tu arrives a la demo Mare a
+/// Mare » ; « un bouton demo qui montre comment marche l appli de A a Z ».
+///
+/// IL N'OUVRE QU'UN SENTIER, ET TOUJOURS LE MEME : le sentier de demonstration
+/// du lot 601, deux etapes, GRATUIT pour tout le monde. Il n'accorde donc aucun
+/// droit a personne — la demo MONTRE, elle ne DEBLOQUE jamais, et c'est le
+/// garde-fou que le lot 601 avait paye cher (suppression du drapeau
+/// `isShowcaseTrail`, une exemption etant un trou dans le modele d'acces).
+class _BoutonDemo extends ConsumerWidget {
+  const _BoutonDemo();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTheme.spacingBase,
+        AppTheme.spacingSm,
+        AppTheme.spacingBase,
+        AppTheme.spacingBase,
+      ),
+      child: Material(
+        color: AppTheme.orangeDifficile,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        child: InkWell(
+          key: const ValueKey('catalog-demo-button'),
+          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+          onTap: () {
+            // On entre en demo AVANT de choisir le sentier : le cadre orange
+            // et la sortie sont donc deja poses quand le cockpit s'affiche.
+            ref.read(sessionDemoProvider.notifier).entrer();
+            choisirSentier(ref, kSentierDeDemo);
+            context.go('/home');
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Row(
+              children: [
+                const StepIcon(
+                  StepwaysIcons.eprouvette,
+                  size: 28,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: AppTheme.spacingBase),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t.demo.boutonTitre,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        t.demo.boutonSous,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const StepIcon(
+                  StepwaysIcons.flecheAvant,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -184,7 +293,10 @@ class _AvailableTrailCard extends ConsumerWidget {
           Row(
             children: [
               ExcludeSemantics(
-                child: StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary),
+                child: StepIcon(
+                  StepwaysIcons.sommet,
+                  color: theme.colorScheme.primary,
+                ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(

@@ -1095,6 +1095,16 @@
     "loadFailedRetry": "Erneut versuchen",
     "staleNoticeOffline": "Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist."
   },
+  "demo": {
+    "bandeau": "DEMO-MODUS",
+    "quitter": "Beenden",
+    "boutonTitre": "Demo ausprobieren",
+    "boutonSous": "Die ganze App von A bis Z, ganz unverbindlich",
+    "rienNeCompte": "Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.",
+    "simulerEtape": "Nächste Etappe simulieren",
+    "simulerFin": "Ankunft simulieren",
+    "simulerRelancer": "Demo neu starten"
+  },
   "updates": {
     "readyTitle": "Update bereit",
     "readyBodyOne": "Ein Weg wurde aktualisiert.",
@@ -1175,6 +1185,7 @@
     "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
     "buyOutcomeUnknownPrice": "Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.",
+    "buyOutcomeDemo": "Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.",
     "subscriptionPrice": "$price pro Monat",
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
     "cancelCta": "Abo beenden",

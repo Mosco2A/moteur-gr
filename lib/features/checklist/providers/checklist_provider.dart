@@ -11,6 +11,7 @@ import '../../notifications/providers/download_reminder_provider.dart';
 import '../data/checklist_seasonal_adapter.dart';
 import '../data/checklist_template.dart';
 import '../domain/season.dart';
+import '../../../core/services/session_demo.dart';
 
 /// Poids corporel de reference par defaut (kg), parite GR20 « Materiel & Sac ».
 ///
@@ -122,25 +123,25 @@ class ChecklistState {
   /// exactement le defaut qui avait produit deux moteurs de verdict (ecart
   /// G1-1, audit #100189) ; on ne le refait pas sur le poids.
   double get loadBaseKg => BodyWeightReference.loadBaseKg(
-        heightCm: bodyHeightCm,
-        bodyWeightKg: bodyWeightKg,
-      );
+    heightCm: bodyHeightCm,
+    bodyWeightKg: bodyWeightKg,
+  );
 
   /// Ratio poids du sac / BASE DE CHARGE (0 si base invalide).
   ///
   /// Le denominateur a change : le libelle qui l'accompagne a change aussi
   /// (#7-e), sans quoi l'ecran mentirait.
   double get backpackRatio => BodyWeightReference.backpackRatio(
-        heightCm: bodyHeightCm,
-        bodyWeightKg: bodyWeightKg,
-        backpackKg: checkedWeightKg,
-      );
+    heightCm: bodyHeightCm,
+    bodyWeightKg: bodyWeightKg,
+    backpackKg: checkedWeightKg,
+  );
 
   /// Sac conseille (kg) = 20 % de la base de charge (#4-b, regle publiee #S13-a).
   double get recommendedBackpackKg => BodyWeightReference.recommendedBackpackKg(
-        heightCm: bodyHeightCm,
-        bodyWeightKg: bodyWeightKg,
-      );
+    heightCm: bodyHeightCm,
+    bodyWeightKg: bodyWeightKg,
+  );
 
   /// Pourquoi la reference de taille n'a pas pu etre calculee, `null` si elle
   /// l'a ete. L'ecran DOIT le dire quand elle ne l'est pas (#5-h).
@@ -148,8 +149,7 @@ class ChecklistState {
       BodyWeightReference.fallbackFor(bodyHeightCm);
 
   /// Nombre d'articles dans la liste de courses (parite GR20).
-  int get shoppingListCount =>
-      items.where((i) => i.inShoppingList).length;
+  int get shoppingListCount => items.where((i) => i.inShoppingList).length;
 
   /// Nombre d'articles obligatoires (requirement == required, parite GR20).
   int get requiredCount => items
@@ -158,9 +158,11 @@ class ChecklistState {
 
   /// Nombre d'articles obligatoires COCHES (parite GR20 « SAC OK »).
   int get requiredCheckedCount => items
-      .where((i) =>
-          i.template.requirement == ChecklistRequirement.required &&
-          i.isChecked)
+      .where(
+        (i) =>
+            i.template.requirement == ChecklistRequirement.required &&
+            i.isChecked,
+      )
       .length;
 
   /// Tous les articles obligatoires sont coches (parite GR20).
@@ -236,8 +238,9 @@ class ChecklistItemState {
 ///
 /// Charge le template par defaut + l'etat persiste en DB.
 /// Chaque toggle est sauvegarde immediatement en Drift.
-final checklistProvider =
-    NotifierProvider<ChecklistNotifier, ChecklistState>(ChecklistNotifier.new);
+final checklistProvider = NotifierProvider<ChecklistNotifier, ChecklistState>(
+  ChecklistNotifier.new,
+);
 
 /// Saison de reference du Sac ADAPTATIF (StepWays LOT 5, sous-ensemble B).
 ///
@@ -260,13 +263,13 @@ final checklistSeasonFromDepartureProvider = Provider<String>((ref) {
 /// (parite). Chargee depuis la donnee externalisee [ChecklistSeasonalAdapter].
 final checklistSeasonalSuggestionsProvider =
     FutureProvider<List<ChecklistTemplateItem>>((ref) async {
-  final trailId = ref.watch(trailIdProvider);
-  final season = ref.watch(checklistSeasonFromDepartureProvider);
-  return ChecklistSeasonalAdapter.seasonalItems(
-    trailId: trailId,
-    season: season,
-  );
-});
+      final trailId = ref.watch(trailIdProvider);
+      final season = ref.watch(checklistSeasonFromDepartureProvider);
+      return ChecklistSeasonalAdapter.seasonalItems(
+        trailId: trailId,
+        season: season,
+      );
+    });
 
 /// Notifier qui gere l'etat de la checklist materiel (parite GR20).
 class ChecklistNotifier extends Notifier<ChecklistState> {
@@ -329,15 +332,17 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       final dbMatch = dbItems.where((i) => i.itemId == template.id);
       final hasRow = dbMatch.isNotEmpty;
       final row = hasRow ? dbMatch.first : null;
-      itemStates.add(ChecklistItemState(
-        template: template,
-        isChecked: row?.isChecked ?? false,
-        // Poids courant = valeur persistee si la ligne existe, sinon le poids
-        // de reference du template (parite GR20 : sac pre-rempli).
-        weightGrams: row?.weightGrams ?? template.weightGrams,
-        quantity: (row?.quantity ?? template.quantity).clamp(1, 999),
-        inShoppingList: row?.inShoppingList ?? false,
-      ));
+      itemStates.add(
+        ChecklistItemState(
+          template: template,
+          isChecked: row?.isChecked ?? false,
+          // Poids courant = valeur persistee si la ligne existe, sinon le poids
+          // de reference du template (parite GR20 : sac pre-rempli).
+          weightGrams: row?.weightGrams ?? template.weightGrams,
+          quantity: (row?.quantity ?? template.quantity).clamp(1, 999),
+          inShoppingList: row?.inShoppingList ?? false,
+        ),
+      );
     }
 
     // Articles personnalises (isCustom en DB, non presents dans le template).
@@ -351,15 +356,17 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
         weightGrams: row.weightGrams,
         quantity: row.quantity,
       );
-      itemStates.add(ChecklistItemState(
-        template: customTemplate,
-        isChecked: row.isChecked,
-        weightGrams: row.weightGrams,
-        quantity: row.quantity.clamp(1, 999),
-        isCustom: true,
-        inShoppingList: row.inShoppingList,
-        customName: row.customName ?? row.itemId,
-      ));
+      itemStates.add(
+        ChecklistItemState(
+          template: customTemplate,
+          isChecked: row.isChecked,
+          weightGrams: row.weightGrams,
+          quantity: row.quantity.clamp(1, 999),
+          isCustom: true,
+          inShoppingList: row.inShoppingList,
+          customName: row.customName ?? row.itemId,
+        ),
+      );
     }
 
     return itemStates;
@@ -406,9 +413,11 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
   /// Coche ou decoche un item et persiste en DB (parite GR20).
   Future<void> toggle(String itemId) async {
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
-    final currentItem =
-        state.items.firstWhere((i) => i.template.id == itemId);
+    final currentItem = state.items.firstWhere((i) => i.template.id == itemId);
     final newChecked = !currentItem.isChecked;
 
     await dao.toggleItem(_trailId, itemId, newChecked);
@@ -418,6 +427,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   /// Force le decochage d'un article (parite GR20 : apres confirmation du
   /// garde-fou sur un article obligatoire).
   Future<void> forceUncheck(String itemId) async {
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.toggleItem(_trailId, itemId, false);
     _emit(_mapItem(itemId, (i) => i.copyWith(isChecked: false)));
@@ -429,8 +441,10 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   /// depuis FIX-1 (M3), l'ecran refuse la saisie hors bornes avec un message
   /// avant d'arriver ici, donc ce clamp ne doit plus jamais mentir a personne.
   Future<void> setItemWeight(String itemId, int weightGrams) async {
-    final clamped =
-        weightGrams.clamp(kItemWeightMinGrams, kItemWeightMaxGrams);
+    final clamped = weightGrams.clamp(kItemWeightMinGrams, kItemWeightMaxGrams);
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.setWeight(_trailId, itemId, clamped);
     _emit(_mapItem(itemId, (i) => i.copyWith(weightGrams: clamped)));
@@ -462,10 +476,17 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       quantity = newQuantity.clamp(kItemQuantityMin, kItemQuantityMax);
     }
 
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.setQuantityAndChecked(_trailId, itemId, quantity, isChecked);
-    _emit(_mapItem(
-        itemId, (i) => i.copyWith(quantity: quantity, isChecked: isChecked)));
+    _emit(
+      _mapItem(
+        itemId,
+        (i) => i.copyWith(quantity: quantity, isChecked: isChecked),
+      ),
+    );
   }
 
   /// Ajoute / retire un article de la liste de courses et persiste (parite
@@ -473,6 +494,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   Future<void> toggleShoppingList(String itemId) async {
     final item = state.items.firstWhere((i) => i.template.id == itemId);
     final next = !item.inShoppingList;
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.setInShoppingList(_trailId, itemId, next);
     _emit(_mapItem(itemId, (i) => i.copyWith(inShoppingList: next)));
@@ -489,10 +513,15 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     if (trimmed.isEmpty) return;
     // Dernier rempart (voir [setItemWeight]) : l'ecran valide et refuse avec un
     // message avant d'en arriver la (FIX-1 / M3).
-    final clampedWeight =
-        weightGrams.clamp(kItemWeightMinGrams, kItemWeightMaxGrams);
+    final clampedWeight = weightGrams.clamp(
+      kItemWeightMinGrams,
+      kItemWeightMaxGrams,
+    );
     final customId = 'custom_${DateTime.now().microsecondsSinceEpoch}';
 
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.insertCustomItem(
       trailId: _trailId,
@@ -548,6 +577,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     final item = state.items.firstWhere((i) => i.template.id == itemId);
     if (!item.isCustom) return;
 
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.setCustomName(_trailId, itemId, trimmed);
     _emit(_mapItem(itemId, (i) => i.copyWith(customName: trimmed)));
@@ -559,6 +591,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     final item = state.items.firstWhere((i) => i.template.id == itemId);
     if (!item.isCustom) return;
 
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.deleteCustomItem(_trailId, itemId);
     _emit(state.items.where((i) => i.template.id != itemId).toList());
@@ -664,6 +699,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
   /// Reinitialise toute la checklist (tout decocher).
   Future<void> resetAll() async {
+    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
+    // DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final dao = ChecklistDao(_db);
     await dao.deleteByTrailId(_trailId);
     await _load();
@@ -673,8 +711,8 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 /// Provider filtrant les items par categorie.
 final checklistByCategoryProvider =
     Provider.family<List<ChecklistItemState>, String>((ref, category) {
-  final checklistState = ref.watch(checklistProvider);
-  return checklistState.items
-      .where((item) => item.template.category == category)
-      .toList();
-});
+      final checklistState = ref.watch(checklistProvider);
+      return checklistState.items
+          .where((item) => item.template.category == category)
+          .toList();
+    });

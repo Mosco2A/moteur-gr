@@ -20,6 +20,7 @@ import '../data/background_gps_service.dart';
 import '../data/trek_recorder.dart';
 import '../domain/models/trek_session.dart';
 import '../domain/trek_stats.dart';
+import '../../../core/services/session_demo.dart';
 
 /// Etat immutable du tracking expose a l'UI.
 ///
@@ -79,12 +80,7 @@ class TrackingSessionState {
 }
 
 /// Etats possibles d'une session de tracking.
-enum TrackingSessionStatus {
-  idle,
-  recording,
-  paused,
-  stopped,
-}
+enum TrackingSessionStatus { idle, recording, paused, stopped }
 
 /// Decision de l'utilisateur face a un CONFLIT d'unicite (StepWays LOT 2, C4).
 ///
@@ -107,9 +103,8 @@ enum ActiveTrekConflictChoice {
 
 /// Callback fourni par l'UI pour resoudre un conflit d'unicite (dialog
 /// Terminer/Abandonner). Recoit le sentier DEJA en cours et renvoie le choix.
-typedef ActiveTrekConflictResolver = Future<ActiveTrekConflictChoice> Function(
-  String ongoingTrailId,
-);
+typedef ActiveTrekConflictResolver =
+    Future<ActiveTrekConflictChoice> Function(String ongoingTrailId);
 
 /// Issue d'un appel a [TrekSessionManagerNotifier.ensureSingleActiveThenStart].
 enum StartOutcome {
@@ -149,8 +144,7 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
       // GPS brut (tracking.distanceKm) qui gonfle sur un aller-retour.
       final doneKm = ref.read(stageDistanceCoveredProvider) / 1000;
       final progress = totalKm > 0 ? (doneKm / totalKm) : 0.0;
-      final remainingKm =
-          (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
+      final remainingKm = (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
       final etaMinutes = tracking.avgSpeedKmh > 0.5
           ? (remainingKm / tracking.avgSpeedKmh * 60).round()
           : 0;
@@ -177,6 +171,12 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
     // etape marchee : la memoire du finisher SURVIT desormais a un
     // redemarrage. Best-effort (ne casse jamais le trek). Firestore = Phase 4.
     onSessionPersist: (session) async {
+      // DEMO : LA RANDO SIMULEE NE TOUCHE PAS LA BASE (tache 634,
+      // DEM-260929-1123). Christophe : « ON EST EN MODE DEMO » = rien ne
+      // compte, « rien en base ». La session vit alors en MEMOIRE seulement —
+      // le randonneur voit son trek avancer, son journal, son arrivee, et
+      // fermer l'application n'en laisse aucune trace.
+      if (ref.read(enDemoProvider)) return;
       try {
         await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
       } catch (_) {
@@ -219,6 +219,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// via le DAO Drift, en dedupliquant implicitement par la source (l'isolate de
   /// fond applique deja son filtre de distance). Best-effort.
   Future<void> _persistBgPoint(BgTrackPoint p) async {
+    // DEMO : aucune trace GPS ecrite (tache 634). De toute facon le GPS est
+    // coupe en demo — cette garde ferme le chemin meme si un point arrivait
+    // d'une capture de fond restee armee d'une vraie rando precedente.
+    if (ref.read(enDemoProvider)) return;
     final trailId = p.trailId.isNotEmpty ? p.trailId : _activeTrailId;
     if (trailId == null || trailId.isEmpty) return;
     final dao = ref.read(databaseProvider).sessionTrackPointsDao;
@@ -276,6 +280,9 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // Le provider a pu etre dispose pendant un gap async (ex. ecran quitte) :
     // on evite tout acces a un Ref invalide.
     if (!ref.mounted) return;
+    // DEMO : rien en base (tache 634). L'etat reste en memoire, ce qui suffit
+    // a montrer tout le parcours et ne survit a rien.
+    if (ref.read(enDemoProvider)) return;
     try {
       await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
     } catch (_) {
@@ -409,7 +416,8 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     TrekSession current, {
     required String status,
   }) async {
-    final isInMemory = state.session?.id == current.id &&
+    final isInMemory =
+        state.session?.id == current.id &&
         (state.status == TrackingSessionStatus.recording ||
             state.status == TrackingSessionStatus.paused);
     if (isInMemory) {
@@ -422,7 +430,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     }
     // Session orpheline : solder son statut en base, best-effort.
     try {
-      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+      await ref
+          .read(databaseProvider)
+          .trekSessionsDao
+          .upsertSession(
             current.copyWith(
               status: status,
               finishedAt: current.finishedAt ?? DateTime.now(),
@@ -445,6 +456,11 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// (`ensureBackgroundTrackingExplained`). Ici on se contente de ce qui est
   /// deja accorde : sans permission de fond la capture premier plan continue.
   Future<void> _startBackgroundCapture(String sessionId, String trailId) async {
+    // DEMO : PAS DE GPS DU TOUT (tache 634, DEM-260929-1123). Christophe
+    // demande une SIMULATION : « le randonneur avance sur les etapes sans
+    // GPS ». Armer la capture de fond ecrirait en prefs et en base, et
+    // demanderait une permission de localisation pour une demonstration.
+    if (ref.read(enDemoProvider)) return;
     try {
       final service = ref.read(backgroundGpsServiceProvider);
 
@@ -533,7 +549,8 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// notifier — cas theorique, l'orpheline est par definition hors memoire — on
   /// delegue a [abandon] (teardown complet) plutot que d'ecrire en base a cote.
   Future<bool> abandonPendingSession(TrekSession session) async {
-    final isInMemory = state.session?.id == session.id &&
+    final isInMemory =
+        state.session?.id == session.id &&
         (state.status == TrackingSessionStatus.recording ||
             state.status == TrackingSessionStatus.paused);
     if (isInMemory) {
@@ -541,7 +558,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       return true;
     }
     try {
-      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+      await ref
+          .read(databaseProvider)
+          .trekSessionsDao
+          .upsertSession(
             session.copyWith(
               status: 'abandoned',
               finishedAt: session.finishedAt ?? DateTime.now(),
@@ -727,5 +747,5 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 /// Expose un [TrackingSessionState] immutable a l'UI.
 final trekSessionManagerProvider =
     NotifierProvider<TrekSessionManagerNotifier, TrackingSessionState>(
-  TrekSessionManagerNotifier.new,
-);
+      TrekSessionManagerNotifier.new,
+    );

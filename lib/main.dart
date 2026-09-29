@@ -24,6 +24,7 @@ import 'core/services/descente_des_droits.dart';
 import 'core/services/ordonnanceur_de_synchronisation.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
+import 'shared/widgets/cadre_demo.dart';
 import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/settings/data/settings_service.dart';
@@ -421,8 +422,15 @@ class _BootstrapGate extends ConsumerWidget {
       // reprendre une rando interrompue est un geste urgent, le consentement de
       // sauvegarde ne l'est pas, et il sera repose au lancement suivant s'il est
       // ignore.
-      data: (_) => PorteConsentementSauvegarde(
-        child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+      // LE CADRE ORANGE DE LA DEMO EST LA PLUS EXTERIEURE DES TROIS PORTES
+      // (tache 634, DEM-260929-1123). Il doit entourer TOUT l'ecran, y compris
+      // les dialogues des deux portes ci-dessous : « le tour des ecran devient
+      // orange », et la sortie doit rester visible en permanence. Hors demo, ce
+      // widget rend son enfant tel quel, sans ajouter un seul noeud.
+      data: (_) => CadreDemo(
+        child: PorteConsentementSauvegarde(
+          child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+        ),
       ),
       loading: loader,
       error: (error, _) => _BootstrapScaffold(

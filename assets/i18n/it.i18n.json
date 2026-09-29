@@ -1095,6 +1095,16 @@
     "loadFailedRetry": "Riprova",
     "staleNoticeOffline": "Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete."
   },
+  "demo": {
+    "bandeau": "MODALITÀ DEMO",
+    "quitter": "Esci",
+    "boutonTitre": "Prova la demo",
+    "boutonSous": "Scopri l'app dall'inizio alla fine, senza impegno",
+    "rienNeCompte": "Sei in modalità demo: nulla di ciò che fai qui viene salvato. Né tappe guadagnate, né diploma, né acquisto.",
+    "simulerEtape": "Simula la tappa successiva",
+    "simulerFin": "Simula l'arrivo",
+    "simulerRelancer": "Ricomincia la demo"
+  },
   "updates": {
     "readyTitle": "Aggiornamento pronto",
     "readyBodyOne": "Un sentiero è stato aggiornato.",
@@ -1175,6 +1185,7 @@
     "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
     "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
+    "buyOutcomeDemo": "Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.",
     "subscriptionPrice": "$price al mese",
     "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.",
     "cancelCta": "Interrompere l’abbonamento",

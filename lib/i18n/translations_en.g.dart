@@ -68,6 +68,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
 	@override late final _Translations$catalog$en catalog = _Translations$catalog$en._(_root);
+	@override late final _Translations$demo$en demo = _Translations$demo$en._(_root);
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
@@ -850,6 +851,23 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 	@override String get staleNoticeOffline => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.';
 }
 
+// Path: demo
+class _Translations$demo$en extends Translations$demo$fr {
+	_Translations$demo$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get bandeau => 'DEMO MODE';
+	@override String get quitter => 'Exit';
+	@override String get boutonTitre => 'Try the demo';
+	@override String get boutonSous => 'See the whole app end to end, with nothing at stake';
+	@override String get rienNeCompte => 'You are in demo mode: nothing you do here is saved. No stages earned, no diploma, no purchase.';
+	@override String get simulerEtape => 'Simulate the next stage';
+	@override String get simulerFin => 'Simulate the finish';
+	@override String get simulerRelancer => 'Restart the demo';
+}
+
 // Path: updates
 class _Translations$updates$en extends Translations$updates$fr {
 	_Translations$updates$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -964,6 +982,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
+	@override String get buyOutcomeDemo => 'You are in demo mode: no purchase is possible, and nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
 	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
 	@override String get cancelCta => 'Stop my subscription';
@@ -5088,6 +5107,14 @@ extension on TranslationsEn {
 			'catalog.loadFailedSubtitle' => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.',
 			'catalog.loadFailedRetry' => 'Try again',
 			'catalog.staleNoticeOffline' => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.',
+			'demo.bandeau' => 'DEMO MODE',
+			'demo.quitter' => 'Exit',
+			'demo.boutonTitre' => 'Try the demo',
+			'demo.boutonSous' => 'See the whole app end to end, with nothing at stake',
+			'demo.rienNeCompte' => 'You are in demo mode: nothing you do here is saved. No stages earned, no diploma, no purchase.',
+			'demo.simulerEtape' => 'Simulate the next stage',
+			'demo.simulerFin' => 'Simulate the finish',
+			'demo.simulerRelancer' => 'Restart the demo',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5153,16 +5180,17 @@ extension on TranslationsEn {
 			'monetization.subscriptionInactive' => 'No active subscription',
 			'monetization.subscriptionAllowancePending' => 'The allowance amount has not been set yet.',
 			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
 			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
+			'monetization.buyOutcomeDemo' => 'You are in demo mode: no purchase is possible, and nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
 			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.cancelCta' => 'Stop my subscription',
 			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
@@ -5666,6 +5694,8 @@ extension on TranslationsEn {
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => 'Got it!',
 			'programme.splitBlocked.single' => 'Cannot split: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
@@ -5675,8 +5705,6 @@ extension on TranslationsEn {
 			'programme.inTrek.doneSection' => 'Already walked',
 			'programme.inTrek.upcomingSection' => 'Upcoming',
 			'programme.inTrek.doneBadge' => 'Done',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.lockedDay' => 'Day already walked, locked',
 			'programme.inTrek.allDone' => 'You have walked every day: there is nothing left to adjust.',
 			'programme.inTrek.notStarted' => 'This screen is for the trail: start your trek to adjust what is coming.',

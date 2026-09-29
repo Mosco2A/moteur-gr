@@ -69,6 +69,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
 	late final Translations$catalog$fr catalog = Translations$catalog$fr.internal(_root);
+	late final Translations$demo$fr demo = Translations$demo$fr.internal(_root);
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
@@ -1754,6 +1755,39 @@ class Translations$catalog$fr {
 	String get staleNoticeOffline => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.';
 }
 
+// Path: demo
+class Translations$demo$fr {
+	Translations$demo$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'MODE DÉMO'
+	String get bandeau => 'MODE DÉMO';
+
+	/// fr: 'Quitter'
+	String get quitter => 'Quitter';
+
+	/// fr: 'Essayer la démo'
+	String get boutonTitre => 'Essayer la démo';
+
+	/// fr: 'Découvrez l'application de A à Z, sans rien engager'
+	String get boutonSous => 'Découvrez l\'application de A à Z, sans rien engager';
+
+	/// fr: 'Vous êtes en démo : rien de ce que vous faites ici n'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.'
+	String get rienNeCompte => 'Vous êtes en démo : rien de ce que vous faites ici n\'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.';
+
+	/// fr: 'Simuler l'étape suivante'
+	String get simulerEtape => 'Simuler l\'étape suivante';
+
+	/// fr: 'Simuler l'arrivée'
+	String get simulerFin => 'Simuler l\'arrivée';
+
+	/// fr: 'Recommencer la démo'
+	String get simulerRelancer => 'Recommencer la démo';
+}
+
 // Path: updates
 class Translations$updates$fr {
 	Translations$updates$fr.internal(this._root);
@@ -2010,6 +2044,9 @@ class Translations$monetization$fr {
 
 	/// fr: 'Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.'
 	String get buyOutcomeUnknownPrice => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.';
+
+	/// fr: 'Vous êtes en démo : aucun achat n'est possible, et rien n'a été débité.'
+	String get buyOutcomeDemo => 'Vous êtes en démo : aucun achat n\'est possible, et rien n\'a été débité.';
 
 	/// fr: '$price par mois'
 	String subscriptionPrice({required Object price}) => '${price} par mois';
@@ -9015,6 +9052,14 @@ extension on Translations {
 			'catalog.loadFailedSubtitle' => 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.',
 			'catalog.loadFailedRetry' => 'Réessayer',
 			'catalog.staleNoticeOffline' => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.',
+			'demo.bandeau' => 'MODE DÉMO',
+			'demo.quitter' => 'Quitter',
+			'demo.boutonTitre' => 'Essayer la démo',
+			'demo.boutonSous' => 'Découvrez l\'application de A à Z, sans rien engager',
+			'demo.rienNeCompte' => 'Vous êtes en démo : rien de ce que vous faites ici n\'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.',
+			'demo.simulerEtape' => 'Simuler l\'étape suivante',
+			'demo.simulerFin' => 'Simuler l\'arrivée',
+			'demo.simulerRelancer' => 'Recommencer la démo',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -9080,16 +9125,17 @@ extension on Translations {
 			'monetization.subscriptionInactive' => 'Aucun abonnement actif',
 			'monetization.subscriptionAllowancePending' => 'Le montant de la cagnotte n\'est pas encore fixé.',
 			'monetization.realizationLockedTitle' => 'Cette randonnée n\'est pas débloquée',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
 			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
+			'monetization.buyOutcomeDemo' => 'Vous êtes en démo : aucun achat n\'est possible, et rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
 			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
 			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
@@ -9593,6 +9639,8 @@ extension on Translations {
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
@@ -9602,8 +9650,6 @@ extension on Translations {
 			'programme.inTrek.doneSection' => 'Déjà marché',
 			'programme.inTrek.upcomingSection' => 'À venir',
 			'programme.inTrek.doneBadge' => 'Fait',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
 			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
 			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.',

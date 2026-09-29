@@ -1095,6 +1095,16 @@
     "loadFailedRetry": "Réessayer",
     "staleNoticeOffline": "Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau."
   },
+  "demo": {
+    "bandeau": "MODE DÉMO",
+    "quitter": "Quitter",
+    "boutonTitre": "Essayer la démo",
+    "boutonSous": "Découvrez l'application de A à Z, sans rien engager",
+    "rienNeCompte": "Vous êtes en démo : rien de ce que vous faites ici n'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.",
+    "simulerEtape": "Simuler l'étape suivante",
+    "simulerFin": "Simuler l'arrivée",
+    "simulerRelancer": "Recommencer la démo"
+  },
   "updates": {
     "readyTitle": "Mise à jour prête",
     "readyBodyOne": "Un sentier a été mis à jour.",
@@ -1175,6 +1185,7 @@
     "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
     "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
     "buyOutcomeUnknownPrice": "Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.",
+    "buyOutcomeDemo": "Vous êtes en démo : aucun achat n'est possible, et rien n'a été débité.",
     "subscriptionPrice": "$price par mois",
     "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.",
     "cancelCta": "Arrêter mon abonnement",

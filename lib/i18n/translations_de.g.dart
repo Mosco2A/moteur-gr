@@ -68,6 +68,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 	@override late final _Translations$catalog$de catalog = _Translations$catalog$de._(_root);
+	@override late final _Translations$demo$de demo = _Translations$demo$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
 	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
@@ -850,6 +851,23 @@ class _Translations$catalog$de extends Translations$catalog$fr {
 	@override String get staleNoticeOffline => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.';
 }
 
+// Path: demo
+class _Translations$demo$de extends Translations$demo$fr {
+	_Translations$demo$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get bandeau => 'DEMO-MODUS';
+	@override String get quitter => 'Beenden';
+	@override String get boutonTitre => 'Demo ausprobieren';
+	@override String get boutonSous => 'Die ganze App von A bis Z, ganz unverbindlich';
+	@override String get rienNeCompte => 'Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.';
+	@override String get simulerEtape => 'Nächste Etappe simulieren';
+	@override String get simulerFin => 'Ankunft simulieren';
+	@override String get simulerRelancer => 'Demo neu starten';
+}
+
 // Path: updates
 class _Translations$updates$de extends Translations$updates$fr {
 	_Translations$updates$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -964,6 +982,7 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeUnknownPrice => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.';
+	@override String get buyOutcomeDemo => 'Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.';
 	@override String subscriptionPrice({required Object price}) => '${price} pro Monat';
 	@override String get subscriptionAllowanceForLife => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.';
 	@override String get cancelCta => 'Abo beenden';
@@ -5088,6 +5107,14 @@ extension on TranslationsDe {
 			'catalog.loadFailedSubtitle' => 'Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.',
 			'catalog.loadFailedRetry' => 'Erneut versuchen',
 			'catalog.staleNoticeOffline' => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.',
+			'demo.bandeau' => 'DEMO-MODUS',
+			'demo.quitter' => 'Beenden',
+			'demo.boutonTitre' => 'Demo ausprobieren',
+			'demo.boutonSous' => 'Die ganze App von A bis Z, ganz unverbindlich',
+			'demo.rienNeCompte' => 'Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.',
+			'demo.simulerEtape' => 'Nächste Etappe simulieren',
+			'demo.simulerFin' => 'Ankunft simulieren',
+			'demo.simulerRelancer' => 'Demo neu starten',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5153,16 +5180,17 @@ extension on TranslationsDe {
 			'monetization.subscriptionInactive' => 'Kein aktives Abo',
 			'monetization.subscriptionAllowancePending' => 'Die Höhe des Guthabens steht noch nicht fest.',
 			'monetization.realizationLockedTitle' => 'Diese Wanderung ist nicht freigeschaltet',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.',
 			'monetization.buyOutcomeOwned' => 'Wanderung freigeschaltet. Gute Tour!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
+			'monetization.buyOutcomeDemo' => 'Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.cancelCta' => 'Abo beenden',
 			'monetization.cancelExplains' => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.',
 			'monetization.cancelStoreUnavailable' => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.',
@@ -5666,6 +5694,8 @@ extension on TranslationsDe {
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => 'Verstanden!',
 			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
@@ -5675,8 +5705,6 @@ extension on TranslationsDe {
 			'programme.inTrek.doneSection' => 'Bereits gelaufen',
 			'programme.inTrek.upcomingSection' => 'Noch vor dir',
 			'programme.inTrek.doneBadge' => 'Erledigt',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.lockedDay' => 'Tag bereits gelaufen, gesperrt',
 			'programme.inTrek.allDone' => 'Du hast alle Tage gelaufen: es gibt nichts mehr anzupassen.',
 			'programme.inTrek.notStarted' => 'Dieser Bildschirm ist für unterwegs: starte deine Tour, um den weiteren Verlauf anzupassen.',
