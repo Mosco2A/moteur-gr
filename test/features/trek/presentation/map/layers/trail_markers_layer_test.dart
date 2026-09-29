@@ -7,6 +7,7 @@ import 'package:moteur_gr/features/map/widgets/poi_marker.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/map/layers/stage_markers_layer.dart';
 import 'package:moteur_gr/features/trek/presentation/map/layers/trail_markers_layer.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 571 — LA COUCHE UNIQUE DES REPERES DU SENTIER.
 ///
@@ -113,7 +114,7 @@ void main() {
 
         expect(markersOf(tester).length, 1);
         expect(find.byType(PoiMarker), findsOneWidget);
-        expect(find.byIcon(Icons.house), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
         expect(find.byType(StageNumberCircle), findsNothing);
       },
     );
@@ -135,12 +136,12 @@ void main() {
           reason: 'deux marqueurs au meme point doivent n en faire qu un',
         );
         expect(find.text('3'), findsOneWidget);
-        expect(find.byIcon(Icons.house), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
 
         // Et le numero reste lisible : sa surface ne croise pas la pastille.
         expect(
           tester.getRect(find.text('3')).overlaps(
-                tester.getRect(find.byIcon(Icons.house)),
+                tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement)),
               ),
           isFalse,
         );
@@ -162,8 +163,8 @@ void main() {
         expect(find.text('3'), findsOneWidget);
         // Le couchage passe devant le commerce : c est l ordre des decisions
         // d un randonneur, et la pastille porte donc le gite.
-        expect(find.byIcon(Icons.house), findsOneWidget);
-        expect(find.byIcon(Icons.shopping_cart), findsNothing);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsNothing);
         // Un lieu de plus est reuni ici, et le repere le dit.
         expect(find.text('+1'), findsOneWidget);
       },
@@ -181,11 +182,11 @@ void main() {
         );
 
         expect(markersOf(tester).length, 2);
-        expect(find.byIcon(Icons.house), findsOneWidget);
-        expect(find.byIcon(Icons.shopping_cart), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsOneWidget);
         expect(
-          tester.getRect(find.byIcon(Icons.house)).overlaps(
-                tester.getRect(find.byIcon(Icons.shopping_cart)),
+          tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement)).overlaps(
+                tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier)),
               ),
           isFalse,
         );

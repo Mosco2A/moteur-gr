@@ -10,6 +10,7 @@ import '../presentation/weather_date_format.dart';
 import '../presentation/weather_freshness.dart';
 import '../providers/program_weather_provider.dart';
 import 'day_forecast_card.dart' show DayForecastCard;
+import '../../../core/branding/stepways_icons.dart';
 
 /// METEO ETAPE PAR ETAPE (tache 572, U1).
 ///
@@ -47,7 +48,7 @@ class ProgramWeatherList extends ConsumerWidget {
       children: [
         SectionHeader(
           title: t.weather.program.title,
-          icon: Icons.route_outlined,
+          icon: StepwaysIcons.itineraire,
           iconColor: theme.colorScheme.primary,
         ),
         const SizedBox(height: AppTheme.spacingXs),
@@ -73,7 +74,7 @@ class ProgramWeatherList extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.event_busy_outlined,
+                const StepIcon(StepwaysIcons.calendrier,
                     size: 18, color: AppTheme.orangeDifficile),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
@@ -127,7 +128,7 @@ class _FreshnessLine extends StatelessWidget {
     };
     return Row(
       children: [
-        Icon(Icons.update, size: 14, color: color),
+        StepIcon(StepwaysIcons.miseAJour, size: 14, color: color),
         const SizedBox(width: AppTheme.spacingXs),
         Expanded(
           child: Text(
@@ -246,7 +247,7 @@ class _TrendChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.trending_up,
+          const StepIcon(StepwaysIcons.denivelePlus,
               size: 14, color: AppTheme.orangeDifficile),
           const SizedBox(width: 4),
           Text(
@@ -270,23 +271,23 @@ class _Absence extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
-    final (IconData icon, String message) = switch (reach) {
+    final (String icon, String message) = switch (reach) {
       ForecastReach.beyondHorizon => (
-          Icons.hourglass_empty,
+          StepwaysIcons.sablier,
           t.weather.program.beyondHorizon(horizon: forecastHorizonDays),
         ),
       ForecastReach.unknownDeparture => (
-          Icons.event_busy_outlined,
+          StepwaysIcons.calendrier,
           t.weather.program.unknownDeparture,
         ),
-      _ => (Icons.cloud_off_outlined, t.weather.program.noData),
+      _ => (StepwaysIcons.horsLigne, t.weather.program.noData),
     };
     return Padding(
       padding: const EdgeInsets.only(top: AppTheme.spacingSm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 14, color: AppTheme.grisGranite),
+          StepIcon(icon, size: 14, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(

@@ -45,6 +45,7 @@ import 'layers/trace_layer.dart';
 import 'layers/trail_markers_layer.dart';
 import 'layers/user_position_layer.dart';
 import 'marker_overlap.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Provider du MapController, gere dans un Notifier pour le cycle de vie.
 ///
@@ -158,7 +159,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         // `push` hors-shell) ; sinon on revient a l'accueil (comportement
         // attendu depuis le HUB, aligne sur le correctif « Itineraire »).
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const StepIcon(StepwaysIcons.flecheArriere),
           tooltip: t.a11y.back,
           onPressed: () {
             if (context.canPop()) {
@@ -174,7 +175,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         // une carte de terrain.
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.map.title,
             onPressed: () => showMapGuideSheet(context, trailId),
           ),
@@ -287,7 +288,7 @@ class _MapContentState extends State<_MapContent> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      const Icon(Icons.layers),
+                      const StepIcon(StepwaysIcons.calques),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -586,7 +587,7 @@ class _MapContentState extends State<_MapContent> {
                           heroTag: 'mapLayers',
                           tooltip: t.map.layers,
                           onPressed: () => _showLayersSheet(context),
-                          child: const Icon(Icons.layers),
+                          child: const StepIcon(StepwaysIcons.calques),
                         ),
                       ],
                     ),
@@ -827,8 +828,8 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.warning_amber,
+                const StepIcon(
+                  StepwaysIcons.danger,
                   color: AppTheme.orangeDifficile,
                   size: 20,
                 ),
@@ -857,7 +858,7 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, size: 18),
+                  icon: const StepIcon(StepwaysIcons.croix, size: 18),
                   color: AppTheme.orangeDifficile,
                   tooltip: t.map.supplyDismiss,
                   visualDensity: VisualDensity.compact,
@@ -1076,7 +1077,7 @@ class _MapPhotoButtonState extends ConsumerState<_MapPhotoButton> {
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : const Icon(Icons.photo_camera),
+          : const StepIcon(StepwaysIcons.photo),
     );
   }
 
@@ -1126,7 +1127,7 @@ class _MapPhotoButtonState extends ConsumerState<_MapPhotoButton> {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.check_circle_outline, size: 18),
+              const StepIcon(StepwaysIcons.cocheCercle, size: 18),
               const SizedBox(width: AppTheme.spacingSm),
               // CONFIRMATION DEDIEE (branchee tache 557) : le message lisait
               // `t.journal.entriesOfDay` — « Entrees du jour », un TITRE de

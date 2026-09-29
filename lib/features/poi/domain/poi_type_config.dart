@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Style visuel associe a un type de POI.
 ///
@@ -11,7 +12,7 @@ class PoiTypeStyle {
   });
 
   /// Icone Material pour ce type
-  final IconData icon;
+  final String icon;
 
   /// Couleur associee a ce type
   final Color color;
@@ -30,57 +31,57 @@ class PoiTypeConfig {
   /// Styles connus par type de POI (String extensible)
   static const Map<String, PoiTypeStyle> _styles = {
     'water': PoiTypeStyle(
-      icon: Icons.water_drop,
+      icon: StepwaysIcons.pluie,
       color: Color(0xFF1565C0),
       labelKey: 'Eau',
     ),
     'refuge': PoiTypeStyle(
-      icon: Icons.house,
+      icon: StepwaysIcons.hebergement,
       color: Color(0xFF5D4037),
       labelKey: 'Refuge',
     ),
     'shelter': PoiTypeStyle(
-      icon: Icons.house,
+      icon: StepwaysIcons.hebergement,
       color: Color(0xFF5D4037),
       labelKey: 'Refuge',
     ),
     'shop': PoiTypeStyle(
-      icon: Icons.shopping_cart,
+      icon: StepwaysIcons.panier,
       color: Color(0xFF2E7D32),
       labelKey: 'Commerce',
     ),
     'accommodation': PoiTypeStyle(
-      icon: Icons.hotel,
+      icon: StepwaysIcons.hebergement,
       color: Color(0xFF6A1B9A),
       labelKey: 'Hebergement',
     ),
     'danger': PoiTypeStyle(
-      icon: Icons.warning,
+      icon: StepwaysIcons.danger,
       color: Color(0xFFC62828),
       labelKey: 'Danger',
     ),
     'viewpoint': PoiTypeStyle(
-      icon: Icons.visibility,
+      icon: StepwaysIcons.oeil,
       color: Color(0xFFE65100),
       labelKey: 'Point de vue',
     ),
     'info': PoiTypeStyle(
-      icon: Icons.info,
+      icon: StepwaysIcons.info,
       color: Color(0xFF616161),
       labelKey: 'Information',
     ),
     'campsite': PoiTypeStyle(
-      icon: Icons.holiday_village,
+      icon: StepwaysIcons.hebergement,
       color: Color(0xFF558B2F),
       labelKey: 'Bivouac',
     ),
     'restaurant': PoiTypeStyle(
-      icon: Icons.restaurant,
+      icon: StepwaysIcons.restauration,
       color: Color(0xFFE65100),
       labelKey: 'Restaurant',
     ),
     'emergency': PoiTypeStyle(
-      icon: Icons.local_hospital,
+      icon: StepwaysIcons.secours,
       color: Color(0xFFC62828),
       labelKey: 'Urgence',
     ),
@@ -88,7 +89,7 @@ class PoiTypeConfig {
 
   /// Style par defaut pour les types inconnus
   static const _fallback = PoiTypeStyle(
-    icon: Icons.location_on,
+    icon: StepwaysIcons.repere,
     color: Color(0xFF616161),
     labelKey: 'POI',
   );

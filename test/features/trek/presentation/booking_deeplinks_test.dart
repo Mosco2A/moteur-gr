@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/presentation/refuge_detail_screen.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E5.12b — Deeplinks reservation V1 (design #83560).
 ///
@@ -60,14 +61,14 @@ void main() {
         // "Appeler" n'est qu'un libelle de bouton (la ligne d'info pratique
         // utilise "Telephone"), donc une seule occurrence attendue.
         expect(find.text('Appeler'), findsOneWidget);
-        expect(find.byIcon(Icons.phone), findsWidgets);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telephone), findsWidgets);
 
         // Bouton Site web visible (website present).
         // "Site web" apparait DEUX fois par design : une fois comme libelle
         // de la ligne "Informations pratiques", une fois comme bouton CTA
         // de la section "Reserver".
         expect(find.text('Site web'), findsNWidgets(2));
-        expect(find.byIcon(Icons.language), findsWidgets);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.langue), findsWidgets);
 
         // Bouton Email absent (email null)
         expect(find.text('Email'), findsNothing);

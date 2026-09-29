@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Widget de selection de la date de depart pour un sentier.
 ///
@@ -31,7 +32,7 @@ class DepartureDatePicker extends ConsumerWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: Icon(Icons.calendar_today, color: theme.colorScheme.primary),
+        leading: StepIcon(StepwaysIcons.calendrier, color: theme.colorScheme.primary),
         title: Text(t.settings.departureDate),
         subtitle: Text(
           reminderState.departureDate != null
@@ -45,7 +46,7 @@ class DepartureDatePicker extends ConsumerWidget {
         ),
         trailing: TextButton.icon(
           onPressed: () => _pickDate(context, ref, reminderState.departureDate),
-          icon: const Icon(Icons.edit_calendar, size: 18),
+          icon: const StepIcon(StepwaysIcons.calendrier, size: 18),
           label: Text(
             reminderState.departureDate != null ? 'Modifier' : 'Choisir',
           ),

@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/catalog_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Libelles i18n pour les statuts de telechargement.
 ///
@@ -113,7 +114,7 @@ class TrailCatalogCard extends StatelessWidget {
           Row(
             children: [
               ExcludeSemantics(
-                child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+                child: StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -144,8 +145,8 @@ class TrailCatalogCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const ExcludeSemantics(
-                    child: Icon(
-                      Icons.storage,
+                    child: StepIcon(
+                      StepwaysIcons.horsLigne,
                       size: 14,
                       color: AppTheme.grisTexteSecondaire,
                     ),
@@ -163,8 +164,8 @@ class TrailCatalogCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const ExcludeSemantics(
-                    child: Icon(
-                      Icons.update,
+                    child: StepIcon(
+                      StepwaysIcons.miseAJour,
                       size: 14,
                       color: AppTheme.grisTexteSecondaire,
                     ),
@@ -207,7 +208,7 @@ class TrailCatalogCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: AppButton(
-            icon: Icons.download,
+            icon: StepwaysIcons.telecharger,
             label: _CatalogLabels.download,
             onPressed: onDownload,
           ),
@@ -242,7 +243,7 @@ class TrailCatalogCard extends StatelessWidget {
               child: AppButton(
                 variant: AppButtonVariant.outline,
                 tone: AppTheme.rougeUrgence,
-                icon: Icons.delete_outline,
+                icon: StepwaysIcons.corbeille,
                 label: _CatalogLabels.delete,
                 onPressed: onDelete,
               ),
@@ -264,7 +265,7 @@ class TrailCatalogCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                icon: Icons.system_update_alt,
+                icon: StepwaysIcons.telecharger,
                 label: _CatalogLabels.update,
                 onPressed: onUpdate,
               ),
@@ -288,7 +289,7 @@ class TrailCatalogCard extends StatelessWidget {
         // pleine largeur (SizedBox width infinity conserve). key/Semantics gardees.
         child: AppButton(
           key: ValueKey('trail-enter-${entry.trailId}'),
-          icon: Icons.arrow_forward,
+          icon: StepwaysIcons.flecheAvant,
           label: t.catalog.enter,
           onPressed: onEnter,
         ),

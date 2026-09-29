@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({
@@ -13,7 +14,7 @@ class EmptyState extends StatelessWidget {
     this.iconColor,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String? subtitle;
   final Widget? action;
@@ -27,7 +28,7 @@ class EmptyState extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingXl),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: iconSize, color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120)),
+          StepIcon(icon, size: iconSize, color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120)),
           const SizedBox(height: AppTheme.spacingBase),
           Text(title, style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisTexteSecondaire),
             textAlign: TextAlign.center),

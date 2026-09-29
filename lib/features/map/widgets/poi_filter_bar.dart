@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../poi/domain/poi_type_config.dart';
 import '../../poi/domain/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Barre horizontale de chips togglables pour filtrer les POIs par type.
 ///
@@ -52,7 +53,7 @@ class PoiFilterBar extends ConsumerWidget {
               final color = style.color;
 
               return FilterChip(
-                avatar: Icon(
+                avatar: StepIcon(
                   style.icon,
                   size: 16,
                   color: isActive ? Colors.white : color,

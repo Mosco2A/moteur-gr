@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/services/consent_service.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bascule de consentement pour UNE finalite (D4A-02), accessible.
 ///
@@ -69,8 +70,8 @@ class ConsentPurposeTile extends StatelessWidget {
         subtitle: hideDescription ? null : Text(_description(tr)),
         contentPadding: EdgeInsets.zero,
         secondary: granted
-            ? const Icon(Icons.check_circle_outline)
-            : const Icon(Icons.radio_button_unchecked),
+            ? const StepIcon(StepwaysIcons.cocheCercle)
+            : const StepIcon(StepwaysIcons.radio),
       ),
     );
   }

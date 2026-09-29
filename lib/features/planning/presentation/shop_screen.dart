@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RAVITAILLEMENT (parite GR20 `ShopDetailScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -175,7 +176,7 @@ class _ShopFilters extends ConsumerWidget {
             children: [
               _ShopFilterChip(
                 label: t.shop.filterAll,
-                icon: Icons.store,
+                icon: StepwaysIcons.boutique,
                 selected: typeFilter == null,
                 color: theme.colorScheme.secondary,
                 onSelected: () =>
@@ -215,7 +216,7 @@ class _ShopFilterChip extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final bool selected;
   final Color color;
   final VoidCallback onSelected;
@@ -230,7 +231,7 @@ class _ShopFilterChip extends StatelessWidget {
         label: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 18),
+            StepIcon(icon, size: 18),
             const SizedBox(width: 6),
             Text(label),
           ],
@@ -274,7 +275,7 @@ class _SupplyAlertBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber,
+          const StepIcon(StepwaysIcons.danger,
               color: AppTheme.orangeDifficile, size: 20),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
@@ -342,7 +343,7 @@ class _ShopCard extends StatelessWidget {
                     color: typeColor.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                   ),
-                  child: Icon(_shopTypeIcon(shop.type),
+                  child: StepIcon(_shopTypeIcon(shop.type),
                       color: typeColor, size: 22),
                 ),
                 const SizedBox(width: AppTheme.spacingMd),
@@ -378,7 +379,7 @@ class _ShopCard extends StatelessWidget {
                           ),
                           if (shop.openingHours.isNotEmpty) ...[
                             const SizedBox(width: AppTheme.spacingSm),
-                            Icon(Icons.access_time,
+                            StepIcon(StepwaysIcons.duree,
                                 size: 14,
                                 color: AppTheme.grisGranite.withAlpha(180)),
                             const SizedBox(width: 2),
@@ -436,7 +437,7 @@ class _ShopCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.warning_amber,
+                    const StepIcon(StepwaysIcons.danger,
                         size: 14, color: AppTheme.rougeUrgence),
                     const SizedBox(width: 4),
                     Flexible(
@@ -497,7 +498,7 @@ void _showShopDetail(
                 // Titre + icone type.
                 Row(
                   children: [
-                    Icon(_shopTypeIcon(shop.type), color: typeColor, size: 28),
+                    StepIcon(_shopTypeIcon(shop.type), color: typeColor, size: 28),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Text(shop.name,
@@ -509,27 +510,27 @@ void _showShopDetail(
 
                 // Informations (parite GR20 : Type, Etape, GPS, Horaires).
                 SectionHeader(
-                    title: t.shop.sectionInfo, icon: Icons.info_outline),
+                    title: t.shop.sectionInfo, icon: StepwaysIcons.info),
                 const SizedBox(height: AppTheme.spacingSm),
                 _DetailRow(
-                    icon: Icons.category,
+                    icon: StepwaysIcons.filtres,
                     label: t.shop.fieldType,
                     value: _shopTypeLabel(t, shop.type)),
                 _DetailRow(
-                    icon: Icons.map,
+                    icon: StepwaysIcons.carte,
                     label: t.shop.fieldStage,
                     value: t.shop.stageBadge(n: shop.stageNumber)),
                 // GPS masque si non verifie (honnetete #99460 : pas de 0,0 faux).
                 if (shop.hasCoordinates)
                   _DetailRow(
-                    icon: Icons.gps_fixed,
+                    icon: StepwaysIcons.maPosition,
                     label: t.shop.fieldGps,
                     value:
                         '${shop.latitude!.toStringAsFixed(4)}, ${shop.longitude!.toStringAsFixed(4)}',
                   ),
                 if (shop.openingHours.isNotEmpty)
                   _DetailRow(
-                      icon: Icons.access_time,
+                      icon: StepwaysIcons.duree,
                       label: t.shop.fieldHours,
                       value: shop.openingHours),
 
@@ -547,7 +548,7 @@ void _showShopDetail(
                               onTap: () => _call(shop.phone),
                               child: Row(
                                 children: [
-                                  Icon(Icons.phone,
+                                  StepIcon(StepwaysIcons.telephone,
                                       size: 18, color: scheme.secondary),
                                   const SizedBox(width: 6),
                                   Text(
@@ -567,7 +568,7 @@ void _showShopDetail(
                           button: true,
                           label: t.shop.a11y.website,
                           child: IconButton(
-                            icon: Icon(Icons.open_in_new,
+                            icon: StepIcon(StepwaysIcons.lien,
                                 size: 18, color: scheme.secondary),
                             tooltip: t.shop.website,
                             onPressed: () => _openUrl(shop.website!),
@@ -591,7 +592,7 @@ void _showShopDetail(
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning,
+                        const StepIcon(StepwaysIcons.danger,
                             color: AppTheme.rougeUrgence, size: 20),
                         const SizedBox(width: AppTheme.spacingSm),
                         Expanded(
@@ -613,14 +614,14 @@ void _showShopDetail(
                 if (shop.hasProducts) ...[
                   SectionHeader(
                       title: t.shop.sectionProducts,
-                      icon: Icons.shopping_basket),
+                      icon: StepwaysIcons.panier),
                   const SizedBox(height: AppTheme.spacingSm),
                   for (final product in shop.products)
                     Padding(
                       padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle_outline,
+                          StepIcon(StepwaysIcons.cocheCercle,
                               size: 16, color: scheme.secondary),
                           const SizedBox(width: AppTheme.spacingMd),
                           Expanded(
@@ -646,7 +647,7 @@ class _DetailRow extends StatelessWidget {
   const _DetailRow(
       {required this.icon, required this.label, required this.value});
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -658,7 +659,7 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppTheme.grisGranite),
+          StepIcon(icon, size: 18, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingMd),
           SizedBox(
             width: 70,
@@ -717,16 +718,16 @@ Future<void> _openUrl(String urlStr) async {
 }
 
 /// Icone Material pour un type de commerce (parite GR20 `_typeIcon`).
-IconData _shopTypeIcon(ShopKind type) {
+String _shopTypeIcon(ShopKind type) {
   switch (type) {
     case ShopKind.epicerie:
-      return Icons.shopping_cart;
+      return StepwaysIcons.panier;
     case ShopKind.bar:
-      return Icons.restaurant;
+      return StepwaysIcons.restauration;
     case ShopKind.pharmacie:
-      return Icons.local_pharmacy;
+      return StepwaysIcons.secours;
     case ShopKind.gaz:
-      return Icons.propane_tank;
+      return StepwaysIcons.rechaud;
   }
 }
 

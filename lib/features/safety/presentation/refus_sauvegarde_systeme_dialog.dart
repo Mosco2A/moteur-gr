@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../providers/refus_sauvegarde_systeme_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LA CASE PRE-COCHEE DE REFUS — UNE SEULE, POUR TOUT CE QUE LE RANDONNEUR
 /// CONFIE (tache 612 pour le montage, tache 617 pour la portee).
@@ -184,7 +185,7 @@ class _RefusSauvegardeSystemeDialogState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lock_outline, size: 18, color: colors.primary),
+                  StepIcon(StepwaysIcons.cadenas, size: 18, color: colors.primary),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(

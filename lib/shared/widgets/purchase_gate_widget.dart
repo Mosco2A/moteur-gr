@@ -5,6 +5,7 @@ import '../../core/services/monetization_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
 import 'paywall_sheet.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Widget gate qui encapsule un ecran et verifie l'achat du trek (E4.17).
 ///
@@ -136,7 +137,7 @@ class _DemoBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.lock_outline, color: Colors.white, size: 18),
+          const StepIcon(StepwaysIcons.cadenas, color: Colors.white, size: 18),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -149,7 +150,7 @@ class _DemoBanner extends StatelessWidget {
             ),
           ),
           if (onTap != null)
-            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14),
+            const StepIcon(StepwaysIcons.chevronDroite, color: Colors.white, size: 14),
         ],
       ),
     );

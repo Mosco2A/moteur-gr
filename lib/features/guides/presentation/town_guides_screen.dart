@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 import 'town_guide_detail_screen.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Liste des town guides d'un sentier (F8C-02, Phase 8 P8-C, offline R3).
 ///
@@ -104,8 +105,8 @@ class _FacilitatorNote extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.info_outline,
+            const StepIcon(
+              StepwaysIcons.info,
               size: 18,
               color: AppTheme.vertFacile,
             ),
@@ -147,7 +148,7 @@ class _TownGuideTile extends StatelessWidget {
           vertical: AppTheme.spacingXs,
         ),
         child: ListTile(
-          leading: const Icon(Icons.location_city, color: AppTheme.vertFacile),
+          leading: const StepIcon(StepwaysIcons.ville, color: AppTheme.vertFacile),
           title: Text(
             guide.nomLieu,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -160,7 +161,7 @@ class _TownGuideTile extends StatelessWidget {
               color: AppTheme.grisGranite,
             ),
           ),
-          trailing: const Icon(Icons.chevron_right),
+          trailing: const StepIcon(StepwaysIcons.chevronDroite),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) =>

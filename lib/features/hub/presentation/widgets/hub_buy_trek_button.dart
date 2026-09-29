@@ -5,6 +5,7 @@ import '../../../../core/services/monetization_service.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// ACHETER DEPUIS LA PREPARATION (tache 614) — deuxieme des trois points
 /// d'entree de l'achat.
@@ -50,7 +51,7 @@ class HubBuyTrekButton extends ConsumerWidget {
     return AppButton(
       key: const Key('hub-buy-trek-button'),
       variant: AppButtonVariant.outline,
-      icon: Icons.lock_open,
+      icon: StepwaysIcons.cadenasOuvert,
       label: etapes > 0
           ? t.monetization.buyCtaWithPrice(price: prix.toStringAsFixed(2))
           : t.monetization.buyCta,

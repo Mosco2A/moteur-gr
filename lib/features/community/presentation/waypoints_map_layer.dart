@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Couche de marqueurs des waypoints communautaires (F8A-04, FarOut R1).
 ///
@@ -74,7 +75,7 @@ class WaypointsMapLayer extends StatelessWidget {
                   ],
                 ),
                 alignment: Alignment.center,
-                child: Icon(
+                child: StepIcon(
                   style.icon,
                   color: Colors.white,
                   size: markerSize * 0.5,

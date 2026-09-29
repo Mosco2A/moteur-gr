@@ -28,6 +28,7 @@ import '../domain/health_bounds.dart';
 import '../domain/models/health_info.dart';
 import '../providers/health_prepare_providers.dart';
 import '../providers/refus_sauvegarde_systeme_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider du stockage durable de la fiche medicale.
 ///
@@ -317,7 +318,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.lock, color: colors.primary, size: 20),
+                            StepIcon(StepwaysIcons.cadenas, color: colors.primary, size: 20),
                             const SizedBox(width: AppTheme.spacingSm),
                             Expanded(
                               child: Text(
@@ -369,7 +370,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         controller: _bloodTypeController,
                         label: t.health.field.bloodType,
                         hint: t.health.hint.bloodType,
-                        icon: Icons.bloodtype,
+                        icon: StepwaysIcons.ficheMedicale,
                         maxLines: 1,
                         maxLength: kBloodTypeMaxLength,
                         showCounter: false,
@@ -394,7 +395,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         controller: _allergiesController,
                         label: t.health.field.allergies,
                         hint: t.health.hint.allergies,
-                        icon: Icons.warning_amber,
+                        icon: StepwaysIcons.danger,
                         maxLines: 3,
                         maxLength: kHealthFreeTextMaxLength,
                       ),
@@ -403,7 +404,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         controller: _treatmentsController,
                         label: t.health.field.treatments,
                         hint: t.health.hint.treatments,
-                        icon: Icons.medication,
+                        icon: StepwaysIcons.ficheMedicale,
                         maxLines: 3,
                         maxLength: kHealthFreeTextMaxLength,
                       ),
@@ -412,7 +413,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         controller: _doctorController,
                         label: t.health.field.doctor,
                         hint: t.health.hint.doctor,
-                        icon: Icons.local_hospital,
+                        icon: StepwaysIcons.secours,
                         maxLines: 2,
                         maxLength: kHealthContactMaxLength,
                       ),
@@ -421,7 +422,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         controller: _insuranceController,
                         label: t.health.field.insurance,
                         hint: t.health.hint.insurance,
-                        icon: Icons.shield,
+                        icon: StepwaysIcons.bouclier,
                         maxLines: 2,
                         maxLength: kHealthContactMaxLength,
                       ),
@@ -437,7 +438,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         child: AppButton(
                           isLoading: _isSaving,
                           minHeight: 52,
-                          icon: Icons.save,
+                          icon: StepwaysIcons.enregistrer,
                           label: t.health.save,
                           onPressed: _isSaving ? null : _save,
                         ),
@@ -457,7 +458,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                             tone: AppTheme.rougeUrgence,
                             isLoading: _isDeleting,
                             minHeight: 52,
-                            icon: Icons.delete_outline,
+                            icon: StepwaysIcons.corbeille,
                             label: t.health.delete.button,
                             onPressed: _isDeleting ? null : _confirmAndDelete,
                           ),
@@ -484,7 +485,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     required TextEditingController controller,
     required String label,
     required String hint,
-    required IconData icon,
+    required String icon,
     int maxLines = 1,
     Key? key,
     int? maxLength,
@@ -516,7 +517,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           color: colors.onSurface.withAlpha(90),
           fontSize: 13,
         ),
-        prefixIcon: Icon(icon, color: colors.primary),
+        prefixIcon: StepIcon(icon, color: colors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
         ),
@@ -564,8 +565,8 @@ class _LocalOnlyPrice extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.phonelink_erase_outlined,
+          StepIcon(
+            StepwaysIcons.effacerTelephone,
             size: 20,
             color: colors.onSurface.withAlpha(180),
           ),
@@ -648,7 +649,7 @@ class _UsageAdvice extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.menu_book_outlined, size: 20, color: colors.primary),
+              StepIcon(StepwaysIcons.journal, size: 20, color: colors.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -665,15 +666,15 @@ class _UsageAdvice extends ConsumerWidget {
           // Les quatre conseils, dans l'ordre de l'urgence reelle : d'abord ou
           // elle est, ensuite comment la montrer, puis les deux filets (fiche du
           // telephone, papier).
-          _AdviceLine(icon: Icons.place_outlined, text: a.whereToFind),
-          _AdviceLine(icon: Icons.volunteer_activism_outlined, text: a.showToRescue),
-          _AdviceLine(icon: Icons.phonelink_lock_outlined, text: a.phoneCard),
-          _AdviceLine(icon: Icons.description_outlined, text: a.paper),
+          _AdviceLine(icon: StepwaysIcons.repere, text: a.whereToFind),
+          _AdviceLine(icon: StepwaysIcons.pouce, text: a.showToRescue),
+          _AdviceLine(icon: StepwaysIcons.bouclier, text: a.phoneCard),
+          _AdviceLine(icon: StepwaysIcons.cgu, text: a.paper),
           const SizedBox(height: AppTheme.spacingSm),
           if (lu)
             Row(
               children: [
-                Icon(Icons.check_circle, size: 20, color: colors.primary),
+                StepIcon(StepwaysIcons.cochePleine, size: 20, color: colors.primary),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -693,7 +694,7 @@ class _UsageAdvice extends ConsumerWidget {
               child: AppButton(
                 key: const ValueKey('health-advice-ack'),
                 variant: AppButtonVariant.outline,
-                icon: Icons.done_all,
+                icon: StepwaysIcons.coche,
                 label: a.ackButton,
                 onPressed: () => ref
                     .read(healthPrepareStepsProvider.notifier)
@@ -710,7 +711,7 @@ class _UsageAdvice extends ConsumerWidget {
 class _AdviceLine extends StatelessWidget {
   const _AdviceLine({required this.icon, required this.text});
 
-  final IconData icon;
+  final String icon;
   final String text;
 
   @override
@@ -723,7 +724,7 @@ class _AdviceLine extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 2),
-            child: Icon(
+            child: StepIcon(
               icon,
               size: 18,
               color: theme.colorScheme.onSurface.withAlpha(150),
@@ -771,8 +772,8 @@ class _ConsentReminder extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.info_outline,
+              StepIcon(
+                StepwaysIcons.info,
                 size: 18,
                 color: colors.onSurface.withAlpha(160),
               ),
@@ -792,7 +793,7 @@ class _ConsentReminder extends StatelessWidget {
             child: TextButton.icon(
               key: const ValueKey('health-consent-manage'),
               onPressed: onManage,
-              icon: const Icon(Icons.privacy_tip_outlined, size: 18),
+              icon: const StepIcon(StepwaysIcons.bouclier, size: 18),
               label: Text(t.health.consent.manage),
             ),
           ),

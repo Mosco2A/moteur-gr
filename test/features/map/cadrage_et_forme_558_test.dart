@@ -7,6 +7,7 @@ import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/map/domain/stage_focus.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 558 — LA CARTE : OU ELLE S'OUVRE, ET A QUOI ELLE RESSEMBLE.
 ///
@@ -207,14 +208,14 @@ void main() {
       await tester.pumpAndSettle();
 
       for (final icone in [
-        Icons.straighten,
-        Icons.directions_walk,
-        Icons.speed,
-        Icons.trending_up,
-        Icons.trending_down,
-        Icons.terrain,
+        StepwaysIcons.distance,
+        StepwaysIcons.pas,
+        StepwaysIcons.vitesse,
+        StepwaysIcons.denivelePlus,
+        StepwaysIcons.deniveleMoins,
+        StepwaysIcons.sommet,
       ]) {
-        final widget = tester.widget<Icon>(find.byIcon(icone));
+        final widget = tester.widget<StepIcon>(find.byWidgetPredicate((w) => w is StepIcon && w.asset == icone));
         expect(widget.size, 28.0, reason: 'grosse icone, lisible en marchant');
       }
     });

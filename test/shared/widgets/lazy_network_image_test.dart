@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/shared/widgets/lazy_network_image.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E5.2b — primitive d'image distante a chargement paresseux.
 void main() {
@@ -12,7 +13,7 @@ void main() {
     await tester.pumpWidget(wrap(const LazyNetworkImage(imageUrl: null)));
 
     expect(find.byType(CachedNetworkImage), findsNothing);
-    expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.imageManquante), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -20,7 +21,7 @@ void main() {
     await tester.pumpWidget(wrap(const LazyNetworkImage(imageUrl: '   ')));
 
     expect(find.byType(CachedNetworkImage), findsNothing);
-    expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.imageManquante), findsOneWidget);
   });
 
   testWidgets('URL valide : construit un CachedNetworkImage', (tester) async {
@@ -52,6 +53,6 @@ void main() {
     );
 
     expect(find.byType(ClipRRect), findsWidgets);
-    expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.imageManquante), findsOneWidget);
   });
 }

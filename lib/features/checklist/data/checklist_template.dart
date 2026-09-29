@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart' show IconData, Icons;
 import 'package:flutter/services.dart' show rootBundle;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Niveau d'exigence d'un article (parite GR20 « Materiel & Sac »).
 ///
@@ -767,17 +767,17 @@ const List<ChecklistTemplateItem> defaultChecklistTemplate = [
 /// (workflow `merge` de codemagic.yaml, « Build APK debug ») ne fait pas ce
 /// retrait, et les deux chaines release s arretent avant le build faute de
 /// secrets de signature. Personne n avait donc jamais atteint l etape qui echoue.
-const Map<String, IconData> checklistCategoryIcons = {
-  'carrying': Icons.luggage,
-  'sleeping': Icons.bed,
-  'clothing': Icons.checkroom,
-  'cooking': Icons.restaurant,
-  'foodWater': Icons.fastfood,
-  'hygiene': Icons.soap,
-  'firstAid': Icons.medical_services,
-  'electronics': Icons.battery_charging_full,
-  'women': Icons.female,
-  'men': Icons.male,
-  'misc': Icons.more_horiz,
-  'dog': Icons.pets,
+const Map<String, String> checklistCategoryIcons = {
+  'carrying': StepwaysIcons.sacADos,
+  'sleeping': StepwaysIcons.nuitees,
+  'clothing': StepwaysIcons.sacADos,
+  'cooking': StepwaysIcons.restauration,
+  'foodWater': StepwaysIcons.restauration,
+  'hygiene': StepwaysIcons.hygiene,
+  'firstAid': StepwaysIcons.ficheMedicale,
+  'electronics': StepwaysIcons.batterie,
+  'women': StepwaysIcons.sexe,
+  'men': StepwaysIcons.sexe,
+  'misc': StepwaysIcons.menu,
+  'dog': StepwaysIcons.animaux,
 };

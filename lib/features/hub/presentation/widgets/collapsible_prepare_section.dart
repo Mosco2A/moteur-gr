@@ -4,6 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
 import 'hub_section.dart';
 import 'quick_access_card.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Section « Préparer » repliable en ACCORDÉON (StepWays refonte nav — D3, R8+R13).
 ///
@@ -66,8 +67,8 @@ class _CollapsiblePrepareSectionState extends State<CollapsiblePrepareSection> {
               padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingSm),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.assignment_outlined,
+                  StepIcon(
+                    StepwaysIcons.programme,
                     color: theme.colorScheme.primary,
                     size: 22,
                   ),
@@ -90,8 +91,8 @@ class _CollapsiblePrepareSectionState extends State<CollapsiblePrepareSection> {
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingXs),
-                  Icon(
-                    _expanded ? Icons.expand_less : Icons.expand_more,
+                  StepIcon(
+                    _expanded ? StepwaysIcons.replier : StepwaysIcons.deplier,
                     color: theme.colorScheme.primary,
                   ),
                 ],
@@ -106,7 +107,7 @@ class _CollapsiblePrepareSectionState extends State<CollapsiblePrepareSection> {
           HubSection(
             title: t.hub.sections.prepare,
             showHeader: false,
-            icon: Icons.assignment_outlined,
+            icon: StepwaysIcons.programme,
             cards: widget.cards,
           ),
         ],

@@ -15,6 +15,7 @@ import 'package:moteur_gr/core/theme/skin_theme.dart';
 import 'package:moteur_gr/features/settings/presentation/settings_screen.dart';
 import 'package:moteur_gr/features/trek/presentation/map/controls/map_controls.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 570, S4 — LE SELECTEUR DE PEAUX EST RETIRE, LE MOTEUR DE PEAUX RESTE.
 ///
@@ -64,7 +65,7 @@ void main() {
       // Zoom +, zoom -, centrer : trois gestes de carte, et c'est tout.
       expect(find.byType(FloatingActionButton), findsNWidgets(3),
           reason: 'le 4e FAB ouvrait le selecteur de peaux, il est retire');
-      expect(find.byIcon(Icons.brush_outlined), findsNothing,
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.palette), findsNothing,
           reason: 'l icone pinceau etait l entree du selecteur');
     });
 
@@ -106,10 +107,19 @@ void main() {
       // L'ecran est bien celui des Reglages (repere sur une section gardee).
       expect(find.text(t.settings.theme), findsWidgets);
       // Mais plus rien n'y propose de choisir une peau.
+      //
+      // TACHE 632 — ce test cherchait `Icons.brush_outlined`, l'icone propre a
+      // la section Apparence. Le jeu de Christophe n'a pas de pinceau : son
+      // dessin le plus proche, `palette`, est DEJA celui de la section Theme,
+      // juste au-dessus. Chercher son absence dirait donc toujours faux.
+      // On garde le meme verrou autrement : la palette doit apparaitre UNE fois
+      // et une seule — deux, et la section Apparence serait revenue.
       expect(
-        find.byIcon(Icons.brush_outlined),
-        findsNothing,
-        reason: 'la section Apparence portait cette icone, elle est retiree',
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.palette,
+        ),
+        findsOneWidget,
+        reason: 'une seconde palette = la section Apparence est de retour',
       );
       for (final nom in <String>['Sentier Vivant', 'Topographique', 'Grand Air']) {
         expect(find.textContaining(nom, skipOffstage: false), findsNothing,

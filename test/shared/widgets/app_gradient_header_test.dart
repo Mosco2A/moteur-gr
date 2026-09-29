@@ -5,6 +5,7 @@ import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/core/theme/skin_theme.dart';
 import 'package:moteur_gr/shared/widgets/app_gradient_header.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget d'AppGradientHeader (SW-SKIN-L5).
 ///
@@ -106,7 +107,7 @@ void main() {
           child: const AppGradientHeader(
             title: 'Refuge Arremoulit',
             subtitle: 'GR20',
-            trailing: Icon(Icons.flag),
+            trailing: StepIcon(StepwaysIcons.depart),
             child: Text('contenu-enfant'),
           ),
         ),
@@ -115,7 +116,7 @@ void main() {
 
       expect(find.text('Refuge Arremoulit'), findsOneWidget);
       expect(find.text('GR20'), findsOneWidget);
-      expect(find.byIcon(Icons.flag), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.depart), findsOneWidget);
       expect(find.text('contenu-enfant'), findsOneWidget);
       // Le fond degrade est peint (DecoratedBox avec gradient).
       expect(

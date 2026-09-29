@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// E5.13 : Ecran de reservation (stub).
 ///
@@ -25,7 +26,7 @@ class BookingScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Reservation'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const StepIcon(StepwaysIcons.flecheArriere),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -35,8 +36,8 @@ class BookingScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.calendar_month_outlined,
+              StepIcon(
+                StepwaysIcons.calendrier,
                 size: 80,
                 color: theme.colorScheme.primary.withAlpha(153),
               ),
@@ -64,7 +65,7 @@ class BookingScreen extends StatelessWidget {
               // (Column mainAxisAlignment.center), iso-rendu du CTA d'attente.
               AppButton(
                 isFullWidth: false,
-                icon: Icons.map_outlined,
+                icon: StepwaysIcons.carte,
                 label: 'Voir les etapes',
                 onPressed: () => Navigator.of(context).pop(),
               ),

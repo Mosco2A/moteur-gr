@@ -9,6 +9,7 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/feedback/presentation/feedback_bottom_sheet.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du bottom sheet de feedback.
 ///
@@ -77,14 +78,16 @@ void main() {
       expect(find.byType(TextFormField), findsOneWidget);
 
       // Bouton envoyer avec icone send
-      expect(find.byIcon(Icons.send), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.envoyer), findsOneWidget);
     });
 
     testWidgets('affiche 5 etoiles pour la note', (tester) async {
       await openSheet(tester, db);
 
       // 5 boutons etoile (toutes vides au depart)
-      final starIcons = find.byIcon(Icons.star_border);
+      final starIcons = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.note,
+      );
       expect(starIcons, findsNWidgets(5));
     });
 
@@ -92,13 +95,23 @@ void main() {
       await openSheet(tester, db);
 
       // Cliquer sur la 3e etoile
-      final stars = find.byIcon(Icons.star_border);
+      final stars = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.note,
+      );
       await tester.tap(stars.at(2));
       await tester.pump();
 
-      // 3 etoiles pleines, 2 vides
-      expect(find.byIcon(Icons.star), findsNWidgets(3));
-      expect(find.byIcon(Icons.star_border), findsNWidgets(2));
+      // 3 etoiles allumees, 2 eteintes. TACHE 632 : Christophe livre UN seul
+      // dessin d'etoile, pas une paire pleine/contour comme Material — l'etat
+      // se lit donc a la COULEUR, et c'est ce qu'on mesure ici.
+      final allumees = tester
+          .widgetList<StepIcon>(stars)
+          .where((s) => s.color == Theme.of(tester.element(stars.first))
+              .colorScheme
+              .primary)
+          .length;
+      expect(stars, findsNWidgets(5));
+      expect(allumees, 3);
     });
 
     testWidgets('selection de categorie change le chip actif', (tester) async {

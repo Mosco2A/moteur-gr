@@ -10,6 +10,7 @@ import '../../map/providers/location_provider.dart';
 import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formulaire de CONTRIBUTION communautaire OFFLINE (F8A-05).
 ///
@@ -192,7 +193,7 @@ class _WaypointContributionScreenState
                         key: const ValueKey('waypoint-contribution-submit'),
                         isLoading: _submitting,
                         minHeight: 52,
-                        icon: Icons.save_outlined,
+                        icon: StepwaysIcons.enregistrer,
                         label: t.waypoints.contribution.submit,
                         onPressed: _submitting ? null : _submit,
                       ),
@@ -225,7 +226,7 @@ class _WaypointContributionScreenState
             label: label,
             child: ChoiceChip(
               key: ValueKey('contribution-type-$type'),
-              avatar: Icon(
+              avatar: StepIcon(
                 style.icon,
                 size: 18,
                 color: selected ? Colors.white : style.color,
@@ -337,8 +338,8 @@ class _LatencyBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.cloud_off_outlined,
+            StepIcon(
+              StepwaysIcons.horsLigne,
               size: 20,
               color: theme.colorScheme.onSecondaryContainer,
             ),
@@ -374,8 +375,8 @@ class _SubmittedView extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.check_circle_outline,
+          StepIcon(
+            StepwaysIcons.cocheCercle,
             size: 72,
             color: theme.colorScheme.primary,
           ),

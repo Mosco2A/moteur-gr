@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Nom affiche d'un article (custom -> customName, sinon i18n du template).
 String checklistItemDisplayName(ChecklistItemState item) {
@@ -113,7 +114,7 @@ class _ChecklistShoppingModalState
               ),
               child: Row(
                 children: [
-                  Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
+                  StepIcon(StepwaysIcons.panier, color: theme.colorScheme.primary),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(ui.shoppingListTitle, style: theme.textTheme.titleLarge),
                 ],
@@ -173,7 +174,7 @@ class _ChecklistShoppingModalState
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.check_circle,
+                          const StepIcon(StepwaysIcons.cochePleine,
                               size: 18, color: AppTheme.vertFacile),
                           const SizedBox(width: AppTheme.spacingSm),
                           Text(
@@ -237,7 +238,7 @@ class _ChecklistShoppingModalState
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _shareList,
-                  icon: const Icon(Icons.share, size: 18),
+                  icon: const StepIcon(StepwaysIcons.partager, size: 18),
                   label: Text(t.checklist.ui.share),
                 ),
               ),

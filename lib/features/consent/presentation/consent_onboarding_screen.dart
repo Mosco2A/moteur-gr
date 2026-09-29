@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de consentement affiche au PREMIER LANCEMENT (D4A-02, design #86166).
 ///
@@ -66,8 +67,8 @@ class ConsentOnboardingScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppTheme.spacingLg),
             children: [
               const SizedBox(height: AppTheme.spacingLg),
-              Icon(
-                Icons.privacy_tip_outlined,
+              StepIcon(
+                StepwaysIcons.bouclier,
                 size: 56,
                 color: theme.colorScheme.primary.withAlpha(180),
               ),
@@ -115,7 +116,7 @@ class ConsentOnboardingScreen extends ConsumerWidget {
                 label: tr.consent.a11y.policyButton,
                 child: TextButton.icon(
                   onPressed: onOpenPrivacyPolicy,
-                  icon: const Icon(Icons.description_outlined),
+                  icon: const StepIcon(StepwaysIcons.cgu),
                   label: Text(tr.consent.privacyPolicyLink),
                 ),
               ),
@@ -167,8 +168,8 @@ class _HealthSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.favorite_outline,
+                StepIcon(
+                  StepwaysIcons.favori,
                   size: 20,
                   color: theme.colorScheme.error,
                 ),

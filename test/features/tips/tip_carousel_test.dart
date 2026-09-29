@@ -6,6 +6,7 @@ import 'package:moteur_gr/features/tips/data/tip_card_repository.dart';
 import 'package:moteur_gr/features/tips/domain/models/tip_card.dart';
 import 'package:moteur_gr/features/tips/presentation/tip_carousel.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E3.4c : carrousel swipeable + filtrage par categorie.
 ///
@@ -150,7 +151,7 @@ void main() {
 
       // Message vide affiche
       expect(find.text(t.tips.noTips), findsOneWidget);
-      expect(find.byIcon(Icons.lightbulb_outline), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.ficheConseil), findsOneWidget);
     });
 
     testWidgets('indicateur priorite haute sur les fiches prioritaires', (tester) async {
@@ -162,7 +163,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // La premiere fiche a priorite 10 >= 8, donc icone priority_high presente
-      expect(find.byIcon(Icons.priority_high), findsWidgets);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsWidgets);
     });
 
     testWidgets('categories dynamiques extraites des donnees', (tester) async {

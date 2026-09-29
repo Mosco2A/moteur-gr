@@ -10,6 +10,7 @@ import 'package:moteur_gr/features/planning/presentation/calendar_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran CALENDRIER (outil de DATES).
 ///
@@ -214,8 +215,8 @@ void main() {
 
       // Le calendrier est rendu (en-tete de mois localise present).
       final locale = LocaleSettings.currentLocale.languageCode;
-      expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite), findsOneWidget);
 
       // Un jour de repos existe -> le label repos « R » apparait dans la grille.
       expect(
@@ -272,7 +273,7 @@ void main() {
       expect(find.text(t.calendar.empty.title), findsOneWidget);
       expect(find.text(t.calendar.empty.action), findsOneWidget);
       // Pas de calendrier / pas de picker auto (aucun jour a dater).
-      expect(find.byIcon(Icons.chevron_left), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsNothing);
     });
 
     testWidgets('itineraire present mais aucune date : invite a choisir', (
@@ -383,7 +384,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/calendar'),
-                  child: const Icon(Icons.calendar_month),
+                  child: const StepIcon(StepwaysIcons.calendrier),
                 ),
               ),
             ),
@@ -410,21 +411,21 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone calendar_month) ouvre le Calendrier.
-      expect(find.byIcon(Icons.calendar_month), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.calendar_month));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier));
       await settle(tester);
       await pumpUntil(tester, find.text(t.calendar.title));
       expect(find.text(t.calendar.title), findsWidgets);
 
       // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
       // sans crash. L'ecran Calendrier porte un unique bouton retour en leading.
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await pumpUntil(tester, find.byType(BackButtonIcon));
+      await tester.tap(find.byType(BackButtonIcon));
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.calendar.title));
       expect(find.text(t.calendar.title), findsNothing);
       // La carte HUB est de nouveau la (retour propre, pile preservee).
-      expect(find.byIcon(Icons.calendar_month), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier), findsOneWidget);
     });
 
     testWidgets('retour #10 : « Valider les dates » retourne au cockpit, JAMAIS au '

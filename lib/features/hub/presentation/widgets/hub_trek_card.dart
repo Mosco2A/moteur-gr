@@ -13,6 +13,7 @@ import '../../../map/providers/track_position_provider.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/providers/my_treks_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Carte principale du trek (RF-4 / #ET-1 / #ET-2), enrichie du cycle de vie
 /// multi-trek (StepWays LOT 2, Phase 5).
@@ -109,8 +110,8 @@ class _ActiveTrekCard extends ConsumerWidget {
             children: [
               // Icone "en cours" en vert categoriel (parite GR20 Navigation ->
               // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(
-                Icons.directions_walk,
+              StepIcon(
+                StepwaysIcons.pas,
                 color: CategoryIconColors.of(context).green,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -184,7 +185,7 @@ class _ActiveTrekCard extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              icon: Icons.navigation_outlined,
+              icon: StepwaysIcons.maPosition,
               label: t.hub.trekCard.resume,
               // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
               onPressed: () => context.push('/map'),
@@ -223,8 +224,8 @@ class _StartTrekCard extends StatelessWidget {
             children: [
               // Icone "carte" en vert categoriel (parite GR20 Navigation ->
               // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(
-                Icons.map_outlined,
+              StepIcon(
+                StepwaysIcons.carte,
                 color: CategoryIconColors.of(context).green,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -275,8 +276,8 @@ class _CompletedTrekCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.emoji_events_outlined,
+              const StepIcon(
+                StepwaysIcons.diplome,
                 color: AppTheme.vertFacile,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -306,7 +307,7 @@ class _CompletedTrekCard extends ConsumerWidget {
             width: double.infinity,
             child: AppButton(
               key: const ValueKey('completed-review'),
-              icon: Icons.landscape_outlined,
+              icon: StepwaysIcons.sommet,
               label: t.hub.cards.recap,
               onPressed: () => context.push('/trail/$trailId/recap'),
             ),

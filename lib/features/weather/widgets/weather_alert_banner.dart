@@ -7,6 +7,7 @@ import '../../tips/domain/models/tip_card.dart';
 import '../../tips/presentation/tip_detail_sheet.dart';
 import '../models/weather_alert.dart';
 import '../presentation/weather_alert_l10n.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bandeau d'alerte meteo en haut de l'ecran.
 ///
@@ -47,10 +48,10 @@ class WeatherAlertBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              StepIcon(
                 hasFireAlert
-                    ? Icons.local_fire_department
-                    : Icons.warning_amber_rounded,
+                    ? StepwaysIcons.incendie
+                    : StepwaysIcons.danger,
                 color: accent,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -70,7 +71,7 @@ class WeatherAlertBanner extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
+                  StepIcon(
                     _iconForAlert(alert),
                     size: 16,
                     color: alert.severity == 'danger'
@@ -98,7 +99,7 @@ class WeatherAlertBanner extends StatelessWidget {
             AppButton(
               variant: AppButtonVariant.outline,
               tone: AppTheme.rougeUrgence,
-              icon: Icons.local_fire_department,
+              icon: StepwaysIcons.incendie,
               label: t.weather.fireSafetyTips,
               onPressed: () => TipDetailSheet.show(context, fireTipCard!),
             ),
@@ -109,8 +110,8 @@ class WeatherAlertBanner extends StatelessWidget {
   }
 
   /// Icone adaptee au type d'alerte.
-  IconData _iconForAlert(WeatherAlert alert) {
-    if (alert.type == AlertType.fire) return Icons.local_fire_department;
+  String _iconForAlert(WeatherAlert alert) {
+    if (alert.type == AlertType.fire) return StepwaysIcons.incendie;
     return alert.icon;
   }
 }

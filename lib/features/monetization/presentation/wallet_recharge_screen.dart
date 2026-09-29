@@ -7,6 +7,7 @@ import '../../../core/theme/category_icon_colors.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ECRAN DE RECHARGE DU COMPTE-ETAPES (tache 594, A3).
 ///
@@ -54,7 +55,7 @@ class WalletRechargeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppTheme.spacingBase),
                 child: Row(
                   children: [
-                    Icon(Icons.account_balance_wallet_outlined, color: accent),
+                    StepIcon(StepwaysIcons.portefeuille, color: accent),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Text(
@@ -138,7 +139,7 @@ class _PackTileState extends ConsumerState<_PackTile> {
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           child: Row(
             children: [
-              Icon(Icons.add_circle_outline, color: theme.colorScheme.primary),
+              StepIcon(StepwaysIcons.plus, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
                 child: Text(

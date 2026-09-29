@@ -10,6 +10,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../providers/stages_provider.dart';
 import '../widgets/stage_list_tile.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran détail d'un sentier.
 ///
@@ -40,21 +41,21 @@ class TrailDetailScreen extends ConsumerWidget {
           // Titre de section
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
-            child: SectionHeader(title: 'Étapes', icon: Icons.hiking),
+            child: SectionHeader(title: 'Étapes', icon: StepwaysIcons.chaussure),
           ),
           // Liste des étapes (AsyncValue)
           Expanded(
             child: stagesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => EmptyState(
-                icon: Icons.error_outline,
+                icon: StepwaysIcons.danger,
                 title: t.common.cannotLoadStages,
                 subtitle: error.toString(),
               ),
               data: (stages) {
                 if (stages.isEmpty) {
                   return EmptyState(
-                    icon: Icons.hiking,
+                    icon: StepwaysIcons.chaussure,
                     title: t.common.noStages,
                   );
                 }
@@ -100,7 +101,7 @@ class TrailDetailScreen extends ConsumerWidget {
                   // conserve). key/Semantics(button+label) preserves.
                   child: AppButton(
                     key: const ValueKey('trail-detail-enter'),
-                    icon: Icons.arrow_forward,
+                    icon: StepwaysIcons.flecheAvant,
                     label: t.catalog.enter,
                     onPressed: () => _enterTrail(context, ref),
                   ),
@@ -117,7 +118,7 @@ class TrailDetailScreen extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outline,
-                      icon: Icons.calendar_month,
+                      icon: StepwaysIcons.calendrier,
                       label: 'Planifier',
                       onPressed: () => context.push('/trail/$trailId/planning'),
                     ),
@@ -126,7 +127,7 @@ class TrailDetailScreen extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outline,
-                      icon: Icons.terrain,
+                      icon: StepwaysIcons.sommet,
                       label: 'Voir la carte',
                       onPressed: () => context.push('/trail/$trailId/map'),
                     ),
@@ -195,14 +196,14 @@ class _TrailHeader extends StatelessWidget {
             spacing: AppTheme.spacingBase,
             runSpacing: AppTheme.spacingXs,
             children: [
-              _InfoChip(icon: Icons.place, label: config.region, theme: theme),
+              _InfoChip(icon: StepwaysIcons.repere, label: config.region, theme: theme),
               _InfoChip(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.distance,
                 label: '${config.totalDistanceKm} km',
                 theme: theme,
               ),
               _InfoChip(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 label: '${config.totalElevationGain} m D+',
                 theme: theme,
               ),
@@ -222,7 +223,7 @@ class _InfoChip extends StatelessWidget {
     required this.theme,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final ThemeData theme;
 
@@ -232,7 +233,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ExcludeSemantics(
-          child: Icon(icon, size: 16, color: theme.colorScheme.primary),
+          child: StepIcon(icon, size: 16, color: theme.colorScheme.primary),
         ),
         const SizedBox(width: 4),
         Text(

@@ -8,6 +8,7 @@ import 'package:moteur_gr/features/planning/domain/shop_info.dart';
 import 'package:moteur_gr/features/planning/presentation/shop_screen.dart';
 import 'package:moteur_gr/features/planning/providers/shop_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran RAVITAILLEMENT (« Commerces & services par
 /// etape », data-driven).
@@ -355,7 +356,7 @@ void main() {
       expect(find.text(t.shop.fieldGps), findsOneWidget);
       // Contact tel (extension StepWays) cliquable.
       expect(find.text('+33123456789'), findsOneWidget);
-      expect(find.byIcon(Icons.open_in_new), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lien), findsOneWidget);
     });
 
     testWidgets('detail sans GPS : ligne GPS masquee (honnetete #99460)',
@@ -456,7 +457,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/shop'),
-                  child: const Icon(Icons.shopping_cart),
+                  child: const StepIcon(StepwaysIcons.panier),
                 ),
               ),
             ),
@@ -479,20 +480,20 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone shopping_cart) ouvre Ravitaillement.
-      expect(find.byIcon(Icons.shopping_cart), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.shopping_cart));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier));
       await settle(tester);
       await pumpUntil(tester, find.text(t.shop.title));
       expect(find.text(t.shop.title), findsWidgets);
 
       // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
       // sans crash (pile preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await pumpUntil(tester, find.byType(BackButtonIcon));
+      await tester.tap(find.byType(BackButtonIcon));
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.shop.title));
       expect(find.text(t.shop.title), findsNothing);
-      expect(find.byIcon(Icons.shopping_cart), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsOneWidget);
     });
   });
 }

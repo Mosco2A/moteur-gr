@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Une action de la [ContextualActionBar] (barre d'ACTIONS, pas d'onglets).
 ///
@@ -18,7 +19,7 @@ class ContextualAction {
     this.semanticLabel,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final VoidCallback onPressed;
 
@@ -121,7 +122,7 @@ class _ActionButton extends StatelessWidget {
                   // Chris 09/09) — explicite pour ne pas dependre du defaut.
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(action.icon, color: Colors.white, size: 22),
+                    StepIcon(action.icon, color: Colors.white, size: 22),
                     const SizedBox(height: AppTheme.spacingXs),
                     Text(
                       action.label,
@@ -161,7 +162,7 @@ class _ActionButton extends StatelessWidget {
             // 09/09) — explicite pour ne pas dependre du defaut du Column.
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(action.icon, color: scheme.onSurface, size: 22),
+              StepIcon(action.icon, color: scheme.onSurface, size: 22),
               const SizedBox(height: AppTheme.spacingXs),
               Text(
                 action.label,

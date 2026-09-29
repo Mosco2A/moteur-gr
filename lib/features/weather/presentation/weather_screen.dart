@@ -21,6 +21,7 @@ import '../widgets/weather_alert_banner.dart';
 import '../widgets/weather_guide_sheet.dart';
 import '../widgets/weather_source_banner.dart';
 import 'weather_freshness.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran météo d'une étape (E31, LOT-B — périmètre dégradé).
 ///
@@ -72,14 +73,14 @@ class WeatherScreen extends ConsumerWidget {
         title: t.weather.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline),
+            icon: const StepIcon(StepwaysIcons.aide),
             tooltip: t.weather.guideTitle,
             onPressed: () => WeatherGuideSheet.show(context),
           ),
           IconButton(
-            icon: Icon(stormAlertsEnabled
-                ? Icons.thunderstorm
-                : Icons.thunderstorm_outlined),
+            icon: StepIcon(stormAlertsEnabled
+                ? StepwaysIcons.orage
+                : StepwaysIcons.orage),
             tooltip: stormAlertsEnabled
                 ? t.weather.stormAlertsToggleOn
                 : t.weather.stormAlertsToggleOff,
@@ -88,7 +89,7 @@ class WeatherScreen extends ConsumerWidget {
                 .state = !stormAlertsEnabled,
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const StepIcon(StepwaysIcons.rafraichir),
             tooltip: t.weather.refresh,
             onPressed: () => _refresh(context, ref, params),
           ),
@@ -209,7 +210,7 @@ class WeatherScreen extends ConsumerWidget {
           Center(
             child: Column(
               children: [
-                const Icon(Icons.cloud_off, size: 64),
+                const StepIcon(StepwaysIcons.horsLigne, size: 64),
                 const SizedBox(height: AppTheme.spacingBase),
                 Text(t.weather.error, style: theme.textTheme.bodyLarge),
               ],
@@ -326,7 +327,7 @@ class _RefreshFailedBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.sync_problem, size: 18, color: color),
+          const StepIcon(StepwaysIcons.lienRompu, size: 18, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

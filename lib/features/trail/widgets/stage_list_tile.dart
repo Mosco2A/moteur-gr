@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
 import 'difficulty_badge.dart';
 import 'elevation_indicator.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte d'étape pour la liste scrollable.
 ///
@@ -81,8 +82,8 @@ class StageListTile extends StatelessWidget {
                 // Distance + durée
                 Row(
                   children: [
-                    Icon(
-                      Icons.straighten,
+                    StepIcon(
+                      StepwaysIcons.distance,
                       size: 14,
                       color: theme.colorScheme.onSurface.withAlpha(180),
                     ),
@@ -92,8 +93,8 @@ class StageListTile extends StatelessWidget {
                       style: theme.textTheme.bodySmall,
                     ),
                     const SizedBox(width: AppTheme.spacingMd),
-                    Icon(
-                      Icons.schedule,
+                    StepIcon(
+                      StepwaysIcons.duree,
                       size: 14,
                       color: theme.colorScheme.onSurface.withAlpha(180),
                     ),
@@ -114,8 +115,8 @@ class StageListTile extends StatelessWidget {
             ),
           ),
           // Chevron de navigation
-          Icon(
-            Icons.chevron_right,
+          StepIcon(
+            StepwaysIcons.chevronDroite,
             color: theme.colorScheme.onSurface.withAlpha(120),
           ),
         ],

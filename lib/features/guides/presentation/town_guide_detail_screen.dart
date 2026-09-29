@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Detail d'un town guide : sections pratiques + liens facilitateur (F8C-02).
 ///
@@ -196,7 +197,7 @@ class _GuideItemTile extends ConsumerWidget {
                   key: ValueKey('guide-deeplink-${item.nom}'),
                   variant: AppButtonVariant.outline,
                   isFullWidth: false,
-                  icon: Icons.open_in_new,
+                  icon: StepwaysIcons.lien,
                   label: t.guides.openSite,
                   onPressed: () => _openSite(context, ref),
                 ),

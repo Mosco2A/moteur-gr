@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
@@ -14,7 +15,7 @@ class SectionHeader extends StatelessWidget {
   });
 
   final String title;
-  final IconData? icon;
+  final String? icon;
   final Color? iconColor;
   final VoidCallback? onSeeAll;
   final String seeAllLabel;
@@ -27,7 +28,7 @@ class SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(children: [
         if (icon != null) ...[
-          Icon(icon, size: 20, color: iconColor ?? theme.colorScheme.primary),
+          StepIcon(icon!, size: 20, color: iconColor ?? theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
         ],
         Expanded(child: Text(title, style: theme.textTheme.titleLarge?.copyWith(fontSize: 18))),
@@ -42,7 +43,7 @@ class SectionHeader extends StatelessWidget {
               Text(seeAllLabel, style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.secondary, fontWeight: FontWeight.w600)),
               const SizedBox(width: 2),
-              Icon(Icons.chevron_right, size: 16, color: theme.colorScheme.secondary),
+              StepIcon(StepwaysIcons.chevronDroite, size: 16, color: theme.colorScheme.secondary),
             ]),
           ),
       ]),

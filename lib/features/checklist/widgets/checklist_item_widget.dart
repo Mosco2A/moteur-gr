@@ -5,6 +5,7 @@ import '../../../i18n/translations.g.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_weight_banner.dart' show formatChecklistGrams;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Pastille coloree du niveau d'exigence (parite GR20 — _RequirementDot).
 class ChecklistRequirementDot extends StatelessWidget {
@@ -141,7 +142,7 @@ class ChecklistItemWidget extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.lock,
+                        const StepIcon(StepwaysIcons.cadenas,
                             size: 14, color: AppTheme.rougeUrgence),
                         const SizedBox(width: 2),
                         Text(
@@ -175,10 +176,10 @@ class ChecklistItemWidget extends StatelessWidget {
                   // Panier — ajouter/retirer de la liste de courses (non coche).
                   if (!item.isChecked)
                     IconButton(
-                      icon: Icon(
+                      icon: StepIcon(
                         item.inShoppingList
-                            ? Icons.shopping_cart
-                            : Icons.add_shopping_cart,
+                            ? StepwaysIcons.panier
+                            : StepwaysIcons.panier,
                         size: 18,
                       ),
                       color: item.inShoppingList
@@ -194,7 +195,7 @@ class ChecklistItemWidget extends StatelessWidget {
                     ),
                   // Bouton - (toujours actif : deselectionne sous 1).
                   IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                    icon: const StepIcon(StepwaysIcons.moins, size: 18),
                     color: AppTheme.rougeUrgence,
                     padding: EdgeInsets.zero,
                     constraints:
@@ -215,7 +216,7 @@ class ChecklistItemWidget extends StatelessWidget {
                   ),
                   // Bouton +
                   IconButton(
-                    icon: const Icon(Icons.add_circle_outline, size: 18),
+                    icon: const StepIcon(StepwaysIcons.plus, size: 18),
                     color: AppTheme.vertFacile,
                     padding: EdgeInsets.zero,
                     constraints:
@@ -225,7 +226,7 @@ class ChecklistItemWidget extends StatelessWidget {
                   ),
                   // Menu edit + delete (delete si custom).
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, size: 18),
+                    icon: const StepIcon(StepwaysIcons.menu, size: 18),
                     padding: EdgeInsets.zero,
                     constraints:
                         const BoxConstraints(minWidth: 36, minHeight: 36),
@@ -234,7 +235,7 @@ class ChecklistItemWidget extends StatelessWidget {
                         value: 'edit',
                         child: Row(
                           children: [
-                            const Icon(Icons.edit,
+                            const StepIcon(StepwaysIcons.crayon,
                                 size: 14, color: AppTheme.grisGranite),
                             const SizedBox(width: 8),
                             Text(ui.modify),
@@ -246,7 +247,7 @@ class ChecklistItemWidget extends StatelessWidget {
                           value: 'delete',
                           child: Row(
                             children: [
-                              const Icon(Icons.delete_outline,
+                              const StepIcon(StepwaysIcons.corbeille,
                                   size: 14, color: AppTheme.rougeUrgence),
                               const SizedBox(width: 8),
                               Text(ui.delete,

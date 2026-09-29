@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../providers/current_stage_provider.dart';
 import '../providers/weather_providers.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Vue « Toutes les étapes » (RF-6) : liste dépliable de la météo par étape.
 ///
@@ -33,7 +34,7 @@ class AllStagesWeatherList extends ConsumerWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ExpansionTile(
-        leading: const Icon(Icons.list_alt_outlined),
+        leading: const StepIcon(StepwaysIcons.questionnaire),
         title: Text(t.weather.allStages, style: theme.textTheme.titleMedium),
         childrenPadding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
         children: stagesAsync.when(

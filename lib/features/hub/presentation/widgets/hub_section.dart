@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/branding/stepways_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'quick_access_card.dart';
 
@@ -14,11 +15,21 @@ class HubSection extends StatelessWidget {
   const HubSection({
     super.key,
     required this.title,
-    required this.icon,
+    this.icon,
+    this.rubrique,
     required this.cards,
     this.iconColor,
     this.showHeader = true,
-  });
+  }) : assert(
+         !showHeader ||
+             (icon == null) != (rubrique == null),
+         'un en-tete de section porte UNE icone : une rubrique (bicolore) ou '
+         'une icone Stepways (monochrome)',
+       );
+
+  /// L'une des 20 rubriques de l'application (tache 632). Voie normale.
+  final RubriqueStepways? rubrique;
+
 
   /// Titre de la section (libelle localise).
   final String title;
@@ -29,8 +40,9 @@ class HubSection extends StatelessWidget {
   /// Randonner / Après », inutile de le repeter juste en dessous (fin doublon).
   final bool showHeader;
 
-  /// Icone de la section.
-  final IconData icon;
+  /// Chemin d'une icone Stepways MONOCHROME ([StepwaysIcons]) — pour les
+  /// sections qui ne sont pas l'une des 20 rubriques. Exclusif avec [rubrique].
+  final String? icon;
 
   /// Couleur categorielle de l'icone d'en-tete (retour Chris 09/09, reco
   /// #IR02, parite `SectionHeader.iconColor` de GR20). Fournie par l'appelant
@@ -40,6 +52,20 @@ class HubSection extends StatelessWidget {
 
   /// Cartes d'acces rapide de la section.
   final List<QuickAccessCard> cards;
+
+  /// Le dessin de l'en-tete (tache 632). La rubrique reste bicolore tant
+  /// qu'aucune couleur categorielle n'est imposee ; une couleur imposee bascule
+  /// sur le trace monochrome, sinon elle serait simplement ignoree.
+  Widget _icone(Color couleur) {
+    if (rubrique case final r?) {
+      return IconeStepways(
+        r,
+        taille: 22,
+        couleur: iconColor != null ? couleur : null,
+      );
+    }
+    return StepIcon(icon!, color: couleur, size: 22);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +78,10 @@ class HubSection extends StatelessWidget {
         if (showHeader) ...[
           Row(
             children: [
-              Icon(icon,
-                  color: iconColor ?? theme.colorScheme.primary, size: 22),
+              // TACHE 632 — l'en-tete de section porte 22 px, pas 24 : les
+              // rubriques les plus chargees (itineraire, programme) y sont
+              // encore lisibles, mesure faite au rendu reel.
+              _icone(iconColor ?? theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               // Flexible + ellipsis : le titre de section s'ajuste a la largeur
               // (mobile 360 px) au lieu de deborder la Row a droite.

@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/segment_ranking.dart';
 import '../providers/leaderboard_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran leaderboard "Roi de l etape" PAR TRANCHE (F7A-04, Phase 7).
 ///
@@ -106,7 +107,7 @@ class _TrancheSection extends StatelessWidget {
           Semantics(
             label: t.leaderboard.notEnoughParticipants,
             child: _InfoCard(
-              icon: Icons.groups_outlined,
+              icon: StepwaysIcons.suiveurs,
               message: t.leaderboard.notEnoughParticipants,
             ),
           )
@@ -188,8 +189,8 @@ class _PseudonymBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.shield_outlined,
+          StepIcon(
+            StepwaysIcons.bouclier,
             size: 20,
             color: theme.colorScheme.onSecondaryContainer,
           ),
@@ -212,7 +213,7 @@ class _PseudonymBanner extends StatelessWidget {
 class _InfoCard extends StatelessWidget {
   const _InfoCard({required this.icon, required this.message});
 
-  final IconData icon;
+  final String icon;
   final String message;
 
   @override
@@ -226,7 +227,7 @@ class _InfoCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
+          StepIcon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(message, style: theme.textTheme.bodyMedium),
@@ -252,8 +253,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.emoji_events_outlined,
+            StepIcon(
+              StepwaysIcons.diplome,
               size: 64,
               color: theme.colorScheme.outline,
             ),

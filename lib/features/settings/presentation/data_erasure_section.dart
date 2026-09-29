@@ -26,6 +26,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../providers/account_erasure_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -52,7 +53,7 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
           padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
           child: Row(
             children: [
-              Icon(Icons.delete_forever_outlined,
+              StepIcon(StepwaysIcons.corbeille,
                   size: 20, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
@@ -69,7 +70,7 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
             button: true,
             label: tr.a11y.entry,
             child: ListTile(
-              leading: const Icon(Icons.delete_forever_outlined,
+              leading: const StepIcon(StepwaysIcons.corbeille,
                   color: AppTheme.rougeUrgence),
               title: Text(tr.entry),
               subtitle: Text(tr.entryDesc),
@@ -79,7 +80,7 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.chevron_right),
+                  : const StepIcon(StepwaysIcons.chevronDroite),
               onTap: _erasing ? null : _confirmAndErase,
             ),
           ),

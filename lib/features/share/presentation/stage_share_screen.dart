@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/share_service.dart';
 import '../providers/visibility_settings_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de partage d'une carte de resultat d'etape (F7D-02, Phase 7).
 ///
@@ -117,8 +118,8 @@ class _CardPreview extends StatelessWidget {
                 const SizedBox(height: AppTheme.spacingMd),
                 Row(
                   children: [
-                    Icon(
-                      Icons.emoji_events,
+                    StepIcon(
+                      StepwaysIcons.diplome,
                       size: 18,
                       color: theme.colorScheme.primary,
                     ),
@@ -140,7 +141,7 @@ class _CardPreview extends StatelessWidget {
           child: AppButton(
             key: const ValueKey('share-button'),
             minHeight: 52,
-            icon: Icons.share,
+            icon: StepwaysIcons.partager,
             label: t.shareVisibility.shareButton,
             onPressed: () => onShare?.call(card),
           ),
@@ -188,7 +189,7 @@ class _PrivateNotice extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock_outline, size: 64, color: theme.colorScheme.outline),
+          StepIcon(StepwaysIcons.cadenas, size: 64, color: theme.colorScheme.outline),
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             message,

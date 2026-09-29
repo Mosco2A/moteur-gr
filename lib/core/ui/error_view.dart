@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../i18n/translations.g.dart';
 import '../../shared/widgets/app_button.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Widget generique pour afficher une erreur avec bouton retry.
 ///
@@ -72,8 +73,8 @@ class _ErrorViewState extends State<ErrorView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.error_outline,
+            StepIcon(
+              StepwaysIcons.danger,
               size: 48,
               color: Theme.of(context).colorScheme.error,
             ),
@@ -100,7 +101,7 @@ class _ErrorViewState extends State<ErrorView> {
               // indicateur seul ne dit que « attends ».
               AppButton(
                 isFullWidth: false,
-                icon: Icons.refresh,
+                icon: StepwaysIcons.rafraichir,
                 label: _essaiEnCours ? t.common.retrying : t.common.retry,
                 onPressed: _essaiEnCours ? null : _relancer,
               ),

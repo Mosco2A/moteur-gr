@@ -8,6 +8,7 @@ import '../../../../../shared/widgets/app_data_stat.dart';
 import '../../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../map/providers/track_position_provider.dart';
 import '../../../providers/tracking_providers.dart';
+import '../../../../../core/branding/stepways_icons.dart';
 
 /// Overlay de tracking temps reel affiche sur la carte.
 ///
@@ -90,7 +91,7 @@ class _StatsRow extends StatelessWidget {
                   // iso-semantique). Le Consumer/select autour reste intact ->
                   // rebuild toujours au champ pres (distance projetee ici).
                   return AppDataStat(
-                    icon: Icons.straighten,
+                    icon: StepwaysIcons.distance,
                     value: _formatDistance(coveredM / 1000),
                     label: t.tracking.distance,
                   );
@@ -103,7 +104,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.elapsedDuration),
                   );
                   return AppDataStat(
-                    icon: Icons.timer_outlined,
+                    icon: StepwaysIcons.duree,
                     value: _formatDuration(duration),
                     label: t.tracking.time,
                   );
@@ -116,7 +117,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.elevationGainM),
                   );
                   return AppDataStat(
-                    icon: Icons.trending_up,
+                    icon: StepwaysIcons.denivelePlus,
                     value: '${elevGain.round()} m',
                     label: t.tracking.dPlus,
                   );
@@ -129,7 +130,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.currentSpeedKmh),
                   );
                   return AppDataStat(
-                    icon: Icons.speed,
+                    icon: StepwaysIcons.vitesse,
                     value: '${speed.toStringAsFixed(1)} km/h',
                     label: t.tracking.speed,
                   );
@@ -178,7 +179,7 @@ class _ButtonsRow extends StatelessWidget {
           case TrackingSessionStatus.stopped:
             return _ActionButton(
               label: t.tracking.start,
-              icon: Icons.play_arrow,
+              icon: StepwaysIcons.enregistrer,
               color: AppTheme.actionStart,
               semanticLabel: t.a11y.startTracking,
               // Meme pre-vol explique que le bouton du cockpit : une demande
@@ -195,7 +196,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.pause,
-                    icon: Icons.pause,
+                    icon: StepwaysIcons.pause,
                     color: AppTheme.actionPause,
                     semanticLabel: t.a11y.pauseTracking,
                     onPressed: notifier.pause,
@@ -205,7 +206,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.stopButton,
-                    icon: Icons.stop,
+                    icon: StepwaysIcons.stop,
                     color: AppTheme.rougeUrgence,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
@@ -219,7 +220,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.resume,
-                    icon: Icons.play_arrow,
+                    icon: StepwaysIcons.enregistrer,
                     color: AppTheme.actionStart,
                     semanticLabel: t.a11y.resumeTracking,
                     onPressed: notifier.resume,
@@ -229,7 +230,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.stopButton,
-                    icon: Icons.stop,
+                    icon: StepwaysIcons.stop,
                     color: AppTheme.rougeUrgence,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
@@ -277,7 +278,7 @@ class _ActionButton extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final Color color;
   final VoidCallback onPressed;
 

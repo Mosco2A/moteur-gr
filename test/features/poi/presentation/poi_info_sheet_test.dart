@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/poi/domain/poi_type_config.dart';
 import 'package:moteur_gr/features/poi/presentation/poi_info_sheet.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget du composant PoiInfoSheet (Phase 2 E2.5c).
 ///
@@ -86,7 +87,7 @@ void main() {
 
       // Icone du type refuge (house) presente
       final style = PoiTypeConfig.getStyle('refuge');
-      expect(find.byIcon(style.icon), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == style.icon), findsOneWidget);
     });
 
     test('est un StatelessWidget', () {
@@ -153,7 +154,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Pas d horaires affiches
-      expect(find.byIcon(Icons.schedule), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsNothing);
     });
 
     testWidgets('masque description si vide', (tester) async {

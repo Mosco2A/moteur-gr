@@ -7,6 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Solde du COMPTE-ÉTAPES en tête du cockpit (correctif L7-1).
 ///
@@ -51,7 +52,7 @@ class HubWalletCard extends ConsumerWidget {
             excludeSemantics: true,
             child: Row(
               children: [
-                Icon(Icons.account_balance_wallet_outlined, color: accent),
+                StepIcon(StepwaysIcons.portefeuille, color: accent),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
                   child: Column(
@@ -93,7 +94,7 @@ class HubWalletCard extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(width: AppTheme.spacingXs),
-                const Icon(Icons.chevron_right,
+                const StepIcon(StepwaysIcons.chevronDroite,
                     size: 18, color: AppTheme.grisTexteSecondaire),
               ],
             ),

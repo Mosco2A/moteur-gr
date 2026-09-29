@@ -157,6 +157,14 @@ dev_dependencies:
   freezed: ^3.2.5
   json_serializable: ^6.7.0
   flutter_lints: ^3.0.0
+  # --- Identite visuelle (tache 632, logo et splash livres par Christophe) ---
+  # Outils de GENERATION uniquement : ils fabriquent les mipmaps Android, le
+  # jeu d'icones iOS et les ressources de demarrage natives une fois pour
+  # toutes, puis ne sont plus embarques dans l'application. Configuration dans
+  # flutter_launcher_icons.yaml / flutter_native_splash.yaml a la racine, tous
+  # deux ecrits par `python tool/set_branding.py <famille> <splash>`.
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   slang_build_runner: ^4.15.0
 
 flutter:
@@ -171,6 +179,34 @@ flutter:
     - assets/data/mare_a_mare_centre_demo/
     - assets/i18n/
     - assets/tips/
+    # IDENTITE VISUELLE (tache 632) — les TROIS familles livrees par Christophe
+    # sont embarquees : ce sont des traces SVG (texte deja converti en courbes,
+    # aucune police requise), quelques centaines d'octets chacune. Les embarquer
+    # toutes rend le changement de famille purement declaratif : `python
+    # tool/set_branding.py marches` suffit, sans toucher a ce fichier.
+    # Les PNG (assets/branding/png, assets/branding/icons) et les images de
+    # demarrage (assets/splash) ne sont PAS embarques : ce sont des sources
+    # consommees a la GENERATION par flutter_launcher_icons et
+    # flutter_native_splash, qui en font des ressources natives.
+    - assets/branding/svg/sentier/
+    - assets/branding/svg/marches/
+    - assets/branding/svg/courbes/
+    # LES 118 ICONES DE CHRISTOPHE (tache 632, zip du 29/09 14:41).
+    # Grille 24 px, trait 2 px, `stroke="currentColor"`. Le dossier racine porte
+    # les 118 traces monochromes. DEUX familles existent en plus en bicolore :
+    # les 20 RUBRIQUES de l'application (rubriques-duo + rubriques-duo-mono) et
+    # les 43 icones ICO-001 a ICO-027 (ico-duo). Les dossiers `-clair`, pour les
+    # fonds sombres, sont DERIVES par `python tool/set_branding.py` et ne sont
+    # jamais edites. Tous sont embarques : basculer entre duo et monochrome est
+    # une constante Dart (AppBranding.iconesEnDuo), pas une modification d'ici.
+    - assets/icons/
+    - assets/icons/rubriques-duo/
+    - assets/icons/rubriques-duo-clair/
+    - assets/icons/rubriques-duo-mono/
+    - assets/icons/ico-duo/
+    - assets/icons/ico-duo-clair/
+    - assets/icons/mat-duo/
+    - assets/icons/mat-duo-clair/
 
   # --- Polices (OFFLINE-FIRST, parite GR20) ---
   # Montserrat EMBARQUEE comme famille Flutter native (comme GR20), et NON via

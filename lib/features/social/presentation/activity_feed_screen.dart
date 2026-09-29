@@ -7,6 +7,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/activity_feed_providers.dart';
 import '../providers/kudos_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran du fil d'activite (F7B-04, Phase 7 social).
 ///
@@ -152,8 +153,8 @@ class _ActivityCard extends ConsumerWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: theme.colorScheme.primaryContainer,
-                  child: Icon(
-                    Icons.person_outline,
+                  child: StepIcon(
+                    StepwaysIcons.monCompte,
                     size: 18,
                     color: theme.colorScheme.onPrimaryContainer,
                   ),
@@ -186,7 +187,7 @@ class _ActivityCard extends ConsumerWidget {
                 child: TextButton.icon(
                   key: ValueKey('kudos-${activity.id}'),
                   onPressed: () => _giveKudo(ref),
-                  icon: const Icon(Icons.favorite_border, size: 18),
+                  icon: const StepIcon(StepwaysIcons.favori, size: 18),
                   label: kudosAsync.when(
                     data: (n) => Text(t.social.kudosCount(n: n)),
                     loading: () => Text(t.social.kudos),
@@ -202,7 +203,7 @@ class _ActivityCard extends ConsumerWidget {
                 child: TextButton.icon(
                   key: ValueKey('report-${activity.id}'),
                   onPressed: onReport,
-                  icon: const Icon(Icons.flag_outlined, size: 18),
+                  icon: const StepIcon(StepwaysIcons.depart, size: 18),
                   label: Text(t.social.report),
                 ),
               ),
@@ -295,8 +296,8 @@ class _EmptyFeed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.forum_outlined,
+            StepIcon(
+              StepwaysIcons.suiveurs,
               size: 64,
               color: theme.colorScheme.outline,
             ),

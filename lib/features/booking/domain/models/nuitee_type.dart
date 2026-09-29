@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 
 import '../../../../i18n/translations.g.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Type de nuitee choisi par nuit (PARITE GR20 `NuiteeType`).
 ///
@@ -28,16 +28,16 @@ extension NuiteeTypeUi on NuiteeType {
   }
 
   /// Icone du type (parite GR20 : cabin / house / terrain / other_houses).
-  IconData get icon {
+  String get icon {
     switch (this) {
       case NuiteeType.refuge:
-        return Icons.cabin;
+        return StepwaysIcons.nuitees;
       case NuiteeType.gite:
-        return Icons.house;
+        return StepwaysIcons.hebergement;
       case NuiteeType.bivouac:
-        return Icons.terrain;
+        return StepwaysIcons.sommet;
       case NuiteeType.autreHebergement:
-        return Icons.other_houses;
+        return StepwaysIcons.hebergement;
     }
   }
 

@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formate une date de facon robuste (parite comportement GR20, mais sans
 /// dependre de `initializeDateFormatting` — l'app StepWays ne l'appelle pas,
@@ -213,7 +214,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const StepIcon(StepwaysIcons.chevronGauche),
           tooltip: t.calendar.previousMonth,
           onPressed: () {
             setState(() {
@@ -229,7 +230,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.0),
         ),
         IconButton(
-          icon: const Icon(Icons.chevron_right),
+          icon: const StepIcon(StepwaysIcons.chevronDroite),
           tooltip: t.calendar.nextMonth,
           onPressed: () {
             setState(() {
@@ -539,7 +540,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ),
                 if (notifier.canSplit(index))
                   IconButton(
-                    icon: const Icon(Icons.call_split, size: 20),
+                    icon: const StepIcon(StepwaysIcons.allerRetour, size: 20),
                     tooltip: t.calendar.splitStages,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(
@@ -551,7 +552,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 if (notifier.canMergeWithNext(index))
                   IconButton(
-                    icon: const Icon(Icons.compress, size: 20),
+                    icon: const StepIcon(StepwaysIcons.compresser, size: 20),
                     tooltip: t.calendar.mergeWithNext,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(
@@ -608,8 +609,8 @@ class _DatePickerSection extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.flight_takeoff,
+                      StepIcon(
+                        StepwaysIcons.avion,
                         size: 16,
                         color: scheme.primary,
                       ),
@@ -639,8 +640,8 @@ class _DatePickerSection extends StatelessWidget {
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingSm),
-          child: Icon(
-            Icons.arrow_forward,
+          child: StepIcon(
+            StepwaysIcons.flecheAvant,
             size: 18,
             color: AppTheme.grisGranite,
           ),
@@ -659,8 +660,8 @@ class _DatePickerSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons.flag,
+                    const StepIcon(
+                      StepwaysIcons.depart,
                       size: 16,
                       color: AppTheme.orangeDifficile,
                     ),
@@ -792,8 +793,8 @@ class _NoDateState extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: AppTheme.spacingXl),
-          Icon(
-            Icons.calendar_month,
+          StepIcon(
+            StepwaysIcons.calendrier,
             size: 64,
             color: AppTheme.grisGranite.withAlpha(80),
           ),
@@ -815,7 +816,7 @@ class _NoDateState extends StatelessWidget {
           const SizedBox(height: AppTheme.spacingLg),
           ElevatedButton.icon(
             onPressed: onPickStartDate,
-            icon: const Icon(Icons.calendar_today),
+            icon: const StepIcon(StepwaysIcons.calendrier),
             label: Text(t.calendar.chooseDateAction),
           ),
         ],
@@ -840,8 +841,8 @@ class _EmptyItineraryState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.calendar_month,
+            StepIcon(
+              StepwaysIcons.calendrier,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -864,7 +865,7 @@ class _EmptyItineraryState extends StatelessWidget {
             const SizedBox(height: AppTheme.spacingXl),
             ElevatedButton.icon(
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
+              icon: const StepIcon(StepwaysIcons.itineraire),
               label: Text(t.calendar.empty.action),
             ),
           ],

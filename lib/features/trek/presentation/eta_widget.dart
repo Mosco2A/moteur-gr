@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../domain/eta_service.dart';
 import '../providers/eta_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Widget d'affichage de l'ETA temps réel (F6B-02, F6.6).
 ///
@@ -46,8 +47,8 @@ class EtaWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.schedule,
+                StepIcon(
+                  StepwaysIcons.duree,
                   size: 18,
                   color: theme.colorScheme.primary,
                 ),
@@ -69,8 +70,8 @@ class EtaWidget extends ConsumerWidget {
             // Indicateur de confiance.
             Row(
               children: [
-                Icon(
-                  low ? Icons.gps_off : Icons.gps_fixed,
+                StepIcon(
+                  low ? StepwaysIcons.gpsPerdu : StepwaysIcons.maPosition,
                   size: 14,
                   color: low
                       ? theme.colorScheme.error

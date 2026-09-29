@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../share/providers/visibility_settings_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de reglage de la VISIBILITE sociale (F7D-02, Phase 7).
 ///
@@ -64,7 +65,7 @@ class VisibilitySettingsScreen extends ConsumerWidget {
               label: t.shareVisibility.consentLink,
               child: TextButton.icon(
                 onPressed: onOpenConsent,
-                icon: const Icon(Icons.privacy_tip_outlined),
+                icon: const StepIcon(StepwaysIcons.bouclier),
                 label: Text(t.shareVisibility.consentLink),
               ),
             ),

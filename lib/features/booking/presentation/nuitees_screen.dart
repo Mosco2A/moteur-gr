@@ -11,6 +11,7 @@ import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran NUITEES — assistant « Reserver vos nuits » (PARITE GR20
 /// `RefugeAssistantScreen`).
@@ -153,7 +154,7 @@ class NuiteesScreen extends ConsumerWidget {
         title: t.nuitees.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.nuitees.guideTooltip,
             onPressed: () => _showInfoSheet(context),
           ),
@@ -239,7 +240,7 @@ class NuiteesScreen extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingBase),
             Row(
               children: [
-                Icon(Icons.info_outline, color: scheme.primary, size: 24),
+                StepIcon(StepwaysIcons.info, color: scheme.primary, size: 24),
                 const SizedBox(width: AppTheme.spacingSm),
                 Text(
                   t.nuitees.guide.title,
@@ -284,7 +285,7 @@ class NuiteesScreen extends ConsumerWidget {
             color: scheme.primary.withAlpha(25),
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           ),
-          child: Icon(type.icon, size: 22, color: scheme.primary),
+          child: StepIcon(type.icon, size: 22, color: scheme.primary),
         ),
         const SizedBox(width: AppTheme.spacingMd),
         Expanded(
@@ -344,7 +345,7 @@ class _CompactInfoBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline,
+              StepIcon(StepwaysIcons.info,
                   size: 20, color: theme.colorScheme.primary.withAlpha(180)),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -660,7 +661,7 @@ class _NuiteeCard extends ConsumerWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(
+                                        StepIcon(
                                           type.icon,
                                           size: 16,
                                           color: isSelected
@@ -721,8 +722,8 @@ class _NuiteeCard extends ConsumerWidget {
                         width: 2,
                       ),
                     ),
-                    child: Icon(
-                      isBooked ? Icons.check : Icons.radio_button_unchecked,
+                    child: StepIcon(
+                      isBooked ? StepwaysIcons.coche : StepwaysIcons.radio,
                       size: 20,
                       color: isBooked
                           ? scheme.primary
@@ -739,7 +740,7 @@ class _NuiteeCard extends ConsumerWidget {
                   children: [
                     TextButton.icon(
                       onPressed: () => _callPhone(phone),
-                      icon: const Icon(Icons.phone, size: 18),
+                      icon: const StepIcon(StepwaysIcons.telephone, size: 18),
                       label: Text(
                         t.nuitees.card.call.replaceAll('{phone}', phone),
                         style: const TextStyle(fontSize: 14),
@@ -830,7 +831,7 @@ class _CompactSummary extends StatelessWidget {
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         child: ElevatedButton.icon(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.check_circle),
+          icon: const StepIcon(StepwaysIcons.cochePleine),
           label: Text(t.nuitees.summary.allBooked),
         ),
       );
@@ -860,7 +861,7 @@ class _CompactSummary extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.warning_amber,
+              const StepIcon(StepwaysIcons.danger,
                   size: 16, color: AppTheme.orangeDifficile),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
@@ -874,7 +875,7 @@ class _CompactSummary extends StatelessWidget {
               ),
               if (bookedDays.isNotEmpty) ...[
                 const Spacer(),
-                Icon(Icons.check_circle,
+                StepIcon(StepwaysIcons.cochePleine,
                     size: 14, color: AppTheme.vertFacile.withAlpha(180)),
                 const SizedBox(width: 4),
                 Text(
@@ -940,7 +941,7 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cabin,
+            StepIcon(StepwaysIcons.nuitees,
                 size: 80, color: AppTheme.grisGranite.withAlpha(80)),
             const SizedBox(height: AppTheme.spacingLg),
             Text(
@@ -959,7 +960,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppTheme.spacingXl),
             ElevatedButton.icon(
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
+              icon: const StepIcon(StepwaysIcons.itineraire),
               label: Text(t.nuitees.empty.action),
             ),
           ],

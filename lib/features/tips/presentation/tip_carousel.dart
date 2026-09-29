@@ -10,6 +10,7 @@ import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
 import 'tip_detail_sheet.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider des fiches conseil filtrees par categorie.
 ///
@@ -117,7 +118,7 @@ class _CategoryChips extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(right: AppTheme.spacingSm),
               child: FilterChip(
-                avatar: Icon(
+                avatar: StepIcon(
                   resolveIcon(meta.icon),
                   size: 16,
                   color: selectedCategory == cat
@@ -182,7 +183,7 @@ class _CarouselView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(resolveIcon(meta.icon), color: color, size: 20),
+                        StepIcon(resolveIcon(meta.icon), color: color, size: 20),
                         const SizedBox(width: AppTheme.spacingSm),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -205,8 +206,8 @@ class _CarouselView extends StatelessWidget {
                         ),
                         const Spacer(),
                         if (card.priority >= 8)
-                          const Icon(
-                            Icons.priority_high,
+                          const StepIcon(
+                            StepwaysIcons.danger,
                             color: AppTheme.rougeUrgence,
                             size: 18,
                           ),
@@ -237,8 +238,8 @@ class _CarouselView extends StatelessWidget {
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(
-                        Icons.swipe,
+                      child: StepIcon(
+                        StepwaysIcons.geste,
                         size: 16,
                         color: theme.colorScheme.onSurface.withAlpha(100),
                       ),
@@ -268,8 +269,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.lightbulb_outline,
+            StepIcon(
+              StepwaysIcons.ficheConseil,
               size: 48,
               color: theme.colorScheme.onSurface.withAlpha(100),
             ),
@@ -310,21 +311,21 @@ Color categoryColor(String category, ThemeData theme) {
 }
 
 /// Resout un nom d icone Material en IconData.
-IconData resolveIcon(String iconName) {
+String resolveIcon(String iconName) {
   switch (iconName) {
     case "checklist":
-      return Icons.checklist;
+      return StepwaysIcons.sacADos;
     case "backpack":
-      return Icons.backpack;
+      return StepwaysIcons.sacADos;
     case "restaurant":
-      return Icons.restaurant;
+      return StepwaysIcons.restauration;
     case "health_and_safety":
-      return Icons.health_and_safety;
+      return StepwaysIcons.ficheMedicale;
     case "forest":
-      return Icons.forest;
+      return StepwaysIcons.foret;
     case "self_improvement":
-      return Icons.self_improvement;
+      return StepwaysIcons.preparationPhysique;
     default:
-      return Icons.info;
+      return StepwaysIcons.info;
   }
 }

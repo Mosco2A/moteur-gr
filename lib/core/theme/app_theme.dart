@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_skin.dart';
 import 'category_icon_colors.dart';
 import 'skin_theme.dart';
+import '../branding/stepways_icons.dart';
 
 /// Theme generique du Moteur GR.
 ///
@@ -210,6 +211,21 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
+      // TACHE 632 — LES ICONES QUE FLUTTER DESSINE LUI-MEME.
+      //
+      // Le bouton Retour d'une AppBar, la croix de fermeture d'un panneau : ce
+      // n'est pas l'application qui les pose, c'est le framework, et elles
+      // restaient donc en Material alors que tout le reste est passe aux
+      // dessins de Christophe. `actionIconTheme` est le seul point ou on peut
+      // les reprendre — sans lui, il aurait fallu poser un `leading` a la main
+      // sur chacun des vingt-quatre ecrans qui portent une AppBar, et en
+      // oublier.
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.flecheArriere),
+        closeButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.croix),
+        drawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
+        endDrawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
+      ),
       scaffoldBackgroundColor: const Color(0xFF121212),
       appBarTheme: AppBarTheme(
         backgroundColor: _darken(primaryColor, 0.1),
@@ -341,6 +357,21 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
+      // TACHE 632 — LES ICONES QUE FLUTTER DESSINE LUI-MEME.
+      //
+      // Le bouton Retour d'une AppBar, la croix de fermeture d'un panneau : ce
+      // n'est pas l'application qui les pose, c'est le framework, et elles
+      // restaient donc en Material alors que tout le reste est passe aux
+      // dessins de Christophe. `actionIconTheme` est le seul point ou on peut
+      // les reprendre — sans lui, il aurait fallu poser un `leading` a la main
+      // sur chacun des vingt-quatre ecrans qui portent une AppBar, et en
+      // oublier.
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.flecheArriere),
+        closeButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.croix),
+        drawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
+        endDrawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
+      ),
       scaffoldBackgroundColor: grisFond,
       appBarTheme: AppBarTheme(
         backgroundColor: primaryColor,

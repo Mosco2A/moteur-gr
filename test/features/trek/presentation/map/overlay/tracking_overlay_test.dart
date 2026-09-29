@@ -5,6 +5,7 @@ import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/map/overlay/tracking_overlay.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Resout la couleur de fond d'un ElevatedButton pour l'etat par defaut.
 Color? _backgroundColorOf(WidgetTester tester, Finder buttonFinder) {
@@ -67,8 +68,8 @@ void main() {
       expect(find.text('Stop'), findsOneWidget);
 
       // Icones des boutons
-      expect(find.byIcon(Icons.pause), findsOneWidget);
-      expect(find.byIcon(Icons.stop), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pause), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
 
       container.dispose();
     });
@@ -97,7 +98,7 @@ void main() {
 
       // Bouton Demarrer visible
       expect(find.text('Démarrer'), findsOneWidget);
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer), findsOneWidget);
 
       // Pas de stats en mode idle
       expect(find.text('Distance'), findsNothing);
@@ -138,8 +139,8 @@ void main() {
       // Boutons Reprendre + Stop
       expect(find.text('Reprendre'), findsOneWidget);
       expect(find.text('Stop'), findsOneWidget);
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-      expect(find.byIcon(Icons.stop), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
 
       container.dispose();
     });

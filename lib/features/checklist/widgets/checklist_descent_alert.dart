@@ -10,6 +10,7 @@ import '../../feasibility/domain/body_weight_reference.dart';
 import '../../feasibility/domain/feasibility_formula.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ALERTE DESCENTE — SORTIE 2 DU DISPOSITIF POIDS (#4-c, #4-j, #4-l).
 ///
@@ -118,7 +119,7 @@ class ChecklistDescentAlert extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.trending_down, size: 20, color: color),
+              const StepIcon(StepwaysIcons.deniveleMoins, size: 20, color: color),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

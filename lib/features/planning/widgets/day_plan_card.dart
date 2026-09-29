@@ -4,6 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../models/day_plan.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte affichant le plan d'une journée de trek.
 ///
@@ -98,8 +99,8 @@ class _RestDayContent extends StatelessWidget {
       padding: const EdgeInsets.only(top: AppTheme.spacingSm),
       child: Row(
         children: [
-          Icon(
-            Icons.self_improvement,
+          StepIcon(
+            StepwaysIcons.preparationPhysique,
             size: 20,
             color: theme.colorScheme.secondary,
           ),
@@ -141,8 +142,8 @@ class _WalkDayContent extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.hiking,
+                StepIcon(
+                  StepwaysIcons.chaussure,
                   size: 16,
                   color: theme.colorScheme.primary,
                 ),
@@ -181,7 +182,7 @@ class _DayStats extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(Icons.straighten, size: 14,
+        StepIcon(StepwaysIcons.distance, size: 14,
             color: theme.colorScheme.primary),
         const SizedBox(width: 4),
         Text(
@@ -189,7 +190,7 @@ class _DayStats extends StatelessWidget {
           style: statStyle,
         ),
         const SizedBox(width: AppTheme.spacingBase),
-        Icon(Icons.trending_up, size: 14,
+        StepIcon(StepwaysIcons.denivelePlus, size: 14,
             color: theme.colorScheme.primary),
         const SizedBox(width: 4),
         Text(
@@ -197,7 +198,7 @@ class _DayStats extends StatelessWidget {
           style: statStyle,
         ),
         const SizedBox(width: AppTheme.spacingBase),
-        Icon(Icons.schedule, size: 14,
+        StepIcon(StepwaysIcons.duree, size: 14,
             color: theme.colorScheme.primary),
         const SizedBox(width: 4),
         Text(

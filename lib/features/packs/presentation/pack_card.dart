@@ -10,6 +10,7 @@ import '../domain/pack_download_progress.dart';
 import '../domain/pack_manifest.dart';
 import '../domain/sentier_pack.dart';
 import '../providers/pack_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte d'un pack sentier A LA CARTE dans le store (F8B-03, regle metier R2).
 ///
@@ -338,7 +339,7 @@ class _PackActions extends StatelessWidget {
             child: AppButton(
               key: ValueKey('pack-download-${pack.id}'),
               isFullWidth: false,
-              icon: Icons.download,
+              icon: StepwaysIcons.telecharger,
               label: primaryLabel,
               onPressed: onDownload,
             ),
@@ -354,7 +355,7 @@ class _PackActions extends StatelessWidget {
               key: ValueKey('pack-delete-${pack.id}'),
               variant: AppButtonVariant.outline,
               isFullWidth: false,
-              icon: Icons.delete_outline,
+              icon: StepwaysIcons.corbeille,
               label: t.packs.actions.delete,
               onPressed: onDelete,
             ),

@@ -40,6 +40,7 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'regie_pub_absente.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 // ---------------------------------------------------------------------------
 // Les drapeaux de l'application (etat de premier lancement)
@@ -458,8 +459,10 @@ String empreinteEcran(WidgetTester tester) {
         '#${w.style?.fontWeight?.value ?? '-'}');
   }
   final icones = tester
-      .widgetList<Icon>(find.byType(Icon))
-      .map((i) => '${i.icon?.codePoint ?? '?'}#${i.color?.toARGB32() ?? '-'}')
+      .widgetList<StepIcon>(find.byType(StepIcon))
+      // TACHE 632 — l'empreinte d'une icone est son NOM DE FICHIER, pas un
+      // point de code de police : les icones sont devenues des dessins.
+      .map((i) => '${i.asset}#${i.color?.toARGB32() ?? '-'}')
       .toList();
   final fonds = tester.widgetList<Container>(find.byType(Container)).map((c) {
     final deco = c.decoration;
@@ -589,25 +592,23 @@ const gestesEvites = <String>[
 /// l'a fait a chaque execution. Un garde qui ne sait pas lire une icone n'est
 /// pas un garde, exactement comme celui qui ne parlait que francais (tache 573).
 /// Ces gestes sont testes NOMMEMENT (cf. `test/comportement/`).
-final Set<int> iconesEvitees = <int>{
-  Icons.phone.codePoint,
-  Icons.phone_in_talk.codePoint,
-  Icons.call.codePoint,
-  Icons.local_phone.codePoint,
-  Icons.sos.codePoint,
-  Icons.emergency.codePoint,
-  Icons.delete.codePoint,
-  Icons.delete_outline.codePoint,
-  Icons.delete_forever.codePoint,
+/// TACHE 632 — les icones ne sont plus des points de code d'une police, mais
+/// des fichiers. Le garde reconnait donc un NOM DE FICHIER, ce qui se lit et se
+/// verifie a l'oeil, la ou « 58530 » ne disait rien a personne.
+final Set<String> iconesEvitees = <String>{
+  StepwaysIcons.telephone,
+  StepwaysIcons.secours,
+  StepwaysIcons.corbeille,
 };
 
 bool estGesteEvite(String libelle) {
   final l = libelle.toLowerCase();
   if (gestesEvites.any(l.contains)) return true;
-  final code = int.tryParse(
-    l.startsWith('icone-') ? l.substring('icone-'.length) : '',
+  // Le libelle de rapport d'une icone sans etiquette porte son nom de fichier
+  // (« icone-cadenas ») : on y retrouve donc directement le dessin evite.
+  return iconesEvitees.any(
+    (asset) => l.contains(asset.split('/').last.replaceAll('.svg', '')),
   );
-  return code != null && iconesEvitees.contains(code);
 }
 
 /// Le geste designe par [f] appartient-il a un SELECTEUR (un groupe d'options

@@ -12,6 +12,7 @@ import 'package:moteur_gr/features/planning/presentation/plan_summary_screen.dar
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran RESUME / SYNTHESE du plan (agregateur).
 ///
@@ -226,7 +227,7 @@ void main() {
       expect(find.text(t.summary.empty.title), findsOneWidget);
       expect(find.text(t.summary.empty.message), findsOneWidget);
       expect(find.text(t.summary.empty.action), findsOneWidget);
-      expect(find.byIcon(Icons.summarize), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
       // Aucune section (pas de « Jour par jour ») en etat vide.
       expect(find.text(t.summary.dayByDay), findsNothing);
     });
@@ -425,8 +426,8 @@ void main() {
       await tester.pumpWidget(wrap(days: [walkDay(1, 1)]));
       await settle(tester);
 
-      expect(find.byIcon(Icons.picture_as_pdf), findsNothing);
-      expect(find.byIcon(Icons.download), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pdf), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telecharger), findsNothing);
       for (final promesse in <String>[
         'bientôt',
         'bientot',
@@ -486,7 +487,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/summary'),
-                  child: const Icon(Icons.summarize),
+                  child: const StepIcon(StepwaysIcons.programme),
                 ),
               ),
             ),
@@ -512,19 +513,19 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone summarize) ouvre le Resume.
-      expect(find.byIcon(Icons.summarize), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.summarize));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme));
       await settle(tester);
       await pumpUntil(tester, find.text(t.summary.title));
       expect(find.text(t.summary.title), findsWidgets);
 
       // Retour : bouton back de l'AppBar -> retour au HUB sans crash.
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await pumpUntil(tester, find.byType(BackButtonIcon));
+      await tester.tap(find.byType(BackButtonIcon));
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.summary.title));
       expect(find.text(t.summary.title), findsNothing);
-      expect(find.byIcon(Icons.summarize), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
     });
   });
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section « Preparation du sac » — CLONE GR20 (_PreparationSection).
 ///
@@ -68,8 +69,8 @@ class _ChecklistPreparationSectionState
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.backpack,
+                  StepIcon(
+                    StepwaysIcons.sacADos,
                     color: allPrepared
                         ? AppTheme.vertFacile
                         : AppTheme.orangeDifficile,
@@ -118,14 +119,14 @@ class _ChecklistPreparationSectionState
                           ),
                         ),
                         if (allPrepared)
-                          const Icon(Icons.check,
+                          const StepIcon(StepwaysIcons.coche,
                               size: 20, color: AppTheme.vertFacile),
                       ],
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
-                  Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                  StepIcon(
+                    _isExpanded ? StepwaysIcons.replier : StepwaysIcons.deplier,
                     color: AppTheme.grisGranite,
                   ),
                 ],
@@ -149,7 +150,7 @@ class _ChecklistPreparationSectionState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check_circle,
+                  const StepIcon(StepwaysIcons.cochePleine,
                       size: 20, color: AppTheme.vertFacile),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
@@ -267,8 +268,8 @@ class _ChecklistPreDepartureSectionState
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
       child: ExpansionTile(
-        leading: Icon(
-          allChecked ? Icons.check_circle : Icons.playlist_add_check,
+        leading: StepIcon(
+          allChecked ? StepwaysIcons.cochePleine : StepwaysIcons.coche,
           color: allChecked ? AppTheme.vertFacile : AppTheme.orangeDifficile,
           size: 22,
         ),

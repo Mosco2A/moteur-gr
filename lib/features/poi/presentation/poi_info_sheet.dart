@@ -7,6 +7,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/lazy_network_image.dart';
 import '../domain/poi_type_config.dart';
 import '../domain/poi_type_label.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bottom sheet affichant le detail d'un POI.
 ///
@@ -89,7 +90,7 @@ class PoiInfoSheet extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: Icon(style.icon, color: Colors.white, size: 24),
+                child: StepIcon(style.icon, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -125,7 +126,7 @@ class PoiInfoSheet extends StatelessWidget {
 
           // Coordonnees GPS
           _InfoRow(
-            icon: Icons.my_location,
+            icon: StepwaysIcons.maPosition,
             label: t.stage.coordinates,
             value:
                 '${poi.lat.toStringAsFixed(5)}, ${poi.lng.toStringAsFixed(5)}',
@@ -134,7 +135,7 @@ class PoiInfoSheet extends StatelessWidget {
           // Altitude
           if (poi.altitudeM > 0)
             _InfoRow(
-              icon: Icons.terrain,
+              icon: StepwaysIcons.sommet,
               label: t.poi.altitude,
               value: '${poi.altitudeM} m',
             ),
@@ -142,7 +143,7 @@ class PoiInfoSheet extends StatelessWidget {
           // Horaires
           if (poi.openingHours != null && poi.openingHours!.isNotEmpty)
             _InfoRow(
-              icon: Icons.schedule,
+              icon: StepwaysIcons.duree,
               label: t.poi.hours,
               value: poi.openingHours!,
             ),
@@ -155,7 +156,7 @@ class PoiInfoSheet extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              icon: Icons.map,
+              icon: StepwaysIcons.carte,
               label: t.map.viewMap,
               onPressed: () {
                 Navigator.of(context).pop();
@@ -177,7 +178,7 @@ class _InfoRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -187,7 +188,7 @@ class _InfoRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: Colors.grey.shade600),
+          StepIcon(icon, size: 18, color: Colors.grey.shade600),
           const SizedBox(width: 8),
           Text(
             '$label : ',

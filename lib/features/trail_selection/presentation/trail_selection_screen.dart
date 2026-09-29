@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de selection / bascule de sentier (F8D-02, Phase 8 P8-D, #84627).
 ///
@@ -179,7 +180,7 @@ class _TrailChoiceCard extends StatelessWidget {
                 child: AppButton(
                   key: ValueKey('trail-select-${trail.id}'),
                   isFullWidth: false,
-                  icon: selected ? Icons.check : Icons.swap_horiz,
+                  icon: selected ? StepwaysIcons.coche : StepwaysIcons.inverser,
                   label: selected
                       ? t.trailSelection.selected
                       : t.trailSelection.select,

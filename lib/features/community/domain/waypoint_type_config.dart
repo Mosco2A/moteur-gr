@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/waypoint_service.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Style visuel associe a un type de waypoint communautaire (F8A-04).
 ///
@@ -14,7 +15,7 @@ class WaypointTypeStyle {
   });
 
   /// Icone Material pour ce type.
-  final IconData icon;
+  final String icon;
 
   /// Couleur associee a ce type.
   final Color color;
@@ -33,39 +34,39 @@ class WaypointTypeConfig {
 
   static const Map<String, WaypointTypeStyle> _styles = {
     WaypointType.eau: WaypointTypeStyle(
-      icon: Icons.water_drop,
+      icon: StepwaysIcons.pluie,
       color: Color(0xFF1565C0),
       labelKey: 'eau',
     ),
     WaypointType.ravitaillement: WaypointTypeStyle(
-      icon: Icons.shopping_basket,
+      icon: StepwaysIcons.panier,
       color: Color(0xFF2E7D32),
       labelKey: 'ravitaillement',
     ),
     WaypointType.danger: WaypointTypeStyle(
-      icon: Icons.warning_amber_rounded,
+      icon: StepwaysIcons.danger,
       color: Color(0xFFC62828),
       labelKey: 'danger',
     ),
     WaypointType.camp: WaypointTypeStyle(
-      icon: Icons.holiday_village,
+      icon: StepwaysIcons.hebergement,
       color: Color(0xFF558B2F),
       labelKey: 'camp',
     ),
     WaypointType.connectivite: WaypointTypeStyle(
-      icon: Icons.signal_cellular_alt,
+      icon: StepwaysIcons.sansReseau,
       color: Color(0xFF6A1B9A),
       labelKey: 'connectivite',
     ),
     WaypointType.jonction: WaypointTypeStyle(
-      icon: Icons.alt_route,
+      icon: StepwaysIcons.itineraire,
       color: Color(0xFFE65100),
       labelKey: 'jonction',
     ),
   };
 
   static const _fallback = WaypointTypeStyle(
-    icon: Icons.place,
+    icon: StepwaysIcons.repere,
     color: Color(0xFF616161),
     labelKey: 'autre',
   );

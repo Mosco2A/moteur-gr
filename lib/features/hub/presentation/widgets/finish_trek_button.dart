@@ -9,6 +9,7 @@ import '../../../../i18n/translations.g.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/providers/my_treks_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Bouton « Terminer le trek » (Finitions V1, point 3 — décision Chris).
 ///
@@ -77,7 +78,7 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
         child: FilledButton.icon(
           key: const ValueKey(kFinishTrekButtonKey),
           onPressed: _finishing ? null : () => _onFinishPressed(context),
-          icon: const Icon(Icons.flag_outlined, size: 22),
+          icon: const StepIcon(StepwaysIcons.depart, size: 22),
           label: Text(t.hub.finishTrek.action),
           style: FilledButton.styleFrom(
             backgroundColor: orange,

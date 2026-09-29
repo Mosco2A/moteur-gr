@@ -8,6 +8,7 @@ import 'package:moteur_gr/features/share/domain/share_card_generator.dart';
 import 'package:moteur_gr/features/share/domain/share_card_template.dart';
 import 'package:moteur_gr/features/share/presentation/share_card_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Test E3.6b : ecran de partage avec preview + templates.
 ///
@@ -59,7 +60,7 @@ void main() {
       expect(find.text('Étape'), findsOneWidget);
 
       // Verifie que le bouton partager est present
-      expect(find.byIcon(Icons.share), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.partager), findsOneWidget);
 
       // Verifie que le label choix template est present
       expect(find.text('Choisir un template'), findsOneWidget);

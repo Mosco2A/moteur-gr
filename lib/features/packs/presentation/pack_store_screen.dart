@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../domain/pack_catalog.dart';
 import '../domain/sentier_pack.dart';
 import 'pack_card.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Store des packs sentier A LA CARTE (F8B-03, Phase 8 P8-B, regle metier R2).
 ///
@@ -85,7 +86,7 @@ class PackStoreScreen extends ConsumerWidget {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.info_outline,
+                              const StepIcon(StepwaysIcons.info,
                                   size: 18, color: AppTheme.vertFacile),
                               const SizedBox(width: AppTheme.spacingSm),
                               Expanded(

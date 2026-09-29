@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_ui_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Panneau de FILTRES des waypoints facon FarOut (F8A-04, Comment Filtering R1).
 ///
@@ -71,7 +72,7 @@ class WaypointFiltersPanel extends ConsumerWidget {
                 label: label,
                 child: FilterChip(
                   key: ValueKey('waypoint-filter-type-$type'),
-                  avatar: Icon(
+                  avatar: StepIcon(
                     style.icon,
                     size: 18,
                     color: selected ? Colors.white : style.color,

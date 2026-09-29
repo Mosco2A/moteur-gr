@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../../poi/domain/poi_type_config.dart';
 import '../../poi/domain/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ouvre le GUIDE DE LA CARTE (LOT D, tâche 554 — manque réel n°2).
 ///
@@ -83,7 +84,7 @@ class _MapGuideSheet extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: scheme.primary),
+                  StepIcon(StepwaysIcons.info, color: scheme.primary),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
@@ -102,7 +103,7 @@ class _MapGuideSheet extends ConsumerWidget {
                 children: [
                   // --- Ce qui se lit SUR la carte ---
                   _GuideRow(
-                    icon: Icons.my_location,
+                    icon: StepwaysIcons.maPosition,
                     color: scheme.primary,
                     label: t.a11y.userPosition,
                     description: t.map.guide.position,
@@ -111,7 +112,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   // couleur du sentier courant (jamais un rouge en dur comme
                   // dans la référence, qui n'a qu'un sentier).
                   _GuideRow(
-                    icon: Icons.timeline,
+                    icon: StepwaysIcons.statistiques,
                     color: scheme.primary,
                     label: t.itinerary.title,
                     description: t.map.guide.track,
@@ -138,13 +139,13 @@ class _MapGuideSheet extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   _GuideSection(title: t.map.guide.buttonsTitle),
                   _GuideRow(
-                    icon: Icons.layers,
+                    icon: StepwaysIcons.calques,
                     color: scheme.primary,
                     label: t.map.layers,
                     description: t.map.layersSubtitle,
                   ),
                   _GuideRow(
-                    icon: Icons.photo_camera,
+                    icon: StepwaysIcons.photo,
                     color: AppTheme.orangeDifficile,
                     label: t.journal.addPhoto,
                     description: t.map.guide.photo,
@@ -168,24 +169,24 @@ class _MapGuideSheet extends ConsumerWidget {
                   // « etape en cours » nomme deja la sienne (« un tiret signifie
                   // que la randonnee n'a pas encore demarre »).
                   _GuideRow(
-                    icon: Icons.emergency,
+                    icon: StepwaysIcons.secours,
                     color: AppTheme.rougeUrgence,
                     label: t.a11y.sos,
                     description: '${t.map.guide.sos} ${t.map.guide.onlyInTrek}',
                   ),
                   _GuideRow(
-                    icon: Icons.my_location,
+                    icon: StepwaysIcons.maPosition,
                     color: scheme.primary,
                     label: t.a11y.centerOnMe,
                     description: t.map.guide.centerOnMe,
                   ),
                   _GuideRow(
-                    icon: Icons.add,
+                    icon: StepwaysIcons.plus,
                     color: scheme.primary,
                     label: t.a11y.zoomIn,
                   ),
                   _GuideRow(
-                    icon: Icons.remove,
+                    icon: StepwaysIcons.moins,
                     color: scheme.primary,
                     label: t.a11y.zoomOut,
                   ),
@@ -194,13 +195,13 @@ class _MapGuideSheet extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   _GuideSection(title: t.stage.statistics),
                   _GuideRow(
-                    icon: Icons.linear_scale,
+                    icon: StepwaysIcons.echelle,
                     color: scheme.primary,
                     label: t.nav.currentStage,
                     description: t.map.guide.currentStage,
                   ),
                   _GuideRow(
-                    icon: Icons.warning_amber_rounded,
+                    icon: StepwaysIcons.danger,
                     color: AppTheme.rougeUrgence,
                     label: t.map.offTrackChip,
                     description: t.map.guide.offTrack,
@@ -257,7 +258,7 @@ class _GuideRow extends StatelessWidget {
     this.description,
   });
 
-  final IconData icon;
+  final String icon;
   final Color color;
   final String label;
   final String? description;
@@ -276,7 +277,7 @@ class _GuideRow extends StatelessWidget {
               color: color.withAlpha(30),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: color),
+            child: StepIcon(icon, size: 20, color: color),
           ),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(

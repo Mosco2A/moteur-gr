@@ -14,6 +14,7 @@ import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_input_bounds.dart';
 import '../domain/hiker_profile.dart';
 import '../providers/hiker_profile_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 export '../domain/hiker_input_bounds.dart'
     show kAgeMin, kAgeMax, kHeightMinCm, kHeightMaxCm, kWeightMinKg, kWeightMaxKg;
@@ -293,7 +294,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _ageController,
                       label: tp.fieldAge,
                       hint: tp.hintAge,
-                      icon: Icons.cake_outlined,
+                      icon: StepwaysIcons.age,
                       maxLength: 3,
                       limitMessage: tp.errorAge,
                       onChanged: (_) => _clearEmptyError(),
@@ -333,7 +334,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _heightController,
                       label: tp.fieldHeight,
                       hint: tp.hintHeight,
-                      icon: Icons.height,
+                      icon: StepwaysIcons.taille,
                       maxLength: 3,
                       limitMessage: tp.errorHeight,
                       onChanged: (_) => _clearEmptyError(),
@@ -348,7 +349,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _weightController,
                       label: tp.fieldWeight,
                       hint: tp.hintWeight,
-                      icon: Icons.monitor_weight_outlined,
+                      icon: StepwaysIcons.poids,
                       allowDecimal: true,
                       maxLength: 5,
                       limitMessage: tp.errorWeight,
@@ -429,7 +430,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     AppButton(
                       isLoading: _saving,
                       minHeight: 52,
-                      icon: Icons.save,
+                      icon: StepwaysIcons.enregistrer,
                       label: tp.save,
                       onPressed: _saving ? null : _save,
                     ),
@@ -481,7 +482,7 @@ class _PrivacyBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lock, color: colors.primary, size: 20),
+          StepIcon(StepwaysIcons.cadenas, color: colors.primary, size: 20),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -516,8 +517,8 @@ class _FieldUsageNote extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 2),
-            child: Icon(
-              Icons.info_outline,
+            child: StepIcon(
+              StepwaysIcons.info,
               size: 14,
               color: theme.colorScheme.onSurface.withAlpha(140),
             ),
@@ -559,7 +560,7 @@ class _FormError extends StatelessWidget {
       key: widgetKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.error_outline, color: colors.error, size: 20),
+        StepIcon(StepwaysIcons.danger, color: colors.error, size: 20),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(
           child: Text(
@@ -604,7 +605,7 @@ class _MorphoConsentTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.health_and_safety_outlined,
+              StepIcon(StepwaysIcons.ficheMedicale,
                   color: colors.tertiary, size: 20),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -657,7 +658,7 @@ class _NumberField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
-  final IconData icon;
+  final String icon;
 
   /// Nombre MAX de caracteres saisissables (barriere physique a la saisie).
   final int maxLength;
@@ -719,7 +720,7 @@ class _NumberFieldState extends State<_NumberField> {
         counterText: '',
         errorText: _limitError,
         errorMaxLines: 2,
-        prefixIcon: Icon(widget.icon, color: colors.primary),
+        prefixIcon: StepIcon(widget.icon, color: colors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
         ),
@@ -825,7 +826,7 @@ class _CountryField extends StatelessWidget {
                 top: Radius.circular(AppTheme.radiusCard),
               ),
               inputDecoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, color: colors.primary),
+                prefixIcon: StepIcon(StepwaysIcons.recherche, color: colors.primary),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTheme.radiusInput),
                 ),
@@ -838,17 +839,17 @@ class _CountryField extends StatelessWidget {
             isEmpty: false,
             decoration: InputDecoration(
               labelText: label,
-              prefixIcon: Icon(Icons.public, color: colors.primary),
+              prefixIcon: StepIcon(StepwaysIcons.langue, color: colors.primary),
               // Croix d'effacement quand un pays est choisi (le champ est
               // optionnel : on doit pouvoir revenir en arriere), chevron sinon
               // — de quoi voir qu'on peut ouvrir quelque chose.
               suffixIcon: chosen
                   ? IconButton(
                       key: const ValueKey('hiker-profile-country-clear'),
-                      icon: const Icon(Icons.clear),
+                      icon: const StepIcon(StepwaysIcons.croix),
                       onPressed: () => controller.clear(),
                     )
-                  : const Icon(Icons.arrow_drop_down),
+                  : const StepIcon(StepwaysIcons.flecheBas),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
               ),

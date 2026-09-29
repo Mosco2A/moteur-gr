@@ -1,0 +1,18 @@
+# GENERE PAR tool/set_branding.py — famille active : sentier
+# Ne pas editer a la main : relancer `python tool/set_branding.py <famille>`.
+#
+#   dart run flutter_launcher_icons
+#
+# image_path              icone pleine (iOS, et icone heritee Android < 8)
+# adaptive_icon_*         icone adaptative Android 8+ : couche avant (picto) +
+#                         couche arriere (aplat). Sans ces deux couches le
+#                         lanceur rogne l'icone pleine n'importe comment.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/branding/icons/app-icon-1024.png"
+  adaptive_icon_background: "#1F3D2B"
+  adaptive_icon_foreground: "assets/branding/icons/adaptive-foreground.png"
+  adaptive_icon_foreground_inset: 0
+  remove_alpha_ios: true
+  background_color_ios: "#1F3D2B"

@@ -21,6 +21,7 @@ import '../widgets/checklist_recommendation_banner.dart';
 import '../widgets/checklist_seasonal_section.dart';
 import '../widgets/checklist_shopping_modal.dart';
 import '../widgets/checklist_weight_banner.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran « Materiel & Sac » — CLONE INTEGRAL de l'ecran GR20 du meme nom
 /// (parite #99433, PAREIL = PAREIL).
@@ -109,7 +110,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: checklistT.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: checklistT.ui.help,
             onPressed: () => _showInfoSheet(context),
           ),
@@ -117,7 +118,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
           Stack(
             children: [
               IconButton(
-                icon: const Icon(Icons.shopping_cart),
+                icon: const StepIcon(StepwaysIcons.panier),
                 tooltip: checklistT.ui.shoppingListTitle,
                 onPressed: () => _showShoppingListModal(state),
               ),
@@ -147,7 +148,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ],
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const StepIcon(StepwaysIcons.rafraichir),
             tooltip: checklistT.reset,
             onPressed: () => _showResetDialog(context, checklistT),
           ),
@@ -443,7 +444,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                   errorText: nameError,
                   suffixIcon: item.isCustom
                       ? null
-                      : const Icon(Icons.lock_outline, size: 16),
+                      : const StepIcon(StepwaysIcons.cadenas, size: 16),
                 ),
                 enabled: item.isCustom,
                 style: item.isCustom
@@ -625,7 +626,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Icon(Icons.luggage, color: theme.colorScheme.primary, size: 24),
+                StepIcon(StepwaysIcons.sacADos, color: theme.colorScheme.primary, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   ui.infoTitle,
@@ -637,16 +638,16 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _richInfoItem(theme, Icons.check_box, ui.infoCheckTitle,
+            _richInfoItem(theme, StepwaysIcons.cocheCercle, ui.infoCheckTitle,
                 ui.infoCheckBody, theme.colorScheme.primary),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.lock, ui.infoRequiredTitle,
+            _richInfoItem(theme, StepwaysIcons.cadenas, ui.infoRequiredTitle,
                 ui.infoRequiredBody, AppTheme.rougeUrgence),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.monitor_weight, ui.infoGaugeTitle,
+            _richInfoItem(theme, StepwaysIcons.poids, ui.infoGaugeTitle,
                 ui.infoGaugeBody, AppTheme.vertFacile),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.add_circle_outline, ui.infoAddTitle,
+            _richInfoItem(theme, StepwaysIcons.plus, ui.infoAddTitle,
                 ui.infoAddBody, AppTheme.orangeDifficile),
             const SizedBox(height: 16),
             Container(
@@ -659,7 +660,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle,
+                  const StepIcon(StepwaysIcons.cochePleine,
                       size: 18, color: AppTheme.vertFacile),
                   const SizedBox(width: 8),
                   Expanded(
@@ -688,7 +689,8 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     );
   }
 
-  static Widget _richInfoItem(ThemeData theme, IconData icon, String title,
+  /// [icon] est un chemin d'icone Stepways ([StepwaysIcons]), tache 632.
+  static Widget _richInfoItem(ThemeData theme, String icon, String title,
       String description, Color accentColor) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +701,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             color: accentColor.withAlpha(25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 22, color: accentColor),
+          child: StepIcon(icon, size: 22, color: accentColor),
         ),
         const SizedBox(width: 12),
         Expanded(

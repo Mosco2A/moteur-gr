@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../domain/weather_recommendation.dart';
 import '../models/weather_forecast.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte « étape en cours » : météo du jour mise en avant (RF-4).
 ///
@@ -84,22 +85,22 @@ class TodayStageWeatherCard extends StatelessWidget {
               runSpacing: AppTheme.spacingSm,
               children: [
                 _Indicator(
-                  icon: Icons.water_drop,
+                  icon: StepwaysIcons.pluie,
                   label: '${day.precipitationMm.round()} mm',
                   danger: day.precipitationMm >= 20,
                 ),
                 _Indicator(
-                  icon: Icons.air,
+                  icon: StepwaysIcons.vent,
                   label: '${day.windSpeedKmh.round()} km/h',
                   danger: day.windSpeedKmh >= 60,
                 ),
                 _Indicator(
-                  icon: Icons.wb_sunny_outlined,
+                  icon: StepwaysIcons.meteo,
                   label: 'UV ${day.uvIndex.round()}',
                   danger: day.uvIndex >= 8,
                 ),
                 _Indicator(
-                  icon: Icons.thunderstorm_outlined,
+                  icon: StepwaysIcons.orage,
                   label: '${day.stormProbability.round()} %',
                   danger: day.stormProbability >= 50,
                 ),
@@ -119,7 +120,7 @@ class TodayStageWeatherCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(_recoIcon(level), size: 18, color: recoColor),
+                  StepIcon(_recoIcon(level), size: 18, color: recoColor),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
@@ -138,14 +139,14 @@ class TodayStageWeatherCard extends StatelessWidget {
     );
   }
 
-  IconData _recoIcon(WeatherRecommendationLevel level) {
+  String _recoIcon(WeatherRecommendationLevel level) {
     switch (level) {
       case WeatherRecommendationLevel.ok:
-        return Icons.check_circle_outline;
+        return StepwaysIcons.cocheCercle;
       case WeatherRecommendationLevel.watch:
-        return Icons.info_outline;
+        return StepwaysIcons.info;
       case WeatherRecommendationLevel.danger:
-        return Icons.warning_amber_rounded;
+        return StepwaysIcons.danger;
     }
   }
 }
@@ -158,7 +159,7 @@ class _Indicator extends StatelessWidget {
     required this.danger,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final bool danger;
 
@@ -180,7 +181,7 @@ class _Indicator extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: color),
+          StepIcon(icon, size: 16, color: color),
           const SizedBox(width: 4),
           Text(label,
               style: theme.textTheme.bodySmall?.copyWith(color: color)),

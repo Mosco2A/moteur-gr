@@ -7,9 +7,11 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../../i18n/translations.g.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../providers/onboarding_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Page courante dans le PageView d'onboarding.
 final _onboardingPageProvider = StateProvider.autoDispose<int>((ref) => 0);
@@ -252,19 +254,17 @@ class _WelcomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer.withAlpha(40),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.terrain,
-              size: 64,
-              color: theme.colorScheme.primary.withAlpha(180),
-            ),
-          ),
+          // LE LOGO, A LA PLACE DU PICTOGRAMME MATERIAL (tache 632).
+          //
+          // Cette page etait la seule surface d'identite de l'application, et
+          // elle montrait un `Icons.terrain` generique dans un rond teinte — la
+          // meme montagne que dans n'importe quelle autre application Material.
+          // C'est desormais le logo livre par Christophe. Le rond teinte part
+          // avec le pictogramme : le logo porte deja sa propre forme.
+          // 150 de large = 135 de haut : a peine plus que le rond de 120 qu'il
+          // remplace. Plus grand, la page deborde du budget de hauteur que le
+          // PageView laisse entre le bandeau haut et le bandeau bas.
+          const AppLogo.vertical(largeur: 150),
           const SizedBox(height: AppTheme.spacingXl),
           Text(
             tr.onboarding.welcomeTitle(appName: appName),
@@ -276,6 +276,20 @@ class _WelcomePage extends StatelessWidget {
             tr.onboarding.welcomeSubtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: AppTheme.grisGranite,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.spacingBase),
+          // LA SIGNATURE DE MARQUE, ENFIN BRANCHEE (tache 632). Le texte
+          // `branding.tagline` (« Votre compagnon de randonnee ») existait dans
+          // les cinq langues depuis le debut et n'etait lu par AUCUN widget.
+          // Il trouve sa place ici, sous le logo : c'est le seul endroit de
+          // l'application qui parle d'elle-meme et non du sentier.
+          Text(
+            tr.branding.tagline,
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
@@ -323,8 +337,8 @@ class _LanguagePage extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: AppTheme.spacingXl),
-          Icon(
-            Icons.language,
+          StepIcon(
+            StepwaysIcons.langue,
             size: 64,
             color: theme.colorScheme.primary.withAlpha(180),
           ),
@@ -398,8 +412,8 @@ class _DownloadPage extends StatelessWidget {
               color: theme.colorScheme.primaryContainer.withAlpha(40),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.downloading_rounded,
+            child: StepIcon(
+              StepwaysIcons.telecharger,
               size: 64,
               color: theme.colorScheme.primary.withAlpha(180),
             ),
@@ -424,7 +438,7 @@ class _DownloadPage extends StatelessWidget {
           // remplissait deja la Column) -> isFullWidth:true = iso-rendu.
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.explore,
+            icon: StepwaysIcons.catalogueSentiers,
             label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
           ),
@@ -470,7 +484,7 @@ class _RecoveryNudge extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.vpn_key_outlined,
+          StepIcon(StepwaysIcons.cle,
               size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(

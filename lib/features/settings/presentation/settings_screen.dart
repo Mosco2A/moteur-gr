@@ -12,6 +12,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran des parametres complets.
 ///
@@ -126,7 +127,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.language, tr.settings.language),
+        _sectionHeader(theme, StepwaysIcons.langue, tr.settings.language),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -134,10 +135,10 @@ class SettingsScreen extends ConsumerWidget {
               final selected = lang == language;
               return ListTile(
                 title: Text(AppLanguageValues.labelFor(lang)),
-                leading: Icon(
+                leading: StepIcon(
                   selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                      ? StepwaysIcons.radioCoche
+                      : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -168,7 +169,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.straighten, tr.settings.units),
+        _sectionHeader(theme, StepwaysIcons.distance, tr.settings.units),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -241,7 +242,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.palette, tr.settings.theme),
+        _sectionHeader(theme, StepwaysIcons.palette, tr.settings.theme),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -249,10 +250,10 @@ class SettingsScreen extends ConsumerWidget {
               final selected = mode == themeMode;
               return ListTile(
                 title: Text(themeModeLabel(mode)),
-                leading: Icon(
+                leading: StepIcon(
                   selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                      ? StepwaysIcons.radioCoche
+                      : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -283,7 +284,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.storage, tr.settings.cache),
+        _sectionHeader(theme, StepwaysIcons.horsLigne, tr.settings.cache),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -339,7 +340,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          Icons.notifications,
+          StepwaysIcons.notifications,
           tr.settings.notifications,
         ),
         // LE TELEPHONE REFUSE LES NOTIFICATIONS — ET L ECRAN LE DIT (596 C3).
@@ -359,7 +360,7 @@ class SettingsScreen extends ConsumerWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.notifications_off_outlined,
+                      const StepIcon(StepwaysIcons.notifications,
                           color: AppTheme.orangeDifficile, size: 22),
                       const SizedBox(width: AppTheme.spacingSm),
                       Expanded(
@@ -379,7 +380,7 @@ class SettingsScreen extends ConsumerWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: OutlinedButton.icon(
-                      icon: const Icon(Icons.notifications_active_outlined,
+                      icon: const StepIcon(StepwaysIcons.notifications,
                           size: 18),
                       label: Text(tr.notifications.permissionAsk),
                       onPressed: () => ref
@@ -466,14 +467,14 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          available ? Icons.cloud_done : Icons.cloud_off,
+          available ? StepwaysIcons.synchronise : StepwaysIcons.horsLigne,
           tr.cloud.statusSection,
         ),
         AppCard(
           padding: EdgeInsets.zero,
           child: ListTile(
-            leading: Icon(
-              available ? Icons.cloud_done : Icons.cloud_off,
+            leading: StepIcon(
+              available ? StepwaysIcons.synchronise : StepwaysIcons.horsLigne,
               color: available
                   ? theme.colorScheme.primary
                   : AppTheme.grisGranite,
@@ -505,7 +506,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          Icons.privacy_tip_outlined,
+          StepwaysIcons.bouclier,
           tr.consent.settingsEntry,
         ),
         AppCard(
@@ -514,10 +515,10 @@ class SettingsScreen extends ConsumerWidget {
             button: true,
             label: tr.consent.settingsEntry,
             child: ListTile(
-              leading: const Icon(Icons.shield_outlined),
+              leading: const StepIcon(StepwaysIcons.bouclier),
               title: Text(tr.consent.settingsEntry),
               subtitle: Text(tr.consent.settingsEntryDesc),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const StepIcon(StepwaysIcons.chevronDroite),
               onTap: () => context.push('/consent'),
             ),
           ),
@@ -539,14 +540,14 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.vpn_key_outlined, tr.recovery.section),
+        _sectionHeader(theme, StepwaysIcons.cle, tr.recovery.section),
         AppCard(
           padding: EdgeInsets.zero,
           child: Semantics(
             button: true,
             label: tr.recovery.title,
             child: ListTile(
-              leading: const Icon(Icons.vpn_key_outlined),
+              leading: const StepIcon(StepwaysIcons.cle),
               title: Text(tr.recovery.title),
               // TACHE 596 (C2) : la porte reste — c'est une invariante du LOT Q
               // — mais son sous-titre ne promet plus un code qui ne sera pas
@@ -555,7 +556,7 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: Text(CoffreDeReconnexion.alimente
                   ? tr.recovery.sectionDesc
                   : tr.recovery.noVaultTitle),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const StepIcon(StepwaysIcons.chevronDroite),
               onTap: () => context.push('/recovery-code'),
             ),
           ),
@@ -579,7 +580,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          Icons.account_balance_wallet_outlined,
+          StepwaysIcons.portefeuille,
           tr.monetization.walletTitle,
         ),
         AppCard(
@@ -588,18 +589,18 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               ListTile(
                 key: const ValueKey('reglages-recharge'),
-                leading: const Icon(Icons.add_circle_outline),
+                leading: const StepIcon(StepwaysIcons.plus),
                 title: Text(tr.monetization.rechargeTitle),
                 subtitle: Text(tr.monetization.rechargeSubtitle),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const StepIcon(StepwaysIcons.chevronDroite),
                 onTap: () => context.push('/wallet'),
               ),
               ListTile(
                 key: const ValueKey('reglages-abonnement'),
-                leading: const Icon(Icons.workspace_premium_outlined),
+                leading: const StepIcon(StepwaysIcons.diplome),
                 title: Text(tr.monetization.subscriptionTitle),
                 subtitle: Text(tr.monetization.subscriptionSubtitle),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const StepIcon(StepwaysIcons.chevronDroite),
                 onTap: () => context.push('/subscription'),
               ),
             ],
@@ -618,7 +619,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.info_outline, tr.settings.version),
+        _sectionHeader(theme, StepwaysIcons.info, tr.settings.version),
         AppCard(
           padding: EdgeInsets.zero,
           child: FutureBuilder<PackageInfo>(
@@ -642,12 +643,12 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   /// En-tete de section avec icone et titre.
-  Widget _sectionHeader(ThemeData theme, IconData icon, String title) {
+  Widget _sectionHeader(ThemeData theme, String icon, String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             title,

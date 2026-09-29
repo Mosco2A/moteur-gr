@@ -15,6 +15,7 @@ import '../../../hub/providers/cockpit_start_providers.dart';
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/itinerary_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Ecran ITINERAIRE (parite GR20).
 ///
@@ -82,8 +83,8 @@ class _EmptyItinerary extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.route_outlined,
+            StepIcon(
+              StepwaysIcons.itineraire,
               size: 72,
               color: theme.colorScheme.onSurface.withAlpha(80),
             ),
@@ -214,7 +215,7 @@ class _DirectionControl extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.swap_horiz, size: 18, color: scheme.primary),
+              StepIcon(StepwaysIcons.inverser, size: 18, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 t.itinerary.direction.title,
@@ -239,8 +240,8 @@ class _DirectionControl extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.spacingSm,
                   ),
-                  child: Icon(
-                    Icons.arrow_forward,
+                  child: StepIcon(
+                    StepwaysIcons.flecheAvant,
                     size: 18,
                     color: scheme.onSurface.withAlpha(140),
                   ),
@@ -273,7 +274,7 @@ class _DirectionControl extends ConsumerWidget {
                       );
                       ref.read(selectedDirectionProvider.notifier).state = next;
                     },
-              icon: const Icon(Icons.swap_horiz, size: 18),
+              icon: const StepIcon(StepwaysIcons.inverser, size: 18),
               label: Text(t.itinerary.direction.reverse),
             ),
           ),
@@ -557,16 +558,16 @@ class _StageTile extends StatelessWidget {
                     runSpacing: AppTheme.spacingXs,
                     children: [
                       _MiniStat(
-                        icon: Icons.straighten,
+                        icon: StepwaysIcons.distance,
                         label: '${stage.distanceKm.toStringAsFixed(1)} km',
                       ),
                       _MiniStat(
-                        icon: Icons.arrow_upward,
+                        icon: StepwaysIcons.flecheHaut,
                         label: '${stage.elevationGainM} m',
                         color: AppTheme.rougeExtreme,
                       ),
                       _MiniStat(
-                        icon: Icons.arrow_downward,
+                        icon: StepwaysIcons.flecheBas,
                         label: '${stage.elevationLossM} m',
                         color: theme.colorScheme.primary,
                       ),
@@ -576,7 +577,7 @@ class _StageTile extends StatelessWidget {
                       // du sentier si fournie, sinon estimation Naismith. Un
                       // sentier sans la donnee reste affiche (repli propre).
                       _MiniStat(
-                        icon: Icons.schedule,
+                        icon: StepwaysIcons.duree,
                         label: formatDurationMinutes(
                           stageDurationMinutes(stage),
                         ),
@@ -610,8 +611,8 @@ class _StageTile extends StatelessWidget {
                       const Spacer(),
                       // Action (parite GR20) : ouvrir le detail de l'etape.
                       // Affordance de navigation vers le detail.
-                      Icon(
-                        Icons.chevron_right,
+                      StepIcon(
+                        StepwaysIcons.chevronDroite,
                         color: theme.colorScheme.onSurface.withAlpha(120),
                       ),
                     ],
@@ -630,7 +631,7 @@ class _StageTile extends StatelessWidget {
 class _MiniStat extends StatelessWidget {
   const _MiniStat({required this.icon, required this.label, this.color});
 
-  final IconData icon;
+  final String icon;
   final String label;
   final Color? color;
 
@@ -641,7 +642,7 @@ class _MiniStat extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: c),
+        StepIcon(icon, size: 16, color: c),
         const SizedBox(width: 3),
         Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
       ],

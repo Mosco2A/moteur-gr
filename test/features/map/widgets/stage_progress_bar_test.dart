@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 void main() {
   Widget buildBar({
@@ -57,7 +58,7 @@ void main() {
     testWidgets('affiche indicateur hors trace', (tester) async {
       await tester.pumpWidget(buildBar(isOffTrack: true));
       expect(find.text(t.map.offTrackChip), findsOneWidget);
-      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
     });
 
     testWidgets('cache indicateur hors trace quand sur le trace',

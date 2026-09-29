@@ -15,6 +15,7 @@ import 'package:moteur_gr/features/after/presentation/adventure_recap_screen.dar
 import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.A / critere (c) — l'ecran Recap
 /// « Mon aventure » affiche les stats de la SESSION REELLE et est accessible
@@ -189,7 +190,7 @@ void main() {
 
     // Etat verrouille (parite GR20) : titre « disponible a la fin » + cadenas.
     expect(find.text(t.recap.lockedTitle), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget);
     // Pas de bandeau finisher/partiel.
     expect(find.text(t.recap.finisherTitle), findsNothing);
     expect(find.text(t.recap.partialTitle), findsNothing);
@@ -202,7 +203,7 @@ void main() {
     // vitrine ouvrait ici « Mon aventure » sur une aventure inexistante.
     await pumpRecap(tester);
 
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget,
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget,
         reason: 'un recap sans aventure ne raconte rien. Sur le sentier '
             'gratuit, le trek se termine vraiment : le recap s ouvre alors '
             'sur des chiffres reels');

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
 import '../services/location_permission_service.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// PRE-VOL EXPLIQUE du suivi de fond (campagne personas 21/09, MAJEUR-1).
 ///
@@ -59,7 +60,7 @@ Future<bool?> _showRationaleDialog(BuildContext context) {
     barrierDismissible: true,
     builder: (dialogContext) => AlertDialog(
       key: const ValueKey('background-tracking-rationale-dialog'),
-      icon: const Icon(Icons.my_location),
+      icon: const StepIcon(StepwaysIcons.maPosition),
       title: Text(tr.title),
       content: Column(
         mainAxisSize: MainAxisSize.min,

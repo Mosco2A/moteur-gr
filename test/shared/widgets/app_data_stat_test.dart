@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/shared/widgets/app_data_stat.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget d'AppDataStat (SW-SKIN-L5).
 ///
@@ -70,13 +71,13 @@ void main() {
     await tester.pumpWidget(
       wrap(
         child: const AppDataStat(
-          icon: Icons.straighten,
+          icon: StepwaysIcons.distance,
           value: '5.2 km',
           label: 'Distance',
         ),
       ),
     );
-    expect(find.byIcon(Icons.straighten), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.distance), findsOneWidget);
   });
 
   testWidgets('peau Topographique -> valeur en fonte monospace (cockpit)',

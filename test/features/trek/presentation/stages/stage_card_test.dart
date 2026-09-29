@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/features/trek/domain/models/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_card.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du widget StageCard (Phase 2 E2.4b).
 ///
@@ -67,7 +68,7 @@ void main() {
       expect(find.text('14.5 km  D+ 850 m  5h30'), findsOneWidget);
 
       // Chevron de navigation
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite), findsOneWidget);
 
       // Tap fonctionne — cibler le StageCard directement
       await tester.tap(find.byType(StageCard));

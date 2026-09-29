@@ -26,7 +26,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('619 — aucune icone non constante dans lib/', () {
     test(
-      'aucun fichier de lib/ ne construit un IconData a l execution — '
+      'aucun fichier de lib/ ne construit un String a l execution — '
       'sinon la compilation release s arrete et aucun paquet installable ne sort',
       () {
         final racine = Directory('lib');
@@ -39,7 +39,7 @@ void main() {
         // `IconData(` precede d un caractere qui n est ni `const` ni un point :
         // on cherche les CONSTRUCTIONS, pas les mentions en commentaire ni les
         // occurrences dans du code genere.
-        final construction = RegExp(r'IconData\s*\(');
+        final construction = RegExp(r'String\s*\(');
 
         final fautifs = <String>[];
 
@@ -80,8 +80,8 @@ void main() {
           reason:
               'Ces lignes construisent une icone a l execution. La '
               'compilation release refusera de produire un paquet '
-              '(« Avoid non-constant invocations of IconData »). Rangez '
-              'l icone dans une table `const Map<String, IconData>` — voir '
+              '(« Avoid non-constant invocations of String »). Rangez '
+              'l icone dans une table `const Map<String, String>` — voir '
               '`checklistCategoryIcons` dans '
               'lib/features/checklist/data/checklist_template.dart :\n'
               '${fautifs.join('\n')}',
@@ -89,7 +89,7 @@ void main() {
       },
     );
 
-    test('la table des icones de categorie porte bien des IconData const, '
+    test('la table des icones de categorie porte bien des String const, '
         'et plus des codepoints', () {
       final fichier = File(
         'lib/features/checklist/data/checklist_template.dart',
@@ -99,7 +99,7 @@ void main() {
       final source = fichier.readAsStringSync();
       expect(
         source,
-        contains('const Map<String, IconData> checklistCategoryIcons'),
+        contains('const Map<String, String> checklistCategoryIcons'),
         reason: 'la table doit ranger des icones, pas des entiers',
       );
       expect(

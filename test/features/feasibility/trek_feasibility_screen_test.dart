@@ -11,6 +11,7 @@ import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provid
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Test WIDGET de l'ecran de faisabilite FEU TRICOLORE (LOT 3a, #100068).
 ///
@@ -307,7 +308,10 @@ void main() {
         findsOneWidget,
       );
       // Et plus aucun bouton ne propose une duree : pas une seule valeur.
-      expect(find.widgetWithIcon(ElevatedButton, Icons.event_available),
+      expect(find.ancestor(
+              of: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier),
+              matching: find.byType(ElevatedButton),
+            ),
           findsNothing,
           reason: 'le bouton appliquerait une duree que l ecran declare '
               'mauvaise trois lignes plus haut');
