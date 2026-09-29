@@ -417,6 +417,15 @@ describe('RISQUE INCENDIE — de bout en bout', () => {
     assert.equal(bilan.compte.echecs, 0, 'la source a repondu');
     assert.equal(bilan.compte.refuses, 0, 'le fichier a ete lu sans refus');
     assert.ok(bilan.saison !== null, 'la saison est lue depuis le FICHIER');
+
+    // Le passage LAISSE au surveillant ce qu il ne peut pas deduire seul (#H7),
+    // sinon celui-ci devrait relire 70 documents pour savoir si le bulletin du jour
+    // est arrive.
+    const donnee = depot.battements.incendie.donnee;
+    assert.ok(donnee !== null && donnee !== undefined, 'la section donnee du battement');
+    assert.equal(donnee.jourCourant, bilan.jourCourant);
+    assert.equal(donnee.saisonActive, true);
+    assert.ok('jourDuBulletinLePlusAncien' in donnee);
     assert.equal(bilan.saison.dernierJourPublie, '2026-09-28');
 
     // Le fixture couvre jusqu au 30/09. Selon le jour ou ce test tourne, il y a des
