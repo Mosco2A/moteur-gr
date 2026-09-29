@@ -6,7 +6,16 @@ description: Moteur generique Flutter multi-sentiers
 # code must increase with every submission attempt, even if a previous release
 # was rejected ». Le nom de version 0.1.2 reste bon pour un test interne, c est
 # le numero de build qui doit monter a chaque tentative.
-version: 0.1.2+4
+#
+# Tache 627 : +4 -> +5. MEME REGLE, APPLIQUEE A UN NUMERO DEJA CONSOMME. Le +4
+# n a pas ete refuse : il est DEPOSE. Mesure et non supposee, la chaine des
+# numeros deja presentes a Google est : +3 au commit 4146356 (refuse pour cible
+# API 35), +4 au commit 285664d du lot 629 (le bundle que Christophe depose
+# pendant que j ecris). Un bundle qui reprendrait 4 serait rejete pour numero
+# deja utilise, exactement comme 3 l aurait ete. Ce bundle-ci porte donc 5.
+# Le nom 0.1.2 ne bouge pas : c est toujours la meme version fonctionnelle,
+# augmentee des quatre lots reunis par le 627.
+version: 0.1.2+5
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
