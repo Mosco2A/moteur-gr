@@ -34,80 +34,81 @@ void main() {
 
   group('planningProvider', () {
     test(
-        'le programme par defaut porte les REPOS CONSEILLES (GO-61)',
-        () async {
-      final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail').overrideWith(
-            (ref) => Future.value(testStages),
-          ),
-        ],
-      );
+      'le programme par defaut porte les REPOS CONSEILLES (GO-61)',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            trailConfigProvider.overrideWithValue(testTrailConfig),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(testStages)),
+          ],
+        );
 
-      // defaultDuration = 5 dans testTrailConfig (5 etapes, une par jour). Le
-      // moteur conseille 2 jours de repos sur ces cinq etapes : le programme
-      // PAR DEFAUT les pose, au lieu de laisser le randonneur partir sans une
-      // seule journee de recuperation et reparer lui-meme.
-      //
-      // Le plan est lu EN PREMIER : tant que les etapes ne sont pas arrivees,
-      // on ne conseille rien (on ne devine pas un repos sur un sentier qu on
-      // n a pas encore lu), et les deux providers derives valent leur valeur
-      // neutre.
-      final plan = await container
-          .read(planningProvider('test-trail').future);
+        // defaultDuration = 5 dans testTrailConfig (5 etapes, une par jour). Le
+        // moteur conseille 2 jours de repos sur ces cinq etapes : le programme
+        // PAR DEFAUT les pose, au lieu de laisser le randonneur partir sans une
+        // seule journee de recuperation et reparer lui-meme.
+        //
+        // Le plan est lu EN PREMIER : tant que les etapes ne sont pas arrivees,
+        // on ne conseille rien (on ne devine pas un repos sur un sentier qu on
+        // n a pas encore lu), et les deux providers derives valent leur valeur
+        // neutre.
+        final plan = await container.read(
+          planningProvider('test-trail').future,
+        );
 
-      expect(container.read(recommendedRestDaysProvider('test-trail')), 2);
-      expect(container.read(defaultDurationWithRestProvider('test-trail')), 7);
-      expect(plan.length, 7);
-      expect(plan.where((d) => d.isRestDay).length, 2);
-      expect(plan.where((d) => !d.isRestDay).length, 5);
+        expect(container.read(recommendedRestDaysProvider('test-trail')), 2);
+        expect(
+          container.read(defaultDurationWithRestProvider('test-trail')),
+          7,
+        );
+        expect(plan.length, 7);
+        expect(plan.where((d) => d.isRestDay).length, 2);
+        expect(plan.where((d) => !d.isRestDay).length, 5);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
 
     test('recalcule quand la durée change', () async {
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail').overrideWith(
-            (ref) => Future.value(testStages),
-          ),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testStages)),
         ],
       );
 
       // Plan initial : 5 jours de marche + 2 repos conseilles (GO-61).
-      var plan = await container
-          .read(planningProvider('test-trail').future);
+      var plan = await container.read(planningProvider('test-trail').future);
       expect(plan.length, 7);
 
       // Changer la durée à 3 jours
       container.read(selectedDurationProvider.notifier).state = 3;
 
       // Attendre le recalcul
-      plan = await container
-          .read(planningProvider('test-trail').future);
+      plan = await container.read(planningProvider('test-trail').future);
       expect(plan.length, 3);
 
       container.dispose();
     });
 
-    test('recalcule quand la durée passe à 7 jours (avec repos)',
-        () async {
+    test('recalcule quand la durée passe à 7 jours (avec repos)', () async {
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail').overrideWith(
-            (ref) => Future.value(testStages),
-          ),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testStages)),
         ],
       );
 
       // Changer la durée à 7 jours
       container.read(selectedDurationProvider.notifier).state = 7;
 
-      final plan = await container
-          .read(planningProvider('test-trail').future);
+      final plan = await container.read(planningProvider('test-trail').future);
 
       expect(plan.length, 7);
       // 5 étapes + 2 repos
@@ -119,16 +120,13 @@ void main() {
       container.dispose();
     });
 
-    test(
-        'sans etapes chargees, aucun repos n est conseille : la duree par '
+    test('sans etapes chargees, aucun repos n est conseille : la duree par '
         'defaut reste celle du sentier', () {
       // On ne conseille rien sur des etapes qu on n a pas : tant que le sentier
       // n est pas charge, le repos conseille vaut zero et la duree par defaut
       // est celle declaree par le sentier — pas un chiffre devine.
       final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-        ],
+        overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
       );
 
       expect(container.read(recommendedRestDaysProvider('test-trail')), 0);
@@ -156,16 +154,18 @@ void main() {
   // ---------------------------------------------------------------------------
   group('DurationBounds — bornes derivees du nombre d etapes', () {
     test('bornes generiques centrees sur le nombre d etapes', () {
+      // TACHE 634 (DEM-260929-1327) — LA BORNE HAUTE REDESCEND AVEC LE
+      // DECOUPAGE. Le lot 558 l'avait portee a deux journees par etape (12
+      // ici). Une etape ne se coupe plus : borne haute = borne naturelle.
       // 5 etapes : min = ceil(5/2) = 3 ; marge repos = round(5/3) = 2 ;
-      // borne NATURELLE = 5 + 2 = 7 ; borne HAUTE = 5 x 2 + 2 = 12.
-      // Les bornes suivent le sentier, jamais « 16 » en dur.
+      // borne = 5 + 2 = 7. Les bornes suivent le sentier, jamais « 16 » en dur.
       final b = DurationBounds.fromStageCount(5);
       expect(b.min, 3);
       expect(b.naturalMax, 7);
       expect(b.restAllowance, 2);
-      expect(b.max, 12);
+      expect(b.max, 7);
       expect(b.options.first, 3);
-      expect(b.options.last, 12);
+      expect(b.options.last, 7);
     });
 
     test('la borne haute ne peut pas etre sous le repos CONSEILLE (GO-61)', () {
@@ -176,24 +176,32 @@ void main() {
       expect(b.min, 3);
       expect(b.restAllowance, 4);
       expect(b.naturalMax, 9);
-      expect(b.max, 14);
+      expect(b.max, 9);
       // Et le budget ne RETRECIT jamais : un conseil plus petit que la marge
       // laisse la marge en place.
       final c = DurationBounds.fromStageCount(5, recommendedRestDays: 1);
       expect(c.restAllowance, 2);
       expect(c.naturalMax, 7);
-      expect(c.max, 12);
+      expect(c.max, 7);
     });
 
-    test('un sentier a 1 etape garde un curseur : son etape se COUPE', () {
-      // Avant la tache 558, ce sentier n'avait AUCUN choix de duree (min = max
-      // = 1) : une seule etape, rien a regrouper. Il n'avait donc aucun moyen
-      // d'alleger sa seule journee. Elle se coupe desormais en deux.
+    test('un sentier a 1 etape : aucun choix de duree, et c est honnete', () {
+      // TACHE 634 (DEM-260929-1327). Le lot 558 donnait un curseur a ce sentier
+      // en coupant sa seule etape en deux ; le decoupage est retire. Une seule
+      // etape, rien a regrouper, aucun repos conseille : il n'y a REELLEMENT
+      // qu'une duree possible, et le curseur ne s'affiche pas plutot que de
+      // faire semblant.
       final b = DurationBounds.fromStageCount(1);
       expect(b.min, 1);
-      expect(b.naturalMax, 1, reason: 'par defaut, l etape reste entiere');
-      expect(b.max, 2, reason: 'mais on peut la couper en deux journees');
-      expect(b.options, [1, 2]);
+      expect(b.naturalMax, 1);
+      expect(b.max, 1);
+      expect(b.options, [1]);
+
+      // Avec du repos conseille, le curseur reapparait — et il ne pilote que
+      // du repos, ce que l'ecran du Programme dit desormais en toutes lettres.
+      final c = DurationBounds.fromStageCount(1, recommendedRestDays: 2);
+      expect(c.max, 3);
+      expect(c.options, [1, 2, 3]);
     });
 
     test('cas vide (etapes non chargees) : borne neutre', () {
@@ -205,13 +213,13 @@ void main() {
 
     test('clampDuration ramene une valeur hors bornes', () {
       // 10 etapes : min 5 ; marge repos = round(10/3) = 3 ;
-      // naturalMax = 13 ; max = 20 + 3 = 23.
+      // naturalMax = max = 13 (tache 634 : plus de borne a 2N).
       final b = DurationBounds.fromStageCount(10);
       expect(b.min, 5);
       expect(b.naturalMax, 13);
-      expect(b.max, 23);
+      expect(b.max, 13);
       expect(b.clampDuration(2), 5);
-      expect(b.clampDuration(99), 23);
+      expect(b.clampDuration(99), 13);
       expect(b.clampDuration(8), 8);
       // Le DEFAUT, lui, ne depasse jamais la duree naturelle : le decoupage se
       // demande, il ne s impose pas au premier ecran.
@@ -231,17 +239,19 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail')
-              .overrideWith((ref) => Future.value(testStages)),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testStages)),
         ],
       );
       // Force le chargement des etapes (5).
       await container.read(stagesProvider('test-trail').future);
       final bounds = container.read(durationBoundsProvider('test-trail'));
       expect(bounds.min, 3);
-      // 5 etapes : duree naturelle 7, borne haute 12 (decoupage compris).
+      // 5 etapes : duree naturelle 7, et c'est aussi la borne haute depuis que
+      // le decoupage est retire (tache 634).
       expect(bounds.naturalMax, 7);
-      expect(bounds.max, 12);
+      expect(bounds.max, 7);
       expect(bounds.options.contains(5), isTrue);
 
       container.dispose();

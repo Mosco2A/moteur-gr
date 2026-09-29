@@ -48,14 +48,15 @@ class FeasibilityProgram {
   final Set<int> restAfterDayIndex;
 
   /// Nombre d'etapes DISTINCTES portees par ce decoupage.
-  ///
-  /// TACHE 558 : une etape PEUT se couper en deux demi-journees, donc elle peut
-  /// apparaitre sur deux jours de marche — elle ne compte ici qu'une fois. Le
-  /// plafond du conseil n'est plus ce nombre mais [maxWalkingDays].
   final int stageCount;
 
-  /// PLAFOND du nombre de jours de marche REELLEMENT atteignable (tache 558).
-  int get maxWalkingDays => PlanningCalculator.maxWalkingDaysFor(stageCount);
+  /// PLAFOND du nombre de jours de marche REELLEMENT atteignable.
+  ///
+  /// TACHE 634 (DEM-260929-1327) : c'est de nouveau le nombre d'etapes. Le
+  /// plafond a deux journees par etape venait du decoupage du lot 558, retire —
+  /// une etape ne se coupe plus, donc elle occupe UNE journee de marche et une
+  /// seule.
+  int get maxWalkingDays => stageCount;
 
   /// Vrai si la source est le PROGRAMME du randonneur, faux si c'est le repli
   /// sur les etapes brutes du sentier.
@@ -82,38 +83,29 @@ class FeasibilityProgram {
 
   /// Construit le decoupage depuis le PROGRAMME editable du randonneur.
   factory FeasibilityProgram.fromPlannedDays(List<PlannedDay> days) =>
-      FeasibilityProgram._fromDays(
-        [
-          for (final d in days)
-            (stages: d.stages, isRestDay: d.isRestDay),
-        ],
-        fromProgram: true,
-      );
+      FeasibilityProgram._fromDays([
+        for (final d in days) (stages: d.stages, isRestDay: d.isRestDay),
+      ], fromProgram: true);
 
   /// Construit le decoupage depuis une repartition CALCULEE
   /// ([PlanningCalculator.distribute]) — le chemin que suit la recherche du
   /// conseil, pour qu'elle juge exactement ce que l'ecran affichera.
   factory FeasibilityProgram.fromDayPlans(List<DayPlan> plans) =>
-      FeasibilityProgram._fromDays(
-        [
-          for (final p in plans)
-            (stages: p.stages, isRestDay: p.isRestDay),
-        ],
-        fromProgram: true,
-      );
+      FeasibilityProgram._fromDays([
+        for (final p in plans) (stages: p.stages, isRestDay: p.isRestDay),
+      ], fromProgram: true);
 
   /// Construit le decoupage depuis les etapes BRUTES du sentier (repli : une
   /// etape par jour, c'est le decoupage de REFERENCE du topo).
   factory FeasibilityProgram.fromRawStages(
     List<StageEffort> stages, {
     Set<int> restAfterStageIndex = const {},
-  }) =>
-      FeasibilityProgram(
-        dayEfforts: stages,
-        restAfterDayIndex: restAfterStageIndex,
-        stageCount: stages.length,
-        fromProgram: false,
-      );
+  }) => FeasibilityProgram(
+    dayEfforts: stages,
+    restAfterDayIndex: restAfterStageIndex,
+    stageCount: stages.length,
+    fromProgram: false,
+  );
 
   /// LA conversion, ecrite une seule fois.
   ///
@@ -133,17 +125,25 @@ class FeasibilityProgram {
         continue;
       }
       stageNumbers.addAll(day.stages.map((s) => s.stageNumber));
-      efforts.add(StageEffort(
-        index: efforts.length,
-        // Le nom de la JOURNEE : celui de son etape, ou les deux noms quand
-        // elle en regroupe deux. C'est ce que le randonneur marche ce jour-la.
-        name: day.stages.map((s) => s.name).join(' + '),
-        distanceKm: day.stages.fold<double>(0, (s, e) => s + e.distanceKm),
-        elevationGainM: day.stages.fold<int>(0, (s, e) => s + e.elevationGainM),
-        // Le D− n'entre PAS dans le score (#1-d) : il classe les journees de
-        // l'alerte descente du dispositif poids (#4-l).
-        elevationLossM: day.stages.fold<int>(0, (s, e) => s + e.elevationLossM),
-      ));
+      efforts.add(
+        StageEffort(
+          index: efforts.length,
+          // Le nom de la JOURNEE : celui de son etape, ou les deux noms quand
+          // elle en regroupe deux. C'est ce que le randonneur marche ce jour-la.
+          name: day.stages.map((s) => s.name).join(' + '),
+          distanceKm: day.stages.fold<double>(0, (s, e) => s + e.distanceKm),
+          elevationGainM: day.stages.fold<int>(
+            0,
+            (s, e) => s + e.elevationGainM,
+          ),
+          // Le D− n'entre PAS dans le score (#1-d) : il classe les journees de
+          // l'alerte descente du dispositif poids (#4-l).
+          elevationLossM: day.stages.fold<int>(
+            0,
+            (s, e) => s + e.elevationLossM,
+          ),
+        ),
+      );
     }
     if (efforts.isEmpty) return FeasibilityProgram.empty;
     return FeasibilityProgram(

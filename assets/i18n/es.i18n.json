@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Viabilidad para este trek",
+      "answerTitle": "¿Está a su alcance?",
+      "answerGreen": "Sí. Este sendero está a su alcance en ${days} días.",
+      "answerOrange": "Sí, en ${days} días — pero una jornada será exigente para usted.",
+      "answerRed": "Así no: una jornada de este sendero supera lo que su perfil puede aguantar.",
+      "answerDaysNote": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.",
+      "answerNoRest": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.",
+      "explainToggle": "Cómo se calcula este resultado",
       "intro": "Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.",
       "ceilingLabel": "Tope recomendado: ${value} km-energía/día (${level})",
       "stagesTitle": "Día por día",
@@ -1769,14 +1776,8 @@
     "duration": {
       "label": "Número de días",
       "daysWithRest": "{total} d en total (incl. {rest} de descanso)",
-      "splitNote": "Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.",
-      "splitExhausted": "Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.",
-      "difficulty": {
-        "comfortable": "Cómodo",
-        "standard": "Estándar",
-        "sporty": "Deportivo",
-        "demanding": "Muy exigente"
-      },
+      "splitNote": "Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.",
+      "splitExhausted": "Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.",
       "daysTotal": "{count} d en total"
     },
     "stats": {
@@ -1847,8 +1848,7 @@
       "close": "¡Entendido!"
     },
     "splitBlocked": {
-      "single": "No se puede partir: este día no tiene nada que cortar.",
-      "portion": "No se puede partir: esta etapa ya está partida en dos.",
+      "single": "No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.",
       "locked": "Día ya caminado: ya no se puede modificar"
     },
     "reorderBlocked": "Ruta iniciada: el orden de las etapas ya no cambia",

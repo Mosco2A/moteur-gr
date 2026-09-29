@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Fattibilità per questo trek",
+      "answerTitle": "È alla sua portata?",
+      "answerGreen": "Sì. Questo sentiero è alla sua portata in ${days} giorni.",
+      "answerOrange": "Sì, in ${days} giorni — ma una giornata sarà impegnativa per lei.",
+      "answerRed": "Non così: una giornata di questo sentiero supera ciò che il suo profilo può reggere.",
+      "answerDaysNote": "È la suddivisione del sentiero così com'è: ${walking} giornate di cammino, ${rest} di riposo.",
+      "answerNoRest": "È la suddivisione del sentiero così com'è: ${walking} giornate di cammino.",
+      "explainToggle": "Come viene calcolato questo risultato",
       "intro": "Confrontiamo lo sforzo di ogni giornata di cammino con ciò che il tuo profilo può reggere. Verde, arancione o rosso.",
       "ceilingLabel": "Soglia consigliata: ${value} km-energia/giorno (${level})",
       "stagesTitle": "Giorno per giorno",
@@ -1769,14 +1776,8 @@
     "duration": {
       "label": "Numero di giorni",
       "daysWithRest": "{total} g in totale (di cui {rest} riposo)",
-      "splitNote": "Più giorni = le giornate più dure vengono divise in due, la peggiore per prima. Il riposo non cambia la durezza di una giornata.",
-      "splitExhausted": "Tutte le giornate sono già divise al minimo: il cursore non alleggerirà più il verdetto.",
-      "difficulty": {
-        "comfortable": "Comodo",
-        "standard": "Standard",
-        "sporty": "Sportivo",
-        "demanding": "Molto impegnativo"
-      },
+      "splitNote": "Più giorni = giorni di RIPOSO. Il riposo non cambia la durezza di una giornata di cammino, e il verdetto segue la giornata più dura.",
+      "splitExhausted": "Ogni tappa ha già la sua giornata: un giorno in più aggiungerà solo riposo, e il riposo non cambierà il verdetto.",
       "daysTotal": "{count} g in totale"
     },
     "stats": {
@@ -1847,8 +1848,7 @@
       "close": "Capito!"
     },
     "splitBlocked": {
-      "single": "Impossibile dividere: questa giornata non ha nulla da tagliare.",
-      "portion": "Impossibile dividere: questa tappa è già divisa in due.",
+      "single": "Impossibile dividere: questa giornata porta una sola tappa, non c'è nulla da separare.",
       "locked": "Giorno già percorso: non è più modificabile"
     },
     "reorderBlocked": "Trek avviato: l'ordine delle tappe non cambia più",

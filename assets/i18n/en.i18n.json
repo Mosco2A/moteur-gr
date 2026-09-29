@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Feasibility for this trek",
+      "answerTitle": "Can you do it?",
+      "answerGreen": "Yes. This trail is within your reach in ${days} days.",
+      "answerOrange": "Yes, in ${days} days — but one day will be demanding for you.",
+      "answerRed": "Not as it stands: one day of this trail is beyond what your profile can hold.",
+      "answerDaysNote": "That is the trail's own plan: ${walking} walking days, ${rest} rest days.",
+      "answerNoRest": "That is the trail's own plan: ${walking} walking days.",
+      "explainToggle": "How this result is worked out",
       "intro": "We compare each walking day's effort to what your profile can handle. Green, orange or red light.",
       "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
       "stagesTitle": "Day by day",
@@ -1769,14 +1776,8 @@
     "duration": {
       "label": "Number of days",
       "daysWithRest": "{total} d in total (incl. {rest} rest)",
-      "splitNote": "More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.",
-      "splitExhausted": "Every day is already cut as short as it goes: the slider will not ease the verdict any further.",
-      "difficulty": {
-        "comfortable": "Comfortable",
-        "standard": "Standard",
-        "sporty": "Sporty",
-        "demanding": "Very demanding"
-      },
+      "splitNote": "More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.",
+      "splitExhausted": "Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.",
       "daysTotal": "{count} d in total"
     },
     "stats": {
@@ -1847,8 +1848,7 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: there is nothing to cut on this day.",
-      "portion": "Cannot split: this stage is already cut in two.",
+      "single": "Cannot split: this day carries a single stage, there is nothing to ungroup.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",

@@ -5284,6 +5284,27 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Faisabilité pour ce trek'
 	String get title => 'Faisabilité pour ce trek';
 
+	/// fr: 'Est-ce faisable pour vous ?'
+	String get answerTitle => 'Est-ce faisable pour vous ?';
+
+	/// fr: 'Oui. Ce sentier est à votre portée en ${days} jours.'
+	String answerGreen({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.';
+
+	/// fr: 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.'
+	String answerOrange({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.';
+
+	/// fr: 'Pas en l'état : une journée de ce sentier dépasse ce que votre profil peut tenir.'
+	String get answerRed => 'Pas en l\'état : une journée de ce sentier dépasse ce que votre profil peut tenir.';
+
+	/// fr: 'C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche, ${rest} de repos.'
+	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.';
+
+	/// fr: 'C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche.'
+	String answerNoRest({required Object walking}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche.';
+
+	/// fr: 'Comment ce résultat est calculé'
+	String get explainToggle => 'Comment ce résultat est calculé';
+
 	/// fr: 'On compare l'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.'
 	String get intro => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.';
 
@@ -6585,13 +6606,11 @@ class Translations$programme$duration$fr {
 	/// fr: '{total} j au total (dont {rest} de repos)'
 	String get daysWithRest => '{total} j au total (dont {rest} de repos)';
 
-	/// fr: 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.'
-	String get splitNote => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.';
+	/// fr: 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d'une journée de marche, et le verdict suit la journée la plus dure.'
+	String get splitNote => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.';
 
-	/// fr: 'Toutes les journées sont déjà coupées au plus court : le curseur n'allègera plus le verdict.'
-	String get splitExhausted => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.';
-
-	late final Translations$programme$duration$difficulty$fr difficulty = Translations$programme$duration$difficulty$fr.internal(_root);
+	/// fr: 'Chaque étape a déjà sa journée : un jour de plus n'ajoutera que du repos, et le repos ne changera pas le verdict.'
+	String get splitExhausted => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.';
 
 	/// fr: '{count} j au total'
 	String get daysTotal => '{count} j au total';
@@ -6755,11 +6774,8 @@ class Translations$programme$splitBlocked$fr {
 
 	// Translations
 
-	/// fr: 'Séparer impossible : ce jour n'a rien à couper.'
-	String get single => 'Séparer impossible : ce jour n\'a rien à couper.';
-
-	/// fr: 'Séparer impossible : cette étape est déjà coupée en deux.'
-	String get portion => 'Séparer impossible : cette étape est déjà coupée en deux.';
+	/// fr: 'Séparer impossible : ce jour ne porte qu'une étape, il n'y a rien à dégrouper.'
+	String get single => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.';
 
 	/// fr: 'Jour déjà marché : il ne peut plus être modifié'
 	String get locked => 'Jour déjà marché : il ne peut plus être modifié';
@@ -7884,27 +7900,6 @@ class Translations$packs$types$mam$fr {
 	String description({required Object trail}) => 'Tout le sentier ${trail}, hors-ligne.';
 }
 
-// Path: programme.duration.difficulty
-class Translations$programme$duration$difficulty$fr {
-	Translations$programme$duration$difficulty$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Confortable'
-	String get comfortable => 'Confortable';
-
-	/// fr: 'Standard'
-	String get standard => 'Standard';
-
-	/// fr: 'Sportif'
-	String get sporty => 'Sportif';
-
-	/// fr: 'Très exigeant'
-	String get demanding => 'Très exigeant';
-}
-
 // Path: programme.info.days
 class Translations$programme$info$days$fr {
 	Translations$programme$info$days$fr.internal(this._root);
@@ -8860,6 +8855,13 @@ extension on Translations {
 			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
 			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
+			'feasibility.formula.answerTitle' => 'Est-ce faisable pour vous ?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.',
+			'feasibility.formula.answerRed' => 'Pas en l\'état : une journée de ce sentier dépasse ce que votre profil peut tenir.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche.',
+			'feasibility.formula.explainToggle' => 'Comment ce résultat est calculé',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})',
 			'feasibility.formula.stagesTitle' => 'Jour par jour',
@@ -9086,6 +9088,8 @@ extension on Translations {
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
 			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
 			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
@@ -9093,8 +9097,6 @@ extension on Translations {
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
 			'signalement.types.eauASec' => 'Point d\'eau à sec',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Danger',
 			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
 			'signalement.confirm' => 'Confirmer le signalement',
@@ -9546,12 +9548,8 @@ extension on Translations {
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
 			'programme.duration.daysWithRest' => '{total} j au total (dont {rest} de repos)',
-			'programme.duration.splitNote' => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.',
-			'programme.duration.splitExhausted' => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.',
-			'programme.duration.difficulty.comfortable' => 'Confortable',
-			'programme.duration.difficulty.standard' => 'Standard',
-			'programme.duration.difficulty.sporty' => 'Sportif',
-			'programme.duration.difficulty.demanding' => 'Très exigeant',
+			'programme.duration.splitNote' => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.',
+			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
 			'programme.duration.daysTotal' => '{count} j au total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
@@ -9596,8 +9594,7 @@ extension on Translations {
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
-			'programme.splitBlocked.single' => 'Séparer impossible : ce jour n\'a rien à couper.',
-			'programme.splitBlocked.portion' => 'Séparer impossible : cette étape est déjà coupée en deux.',
+			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.reorderBlocked' => 'Rando démarrée : l\'ordre des étapes ne change plus',
 			'programme.inTrek.title' => 'Adapter l\'itinéraire',
@@ -9605,10 +9602,10 @@ extension on Translations {
 			'programme.inTrek.doneSection' => 'Déjà marché',
 			'programme.inTrek.upcomingSection' => 'À venir',
 			'programme.inTrek.doneBadge' => 'Fait',
-			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
-			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
+			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
 			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.',
 			'programme.inTrek.validate' => 'Valider mes changements',
 			'programme.inTrek.saved' => 'Programme mis à jour',

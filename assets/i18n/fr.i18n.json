@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Faisabilité pour ce trek",
+      "answerTitle": "Est-ce faisable pour vous ?",
+      "answerGreen": "Oui. Ce sentier est à votre portée en ${days} jours.",
+      "answerOrange": "Oui, en ${days} jours — mais une journée sera exigeante pour vous.",
+      "answerRed": "Pas en l'état : une journée de ce sentier dépasse ce que votre profil peut tenir.",
+      "answerDaysNote": "C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche, ${rest} de repos.",
+      "answerNoRest": "C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche.",
+      "explainToggle": "Comment ce résultat est calculé",
       "intro": "On compare l'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.",
       "ceilingLabel": "Plafond conseillé : ${value} km-énergie/jour (${level})",
       "stagesTitle": "Jour par jour",
@@ -1769,14 +1776,8 @@
     "duration": {
       "label": "Nombre de jours",
       "daysWithRest": "{total} j au total (dont {rest} de repos)",
-      "splitNote": "Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.",
-      "splitExhausted": "Toutes les journées sont déjà coupées au plus court : le curseur n'allègera plus le verdict.",
-      "difficulty": {
-        "comfortable": "Confortable",
-        "standard": "Standard",
-        "sporty": "Sportif",
-        "demanding": "Très exigeant"
-      },
+      "splitNote": "Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d'une journée de marche, et le verdict suit la journée la plus dure.",
+      "splitExhausted": "Chaque étape a déjà sa journée : un jour de plus n'ajoutera que du repos, et le repos ne changera pas le verdict.",
       "daysTotal": "{count} j au total"
     },
     "stats": {
@@ -1847,8 +1848,7 @@
       "close": "Compris !"
     },
     "splitBlocked": {
-      "single": "Séparer impossible : ce jour n'a rien à couper.",
-      "portion": "Séparer impossible : cette étape est déjà coupée en deux.",
+      "single": "Séparer impossible : ce jour ne porte qu'une étape, il n'y a rien à dégrouper.",
       "locked": "Jour déjà marché : il ne peut plus être modifié"
     },
     "reorderBlocked": "Rando démarrée : l'ordre des étapes ne change plus",

@@ -84,24 +84,36 @@ void main() {
       ),
   ];
 
-  /// Le randonneur : DEBUTANT sans rien de demontre, criteres complets ou non.
+  /// Le randonneur, et POURQUOI SON NIVEAU EST DEVENU UN PARAMETRE (tache 634).
   ///
-  /// Un debutant a un plafond de 25,14 km-energie ; la premiere etape du sentier
-  /// en pese 35,24 (15 km + 850 m / 42). Elle est donc ROUGE seule, et il faut
-  /// la couper pour que le verdict tombe sous le rouge : c'est exactement le cas
-  /// ou le curseur SERT, et celui ou il s'ouvrait au mauvais endroit.
-  ProviderContainer conteneur({bool profilComplet = true}) {
+  /// Ce fichier n'exercait qu'un DEBUTANT : plafond 25,14 km-energie, alors que
+  /// la premiere etape du sentier en pese 35,24 (15 km + 850 m / 42). Elle est
+  /// donc rouge a elle seule, et le lot 558 la COUPAIT pour faire tomber le
+  /// verdict — c'etait tout l'objet du curseur elargi.
+  ///
+  /// Christophe a retire le decoupage (DEM-260929-1327). Pour un debutant, ce
+  /// sentier n'a donc plus de solution, et la reponse honnete est « aucune
+  /// duree conseillee » — verrouillee plus bas comme un cas a part entiere. Le
+  /// conseil, lui, s'exerce avec un randonneur INTERMEDIAIRE, pour qui le plan
+  /// du sentier tient.
+  ProviderContainer conteneur({
+    bool profilComplet = true,
+    HikerLevel niveau = HikerLevel.intermediate,
+  }) {
     final container = ProviderContainer(
       overrides: [
         trailConfigProvider.overrideWithValue(config),
-        stagesProvider('test-trail').overrideWith((ref) => Future.value(stages)),
-        feasibilityCriteriaProvider.overrideWith((ref) async =>
-            FeasibilityCriteria(
-              profileComplete: profilComplet,
-              hasPastHike: profilComplet,
-              hasWalkTest: false,
-            )),
-        hikerLevelProvider.overrideWith((ref) async => HikerLevel.beginner),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(stages)),
+        feasibilityCriteriaProvider.overrideWith(
+          (ref) async => FeasibilityCriteria(
+            profileComplete: profilComplet,
+            hasPastHike: profilComplet,
+            hasWalkTest: false,
+          ),
+        ),
+        hikerLevelProvider.overrideWith((ref) async => niveau),
         objectiveProfileProvider.overrideWith(
           (ref) async => const ObjectiveProfile(
             maxElevationGainPerDayDone: 200,
@@ -113,8 +125,9 @@ void main() {
             hasWalkTest: false,
           ),
         ),
-        trekConditionsProvider
-            .overrideWith((ref) async => TrekConditions.unknown),
+        trekConditionsProvider.overrideWith(
+          (ref) async => TrekConditions.unknown,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -136,16 +149,28 @@ void main() {
       await amorcer(c);
 
       final conseil = await c.read(advisedTotalDaysProvider.future);
-      expect(conseil, isNotNull,
-          reason: 'aucune duree conseillee alors que le sentier a une solution');
-      // La duree de reference du sentier, repos conseilles compris : c est la
-      // valeur sur laquelle le curseur s ouvrait AVANT (et elle etait rouge).
-      final reference = c.read(defaultDurationWithRestProvider('test-trail'));
-      expect(conseil, greaterThan(reference),
-          reason: 'le conseil doit s ecarter du decoupage du topo — sinon ce '
-              'test ne prouverait pas que le curseur a bouge');
-      expect(c.read(selectedDurationProvider), conseil,
-          reason: 'le curseur ne s ouvre pas sur la valeur conseillee');
+      expect(
+        conseil,
+        isNotNull,
+        reason: 'aucune duree conseillee alors que le sentier a une solution',
+      );
+
+      // TACHE 634 (DEM-260929-1132) — LE CONSEIL EST LE PLAN DU SENTIER. Ce
+      // test exigeait l'inverse : que le conseil S'ECARTE du decoupage du topo,
+      // parce que le lot 558 devait couper des etapes pour sortir du rouge. Le
+      // moteur ne propose plus de plan a lui : 7 etapes, 7 journees de marche,
+      // plus le repos conseille.
+      final programme = await c.read(advisedSuggestedProgramProvider.future);
+      expect(programme!.walkingDays, stages.length);
+      expect(conseil, stages.length + programme.restDays);
+      // Et c'est exactement la duree de reference du sentier, repos compris :
+      // l'application n'ecarte plus le randonneur de son propre topo.
+      expect(conseil, c.read(defaultDurationWithRestProvider('test-trail')));
+      expect(
+        c.read(selectedDurationProvider),
+        conseil,
+        reason: 'le curseur ne s ouvre pas sur la valeur conseillee',
+      );
     });
 
     test('LE VERDICT A LA VALEUR OUVERTE N EST PAS ROUGE', () async {
@@ -154,62 +179,119 @@ void main() {
 
       final ouverture = c.read(selectedDurationProvider);
       final jours = c.read(plannedDaysProvider('test-trail'));
-      expect(jours.length, ouverture,
-          reason: 'le programme ne fait pas la longueur du curseur');
+      expect(
+        jours.length,
+        ouverture,
+        reason: 'le programme ne fait pas la longueur du curseur',
+      );
 
       final a = await c.read(feasibilityAssessmentProvider.future);
       expect(a, isNotNull);
-      expect(a!.globalVerdict, isNot(FeasibilityVerdict.red),
-          reason: 'le curseur s ouvre sur un verdict que l ecran declare '
-              'mauvais dans la meme page');
-      expect(a.isDurationSearched, isTrue,
-          reason: 'le chemin de production doit TOUJOURS passer par la '
-              'recherche — sinon l estimation de lissage revient par la fenetre');
+      expect(
+        a!.globalVerdict,
+        isNot(FeasibilityVerdict.red),
+        reason:
+            'le curseur s ouvre sur un verdict que l ecran declare '
+            'mauvais dans la meme page',
+      );
+      expect(
+        a.isDurationSearched,
+        isTrue,
+        reason:
+            'le chemin de production doit TOUJOURS passer par la '
+            'recherche — sinon l estimation de lissage revient par la fenetre',
+      );
       expect(a.isDurationAdvised, isTrue);
-      expect(a.suggestedTotalDays, ouverture,
-          reason: 'le conseil affiche et la position du curseur doivent etre '
-              'le meme nombre');
+      expect(
+        a.suggestedTotalDays,
+        ouverture,
+        reason:
+            'le conseil affiche et la position du curseur doivent etre '
+            'le meme nombre',
+      );
       expect(a.suggestedDays + a.suggestedRestDays, a.suggestedTotalDays);
     });
 
     test(
-        'le conseil ne dit plus de couper une etape, et l ecran n affiche plus '
-        'le decoupage comme solution', () async {
-      final c = conteneur();
-      await amorcer(c);
-      final a = await c.read(feasibilityAssessmentProvider.future);
-      final cles = a!.advice.map((x) => x.key).toList();
-      expect(cles, isNot(contains('split')));
-      expect(cles, isNot(contains('splitImpossible')));
-    });
-
-    test('un decoupage RETENU par le randonneur prime sur le conseil', () async {
-      final c = conteneur();
-      await amorcer(c);
-      final conseil = c.read(selectedDurationProvider);
-
-      // Le randonneur decide, l application propose : choisir 7 jours retire
-      // les repos et le conseil ne les remet pas.
-      c.read(selectedDurationProvider.notifier).set(7);
-      expect(c.read(selectedDurationProvider), 7);
-      expect(c.read(plannedDaysProvider('test-trail')).length, 7);
-      expect(7, isNot(conseil),
-          reason: 'le test ne prouve rien si 7 est deja la valeur conseillee');
-    });
+      'le conseil ne dit plus de couper une etape, et l ecran n affiche plus '
+      'le decoupage comme solution',
+      () async {
+        final c = conteneur();
+        await amorcer(c);
+        final a = await c.read(feasibilityAssessmentProvider.future);
+        final cles = a!.advice.map((x) => x.key).toList();
+        expect(cles, isNot(contains('split')));
+        expect(cles, isNot(contains('splitImpossible')));
+      },
+    );
 
     test(
-        'profil incomplet -> AUCUN conseil, et le sentier garde son decoupage '
+      'un decoupage RETENU par le randonneur prime sur le conseil',
+      () async {
+        final c = conteneur();
+        await amorcer(c);
+        final conseil = c.read(selectedDurationProvider);
+
+        // Le randonneur decide, l application propose : choisir la borne basse
+        // (il COMPRIME son sentier, ce qui est SON droit) et le conseil ne
+        // revient pas par-dessus.
+        final bornes = c.read(durationBoundsProvider('test-trail'));
+        c.read(selectedDurationProvider.notifier).set(bornes.min);
+        expect(c.read(selectedDurationProvider), bornes.min);
+        expect(
+          bornes.min,
+          isNot(conseil),
+          reason:
+              'le test ne prouve rien si la borne basse est deja le conseil',
+        );
+      },
+    );
+
+    test('DEBUTANT sur ce sentier -> AUCUN conseil, au lieu d un plan comprime '
+        'qualifie d exigeant', () async {
+      // LE CAS QUE LE LOT 558 RATTRAPAIT EN COUPANT UNE ETAPE. Pour un
+      // debutant, la premiere etape (35,24 km-energie) depasse le plafond
+      // (25,14) et aucune duree ne peut plus rien y faire : le repos ne change
+      // pas une journee de marche, et regrouper aggrave. Le moteur se TAIT.
+      final c = conteneur(niveau: HikerLevel.beginner);
+      await amorcer(c);
+
+      expect(await c.read(advisedTotalDaysProvider.future), isNull);
+      // Et l'ecran le dit franchement, en NOMMANT l etape qui bloque.
+      final a = await c.read(feasibilityAssessmentProvider.future);
+      expect(a!.isDurationAdvised, isFalse);
+      final cles = a.advice.map((x) => x.key).toList();
+      expect(cles, contains('noViableDuration'));
+      expect(cles, isNot(contains('split')));
+      // Le curseur retombe sur le decoupage de reference du sentier.
+      expect(
+        c.read(selectedDurationProvider),
+        c.read(defaultDurationWithRestProvider('test-trail')),
+      );
+    });
+
+    test('profil incomplet -> AUCUN conseil, et le sentier garde son decoupage '
         'de reference', () async {
       final c = conteneur(profilComplet: false);
       await amorcer(c);
-      expect(await c.read(advisedTotalDaysProvider.future), isNull,
-          reason: 'un conseil est une sortie du moteur de verdict : il ne '
-              'existe pas la ou le verdict n existe pas');
-      expect(await c.read(advisedProgramProvider.future), isNull,
-          reason: 'aucune recherche : l ecran ne doit pas annoncer que rien ne '
-              'marche');
-      expect(c.read(selectedDurationProvider),
-          c.read(defaultDurationWithRestProvider('test-trail')));
+      expect(
+        await c.read(advisedTotalDaysProvider.future),
+        isNull,
+        reason:
+            'un conseil est une sortie du moteur de verdict : il ne '
+            'existe pas la ou le verdict n existe pas',
+      );
+      expect(
+        await c.read(advisedProgramProvider.future),
+        isNull,
+        reason:
+            'aucune recherche : l ecran ne doit pas annoncer que rien ne '
+            'marche',
+      );
+      expect(
+        c.read(selectedDurationProvider),
+        c.read(defaultDurationWithRestProvider('test-trail')),
+      );
     });
   });
 }

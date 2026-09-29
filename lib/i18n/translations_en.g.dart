@@ -2479,6 +2479,13 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Feasibility for this trek';
+	@override String get answerTitle => 'Can you do it?';
+	@override String answerGreen({required Object days}) => 'Yes. This trail is within your reach in ${days} days.';
+	@override String answerOrange({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.';
+	@override String get answerRed => 'Not as it stands: one day of this trail is beyond what your profile can hold.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.';
+	@override String answerNoRest({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.';
+	@override String get explainToggle => 'How this result is worked out';
 	@override String get intro => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})';
 	@override String get stagesTitle => 'Day by day';
@@ -3192,9 +3199,8 @@ class _Translations$programme$duration$en extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Number of days';
 	@override String get daysWithRest => '{total} d in total (incl. {rest} rest)';
-	@override String get splitNote => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.';
-	@override String get splitExhausted => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.';
-	@override late final _Translations$programme$duration$difficulty$en difficulty = _Translations$programme$duration$difficulty$en._(_root);
+	@override String get splitNote => 'More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.';
+	@override String get splitExhausted => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.';
 	@override String get daysTotal => '{count} d in total';
 }
 
@@ -3300,8 +3306,7 @@ class _Translations$programme$splitBlocked$en extends Translations$programme$spl
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Cannot split: there is nothing to cut on this day.';
-	@override String get portion => 'Cannot split: this stage is already cut in two.';
+	@override String get single => 'Cannot split: this day carries a single stage, there is nothing to ungroup.';
 	@override String get locked => 'Day already walked: it can no longer be changed';
 }
 
@@ -4007,19 +4012,6 @@ class _Translations$packs$types$mam$en extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String nom({required Object trail}) => '${trail}';
 	@override String description({required Object trail}) => 'The whole ${trail} trail, offline.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$en extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Comfortable';
-	@override String get standard => 'Standard';
-	@override String get sporty => 'Sporty';
-	@override String get demanding => 'Very demanding';
 }
 
 // Path: programme.info.days
@@ -4936,6 +4928,13 @@ extension on TranslationsEn {
 			'feasibility.gaps.fitness' => 'Fitness insufficient on the 6-minute test',
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
+			'feasibility.formula.answerTitle' => 'Can you do it?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Yes. This trail is within your reach in ${days} days.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.',
+			'feasibility.formula.answerRed' => 'Not as it stands: one day of this trail is beyond what your profile can hold.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.',
+			'feasibility.formula.explainToggle' => 'How this result is worked out',
 			'feasibility.formula.intro' => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})',
 			'feasibility.formula.stagesTitle' => 'Day by day',
@@ -5162,6 +5161,8 @@ extension on TranslationsEn {
 			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
 			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelCta' => 'Stop my subscription',
 			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
@@ -5169,8 +5170,6 @@ extension on TranslationsEn {
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
 			'signalement.types.eauASec' => 'Dry water point',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Danger',
 			'signalement.latencyBanner' => 'Saved. Visible to other hikers once the network syncs.',
 			'signalement.confirm' => 'Confirm report',
@@ -5622,12 +5621,8 @@ extension on TranslationsEn {
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
 			'programme.duration.daysWithRest' => '{total} d in total (incl. {rest} rest)',
-			'programme.duration.splitNote' => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.',
-			'programme.duration.splitExhausted' => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.',
-			'programme.duration.difficulty.comfortable' => 'Comfortable',
-			'programme.duration.difficulty.standard' => 'Standard',
-			'programme.duration.difficulty.sporty' => 'Sporty',
-			'programme.duration.difficulty.demanding' => 'Very demanding',
+			'programme.duration.splitNote' => 'More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.',
+			'programme.duration.splitExhausted' => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.',
 			'programme.duration.daysTotal' => '{count} d in total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
@@ -5672,8 +5667,7 @@ extension on TranslationsEn {
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
-			'programme.splitBlocked.single' => 'Cannot split: there is nothing to cut on this day.',
-			'programme.splitBlocked.portion' => 'Cannot split: this stage is already cut in two.',
+			'programme.splitBlocked.single' => 'Cannot split: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.reorderBlocked' => 'Trek started: the order of stages can no longer change',
 			'programme.inTrek.title' => 'Adjust the route',
@@ -5681,10 +5675,10 @@ extension on TranslationsEn {
 			'programme.inTrek.doneSection' => 'Already walked',
 			'programme.inTrek.upcomingSection' => 'Upcoming',
 			'programme.inTrek.doneBadge' => 'Done',
-			'programme.inTrek.lockedDay' => 'Day already walked, locked',
-			'programme.inTrek.allDone' => 'You have walked every day: there is nothing left to adjust.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.inTrek.lockedDay' => 'Day already walked, locked',
+			'programme.inTrek.allDone' => 'You have walked every day: there is nothing left to adjust.',
 			'programme.inTrek.notStarted' => 'This screen is for the trail: start your trek to adjust what is coming.',
 			'programme.inTrek.validate' => 'Save my changes',
 			'programme.inTrek.saved' => 'Plan updated',

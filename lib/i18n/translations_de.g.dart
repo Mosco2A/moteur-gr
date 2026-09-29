@@ -2479,6 +2479,13 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Machbarkeit für diese Tour';
+	@override String get answerTitle => 'Schaffen Sie das?';
+	@override String answerGreen({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.';
+	@override String answerOrange({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.';
+	@override String get answerRed => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
+	@override String answerNoRest({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.';
+	@override String get explainToggle => 'Wie dieses Ergebnis berechnet wird';
 	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})';
 	@override String get stagesTitle => 'Tag für Tag';
@@ -3192,9 +3199,8 @@ class _Translations$programme$duration$de extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Anzahl der Tage';
 	@override String get daysWithRest => '{total} T insgesamt (davon {rest} Ruhe)';
-	@override String get splitNote => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.';
-	@override String get splitExhausted => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.';
-	@override late final _Translations$programme$duration$difficulty$de difficulty = _Translations$programme$duration$difficulty$de._(_root);
+	@override String get splitNote => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.';
+	@override String get splitExhausted => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.';
 	@override String get daysTotal => '{count} T insgesamt';
 }
 
@@ -3300,8 +3306,7 @@ class _Translations$programme$splitBlocked$de extends Translations$programme$spl
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.';
-	@override String get portion => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.';
+	@override String get single => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.';
 	@override String get locked => 'Tag bereits gelaufen: nicht mehr änderbar';
 }
 
@@ -4007,19 +4012,6 @@ class _Translations$packs$types$mam$de extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String nom({required Object trail}) => '${trail}';
 	@override String description({required Object trail}) => 'Der ganze Weg ${trail}, offline.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$de extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Gemütlich';
-	@override String get standard => 'Standard';
-	@override String get sporty => 'Sportlich';
-	@override String get demanding => 'Sehr anspruchsvoll';
 }
 
 // Path: programme.info.days
@@ -4936,6 +4928,13 @@ extension on TranslationsDe {
 			'feasibility.gaps.fitness' => 'Form beim 6-Minuten-Test unzureichend',
 			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung',
 			'feasibility.formula.title' => 'Machbarkeit für diese Tour',
+			'feasibility.formula.answerTitle' => 'Schaffen Sie das?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.',
+			'feasibility.formula.answerRed' => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.',
+			'feasibility.formula.explainToggle' => 'Wie dieses Ergebnis berechnet wird',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})',
 			'feasibility.formula.stagesTitle' => 'Tag für Tag',
@@ -5162,6 +5161,8 @@ extension on TranslationsDe {
 			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelCta' => 'Abo beenden',
 			'monetization.cancelExplains' => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.',
 			'monetization.cancelStoreUnavailable' => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.',
@@ -5169,8 +5170,6 @@ extension on TranslationsDe {
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
 			'signalement.types.eauASec' => 'Trockene Wasserstelle',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Gefahr',
 			'signalement.latencyBanner' => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.',
 			'signalement.confirm' => 'Meldung bestätigen',
@@ -5622,12 +5621,8 @@ extension on TranslationsDe {
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
 			'programme.duration.daysWithRest' => '{total} T insgesamt (davon {rest} Ruhe)',
-			'programme.duration.splitNote' => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.',
-			'programme.duration.splitExhausted' => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.',
-			'programme.duration.difficulty.comfortable' => 'Gemütlich',
-			'programme.duration.difficulty.standard' => 'Standard',
-			'programme.duration.difficulty.sporty' => 'Sportlich',
-			'programme.duration.difficulty.demanding' => 'Sehr anspruchsvoll',
+			'programme.duration.splitNote' => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.',
+			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
 			'programme.duration.daysTotal' => '{count} T insgesamt',
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
@@ -5672,8 +5667,7 @@ extension on TranslationsDe {
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
-			'programme.splitBlocked.single' => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.',
-			'programme.splitBlocked.portion' => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.',
+			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.reorderBlocked' => 'Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr',
 			'programme.inTrek.title' => 'Route anpassen',
@@ -5681,10 +5675,10 @@ extension on TranslationsDe {
 			'programme.inTrek.doneSection' => 'Bereits gelaufen',
 			'programme.inTrek.upcomingSection' => 'Noch vor dir',
 			'programme.inTrek.doneBadge' => 'Erledigt',
-			'programme.inTrek.lockedDay' => 'Tag bereits gelaufen, gesperrt',
-			'programme.inTrek.allDone' => 'Du hast alle Tage gelaufen: es gibt nichts mehr anzupassen.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.inTrek.lockedDay' => 'Tag bereits gelaufen, gesperrt',
+			'programme.inTrek.allDone' => 'Du hast alle Tage gelaufen: es gibt nichts mehr anzupassen.',
 			'programme.inTrek.notStarted' => 'Dieser Bildschirm ist für unterwegs: starte deine Tour, um den weiteren Verlauf anzupassen.',
 			'programme.inTrek.validate' => 'Änderungen speichern',
 			'programme.inTrek.saved' => 'Programm aktualisiert',

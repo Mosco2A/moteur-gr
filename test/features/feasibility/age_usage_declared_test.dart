@@ -22,6 +22,7 @@ import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provid
 import 'package:moteur_gr/features/feasibility/providers/walk_test_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import '../../outillage/volet_du_calcul.dart';
 
 /// TACHE 570, S1 — L'AGE DIT A QUOI IL SERT (il n'est PAS retire).
 ///
@@ -58,22 +59,31 @@ void main() {
     /// a perdre, la ou un profil deja a 0 n'en avait aucun.
     test('60 ans retire UN cran de niveau, 75 ans en retire DEUX', () {
       HikerLevel levelAt(int age) => FeasibilityFormula.deriveLevel(
-            maxElevationGainPerDayDone: 1200,
-            maxDistancePerDayDone: 24,
-            age: age,
-            fitnessRank: 1,
-          );
+        maxElevationGainPerDayDone: 1200,
+        maxDistancePerDayDone: 24,
+        age: age,
+        fitnessRank: 1,
+      );
 
       final young = levelAt(45);
       final sixty = levelAt(60);
       final seventyFive = levelAt(75);
 
-      expect(young.index, greaterThan(sixty.index),
-          reason: 'a 60 ans le niveau retenu doit descendre d un cran');
-      expect(sixty.index, greaterThan(seventyFive.index),
-          reason: 'a 75 ans il doit descendre d un cran de plus');
-      expect(young.index - seventyFive.index, 2,
-          reason: 'l ecart 45 ans -> 75 ans est de DEUX crans');
+      expect(
+        young.index,
+        greaterThan(sixty.index),
+        reason: 'a 60 ans le niveau retenu doit descendre d un cran',
+      );
+      expect(
+        sixty.index,
+        greaterThan(seventyFive.index),
+        reason: 'a 75 ans il doit descendre d un cran de plus',
+      );
+      expect(
+        young.index - seventyFive.index,
+        2,
+        reason: 'l ecart 45 ans -> 75 ans est de DEUX crans',
+      );
     });
 
     test('l age change la distance de reference du test de marche', () {
@@ -88,8 +98,11 @@ void main() {
 
       expect(at45, isNotNull);
       expect(at70, isNotNull);
-      expect(at45! - at70!, greaterThan(50),
-          reason: 'la distance predite doit baisser nettement avec l age');
+      expect(
+        at45! - at70!,
+        greaterThan(50),
+        reason: 'la distance predite doit baisser nettement avec l age',
+      );
     });
   });
 
@@ -112,8 +125,9 @@ void main() {
       return ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
-          hikerProfileRepositoryProvider
-              .overrideWithValue(HikerProfileRepository(db: db, prefs: prefs)),
+          hikerProfileRepositoryProvider.overrideWithValue(
+            HikerProfileRepository(db: db, prefs: prefs),
+          ),
         ],
         child: TranslationProvider(
           child: MaterialApp.router(
@@ -137,7 +151,9 @@ void main() {
       );
     }
 
-    testWidgets('le champ age porte l explication de son usage', (tester) async {
+    testWidgets('le champ age porte l explication de son usage', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrapProfile());
       await tester.pumpAndSettle();
 
@@ -159,26 +175,35 @@ void main() {
     setUp(() => SharedPreferences.setMockInitialValues(<String, Object>{}));
 
     StageModel stage(int n) => StageModel(
-          trailId: 'test-trail',
-          stageNumber: n,
-          name: 'Etape $n',
-          distanceKm: 10,
-          elevationGainM: 400,
-          elevationLossM: 300,
-          startLat: 42.0,
-          startLng: 9.0,
-          endLat: 42.1,
-          endLng: 9.1,
-        );
+      trailId: 'test-trail',
+      stageNumber: n,
+      name: 'Etape $n',
+      distanceKm: 10,
+      elevationGainM: 400,
+      elevationLossM: 300,
+      startLat: 42.0,
+      startLng: 9.0,
+      endLat: 42.1,
+      endLng: 9.1,
+    );
 
-    testWidgets('« ce qui est entre dans ce verdict » nomme l age',
-        (tester) async {
+    testWidgets('« ce qui est entre dans ce verdict » nomme l age', (
+      tester,
+    ) async {
       final assessment = FeasibilityFormula.evaluate(
         stages: [
           const StageEffort(
-              index: 0, name: 'A -> B', distanceKm: 12, elevationGainM: 500),
+            index: 0,
+            name: 'A -> B',
+            distanceKm: 12,
+            elevationGainM: 500,
+          ),
           const StageEffort(
-              index: 1, name: 'B -> C', distanceKm: 14, elevationGainM: 700),
+            index: 1,
+            name: 'B -> C',
+            distanceKm: 14,
+            elevationGainM: 700,
+          ),
         ],
         level: HikerLevel.intermediate,
       );
@@ -188,21 +213,27 @@ void main() {
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
             stagesProvider('test-trail').overrideWith(
-                (ref) => Future.value([for (var n = 1; n <= 5; n++) stage(n)])),
-            feasibilityAssessmentProvider.overrideWith((ref) async => assessment),
-            hikerProfileProvider.overrideWith(
-              () => _FixedProfile(const HikerProfile(
-                  age: 45, heightCm: 178, weightKg: 76)),
+              (ref) => Future.value([for (var n = 1; n <= 5; n++) stage(n)]),
             ),
-            pastHikesProvider.overrideWith(() => _FixedHikes([
-                  PastHike(
-                    date: DateTime(2026, 6, 1),
-                    days: 3,
-                    avgWalkHoursPerDay: 6,
-                    totalElevationGain: 2400,
-                    totalDistanceKm: 54,
-                  ),
-                ])),
+            feasibilityAssessmentProvider.overrideWith(
+              (ref) async => assessment,
+            ),
+            hikerProfileProvider.overrideWith(
+              () => _FixedProfile(
+                const HikerProfile(age: 45, heightCm: 178, weightKg: 76),
+              ),
+            ),
+            pastHikesProvider.overrideWith(
+              () => _FixedHikes([
+                PastHike(
+                  date: DateTime(2026, 6, 1),
+                  days: 3,
+                  avgWalkHoursPerDay: 6,
+                  totalElevationGain: 2400,
+                  totalDistanceKm: 54,
+                ),
+              ]),
+            ),
             walkTestResultProvider.overrideWith((ref) async => null),
           ],
           child: TranslationProvider(
@@ -212,8 +243,9 @@ void main() {
                 initialLocation: '/',
                 routes: [
                   GoRoute(
-                      path: '/',
-                      builder: (_, __) => const TrekFeasibilityScreen()),
+                    path: '/',
+                    builder: (_, __) => const TrekFeasibilityScreen(),
+                  ),
                 ],
               ),
             ),
@@ -223,6 +255,11 @@ void main() {
       for (var i = 0; i < 8; i++) {
         await tester.pump(const Duration(milliseconds: 20));
       }
+
+      // TACHE 634 (DEM-260929-1134) : ces deux lignes vivent dans le volet du
+      // calcul, ferme au depart. On fait le geste du randonneur curieux — le
+      // point du test reste le meme : les deux lignes sont AU MEME ENDROIT.
+      await ouvrirLeVoletDuCalcul(tester);
 
       // La ligne sur la masse existe deja : c'est elle qui sert de repere.
       expect(
@@ -234,7 +271,8 @@ void main() {
       expect(
         find.text(t.feasibility.formula.ageCounted, skipOffstage: false),
         findsOneWidget,
-        reason: 'le verdict declare ce que la masse ne fait pas mais taisait '
+        reason:
+            'le verdict declare ce que la masse ne fait pas mais taisait '
             'ce que l age fait',
       );
     });

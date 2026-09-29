@@ -1,12 +1,15 @@
-/// LE PROGRAMME CONSEILLE — CABLAGE DE L'INVARIANTE DU LOT R (tache 569, R1).
+/// LE PROGRAMME CONSEILLE — LE PLAN DU SENTIER (tache 634, DEM-260929-1132).
 ///
-/// DECISION DE CHRIS DU 26/09, VERBATIM : « OK mais le curseur est celui
+/// DECISION DE CHRIS DU 26/09, TOUJOURS EN VIGUEUR : « le curseur est celui
 /// conseille et il n'est jamais en rouge quand il est conseille en orange max ».
 ///
-/// CE QUE CE FICHIER BRANCHE. [ProgramPlanSearch.firstNonRed] essaie chaque
-/// valeur atteignable du curseur, construit le vrai programme avec le moteur de
-/// repartition de l'ecran et le colore avec le moteur de verdict de l'ecran. Le
-/// resultat part vers deux endroits, et c'est tout l'interet :
+/// CE QUE CE FICHIER BRANCHE. [ProgramPlanSearch.planDuSentier] construit le
+/// plan d'etapes du sentier TEL QU'IL EST DANS LES DONNEES — une etape, une
+/// journee de marche — plus le repos conseille par le moteur, et le colore avec
+/// le moteur de verdict de l'ecran. Il ne cherche plus la plus petite duree non
+/// rouge : c'est cette recherche qui proposait 4 jours pour les 7 etapes du
+/// Mare a Mare Centre, puis qualifiait ce plan d'exigeant. Le resultat part
+/// vers deux endroits, et c'est tout l'interet :
 ///   * [feasibilityAssessmentProvider], qui n'a donc plus a deviner un nombre de
 ///     jours — il porte celui qui a ETE ESSAYE ;
 ///   * [selectedDurationProvider], pour que le curseur S'OUVRE sur cette valeur
@@ -44,12 +47,14 @@ import 'trek_feasibility_provider.dart';
 ///
 /// Meme tri et meme regle de sens que [plannedDaysProvider] : la recherche doit
 /// juger la sequence reelle, sinon elle jugerait un autre itineraire.
-final _advisedSearchStagesProvider =
-    Provider<List<StageModel>>((ref) {
+final _advisedSearchStagesProvider = Provider<List<StageModel>>((ref) {
   final trailId = ref.watch(trailIdProvider);
-  final sorted = ref.watch(stagesProvider(trailId)).maybeWhen(
-        data: (list) => List<StageModel>.of(list)
-          ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
+  final sorted = ref
+      .watch(stagesProvider(trailId))
+      .maybeWhen(
+        data: (list) =>
+            List<StageModel>.of(list)
+              ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
         orElse: () => const <StageModel>[],
       );
   if (sorted.isEmpty) return const [];
@@ -69,8 +74,9 @@ final _advisedSearchStagesProvider =
 /// [SuggestedProgram] non nul : une duree est conseillee, et son verdict est
 /// vert ou orange. Aucun moyen de rendre cette valeur rouge : elle a ete
 /// colorée avant d'etre retenue.
-final advisedSuggestedProgramProvider =
-    FutureProvider<SuggestedProgram?>((ref) async {
+final advisedSuggestedProgramProvider = FutureProvider<SuggestedProgram?>((
+  ref,
+) async {
   final stages = ref.watch(_advisedSearchStagesProvider);
   if (stages.isEmpty) return null;
 
@@ -84,10 +90,11 @@ final advisedSuggestedProgramProvider =
   final objective = await ref.watch(objectiveProfileProvider.future);
   final conditions = await ref.watch(trekConditionsProvider.future);
 
-  return ProgramPlanSearch.firstNonRed(
+  return ProgramPlanSearch.planDuSentier(
     stages: stages,
     level: level,
     bounds: bounds,
+    joursDeReposConseilles: ref.watch(recommendedRestDaysProvider(trailId)),
     demonstratedFloorEnergyKm: objective.maxDailyEnergyKmDone,
     habitualDailyEnergyKm: objective.habitualDailyEnergyKm,
     longestConsecutiveDaysDone: objective.maxConsecutiveDaysDone,
@@ -105,8 +112,9 @@ final advisedSuggestedProgramProvider =
 ///     valeurs du curseur et aucune ne fait mieux que rouge. L'application ne
 ///     conseille alors aucune duree et le dit franchement ;
 ///   * un conseil viable — ses trois nombres (marche, repos, total).
-final advisedProgramProvider =
-    FutureProvider<ProgramDurationAdvice?>((ref) async {
+final advisedProgramProvider = FutureProvider<ProgramDurationAdvice?>((
+  ref,
+) async {
   final stages = ref.watch(_advisedSearchStagesProvider);
   if (stages.isEmpty) return null;
   final criteria = await ref.watch(feasibilityCriteriaProvider.future);

@@ -13,8 +13,9 @@ import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
 
 /// Acces au stockage durable du decoupage retenu (surchargeable en test).
-final retainedPlanStoreProvider =
-    Provider<RetainedPlanStore>((ref) => const RetainedPlanStore());
+final retainedPlanStoreProvider = Provider<RetainedPlanStore>(
+  (ref) => const RetainedPlanStore(),
+);
 
 /// DECOUPAGE RETENU par le randonneur pour le sentier courant — `null` tant
 /// qu'il n'a rien choisi (correctif N2 / D2, mandat #100293).
@@ -67,7 +68,8 @@ class RetainedDurationNotifier extends Notifier<int?> {
 
 final retainedDurationProvider =
     NotifierProvider<RetainedDurationNotifier, int?>(
-        RetainedDurationNotifier.new);
+      RetainedDurationNotifier.new,
+    );
 
 /// REPOS CONSEILLES pour le sentier courant : COMBIEN de jours de repos
 /// ramenent la monotonie de la pire semaine sous son seuil publie.
@@ -90,11 +92,16 @@ final retainedDurationProvider =
 /// fenetre glissante, la pire d'entre elles — seul le placement arrondi des
 /// repos pourrait, dans un cas limite, deplacer le compte d'une unite. C'est
 /// une valeur PAR DEFAUT, que le randonneur reste libre de changer.
-final recommendedRestDaysProvider =
-    Provider.family<int, String>((ref, trailId) {
-  final stages = ref.watch(stagesProvider(trailId)).maybeWhen(
-        data: (list) => List<StageModel>.of(list)
-          ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
+final recommendedRestDaysProvider = Provider.family<int, String>((
+  ref,
+  trailId,
+) {
+  final stages = ref
+      .watch(stagesProvider(trailId))
+      .maybeWhen(
+        data: (list) =>
+            List<StageModel>.of(list)
+              ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
         orElse: () => const <StageModel>[],
       );
   if (stages.length < 2) return 0;
@@ -114,8 +121,10 @@ final recommendedRestDaysProvider =
 /// aucun decoupage : les jours de marche du sentier, plus les jours de repos
 /// que le moteur conseille. Bornee aux durees possibles du sentier, pour que la
 /// valeur par defaut reste toujours atteignable par le selecteur.
-final defaultDurationWithRestProvider =
-    Provider.family<int, String>((ref, trailId) {
+final defaultDurationWithRestProvider = Provider.family<int, String>((
+  ref,
+  trailId,
+) {
   final base = ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
   final rest = ref.watch(recommendedRestDaysProvider(trailId));
   // Borne a la duree NATURELLE (tache 558) et non a la borne haute du curseur :
@@ -160,10 +169,9 @@ class SelectedDurationNotifier extends Notifier<int> {
     final fallback = ref.watch(defaultDurationWithRestProvider(trailId));
     final retained = ref.watch(retainedDurationProvider);
     if (retained != null) return retained;
-    final advised = ref.watch(advisedTotalDaysProvider).maybeWhen(
-          data: (days) => days,
-          orElse: () => null,
-        );
+    final advised = ref
+        .watch(advisedTotalDaysProvider)
+        .maybeWhen(data: (days) => days, orElse: () => null);
     return advised ?? fallback;
   }
 
@@ -176,24 +184,26 @@ class SelectedDurationNotifier extends Notifier<int> {
 
 final selectedDurationProvider =
     NotifierProvider<SelectedDurationNotifier, int>(
-        SelectedDurationNotifier.new);
+      SelectedDurationNotifier.new,
+    );
 
 /// Provider du planning calcule.
 ///
 /// Combine les etapes du sentier (stagesProvider) et la duree
 /// choisie (selectedDurationProvider) pour recalculer le planning
 /// via PlanningCalculator a chaque changement.
-final planningProvider =
-    FutureProvider.family<List<DayPlan>, String>((ref, trailId) async {
+final planningProvider = FutureProvider.family<List<DayPlan>, String>((
+  ref,
+  trailId,
+) async {
   final stages = await ref.watch(stagesProvider(trailId).future);
   final duration = ref.watch(selectedDurationProvider);
 
-  // Tache 558 : meme regle que le PROGRAMME editable — au-dela du budget de
-  // repos du sentier, un jour de plus COUPE la journee la plus lourde au lieu
-  // d'ajouter un repos de plus. Sans ce parametre, cette repartition et le
-  // programme affiche finiraient par decrire deux itineraires differents.
-  final maxRest = ref.watch(durationBoundsProvider(trailId)).restAllowance;
-  return PlanningCalculator.distribute(stages, duration, maxRestDays: maxRest);
+  // TACHE 634 (DEM-260929-1327) : le plafond de repos du lot 558, qui servait a
+  // declencher le decoupage de la journee la plus lourde, a disparu avec le
+  // decoupage. Cette repartition et le programme affiche restent identiques —
+  // ils appellent le meme calculateur avec les memes arguments.
+  return PlanningCalculator.distribute(stages, duration);
 });
 
 /// Bornes de duree (en jours) DERIVEES du nombre d'etapes du sentier.
@@ -228,8 +238,8 @@ class DurationBounds implements DurationSearchBounds {
     required this.max,
     int? naturalMax,
     int? restAllowance,
-  })  : _naturalMax = naturalMax,
-        _restAllowance = restAllowance;
+  }) : _naturalMax = naturalMax,
+       _restAllowance = restAllowance;
 
   @override
   final int min;
@@ -262,11 +272,17 @@ class DurationBounds implements DurationSearchBounds {
   /// haute ne peut pas etre PLUS BASSE que le conseil, sinon l'application
   /// proposerait un programme que son propre selecteur refuserait d'atteindre —
   /// et le randonneur verrait un conseil qu'il ne peut pas appliquer.
-  factory DurationBounds.fromStageCount(int stageCount,
-      {int recommendedRestDays = 0}) {
+  factory DurationBounds.fromStageCount(
+    int stageCount, {
+    int recommendedRestDays = 0,
+  }) {
     if (stageCount <= 0) {
       return const DurationBounds(
-          min: 1, max: 1, naturalMax: 1, restAllowance: 0);
+        min: 1,
+        max: 1,
+        naturalMax: 1,
+        restAllowance: 0,
+      );
     }
     if (stageCount == 1) {
       // Une seule etape : rien a regrouper, mais elle se COUPE comme les
@@ -274,7 +290,7 @@ class DurationBounds implements DurationSearchBounds {
       // et aucun moyen d'alleger sa seule journee.
       return DurationBounds(
         min: 1,
-        max: PlanningCalculator.maxWalkingDaysFor(1) + recommendedRestDays,
+        max: 1 + recommendedRestDays,
         naturalMax: 1 + recommendedRestDays,
         restAllowance: recommendedRestDays,
       );
@@ -285,7 +301,7 @@ class DurationBounds implements DurationSearchBounds {
     // Tous les jours de MARCHE atteignables (decoupage compris) + le repos.
     return DurationBounds(
       min: min,
-      max: PlanningCalculator.maxWalkingDaysFor(stageCount) + rest,
+      max: stageCount + rest,
       naturalMax: stageCount + rest,
       restAllowance: rest,
     );
@@ -293,8 +309,7 @@ class DurationBounds implements DurationSearchBounds {
 
   /// Liste discrete des durees proposees (min..max inclus), pour le selecteur.
   @override
-  List<int> get options =>
-      List<int>.generate(max - min + 1, (i) => min + i);
+  List<int> get options => List<int>.generate(max - min + 1, (i) => min + i);
 
   /// Ramene une duree dans les bornes.
   int clampDuration(int duration) => duration.clamp(min, max);
@@ -310,8 +325,10 @@ class DurationBounds implements DurationSearchBounds {
 /// Tant que les etapes ne sont pas chargees, se rabat sur les bornes de la
 /// config du sentier ([TrailConfig.availableDurations]) pour rester coherent
 /// avant l'arrivee des donnees.
-final durationBoundsProvider =
-    Provider.family<DurationBounds, String>((ref, trailId) {
+final durationBoundsProvider = Provider.family<DurationBounds, String>((
+  ref,
+  trailId,
+) {
   final stagesAsync = ref.watch(stagesProvider(trailId));
   final recommendedRest = ref.watch(recommendedRestDaysProvider(trailId));
   return stagesAsync.maybeWhen(
@@ -324,7 +341,9 @@ final durationBoundsProvider =
       final durations = config.availableDurations;
       if (durations.isEmpty) {
         return DurationBounds(
-            min: config.defaultDuration, max: config.defaultDuration);
+          min: config.defaultDuration,
+          max: config.defaultDuration,
+        );
       }
       return DurationBounds(
         min: durations.reduce((a, b) => a < b ? a : b),

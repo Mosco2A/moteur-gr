@@ -2479,6 +2479,13 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Viabilidad para este trek';
+	@override String get answerTitle => '¿Está a su alcance?';
+	@override String answerGreen({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.';
+	@override String answerOrange({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.';
+	@override String get answerRed => 'Así no: una jornada de este sendero supera lo que su perfil puede aguantar.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.';
+	@override String answerNoRest({required Object walking}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.';
+	@override String get explainToggle => 'Cómo se calcula este resultado';
 	@override String get intro => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})';
 	@override String get stagesTitle => 'Día por día';
@@ -3192,9 +3199,8 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Número de días';
 	@override String get daysWithRest => '{total} d en total (incl. {rest} de descanso)';
-	@override String get splitNote => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.';
-	@override String get splitExhausted => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.';
-	@override late final _Translations$programme$duration$difficulty$es difficulty = _Translations$programme$duration$difficulty$es._(_root);
+	@override String get splitNote => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.';
+	@override String get splitExhausted => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.';
 	@override String get daysTotal => '{count} d en total';
 }
 
@@ -3300,8 +3306,7 @@ class _Translations$programme$splitBlocked$es extends Translations$programme$spl
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'No se puede partir: este día no tiene nada que cortar.';
-	@override String get portion => 'No se puede partir: esta etapa ya está partida en dos.';
+	@override String get single => 'No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.';
 	@override String get locked => 'Día ya caminado: ya no se puede modificar';
 }
 
@@ -4007,19 +4012,6 @@ class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String nom({required Object trail}) => '${trail}';
 	@override String description({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$es extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Cómodo';
-	@override String get standard => 'Estándar';
-	@override String get sporty => 'Deportivo';
-	@override String get demanding => 'Muy exigente';
 }
 
 // Path: programme.info.days
@@ -4936,6 +4928,13 @@ extension on TranslationsEs {
 			'feasibility.gaps.fitness' => 'Forma insuficiente en la prueba de 6 minutos',
 			'feasibility.gaps.effort' => 'Esfuerzo global (IBP) por encima de tu experiencia',
 			'feasibility.formula.title' => 'Viabilidad para este trek',
+			'feasibility.formula.answerTitle' => '¿Está a su alcance?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.',
+			'feasibility.formula.answerRed' => 'Así no: una jornada de este sendero supera lo que su perfil puede aguantar.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.',
+			'feasibility.formula.explainToggle' => 'Cómo se calcula este resultado',
 			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})',
 			'feasibility.formula.stagesTitle' => 'Día por día',
@@ -5162,6 +5161,8 @@ extension on TranslationsEs {
 			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
 			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelCta' => 'Cancelar mi suscripción',
 			'monetization.cancelExplains' => 'La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.',
 			'monetization.cancelStoreUnavailable' => 'No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones.',
@@ -5169,8 +5170,6 @@ extension on TranslationsEs {
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
 			'signalement.types.eauASec' => 'Punto de agua seco',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Peligro',
 			'signalement.latencyBanner' => 'Guardado. Visible para otros senderistas tras la sincronización de red.',
 			'signalement.confirm' => 'Confirmar notificación',
@@ -5622,12 +5621,8 @@ extension on TranslationsEs {
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.daysWithRest' => '{total} d en total (incl. {rest} de descanso)',
-			'programme.duration.splitNote' => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.',
-			'programme.duration.splitExhausted' => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.',
-			'programme.duration.difficulty.comfortable' => 'Cómodo',
-			'programme.duration.difficulty.standard' => 'Estándar',
-			'programme.duration.difficulty.sporty' => 'Deportivo',
-			'programme.duration.difficulty.demanding' => 'Muy exigente',
+			'programme.duration.splitNote' => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.',
+			'programme.duration.splitExhausted' => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.',
 			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
@@ -5672,8 +5667,7 @@ extension on TranslationsEs {
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
-			'programme.splitBlocked.single' => 'No se puede partir: este día no tiene nada que cortar.',
-			'programme.splitBlocked.portion' => 'No se puede partir: esta etapa ya está partida en dos.',
+			'programme.splitBlocked.single' => 'No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.',
 			'programme.splitBlocked.locked' => 'Día ya caminado: ya no se puede modificar',
 			'programme.reorderBlocked' => 'Ruta iniciada: el orden de las etapas ya no cambia',
 			'programme.inTrek.title' => 'Adaptar el itinerario',
@@ -5681,10 +5675,10 @@ extension on TranslationsEs {
 			'programme.inTrek.doneSection' => 'Ya caminado',
 			'programme.inTrek.upcomingSection' => 'Por venir',
 			'programme.inTrek.doneBadge' => 'Hecho',
-			'programme.inTrek.lockedDay' => 'Día ya caminado, bloqueado',
-			'programme.inTrek.allDone' => 'Has caminado todos tus días: ya no queda nada que adaptar.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.inTrek.lockedDay' => 'Día ya caminado, bloqueado',
+			'programme.inTrek.allDone' => 'Has caminado todos tus días: ya no queda nada que adaptar.',
 			'programme.inTrek.notStarted' => 'Esta pantalla es para la ruta: inicia tu travesía para adaptar lo que viene.',
 			'programme.inTrek.validate' => 'Guardar mis cambios',
 			'programme.inTrek.saved' => 'Programa actualizado',

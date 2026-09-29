@@ -48,25 +48,25 @@ void main() {
   /// verifiables a la main : 1 etape/jour = 0,43 (VERT), 2 etapes/jour = 0,86
   /// (ORANGE, le vert s'arrete a 0,85), 3 etapes/jour = 1,29 (ROUGE).
   StageModel stage(int n) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: 12,
-        elevationGainM: 500,
-        elevationLossM: 400,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: 12,
+    elevationGainM: 500,
+    elevationLossM: 400,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+  );
 
   final etapes = [for (var n = 1; n <= 6; n++) stage(n)];
 
   /// Journee de marche portant les etapes [numeros] (1-based).
   PlannedDay marche(int dayNumber, List<int> numeros) => PlannedDay(
-        dayNumber: dayNumber,
-        stages: [for (final n in numeros) etapes[n - 1]],
-      );
+    dayNumber: dayNumber,
+    stages: [for (final n in numeros) etapes[n - 1]],
+  );
 
   /// Journee de repos.
   PlannedDay repos(int dayNumber) =>
@@ -90,8 +90,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         trailIdProvider.overrideWithValue(trailId),
-        plannedDaysProvider(trailId)
-            .overrideWith((ref) => _ProgrammeFige(ref, days)),
+        plannedDaysProvider(
+          trailId,
+        ).overrideWith((ref) => _ProgrammeFige(ref, days)),
         // Niveau FIGE : ces tests portent sur le DECOUPAGE evalue, pas sur la
         // derivation du niveau (couverte ailleurs). Un niveau fige rend les
         // scores calculables a la main.
@@ -109,7 +110,9 @@ void main() {
             hasWalkTest: false,
           ),
         ),
-        trekConditionsProvider.overrideWith((ref) async => TrekConditions.unknown),
+        trekConditionsProvider.overrideWith(
+          (ref) async => TrekConditions.unknown,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -123,32 +126,51 @@ void main() {
       conteneur(days).read(feasibilityAssessmentProvider.future);
 
   group('1-3. le decoupage evalue EST le programme', () {
-    test('une journee qui regroupe deux etapes pese la somme des deux',
-        () async {
-      final p = await decoupage([
-        marche(1, [1, 2]),
-        marche(2, [3]),
-      ]);
-      expect(p.fromProgram, isTrue, reason: 'la source doit etre le programme');
-      expect(p.walkingDays, 2, reason: 'deux journees de marche, pas 3 etapes');
-      expect(p.dayEfforts.first.distanceKm, 24, reason: '12 + 12');
-      expect(p.dayEfforts.first.elevationGainM, 1000, reason: '500 + 500');
-      expect(p.dayEfforts.first.elevationLossM, 800, reason: '400 + 400');
-      expect(p.dayEfforts.first.name, 'Etape 1 + Etape 2',
-          reason: 'la journee nomme ce qui se marche ce jour-la');
-      expect(p.stageCount, 3, reason: 'trois etapes portees par ce decoupage');
-    });
+    test(
+      'une journee qui regroupe deux etapes pese la somme des deux',
+      () async {
+        final p = await decoupage([
+          marche(1, [1, 2]),
+          marche(2, [3]),
+        ]);
+        expect(
+          p.fromProgram,
+          isTrue,
+          reason: 'la source doit etre le programme',
+        );
+        expect(
+          p.walkingDays,
+          2,
+          reason: 'deux journees de marche, pas 3 etapes',
+        );
+        expect(p.dayEfforts.first.distanceKm, 24, reason: '12 + 12');
+        expect(p.dayEfforts.first.elevationGainM, 1000, reason: '500 + 500');
+        expect(p.dayEfforts.first.elevationLossM, 800, reason: '400 + 400');
+        expect(
+          p.dayEfforts.first.name,
+          'Etape 1 + Etape 2',
+          reason: 'la journee nomme ce qui se marche ce jour-la',
+        );
+        expect(
+          p.stageCount,
+          3,
+          reason: 'trois etapes portees par ce decoupage',
+        );
+      },
+    );
 
-    test('le verdict est rendu sur les JOURNEES, pas sur les etapes brutes',
-        () async {
-      // Six etapes en trois journees de deux : le moteur doit rendre TROIS
-      // verdicts de journee, chacun a 0,86 (orange), et non six a 0,43 (vert).
-      final a = await verdict(programmeGroupe(2));
-      expect(a!.stageVerdicts.length, 3);
-      expect(a.walkingDays, 3);
-      expect(a.stageVerdicts.first.score, closeTo(0.86033, 0.0005));
-      expect(a.globalVerdict, FeasibilityVerdict.orange);
-    });
+    test(
+      'le verdict est rendu sur les JOURNEES, pas sur les etapes brutes',
+      () async {
+        // Six etapes en trois journees de deux : le moteur doit rendre TROIS
+        // verdicts de journee, chacun a 0,86 (orange), et non six a 0,43 (vert).
+        final a = await verdict(programmeGroupe(2));
+        expect(a!.stageVerdicts.length, 3);
+        expect(a.walkingDays, 3);
+        expect(a.stageVerdicts.first.score, closeTo(0.86033, 0.0005));
+        expect(a.globalVerdict, FeasibilityVerdict.orange);
+      },
+    );
 
     test('un repos apres une journee REGROUPEE est repere en JOURS', () async {
       final days = [
@@ -196,18 +218,20 @@ void main() {
       expect(deux.circuit!.score, greaterThan(trois.circuit!.score));
     });
 
-    test('plus de jours -> le verdict S AMELIORE, et le rouge s en va',
-        () async {
-      final deux = await verdict(programmeGroupe(3));
-      final six = await verdict(programmeGroupe(1));
-      expect(deux!.globalVerdict, FeasibilityVerdict.red);
-      // Retour Chris 6d : au bon decoupage, l'ecran cesse de dire « au-dessus
-      // de tes capacites » — le verdict porte sur le decoupage, pas sur la
-      // personne, et la personne n'a pas change entre ces deux lectures.
-      expect(six!.globalVerdict, isNot(FeasibilityVerdict.red));
-      expect(six.globalVerdict, FeasibilityVerdict.green);
-      expect(six.circuit!.score, lessThan(deux.circuit!.score));
-    });
+    test(
+      'plus de jours -> le verdict S AMELIORE, et le rouge s en va',
+      () async {
+        final deux = await verdict(programmeGroupe(3));
+        final six = await verdict(programmeGroupe(1));
+        expect(deux!.globalVerdict, FeasibilityVerdict.red);
+        // Retour Chris 6d : au bon decoupage, l'ecran cesse de dire « au-dessus
+        // de tes capacites » — le verdict porte sur le decoupage, pas sur la
+        // personne, et la personne n'a pas change entre ces deux lectures.
+        expect(six!.globalVerdict, isNot(FeasibilityVerdict.red));
+        expect(six.globalVerdict, FeasibilityVerdict.green);
+        expect(six.circuit!.score, lessThan(deux.circuit!.score));
+      },
+    );
   });
 
   group('5. repli sur les etapes brutes, et il est DECLARE', () {
@@ -216,20 +240,25 @@ void main() {
         overrides: [
           trailIdProvider.overrideWithValue(trailId),
           // Programme VIDE : etapes pas encore chargees, ecran jamais ouvert.
-          plannedDaysProvider(trailId)
-              .overrideWith((ref) => _ProgrammeFige(ref, const [])),
-          stageEffortsProvider.overrideWith((ref) async => const [
-                StageEffort(
-                    index: 0,
-                    name: 'Brute 1',
-                    distanceKm: 12,
-                    elevationGainM: 500),
-                StageEffort(
-                    index: 1,
-                    name: 'Brute 2',
-                    distanceKm: 12,
-                    elevationGainM: 500),
-              ]),
+          plannedDaysProvider(
+            trailId,
+          ).overrideWith((ref) => _ProgrammeFige(ref, const [])),
+          stageEffortsProvider.overrideWith(
+            (ref) async => const [
+              StageEffort(
+                index: 0,
+                name: 'Brute 1',
+                distanceKm: 12,
+                elevationGainM: 500,
+              ),
+              StageEffort(
+                index: 1,
+                name: 'Brute 2',
+                distanceKm: 12,
+                elevationGainM: 500,
+              ),
+            ],
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -239,22 +268,31 @@ void main() {
       expect(p.dayEfforts.first.name, 'Brute 1');
     });
 
-    test('ni programme ni etape -> aucun verdict (jamais sur du vide)',
-        () async {
-      final container = ProviderContainer(
-        overrides: [
-          trailIdProvider.overrideWithValue(trailId),
-          plannedDaysProvider(trailId)
-              .overrideWith((ref) => _ProgrammeFige(ref, const [])),
-          stageEffortsProvider.overrideWith((ref) async => const <StageEffort>[]),
-        ],
-      );
-      addTearDown(container.dispose);
-      expect(await container.read(feasibilityProgramProvider.future),
-          isA<FeasibilityProgram>().having((p) => p.isEmpty, 'isEmpty', isTrue));
-      expect(
-          await container.read(feasibilityAssessmentProvider.future), isNull);
-    });
+    test(
+      'ni programme ni etape -> aucun verdict (jamais sur du vide)',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            trailIdProvider.overrideWithValue(trailId),
+            plannedDaysProvider(
+              trailId,
+            ).overrideWith((ref) => _ProgrammeFige(ref, const [])),
+            stageEffortsProvider.overrideWith(
+              (ref) async => const <StageEffort>[],
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        expect(
+          await container.read(feasibilityProgramProvider.future),
+          isA<FeasibilityProgram>().having((p) => p.isEmpty, 'isEmpty', isTrue),
+        );
+        expect(
+          await container.read(feasibilityAssessmentProvider.future),
+          isNull,
+        );
+      },
+    );
   });
 
   group('6. le conseil reste APPLICABLE', () {
@@ -265,11 +303,16 @@ void main() {
       final a = await verdict(programmeGroupe(6));
       expect(a!.walkingDays, 1);
       expect(a.suggestedDays, lessThanOrEqualTo(6));
-      expect(a.suggestedDays, greaterThan(1),
-          reason: 'etaler reste conseille quand la journee est trop lourde');
+      expect(
+        a.suggestedDays,
+        greaterThan(1),
+        reason: 'etaler reste conseille quand la journee est trop lourde',
+      );
       // Et le conseil chiffre est bien emis, avec les deux nombres.
-      final conseil =
-          a.advice.firstWhere((c) => c.key == 'optimalDays', orElse: () => const ProgramAdvice(key: 'absent'));
+      final conseil = a.advice.firstWhere(
+        (c) => c.key == 'optimalDays',
+        orElse: () => const ProgramAdvice(key: 'absent'),
+      );
       expect(conseil.key, 'optimalDays');
       expect(conseil.params['current'], 1);
     });
@@ -279,7 +322,11 @@ void main() {
       final a = FeasibilityFormula.evaluate(
         stages: const [
           StageEffort(
-              index: 0, name: 'A', distanceKm: 40, elevationGainM: 2500),
+            index: 0,
+            name: 'A',
+            distanceKm: 40,
+            elevationGainM: 2500,
+          ),
         ],
         level: HikerLevel.beginner,
       );
@@ -290,16 +337,28 @@ void main() {
   group('7. l ecran : le conseil AVANT le verdict, sans jargon', () {
     /// Evaluation ROUGE avec conseils (etape trop dure pour un intermediaire).
     FeasibilityAssessment rouge() => FeasibilityFormula.evaluate(
-          stages: const [
-            StageEffort(
-                index: 0, name: 'Depart -> Col', distanceKm: 24, elevationGainM: 1600),
-            StageEffort(
-                index: 1, name: 'Col -> Refuge', distanceKm: 22, elevationGainM: 800),
-            StageEffort(
-                index: 2, name: 'Refuge -> Village', distanceKm: 10, elevationGainM: 200),
-          ],
-          level: HikerLevel.intermediate,
-        );
+      stages: const [
+        StageEffort(
+          index: 0,
+          name: 'Depart -> Col',
+          distanceKm: 24,
+          elevationGainM: 1600,
+        ),
+        StageEffort(
+          index: 1,
+          name: 'Col -> Refuge',
+          distanceKm: 22,
+          elevationGainM: 800,
+        ),
+        StageEffort(
+          index: 2,
+          name: 'Refuge -> Village',
+          distanceKm: 10,
+          elevationGainM: 200,
+        ),
+      ],
+      level: HikerLevel.intermediate,
+    );
 
     Future<void> pumpEcran(WidgetTester tester) async {
       final router = GoRouter(
@@ -312,11 +371,13 @@ void main() {
         ProviderScope(
           overrides: [
             feasibilityAssessmentProvider.overrideWith((ref) async => rouge()),
-            feasibilityCriteriaProvider.overrideWith((ref) async =>
-                const FeasibilityCriteria(
-                    profileComplete: true,
-                    hasPastHike: true,
-                    hasWalkTest: true)),
+            feasibilityCriteriaProvider.overrideWith(
+              (ref) async => const FeasibilityCriteria(
+                profileComplete: true,
+                hasPastHike: true,
+                hasWalkTest: true,
+              ),
+            ),
             hasObjectiveProfileProvider.overrideWith((ref) async => true),
           ],
           child: MaterialApp.router(
@@ -330,30 +391,74 @@ void main() {
       }
     }
 
-    testWidgets('le bloc de conseils est AU-DESSUS du feu tricolore',
-        (tester) async {
+    testWidgets('le bloc de conseils est AU-DESSUS des explications', (
+      tester,
+    ) async {
+      // TACHE 634 (DEM-260929-1134). L'ancre de ce test etait la ligne
+      // « Plafond conseille », collee sous le feu ; elle vit desormais dans le
+      // volet des explications, en bas et ferme. L'intention du retour Chris 4
+      // — conseiller AVANT de juger — est verifiee a l'identique, et meme plus
+      // largement : le conseil precede TOUT le calcul.
       await pumpEcran(tester);
-      final conseils =
-          find.byKey(const ValueKey('feasibility-advice-first'));
+      final conseils = find.byKey(const ValueKey('feasibility-advice-first'));
+      final explications = find.byKey(
+        const ValueKey('feasibility-explain-toggle'),
+      );
       expect(conseils, findsOneWidget);
-      // « Plafond conseille » est la ligne collee sous le feu tricolore : si le
-      // bloc de conseils est plus haut qu'elle, il est plus haut que le verdict.
-      final yConseils = tester.getTopLeft(conseils).dy;
-      final yFeu =
-          tester.getTopLeft(find.textContaining('Plafond conseillé')).dy;
-      expect(yConseils, lessThan(yFeu),
-          reason: 'retour Chris 4 : conseiller AVANT de juger');
+      expect(explications, findsOneWidget);
+      expect(
+        tester.getTopLeft(conseils).dy,
+        lessThan(tester.getTopLeft(explications).dy),
+        reason: 'retour Chris 4 : conseiller AVANT de juger',
+      );
       // Le titre des conseils et le nombre de jours proposes sont bien la.
       expect(find.text(t.feasibility.formula.adviceTitle), findsOneWidget);
       expect(find.textContaining('Générer mon programme'), findsOneWidget);
     });
 
-    testWidgets('le jargon « X jour(s) au-dessus de ton plafond » a disparu',
-        (tester) async {
+    testWidgets('LA REPONSE ouvre l ecran, avant le conseil et le calcul', (
+      tester,
+    ) async {
+      // TACHE 634 (DEM-260929-1134), retour de Christophe : « Il y a trop
+      // d'explication confuse, ce n'est pas fluide la faisabilite ». Ce que le
+      // randonneur vient chercher est en tete : est-ce faisable, en combien de
+      // jours.
+      await pumpEcran(tester);
+      final reponse = find.byKey(const ValueKey('feasibility-answer'));
+      expect(reponse, findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('feasibility-answer-sentence')),
+        findsOneWidget,
+      );
+      expect(
+        tester.getTopLeft(reponse).dy,
+        lessThan(
+          tester
+              .getTopLeft(
+                find.byKey(const ValueKey('feasibility-advice-first')),
+              )
+              .dy,
+        ),
+      );
+    });
+
+    testWidgets('le jargon « X jour(s) au-dessus de ton plafond » a disparu', (
+      tester,
+    ) async {
       await pumpEcran(tester);
       expect(find.textContaining('au-dessus de ton plafond'), findsNothing);
       expect(find.text(t.feasibility.formula.daysOverNone), findsNothing);
-      // Ce qui reste : le facteur limitant, qui NOMME ce qui pese.
+      // Ce qui reste : le facteur limitant, qui NOMME ce qui pese. Il est
+      // DISPONIBLE, plus IMPOSE (tache 634) : on ouvre le volet du calcul.
+      expect(find.textContaining('Facteur limitant'), findsNothing);
+      final volet = find.byKey(const ValueKey('feasibility-explain-toggle'));
+      await tester.scrollUntilVisible(volet, 200);
+      await tester.tap(volet);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.textContaining('Facteur limitant'),
+        200,
+      );
       expect(find.textContaining('Facteur limitant'), findsOneWidget);
     });
   });
@@ -378,9 +483,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            trail_stages.stagesProvider(trailId)
+            trail_stages
+                .stagesProvider(trailId)
                 .overrideWith((ref) => Future.value(etapes)),
-            feasibilityAssessmentProvider.overrideWith((ref) async => assessment),
+            feasibilityAssessmentProvider.overrideWith(
+              (ref) async => assessment,
+            ),
           ],
           child: MaterialApp.router(
             locale: const Locale('fr'),
@@ -392,7 +500,10 @@ void main() {
                   builder: (_, __) =>
                       const TrailPlanningScreen(trailId: trailId),
                 ),
-                GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+                GoRoute(
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -402,14 +513,19 @@ void main() {
       return tester.widget<DurationSelector>(find.byType(DurationSelector));
     }
 
-    testWidgets('verdict ROUGE -> curseur rouge et pastille qui le nomme',
-        (tester) async {
+    testWidgets('verdict ROUGE -> curseur rouge et pastille qui le nomme', (
+      tester,
+    ) async {
       final selector = await pumpProgramme(
         tester,
         FeasibilityFormula.evaluate(
           stages: const [
             StageEffort(
-                index: 0, name: 'Dure', distanceKm: 30, elevationGainM: 2000),
+              index: 0,
+              name: 'Dure',
+              distanceKm: 30,
+              elevationGainM: 2000,
+            ),
           ],
           level: HikerLevel.beginner,
         ),
@@ -419,16 +535,25 @@ void main() {
       expect(find.text(t.feasibility.formula.verdicts.red), findsOneWidget);
     });
 
-    testWidgets('verdict VERT -> curseur vert (le randonneur voit le vert)',
-        (tester) async {
+    testWidgets('verdict VERT -> curseur vert (le randonneur voit le vert)', (
+      tester,
+    ) async {
       final selector = await pumpProgramme(
         tester,
         FeasibilityFormula.evaluate(
           stages: const [
             StageEffort(
-                index: 0, name: 'Facile', distanceKm: 8, elevationGainM: 200),
+              index: 0,
+              name: 'Facile',
+              distanceKm: 8,
+              elevationGainM: 200,
+            ),
             StageEffort(
-                index: 1, name: 'Facile 2', distanceKm: 9, elevationGainM: 250),
+              index: 1,
+              name: 'Facile 2',
+              distanceKm: 9,
+              elevationGainM: 250,
+            ),
           ],
           level: HikerLevel.confirmed,
         ),
@@ -438,17 +563,27 @@ void main() {
       expect(find.text(t.feasibility.formula.verdicts.green), findsOneWidget);
     });
 
-    testWidgets('aucun verdict calculable -> retour au ratio, rien d invente',
-        (tester) async {
-      final selector = await pumpProgramme(tester, null);
-      expect(selector.verdict, isNull);
-      // La pastille reprend le libelle de difficulte (ratio etapes/jour).
-      expect(
-        find.text(durationDifficultyLabel(
-            durationDifficultyFor(selector.stageCount, selector.walkingDays))),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      'aucun verdict calculable -> AUCUN qualificatif, pas un second calcul',
+      (tester) async {
+        // TACHE 634 (DEM-260929-1132) : le curseur portait un SECOND systeme de
+        // qualificatif — un ratio etapes/jour, sans profil, sans energie — qui
+        // prenait la releve quand le verdict n'etait pas calculable. La meme
+        // pastille pouvait donc dire « Sportif » (un ratio) ou « Decoupage
+        // exigeant » (une energie sur une capacite) sans que rien ne distingue
+        // les deux. Le plan et le jugement doivent venir de la MEME base : il
+        // n'en reste qu'une, et quand elle manque, la pastille se tait.
+        final selector = await pumpProgramme(tester, null);
+        expect(selector.verdict, isNull);
+        for (final libelle in [
+          t.feasibility.formula.verdicts.green,
+          t.feasibility.formula.verdicts.orange,
+          t.feasibility.formula.verdicts.red,
+        ]) {
+          expect(find.text(libelle), findsNothing);
+        }
+      },
+    );
   });
 }
 

@@ -21,17 +21,17 @@ import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 /// preparation, qui reste joignable pendant la rando).
 void main() {
   StageModel makeStage(int num, double km, int gain) => StageModel(
-        trailId: 'test-trail',
-        stageNumber: num,
-        name: 'Etape $num',
-        distanceKm: km,
-        elevationGainM: gain,
-        elevationLossM: (gain * 0.8).round(),
-        startLat: 42.0,
-        startLng: 9.0,
-        endLat: 42.1,
-        endLng: 9.1,
-      );
+    trailId: 'test-trail',
+    stageNumber: num,
+    name: 'Etape $num',
+    distanceKm: km,
+    elevationGainM: gain,
+    elevationLossM: (gain * 0.8).round(),
+    startLat: 42.0,
+    startLng: 9.0,
+    endLat: 42.1,
+    endLng: 9.1,
+  );
 
   // 5 etapes courtes : la somme de 2 etapes adjacentes reste < 16 h, donc le
   // regroupement n'est jamais bloque par la duree -> si un merge est refuse,
@@ -50,8 +50,9 @@ void main() {
     return ProviderContainer(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(testStages)),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(testStages)),
         trekEditLockProvider.overrideWithValue(lock),
       ],
     );
@@ -71,118 +72,151 @@ void main() {
   /// Signature lisible d'un programme : les numeros d'etape par jour
   /// (`R` = jour de repos). Sert a prouver qu'un etat n'a PAS bouge.
   List<String> signature(List<dynamic> days) => [
-        for (final d in days)
-          d.isRestDay
-              ? 'R'
-              : (d.stages as List<StageModel>)
-                  .map((s) => s.stageNumber)
-                  .join('+'),
-      ];
+    for (final d in days)
+      d.isRestDay
+          ? 'R'
+          : (d.stages as List<StageModel>).map((s) => s.stageNumber).join('+'),
+  ];
 
   group('R12 — perimetre du verrou', () {
     test('Sans rando demarree, le programme reste ENTIEREMENT editable', () async {
-      final (container, notifier) =
-          await setUpProgram(lock: TrekEditLock.none);
+      final (container, notifier) = await setUpProgram(lock: TrekEditLock.none);
 
       expect(notifier.lockedDayCount, 0, reason: 'rien de fait, rien de fige');
-      expect(notifier.canReorder, isTrue,
-          reason: 'en preparation on peut encore tout reorganiser');
-      // TACHE 558 : un jour mono-etape SE SEPARE desormais — l'etape entiere se
-      // coupe en deux portions de meme energie. C'etait le defaut mesure par la
-      // campagne personas : « Separer » etait mort sur la journee la plus dure
-      // du sentier, celle qui ne porte qu'UNE etape, alors que l'application
-      // conseillait precisement de la couper. « Entierement editable » veut donc
-      // dire un cran de plus qu'avant.
-      expect(notifier.canSplit(0), isTrue,
-          reason: 'un jour mono-etape se coupe en deux demi-journees');
+      expect(
+        notifier.canReorder,
+        isTrue,
+        reason: 'en preparation on peut encore tout reorganiser',
+      );
+      // TACHE 634 (DEM-260929-1327) : un jour mono-etape ne se separe PLUS. Le
+      // lot 558 l'avait ouvert en coupant l'etape en deux demi-journees ;
+      // Christophe l'a refuse (« il n'y a pas de refuge »). « Entierement
+      // editable » ne veut donc pas dire « coupable » : le refus de separer ici
+      // n'est pas un verrou de rando, c'est qu'il n'y a rien a degrouper — et
+      // le code le distingue (« single », pas « locked »).
+      expect(notifier.canSplit(0), isFalse);
+      expect(
+        notifier.splitBlockedReason(0),
+        'single',
+        reason: 'rien a degrouper, et surtout pas un verrou de rando',
+      );
       expect(notifier.canMergeWithNext(0), isTrue);
 
       // Non-regression du flux amont : la reorganisation fonctionne toujours.
       notifier.reorder(0, 3);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['2', '3', '1', '4', '5']);
+      expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+        '2',
+        '3',
+        '1',
+        '4',
+        '5',
+      ]);
 
       container.dispose();
     });
 
-    test('Les jours contenant une etape FAITE sont figes, les suivants non',
-        () async {
-      // Etapes 1 et 2 marchees -> jours 1 et 2 figes (5 jours mono-etape).
-      final (container, notifier) = await setUpProgram(
-        lock: const TrekEditLock(
-          trekStarted: true,
-          doneStageIds: {'1', '2'},
-        ),
-      );
+    test(
+      'Les jours contenant une etape FAITE sont figes, les suivants non',
+      () async {
+        // Etapes 1 et 2 marchees -> jours 1 et 2 figes (5 jours mono-etape).
+        final (container, notifier) = await setUpProgram(
+          lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
+        );
 
-      expect(notifier.lockedDayCount, 2);
-      expect(notifier.isDayLocked(0), isTrue);
-      expect(notifier.isDayLocked(1), isTrue);
-      expect(notifier.isDayLocked(2), isFalse);
-      expect(notifier.isStageDone(2), isTrue);
-      expect(notifier.isStageDone(3), isFalse);
+        expect(notifier.lockedDayCount, 2);
+        expect(notifier.isDayLocked(0), isTrue);
+        expect(notifier.isDayLocked(1), isTrue);
+        expect(notifier.isDayLocked(2), isFalse);
+        expect(notifier.isStageDone(2), isTrue);
+        expect(notifier.isStageDone(3), isFalse);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
   });
 
   group('R12 — un jour / une etape DEJA FAIT ne peut pas etre modifie', () {
-    test('REGROUPER est refuse sur un jour deja marche (raison « locked »)',
-        () async {
-      final (container, notifier) = await setUpProgram(
-        lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
-      );
-      final before = signature(container.read(plannedDaysProvider('test-trail')));
+    test(
+      'REGROUPER est refuse sur un jour deja marche (raison « locked »)',
+      () async {
+        final (container, notifier) = await setUpProgram(
+          lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
+        );
+        final before = signature(
+          container.read(plannedDaysProvider('test-trail')),
+        );
 
-      expect(notifier.canMergeWithNext(0), isFalse);
-      expect(notifier.mergeBlockedReason(0), 'locked');
-      expect(notifier.canMergeWithNext(1), isFalse);
-      expect(notifier.mergeBlockedReason(1), 'locked');
+        expect(notifier.canMergeWithNext(0), isFalse);
+        expect(notifier.mergeBlockedReason(0), 'locked');
+        expect(notifier.canMergeWithNext(1), isFalse);
+        expect(notifier.mergeBlockedReason(1), 'locked');
 
-      // Appel FORCE : la garde tient meme si l'UI etait contournee.
-      notifier.mergeWithNext(0);
-      notifier.mergeWithNext(1);
+        // Appel FORCE : la garde tient meme si l'UI etait contournee.
+        notifier.mergeWithNext(0);
+        notifier.mergeWithNext(1);
 
-      expect(signature(container.read(plannedDaysProvider('test-trail'))), before,
-          reason: 'aucun jour deja marche ne doit avoir bouge');
-      container.dispose();
-    });
+        expect(
+          signature(container.read(plannedDaysProvider('test-trail'))),
+          before,
+          reason: 'aucun jour deja marche ne doit avoir bouge',
+        );
+        container.dispose();
+      },
+    );
 
-    test('SEPARER est refuse sur un jour deja marche, meme multi-etapes',
-        () async {
-      // 1) En preparation : on regroupe les etapes 1+2 sur le jour 1.
-      final (container, notifier) =
-          await setUpProgram(lock: TrekEditLock.none);
-      notifier.mergeWithNext(0);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))).first,
-          '1+2');
-      expect(notifier.canSplit(0), isTrue,
-          reason: 'avant depart, un jour a 2 etapes est separable');
+    test(
+      'SEPARER est refuse sur un jour deja marche, meme multi-etapes',
+      () async {
+        // 1) En preparation : on regroupe les etapes 1+2 sur le jour 1.
+        final (container, notifier) = await setUpProgram(
+          lock: TrekEditLock.none,
+        );
+        notifier.mergeWithNext(0);
+        expect(
+          signature(container.read(plannedDaysProvider('test-trail'))).first,
+          '1+2',
+        );
+        expect(
+          notifier.canSplit(0),
+          isTrue,
+          reason: 'avant depart, un jour a 2 etapes est separable',
+        );
 
-      // 2) Le randonneur part et marche ce jour-la : il se fige.
-      notifier.applyEditLock(
-        const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
-      );
-      final before = signature(container.read(plannedDaysProvider('test-trail')));
+        // 2) Le randonneur part et marche ce jour-la : il se fige.
+        notifier.applyEditLock(
+          const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
+        );
+        final before = signature(
+          container.read(plannedDaysProvider('test-trail')),
+        );
 
-      expect(notifier.lockedDayCount, 1);
-      expect(notifier.canSplit(0), isFalse);
-      expect(notifier.splitBlockedReason(0), 'locked');
+        expect(notifier.lockedDayCount, 1);
+        expect(notifier.canSplit(0), isFalse);
+        expect(notifier.splitBlockedReason(0), 'locked');
 
-      notifier.splitDay(0);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))), before,
-          reason: 'un jour deja marche ne se separe pas');
+        notifier.splitDay(0);
+        expect(
+          signature(container.read(plannedDaysProvider('test-trail'))),
+          before,
+          reason: 'un jour deja marche ne se separe pas',
+        );
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
 
     test('Un jour de REPOS deja passe ne peut pas etre supprime', () async {
       // Repos insere apres le jour 1 en preparation.
-      final (container, notifier) =
-          await setUpProgram(lock: TrekEditLock.none);
+      final (container, notifier) = await setUpProgram(lock: TrekEditLock.none);
       notifier.addRestDay(0);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', 'R', '2', '3', '4', '5']);
+      expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+        '1',
+        'R',
+        '2',
+        '3',
+        '4',
+        '5',
+      ]);
 
       // Le randonneur a marche les etapes 1 et 2 : le repos (index 1) est
       // derriere lui -> jours 0,1,2 figes.
@@ -193,9 +227,11 @@ void main() {
       expect(notifier.isDayLocked(1), isTrue);
 
       notifier.removeRestDay(1);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', 'R', '2', '3', '4', '5'],
-          reason: 'un repos deja pris ne s efface pas du programme');
+      expect(
+        signature(container.read(plannedDaysProvider('test-trail'))),
+        ['1', 'R', '2', '3', '4', '5'],
+        reason: 'un repos deja pris ne s efface pas du programme',
+      );
 
       container.dispose();
     });
@@ -204,18 +240,29 @@ void main() {
       final (container, notifier) = await setUpProgram(
         lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
       );
-      final before = signature(container.read(plannedDaysProvider('test-trail')));
+      final before = signature(
+        container.read(plannedDaysProvider('test-trail')),
+      );
 
       expect(notifier.canAddRestDayAfter(0), isFalse);
       notifier.addRestDay(0);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))), before,
-          reason: 'on n insere pas un repos entre deux jours deja marches');
+      expect(
+        signature(container.read(plannedDaysProvider('test-trail'))),
+        before,
+        reason: 'on n insere pas un repos entre deux jours deja marches',
+      );
 
       // En revanche, apres le DERNIER jour fige, le repos tombe dans le futur.
       expect(notifier.canAddRestDayAfter(1), isTrue);
       notifier.addRestDay(1);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', '2', 'R', '3', '4', '5']);
+      expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+        '1',
+        '2',
+        'R',
+        '3',
+        '4',
+        '5',
+      ]);
 
       container.dispose();
     });
@@ -226,12 +273,19 @@ void main() {
       );
 
       notifier.regeneratePreservingRestDays();
-      final after = signature(container.read(plannedDaysProvider('test-trail')));
+      final after = signature(
+        container.read(plannedDaysProvider('test-trail')),
+      );
 
-      expect(after.take(2).toList(), ['1', '2'],
-          reason: 'le passe marche est recopie tel quel');
-      expect(after.skip(2).join('+').contains('1'), isFalse,
-          reason: 'une etape deja marchee ne repasse pas dans le futur');
+      expect(after.take(2).toList(), [
+        '1',
+        '2',
+      ], reason: 'le passe marche est recopie tel quel');
+      expect(
+        after.skip(2).join('+').contains('1'),
+        isFalse,
+        reason: 'une etape deja marchee ne repasse pas dans le futur',
+      );
 
       container.dispose();
     });
@@ -242,7 +296,9 @@ void main() {
       final (container, notifier) = await setUpProgram(
         lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
       );
-      final before = signature(container.read(plannedDaysProvider('test-trail')));
+      final before = signature(
+        container.read(plannedDaysProvider('test-trail')),
+      );
       expect(before, ['1', '2', '3', '4', '5']);
       expect(notifier.canReorder, isFalse);
 
@@ -252,56 +308,83 @@ void main() {
       notifier.reorder(0, 4); // repousser une etape deja marchee a la fin
       notifier.reorder(3, 2); // inverser deux jours pourtant tous deux a venir
 
-      expect(signature(container.read(plannedDaysProvider('test-trail'))), before,
-          reason: 'une fois parti, l ordre des etapes est gele');
-      container.dispose();
-    });
-
-    test('REORGANISER est refuse meme si aucune etape n est encore terminee',
-        () async {
-      // Cas limite : trek demarre a l instant, rien de marche. Le passe est
-      // vide, mais l ordre est deja engage -> pas d inversion.
-      final (container, notifier) = await setUpProgram(
-        lock: const TrekEditLock(trekStarted: true),
+      expect(
+        signature(container.read(plannedDaysProvider('test-trail'))),
+        before,
+        reason: 'une fois parti, l ordre des etapes est gele',
       );
-      expect(notifier.lockedDayCount, 0);
-      expect(notifier.canReorder, isFalse);
-
-      notifier.reorder(4, 0);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', '2', '3', '4', '5']);
       container.dispose();
     });
+
+    test(
+      'REORGANISER est refuse meme si aucune etape n est encore terminee',
+      () async {
+        // Cas limite : trek demarre a l instant, rien de marche. Le passe est
+        // vide, mais l ordre est deja engage -> pas d inversion.
+        final (container, notifier) = await setUpProgram(
+          lock: const TrekEditLock(trekStarted: true),
+        );
+        expect(notifier.lockedDayCount, 0);
+        expect(notifier.canReorder, isFalse);
+
+        notifier.reorder(4, 0);
+        expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+        ]);
+        container.dispose();
+      },
+    );
   });
 
   group('R12 — la partie NON FAITE reste bien modifiable', () {
-    test('Regrouper / separer / repos fonctionnent sur les jours a venir',
-        () async {
-      final (container, notifier) = await setUpProgram(
-        lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
-      );
+    test(
+      'Regrouper / separer / repos fonctionnent sur les jours a venir',
+      () async {
+        final (container, notifier) = await setUpProgram(
+          lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
+        );
 
-      // Regrouper les jours 3 et 4 (a venir).
-      expect(notifier.canMergeWithNext(2), isTrue);
-      expect(notifier.mergeBlockedReason(2), isNull);
-      notifier.mergeWithNext(2);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', '2', '3+4', '5']);
+        // Regrouper les jours 3 et 4 (a venir).
+        expect(notifier.canMergeWithNext(2), isTrue);
+        expect(notifier.mergeBlockedReason(2), isNull);
+        notifier.mergeWithNext(2);
+        expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+          '1',
+          '2',
+          '3+4',
+          '5',
+        ]);
 
-      // Puis le reseparer : c'est un jour a venir, il reste libre.
-      expect(notifier.canSplit(2), isTrue);
-      notifier.splitDay(2);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', '2', '3', '4', '5']);
+        // Puis le reseparer : c'est un jour a venir, il reste libre.
+        expect(notifier.canSplit(2), isTrue);
+        notifier.splitDay(2);
+        expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+        ]);
 
-      // Et y inserer un jour de repos.
-      notifier.addRestDay(3);
-      expect(signature(container.read(plannedDaysProvider('test-trail'))),
-          ['1', '2', '3', '4', 'R', '5']);
+        // Et y inserer un jour de repos.
+        notifier.addRestDay(3);
+        expect(signature(container.read(plannedDaysProvider('test-trail'))), [
+          '1',
+          '2',
+          '3',
+          '4',
+          'R',
+          '5',
+        ]);
 
-      // Le passe marche n a pas bouge d un pouce pendant tout ca.
-      expect(notifier.lockedDayCount, 2);
-      container.dispose();
-    });
+        // Le passe marche n a pas bouge d un pouce pendant tout ca.
+        expect(notifier.lockedDayCount, 2);
+        container.dispose();
+      },
+    );
   });
 }
