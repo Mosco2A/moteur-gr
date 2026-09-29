@@ -46,6 +46,11 @@ app.*.map.json
 
 # Tests de regles Firestore (P0-2) + emulateur Firebase
 firestore-tests/node_modules/
+# Cloud Functions (le collecteur serveur, tache 624) — les dependances npm ne
+# sont jamais committees : `firebase deploy` les reinstalle, et un node_modules
+# versionne est a la fois enorme et faux (binaires par plateforme).
+functions/node_modules/
+functions/package-lock.json.bak
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
