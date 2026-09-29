@@ -8,6 +8,7 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../trail/providers/stages_provider.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Ecran liste des etapes d'un sentier.
 ///
@@ -81,7 +82,7 @@ class _StageCard extends StatelessWidget {
           '${stage.distanceKm.toStringAsFixed(1)} km  '
           'D+ ${stage.elevationGainM} m',
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const StepIcon(StepwaysIcons.chevronDroite),
       ),
     );
   }

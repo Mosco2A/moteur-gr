@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../providers/ads_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LE BOUTON « UN JOUR SANS PUBLICITE » (tache 614, demande de Christophe du
 /// 28/09 11:41 : « un bouton 1 jour sans pub : regarder la video »).
@@ -86,7 +87,7 @@ class _RewardedNoAdsButtonState extends ConsumerState<RewardedNoAdsButton> {
         variant: AppButtonVariant.outline,
         isLoading: _busy,
         minHeight: widget.compact ? 44 : 48,
-        icon: Icons.ondemand_video_outlined,
+        icon: StepwaysIcons.video,
         label: t.monetization.rewardedCta,
         onPressed: _busy ? null : _watch,
       ),

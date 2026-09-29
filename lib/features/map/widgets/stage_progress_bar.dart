@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Barre de progression d'étape affichée en bas de la carte.
 ///
@@ -182,8 +183,8 @@ class StageProgressBar extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.warning_amber_rounded,
+                      const StepIcon(
+                        StepwaysIcons.danger,
                         size: 14,
                         color: AppTheme.rougeUrgence,
                       ),
@@ -253,7 +254,7 @@ class StageProgressBar extends StatelessWidget {
                   _StatRow(children: [
                     if (_shows(totalDistanceKm))
                       _MeasuredStat(
-                        icon: Icons.straighten,
+                        icon: StepwaysIcons.distance,
                         label: t.tracking.total,
                         value: _valueOrPending(
                           totalDistanceKm == null
@@ -263,7 +264,7 @@ class StageProgressBar extends StatelessWidget {
                       ),
                     if (_shows(distanceCoveredKm))
                       _MeasuredStat(
-                        icon: Icons.directions_walk,
+                        icon: StepwaysIcons.pas,
                         label: t.tracking.covered,
                         value: _valueOrPending(
                           distanceCoveredKm == null
@@ -273,7 +274,7 @@ class StageProgressBar extends StatelessWidget {
                       ),
                     if (_shows(avgSpeedKmh))
                       _MeasuredStat(
-                        icon: Icons.speed,
+                        icon: StepwaysIcons.vitesse,
                         label: t.tracking.avgSpeed,
                         value: _valueOrPending(
                           avgSpeedKmh == null
@@ -286,7 +287,7 @@ class StageProgressBar extends StatelessWidget {
                   _StatRow(children: [
                     if (_shows(elevationGainM))
                       _MeasuredStat(
-                        icon: Icons.trending_up,
+                        icon: StepwaysIcons.denivelePlus,
                         label: t.tracking.dPlus,
                         value: _valueOrPending(
                           elevationGainM == null ? null : '$elevationGainM m',
@@ -294,7 +295,7 @@ class StageProgressBar extends StatelessWidget {
                       ),
                     if (_shows(elevationLossM))
                       _MeasuredStat(
-                        icon: Icons.trending_down,
+                        icon: StepwaysIcons.deniveleMoins,
                         label: t.tracking.dMinus,
                         value: _valueOrPending(
                           elevationLossM == null ? null : '$elevationLossM m',
@@ -302,7 +303,7 @@ class StageProgressBar extends StatelessWidget {
                       ),
                     if (_shows(altitudeM))
                       _MeasuredStat(
-                        icon: Icons.terrain,
+                        icon: StepwaysIcons.sommet,
                         label: t.tracking.altitude,
                         value: _valueOrPending(
                           altitudeM == null ? null : '${altitudeM!.round()} m',
@@ -369,7 +370,7 @@ class _MeasuredStat extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -385,7 +386,7 @@ class _MeasuredStat extends StatelessWidget {
           // Grosse icône (parité GR20 : 28 px), dans la couleur d'accent du
           // sentier plutôt qu'en gris : c'est le repère qu'on attrape en
           // premier sur un écran de terrain.
-          Icon(icon, size: 28, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 28, color: theme.colorScheme.primary),
           const SizedBox(height: 2),
           Text(
             value,

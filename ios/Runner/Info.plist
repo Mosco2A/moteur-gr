@@ -117,5 +117,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- TACHE 632 — ECRAN DE DEMARRAGE. Ces deux cles sont ce que
+	     `flutter_native_splash` pose pour un splash `fullscreen: true` : la barre
+	     d'etat reste masquee pendant la fenetre de demarrage native, le temps que
+	     Flutter dessine sa premiere image. Elles sont ecrites A LA MAIN ici parce
+	     que le generateur, lui, reserialise TOUT le fichier (reindentation
+	     complete, entites HTML decodees) : un diff de 46 lignes pour deux cles,
+	     sur un fichier que d'autres chantiers touchent aussi. Si le generateur est
+	     relance, reprendre cette version-ci plutot que la sienne. -->
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

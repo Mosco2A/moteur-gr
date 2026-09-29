@@ -9,6 +9,7 @@ import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_ui_providers.dart';
 import 'waypoint_freshness.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Feuille de DETAIL d'un waypoint communautaire (F8A-04).
 ///
@@ -57,7 +58,7 @@ class WaypointDetailSheet extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: style.color,
-                  child: Icon(style.icon, color: Colors.white),
+                  child: StepIcon(style.icon, color: Colors.white),
                 ),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
@@ -74,8 +75,8 @@ class WaypointDetailSheet extends ConsumerWidget {
               label: formatFreshness(t, age),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.schedule,
+                  const StepIcon(
+                    StepwaysIcons.duree,
                     size: 16,
                     color: AppTheme.grisTexteSecondaire,
                   ),
@@ -131,7 +132,7 @@ class WaypointDetailSheet extends ConsumerWidget {
               child: AppButton(
                 key: const ValueKey('waypoint-report-button'),
                 variant: AppButtonVariant.outline,
-                icon: Icons.flag_outlined,
+                icon: StepwaysIcons.depart,
                 label: t.waypoints.detail.report,
                 onPressed: () => _onReport(context, t),
               ),
@@ -173,10 +174,10 @@ class _CommentTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
+          StepIcon(
             comment.synced
-                ? Icons.cloud_done_outlined
-                : Icons.cloud_off_outlined,
+                ? StepwaysIcons.synchronise
+                : StepwaysIcons.horsLigne,
             size: 16,
             color: comment.synced
                 ? theme.colorScheme.primary

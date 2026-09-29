@@ -10,6 +10,7 @@ import '../domain/walk_test_norms.dart';
 import '../domain/walk_test_result.dart';
 import '../providers/hiker_profile_provider.dart';
 import '../providers/walk_test_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran du test de marche 6 minutes (StepWays LOT 4, Ph2).
 ///
@@ -119,7 +120,7 @@ class _IdleView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(Icons.directions_walk, size: 64, color: colors.primary),
+          StepIcon(StepwaysIcons.pas, size: 64, color: colors.primary),
           const SizedBox(height: AppTheme.spacingBase),
           Text(wt.intro, style: theme.textTheme.bodyLarge),
           const SizedBox(height: AppTheme.spacingLg),
@@ -133,7 +134,7 @@ class _IdleView extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.favorite, color: AppTheme.orangeDifficile),
+                const StepIcon(StepwaysIcons.favori, color: AppTheme.orangeDifficile),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -147,7 +148,7 @@ class _IdleView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingXl),
           AppButton(
             minHeight: 52,
-            icon: Icons.play_arrow,
+            icon: StepwaysIcons.enregistrer,
             label: wt.start,
             onPressed: () =>
                 ref.read(walkTestControllerProvider.notifier).start(
@@ -239,7 +240,7 @@ class _RunningView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingXl),
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.stop,
+            icon: StepwaysIcons.stop,
             label: wt.cancel,
             onPressed: () =>
                 ref.read(walkTestControllerProvider.notifier).cancel(),
@@ -279,7 +280,7 @@ class _ResultView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(Icons.emoji_events, size: 56, color: colors.primary),
+          StepIcon(StepwaysIcons.diplome, size: 56, color: colors.primary),
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             wt.resultTitle,
@@ -315,7 +316,7 @@ class _ResultView extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.straighten, size: 18, color: colors.primary),
+                StepIcon(StepwaysIcons.distance, size: 18, color: colors.primary),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -334,7 +335,7 @@ class _ResultView extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, size: 18, color: colors.primary),
+                StepIcon(StepwaysIcons.info, size: 18, color: colors.primary),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -350,7 +351,7 @@ class _ResultView extends ConsumerWidget {
           // Info rappel mensuel (planifie a la fin du test).
           Row(
             children: [
-              Icon(Icons.event_repeat, size: 18, color: colors.primary),
+              StepIcon(StepwaysIcons.calendrier, size: 18, color: colors.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -363,7 +364,7 @@ class _ResultView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingXl),
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.refresh,
+            icon: StepwaysIcons.rafraichir,
             label: wt.doneAgain,
             onPressed: () =>
                 ref.read(walkTestControllerProvider.notifier).reset(),
@@ -423,7 +424,7 @@ class _GpsDeniedView extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.location_off,
+            StepIcon(StepwaysIcons.gpsPerdu,
                 size: 56, color: theme.colorScheme.error),
             const SizedBox(height: AppTheme.spacingBase),
             // DEUX CAUSES, DEUX PHRASES (tache 579). « Autorisez la
@@ -442,7 +443,7 @@ class _GpsDeniedView extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
             AppButton(
               variant: AppButtonVariant.outline,
-              icon: Icons.arrow_back,
+              icon: StepwaysIcons.flecheArriere,
               label: wt.cancel,
               onPressed: () =>
                   ref.read(walkTestControllerProvider.notifier).reset(),

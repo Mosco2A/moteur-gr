@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/past_hike.dart';
 import '../providers/hiker_profile_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran « Vos 5 dernieres randos » (StepWays LOT 4, Ph3).
 ///
@@ -152,7 +153,7 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
               if (hikes.length < 5)
                 AppButton(
                   variant: AppButtonVariant.outline,
-                  icon: Icons.add,
+                  icon: StepwaysIcons.plus,
                   label: ph.addHike,
                   onPressed: () => _addOrEdit(count: hikes.length),
                 ),
@@ -162,7 +163,7 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
               // remplace — on ne comble pas la place laissee par une donnee
               // qu'on vient de juger inutile.
               AppButton(
-                icon: Icons.arrow_back,
+                icon: StepwaysIcons.flecheArriere,
                 label: ph.backToFeasibility,
                 onPressed: _backToFeasibility,
               ),
@@ -204,13 +205,13 @@ class _HikeCard extends StatelessWidget {
                 children: [
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.edit, size: 20),
+                    icon: const StepIcon(StepwaysIcons.crayon, size: 20),
                     tooltip: ph.editHike,
                     onPressed: onEdit,
                   ),
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.delete_outline, size: 20),
+                    icon: const StepIcon(StepwaysIcons.corbeille, size: 20),
                     tooltip: ph.deleteHike,
                     onPressed: onDelete,
                   ),
@@ -223,19 +224,19 @@ class _HikeCard extends StatelessWidget {
             runSpacing: AppTheme.spacingXs,
             children: [
               _Chip(
-                icon: Icons.calendar_today,
+                icon: StepwaysIcons.calendrier,
                 text: '${hike.days} ${ph.fieldDays.toLowerCase()}',
               ),
               _Chip(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.distance,
                 text: '${hike.totalDistanceKm.round()} km',
               ),
               _Chip(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 text: '${hike.totalElevationGain} m D+',
               ),
               _Chip(
-                icon: Icons.schedule,
+                icon: StepwaysIcons.duree,
                 text:
                     '${hike.avgWalkHoursPerDay.toStringAsFixed(1)} h/${ph.perDay}',
               ),
@@ -249,7 +250,7 @@ class _HikeCard extends StatelessWidget {
 
 class _Chip extends StatelessWidget {
   const _Chip({required this.icon, required this.text});
-  final IconData icon;
+  final String icon;
   final String text;
   @override
   Widget build(BuildContext context) {
@@ -257,7 +258,7 @@ class _Chip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: theme.colorScheme.primary),
+        StepIcon(icon, size: 16, color: theme.colorScheme.primary),
         const SizedBox(width: 4),
         Text(text, style: theme.textTheme.bodySmall),
       ],
@@ -367,7 +368,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             // Date
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.calendar_today),
+              leading: const StepIcon(StepwaysIcons.calendrier),
               title: Text(ph.fieldDate),
               trailing: Text(
                 '${_date.day.toString().padLeft(2, '0')}/'
@@ -388,29 +389,29 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             // SAISIE (maxLength) ET A LA VALIDATION (min/max metier + message
             // clair). Bornes = mandat : jours 1-60, marche 0-24 h/j,
             // denivele 0-5000 m, distance 0-100 km.
-            _num(_daysCtrl, ph.fieldDays, Icons.event,
+            _num(_daysCtrl, ph.fieldDays, StepwaysIcons.calendrier,
                 decimal: false,
                 min: 1,
                 max: 60,
                 maxLength: 2,
                 required: true,
                 error: ph.errorDays),
-            _num(_hoursCtrl, ph.fieldAvgHours, Icons.schedule,
+            _num(_hoursCtrl, ph.fieldAvgHours, StepwaysIcons.duree,
                 min: 0, max: 24, maxLength: 4, error: ph.errorHours),
-            _num(_elevCtrl, ph.fieldElevation, Icons.trending_up,
+            _num(_elevCtrl, ph.fieldElevation, StepwaysIcons.denivelePlus,
                 decimal: false,
                 min: 0,
                 max: 5000,
                 maxLength: 4,
                 error: ph.errorElevation),
-            _num(_distCtrl, ph.fieldDistance, Icons.straighten,
+            _num(_distCtrl, ph.fieldDistance, StepwaysIcons.distance,
                 min: 0, max: 100, maxLength: 5, error: ph.errorDistance),
             if (_formError case final message?)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 child: Row(
                   children: [
-                    Icon(Icons.error_outline,
+                    StepIcon(StepwaysIcons.danger,
                         size: 18, color: theme.colorScheme.error),
                     const SizedBox(width: AppTheme.spacingXs),
                     Expanded(
@@ -425,7 +426,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
                 ),
               ),
             const SizedBox(height: AppTheme.spacingLg),
-            AppButton(icon: Icons.check, label: ph.save, onPressed: _submit),
+            AppButton(icon: StepwaysIcons.coche, label: ph.save, onPressed: _submit),
           ],
         ),
       ),
@@ -444,7 +445,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
   Widget _num(
     TextEditingController c,
     String label,
-    IconData icon, {
+    String icon, {
     required num min,
     required num max,
     required int maxLength,
@@ -477,7 +478,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
           labelText: label,
           // Compteur masque : la borne est deja portee par maxLength (physique).
           counterText: '',
-          prefixIcon: Icon(icon),
+          prefixIcon: StepIcon(icon),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusInput),
           ),

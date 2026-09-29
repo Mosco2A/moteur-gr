@@ -9,6 +9,7 @@ import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_screen.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// CE QUE LE VERDICT NE REGARDE PAS — LA MENTION A ETE SUPPRIMEE (tache 552).
 ///
@@ -98,7 +99,7 @@ void main() {
 
   /// Temoin d'ecran de la mention supprimee : son icone, unique dans l'ecran
   /// Faisabilite (`Icons.visibility_off_outlined` n'y servait qu'a elle).
-  final temoinMention = find.byIcon(Icons.visibility_off_outlined);
+  final temoinMention = find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.oeilBarre);
 
   testWidgets('AUCUNE mention hors-perimetre sous un feu ROUGE',
       (tester) async {

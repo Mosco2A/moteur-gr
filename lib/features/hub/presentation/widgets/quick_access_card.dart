@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/branding/stepways_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/app_card.dart';
 import 'step_status_icon.dart';
@@ -21,7 +22,8 @@ import 'step_status_icon.dart';
 class QuickAccessCard extends StatelessWidget {
   const QuickAccessCard({
     super.key,
-    required this.icon,
+    this.icon,
+    this.rubrique,
     required this.title,
     required this.subtitle,
     required this.onTap,
@@ -29,10 +31,23 @@ class QuickAccessCard extends StatelessWidget {
     this.enabled = true,
     this.lockedLabel,
     this.stepStatus,
-  });
+  }) : assert(
+         (icon == null) != (rubrique == null),
+         'une carte porte UNE icone : une rubrique (bicolore) ou une icone '
+         'Stepways (monochrome)',
+       );
 
-  /// Icone illustrant la destination.
-  final IconData icon;
+  /// Chemin d'une icone Stepways MONOCHROME ([StepwaysIcons]) — pour les cartes
+  /// qui ne sont pas l'une des 20 rubriques (secours, signaler, cartes hors
+  /// ligne...). Exclusif avec [rubrique].
+  final String? icon;
+
+  /// L'une des 20 rubriques de l'application. C'est la voie normale : la carte
+  /// montre alors le dessin BICOLORE de Christophe, et retombe d'elle-meme sur
+  /// le trace monochrome grise quand la carte est verrouillee — un dessin
+  /// bicolore fige resterait vif a cote d'un titre eteint.
+  final RubriqueStepways? rubrique;
+
 
   /// Couleur categorielle de l'icone (retour Chris 09/09, reco #IR02).
   ///
@@ -64,6 +79,25 @@ class QuickAccessCard extends StatelessWidget {
   /// posee sous le sous-titre — signal de progression sur les cartes de prepa.
   /// `null` -> aucune coche (cartes sans notion de progression).
   final PlanningStepStatus? stepStatus;
+
+  /// Le dessin de la carte (tache 632).
+  ///
+  /// La rubrique s'affiche en BICOLORE tant que la carte est active et qu'aucune
+  /// couleur categorielle n'est imposee. Des que l'une des deux conditions tombe
+  /// — carte verrouillee, ou couleur demandee par l'appelant — on passe au trace
+  /// monochrome : le bicolore fige ignorerait la couleur et la carte grisee
+  /// garderait une icone vive, ce qui brouillerait le verrou.
+  Widget _icone(Color couleurEffective) {
+    if (rubrique case final r?) {
+      final impose = !enabled || iconColor != null;
+      return IconeStepways(
+        r,
+        taille: 24,
+        couleur: impose ? couleurEffective : null,
+      );
+    }
+    return StepIcon(icon!, color: couleurEffective, size: 24);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,14 +140,14 @@ class QuickAccessCard extends StatelessWidget {
                   color: effectiveIconColor.withAlpha(enabled ? 30 : 20),
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
-                child: Icon(icon, color: effectiveIconColor, size: 24),
+                child: _icone(effectiveIconColor),
               ),
               if (!enabled)
                 Positioned(
                   right: 0,
                   top: 0,
-                  child: Icon(
-                    Icons.lock_outline,
+                  child: StepIcon(
+                    StepwaysIcons.cadenas,
                     size: 18,
                     color: scheme.onSurface.withValues(alpha: 0.38),
                   ),

@@ -10,6 +10,7 @@ import '../../booking/providers/hebergement_peripherique_providers.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ECRAN D'ABONNEMENT SANS PUBLICITE + RESTAURATION DES ACHATS (tache 594, A3).
 ///
@@ -149,8 +150,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   padding: const EdgeInsets.all(AppTheme.spacingBase),
                   child: Row(
                     children: [
-                      Icon(
-                        actif ? Icons.verified : Icons.remove_circle_outline,
+                      StepIcon(
+                        actif ? StepwaysIcons.diplome : StepwaysIcons.moins,
                         color: actif
                             ? AppTheme.vertFacile
                             : AppTheme.grisTexteSecondaire,
@@ -181,7 +182,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: Row(
                 children: [
-                  Icon(Icons.sell_outlined, color: theme.colorScheme.primary),
+                  StepIcon(StepwaysIcons.prix, color: theme.colorScheme.primary),
                   const SizedBox(width: AppTheme.spacingMd),
                   Expanded(
                     child: Text(
@@ -201,20 +202,20 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
             // --- Ce que l'abo DONNE ----------------------------------------
             _Ligne(
-              icon: Icons.block,
+              icon: StepwaysIcons.interdit,
               label: t.monetization.subscriptionIncludesNoAds,
             ),
             // Montant NON DECIDE : on le dit, on ne l'invente pas. Decide
             // (27/09) : on l'annonce avec son nombre et sa periodicite.
             if (cagnotte == null)
               _Ligne(
-                icon: Icons.savings_outlined,
+                icon: StepwaysIcons.portefeuille,
                 label: t.monetization.subscriptionAllowancePending,
               )
             else ...[
               _Ligne(
                 key: const ValueKey('abo-cagnotte'),
-                icon: Icons.savings_outlined,
+                icon: StepwaysIcons.portefeuille,
                 label: t.monetization.subscriptionIncludesAllowance(
                   steps: cagnotte,
                 ),
@@ -243,7 +244,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline,
+                  StepIcon(StepwaysIcons.info,
                       size: 20, color: theme.colorScheme.error),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
@@ -259,7 +260,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
             AppButton(
               key: const ValueKey('souscrire-abo'),
-              icon: Icons.workspace_premium,
+              icon: StepwaysIcons.diplome,
               label: t.monetization.subscriptionCta,
               isLoading: _occupe,
               onPressed: _occupe ? null : _souscrire,
@@ -286,7 +287,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             AppButton(
               key: const ValueKey('abo-arreter'),
               variant: AppButtonVariant.outline,
-              icon: Icons.cancel_outlined,
+              icon: StepwaysIcons.croix,
               label: t.monetization.cancelCta,
               onPressed: _occupe ? null : _arreterAbonnement,
             ),
@@ -304,7 +305,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             AppButton(
               key: const ValueKey('restaurer-achats'),
               variant: AppButtonVariant.outline,
-              icon: Icons.restore,
+              icon: StepwaysIcons.rafraichir,
               label: t.monetization.restoreCta,
               onPressed: _occupe ? null : _restaurer,
             ),
@@ -344,7 +345,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 class _Ligne extends StatelessWidget {
   const _Ligne({super.key, required this.icon, required this.label});
 
-  final IconData icon;
+  final String icon;
   final String label;
 
   @override
@@ -354,7 +355,7 @@ class _Ligne extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppTheme.vertFacile),
+          StepIcon(icon, size: 18, color: AppTheme.vertFacile),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],

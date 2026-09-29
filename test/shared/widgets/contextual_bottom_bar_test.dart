@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/routing/contextual_actions_provider.dart';
 import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
 import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du mécanisme DÉCLARATIF de la barre contextuelle (StepWays LOT 3, Ph2).
 ///
@@ -11,7 +12,7 @@ import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 /// set-on-mount / clear-on-dispose via [ContextualActionsMixin] ; cibles ≥ 48 dp.
 void main() {
   ContextualAction action(String label) => ContextualAction(
-        icon: Icons.star,
+        icon: StepwaysIcons.favori,
         label: label,
         onPressed: () {},
       );
@@ -136,12 +137,12 @@ class _HostScreenState extends ConsumerState<_HostScreen>
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
         ContextualAction(
-          icon: Icons.assignment_outlined,
+          icon: StepwaysIcons.programme,
           label: 'Preparer',
           onPressed: () {},
         ),
         ContextualAction(
-          icon: Icons.hiking,
+          icon: StepwaysIcons.chaussure,
           label: 'Randonner',
           onPressed: () {},
         ),

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 
 import '../../../i18n/translations.g.dart';
 import '../domain/models/stage_accommodation.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Mapping UI des types d'hebergement (#81752).
 ///
@@ -11,23 +11,23 @@ import '../domain/models/stage_accommodation.dart';
 /// d'origine n'est jamais alteree.
 
 /// Icone associee au type d'hebergement.
-IconData accommodationTypeIcon(AccommodationType type) {
+String accommodationTypeIcon(AccommodationType type) {
   switch (type) {
     case AccommodationTypeValues.refuge:
-      return Icons.house;
+      return StepwaysIcons.hebergement;
     case AccommodationTypeValues.bergerie:
-      return Icons.cabin;
+      return StepwaysIcons.nuitees;
     case AccommodationTypeValues.gite:
-      return Icons.cottage;
+      return StepwaysIcons.hebergement;
     case AccommodationTypeValues.hotel:
-      return Icons.hotel;
+      return StepwaysIcons.hebergement;
     case AccommodationTypeValues.camping:
-      return Icons.park;
+      return StepwaysIcons.foret;
     case AccommodationTypeValues.bivouac:
-      return Icons.nights_stay;
+      return StepwaysIcons.nuitees;
     default:
       // Type inconnu : icone generique hebergement.
-      return Icons.holiday_village;
+      return StepwaysIcons.hebergement;
   }
 }
 

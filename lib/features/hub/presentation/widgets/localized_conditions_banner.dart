@@ -13,6 +13,7 @@ import '../../../weather/providers/fire_risk_providers.dart'
     show FireRiskDay, trailFireRiskProvider;
 import '../../../weather/providers/weather_providers.dart';
 import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
+import '../../../../core/branding/stepways_icons.dart';
 
 /// BANDEAU « ICI ET MAINTENANT » — MÉTÉO PENDANT LA RANDO, AU JOUR J (R11).
 ///
@@ -87,8 +88,8 @@ class LocalizedConditionsBanner extends ConsumerWidget {
           // Titre du bandeau (« Ici et maintenant ») + localisation par étape.
           Row(
             children: [
-              const Icon(
-                Icons.my_location,
+              const StepIcon(
+                StepwaysIcons.maPosition,
                 size: 16,
                 color: AppTheme.phaseHike,
               ),
@@ -129,7 +130,7 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => context.push('/trail/$trailId/weather'),
-              icon: const Icon(Icons.wb_sunny_outlined, size: 18),
+              icon: const StepIcon(StepwaysIcons.meteo, size: 18),
               label: Text(t.navPilote.weatherBannerStages),
             ),
           ),
@@ -160,8 +161,8 @@ class LocalizedConditionsBanner extends ConsumerWidget {
         child: CircularProgressIndicator(strokeWidth: 2),
       );
     }
-    return Icon(
-      Icons.wb_cloudy_outlined,
+    return StepIcon(
+      StepwaysIcons.meteo,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );
@@ -229,7 +230,7 @@ class _FireChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.local_fire_department, size: 14, color: color),
+            StepIcon(StepwaysIcons.incendie, size: 14, color: color),
             const SizedBox(width: 4),
             Text(
               t.fireRisk.levelBadge(level: level),

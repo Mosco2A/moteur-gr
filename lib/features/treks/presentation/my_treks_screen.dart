@@ -16,6 +16,7 @@ import '../domain/trek_lifecycle_state.dart';
 import '../domain/trek_summary.dart';
 import '../providers/my_treks_provider.dart';
 import 'widgets/trek_summary_card.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran d'accueil « Mes treks » (StepWays LOT 2, Phase 4 / §2).
 ///
@@ -57,12 +58,12 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
         // sur le COCKPIT d'un sentier non choisi — le defaut de Chris du 26/09.
         // En empilant, le retour DEPILE naturellement vers « Mes treks ».
         ContextualAction(
-          icon: Icons.explore_outlined,
+          icon: StepwaysIcons.catalogueSentiers,
           label: t.myTreks.discoverTitle,
           onPressed: () => context.push('/catalog'),
         ),
         ContextualAction(
-          icon: Icons.person_outline,
+          icon: StepwaysIcons.monCompte,
           label: t.myTreks.accountTitle,
           onPressed: () => context.push('/profile'),
         ),
@@ -72,7 +73,7 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
         // apres l'onboarding. On retablit l'acces ici (SPEC §4 : reglages dans
         // l'aire « Mon compte » de l'accueil). push -> retour propre.
         ContextualAction(
-          icon: Icons.settings_outlined,
+          icon: StepwaysIcons.reglages,
           label: t.nav.settings,
           onPressed: () => context.push('/settings'),
         ),
@@ -154,14 +155,14 @@ class _MyTreksBody extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXl),
             child: EmptyState(
-              icon: Icons.explore_outlined,
+              icon: StepwaysIcons.catalogueSentiers,
               title: t.myTreks.emptyTitle,
               subtitle: t.myTreks.empty,
               action: FilledButton.icon(
                 key: const ValueKey('my-treks-empty-discover'),
                 // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
                 onPressed: () => context.push('/catalog'),
-                icon: const Icon(Icons.explore_outlined),
+                icon: const StepIcon(StepwaysIcons.catalogueSentiers),
                 label: Text(t.myTreks.discoverTitle),
               ),
             ),
@@ -190,17 +191,17 @@ class _MyTreksBody extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd),
           child: HubSection(
             title: t.nav.myTreks,
-            icon: Icons.explore_outlined,
+            icon: StepwaysIcons.catalogueSentiers,
             cards: [
               QuickAccessCard(
-                icon: Icons.explore_outlined,
+                icon: StepwaysIcons.catalogueSentiers,
                 title: t.myTreks.discoverTitle,
                 subtitle: t.myTreks.discoverSubtitle,
                 // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
                 onTap: () => context.push('/catalog'),
               ),
               QuickAccessCard(
-                icon: Icons.person_outline,
+                icon: StepwaysIcons.monCompte,
                 title: t.myTreks.accountTitle,
                 subtitle: t.myTreks.accountSubtitle,
                 onTap: () => context.push('/profile'),
@@ -210,7 +211,7 @@ class _MyTreksBody extends ConsumerWidget {
               // atteignables depuis l'accueil apres l'onboarding (l'onglet
               // « Plus », seule porte historique, a disparu au big-bang L3).
               QuickAccessCard(
-                icon: Icons.settings_outlined,
+                icon: StepwaysIcons.reglages,
                 title: t.nav.settings,
                 subtitle: t.myTreks.settingsSubtitle,
                 onTap: () => context.push('/settings'),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import '../../../../../i18n/translations.g.dart';
+import '../../../../../core/branding/stepways_icons.dart';
 
 /// Controles de carte — zoom in, zoom out, centrer sur moi.
 ///
@@ -46,7 +47,7 @@ class MapControls extends StatelessWidget {
               tooltip: t.a11y.zoomIn,
               backgroundColor: colorScheme.primaryContainer,
               foregroundColor: colorScheme.onPrimaryContainer,
-              child: const Icon(Icons.add),
+              child: const StepIcon(StepwaysIcons.plus),
             ),
           ),
           const SizedBox(height: 8),
@@ -58,7 +59,7 @@ class MapControls extends StatelessWidget {
               tooltip: t.a11y.zoomOut,
               backgroundColor: colorScheme.primaryContainer,
               foregroundColor: colorScheme.onPrimaryContainer,
-              child: const Icon(Icons.remove),
+              child: const StepIcon(StepwaysIcons.moins),
             ),
           ),
           const SizedBox(height: 8),
@@ -70,7 +71,7 @@ class MapControls extends StatelessWidget {
               tooltip: t.a11y.centerOnMe,
               backgroundColor: colorScheme.primaryContainer,
               foregroundColor: colorScheme.onPrimaryContainer,
-              child: const Icon(Icons.my_location),
+              child: const StepIcon(StepwaysIcons.maPosition),
             ),
           ),
         ],

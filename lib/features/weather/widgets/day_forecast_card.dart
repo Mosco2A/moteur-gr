@@ -4,6 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../models/weather_forecast.dart';
 import '../presentation/weather_date_format.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte de prévision pour un jour.
 ///
@@ -136,19 +137,19 @@ class DayForecastCard extends StatelessWidget {
               children: [
                 _detailChip(
                   context,
-                  Icons.water_drop,
+                  StepwaysIcons.pluie,
                   '${day.precipitationMm.round()} mm',
                   day.precipitationMm >= 20,
                 ),
                 _detailChip(
                   context,
-                  Icons.air,
+                  StepwaysIcons.vent,
                   '${day.windSpeedKmh.round()} km/h',
                   day.windSpeedKmh >= 60,
                 ),
                 _detailChip(
                   context,
-                  Icons.wb_sunny_outlined,
+                  StepwaysIcons.meteo,
                   'UV ${day.uvIndex.round()}',
                   day.uvIndex >= 8,
                 ),
@@ -165,7 +166,7 @@ class DayForecastCard extends StatelessWidget {
   }
 
   Widget _detailChip(
-      BuildContext context, IconData icon, String label, bool isDanger) {
+      BuildContext context, String icon, String label, bool isDanger) {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -181,7 +182,7 @@ class DayForecastCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14,
+          StepIcon(icon, size: 14,
               color: isDanger ? AppTheme.rougeUrgence : null),
           const SizedBox(width: 4),
           Text(
@@ -221,27 +222,27 @@ class WeatherIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(_iconFor(iconName), size: size, color: color);
+    return StepIcon(_iconFor(iconName), size: size, color: color);
   }
 
-  static IconData _iconFor(String iconName) {
+  static String _iconFor(String iconName) {
     switch (iconName) {
       case 'wb_sunny':
-        return Icons.wb_sunny;
+        return StepwaysIcons.soleil;
       case 'cloud':
-        return Icons.cloud;
+        return StepwaysIcons.nuageux;
       case 'foggy':
-        return Icons.foggy;
+        return StepwaysIcons.brouillard;
       case 'grain':
-        return Icons.grain;
+        return StepwaysIcons.pluie;
       case 'water_drop':
-        return Icons.water_drop;
+        return StepwaysIcons.pluie;
       case 'ac_unit':
-        return Icons.ac_unit;
+        return StepwaysIcons.neige;
       case 'thunderstorm':
-        return Icons.thunderstorm;
+        return StepwaysIcons.orage;
       default:
-        return Icons.cloud;
+        return StepwaysIcons.nuageux;
     }
   }
 }

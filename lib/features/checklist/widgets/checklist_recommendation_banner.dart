@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/domain/body_weight_reference.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bandeau « Poids recommande » — CLONE GR20 (BackpackRecommendationBanner).
 ///
@@ -74,7 +75,7 @@ class ChecklistRecommendationBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.cabin, size: 24, color: color),
+          const StepIcon(StepwaysIcons.nuitees, size: 24, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

@@ -10,6 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/analytics/firebase_analytics_sink.dart';
+import 'core/branding/app_branding.dart';
 import 'core/config/firebase_config.dart';
 import 'core/config/mare_a_mare_centre_trail_config.dart';
 import 'core/config/trail_config.dart';
@@ -30,6 +31,7 @@ import 'features/settings/providers/settings_provider.dart';
 import 'features/safety/presentation/porte_consentement_sauvegarde.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
+import 'shared/widgets/app_logo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -354,16 +356,38 @@ class _BootstrapGate extends ConsumerWidget {
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);
 
+    // LE PREMIER ECRAN FLUTTER PROLONGE LE SPLASH NATIF (tache 632).
+    //
+    // L'ecran de demarrage natif (flutter_native_splash, variante Foret) montre
+    // le logo sur le vert #1F3D2B, puis s'efface des que Flutter dessine sa
+    // premiere image — qui etait jusqu'ici un fond de theme CLAIR avec un
+    // tourniquet nu. Le randonneur voyait donc un flash blanc au lancement, et
+    // l'application ne disait son nom nulle part.
+    //
+    // Ce loader reprend la couleur ET le logo du splash natif : la passation ne
+    // se voit plus. C'est l'equivalent du `main_snippet.dart` livre par
+    // Christophe (`FlutterNativeSplash.preserve`), en mieux : la continuite
+    // couvre AUSSI le re-seed apres un changement de sentier, pas seulement
+    // l'amorce initiale — et sans garder la main sur le splash natif, donc sans
+    // risque de figer le demarrage si l'amorce echoue.
     Widget loader() => _BootstrapScaffold(
+      fond: AppBranding.couleurFondSplash,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircularProgressIndicator(),
+          const AppLogo.horizontal(
+            hauteur: 52,
+            surFondSombre: AppBranding.splashSurFondSombre,
+          ),
+          const SizedBox(height: 40),
+          const CircularProgressIndicator(color: _encreSurSplash),
           const SizedBox(height: 24),
           Text(
             t.bootstrap.loading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: _encreSurSplash),
           ),
         ],
       ),
@@ -415,18 +439,30 @@ class _BootstrapGate extends ConsumerWidget {
   }
 }
 
+/// Encre posee sur le fond de l'ecran de demarrage : le creme de la charte sur
+/// le vert sombre (variante Foret), le vert sombre sur le creme (variante
+/// Aube). Derive de la variante active, donc suit `tool/set_branding.py`.
+const Color _encreSurSplash = AppBranding.splashSurFondSombre
+    ? Color(0xFFF4F1E8)
+    : Color(0xFF1F3D2B);
+
 /// Echafaudage commun (loader / erreur) de la porte d'amorce : centre le
-/// contenu sur la couleur de fond du theme actif, pour une transition sans
-/// clignotement vers l'ecran route.
+/// contenu pour une transition sans clignotement vers l'ecran route.
+///
+/// [fond] laisse a null = couleur de fond du theme actif. C'est ce que garde la
+/// branche ERREUR : le message y est ecrit a l'encre du theme, et le forcer sur
+/// le vert du splash le rendrait illisible. Le loader, lui, passe la couleur du
+/// splash pour prolonger l'ecran de demarrage natif (tache 632).
 class _BootstrapScaffold extends StatelessWidget {
-  const _BootstrapScaffold({required this.child});
+  const _BootstrapScaffold({required this.child, this.fond});
 
   final Widget child;
+  final Color? fond;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: fond ?? Theme.of(context).scaffoldBackgroundColor,
       body: Center(child: child),
     );
   }

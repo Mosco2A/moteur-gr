@@ -6,6 +6,7 @@ import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_item_widget.dart';
 import 'checklist_weight_banner.dart' show formatChecklistGrams;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section (Card + ExpansionTile) d'une categorie de materiel — CLONE du rendu
 /// GR20 « Materiel & Sac » (_GearCategoryCard).
@@ -54,7 +55,7 @@ class ChecklistCategorySection extends StatelessWidget {
   /// `IconData(...)` non constante fait echouer la compilation release, qui doit
   /// pouvoir voir chaque glyphe utilise pour alleger la police. Voir la table
   /// [checklistCategoryIcons] (tache 619).
-  IconData get _icon => checklistCategoryIcons[categoryKey] ?? Icons.more_horiz;
+  String get _icon => checklistCategoryIcons[categoryKey] ?? StepwaysIcons.menu;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class ChecklistCategorySection extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
       child: ExpansionTile(
-        leading: Icon(_icon, color: theme.colorScheme.primary, size: 22),
+        leading: StepIcon(_icon, color: theme.colorScheme.primary, size: 22),
         title: Text(
           categoryName,
           style: theme.textTheme.bodyLarge?.copyWith(
@@ -101,7 +102,7 @@ class ChecklistCategorySection extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
               onPressed: onAddItem,
-              icon: const Icon(Icons.add, size: 16),
+              icon: const StepIcon(StepwaysIcons.plus, size: 16),
               label: Text(t.checklist.ui.addItem),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/presentation/accommodation_type_ui.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests finitions V8 F1 — AccommodationType String parametrique (#81752).
 ///
@@ -41,32 +41,32 @@ void main() {
     test('icone dediee pour chaque type connu', () {
       expect(
         accommodationTypeIcon(AccommodationTypeValues.refuge),
-        Icons.house,
+        StepwaysIcons.hebergement,
       );
       expect(
         accommodationTypeIcon(AccommodationTypeValues.bergerie),
-        Icons.cabin,
+        StepwaysIcons.nuitees,
       );
       expect(
         accommodationTypeIcon(AccommodationTypeValues.gite),
-        Icons.cottage,
+        StepwaysIcons.hebergement,
       );
       expect(
         accommodationTypeIcon(AccommodationTypeValues.hotel),
-        Icons.hotel,
+        StepwaysIcons.hebergement,
       );
       expect(
         accommodationTypeIcon(AccommodationTypeValues.camping),
-        Icons.park,
+        StepwaysIcons.foret,
       );
       expect(
         accommodationTypeIcon(AccommodationTypeValues.bivouac),
-        Icons.nights_stay,
+        StepwaysIcons.nuitees,
       );
     });
 
     test('icone generique pour type inconnu', () {
-      expect(accommodationTypeIcon('cabane_perchee'), Icons.holiday_village);
+      expect(accommodationTypeIcon('cabane_perchee'), StepwaysIcons.hebergement);
     });
 
     test('libelle i18n pour type connu', () {

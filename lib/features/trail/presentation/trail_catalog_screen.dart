@@ -15,6 +15,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran catalogue des sentiers disponibles.
 ///
@@ -73,7 +74,7 @@ class TrailCatalogScreen extends ConsumerWidget {
       bottomNavigationBar: const BannerAdSlot.horsTrek(),
       body: trails.isEmpty
           ? EmptyState(
-              icon: Icons.explore_off,
+              icon: StepwaysIcons.catalogueSentiers,
               title: t.catalog.emptyTitle,
               subtitle: t.catalog.emptySubtitle,
             )
@@ -183,7 +184,7 @@ class _AvailableTrailCard extends ConsumerWidget {
           Row(
             children: [
               ExcludeSemantics(
-                child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+                child: StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -247,17 +248,17 @@ class _AvailableTrailCard extends ConsumerWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               _InfoChip(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.distance,
                 label: '${trail.totalDistanceKm.toStringAsFixed(0)} km',
                 theme: theme,
               ),
               _InfoChip(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 label: '${trail.totalElevationGain} m D+',
                 theme: theme,
               ),
               _InfoChip(
-                icon: Icons.flag,
+                icon: StepwaysIcons.depart,
                 label: '${trail.totalStages}',
                 theme: theme,
               ),
@@ -275,7 +276,7 @@ class _AvailableTrailCard extends ConsumerWidget {
               // key/Semantics(button+label) preserves.
               child: AppButton(
                 key: ValueKey('catalog-enter-${trail.id}'),
-                icon: Icons.arrow_forward,
+                icon: StepwaysIcons.flecheAvant,
                 label: t.catalog.enter,
                 onPressed: onEnter,
               ),
@@ -291,7 +292,7 @@ class _AvailableTrailCard extends ConsumerWidget {
               child: AppButton(
                 key: ValueKey('catalog-buy-${trail.id}'),
                 variant: AppButtonVariant.outline,
-                icon: Icons.lock_open,
+                icon: StepwaysIcons.cadenasOuvert,
                 label: t.monetization.buyCtaWithPrice(
                   price: monetisation
                       .eurPriceForTrail(trail.id)
@@ -316,7 +317,7 @@ class _InfoChip extends StatelessWidget {
     required this.theme,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final ThemeData theme;
 
@@ -326,7 +327,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ExcludeSemantics(
-          child: Icon(icon, size: 14, color: AppTheme.grisTexteSecondaire),
+          child: StepIcon(icon, size: 14, color: AppTheme.grisTexteSecondaire),
         ),
         const SizedBox(width: 4),
         Text(

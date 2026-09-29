@@ -7,6 +7,7 @@ import '../../../i18n/translations.g.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_shopping_modal.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Boutons en bas de la checklist — CLONE GR20 (_BottomActions).
 ///
@@ -40,8 +41,8 @@ class ChecklistBottomActions extends ConsumerWidget {
                 state.requiredCount,
                 state.requiredCheckedCount,
               ),
-              icon: Icon(
-                allRequiredChecked ? Icons.check_circle : Icons.warning_amber,
+              icon: StepIcon(
+                allRequiredChecked ? StepwaysIcons.cochePleine : StepwaysIcons.danger,
                 size: 20,
               ),
               label: Text(allRequiredChecked ? ui.bagOk : ui.validateBag),
@@ -67,7 +68,7 @@ class ChecklistBottomActions extends ConsumerWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.undo, size: 18),
+                icon: const StepIcon(StepwaysIcons.annuler, size: 18),
                 label: Text(ui.cancelValidation),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.orangeDifficile,
@@ -82,7 +83,7 @@ class ChecklistBottomActions extends ConsumerWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _openShoppingList(context, ref),
-              icon: const Icon(Icons.add_shopping_cart, size: 18),
+              icon: const StepIcon(StepwaysIcons.panier, size: 18),
               label: Text(ui.shoppingListButton),
             ),
           ),
@@ -91,7 +92,7 @@ class ChecklistBottomActions extends ConsumerWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _shareChecklist(context, ref),
-              icon: const Icon(Icons.group, size: 18),
+              icon: const StepIcon(StepwaysIcons.suiveurs, size: 18),
               label: Text(ui.shareGroup),
             ),
           ),
@@ -100,7 +101,7 @@ class ChecklistBottomActions extends ConsumerWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _shareChecklist(context, ref),
-              icon: const Icon(Icons.share, size: 18),
+              icon: const StepIcon(StepwaysIcons.partager, size: 18),
               label: Text(ui.exportList),
             ),
           ),
@@ -154,7 +155,7 @@ class ChecklistBottomActions extends ConsumerWidget {
         builder: (ctx) => AlertDialog(
           title: Row(
             children: [
-              const Icon(Icons.check_circle, color: AppTheme.vertFacile),
+              const StepIcon(StepwaysIcons.cochePleine, color: AppTheme.vertFacile),
               const SizedBox(width: 8),
               Text(ui.bagValidTitle),
             ],
@@ -217,7 +218,7 @@ class ChecklistBottomActions extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.warning_amber,
+                          const StepIcon(StepwaysIcons.danger,
                               color: AppTheme.orangeDifficile),
                           const SizedBox(width: 8),
                           Expanded(
@@ -244,7 +245,7 @@ class ChecklistBottomActions extends ConsumerWidget {
                                     padding: const EdgeInsets.only(bottom: 2),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.close,
+                                        const StepIcon(StepwaysIcons.croix,
                                             size: 14,
                                             color: AppTheme.rougeUrgence),
                                         const SizedBox(width: 4),

@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../features/ads/presentation/rewarded_no_ads_button.dart';
 import '../../i18n/translations.g.dart';
 import 'app_button.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// ACHETER UN SENTIER — LE GESTE UNIQUE (tache 614).
 ///
@@ -99,8 +100,8 @@ class PaywallSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.workspace_premium,
+            StepIcon(
+              StepwaysIcons.diplome,
               size: 48,
               color: theme.colorScheme.primary,
             ),
@@ -144,7 +145,7 @@ class PaywallSheet extends ConsumerWidget {
             // vient sans explication.
             AppButton(
               key: const Key('paywall-buy-button'),
-              icon: Icons.lock_open,
+              icon: StepwaysIcons.cadenasOuvert,
               label: totalStages > 0
                   ? t.monetization.buyCtaWithPrice(
                       price: price.toStringAsFixed(2),
@@ -226,7 +227,7 @@ class _FeatureLine extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, size: 18, color: AppTheme.vertFacile),
+          const StepIcon(StepwaysIcons.cochePleine, size: 18, color: AppTheme.vertFacile),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],

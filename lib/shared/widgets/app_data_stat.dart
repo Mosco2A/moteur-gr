@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/skin_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Bloc data "gros chiffre" reutilisable (SW-SKIN-L5).
 ///
@@ -49,7 +50,7 @@ class AppDataStat extends StatelessWidget {
   /// Icone optionnelle au-dessus de la valeur (teintee accent). Reprend le
   /// pictogramme des tuiles du HUD tracking ; `null` => pas d'icone (hub,
   /// fiche etape).
-  final IconData? icon;
+  final String? icon;
 
   /// Force le rendu mono tabular de la valeur. `null` => on suit la peau active
   /// (`SkinTheme.usesMonoData`). Expose pour tester / forcer le cockpit sans
@@ -105,7 +106,7 @@ class AppDataStat extends StatelessWidget {
           crossAxisAlignment: crossAxisAlignment,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 18, color: theme.colorScheme.primary),
+              StepIcon(icon!, size: 18, color: theme.colorScheme.primary),
               const SizedBox(height: 2),
             ],
             // Valeur + unite sur la meme ligne de base : l'unite s'aligne sur la

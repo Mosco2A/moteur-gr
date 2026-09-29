@@ -17,6 +17,7 @@ import '../../../safety/providers/signalement_providers.dart';
 import '../../../trail/providers/pois_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Types de POI consideres comme un HEBERGEMENT d'etape (parite GR20 bloc
 /// « Hebergements »). Generique multi-sentiers : couvre les libelles du socle
@@ -499,7 +500,7 @@ class _DepartureArrivalLine extends StatelessWidget {
           .replaceAll('{to}', arrival),
       child: Row(
         children: [
-          Icon(Icons.play_arrow, size: 22, color: theme.colorScheme.primary),
+          StepIcon(StepwaysIcons.enregistrer, size: 22, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -538,7 +539,7 @@ class _WaterSourcesSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.water_drop, size: 20, color: waterColor),
+            StepIcon(StepwaysIcons.pluie, size: 20, color: waterColor),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.waterSources.title,
@@ -577,8 +578,8 @@ class _WaterSourcesSection extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(
-                  Icons.warning_amber,
+                const StepIcon(
+                  StepwaysIcons.danger,
                   size: 20,
                   color: AppTheme.rougeUrgence,
                 ),
@@ -638,8 +639,8 @@ class _WaterPointTile extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: Icon(
-                  Icons.water_drop_outlined,
+                child: StepIcon(
+                  StepwaysIcons.pluie,
                   size: 20,
                   color: waterColor,
                 ),
@@ -693,8 +694,8 @@ class _WaterPointTile extends ConsumerWidget {
               child: TextButton.icon(
                 key: ValueKey('water-report-${poi.stageNumber}-${poi.name}'),
                 onPressed: () => _openReportSheet(context, ref),
-                icon: Icon(
-                  Icons.add_location_alt_outlined,
+                icon: StepIcon(
+                  StepwaysIcons.repere,
                   size: 18,
                   color: waterColor,
                 ),
@@ -749,7 +750,7 @@ class _WaterStatusChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 14, color: color),
+            StepIcon(icon, size: 14, color: color),
             const SizedBox(width: 4),
             Text(
               label,
@@ -773,31 +774,31 @@ class _WaterStatusChip extends StatelessWidget {
 }
 
 /// Visuel (libelle i18n, couleur, icone) d'un statut de point d'eau.
-(String, Color, IconData) _statusVisual(String? status) {
+(String, Color, String) _statusVisual(String? status) {
   switch (status) {
     case 'water_available':
       return (
         t.signalement.water.states.available,
         AppTheme.vertFacile,
-        Icons.water_drop,
+        StepwaysIcons.pluie,
       );
     case 'water_low':
       return (
         t.signalement.water.states.low,
         AppTheme.orangeDifficile,
-        Icons.opacity,
+        StepwaysIcons.pluie,
       );
     case 'water_dry':
       return (
         t.signalement.water.states.dry,
         AppTheme.rougeUrgence,
-        Icons.water_drop_outlined,
+        StepwaysIcons.pluie,
       );
     default:
       return (
         t.signalement.water.states.unknown,
         AppTheme.grisTexteSecondaire,
-        Icons.help_outline,
+        StepwaysIcons.aide,
       );
   }
 }
@@ -931,7 +932,7 @@ class _WaterStateButton extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: color),
+              StepIcon(icon, color: color),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
             ],
@@ -960,7 +961,7 @@ class _AccommodationSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.hotel, size: 20, color: AppTheme.orangeDifficile),
+            const StepIcon(StepwaysIcons.hebergement, size: 20, color: AppTheme.orangeDifficile),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.accommodation.title,
@@ -1009,7 +1010,7 @@ class _AccommodationTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(style.icon, size: 32, color: color),
+          StepIcon(style.icon, size: 32, color: color),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
@@ -1107,8 +1108,8 @@ class _AdviceSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(
-              Icons.lightbulb_outline,
+            const StepIcon(
+              StepwaysIcons.ficheConseil,
               size: 20,
               color: AppTheme.jauneModere,
             ),
@@ -1134,8 +1135,8 @@ class _AdviceSection extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(top: 6),
-                      child: Icon(
-                        Icons.circle,
+                      child: StepIcon(
+                        StepwaysIcons.pastille,
                         size: 6,
                         color: AppTheme.jauneModere,
                       ),

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/safety/presentation/sos_button.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// NON-REGRESSION — LOT FIX-2, finding M1.
 ///
@@ -17,7 +18,7 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// contextuelle de la carte ne porte QUE « Etape en cours » et « Journal »
 /// (code + capture `S3_Steve_07_apres_gps` du round 1), et le cockpit n'a
 /// aucune barre du bas. Ce que le harnais observait, c'est son propre finder :
-/// `find.byIcon(Icons.emergency)` attendu FAUX alors que la pastille SOS
+/// `find.byWidgetPredicate((w) => w is StepIcon && w.asset == Icons.emergency)` attendu FAUX alors que la pastille SOS
 /// legitime — l'unique acces — contient justement cette icone. Le test ne
 /// pouvait donc JAMAIS etre satisfait, meme sans aucun doublon.
 ///
@@ -171,7 +172,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
-      expect(find.byIcon(Icons.emergency), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
       expect(
         find.byWidgetPredicate(
           (w) => w is FloatingActionButton && w.heroTag == 'sos_e515',
@@ -185,7 +186,7 @@ void main() {
       await tester.pumpWidget(wrap(TrackingSessionStatus.paused));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.emergency), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
     });
 
     testWidgets('hors trek -> AUCUN acces SOS', (tester) async {
@@ -193,7 +194,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FloatingActionButton), findsNothing);
-      expect(find.byIcon(Icons.emergency), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsNothing);
     });
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/branding/stepways_icons.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -127,17 +128,17 @@ class _HubScreenState extends ConsumerState<HubScreen> {
           // StepWays LOT 2 (Phase 5) : retour a l'accueil « Mes treks » (option
           // A) — l'entree de l'onglet Accueil liste tous les treks possedes.
           IconButton(
-            icon: const Icon(Icons.hiking),
+            icon: const StepIcon(StepwaysIcons.chaussure),
             tooltip: t.nav.myTreks,
             onPressed: () => context.go('/my-treks'),
           ),
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.hub.infoTooltip,
             onPressed: () => _showInfoSheet(context, trailTitle),
           ),
           IconButton(
-            icon: const Icon(Icons.person_outline),
+            icon: const StepIcon(StepwaysIcons.monCompte),
             tooltip: t.hub.profileTooltip,
             onPressed: () => context.push('/profile'),
           ),
@@ -148,7 +149,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
           // atteignable via le header standard du cockpit (SPEC §4 : « Mon compte
           // / reglages / ecrans info : header standard »). push -> retour propre.
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const StepIcon(StepwaysIcons.reglages),
             tooltip: t.nav.settings,
             onPressed: () => context.push('/settings'),
           ),
@@ -293,13 +294,13 @@ class _HubScreenState extends ConsumerState<HubScreen> {
               initiallyExpanded: !showHike && !showAfter,
               cards: [
                 QuickAccessCard(
-                  icon: Icons.quiz_outlined,
+                  rubrique: RubriqueStepways.faisabilite,
                   title: t.hub.cards.feasibility,
                   subtitle: t.hub.cards.feasibilitySub,
                   onTap: () => context.push('/trail/$trailId/feasibility'),
                 ),
                 QuickAccessCard(
-                  icon: Icons.route_outlined,
+                  rubrique: RubriqueStepways.itineraire,
                   title: t.hub.cards.itinerary,
                   subtitle: t.hub.cards.itinerarySub,
                   // PARITE GR20 (#99433) + fix crash retour : « Itineraire »
@@ -310,7 +311,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   onTap: () => context.push('/trail/$trailId/itinerary'),
                 ),
                 QuickAccessCard(
-                  icon: Icons.event_note_outlined,
+                  rubrique: RubriqueStepways.programme,
                   title: t.hub.cards.programme,
                   subtitle: t.hub.cards.programmeSub,
                   onTap: () => context.push('/trail/$trailId/planning'),
@@ -322,7 +323,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // `context.push` -> retour propre (jamais context.go qui viderait
                 // la pile).
                 QuickAccessCard(
-                  icon: Icons.calendar_month,
+                  rubrique: RubriqueStepways.calendrier,
                   title: t.hub.cards.calendar,
                   subtitle: t.hub.cards.calendarSub,
                   onTap: () => context.push('/trail/$trailId/calendar'),
@@ -335,7 +336,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // apres avoir pose le calendrier). Elle est donc ICI, juste
                 // sous « Calendrier », et plus en fin de liste.
                 QuickAccessCard(
-                  icon: Icons.fitness_center,
+                  rubrique: RubriqueStepways.preparationPhysique,
                   title: t.hub.cards.training,
                   subtitle: t.hub.cards.trainingSub,
                   onTap: () => context.push('/training'),
@@ -362,7 +363,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // Place juste apres « Preparation physique » : c'est le meme
                 // moment de la prepa — ce qui concerne le corps du randonneur.
                 QuickAccessCard(
-                  icon: Icons.medical_information_outlined,
+                  rubrique: RubriqueStepways.ficheMedicale,
                   title: t.hub.cards.health,
                   subtitle: t.hub.cards.healthSub,
                   onTap: () => context.push('/health'),
@@ -378,7 +379,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // sentier est un geste de PREPARATION (on part couvert), pas de
                 // terrain : c'est trop tard une fois sans reseau.
                 QuickAccessCard(
-                  icon: Icons.download_for_offline_outlined,
+                  icon: StepwaysIcons.horsLigne,
                   title: t.hub.cards.packs,
                   subtitle: t.hub.cards.packsSub,
                   onTap: () => context.push('/trail/$trailId/packs'),
@@ -388,7 +389,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // Route hors-shell atteinte via `context.push` -> retour propre
                 // (pile preservee, jamais context.go qui viderait la pile).
                 QuickAccessCard(
-                  icon: Icons.cabin,
+                  rubrique: RubriqueStepways.nuitees,
                   title: t.hub.cards.nuitees,
                   subtitle: t.hub.cards.nuiteesSub,
                   onTap: () => context.push('/trail/$trailId/nuitees'),
@@ -401,7 +402,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // propre, pile preservee — jamais context.go qui viderait la
                 // pile). Generique multi-sentiers, zero hardcode de localite.
                 QuickAccessCard(
-                  icon: Icons.directions_bus,
+                  rubrique: RubriqueStepways.transport,
                   title: t.hub.cards.transport,
                   subtitle: t.hub.cards.transportSub,
                   onTap: () => context.push('/trail/$trailId/transport'),
@@ -416,7 +417,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // context.go qui viderait la pile). Generique multi-sentiers,
                 // zero hardcode de localite.
                 QuickAccessCard(
-                  icon: Icons.shopping_cart,
+                  rubrique: RubriqueStepways.ravitaillement,
                   title: t.hub.cards.shop,
                   subtitle: t.hub.cards.shopSub,
                   onTap: () => context.push('/trail/$trailId/shop'),
@@ -429,13 +430,13 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // via `context.push` -> retour propre (jamais context.go qui
                 // viderait la pile). Generique multi-sentiers, zero hardcode.
                 QuickAccessCard(
-                  icon: Icons.summarize,
+                  icon: StepwaysIcons.programme,
                   title: t.hub.cards.resume,
                   subtitle: t.hub.cards.resumeSub,
                   onTap: () => context.push('/trail/$trailId/summary'),
                 ),
                 QuickAccessCard(
-                  icon: Icons.checklist_rtl,
+                  rubrique: RubriqueStepways.sacADos,
                   title: t.hub.cards.checklist,
                   subtitle: t.hub.cards.checklistSub,
                   onTap: () => context.push('/trail/$trailId/checklist'),
@@ -481,10 +482,10 @@ class _HubScreenState extends ConsumerState<HubScreen> {
               const SizedBox(height: AppTheme.spacingBase),
               HubSection(
                 title: t.hub.sections.hike,
-                icon: Icons.hiking,
+                icon: StepwaysIcons.chaussure,
                 cards: [
                   QuickAccessCard(
-                    icon: Icons.navigation_outlined,
+                    rubrique: RubriqueStepways.carte,
                     title: t.hub.cards.navigation,
                     subtitle: t.hub.cards.navigationSub,
                     // Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la
@@ -517,7 +518,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // recreerait le soupcon de « double acces SOS » qui a coute
                   // une campagne QA (faux positif M1, #100175).
                   QuickAccessCard(
-                    icon: Icons.contact_emergency_outlined,
+                    icon: StepwaysIcons.secours,
                     title: t.hub.cards.emergency,
                     subtitle: t.hub.cards.emergencySub,
                     onTap: () => context.push('/emergency'),
@@ -542,7 +543,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // raisonnement que la decision du 02/09 (#99410) qui a mis la
                   // securite au terrain et sa PREPARATION a la preparation.
                   QuickAccessCard(
-                    icon: Icons.report_problem_outlined,
+                    icon: StepwaysIcons.signaler,
                     title: t.hub.cards.signalement,
                     subtitle: t.hub.cards.signalementSub,
                     onTap: () => context.push('/signalement'),
@@ -555,7 +556,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // carte disparait d'elle-meme en preparation — aucune garde
                   // supplementaire n'est necessaire ici.
                   QuickAccessCard(
-                    icon: Icons.menu_book_outlined,
+                    rubrique: RubriqueStepways.journal,
                     title: t.hub.cards.journal,
                     subtitle: t.hub.cards.journalSub,
                     onTap: () => context.push('/journal'),
@@ -582,13 +583,13 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // ne s'inverse jamais. Route hors-shell via `context.push`
                   // (retour propre, pile preservee).
                   QuickAccessCard(
-                    icon: Icons.edit_road,
+                    icon: StepwaysIcons.filtres,
                     title: t.hub.cards.adjust,
                     subtitle: t.hub.cards.adjustSub,
                     onTap: () => context.push('/trail/$trailId/adjust'),
                   ),
                   QuickAccessCard(
-                    icon: Icons.wb_sunny_outlined,
+                    rubrique: RubriqueStepways.meteo,
                     title: t.hub.cards.weather,
                     subtitle: t.hub.cards.weatherSub,
                     onTap: () => context.push('/trail/$trailId/weather'),
@@ -603,7 +604,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // preservee — jamais context.go qui viderait la pile). Generique
                   // multi-sentiers, fallback si aucune donnee meteo.
                   QuickAccessCard(
-                    icon: Icons.local_fire_department,
+                    rubrique: RubriqueStepways.incendie,
                     title: t.hub.cards.fire,
                     subtitle: t.hub.cards.fireSub,
                     onTap: () => context.push('/trail/$trailId/fire-risk'),
@@ -623,7 +624,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // R10 / LOT L10 avait repere — il reste bouche.
             if (showAfter) ...[
               QuickAccessCard(
-                icon: Icons.menu_book_outlined,
+                rubrique: RubriqueStepways.journal,
                 title: t.hub.cards.journal,
                 subtitle: t.hub.cards.journalSub,
                 onTap: () => context.push('/journal'),
@@ -635,7 +636,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // TOUJOURS rendue (aucune garde de phase).
             HubSection(
               title: t.hub.sections.info,
-              icon: Icons.info_outline,
+              icon: StepwaysIcons.info,
               cards: [
                 // JOURNAL : PLUS ICI (retour Chris #11, tache 553). Mot pour
                 // mot : « journal est dans information dans preparation??? ».
@@ -648,13 +649,13 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // pendant la rando, et juste au-dessus de cette section une
                 // fois le trek termine.
                 QuickAccessCard(
-                  icon: Icons.hotel_outlined,
+                  rubrique: RubriqueStepways.hebergement,
                   title: t.hub.cards.accommodations,
                   subtitle: t.hub.cards.accommodationsSub,
                   onTap: () => context.push('/accommodations-nearby'),
                 ),
                 QuickAccessCard(
-                  icon: Icons.lightbulb_outline,
+                  rubrique: RubriqueStepways.ficheConseil,
                   title: t.hub.cards.tips,
                   subtitle: t.hub.cards.tipsSub,
                   onTap: () => context.push('/trail/$trailId/tips'),

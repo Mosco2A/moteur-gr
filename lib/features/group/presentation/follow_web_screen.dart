@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran web de suivi de position en temps reel (E4.12a).
 ///
@@ -229,7 +230,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingXl),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.link_off, size: 48, color: AppTheme.rougeUrgence),
+            const StepIcon(StepwaysIcons.lienRompu, size: 48, color: AppTheme.rougeUrgence),
             const SizedBox(height: AppTheme.spacingBase),
             Text(
               t.follow.invalidLink,

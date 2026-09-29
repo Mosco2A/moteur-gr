@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../domain/defi_ranking.dart';
 import '../domain/defi_saisonnier.dart';
 import '../providers/gamification_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran d'un defi saisonnier (F7C-03, Phase 7 gamification).
 ///
@@ -203,7 +204,7 @@ class _Notice extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline,
+          StepIcon(StepwaysIcons.info,
               size: 18, color: theme.colorScheme.onSecondaryContainer),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(

@@ -13,6 +13,7 @@ import '../providers/planned_days_provider.dart';
 import '../providers/planning_provider.dart';
 import '../widgets/day_action_chip.dart';
 import '../widgets/duration_selector.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran PROGRAMME (parite GR20 `PlanningScreen`).
 ///
@@ -66,7 +67,7 @@ class TrailPlanningScreen extends ConsumerWidget {
         title: t.programme.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             onPressed: () => _showInfoSheet(context),
             tooltip: t.programme.helpTooltip,
           ),
@@ -109,7 +110,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                Icon(Icons.calendar_today, color: scheme.primary, size: 24),
+                StepIcon(StepwaysIcons.calendrier, color: scheme.primary, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   t.programme.info.title,
@@ -123,7 +124,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _richInfoItem(
               theme,
-              Icons.view_list,
+              StepwaysIcons.programme,
               t.programme.info.days.title,
               t.programme.info.days.body,
               scheme.primary,
@@ -131,7 +132,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.drag_handle,
+              StepwaysIcons.poignee,
               t.programme.info.reorder.title,
               t.programme.info.reorder.body,
               AppTheme.vertFacile,
@@ -139,7 +140,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.hotel,
+              StepwaysIcons.hebergement,
               t.programme.info.rest.title,
               t.programme.info.rest.body,
               AppTheme.orangeDifficile,
@@ -147,7 +148,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.link,
+              StepwaysIcons.lien,
               t.programme.info.mergeSplit.title,
               t.programme.info.mergeSplit.body,
               scheme.primary,
@@ -155,7 +156,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.circle,
+              StepwaysIcons.pastille,
               t.programme.info.colors.title,
               t.programme.info.colors.body,
               AppTheme.vertFacile,
@@ -171,7 +172,7 @@ class TrailPlanningScreen extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.show_chart, size: 18, color: scheme.primary),
+                  StepIcon(StepwaysIcons.statistiques, size: 18, color: scheme.primary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -203,7 +204,7 @@ class TrailPlanningScreen extends ConsumerWidget {
 
   static Widget _richInfoItem(
     ThemeData theme,
-    IconData icon,
+    String icon,
     String title,
     String description,
     Color accentColor,
@@ -217,7 +218,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             color: accentColor.withAlpha(25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 22, color: accentColor),
+          child: StepIcon(icon, size: 22, color: accentColor),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -331,7 +332,7 @@ class _PlanningContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const _DurationNote(
-                  icon: Icons.call_split,
+                  icon: StepwaysIcons.allerRetour,
                   textKey: _DurationNoteKind.split,
                 ),
                 // ET QUAND IL N'Y A PLUS RIEN A COUPER, ON LE DIT. Sans cela,
@@ -339,7 +340,7 @@ class _PlanningContent extends ConsumerWidget {
                 // rien pour lui — la situation exacte ou Chris s'est retrouve.
                 if (!stats.canSplitFurther)
                   const _DurationNote(
-                    icon: Icons.report_problem_outlined,
+                    icon: StepwaysIcons.signaler,
                     textKey: _DurationNoteKind.exhausted,
                     emphasis: true,
                   ),
@@ -395,7 +396,7 @@ class _PlanningContent extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             child: OutlinedButton.icon(
               onPressed: () => _showReplanConfirmation(context, ref),
-              icon: const Icon(Icons.refresh, size: 18),
+              icon: const StepIcon(StepwaysIcons.rafraichir, size: 18),
               label: Text(t.programme.replanButton),
             ),
           ),
@@ -459,7 +460,7 @@ class _DurationNote extends StatelessWidget {
     this.emphasis = false,
   });
 
-  final IconData icon;
+  final String icon;
   final _DurationNoteKind textKey;
 
   /// Vrai pour l'impasse (plus rien a couper) : la phrase passe en orange
@@ -481,7 +482,7 @@ class _DurationNote extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: color),
+          StepIcon(icon, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -892,16 +893,16 @@ class _DayCard extends ConsumerWidget {
                       runSpacing: AppTheme.spacingXs,
                       children: [
                         DayMiniStat(
-                          icon: Icons.straighten,
+                          icon: StepwaysIcons.distance,
                           value: '${day.totalDistanceKm.toStringAsFixed(1)} km',
                         ),
                         DayMiniStat(
-                          icon: Icons.arrow_upward,
+                          icon: StepwaysIcons.flecheHaut,
                           value: '${day.totalElevationGainM} m D+',
                           color: AppTheme.rougeExtreme,
                         ),
                         DayMiniStat(
-                          icon: Icons.arrow_downward,
+                          icon: StepwaysIcons.flecheBas,
                           value: '${day.totalElevationLossM} m D-',
                           color: theme.colorScheme.primary,
                         ),
@@ -909,7 +910,7 @@ class _DayCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
                     // Duree.
-                    DayMiniStat(icon: Icons.schedule, value: durationStr),
+                    DayMiniStat(icon: StepwaysIcons.duree, value: durationStr),
                   ],
                 ),
               ),
@@ -922,14 +923,14 @@ class _DayCard extends ConsumerWidget {
               // reste jamais « inerte ».
               Column(
                 children: [
-                  const Icon(
-                    Icons.drag_handle,
+                  const StepIcon(
+                    StepwaysIcons.poignee,
                     color: AppTheme.grisGranite,
                     size: 20,
                   ),
                   const SizedBox(height: 4),
                   DayActionChip(
-                    icon: Icons.compress,
+                    icon: StepwaysIcons.compresser,
                     label: t.programme.actions.merge,
                     tone: DayActionTone.principal,
                     enabled: canMerge,
@@ -941,7 +942,7 @@ class _DayCard extends ConsumerWidget {
                           ),
                   ),
                   DayActionChip(
-                    icon: Icons.call_split,
+                    icon: StepwaysIcons.allerRetour,
                     label: t.programme.actions.split,
                     tone: DayActionTone.secondaire,
                     enabled: canSplit,
@@ -953,7 +954,7 @@ class _DayCard extends ConsumerWidget {
                           ),
                   ),
                   DayActionChip(
-                    icon: Icons.self_improvement,
+                    icon: StepwaysIcons.preparationPhysique,
                     label: t.programme.actions.rest,
                     tone: DayActionTone.principal,
                     onPressed: onAddRestDay,
@@ -1004,8 +1005,8 @@ class _DayCard extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.self_improvement,
+                  const StepIcon(
+                    StepwaysIcons.preparationPhysique,
                     size: 20,
                     color: restColor,
                   ),
@@ -1026,15 +1027,15 @@ class _DayCard extends ConsumerWidget {
             ),
             Column(
               children: [
-                const Icon(
-                  Icons.drag_handle,
+                const StepIcon(
+                  StepwaysIcons.poignee,
                   color: AppTheme.grisGranite,
                   size: 20,
                 ),
                 if (onRemoveRestDay != null) ...[
                   const SizedBox(height: 4),
                   IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 20),
+                    icon: const StepIcon(StepwaysIcons.moins, size: 20),
                     color: AppTheme.rougeUrgence,
                     tooltip: t.programme.actions.removeRest,
                     onPressed: onRemoveRestDay,
@@ -1079,8 +1080,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.route,
+            StepIcon(
+              StepwaysIcons.itineraire,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -1103,7 +1104,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppTheme.spacingXl),
             ElevatedButton.icon(
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
+              icon: const StepIcon(StepwaysIcons.itineraire),
               label: Text(t.programme.empty.action),
             ),
           ],

@@ -7,6 +7,7 @@ import '../domain/badge.dart';
 import '../domain/badge_catalog.dart';
 import '../domain/badge_engine.dart';
 import '../providers/gamification_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Galerie de badges (F7C-03, Phase 7 gamification).
 ///
@@ -50,21 +51,21 @@ class _BadgeTile extends StatelessWidget {
 
   final Badge badge;
 
-  IconData get _icon {
+  String get _icon {
     switch (badge.iconRef) {
       case 'hiking':
-        return Icons.hiking;
+        return StepwaysIcons.chaussure;
       case 'timeline':
-        return Icons.timeline;
+        return StepwaysIcons.statistiques;
       case 'terrain':
-        return Icons.terrain;
+        return StepwaysIcons.sommet;
       case 'military_tech':
-        return Icons.military_tech;
+        return StepwaysIcons.diplome;
       case 'emoji_events':
-        return Icons.emoji_events;
+        return StepwaysIcons.diplome;
       case 'flag':
       default:
-        return Icons.flag;
+        return StepwaysIcons.depart;
     }
   }
 
@@ -99,7 +100,7 @@ class _BadgeTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
+                StepIcon(
                   _icon,
                   size: 32,
                   color: obtained
@@ -107,8 +108,10 @@ class _BadgeTile extends StatelessWidget {
                       : theme.colorScheme.outline,
                 ),
                 const Spacer(),
-                Icon(
-                  obtained ? Icons.check_circle : Icons.lock_outline,
+                StepIcon(
+                  obtained ? StepwaysIcons.cochePleine : StepwaysIcons.cadenas, // laisse en Material :
+                  // les deux etats passent par le MEME Icon, on ne peut pas
+                  // en remplacer un seul sans dedoubler le widget.
                   size: 18,
                   color: obtained
                       ? theme.colorScheme.primary

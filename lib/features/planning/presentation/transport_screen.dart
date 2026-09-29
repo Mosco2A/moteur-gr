@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/transport_info.dart';
 import '../providers/transport_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran TRANSPORT (parite GR20 `TransportScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -105,11 +106,11 @@ class TransportScreen extends ConsumerWidget {
           bottom: TabBar(
             tabs: [
               Tab(
-                icon: const Icon(Icons.flight_land),
+                icon: const StepIcon(StepwaysIcons.avion),
                 text: joinLabel,
               ),
               Tab(
-                icon: const Icon(Icons.flight_takeoff),
+                icon: const StepIcon(StepwaysIcons.avion),
                 text: leaveLabel,
               ),
             ],
@@ -212,7 +213,7 @@ class _TransportTabView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.info_outline, color: accent, size: 20),
+                      StepIcon(StepwaysIcons.info, color: accent, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -292,7 +293,7 @@ class _TransportOptionCard extends StatelessWidget {
                   color: color.withAlpha(30),
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
-                child: Icon(_iconFor(option.mode), color: color, size: 22),
+                child: StepIcon(_iconFor(option.mode), color: color, size: 22),
               ),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
@@ -347,7 +348,7 @@ class _TransportOptionCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.schedule,
+                  const StepIcon(StepwaysIcons.duree,
                       size: 18, color: AppTheme.grisGranite),
                   const SizedBox(width: 6),
                   Expanded(
@@ -376,7 +377,7 @@ class _TransportOptionCard extends StatelessWidget {
                         onTap: () => _call(option.contact),
                         child: Row(
                           children: [
-                            Icon(Icons.phone, size: 18, color: linkColor),
+                            StepIcon(StepwaysIcons.telephone, size: 18, color: linkColor),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Column(
@@ -412,7 +413,7 @@ class _TransportOptionCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline,
+                        const StepIcon(StepwaysIcons.info,
                             size: 18, color: AppTheme.grisGranite),
                         const SizedBox(width: 6),
                         Expanded(
@@ -432,7 +433,7 @@ class _TransportOptionCard extends StatelessWidget {
                     button: true,
                     label: t.transport.a11y.website,
                     child: IconButton(
-                      icon: Icon(Icons.open_in_new, size: 18, color: linkColor),
+                      icon: StepIcon(StepwaysIcons.lien, size: 18, color: linkColor),
                       tooltip: t.transport.website,
                       onPressed: () => _openUrl(option.url!),
                     ),
@@ -480,7 +481,7 @@ class _AdviceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.lightbulb_outline,
+              const StepIcon(StepwaysIcons.ficheConseil,
                   color: AppTheme.jauneModere, size: 20),
               const SizedBox(width: 8),
               Text(
@@ -519,24 +520,24 @@ class _AdviceCard extends StatelessWidget {
 // d'objet — l'onglet rend `SizedBox.shrink()`.
 
 /// Icone Material pour une famille de mode (le domaine ne connait pas Material).
-IconData _iconFor(TransportModeKind mode) {
+String _iconFor(TransportModeKind mode) {
   switch (mode) {
     case TransportModeKind.taxi:
-      return Icons.local_taxi;
+      return StepwaysIcons.taxi;
     case TransportModeKind.bus:
-      return Icons.directions_bus;
+      return StepwaysIcons.transport;
     case TransportModeKind.train:
-      return Icons.train;
+      return StepwaysIcons.train;
     case TransportModeKind.shuttle:
-      return Icons.airport_shuttle;
+      return StepwaysIcons.transport;
     case TransportModeKind.ferry:
-      return Icons.directions_boat;
+      return StepwaysIcons.bateau;
     case TransportModeKind.plane:
-      return Icons.flight;
+      return StepwaysIcons.avion;
     case TransportModeKind.carRental:
-      return Icons.car_rental;
+      return StepwaysIcons.taxi;
     case TransportModeKind.other:
-      return Icons.place_outlined;
+      return StepwaysIcons.repere;
   }
 }
 

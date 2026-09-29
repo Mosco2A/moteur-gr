@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../ads/providers/ads_providers.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de gestion du consentement dans les REGLAGES (D4A-02, design #86166).
 ///
@@ -62,7 +63,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                   backgroundColor: theme.colorScheme.tertiaryContainer,
                   padding: EdgeInsets.zero,
                   child: ListTile(
-                    leading: const Icon(Icons.update),
+                    leading: const StepIcon(StepwaysIcons.miseAJour),
                     title: Text(tr.consent.reviewNeeded),
                   ),
                 ),
@@ -100,7 +101,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                 label: tr.consent.declineAll,
                 child: AppButton(
                   variant: AppButtonVariant.outline,
-                  icon: Icons.block,
+                  icon: StepwaysIcons.interdit,
                   label: tr.consent.declineAll,
                   onPressed: () => _confirmerRefusGlobal(context, controller),
                 ),
@@ -160,7 +161,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                     onPressed: () => ref
                         .read(adsConsentServiceProvider)
                         .showPrivacyOptionsForm(),
-                    icon: const Icon(Icons.tune_outlined),
+                    icon: const StepIcon(StepwaysIcons.reglages),
                     label: Text(tr.consent.adsPrivacyOptions),
                   ),
                 ),
@@ -179,8 +180,8 @@ class ConsentSettingsScreen extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.favorite_outline,
+                          StepIcon(
+                            StepwaysIcons.favori,
                             size: 20,
                             color: theme.colorScheme.error,
                           ),
@@ -244,7 +245,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                 label: tr.consent.a11y.policyButton,
                 child: TextButton.icon(
                   onPressed: onOpenPrivacyPolicy,
-                  icon: const Icon(Icons.description_outlined),
+                  icon: const StepIcon(StepwaysIcons.cgu),
                   label: Text(tr.consent.privacyPolicyLink),
                 ),
               ),

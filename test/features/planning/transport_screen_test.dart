@@ -13,6 +13,7 @@ import 'package:moteur_gr/features/planning/providers/transport_providers.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran TRANSPORT (« Aller & retour », data-driven).
 ///
@@ -388,8 +389,8 @@ void main() {
       // Contact telephonique cliquable (numero affiche) + bouton site (icone
       // open_in_new) — parite GR20 (facilitateur tel:/url).
       expect(find.text('+33123456789'), findsOneWidget);
-      expect(find.byIcon(Icons.open_in_new), findsOneWidget);
-      expect(find.byIcon(Icons.phone), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lien), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telephone), findsOneWidget);
     });
 
     testWidgets('bascule sur l\'onglet RETOUR : contenu de l\'arrivee',
@@ -491,7 +492,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/transport'),
-                  child: const Icon(Icons.directions_bus),
+                  child: const StepIcon(StepwaysIcons.transport),
                 ),
               ),
             ),
@@ -514,20 +515,20 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone directions_bus) ouvre Transport.
-      expect(find.byIcon(Icons.directions_bus), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.directions_bus));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport));
       await settle(tester);
       await pumpUntil(tester, find.text(t.transport.title));
       expect(find.text(t.transport.title), findsWidgets);
 
       // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
       // sans crash (pile preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await pumpUntil(tester, find.byType(BackButtonIcon));
+      await tester.tap(find.byType(BackButtonIcon));
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.transport.title));
       expect(find.text(t.transport.title), findsNothing);
-      expect(find.byIcon(Icons.directions_bus), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport), findsOneWidget);
     });
   });
 }

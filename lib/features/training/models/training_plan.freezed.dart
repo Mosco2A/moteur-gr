@@ -329,7 +329,7 @@ mixin _$TrainingPhase {
 /// Identifiant stable de la phase (`foundation`, `elevation`, `endurance`).
  String get id;/// Premiere semaine de la phase (1-based, pour « Semaines X-Y »).
  int get weekStart;/// Derniere semaine de la phase (1-based).
- int get weekEnd;/// Nom de l'icone Material (resolu cote UI, jamais d'IconData en donnee).
+ int get weekEnd;/// Nom de l'icone Material (resolu cote UI, jamais d'String en donnee).
  String get icon;/// Intitule de la phase — francais (base).
  String get titleFr; String get titleEn; String get titleDe; String get titleIt; String get titleEs;/// Accroche courte de la phase — francais (base).
  String get subtitleFr; String get subtitleEn; String get subtitleDe; String get subtitleIt; String get subtitleEs;/// Seances cochables de la phase.

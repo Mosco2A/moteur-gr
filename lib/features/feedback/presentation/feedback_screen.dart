@@ -7,6 +7,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../data/feedback_service.dart';
 import '../providers/feedback_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran de feedback in-app.
 ///
@@ -115,11 +116,14 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               children: List.generate(5, (index) {
                 final starIndex = index + 1;
                 return IconButton(
-                  icon: Icon(
-                    starIndex <= (_rating ?? 0)
-                        ? Icons.star
-                        : Icons.star_border,
-                    color: theme.colorScheme.primary,
+                  // TACHE 632 — meme etoile allumee ou eteinte, distinguee
+                  // par la couleur : Christophe livre un seul dessin `note`,
+                  // pas une paire pleine/contour comme Material.
+                  icon: StepIcon(
+                    StepwaysIcons.note,
+                    color: starIndex <= (_rating ?? 0)
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.3),
                     size: 32,
                   ),
                   onPressed: () => setState(() => _rating = starIndex),
@@ -135,7 +139,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             // libelle inchange hors envoi.
             AppButton(
               isLoading: feedbackState.isSubmitting,
-              icon: Icons.send,
+              icon: StepwaysIcons.envoyer,
               label: t.feedback.send,
               onPressed: feedbackState.isSubmitting ? null : _submitFeedback,
             ),

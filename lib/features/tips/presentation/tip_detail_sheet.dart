@@ -7,6 +7,7 @@ import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
 import 'tip_carousel.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Nom LISIBLE du sentier couvert par une fiche conseil (tâche 557).
 ///
@@ -110,7 +111,7 @@ class TipDetailSheet extends StatelessWidget {
                 // En-tete categorie
                 Row(
                   children: [
-                    Icon(resolveIcon(meta.icon), color: color, size: 24),
+                    StepIcon(resolveIcon(meta.icon), color: color, size: 24),
                     const SizedBox(width: AppTheme.spacingSm),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -143,8 +144,8 @@ class TipDetailSheet extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.priority_high,
+                            const StepIcon(
+                              StepwaysIcons.danger,
                               color: AppTheme.rougeUrgence,
                               size: 14,
                             ),
@@ -201,18 +202,18 @@ class TipDetailSheet extends StatelessWidget {
                 // cles existent (`t.tips.scope`, `t.tips.season`,
                 // `t.tips.altitude`) et sont branchees ici (tache 557).
                 _MetadataRow(
-                  icon: Icons.hiking,
+                  icon: StepwaysIcons.chaussure,
                   label: t.tips.scope,
                   value: tipScopeLabel(card.scope),
                 ),
                 _MetadataRow(
-                  icon: Icons.calendar_today,
+                  icon: StepwaysIcons.calendrier,
                   label: t.tips.season,
                   value: tipSeasonLabel(card.season),
                 ),
                 if (card.minAltitudeM != null)
                   _MetadataRow(
-                    icon: Icons.terrain,
+                    icon: StepwaysIcons.sommet,
                     label: t.tips.altitude,
                     value: "${card.minAltitudeM} m",
                   ),
@@ -234,7 +235,7 @@ class _MetadataRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -246,7 +247,7 @@ class _MetadataRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: theme.colorScheme.onSurface.withAlpha(150)),
+          StepIcon(icon, size: 16, color: theme.colorScheme.onSurface.withAlpha(150)),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             label,

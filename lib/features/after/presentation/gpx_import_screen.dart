@@ -17,6 +17,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../../trek/domain/models/stage.dart';
 import '../data/gpx_import_service.dart';
 import '../providers/gpx_import_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Import GPX — permet d'importer une trace GPS externe (parite GR20).
 ///
@@ -74,7 +75,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return AppCard(
       child: Column(
         children: [
-          Icon(Icons.upload_file, size: 48, color: theme.colorScheme.primary),
+          StepIcon(StepwaysIcons.telecharger, size: 48, color: theme.colorScheme.primary),
           const SizedBox(height: AppTheme.spacingMd),
           Text(t.import.headerTitle, style: theme.textTheme.titleLarge),
           const SizedBox(height: AppTheme.spacingSm),
@@ -87,7 +88,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           const SizedBox(height: AppTheme.spacingLg),
           AppButton(
             label: t.import.pickButton,
-            icon: Icons.folder_open,
+            icon: StepwaysIcons.telecharger,
             isLoading: _isImporting,
             onPressed: _isImporting ? null : _pickAndImportGpx,
           ),
@@ -107,7 +108,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: AppTheme.rougeUrgence),
+          const StepIcon(StepwaysIcons.danger, color: AppTheme.rougeUrgence),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Text(
@@ -132,17 +133,17 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: t.import.traceSection, icon: Icons.route),
+        SectionHeader(title: t.import.traceSection, icon: StepwaysIcons.itineraire),
         const SizedBox(height: AppTheme.spacingSm),
         _buildTraceMap(theme, data),
         const SizedBox(height: AppTheme.spacingLg),
-        SectionHeader(title: t.import.statsSection, icon: Icons.bar_chart),
+        SectionHeader(title: t.import.statsSection, icon: StepwaysIcons.statistiques),
         const SizedBox(height: AppTheme.spacingSm),
         Row(children: [
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.straighten,
+              icon: StepwaysIcons.distance,
               label: t.import.statDistance,
               value: '${data.totalDistanceKm.toStringAsFixed(1)} km',
               color: theme.colorScheme.primary,
@@ -152,7 +153,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.trending_up,
+              icon: StepwaysIcons.denivelePlus,
               label: t.import.statElevationGain,
               value: '${data.totalElevationGain} m',
               color: theme.colorScheme.secondary,
@@ -164,7 +165,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.trending_down,
+              icon: StepwaysIcons.deniveleMoins,
               label: t.import.statElevationLoss,
               value: '${data.totalElevationLoss} m',
               color: AppTheme.orangeDifficile,
@@ -174,7 +175,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.timer,
+              icon: StepwaysIcons.duree,
               label: t.import.statDuration,
               value: durationStr,
               color: theme.colorScheme.primary,
@@ -186,7 +187,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.explore,
+              icon: StepwaysIcons.catalogueSentiers,
               label: t.import.statDirection,
               value: directionLabel,
               color: theme.colorScheme.secondary,
@@ -196,7 +197,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: _buildStatCard(
               theme,
-              icon: Icons.gps_fixed,
+              icon: StepwaysIcons.maPosition,
               label: t.import.statPoints,
               value: '${data.trackPoints.length}',
               color: theme.colorScheme.primary,
@@ -207,7 +208,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         if (data.stagesDetected.isNotEmpty) ...[
           SectionHeader(
             title: t.import.stagesSection,
-            icon: Icons.flag,
+            icon: StepwaysIcons.depart,
             trailing: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.spacingSm,
@@ -238,7 +239,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         if (data.warnings.isNotEmpty) ...[
           SectionHeader(
             title: t.import.warningsSection,
-            icon: Icons.warning_amber,
+            icon: StepwaysIcons.danger,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           ...data.warnings.map((w) => _buildWarningRow(theme, _warningText(w))),
@@ -246,7 +247,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         ],
         AppButton(
           label: t.import.validateButton,
-          icon: Icons.check_circle,
+          icon: StepwaysIcons.cochePleine,
           onPressed: () => _validateImport(context, data),
         ),
         const SizedBox(height: AppTheme.spacingBase),
@@ -298,7 +299,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const Icon(Icons.play_arrow,
+                    child: const StepIcon(StepwaysIcons.enregistrer,
                         size: 14, color: Colors.white),
                   ),
                 ),
@@ -312,7 +313,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const Icon(Icons.flag, size: 14, color: Colors.white),
+                    child: const StepIcon(StepwaysIcons.depart, size: 14, color: Colors.white),
                   ),
                 ),
               ],
@@ -325,7 +326,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   Widget _buildStatCard(
     ThemeData theme, {
-    required IconData icon,
+    required String icon,
     required String label,
     required String value,
     required Color color,
@@ -333,7 +334,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return AppCard(
       child: Column(
         children: [
-          Icon(icon, size: 24, color: color),
+          StepIcon(icon, size: 24, color: color),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             value,
@@ -386,7 +387,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Icon(Icons.check_circle, size: 18, color: AppTheme.vertFacile),
+          const StepIcon(StepwaysIcons.cochePleine, size: 18, color: AppTheme.vertFacile),
         ]),
       ),
     );
@@ -400,7 +401,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.warning_amber,
+            const StepIcon(StepwaysIcons.danger,
                 size: 18, color: AppTheme.orangeDifficile),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
@@ -509,7 +510,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Row(children: [
-          const Icon(Icons.check_circle, color: AppTheme.vertFacile),
+          const StepIcon(StepwaysIcons.cochePleine, color: AppTheme.vertFacile),
           const SizedBox(width: 8),
           Text(t.import.confirmTitle),
         ]),

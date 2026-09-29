@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/trail/presentation/no_data_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget de l'ecran NoDataScreen.
 ///
@@ -32,7 +33,7 @@ void main() {
 
       // Icone downloading_rounded presente
       expect(
-        find.byIcon(Icons.downloading_rounded),
+        find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telecharger),
         findsOneWidget,
       );
     });

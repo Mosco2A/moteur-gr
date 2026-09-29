@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/offline_map_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Badge discret affichant le statut de la carte offline.
 ///
@@ -45,7 +46,7 @@ class OfflineMapBadge extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.white),
+          StepIcon(icon, size: 14, color: Colors.white),
           const SizedBox(width: 4),
           Text(
             label,
@@ -61,18 +62,18 @@ class OfflineMapBadge extends ConsumerWidget {
   }
 
   /// Configuration visuelle selon le statut.
-  (IconData, String, Color) _statusConfig(OfflineMapStatus status) {
+  (String, String, Color) _statusConfig(OfflineMapStatus status) {
     switch (status) {
       case OfflineMapStatusValues.online:
-        return (Icons.cloud_outlined, 'En ligne', Colors.orange);
+        return (StepwaysIcons.horsLigne, 'En ligne', Colors.orange);
       case OfflineMapStatusValues.offlineAvailable:
-        return (Icons.cloud_done, 'Offline OK', Colors.green);
+        return (StepwaysIcons.synchronise, 'Offline OK', Colors.green);
       case OfflineMapStatusValues.offlineOnly:
-        return (Icons.cloud_off, 'Offline', Colors.green.shade700);
+        return (StepwaysIcons.horsLigne, 'Offline', Colors.green.shade700);
       case OfflineMapStatusValues.noMap:
-        return (Icons.cloud_off, 'Pas de carte', Colors.red);
+        return (StepwaysIcons.horsLigne, 'Pas de carte', Colors.red);
       default:
-        return (Icons.help_outline, status, Colors.grey);
+        return (StepwaysIcons.aide, status, Colors.grey);
     }
   }
 }

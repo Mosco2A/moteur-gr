@@ -13,6 +13,7 @@ import 'package:moteur_gr/features/map/providers/map_pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 571 — LOT T : LES MARQUEURS DE LA CARTE NE SE RECOUVRENT PLUS.
 ///
@@ -161,7 +162,7 @@ void main() {
         );
 
         final numero = inMap(find.text('3'));
-        final refuge = inMap(find.byIcon(Icons.house));
+        final refuge = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement));
 
         expect(
           numero,
@@ -232,8 +233,8 @@ void main() {
           pois: const [giteCozzano, epicerieCozzano],
         );
 
-        final refuge = inMap(find.byIcon(Icons.house));
-        final epicerie = inMap(find.byIcon(Icons.shopping_cart));
+        final refuge = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement));
+        final epicerie = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier));
 
         expect(refuge, findsOneWidget);
 

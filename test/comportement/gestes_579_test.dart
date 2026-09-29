@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../structurel/parcours_reel.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Amene [f] sous le doigt puis appuie, comme un utilisateur.
 Future<void> appuyerSur(WidgetTester tester, Finder f) async {
@@ -230,7 +231,10 @@ void main() {
         'composer (geste evite par le balayage, teste ici nommement)',
         (tester) async {
       await monterAppliReelle(tester, depart: '/emergency');
-      final appel = find.widgetWithIcon(IconButton, Icons.phone);
+      final appel = find.ancestor(
+              of: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telephone),
+              matching: find.byType(IconButton),
+            );
       expect(appel, findsWidgets, reason: 'aucun bouton d appel a l ecran');
       await appuyerSur(tester, appel);
       expect(messageOuDialogueVisible(tester), isTrue,

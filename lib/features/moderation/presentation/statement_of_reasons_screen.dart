@@ -6,6 +6,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import 'complaint_screen.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Vue d'un EXPOSE DES MOTIFS (DSA art 17), immuable.
 ///
@@ -99,8 +100,8 @@ class StatementOfReasonsScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                Icons.gavel_outlined,
+                              StepIcon(
+                                StepwaysIcons.loi,
                                 size: 20,
                                 color: theme.colorScheme.primary,
                               ),
@@ -132,7 +133,7 @@ class StatementOfReasonsScreen extends StatelessWidget {
                     child: AppButton(
                       key: const ValueKey('statement-complaint-action'),
                       variant: AppButtonVariant.outline,
-                      icon: Icons.balance_outlined,
+                      icon: StepwaysIcons.loi,
                       label: tr.moderation.complaintAction,
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(

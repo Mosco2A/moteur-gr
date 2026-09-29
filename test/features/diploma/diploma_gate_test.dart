@@ -15,6 +15,7 @@ import 'package:moteur_gr/features/diploma/presentation/diploma_screen.dart';
 import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.B / critere (a) — le Diplome est
 /// VERROUILLE tant que le parcours n'a pas ete reellement marche.
@@ -116,7 +117,7 @@ void main() {
 
     // Etat verrouille : titre + cadenas ; pas de champ « votre nom ».
     expect(find.text(t.diploma.lockedTitle), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget);
     expect(find.text(t.diploma.yourName), findsNothing);
   });
 
@@ -127,7 +128,7 @@ void main() {
     // deverrouillait ici le diplome sans une seule etape marchee.
     await pumpDiploma(tester);
 
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget,
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget,
         reason: 'un diplome se gagne par la marche, jamais par le prix du '
             'sentier. Le sentier de demonstration est gratuit et court : on '
             'y gagne le diplome pour de vrai, ce qui vaut infiniment mieux '
@@ -152,7 +153,7 @@ void main() {
     await pumpDiploma(tester);
 
     // Deverrouille + libelle Integral (parcours entier reellement fini).
-    expect(find.byIcon(Icons.lock_outline), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
     expect(find.text(t.diploma.labelIntegral), findsOneWidget);
     // Chiffres REELS (4 etapes / 40 km / 2000 m) — ici egaux au sentier car
     // parcours entier, mais issus de la session (etapes marchees).

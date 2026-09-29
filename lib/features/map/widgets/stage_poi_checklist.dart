@@ -10,6 +10,7 @@ import '../../trail/providers/pois_provider.dart';
 import '../../trail/providers/stages_provider.dart';
 import '../providers/stage_poi_check_provider.dart';
 import '../providers/track_position_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LISTE DES POINTS DE L'ETAPE EN COURS, cochables au passage (LOT D, 554).
 ///
@@ -79,7 +80,7 @@ class StagePoiChecklist extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              Icon(Icons.checklist, color: theme.colorScheme.primary),
+              StepIcon(StepwaysIcons.sacADos, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -104,7 +105,7 @@ class StagePoiChecklist extends ConsumerWidget {
 
         // --- Points d'eau de l'etape ---
         _ChecklistGroup(
-          icon: Icons.water_drop,
+          icon: StepwaysIcons.pluie,
           color: PoiTypeConfig.getStyle('water').color,
           title: t.stage.waterSources.title,
           // Convention du projet : Slang n'interpole pas `{n}`, on remplace en
@@ -120,7 +121,7 @@ class StagePoiChecklist extends ConsumerWidget {
 
         // --- Hebergements de l'etape ---
         _ChecklistGroup(
-          icon: Icons.house,
+          icon: StepwaysIcons.hebergement,
           color: PoiTypeConfig.getStyle('refuge').color,
           title: t.stage.accommodation.title,
           countLabel: null,
@@ -144,7 +145,7 @@ class _ChecklistGroup extends ConsumerWidget {
     required this.pois,
   });
 
-  final IconData icon;
+  final String icon;
   final Color color;
   final String title;
   final String? countLabel;
@@ -165,7 +166,7 @@ class _ChecklistGroup extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: color),
+              StepIcon(icon, size: 18, color: color),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(title, style: theme.textTheme.titleSmall),
@@ -223,7 +224,7 @@ class _ChecklistGroup extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              secondary: Icon(
+              secondary: StepIcon(
                 PoiTypeConfig.getStyle(poi.type).icon,
                 color: color,
               ),

@@ -11,6 +11,7 @@ import '../../../../poi/domain/poi_type_label.dart';
 import '../../../domain/models/stage.dart';
 import '../marker_overlap.dart';
 import 'stage_markers_layer.dart';
+import '../../../../../core/branding/stepways_icons.dart';
 
 /// LA COUCHE UNIQUE DES REPERES DU SENTIER (tache 571).
 ///
@@ -300,7 +301,7 @@ class _MergedPin extends StatelessWidget {
               child: _PinBadge(
                 size: badgeSize,
                 color: PoiMarker.colorFor(primary.type),
-                child: Icon(
+                child: StepIcon(
                   PoiMarker.iconFor(primary.type),
                   color: Colors.white,
                   size: badgeSize * 0.6,
@@ -428,7 +429,7 @@ Future<void> showTrailPinSheet(
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.place),
+                    const StepIcon(StepwaysIcons.repere),
                     const SizedBox(width: AppTheme.spacingSm),
                     Expanded(
                       child: Text(

@@ -14,6 +14,7 @@ import 'package:moteur_gr/features/weather/providers/fire_risk_providers.dart';
 import 'package:moteur_gr/features/weather/providers/weather_providers.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran RISQUE INCENDIE (« Risques & alertes »,
 /// data-driven).
@@ -433,7 +434,7 @@ void main() {
       expect(find.text('Message reglementaire de test.'), findsOneWidget);
       // Lien vers les arretes (libelle traduit + icone open_in_new, parite GR20).
       expect(find.text(t.fireRisk.regulation.decreeLink), findsOneWidget);
-      expect(find.byIcon(Icons.open_in_new), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lien), findsOneWidget);
     });
 
     testWidgets('section reglementation masquee quand le sentier n\'en a pas',
@@ -451,7 +452,7 @@ void main() {
 
       // Beta a 3 jours de prevision -> plusieurs pastilles « Niv. X » (detail
       // par jour, parite GR20). Au moins un badge de niveau visible.
-      expect(find.byIcon(Icons.local_fire_department), findsWidgets);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsWidgets);
       expect(find.textContaining('Niv.'), findsWidgets);
     });
 
@@ -495,7 +496,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/fire-risk'),
-                  child: const Icon(Icons.local_fire_department),
+                  child: const StepIcon(StepwaysIcons.incendie),
                 ),
               ),
             ),
@@ -518,20 +519,20 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone local_fire_department) ouvre l'ecran.
-      expect(find.byIcon(Icons.local_fire_department), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.local_fire_department));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie));
       await settle(tester);
       await pumpUntil(tester, find.text(t.fireRisk.title));
       expect(find.text(t.fireRisk.title), findsWidgets);
 
       // Retour : bouton back de l'AppBar -> retour au HUB sans crash (pile
       // preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await pumpUntil(tester, find.byType(BackButtonIcon));
+      await tester.tap(find.byType(BackButtonIcon));
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.fireRisk.title));
       expect(find.text(t.fireRisk.title), findsNothing);
-      expect(find.byIcon(Icons.local_fire_department), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsOneWidget);
     });
   });
 }

@@ -20,6 +20,7 @@ import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_day_providers.dart';
 import '../providers/journal_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran principal du journal de trek (E3.1c).
 ///
@@ -172,7 +173,7 @@ class _LockedJournalCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+              StepIcon(StepwaysIcons.cadenas, color: theme.colorScheme.primary, size: 22),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -192,7 +193,7 @@ class _LockedJournalCard extends ConsumerWidget {
           ],
           const SizedBox(height: AppTheme.spacingBase),
           AppButton(
-            icon: Icons.lock_open,
+            icon: StepwaysIcons.cadenasOuvert,
             label: t.journal.lockedUnlock,
             onPressed: () => acheterSentier(context, ref, trailId: trailId),
           ),
@@ -218,19 +219,19 @@ class _JournalContentPreview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _JournalPreviewRow(
-          icon: Icons.route_outlined,
+          icon: StepwaysIcons.itineraire,
           label: journalT.dayTrace,
         ),
         _JournalPreviewRow(
-          icon: Icons.insights_outlined,
+          icon: StepwaysIcons.statistiques,
           label: journalT.daySummary,
         ),
         _JournalPreviewRow(
-          icon: Icons.edit_note,
+          icon: StepwaysIcons.crayon,
           label: journalT.entriesOfDay,
         ),
         _JournalPreviewRow(
-          icon: Icons.photo_camera_outlined,
+          icon: StepwaysIcons.photo,
           label: journalT.addPhoto,
         ),
       ],
@@ -242,7 +243,7 @@ class _JournalContentPreview extends StatelessWidget {
 class _JournalPreviewRow extends StatelessWidget {
   const _JournalPreviewRow({required this.icon, required this.label});
 
-  final IconData icon;
+  final String icon;
   final String label;
 
   @override
@@ -252,7 +253,7 @@ class _JournalPreviewRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 18, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(label, style: theme.textTheme.bodyMedium),
@@ -314,7 +315,7 @@ class _UnlockedJournal extends ConsumerWidget {
           : const _JournalDayView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context, ref, stageCount),
-        child: const Icon(Icons.add),
+        child: const StepIcon(StepwaysIcons.plus),
       ),
     );
   }
@@ -387,7 +388,7 @@ class _EmptyJournalView extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
         const SizedBox(height: AppTheme.spacingLg),
-        Icon(Icons.book_outlined, size: 80, color: theme.colorScheme.primary),
+        StepIcon(StepwaysIcons.journal, size: 80, color: theme.colorScheme.primary),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           journalT.empty,
@@ -501,7 +502,7 @@ class _DayTraceCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.route_outlined,
+                  StepIcon(StepwaysIcons.itineraire,
                       size: 18, color: theme.colorScheme.primary),
                   const SizedBox(width: AppTheme.spacingXs),
                   Text(
@@ -613,7 +614,7 @@ class _DaySummaryCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.insights_outlined,
+                    StepIcon(StepwaysIcons.statistiques,
                         size: 18, color: theme.colorScheme.primary),
                     const SizedBox(width: AppTheme.spacingXs),
                     Text(
@@ -746,7 +747,7 @@ class _DayNavigator extends ConsumerWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left),
+            icon: const StepIcon(StepwaysIcons.chevronGauche),
             tooltip: journalT.dayNavPrevious,
             onPressed: hasPrevious ? () => notifier.select(days[index - 1]) : null,
           ),
@@ -778,7 +779,7 @@ class _DayNavigator extends ConsumerWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.chevron_right),
+            icon: const StepIcon(StepwaysIcons.chevronDroite),
             tooltip: journalT.dayNavNext,
             onPressed: hasNext ? () => notifier.select(days[index + 1]) : null,
           ),
@@ -867,7 +868,7 @@ class _JournalEntryTile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.terrain, size: 16, color: theme.colorScheme.primary),
+              StepIcon(StepwaysIcons.sommet, size: 16, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingXs),
               Text(
                 stageLabel,
@@ -883,6 +884,10 @@ class _JournalEntryTile extends ConsumerWidget {
                 ),
               ),
               PopupMenuButton<String>(
+                // TACHE 632 — sans `icon`, le framework pose son propre
+                // `Icons.more_vert` : la seule facon de le remplacer est de le
+                // fournir.
+                icon: const StepIcon(StepwaysIcons.menu),
                 onSelected: (value) {
                   // Double verrou : l'entree du menu n'existe pas en lecture
                   // seule, et l'action refuse quand meme d'agir.
@@ -909,7 +914,7 @@ class _JournalEntryTile extends ConsumerWidget {
                     value: 'share',
                     child: Row(
                       children: [
-                        const Icon(Icons.share_outlined, size: 20),
+                        const StepIcon(StepwaysIcons.partager, size: 20),
                         const SizedBox(width: 8),
                         Text(journalT.share),
                       ],
@@ -920,7 +925,7 @@ class _JournalEntryTile extends ConsumerWidget {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete_outline, size: 20),
+                          const StepIcon(StepwaysIcons.corbeille, size: 20),
                           const SizedBox(width: 8),
                           Text(journalT.delete),
                         ],
@@ -959,7 +964,7 @@ class _JournalEntryTile extends ConsumerWidget {
                   errorBuilder: (_, __, ___) => Container(
                     color: theme.colorScheme.surfaceContainerHighest,
                     child: const Center(
-                      child: Icon(Icons.broken_image, size: 32),
+                      child: StepIcon(StepwaysIcons.imageManquante, size: 32),
                     ),
                   ),
                 ),
@@ -1033,12 +1038,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
+              leading: const StepIcon(StepwaysIcons.photo),
               title: Text(journalT.camera),
               onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
+              leading: const StepIcon(StepwaysIcons.photo),
               title: Text(journalT.gallery),
               onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
             ),
@@ -1079,6 +1084,9 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             // dur (compte du GR20) laissait choisir des etapes inexistantes sur
             // un sentier a 7, 12 ou 5 etapes.
             DropdownButtonFormField<int>(
+              // TACHE 632 — meme raison : la fleche du menu deroulant est
+              // fournie par le framework tant qu'on ne la donne pas.
+              icon: const StepIcon(StepwaysIcons.flecheBas, size: 20),
               initialValue: _stageNumber,
               items: List.generate(widget.stageCount, (i) => i + 1)
                   .map(
@@ -1109,7 +1117,7 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             if (_photoPath == null)
               OutlinedButton.icon(
                 onPressed: _choosePhotoSource,
-                icon: const Icon(Icons.add_a_photo_outlined),
+                icon: const StepIcon(StepwaysIcons.photo),
                 label: Text(journalT.addPhoto),
               )
             else
@@ -1147,14 +1155,14 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
                         height: _photoPreviewSize,
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: const Center(
-                          child: Icon(Icons.broken_image, size: 32),
+                          child: StepIcon(StepwaysIcons.imageManquante, size: 32),
                         ),
                       ),
                     ),
                   ),
                   TextButton.icon(
                     onPressed: () => setState(() => _photoPath = null),
-                    icon: const Icon(Icons.close),
+                    icon: const StepIcon(StepwaysIcons.croix),
                     label: Text(journalT.removePhoto),
                   ),
                 ],

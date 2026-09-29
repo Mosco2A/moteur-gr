@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/map/providers/map_pois_provider.dart';
 import 'package:moteur_gr/features/map/widgets/map_guide_sheet.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Q5 (tache 568, LOT Q) — LE GUIDE DE LA CARTE ET SON ICONE SOS.
 ///
@@ -81,7 +82,7 @@ void main() {
 
         // La ligne existe toujours (la fonction existe : on ne ment pas par
         // omission non plus).
-        expect(find.byIcon(Icons.emergency), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
         expect(find.text(t.a11y.sos), findsOneWidget);
 
         // Et son explication porte desormais la condition.
@@ -114,7 +115,7 @@ void main() {
       () {
         final bouton = source('lib/features/safety/presentation/sos_button.dart');
         expect(
-          bouton.contains('Icons.emergency'),
+          bouton.contains('StepwaysIcons.secours'),
           isTrue,
           reason: 'c est ce widget qui dessine l icone que le guide explique',
         );

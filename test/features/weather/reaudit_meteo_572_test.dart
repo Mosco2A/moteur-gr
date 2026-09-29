@@ -29,6 +29,7 @@ import 'package:moteur_gr/features/weather/presentation/weather_screen.dart';
 import 'package:moteur_gr/features/weather/providers/program_weather_provider.dart';
 import 'package:moteur_gr/features/weather/providers/weather_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 572 — LOT U : REAUDIT DE LA METEO.
 ///
@@ -281,7 +282,7 @@ void main() {
       ));
       await settle(tester);
 
-      await tester.tap(find.byIcon(Icons.refresh).first);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.rafraichir).first);
       await settle(tester);
 
       expect(

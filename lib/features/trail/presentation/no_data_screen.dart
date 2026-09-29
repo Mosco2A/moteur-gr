@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider qui indique si des sentiers sont disponibles localement.
 ///
@@ -51,8 +52,8 @@ class NoDataScreen extends ConsumerWidget {
                     color: theme.colorScheme.primaryContainer.withAlpha(40),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.downloading_rounded,
+                  child: StepIcon(
+                    StepwaysIcons.telecharger,
                     size: 64,
                     color: theme.colorScheme.primary.withAlpha(180),
                   ),
@@ -90,7 +91,7 @@ class NoDataScreen extends ConsumerWidget {
                 // largeur (theme = minimumSize infinie, le bouton remplissait
                 // deja la Column) -> isFullWidth:true = iso-rendu.
                 AppButton(
-                  icon: Icons.explore,
+                  icon: StepwaysIcons.catalogueSentiers,
                   label: t.noData.browseCta,
                   onPressed: () => context.go('/catalog'),
                 ),

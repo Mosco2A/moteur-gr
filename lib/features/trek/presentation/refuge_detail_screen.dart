@@ -10,6 +10,7 @@ import '../domain/models/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
 import 'accommodation_type_ui.dart';
 import '../../trail/providers/trail_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider des hebergements d'une etape du sentier actif.
 ///
@@ -53,7 +54,7 @@ class RefugeDetailScreen extends ConsumerWidget {
           orElse: () => Text('Hebergements etape $stage'),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const StepIcon(StepwaysIcons.flecheArriere),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -133,7 +134,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   color: theme.colorScheme.primary.withAlpha(40),
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
-                child: Icon(
+                child: StepIcon(
                   accommodationTypeIcon(accommodation.type),
                   color: theme.colorScheme.primary,
                   size: 32,
@@ -177,13 +178,13 @@ class RefugeDetailScreen extends ConsumerWidget {
               if (accommodation.capacity != null)
                 _quickStat(
                   theme,
-                  Icons.people,
+                  StepwaysIcons.suiveurs,
                   '${accommodation.capacity} places',
                   'Capacite',
                 ),
               _quickStat(
                 theme,
-                Icons.euro,
+                StepwaysIcons.prix,
                 accommodation.priceRange ?? 'N/A',
                 'Tarifs',
               ),
@@ -215,13 +216,13 @@ class RefugeDetailScreen extends ConsumerWidget {
 
   Widget _quickStat(
     ThemeData theme,
-    IconData icon,
+    String icon,
     String value,
     String label,
   ) {
     return Column(
       children: [
-        Icon(icon, color: theme.colorScheme.secondary, size: 20),
+        StepIcon(icon, color: theme.colorScheme.secondary, size: 20),
         const SizedBox(height: 2),
         Text(
           value,
@@ -240,11 +241,11 @@ class RefugeDetailScreen extends ConsumerWidget {
   ) {
     final rows = <Widget>[
       if (accommodation.phone != null)
-        _infoRow(theme, Icons.phone, 'Telephone', accommodation.phone!),
+        _infoRow(theme, StepwaysIcons.telephone, 'Telephone', accommodation.phone!),
       if (accommodation.email != null)
-        _infoRow(theme, Icons.email, 'Email', accommodation.email!),
+        _infoRow(theme, StepwaysIcons.courrier, 'Email', accommodation.email!),
       if (accommodation.website != null)
-        _infoRow(theme, Icons.language, 'Site web', accommodation.website!),
+        _infoRow(theme, StepwaysIcons.langue, 'Site web', accommodation.website!),
     ];
 
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -254,7 +255,7 @@ class RefugeDetailScreen extends ConsumerWidget {
       children: [
         const SectionHeader(
           title: 'Informations pratiques',
-          icon: Icons.info_outline,
+          icon: StepwaysIcons.info,
         ),
         AppCard(
           child: Column(
@@ -272,13 +273,13 @@ class RefugeDetailScreen extends ConsumerWidget {
 
   Widget _infoRow(
     ThemeData theme,
-    IconData icon,
+    String icon,
     String label,
     String value,
   ) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: theme.colorScheme.secondary),
+        StepIcon(icon, size: 20, color: theme.colorScheme.secondary),
         const SizedBox(width: AppTheme.spacingMd),
         Text(label, style: theme.textTheme.bodyMedium),
         const Spacer(),
@@ -319,14 +320,14 @@ class RefugeDetailScreen extends ConsumerWidget {
       children: [
         const SectionHeader(
           title: 'Reserver',
-          icon: Icons.bookmark_add_outlined,
+          icon: StepwaysIcons.repere,
         ),
         if (hasPhone)
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
             child: AppButton(
               label: 'Appeler',
-              icon: Icons.phone,
+              icon: StepwaysIcons.telephone,
               variant: AppButtonVariant.secondary,
               onPressed: () async {
                 _logBookingAttempt('phone', accommodation.name);
@@ -352,7 +353,7 @@ class RefugeDetailScreen extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
             child: AppButton(
               label: 'Email',
-              icon: Icons.email,
+              icon: StepwaysIcons.courrier,
               variant: AppButtonVariant.outline,
               onPressed: () async {
                 _logBookingAttempt('email', accommodation.name);
@@ -380,7 +381,7 @@ class RefugeDetailScreen extends ConsumerWidget {
         if (hasWebsite)
           AppButton(
             label: 'Site web',
-            icon: Icons.language,
+            icon: StepwaysIcons.langue,
             variant: AppButtonVariant.outline,
             onPressed: () async {
               _logBookingAttempt('web', accommodation.name);
@@ -415,7 +416,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     return AppCard(
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: theme.colorScheme.secondary),
+          StepIcon(StepwaysIcons.info, color: theme.colorScheme.secondary),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Text(
@@ -447,7 +448,7 @@ class RefugeDetailScreen extends ConsumerWidget {
       children: [
         const SectionHeader(
           title: 'Autres hebergements',
-          icon: Icons.hotel,
+          icon: StepwaysIcons.hebergement,
         ),
         ...others.map((accom) {
           return Padding(
@@ -455,7 +456,7 @@ class RefugeDetailScreen extends ConsumerWidget {
             child: AppCard(
               child: Row(
                 children: [
-                  Icon(
+                  StepIcon(
                     accommodationTypeIcon(accom.type),
                     color: theme.colorScheme.secondary,
                     size: 24,
@@ -483,7 +484,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   ),
                   if (accom.phone != null)
                     IconButton(
-                      icon: const Icon(Icons.phone, size: 20),
+                      icon: const StepIcon(StepwaysIcons.telephone, size: 20),
                       color: theme.colorScheme.primary,
                       onPressed: () async {
                         final uri = Uri(

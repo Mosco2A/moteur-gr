@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/presentation/map/controls/map_controls.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget du composant MapControls (Phase 2 E2.3c).
 ///
@@ -45,10 +46,10 @@ void main() {
 
       // Icones attendues. Le pinceau (selecteur de peaux) est retire : on
       // exige son ABSENCE, pour qu'il ne revienne pas par inadvertance.
-      expect(find.byIcon(Icons.brush_outlined), findsNothing);
-      expect(find.byIcon(Icons.add), findsOneWidget);
-      expect(find.byIcon(Icons.remove), findsOneWidget);
-      expect(find.byIcon(Icons.my_location), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.palette), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.plus), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.moins), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.maPosition), findsOneWidget);
     });
 
     test('est un StatelessWidget', () {

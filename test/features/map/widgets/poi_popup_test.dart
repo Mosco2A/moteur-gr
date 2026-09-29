@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/map/widgets/poi_popup.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du widget PoiPopup.
 ///
@@ -55,23 +56,23 @@ void main() {
     testWidgets('affiche l\'altitude quand disponible', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       expect(find.text('1350 m'), findsOneWidget);
-      expect(find.byIcon(Icons.terrain), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.sommet), findsOneWidget);
     });
 
     testWidgets('affiche les horaires quand disponibles', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       expect(find.text('Mai-Octobre'), findsOneWidget);
-      expect(find.byIcon(Icons.schedule), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsOneWidget);
     });
 
     testWidgets('masque l\'altitude quand elle vaut 0', (tester) async {
       await tester.pumpWidget(buildPopup(poiMinimal));
-      expect(find.byIcon(Icons.terrain), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.sommet), findsNothing);
     });
 
     testWidgets('masque les horaires quand null', (tester) async {
       await tester.pumpWidget(buildPopup(poiMinimal));
-      expect(find.byIcon(Icons.schedule), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsNothing);
     });
 
     testWidgets('masque la description quand vide', (tester) async {
@@ -83,7 +84,7 @@ void main() {
     testWidgets('affiche l\'icône du type de POI', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       // L'icône shelter (house) est dans l'en-tête du popup
-      expect(find.byIcon(Icons.house), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
     });
 
     testWidgets('est encapsulé dans une AppCard', (tester) async {

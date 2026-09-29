@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/routing/home_location_provider.dart';
 import '../../i18n/translations.g.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// En-tete universel de navigation StepWays (LOT 3 — refonte nav hub-and-push).
 ///
@@ -150,7 +151,7 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
         if (actions != null) ...actions!,
         if (showHome)
           IconButton(
-            icon: const Icon(Icons.home_outlined),
+            icon: const StepIcon(StepwaysIcons.hebergement),
             tooltip: t.nav.home,
             // Le bouton Accueil ne QUITTE JAMAIS l'app (Up-like, AUDIT §M-3).
             onPressed: () => context.go(home),

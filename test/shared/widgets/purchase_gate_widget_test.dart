@@ -14,6 +14,7 @@ import 'package:moteur_gr/shared/widgets/purchase_gate_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../structurel/regie_pub_absente.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget E4.17 / StepWays LOT 1 — purchase gate + ecran paywall.
 ///
@@ -152,7 +153,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(t.monetization.demoBanner), findsOneWidget);
-      expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget);
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });
@@ -169,7 +170,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(t.monetization.demoBanner), findsNothing);
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });
@@ -194,7 +195,7 @@ void main() {
 
       // isDemoModeProvider relance via le stream d'entitlements : bandeau parti.
       expect(find.text(t.monetization.demoBanner), findsNothing);
-      expect(find.byIcon(Icons.lock_outline), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });

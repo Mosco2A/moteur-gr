@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/poi/domain/poi_type_config.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E2.5a — PoiTypeConfig getStyle type connu et inconnu.
 void main() {
   group('PoiTypeConfig', () {
     test('getStyle type connu retourne le bon style', () {
       final waterStyle = PoiTypeConfig.getStyle('water');
-      expect(waterStyle.icon, Icons.water_drop);
+      expect(waterStyle.icon, StepwaysIcons.pluie);
       expect(waterStyle.color, const Color(0xFF1565C0));
       expect(waterStyle.labelKey, 'Eau');
 
       final refugeStyle = PoiTypeConfig.getStyle('refuge');
-      expect(refugeStyle.icon, Icons.house);
+      expect(refugeStyle.icon, StepwaysIcons.hebergement);
       expect(refugeStyle.color, const Color(0xFF5D4037));
 
       final dangerStyle = PoiTypeConfig.getStyle('danger');
-      expect(dangerStyle.icon, Icons.warning);
+      expect(dangerStyle.icon, StepwaysIcons.danger);
       expect(dangerStyle.color, const Color(0xFFC62828));
     });
 
     test('getStyle type inconnu retourne fallback', () {
       final unknown = PoiTypeConfig.getStyle('parking_lot');
-      expect(unknown.icon, Icons.location_on);
+      expect(unknown.icon, StepwaysIcons.repere);
       expect(unknown.color, const Color(0xFF616161));
       // labelKey = le type brut pour les inconnus
       expect(unknown.labelKey, 'parking_lot');
@@ -30,7 +31,7 @@ void main() {
 
     test('getStyle type vide retourne fallback', () {
       final empty = PoiTypeConfig.getStyle('');
-      expect(empty.icon, Icons.location_on);
+      expect(empty.icon, StepwaysIcons.repere);
       expect(empty.color, const Color(0xFF616161));
     });
 

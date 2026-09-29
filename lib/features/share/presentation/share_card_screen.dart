@@ -9,10 +9,12 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/share_card_generator.dart';
 import '../domain/share_card_template.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de previsualisation et partage d'une carte trek.
 ///
@@ -78,7 +80,7 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
             padding: const EdgeInsets.all(AppTheme.spacingBase),
             child: AppButton(
               isLoading: _isGenerating,
-              icon: Icons.share,
+              icon: StepwaysIcons.partager,
               label: t.share.share,
               onPressed: _isGenerating ? null : _shareCard,
             ),
@@ -155,107 +157,143 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
         ),
       ),
       padding: const EdgeInsets.all(AppTheme.spacingXl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Carte miniature (template journey uniquement)
-          if (_selectedTemplate == ShareCardTemplate.journey &&
-              data.mapSnapshotBytes != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                child: Image.memory(
-                  data.mapSnapshotBytes!,
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          // Nom du sentier (dynamique depuis branding)
-          Text(
-            branding.trailName,
-            style: theme.textTheme.headlineLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingXs),
-          // Region du sentier
-          Text(
-            branding.region,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white.withAlpha(180),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          // Etape (template stage uniquement si hasStageInfo)
-          if (_selectedTemplate == ShareCardTemplate.stage &&
-              data.hasStageInfo) ...[
-            const SizedBox(height: AppTheme.spacingSm),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingBase,
-                vertical: AppTheme.spacingSm,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(40),
-                borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-              ),
-              child: Text(
-                '${data.stageNumber} — ${data.stageName}',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: AppTheme.spacingXl),
-          // Statistiques km / denivele (tous les templates)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
+      // LA CARTE NE DEBORDE PLUS, QUEL QUE SOIT LE TELEPHONE (tache 632).
+      //
+      // Cette carte est un CARRE (AspectRatio 1:1) dont le contenu est du texte
+      // a taille fixe : sur un ecran etroit, le carre retrecit mais pas le
+      // texte. Elle passait deja a 35 px du debordement avant cette tache — la
+      // signature ajoutee en bas l'a fait deborder pour de bon (23 px, attrape
+      // par le test E3.6b).
+      //
+      // `FittedBox` en `scaleDown` reduit l'ENSEMBLE d'un bloc quand la place
+      // manque, au lieu de couper le bas. La largeur reste imposee par le
+      // `LayoutBuilder` : sans elle, le texte cesserait de revenir a la ligne et
+      // un nom de sentier long ecraserait toute la carte.
+      child: LayoutBuilder(
+        builder: (context, constraints) => FittedBox(
+          fit: BoxFit.scaleDown,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _statItem(
-                  Icons.straighten,
-                  '${data.distanceKm.toStringAsFixed(1)} km',
+                // Carte miniature (template journey uniquement)
+                if (_selectedTemplate == ShareCardTemplate.journey &&
+                    data.mapSnapshotBytes != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                      child: Image.memory(
+                        data.mapSnapshotBytes!,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                // Nom du sentier (dynamique depuis branding)
+                Text(
+                  branding.trailName,
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-                const SizedBox(width: AppTheme.spacingXl),
-                _statItem(Icons.trending_up, '${data.elevationGain} m D+'),
+                const SizedBox(height: AppTheme.spacingXs),
+                // Region du sentier
+                Text(
+                  branding.region,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white.withAlpha(180),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                // Etape (template stage uniquement si hasStageInfo)
+                if (_selectedTemplate == ShareCardTemplate.stage &&
+                    data.hasStageInfo) ...[
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacingBase,
+                      vertical: AppTheme.spacingSm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(40),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                    ),
+                    child: Text(
+                      '${data.stageNumber} — ${data.stageName}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: AppTheme.spacingXl),
+                // Statistiques km / denivele (tous les templates)
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _statItem(
+                        StepwaysIcons.distance,
+                        '${data.distanceKm.toStringAsFixed(1)} km',
+                      ),
+                      const SizedBox(width: AppTheme.spacingXl),
+                      _statItem(
+                        StepwaysIcons.denivelePlus,
+                        '${data.elevationGain} m D+',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingLg),
+                // Date
+                Text(
+                  dateFormat.format(data.date),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white.withAlpha(200),
+                  ),
+                ),
+                // Message personnalise
+                if (data.customMessage != null) ...[
+                  const SizedBox(height: AppTheme.spacingBase),
+                  Text(
+                    data.customMessage!,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white.withAlpha(220),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+                // LA SIGNATURE DE L'APPLICATION (tache 632). Cette carte 1080x1080 est
+                // la seule image que le randonneur fait SORTIR du telephone, et elle
+                // ne portait aucune marque : ni logo, ni nom. Elle partait sur les
+                // reseaux sans dire d'ou elle venait. Le logo en trace clair la signe
+                // desormais — clair parce que le fond est toujours un degrade sature
+                // du sentier, jamais un fond blanc.
+                //
+                // `ShareCardBranding.logoAssetPath` n'est PAS utilise pour cela : ce
+                // champ porte le logo eventuel du SENTIER (il est reste nul depuis sa
+                // creation), pas la marque de l'application.
+                const SizedBox(height: AppTheme.spacingLg),
+                const AppLogo.horizontal(hauteur: 22, surFondSombre: true),
               ],
             ),
           ),
-          const SizedBox(height: AppTheme.spacingLg),
-          // Date
-          Text(
-            dateFormat.format(data.date),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withAlpha(200),
-            ),
-          ),
-          // Message personnalise
-          if (data.customMessage != null) ...[
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              data.customMessage!,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withAlpha(220),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
 
-  Widget _statItem(IconData icon, String value) {
+  Widget _statItem(String icon, String value) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white, size: 28),
+        StepIcon(icon, color: Colors.white, size: 28),
         const SizedBox(height: 4),
         Text(
           value,

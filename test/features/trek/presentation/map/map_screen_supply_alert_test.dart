@@ -15,6 +15,7 @@ import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Correctif L6-1 — LE MONTAGE de l'alerte ravitaillement sur la carte.
 ///
@@ -103,7 +104,7 @@ void main() {
           harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text(texteAlerte(6)), findsOneWidget);
-      expect(find.byIcon(Icons.warning_amber), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
     });
 
     testWidgets('AUCUNE alerte hors trek', (tester) async {

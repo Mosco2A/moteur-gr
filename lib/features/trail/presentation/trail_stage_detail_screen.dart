@@ -15,6 +15,7 @@ import '../widgets/difficulty_badge.dart';
 import '../widgets/poi_tile.dart';
 import '../widgets/stage_list_tile.dart';
 import '../widgets/stage_stats_section.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran détail d'une étape.
 ///
@@ -48,7 +49,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
       body: stagesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
-          icon: Icons.error_outline,
+          icon: StepwaysIcons.danger,
           title: t.common.cannotLoadStage,
           subtitle: error.toString(),
         ),
@@ -59,7 +60,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
 
           if (stage == null) {
             return const EmptyState(
-              icon: Icons.hiking,
+              icon: StepwaysIcons.chaussure,
               title: 'Étape introuvable',
             );
           }
@@ -116,7 +117,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
                 // Points d'intérêt
                 const SectionHeader(
                   title: 'Points d\'intérêt',
-                  icon: Icons.place,
+                  icon: StepwaysIcons.repere,
                 ),
                 const SizedBox(height: AppTheme.spacingSm),
                 if (pois.isEmpty)
@@ -140,7 +141,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    icon: Icons.terrain,
+                    icon: StepwaysIcons.sommet,
                     label: 'Voir sur la carte',
                     onPressed: () =>
                         GoRouter.of(context).go('/trail/$trailId/map'),

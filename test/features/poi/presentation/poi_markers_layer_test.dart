@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/poi/domain/poi_type_config.dart';
 import 'package:moteur_gr/features/poi/presentation/poi_markers_layer.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E2.5b — PoiMarkersLayer markers filtres par type String + fallback.
 void main() {
@@ -107,7 +108,7 @@ void main() {
 
       // Verifier que PoiTypeConfig retourne le fallback pour un type inconnu
       final fallbackStyle = PoiTypeConfig.getStyle('parking_lot');
-      expect(fallbackStyle.icon, Icons.location_on);
+      expect(fallbackStyle.icon, StepwaysIcons.repere);
       expect(fallbackStyle.color, const Color(0xFF616161));
       expect(fallbackStyle.labelKey, 'parking_lot');
 

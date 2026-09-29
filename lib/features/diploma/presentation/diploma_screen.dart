@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/branding/app_branding.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
@@ -12,6 +13,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../../trek/domain/models/trek_session.dart';
@@ -23,6 +25,7 @@ import '../providers/session_trace_provider.dart';
 import 'widgets/session_trace_painter.dart';
 import '../../after/providers/adventure_recap_provider.dart';
 import '../../after/providers/in_app_review_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran diplome de fin de trek avec recap aventure.
 ///
@@ -179,7 +182,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             // Bouton PDF
             AppButton(
               label: diplomaT.downloadPdf,
-              icon: Icons.picture_as_pdf,
+              icon: StepwaysIcons.pdf,
               onPressed: _diplomaData != null && !_isGeneratingPdf
                   ? () => _generatePdf(config, realStats, session: session)
                   : null,
@@ -190,7 +193,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             // l'ecran n'avait aucun bouton de partage, ni reel ni decoratif.
             AppButton(
               label: diplomaT.shareDiploma,
-              icon: Icons.share_outlined,
+              icon: StepwaysIcons.partager,
               onPressed: _diplomaData != null && !_isGeneratingPdf
                   ? () => _generatePdf(config, realStats,
                       session: session, share: true)
@@ -262,8 +265,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         ),
         child: Column(
           children: [
-            Icon(
-              Icons.emoji_events,
+            StepIcon(
+              StepwaysIcons.diplome,
               size: 48,
               color: theme.colorScheme.primary,
             ),
@@ -300,6 +303,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
                 ),
               ),
             ],
+            // LA MARQUE DE CELUI QUI DELIVRE LE DIPLOME (tache 632), au meme
+            // endroit que sur le PDF : en bas, sous le numero de finisher.
+            // L'apercu et le document imprime doivent se ressembler — sinon le
+            // randonneur decouvre le logo en ouvrant le fichier.
+            const SizedBox(height: AppTheme.spacingLg),
+            const AppLogo.horizontal(hauteur: 24),
           ],
         ),
       ),
@@ -360,6 +369,20 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         finisherNumber: _finisherNumber(session, stats),
       );
 
+      // LE LOGO EST LU ICI, PAS DANS LE SERVICE (tache 632). L'ecran a un
+      // paquet d'assets sous la main ; le service du domaine, lui, tourne aussi
+      // dans des tests sans liaison Flutter initialisee et ne doit rien savoir
+      // de `rootBundle`. Si la lecture echoue, le diplome sort quand meme —
+      // sans marque plutot que pas du tout.
+      String? logoSvg;
+      try {
+        logoSvg = await DefaultAssetBundle.of(
+          context,
+        ).loadString(AppBranding.logoHorizontal);
+      } catch (_) {
+        logoSvg = null;
+      }
+
       // CORRECTIF L5-1 : le retour de generatePdf est AFFECTE, puis ECRIT.
       // Avant, les octets etaient calcules puis jetes, et le message qui
       // suivait reprenait le LIBELLE DU BOUTON — le randonneur croyait
@@ -367,6 +390,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
       final bytes = await DiplomaPdfService.generatePdf(
         data: data,
         labels: labels,
+        logoSvg: logoSvg,
       );
       final file = await DiplomaPdfService.savePdf(
         bytes: bytes,
@@ -424,7 +448,7 @@ class _RecapHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(Icons.landscape, color: theme.colorScheme.primary, size: 28),
+        StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary, size: 28),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(
           child: Text(
@@ -520,7 +544,7 @@ class _PhotoCard extends StatelessWidget {
                 ? Image.file(file, fit: BoxFit.cover)
                 : Container(
                     color: AppTheme.grisClair,
-                    child: const Icon(Icons.broken_image, size: 40),
+                    child: const StepIcon(StepwaysIcons.imageManquante, size: 40),
                   ),
             // Etiquette etape en bas
             Positioned(
@@ -590,24 +614,24 @@ class _StatsSection extends StatelessWidget {
           child: Column(
             children: [
               _StatRow(
-                icon: Icons.flag,
+                icon: StepwaysIcons.depart,
                 label: diplomaT.recapStages.replaceAll('{count}', stagesText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.distance,
                 label:
                     diplomaT.recapDistance.replaceAll('{km}', distanceText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 label: diplomaT.recapElevation
                     .replaceAll('{meters}', elevationText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
-                icon: Icons.calendar_today,
+                icon: StepwaysIcons.calendrier,
                 label:
                     diplomaT.recapDuration.replaceAll('{days}', durationText),
               ),
@@ -657,8 +681,8 @@ class _ParcoursLabel extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isIntegral ? Icons.verified : Icons.terrain,
+              StepIcon(
+                isIntegral ? StepwaysIcons.diplome : StepwaysIcons.sommet,
                 size: 18,
                 color: theme.colorScheme.primary,
               ),
@@ -693,8 +717,8 @@ class _LockedState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.lock_outline,
+            const StepIcon(
+              StepwaysIcons.cadenas,
               size: 64,
               color: AppTheme.grisTexteSecondaire,
             ),
@@ -724,7 +748,7 @@ class _LockedState extends StatelessWidget {
 /// Ligne de statistique individuelle avec icone.
 class _StatRow extends StatelessWidget {
   const _StatRow({required this.icon, required this.label});
-  final IconData icon;
+  final String icon;
   final String label;
 
   @override
@@ -732,7 +756,7 @@ class _StatRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, color: theme.colorScheme.primary, size: 22),
+        StepIcon(icon, color: theme.colorScheme.primary, size: 22),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
       ],
@@ -808,8 +832,8 @@ class _NoTracePlaceholder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.map,
+          StepIcon(
+            StepwaysIcons.carte,
             size: 48,
             color: theme.colorScheme.primary.withAlpha(120),
           ),
@@ -839,7 +863,7 @@ class _JournalCountSection extends StatelessWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: Icon(Icons.menu_book, color: theme.colorScheme.primary),
+        leading: StepIcon(StepwaysIcons.journal, color: theme.colorScheme.primary),
         title: Text(
           diplomaT.recapJournalEntries.replaceAll('{count}', '$count'),
           style: theme.textTheme.bodyLarge,

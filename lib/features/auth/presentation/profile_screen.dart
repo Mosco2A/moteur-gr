@@ -9,24 +9,26 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Liste des icones d'avatars locaux predefinis.
 ///
 /// 8 avatars thematiques randonnee, accessibles par index (0-7).
-const _avatarIcons = <IconData>[
-  Icons.hiking,
-  Icons.landscape,
-  Icons.terrain,
-  Icons.forest,
-  Icons.wb_sunny,
-  Icons.star,
-  Icons.explore,
-  Icons.nature_people,
+const _avatarIcons = <String>[
+  StepwaysIcons.chaussure,
+  StepwaysIcons.sommet,
+  StepwaysIcons.sommet,
+  StepwaysIcons.foret,
+  StepwaysIcons.soleil,
+  StepwaysIcons.favori,
+  StepwaysIcons.catalogueSentiers,
+  StepwaysIcons.sommet,
 ];
 
 /// Ecran de profil utilisateur.
@@ -99,7 +101,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Mon compte » (connexion / deconnexion).
-          SectionHeader(title: i18n.auth.profile, icon: Icons.person_outline),
+          SectionHeader(title: i18n.auth.profile, icon: StepwaysIcons.monCompte),
           const SizedBox(height: AppTheme.spacingSm),
           _buildAccountSection(context, ref, theme, i18n, user),
           const SizedBox(height: AppTheme.spacingLg),
@@ -109,7 +111,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // Donnee NON sensible, defaut droitier. Persiste via settingsProvider.
           SectionHeader(
             title: i18n.navPilote.dominantHand,
-            icon: Icons.pan_tool_outlined,
+            icon: StepwaysIcons.geste,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           _buildDominantHandSection(context, ref, theme, i18n),
@@ -119,7 +121,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // dediee en rouge, requise par les stores).
           SectionHeader(
             title: i18n.auth.deleteAccount,
-            icon: Icons.warning_amber_rounded,
+            icon: StepwaysIcons.danger,
             iconColor: AppTheme.rougeUrgence,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -193,10 +195,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         padding: EdgeInsets.zero,
         child: ListTile(
           key: const ValueKey('profil-connexion-google'),
-          leading: const Icon(Icons.login),
+          leading: const StepIcon(StepwaysIcons.connexion),
           title: Text(i18n.auth.signInGoogle),
           subtitle: Text(i18n.auth.signInGoogleDesc),
-          trailing: const Icon(Icons.chevron_right),
+          trailing: const StepIcon(StepwaysIcons.chevronDroite),
           onTap: () async {
             final service = ref.read(authServiceProvider);
             await service.signInWithGoogleSilent();
@@ -218,7 +220,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: const Icon(Icons.logout),
+        leading: const StepIcon(StepwaysIcons.deconnexion),
         title: Text(i18n.auth.signOut),
         subtitle: Text(i18n.auth.signOutDesc),
         onTap: () => _confirmSignOut(context, ref, i18n),
@@ -231,28 +233,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   /// Lue dynamiquement via package_info_plus. Format mandate :
   /// « StepWays v0.1.0 (build 1) ». Fallback discret « ... » le temps du
   /// chargement du plugin (jamais de spinner — coherent avec l'offline-first).
+  /// TACHE 632 — LE LOGO AU-DESSUS DE LA VERSION. Ce pied de page etait le seul
+  /// endroit de toute l'application ou le mot « StepWays » etait ecrit, et il
+  /// n'y avait aucune marque a cote. L'application n'a pas d'ecran « a propos »
+  /// (aucune route) : ce bloc en tient lieu, c'est donc ici que la marque se
+  /// montre en clair.
   Widget _buildVersionFooter(ThemeData theme, Translations i18n) {
     return Center(
-      child: FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
-          final String versionText;
-          if (snapshot.hasData) {
-            final info = snapshot.data!;
-            versionText = i18n.auth.appVersion(
-              version: info.version,
-              build: info.buildNumber,
-            );
-          } else {
-            versionText = '...';
-          }
-          return Text(
-            versionText,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AppLogo.horizontal(hauteur: 28),
+          const SizedBox(height: AppTheme.spacingSm),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              final String versionText;
+              if (snapshot.hasData) {
+                final info = snapshot.data!;
+                versionText = i18n.auth.appVersion(
+                  version: info.version,
+                  build: info.buildNumber,
+                );
+              } else {
+                versionText = '...';
+              }
+              return Text(
+                versionText,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -286,12 +300,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ButtonSegment<DominantHand>(
                 value: DominantHandValues.right,
                 label: Text(i18n.navPilote.dominantHandRight),
-                icon: const Icon(Icons.back_hand_outlined),
+                icon: const StepIcon(StepwaysIcons.geste),
               ),
               ButtonSegment<DominantHand>(
                 value: DominantHandValues.left,
                 label: Text(i18n.navPilote.dominantHandLeft),
-                icon: const Icon(Icons.front_hand_outlined),
+                icon: const StepIcon(StepwaysIcons.geste),
               ),
             ],
             selected: {DominantHandValues.fromString(hand)},
@@ -318,8 +332,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       padding: EdgeInsets.zero,
       borderColor: AppTheme.rougeUrgence.withValues(alpha: 0.4),
       child: ListTile(
-        leading: const Icon(
-          Icons.delete_forever,
+        leading: const StepIcon(
+          StepwaysIcons.corbeille,
           color: AppTheme.rougeUrgence,
         ),
         title: Text(
@@ -348,7 +362,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: CircleAvatar(
               radius: 48,
               backgroundColor: theme.colorScheme.primaryContainer,
-              child: Icon(
+              child: StepIcon(
                 _avatarIcons[user.avatarIndex.clamp(
                   0,
                   _avatarIcons.length - 1,
@@ -413,7 +427,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     backgroundColor: isSelected
                         ? theme.colorScheme.primary
                         : theme.colorScheme.surfaceContainerHighest,
-                    child: Icon(
+                    child: StepIcon(
                       _avatarIcons[index],
                       color: isSelected
                           ? theme.colorScheme.onPrimary
@@ -533,7 +547,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             const SizedBox(width: AppTheme.spacingXs),
-            Icon(Icons.edit, size: 18, color: theme.colorScheme.primary),
+            StepIcon(StepwaysIcons.crayon, size: 18, color: theme.colorScheme.primary),
           ],
         ),
       ),

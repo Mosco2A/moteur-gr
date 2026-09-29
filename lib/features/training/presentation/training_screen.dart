@@ -13,6 +13,7 @@ import '../../../shared/widgets/paywall_sheet.dart';
 import '../models/localized_text.dart';
 import '../models/training_plan.dart';
 import '../providers/training_plan_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ECRAN ENTRAINEMENT — coeur du LOT 5 (sous-ensemble A), PAYANT.
 ///
@@ -150,7 +151,7 @@ class _DemoBridledBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.science_outlined,
+              StepIcon(StepwaysIcons.eprouvette,
                   size: 20, color: theme.colorScheme.secondary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -201,7 +202,7 @@ class _LockedPhaseRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Row(
         children: [
-          Icon(_phaseIcon(phase.icon), color: grise),
+          StepIcon(_phaseIcon(phase.icon), color: grise),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
@@ -223,7 +224,7 @@ class _LockedPhaseRow extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.lock_outline, size: 18, color: grise),
+          StepIcon(StepwaysIcons.cadenas, size: 18, color: grise),
         ],
       ),
     );
@@ -250,7 +251,7 @@ class _PaywallCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+              StepIcon(StepwaysIcons.cadenas, color: theme.colorScheme.primary, size: 22),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -276,7 +277,7 @@ class _PaywallCard extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingBase),
           AppButton(
-            icon: Icons.lock_open,
+            icon: StepwaysIcons.cadenasOuvert,
             label: tr.unlock,
             onPressed: () => acheterSentier(context, ref, trailId: trail.id),
           ),
@@ -359,7 +360,7 @@ class _PlanContent extends ConsumerWidget {
       return _NoPlanYet(
         trail: trail,
         plan: plan,
-        icon: Icons.event_available,
+        icon: StepwaysIcons.calendrier,
         headline: tr.inviteSetDate,
         explanation: tr.noDateWhy,
         explanationKey: const ValueKey('training-no-date-why'),
@@ -370,7 +371,7 @@ class _PlanContent extends ConsumerWidget {
         trail: trail,
         plan: plan,
         daysUntilDeparture: daysUntil,
-        icon: Icons.hourglass_disabled,
+        icon: StepwaysIcons.sablier,
         headline: tr.tooShortTitle,
         explanation: tr.tooShortWhy(
           days: daysUntil,
@@ -402,7 +403,7 @@ class _PlanContent extends ConsumerWidget {
         // --- Etat « sans fiche » : invite non bloquante a remplir la fiche ---
         if (perso != null && !perso.hasProfile) ...[
           _InviteBanner(
-            icon: Icons.badge_outlined,
+            icon: StepwaysIcons.monCompte,
             message: tr.inviteFillProfile,
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -501,7 +502,7 @@ class _IntroEffortCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.fitness_center,
+          const StepIcon(StepwaysIcons.preparationPhysique,
               color: AppTheme.bleuRepos, size: 24),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
@@ -578,7 +579,7 @@ class _PhaseBlock extends StatelessWidget {
       child: ExpansionTile(
         // 1re phase ouverte par defaut (maquette).
         initiallyExpanded: phase.id == 'foundation',
-        leading: Icon(_phaseIcon(phase.icon), color: theme.colorScheme.primary),
+        leading: StepIcon(_phaseIcon(phase.icon), color: theme.colorScheme.primary),
         title: Text(
           tr.phaseWeeks(
             start: phase.weekStart,
@@ -653,7 +654,7 @@ class _ObjectiveCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.my_location,
+          const StepIcon(StepwaysIcons.maPosition,
               color: AppTheme.orangeDifficile, size: 22),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
@@ -741,7 +742,7 @@ class _NoPlanState extends StatelessWidget {
 class _InviteBanner extends StatelessWidget {
   const _InviteBanner({required this.icon, required this.message});
 
-  final IconData icon;
+  final String icon;
   final String message;
 
   @override
@@ -755,7 +756,7 @@ class _InviteBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.onSecondaryContainer),
+          StepIcon(icon, size: 20, color: theme.colorScheme.onSecondaryContainer),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -789,7 +790,7 @@ class _WarningBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber,
+          const StepIcon(StepwaysIcons.danger,
               size: 20, color: AppTheme.orangeDifficile),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
@@ -839,7 +840,7 @@ class _NoPlanYet extends StatelessWidget {
 
   final TrailConfig trail;
   final TrainingPlan plan;
-  final IconData icon;
+  final String icon;
 
   /// Phrase courte qui NOMME le refus (ou l'invite).
   final String headline;
@@ -876,7 +877,7 @@ class _NoPlanYet extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(icon, color: AppTheme.orangeDifficile, size: 22),
+                  StepIcon(icon, color: AppTheme.orangeDifficile, size: 22),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
@@ -902,19 +903,19 @@ class _NoPlanYet extends StatelessWidget {
 }
 
 /// Resout le nom d'icone de phase (donnee) en [IconData] (couche UI).
-IconData _phaseIcon(String name) {
+String _phaseIcon(String name) {
   switch (name) {
     case 'terrain':
-      return Icons.terrain;
+      return StepwaysIcons.sommet;
     case 'hiking':
-      return Icons.hiking;
+      return StepwaysIcons.chaussure;
     case 'directions_walk':
-      return Icons.directions_walk;
+      return StepwaysIcons.pas;
     case 'fitness_center':
-      return Icons.fitness_center;
+      return StepwaysIcons.preparationPhysique;
     case 'favorite_outline':
-      return Icons.favorite_outline;
+      return StepwaysIcons.favori;
     default:
-      return Icons.directions_walk;
+      return StepwaysIcons.pas;
   }
 }

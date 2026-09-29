@@ -15,6 +15,7 @@ import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/planning/providers/trek_edit_lock_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Ecran « Adapter l'itineraire » (R12, LOT L9) — preuve cote INTERFACE.
 ///
@@ -118,7 +119,7 @@ void main() {
 
     expect(find.byType(ReorderableListView), findsNothing,
         reason: 'l ordre des etapes ne se glisse pas une fois parti');
-    expect(find.byIcon(Icons.drag_handle), findsNothing,
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.poignee), findsNothing,
         reason: 'aucune poignee de glissement ne doit etre offerte');
   });
 

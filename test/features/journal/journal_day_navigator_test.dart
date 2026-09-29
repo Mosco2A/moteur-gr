@@ -12,6 +12,7 @@ import 'package:moteur_gr/features/journal/presentation/journal_screen.dart';
 import 'package:moteur_gr/features/journal/providers/journal_day_providers.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// CORRECTIF L4-1 — NAVIGATEUR PAR JOUR DU JOURNAL.
 ///
@@ -91,11 +92,11 @@ void main() {
 
       await pumpJournal(tester, db);
 
-      await tester.tap(find.byIcon(Icons.chevron_left));
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
       await tester.pumpAndSettle();
       expect(find.text('Jour deux sous la pluie'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.chevron_left));
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
       await tester.pumpAndSettle();
       expect(find.text('Jour un du Mare a Mare'), findsOneWidget);
 
@@ -112,23 +113,23 @@ void main() {
 
       await pumpJournal(tester, db);
 
-      IconButton buttonOf(IconData icon) => tester.widget<IconButton>(
+      IconButton buttonOf(String icon) => tester.widget<IconButton>(
             find.ancestor(
-              of: find.byIcon(icon),
+              of: find.byWidgetPredicate((w) => w is StepIcon && w.asset == icon),
               matching: find.byType(IconButton),
             ),
           );
 
       // Sur la journee la plus recente : suivant mort, precedent vivant.
-      expect(buttonOf(Icons.chevron_right).onPressed, isNull);
-      expect(buttonOf(Icons.chevron_left).onPressed, isNotNull);
+      expect(buttonOf(StepwaysIcons.chevronDroite).onPressed, isNull);
+      expect(buttonOf(StepwaysIcons.chevronGauche).onPressed, isNotNull);
 
-      await tester.tap(find.byIcon(Icons.chevron_left));
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
       await tester.pumpAndSettle();
 
       // Sur la plus ancienne : l'inverse.
-      expect(buttonOf(Icons.chevron_left).onPressed, isNull);
-      expect(buttonOf(Icons.chevron_right).onPressed, isNotNull);
+      expect(buttonOf(StepwaysIcons.chevronGauche).onPressed, isNull);
+      expect(buttonOf(StepwaysIcons.chevronDroite).onPressed, isNotNull);
     });
 
     testWidgets('journal vide : aucun navigateur, etat vide conserve',
@@ -138,8 +139,8 @@ void main() {
 
       await pumpJournal(tester, db);
 
-      expect(find.byIcon(Icons.chevron_left), findsNothing);
-      expect(find.byIcon(Icons.book_outlined), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.journal), findsOneWidget);
     });
   });
 

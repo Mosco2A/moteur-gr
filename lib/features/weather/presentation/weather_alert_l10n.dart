@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 
 import '../../../i18n/translations.g.dart';
 import '../models/weather_alert.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Résolution i18n des alertes météo (LOT-B, D-5 / RF-15).
 ///
@@ -49,20 +49,20 @@ extension WeatherAlertL10n on WeatherAlert {
   }
 
   /// Icône associée à la nature de l'alerte.
-  IconData get icon {
+  String get icon {
     switch (kind) {
       case WeatherAlertKind.storm:
-        return Icons.thunderstorm;
+        return StepwaysIcons.orage;
       case WeatherAlertKind.wind:
-        return Icons.air;
+        return StepwaysIcons.vent;
       case WeatherAlertKind.rain:
-        return Icons.water_drop;
+        return StepwaysIcons.pluie;
       case WeatherAlertKind.snow:
-        return Icons.ac_unit;
+        return StepwaysIcons.neige;
       case WeatherAlertKind.uv:
-        return Icons.wb_sunny;
+        return StepwaysIcons.soleil;
       case WeatherAlertKind.fire:
-        return Icons.local_fire_department;
+        return StepwaysIcons.incendie;
     }
   }
 }

@@ -21,6 +21,7 @@ import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — l'onglet Carte StepWays clone l'ecran Navigation GR20.
 ///
@@ -136,7 +137,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // FAB des calques (heroTag mapLayers -> icone layers).
-      expect(find.byIcon(Icons.layers), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calques), findsOneWidget);
     });
 
     testWidgets('SOS overlay masque hors trek (acces unique, aucun SOS de barre)',
@@ -150,7 +151,7 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(SosButton),
-          matching: find.byIcon(Icons.emergency),
+          matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
         ),
         findsNothing,
         reason: 'overlay SOS invisible hors trek (parite SosButton)',
@@ -160,7 +161,7 @@ void main() {
       // RETIRE. Hors trek, l'overlay est masque ET la barre ne porte plus de SOS
       // -> AUCUNE icone SOS a l'ecran (exactement comme GR20, sans barre SOS).
       expect(
-        find.byIcon(Icons.emergency),
+        find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
         findsNothing,
         reason: 'plus de SOS en barre (retire cycle 3) + overlay masque hors trek',
       );
@@ -175,7 +176,7 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(SosButton),
-          matching: find.byIcon(Icons.emergency),
+          matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
         ),
         findsOneWidget,
       );
@@ -190,7 +191,7 @@ void main() {
       // SOS UNIQUE aligne GR20 (cycle 3) : plus de doublon en barre. En trek,
       // il n'y a donc qu'UNE SEULE icone SOS et un seul texte « SOS » a l'ecran,
       // ceux de l'overlay — a l'identique de GR20 (SosFloatingButton unique).
-      expect(find.byIcon(Icons.emergency), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
       expect(find.text('SOS'), findsOneWidget);
     });
 
@@ -250,7 +251,7 @@ void main() {
 
       // Manque reel n°1 : la carte de reference porte ce bouton, StepWays
       // n'en avait aucune occurrence.
-      expect(find.byIcon(Icons.photo_camera), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.photo), findsOneWidget);
     });
 
     testWidgets('guide des icones accessible depuis l en-tete (LOT D)',
@@ -259,8 +260,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Manque reel n°2 : action (i) de l'en-tete -> guide de la carte.
-      expect(find.byIcon(Icons.info_outline), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.info_outline));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
@@ -307,7 +308,7 @@ void main() {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
-      await tester.tap(find.byIcon(Icons.layers));
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calques));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
@@ -364,7 +365,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Le bouton retour est present.
-      final backButton = find.byIcon(Icons.arrow_back);
+      // La carte pose son PROPRE bouton retour (leading explicite), pas celui
+      // du framework : on le cherche donc par son dessin (tache 632).
+      final backButton = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.flecheArriere,
+      );
       expect(backButton, findsOneWidget);
 
       // Tap retour : aucune exception, on arrive sur /home.

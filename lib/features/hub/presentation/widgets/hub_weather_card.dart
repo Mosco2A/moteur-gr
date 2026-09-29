@@ -11,6 +11,7 @@ import '../../../weather/models/weather_forecast.dart';
 import '../../../weather/providers/current_stage_provider.dart';
 import '../../../weather/providers/weather_providers.dart';
 import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Tuile météo du jour du HUB (AM-3, LOT-B — tuile réelle).
 ///
@@ -93,7 +94,7 @@ class HubWeatherCard extends ConsumerWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: scheme.onSurface.withAlpha(120)),
+          StepIcon(StepwaysIcons.chevronDroite, color: scheme.onSurface.withAlpha(120)),
         ],
       ),
     );
@@ -120,8 +121,8 @@ class HubWeatherCard extends ConsumerWidget {
         child: CircularProgressIndicator(strokeWidth: 2),
       );
     }
-    return Icon(
-      Icons.wb_cloudy_outlined,
+    return StepIcon(
+      StepwaysIcons.meteo,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );
@@ -166,7 +167,7 @@ class _StormBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.thunderstorm,
+          const StepIcon(StepwaysIcons.orage,
               size: 13, color: AppTheme.rougeUrgence),
           const SizedBox(width: 3),
           Text(

@@ -12,6 +12,7 @@ import '../providers/current_stage_provider.dart';
 import '../providers/fire_risk_providers.dart';
 import '../providers/weather_providers.dart';
 import 'weather_freshness.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RISQUE INCENDIE (parite GR20 `FireRiskScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -58,7 +59,7 @@ class FireRiskScreen extends ConsumerWidget {
         title: t.fireRisk.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const StepIcon(StepwaysIcons.rafraichir),
             tooltip: t.fireRisk.refresh,
             onPressed: () => _refreshAll(context, ref),
           ),
@@ -117,7 +118,7 @@ class FireRiskScreen extends ConsumerWidget {
           // 5. Legende des niveaux.
           SectionHeader(
             title: t.fireRisk.levelsTitle,
-            icon: Icons.local_fire_department,
+            icon: StepwaysIcons.incendie,
             iconColor: AppTheme.rougeUrgence,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -127,7 +128,7 @@ class FireRiskScreen extends ConsumerWidget {
           // 6. Risque par etape.
           SectionHeader(
             title: t.fireRisk.stagesTitle,
-            icon: Icons.map_outlined,
+            icon: StepwaysIcons.carte,
             iconColor: AppTheme.orangeDifficile,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -143,7 +144,7 @@ class FireRiskScreen extends ConsumerWidget {
           // 7. Numeros utiles (data-driven).
           SectionHeader(
             title: t.fireRisk.numbersTitle,
-            icon: Icons.phone,
+            icon: StepwaysIcons.telephone,
             iconColor: theme.colorScheme.secondary,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -277,7 +278,7 @@ class _UpdateBanner extends ConsumerWidget {
     return AppCard(
       child: Row(
         children: [
-          Icon(Icons.update, size: 16, color: color),
+          StepIcon(StepwaysIcons.miseAJour, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -287,7 +288,7 @@ class _UpdateBanner extends ConsumerWidget {
           ),
           TextButton.icon(
             onPressed: onRefresh,
-            icon: const Icon(Icons.refresh, size: 14),
+            icon: const StepIcon(StepwaysIcons.rafraichir, size: 14),
             label: Text(t.fireRisk.refresh,
                 style: const TextStyle(fontSize: 12)),
             style: TextButton.styleFrom(
@@ -325,7 +326,7 @@ class _FwiSourceBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline, size: 18, color: accent),
+          StepIcon(StepwaysIcons.info, size: 18, color: accent),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -376,7 +377,7 @@ class _RegulationSection extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.gavel,
+                  const StepIcon(StepwaysIcons.loi,
                       size: 18, color: AppTheme.orangeDifficile),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
@@ -405,7 +406,7 @@ class _RegulationSection extends ConsumerWidget {
                     onTap: () => _openUrl(regulation.decreeUrl!),
                     child: Row(
                       children: [
-                        Icon(Icons.open_in_new,
+                        StepIcon(StepwaysIcons.lien,
                             size: 14, color: theme.colorScheme.secondary),
                         const SizedBox(width: AppTheme.spacingXs),
                         Flexible(
@@ -480,7 +481,7 @@ class _Legend extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppTheme.spacingMd),
-          Icon(Icons.local_fire_department, size: 16, color: color),
+          StepIcon(StepwaysIcons.incendie, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Text(label,
               style: theme.textTheme.bodyMedium
@@ -508,7 +509,7 @@ class _NoRiskCard extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.check_circle,
+            StepIcon(StepwaysIcons.cochePleine,
                 size: 40, color: AppTheme.vertFacile.withAlpha(180)),
             const SizedBox(height: AppTheme.spacingSm),
             Text(
@@ -606,7 +607,7 @@ class _StageFireCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.local_fire_department, size: 14, color: color),
+                      StepIcon(StepwaysIcons.incendie, size: 14, color: color),
                       const SizedBox(width: 4),
                       Text(
                         t.fireRisk.levelBadge(level: maxLevel),
@@ -633,7 +634,7 @@ class _StageFireCard extends StatelessWidget {
                         style: theme.textTheme.bodySmall
                             ?.copyWith(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 4),
-                    Icon(Icons.local_fire_department, size: 20, color: dColor),
+                    StepIcon(StepwaysIcons.incendie, size: 20, color: dColor),
                     Text(
                       t.fireRisk.dayLevel(level: d.level),
                       style: theme.textTheme.labelSmall
@@ -699,7 +700,7 @@ class _EmergencyNumbers extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
           child: Row(
             children: [
-              Icon(Icons.phone, size: 18, color: color),
+              StepIcon(StepwaysIcons.telephone, size: 18, color: color),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
                 child: Column(
@@ -714,7 +715,7 @@ class _EmergencyNumbers extends ConsumerWidget {
                   ],
                 ),
               ),
-              Icon(Icons.call, size: 20, color: color),
+              StepIcon(StepwaysIcons.telephone, size: 20, color: color),
             ],
           ),
         ),
@@ -751,7 +752,7 @@ class _FireRiskEmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingXl),
       children: [
         const SizedBox(height: 80),
-        Icon(Icons.local_fire_department,
+        StepIcon(StepwaysIcons.incendie,
             size: 72, color: AppTheme.grisGranite.withAlpha(80)),
         const SizedBox(height: AppTheme.spacingLg),
         Text(

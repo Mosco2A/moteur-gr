@@ -14,6 +14,7 @@ import 'package:moteur_gr/features/journal/presentation/journal_screen.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Test E3.1c : ecran journal s affiche avec donnees mock.
 void main() {
@@ -58,10 +59,10 @@ void main() {
 
     // Verifier le FAB d ajout
     expect(find.byType(FloatingActionButton), findsOneWidget);
-    expect(find.byIcon(Icons.add), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.plus), findsOneWidget);
 
     // Verifier l etat vide (icone livre)
-    expect(find.byIcon(Icons.book_outlined), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.journal), findsOneWidget);
 
     await db.close();
   });

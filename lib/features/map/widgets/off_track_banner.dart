@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/off_track_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Banniere de securite affichee sur la carte quand le randonneur s'ecarte du
 /// trace (etat pilote par [offTrackProvider], avec hysteresis 80/50 m). Rendu
@@ -41,8 +42,8 @@ class OffTrackBanner extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.wrong_location_outlined,
+              const StepIcon(
+                StepwaysIcons.gpsPerdu,
                 color: Colors.white,
                 size: 22,
               ),

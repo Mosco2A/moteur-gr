@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moteur_gr/features/group/presentation/follow_web_screen.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests de la page de suivi web (E4.12a).
 ///
@@ -35,7 +36,7 @@ void main() {
 
       // Firebase indisponible => ecran erreur affiche
       expect(find.text(t.follow.invalidLink), findsOneWidget);
-      expect(find.byIcon(Icons.link_off), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lienRompu), findsOneWidget);
     });
 
     testWidgets('sans shareCode affiche ecran erreur', (tester) async {

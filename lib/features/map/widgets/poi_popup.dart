@@ -4,6 +4,7 @@ import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
 import 'poi_marker.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Popup affiché au tap sur un marqueur POI.
 ///
@@ -36,7 +37,7 @@ class PoiPopup extends StatelessWidget {
             // En-tête : icône + nom
             Row(
               children: [
-                Icon(PoiMarker.iconFor(poi.type), color: color, size: 20),
+                StepIcon(PoiMarker.iconFor(poi.type), color: color, size: 20),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -67,8 +68,8 @@ class PoiPopup extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingSm),
               Row(
                 children: [
-                  const Icon(
-                    Icons.terrain,
+                  const StepIcon(
+                    StepwaysIcons.sommet,
                     size: 14,
                     color: AppTheme.grisTexteSecondaire,
                   ),
@@ -88,8 +89,8 @@ class PoiPopup extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingXs),
               Row(
                 children: [
-                  const Icon(
-                    Icons.schedule,
+                  const StepIcon(
+                    StepwaysIcons.duree,
                     size: 14,
                     color: AppTheme.grisTexteSecondaire,
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du routeur GoRouter (E2.9b + HUB E07/AM-1 — bottom nav 5 onglets).
 ///
@@ -453,13 +454,13 @@ void main() {
                   initialLocation: i == navigationShell.currentIndex,
                 ),
                 destinations: const [
-                  NavigationDestination(icon: Icon(Icons.map), label: 'Carte'),
+                  NavigationDestination(icon: StepIcon(StepwaysIcons.carte), label: 'Carte'),
                   NavigationDestination(
-                    icon: Icon(Icons.terrain),
+                    icon: StepIcon(StepwaysIcons.sommet),
                     label: 'Etapes',
                   ),
                   NavigationDestination(
-                    icon: Icon(Icons.more_horiz),
+                    icon: StepIcon(StepwaysIcons.menu),
                     label: 'Plus',
                   ),
                 ],
@@ -571,7 +572,7 @@ class _CounterStubState extends State<_CounterStub> {
             Text('${widget.label}: $_count'),
             IconButton(
               key: ValueKey('inc-${widget.label}'),
-              icon: const Icon(Icons.add),
+              icon: const StepIcon(StepwaysIcons.plus),
               onPressed: () => setState(() => _count++),
             ),
           ],

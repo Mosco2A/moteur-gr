@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../poi/domain/poi_type_config.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Widget marqueur personnalise pour un point d'interet sur la carte.
 ///
@@ -16,7 +17,7 @@ class PoiMarker extends StatelessWidget {
   final double size;
 
   /// Retourne l'icone Material associee au type de POI.
-  static IconData iconFor(String type) {
+  static String iconFor(String type) {
     return PoiTypeConfig.getStyle(type).icon;
   }
 
@@ -44,7 +45,7 @@ class PoiMarker extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(
+      child: StepIcon(
         style.icon,
         color: Colors.white,
         size: size * 0.5,

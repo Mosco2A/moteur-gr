@@ -19,6 +19,7 @@ import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/geo/track_point.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran NUITEES (assistant « Reserver vos nuits »).
 ///
@@ -589,7 +590,7 @@ void main() {
                 // Meme geste que la carte HUB reelle (Icons.cabin + push).
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/nuitees'),
-                  child: const Icon(Icons.cabin),
+                  child: const StepIcon(StepwaysIcons.nuitees),
                 ),
               ),
             ),
@@ -618,8 +619,8 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone cabin) ouvre l'ecran Nuitees.
-      expect(find.byIcon(Icons.cabin), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.cabin));
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees), findsOneWidget);
+      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees));
       await settle(tester);
       await pumpUntil(tester, find.text(t.nuitees.title));
       expect(find.text(t.nuitees.title), findsWidgets);
@@ -636,7 +637,7 @@ void main() {
       // titre de l'ecran puis la presence de la carte HUB.
       await pumpUntilGone(tester, find.text(t.nuitees.title));
       expect(find.text(t.nuitees.title), findsNothing);
-      expect(find.byIcon(Icons.cabin), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees), findsOneWidget);
     });
   });
 }

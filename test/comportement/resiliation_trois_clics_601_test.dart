@@ -41,6 +41,7 @@ import 'package:moteur_gr/features/monetization/presentation/subscription_screen
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 import '../structurel/parcours_reel.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Faux lanceur de lien : enregistre ce qui a REELLEMENT ete demande.
 ///
@@ -76,7 +77,7 @@ void main() {
       var gestes = 0;
 
       // Geste 1 — les reglages, depuis l'accueil.
-      final reglages = find.byIcon(Icons.settings_outlined);
+      final reglages = find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.reglages);
       expect(reglages, findsWidgets,
           reason: 'l accueil doit offrir une entree vers les reglages');
       await tester.tap(reglages.first);

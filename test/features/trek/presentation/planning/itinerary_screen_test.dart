@@ -13,6 +13,7 @@ import 'package:moteur_gr/features/trek/presentation/planning/itinerary_screen.d
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests de l'ecran ITINERAIRE (PARITE GR20 #99433) + non-regression du bug de
 /// navigation (retour depuis Itineraire).
@@ -300,7 +301,7 @@ void main() {
         expect(
           find.descendant(
             of: find.byType(OutlinedButton),
-            matching: find.byIcon(Icons.swap_horiz),
+            matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.inverser),
           ),
           findsOneWidget,
         );

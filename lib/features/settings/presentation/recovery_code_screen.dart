@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran « Afficher mon code de reconnexion » (StepWays — modèle code-sur-tel).
 ///
@@ -118,7 +119,7 @@ class RecoveryCodeScreen extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingMd),
                   OutlinedButton.icon(
                     onPressed: () => _copy(context, ref, code),
-                    icon: const Icon(Icons.copy, size: 18),
+                    icon: const StepIcon(StepwaysIcons.copier, size: 18),
                     label: Text(tr.recovery.copy),
                   ),
                 ],
@@ -132,8 +133,8 @@ class RecoveryCodeScreen extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.warning_amber_rounded,
+                  const StepIcon(
+                    StepwaysIcons.danger,
                     color: AppTheme.orangeDifficile,
                     size: 22,
                   ),

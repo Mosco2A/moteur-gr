@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// E5.15 / L6 : Dialog de confirmation SOS (2 canaux secours, H1).
 ///
@@ -43,7 +44,7 @@ class SosConfirmationDialog extends StatelessWidget {
       backgroundColor: theme.colorScheme.surface,
       title: Row(
         children: [
-          const Icon(Icons.emergency, color: AppTheme.rougeUrgence, size: 28),
+          const StepIcon(StepwaysIcons.secours, color: AppTheme.rougeUrgence, size: 28),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -83,8 +84,8 @@ class SosConfirmationDialog extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.gps_fixed,
+                    StepIcon(
+                      StepwaysIcons.maPosition,
                       size: 14,
                       color: theme.colorScheme.primary,
                     ),
@@ -177,8 +178,8 @@ class SosConfirmationDialog extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.medical_information_outlined,
+                    StepIcon(
+                      StepwaysIcons.ficheMedicale,
                       size: 20,
                       color: theme.colorScheme.primary,
                     ),
@@ -230,7 +231,7 @@ class SosConfirmationDialog extends StatelessWidget {
           variant: AppButtonVariant.filledTone,
           tone: AppTheme.rougeUrgence,
           isFullWidth: false,
-          icon: Icons.phone,
+          icon: StepwaysIcons.telephone,
           label: t.sos.call,
           onPressed: () {
             Navigator.of(context).pop();

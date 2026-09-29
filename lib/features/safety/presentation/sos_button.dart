@@ -15,6 +15,7 @@ import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/tracking_providers.dart';
 import 'sos_confirmation_dialog.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// E5.15 : Bouton SOS flottant — visible uniquement pendant trek actif.
 ///
@@ -66,7 +67,7 @@ class SosButton extends ConsumerWidget {
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.emergency, color: Colors.white, size: 24),
+              StepIcon(StepwaysIcons.secours, color: Colors.white, size: 24),
               Text(
                 'SOS',
                 style: TextStyle(

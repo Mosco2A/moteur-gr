@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/core/ui/error_view.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 void main() {
   group('ErrorView', () {
@@ -16,7 +17,7 @@ void main() {
       );
 
       expect(find.text('Une erreur est survenue'), findsOneWidget);
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
     });
 
     testWidgets('affiche le bouton retry quand onRetry est fourni',

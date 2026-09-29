@@ -12,6 +12,7 @@ import '../models/group_member.dart';
 import '../providers/group_provider.dart';
 import '../services/group_tracking_service.dart';
 import '../widgets/member_position_card.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de gestion du groupe de localisation partagee.
 class GroupScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         actions: [
           if (groupCode != null)
             IconButton(
-              icon: const Icon(Icons.exit_to_app),
+              icon: const StepIcon(StepwaysIcons.deconnexion),
               tooltip: 'Quitter le groupe',
               onPressed: _leaveGroup,
             ),
@@ -83,7 +84,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           // desactive l'action), pleine largeur (Column stretch, iso-rendu).
           AppButton(
             isLoading: _isLoading,
-            icon: Icons.group_add,
+            icon: StepwaysIcons.suiveurs,
             label: 'Creer un groupe',
             onPressed: _isLoading ? null : _createGroup,
           ),
@@ -121,7 +122,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           // largeur (Column stretch). Desactive pendant le chargement (iso).
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.login,
+            icon: StepwaysIcons.connexion,
             label: 'Rejoindre',
             onPressed: _isLoading ? null : _joinGroup,
           ),
@@ -177,7 +178,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.copy),
+                  icon: const StepIcon(StepwaysIcons.copier),
                   tooltip: 'Copier le code',
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: groupCode));

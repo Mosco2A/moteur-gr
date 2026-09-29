@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/models/poi.dart';
 import '../domain/poi_type_config.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Couche de marqueurs POI pour la carte — filtre par type visible.
 ///
@@ -63,7 +64,7 @@ class PoiMarkersLayer extends StatelessWidget {
                 ],
               ),
               alignment: Alignment.center,
-              child: Icon(
+              child: StepIcon(
                 style.icon,
                 color: Colors.white,
                 size: markerSize * 0.5,

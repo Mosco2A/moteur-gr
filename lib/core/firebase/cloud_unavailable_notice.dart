@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../i18n/translations.g.dart';
 import '../../shared/widgets/app_card.dart';
 import '../theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Etat explicite du mode local (P1-4 audit #327).
 ///
@@ -24,8 +25,8 @@ class CloudUnavailableNotice extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.cloud_off,
+          const StepIcon(
+            StepwaysIcons.horsLigne,
             size: 48,
             color: AppTheme.grisTexteSecondaire,
           ),

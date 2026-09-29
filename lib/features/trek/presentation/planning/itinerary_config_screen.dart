@@ -6,6 +6,7 @@ import '../../../../shared/widgets/app_card.dart';
 import '../../domain/models/itinerary_config.dart';
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/itinerary_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Ecran de configuration de l'itineraire.
 ///
@@ -36,7 +37,7 @@ class ItineraryConfigScreen extends ConsumerWidget {
         children: [
           // --- Distance max par jour ---
           _SectionCard(
-            icon: Icons.straighten,
+            icon: StepwaysIcons.distance,
             title: 'Distance maximale par jour',
             subtitle: '${config.maxKmPerDay.round()} km',
             colorScheme: colorScheme,
@@ -57,7 +58,7 @@ class ItineraryConfigScreen extends ConsumerWidget {
 
           // --- Duree max par jour ---
           _SectionCard(
-            icon: Icons.schedule,
+            icon: StepwaysIcons.duree,
             title: 'Duree maximale par jour',
             subtitle: '${config.maxHoursPerDay.toStringAsFixed(1)} h',
             colorScheme: colorScheme,
@@ -78,7 +79,7 @@ class ItineraryConfigScreen extends ConsumerWidget {
 
           // --- Date de depart ---
           _SectionCard(
-            icon: Icons.calendar_today,
+            icon: StepwaysIcons.calendrier,
             title: 'Date de depart',
             subtitle: _formatDate(config.startDate),
             colorScheme: colorScheme,
@@ -148,7 +149,7 @@ class _SectionCard extends StatelessWidget {
     required this.child,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String subtitle;
   final ColorScheme colorScheme;
@@ -165,7 +166,7 @@ class _SectionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: colorScheme.primary, size: 20),
+              StepIcon(icon, color: colorScheme.primary, size: 20),
               const SizedBox(width: 8),
               Text(title, style: Theme.of(context).textTheme.titleSmall),
               const Spacer(),
@@ -221,7 +222,7 @@ class _ItinerarySummary extends StatelessWidget {
         ),
         error: (_, __) => Row(
           children: [
-            Icon(Icons.warning_amber, color: colorScheme.error),
+            StepIcon(StepwaysIcons.danger, color: colorScheme.error),
             const SizedBox(width: 8),
             const Expanded(child: Text("Impossible de calculer l'itineraire")),
           ],
@@ -230,7 +231,7 @@ class _ItinerarySummary extends StatelessWidget {
           if (days.isEmpty) {
             return const Row(
               children: [
-                Icon(Icons.info_outline),
+                StepIcon(StepwaysIcons.info),
                 SizedBox(width: 8),
                 Text('Aucune etape chargee'),
               ],

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_header.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget dédiés de l'[AppHeader] (StepWays LOT 3, Ph1).
 ///
@@ -59,7 +60,7 @@ void main() {
       expect(find.text('Titre'), findsOneWidget);
       expect(find.byTooltip(t.nav.back), findsOneWidget);
       expect(find.byTooltip(t.nav.home), findsOneWidget);
-      expect(find.byIcon(Icons.home_outlined), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
     });
 
     testWidgets('showBack=false : pas de bouton Retour', (tester) async {
@@ -100,7 +101,7 @@ void main() {
             title: 'Titre',
             actions: [
               IconButton(
-                icon: const Icon(Icons.info_outline),
+                icon: const StepIcon(StepwaysIcons.info),
                 onPressed: () {},
               ),
             ],
@@ -112,8 +113,8 @@ void main() {
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.info_outline), findsOneWidget);
-      expect(find.byIcon(Icons.home_outlined), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
     });
   });
 

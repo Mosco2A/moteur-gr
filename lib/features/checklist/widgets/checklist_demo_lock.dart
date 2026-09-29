@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LE BRIDAGE DU SAC EN DEMO (tache 594, A2c) — deux pieces, une regle.
 ///
@@ -44,7 +45,7 @@ class ChecklistDemoBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.science_outlined,
+              StepIcon(StepwaysIcons.eprouvette,
                   size: 20, color: theme.colorScheme.secondary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -109,7 +110,7 @@ class ChecklistLockedCategory extends ConsumerWidget {
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           child: Row(
             children: [
-              Icon(Icons.lock_outline, size: 20, color: grise),
+              StepIcon(StepwaysIcons.cadenas, size: 20, color: grise),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
                 child: Column(
@@ -127,7 +128,7 @@ class ChecklistLockedCategory extends ConsumerWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, size: 18, color: grise),
+              StepIcon(StepwaysIcons.chevronDroite, size: 18, color: grise),
             ],
           ),
         ),

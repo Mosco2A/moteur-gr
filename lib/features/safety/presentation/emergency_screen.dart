@@ -20,6 +20,7 @@ import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
+import '../../../core/branding/stepways_icons.dart';
 import 'health_info_screen.dart' show healthInfoProvider;
 
 /// Provider pour le service de contacts d'urgence.
@@ -134,7 +135,7 @@ class _GpsPositionBanner extends StatelessWidget {
         ),
         error: (_, __) => Row(
           children: [
-            const Icon(Icons.gps_off, size: 18, color: AppTheme.rougeUrgence),
+            const StepIcon(StepwaysIcons.gpsPerdu, size: 18, color: AppTheme.rougeUrgence),
             const SizedBox(width: AppTheme.spacingSm),
             Text(t.sos.positionUnavailable),
           ],
@@ -145,8 +146,8 @@ class _GpsPositionBanner extends StatelessWidget {
           final alt = position.altitude.toStringAsFixed(0);
           return Row(
             children: [
-              Icon(
-                Icons.gps_fixed,
+              StepIcon(
+                StepwaysIcons.maPosition,
                 size: 18,
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -190,8 +191,8 @@ class _HealthInfoEntry extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: theme.colorScheme.primary,
-            child: const Icon(
-              Icons.medical_information_outlined,
+            child: const StepIcon(
+              StepwaysIcons.ficheMedicale,
               color: Colors.white,
               size: 20,
             ),
@@ -201,7 +202,7 @@ class _HealthInfoEntry extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(t.health.entrySubtitle),
-          trailing: const Icon(Icons.chevron_right),
+          trailing: const StepIcon(StepwaysIcons.chevronDroite),
           onTap: () => context.push('/health'),
         ),
       ),
@@ -234,8 +235,8 @@ class _EmergencyContactTile extends StatelessWidget {
           backgroundColor: isAuto
               ? AppTheme.rougeUrgence
               : theme.colorScheme.primary,
-          child: Icon(
-            isAuto ? Icons.local_hospital : Icons.person,
+          child: StepIcon(
+            isAuto ? StepwaysIcons.secours : StepwaysIcons.monCompte,
             color: Colors.white,
             size: 20,
           ),
@@ -251,8 +252,8 @@ class _EmergencyContactTile extends StatelessWidget {
           style: const TextStyle(fontFamily: 'monospace'),
         ),
         trailing: IconButton(
-          icon: Icon(
-            Icons.phone,
+          icon: StepIcon(
+            StepwaysIcons.telephone,
             color: isAuto ? AppTheme.rougeUrgence : theme.colorScheme.primary,
             size: 28,
           ),

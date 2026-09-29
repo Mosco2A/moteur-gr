@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/branding/stepways_icons.dart';
 import '../../core/theme/app_theme.dart';
 
 enum AppButtonVariant { primary, secondary, outline, filledTone }
@@ -21,7 +22,13 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
   final bool isLoading;
-  final IconData? icon;
+
+  /// Chemin d'une icone Stepways ([StepwaysIcons]), tache 632. Rendue en
+  /// MONOCHROME : elle doit suivre la couleur du bouton (blanc sur fond plein,
+  /// teinte du theme en contour, grisee quand le bouton est desactive), ce
+  /// qu'un trace bicolore fige ne saurait pas faire.
+  final String? icon;
+
   final bool isFullWidth;
 
   /// Couleur semantique optionnelle (danger, succes...) appliquee a la variante
@@ -59,8 +66,11 @@ class AppButton extends StatelessWidget {
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 20),
+              // Pas de couleur passee : StepIcon prend celle de l'IconTheme,
+              // que le style du bouton pose deja. L'icone suit donc le bouton,
+              // y compris desactive.
+              if (icon case final asset?) ...[
+                StepIcon(asset, size: 20),
                 const SizedBox(width: AppTheme.spacingSm),
               ],
               // Le libelle est `Flexible` (comme `ElevatedButton.icon`/

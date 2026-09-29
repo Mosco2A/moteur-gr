@@ -13,6 +13,7 @@ import '../domain/feasibility_formula.dart';
 import '../providers/hiker_profile_provider.dart';
 import '../providers/trek_feasibility_provider.dart';
 import '../providers/walk_test_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de faisabilite profil x trek — FORMULE V1 FEU TRICOLORE (LOT 3a,
 /// decision Chris #100068) ENVELOPPEE d'un PARCOURS GUIDE (LOT 4, retours
@@ -217,7 +218,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           // Etape 1 : fiche morpho (age/taille/poids).
           _FlowStepCard(
             step: 1,
-            icon: Icons.badge_outlined,
+            icon: StepwaysIcons.monCompte,
             title: f.flow.stepProfile,
             subtitle: f.flow.stepProfileSub,
             done: criteria.profileComplete,
@@ -226,7 +227,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           // Etape 2 : test 6 minutes (optionnel mais alimente le calcul).
           _FlowStepCard(
             step: 2,
-            icon: Icons.directions_walk,
+            icon: StepwaysIcons.pas,
             title: f.flow.stepWalkTest,
             subtitle: f.flow.stepWalkTestSub,
             done: criteria.hasWalkTest,
@@ -236,7 +237,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           // Etape 3 : 5 dernieres randos.
           _FlowStepCard(
             step: 3,
-            icon: Icons.history,
+            icon: StepwaysIcons.historique,
             title: f.flow.stepPastHikes,
             subtitle: f.flow.stepPastHikesSub,
             done: criteria.hasPastHike,
@@ -247,7 +248,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           // « Valider / Voir mon resultat » — actif SEULEMENT au complet (D1).
           AppButton(
             minHeight: 52,
-            icon: Icons.check_circle_outline,
+            icon: StepwaysIcons.cocheCercle,
             label: f.flow.validate,
             onPressed: onValidate,
           ),
@@ -297,7 +298,7 @@ class _MissingCriteriaNotice extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.pending_actions, size: 20, color: color),
+              const StepIcon(StepwaysIcons.sablier, size: 20, color: color),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -317,7 +318,7 @@ class _MissingCriteriaNotice extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.radio_button_unchecked,
+                  const StepIcon(StepwaysIcons.radio,
                       size: 14, color: color),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
@@ -354,7 +355,7 @@ class _FlowStepCard extends StatelessWidget {
     this.optional = false,
   });
   final int step;
-  final IconData icon;
+  final String icon;
   final String title;
   final String subtitle;
   final bool done;
@@ -382,7 +383,7 @@ class _FlowStepCard extends StatelessWidget {
               border: Border.all(color: accent.withAlpha(120)),
             ),
             child: done
-                ? Icon(Icons.check, color: accent, size: 20)
+                ? StepIcon(StepwaysIcons.coche, color: accent, size: 20)
                 : Text(
                     '$step',
                     style: theme.textTheme.titleMedium
@@ -396,7 +397,7 @@ class _FlowStepCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(icon, size: 18, color: colors.onSurface),
+                    StepIcon(icon, size: 18, color: colors.onSurface),
                     const SizedBox(width: AppTheme.spacingXs),
                     Flexible(
                       child: Text(
@@ -421,7 +422,7 @@ class _FlowStepCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right),
+          const StepIcon(StepwaysIcons.chevronDroite),
         ],
       ),
     );
@@ -550,7 +551,7 @@ class _VerdictView extends ConsumerWidget {
           // physique (payant), porte d'entree definie par la spec.
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.fitness_center,
+            icon: StepwaysIcons.preparationPhysique,
             label: t.hub.cards.training,
             onPressed: () => context.push('/training'),
           ),
@@ -560,7 +561,7 @@ class _VerdictView extends ConsumerWidget {
           // Recommencer pour refaire fiche/test/randos).
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.refresh,
+            icon: StepwaysIcons.rafraichir,
             label: f.restart,
             onPressed: onRestart,
           ),
@@ -670,8 +671,8 @@ class _RetainedPlanLine extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          retainedPlan ? Icons.task_alt : Icons.radio_button_unchecked,
+        StepIcon(
+          retainedPlan ? StepwaysIcons.coche : StepwaysIcons.radio,
           size: 18,
           color: color,
         ),
@@ -736,7 +737,7 @@ class _GenerateProgramButton extends ConsumerWidget {
 
     return AppButton(
       minHeight: 52,
-      icon: Icons.event_available,
+      icon: StepwaysIcons.calendrier,
       label: f.generateProgram(days: target),
       onPressed: () {
         // Applique la reco a la source unique des jours (D2 / #100122).
@@ -783,7 +784,7 @@ class _WinterInvalidNotice extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.ac_unit, size: 20, color: color),
+          const StepIcon(StepwaysIcons.neige, size: 20, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -1158,7 +1159,7 @@ class _ConditionsSection extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Icon(Icons.circle,
+                      child: StepIcon(StepwaysIcons.pastille,
                           size: 6,
                           color: theme.colorScheme.onSurface.withAlpha(120)),
                     ),
@@ -1190,7 +1191,7 @@ class _PartialProfileNotice extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 20, color: color),
+          const StepIcon(StepwaysIcons.info, size: 20, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -1223,7 +1224,7 @@ class _GlobalSummary extends StatelessWidget {
         assessment.globalVerdict != FeasibilityVerdict.green) {
       lines.add(_summaryLine(
         theme,
-        Icons.trending_up,
+        StepwaysIcons.denivelePlus,
         f.hardestStage(stage: hardest.stage.name),
         color,
       ));
@@ -1242,7 +1243,7 @@ class _GlobalSummary extends StatelessWidget {
     if (assessment.limitingFactor != LimitingFactor.none) {
       lines.add(_summaryLine(
         theme,
-        Icons.warning_amber,
+        StepwaysIcons.danger,
         f.limitingLabel(factor: _limitingLabel(assessment.limitingFactor)),
         color,
       ));
@@ -1252,7 +1253,7 @@ class _GlobalSummary extends StatelessWidget {
     if (assessment.recommendedTrainingWeeks > 0) {
       lines.add(_summaryLine(
         theme,
-        Icons.event_available,
+        StepwaysIcons.calendrier,
         f.trainingReco(weeks: assessment.recommendedTrainingWeeks),
         theme.colorScheme.primary,
       ));
@@ -1278,11 +1279,11 @@ class _GlobalSummary extends StatelessWidget {
   }
 
   Widget _summaryLine(
-      ThemeData theme, IconData icon, String text, Color color) {
+      ThemeData theme, String icon, String text, Color color) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: color),
+        StepIcon(icon, size: 20, color: color),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
       ],
@@ -1312,7 +1313,7 @@ class _VerdictBadge extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 28),
+          StepIcon(icon, color: color, size: 28),
           const SizedBox(width: AppTheme.spacingSm),
           Flexible(
             child: Text(
@@ -1421,7 +1422,7 @@ class _AdviceTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.tips_and_updates_outlined,
+          StepIcon(StepwaysIcons.ficheConseil,
               color: theme.colorScheme.primary, size: 20),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
@@ -1445,17 +1446,17 @@ class _ProfileShortcuts extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _ShortcutCard(
-          icon: Icons.badge_outlined,
+          icon: StepwaysIcons.monCompte,
           label: f.openProfile,
           onTap: () => context.push('/trail/$trailId/hiker-profile'),
         ),
         _ShortcutCard(
-          icon: Icons.directions_walk,
+          icon: StepwaysIcons.pas,
           label: f.openWalkTest,
           onTap: () => context.push('/trail/$trailId/walk-test'),
         ),
         _ShortcutCard(
-          icon: Icons.history,
+          icon: StepwaysIcons.historique,
           label: f.openPastHikes,
           onTap: () => context.push('/trail/$trailId/past-hikes'),
         ),
@@ -1470,7 +1471,7 @@ class _ShortcutCard extends StatelessWidget {
     required this.label,
     required this.onTap,
   });
-  final IconData icon;
+  final String icon;
   final String label;
   final VoidCallback onTap;
   @override
@@ -1481,12 +1482,12 @@ class _ShortcutCard extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon, color: theme.colorScheme.primary),
+          StepIcon(icon, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
             child: Text(label, style: theme.textTheme.titleSmall),
           ),
-          const Icon(Icons.chevron_right),
+          const StepIcon(StepwaysIcons.chevronDroite),
         ],
       ),
     );
@@ -1510,17 +1511,17 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
           Text(reason, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
           _ShortcutCard(
-            icon: Icons.badge_outlined,
+            icon: StepwaysIcons.monCompte,
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),
           _ShortcutCard(
-            icon: Icons.directions_walk,
+            icon: StepwaysIcons.pas,
             label: f.openWalkTest,
             onTap: () => context.push('/trail/$trailId/walk-test'),
           ),
           _ShortcutCard(
-            icon: Icons.history,
+            icon: StepwaysIcons.historique,
             label: f.openPastHikes,
             onTap: () => context.push('/trail/$trailId/past-hikes'),
           ),
@@ -1656,13 +1657,13 @@ Color _verdictColor(FeasibilityVerdict verdict) {
   }
 }
 
-IconData _verdictIcon(FeasibilityVerdict verdict) {
+String _verdictIcon(FeasibilityVerdict verdict) {
   switch (verdict) {
     case FeasibilityVerdict.red:
-      return Icons.dangerous;
+      return StepwaysIcons.refuser;
     case FeasibilityVerdict.orange:
-      return Icons.warning;
+      return StepwaysIcons.danger;
     case FeasibilityVerdict.green:
-      return Icons.check_circle;
+      return StepwaysIcons.cochePleine;
   }
 }

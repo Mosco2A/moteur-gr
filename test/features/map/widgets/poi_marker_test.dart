@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/map/widgets/poi_marker.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du widget PoiMarker.
 ///
@@ -9,36 +10,36 @@ import 'package:moteur_gr/features/map/widgets/poi_marker.dart';
 void main() {
   group('PoiMarker', () {
     group('iconFor', () {
-      test('shelter retourne Icons.house', () {
-        expect(PoiMarker.iconFor('shelter'), Icons.house);
+      test('shelter retourne StepwaysIcons.hebergement', () {
+        expect(PoiMarker.iconFor('shelter'), StepwaysIcons.hebergement);
       });
 
-      test('water retourne Icons.water_drop', () {
-        expect(PoiMarker.iconFor('water'), Icons.water_drop);
+      test('water retourne StepwaysIcons.pluie', () {
+        expect(PoiMarker.iconFor('water'), StepwaysIcons.pluie);
       });
 
-      test('viewpoint retourne Icons.visibility', () {
-        expect(PoiMarker.iconFor('viewpoint'), Icons.visibility);
+      test('viewpoint retourne StepwaysIcons.oeil', () {
+        expect(PoiMarker.iconFor('viewpoint'), StepwaysIcons.oeil);
       });
 
-      test('campsite retourne Icons.holiday_village', () {
-        expect(PoiMarker.iconFor('campsite'), Icons.holiday_village);
+      test('campsite retourne StepwaysIcons.hebergement', () {
+        expect(PoiMarker.iconFor('campsite'), StepwaysIcons.hebergement);
       });
 
-      test('restaurant retourne Icons.restaurant', () {
-        expect(PoiMarker.iconFor('restaurant'), Icons.restaurant);
+      test('restaurant retourne StepwaysIcons.restauration', () {
+        expect(PoiMarker.iconFor('restaurant'), StepwaysIcons.restauration);
       });
 
-      test('emergency retourne Icons.local_hospital', () {
-        expect(PoiMarker.iconFor('emergency'), Icons.local_hospital);
+      test('emergency retourne StepwaysIcons.secours', () {
+        expect(PoiMarker.iconFor('emergency'), StepwaysIcons.secours);
       });
 
-      test('danger retourne Icons.warning', () {
-        expect(PoiMarker.iconFor('danger'), Icons.warning);
+      test('danger retourne StepwaysIcons.danger', () {
+        expect(PoiMarker.iconFor('danger'), StepwaysIcons.danger);
       });
 
-      test('shop retourne Icons.shopping_cart', () {
-        expect(PoiMarker.iconFor('shop'), Icons.shopping_cart);
+      test('shop retourne StepwaysIcons.panier', () {
+        expect(PoiMarker.iconFor('shop'), StepwaysIcons.panier);
       });
     });
 
@@ -82,22 +83,22 @@ void main() {
 
       testWidgets('affiche l\'icône correcte pour shelter', (tester) async {
         await tester.pumpWidget(buildMarker('shelter'));
-        expect(find.byIcon(Icons.house), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
       });
 
       testWidgets('affiche l\'icône correcte pour water', (tester) async {
         await tester.pumpWidget(buildMarker('water'));
-        expect(find.byIcon(Icons.water_drop), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pluie), findsOneWidget);
       });
 
       testWidgets('affiche l\'icône correcte pour danger', (tester) async {
         await tester.pumpWidget(buildMarker('danger'));
-        expect(find.byIcon(Icons.warning), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
       });
 
       testWidgets('l\'icône est blanche', (tester) async {
         await tester.pumpWidget(buildMarker('viewpoint'));
-        final icon = tester.widget<Icon>(find.byType(Icon));
+        final icon = tester.widget<StepIcon>(find.byType(StepIcon));
         expect(icon.color, Colors.white);
       });
 

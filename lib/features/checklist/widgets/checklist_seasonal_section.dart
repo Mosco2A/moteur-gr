@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section « Sac adaptatif » (StepWays LOT 5, sous-ensemble B).
 ///
@@ -52,8 +53,8 @@ class ChecklistSeasonalSection extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.wb_twilight,
+                const StepIcon(
+                  StepwaysIcons.nuit,
                   size: 20,
                   color: AppTheme.bleuRepos,
                 ),
@@ -119,8 +120,8 @@ class _SuggestionRow extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.check_circle,
+                const StepIcon(
+                  StepwaysIcons.cochePleine,
                   size: 18,
                   color: AppTheme.vertFacile,
                 ),
@@ -142,7 +143,7 @@ class _SuggestionRow extends ConsumerWidget {
                     name: name,
                     weightGrams: item.weightGrams,
                   ),
-              icon: const Icon(Icons.add_circle_outline, size: 18),
+              icon: const StepIcon(StepwaysIcons.plus, size: 18),
               label: Text(t.checklist.seasonalAdd),
             ),
         ],

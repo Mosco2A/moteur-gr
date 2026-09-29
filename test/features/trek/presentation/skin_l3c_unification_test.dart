@@ -11,6 +11,7 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/trek/presentation/map/overlay/tracking_overlay.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests transverses SW-SKIN-L3c (unification composants trek + planning).
 ///
@@ -76,7 +77,7 @@ void main() {
 
       // Iso-rendu du contenu (numero + chevron toujours la).
       expect(find.text('3'), findsOneWidget);
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite), findsOneWidget);
 
       // Tap fonctionnel (onTap porte par l'InkWell interne d'AppCard).
       await tester.tap(find.byType(StageCard));
@@ -165,8 +166,8 @@ void main() {
         expect(foregroundOf(tester, pause), Colors.white);
 
         // Icones conservees.
-        expect(find.byIcon(Icons.pause), findsOneWidget);
-        expect(find.byIcon(Icons.stop), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pause), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
       },
     );
 

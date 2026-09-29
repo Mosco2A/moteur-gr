@@ -15,6 +15,7 @@ import '../../notifications/providers/download_reminder_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RESUME / SYNTHESE du plan (parite GR20 `PlanSummaryScreen`).
 ///
@@ -168,8 +169,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.summarize,
+            StepIcon(
+              StepwaysIcons.programme,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -192,7 +193,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppTheme.spacingXl),
             ElevatedButton.icon(
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
+              icon: const StepIcon(StepwaysIcons.itineraire),
               label: Text(t.summary.empty.action),
             ),
           ],
@@ -256,7 +257,7 @@ class _ConfigSummaryCard extends ConsumerWidget {
           // Titre « Mon {sentier} ».
           Row(
             children: [
-              Icon(Icons.terrain, size: 28, color: scheme.primary),
+              StepIcon(StepwaysIcons.sommet, size: 28, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -272,14 +273,14 @@ class _ConfigSummaryCard extends ConsumerWidget {
 
           // Direction (sens de marche choisi).
           _ConfigRow(
-            icon: Icons.navigation,
+            icon: StepwaysIcons.maPosition,
             label: t.summary.direction,
             value: direction,
           ),
 
           // Duree.
           _ConfigRow(
-            icon: Icons.calendar_today,
+            icon: StepwaysIcons.calendrier,
             label: t.summary.duration,
             value: durationValue,
           ),
@@ -287,13 +288,13 @@ class _ConfigSummaryCard extends ConsumerWidget {
           // Dates (si une date de depart est posee).
           if (startDate != null) ...[
             _ConfigRow(
-              icon: Icons.event,
+              icon: StepwaysIcons.calendrier,
               label: t.summary.startDate,
               value: _formatDate(startDate!, 'd MMMM yyyy'),
             ),
             if (stats.totalDays > 0)
               _ConfigRow(
-                icon: Icons.event_available,
+                icon: StepwaysIcons.calendrier,
                 label: t.summary.endDate,
                 value: _formatDate(
                   startDate!.add(Duration(days: stats.totalDays - 1)),
@@ -315,7 +316,7 @@ class _ConfigRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -327,7 +328,7 @@ class _ConfigRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: AppTheme.grisGranite),
+          StepIcon(icon, size: 16, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingSm),
           // LARGEUR PLANCHER, PLUS LARGEUR FIXE (retour Chris #8, tache 553).
           // Mot pour mot : « resume du plan: direction le mot est sur 2 lignes ».
@@ -403,7 +404,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.straighten,
+                  icon: StepwaysIcons.distance,
                   value: stats.totalDistance.toStringAsFixed(1),
                   unit: 'km',
                   label: t.summary.stats.distance,
@@ -412,7 +413,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.arrow_upward,
+                  icon: StepwaysIcons.flecheHaut,
                   value: '${stats.totalElevationGain}',
                   unit: 'm',
                   label: t.summary.stats.elevationGain,
@@ -426,7 +427,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.arrow_downward,
+                  icon: StepwaysIcons.flecheBas,
                   value: '${stats.totalElevationLoss}',
                   unit: 'm',
                   label: t.summary.stats.elevationLoss,
@@ -435,7 +436,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.schedule,
+                  icon: StepwaysIcons.duree,
                   value: stats.totalHours.toStringAsFixed(0),
                   unit: 'h',
                   label: t.summary.stats.duration,
@@ -449,7 +450,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.hiking,
+                  icon: StepwaysIcons.chaussure,
                   value: '${stats.stageCount}',
                   unit: '',
                   label: t.summary.stats.stages,
@@ -458,7 +459,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.self_improvement,
+                  icon: StepwaysIcons.preparationPhysique,
                   value: '${stats.restDays}',
                   unit: '',
                   label: t.summary.stats.restDays,
@@ -483,7 +484,7 @@ class _BigStat extends StatelessWidget {
     required this.color,
   });
 
-  final IconData icon;
+  final String icon;
   final String value;
   final String unit;
   final String label;
@@ -495,7 +496,7 @@ class _BigStat extends StatelessWidget {
 
     return Column(
       children: [
-        Icon(icon, size: 20, color: color),
+        StepIcon(icon, size: 20, color: color),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
@@ -661,7 +662,7 @@ class _DaySummaryTile extends ConsumerWidget {
 
               // Icone hebergement (type de nuitee du jour).
               const SizedBox(width: AppTheme.spacingSm),
-              Icon(
+              StepIcon(
                 nuiteeType.icon,
                 size: 20,
                 color: nuiteeType == NuiteeType.refuge
@@ -671,7 +672,7 @@ class _DaySummaryTile extends ConsumerWidget {
 
               // Chevron (affordance tap).
               const SizedBox(width: AppTheme.spacingXs),
-              const Icon(Icons.chevron_right,
+              const StepIcon(StepwaysIcons.chevronDroite,
                   size: 20, color: AppTheme.grisGranite),
             ],
           ),
@@ -707,7 +708,7 @@ class _DaySummaryTile extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.self_improvement,
+                        StepIcon(StepwaysIcons.preparationPhysique,
                             size: 24, color: scheme.secondary),
                         const SizedBox(width: AppTheme.spacingSm),
                         Text(
@@ -757,7 +758,7 @@ class _DaySummaryTile extends ConsumerWidget {
                   ),
                 ),
               ),
-              Icon(Icons.self_improvement, size: 20, color: scheme.secondary),
+              StepIcon(StepwaysIcons.preparationPhysique, size: 20, color: scheme.secondary),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 t.summary.restDay,
@@ -778,7 +779,7 @@ class _DaySummaryTile extends ConsumerWidget {
                 ),
               ],
               const SizedBox(width: AppTheme.spacingXs),
-              const Icon(Icons.chevron_right,
+              const StepIcon(StepwaysIcons.chevronDroite,
                   size: 20, color: AppTheme.grisGranite),
             ],
           ),
@@ -839,7 +840,7 @@ class _ActionButtons extends ConsumerWidget {
               );
               Share.share(text);
             },
-            icon: const Icon(Icons.share),
+            icon: const StepIcon(StepwaysIcons.partager),
             label: Text(t.summary.actions.share),
             style: OutlinedButton.styleFrom(
               foregroundColor: scheme.secondary,

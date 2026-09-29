@@ -10,6 +10,7 @@ import '../domain/models/tip_card.dart';
 import '../domain/models/tip_theme.dart';
 import '../providers/tip_cards_provider.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran FICHES CONSEILS — refonte StepWays LOT 5 (sous-ensemble C).
 ///
@@ -82,7 +83,7 @@ class _ThemeSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
+              StepIcon(
                 _themeIcon(TipTheme.iconFor(section.theme)),
                 size: 20,
                 color: theme.colorScheme.primary,
@@ -177,13 +178,13 @@ class _SocialLinks extends StatelessWidget {
         if (fb != null && fb.isNotEmpty)
           OutlinedButton.icon(
             onPressed: () => _open(context, fb),
-            icon: const Icon(Icons.facebook, size: 18),
+            icon: const StepIcon(StepwaysIcons.partager, size: 18),
             label: Text(t.tips.viewOnFacebook),
           ),
         if (ig != null && ig.isNotEmpty)
           OutlinedButton.icon(
             onPressed: () => _open(context, ig),
-            icon: const Icon(Icons.camera_alt_outlined, size: 18),
+            icon: const StepIcon(StepwaysIcons.photo, size: 18),
             label: Text(t.tips.viewOnInstagram),
           ),
       ],
@@ -202,8 +203,8 @@ class _EmptyThemed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.menu_book_outlined,
+            StepIcon(
+              StepwaysIcons.journal,
               size: 48,
               color: theme.colorScheme.onSurface.withAlpha(120),
             ),
@@ -223,21 +224,21 @@ class _EmptyThemed extends StatelessWidget {
 }
 
 /// Resout le nom d'icone de theme (donnee) en [IconData] (couche UI).
-IconData _themeIcon(String name) {
+String _themeIcon(String name) {
   switch (name) {
     case 'backpack':
-      return Icons.backpack;
+      return StepwaysIcons.sacADos;
     case 'health_and_safety':
-      return Icons.health_and_safety;
+      return StepwaysIcons.ficheMedicale;
     case 'healing':
-      return Icons.healing;
+      return StepwaysIcons.ficheMedicale;
     case 'wb_sunny':
-      return Icons.wb_sunny;
+      return StepwaysIcons.soleil;
     case 'cabin':
-      return Icons.cabin;
+      return StepwaysIcons.nuitees;
     case 'forest':
-      return Icons.forest;
+      return StepwaysIcons.foret;
     default:
-      return Icons.info_outline;
+      return StepwaysIcons.info;
   }
 }

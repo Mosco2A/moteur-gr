@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Statut de completion d'un sujet de preparation (coche « sujet traite »),
 /// clone du `PlanningStepStatus` de GR20 (home_screen.dart B-19c).
@@ -43,22 +44,22 @@ class StepStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (status) {
       case PlanningStepStatus.notStarted:
-        return Icon(
-          Icons.radio_button_unchecked,
+        return StepIcon(
+          StepwaysIcons.radio,
           size: size,
           // Gris neutre (parite GR20 : gris 0xFF9E9E9E ~ grisGranite du socle).
           color: AppTheme.grisGranite,
         );
       case PlanningStepStatus.inProgress:
-        return Icon(
-          Icons.timelapse,
+        return StepIcon(
+          StepwaysIcons.sablier,
           size: size,
           // Orange (parite GR20 orangeTerre -> token categoriel orange).
           color: AppTheme.orangeDifficile,
         );
       case PlanningStepStatus.completed:
-        return Icon(
-          Icons.check_circle,
+        return StepIcon(
+          StepwaysIcons.cochePleine,
           size: size,
           // Vert (parite GR20 vertMaquisLight -> token phase Randonner / vert).
           color: AppTheme.phaseHike,

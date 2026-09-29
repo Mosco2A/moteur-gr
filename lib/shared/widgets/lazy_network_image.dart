@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Image distante a chargement PARESSEUX, mise en cache disque (E5.2b).
 ///
@@ -45,7 +46,7 @@ class LazyNetworkImage extends StatelessWidget {
         ? _ImagePlaceholder(
             width: width,
             height: height,
-            icon: Icons.image_outlined,
+            icon: StepwaysIcons.imageManquante,
           )
         : CachedNetworkImage(
             imageUrl: url,
@@ -58,12 +59,12 @@ class LazyNetworkImage extends StatelessWidget {
             placeholder: (context, _) => _ImagePlaceholder(
               width: width,
               height: height,
-              icon: Icons.image_outlined,
+              icon: StepwaysIcons.imageManquante,
             ),
             errorWidget: (context, _, __) => _ImagePlaceholder(
               width: width,
               height: height,
-              icon: Icons.broken_image_outlined,
+              icon: StepwaysIcons.imageManquante,
             ),
           );
 
@@ -82,7 +83,7 @@ class _ImagePlaceholder extends StatelessWidget {
     this.height,
   });
 
-  final IconData icon;
+  final String icon;
   final double? width;
   final double? height;
 
@@ -93,7 +94,7 @@ class _ImagePlaceholder extends StatelessWidget {
       height: height,
       color: Colors.grey.shade200,
       alignment: Alignment.center,
-      child: Icon(icon, color: Colors.grey.shade400, size: 32),
+      child: StepIcon(icon, color: Colors.grey.shade400, size: 32),
     );
   }
 }

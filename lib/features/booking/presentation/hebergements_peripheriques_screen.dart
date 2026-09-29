@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/models/hebergement_peripherique.dart';
 import '../providers/hebergement_peripherique_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran des hébergements périphériques A/R (F6D-02, F6.4).
 ///
@@ -129,7 +130,7 @@ class _HebergementCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              StepIcon(
                 _iconFor(hebergement.type),
                 color: theme.colorScheme.primary,
               ),
@@ -165,7 +166,7 @@ class _HebergementCard extends StatelessWidget {
             // entiere — seule la mise en page change.
             child: Row(
               children: [
-                const Icon(Icons.directions_walk, size: 18),
+                const StepIcon(StepwaysIcons.pas, size: 18),
                 const SizedBox(width: AppTheme.spacingXs),
                 Expanded(
                   child: Text(
@@ -191,7 +192,7 @@ class _HebergementCard extends StatelessWidget {
               // par sonde de largeur. Semantics(button+label) conservee.
               child: AppButton(
                 variant: AppButtonVariant.outline,
-                icon: Icons.open_in_new,
+                icon: StepwaysIcons.lien,
                 label: t.hebergement.openSite,
                 onPressed: onOpen,
               ),
@@ -202,18 +203,18 @@ class _HebergementCard extends StatelessWidget {
     );
   }
 
-  IconData _iconFor(HebergementType type) {
+  String _iconFor(HebergementType type) {
     switch (type) {
       case HebergementType.refuge:
-        return Icons.cabin;
+        return StepwaysIcons.nuitees;
       case HebergementType.gite:
-        return Icons.house_outlined;
+        return StepwaysIcons.hebergement;
       case HebergementType.hotel:
-        return Icons.hotel;
+        return StepwaysIcons.hebergement;
       case HebergementType.camping:
-        return Icons.cottage_outlined;
+        return StepwaysIcons.hebergement;
       case HebergementType.chambreHote:
-        return Icons.bedroom_parent_outlined;
+        return StepwaysIcons.hebergement;
     }
   }
 }
@@ -237,8 +238,8 @@ class _FacilitatorBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.info_outline,
+            StepIcon(
+              StepwaysIcons.info,
               size: 20,
               color: theme.colorScheme.onSecondaryContainer,
             ),

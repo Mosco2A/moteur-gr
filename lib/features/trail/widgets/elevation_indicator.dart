@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Indicateurs de dénivelé positif (D+) et négatif (D-).
 ///
@@ -33,8 +34,8 @@ class ElevationIndicator extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Dénivelé positif (D+)
-        Icon(
-          Icons.arrow_upward,
+        StepIcon(
+          StepwaysIcons.flecheHaut,
           size: iconSize,
           color: AppTheme.vertFacile,
         ),
@@ -49,8 +50,8 @@ class ElevationIndicator extends StatelessWidget {
         ),
         const SizedBox(width: AppTheme.spacingSm),
         // Dénivelé négatif (D-)
-        Icon(
-          Icons.arrow_downward,
+        StepIcon(
+          StepwaysIcons.flecheBas,
           size: iconSize,
           color: AppTheme.rougeUrgence,
         ),

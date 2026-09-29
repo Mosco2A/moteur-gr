@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../map/providers/track_position_provider.dart';
 import '../models/tracking_status.dart';
 import '../providers/tracking_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Overlay de tracking affiche en bas de la carte.
 class TrackingOverlay extends ConsumerWidget {
@@ -67,22 +68,22 @@ class TrackingOverlay extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _StatTile(
-            icon: Icons.timer_outlined,
+            icon: StepwaysIcons.duree,
             value: _formatDuration(tracking.durationSec),
             label: 'Temps',
           ),
           _StatTile(
-            icon: Icons.straighten,
+            icon: StepwaysIcons.distance,
             value: _formatDistance(coveredM),
             label: 'Distance',
           ),
           _StatTile(
-            icon: Icons.trending_up,
+            icon: StepwaysIcons.denivelePlus,
             value: '${tracking.elevationGainM} m',
             label: 'D+',
           ),
           _StatTile(
-            icon: Icons.speed,
+            icon: StepwaysIcons.vitesse,
             value: '${tracking.speedKmh.toStringAsFixed(1)} km/h',
             label: 'Vitesse',
           ),
@@ -103,7 +104,7 @@ class TrackingOverlay extends ConsumerWidget {
       case TrackingStatusValues.stopped:
         return _ActionButton(
           label: 'Demarrer',
-          icon: Icons.play_arrow,
+          icon: StepwaysIcons.enregistrer,
           color: AppTheme.actionStart,
           onPressed: () => notifier.start(trailId),
         );
@@ -113,7 +114,7 @@ class TrackingOverlay extends ConsumerWidget {
             Expanded(
               child: _ActionButton(
                 label: 'Pause',
-                icon: Icons.pause,
+                icon: StepwaysIcons.pause,
                 color: AppTheme.actionPause,
                 onPressed: notifier.pause,
               ),
@@ -122,7 +123,7 @@ class TrackingOverlay extends ConsumerWidget {
             Expanded(
               child: _ActionButton(
                 label: 'Stop',
-                icon: Icons.stop,
+                icon: StepwaysIcons.stop,
                 color: AppTheme.rougeUrgence,
                 onPressed: () => _confirmStop(context, notifier),
               ),
@@ -135,7 +136,7 @@ class TrackingOverlay extends ConsumerWidget {
             Expanded(
               child: _ActionButton(
                 label: 'Reprendre',
-                icon: Icons.play_arrow,
+                icon: StepwaysIcons.enregistrer,
                 color: AppTheme.actionStart,
                 onPressed: notifier.resume,
               ),
@@ -144,7 +145,7 @@ class TrackingOverlay extends ConsumerWidget {
             Expanded(
               child: _ActionButton(
                 label: 'Stop',
-                icon: Icons.stop,
+                icon: StepwaysIcons.stop,
                 color: AppTheme.rougeUrgence,
                 onPressed: () => _confirmStop(context, notifier),
               ),
@@ -201,7 +202,7 @@ class _StatTile extends StatelessWidget {
     required this.label,
   });
 
-  final IconData icon;
+  final String icon;
   final String value;
   final String label;
 
@@ -211,7 +212,7 @@ class _StatTile extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 18, color: theme.colorScheme.primary),
+        StepIcon(icon, size: 18, color: theme.colorScheme.primary),
         const SizedBox(height: 2),
         Text(value, style: theme.textTheme.labelLarge),
         Text(
@@ -236,7 +237,7 @@ class _ActionButton extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final Color color;
   final VoidCallback onPressed;
 

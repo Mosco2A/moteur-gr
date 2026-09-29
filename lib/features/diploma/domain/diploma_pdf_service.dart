@@ -130,10 +130,18 @@ class DiplomaPdfService {
   ///
   /// Retourne un [Uint8List] pret pour sauvegarde ou impression
   /// via le package printing.
+  ///
+  /// [logoSvg] est le CONTENU du fichier SVG du logo de l'application, pas son
+  /// chemin (tache 632). C'est l'appelant qui le lit dans le paquet d'assets et
+  /// le passe ici : ce service est du domaine, il ne connait ni `rootBundle` ni
+  /// le moindre widget Flutter, et ses tests tournent sans liaison Flutter
+  /// initialisee — y lire un asset les ferait tous echouer. Absent (null), le
+  /// diplome s'imprime sans marque, exactement comme avant.
   static Future<Uint8List> generatePdf({
     required DiplomaPdfData data,
     required DiplomaPdfLabels labels,
     String locale = 'fr',
+    String? logoSvg,
   }) async {
     final pdf = pw.Document(
       title: labels.title,
@@ -181,6 +189,7 @@ class DiplomaPdfService {
                   endFormatted,
                   accentColor,
                   subtitleColor,
+                  logoSvg,
                 ),
               ],
             ),
@@ -398,6 +407,7 @@ class DiplomaPdfService {
     String endFormatted,
     PdfColor accentColor,
     PdfColor subtitleColor,
+    String? logoSvg,
   ) {
     return pw.Column(
       children: [
@@ -429,6 +439,16 @@ class DiplomaPdfService {
               letterSpacing: 1.5,
             ),
           ),
+        ],
+        // LA MARQUE DE CELUI QUI DELIVRE LE DIPLOME (tache 632). Ce PDF est le
+        // document qui SORT du telephone — on l'imprime, on l'envoie, on
+        // l'encadre — et il ne portait aucune marque : aucune image d'aucune
+        // sorte, meme pas le nom de l'application. Le logo est trace en
+        // VECTORIEL (pw.SvgImage lit le meme fichier que les ecrans), donc net
+        // a l'impression quelle que soit la taille du papier.
+        if (logoSvg != null) ...[
+          pw.SizedBox(height: 14),
+          pw.SvgImage(svg: logoSvg, height: 22),
         ],
       ],
     );

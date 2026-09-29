@@ -6,6 +6,7 @@ import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/domain/body_weight_reference.dart';
 import '../../feasibility/domain/hiker_input_bounds.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formate un poids en grammes avec separateur de milliers (parite GR20).
 /// Ex: 1600 -> "1 600 g", 350 -> "350 g".
@@ -26,38 +27,38 @@ String formatChecklistGrams(int grams) {
 /// Memes seuils que GR20 « Materiel & Sac » : 12 / 15 / 20 / 25 %. Couleurs
 /// semantiques via [AppTheme] (hors systeme de peaux) — les paliers
 /// intermediaires (jaune-vert, rouge fonce) sont des couleurs fixes comme GR20.
-({Color color, String advice, IconData icon}) checklistRatioAdvice(
+({Color color, String advice, String icon}) checklistRatioAdvice(
     double ratio) {
   final w = t.checklist.weight;
   if (ratio < 0.12) {
     return (
       color: AppTheme.vertFacile,
       advice: w.adviceUltraLight,
-      icon: Icons.check_circle,
+      icon: StepwaysIcons.cochePleine,
     );
   } else if (ratio < 0.15) {
     return (
       color: const Color(0xFF9ACD32), // jaune-vert (parite GR20)
       advice: w.adviceOk,
-      icon: Icons.check_circle,
+      icon: StepwaysIcons.cochePleine,
     );
   } else if (ratio < 0.20) {
     return (
       color: AppTheme.orangeDifficile,
       advice: w.adviceHeavy,
-      icon: Icons.warning_amber,
+      icon: StepwaysIcons.danger,
     );
   } else if (ratio < 0.25) {
     return (
       color: AppTheme.rougeUrgence,
       advice: w.adviceTooHeavy,
-      icon: Icons.error,
+      icon: StepwaysIcons.danger,
     );
   } else {
     return (
       color: const Color(0xFF8B0000), // rouge fonce (parite GR20)
       advice: w.adviceDanger,
-      icon: Icons.error,
+      icon: StepwaysIcons.danger,
     );
   }
 }
@@ -102,7 +103,7 @@ class ChecklistWeightBanner extends StatelessWidget {
               color: a.color.withAlpha(40),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
             ),
-            child: Icon(Icons.luggage, size: 32, color: a.color),
+            child: StepIcon(StepwaysIcons.sacADos, size: 32, color: a.color),
           ),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
@@ -119,7 +120,7 @@ class ChecklistWeightBanner extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
-                    Icon(a.icon, size: 20, color: a.color),
+                    StepIcon(a.icon, size: 20, color: a.color),
                   ],
                 ),
                 const SizedBox(height: 2),
@@ -269,7 +270,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
         children: [
           Row(
             children: [
-              Icon(Icons.monitor_weight_outlined,
+              StepIcon(StepwaysIcons.poids,
                   size: 18, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               // LIBELLE « Poids du corps » — PLUS DE COUPE (retour Chris #10,
@@ -349,7 +350,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
               padding: const EdgeInsets.only(top: AppTheme.spacingXs),
               child: Row(
                 children: [
-                  Icon(Icons.error_outline,
+                  StepIcon(StepwaysIcons.danger,
                       size: 16, color: theme.colorScheme.error),
                   const SizedBox(width: AppTheme.spacingXs),
                   Expanded(

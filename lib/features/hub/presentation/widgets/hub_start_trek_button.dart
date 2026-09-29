@@ -10,6 +10,7 @@ import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../../trek/providers/tracking_providers.dart';
 import '../../providers/cockpit_start_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Bouton « Démarrer la randonnée » du cockpit HUB (retour Chris #3, LOT 2).
 ///
@@ -69,7 +70,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
               // demarrage. SEUL le gate 3 cartes conditionne l'enable (la
               // proximite GPS ne bloque jamais — filet au clic).
               onPressed: enabled ? () => _onStartPressed(context) : null,
-              icon: const Icon(Icons.play_arrow, size: 22),
+              icon: const StepIcon(StepwaysIcons.enregistrer, size: 22),
               label: Text(t.hub.startCta),
               style: FilledButton.styleFrom(
                 backgroundColor: orange,
@@ -163,7 +164,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
       context: context,
       builder: (ctx) => AlertDialog(
         key: const ValueKey('realisation-verrouillee'),
-        icon: const Icon(Icons.lock_outline),
+        icon: const StepIcon(StepwaysIcons.cadenas),
         title: Text(t.monetization.realizationLockedTitle),
         content: Text(t.monetization.realizationLockedBody),
         actions: [

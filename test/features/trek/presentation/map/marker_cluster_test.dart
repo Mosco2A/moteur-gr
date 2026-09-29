@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:moteur_gr/features/trek/presentation/map/marker_cluster.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E5.2a — clustering de marqueurs + epsilon Douglas-Peucker dynamique.
 ///
@@ -179,7 +180,7 @@ void main() {
                       point: point.position,
                       width: 20,
                       height: 20,
-                      child: const Icon(Icons.place),
+                      child: const StepIcon(StepwaysIcons.repere),
                     ),
                   ),
                 ],
