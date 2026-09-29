@@ -1,6 +1,12 @@
 name: moteur_gr
 description: Moteur generique Flutter multi-sentiers
-version: 0.1.2+3
+# Tache 629 : +3 -> +4. Le bundle en version code 3 a ete presente a la Play
+# Console et refuse (cible API 35 au lieu de 36). Google refuse de reprendre un
+# numero de version deja utilise, y compris apres un depot echoue : « the version
+# code must increase with every submission attempt, even if a previous release
+# was rejected ». Le nom de version 0.1.2 reste bon pour un test interne, c est
+# le numero de build qui doit monter a chaque tentative.
+version: 0.1.2+4
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
