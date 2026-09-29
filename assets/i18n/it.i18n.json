@@ -1501,14 +1501,25 @@
       "allergies": "Allergie",
       "treatments": "Terapie in corso",
       "doctor": "Medico di base",
-      "insurance": "N. assicurazione / mutua"
+      "insurance": "N. assicurazione / mutua",
+      "fullName": "Nome e cognome",
+      "birthDate": "Data di nascita",
+      "birthDateClear": "Cancellare la data di nascita",
+      "address": "Indirizzo",
+      "conditions": "Anamnesi e problemi medici",
+      "organDonor": "Donazione di organi"
     },
     "hint": {
       "bloodType": "Es. A+, O-, AB+",
       "allergies": "Es. penicillina, arachidi",
       "treatments": "Es. Levothyrox 50 mg/giorno",
       "doctor": "Es. Dr. Rossi +39 06 xxxx xxxx",
-      "insurance": "Es. tessera europea"
+      "insurance": "Es. tessera europea",
+      "fullName": "Es. Christophe Mosconi",
+      "birthDate": "Toccare per scegliere",
+      "address": "Es. via dei Lillà 12, 20000 Ajaccio",
+      "conditions": "Es. diabete di tipo 1, epilessia, anticoagulante",
+      "organDonor": "Fate la vostra scelta"
     },
     "error": {
       "bloodType": "Gruppo sanguigno non valido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1539,11 +1550,55 @@
     "advice": {
       "title": "Consigli d'uso sul sentiero",
       "whereToFind": "Dove trovarla quando sei a terra: la tua scheda vive in Preparare, riquadro « Scheda medica », e si apre senza rete. Mostrala ai tuoi compagni di cammino prima di partire — il giorno in cui non potrai più parlare, saranno loro ad aprire il tuo telefono.",
-      "showToRescue": "Come mostrarla ai soccorsi: apri questa schermata e porgi il telefono. Gruppo sanguigno, allergie, terapie, medico e assicurazione sono in quest'ordine, in chiaro. Nulla viene inviato su internet: quello che mostri è esattamente quello che è scritto qui.",
+      "showToRescue": "Come mostrarla ai soccorsi: apri questa schermata e porgi il telefono. Chi sei, chi avvisare, poi allergie, terapie, anamnesi e gruppo sanguigno — nell'ordine in cui legge un soccorritore. Nulla viene inviato su internet: quello che mostri è esattamente quello che è scritto qui.",
       "phoneCard": "Ricopiala nella scheda medica del tuo telefono: appare a schermo bloccato, senza il tuo codice. Un soccorritore che trova il tuo telefono ci arriva in due gesti, anche senza conoscere questa applicazione.",
       "paper": "Tieni una copia su carta in una tasca dello zaino: la carta non resta mai senza batteria, non si rompe in una caduta e si legge sotto la pioggia.",
       "ackButton": "Ho letto questi consigli",
       "ackDone": "Consigli letti"
+    },
+    "section": {
+      "identity": "Chi siete",
+      "identityWhy": "È la prima cosa che legge un soccorritore: senza nome cura uno sconosciuto e non può avvisare nessuno.",
+      "contacts": "Chi avvisare",
+      "contactsWhy": "Ciò che i soccorsi cercano subito dopo avervi identificato. Tre persone al massimo: oltre, nessuna viene chiamata.",
+      "vital": "Ciò che vi cura",
+      "vitalWhy": "Nell'ordine in cui interroga un medico d'urgenza: prima ciò che può uccidervi durante le cure, poi ciò che serve in ospedale.",
+      "admin": "Amministrativo",
+      "adminWhy": "Ciò che si ricopia all'accettazione dell'ospedale, non ciò che si legge sotto la pioggia."
+    },
+    "bloodTypeUnknown": "Non lo so",
+    "bloodTypeLegacy": "La voce precedente « $valeur » non è un gruppo sanguigno riconosciuto. Scegliete nell'elenco.",
+    "organDonor": {
+      "yes": "Donatore",
+      "no": "Contrario alla donazione",
+      "unknown": "Non ho scelto"
+    },
+    "contacts": {
+      "add": "Aggiungere una persona da avvisare",
+      "name": "Nome della persona",
+      "nameHint": "Es. Maria, mia sorella",
+      "phone": "Telefono",
+      "phoneHint": "Es. +39 333 123 4567",
+      "remove": "Togliere questa persona",
+      "errorName": "Indicate un nome, altrimenti i soccorsi non sanno chi stanno chiamando.",
+      "errorPhone": "Indicate un numero, altrimenti questo nome non serve a nulla."
+    },
+    "cards": {
+      "vitale": "Foto della tessera sanitaria",
+      "mutuelle": "Foto della tessera dell'assicurazione integrativa",
+      "take": "Scattare una foto",
+      "retake": "Rifare la foto",
+      "pick": "Scegliere un'immagine",
+      "remove": "Togliere la foto",
+      "stored": "Foto registrata su questo telefono. Non viene inviata da nessuna parte e sparisce con la scheda quando la cancellate.",
+      "explain": "La foto resta su questo telefono, nella stessa cartella protetta del resto della scheda.",
+      "permissionRefused": "Accesso alla fotocamera rifiutato. La scheda funziona benissimo anche senza.",
+      "failed": "Non è stato possibile registrare la foto."
+    },
+    "phoneCard": {
+      "title": "Ricopiate la vostra scheda in quella del telefono",
+      "why": "È l'unica schermata che un soccorritore raggiunge senza il vostro codice, su iPhone come su Android. Impostazioni del telefono, sezione Emergenza o Salute: nome, gruppo sanguigno, allergie, terapie e persone da avvisare.",
+      "done": "Fatto, la mia scheda è anche nel telefono"
     },
     "localOnlyPriceTitle": "Cambiare telefono vuol dire riscriverla",
     "localOnlyPrice": "Se cambi telefono, questa scheda non ti segue: dovrai riscrivere il gruppo sanguigno, le allergie e le terapie. È il prezzo della promessa, ed è per questo che nessuno, noi compresi, può leggerla altrove."

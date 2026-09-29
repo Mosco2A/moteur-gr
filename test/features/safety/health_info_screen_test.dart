@@ -140,16 +140,35 @@ void main() {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
+      // TÂCHE 630 — CE TEST TAPAIT « O- » DANS LE PREMIER `TextFormField` DE
+      // L'ÉCRAN. Il n'y a plus de champ de saisie pour le groupe sanguin : c'est
+      // une LISTE FERMÉE de huit valeurs plus « je ne sais pas ». Et le premier
+      // champ de l'écran n'est plus le groupe sanguin mais le NOM, parce que
+      // c'est ce qu'un secouriste lit en premier. Le test vise donc désormais
+      // les deux champs par leur clé — ce qui le rend aussi insensible à un
+      // futur réordonnancement.
       await tester.enterText(
-        find.byType(TextFormField).first,
-        'O-',
+        find.byKey(const ValueKey('health-full-name-field')),
+        'Christophe Mosconi',
       );
+      final liste = find.byKey(const ValueKey('health-blood-type-field'));
+      await tester.ensureVisible(liste);
+      await tester.tap(liste);
+      await tester.pumpAndSettle();
+      // Le menu déroulant est ouvert : « O- » y figure (le `.last` évite
+      // l'éventuel libellé du champ resté sous le menu).
+      await tester.tap(find.text('O-').last);
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text(t.health.save));
       await tester.pump(); // déclenche la sauvegarde + snackbar
 
       // Écrit bien dans le fichier local (LOCAL ONLY).
       final saved = await HealthInfoRepository(fichier: fiche).get();
       expect(saved.bloodType, 'O-');
+      expect(saved.fullName, 'Christophe Mosconi',
+          reason: 'l identite est la premiere chose que lit un secouriste : '
+              'elle doit s enregistrer comme le reste');
     });
   });
 

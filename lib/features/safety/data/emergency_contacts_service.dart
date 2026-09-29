@@ -47,6 +47,17 @@ class EmergencyContactsService {
   final List<EmergencyContact> _trailContacts;
 
   /// Contacts personnels de l'utilisateur.
+  ///
+  /// ILS NE SONT PLUS LA SOURCE DE VERITE (tache 630). Cette liste est un CACHE
+  /// de ce que porte la fiche d'urgence, alimente par [chargerDepuisLaFiche].
+  ///
+  /// CE QU'ELLE ETAIT AVANT, ET C'EST LA MESURE QUI A DECLENCHE LE CHANGEMENT :
+  /// la SEULE copie. Elle vivait en memoire, personne ne la persistait, et
+  /// `addContact` n'etait appele par AUCUNE ligne de `lib/`. Autrement dit les
+  /// contacts a prevenir etaient un modele sans ecran de saisie et sans disque :
+  /// meme remplis, ils mouraient avec le processus. Ils vivent maintenant dans la
+  /// fiche (`HealthInfo.emergencyContacts`), donc dans le fichier du dossier
+  /// exclu de la sauvegarde, avec le meme effacement que le reste.
   final List<EmergencyContact> _personalContacts = [];
 
   /// Retourne tous les contacts : personnels tries + automatiques.
@@ -60,7 +71,23 @@ class EmergencyContactsService {
     return [...sorted, ...kUniversalEmergencyContacts, ..._trailContacts];
   }
 
-  /// Ajoute un contact personnel.
+  /// REMPLACE LES CONTACTS PERSONNELS PAR CEUX DE LA FICHE D'URGENCE (tache 630).
+  ///
+  /// REMPLACE, ET NE FUSIONNE PAS : la fiche est la source unique. Fusionner
+  /// ferait survivre ici un contact que le randonneur vient de retirer de sa
+  /// fiche — et un numero d'urgence perime est exactement ce qu'on ne veut pas
+  /// laisser sur un ecran verrouille.
+  void chargerDepuisLaFiche(List<EmergencyContact> contacts) {
+    _personalContacts
+      ..clear()
+      ..addAll(contacts);
+  }
+
+  /// Ajoute un contact personnel au cache.
+  ///
+  /// CONSERVE POUR LES TESTS ET LES APPELS EXISTANTS. En production, la saisie
+  /// passe par l'ecran de la fiche puis par [chargerDepuisLaFiche] : ce qui
+  /// s'ajoute ici seulement ne serait pas persiste.
   void addContact(EmergencyContact contact) {
     _personalContacts.add(contact);
   }

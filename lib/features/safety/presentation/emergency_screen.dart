@@ -20,6 +20,7 @@ import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
+import 'health_info_screen.dart' show healthInfoProvider;
 
 /// Provider pour le service de contacts d'urgence.
 ///
@@ -42,6 +43,26 @@ class EmergencyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final service = ref.watch(emergencyContactsServiceProvider);
+    // LES CONTACTS PERSONNELS VIENNENT DE LA FICHE D'URGENCE (tache 630).
+    //
+    // AVANT CE LOT ILS NE VENAIENT DE NULLE PART. `addContact` n'etait appele
+    // par aucune ligne de `lib/` et le service gardait sa liste EN MEMOIRE :
+    // aucun ecran ne permettait d'ajouter un proche a prevenir, et un proche
+    // ajoute n'aurait de toute facon pas survecu au redemarrage. Cet ecran
+    // n'affichait donc jamais que le 112 et les secours du sentier.
+    //
+    // POURQUOI L'ALIMENTATION SE FAIT ICI ET PAS DANS LE PROVIDER. Faire
+    // observer la fiche au provider du service le ferait RECONSTRUIRE a chaque
+    // modification de la fiche — et avec lui le service du widget d'ecran
+    // verrouille, qui en depend et qui perdrait son etat « actif ». Un
+    // secouriste verrait la notification de secours disparaitre parce que le
+    // randonneur a corrige une allergie. Le service est un cache mutable : on le
+    // realimente, on ne le refabrique pas.
+    // `asData?.value` et pas `value` : pendant le chargement, ou si la lecture a
+    // echoue, on ne veut PAS d'exception sur l'ecran d'urgence — on veut la
+    // liste des secours automatiques, qui est toujours la.
+    final fiche = ref.watch(healthInfoProvider).asData?.value;
+    if (fiche != null) service.chargerDepuisLaFiche(fiche.emergencyContacts);
     final contacts = service.getContacts();
     final positionAsync = ref.watch(positionStreamProvider);
 

@@ -1220,6 +1220,13 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
 	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
 	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
+	@override late final _Translations$health$section$en section = _Translations$health$section$en._(_root);
+	@override String get bloodTypeUnknown => 'I don\'t know';
+	@override String bloodTypeLegacy({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Please choose from the list.';
+	@override late final _Translations$health$organDonor$en organDonor = _Translations$health$organDonor$en._(_root);
+	@override late final _Translations$health$contacts$en contacts = _Translations$health$contacts$en._(_root);
+	@override late final _Translations$health$cards$en cards = _Translations$health$cards$en._(_root);
+	@override late final _Translations$health$phoneCard$en phoneCard = _Translations$health$phoneCard$en._(_root);
 	@override String get localOnlyPriceTitle => 'Switching phones means typing it in again';
 	@override String get localOnlyPrice => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.';
 }
@@ -2911,6 +2918,12 @@ class _Translations$health$field$en extends Translations$health$field$fr {
 	@override String get treatments => 'Current treatments';
 	@override String get doctor => 'Family doctor';
 	@override String get insurance => 'Insurance no. / health cover';
+	@override String get fullName => 'First and last name';
+	@override String get birthDate => 'Date of birth';
+	@override String get birthDateClear => 'Clear date of birth';
+	@override String get address => 'Address';
+	@override String get conditions => 'Medical conditions and history';
+	@override String get organDonor => 'Organ donation';
 }
 
 // Path: health.hint
@@ -2925,6 +2938,11 @@ class _Translations$health$hint$en extends Translations$health$hint$fr {
 	@override String get treatments => 'e.g. Levothyrox 50 mg/day';
 	@override String get doctor => 'e.g. Dr Smith +44 20 xxxx xxxx';
 	@override String get insurance => 'e.g. European health card';
+	@override String get fullName => 'e.g. Christophe Mosconi';
+	@override String get birthDate => 'Tap to choose';
+	@override String get address => 'e.g. 12 Lilac Street, 20000 Ajaccio';
+	@override String get conditions => 'e.g. type 1 diabetes, epilepsy, blood thinner';
+	@override String get organDonor => 'Make your choice';
 }
 
 // Path: health.error
@@ -2984,11 +3002,88 @@ class _Translations$health$advice$en extends Translations$health$advice$fr {
 	// Translations
 	@override String get title => 'How to use it on the trail';
 	@override String get whereToFind => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.';
-	@override String get showToRescue => 'How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.';
+	@override String get showToRescue => 'How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.';
 	@override String get phoneCard => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.';
 	@override String get paper => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.';
 	@override String get ackButton => 'I have read this advice';
 	@override String get ackDone => 'Advice read';
+}
+
+// Path: health.section
+class _Translations$health$section$en extends Translations$health$section$fr {
+	_Translations$health$section$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get identity => 'Who you are';
+	@override String get identityWhy => 'The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.';
+	@override String get contacts => 'Who to call';
+	@override String get contactsWhy => 'What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.';
+	@override String get vital => 'What treats you';
+	@override String get vitalWhy => 'In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.';
+	@override String get admin => 'Paperwork';
+	@override String get adminWhy => 'What gets copied at the hospital desk, not what is read in the rain.';
+}
+
+// Path: health.organDonor
+class _Translations$health$organDonor$en extends Translations$health$organDonor$fr {
+	_Translations$health$organDonor$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get yes => 'Donor';
+	@override String get no => 'Opted out';
+	@override String get unknown => 'I have not decided';
+}
+
+// Path: health.contacts
+class _Translations$health$contacts$en extends Translations$health$contacts$fr {
+	_Translations$health$contacts$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get add => 'Add someone to call';
+	@override String get name => 'Person\'s name';
+	@override String get nameHint => 'e.g. Marie, my sister';
+	@override String get phone => 'Phone';
+	@override String get phoneHint => 'e.g. +33 6 12 34 56 78';
+	@override String get remove => 'Remove this person';
+	@override String get errorName => 'Give a name, otherwise rescuers do not know who they are calling.';
+	@override String get errorPhone => 'Give a number, otherwise this name is useless.';
+}
+
+// Path: health.cards
+class _Translations$health$cards$en extends Translations$health$cards$fr {
+	_Translations$health$cards$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get vitale => 'Photo of the health insurance card';
+	@override String get mutuelle => 'Photo of the top-up insurance card';
+	@override String get take => 'Take a photo';
+	@override String get retake => 'Retake the photo';
+	@override String get pick => 'Pick an image';
+	@override String get remove => 'Remove the photo';
+	@override String get stored => 'Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.';
+	@override String get explain => 'The photo stays on this phone, in the same protected folder as the rest of the card.';
+	@override String get permissionRefused => 'Camera access refused. The card works perfectly well without it.';
+	@override String get failed => 'The photo could not be saved.';
+}
+
+// Path: health.phoneCard
+class _Translations$health$phoneCard$en extends Translations$health$phoneCard$fr {
+	_Translations$health$phoneCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Copy your card into the phone\'s own one';
+	@override String get why => 'It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.';
+	@override String get done => 'Done, my card is in the phone too';
 }
 
 // Path: trailSelection.a11y
@@ -5309,11 +5404,22 @@ extension on TranslationsEn {
 			'health.field.treatments' => 'Current treatments',
 			'health.field.doctor' => 'Family doctor',
 			'health.field.insurance' => 'Insurance no. / health cover',
+			'health.field.fullName' => 'First and last name',
+			'health.field.birthDate' => 'Date of birth',
+			'health.field.birthDateClear' => 'Clear date of birth',
+			'health.field.address' => 'Address',
+			'health.field.conditions' => 'Medical conditions and history',
+			'health.field.organDonor' => 'Organ donation',
 			'health.hint.bloodType' => 'e.g. A+, O-, AB+',
 			'health.hint.allergies' => 'e.g. penicillin, peanuts',
 			'health.hint.treatments' => 'e.g. Levothyrox 50 mg/day',
 			'health.hint.doctor' => 'e.g. Dr Smith +44 20 xxxx xxxx',
 			'health.hint.insurance' => 'e.g. European health card',
+			'health.hint.fullName' => 'e.g. Christophe Mosconi',
+			'health.hint.birthDate' => 'Tap to choose',
+			'health.hint.address' => 'e.g. 12 Lilac Street, 20000 Ajaccio',
+			'health.hint.conditions' => 'e.g. type 1 diabetes, epilepsy, blood thinner',
+			'health.hint.organDonor' => 'Make your choice',
 			'health.error.bloodType' => 'Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Save',
 			'health.saving' => 'Saving…',
@@ -5334,11 +5440,45 @@ extension on TranslationsEn {
 			'health.consent.manage' => 'Manage my health consent',
 			'health.advice.title' => 'How to use it on the trail',
 			'health.advice.whereToFind' => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.',
-			'health.advice.showToRescue' => 'How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.',
+			'health.advice.showToRescue' => 'How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.',
 			'health.advice.phoneCard' => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.',
 			'health.advice.paper' => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.',
 			'health.advice.ackButton' => 'I have read this advice',
 			'health.advice.ackDone' => 'Advice read',
+			'health.section.identity' => 'Who you are',
+			'health.section.identityWhy' => 'The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.',
+			'health.section.contacts' => 'Who to call',
+			'health.section.contactsWhy' => 'What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.',
+			'health.section.vital' => 'What treats you',
+			'health.section.vitalWhy' => 'In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.',
+			'health.section.admin' => 'Paperwork',
+			'health.section.adminWhy' => 'What gets copied at the hospital desk, not what is read in the rain.',
+			'health.bloodTypeUnknown' => 'I don\'t know',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Please choose from the list.',
+			'health.organDonor.yes' => 'Donor',
+			'health.organDonor.no' => 'Opted out',
+			'health.organDonor.unknown' => 'I have not decided',
+			'health.contacts.add' => 'Add someone to call',
+			'health.contacts.name' => 'Person\'s name',
+			'health.contacts.nameHint' => 'e.g. Marie, my sister',
+			'health.contacts.phone' => 'Phone',
+			'health.contacts.phoneHint' => 'e.g. +33 6 12 34 56 78',
+			'health.contacts.remove' => 'Remove this person',
+			'health.contacts.errorName' => 'Give a name, otherwise rescuers do not know who they are calling.',
+			'health.contacts.errorPhone' => 'Give a number, otherwise this name is useless.',
+			'health.cards.vitale' => 'Photo of the health insurance card',
+			'health.cards.mutuelle' => 'Photo of the top-up insurance card',
+			'health.cards.take' => 'Take a photo',
+			'health.cards.retake' => 'Retake the photo',
+			'health.cards.pick' => 'Pick an image',
+			'health.cards.remove' => 'Remove the photo',
+			'health.cards.stored' => 'Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.',
+			'health.cards.explain' => 'The photo stays on this phone, in the same protected folder as the rest of the card.',
+			'health.cards.permissionRefused' => 'Camera access refused. The card works perfectly well without it.',
+			'health.cards.failed' => 'The photo could not be saved.',
+			'health.phoneCard.title' => 'Copy your card into the phone\'s own one',
+			'health.phoneCard.why' => 'It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.',
+			'health.phoneCard.done' => 'Done, my card is in the phone too',
 			'health.localOnlyPriceTitle' => 'Switching phones means typing it in again',
 			'health.localOnlyPrice' => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.',
 			'trailSelection.title' => 'Switch trail',
@@ -5540,6 +5680,8 @@ extension on TranslationsEn {
 			'programme.inTrek.doneBadge' => 'Done',
 			'programme.inTrek.lockedDay' => 'Day already walked, locked',
 			'programme.inTrek.allDone' => 'You have walked every day: there is nothing left to adjust.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.inTrek.notStarted' => 'This screen is for the trail: start your trek to adjust what is coming.',
 			'programme.inTrek.validate' => 'Save my changes',
 			'programme.inTrek.saved' => 'Plan updated',
@@ -5585,8 +5727,6 @@ extension on TranslationsEn {
 			'calendar.noDate.title' => 'Choose a departure date',
 			'calendar.noDate.message' => 'Your trek calendar will appear automatically with hiking and rest days.',
 			'calendar.empty.title' => 'Set up your itinerary first',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',

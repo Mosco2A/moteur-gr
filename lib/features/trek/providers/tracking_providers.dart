@@ -8,6 +8,10 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../map/providers/track_position_provider.dart';
+// TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
+// et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
+// fichier, aucun cycle d'import.
+import '../../safety/providers/safety_providers.dart';
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
 // n'importe pas ce fichier, aucun cycle d'import.
@@ -456,6 +460,14 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
         stageInfo: ref.read(trailConfigProvider).displayName,
       );
 
+      // LA FICHE D'URGENCE MONTE SUR L'ECRAN VERROUILLE (tache 630). Le trek
+      // commence : c'est le moment ou un secouriste peut avoir besoin de la lire
+      // sans deverrouiller le telephone, et c'est le moment ou la permission
+      // POST_NOTIFICATIONS vient d'etre accordee pour le service de fond. Elle
+      // s'eteindra avec le trek (voir `_finalize`). Lancee, pas attendue, et non
+      // levante : le raisonnement entier est dans `FicheEcranVerrouille`.
+      unawaited(ref.read(ficheEcranVerrouilleProvider).allumer());
+
       // Draine un eventuel reliquat tamponne (session precedente interrompue).
       await _drainBackgroundBuffer();
     } catch (_) {
@@ -560,6 +572,12 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     } catch (_) {
       // Best-effort : l'arret du service ne doit pas empecher la finalisation.
     }
+
+    // ET LA FICHE D'URGENCE QUITTE L'ECRAN VERROUILLE AVEC LE TREK (tache 630).
+    // Une notification portant un nom, une adresse et un groupe sanguin ne doit
+    // pas survivre des semaines a la randonnee qui la justifiait.
+    await ref.read(ficheEcranVerrouilleProvider).eteindre();
+
     await _bgPointsSub?.cancel();
     _bgPointsSub = null;
     _activeTrailId = null;

@@ -12,6 +12,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/health_bounds.dart';
+import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -95,26 +96,24 @@ void main() {
       expect(normalizeBloodType(' a+ '), 'A+');
     });
 
-    testWidgets('« XYZ123!! » ne peut meme pas etre saisi', (tester) async {
-      tester.view.physicalSize = const Size(390, 2600);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+    // ========================================================================
+    // TACHE 630 — CES TROIS TESTS ONT CHANGE DE NATURE, ET LA RAISON EST QUE LA
+    // GARANTIE, ELLE, A CHANGE DE NATURE.
+    //
+    // FIX-1 avait rendu la SAISIE LIBRE sure : filtrage des caracteres, puis
+    // refus au `validate()` avec un message. Ils testaient donc qu'une valeur
+    // inventee etait REFUSEE. Christophe a tranche autrement le 29/09
+    // (DEM-260929-1135) : il n'existe que huit groupes sanguins, la saisie libre
+    // n'a aucune raison d'exister sur une fiche d'urgence.
+    //
+    // ON NE TESTE PLUS QU'UNE MAUVAISE VALEUR EST REFUSEE : ON TESTE QU'ELLE EST
+    // IMPOSSIBLE. C'est une garantie strictement plus forte, et les tests qui la
+    // verifient remplacent — sans en perdre — ceux qui verifiaient la
+    // precedente. Le refus au `validate()` reste couvert par le premier test du
+    // groupe, qui porte sur la table de reference elle-meme.
+    // ========================================================================
 
-      await tester.pumpWidget(wrap());
-      await tester.pumpAndSettle();
-
-      final field = find.byKey(const ValueKey('health-blood-type-field'));
-      await tester.enterText(field, 'XYZ123!!');
-      await tester.pumpAndSettle();
-
-      final input = tester.widget<TextField>(
-          find.descendant(of: field, matching: find.byType(TextField)));
-      expect(input.controller!.text, '',
-          reason: 'chiffres, ponctuation et lettres hors ABO sont filtres');
-    });
-
-    testWidgets('un groupe invalide bloque la sauvegarde avec un message',
+    testWidgets('il n existe AUCUN champ de saisie pour le groupe sanguin',
         (tester) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
@@ -124,19 +123,43 @@ void main() {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const ValueKey('health-blood-type-field')), 'BBB');
-      await tester.pumpAndSettle();
-      await tapSave(tester);
-
-      expect(find.text(t.health.error.bloodType), findsOneWidget);
-      // L'ecran n'est pas quitte et RIEN n'est enregistre.
-      expect(find.byType(HealthInfoScreen), findsOneWidget);
-      final saved = await HealthInfoRepository(fichier: fiche).get();
-      expect(saved.bloodType, '');
+      final champ = find.byKey(const ValueKey('health-blood-type-field'));
+      expect(champ, findsOneWidget);
+      expect(
+        find.descendant(of: champ, matching: find.byType(EditableText)),
+        findsNothing,
+        reason: 'plus aucun clavier ne s ouvre sur le groupe sanguin : '
+            '« XYZ123!! » n est plus refuse, il est INSAISISSABLE',
+      );
     });
 
-    testWidgets('un groupe valide est enregistre sous forme canonique',
+    testWidgets('la liste propose les HUIT groupes et « je ne sais pas », '
+        'et rien d autre', (tester) async {
+      tester.view.physicalSize = const Size(390, 2600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+
+      final champ = find.byKey(const ValueKey('health-blood-type-field'));
+      await tester.ensureVisible(champ);
+      await tester.tap(champ);
+      await tester.pumpAndSettle();
+
+      // NEUF choix, pas huit et pas dix : les huit groupes du systeme ABO +
+      // Rhesus (source : Etablissement francais du sang) et « je ne sais pas »,
+      // qui est une REPONSE et non un champ vide.
+      expect(kBloodTypeChoices.length, 9);
+      for (final groupe in kBloodTypes) {
+        expect(find.text(groupe), findsWidgets,
+            reason: 'le groupe $groupe doit etre proposable');
+      }
+      expect(find.text(t.health.bloodTypeUnknown), findsWidgets);
+    });
+
+    testWidgets('un groupe choisi dans la liste est enregistre tel quel',
         (tester) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
@@ -146,13 +169,48 @@ void main() {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-          find.byKey(const ValueKey('health-blood-type-field')), 'ab+');
+      final champ = find.byKey(const ValueKey('health-blood-type-field'));
+      await tester.ensureVisible(champ);
+      await tester.tap(champ);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('AB+').last);
       await tester.pumpAndSettle();
       await tapSave(tester);
 
       final saved = await HealthInfoRepository(fichier: fiche).get();
-      expect(saved.bloodType, 'AB+');
+      expect(saved.bloodType, 'AB+',
+          reason: 'la valeur vient d une liste fermee : elle est deja '
+              'canonique, il n y a plus rien a normaliser');
+    });
+
+    testWidgets('une valeur heritee non reconnue est MONTREE, jamais effacee',
+        (tester) async {
+      // CONSIGNE 630, mot pour mot : « les fiches deja saisies ne perdent
+      // RIEN ». Une fiche remplie avant FIX-1 peut porter n importe quoi.
+      await HealthInfoRepository(fichier: fiche)
+          .save(const HealthInfo(bloodType: 'XYZ123!!'));
+
+      tester.view.physicalSize = const Size(390, 2600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+
+      // L avertissement existe ET il porte la valeur d origine : le randonneur
+      // voit ce qu il avait ecrit, et choisit.
+      expect(find.byKey(const ValueKey('health-blood-type-legacy')),
+          findsOneWidget);
+      expect(
+        find.textContaining('XYZ123!!'),
+        findsOneWidget,
+        reason: 'la valeur heritee doit etre LUE par le randonneur, pas '
+            'effacee dans son dos',
+      );
+      // Et le fichier, lui, n a pas ete touche par la simple ouverture.
+      final surLeDisque = await HealthInfoRepository(fichier: fiche).get();
+      expect(surLeDisque.bloodType, 'XYZ123!!');
     });
   });
 

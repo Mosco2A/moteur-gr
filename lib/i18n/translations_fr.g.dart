@@ -2516,6 +2516,18 @@ class Translations$health$fr {
 	late final Translations$health$delete$fr delete = Translations$health$delete$fr.internal(_root);
 	late final Translations$health$consent$fr consent = Translations$health$consent$fr.internal(_root);
 	late final Translations$health$advice$fr advice = Translations$health$advice$fr.internal(_root);
+	late final Translations$health$section$fr section = Translations$health$section$fr.internal(_root);
+
+	/// fr: 'Je ne sais pas'
+	String get bloodTypeUnknown => 'Je ne sais pas';
+
+	/// fr: 'Votre ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisissez dans la liste.'
+	String bloodTypeLegacy({required Object valeur}) => 'Votre ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisissez dans la liste.';
+
+	late final Translations$health$organDonor$fr organDonor = Translations$health$organDonor$fr.internal(_root);
+	late final Translations$health$contacts$fr contacts = Translations$health$contacts$fr.internal(_root);
+	late final Translations$health$cards$fr cards = Translations$health$cards$fr.internal(_root);
+	late final Translations$health$phoneCard$fr phoneCard = Translations$health$phoneCard$fr.internal(_root);
 
 	/// fr: 'Changer de téléphone veut dire la ressaisir'
 	String get localOnlyPriceTitle => 'Changer de téléphone veut dire la ressaisir';
@@ -6092,6 +6104,24 @@ class Translations$health$field$fr {
 
 	/// fr: 'N° assurance / mutuelle'
 	String get insurance => 'N° assurance / mutuelle';
+
+	/// fr: 'Nom et prénom'
+	String get fullName => 'Nom et prénom';
+
+	/// fr: 'Date de naissance'
+	String get birthDate => 'Date de naissance';
+
+	/// fr: 'Effacer la date de naissance'
+	String get birthDateClear => 'Effacer la date de naissance';
+
+	/// fr: 'Adresse'
+	String get address => 'Adresse';
+
+	/// fr: 'Antécédents et problèmes médicaux'
+	String get conditions => 'Antécédents et problèmes médicaux';
+
+	/// fr: 'Don d'organes'
+	String get organDonor => 'Don d\'organes';
 }
 
 // Path: health.hint
@@ -6116,6 +6146,21 @@ class Translations$health$hint$fr {
 
 	/// fr: 'Ex : carte européenne'
 	String get insurance => 'Ex : carte européenne';
+
+	/// fr: 'Ex : Christophe Mosconi'
+	String get fullName => 'Ex : Christophe Mosconi';
+
+	/// fr: 'Appuyez pour choisir'
+	String get birthDate => 'Appuyez pour choisir';
+
+	/// fr: 'Ex : 12 rue des Lilas, 20000 Ajaccio'
+	String get address => 'Ex : 12 rue des Lilas, 20000 Ajaccio';
+
+	/// fr: 'Ex : diabète type 1, épilepsie, anticoagulant'
+	String get conditions => 'Ex : diabète type 1, épilepsie, anticoagulant';
+
+	/// fr: 'Faites votre choix'
+	String get organDonor => 'Faites votre choix';
 }
 
 // Path: health.error
@@ -6204,8 +6249,8 @@ class Translations$health$advice$fr {
 	/// fr: 'Où la trouver quand tu es à terre : ta fiche vit dans Préparer, carte « Fiche médicale », et elle s'ouvre sans réseau. Montre-la à tes compagnons de marche avant le départ — le jour où tu ne peux plus parler, c'est eux qui ouvriront ton téléphone.'
 	String get whereToFind => 'Où la trouver quand tu es à terre : ta fiche vit dans Préparer, carte « Fiche médicale », et elle s\'ouvre sans réseau. Montre-la à tes compagnons de marche avant le départ — le jour où tu ne peux plus parler, c\'est eux qui ouvriront ton téléphone.';
 
-	/// fr: 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Groupe sanguin, allergies, traitements, médecin et assurance y sont dans cet ordre, en clair. Rien n'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.'
-	String get showToRescue => 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Groupe sanguin, allergies, traitements, médecin et assurance y sont dans cet ordre, en clair. Rien n\'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.';
+	/// fr: 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Qui tu es, qui prévenir, puis allergies, traitements, antécédents et groupe sanguin — dans l'ordre où un secouriste lit. Rien n'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.'
+	String get showToRescue => 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Qui tu es, qui prévenir, puis allergies, traitements, antécédents et groupe sanguin — dans l\'ordre où un secouriste lit. Rien n\'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.';
 
 	/// fr: 'Recopie-la dans la fiche médicale de ton téléphone : elle s'affiche écran verrouillé, sans ton code. Un secouriste qui trouve ton téléphone y accède en deux gestes, même s'il ne connaît pas cette application.'
 	String get phoneCard => 'Recopie-la dans la fiche médicale de ton téléphone : elle s\'affiche écran verrouillé, sans ton code. Un secouriste qui trouve ton téléphone y accède en deux gestes, même s\'il ne connaît pas cette application.';
@@ -6218,6 +6263,147 @@ class Translations$health$advice$fr {
 
 	/// fr: 'Conseils lus'
 	String get ackDone => 'Conseils lus';
+}
+
+// Path: health.section
+class Translations$health$section$fr {
+	Translations$health$section$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Qui vous êtes'
+	String get identity => 'Qui vous êtes';
+
+	/// fr: 'C'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.'
+	String get identityWhy => 'C\'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.';
+
+	/// fr: 'Qui prévenir'
+	String get contacts => 'Qui prévenir';
+
+	/// fr: 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.'
+	String get contactsWhy => 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.';
+
+	/// fr: 'Ce qui vous soigne'
+	String get vital => 'Ce qui vous soigne';
+
+	/// fr: 'Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l'hôpital.'
+	String get vitalWhy => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l\'hôpital.';
+
+	/// fr: 'Administratif'
+	String get admin => 'Administratif';
+
+	/// fr: 'Ce qu'on recopie à l'accueil de l'hôpital, pas ce qu'on lit sous la pluie.'
+	String get adminWhy => 'Ce qu\'on recopie à l\'accueil de l\'hôpital, pas ce qu\'on lit sous la pluie.';
+}
+
+// Path: health.organDonor
+class Translations$health$organDonor$fr {
+	Translations$health$organDonor$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Donneur'
+	String get yes => 'Donneur';
+
+	/// fr: 'Opposé au don'
+	String get no => 'Opposé au don';
+
+	/// fr: 'Je n'ai pas choisi'
+	String get unknown => 'Je n\'ai pas choisi';
+}
+
+// Path: health.contacts
+class Translations$health$contacts$fr {
+	Translations$health$contacts$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ajouter une personne à prévenir'
+	String get add => 'Ajouter une personne à prévenir';
+
+	/// fr: 'Nom de la personne'
+	String get name => 'Nom de la personne';
+
+	/// fr: 'Ex : Marie, ma sœur'
+	String get nameHint => 'Ex : Marie, ma sœur';
+
+	/// fr: 'Téléphone'
+	String get phone => 'Téléphone';
+
+	/// fr: 'Ex : 06 12 34 56 78'
+	String get phoneHint => 'Ex : 06 12 34 56 78';
+
+	/// fr: 'Retirer cette personne'
+	String get remove => 'Retirer cette personne';
+
+	/// fr: 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.'
+	String get errorName => 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.';
+
+	/// fr: 'Donnez un numéro, sinon ce nom ne sert à rien.'
+	String get errorPhone => 'Donnez un numéro, sinon ce nom ne sert à rien.';
+}
+
+// Path: health.cards
+class Translations$health$cards$fr {
+	Translations$health$cards$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Photo de la carte Vitale'
+	String get vitale => 'Photo de la carte Vitale';
+
+	/// fr: 'Photo de la carte de mutuelle'
+	String get mutuelle => 'Photo de la carte de mutuelle';
+
+	/// fr: 'Prendre en photo'
+	String get take => 'Prendre en photo';
+
+	/// fr: 'Reprendre la photo'
+	String get retake => 'Reprendre la photo';
+
+	/// fr: 'Choisir une image'
+	String get pick => 'Choisir une image';
+
+	/// fr: 'Retirer la photo'
+	String get remove => 'Retirer la photo';
+
+	/// fr: 'Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand vous l'effacez.'
+	String get stored => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand vous l\'effacez.';
+
+	/// fr: 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.'
+	String get explain => 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.';
+
+	/// fr: 'Accès à l'appareil photo refusé. La fiche fonctionne très bien sans.'
+	String get permissionRefused => 'Accès à l\'appareil photo refusé. La fiche fonctionne très bien sans.';
+
+	/// fr: 'La photo n'a pas pu être enregistrée.'
+	String get failed => 'La photo n\'a pas pu être enregistrée.';
+}
+
+// Path: health.phoneCard
+class Translations$health$phoneCard$fr {
+	Translations$health$phoneCard$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Recopiez votre fiche dans celle du téléphone'
+	String get title => 'Recopiez votre fiche dans celle du téléphone';
+
+	/// fr: 'C'est le seul écran qu'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.'
+	String get why => 'C\'est le seul écran qu\'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.';
+
+	/// fr: 'C'est fait, ma fiche est aussi dans le téléphone'
+	String get done => 'C\'est fait, ma fiche est aussi dans le téléphone';
 }
 
 // Path: trailSelection.a11y
@@ -9136,11 +9322,22 @@ extension on Translations {
 			'health.field.treatments' => 'Traitements en cours',
 			'health.field.doctor' => 'Médecin traitant',
 			'health.field.insurance' => 'N° assurance / mutuelle',
+			'health.field.fullName' => 'Nom et prénom',
+			'health.field.birthDate' => 'Date de naissance',
+			'health.field.birthDateClear' => 'Effacer la date de naissance',
+			'health.field.address' => 'Adresse',
+			'health.field.conditions' => 'Antécédents et problèmes médicaux',
+			'health.field.organDonor' => 'Don d\'organes',
 			'health.hint.bloodType' => 'Ex : A+, O-, AB+',
 			'health.hint.allergies' => 'Ex : pénicilline, arachides',
 			'health.hint.treatments' => 'Ex : Lévothyrox 50 mg/j',
 			'health.hint.doctor' => 'Ex : Dr Dupont 04 95 xx xx xx',
 			'health.hint.insurance' => 'Ex : carte européenne',
+			'health.hint.fullName' => 'Ex : Christophe Mosconi',
+			'health.hint.birthDate' => 'Appuyez pour choisir',
+			'health.hint.address' => 'Ex : 12 rue des Lilas, 20000 Ajaccio',
+			'health.hint.conditions' => 'Ex : diabète type 1, épilepsie, anticoagulant',
+			'health.hint.organDonor' => 'Faites votre choix',
 			'health.error.bloodType' => 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Sauvegarder',
 			'health.saving' => 'Sauvegarde…',
@@ -9161,11 +9358,45 @@ extension on Translations {
 			'health.consent.manage' => 'Gérer mon consentement santé',
 			'health.advice.title' => 'Conseils d\'usage sur le sentier',
 			'health.advice.whereToFind' => 'Où la trouver quand tu es à terre : ta fiche vit dans Préparer, carte « Fiche médicale », et elle s\'ouvre sans réseau. Montre-la à tes compagnons de marche avant le départ — le jour où tu ne peux plus parler, c\'est eux qui ouvriront ton téléphone.',
-			'health.advice.showToRescue' => 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Groupe sanguin, allergies, traitements, médecin et assurance y sont dans cet ordre, en clair. Rien n\'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.',
+			'health.advice.showToRescue' => 'Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Qui tu es, qui prévenir, puis allergies, traitements, antécédents et groupe sanguin — dans l\'ordre où un secouriste lit. Rien n\'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.',
 			'health.advice.phoneCard' => 'Recopie-la dans la fiche médicale de ton téléphone : elle s\'affiche écran verrouillé, sans ton code. Un secouriste qui trouve ton téléphone y accède en deux gestes, même s\'il ne connaît pas cette application.',
 			'health.advice.paper' => 'Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.',
 			'health.advice.ackButton' => 'J\'ai lu ces conseils',
 			'health.advice.ackDone' => 'Conseils lus',
+			'health.section.identity' => 'Qui vous êtes',
+			'health.section.identityWhy' => 'C\'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.',
+			'health.section.contacts' => 'Qui prévenir',
+			'health.section.contactsWhy' => 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.',
+			'health.section.vital' => 'Ce qui vous soigne',
+			'health.section.vitalWhy' => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l\'hôpital.',
+			'health.section.admin' => 'Administratif',
+			'health.section.adminWhy' => 'Ce qu\'on recopie à l\'accueil de l\'hôpital, pas ce qu\'on lit sous la pluie.',
+			'health.bloodTypeUnknown' => 'Je ne sais pas',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Votre ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisissez dans la liste.',
+			'health.organDonor.yes' => 'Donneur',
+			'health.organDonor.no' => 'Opposé au don',
+			'health.organDonor.unknown' => 'Je n\'ai pas choisi',
+			'health.contacts.add' => 'Ajouter une personne à prévenir',
+			'health.contacts.name' => 'Nom de la personne',
+			'health.contacts.nameHint' => 'Ex : Marie, ma sœur',
+			'health.contacts.phone' => 'Téléphone',
+			'health.contacts.phoneHint' => 'Ex : 06 12 34 56 78',
+			'health.contacts.remove' => 'Retirer cette personne',
+			'health.contacts.errorName' => 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.',
+			'health.contacts.errorPhone' => 'Donnez un numéro, sinon ce nom ne sert à rien.',
+			'health.cards.vitale' => 'Photo de la carte Vitale',
+			'health.cards.mutuelle' => 'Photo de la carte de mutuelle',
+			'health.cards.take' => 'Prendre en photo',
+			'health.cards.retake' => 'Reprendre la photo',
+			'health.cards.pick' => 'Choisir une image',
+			'health.cards.remove' => 'Retirer la photo',
+			'health.cards.stored' => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand vous l\'effacez.',
+			'health.cards.explain' => 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.',
+			'health.cards.permissionRefused' => 'Accès à l\'appareil photo refusé. La fiche fonctionne très bien sans.',
+			'health.cards.failed' => 'La photo n\'a pas pu être enregistrée.',
+			'health.phoneCard.title' => 'Recopiez votre fiche dans celle du téléphone',
+			'health.phoneCard.why' => 'C\'est le seul écran qu\'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.',
+			'health.phoneCard.done' => 'C\'est fait, ma fiche est aussi dans le téléphone',
 			'health.localOnlyPriceTitle' => 'Changer de téléphone veut dire la ressaisir',
 			'health.localOnlyPrice' => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.',
 			'trailSelection.title' => 'Changer de sentier',
@@ -9367,6 +9598,8 @@ extension on Translations {
 			'programme.inTrek.doneBadge' => 'Fait',
 			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
 			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.',
 			'programme.inTrek.validate' => 'Valider mes changements',
 			'programme.inTrek.saved' => 'Programme mis à jour',
@@ -9412,8 +9645,6 @@ extension on Translations {
 			'calendar.noDate.title' => 'Choisissez une date de départ',
 			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
 			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',

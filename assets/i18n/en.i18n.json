@@ -1501,14 +1501,25 @@
       "allergies": "Allergies",
       "treatments": "Current treatments",
       "doctor": "Family doctor",
-      "insurance": "Insurance no. / health cover"
+      "insurance": "Insurance no. / health cover",
+      "fullName": "First and last name",
+      "birthDate": "Date of birth",
+      "birthDateClear": "Clear date of birth",
+      "address": "Address",
+      "conditions": "Medical conditions and history",
+      "organDonor": "Organ donation"
     },
     "hint": {
       "bloodType": "e.g. A+, O-, AB+",
       "allergies": "e.g. penicillin, peanuts",
       "treatments": "e.g. Levothyrox 50 mg/day",
       "doctor": "e.g. Dr Smith +44 20 xxxx xxxx",
-      "insurance": "e.g. European health card"
+      "insurance": "e.g. European health card",
+      "fullName": "e.g. Christophe Mosconi",
+      "birthDate": "Tap to choose",
+      "address": "e.g. 12 Lilac Street, 20000 Ajaccio",
+      "conditions": "e.g. type 1 diabetes, epilepsy, blood thinner",
+      "organDonor": "Make your choice"
     },
     "error": {
       "bloodType": "Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1539,11 +1550,55 @@
     "advice": {
       "title": "How to use it on the trail",
       "whereToFind": "Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.",
-      "showToRescue": "How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.",
+      "showToRescue": "How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.",
       "phoneCard": "Copy it into your phone's own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.",
       "paper": "Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.",
       "ackButton": "I have read this advice",
       "ackDone": "Advice read"
+    },
+    "section": {
+      "identity": "Who you are",
+      "identityWhy": "The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.",
+      "contacts": "Who to call",
+      "contactsWhy": "What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.",
+      "vital": "What treats you",
+      "vitalWhy": "In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.",
+      "admin": "Paperwork",
+      "adminWhy": "What gets copied at the hospital desk, not what is read in the rain."
+    },
+    "bloodTypeUnknown": "I don't know",
+    "bloodTypeLegacy": "Your previous entry « $valeur » is not a recognised blood group. Please choose from the list.",
+    "organDonor": {
+      "yes": "Donor",
+      "no": "Opted out",
+      "unknown": "I have not decided"
+    },
+    "contacts": {
+      "add": "Add someone to call",
+      "name": "Person's name",
+      "nameHint": "e.g. Marie, my sister",
+      "phone": "Phone",
+      "phoneHint": "e.g. +33 6 12 34 56 78",
+      "remove": "Remove this person",
+      "errorName": "Give a name, otherwise rescuers do not know who they are calling.",
+      "errorPhone": "Give a number, otherwise this name is useless."
+    },
+    "cards": {
+      "vitale": "Photo of the health insurance card",
+      "mutuelle": "Photo of the top-up insurance card",
+      "take": "Take a photo",
+      "retake": "Retake the photo",
+      "pick": "Pick an image",
+      "remove": "Remove the photo",
+      "stored": "Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.",
+      "explain": "The photo stays on this phone, in the same protected folder as the rest of the card.",
+      "permissionRefused": "Camera access refused. The card works perfectly well without it.",
+      "failed": "The photo could not be saved."
+    },
+    "phoneCard": {
+      "title": "Copy your card into the phone's own one",
+      "why": "It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.",
+      "done": "Done, my card is in the phone too"
     },
     "localOnlyPriceTitle": "Switching phones means typing it in again",
     "localOnlyPrice": "If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here."
