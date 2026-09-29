@@ -13,6 +13,34 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "meteo_etape",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "trailId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "rev",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "risque_incendie_etape",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "trailId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "rev",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

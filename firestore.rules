@@ -598,6 +598,78 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    // ========================================================================
+    // LE COLLECTEUR SERVEUR (tache 624, conception 611)
+    // ========================================================================
+    //
+    // POURQUOI CES REGLES SONT LE COEUR DU DISPOSITIF ET PAS SA PERIPHERIE.
+    // #L4 : « la partition est appliquee par les REGLES DE SECURITE, pas par la
+    // discipline. Une convention se viole en silence ; une regle refuse. »
+    //
+    // Le collecteur ecrit via l'Admin SDK, qui contourne ces regles par
+    // construction. Elles ne sont donc pas la pour l'autoriser — elles sont la
+    // pour REFUSER tout le monde d'autre : un telephone bogue, et aussi une
+    // future version de l'application qui voudrait « juste corriger » une meteo.
+    // Le telephone ne doit JAMAIS pouvoir ecrire une meteo (#V5).
+
+    // Meteo par etape — LECTURE PUBLIQUE, ecriture refusee a tout client.
+    //
+    // Lecture non authentifiee : le catalogue se consulte avant toute inscription
+    // (trois etats, deux gestes, #E1), donc la meteo d'un sentier qu'on envisage
+    // doit se consulter aussi.
+    match /meteo_etape/{documentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Risque incendie par etape — meme regime.
+    //
+    // Ce document porte DEUX blocs qui ne se fondent pas : `dangerMeteo`
+    // (Meteo-France, informatif) et `acces` (Etat en Corse, contraignant, #I7).
+    // Un client capable d'ecrire ici serait capable de faire disparaitre une
+    // interdiction d'acces a un massif en feu. D'ou `write: if false`, sans
+    // exception et sans condition d'authentification qu'on pourrait un jour
+    // assouplir « juste pour un test ».
+    match /risque_incendie_etape/{documentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // La borne du catalogue — un seul document, lu par tous, ecrit par les seuls
+    // producteurs serveur (#K5, #K6, #K9).
+    match /catalogue_borne/{documentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ------------------------------------------------------------------------
+    // LE BATTEMENT — LECTURE REFUSEE, ET C'EST VOULU (#H4)
+    // ------------------------------------------------------------------------
+    // « LE BATTEMENT N'EST JAMAIS LU PAR L'APPLICATION. Si le telephone le
+    // lisait, un battement vert rassurerait sur une donnee perimee. Un collecteur
+    // peut tourner parfaitement et ne collecter que des echecs. »
+    //
+    // Ce `read: if false` est donc une DECISION DE CONCEPTION, pas un oubli de
+    // permission : il rend impossible le raccourci tentant « le serveur va bien,
+    // donc la donnee est bonne ». La fraicheur est portee par la donnee
+    // (`produiteLe`, le jour du bulletin), la vivacite par le battement, et les
+    // deux ont des lecteurs differents. L'exploitation le lit par la console ou
+    // par l'Admin SDK.
+    match /collecteur_battement/{documentId} {
+      allow read, write: if false;
+    }
+
+    // Le registre (validateurs de cache HTTP + empreintes de contenu) et la liste
+    // enrolee : mecanique interne du serveur. Aucun client n'a de raison de les
+    // lire, et un client capable d'ecrire le registre pourrait faire rejouer — ou
+    // faire taire — des collectes entieres.
+    match /collecteur_registre/{documentId} {
+      allow read, write: if false;
+    }
+    match /collecteur_enrolement/{documentId} {
+      allow read, write: if false;
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).
