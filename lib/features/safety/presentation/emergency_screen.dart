@@ -135,7 +135,11 @@ class _GpsPositionBanner extends StatelessWidget {
         ),
         error: (_, __) => Row(
           children: [
-            const StepIcon(StepwaysIcons.gpsPerdu, size: 18, color: AppTheme.rougeUrgence),
+            const StepIcon(
+              StepwaysIcons.gpsPerdu,
+              size: 18,
+              color: AppTheme.rougeUrgence,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(t.sos.positionUnavailable),
           ],

@@ -241,7 +241,7 @@ void main() {
 
     testWidgets('AUCUNE phrase d explication des tirets sous les chiffres',
         (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: StageProgressBar(
             stageName: 'Etape 1',

@@ -25,7 +25,7 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 void main() {
   /// Cree une session active minimale, eventuellement avec des etapes deja
   /// completees (retro-compat : defaut = aucune).
-  TrekSession _activeSession({List<String> completed = const []}) {
+  TrekSession activeSession({List<String> completed = const []}) {
     return TrekSession(
       id: 'sess-gate-001',
       trailId: 'sentier-test',
@@ -36,7 +36,7 @@ void main() {
   }
 
   /// Etat de tracking « en cours » portant [session].
-  TrackingSessionState _recording(TrekSession session) => TrackingSessionState(
+  TrackingSessionState recording(TrekSession session) => TrackingSessionState(
         status: TrackingSessionStatus.recording,
         session: session,
       );
@@ -46,7 +46,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(_recording(_activeSession())),
+            () => _GateNotifier(recording(activeSession())),
           ),
         ],
       );
@@ -87,7 +87,7 @@ void main() {
         overrides: [
           trekSessionManagerProvider.overrideWith(
             () => _GateNotifier(
-              _recording(_activeSession(completed: ['s1', 's2', 's3'])),
+              recording(activeSession(completed: ['s1', 's2', 's3'])),
             ),
           ),
         ],
@@ -112,7 +112,7 @@ void main() {
         overrides: [
           trekSessionManagerProvider.overrideWith(
             () => _GateNotifier(
-              _recording(_activeSession(completed: ['s1', 's3'])),
+              recording(activeSession(completed: ['s1', 's3'])),
             ),
           ),
         ],
@@ -172,7 +172,7 @@ void main() {
           currentTrekPlanProvider.overrideWithValue(plan),
           arrivalEventsProvider.overrideWith((ref) => ctrl.stream),
           trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(_recording(_activeSession())),
+            () => _GateNotifier(recording(activeSession())),
           ),
         ],
       );

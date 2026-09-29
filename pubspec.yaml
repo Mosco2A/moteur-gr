@@ -21,7 +21,17 @@ description: Moteur generique Flutter multi-sentiers
 # APRES UN DEPOT ECHOUE : le numero monte a chaque tentative, pas a chaque
 # succes. Celui-ci porte en plus le compte de test (`STEPWAYS_COMPTE_DE_TEST`),
 # qui est ETEINT dans le depot et ne s allume qu au build.
-version: 0.1.2+6
+#
+# TACHE 633 — 0.1.3+7, ET LE NOM BOUGE POUR LA PREMIERE FOIS DEPUIS LE 627.
+# Le numero de build monte a 7 parce que 6 est pris : c est le bundle que
+# Christophe a installe depuis le Play Store, celui qu il a juge « une version
+# de merde » — il ne portait QUE le lot 631. 3, 4 et 6 sont donc consommes.
+# Le NOM passe a 0.1.3 et non plus 0.1.2 : ce bundle-ci n est pas le meme
+# perimetre fonctionnel, il reunit pour la premiere fois les trois lots que
+# Christophe attendait ensemble — la descente des droits (631), la fiche
+# d urgence et d identite a 13 champs (630), et l identite visuelle : logo,
+# splash, icone de lancement et les 380 icones (632).
+version: 0.1.3+7
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
