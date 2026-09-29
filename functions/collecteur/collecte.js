@@ -378,6 +378,7 @@ export async function collecterLeRisqueIncendie({ depot, configuration }) {
 
   const aEcrire = [];
   const sentiersTouches = new Set();
+  const premiersJoursCouverts = [];
 
   if (lecture !== null || lectureCorse !== null) {
     for (const etape of etapes) {
@@ -392,6 +393,14 @@ export async function collecterLeRisqueIncendie({ depot, configuration }) {
         massifIncendie: etape.massifIncendie,
         zoneIncendie: etape.zoneIncendie,
       });
+
+      // Pour l'alerte #H7 : le premier jour que la source couvre pour cette etape.
+      // `null` des qu'une etape n'a RIEN — c'est LE signal que le bulletin du jour
+      // manque, et il doit remonter au surveillant SANS lui couter la relecture des
+      // documents d'etape.
+      premiersJoursCouverts.push(
+        dangerMeteo !== null && dangerMeteo.length > 0 ? dangerMeteo[0].jour : null,
+      );
 
       if ((dangerMeteo === null || dangerMeteo.length === 0) && acces === null) {
         // Rien a dire pour cette etape : on n'ecrit PAS un vide (#T1). Ce qui etait
@@ -433,9 +442,27 @@ export async function collecterLeRisqueIncendie({ depot, configuration }) {
     }));
   }
 
+  // #H7 — CE QUE LE SURVEILLANT AURA BESOIN DE SAVOIR, ET QU'IL NE PEUT PAS
+  // DEDUIRE SEUL. Si a 08:00 UTC, en pleine saison, le bulletin du jour n'est pas
+  // la, c'est une ALERTE et pas une attente : la source n'a rate aucun jour sur
+  // 124, donc un jour manque est un evenement.
+  //
+  // Le surveillant ne relit PAS les documents d'etape pour le savoir — ce serait 70
+  // lectures pour une question a laquelle ce passage-ci vient de repondre. Les deux
+  // valeurs voyagent donc dans le battement.
+  const jourDuBulletinLePlusAncien = premiersJoursCouverts.length === 0
+    || premiersJoursCouverts.some((j) => j === null)
+    ? null
+    : premiersJoursCouverts.reduce((a, b) => (a < b ? a : b));
+
   await depot.battre('incendie', bat.sectionDeBattement({
     tache: 'incendie',
     passage,
+    donnee: {
+      jourCourant,
+      jourDuBulletinLePlusAncien,
+      saisonActive: lecture === null ? null : lecture.saison.active,
+    },
     familles: {
       [docs.FAMILLE_INCENDIE]: bat.resumeDeFamille({
         issue: compte.echecs > 0 && compte.ecrits === 0 ? bat.ISSUE.echec
@@ -479,12 +506,13 @@ export async function surveiller({ depot, configuration }) {
     nom: 'surveillant',
   });
   const battement = await depot.lireBattement();
-  const jourCourantUtc = new Date(passage.millisecondes).toISOString().slice(0, 10);
+  // L'heure UTC sert au seul seuil qui en depend : #H7, l'alerte incendie de 08:00.
+  // Elle est derivee de l'instant du passage, jamais d'une seconde lecture d'horloge.
+  const heureUtc = new Date(passage.millisecondes).getUTCHours();
 
   const alertes = bat.juger(battement, {
     maintenantMs: passage.millisecondes,
-    jourCourantUtc,
-    saisonIncendieActive: null,
+    heureUtc,
   });
 
   await depot.deposerAlertes(alertes, passage);

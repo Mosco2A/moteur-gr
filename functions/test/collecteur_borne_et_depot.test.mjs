@@ -326,6 +326,73 @@ describe('le battement et le surveillant', () => {
     assert.equal(s.executeLe, PASSAGE.instant);
     assert.equal(s.horlogeCorrigee, false);
     assert.equal(s.erreur, null);
+    assert.equal(s.donnee, null);
+  });
+
+  it('L ALERTE #H7 REMONTE PAR LE SURVEILLANT, et pas seulement en theorie', () => {
+    // Cette alerte a un cout de conception : le passage incendie doit LAISSER dans
+    // son battement ce que le surveillant ne peut pas deduire seul, sinon celui-ci
+    // devrait relire 70 documents d etape pour une question a laquelle le passage
+    // vient de repondre. Ce test verifie le chemin COMPLET : une alerte implementee
+    // mais non branchee ne protege personne.
+    const recent = new Date(PASSAGE.millisecondes - 60e3).toISOString();
+    const battement = {
+      meteo: { executeLe: recent, familles: {} },
+      incendie: {
+        executeLe: recent,
+        familles: {},
+        donnee: {
+          jourCourant: '2026-09-29',
+          jourDuBulletinLePlusAncien: '2026-09-28',
+          saisonActive: true,
+        },
+      },
+    };
+
+    // A 06:00 UTC il est trop tot : la source publie a 14:50, attendre est normal.
+    assert.deepEqual(juger(battement, { maintenantMs: PASSAGE.millisecondes, heureUtc: 6 }), []);
+
+    // A 08:00 UTC en pleine saison, c est un evenement : la source n a rate aucun
+    // jour sur 124 mesures.
+    const alertes = juger(battement, {
+      maintenantMs: PASSAGE.millisecondes,
+      heureUtc: HEURE_ALERTE_INCENDIE_UTC,
+    });
+    assert.equal(alertes.length, 1);
+    assert.equal(alertes[0].code, 'bulletin-du-jour-absent');
+    assert.equal(alertes[0].gravite, 'critique');
+
+    // HORS SAISON, plus rien : l absence est une REPONSE (#I19), pas une panne.
+    const horsSaison = {
+      ...battement,
+      incendie: { ...battement.incendie, donnee: { ...battement.incendie.donnee, saisonActive: false } },
+    };
+    assert.deepEqual(juger(horsSaison, { maintenantMs: PASSAGE.millisecondes, heureUtc: 12 }), []);
+
+    // Bulletin du jour present : rien non plus.
+    const aJour = {
+      ...battement,
+      incendie: {
+        ...battement.incendie,
+        donnee: { ...battement.incendie.donnee, jourDuBulletinLePlusAncien: '2026-09-29' },
+      },
+    };
+    assert.deepEqual(juger(aJour, { maintenantMs: PASSAGE.millisecondes, heureUtc: 12 }), []);
+
+    // AUCUN bulletin du tout pour au moins une etape (null) : l alerte part aussi.
+    const aucun = {
+      ...battement,
+      incendie: {
+        ...battement.incendie,
+        donnee: { ...battement.incendie.donnee, jourDuBulletinLePlusAncien: null },
+      },
+    };
+    assert.equal(juger(aucun, { maintenantMs: PASSAGE.millisecondes, heureUtc: 12 }).length, 1);
+
+    // Et sans section `donnee` (un battement d avant ce branchement), le surveillant
+    // ne crie PAS : il ne sait pas, il ne suppose pas.
+    const sansDonnee = { ...battement, incendie: { executeLe: recent, familles: {} } };
+    assert.deepEqual(juger(sansDonnee, { maintenantMs: PASSAGE.millisecondes, heureUtc: 12 }), []);
   });
 });
 

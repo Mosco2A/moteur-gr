@@ -62,7 +62,14 @@ export const PERIODES_MS = Object.freeze({
 export const HEURE_ALERTE_INCENDIE_UTC = 8;
 
 /// Construit la section de battement d'une tache.
-export function sectionDeBattement({ tache, passage, familles, dureeMs = null, erreur = null }) {
+///
+/// `donnee` porte ce que le SURVEILLANT ne peut pas deduire seul — typiquement le
+/// jour du bulletin le plus ancien (#H7). Il voyage ICI plutot que d'etre relu :
+/// faire relire 70 documents d'etape au surveillant, pour une question a laquelle le
+/// passage vient de repondre, serait 70 lectures pour rien.
+export function sectionDeBattement({
+  tache, passage, familles, donnee = null, dureeMs = null, erreur = null,
+}) {
   return {
     tache,
     executeLe: passage.instant,
@@ -70,6 +77,7 @@ export function sectionDeBattement({ tache, passage, familles, dureeMs = null, e
     dureeMs,
     // `familles` = { meteo: { issue, ecrits, inchanges, refuses, echecs, detail } }
     familles: familles ?? {},
+    donnee,
     erreur: erreur === null ? null : String(erreur),
   };
 }
@@ -97,9 +105,9 @@ export function resumeDeFamille({
 /// peut pas signaler sa propre mort. Il occupe la troisieme place gratuite du
 /// planificateur.
 ///
-/// `battement` = le document relu. `donnees` = ce que le surveillant a mesure sur
-/// la donnee elle-meme (voir `alerteDeVieillissement`).
-export function juger(battement, { maintenantMs, jourCourantUtc, saisonIncendieActive = null }) {
+/// `battement` = le document relu, avec la section `donnee` que chaque passage y a
+/// laissee (#H7) — c'est ce qui permet de juger LA DONNEE sans la relire.
+export function juger(battement, { maintenantMs, heureUtc = null }) {
   const alertes = [];
 
   for (const [tache, periodeMs] of Object.entries(PERIODES_MS)) {
@@ -156,6 +164,23 @@ export function juger(battement, { maintenantMs, jourCourantUtc, saisonIncendieA
         });
       }
     }
+  }
+
+  // #H7 — LE SEUIL PLUS SERRE DE L'INCENDIE, en saison seulement.
+  //
+  // C'est l'alerte qui regarde LA DONNEE et pas L'EXECUTION. Elle est la derniere
+  // parce qu'elle est la plus specifique, et elle n'existe que parce que le passage
+  // incendie a laisse dans son battement ce que le surveillant ne peut pas deduire
+  // seul (section `donnee`). La lire ici ne coute aucune lecture supplementaire.
+  const donnee = battement?.incendie?.donnee;
+  if (donnee !== null && donnee !== undefined && heureUtc !== null) {
+    const vieillissement = alerteDeVieillissementIncendie({
+      jourDuBulletinLePlusAncien: donnee.jourDuBulletinLePlusAncien ?? null,
+      jourCourant: donnee.jourCourant ?? null,
+      saisonActive: donnee.saisonActive === true,
+      heureUtc,
+    });
+    if (vieillissement !== null) alertes.push(vieillissement);
   }
 
   return alertes;
