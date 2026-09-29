@@ -3518,6 +3518,15 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Non précisé'
 	String get countryUnspecified => 'Non précisé';
 
+	/// fr: 'Choisir un pays'
+	String get countryPickerTitle => 'Choisir un pays';
+
+	/// fr: 'Rechercher un pays'
+	String get countrySearchHint => 'Rechercher un pays';
+
+	/// fr: 'Aucun pays ne correspond'
+	String get countryNoResult => 'Aucun pays ne correspond';
+
 	/// fr: 'Code (ex. FR)'
 	String get hintCountry => 'Code (ex. FR)';
 
@@ -9869,6 +9878,9 @@ extension on Translations {
 			'hikerProfile.sexUnspecified' => 'Non précisé',
 			'hikerProfile.fieldCountry' => 'Pays',
 			'hikerProfile.countryUnspecified' => 'Non précisé',
+			'hikerProfile.countryPickerTitle' => 'Choisir un pays',
+			'hikerProfile.countrySearchHint' => 'Rechercher un pays',
+			'hikerProfile.countryNoResult' => 'Aucun pays ne correspond',
 			'hikerProfile.hintCountry' => 'Code (ex. FR)',
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',

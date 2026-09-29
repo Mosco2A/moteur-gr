@@ -1681,6 +1681,9 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Keine Angabe';
 	@override String get fieldCountry => 'Land';
 	@override String get countryUnspecified => 'Keine Angabe';
+	@override String get countryPickerTitle => 'Land auswählen';
+	@override String get countrySearchHint => 'Land suchen';
+	@override String get countryNoResult => 'Kein Land gefunden';
 	@override String get hintCountry => 'Code (z. B. FR)';
 	@override String get consentTitle => 'Körperdaten (DSGVO Artikel 9)';
 	@override String get consentBody => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
@@ -5951,6 +5954,9 @@ extension on TranslationsDe {
 			'hikerProfile.sexUnspecified' => 'Keine Angabe',
 			'hikerProfile.fieldCountry' => 'Land',
 			'hikerProfile.countryUnspecified' => 'Keine Angabe',
+			'hikerProfile.countryPickerTitle' => 'Land auswählen',
+			'hikerProfile.countrySearchHint' => 'Land suchen',
+			'hikerProfile.countryNoResult' => 'Kein Land gefunden',
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
 			'hikerProfile.consentBody' => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',

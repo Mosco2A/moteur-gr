@@ -1681,6 +1681,9 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Unspecified';
 	@override String get fieldCountry => 'Country';
 	@override String get countryUnspecified => 'Unspecified';
+	@override String get countryPickerTitle => 'Choose a country';
+	@override String get countrySearchHint => 'Search for a country';
+	@override String get countryNoResult => 'No country matches';
 	@override String get hintCountry => 'Code (e.g. FR)';
 	@override String get consentTitle => 'Body metrics (GDPR article 9)';
 	@override String get consentBody => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.';
@@ -5951,6 +5954,9 @@ extension on TranslationsEn {
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',
 			'hikerProfile.countryUnspecified' => 'Unspecified',
+			'hikerProfile.countryPickerTitle' => 'Choose a country',
+			'hikerProfile.countrySearchHint' => 'Search for a country',
+			'hikerProfile.countryNoResult' => 'No country matches',
 			'hikerProfile.hintCountry' => 'Code (e.g. FR)',
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',

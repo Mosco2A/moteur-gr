@@ -1681,6 +1681,9 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Sin especificar';
 	@override String get fieldCountry => 'País';
 	@override String get countryUnspecified => 'Sin especificar';
+	@override String get countryPickerTitle => 'Elegir un país';
+	@override String get countrySearchHint => 'Buscar un país';
+	@override String get countryNoResult => 'Ningún país coincide';
 	@override String get hintCountry => 'Código (p. ej. FR)';
 	@override String get consentTitle => 'Datos corporales (RGPD artículo 9)';
 	@override String get consentBody => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.';
@@ -5951,6 +5954,9 @@ extension on TranslationsEs {
 			'hikerProfile.sexUnspecified' => 'Sin especificar',
 			'hikerProfile.fieldCountry' => 'País',
 			'hikerProfile.countryUnspecified' => 'Sin especificar',
+			'hikerProfile.countryPickerTitle' => 'Elegir un país',
+			'hikerProfile.countrySearchHint' => 'Buscar un país',
+			'hikerProfile.countryNoResult' => 'Ningún país coincide',
 			'hikerProfile.hintCountry' => 'Código (p. ej. FR)',
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD artículo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
