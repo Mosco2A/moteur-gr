@@ -150,13 +150,13 @@
       "tipsSub": "Unsere Trekking-Tipps",
       "townGuides": "Ortsführer",
       "townGuidesSub": "Praktische Infos zu den Etappen",
-      "recap": "Zusammenfassung",
+      "recap": "Rückblick",
       "recapSub": "Ihr Abenteuer in Kürze",
       "importGpx": "GPX-Import",
       "importGpxSub": "Einen GPS-Track importieren",
       "diploma": "Diplom",
       "diplomaSub": "Ihre Abschlussurkunde",
-      "resume": "Zusammenfassung",
+      "resume": "Übersicht",
       "resumeSub": "Planübersicht",
       "shop": "Verpflegung",
       "shopSub": "Lebensmittel, Apotheken, Gas",
@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Machbarkeit für diese Tour",
+      "answerTitle": "Schaffen Sie das?",
+      "answerGreen": "Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.",
+      "answerOrange": "Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.",
+      "answerRed": "So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.",
+      "answerDaysNote": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.",
+      "answerNoRest": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.",
+      "explainToggle": "Wie dieses Ergebnis berechnet wird",
       "intro": "Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
       "stagesTitle": "Tag für Tag",
@@ -1088,6 +1095,16 @@
     "loadFailedRetry": "Erneut versuchen",
     "staleNoticeOffline": "Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist."
   },
+  "demo": {
+    "bandeau": "DEMO-MODUS",
+    "quitter": "Beenden",
+    "boutonTitre": "Demo ausprobieren",
+    "boutonSous": "Die ganze App von A bis Z, ganz unverbindlich",
+    "rienNeCompte": "Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.",
+    "simulerEtape": "Nächste Etappe simulieren",
+    "simulerFin": "Ankunft simulieren",
+    "simulerRelancer": "Demo neu starten"
+  },
   "updates": {
     "readyTitle": "Update bereit",
     "readyBodyOne": "Ein Weg wurde aktualisiert.",
@@ -1168,6 +1185,7 @@
     "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
     "buyOutcomeUnknownPrice": "Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.",
+    "buyOutcomeDemo": "Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.",
     "subscriptionPrice": "$price pro Monat",
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
     "cancelCta": "Abo beenden",
@@ -1445,20 +1463,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare Nord",
+        "nom": "$trail — Nord",
         "description": "Die nördliche Hälfte des Wegs, offline."
       },
       "sud": {
-        "nom": "Mare a Mare Süd",
+        "nom": "$trail — Süd",
         "description": "Die südliche Hälfte des Wegs, offline."
       },
       "complet": {
-        "nom": "Mare a Mare Komplett",
+        "nom": "$trail — Komplett",
         "description": "Der ganze Weg, offline."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "Der Mare-a-Mare-Weg, offline."
+        "nom": "$trail",
+        "description": "Der ganze Weg $trail, offline."
       }
     }
   },
@@ -1769,14 +1787,8 @@
     "duration": {
       "label": "Anzahl der Tage",
       "daysWithRest": "{total} T insgesamt (davon {rest} Ruhe)",
-      "splitNote": "Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.",
-      "splitExhausted": "Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.",
-      "difficulty": {
-        "comfortable": "Gemütlich",
-        "standard": "Standard",
-        "sporty": "Sportlich",
-        "demanding": "Sehr anspruchsvoll"
-      },
+      "splitNote": "Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.",
+      "splitExhausted": "Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.",
       "daysTotal": "{count} T insgesamt"
     },
     "stats": {
@@ -1847,8 +1859,7 @@
       "close": "Verstanden!"
     },
     "splitBlocked": {
-      "single": "Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.",
-      "portion": "Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.",
+      "single": "Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.",
       "locked": "Tag bereits gelaufen: nicht mehr änderbar"
     },
     "reorderBlocked": "Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr",
@@ -2218,6 +2229,9 @@
     "sexUnspecified": "Keine Angabe",
     "fieldCountry": "Land",
     "countryUnspecified": "Keine Angabe",
+    "countryPickerTitle": "Land auswählen",
+    "countrySearchHint": "Land suchen",
+    "countryNoResult": "Kein Land gefunden",
     "hintCountry": "Code (z. B. FR)",
     "consentTitle": "Körperdaten (DSGVO Artikel 9)",
     "consentBody": "Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",

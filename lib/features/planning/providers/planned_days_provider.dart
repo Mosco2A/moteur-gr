@@ -32,16 +32,19 @@ import 'trek_edit_lock_provider.dart';
 /// etapes est inverse AVANT la repartition en jours -> Jour 1 = etape de depart
 /// du sens choisi. Sens de reference (ordre croissant) = 1er code de
 /// `TrailConfig.directions` (fourni par le sentier, jamais devine).
-final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
-    List<PlannedDay>, String>((ref, trailId) {
+final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier, List<PlannedDay>, String>((
+  ref,
+  trailId,
+) {
   // Etapes du sentier courant (asynchrones). Tant qu'elles ne sont pas la, on
   // part d'une liste vide : l'ecran affiche alors son etat vide, puis le
   // provider est recree avec les etapes reelles (ref.watch).
   final stagesAsync = ref.watch(stagesProvider(trailId));
   final duration = ref.watch(selectedDurationProvider);
   final sorted = stagesAsync.maybeWhen(
-    data: (list) => List<StageModel>.of(list)
-      ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
+    data: (list) =>
+        List<StageModel>.of(list)
+          ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
     orElse: () => const <StageModel>[],
   );
 
@@ -54,16 +57,12 @@ final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
   final reversed = forward != null && selected != null && selected != forward;
   final stages = reversed ? sorted.reversed.toList() : sorted;
 
-  // TACHE 558 — LE JOUR EN TROP DEVIENT UN DECOUPAGE, PAS UN REPOS DE PLUS.
-  // Au-dela du budget de repos du sentier ([DurationBounds.restAllowance], qui
-  // couvre le repos CONSEILLE de GO-61), un jour supplementaire COUPE la
-  // journee la plus lourde au lieu d'ajouter un repos : c'est le seul levier
-  // qui allege la pire journee, donc le seul qui peut changer le verdict.
-  final maxRest = ref.watch(durationBoundsProvider(trailId)).restAllowance;
-
+  // TACHE 634 — LE JOUR EN TROP REDEVIENT UN JOUR DE REPOS (DEM-260929-1327).
+  // Le lot 558 en faisait un DECOUPAGE de la journee la plus lourde ; Christophe
+  // l'a refuse. Le plafond de repos qui servait a declencher ce decoupage n'a
+  // donc plus d'objet.
   final cachedRestDays = ref.read(manualRestDayCacheProvider);
-  final notifier =
-      PlannedDaysNotifier(stages, duration, ref, maxRestDays: maxRest);
+  final notifier = PlannedDaysNotifier(stages, duration, ref);
   if (cachedRestDays.isNotEmpty) {
     notifier.restoreRestDaysFromCache(cachedRestDays);
   }
@@ -102,22 +101,13 @@ final manualRestDayCacheProvider = StateProvider<List<int>>((ref) => const []);
 /// mais generique : il opere sur des [StageModel] du sentier courant et non sur
 /// une base d'etapes en dur.
 class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
-  PlannedDaysNotifier(this._stages, this._duration, this._ref,
-      {int? maxRestDays})
-      : _maxRestDays = maxRestDays,
-        _hasManualEdits = false,
-        super(_generate(_stages, _duration, maxRestDays));
+  PlannedDaysNotifier(this._stages, this._duration, this._ref)
+    : _hasManualEdits = false,
+      super(_generate(_stages, _duration));
 
   final List<StageModel> _stages;
   final int _duration;
   final Ref _ref;
-
-  /// Repos CONSEILLE par le moteur (GO-61) — plafond du repos AUTOMATIQUE.
-  ///
-  /// Au-dela, un jour de plus est un DECOUPAGE et non un repos (tache 558).
-  /// `null` = plafond absent, tout le surplus part en repos (comportement
-  /// d'origine, conserve pour les appels qui ne connaissent pas le conseil).
-  final int? _maxRestDays;
 
   bool _hasManualEdits;
 
@@ -174,18 +164,9 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 
   /// Genere le programme initial : repartition des etapes sur la duree via le
   /// meme calculateur que l'ecran de repartition, converti en jours editables.
-  static List<PlannedDay> _generate(
-    List<StageModel> stages,
-    int duration, [
-    int? maxRestDays,
-  ]) {
+  static List<PlannedDay> _generate(List<StageModel> stages, int duration) {
     if (stages.isEmpty) return const [];
-    final plans = PlanningCalculator.distribute(
-      stages,
-      duration,
-      maxRestDays: maxRestDays,
-    );
-    return _fromDayPlans(plans);
+    return _fromDayPlans(PlanningCalculator.distribute(stages, duration));
   }
 
   /// Convertit les [DayPlan] (calcul) en [PlannedDay] (editables) puis
@@ -193,11 +174,13 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   static List<PlannedDay> _fromDayPlans(List<DayPlan> plans) {
     final days = <PlannedDay>[];
     for (final p in plans) {
-      days.add(PlannedDay(
-        dayNumber: p.dayNumber,
-        stages: p.isRestDay ? const [] : List<StageModel>.of(p.stages),
-        isRestDay: p.isRestDay,
-      ));
+      days.add(
+        PlannedDay(
+          dayNumber: p.dayNumber,
+          stages: p.isRestDay ? const [] : List<StageModel>.of(p.stages),
+          isRestDay: p.isRestDay,
+        ),
+      );
     }
     return _renumber(days);
   }
@@ -269,7 +252,9 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   // --- Edition : regrouper / separer (parite GR20 merge / split) ---
 
   double _hoursFor(List<StageModel> stages) => stages.fold<double>(
-      0, (sum, s) => sum + PlanningCalculator.estimatedHours(s));
+    0,
+    (sum, s) => sum + PlanningCalculator.estimatedHours(s),
+  );
 
   /// Message explicatif si le regroupement avec le jour suivant est impossible.
   /// `null` si le regroupement est possible (parite GR20 `mergeBlockedReason`,
@@ -307,65 +292,40 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   /// Vrai si le jour [dayIndex] peut etre separe.
   bool canSplit(int dayIndex) => splitBlockedReason(dayIndex) == null;
 
-  /// L'etape [stage] est-elle une etape ENTIERE du sentier (tache 558) ?
-  ///
-  /// Faux pour une PORTION produite par [PlanningCalculator.splitStage] : une
-  /// etape se coupe UNE fois ([PlanningCalculator.maxDaysPerStage]), pas
-  /// indefiniment. La reponse se lit sur la donnee du sentier — les etapes
-  /// sources que porte ce notifier — et non sur un marqueur qu'il faudrait
-  /// maintenir a jour dans le modele.
-  bool _isWholeStage(StageModel stage) => _stages.any(
-        (source) =>
-            source.stageNumber == stage.stageNumber &&
-            source.name == stage.name,
-      );
-
   /// Message explicatif si la separation est impossible (`null` si possible).
   ///
   /// Codes semantiques (libelles i18n a l'appelant, comme
   /// [mergeBlockedReason]) : `locked` (jour deja fait, R12), `single` (jour de
-  /// repos ou jour vide -> rien a separer), `portion` (l'etape est deja coupee
-  /// en deux, on ne la recoupe pas).
+  /// repos, jour vide, ou jour qui ne porte qu'UNE etape -> rien a separer).
   ///
-  /// TACHE 558 — UN JOUR A UNE SEULE ETAPE SE SEPARE DESORMAIS. Avant, ce cas
-  /// rendait `single` : « Separer » etait mort sur la journee la plus dure du
-  /// sentier — celle qui ne porte qu'une etape — c'est-a-dire precisement celle
-  /// que l'application conseillait de couper (`advice.split` : « Decoupe la
-  /// journee N en deux »). La campagne personas l'a mesure sur l'emulateur :
-  /// depart a 9 jours, verdict « Decoupage trop serre », curseur pousse a fond,
-  /// et le compteur ne bougeait pas d'un jour. Un conseil que l'application
-  /// n'offre pas est pire que pas de conseil : le bouton fait maintenant ce que
-  /// le conseil dit, en coupant l'etape en deux portions de meme energie.
+  /// TACHE 634 — UN JOUR A UNE SEULE ETAPE NE SE SEPARE PLUS (DEM-260929-1327).
+  /// Le lot 558 avait ouvert ce cas : « Separer » coupait alors l'etape en deux
+  /// demi-journees. Christophe l'a refuse, verbatim : « Decouper les etapes en
+  /// deux est une mauvaise idee... il n'y a pas de refuge et surtout JE N AI
+  /// JAMAIS DEMANDE CA ». « Separer » redevient donc ce qu'il a toujours du
+  /// etre : DEGROUPER des etapes qu'on avait reunies. Degrouper rend a chaque
+  /// etape sa journee et n'invente aucun point d'arret ; couper en inventait un,
+  /// par interpolation, la ou il n'y a peut-etre ni refuge ni eau.
   String? splitBlockedReason(int dayIndex) {
     if (dayIndex < 0 || dayIndex >= state.length) return 'single';
     if (isDayLocked(dayIndex)) return 'locked';
     final day = state[dayIndex];
     if (day.isRestDay || day.stages.isEmpty) return 'single';
-    if (day.stages.length > 1) return null;
-    // Une seule etape : coupable si elle est ENTIERE, deja coupee sinon.
-    return _isWholeStage(day.stages.single) ? null : 'portion';
+    // Il faut au moins DEUX etapes reunies pour qu'il y ait quelque chose a
+    // degrouper.
+    return day.stages.length > 1 ? null : 'single';
   }
 
-  /// Separe un jour : en N jours d'une etape s'il en regroupe plusieurs, en DEUX
-  /// portions de meme energie s'il n'en porte qu'une (tache 558).
+  /// Separe un jour REGROUPE : chaque etape reprend sa journee (parite GR20).
   ///
   /// R12 : refuse sur un jour deja fait (via [canSplit]).
   void splitDay(int dayIndex) {
     if (!canSplit(dayIndex)) return;
     final days = List<PlannedDay>.of(state);
     final toSplit = days[dayIndex];
-    final List<PlannedDay> newDays;
-    if (toSplit.stages.length > 1) {
-      // Jour regroupe : on rend a chaque etape sa journee (parite GR20).
-      newDays = toSplit.stages
-          .map((s) => PlannedDay(dayNumber: 0, stages: [s]))
-          .toList(growable: false);
-    } else {
-      // Jour a une seule etape ENTIERE : on la coupe en deux demi-journees.
-      newDays = PlanningCalculator.splitStage(toSplit.stages.single)
-          .map((s) => PlannedDay(dayNumber: 0, stages: [s]))
-          .toList(growable: false);
-    }
+    final newDays = toSplit.stages
+        .map((s) => PlannedDay(dayNumber: 0, stages: [s]))
+        .toList(growable: false);
     days.removeAt(dayIndex);
     days.insertAll(dayIndex, newDays);
     _hasManualEdits = true;
@@ -403,13 +363,15 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     }
 
     final remainingDays = (_duration - locked) < 1 ? 1 : _duration - locked;
-    var tail = _generate(remainingStages, remainingDays, _maxRestDays);
+    var tail = _generate(remainingStages, remainingDays);
     var offset = 0;
     for (final restIndex in restIndices) {
       final insertAt = (restIndex + offset).clamp(0, tail.length);
       tail = List<PlannedDay>.of(tail)
-        ..insert(insertAt,
-            const PlannedDay(dayNumber: 0, stages: [], isRestDay: true));
+        ..insert(
+          insertAt,
+          const PlannedDay(dayNumber: 0, stages: [], isRestDay: true),
+        );
       offset++;
     }
 
@@ -437,7 +399,9 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     for (final restIndex in cachedIndices) {
       final insertAt = (restIndex + offset).clamp(0, days.length);
       days.insert(
-          insertAt, const PlannedDay(dayNumber: 0, stages: [], isRestDay: true));
+        insertAt,
+        const PlannedDay(dayNumber: 0, stages: [], isRestDay: true),
+      );
       offset++;
     }
     _hasManualEdits = cachedIndices.isNotEmpty;
@@ -470,8 +434,10 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 /// orientees AVANT de sommer, donc applique le sens au global ET au jour).
 /// En sens INVERSE, la montee et la descente s'echangent (le D+ devient le D-
 /// officiel) ; distance, duree et nombre d'etapes sont invariants au sens.
-final planningStatsProvider =
-    Provider.family<PlanningStats, String>((ref, trailId) {
+final planningStatsProvider = Provider.family<PlanningStats, String>((
+  ref,
+  trailId,
+) {
   final days = ref.watch(plannedDaysProvider(trailId));
 
   // Sens de reference = 1er sens declare par le sentier (jamais devine). Sans
@@ -531,19 +497,19 @@ class PlanningStats {
   final double totalHours;
   final int trekDays;
   final int restDays;
-  /// Nombre d'etapes DISTINCTES portees par le programme (tache 558) — une
-  /// etape coupee en deux demi-journees compte pour UNE.
+
+  /// Nombre d'etapes DISTINCTES portees par le programme.
   final int stageCount;
 
   int get totalDays => trekDays + restDays;
 
-  /// Reste-t-il une journee a COUPER (tache 558) ?
+  /// Reste-t-il quelque chose a DEGROUPER dans le programme ?
   ///
-  /// Faux quand chaque etape occupe deja le maximum de journees permis : a ce
-  /// point, pousser le curseur n'allegera plus la pire journee, donc plus le
-  /// verdict — et l'ecran doit le DIRE au lieu de laisser pousser un curseur
-  /// qui ne sert plus a rien.
-  bool get canSplitFurther =>
-      stageCount > 0 &&
-      trekDays < PlanningCalculator.maxWalkingDaysFor(stageCount);
+  /// TACHE 634 (DEM-260929-1327) : c'etait « reste-t-il une journee a COUPER »
+  /// tant que le decoupage existait. Il n'existe plus. Il reste du grain a
+  /// moudre tant qu'une journee reunit plusieurs etapes ; au-dela, pousser le
+  /// curseur n'ajoute que du repos, et le repos ne change rien au verdict (le
+  /// verdict vaut la pire journee, GO-61) — l'ecran doit le DIRE plutot que de
+  /// laisser pousser un curseur qui ne sert plus a rien.
+  bool get canSplitFurther => stageCount > 0 && trekDays < stageCount;
 }

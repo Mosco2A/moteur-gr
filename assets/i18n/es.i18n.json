@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Viabilidad para este trek",
+      "answerTitle": "¿Está a su alcance?",
+      "answerGreen": "Sí. Este sendero está a su alcance en ${days} días.",
+      "answerOrange": "Sí, en ${days} días — pero una jornada será exigente para usted.",
+      "answerRed": "Así no: una jornada de este sendero supera lo que su perfil puede aguantar.",
+      "answerDaysNote": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.",
+      "answerNoRest": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.",
+      "explainToggle": "Cómo se calcula este resultado",
       "intro": "Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.",
       "ceilingLabel": "Tope recomendado: ${value} km-energía/día (${level})",
       "stagesTitle": "Día por día",
@@ -1088,6 +1095,16 @@
     "loadFailedRetry": "Reintentar",
     "staleNoticeOffline": "Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red."
   },
+  "demo": {
+    "bandeau": "MODO DEMO",
+    "quitter": "Salir",
+    "boutonTitre": "Probar la demo",
+    "boutonSous": "Descubra la aplicación de principio a fin, sin compromiso",
+    "rienNeCompte": "Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.",
+    "simulerEtape": "Simular la siguiente etapa",
+    "simulerFin": "Simular la llegada",
+    "simulerRelancer": "Reiniciar la demo"
+  },
   "updates": {
     "readyTitle": "Actualización lista",
     "readyBodyOne": "Un sendero ha sido actualizado.",
@@ -1168,6 +1185,7 @@
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
+    "buyOutcomeDemo": "Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",
@@ -1445,20 +1463,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare Norte",
+        "nom": "$trail — Norte",
         "description": "La mitad norte del sendero, sin conexión."
       },
       "sud": {
-        "nom": "Mare a Mare Sur",
+        "nom": "$trail — Sur",
         "description": "La mitad sur del sendero, sin conexión."
       },
       "complet": {
-        "nom": "Mare a Mare Completo",
+        "nom": "$trail — Completo",
         "description": "Todo el sendero, sin conexión."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "El sendero Mare a Mare, sin conexión."
+        "nom": "$trail",
+        "description": "Todo el sendero $trail, sin conexión."
       }
     }
   },
@@ -1769,14 +1787,8 @@
     "duration": {
       "label": "Número de días",
       "daysWithRest": "{total} d en total (incl. {rest} de descanso)",
-      "splitNote": "Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.",
-      "splitExhausted": "Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.",
-      "difficulty": {
-        "comfortable": "Cómodo",
-        "standard": "Estándar",
-        "sporty": "Deportivo",
-        "demanding": "Muy exigente"
-      },
+      "splitNote": "Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.",
+      "splitExhausted": "Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.",
       "daysTotal": "{count} d en total"
     },
     "stats": {
@@ -1847,8 +1859,7 @@
       "close": "¡Entendido!"
     },
     "splitBlocked": {
-      "single": "No se puede partir: este día no tiene nada que cortar.",
-      "portion": "No se puede partir: esta etapa ya está partida en dos.",
+      "single": "No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.",
       "locked": "Día ya caminado: ya no se puede modificar"
     },
     "reorderBlocked": "Ruta iniciada: el orden de las etapas ya no cambia",
@@ -2218,6 +2229,9 @@
     "sexUnspecified": "Sin especificar",
     "fieldCountry": "País",
     "countryUnspecified": "Sin especificar",
+    "countryPickerTitle": "Elegir un país",
+    "countrySearchHint": "Buscar un país",
+    "countryNoResult": "Ningún país coincide",
     "hintCountry": "Código (p. ej. FR)",
     "consentTitle": "Datos corporales (RGPD artículo 9)",
     "consentBody": "Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.",

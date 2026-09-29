@@ -1,4 +1,3 @@
-import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/selecteur_de_pays.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_input_bounds.dart';
@@ -17,7 +17,13 @@ import '../providers/hiker_profile_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 export '../domain/hiker_input_bounds.dart'
-    show kAgeMin, kAgeMax, kHeightMinCm, kHeightMaxCm, kWeightMinKg, kWeightMaxKg;
+    show
+        kAgeMin,
+        kAgeMax,
+        kHeightMinCm,
+        kHeightMaxCm,
+        kWeightMinKg,
+        kWeightMaxKg;
 
 /// Ecran « Fiche d'info » — 1ere page de la faisabilite (StepWays LOT 4, Ph1).
 ///
@@ -54,8 +60,7 @@ class HikerProfileScreen extends ConsumerStatefulWidget {
   const HikerProfileScreen({super.key});
 
   @override
-  ConsumerState<HikerProfileScreen> createState() =>
-      _HikerProfileScreenState();
+  ConsumerState<HikerProfileScreen> createState() => _HikerProfileScreenState();
 }
 
 // Bornes metier des champs morpho (LOT 1, retour Chris #4) : elles vivent
@@ -138,8 +143,9 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
       // s'agissait d'un pays, le champ repart a « non precise » et se rechoisit
       // en deux taps. Le vide reste le vide (champ optionnel).
       final storedCountry = profile.countryIso.trim().toUpperCase();
-      _countryController.text =
-          isValidIsoCountryCode(storedCountry) ? storedCountry : '';
+      _countryController.text = isValidIsoCountryCode(storedCountry)
+          ? storedCountry
+          : '';
       _sex = profile.sex;
       _morphoConsent = consent.hasConsent(ConsentPurpose.healthData);
       _loading = false;
@@ -156,8 +162,8 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     final profile = HikerProfile(
       age: int.tryParse(_ageController.text.trim()) ?? 0,
       heightCm: int.tryParse(_heightController.text.trim()) ?? 0,
-      weightKg: double.tryParse(
-              _weightController.text.trim().replaceAll(',', '.')) ??
+      weightKg:
+          double.tryParse(_weightController.text.trim().replaceAll(',', '.')) ??
           0,
       sex: _sex,
       countryIso: _countryController.text.trim().toUpperCase(),
@@ -339,7 +345,11 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       limitMessage: tp.errorHeight,
                       onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
-                          v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
+                        v,
+                        kHeightMinCm,
+                        kHeightMaxCm,
+                        tp.errorHeight,
+                      ),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Poids — borne [kWeightMinKg..kWeightMaxKg] kg, max 5
@@ -355,7 +365,11 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       limitMessage: tp.errorWeight,
                       onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
-                          v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
+                        v,
+                        kWeightMinKg,
+                        kWeightMaxKg,
+                        tp.errorWeight,
+                      ),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // PAS DE CARTE IMC ICI, ET PLUS NULLE PART (tache 560, N2).
@@ -387,8 +401,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                         ),
                       ],
                       selected: {_sex},
-                      onSelectionChanged: (s) =>
-                          setState(() => _sex = s.first),
+                      onSelectionChanged: (s) => setState(() => _sex = s.first),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Pays ISO
@@ -422,8 +435,9 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     if (_consentError case final message?) ...[
                       _FormError(
                         message: message,
-                        widgetKey:
-                            const ValueKey('hiker-profile-consent-error'),
+                        widgetKey: const ValueKey(
+                          'hiker-profile-consent-error',
+                        ),
                       ),
                       const SizedBox(height: AppTheme.spacingSm),
                     ],
@@ -565,10 +579,9 @@ class _FormError extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: colors.error),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: colors.error),
           ),
         ),
       ],
@@ -605,14 +618,18 @@ class _MorphoConsentTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.ficheMedicale,
-                  color: colors.tertiary, size: 20),
+              StepIcon(
+                StepwaysIcons.ficheMedicale,
+                color: colors.tertiary,
+                size: 20,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   tp.consentTitle,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -686,8 +703,9 @@ class _NumberFieldState extends State<_NumberField> {
     final colors = Theme.of(context).colorScheme;
     return TextFormField(
       controller: widget.controller,
-      keyboardType:
-          TextInputType.numberWithOptions(decimal: widget.allowDecimal),
+      keyboardType: TextInputType.numberWithOptions(
+        decimal: widget.allowDecimal,
+      ),
       maxLength: widget.maxLength,
       inputFormatters: [
         widget.allowDecimal
@@ -740,13 +758,8 @@ class _NumberFieldState extends State<_NumberField> {
 ///     selecteur ne propose pas (`AQ`, `BV`, `PN`, `TF`, `UM`) : une fiche
 ///     enregistree du temps de la saisie libre peut en porter un, et il vaut
 ///     mieux afficher « AQ » que rien.
-String localizedCountryName(BuildContext context, String code) {
-  final localized = CountryLocalizations.of(context)?.countryName(
-    countryCode: code,
-  );
-  if (localized != null && localized.isNotEmpty) return localized;
-  return Country.tryParse(code)?.name ?? code;
-}
+String localizedCountryName(BuildContext context, String code) =>
+    nomPaysLocalise(context, code);
 
 /// Champ pays — UN VRAI SELECTEUR, PLUS UN CODE A TAPER (retour Chris #2,
 /// tache 553).
@@ -783,10 +796,7 @@ String localizedCountryName(BuildContext context, String code) {
 ///
 /// Le champ reste OPTIONNEL : on peut ne rien choisir, et effacer son choix.
 class _CountryField extends StatelessWidget {
-  const _CountryField({
-    required this.controller,
-    required this.label,
-  });
+  const _CountryField({required this.controller, required this.label});
 
   /// Porte le CODE ISO (« FR »), pas le nom : c'est le code qui est enregistre,
   /// et le reste de l'application (base, miroir cloud, restauration) ne connait
@@ -810,28 +820,14 @@ class _CountryField extends StatelessWidget {
         return InkWell(
           key: const ValueKey('hiker-profile-country-field'),
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          onTap: () => showCountryPicker(
-            context: context,
-            // On choisit un PAYS, pas un numero de telephone.
-            showPhoneCode: false,
-            // La recherche par nom est l'interet meme du selecteur : 246 pays,
-            // personne ne defile jusqu'a « Nouvelle-Zelande ».
-            showSearch: true,
+          // LE SELECTEUR EST LE NOTRE DEPUIS LA TACHE 634 (DEM-260929-1124).
+          // Celui du paquet rangeait les pays dans l'ordre alphabetique
+          // ANGLAIS tout en affichant des noms traduits, et aucun de ses
+          // parametres ne permettait de le reordonner. Le notre trie sur le
+          // libelle AFFICHE, dans la langue courante.
+          onTap: () => ouvrirSelecteurDePays(
+            context,
             onSelect: (country) => controller.text = country.countryCode,
-            countryListTheme: CountryListThemeData(
-              backgroundColor: colors.surface,
-              textStyle: theme.textTheme.bodyLarge,
-              searchTextStyle: theme.textTheme.bodyLarge,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(AppTheme.radiusCard),
-              ),
-              inputDecoration: InputDecoration(
-                prefixIcon: StepIcon(StepwaysIcons.recherche, color: colors.primary),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                ),
-              ),
-            ),
           ),
           child: InputDecorator(
             // Le libelle flotte toujours : la ligne n'est jamais vide, elle dit

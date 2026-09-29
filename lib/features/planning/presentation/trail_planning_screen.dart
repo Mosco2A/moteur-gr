@@ -110,7 +110,11 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                StepIcon(StepwaysIcons.calendrier, color: scheme.primary, size: 24),
+                StepIcon(
+                  StepwaysIcons.calendrier,
+                  color: scheme.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   t.programme.info.title,
@@ -172,7 +176,11 @@ class TrailPlanningScreen extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StepIcon(StepwaysIcons.statistiques, size: 18, color: scheme.primary),
+                  StepIcon(
+                    StepwaysIcons.statistiques,
+                    size: 18,
+                    color: scheme.primary,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -279,10 +287,9 @@ class _PlanningContent extends ConsumerWidget {
     // couleur du curseur. `maybeWhen` : un verdict encore en calcul ou
     // indisponible (profil incomplet) ne colore rien et ne casse rien — le
     // curseur reprend alors son ratio etapes/jour.
-    final verdict = ref.watch(feasibilityAssessmentProvider).maybeWhen(
-          data: (a) => a?.globalVerdict,
-          orElse: () => null,
-        );
+    final verdict = ref
+        .watch(feasibilityAssessmentProvider)
+        .maybeWhen(data: (a) => a?.globalVerdict, orElse: () => null);
 
     return Column(
       children: [
@@ -470,8 +477,9 @@ class _DurationNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color =
-        emphasis ? AppTheme.orangeDifficile : theme.colorScheme.onSurfaceVariant;
+    final color = emphasis
+        ? AppTheme.orangeDifficile
+        : theme.colorScheme.onSurfaceVariant;
     final text = switch (textKey) {
       _DurationNoteKind.split => t.programme.duration.splitNote,
       _DurationNoteKind.exhausted => t.programme.duration.splitExhausted,
@@ -798,14 +806,13 @@ class _DayCard extends ConsumerWidget {
 
   /// Traduit le code de blocage de SEPARER en libelle i18n (R12, LOT L9).
   ///
-  /// `portion` est arrive avec la tache 558 : une etape deja coupee en deux ne
-  /// se recoupe pas, et il faut le DIRE — c'est different de « rien a couper ».
+  /// Le code `portion` a disparu avec le decoupage d'etape (tache 634,
+  /// DEM-260929-1327) : il n'existe plus de demi-etape, donc plus de cas
+  /// « deja coupee ».
   String _splitBlockedLabel(String? code) {
     switch (code) {
       case 'locked':
         return t.programme.splitBlocked.locked;
-      case 'portion':
-        return t.programme.splitBlocked.portion;
       default:
         return t.programme.splitBlocked.single;
     }

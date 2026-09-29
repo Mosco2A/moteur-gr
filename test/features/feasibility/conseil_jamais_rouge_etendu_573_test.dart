@@ -26,8 +26,8 @@
 // D'APPEL, pas seulement le moteur.
 //
 // MANQUE 3 — AUCUN TEMOIN ROUGE. Une invariante dont le conseil est construit
-// pour la satisfaire (`ProgramPlanSearch.firstNonRed` retient la premiere valeur
-// non rouge) est vraie par construction : elle ne peut plus echouer, donc elle ne
+// pour la satisfaire (`ProgramPlanSearch.planDuSentier` ne rend rien
+// quand le plan du sentier est rouge) est vraie par construction : elle ne peut plus echouer, donc elle ne
 // prouve plus rien. Un test qui ne peut pas echouer ne protege de rien. On garde
 // donc ici l'ANCIENNE regle, rejouee a cote, comme TEMOIN : elle DOIT produire
 // du rouge. Le jour ou le temoin passe au vert, c'est le test qui est casse, pas
@@ -87,21 +87,24 @@ List<SentierLivre> sentiersLivres() {
       final r = rows[i];
       if (r is! Map<String, dynamic>) continue;
       final dist = r['distanceKm'] ?? r['distance_km'];
-      final gain = r['elevationGain'] ?? r['elevationGainM'] ?? r['elevation_gain'];
+      final gain =
+          r['elevationGain'] ?? r['elevationGainM'] ?? r['elevation_gain'];
       if (dist is! num || gain is! num) continue;
       final perte = r['elevationLoss'] ?? r['elevationLossM'] ?? 0;
-      stages.add(StageModel(
-        trailId: f.uri.pathSegments.last,
-        stageNumber: ((r['stageNumber'] ?? (i + 1)) as num).toInt(),
-        name: 'E${i + 1}',
-        distanceKm: dist.toDouble(),
-        elevationGainM: gain.toInt(),
-        elevationLossM: (perte as num).toInt(),
-        startLat: 42.0 + i * 0.01,
-        startLng: 9.0 + i * 0.01,
-        endLat: 42.0 + (i + 1) * 0.01,
-        endLng: 9.0 + (i + 1) * 0.01,
-      ));
+      stages.add(
+        StageModel(
+          trailId: f.uri.pathSegments.last,
+          stageNumber: ((r['stageNumber'] ?? (i + 1)) as num).toInt(),
+          name: 'E${i + 1}',
+          distanceKm: dist.toDouble(),
+          elevationGainM: gain.toInt(),
+          elevationLossM: (perte as num).toInt(),
+          startLat: 42.0 + i * 0.01,
+          startLng: 9.0 + i * 0.01,
+          endLat: 42.0 + (i + 1) * 0.01,
+          endLng: 9.0 + (i + 1) * 0.01,
+        ),
+      );
     }
     if (stages.isEmpty) continue;
     out.add(SentierLivre(id: f.uri.pathSegments.last, stages: stages));
@@ -116,11 +119,18 @@ List<SentierLivre> sentiersLivres() {
 DurationBounds bornesDe(List<StageModel> stages) {
   final energies = [
     for (final s in stages)
-      FeasibilityScale.v2
-          .energyOf(distanceKm: s.distanceKm, elevationGainM: s.elevationGainM),
+      FeasibilityScale.v2.energyOf(
+        distanceKm: s.distanceKm,
+        elevationGainM: s.elevationGainM,
+      ),
   ];
-  final rest = FeasibilityFormula.recommendedRestAfterStageIndex(energies).length;
-  return DurationBounds.fromStageCount(stages.length, recommendedRestDays: rest);
+  final rest = FeasibilityFormula.recommendedRestAfterStageIndex(
+    energies,
+  ).length;
+  return DurationBounds.fromStageCount(
+    stages.length,
+    recommendedRestDays: rest,
+  );
 }
 
 /// Le verdict REEL a [totalJours] de curseur : le programme est construit par le
@@ -135,8 +145,7 @@ FeasibilityAssessment evaluationA(
   required TrekConditions conditions,
   ProgramDurationAdvice? conseil,
 }) {
-  final plan = PlanningCalculator.distribute(stages, totalJours,
-      maxRestDays: bornes.restAllowance);
+  final plan = PlanningCalculator.distribute(stages, totalJours);
   final program = FeasibilityProgram.fromDayPlans(plan);
   return FeasibilityFormula.evaluate(
     stages: program.dayEfforts,
@@ -202,9 +211,13 @@ void main() {
 
   setUpAll(() {
     sentiers = sentiersLivres();
-    expect(sentiers, isNotEmpty,
-        reason: 'aucun sentier livre trouve dans assets/data : la lecture est '
-            'cassee, et l invariante ne testerait plus rien');
+    expect(
+      sentiers,
+      isNotEmpty,
+      reason:
+          'aucun sentier livre trouve dans assets/data : la lecture est '
+          'cassee, et l invariante ne testerait plus rien',
+    );
   });
 
   group('V4-a — l invariante sur les sentiers REELLEMENT LIVRES', () {
@@ -220,14 +233,17 @@ void main() {
           for (final saison in saisons) {
             for (final plancher in planchers) {
               cellules++;
-              final conditions =
-                  TrekConditions(maxAltitudeM: aMax, season: saison);
-              final conseil = ProgramPlanSearch.firstNonRed(
+              final conditions = TrekConditions(
+                maxAltitudeM: aMax,
+                season: saison,
+              );
+              final conseil = ProgramPlanSearch.planDuSentier(
                 stages: sentier.stages,
                 level: niveau,
                 demonstratedFloorEnergyKm: plancher,
                 conditions: conditions,
                 bounds: bornes,
+                joursDeReposConseilles: bornes.restAllowance,
               );
               if (conseil == null) continue; // couvert par le test suivant
               final reel = evaluationA(
@@ -239,25 +255,36 @@ void main() {
                 conditions: conditions,
                 conseil: conseil.toAdvice(),
               );
-              final cle = '$sentier / ${niveau.name} / ${saison ?? "sans date"}'
+              final cle =
+                  '$sentier / ${niveau.name} / ${saison ?? "sans date"}'
                   ' / plancher $plancher';
               if (reel.globalVerdict == FeasibilityVerdict.red) {
                 fautes.add('$cle : conseil ${conseil.totalDays} j -> ROUGE');
               }
               if (conseil.verdict != reel.globalVerdict) {
-                fautes.add('$cle : le conseil annonce ${conseil.verdict.name} '
-                    'et l ecran affichera ${reel.globalVerdict.name}');
+                fautes.add(
+                  '$cle : le conseil annonce ${conseil.verdict.name} '
+                  'et l ecran affichera ${reel.globalVerdict.name}',
+                );
               }
             }
           }
         }
       }
-      expect(cellules, greaterThanOrEqualTo(60),
-          reason: 'le balayage doit couvrir au moins 4 niveaux x 5 saisons x 3 '
-              'planchers sur le sentier livre');
-      expect(fautes, isEmpty,
-          reason: 'l application conseille une valeur qu elle declare '
-              'mauvaise :\n${fautes.join('\n')}');
+      expect(
+        cellules,
+        greaterThanOrEqualTo(60),
+        reason:
+            'le balayage doit couvrir au moins 4 niveaux x 5 saisons x 3 '
+            'planchers sur le sentier livre',
+      );
+      expect(
+        fautes,
+        isEmpty,
+        reason:
+            'l application conseille une valeur qu elle declare '
+            'mauvaise :\n${fautes.join('\n')}',
+      );
     });
 
     test('quand rien n est conseillable, l appli le DIT au lieu de pointer '
@@ -267,12 +294,13 @@ void main() {
         final bornes = bornesDe(sentier.stages);
         for (final niveau in niveaux) {
           const conditions = TrekConditions.unknown;
-          final conseil = ProgramPlanSearch.firstNonRed(
+          final conseil = ProgramPlanSearch.planDuSentier(
             stages: sentier.stages,
             level: niveau,
             demonstratedFloorEnergyKm: 0,
             conditions: conditions,
             bounds: bornes,
+            joursDeReposConseilles: bornes.restAllowance,
           );
           if (conseil != null) continue;
           // Aucune valeur n'est viable : toutes les valeurs du curseur doivent
@@ -287,8 +315,10 @@ void main() {
               conditions: conditions,
             ).globalVerdict;
             if (v != FeasibilityVerdict.red) {
-              fautes.add('$sentier / ${niveau.name} : aucun conseil rendu, '
-                  'alors que $j jours donne ${v.name}');
+              fautes.add(
+                '$sentier / ${niveau.name} : aucun conseil rendu, '
+                'alors que $j jours donne ${v.name}',
+              );
             }
           }
         }
@@ -311,8 +341,10 @@ void main() {
         for (final niveau in niveaux) {
           for (final saison in saisons) {
             for (final plancher in planchers) {
-              final conditions =
-                  TrekConditions(maxAltitudeM: aMax, season: saison);
+              final conditions = TrekConditions(
+                maxAltitudeM: aMax,
+                season: saison,
+              );
               final ancien = conseilAncienneRegle(
                 stages: sentier.stages,
                 niveau: niveau,
@@ -329,26 +361,36 @@ void main() {
                 conditions: conditions,
               ).globalVerdict;
               if (verdict == FeasibilityVerdict.red) {
-                rouges.add('$sentier / ${niveau.name} / '
-                    '${saison ?? "sans date"} / plancher $plancher : '
-                    'ancien conseil $ancien j -> ROUGE');
+                rouges.add(
+                  '$sentier / ${niveau.name} / '
+                  '${saison ?? "sans date"} / plancher $plancher : '
+                  'ancien conseil $ancien j -> ROUGE',
+                );
               }
             }
           }
         }
       }
-      expect(rouges, isNotEmpty,
-          reason: 'LE TEMOIN EST MUET : l ancienne regle de conseil ne tombe '
-              'plus sur aucun rouge dans ce balayage. L invariante ne prouve '
-              'donc plus rien — il faut elargir le balayage jusqu a ce qu elle '
-              'attrape a nouveau un cas reel.');
+      expect(
+        rouges,
+        isNotEmpty,
+        reason:
+            'LE TEMOIN EST MUET : l ancienne regle de conseil ne tombe '
+            'plus sur aucun rouge dans ce balayage. L invariante ne prouve '
+            'donc plus rien — il faut elargir le balayage jusqu a ce qu elle '
+            'attrape a nouveau un cas reel.',
+      );
       // MESURE DU 26/09 : 82 cellules rouges sur les 120 du balayage. Le
       // plancher est volontairement bas (20) pour ne pas casser au premier
       // sentier ajoute, mais assez haut pour qu'un temoin devenu anecdotique se
       // signale.
-      expect(rouges.length, greaterThanOrEqualTo(20),
-          reason: 'le temoin ne trouve plus que ${rouges.length} cas rouges : '
-              'l invariante perd ses dents.');
+      expect(
+        rouges.length,
+        greaterThanOrEqualTo(20),
+        reason:
+            'le temoin ne trouve plus que ${rouges.length} cas rouges : '
+            'l invariante perd ses dents.',
+      );
     });
   });
 
@@ -371,20 +413,27 @@ void main() {
         final src = f.readAsStringSync();
         if (!src.contains('FeasibilityFormula.evaluate(')) continue;
         // Chaque appel est examine separement : un fichier peut en porter deux.
-        for (final m
-            in RegExp(r'FeasibilityFormula\.evaluate\(').allMatches(src)) {
+        for (final m in RegExp(
+          r'FeasibilityFormula\.evaluate\(',
+        ).allMatches(src)) {
           final fin = src.indexOf(');', m.end);
-          final appel = fin < 0 ? src.substring(m.end) : src.substring(m.end, fin);
+          final appel = fin < 0
+              ? src.substring(m.end)
+              : src.substring(m.end, fin);
           if (!appel.contains('durationAdvice')) {
             fautifs.add('$chemin (appel sans durationAdvice)');
           }
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'CES APPELS DE PRODUCTION N ENVOIENT PAS LE CONSEIL DE '
-              'DUREE : ils retombent sur l ancienne regle de moyenne, qui ne '
-              'garantit pas la couleur. L invariante de Chris ne tient alors '
-              'plus pour l ecran qui les utilise.\n  ${fautifs.join('\n  ')}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'CES APPELS DE PRODUCTION N ENVOIENT PAS LE CONSEIL DE '
+            'DUREE : ils retombent sur l ancienne regle de moyenne, qui ne '
+            'garantit pas la couleur. L invariante de Chris ne tient alors '
+            'plus pour l ecran qui les utilise.\n  ${fautifs.join('\n  ')}',
+      );
     });
   });
 }

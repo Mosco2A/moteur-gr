@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Feasibility for this trek",
+      "answerTitle": "Can you do it?",
+      "answerGreen": "Yes. This trail is within your reach in ${days} days.",
+      "answerOrange": "Yes, in ${days} days — but one day will be demanding for you.",
+      "answerRed": "Not as it stands: one day of this trail is beyond what your profile can hold.",
+      "answerDaysNote": "That is the trail's own plan: ${walking} walking days, ${rest} rest days.",
+      "answerNoRest": "That is the trail's own plan: ${walking} walking days.",
+      "explainToggle": "How this result is worked out",
       "intro": "We compare each walking day's effort to what your profile can handle. Green, orange or red light.",
       "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
       "stagesTitle": "Day by day",
@@ -1088,6 +1095,16 @@
     "loadFailedRetry": "Try again",
     "staleNoticeOffline": "Offline: these are the trails you already downloaded. The full list will refresh once you are back online."
   },
+  "demo": {
+    "bandeau": "DEMO MODE",
+    "quitter": "Exit",
+    "boutonTitre": "Try the demo",
+    "boutonSous": "See the whole app end to end, with nothing at stake",
+    "rienNeCompte": "You are in demo mode: nothing you do here is saved. No stages earned, no diploma, no purchase.",
+    "simulerEtape": "Simulate the next stage",
+    "simulerFin": "Simulate the finish",
+    "simulerRelancer": "Restart the demo"
+  },
   "updates": {
     "readyTitle": "Update ready",
     "readyBodyOne": "One trail has been updated.",
@@ -1168,6 +1185,7 @@
     "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
     "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
     "buyOutcomeUnknownPrice": "This trail is not on sale right now. Nothing was charged.",
+    "buyOutcomeDemo": "You are in demo mode: no purchase is possible, and nothing was charged.",
     "subscriptionPrice": "$price per month",
     "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",
@@ -1445,20 +1463,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare North",
+        "nom": "$trail — North",
         "description": "The northern half of the trail, offline."
       },
       "sud": {
-        "nom": "Mare a Mare South",
+        "nom": "$trail — South",
         "description": "The southern half of the trail, offline."
       },
       "complet": {
-        "nom": "Mare a Mare Full",
+        "nom": "$trail — Full",
         "description": "The whole trail, offline."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "The Mare a Mare trail, offline."
+        "nom": "$trail",
+        "description": "The whole $trail trail, offline."
       }
     }
   },
@@ -1769,14 +1787,8 @@
     "duration": {
       "label": "Number of days",
       "daysWithRest": "{total} d in total (incl. {rest} rest)",
-      "splitNote": "More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.",
-      "splitExhausted": "Every day is already cut as short as it goes: the slider will not ease the verdict any further.",
-      "difficulty": {
-        "comfortable": "Comfortable",
-        "standard": "Standard",
-        "sporty": "Sporty",
-        "demanding": "Very demanding"
-      },
+      "splitNote": "More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.",
+      "splitExhausted": "Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.",
       "daysTotal": "{count} d in total"
     },
     "stats": {
@@ -1847,8 +1859,7 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: there is nothing to cut on this day.",
-      "portion": "Cannot split: this stage is already cut in two.",
+      "single": "Cannot split: this day carries a single stage, there is nothing to ungroup.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",
@@ -2218,6 +2229,9 @@
     "sexUnspecified": "Unspecified",
     "fieldCountry": "Country",
     "countryUnspecified": "Unspecified",
+    "countryPickerTitle": "Choose a country",
+    "countrySearchHint": "Search for a country",
+    "countryNoResult": "No country matches",
     "hintCountry": "Code (e.g. FR)",
     "consentTitle": "Body metrics (GDPR article 9)",
     "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",

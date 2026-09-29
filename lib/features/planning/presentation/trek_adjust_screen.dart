@@ -74,8 +74,10 @@ class TrekAdjustScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: days.isEmpty
-            ? _EmptyAdjustState(message: t.programme.inTrek.empty.message,
-                title: t.programme.inTrek.empty.title)
+            ? _EmptyAdjustState(
+                message: t.programme.inTrek.empty.message,
+                title: t.programme.inTrek.empty.title,
+              )
             : Column(
                 children: [
                   _IntroBanner(
@@ -126,9 +128,13 @@ class TrekAdjustScreen extends ConsumerWidget {
                               day: days[i],
                               locked: false,
                               canMerge: notifier.canMergeWithNext(i),
-                              mergeBlockedReason: notifier.mergeBlockedReason(i),
+                              mergeBlockedReason: notifier.mergeBlockedReason(
+                                i,
+                              ),
                               canSplit: notifier.canSplit(i),
-                              splitBlockedReason: notifier.splitBlockedReason(i),
+                              splitBlockedReason: notifier.splitBlockedReason(
+                                i,
+                              ),
                               onMerge: () => notifier.mergeWithNext(i),
                               onSplit: () => notifier.splitDay(i),
                               onAddRestDay: () => notifier.addRestDay(i),
@@ -179,8 +185,10 @@ class TrekAdjustScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(t.programme.inTrek.info.title,
-                style: theme.textTheme.titleLarge),
+            Text(
+              t.programme.inTrek.info.title,
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _HelpLine(
               icon: StepwaysIcons.cadenas,
@@ -245,9 +253,7 @@ class _IntroBanner extends StatelessWidget {
             color: theme.colorScheme.primary,
           ),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodySmall),
-          ),
+          Expanded(child: Text(message, style: theme.textTheme.bodySmall)),
         ],
       ),
     );
@@ -315,9 +321,12 @@ class _HelpLine extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Text(body, style: theme.textTheme.bodySmall),
               ],
             ),
@@ -388,13 +397,12 @@ class _AdjustDayCard extends StatelessWidget {
     }
   }
 
-  /// `portion` : tache 558 — une etape deja coupee en deux ne se recoupe pas,
-  /// et ce n'est pas la meme chose que « rien a couper ».
+  /// Le code `portion` a disparu avec le decoupage d'etape (tache 634,
+  /// DEM-260929-1327) : il n'existe plus de demi-etape.
   String _splitLabel() => switch (splitBlockedReason) {
-        'locked' => t.programme.splitBlocked.locked,
-        'portion' => t.programme.splitBlocked.portion,
-        _ => t.programme.splitBlocked.single,
-      };
+    'locked' => t.programme.splitBlocked.locked,
+    _ => t.programme.splitBlocked.single,
+  };
 
   void _blocked(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -417,8 +425,8 @@ class _AdjustDayCard extends StatelessWidget {
     final accent = locked
         ? dayNeutralColor(context)
         : isRest
-            ? AppTheme.bleuRepos
-            : _difficultyColor(day.maxDifficulty);
+        ? AppTheme.bleuRepos
+        : _difficultyColor(day.maxDifficulty);
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -443,8 +451,10 @@ class _AdjustDayCard extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'J${day.dayNumber}',
-                    style: theme.textTheme.labelLarge
-                        ?.copyWith(color: accent, fontSize: 14),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: accent,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
@@ -456,7 +466,11 @@ class _AdjustDayCard extends StatelessWidget {
                     if (isRest)
                       Row(
                         children: [
-                          StepIcon(StepwaysIcons.preparationPhysique, size: 20, color: accent),
+                          StepIcon(
+                            StepwaysIcons.preparationPhysique,
+                            size: 20,
+                            color: accent,
+                          ),
                           const SizedBox(width: AppTheme.spacingSm),
                           Flexible(
                             child: Text(
@@ -490,7 +504,8 @@ class _AdjustDayCard extends StatelessWidget {
                         children: [
                           DayMiniStat(
                             icon: StepwaysIcons.distance,
-                            value: '${day.totalDistanceKm.toStringAsFixed(1)} km',
+                            value:
+                                '${day.totalDistanceKm.toStringAsFixed(1)} km',
                           ),
                           DayMiniStat(
                             icon: StepwaysIcons.flecheHaut,
@@ -509,8 +524,11 @@ class _AdjustDayCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          StepIcon(StepwaysIcons.cadenas,
-                              size: 16, color: dayNeutralColor(context)),
+                          StepIcon(
+                            StepwaysIcons.cadenas,
+                            size: 16,
+                            color: dayNeutralColor(context),
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             t.programme.inTrek.doneBadge,
@@ -565,14 +583,19 @@ class _AdjustDayCard extends StatelessWidget {
                         tooltip: t.programme.actions.removeRest,
                         onPressed: onRemoveRestDay,
                         padding: EdgeInsets.zero,
-                        constraints:
-                            const BoxConstraints(minWidth: 48, minHeight: 48),
+                        constraints: const BoxConstraints(
+                          minWidth: 48,
+                          minHeight: 48,
+                        ),
                       ),
                   ],
                 )
               else
-                StepIcon(StepwaysIcons.cadenas,
-                    size: 20, color: dayNeutralColor(context)),
+                StepIcon(
+                  StepwaysIcons.cadenas,
+                  size: 20,
+                  color: dayNeutralColor(context),
+                ),
             ],
           ),
         ),
@@ -597,16 +620,23 @@ class _EmptyAdjustState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            StepIcon(StepwaysIcons.calendrier,
-                size: 48, color: dayNeutralColor(context)),
+            StepIcon(
+              StepwaysIcons.calendrier,
+              size: 48,
+              color: dayNeutralColor(context),
+            ),
             const SizedBox(height: AppTheme.spacingMd),
-            Text(title,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
-            Text(message,
-                style: theme.textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            Text(
+              message,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/features/packs/data/pack_download_service.dart';
 import 'package:moteur_gr/features/packs/data/pack_storage.dart';
 import 'package:moteur_gr/features/packs/domain/pack_catalog.dart';
@@ -21,7 +22,7 @@ class _MemStorage implements PackStorage {
 
   void seedPack(String packId, List<String> refs) {
     _packs[packId] = {
-      for (final r in refs) r: Uint8List.fromList(utf8.encode('x'))
+      for (final r in refs) r: Uint8List.fromList(utf8.encode('x')),
     };
   }
 
@@ -111,9 +112,7 @@ void main() {
         packFileSourceProvider.overrideWithValue(source ?? _OkSource()),
         ...overrides,
       ],
-      child: TranslationProvider(
-        child: MaterialApp(home: child),
-      ),
+      child: TranslationProvider(child: MaterialApp(home: child)),
     );
   }
 
@@ -136,8 +135,9 @@ void main() {
   }
 
   group('PackStoreScreen — liste a la carte (R2)', () {
-    testWidgets('affiche 4 cartes Nord/Sud/Complet/MaM + note a la carte',
-        (tester) async {
+    testWidgets('affiche 4 cartes Nord/Sud/Complet/MaM + note a la carte', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const PackStoreScreen(trailId: trailId)));
       await tester.pumpAndSettle();
 
@@ -161,58 +161,77 @@ void main() {
       }
     });
 
-    testWidgets('affiche le titre, la taille et la description localisee',
-        (tester) async {
+    testWidgets('affiche le titre, la taille et la description localisee', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const PackStoreScreen(trailId: trailId)));
       await tester.pumpAndSettle();
 
       final t = TranslationProvider.of(
-              tester.element(find.byType(PackStoreScreen)))
-          .translations;
-      expect(find.text(t.packs.types.complet.nom), findsOneWidget);
+        tester.element(find.byType(PackStoreScreen)),
+      ).translations;
+      // Le nom du pack porte desormais le nom REEL du sentier (tache 634,
+      // DEM-260929-1326) : « Centre » ne peut plus se perdre en route.
+      final nomDuSentier = TrailCatalog.byId(trailId)?.displayName ?? trailId;
+      expect(
+        find.text(t.packs.types.complet.nom(trail: nomDuSentier)),
+        findsOneWidget,
+      );
       // Taille du pack complet (340 Mo dans le catalogue fictif).
-      final completManifest =
-          PackCatalog.manifestFor(trailId, PackType.complet);
-      expect(find.text(t.packs.size(mo: completManifest.tailleMo)),
-          findsOneWidget);
+      final completManifest = PackCatalog.manifestFor(
+        trailId,
+        PackType.complet,
+      );
+      expect(
+        find.text(t.packs.size(mo: completManifest.tailleMo)),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('aucun bouton acheter tant que la monetisation est OFF (R2)',
-        (tester) async {
+    testWidgets('aucun bouton acheter tant que la monetisation est OFF (R2)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const PackStoreScreen(trailId: trailId)));
       await tester.pumpAndSettle();
 
       // purchaseEnabled=false par defaut -> pas d'achat impose, pas d'abo.
-      expect(find.byKey(ValueKey('pack-buy-${PackCatalog.packId(trailId, PackType.nord)}')),
-          findsNothing);
+      expect(
+        find.byKey(
+          ValueKey('pack-buy-${PackCatalog.packId(trailId, PackType.nord)}'),
+        ),
+        findsNothing,
+      );
     });
   });
 
   group('PackCard — etats (non telecharge / telecharge / maj)', () {
     SentierPack packFor(String type) => SentierPack(
-          id: PackCatalog.packId(trailId, type),
-          nom: 'Pack $type',
-          trailId: trailId,
-          type: type,
-          description: 'desc',
-        );
+      id: PackCatalog.packId(trailId, type),
+      nom: 'Pack $type',
+      trailId: trailId,
+      type: type,
+      description: 'desc',
+    );
 
     testWidgets('etat non telecharge -> bouton telecharger', (tester) async {
       final pack = packFor(PackType.nord);
-      await tester.pumpWidget(wrap(
-        PackCard(
-          pack: pack,
-          manifest: PackCatalog.manifestFor(trailId, PackType.nord),
+      await tester.pumpWidget(
+        wrap(
+          PackCard(
+            pack: pack,
+            manifest: PackCatalog.manifestFor(trailId, PackType.nord),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.byKey(ValueKey('pack-download-${pack.id}')), findsOneWidget);
       expect(find.byKey(ValueKey('pack-delete-${pack.id}')), findsNothing);
     });
 
-    testWidgets('etat telecharge -> chip telecharge + bouton supprimer',
-        (tester) async {
+    testWidgets('etat telecharge -> chip telecharge + bouton supprimer', (
+      tester,
+    ) async {
       final pack = packFor(PackType.sud);
       final manifest = PackCatalog.manifestFor(trailId, PackType.sud);
       storage.seedPack(pack.id, manifest.allRefs); // deja telecharge
@@ -220,25 +239,28 @@ void main() {
       await tester.pumpWidget(wrap(PackCard(pack: pack, manifest: manifest)));
       await tester.pumpAndSettle();
 
-      final t = TranslationProvider.of(tester.element(find.byType(PackCard)))
-          .translations;
+      final t = TranslationProvider.of(
+        tester.element(find.byType(PackCard)),
+      ).translations;
       expect(find.text(t.packs.states.downloaded), findsOneWidget);
       expect(find.byKey(ValueKey('pack-delete-${pack.id}')), findsOneWidget);
     });
 
-    testWidgets('etat mise a jour dispo -> chip update + bouton mettre a jour',
-        (tester) async {
+    testWidgets('etat mise a jour dispo -> chip update + bouton mettre a jour', (
+      tester,
+    ) async {
       final pack = packFor(PackType.complet);
       final manifest = PackCatalog.manifestFor(trailId, PackType.complet);
       storage.seedPack(pack.id, manifest.allRefs);
 
-      await tester.pumpWidget(wrap(
-        PackCard(pack: pack, manifest: manifest, updateAvailable: true),
-      ));
+      await tester.pumpWidget(
+        wrap(PackCard(pack: pack, manifest: manifest, updateAvailable: true)),
+      );
       await tester.pumpAndSettle();
 
-      final t = TranslationProvider.of(tester.element(find.byType(PackCard)))
-          .translations;
+      final t = TranslationProvider.of(
+        tester.element(find.byType(PackCard)),
+      ).translations;
       expect(find.text(t.packs.states.updateAvailable), findsOneWidget);
       // Bouton present (libelle « mettre a jour ») et action telechargement dispo.
       expect(find.byKey(ValueKey('pack-download-${pack.id}')), findsOneWidget);
@@ -247,8 +269,9 @@ void main() {
   });
 
   group('PackCard — telechargement (progression) + suppression', () {
-    testWidgets('telechargement affiche la progression puis l etat telecharge',
-        (tester) async {
+    testWidgets('telechargement affiche la progression puis l etat telecharge', (
+      tester,
+    ) async {
       final pack = SentierPack(
         id: PackCatalog.packId(trailId, PackType.mam),
         nom: 'Pack mam',
@@ -259,10 +282,12 @@ void main() {
       final manifest = PackCatalog.manifestFor(trailId, PackType.mam);
       final gated = _GatedSource();
 
-      await tester.pumpWidget(wrapCard(
-        PackCard(pack: pack, manifest: manifest),
-        source: gated,
-      ));
+      await tester.pumpWidget(
+        wrapCard(
+          PackCard(pack: pack, manifest: manifest),
+          source: gated,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Lance le telechargement (fetch bloque sur la grille -> reste en cours).
@@ -278,16 +303,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // Apres succes : chip telecharge + bouton supprimer.
-      final t = TranslationProvider.of(tester.element(find.byType(PackCard)))
-          .translations;
+      final t = TranslationProvider.of(
+        tester.element(find.byType(PackCard)),
+      ).translations;
       expect(find.text(t.packs.states.downloaded), findsOneWidget);
       expect(find.byKey(ValueKey('pack-delete-${pack.id}')), findsOneWidget);
       // Le pack est reellement stocke (lisible offline).
       expect(await storage.packExists(pack.id), isTrue);
     });
 
-    testWidgets('suppression via dialog retire le pack et libere l espace',
-        (tester) async {
+    testWidgets('suppression via dialog retire le pack et libere l espace', (
+      tester,
+    ) async {
       final pack = SentierPack(
         id: PackCatalog.packId(trailId, PackType.nord),
         nom: 'Pack nord',
@@ -298,7 +325,9 @@ void main() {
       final manifest = PackCatalog.manifestFor(trailId, PackType.nord);
       storage.seedPack(pack.id, manifest.allRefs);
 
-      await tester.pumpWidget(wrapCard(PackCard(pack: pack, manifest: manifest)));
+      await tester.pumpWidget(
+        wrapCard(PackCard(pack: pack, manifest: manifest)),
+      );
       await tester.pumpAndSettle();
 
       // Ouvre le dialog de suppression.

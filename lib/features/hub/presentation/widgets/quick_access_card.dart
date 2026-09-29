@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/branding/stepways_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../shared/widgets/texte_ajuste.dart';
 import 'step_status_icon.dart';
 
 /// Carte d'acces rapide du HUB (RF-14).
@@ -47,7 +48,6 @@ class QuickAccessCard extends StatelessWidget {
   /// le trace monochrome grise quand la carte est verrouillee — un dessin
   /// bicolore fige resterait vif a cote d'un titre eteint.
   final RubriqueStepways? rubrique;
-
 
   /// Couleur categorielle de l'icone (retour Chris 09/09, reco #IR02).
   ///
@@ -108,10 +108,12 @@ class QuickAccessCard extends StatelessWidget {
     // sinon repli sur l'accent-sentier. Attenuee quand la carte est desactivee
     // (verrou).
     final accent = iconColor ?? scheme.primary;
-    final effectiveIconColor =
-        enabled ? accent : scheme.onSurface.withValues(alpha: 0.38);
-    final titleColor =
-        enabled ? scheme.onSurface : scheme.onSurface.withValues(alpha: 0.38);
+    final effectiveIconColor = enabled
+        ? accent
+        : scheme.onSurface.withValues(alpha: 0.38);
+    final titleColor = enabled
+        ? scheme.onSurface
+        : scheme.onSurface.withValues(alpha: 0.38);
     final subtitleText = enabled ? subtitle : (lockedLabel ?? subtitle);
 
     return AppCard(
@@ -155,17 +157,25 @@ class QuickAccessCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          Text(
+          // LE TITRE S'AJUSTE AU LIEU DE SE COUPER (tache 634, DEM-260929-1325).
+          //
+          // Finitions V1 (point 6) : titre sur 2 lignes. Les titres longs
+          // (« Découvrir des sentiers ») etaient TRONQUES a 1 ligne sur les
+          // cartes etroites (Mes treks). Le budget de hauteur de la cellule
+          // ([HubSection] mainAxisExtent) est releve en consequence (2 lignes
+          // titre + 2 lignes sous-titre) — plus de troncature, pas d'overflow.
+          //
+          // Ce que ces deux lignes ne reglaient PAS : un titre d'UN SEUL MOT
+          // plus large que la colonne. Flutter le casse alors en plein milieu
+          // — « Ravitailleme / nt », retour de Christophe du 29/09 13:25 — sans
+          // lever la moindre exception. [TexteAjuste] reduit la police juste
+          // assez pour que le mot tienne entier, dans les cinq langues — pire
+          // cas mesure : l'espagnol « Avituallamiento », 15 caracteres.
+          TexteAjuste(
             title,
             style: theme.textTheme.titleMedium?.copyWith(color: titleColor),
             textAlign: TextAlign.center,
-            // Finitions V1 (point 6) : titre sur 2 lignes. Les titres longs
-            // (« Découvrir des sentiers ») etaient TRONQUES a 1 ligne sur les
-            // cartes etroites (Mes treks). Le budget de hauteur de la cellule
-            // ([HubSection] mainAxisExtent) est releve en consequence (2 lignes
-            // titre + 2 lignes sous-titre) — plus de troncature, pas d'overflow.
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppTheme.spacingXs),
           Text(

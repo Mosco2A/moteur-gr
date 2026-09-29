@@ -909,6 +909,13 @@
     },
     "formula": {
       "title": "Fattibilità per questo trek",
+      "answerTitle": "È alla sua portata?",
+      "answerGreen": "Sì. Questo sentiero è alla sua portata in ${days} giorni.",
+      "answerOrange": "Sì, in ${days} giorni — ma una giornata sarà impegnativa per lei.",
+      "answerRed": "Non così: una giornata di questo sentiero supera ciò che il suo profilo può reggere.",
+      "answerDaysNote": "È la suddivisione del sentiero così com'è: ${walking} giornate di cammino, ${rest} di riposo.",
+      "answerNoRest": "È la suddivisione del sentiero così com'è: ${walking} giornate di cammino.",
+      "explainToggle": "Come viene calcolato questo risultato",
       "intro": "Confrontiamo lo sforzo di ogni giornata di cammino con ciò che il tuo profilo può reggere. Verde, arancione o rosso.",
       "ceilingLabel": "Soglia consigliata: ${value} km-energia/giorno (${level})",
       "stagesTitle": "Giorno per giorno",
@@ -1088,6 +1095,16 @@
     "loadFailedRetry": "Riprova",
     "staleNoticeOffline": "Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete."
   },
+  "demo": {
+    "bandeau": "MODALITÀ DEMO",
+    "quitter": "Esci",
+    "boutonTitre": "Prova la demo",
+    "boutonSous": "Scopri l'app dall'inizio alla fine, senza impegno",
+    "rienNeCompte": "Sei in modalità demo: nulla di ciò che fai qui viene salvato. Né tappe guadagnate, né diploma, né acquisto.",
+    "simulerEtape": "Simula la tappa successiva",
+    "simulerFin": "Simula l'arrivo",
+    "simulerRelancer": "Ricomincia la demo"
+  },
   "updates": {
     "readyTitle": "Aggiornamento pronto",
     "readyBodyOne": "Un sentiero è stato aggiornato.",
@@ -1168,6 +1185,7 @@
     "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
     "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
+    "buyOutcomeDemo": "Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.",
     "subscriptionPrice": "$price al mese",
     "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.",
     "cancelCta": "Interrompere l’abbonamento",
@@ -1445,20 +1463,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare Nord",
+        "nom": "$trail — Nord",
         "description": "La metà nord del sentiero, offline."
       },
       "sud": {
-        "nom": "Mare a Mare Sud",
+        "nom": "$trail — Sud",
         "description": "La metà sud del sentiero, offline."
       },
       "complet": {
-        "nom": "Mare a Mare Completo",
+        "nom": "$trail — Completo",
         "description": "Tutto il sentiero, offline."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "Il sentiero Mare a Mare, offline."
+        "nom": "$trail",
+        "description": "Tutto il sentiero $trail, offline."
       }
     }
   },
@@ -1769,14 +1787,8 @@
     "duration": {
       "label": "Numero di giorni",
       "daysWithRest": "{total} g in totale (di cui {rest} riposo)",
-      "splitNote": "Più giorni = le giornate più dure vengono divise in due, la peggiore per prima. Il riposo non cambia la durezza di una giornata.",
-      "splitExhausted": "Tutte le giornate sono già divise al minimo: il cursore non alleggerirà più il verdetto.",
-      "difficulty": {
-        "comfortable": "Comodo",
-        "standard": "Standard",
-        "sporty": "Sportivo",
-        "demanding": "Molto impegnativo"
-      },
+      "splitNote": "Più giorni = giorni di RIPOSO. Il riposo non cambia la durezza di una giornata di cammino, e il verdetto segue la giornata più dura.",
+      "splitExhausted": "Ogni tappa ha già la sua giornata: un giorno in più aggiungerà solo riposo, e il riposo non cambierà il verdetto.",
       "daysTotal": "{count} g in totale"
     },
     "stats": {
@@ -1847,8 +1859,7 @@
       "close": "Capito!"
     },
     "splitBlocked": {
-      "single": "Impossibile dividere: questa giornata non ha nulla da tagliare.",
-      "portion": "Impossibile dividere: questa tappa è già divisa in due.",
+      "single": "Impossibile dividere: questa giornata porta una sola tappa, non c'è nulla da separare.",
       "locked": "Giorno già percorso: non è più modificabile"
     },
     "reorderBlocked": "Trek avviato: l'ordine delle tappe non cambia più",
@@ -2218,6 +2229,9 @@
     "sexUnspecified": "Non specificato",
     "fieldCountry": "Paese",
     "countryUnspecified": "Non specificato",
+    "countryPickerTitle": "Scegli un paese",
+    "countrySearchHint": "Cerca un paese",
+    "countryNoResult": "Nessun paese corrisponde",
     "hintCountry": "Codice (es. FR)",
     "consentTitle": "Dati corporei (GDPR articolo 9)",
     "consentBody": "Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.",

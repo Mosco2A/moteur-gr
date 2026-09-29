@@ -68,6 +68,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 	@override late final _Translations$catalog$de catalog = _Translations$catalog$de._(_root);
+	@override late final _Translations$demo$de demo = _Translations$demo$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
 	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
@@ -850,6 +851,23 @@ class _Translations$catalog$de extends Translations$catalog$fr {
 	@override String get staleNoticeOffline => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.';
 }
 
+// Path: demo
+class _Translations$demo$de extends Translations$demo$fr {
+	_Translations$demo$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get bandeau => 'DEMO-MODUS';
+	@override String get quitter => 'Beenden';
+	@override String get boutonTitre => 'Demo ausprobieren';
+	@override String get boutonSous => 'Die ganze App von A bis Z, ganz unverbindlich';
+	@override String get rienNeCompte => 'Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.';
+	@override String get simulerEtape => 'Nächste Etappe simulieren';
+	@override String get simulerFin => 'Ankunft simulieren';
+	@override String get simulerRelancer => 'Demo neu starten';
+}
+
 // Path: updates
 class _Translations$updates$de extends Translations$updates$fr {
 	_Translations$updates$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -964,6 +982,7 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeUnknownPrice => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.';
+	@override String get buyOutcomeDemo => 'Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.';
 	@override String subscriptionPrice({required Object price}) => '${price} pro Monat';
 	@override String get subscriptionAllowanceForLife => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.';
 	@override String get cancelCta => 'Abo beenden';
@@ -1681,6 +1700,9 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Keine Angabe';
 	@override String get fieldCountry => 'Land';
 	@override String get countryUnspecified => 'Keine Angabe';
+	@override String get countryPickerTitle => 'Land auswählen';
+	@override String get countrySearchHint => 'Land suchen';
+	@override String get countryNoResult => 'Kein Land gefunden';
 	@override String get hintCountry => 'Code (z. B. FR)';
 	@override String get consentTitle => 'Körperdaten (DSGVO Artikel 9)';
 	@override String get consentBody => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
@@ -1950,13 +1972,13 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get tipsSub => 'Unsere Trekking-Tipps';
 	@override String get townGuides => 'Ortsführer';
 	@override String get townGuidesSub => 'Praktische Infos zu den Etappen';
-	@override String get recap => 'Zusammenfassung';
+	@override String get recap => 'Rückblick';
 	@override String get recapSub => 'Ihr Abenteuer in Kürze';
 	@override String get importGpx => 'GPX-Import';
 	@override String get importGpxSub => 'Einen GPS-Track importieren';
 	@override String get diploma => 'Diplom';
 	@override String get diplomaSub => 'Ihre Abschlussurkunde';
-	@override String get resume => 'Zusammenfassung';
+	@override String get resume => 'Übersicht';
 	@override String get resumeSub => 'Planübersicht';
 	@override String get shop => 'Verpflegung';
 	@override String get shopSub => 'Lebensmittel, Apotheken, Gas';
@@ -2476,6 +2498,13 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Machbarkeit für diese Tour';
+	@override String get answerTitle => 'Schaffen Sie das?';
+	@override String answerGreen({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.';
+	@override String answerOrange({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.';
+	@override String get answerRed => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
+	@override String answerNoRest({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.';
+	@override String get explainToggle => 'Wie dieses Ergebnis berechnet wird';
 	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})';
 	@override String get stagesTitle => 'Tag für Tag';
@@ -3189,9 +3218,8 @@ class _Translations$programme$duration$de extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Anzahl der Tage';
 	@override String get daysWithRest => '{total} T insgesamt (davon {rest} Ruhe)';
-	@override String get splitNote => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.';
-	@override String get splitExhausted => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.';
-	@override late final _Translations$programme$duration$difficulty$de difficulty = _Translations$programme$duration$difficulty$de._(_root);
+	@override String get splitNote => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.';
+	@override String get splitExhausted => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.';
 	@override String get daysTotal => '{count} T insgesamt';
 }
 
@@ -3297,8 +3325,7 @@ class _Translations$programme$splitBlocked$de extends Translations$programme$spl
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.';
-	@override String get portion => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.';
+	@override String get single => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.';
 	@override String get locked => 'Tag bereits gelaufen: nicht mehr änderbar';
 }
 
@@ -3969,7 +3996,7 @@ class _Translations$packs$types$nord$de extends Translations$packs$types$nord$fr
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Nord';
+	@override String nom({required Object trail}) => '${trail} — Nord';
 	@override String get description => 'Die nördliche Hälfte des Wegs, offline.';
 }
 
@@ -3980,7 +4007,7 @@ class _Translations$packs$types$sud$de extends Translations$packs$types$sud$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Süd';
+	@override String nom({required Object trail}) => '${trail} — Süd';
 	@override String get description => 'Die südliche Hälfte des Wegs, offline.';
 }
 
@@ -3991,7 +4018,7 @@ class _Translations$packs$types$complet$de extends Translations$packs$types$comp
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Komplett';
+	@override String nom({required Object trail}) => '${trail} — Komplett';
 	@override String get description => 'Der ganze Weg, offline.';
 }
 
@@ -4002,21 +4029,8 @@ class _Translations$packs$types$mam$de extends Translations$packs$types$mam$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare';
-	@override String get description => 'Der Mare-a-Mare-Weg, offline.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$de extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Gemütlich';
-	@override String get standard => 'Standard';
-	@override String get sporty => 'Sportlich';
-	@override String get demanding => 'Sehr anspruchsvoll';
+	@override String nom({required Object trail}) => '${trail}';
+	@override String description({required Object trail}) => 'Der ganze Weg ${trail}, offline.';
 }
 
 // Path: programme.info.days
@@ -4275,13 +4289,13 @@ extension on TranslationsDe {
 			'hub.cards.tipsSub' => 'Unsere Trekking-Tipps',
 			'hub.cards.townGuides' => 'Ortsführer',
 			'hub.cards.townGuidesSub' => 'Praktische Infos zu den Etappen',
-			'hub.cards.recap' => 'Zusammenfassung',
+			'hub.cards.recap' => 'Rückblick',
 			'hub.cards.recapSub' => 'Ihr Abenteuer in Kürze',
 			'hub.cards.importGpx' => 'GPX-Import',
 			'hub.cards.importGpxSub' => 'Einen GPS-Track importieren',
 			'hub.cards.diploma' => 'Diplom',
 			'hub.cards.diplomaSub' => 'Ihre Abschlussurkunde',
-			'hub.cards.resume' => 'Zusammenfassung',
+			'hub.cards.resume' => 'Übersicht',
 			'hub.cards.resumeSub' => 'Planübersicht',
 			'hub.cards.shop' => 'Verpflegung',
 			'hub.cards.shopSub' => 'Lebensmittel, Apotheken, Gas',
@@ -4933,6 +4947,13 @@ extension on TranslationsDe {
 			'feasibility.gaps.fitness' => 'Form beim 6-Minuten-Test unzureichend',
 			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung',
 			'feasibility.formula.title' => 'Machbarkeit für diese Tour',
+			'feasibility.formula.answerTitle' => 'Schaffen Sie das?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.',
+			'feasibility.formula.answerRed' => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.',
+			'feasibility.formula.explainToggle' => 'Wie dieses Ergebnis berechnet wird',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})',
 			'feasibility.formula.stagesTitle' => 'Tag für Tag',
@@ -5086,6 +5107,14 @@ extension on TranslationsDe {
 			'catalog.loadFailedSubtitle' => 'Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.',
 			'catalog.loadFailedRetry' => 'Erneut versuchen',
 			'catalog.staleNoticeOffline' => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.',
+			'demo.bandeau' => 'DEMO-MODUS',
+			'demo.quitter' => 'Beenden',
+			'demo.boutonTitre' => 'Demo ausprobieren',
+			'demo.boutonSous' => 'Die ganze App von A bis Z, ganz unverbindlich',
+			'demo.rienNeCompte' => 'Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.',
+			'demo.simulerEtape' => 'Nächste Etappe simulieren',
+			'demo.simulerFin' => 'Ankunft simulieren',
+			'demo.simulerRelancer' => 'Demo neu starten',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5151,12 +5180,15 @@ extension on TranslationsDe {
 			'monetization.subscriptionInactive' => 'Kein aktives Abo',
 			'monetization.subscriptionAllowancePending' => 'Die Höhe des Guthabens steht noch nicht fest.',
 			'monetization.realizationLockedTitle' => 'Diese Wanderung ist nicht freigeschaltet',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.',
 			'monetization.buyOutcomeOwned' => 'Wanderung freigeschaltet. Gute Tour!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
+			'monetization.buyOutcomeDemo' => 'Sie sind im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.',
 			'monetization.cancelCta' => 'Abo beenden',
@@ -5166,8 +5198,6 @@ extension on TranslationsDe {
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
 			'signalement.types.eauASec' => 'Trockene Wasserstelle',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Gefahr',
 			'signalement.latencyBanner' => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.',
 			'signalement.confirm' => 'Meldung bestätigen',
@@ -5366,14 +5396,14 @@ extension on TranslationsDe {
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Paket ${nom}, ${state}',
 			'packs.a11y.downloadButton' => ({required Object nom}) => 'Paket ${nom} herunterladen',
 			'packs.a11y.deleteButton' => ({required Object nom}) => 'Paket ${nom} löschen',
-			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Nord',
 			'packs.types.nord.description' => 'Die nördliche Hälfte des Wegs, offline.',
-			'packs.types.sud.nom' => 'Mare a Mare Süd',
+			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Süd',
 			'packs.types.sud.description' => 'Die südliche Hälfte des Wegs, offline.',
-			'packs.types.complet.nom' => 'Mare a Mare Komplett',
+			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Komplett',
 			'packs.types.complet.description' => 'Der ganze Weg, offline.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'Der Mare-a-Mare-Weg, offline.',
+			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
+			'packs.types.mam.description' => ({required Object trail}) => 'Der ganze Weg ${trail}, offline.',
 			'guides.title' => 'Ortsführer',
 			'guides.subtitle' => 'Praktische Infos zu Städten und Dörfern, offline verfügbar.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} praktische Rubriken',
@@ -5619,12 +5649,8 @@ extension on TranslationsDe {
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
 			'programme.duration.daysWithRest' => '{total} T insgesamt (davon {rest} Ruhe)',
-			'programme.duration.splitNote' => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.',
-			'programme.duration.splitExhausted' => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.',
-			'programme.duration.difficulty.comfortable' => 'Gemütlich',
-			'programme.duration.difficulty.standard' => 'Standard',
-			'programme.duration.difficulty.sporty' => 'Sportlich',
-			'programme.duration.difficulty.demanding' => 'Sehr anspruchsvoll',
+			'programme.duration.splitNote' => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.',
+			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
 			'programme.duration.daysTotal' => '{count} T insgesamt',
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
@@ -5668,9 +5694,10 @@ extension on TranslationsDe {
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => 'Verstanden!',
-			'programme.splitBlocked.single' => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.',
-			'programme.splitBlocked.portion' => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.',
+			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.reorderBlocked' => 'Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr',
 			'programme.inTrek.title' => 'Route anpassen',
@@ -5680,8 +5707,6 @@ extension on TranslationsDe {
 			'programme.inTrek.doneBadge' => 'Erledigt',
 			'programme.inTrek.lockedDay' => 'Tag bereits gelaufen, gesperrt',
 			'programme.inTrek.allDone' => 'Du hast alle Tage gelaufen: es gibt nichts mehr anzupassen.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.notStarted' => 'Dieser Bildschirm ist für unterwegs: starte deine Tour, um den weiteren Verlauf anzupassen.',
 			'programme.inTrek.validate' => 'Änderungen speichern',
 			'programme.inTrek.saved' => 'Programm aktualisiert',
@@ -5951,6 +5976,9 @@ extension on TranslationsDe {
 			'hikerProfile.sexUnspecified' => 'Keine Angabe',
 			'hikerProfile.fieldCountry' => 'Land',
 			'hikerProfile.countryUnspecified' => 'Keine Angabe',
+			'hikerProfile.countryPickerTitle' => 'Land auswählen',
+			'hikerProfile.countrySearchHint' => 'Land suchen',
+			'hikerProfile.countryNoResult' => 'Kein Land gefunden',
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
 			'hikerProfile.consentBody' => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',

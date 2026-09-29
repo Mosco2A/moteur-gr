@@ -66,12 +66,12 @@ import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 // ---------------------------------------------------------------------------
 
 HikerLevel _levelFromName(String name) => switch (name) {
-      'beginner' => HikerLevel.beginner,
-      'intermediate' => HikerLevel.intermediate,
-      'confirmed' => HikerLevel.confirmed,
-      'expert' => HikerLevel.expert,
-      _ => throw ArgumentError('niveau inconnu: $name'),
-    };
+  'beginner' => HikerLevel.beginner,
+  'intermediate' => HikerLevel.intermediate,
+  'confirmed' => HikerLevel.confirmed,
+  'expert' => HikerLevel.expert,
+  _ => throw ArgumentError('niveau inconnu: $name'),
+};
 
 /// Les etapes d'un jeu, en [StageModel] — le type que le moteur de repartition
 /// consomme reellement (le conseil doit etre calcule sur ce qu'on lui donnera).
@@ -99,13 +99,18 @@ List<StageModel> _stageModelsOf(Map<String, dynamic> jeu, String trailId) {
 DurationBounds _boundsOf(List<StageModel> stages) {
   final energies = [
     for (final s in stages)
-      FeasibilityScale.v2
-          .energyOf(distanceKm: s.distanceKm, elevationGainM: s.elevationGainM),
+      FeasibilityScale.v2.energyOf(
+        distanceKm: s.distanceKm,
+        elevationGainM: s.elevationGainM,
+      ),
   ];
-  final rest =
-      FeasibilityFormula.recommendedRestAfterStageIndex(energies).length;
-  return DurationBounds.fromStageCount(stages.length,
-      recommendedRestDays: rest);
+  final rest = FeasibilityFormula.recommendedRestAfterStageIndex(
+    energies,
+  ).length;
+  return DurationBounds.fromStageCount(
+    stages.length,
+    recommendedRestDays: rest,
+  );
 }
 
 void main() {
@@ -115,8 +120,11 @@ void main() {
 
   setUpAll(() {
     final f = File('integration_test/campagne_v2/matrice_96.json');
-    expect(f.existsSync(), isTrue,
-        reason: 'matrice de campagne introuvable : ${f.absolute.path}');
+    expect(
+      f.existsSync(),
+      isTrue,
+      reason: 'matrice de campagne introuvable : ${f.absolute.path}',
+    );
     final matrice = jsonDecode(f.readAsStringSync()) as Map<String, dynamic>;
     jeux = matrice['jeuxEtapes'] as Map<String, dynamic>;
     personas = matrice['personas'] as Map<String, dynamic>;
@@ -130,9 +138,11 @@ void main() {
     HikerLevel level,
     double floor,
     TrekConditions conditions,
-  }) cas(Map<String, dynamic> cellule) {
+  })
+  cas(Map<String, dynamic> cellule) {
     final jeu = jeux[cellule['jeu'] as String] as Map<String, dynamic>;
-    final persona = personas[cellule['profil'] as String] as Map<String, dynamic>;
+    final persona =
+        personas[cellule['profil'] as String] as Map<String, dynamic>;
     final stages = _stageModelsOf(jeu, cellule['jeu'] as String);
     return (
       stages: stages,
@@ -158,8 +168,7 @@ void main() {
     required double floor,
     required TrekConditions conditions,
   }) {
-    final plan = PlanningCalculator.distribute(stages, totalDays,
-        maxRestDays: bounds.restAllowance);
+    final plan = PlanningCalculator.distribute(stages, totalDays);
     final program = FeasibilityProgram.fromDayPlans(plan);
     return FeasibilityFormula.evaluate(
       stages: program.dayEfforts,
@@ -173,61 +182,73 @@ void main() {
 
   group('R1 — L INVARIANTE : la valeur conseillee n est JAMAIS rouge', () {
     test(
-        'sur les 96 cellules (4 sentiers x 6 personas x 4 rangs), le verdict a '
-        'la valeur conseillee est vert ou orange', () {
-      final fautes = <String>[];
-      for (final cellule in cellules) {
-        final c = cas(cellule);
-        final conseil = ProgramPlanSearch.firstNonRed(
-          stages: c.stages,
-          level: c.level,
-          demonstratedFloorEnergyKm: c.floor,
-          conditions: c.conditions,
-          bounds: c.bounds,
-        );
-        if (conseil == null) continue; // couvert par le test suivant.
-        final reel = verdictA(
-          conseil.totalDays,
-          stages: c.stages,
-          bounds: c.bounds,
-          level: c.level,
-          floor: c.floor,
-          conditions: c.conditions,
-        );
-        if (reel == FeasibilityVerdict.red) {
-          fautes.add('${cellule['id']} : conseil ${conseil.totalDays} j '
+      'sur les 96 cellules (4 sentiers x 6 personas x 4 rangs), le verdict a '
+      'la valeur conseillee est vert ou orange',
+      () {
+        final fautes = <String>[];
+        for (final cellule in cellules) {
+          final c = cas(cellule);
+          final conseil = ProgramPlanSearch.planDuSentier(
+            stages: c.stages,
+            level: c.level,
+            demonstratedFloorEnergyKm: c.floor,
+            conditions: c.conditions,
+            bounds: c.bounds,
+            joursDeReposConseilles: c.bounds.restAllowance,
+          );
+          if (conseil == null) continue; // couvert par le test suivant.
+          final reel = verdictA(
+            conseil.totalDays,
+            stages: c.stages,
+            bounds: c.bounds,
+            level: c.level,
+            floor: c.floor,
+            conditions: c.conditions,
+          );
+          if (reel == FeasibilityVerdict.red) {
+            fautes.add(
+              '${cellule['id']} : conseil ${conseil.totalDays} j '
               '(${conseil.walkingDays} marche + ${conseil.restDays} repos) '
-              '-> verdict ROUGE');
+              '-> verdict ROUGE',
+            );
+          }
+          // Le conseil ANNONCE aussi son verdict : il doit etre celui que
+          // l'ecran affichera, sinon le conseil se contredirait lui-meme.
+          if (conseil.verdict != reel) {
+            fautes.add(
+              '${cellule['id']} : le conseil annonce ${conseil.verdict} '
+              'et l ecran affichera $reel',
+            );
+          }
         }
-        // Le conseil ANNONCE aussi son verdict : il doit etre celui que
-        // l'ecran affichera, sinon le conseil se contredirait lui-meme.
-        if (conseil.verdict != reel) {
-          fautes.add('${cellule['id']} : le conseil annonce ${conseil.verdict} '
-              'et l ecran affichera $reel');
-        }
-      }
-      expect(fautes, isEmpty,
-          reason: 'l application conseille une valeur qu elle declare '
-              'mauvaise :\n${fautes.join('\n')}');
-    });
+        expect(
+          fautes,
+          isEmpty,
+          reason:
+              'l application conseille une valeur qu elle declare '
+              'mauvaise :\n${fautes.join('\n')}',
+        );
+      },
+    );
 
-    test(
-        'quand AUCUNE valeur n est conseillee, c est que TOUTES les valeurs du '
+    test('quand AUCUNE valeur n est conseillee, c est que TOUTES les valeurs du '
         'curseur sont rouges', () {
-      // LES 96 CELLULES, PLUS UN SENTIER QUI BLOQUE. Les quatre jeux de la
-      // matrice ont tous une solution, meme pour un debutant sans rien de
-      // demontre : leur pire etape coupee en deux repasse sous le plafond. Le
-      // cas « rien ne marche » n'y est donc pas — et sans lui ce test ne
-      // prouverait rien. On y ajoute le sentier d'une etape indivisible :
-      // 40 km et 3 000 m de D+, dont chaque moitie (20 km, 1 500 m, soit 55,7
-      // km-energie) depasse encore le plafond d'un debutant (25,14).
-      final jeux = <String, ({
-        List<StageModel> stages,
-        DurationBounds bounds,
-        HikerLevel level,
-        double floor,
-        TrekConditions conditions,
-      })>{};
+      // LES 96 CELLULES, PLUS UN SENTIER QUI BLOQUE. Le cas « rien ne marche »
+      // doit etre exerce, sans quoi ce test ne prouverait rien. On ajoute donc
+      // le sentier d'une seule etape de 40 km et 3 000 m de D+ (111 km-energie)
+      // qui depasse de loin le plafond d'un debutant (25,14) — et qu'aucune
+      // duree ne peut plus alleger depuis que le decoupage est retire.
+      final jeux =
+          <
+            String,
+            ({
+              List<StageModel> stages,
+              DurationBounds bounds,
+              HikerLevel level,
+              double floor,
+              TrekConditions conditions,
+            })
+          >{};
       for (final cellule in cellules) {
         jeux[cellule['id'] as String] = cas(cellule);
       }
@@ -256,12 +277,13 @@ void main() {
       var sansSolution = 0;
       for (final entree in jeux.entries) {
         final c = entree.value;
-        final conseil = ProgramPlanSearch.firstNonRed(
+        final conseil = ProgramPlanSearch.planDuSentier(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
           conditions: c.conditions,
           bounds: c.bounds,
+          joursDeReposConseilles: c.bounds.restAllowance,
         );
         if (conseil != null) continue;
         sansSolution++;
@@ -274,29 +296,56 @@ void main() {
             floor: c.floor,
             conditions: c.conditions,
           );
-          expect(v, FeasibilityVerdict.red,
-              reason: '${entree.key} : aucune valeur conseillee alors que '
-                  '$d jours donne $v — on a tu une solution qui existe');
+          expect(
+            v,
+            FeasibilityVerdict.red,
+            reason:
+                '${entree.key} : aucune valeur conseillee alors que '
+                '$d jours donne $v — on a tu une solution qui existe',
+          );
         }
       }
-      expect(sansSolution, greaterThan(0),
-          reason: 'le cas « l etape bloque » n est pas exerce : ce test ne '
-              'prouve alors rien');
+      expect(
+        sansSolution,
+        greaterThan(0),
+        reason:
+            'le cas « l etape bloque » n est pas exerce : ce test ne '
+            'prouve alors rien',
+      );
     });
 
-    test('le conseil est le PLUS PETIT total qui ne soit pas rouge', () {
+    test('le conseil est LE PLAN DU SENTIER : une etape par journee', () {
       for (final cellule in cellules) {
         final c = cas(cellule);
-        final conseil = ProgramPlanSearch.firstNonRed(
+        final conseil = ProgramPlanSearch.planDuSentier(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
           conditions: c.conditions,
           bounds: c.bounds,
+          joursDeReposConseilles: c.bounds.restAllowance,
         );
         if (conseil == null) continue;
+        // TACHE 634 (DEM-260929-1132). Ce test verrouillait « le PLUS PETIT
+        // total non rouge ». C'est cette regle qui proposait 4 jours pour les
+        // 7 etapes du Mare a Mare Centre — la borne basse du curseur — en
+        // regroupant les etapes deux par deux, puis qualifiait le resultat
+        // d'exigeant. Christophe : « c'est completement con !!! ». Le moteur
+        // propose desormais le plan du sentier tel qu'il est dans les donnees.
+        expect(
+          conseil.walkingDays,
+          c.stages.length,
+          reason:
+              '${cellule['id']} : une etape doit occuper une journee, '
+              'ni regroupee ni coupee',
+        );
+        expect(conseil.restDays, conseil.totalDays - c.stages.length);
+        // ET AUCUN TOTAL PLUS GRAND NE FERAIT MIEUX : au-dessus du plan du
+        // sentier on n'ajoute que du repos, et le repos ne touche pas la pire
+        // journee — donc pas le verdict (GO-61). C'est ce qui rend le plan du
+        // sentier optimal sans avoir a le chercher.
         for (final d in c.bounds.options) {
-          if (d >= conseil.totalDays) break;
+          if (d <= conseil.totalDays) continue;
           final v = verdictA(
             d,
             stages: c.stages,
@@ -305,10 +354,14 @@ void main() {
             floor: c.floor,
             conditions: c.conditions,
           );
-          expect(v, FeasibilityVerdict.red,
-              reason: '${cellule['id']} : $d jours donne $v et le conseil est '
-                  'a ${conseil.totalDays} — on fait marcher le randonneur '
-                  '${conseil.totalDays - d} jour(s) de plus que necessaire');
+          expect(
+            v,
+            conseil.verdict,
+            reason:
+                '${cellule['id']} : $d jours donne $v alors que le plan '
+                'du sentier donne ${conseil.verdict} — un jour de repos a '
+                'change le verdict, ce qui est impossible',
+          );
         }
       }
     });
@@ -316,59 +369,78 @@ void main() {
     test('le conseil tient dans les bornes du curseur : il est APPLICABLE', () {
       for (final cellule in cellules) {
         final c = cas(cellule);
-        final conseil = ProgramPlanSearch.firstNonRed(
+        final conseil = ProgramPlanSearch.planDuSentier(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
           conditions: c.conditions,
           bounds: c.bounds,
+          joursDeReposConseilles: c.bounds.restAllowance,
         );
         if (conseil == null) continue;
-        expect(conseil.totalDays, greaterThanOrEqualTo(c.bounds.min),
-            reason: '${cellule['id']} : conseil sous la borne basse');
-        expect(conseil.totalDays, lessThanOrEqualTo(c.bounds.max),
-            reason: '${cellule['id']} : conseil au-dessus de la borne haute');
-        expect(conseil.walkingDays + conseil.restDays, conseil.totalDays,
-            reason: '${cellule['id']} : les trois nombres ne s additionnent pas');
+        expect(
+          conseil.totalDays,
+          greaterThanOrEqualTo(c.bounds.min),
+          reason: '${cellule['id']} : conseil sous la borne basse',
+        );
+        expect(
+          conseil.totalDays,
+          lessThanOrEqualTo(c.bounds.max),
+          reason: '${cellule['id']} : conseil au-dessus de la borne haute',
+        );
+        expect(
+          conseil.walkingDays + conseil.restDays,
+          conseil.totalDays,
+          reason: '${cellule['id']} : les trois nombres ne s additionnent pas',
+        );
       }
     });
   });
 
   group('R1 — le moteur porte le conseil, l ecran ne le recalcule pas', () {
-    /// Un sentier dont UNE etape est hors de portee quoi qu on fasse : meme
-    /// coupee en deux, chaque moitie depasse le plafond d un debutant.
+    /// Un sentier dont UNE etape est hors de portee quoi qu on fasse : aucune
+    /// duree ne l allege, puisqu'une journee de repos ne change rien a une
+    /// journee de marche.
     List<StageModel> sentierBloquant() => const [
-          StageModel(
-            trailId: 'bloquant',
-            stageNumber: 1,
-            name: 'Mur',
-            distanceKm: 40,
-            elevationGainM: 3000,
-            elevationLossM: 0,
-            startLat: 42,
-            startLng: 9,
-            endLat: 42.1,
-            endLng: 9.1,
-          ),
-        ];
+      StageModel(
+        trailId: 'bloquant',
+        stageNumber: 1,
+        name: 'Mur',
+        distanceKm: 40,
+        elevationGainM: 3000,
+        elevationLossM: 0,
+        startLat: 42,
+        startLng: 9,
+        endLat: 42.1,
+        endLng: 9.1,
+      ),
+    ];
 
     test('conseil viable -> l evaluation porte les trois nombres', () {
-      final stages = _stageModelsOf(
-          jeux['J1'] as Map<String, dynamic>, 'J1');
+      // TACHE 634 : le profil de ce test passe de DEBUTANT a INTERMEDIAIRE, et
+      // c'est une consequence assumee du retrait du decoupage. Pour un
+      // debutant, la pire etape de ce sentier depasse le plafond ; le seul
+      // levier qui pouvait encore l'alleger etait de la couper en deux, ce que
+      // Christophe a refuse. La reponse honnete devient donc « aucune duree
+      // conseillee » — elle est verrouillee par le test suivant, sur le sentier
+      // bloquant. Ici on exerce le cas ou un conseil EXISTE.
+      final stages = _stageModelsOf(jeux['J1'] as Map<String, dynamic>, 'J1');
       final bounds = _boundsOf(stages);
-      final conseil = ProgramPlanSearch.firstNonRed(
+      final conseil = ProgramPlanSearch.planDuSentier(
         stages: stages,
-        level: HikerLevel.beginner,
+        level: HikerLevel.intermediate,
         conditions: const TrekConditions(maxAltitudeM: 1050, season: 'summer'),
         bounds: bounds,
+        joursDeReposConseilles: bounds.restAllowance,
       );
       expect(conseil, isNotNull);
-      final plan = PlanningCalculator.distribute(stages, conseil!.totalDays,
-          maxRestDays: bounds.restAllowance);
+      // LE PLAN DU SENTIER, ET RIEN D'AUTRE : 7 etapes = 7 journees de marche.
+      expect(conseil!.walkingDays, stages.length);
+      final plan = PlanningCalculator.distribute(stages, conseil.totalDays);
       final program = FeasibilityProgram.fromDayPlans(plan);
       final a = FeasibilityFormula.evaluate(
         stages: program.dayEfforts,
-        level: HikerLevel.beginner,
+        level: HikerLevel.intermediate,
         restAfterStageIndex: program.restAfterDayIndex,
         conditions: const TrekConditions(maxAltitudeM: 1050, season: 'summer'),
         maxWalkingDays: program.maxWalkingDays,
@@ -381,20 +453,22 @@ void main() {
       expect(a.globalVerdict, isNot(FeasibilityVerdict.red));
     });
 
-    test(
-        'AUCUN conseil possible -> aucune duree conseillee, et l etape qui '
+    test('AUCUN conseil possible -> aucune duree conseillee, et l etape qui '
         'bloque est NOMMEE', () {
       final stages = sentierBloquant();
       final bounds = _boundsOf(stages);
-      final conseil = ProgramPlanSearch.firstNonRed(
+      final conseil = ProgramPlanSearch.planDuSentier(
         stages: stages,
         level: HikerLevel.beginner,
         bounds: bounds,
+        joursDeReposConseilles: bounds.restAllowance,
       );
-      expect(conseil, isNull,
-          reason: 'une etape de 40 km et 3 000 m D+ ne passe pas, meme coupee');
-      final plan = PlanningCalculator.distribute(stages, bounds.min,
-          maxRestDays: bounds.restAllowance);
+      expect(
+        conseil,
+        isNull,
+        reason: 'une etape de 40 km et 3 000 m D+ ne passe pas',
+      );
+      final plan = PlanningCalculator.distribute(stages, bounds.min);
       final program = FeasibilityProgram.fromDayPlans(plan);
       final a = FeasibilityFormula.evaluate(
         stages: program.dayEfforts,
@@ -403,16 +477,24 @@ void main() {
         maxWalkingDays: program.maxWalkingDays,
         durationAdvice: ProgramDurationAdvice.impossible,
       );
-      expect(a.isDurationAdvised, isFalse,
-          reason: 'mieux vaut avouer qu il n y a pas de solution de programme '
-              'que d en pointer une fausse');
+      expect(
+        a.isDurationAdvised,
+        isFalse,
+        reason:
+            'mieux vaut avouer qu il n y a pas de solution de programme '
+            'que d en pointer une fausse',
+      );
       final cles = a.advice.map((x) => x.key).toList();
       expect(cles, contains('noViableDuration'));
       expect(cles, isNot(contains('optimalDays')));
       expect(cles, isNot(contains('optimalDaysNoChoice')));
-      expect(cles, contains('training'),
-          reason: 'l entrainement est la vraie reponse quand le programme n en '
-              'a pas');
+      expect(
+        cles,
+        contains('training'),
+        reason:
+            'l entrainement est la vraie reponse quand le programme n en '
+            'a pas',
+      );
       final franc = a.advice.firstWhere((x) => x.key == 'noViableDuration');
       expect(franc.params['stage'], a.hardestStageIndex + 1);
     });
@@ -428,38 +510,60 @@ void main() {
         level: HikerLevel.intermediate,
       );
       final cles = r.advice.map((a) => a.key).toList();
-      expect(cles, isNot(contains('split')),
-          reason: 'une etape se termine la ou il y a un toit : couper a '
-              'mi-distance envoie quelqu un dormir dans un ravin');
+      expect(
+        cles,
+        isNot(contains('split')),
+        reason:
+            'une etape se termine la ou il y a un toit : couper a '
+            'mi-distance envoie quelqu un dormir dans un ravin',
+      );
       expect(cles, isNot(contains('splitImpossible')));
       expect(cles, contains('hardStageAlert'));
       final alerte = r.advice.firstWhere((a) => a.key == 'hardStageAlert');
       expect(alerte.params['stage'], r.hardestStageIndex + 1);
-      expect(cles, contains('training'),
-          reason: 's entrainer eleve le plafond, donc fait passer la journee');
+      expect(
+        cles,
+        contains('training'),
+        reason: 's entrainer eleve le plafond, donc fait passer la journee',
+      );
     });
 
-    test('le MECANISME de decoupage reste en place (il n est pas conseille)',
-        () {
-      // La borne a 2N du lot G et [splitStage] sont conserves : Chris l a
-      // tranche. Ce qui disparait, c est le CONSEIL, pas l outil.
-      expect(PlanningCalculator.maxDaysPerStage, 2);
-      expect(PlanningCalculator.maxWalkingDaysFor(7), 14);
-      const stage = StageModel(
-        trailId: 't',
-        stageNumber: 1,
-        name: 'A',
-        distanceKm: 20,
-        elevationGainM: 1000,
-        elevationLossM: 400,
-        startLat: 42,
-        startLng: 9,
-        endLat: 43,
-        endLng: 10,
-      );
-      final parts = PlanningCalculator.splitStage(stage);
-      expect(parts.length, 2);
-      expect(parts[0].distanceKm + parts[1].distanceKm, closeTo(20, 1e-9));
+    test('le MECANISME de decoupage n existe PLUS (tache 634)', () {
+      // CE TEST EST RETOURNE. Il verrouillait « le mecanisme reste en place,
+      // seul le CONSEIL disparait » — c'etait l'arbitrage du lot 569. Le lot
+      // 634 va au bout : Christophe a refuse l'outil lui-meme, verbatim
+      // « Decouper les etapes en deux est une mauvaise idee... il n'y a pas de
+      // refuge et surtout JE N AI JAMAIS DEMANDE CA ».
+      //
+      // On verifie par le COMPORTEMENT, seule preuve qui vaille : aucune duree,
+      // si grande soit-elle, ne peut plus produire plus de journees de MARCHE
+      // qu'il n'y a d'etapes.
+      final stages = _stageModelsOf(jeux['J1'] as Map<String, dynamic>, 'J1');
+      final bounds = _boundsOf(stages);
+      for (final total in [
+        ...bounds.options,
+        bounds.max + 10,
+        stages.length * 3,
+      ]) {
+        final plan = PlanningCalculator.distribute(stages, total);
+        final marche = plan
+            .where((d) => !d.isRestDay && d.stages.isNotEmpty)
+            .length;
+        expect(
+          marche,
+          lessThanOrEqualTo(stages.length),
+          reason:
+              '$total jours produisent $marche journees de marche pour '
+              '${stages.length} etapes : une etape a ete coupee',
+        );
+        // Et aucun nom de journee ne porte la marque d'une portion.
+        for (final jour in plan) {
+          for (final etape in jour.stages) {
+            expect(etape.name, isNot(contains('(1/2)')));
+            expect(etape.name, isNot(contains('(2/2)')));
+          }
+        }
+      }
     });
   });
 }

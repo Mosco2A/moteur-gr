@@ -7,6 +7,7 @@ import '../../trail/providers/stages_provider.dart';
 import '../data/journal_repository.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
+import '../../../core/services/session_demo.dart';
 
 // ---------------------------------------------------------------------------
 // Providers Riverpod 3 pour le journal de trek (E3.1c)
@@ -132,6 +133,9 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
     required int stageNumber,
     required String content,
   }) async {
+    // DEMO : rien ne s'ecrit (tache 634, DEM-260929-1123). Christophe :
+    // « ON EST EN MODE DEMO » = rien ne compte, « rien en base ».
+    if (ref.read(enDemoProvider)) return;
     await _repo.addNote(
       trailId: _trailId,
       stageNumber: stageNumber,
@@ -162,6 +166,10 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
     );
     if (!saved.isSuccess) return saved.error ?? PhotoError.ioError;
 
+    // DEMO : la photo est prise et montree, mais AUCUNE ligne de journal
+    // n'atteint la base (tache 634, DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return null;
+
     await _repo.addPhotoNote(
       trailId: _trailId,
       stageNumber: stageNumber,
@@ -175,12 +183,18 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
 
   /// Met a jour le texte d'une entree existante.
   Future<void> updateNote(int entryId, String content) async {
+    // DEMO : rien ne s'ecrit (tache 634, DEM-260929-1123). Christophe :
+    // « ON EST EN MODE DEMO » = rien ne compte, « rien en base ».
+    if (ref.read(enDemoProvider)) return;
     await _repo.updateNote(entryId, content);
     await _loadEntries();
   }
 
   /// Supprime une entree par son identifiant.
   Future<void> deleteEntry(int entryId) async {
+    // DEMO : rien ne s'ecrit (tache 634, DEM-260929-1123). Christophe :
+    // « ON EST EN MODE DEMO » = rien ne compte, « rien en base ».
+    if (ref.read(enDemoProvider)) return;
     await _repo.deleteEntry(entryId);
     await _loadEntries();
   }
@@ -207,8 +221,8 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
 /// ```
 final journalScreenProvider =
     NotifierProvider<JournalScreenNotifier, JournalScreenState>(
-  JournalScreenNotifier.new,
-);
+      JournalScreenNotifier.new,
+    );
 
 /// Nombre d'etapes REELLES du sentier, pour le selecteur d'etape du journal
 /// (R10, LOT L10).
@@ -224,10 +238,9 @@ final journalScreenProvider =
 /// jamais rendre un menu deroulant vide (un `DropdownButtonFormField` sans item
 /// mais avec une valeur initiale leve une assertion Flutter).
 final journalStageCountProvider = Provider.family<int, String>((ref, trailId) {
-  final loaded = ref.watch(stagesProvider(trailId)).maybeWhen(
-        data: (stages) => stages.length,
-        orElse: () => 0,
-      );
+  final loaded = ref
+      .watch(stagesProvider(trailId))
+      .maybeWhen(data: (stages) => stages.length, orElse: () => 0);
   if (loaded > 0) return loaded;
   final declared = ref.watch(trailConfigProvider.select((c) => c.totalStages));
   return declared > 0 ? declared : 1;

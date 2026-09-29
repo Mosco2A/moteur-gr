@@ -47,8 +47,7 @@ class TrekFeasibilityScreen extends ConsumerStatefulWidget {
       _TrekFeasibilityScreenState();
 }
 
-class _TrekFeasibilityScreenState
-    extends ConsumerState<TrekFeasibilityScreen> {
+class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
   /// « Recommencer » : l'utilisateur veut re-repondre au parcours guide alors
   /// que ses criteres sont deja complets. Le bouton « Valider » du parcours le
   /// ramene au verdict. Ce drapeau ne permet JAMAIS de contourner la regle : un
@@ -189,8 +188,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
               value: progress,
               minHeight: 8,
               backgroundColor: theme.colorScheme.onSurface.withAlpha(30),
-              valueColor:
-                  AlwaysStoppedAnimation(theme.colorScheme.primary),
+              valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -303,8 +301,9 @@ class _MissingCriteriaNotice extends StatelessWidget {
               Expanded(
                 child: Text(
                   f.missingTitle,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -318,8 +317,7 @@ class _MissingCriteriaNotice extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const StepIcon(StepwaysIcons.radio,
-                      size: 14, color: color),
+                  const StepIcon(StepwaysIcons.radio, size: 14, color: color),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(item, style: theme.textTheme.bodyMedium),
@@ -386,8 +384,10 @@ class _FlowStepCard extends StatelessWidget {
                 ? StepIcon(StepwaysIcons.coche, color: accent, size: 20)
                 : Text(
                     '$step',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(color: accent, fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: accent,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
           ),
           const SizedBox(width: AppTheme.spacingBase),
@@ -402,8 +402,9 @@ class _FlowStepCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         title,
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     if (optional) ...[
@@ -452,100 +453,60 @@ class _VerdictView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(f.formula.intro, style: theme.textTheme.bodyMedium),
+          // LA REPONSE D'ABORD (tache 634, DEM-260929-1134). Retour de
+          // Christophe du 29/09 11:34 : « Il y a trop d'explication confuse, ce
+          // n'est pas fluide la faisabilite ». Ce que le randonneur vient
+          // chercher, c'est SI il peut le faire et EN COMBIEN DE JOURS — pas
+          // comment le moteur a calcule. Voir [_LaReponse].
+          _LaReponse(assessment: assessment),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Rappel si le verdict s'appuie sur un profil encore partiel : on
-          // invite a completer (le resultat reste affiche — R2d).
+          // invite a completer (le resultat reste affiche — R2d). RESTE
+          // VISIBLE : ce n'est pas une explication, c'est une reserve sur la
+          // reponse elle-meme.
           if (!hasProfile) ...[
             _PartialProfileNotice(),
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
-          // LE CONSEIL AVANT LE VERDICT (retour Chris 4, #100417) : combien de
-          // jours viser, combien de repos poser et ou, ou decouper — PUIS le
-          // feu. Voir [_AdviceFirst] pour le pourquoi.
-          _AdviceFirst(assessment: assessment, trailId: trailId),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // HIVER : LE VERDICT EST DECLARE NON VALIDE (#1-e, #8-d). Place AVANT
-          // le feu — une declaration de non-validite lue apres le verdict
-          // qu'elle annule arrive trop tard.
+          // HIVER : LE VERDICT EST DECLARE NON VALIDE (#1-e, #8-d). RESTE
+          // VISIBLE pour la meme raison : une declaration de non-validite qui
+          // se replierait sous un volet annulerait un verdict que personne
+          // n'aurait lu.
           if (!assessment.isVerdictValid) ...[
             const _WinterInvalidNotice(),
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
-          // Verdict global (feu tricolore).
-          _VerdictBadge(verdict: assessment.globalVerdict),
-          const SizedBox(height: AppTheme.spacingSm),
-          Center(
-            child: Text(
-              f.formula.ceilingLabel(
-                value: _fmt(assessment.dailyCapacityEnergyKm),
-                level: _levelLabel(assessment.level),
-              ),
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurface.withAlpha(150),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-
-          // LE CALCUL, LA OU LE VERDICT TOMBE (tache 569, R3). Colle sous le
-          // feu : c'est la que la question se pose.
-          _VerdictHowSection(assessment: assessment),
-          const SizedBox(height: AppTheme.spacingBase),
-
-          // CE QUE LE FEU NE REGARDE PAS : PLUS AUCUNE MENTION (tache 552).
-          // La mention « le poids de ton sac n'entre pas dans ce feu, de 0 a
-          // 45 kg de charge le verdict ne bouge pas d'un cran » est RETIREE.
-          // Elle expliquait une absence SANS RIEN CHANGER au resultat affiche :
-          // c'est le resultat d'un test de sensibilite interne, pas une
-          // information de randonneur. Regle posee avec Chris le 25/09 : on se
-          // tait sur ce qu'on n'a pas, on parle de ce que ca change — une
-          // absence qui MODIFIE un resultat reste a l'ecran (c'est le cas du
-          // bandeau hiver, place plus haut par la tache 551, qui invalide le
-          // verdict), une simple information absente disparait. Le poids du sac
-          // continue de vivre la ou il sert : dans le Sac (sac conseille +
-          // alerte descente).
-          //
-          // ARBITRAGE D'INTEGRATION (tache 557). Ici les taches 551 et 552 se
-          // croisaient : 551 remontait le bandeau hiver AVANT le feu et gardait
-          // `_OutOfScopeNotice`, 552 supprimait ce widget et sa cle i18n dans
-          // les cinq langues. On garde les deux intentions non contradictoires :
-          // le bandeau hiver reste a sa nouvelle place (plus haut, voir
-          // `_AdviceFirst`), et la mention hors-perimetre reste supprimee —
-          // c'est la decision de Chris du 25/09, et son widget comme sa cle
-          // n'existent plus.
-
-          // Synthese du verdict global : journee la plus dure, facteur
-          // limitant, reco entrainement.
-          _GlobalSummary(assessment: assessment),
+          // LE CONSEIL (retour Chris 4, #100417) : combien de jours viser,
+          // combien de repos poser et ou, et le bouton qui applique.
+          _AdviceFirst(assessment: assessment, trailId: trailId),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // SCORE DE CIRCUIT (#2-m a #2-t) + explication OBLIGATOIRE quand le
-          // circuit est plus severe que toutes ses etapes (#2-s).
-          _CircuitSection(assessment: assessment),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // CE QUI EST ENTRE DANS CE VERDICT, ET CE QUI N'Y EST PAS ENTRE —
-          // AVEC LA RAISON (#8-b). Une dimension neutre faute de DONNEE n'a
-          // pas le meme statut qu'une dimension neutre faute de SOURCE.
-          _ConditionsSection(assessment: assessment),
-          const SizedBox(height: AppTheme.spacingLg),
-
-          // Feu tricolore etape par etape.
+          // Feu tricolore etape par etape : concret, et c'est ce qui dit QUELLE
+          // journee coince. Reste a l'ecran.
           Text(f.formula.stagesTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingSm),
           ...assessment.stageVerdicts.map((v) => _StageTile(verdict: v)),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // Les conseils, le bouton « Generer mon programme » et la ligne du
-          // decoupage retenu ne sont PLUS ici : ils ouvrent l'ecran
-          // ([_AdviceFirst]), avant le verdict — retour Chris 4 du 25/09.
+          // TOUT LE CALCUL SOUS UN SEUL VOLET, REPLIE (tache 634, DEM-1134).
+          //
+          // CE QUI ETAIT IMPOSE AVANT. L'ecran empilait, sans qu'aucun geste ne
+          // puisse les ecarter : un paragraphe d'introduction, la ligne du
+          // plafond, les cinq lignes du detail de calcul, jusqu'a trois lignes
+          // de synthese, deux a treize lignes de score de circuit, et quatre a
+          // six puces de conditions — avant meme la liste des journees. Mesure
+          // faite sur le fichier : AUCUN `ExpansionTile`, aucun repli, aucun
+          // `showDialog`. Tout etait a lire, toujours.
+          //
+          // CE QUI CHANGE. Rien n'est supprime — les explications restent
+          // DISPONIBLES, entieres, dans l'ordre. Elles ne sont simplement plus
+          // IMPOSEES : un seul volet, ferme au depart, qu'on ouvre si on veut
+          // savoir comment le moteur a conclu.
+          _VoletDuCalcul(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingLg),
 
           // Pont « es-tu pret ? » -> « voila comment le devenir » : prepa
           // physique (payant), porte d'entree definie par la spec.
@@ -569,6 +530,161 @@ class _VerdictView extends ConsumerWidget {
 
           // Acces rapides pour completer / affiner le profil objectif.
           _ProfileShortcuts(trailId: trailId, complete: hasProfile),
+        ],
+      ),
+    );
+  }
+}
+
+/// LA REPONSE, EN TETE ET EN UNE PHRASE (tache 634, DEM-260929-1134).
+///
+/// Retour de Christophe du 29/09 11:34, verbatim : « Il y a trop d'explication
+/// confuse, ce n'est pas fluide la faisabilite ».
+///
+/// CE BLOC REPOND AUX DEUX QUESTIONS QU'ON VIENT POSER, DANS CET ORDRE :
+/// est-ce faisable pour moi, et en combien de jours. Le feu tricolore, la
+/// phrase, et le rappel que le nombre de jours annonce est LE DECOUPAGE DU
+/// SENTIER — pas un plan invente par l'application (DEM-260929-1132).
+///
+/// Le plafond en km-energie, le detail du calcul, le score de circuit et les
+/// conditions ne sont pas ici : ce sont des explications, et elles vivent
+/// desormais sous un volet qu'on ouvre ([_VoletDuCalcul]).
+class _LaReponse extends StatelessWidget {
+  const _LaReponse({required this.assessment});
+
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    final jours = assessment.suggestedTotalDays;
+    final conseille = assessment.isDurationAdvised;
+    final rouge = assessment.globalVerdict == FeasibilityVerdict.red;
+
+    // La phrase suit le VERDICT, la seule base de calcul de l'ecran. Un verdict
+    // vert ou orange sans duree conseillee ne peut pas annoncer de nombre de
+    // jours : on retombe alors sur la formulation sans chiffre.
+    final String phrase;
+    if (rouge || !conseille) {
+      phrase = f.answerRed;
+    } else if (assessment.globalVerdict == FeasibilityVerdict.orange) {
+      phrase = f.answerOrange(days: jours);
+    } else {
+      phrase = f.answerGreen(days: jours);
+    }
+
+    return Column(
+      key: const ValueKey('feasibility-answer'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(f.answerTitle, style: theme.textTheme.titleMedium),
+        const SizedBox(height: AppTheme.spacingSm),
+        _VerdictBadge(verdict: assessment.globalVerdict),
+        const SizedBox(height: AppTheme.spacingSm),
+        Text(
+          phrase,
+          key: const ValueKey('feasibility-answer-sentence'),
+          style: theme.textTheme.bodyLarge,
+          textAlign: TextAlign.center,
+        ),
+        // D'OU VIENT LE NOMBRE DE JOURS. Le dire ici ferme la porte au reproche
+        // de Christophe sur le plan a 4 jours : l'application annonce le
+        // decoupage du sentier, elle n'en propose pas un autre.
+        if (conseille && !rouge) ...[
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            assessment.suggestedRestDays > 0
+                ? f.answerDaysNote(
+                    walking: assessment.suggestedDays,
+                    rest: assessment.suggestedRestDays,
+                  )
+                : f.answerNoRest(walking: assessment.suggestedDays),
+            key: const ValueKey('feasibility-answer-days-note'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(150),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// LE VOLET DES EXPLICATIONS (tache 634, DEM-260929-1134).
+///
+/// Il porte, DANS LEUR ORDRE D'ORIGINE et sans rien perdre, tout ce que l'ecran
+/// imposait avant la reponse : l'introduction, le plafond conseille, le detail
+/// du calcul du verdict, la synthese, le score de circuit et la liste de ce qui
+/// est entre — ou non — dans le verdict.
+///
+/// FERME AU DEPART, ET C'EST LE POINT. « Les explications doivent etre
+/// disponibles, jamais imposees. »
+class _VoletDuCalcul extends StatelessWidget {
+  const _VoletDuCalcul({required this.assessment});
+
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        key: const ValueKey('feasibility-explain-toggle'),
+        initiallyExpanded: false,
+        leading: StepIcon(StepwaysIcons.info, color: theme.colorScheme.primary),
+        title: Text(f.explainToggle, style: theme.textTheme.titleSmall),
+        childrenPadding: const EdgeInsets.fromLTRB(
+          AppTheme.spacingBase,
+          0,
+          AppTheme.spacingBase,
+          AppTheme.spacingBase,
+        ),
+        expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(f.intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // Le plafond : c'est une explication du verdict, pas le verdict.
+          Text(
+            f.ceilingLabel(
+              value: _fmt(assessment.dailyCapacityEnergyKm),
+              level: _levelLabel(assessment.level),
+            ),
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: theme.colorScheme.onSurface.withAlpha(150),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // LE CALCUL, LA OU LE VERDICT TOMBE (tache 569, R3).
+          _VerdictHowSection(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // Synthese du verdict global : journee la plus dure, facteur
+          // limitant, reco entrainement.
+          _GlobalSummary(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // SCORE DE CIRCUIT (#2-m a #2-t) + explication OBLIGATOIRE quand le
+          // circuit est plus severe que toutes ses etapes (#2-s).
+          _CircuitSection(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // CE QUI EST ENTRE DANS CE VERDICT, ET CE QUI N'Y EST PAS ENTRE —
+          // AVEC LA RAISON (#8-b). Une dimension neutre faute de DONNEE n'a pas
+          // le meme statut qu'une dimension neutre faute de SOURCE.
+          //
+          // CE QUE LE FEU NE REGARDE PAS : PLUS AUCUNE MENTION (tache 552). La
+          // mention « le poids de ton sac n'entre pas dans ce feu » est RETIREE
+          // depuis cette tache-la, et elle le reste : on se tait sur ce qu'on
+          // n'a pas, on parle de ce que ca change.
+          _ConditionsSection(assessment: assessment),
         ],
       ),
     );
@@ -662,7 +778,8 @@ class _RetainedPlanLine extends ConsumerWidget {
     // pendant que le programme en pose une autre serait un troisieme chiffre
     // qui ment.
     final fallback = ref.watch(
-        defaultDurationWithRestProvider(ref.watch(trailIdProvider)));
+      defaultDurationWithRestProvider(ref.watch(trailIdProvider)),
+    );
     final retainedPlan = retained != null;
     final color = retainedPlan
         ? AppTheme.vertFacile
@@ -789,8 +906,9 @@ class _WinterInvalidNotice extends StatelessWidget {
           Expanded(
             child: Text(
               t.feasibility.formula.winterInvalid,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -914,26 +1032,30 @@ class _CircuitSection extends StatelessWidget {
     // LE SCORE NE S'AFFICHE PLUS JAMAIS NU (tache 569, R3). Chris : « score 1,30
     // sans echelle ca ne veut rien dire ». Il porte desormais ses deux seuils,
     // au meme endroit et dans la meme phrase.
-    lines.add(Text(
-      f.circuitScore(
-        value: _fmt2(circuit.score),
-        green: _fmt2(FeasibilityThresholds.median.green),
-        orange: _fmt2(FeasibilityThresholds.median.orange),
+    lines.add(
+      Text(
+        f.circuitScore(
+          value: _fmt2(circuit.score),
+          green: _fmt2(FeasibilityThresholds.median.green),
+          orange: _fmt2(FeasibilityThresholds.median.orange),
+        ),
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
       ),
-      style: theme.textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w700,
-        color: color,
-      ),
-    ));
+    );
     lines.add(const SizedBox(height: AppTheme.spacingXs));
     // CE QUI DECIDE, DIT EN CLAIR. Le verdict du circuit est celui de sa pire
     // journee, et rien d'autre ne peut le durcir : la phrase le dit, pour que
     // le randonneur sache ou regarder quand il veut le faire bouger.
-    lines.add(Text(
-      f.circuitIsWorstStage,
-      key: const ValueKey('feasibility-circuit-is-worst-stage'),
-      style: theme.textTheme.bodySmall,
-    ));
+    lines.add(
+      Text(
+        f.circuitIsWorstStage,
+        key: const ValueKey('feasibility-circuit-is-worst-stage'),
+        style: theme.textTheme.bodySmall,
+      ),
+    );
 
     // --- CE QUI S'AFFICHE ET NE DECIDE PAS ---------------------------------
     final infoStyle = theme.textTheme.bodySmall?.copyWith(
@@ -950,40 +1072,49 @@ class _CircuitSection extends StatelessWidget {
     // CONSEIL : combien de jours de repos, et apres quelles etapes.
     lines.add(const SizedBox(height: AppTheme.spacingSm));
     if (!circuit.isRestApplicable) {
-      lines.add(Text(
-        f.restNotApplicable,
-        key: const ValueKey('feasibility-rest-not-applicable'),
-        style: theme.textTheme.bodySmall,
-      ));
+      lines.add(
+        Text(
+          f.restNotApplicable,
+          key: const ValueKey('feasibility-rest-not-applicable'),
+          style: theme.textTheme.bodySmall,
+        ),
+      );
     } else {
-      lines.add(Text(
-        circuit.monotonyCoversWholeTrek
-            ? f.restWindowWhole(days: circuit.totalDays)
-            : f.restWindowSlice(
-                start: circuit.monotonyWindowStartDay ?? 1,
-                end: circuit.monotonyWindowEndDay ?? circuit.totalDays,
-              ),
-        style: theme.textTheme.bodySmall,
-      ));
+      lines.add(
+        Text(
+          circuit.monotonyCoversWholeTrek
+              ? f.restWindowWhole(days: circuit.totalDays)
+              : f.restWindowSlice(
+                  start: circuit.monotonyWindowStartDay ?? 1,
+                  end: circuit.monotonyWindowEndDay ?? circuit.totalDays,
+                ),
+          style: theme.textTheme.bodySmall,
+        ),
+      );
       // LE LIEN ENTRE LE PROGRAMME ET CE CHIFFRE, ECRIT. Sans cette ligne, le
       // randonneur ne voit pas que c'est SON decoupage qui le produit, ni que
       // changer le decoupage le fait bouger.
       lines.add(const SizedBox(height: 2));
-      lines.add(Text(
-        assessment.restDaysPlanned > 0
-            ? f.restDaysCounted(count: assessment.restDaysPlanned)
-            : f.restDaysNone,
-        key: const ValueKey('feasibility-rest-days-counted'),
-        style: theme.textTheme.bodySmall,
-      ));
+      lines.add(
+        Text(
+          assessment.restDaysPlanned > 0
+              ? f.restDaysCounted(count: assessment.restDaysPlanned)
+              : f.restDaysNone,
+          key: const ValueKey('feasibility-rest-days-counted'),
+          style: theme.textTheme.bodySmall,
+        ),
+      );
       if (assessment.isRestAdvised) {
         lines.add(const SizedBox(height: 2));
-        lines.add(Text(
-          f.restAdvisedLine(days: assessment.recommendedRestDays),
-          key: const ValueKey('feasibility-rest-advised'),
-          style: theme.textTheme.bodySmall
-              ?.copyWith(fontWeight: FontWeight.w600),
-        ));
+        lines.add(
+          Text(
+            f.restAdvisedLine(days: assessment.recommendedRestDays),
+            key: const ValueKey('feasibility-rest-advised'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
         lines.add(const SizedBox(height: 2));
         lines.add(Text(f.restTwoDays, style: theme.textTheme.bodySmall));
       }
@@ -1002,14 +1133,16 @@ class _CircuitSection extends StatelessWidget {
     // dure » de « dur tous les jours ».
     if (circuit.averageLoad.isFinite) {
       lines.add(const SizedBox(height: AppTheme.spacingSm));
-      lines.add(Text(
-        f.averageLoad(
-          value: _fmt2(circuit.averageLoad),
-          worst: _fmt2(circuit.worstStage),
+      lines.add(
+        Text(
+          f.averageLoad(
+            value: _fmt2(circuit.averageLoad),
+            worst: _fmt2(circuit.worstStage),
+          ),
+          key: const ValueKey('feasibility-average-load'),
+          style: theme.textTheme.bodySmall,
         ),
-        key: const ValueKey('feasibility-average-load'),
-        style: theme.textTheme.bodySmall,
-      ));
+      );
       lines.add(const SizedBox(height: 2));
       lines.add(Text(f.averageLoadInfo, style: infoStyle));
     }
@@ -1018,10 +1151,9 @@ class _CircuitSection extends StatelessWidget {
     final habit = circuit.habitGap;
     if (habit != null && habit.isFinite) {
       lines.add(const SizedBox(height: AppTheme.spacingSm));
-      lines.add(Text(
-        f.habitGap(value: _fmt2(habit)),
-        style: theme.textTheme.bodySmall,
-      ));
+      lines.add(
+        Text(f.habitGap(value: _fmt2(habit)), style: theme.textTheme.bodySmall),
+      );
       lines.add(const SizedBox(height: 2));
       lines.add(Text(f.habitGapNotDecisive, style: infoStyle));
     }
@@ -1032,14 +1164,16 @@ class _CircuitSection extends StatelessWidget {
     // n'invente rien — on dit le fait et le randonneur juge.
     if (assessment.hasDurationStatement) {
       lines.add(const SizedBox(height: AppTheme.spacingSm));
-      lines.add(Text(
-        f.durationStatement(
-          days: assessment.walkingDays,
-          done: assessment.longestConsecutiveDaysDone,
+      lines.add(
+        Text(
+          f.durationStatement(
+            days: assessment.walkingDays,
+            done: assessment.longestConsecutiveDaysDone,
+          ),
+          key: const ValueKey('feasibility-duration-statement'),
+          style: theme.textTheme.bodySmall,
         ),
-        key: const ValueKey('feasibility-duration-statement'),
-        style: theme.textTheme.bodySmall,
-      ));
+      );
       lines.add(const SizedBox(height: 2));
       lines.add(Text(f.durationStatementInfo, style: infoStyle));
     }
@@ -1086,9 +1220,9 @@ class _ConditionsSection extends StatelessWidget {
 
     // 2. Le plancher demontre, quand il a REELLEMENT releve la capacite.
     if (assessment.isDemonstratedFloorActive) {
-      lines.add(f.floorActive(
-        value: _fmt(assessment.demonstratedFloorEnergyKm),
-      ));
+      lines.add(
+        f.floorActive(value: _fmt(assessment.demonstratedFloorEnergyKm)),
+      );
     }
 
     // 3. L'altitude : appliquee, sous le seuil, ou absente de la trace.
@@ -1101,10 +1235,12 @@ class _ConditionsSection extends StatelessWidget {
         lines.add(f.altitudeBelowThreshold(value: altitude!.round()));
         break;
       default:
-        lines.add(f.altitudeApplied(
-          value: (altitude ?? 0).round(),
-          pct: _fmt((1 - conditions.altitudeFactor) * 100),
-        ));
+        lines.add(
+          f.altitudeApplied(
+            value: (altitude ?? 0).round(),
+            pct: _fmt((1 - conditions.altitudeFactor) * 100),
+          ),
+        );
     }
 
     // 4. La saison : ete chiffre, printemps/automne sans source, ou pas de
@@ -1159,9 +1295,11 @@ class _ConditionsSection extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: StepIcon(StepwaysIcons.pastille,
-                          size: 6,
-                          color: theme.colorScheme.onSurface.withAlpha(120)),
+                      child: StepIcon(
+                        StepwaysIcons.pastille,
+                        size: 6,
+                        color: theme.colorScheme.onSurface.withAlpha(120),
+                      ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
                     Expanded(
@@ -1222,12 +1360,14 @@ class _GlobalSummary extends StatelessWidget {
     final hardest = assessment.hardestStage;
     if (hardest != null &&
         assessment.globalVerdict != FeasibilityVerdict.green) {
-      lines.add(_summaryLine(
-        theme,
-        StepwaysIcons.denivelePlus,
-        f.hardestStage(stage: hardest.stage.name),
-        color,
-      ));
+      lines.add(
+        _summaryLine(
+          theme,
+          StepwaysIcons.denivelePlus,
+          f.hardestStage(stage: hardest.stage.name),
+          color,
+        ),
+      );
     }
 
     // LE JARGON « X JOUR(S) AU-DESSUS DE TON PLAFOND » EST PARTI (retour Chris
@@ -1241,22 +1381,26 @@ class _GlobalSummary extends StatelessWidget {
 
     // Facteur limitant nomme (si present).
     if (assessment.limitingFactor != LimitingFactor.none) {
-      lines.add(_summaryLine(
-        theme,
-        StepwaysIcons.danger,
-        f.limitingLabel(factor: _limitingLabel(assessment.limitingFactor)),
-        color,
-      ));
+      lines.add(
+        _summaryLine(
+          theme,
+          StepwaysIcons.danger,
+          f.limitingLabel(factor: _limitingLabel(assessment.limitingFactor)),
+          color,
+        ),
+      );
     }
 
     // Reco entrainement (si non-vert).
     if (assessment.recommendedTrainingWeeks > 0) {
-      lines.add(_summaryLine(
-        theme,
-        StepwaysIcons.calendrier,
-        f.trainingReco(weeks: assessment.recommendedTrainingWeeks),
-        theme.colorScheme.primary,
-      ));
+      lines.add(
+        _summaryLine(
+          theme,
+          StepwaysIcons.calendrier,
+          f.trainingReco(weeks: assessment.recommendedTrainingWeeks),
+          theme.colorScheme.primary,
+        ),
+      );
     }
 
     // Plus une ligne a dire (verdict vert, aucun facteur limitant, aucune reco)
@@ -1278,8 +1422,7 @@ class _GlobalSummary extends StatelessWidget {
     );
   }
 
-  Widget _summaryLine(
-      ThemeData theme, String icon, String text, Color color) {
+  Widget _summaryLine(ThemeData theme, String icon, String text, Color color) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1363,8 +1506,9 @@ class _StageTile extends StatelessWidget {
               children: [
                 Text(
                   s.name,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -1400,8 +1544,10 @@ class _StageTile extends StatelessWidget {
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             _verdictLabel(verdict.verdict),
-            style: theme.textTheme.labelMedium
-                ?.copyWith(color: color, fontWeight: FontWeight.bold),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -1422,8 +1568,11 @@ class _AdviceTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StepIcon(StepwaysIcons.ficheConseil,
-              color: theme.colorScheme.primary, size: 20),
+          StepIcon(
+            StepwaysIcons.ficheConseil,
+            color: theme.colorScheme.primary,
+            size: 20,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(_adviceText(advice), style: theme.textTheme.bodyMedium),
@@ -1484,9 +1633,7 @@ class _ShortcutCard extends StatelessWidget {
         children: [
           StepIcon(icon, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingBase),
-          Expanded(
-            child: Text(label, style: theme.textTheme.titleSmall),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.titleSmall)),
           const StepIcon(StepwaysIcons.chevronDroite),
         ],
       ),

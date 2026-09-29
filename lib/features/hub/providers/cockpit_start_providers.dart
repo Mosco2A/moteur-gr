@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../../safety/providers/health_prepare_providers.dart';
 import '../../trek/providers/gps_providers.dart';
+import '../../../core/services/session_demo.dart';
 
 /// Providers du DÉMARRAGE RÉEL du trek depuis le cockpit (StepWays LOT 3, Q1).
 ///
@@ -90,7 +91,9 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (!ref.mounted) return;
-    final stored = _decode(prefs.getStringList('$_prefix$_trailId') ?? const []);
+    final stored = _decode(
+      prefs.getStringList('$_prefix$_trailId') ?? const [],
+    );
     state = {...state, ...stored};
   }
 
@@ -106,6 +109,13 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
   /// redémarrage de l'application.
   Future<void> markSeen(PrepCoreStep step) async {
     if (state.contains(step)) return;
+    // DEMO : l'etat reste EN MEMOIRE, rien ne part sur le disque (tache 634).
+    // La porte s'ouvre donc normalement pendant la demonstration, et le
+    // randonneur retrouve sa vraie preparation intacte en sortant.
+    if (ref.read(enDemoProvider)) {
+      state = {...state, step};
+      return;
+    }
     // Réactivité immédiate : l'UI ne doit pas attendre l'écriture disque.
     state = {...state, step};
     final prefs = await SharedPreferences.getInstance();
@@ -124,10 +134,12 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
 }
 
 /// Étapes cœur faites pour un sentier donné (persisté). Famille par `trailId`.
-final prepareCoreStepsProvider = NotifierProvider.family<
-    PrepareCoreStepsNotifier, Set<PrepCoreStep>, String>(
-  PrepareCoreStepsNotifier.new,
-);
+final prepareCoreStepsProvider =
+    NotifierProvider.family<
+      PrepareCoreStepsNotifier,
+      Set<PrepCoreStep>,
+      String
+    >(PrepareCoreStepsNotifier.new);
 
 /// « Préparer terminé » (Q1, §12.1) : Itinéraire ET Date ET Programme, PLUS la
 /// FICHE MÉDICALE depuis la décision de Chris du 26/09 (tâche 568, LOT Q).

@@ -1,6 +1,5 @@
 import '../../../core/models/stage.dart';
 import '../../../core/models/stage_duration.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
 import '../models/day_plan.dart';
 
 /// Calculateur de planning : répartit N étapes sur D jours.
@@ -9,152 +8,55 @@ import '../models/day_plan.dart';
 /// en se basant sur un score de difficulté par étape
 /// (distance + dénivelé positif / 100).
 ///
-/// TACHE 558 — LE CURSEUR DOIT POUVOIR ALLEGER LE VERDICT.
+/// TACHE 634 — LE DECOUPAGE D'ETAPE EST RETIRE (DEM-260929-1327).
 ///
-/// CE QUI N'ALLAIT PAS, mot pour mot (Chris, 25/09) : « si je passe a 20 jours
-/// en mettant des jours de repos ca reste rouge ». Ce n'etait pas un bug de
-/// calcul, c'etait une impasse mathematique. Depuis GO-61, le verdict du
-/// circuit vaut C1 = LA PIRE JOURNEE ET ELLE SEULE. Or au-dela de N jours pour
-/// N etapes, [distribute] ne savait qu'AJOUTER DU REPOS : les memes etapes
-/// restaient seules sur leur journee, donc la pire journee ne bougeait pas d'un
-/// gramme, donc le rouge ne pouvait pas partir. Pousser le curseur ne servait a
-/// rien, et rien ne le disait.
+/// CE QUI A ETE RETIRE, ET POURQUOI. La tache 558 (25/09) avait ajoute ici un
+/// mecanisme qui COUPAIT une etape en deux demi-journees quand le randonneur
+/// poussait le curseur de duree : `maxDaysPerStage`, `splitStage`,
+/// `_splitHeaviestFirst`, et une borne haute de curseur a deux journees par
+/// etape. Christophe l'a refuse le 29/09, verbatim : « Decouper les etapes en
+/// deux est une mauvaise idee... il n'y a pas de refuge et surtout JE N AI
+/// JAMAIS DEMANDE CA ».
 ///
-/// CE QUI CHANGE : au-dela du repos CONSEILLE, un jour de plus ne devient plus
-/// un jour de repos mais un DECOUPAGE — la journee la plus lourde est coupee en
-/// deux demi-journees, en commencant par la PIRE, puisque c'est elle et elle
-/// seule qui fixe le verdict. Le randonneur pousse le curseur, la pire journee
-/// s'allege, la couleur bouge : la boucle est enfin fermee.
+/// LES DEUX GRIEFS SONT FONDES, ET MESURES.
+///  1. C'ETAIT DANGEREUX. Le point de coupe etait une INTERPOLATION LINEAIRE
+///     entre le depart et l'arrivee de l'etape — pas un lieu releve, pas un
+///     hebergement verifie. Sur le Mare a Mare comme sur le GR20, les etapes
+///     sont calees sur les refuges. Couper une etape proposait donc au
+///     randonneur de s'arreter la ou il n'y a ni refuge, ni eau, ni abri, et le
+///     lot 558 le savait : il l'avait ecrit noir sur blanc dans ce qu'il
+///     laissait ouvert (« le point de coupe n'est pas un lieu releve »).
+///  2. PERSONNE NE L'AVAIT DEMANDE. Recherche faite en base avant de retirer :
+///     AUCUNE decision de Christophe ne soutient le decoupage. Trois traces
+///     disent le contraire, dont DEUX ANTERIEURES au lot 558 — #100549 du 26/09
+///     10:02, verbatim « decoupe la journee 1 en 2 === comment on fait???? pas
+///     une solution » ; #100649 du 26/09 17:51, verbatim « couper une journer
+///     c est dormir ou? » ; #100812 du 29/09, le present retour. Le lot 558
+///     avait lui-meme note que Christophe « ne l'a jamais vu a l'ecran : a lui
+///     faire valider ». Il l'a vu, il a repondu non.
 ///
-/// LA COUPE SE FAIT A MI-ENERGIE, PAS A MI-DISTANCE. L'unite du moteur est
-/// l'energie (1 km de plat = 42 m de D+, [FeasibilityScale.v2]) : couper a
-/// mi-distance laisserait une moitie deux fois plus dure que l'autre des que le
-/// denivele est mal reparti, et la pire journee — celle qui fixe le verdict —
-/// ne baisserait pas de moitie. Les deux portions portent donc chacune la
-/// moitie de la distance ET la moitie du D+, ce qui vaut, par linearite de
-/// l'energie, exactement la moitie de l'energie de l'etape.
+/// CE QUI RESTE. Le REGROUPEMENT (moins de jours que d'etapes) est intact : il
+/// reunit des etapes existantes sur une journee, il n'invente aucun point
+/// d'arret. Et le surplus de jours redevient ce qu'il a toujours du etre : du
+/// REPOS.
 ///
-/// CE QUE CE MODELE NE PRETEND PAS : dire OU s'arreter. Les chiffres d'une
-/// portion sont une estimation d'effort ; le point de passage est une
-/// interpolation sur le segment depart -> arrivee, PAS un lieu releve ni un
-/// hebergement verifie. Couper une etape suppose qu'on puisse s'arreter a
-/// mi-parcours — l'ecran le DIT, il ne le laisse pas deviner (cf.
-/// `t.programme.duration.splitNote`). Poser la coupe sur un hebergement reel du
-/// trace demanderait une donnee que le socle sentier ne porte pas encore.
+/// CE QUE CE RETRAIT COUTE, ET IL FAUT LE DIRE. Le curseur de duree ne peut
+/// plus alleger le verdict — parce que le verdict vaut C1, la pire journee et
+/// elle seule (GO-61), et que le repos ne change rien a une journee de marche.
+/// C'etait le probleme que le lot 558 cherchait a resoudre. La reponse honnete
+/// n'est pas de couper l'etape : c'est de DIRE que cette etape-la depasse le
+/// plafond du randonneur. L'ecran de faisabilite le dit deja
+/// (`hardStageAlert`).
 class PlanningCalculator {
   const PlanningCalculator._();
-
-  /// Nombre MAXIMAL de journees qu'une etape peut occuper (tache 558).
-  ///
-  /// Deux : une etape se coupe en deux demi-journees, jamais davantage. Au-dela
-  /// on ne decrirait plus une journee de marche mais des fragments d'itineraire
-  /// sans point d'arret plausible — et la moitie d'une etape est deja la plus
-  /// petite unite que la donnee du sentier permette d'estimer honnetement.
-  static const int maxDaysPerStage = 2;
-
-  /// Marque d'une demi-journee dans le nom affiche (tache 558).
-  ///
-  /// Volontairement un SIGNE et non un mot — meme regle que le tiret d'attente
-  /// de la carte : il ne demande aucune traduction et se lit dans les cinq
-  /// langues. `Sermano -> Corte (1/2)` puis `(2/2)`.
-  static String splitSuffix(int part, int count) => ' ($part/$count)';
-
-  /// Nombre maximal de JOURS DE MARCHE atteignable pour [stageCount] etapes.
-  static int maxWalkingDaysFor(int stageCount) =>
-      stageCount <= 0 ? 0 : stageCount * maxDaysPerStage;
 
   /// Calcule le score de difficulté d'une étape (répartition greedy).
   ///
   /// Formule historique : distanceKm + elevationGainM / 100. Elle sert au
   /// REGROUPEMENT d'étapes, dont elle équilibre les paquets ; elle n'est PAS
-  /// l'unité du verdict. Pour choisir quelle journée couper, c'est
-  /// [stageEnergyKm] qui fait foi.
+  /// l'unité du verdict — c'est le score de REGROUPEMENT, rien d'autre.
   static double stageScore(StageModel stage) {
     return stage.distanceKm + stage.elevationGainM / 100.0;
-  }
-
-  /// ENERGIE d'une etape, dans l'unite du VERDICT ([FeasibilityScale.v2] :
-  /// 1 km de plat = 42 m de D+).
-  ///
-  /// C'est cette grandeur, et aucune autre, qui ordonne les journees quand il
-  /// faut decider laquelle couper : le verdict du circuit vaut la PIRE journee
-  /// et elle seule (GO-61), donc couper une journee choisie sur une autre
-  /// echelle reviendrait a couper la mauvaise et a ne rien changer au verdict.
-  static double stageEnergyKm(StageModel stage) =>
-      FeasibilityScale.v2.energyOf(
-        distanceKm: stage.distanceKm,
-        elevationGainM: stage.elevationGainM,
-      );
-
-  /// Coupe une etape en [maxDaysPerStage] portions de MEME ENERGIE.
-  ///
-  /// Chaque portion porte sa fraction de distance, de D+, de D− et de duree —
-  /// donc, par linearite de l'energie, exactement sa fraction d'energie. Les
-  /// entiers sont repartis sans perte : la derniere portion prend le reste, de
-  /// sorte que la somme des portions redonne EXACTEMENT l'etape d'origine
-  /// (aucun metre de denivele ne disparait dans un arrondi).
-  ///
-  /// Le numero d'etape est CONSERVE sur les deux portions : ce sont deux
-  /// moments de la meme etape, et tout ce qui identifie une etape ailleurs dans
-  /// l'application (journal, carte, verrou « deja marchee ») continue de la
-  /// retrouver. Le point de passage est interpole sur le segment depart ->
-  /// arrivee : c'est un repere, pas un lieu releve.
-  static List<StageModel> splitStage(StageModel stage, {int parts = 2}) {
-    if (parts < 2) return [stage];
-    final result = <StageModel>[];
-    var distanceLeft = stage.distanceKm;
-    var gainLeft = stage.elevationGainM;
-    var lossLeft = stage.elevationLossM;
-    final providedMinutes = stage.estimatedDurationMinutes;
-    var minutesLeft = providedMinutes;
-    var fromLat = stage.startLat;
-    var fromLng = stage.startLng;
-
-    for (var i = 0; i < parts; i++) {
-      final remaining = parts - i;
-      final last = remaining == 1;
-      final distance = last ? distanceLeft : stage.distanceKm / parts;
-      final gain = last ? gainLeft : (stage.elevationGainM / parts).floor();
-      final loss = last ? lossLeft : (stage.elevationLossM / parts).floor();
-      final int? minutes = providedMinutes == null
-          ? null
-          : (last ? minutesLeft : (providedMinutes / parts).floor());
-
-      // Fin de la part : le milieu interpole du segment, sauf la derniere qui
-      // s'acheve sur l'arrivee REELLE de l'etape.
-      final ratio = (i + 1) / parts;
-      final toLat = last
-          ? stage.endLat
-          : stage.startLat + (stage.endLat - stage.startLat) * ratio;
-      final toLng = last
-          ? stage.endLng
-          : stage.startLng + (stage.endLng - stage.startLng) * ratio;
-
-      result.add(stage.copyWith(
-        name: '${stage.name}${splitSuffix(i + 1, parts)}',
-        distanceKm: distance,
-        elevationGainM: gain,
-        elevationLossM: loss,
-        estimatedDurationMinutes: minutes,
-        startLat: fromLat,
-        startLng: fromLng,
-        endLat: toLat,
-        endLng: toLng,
-        // Les noms de depart / arrivee du sentier ne valent QUE pour l'etape
-        // entiere : un point de coupe n'a pas de nom, et en inventer un serait
-        // affirmer un lieu qui n'existe pas.
-        departureName: i == 0 ? stage.departureName : null,
-        arrivalName: last ? stage.arrivalName : null,
-      ));
-
-      distanceLeft -= distance;
-      gainLeft -= gain;
-      lossLeft -= loss;
-      if (minutesLeft != null && minutes != null) minutesLeft -= minutes;
-      fromLat = toLat;
-      fromLng = toLng;
-    }
-    return result;
   }
 
   /// Calcule la durée estimée en heures pour une étape.
@@ -167,105 +69,27 @@ class PlanningCalculator {
 
   /// Répartit les [stages] sur [days] jours de manière équilibrée.
   ///
-  /// - Si jours < étapes : distribution greedy qui minimise l'écart
-  ///   de score entre les jours.
-  /// - Si jours >= étapes : une étape par jour, les jours restants
-  ///   deviennent des jours de repos.
+  /// - Si jours < étapes : distribution greedy qui REGROUPE des étapes
+  ///   existantes, en minimisant l'écart de score entre les jours ;
+  /// - Si jours >= étapes : une étape par jour, les jours restants deviennent
+  ///   des jours de REPOS ;
   /// - Les étapes conservent leur ordre séquentiel (pas de mélange).
   ///
-  /// [maxRestDays] — TACHE 558, LE JOUR EN TROP DEVIENT UN DECOUPAGE.
-  ///
-  /// `null` (defaut) : comportement d'origine, TOUT jour au-dela du nombre
-  /// d'etapes devient un jour de repos. C'est ce que lisent les appelants qui
-  /// ne raisonnent qu'en repartition brute, et les tests qui la verrouillent.
-  ///
-  /// Une valeur : le surplus de jours alimente d'ABORD le repos, dans la limite
-  /// de [maxRestDays] — c'est le repos CONSEILLE par le moteur (GO-61), et le
-  /// programme par defaut est donc INCHANGE — puis, au-dela, il COUPE les
-  /// journees les plus lourdes en deux, en commencant par la pire. Le nombre de
-  /// jours de marche est plafonne a [maxWalkingDaysFor] ; ce qui depasse
-  /// redevient du repos, faute de quoi le curseur aurait une plage morte.
-  static List<DayPlan> distribute(
-    List<StageModel> stages,
-    int days, {
-    int? maxRestDays,
-  }) {
+  /// AUCUNE ETAPE N'EST JAMAIS COUPEE (tache 634, DEM-260929-1327). Le
+  /// parametre `maxRestDays` du lot 558, qui plafonnait le repos pour convertir
+  /// le reste en decoupages, a disparu avec le decoupage : au-dela du nombre
+  /// d'etapes, TOUT jour de plus est un jour de repos, sans plafond. Voir
+  /// l'en-tete de la classe.
+  static List<DayPlan> distribute(List<StageModel> stages, int days) {
     if (stages.isEmpty || days <= 0) return [];
 
     if (days < stages.length) {
       return _distributeGreedy(stages, days);
     }
 
-    // Combien de jours de MARCHE, combien de jours de REPOS.
-    final surplus = days - stages.length;
-    int restDays;
-    List<List<StageModel>> walkingDays;
-    if (maxRestDays == null) {
-      // Comportement d'origine : tout le surplus part en repos.
-      restDays = surplus;
-      walkingDays = [
-        for (final stage in stages) [stage],
-      ];
-    } else {
-      final cappedRest = surplus < maxRestDays ? surplus : maxRestDays;
-      final maxWalking = maxWalkingDaysFor(stages.length);
-      var targetWalking = days - (cappedRest < 0 ? 0 : cappedRest);
-      if (targetWalking > maxWalking) targetWalking = maxWalking;
-      restDays = days - targetWalking;
-      walkingDays = _splitHeaviestFirst(stages, targetWalking);
-    }
-
-    return _assemble(walkingDays, restDays);
-  }
-
-  /// Construit les journees de MARCHE en coupant les plus lourdes d'abord.
-  ///
-  /// Depart : une etape par journee. Tant qu'il manque des journees, on coupe
-  /// la journee de plus grosse [stageEnergyKm] parmi celles qui portent encore
-  /// une etape ENTIERE — la PIRE d'abord, puisque c'est elle qui fixe le
-  /// verdict (GO-61). Une etape deja coupee ne se recoupe pas
-  /// ([maxDaysPerStage]).
-  static List<List<StageModel>> _splitHeaviestFirst(
-    List<StageModel> stages,
-    int targetWalkingDays,
-  ) {
-    final days = <List<StageModel>>[
+    return _assemble([
       for (final stage in stages) [stage],
-    ];
-    // Journees encore coupables : celles qui portent une etape entiere.
-    final splittable = <int>{for (var i = 0; i < days.length; i++) i};
-
-    while (days.length < targetWalkingDays && splittable.isNotEmpty) {
-      int? worst;
-      double worstScore = double.negativeInfinity;
-      for (final i in splittable) {
-        final score = stageEnergyKm(days[i].single);
-        if (score > worstScore) {
-          worstScore = score;
-          worst = i;
-        }
-      }
-      if (worst == null) break;
-
-      final parts = splitStage(days[worst].single);
-      days.removeAt(worst);
-      days.insertAll(worst, [
-        for (final part in parts) [part],
-      ]);
-
-      // Les index ont glisse de (parts-1) a partir du point de coupe, et les
-      // parts nouvellement creees ne sont plus coupables.
-      final shift = parts.length - 1;
-      final updated = <int>{};
-      for (final i in splittable) {
-        if (i == worst) continue;
-        updated.add(i > worst ? i + shift : i);
-      }
-      splittable
-        ..clear()
-        ..addAll(updated);
-    }
-    return days;
+    ], days - stages.length);
   }
 
   /// Assemble les journees de marche et [restDays] jours de repos repartis.
@@ -278,13 +102,13 @@ class PlanningCalculator {
     final restPositions = _computeRestPositions(walkingDays.length, safeRest);
 
     DayPlan restDay(int dayNumber) => DayPlan(
-          dayNumber: dayNumber,
-          stages: const [],
-          totalDistanceKm: 0,
-          totalElevationGainM: 0,
-          estimatedDurationHours: 0,
-          isRestDay: true,
-        );
+      dayNumber: dayNumber,
+      stages: const [],
+      totalDistanceKm: 0,
+      totalElevationGainM: 0,
+      estimatedDurationHours: 0,
+      isRestDay: true,
+    );
 
     var dayNumber = 1;
     for (var i = 0; i < walkingDays.length; i++) {
@@ -294,17 +118,25 @@ class PlanningCalculator {
       }
 
       final group = walkingDays[i];
-      result.add(DayPlan(
-        dayNumber: dayNumber,
-        stages: group,
-        totalDistanceKm:
-            group.fold<double>(0, (sum, s) => sum + s.distanceKm),
-        totalElevationGainM:
-            group.fold<int>(0, (sum, s) => sum + s.elevationGainM),
-        estimatedDurationHours:
-            group.fold<double>(0, (sum, s) => sum + estimatedHours(s)),
-        isRestDay: false,
-      ));
+      result.add(
+        DayPlan(
+          dayNumber: dayNumber,
+          stages: group,
+          totalDistanceKm: group.fold<double>(
+            0,
+            (sum, s) => sum + s.distanceKm,
+          ),
+          totalElevationGainM: group.fold<int>(
+            0,
+            (sum, s) => sum + s.elevationGainM,
+          ),
+          estimatedDurationHours: group.fold<double>(
+            0,
+            (sum, s) => sum + estimatedHours(s),
+          ),
+          isRestDay: false,
+        ),
+      );
       dayNumber++;
     }
 
@@ -318,17 +150,13 @@ class PlanningCalculator {
   }
 
   /// Calcule combien de jours de repos placer avant chaque étape.
-  static List<int> _computeRestPositions(
-    int stageCount,
-    int restDays,
-  ) {
+  static List<int> _computeRestPositions(int stageCount, int restDays) {
     final positions = List.filled(stageCount, 0);
     if (restDays <= 0) return positions;
 
     final interval = stageCount / (restDays + 1);
     for (var r = 0; r < restDays; r++) {
-      final pos =
-          ((r + 1) * interval).round().clamp(0, stageCount - 1);
+      final pos = ((r + 1) * interval).round().clamp(0, stageCount - 1);
       positions[pos]++;
     }
 
@@ -340,13 +168,9 @@ class PlanningCalculator {
   /// Approche DP simplifiée : calcule les points de coupure optimaux
   /// pour répartir les étapes séquentiellement en [days] groupes,
   /// minimisant l'écart de score maximum entre groupes.
-  static List<DayPlan> _distributeGreedy(
-    List<StageModel> stages,
-    int days,
-  ) {
+  static List<DayPlan> _distributeGreedy(List<StageModel> stages, int days) {
     final n = stages.length;
-    final scores =
-        stages.map((s) => stageScore(s)).toList();
+    final scores = stages.map((s) => stageScore(s)).toList();
 
     // Calculer les sommes de préfixes pour accès O(1)
     final prefix = List.filled(n + 1, 0.0);
@@ -368,8 +192,7 @@ class PlanningCalculator {
 
       // Si le score accumulé dépasse la cible et qu'il reste
       // assez d'étapes pour les jours restants
-      if (accumulated >= targetPerDay &&
-          remainingStages >= remainingCuts) {
+      if (accumulated >= targetPerDay && remainingStages >= remainingCuts) {
         cutPoints.add(i + 1);
         accumulated = 0;
       }
@@ -379,8 +202,7 @@ class PlanningCalculator {
     final groups = <List<StageModel>>[];
     for (var g = 0; g < cutPoints.length; g++) {
       final start = cutPoints[g];
-      final end =
-          g + 1 < cutPoints.length ? cutPoints[g + 1] : n;
+      final end = g + 1 < cutPoints.length ? cutPoints[g + 1] : n;
       groups.add(stages.sublist(start, end));
     }
 

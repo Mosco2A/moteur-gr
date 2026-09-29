@@ -26,6 +26,7 @@ import 'widgets/session_trace_painter.dart';
 import '../../after/providers/adventure_recap_provider.dart';
 import '../../after/providers/in_app_review_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
+import '../../../core/services/session_demo.dart';
 
 /// Ecran diplome de fin de trek avec recap aventure.
 ///
@@ -62,6 +63,10 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   /// avis n'est demande (on ne felicite pas un trek non fini).
   Future<void> _requestInAppReviewIfEligible() async {
     if (!ref.read(isDiplomaUnlockedProvider)) return;
+    // DEMO : on ne demande pas un avis sur le store pour un diplome simule, et
+    // on n'ecrit pas la ligne « avis demande » qui l'empecherait de l'etre le
+    // jour d'un VRAI trek termine (tache 634, DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     final config = ref.read(trailConfigProvider);
     final trailId = config.id;
     final reviewService = ref.read(inAppReviewServiceProvider);
@@ -195,8 +200,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               label: diplomaT.shareDiploma,
               icon: StepwaysIcons.partager,
               onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(config, realStats,
-                      session: session, share: true)
+                  ? () => _generatePdf(
+                      config,
+                      realStats,
+                      session: session,
+                      share: true,
+                    )
                   : null,
             ),
           ],
@@ -236,10 +245,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         trailRegion: config.region,
         totalStages: useReal ? stats.stagesWalked : config.totalStages,
         totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
-        totalElevationGain:
-            useReal ? stats.elevationGainM : config.totalElevationGain,
-        completionDate:
-            useReal ? (stats.endDate ?? DateTime.now()) : DateTime.now(),
+        totalElevationGain: useReal
+            ? stats.elevationGainM
+            : config.totalElevationGain,
+        completionDate: useReal
+            ? (stats.endDate ?? DateTime.now())
+            : DateTime.now(),
         durationDays: useReal ? stats.durationDays : config.defaultDuration,
       );
     });
@@ -332,11 +343,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
       // Chiffres REELS de la session si disponibles, sinon totaux du sentier
       // (demo/vitrine). Meme regle que l'apercu (parite GR20, 3.B.2).
       final useReal = stats != null && stats.hasWalkedStages;
-      final endDate =
-          useReal ? (stats.endDate ?? DateTime.now()) : DateTime.now();
+      final endDate = useReal
+          ? (stats.endDate ?? DateTime.now())
+          : DateTime.now();
       final startDate = useReal
           ? (stats.startDate ??
-              endDate.subtract(Duration(days: stats.durationDays)))
+                endDate.subtract(Duration(days: stats.durationDays)))
           : DateTime.now().subtract(Duration(days: config.defaultDuration));
       final data = DiplomaPdfData(
         hikerName: _diplomaData!.hikerName,
@@ -344,8 +356,9 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         trailRegion: config.region,
         totalStages: useReal ? stats.stagesWalked : config.totalStages,
         totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
-        totalElevationGain:
-            useReal ? stats.elevationGainM : config.totalElevationGain,
+        totalElevationGain: useReal
+            ? stats.elevationGainM
+            : config.totalElevationGain,
         startDate: startDate,
         endDate: endDate,
         durationDays: useReal ? stats.durationDays : config.defaultDuration,
@@ -400,10 +413,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
       // Le partage vient APRES l'ecriture : on ne propose jamais un fichier
       // qui n'existe pas encore.
       if (share) {
-        await Share.shareXFiles(
-          [XFile(file.path)],
-          subject: diplomaT.title,
-        );
+        await Share.shareXFiles([XFile(file.path)], subject: diplomaT.title);
         return;
       }
 
@@ -412,9 +422,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         // libelle du bouton ne prouve rien.
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              diplomaT.pdfSaved(file: file.uri.pathSegments.last),
-            ),
+            content: Text(diplomaT.pdfSaved(file: file.uri.pathSegments.last)),
           ),
         );
       }
@@ -448,7 +456,11 @@ class _RecapHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary, size: 28),
+        StepIcon(
+          StepwaysIcons.sommet,
+          color: theme.colorScheme.primary,
+          size: 28,
+        ),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(
           child: Text(
@@ -544,7 +556,10 @@ class _PhotoCard extends StatelessWidget {
                 ? Image.file(file, fit: BoxFit.cover)
                 : Container(
                     color: AppTheme.grisClair,
-                    child: const StepIcon(StepwaysIcons.imageManquante, size: 40),
+                    child: const StepIcon(
+                      StepwaysIcons.imageManquante,
+                      size: 40,
+                    ),
                   ),
             // Etiquette etape en bas
             Positioned(
@@ -590,15 +605,18 @@ class _StatsSection extends StatelessWidget {
     final diplomaT = t.diploma;
 
     final useReal = stats != null && stats!.hasWalkedStages;
-    final stagesText =
-        useReal ? '${stats!.stagesWalked}' : '${config.totalStages}';
+    final stagesText = useReal
+        ? '${stats!.stagesWalked}'
+        : '${config.totalStages}';
     final distanceText = useReal
         ? stats!.distanceKm.toStringAsFixed(0)
         : config.totalDistanceKm.toStringAsFixed(0);
-    final elevationText =
-        useReal ? '${stats!.elevationGainM}' : '${config.totalElevationGain}';
-    final durationText =
-        useReal ? '${stats!.durationDays}' : '${config.defaultDuration}';
+    final elevationText = useReal
+        ? '${stats!.elevationGainM}'
+        : '${config.totalElevationGain}';
+    final durationText = useReal
+        ? '${stats!.durationDays}'
+        : '${config.defaultDuration}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,20 +638,23 @@ class _StatsSection extends StatelessWidget {
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: StepwaysIcons.distance,
-                label:
-                    diplomaT.recapDistance.replaceAll('{km}', distanceText),
+                label: diplomaT.recapDistance.replaceAll('{km}', distanceText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: StepwaysIcons.denivelePlus,
-                label: diplomaT.recapElevation
-                    .replaceAll('{meters}', elevationText),
+                label: diplomaT.recapElevation.replaceAll(
+                  '{meters}',
+                  elevationText,
+                ),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: StepwaysIcons.calendrier,
-                label:
-                    diplomaT.recapDuration.replaceAll('{days}', durationText),
+                label: diplomaT.recapDuration.replaceAll(
+                  '{days}',
+                  durationText,
+                ),
               ),
             ],
           ),
@@ -863,7 +884,10 @@ class _JournalCountSection extends StatelessWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: StepIcon(StepwaysIcons.journal, color: theme.colorScheme.primary),
+        leading: StepIcon(
+          StepwaysIcons.journal,
+          color: theme.colorScheme.primary,
+        ),
         title: Text(
           diplomaT.recapJournalEntries.replaceAll('{count}', '$count'),
           style: theme.textTheme.bodyLarge,

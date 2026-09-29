@@ -15,6 +15,7 @@ import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 import 'wallet_iap_service.dart';
 import 'wallet_store.dart';
+import 'session_demo.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -140,8 +141,7 @@ enum TrailAccess {
   /// drapeau `isShowcaseTrail` : un commentaire qui survit à la décision qui
   /// l'abroge et sert ensuite de justification. Il est corrigé ici, sur le getter
   /// lui-même, parce que c'est là qu'on vient le lire avant de « réparer ».
-  bool get showAds =>
-      this == TrailAccess.free || this == TrailAccess.freeTrail;
+  bool get showAds => this == TrailAccess.free || this == TrailAccess.freeTrail;
 }
 
 /// Issue d'un versement de la CAGNOTTE de l'abonné (modèle éco §2, A5).
@@ -174,10 +174,7 @@ enum PurchaseRestoreStatus {
 /// Résultat d'une restauration d'achats (ce qui a été sollicité, ce qui est
 /// redescendu). Sert à ne JAMAIS laisser le bouton « Restaurer » muet.
 class PurchaseRestoreOutcome {
-  const PurchaseRestoreOutcome({
-    required this.status,
-    this.itemsRestored = 0,
-  });
+  const PurchaseRestoreOutcome({required this.status, this.itemsRestored = 0});
 
   /// Ce que la demande a pu faire.
   final PurchaseRestoreStatus status;
@@ -287,7 +284,8 @@ class PurchaseOutcome {
   bool get isOwned => status == PurchaseStatusResult.owned;
 
   @override
-  String toString() => 'PurchaseOutcome($status, $trailId, '
+  String toString() =>
+      'PurchaseOutcome($status, $trailId, '
       'wallet=$stepsFromWallet, complément=$complementSteps)';
 }
 
@@ -321,6 +319,18 @@ enum PurchaseStatusResult {
   /// « Prix nul parce que le catalogue le dit » et « prix nul parce qu'on ne
   /// sait pas » sont deux choses, et ce statut n'existe que pour la seconde.
   unknownPrice,
+
+  /// REFUSE PARCE QU'ON EST EN DEMO (tache 634, DEM-260929-1123).
+  ///
+  /// Christophe, le 29/09 : « ON EST EN MODE DEMO » = rien ne compte, « pas
+  /// d etapes gagnees, pas de diplome, pas de droits, rien en base ». Une
+  /// demonstration qui deduirait des etapes du compte, ou qui poserait un droit
+  /// acquis, ne serait plus une demonstration.
+  ///
+  /// CE STATUT EXISTE POUR ETRE LU. Le refus n'est pas silencieux : l'ecran le
+  /// recoit et peut le dire, la ou un `false` muet aurait ressemble a une
+  /// panne.
+  refuseEnDemo,
 }
 
 /// Devis d'achat/reprise d'un trek (spec §2.4/§2.5).
@@ -360,7 +370,8 @@ class TrailQuote {
   double get complementPriceEur => complementPack?.priceEur ?? 0.0;
 
   @override
-  String toString() => 'TrailQuote($trailId, besoin=$stepsNeeded, '
+  String toString() =>
+      'TrailQuote($trailId, besoin=$stepsNeeded, '
       'wallet=$stepsFromWallet, complément=$complementSteps)';
 }
 
@@ -459,15 +470,33 @@ class MonetizationService {
     SharedPreferences? prefs,
     Set<String>? freeTrailIds,
     int Function(String trailId)? stagesOf,
-  })  : _wallet = walletStore,
-        _entitlementsDao = entitlementsDao,
-        _noAdsDao = noAdsDao,
-        _iap = iapService,
-        _connectivity = connectivityMonitor,
-        _now = nowFn ?? DateTime.now,
-        _prefs = prefs,
-        _freeTrailIds = freeTrailIds,
-        _stagesOf = stagesOf;
+    bool Function()? enDemo,
+  }) : _enDemo = enDemo,
+       _wallet = walletStore,
+       _entitlementsDao = entitlementsDao,
+       _noAdsDao = noAdsDao,
+       _iap = iapService,
+       _connectivity = connectivityMonitor,
+       _now = nowFn ?? DateTime.now,
+       _prefs = prefs,
+       _freeTrailIds = freeTrailIds,
+       _stagesOf = stagesOf;
+
+  /// LA BARRIERE D'ECRITURE DE LA DEMO (tache 634, DEM-260929-1123).
+  ///
+  /// Rendue par une FONCTION et non par un booleen fige : la demo s'entre et se
+  /// quitte pendant la vie du service, et le service n'est pas reconstruit pour
+  /// autant. On interroge donc l'etat A L'INSTANT DE L'ECRITURE — meme
+  /// raisonnement que `stagesOf`, qui lit le prix a l'instant de l'achat.
+  ///
+  /// `null` (defaut) = jamais en demo. C'est ce que lisent les tests qui ne
+  /// connaissent pas ce mode, et le comportement d'origine est donc
+  /// strictement inchange pour eux.
+  final bool Function()? _enDemo;
+
+  /// Vrai quand une demo volontaire est en cours : AUCUNE ecriture d'argent,
+  /// de droit ou d'abonnement ne doit partir.
+  bool get enDemo => _enDemo?.call() ?? false;
 
   final WalletStore _wallet;
   final TrekEntitlementsDao _entitlementsDao;
@@ -616,6 +645,8 @@ class MonetizationService {
   /// boucle de complétion (`purchaseStream`). Retourne true si l'achat est
   /// initié (false en mode stub / hors-ligne). Le crédit n'est PAS immédiat.
   Future<bool> rechargeWallet(StepPack pack) async {
+    // DEMO : on ne recharge pas un compte qui ne compte pas (tache 634).
+    if (enDemo) return false;
     return _iap.buyCredits(pack.productId);
   }
 
@@ -727,7 +758,11 @@ class MonetizationService {
   /// Le prix vient du catalogue ([stagesOfTrail]), plus de l'appelant
   /// (avenant 614) : un devis et l'achat qui le suit lisent le MÊME nombre.
   Future<TrailQuote> quoteTrail(String trailId) {
-    return _quote(trailId, totalStages: stagesOfTrail(trailId), useAcquired: true);
+    return _quote(
+      trailId,
+      totalStages: stagesOfTrail(trailId),
+      useAcquired: true,
+    );
   }
 
   Future<TrailQuote> _quote(
@@ -775,6 +810,17 @@ class MonetizationService {
   /// méthode pour la mesure complète du trou et la raison de le fermer en
   /// retirant le choix plutôt qu'en le surveillant.
   Future<PurchaseOutcome> buyTrail(String trailId) async {
+    // DEMO : AUCUN DEBIT, AUCUN DROIT (tache 634, DEM-260929-1123). C'est le
+    // refus le plus important des cinq : c'est ici qu'un sentier payant
+    // deviendrait possede, et c'est exactement le trou que le lot 601 avait
+    // ferme en supprimant le drapeau vitrine. La demo MONTRE, elle ne DEBLOQUE
+    // jamais.
+    if (enDemo) {
+      return PurchaseOutcome(
+        status: PurchaseStatusResult.refuseEnDemo,
+        trailId: trailId,
+      );
+    }
     if (await ownsTrail(trailId)) {
       return PurchaseOutcome(
         status: PurchaseStatusResult.alreadyOwned,
@@ -809,15 +855,21 @@ class MonetizationService {
     // Mare a Mare invendable jusqu'à ce qu'un audit la trouve.
     final totalStages = stagesOfTrail(trailId);
     if (totalStages <= 0) {
-      _log.w('[Monetization] $trailId : prix introuvable au catalogue -> '
-          'vente REFUSEE (rien debite, aucun droit pose)');
+      _log.w(
+        '[Monetization] $trailId : prix introuvable au catalogue -> '
+        'vente REFUSEE (rien debite, aucun droit pose)',
+      );
       return PurchaseOutcome(
         status: PurchaseStatusResult.unknownPrice,
         trailId: trailId,
       );
     }
 
-    final quote = await _quote(trailId, totalStages: totalStages, useAcquired: true);
+    final quote = await _quote(
+      trailId,
+      totalStages: totalStages,
+      useAcquired: true,
+    );
 
     // 1) Débit wallet (offline OK). Jamais de solde négatif (garde WalletStore).
     if (quote.stepsFromWallet > 0) {
@@ -829,8 +881,10 @@ class MonetizationService {
       final online = await _isOnline();
       if (!online) {
         await _rollbackWallet(quote.stepsFromWallet);
-        _log.w('[Monetization] $trailId : complément store hors-ligne -> '
-            'rollback wallet (${quote.stepsFromWallet} étapes)');
+        _log.w(
+          '[Monetization] $trailId : complément store hors-ligne -> '
+          'rollback wallet (${quote.stepsFromWallet} étapes)',
+        );
         return PurchaseOutcome(
           status: PurchaseStatusResult.offlineComplementRequired,
           trailId: trailId,
@@ -847,8 +901,10 @@ class MonetizationService {
       // achat. POINT D'EXTENSION : à confirmation synchrone, poser `owned` ici.
       await rechargeWallet(quote.complementPack!);
       await _rollbackWallet(quote.stepsFromWallet);
-      _log.w('[Monetization] $trailId : complément store non confirmé (async) -> '
-          'rollback wallet (${quote.stepsFromWallet} étapes)');
+      _log.w(
+        '[Monetization] $trailId : complément store non confirmé (async) -> '
+        'rollback wallet (${quote.stepsFromWallet} étapes)',
+      );
       return PurchaseOutcome(
         status: PurchaseStatusResult.complementFailed,
         trailId: trailId,
@@ -865,8 +921,10 @@ class MonetizationService {
       consumedComplementSteps: 0,
       source: 'wallet',
     );
-    _log.i('[Monetization] $trailId acheté (wallet: '
-        '${quote.stepsFromWallet} étapes)');
+    _log.i(
+      '[Monetization] $trailId acheté (wallet: '
+      '${quote.stepsFromWallet} étapes)',
+    );
     return PurchaseOutcome(
       status: PurchaseStatusResult.owned,
       trailId: trailId,
@@ -926,10 +984,12 @@ class MonetizationService {
   Future<bool> isSubscriberActive() async {
     final now = _now();
     final states = await _noAdsDao.getAll();
-    return states.any((s) =>
-        s.source == 'subscription' &&
-        s.expiresAt != null &&
-        s.expiresAt!.isAfter(now));
+    return states.any(
+      (s) =>
+          s.source == 'subscription' &&
+          s.expiresAt != null &&
+          s.expiresAt!.isAfter(now),
+    );
   }
 
   /// Échéance courante du sans-pub d'abonnement (null si aucun abo actif).
@@ -939,10 +999,12 @@ class MonetizationService {
   Future<DateTime?> subscriptionExpiresAt() async {
     final now = _now();
     final actifs = (await _noAdsDao.getAll())
-        .where((s) =>
-            s.source == 'subscription' &&
-            s.expiresAt != null &&
-            s.expiresAt!.isAfter(now))
+        .where(
+          (s) =>
+              s.source == 'subscription' &&
+              s.expiresAt != null &&
+              s.expiresAt!.isAfter(now),
+        )
         .map((s) => s.expiresAt!)
         .toList();
     if (actifs.isEmpty) return null;
@@ -953,7 +1015,9 @@ class MonetizationService {
   ///
   /// Délègue au [WalletIapService] ; la pose réelle de l'abo arrive par la
   /// boucle de complétion. Retourne true si initié (false en stub).
-  Future<bool> subscribe() => _iap.buyNoAdsSubscription();
+  Future<bool> subscribe() =>
+      // DEMO : pas d'abonnement souscrit depuis une demonstration (tache 634).
+      enDemo ? Future.value(false) : _iap.buyNoAdsSubscription();
 
   /// Vrai si l'achat in-app est réellement proposé (kill-switch ouvert).
   ///
@@ -979,8 +1043,10 @@ class MonetizationService {
       ),
     );
     await _syncFeatureFlags();
-    _log.i('[Monetization] Abo sans-pub validé jusqu au '
-        '${now.add(kSubscriptionNoAdsWindow)}');
+    _log.i(
+      '[Monetization] Abo sans-pub validé jusqu au '
+      '${now.add(kSubscriptionNoAdsWindow)}',
+    );
   }
 
   /// Callback à appeler quand l'abonnement est ANNULÉ / expiré côté store.
@@ -1009,13 +1075,17 @@ class MonetizationService {
   /// [SubscriberAllowanceOutcome.pendingDecision]. Voir la documentation de
   /// cette constante : la valeur attend une décision de Christophe.
   Future<SubscriberAllowanceOutcome> grantSubscriberAllowance() async {
+    // DEMO : aucune cagnotte versee (tache 634).
+    if (enDemo) return SubscriberAllowanceOutcome.notSubscriber;
     if (!await isSubscriberActive()) {
       return SubscriberAllowanceOutcome.notSubscriber;
     }
     const montant = kSubscriberStepsAllowance;
     if (montant == null || montant <= 0) {
-      _log.w('[Monetization] Cagnotte abonné : montant NON DÉCIDÉ '
-          '(kSubscriberStepsAllowance == null) -> rien versé');
+      _log.w(
+        '[Monetization] Cagnotte abonné : montant NON DÉCIDÉ '
+        '(kSubscriberStepsAllowance == null) -> rien versé',
+      );
       return SubscriberAllowanceOutcome.pendingDecision;
     }
     final prefs = await _preferences;
@@ -1040,16 +1110,20 @@ class MonetizationService {
   Future<bool> isRewardNoAdsActive() async {
     final now = _now();
     final states = await _noAdsDao.getAll();
-    return states.any((s) =>
-        s.source == 'reward' &&
-        s.expiresAt != null &&
-        s.expiresAt!.isAfter(now));
+    return states.any(
+      (s) =>
+          s.source == 'reward' &&
+          s.expiresAt != null &&
+          s.expiresAt!.isAfter(now),
+    );
   }
 
   /// Octroie une récompense sans-pub de 24 h (après une pub rewarded).
   ///
   /// Pose une source 'reward' `expiresAt = now + 24 h` (horloge [nowFn]).
   Future<void> grantRewardNoAds() async {
+    // DEMO : aucune recompense video ecrite en base (tache 634).
+    if (enDemo) return;
     final now = _now();
     await _noAdsDao.insertState(
       NoAdsStateCompanion.insert(
@@ -1119,8 +1193,10 @@ class MonetizationService {
       ),
     );
     FeatureFlags.setOverride('premium', trailId, enabled: false);
-    _log.i('[Monetization] $trailId abandonné (acquis conservés: '
-        '${e.acquiredStages})');
+    _log.i(
+      '[Monetization] $trailId abandonné (acquis conservés: '
+      '${e.acquiredStages})',
+    );
   }
 
   /// Devis de REPRISE : ne facture que les étapes non encore acquises.
@@ -1129,7 +1205,11 @@ class MonetizationService {
   /// besoin = `prix − acquis` (les étapes déjà acquises ne sont pas repayées,
   /// spec §2.5 « rachat du complément consommé »). Prix lu au catalogue.
   Future<TrailQuote> quoteResume(String trailId) {
-    return _quote(trailId, totalStages: stagesOfTrail(trailId), useAcquired: true);
+    return _quote(
+      trailId,
+      totalStages: stagesOfTrail(trailId),
+      useAcquired: true,
+    );
   }
 
   /// Reprend un trek abandonné : rachète UNIQUEMENT le complément restant.
@@ -1160,9 +1240,18 @@ class MonetizationService {
   /// été retirée par la tâche 635 parce que les règles refusent désormais au
   /// téléphone d'écrire ses propres droits.
   Future<PurchaseRestoreOutcome> restorePurchases() async {
+    // DEMO : on ne restaure pas des achats reels au milieu d'une demo
+    // (tache 634) — ils ecriraient de vrais droits en base.
+    if (enDemo) {
+      return const PurchaseRestoreOutcome(
+        status: PurchaseRestoreStatus.storeUnavailable,
+      );
+    }
     if (!await _iap.isAvailable()) {
-      _log.w('[Monetization] Restauration demandée mais achat in-app '
-          'indisponible');
+      _log.w(
+        '[Monetization] Restauration demandée mais achat in-app '
+        'indisponible',
+      );
       return const PurchaseRestoreOutcome(
         status: PurchaseRestoreStatus.storeUnavailable,
       );
@@ -1178,6 +1267,10 @@ class MonetizationService {
   /// Efface les droits, les sources sans-pub et le cache [FeatureFlags] premium.
   /// Le solde du compte-étapes est laissé à [WalletStore] (non touché ici).
   Future<void> reset() async {
+    // DEMO : une demonstration n'efface pas les droits REELS du randonneur
+    // (tache 634). Rien ne s'ecrit pendant une demo, et effacer est encore une
+    // ecriture.
+    if (enDemo) return;
     final entitlements = await _entitlementsDao.getAll();
     for (final e in entitlements) {
       await _entitlementsDao.deleteByTrailId(e.trailId);
@@ -1271,6 +1364,11 @@ final monetizationServiceProvider = Provider<MonetizationService>((ref) {
     noAdsDao: db.noAdsDao,
     iapService: ref.watch(walletIapServiceProvider),
     connectivityMonitor: ref.watch(connectivityMonitorProvider),
+    // LA BARRIERE DE LA DEMO (tache 634, DEM-260929-1123). `ref.read` DANS la
+    // fonction, comme `stagesOf` juste en dessous : l'etat est lu A L'INSTANT
+    // de l'ecriture, donc entrer ou quitter la demo agit sans reconstruire le
+    // service ni invalider quoi que ce soit.
+    enDemo: () => ref.read(enDemoProvider),
     // LE PRIX VIENT DU CATALOGUE EFFECTIF (avenant 614), pas du catalogue
     // compilé. La nuance est tout l'enjeu depuis la tâche 605 : un sentier
     // décrit à DISTANCE n'a pas le nombre d'étapes du sentier compilé du même
@@ -1294,7 +1392,9 @@ final monetizationServiceProvider = Provider<MonetizationService>((ref) {
 /// À `watch` au boot (`app_bootstrap_provider.dart`) AVANT tout accès aux droits
 /// : hydrate le wallet, migre le legacy, démarre l'écoute IAP et resynchronise
 /// le cache [FeatureFlags]. Retourne l'instance chargée.
-final monetizationReadyProvider = FutureProvider<MonetizationService>((ref) async {
+final monetizationReadyProvider = FutureProvider<MonetizationService>((
+  ref,
+) async {
   final service = ref.watch(monetizationServiceProvider);
   await service.load();
   return service;
@@ -1304,8 +1404,10 @@ final monetizationReadyProvider = FutureProvider<MonetizationService>((ref) asyn
 ///
 /// Émet à chaque mutation Drift des `TrekEntitlements` : c'est le signal qui
 /// permet à [isDemoModeProvider] de se réévaluer quand un achat pose `owned`.
-final _entitlementProvider =
-    StreamProvider.family<TrekEntitlement?, String>((ref, trailId) {
+final _entitlementProvider = StreamProvider.family<TrekEntitlement?, String>((
+  ref,
+  trailId,
+) {
   return ref.watch(monetizationServiceProvider).watchEntitlement(trailId);
 });
 
@@ -1317,7 +1419,10 @@ final _entitlementProvider =
 /// achat débloque le trek pendant l'affichage — le bandeau démo ne peut plus
 /// rester périmé (réserve QA StepWays LOT 1). Vitrine/abo restent couverts par
 /// la source unique [MonetizationService.isDemoMode].
-final isDemoModeProvider = FutureProvider.family<bool, String>((ref, trailId) async {
+final isDemoModeProvider = FutureProvider.family<bool, String>((
+  ref,
+  trailId,
+) async {
   final service = await ref.watch(monetizationReadyProvider.future);
   ref.watch(_entitlementProvider(trailId)); // relance au flip owned
   return service.isDemoMode(trailId);

@@ -44,8 +44,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(testStages)),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(testStages)),
       ],
     );
     // Charger les etapes puis fixer la duree (chaque jour = 1 etape).
@@ -53,38 +54,42 @@ void main() {
   }
 
   group('PROGRAMME editable — regrouper (merge)', () {
-    test('REGROUPER est possible entre deux jours adjacents (mono-etape)',
-        () async {
-      final container = makeContainer();
-      await container.read(stagesProvider('test-trail').future);
-      // 5 jours = 5 etapes (1 etape / jour).
-      container.read(selectedDurationProvider.notifier).set(5);
+    test(
+      'REGROUPER est possible entre deux jours adjacents (mono-etape)',
+      () async {
+        final container = makeContainer();
+        await container.read(stagesProvider('test-trail').future);
+        // 5 jours = 5 etapes (1 etape / jour).
+        container.read(selectedDurationProvider.notifier).set(5);
 
-      final notifier =
-          container.read(plannedDaysProvider('test-trail').notifier);
-      // Etat initial : 5 jours mono-etape.
-      expect(container.read(plannedDaysProvider('test-trail')).length, 5);
+        final notifier = container.read(
+          plannedDaysProvider('test-trail').notifier,
+        );
+        // Etat initial : 5 jours mono-etape.
+        expect(container.read(plannedDaysProvider('test-trail')).length, 5);
 
-      // Le jour 1 PEUT etre regroupe avec le jour 2 (2 etapes courtes < 16 h).
-      expect(notifier.canMergeWithNext(0), isTrue);
-      expect(notifier.mergeBlockedReason(0), isNull);
+        // Le jour 1 PEUT etre regroupe avec le jour 2 (2 etapes courtes < 16 h).
+        expect(notifier.canMergeWithNext(0), isTrue);
+        expect(notifier.mergeBlockedReason(0), isNull);
 
-      notifier.mergeWithNext(0);
-      final days = container.read(plannedDaysProvider('test-trail'));
-      // Un jour de moins ; le 1er jour porte 2 etapes.
-      expect(days.length, 4);
-      expect(days.first.stages.length, 2);
+        notifier.mergeWithNext(0);
+        final days = container.read(plannedDaysProvider('test-trail'));
+        // Un jour de moins ; le 1er jour porte 2 etapes.
+        expect(days.length, 4);
+        expect(days.first.stages.length, 2);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
 
     test('REGROUPER est bloque (raison rest) avec un jour de repos', () async {
       final container = makeContainer();
       await container.read(stagesProvider('test-trail').future);
       container.read(selectedDurationProvider.notifier).set(5);
 
-      final notifier =
-          container.read(plannedDaysProvider('test-trail').notifier);
+      final notifier = container.read(
+        plannedDaysProvider('test-trail').notifier,
+      );
       // Inserer un repos apres le jour 1 -> le jour 1 a un voisin « repos ».
       notifier.addRestDay(0);
       expect(notifier.canMergeWithNext(0), isFalse);
@@ -95,81 +100,89 @@ void main() {
   });
 
   group('PROGRAMME editable — separer (split)', () {
-    // TACHE 558 — CE TEST EST RETOURNE, PAS SUPPRIME.
+    // TACHE 634 — CE TEST EST RETOURNE UNE SECONDE FOIS (DEM-260929-1327).
     //
-    // Il verrouillait « SEPARER est INDISPONIBLE sur un jour mono-etape ». La
-    // campagne personas a mesure ce que cela coutait sur l'emulateur : la
-    // journee la plus dure du sentier de reference (Ghisonaccia-Catastaghju,
-    // 35,2 km-energie) ne porte QU'UNE etape, l'application conseillait
-    // « Decoupe la journee 1 en deux » — la seule action capable de detendre le
-    // verdict — et « Separer » n'y faisait rien. Un conseil que l'application
-    // n'offre pas est pire que pas de conseil.
+    // Historique, parce qu'il compte. A l'origine il verrouillait « SEPARER est
+    // INDISPONIBLE sur un jour mono-etape ». Le lot 558 l'a retourne : la
+    // campagne personas avait mesure que la journee la plus dure du sentier de
+    // reference ne porte QU'UNE etape, que l'application conseillait de la
+    // couper, et que le bouton n'y faisait rien. « Separer » s'est donc mis a
+    // COUPER l'etape en deux demi-journees.
     //
-    // « Separer » coupe donc desormais une etape ENTIERE en deux portions de
-    // meme energie. Ce qui reste indisponible est nomme plus bas : un jour de
-    // repos, un jour deja marche, et une etape DEJA coupee.
-    test('SEPARER coupe un jour mono-etape en deux demi-journees', () async {
+    // Christophe a refuse ce remede le 29/09, verbatim : « Decouper les etapes
+    // en deux est une mauvaise idee... il n'y a pas de refuge et surtout JE N
+    // AI JAMAIS DEMANDE CA ». Le point de coupe etait une interpolation entre
+    // le depart et l'arrivee — pas un lieu releve, pas un hebergement verifie.
+    // Le conseil de decoupe, lui, avait deja disparu au lot 569 (R4) : le
+    // bouton n'avait donc plus de conseil a honorer.
+    //
+    // « Separer » redevient DEGROUPER, et rien d'autre.
+    test('SEPARER ne coupe plus un jour mono-etape, et dit pourquoi', () async {
       final container = makeContainer();
       await container.read(stagesProvider('test-trail').future);
       container.read(selectedDurationProvider.notifier).set(5);
 
-      final notifier =
-          container.read(plannedDaysProvider('test-trail').notifier);
+      final notifier = container.read(
+        plannedDaysProvider('test-trail').notifier,
+      );
       final days = container.read(plannedDaysProvider('test-trail'));
-      // Chaque jour porte une etape ENTIERE -> chacun est coupable.
+      final avant = days.length;
+
+      // Chaque jour porte UNE etape : il n'y a rien a degrouper nulle part.
       for (var i = 0; i < days.length; i++) {
-        expect(notifier.canSplit(i), isTrue,
-            reason: 'jour $i porte une etape entiere, donc coupable');
+        expect(
+          notifier.canSplit(i),
+          isFalse,
+          reason: 'jour $i ne porte qu une etape, rien a degrouper',
+        );
+        expect(notifier.splitBlockedReason(i), 'single');
       }
 
-      final avant = days.first;
+      // Et le geste ne fait RIEN : aucune demi-etape n'apparait.
       notifier.splitDay(0);
       final apres = container.read(plannedDaysProvider('test-trail'));
-      expect(apres.length, 6, reason: 'un jour de plus : l etape est en deux');
-
-      // Les deux portions somment EXACTEMENT l etape d origine : aucun
-      // kilometre ni metre de denivele ne se perd dans un arrondi.
-      expect(apres[0].totalDistanceKm + apres[1].totalDistanceKm,
-          closeTo(avant.totalDistanceKm, 0.0001));
-      expect(apres[0].totalElevationGainM + apres[1].totalElevationGainM,
-          avant.totalElevationGainM);
-      // Et chacune est plus legere que l etape entiere : c est tout l interet.
-      expect(apres[0].totalDistanceKm, lessThan(avant.totalDistanceKm));
-      expect(apres[1].totalDistanceKm, lessThan(avant.totalDistanceKm));
-
-      // UNE SEULE FOIS : une portion ne se recoupe pas, et on le DIT.
-      expect(notifier.canSplit(0), isFalse);
-      expect(notifier.splitBlockedReason(0), 'portion');
+      expect(apres.length, avant);
+      expect(
+        apres.first.stages.single.name,
+        days.first.stages.single.name,
+        reason: 'aucun suffixe de portion : l etape est restee entiere',
+      );
 
       container.dispose();
     });
 
-    test('SEPARER est DISPONIBLE sur un jour multi-etapes, et le decoupe',
-        () async {
-      final container = makeContainer();
-      await container.read(stagesProvider('test-trail').future);
-      // 3 jours < 5 etapes -> au moins un jour porte plusieurs etapes.
-      container.read(selectedDurationProvider.notifier).set(3);
+    test(
+      'SEPARER est DISPONIBLE sur un jour multi-etapes, et le decoupe',
+      () async {
+        final container = makeContainer();
+        await container.read(stagesProvider('test-trail').future);
+        // 3 jours < 5 etapes -> au moins un jour porte plusieurs etapes.
+        container.read(selectedDurationProvider.notifier).set(3);
 
-      final notifier =
-          container.read(plannedDaysProvider('test-trail').notifier);
-      final days = container.read(plannedDaysProvider('test-trail'));
-      expect(days.length, 3);
+        final notifier = container.read(
+          plannedDaysProvider('test-trail').notifier,
+        );
+        final days = container.read(plannedDaysProvider('test-trail'));
+        expect(days.length, 3);
 
-      final multiIndex = days.indexWhere((d) => d.stages.length > 1);
-      expect(multiIndex, isNot(-1),
-          reason: '3 jours pour 5 etapes -> un jour multi-etapes existe');
-      expect(notifier.canSplit(multiIndex), isTrue);
+        final multiIndex = days.indexWhere((d) => d.stages.length > 1);
+        expect(
+          multiIndex,
+          isNot(-1),
+          reason: '3 jours pour 5 etapes -> un jour multi-etapes existe',
+        );
+        expect(notifier.canSplit(multiIndex), isTrue);
 
-      final before = days.length;
-      final splitCount = days[multiIndex].stages.length;
-      notifier.splitDay(multiIndex);
-      final after = container.read(plannedDaysProvider('test-trail'));
-      // Le jour multi-etapes eclate en N jours mono-etape.
-      expect(after.length, before - 1 + splitCount);
+        final before = days.length;
+        final splitCount = days[multiIndex].stages.length;
+        notifier.splitDay(multiIndex);
+        final after = container.read(plannedDaysProvider('test-trail'));
+        // Le jour multi-etapes eclate en N jours mono-etape.
+        expect(after.length, before - 1 + splitCount);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
   });
 
   // Retour QA polish (P3) : coherence Itineraire<->Programme. Le programme doit
@@ -177,27 +190,29 @@ void main() {
   // ordre des etapes du Programme inverse (Jour 1 = etape de depart du sens
   // choisi). testTrailConfig.directions = ['NS', 'SN'] (NS = sens de reference).
   group('PROGRAMME — honore le sens de marche (parite itineraire)', () {
-    test('sens de reference (defaut) : Jour 1 = 1re etape (ordre croissant)',
-        () async {
-      final container = makeContainer();
-      await container.read(stagesProvider('test-trail').future);
-      container.read(selectedDurationProvider.notifier).set(5);
+    test(
+      'sens de reference (defaut) : Jour 1 = 1re etape (ordre croissant)',
+      () async {
+        final container = makeContainer();
+        await container.read(stagesProvider('test-trail').future);
+        container.read(selectedDurationProvider.notifier).set(5);
 
-      final days = container.read(plannedDaysProvider('test-trail'));
-      // 5 jours mono-etape, ordre croissant : J1=E1 ... J5=E5.
-      expect(days.first.stages.single.stageNumber, 1);
-      expect(days.last.stages.single.stageNumber, 5);
+        final days = container.read(plannedDaysProvider('test-trail'));
+        // 5 jours mono-etape, ordre croissant : J1=E1 ... J5=E5.
+        expect(days.first.stages.single.stageNumber, 1);
+        expect(days.last.stages.single.stageNumber, 5);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
 
-    test('sens INVERSE (SN) : Jour 1 = derniere etape (ordre inverse)',
-        () async {
+    test('sens INVERSE (SN) : Jour 1 = derniere etape (ordre inverse)', () async {
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail')
-              .overrideWith((ref) => Future.value(testStages)),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testStages)),
         ],
       );
       await container.read(stagesProvider('test-trail').future);
@@ -213,25 +228,28 @@ void main() {
       container.dispose();
     });
 
-    test('selection explicite du sens de reference (NS) : ordre croissant',
-        () async {
-      final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-          stagesProvider('test-trail')
-              .overrideWith((ref) => Future.value(testStages)),
-        ],
-      );
-      await container.read(stagesProvider('test-trail').future);
-      container.read(selectedDurationProvider.notifier).set(5);
-      container.read(selectedDirectionProvider.notifier).state = 'NS';
+    test(
+      'selection explicite du sens de reference (NS) : ordre croissant',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            trailConfigProvider.overrideWithValue(testTrailConfig),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(testStages)),
+          ],
+        );
+        await container.read(stagesProvider('test-trail').future);
+        container.read(selectedDurationProvider.notifier).set(5);
+        container.read(selectedDirectionProvider.notifier).state = 'NS';
 
-      final days = container.read(plannedDaysProvider('test-trail'));
-      expect(days.first.stages.single.stageNumber, 1);
-      expect(days.last.stages.single.stageNumber, 5);
+        final days = container.read(plannedDaysProvider('test-trail'));
+        expect(days.first.stages.single.stageNumber, 1);
+        expect(days.last.stages.single.stageNumber, 5);
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
   });
 
   // -------------------------------------------------------------------------

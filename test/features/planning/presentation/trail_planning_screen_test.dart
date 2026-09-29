@@ -166,6 +166,13 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap sur la carte du jour 1 (via son nom d'etape).
+      //
+      // `ensureVisible` depuis la tache 634 : chaque etape ayant desormais sa
+      // propre journee, l'en-tete de la liste porte en plus la phrase « un jour
+      // de plus n'ajoutera que du repos » — et la premiere carte peut tomber
+      // sous la ligne de flottaison du viewport de test.
+      await tester.ensureVisible(find.text('Etape 1 - Refuge 1'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Etape 1 - Refuge 1'));
       await tester.pumpAndSettle();
 
@@ -310,19 +317,18 @@ void main() {
       // Libelle du selecteur present.
       expect(find.text(t.programme.duration.label), findsOneWidget);
 
-      // 5 etapes -> min 3 ; borne haute 12 (tache 558 : deux journees par etape
-      // + 2 repos). L'ancienne borne, 7, s'arretait pile la ou le curseur
-      // aurait commence a servir : au-dela de 5 jours de marche, les seuls jours
-      // disponibles etaient du repos, et le repos ne change rien a la pire
-      // journee — donc rien au verdict (GO-61). Retour de Chris, mot pour mot :
-      // « ca me propose 9jours, je peux pas augmenter et ca met tout en rouge ».
+      // TACHE 634 (DEM-260929-1327) — LA BORNE HAUTE REDESCEND A LA DUREE
+      // NATURELLE. Le lot 558 l'avait portee a deux journees par etape (12 ici)
+      // pour laisser le curseur COUPER les etapes ; le decoupage est retire,
+      // donc la borne haute redevient « une journee par etape + le repos
+      // conseille » = 5 + 2 = 7. Au-dela, il n'y aurait que du repos, et le
+      // repos ne change rien au verdict (GO-61) — l'ecran le DIT desormais au
+      // lieu d'offrir une plage de curseur qui ne sert a rien.
       final slider = tester.widget<Slider>(find.byType(Slider));
       expect(slider.min, 3.0);
-      expect(slider.max, 12.0);
-      expect(slider.divisions, 9); // 12 - 3
-      // GO-61 : duree par defaut = 5 jours de marche + 2 repos conseilles. Le
-      // DEFAUT reste pose sur la duree NATURELLE : aucun sentier ne s'ouvre sur
-      // des etapes deja coupees en deux.
+      expect(slider.max, 7.0);
+      expect(slider.divisions, 4); // 7 - 3
+      // GO-61 : duree par defaut = 5 jours de marche + 2 repos conseilles.
       expect(slider.value, 7.0);
 
       // Le compteur affiche le total ET le detail des repos.
@@ -332,32 +338,27 @@ void main() {
       expect(find.text(labelAvecRepos), findsWidgets);
     });
 
-    testWidgets('la couleur du curseur suit la DIFFICULTE (ratio etapes/jours)', (
-      tester,
-    ) async {
+    testWidgets('sans verdict calculable, le curseur ne QUALIFIE plus rien '
+        '(tache 634)', (tester) async {
+      // TACHE 634 (DEM-260929-1132). Ce test verrouillait l'inverse : la
+      // couleur et le libelle du curseur suivaient un ratio etapes/jour
+      // (« Standard », « Tres exigeant ») quand le verdict n'etait pas
+      // calculable. C'etait une SECONDE base de calcul pour le meme mot, et
+      // c'est ce que Christophe a refuse. Le curseur reste neutre.
       await tester.pumpWidget(
         ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
-      // 5 etapes / 5 jours de marche = ratio 1.0 -> « Standard » (jaune modere).
-      var slider = tester.widget<Slider>(find.byType(Slider));
-      expect(slider.activeColor, AppTheme.jauneModere);
-      expect(
-        find.text(t.programme.duration.difficulty.standard),
-        findsOneWidget,
-      );
-
-      // Descendre a 3 jours -> 5 etapes / 3 jours = 1.67 -> « Tres exigeant »
-      // (rouge). Le curseur DOIT changer de couleur (parite GR20).
-      slider.onChanged!(3);
-      await tester.pumpAndSettle();
-      slider = tester.widget<Slider>(find.byType(Slider));
-      expect(slider.activeColor, AppTheme.rougeExtreme);
-      expect(
-        find.text(t.programme.duration.difficulty.demanding),
-        findsOneWidget,
-      );
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.activeColor, AppTheme.grisGranite);
+      for (final libelle in [
+        t.feasibility.formula.verdicts.green,
+        t.feasibility.formula.verdicts.orange,
+        t.feasibility.formula.verdicts.red,
+      ]) {
+        expect(find.text(libelle), findsNothing);
+      }
     });
 
     testWidgets('changer la duree via le curseur recalcule le programme', (
@@ -462,22 +463,22 @@ void main() {
     // (l'etape se coupe en deux portions de meme energie) ; ce qui reste
     // indisponible, c'est de recouper une PORTION. C'est ce refus-la, et son
     // explication, qu'on verrouille ici.
-    testWidgets('Separer une PORTION deja coupee explique pourquoi', (
+    testWidgets('Separer un jour d UNE SEULE etape refuse et dit pourquoi', (
       tester,
     ) async {
+      // TACHE 634 (DEM-260929-1327). Ce test verrouillait l'inverse : le
+      // premier tap COUPAIT l'etape en deux demi-journees et seul le second
+      // etait refuse. Le decoupage est retire ; « Separer » ne sait plus que
+      // DEGROUPER des etapes reunies, donc un jour qui n'en porte qu'une n'a
+      // rien a separer — et l'ecran le DIT.
       await pumpProgramme(tester);
 
-      // 1er tap : le jour 1 porte une etape ENTIERE -> elle est coupee en deux.
       await tester.tap(find.text(t.programme.actions.split).first);
       await tester.pumpAndSettle();
-      expect(find.text(t.programme.splitBlocked.portion), findsNothing,
-          reason: 'la premiere coupe est legitime, aucun refus a expliquer');
+      expect(find.text(t.programme.splitBlocked.single), findsOneWidget);
 
-      // 2e tap sur la MEME journee : c'est desormais une demi-etape, on ne la
-      // recoupe pas — et un snackbar dit pourquoi (feedback, parite GR20).
-      await tester.tap(find.text(t.programme.actions.split).first);
-      await tester.pumpAndSettle();
-      expect(find.text(t.programme.splitBlocked.portion), findsOneWidget);
+      // Et le programme n'a pas bouge : toujours 5 journees d'une etape.
+      expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
     });
 
     testWidgets('Regrouper puis Separer fonctionnent depuis la liste', (

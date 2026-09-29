@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/trail_catalog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/pack_catalog.dart';
@@ -71,8 +72,10 @@ class PackStoreScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(t.packs.subtitle,
-                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text(
+                        t.packs.subtitle,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                       const SizedBox(height: AppTheme.spacingXs),
                       Semantics(
                         label: t.packs.alaCarteNote,
@@ -81,19 +84,22 @@ class PackStoreScreen extends ConsumerWidget {
                           padding: const EdgeInsets.all(AppTheme.spacingSm),
                           decoration: BoxDecoration(
                             color: AppTheme.vertFacile.withAlpha(30),
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.radiusCard),
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.radiusCard,
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const StepIcon(StepwaysIcons.info,
-                                  size: 18, color: AppTheme.vertFacile),
+                              const StepIcon(
+                                StepwaysIcons.info,
+                                size: 18,
+                                color: AppTheme.vertFacile,
+                              ),
                               const SizedBox(width: AppTheme.spacingSm),
                               Expanded(
                                 child: Text(
                                   t.packs.alaCarteNote,
-                                  style:
-                                      Theme.of(context).textTheme.bodySmall,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             ],
@@ -107,8 +113,7 @@ class PackStoreScreen extends ConsumerWidget {
                 for (final pack in packs)
                   PackCard(
                     pack: pack,
-                    manifest:
-                        PackCatalog.manifestFor(trailId, pack.type),
+                    manifest: PackCatalog.manifestFor(trailId, pack.type),
                     updateAvailable: updatablePackIds.contains(pack.id),
                   ),
                 const SizedBox(height: AppTheme.spacingLg),
@@ -118,19 +123,48 @@ class PackStoreScreen extends ConsumerWidget {
   }
 
   /// Resout les libelles localises d'un type de pack via Slang (5 langues).
+  ///
+  /// LE NOM DU SENTIER VIENT DU SENTIER (tache 634, DEM-260929-1326). Retour de
+  /// Christophe du 29/09 13:26, verbatim : « Mare a mare centre, il manque
+  /// centre dans le nom ». Il avait raison, et la cause n'etait PAS une
+  /// troncature : ces quatre libelles etaient des noms de sentier ECRITS EN DUR
+  /// dans les cinq fichiers de traduction (« Mare a Mare Nord », « Mare a Mare
+  /// Sud », « Mare a Mare Complet », « Mare a Mare »). Le mot « Centre » n'y
+  /// avait jamais figure, et cet ecran ne lisait a aucun moment le nom du
+  /// sentier qu'il montrait — alors que la configuration le porte correctement
+  /// depuis toujours (`mare_a_mare_centre_trail_config.dart` : 'Mare a Mare
+  /// Centre').
+  ///
+  /// Le defaut etait donc plus large que le mot manquant : un moteur GENERIQUE
+  /// multi-sentiers affichait le nom d'un sentier particulier quel que soit le
+  /// sentier ouvert. Les libelles sont maintenant parametres par le nom reel du
+  /// sentier ; « Centre » ne peut plus se perdre, et aucun autre sentier ne
+  /// peut plus heriter du nom de celui-la.
   PackLabels _labelsFor(Translations t, String type) {
     final types = t.packs.types;
+    final nomDuSentier = TrailCatalog.byId(trailId)?.displayName ?? trailId;
     switch (type) {
       case PackType.nord:
-        return PackLabels(nom: types.nord.nom, description: types.nord.description);
+        return PackLabels(
+          nom: types.nord.nom(trail: nomDuSentier),
+          description: types.nord.description,
+        );
       case PackType.sud:
-        return PackLabels(nom: types.sud.nom, description: types.sud.description);
+        return PackLabels(
+          nom: types.sud.nom(trail: nomDuSentier),
+          description: types.sud.description,
+        );
       case PackType.complet:
         return PackLabels(
-            nom: types.complet.nom, description: types.complet.description);
+          nom: types.complet.nom(trail: nomDuSentier),
+          description: types.complet.description,
+        );
       case PackType.mam:
       default:
-        return PackLabels(nom: types.mam.nom, description: types.mam.description);
+        return PackLabels(
+          nom: types.mam.nom(trail: nomDuSentier),
+          description: types.mam.description(trail: nomDuSentier),
+        );
     }
   }
 }

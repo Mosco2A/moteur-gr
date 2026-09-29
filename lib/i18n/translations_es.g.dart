@@ -68,6 +68,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$es goodies = _Translations$goodies$es._(_root);
 	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
 	@override late final _Translations$catalog$es catalog = _Translations$catalog$es._(_root);
+	@override late final _Translations$demo$es demo = _Translations$demo$es._(_root);
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
@@ -850,6 +851,23 @@ class _Translations$catalog$es extends Translations$catalog$fr {
 	@override String get staleNoticeOffline => 'Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red.';
 }
 
+// Path: demo
+class _Translations$demo$es extends Translations$demo$fr {
+	_Translations$demo$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get bandeau => 'MODO DEMO';
+	@override String get quitter => 'Salir';
+	@override String get boutonTitre => 'Probar la demo';
+	@override String get boutonSous => 'Descubra la aplicación de principio a fin, sin compromiso';
+	@override String get rienNeCompte => 'Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.';
+	@override String get simulerEtape => 'Simular la siguiente etapa';
+	@override String get simulerFin => 'Simular la llegada';
+	@override String get simulerRelancer => 'Reiniciar la demo';
+}
+
 // Path: updates
 class _Translations$updates$es extends Translations$updates$fr {
 	_Translations$updates$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -964,6 +982,7 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
 	@override String get buyOutcomeUnknownPrice => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.';
+	@override String get buyOutcomeDemo => 'Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mes';
 	@override String get subscriptionAllowanceForLife => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.';
 	@override String get cancelCta => 'Cancelar mi suscripción';
@@ -1681,6 +1700,9 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Sin especificar';
 	@override String get fieldCountry => 'País';
 	@override String get countryUnspecified => 'Sin especificar';
+	@override String get countryPickerTitle => 'Elegir un país';
+	@override String get countrySearchHint => 'Buscar un país';
+	@override String get countryNoResult => 'Ningún país coincide';
 	@override String get hintCountry => 'Código (p. ej. FR)';
 	@override String get consentTitle => 'Datos corporales (RGPD artículo 9)';
 	@override String get consentBody => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.';
@@ -2476,6 +2498,13 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Viabilidad para este trek';
+	@override String get answerTitle => '¿Está a su alcance?';
+	@override String answerGreen({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.';
+	@override String answerOrange({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.';
+	@override String get answerRed => 'Así no: una jornada de este sendero supera lo que su perfil puede aguantar.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.';
+	@override String answerNoRest({required Object walking}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.';
+	@override String get explainToggle => 'Cómo se calcula este resultado';
 	@override String get intro => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})';
 	@override String get stagesTitle => 'Día por día';
@@ -3189,9 +3218,8 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Número de días';
 	@override String get daysWithRest => '{total} d en total (incl. {rest} de descanso)';
-	@override String get splitNote => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.';
-	@override String get splitExhausted => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.';
-	@override late final _Translations$programme$duration$difficulty$es difficulty = _Translations$programme$duration$difficulty$es._(_root);
+	@override String get splitNote => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.';
+	@override String get splitExhausted => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.';
 	@override String get daysTotal => '{count} d en total';
 }
 
@@ -3297,8 +3325,7 @@ class _Translations$programme$splitBlocked$es extends Translations$programme$spl
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'No se puede partir: este día no tiene nada que cortar.';
-	@override String get portion => 'No se puede partir: esta etapa ya está partida en dos.';
+	@override String get single => 'No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.';
 	@override String get locked => 'Día ya caminado: ya no se puede modificar';
 }
 
@@ -3969,7 +3996,7 @@ class _Translations$packs$types$nord$es extends Translations$packs$types$nord$fr
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Norte';
+	@override String nom({required Object trail}) => '${trail} — Norte';
 	@override String get description => 'La mitad norte del sendero, sin conexión.';
 }
 
@@ -3980,7 +4007,7 @@ class _Translations$packs$types$sud$es extends Translations$packs$types$sud$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Sur';
+	@override String nom({required Object trail}) => '${trail} — Sur';
 	@override String get description => 'La mitad sur del sendero, sin conexión.';
 }
 
@@ -3991,7 +4018,7 @@ class _Translations$packs$types$complet$es extends Translations$packs$types$comp
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Completo';
+	@override String nom({required Object trail}) => '${trail} — Completo';
 	@override String get description => 'Todo el sendero, sin conexión.';
 }
 
@@ -4002,21 +4029,8 @@ class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare';
-	@override String get description => 'El sendero Mare a Mare, sin conexión.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$es extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Cómodo';
-	@override String get standard => 'Estándar';
-	@override String get sporty => 'Deportivo';
-	@override String get demanding => 'Muy exigente';
+	@override String nom({required Object trail}) => '${trail}';
+	@override String description({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.';
 }
 
 // Path: programme.info.days
@@ -4933,6 +4947,13 @@ extension on TranslationsEs {
 			'feasibility.gaps.fitness' => 'Forma insuficiente en la prueba de 6 minutos',
 			'feasibility.gaps.effort' => 'Esfuerzo global (IBP) por encima de tu experiencia',
 			'feasibility.formula.title' => 'Viabilidad para este trek',
+			'feasibility.formula.answerTitle' => '¿Está a su alcance?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.',
+			'feasibility.formula.answerRed' => 'Así no: una jornada de este sendero supera lo que su perfil puede aguantar.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.',
+			'feasibility.formula.explainToggle' => 'Cómo se calcula este resultado',
 			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})',
 			'feasibility.formula.stagesTitle' => 'Día por día',
@@ -5086,6 +5107,14 @@ extension on TranslationsEs {
 			'catalog.loadFailedSubtitle' => 'No se ha podido recuperar la lista de senderos ahora mismo. Los senderos ya descargados siguen disponibles sin conexión.',
 			'catalog.loadFailedRetry' => 'Reintentar',
 			'catalog.staleNoticeOffline' => 'Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red.',
+			'demo.bandeau' => 'MODO DEMO',
+			'demo.quitter' => 'Salir',
+			'demo.boutonTitre' => 'Probar la demo',
+			'demo.boutonSous' => 'Descubra la aplicación de principio a fin, sin compromiso',
+			'demo.rienNeCompte' => 'Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.',
+			'demo.simulerEtape' => 'Simular la siguiente etapa',
+			'demo.simulerFin' => 'Simular la llegada',
+			'demo.simulerRelancer' => 'Reiniciar la demo',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -5151,12 +5180,15 @@ extension on TranslationsEs {
 			'monetization.subscriptionInactive' => 'Ninguna suscripción activa',
 			'monetization.subscriptionAllowancePending' => 'El importe del bote aún no está fijado.',
 			'monetization.realizationLockedTitle' => 'Esta ruta no está desbloqueada',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.',
 			'monetization.buyOutcomeOwned' => 'Ruta desbloqueada. ¡Buen camino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
 			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
+			'monetization.buyOutcomeDemo' => 'Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
 			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
 			'monetization.cancelCta' => 'Cancelar mi suscripción',
@@ -5166,8 +5198,6 @@ extension on TranslationsEs {
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
 			'signalement.types.eauASec' => 'Punto de agua seco',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.types.danger' => 'Peligro',
 			'signalement.latencyBanner' => 'Guardado. Visible para otros senderistas tras la sincronización de red.',
 			'signalement.confirm' => 'Confirmar notificación',
@@ -5366,14 +5396,14 @@ extension on TranslationsEs {
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
 			'packs.a11y.downloadButton' => ({required Object nom}) => 'Descargar el pack ${nom}',
 			'packs.a11y.deleteButton' => ({required Object nom}) => 'Eliminar el pack ${nom}',
-			'packs.types.nord.nom' => 'Mare a Mare Norte',
+			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Norte',
 			'packs.types.nord.description' => 'La mitad norte del sendero, sin conexión.',
-			'packs.types.sud.nom' => 'Mare a Mare Sur',
+			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Sur',
 			'packs.types.sud.description' => 'La mitad sur del sendero, sin conexión.',
-			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Completo',
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
+			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
+			'packs.types.mam.description' => ({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.',
 			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones prácticas',
@@ -5619,12 +5649,8 @@ extension on TranslationsEs {
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.daysWithRest' => '{total} d en total (incl. {rest} de descanso)',
-			'programme.duration.splitNote' => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.',
-			'programme.duration.splitExhausted' => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.',
-			'programme.duration.difficulty.comfortable' => 'Cómodo',
-			'programme.duration.difficulty.standard' => 'Estándar',
-			'programme.duration.difficulty.sporty' => 'Deportivo',
-			'programme.duration.difficulty.demanding' => 'Muy exigente',
+			'programme.duration.splitNote' => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.',
+			'programme.duration.splitExhausted' => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.',
 			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
@@ -5668,9 +5694,10 @@ extension on TranslationsEs {
 			'programme.info.colors.title' => 'Colores',
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.close' => '¡Entendido!',
-			'programme.splitBlocked.single' => 'No se puede partir: este día no tiene nada que cortar.',
-			'programme.splitBlocked.portion' => 'No se puede partir: esta etapa ya está partida en dos.',
+			'programme.splitBlocked.single' => 'No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.',
 			'programme.splitBlocked.locked' => 'Día ya caminado: ya no se puede modificar',
 			'programme.reorderBlocked' => 'Ruta iniciada: el orden de las etapas ya no cambia',
 			'programme.inTrek.title' => 'Adaptar el itinerario',
@@ -5680,8 +5707,6 @@ extension on TranslationsEs {
 			'programme.inTrek.doneBadge' => 'Hecho',
 			'programme.inTrek.lockedDay' => 'Día ya caminado, bloqueado',
 			'programme.inTrek.allDone' => 'Has caminado todos tus días: ya no queda nada que adaptar.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.inTrek.notStarted' => 'Esta pantalla es para la ruta: inicia tu travesía para adaptar lo que viene.',
 			'programme.inTrek.validate' => 'Guardar mis cambios',
 			'programme.inTrek.saved' => 'Programa actualizado',
@@ -5951,6 +5976,9 @@ extension on TranslationsEs {
 			'hikerProfile.sexUnspecified' => 'Sin especificar',
 			'hikerProfile.fieldCountry' => 'País',
 			'hikerProfile.countryUnspecified' => 'Sin especificar',
+			'hikerProfile.countryPickerTitle' => 'Elegir un país',
+			'hikerProfile.countrySearchHint' => 'Buscar un país',
+			'hikerProfile.countryNoResult' => 'Ningún país coincide',
 			'hikerProfile.hintCountry' => 'Código (p. ej. FR)',
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD artículo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',

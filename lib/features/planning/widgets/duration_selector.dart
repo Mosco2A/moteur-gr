@@ -4,42 +4,24 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/domain/feasibility_formula.dart';
 
-/// Niveau de difficulte derive du ratio etapes / jours de marche (parite GR20).
+/// LE QUALIFICATIF D'EFFORT N'A PLUS QU'UNE SEULE BASE DE CALCUL (tache 634,
+/// DEM-260929-1132).
 ///
-/// GR20 (`ItineraryConfigScreen`) colore le curseur de duree selon
-/// `stagesPerDay = nbEtapes / nbJours` : peu d'etapes par jour = confortable
-/// (vert), beaucoup = tres exigeant (rouge). On reprend a l'identique les memes
-/// seuils et la meme echelle de couleurs semantiques.
-enum DurationDifficulty { comfortable, standard, sporty, demanding }
-
-/// Calcule le niveau de difficulte a partir du ratio etapes / jours de marche.
+/// CE QUI A ETE RETIRE. Ce fichier portait un SECOND systeme de qualificatif,
+/// `durationDifficultyFor` : un simple ratio etapes / jours de marche (<=0,8
+/// « Confortable », <=1,0 « Standard », <=1,3 « Sportif », au-dela « Tres
+/// exigeant »), herite du GR20. Il ne connaissait ni le profil du randonneur,
+/// ni l'energie d'une journee, ni son plafond. Il servait de repli quand le
+/// verdict n'etait pas calculable — si bien que la MEME pastille pouvait dire
+/// « Sportif » (un ratio) ou « Decoupage exigeant » (une energie rapportee a
+/// une capacite) selon l'etat du profil, sans que rien ne distingue les deux.
 ///
-/// Memes seuils que GR20 : <=0.8 confortable, <=1.0 standard, <=1.3 sportif,
-/// au-dela tres exigeant. [walkingDays] = jours de MARCHE (repos exclus) pour
-/// que la couleur reflete l'effort reel ; retombe sur « standard » si aucun
-/// jour de marche (cas degenere).
-DurationDifficulty durationDifficultyFor(int stageCount, int walkingDays) {
-  if (walkingDays <= 0) return DurationDifficulty.standard;
-  final stagesPerDay = stageCount / walkingDays;
-  if (stagesPerDay <= 0.8) return DurationDifficulty.comfortable;
-  if (stagesPerDay <= 1.0) return DurationDifficulty.standard;
-  if (stagesPerDay <= 1.3) return DurationDifficulty.sporty;
-  return DurationDifficulty.demanding;
-}
-
-/// Couleur semantique StepWays associee a un niveau de difficulte (parite GR20).
-Color durationDifficultyColor(DurationDifficulty difficulty) {
-  switch (difficulty) {
-    case DurationDifficulty.comfortable:
-      return AppTheme.vertFacile;
-    case DurationDifficulty.standard:
-      return AppTheme.jauneModere;
-    case DurationDifficulty.sporty:
-      return AppTheme.orangeDifficile;
-    case DurationDifficulty.demanding:
-      return AppTheme.rougeExtreme;
-  }
-}
+/// Retour de Christophe du 29/09 11:32 : « pourquoi la faisabilite de mare a
+/// mare te le propose en 4 jours ?????? En te disant que c'est exigeant, c'est
+/// completement con !!! ». Le plan et le jugement doivent venir de la MEME base
+/// de calcul. Il n'en reste donc qu'une : le verdict. Quand il n'est pas
+/// calculable, la pastille ne s'affiche PAS — se taire vaut mieux que qualifier
+/// l'effort d'un randonneur sur une echelle qui ne le connait pas.
 
 /// COULEUR DU VERDICT DE FAISABILITE (retour Chris 6c du 25/09, spec #100417).
 ///
@@ -68,21 +50,6 @@ String durationVerdictLabel(FeasibilityVerdict verdict) {
       return v.orange;
     case FeasibilityVerdict.red:
       return v.red;
-  }
-}
-
-/// Libelle i18n du niveau de difficulte (parite GR20 « Confortable / Standard /
-/// Sportif / Tres exigeant »).
-String durationDifficultyLabel(DurationDifficulty difficulty) {
-  switch (difficulty) {
-    case DurationDifficulty.comfortable:
-      return t.programme.duration.difficulty.comfortable;
-    case DurationDifficulty.standard:
-      return t.programme.duration.difficulty.standard;
-    case DurationDifficulty.sporty:
-      return t.programme.duration.difficulty.sporty;
-    case DurationDifficulty.demanding:
-      return t.programme.duration.difficulty.demanding;
   }
 }
 
@@ -160,15 +127,13 @@ class DurationSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Le verdict prime sur le ratio : il tient compte du profil du randonneur
-    // ET du decoupage reel, la ou le ratio ne voit que des etapes par jour.
+    // UNE SEULE BASE DE CALCUL (tache 634). Le verdict, ou rien : pas de
+    // second qualificatif de repli sur une autre echelle.
     final v = verdict;
-    final difficulty = durationDifficultyFor(stageCount, walkingDays);
     final sliderColor = v == null
-        ? durationDifficultyColor(difficulty)
+        ? AppTheme.grisGranite
         : durationVerdictColor(v);
-    final badgeLabel =
-        v == null ? durationDifficultyLabel(difficulty) : durationVerdictLabel(v);
+    final badgeLabel = v == null ? null : durationVerdictLabel(v);
 
     // Bornes securisees : un slider exige min < max et au moins 1 division.
     final min = minDuration.toDouble();
@@ -219,27 +184,30 @@ class DurationSelector extends StatelessWidget {
               // faisait deborder la ligne sur un ecran de telephone — constate
               // en test widget a 468 px de large. Elle se replie desormais sur
               // deux lignes plutot que de deborder.
-              Flexible(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: sliderColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                    border: Border.all(color: sliderColor.withAlpha(90)),
-                  ),
-                  child: Text(
-                    badgeLabel,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: sliderColor,
-                      fontWeight: FontWeight.w700,
+              if (badgeLabel != null)
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: sliderColor.withAlpha(30),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                      border: Border.all(color: sliderColor.withAlpha(90)),
+                    ),
+                    child: Text(
+                      badgeLabel,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: sliderColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingXs),
@@ -272,13 +240,17 @@ class DurationSelector extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                t.programme.duration.daysTotal
-                    .replaceAll('{count}', '$minDuration'),
+                t.programme.duration.daysTotal.replaceAll(
+                  '{count}',
+                  '$minDuration',
+                ),
                 style: theme.textTheme.bodySmall,
               ),
               Text(
-                t.programme.duration.daysTotal
-                    .replaceAll('{count}', '$maxDuration'),
+                t.programme.duration.daysTotal.replaceAll(
+                  '{count}',
+                  '$maxDuration',
+                ),
                 style: theme.textTheme.bodySmall,
               ),
             ],

@@ -1,46 +1,44 @@
-/// LA RECHERCHE DU PROGRAMME CONSEILLE — L'INVARIANTE DU LOT R (tache 569).
+/// LE PROGRAMME CONSEILLE : LE PLAN DU SENTIER, PAS UN PLAN INVENTE.
 ///
-/// DECISION DE CHRIS DU 26/09, VERBATIM : « OK mais le curseur est celui
-/// conseille et il n'est jamais en rouge quand il est conseille en orange max ».
+/// TACHE 634 (DEM-260929-1132 et DEM-260929-1327). Retour de Christophe du
+/// 29/09 11:32, verbatim : « pourquoi la faisabilite de mare a mare te le
+/// propose en 4 jours ?????? En te disant que c'est exigeant, c'est
+/// completement con !!! ».
 ///
-/// CE QUI N'ALLAIT PAS, ET CE N'ETAIT PAS UN ARBITRAGE DE CONFORT. Le conseil de
-/// duree et le verdict etaient produits par DEUX REGLES DIFFERENTES :
+/// D'OU VENAIENT LES 4 JOURS, MESURE. Ce fichier cherchait LE PLUS PETIT total
+/// de jours du curseur dont le verdict n'etait pas rouge. La borne basse du
+/// curseur valait `ceil(nbEtapes / 2)` — pour les 7 etapes du Mare a Mare
+/// Centre, QUATRE. Le moteur essayait donc 4 en premier, y REGROUPAIT les 7
+/// etapes en 4 journees (deux etapes par jour ou presque), trouvait le verdict
+/// orange, et s'arretait la. Il proposait ainsi de son propre chef un plan
+/// comprime que personne n'avait demande, puis le qualifiait d'exigeant.
+/// Christophe a raison : c'est absurde. Un moteur qui sait qu'un plan est dur
+/// ne le propose pas.
 ///
-///   * le conseil par `FeasibilityFormula._suggestedWalkingDays`, qui cherche le
-///     nombre de journees pour que la CHARGE MOYENNE tienne sous la capacite
-///     (energie totale / capacite, arrondi au superieur, plus une journee par
-///     journee au-dessus du plafond) ;
-///   * le verdict par le SCORE DE CIRCUIT, qui vaut C1 = LA PIRE JOURNEE et elle
-///     seule depuis GO-61.
+/// CE QUE LE MOTEUR PROPOSE MAINTENANT. Le plan d'etapes du sentier TEL QU'IL
+/// EST DANS LES DONNEES : une etape, une journee de marche — 7 journees pour le
+/// Mare a Mare Centre — plus les jours de repos que le moteur conseille
+/// (GO-61). Rien n'est regroupe, rien n'est coupe. Le randonneur garde son
+/// curseur s'il veut comprimer ; c'est SON choix, plus une proposition de
+/// l'application.
 ///
-/// Une MOYENNE ne dit rien d'un MAXIMUM : viser la moyenne laisse la pire
-/// journee exactement ou elle est. Et deux unites s'ajoutaient au malentendu —
-/// le conseil comptait des jours de MARCHE, le curseur affiche des TOTAUX. Mesure
-/// sur les 96 cellules de la campagne avant correction : 16 conseils dont le
-/// nombre, lu sur le curseur, tombait sur un verdict ROUGE (dont Lea sur le Mare
-/// a Mare : « vise 10 jours », rouge a 10, orange a 11).
+/// ET IL N'Y A PLUS RIEN A CHERCHER, C'EST UNE CONSEQUENCE ET NON UN RACCOURCI.
+/// Depuis GO-61 le verdict vaut C1 = la pire journee et elle seule. Un jour de
+/// repos ne change l'energie d'aucune journee de marche, donc ne change pas
+/// C1 : au-dessus du plan du sentier, TOUS les totaux donnent exactement le
+/// meme verdict. En dessous, on regroupe, donc on aggrave. Le plan du sentier
+/// est donc le meilleur plan atteignable, et il l'est par construction — il n'y
+/// a aucun balayage a faire pour le trouver. Le decoupage d'etape, seul levier
+/// qui pouvait encore alleger C1, a ete retire par cette meme tache
+/// (DEM-260929-1327, voir [PlanningCalculator]).
 ///
-/// CE QUE FAIT CE FICHIER, ET POURQUOI C'EST LA SEULE FACON D'ETRE SUR. On
-/// n'essaie pas de rendre les deux formules compatibles : on SUPPRIME la seconde
-/// formule. Le conseil est desormais trouve par ESSAI REEL — pour chaque valeur
-/// atteignable du curseur, on construit le programme avec le moteur de
-/// repartition qui le produira a l'ecran ([PlanningCalculator.distribute]), on
-/// le colore avec le moteur de verdict qui le colorera a l'ecran
-/// ([FeasibilityFormula.evaluate]), et on retient LA PREMIERE valeur qui n'est
-/// pas rouge. L'accord des deux calculs n'est donc plus une propriete a esperer :
-/// c'est la definition du conseil.
-///
-/// ORANGE EST ACCEPTABLE, CHRIS L'A TRANCHE. On ne vise pas forcement le vert :
-/// on garantit de ne jamais conseiller un rouge, et on prend la valeur la plus
-/// PETITE qui tienne — allonger un trek au-dela du necessaire est aussi un
-/// mauvais conseil.
-///
-/// ET QUAND RIEN NE MARCHE, ON LE DIT. Si aucune valeur du curseur ne fait mieux
-/// que rouge — une etape indivisible au-dessus du plafond, meme coupee en deux —
-/// la recherche rend `null` et l'application NE CONSEILLE AUCUNE VALEUR. Mieux
-/// vaut avouer qu'il n'y a pas de solution de programme que d'en pointer une
-/// fausse : c'est le cas de l'etape de 40 km et 3 000 m de D+ pour un debutant,
-/// ou l'ancien code conseillait 2 jours et affichait rouge a 2 jours.
+/// L'INVARIANTE DE CHRIS DU 26/09 EST TENUE, ET PLUS SIMPLEMENT QU'AVANT.
+/// Verbatim : « le curseur est celui conseille et il n'est jamais en rouge
+/// quand il est conseille en orange max ». Le plan du sentier est evalue avec
+/// le moteur de verdict qui le colorera A L'ECRAN ; s'il est rouge, AUCUNE
+/// duree n'est conseillee et l'application le dit franchement — parce qu'alors
+/// aucune duree ne marcherait, une etape du sentier depassant a elle seule le
+/// plafond du randonneur. L'ecran nomme cette etape (`hardStageAlert`).
 library;
 
 import '../../../core/models/stage.dart';
@@ -72,13 +70,12 @@ class SuggestedProgram {
   final FeasibilityVerdict verdict;
 
   /// Le conseil, sous la forme que le moteur de verdict consomme.
-  ProgramDurationAdvice toAdvice() => ProgramDurationAdvice(
-        walkingDays: walkingDays,
-        restDays: restDays,
-      );
+  ProgramDurationAdvice toAdvice() =>
+      ProgramDurationAdvice(walkingDays: walkingDays, restDays: restDays);
 
   @override
-  String toString() => 'SuggestedProgram($totalDays j = $walkingDays marche + '
+  String toString() =>
+      'SuggestedProgram($totalDays j = $walkingDays marche + '
       '$restDays repos, ${verdict.name})';
 }
 
@@ -106,12 +103,9 @@ class ProgramPlanSearch {
     List<StageModel> stages,
     int totalDays, {
     required int restAllowance,
-  }) =>
-      FeasibilityProgram.fromDayPlans(PlanningCalculator.distribute(
-        stages,
-        totalDays,
-        maxRestDays: restAllowance,
-      ));
+  }) => FeasibilityProgram.fromDayPlans(
+    PlanningCalculator.distribute(stages, totalDays),
+  );
 
   /// Le verdict REEL a [totalDays] jours de curseur.
   ///
@@ -142,19 +136,25 @@ class ProgramPlanSearch {
     );
   }
 
-  /// LE CONSEIL : le PLUS PETIT total de jours dont le verdict n'est pas rouge.
+  /// LE CONSEIL : LE PLAN DU SENTIER, repos conseilles compris.
   ///
-  /// `null` quand AUCUNE valeur du curseur ne fait mieux que rouge — et alors
-  /// l'application ne conseille aucune duree (voir l'en-tete du fichier).
+  /// [joursDeReposConseilles] — le repos que le moteur conseille (GO-61). Le
+  /// total propose vaut donc `nombre d'etapes + ce repos`, borne a la plage du
+  /// curseur pour rester une valeur atteignable.
+  ///
+  /// `null` quand ce plan est ROUGE : l'application ne conseille alors aucune
+  /// duree. Ce n'est pas un aveu d'impuissance mais la seule reponse vraie —
+  /// aucune autre duree ne ferait mieux (voir l'en-tete du fichier), et une
+  /// etape du sentier depasse a elle seule le plafond du randonneur.
   ///
   /// HIVER : la recherche ne cherche pas a rattraper un verdict declare NON
-  /// VALIDE (#2-j). Les couleurs restent calculees et la plus petite valeur non
-  /// rouge reste la meilleure proposition disponible ; c'est le bandeau hiver,
+  /// VALIDE (#2-j). Les couleurs restent calculees ; c'est le bandeau hiver,
   /// place avant le feu, qui dit que le verdict ne tient plus.
-  static SuggestedProgram? firstNonRed({
+  static SuggestedProgram? planDuSentier({
     required List<StageModel> stages,
     required HikerLevel level,
     required DurationSearchBounds bounds,
+    required int joursDeReposConseilles,
     double demonstratedFloorEnergyKm = 0,
     double? habitualDailyEnergyKm,
     int longestConsecutiveDaysDone = 0,
@@ -162,45 +162,45 @@ class ProgramPlanSearch {
     FeasibilityThresholds thresholds = FeasibilityThresholds.median,
   }) {
     if (stages.isEmpty) return null;
-    for (final totalDays in bounds.options) {
-      if (totalDays <= 0) continue;
-      final plan = PlanningCalculator.distribute(stages, totalDays,
-          maxRestDays: bounds.restAllowance);
-      // LE CONSEIL DOIT ETRE UNE VALEUR DE CURSEUR QUI REDONNE CE PROGRAMME.
-      // En dessous du nombre d'etapes, la repartition greedy peut rendre MOINS
-      // de journees que demande (elle ne trouve pas assez de points de coupe) :
-      // conseiller cette valeur ferait afficher un programme d'une autre
-      // longueur que celui qu'on vient de juger. On passe.
-      if (plan.length != totalDays) continue;
-      final program = FeasibilityProgram.fromDayPlans(plan);
-      if (program.isEmpty) continue;
-      final assessment = FeasibilityFormula.evaluate(
-        stages: program.dayEfforts,
-        level: level,
-        demonstratedFloorEnergyKm: demonstratedFloorEnergyKm,
-        habitualDailyEnergyKm: habitualDailyEnergyKm,
-        longestConsecutiveDaysDone: longestConsecutiveDaysDone,
-        restAfterStageIndex: program.restAfterDayIndex,
-        conditions: conditions,
-        maxWalkingDays: program.maxWalkingDays,
-        thresholds: thresholds,
-      );
-      if (assessment.globalVerdict == FeasibilityVerdict.red) continue;
-      // LES TROIS NOMBRES SONT LUS SUR LE PROGRAMME, PAS DEDUITS. Le compte des
-      // repos vient des journees `isRestDay` du plan et non de
-      // [FeasibilityProgram.restAfterDayIndex] : ce dernier est un ENSEMBLE
-      // d'index, donc deux repos poses au meme endroit (ou apres la derniere
-      // etape) n'y comptent qu'une fois. C'est juste pour la monotonie de
-      // Foster, qui n'a besoin que des positions, et faux pour un affichage.
-      final walking =
-          plan.where((d) => !d.isRestDay && d.stages.isNotEmpty).length;
-      return SuggestedProgram(
-        totalDays: totalDays,
-        walkingDays: walking,
-        restDays: totalDays - walking,
-        verdict: assessment.globalVerdict,
-      );
-    }
-    return null;
+
+    final repos = joursDeReposConseilles < 0 ? 0 : joursDeReposConseilles;
+    var totalDays = stages.length + repos;
+    if (totalDays > bounds.max) totalDays = bounds.max;
+    if (totalDays < stages.length) return null;
+
+    final plan = PlanningCalculator.distribute(stages, totalDays);
+    // LE CONSEIL DOIT ETRE UNE VALEUR DE CURSEUR QUI REDONNE CE PROGRAMME.
+    if (plan.length != totalDays) return null;
+    final program = FeasibilityProgram.fromDayPlans(plan);
+    if (program.isEmpty) return null;
+
+    final assessment = FeasibilityFormula.evaluate(
+      stages: program.dayEfforts,
+      level: level,
+      demonstratedFloorEnergyKm: demonstratedFloorEnergyKm,
+      habitualDailyEnergyKm: habitualDailyEnergyKm,
+      longestConsecutiveDaysDone: longestConsecutiveDaysDone,
+      restAfterStageIndex: program.restAfterDayIndex,
+      conditions: conditions,
+      maxWalkingDays: program.maxWalkingDays,
+      thresholds: thresholds,
+    );
+    if (assessment.globalVerdict == FeasibilityVerdict.red) return null;
+
+    // LES TROIS NOMBRES SONT LUS SUR LE PROGRAMME, PAS DEDUITS. Le compte des
+    // repos vient des journees `isRestDay` du plan et non de
+    // [FeasibilityProgram.restAfterDayIndex] : ce dernier est un ENSEMBLE
+    // d'index, donc deux repos poses au meme endroit (ou apres la derniere
+    // etape) n'y comptent qu'une fois. C'est juste pour la monotonie de
+    // Foster, qui n'a besoin que des positions, et faux pour un affichage.
+    final walking = plan
+        .where((d) => !d.isRestDay && d.stages.isNotEmpty)
+        .length;
+    return SuggestedProgram(
+      totalDays: totalDays,
+      walkingDays: walking,
+      restDays: totalDays - walking,
+      verdict: assessment.globalVerdict,
+    );
   }
 }
