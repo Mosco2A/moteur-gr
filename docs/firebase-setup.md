@@ -179,11 +179,18 @@ Ce que la tâche 626 a posé :
   phases → PBXBuildFile → PBXFileReference) et **démontre** qu'elle devient
   rouge quand on casse le projet.
 
-**Ce qui reste à insérer dans `codemagic.yaml`** (le lot 621 y travaillait en
-parallèle) : voir `docs/ci/626_etape_codemagic_config_firebase.md`, qui donne
-l'étape verbatim, son point d'insertion dans chaque chaîne, et la liste des
-variables à créer dans Codemagic. **Tant que cette insertion n'est pas faite,
-Firebase reste muet — sans régression, mais muet.**
+- **le câblage des chaînes Codemagic** : cinq des sept chaînes déposent la
+  configuration et passent `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID` ;
+  `ios_compile` et `pr_gate` ne reçoivent rien, et c'est voulu. Détail chaîne
+  par chaîne, et raison de chaque choix, dans
+  `docs/ci/626_etape_codemagic_config_firebase.md`.
+
+**Ce qui reste, et ce n'est pas dans le dépôt** : créer le groupe
+d'environnement `stepways_firebase` dans la console Codemagic (trois
+variables, noms dans le document ci-dessus). **Tant qu'il est vide, Firebase
+reste muet** — les chaînes de branche livrent quand même un APK utilisable en
+le disant dans leur journal, les trois chaînes de livraison s'arrêtent
+proprement.
 
 ### 3. Brancher l'init dans le code
 
@@ -330,12 +337,10 @@ l'espace de stockage, et le catalogue distant reste vide.
 
 - Keystore Android réel + `android/key.properties` (P1-3, wagon 3).
 - Secrets de signature CI (codemagic.yaml, P1-5 — groupes d'env vars).
-- **L'insertion de l'étape de dépôt dans `codemagic.yaml`** : écrite verbatim
-  dans `docs/ci/626_etape_codemagic_config_firebase.md`, à insérer après le lot
-  621 qui éditait le même fichier.
 - **La création du groupe de variables `stepways_firebase` dans Codemagic** :
-  console Codemagic uniquement, trois variables, noms dans le document
-  ci-dessus.
+  console Codemagic uniquement, trois variables, noms dans
+  `docs/ci/626_etape_codemagic_config_firebase.md`. Le câblage des chaînes,
+  lui, est fait.
 - AdMob réel / ATT / CMP (docs/rgpd/data-safety.md — prérequis stores).
 - Renommage du **nom Dart interne** du paquet (`pubspec name: moteur_gr`,
   417 fichiers `package:moteur_gr/`) : chantier à part, **ne bloque aucune

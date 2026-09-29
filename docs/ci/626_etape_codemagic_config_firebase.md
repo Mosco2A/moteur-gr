@@ -1,50 +1,48 @@
-# L'étape Codemagic à insérer pour que Firebase parle (tâche 626)
+# La configuration Firebase dans les chaînes Codemagic (tâche 626)
 
-> **POURQUOI CE FICHIER EXISTE AU LIEU D'UNE MODIFICATION DE `codemagic.yaml`.**
-> Le lot 621 modifie `codemagic.yaml` la même nuit que le lot 626 (chaîne
-> TestFlight). Deux agents qui éditent le même fichier en parallèle, c'est un
-> conflit garanti et un travail écrasé. L'étape est donc **écrite ici,
-> verbatim**, avec ses points d'insertion exacts. Elle est à insérer **après**
-> le lot 621, par qui fera la réunion des branches.
+> **ÉTAT : CÂBLÉ DANS `codemagic.yaml`, À DEUX LIGNES PRÈS — et ces deux lignes
+> attendent volontairement un geste de Christophe.** Ce document a d'abord été
+> écrit comme une étape « à insérer », parce que le lot 621 éditait
+> `codemagic.yaml` la même nuit. Le 621 a poussé (tête `4146356`, septième
+> chaîne `ios_testflight`), le lot 626 est reparti de sa tête, et l'étape de
+> dépôt **plus** le `--dart-define` sont dans les **cinq** chaînes concernées.
 >
-> **RIEN N'EST CASSÉ EN ATTENDANT.** La partie iPhone du lot 626 (référence du
-> plist dans le projet Xcode) est autoportante : une phase du projet garantit
-> que le fichier existe avant la copie des ressources, donc `ios_compile`
-> continue de compiler sur toute branche, avec ou sans configuration Firebase.
-> Sans l'insertion ci-dessous, Firebase reste simplement **muet** — exactement
-> l'état d'aujourd'hui, sans régression.
+> Ce qui reste dans le dépôt : le bloc `groups:` de `merge` et d'`android_test`,
+> écrit **en commentaire à sa place exacte**, à décommenter dans la même session
+> que la création du groupe dans la console. La raison est à la section « Les
+> deux lignes qui attendent », et ce n'est pas de la prudence décorative.
 
-## Ce que l'insertion change, en une phrase
+## Ce que ça change, en une phrase
 
-Sans elle, aucun paquet produit par Codemagic ne contient de configuration
-Firebase, donc rien de ce que le collecteur serveur publie n'arrive sur le
-téléphone. Avec elle, l'APK que Christophe installe depuis `android_test` lit
-le catalogue distant.
+Avant, aucun paquet produit par Codemagic ne contenait de configuration
+Firebase : l'APK que Christophe installe depuis `android_test` avait un
+catalogue distant muet, et rien de ce que publie le collecteur serveur ne
+pouvait arriver sur son téléphone.
 
-## Les deux moitiés, et il faut LES DEUX
+## Il faut LES DEUX MOITIÉS
 
 Firebase ne parle que si **deux** choses sont vraies au même moment :
 
 1. **le fichier de configuration natif est dans le paquet** — c'est l'étape de
-   dépôt ci-dessous, côté Android (côté iPhone, le projet Xcode s'en charge
-   dès que le fichier existe) ;
+   dépôt ; côté iPhone, le projet Xcode le copie dans le paquet dès que le
+   fichier existe (référence ajoutée par ce même lot) ;
 2. **l'identifiant de projet est passé en `--dart-define`** — sans lui,
    `FirebaseConfig.resoudre()` rend `null` et `Firebase.initializeApp()` n'est
-   **jamais** appelé (tâche 596). C'est le commutateur, et il est indépendant
-   du fichier.
+   **jamais** appelé (tâche 596). C'est le commutateur, indépendant du fichier.
 
-Une seule des deux moitiés donne un paquet muet. Le script de dépôt le **dit**
-dans le journal de build plutôt que de laisser deviner.
+Une seule des deux moitiés donne un paquet muet, avec un fichier de
+configuration parfaitement valide dedans. Les deux sont câblées ensemble dans
+chaque chaîne, pour qu'on ne puisse pas en oublier une.
 
-## L'étape, verbatim
+## L'étape, telle qu'elle est dans le fichier
 
 ```yaml
       - name: Deposer la configuration Firebase (hors depot)
         script: sh scripts/ci/config_firebase.sh deposer android
 ```
 
-Remplacer `android` par `ios` dans une chaîne iPhone, ou par `tout` dans une
-chaîne qui produit les deux. Le script :
+`android`, `ios` ou `tout` selon la chaîne, et un troisième argument `exiger`
+pour les chaînes qui livrent un paquet à quelqu'un. Le script :
 
 - écrit `android/app/google-services.json` et/ou
   `ios/Runner/GoogleService-Info.plist` depuis des variables encodées en
@@ -56,157 +54,99 @@ chaîne qui produit les deux. Le script :
 - **refuse de continuer** si la configuration vise un autre paquet que
   `com.only1cent.stepways`, un autre projet que celui de
   `STEPWAYS_FIREBASE_PROJECT_ID`, ou le projet `gr20-app` (#326 divorce) ;
-- **prévient sans bloquer** quand les fichiers sont là mais que
-  l'identifiant de projet manque : le paquet sera utilisable et Firebase muet.
+- **refuse de continuer**, avec `exiger`, quand la configuration manque ;
+- **prévient sans bloquer**, sans `exiger`, en disant dans le journal que le
+  paquet sera utilisable et Firebase muet.
 
-## Où l'insérer, chaîne par chaîne
+## Chaîne par chaîne, et pourquoi
 
-Les numéros de ligne sont ceux du commit `2393796` ; **le lot 621 les fera
-bouger, donc les ancres de texte sont ce qui fait foi.**
+### Les deux qui compilent une branche — souples
 
-### 1. `android_test` — LA PLUS IMPORTANTE
+`merge` et `android_test` déposent la configuration **sans** `exiger`. Elles
+compilent toute branche et doivent rester vertes même quand le groupe de
+variables n'est pas rempli : elles livrent alors un APK utilisable où Firebase
+est muet, et le **disent** dans leur journal.
 
-C'est la seule chaîne qui livre un APK installable depuis une branche
-d'intégration : c'est de là que vient le paquet que Christophe installe.
+`android_test` est la plus importante du fichier pour ce lot : c'est de là que
+vient l'APK que Christophe installe. C'est aussi pour elle que les deux lignes
+de `groups:` attendent — voir la section suivante.
 
-**a. Ajouter le groupe de variables** — remplacer (ligne 195) :
-
-```yaml
-    environment:
-      flutter: stable
-    scripts:
-```
-
-par :
-
-```yaml
-    environment:
-      flutter: stable
-      groups:
-        - stepways_firebase
-    scripts:
-```
-
-> **Ce groupe ne contredit pas la garde « aucun secret » de cette chaîne.**
-> La première étape de `android_test` refuse `CM_KEYSTORE`,
+> **Le groupe `stepways_firebase` ne contredit pas la garde « aucun secret » de
+> `android_test`.** Sa première étape refuse `CM_KEYSTORE`,
 > `CM_KEYSTORE_PASSWORD`, `CM_KEY_ALIAS`, `CM_KEY_PASSWORD`,
-> `APP_STORE_CONNECT_*` et `CERTIFICATE_PRIVATE_KEY` — aucune des variables
-> Firebase n'en fait partie, et la garde reste inchangée. La distinction est
-> réelle : une clé de signature permet de **publier au nom de Christophe**,
-> une configuration Firebase cliente voyage dans chaque APK distribué et se
-> lit en décompressant le paquet. Ce qui protège les données, ce sont les
-> règles de sécurité Firestore et Storage.
+> `APP_STORE_CONNECT_*` et `CERTIFICATE_PRIVATE_KEY` — aucune variable Firebase
+> n'en fait partie, et cette garde n'a pas bougé. La distinction est réelle :
+> une clé de signature permet de **publier au nom de Christophe**, une
+> configuration Firebase cliente voyage dans chaque APK distribué et se lit en
+> décompressant le paquet. Ce qui protège les données, ce sont les règles de
+> sécurité Firestore et Storage.
+>
+> L'invariante de la tâche 619 interdisait **tout** groupe à `android_test`.
+> Elle interdit désormais les **groupes de signature**, ce qui était son
+> intention écrite noir sur blanc. Le changement est commenté dans
+> `test/structurel/codemagic_entete_ne_mente_pas_619_test.dart`.
 
-**b. Insérer l'étape de dépôt** juste avant la construction — avant (ligne
-261) :
+### Les trois qui livrent un paquet à quelqu'un — `exiger`
 
-```yaml
-      - name: Build APK debug
-        script: flutter build apk --debug
-```
+`android_release`, `ios_release` et `ios_testflight` passent `exiger` : la
+chaîne **s'arrête** si la configuration manque, au lieu de produire un paquet
+muet. Un paquet publié sur un magasin, ou déposé chez un testeur TestFlight,
+avec un catalogue vide, est un test pour rien — et personne ne s'en aperçoit
+avant de chercher ses sentiers sur le téléphone.
 
-**c. Et passer le commutateur** : remplacer ces deux lignes par :
-
-```yaml
-      - name: Deposer la configuration Firebase (hors depot)
-        script: sh scripts/ci/config_firebase.sh deposer android
-
-      - name: Build APK debug
-        script: |
-          flutter build apk --debug \
-            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="${STEPWAYS_FIREBASE_PROJECT_ID:-}"
-```
-
-> Si la variable est vide, `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID=` est
-> passé avec une valeur vide : `FirebaseConfig` traite la chaîne vide comme une
-> absence (`_injecte.isEmpty`). La chaîne reste donc verte sans le groupe, et
-> livre un APK en mode local. Aucun `if` n'est nécessaire.
-
-### 2. `android_release` — AAB publié au Play Store
-
-Même chose. Avant (ligne 547) :
-
-```yaml
-      - name: Build AAB release signe
-        script: flutter build appbundle --release
-```
-
-Remplacer par :
-
-```yaml
-      - name: Deposer la configuration Firebase (hors depot)
-        script: sh scripts/ci/config_firebase.sh deposer android
-
-      - name: Build AAB release signe
-        script: |
-          flutter build appbundle --release \
-            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
-```
-
-Et ajouter `stepways_firebase` à la liste `groups:` existante (ligne 491) :
-
-```yaml
-      groups:
-        - stepways_android_signing
-        - stepways_firebase
-```
-
-> Ici **pas** de `:-` : une release publiée au magasin sans Firebase serait une
-> release muette, livrée à des inconnus. Mieux vaut que la chaîne s'arrête sur
-> une variable absente.
-
-### 3. `ios_release` — IPA App Store
-
-Ajouter `stepways_firebase` à la liste `groups:` de la chaîne, puis avant
-(ligne 632) :
-
-```yaml
-      - name: Build IPA release signe
-        script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
-```
-
-Remplacer par :
-
-```yaml
-      - name: Deposer la configuration Firebase (hors depot)
-        script: sh scripts/ci/config_firebase.sh deposer ios
-
-      - name: Build IPA release signe
-        script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist \
-            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
-```
-
-### 4. La chaîne TestFlight du lot 621
-
-Même traitement que `ios_release` : groupe `stepways_firebase`, étape
-`sh scripts/ci/config_firebase.sh deposer ios` avant la construction, et
-`--dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"`
-ajouté à la commande de build. **Un paquet envoyé à TestFlight sans Firebase
-serait un test pour rien** : c'est précisément le catalogue distant que
-Christophe doit pouvoir vérifier sur son téléphone.
-
-### 5. `merge` — recommandé, pas indispensable
-
-`merge` construit un APK debug sur `main` seulement. Même modification que
-`android_test` si on veut que cet APK aussi lise le catalogue. Sans elle, il
-reste muet, ce qui n'est pas une régression.
-
-### 6. `ios_compile` et `pr_gate` — NE RIEN TOUCHER, ET C'EST VOULU
+### `ios_compile` et `pr_gate` — RIEN, et c'est voulu
 
 `ios_compile` répond à une seule question — « est-ce que le natif compile ? » —
-et ne doit recevoir **aucun** groupe de variables (sa première étape le
-vérifie et arrête la chaîne sinon). Elle reste verte sans configuration
-Firebase grâce à la phase du projet Xcode ajoutée par ce lot. `pr_gate` ne
+et ne reçoit **aucun** groupe de variables : sa première étape arrête la chaîne
+si un secret de publication apparaît dans son environnement. Elle reste verte
+sans configuration Firebase grâce à la phase du projet Xcode ajoutée par ce lot,
+qui garantit l'existence du plist avant la copie des ressources. `pr_gate` ne
 construit aucun paquet.
 
-## Les variables à créer dans Codemagic
+### Un groupe par usage
 
-Groupe d'environnement **`stepways_firebase`**. Les **noms** sont ci-dessous ;
-les **valeurs** ne s'écrivent nulle part dans le dépôt, ni dans ce fichier.
+`stepways_firebase` est **distinct** de `stepways_android_signing` et de
+`stepways_ios_signing`. Sans cette séparation, `android_test` recevrait les
+secrets de signature Apple sans en avoir le moindre besoin — et sa propre garde
+l'arrêterait.
+
+## Les deux lignes qui attendent
+
+Dans `merge` et dans `android_test`, sous `environment:`, ce bloc est écrit **en
+commentaire**, à sa place exacte :
+
+```yaml
+      groups:
+        - stepways_firebase
+```
+
+**Pourquoi il n'est pas déjà actif, et pourquoi ce n'est pas de la timidité.**
+Le groupe `stepways_firebase` n'existe pas encore dans la console Codemagic : il
+est à créer à la main. Or la documentation Codemagic **ne dit pas** ce qui
+arrive à une chaîne qui réclame un groupe inexistant — build refusé à
+l'initialisation, ou variables simplement vides. Les deux réponses circulent,
+aucune n'est écrite noir sur blanc. Et `android_test` est la **seule** chaîne
+qui livre un installable depuis une branche : celle dont Christophe se sert.
+On ne joue pas ça à la devinette.
+
+Les **trois chaînes de livraison**, elles, réclament le groupe dès maintenant
+sans aucun risque : elles sont **déjà inertes** aujourd'hui — `android_release`
+et `ios_release` ne partent que sur une étiquette de version et s'arrêtent à
+leur première étape tant que leur groupe de signature est vide, `ios_testflight`
+n'a aucun déclencheur. Si réclamer un groupe absent devait échouer, cela
+changerait un arrêt propre en un autre arrêt propre.
+
+**Ordre à respecter :** créer le groupe (section suivante), *puis* décommenter
+les deux lignes dans les deux chaînes. Une garde le rappelle dans
+`test/structurel/firebase_branche_sur_les_deux_telephones_626_test.dart` ; le
+jour où le groupe existe, on décommente et **on retire cette garde-là**, qui n'a
+plus d'objet.
+
+## CE QUI RESTE À FAIRE, ET CE N'EST PAS DANS LE DÉPÔT
+
+Créer le groupe d'environnement **`stepways_firebase`** dans la console
+Codemagic, avec trois variables. Les **noms** sont ci-dessous ; les **valeurs**
+ne s'écrivent nulle part dans le dépôt, ni dans ce fichier.
 
 - **`STEPWAYS_GOOGLE_SERVICES_JSON`** — le fichier `google-services.json`
   encodé en base64, sur une seule ligne. Variable **secrète** (case cochée).
@@ -221,9 +161,20 @@ les **valeurs** ne s'écrivent nulle part dans le dépôt, ni dans ce fichier.
 > porte déjà la bonne valeur par défaut. Ne la créer que si l'espace de
 > stockage change.
 
-Le pas à pas complet pour obtenir les deux fichiers depuis la console Firebase,
-et pour les encoder, est dans `data/apport_stepways/` du dépôt Skynet
-(`MODOP_626_firebase_console_et_codemagic.md`).
+**Tant que ce groupe est vide :** `merge` et `android_test` continuent de
+livrer un APK, avec Firebase muet et un avertissement dans le journal ; les
+trois chaînes de livraison s'arrêtent proprement à leur première étape de
+dépôt.
+
+**Une fois le groupe créé :** décommenter les deux lignes `groups:` de `merge`
+et d'`android_test` (section précédente), relancer `android_test`, et lire le
+journal comme indiqué ci-dessous. Sans ce décommentage, l'APK reste muet même
+avec le groupe rempli.
+
+Le pas à pas pour obtenir les deux fichiers depuis la console Firebase, les
+encoder, et remplir Codemagic écran par écran est dans
+`data/apport_stepways/MODOP_626_firebase_console_et_codemagic.md` (dépôt
+Skynet), à côté de celui du lot 621.
 
 ## Comment savoir que ça a marché, sans deviner
 
@@ -240,3 +191,9 @@ Sur le téléphone, une fois l'APK installé : **Réglages → Cloud** doit affi
 `[FirebaseService]` nomme la cause — `MODE LOCAL` (rien n'a été fourni) ou
 `MODE LOCAL FORCE` (fourni mais l'initialisation a échoué). Ne pas confondre
 les deux : c'est ce qui rend le diagnostic possible.
+
+En local, sans rien lancer :
+
+```bash
+sh scripts/ci/config_firebase.sh etat
+```

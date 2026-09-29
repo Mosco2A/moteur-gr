@@ -137,13 +137,40 @@ void main() {
         contains('build/**/outputs/**/*.apk'),
         reason: 'sans artefact, Christophe n a rien a telecharger',
       );
-      expect(
-        bloc.contains('groups:'),
-        isFalse,
-        reason:
-            'un APK debug est signe par la cle de debogage de Flutter : '
-            'cette chaine ne doit recevoir aucun groupe de variables',
-      );
+      // TACHE 626 — CE CONTROLE A CHANGE DE LETTRE, PAS D INTENTION.
+      //
+      // Il interdisait TOUT groupe de variables. L intention etait : « un APK
+      // debug est signe par la cle de debogage de Flutter, cette chaine n a
+      // besoin d AUCUN secret de publication et ne doit pouvoir s authentifier
+      // nulle part ». Cette intention est intacte, et c est celle qui est
+      // verifiee ici.
+      //
+      // CE QUI A CHANGE DANS LE MONDE REEL. Firebase etait MUET dans l APK que
+      // cette chaine livre, parce que `google-services.json` est hors depot et
+      // qu aucune chaine ne le fournissait. La configuration Firebase arrive
+      // desormais par le groupe `stepways_firebase` (tache 626). Ce n est PAS
+      // une valeur de signature : elle voyage dans chaque APK distribue et se
+      // lit en decompressant le paquet, alors qu une cle de signature permet de
+      // publier au nom de Christophe. Ce qui protege les donnees, ce sont les
+      // regles de securite Firestore et Storage.
+      //
+      // Ce qui reste donc interdit, et qui est le vrai sujet : les groupes de
+      // SIGNATURE. La premiere etape de la chaine, elle, refuse deja les
+      // variables elles-memes a l execution — les deux gardes se completent.
+      for (final groupeDeSignature in const [
+        'stepways_android_signing',
+        'stepways_ios_signing',
+      ]) {
+        expect(
+          bloc.contains(groupeDeSignature),
+          isFalse,
+          reason:
+              'un APK debug est signe par la cle de debogage de Flutter : '
+              'cette chaine ne doit recevoir AUCUN groupe de signature, et '
+              '« $groupeDeSignature » lui en donnerait un. Un APK signe avec '
+              'une vraie cle appartient a android_release, sur etiquette.',
+        );
+      }
       expect(
         bloc.contains('publishing:'),
         isFalse,
