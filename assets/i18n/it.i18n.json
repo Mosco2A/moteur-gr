@@ -1445,20 +1445,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare Nord",
+        "nom": "$trail — Nord",
         "description": "La metà nord del sentiero, offline."
       },
       "sud": {
-        "nom": "Mare a Mare Sud",
+        "nom": "$trail — Sud",
         "description": "La metà sud del sentiero, offline."
       },
       "complet": {
-        "nom": "Mare a Mare Completo",
+        "nom": "$trail — Completo",
         "description": "Tutto il sentiero, offline."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "Il sentiero Mare a Mare, offline."
+        "nom": "$trail",
+        "description": "Tutto il sentiero $trail, offline."
       }
     }
   },

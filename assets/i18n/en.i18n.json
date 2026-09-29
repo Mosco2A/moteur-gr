@@ -1445,20 +1445,20 @@
     },
     "types": {
       "nord": {
-        "nom": "Mare a Mare North",
+        "nom": "$trail — North",
         "description": "The northern half of the trail, offline."
       },
       "sud": {
-        "nom": "Mare a Mare South",
+        "nom": "$trail — South",
         "description": "The southern half of the trail, offline."
       },
       "complet": {
-        "nom": "Mare a Mare Full",
+        "nom": "$trail — Full",
         "description": "The whole trail, offline."
       },
       "mam": {
-        "nom": "Mare a Mare",
-        "description": "The Mare a Mare trail, offline."
+        "nom": "$trail",
+        "description": "The whole $trail trail, offline."
       }
     }
   },

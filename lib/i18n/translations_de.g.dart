@@ -3972,7 +3972,7 @@ class _Translations$packs$types$nord$de extends Translations$packs$types$nord$fr
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Nord';
+	@override String nom({required Object trail}) => '${trail} — Nord';
 	@override String get description => 'Die nördliche Hälfte des Wegs, offline.';
 }
 
@@ -3983,7 +3983,7 @@ class _Translations$packs$types$sud$de extends Translations$packs$types$sud$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Süd';
+	@override String nom({required Object trail}) => '${trail} — Süd';
 	@override String get description => 'Die südliche Hälfte des Wegs, offline.';
 }
 
@@ -3994,7 +3994,7 @@ class _Translations$packs$types$complet$de extends Translations$packs$types$comp
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Komplett';
+	@override String nom({required Object trail}) => '${trail} — Komplett';
 	@override String get description => 'Der ganze Weg, offline.';
 }
 
@@ -4005,8 +4005,8 @@ class _Translations$packs$types$mam$de extends Translations$packs$types$mam$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare';
-	@override String get description => 'Der Mare-a-Mare-Weg, offline.';
+	@override String nom({required Object trail}) => '${trail}';
+	@override String description({required Object trail}) => 'Der ganze Weg ${trail}, offline.';
 }
 
 // Path: programme.duration.difficulty
@@ -5369,14 +5369,14 @@ extension on TranslationsDe {
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Paket ${nom}, ${state}',
 			'packs.a11y.downloadButton' => ({required Object nom}) => 'Paket ${nom} herunterladen',
 			'packs.a11y.deleteButton' => ({required Object nom}) => 'Paket ${nom} löschen',
-			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Nord',
 			'packs.types.nord.description' => 'Die nördliche Hälfte des Wegs, offline.',
-			'packs.types.sud.nom' => 'Mare a Mare Süd',
+			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Süd',
 			'packs.types.sud.description' => 'Die südliche Hälfte des Wegs, offline.',
-			'packs.types.complet.nom' => 'Mare a Mare Komplett',
+			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Komplett',
 			'packs.types.complet.description' => 'Der ganze Weg, offline.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'Der Mare-a-Mare-Weg, offline.',
+			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
+			'packs.types.mam.description' => ({required Object trail}) => 'Der ganze Weg ${trail}, offline.',
 			'guides.title' => 'Ortsführer',
 			'guides.subtitle' => 'Praktische Infos zu Städten und Dörfern, offline verfügbar.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} praktische Rubriken',

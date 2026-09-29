@@ -3972,7 +3972,7 @@ class _Translations$packs$types$nord$es extends Translations$packs$types$nord$fr
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Norte';
+	@override String nom({required Object trail}) => '${trail} — Norte';
 	@override String get description => 'La mitad norte del sendero, sin conexión.';
 }
 
@@ -3983,7 +3983,7 @@ class _Translations$packs$types$sud$es extends Translations$packs$types$sud$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Sur';
+	@override String nom({required Object trail}) => '${trail} — Sur';
 	@override String get description => 'La mitad sur del sendero, sin conexión.';
 }
 
@@ -3994,7 +3994,7 @@ class _Translations$packs$types$complet$es extends Translations$packs$types$comp
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare Completo';
+	@override String nom({required Object trail}) => '${trail} — Completo';
 	@override String get description => 'Todo el sendero, sin conexión.';
 }
 
@@ -4005,8 +4005,8 @@ class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get nom => 'Mare a Mare';
-	@override String get description => 'El sendero Mare a Mare, sin conexión.';
+	@override String nom({required Object trail}) => '${trail}';
+	@override String description({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.';
 }
 
 // Path: programme.duration.difficulty
@@ -5369,14 +5369,14 @@ extension on TranslationsEs {
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
 			'packs.a11y.downloadButton' => ({required Object nom}) => 'Descargar el pack ${nom}',
 			'packs.a11y.deleteButton' => ({required Object nom}) => 'Eliminar el pack ${nom}',
-			'packs.types.nord.nom' => 'Mare a Mare Norte',
+			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Norte',
 			'packs.types.nord.description' => 'La mitad norte del sendero, sin conexión.',
-			'packs.types.sud.nom' => 'Mare a Mare Sur',
+			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Sur',
 			'packs.types.sud.description' => 'La mitad sur del sendero, sin conexión.',
-			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Completo',
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
+			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
+			'packs.types.mam.description' => ({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.',
 			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones prácticas',

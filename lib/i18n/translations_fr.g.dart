@@ -7832,8 +7832,8 @@ class Translations$packs$types$nord$fr {
 
 	// Translations
 
-	/// fr: 'Mare a Mare Nord'
-	String get nom => 'Mare a Mare Nord';
+	/// fr: '$trail — Nord'
+	String nom({required Object trail}) => '${trail} — Nord';
 
 	/// fr: 'La moitié nord du sentier, hors-ligne.'
 	String get description => 'La moitié nord du sentier, hors-ligne.';
@@ -7847,8 +7847,8 @@ class Translations$packs$types$sud$fr {
 
 	// Translations
 
-	/// fr: 'Mare a Mare Sud'
-	String get nom => 'Mare a Mare Sud';
+	/// fr: '$trail — Sud'
+	String nom({required Object trail}) => '${trail} — Sud';
 
 	/// fr: 'La moitié sud du sentier, hors-ligne.'
 	String get description => 'La moitié sud du sentier, hors-ligne.';
@@ -7862,8 +7862,8 @@ class Translations$packs$types$complet$fr {
 
 	// Translations
 
-	/// fr: 'Mare a Mare Complet'
-	String get nom => 'Mare a Mare Complet';
+	/// fr: '$trail — Complet'
+	String nom({required Object trail}) => '${trail} — Complet';
 
 	/// fr: 'Tout le sentier, hors-ligne.'
 	String get description => 'Tout le sentier, hors-ligne.';
@@ -7877,11 +7877,11 @@ class Translations$packs$types$mam$fr {
 
 	// Translations
 
-	/// fr: 'Mare a Mare'
-	String get nom => 'Mare a Mare';
+	/// fr: '$trail'
+	String nom({required Object trail}) => '${trail}';
 
-	/// fr: 'Le sentier Mare a Mare, hors-ligne.'
-	String get description => 'Le sentier Mare a Mare, hors-ligne.';
+	/// fr: 'Tout le sentier $trail, hors-ligne.'
+	String description({required Object trail}) => 'Tout le sentier ${trail}, hors-ligne.';
 }
 
 // Path: programme.duration.difficulty
@@ -9293,14 +9293,14 @@ extension on Translations {
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
 			'packs.a11y.downloadButton' => ({required Object nom}) => 'Télécharger le pack ${nom}',
 			'packs.a11y.deleteButton' => ({required Object nom}) => 'Supprimer le pack ${nom}',
-			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Nord',
 			'packs.types.nord.description' => 'La moitié nord du sentier, hors-ligne.',
-			'packs.types.sud.nom' => 'Mare a Mare Sud',
+			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Sud',
 			'packs.types.sud.description' => 'La moitié sud du sentier, hors-ligne.',
-			'packs.types.complet.nom' => 'Mare a Mare Complet',
+			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Complet',
 			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
+			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
+			'packs.types.mam.description' => ({required Object trail}) => 'Tout le sentier ${trail}, hors-ligne.',
 			'guides.title' => 'Guides des villes',
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
