@@ -535,7 +535,6 @@ class _Translations$weather$en extends Translations$weather$fr {
 	@override String get loading => 'Loading weather...';
 	@override String get offline => 'No connection. Weather data unavailable.';
 	@override String get error => 'Unable to load weather.';
-	@override String get cached => 'Cached data';
 	@override String get alerts => 'weather alerts';
 	@override String get refresh => 'Refresh';
 	@override String get temperature => 'Temperature';
@@ -558,17 +557,20 @@ class _Translations$weather$en extends Translations$weather$fr {
 	@override String get stormAlertsToggleOff => 'Storm alerts off';
 	@override String lastUpdate({required Object date}) => 'Updated ${date}';
 	@override String get guideTitle => 'Understanding the weather';
-	@override String get guideBody => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.';
+	@override String guideBody({required Object horizon, required Object days}) => 'Forecasts are produced by OUR SERVER, stage by stage: for each day of your plan, the weather at that day\'s arrival point. They reach ${horizon} days ahead. The app never requests them itself: it picks up whatever the server produced most recently, when the network comes back and then every 4 hours. Every forecast shows ITS PRODUCTION DATE, not the download date. And after ${days} days with nothing new, the app removes the figures instead of passing them off as today\'s weather.';
 	@override late final _Translations$weather$source$en source = _Translations$weather$source$en._(_root);
 	@override late final _Translations$weather$recommendation$en recommendation = _Translations$weather$recommendation$en._(_root);
 	@override late final _Translations$weather$alert$en alert = _Translations$weather$alert$en._(_root);
 	@override late final _Translations$weather$program$en program = _Translations$weather$program$en._(_root);
-	@override late final _Translations$weather$freshness$en freshness = _Translations$weather$freshness$en._(_root);
 	@override late final _Translations$weather$duration$en duration = _Translations$weather$duration$en._(_root);
 	@override String refreshFailed({required Object date}) => 'Update failed. The data shown was fetched on ${date}.';
 	@override String get refreshFailedNoData => 'Update failed and no data is saved.';
 	@override String refreshedAt({required Object date}) => 'Data updated (${date})';
-	@override String refreshPartial({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).';
+	@override late final _Translations$weather$fabrication$en fabrication = _Translations$weather$fabrication$en._(_root);
+	@override late final _Translations$weather$neverReceived$en neverReceived = _Translations$weather$neverReceived$en._(_root);
+	@override late final _Translations$weather$expiredNotice$en expiredNotice = _Translations$weather$expiredNotice$en._(_root);
+	@override String get refreshUpToDate => 'Already up to date: the server has produced nothing newer.';
+	@override String get refreshOffline => 'Offline: nothing could be checked. What is shown keeps its age.';
 }
 
 // Path: share
@@ -2366,10 +2368,8 @@ class _Translations$weather$source$en extends Translations$weather$source$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get api => 'Live data';
-	@override String get cache => 'Saved data';
-	@override String get offline => 'Offline';
-	@override String get demo => 'Demo data';
+	@override String get server => 'Weather from our server';
+	@override String get demo => 'Demonstration data';
 }
 
 // Path: weather.recommendation
@@ -2416,19 +2416,7 @@ class _Translations$weather$program$en extends Translations$weather$program$fr {
 	@override String beyondHorizon({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.';
 	@override String get noData => 'No data for this place.';
 	@override String get unknownDeparture => 'Pick your departure date: without it there is no way to tell which day you reach which stage.';
-}
-
-// Path: weather.freshness
-class _Translations$weather$freshness$en extends Translations$weather$freshness$fr {
-	_Translations$weather$freshness$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get justNow => 'Fetched just now';
-	@override String at({required Object date}) => 'Fetched on ${date}';
-	@override String stale({required Object duration}) => 'Fetched ${duration} ago, no update since';
-	@override String get never => 'Never fetched';
+	@override String get tooOld => 'Forecast too old.';
 }
 
 // Path: weather.duration
@@ -2442,6 +2430,43 @@ class _Translations$weather$duration$en extends Translations$weather$duration$fr
 	@override String minutes({required Object n}) => '${n} min';
 	@override String hours({required Object n}) => '${n} h';
 	@override String days({required Object n}) => '${n} d';
+}
+
+// Path: weather.fabrication
+class _Translations$weather$fabrication$en extends Translations$weather$fabrication$fr {
+	_Translations$weather$fabrication$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String at({required Object date}) => 'Forecast produced on ${date}';
+	@override String expired({required Object duration}) => 'No figures shown: the last forecast was produced ${duration} ago';
+	@override String get justNow => 'Forecast just produced';
+	@override String stale({required Object duration}) => 'Forecast produced ${duration} ago, nothing newer has arrived';
+	@override String todayStale({required Object duration, required Object date}) => 'Forecast produced ${duration} ago (on ${date}): today\'s weather may have changed since';
+	@override String get unknown => 'Production date unknown';
+}
+
+// Path: weather.neverReceived
+class _Translations$weather$neverReceived$en extends Translations$weather$neverReceived$fr {
+	_Translations$weather$neverReceived$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get body => 'The weather is produced by our server and arrives with the trail data. As soon as this phone is back online it updates on its own: there is nothing to request.';
+	@override String get title => 'No forecast yet';
+}
+
+// Path: weather.expiredNotice
+class _Translations$weather$expiredNotice$en extends Translations$weather$expiredNotice$fr {
+	_Translations$weather$expiredNotice$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String body({required Object days}) => 'The last forecast is more than ${days} days old. A three-day-old forecast presented as today\'s is dangerous in the mountains, so the app stays silent. It will update by itself once you are back online.';
+	@override String get title => 'Forecast too old to be shown';
 }
 
 // Path: feasibility.gaps
@@ -4633,7 +4658,6 @@ extension on TranslationsEn {
 			'weather.loading' => 'Loading weather...',
 			'weather.offline' => 'No connection. Weather data unavailable.',
 			'weather.error' => 'Unable to load weather.',
-			'weather.cached' => 'Cached data',
 			'weather.alerts' => 'weather alerts',
 			'weather.refresh' => 'Refresh',
 			'weather.temperature' => 'Temperature',
@@ -4656,11 +4680,9 @@ extension on TranslationsEn {
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
 			'weather.guideTitle' => 'Understanding the weather',
-			'weather.guideBody' => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.',
-			'weather.source.api' => 'Live data',
-			'weather.source.cache' => 'Saved data',
-			'weather.source.offline' => 'Offline',
-			'weather.source.demo' => 'Demo data',
+			'weather.guideBody' => ({required Object horizon, required Object days}) => 'Forecasts are produced by OUR SERVER, stage by stage: for each day of your plan, the weather at that day\'s arrival point. They reach ${horizon} days ahead. The app never requests them itself: it picks up whatever the server produced most recently, when the network comes back and then every 4 hours. Every forecast shows ITS PRODUCTION DATE, not the download date. And after ${days} days with nothing new, the app removes the figures instead of passing them off as today\'s weather.',
+			'weather.source.server' => 'Weather from our server',
+			'weather.source.demo' => 'Demonstration data',
 			'weather.recommendation.ok' => 'Favourable conditions',
 			'weather.recommendation.watch' => 'Caution advised',
 			'weather.recommendation.danger' => 'Unfavourable conditions',
@@ -4686,10 +4708,7 @@ extension on TranslationsEn {
 			'weather.program.beyondHorizon' => ({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.',
 			'weather.program.noData' => 'No data for this place.',
 			'weather.program.unknownDeparture' => 'Pick your departure date: without it there is no way to tell which day you reach which stage.',
-			'weather.freshness.justNow' => 'Fetched just now',
-			'weather.freshness.at' => ({required Object date}) => 'Fetched on ${date}',
-			'weather.freshness.stale' => ({required Object duration}) => 'Fetched ${duration} ago, no update since',
-			'weather.freshness.never' => 'Never fetched',
+			'weather.program.tooOld' => 'Forecast too old.',
 			'weather.duration.seconds' => 'a few seconds',
 			'weather.duration.minutes' => ({required Object n}) => '${n} min',
 			'weather.duration.hours' => ({required Object n}) => '${n} h',
@@ -4697,7 +4716,18 @@ extension on TranslationsEn {
 			'weather.refreshFailed' => ({required Object date}) => 'Update failed. The data shown was fetched on ${date}.',
 			'weather.refreshFailedNoData' => 'Update failed and no data is saved.',
 			'weather.refreshedAt' => ({required Object date}) => 'Data updated (${date})',
-			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
+			'weather.fabrication.at' => ({required Object date}) => 'Forecast produced on ${date}',
+			'weather.fabrication.expired' => ({required Object duration}) => 'No figures shown: the last forecast was produced ${duration} ago',
+			'weather.fabrication.justNow' => 'Forecast just produced',
+			'weather.fabrication.stale' => ({required Object duration}) => 'Forecast produced ${duration} ago, nothing newer has arrived',
+			'weather.fabrication.todayStale' => ({required Object duration, required Object date}) => 'Forecast produced ${duration} ago (on ${date}): today\'s weather may have changed since',
+			'weather.fabrication.unknown' => 'Production date unknown',
+			'weather.neverReceived.body' => 'The weather is produced by our server and arrives with the trail data. As soon as this phone is back online it updates on its own: there is nothing to request.',
+			'weather.neverReceived.title' => 'No forecast yet',
+			'weather.expiredNotice.body' => ({required Object days}) => 'The last forecast is more than ${days} days old. A three-day-old forecast presented as today\'s is dangerous in the mountains, so the app stays silent. It will update by itself once you are back online.',
+			'weather.expiredNotice.title' => 'Forecast too old to be shown',
+			'weather.refreshUpToDate' => 'Already up to date: the server has produced nothing newer.',
+			'weather.refreshOffline' => 'Offline: nothing could be checked. What is shown keeps its age.',
 			'share.title' => 'Share',
 			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
@@ -5065,14 +5095,14 @@ extension on TranslationsEn {
 			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
 			'monetization.cancelCta' => 'Stop my subscription',
 			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
 			'signalement.types.eauASec' => 'Dry water point',
 			'signalement.types.danger' => 'Danger',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Saved. Visible to other hikers once the network syncs.',
 			'signalement.confirm' => 'Confirm report',
 			'signalement.noLocation' => 'GPS position unavailable right now. Try again under open sky.',
@@ -5579,14 +5609,14 @@ extension on TranslationsEn {
 			'calendar.legend.rest' => 'Rest',
 			'calendar.legend.arrival' => 'Arrival',
 			'calendar.summary.totalDays' => 'Total days',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.summary.walkDays' => 'Hiking days',
 			'calendar.summary.restDays' => 'Rest days',
 			'calendar.noDate.title' => 'Choose a departure date',
 			'calendar.noDate.message' => 'Your trek calendar will appear automatically with hiking and rest days.',
 			'calendar.empty.title' => 'Set up your itinerary first',
 			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',
 			'nuitees.guideTooltip' => 'Overnight stays guide',

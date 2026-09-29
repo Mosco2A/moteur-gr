@@ -19,6 +19,7 @@ import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
 import 'package:moteur_gr/core/models/trail_manifest.dart';
@@ -551,6 +552,7 @@ void main() {
         trailStagesDao: TrailStagesDao(db1),
         trailAccommodationsDao: TrailAccommodationsDao(db1),
         trailPoisDao: TrailPoisDao(db1),
+        trailMeteoDao: TrailMeteoDao(db1),
         trailGpxTracksDao: TrailGpxTracksDao(db1),
         trailGpxPointsDao: TrailGpxPointsDao(db1),
         httpClient: stockage(),

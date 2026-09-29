@@ -8,6 +8,7 @@ import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_accommodations_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_tracks_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_points_dao.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
@@ -44,6 +45,7 @@ void main() {
       trailManifestsDao: dao, trailMetaDao: TrailMetaDao(db),
       trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
       trailAccommodationsDao: TrailAccommodationsDao(db), trailPoisDao: TrailPoisDao(db),
+      trailMeteoDao: TrailMeteoDao(db),
       trailGpxTracksDao: TrailGpxTracksDao(db), trailGpxPointsDao: TrailGpxPointsDao(db));
   });
   tearDown(() async { await db.close(); });

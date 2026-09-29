@@ -664,7 +664,6 @@
     "loading": "Caricamento meteo...",
     "offline": "Nessuna connessione. Dati meteo non disponibili.",
     "error": "Impossibile caricare il meteo.",
-    "cached": "Dati nella cache",
     "alerts": "allerte meteo",
     "refresh": "Aggiorna",
     "temperature": "Temperatura",
@@ -687,11 +686,9 @@
     "stormAlertsToggleOff": "Allerte temporali disattivate",
     "lastUpdate": "Aggiornato $date",
     "guideTitle": "Capire il meteo",
-    "guideBody": "Le previsioni sono date TAPPA PER TAPPA: per ogni giorno del tuo programma, il tempo al luogo di arrivo di quel giorno. Arrivano al massimo a 10 giorni; i primi 7 sono affidabili, i successivi sono solo una tendenza, e oltre l'app lo dice invece di inventare. Ogni bollettino mostra quando è stato rilevato: in montagna, senza rete, resta visibile l'ultimo rilevamento.",
+    "guideBody": "Le previsioni sono prodotte dal NOSTRO SERVER, tappa per tappa: per ogni giorno del tuo programma, il tempo nel luogo di arrivo di quel giorno. Arrivano a $horizon giorni. L'app non le chiede mai da sola: recupera ciò che il server ha prodotto di più recente, al ritorno della rete e poi ogni 4 ore. Ogni bollettino mostra LA SUA DATA DI PRODUZIONE, non quella dello scaricamento. E passati $days giorni senza nulla di nuovo, l'app toglie i valori invece di farli passare per il tempo di oggi.",
     "source": {
-      "api": "Dati in diretta",
-      "cache": "Dati salvati",
-      "offline": "Non in linea",
+      "server": "Meteo dal nostro server",
       "demo": "Dati dimostrativi"
     },
     "recommendation": {
@@ -735,13 +732,8 @@
       "trendHint": "Oltre $reliable giorni è solo una tendenza: una previsione a 10 giorni si avvera circa una volta su due.",
       "beyondHorizon": "Nessuna previsione ancora: le previsioni arrivano solo a $horizon giorni.",
       "noData": "Nessun dato per questo luogo.",
-      "unknownDeparture": "Scegli la data di partenza: senza di essa è impossibile dire in che giorno sarai a quale tappa."
-    },
-    "freshness": {
-      "justNow": "Rilevato ora",
-      "at": "Rilevato il $date",
-      "stale": "Rilevato $duration fa, nessun aggiornamento da allora",
-      "never": "Mai rilevato"
+      "unknownDeparture": "Scegli la data di partenza: senza di essa è impossibile dire in che giorno sarai a quale tappa.",
+      "tooOld": "Bollettino troppo vecchio."
     },
     "duration": {
       "seconds": "pochi secondi",
@@ -752,7 +744,24 @@
     "refreshFailed": "Aggiornamento impossibile. I dati mostrati risalgono al $date.",
     "refreshFailedNoData": "Aggiornamento impossibile e nessun dato salvato.",
     "refreshedAt": "Dati aggiornati ($date)",
-    "refreshPartial": "Aggiornamento parziale: $done tappa/e su $total."
+    "fabrication": {
+      "at": "Bollettino prodotto il $date",
+      "expired": "Nessun valore mostrato: l'ultimo bollettino è stato prodotto $duration fa",
+      "justNow": "Bollettino prodotto adesso",
+      "stale": "Bollettino prodotto $duration fa, non è arrivato nulla di più recente",
+      "todayStale": "Bollettino prodotto $duration fa (il $date): il tempo di oggi può essere cambiato da allora",
+      "unknown": "Data di produzione sconosciuta"
+    },
+    "neverReceived": {
+      "body": "Il meteo è prodotto dal nostro server e arriva con i dati del sentiero. Appena questo telefono ritrova la rete si aggiorna da solo: non c'è nulla da chiedere.",
+      "title": "Ancora nessun bollettino"
+    },
+    "expiredNotice": {
+      "body": "L'ultimo bollettino ha più di $days giorni. Una previsione di tre giorni presentata come quella di oggi è pericolosa in montagna: l'app preferisce tacere. Si aggiornerà da sola al ritorno della rete.",
+      "title": "Previsioni troppo vecchie per essere mostrate"
+    },
+    "refreshUpToDate": "Già aggiornato: il server non ha prodotto nulla di più recente.",
+    "refreshOffline": "Offline: non si è potuto verificare nulla. Ciò che è mostrato conserva la sua età."
   },
   "share": {
     "title": "Condividi",

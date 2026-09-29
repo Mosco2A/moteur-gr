@@ -15,6 +15,7 @@ import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_accommodations_dao.dart';
 import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
@@ -289,6 +290,7 @@ void main() {
         trailStagesDao: TrailStagesDao(db),
         trailAccommodationsDao: TrailAccommodationsDao(db),
         trailPoisDao: TrailPoisDao(db),
+        trailMeteoDao: TrailMeteoDao(db),
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
         source: source,
@@ -719,11 +721,14 @@ void main() {
               'pour rien : c est la mise a jour qui coute');
       expect(
           aPrendre.parFamille.keys,
-          MorceauxDeSentier.tous
-              .where((f) => f != MorceauxDeSentier.hebergements),
+          MorceauxDeSentier.tous.where((f) =>
+              f != MorceauxDeSentier.hebergements &&
+              f != MorceauxDeSentier.meteo),
           reason: 'les six familles publiees, DANS L ORDRE DES CLES '
-              'ETRANGERES ; ce sentier ne declare pas d hebergement, et une '
-              'famille absente est absente — pas vide, pas fatale');
+              'ETRANGERES ; ce sentier ne declare ni hebergement ni meteo — la '
+              'premiere parce que ce sentier n en a pas, la seconde parce '
+              'qu elle est ecrite par le COLLECTEUR et non par le publicateur '
+              '(#L1). Une famille absente est absente : pas vide, pas fatale');
     });
   });
 

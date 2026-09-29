@@ -13,9 +13,26 @@ import 'day_forecast_card.dart' show WeatherIcon;
 /// clés (précipitations, vent, UV, probabilité d'orage) et une recommandation
 /// de randonnée dérivée (3 niveaux). Tous les libellés passent par Slang.
 class TodayStageWeatherCard extends StatelessWidget {
-  const TodayStageWeatherCard({super.key, required this.day});
+  const TodayStageWeatherCard({
+    super.key,
+    required this.day,
+    this.perime = false,
+  });
 
   final DayForecast day;
+
+  /// LE BULLETIN A DEPASSE LA PEREMPTION DU JOUR COURANT (six heures, #T8).
+  ///
+  /// La carte est alors GRISEE, pas masquee : la conception 611 tranche que la
+  /// prevision perimee « reste affichee, grisee et datee » jusqu a 72 h, parce
+  /// qu une prevision d hier reste une information — datee, elle n induit pas en
+  /// erreur. Au-dela de 72 h, c est l ecran qui ne l affiche plus du tout, et ce
+  /// n est plus l affaire de cette carte.
+  ///
+  /// LA DATE, ELLE, EST DANS LE BANDEAU AU-DESSUS, ET ELLE Y EST TOUJOURS. Griser
+  /// sans dater serait un signal sans information : c est pour cela que le grise et
+  /// la ligne d age ne se separent jamais.
+  final bool perime;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +56,14 @@ class TodayStageWeatherCard extends StatelessWidget {
 
     // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). Le Padding interne est
     // porte par le parametre padding d'AppCard (memes marges spacingBase).
-    return AppCard(
+    //
+    // L OPACITE EST LE « GRISE » DE #T8, ET ELLE PORTE SUR TOUTE LA CARTE. Griser
+    // les seuls chiffres laisserait la recommandation (« Conditions favorables ») en
+    // pleine couleur sur des donnees perimees — ce qui est la plus trompeuse des
+    // deux informations, parce que c est un VERDICT et non une mesure.
+    return Opacity(
+      opacity: perime ? 0.55 : 1,
+      child: AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,6 +159,7 @@ class TodayStageWeatherCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
     );
   }
 

@@ -1,185 +1,208 @@
+import 'dart:convert';
+
 import 'package:logger/logger.dart';
 
-import '../../../core/data/daos/stages_dao.dart';
+import '../../../core/data/daos/trail_meteo_dao.dart';
 import '../models/weather_forecast.dart';
-import 'weather_api_service.dart';
-import 'weather_cache.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
-/// Resultat NOMME d'un rafraichissement force (tache 572, U2/U3).
+/// CE QUE LE GESTE « ACTUALISER » A REELLEMENT PRODUIT.
 ///
-/// `Future<WeatherForecast?>` ne suffisait pas : `null` confondait « le reseau a
-/// echoue » et « cette etape n'existe pas », et un bulletin non nul ne disait pas
-/// s'il venait d'etre releve ou s'il sortait du cache faute de reseau. L'ecran
-/// avait donc besoin d'une information qu'il n'avait pas pour dire la verite au
-/// randonneur — et il se taisait.
-class WeatherRefreshResult {
-  const WeatherRefreshResult({
-    required this.forecast,
-    required this.failed,
-    this.reason,
-  });
+/// Quatre issues, et elles sont DISTINCTES A L ECRAN. C est la lecon de la tache
+/// 572 (« la mise a jour ne produit rien », verbatim de Christophe) poussee un cran
+/// plus loin : il ne suffit plus de distinguer reussi d echoue, parce que le cas le
+/// plus frequent n est ni l un ni l autre — c est « le serveur n a rien fabrique de
+/// plus recent », et c est une BONNE nouvelle qu un message d echec ferait passer
+/// pour une panne.
+enum IssueMiseAJourMeteo {
+  /// Un bulletin plus recent est arrive et est pose en base.
+  recue,
 
-  /// Rafraichissement reussi : bulletin neuf.
-  const WeatherRefreshResult.refreshed(WeatherForecast forecast)
-      : this(forecast: forecast, failed: false);
+  /// La passe a abouti, le serveur n a rien de plus recent. Rien a faire.
+  rienDePlusRecent,
 
-  /// Echec du rafraichissement. [forecast] porte le dernier bulletin connu s'il
-  /// en existe un (l'ecran garde son contenu et affiche son age), `null` sinon.
-  const WeatherRefreshResult.failure({
-    WeatherForecast? lastKnown,
-    required String reason,
-  }) : this(forecast: lastKnown, failed: true, reason: reason);
+  /// Hors ligne : aucune passe n a pu partir. Ce qui est affiche reste affiche,
+  /// avec son age.
+  horsLigne,
 
-  /// Bulletin a afficher apres l'operation (neuf, ou dernier connu).
-  final WeatherForecast? forecast;
-
-  /// Vrai si la mise a jour n'a PAS abouti — l'ecran doit le DIRE.
-  final bool failed;
-
-  /// Cause technique de l'echec (journal / diagnostic, jamais affichee brute).
-  final String? reason;
-
-  /// Vrai si l'ecran a quand meme quelque chose a montrer.
-  bool get hasData => forecast != null;
+  /// La passe a echoue (transport, empreinte, donnee refusee).
+  echec,
 }
 
-/// Repository meteo : orchestre API + cache + coordonnees dynamiques.
+/// Resultat NOMME d une demande de mise a jour de la meteo.
+class MiseAJourMeteo {
+  const MiseAJourMeteo({
+    required this.issue,
+    this.bulletin,
+    this.cause,
+  });
+
+  final IssueMiseAJourMeteo issue;
+
+  /// Le bulletin a afficher APRES l operation : le neuf s il est arrive, le dernier
+  /// connu sinon. Jamais un ecran vide quand le telephone a quelque chose.
+  final WeatherForecast? bulletin;
+
+  /// Cause technique (journal / diagnostic). Jamais affichee brute : l ecran en
+  /// tire un message i18n.
+  final String? cause;
+
+  /// Vrai si l operation n a pas abouti — l ecran doit le DIRE.
+  bool get echoue =>
+      issue == IssueMiseAJourMeteo.echec ||
+      issue == IssueMiseAJourMeteo.horsLigne;
+}
+
+/// LA METEO SE LIT EN BASE. IL N Y A PLUS RIEN A DEMANDER A PERSONNE.
 ///
-/// LE POINT ECHANTILLONNE EST L'ARRIVEE DE L'ETAPE (tache 572, U1). Avant, la
-/// prevision etait demandee aux coordonnees de DEPART (`startLat`/`startLng`).
-/// Ce que le randonneur veut savoir, verbatim de Chris, c'est « la meteo a
-/// l'endroit ou on est cense se trouver le lendemain » : l'endroit ou il DORT au
-/// bout de la journee, celui qui porte un nom (`arrivalName`) et qu'on affiche a
-/// l'ecran. Echantillonner le depart tout en nommant l'arrivee aurait donne un
-/// bulletin pour un autre lieu — en montagne, quinze kilometres et huit cents
-/// metres de denivele plus loin, ce n'est pas la meme temperature. Le nom affiche
-/// et les coordonnees interrogees decrivent desormais le MEME point.
+/// DECISION DE CHRISTOPHE DU 28/09, verbatim : « Ce n est pas l appli qui demande la
+/// meteo mais notre serveur, les infos meteo sont mises sur firebase et quand l appli
+/// voit qu il y a des donnees a jour elle les met a jour, comme pour le reste. »
 ///
-/// Strategie de lecture (tache 572) :
-///   1. cache FRAIS -> retour direct, aucun appel reseau ;
-///   2. sinon appel Open-Meteo, mise en cache, retour ;
-///   3. si l'appel echoue -> DERNIER bulletin connu, quel que soit son age, avec
-///      son instant de releve pour que l'ecran affiche sa fraicheur.
-///      L'etape 3 est la reponse au « pas de reseau sur le sentier » : le TTL
-///      gouverne le re-telechargement, jamais le droit d'afficher.
+/// CE QUE CETTE CLASSE FAISAIT ET NE FAIT PLUS. Elle orchestrait trois choses : un
+/// cache avec sa duree de vie, un appel a Open-Meteo, et un repli sur le dernier
+/// bulletin connu. Les deux premieres ont disparu — il n y a plus de fournisseur a
+/// appeler, donc plus de duree de vie a faire expirer pour decider de le rappeler.
+/// La troisieme est devenue la seule et unique lecture : **le dernier bulletin
+/// connu EST le bulletin**, et son age est affiche.
+///
+/// ELLE N A PLUS BESOIN DES COORDONNEES DES ETAPES, ET C EST UN GAIN REEL. L ancienne
+/// version lisait `endLat`/`endLng` dans la table `stages` pour construire son appel.
+/// Consequence mesuree : un sentier venu du SEUL distant, dont les etapes vivent dans
+/// `trail_stages` et pas dans `stages`, n avait aucune meteo et rien ne le disait. Le
+/// serveur fabriquant la meteo PAR ETAPE, l application n a plus qu a la lire par
+/// (sentier, numero d etape) — ce chemin d echec n existe plus.
 class WeatherRepository {
   WeatherRepository({
-    required WeatherApiService apiService,
-    required WeatherCache cache,
-    required StagesDao stagesDao,
-  })  : _apiService = apiService,
-        _cache = cache,
-        _stagesDao = stagesDao;
+    required TrailMeteoDao dao,
+    required Future<bool> Function() demanderUnePasse,
+  })  : _dao = dao,
+        _demanderUnePasse = demanderUnePasse;
 
-  final WeatherApiService _apiService;
-  final WeatherCache _cache;
-  final StagesDao _stagesDao;
+  final TrailMeteoDao _dao;
 
-  /// Recupere la prevision meteo d'une etape, au point d'ARRIVEE de l'etape.
+  /// DEMANDE UNE PASSE A L ORDONNANCEUR QUI EXISTE DEJA, ET N EN ECRIT PAS UN
+  /// SECOND.
   ///
-  /// Coordonnees dynamiques depuis Drift (endLat/endLng). Cache-first avec
-  /// repli sur le dernier bulletin connu quand le reseau manque. Retourne null
-  /// seulement si l'etape n'existe pas en base ET qu'aucun bulletin n'a jamais
-  /// ete enregistre pour elle.
-  Future<WeatherForecast?> getForecast({
+  /// `OrdonnanceurDeSynchronisation.passer` est la methode que le lot 616 a rendue
+  /// publique exactement pour cela — son commentaire l annonce : « parce qu un geste
+  /// "verifier maintenant" dans l interface s y branchera sans ajouter de chemin ».
+  ///
+  /// IL REND « LA PASSE A-T-ELLE REELLEMENT TOURNE », ET C EST CE QUI REMPLACE UNE
+  /// SECONDE AUTORITE SUR LA CONNECTIVITE. Une premiere version interrogeait le
+  /// moniteur de reseau ICI, en plus de l ordonnanceur qui l interroge deja avant
+  /// chaque passe : deux sources pour un meme fait, dont la plus silencieuse
+  /// gagne — exactement le piege #M7 de la spec 605. L ordonnanceur sait, lui, s il
+  /// a tourne (`passesExecutees` ne monte que sur une passe REELLEMENT executee),
+  /// et c est la seule chose que le repository ait besoin de savoir.
+  ///
+  /// CONSEQUENCE VISIBLE, ET ELLE EST VOULUE : le bouton « Actualiser » de l ecran
+  /// meteo synchronise TOUT ce qui est telecharge, pas seulement la meteo. Il n y a
+  /// plus de mise a jour « de la meteo » : il y a une mise a jour des donnees, dont
+  /// la meteo est une famille. C est la phrase de Christophe — « comme pour le
+  /// reste » — appliquee jusqu au bouton.
+  final Future<bool> Function() _demanderUnePasse;
+
+  /// LE BULLETIN D UNE ETAPE, TEL QUE LE SERVEUR L A FABRIQUE.
+  ///
+  /// Rend `null` quand le serveur n a encore rien depose pour cette etape sur ce
+  /// telephone. **CE `null` EST UNE REPONSE, PAS UNE PANNE**, et l ecran doit le
+  /// dire ainsi : « pas encore de bulletin ». Il ne doit surtout pas le combler.
+  Future<WeatherForecast?> bulletinDeLEtape({
     required String trailId,
     required int stageNumber,
   }) async {
-    // 1. Cache encore frais : aucun appel reseau (rate limit #81812 I6).
-    final fresh = await _cache.getFreshForecast(
-      trailId: trailId,
-      stageNumber: stageNumber,
-    );
-    if (fresh != null) {
-      _log.d('[WeatherRepository] Cache frais pour $trailId/$stageNumber');
-      return fresh;
-    }
-
-    // 2. Coordonnees dynamiques depuis Drift, point d'ARRIVEE de l'etape.
-    final stage = await _stagesDao.getByStageNumber(trailId, stageNumber);
-    if (stage == null) {
-      _log.w('[WeatherRepository] Etape $trailId/$stageNumber introuvable');
-      // L'etape est inconnue mais un bulletin a peut-etre ete enregistre avant
-      // (base rechargee) : on ne jette pas ce qu'on a.
-      return _cache.getLastKnownForecast(
-        trailId: trailId,
-        stageNumber: stageNumber,
+    try {
+      final ligne = await _dao.pourEtape(trailId, stageNumber);
+      if (ligne == null) return null;
+      return WeatherForecast.depuisLePublie(
+        jours: jsonDecode(ligne.joursJson) as List<dynamic>,
+        latitude: ligne.latitude,
+        longitude: ligne.longitude,
+        produiteLe: ligne.produiteLe,
+        collecteeLe: ligne.collecteeLe,
+        source: ligne.source,
       );
+    } catch (e) {
+      // UNE LIGNE ILLISIBLE VAUT « PAS DE BULLETIN », JAMAIS UN ECRAN CASSE. Elle
+      // est journalisee, et la prochaine passe la remplacera : l ecriture est
+      // idempotente, donc le serveur reposera le meme enregistrement des que sa
+      // borne repassera devant le repere.
+      _log.w('[Meteo] Bulletin illisible pour $trailId/$stageNumber : $e');
+      return null;
     }
-
-    final forecast = await _apiService.fetchForecast(
-      latitude: stage.endLat,
-      longitude: stage.endLng,
-    );
-
-    // 3. Appel echoue : le DERNIER bulletin connu vaut mieux qu'un ecran vide.
-    if (forecast == null) {
-      _log.w('[WeatherRepository] API echec pour $trailId/$stageNumber, '
-          'repli sur le dernier bulletin connu');
-      return _cache.getLastKnownForecast(
-        trailId: trailId,
-        stageNumber: stageNumber,
-      );
-    }
-
-    await _cache.saveForecast(
-      trailId: trailId,
-      stageNumber: stageNumber,
-      forecast: forecast,
-    );
-
-    _log.d('[WeatherRepository] API + cache OK pour $trailId/$stageNumber');
-    return forecast;
   }
 
-  /// Force le rafraichissement en ignorant le cache (bouton « Actualiser » et
-  /// pull-to-refresh).
+  /// Tous les bulletins d un sentier, par numero d etape.
+  Future<List<WeatherForecast>> bulletinsDuSentier(String trailId) async {
+    final lignes = await _dao.pourSentier(trailId);
+    final bulletins = <WeatherForecast>[];
+    for (final ligne in lignes) {
+      final b = await bulletinDeLEtape(
+        trailId: ligne.trailId,
+        stageNumber: ligne.stageNumber,
+      );
+      if (b != null) bulletins.add(b);
+    }
+    return bulletins;
+  }
+
+  /// DEMANDE AU SERVEUR CE QU IL A DE PLUS RECENT, PAR L ORDONNANCEUR.
   ///
-  /// Rend un resultat NOMME : l'ecran doit pouvoir distinguer une mise a jour
-  /// reussie d'une mise a jour ratee, sinon un bouton qui echoue est
-  /// indistinguable d'un bouton qui reussit — et c'est exactement le « ne
-  /// produit rien » de Chris.
-  Future<WeatherRefreshResult> refreshForecast({
+  /// C est le geste « Actualiser » et le tire-pour-rafraichir. La comparaison qui
+  /// decide de l issue porte sur la DATE DE FABRICATION, avant et apres la passe :
+  /// c est la seule mesure honnete de « quelque chose de plus recent est arrive ».
+  /// Compter les enregistrements ecrits ne dirait rien — la borne du serveur fait
+  /// volontairement relire des enregistrements deja connus (#K4).
+  Future<MiseAJourMeteo> demanderLaMiseAJour({
     required String trailId,
     required int stageNumber,
   }) async {
-    Future<WeatherForecast?> lastKnown() => _cache.getLastKnownForecast(
-          trailId: trailId,
-          stageNumber: stageNumber,
-        );
-
-    final stage = await _stagesDao.getByStageNumber(trailId, stageNumber);
-    if (stage == null) {
-      return WeatherRefreshResult.failure(
-        lastKnown: await lastKnown(),
-        reason: 'etape $trailId/$stageNumber introuvable en base',
-      );
-    }
-
-    final forecast = await _apiService.fetchForecast(
-      latitude: stage.endLat,
-      longitude: stage.endLng,
-    );
-
-    if (forecast == null) {
-      return WeatherRefreshResult.failure(
-        lastKnown: await lastKnown(),
-        reason: 'appel Open-Meteo sans reponse exploitable',
-      );
-    }
-
-    await _cache.saveForecast(
+    final avant = await bulletinDeLEtape(
       trailId: trailId,
       stageNumber: stageNumber,
-      forecast: forecast,
     );
-    return WeatherRefreshResult.refreshed(forecast);
-  }
 
-  /// Libere les ressources
-  void dispose() {
-    _apiService.dispose();
+    final bool aTourne;
+    try {
+      aTourne = await _demanderUnePasse();
+    } catch (e) {
+      return MiseAJourMeteo(
+        issue: IssueMiseAJourMeteo.echec,
+        bulletin: avant,
+        cause: 'passe de synchronisation en echec : $e',
+      );
+    }
+
+    // LA PASSE N A PAS TOURNE = HORS LIGNE. L ordonnanceur ecarte lui-meme les
+    // passes emises sans reseau (« une passe hors ligne ne produirait qu un echec
+    // de transport et des journaux trompeurs »), et il ne compte que celles qui
+    // ont REELLEMENT eu lieu. On lit donc son verdict au lieu d en rendre un
+    // second.
+    if (!aTourne) {
+      return MiseAJourMeteo(
+        issue: IssueMiseAJourMeteo.horsLigne,
+        bulletin: avant,
+        cause: 'aucune passe de synchronisation n a pu tourner (hors ligne)',
+      );
+    }
+
+    final apres = await bulletinDeLEtape(
+      trailId: trailId,
+      stageNumber: stageNumber,
+    );
+
+    final aAvance = apres != null &&
+        (avant?.produiteLe == null ||
+            (apres.produiteLe != null &&
+                apres.produiteLe! > avant!.produiteLe!));
+
+    return MiseAJourMeteo(
+      issue: aAvance
+          ? IssueMiseAJourMeteo.recue
+          : IssueMiseAJourMeteo.rienDePlusRecent,
+      bulletin: apres ?? avant,
+    );
   }
 }

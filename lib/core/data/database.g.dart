@@ -8581,6 +8581,725 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
   }
 }
 
+class $TrailMeteoTable extends TrailMeteo
+    with TableInfo<$TrailMeteoTable, TrailMeteoData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrailMeteoTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageIdMeta = const VerificationMeta(
+    'stageId',
+  );
+  @override
+  late final GeneratedColumn<String> stageId = GeneratedColumn<String>(
+    'stage_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
+  @override
+  late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur, int>
+  produiteLe = GeneratedColumn<int>(
+    'produite_le',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  ).withConverter<HorodatageServeur>($TrailMeteoTable.$converterproduiteLe);
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int>
+  collecteeLe = GeneratedColumn<int>(
+    'collectee_le',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  ).withConverter<HorodatageServeur?>($TrailMeteoTable.$convertercollecteeLen);
+  static const VerificationMeta _joursJsonMeta = const VerificationMeta(
+    'joursJson',
+  );
+  @override
+  late final GeneratedColumn<String> joursJson = GeneratedColumn<String>(
+    'jours_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailMeteoTable.$converterrevn);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    stageId,
+    stageNumber,
+    latitude,
+    longitude,
+    source,
+    produiteLe,
+    collecteeLe,
+    joursJson,
+    rev,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trail_meteo';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrailMeteoData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('stage_id')) {
+      context.handle(
+        _stageIdMeta,
+        stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stageIdMeta);
+    }
+    if (data.containsKey('stage_number')) {
+      context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
+          _stageNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_stageNumberMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('jours_json')) {
+      context.handle(
+        _joursJsonMeta,
+        joursJson.isAcceptableOrUnknown(data['jours_json']!, _joursJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_joursJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TrailMeteoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrailMeteoData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      stageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stage_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      produiteLe: $TrailMeteoTable.$converterproduiteLe.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}produite_le'],
+        )!,
+      ),
+      collecteeLe: $TrailMeteoTable.$convertercollecteeLen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}collectee_le'],
+        ),
+      ),
+      joursJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}jours_json'],
+      )!,
+      rev: $TrailMeteoTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
+    );
+  }
+
+  @override
+  $TrailMeteoTable createAlias(String alias) {
+    return $TrailMeteoTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<HorodatageServeur, int> $converterproduiteLe =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur, int> $convertercollecteeLe =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $convertercollecteeLen =
+      NullAwareTypeConverter.wrap($convertercollecteeLe);
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
+}
+
+class TrailMeteoData extends DataClass implements Insertable<TrailMeteoData> {
+  /// Identite publiee de l enregistrement (`id` du JSON serveur).
+  ///
+  /// UNE IDENTITE PUBLIEE, PAS UNE CLE TECHNIQUE, et c est ce qui rend le marqueur
+  /// de suppression (#R7 de la spec 605) applicable a cette famille comme aux six
+  /// autres qui portent un `id`.
+  final String id;
+
+  /// Sentier concerne.
+  final String trailId;
+
+  /// Etape concernee, par son identite publiee (`trail_stages.id`).
+  final String stageId;
+
+  /// Numero de l etape dans son itineraire.
+  ///
+  /// IL EST STOCKE BIEN QU IL SOIT DEDUCTIBLE DE [stageId], ET C EST DELIBERE.
+  /// C est par (sentier, numero d etape) que toute la presentation meteo adresse un
+  /// bulletin, depuis l ecran d etape jusqu a la tuile du HUB. Passer par une
+  /// jointure sur les etapes rendrait la meteo indisponible exactement quand elle
+  /// est utile : un sentier venu du seul distant, dont les etapes vivent dans
+  /// `trail_stages` et non dans la table `stages` que la presentation lit encore
+  /// (dette mesuree, deux tables d etapes coexistent dans ce depot).
+  final int stageNumber;
+
+  /// Point ou la prevision a ete demandee — l ARRIVEE de l etape.
+  ///
+  /// C est le point ou le randonneur dort (#I11 de la conception 611, et la
+  /// decision de la tache 572). Conserve pour que l ecran puisse dire de QUEL lieu
+  /// il parle, et pour qu un bulletin visiblement pose sur le mauvais point se
+  /// voie au lieu de se deviner.
+  final double latitude;
+
+  /// Longitude du point interroge.
+  final double longitude;
+
+  /// Le fournisseur NOMME DANS LA DONNEE (#A3 de la conception 611).
+  ///
+  /// « Un seul fournisseur en service a la fois, le second est un repli, pas un
+  /// complement. » Le nommer dans l enregistrement est ce qui rend un basculement
+  /// VISIBLE : sans lui, les chiffres bougeraient sans raison apparente.
+  final String source;
+
+  /// INSTANT DE FABRICATION PAR LE MODELE — LA DATE QUE L ECRAN AFFICHE.
+  ///
+  /// Le type l interdit d etre l horloge du telephone :
+  /// [HorodatageServeur] ne se construit qu en LISANT une valeur venue du serveur
+  /// (cf. `lib/core/data/revision_de_donnee.dart`). Une date de fabrication
+  /// fabriquee par le telephone serait precisement le mensonge que ce lot ferme.
+  final HorodatageServeur produiteLe;
+
+  /// Instant de la collecte reussie cote serveur. Exploitation, jamais affiche.
+  ///
+  /// Nullable : un serveur qui ne le publie pas ne doit pas rendre la meteo
+  /// illisible — c est [produiteLe] qui porte la verite utile au randonneur.
+  final HorodatageServeur? collecteeLe;
+
+  /// Les jours de prevision, dans la forme que la presentation consomme.
+  final String joursJson;
+
+  /// HORODATAGE DE SYNCHRONISATION de cet enregistrement, pose par le SERVEUR.
+  ///
+  /// Nullable comme sur les sept autres familles : une donnee qui n en declare pas
+  /// est rattachee a l instant courant du sentier (#R6 de la spec 605).
+  final HorodatageServeur? rev;
+  const TrailMeteoData({
+    required this.id,
+    required this.trailId,
+    required this.stageId,
+    required this.stageNumber,
+    required this.latitude,
+    required this.longitude,
+    required this.source,
+    required this.produiteLe,
+    this.collecteeLe,
+    required this.joursJson,
+    this.rev,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['stage_id'] = Variable<String>(stageId);
+    map['stage_number'] = Variable<int>(stageNumber);
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    map['source'] = Variable<String>(source);
+    {
+      map['produite_le'] = Variable<int>(
+        $TrailMeteoTable.$converterproduiteLe.toSql(produiteLe),
+      );
+    }
+    if (!nullToAbsent || collecteeLe != null) {
+      map['collectee_le'] = Variable<int>(
+        $TrailMeteoTable.$convertercollecteeLen.toSql(collecteeLe),
+      );
+    }
+    map['jours_json'] = Variable<String>(joursJson);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>($TrailMeteoTable.$converterrevn.toSql(rev));
+    }
+    return map;
+  }
+
+  TrailMeteoCompanion toCompanion(bool nullToAbsent) {
+    return TrailMeteoCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      stageId: Value(stageId),
+      stageNumber: Value(stageNumber),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      source: Value(source),
+      produiteLe: Value(produiteLe),
+      collecteeLe: collecteeLe == null && nullToAbsent
+          ? const Value.absent()
+          : Value(collecteeLe),
+      joursJson: Value(joursJson),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
+    );
+  }
+
+  factory TrailMeteoData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrailMeteoData(
+      id: serializer.fromJson<String>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      stageId: serializer.fromJson<String>(json['stageId']),
+      stageNumber: serializer.fromJson<int>(json['stageNumber']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+      source: serializer.fromJson<String>(json['source']),
+      produiteLe: serializer.fromJson<HorodatageServeur>(json['produiteLe']),
+      collecteeLe: serializer.fromJson<HorodatageServeur?>(json['collecteeLe']),
+      joursJson: serializer.fromJson<String>(json['joursJson']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'stageId': serializer.toJson<String>(stageId),
+      'stageNumber': serializer.toJson<int>(stageNumber),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+      'source': serializer.toJson<String>(source),
+      'produiteLe': serializer.toJson<HorodatageServeur>(produiteLe),
+      'collecteeLe': serializer.toJson<HorodatageServeur?>(collecteeLe),
+      'joursJson': serializer.toJson<String>(joursJson),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
+    };
+  }
+
+  TrailMeteoData copyWith({
+    String? id,
+    String? trailId,
+    String? stageId,
+    int? stageNumber,
+    double? latitude,
+    double? longitude,
+    String? source,
+    HorodatageServeur? produiteLe,
+    Value<HorodatageServeur?> collecteeLe = const Value.absent(),
+    String? joursJson,
+    Value<HorodatageServeur?> rev = const Value.absent(),
+  }) => TrailMeteoData(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    stageId: stageId ?? this.stageId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    source: source ?? this.source,
+    produiteLe: produiteLe ?? this.produiteLe,
+    collecteeLe: collecteeLe.present ? collecteeLe.value : this.collecteeLe,
+    joursJson: joursJson ?? this.joursJson,
+    rev: rev.present ? rev.value : this.rev,
+  );
+  TrailMeteoData copyWithCompanion(TrailMeteoCompanion data) {
+    return TrailMeteoData(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      stageId: data.stageId.present ? data.stageId.value : this.stageId,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      source: data.source.present ? data.source.value : this.source,
+      produiteLe: data.produiteLe.present
+          ? data.produiteLe.value
+          : this.produiteLe,
+      collecteeLe: data.collecteeLe.present
+          ? data.collecteeLe.value
+          : this.collecteeLe,
+      joursJson: data.joursJson.present ? data.joursJson.value : this.joursJson,
+      rev: data.rev.present ? data.rev.value : this.rev,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrailMeteoData(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageId: $stageId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('source: $source, ')
+          ..write('produiteLe: $produiteLe, ')
+          ..write('collecteeLe: $collecteeLe, ')
+          ..write('joursJson: $joursJson, ')
+          ..write('rev: $rev')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    stageId,
+    stageNumber,
+    latitude,
+    longitude,
+    source,
+    produiteLe,
+    collecteeLe,
+    joursJson,
+    rev,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrailMeteoData &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.stageId == this.stageId &&
+          other.stageNumber == this.stageNumber &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.source == this.source &&
+          other.produiteLe == this.produiteLe &&
+          other.collecteeLe == this.collecteeLe &&
+          other.joursJson == this.joursJson &&
+          other.rev == this.rev);
+}
+
+class TrailMeteoCompanion extends UpdateCompanion<TrailMeteoData> {
+  final Value<String> id;
+  final Value<String> trailId;
+  final Value<String> stageId;
+  final Value<int> stageNumber;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  final Value<String> source;
+  final Value<HorodatageServeur> produiteLe;
+  final Value<HorodatageServeur?> collecteeLe;
+  final Value<String> joursJson;
+  final Value<HorodatageServeur?> rev;
+  final Value<int> rowid;
+  const TrailMeteoCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.stageId = const Value.absent(),
+    this.stageNumber = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.source = const Value.absent(),
+    this.produiteLe = const Value.absent(),
+    this.collecteeLe = const Value.absent(),
+    this.joursJson = const Value.absent(),
+    this.rev = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrailMeteoCompanion.insert({
+    required String id,
+    required String trailId,
+    required String stageId,
+    required int stageNumber,
+    required double latitude,
+    required double longitude,
+    required String source,
+    required HorodatageServeur produiteLe,
+    this.collecteeLe = const Value.absent(),
+    required String joursJson,
+    this.rev = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trailId = Value(trailId),
+       stageId = Value(stageId),
+       stageNumber = Value(stageNumber),
+       latitude = Value(latitude),
+       longitude = Value(longitude),
+       source = Value(source),
+       produiteLe = Value(produiteLe),
+       joursJson = Value(joursJson);
+  static Insertable<TrailMeteoData> custom({
+    Expression<String>? id,
+    Expression<String>? trailId,
+    Expression<String>? stageId,
+    Expression<int>? stageNumber,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<String>? source,
+    Expression<int>? produiteLe,
+    Expression<int>? collecteeLe,
+    Expression<String>? joursJson,
+    Expression<int>? rev,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (stageId != null) 'stage_id': stageId,
+      if (stageNumber != null) 'stage_number': stageNumber,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (source != null) 'source': source,
+      if (produiteLe != null) 'produite_le': produiteLe,
+      if (collecteeLe != null) 'collectee_le': collecteeLe,
+      if (joursJson != null) 'jours_json': joursJson,
+      if (rev != null) 'rev': rev,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrailMeteoCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trailId,
+    Value<String>? stageId,
+    Value<int>? stageNumber,
+    Value<double>? latitude,
+    Value<double>? longitude,
+    Value<String>? source,
+    Value<HorodatageServeur>? produiteLe,
+    Value<HorodatageServeur?>? collecteeLe,
+    Value<String>? joursJson,
+    Value<HorodatageServeur?>? rev,
+    Value<int>? rowid,
+  }) {
+    return TrailMeteoCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      stageId: stageId ?? this.stageId,
+      stageNumber: stageNumber ?? this.stageNumber,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      source: source ?? this.source,
+      produiteLe: produiteLe ?? this.produiteLe,
+      collecteeLe: collecteeLe ?? this.collecteeLe,
+      joursJson: joursJson ?? this.joursJson,
+      rev: rev ?? this.rev,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (stageId.present) {
+      map['stage_id'] = Variable<String>(stageId.value);
+    }
+    if (stageNumber.present) {
+      map['stage_number'] = Variable<int>(stageNumber.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (produiteLe.present) {
+      map['produite_le'] = Variable<int>(
+        $TrailMeteoTable.$converterproduiteLe.toSql(produiteLe.value),
+      );
+    }
+    if (collecteeLe.present) {
+      map['collectee_le'] = Variable<int>(
+        $TrailMeteoTable.$convertercollecteeLen.toSql(collecteeLe.value),
+      );
+    }
+    if (joursJson.present) {
+      map['jours_json'] = Variable<String>(joursJson.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailMeteoTable.$converterrevn.toSql(rev.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrailMeteoCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageId: $stageId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('source: $source, ')
+          ..write('produiteLe: $produiteLe, ')
+          ..write('collecteeLe: $collecteeLe, ')
+          ..write('joursJson: $joursJson, ')
+          ..write('rev: $rev, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TrailGpxTracksTable extends TrailGpxTracks
     with TableInfo<$TrailGpxTracksTable, TrailGpxTrack> {
   @override
@@ -19880,6 +20599,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TrailAccommodationsTable trailAccommodations =
       $TrailAccommodationsTable(this);
   late final $TrailPoisTable trailPois = $TrailPoisTable(this);
+  late final $TrailMeteoTable trailMeteo = $TrailMeteoTable(this);
   late final $TrailGpxTracksTable trailGpxTracks = $TrailGpxTracksTable(this);
   late final $TrailGpxPointsTable trailGpxPoints = $TrailGpxPointsTable(this);
   late final $TrailManifestsTable trailManifests = $TrailManifestsTable(this);
@@ -19938,6 +20658,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final TrailAccommodationsDao trailAccommodationsDao =
       TrailAccommodationsDao(this as AppDatabase);
   late final TrailPoisDao trailPoisDao = TrailPoisDao(this as AppDatabase);
+  late final TrailMeteoDao trailMeteoDao = TrailMeteoDao(this as AppDatabase);
   late final TrailGpxTracksDao trailGpxTracksDao = TrailGpxTracksDao(
     this as AppDatabase,
   );
@@ -19998,6 +20719,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     trailStages,
     trailAccommodations,
     trailPois,
+    trailMeteo,
     trailGpxTracks,
     trailGpxPoints,
     trailManifests,
@@ -23984,6 +24706,331 @@ typedef $$TrailPoisTableProcessedTableManager =
       $$TrailPoisTableUpdateCompanionBuilder,
       (TrailPoi, BaseReferences<_$AppDatabase, $TrailPoisTable, TrailPoi>),
       TrailPoi,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailMeteoTableCreateCompanionBuilder =
+    TrailMeteoCompanion Function({
+      required String id,
+      required String trailId,
+      required String stageId,
+      required int stageNumber,
+      required double latitude,
+      required double longitude,
+      required String source,
+      required HorodatageServeur produiteLe,
+      Value<HorodatageServeur?> collecteeLe,
+      required String joursJson,
+      Value<HorodatageServeur?> rev,
+      Value<int> rowid,
+    });
+typedef $$TrailMeteoTableUpdateCompanionBuilder =
+    TrailMeteoCompanion Function({
+      Value<String> id,
+      Value<String> trailId,
+      Value<String> stageId,
+      Value<int> stageNumber,
+      Value<double> latitude,
+      Value<double> longitude,
+      Value<String> source,
+      Value<HorodatageServeur> produiteLe,
+      Value<HorodatageServeur?> collecteeLe,
+      Value<String> joursJson,
+      Value<HorodatageServeur?> rev,
+      Value<int> rowid,
+    });
+
+class $$TrailMeteoTableFilterComposer
+    extends Composer<_$AppDatabase, $TrailMeteoTable> {
+  $$TrailMeteoTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stageId => $composableBuilder(
+    column: $table.stageId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get stageNumber => $composableBuilder(
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur, HorodatageServeur, int>
+  get produiteLe => $composableBuilder(
+    column: $table.produiteLe,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get collecteeLe => $composableBuilder(
+    column: $table.collecteeLe,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get joursJson => $composableBuilder(
+    column: $table.joursJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+}
+
+class $$TrailMeteoTableOrderingComposer
+    extends Composer<_$AppDatabase, $TrailMeteoTable> {
+  $$TrailMeteoTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stageId => $composableBuilder(
+    column: $table.stageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get stageNumber => $composableBuilder(
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get produiteLe => $composableBuilder(
+    column: $table.produiteLe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get collecteeLe => $composableBuilder(
+    column: $table.collecteeLe,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get joursJson => $composableBuilder(
+    column: $table.joursJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TrailMeteoTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TrailMeteoTable> {
+  $$TrailMeteoTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get stageId =>
+      $composableBuilder(column: $table.stageId, builder: (column) => column);
+
+  GeneratedColumn<int> get stageNumber => $composableBuilder(
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur, int> get produiteLe =>
+      $composableBuilder(
+        column: $table.produiteLe,
+        builder: (column) => column,
+      );
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get collecteeLe =>
+      $composableBuilder(
+        column: $table.collecteeLe,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get joursJson =>
+      $composableBuilder(column: $table.joursJson, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
+}
+
+class $$TrailMeteoTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailMeteoTable,
+          TrailMeteoData,
+          $$TrailMeteoTableFilterComposer,
+          $$TrailMeteoTableOrderingComposer,
+          $$TrailMeteoTableAnnotationComposer,
+          $$TrailMeteoTableCreateCompanionBuilder,
+          $$TrailMeteoTableUpdateCompanionBuilder,
+          (
+            TrailMeteoData,
+            BaseReferences<_$AppDatabase, $TrailMeteoTable, TrailMeteoData>,
+          ),
+          TrailMeteoData,
+          PrefetchHooks Function()
+        > {
+  $$TrailMeteoTableTableManager(_$AppDatabase db, $TrailMeteoTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrailMeteoTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrailMeteoTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrailMeteoTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> stageId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<HorodatageServeur> produiteLe = const Value.absent(),
+                Value<HorodatageServeur?> collecteeLe = const Value.absent(),
+                Value<String> joursJson = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailMeteoCompanion(
+                id: id,
+                trailId: trailId,
+                stageId: stageId,
+                stageNumber: stageNumber,
+                latitude: latitude,
+                longitude: longitude,
+                source: source,
+                produiteLe: produiteLe,
+                collecteeLe: collecteeLe,
+                joursJson: joursJson,
+                rev: rev,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trailId,
+                required String stageId,
+                required int stageNumber,
+                required double latitude,
+                required double longitude,
+                required String source,
+                required HorodatageServeur produiteLe,
+                Value<HorodatageServeur?> collecteeLe = const Value.absent(),
+                required String joursJson,
+                Value<HorodatageServeur?> rev = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailMeteoCompanion.insert(
+                id: id,
+                trailId: trailId,
+                stageId: stageId,
+                stageNumber: stageNumber,
+                latitude: latitude,
+                longitude: longitude,
+                source: source,
+                produiteLe: produiteLe,
+                collecteeLe: collecteeLe,
+                joursJson: joursJson,
+                rev: rev,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TrailMeteoTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailMeteoTable,
+      TrailMeteoData,
+      $$TrailMeteoTableFilterComposer,
+      $$TrailMeteoTableOrderingComposer,
+      $$TrailMeteoTableAnnotationComposer,
+      $$TrailMeteoTableCreateCompanionBuilder,
+      $$TrailMeteoTableUpdateCompanionBuilder,
+      (
+        TrailMeteoData,
+        BaseReferences<_$AppDatabase, $TrailMeteoTable, TrailMeteoData>,
+      ),
+      TrailMeteoData,
       PrefetchHooks Function()
     >;
 typedef $$TrailGpxTracksTableCreateCompanionBuilder =
@@ -29752,6 +30799,8 @@ class $AppDatabaseManager {
       $$TrailAccommodationsTableTableManager(_db, _db.trailAccommodations);
   $$TrailPoisTableTableManager get trailPois =>
       $$TrailPoisTableTableManager(_db, _db.trailPois);
+  $$TrailMeteoTableTableManager get trailMeteo =>
+      $$TrailMeteoTableTableManager(_db, _db.trailMeteo);
   $$TrailGpxTracksTableTableManager get trailGpxTracks =>
       $$TrailGpxTracksTableTableManager(_db, _db.trailGpxTracks);
   $$TrailGpxPointsTableTableManager get trailGpxPoints =>

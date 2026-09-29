@@ -1,59 +1,84 @@
+import '../../../core/data/revision_de_donnee.dart';
+
 /// Prévision météo quotidienne pour un point géographique.
 ///
-/// Modèle immuable construit depuis la réponse Open-Meteo.
-/// Chaque DayForecast contient les données d'une journée.
+/// ELLE N EST PLUS CONSTRUITE DEPUIS UNE REPONSE DE FOURNISSEUR (lot 625). Elle est
+/// construite depuis ce que NOTRE SERVEUR a fabrique et depose, et que
+/// l application a recopie en base par le meme chemin que les etapes ou les points
+/// d interet. Decision de Christophe du 28/09, verbatim : « Ce n est pas l appli qui
+/// demande la meteo mais notre serveur. »
+///
+/// CE QUE CELA SUPPRIME, ET C EST LA MESURE DU LOT : la fabrique
+/// `WeatherForecast.fromOpenMeteo` n existe plus, et avec elle le dernier endroit du
+/// depot qui connaissait la forme d un fournisseur de meteo. L application ne sait
+/// plus d ou vient le temps qu il fait — elle sait seulement QUAND il a ete regarde.
 class WeatherForecast {
   const WeatherForecast({
     required this.days,
     required this.latitude,
     required this.longitude,
-    this.fetchedAt,
+    this.produiteLe,
+    this.collecteeLe,
+    this.source,
   });
 
   final List<DayForecast> days;
   final double latitude;
   final double longitude;
 
-  /// INSTANT DU RELEVE — l'heure a laquelle ce bulletin a ete obtenu du
-  /// fournisseur (TACHE 572, U2/U3).
+  /// INSTANT DE FABRICATION PAR LE MODELE METEO — LA SEULE DATE QU ON AFFICHE.
   ///
-  /// C'ETAIT LA CAUSE DES DEUX BOUTONS MORTS. Le modele ne portait AUCUNE
-  /// notion de « quand est-ce que ca a ete releve », alors la ligne « MAJ » des
-  /// deux ecrans se rabattait sur `days.first.date`, c'est-a-dire le JOUR DU
-  /// BULLETIN (aujourd'hui a 00:00). Ce texte est le meme avant et apres un
-  /// rafraichissement REUSSI : l'appel partait, le cache etait reecrit, et
-  /// l'ecran affichait mot pour mot la meme chose. « La mise a jour ne produit
-  /// rien », verbatim de Chris, et il avait raison de le lire comme ca.
+  /// DEMANDE EXPLICITE DE CHRISTOPHE, 28/09 : « la date affichee est celle de
+  /// FABRICATION », pas celle du telechargement. Les deux peuvent differer de
+  /// plusieurs heures, et c est justement l ecart qui est dangereux : un bulletin
+  /// telecharge a l instant peut avoir ete fabrique la veille.
   ///
-  /// Renseigne a la lecture du cache depuis la colonne `fetchedAt` de la ligne
-  /// Drift (source d'autorite : c'est la DB qui horodate l'ecriture) et a la
-  /// sortie de l'API. `null` seulement pour un bulletin construit en memoire
-  /// (seed de demonstration, fixture de test) : dans ce cas l'ecran dit
-  /// « jamais releve » au lieu d'inventer un age.
-  final DateTime? fetchedAt;
+  /// SON TYPE EST CE QUI EMPECHE LE MENSONGE, PAS UN COMMENTAIRE.
+  /// [HorodatageServeur] ne se construit qu en LISANT une valeur venue du serveur ;
+  /// `HorodatageServeur(DateTime.now())` n existe pas. Une date de fabrication posee
+  /// par l horloge du telephone est donc une erreur de COMPILATION, pas une
+  /// vigilance a maintenir de lot en lot.
+  ///
+  /// `null` seulement pour un bulletin construit en memoire (jeu de demonstration,
+  /// fixture de test) : l ecran dit alors qu il ne connait pas l age, jamais qu il
+  /// est nul.
+  final HorodatageServeur? produiteLe;
+
+  /// Instant ou notre serveur a reussi sa collecte. EXPLOITATION SEULEMENT.
+  ///
+  /// La conception 611 le tranche (#W11) : trois dates existent, une seule
+  /// s affiche. Celle-ci sert a comprendre une source qui radote — elle bouge
+  /// pendant que [produiteLe] reste immobile — et l afficher au randonneur
+  /// lui ferait croire a un bulletin neuf.
+  final HorodatageServeur? collecteeLe;
+
+  /// Fournisseur nomme dans la donnee (#A3). `null` pour un bulletin en memoire.
+  final String? source;
+
+  /// Le point qu on affiche, en heure locale lisible.
+  DateTime? get produiteLeLocal => produiteLe?.date.toLocal();
 
   /// Age du bulletin a [now] (horloge injectable pour les tests).
   ///
-  /// `null` quand l'instant du releve est inconnu — un age inconnu doit
-  /// s'afficher comme inconnu, jamais comme zero.
-  Duration? ageAt([DateTime? now]) => fetchedAt == null
+  /// `null` quand l instant de fabrication est inconnu — un age inconnu doit
+  /// s afficher comme inconnu, jamais comme zero.
+  ///
+  /// L HORLOGE DU TELEPHONE INTERVIENT ICI, ET C EST LE SEUL ENDROIT OU ELLE PEUT.
+  /// Un age est une difference avec maintenant : hors reseau, il n existe aucune
+  /// autre reference. Consequence a connaitre : un telephone dont l horloge retarde
+  /// de deux jours affichera un bulletin de deux jours comme frais. On ne peut pas
+  /// le detecter sans reseau — mais on peut refuser de FABRIQUER la date de
+  /// fabrication, et c est ce que fait [produiteLe].
+  Duration? ageAt([DateTime? now]) => produiteLe == null
       ? null
-      : (now ?? DateTime.now()).difference(fetchedAt!);
-
-  /// Copie en fixant l'instant du releve (la DB fait autorite sur l'age).
-  WeatherForecast withFetchedAt(DateTime? at) => WeatherForecast(
-        days: days,
-        latitude: latitude,
-        longitude: longitude,
-        fetchedAt: at,
-      );
+      : (now ?? DateTime.now()).toUtc().difference(produiteLe!.date);
 
   /// Prevision du JOUR CALENDAIRE [date] (comparaison a la journee, pas a
-  /// l'instant), ou `null` si ce jour n'est pas couvert par le bulletin.
+  /// l instant), ou `null` si ce jour n est pas couvert par le bulletin.
   ///
-  /// TACHE 572 (U1) : c'est l'acces dont le programme a besoin. Le randonneur ne
+  /// TACHE 572 (U1) : c est l acces dont le programme a besoin. Le randonneur ne
   /// veut pas « le jour 3 du bulletin », il veut « le mardi 22, la ou je serai
-  /// ce mardi-la ». Les deux ne coincident que si le trek part aujourd'hui.
+  /// ce mardi-la ». Les deux ne coincident que si le trek part aujourd hui.
   DayForecast? dayOn(DateTime date) {
     for (final d in days) {
       if (d.date.year == date.year &&
@@ -65,73 +90,36 @@ class WeatherForecast {
     return null;
   }
 
-  /// Parse depuis la réponse JSON Open-Meteo
-  factory WeatherForecast.fromOpenMeteo(Map<String, dynamic> json) {
-    final daily = json['daily'] as Map<String, dynamic>;
-    final dates = (daily['time'] as List).cast<String>();
-    final tempMax = (daily['temperature_2m_max'] as List).cast<num>();
-    final tempMin = (daily['temperature_2m_min'] as List).cast<num>();
-    final precipitation = (daily['precipitation_sum'] as List).cast<num>();
-    final windMax = (daily['wind_speed_10m_max'] as List).cast<num>();
-    final uvMax = (daily['uv_index_max'] as List).cast<num>();
-    final weatherCode = (daily['weather_code'] as List).cast<int>();
-    // Probabilité d'orage/précipitation (LOT-B, PT-5). Champ optionnel :
-    // absent des réponses/caches antérieurs => null (dérivé stormProbability).
-    final precipProb = (daily['precipitation_probability_max'] as List?)
-        ?.map((e) => e == null ? null : (e as num).toDouble())
-        .toList();
-
-    final days = <DayForecast>[];
-    for (var i = 0; i < dates.length; i++) {
-      days.add(DayForecast(
-        date: DateTime.parse(dates[i]),
-        temperatureMax: tempMax[i].toDouble(),
-        temperatureMin: tempMin[i].toDouble(),
-        precipitationMm: precipitation[i].toDouble(),
-        windSpeedKmh: windMax[i].toDouble(),
-        uvIndex: uvMax[i].toDouble(),
-        weatherCode: weatherCode[i],
-        precipitationProbabilityMax:
-            (precipProb != null && i < precipProb.length)
-                ? precipProb[i]
-                : null,
-      ));
-    }
-
-    return WeatherForecast(
-      days: days,
-      latitude: (json['latitude'] as num).toDouble(),
-      longitude: (json['longitude'] as num).toDouble(),
-    );
-  }
-
-  /// Sérialise en JSON pour le cache Drift
-  Map<String, dynamic> toJson() => {
-        'latitude': latitude,
-        'longitude': longitude,
-        'days': days.map((d) => d.toJson()).toList(),
-        if (fetchedAt != null) 'fetchedAt': fetchedAt!.toIso8601String(),
-      };
-
-  /// Désérialise depuis le cache JSON
+  /// LE BULLETIN TEL QUE LE SERVEUR L A PUBLIE.
   ///
-  /// `fetchedAt` est optionnel : les lignes de cache ecrites avant la tache 572
-  /// ne le portent pas. Le repository le renseigne alors depuis la colonne
-  /// `fetchedAt` de la ligne Drift, qui fait de toute facon autorite sur l'age.
-  factory WeatherForecast.fromJson(Map<String, dynamic> json) {
-    final fetched = json['fetchedAt'] as String?;
+  /// [jours] est la valeur du champ `jours` du fichier publie, relue telle quelle
+  /// depuis la colonne `trail_meteo.joursJson`. Il n y a donc PAS de troisieme
+  /// format entre le serveur, la base et l ecran : la forme publiee est la forme
+  /// stockee est la forme lue. Le lot 606 a paye le prix de trois definitions
+  /// concurrentes de la meme donnee ; il n en existe ici qu une.
+  factory WeatherForecast.depuisLePublie({
+    required List<dynamic> jours,
+    required double latitude,
+    required double longitude,
+    required HorodatageServeur produiteLe,
+    HorodatageServeur? collecteeLe,
+    String? source,
+  }) {
     return WeatherForecast(
-      latitude: (json['latitude'] as num).toDouble(),
-      longitude: (json['longitude'] as num).toDouble(),
-      days: (json['days'] as List)
-          .map((d) => DayForecast.fromJson(d as Map<String, dynamic>))
-          .toList(),
-      fetchedAt: fetched == null ? null : DateTime.tryParse(fetched),
+      days: jours
+          .whereType<Map>()
+          .map((j) => DayForecast.depuisLePublie(Map<String, dynamic>.from(j)))
+          .toList(growable: false),
+      latitude: latitude,
+      longitude: longitude,
+      produiteLe: produiteLe,
+      collecteeLe: collecteeLe,
+      source: source,
     );
   }
 }
 
-/// Prévision pour une journée unique
+/// Prévision pour une journée unique.
 class DayForecast {
   const DayForecast({
     required this.date,
@@ -150,12 +138,20 @@ class DayForecast {
   final double precipitationMm;
   final double windSpeedKmh;
   final double uvIndex;
+
+  /// Code WMO.
+  ///
+  /// IL RESTE UN CODE WMO, ET C EST LE COLLECTEUR QUI S Y PLIE. La conception 611
+  /// le dit (#W7) : « traduire le `symbol_code` de MET Norway vers le code WMO que
+  /// l application attend », et cette traduction vit dans le collecteur, une fois,
+  /// pour tout le monde. L application ne connait donc aucun vocabulaire de
+  /// fournisseur.
   final int weatherCode;
 
   /// Probabilité maximale de précipitations dans la journée (0-100 %).
   ///
-  /// Fournie par Open-Meteo (`precipitation_probability_max`, LOT-B PT-5).
-  /// Nullable : absente des caches/réponses antérieurs à l'enrichissement.
+  /// Nullable : un serveur qui ne l agrege pas ne doit pas rendre le bulletin
+  /// illisible. `stormProbability` retombe alors sur le code WMO seul.
   final double? precipitationProbabilityMax;
 
   /// Indicateur de conditions dangereuses (orage, neige, pluie forte)
@@ -168,10 +164,6 @@ class DayForecast {
   bool get isStorm => weatherCode >= 95;
 
   /// Probabilité d'orage dérivée (0-100 %) — AM-7.
-  ///
-  /// Combine le code WMO (orage certain => 100) et la probabilité de
-  /// précipitations Open-Meteo quand elle est disponible. Sert la pastille
-  /// d'alerte orage du HUB et le toggle de l'écran météo.
   double get stormProbability {
     if (isStorm) return 100;
     return precipitationProbabilityMax ?? 0;
@@ -195,29 +187,42 @@ class DayForecast {
     return 'thunderstorm';
   }
 
-  Map<String, dynamic> toJson() => {
+  /// LES NOMS DE CHAMPS DU FICHIER PUBLIE, ET C EST LE CONTRAT AVEC LE COLLECTEUR.
+  ///
+  /// SNAKE_CASE, comme les sept autres familles du fichier publie. Ce n est pas un
+  /// gout : le depot porte deja le piege inverse (#S11 de la spec 605) — le fichier
+  /// EMBARQUE est en camelCase, le fichier PUBLIE en snake_case, et les deux
+  /// ecritures du Mare a Mare se contredisent pour cette raison exacte. Une
+  /// huitieme famille publiee en camelCase aurait rouvert ce piege.
+  Map<String, dynamic> versLePublie() => {
         'date': date.toIso8601String(),
-        'temperatureMax': temperatureMax,
-        'temperatureMin': temperatureMin,
-        'precipitationMm': precipitationMm,
-        'windSpeedKmh': windSpeedKmh,
-        'uvIndex': uvIndex,
-        'weatherCode': weatherCode,
+        'temperature_max': temperatureMax,
+        'temperature_min': temperatureMin,
+        'precipitation_mm': precipitationMm,
+        'wind_speed_kmh': windSpeedKmh,
+        'uv_index': uvIndex,
+        'weather_code': weatherCode,
         if (precipitationProbabilityMax != null)
-          'precipitationProbabilityMax': precipitationProbabilityMax,
+          'precipitation_probability_max': precipitationProbabilityMax,
       };
 
-  factory DayForecast.fromJson(Map<String, dynamic> json) {
+  /// Relit un jour publie par le serveur.
+  ///
+  /// UNE DATE SANS FUSEAU EST LUE EN LOCAL, ET C EST VOULU ICI — a la difference
+  /// des horodatages de synchronisation. Un jour de prevision est une JOURNEE
+  /// CALENDAIRE (« mardi »), pas un instant : la convertir en UTC decalerait le
+  /// mardi du randonneur d un jour a l est de Greenwich.
+  factory DayForecast.depuisLePublie(Map<String, dynamic> json) {
     return DayForecast(
       date: DateTime.parse(json['date'] as String),
-      temperatureMax: (json['temperatureMax'] as num).toDouble(),
-      temperatureMin: (json['temperatureMin'] as num).toDouble(),
-      precipitationMm: (json['precipitationMm'] as num).toDouble(),
-      windSpeedKmh: (json['windSpeedKmh'] as num).toDouble(),
-      uvIndex: (json['uvIndex'] as num).toDouble(),
-      weatherCode: json['weatherCode'] as int,
+      temperatureMax: (json['temperature_max'] as num).toDouble(),
+      temperatureMin: (json['temperature_min'] as num).toDouble(),
+      precipitationMm: (json['precipitation_mm'] as num).toDouble(),
+      windSpeedKmh: (json['wind_speed_kmh'] as num).toDouble(),
+      uvIndex: (json['uv_index'] as num).toDouble(),
+      weatherCode: json['weather_code'] as int,
       precipitationProbabilityMax:
-          (json['precipitationProbabilityMax'] as num?)?.toDouble(),
+          (json['precipitation_probability_max'] as num?)?.toDouble(),
     );
   }
 }

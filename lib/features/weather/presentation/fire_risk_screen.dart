@@ -189,28 +189,34 @@ class FireRiskScreen extends ConsumerWidget {
       return;
     }
 
-    final results = await Future.wait([
-      for (final s in stages)
-        ref
-            .read(stageWeatherProvider(WeatherStageParams(
-              trailId: trailId,
-              stageNumber: s.stageNumber,
-            )).notifier)
-            .refresh(),
-    ]);
+    // UNE SEULE PASSE POUR TOUT LE SENTIER (lot 625), PLUS UNE PAR ETAPE.
+    //
+    // La passe de synchronisation descend le fichier de donnees du sentier en UNE
+    // transaction : toutes les etapes arrivent ensemble ou aucune n'arrive (#C1 de
+    // la spec 605). « Partiel » n'est donc plus un etat atteignable, et le decompte
+    // qui l'annoncait aurait fini par mentir dans l'autre sens — annoncer trois
+    // etapes sur sept la ou il y en a zero ou sept.
+    final abouti = await ref
+        .read(stageWeatherProvider(WeatherStageParams(
+          trailId: trailId,
+          stageNumber: stages.first.stageNumber,
+        )).notifier)
+        .refresh();
+
+    // Les autres etapes n'ont rien a demander : elles RELISENT ce que la passe a
+    // pose en base.
+    for (final s in stages.skip(1)) {
+      ref.invalidate(stageWeatherProvider(WeatherStageParams(
+        trailId: trailId,
+        stageNumber: s.stageNumber,
+      )));
+    }
 
     if (messenger == null || !context.mounted) return;
-    final ok = results.where((r) => r).length;
-    if (ok == 0) {
+    if (!abouti) {
       messenger.showSnackBar(
         SnackBar(content: Text(t.fireRisk.refreshError)),
       );
-    } else if (ok < results.length) {
-      messenger.showSnackBar(SnackBar(
-        content: Text(
-          t.fireRisk.refreshPartial(done: ok, total: results.length),
-        ),
-      ));
     } else {
       final at = ref
           .read(stageWeatherProvider(WeatherStageParams(
@@ -218,7 +224,7 @@ class FireRiskScreen extends ConsumerWidget {
             stageNumber: stages.first.stageNumber,
           )))
           .forecast
-          ?.fetchedAt;
+          ?.produiteLeLocal;
       messenger.showSnackBar(SnackBar(
         content: Text(t.fireRisk.refreshedAt(
           date: at == null ? '-' : formatFetchedAt(at),
@@ -244,11 +250,11 @@ class FireRiskScreen extends ConsumerWidget {
 /// provider etait mis a jour — et la seule chose a l'ecran capable de le montrer
 /// racontait autre chose. C'est ca, « MAJ ne produit rien ».
 ///
-/// Le bandeau lit desormais [WeatherForecast.fetchedAt], l'instant du releve, via
-/// la source unique [weatherFreshness]. Et son bouton rafraichit TOUT le sentier
-/// (comme celui de la barre de titre) et non plus la seule etape de reference :
-/// deux boutons cote a cote qui ne font pas la meme chose, c'est une autre facon
-/// de ne rien produire.
+/// Le bandeau lit desormais l'instant de FABRICATION du bulletin par le modele
+/// meteo (`WeatherForecast.produiteLe`, lot 625), via la source unique
+/// [weatherFreshness]. Et son bouton rafraichit TOUT le sentier (comme celui de la
+/// barre de titre) et non plus la seule etape de reference : deux boutons cote a
+/// cote qui ne font pas la meme chose, c'est une autre facon de ne rien produire.
 class _UpdateBanner extends ConsumerWidget {
   const _UpdateBanner({required this.trailId, required this.onRefresh});
 
@@ -265,12 +271,15 @@ class _UpdateBanner extends ConsumerWidget {
     final params = WeatherStageParams(trailId: trailId, stageNumber: refStage);
     final weather = ref.watch(stageWeatherProvider(params));
 
-    final freshness =
-        weatherFreshness(fetchedAt: weather.forecast?.fetchedAt, t: t);
+    final freshness = weatherFreshness(
+      produiteLe: weather.forecast?.produiteLeLocal,
+      t: t,
+    );
     final color = switch (freshness.level) {
       FreshnessLevel.fresh => AppTheme.vertFacile,
-      FreshnessLevel.recent => AppTheme.jauneModere,
+      FreshnessLevel.jourCourantPerime => AppTheme.jauneModere,
       FreshnessLevel.stale => AppTheme.orangeDifficile,
+      FreshnessLevel.tropVieux => AppTheme.rougeUrgence,
       FreshnessLevel.unknown => AppTheme.rougeUrgence,
     };
 

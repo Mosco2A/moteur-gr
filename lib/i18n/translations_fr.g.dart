@@ -1031,9 +1031,6 @@ class Translations$weather$fr {
 	/// fr: 'Impossible de charger la météo.'
 	String get error => 'Impossible de charger la météo.';
 
-	/// fr: 'Données en cache'
-	String get cached => 'Données en cache';
-
 	/// fr: 'alertes météo'
 	String get alerts => 'alertes météo';
 
@@ -1100,14 +1097,13 @@ class Translations$weather$fr {
 	/// fr: 'Comprendre la météo'
 	String get guideTitle => 'Comprendre la météo';
 
-	/// fr: 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu'une tendance, et au-delà l'application le dit au lieu d'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c'est le dernier relevé qui reste affiché.'
-	String get guideBody => 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu\'une tendance, et au-delà l\'application le dit au lieu d\'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c\'est le dernier relevé qui reste affiché.';
+	/// fr: 'Les prévisions sont fabriquées par NOTRE SERVEUR, étape par étape : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à $horizon jours. L'application ne les demande jamais elle-même : elle récupère ce que le serveur a fabriqué de plus récent, au retour du réseau puis toutes les 4 heures. Chaque bulletin affiche SA DATE DE FABRICATION, pas celle du téléchargement. Et passé $days jours sans rien de neuf, l'application retire les chiffres au lieu de les faire passer pour le temps du jour.'
+	String guideBody({required Object horizon, required Object days}) => 'Les prévisions sont fabriquées par NOTRE SERVEUR, étape par étape : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à ${horizon} jours. L\'application ne les demande jamais elle-même : elle récupère ce que le serveur a fabriqué de plus récent, au retour du réseau puis toutes les 4 heures. Chaque bulletin affiche SA DATE DE FABRICATION, pas celle du téléchargement. Et passé ${days} jours sans rien de neuf, l\'application retire les chiffres au lieu de les faire passer pour le temps du jour.';
 
 	late final Translations$weather$source$fr source = Translations$weather$source$fr.internal(_root);
 	late final Translations$weather$recommendation$fr recommendation = Translations$weather$recommendation$fr.internal(_root);
 	late final Translations$weather$alert$fr alert = Translations$weather$alert$fr.internal(_root);
 	late final Translations$weather$program$fr program = Translations$weather$program$fr.internal(_root);
-	late final Translations$weather$freshness$fr freshness = Translations$weather$freshness$fr.internal(_root);
 	late final Translations$weather$duration$fr duration = Translations$weather$duration$fr.internal(_root);
 
 	/// fr: 'Mise à jour impossible. Les données affichées datent du $date.'
@@ -1119,8 +1115,15 @@ class Translations$weather$fr {
 	/// fr: 'Données mises à jour ($date)'
 	String refreshedAt({required Object date}) => 'Données mises à jour (${date})';
 
-	/// fr: 'Mise à jour partielle : $done étape(s) sur $total.'
-	String refreshPartial({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.';
+	late final Translations$weather$fabrication$fr fabrication = Translations$weather$fabrication$fr.internal(_root);
+	late final Translations$weather$neverReceived$fr neverReceived = Translations$weather$neverReceived$fr.internal(_root);
+	late final Translations$weather$expiredNotice$fr expiredNotice = Translations$weather$expiredNotice$fr.internal(_root);
+
+	/// fr: 'Déjà à jour : le serveur n'a rien fabriqué de plus récent.'
+	String get refreshUpToDate => 'Déjà à jour : le serveur n\'a rien fabriqué de plus récent.';
+
+	/// fr: 'Hors ligne : rien n'a pu être vérifié. Ce qui est affiché garde son âge.'
+	String get refreshOffline => 'Hors ligne : rien n\'a pu être vérifié. Ce qui est affiché garde son âge.';
 }
 
 // Path: share
@@ -5092,14 +5095,8 @@ class Translations$weather$source$fr {
 
 	// Translations
 
-	/// fr: 'Données en direct'
-	String get api => 'Données en direct';
-
-	/// fr: 'Données enregistrées'
-	String get cache => 'Données enregistrées';
-
-	/// fr: 'Hors ligne'
-	String get offline => 'Hors ligne';
+	/// fr: 'Météo de notre serveur'
+	String get server => 'Météo de notre serveur';
 
 	/// fr: 'Données de démonstration'
 	String get demo => 'Données de démonstration';
@@ -5175,27 +5172,9 @@ class Translations$weather$program$fr {
 
 	/// fr: 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.'
 	String get unknownDeparture => 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.';
-}
 
-// Path: weather.freshness
-class Translations$weather$freshness$fr {
-	Translations$weather$freshness$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Relevé à l'instant'
-	String get justNow => 'Relevé à l\'instant';
-
-	/// fr: 'Relevé le $date'
-	String at({required Object date}) => 'Relevé le ${date}';
-
-	/// fr: 'Relevé il y a $duration, sans mise à jour depuis'
-	String stale({required Object duration}) => 'Relevé il y a ${duration}, sans mise à jour depuis';
-
-	/// fr: 'Jamais relevé'
-	String get never => 'Jamais relevé';
+	/// fr: 'Bulletin trop ancien.'
+	String get tooOld => 'Bulletin trop ancien.';
 }
 
 // Path: weather.duration
@@ -5217,6 +5196,63 @@ class Translations$weather$duration$fr {
 
 	/// fr: '$n j'
 	String days({required Object n}) => '${n} j';
+}
+
+// Path: weather.fabrication
+class Translations$weather$fabrication$fr {
+	Translations$weather$fabrication$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Bulletin fabriqué le $date'
+	String at({required Object date}) => 'Bulletin fabriqué le ${date}';
+
+	/// fr: 'Plus de prévisions affichées : le dernier bulletin a été fabriqué il y a $duration'
+	String expired({required Object duration}) => 'Plus de prévisions affichées : le dernier bulletin a été fabriqué il y a ${duration}';
+
+	/// fr: 'Bulletin fabriqué à l'instant'
+	String get justNow => 'Bulletin fabriqué à l\'instant';
+
+	/// fr: 'Bulletin fabriqué il y a $duration, rien de plus récent n'est arrivé'
+	String stale({required Object duration}) => 'Bulletin fabriqué il y a ${duration}, rien de plus récent n\'est arrivé';
+
+	/// fr: 'Bulletin fabriqué il y a $duration (le $date) : le temps d'aujourd'hui a pu changer depuis'
+	String todayStale({required Object duration, required Object date}) => 'Bulletin fabriqué il y a ${duration} (le ${date}) : le temps d\'aujourd\'hui a pu changer depuis';
+
+	/// fr: 'Date de fabrication inconnue'
+	String get unknown => 'Date de fabrication inconnue';
+}
+
+// Path: weather.neverReceived
+class Translations$weather$neverReceived$fr {
+	Translations$weather$neverReceived$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'La météo est fabriquée par notre serveur et arrive avec les données du sentier. Dès que ce téléphone retrouve du réseau, elle se met à jour toute seule : il n'y a rien à demander.'
+	String get body => 'La météo est fabriquée par notre serveur et arrive avec les données du sentier. Dès que ce téléphone retrouve du réseau, elle se met à jour toute seule : il n\'y a rien à demander.';
+
+	/// fr: 'Pas encore de bulletin'
+	String get title => 'Pas encore de bulletin';
+}
+
+// Path: weather.expiredNotice
+class Translations$weather$expiredNotice$fr {
+	Translations$weather$expiredNotice$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Le dernier bulletin a plus de $days jours. Une prévision de trois jours présentée comme celle du jour est dangereuse en montagne : l'application préfère se taire. Au retour du réseau, elle se mettra à jour toute seule.'
+	String body({required Object days}) => 'Le dernier bulletin a plus de ${days} jours. Une prévision de trois jours présentée comme celle du jour est dangereuse en montagne : l\'application préfère se taire. Au retour du réseau, elle se mettra à jour toute seule.';
+
+	/// fr: 'Prévisions trop anciennes pour être affichées'
+	String get title => 'Prévisions trop anciennes pour être affichées';
 }
 
 // Path: feasibility.gaps
@@ -8458,7 +8494,6 @@ extension on Translations {
 			'weather.loading' => 'Chargement de la météo...',
 			'weather.offline' => 'Pas de connexion. Données météo indisponibles.',
 			'weather.error' => 'Impossible de charger la météo.',
-			'weather.cached' => 'Données en cache',
 			'weather.alerts' => 'alertes météo',
 			'weather.refresh' => 'Actualiser',
 			'weather.temperature' => 'Température',
@@ -8481,10 +8516,8 @@ extension on Translations {
 			'weather.stormAlertsToggleOff' => 'Alertes orage désactivées',
 			'weather.lastUpdate' => ({required Object date}) => 'Mis à jour ${date}',
 			'weather.guideTitle' => 'Comprendre la météo',
-			'weather.guideBody' => 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu\'une tendance, et au-delà l\'application le dit au lieu d\'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c\'est le dernier relevé qui reste affiché.',
-			'weather.source.api' => 'Données en direct',
-			'weather.source.cache' => 'Données enregistrées',
-			'weather.source.offline' => 'Hors ligne',
+			'weather.guideBody' => ({required Object horizon, required Object days}) => 'Les prévisions sont fabriquées par NOTRE SERVEUR, étape par étape : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à ${horizon} jours. L\'application ne les demande jamais elle-même : elle récupère ce que le serveur a fabriqué de plus récent, au retour du réseau puis toutes les 4 heures. Chaque bulletin affiche SA DATE DE FABRICATION, pas celle du téléchargement. Et passé ${days} jours sans rien de neuf, l\'application retire les chiffres au lieu de les faire passer pour le temps du jour.',
+			'weather.source.server' => 'Météo de notre serveur',
 			'weather.source.demo' => 'Données de démonstration',
 			'weather.recommendation.ok' => 'Conditions favorables',
 			'weather.recommendation.watch' => 'Vigilance recommandée',
@@ -8511,10 +8544,7 @@ extension on Translations {
 			'weather.program.beyondHorizon' => ({required Object horizon}) => 'Pas encore de prévision : les prévisions ne portent qu\'à ${horizon} jours.',
 			'weather.program.noData' => 'Aucune donnée pour ce lieu.',
 			'weather.program.unknownDeparture' => 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.',
-			'weather.freshness.justNow' => 'Relevé à l\'instant',
-			'weather.freshness.at' => ({required Object date}) => 'Relevé le ${date}',
-			'weather.freshness.stale' => ({required Object duration}) => 'Relevé il y a ${duration}, sans mise à jour depuis',
-			'weather.freshness.never' => 'Jamais relevé',
+			'weather.program.tooOld' => 'Bulletin trop ancien.',
 			'weather.duration.seconds' => 'quelques secondes',
 			'weather.duration.minutes' => ({required Object n}) => '${n} min',
 			'weather.duration.hours' => ({required Object n}) => '${n} h',
@@ -8522,7 +8552,18 @@ extension on Translations {
 			'weather.refreshFailed' => ({required Object date}) => 'Mise à jour impossible. Les données affichées datent du ${date}.',
 			'weather.refreshFailedNoData' => 'Mise à jour impossible et aucune donnée enregistrée.',
 			'weather.refreshedAt' => ({required Object date}) => 'Données mises à jour (${date})',
-			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.',
+			'weather.fabrication.at' => ({required Object date}) => 'Bulletin fabriqué le ${date}',
+			'weather.fabrication.expired' => ({required Object duration}) => 'Plus de prévisions affichées : le dernier bulletin a été fabriqué il y a ${duration}',
+			'weather.fabrication.justNow' => 'Bulletin fabriqué à l\'instant',
+			'weather.fabrication.stale' => ({required Object duration}) => 'Bulletin fabriqué il y a ${duration}, rien de plus récent n\'est arrivé',
+			'weather.fabrication.todayStale' => ({required Object duration, required Object date}) => 'Bulletin fabriqué il y a ${duration} (le ${date}) : le temps d\'aujourd\'hui a pu changer depuis',
+			'weather.fabrication.unknown' => 'Date de fabrication inconnue',
+			'weather.neverReceived.body' => 'La météo est fabriquée par notre serveur et arrive avec les données du sentier. Dès que ce téléphone retrouve du réseau, elle se met à jour toute seule : il n\'y a rien à demander.',
+			'weather.neverReceived.title' => 'Pas encore de bulletin',
+			'weather.expiredNotice.body' => ({required Object days}) => 'Le dernier bulletin a plus de ${days} jours. Une prévision de trois jours présentée comme celle du jour est dangereuse en montagne : l\'application préfère se taire. Au retour du réseau, elle se mettra à jour toute seule.',
+			'weather.expiredNotice.title' => 'Prévisions trop anciennes pour être affichées',
+			'weather.refreshUpToDate' => 'Déjà à jour : le serveur n\'a rien fabriqué de plus récent.',
+			'weather.refreshOffline' => 'Hors ligne : rien n\'a pu être vérifié. Ce qui est affiché garde son âge.',
 			'share.title' => 'Partager',
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
@@ -8890,14 +8931,14 @@ extension on Translations {
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
 			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
 			'signalement.types.eauASec' => 'Point d\'eau à sec',
 			'signalement.types.danger' => 'Danger',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
 			'signalement.confirm' => 'Confirmer le signalement',
 			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
@@ -9404,14 +9445,14 @@ extension on Translations {
 			'calendar.legend.rest' => 'Repos',
 			'calendar.legend.arrival' => 'Arrivée',
 			'calendar.summary.totalDays' => 'Jours total',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.summary.walkDays' => 'Jours marche',
 			'calendar.summary.restDays' => 'Jours repos',
 			'calendar.noDate.title' => 'Choisissez une date de départ',
 			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
 			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
 			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
 			'nuitees.guideTooltip' => 'Guide des nuitées',

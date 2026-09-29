@@ -14,6 +14,7 @@ import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_manifests_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
@@ -162,6 +163,7 @@ void main() {
         trailStagesDao: TrailStagesDao(db),
         trailAccommodationsDao: TrailAccommodationsDao(db),
         trailPoisDao: TrailPoisDao(db),
+        trailMeteoDao: TrailMeteoDao(db),
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
         source: avecSource,
@@ -196,6 +198,13 @@ void main() {
       MorceauxDeSentier.etapes: etapes.length,
       MorceauxDeSentier.hebergements: hebergements,
       MorceauxDeSentier.pointsDInteret: pointsDInteret,
+      // LA METEO EST LA HUITIEME FAMILLE (lot 625), et elle reste a ZERO dans ce
+      // test : elle n'est pas ecrite par le PUBLICATEUR mais par le COLLECTEUR
+      // (#L1 de la conception 611), et ce test publie un sentier. La compter ici
+      // est ce qui garantit qu'aucune ligne de meteo n'apparait par surprise.
+      MorceauxDeSentier.meteo: (await TrailMeteoDao(db).pourSentier(
+        'gr-monts-dore',
+      )).length,
       MorceauxDeSentier.traces: (await TrailGpxTracksDao(db).getAll()).length,
       MorceauxDeSentier.pointsDeTrace:
           (await TrailGpxPointsDao(db).getAll()).length,
@@ -305,6 +314,7 @@ void main() {
         'stages': 2,
         'accommodations': 2,
         'pois': 2,
+        'meteo': 0,
         'gpx_tracks': 0,
         'gpx_points': 0,
       });
@@ -321,8 +331,8 @@ void main() {
       expect(bilan.transferesEnTrop, 11);
     });
 
-    test('REALISER descend TOUT : 19 enregistrements, les sept familles',
-        () async {
+    test('REALISER descend TOUT : 19 enregistrements, les sept familles du '
+        'PUBLICATEUR', () async {
       final entree = await publier();
 
       final bilan = await service().synchroniser(
@@ -337,7 +347,17 @@ void main() {
       expect(bilan.retenus, 19);
       expect(bilan.ecartesHorsNiveau, 0,
           reason: 'a ce niveau rien n est hors perimetre');
-      expect(bilan.famillesTouchees, MorceauxDeSentier.tous);
+      // LES SEPT FAMILLES DU PUBLICATEUR, PAS LES HUIT DU MODELE. La meteo est
+      // ecrite par le COLLECTEUR (#L1) : un sentier publie n'en porte pas, et
+      // « realiser » ne peut donc pas la toucher. Attendre `MorceauxDeSentier.tous`
+      // ici reviendrait a exiger que le publicateur produise une donnee dont il
+      // n'a pas l'autorite.
+      expect(
+        bilan.famillesTouchees,
+        MorceauxDeSentier.tous
+            .where((f) => f != MorceauxDeSentier.meteo)
+            .toList(),
+      );
       expect(bilan.niveauAtteint, NiveauDeTelechargement.realiser);
 
       expect(await enBase(), {
@@ -346,6 +366,7 @@ void main() {
         'stages': 2,
         'accommodations': 2,
         'pois': 2,
+        'meteo': 0,
         'gpx_tracks': 1,
         'gpx_points': 10,
       });
@@ -354,7 +375,15 @@ void main() {
     test('LE PERIMETRE DE CHAQUE NIVEAU EST EMBOITE, et le volumineux est nomme '
         'une seule fois', () {
       expect(NiveauDeTelechargement.regarder.familles, isEmpty);
-      expect(NiveauDeTelechargement.preparer.familles, hasLength(5));
+      // SIX DEPUIS LE LOT 625 : les cinq familles legeres du sentier, plus la
+      // meteo. Preparer, c'est choisir un jour de depart — et cela se decide sur
+      // le temps qu'il fera.
+      expect(NiveauDeTelechargement.preparer.familles, hasLength(6));
+      expect(NiveauDeTelechargement.preparer.porte(MorceauxDeSentier.meteo),
+          isTrue);
+      expect(NiveauDeTelechargement.regarder.porte(MorceauxDeSentier.meteo),
+          isFalse,
+          reason: 'regarder ne descend RIEN, meteo comprise : zero octet.');
       expect(NiveauDeTelechargement.realiser.familles, MorceauxDeSentier.tous);
 
       // EMBOITEMENT : c est ce qui rend « faut-il completer ? » decidable.

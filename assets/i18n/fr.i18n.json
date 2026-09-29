@@ -664,7 +664,6 @@
     "loading": "Chargement de la météo...",
     "offline": "Pas de connexion. Données météo indisponibles.",
     "error": "Impossible de charger la météo.",
-    "cached": "Données en cache",
     "alerts": "alertes météo",
     "refresh": "Actualiser",
     "temperature": "Température",
@@ -687,11 +686,9 @@
     "stormAlertsToggleOff": "Alertes orage désactivées",
     "lastUpdate": "Mis à jour $date",
     "guideTitle": "Comprendre la météo",
-    "guideBody": "Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu'une tendance, et au-delà l'application le dit au lieu d'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c'est le dernier relevé qui reste affiché.",
+    "guideBody": "Les prévisions sont fabriquées par NOTRE SERVEUR, étape par étape : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à $horizon jours. L'application ne les demande jamais elle-même : elle récupère ce que le serveur a fabriqué de plus récent, au retour du réseau puis toutes les 4 heures. Chaque bulletin affiche SA DATE DE FABRICATION, pas celle du téléchargement. Et passé $days jours sans rien de neuf, l'application retire les chiffres au lieu de les faire passer pour le temps du jour.",
     "source": {
-      "api": "Données en direct",
-      "cache": "Données enregistrées",
-      "offline": "Hors ligne",
+      "server": "Météo de notre serveur",
       "demo": "Données de démonstration"
     },
     "recommendation": {
@@ -735,13 +732,8 @@
       "trendHint": "Au-delà de $reliable jours ce n'est plus qu'une tendance : une prévision à 10 jours ne se vérifie qu'une fois sur deux.",
       "beyondHorizon": "Pas encore de prévision : les prévisions ne portent qu'à $horizon jours.",
       "noData": "Aucune donnée pour ce lieu.",
-      "unknownDeparture": "Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape."
-    },
-    "freshness": {
-      "justNow": "Relevé à l'instant",
-      "at": "Relevé le $date",
-      "stale": "Relevé il y a $duration, sans mise à jour depuis",
-      "never": "Jamais relevé"
+      "unknownDeparture": "Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.",
+      "tooOld": "Bulletin trop ancien."
     },
     "duration": {
       "seconds": "quelques secondes",
@@ -752,7 +744,24 @@
     "refreshFailed": "Mise à jour impossible. Les données affichées datent du $date.",
     "refreshFailedNoData": "Mise à jour impossible et aucune donnée enregistrée.",
     "refreshedAt": "Données mises à jour ($date)",
-    "refreshPartial": "Mise à jour partielle : $done étape(s) sur $total."
+    "fabrication": {
+      "at": "Bulletin fabriqué le $date",
+      "expired": "Plus de prévisions affichées : le dernier bulletin a été fabriqué il y a $duration",
+      "justNow": "Bulletin fabriqué à l'instant",
+      "stale": "Bulletin fabriqué il y a $duration, rien de plus récent n'est arrivé",
+      "todayStale": "Bulletin fabriqué il y a $duration (le $date) : le temps d'aujourd'hui a pu changer depuis",
+      "unknown": "Date de fabrication inconnue"
+    },
+    "neverReceived": {
+      "body": "La météo est fabriquée par notre serveur et arrive avec les données du sentier. Dès que ce téléphone retrouve du réseau, elle se met à jour toute seule : il n'y a rien à demander.",
+      "title": "Pas encore de bulletin"
+    },
+    "expiredNotice": {
+      "body": "Le dernier bulletin a plus de $days jours. Une prévision de trois jours présentée comme celle du jour est dangereuse en montagne : l'application préfère se taire. Au retour du réseau, elle se mettra à jour toute seule.",
+      "title": "Prévisions trop anciennes pour être affichées"
+    },
+    "refreshUpToDate": "Déjà à jour : le serveur n'a rien fabriqué de plus récent.",
+    "refreshOffline": "Hors ligne : rien n'a pu être vérifié. Ce qui est affiché garde son âge."
   },
   "share": {
     "title": "Partager",

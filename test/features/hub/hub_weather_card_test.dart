@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
@@ -10,7 +9,6 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/a11y/wcag_contrast.dart';
-import 'package:moteur_gr/core/data/daos/weather_cache_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
@@ -19,31 +17,37 @@ import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_weather_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
+import '../weather/meteo_du_serveur.dart';
+
 /// Tests LOT-B de la tuile météo réelle du HUB : rendu (données + pastille
 /// orage) + NON-RÉGRESSION overflow aux largeurs mobiles (retour Lot A #95062).
 void main() {
   late AppDatabase db;
 
-  /// Prévision cache avec un orage le jour même (déclenche la pastille).
-  String stormForecastJson() {
-    final now = DateTime.now();
-    return jsonEncode({
-      'latitude': 45.51,
-      'longitude': 2.96,
-      'days': [
-        {
-          'date': DateTime(now.year, now.month, now.day).toIso8601String(),
-          'temperatureMax': 24.0,
-          'temperatureMin': 14.0,
-          'precipitationMm': 12.0,
-          'windSpeedKmh': 35.0,
-          'uvIndex': 5.0,
-          'weatherCode': 95, // orage -> stormProbability 100
-          'precipitationProbabilityMax': 80.0,
-        },
-      ],
-    });
-  }
+  /// Bulletin d'orage DEPOSE PAR LE SERVEUR pour le jour meme (lot 625).
+  ///
+  /// Il ne passe plus par `weather_cache` — cette table n'a plus d'ecrivain — mais
+  /// par `trail_meteo`, la huitieme famille de donnees de sentier. Et il porte sa
+  /// DATE DE FABRICATION, sans laquelle l'ecran ne saurait pas dire son age.
+  Future<void> deposerOrage() => deposerMeteoEnBase(
+        db,
+        trailId: 'test-trail',
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 1)),
+        latitude: 45.51,
+        longitude: 2.96,
+        jours: [
+          jourPublie(
+            DateTime.now().toIso8601String().substring(0, 10),
+            code: 95, // orage -> stormProbability 100
+            tMax: 24.0,
+            tMin: 14.0,
+            precipitationMm: 12.0,
+            ventKmh: 35.0,
+            probabilite: 80.0,
+          ),
+        ],
+      );
 
   setUp(() async {
     db = AppDatabase(NativeDatabase.memory());
@@ -108,11 +112,7 @@ void main() {
 
   testWidgets('affiche le titre et la pastille orage quand orage prévu',
       (tester) async {
-    await WeatherCacheDao(db).upsertForecast(
-      trailId: 'test-trail',
-      stageNumber: 1,
-      forecastJson: stormForecastJson(),
-    );
+    await deposerOrage();
 
     tester.view.physicalSize = const Size(390, 800);
     tester.view.devicePixelRatio = 1.0;
@@ -151,11 +151,7 @@ void main() {
       double width,
     ) async {
       // Cache avec orage : cas le plus large (titre + pastille orage).
-      await WeatherCacheDao(db).upsertForecast(
-        trailId: 'test-trail',
-        stageNumber: 1,
-        forecastJson: stormForecastJson(),
-      );
+      await deposerOrage();
 
       final captured = <String>[];
       final previous = FlutterError.onError;

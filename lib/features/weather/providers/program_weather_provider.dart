@@ -6,6 +6,7 @@ import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../domain/forecast_reach.dart';
 import '../models/weather_forecast.dart';
+import '../presentation/weather_freshness.dart';
 import 'weather_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -45,7 +46,8 @@ class ProgramDayWeather {
     required this.isRestDay,
     required this.reach,
     this.day,
-    this.fetchedAt,
+    this.produiteLe,
+    this.porteeAnnoncee = forecastHorizonDays,
   });
 
   /// Numero du jour dans le programme (1 = jour de depart).
@@ -81,8 +83,25 @@ class ProgramDayWeather {
   /// chiffre qu'on n'a pas.
   final DayForecast? day;
 
-  /// Instant du releve du bulletin d'ou vient [day] (fraicheur affichable).
-  final DateTime? fetchedAt;
+  /// INSTANT DE FABRICATION du bulletin d'ou vient [day] (lot 625).
+  ///
+  /// Plus l'instant du releve par le telephone : celui de la fabrication par le
+  /// modele meteo, pose par le serveur. C'est la date que Christophe a demande de
+  /// montrer, et la seule sur laquelle un age soit honnete.
+  final DateTime? produiteLe;
+
+  /// PORTEE REELLEMENT RECUE pour cette journee, en jours (lot 625).
+  ///
+  /// C'est le nombre de jours que le bulletin en main contient, et c'est CE
+  /// NOMBRE que l'ecran annonce quand il dit « pas encore de prevision au-dela de
+  /// N jours ». Annoncer la constante du code pendant que la decision est prise
+  /// sur la donnee recue est exactement le genre d'ecart qui fait mentir un ecran
+  /// sans que personne ne s'en apercoive — le defaut a ete attrape par le test
+  /// U1-E de la tache 572, qui a survecu a ce lot pour cette raison.
+  ///
+  /// Vaut [forecastHorizonDays] quand aucun bulletin n'est en main : il n'y a rien
+  /// a mesurer, seulement ce que le serveur est cense produire.
+  final int porteeAnnoncee;
 
   /// Vrai si un chiffre peut etre affiche pour cette journee.
   bool get hasValue => day != null;
@@ -109,12 +128,12 @@ class ProgramWeatherState {
   /// Vrai si la date de depart manque : aucune journee ne peut etre datee.
   bool get departureUnknown => departureDate == null;
 
-  /// Releve le PLUS RECENT parmi les journees affichables — la fraicheur
+  /// FABRICATION LA PLUS RECENTE parmi les journees affichables — la fraicheur
   /// globale que l'ecran annonce en tete de section.
-  DateTime? get latestFetchedAt {
+  DateTime? get fabricationLaPlusRecente {
     DateTime? latest;
     for (final d in days) {
-      final f = d.fetchedAt;
+      final f = d.produiteLe;
       if (f == null) continue;
       if (latest == null || f.isAfter(latest)) latest = f;
     }
@@ -128,13 +147,14 @@ class ProgramWeatherState {
 /// METEO ETAPE PAR ETAPE du sentier [trailId].
 ///
 /// Croise le programme, la date de depart et le socle meteo par etape. AUCUN
-/// nouvel appel reseau et AUCUNE nouvelle ligne de cache : chaque journee lit le
-/// bulletin de l'etape dont elle atteint l'arrivee, via
-/// [stageWeatherProvider] — le meme que le HUB et l'ecran incendie. Le cout
-/// reste donc d'au plus UN appel par etape du sentier (quota Open-Meteo gratuit :
-/// 600 appels/minute, 10 000/jour), divise par le cache. Deux journees qui
-/// finissent au meme endroit, ou un jour de repos qui suit une etape, partagent
-/// la meme ligne de cache et ne declenchent rien de plus.
+/// appel reseau, ET PLUS AUCUN COUT D APPEL A CHIFFRER (lot 625) : chaque journee
+/// lit le bulletin de l'etape dont elle atteint l'arrivee, via
+/// [stageWeatherProvider] — le meme que le HUB et l'ecran incendie — et ce bulletin
+/// est une LIGNE DE BASE que notre serveur y a deposee. Le raisonnement de quota
+/// qui tenait ici (600 appels/minute chez Open-Meteo, divises par le cache) n'a
+/// plus d'objet : il n'y a plus d'appelant cote telephone. Deux journees qui
+/// finissent au meme endroit, ou un jour de repos qui suit une etape, lisent la
+/// meme ligne.
 final programWeatherProvider =
     Provider.family<ProgramWeatherState, String>((ref, trailId) {
   final plan = ref.watch(plannedDaysProvider(trailId));
@@ -193,21 +213,20 @@ final programWeatherProvider =
 
     final daysAhead = calendarDaysBetween(today, date);
 
-    // Au-dela de la portee du fournisseur, on ne demande RIEN : pas d'appel
-    // inutile, pas de chiffre invente. On le dit, c'est tout.
-    if (forecastReachFor(daysAhead: daysAhead) ==
-        ForecastReach.beyondHorizon) {
-      result.add(ProgramDayWeather(
-        dayNumber: planned.dayNumber,
-        date: date,
-        placeName: _placeNameOf(stage),
-        stageNumber: stage?.stageNumber ?? 0,
-        isRestDay: planned.isRestDay,
-        reach: ForecastReach.beyondHorizon,
-      ));
-      continue;
-    }
-
+    // LA SORTIE ANTICIPEE « AU-DELA DE LA PORTEE » A ETE RETIREE (lot 625), ET SA
+    // RAISON D'ETRE AVAIT DISPARU AVANT ELLE.
+    //
+    // Elle existait pour NE PAS EMETTRE D'APPEL inutile vers le fournisseur sur une
+    // journee trop lointaine. Il n'y a plus d'appel : lire un bulletin est une
+    // lecture de base. Ce qu'elle coutait, en revanche, etait bien reel — elle
+    // tranchait « trop loin » sur la CONSTANTE du code, sans jamais regarder ce que
+    // le serveur avait REELLEMENT envoye, et annoncait donc au randonneur une portee
+    // qui n'etait pas celle de sa donnee. Defaut attrape par le test U1-E de la
+    // tache 572, qui a survecu a ce lot pour cette raison exacte.
+    //
+    // Sans stage, en revanche, il n'y a aucun bulletin a consulter : la portee
+    // attendue est alors tout ce dont on dispose, et on le dit sans pretendre
+    // mesurer quoi que ce soit.
     if (stage == null) {
       result.add(ProgramDayWeather(
         dayNumber: planned.dayNumber,
@@ -215,7 +234,10 @@ final programWeatherProvider =
         placeName: _placeNameOf(null),
         stageNumber: 0,
         isRestDay: planned.isRestDay,
-        reach: ForecastReach.noData,
+        reach: forecastReachFor(daysAhead: daysAhead) ==
+                ForecastReach.beyondHorizon
+            ? ForecastReach.beyondHorizon
+            : ForecastReach.noData,
       ));
       continue;
     }
@@ -227,9 +249,23 @@ final programWeatherProvider =
     if (weather.isLoading && forecast == null) anyLoading = true;
 
     final dayForecast = forecast?.dayOn(date);
+
+    // UN BULLETIN TROP VIEUX NE REND AUCUN CHIFFRE, Y COMPRIS ICI (#T8).
+    //
+    // C'EST LA MOITIE DE LA REGLE QU'IL SERAIT LE PLUS FACILE D'OUBLIER. L'ecran
+    // meteo se tait au-dela de 72 h ; si cette liste continuait a afficher ses
+    // temperatures, la regle ne servirait a rien — c'est meme LA section qui sert a
+    // decider, celle qui nomme les lieux et les jours. Une regle de securite
+    // appliquee a un seul des deux endroits qui montrent la meme donnee n'est pas
+    // appliquee.
+    final age = forecast?.ageAt(today);
+    final tropVieux = age != null && age >= plusAucunChiffreApres;
+
     final reach = reachForProgramDay(
       daysAhead: daysAhead,
       hasForecast: dayForecast != null,
+      porteeRecue: forecast?.days.length,
+      bulletinTropVieux: tropVieux,
     );
 
     result.add(ProgramDayWeather(
@@ -239,8 +275,9 @@ final programWeatherProvider =
       stageNumber: stage.stageNumber,
       isRestDay: planned.isRestDay,
       reach: reach,
-      day: dayForecast,
-      fetchedAt: forecast?.fetchedAt,
+      day: reach == ForecastReach.tropVieux ? null : dayForecast,
+      produiteLe: forecast?.produiteLeLocal,
+      porteeAnnoncee: forecast?.days.length ?? forecastHorizonDays,
     ));
   }
 

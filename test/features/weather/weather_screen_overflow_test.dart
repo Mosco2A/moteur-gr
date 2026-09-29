@@ -14,15 +14,23 @@ import 'package:moteur_gr/features/weather/presentation/weather_screen.dart';
 import 'package:moteur_gr/features/weather/widgets/today_stage_weather_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
+import 'meteo_du_serveur.dart';
+
 /// Tests LOT-B de l'écran météo E31 : rendu + NON-RÉGRESSION overflow mobile.
 ///
 /// Retour d'expérience du Lot A (#95062) : un layout qui ne déborde pas à
 /// 1200 px peut déborder à 360/390/412 px. Ce fichier rend l'écran COMPLET à
 /// chaque largeur mobile et échoue si le moindre RenderFlex signale un overflow.
 ///
-/// Mode hors-ligne + DB seedée : l'écran bascule sur le seed de démonstration
-/// (déterministe, aucun réseau) et affiche toute l'UX (carte du jour, J+1/J+2,
-/// « toutes les étapes », bandeau source).
+/// HORS LIGNE AVEC UN BULLETIN DEPOSE PAR LE SERVEUR (lot 625) : l'écran affiche
+/// toute l'UX (carte du jour, J+1/J+2, « toutes les étapes », bandeau source + âge)
+/// SANS le moindre appel réseau — le bulletin est en base, notre serveur l'y a mis.
+///
+/// CE QUE CE FICHIER TESTAIT AVANT, ET QUI A ÉTÉ SUPPRIMÉ : « l'écran bascule sur le
+/// seed de démonstration ». Sur un sentier RÉEL, fabriquer une prévision fictive et
+/// la badger discrètement « démonstration » est le « défaut vert » que la conception
+/// 611 nomme un mensonge confortable (#I21). Le cas sans bulletin a désormais son
+/// propre test, plus bas, et il vérifie qu'on n'affiche AUCUN chiffre.
 void main() {
   late AppDatabase db;
 
@@ -73,12 +81,24 @@ void main() {
     await db.close();
   });
 
+  /// Depose le bulletin du serveur pour l'etape affichee.
+  Future<void> deposerLeBulletin({Duration age = const Duration(hours: 1)}) =>
+      deposerMeteoEnBase(
+        db,
+        trailId: 'test-trail',
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(age),
+        latitude: 45.58,
+        longitude: 3.10,
+      );
+
   Widget wrap() {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
         databaseProvider.overrideWithValue(db),
-        // Hors-ligne : force le repli seed démo (déterministe, sans réseau).
+        // HORS LIGNE : c'est l'etat du randonneur sur le sentier, et il ne change
+        // RIEN a la lecture — le bulletin vient de la base, pas du reseau.
         connectivityProvider.overrideWith(
           (ref) => Stream.value(ConnectivityStatusValues.offline),
         ),
@@ -112,6 +132,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      await deposerLeBulletin();
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -130,6 +151,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      await deposerLeBulletin();
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -163,6 +185,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
 
       try {
+        await deposerLeBulletin();
         await tester.pumpWidget(wrap());
         await tester.pumpAndSettle();
       } finally {
@@ -191,4 +214,103 @@ void main() {
       });
     }
   });
+
+  // =========================================================================
+  // LES DEUX ECRANS SANS CHIFFRES — CE QUE LE LOT 625 EXISTE POUR RENDRE PROPRE
+  // =========================================================================
+
+  group('WeatherScreen — quand il n y a pas de chiffre a montrer', () {
+    testWidgets(
+        'JAMAIS EU DE RESEAU DEPUIS L INSTALLATION : l ecran EXPLIQUE, il n est '
+        'ni vide ni invente', (tester) async {
+      tester.view.physicalSize = const Size(390, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      // Aucun bulletin en base, hors ligne : le randonneur vient d installer
+      // l application et n a jamais eu de reseau.
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+
+      expect(find.text(t.weather.neverReceived.title), findsOneWidget);
+      expect(find.text(t.weather.neverReceived.body), findsOneWidget,
+          reason: 'Il faut lui dire CE QUI VA SE PASSER : la meteo est fabriquee '
+              'par notre serveur et arrivera avec les donnees du sentier.');
+
+      // ET SURTOUT : AUCUN CHIFFRE INVENTE. Avant ce lot, l ecran fabriquait une
+      // prevision fictive (12 a 25 °C, codes WMO cycliques) badgee « donnees de
+      // demonstration », sur un sentier REEL. Sept cartes credibles contre un
+      // badge discret.
+      expect(find.byType(TodayStageWeatherCard), findsNothing);
+      expect(find.text(t.weather.source.demo), findsNothing);
+    });
+
+    testWidgets(
+        'et « Actualiser » y PRODUIT QUELQUE CHOSE : la reponse RESTE a l ecran',
+        (tester) async {
+      tester.view.physicalSize = const Size(390, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+
+      final avant = _textes(tester);
+      await tester.tap(find.byIcon(Icons.refresh));
+      // PAS DE `pumpAndSettle` ICI : s il restait la moindre roue a l ecran, elle
+      // tournerait sans fin et le test expirerait au lieu d echouer. On pompe un
+      // nombre BORNE d images — ce qui verifie du meme coup que l ecran ne part
+      // pas dans une animation perpetuelle.
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      final apres = _textes(tester);
+
+      expect(apres, isNot(avant),
+          reason: 'GARDE ANTI-GESTE-MORT (tache 573) : sur l ecran ou il n y a '
+              'rien d autre a lire, un bouton dont la seule trace est un bandeau '
+              'fugace est indistinguable d un bouton mort.');
+      expect(apres, contains(t.weather.neverReceived.title),
+          reason: 'L explication ne DISPARAIT pas pendant la verification : la '
+              'remplacer par une roue ferait perdre au randonneur le seul texte '
+              'utile de l ecran au moment ou il agit.');
+    });
+
+    testWidgets(
+        'BULLETIN DE PLUS DE TROIS JOURS : plus aucun chiffre, et l ecran dit '
+        'depuis quand', (tester) async {
+      tester.view.physicalSize = const Size(390, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      // « Une meteo de trois jours presentee comme fraiche a quelqu un qui decide
+      // de passer un col est dangereuse » (Christophe, 28/09). C est le point le
+      // plus important de ce lot.
+      await deposerLeBulletin(age: const Duration(hours: 80));
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TodayStageWeatherCard), findsNothing,
+          reason: 'Passe 72 h, on ne grise plus : on RETIRE les chiffres.');
+      expect(find.text(t.weather.expiredNotice.title), findsOneWidget);
+
+      // L AGE RESTE VISIBLE : dire qu on ne sait plus sans dire depuis quand ne
+      // renseigne personne.
+      final textes = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((w) => w.data ?? '')
+          .join(' | ');
+      expect(textes, contains('3'),
+          reason: 'l age du dernier bulletin connu doit etre lisible');
+    });
+  });
 }
+
+/// Tout le texte rendu, concatene : on verifie ce que le randonneur LIT.
+String _textes(WidgetTester tester) => tester
+    .widgetList<Text>(find.byType(Text))
+    .map((w) => w.data ?? w.textSpan?.toPlainText() ?? '')
+    .join(' | ');

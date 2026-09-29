@@ -1,34 +1,32 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart' as http_testing;
 import 'package:moteur_gr/core/config/trail_config.dart';
-import 'package:moteur_gr/core/data/daos/stages_dao.dart';
-import 'package:moteur_gr/core/data/daos/weather_cache_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
-import 'package:moteur_gr/features/weather/data/weather_api_service.dart';
 import 'package:moteur_gr/features/weather/domain/forecast_reach.dart';
-import 'package:moteur_gr/features/weather/data/weather_cache.dart';
 import 'package:moteur_gr/features/weather/data/weather_repository.dart';
 import 'package:moteur_gr/features/weather/models/weather_forecast.dart';
 import 'package:moteur_gr/features/weather/presentation/fire_risk_screen.dart';
+import 'package:moteur_gr/features/weather/presentation/weather_freshness.dart';
 import 'package:moteur_gr/features/weather/presentation/weather_screen.dart';
 import 'package:moteur_gr/features/weather/providers/program_weather_provider.dart';
 import 'package:moteur_gr/features/weather/providers/weather_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+
+import 'meteo_du_serveur.dart';
 
 /// TACHE 572 — LOT U : REAUDIT DE LA METEO.
 ///
@@ -402,90 +400,109 @@ void main() {
   // OFF-G — HORS LIGNE : LE DERNIER BULLETIN CONNU SURVIT
   // ==========================================================================
 
-  group('Hors ligne — le dernier bulletin connu reste lisible', () {
+  group('Hors ligne — le dernier bulletin connu reste lisible, ET DATE', () {
     late AppDatabase db;
-    late StagesDao stagesDao;
-    late WeatherCacheDao cacheDao;
 
-    setUp(() async {
-      db = AppDatabase(NativeDatabase.memory());
-      stagesDao = StagesDao(db);
-      cacheDao = WeatherCacheDao(db);
-      await stagesDao.insertAll([
-        const StagesCompanion(
-          trailId: Value(trailId),
-          stageNumber: Value(1),
-          name: Value('Depart - Bergerie'),
-          distanceKm: Value(12),
-          elevationGainM: Value(700),
-          elevationLossM: Value(300),
-          startLat: Value(45.55),
-          startLng: Value(2.95),
-          endLat: Value(45.60),
-          endLng: Value(3.00),
-          arrivalName: Value('Bergerie de Colga'),
-        ),
-      ]);
-    });
-
+    setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    /// Ecrit une ligne de cache PERIMEE (fetchedAt/expiresAt passes) : l'etat
-    /// d'un telephone qui a telecharge la meteo le matin et marche depuis
-    /// quatre heures sans reseau.
-    Future<void> seedStaleCache(DateTime fetchedAt) async {
-      final forecast = WeatherForecast(
-        latitude: 45.60,
-        longitude: 3.00,
-        days: [
-          DayForecast(
-            date: DateTime(2026, 7, 20),
-            temperatureMax: 21,
-            temperatureMin: 11,
-            precipitationMm: 0,
-            windSpeedKmh: 12,
-            uvIndex: 5,
-            weatherCode: 1,
-          ),
-        ],
-      );
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion(
-            trailId: const Value(trailId),
-            stageNumber: const Value(1),
-            forecastJson: Value(jsonEncode(forecast.toJson())),
-            fetchedAt: Value(fetchedAt),
-            // Perime : le TTL disque (3 h) est passe.
-            expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
-          ));
-    }
+    WeatherRepository repo({
+      ConnectivityStatus reseau = ConnectivityStatusValues.offline,
+      Future<bool> Function()? passe,
+    }) =>
+        WeatherRepository(
+          dao: TrailMeteoDao(db),
+          demanderUnePasse: passe ?? () async => true,
+        );
 
     test(
-        'OFF-G : sans reseau et au-dela du TTL, getForecast rend le DERNIER '
-        'bulletin connu au lieu de rien', () async {
-      final fetchedAt = DateTime.now().subtract(const Duration(hours: 4));
-      await seedStaleCache(fetchedAt);
-
-      final deadClient = http_testing.MockClient(
-        (_) async => throw const _NetworkDown(),
+        'OFF-G : sans reseau, le DERNIER bulletin connu reste lisible — il n\'y '
+        'a plus de duree de vie qui puisse le retirer', () async {
+      // L'etat d'un telephone qui a recu la meteo le matin et marche depuis
+      // quatre heures sans reseau. La regression que ce test gardait existait
+      // parce qu'un `expiresAt` de trois heures filtrait la LECTURE : le TTL
+      // gouvernait le DROIT D'AFFICHER au lieu du re-telechargement. La colonne
+      // a disparu avec le cache (lot 625) — le bulletin est une donnee de
+      // sentier, et une donnee de sentier ne s'auto-efface pas.
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 4)),
       );
-      final repo = WeatherRepository(
-        apiService: WeatherApiService(client: deadClient),
-        cache: WeatherCache(dao: cacheDao),
-        stagesDao: stagesDao,
+
+      final bulletin =
+          await repo().bulletinDeLEtape(trailId: trailId, stageNumber: 1);
+
+      expect(bulletin, isNotNull);
+      expect(bulletin!.ageAt()!.inHours, greaterThanOrEqualTo(3));
+    });
+
+    test(
+        'OFF-G2 : SON AGE EST VISIBLE, et c\'est le point le plus important du '
+        'lot 625', () async {
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 9)),
       );
 
-      final forecast =
-          await repo.getForecast(trailId: trailId, stageNumber: 1);
-
-      expect(
-        forecast,
-        isNotNull,
-        reason: 'Le TTL doit gouverner le RE-TELECHARGEMENT, pas le DROIT '
-            'D\'AFFICHER. `getValidCache` filtrait sur `expiresAt` : apres 3 h '
-            'hors ligne le randonneur perdait la meteo telechargee avant de '
-            'partir.',
+      final bulletin =
+          await repo().bulletinDeLEtape(trailId: trailId, stageNumber: 1);
+      final fraicheur = weatherFreshness(
+        produiteLe: bulletin!.produiteLeLocal,
+        t: t,
       );
-      repo.dispose();
+
+      expect(fraicheur.level, FreshnessLevel.jourCourantPerime,
+          reason: 'Neuf heures depassent la peremption du jour courant (six '
+              'heures, #T8) sans atteindre celle des jours suivants.');
+      expect(fraicheur.label, contains('9'),
+          reason: 'L\'AGE EST DANS LE TEXTE. Un bulletin de neuf heures presente '
+              'sans son age est exactement ce que Christophe a nomme dangereux.');
+      expect(fraicheur.plusAucunChiffre, isFalse,
+          reason: 'A neuf heures la prevision reste une information : grisee et '
+              'datee, elle n\'induit pas en erreur (#T10).');
+    });
+
+    test(
+        'OFF-G3 : PASSE SOIXANTE-DOUZE HEURES, PLUS AUCUN CHIFFRE — la regle '
+        'que ce lot existe pour poser', () async {
+      // « Une meteo de trois jours presentee comme fraiche a quelqu'un qui
+      // decide de passer un col est dangereuse » (Christophe, 28/09). #T8 de la
+      // conception 611 : au-dela de 72 h, l'ecran dit qu'il ne sait plus et
+      // depuis quand.
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 73)),
+      );
+
+      final bulletin =
+          await repo().bulletinDeLEtape(trailId: trailId, stageNumber: 1);
+      final fraicheur = weatherFreshness(
+        produiteLe: bulletin!.produiteLeLocal,
+        t: t,
+      );
+
+      expect(fraicheur.level, FreshnessLevel.tropVieux);
+      expect(fraicheur.plusAucunChiffre, isTrue,
+          reason: 'Griser ne suffit plus a cet age : un grise permanent devient '
+              'une decoration qu\'on ne lit plus.');
+      expect(fraicheur.label, contains('3'),
+          reason: 'Et il faut dire DEPUIS QUAND on ne sait plus.');
+    });
+
+    test('OFF-G4 : la borne de 72 h est franche, pas approximative', () async {
+      WeatherFreshness a(Duration age) => weatherFreshness(
+            produiteLe: DateTime.now().subtract(age),
+            t: t,
+          );
+
+      expect(a(const Duration(hours: 71, minutes: 59)).plusAucunChiffre, isFalse);
+      expect(a(const Duration(hours: 72, minutes: 1)).plusAucunChiffre, isTrue);
     });
   });
 
@@ -495,120 +512,104 @@ void main() {
 
   group('Le bouton de mise a jour produit un effet VISIBLE', () {
     late AppDatabase db;
-    late StagesDao stagesDao;
-    late WeatherCacheDao cacheDao;
 
-    setUp(() async {
-      db = AppDatabase(NativeDatabase.memory());
-      stagesDao = StagesDao(db);
-      cacheDao = WeatherCacheDao(db);
-      await stagesDao.insertAll([
-        const StagesCompanion(
-          trailId: Value(trailId),
-          stageNumber: Value(1),
-          name: Value('Depart - Bergerie'),
-          distanceKm: Value(12),
-          elevationGainM: Value(700),
-          elevationLossM: Value(300),
-          startLat: Value(45.55),
-          startLng: Value(2.95),
-          endLat: Value(45.60),
-          endLng: Value(3.00),
-          arrivalName: Value('Bergerie de Colga'),
-        ),
-      ]);
-    });
-
+    setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    Future<void> seedCache(DateTime fetchedAt) async {
-      final forecast = WeatherForecast(
-        latitude: 45.60,
-        longitude: 3.00,
-        days: [
-          DayForecast(
-            date: DateTime(2026, 7, 20),
-            temperatureMax: 21,
-            temperatureMin: 11,
-            precipitationMm: 0,
-            windSpeedKmh: 12,
-            uvIndex: 5,
-            weatherCode: 1,
-          ),
-        ],
-      );
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion(
-            trailId: const Value(trailId),
-            stageNumber: const Value(1),
-            forecastJson: Value(jsonEncode(forecast.toJson())),
-            fetchedAt: Value(fetchedAt),
-            expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
-          ));
-    }
+    WeatherRepository repo({
+      ConnectivityStatus reseau = ConnectivityStatusValues.online,
+      Future<bool> Function()? passe,
+    }) =>
+        WeatherRepository(
+          dao: TrailMeteoDao(db),
+          demanderUnePasse: passe ?? () async => true,
+        );
 
     test(
-        'MAJ-K : un rafraichissement REUSSI change l\'instant du releve '
+        'MAJ-K : un rafraichissement REUSSI change la DATE DE FABRICATION '
         '(c\'est ce qui « ne produisait rien »)', () async {
-      final morning = DateTime.now().subtract(const Duration(hours: 6));
-      await seedCache(morning);
-
-      final liveClient = http_testing.MockClient(
-        (_) async => http.Response(jsonEncode(_okResponse), 200),
-      );
-      final repo = WeatherRepository(
-        apiService: WeatherApiService(client: liveClient),
-        cache: WeatherCache(dao: cacheDao),
-        stagesDao: stagesDao,
+      final matin = DateTime.now().toUtc().subtract(const Duration(hours: 6));
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: matin,
       );
 
-      final before = await WeatherCache(dao: cacheDao)
-          .getLastKnownForecast(trailId: trailId, stageNumber: 1);
-      final result =
-          await repo.refreshForecast(trailId: trailId, stageNumber: 1);
+      final avant =
+          await repo().bulletinDeLEtape(trailId: trailId, stageNumber: 1);
 
-      expect(result.failed, isFalse);
-      expect(before!.fetchedAt!.difference(morning).inSeconds.abs(),
-          lessThan(2));
+      final resultat = await repo(passe: () async {
+        // Ce que fait la vraie passe : elle POSE un bulletin plus recent.
+        await deposerMeteoEnBase(
+          db,
+          trailId: trailId,
+          stageNumber: 1,
+          produiteLe: DateTime.now().toUtc(),
+        );
+        return true;
+      }).demanderLaMiseAJour(trailId: trailId, stageNumber: 1);
+
+      expect(resultat.echoue, isFalse);
+      expect(resultat.issue, IssueMiseAJourMeteo.recue);
       expect(
-        result.forecast!.fetchedAt!.isAfter(before.fetchedAt!),
+        resultat.bulletin!.produiteLe! > avant!.produiteLe!,
         isTrue,
-        reason: 'C\'EST LA PREUVE DU CORRECTIF U2/U3 : l\'instant du releve a '
-            'avance, donc la ligne « MAJ » de l\'ecran change. Avant, cette '
-            'ligne etait calculee sur le jour du bulletin et restait identique '
-            'au caractere pres apres un rafraichissement reussi.',
+        reason: 'C\'EST LA PREUVE DU CORRECTIF U2/U3, RENDUE PLUS EXIGEANTE PAR '
+            'LE LOT 625 : ce qui avance n\'est plus l\'heure a laquelle le '
+            'telephone a appele, c\'est la date a laquelle le MODELE a ete '
+            'fabrique. La premiere bougeait a chaque appel, meme quand le '
+            'fournisseur renvoyait la meme prevision — un mouvement sans '
+            'information.',
       );
-      repo.dispose();
     });
 
     test(
         'OFF-H : un rafraichissement qui echoue est NOMME et ne detruit pas le '
         'dernier bulletin connu', () async {
-      final morning = DateTime.now().subtract(const Duration(hours: 6));
-      await seedCache(morning);
-
-      final deadClient = http_testing.MockClient(
-        (_) async => http.Response('nope', 503),
-      );
-      final repo = WeatherRepository(
-        apiService: WeatherApiService(client: deadClient),
-        cache: WeatherCache(dao: cacheDao),
-        stagesDao: stagesDao,
+      final matin = DateTime.now().toUtc().subtract(const Duration(hours: 6));
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: matin,
       );
 
-      final result =
-          await repo.refreshForecast(trailId: trailId, stageNumber: 1);
+      final resultat = await repo(
+        passe: () async => throw Exception('transport interrompu'),
+      ).demanderLaMiseAJour(trailId: trailId, stageNumber: 1);
 
-      expect(result.failed, isTrue,
-          reason: 'L\'echec doit etre NOMME pour que l\'ecran puisse le dire : '
-              'avant, `refresh()` rendait `null` et personne ne le lisait.');
-      expect(result.hasData, isTrue,
+      expect(resultat.echoue, isTrue,
+          reason: 'L\'echec doit etre NOMME pour que l\'ecran puisse le dire.');
+      expect(resultat.bulletin, isNotNull,
           reason: 'Un echec de mise a jour ne vide pas l\'ecran : le randonneur '
               'garde le dernier bulletin connu, avec son age.');
-      expect(result.forecast!.fetchedAt!.difference(morning).inSeconds.abs(),
-          lessThan(2),
-          reason: 'Et l\'age affiche est celui du VRAI releve, pas de '
-              'maintenant.');
-      repo.dispose();
+      expect(
+        resultat.bulletin!.produiteLe!.date.difference(matin).inSeconds.abs(),
+        lessThan(2),
+        reason: 'Et la date affichee reste celle de la VRAIE fabrication, pas '
+            'de maintenant.',
+      );
+    });
+
+    test(
+        'MAJ-L : « rien de plus recent » se distingue d\'un echec, et c\'est le '
+        'cas le plus frequent', () async {
+      await deposerMeteoEnBase(
+        db,
+        trailId: trailId,
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 1)),
+      );
+
+      final resultat = await repo(passe: () async => true)
+          .demanderLaMiseAJour(trailId: trailId, stageNumber: 1);
+
+      expect(resultat.issue, IssueMiseAJourMeteo.rienDePlusRecent);
+      expect(resultat.echoue, isFalse,
+          reason: 'Avec une cadence de quatre heures, la plupart des passes ne '
+              'rapportent rien. Les annoncer comme des echecs apprendrait au '
+              'randonneur a ignorer le message.');
     });
   });
 
@@ -617,26 +618,35 @@ void main() {
   // ==========================================================================
 
   group('Portee honnete des previsions', () {
-    test('PORT-J : la portee demandee reste dans la borne du fournisseur', () {
-      expect(forecastHorizonDays, lessThanOrEqualTo(16),
-          reason: 'Open-Meteo : `forecast_days` accepte 0-16.');
-      expect(reliableForecastDays, lessThan(forecastHorizonDays),
-          reason: 'NOAA : ~80 % de justesse a 7 jours, ~50 % a 10. Les jours '
-              'au-dela du 7e sont une tendance, pas une prevision.');
+    test('PORT-J : la portee annoncee est celle que le SERVEUR publie', () {
+      // Decision de Christophe du 28/09 : « le serveur a une seule version de
+      // meteo par etapes et ce a 3 ou 5 jours ». La conception 611 retient 5
+      // (#W6) et releve que le depot en DEMANDAIT dix : « C'est le code qui
+      // demandait trop, pas Christophe qui demande trop peu. »
+      expect(forecastHorizonDays, 5);
+      expect(reliableForecastDays, lessThanOrEqualTo(forecastHorizonDays),
+          reason: 'NOAA : ~90 % de justesse a 5 jours. Tout ce que le serveur '
+              'descend est donc une prevision ; le barreau « tendance » reste en '
+              'place et s\'allumera si le serveur publie plus loin.');
     });
 
     test('PORT-K : chaque rang de jour recoit la portee qui lui revient', () {
       expect(forecastReachFor(daysAhead: 0), ForecastReach.forecast);
-      expect(forecastReachFor(daysAhead: reliableForecastDays - 1),
-          ForecastReach.forecast);
-      expect(forecastReachFor(daysAhead: reliableForecastDays),
-          ForecastReach.trend);
       expect(forecastReachFor(daysAhead: forecastHorizonDays - 1),
-          ForecastReach.trend);
+          ForecastReach.forecast);
       expect(forecastReachFor(daysAhead: forecastHorizonDays),
           ForecastReach.beyondHorizon,
-          reason: 'L\'API ne rend que les jours 0 a horizon-1 : le jour '
+          reason: 'Le serveur ne publie que les jours 0 a portee-1 : le jour '
               'suivant est inconnu, et on le DIT.');
+
+      // LE BARREAU « TENDANCE » N'EST PAS MORT : il s'allume des que le serveur
+      // publie au-dela de la fenetre fiable. On le verifie avec une portee recue
+      // plus longue, ce qui est exactement le cas que la conception 611 demande
+      // de ne pas jeter (#W6).
+      expect(
+        forecastReachFor(daysAhead: reliableForecastDays, porteeRecue: 10),
+        ForecastReach.trend,
+      );
     });
 
     test(
@@ -651,6 +661,18 @@ void main() {
       expect(
         reachForProgramDay(daysAhead: 2, hasForecast: true),
         ForecastReach.forecast,
+      );
+      // ET LA MOITIE DE LA REGLE QU'IL SERAIT LE PLUS FACILE D'OUBLIER : un
+      // bulletin trop vieux ne rend aucun chiffre dans la LISTE DU PROGRAMME non
+      // plus. C'est la section qui sert a decider ; l'ecran se taire sans qu'elle
+      // se taise ne serait pas se taire.
+      expect(
+        reachForProgramDay(
+          daysAhead: 2,
+          hasForecast: true,
+          bulletinTropVieux: true,
+        ),
+        ForecastReach.tropVieux,
       );
     });
 
@@ -673,23 +695,42 @@ void main() {
       );
     });
 
-    test('PORT-I : l\'appel Open-Meteo demande la portee annoncee a l\'ecran',
-        () async {
-      String? asked;
-      final client = http_testing.MockClient((request) async {
-        asked = request.url.toString();
-        return http.Response(jsonEncode(_okResponse), 200);
-      });
-      final api = WeatherApiService(client: client);
-      await api.fetchForecast(latitude: 45.6, longitude: 3.0);
-      api.dispose();
+    test(
+        'PORT-I : LA PORTEE ANNONCEE DERIVE DE CE QUE LE SERVEUR A ENVOYE, pas '
+        'd\'une constante', () async {
+      // CE TEST A CHANGE DE NATURE AU LOT 625, ET C'EST LA MESURE DU LOT. Il
+      // verifiait l'URL d'un appel — « l'appel demande bien la portee qu'on
+      // annonce ». Il n'y a plus d'URL a verifier : l'application ne demande
+      // rien. Ce qu'il faut garantir a la place est plus fort : que l'ecran
+      // n'annonce pas une portee que la donnee recue ne porte pas.
+      final troisJours = WeatherForecast.depuisLePublie(
+        jours: joursDepuis(DateTime.now(), nombre: 3),
+        latitude: 45.6,
+        longitude: 3.0,
+        produiteLe: HorodatageServeur.annonceParLeServeur(
+          DateTime.now().toUtc().toIso8601String(),
+        )!,
+      );
 
       expect(
-        asked,
-        contains('forecast_days=$forecastHorizonDays'),
-        reason: 'Open-Meteo accepte forecast_days 0-16 (defaut 7). On demande '
-            'la portee qu\'on annonce : a 7 jours un trek de 10 jours perdait '
-            'ses trois derniers jours, et rien ne le disait.',
+        reachForProgramDay(
+          daysAhead: 4,
+          hasForecast: false,
+          porteeRecue: troisJours.days.length,
+        ),
+        ForecastReach.beyondHorizon,
+        reason: 'Le serveur n\'a envoye que trois jours : le quatrieme est '
+            '« pas encore de prevision », pas « aucune donnee pour ce lieu ». '
+            'Une attente ecrite dans le code ne doit jamais contredire la donnee '
+            'recue.',
+      );
+      expect(
+        reachForProgramDay(
+          daysAhead: 2,
+          hasForecast: true,
+          porteeRecue: troisJours.days.length,
+        ),
+        ForecastReach.forecast,
       );
     });
   });
@@ -796,26 +837,11 @@ void main() {
   });
 }
 
-/// Reponse Open-Meteo minimale valide (3 jours) pour les tests d'URL.
-const _okResponse = {
-  'latitude': 45.6,
-  'longitude': 3.0,
-  'daily': {
-    'time': ['2026-07-20', '2026-07-21', '2026-07-22'],
-    'temperature_2m_max': [25.0, 22.0, 28.0],
-    'temperature_2m_min': [12.0, 10.0, 15.0],
-    'precipitation_sum': [0.0, 5.0, 0.0],
-    'wind_speed_10m_max': [15.0, 25.0, 10.0],
-    'uv_index_max': [7.0, 5.0, 9.0],
-    'weather_code': [0, 61, 1],
-    'precipitation_probability_max': [0, 70, 10],
-  },
-};
-
-/// Panne reseau simulee (sans dart:io, pour rester portable en test).
-class _NetworkDown implements Exception {
-  const _NetworkDown();
-}
+/// LA REPONSE OPEN-METEO ET LA PANNE RESEAU SIMULEE ONT DISPARU D'ICI (lot 625).
+///
+/// Elles servaient a eprouver un appel sortant que l'application ne fait plus. Leur
+/// absence est la mesure la plus simple du lot : il n'existe plus, dans ce fichier,
+/// de forme de reponse de fournisseur a imiter.
 
 /// Notifier meteo de test : etat fixe, aucune DB ni reseau.
 class _FixedWeatherNotifier extends StageWeatherNotifier {

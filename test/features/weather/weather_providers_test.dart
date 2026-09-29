@@ -1,128 +1,185 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart' as http_testing;
-import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
-import 'package:moteur_gr/core/data/daos/stages_dao.dart';
-import 'package:moteur_gr/core/data/daos/weather_cache_dao.dart';
-import 'package:moteur_gr/features/weather/data/weather_api_service.dart';
-import 'package:moteur_gr/features/weather/data/weather_cache.dart';
+import 'package:moteur_gr/core/network/connectivity_monitor.dart';
+import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/weather/data/weather_repository.dart';
 import 'package:moteur_gr/features/weather/providers/weather_providers.dart';
 
-/// Reponse Open-Meteo simulee pour les tests providers
-const _mockApiResponse = {
-  'latitude': 42.18,
-  'longitude': 9.12,
-  'daily': {
-    'time': ['2026-06-01', '2026-06-02', '2026-06-03'],
-    'temperature_2m_max': [25.0, 22.0, 28.0],
-    'temperature_2m_min': [12.0, 10.0, 15.0],
-    'precipitation_sum': [0.0, 5.0, 0.0],
-    'wind_speed_10m_max': [15.0, 25.0, 10.0],
-    'uv_index_max': [7.0, 5.0, 9.0],
-    'weather_code': [0, 61, 1],
-  },
-};
+import 'meteo_du_serveur.dart';
 
-/// Tests E3.5c : provider retourne donnees cache si offline.
+/// LOT 625 — CE QUE L ECRAN OBTIENT, ET CE QU IL N OBTIENT PLUS.
+///
+/// Ce fichier testait « le provider retourne les donnees du cache si offline », avec
+/// deux `MockClient` : un qui repond, un qui jette. Les deux ont disparu, et c est le
+/// point : hors ligne ne change RIEN a la lecture, puisque la lecture n a jamais ete
+/// un appel. Le bulletin est en base, le serveur l y a mis, l ecran le lit.
 void main() {
   late AppDatabase db;
-  late StagesDao stagesDao;
-  late WeatherCacheDao weatherCacheDao;
 
-  setUp(() async {
-    db = AppDatabase(NativeDatabase.memory());
-    stagesDao = StagesDao(db);
-    weatherCacheDao = WeatherCacheDao(db);
+  setUp(() => db = AppDatabase(NativeDatabase.memory()));
+  tearDown(() async => db.close());
 
-    // Inserer une etape de test avec coordonnees dynamiques
-    await stagesDao.insertAll([
-      const StagesCompanion(
-        trailId: Value('sentier-bleu'),
-        stageNumber: Value(1),
-        name: Value('Calenzana - Ortu di u Piobbu'),
-        distanceKm: Value(12.0),
-        elevationGainM: Value(1500),
-        elevationLossM: Value(200),
-        startLat: Value(42.508),
-        startLng: Value(8.855),
-        endLat: Value(42.472),
-        endLng: Value(8.927),
-      ),
+  ProviderContainer contenant({
+    ConnectivityStatus reseau = ConnectivityStatusValues.online,
+    Future<bool> Function()? passe,
+  }) {
+    final c = ProviderContainer(overrides: [
+      databaseProvider.overrideWithValue(db),
+      connectivityProvider.overrideWith((ref) => Stream.value(reseau)),
+      weatherRepositoryProvider.overrideWith((ref) => WeatherRepository(
+            dao: TrailMeteoDao(db),
+            demanderUnePasse: passe ?? () async => true,
+          )),
     ]);
-  });
+    addTearDown(c.dispose);
+    return c;
+  }
 
-  tearDown(() async {
-    await db.close();
-  });
+  const params = WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1);
 
-  group('WeatherProviders -- cache offline', () {
-    test('retourne donnees cache si offline', () async {
-      // ARRANGE : remplir le cache via une requete API simulee
-      final mockClient = http_testing.MockClient((request) async {
-        return http.Response(
-          jsonEncode(_mockApiResponse),
-          200,
-          headers: {'content-type': 'application/json'},
+  group('StageWeatherNotifier — la lecture du bulletin du serveur', () {
+    test('expose le bulletin depose en base', () async {
+      await deposerMeteoEnBase(
+        db,
+        trailId: 'sentier-bleu',
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 1)),
+      );
+
+      final c = contenant();
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
+
+      final etat = c.read(stageWeatherProvider(params));
+      expect(etat.forecast, isNotNull);
+      expect(etat.jamaisRecue, false);
+      expect(etat.forecast!.produiteLe, isNotNull);
+    });
+
+    test('HORS LIGNE NE CHANGE RIEN : le bulletin est la, avec son age', () async {
+      await deposerMeteoEnBase(
+        db,
+        trailId: 'sentier-bleu',
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 5)),
+      );
+
+      final c = contenant(reseau: ConnectivityStatusValues.offline);
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
+
+      final etat = c.read(stageWeatherProvider(params));
+      expect(etat.forecast, isNotNull,
+          reason: 'La lecture n est pas un appel : elle ne depend pas du reseau.');
+      expect(etat.forecast!.ageAt()!.inHours, greaterThanOrEqualTo(4));
+    });
+
+    test('RIEN EN BASE : jamaisRecue, et AUCUNE prevision inventee', () async {
+      final c = contenant(reseau: ConnectivityStatusValues.offline);
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
+
+      final etat = c.read(stageWeatherProvider(params));
+      expect(etat.jamaisRecue, true,
+          reason: 'C est le randonneur qui n a jamais eu de reseau depuis '
+              'l installation, et ce cas doit etre NOMME.');
+      expect(etat.forecast, isNull);
+      expect(etat.alerts, isEmpty,
+          reason: 'Aucune alerte ne peut etre derivee de rien.');
+    });
+
+    test('rafraichir HORS LIGNE n emet aucune passe et le dit', () async {
+      await deposerMeteoEnBase(
+        db,
+        trailId: 'sentier-bleu',
+        stageNumber: 1,
+        produiteLe: DateTime.now().toUtc().subtract(const Duration(hours: 2)),
+      );
+      // La passe rend `false` : c est ce que l ordonnanceur fait quand il ecarte
+      // une passe faute de reseau.
+      final c = contenant(
+        reseau: ConnectivityStatusValues.offline,
+        passe: () async => false,
+      );
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
+
+      final abouti =
+          await c.read(stageWeatherProvider(params).notifier).refresh();
+
+      expect(abouti, false);
+      expect(c.read(stageWeatherProvider(params)).derniereIssue,
+          IssueMiseAJourMeteo.horsLigne);
+      expect(c.read(stageWeatherProvider(params)).forecast, isNotNull,
+          reason: 'Un echec ne vide pas l ecran.');
+    });
+
+    test('rafraichir EN LIGNE passe par l ordonnanceur, une seule fois', () async {
+      var passes = 0;
+      final c = contenant(passe: () async {
+        passes++;
+        await deposerMeteoEnBase(
+          db,
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          produiteLe: DateTime.now().toUtc(),
         );
+        return true;
       });
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
 
-      final apiService = WeatherApiService(client: mockClient);
-      final cache = WeatherCache(dao: weatherCacheDao);
-      final repo = WeatherRepository(
-        apiService: apiService,
-        cache: cache,
-        stagesDao: stagesDao,
-      );
+      final abouti =
+          await c.read(stageWeatherProvider(params).notifier).refresh();
 
-      // 1. Remplir le cache en simulant un appel online
-      final forecast = await repo.getForecast(
+      expect(passes, 1,
+          reason: 'UNE passe pour tout le sentier, plus un appel par etape.');
+      expect(abouti, true);
+      expect(c.read(stageWeatherProvider(params)).derniereIssue,
+          IssueMiseAJourMeteo.recue);
+    });
+
+    test('« rien de plus recent » est un succes, pas un echec', () async {
+      final produiteLe = DateTime.now().toUtc().subtract(const Duration(hours: 1));
+      await deposerMeteoEnBase(
+        db,
         trailId: 'sentier-bleu',
         stageNumber: 1,
-      );
-      expect(forecast, isNotNull,
-          reason: 'La prevision API doit fonctionner pour remplir le cache');
-      expect(forecast!.days.length, 3);
-
-      // 2. Simuler le mode offline : client qui echoue systematiquement
-      final offlineClient = http_testing.MockClient((request) async {
-        throw Exception('Pas de reseau');
-      });
-
-      final offlineApiService = WeatherApiService(client: offlineClient);
-      final offlineRepo = WeatherRepository(
-        apiService: offlineApiService,
-        cache: cache,
-        stagesDao: stagesDao,
+        produiteLe: produiteLe,
       );
 
-      // ACT : recuperer la meteo en mode offline (cache doit repondre)
-      final cachedForecast = await offlineRepo.getForecast(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-      );
+      final c = contenant(passe: () async => true);
+      c.listen(stageWeatherProvider(params), (_, __) {});
+      await pumpEventQueue();
 
-      // ASSERT : le cache retourne les donnees meme sans reseau
-      expect(cachedForecast, isNotNull,
-          reason: 'Le cache doit retourner les donnees en mode offline');
-      expect(cachedForecast!.days.length, 3);
-      expect(cachedForecast.days[0].temperatureMax, 25.0);
-      expect(cachedForecast.days[1].precipitationMm, 5.0);
-      expect(cachedForecast.days[2].weatherCode, 1);
+      final abouti =
+          await c.read(stageWeatherProvider(params).notifier).refresh();
 
-      // Verifier que les params du provider sont corrects
-      const params = WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1);
+      expect(abouti, true);
+      expect(c.read(stageWeatherProvider(params)).derniereIssue,
+          IssueMiseAJourMeteo.rienDePlusRecent);
+      expect(c.read(stageWeatherProvider(params)).refreshFailed, false);
+    });
+  });
+
+  group('WeatherStageParams', () {
+    test('identite par sentier et numero d etape', () {
       expect(params.trailId, 'sentier-bleu');
       expect(params.stageNumber, 1);
-      expect(params, equals(const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1)));
-
-      apiService.dispose();
-      offlineApiService.dispose();
+      expect(
+        params,
+        equals(const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1)),
+      );
+      expect(
+        params,
+        isNot(const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 2)),
+      );
     });
   });
 }

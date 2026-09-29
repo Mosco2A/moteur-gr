@@ -16,6 +16,7 @@ import 'tables/trail_itineraries_table.dart';
 import 'tables/trail_stages_table.dart';
 import 'tables/trail_accommodations_table.dart';
 import 'tables/trail_pois_table.dart';
+import 'tables/trail_meteo_table.dart';
 import 'tables/trail_gpx_tracks_table.dart';
 import 'tables/trail_gpx_points_table.dart';
 import 'tables/trail_manifests_table.dart';
@@ -48,6 +49,7 @@ import 'daos/trail_itineraries_dao.dart';
 import 'daos/trail_stages_dao.dart';
 import 'daos/trail_accommodations_dao.dart';
 import 'daos/trail_pois_dao.dart';
+import 'daos/trail_meteo_dao.dart';
 import 'daos/trail_gpx_tracks_dao.dart';
 import 'daos/trail_gpx_points_dao.dart';
 import 'daos/trail_manifests_dao.dart';
@@ -105,6 +107,7 @@ part 'database.g.dart';
     TrailStages,
     TrailAccommodations,
     TrailPois,
+    TrailMeteo,
     TrailGpxTracks,
     TrailGpxPoints,
     TrailManifests,
@@ -143,6 +146,7 @@ part 'database.g.dart';
     TrailStagesDao,
     TrailAccommodationsDao,
     TrailPoisDao,
+    TrailMeteoDao,
     TrailGpxTracksDao,
     TrailGpxPointsDao,
     TrailManifestsDao,
@@ -169,7 +173,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 29;
+  int get schemaVersion => 30;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -469,6 +473,30 @@ class AppDatabase extends _$AppDatabase {
           if (from < 29) {
             await _ajouterColonneSiAbsente(
                 migrator, trailManifests, trailManifests.niveauLocal);
+          }
+          // Migration v29 -> v30 : LA METEO DEVIENT UNE DONNEE DE SENTIER
+          // (tache 625 — decision de Christophe du 28/09, verbatim : « Ce n est
+          // pas l appli qui demande la meteo mais notre serveur »).
+          //
+          // UNE CREATION DE TABLE, ZERO `ALTER TABLE`, ET RIEN N EST DETRUIT.
+          // `trail_meteo` est une huitieme famille de donnees de sentier ; elle
+          // arrive vide et se remplit a la premiere synchronisation, par le meme
+          // chemin transactionnel que les sept autres. Aucune donnee de l ancien
+          // cache n est transportee, et c est le bon choix : ce cache contient des
+          // previsions relevees par le telephone, sans date de FABRICATION — les
+          // reprendre reviendrait a inventer la seule date que ce lot existe pour
+          // dire la verite sur. Le randonneur recoit son premier bulletin serveur
+          // a la premiere passe de l ordonnanceur, et l ecran dit clairement
+          // qu il attend en attendant.
+          //
+          // `weather_cache` RESTE DANS LE SCHEMA ET N A PLUS D ECRIVAIN. Meme
+          // situation que `sync_queue` depuis le lot 606 (#X7 de la spec 605) :
+          // la retirer demande une reconstruction de table, et les tests de
+          // migration du depot sont deja fragiles. La dette est NOMMEE plutot que
+          // dissimulee, et une invariante de la tache 625 verifie qu aucun fichier
+          // de production ne l ecrit plus.
+          if (from < 30) {
+            await migrator.createTable(trailMeteo);
           }
         },
       );

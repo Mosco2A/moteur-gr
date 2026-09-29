@@ -664,7 +664,6 @@
     "loading": "Cargando meteorología...",
     "offline": "Sin conexión. Datos meteorológicos no disponibles.",
     "error": "No se pudo cargar la meteorología.",
-    "cached": "Datos en caché",
     "alerts": "alertas meteorológicas",
     "refresh": "Actualizar",
     "temperature": "Temperatura",
@@ -687,11 +686,9 @@
     "stormAlertsToggleOff": "Alertas de tormenta desactivadas",
     "lastUpdate": "Actualizado $date",
     "guideTitle": "Entender la meteorología",
-    "guideBody": "Las previsiones se dan ETAPA POR ETAPA: para cada día de tu programa, el tiempo en el punto de llegada de ese día. Alcanzan 10 días como máximo; los 7 primeros son fiables, los siguientes solo son una tendencia, y más allá la aplicación lo dice en lugar de inventarlo. Cada boletín muestra cuándo se obtuvo: en la montaña, sin red, lo que queda en pantalla es la última obtención.",
+    "guideBody": "Las previsiones las produce NUESTRO SERVIDOR, etapa por etapa: para cada día de tu programa, el tiempo en el lugar de llegada de ese día. Alcanzan $horizon días. La aplicación nunca las pide: recoge lo más reciente que el servidor haya producido, al recuperar la red y luego cada 4 horas. Cada boletín muestra SU FECHA DE PRODUCCIÓN, no la de la descarga. Y pasados $days días sin nada nuevo, la aplicación retira las cifras en vez de hacerlas pasar por el tiempo de hoy.",
     "source": {
-      "api": "Datos en directo",
-      "cache": "Datos guardados",
-      "offline": "Sin conexión",
+      "server": "Tiempo de nuestro servidor",
       "demo": "Datos de demostración"
     },
     "recommendation": {
@@ -735,13 +732,8 @@
       "trendHint": "Más allá de $reliable días solo es una tendencia: una previsión a 10 días acierta una vez de cada dos.",
       "beyondHorizon": "Todavía sin previsión: las previsiones solo alcanzan $horizon días.",
       "noData": "Sin datos para este lugar.",
-      "unknownDeparture": "Elige tu fecha de salida: sin ella no hay forma de saber qué día estarás en qué etapa."
-    },
-    "freshness": {
-      "justNow": "Obtenido ahora mismo",
-      "at": "Obtenido el $date",
-      "stale": "Obtenido hace $duration, sin actualizar desde entonces",
-      "never": "Nunca obtenido"
+      "unknownDeparture": "Elige tu fecha de salida: sin ella no hay forma de saber qué día estarás en qué etapa.",
+      "tooOld": "Boletín demasiado antiguo."
     },
     "duration": {
       "seconds": "unos segundos",
@@ -752,7 +744,24 @@
     "refreshFailed": "Actualización imposible. Los datos mostrados son del $date.",
     "refreshFailedNoData": "Actualización imposible y ningún dato guardado.",
     "refreshedAt": "Datos actualizados ($date)",
-    "refreshPartial": "Actualización parcial: $done etapa(s) de $total."
+    "fabrication": {
+      "at": "Boletín producido el $date",
+      "expired": "No se muestran cifras: el último boletín se produjo hace $duration",
+      "justNow": "Boletín producido ahora mismo",
+      "stale": "Boletín producido hace $duration, no ha llegado nada más reciente",
+      "todayStale": "Boletín producido hace $duration (el $date): el tiempo de hoy puede haber cambiado desde entonces",
+      "unknown": "Fecha de producción desconocida"
+    },
+    "neverReceived": {
+      "body": "El tiempo lo produce nuestro servidor y llega con los datos del sendero. En cuanto este teléfono recupere la red se actualiza solo: no hay nada que pedir.",
+      "title": "Todavía no hay boletín"
+    },
+    "expiredNotice": {
+      "body": "El último boletín tiene más de $days días. Una previsión de tres días presentada como la de hoy es peligrosa en montaña: la aplicación prefiere callarse. Se actualizará sola al recuperar la red.",
+      "title": "Previsión demasiado antigua para mostrarse"
+    },
+    "refreshUpToDate": "Ya está al día: el servidor no ha producido nada más reciente.",
+    "refreshOffline": "Sin conexión: no se ha podido comprobar nada. Lo mostrado conserva su edad."
   },
   "share": {
     "title": "Compartir",

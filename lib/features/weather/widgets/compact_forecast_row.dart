@@ -11,10 +11,23 @@ import 'day_forecast_card.dart' show WeatherIcon;
 /// sous la carte du jour. Utilise un [Row] d'[Expanded] : les cellules se
 /// partagent la largeur, aucun débordement horizontal aux largeurs mobiles.
 class CompactForecastRow extends StatelessWidget {
-  const CompactForecastRow({super.key, required this.days});
+  const CompactForecastRow({
+    super.key,
+    required this.days,
+    this.perime = false,
+  });
 
   /// Prévisions à venir (on n'affiche que les 2 premières : demain, après-demain).
   final List<DayForecast> days;
+
+  /// LE BULLETIN A DEPASSE LA PEREMPTION DES JOURS SUIVANTS (24 h, #T8).
+  ///
+  /// Le seuil est plus LONG que celui du jour courant, et ce n est pas une
+  /// indulgence : une prevision a J+1 ou J+2 ne vieillit pas au rythme du temps de
+  /// cet apres-midi. Griser les jours suivants des six heures apprendrait au
+  /// randonneur a ignorer le grise, et le grise ne servirait plus a rien le jour ou
+  /// il compte.
+  final bool perime;
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +37,21 @@ class CompactForecastRow extends StatelessWidget {
 
     final labels = <String>[t.weather.tomorrow, t.weather.dayPlus2];
 
-    return Row(
-      children: [
-        for (var i = 0; i < upcoming.length; i++) ...[
-          if (i > 0) const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _CompactTile(
-              label: labels[i],
-              day: upcoming[i],
+    return Opacity(
+      opacity: perime ? 0.55 : 1,
+      child: Row(
+        children: [
+          for (var i = 0; i < upcoming.length; i++) ...[
+            if (i > 0) const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _CompactTile(
+                label: labels[i],
+                day: upcoming[i],
+              ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

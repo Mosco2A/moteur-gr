@@ -119,6 +119,7 @@ void main() {
         'trail_itineraries',
         'trail_manifests',
         'trail_meta',
+        'trail_meteo',
         'trail_pois',
         'trail_stages',
         'user_progress_entries',

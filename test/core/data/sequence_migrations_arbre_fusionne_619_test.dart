@@ -61,7 +61,12 @@ void main() {
               'une base neuve doit etre posee directement a la version '
               'courante, sans repasser par les marches',
         );
-        expect(db.schemaVersion, 29);
+        // PAS DE NUMERO EN DUR ICI : ce test verifie que la sequence ABOUTIT, pas
+        // quelle est la derniere marche. Epingler le numero le faisait echouer a
+        // chaque montee de schema (mesure au lot 625, qui ajoute la v30) alors que
+        // le comportement teste, lui, etait intact. La version courante est
+        // verifiee juste au-dessus, contre `versionUtilisateur`.
+        expect(db.schemaVersion, greaterThanOrEqualTo(29));
 
         await db.close();
         expect(
@@ -151,8 +156,9 @@ void main() {
 
       expect(
         await versionUtilisateur(db),
-        29,
-        reason: 'le compteur doit avoir traverse v27, v28 et v29',
+        db.schemaVersion,
+        reason: 'le compteur doit avoir traverse TOUTES les marches jusqu a la '
+            'version courante — v27, v28, v29, puis celles qui suivront',
       );
     });
 
@@ -182,10 +188,10 @@ void main() {
         'c est le cas de l application tuee au milieu d une marche', () async {
       final fichier = await baseEnV26AvecDonnees();
 
-      // Premier passage : la base monte de 26 a 29.
+      // Premier passage : la base monte de 26 a la version courante.
       final premier = AppDatabase(NativeDatabase(fichier));
       await premier.customStatement('SELECT 1');
-      expect(await versionUtilisateur(premier), 29);
+      expect(await versionUtilisateur(premier), premier.schemaVersion);
       await premier.close();
 
       // On remet le compteur en arriere SANS defaire le schema : c est l etat
@@ -201,7 +207,7 @@ void main() {
       await second.customStatement('SELECT 1');
       expect(
         await versionUtilisateur(second),
-        29,
+        second.schemaVersion,
         reason: 'les marches doivent etre rejouables sans echouer',
       );
     });

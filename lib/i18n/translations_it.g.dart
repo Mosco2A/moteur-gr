@@ -535,7 +535,6 @@ class _Translations$weather$it extends Translations$weather$fr {
 	@override String get loading => 'Caricamento meteo...';
 	@override String get offline => 'Nessuna connessione. Dati meteo non disponibili.';
 	@override String get error => 'Impossibile caricare il meteo.';
-	@override String get cached => 'Dati nella cache';
 	@override String get alerts => 'allerte meteo';
 	@override String get refresh => 'Aggiorna';
 	@override String get temperature => 'Temperatura';
@@ -558,17 +557,20 @@ class _Translations$weather$it extends Translations$weather$fr {
 	@override String get stormAlertsToggleOff => 'Allerte temporali disattivate';
 	@override String lastUpdate({required Object date}) => 'Aggiornato ${date}';
 	@override String get guideTitle => 'Capire il meteo';
-	@override String get guideBody => 'Le previsioni sono date TAPPA PER TAPPA: per ogni giorno del tuo programma, il tempo al luogo di arrivo di quel giorno. Arrivano al massimo a 10 giorni; i primi 7 sono affidabili, i successivi sono solo una tendenza, e oltre l\'app lo dice invece di inventare. Ogni bollettino mostra quando è stato rilevato: in montagna, senza rete, resta visibile l\'ultimo rilevamento.';
+	@override String guideBody({required Object horizon, required Object days}) => 'Le previsioni sono prodotte dal NOSTRO SERVER, tappa per tappa: per ogni giorno del tuo programma, il tempo nel luogo di arrivo di quel giorno. Arrivano a ${horizon} giorni. L\'app non le chiede mai da sola: recupera ciò che il server ha prodotto di più recente, al ritorno della rete e poi ogni 4 ore. Ogni bollettino mostra LA SUA DATA DI PRODUZIONE, non quella dello scaricamento. E passati ${days} giorni senza nulla di nuovo, l\'app toglie i valori invece di farli passare per il tempo di oggi.';
 	@override late final _Translations$weather$source$it source = _Translations$weather$source$it._(_root);
 	@override late final _Translations$weather$recommendation$it recommendation = _Translations$weather$recommendation$it._(_root);
 	@override late final _Translations$weather$alert$it alert = _Translations$weather$alert$it._(_root);
 	@override late final _Translations$weather$program$it program = _Translations$weather$program$it._(_root);
-	@override late final _Translations$weather$freshness$it freshness = _Translations$weather$freshness$it._(_root);
 	@override late final _Translations$weather$duration$it duration = _Translations$weather$duration$it._(_root);
 	@override String refreshFailed({required Object date}) => 'Aggiornamento impossibile. I dati mostrati risalgono al ${date}.';
 	@override String get refreshFailedNoData => 'Aggiornamento impossibile e nessun dato salvato.';
 	@override String refreshedAt({required Object date}) => 'Dati aggiornati (${date})';
-	@override String refreshPartial({required Object done, required Object total}) => 'Aggiornamento parziale: ${done} tappa/e su ${total}.';
+	@override late final _Translations$weather$fabrication$it fabrication = _Translations$weather$fabrication$it._(_root);
+	@override late final _Translations$weather$neverReceived$it neverReceived = _Translations$weather$neverReceived$it._(_root);
+	@override late final _Translations$weather$expiredNotice$it expiredNotice = _Translations$weather$expiredNotice$it._(_root);
+	@override String get refreshUpToDate => 'Già aggiornato: il server non ha prodotto nulla di più recente.';
+	@override String get refreshOffline => 'Offline: non si è potuto verificare nulla. Ciò che è mostrato conserva la sua età.';
 }
 
 // Path: share
@@ -2366,9 +2368,7 @@ class _Translations$weather$source$it extends Translations$weather$source$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
-	@override String get api => 'Dati in diretta';
-	@override String get cache => 'Dati salvati';
-	@override String get offline => 'Non in linea';
+	@override String get server => 'Meteo dal nostro server';
 	@override String get demo => 'Dati dimostrativi';
 }
 
@@ -2416,19 +2416,7 @@ class _Translations$weather$program$it extends Translations$weather$program$fr {
 	@override String beyondHorizon({required Object horizon}) => 'Nessuna previsione ancora: le previsioni arrivano solo a ${horizon} giorni.';
 	@override String get noData => 'Nessun dato per questo luogo.';
 	@override String get unknownDeparture => 'Scegli la data di partenza: senza di essa è impossibile dire in che giorno sarai a quale tappa.';
-}
-
-// Path: weather.freshness
-class _Translations$weather$freshness$it extends Translations$weather$freshness$fr {
-	_Translations$weather$freshness$it._(TranslationsIt root) : this._root = root, super.internal(root);
-
-	final TranslationsIt _root; // ignore: unused_field
-
-	// Translations
-	@override String get justNow => 'Rilevato ora';
-	@override String at({required Object date}) => 'Rilevato il ${date}';
-	@override String stale({required Object duration}) => 'Rilevato ${duration} fa, nessun aggiornamento da allora';
-	@override String get never => 'Mai rilevato';
+	@override String get tooOld => 'Bollettino troppo vecchio.';
 }
 
 // Path: weather.duration
@@ -2442,6 +2430,43 @@ class _Translations$weather$duration$it extends Translations$weather$duration$fr
 	@override String minutes({required Object n}) => '${n} min';
 	@override String hours({required Object n}) => '${n} h';
 	@override String days({required Object n}) => '${n} g';
+}
+
+// Path: weather.fabrication
+class _Translations$weather$fabrication$it extends Translations$weather$fabrication$fr {
+	_Translations$weather$fabrication$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String at({required Object date}) => 'Bollettino prodotto il ${date}';
+	@override String expired({required Object duration}) => 'Nessun valore mostrato: l\'ultimo bollettino è stato prodotto ${duration} fa';
+	@override String get justNow => 'Bollettino prodotto adesso';
+	@override String stale({required Object duration}) => 'Bollettino prodotto ${duration} fa, non è arrivato nulla di più recente';
+	@override String todayStale({required Object duration, required Object date}) => 'Bollettino prodotto ${duration} fa (il ${date}): il tempo di oggi può essere cambiato da allora';
+	@override String get unknown => 'Data di produzione sconosciuta';
+}
+
+// Path: weather.neverReceived
+class _Translations$weather$neverReceived$it extends Translations$weather$neverReceived$fr {
+	_Translations$weather$neverReceived$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get body => 'Il meteo è prodotto dal nostro server e arriva con i dati del sentiero. Appena questo telefono ritrova la rete si aggiorna da solo: non c\'è nulla da chiedere.';
+	@override String get title => 'Ancora nessun bollettino';
+}
+
+// Path: weather.expiredNotice
+class _Translations$weather$expiredNotice$it extends Translations$weather$expiredNotice$fr {
+	_Translations$weather$expiredNotice$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String body({required Object days}) => 'L\'ultimo bollettino ha più di ${days} giorni. Una previsione di tre giorni presentata come quella di oggi è pericolosa in montagna: l\'app preferisce tacere. Si aggiornerà da sola al ritorno della rete.';
+	@override String get title => 'Previsioni troppo vecchie per essere mostrate';
 }
 
 // Path: feasibility.gaps
@@ -4633,7 +4658,6 @@ extension on TranslationsIt {
 			'weather.loading' => 'Caricamento meteo...',
 			'weather.offline' => 'Nessuna connessione. Dati meteo non disponibili.',
 			'weather.error' => 'Impossibile caricare il meteo.',
-			'weather.cached' => 'Dati nella cache',
 			'weather.alerts' => 'allerte meteo',
 			'weather.refresh' => 'Aggiorna',
 			'weather.temperature' => 'Temperatura',
@@ -4656,10 +4680,8 @@ extension on TranslationsIt {
 			'weather.stormAlertsToggleOff' => 'Allerte temporali disattivate',
 			'weather.lastUpdate' => ({required Object date}) => 'Aggiornato ${date}',
 			'weather.guideTitle' => 'Capire il meteo',
-			'weather.guideBody' => 'Le previsioni sono date TAPPA PER TAPPA: per ogni giorno del tuo programma, il tempo al luogo di arrivo di quel giorno. Arrivano al massimo a 10 giorni; i primi 7 sono affidabili, i successivi sono solo una tendenza, e oltre l\'app lo dice invece di inventare. Ogni bollettino mostra quando è stato rilevato: in montagna, senza rete, resta visibile l\'ultimo rilevamento.',
-			'weather.source.api' => 'Dati in diretta',
-			'weather.source.cache' => 'Dati salvati',
-			'weather.source.offline' => 'Non in linea',
+			'weather.guideBody' => ({required Object horizon, required Object days}) => 'Le previsioni sono prodotte dal NOSTRO SERVER, tappa per tappa: per ogni giorno del tuo programma, il tempo nel luogo di arrivo di quel giorno. Arrivano a ${horizon} giorni. L\'app non le chiede mai da sola: recupera ciò che il server ha prodotto di più recente, al ritorno della rete e poi ogni 4 ore. Ogni bollettino mostra LA SUA DATA DI PRODUZIONE, non quella dello scaricamento. E passati ${days} giorni senza nulla di nuovo, l\'app toglie i valori invece di farli passare per il tempo di oggi.',
+			'weather.source.server' => 'Meteo dal nostro server',
 			'weather.source.demo' => 'Dati dimostrativi',
 			'weather.recommendation.ok' => 'Condizioni favorevoli',
 			'weather.recommendation.watch' => 'Prudenza consigliata',
@@ -4686,10 +4708,7 @@ extension on TranslationsIt {
 			'weather.program.beyondHorizon' => ({required Object horizon}) => 'Nessuna previsione ancora: le previsioni arrivano solo a ${horizon} giorni.',
 			'weather.program.noData' => 'Nessun dato per questo luogo.',
 			'weather.program.unknownDeparture' => 'Scegli la data di partenza: senza di essa è impossibile dire in che giorno sarai a quale tappa.',
-			'weather.freshness.justNow' => 'Rilevato ora',
-			'weather.freshness.at' => ({required Object date}) => 'Rilevato il ${date}',
-			'weather.freshness.stale' => ({required Object duration}) => 'Rilevato ${duration} fa, nessun aggiornamento da allora',
-			'weather.freshness.never' => 'Mai rilevato',
+			'weather.program.tooOld' => 'Bollettino troppo vecchio.',
 			'weather.duration.seconds' => 'pochi secondi',
 			'weather.duration.minutes' => ({required Object n}) => '${n} min',
 			'weather.duration.hours' => ({required Object n}) => '${n} h',
@@ -4697,7 +4716,18 @@ extension on TranslationsIt {
 			'weather.refreshFailed' => ({required Object date}) => 'Aggiornamento impossibile. I dati mostrati risalgono al ${date}.',
 			'weather.refreshFailedNoData' => 'Aggiornamento impossibile e nessun dato salvato.',
 			'weather.refreshedAt' => ({required Object date}) => 'Dati aggiornati (${date})',
-			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Aggiornamento parziale: ${done} tappa/e su ${total}.',
+			'weather.fabrication.at' => ({required Object date}) => 'Bollettino prodotto il ${date}',
+			'weather.fabrication.expired' => ({required Object duration}) => 'Nessun valore mostrato: l\'ultimo bollettino è stato prodotto ${duration} fa',
+			'weather.fabrication.justNow' => 'Bollettino prodotto adesso',
+			'weather.fabrication.stale' => ({required Object duration}) => 'Bollettino prodotto ${duration} fa, non è arrivato nulla di più recente',
+			'weather.fabrication.todayStale' => ({required Object duration, required Object date}) => 'Bollettino prodotto ${duration} fa (il ${date}): il tempo di oggi può essere cambiato da allora',
+			'weather.fabrication.unknown' => 'Data di produzione sconosciuta',
+			'weather.neverReceived.body' => 'Il meteo è prodotto dal nostro server e arriva con i dati del sentiero. Appena questo telefono ritrova la rete si aggiorna da solo: non c\'è nulla da chiedere.',
+			'weather.neverReceived.title' => 'Ancora nessun bollettino',
+			'weather.expiredNotice.body' => ({required Object days}) => 'L\'ultimo bollettino ha più di ${days} giorni. Una previsione di tre giorni presentata come quella di oggi è pericolosa in montagna: l\'app preferisce tacere. Si aggiornerà da sola al ritorno della rete.',
+			'weather.expiredNotice.title' => 'Previsioni troppo vecchie per essere mostrate',
+			'weather.refreshUpToDate' => 'Già aggiornato: il server non ha prodotto nulla di più recente.',
+			'weather.refreshOffline' => 'Offline: non si è potuto verificare nulla. Ciò che è mostrato conserva la sua età.',
 			'share.title' => 'Condividi',
 			'share.generating' => 'Generazione...',
 			'share.share' => 'Condividi',
@@ -5065,14 +5095,14 @@ extension on TranslationsIt {
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',
 			'monetization.cancelExplains' => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.cancelStoreUnavailable' => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.',
 			'signalement.title' => 'Segnala',
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
 			'signalement.types.eauASec' => 'Punto d\'acqua a secco',
 			'signalement.types.danger' => 'Pericolo',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Salvato. Visibile agli altri escursionisti dopo la sincronizzazione di rete.',
 			'signalement.confirm' => 'Conferma segnalazione',
 			'signalement.noLocation' => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.',
@@ -5579,14 +5609,14 @@ extension on TranslationsIt {
 			'calendar.legend.rest' => 'Riposo',
 			'calendar.legend.arrival' => 'Arrivo',
 			'calendar.summary.totalDays' => 'Giorni totali',
+			_ => null,
+		} ?? switch (path) {
 			'calendar.summary.walkDays' => 'Giorni cammino',
 			'calendar.summary.restDays' => 'Giorni riposo',
 			'calendar.noDate.title' => 'Scegli una data di partenza',
 			'calendar.noDate.message' => 'Il calendario del tuo trek apparirà automaticamente con i giorni di cammino e di riposo.',
 			'calendar.empty.title' => 'Configura prima il tuo itinerario',
 			'calendar.empty.message' => 'Scegli il percorso e la durata per poter configurare le tue date.',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'nuitees.title' => 'Pernottamenti',
 			'nuitees.guideTooltip' => 'Guida ai pernottamenti',

@@ -7,6 +7,7 @@ import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_accommodations_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
+import 'package:moteur_gr/core/data/daos/trail_meteo_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_tracks_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_points_dao.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
@@ -83,6 +84,7 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
     required super.trailStagesDao,
     required super.trailAccommodationsDao,
     required super.trailPoisDao,
+    required super.trailMeteoDao,
     required super.trailGpxTracksDao,
     required super.trailGpxPointsDao,
     this.fakeDelta,
@@ -205,6 +207,7 @@ void main() {
         trailStagesDao: TrailStagesDao(db),
         trailAccommodationsDao: TrailAccommodationsDao(db),
         trailPoisDao: TrailPoisDao(db),
+        trailMeteoDao: TrailMeteoDao(db),
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
         fakeDelta: delta,
@@ -264,18 +267,24 @@ void main() {
       // Verification cle: seules 2 tables ont ete telechargees (delta)
       expect(results.first.tablesUpdated, ['stages', 'pois']);
 
-      // Verification: les 5 autres tables ont ete ignorees
+      // Verification: les 6 autres familles ont ete ignorees.
+      //
+      // SIX DEPUIS LE LOT 625 : la meteo est devenue la huitieme famille de
+      // donnees de sentier. Elle est ignoree ici comme les autres — une
+      // correction d'altitude ne fait pas redescendre la meteo, ce qui est
+      // exactement la promesse du modele de revision.
       expect(
         results.first.tablesSkipped,
         containsAll([
           'trail_meta',
           'itineraries',
           'accommodations',
+          'meteo',
           'gpx_tracks',
           'gpx_points',
         ]),
       );
-      expect(results.first.tablesSkipped, hasLength(5));
+      expect(results.first.tablesSkipped, hasLength(6));
 
       // Verification: le service delta n a ete appele qu une fois
       expect(fakeDeltaService.downloadCallCount, 1);
@@ -317,6 +326,7 @@ void main() {
         trailStagesDao: TrailStagesDao(db),
         trailAccommodationsDao: TrailAccommodationsDao(db),
         trailPoisDao: TrailPoisDao(db),
+        trailMeteoDao: TrailMeteoDao(db),
         trailGpxTracksDao: TrailGpxTracksDao(db),
         trailGpxPointsDao: TrailGpxPointsDao(db),
       );

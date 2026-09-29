@@ -5,13 +5,23 @@ import '../data/revision_de_donnee.dart';
 part 'trail_manifest.freezed.dart';
 part 'trail_manifest.g.dart';
 
-/// LES SEPT FAMILLES DE DONNEES D UN SENTIER, ET LEUR ORDRE.
+/// LES HUIT FAMILLES DE DONNEES D UN SENTIER, ET LEUR ORDRE.
 ///
-/// Ces sept noms ne sont pas un choix : ce sont les sept clefs du fichier de
+/// Ces noms ne sont pas un choix : ce sont les clefs du fichier de
 /// donnees de sentier que le moteur sait deja lire (`TrailSeeder`,
 /// `DeltaUpdateService`), c est-a-dire le schema
 /// MONOLITHE documente au §3.5 du MODOP 603. Les changer ici sans les changer
 /// la-bas casserait la copie.
+///
+/// ELLES ETAIENT SEPT JUSQU AU LOT 625, ET LA HUITIEME EST LA METEO. Decision de
+/// Christophe du 28/09, verbatim : « Ce n est pas l appli qui demande la meteo mais
+/// notre serveur, les infos meteo sont mises sur firebase et quand l appli voit
+/// qu il y a des donnees a jour elle les met a jour, COMME POUR LE RESTE. » « Comme
+/// pour le reste » est la phrase qui compte : la meteo n a pas de mecanisme a elle,
+/// elle entre dans celui-ci. La conception 611 d Athena le formule autrement (#N6) :
+/// **le mecanisme est commun, la peremption est par famille** — une trace ne perime
+/// pas, une prevision oui, et c est la presentation qui porte cette difference,
+/// pas le transport.
 ///
 /// L ORDRE EST CELUI DES CLES ETRANGERES, et il n est pas decoratif : un
 /// hebergement rattache a une etape qui n existe pas encore echoue. Cet ordre
@@ -44,20 +54,37 @@ abstract final class MorceauxDeSentier {
   /// Points d interet.
   static const String pointsDInteret = 'pois';
 
+  /// METEO FABRIQUEE PAR LE SERVEUR, un enregistrement par etape (lot 625).
+  ///
+  /// C est la seule famille dont le producteur n est PAS le publicateur mais le
+  /// COLLECTEUR (#L1 de la conception 611), et cela ne change rien au transport :
+  /// les deux ecrivent la meme borne, chacun ses lignes (#K9). La liste des
+  /// producteurs est close — une famille appartient a l un ou a l autre, jamais
+  /// aux deux.
+  static const String meteo = 'meteo';
+
   /// Traces GPX (l entete des traces).
   static const String traces = 'gpx_tracks';
 
   /// Points de trace GPX (le gros du volume).
   static const String pointsDeTrace = 'gpx_points';
 
-  /// Les sept familles, dans l ORDRE D INSERTION impose par les cles
+  /// Les huit familles, dans l ORDRE D INSERTION impose par les cles
   /// etrangeres.
+  ///
+  /// [meteo] EST PLACEE APRES [etapes] PARCE QU ELLE S Y RATTACHE, et avant
+  /// [traces] parce que c est ce qui la fait entrer dans le niveau « preparer »
+  /// (`NiveauDeTelechargement.volumineux` retire les deux dernieres, et seulement
+  /// elles). Ce placement n est donc pas esthetique : il decide que le randonneur
+  /// qui PREPARE recoit la meteo. C est le but — preparer, c est choisir un jour de
+  /// depart, et cela se decide sur le temps.
   static const List<String> tous = <String>[
     fiche,
     itineraires,
     etapes,
     hebergements,
     pointsDInteret,
+    meteo,
     traces,
     pointsDeTrace,
   ];

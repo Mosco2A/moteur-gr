@@ -91,11 +91,12 @@ class ProgramWeatherList extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingSm),
         ],
 
-        // Fraicheur GLOBALE de la section : l'instant du releve le plus recent.
-        // Elle change des qu'un rafraichissement aboutit — c'est precisement ce
+        // Fraicheur GLOBALE de la section : la FABRICATION la plus recente parmi
+        // les journees affichables (lot 625). Elle change des qu'une passe de
+        // synchronisation rapporte un bulletin plus recent — c'est precisement ce
         // qui manquait pour que le bouton « produise » quelque chose de visible.
         if (!state.departureUnknown)
-          _FreshnessLine(fetchedAt: state.latestFetchedAt),
+          _FreshnessLine(produiteLe: state.fabricationLaPlusRecente),
 
         const SizedBox(height: AppTheme.spacingSm),
         for (final day in state.days)
@@ -108,21 +109,27 @@ class ProgramWeatherList extends ConsumerWidget {
   }
 }
 
-/// Ligne de fraicheur : quand le bulletin affiche a-t-il ete releve.
+/// Ligne de fraicheur : quand le bulletin affiche a-t-il ete FABRIQUE.
 class _FreshnessLine extends StatelessWidget {
-  const _FreshnessLine({required this.fetchedAt});
+  const _FreshnessLine({required this.produiteLe});
 
-  final DateTime? fetchedAt;
+  final DateTime? produiteLe;
 
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
-    final freshness = weatherFreshness(fetchedAt: fetchedAt, t: t);
+    final freshness = weatherFreshness(produiteLe: produiteLe, t: t);
+    // LES COULEURS SUIVENT LA GRAVITE, ET LE ROUGE EST RESERVE AU CAS OU L'ON NE
+    // MONTRE PLUS RIEN. Un bulletin de trois jours n'est pas « un peu vieux » :
+    // c'est le cas que Christophe a nomme dangereux, et il ne doit pas porter la
+    // meme couleur qu'un bulletin de sept heures.
     final color = switch (freshness.level) {
       FreshnessLevel.fresh => AppTheme.vertFacile,
-      FreshnessLevel.recent => theme.colorScheme.onSurface.withAlpha(170),
+      FreshnessLevel.jourCourantPerime =>
+        theme.colorScheme.onSurface.withAlpha(170),
       FreshnessLevel.stale => AppTheme.orangeDifficile,
+      FreshnessLevel.tropVieux => AppTheme.rougeUrgence,
       FreshnessLevel.unknown => AppTheme.grisGranite,
     };
     return Row(
@@ -196,7 +203,10 @@ class _ProgramDayCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-            _Absence(reach: day.reach),
+            _Absence(
+              reach: day.reach,
+              porteeAnnoncee: day.porteeAnnoncee,
+            ),
           ],
         ),
       );
@@ -262,9 +272,12 @@ class _TrendChip extends StatelessWidget {
 
 /// Pourquoi il n'y a pas de chiffre pour cette journee — ecrit, jamais blanc.
 class _Absence extends StatelessWidget {
-  const _Absence({required this.reach});
+  const _Absence({required this.reach, required this.porteeAnnoncee});
 
   final ForecastReach reach;
+
+  /// Portee REELLEMENT recue, annoncee au randonneur (lot 625).
+  final int porteeAnnoncee;
 
   @override
   Widget build(BuildContext context) {
@@ -273,11 +286,20 @@ class _Absence extends StatelessWidget {
     final (IconData icon, String message) = switch (reach) {
       ForecastReach.beyondHorizon => (
           Icons.hourglass_empty,
-          t.weather.program.beyondHorizon(horizon: forecastHorizonDays),
+          t.weather.program.beyondHorizon(horizon: porteeAnnoncee),
         ),
       ForecastReach.unknownDeparture => (
           Icons.event_busy_outlined,
           t.weather.program.unknownDeparture,
+        ),
+      // DISTINCT DE « aucune donnee », ET LA DISTINCTION N'EST PAS COSMETIQUE.
+      // « Aucune donnee » veut dire que nous n'avons rien pour ce lieu ce jour-la.
+      // « Bulletin trop ancien » veut dire que nous avons quelque chose et que nous
+      // REFUSONS de le montrer, parce qu'il a plus de trois jours. Les confondre
+      // laisserait croire a un trou de couverture la ou il y a un choix delibere.
+      ForecastReach.tropVieux => (
+          Icons.history_toggle_off,
+          t.weather.program.tooOld,
         ),
       _ => (Icons.cloud_off_outlined, t.weather.program.noData),
     };

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -6,6 +8,7 @@ import '../data/database.dart' hide TrailManifest;
 import '../data/daos/trail_manifests_dao.dart';
 import '../data/daos/trail_stages_dao.dart';
 import '../data/daos/trail_accommodations_dao.dart';
+import '../data/daos/trail_meteo_dao.dart';
 import '../data/daos/trail_pois_dao.dart';
 import '../data/daos/trail_gpx_tracks_dao.dart';
 import '../data/daos/trail_gpx_points_dao.dart';
@@ -65,6 +68,7 @@ class DeltaUpdateService {
     required this.trailStagesDao,
     required this.trailAccommodationsDao,
     required this.trailPoisDao,
+    required this.trailMeteoDao,
     required this.trailGpxTracksDao,
     required this.trailGpxPointsDao,
     SourceDeDonneesSentier? source,
@@ -84,6 +88,7 @@ class DeltaUpdateService {
   final TrailStagesDao trailStagesDao;
   final TrailAccommodationsDao trailAccommodationsDao;
   final TrailPoisDao trailPoisDao;
+  final TrailMeteoDao trailMeteoDao;
   final TrailGpxTracksDao trailGpxTracksDao;
   final TrailGpxPointsDao trailGpxPointsDao;
 
@@ -462,6 +467,13 @@ class DeltaUpdateService {
           .go();
       await (db.delete(db.trailGpxTracks)..where((t) => t.id.isIn(traces))).go();
     }
+    // LA METEO PART AVEC LE SENTIER, ET ELLE SE BORNE PAR LE SENTIER, PAS PAR SES
+    // ETAPES. Un sentier trop en retard (#R12) peut n avoir aucune etape en base —
+    // c est meme le cas le plus probable d une remise a zero. Passer par la liste
+    // des etapes laisserait alors des bulletins orphelins, rattaches a des etapes
+    // qui n existent plus, que plus aucune republication ne viendrait remplacer.
+    await trailMeteoDao.deleteByTrailId(trailId);
+
     if (etapes.isNotEmpty) {
       await (db.delete(db.trailPois)..where((t) => t.stageId.isIn(etapes))).go();
       await (db.delete(db.trailAccommodations)
@@ -591,6 +603,48 @@ class DeltaUpdateService {
           lng: Value((d['lng'] as num).toDouble()),
           elevation: Value((d['elevation'] as num?)?.toDouble()),
           rev: Value(rev)));
+      case MorceauxDeSentier.meteo:
+        // LA DATE DE FABRICATION EST OBLIGATOIRE, ET SON ABSENCE REFUSE
+        // L ENREGISTREMENT (lot 625).
+        //
+        // C est une fermeture par defaut, la meme doctrine que l empreinte du lot
+        // 607, et pour une raison plus grave : un bulletin dont on ignore QUAND il
+        // a ete fabrique ne peut pas afficher son age. On ne saurait donc pas
+        // distinguer une prevision d il y a une heure d une prevision de trois
+        // jours — et c est exactement le mensonge dangereux que ce lot existe pour
+        // fermer. Accepter le bulletin « quand meme » en se rabattant sur une
+        // autre date (la revision, l heure du telephone) reviendrait a INVENTER la
+        // seule information qui protege le randonneur.
+        //
+        // L exception remonte, donc la TRANSACTION ENTIERE est annulee et le
+        // repere n avance pas : le sentier reste honnetement « a prendre » et la
+        // prochaine passe reessaiera. Un bulletin muet sur sa fabrication est un
+        // defaut de PUBLICATION, pas un alea.
+        final produiteLe = HorodatageServeur.annonceParLeServeur(d['produite_le']);
+        if (produiteLe == null) {
+          throw MeteoSansDateDeFabrication(
+            id: d['id'] as String?,
+            trailId: d['trail_id'] as String?,
+            brut: d['produite_le'],
+          );
+        }
+        await trailMeteoDao.insertOrReplace(TrailMeteoCompanion(
+          id: Value(d['id'] as String),
+          trailId: Value(d['trail_id'] as String),
+          stageId: Value(d['stage_id'] as String),
+          stageNumber: Value(d['stage_number'] as int),
+          latitude: Value((d['latitude'] as num).toDouble()),
+          longitude: Value((d['longitude'] as num).toDouble()),
+          source: Value(d['source'] as String),
+          produiteLe: Value(produiteLe),
+          collecteeLe:
+              Value(HorodatageServeur.annonceParLeServeur(d['collectee_le'])),
+          // LES JOURS SONT STOCKES DANS LA FORME OU LE SERVEUR LES PUBLIE, sans
+          // traduction. Le lot 606 a paye le prix de trois definitions
+          // concurrentes de la meme chose ; il n en existe ici qu une, et c est
+          // celle que `DayForecast` lit.
+          joursJson: Value(jsonEncode(d['jours'])),
+          rev: Value(rev)));
       case MorceauxDeSentier.traces:
         await trailGpxTracksDao.insertOrReplace(TrailGpxTracksCompanion(
           id: Value(d['id'] as String), itineraryId: Value(d['itinerary_id'] as String),
@@ -639,6 +693,9 @@ class DeltaUpdateService {
       case MorceauxDeSentier.pointsDInteret:
         if (id == null) break;
         return (db.delete(db.trailPois)..where((t) => t.id.equals(id))).go();
+      case MorceauxDeSentier.meteo:
+        if (id == null) break;
+        return (db.delete(db.trailMeteo)..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.traces:
         if (id == null) break;
         return (db.delete(db.trailGpxTracks)..where((t) => t.id.equals(id)))
@@ -679,5 +736,36 @@ final deltaUpdateServiceProvider = Provider<DeltaUpdateService>((ref) {
     trailMetaDao: TrailMetaDao(db),
     trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
     trailAccommodationsDao: TrailAccommodationsDao(db), trailPoisDao: TrailPoisDao(db),
+    trailMeteoDao: TrailMeteoDao(db),
     trailGpxTracksDao: TrailGpxTracksDao(db), trailGpxPointsDao: TrailGpxPointsDao(db));
 });
+
+/// UN BULLETIN METEO SANS DATE DE FABRICATION EST REFUSE (lot 625).
+///
+/// Elle porte l identite de l enregistrement fautif parce qu un refus doit dire QUOI
+/// republier : c est la meme exigence que les sept refus de l outil de publication,
+/// qui rendent le motif mot pour mot au lieu d un « donnees invalides ».
+class MeteoSansDateDeFabrication implements Exception {
+  const MeteoSansDateDeFabrication({
+    required this.id,
+    required this.trailId,
+    required this.brut,
+  });
+
+  /// Identite publiee de l enregistrement refuse.
+  final String? id;
+
+  /// Sentier concerne.
+  final String? trailId;
+
+  /// Ce que le champ `produite_le` contenait — illisible ou absent.
+  final Object? brut;
+
+  @override
+  String toString() =>
+      'Bulletin meteo refuse (${trailId ?? "sentier inconnu"} / '
+      '${id ?? "identite absente"}) : le champ « produite_le » est absent ou '
+      'illisible (${brut ?? "null"}). La date de FABRICATION est la seule qui '
+      'permette d afficher l age d une prevision ; sans elle, un bulletin de trois '
+      'jours serait indistinguable d un bulletin d une heure. Rien n est ecrit.';
+}

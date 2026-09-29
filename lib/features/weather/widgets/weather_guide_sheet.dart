@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../domain/forecast_reach.dart';
+import '../presentation/weather_freshness.dart';
 
 /// Bottom-sheet « Comprendre la météo » (guide (i), RF-1).
 ///
@@ -40,7 +42,17 @@ class WeatherGuideSheet extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppTheme.spacingMd),
-            Text(t.weather.guideBody, style: theme.textTheme.bodyMedium),
+            // LES DEUX NOMBRES DU TEXTE VIENNENT DES CONSTANTES, PAS DU TEXTE.
+            // Le guide annoncait « 10 jours au plus, les 7 premiers fiables » en
+            // dur, pendant que le code demandait autre chose : une explication qui
+            // se met a mentir toute seule au premier changement de constante.
+            Text(
+              t.weather.guideBody(
+                horizon: forecastHorizonDays,
+                days: plusAucunChiffreApres.inDays,
+              ),
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppTheme.spacingLg),
           ],
         ),
