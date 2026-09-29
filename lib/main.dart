@@ -19,6 +19,7 @@ import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
+import 'core/services/descente_des_droits.dart';
 import 'core/services/ordonnanceur_de_synchronisation.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
@@ -340,6 +341,15 @@ class _BootstrapGate extends ConsumerWidget {
     // connectivite, il ne declenche aucune passe au demarrage et ne retarde donc
     // pas le premier ecran.
     ref.watch(ordonnanceurDemarreProvider);
+
+    // L ECOUTE EN DIRECT DES DROITS (tache 631), ARMEE AU MEME ENDROIT ET POUR
+    // LA MEME RAISON. Le scenario d acceptation de Christophe est : on ecrit ses
+    // droits depuis le PC et il les voit arriver dans l application OUVERTE,
+    // sans la fermer. La cadence de l ordonnanceur (quatre heures) est le repli
+    // pour le reste du temps ; ceci est le direct. Cette garde ne se demonte
+    // jamais et n est jamais mise en pause : l ecoute vit aussi longtemps que
+    // l application.
+    ref.watch(descenteEnDirectProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);

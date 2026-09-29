@@ -19,6 +19,16 @@ final authServiceProvider = Provider<AuthService>((ref) {
 
   if (firebase.isAvailable) {
     final service = FirebaseAuthService()..initialize();
+    // UNE IDENTITE EST GARANTIE, ET RIEN NE LA GARANTISSAIT (tache 631).
+    // `initialize()` ne fait qu ECOUTER : sans la ligne ci-dessous, personne
+    // n appelait jamais `signInAnonymously` sur le chemin Firebase (mesure dans
+    // `lib/` : les seuls appelants etaient ceux de `LocalAuthService`). Le
+    // telephone n avait donc AUCUN identifiant cote serveur, donc aucun
+    // `users/{uid}` a lire : la descente des droits n aurait jamais rien trouve,
+    // et personne n aurait pu designer ce compte pour lui ecrire.
+    // Fire-and-forget, comme le chemin local juste en dessous : le premier ecran
+    // n attend pas le reseau.
+    unawaited(service.garantirUneIdentite());
     ref.onDispose(service.dispose);
     return service;
   }
@@ -57,4 +67,31 @@ final isAuthenticatedProvider = Provider<bool>((ref) {
 final isIdentifiedProvider = Provider<bool>((ref) {
   final user = ref.watch(authStateProvider);
   return user != null && !user.isAnonymous;
+});
+
+/// L IDENTIFIANT DU COMPTE AU SERVEUR — celui sous lequel ses droits vivent.
+///
+/// A QUOI IL SERT, ET POURQUOI IL EST AFFICHE. StepWays n a AUCUN compte
+/// nominatif : pas de nom, pas d adresse, pas de courriel, pas de numero. Pour
+/// poser des droits sur un compte precis — un achat a rattraper, une
+/// restauration, un depannage — il faut bien pouvoir le DESIGNER. Cet
+/// identifiant est la seule facon de le faire, et il est montre dans les
+/// reglages, sous « Abonnement & achats », pour que le randonneur puisse le
+/// donner quand il demande de l aide.
+///
+/// CE N EST PAS `AuthUser.uid`. Celui-la est le hash SHA-256 qui voyage dans les
+/// donnees metier ; celui-ci est l identifiant d authentification, le seul que
+/// `firestore.rules` accepte comme nom de document (`request.auth.uid ==
+/// userId`). Pour un compte anonyme, il ne designe personne.
+///
+/// `null` quand Firebase n est pas configure dans ce paquet, ou tant que la
+/// premiere connexion anonyme n a pas abouti (premier lancement hors ligne).
+final identifiantDeCompteProvider = Provider<String?>((ref) {
+  final firebase = ref.watch(firebaseServiceProvider);
+  if (!firebase.isAvailable) return null;
+  // Se recalcule des que l identite arrive.
+  ref.watch(currentUserProvider);
+  final service = ref.watch(authServiceProvider);
+  if (service is! FirebaseAuthService) return null;
+  return service.identifiantDeCompte;
 });

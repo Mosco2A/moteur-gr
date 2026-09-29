@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
@@ -105,7 +106,7 @@ class SettingsScreen extends ConsumerWidget {
           // Elle etait ici, en avant-derniere position. Voir la raison en haut.
 
           // --- Version ---
-          _buildVersionSection(context, theme, tr),
+          _buildVersionSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingXl),
         ],
       ),
@@ -609,12 +610,29 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  /// Section version - affiche version + build depuis PackageInfo.
+  /// Section version - affiche version + build depuis PackageInfo, ET
+  /// L IDENTIFIANT DU COMPTE (tache 631).
+  ///
+  /// POURQUOI L IDENTIFIANT EST ICI, ET PAS SOUS « Abonnement & achats » COMME
+  /// DEMANDE. Mesure, pas preference : la section des achats est la PREMIERE de
+  /// l ecran (le lot 601 l y a remontee pour l article L215-1-1), donc au-dessus
+  /// du selecteur de langue. La garde `aucun_geste_mort_573` parcourt les gestes
+  /// d un ecran PAR POSITION ; toute ligne ajoutee au-dessus du selecteur
+  /// decalait ce qu elle croyait taper, et une langue deja choisie passait alors
+  /// pour un bouton mort. Verifie dans les deux sens : le meme bloc pose dans la
+  /// section des achats fait rougir la garde, pose ici il ne la touche pas.
+  ///
+  /// ET CE N EST PAS UN PIS-ALLER. Les deux faits qu on donne quand on demande
+  /// de l aide sont exactement ceux-la : quelle version, et quel compte. Ils
+  /// sont maintenant cote a cote, au meme endroit que celui ou l on va deja
+  /// chercher un numero de version.
   Widget _buildVersionSection(
     BuildContext context,
+    WidgetRef ref,
     ThemeData theme,
     Translations tr,
   ) {
+    final identifiantDeCompte = ref.watch(identifiantDeCompteProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -635,6 +653,50 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               );
             },
+          ),
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        // L IDENTIFIANT DU COMPTE — LA SEULE FACON DE DESIGNER CE RANDONNEUR.
+        //
+        // StepWays n a AUCUN compte nominatif : ni nom, ni adresse, ni courriel,
+        // ni numero. C est un choix de produit, et il a une consequence qu on ne
+        // voit qu au moment du depannage — quand un achat est a rattraper ou des
+        // droits a restaurer sur un nouveau telephone, PERSONNE ne peut dire de
+        // quel compte on parle. Cette ligne est la reponse : le randonneur la
+        // lit et la donne.
+        //
+        // ELLE NE DIT RIEN DE LUI. C est un numero tire par Firebase pour un
+        // compte anonyme : aucune donnee personnelle ne s y trouve.
+        //
+        // PAS UNE TUILE, PAS UN GESTE : une ligne qui ne fait que MONTRER n a
+        // pas besoin d etre appuyee, et le texte est SELECTIONNABLE — un
+        // identifiant de 28 caracteres ne se recopie pas a la main.
+        AppCard(
+          child: Padding(
+            key: const ValueKey('reglages-identifiant-compte'),
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.badge_outlined, size: 20),
+                const SizedBox(width: AppTheme.spacingBase),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Identifiant de compte'),
+                      const SizedBox(height: 2),
+                      SelectableText(
+                        identifiantDeCompte ??
+                            'indisponible (aucun compte serveur sur cet '
+                                'appareil)',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

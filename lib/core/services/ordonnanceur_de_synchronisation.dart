@@ -8,6 +8,7 @@ import '../data/daos/trail_manifests_dao.dart';
 import '../models/niveau_de_telechargement.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
+import 'descente_des_droits.dart';
 import 'update_downloader.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -59,6 +60,7 @@ class OrdonnanceurDeSynchronisation {
     required this.connectivityMonitor,
     required this.urlManifeste,
     this.cadence = cadenceParDefaut,
+    this.descendreLesDroits,
   });
 
   /// LA CADENCE DE CHRISTOPHE : QUATRE HEURES.
@@ -77,6 +79,20 @@ class OrdonnanceurDeSynchronisation {
 
   /// Intervalle de la cadence periodique.
   final Duration cadence;
+
+  /// LA DESCENTE DES DROITS, SI ELLE EST BRANCHEE (tache 631).
+  ///
+  /// UN RAPPEL ET PAS LE SERVICE : l ordonnanceur n a aucune raison de connaitre
+  /// Firestore, ni le compte-etapes, ni les droits. Il sait seulement QUAND
+  /// reveiller, et c est deja tout ce qu on lui demande. Le branchement se fait
+  /// dans son provider.
+  ///
+  /// POURQUOI ICI ET PAS DANS UN SECOND ORDONNANCEUR. Les deux reveils qui
+  /// comptent — le retour du reseau et la cadence — sont deja armes ici, avec
+  /// leur verrou d unicite et leur garde hors ligne. En ecrire un second
+  /// donnerait deux horloges a tenir d accord, pour exactement les memes deux
+  /// evenements.
+  final Future<Object?> Function()? descendreLesDroits;
 
   Timer? _horloge;
   StreamSubscription<ConnectivityStatus>? _ecouteReseau;
@@ -132,6 +148,15 @@ class OrdonnanceurDeSynchronisation {
           _log.w('[Ordonnanceur] Flux de connectivite en erreur : $e'),
     );
 
+    // LA DESCENTE DES DROITS PART TOUT DE SUITE, ET ELLE EST LA SEULE (tache
+    // 631). Le commentaire de cette methode explique pourquoi le transport des
+    // SENTIERS n a rien a faire au demarrage : il se dispute le reseau avec
+    // tout le reste pour un gain nul. La descente des droits est l exact
+    // contraire — trois petits documents, et c est ce que le randonneur attend
+    // en ouvrant l application apres un achat. Non attendue : le premier ecran
+    // ne l attend pas.
+    unawaited(_descendreLesDroits('demarrage'));
+
     _log.d(
       '[Ordonnanceur] Demarre : retour du reseau + cadence de '
       '${cadence.inHours} h. Perimetre : les sentiers TELECHARGES, chacun a son '
@@ -159,6 +184,22 @@ class OrdonnanceurDeSynchronisation {
   /// maintenant » dans l interface s y branchera sans ajouter de chemin.
   Future<List<UpdateDownloadResult>> passer([String cause = 'appel direct']) =>
       _passer(cause);
+
+  /// Une passe de descente des droits, isolee du reste.
+  ///
+  /// SON ECHEC NE FAIT PAS ECHOUER LA PASSE. Ne pas avoir pu relire ses droits
+  /// n est pas une raison pour ne pas mettre a jour ses sentiers, et encore
+  /// moins pour tuer l ordonnanceur.
+  Future<void> _descendreLesDroits(String cause) async {
+    final descente = descendreLesDroits;
+    if (descente == null) return;
+    try {
+      final resultat = await descente();
+      _log.d('[Ordonnanceur] Descente des droits ($cause) : $resultat');
+    } catch (e) {
+      _log.w('[Ordonnanceur] Descente des droits ($cause) en echec : $e');
+    }
+  }
 
   Future<List<UpdateDownloadResult>> _passer(String cause) async {
     // LE VERROU SE POSE AVANT LE PREMIER `await`, ET C EST TOUT L INTERET.
@@ -188,6 +229,13 @@ class OrdonnanceurDeSynchronisation {
         _log.d('[Ordonnanceur] Passe ($cause) ignoree : hors ligne.');
         return const [];
       }
+
+      // LES DROITS D ABORD, ET SANS DEPENDRE DES SENTIERS (tache 631). Placee
+      // ici, AVANT le compteur et avant le « aucun sentier telecharge, rien a
+      // verifier » : un randonneur qui vient d acheter n a peut-etre encore
+      // copie aucun sentier, et c est justement le moment ou ses droits doivent
+      // descendre.
+      await _descendreLesDroits(cause);
 
       _passesExecutees++;
       final telecharges = await dao.getTelecharges();
@@ -274,6 +322,15 @@ final ordonnanceurDeSynchronisationProvider =
     dao: TrailManifestsDao(db),
     connectivityMonitor: ref.watch(connectivityMonitorProvider),
     urlManifeste: TrailDataSource.urlManifeste,
+    // TACHE 631 — LA DESCENTE DES DROITS SE BRANCHE ICI, et l ordonnanceur
+    // n en sait rien d autre que « appelle ca quand tu te reveilles ».
+    // `ref.read` DANS le rappel : le service est construit au premier reveil,
+    // pas a la creation de l ordonnanceur — il a besoin des preferences, qui
+    // sont asynchrones.
+    descendreLesDroits: () async {
+      final descente = await ref.read(descenteDesDroitsProvider.future);
+      return descente.executer();
+    },
   );
   ref.onDispose(ordonnanceur.arreter);
   return ordonnanceur;

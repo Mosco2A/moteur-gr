@@ -47,6 +47,53 @@ class FirebaseAuthService implements AuthService {
     });
   }
 
+  /// L IDENTIFIANT SOUS LEQUEL LE COMPTE VIT AU SERVEUR (tache 631).
+  ///
+  /// C EST L IDENTIFIANT D AUTHENTIFICATION BRUT, ET PAS `AuthUser.uid`. La
+  /// nuance decide de tout : `AuthUser.uid` est le HASH SHA-256 (voir
+  /// [AnonymousIdService]), alors que `firestore.rules` n autorise
+  /// `users/{userId}` QUE si `request.auth.uid == userId`. Un document range
+  /// sous le hash serait refuse a la lecture comme a l ecriture.
+  ///
+  /// CE N EST PAS UNE DONNEE PERSONNELLE. Pour un compte ANONYME, cet
+  /// identifiant est un numero tire par Firebase : il ne porte ni nom, ni
+  /// adresse, ni courriel, ni numero de telephone — c est exactement ce que
+  /// Christophe exige du modele (« On ne connait pas leur nom, leur adresse,
+  /// leur mail, meme pas leur telephone »). Le hash reste ce qui voyage dans
+  /// les donnees METIER ; celui-ci ne sert qu a designer la boite.
+  String? get identifiantDeCompte => _firebaseAuth.currentUser?.uid;
+
+  /// GARANTIT QU UNE IDENTITE EXISTE — et rien ne le faisait (tache 631).
+  ///
+  /// LE DEFAUT MESURE. `authServiceProvider` construisait ce service et
+  /// appelait `initialize()`, qui ne fait qu ECOUTER `authStateChanges`.
+  /// AUCUN appelant de `signInAnonymously` n existait sur le chemin Firebase —
+  /// la recherche dans `lib/` ne le trouvait que sur `LocalAuthService`, qui,
+  /// lui, s auto-connecte depuis les finitions V1. Consequence : des que
+  /// Firebase devenait disponible, l application n avait PLUS AUCUNE identite,
+  /// donc aucun `users/{uid}` a lire, donc aucun droit ne pouvait redescendre —
+  /// et personne ne pouvait non plus DESIGNER ce compte pour lui ecrire.
+  ///
+  /// IDEMPOTENT : si quelqu un est deja connecte, on ne recree rien. Firebase
+  /// rend d ailleurs l utilisateur anonyme existant plutot que d en fabriquer un
+  /// second, mais on ne s appuie pas dessus — un compte de plus, c est un
+  /// compte de trop, et ce serait des droits perdus a chaque lancement.
+  ///
+  /// NE LEVE PAS : sans reseau au premier lancement, l identite n existera
+  /// qu au suivant, et l application marche entre-temps sur sa base locale.
+  Future<AuthUser?> garantirUneIdentite() async {
+    final deja = _firebaseAuth.currentUser;
+    if (deja != null) {
+      _currentUser = _toAnonymizedUser(deja);
+      return _currentUser;
+    }
+    try {
+      return await signInAnonymously();
+    } on Object {
+      return null;
+    }
+  }
+
   @override
   Future<AuthUser> signInAnonymously() async {
     final credential = await _firebaseAuth.signInAnonymously();

@@ -37,8 +37,52 @@ service cloud.firestore {
     }
 
     // Donnees utilisateur — lecture/ecriture par le proprietaire
+    //
+    // TACHE 631 — LES DROITS SONT EN LECTURE SEULE POUR LE TELEPHONE, ET C EST
+    // LA REGLE LA PLUS IMPORTANTE DE CE FICHIER.
+    //
+    // Decision d architecture de Christophe (29/09 13:43) : « je veux que tout
+    // soit en base ... seul la copie sur le tel ». LE SERVEUR FAIT FOI pour le
+    // COMPTE — solde d etapes, sentiers achetes, abonnement — et la base du
+    // telephone n en est qu une copie, tenue a jour par la descente des droits
+    // (`core/services/descente_des_droits.dart`).
+    //
+    // SI LE TELEPHONE POUVAIT ECRIRE SES PROPRES DROITS, il n y aurait plus de
+    // modele economique du tout : n importe qui posant `owned: true` sur un
+    // sentier, ou un solde de mille etapes, se servirait lui-meme. La regle
+    // generique ci-dessous autorisait precisement cela — elle donnait
+    // `read, write` sur TOUTE sous-collection de `users/{uid}`, droits compris.
+    // Les trois chemins du COMPTE sont donc sortis de la regle generale et
+    // passent en LECTURE SEULE, AVANT elle (dans Firestore, une regle plus
+    // specifique doit etre declaree pour s appliquer ; les autorisations ne se
+    // soustraient pas, on ne laisse donc PAS la regle large les recouvrir).
+    //
+    // QUI ECRIT, ALORS : le serveur. Cloud Functions et le SDK d administration
+    // IGNORENT ces regles par construction — c est le propre d un acces
+    // privilegie. Aujourd hui, tant que la caisse n est pas branchee, c est
+    // l administration qui pose les droits ; demain, ce sera la confirmation
+    // d achat cote serveur. Dans les deux cas, jamais le telephone.
+    //
+    // CE QUI N EST PAS TOUCHE : tout le reste de `users/{uid}` — les donnees que
+    // le randonneur produit — garde lecture ET ecriture par son proprietaire.
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // --- LE COMPTE : le telephone LIT, il n ECRIT JAMAIS ---
+      match /wallet/{docId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+      match /entitlements/{trailId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+      match /subscription/{docId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+
+      // --- Le reste des donnees du randonneur : inchange ---
       match /{subcollection}/{docId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }

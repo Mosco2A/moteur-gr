@@ -15,7 +15,13 @@ description: Moteur generique Flutter multi-sentiers
 # deja utilise, exactement comme 3 l aurait ete. Ce bundle-ci porte donc 5.
 # Le nom 0.1.2 ne bouge pas : c est toujours la meme version fonctionnelle,
 # augmentee des quatre lots reunis par le 627.
-version: 0.1.2+5
+#
+# TACHE 631 — 5 EST PRIS, CE BUNDLE PORTE 6. Le 5 est celui que Christophe a
+# devant lui depuis 11:17. Google refuse de reprendre un numero deja vu, MEME
+# APRES UN DEPOT ECHOUE : le numero monte a chaque tentative, pas a chaque
+# succes. Celui-ci porte en plus le compte de test (`STEPWAYS_COMPTE_DE_TEST`),
+# qui est ETEINT dans le depot et ne s allume qu au build.
+version: 0.1.2+6
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
