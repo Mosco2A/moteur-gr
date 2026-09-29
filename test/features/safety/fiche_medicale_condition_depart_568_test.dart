@@ -379,10 +379,16 @@ void main() {
       (tester) async {
         await pumpEcran(tester);
 
-        await tester.enterText(
-          find.byKey(const ValueKey('health-blood-type-field')),
-          'A+',
-        );
+        // TACHE 630 : le groupe sanguin ne se SAISIT plus, il se CHOISIT dans
+        // une liste fermee de huit valeurs (Christophe, 29/09 : un groupe mal
+        // saisi sur une fiche d urgence est pire qu un champ vide). Le geste du
+        // randonneur a change ; ce que ce test verifie — enregistrer une fiche
+        // qui porte quelque chose pose le signal « remplie » — n a pas bouge.
+        final groupe = find.byKey(const ValueKey('health-blood-type-field'));
+        await tester.ensureVisible(groupe);
+        await tester.tap(groupe);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('A+').last);
         await tester.pumpAndSettle();
 
         final save = find.text(t.health.save);

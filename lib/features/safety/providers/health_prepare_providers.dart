@@ -44,6 +44,30 @@ enum HealthPrepStep {
 
   /// Les conseils d'usage terrain ont ete LUS (accuse de lecture explicite).
   adviceRead,
+
+  /// LA FICHE A ETE RECOPIEE DANS LA FICHE D'URGENCE DU TELEPHONE (tache 630).
+  ///
+  /// POURQUOI CE TROISIEME SIGNAL EXISTE, ET CE N'EST PAS UNE CASE DE PLUS. La
+  /// mesure de la tache 630 (documentation Apple et Google, 29/09) a etabli que
+  /// SUR IPHONE AUCUNE APPLICATION TIERCE NE PEUT AFFICHER QUOI QUE CE SOIT DE
+  /// COMPLET SANS DEVERROUILLAGE : la fiche que les premiers intervenants
+  /// atteignent est celle du SYSTEME, et Apple n'offre aucune API pour y ecrire.
+  /// Sur Android, la notification persistante y arrive, mais le randonneur peut
+  /// masquer les notifications sensibles de son ecran verrouille — la
+  /// documentation le dit : « the user always has ultimate control ».
+  ///
+  /// LA RECOPIE DANS LA FICHE DU TELEPHONE EST DONC LE SEUL CHEMIN QUI MARCHE
+  /// PARTOUT. Elle etait ecrite depuis la tache 568 comme une ligne de conseil
+  /// parmi quatre (`health.advice.phoneCard`) — c'est-a-dire comme une
+  /// information, pas comme un acte. Elle devient une ETAPE, avec un rappel
+  /// visible tant qu'elle n'est pas faite, parce que c'est ELLE qui sauve.
+  ///
+  /// ELLE N'ENTRE PAS DANS LA PORTE DE DEMARRAGE DU TREK, et c'est delibere :
+  /// nous ne pouvons pas VERIFIER qu'elle a ete faite (rien ne nous donne acces
+  /// a la fiche du systeme). Bloquer un depart sur une declaration invérifiable
+  /// apprendrait au randonneur a cocher sans faire. On rappelle, on n'interdit
+  /// pas — cf. [healthPrepareDoneProvider].
+  phoneCardCopied,
 }
 
 /// Cle SharedPreferences des signaux de preparation de la fiche medicale.
@@ -129,6 +153,17 @@ class HealthPrepareStepsNotifier extends Notifier<Set<HealthPrepStep>> {
   /// Enregistre l'ACCUSE DE LECTURE des conseils d'usage terrain. Idempotent.
   Future<void> markAdviceRead() =>
       _apply(ajouts: const {HealthPrepStep.adviceRead});
+
+  /// Enregistre que la fiche a ete RECOPIEE dans celle du telephone (tache 630).
+  ///
+  /// REVOCABLE, contrairement a l'accuse de lecture. On ne « delit » pas un
+  /// conseil, mais on peut tres bien avoir efface la fiche du telephone, ou en
+  /// avoir change. Le randonneur doit pouvoir dire « finalement non » et
+  /// retrouver son rappel.
+  Future<void> setPhoneCardCopied(bool recopiee) => _apply(
+        ajouts: recopiee ? const {HealthPrepStep.phoneCardCopied} : const {},
+        retraits: recopiee ? const {} : const {HealthPrepStep.phoneCardCopied},
+      );
 }
 
 /// Signaux de preparation de la fiche medicale (persistes).

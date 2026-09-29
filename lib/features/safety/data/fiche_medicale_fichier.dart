@@ -110,6 +110,21 @@ class FicheMedicaleFichier {
   /// Nom du fichier de la fiche.
   static const String nomFichier = 'fiche.json';
 
+  /// NOM DU FICHIER DE LA PHOTO DE LA CARTE VITALE (tache 630).
+  ///
+  /// LE NOM EST FIXE, ET CE N'EST PAS UN DETAIL. Reprendre le nom du fichier
+  /// rendu par l'appareil photo ferait entrer dans le dossier protege une chaine
+  /// choisie par le systeme — donc potentiellement un chemin relatif, un nom
+  /// deja pris, ou un nom qui fuite quelque chose. Deux noms fixes : deux
+  /// fichiers, jamais plus, toujours au meme endroit, toujours effacables.
+  static const String nomCarteVitale = 'carte_vitale.jpg';
+
+  /// Nom du fichier de la photo de la carte de mutuelle (tache 630).
+  static const String nomCarteMutuelle = 'carte_mutuelle.jpg';
+
+  /// Les deux seuls noms d'image que ce dossier accepte.
+  static const List<String> nomsCartes = [nomCarteVitale, nomCarteMutuelle];
+
   /// Suffixe du fichier temporaire de l'ecriture atomique.
   ///
   /// Nomme ici, et pas recopie a trois endroits, parce que TROIS choses portent
@@ -125,6 +140,29 @@ class FicheMedicaleFichier {
     return File(
       '${base.path}/${SauvegardeSysteme.dossierExclu}/$nomFichier',
     );
+  }
+
+  /// LE FICHIER D'UNE PHOTO DE CARTE — DANS LE MEME DOSSIER QUE LA FICHE
+  /// (tache 630).
+  ///
+  /// C'est TOUT le sujet de la demande de Christophe (« tout reste sur le
+  /// tel ») : les images ne prennent pas un chemin a elles. Elles sont voisines
+  /// de `fiche.json`, dans `medical/`, donc :
+  ///  * ANDROID — le dossier est hors sauvegarde par l'inclusion unique du lot
+  ///    617 (`file/sauvegarde_systeme/` est le SEUL chemin sauvegarde) ET par
+  ///    l'exclusion explicite de `file/medical/` du lot 612. Deux verrous, aucun
+  ///    a poser de nouveau pour ces images ;
+  ///  * IPHONE — `NSURLIsExcludedFromBackupKey` est pose sur le DOSSIER et sur
+  ///    chaque fichier ecrit, donc sur elles aussi (voir [enregistrerCarte]).
+  ///
+  /// [nom] doit etre l'un de [nomsCartes] : une image dont le nom vient
+  /// d'ailleurs est refusee, pas rangee ailleurs.
+  Future<File> fichierCarte(String nom) async {
+    if (!nomsCartes.contains(nom)) {
+      throw ArgumentError.value(nom, 'nom', 'nom de carte inconnu');
+    }
+    final base = await _dossierApplicatif();
+    return File('${base.path}/${SauvegardeSysteme.dossierExclu}/$nom');
   }
 
   /// Lit la fiche. Retourne une fiche VIDE si rien n'a jamais ete ecrit, et
@@ -181,6 +219,45 @@ class FicheMedicaleFichier {
     await _exclusion.exclure(f.path);
   }
 
+  /// ENREGISTRE UNE PHOTO DE CARTE, PAR LA MEME PORTE QUE LA FICHE (tache 630).
+  ///
+  /// LES QUATRE GESTES DE [ecrire] SONT REPRIS A L'IDENTIQUE, ET POUR LES MEMES
+  /// RAISONS — ce n'est pas de la copie paresseuse, c'est le meme piege :
+  ///  1. dossier cree PUIS exclu ;
+  ///  2. `.tmp` ecrit PUIS exclu, AVANT le renommage — sans quoi la photo d'une
+  ///     carte Vitale existe sur le disque, en clair, sans attribut, pendant
+  ///     toute l'ecriture ;
+  ///  3. renommage atomique — une photo a moitie ecrite ne doit pas remplacer
+  ///     une photo lisible ;
+  ///  4. fichier final exclu APRES le renommage, parce que l'attribut appartient
+  ///     au FICHIER et non au chemin (mesure de la tache 615, et elle vaut
+  ///     exactement pareil pour une image).
+  ///
+  /// ECRITURE SYNCHRONE, comme la fiche : l'ecran attend la confirmation, et une
+  /// ecriture asynchrone ne se termine jamais dans un test de widgets (mesure du
+  /// 28/09, tache 612). Une photo bornee a quelques centaines de kilo-octets
+  /// s'ecrit en quelques millisecondes.
+  Future<void> enregistrerCarte(String nom, List<int> octets) async {
+    final f = await fichierCarte(nom);
+    f.parent.createSync(recursive: true);
+    await _exclusion.exclure(f.parent.path);
+
+    final temporaire = File('${f.path}$suffixeTemporaire');
+    temporaire.writeAsBytesSync(octets, flush: true);
+    await _exclusion.exclure(temporaire.path);
+
+    temporaire.renameSync(f.path);
+    await _exclusion.exclure(f.path);
+  }
+
+  /// Supprime une photo de carte, et son `.tmp` eventuel. Idempotent.
+  Future<void> effacerCarte(String nom) async {
+    final f = await fichierCarte(nom);
+    if (f.existsSync()) f.deleteSync();
+    final temporaire = File('${f.path}$suffixeTemporaire');
+    if (temporaire.existsSync()) temporaire.deleteSync();
+  }
+
   /// REPOSE L'EXCLUSION SUR CE QUI EST DEJA SUR LE DISQUE, SANS RIEN ECRIRE.
   ///
   /// POURQUOI ELLE EXISTE, ET ELLE N'EST PAS UNE CEINTURE DE PLUS. [ecrire]
@@ -209,6 +286,17 @@ class FicheMedicaleFichier {
       if (f.existsSync()) await _exclusion.exclure(f.path);
       final temporaire = File('${f.path}$suffixeTemporaire');
       if (temporaire.existsSync()) await _exclusion.exclure(temporaire.path);
+      // LES DEUX PHOTOS DE CARTE AUSSI (tache 630). Meme motif que pour la
+      // fiche : un randonneur qui a photographie sa carte Vitale avec la version
+      // precedente a l'image sur son iPhone SANS attribut, et il ne la
+      // rephotographiera jamais. Sans cette reprise au demarrage, elle resterait
+      // dans iCloud pour toujours.
+      for (final nomCarte in nomsCartes) {
+        final image = File('${dossier.path}/$nomCarte');
+        if (image.existsSync()) await _exclusion.exclure(image.path);
+        final imageTmp = File('${image.path}$suffixeTemporaire');
+        if (imageTmp.existsSync()) await _exclusion.exclure(imageTmp.path);
+      }
     } catch (e) {
       // ELLE NE LEVE JAMAIS : elle est attendue par l'amorce de l'application.
       // Un attribut de sauvegarde ne doit pas empecher un randonneur de demarrer
@@ -220,8 +308,19 @@ class FicheMedicaleFichier {
   /// Supprime la fiche du disque. Idempotent, et il emporte AUSSI le fichier
   /// temporaire : une ecriture interrompue juste avant un effacement laisserait
   /// sinon la donnee medicale dans le `.tmp`, hors de portee de la promesse.
+  ///
+  /// IL EMPORTE LES DEUX PHOTOS DE CARTE (tache 630). « Effacer ma fiche » qui
+  /// laisserait une photo de carte Vitale sur le disque serait un effacement qui
+  /// ment — et cette methode est aussi celle qu'appelle l'effacement de compte.
+  /// Les images partent AVANT le JSON : si l'effacement est interrompu entre les
+  /// deux, il reste une fiche qui designe des images absentes (l'ecran le gere,
+  /// une image manquante ne s'affiche pas) plutot que des images que plus aucune
+  /// fiche ne designe, donc que plus personne ne viendrait effacer.
   Future<void> effacer() async {
     try {
+      for (final nomCarte in nomsCartes) {
+        await effacerCarte(nomCarte);
+      }
       final f = await fichier();
       if (f.existsSync()) f.deleteSync();
       final temporaire = File('${f.path}$suffixeTemporaire');

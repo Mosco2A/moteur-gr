@@ -1501,14 +1501,25 @@
       "allergies": "Allergies",
       "treatments": "Traitements en cours",
       "doctor": "Médecin traitant",
-      "insurance": "N° assurance / mutuelle"
+      "insurance": "N° assurance / mutuelle",
+      "fullName": "Nom et prénom",
+      "birthDate": "Date de naissance",
+      "birthDateClear": "Effacer la date de naissance",
+      "address": "Adresse",
+      "conditions": "Antécédents et problèmes médicaux",
+      "organDonor": "Don d'organes"
     },
     "hint": {
       "bloodType": "Ex : A+, O-, AB+",
       "allergies": "Ex : pénicilline, arachides",
       "treatments": "Ex : Lévothyrox 50 mg/j",
       "doctor": "Ex : Dr Dupont 04 95 xx xx xx",
-      "insurance": "Ex : carte européenne"
+      "insurance": "Ex : carte européenne",
+      "fullName": "Ex : Christophe Mosconi",
+      "birthDate": "Appuyez pour choisir",
+      "address": "Ex : 12 rue des Lilas, 20000 Ajaccio",
+      "conditions": "Ex : diabète type 1, épilepsie, anticoagulant",
+      "organDonor": "Faites votre choix"
     },
     "error": {
       "bloodType": "Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1539,11 +1550,55 @@
     "advice": {
       "title": "Conseils d'usage sur le sentier",
       "whereToFind": "Où la trouver quand tu es à terre : ta fiche vit dans Préparer, carte « Fiche médicale », et elle s'ouvre sans réseau. Montre-la à tes compagnons de marche avant le départ — le jour où tu ne peux plus parler, c'est eux qui ouvriront ton téléphone.",
-      "showToRescue": "Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Groupe sanguin, allergies, traitements, médecin et assurance y sont dans cet ordre, en clair. Rien n'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.",
+      "showToRescue": "Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Qui tu es, qui prévenir, puis allergies, traitements, antécédents et groupe sanguin — dans l'ordre où un secouriste lit. Rien n'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.",
       "phoneCard": "Recopie-la dans la fiche médicale de ton téléphone : elle s'affiche écran verrouillé, sans ton code. Un secouriste qui trouve ton téléphone y accède en deux gestes, même s'il ne connaît pas cette application.",
       "paper": "Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.",
       "ackButton": "J'ai lu ces conseils",
       "ackDone": "Conseils lus"
+    },
+    "section": {
+      "identity": "Qui vous êtes",
+      "identityWhy": "C'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.",
+      "contacts": "Qui prévenir",
+      "contactsWhy": "Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.",
+      "vital": "Ce qui vous soigne",
+      "vitalWhy": "Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l'hôpital.",
+      "admin": "Administratif",
+      "adminWhy": "Ce qu'on recopie à l'accueil de l'hôpital, pas ce qu'on lit sous la pluie."
+    },
+    "bloodTypeUnknown": "Je ne sais pas",
+    "bloodTypeLegacy": "Votre ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisissez dans la liste.",
+    "organDonor": {
+      "yes": "Donneur",
+      "no": "Opposé au don",
+      "unknown": "Je n'ai pas choisi"
+    },
+    "contacts": {
+      "add": "Ajouter une personne à prévenir",
+      "name": "Nom de la personne",
+      "nameHint": "Ex : Marie, ma sœur",
+      "phone": "Téléphone",
+      "phoneHint": "Ex : 06 12 34 56 78",
+      "remove": "Retirer cette personne",
+      "errorName": "Donnez un nom, sinon les secours ne savent pas qui ils appellent.",
+      "errorPhone": "Donnez un numéro, sinon ce nom ne sert à rien."
+    },
+    "cards": {
+      "vitale": "Photo de la carte Vitale",
+      "mutuelle": "Photo de la carte de mutuelle",
+      "take": "Prendre en photo",
+      "retake": "Reprendre la photo",
+      "pick": "Choisir une image",
+      "remove": "Retirer la photo",
+      "stored": "Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand vous l'effacez.",
+      "explain": "La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.",
+      "permissionRefused": "Accès à l'appareil photo refusé. La fiche fonctionne très bien sans.",
+      "failed": "La photo n'a pas pu être enregistrée."
+    },
+    "phoneCard": {
+      "title": "Recopiez votre fiche dans celle du téléphone",
+      "why": "C'est le seul écran qu'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.",
+      "done": "C'est fait, ma fiche est aussi dans le téléphone"
     },
     "localOnlyPriceTitle": "Changer de téléphone veut dire la ressaisir",
     "localOnlyPrice": "Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C'est le prix de la promesse, et c'est pour cela que personne, nous compris, ne peut la lire ailleurs qu'ici."

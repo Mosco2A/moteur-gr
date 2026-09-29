@@ -1220,6 +1220,13 @@ class _Translations$health$es extends Translations$health$fr {
 	@override late final _Translations$health$delete$es delete = _Translations$health$delete$es._(_root);
 	@override late final _Translations$health$consent$es consent = _Translations$health$consent$es._(_root);
 	@override late final _Translations$health$advice$es advice = _Translations$health$advice$es._(_root);
+	@override late final _Translations$health$section$es section = _Translations$health$section$es._(_root);
+	@override String get bloodTypeUnknown => 'No lo sé';
+	@override String bloodTypeLegacy({required Object valeur}) => 'Su entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elija en la lista.';
+	@override late final _Translations$health$organDonor$es organDonor = _Translations$health$organDonor$es._(_root);
+	@override late final _Translations$health$contacts$es contacts = _Translations$health$contacts$es._(_root);
+	@override late final _Translations$health$cards$es cards = _Translations$health$cards$es._(_root);
+	@override late final _Translations$health$phoneCard$es phoneCard = _Translations$health$phoneCard$es._(_root);
 	@override String get localOnlyPriceTitle => 'Cambiar de teléfono significa volver a escribirla';
 	@override String get localOnlyPrice => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.';
 }
@@ -2911,6 +2918,12 @@ class _Translations$health$field$es extends Translations$health$field$fr {
 	@override String get treatments => 'Tratamientos en curso';
 	@override String get doctor => 'Médico de cabecera';
 	@override String get insurance => 'N.º de seguro / mutua';
+	@override String get fullName => 'Nombre y apellidos';
+	@override String get birthDate => 'Fecha de nacimiento';
+	@override String get birthDateClear => 'Borrar la fecha de nacimiento';
+	@override String get address => 'Dirección';
+	@override String get conditions => 'Antecedentes y problemas médicos';
+	@override String get organDonor => 'Donación de órganos';
 }
 
 // Path: health.hint
@@ -2925,6 +2938,11 @@ class _Translations$health$hint$es extends Translations$health$hint$fr {
 	@override String get treatments => 'Ej.: Levothyrox 50 mg/día';
 	@override String get doctor => 'Ej.: Dr. García +34 91 xxx xx xx';
 	@override String get insurance => 'Ej.: tarjeta sanitaria europea';
+	@override String get fullName => 'Ej.: Christophe Mosconi';
+	@override String get birthDate => 'Pulse para elegir';
+	@override String get address => 'Ej.: calle de las Lilas 12, 20000 Ajaccio';
+	@override String get conditions => 'Ej.: diabetes tipo 1, epilepsia, anticoagulante';
+	@override String get organDonor => 'Elija una opción';
 }
 
 // Path: health.error
@@ -2984,11 +3002,88 @@ class _Translations$health$advice$es extends Translations$health$advice$fr {
 	// Translations
 	@override String get title => 'Consejos de uso en el sendero';
 	@override String get whereToFind => 'Dónde encontrarla cuando estás en el suelo: tu ficha vive en Preparar, tarjeta « Ficha médica », y se abre sin red. Muéstrala a tus compañeros de marcha antes de salir — el día en que ya no puedas hablar, serán ellos quienes abran tu teléfono.';
-	@override String get showToRescue => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Grupo sanguíneo, alergias, tratamientos, médico y seguro están en ese orden, en claro. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.';
+	@override String get showToRescue => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Quién eres, a quién avisar, después alergias, tratamientos, antecedentes y grupo sanguíneo — en el orden en que lee un rescatador. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.';
 	@override String get phoneCard => 'Cópiala en la ficha médica de tu teléfono: se muestra en la pantalla de bloqueo, sin tu código. Un rescatador que encuentre tu teléfono llega ahí en dos gestos, aunque no conozca esta aplicación.';
 	@override String get paper => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.';
 	@override String get ackButton => 'He leído estos consejos';
 	@override String get ackDone => 'Consejos leídos';
+}
+
+// Path: health.section
+class _Translations$health$section$es extends Translations$health$section$fr {
+	_Translations$health$section$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get identity => 'Quién es usted';
+	@override String get identityWhy => 'Es lo primero que lee un rescatador: sin nombre, atiende a un desconocido y no puede avisar a nadie.';
+	@override String get contacts => 'A quién avisar';
+	@override String get contactsWhy => 'Lo que buscan los servicios de rescate justo después de identificarle. Tres personas como máximo: más allá, no se llama a ninguna.';
+	@override String get vital => 'Lo que le trata';
+	@override String get vitalWhy => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarle durante el tratamiento, después lo que sirve en el hospital.';
+	@override String get admin => 'Administrativo';
+	@override String get adminWhy => 'Lo que se copia en el mostrador del hospital, no lo que se lee bajo la lluvia.';
+}
+
+// Path: health.organDonor
+class _Translations$health$organDonor$es extends Translations$health$organDonor$fr {
+	_Translations$health$organDonor$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get yes => 'Donante';
+	@override String get no => 'Opuesto a la donación';
+	@override String get unknown => 'No lo he decidido';
+}
+
+// Path: health.contacts
+class _Translations$health$contacts$es extends Translations$health$contacts$fr {
+	_Translations$health$contacts$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get add => 'Añadir una persona a avisar';
+	@override String get name => 'Nombre de la persona';
+	@override String get nameHint => 'Ej.: María, mi hermana';
+	@override String get phone => 'Teléfono';
+	@override String get phoneHint => 'Ej.: +34 612 34 56 78';
+	@override String get remove => 'Quitar esta persona';
+	@override String get errorName => 'Indique un nombre; si no, el rescate no sabe a quién llama.';
+	@override String get errorPhone => 'Indique un número; si no, este nombre no sirve de nada.';
+}
+
+// Path: health.cards
+class _Translations$health$cards$es extends Translations$health$cards$fr {
+	_Translations$health$cards$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get vitale => 'Foto de la tarjeta sanitaria';
+	@override String get mutuelle => 'Foto de la tarjeta del seguro complementario';
+	@override String get take => 'Hacer una foto';
+	@override String get retake => 'Repetir la foto';
+	@override String get pick => 'Elegir una imagen';
+	@override String get remove => 'Quitar la foto';
+	@override String get stored => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borra.';
+	@override String get explain => 'La foto permanece en este teléfono, en la misma carpeta protegida que el resto de la ficha.';
+	@override String get permissionRefused => 'Acceso a la cámara denegado. La ficha funciona perfectamente sin ella.';
+	@override String get failed => 'No se ha podido guardar la foto.';
+}
+
+// Path: health.phoneCard
+class _Translations$health$phoneCard$es extends Translations$health$phoneCard$fr {
+	_Translations$health$phoneCard$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Copie su ficha en la del teléfono';
+	@override String get why => 'Es la única pantalla que un rescatador alcanza sin su código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.';
+	@override String get done => 'Hecho, mi ficha también está en el teléfono';
 }
 
 // Path: trailSelection.a11y
@@ -5309,11 +5404,22 @@ extension on TranslationsEs {
 			'health.field.treatments' => 'Tratamientos en curso',
 			'health.field.doctor' => 'Médico de cabecera',
 			'health.field.insurance' => 'N.º de seguro / mutua',
+			'health.field.fullName' => 'Nombre y apellidos',
+			'health.field.birthDate' => 'Fecha de nacimiento',
+			'health.field.birthDateClear' => 'Borrar la fecha de nacimiento',
+			'health.field.address' => 'Dirección',
+			'health.field.conditions' => 'Antecedentes y problemas médicos',
+			'health.field.organDonor' => 'Donación de órganos',
 			'health.hint.bloodType' => 'Ej.: A+, O-, AB+',
 			'health.hint.allergies' => 'Ej.: penicilina, cacahuetes',
 			'health.hint.treatments' => 'Ej.: Levothyrox 50 mg/día',
 			'health.hint.doctor' => 'Ej.: Dr. García +34 91 xxx xx xx',
 			'health.hint.insurance' => 'Ej.: tarjeta sanitaria europea',
+			'health.hint.fullName' => 'Ej.: Christophe Mosconi',
+			'health.hint.birthDate' => 'Pulse para elegir',
+			'health.hint.address' => 'Ej.: calle de las Lilas 12, 20000 Ajaccio',
+			'health.hint.conditions' => 'Ej.: diabetes tipo 1, epilepsia, anticoagulante',
+			'health.hint.organDonor' => 'Elija una opción',
 			'health.error.bloodType' => 'Grupo sanguíneo no válido (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Guardar',
 			'health.saving' => 'Guardando…',
@@ -5334,11 +5440,45 @@ extension on TranslationsEs {
 			'health.consent.manage' => 'Gestionar mi consentimiento de salud',
 			'health.advice.title' => 'Consejos de uso en el sendero',
 			'health.advice.whereToFind' => 'Dónde encontrarla cuando estás en el suelo: tu ficha vive en Preparar, tarjeta « Ficha médica », y se abre sin red. Muéstrala a tus compañeros de marcha antes de salir — el día en que ya no puedas hablar, serán ellos quienes abran tu teléfono.',
-			'health.advice.showToRescue' => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Grupo sanguíneo, alergias, tratamientos, médico y seguro están en ese orden, en claro. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.',
+			'health.advice.showToRescue' => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Quién eres, a quién avisar, después alergias, tratamientos, antecedentes y grupo sanguíneo — en el orden en que lee un rescatador. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.',
 			'health.advice.phoneCard' => 'Cópiala en la ficha médica de tu teléfono: se muestra en la pantalla de bloqueo, sin tu código. Un rescatador que encuentre tu teléfono llega ahí en dos gestos, aunque no conozca esta aplicación.',
 			'health.advice.paper' => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.',
 			'health.advice.ackButton' => 'He leído estos consejos',
 			'health.advice.ackDone' => 'Consejos leídos',
+			'health.section.identity' => 'Quién es usted',
+			'health.section.identityWhy' => 'Es lo primero que lee un rescatador: sin nombre, atiende a un desconocido y no puede avisar a nadie.',
+			'health.section.contacts' => 'A quién avisar',
+			'health.section.contactsWhy' => 'Lo que buscan los servicios de rescate justo después de identificarle. Tres personas como máximo: más allá, no se llama a ninguna.',
+			'health.section.vital' => 'Lo que le trata',
+			'health.section.vitalWhy' => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarle durante el tratamiento, después lo que sirve en el hospital.',
+			'health.section.admin' => 'Administrativo',
+			'health.section.adminWhy' => 'Lo que se copia en el mostrador del hospital, no lo que se lee bajo la lluvia.',
+			'health.bloodTypeUnknown' => 'No lo sé',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Su entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elija en la lista.',
+			'health.organDonor.yes' => 'Donante',
+			'health.organDonor.no' => 'Opuesto a la donación',
+			'health.organDonor.unknown' => 'No lo he decidido',
+			'health.contacts.add' => 'Añadir una persona a avisar',
+			'health.contacts.name' => 'Nombre de la persona',
+			'health.contacts.nameHint' => 'Ej.: María, mi hermana',
+			'health.contacts.phone' => 'Teléfono',
+			'health.contacts.phoneHint' => 'Ej.: +34 612 34 56 78',
+			'health.contacts.remove' => 'Quitar esta persona',
+			'health.contacts.errorName' => 'Indique un nombre; si no, el rescate no sabe a quién llama.',
+			'health.contacts.errorPhone' => 'Indique un número; si no, este nombre no sirve de nada.',
+			'health.cards.vitale' => 'Foto de la tarjeta sanitaria',
+			'health.cards.mutuelle' => 'Foto de la tarjeta del seguro complementario',
+			'health.cards.take' => 'Hacer una foto',
+			'health.cards.retake' => 'Repetir la foto',
+			'health.cards.pick' => 'Elegir una imagen',
+			'health.cards.remove' => 'Quitar la foto',
+			'health.cards.stored' => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borra.',
+			'health.cards.explain' => 'La foto permanece en este teléfono, en la misma carpeta protegida que el resto de la ficha.',
+			'health.cards.permissionRefused' => 'Acceso a la cámara denegado. La ficha funciona perfectamente sin ella.',
+			'health.cards.failed' => 'No se ha podido guardar la foto.',
+			'health.phoneCard.title' => 'Copie su ficha en la del teléfono',
+			'health.phoneCard.why' => 'Es la única pantalla que un rescatador alcanza sin su código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.',
+			'health.phoneCard.done' => 'Hecho, mi ficha también está en el teléfono',
 			'health.localOnlyPriceTitle' => 'Cambiar de teléfono significa volver a escribirla',
 			'health.localOnlyPrice' => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.',
 			'trailSelection.title' => 'Cambiar de sendero',
@@ -5540,6 +5680,8 @@ extension on TranslationsEs {
 			'programme.inTrek.doneBadge' => 'Hecho',
 			'programme.inTrek.lockedDay' => 'Día ya caminado, bloqueado',
 			'programme.inTrek.allDone' => 'Has caminado todos tus días: ya no queda nada que adaptar.',
+			_ => null,
+		} ?? switch (path) {
 			'programme.inTrek.notStarted' => 'Esta pantalla es para la ruta: inicia tu travesía para adaptar lo que viene.',
 			'programme.inTrek.validate' => 'Guardar mis cambios',
 			'programme.inTrek.saved' => 'Programa actualizado',
@@ -5585,8 +5727,6 @@ extension on TranslationsEs {
 			'calendar.noDate.title' => 'Elige una fecha de salida',
 			'calendar.noDate.message' => 'El calendario de tu trek aparecerá automáticamente con los días de marcha y de descanso.',
 			'calendar.empty.title' => 'Configura primero tu itinerario',
-			_ => null,
-		} ?? switch (path) {
 			'calendar.empty.message' => 'Elige tu ruta y la duración para poder configurar tus fechas.',
 			'calendar.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'nuitees.title' => 'Pernoctaciones',

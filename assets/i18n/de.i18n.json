@@ -1501,14 +1501,25 @@
       "allergies": "Allergien",
       "treatments": "Aktuelle Behandlungen",
       "doctor": "Hausarzt",
-      "insurance": "Versicherungsnr. / Krankenkasse"
+      "insurance": "Versicherungsnr. / Krankenkasse",
+      "fullName": "Vor- und Nachname",
+      "birthDate": "Geburtsdatum",
+      "birthDateClear": "Geburtsdatum löschen",
+      "address": "Adresse",
+      "conditions": "Vorerkrankungen und Krankheitsgeschichte",
+      "organDonor": "Organspende"
     },
     "hint": {
       "bloodType": "z. B. A+, O-, AB+",
       "allergies": "z. B. Penicillin, Erdnüsse",
       "treatments": "z. B. Levothyrox 50 mg/Tag",
       "doctor": "z. B. Dr. Müller +49 30 xxxx xxxx",
-      "insurance": "z. B. Europäische Krankenversicherungskarte"
+      "insurance": "z. B. Europäische Krankenversicherungskarte",
+      "fullName": "z. B. Christophe Mosconi",
+      "birthDate": "Zum Auswählen tippen",
+      "address": "z. B. Lilienweg 12, 20000 Ajaccio",
+      "conditions": "z. B. Diabetes Typ 1, Epilepsie, Blutverdünner",
+      "organDonor": "Treffen Sie Ihre Wahl"
     },
     "error": {
       "bloodType": "Ungültige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1539,11 +1550,55 @@
     "advice": {
       "title": "Hinweise für den Einsatz unterwegs",
       "whereToFind": "Wo du sie findest, wenn du am Boden liegst: Deine Karte liegt unter Vorbereiten, Kachel « Medizinische Daten », und sie öffnet sich ohne Netz. Zeige sie deinen Begleitern vor dem Start — an dem Tag, an dem du nicht mehr sprechen kannst, sind sie es, die dein Telefon öffnen.",
-      "showToRescue": "Wie du sie der Rettung zeigst: Öffne diesen Bildschirm und reiche das Telefon weiter. Blutgruppe, Allergien, Medikamente, Arzt und Versicherung stehen in dieser Reihenfolge, im Klartext. Nichts wird ins Internet gesendet: Was du zeigst, ist genau das, was hier steht.",
+      "showToRescue": "Wie du sie der Rettung zeigst: Öffne diesen Bildschirm und reiche das Telefon weiter. Wer du bist, wen man verständigen soll, dann Allergien, Medikamente, Vorerkrankungen und Blutgruppe — in der Reihenfolge, in der ein Retter liest. Nichts wird ins Internet gesendet: Was du zeigst, ist genau das, was hier steht.",
       "phoneCard": "Übertrage sie in die medizinische Karte deines Telefons: Sie erscheint auf dem Sperrbildschirm, ohne deinen Code. Ein Retter, der dein Telefon findet, kommt in zwei Schritten dorthin, auch ohne diese App zu kennen.",
       "paper": "Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.",
       "ackButton": "Ich habe diese Hinweise gelesen",
       "ackDone": "Hinweise gelesen"
+    },
+    "section": {
+      "identity": "Wer Sie sind",
+      "identityWhy": "Das Erste, was ein Retter liest: ohne Namen behandelt er einen Unbekannten und kann niemanden verständigen.",
+      "contacts": "Wen verständigen",
+      "contactsWhy": "Wonach die Rettung sucht, sobald Sie identifiziert sind. Höchstens drei Personen: mehr heisst, dass keine angerufen wird.",
+      "vital": "Was Sie behandelt",
+      "vitalWhy": "In der Reihenfolge, in der ein Notarzt fragt: zuerst was Sie während der Behandlung töten kann, dann was das Krankenhaus braucht.",
+      "admin": "Verwaltung",
+      "adminWhy": "Was an der Aufnahme abgeschrieben wird, nicht was man im Regen liest."
+    },
+    "bloodTypeUnknown": "Ich weiss es nicht",
+    "bloodTypeLegacy": "Ihre frühere Eingabe « $valeur » ist keine anerkannte Blutgruppe. Bitte wählen Sie aus der Liste.",
+    "organDonor": {
+      "yes": "Spender",
+      "no": "Widerspruch",
+      "unknown": "Ich habe mich nicht entschieden"
+    },
+    "contacts": {
+      "add": "Person zum Verständigen hinzufügen",
+      "name": "Name der Person",
+      "nameHint": "z. B. Marie, meine Schwester",
+      "phone": "Telefon",
+      "phoneHint": "z. B. +33 6 12 34 56 78",
+      "remove": "Diese Person entfernen",
+      "errorName": "Geben Sie einen Namen an, sonst weiss die Rettung nicht, wen sie anruft.",
+      "errorPhone": "Geben Sie eine Nummer an, sonst nützt dieser Name nichts."
+    },
+    "cards": {
+      "vitale": "Foto der Krankenversichertenkarte",
+      "mutuelle": "Foto der Zusatzversicherungskarte",
+      "take": "Foto aufnehmen",
+      "retake": "Foto neu aufnehmen",
+      "pick": "Bild auswählen",
+      "remove": "Foto entfernen",
+      "stored": "Foto auf diesem Telefon gespeichert. Es wird nirgendwohin gesendet und verschwindet mit der Karte, wenn Sie sie löschen.",
+      "explain": "Das Foto bleibt auf diesem Telefon, im selben geschützten Ordner wie der Rest der Karte.",
+      "permissionRefused": "Kamerazugriff verweigert. Die Karte funktioniert auch ohne sehr gut.",
+      "failed": "Das Foto konnte nicht gespeichert werden."
+    },
+    "phoneCard": {
+      "title": "Übertragen Sie Ihre Karte in die des Telefons",
+      "why": "Es ist der einzige Bildschirm, den ein Retter ohne Ihren Code erreicht, auf dem iPhone wie auf Android. Telefoneinstellungen, Bereich Notfall oder Gesundheit: Name, Blutgruppe, Allergien, Medikamente und zu verständigende Personen.",
+      "done": "Erledigt, meine Karte ist auch im Telefon"
     },
     "localOnlyPriceTitle": "Ein neues Telefon bedeutet neu eintragen",
     "localOnlyPrice": "Wenn du das Telefon wechselst, wandert dieses Blatt nicht mit: Blutgruppe, Allergien und Medikamente musst du neu eintragen. Das ist der Preis dieses Versprechens, und deshalb kann niemand, auch wir nicht, das Blatt anderswo lesen."

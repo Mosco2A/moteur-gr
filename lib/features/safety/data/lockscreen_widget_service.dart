@@ -1,14 +1,69 @@
 // E5.14b — Service widget lockscreen contacts urgence.
 // E5.20a — Enrichi avec donnees sante, GPS, etape en cours.
+// TACHE 630 — LA FICHE ENTIERE, ET LA MESURE DE CE QU'ON PEUT REELLEMENT
+//             MONTRER SANS DEVERROUILLAGE.
 //
-// Expose les contacts d'urgence sur l'ecran de verrouillage :
-// - Android : notification foreground persistante avec contacts
-// - iOS : WidgetKit widget contacts urgence
+// ===========================================================================
+// CE QU'UN SECOURISTE VOIT REELLEMENT, SYSTEME PAR SYSTEME — MESURE LE 29/09
+// SUR LA DOCUMENTATION OFFICIELLE, PAS DE MEMOIRE
+// ===========================================================================
 //
-// E5.20a : ajoute au widget lockscreen :
-// - Donnees sante (health_info) : groupe sanguin, allergies, traitements
-// - Position GPS (latitude, longitude)
-// - Etape en cours (stageName, stageIndex)
+// La question posee par Christophe est la seule qui compte : « ou la trouver
+// quand tu es a terre !!! serieux ». Une fiche qu'il faut deverrouiller pour
+// lire ne sert a rien, parce que le seul moment ou elle compte est celui ou le
+// randonneur ne peut plus ouvrir son telephone.
+//
+// --- ANDROID : L'APPLICATION PEUT, ET C'EST CE FICHIER QUI LE FAIT ---
+//
+//  [a] NOTIFICATION PERSISTANTE — CE QUI EST LIVRE. Avec
+//      `VISIBILITY_PUBLIC`, « the notification's full content shows on the lock
+//      screen » (documentation Android, « Create a notification »). C'est un
+//      chemin REEL, disponible sur le telephone de Christophe aujourd'hui, sans
+//      code et sans geste : la fiche s'y lit en clair. Limite : du TEXTE.
+//
+//  [b] WIDGET D'ECRAN VERROUILLE — INDISPONIBLE SUR TELEPHONE. Google, « Widgets
+//      on lock screen: FAQ » (mars 2025) : « Lock screen widgets are already
+//      available on Pixel Tablets » et « Lock screen widgets will be available in
+//      AOSP for tablets and mobile starting with the release AFTER Android 16
+//      (QPR1) ». Donc : tablette Pixel seulement a la date de cette mesure. Ce
+//      n'est pas un chemin sur lequel on peut faire reposer un secours.
+//      <https://android-developers.googleblog.com/2025/03/widgets-on-lock-screen-faq.html>
+//
+//  [c] ACTIVITE AFFICHEE PAR-DESSUS LE VERROU — POSSIBLE, PAS BRANCHEE, ET JE
+//      DIS POURQUOI. `android:showWhenLocked="true"` « makes your app accessible
+//      from the device lock screen » (documentation Android), et la FAQ ci-dessus
+//      le confirme pour ce qui est lance depuis l'ecran verrouille : « users must
+//      authenticate to launch the activity, OR the activity should declare
+//      android:showWhenLocked="true" ». Une activite native dediee, portant la
+//      fiche ET LES DEUX PHOTOS DE CARTE, serait donc le seul chemin qui montre
+//      les images sans deverrouillage. ELLE N'EST PAS FAITE ICI pour une raison
+//      technique nette : `flutter_local_notifications` ne laisse pas choisir
+//      l'activite ouverte au toucher de la notification — elle ouvre l'activite
+//      de lancement de l'application. Poser `showWhenLocked` sur `MainActivity`
+//      rendrait TOUTE l'application atteignable sans code, ce qui est une fuite
+//      bien pire que celle qu'on evite. Il faut une activite Kotlin dediee et un
+//      chemin de notification natif : c'est un lot a soi, il est chiffre, il
+//      n'est pas bricole ici. POINT OUVERT NOMME.
+//
+// --- IPHONE : L'APPLICATION NE PEUT PAS. C'EST LA FICHE DU SYSTEME OU RIEN ---
+//
+//  Apple, « Configuration de votre fiche medicale » : « La fiche medicale donne
+//  aux premiers intervenants un acces a vos informations medicales essentielles
+//  a partir de l'ecran verrouille », et « They can see information like allergies
+//  and medical conditions as well as who to contact in case of an emergency ».
+//  <https://support.apple.com/fr-fr/105072>
+//
+//  AUCUNE API N'EXISTE POUR Y ECRIRE DEPUIS UNE APPLICATION TIERCE. Les widgets
+//  d'ecran verrouille iOS 16+ (familles `accessory*`) affichent quelques lignes
+//  de texte, sont soumis au reglage « Autoriser l'acces en mode verrouille » de
+//  Face ID et code, et ne peuvent pas ouvrir l'application sans deverrouillage.
+//  Ils ne peuvent pas porter une fiche, encore moins deux photos de carte.
+//
+//  CONSEQUENCE, ET C'EST ELLE QUI SAUVE SUR IPHONE : le vrai chemin est celui que
+//  l'application conseille deja (`health.advice.phoneCard`) — recopier la fiche
+//  dans celle du telephone. La tache 630 le sort donc de l'etat de conseil : il
+//  devient une ETAPE de preparation (`HealthPrepStep.phoneCardCopied`), rappelee
+//  tant qu'elle n'est pas faite.
 //
 // Utilise EmergencyContactsService (E5.14a) comme source de donnees.
 
@@ -87,12 +142,53 @@ class LockscreenWidgetService {
   /// Titre de la notification secours — base sur le sentier actif.
   String get notificationTitle => 'Secours $trailName';
 
-  /// Compose le corps complet de la notification :
-  /// contacts + sante + GPS + etape. Utilise par la notification
-  /// Android et expose pour les tests.
+  /// COMPOSE LE CORPS COMPLET DE LA NOTIFICATION — LA FICHE ENTIERE, PLUS TROIS
+  /// CHAMPS SUR CINQ (tache 630).
+  ///
+  /// CE QUE CETTE METHODE FAISAIT, ET C'ETAIT LE DEFAUT MESURE : elle recopiait
+  /// SANG, ALLERGIES et TRAITEMENTS. Le medecin traitant et l'assurance
+  /// n'y etaient pas — et l'identite, les contacts a prevenir et les antecedents
+  /// n'existaient meme pas dans le modele. Un secouriste lisait donc, sur le seul
+  /// ecran qu'il peut atteindre sans code, une fiche amputee.
+  ///
+  /// L'ORDRE EST CELUI DE `HealthInfo` : identite, qui prevenir, vital,
+  /// administratif — puis la position et l'etape, qui sont le contexte du
+  /// secours et non la fiche. Il n'y a PAS deux ordres dans l'application : celui
+  /// de l'ecran et celui-ci sont le meme, et un test le verrouille.
+  ///
+  /// CE QUI N'Y ENTRE PAS, ET C'EST UNE LIMITE DU SUPPORT, PAS UN CHOIX : LES
+  /// DEUX PHOTOS DE CARTE. Une notification Android n'affiche qu'UNE image
+  /// (`BigPictureStyle`), et seulement depliee. Deux cartes n'y tiennent pas.
+  /// Elles restent atteignables sur l'ecran de la fiche. Mesure ecrite ici pour
+  /// que personne ne croie plus tard a un oubli.
   String buildNotificationContent(List<EmergencyContact> contacts) {
-    final body = _formatContactsForNotification(contacts);
-    return _enrichWithSecurityData(body);
+    final buffer = StringBuffer();
+    _ecrireIdentite(buffer);
+    final corpsContacts = _formatContactsForNotification(contacts);
+    if (corpsContacts.isNotEmpty) {
+      if (buffer.isNotEmpty) buffer.writeln();
+      buffer.writeln(corpsContacts);
+    }
+    return _enrichWithSecurityData(buffer.toString().trim());
+  }
+
+  /// QUI EST LE PATIENT — LA PREMIERE CHOSE QUE LIT UN SECOURISTE.
+  ///
+  /// Placee AVANT les numeros a appeler, parce qu'un secouriste qui compose le
+  /// numero d'un proche doit pouvoir dire de QUI il parle des la premiere
+  /// seconde.
+  void _ecrireIdentite(StringBuffer buffer) {
+    final health = _securityData.healthInfo;
+    if (health == null) return;
+    final lignes = <String>[
+      if (health.fullName.isNotEmpty) health.fullName,
+      if (health.birthDate.isNotEmpty) 'Ne(e) le ${health.birthDate}',
+      if (health.address.isNotEmpty) health.address,
+    ];
+    if (lignes.isEmpty) return;
+    for (final ligne in lignes) {
+      buffer.writeln(ligne);
+    }
   }
 
   /// E5.20a : met a jour les donnees de secours.
@@ -138,8 +234,32 @@ class LockscreenWidgetService {
     await activate();
   }
 
-  /// Cree la notification persistante Android.
-  /// E5.20a : inclut donnees sante + GPS + etape.
+  /// CREE LA NOTIFICATION PERSISTANTE ANDROID — LE SEUL CHEMIN MESURE PAR
+  /// LEQUEL CETTE APPLICATION MONTRE QUELQUE CHOSE SANS DEVERROUILLAGE.
+  ///
+  /// E5.20a : inclut donnees sante + GPS + etape. Tache 630 : la fiche ENTIERE.
+  ///
+  /// `visibility: NotificationVisibility.public` N'EST PAS DECORATIF, ET C'EST LA
+  /// LIGNE LA PLUS IMPORTANTE DE CE FICHIER. Documentation Android, « Create a
+  /// notification », mot pour mot :
+  ///   * `VISIBILITY_PUBLIC` : « the notification's full content shows on the
+  ///     lock screen » ;
+  ///   * `VISIBILITY_PRIVATE`, QUI EST LE DEFAUT : « only basic information, such
+  ///     as the notification's icon and the content title, shows on the lock
+  ///     screen. The notification's full content doesn't show » ;
+  ///   * le troisieme niveau, le plus ferme : « no part of the notification shows
+  ///     on the lock screen ».
+  ///   <https://developer.android.com/develop/ui/views/notifications/build-notification>
+  ///
+  /// Sans elle, un secouriste verrait le titre « Secours <sentier> » et RIEN
+  /// d'autre. C'est le contraire exact de ce que Christophe a demande le 29/09 :
+  /// « ou la trouver quand tu es a terre !!! serieux ».
+  ///
+  /// LA MEME PAGE POSE LA LIMITE, ET ELLE NE NOUS APPARTIENT PAS : « the user
+  /// always has ultimate control over whether their notifications are visible on
+  /// the lock screen ». Un randonneur qui masque les notifications sensibles sur
+  /// son ecran verrouille masque celle-ci. C'est pour cela que la recopie dans la
+  /// fiche du telephone reste une ETAPE, et pas un conseil.
   Future<void> _showAndroidNotification(
     List<EmergencyContact> contacts,
   ) async {
@@ -184,16 +304,27 @@ class LockscreenWidgetService {
 
     if (_securityData.hasHealthInfo) {
       final health = _securityData.healthInfo!;
-      buffer.writeln();
-      buffer.writeln('\u2014\u2014 SANTE \u2014\u2014');
-      if (health.bloodType.isNotEmpty) {
-        buffer.writeln('Sang: ${health.bloodType}');
-      }
-      if (health.allergies.isNotEmpty) {
-        buffer.writeln('Allergies: ${health.allergies}');
-      }
-      if (health.treatments.isNotEmpty) {
-        buffer.writeln('Traitements: ${health.treatments}');
+      // L'ORDRE EST CELUI DE `HealthInfo` : allergies (ce qui tue au moment du
+      // soin), traitements, antecedents, groupe sanguin, don d'organes \u2014 puis
+      // l'administratif. Voir la source de l'ordre dans `health_info.dart`.
+      final vital = <String>[
+        if (health.allergies.isNotEmpty) 'Allergies: ${health.allergies}',
+        if (health.treatments.isNotEmpty) 'Traitements: ${health.treatments}',
+        if (health.conditions.isNotEmpty) 'Antecedents: ${health.conditions}',
+        if (health.bloodType.isNotEmpty) 'Sang: ${health.bloodType}',
+        if (health.organDonor.isNotEmpty)
+          'Don d\'organes: ${health.organDonor}',
+        if (health.doctorContact.isNotEmpty)
+          'Medecin: ${health.doctorContact}',
+        if (health.insuranceNumber.isNotEmpty)
+          'Assurance: ${health.insuranceNumber}',
+      ];
+      if (vital.isNotEmpty) {
+        buffer.writeln();
+        buffer.writeln('\u2014\u2014 SANTE \u2014\u2014');
+        for (final ligne in vital) {
+          buffer.writeln(ligne);
+        }
       }
     }
 
