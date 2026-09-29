@@ -1152,11 +1152,13 @@ class MonetizationService {
   /// [PurchaseRestoreStatus.storeUnavailable] au lieu de ne rien faire en
   /// silence — l'UI a de quoi expliquer le refus.
   ///
-  /// CE QUE LA RESTAURATION NE RAMÈNE PAS ENCORE : les droits de trek achetés
-  /// avec le compte-étapes ne sont PAS des produits store, ils vivent dans la
-  /// base locale. Leur sauvegarde hors de l'appareil existe
-  /// (`CloudSyncService.syncWallet` / `restoreWallet`) mais exige une identité
-  /// de compte et un Firebase réel — verrous hors de ce lot. L'UI le dit.
+  /// CE QUE LA RESTAURATION NE RAMÈNE PAS ICI : les droits de trek achetés avec
+  /// le compte-étapes ne sont PAS des produits store. Depuis la tâche 631 ils
+  /// vivent AU SERVEUR et redescendent par `DescenteDesDroits`, pas par ce
+  /// chemin — la base locale n'en est qu'une copie. Ce commentaire renvoyait
+  /// à `CloudSyncService.syncWallet`, qui MONTAIT le compte ; cette méthode a
+  /// été retirée par la tâche 635 parce que les règles refusent désormais au
+  /// téléphone d'écrire ses propres droits.
   Future<PurchaseRestoreOutcome> restorePurchases() async {
     if (!await _iap.isAvailable()) {
       _log.w('[Monetization] Restauration demandée mais achat in-app '

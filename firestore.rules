@@ -82,6 +82,30 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // --- LA PROGRESSION ET LE SAC D UN SENTIER (tache 635) ---
+      //
+      // CETTE REGLE MANQUAIT, ET C EST ELLE QUI EMPECHAIT TOUTE MONTEE. La
+      // regle generique ci-dessous s ecrit `users/{userId}/{subcollection}/
+      // {docId}` : elle couvre EXACTEMENT deux segments, donc
+      // `users/{uid}/trails/{trailId}` et rien de plus. Les documents que le
+      // telephone doit ecrire vivent UN CRAN PLUS BAS —
+      // `users/{uid}/trails/{trailId}/user_progress/current` et
+      // `.../checklist_items/{id}` — et dans Firestore une regle ne descend
+      // JAMAIS toute seule dans une sous-collection. Ces deux chemins
+      // retombaient donc sur le `match /{document=**}` final, qui refuse tout.
+      //
+      // MESURE, PAS SUPPOSEE : c est la cause premiere du constat de
+      // Christophe le 29/09 (« donnees dans la base ni utilisateur ni
+      // sentier ? »). Meme branchee, la montee se serait fait refuser chaque
+      // ecriture par le serveur.
+      //
+      // LA PORTEE RESTE ETROITE : seulement sous `trails`, seulement pour son
+      // proprietaire. Le compte (wallet / entitlements / subscription) garde
+      // ses regles propres au-dessus et reste en LECTURE SEULE.
+      match /trails/{trailId}/{sousCollection}/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
       // --- Le reste des donnees du randonneur : inchange ---
       match /{subcollection}/{docId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;

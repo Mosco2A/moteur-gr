@@ -1,10 +1,10 @@
+import "dart:io";
+
 import "package:drift/drift.dart" hide isNull, isNotNull;
 import "package:drift/native.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:moteur_gr/core/data/database.dart";
 import "package:moteur_gr/core/data/daos/checklist_dao.dart";
-import "package:moteur_gr/core/data/daos/hiker_profile_dao.dart";
-import "package:moteur_gr/core/data/daos/journal_dao.dart";
 import "package:moteur_gr/core/data/daos/past_hikes_dao.dart";
 import "package:moteur_gr/core/data/daos/progress_dao.dart";
 import "package:moteur_gr/core/data/daos/sync_queue_dao.dart";
@@ -19,23 +19,30 @@ class _FakeConnectivityMonitor extends ConnectivityMonitor {
   Future<ConnectivityStatus> checkStatus() async => status;
 }
 
-/// Tests StepWays LOT 4 — miroir cloud ANONYME du profil (donnee SENSIBLE).
+/// LES RANDOS PASSEES MONTENT, LA MORPHOLOGIE RESTE SUR LE TELEPHONE
+/// (StepWays LOT 4, revu par la tache 635).
 ///
-/// Firestore reel n'est pas mockable ici : on verifie (1) que les payloads
-/// pousses sont ANONYMES (aucun nom/e-mail, AUCUN IMC — donnee derivee), a
-/// partir de vraies donnees DAO, et (2) le GRACEFUL NO-OP (Firebase indispo /
-/// hors-ligne / DAOs absents).
+/// CE QUI A CHANGE LE 29/09. Ce fichier verifiait le miroir cloud du PROFIL :
+/// age, taille, poids, sexe, pays, pousses sous `users/{uid}/profile/hiker`.
+/// Decision de Christophe le meme jour : « Sauf les donnees persos ». La
+/// morphologie est une donnee personnelle — et une donnee de sante au sens de
+/// l article 9 — donc elle ne sort plus du telephone, au meme titre que la
+/// fiche medicale (tache 612). Seules les RANDOS PASSEES montent : des
+/// metriques d effort, sans trace, sans lieu, sans rien qui dise qui.
+///
+/// Firestore reel n est pas mockable ici : on verifie (1) que la charge utile
+/// poussee est ANONYME, a partir de vraies donnees DAO, (2) le GRACEFUL NO-OP
+/// (Firebase indispo / hors-ligne / DAO absent), et (3) que le chemin de sortie
+/// de la morphologie a bien ete FERME, pas seulement laisse inutilise.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late AppDatabase db;
-  late HikerProfileDao profileDao;
   late PastHikesDao pastHikesDao;
   late _FakeConnectivityMonitor connectivity;
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
-    profileDao = HikerProfileDao(db);
     pastHikesDao = PastHikesDao(db);
     connectivity = _FakeConnectivityMonitor();
   });
@@ -46,13 +53,10 @@ void main() {
   CloudSyncService makeService({bool firebaseAvailable = false}) {
     return CloudSyncService(
       progressDao: ProgressDao(db),
-      journalDao: JournalDao(db),
       checklistDao: ChecklistDao(db),
       syncQueueDao: SyncQueueDao(db),
       connectivityMonitor: connectivity,
-      firebaseService:
-          FirebaseService.testOnly(isAvailable: firebaseAvailable),
-      hikerProfileDao: profileDao,
+      firebaseService: FirebaseService.testOnly(isAvailable: firebaseAvailable),
       pastHikesDao: pastHikesDao,
       // Consentement art. 9 ACCORDE (tache 561, J2). Sans cette injection, la
       // garde de consentement refuserait AVANT les verifications Firebase /
@@ -63,63 +67,46 @@ void main() {
     );
   }
 
-  group("payload profil ANONYME (art. 9)", () {
-    test("profil -> morpho source + timestamp, AUCUN IMC ni nominatif",
-        () async {
-      final svc = makeService();
-      final now = DateTime(2026, 9, 11, 12);
-      await profileDao.upsert(HikerProfileCompanion.insert(
-        userId: "hash-anon",
-        age: const Value(42),
-        heightCm: const Value(178),
-        weightKg: const Value(74.5),
-        sex: const Value("male"),
-        countryIso: const Value("FR"),
-        updatedAt: now,
-      ));
-      final profile = await profileDao.getByUserId("hash-anon");
+  group("la morphologie ne peut plus sortir du telephone (tache 635)", () {
+    final service = File("lib/core/services/cloud_sync_service.dart");
 
-      final payload = svc.buildHikerProfilePayload(profile!);
-
-      expect(payload["age"], 42);
-      expect(payload["height_cm"], 178);
-      expect(payload["weight_kg"], 74.5);
-      expect(payload["sex"], "male");
-      expect(payload["country_iso"], "FR");
-      expect(payload["updated_at"], now.toIso8601String());
-
-      // Cle de securite : champs autorises uniquement.
-      expect(payload.keys.toSet(), {
-        "age",
-        "height_cm",
-        "weight_kg",
-        "sex",
-        "country_iso",
-        "updated_at",
-      });
-      // AUCUN nominatif.
-      expect(payload.containsKey("name"), isFalse);
-      expect(payload.containsKey("email"), isFalse);
-      expect(payload.containsKey("user_id"), isFalse);
-      expect(payload.containsKey("uid"), isFalse);
-      // AUCUN IMC (donnee derivee, recalculable local, jamais poussee).
-      expect(payload.containsKey("bmi"), isFalse);
-      expect(payload.containsKey("imc"), isFalse);
+    test("le chemin `profile/hiker` n est plus emprunte", () {
+      expect(
+        service.readAsStringSync(),
+        isNot(contains('collection("profile")')),
+        reason:
+            "age, taille, poids et sexe partaient par la. Ils restent sur "
+            "le telephone, comme la fiche medicale (tache 612).",
+      );
     });
 
+    test("le constructeur de charge morphologique n existe plus", () {
+      expect(
+        service.readAsStringSync(),
+        isNot(contains("buildHikerProfilePayload")),
+        reason:
+            "un constructeur de charge qui survit a son chemin de sortie "
+            "est une invitation a le rebrancher.",
+      );
+    });
+  });
+
+  group("payload rando passee ANONYME (art. 9)", () {
     test("rando passee -> metriques d'effort + timestamp uniquement", () async {
       final svc = makeService();
       final now = DateTime(2026, 9, 11, 13);
-      await pastHikesDao.insertHike(PastHikeEntriesCompanion.insert(
-        userId: "hash-anon",
-        date: DateTime(2026, 7, 1),
-        days: const Value(3),
-        avgWalkHoursPerDay: const Value(6),
-        totalElevationGain: const Value(2100),
-        totalDistanceKm: const Value(42),
-        updatedAt: now,
-      ));
-      final hikes = await pastHikesDao.getByUserId("hash-anon");
+      await pastHikesDao.insertHike(
+        PastHikeEntriesCompanion.insert(
+          userId: "local",
+          date: DateTime(2026, 7, 1),
+          days: const Value(3),
+          avgWalkHoursPerDay: const Value(6),
+          totalElevationGain: const Value(2100),
+          totalDistanceKm: const Value(42),
+          updatedAt: now,
+        ),
+      );
+      final hikes = await pastHikesDao.getByUserId("local");
 
       final payload = svc.buildPastHikePayload(hikes.first);
 
@@ -142,7 +129,7 @@ void main() {
   group("graceful no-op", () {
     test("Firebase indisponible -> idle, rien pousse", () async {
       final svc = makeService(firebaseAvailable: false);
-      final result = await svc.syncHikerProfile("hash-anon");
+      final result = await svc.syncPastHikes("uid-auth");
       expect(result.status, CloudSyncStatusValues.idle);
       expect(result.itemsSynced, 0);
     });
@@ -150,22 +137,21 @@ void main() {
     test("hors ligne -> idle", () async {
       final svc = makeService(firebaseAvailable: true);
       connectivity.status = ConnectivityStatusValues.offline;
-      final result = await svc.syncHikerProfile("hash-anon");
+      final result = await svc.syncPastHikes("uid-auth");
       expect(result.status, CloudSyncStatusValues.idle);
     });
 
-    test("DAOs profil non injectes -> idle (retro-compat)", () async {
+    test("DAO randos non injecte -> idle (retro-compat)", () async {
       final svc = CloudSyncService(
         progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
         checklistDao: ChecklistDao(db),
         syncQueueDao: SyncQueueDao(db),
         connectivityMonitor: connectivity,
         firebaseService: FirebaseService.testOnly(isAvailable: true),
         consentCheck: (_) async => true,
-        // hikerProfileDao / pastHikesDao omis volontairement.
+        // pastHikesDao omis volontairement.
       );
-      final result = await svc.syncHikerProfile("hash-anon");
+      final result = await svc.syncPastHikes("uid-auth");
       expect(result.status, CloudSyncStatusValues.idle);
       expect(result.itemsSynced, 0);
     });

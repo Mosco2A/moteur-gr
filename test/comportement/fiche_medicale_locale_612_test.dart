@@ -52,7 +52,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:drift/native.dart';
 
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
-import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/daos/progress_dao.dart';
 import 'package:moteur_gr/core/data/daos/sync_queue_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
@@ -181,7 +180,6 @@ void main() {
 
     CloudSyncService transport() => CloudSyncService(
           progressDao: ProgressDao(db),
-          journalDao: JournalDao(db),
           checklistDao: ChecklistDao(db),
           syncQueueDao: SyncQueueDao(db),
           connectivityMonitor: reseau,

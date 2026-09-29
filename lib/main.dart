@@ -22,6 +22,7 @@ import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
 import 'core/services/descente_des_droits.dart';
 import 'core/services/ordonnanceur_de_synchronisation.dart';
+import 'core/services/sync_scheduler.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'features/ads/providers/ads_providers.dart';
@@ -352,6 +353,26 @@ class _BootstrapGate extends ConsumerWidget {
     // jamais et n est jamais mise en pause : l ecoute vit aussi longtemps que
     // l application.
     ref.watch(descenteEnDirectProvider);
+
+    // LA MONTEE EN BASE, ARMEE ICI ET NULLE PART AILLEURS (tache 635).
+    //
+    // Demande de Christophe du 29/09 : « je veux voir toutes les donnees en
+    // base qui se mettent a jour quand je rentre des infos dans l appli ». La
+    // mecanique de montee existait depuis le LOT A5 et DEUX ordonnanceurs
+    // etaient censes la reveiller — aucun des deux n avait le moindre appelant
+    // dans `lib/`. Le telephone n ecrivait donc RIEN : ni fiche technique, ni
+    // progression, ni sac, ni randos passees, d ou le constat « donnees dans la
+    // base ni utilisateur ni sentier ».
+    //
+    // MEME RAISON D ETRE ICI que la cadence et l ecoute des droits juste
+    // au-dessus : cette garde vit au-dessus du `Navigator` et ne se demonte
+    // jamais. Une montee branchee depuis un ecran s arreterait des qu on
+    // naviguerait ailleurs, c est-a-dire au moment meme ou le randonneur valide
+    // une etape et change d ecran.
+    //
+    // NON BLOQUANT : elle attend l identite en tache de fond et n empeche pas le
+    // premier rendu.
+    ref.watch(monteeEnBaseDemarreeProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);
