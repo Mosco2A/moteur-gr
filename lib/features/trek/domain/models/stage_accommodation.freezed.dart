@@ -29,7 +29,14 @@ mixin _$StageAccommodation {
  String? get website;/// Capacite d'accueil (nullable)
  int? get capacity;/// Fourchette de prix (nullable, ex: '30-50EUR')
  String? get priceRange;/// URL de reservation (nullable)
- String? get bookingUrl;
+ String? get bookingUrl;/// ADRESSE POSTALE (nullable, tache 641, bug 15).
+///
+/// « hebergement il doit avoir une adresse et un point GPS qui link sur
+/// Maps » (Christophe, 30/09 10:23). Les coordonnees existaient deja ;
+/// l adresse n existait NULLE PART — ni dans la table, ni dans ce modele,
+/// ni dans l asset embarque. Elle vient desormais de la base, donc de
+/// Firestore, donc corrigible sans republier l application.
+ String? get address;
 /// Create a copy of StageAccommodation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -42,16 +49,16 @@ $StageAccommodationCopyWith<StageAccommodation> get copyWith => _$StageAccommoda
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StageAccommodation&&(identical(other.id, id) || other.id == id)&&(identical(other.stageId, stageId) || other.stageId == stageId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.nameFr, nameFr) || other.nameFr == nameFr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.priceRange, priceRange) || other.priceRange == priceRange)&&(identical(other.bookingUrl, bookingUrl) || other.bookingUrl == bookingUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StageAccommodation&&(identical(other.id, id) || other.id == id)&&(identical(other.stageId, stageId) || other.stageId == stageId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.nameFr, nameFr) || other.nameFr == nameFr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.priceRange, priceRange) || other.priceRange == priceRange)&&(identical(other.bookingUrl, bookingUrl) || other.bookingUrl == bookingUrl)&&(identical(other.address, address) || other.address == address));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,stageId,stageNumber,nameFr,nameEn,type,lat,lng,phone,email,website,capacity,priceRange,bookingUrl);
+int get hashCode => Object.hash(runtimeType,id,stageId,stageNumber,nameFr,nameEn,type,lat,lng,phone,email,website,capacity,priceRange,bookingUrl,address);
 
 @override
 String toString() {
-  return 'StageAccommodation(id: $id, stageId: $stageId, stageNumber: $stageNumber, nameFr: $nameFr, nameEn: $nameEn, type: $type, lat: $lat, lng: $lng, phone: $phone, email: $email, website: $website, capacity: $capacity, priceRange: $priceRange, bookingUrl: $bookingUrl)';
+  return 'StageAccommodation(id: $id, stageId: $stageId, stageNumber: $stageNumber, nameFr: $nameFr, nameEn: $nameEn, type: $type, lat: $lat, lng: $lng, phone: $phone, email: $email, website: $website, capacity: $capacity, priceRange: $priceRange, bookingUrl: $bookingUrl, address: $address)';
 }
 
 
@@ -62,7 +69,7 @@ abstract mixin class $StageAccommodationCopyWith<$Res>  {
   factory $StageAccommodationCopyWith(StageAccommodation value, $Res Function(StageAccommodation) _then) = _$StageAccommodationCopyWithImpl;
 @useResult
 $Res call({
- String id, String stageId, int stageNumber, String nameFr, String nameEn, AccommodationType type, double lat, double lng, String? phone, String? email, String? website, int? capacity, String? priceRange, String? bookingUrl
+ String id, String stageId, int stageNumber, String nameFr, String nameEn, AccommodationType type, double lat, double lng, String? phone, String? email, String? website, int? capacity, String? priceRange, String? bookingUrl, String? address
 });
 
 
@@ -79,7 +86,7 @@ class _$StageAccommodationCopyWithImpl<$Res>
 
 /// Create a copy of StageAccommodation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? stageId = null,Object? stageNumber = null,Object? nameFr = null,Object? nameEn = null,Object? type = null,Object? lat = null,Object? lng = null,Object? phone = freezed,Object? email = freezed,Object? website = freezed,Object? capacity = freezed,Object? priceRange = freezed,Object? bookingUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? stageId = null,Object? stageNumber = null,Object? nameFr = null,Object? nameEn = null,Object? type = null,Object? lat = null,Object? lng = null,Object? phone = freezed,Object? email = freezed,Object? website = freezed,Object? capacity = freezed,Object? priceRange = freezed,Object? bookingUrl = freezed,Object? address = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,stageId: null == stageId ? _self.stageId : stageId // ignore: cast_nullable_to_non_nullable
@@ -95,6 +102,7 @@ as String?,website: freezed == website ? _self.website : website // ignore: cast
 as String?,capacity: freezed == capacity ? _self.capacity : capacity // ignore: cast_nullable_to_non_nullable
 as int?,priceRange: freezed == priceRange ? _self.priceRange : priceRange // ignore: cast_nullable_to_non_nullable
 as String?,bookingUrl: freezed == bookingUrl ? _self.bookingUrl : bookingUrl // ignore: cast_nullable_to_non_nullable
+as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -180,10 +188,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl,  String? address)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StageAccommodation() when $default != null:
-return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl);case _:
+return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl,_that.address);case _:
   return orElse();
 
 }
@@ -201,10 +209,10 @@ return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.name
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl,  String? address)  $default,) {final _that = this;
 switch (_that) {
 case _StageAccommodation():
-return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl);case _:
+return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl,_that.address);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -221,10 +229,10 @@ return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.name
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String stageId,  int stageNumber,  String nameFr,  String nameEn,  AccommodationType type,  double lat,  double lng,  String? phone,  String? email,  String? website,  int? capacity,  String? priceRange,  String? bookingUrl,  String? address)?  $default,) {final _that = this;
 switch (_that) {
 case _StageAccommodation() when $default != null:
-return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl);case _:
+return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.nameEn,_that.type,_that.lat,_that.lng,_that.phone,_that.email,_that.website,_that.capacity,_that.priceRange,_that.bookingUrl,_that.address);case _:
   return null;
 
 }
@@ -236,7 +244,7 @@ return $default(_that.id,_that.stageId,_that.stageNumber,_that.nameFr,_that.name
 @JsonSerializable()
 
 class _StageAccommodation extends StageAccommodation {
-  const _StageAccommodation({required this.id, required this.stageId, required this.stageNumber, required this.nameFr, this.nameEn = '', required this.type, required this.lat, required this.lng, this.phone, this.email, this.website, this.capacity, this.priceRange, this.bookingUrl}): super._();
+  const _StageAccommodation({required this.id, required this.stageId, required this.stageNumber, required this.nameFr, this.nameEn = '', required this.type, required this.lat, required this.lng, this.phone, this.email, this.website, this.capacity, this.priceRange, this.bookingUrl, this.address}): super._();
   factory _StageAccommodation.fromJson(Map<String, dynamic> json) => _$StageAccommodationFromJson(json);
 
 /// Identifiant unique (UUID du JSON sentier)
@@ -267,6 +275,14 @@ class _StageAccommodation extends StageAccommodation {
 @override final  String? priceRange;
 /// URL de reservation (nullable)
 @override final  String? bookingUrl;
+/// ADRESSE POSTALE (nullable, tache 641, bug 15).
+///
+/// « hebergement il doit avoir une adresse et un point GPS qui link sur
+/// Maps » (Christophe, 30/09 10:23). Les coordonnees existaient deja ;
+/// l adresse n existait NULLE PART — ni dans la table, ni dans ce modele,
+/// ni dans l asset embarque. Elle vient desormais de la base, donc de
+/// Firestore, donc corrigible sans republier l application.
+@override final  String? address;
 
 /// Create a copy of StageAccommodation
 /// with the given fields replaced by the non-null parameter values.
@@ -281,16 +297,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StageAccommodation&&(identical(other.id, id) || other.id == id)&&(identical(other.stageId, stageId) || other.stageId == stageId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.nameFr, nameFr) || other.nameFr == nameFr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.priceRange, priceRange) || other.priceRange == priceRange)&&(identical(other.bookingUrl, bookingUrl) || other.bookingUrl == bookingUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StageAccommodation&&(identical(other.id, id) || other.id == id)&&(identical(other.stageId, stageId) || other.stageId == stageId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.nameFr, nameFr) || other.nameFr == nameFr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.priceRange, priceRange) || other.priceRange == priceRange)&&(identical(other.bookingUrl, bookingUrl) || other.bookingUrl == bookingUrl)&&(identical(other.address, address) || other.address == address));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,stageId,stageNumber,nameFr,nameEn,type,lat,lng,phone,email,website,capacity,priceRange,bookingUrl);
+int get hashCode => Object.hash(runtimeType,id,stageId,stageNumber,nameFr,nameEn,type,lat,lng,phone,email,website,capacity,priceRange,bookingUrl,address);
 
 @override
 String toString() {
-  return 'StageAccommodation(id: $id, stageId: $stageId, stageNumber: $stageNumber, nameFr: $nameFr, nameEn: $nameEn, type: $type, lat: $lat, lng: $lng, phone: $phone, email: $email, website: $website, capacity: $capacity, priceRange: $priceRange, bookingUrl: $bookingUrl)';
+  return 'StageAccommodation(id: $id, stageId: $stageId, stageNumber: $stageNumber, nameFr: $nameFr, nameEn: $nameEn, type: $type, lat: $lat, lng: $lng, phone: $phone, email: $email, website: $website, capacity: $capacity, priceRange: $priceRange, bookingUrl: $bookingUrl, address: $address)';
 }
 
 
@@ -301,7 +317,7 @@ abstract mixin class _$StageAccommodationCopyWith<$Res> implements $StageAccommo
   factory _$StageAccommodationCopyWith(_StageAccommodation value, $Res Function(_StageAccommodation) _then) = __$StageAccommodationCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String stageId, int stageNumber, String nameFr, String nameEn, AccommodationType type, double lat, double lng, String? phone, String? email, String? website, int? capacity, String? priceRange, String? bookingUrl
+ String id, String stageId, int stageNumber, String nameFr, String nameEn, AccommodationType type, double lat, double lng, String? phone, String? email, String? website, int? capacity, String? priceRange, String? bookingUrl, String? address
 });
 
 
@@ -318,7 +334,7 @@ class __$StageAccommodationCopyWithImpl<$Res>
 
 /// Create a copy of StageAccommodation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? stageId = null,Object? stageNumber = null,Object? nameFr = null,Object? nameEn = null,Object? type = null,Object? lat = null,Object? lng = null,Object? phone = freezed,Object? email = freezed,Object? website = freezed,Object? capacity = freezed,Object? priceRange = freezed,Object? bookingUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? stageId = null,Object? stageNumber = null,Object? nameFr = null,Object? nameEn = null,Object? type = null,Object? lat = null,Object? lng = null,Object? phone = freezed,Object? email = freezed,Object? website = freezed,Object? capacity = freezed,Object? priceRange = freezed,Object? bookingUrl = freezed,Object? address = freezed,}) {
   return _then(_StageAccommodation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,stageId: null == stageId ? _self.stageId : stageId // ignore: cast_nullable_to_non_nullable
@@ -334,6 +350,7 @@ as String?,website: freezed == website ? _self.website : website // ignore: cast
 as String?,capacity: freezed == capacity ? _self.capacity : capacity // ignore: cast_nullable_to_non_nullable
 as int?,priceRange: freezed == priceRange ? _self.priceRange : priceRange // ignore: cast_nullable_to_non_nullable
 as String?,bookingUrl: freezed == bookingUrl ? _self.bookingUrl : bookingUrl // ignore: cast_nullable_to_non_nullable
+as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

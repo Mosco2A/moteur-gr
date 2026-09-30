@@ -79,6 +79,9 @@ class TransportOption {
     this.price = '',
     this.schedule = '',
     this.url,
+    this.address,
+    this.lat,
+    this.lng,
   });
 
   /// Famille de mode (icone/couleur resolues cote widget).
@@ -107,6 +110,27 @@ class TransportOption {
   /// Lien web optionnel (site de l'operateur), ouvert en application externe.
   /// Null/vide = pas de bouton site (parite GR20 : `url` optionnel).
   final String? url;
+
+  /// ADRESSE POSTALE DU LIEU (nullable, tache 641, bug 15).
+  ///
+  /// Un arret d autocar, un ponton de navette, un aeroport sont des LIEUX qu on
+  /// doit rejoindre. « une adresse + un point GPS cliquable partout ou il y a un
+  /// lieu » (Christophe, 30/09 10:23) : cette rubrique n en etait pas exemptee.
+  final String? address;
+
+  /// Latitude du lieu, ou `null` si elle n est pas connue.
+  ///
+  /// NULL PLUTOT QUE ZERO, et ce n est pas un detail : `0,0` est un point reel au
+  /// large de l Afrique, et un lien vers lui ne serait pas vide mais FAUX.
+  final double? lat;
+
+  /// Longitude du lieu, ou `null` si elle n est pas connue.
+  final double? lng;
+
+  /// Vrai si ce lieu porte une adresse ou un point exploitable.
+  bool get hasLieu =>
+      (address != null && address!.trim().isNotEmpty) ||
+      (lat != null && lng != null);
 
   /// Vrai si un contact telephonique est disponible.
   bool get hasContact => contact.isNotEmpty;

@@ -11,6 +11,7 @@ import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
+import '../../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../poi/domain/poi_type_config.dart';
 import '../../../safety/data/signalement_service.dart';
 import '../../../safety/providers/signalement_providers.dart';
@@ -672,6 +673,29 @@ class _WaterPointTile extends ConsumerWidget {
                   ),
                 ),
             ],
+          ),
+          // LE POINT D'EAU EST UN LIEU, DONC IL S'OUVRE DANS LES CARTES
+          // (tache 641, bug 15).
+          //
+          // « appliquer la meme regle a tout lieu physique (ravitaillement, point
+          // d'eau, depart/arrivee, transport) : une adresse + un point GPS
+          // cliquable partout ou il y a un lieu » (Christophe, 30/09 10:23). Une
+          // fontaine n'a pas d'adresse postale, mais elle a des coordonnees — et
+          // c'est le seul moyen de la retrouver quand on la cherche avec un bidon
+          // vide.
+          //
+          // PAS DE LIEN MORT : un point d'eau sans coordonnees exploitables
+          // (`0,0`) n'affiche aucun lien.
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: LigneDeLieu(
+              lieu: LieuCliquable(
+                nom: poi.name,
+                lat: poi.lat,
+                lng: poi.lng,
+              ),
+              compact: true,
+            ),
           ),
           // Statut partage (dernier signalement + compteur) — I1 crowdsourcing.
           statusAsync.maybeWhen(

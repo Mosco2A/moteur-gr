@@ -18,6 +18,7 @@ import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
 import 'source_de_donnees_sentier.dart';
+import 'source_firestore_sentier.dart';
 import 'package:drift/drift.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -574,6 +575,10 @@ class DeltaUpdateService {
           website: Value(d['website'] as String?), capacity: Value(d['capacity'] as int?),
           priceRange: Value(d['price_range'] as String?),
           bookingUrl: Value(d['booking_url'] as String?),
+          // L ADRESSE POSTALE (tache 641, bug 15). Absente du schema jusqu ici :
+          // un hebergement n avait que des coordonnees, donc rien a donner a un
+          // taxi ni a ecrire dans un courriel de reservation.
+          address: Value(d['address'] as String?),
           rev: Value(rev)));
       case MorceauxDeSentier.pointsDInteret:
         await trailPoisDao.insertOrReplace(TrailPoisCompanion(
@@ -590,6 +595,13 @@ class DeltaUpdateService {
           lat: Value((d['lat'] as num).toDouble()),
           lng: Value((d['lng'] as num).toDouble()),
           elevation: Value((d['elevation'] as num?)?.toDouble()),
+          // ADRESSE, TELEPHONE, SITE (tache 641). Ce sont eux qui permettent au
+          // TRANSPORT et au RAVITAILLEMENT de vivre en base au lieu de deux
+          // constantes Dart : un arret d autocar sans exploitant a appeler et
+          // sans site ou lire les horaires ne sert a rien.
+          address: Value(d['address'] as String?),
+          phone: Value(d['phone'] as String?),
+          website: Value(d['website'] as String?),
           rev: Value(rev)));
       case MorceauxDeSentier.traces:
         await trailGpxTracksDao.insertOrReplace(TrailGpxTracksCompanion(
@@ -671,9 +683,17 @@ class _Bilan {
 }
 
 /// Provider Riverpod pour le service de synchronisation des donnees sentier.
+///
+/// LA SOURCE EST DESORMAIS PASSEE, ET C EST LE CORRECTIF DU LOT 641. Ce provider
+/// omettait l argument `source` : il retombait donc sur `SourceFichierEntier`,
+/// c est-a-dire sur un fichier de Firebase Storage que la mesure du 30/09 trouve
+/// en 403 et que personne n avait jamais deposé. `SourceInterrogeable` — tout le
+/// modele par revision du lot 605 — n etait instancie que dans des tests. La
+/// question part maintenant a Firestore, ou le sentier est reellement publie.
 final deltaUpdateServiceProvider = Provider<DeltaUpdateService>((ref) {
   final db = ref.watch(databaseProvider);
   return DeltaUpdateService(db: db,
+    source: ref.watch(sourceDeDonneesSentierProvider),
     manifestService: ref.watch(manifestServiceProvider),
     trailManifestsDao: TrailManifestsDao(db),
     trailMetaDao: TrailMetaDao(db),

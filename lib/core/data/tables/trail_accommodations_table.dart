@@ -55,6 +55,28 @@ class TrailAccommodations extends Table {
   /// URL de reservation (nullable)
   TextColumn get bookingUrl => text().nullable()();
 
+  /// ADRESSE POSTALE (nullable, tache 641).
+  ///
+  /// DEMANDE DE CHRISTOPHE DU 30/09 10:23, verbatim : « hebergement il doit
+  /// avoir une adresse et un point GPS qui link sur Maps » (bug 15). La table
+  /// portait deja `lat` et `lng` ; elle n avait AUCUN champ d adresse, et les
+  /// onze hebergements du Mare a Mare n avaient ni telephone, ni site, ni
+  /// adresse — tous nuls dans l asset embarque.
+  ///
+  /// POURQUOI L ADRESSE EN PLUS DU POINT GPS, alors qu on a deja des coordonnees.
+  /// Parce que les deux ne repondent pas a la meme question. Le point GPS dit ou
+  /// c est ; l adresse est ce qu on donne a un taxi, ce qu on ecrit dans un
+  /// courriel de reservation, et ce que l application de cartes sait geocoder
+  /// quand les coordonnees ne designent que le CENTRE DU VILLAGE — ce qui est le
+  /// cas de la plupart des gites du Mare a Mare, et c est dit dans la donnee
+  /// plutot que masque par une fausse precision.
+  ///
+  /// NULLABLE, ET CE N EST PAS UN PIS-ALLER : « pas d adresse connue » est un
+  /// etat REEL et frequent pour un refuge de montagne. Le lien vers les cartes
+  /// se construit alors sur les coordonnees seules, et l ecran n affiche aucune
+  /// ligne vide.
+  TextColumn get address => text().nullable()();
+
   /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
   /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///

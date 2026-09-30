@@ -22,6 +22,7 @@ _StageAccommodation _$StageAccommodationFromJson(Map<String, dynamic> json) =>
       capacity: (json['capacity'] as num?)?.toInt(),
       priceRange: json['priceRange'] as String?,
       bookingUrl: json['bookingUrl'] as String?,
+      address: json['address'] as String?,
     );
 
 Map<String, dynamic> _$StageAccommodationToJson(_StageAccommodation instance) =>
@@ -40,4 +41,5 @@ Map<String, dynamic> _$StageAccommodationToJson(_StageAccommodation instance) =>
       'capacity': instance.capacity,
       'priceRange': instance.priceRange,
       'bookingUrl': instance.bookingUrl,
+      'address': instance.address,
     };

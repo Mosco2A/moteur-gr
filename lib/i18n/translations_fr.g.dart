@@ -111,6 +111,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$recovery$fr recovery = Translations$recovery$fr.internal(_root);
 	late final Translations$common$fr common = Translations$common$fr.internal(_root);
 	late final Translations$systemBackup$fr systemBackup = Translations$systemBackup$fr.internal(_root);
+	late final Translations$lieu$fr lieu = Translations$lieu$fr.internal(_root);
 }
 
 // Path: a11y
@@ -3367,6 +3368,9 @@ class Translations$shop$fr {
 	String get filterEmpty => 'Aucun commerce pour ce filtre.';
 
 	late final Translations$shop$a11y$fr a11y = Translations$shop$a11y$fr.internal(_root);
+
+	/// fr: 'Aucun commerce n'est référencé pour ce sentier.'
+	String get noneForTrail => 'Aucun commerce n\'est référencé pour ce sentier.';
 }
 
 // Path: summary
@@ -4076,6 +4080,53 @@ class Translations$systemBackup$fr {
 
 	/// fr: 'Refuser la sauvegarde de toutes mes données par le système du téléphone'
 	String get a11yCheckbox => 'Refuser la sauvegarde de toutes mes données par le système du téléphone';
+}
+
+// Path: lieu
+class Translations$lieu$fr {
+	Translations$lieu$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ouvrir dans les cartes'
+	String get ouvrirDansLesCartes => 'Ouvrir dans les cartes';
+
+	/// fr: 'Aucune application de cartes n'a pu s'ouvrir sur cet appareil.'
+	String get cartesIndisponibles => 'Aucune application de cartes n\'a pu s\'ouvrir sur cet appareil.';
+
+	/// fr: 'Adresse'
+	String get adresse => 'Adresse';
+
+	/// fr: 'Appeler'
+	String get telephoner => 'Appeler';
+
+	/// fr: 'Site officiel'
+	String get siteOfficiel => 'Site officiel';
+
+	/// fr: 'Information à compléter'
+	String get aCompleter => 'Information à compléter';
+
+	/// fr: 'Source'
+	String get source => 'Source';
+
+	/// fr: 'Rafraîchir depuis la base'
+	String get rafraichir => 'Rafraîchir depuis la base';
+
+	/// fr: '$n information(s) mise(s) à jour depuis la base.'
+	String rafraichirFait({required Object n}) => '${n} information(s) mise(s) à jour depuis la base.';
+
+	/// fr: 'Déjà à jour : la base ne contient rien de plus récent.'
+	String get rafraichirDejaAJour => 'Déjà à jour : la base ne contient rien de plus récent.';
+
+	/// fr: 'Pas de réseau : les données affichées sont celles du téléphone.'
+	String get rafraichirHorsLigne => 'Pas de réseau : les données affichées sont celles du téléphone.';
+
+	/// fr: 'La mise à jour a échoué. Les données du téléphone sont intactes.'
+	String get rafraichirEchec => 'La mise à jour a échoué. Les données du téléphone sont intactes.';
+
+	late final Translations$lieu$a11y$fr a11y = Translations$lieu$a11y$fr.internal(_root);
 }
 
 // Path: hub.trekCard
@@ -7643,6 +7694,24 @@ class Translations$sos$medicalId$fr {
 	String get unavailable => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.';
 }
 
+// Path: lieu.a11y
+class Translations$lieu$a11y$fr {
+	Translations$lieu$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ouvrir $name dans l'application de cartes'
+	String ouvrirDansLesCartes({required Object name}) => 'Ouvrir ${name} dans l\'application de cartes';
+
+	/// fr: 'Appeler $name'
+	String telephoner({required Object name}) => 'Appeler ${name}';
+
+	/// fr: 'Ouvrir le site officiel de $name'
+	String siteOfficiel({required Object name}) => 'Ouvrir le site officiel de ${name}';
+}
+
 // Path: map.guide.poi
 class Translations$map$guide$poi$fr {
 	Translations$map$guide$poi$fr.internal(this._root);
@@ -9952,6 +10021,7 @@ extension on Translations {
 			'shop.a11y.openDetail' => ({required Object name}) => 'Voir le détail de ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
 			'shop.a11y.website' => 'Ouvrir le site web',
+			'shop.noneForTrail' => 'Aucun commerce n\'est référencé pour ce sentier.',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			'summary.direction' => 'Direction',
@@ -10199,6 +10269,21 @@ extension on Translations {
 			'systemBackup.notOurServers' => 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.',
 			'systemBackup.confirm' => 'C\'est noté',
 			'systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de toutes mes données par le système du téléphone',
+			'lieu.ouvrirDansLesCartes' => 'Ouvrir dans les cartes',
+			'lieu.cartesIndisponibles' => 'Aucune application de cartes n\'a pu s\'ouvrir sur cet appareil.',
+			'lieu.adresse' => 'Adresse',
+			'lieu.telephoner' => 'Appeler',
+			'lieu.siteOfficiel' => 'Site officiel',
+			'lieu.aCompleter' => 'Information à compléter',
+			'lieu.source' => 'Source',
+			'lieu.rafraichir' => 'Rafraîchir depuis la base',
+			'lieu.rafraichirFait' => ({required Object n}) => '${n} information(s) mise(s) à jour depuis la base.',
+			'lieu.rafraichirDejaAJour' => 'Déjà à jour : la base ne contient rien de plus récent.',
+			'lieu.rafraichirHorsLigne' => 'Pas de réseau : les données affichées sont celles du téléphone.',
+			'lieu.rafraichirEchec' => 'La mise à jour a échoué. Les données du téléphone sont intactes.',
+			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Ouvrir ${name} dans l\'application de cartes',
+			'lieu.a11y.telephoner' => ({required Object name}) => 'Appeler ${name}',
+			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Ouvrir le site officiel de ${name}',
 			_ => null,
 		};
 	}

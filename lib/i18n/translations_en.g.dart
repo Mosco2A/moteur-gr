@@ -110,6 +110,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$recovery$en recovery = _Translations$recovery$en._(_root);
 	@override late final _Translations$common$en common = _Translations$common$en._(_root);
 	@override late final _Translations$systemBackup$en systemBackup = _Translations$systemBackup$en._(_root);
+	@override late final _Translations$lieu$en lieu = _Translations$lieu$en._(_root);
 }
 
 // Path: a11y
@@ -1603,6 +1604,7 @@ class _Translations$shop$en extends Translations$shop$fr {
 	@override String get website => 'Website';
 	@override String get filterEmpty => 'No shop for this filter.';
 	@override late final _Translations$shop$a11y$en a11y = _Translations$shop$a11y$en._(_root);
+	@override String get noneForTrail => 'No shop is listed for this trail.';
 }
 
 // Path: summary
@@ -1917,6 +1919,28 @@ class _Translations$systemBackup$en extends Translations$systemBackup$fr {
 	@override String get notOurServers => 'Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.';
 	@override String get confirm => 'Got it';
 	@override String get a11yCheckbox => 'Refuse the backup of all my data by the system of the phone';
+}
+
+// Path: lieu
+class _Translations$lieu$en extends Translations$lieu$fr {
+	_Translations$lieu$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get ouvrirDansLesCartes => 'Open in maps';
+	@override String get cartesIndisponibles => 'No maps app could be opened on this device.';
+	@override String get adresse => 'Address';
+	@override String get telephoner => 'Call';
+	@override String get siteOfficiel => 'Official website';
+	@override String get aCompleter => 'Information still to be confirmed';
+	@override String get source => 'Source';
+	@override late final _Translations$lieu$a11y$en a11y = _Translations$lieu$a11y$en._(_root);
+	@override String get rafraichir => 'Refresh from the database';
+	@override String rafraichirFait({required Object n}) => '${n} item(s) updated from the database.';
+	@override String get rafraichirDejaAJour => 'Already up to date: the database holds nothing newer.';
+	@override String get rafraichirHorsLigne => 'No network: what you see is what is on the phone.';
+	@override String get rafraichirEchec => 'The update failed. The data on the phone is intact.';
 }
 
 // Path: hub.trekCard
@@ -3801,6 +3825,18 @@ class _Translations$sos$medicalId$en extends Translations$sos$medicalId$fr {
 	@override String get action => 'Phone medical ID';
 	@override String get hint => 'Show your vital info to rescuers, even on the lock screen.';
 	@override String get unavailable => 'Open the medical ID in your phone\'s Health settings.';
+}
+
+// Path: lieu.a11y
+class _Translations$lieu$a11y$en extends Translations$lieu$a11y$fr {
+	_Translations$lieu$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String ouvrirDansLesCartes({required Object name}) => 'Open ${name} in the maps app';
+	@override String telephoner({required Object name}) => 'Call ${name}';
+	@override String siteOfficiel({required Object name}) => 'Open the official website of ${name}';
 }
 
 // Path: map.guide.poi
@@ -5931,6 +5967,7 @@ extension on TranslationsEn {
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'shop.a11y.website' => 'Open website',
+			'shop.noneForTrail' => 'No shop is listed for this trail.',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
@@ -6178,6 +6215,21 @@ extension on TranslationsEn {
 			'systemBackup.notOurServers' => 'Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.',
 			'systemBackup.confirm' => 'Got it',
 			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
+			'lieu.ouvrirDansLesCartes' => 'Open in maps',
+			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
+			'lieu.adresse' => 'Address',
+			'lieu.telephoner' => 'Call',
+			'lieu.siteOfficiel' => 'Official website',
+			'lieu.aCompleter' => 'Information still to be confirmed',
+			'lieu.source' => 'Source',
+			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Open ${name} in the maps app',
+			'lieu.a11y.telephoner' => ({required Object name}) => 'Call ${name}',
+			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Open the official website of ${name}',
+			'lieu.rafraichir' => 'Refresh from the database',
+			'lieu.rafraichirFait' => ({required Object n}) => '${n} item(s) updated from the database.',
+			'lieu.rafraichirDejaAJour' => 'Already up to date: the database holds nothing newer.',
+			'lieu.rafraichirHorsLigne' => 'No network: what you see is what is on the phone.',
+			'lieu.rafraichirEchec' => 'The update failed. The data on the phone is intact.',
 			_ => null,
 		};
 	}

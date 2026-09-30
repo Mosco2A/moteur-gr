@@ -6747,6 +6747,17 @@ class $TrailAccommodationsTable extends TrailAccommodations
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
       GeneratedColumn<int>(
@@ -6776,6 +6787,7 @@ class $TrailAccommodationsTable extends TrailAccommodations
     capacity,
     priceRange,
     bookingUrl,
+    address,
     rev,
   ];
   @override
@@ -6903,6 +6915,12 @@ class $TrailAccommodationsTable extends TrailAccommodations
         bookingUrl.isAcceptableOrUnknown(data['booking_url']!, _bookingUrlMeta),
       );
     }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
     return context;
   }
 
@@ -6976,6 +6994,10 @@ class $TrailAccommodationsTable extends TrailAccommodations
         DriftSqlType.string,
         data['${effectivePrefix}booking_url'],
       ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
       rev: $TrailAccommodationsTable.$converterrevn.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -7046,6 +7068,28 @@ class TrailAccommodation extends DataClass
   /// URL de reservation (nullable)
   final String? bookingUrl;
 
+  /// ADRESSE POSTALE (nullable, tache 641).
+  ///
+  /// DEMANDE DE CHRISTOPHE DU 30/09 10:23, verbatim : « hebergement il doit
+  /// avoir une adresse et un point GPS qui link sur Maps » (bug 15). La table
+  /// portait deja `lat` et `lng` ; elle n avait AUCUN champ d adresse, et les
+  /// onze hebergements du Mare a Mare n avaient ni telephone, ni site, ni
+  /// adresse — tous nuls dans l asset embarque.
+  ///
+  /// POURQUOI L ADRESSE EN PLUS DU POINT GPS, alors qu on a deja des coordonnees.
+  /// Parce que les deux ne repondent pas a la meme question. Le point GPS dit ou
+  /// c est ; l adresse est ce qu on donne a un taxi, ce qu on ecrit dans un
+  /// courriel de reservation, et ce que l application de cartes sait geocoder
+  /// quand les coordonnees ne designent que le CENTRE DU VILLAGE — ce qui est le
+  /// cas de la plupart des gites du Mare a Mare, et c est dit dans la donnee
+  /// plutot que masque par une fausse precision.
+  ///
+  /// NULLABLE, ET CE N EST PAS UN PIS-ALLER : « pas d adresse connue » est un
+  /// etat REEL et frequent pour un refuge de montagne. Le lien vers les cartes
+  /// se construit alors sur les coordonnees seules, et l ecran n affiche aucune
+  /// ligne vide.
+  final String? address;
+
   /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
   /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///
@@ -7075,6 +7119,7 @@ class TrailAccommodation extends DataClass
     this.capacity,
     this.priceRange,
     this.bookingUrl,
+    this.address,
     this.rev,
   });
   @override
@@ -7107,6 +7152,9 @@ class TrailAccommodation extends DataClass
     }
     if (!nullToAbsent || bookingUrl != null) {
       map['booking_url'] = Variable<String>(bookingUrl);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
     }
     if (!nullToAbsent || rev != null) {
       map['rev'] = Variable<int>(
@@ -7146,6 +7194,9 @@ class TrailAccommodation extends DataClass
       bookingUrl: bookingUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(bookingUrl),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
       rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
@@ -7172,6 +7223,7 @@ class TrailAccommodation extends DataClass
       capacity: serializer.fromJson<int?>(json['capacity']),
       priceRange: serializer.fromJson<String?>(json['priceRange']),
       bookingUrl: serializer.fromJson<String?>(json['bookingUrl']),
+      address: serializer.fromJson<String?>(json['address']),
       rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
@@ -7195,6 +7247,7 @@ class TrailAccommodation extends DataClass
       'capacity': serializer.toJson<int?>(capacity),
       'priceRange': serializer.toJson<String?>(priceRange),
       'bookingUrl': serializer.toJson<String?>(bookingUrl),
+      'address': serializer.toJson<String?>(address),
       'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
@@ -7216,6 +7269,7 @@ class TrailAccommodation extends DataClass
     Value<int?> capacity = const Value.absent(),
     Value<String?> priceRange = const Value.absent(),
     Value<String?> bookingUrl = const Value.absent(),
+    Value<String?> address = const Value.absent(),
     Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailAccommodation(
     id: id ?? this.id,
@@ -7234,6 +7288,7 @@ class TrailAccommodation extends DataClass
     capacity: capacity.present ? capacity.value : this.capacity,
     priceRange: priceRange.present ? priceRange.value : this.priceRange,
     bookingUrl: bookingUrl.present ? bookingUrl.value : this.bookingUrl,
+    address: address.present ? address.value : this.address,
     rev: rev.present ? rev.value : this.rev,
   );
   TrailAccommodation copyWithCompanion(TrailAccommodationsCompanion data) {
@@ -7258,6 +7313,7 @@ class TrailAccommodation extends DataClass
       bookingUrl: data.bookingUrl.present
           ? data.bookingUrl.value
           : this.bookingUrl,
+      address: data.address.present ? data.address.value : this.address,
       rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
@@ -7281,6 +7337,7 @@ class TrailAccommodation extends DataClass
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
           ..write('bookingUrl: $bookingUrl, ')
+          ..write('address: $address, ')
           ..write('rev: $rev')
           ..write(')'))
         .toString();
@@ -7304,6 +7361,7 @@ class TrailAccommodation extends DataClass
     capacity,
     priceRange,
     bookingUrl,
+    address,
     rev,
   );
   @override
@@ -7326,6 +7384,7 @@ class TrailAccommodation extends DataClass
           other.capacity == this.capacity &&
           other.priceRange == this.priceRange &&
           other.bookingUrl == this.bookingUrl &&
+          other.address == this.address &&
           other.rev == this.rev);
 }
 
@@ -7346,6 +7405,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
   final Value<int?> capacity;
   final Value<String?> priceRange;
   final Value<String?> bookingUrl;
+  final Value<String?> address;
   final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailAccommodationsCompanion({
@@ -7365,6 +7425,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.address = const Value.absent(),
     this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -7385,6 +7446,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.address = const Value.absent(),
     this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -7414,6 +7476,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Expression<int>? capacity,
     Expression<String>? priceRange,
     Expression<String>? bookingUrl,
+    Expression<String>? address,
     Expression<int>? rev,
     Expression<int>? rowid,
   }) {
@@ -7434,6 +7497,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       if (capacity != null) 'capacity': capacity,
       if (priceRange != null) 'price_range': priceRange,
       if (bookingUrl != null) 'booking_url': bookingUrl,
+      if (address != null) 'address': address,
       if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
@@ -7456,6 +7520,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Value<int?>? capacity,
     Value<String?>? priceRange,
     Value<String?>? bookingUrl,
+    Value<String?>? address,
     Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
@@ -7476,6 +7541,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       capacity: capacity ?? this.capacity,
       priceRange: priceRange ?? this.priceRange,
       bookingUrl: bookingUrl ?? this.bookingUrl,
+      address: address ?? this.address,
       rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
@@ -7532,6 +7598,9 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     if (bookingUrl.present) {
       map['booking_url'] = Variable<String>(bookingUrl.value);
     }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
     if (rev.present) {
       map['rev'] = Variable<int>(
         $TrailAccommodationsTable.$converterrevn.toSql(rev.value),
@@ -7562,6 +7631,7 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
           ..write('bookingUrl: $bookingUrl, ')
+          ..write('address: $address, ')
           ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -7733,6 +7803,37 @@ class $TrailPoisTable extends TrailPois
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _websiteMeta = const VerificationMeta(
+    'website',
+  );
+  @override
+  late final GeneratedColumn<String> website = GeneratedColumn<String>(
+    'website',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
       GeneratedColumn<int>(
@@ -7760,6 +7861,9 @@ class $TrailPoisTable extends TrailPois
     lat,
     lng,
     elevation,
+    address,
+    phone,
+    website,
     rev,
   ];
   @override
@@ -7902,6 +8006,24 @@ class $TrailPoisTable extends TrailPois
         elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta),
       );
     }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('website')) {
+      context.handle(
+        _websiteMeta,
+        website.isAcceptableOrUnknown(data['website']!, _websiteMeta),
+      );
+    }
     return context;
   }
 
@@ -7975,6 +8097,18 @@ class $TrailPoisTable extends TrailPois
         DriftSqlType.double,
         data['${effectivePrefix}elevation'],
       ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      website: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}website'],
+      ),
       rev: $TrailPoisTable.$converterrevn.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -8044,6 +8178,34 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
   /// Altitude en metres (nullable)
   final double? elevation;
 
+  /// ADRESSE POSTALE DU LIEU (nullable, tache 641).
+  ///
+  /// « appliquer la meme regle a tout lieu physique (ravitaillement, point d eau,
+  /// depart/arrivee, transport) : une adresse + un point GPS cliquable partout ou
+  /// il y a un lieu » (Christophe, 30/09 10:23, bug 15). Un arret d autocar, une
+  /// epicerie, un office de tourisme sont des lieux qu on rejoint : ils ont une
+  /// adresse, et elle ne se deduit pas d une latitude.
+  final String? address;
+
+  /// TELEPHONE DU LIEU (nullable, tache 641).
+  ///
+  /// C EST LE CHAMP QUI MANQUAIT POUR QUE TRANSPORT ET RAVITAILLEMENT VIVENT EN
+  /// BASE. Avant ce lot, ces deux rubriques etaient deux constantes Dart
+  /// (`transport_catalog.dart`, `shop_catalog.dart`) derriere un
+  /// `switch (trailId)` : muettes pour tout autre sentier, invisibles dans la
+  /// base, et impossibles a corriger sans republier l application. Les y deplacer
+  /// demandait de pouvoir porter un numero a appeler — l exploitant d une ligne
+  /// d autocar, le gite qui prepare les paniers-repas, l office de tourisme qui
+  /// sait quels commerces sont ouverts hors saison.
+  final String? phone;
+
+  /// SITE WEB DU LIEU (nullable, tache 641).
+  ///
+  /// Meme raison que [phone]. Les horaires d un autocar corse changent quatre
+  /// fois par an : on ne les fige pas dans l application, on donne l adresse
+  /// officielle ou ils sont publies.
+  final String? website;
+
   /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
   /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///
@@ -8073,6 +8235,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     required this.lat,
     required this.lng,
     this.elevation,
+    this.address,
+    this.phone,
+    this.website,
     this.rev,
   });
   @override
@@ -8105,6 +8270,15 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     map['lng'] = Variable<double>(lng);
     if (!nullToAbsent || elevation != null) {
       map['elevation'] = Variable<double>(elevation);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || website != null) {
+      map['website'] = Variable<String>(website);
     }
     if (!nullToAbsent || rev != null) {
       map['rev'] = Variable<int>($TrailPoisTable.$converterrevn.toSql(rev));
@@ -8142,6 +8316,15 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       elevation: elevation == null && nullToAbsent
           ? const Value.absent()
           : Value(elevation),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      website: website == null && nullToAbsent
+          ? const Value.absent()
+          : Value(website),
       rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
@@ -8168,6 +8351,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
       elevation: serializer.fromJson<double?>(json['elevation']),
+      address: serializer.fromJson<String?>(json['address']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      website: serializer.fromJson<String?>(json['website']),
       rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
@@ -8191,6 +8377,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
       'elevation': serializer.toJson<double?>(elevation),
+      'address': serializer.toJson<String?>(address),
+      'phone': serializer.toJson<String?>(phone),
+      'website': serializer.toJson<String?>(website),
       'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
@@ -8212,6 +8401,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     double? lat,
     double? lng,
     Value<double?> elevation = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> website = const Value.absent(),
     Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailPoi(
     id: id ?? this.id,
@@ -8240,6 +8432,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
     elevation: elevation.present ? elevation.value : this.elevation,
+    address: address.present ? address.value : this.address,
+    phone: phone.present ? phone.value : this.phone,
+    website: website.present ? website.value : this.website,
     rev: rev.present ? rev.value : this.rev,
   );
   TrailPoi copyWithCompanion(TrailPoisCompanion data) {
@@ -8270,6 +8465,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
       elevation: data.elevation.present ? data.elevation.value : this.elevation,
+      address: data.address.present ? data.address.value : this.address,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      website: data.website.present ? data.website.value : this.website,
       rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
@@ -8293,6 +8491,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('website: $website, ')
           ..write('rev: $rev')
           ..write(')'))
         .toString();
@@ -8316,6 +8517,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat,
     lng,
     elevation,
+    address,
+    phone,
+    website,
     rev,
   );
   @override
@@ -8338,6 +8542,9 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.elevation == this.elevation &&
+          other.address == this.address &&
+          other.phone == this.phone &&
+          other.website == this.website &&
           other.rev == this.rev);
 }
 
@@ -8358,6 +8565,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
   final Value<double> lat;
   final Value<double> lng;
   final Value<double?> elevation;
+  final Value<String?> address;
+  final Value<String?> phone;
+  final Value<String?> website;
   final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailPoisCompanion({
@@ -8377,6 +8587,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
     this.elevation = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.website = const Value.absent(),
     this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -8397,6 +8610,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     required double lat,
     required double lng,
     this.elevation = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.website = const Value.absent(),
     this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -8426,6 +8642,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Expression<double>? lat,
     Expression<double>? lng,
     Expression<double>? elevation,
+    Expression<String>? address,
+    Expression<String>? phone,
+    Expression<String>? website,
     Expression<int>? rev,
     Expression<int>? rowid,
   }) {
@@ -8446,6 +8665,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
       if (elevation != null) 'elevation': elevation,
+      if (address != null) 'address': address,
+      if (phone != null) 'phone': phone,
+      if (website != null) 'website': website,
       if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
@@ -8468,6 +8690,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Value<double>? lat,
     Value<double>? lng,
     Value<double?>? elevation,
+    Value<String?>? address,
+    Value<String?>? phone,
+    Value<String?>? website,
     Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
@@ -8488,6 +8713,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       elevation: elevation ?? this.elevation,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      website: website ?? this.website,
       rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
@@ -8544,6 +8772,15 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     if (elevation.present) {
       map['elevation'] = Variable<double>(elevation.value);
     }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (website.present) {
+      map['website'] = Variable<String>(website.value);
+    }
     if (rev.present) {
       map['rev'] = Variable<int>(
         $TrailPoisTable.$converterrevn.toSql(rev.value),
@@ -8574,6 +8811,9 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('website: $website, ')
           ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -23294,6 +23534,7 @@ typedef $$TrailAccommodationsTableCreateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<String?> address,
       Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
@@ -23315,6 +23556,7 @@ typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<String?> address,
       Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
@@ -23405,6 +23647,11 @@ class $$TrailAccommodationsTableFilterComposer
 
   ColumnFilters<String> get bookingUrl => $composableBuilder(
     column: $table.bookingUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23504,6 +23751,11 @@ class $$TrailAccommodationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get rev => $composableBuilder(
     column: $table.rev,
     builder: (column) => ColumnOrderings(column),
@@ -23571,6 +23823,9 @@ class $$TrailAccommodationsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
       $composableBuilder(column: $table.rev, builder: (column) => column);
 }
@@ -23634,6 +23889,7 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<String?> address = const Value.absent(),
                 Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion(
@@ -23653,6 +23909,7 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                address: address,
                 rev: rev,
                 rowid: rowid,
               ),
@@ -23674,6 +23931,7 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<String?> address = const Value.absent(),
                 Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion.insert(
@@ -23693,6 +23951,7 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                address: address,
                 rev: rev,
                 rowid: rowid,
               ),
@@ -23743,6 +24002,9 @@ typedef $$TrailPoisTableCreateCompanionBuilder =
       required double lat,
       required double lng,
       Value<double?> elevation,
+      Value<String?> address,
+      Value<String?> phone,
+      Value<String?> website,
       Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
@@ -23764,6 +24026,9 @@ typedef $$TrailPoisTableUpdateCompanionBuilder =
       Value<double> lat,
       Value<double> lng,
       Value<double?> elevation,
+      Value<String?> address,
+      Value<String?> phone,
+      Value<String?> website,
       Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
@@ -23854,6 +24119,21 @@ class $$TrailPoisTableFilterComposer
 
   ColumnFilters<double> get elevation => $composableBuilder(
     column: $table.elevation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get website => $composableBuilder(
+    column: $table.website,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23953,6 +24233,21 @@ class $$TrailPoisTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get rev => $composableBuilder(
     column: $table.rev,
     builder: (column) => ColumnOrderings(column),
@@ -24026,6 +24321,15 @@ class $$TrailPoisTableAnnotationComposer
   GeneratedColumn<double> get elevation =>
       $composableBuilder(column: $table.elevation, builder: (column) => column);
 
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get website =>
+      $composableBuilder(column: $table.website, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
       $composableBuilder(column: $table.rev, builder: (column) => column);
 }
@@ -24074,6 +24378,9 @@ class $$TrailPoisTableTableManager
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
                 Value<double?> elevation = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> website = const Value.absent(),
                 Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion(
@@ -24093,6 +24400,9 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                address: address,
+                phone: phone,
+                website: website,
                 rev: rev,
                 rowid: rowid,
               ),
@@ -24114,6 +24424,9 @@ class $$TrailPoisTableTableManager
                 required double lat,
                 required double lng,
                 Value<double?> elevation = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> website = const Value.absent(),
                 Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion.insert(
@@ -24133,6 +24446,9 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                address: address,
+                phone: phone,
+                website: website,
                 rev: rev,
                 rowid: rowid,
               ),

@@ -6,6 +6,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bouton_rafraichir_depuis_la_base.dart';
+import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
@@ -52,15 +54,40 @@ class ShopScreen extends ConsumerWidget {
     return Scaffold(
       // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android).
       // Le back custom est retire (comportement repris a l'identique).
-      appBar: AppHeader(title: t.shop.title),
-      // Aucune donnee ravitaillement pour ce sentier : on n'affiche RIEN
-      // (tache 552). L'ecran portait « Ravitaillement bientot disponible » et
-      // « les commerces ... seront ajoutes prochainement » — une date que rien
-      // ne tient. Retour Chris 25/09 : « si tu ne les a pas tu ne met rien ».
-      // Un commerce absent ne modifie aucun resultat calcule ailleurs, donc il
-      // ne se commente pas. L'AppBar reste (retour possible, pas de crash).
+      appBar: AppHeader(
+        title: t.shop.title,
+        // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des deux
+        // ecrans que Christophe a trouves vides, donc l'un des deux ou il doit
+        // pouvoir verifier tout de suite qu'une publication est bien arrivee.
+        actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+      ),
+      // UN ECRAN BLANC N'EST PAS UNE ABSENCE DE COMMENTAIRE, C'EST UNE PANNE
+      // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et ravitaillement
+      // ecran vide »).
+      //
+      // La tache 552 avait raison de supprimer « Ravitaillement bientot
+      // disponible » : une date que rien ne tient ne se promet pas. Mais elle l'a
+      // remplacee par un `SizedBox.shrink()`, c'est-a-dire un titre
+      // « Ravitaillement » au-dessus de RIEN. Christophe a ouvert cet ecran et n'a
+      // eu aucun moyen de savoir s'il n'y avait pas de commerce, si l'application
+      // etait cassee, ou s'il avait mal appuye. L'ecran Transport, lui, enonce un
+      // fait depuis toujours — et c'est le bon comportement.
+      //
+      // ON ENONCE DONC UN FAIT, sans date et sans promesse : aucun commerce n'est
+      // reference pour ce sentier. C'est exactement ce que dit la base, et c'est
+      // verifiable.
       body: (data == null || !data.hasShops)
-          ? const SizedBox.shrink()
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingLg),
+                child: Text(
+                  t.shop.noneForTrail,
+                  key: const ValueKey('ravitaillement-aucune-donnee'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            )
           : _ShopBody(data: data, typeFilter: typeFilter, theme: theme),
     );
   }
@@ -533,6 +560,28 @@ void _showShopDetail(
                       icon: StepwaysIcons.duree,
                       label: t.shop.fieldHours,
                       value: shop.openingHours),
+
+                // ADRESSE ET LIEN VERS LES CARTES (tache 641, bug 15).
+                //
+                // « appliquer la meme regle a tout lieu physique (ravitaillement,
+                // point d'eau, depart/arrivee, transport) : une adresse + un point
+                // GPS cliquable partout ou il y a un lieu » (Christophe, 30/09
+                // 10:23). Un commerce est un lieu : on y va a pied, avec un sac.
+                //
+                // PAS DE LIEN MORT : sans adresse ni point exploitable, ce widget
+                // ne rend RIEN — ni libelle vide, ni bouton inerte.
+                Padding(
+                  padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+                  child: LigneDeLieu(
+                    lieu: LieuCliquable(
+                      nom: shop.name,
+                      adresse: shop.address,
+                      lat: shop.latitude,
+                      lng: shop.longitude,
+                    ),
+                    compact: true,
+                  ),
+                ),
 
                 // Contact / site (extension StepWays, cables url_launcher).
                 if (shop.hasPhone || shop.hasWebsite) ...[

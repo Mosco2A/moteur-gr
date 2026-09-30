@@ -21,6 +21,7 @@ import 'core/providers/app_bootstrap_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
 import 'core/services/descente_des_droits.dart';
+import 'core/services/mise_a_jour_a_la_source.dart';
 import 'core/services/ordonnanceur_de_synchronisation.dart';
 import 'core/services/sync_scheduler.dart';
 import 'core/theme/app_theme.dart';
@@ -451,6 +452,26 @@ class BootstrapGate extends ConsumerWidget {
     // NON BLOQUANT : elle attend l identite en tache de fond et n empeche pas le
     // premier rendu.
     _armer('montee en base', () => ref.watch(monteeEnBaseDemarreeProvider));
+
+    // LA DESCENTE DES DONNEES DE SENTIER AU DEMARRAGE (tache 641).
+    //
+    // Demande de Christophe du 30/09 11:54 : « Je veux que les donnees des
+    // applications soient dans Firebase, chaque donnee a jour avec son timestamp
+    // de MAJ. Ensuite je veux que l application vienne mettre a jour ses donnees a
+    // cette source. » La descente par revision existait depuis le lot 605 et la
+    // cadence depuis le lot 616, mais la cadence ne s occupe que des sentiers
+    // DEJA telecharges — et le seul geste capable de poser ce premier repere
+    // n avait aucun appelant dans `lib/`. Aucun sentier ne pouvait donc jamais
+    // entrer dans le perimetre de la cadence : la chaine complete etait
+    // inatteignable en production.
+    //
+    // MEME RAISON D ETRE ICI que les trois gardes au-dessus : au-dessus du
+    // `Navigator`, elle ne se demonte jamais.
+    //
+    // NON BLOQUANT, ET C EST LE POINT : la copie embarquee est deja en base quand
+    // cette garde s arme (`appBootstrapProvider` a seede), donc l ecran est PLEIN.
+    // La mise a jour l ameliore quand elle arrive, elle ne la fait pas attendre.
+    ref.watch(miseAJourAuDemarrageProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);

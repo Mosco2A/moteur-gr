@@ -2117,7 +2117,8 @@
       "openDetail": "View details for $name",
       "call": "Call $label",
       "website": "Open website"
-    }
+    },
+    "noneForTrail": "No shop is listed for this trail."
   },
   "summary": {
     "title": "Plan summary",
@@ -2413,5 +2414,24 @@
     "notOurServers": "Not to be confused: nothing you entrust to us goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system, which does not belong to us.",
     "confirm": "Got it",
     "a11yCheckbox": "Refuse the backup of all my data by the system of the phone"
+  },
+  "lieu": {
+    "ouvrirDansLesCartes": "Open in maps",
+    "cartesIndisponibles": "No maps app could be opened on this device.",
+    "adresse": "Address",
+    "telephoner": "Call",
+    "siteOfficiel": "Official website",
+    "aCompleter": "Information still to be confirmed",
+    "source": "Source",
+    "a11y": {
+      "ouvrirDansLesCartes": "Open $name in the maps app",
+      "telephoner": "Call $name",
+      "siteOfficiel": "Open the official website of $name"
+    },
+    "rafraichir": "Refresh from the database",
+    "rafraichirFait": "$n item(s) updated from the database.",
+    "rafraichirDejaAJour": "Already up to date: the database holds nothing newer.",
+    "rafraichirHorsLigne": "No network: what you see is what is on the phone.",
+    "rafraichirEchec": "The update failed. The data on the phone is intact."
   }
 }

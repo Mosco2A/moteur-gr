@@ -2117,7 +2117,8 @@
       "openDetail": "Vedi i dettagli di $name",
       "call": "Chiama $label",
       "website": "Apri il sito web"
-    }
+    },
+    "noneForTrail": "Nessun negozio è registrato per questo sentiero."
   },
   "summary": {
     "title": "Sintesi del piano",
@@ -2413,5 +2414,24 @@
     "notOurServers": "Da non confondere: niente di quello che ci affidi arriva ai nostri server, che questa casella sia spuntata o no. Riguarda soltanto il backup che il telefono fa con il proprio sistema, che non ci appartiene.",
     "confirm": "Ho capito",
     "a11yCheckbox": "Rifiutare il backup di tutti i miei dati da parte del sistema del telefono"
+  },
+  "lieu": {
+    "ouvrirDansLesCartes": "Apri nelle mappe",
+    "cartesIndisponibles": "Nessuna app di mappe si è potuta aprire su questo dispositivo.",
+    "adresse": "Indirizzo",
+    "telephoner": "Chiama",
+    "siteOfficiel": "Sito ufficiale",
+    "aCompleter": "Informazione ancora da confermare",
+    "source": "Fonte",
+    "rafraichir": "Aggiorna dalla base dati",
+    "rafraichirFait": "$n informazione(i) aggiornata(e) dalla base dati.",
+    "rafraichirDejaAJour": "Già aggiornato: la base dati non ha nulla di più recente.",
+    "rafraichirHorsLigne": "Nessuna rete: vedi ciò che è sul telefono.",
+    "rafraichirEchec": "L'aggiornamento è fallito. I dati sul telefono sono intatti.",
+    "a11y": {
+      "ouvrirDansLesCartes": "Apri $name nell'app di mappe",
+      "telephoner": "Chiama $name",
+      "siteOfficiel": "Apri il sito ufficiale di $name"
+    }
   }
 }
