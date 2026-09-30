@@ -12,6 +12,7 @@ import '../../../core/models/trail_manifest.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/manifest_service.dart';
+import '../../../core/services/source_firestore_sentier.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -155,14 +156,43 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
       return;
     }
 
+    // COUCHE 1 — LA BASE D ABORD, LE FICHIER EN REPLI (tache 641).
+    //
+    // « Je ne vois toujours pas les donnees Mare a Mare dans Firebase, ni demo,
+    // ni normal, rien, d ou viennent les infos de l application » (Christophe,
+    // 30/09 11:52). La reponse mesuree etait : de la constante compilee, parce que
+    // la liste distante vivait dans un FICHIER de Firebase Storage que personne
+    // n avait jamais deposé — mesure du meme jour : HTTP 403.
+    //
+    // La liste se lit donc desormais dans la COLLECTION `trails` de Firestore,
+    // celle que Christophe voit dans sa console et que `tool/publier_en_base.py`
+    // alimente. Le fichier reste le repli : mode local sans Firebase, ou projet
+    // sans identifiant injecte au build.
     TrailManifest? liste;
     try {
-      liste = await ref
-          .read(manifestServiceProvider)
-          .fetchManifest(urlDeLaListe);
+      liste = await ref.read(listeSentiersFirestoreProvider).lire();
     } catch (e) {
-      _log.w('[Catalogue] Lecture de la liste distante impossible: $e');
+      _log.w('[Catalogue] Lecture de la liste en base impossible: $e');
       liste = null;
+    }
+    if (!ref.mounted) return;
+
+    if (liste == null || liste.trails.isEmpty) {
+      try {
+        liste = await ref
+            .read(manifestServiceProvider)
+            .fetchManifest(urlDeLaListe);
+        if (liste != null) {
+          _log.w(
+            '[Catalogue] Liste lue depuis le FICHIER ($urlDeLaListe) et non '
+            'depuis la base. C est le repli : la base fait foi des que la '
+            'collection « trails » est publiee.',
+          );
+        }
+      } catch (e) {
+        _log.w('[Catalogue] Lecture de la liste distante impossible: $e');
+        liste = null;
+      }
     }
     if (!ref.mounted) return;
 

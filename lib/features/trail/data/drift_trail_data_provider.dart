@@ -89,6 +89,9 @@ class DriftTrailDataProvider implements TrailDataProvider {
             capacity: row.capacity,
             priceRange: row.priceRange,
             bookingUrl: row.bookingUrl,
+            // L ADRESSE POSTALE (tache 641, bug 15) : elle vient de la base,
+            // comme tout le reste de la fiche.
+            address: row.address,
           )));
     }
     return result;

@@ -79,6 +79,15 @@ abstract class StageAccommodation with _$StageAccommodation {
 
     /// URL de reservation (nullable)
     String? bookingUrl,
+
+    /// ADRESSE POSTALE (nullable, tache 641, bug 15).
+    ///
+    /// « hebergement il doit avoir une adresse et un point GPS qui link sur
+    /// Maps » (Christophe, 30/09 10:23). Les coordonnees existaient deja ;
+    /// l adresse n existait NULLE PART — ni dans la table, ni dans ce modele,
+    /// ni dans l asset embarque. Elle vient desormais de la base, donc de
+    /// Firestore, donc corrigible sans republier l application.
+    String? address,
   }) = _StageAccommodation;
 
   /// Nom d'affichage (francais par defaut).

@@ -110,6 +110,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$recovery$de recovery = _Translations$recovery$de._(_root);
 	@override late final _Translations$common$de common = _Translations$common$de._(_root);
 	@override late final _Translations$systemBackup$de systemBackup = _Translations$systemBackup$de._(_root);
+	@override late final _Translations$lieu$de lieu = _Translations$lieu$de._(_root);
 }
 
 // Path: a11y
@@ -1568,6 +1569,7 @@ class _Translations$shop$de extends Translations$shop$fr {
 	@override String get website => 'Website';
 	@override String get filterEmpty => 'Kein Geschäft für diesen Filter.';
 	@override late final _Translations$shop$a11y$de a11y = _Translations$shop$a11y$de._(_root);
+	@override String get noneForTrail => 'Für diesen Weg ist kein Geschäft erfasst.';
 }
 
 // Path: summary
@@ -1880,6 +1882,28 @@ class _Translations$systemBackup$de extends Translations$systemBackup$fr {
 	@override String get notOurServers => 'Nicht verwechseln: nichts, was du uns anvertraust, geht an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.';
 	@override String get confirm => 'Verstanden';
 	@override String get a11yCheckbox => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen';
+}
+
+// Path: lieu
+class _Translations$lieu$de extends Translations$lieu$fr {
+	_Translations$lieu$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get ouvrirDansLesCartes => 'In Karten öffnen';
+	@override String get cartesIndisponibles => 'Auf diesem Gerät konnte keine Karten-App geöffnet werden.';
+	@override String get adresse => 'Adresse';
+	@override String get telephoner => 'Anrufen';
+	@override String get siteOfficiel => 'Offizielle Website';
+	@override String get aCompleter => 'Angabe noch zu bestätigen';
+	@override String get source => 'Quelle';
+	@override String get rafraichir => 'Aus der Datenbank aktualisieren';
+	@override String rafraichirFait({required Object n}) => '${n} Angabe(n) aus der Datenbank aktualisiert.';
+	@override String get rafraichirDejaAJour => 'Bereits aktuell: die Datenbank hat nichts Neueres.';
+	@override String get rafraichirHorsLigne => 'Kein Netz: angezeigt wird, was auf dem Telefon liegt.';
+	@override String get rafraichirEchec => 'Die Aktualisierung ist fehlgeschlagen. Die Daten auf dem Telefon sind unversehrt.';
+	@override late final _Translations$lieu$a11y$de a11y = _Translations$lieu$a11y$de._(_root);
 }
 
 // Path: hub.trekCard
@@ -3763,6 +3787,18 @@ class _Translations$sos$medicalId$de extends Translations$sos$medicalId$fr {
 	@override String get action => 'Notfallpass des Telefons';
 	@override String get hint => 'Zeigen Sie den Rettungskräften Ihre Vitaldaten, auch im Sperrbildschirm.';
 	@override String get unavailable => 'Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons.';
+}
+
+// Path: lieu.a11y
+class _Translations$lieu$a11y$de extends Translations$lieu$a11y$fr {
+	_Translations$lieu$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String ouvrirDansLesCartes({required Object name}) => '${name} in der Karten-App öffnen';
+	@override String telephoner({required Object name}) => '${name} anrufen';
+	@override String siteOfficiel({required Object name}) => 'Offizielle Website von ${name} öffnen';
 }
 
 // Path: map.guide.poi
@@ -5857,6 +5893,7 @@ extension on TranslationsDe {
 			'shop.a11y.openDetail' => ({required Object name}) => 'Details zu ${name} anzeigen',
 			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
 			'shop.a11y.website' => 'Website öffnen',
+			'shop.noneForTrail' => 'Für diesen Weg ist kein Geschäft erfasst.',
 			'summary.title' => 'Planübersicht',
 			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			'summary.direction' => 'Richtung',
@@ -6102,6 +6139,21 @@ extension on TranslationsDe {
 			'systemBackup.notOurServers' => 'Nicht verwechseln: nichts, was du uns anvertraust, geht an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.',
 			'systemBackup.confirm' => 'Verstanden',
 			'systemBackup.a11yCheckbox' => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen',
+			'lieu.ouvrirDansLesCartes' => 'In Karten öffnen',
+			'lieu.cartesIndisponibles' => 'Auf diesem Gerät konnte keine Karten-App geöffnet werden.',
+			'lieu.adresse' => 'Adresse',
+			'lieu.telephoner' => 'Anrufen',
+			'lieu.siteOfficiel' => 'Offizielle Website',
+			'lieu.aCompleter' => 'Angabe noch zu bestätigen',
+			'lieu.source' => 'Quelle',
+			'lieu.rafraichir' => 'Aus der Datenbank aktualisieren',
+			'lieu.rafraichirFait' => ({required Object n}) => '${n} Angabe(n) aus der Datenbank aktualisiert.',
+			'lieu.rafraichirDejaAJour' => 'Bereits aktuell: die Datenbank hat nichts Neueres.',
+			'lieu.rafraichirHorsLigne' => 'Kein Netz: angezeigt wird, was auf dem Telefon liegt.',
+			'lieu.rafraichirEchec' => 'Die Aktualisierung ist fehlgeschlagen. Die Daten auf dem Telefon sind unversehrt.',
+			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => '${name} in der Karten-App öffnen',
+			'lieu.a11y.telephoner' => ({required Object name}) => '${name} anrufen',
+			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Offizielle Website von ${name} öffnen',
 			_ => null,
 		};
 	}

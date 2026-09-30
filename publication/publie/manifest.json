@@ -39,6 +39,51 @@
         ],
         "privacyPolicyUrl": "https://example.org/gr-pyrenees/privacy"
       }
+    },
+    {
+      "trailId": "mare-a-mare-centre",
+      "dataVersion": "2026-09-30T10:27:44.414Z",
+      "hash": "47b51d5097c41b281c89d79c82912e12c122220c028750ba0b66fcb66a1c5718",
+      "filePath": "mare_a_mare_centre/v20260930T102744414Z.json",
+      "fileSize": 89990,
+      "status": "active",
+      "lastUpdated": "2026-09-30T10:27:44.414Z",
+      "fiche": {
+        "name": "Mare a Mare Centre",
+        "displayName": "Mare a Mare Centre",
+        "tagline": "De la mer a la mer, au coeur de la Corse",
+        "region": "Corse",
+        "country": "France",
+        "totalStages": 7,
+        "totalDistanceKm": 84.0,
+        "totalElevationGain": 3550,
+        "primaryColorValue": 4281109298,
+        "secondaryColorValue": 4279592384,
+        "directions": [
+          "NS",
+          "SN"
+        ],
+        "availableDurations": [
+          5,
+          7,
+          9
+        ],
+        "defaultDuration": 7,
+        "emergencyNumbers": [
+          {
+            "name": "Secours montagne Corse",
+            "phone": "+33495613636"
+          },
+          {
+            "name": "PGHM Corte (secours en montagne)",
+            "phone": "+33495477146"
+          },
+          {
+            "name": "Parc naturel regional de Corse",
+            "phone": "+33495345480"
+          }
+        ]
+      }
     }
   ]
 }

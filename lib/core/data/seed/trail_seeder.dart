@@ -128,6 +128,11 @@ class TrailSeeder {
         capacity: Value(m['capacity'] as int?),
         priceRange: Value(m['priceRange'] as String?),
         bookingUrl: Value(m['bookingUrl'] as String?),
+        // L ADRESSE POSTALE (tache 641, bug 15). La copie embarquee la porte
+        // aussi, sinon un telephone sans reseau afficherait un hebergement sans
+        // adresse la ou la base en a une : le cache doit savoir tout ce que la
+        // source sait dire.
+        address: Value(m['address'] as String?),
       ));
     }
 
@@ -152,6 +157,11 @@ class TrailSeeder {
         lat: Value((m['lat'] as num).toDouble()),
         lng: Value((m['lng'] as num).toDouble()),
         elevation: Value(m['elevation'] != null ? (m['elevation'] as num).toDouble() : null),
+        // ADRESSE, TELEPHONE, SITE (tache 641) : memes champs que la source, pour
+        // que le cache embarque puisse porter le transport et le ravitaillement.
+        address: Value(m['address'] as String?),
+        phone: Value(m['phone'] as String?),
+        website: Value(m['website'] as String?),
       ));
     }
   }

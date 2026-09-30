@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/mise_a_jour_a_la_source.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
@@ -87,6 +88,16 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       trailConfigProvider.select((c) => c.displayName),
     );
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+
+    // OUVRIR UN SENTIER, C EST DEMANDER CE QUI A CHANGE DESSUS (tache 641).
+    //
+    // « Je veux que l'application vienne mettre a jour ses donnees a cette
+    // source » (Christophe, 30/09 11:54). Cet ecran est la porte d'entree du
+    // sentier : les rubriques qu'il ouvre — transport, ravitaillement, nuitees,
+    // etapes — sont precisement celles que Christophe a trouvees vides. La mise
+    // a jour part ICI, en arriere-plan, sans rien faire attendre : la copie
+    // locale est deja affichee, la base la complete quand elle repond.
+    ref.watch(miseAJourAlOuvertureProvider(trailId));
 
     // Retour Chris #13 (LOT 2) : le menu du cockpit est CONTEXTUEL a l'etat du
     // trek (DECISIONS.md §5.2, accueil « maison »/« terrain »). La PHASE est

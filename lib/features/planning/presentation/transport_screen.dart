@@ -6,6 +6,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bouton_rafraichir_depuis_la_base.dart';
+import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/transport_info.dart';
 import '../providers/transport_providers.dart';
@@ -81,7 +83,14 @@ class TransportScreen extends ConsumerWidget {
         (departureTab == null || !departureTab.hasContent);
     if (aucunContenu) {
       return Scaffold(
-        appBar: AppHeader(title: t.transport.title),
+        appBar: AppHeader(
+          title: t.transport.title,
+          // LE GESTE MANUEL EST SURTOUT UTILE ICI : c'est l'ecran que Christophe
+          // a trouve vide. S'il publie le transport en base depuis son PC, ce
+          // bouton le fait arriver tout de suite, sans attendre la cadence de
+          // quatre heures ni redemarrer l'application (tache 641).
+          actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+        ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.spacingLg),
@@ -103,6 +112,7 @@ class TransportScreen extends ConsumerWidget {
         // le parametre `bottom`. Le back custom est retire (comportement repris).
         appBar: AppHeader(
           title: t.transport.title,
+          actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
           bottom: TabBar(
             tabs: [
               Tab(
@@ -361,6 +371,32 @@ class _TransportOptionCard extends StatelessWidget {
               ),
             ),
           ],
+
+          // ADRESSE ET POINT GPS CLIQUABLE (tache 641, bug 15).
+          //
+          // « appliquer la meme regle a tout lieu physique (ravitaillement, point
+          // d'eau, depart/arrivee, transport) : une adresse + un point GPS
+          // cliquable partout ou il y a un lieu » (Christophe, 30/09 10:23). Un
+          // arret d'autocar, un ponton de navette, un aeroport sont des lieux
+          // qu'on doit rejoindre — le plus souvent en arrivant de loin, sans
+          // connaitre la ville.
+          //
+          // PAS DE LIEN MORT : sans adresse ni point exploitable, ce widget ne
+          // rend RIEN. Les lieux dont la base dit « a completer » n'affichent pas
+          // ce marqueur au randonneur : il est destine a l'editeur du contenu.
+          if (option.hasLieu)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: LigneDeLieu(
+                lieu: LieuCliquable(
+                  nom: option.title,
+                  adresse: option.address,
+                  lat: option.lat,
+                  lng: option.lng,
+                ),
+                compact: true,
+              ),
+            ),
 
           // Contact telephonique cliquable + eventuel bouton site (parite GR20).
           if (option.hasContact || option.hasUrl) ...[

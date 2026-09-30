@@ -2081,7 +2081,8 @@
       "openDetail": "Ver detalles de $name",
       "call": "Llamar a $label",
       "website": "Abrir el sitio web"
-    }
+    },
+    "noneForTrail": "Ningún comercio está registrado para este sendero."
   },
   "summary": {
     "title": "Síntesis del plan",
@@ -2375,5 +2376,24 @@
     "notOurServers": "No hay que confundirlo: nada de lo que nos confías va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.",
     "confirm": "Entendido",
     "a11yCheckbox": "Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono"
+  },
+  "lieu": {
+    "ouvrirDansLesCartes": "Abrir en mapas",
+    "cartesIndisponibles": "Ninguna aplicación de mapas pudo abrirse en este dispositivo.",
+    "adresse": "Dirección",
+    "telephoner": "Llamar",
+    "siteOfficiel": "Sitio oficial",
+    "aCompleter": "Información pendiente de confirmar",
+    "source": "Fuente",
+    "rafraichir": "Actualizar desde la base de datos",
+    "rafraichirFait": "$n información(es) actualizada(s) desde la base de datos.",
+    "rafraichirDejaAJour": "Ya está al día: la base de datos no tiene nada más reciente.",
+    "rafraichirHorsLigne": "Sin red: lo que ves es lo que hay en el teléfono.",
+    "rafraichirEchec": "La actualización ha fallado. Los datos del teléfono están intactos.",
+    "a11y": {
+      "ouvrirDansLesCartes": "Abrir $name en la aplicación de mapas",
+      "telephoner": "Llamar a $name",
+      "siteOfficiel": "Abrir el sitio oficial de $name"
+    }
   }
 }

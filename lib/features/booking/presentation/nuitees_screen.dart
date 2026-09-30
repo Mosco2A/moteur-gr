@@ -8,6 +8,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
+import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';
@@ -732,6 +733,32 @@ class _NuiteeCard extends ConsumerWidget {
                   ),
                 ],
               ),
+              // ADRESSE ET POINT GPS CLIQUABLE DE L'HEBERGEMENT (tache 641,
+              // bug 15).
+              //
+              // Demande de Christophe du 30/09 10:23, verbatim : « hebergement il
+              // doit avoir une adresse et un point GPS qui link sur Maps ». La
+              // fiche montrait le nom, le type et le telephone ; ni adresse, ni
+              // moyen d'ouvrir les cartes — alors que trouver la porte d'un gite
+              // dans un village corse a la tombee du jour est precisement le
+              // moment ou l'on en a besoin.
+              //
+              // MASQUE POUR « AUTRE HEBERGEMENT », comme le bouton Appeler : ce
+              // choix ne designe aucun etablissement, donc aucun lieu.
+              if (accom != null && nuiteeType != NuiteeType.autreHebergement)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+                  child: LigneDeLieu(
+                    lieu: LieuCliquable(
+                      nom: accom.name,
+                      adresse: accom.address,
+                      lat: accom.lat,
+                      lng: accom.lng,
+                    ),
+                    compact: true,
+                  ),
+                ),
+
               // Action Appeler (masquee pour « autre hebergement », parite GR20).
               if (phone.isNotEmpty &&
                   nuiteeType != NuiteeType.autreHebergement) ...[

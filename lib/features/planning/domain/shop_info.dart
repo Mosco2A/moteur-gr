@@ -63,6 +63,7 @@ class Shop {
     this.longitude,
     this.phone = '',
     this.website,
+    this.address,
   });
 
   /// Nom du commerce (donnee du sentier).
@@ -95,6 +96,15 @@ class Shop {
   /// Site web optionnel (extension StepWays), ouvert en application externe.
   /// Null/vide = pas de bouton site.
   final String? website;
+
+  /// ADRESSE POSTALE (nullable, tache 641, bug 15).
+  ///
+  /// « appliquer la meme regle a tout lieu physique (ravitaillement, point d eau,
+  /// depart/arrivee, transport) : une adresse + un point GPS cliquable partout ou
+  /// il y a un lieu » (Christophe, 30/09 10:23). Un commerce dont on connait
+  /// l adresse mais pas les coordonnees exactes se rejoint par l adresse — et
+  /// c est le cas le plus frequent dans les villages corses.
+  final String? address;
 
   /// Vrai si des coordonnees GPS exploitables sont disponibles.
   bool get hasCoordinates => latitude != null && longitude != null;
@@ -129,6 +139,7 @@ class Shop {
       longitude: (json['longitude'] as num?)?.toDouble(),
       phone: json['phone'] as String? ?? '',
       website: json['website'] as String?,
+      address: json['address'] as String?,
     );
   }
 
@@ -144,6 +155,7 @@ class Shop {
       if (longitude != null) 'longitude': longitude,
       if (phone.isNotEmpty) 'phone': phone,
       if (website != null) 'website': website,
+      if (address != null) 'address': address,
     };
   }
 }

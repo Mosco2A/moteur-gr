@@ -56,6 +56,34 @@ class TrailPois extends Table {
   /// Altitude en metres (nullable)
   RealColumn get elevation => real().nullable()();
 
+  /// ADRESSE POSTALE DU LIEU (nullable, tache 641).
+  ///
+  /// « appliquer la meme regle a tout lieu physique (ravitaillement, point d eau,
+  /// depart/arrivee, transport) : une adresse + un point GPS cliquable partout ou
+  /// il y a un lieu » (Christophe, 30/09 10:23, bug 15). Un arret d autocar, une
+  /// epicerie, un office de tourisme sont des lieux qu on rejoint : ils ont une
+  /// adresse, et elle ne se deduit pas d une latitude.
+  TextColumn get address => text().nullable()();
+
+  /// TELEPHONE DU LIEU (nullable, tache 641).
+  ///
+  /// C EST LE CHAMP QUI MANQUAIT POUR QUE TRANSPORT ET RAVITAILLEMENT VIVENT EN
+  /// BASE. Avant ce lot, ces deux rubriques etaient deux constantes Dart
+  /// (`transport_catalog.dart`, `shop_catalog.dart`) derriere un
+  /// `switch (trailId)` : muettes pour tout autre sentier, invisibles dans la
+  /// base, et impossibles a corriger sans republier l application. Les y deplacer
+  /// demandait de pouvoir porter un numero a appeler — l exploitant d une ligne
+  /// d autocar, le gite qui prepare les paniers-repas, l office de tourisme qui
+  /// sait quels commerces sont ouverts hors saison.
+  TextColumn get phone => text().nullable()();
+
+  /// SITE WEB DU LIEU (nullable, tache 641).
+  ///
+  /// Meme raison que [phone]. Les horaires d un autocar corse changent quatre
+  /// fois par an : on ne les fige pas dans l application, on donne l adresse
+  /// officielle ou ils sont publies.
+  TextColumn get website => text().nullable()();
+
   /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
   /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///

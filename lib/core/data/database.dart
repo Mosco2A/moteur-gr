@@ -169,7 +169,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 30;
+  int get schemaVersion => 31;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -494,6 +494,49 @@ class AppDatabase extends _$AppDatabase {
                 migrator, trailManifests, trailManifests.tilesSize);
             await _ajouterColonneSiAbsente(
                 migrator, trailManifests, trailManifests.tilesHash);
+          }
+
+          // Migration v30 -> v31 : UNE ADRESSE, UN TELEPHONE, UN SITE — POUR QUE
+          // LES LIEUX SOIENT ATTEIGNABLES (tache 641).
+          //
+          // DEUX DEMANDES DE CHRISTOPHE TOMBENT SUR CES QUATRE COLONNES.
+          //
+          //  * BUG 15 (30/09 10:23) : « hebergement il doit avoir une adresse et
+          //    un point GPS qui link sur Maps [...] appliquer la meme regle a tout
+          //    lieu physique ». Les coordonnees existaient deja ; l ADRESSE
+          //    n existait nulle part, ni sur les hebergements ni sur les points
+          //    d interet.
+          //
+          //  * BUGS 12, 13 ET 17 (transport et ravitaillement vides) : la mesure du
+          //    30/09 a montre que ces deux rubriques n existaient PAS en base. Elles
+          //    vivaient dans deux constantes Dart derriere un `switch (trailId)`,
+          //    donc muettes pour tout autre sentier et pour le mode demo. Les
+          //    deplacer en base demandait que la table des points d interet puisse
+          //    porter un TELEPHONE (l exploitant d une ligne d autocar, le gite qui
+          //    prepare les paniers) et un SITE (ou les horaires sont publies, parce
+          //    qu un horaire d autocar corse change quatre fois par an et n a rien
+          //    a faire dans un binaire).
+          //
+          // QUATRE `ALTER TABLE ADD COLUMN`, TOUS SUR DES COLONNES NULLABLES : c est
+          // la seule forme d ajout qui ne peut pas echouer sur une table peuplee, et
+          // UNE MIGRATION QUI ECHOUE EMPECHE LA BASE DE S OUVRIR sur le telephone
+          // d un randonneur, sans recours. Passage par
+          // [_ajouterColonneSiAbsente] comme l exige la regle posee a la tache 613 :
+          // si l application est tuee au milieu de la marche, `user_version` reste
+          // en arriere et la marche se rejoue sur des colonnes deja posees.
+          //
+          // AUCUNE DONNEE N EST PERDUE NI REMISE A ZERO. Ces quatre colonnes
+          // n ont jamais existe : elles naissent nulles, et la prochaine
+          // synchronisation a la source les remplit pour les sentiers publies.
+          if (from < 31) {
+            await _ajouterColonneSiAbsente(
+                migrator, trailAccommodations, trailAccommodations.address);
+            await _ajouterColonneSiAbsente(
+                migrator, trailPois, trailPois.address);
+            await _ajouterColonneSiAbsente(
+                migrator, trailPois, trailPois.phone);
+            await _ajouterColonneSiAbsente(
+                migrator, trailPois, trailPois.website);
           }
         },
       );

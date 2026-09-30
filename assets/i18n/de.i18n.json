@@ -2081,7 +2081,8 @@
       "openDetail": "Details zu $name anzeigen",
       "call": "$label anrufen",
       "website": "Website öffnen"
-    }
+    },
+    "noneForTrail": "Für diesen Weg ist kein Geschäft erfasst."
   },
   "summary": {
     "title": "Planübersicht",
@@ -2375,5 +2376,24 @@
     "notOurServers": "Nicht verwechseln: nichts, was du uns anvertraust, geht an unsere Server, ob dieses Kästchen angekreuzt ist oder nicht. Es betrifft nur die Sicherung, die dein Telefon über sein eigenes System vornimmt und die uns nicht gehört.",
     "confirm": "Verstanden",
     "a11yCheckbox": "Die Sicherung aller meiner Daten durch das System des Telefons ablehnen"
+  },
+  "lieu": {
+    "ouvrirDansLesCartes": "In Karten öffnen",
+    "cartesIndisponibles": "Auf diesem Gerät konnte keine Karten-App geöffnet werden.",
+    "adresse": "Adresse",
+    "telephoner": "Anrufen",
+    "siteOfficiel": "Offizielle Website",
+    "aCompleter": "Angabe noch zu bestätigen",
+    "source": "Quelle",
+    "rafraichir": "Aus der Datenbank aktualisieren",
+    "rafraichirFait": "$n Angabe(n) aus der Datenbank aktualisiert.",
+    "rafraichirDejaAJour": "Bereits aktuell: die Datenbank hat nichts Neueres.",
+    "rafraichirHorsLigne": "Kein Netz: angezeigt wird, was auf dem Telefon liegt.",
+    "rafraichirEchec": "Die Aktualisierung ist fehlgeschlagen. Die Daten auf dem Telefon sind unversehrt.",
+    "a11y": {
+      "ouvrirDansLesCartes": "$name in der Karten-App öffnen",
+      "telephoner": "$name anrufen",
+      "siteOfficiel": "Offizielle Website von $name öffnen"
+    }
   }
 }

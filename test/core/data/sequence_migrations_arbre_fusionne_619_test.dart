@@ -12,10 +12,10 @@ import 'package:moteur_gr/core/data/database.dart';
 /// SEPAREMENT, chacun depuis une base fabriquee a l etat de la marche precedente.
 /// Aucun ne verifie L ESCALIER ENTIER EN UN SEUL COUP. Or c est l escalier entier
 /// que le telephone de Christophe va monter : sa derniere version installee porte
-/// `user_version = 26` (l etat de `main`), et l arbre fusionne en demande 30. QUATRE
-/// marches d un coup, posees par QUATRE LOTS DIFFERENTS qui ne se sont jamais vus
-/// (607 pour la v27, 613 pour la v28, 616 pour la v29, 622 pour la v30 — et 610 avait
-/// ecrit SA PROPRE v28, renumerotee au moment de la composition).
+/// `user_version = 26` (l etat de `main`), et l arbre fusionne en demande 31. CINQ
+/// marches d un coup, posees par CINQ LOTS DIFFERENTS qui ne se sont jamais vus
+/// (607 pour la v27, 613 pour la v28, 616 pour la v29, 622 pour la v30, 641 pour la
+/// v31 — et 610 avait ecrit SA PROPRE v28, renumerotee au moment de la composition).
 ///
 /// UNE MIGRATION QUI ECHOUE EMPECHE LA BASE DE S OUVRIR. L application ne demarre
 /// plus, et le randonneur n a aucun recours : ni reinstallation propre ni retour en
@@ -40,7 +40,7 @@ void main() {
 
   group('619 — la sequence complete sur une base NEUVE', () {
     test(
-      'un fichier vide s ouvre du premier coup et se range directement en v30 '
+      'un fichier vide s ouvre du premier coup et se range directement en v31 '
       '— c est le chemin de la PREMIERE INSTALLATION sur le telephone',
       () async {
         final fichier = await fichierNeuf('gr_619_neuve_');
@@ -61,7 +61,12 @@ void main() {
               'une base neuve doit etre posee directement a la version '
               'courante, sans repasser par les marches',
         );
-        expect(db.schemaVersion, 30);
+        // LA VERSION ATTENDUE EST ECRITE EN DUR, ET C EST VOULU : comparer
+        // `db.schemaVersion` a lui-meme ne verifierait rien. Ce nombre monte a
+        // chaque lot qui ajoute une marche — la v31 vient de la tache 641
+        // (adresse, telephone et site sur les lieux, pour que le transport et le
+        // ravitaillement vivent en base).
+        expect(db.schemaVersion, 31);
 
         await db.close();
         expect(
@@ -74,7 +79,7 @@ void main() {
 
     test(
       'sur une base neuve les colonnes des QUATRE derniers lots sont toutes la '
-      '— la v27 (lot 607), la v28 (lots 613 et 610), la v29 (lot 616) et la v30 '
+      '— la v27 (lot 607), la v28 (lots 613 et 610), la v29 (lot 616), la v30 '
       '(lot 622)',
       () async {
         final fichier = await fichierNeuf('gr_619_neuve_col_');
@@ -166,8 +171,8 @@ void main() {
 
       expect(
         await versionUtilisateur(db),
-        30,
-        reason: 'le compteur doit avoir traverse v27, v28, v29 et v30',
+        31,
+        reason: 'le compteur doit avoir traverse v27, v28, v29, v30 et v31',
       );
     });
 
@@ -197,10 +202,10 @@ void main() {
         'c est le cas de l application tuee au milieu d une marche', () async {
       final fichier = await baseEnV26AvecDonnees();
 
-      // Premier passage : la base monte de 26 a 30.
+      // Premier passage : la base monte de 26 a 31.
       final premier = AppDatabase(NativeDatabase(fichier));
       await premier.customStatement('SELECT 1');
-      expect(await versionUtilisateur(premier), 30);
+      expect(await versionUtilisateur(premier), 31);
       await premier.close();
 
       // On remet le compteur en arriere SANS defaire le schema : c est l etat
@@ -216,7 +221,7 @@ void main() {
       await second.customStatement('SELECT 1');
       expect(
         await versionUtilisateur(second),
-        30,
+        31,
         reason: 'les marches doivent etre rejouables sans echouer',
       );
     });
