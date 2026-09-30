@@ -72,6 +72,8 @@
 /// ajouter le moindre noeud a l'arbre.
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -242,18 +244,40 @@ Future<void> sortirDeLaDemoDUnAppui(WidgetRef ref, BuildContext context) async {
 
   await quitterLaDemo(ref, context: context);
 
-  messager
-    ?..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        key: const ValueKey('demo-sortie-faite'),
-        content: Text(t.demo.sortieFaite),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: t.demo.cacherLabel,
-          onPressed: () =>
-              conteneur.read(boutonDemoCacheProvider.notifier).definir(true),
-        ),
+  if (messager == null) return;
+  messager.hideCurrentSnackBar();
+  final controleur = messager.showSnackBar(
+    SnackBar(
+      key: const ValueKey('demo-sortie-faite'),
+      content: Text(t.demo.sortieFaite),
+      duration: kDureeMessageSortieDemo,
+      action: SnackBarAction(
+        label: t.demo.cacherLabel,
+        onPressed: () =>
+            conteneur.read(boutonDemoCacheProvider.notifier).definir(true),
       ),
-    );
+    ),
+  );
+
+  // LE MESSAGE SE FERME TOUT SEUL, ET C'EST NOUS QUI LE FERMONS — MESURE.
+  //
+  // Sur l'emulateur, le message pose juste apres le changement d'ecran est
+  // reste affiche DEUX MINUTES : `ScaffoldMessenger` n'arme son minuteur de
+  // fermeture qu'a la fin de l'animation d'entree, et cette animation est
+  // interrompue par la transition de route qui part au meme instant. Le
+  // `duration` ci-dessus n'a donc jamais ete lu.
+  //
+  // UN BANDEAU QUI NE PART PAS EST EXACTEMENT LE BUG 11 : « le bandeau du bas
+  // du mode demo cache une partie de l'appli ». On ne s'en remet donc pas au
+  // cadre : on ferme nous-memes.
+  //
+  // LE MINUTEUR EST ANNULE DES QUE LE MESSAGE SE FERME, d'ou qu'il vienne — le
+  // randonneur a repondu, il l'a balaye, ou un autre message l'a chasse. C'est
+  // ce qui interdit de fermer deux fois, et ce qui evite de laisser un minuteur
+  // courir derriere un message qui n'existe plus.
+  final minuteur = Timer(kDureeMessageSortieDemo, controleur.close);
+  unawaited(controleur.closed.then((_) => minuteur.cancel()));
 }
+
+/// Duree d'affichage du message de fin de demo.
+const Duration kDureeMessageSortieDemo = Duration(seconds: 6);

@@ -179,6 +179,10 @@ void main() {
 
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
+      // Le message de fin se ferme tout seul (tache 649) : on le laisse partir,
+      // sinon son minuteur survit a l'arbre et le harnais le signale.
+      await tester.pump(kDureeMessageSortieDemo);
+      await tester.pumpAndSettle();
 
       expect(c.read(enDemoProvider), isFalse);
       expect(

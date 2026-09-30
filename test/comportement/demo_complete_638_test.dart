@@ -714,6 +714,9 @@ void main() {
         isFalse,
         reason: 'tant qu on n a rien demande, le bouton reste au catalogue',
       );
+
+      await tester.pump(kDureeMessageSortieDemo);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('le bandeau de message cache le bouton si on le lui demande', (
@@ -739,15 +742,27 @@ void main() {
 
       expect(c.read(enDemoProvider), isFalse);
       expect(c.read(boutonDemoCacheProvider), isTrue);
+      expect(
+        find.byKey(const ValueKey('demo-sortie-faite')),
+        findsNothing,
+        reason: 'repondre ferme le message : il n a plus rien a demander',
+      );
     });
 
-    testWidgets('ignorer le message ne cache rien, et la demo reste sortie', (
+    testWidgets('ignorer le message ne cache rien, et le message S EN VA', (
       tester,
     ) async {
-      // L OFFRE NE BLOQUE PAS, ET NE PIEGE PAS : ne rien faire laisse le bouton
-      // au catalogue. C est l ancien « Annuler », mais il ne peut plus annuler la
-      // SORTIE elle-meme — un appui sur Quitter est une decision, pas une
-      // question.
+      // L OFFRE NE BLOQUE PAS, NE PIEGE PAS, ET NE RESTE PAS. Ne rien faire
+      // laisse le bouton au catalogue. C est l ancien « Annuler », mais il ne
+      // peut plus annuler la SORTIE elle-meme — un appui sur Quitter est une
+      // decision, pas une question.
+      //
+      // ET LE MESSAGE PART TOUT SEUL, parce qu un bandeau du bas qui reste est
+      // EXACTEMENT le bug 11 de Christophe. Mesure sur l emulateur : pose juste
+      // apres le changement d ecran, il etait encore la deux minutes plus tard —
+      // `ScaffoldMessenger` n arme son minuteur qu a la fin de l animation
+      // d entree, interrompue par la transition de route. La fermeture est donc
+      // tenue par le lot, pas par le cadre.
       final c = ProviderContainer();
       addTearDown(c.dispose);
       c.read(sessionDemoProvider.notifier).entrer();
@@ -763,6 +778,10 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('demo-sortie-faite')), findsOneWidget);
+
+      await tester.pump(kDureeMessageSortieDemo);
+      await tester.pumpAndSettle();
 
       expect(c.read(enDemoProvider), isFalse);
       expect(
@@ -771,6 +790,13 @@ void main() {
         reason:
             'ne rien faire laisse le bouton demo au catalogue : le message '
             'PROPOSE, il ne decide pas',
+      );
+      expect(
+        find.byKey(const ValueKey('demo-sortie-faite')),
+        findsNothing,
+        reason:
+            'un bandeau du bas qui ne part pas cache une partie de l appli — '
+            'c est le bug 11, et il ne revient pas par la porte de derriere',
       );
     });
   });
