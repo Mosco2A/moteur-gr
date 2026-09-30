@@ -142,8 +142,9 @@ void main() {
       await tester.pump();
 
       expect(find.byKey(const ValueKey('demo-sortie')), findsOneWidget);
-      // L'ecran est toujours la : la pastille est PEINTE par-dessus, elle ne
-      // remplace rien et ne deplace rien.
+      // L'ecran est toujours la, ENTIER : depuis la tache 649 le bandeau prend
+      // sa propre place au-dessus de l'application au lieu d'etre peint
+      // par-dessus — il pousse, il ne masque plus.
       expect(find.text('ecran'), findsOneWidget);
 
       // BUG 11 : PLUS DE CADRE QUI ROGNE, PLUS DE BANDEAU EN BAS.
@@ -161,7 +162,14 @@ void main() {
       );
     });
 
-    testWidgets('la pastille ouvre le dialogue de fin de demo', (tester) async {
+    testWidgets('la pastille quitte la demo DU PREMIER APPUI', (tester) async {
+      // TACHE 649. Ce test disait l'inverse : « la sortie n'est plus immediate,
+      // elle passe par le dialogue ». Ce dialogue ne s'est JAMAIS ouvert en
+      // production — `CadreDemo` est pose au-dessus du `Navigator`, donc
+      // `showDialog` y levait une exception avalee par le filet de Flutter, et
+      // le bouton etait mort (mesure sur l'emulateur le 30/09, build 8). La
+      // sortie est redevenue immediate, et c'est la seule forme qui marche a
+      // cet endroit de l'arbre.
       final c = ProviderContainer();
       addTearDown(c.dispose);
       c.read(sessionDemoProvider.notifier).entrer();
@@ -172,13 +180,12 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
 
-      // La sortie n'est plus immediate : elle passe par le dialogue qui dit OU
-      // retrouver la demo et propose de la cacher (bug 18).
+      expect(c.read(enDemoProvider), isFalse);
       expect(
-        find.byKey(const ValueKey('demo-dialogue-sortie')),
-        findsOneWidget,
+        find.byKey(const ValueKey('demo-sortie')),
+        findsNothing,
+        reason: 'hors demo, le bandeau ne laisse aucune trace',
       );
-      expect(c.read(enDemoProvider), isTrue);
     });
   });
 

@@ -276,7 +276,15 @@ void main() {
         },
       );
 
-      testWidgets('$nom — la pastille ne DECALE aucun element', (tester) async {
+      testWidgets('$nom — le bandeau POUSSE l ecran, il ne le recouvre pas', (
+        tester,
+      ) async {
+        // TACHE 649 — L ECHANGE EST INVERSE, ET C EST LE CORRECTIF. Ce test
+        // exigeait l inverse : « le contenu ne se deplace pas, la pastille est
+        // PEINTE par-dessus ». C est exactement ce que Christophe a refuse sur
+        // le build 8 : peinte par-dessus, elle masquait le titre de la barre sur
+        // tous les ecrans. Le bandeau prend desormais sa propre place — il
+        // decale l application de sa hauteur, et ne masque plus rien.
         tester.view.physicalSize = taille;
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.reset);
@@ -296,16 +304,43 @@ void main() {
         await tester.pumpWidget(ecranType(enDemo));
         await tester.pump();
 
-        expect(
-          tester.getRect(find.text('contenu')),
-          avant,
-          reason:
-              '$nom : le contenu de l ecran s est deplace — la pastille est '
-              'PEINTE par-dessus, elle ne prend pas de place',
+        final bandeau = tester.getRect(
+          find.byKey(const ValueKey('demo-bandeau')),
         );
         expect(
-          tester.getRect(find.byKey(const ValueKey('test-retour'))),
-          retourAvant,
+          bandeau.top,
+          0,
+          reason: '$nom : le bandeau est en TETE, rien au-dessus de lui',
+        );
+        expect(
+          tester.getRect(find.byKey(const ValueKey('test-retour'))).top,
+          greaterThanOrEqualTo(bandeau.bottom),
+          reason:
+              '$nom : la barre de titre doit commencer SOUS le bandeau — si '
+              'elle commence dedans, le bandeau la recouvre a nouveau',
+        );
+        expect(
+          tester.getRect(find.byKey(const ValueKey('test-retour'))).top -
+              retourAvant.top,
+          bandeau.height,
+          reason:
+              '$nom : la barre de titre descend EXACTEMENT de la hauteur du '
+              'bandeau — ni plus (la marge de la barre d etat serait comptee '
+              'deux fois), ni moins (le bandeau mordrait sur l application)',
+        );
+        expect(
+          tester.getRect(find.text('contenu')).top,
+          greaterThanOrEqualTo(bandeau.bottom),
+          reason:
+              '$nom : le contenu de l ecran commence SOUS le bandeau. Il ne '
+              'descend pas de la hauteur pleine parce qu il est centre dans '
+              'ce qui reste — ce qui compte est qu aucun pixel ne passe '
+              'dessous',
+        );
+        expect(
+          tester.getRect(find.text('contenu')).top,
+          greaterThan(avant.top),
+          reason: '$nom : le bandeau pousse, il ne recouvre pas',
         );
       });
     }
@@ -637,7 +672,18 @@ void main() {
       expect(second.read(boutonDemoCacheProvider), isFalse);
     });
 
-    testWidgets('le dialogue de sortie porte la case et dit OU la retrouver', (
+    // TACHE 649 — LES TROIS TESTS DU DIALOGUE SONT REMPLACES, PAS SUPPRIMES.
+    //
+    // Ils pilotaient un dialogue qui ne s est JAMAIS ouvert en production : pose
+    // au-dessus du `Navigator`, `showDialog` y levait une exception avalee, et le
+    // bouton etait mort (mesure sur l emulateur, build 8). Ils passaient au vert
+    // parce qu ils montaient `CadreDemo` sous `MaterialApp(home:)`, c est-a-dire
+    // SOUS un `Navigator` — l exact oppose de sa place reelle.
+    //
+    // CE QU ILS GARANTISSAIENT RESTE GARANTI, PAR D AUTRES GESTES : la sortie
+    // marche (en un appui), et « cacher le mode demo » reste offert au moment de
+    // sortir (bug 18) — dans un bandeau de message qui ne bloque plus rien.
+    testWidgets('un appui sur Quitter suffit, et il propose de cacher', (
       tester,
     ) async {
       final c = ProviderContainer();
@@ -656,24 +702,21 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
 
-      // Case DECOCHEE : la demo reste en tete du catalogue, et le message le dit.
-      expect(find.text(t.demo.sortieEnTeteCatalogue), findsOneWidget);
-      expect(find.text(t.demo.cacherLabel), findsOneWidget);
-
-      // Case COCHEE : le message change, parce que l endroit change.
-      await tester.tap(find.byKey(const ValueKey('demo-sortie-cacher')));
-      await tester.pumpAndSettle();
-      expect(find.text(t.demo.sortieDansMonCompte), findsOneWidget);
+      expect(c.read(enDemoProvider), isFalse);
+      expect(find.byKey(const ValueKey('demo-sortie-faite')), findsOneWidget);
       expect(
-        find.text(t.demo.sortieEnTeteCatalogue),
-        findsNothing,
-        reason:
-            'un message qui annonce autre chose que ce que le reglage va '
-            'faire serait un mensonge',
+        find.text(t.demo.cacherLabel),
+        findsOneWidget,
+        reason: 'bug 18 : la sortie propose encore de cacher le bouton demo',
+      );
+      expect(
+        c.read(boutonDemoCacheProvider),
+        isFalse,
+        reason: 'tant qu on n a rien demande, le bouton reste au catalogue',
       );
     });
 
-    testWidgets('confirmer avec la case cochee cache le bouton', (
+    testWidgets('le bandeau de message cache le bouton si on le lui demande', (
       tester,
     ) async {
       final c = ProviderContainer();
@@ -691,18 +734,20 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('demo-sortie-cacher')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('demo-sortie-confirmer')));
+      await tester.tap(find.text(t.demo.cacherLabel));
       await tester.pumpAndSettle();
 
       expect(c.read(enDemoProvider), isFalse);
       expect(c.read(boutonDemoCacheProvider), isTrue);
     });
 
-    testWidgets('annuler ne quitte pas la demo et ne cache rien', (
+    testWidgets('ignorer le message ne cache rien, et la demo reste sortie', (
       tester,
     ) async {
+      // L OFFRE NE BLOQUE PAS, ET NE PIEGE PAS : ne rien faire laisse le bouton
+      // au catalogue. C est l ancien « Annuler », mais il ne peut plus annuler la
+      // SORTIE elle-meme — un appui sur Quitter est une decision, pas une
+      // question.
       final c = ProviderContainer();
       addTearDown(c.dispose);
       c.read(sessionDemoProvider.notifier).entrer();
@@ -718,13 +763,15 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('demo-sortie-cacher')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('demo-sortie-annuler')));
-      await tester.pumpAndSettle();
 
-      expect(c.read(enDemoProvider), isTrue);
-      expect(c.read(boutonDemoCacheProvider), isFalse);
+      expect(c.read(enDemoProvider), isFalse);
+      expect(
+        c.read(boutonDemoCacheProvider),
+        isFalse,
+        reason:
+            'ne rien faire laisse le bouton demo au catalogue : le message '
+            'PROPOSE, il ne decide pas',
+      );
     });
   });
 

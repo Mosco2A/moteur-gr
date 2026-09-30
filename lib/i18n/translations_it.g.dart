@@ -748,6 +748,7 @@ class _Translations$auth$it extends Translations$auth$fr {
 	@override String get chooseAvatar => 'Scegli un avatar';
 	@override String get errorLoading => 'Errore di caricamento';
 	@override String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
+	@override String get errorTimeout => 'L\'account non ha risposto. Controlla la connessione, poi riprova.';
 }
 
 // Path: feasibility
@@ -890,6 +891,7 @@ class _Translations$demo$it extends Translations$demo$fr {
 	@override String get collecteSentier => 'Il sentiero';
 	@override String get collecteJours => 'Numero di giorni';
 	@override String get collecteAbsent => 'Non indicato';
+	@override String get sortieFaite => 'Hai lasciato la demo.';
 }
 
 // Path: updates
@@ -4950,6 +4952,7 @@ extension on TranslationsIt {
 			'auth.chooseAvatar' => 'Scegli un avatar',
 			'auth.errorLoading' => 'Errore di caricamento',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
+			'auth.errorTimeout' => 'L\'account non ha risposto. Controlla la connessione, poi riprova.',
 			'feasibility.restart' => 'Start over',
 			'feasibility.objectiveTitle' => 'Fattibilità per questo trek',
 			'feasibility.objectiveIntro' => 'Verdetto basato sul tuo profilo reale incrociato con i requisiti del trek.',
@@ -5158,6 +5161,7 @@ extension on TranslationsIt {
 			'demo.collecteSentier' => 'Il sentiero',
 			'demo.collecteJours' => 'Numero di giorni',
 			'demo.collecteAbsent' => 'Non indicato',
+			'demo.sortieFaite' => 'Hai lasciato la demo.',
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
@@ -5197,10 +5201,10 @@ extension on TranslationsIt {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acquista — ${price} €',
 			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
-			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
-			'monetization.walletTitle' => 'Conto tappe',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
+			'monetization.walletTitle' => 'Conto tappe',
 			'monetization.walletSubtitle' => 'Le tue tappe servono a sbloccare le escursioni',
 			'monetization.walletUnit' => 'tappe',
 			'monetization.storeUnavailable' => 'Il pagamento non è disponibile al momento.',
@@ -5711,10 +5715,10 @@ extension on TranslationsIt {
 			'programme.duration.daysWithRest' => '{total} g in totale (di cui {rest} riposo)',
 			'programme.duration.splitNote' => 'Più giorni = giorni di RIPOSO. Il riposo non cambia la durezza di una giornata di cammino, e il verdetto segue la giornata più dura.',
 			'programme.duration.splitExhausted' => 'Ogni tappa ha già la sua giornata: un giorno in più aggiungerà solo riposo, e il riposo non cambierà il verdetto.',
-			'programme.duration.daysTotal' => '{count} g in totale',
-			'programme.stats.distance' => 'Distanza',
 			_ => null,
 		} ?? switch (path) {
+			'programme.duration.daysTotal' => '{count} g in totale',
+			'programme.stats.distance' => 'Distanza',
 			'programme.stats.elevation' => 'Dislivello+',
 			'programme.stats.days' => 'Giorni',
 			'programme.stats.stages' => 'Tappe',

@@ -748,6 +748,7 @@ class _Translations$auth$en extends Translations$auth$fr {
 	@override String get chooseAvatar => 'Choose an avatar';
 	@override String get errorLoading => 'Loading error';
 	@override String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
+	@override String get errorTimeout => 'Your account did not respond. Check your connection, then try again.';
 }
 
 // Path: feasibility
@@ -890,6 +891,7 @@ class _Translations$demo$en extends Translations$demo$fr {
 	@override String get collecteSentier => 'The trail';
 	@override String get collecteJours => 'Number of days';
 	@override String get collecteAbsent => 'Not provided';
+	@override String get sortieFaite => 'You have left the demo.';
 }
 
 // Path: updates
@@ -4950,6 +4952,7 @@ extension on TranslationsEn {
 			'auth.chooseAvatar' => 'Choose an avatar',
 			'auth.errorLoading' => 'Loading error',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
+			'auth.errorTimeout' => 'Your account did not respond. Check your connection, then try again.',
 			'feasibility.restart' => 'Start over',
 			'feasibility.objectiveTitle' => 'Feasibility for this trek',
 			'feasibility.objectiveIntro' => 'Verdict based on your real profile crossed with the trek requirements.',
@@ -5158,6 +5161,7 @@ extension on TranslationsEn {
 			'demo.collecteSentier' => 'The trail',
 			'demo.collecteJours' => 'Number of days',
 			'demo.collecteAbsent' => 'Not provided',
+			'demo.sortieFaite' => 'You have left the demo.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5197,10 +5201,10 @@ extension on TranslationsEn {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Buy — €${price}',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
-			'monetization.rewardedUnavailable' => 'No video available right now.',
-			'monetization.walletTitle' => 'Step account',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.rewardedUnavailable' => 'No video available right now.',
+			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
 			'monetization.storeUnavailable' => 'Payment is not available right now.',
@@ -5711,10 +5715,10 @@ extension on TranslationsEn {
 			'programme.duration.daysWithRest' => '{total} d in total (incl. {rest} rest)',
 			'programme.duration.splitNote' => 'More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.',
 			'programme.duration.splitExhausted' => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.',
-			'programme.duration.daysTotal' => '{count} d in total',
-			'programme.stats.distance' => 'Distance',
 			_ => null,
 		} ?? switch (path) {
+			'programme.duration.daysTotal' => '{count} d in total',
+			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',
 			'programme.stats.stages' => 'Stages',

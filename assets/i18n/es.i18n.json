@@ -889,7 +889,8 @@
     "changeAvatar": "Cambiar avatar",
     "chooseAvatar": "Elegir un avatar",
     "errorLoading": "Error de carga",
-    "appVersion": "StepWays v$version (build $build)"
+    "appVersion": "StepWays v$version (build $build)",
+    "errorTimeout": "La cuenta no ha respondido. Comprueba tu conexión y vuelve a intentarlo."
   },
   "feasibility": {
     "restart": "Start over",
@@ -1129,7 +1130,8 @@
     "collecteSaison": "Temporada de salida",
     "collecteSentier": "El sendero",
     "collecteJours": "Número de días",
-    "collecteAbsent": "No indicado"
+    "collecteAbsent": "No indicado",
+    "sortieFaite": "Has salido de la demo."
   },
   "updates": {
     "readyTitle": "Actualización lista",

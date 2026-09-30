@@ -27,8 +27,9 @@
 ///      relus depuis le telephone (leur vraie valeur) ;
 ///   5. l'etat de demo est detruit — les barrieres tombent, une vraie ecriture
 ///      repart normalement ;
-///   6. le reglage « cacher le bouton demo » est ecrit s'il a ete demande, puis
-///      l'application revient a « Mes treks ».
+///   6. l'application revient a « Mes treks », puis le reglage « cacher le
+///      bouton demo » est ecrit S'IL a ete demande — et il ne l'est plus a
+///      chaque sortie (tache 649).
 ///
 /// L'ORDRE N'EST PAS DECORATIF. Tout le demontage des points 1 a 4 se fait
 /// PENDANT que la demo est encore active : c'est ce qui garantit qu'aucun de ces
@@ -49,6 +50,7 @@ import '../../features/trek/providers/tracking_providers.dart';
 import '../config/trail_selection.dart';
 import '../engine/trail_engine.dart';
 import '../routing/home_location_provider.dart';
+import '../routing/navigateur_racine.dart';
 import 'session_demo.dart';
 
 /// ENTRE EN DEMO SUR LE MARE A MARE CENTRE COMPLET, et se souvient d'ou l'on
@@ -68,21 +70,48 @@ void entrerEnDemo(WidgetRef ref) {
 /// QUITTE LA DEMO : sortie COMPLETE et ATOMIQUE (bug 19), puis retour a
 /// « Mes treks ».
 ///
-/// [cacherBouton] porte la case a cocher « Cacher le mode demo » du dialogue de
-/// fin (precision de Christophe du 30/09 10:30 sur le bug 18) : cochee, le
-/// bouton orange disparait du catalogue et se retrouve dans Mon compte ;
-/// decochee, il reste en tete du catalogue. Le reglage est persistant et
-/// reversible depuis Mon compte — il ne touche AUCUN droit.
+/// [cacherBouton] porte le reglage « Cacher le mode demo » (precision de
+/// Christophe du 30/09 10:30 sur le bug 18) : `true`, le bouton orange disparait
+/// du catalogue et se retrouve dans Mon compte ; `false`, il revient en tete du
+/// catalogue. Le reglage est persistant et reversible depuis Mon compte — il ne
+/// touche AUCUN droit.
+///
+/// `null` — LE DEFAUT, ET C'EST LE CAS DE LA SORTIE EN UN APPUI (tache 649) —
+/// ne touche PAS au reglage. Ecrire `false` a chaque sortie DEFERAIT en silence
+/// un « cacher » demande a la sortie precedente : quitter la demo n'est pas
+/// demander a revoir le bouton.
 ///
 /// [context] sert au retour a « Mes treks ». S'il est absent (test unitaire), la
 /// sortie s'execute quand meme : c'est l'etat qui fait la sortie, pas l'ecran.
 Future<void> quitterLaDemo(
   WidgetRef ref, {
   BuildContext? context,
-  bool cacherBouton = false,
+  bool? cacherBouton,
 }) async {
   final session = ref.read(sessionDemoProvider);
   if (!session.active) return;
+
+  // LE ROUTEUR EST PRIS MAINTENANT, ET DEPUIS UN CONTEXTE QUI EN PORTE UN.
+  // Deux corrections en une ligne (tache 649), et les deux ont ete mesurees.
+  //
+  // 1. IL EST PRIS AU DEBUT, ET PLUS A LA FIN. Il etait resolu apres l'attente
+  //    de `arreterSimulationDemo` et celle de l'ecriture du reglage : or
+  //    l'appelant est demonte des que la demo s'arrete (etape 5), donc
+  //    `context.mounted` pouvait etre FAUX au moment de partir, et le retour a
+  //    « Mes treks » saute en silence. Le `GoRouter`, lui, vit au-dessus de
+  //    toute l'application : l'appeler apres ce demontage est sans danger.
+  //
+  // 2. IL EST CHERCHE VIA [contexteDeDialogue], ET PAS SUR LE CONTEXTE RECU.
+  //    `GoRouter.maybeOf` remonte les ANCETRES a la recherche de
+  //    `InheritedGoRouter`, que GoRouter pose SOUS le `Router`. Or l'appelant
+  //    — le bandeau de demo — est pose dans le `builder` de
+  //    `MaterialApp.router`, donc AU-DESSUS : la reponse etait `null` a tous
+  //    les coups, et le retour a « Mes treks » n'avait jamais lieu depuis le
+  //    bandeau. C'est la meme famille que la tache 637, et c'est exactement ce
+  //    pour quoi `contexteDeDialogue` existe : il rend le contexte du
+  //    navigateur RACINE, le seul dont on sache qu'il est dessous.
+  final hote = context == null ? null : contexteDeDialogue(context);
+  final routeur = hote == null ? null : GoRouter.maybeOf(hote);
 
   // 1 ET 2. LA SIMULATION S'ARRETE, ET L'ETAT DE TRACKING D'AVANT REVIENT.
   // Encore sous barriere : rien ne part en base.
@@ -110,15 +139,15 @@ Future<void> quitterLaDemo(
   // 5. L'ETAT DE DEMO EST DETRUIT — LES BARRIERES TOMBENT ICI, ET PAS AVANT.
   ref.read(sessionDemoProvider.notifier).sortir();
 
-  // 6. LE REGLAGE DEMANDE, PUIS LE RETOUR A MES TREKS.
-  await ref.read(boutonDemoCacheProvider.notifier).definir(cacherBouton);
-  if (context != null && context.mounted) {
-    // `maybeOf` ET PAS `context.go` : la sortie doit rester ATOMIQUE meme si
-    // l'appel vient d'un contexte sans routeur (un dialogue monte hors de
-    // l'arbre route, un test). Un `context.go` y leve une assertion — et une
-    // assertion levee APRES avoir detruit l'etat de demo laisserait exactement
-    // l'etat hybride que le bug 19 denonce.
-    GoRouter.maybeOf(context)?.go(HomeLocations.maison);
+  // 6. LE RETOUR A MES TREKS, PUIS LE REGLAGE S'IL A ETE DEMANDE.
+  //
+  // LE DEPART PASSE EN PREMIER : c'est le geste que le randonneur attend, et il
+  // ne doit dependre d'aucune ecriture. Le routeur a ete pris au debut, donc
+  // `null` ici ne veut dire qu'une chose — l'appel ne venait pas de l'arbre
+  // route (un test) — et jamais « l'appelant a ete demonte en route ».
+  routeur?.go(HomeLocations.maison);
+  if (cacherBouton != null) {
+    await ref.read(boutonDemoCacheProvider.notifier).definir(cacherBouton);
   }
 }
 
