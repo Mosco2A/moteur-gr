@@ -247,8 +247,9 @@ void main() {
       //    d'une exception muette.
       final bavardes = <String>[];
       registreDesRoutesDormantes.forEach((g, d) {
-        if (d.raison.trim().length < 40)
+        if (d.raison.trim().length < 40) {
           bavardes.add('$g : raison trop courte');
+        }
         if (d.reveil.trim().length < 20) bavardes.add('$g : reveil trop court');
       });
       expect(

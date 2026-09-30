@@ -190,8 +190,9 @@ class GpsService {
         return GpsAccuracyMode.walking;
       case GpsAccuracyMode.moving:
         if (speed <= restingSpeedThresholdMps) return GpsAccuracyMode.resting;
-        if (speed <= movingExitSpeedThresholdMps)
+        if (speed <= movingExitSpeedThresholdMps) {
           return GpsAccuracyMode.walking;
+        }
         return GpsAccuracyMode.moving;
     }
   }

@@ -120,8 +120,9 @@ void main() {
           .map((e) => ChecklistTemplateItem.fromJson(e as Map<String, dynamic>))
           .toList();
       final overrides = testJson['trailOverrides'] as Map<String, dynamic>?;
-      if (overrides == null || !overrides.containsKey(trailId))
+      if (overrides == null || !overrides.containsKey(trailId)) {
         return defaultItems;
+      }
       final trailOverride = TrailChecklistOverride.fromJson(
         overrides[trailId] as Map<String, dynamic>,
       );

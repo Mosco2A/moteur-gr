@@ -82,8 +82,9 @@ void main() {
         Future<String?> typeDe(String table, String colonne) async {
           final rows = await db.customSelect('PRAGMA table_info($table)').get();
           for (final r in rows) {
-            if (r.read<String>('name') == colonne)
+            if (r.read<String>('name') == colonne) {
               return r.read<String>('type');
+            }
           }
           return null;
         }
