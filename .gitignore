@@ -79,3 +79,14 @@ lib/firebase_options.dart
 # jamais versionnee. Les CAPTURES de preuve sont archivees hors repo par
 # l'autopilot (data/stepways_autopilot/ dans le repo Skynet).
 /data/
+
+# Cartes hors ligne (tache 648) — la fabrication produit des fichiers LOURDS
+# qui n'ont rien a faire dans un depot : l'extrait OpenStreetMap (33 Mo), les
+# sources auxiliaires de Planetiler (~500 Mo), les tuiles vectorielles
+# intermediaires et le .mbtiles livre (27 Mo). Ils vivent dans le dossier
+# --travail de tool/cartes_hors_ligne/fabriquer.py, hors depot ; ces motifs sont
+# le filet, pas le rangement.
+*.mbtiles
+*.osm.pbf
+*.osm.pbf.md5
+planetiler*.jar
