@@ -13,8 +13,10 @@ import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
+import "../providers/service_providers.dart";
 import "cloud_sync_service.dart";
 import "fiche_technique_du_telephone.dart";
+import "montee_des_consentements.dart";
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -73,6 +75,7 @@ class SyncScheduler with WidgetsBindingObserver {
     required this.firebaseService,
     required this.progressDao,
     this.ficheTechnique,
+    this.monterLesConsentements,
     this.attenteAvantMontee = attenteParDefaut,
     this.config = const SyncConfig(),
     this.identifiantLocalDesRandos = "local",
@@ -100,6 +103,14 @@ class SyncScheduler with WidgetsBindingObserver {
   /// s y interesse pas n a pas a la fabriquer.
   final FicheTechniqueDuTelephone? ficheTechnique;
 
+  /// LE REGISTRE DE CONSENTEMENT (tache 638), SI IL EST BRANCHE.
+  ///
+  /// UN RAPPEL ET PAS LE SERVICE : cet objet sait QUAND reveiller, pas QUOI
+  /// envoyer — meme raison que `descendreLesDroits` chez l ordonnanceur de la
+  /// tache 616. Le branchement se fait dans le provider, et le registre a besoin
+  /// des preferences, qui sont asynchrones.
+  final Future<int> Function()? monterLesConsentements;
+
   /// Le delai de regroupement des ecritures locales.
   final Duration attenteAvantMontee;
 
@@ -115,6 +126,7 @@ class SyncScheduler with WidgetsBindingObserver {
   Timer? _attente;
   StreamSubscription<ConnectivityStatus>? _ecouteReseau;
   StreamSubscription<void>? _ecouteEcritures;
+  StreamSubscription<void>? _ecouteConsentements;
   String? _userId;
   bool _enCours = false;
   bool _redemander = false;
@@ -151,6 +163,7 @@ class SyncScheduler with WidgetsBindingObserver {
   Future<void> demarrer({
     required String userId,
     Stream<void>? ecrituresLocales,
+    Stream<void>? decisionsDeConsentement,
   }) async {
     if (_userId != null) await arreter();
     if (userId.isEmpty) {
@@ -176,6 +189,18 @@ class SyncScheduler with WidgetsBindingObserver {
     _ecouteEcritures = ecrituresLocales?.listen(
       (_) => signalerUneEcritureLocale(),
       onError: (Object e) => _log.w("[Montee] Flux des ecritures locales : $e"),
+    );
+
+    // UNE DECISION DE CONSENTEMENT EST UN EVENEMENT DE DONNEE (tache 638).
+    //
+    // Elle ne touche AUCUNE table Drift — elle vit dans les preferences — donc
+    // le flux des ecritures locales ci-dessus ne la voit pas. Sans cette seconde
+    // ecoute, un consentement accorde ne monterait qu au prochain demarrage ou
+    // au prochain geste sur la progression : Christophe coche, regarde la
+    // console, et ne voit rien bouger.
+    _ecouteConsentements = decisionsDeConsentement?.listen(
+      (_) => signalerUneEcritureLocale(),
+      onError: (Object e) => _log.w("[Montee] Flux des consentements : $e"),
     );
 
     // LA FICHE TECHNIQUE D ABORD, ET SANS DEPENDRE DU RESTE. C est elle qui
@@ -205,6 +230,8 @@ class SyncScheduler with WidgetsBindingObserver {
     _ecouteReseau = null;
     await _ecouteEcritures?.cancel();
     _ecouteEcritures = null;
+    await _ecouteConsentements?.cancel();
+    _ecouteConsentements = null;
     if (_observe) {
       try {
         WidgetsBinding.instance.removeObserver(this);
@@ -321,6 +348,20 @@ class SyncScheduler with WidgetsBindingObserver {
       total += randos.itemsSynced;
     }
 
+    // 4. LE REGISTRE DE CONSENTEMENT (tache 638). Seules les decisions qui ont
+    //    BOUGE partent : `decided_at` est un horodatage serveur, le renvoyer a
+    //    chaque passe deplacerait la date du consentement a chaque lancement.
+    //    Son echec ne fait pas echouer la passe — ne pas avoir pu publier un
+    //    registre n est pas une raison de ne pas monter une etape validee.
+    final registre = monterLesConsentements;
+    if (registre != null) {
+      try {
+        total += await registre();
+      } on Object catch (e) {
+        _log.w("[Montee] Registre de consentement en echec : $e");
+      }
+    }
+
     _monteesExecutees++;
     _log.d("[Montee] Passe ($cause) terminee : $total document(s).");
     return total;
@@ -392,6 +433,14 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
     firebaseService: ref.watch(firebaseServiceProvider),
     progressDao: ProgressDao(db),
     ficheTechnique: ref.watch(ficheTechniqueDuTelephoneProvider),
+    // LE REGISTRE DE CONSENTEMENT SE BRANCHE ICI (tache 638), et la montee n en
+    // sait rien d autre que « appelle ca quand tu te reveilles ». `ref.read`
+    // DANS le rappel : le service se construit au premier reveil, pas a la
+    // creation de la montee — il a besoin des preferences, qui sont asynchrones.
+    monterLesConsentements: () async {
+      final registre = await ref.read(monteeDesConsentementsProvider.future);
+      return registre.monter();
+    },
   );
   ref.onDispose(montee.arreter);
   return montee;
@@ -434,26 +483,77 @@ TableUpdateQuery _tablesQuiFontMonter(AppDatabase db) {
 /// EN MODE LOCAL (aucun `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID`), le
 /// service d authentification n est pas celui de Firebase : rien ne s arme, et
 /// c est le comportement attendu, pas une panne.
+/// TACHE 637 (VOLET 2) — LA LECTURE DE L IDENTITE POUVAIT NOIRCIR TOUTE
+/// L APPLICATION, ET « NON BLOQUANT » ETAIT FAUX.
+///
+/// `authServiceProvider` CONSTRUIT `FirebaseAuthService`, donc il touche
+/// `FirebaseAuth.instance` pendant son `create`. Tout ce qui leve la — Firebase
+/// non initialise, services Google Play absents ou trop vieux, authentification
+/// non activee sur le projet — sortait de ce provider, remontait dans le
+/// `ref.watch` que la garde d amorce fait de lui, et faisait LEVER son `build`.
+/// Flutter remplace alors l arbre entier par un `ErrorWidget` : en release, un
+/// rectangle noir sans une ligne de texte, et il revient a chaque
+/// reconstruction. C est le « Mon compte depuis le menu trek = ecran noir » de
+/// Christophe (DEM-260930-1103).
+///
+/// LA MONTEE EST UN SERVICE DE FOND : son echec doit couter LA MONTEE, jamais
+/// l ecran. On renonce, on le dit au journal, et l application vit.
 final monteeEnBaseDemarreeProvider = Provider<void>((ref) {
   final montee = ref.watch(syncSchedulerProvider);
   final db = ref.watch(databaseProvider);
-  final auth = ref.read(authServiceProvider);
 
-  if (auth is! FirebaseAuthService) {
-    _log.d("[Montee] Mode local : aucune identite serveur, montee inactive.");
+  // `Object` et non `AuthService` : le type de l interface n est pas importe ici.
+  final Object service;
+  try {
+    service = ref.read(authServiceProvider);
+  } catch (erreur) {
+    _log.d("[Montee] Identite indisponible ($erreur) — montee non armee.");
     return;
   }
 
+  if (service is! FirebaseAuthService) {
+    _log.d("[Montee] Mode local : aucune identite serveur, montee inactive.");
+    return;
+  }
+  // Recopie APRES la promotion : une variable promue ne garde pas son type a
+  // l interieur d une fermeture.
+  final auth = service;
+
   unawaited(() async {
-    await auth.garantirUneIdentite();
-    final uid = auth.identifiantDeCompte;
-    if (uid == null || uid.isEmpty) {
-      _log.d("[Montee] Identite absente au demarrage — montee non armee.");
-      return;
+    try {
+      await auth.garantirUneIdentite();
+      final uid = auth.identifiantDeCompte;
+      if (uid == null || uid.isEmpty) {
+        _log.d("[Montee] Identite absente au demarrage — montee non armee.");
+        return;
+      }
+      await montee.demarrer(
+        userId: uid,
+        ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
+        // CHAQUE DECISION DE CONSENTEMENT FAIT MONTER LE REGISTRE (tache 638).
+        // Le flux `changes` du service porte la finalite tranchee ; on ne s en
+        // sert que comme d un reveil, la montee relit l etat complet.
+        decisionsDeConsentement: _decisionsDeConsentement(ref),
+      );
+    } catch (erreur) {
+      // MEME REGLE DANS LA SUITE ASYNCHRONE. Une erreur laissee libre ici part
+      // dans le gestionnaire de zone et remonte en plantage ; elle ne coute
+      // pourtant que la montee, qui se rearmera a la prochaine ouverture.
+      _log.d("[Montee] Armement abandonne ($erreur).");
     }
-    await montee.demarrer(
-      userId: uid,
-      ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
-    );
   }());
 });
+
+/// Le flux des decisions de consentement, ou un flux vide si le service n est
+/// pas joignable.
+///
+/// MEME REGLE QUE CI-DESSUS : construire le service de consentement ne doit pas
+/// pouvoir faire echouer l armement de la montee, et encore moins l ecran.
+Stream<void> _decisionsDeConsentement(Ref ref) {
+  try {
+    return ref.read(consentServiceProvider).changes;
+  } catch (erreur) {
+    _log.d("[Montee] Flux des consentements indisponible ($erreur).");
+    return const Stream<void>.empty();
+  }
+}

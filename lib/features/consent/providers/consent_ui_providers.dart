@@ -75,7 +75,12 @@ class ConsentController {
   /// rafraichit l'etat affiche.
   Future<void> grant(ConsentPurpose purpose) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    await service.grant(purpose);
+    // DECLENCHEUR « REGLAGES » (tache 638) : la decision vient de l ecran
+    // Confidentialite, ou le randonneur est venu de lui-meme. Ce n est ni une
+    // premiere demande imposee, ni une re-demande apres modification — et le
+    // registre en base doit pouvoir les distinguer.
+    await service.grant(purpose,
+        declencheur: DeclencheurDeConsentement.reglages);
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
   }
@@ -99,7 +104,8 @@ class ConsentController {
   /// quelque chose, c'est ici que son effacement se branche.
   Future<void> revoke(ConsentPurpose purpose) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    await service.revoke(purpose);
+    await service.revoke(purpose,
+        declencheur: DeclencheurDeConsentement.reglages);
     await _effacerCeQueProtege(purpose);
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
@@ -128,7 +134,8 @@ class ConsentController {
   Future<void> declineAll() async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     for (final purpose in ConsentPurpose.values) {
-      await service.revoke(purpose);
+      await service.revoke(purpose,
+          declencheur: DeclencheurDeConsentement.reglages);
       await _effacerCeQueProtege(purpose);
     }
     _ref.invalidate(consentStatesProvider);
