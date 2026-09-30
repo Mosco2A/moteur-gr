@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../providers/ads_providers.dart';
@@ -79,17 +80,24 @@ class _RewardedNoAdsButtonState extends ConsumerState<RewardedNoAdsButton> {
     final adsReady = ref.watch(adsReadyProvider).value ?? false;
     if (!adsReady) return const SizedBox.shrink();
     return Padding(
-      padding: EdgeInsets.only(
-        top: widget.compact ? 0 : AppTheme.spacingSm,
-      ),
-      child: AppButton(
-        key: const Key('rewarded-no-ads-button'),
-        variant: AppButtonVariant.outline,
-        isLoading: _busy,
-        minHeight: widget.compact ? 44 : 48,
-        icon: StepwaysIcons.video,
-        label: t.monetization.rewardedCta,
-        onPressed: _busy ? null : _watch,
+      padding: EdgeInsets.only(top: widget.compact ? 0 : AppTheme.spacingSm),
+      // GRISE EN DEMO (integration 647, decision de Christophe du 30/09).
+      //
+      // « Voir une video » accorde 24 h de sans-pub REEL : c est une contrepartie
+      // qui vaut quelque chose, et elle survivrait a la demo puisqu elle s ecrit
+      // dans le magasin de sans-pub. La demo montre l application, elle
+      // n accorde rien — regle du bug 14, deux branches et pas une troisieme :
+      // actif et identique, ou grise et visiblement indisponible.
+      child: GriseEnDemo(
+        child: AppButton(
+          key: const Key('rewarded-no-ads-button'),
+          variant: AppButtonVariant.outline,
+          isLoading: _busy,
+          minHeight: widget.compact ? 44 : 48,
+          icon: StepwaysIcons.video,
+          label: t.monetization.rewardedCta,
+          onPressed: _busy ? null : _watch,
+        ),
       ),
     );
   }

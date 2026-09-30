@@ -28,10 +28,6 @@
     "defaultDuration": 7,
     "emergencyNumbers": [
       {
-        "name": "Secours montagne Corse",
-        "phone": "+33495613636"
-      },
-      {
         "name": "PGHM Corte (secours en montagne)",
         "phone": "+33495477146"
       },

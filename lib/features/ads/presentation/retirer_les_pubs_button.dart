@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../domain/etat_publicite.dart';
@@ -58,13 +59,19 @@ class RetirerLesPubsButton extends ConsumerWidget {
 
     return Padding(
       padding: EdgeInsets.only(top: compact ? 0 : AppTheme.spacingSm),
-      child: AppButton(
-        key: const Key('retirer-les-pubs-button'),
-        variant: AppButtonVariant.outline,
-        minHeight: compact ? 44 : 48,
-        icon: StepwaysIcons.interdit,
-        label: t.monetization.removeAdsCta,
-        onPressed: () => ouvrirLeChoixSansPub(context, trailId: trailId),
+      // GRISE EN DEMO (integration 647, decision de Christophe du 30/09). Cette
+      // porte n ouvre que deux chemins — l abonnement et la video des 24 h — et
+      // les deux engagent quelque chose de reel. En demo on la montre, on ne la
+      // franchit pas.
+      child: GriseEnDemo(
+        child: AppButton(
+          key: const Key('retirer-les-pubs-button'),
+          variant: AppButtonVariant.outline,
+          minHeight: compact ? 44 : 48,
+          icon: StepwaysIcons.interdit,
+          label: t.monetization.removeAdsCta,
+          onPressed: () => ouvrirLeChoixSansPub(context, trailId: trailId),
+        ),
       ),
     );
   }
