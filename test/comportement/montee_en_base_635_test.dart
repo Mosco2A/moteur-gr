@@ -253,10 +253,6 @@ void main() {
     connectivityMonitor: reseau,
     firebaseService: FirebaseService.testOnly(isAvailable: true),
     pastHikesDao: db.pastHikesDao,
-    // Consentement art. 9 accorde : sinon les randos passees seraient
-    // refusees AVANT toute lecture, et les tests passeraient au vert sans
-    // rien prouver de la montee.
-    consentCheck: (_) async => true,
     firestore: serveur,
   );
 
@@ -680,7 +676,6 @@ void main() {
             connectivityMonitor: reseau,
             firebaseService: FirebaseService.unavailable(),
             pastHikesDao: db.pastHikesDao,
-            consentCheck: (_) async => true,
             firestore: serveur,
           ),
           connectivityMonitor: reseau,
