@@ -129,8 +129,9 @@ class PostTrekStatsCalculator {
       distanceKm: distanceKm,
       elevationGainM: gain,
       elevationLossM: loss,
-      elevationSource:
-          useBaro ? ElevationSource.barometer : ElevationSource.gps,
+      elevationSource: useBaro
+          ? ElevationSource.barometer
+          : ElevationSource.gps,
       avgSpeedKmh: avgSpeedKmh,
       maxSpeedKmh: maxSpeedKmh,
       activeDuration: active,

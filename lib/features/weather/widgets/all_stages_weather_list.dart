@@ -55,8 +55,10 @@ class AllStagesWeatherList extends ConsumerWidget {
               return [
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.spacingBase),
-                  child: Text(t.weather.noForecast,
-                      style: theme.textTheme.bodySmall),
+                  child: Text(
+                    t.weather.noForecast,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
               ];
             }

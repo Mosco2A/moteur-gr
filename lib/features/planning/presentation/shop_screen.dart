@@ -115,8 +115,8 @@ class _ShopBody extends ConsumerWidget {
 
     // Regroupement/ordre par ETAPE (amelioration data-driven vs GR20 qui laisse
     // l'ordre du const) : etapes croissantes, commerces de chaque etape ensemble.
-    final stagesOrdered =
-        filtered.map((s) => s.stageNumber).toSet().toList()..sort();
+    final stagesOrdered = filtered.map((s) => s.stageNumber).toSet().toList()
+      ..sort();
 
     return Column(
       children: [
@@ -216,10 +216,9 @@ class _ShopFilters extends ConsumerWidget {
                   icon: _shopTypeIcon(type),
                   selected: typeFilter == type,
                   color: _shopTypeColor(type, theme.colorScheme),
-                  onSelected: () => ref
-                          .read(shopTypeFilterProvider.notifier)
-                          .state =
-                      typeFilter == type ? null : type,
+                  onSelected: () =>
+                      ref.read(shopTypeFilterProvider.notifier).state =
+                          typeFilter == type ? null : type,
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
               ],
@@ -302,8 +301,11 @@ class _SupplyAlertBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const StepIcon(StepwaysIcons.danger,
-              color: AppTheme.orangeDifficile, size: 20),
+          const StepIcon(
+            StepwaysIcons.danger,
+            color: AppTheme.orangeDifficile,
+            size: 20,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -370,8 +372,11 @@ class _ShopCard extends StatelessWidget {
                     color: typeColor.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                   ),
-                  child: StepIcon(_shopTypeIcon(shop.type),
-                      color: typeColor, size: 22),
+                  child: StepIcon(
+                    _shopTypeIcon(shop.type),
+                    color: typeColor,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
@@ -390,11 +395,14 @@ class _ShopCard extends StatelessWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 1),
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: AppTheme.vertFacile.withAlpha(40),
-                              borderRadius:
-                                  BorderRadius.circular(AppTheme.radiusChip),
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusChip,
+                              ),
                             ),
                             child: Text(
                               t.shop.stageBadge(n: shop.stageNumber),
@@ -406,15 +414,18 @@ class _ShopCard extends StatelessWidget {
                           ),
                           if (shop.openingHours.isNotEmpty) ...[
                             const SizedBox(width: AppTheme.spacingSm),
-                            StepIcon(StepwaysIcons.duree,
-                                size: 14,
-                                color: AppTheme.grisGranite.withAlpha(180)),
+                            StepIcon(
+                              StepwaysIcons.duree,
+                              size: 14,
+                              color: AppTheme.grisGranite.withAlpha(180),
+                            ),
                             const SizedBox(width: 2),
                             Expanded(
                               child: Text(
                                 shop.openingHours,
-                                style: theme.textTheme.bodySmall
-                                    ?.copyWith(fontSize: 14),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 14,
+                                ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -436,15 +447,19 @@ class _ShopCard extends StatelessWidget {
                 children: shop.products.take(4).map((product) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: scheme.surface,
                       borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                     ),
                     child: Text(
                       product,
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -456,7 +471,9 @@ class _ShopCard extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingSm),
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm, vertical: AppTheme.spacingXs),
+                  horizontal: AppTheme.spacingSm,
+                  vertical: AppTheme.spacingXs,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.rougeUrgence.withAlpha(15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -464,8 +481,11 @@ class _ShopCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const StepIcon(StepwaysIcons.danger,
-                        size: 14, color: AppTheme.rougeUrgence),
+                    const StepIcon(
+                      StepwaysIcons.danger,
+                      size: 14,
+                      color: AppTheme.rougeUrgence,
+                    ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
@@ -506,8 +526,9 @@ void _showShopDetail(
     isScrollControlled: true,
     showDragHandle: true,
     shape: const RoundedRectangleBorder(
-      borderRadius:
-          BorderRadius.vertical(top: Radius.circular(AppTheme.radiusBottomSheet)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppTheme.radiusBottomSheet),
+      ),
     ),
     builder: (context) {
       return DraggableScrollableSheet(
@@ -525,11 +546,17 @@ void _showShopDetail(
                 // Titre + icone type.
                 Row(
                   children: [
-                    StepIcon(_shopTypeIcon(shop.type), color: typeColor, size: 28),
+                    StepIcon(
+                      _shopTypeIcon(shop.type),
+                      color: typeColor,
+                      size: 28,
+                    ),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
-                      child: Text(shop.name,
-                          style: theme.textTheme.headlineSmall),
+                      child: Text(
+                        shop.name,
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
                   ],
                 ),
@@ -537,16 +564,20 @@ void _showShopDetail(
 
                 // Informations (parite GR20 : Type, Etape, GPS, Horaires).
                 SectionHeader(
-                    title: t.shop.sectionInfo, icon: StepwaysIcons.info),
+                  title: t.shop.sectionInfo,
+                  icon: StepwaysIcons.info,
+                ),
                 const SizedBox(height: AppTheme.spacingSm),
                 _DetailRow(
-                    icon: StepwaysIcons.filtres,
-                    label: t.shop.fieldType,
-                    value: _shopTypeLabel(t, shop.type)),
+                  icon: StepwaysIcons.filtres,
+                  label: t.shop.fieldType,
+                  value: _shopTypeLabel(t, shop.type),
+                ),
                 _DetailRow(
-                    icon: StepwaysIcons.carte,
-                    label: t.shop.fieldStage,
-                    value: t.shop.stageBadge(n: shop.stageNumber)),
+                  icon: StepwaysIcons.carte,
+                  label: t.shop.fieldStage,
+                  value: t.shop.stageBadge(n: shop.stageNumber),
+                ),
                 // GPS masque si non verifie (honnetete #99460 : pas de 0,0 faux).
                 if (shop.hasCoordinates)
                   _DetailRow(
@@ -557,9 +588,10 @@ void _showShopDetail(
                   ),
                 if (shop.openingHours.isNotEmpty)
                   _DetailRow(
-                      icon: StepwaysIcons.duree,
-                      label: t.shop.fieldHours,
-                      value: shop.openingHours),
+                    icon: StepwaysIcons.duree,
+                    label: t.shop.fieldHours,
+                    value: shop.openingHours,
+                  ),
 
                 // ADRESSE ET LIEN VERS LES CARTES (tache 641, bug 15).
                 //
@@ -597,8 +629,11 @@ void _showShopDetail(
                               onTap: () => _call(shop.phone),
                               child: Row(
                                 children: [
-                                  StepIcon(StepwaysIcons.telephone,
-                                      size: 18, color: scheme.secondary),
+                                  StepIcon(
+                                    StepwaysIcons.telephone,
+                                    size: 18,
+                                    color: scheme.secondary,
+                                  ),
                                   const SizedBox(width: 6),
                                   Text(
                                     shop.phone,
@@ -617,8 +652,11 @@ void _showShopDetail(
                           button: true,
                           label: t.shop.a11y.website,
                           child: IconButton(
-                            icon: StepIcon(StepwaysIcons.lien,
-                                size: 18, color: scheme.secondary),
+                            icon: StepIcon(
+                              StepwaysIcons.lien,
+                              size: 18,
+                              color: scheme.secondary,
+                            ),
                             tooltip: t.shop.website,
                             onPressed: () => _openUrl(shop.website!),
                           ),
@@ -635,14 +673,18 @@ void _showShopDetail(
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
                       color: AppTheme.rougeUrgence.withAlpha(20),
-                      border:
-                          Border.all(color: AppTheme.rougeUrgence.withAlpha(100)),
+                      border: Border.all(
+                        color: AppTheme.rougeUrgence.withAlpha(100),
+                      ),
                       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                     ),
                     child: Row(
                       children: [
-                        const StepIcon(StepwaysIcons.danger,
-                            color: AppTheme.rougeUrgence, size: 20),
+                        const StepIcon(
+                          StepwaysIcons.danger,
+                          color: AppTheme.rougeUrgence,
+                          size: 20,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Expanded(
                           child: Text(
@@ -662,20 +704,28 @@ void _showShopDetail(
                 // Produits disponibles (liste complete, parite GR20).
                 if (shop.hasProducts) ...[
                   SectionHeader(
-                      title: t.shop.sectionProducts,
-                      icon: StepwaysIcons.panier),
+                    title: t.shop.sectionProducts,
+                    icon: StepwaysIcons.panier,
+                  ),
                   const SizedBox(height: AppTheme.spacingSm),
                   for (final product in shop.products)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
+                      padding: const EdgeInsets.only(
+                        bottom: AppTheme.spacingXs,
+                      ),
                       child: Row(
                         children: [
-                          StepIcon(StepwaysIcons.cocheCercle,
-                              size: 16, color: scheme.secondary),
+                          StepIcon(
+                            StepwaysIcons.cocheCercle,
+                            size: 16,
+                            color: scheme.secondary,
+                          ),
                           const SizedBox(width: AppTheme.spacingMd),
                           Expanded(
-                            child: Text(product,
-                                style: theme.textTheme.bodyMedium),
+                            child: Text(
+                              product,
+                              style: theme.textTheme.bodyMedium,
+                            ),
                           ),
                         ],
                       ),
@@ -693,8 +743,11 @@ void _showShopDetail(
 
 /// Ligne d'information du bottom sheet (parite GR20 `_buildDetailRow`).
 class _DetailRow extends StatelessWidget {
-  const _DetailRow(
-      {required this.icon, required this.label, required this.value});
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   final String icon;
   final String label;
@@ -736,8 +789,9 @@ class _ShopFilterEmpty extends StatelessWidget {
         padding: const EdgeInsets.all(AppTheme.spacingXl),
         child: Text(
           t.shop.filterEmpty,
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: AppTheme.grisGranite),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppTheme.grisGranite,
+          ),
           textAlign: TextAlign.center,
         ),
       ),

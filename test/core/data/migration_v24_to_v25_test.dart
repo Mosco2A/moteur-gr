@@ -25,8 +25,7 @@ void main() {
       expect(db.schemaVersion, greaterThanOrEqualTo(25));
     });
 
-    test(
-        'migration reelle 24 -> 25 : cree les 3 tables faisabilite et preserve '
+    test('migration reelle 24 -> 25 : cree les 3 tables faisabilite et preserve '
         'les donnees existantes', () async {
       final dir = await Directory.systemTemp.createTemp('gr_mig_v25_');
       addTearDown(() async {
@@ -47,8 +46,9 @@ void main() {
       );
 
       // Retire les tables v25 et rembobine la version -> etat "v24".
-      await seedDb
-          .customStatement('DROP TABLE IF EXISTS hiker_experience_note');
+      await seedDb.customStatement(
+        'DROP TABLE IF EXISTS hiker_experience_note',
+      );
       await seedDb.customStatement('DROP TABLE IF EXISTS past_hike_entries');
       await seedDb.customStatement('DROP TABLE IF EXISTS hiker_profile');
 
@@ -81,17 +81,29 @@ void main() {
           .get();
       final tableNames = tables.map((r) => r.read<String>('name')).toList();
 
-      expect(tableNames, contains('hiker_profile'),
-          reason: 'Table hiker_profile creee en migration v25');
-      expect(tableNames, contains('past_hike_entries'),
-          reason: 'Table past_hike_entries creee en migration v25');
-      expect(tableNames, contains('hiker_experience_note'),
-          reason: 'Table hiker_experience_note creee en migration v25');
+      expect(
+        tableNames,
+        contains('hiker_profile'),
+        reason: 'Table hiker_profile creee en migration v25',
+      );
+      expect(
+        tableNames,
+        contains('past_hike_entries'),
+        reason: 'Table past_hike_entries creee en migration v25',
+      );
+      expect(
+        tableNames,
+        contains('hiker_experience_note'),
+        reason: 'Table hiker_experience_note creee en migration v25',
+      );
 
       // --- 3. Aucune perte : l'etape preexistante est intacte ---------------
       final stagesRows = await db.customSelect('SELECT * FROM stages').get();
-      expect(stagesRows, hasLength(1),
-          reason: 'La donnee metier v24 survit a la migration');
+      expect(
+        stagesRows,
+        hasLength(1),
+        reason: 'La donnee metier v24 survit a la migration',
+      );
       expect(stagesRows.first.read<String>('trail_id'), 'gr20');
 
       final userVersion = await db
@@ -101,53 +113,55 @@ void main() {
       expect(userVersion, greaterThanOrEqualTo(25));
     });
 
-    test('les 3 nouvelles tables sont utilisables (DAOs + valeurs par defaut)',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
+    test(
+      'les 3 nouvelles tables sont utilisables (DAOs + valeurs par defaut)',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
 
-      // HikerProfile : upsert minimal -> defauts (0 / null / '').
-      await db.hikerProfileDao.upsert(
-        HikerProfileCompanion.insert(
-          userId: 'user-hash-abc',
-          updatedAt: DateTime(2026, 9, 11),
-        ),
-      );
-      final profile = await db.hikerProfileDao.getByUserId('user-hash-abc');
-      expect(profile, isNotNull);
-      expect(profile!.age, 0);
-      expect(profile.heightCm, 0);
-      expect(profile.weightKg, 0);
-      expect(profile.sex, isNull);
-      expect(profile.countryIso, '');
+        // HikerProfile : upsert minimal -> defauts (0 / null / '').
+        await db.hikerProfileDao.upsert(
+          HikerProfileCompanion.insert(
+            userId: 'user-hash-abc',
+            updatedAt: DateTime(2026, 9, 11),
+          ),
+        );
+        final profile = await db.hikerProfileDao.getByUserId('user-hash-abc');
+        expect(profile, isNotNull);
+        expect(profile!.age, 0);
+        expect(profile.heightCm, 0);
+        expect(profile.weightKg, 0);
+        expect(profile.sex, isNull);
+        expect(profile.countryIso, '');
 
-      // PastHikeEntries : insert d'une rando.
-      await db.pastHikesDao.insertHike(
-        PastHikeEntriesCompanion.insert(
-          userId: 'user-hash-abc',
-          date: DateTime(2026, 7, 1),
-          days: const Value(3),
-          totalDistanceKm: const Value(42),
-          totalElevationGain: const Value(2100),
-          updatedAt: DateTime(2026, 9, 11),
-        ),
-      );
-      final hikes = await db.pastHikesDao.getByUserId('user-hash-abc');
-      expect(hikes, hasLength(1));
-      expect(hikes.first.days, 3);
-      expect(hikes.first.totalDistanceKm, 42);
+        // PastHikeEntries : insert d'une rando.
+        await db.pastHikesDao.insertHike(
+          PastHikeEntriesCompanion.insert(
+            userId: 'user-hash-abc',
+            date: DateTime(2026, 7, 1),
+            days: const Value(3),
+            totalDistanceKm: const Value(42),
+            totalElevationGain: const Value(2100),
+            updatedAt: DateTime(2026, 9, 11),
+          ),
+        );
+        final hikes = await db.pastHikesDao.getByUserId('user-hash-abc');
+        expect(hikes, hasLength(1));
+        expect(hikes.first.days, 3);
+        expect(hikes.first.totalDistanceKm, 42);
 
-      // HikerExperienceNote : upsert de la note globale.
-      await db.pastHikesDao.upsertNote(
-        HikerExperienceNoteCompanion.insert(
-          userId: 'user-hash-abc',
-          freeTextDifficulties: const Value('genoux en descente'),
-          updatedAt: DateTime(2026, 9, 11),
-        ),
-      );
-      final note = await db.pastHikesDao.getNote('user-hash-abc');
-      expect(note, isNotNull);
-      expect(note!.freeTextDifficulties, 'genoux en descente');
-    });
+        // HikerExperienceNote : upsert de la note globale.
+        await db.pastHikesDao.upsertNote(
+          HikerExperienceNoteCompanion.insert(
+            userId: 'user-hash-abc',
+            freeTextDifficulties: const Value('genoux en descente'),
+            updatedAt: DateTime(2026, 9, 11),
+          ),
+        );
+        final note = await db.pastHikesDao.getNote('user-hash-abc');
+        expect(note, isNotNull);
+        expect(note!.freeTextDifficulties, 'genoux en descente');
+      },
+    );
   });
 }

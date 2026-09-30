@@ -215,7 +215,7 @@ abstract final class MarkerOverlap {
             minimumGapPx(anchor.diameterPx, other.diameterPx) * anchorScale;
         final latGapM =
             (anchor.position.latitude - other.position.latitude).abs() *
-                _metersPerLatitudeDegree;
+            _metersPerLatitudeDegree;
         if (latGapM > maxGapM) continue;
         if (overlapAtZoom(anchor, other, zoom)) {
           taken[j] = true;

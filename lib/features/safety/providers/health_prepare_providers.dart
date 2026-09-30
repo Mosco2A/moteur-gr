@@ -146,9 +146,9 @@ class HealthPrepareStepsNotifier extends Notifier<Set<HealthPrepStep>> {
   /// Appele par l'ecran de la fiche a chaque ouverture, a chaque enregistrement
   /// et apres un effacement : le signal SUIT la donnee, il ne lui survit pas.
   Future<void> setFilled(bool remplie) => _apply(
-        ajouts: remplie ? const {HealthPrepStep.filled} : const {},
-        retraits: remplie ? const {} : const {HealthPrepStep.filled},
-      );
+    ajouts: remplie ? const {HealthPrepStep.filled} : const {},
+    retraits: remplie ? const {} : const {HealthPrepStep.filled},
+  );
 
   /// Enregistre l'ACCUSE DE LECTURE des conseils d'usage terrain. Idempotent.
   Future<void> markAdviceRead() =>
@@ -161,16 +161,16 @@ class HealthPrepareStepsNotifier extends Notifier<Set<HealthPrepStep>> {
   /// avoir change. Le randonneur doit pouvoir dire « finalement non » et
   /// retrouver son rappel.
   Future<void> setPhoneCardCopied(bool recopiee) => _apply(
-        ajouts: recopiee ? const {HealthPrepStep.phoneCardCopied} : const {},
-        retraits: recopiee ? const {} : const {HealthPrepStep.phoneCardCopied},
-      );
+    ajouts: recopiee ? const {HealthPrepStep.phoneCardCopied} : const {},
+    retraits: recopiee ? const {} : const {HealthPrepStep.phoneCardCopied},
+  );
 }
 
 /// Signaux de preparation de la fiche medicale (persistes).
 final healthPrepareStepsProvider =
     NotifierProvider<HealthPrepareStepsNotifier, Set<HealthPrepStep>>(
-  HealthPrepareStepsNotifier.new,
-);
+      HealthPrepareStepsNotifier.new,
+    );
 
 /// « Fiche medicale prete » : REMPLIE **et** conseils LUS (decision Chris).
 ///

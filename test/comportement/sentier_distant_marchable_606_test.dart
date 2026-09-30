@@ -42,7 +42,6 @@ import '../fixtures/horodatage_de_serveur.dart';
 /// dit exactement ce que `3 < 4` disait. Aucune assertion n est affaiblie.
 HorodatageServeur v(int n) => aJPlus(n);
 
-
 /// TACHE 606 — LA SECONDE MOITIE DU MUR N1 : UN SENTIER 100 % DISTANT EST
 /// MARCHABLE.
 ///
@@ -108,8 +107,9 @@ String _empreinteServie(String chemin) => _empreintesServies[chemin]!;
 /// Client HTTP qui sert le manifeste et les fichiers de donnees du double.
 MockClient _fauxStockage(Map<String, Object> parChemin, {List<int>? appels}) {
   for (final entree in parChemin.entries) {
-    _empreintesServies[entree.key] =
-        EmpreinteDePublication.duTexte(jsonEncode(entree.value));
+    _empreintesServies[entree.key] = EmpreinteDePublication.duTexte(
+      jsonEncode(entree.value),
+    );
   }
   return MockClient((requete) async {
     appels?.add(1);
@@ -158,106 +158,104 @@ final _entreeAubrac = TrailManifestEntry(
 );
 
 Map<String, Object> _manifeste(List<TrailManifestEntry> entrees) => {
-      'schemaVersion': 2,
-      'trails': entrees.map((e) => e.toJson()).toList(),
-    };
+  'schemaVersion': 2,
+  'trails': entrees.map((e) => e.toJson()).toList(),
+};
 
 Map<String, Object?> _etape({int elevationGain = 800, int rev = 3}) => {
-      'id': 'aubrac-s1',
-      'itinerary_id': 'aubrac-i1',
-      'stage_number': 1,
-      'name_fr': 'Nasbinals - Aubrac',
-      'name_en': 'Nasbinals - Aubrac',
-      'name_de': 'Nasbinals - Aubrac',
-      'name_it': 'Nasbinals - Aubrac',
-      'name_es': 'Nasbinals - Aubrac',
-      'start_lat': 44.66,
-      'start_lng': 3.04,
-      'end_lat': 44.63,
-      'end_lng': 2.98,
-      'distance_km': 14.0,
-      'elevation_gain': elevationGain,
-      'elevation_loss': 210,
-      'duration_minutes': 240,
-      'difficulty': 'moyen',
-      'rev': v(rev).iso8601,
-    };
+  'id': 'aubrac-s1',
+  'itinerary_id': 'aubrac-i1',
+  'stage_number': 1,
+  'name_fr': 'Nasbinals - Aubrac',
+  'name_en': 'Nasbinals - Aubrac',
+  'name_de': 'Nasbinals - Aubrac',
+  'name_it': 'Nasbinals - Aubrac',
+  'name_es': 'Nasbinals - Aubrac',
+  'start_lat': 44.66,
+  'start_lng': 3.04,
+  'end_lat': 44.63,
+  'end_lng': 2.98,
+  'distance_km': 14.0,
+  'elevation_gain': elevationGain,
+  'elevation_loss': 210,
+  'duration_minutes': 240,
+  'difficulty': 'moyen',
+  'rev': v(rev).iso8601,
+};
 
 Map<String, Object?> _itineraire({int rev = 3}) => {
-      'id': 'aubrac-i1',
-      'trail_id': 'gr-aubrac',
-      'code': 'AUBRAC-NS',
-      'name_fr': 'Aubrac nord-sud',
-      'name_en': 'Aubrac north-south',
-      'name_de': 'Aubrac Nord-Sud',
-      'name_it': 'Aubrac nord-sud',
-      'name_es': 'Aubrac norte-sur',
-      'distance_km': 14.0,
-      'elevation_gain': 800,
-      'stage_count': 1,
-      'rev': v(rev).iso8601,
-    };
+  'id': 'aubrac-i1',
+  'trail_id': 'gr-aubrac',
+  'code': 'AUBRAC-NS',
+  'name_fr': 'Aubrac nord-sud',
+  'name_en': 'Aubrac north-south',
+  'name_de': 'Aubrac Nord-Sud',
+  'name_it': 'Aubrac nord-sud',
+  'name_es': 'Aubrac norte-sur',
+  'distance_km': 14.0,
+  'elevation_gain': 800,
+  'stage_count': 1,
+  'rev': v(rev).iso8601,
+};
 
 Map<String, Object?> _poi({
   String id = 'aubrac-p1',
   int rev = 3,
   bool supprime = false,
-}) =>
-    {
-      'id': id,
-      'stage_id': 'aubrac-s1',
-      'name_fr': 'Fontaine des Rajas',
-      'name_en': 'Rajas spring',
-      'name_de': 'Rajas-Quelle',
-      'name_it': 'Fonte Rajas',
-      'name_es': 'Fuente Rajas',
-      'type': 'water',
-      'lat': 44.65,
-      'lng': 3.0,
-      if (rev > 0) 'rev': v(rev).iso8601,
-      if (supprime) 'supprime': true,
-    };
+}) => {
+  'id': id,
+  'stage_id': 'aubrac-s1',
+  'name_fr': 'Fontaine des Rajas',
+  'name_en': 'Rajas spring',
+  'name_de': 'Rajas-Quelle',
+  'name_it': 'Fonte Rajas',
+  'name_es': 'Fuente Rajas',
+  'type': 'water',
+  'lat': 44.65,
+  'lng': 3.0,
+  if (rev > 0) 'rev': v(rev).iso8601,
+  if (supprime) 'supprime': true,
+};
 
 /// La TRACE du sentier distant : l entete et ses points.
 Map<String, Object?> _trace({int rev = 3}) => {
-      'id': 'aubrac-t1',
-      'itinerary_id': 'aubrac-i1',
-      'name': 'Trace Aubrac nord-sud',
-      'rev': v(rev).iso8601,
-    };
+  'id': 'aubrac-t1',
+  'itinerary_id': 'aubrac-i1',
+  'name': 'Trace Aubrac nord-sud',
+  'rev': v(rev).iso8601,
+};
 
 List<Map<String, Object?>> _pointsDeTrace({int nombre = 5, int rev = 3}) => [
-      for (var i = 0; i < nombre; i++)
-        {
-          'track_id': 'aubrac-t1',
-          'sequence_index': i,
-          'lat': 44.66 - i * 0.01,
-          'lng': 3.04 - i * 0.01,
-          'elevation': 1100.0 + i * 10,
-          'rev': v(rev).iso8601,
-        },
-    ];
+  for (var i = 0; i < nombre; i++)
+    {
+      'track_id': 'aubrac-t1',
+      'sequence_index': i,
+      'lat': 44.66 - i * 0.01,
+      'lng': 3.04 - i * 0.01,
+      'elevation': 1100.0 + i * 10,
+      'rev': v(rev).iso8601,
+    },
+];
 
 /// Le fichier de donnees COMPLET du sentier distant (les cinq familles utiles).
 Map<String, Object> _donneesAubrac({
   int revision = 3,
   int elevationGain = 800,
   List<Map<String, Object?>>? pois,
-}) =>
-    {
-      'trail_meta': {
-        'id': 'gr-aubrac',
-        'code': 'AUBRAC',
-        'data_version': v(revision).iso8601,
-        'status': 'active',
-        'rev': v(revision).iso8601,
-      },
-      'itineraries': [_itineraire()],
-      'stages': [_etape(elevationGain: elevationGain, rev: revision)],
-      'pois': pois ?? [_poi()],
-      'gpx_tracks': [_trace()],
-      'gpx_points': _pointsDeTrace(),
-    };
+}) => {
+  'trail_meta': {
+    'id': 'gr-aubrac',
+    'code': 'AUBRAC',
+    'data_version': v(revision).iso8601,
+    'status': 'active',
+    'rev': v(revision).iso8601,
+  },
+  'itineraries': [_itineraire()],
+  'stages': [_etape(elevationGain: elevationGain, rev: revision)],
+  'pois': pois ?? [_poi()],
+  'gpx_tracks': [_trace()],
+  'gpx_points': _pointsDeTrace(),
+};
 
 void main() {
   // rootBundle : le secours asset des sentiers embarques est lu pour de vrai.
@@ -276,24 +274,23 @@ void main() {
     Map<String, Object> servi = const {},
     SourceDeDonneesSentier? source,
     List<int>? appels,
-  }) =>
-      DeltaUpdateService(
-        db: db,
-        manifestService: ManifestService(
-          dao: manifestes,
-          connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
-        ),
-        trailManifestsDao: manifestes,
-        trailMetaDao: TrailMetaDao(db),
-        trailItinerariesDao: TrailItinerariesDao(db),
-        trailStagesDao: TrailStagesDao(db),
-        trailAccommodationsDao: TrailAccommodationsDao(db),
-        trailPoisDao: TrailPoisDao(db),
-        trailGpxTracksDao: TrailGpxTracksDao(db),
-        trailGpxPointsDao: TrailGpxPointsDao(db),
-        source: source,
-        httpClient: _fauxStockage(servi, appels: appels),
-      );
+  }) => DeltaUpdateService(
+    db: db,
+    manifestService: ManifestService(
+      dao: manifestes,
+      connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
+    ),
+    trailManifestsDao: manifestes,
+    trailMetaDao: TrailMetaDao(db),
+    trailItinerariesDao: TrailItinerariesDao(db),
+    trailStagesDao: TrailStagesDao(db),
+    trailAccommodationsDao: TrailAccommodationsDao(db),
+    trailPoisDao: TrailPoisDao(db),
+    trailGpxTracksDao: TrailGpxTracksDao(db),
+    trailGpxPointsDao: TrailGpxPointsDao(db),
+    source: source,
+    httpClient: _fauxStockage(servi, appels: appels),
+  );
 
   ProviderContainer conteneur({
     required ConnectivityStatus reseau,
@@ -301,18 +298,22 @@ void main() {
   }) {
     final reseauDouble = _FauxReseau(reseau);
     final http = _fauxStockage(servi);
-    return ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      connectivityMonitorProvider.overrideWithValue(reseauDouble),
-      manifestServiceProvider.overrideWithValue(ManifestService(
-        dao: manifestes,
-        connectivityMonitor: reseauDouble,
-        httpClient: http,
-      )),
-      deltaUpdateServiceProvider.overrideWith(
-        (ref) => serviceAvec(servi: servi),
-      ),
-    ]);
+    return ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        connectivityMonitorProvider.overrideWithValue(reseauDouble),
+        manifestServiceProvider.overrideWithValue(
+          ManifestService(
+            dao: manifestes,
+            connectivityMonitor: reseauDouble,
+            httpClient: http,
+          ),
+        ),
+        deltaUpdateServiceProvider.overrideWith(
+          (ref) => serviceAvec(servi: servi),
+        ),
+      ],
+    );
   }
 
   // =========================================================================
@@ -320,85 +321,123 @@ void main() {
   // =========================================================================
   group('606 — un sentier 100 % distant est MARCHABLE', () {
     test(
-        'LE TEST D ACCEPTATION : un sentier absent des assets, decrit '
-        'entierement a distance (fiche, etapes, POI, TRACE), apparait au '
-        'catalogue, se telecharge, s ouvre, ET SA TRACE S AFFICHE SUR LA CARTE',
-        () async {
-      final c = conteneur(
-        reseau: ConnectivityStatusValues.online,
-        servi: {
-          'manifest.json': _manifeste([_entreeAubrac]),
-          'gr_aubrac/v3.json': _donneesAubrac(),
-        },
-      );
-      addTearDown(c.dispose);
+      'LE TEST D ACCEPTATION : un sentier absent des assets, decrit '
+      'entierement a distance (fiche, etapes, POI, TRACE), apparait au '
+      'catalogue, se telecharge, s ouvre, ET SA TRACE S AFFICHE SUR LA CARTE',
+      () async {
+        final c = conteneur(
+          reseau: ConnectivityStatusValues.online,
+          servi: {
+            'manifest.json': _manifeste([_entreeAubrac]),
+            'gr_aubrac/v3.json': _donneesAubrac(),
+          },
+        );
+        addTearDown(c.dispose);
 
-      // PREMISSE DU TEST : le binaire ne connait PAS ce sentier, et il n a
-      // AUCUN fichier embarque. Sans cela le test ne prouverait rien.
-      expect(TrailCatalog.byId('gr-aubrac'), isNull);
+        // PREMISSE DU TEST : le binaire ne connait PAS ce sentier, et il n a
+        // AUCUN fichier embarque. Sans cela le test ne prouverait rien.
+        expect(TrailCatalog.byId('gr-aubrac'), isNull);
 
-      // --- 1. IL APPARAIT AU CATALOGUE (acquis du lot 605) ---
-      c.read(catalogueSentiersProvider);
-      await _laisserLaLectureSeFaire(c);
-      final auCatalogue =
-          c.read(availableTrailsProvider).where((s) => s.id == 'gr-aubrac');
-      expect(auCatalogue, hasLength(1));
-      expect(auCatalogue.single.gpxAssetPath, isEmpty,
-          reason: 'une liste distante ne peut pas inventer un fichier embarque '
+        // --- 1. IL APPARAIT AU CATALOGUE (acquis du lot 605) ---
+        c.read(catalogueSentiersProvider);
+        await _laisserLaLectureSeFaire(c);
+        final auCatalogue = c
+            .read(availableTrailsProvider)
+            .where((s) => s.id == 'gr-aubrac');
+        expect(auCatalogue, hasLength(1));
+        expect(
+          auCatalogue.single.gpxAssetPath,
+          isEmpty,
+          reason:
+              'une liste distante ne peut pas inventer un fichier embarque '
               '(#F14) : c est precisement pourquoi la carte devait changer de '
-              'source');
+              'source',
+        );
 
-      // --- 2. IL SE TELECHARGE, PAR LE CHEMIN UNIQUE ---
-      await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac',
-          niveau: NiveauDeTelechargement.realiser);
+        // --- 2. IL SE TELECHARGE, PAR LE CHEMIN UNIQUE ---
+        await c.read(catalogStateProvider.future);
+        await c
+            .read(catalogStateProvider.notifier)
+            .downloadTrail(
+              'gr-aubrac',
+              niveau: NiveauDeTelechargement.realiser,
+            );
 
-      expect(await manifestes.needsUpdate('gr-aubrac'), isFalse,
-          reason: 'la revision locale est inscrite DANS la transaction de la '
-              'pose, sinon chaque ouverture retelechargerait tout');
-      expect((await TrailGpxPointsDao(db).getByTrackId('aubrac-t1')),
+        expect(
+          await manifestes.needsUpdate('gr-aubrac'),
+          isFalse,
+          reason:
+              'la revision locale est inscrite DANS la transaction de la '
+              'pose, sinon chaque ouverture retelechargerait tout',
+        );
+        expect(
+          (await TrailGpxPointsDao(db).getByTrackId('aubrac-t1')),
           hasLength(5),
-          reason: 'la TRACE est copiee en base comme le reste : c est la '
-              'famille gpx_points');
+          reason:
+              'la TRACE est copiee en base comme le reste : c est la '
+              'famille gpx_points',
+        );
 
-      // --- 3. IL S OUVRE : le moteur suit le sentier choisi ---
-      c.read(selectedTrailIdProvider.notifier).state = 'gr-aubrac';
-      expect(c.read(trailConfigProvider).id, 'gr-aubrac');
+        // --- 3. IL S OUVRE : le moteur suit le sentier choisi ---
+        c.read(selectedTrailIdProvider.notifier).state = 'gr-aubrac';
+        expect(c.read(trailConfigProvider).id, 'gr-aubrac');
 
-      // --- 4. ET SA TRACE S AFFICHE SUR LA CARTE. C EST LE MUR. ---
-      final points = await c.read(gpxTrackProvider('gr-aubrac').future);
-      expect(points, hasLength(5),
-          reason: 'AVANT CE LOT : `GpxParser.parseFromAsset("")` — la carte '
+        // --- 4. ET SA TRACE S AFFICHE SUR LA CARTE. C EST LE MUR. ---
+        final points = await c.read(gpxTrackProvider('gr-aubrac').future);
+        expect(
+          points,
+          hasLength(5),
+          reason:
+              'AVANT CE LOT : `GpxParser.parseFromAsset("")` — la carte '
               'allait chercher la trace dans le BINAIRE, donc un sentier connu '
               'du seul distant n avait AUCUNE source de trace. Il etait '
-              'consultable et pas MARCHABLE.');
-      expect(points.first.altitude, 1100.0);
-      expect(points.last.distanceFromStart, greaterThan(0),
-          reason: 'la distance cumulee est calculee a la lecture : la base ne '
-              'la stocke pas');
+              'consultable et pas MARCHABLE.',
+        );
+        expect(points.first.altitude, 1100.0);
+        expect(
+          points.last.distanceFromStart,
+          greaterThan(0),
+          reason:
+              'la distance cumulee est calculee a la lecture : la base ne '
+              'la stocke pas',
+        );
 
-      final trace = await c.read(traceDuSentierProvider('gr-aubrac').future);
-      expect(trace.source, SourceDeLaTrace.base,
-          reason: 'et elle vient de la BASE, pas d un asset de complaisance');
-    });
+        final trace = await c.read(traceDuSentierProvider('gr-aubrac').future);
+        expect(
+          trace.source,
+          SourceDeLaTrace.base,
+          reason: 'et elle vient de la BASE, pas d un asset de complaisance',
+        );
+      },
+    );
 
     test('LES QUATRE SENTIERS EMBARQUES NE PERDENT RIEN : base vide, la trace '
         'compilee est lue comme avant', () async {
-      final c = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(testTrailConfig),
-      ]);
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+        ],
+      );
       addTearDown(c.dispose);
 
       final points = await c.read(gpxTrackProvider(testTrailConfig.id).future);
-      expect(points, hasLength(27),
-          reason: 'les 27 points de assets/gpx/test_trail.gpx, exactement '
-              'comme avant le branchement');
+      expect(
+        points,
+        hasLength(27),
+        reason:
+            'les 27 points de assets/gpx/test_trail.gpx, exactement '
+            'comme avant le branchement',
+      );
 
-      final trace =
-          await c.read(traceDuSentierProvider(testTrailConfig.id).future);
-      expect(trace.source, SourceDeLaTrace.assetCompile,
-          reason: 'l asset est le SECOURS, et il sert quand la base n a rien');
+      final trace = await c.read(
+        traceDuSentierProvider(testTrailConfig.id).future,
+      );
+      expect(
+        trace.source,
+        SourceDeLaTrace.assetCompile,
+        reason: 'l asset est le SECOURS, et il sert quand la base n a rien',
+      );
     });
 
     test('L ALLER-RETOUR BASE/ASSET EST NEUTRE : la trace posee en base rend '
@@ -413,11 +452,13 @@ void main() {
       expect(duFichier, hasLength(53), reason: 'temoin de la mesure');
 
       // On pose en base ce que le semeur pose desormais : la trace ENTIERE.
-      await TrailGpxTracksDao(db).insertOrReplace(const TrailGpxTracksCompanion(
-        id: Value('mare-a-mare-centre'),
-        itineraryId: Value('mare-a-mare-centre'),
-        name: Value('Mare a Mare Centre'),
-      ));
+      await TrailGpxTracksDao(db).insertOrReplace(
+        const TrailGpxTracksCompanion(
+          id: Value('mare-a-mare-centre'),
+          itineraryId: Value('mare-a-mare-centre'),
+          name: Value('Mare a Mare Centre'),
+        ),
+      );
       await TrailGpxPointsDao(db).insertAll([
         for (var i = 0; i < duFichier.length; i++)
           TrailGpxPointsCompanion(
@@ -435,45 +476,63 @@ void main() {
       );
 
       expect(deLaBase.source, SourceDeLaTrace.base);
-      expect(deLaBase.points, hasLength(duFichier.length),
-          reason: 'AUCUN point perdu : c est la condition non negociable du '
-              'branchement');
+      expect(
+        deLaBase.points,
+        hasLength(duFichier.length),
+        reason:
+            'AUCUN point perdu : c est la condition non negociable du '
+            'branchement',
+      );
       for (var i = 0; i < duFichier.length; i++) {
         expect(deLaBase.points[i].lat, duFichier[i].lat);
         expect(deLaBase.points[i].lng, duFichier[i].lng);
         expect(deLaBase.points[i].altitude, duFichier[i].altitude);
-        expect(deLaBase.points[i].distanceFromStart,
-            closeTo(duFichier[i].distanceFromStart, 0.01),
-            reason: 'la distance cumulee est recalculee, elle doit retomber '
-                'sur celle du parseur');
+        expect(
+          deLaBase.points[i].distanceFromStart,
+          closeTo(duFichier[i].distanceFromStart, 0.01),
+          reason:
+              'la distance cumulee est recalculee, elle doit retomber '
+              'sur celle du parseur',
+        );
       }
     });
 
-    test('UN SENTIER AU CATALOGUE MAIS PAS ENCORE COPIE : l absence est NOMMEE, '
-        'pas jetee ni deguisee en carte vide', () async {
-      final trace = await LecteurDeTrace(db: db)
-          .lire(trailId: 'gr-aubrac', cheminAsset: '');
+    test(
+      'UN SENTIER AU CATALOGUE MAIS PAS ENCORE COPIE : l absence est NOMMEE, '
+      'pas jetee ni deguisee en carte vide',
+      () async {
+        final trace = await LecteurDeTrace(
+          db: db,
+        ).lire(trailId: 'gr-aubrac', cheminAsset: '');
 
-      expect(trace.source, SourceDeLaTrace.aucune);
-      expect(trace.estVide, isTrue,
-          reason: 'l ecran carte sait deja traiter une trace vide '
-              '(`t.map.noTrack`) : c est un etat, pas une panne');
-    });
+        expect(trace.source, SourceDeLaTrace.aucune);
+        expect(
+          trace.estVide,
+          isTrue,
+          reason:
+              'l ecran carte sait deja traiter une trace vide '
+              '(`t.map.noTrack`) : c est un etat, pas une panne',
+        );
+      },
+    );
 
-    test('L ASSET DECLARE QUI NE SE LIT PAS RESTE UNE ERREUR — mesure : '
-        'gr-pyrenees declare un fichier qui N EXISTE PAS dans le depot',
-        () async {
-      await expectLater(
-        LecteurDeTrace(db: db).lire(
-          trailId: 'gr-pyrenees',
-          cheminAsset: 'assets/gpx/gr_pyrenees.gpx',
-        ),
-        throwsA(anything),
-        reason: 'la carte affiche « impossible de charger la trace » avec un '
-            'bouton reessayer dans ce cas, et avaler l echec transformerait un '
-            'fichier manquant en carte silencieusement vide',
-      );
-    });
+    test(
+      'L ASSET DECLARE QUI NE SE LIT PAS RESTE UNE ERREUR — mesure : '
+      'gr-pyrenees declare un fichier qui N EXISTE PAS dans le depot',
+      () async {
+        await expectLater(
+          LecteurDeTrace(db: db).lire(
+            trailId: 'gr-pyrenees',
+            cheminAsset: 'assets/gpx/gr_pyrenees.gpx',
+          ),
+          throwsA(anything),
+          reason:
+              'la carte affiche « impossible de charger la trace » avec un '
+              'bouton reessayer dans ce cas, et avaler l echec transformerait un '
+              'fichier manquant en carte silencieusement vide',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -481,15 +540,17 @@ void main() {
   // =========================================================================
   group('606 — le transfert unitaire', () {
     Future<void> poserLeManifeste({int revision = 3}) {
-      return manifestes.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('gr-aubrac'),
-        dataVersion: Value(v(revision)),
-        hash: const Value('h'),
-        filePath: const Value('gr_aubrac/v3.json'),
-        fileSize: const Value(4096),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-09-27T20:00:00Z'),
-      ));
+      return manifestes.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('gr-aubrac'),
+          dataVersion: Value(v(revision)),
+          hash: const Value('h'),
+          filePath: const Value('gr_aubrac/v3.json'),
+          fileSize: const Value(4096),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-09-27T20:00:00Z'),
+        ),
+      );
     }
 
     test('UNE SOURCE INTERROGEABLE NE FAIT DESCENDRE QUE L ENREGISTREMENT '
@@ -498,8 +559,12 @@ void main() {
 
       // Etat initial a la revision 3, par le chemin du fichier entier.
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
-          'gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
       expect(await TrailGpxPointsDao(db).getAll(), hasLength(5));
 
       // Revision 4 : SEULE l altitude de l etape a bouge. La source
@@ -508,26 +573,32 @@ void main() {
       final source = SourceInterrogeable((trailId, famille, revMin) async {
         interrogees.add('$trailId/$famille>${revMin.iso8601}');
         if (famille != MorceauxDeSentier.etapes) return const [];
-        return [
-          Map<String, dynamic>.from(_etape(elevationGain: 915, rev: 4)),
-        ];
+        return [Map<String, dynamic>.from(_etape(elevationGain: 915, rev: 4))];
       });
 
       final aPrendre = await source.depuisLaRevision(
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous,
+        revisionCible: v(4),
       );
 
-      expect(aPrendre.transferes, 1,
-          reason: 'C EST LE TRANSFERT UNITAIRE : un seul enregistrement a '
-              'traverse le reseau. Avec un fichier entier, les 10 '
-              'enregistrements du sentier descendent pour en retenir 1.');
+      expect(
+        aPrendre.transferes,
+        1,
+        reason:
+            'C EST LE TRANSFERT UNITAIRE : un seul enregistrement a '
+            'traverse le reseau. Avec un fichier entier, les 10 '
+            'enregistrements du sentier descendent pour en retenir 1.',
+      );
       expect(aPrendre.retenus, 1);
       expect(aPrendre.transferesEnTrop, 0);
-      expect(interrogees, hasLength(MorceauxDeSentier.tous.length),
-          reason: 'une question par famille, toutes familles comprises');
+      expect(
+        interrogees,
+        hasLength(MorceauxDeSentier.tous.length),
+        reason: 'une question par famille, toutes familles comprises',
+      );
       // LA QUESTION PORTE L INSTANT DU TELEPHONE, ET SON PERIMETRE EST LE
       // SENTIER : `trailId` est le premier parametre de la requete, donc elle ne
       // peut pas partir sur tout le catalogue (perimetre precise par Christophe,
@@ -538,7 +609,8 @@ void main() {
       final bilan = await serviceAvec(source: source).synchroniser(
         'gr-aubrac',
         'ignoree',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v(4),
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(4),
         // UNE SOURCE INTERROGEABLE NE RECOIT PAS DE FICHIER : il n y a rien
         // dont l empreinte du fichier publie pourrait certifier l integrite, et
         // le dire vaut mieux que de l ignorer en silence.
@@ -547,12 +619,16 @@ void main() {
       expect(bilan.famillesTouchees, [MorceauxDeSentier.etapes]);
       expect(bilan.ecrits, 1);
       expect(
-          (await TrailStagesDao(db).getByItineraryId('aubrac-i1'))
-              .single
-              .elevationGain,
-          915);
-      expect(await TrailGpxPointsDao(db).getAll(), hasLength(5),
-          reason: 'la trace n a pas bouge : elle est restee a la revision 3');
+        (await TrailStagesDao(
+          db,
+        ).getByItineraryId('aubrac-i1')).single.elevationGain,
+        915,
+      );
+      expect(
+        await TrailGpxPointsDao(db).getAll(),
+        hasLength(5),
+        reason: 'la trace n a pas bouge : elle est restee a la revision 3',
+      );
     });
 
     test('LE MEME RESULTAT PAR LES DEUX SOURCES, ET LA DIFFERENCE EST EN '
@@ -567,11 +643,16 @@ void main() {
         'gr-aubrac',
         adresse: 'https://double/v4',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous,
+        revisionCible: v(4),
         empreinteAttendue: _empreinteServie('v4'),
       );
 
-      final interrogeable = SourceInterrogeable((trailId, famille, revMin) async {
+      final interrogeable = SourceInterrogeable((
+        trailId,
+        famille,
+        revMin,
+      ) async {
         final donnees = _donneesAubrac(revision: 4);
         final brut = donnees[famille];
         final tous = <Map<String, dynamic>>[
@@ -584,37 +665,58 @@ void main() {
         // NATIVEMENT, ce qu un compteur n obtenait qu au prix d une coordination
         // entre producteurs (tache 610).
         return tous
-            .where((e) =>
-                (HorodatageServeur.annonceParLeServeur(e['rev']) ?? v(4)) >
-                revMin)
+            .where(
+              (e) =>
+                  (HorodatageServeur.annonceParLeServeur(e['rev']) ?? v(4)) >
+                  revMin,
+            )
             .toList();
       });
       final parRequete = await interrogeable.depuisLaRevision(
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(4),
+        famillesDemandees: MorceauxDeSentier.tous,
+        revisionCible: v(4),
       );
 
-      expect(parRequete.parFamille.keys, parFichier.parFamille.keys,
-          reason: 'MEME comportement : les memes familles sont retenues');
+      expect(
+        parRequete.parFamille.keys,
+        parFichier.parFamille.keys,
+        reason: 'MEME comportement : les memes familles sont retenues',
+      );
       expect(parRequete.retenus, parFichier.retenus);
-      expect(parFichier.octetsRecus, greaterThan(0),
-          reason: 'le fichier entier a un cout en octets, et on le MESURE');
-      expect(parRequete.octetsRecus, 0,
-          reason: 'la source interrogeable ne transfere pas de fichier');
+      expect(
+        parFichier.octetsRecus,
+        greaterThan(0),
+        reason: 'le fichier entier a un cout en octets, et on le MESURE',
+      );
+      expect(
+        parRequete.octetsRecus,
+        0,
+        reason: 'la source interrogeable ne transfere pas de fichier',
+      );
     });
 
     test('RIEN DE PLUS RECENT : la source ne retient rien et la pose n ecrit '
         'rien', () async {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
-          'gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
 
       final bilan = await serviceAvec(servi: {'v3': _donneesAubrac()})
-          .synchroniser('gr-aubrac', 'https://double/v3',
-              niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+          .synchroniser(
+            'gr-aubrac',
+            'https://double/v3',
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: v(3),
+            empreinteAttendue: _empreinteServie('v3'),
+          );
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -624,24 +726,40 @@ void main() {
         'DISPARAIT du telephone', () async {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
-          'gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
-      final bilan = await serviceAvec(servi: {
-        'v5': _donneesAubrac(
-          revision: 3,
-          pois: [
-            {'id': 'aubrac-p1', 'rev': v(5).iso8601, 'supprime': true},
-          ],
-        ),
-      }).synchroniser('gr-aubrac', 'https://double/v5',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
+      final bilan =
+          await serviceAvec(
+            servi: {
+              'v5': _donneesAubrac(
+                revision: 3,
+                pois: [
+                  {'id': 'aubrac-p1', 'rev': v(5).iso8601, 'supprime': true},
+                ],
+              ),
+            },
+          ).synchroniser(
+            'gr-aubrac',
+            'https://double/v5',
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: v(5),
+            empreinteAttendue: _empreinteServie('v5'),
+          );
 
       expect(bilan.supprimes, 1);
-      expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
-          reason: 'un numero qui monte ne transmet pas une ABSENCE : sans le '
-              'marqueur, un point d eau tari resterait A VIE sur le telephone');
+      expect(
+        await TrailPoisDao(db).getByStageId('aubrac-s1'),
+        isEmpty,
+        reason:
+            'un numero qui monte ne transmet pas une ABSENCE : sans le '
+            'marqueur, un point d eau tari resterait A VIE sur le telephone',
+      );
     });
 
     test('LE TRANSFERT EST REPRIS TROIS FOIS, PUIS L ECHEC EST FRANC : rien en '
@@ -651,21 +769,34 @@ void main() {
       final svc = serviceAvec(servi: const {}, appels: appels); // 404 sur tout
 
       await expectLater(
-        svc.synchroniser('gr-aubrac', 'https://double/absent',
-            niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
-            empreinteAttendue:
-                EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac()))),
+        svc.synchroniser(
+          'gr-aubrac',
+          'https://double/absent',
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: v(3),
+          empreinteAttendue: EmpreinteDePublication.duTexte(
+            jsonEncode(_donneesAubrac()),
+          ),
+        ),
         throwsA(anything),
       );
 
-      expect(appels, hasLength(3),
-          reason: 'la reprise sur echec reseau etait la seule chose que le '
-              'second chemin de descente apportait de plus : elle est reprise '
-              'ici, donc pour la premiere copie COMME pour une mise a jour');
+      expect(
+        appels,
+        hasLength(3),
+        reason:
+            'la reprise sur echec reseau etait la seule chose que le '
+            'second chemin de descente apportait de plus : elle est reprise '
+            'ici, donc pour la premiere copie COMME pour une mise a jour',
+      );
       expect(await TrailStagesDao(db).getByItineraryId('aubrac-i1'), isEmpty);
-      expect((await manifestes.getByTrailId('gr-aubrac'))!.localVersion, isNull,
-          reason: 'la revision locale n avance pas : le sentier reste « a '
-              'prendre » plutot qu a moitie copie (#C1)');
+      expect(
+        (await manifestes.getByTrailId('gr-aubrac'))!.localVersion,
+        isNull,
+        reason:
+            'la revision locale n avance pas : le sentier reste « a '
+            'prendre » plutot qu a moitie copie (#C1)',
+      );
     });
 
     test('PREMIERE COPIE ET MISE A JOUR SONT LE MEME CHEMIN : le geste '
@@ -681,50 +812,70 @@ void main() {
       addTearDown(c.dispose);
 
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-aubrac',
-          niveau: NiveauDeTelechargement.realiser);
+      await c
+          .read(catalogStateProvider.notifier)
+          .downloadTrail('gr-aubrac', niveau: NiveauDeTelechargement.realiser);
 
       // LA PREUVE QUE LE CHEMIN A CHANGE : `rev` est ECRIT sur chaque
       // enregistrement. L ancien `TrailDownloadService` n en ecrivait aucun,
       // donc la premiere mise a jour reprenait TOUT.
-      final etape =
-          (await TrailStagesDao(db).getByItineraryId('aubrac-i1')).single;
-      expect(etape.rev, v(3),
-          reason: 'le second chemin de descente ecrivait rev = NULL sur les '
-              'sept familles : le versionnage unitaire etait donc mort des la '
-              'premiere copie');
+      final etape = (await TrailStagesDao(
+        db,
+      ).getByItineraryId('aubrac-i1')).single;
+      expect(
+        etape.rev,
+        v(3),
+        reason:
+            'le second chemin de descente ecrivait rev = NULL sur les '
+            'sept familles : le versionnage unitaire etait donc mort des la '
+            'premiere copie',
+      );
       expect((await TrailGpxPointsDao(db).getAll()).first.rev, v(3));
       expect(await manifestes.needsUpdate('gr-aubrac'), isFalse);
     });
 
-    test('A LA REVISION ZERO TOUT DESCEND, ET C EST LA MEME QUESTION',
-        () async {
-      final source = SourceFichierEntier(
-        httpClient: _fauxStockage({'v3': _donneesAubrac()}),
-      );
-      final aPrendre = await source.depuisLaRevision(
-        'gr-aubrac',
-        adresse: 'https://double/v3',
-        revisionLocale: RevisionDeDonnee.revisionInitiale,
-        famillesDemandees: MorceauxDeSentier.tous, revisionCible: v(3),
-        empreinteAttendue: _empreinteServie('v3'),
-      );
+    test(
+      'A LA REVISION ZERO TOUT DESCEND, ET C EST LA MEME QUESTION',
+      () async {
+        final source = SourceFichierEntier(
+          httpClient: _fauxStockage({'v3': _donneesAubrac()}),
+        );
+        final aPrendre = await source.depuisLaRevision(
+          'gr-aubrac',
+          adresse: 'https://double/v3',
+          revisionLocale: RevisionDeDonnee.revisionInitiale,
+          famillesDemandees: MorceauxDeSentier.tous,
+          revisionCible: v(3),
+          empreinteAttendue: _empreinteServie('v3'),
+        );
 
-      expect(aPrendre.retenus, 10,
-          reason: '1 fiche + 1 itineraire + 1 etape + 1 POI + 1 entete de '
+        expect(
+          aPrendre.retenus,
+          10,
+          reason:
+              '1 fiche + 1 itineraire + 1 etape + 1 POI + 1 entete de '
               'trace + 5 points de trace = 10, tous plus recents que la '
-              'revision zero');
-      expect(aPrendre.transferesEnTrop, 0,
-          reason: 'a la premiere copie, un fichier entier ne transfere rien '
-              'pour rien : c est la mise a jour qui coute');
-      expect(
+              'revision zero',
+        );
+        expect(
+          aPrendre.transferesEnTrop,
+          0,
+          reason:
+              'a la premiere copie, un fichier entier ne transfere rien '
+              'pour rien : c est la mise a jour qui coute',
+        );
+        expect(
           aPrendre.parFamille.keys,
-          MorceauxDeSentier.tous
-              .where((f) => f != MorceauxDeSentier.hebergements),
-          reason: 'les six familles publiees, DANS L ORDRE DES CLES '
+          MorceauxDeSentier.tous.where(
+            (f) => f != MorceauxDeSentier.hebergements,
+          ),
+          reason:
+              'les six familles publiees, DANS L ORDRE DES CLES '
               'ETRANGERES ; ce sentier ne declare pas d hebergement, et une '
-              'famille absente est absente — pas vide, pas fatale');
-    });
+              'famille absente est absente — pas vide, pas fatale',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -746,8 +897,7 @@ void main() {
       await enLigne.read(catalogStateProvider.future);
       await enLigne
           .read(catalogStateProvider.notifier)
-          .downloadTrail('gr-aubrac',
-          niveau: NiveauDeTelechargement.realiser);
+          .downloadTrail('gr-aubrac', niveau: NiveauDeTelechargement.realiser);
       enLigne.dispose();
 
       // Second passage HORS LIGNE, MEME base : rien n est demande au reseau.
@@ -756,19 +906,25 @@ void main() {
       horsLigne.read(catalogueSentiersProvider);
       await _laisserLaLectureSeFaire(horsLigne);
 
-      expect(horsLigne.read(availableTrailsProvider).map((s) => s.id),
-          contains('gr-aubrac'),
-          reason: 'la fiche conservee tient le catalogue hors ligne (lot 605)');
+      expect(
+        horsLigne.read(availableTrailsProvider).map((s) => s.id),
+        contains('gr-aubrac'),
+        reason: 'la fiche conservee tient le catalogue hors ligne (lot 605)',
+      );
 
       horsLigne.read(selectedTrailIdProvider.notifier).state = 'gr-aubrac';
-      final points =
-          await horsLigne.read(gpxTrackProvider('gr-aubrac').future);
-      expect(points, hasLength(5),
-          reason: 'la trace est EN BASE : le randonneur sans reseau, sur le '
-              'sentier, voit sa trace');
+      final points = await horsLigne.read(gpxTrackProvider('gr-aubrac').future);
+      expect(
+        points,
+        hasLength(5),
+        reason:
+            'la trace est EN BASE : le randonneur sans reseau, sur le '
+            'sentier, voit sa trace',
+      );
 
-      final trace =
-          await horsLigne.read(traceDuSentierProvider('gr-aubrac').future);
+      final trace = await horsLigne.read(
+        traceDuSentierProvider('gr-aubrac').future,
+      );
       expect(trace.source, SourceDeLaTrace.base);
     });
   });

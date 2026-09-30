@@ -156,11 +156,11 @@ class ConsentState {
   ///
   /// Aucune date ni version : aucune decision n'a encore ete prise.
   factory ConsentState.initial(ConsentPurpose purpose) => ConsentState(
-        purpose: purpose,
-        granted: false,
-        decidedAt: null,
-        policyVersion: null,
-      );
+    purpose: purpose,
+    granted: false,
+    decidedAt: null,
+    policyVersion: null,
+  );
 
   /// Reconstruit un etat depuis sa forme serialisee (JSON SharedPreferences).
   ///
@@ -219,12 +219,12 @@ class ConsentState {
 
   /// Serialise l'etat pour le stockage local.
   String toJson() => jsonEncode(<String, dynamic>{
-        'granted': granted,
-        'decidedAt': decidedAt?.millisecondsSinceEpoch,
-        'policyVersion': policyVersion,
-        'declencheur': declencheur.code,
-        'revisionDesDonnees': revisionDesDonnees,
-      });
+    'granted': granted,
+    'decidedAt': decidedAt?.millisecondsSinceEpoch,
+    'policyVersion': policyVersion,
+    'declencheur': declencheur.code,
+    'revisionDesDonnees': revisionDesDonnees,
+  });
 
   /// Vrai si cet etat est EFFECTIF pour [currentPolicyVersion].
   ///
@@ -247,8 +247,8 @@ class ConsentService {
   ConsentService({
     SharedPreferences? prefs,
     int policyVersion = currentPolicyVersion,
-  })  : _prefs = prefs,
-        _policyVersion = policyVersion;
+  }) : _prefs = prefs,
+       _policyVersion = policyVersion;
 
   /// Version courante de la politique de consentement.
   ///
@@ -377,8 +377,7 @@ class ConsentService {
   Future<void> grant(
     ConsentPurpose purpose, {
     DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
-  }) =>
-      _record(purpose, granted: true, declencheur: declencheur);
+  }) => _record(purpose, granted: true, declencheur: declencheur);
 
   /// Retire le consentement pour [purpose] (retractable a tout moment).
   ///
@@ -386,8 +385,7 @@ class ConsentService {
   Future<void> revoke(
     ConsentPurpose purpose, {
     DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
-  }) =>
-      _record(purpose, granted: false, declencheur: declencheur);
+  }) => _record(purpose, granted: false, declencheur: declencheur);
 
   /// Enregistre une decision de consentement et notifie les ecouteurs.
   ///
@@ -417,7 +415,8 @@ class ConsentService {
   /// Etat de consentement de TOUTES les finalites (lecture seule).
   ///
   /// Utile pour l'ecran de reglages (D4A-02) qui liste chaque finalite.
-  Map<ConsentPurpose, ConsentState> allStates() => <ConsentPurpose, ConsentState>{
+  Map<ConsentPurpose, ConsentState> allStates() =>
+      <ConsentPurpose, ConsentState>{
         for (final purpose in ConsentPurpose.values) purpose: stateOf(purpose),
       };
 

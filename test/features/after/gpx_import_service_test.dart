@@ -11,17 +11,17 @@ void main() {
   // etapes ~ autour de 45.5N / 2.9E. Le service en derive une boite + des points
   // de reference (depart/arrivee de chaque etape). ---
   Stage stage(int n, double lat, double lng, double lat2, double lng2) => Stage(
-        id: '$n',
-        nameFr: 'Etape $n',
-        distance: 12.0,
-        elevationGain: 600,
-        elevationLoss: 400,
-        orderIndex: n,
-        startLat: lat,
-        startLng: lng,
-        endLat: lat2,
-        endLng: lng2,
-      );
+    id: '$n',
+    nameFr: 'Etape $n',
+    distance: 12.0,
+    elevationGain: 600,
+    elevationLoss: 400,
+    orderIndex: n,
+    startLat: lat,
+    startLng: lng,
+    endLat: lat2,
+    endLng: lng2,
+  );
 
   final stages = <Stage>[
     stage(1, 45.500, 2.900, 45.520, 2.920),
@@ -64,21 +64,23 @@ void main() {
   }
 
   group('TrailImportConfig.fromStages (data-driven)', () {
-    test('derive une boite englobante des etapes + marge (pas de Corse en dur)',
-        () {
-      expect(config.bounds, isNotNull);
-      final b = config.bounds!;
-      // La boite couvre bien les coords des etapes (avec marge 0.15deg).
-      expect(b.minLat, lessThan(45.500));
-      expect(b.maxLat, greaterThan(45.560));
-      expect(b.minLon, lessThan(2.900));
-      expect(b.maxLon, greaterThan(2.960));
-      // Un point EN Corse (42.4N, 9.0E) est HORS de la boite Auvergne (preuve
-      // que rien n'est borne sur la Corse).
-      expect(b.contains(42.4, 9.0), isFalse);
-      // Le coeur du sentier fictif est DANS la boite.
-      expect(b.contains(45.53, 2.93), isTrue);
-    });
+    test(
+      'derive une boite englobante des etapes + marge (pas de Corse en dur)',
+      () {
+        expect(config.bounds, isNotNull);
+        final b = config.bounds!;
+        // La boite couvre bien les coords des etapes (avec marge 0.15deg).
+        expect(b.minLat, lessThan(45.500));
+        expect(b.maxLat, greaterThan(45.560));
+        expect(b.minLon, lessThan(2.900));
+        expect(b.maxLon, greaterThan(2.960));
+        // Un point EN Corse (42.4N, 9.0E) est HORS de la boite Auvergne (preuve
+        // que rien n'est borne sur la Corse).
+        expect(b.contains(42.4, 9.0), isFalse);
+        // Le coeur du sentier fictif est DANS la boite.
+        expect(b.contains(45.53, 2.93), isTrue);
+      },
+    );
 
     test('un point de reference par extremite d etape (depart + arrivee)', () {
       // 3 etapes -> 6 points de reference.
@@ -100,26 +102,28 @@ void main() {
   });
 
   group('GpxImportService.importGpxFile', () {
-    test('GPX valide dans la zone -> preview coherente (dist/D+/D-/direction)',
-        () {
-      // 30 points montant vers le nord (lat croissante) le long du sentier.
-      final gpx = gpxWith(count: 30, baseLat: 45.500, baseLng: 2.900);
-      final data = service.importGpxFile(gpx, config);
+    test(
+      'GPX valide dans la zone -> preview coherente (dist/D+/D-/direction)',
+      () {
+        // 30 points montant vers le nord (lat croissante) le long du sentier.
+        final gpx = gpxWith(count: 30, baseLat: 45.500, baseLng: 2.900);
+        final data = service.importGpxFile(gpx, config);
 
-      expect(data.isValid, isTrue);
-      expect(data.trackPoints.length, 30);
-      // Distance > 0 et coherente (points espaces ~0.0007deg -> ~2 km sur 30 pts).
-      expect(data.totalDistanceKm, greaterThan(0));
-      // Altitude croissante 800 -> 800+29*10 : D+ = 290, D- = 0.
-      expect(data.totalElevationGain, 290);
-      expect(data.totalElevationLoss, 0);
-      // Latitude finale > initiale -> direction 'SN' (premier < dernier).
-      expect(data.direction, 'SN');
-      // Duree = 29 * 10 min.
-      expect(data.totalDuration, const Duration(minutes: 290));
-      // totalStages propage la config (3).
-      expect(data.totalStages, 3);
-    });
+        expect(data.isValid, isTrue);
+        expect(data.trackPoints.length, 30);
+        // Distance > 0 et coherente (points espaces ~0.0007deg -> ~2 km sur 30 pts).
+        expect(data.totalDistanceKm, greaterThan(0));
+        // Altitude croissante 800 -> 800+29*10 : D+ = 290, D- = 0.
+        expect(data.totalElevationGain, 290);
+        expect(data.totalElevationLoss, 0);
+        // Latitude finale > initiale -> direction 'SN' (premier < dernier).
+        expect(data.direction, 'SN');
+        // Duree = 29 * 10 min.
+        expect(data.totalDuration, const Duration(minutes: 290));
+        // totalStages propage la config (3).
+        expect(data.totalStages, 3);
+      },
+    );
 
     test('< 10 points -> invalide (motif tooFewPoints + valeur)', () {
       final gpx = gpxWith(count: 5, baseLat: 45.500, baseLng: 2.900);

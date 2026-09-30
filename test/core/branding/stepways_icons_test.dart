@@ -86,7 +86,11 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull, reason: '$chemin ne se rend pas');
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: '$chemin ne se rend pas',
+        );
       }
     });
 

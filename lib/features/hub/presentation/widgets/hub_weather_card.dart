@@ -32,8 +32,10 @@ class HubWeatherCard extends ConsumerWidget {
 
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final stageNumber = ref.watch(referenceStageNumberProvider);
-    final params =
-        WeatherStageParams(trailId: trailId, stageNumber: stageNumber);
+    final params = WeatherStageParams(
+      trailId: trailId,
+      stageNumber: stageNumber,
+    );
     final state = ref.watch(stageWeatherProvider(params));
 
     final forecast = state.forecast;
@@ -42,7 +44,8 @@ class HubWeatherCard extends ConsumerWidget {
         : null;
 
     // Pastille orage : aujourd'hui ou demain au-dessus du seuil.
-    final stormSoon = forecast != null &&
+    final stormSoon =
+        forecast != null &&
         forecast.days.take(2).any((d) => d.stormProbability >= 60);
 
     // Tap seulement si la route météo est utile (toujours vraie ici : la route
@@ -54,8 +57,13 @@ class HubWeatherCard extends ConsumerWidget {
         children: [
           // Icone meteo en orange categoriel (parite GR20 Meteo -> orangeTerre)
           // au lieu de l'accent-sentier unique. Portee par le theme (#IR02).
-          _leading(context, today, state.isLoading, scheme,
-              CategoryIconColors.of(context).orange),
+          _leading(
+            context,
+            today,
+            state.isLoading,
+            scheme,
+            CategoryIconColors.of(context).orange,
+          ),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
             child: Column(
@@ -65,10 +73,12 @@ class HubWeatherCard extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(t.hub.weather.title,
-                          style: theme.textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        t.hub.weather.title,
+                        style: theme.textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     if (stormSoon) ...[
                       const SizedBox(width: AppTheme.spacingSm),
@@ -94,7 +104,10 @@ class HubWeatherCard extends ConsumerWidget {
               ],
             ),
           ),
-          StepIcon(StepwaysIcons.chevronDroite, color: scheme.onSurface.withAlpha(120)),
+          StepIcon(
+            StepwaysIcons.chevronDroite,
+            color: scheme.onSurface.withAlpha(120),
+          ),
         ],
       ),
     );
@@ -167,8 +180,11 @@ class _StormBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const StepIcon(StepwaysIcons.orage,
-              size: 13, color: AppTheme.rougeUrgence),
+          const StepIcon(
+            StepwaysIcons.orage,
+            size: 13,
+            color: AppTheme.rougeUrgence,
+          ),
           const SizedBox(width: 3),
           Text(
             label,

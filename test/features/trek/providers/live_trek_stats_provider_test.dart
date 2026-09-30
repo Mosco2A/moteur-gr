@@ -21,11 +21,11 @@ void main() {
   tearDown(() async => db.close());
 
   TrekSession session(String id) => TrekSession(
-        id: id,
-        trailId: 'sentier-bleu',
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        status: 'active',
-      );
+    id: id,
+    trailId: 'sentier-bleu',
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    status: 'active',
+  );
 
   ProviderContainer conteneur({
     required TrackingSessionStatus status,
@@ -62,52 +62,56 @@ void main() {
   }
 
   group('liveTrekStatsProvider', () {
-    test('mesure denivele et vitesse sur la trace de la session en cours',
-        () async {
-      await tracer('sess-1', [
-        (45.000, 3.000, 1000, 0),
-        (45.010, 3.000, 1200, 30),
-        (45.020, 3.000, 1100, 60),
-      ]);
+    test(
+      'mesure denivele et vitesse sur la trace de la session en cours',
+      () async {
+        await tracer('sess-1', [
+          (45.000, 3.000, 1000, 0),
+          (45.010, 3.000, 1200, 30),
+          (45.020, 3.000, 1100, 60),
+        ]);
 
-      final container = conteneur(
-        status: TrackingSessionStatus.recording,
-        active: session('sess-1'),
-      );
-      final stats = await container.read(liveTrekStatsProvider.future);
+        final container = conteneur(
+          status: TrackingSessionStatus.recording,
+          active: session('sess-1'),
+        );
+        final stats = await container.read(liveTrekStatsProvider.future);
 
-      expect(stats.hasData, isTrue);
-      expect(stats.pointCount, 3);
-      // Montee de 200 m puis descente de 100 m, au-dessus du seuil de bruit.
-      expect(stats.elevationGainM, 200);
-      expect(stats.elevationLossM, 100);
-      expect(stats.maxAltitudeM, 1200);
-      // Environ 2,2 km en une heure : une vitesse de marche plausible.
-      expect(stats.duration, const Duration(hours: 1));
-      expect(stats.averageSpeedKmh, isNotNull);
-      expect(stats.averageSpeedKmh!, inInclusiveRange(1.0, 4.0));
-    });
+        expect(stats.hasData, isTrue);
+        expect(stats.pointCount, 3);
+        // Montee de 200 m puis descente de 100 m, au-dessus du seuil de bruit.
+        expect(stats.elevationGainM, 200);
+        expect(stats.elevationLossM, 100);
+        expect(stats.maxAltitudeM, 1200);
+        // Environ 2,2 km en une heure : une vitesse de marche plausible.
+        expect(stats.duration, const Duration(hours: 1));
+        expect(stats.averageSpeedKmh, isNotNull);
+        expect(stats.averageSpeedKmh!, inInclusiveRange(1.0, 4.0));
+      },
+    );
 
-    test('ne lit QUE la session en cours, pas la randonnee precedente',
-        () async {
-      await tracer('sess-precedente', [
-        (44.000, 2.000, 500, 0),
-        (44.050, 2.000, 2000, 30),
-      ]);
-      await tracer('sess-2', [
-        (45.000, 3.000, 1000, 0),
-        (45.005, 3.000, 1050, 20),
-      ]);
+    test(
+      'ne lit QUE la session en cours, pas la randonnee precedente',
+      () async {
+        await tracer('sess-precedente', [
+          (44.000, 2.000, 500, 0),
+          (44.050, 2.000, 2000, 30),
+        ]);
+        await tracer('sess-2', [
+          (45.000, 3.000, 1000, 0),
+          (45.005, 3.000, 1050, 20),
+        ]);
 
-      final container = conteneur(
-        status: TrackingSessionStatus.recording,
-        active: session('sess-2'),
-      );
-      final stats = await container.read(liveTrekStatsProvider.future);
+        final container = conteneur(
+          status: TrackingSessionStatus.recording,
+          active: session('sess-2'),
+        );
+        final stats = await container.read(liveTrekStatsProvider.future);
 
-      expect(stats.pointCount, 2);
-      expect(stats.elevationGainM, 50);
-    });
+        expect(stats.pointCount, 2);
+        expect(stats.elevationGainM, 50);
+      },
+    );
 
     test('RIEN hors trek : aucune lecture, aucun chiffre', () async {
       await tracer('sess-3', [

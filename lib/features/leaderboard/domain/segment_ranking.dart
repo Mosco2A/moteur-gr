@@ -75,10 +75,7 @@ class RankingTranche {
 
 /// Classement complet d'un segment "Roi de l etape", par tranche.
 class SegmentRanking {
-  const SegmentRanking({
-    required this.segmentId,
-    required this.tranches,
-  });
+  const SegmentRanking({required this.segmentId, required this.tranches});
 
   /// Seuil de k-anonymat (doit rester aligne avec la Cloud Function F7A-03).
   static const int kMin = 5;

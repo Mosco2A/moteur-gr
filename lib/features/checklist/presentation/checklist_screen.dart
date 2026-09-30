@@ -56,14 +56,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     // + un post-frame : on ne mute pas le provider Sac pendant la construction.
     final profileWeight =
         ref.watch(hikerProfileProvider).value?.weightKg ??
-            HikerProfile.empty.weightKg;
+        HikerProfile.empty.weightKg;
     // La TAILLE suit la meme porte depuis le 22/09 : le plafond du sac n'est
     // plus un pourcentage du poids reel mais de la base de charge
     // `min(poids ; 25 × taille²)` (#4-b). Sans taille, la base retombe sur le
     // poids reel et le bandeau le DIT (#5-h).
     final profileHeight =
         ref.watch(hikerProfileProvider).value?.heightCm ??
-            HikerProfile.empty.heightCm;
+        HikerProfile.empty.heightCm;
     if (profileWeight > 0 || profileHeight > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -121,37 +121,39 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
           // en base, article par article — rien a en faire dans une demo.
           GriseEnDemo(
             child: Stack(
-            children: [
-              IconButton(
-                icon: const StepIcon(StepwaysIcons.panier),
-                tooltip: checklistT.ui.shoppingListTitle,
-                onPressed: () => _showShoppingListModal(state),
-              ),
-              if (shoppingCount > 0)
-                Positioned(
-                  right: 4,
-                  top: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: AppTheme.rougeUrgence,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints:
-                        const BoxConstraints(minWidth: 18, minHeight: 18),
-                    child: Text(
-                      '$shoppingCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
+              children: [
+                IconButton(
+                  icon: const StepIcon(StepwaysIcons.panier),
+                  tooltip: checklistT.ui.shoppingListTitle,
+                  onPressed: () => _showShoppingListModal(state),
+                ),
+                if (shoppingCount > 0)
+                  Positioned(
+                    right: 4,
+                    top: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: AppTheme.rougeUrgence,
+                        shape: BoxShape.circle,
                       ),
-                      textAlign: TextAlign.center,
+                      constraints: const BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      child: Text(
+                        '$shoppingCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
+              ],
+            ),
           ),
           // GRISE EN DEMO : reinitialiser le sac est une suppression en base.
           GriseEnDemo(
@@ -217,8 +219,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final (index, category)
-                      in checklistCategories.indexed)
+                  for (final (index, category) in checklistCategories.indexed)
                     if (!isDemo || index < kDemoChecklistCategoriesPlayable)
                       ChecklistCategorySection(
                         key: ValueKey('checklist-category-$category'),
@@ -270,8 +271,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   // ------------------------------------------------------------------ toggle
 
   void _handleToggle(String itemId) {
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     if (item.template.requirement == ChecklistRequirement.required &&
         item.isChecked) {
       _showRequiredWarning(itemId);
@@ -408,8 +411,9 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                final nextName =
-                    nameCtrl.text.trim().isEmpty ? ui.errorNameRequired : null;
+                final nextName = nameCtrl.text.trim().isEmpty
+                    ? ui.errorNameRequired
+                    : null;
                 final nextWeight = _validateItemWeight(weightCtrl.text);
                 if (nextName != null || nextWeight != null) {
                   // Le dialogue RESTE ouvert : rien n'est invente dans le dos
@@ -430,7 +434,9 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     );
 
     if (result == true) {
-      await ref.read(checklistProvider.notifier).addCustomItem(
+      await ref
+          .read(checklistProvider.notifier)
+          .addCustomItem(
             category,
             nameCtrl.text.trim(),
             int.parse(weightCtrl.text.trim()),
@@ -451,8 +457,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     }
     final ui = t.checklist.ui;
     final weightT = t.checklist.weight;
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     final name = checklistItemDisplayName(item);
     final nameCtrl = TextEditingController(text: name);
     final weightCtrl = TextEditingController(text: item.weightGrams.toString());
@@ -578,8 +586,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
       return;
     }
     final ui = t.checklist.ui;
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     if (!item.isCustom) return;
     final name = checklistItemDisplayName(item);
 
@@ -618,9 +628,9 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
       byCategory.putIfAbsent(catName, () => []).add(item);
     }
     if (byCategory.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)));
       return;
     }
     showModalBottomSheet<void>(
@@ -629,8 +639,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) =>
-          ChecklistShoppingModal(uncheckedByCategory: byCategory),
+      builder: (ctx) => ChecklistShoppingModal(uncheckedByCategory: byCategory),
     );
   }
 
@@ -664,7 +673,11 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                StepIcon(StepwaysIcons.sacADos, color: theme.colorScheme.primary, size: 24),
+                StepIcon(
+                  StepwaysIcons.sacADos,
+                  color: theme.colorScheme.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   ui.infoTitle,
@@ -676,17 +689,37 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _richInfoItem(theme, StepwaysIcons.cocheCercle, ui.infoCheckTitle,
-                ui.infoCheckBody, theme.colorScheme.primary),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.cocheCercle,
+              ui.infoCheckTitle,
+              ui.infoCheckBody,
+              theme.colorScheme.primary,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, StepwaysIcons.cadenas, ui.infoRequiredTitle,
-                ui.infoRequiredBody, AppTheme.rougeUrgence),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.cadenas,
+              ui.infoRequiredTitle,
+              ui.infoRequiredBody,
+              AppTheme.rougeUrgence,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, StepwaysIcons.poids, ui.infoGaugeTitle,
-                ui.infoGaugeBody, AppTheme.vertFacile),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.poids,
+              ui.infoGaugeTitle,
+              ui.infoGaugeBody,
+              AppTheme.vertFacile,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, StepwaysIcons.plus, ui.infoAddTitle,
-                ui.infoAddBody, AppTheme.orangeDifficile),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.plus,
+              ui.infoAddTitle,
+              ui.infoAddBody,
+              AppTheme.orangeDifficile,
+            ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
@@ -698,8 +731,11 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const StepIcon(StepwaysIcons.cochePleine,
-                      size: 18, color: AppTheme.vertFacile),
+                  const StepIcon(
+                    StepwaysIcons.cochePleine,
+                    size: 18,
+                    color: AppTheme.vertFacile,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -717,8 +753,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             Center(
               child: TextButton(
                 onPressed: () => Navigator.of(sheetCtx).pop(),
-                child: Text(ui.infoUnderstood,
-                    style: const TextStyle(fontSize: 16)),
+                child: Text(
+                  ui.infoUnderstood,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -728,8 +766,13 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   }
 
   /// [icon] est un chemin d'icone Stepways ([StepwaysIcons]), tache 632.
-  static Widget _richInfoItem(ThemeData theme, String icon, String title,
-      String description, Color accentColor) {
+  static Widget _richInfoItem(
+    ThemeData theme,
+    String icon,
+    String title,
+    String description,
+    Color accentColor,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -757,8 +800,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               const SizedBox(height: 2),
               Text(
                 description,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontSize: 14, height: 1.4),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 14,
+                  height: 1.4,
+                ),
               ),
             ],
           ),

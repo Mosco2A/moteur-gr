@@ -58,11 +58,17 @@ void main() {
     testWidgets('affiche indicateur hors trace', (tester) async {
       await tester.pumpWidget(buildBar(isOffTrack: true));
       expect(find.text(t.map.offTrackChip), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('cache indicateur hors trace quand sur le trace',
-        (tester) async {
+    testWidgets('cache indicateur hors trace quand sur le trace', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildBar(isOffTrack: false));
       expect(find.text(t.map.offTrackChip), findsNothing);
     });
@@ -96,16 +102,19 @@ void main() {
       expect(find.text(t.tracking.altitude), findsNothing);
     });
 
-    testWidgets('affiche les SIX valeurs quand elles sont disponibles',
-        (tester) async {
-      await tester.pumpWidget(buildBar(
-        totalDistanceKm: 180.4,
-        distanceCoveredKm: 42.7,
-        elevationGainM: 1240,
-        elevationLossM: 980,
-        avgSpeedKmh: 3.4,
-        altitudeM: 1465.7,
-      ));
+    testWidgets('affiche les SIX valeurs quand elles sont disponibles', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildBar(
+          totalDistanceKm: 180.4,
+          distanceCoveredKm: 42.7,
+          elevationGainM: 1240,
+          elevationLossM: 980,
+          avgSpeedKmh: 3.4,
+          altitudeM: 1465.7,
+        ),
+      );
 
       expect(find.text('180.4 km'), findsOneWidget);
       expect(find.text('42.7 km'), findsOneWidget);
@@ -123,14 +132,12 @@ void main() {
       expect(find.text(t.tracking.altitude), findsOneWidget);
     });
 
-    testWidgets('une valeur absente est MASQUEE, jamais affichee a zero',
-        (tester) async {
+    testWidgets('une valeur absente est MASQUEE, jamais affichee a zero', (
+      tester,
+    ) async {
       // Cas reel du debut de trek : le denivele est connu, la vitesse ne l est
       // pas encore (duree trop courte) et l altitude n a pas de fix.
-      await tester.pumpWidget(buildBar(
-        elevationGainM: 120,
-        elevationLossM: 0,
-      ));
+      await tester.pumpWidget(buildBar(elevationGainM: 120, elevationLossM: 0));
 
       expect(find.text('120 m'), findsOneWidget);
       expect(find.text(t.tracking.dMinus), findsOneWidget);
@@ -139,8 +146,9 @@ void main() {
       expect(find.text(t.tracking.total), findsNothing);
     });
 
-    testWidgets('la seconde ligne ne capte AUCUN geste (IgnorePointer)',
-        (tester) async {
+    testWidgets('la seconde ligne ne capte AUCUN geste (IgnorePointer)', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildBar(elevationGainM: 500));
       final barrages = tester.widgetList<IgnorePointer>(
         find.ancestor(
@@ -165,8 +173,9 @@ void main() {
   // dans celles qu'elle ne sait pas remplir.
   // -------------------------------------------------------------------------
   group('StageProgressBar — valeurs en attente (LOT D)', () {
-    testWidgets('AUCUNE valeur connue : les SIX cases restent, avec un tiret',
-        (tester) async {
+    testWidgets('AUCUNE valeur connue : les SIX cases restent, avec un tiret', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildBar(showPendingValues: true));
 
       // Les six libelles sont la...
@@ -177,14 +186,12 @@ void main() {
       expect(find.text(t.tracking.avgSpeed), findsOneWidget);
       expect(find.text(t.tracking.altitude), findsOneWidget);
       // ... et chaque valeur porte le tiret d'attente.
-      expect(
-        find.text(StageProgressBar.pendingValueLabel),
-        findsNWidgets(6),
-      );
+      expect(find.text(StageProgressBar.pendingValueLabel), findsNWidgets(6));
     });
 
-    testWidgets('un ZERO n est jamais affiche a la place du tiret',
-        (tester) async {
+    testWidgets('un ZERO n est jamais affiche a la place du tiret', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildBar(showPendingValues: true));
 
       expect(find.text('0.0 km'), findsNothing);
@@ -196,14 +203,16 @@ void main() {
         'attendent', (tester) async {
       // Cas de l'utilisateur neuf : l etape est connue (12 km, D+ 450, D- 200)
       // et la distance totale du sentier aussi ; parcouru et vitesse non.
-      await tester.pumpWidget(buildBar(
-        distanceRemainingKm: 12.0,
-        progressRatio: 0,
-        totalDistanceKm: 96.4,
-        elevationGainM: 450,
-        elevationLossM: 200,
-        showPendingValues: true,
-      ));
+      await tester.pumpWidget(
+        buildBar(
+          distanceRemainingKm: 12.0,
+          progressRatio: 0,
+          totalDistanceKm: 96.4,
+          elevationGainM: 450,
+          elevationLossM: 200,
+          showPendingValues: true,
+        ),
+      );
 
       expect(find.text('96.4 km'), findsOneWidget);
       expect(find.text('450 m'), findsOneWidget);
@@ -211,10 +220,7 @@ void main() {
       expect(find.text(t.map.stageRemaining(km: '12.0')), findsOneWidget);
       expect(find.text('0%'), findsOneWidget);
       // Restent en attente : parcouru, vitesse moyenne, altitude.
-      expect(
-        find.text(StageProgressBar.pendingValueLabel),
-        findsNWidgets(3),
-      );
+      expect(find.text(StageProgressBar.pendingValueLabel), findsNWidgets(3));
     });
 
     testWidgets('le mode par defaut est INCHANGE : une valeur absente reste '
@@ -226,12 +232,15 @@ void main() {
       expect(find.text(StageProgressBar.pendingValueLabel), findsNothing);
     });
 
-    testWidgets('la ligne d explication s affiche quand elle est fournie',
-        (tester) async {
-      await tester.pumpWidget(buildBar(
-        showPendingValues: true,
-        footer: const Text('ce qui demarrera avec la rando'),
-      ));
+    testWidgets('la ligne d explication s affiche quand elle est fournie', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildBar(
+          showPendingValues: true,
+          footer: const Text('ce qui demarrera avec la rando'),
+        ),
+      );
 
       expect(find.text('ce qui demarrera avec la rando'), findsOneWidget);
     });

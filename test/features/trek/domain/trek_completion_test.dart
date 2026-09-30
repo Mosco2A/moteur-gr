@@ -5,17 +5,17 @@ import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
 /// Helper : cree une Stage minimale identifiee par [id] / [orderIndex].
 /// Les coordonnees ne servent pas a la logique de completion (pure ordre).
 Stage _stage(String id, int orderIndex) => Stage(
-      id: id,
-      nameFr: 'Etape $orderIndex',
-      distance: 10.0,
-      elevationGain: 500,
-      elevationLoss: 300,
-      orderIndex: orderIndex,
-      startLat: 0,
-      startLng: 0,
-      endLat: 0,
-      endLng: 0,
-    );
+  id: id,
+  nameFr: 'Etape $orderIndex',
+  distance: 10.0,
+  elevationGain: 500,
+  elevationLoss: 300,
+  orderIndex: orderIndex,
+  startLat: 0,
+  startLng: 0,
+  endLat: 0,
+  endLng: 0,
+);
 
 void main() {
   // Sentier fictif a 4 etapes (ordre officiel = orderIndex croissant).
@@ -91,20 +91,22 @@ void main() {
   });
 
   group('TrekPlan — parcours partiel (moitie / section)', () {
-    test('sous-ensemble (moitie nord) : entier=false, bornes sur le sous-ens.',
-        () {
-      // Moitie « nord » = s1..s2, en NS.
-      final plan = TrekPlan.fromStages(
-        stages,
-        direction: 'NS',
-        forwardDirectionCode: 'NS',
-        stageIds: ['s1', 's2'],
-      );
-      expect(plan.orderedStageIds, ['s1', 's2']);
-      expect(plan.startStageId, 's1');
-      expect(plan.finalStageId, 's2');
-      expect(plan.isFullTrail, isFalse);
-    });
+    test(
+      'sous-ensemble (moitie nord) : entier=false, bornes sur le sous-ens.',
+      () {
+        // Moitie « nord » = s1..s2, en NS.
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'NS',
+          forwardDirectionCode: 'NS',
+          stageIds: ['s1', 's2'],
+        );
+        expect(plan.orderedStageIds, ['s1', 's2']);
+        expect(plan.startStageId, 's1');
+        expect(plan.finalStageId, 's2');
+        expect(plan.isFullTrail, isFalse);
+      },
+    );
 
     test('sous-ensemble en sens inverse (moitie sud en SN)', () {
       // Moitie « sud » = s3..s4 ; marchee en SN => depart s4, fin s3.
@@ -205,8 +207,7 @@ void main() {
     // le caller via position) est ignore ; une arrivee REELLE a la fin de
     // l'etape de depart avance normalement (sinon le trek reste bloque a l'etape
     // de depart a vie, cf. preuve terrain laugr20).
-    test(
-        'SN : s4 = DEPART, faux positif au refuge de depart -> ignore '
+    test('SN : s4 = DEPART, faux positif au refuge de depart -> ignore '
         '(#98856 garde de position)', () {
       final plan = TrekPlan.fromStages(
         stages,
@@ -214,15 +215,16 @@ void main() {
         forwardDirectionCode: 'NS',
       );
       // Caller signale qu'on est encore au point de depart (distToStart<=rayon).
-      final outcome =
-          plan.resolveArrival('s4', isFalsePositiveAtDeparture: true);
+      final outcome = plan.resolveArrival(
+        's4',
+        isFalsePositiveAtDeparture: true,
+      );
       expect(outcome.action, TrekArrivalAction.ignore);
       expect(outcome.isComplete, isFalse);
       expect(outcome.isAdvance, isFalse);
     });
 
-    test(
-        'SN : s4 = DEPART, arrivee REELLE en fin d etape -> avance vers s3 '
+    test('SN : s4 = DEPART, arrivee REELLE en fin d etape -> avance vers s3 '
         '(#98856 fix verrou : plus de blocage par identite)', () {
       final plan = TrekPlan.fromStages(
         stages,
@@ -231,26 +233,29 @@ void main() {
       );
       // Pas de faux positif : on a genuinement atteint la fin de l'etape s4.
       final outcome = plan.resolveArrival('s4');
-      expect(outcome.action, TrekArrivalAction.advance,
-          reason: 'La 1re etape doit pouvoir avancer (verrou oeuf-poule leve).');
+      expect(
+        outcome.action,
+        TrekArrivalAction.advance,
+        reason: 'La 1re etape doit pouvoir avancer (verrou oeuf-poule leve).',
+      );
       expect(outcome.nextStageId, 's3');
     });
 
-    test(
-        'NS : s1 = DEPART, faux positif au refuge de depart -> ignore '
+    test('NS : s1 = DEPART, faux positif au refuge de depart -> ignore '
         '(#98856 garde de position)', () {
       final plan = TrekPlan.fromStages(
         stages,
         direction: 'NS',
         forwardDirectionCode: 'NS',
       );
-      final outcome =
-          plan.resolveArrival('s1', isFalsePositiveAtDeparture: true);
+      final outcome = plan.resolveArrival(
+        's1',
+        isFalsePositiveAtDeparture: true,
+      );
       expect(outcome.action, TrekArrivalAction.ignore);
     });
 
-    test(
-        'NS : s1 = DEPART, arrivee REELLE en fin d etape -> avance vers s2 '
+    test('NS : s1 = DEPART, arrivee REELLE en fin d etape -> avance vers s2 '
         '(#98856 fix verrou : plus de blocage par identite)', () {
       final plan = TrekPlan.fromStages(
         stages,
@@ -258,8 +263,11 @@ void main() {
         forwardDirectionCode: 'NS',
       );
       final outcome = plan.resolveArrival('s1');
-      expect(outcome.action, TrekArrivalAction.advance,
-          reason: 'La 1re etape (NS) doit pouvoir avancer apres arrivee reelle.');
+      expect(
+        outcome.action,
+        TrekArrivalAction.advance,
+        reason: 'La 1re etape (NS) doit pouvoir avancer apres arrivee reelle.',
+      );
       expect(outcome.nextStageId, 's2');
     });
 
@@ -320,8 +328,11 @@ void main() {
         direction: 'NS',
         forwardDirectionCode: 'NS',
       );
-      expect(plan.isFullyWalked({'s1', 's2', 's4'}), isFalse,
-          reason: 's3 manquante : le parcours entier n est pas marche.');
+      expect(
+        plan.isFullyWalked({'s1', 's2', 's4'}),
+        isFalse,
+        reason: 's3 manquante : le parcours entier n est pas marche.',
+      );
     });
 
     test('SN (sens inverse) parcours entier marche -> finisher ouvert', () {
@@ -345,19 +356,21 @@ void main() {
       expect(plan.isFullyWalked({'s4', 's1'}), isFalse);
     });
 
-    test('parcours partiel (moitie nord s1..s2) entierement marche -> ouvert',
-        () {
-      final plan = TrekPlan.fromStages(
-        stages,
-        direction: 'NS',
-        forwardDirectionCode: 'NS',
-        stageIds: ['s1', 's2'],
-      );
-      // Seules s1 et s2 comptent : les avoir marchees suffit (parcours partiel).
-      expect(plan.isFullyWalked({'s1', 's2'}), isTrue);
-      // Etapes hors parcours ignorees : marcher s3/s4 en plus ne change rien.
-      expect(plan.isFullyWalked({'s1', 's2', 's3', 's4'}), isTrue);
-    });
+    test(
+      'parcours partiel (moitie nord s1..s2) entierement marche -> ouvert',
+      () {
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'NS',
+          forwardDirectionCode: 'NS',
+          stageIds: ['s1', 's2'],
+        );
+        // Seules s1 et s2 comptent : les avoir marchees suffit (parcours partiel).
+        expect(plan.isFullyWalked({'s1', 's2'}), isTrue);
+        // Etapes hors parcours ignorees : marcher s3/s4 en plus ne change rien.
+        expect(plan.isFullyWalked({'s1', 's2', 's3', 's4'}), isTrue);
+      },
+    );
 
     test('parcours partiel : arrivee finale seule (s2) sans s1 -> REFUSE', () {
       final plan = TrekPlan.fromStages(

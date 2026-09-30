@@ -21,8 +21,9 @@ class TrailGpxPointsDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un point par son id
   Future<TrailGpxPoint?> getById(int id) {
-    return (select(trailGpxPoints)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailGpxPoints,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les points d'une trace, ordonnes par sequenceIndex

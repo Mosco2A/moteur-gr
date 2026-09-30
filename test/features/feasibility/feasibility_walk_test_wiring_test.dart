@@ -45,10 +45,10 @@ void main() {
   }
 
   WalkTestResult testOfLevel(String level) => WalkTestResult(
-        distanceMeters: 500,
-        level: level,
-        takenAt: DateTime(2026, 1, 2),
-      );
+    distanceMeters: 500,
+    level: level,
+    takenAt: DateTime(2026, 1, 2),
+  );
 
   test('le niveau derive depend du test 6 min (rank consomme)', () {
     // Sans test : rang de forme fallback median (1) -> intermediaire brut.
@@ -58,12 +58,21 @@ void main() {
     // Test FAIBLE (rang 0) -> redescend d'un cran -> debutant.
     final low = deriveLevelFor(testOfLevel(WalkTestLevel.low));
 
-    expect(noTest, HikerLevel.intermediate,
-        reason: 'baseline intermediaire sans test');
-    expect(excellent.index, greaterThan(noTest.index),
-        reason: 'un excellent test 6 min remonte le niveau');
-    expect(low.index, lessThan(noTest.index),
-        reason: 'un faible test 6 min redescend le niveau');
+    expect(
+      noTest,
+      HikerLevel.intermediate,
+      reason: 'baseline intermediaire sans test',
+    );
+    expect(
+      excellent.index,
+      greaterThan(noTest.index),
+      reason: 'un excellent test 6 min remonte le niveau',
+    );
+    expect(
+      low.index,
+      lessThan(noTest.index),
+      reason: 'un faible test 6 min redescend le niveau',
+    );
   });
 
   test('le VERDICT change quand le test 6 min change (meme etapes)', () {
@@ -82,25 +91,27 @@ void main() {
     ];
 
     FeasibilityAssessment evalWith(WalkTestResult? t) =>
-        FeasibilityFormula.evaluate(
-          stages: stages,
-          level: deriveLevelFor(t),
-        );
+        FeasibilityFormula.evaluate(stages: stages, level: deriveLevelFor(t));
 
     final withoutTest = evalWith(null); // intermediaire
-    final withExcellent =
-        evalWith(testOfLevel(WalkTestLevel.excellent)); // confirme
+    final withExcellent = evalWith(
+      testOfLevel(WalkTestLevel.excellent),
+    ); // confirme
 
     // La capacite journaliere augmente avec un excellent test -> le score baisse.
-    expect(withExcellent.dailyCapacityEnergyKm,
-        greaterThan(withoutTest.dailyCapacityEnergyKm));
+    expect(
+      withExcellent.dailyCapacityEnergyKm,
+      greaterThan(withoutTest.dailyCapacityEnergyKm),
+    );
     // Concretement : orange (36,9/38,67 ~ 0,95) sans test -> vert
     // (36,9/55,57 ~ 0,66) avec un excellent test. Le verdict DOIT changer.
     expect(withoutTest.globalVerdict, FeasibilityVerdict.orange);
     expect(withExcellent.globalVerdict, FeasibilityVerdict.green);
-    expect(withExcellent.globalVerdict,
-        isNot(equals(withoutTest.globalVerdict)),
-        reason: 'le test 6 min change bien le verdict (R2b)');
+    expect(
+      withExcellent.globalVerdict,
+      isNot(equals(withoutTest.globalVerdict)),
+      reason: 'le test 6 min change bien le verdict (R2b)',
+    );
   });
 
   test('WalkTestLevel.rank mappe bien les 4 niveaux (0..3)', () {
@@ -125,7 +136,10 @@ void main() {
       fallbackFitnessRank: 2,
     );
     expect(withoutTest.hasWalkTest, isFalse);
-    expect(withoutTest.fitnessLevelRank, 2,
-        reason: 'sans test -> le fallback fournit le rang');
+    expect(
+      withoutTest.fitnessLevelRank,
+      2,
+      reason: 'sans test -> le fallback fournit le rang',
+    );
   });
 }

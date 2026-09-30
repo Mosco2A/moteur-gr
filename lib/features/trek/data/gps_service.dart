@@ -58,18 +58,18 @@ class GpsService {
     Future<LocationPermission> Function()? checkPermission,
     Future<LocationPermission> Function()? requestPermission,
     Stream<Position> Function({required LocationSettings locationSettings})?
-        getPositionStream,
-  })  : _isLocationServiceEnabled =
-            isLocationServiceEnabled ?? Geolocator.isLocationServiceEnabled,
-        _checkPermission = checkPermission ?? Geolocator.checkPermission,
-        _requestPermission = requestPermission ?? Geolocator.requestPermission,
-        _getPositionStream = getPositionStream ?? _defaultGetPositionStream;
+    getPositionStream,
+  }) : _isLocationServiceEnabled =
+           isLocationServiceEnabled ?? Geolocator.isLocationServiceEnabled,
+       _checkPermission = checkPermission ?? Geolocator.checkPermission,
+       _requestPermission = requestPermission ?? Geolocator.requestPermission,
+       _getPositionStream = getPositionStream ?? _defaultGetPositionStream;
 
   final Future<bool> Function() _isLocationServiceEnabled;
   final Future<LocationPermission> Function() _checkPermission;
   final Future<LocationPermission> Function() _requestPermission;
   final Stream<Position> Function({required LocationSettings locationSettings})
-      _getPositionStream;
+  _getPositionStream;
 
   /// Filtre de distance conserve dans tous les regimes de precision.
   static const int distanceFilterMeters = 10;
@@ -147,7 +147,11 @@ class GpsService {
       // 5. Permission accordee (whileInUse ou always)
       return GpsPermissionResultValues.granted;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e, stackTrace: st, context: 'GpsService.requestPermission');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'GpsService.requestPermission',
+      );
       rethrow;
     }
   }
@@ -186,7 +190,9 @@ class GpsService {
         return GpsAccuracyMode.walking;
       case GpsAccuracyMode.moving:
         if (speed <= restingSpeedThresholdMps) return GpsAccuracyMode.resting;
-        if (speed <= movingExitSpeedThresholdMps) return GpsAccuracyMode.walking;
+        if (speed <= movingExitSpeedThresholdMps) {
+          return GpsAccuracyMode.walking;
+        }
         return GpsAccuracyMode.moving;
     }
   }

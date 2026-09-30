@@ -34,10 +34,13 @@ void main() {
       expect(haut, greaterThan(bas));
     });
 
-    test('reference 950 hPa : meme pression -> 0 m (relatif a la reference)', () {
-      final h = SensorFusionService.pressureToAltitude(950.0, 950.0);
-      expect(h, closeTo(0, 0.001));
-    });
+    test(
+      'reference 950 hPa : meme pression -> 0 m (relatif a la reference)',
+      () {
+        final h = SensorFusionService.pressureToAltitude(950.0, 950.0);
+        expect(h, closeTo(0, 0.001));
+      },
+    );
 
     test('pression non physique (<=0) ne renvoie pas NaN/Infinity', () {
       final h = SensorFusionService.pressureToAltitude(0, 1013.25);
@@ -45,63 +48,71 @@ void main() {
     });
   });
 
-  group('SensorFusionService.altitudeRelativeStream (barometre + calibration)',
-      () {
-    test('1er echantillon -> 0 m (origine), puis altitude relative', () async {
-      final baro = StreamController<BarometerEvent>();
-      final service = SensorFusionService(
-        barometerStream: () => baro.stream,
-      );
-
-      final future = service.altitudeRelativeStream().take(2).toList();
-
-      baro.add(BarometerEvent(1013.25, DateTime.now())); // reference -> 0 m
-      baro.add(BarometerEvent(1000.0, DateTime.now())); // plus bas -> >0 m
-      await baro.close();
-
-      final values = await future;
-      expect(values[0], closeTo(0, 0.001));
-      expect(values[1], greaterThan(0));
-    });
-
-    test('recalibrate(GPS) translate l altitude relative sur l altitude GPS',
+  group(
+    'SensorFusionService.altitudeRelativeStream (barometre + calibration)',
+    () {
+      test(
+        '1er echantillon -> 0 m (origine), puis altitude relative',
         () async {
-      final baro = StreamController<BarometerEvent>();
-      final service = SensorFusionService(
-        barometerStream: () => baro.stream,
+          final baro = StreamController<BarometerEvent>();
+          final service = SensorFusionService(
+            barometerStream: () => baro.stream,
+          );
+
+          final future = service.altitudeRelativeStream().take(2).toList();
+
+          baro.add(BarometerEvent(1013.25, DateTime.now())); // reference -> 0 m
+          baro.add(BarometerEvent(1000.0, DateTime.now())); // plus bas -> >0 m
+          await baro.close();
+
+          final values = await future;
+          expect(values[0], closeTo(0, 0.001));
+          expect(values[1], greaterThan(0));
+        },
       );
-      // Recalage AVANT toute donnee barometre : origine = 800 m (altitude GPS).
-      service.recalibrate(800);
 
-      final future = service.altitudeRelativeStream().first;
-      baro.add(BarometerEvent(1013.25, DateTime.now()));
-      await baro.close();
+      test(
+        'recalibrate(GPS) translate l altitude relative sur l altitude GPS',
+        () async {
+          final baro = StreamController<BarometerEvent>();
+          final service = SensorFusionService(
+            barometerStream: () => baro.stream,
+          );
+          // Recalage AVANT toute donnee barometre : origine = 800 m (altitude GPS).
+          service.recalibrate(800);
 
-      final value = await future;
-      // Reference barometre = 1013.25 -> relatif 0 m + offset 800 m = 800 m.
-      expect(value, closeTo(800, 0.001));
-    });
+          final future = service.altitudeRelativeStream().first;
+          baro.add(BarometerEvent(1013.25, DateTime.now()));
+          await baro.close();
 
-    test('barometre absent sous le timeout -> fallback altitude GPS', () async {
-      final baro = StreamController<BarometerEvent>();
-      final service = SensorFusionService(
-        barometerStream: () => baro.stream,
-        barometerProbeTimeout: const Duration(milliseconds: 30),
+          final value = await future;
+          // Reference barometre = 1013.25 -> relatif 0 m + offset 800 m = 800 m.
+          expect(value, closeTo(800, 0.001));
+        },
       );
-      service.pushGpsAltitude(1234);
 
-      final value = await service.altitudeRelativeStream().first;
-      expect(value, closeTo(1234, 0.001));
-      await baro.close();
-    });
-  });
+      test(
+        'barometre absent sous le timeout -> fallback altitude GPS',
+        () async {
+          final baro = StreamController<BarometerEvent>();
+          final service = SensorFusionService(
+            barometerStream: () => baro.stream,
+            barometerProbeTimeout: const Duration(milliseconds: 30),
+          );
+          service.pushGpsAltitude(1234);
+
+          final value = await service.altitudeRelativeStream().first;
+          expect(value, closeTo(1234, 0.001));
+          await baro.close();
+        },
+      );
+    },
+  );
 
   group('SensorFusionService.stepCountStream (podometre)', () {
     test('expose le nombre de pas cumule', () async {
       final steps = StreamController<int>();
-      final service = SensorFusionService(
-        stepCountStream: () => steps.stream,
-      );
+      final service = SensorFusionService(stepCountStream: () => steps.stream);
 
       final future = service.stepCountStream().take(2).toList();
       steps.add(10);

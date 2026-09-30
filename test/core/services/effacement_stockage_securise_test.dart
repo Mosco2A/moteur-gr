@@ -59,9 +59,9 @@ void main() {
   });
 
   Future<DataRetentionService> buildService() async => DataRetentionService(
-        database: db,
-        prefs: await SharedPreferences.getInstance(),
-      );
+    database: db,
+    prefs: await SharedPreferences.getInstance(),
+  );
 
   /// Met le keystore dans l'etat d'un randonneur qui a reellement utilise
   /// l'app : un code de reconnexion genere, une cle de coffre creee.
@@ -73,9 +73,11 @@ void main() {
   group('LOT K — l effacement art 17 atteint le keystore de l OS', () {
     test('le CODE DE RECONNEXION ne survit pas a l effacement', () async {
       await seedKeystoreReel();
-      expect(await keystore.read(key: RecoveryCodeService.storageKey),
-          isNotNull,
-          reason: 'le code doit exister AVANT, sinon le test ne prouve rien');
+      expect(
+        await keystore.read(key: RecoveryCodeService.storageKey),
+        isNotNull,
+        reason: 'le code doit exister AVANT, sinon le test ne prouve rien',
+      );
 
       final service = await buildService();
       await service.deleteAccountData();
@@ -83,7 +85,8 @@ void main() {
       expect(
         await keystore.read(key: RecoveryCodeService.storageKey),
         isNull,
-        reason: 'le code de reconnexion ouvre le coffre du randonneur sur un '
+        reason:
+            'le code de reconnexion ouvre le coffre du randonneur sur un '
             'autre telephone : il doit partir avec le reste',
       );
     });
@@ -95,9 +98,13 @@ void main() {
       final service = await buildService();
       await service.deleteAccountData();
 
-      expect(await keystore.read(key: vaultDataKey), isNull,
-          reason: 'la cle qui dechiffre le backup de la fiche sante reste '
-              'une donnee du randonneur');
+      expect(
+        await keystore.read(key: vaultDataKey),
+        isNull,
+        reason:
+            'la cle qui dechiffre le backup de la fiche sante reste '
+            'une donnee du randonneur',
+      );
     });
 
     test('INVERSION : une cle ajoutee DEMAIN part aussi, sans etre nommee '
@@ -108,11 +115,18 @@ void main() {
       final service = await buildService();
       await service.deleteAccountData();
 
-      expect(await keystore.read(key: cleDeDemain), isNull,
-          reason: 'le defaut doit proteger la personne : une cle non classee '
-              'est EFFACEE, jamais conservee');
-      expect(await keystore.readAll(), isEmpty,
-          reason: 'aucune exception n est declaree : le keystore doit etre vide');
+      expect(
+        await keystore.read(key: cleDeDemain),
+        isNull,
+        reason:
+            'le defaut doit proteger la personne : une cle non classee '
+            'est EFFACEE, jamais conservee',
+      );
+      expect(
+        await keystore.readAll(),
+        isEmpty,
+        reason: 'aucune exception n est declaree : le keystore doit etre vide',
+      );
     });
 
     test('le compte des cles effacees est RENDU (tracabilite)', () async {
@@ -122,8 +136,11 @@ void main() {
       final service = await buildService();
       final report = await service.deleteAccountData();
 
-      expect(report.secureKeysDeleted, 3,
-          reason: 'code de reconnexion + cle de coffre + cle de demain');
+      expect(
+        report.secureKeysDeleted,
+        3,
+        reason: 'code de reconnexion + cle de coffre + cle de demain',
+      );
     });
 
     test('keystore VIDE : aucune erreur, compte a zero, idempotent', () async {
@@ -134,49 +151,68 @@ void main() {
     });
   });
 
-  group('LOT K — la non-recurrence est STRUCTURELLE, pas une liste tenue a jour',
-      () {
-    test('AUCUNE exception n est declaree, et ce vide est une decision', () {
-      expect(SecureKeystoreEraser.preservedKeys, isEmpty,
-          reason: 'ajouter une exception ici doit forcer a ecrire sa raison : '
+  group(
+    'LOT K — la non-recurrence est STRUCTURELLE, pas une liste tenue a jour',
+    () {
+      test('AUCUNE exception n est declaree, et ce vide est une decision', () {
+        expect(
+          SecureKeystoreEraser.preservedKeys,
+          isEmpty,
+          reason:
+              'ajouter une exception ici doit forcer a ecrire sa raison : '
               'rien de ce qui vit dans le keystore n appartient a l appareil, '
-              'tout appartient au randonneur');
-    });
+              'tout appartient au randonneur',
+        );
+      });
 
-    test('CHAQUE cle keystore declaree dans lib/ est reellement emportee',
+      test(
+        'CHAQUE cle keystore declaree dans lib/ est reellement emportee',
         () async {
-      // On ne relit pas une liste ecrite dans ce test : on relit le CODE SOURCE.
-      // Tout fichier de lib/ qui parle a `flutter_secure_storage` et y nomme une
-      // cle « stepways.* » voit cette cle seedee, puis exigee absente. Un
-      // troisieme service qui apparaitrait demain est donc couvert sans que
-      // personne ait a penser a modifier ce fichier.
-      final cles = <String>{};
-      final regexp = RegExp("'(stepways\\.[A-Za-z0-9_.]+)'");
-      for (final entity in Directory('lib').listSync(recursive: true)) {
-        if (entity is! File || !entity.path.endsWith('.dart')) continue;
-        final source = entity.readAsStringSync();
-        if (!source.contains('flutter_secure_storage')) continue;
-        for (final m in regexp.allMatches(source)) {
-          cles.add(m.group(1)!);
-        }
-      }
+          // On ne relit pas une liste ecrite dans ce test : on relit le CODE SOURCE.
+          // Tout fichier de lib/ qui parle a `flutter_secure_storage` et y nomme une
+          // cle « stepways.* » voit cette cle seedee, puis exigee absente. Un
+          // troisieme service qui apparaitrait demain est donc couvert sans que
+          // personne ait a penser a modifier ce fichier.
+          final cles = <String>{};
+          final regexp = RegExp("'(stepways\\.[A-Za-z0-9_.]+)'");
+          for (final entity in Directory('lib').listSync(recursive: true)) {
+            if (entity is! File || !entity.path.endsWith('.dart')) continue;
+            final source = entity.readAsStringSync();
+            if (!source.contains('flutter_secure_storage')) continue;
+            for (final m in regexp.allMatches(source)) {
+              cles.add(m.group(1)!);
+            }
+          }
 
-      expect(cles, contains(RecoveryCodeService.storageKey),
-          reason: 'le scan du source doit au minimum retrouver le code de '
-              'reconnexion, sinon il ne scanne rien');
-      expect(cles, contains(vaultDataKey),
-          reason: 'la cle du coffre local doit etre vue par le scan');
+          expect(
+            cles,
+            contains(RecoveryCodeService.storageKey),
+            reason:
+                'le scan du source doit au minimum retrouver le code de '
+                'reconnexion, sinon il ne scanne rien',
+          );
+          expect(
+            cles,
+            contains(vaultDataKey),
+            reason: 'la cle du coffre local doit etre vue par le scan',
+          );
 
-      FlutterSecureStorage.setMockInitialValues(
-        <String, String>{for (final cle in cles) cle: 'valeur'},
+          FlutterSecureStorage.setMockInitialValues(<String, String>{
+            for (final cle in cles) cle: 'valeur',
+          });
+          final service = await buildService();
+          await service.deleteAccountData();
+
+          for (final cle in cles) {
+            expect(
+              await keystore.read(key: cle),
+              isNull,
+              reason:
+                  '« $cle » est declaree dans lib/ et survit a l effacement',
+            );
+          }
+        },
       );
-      final service = await buildService();
-      await service.deleteAccountData();
-
-      for (final cle in cles) {
-        expect(await keystore.read(key: cle), isNull,
-            reason: '« $cle » est declaree dans lib/ et survit a l effacement');
-      }
-    });
-  });
+    },
+  );
 }

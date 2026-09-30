@@ -8,9 +8,9 @@ import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 
 import '../../../fixtures/horodatage_de_serveur.dart';
+
 /// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
 HorodatageServeur v(int n) => aJPlus(n);
-
 
 /// Tests du CatalogNotifier et des modeles du catalogue.
 void main() {
@@ -76,15 +76,17 @@ void main() {
       final dao = TrailManifestsDao(db);
 
       // Inserer un manifeste distant sans version locale
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'),
-        dataVersion: Value(v(3)),
-        hash: const Value('abc123'),
-        filePath: const Value('trails/sentier-volcans/data.json'),
-        fileSize: const Value(524288),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-05-26T12:00:00Z'),
-      ));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(v(3)),
+          hash: const Value('abc123'),
+          filePath: const Value('trails/sentier-volcans/data.json'),
+          fileSize: const Value(524288),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-05-26T12:00:00Z'),
+        ),
+      );
 
       final entry = await dao.getByTrailId('sentier-volcans');
       expect(entry, isNotNull);
@@ -101,16 +103,18 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       final dao = TrailManifestsDao(db);
 
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'),
-        dataVersion: Value(v(3)),
-        hash: const Value('abc123'),
-        filePath: const Value('trails/sentier-volcans/data.json'),
-        fileSize: const Value(524288),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-05-26T12:00:00Z'),
-        localVersion: Value(v(3)),
-      ));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(v(3)),
+          hash: const Value('abc123'),
+          filePath: const Value('trails/sentier-volcans/data.json'),
+          fileSize: const Value(524288),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-05-26T12:00:00Z'),
+          localVersion: Value(v(3)),
+        ),
+      );
 
       final needsUpdate = await dao.needsUpdate('sentier-volcans');
       expect(needsUpdate, false);
@@ -122,16 +126,18 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       final dao = TrailManifestsDao(db);
 
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'),
-        dataVersion: Value(v(5)),
-        hash: const Value('new_hash'),
-        filePath: const Value('trails/sentier-volcans/data.json'),
-        fileSize: const Value(600000),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-05-26T12:00:00Z'),
-        localVersion: Value(v(3)),
-      ));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(v(5)),
+          hash: const Value('new_hash'),
+          filePath: const Value('trails/sentier-volcans/data.json'),
+          fileSize: const Value(600000),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-05-26T12:00:00Z'),
+          localVersion: Value(v(3)),
+        ),
+      );
 
       final needsUpdate = await dao.needsUpdate('sentier-volcans');
       expect(needsUpdate, true);
@@ -143,8 +149,9 @@ void main() {
   group('downloadProgressProvider', () {
     test('etat initial est null', () async {
       final container = ProviderContainer();
-      final progress =
-          await container.read(downloadProgressProvider('test').future);
+      final progress = await container.read(
+        downloadProgressProvider('test').future,
+      );
       expect(progress, isNull);
       container.dispose();
     });

@@ -116,17 +116,19 @@ void main() {
     // realisation — pour les outils complets d'un trek, il faut l'acheter
     // (comme le gratuit) ». Ce que l'abo donne, il le donne toujours : le
     // sans-pub partout. Le reste du test est inchange.
-    test('abo actif = subscriber : sans pub partout, mais PAS jouable',
-        () async {
-      final svc = await makeService();
-      await svc.onSubscriptionValidated();
+    test(
+      'abo actif = subscriber : sans pub partout, mais PAS jouable',
+      () async {
+        final svc = await makeService();
+        await svc.onSubscriptionValidated();
 
-      expect(await svc.isSubscriberActive(), isTrue);
-      expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
-      expect(TrailAccess.subscriber.showAds, isFalse);
-      expect(await svc.isDemoMode('gr20'), isTrue);
-      expect(await svc.isNoAdsActive('gr20'), isTrue);
-    });
+        expect(await svc.isSubscriberActive(), isTrue);
+        expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
+        expect(TrailAccess.subscriber.showAds, isFalse);
+        expect(await svc.isDemoMode('gr20'), isTrue);
+        expect(await svc.isNoAdsActive('gr20'), isTrue);
+      },
+    );
 
     test('trek possede = owned (prioritaire sur l abo)', () async {
       final svc = await makeService(walletSteps: 10);
@@ -173,22 +175,24 @@ void main() {
   });
 
   group('ST4 buyTrail — wallet suffisant', () {
-    test('wallet couvre tout : owned pose, wallet debite, complement nul',
-        () async {
-      final svc = await makeService(walletSteps: 12);
+    test(
+      'wallet couvre tout : owned pose, wallet debite, complement nul',
+      () async {
+        final svc = await makeService(walletSteps: 12);
 
-      final quote = await svc.quoteTrail('gr20');
-      expect(quote.stepsNeeded, 10);
-      expect(quote.stepsFromWallet, 10);
-      expect(quote.complementSteps, 0);
-      expect(quote.complementPack, isNull);
+        final quote = await svc.quoteTrail('gr20');
+        expect(quote.stepsNeeded, 10);
+        expect(quote.stepsFromWallet, 10);
+        expect(quote.complementSteps, 0);
+        expect(quote.complementPack, isNull);
 
-      final outcome = await svc.buyTrail('gr20');
-      expect(outcome.status, PurchaseStatusResult.owned);
-      expect(outcome.stepsFromWallet, 10);
-      expect(svc.walletSteps, 2, reason: '12 - 10 debitees');
-      expect(await svc.ownsTrail('gr20'), isTrue);
-    });
+        final outcome = await svc.buyTrail('gr20');
+        expect(outcome.status, PurchaseStatusResult.owned);
+        expect(outcome.stepsFromWallet, 10);
+        expect(svc.walletSteps, 2, reason: '12 - 10 debitees');
+        expect(await svc.ownsTrail('gr20'), isTrue);
+      },
+    );
 
     test('deja possede : idempotent, rien debite', () async {
       final svc = await makeService(walletSteps: 20);
@@ -202,35 +206,39 @@ void main() {
   });
 
   group('ST4 buyTrail — complement store', () {
-    test('hors-ligne : complement requis -> ROLLBACK wallet, pas de owned',
-        () async {
-      final svc = await makeService(walletSteps: 4, online: false);
+    test(
+      'hors-ligne : complement requis -> ROLLBACK wallet, pas de owned',
+      () async {
+        final svc = await makeService(walletSteps: 4, online: false);
 
-      final quote = await svc.quoteTrail('gr20');
-      expect(quote.stepsFromWallet, 4);
-      expect(quote.complementSteps, 6);
-      expect(quote.complementPack!.steps, 11);
+        final quote = await svc.quoteTrail('gr20');
+        expect(quote.stepsFromWallet, 4);
+        expect(quote.complementSteps, 6);
+        expect(quote.complementPack!.steps, 11);
 
-      final outcome = await svc.buyTrail('gr20');
-      expect(outcome.status, PurchaseStatusResult.offlineComplementRequired);
-      expect(outcome.complementSteps, 6);
-      // Jamais de wallet debite sans contrepartie : le debit est annule.
-      expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
-      expect(await svc.ownsTrail('gr20'), isFalse);
-    });
+        final outcome = await svc.buyTrail('gr20');
+        expect(outcome.status, PurchaseStatusResult.offlineComplementRequired);
+        expect(outcome.complementSteps, 6);
+        // Jamais de wallet debite sans contrepartie : le debit est annule.
+        expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
+        expect(await svc.ownsTrail('gr20'), isFalse);
+      },
+    );
 
-    test('en ligne mais IAP stub : rollback + complementFailed, pas de owned',
-        () async {
-      final svc = await makeService(walletSteps: 4, online: true);
+    test(
+      'en ligne mais IAP stub : rollback + complementFailed, pas de owned',
+      () async {
+        final svc = await makeService(walletSteps: 4, online: true);
 
-      final outcome = await svc.buyTrail('gr20');
-      // Le complement store est asynchrone (boucle completion) : pas de
-      // confirmation synchrone en stub -> rollback + echec, owned NON pose.
-      expect(outcome.status, PurchaseStatusResult.complementFailed);
-      expect(outcome.complementSteps, 6);
-      expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
-      expect(await svc.ownsTrail('gr20'), isFalse);
-    });
+        final outcome = await svc.buyTrail('gr20');
+        // Le complement store est asynchrone (boucle completion) : pas de
+        // confirmation synchrone en stub -> rollback + echec, owned NON pose.
+        expect(outcome.status, PurchaseStatusResult.complementFailed);
+        expect(outcome.complementSteps, 6);
+        expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
+        expect(await svc.ownsTrail('gr20'), isFalse);
+      },
+    );
   });
 
   group('ST4 reward sans-pub 24 h (Clock injecte)', () {
@@ -240,8 +248,11 @@ void main() {
 
       await svc.grantRewardNoAds();
       expect(await svc.isRewardNoAdsActive(), isTrue);
-      expect(await svc.isNoAdsActive('gr20'), isTrue,
-          reason: 'reward couvre le sans-pub meme sans achat');
+      expect(
+        await svc.isNoAdsActive('gr20'),
+        isTrue,
+        reason: 'reward couvre le sans-pub meme sans achat',
+      );
 
       // Avance l'horloge de 25 h : le reward a expire.
       now = now.add(const Duration(hours: 25));
@@ -277,51 +288,64 @@ void main() {
   });
 
   group('ST4 abandon / reprise', () {
-    test('reprise ne rachete que le complement restant (acquis conserves)',
-        () async {
-      // Achat initial couvert par le wallet : 10/10 acquis, owned.
-      final svc = await makeService(walletSteps: 30);
-      await svc.buyTrail('gr20');
-      expect(await svc.acquiredStagesFor('gr20'), 10);
+    test(
+      'reprise ne rachete que le complement restant (acquis conserves)',
+      () async {
+        // Achat initial couvert par le wallet : 10/10 acquis, owned.
+        final svc = await makeService(walletSteps: 30);
+        await svc.buyTrail('gr20');
+        expect(await svc.acquiredStagesFor('gr20'), 10);
 
-      // Abandon : owned retombe a false, acquis conserves comme base de rachat.
-      await svc.onTrailAbandoned('gr20');
-      expect(await svc.ownsTrail('gr20'), isFalse);
-      expect(await svc.acquiredStagesFor('gr20'), 10);
-      expect(FeatureFlags.isPremiumEnabled('gr20'), isFalse);
+        // Abandon : owned retombe a false, acquis conserves comme base de rachat.
+        await svc.onTrailAbandoned('gr20');
+        expect(await svc.ownsTrail('gr20'), isFalse);
+        expect(await svc.acquiredStagesFor('gr20'), 10);
+        expect(FeatureFlags.isPremiumEnabled('gr20'), isFalse);
 
-      // Devis de reprise : plus rien a payer (tout deja acquis).
-      final resumeQuote = await svc.quoteResume('gr20');
-      expect(resumeQuote.stepsNeeded, 0, reason: 'les 10 etapes sont acquises');
-      expect(resumeQuote.complementSteps, 0);
+        // Devis de reprise : plus rien a payer (tout deja acquis).
+        final resumeQuote = await svc.quoteResume('gr20');
+        expect(
+          resumeQuote.stepsNeeded,
+          0,
+          reason: 'les 10 etapes sont acquises',
+        );
+        expect(resumeQuote.complementSteps, 0);
 
-      final walletBefore = svc.walletSteps;
-      final outcome = await svc.resumeTrail('gr20');
-      expect(outcome.status, PurchaseStatusResult.owned);
-      expect(outcome.stepsFromWallet, 0, reason: 'rien re-debite a la reprise');
-      expect(svc.walletSteps, walletBefore);
-      expect(await svc.ownsTrail('gr20'), isTrue);
-    });
+        final walletBefore = svc.walletSteps;
+        final outcome = await svc.resumeTrail('gr20');
+        expect(outcome.status, PurchaseStatusResult.owned);
+        expect(
+          outcome.stepsFromWallet,
+          0,
+          reason: 'rien re-debite a la reprise',
+        );
+        expect(svc.walletSteps, walletBefore);
+        expect(await svc.ownsTrail('gr20'), isTrue);
+      },
+    );
 
-    test('reprise partielle : ne facture que les etapes non acquises', () async {
-      // Trek de 10 etapes dont 4 deja acquises (posees via abandon d'un achat
-      // partiel simule : on part d'un etat acquis=4 sans owned).
-      final svc = await makeService(walletSteps: 30);
-      final now2 = now;
-      await db.trekEntitlementsDao.upsert(
-        TrekEntitlementsCompanion.insert(
-          trailId: 'gr20',
-          owned: const Value(false),
-          acquiredStages: const Value(4),
-          totalStages: const Value(10),
-          updatedAt: now2,
-        ),
-      );
+    test(
+      'reprise partielle : ne facture que les etapes non acquises',
+      () async {
+        // Trek de 10 etapes dont 4 deja acquises (posees via abandon d'un achat
+        // partiel simule : on part d'un etat acquis=4 sans owned).
+        final svc = await makeService(walletSteps: 30);
+        final now2 = now;
+        await db.trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: 'gr20',
+            owned: const Value(false),
+            acquiredStages: const Value(4),
+            totalStages: const Value(10),
+            updatedAt: now2,
+          ),
+        );
 
-      final quote = await svc.quoteResume('gr20');
-      expect(quote.acquiredStages, 4);
-      expect(quote.stepsNeeded, 6, reason: '10 - 4 acquises');
-    });
+        final quote = await svc.quoteResume('gr20');
+        expect(quote.acquiredStages, 4);
+        expect(quote.stepsNeeded, 6, reason: '10 - 4 acquises');
+      },
+    );
   });
 
   group('ST4 migration legacy (idempotente)', () {
@@ -349,40 +373,58 @@ void main() {
   // s'accroche a l'achat, sans-pub permanent compris. Un sentier gratuit est
   // resolu `freeTrail` : jouable, et avec pub, parce qu'il n'a rien paye.
   group('ST4 sentier GRATUIT (prix nul)', () {
-    test('jouable sans achat, AVEC pub, et sans devenir un sentier achete',
-        () async {
-      final svc = await makeService(gratuits: {'sentier-gratuit'});
+    test(
+      'jouable sans achat, AVEC pub, et sans devenir un sentier achete',
+      () async {
+        final svc = await makeService(gratuits: {'sentier-gratuit'});
 
-      expect(svc.isFreeTrail('sentier-gratuit'), isTrue);
-      expect(await svc.ownsTrail('sentier-gratuit'), isFalse,
-          reason: 'jouable sans etre achete — et sans droit d achat pose');
-      expect(await svc.accessFor('sentier-gratuit'), TrailAccess.freeTrail);
-      expect(await svc.canRealizeTrail('sentier-gratuit'), isTrue,
-          reason: 'rien de bride : la realisation comprise');
-      expect(await svc.isDemoMode('sentier-gratuit'), isFalse);
-      expect(await svc.isNoAdsActive('sentier-gratuit'), isFalse,
-          reason: 'le sans-pub est la contrepartie d avoir PAYE (modele eco '
+        expect(svc.isFreeTrail('sentier-gratuit'), isTrue);
+        expect(
+          await svc.ownsTrail('sentier-gratuit'),
+          isFalse,
+          reason: 'jouable sans etre achete — et sans droit d achat pose',
+        );
+        expect(await svc.accessFor('sentier-gratuit'), TrailAccess.freeTrail);
+        expect(
+          await svc.canRealizeTrail('sentier-gratuit'),
+          isTrue,
+          reason: 'rien de bride : la realisation comprise',
+        );
+        expect(await svc.isDemoMode('sentier-gratuit'), isFalse);
+        expect(
+          await svc.isNoAdsActive('sentier-gratuit'),
+          isFalse,
+          reason:
+              'le sans-pub est la contrepartie d avoir PAYE (modele eco '
               'section 3). Un sentier gratuit releve du niveau gratuit de la '
               'section 2, « avec pub » — et c est exactement le privilege que '
-              'le drapeau vitrine lui offrait pour rien');
+              'le drapeau vitrine lui offrait pour rien',
+        );
 
-      // Un autre sentier non achete reste en demo bridee (modele intact).
-      expect(await svc.isDemoMode('sentier-payant'), isTrue);
-      expect(await svc.accessFor('sentier-payant'), TrailAccess.free);
-    });
+        // Un autre sentier non achete reste en demo bridee (modele intact).
+        expect(await svc.isDemoMode('sentier-payant'), isTrue);
+        expect(await svc.accessFor('sentier-payant'), TrailAccess.free);
+      },
+    );
 
-    test('on ne lui vend rien : aucune etape debitee, aucun droit pose',
-        () async {
-      final svc = await makeService(walletSteps: 9, gratuits: {'gratuit'});
-      final outcome = await svc.buyTrail('gratuit');
+    test(
+      'on ne lui vend rien : aucune etape debitee, aucun droit pose',
+      () async {
+        final svc = await makeService(walletSteps: 9, gratuits: {'gratuit'});
+        final outcome = await svc.buyTrail('gratuit');
 
-      expect(outcome.status, PurchaseStatusResult.alreadyOwned);
-      expect(svc.walletSteps, 9, reason: 'son prix est nul');
-      expect(await svc.ownsTrail('gratuit'), isFalse,
-          reason: 'poser un droit `owned` lui redonnerait le sans-pub '
+        expect(outcome.status, PurchaseStatusResult.alreadyOwned);
+        expect(svc.walletSteps, 9, reason: 'son prix est nul');
+        expect(
+          await svc.ownsTrail('gratuit'),
+          isFalse,
+          reason:
+              'poser un droit `owned` lui redonnerait le sans-pub '
               'permanent de l achat : ce serait le drapeau vitrine sous un '
-              'autre nom');
-    });
+              'autre nom',
+        );
+      },
+    );
   });
 
   group('ST4 reset', () {

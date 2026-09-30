@@ -134,9 +134,7 @@ void main() {
     });
 
     test('defauts corrects : bookingEnabled=false, methods=vide', () {
-      final config = BookingConfig.fromJson({
-        'trailId': 'mare-a-mare',
-      });
+      final config = BookingConfig.fromJson({'trailId': 'mare-a-mare'});
       expect(config.bookingEnabled, isFalse);
       expect(config.bookingMethods, isEmpty);
       expect(config.partnerUrl, isNull);

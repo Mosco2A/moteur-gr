@@ -72,7 +72,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     if (_occupe) return;
     setState(() => _occupe = true);
     final messenger = ScaffoldMessenger.of(context);
-    final issue = await ref.read(monetizationServiceProvider).restorePurchases();
+    final issue = await ref
+        .read(monetizationServiceProvider)
+        .restorePurchases();
     if (!mounted) return;
     setState(() => _occupe = false);
     // LE BOUTON REPOND TOUJOURS. `restorePurchases` etait un `Future<void>`
@@ -80,14 +82,11 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     // visible. Il rend desormais un resultat type, et on le NOMME.
     messenger.showSnackBar(
       SnackBar(
-        content: Text(
-          switch (issue.status) {
-            PurchaseRestoreStatus.requested =>
-              t.monetization.restoreRequested,
-            PurchaseRestoreStatus.storeUnavailable =>
-              t.monetization.restoreUnavailable,
-          },
-        ),
+        content: Text(switch (issue.status) {
+          PurchaseRestoreStatus.requested => t.monetization.restoreRequested,
+          PurchaseRestoreStatus.storeUnavailable =>
+            t.monetization.restoreUnavailable,
+        }),
       ),
     );
   }
@@ -106,9 +105,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   /// sur une resiliation serait exactement le defaut que la loi vise.
   Future<void> _arreterAbonnement() async {
     final messenger = ScaffoldMessenger.of(context);
-    final ouvert = await ref.read(deeplinkLauncherProvider).open(
-          StoreSubscriptionLinks.pour(productId: kWalletSubNoAdsMonthly),
-        );
+    final ouvert = await ref
+        .read(deeplinkLauncherProvider)
+        .open(StoreSubscriptionLinks.pour(productId: kWalletSubNoAdsMonthly));
     if (!mounted || ouvert) return;
     messenger.showSnackBar(
       SnackBar(content: Text(t.monetization.cancelStoreUnavailable)),
@@ -182,13 +181,17 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: Row(
                 children: [
-                  StepIcon(StepwaysIcons.prix, color: theme.colorScheme.primary),
+                  StepIcon(
+                    StepwaysIcons.prix,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingMd),
                   Expanded(
                     child: Text(
                       t.monetization.subscriptionPrice(
-                        price: t.monetization
-                            .packPrice(price: _euros(kSubscriptionPriceEur)),
+                        price: t.monetization.packPrice(
+                          price: _euros(kSubscriptionPriceEur),
+                        ),
                       ),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
@@ -244,8 +247,11 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StepIcon(StepwaysIcons.info,
-                      size: 20, color: theme.colorScheme.error),
+                  StepIcon(
+                    StepwaysIcons.info,
+                    size: 20,
+                    color: theme.colorScheme.error,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(

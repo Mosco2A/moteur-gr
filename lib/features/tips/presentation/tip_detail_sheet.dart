@@ -120,7 +120,9 @@ class TipDetailSheet extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: color.withAlpha(30),
-                        borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusChip,
+                        ),
                       ),
                       child: Text(
                         card.category,
@@ -139,7 +141,9 @@ class TipDetailSheet extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: AppTheme.rougeUrgence.withAlpha(20),
-                          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusChip,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -183,7 +187,9 @@ class TipDetailSheet extends StatelessWidget {
                       return Chip(
                         label: Text(
                           tag,
-                          style: theme.textTheme.bodySmall?.copyWith(fontSize: 12),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 12,
+                          ),
                         ),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: EdgeInsets.zero,
@@ -247,7 +253,11 @@ class _MetadataRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          StepIcon(icon, size: 16, color: theme.colorScheme.onSurface.withAlpha(150)),
+          StepIcon(
+            icon,
+            size: 16,
+            color: theme.colorScheme.onSurface.withAlpha(150),
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             label,

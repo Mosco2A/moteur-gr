@@ -33,8 +33,7 @@ void main() {
         lat: 45.0,
         lng: 3.0,
       );
-      final decoded =
-          StageAccommodation.fromJson(accommodation.toJson());
+      final decoded = StageAccommodation.fromJson(accommodation.toJson());
       expect(decoded.type, 'cabane_perchee');
     });
 
@@ -66,7 +65,10 @@ void main() {
     });
 
     test('icone generique pour type inconnu', () {
-      expect(accommodationTypeIcon('cabane_perchee'), StepwaysIcons.hebergement);
+      expect(
+        accommodationTypeIcon('cabane_perchee'),
+        StepwaysIcons.hebergement,
+      );
     });
 
     test('libelle i18n pour type connu', () {

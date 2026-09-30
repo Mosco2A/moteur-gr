@@ -29,9 +29,9 @@ class BookingDataService {
     required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
     SharedPreferences? prefs,
-  })  : _firebaseService = firebaseService,
-        _firestore = firestore,
-        _prefs = prefs;
+  }) : _firebaseService = firebaseService,
+       _firestore = firestore,
+       _prefs = prefs;
 
   /// 596 C4 — GARDE DE DISPONIBILITE, ET RESOLUTION PARESSEUSE.
   ///
@@ -49,8 +49,9 @@ class BookingDataService {
     if (!_firebaseService.isAvailable) {
       throw const CloudIndisponibleException('reservation d un hebergement');
     }
-    return (_firestore ??= FirebaseFirestore.instance)
-        .collection(kBookingsCollection);
+    return (_firestore ??= FirebaseFirestore.instance).collection(
+      kBookingsCollection,
+    );
   }
 
   Future<SharedPreferences> _getPrefs() async {
@@ -87,9 +88,7 @@ class BookingDataService {
   /// Recupere les reservations pour un trail depuis le cache local.
   ///
   /// Offline-first : lit le cache local, pas Firestore.
-  Future<List<AccommodationBooking>> getBookingsForTrail(
-    String trailId,
-  ) async {
+  Future<List<AccommodationBooking>> getBookingsForTrail(String trailId) async {
     final cache = await _readCache();
     final bookings = <AccommodationBooking>[];
 
@@ -107,14 +106,9 @@ class BookingDataService {
   }
 
   /// Met a jour le statut d'une reservation.
-  Future<void> updateStatus(
-    String bookingId,
-    BookingStatus newStatus,
-  ) async {
+  Future<void> updateStatus(String bookingId, BookingStatus newStatus) async {
     // Firestore
-    await _collection.doc(bookingId).update({
-      'status': newStatus.name,
-    });
+    await _collection.doc(bookingId).update({'status': newStatus.name});
 
     // Cache local
     final cache = await _readCache();

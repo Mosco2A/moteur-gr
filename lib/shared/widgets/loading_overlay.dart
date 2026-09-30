@@ -14,14 +14,25 @@ class LoadingOverlay extends StatelessWidget {
     return Container(
       color: Colors.black.withAlpha((opacity * 255).round()),
       child: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          CircularProgressIndicator(color: theme.colorScheme.primary, strokeWidth: 3),
-          if (message != null) ...[
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(message!, style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-              textAlign: TextAlign.center),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: theme.colorScheme.primary,
+              strokeWidth: 3,
+            ),
+            if (message != null) ...[
+              const SizedBox(height: AppTheme.spacingBase),
+              Text(
+                message!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ],
-        ]),
+        ),
       ),
     );
   }

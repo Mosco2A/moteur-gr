@@ -65,8 +65,8 @@ class _MapGuideSheet extends ConsumerWidget {
     // Types de points réellement présents sur le sentier courant. En attente ou
     // en erreur : liste vide -> la légende des points disparaît, celle des
     // boutons reste. Jamais de spinner bloquant pour un écran d'explication.
-    final types = ref.watch(availablePoiTypesProvider(trailId)).value ??
-        const <String>{};
+    final types =
+        ref.watch(availablePoiTypesProvider(trailId)).value ?? const <String>{};
     final sortedTypes = types.toList()..sort();
 
     return SafeArea(
@@ -87,10 +87,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   StepIcon(StepwaysIcons.info, color: scheme.primary),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
-                    child: Text(
-                      t.map.title,
-                      style: theme.textTheme.titleLarge,
-                    ),
+                    child: Text(t.map.title, style: theme.textTheme.titleLarge),
                   ),
                 ],
               ),

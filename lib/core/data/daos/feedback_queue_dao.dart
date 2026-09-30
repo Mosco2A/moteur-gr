@@ -29,12 +29,12 @@ class FeedbackQueueDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un feedback comme envoyé
   Future<int> markSent(int feedbackId) {
-    return (update(feedbackQueue)
-          ..where((t) => t.id.equals(feedbackId)))
-        .write(FeedbackQueueCompanion(
-      status: const Value('sent'),
-      sentAt: Value(DateTime.now()),
-    ));
+    return (update(feedbackQueue)..where((t) => t.id.equals(feedbackId))).write(
+      FeedbackQueueCompanion(
+        status: const Value('sent'),
+        sentAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   /// Récupère les feedbacks dont un envoi a déjà échoué (596 C1).
@@ -51,11 +51,9 @@ class FeedbackQueueDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un feedback comme échoué
   Future<int> markFailed(int feedbackId) {
-    return (update(feedbackQueue)
-          ..where((t) => t.id.equals(feedbackId)))
-        .write(const FeedbackQueueCompanion(
-      status: Value('failed'),
-    ));
+    return (update(feedbackQueue)..where((t) => t.id.equals(feedbackId))).write(
+      const FeedbackQueueCompanion(status: Value('failed')),
+    );
   }
 
   /// Récupère tous les feedbacks d'un sentier
@@ -74,8 +72,6 @@ class FeedbackQueueDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime les feedbacks envoyés (nettoyage)
   Future<int> clearSent() {
-    return (delete(feedbackQueue)
-          ..where((t) => t.status.equals('sent')))
-        .go();
+    return (delete(feedbackQueue)..where((t) => t.status.equals('sent'))).go();
   }
 }

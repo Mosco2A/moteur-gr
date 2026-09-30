@@ -119,11 +119,9 @@ enum ResultatExclusionIcloud {
 /// medicale et le reseau ») garde un sens, et le meme canal servira le jour ou un
 /// autre stockage devra etre exclu.
 class ExclusionSauvegardeIcloud {
-  ExclusionSauvegardeIcloud({
-    MethodChannel? canal,
-    bool? cibleIos,
-  })  : _canal = canal ?? const MethodChannel(nomDuCanal),
-        _cibleIos = cibleIos ?? Platform.isIOS;
+  ExclusionSauvegardeIcloud({MethodChannel? canal, bool? cibleIos})
+    : _canal = canal ?? const MethodChannel(nomDuCanal),
+      _cibleIos = cibleIos ?? Platform.isIOS;
 
   final MethodChannel _canal;
 
@@ -163,7 +161,8 @@ class ExclusionSauvegardeIcloud {
   static const String fichierNatif = 'ios/Runner/AppDelegate.swift';
 
   /// Reference Xcode qui prouve que [fichierNatif] est COMPILE.
-  static const String phaseSourcesXcode = 'ios/Runner.xcodeproj/project.pbxproj';
+  static const String phaseSourcesXcode =
+      'ios/Runner.xcodeproj/project.pbxproj';
 
   /// DELAI MAXIMAL D'UN ALLER-RETOUR NATIF.
   ///
@@ -190,11 +189,16 @@ class ExclusionSauvegardeIcloud {
   /// pour un attribut de sauvegarde. L'echec est journalise et RENDU
   /// ([ResultatExclusionIcloud.echec]), jamais avale en se faisant passer pour un
   /// succes.
-  Future<ResultatExclusionIcloud> _appeler(String methode, String chemin) async {
+  Future<ResultatExclusionIcloud> _appeler(
+    String methode,
+    String chemin,
+  ) async {
     if (!_cibleIos) return ResultatExclusionIcloud.sansObjet;
     try {
       final pose = await _canal
-          .invokeMethod<bool>(methode, <String, dynamic>{argumentChemin: chemin})
+          .invokeMethod<bool>(methode, <String, dynamic>{
+            argumentChemin: chemin,
+          })
           .timeout(delaiMax);
       if (pose == true) return ResultatExclusionIcloud.appliquee;
       _log.e('[ExclusionIcloud] $methode refuse par le natif sur « $chemin »');

@@ -8,27 +8,74 @@ void main() {
     final testJson = {
       'version': 1,
       'defaultTemplate': {
-        'categories': ['equipment', 'clothing', 'food', 'safety', 'documents', 'hygiene'],
+        'categories': [
+          'equipment',
+          'clothing',
+          'food',
+          'safety',
+          'documents',
+          'hygiene',
+        ],
         'items': [
-          {'id': 'backpack', 'category': 'equipment', 'nameKey': 'backpack', 'isEssential': true},
-          {'id': 'sleepingBag', 'category': 'equipment', 'nameKey': 'sleepingBag', 'isEssential': true},
-          {'id': 'hikingBoots', 'category': 'clothing', 'nameKey': 'hikingBoots', 'isEssential': true},
-          {'id': 'trailSnacks', 'category': 'food', 'nameKey': 'trailSnacks', 'isEssential': false},
-          {'id': 'firstAidKit', 'category': 'safety', 'nameKey': 'firstAidKit', 'isEssential': true},
-          {'id': 'towel', 'category': 'hygiene', 'nameKey': 'towel', 'isEssential': false},
+          {
+            'id': 'backpack',
+            'category': 'equipment',
+            'nameKey': 'backpack',
+            'isEssential': true,
+          },
+          {
+            'id': 'sleepingBag',
+            'category': 'equipment',
+            'nameKey': 'sleepingBag',
+            'isEssential': true,
+          },
+          {
+            'id': 'hikingBoots',
+            'category': 'clothing',
+            'nameKey': 'hikingBoots',
+            'isEssential': true,
+          },
+          {
+            'id': 'trailSnacks',
+            'category': 'food',
+            'nameKey': 'trailSnacks',
+            'isEssential': false,
+          },
+          {
+            'id': 'firstAidKit',
+            'category': 'safety',
+            'nameKey': 'firstAidKit',
+            'isEssential': true,
+          },
+          {
+            'id': 'towel',
+            'category': 'hygiene',
+            'nameKey': 'towel',
+            'isEssential': false,
+          },
         ],
       },
       'trailOverrides': {
         'trail_alpha': {
           'addItems': [
-            {'id': 'crampons', 'category': 'equipment', 'nameKey': 'crampons', 'isEssential': true},
+            {
+              'id': 'crampons',
+              'category': 'equipment',
+              'nameKey': 'crampons',
+              'isEssential': true,
+            },
           ],
           'removeItems': ['towel'],
           'essentialOverrides': {'trailSnacks': true},
         },
         'trail_beta': {
           'addItems': [
-            {'id': 'swimsuit', 'category': 'clothing', 'nameKey': 'swimsuit', 'isEssential': false},
+            {
+              'id': 'swimsuit',
+              'category': 'clothing',
+              'nameKey': 'swimsuit',
+              'isEssential': false,
+            },
           ],
           'removeItems': <String>[],
           'essentialOverrides': <String, bool>{},
@@ -37,19 +84,33 @@ void main() {
     };
 
     const trailAlpha = TrailConfig(
-      id: 'trail_alpha', name: 'Trail Alpha', displayName: 'Alpha Trek',
-      tagline: 'Sentier technique en altitude', totalStages: 10,
-      totalDistanceKm: 150.0, totalElevationGain: 9000, region: 'Alpes',
-      country: 'France', primaryColorValue: 0xFF2196F3,
-      secondaryColorValue: 0xFF1976D2, gpxAssetPath: 'assets/gpx/trail_alpha.gpx',
+      id: 'trail_alpha',
+      name: 'Trail Alpha',
+      displayName: 'Alpha Trek',
+      tagline: 'Sentier technique en altitude',
+      totalStages: 10,
+      totalDistanceKm: 150.0,
+      totalElevationGain: 9000,
+      region: 'Alpes',
+      country: 'France',
+      primaryColorValue: 0xFF2196F3,
+      secondaryColorValue: 0xFF1976D2,
+      gpxAssetPath: 'assets/gpx/trail_alpha.gpx',
     );
 
     const trailBeta = TrailConfig(
-      id: 'trail_beta', name: 'Trail Beta', displayName: 'Beta Littoral',
-      tagline: 'Sentier cotier facile', totalStages: 5,
-      totalDistanceKm: 80.0, totalElevationGain: 1200, region: 'Bretagne',
-      country: 'France', primaryColorValue: 0xFF4CAF50,
-      secondaryColorValue: 0xFF388E3C, gpxAssetPath: 'assets/gpx/trail_beta.gpx',
+      id: 'trail_beta',
+      name: 'Trail Beta',
+      displayName: 'Beta Littoral',
+      tagline: 'Sentier cotier facile',
+      totalStages: 5,
+      totalDistanceKm: 80.0,
+      totalElevationGain: 1200,
+      region: 'Bretagne',
+      country: 'France',
+      primaryColorValue: 0xFF4CAF50,
+      secondaryColorValue: 0xFF388E3C,
+      gpxAssetPath: 'assets/gpx/trail_beta.gpx',
     );
 
     /// Resout le template pour un sentier (simule ChecklistTemplateLoader).
@@ -59,13 +120,23 @@ void main() {
           .map((e) => ChecklistTemplateItem.fromJson(e as Map<String, dynamic>))
           .toList();
       final overrides = testJson['trailOverrides'] as Map<String, dynamic>?;
-      if (overrides == null || !overrides.containsKey(trailId)) return defaultItems;
-      final trailOverride = TrailChecklistOverride.fromJson(overrides[trailId] as Map<String, dynamic>);
-      var result = defaultItems.where((item) => !trailOverride.removeItems.contains(item.id)).toList();
+      if (overrides == null || !overrides.containsKey(trailId)) {
+        return defaultItems;
+      }
+      final trailOverride = TrailChecklistOverride.fromJson(
+        overrides[trailId] as Map<String, dynamic>,
+      );
+      var result = defaultItems
+          .where((item) => !trailOverride.removeItems.contains(item.id))
+          .toList();
       result = result.map((item) {
         if (trailOverride.essentialOverrides.containsKey(item.id)) {
-          return ChecklistTemplateItem(id: item.id, category: item.category, nameKey: item.nameKey,
-            isEssential: trailOverride.essentialOverrides[item.id]!);
+          return ChecklistTemplateItem(
+            id: item.id,
+            category: item.category,
+            nameKey: item.nameKey,
+            isEssential: trailOverride.essentialOverrides[item.id]!,
+          );
         }
         return item;
       }).toList();
@@ -94,10 +165,17 @@ void main() {
 
     test('sentier sans override retourne template par defaut', () {
       const trailGamma = TrailConfig(
-        id: 'trail_gamma', name: 'Trail Gamma', displayName: 'Gamma Campagne',
-        tagline: 'Balade tranquille', totalStages: 3, totalDistanceKm: 40.0,
-        totalElevationGain: 500, region: 'Normandie', country: 'France',
-        primaryColorValue: 0xFFFF9800, secondaryColorValue: 0xFFF57C00,
+        id: 'trail_gamma',
+        name: 'Trail Gamma',
+        displayName: 'Gamma Campagne',
+        tagline: 'Balade tranquille',
+        totalStages: 3,
+        totalDistanceKm: 40.0,
+        totalElevationGain: 500,
+        region: 'Normandie',
+        country: 'France',
+        primaryColorValue: 0xFFFF9800,
+        secondaryColorValue: 0xFFF57C00,
         gpxAssetPath: 'assets/gpx/trail_gamma.gpx',
       );
       final itemsGamma = resolveForTrail(trailGamma.id);

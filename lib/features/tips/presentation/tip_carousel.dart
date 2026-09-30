@@ -183,7 +183,11 @@ class _CarouselView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        StepIcon(resolveIcon(meta.icon), color: color, size: 20),
+                        StepIcon(
+                          resolveIcon(meta.icon),
+                          color: color,
+                          size: 20,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Container(
                           padding: const EdgeInsets.symmetric(

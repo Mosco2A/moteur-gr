@@ -301,7 +301,9 @@ void main() {
         expect(
           find.descendant(
             of: find.byType(OutlinedButton),
-            matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.inverser),
+            matching: find.byWidgetPredicate(
+              (w) => w is StepIcon && w.asset == StepwaysIcons.inverser,
+            ),
           ),
           findsOneWidget,
         );

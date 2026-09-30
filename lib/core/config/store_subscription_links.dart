@@ -76,10 +76,7 @@ abstract final class StoreSubscriptionLinks {
   /// [plateforme] est injectable pour que le choix soit MESURABLE en test :
   /// verifier « le bouton ouvre la bonne boutique » sur les deux plateformes est
   /// exactement ce qu'un test doit pouvoir faire sans deux appareils.
-  static String pour({
-    required String productId,
-    TargetPlatform? plateforme,
-  }) {
+  static String pour({required String productId, TargetPlatform? plateforme}) {
     final cible = plateforme ?? defaultTargetPlatform;
     if (cible == TargetPlatform.iOS || cible == TargetPlatform.macOS) {
       return appStore;

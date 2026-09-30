@@ -36,17 +36,16 @@ class WeatherForecast {
   ///
   /// `null` quand l'instant du releve est inconnu — un age inconnu doit
   /// s'afficher comme inconnu, jamais comme zero.
-  Duration? ageAt([DateTime? now]) => fetchedAt == null
-      ? null
-      : (now ?? DateTime.now()).difference(fetchedAt!);
+  Duration? ageAt([DateTime? now]) =>
+      fetchedAt == null ? null : (now ?? DateTime.now()).difference(fetchedAt!);
 
   /// Copie en fixant l'instant du releve (la DB fait autorite sur l'age).
   WeatherForecast withFetchedAt(DateTime? at) => WeatherForecast(
-        days: days,
-        latitude: latitude,
-        longitude: longitude,
-        fetchedAt: at,
-      );
+    days: days,
+    latitude: latitude,
+    longitude: longitude,
+    fetchedAt: at,
+  );
 
   /// Prevision du JOUR CALENDAIRE [date] (comparaison a la journee, pas a
   /// l'instant), ou `null` si ce jour n'est pas couvert par le bulletin.
@@ -83,19 +82,21 @@ class WeatherForecast {
 
     final days = <DayForecast>[];
     for (var i = 0; i < dates.length; i++) {
-      days.add(DayForecast(
-        date: DateTime.parse(dates[i]),
-        temperatureMax: tempMax[i].toDouble(),
-        temperatureMin: tempMin[i].toDouble(),
-        precipitationMm: precipitation[i].toDouble(),
-        windSpeedKmh: windMax[i].toDouble(),
-        uvIndex: uvMax[i].toDouble(),
-        weatherCode: weatherCode[i],
-        precipitationProbabilityMax:
-            (precipProb != null && i < precipProb.length)
-                ? precipProb[i]
-                : null,
-      ));
+      days.add(
+        DayForecast(
+          date: DateTime.parse(dates[i]),
+          temperatureMax: tempMax[i].toDouble(),
+          temperatureMin: tempMin[i].toDouble(),
+          precipitationMm: precipitation[i].toDouble(),
+          windSpeedKmh: windMax[i].toDouble(),
+          uvIndex: uvMax[i].toDouble(),
+          weatherCode: weatherCode[i],
+          precipitationProbabilityMax:
+              (precipProb != null && i < precipProb.length)
+              ? precipProb[i]
+              : null,
+        ),
+      );
     }
 
     return WeatherForecast(
@@ -107,11 +108,11 @@ class WeatherForecast {
 
   /// Sérialise en JSON pour le cache Drift
   Map<String, dynamic> toJson() => {
-        'latitude': latitude,
-        'longitude': longitude,
-        'days': days.map((d) => d.toJson()).toList(),
-        if (fetchedAt != null) 'fetchedAt': fetchedAt!.toIso8601String(),
-      };
+    'latitude': latitude,
+    'longitude': longitude,
+    'days': days.map((d) => d.toJson()).toList(),
+    if (fetchedAt != null) 'fetchedAt': fetchedAt!.toIso8601String(),
+  };
 
   /// Désérialise depuis le cache JSON
   ///
@@ -196,16 +197,16 @@ class DayForecast {
   }
 
   Map<String, dynamic> toJson() => {
-        'date': date.toIso8601String(),
-        'temperatureMax': temperatureMax,
-        'temperatureMin': temperatureMin,
-        'precipitationMm': precipitationMm,
-        'windSpeedKmh': windSpeedKmh,
-        'uvIndex': uvIndex,
-        'weatherCode': weatherCode,
-        if (precipitationProbabilityMax != null)
-          'precipitationProbabilityMax': precipitationProbabilityMax,
-      };
+    'date': date.toIso8601String(),
+    'temperatureMax': temperatureMax,
+    'temperatureMin': temperatureMin,
+    'precipitationMm': precipitationMm,
+    'windSpeedKmh': windSpeedKmh,
+    'uvIndex': uvIndex,
+    'weatherCode': weatherCode,
+    if (precipitationProbabilityMax != null)
+      'precipitationProbabilityMax': precipitationProbabilityMax,
+  };
 
   factory DayForecast.fromJson(Map<String, dynamic> json) {
     return DayForecast(
@@ -216,8 +217,8 @@ class DayForecast {
       windSpeedKmh: (json['windSpeedKmh'] as num).toDouble(),
       uvIndex: (json['uvIndex'] as num).toDouble(),
       weatherCode: json['weatherCode'] as int,
-      precipitationProbabilityMax:
-          (json['precipitationProbabilityMax'] as num?)?.toDouble(),
+      precipitationProbabilityMax: (json['precipitationProbabilityMax'] as num?)
+          ?.toDouble(),
     );
   }
 }

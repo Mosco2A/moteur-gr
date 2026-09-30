@@ -116,10 +116,7 @@ class PurchaseGateWidget extends ConsumerWidget {
 ///
 /// Fond orange, texte blanc, tap = ouverture paywall.
 class _DemoBanner extends StatelessWidget {
-  const _DemoBanner({
-    required this.text,
-    this.onTap,
-  });
+  const _DemoBanner({required this.text, this.onTap});
 
   final String text;
   final VoidCallback? onTap;
@@ -132,9 +129,7 @@ class _DemoBanner extends StatelessWidget {
         horizontal: AppTheme.spacingBase,
         vertical: AppTheme.spacingSm,
       ),
-      decoration: const BoxDecoration(
-        color: AppTheme.orangeDifficile,
-      ),
+      decoration: const BoxDecoration(color: AppTheme.orangeDifficile),
       child: Row(
         children: [
           const StepIcon(StepwaysIcons.cadenas, color: Colors.white, size: 18),
@@ -150,7 +145,11 @@ class _DemoBanner extends StatelessWidget {
             ),
           ),
           if (onTap != null)
-            const StepIcon(StepwaysIcons.chevronDroite, color: Colors.white, size: 14),
+            const StepIcon(
+              StepwaysIcons.chevronDroite,
+              color: Colors.white,
+              size: 14,
+            ),
         ],
       ),
     );

@@ -189,7 +189,11 @@ class _PrivateNotice extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          StepIcon(StepwaysIcons.cadenas, size: 64, color: theme.colorScheme.outline),
+          StepIcon(
+            StepwaysIcons.cadenas,
+            size: 64,
+            color: theme.colorScheme.outline,
+          ),
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             message,

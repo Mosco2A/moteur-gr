@@ -58,12 +58,10 @@ class NotificationSettings {
     return NotificationSettings(
       morningReminderEnabled:
           morningReminderEnabled ?? this.morningReminderEnabled,
-      morningReminderHour:
-          morningReminderHour ?? this.morningReminderHour,
+      morningReminderHour: morningReminderHour ?? this.morningReminderHour,
       morningReminderMinute:
           morningReminderMinute ?? this.morningReminderMinute,
-      weatherAlertsEnabled:
-          weatherAlertsEnabled ?? this.weatherAlertsEnabled,
+      weatherAlertsEnabled: weatherAlertsEnabled ?? this.weatherAlertsEnabled,
       countdownEnabled: countdownEnabled ?? this.countdownEnabled,
       offTrackAlerts: offTrackAlerts ?? this.offTrackAlerts,
       permissionGranted: permissionGranted ?? this.permissionGranted,
@@ -125,7 +123,9 @@ class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
   /// Sans ca, couper un reglage dans la seconde qui suit l'ouverture de l'ecran
   /// serait perdu : `_prefs` serait encore nul et l'ecriture partirait dans le
   /// vide — exactement le defaut qu'on corrige.
-  Future<void> _ecrire(Future<void> Function(SharedPreferences) ecriture) async {
+  Future<void> _ecrire(
+    Future<void> Function(SharedPreferences) ecriture,
+  ) async {
     try {
       final prefs = _prefs ?? await SharedPreferences.getInstance();
       _prefs ??= prefs;
@@ -214,4 +214,5 @@ class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
 /// Provider des parametres de notification
 final notificationSettingsProvider =
     NotifierProvider<NotificationSettingsNotifier, NotificationSettings>(
-        NotificationSettingsNotifier.new);
+      NotificationSettingsNotifier.new,
+    );

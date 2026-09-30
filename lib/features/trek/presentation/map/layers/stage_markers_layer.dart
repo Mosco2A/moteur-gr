@@ -40,11 +40,7 @@ class StageNumberCircle extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
+          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
         ],
       ),
       alignment: Alignment.center,
@@ -151,8 +147,6 @@ class StageMarkersLayer extends StatelessWidget {
       );
     }
 
-    return MarkerLayer(
-      markers: List.generate(stages.length, _stageMarker),
-    );
+    return MarkerLayer(markers: List.generate(stages.length, _stageMarker));
   }
 }

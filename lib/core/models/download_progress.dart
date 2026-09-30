@@ -15,7 +15,13 @@ abstract class DownloadStatusValues {
   static const String completed = 'completed';
   static const String error = 'error';
   static const String fallback = pending;
-  static const List<String> values = [pending, downloading, paused, completed, error];
+  static const List<String> values = [
+    pending,
+    downloading,
+    paused,
+    completed,
+    error,
+  ];
   static DownloadStatus fromString(String value) =>
       values.contains(value) ? value : fallback;
 }

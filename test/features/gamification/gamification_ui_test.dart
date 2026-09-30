@@ -30,16 +30,20 @@ void main() {
   }
 
   group('BadgeGalleryScreen', () {
-    testWidgets('affiche badges obtenus et verrouilles selon les stats',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        const BadgeGalleryScreen(),
-        overrides: [
-          // 1 etape -> first_stage obtenu ; le reste verrouille.
-          userStatsProvider
-              .overrideWithValue(const UserStats(stagesCompleted: 1)),
-        ],
-      ));
+    testWidgets('affiche badges obtenus et verrouilles selon les stats', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const BadgeGalleryScreen(),
+          overrides: [
+            // 1 etape -> first_stage obtenu ; le reste verrouille.
+            userStatsProvider.overrideWithValue(
+              const UserStats(stagesCompleted: 1),
+            ),
+          ],
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text(t.gamification.galleryTitle), findsOneWidget);
@@ -52,39 +56,49 @@ void main() {
 
   group('DefiScreen', () {
     DefiSaisonnier defi() => DefiSaisonnier(
-          id: 'defi-1',
-          titre: 'Defi printemps',
-          description: 'Cumule du denivele',
-          debut: DateTime.utc(2026, 3, 1),
-          fin: DateTime.utc(2026, 5, 31),
-          typeObjectif: DefiObjectif.denivele,
-          cible: 3000,
-        );
+      id: 'defi-1',
+      titre: 'Defi printemps',
+      description: 'Cumule du denivele',
+      debut: DateTime.utc(2026, 3, 1),
+      fin: DateTime.utc(2026, 5, 31),
+      typeObjectif: DefiObjectif.denivele,
+      cible: 3000,
+    );
 
-    testWidgets('affiche la progression locale + classement par tranche',
-        (tester) async {
+    testWidgets('affiche la progression locale + classement par tranche', (
+      tester,
+    ) async {
       final repo = InMemoryDefiRankingRepository()
-        ..put(const DefiRanking(
-          defiId: 'defi-1',
-          tranches: [
-            DefiRankingTranche(
-              tranche: 'all',
-              participantCount: 6,
-              published: true,
-              entries: [
-                DefiRankingEntry(rank: 1, pseudonym: 'rndr-aaaa', value: 4200),
-              ],
+        ..put(
+          const DefiRanking(
+            defiId: 'defi-1',
+            tranches: [
+              DefiRankingTranche(
+                tranche: 'all',
+                participantCount: 6,
+                published: true,
+                entries: [
+                  DefiRankingEntry(
+                    rank: 1,
+                    pseudonym: 'rndr-aaaa',
+                    value: 4200,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      await tester.pumpWidget(
+        wrap(
+          DefiScreen(defi: defi()),
+          overrides: [
+            userStatsProvider.overrideWithValue(
+              const UserStats(totalElevationGainM: 1500),
             ),
+            defiRankingRepositoryProvider.overrideWithValue(repo),
           ],
-        ));
-      await tester.pumpWidget(wrap(
-        DefiScreen(defi: defi()),
-        overrides: [
-          userStatsProvider
-              .overrideWithValue(const UserStats(totalElevationGainM: 1500)),
-          defiRankingRepositoryProvider.overrideWithValue(repo),
-        ],
-      ));
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Notice pseudonyme + une entree pseudonyme.
@@ -95,23 +109,25 @@ void main() {
 
     testWidgets('tranche < 5 : message k-anonymat', (tester) async {
       final repo = InMemoryDefiRankingRepository()
-        ..put(const DefiRanking(
-          defiId: 'defi-1',
-          tranches: [
-            DefiRankingTranche(
-              tranche: 'all',
-              participantCount: 3,
-              published: false,
-              entries: [],
-            ),
-          ],
-        ));
-      await tester.pumpWidget(wrap(
-        DefiScreen(defi: defi()),
-        overrides: [
-          defiRankingRepositoryProvider.overrideWithValue(repo),
-        ],
-      ));
+        ..put(
+          const DefiRanking(
+            defiId: 'defi-1',
+            tranches: [
+              DefiRankingTranche(
+                tranche: 'all',
+                participantCount: 3,
+                published: false,
+                entries: [],
+              ),
+            ],
+          ),
+        );
+      await tester.pumpWidget(
+        wrap(
+          DefiScreen(defi: defi()),
+          overrides: [defiRankingRepositoryProvider.overrideWithValue(repo)],
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(

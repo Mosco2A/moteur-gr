@@ -97,9 +97,7 @@ void main() {
       final id = await dao.insertEntry(
         makeEntry(trailId: 'sentier-bleu', stageNumber: 1),
       );
-      await dao.insertEntry(
-        makeEntry(trailId: 'sentier-bleu', stageNumber: 2),
-      );
+      await dao.insertEntry(makeEntry(trailId: 'sentier-bleu', stageNumber: 2));
 
       final deleted = await dao.deleteEntry(id);
       expect(deleted, 1);
@@ -110,26 +108,28 @@ void main() {
 
     test('countPhotosToday compte les photos du jour', () async {
       final today = DateTime.now();
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        photoPath: '/photos/1.jpg',
-        photoSizeBytes: 1024,
-        createdAt: today,
-      ));
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        photoPath: '/photos/2.jpg',
-        photoSizeBytes: 2048,
-        createdAt: today,
-      ));
+      await dao.insertEntry(
+        makeEntry(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          photoPath: '/photos/1.jpg',
+          photoSizeBytes: 1024,
+          createdAt: today,
+        ),
+      );
+      await dao.insertEntry(
+        makeEntry(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          photoPath: '/photos/2.jpg',
+          photoSizeBytes: 2048,
+          createdAt: today,
+        ),
+      );
       // Note sans photo
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        createdAt: today,
-      ));
+      await dao.insertEntry(
+        makeEntry(trailId: 'sentier-bleu', stageNumber: 1, createdAt: today),
+      );
 
       final count = await dao.countPhotosToday('sentier-bleu');
       expect(count, 2);
@@ -137,13 +137,15 @@ void main() {
 
     test('canAddPhoto retourne true si < 3 photos', () async {
       final today = DateTime.now();
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        photoPath: '/photos/1.jpg',
-        photoSizeBytes: 1024,
-        createdAt: today,
-      ));
+      await dao.insertEntry(
+        makeEntry(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          photoPath: '/photos/1.jpg',
+          photoSizeBytes: 1024,
+          createdAt: today,
+        ),
+      );
 
       final canAdd = await dao.canAddPhoto('sentier-bleu');
       expect(canAdd, true);
@@ -152,13 +154,15 @@ void main() {
     test('canAddPhoto retourne false si >= 3 photos', () async {
       final today = DateTime.now();
       for (var i = 0; i < 3; i++) {
-        await dao.insertEntry(makeEntry(
-          trailId: 'sentier-bleu',
-          stageNumber: 1,
-          photoPath: '/photos/$i.jpg',
-          photoSizeBytes: 1024,
-          createdAt: today,
-        ));
+        await dao.insertEntry(
+          makeEntry(
+            trailId: 'sentier-bleu',
+            stageNumber: 1,
+            photoPath: '/photos/$i.jpg',
+            photoSizeBytes: 1024,
+            createdAt: today,
+          ),
+        );
       }
 
       final canAdd = await dao.canAddPhoto('sentier-bleu');
@@ -195,18 +199,22 @@ void main() {
 
     test('entries triées par date décroissante', () async {
       final now = DateTime.now();
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        content: 'ancien',
-        createdAt: now.subtract(const Duration(hours: 2)),
-      ));
-      await dao.insertEntry(makeEntry(
-        trailId: 'sentier-bleu',
-        stageNumber: 2,
-        content: 'récent',
-        createdAt: now,
-      ));
+      await dao.insertEntry(
+        makeEntry(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          content: 'ancien',
+          createdAt: now.subtract(const Duration(hours: 2)),
+        ),
+      );
+      await dao.insertEntry(
+        makeEntry(
+          trailId: 'sentier-bleu',
+          stageNumber: 2,
+          content: 'récent',
+          createdAt: now,
+        ),
+      );
 
       final entries = await dao.getByTrailId('sentier-bleu');
       expect(entries.first.content, 'récent');

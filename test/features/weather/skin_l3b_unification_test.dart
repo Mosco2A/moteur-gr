@@ -32,32 +32,30 @@ void main() {
 
   // Journee calme (aucune condition d'alerte) : liseré neutre.
   DayForecast calmDay() => DayForecast(
-        date: DateTime(2026, 7, 15),
-        temperatureMax: 24,
-        temperatureMin: 14,
-        precipitationMm: 1,
-        windSpeedKmh: 10,
-        uvIndex: 4,
-        weatherCode: 1,
-      );
+    date: DateTime(2026, 7, 15),
+    temperatureMax: 24,
+    temperatureMin: 14,
+    precipitationMm: 1,
+    windSpeedKmh: 10,
+    uvIndex: 4,
+    weatherCode: 1,
+  );
 
   // Journee d'orage (isAlertCondition == true) : liseré rouge 1.5px attendu.
   DayForecast stormDay() => DayForecast(
-        date: DateTime(2026, 7, 16),
-        temperatureMax: 28,
-        temperatureMin: 18,
-        precipitationMm: 25,
-        windSpeedKmh: 45,
-        uvIndex: 6,
-        weatherCode: 95,
-      );
+    date: DateTime(2026, 7, 16),
+    temperatureMax: 28,
+    temperatureMin: 18,
+    precipitationMm: 25,
+    windSpeedKmh: 45,
+    uvIndex: 6,
+    weatherCode: 95,
+  );
 
   Widget wrap(Widget child) {
     return ProviderScope(
       child: TranslationProvider(
-        child: MaterialApp(
-          home: Scaffold(body: child),
-        ),
+        child: MaterialApp(home: Scaffold(body: child)),
       ),
     );
   }
@@ -79,13 +77,13 @@ void main() {
           // Liste d'etapes vide (branche « aucune prevision ») : la coque
           // AppCard + ExpansionTile se construit sans base de donnees.
           overrides: [
-            trailStagesProvider('test-trail').overrideWith((ref) async => const []),
+            trailStagesProvider(
+              'test-trail',
+            ).overrideWith((ref) async => const []),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
-              home: Scaffold(
-                body: AllStagesWeatherList(trailId: 'test-trail'),
-              ),
+              home: Scaffold(body: AllStagesWeatherList(trailId: 'test-trail')),
             ),
           ),
         ),
@@ -98,8 +96,9 @@ void main() {
   });
 
   group('SW-SKIN-L3b — DayForecastCard', () {
-    testWidgets('utilise AppCard sans liseré en conditions calmes',
-        (tester) async {
+    testWidgets('utilise AppCard sans liseré en conditions calmes', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(DayForecastCard(day: calmDay())));
       await tester.pumpAndSettle();
 
@@ -111,8 +110,9 @@ void main() {
       expect(card.borderColor, isNull);
     });
 
-    testWidgets('conserve le liseré rouge 1.5px en condition d\'alerte',
-        (tester) async {
+    testWidgets('conserve le liseré rouge 1.5px en condition d\'alerte', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(DayForecastCard(day: stormDay())));
       await tester.pumpAndSettle();
 
@@ -144,11 +144,12 @@ void main() {
       fireTipId: 'incendie-periode-risque',
     );
 
-    testWidgets('le CTA est un AppButton outline en rouge semantique',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        WeatherAlertBanner(alerts: [fireAlert], fireTipCard: fireTip),
-      ));
+    testWidgets('le CTA est un AppButton outline en rouge semantique', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(WeatherAlertBanner(alerts: [fireAlert], fireTipCard: fireTip)),
+      );
       await tester.pumpAndSettle();
 
       // Grammaire unifiee : aucune Card brute, un AppButton pour le CTA.
@@ -163,11 +164,12 @@ void main() {
       expect(button.label, tr.weather.fireSafetyTips);
     });
 
-    testWidgets('tap du CTA ouvre la fiche conseil (iso-fonction)',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        WeatherAlertBanner(alerts: [fireAlert], fireTipCard: fireTip),
-      ));
+    testWidgets('tap du CTA ouvre la fiche conseil (iso-fonction)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(WeatherAlertBanner(alerts: [fireAlert], fireTipCard: fireTip)),
+      );
       await tester.pumpAndSettle();
 
       // Tap sur le libelle du CTA : onPressed inchange -> ouvre la fiche.
@@ -177,11 +179,10 @@ void main() {
       expect(find.byType(TipDetailSheet), findsOneWidget);
     });
 
-    testWidgets('sans fiche conseil, pas de CTA (comportement inchange)',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        WeatherAlertBanner(alerts: [fireAlert]),
-      ));
+    testWidgets('sans fiche conseil, pas de CTA (comportement inchange)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(wrap(WeatherAlertBanner(alerts: [fireAlert])));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppButton), findsNothing);

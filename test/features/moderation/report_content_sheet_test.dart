@@ -45,26 +45,26 @@ void main() {
   setUp(() => store = _FakeStore());
 
   Widget host() => ProviderScope(
-        overrides: [moderationStoreProvider.overrideWithValue(store)],
-        child: TranslationProvider(
-          child: MaterialApp(
-            home: Scaffold(
-              body: Builder(
-                builder: (context) => Center(
-                  child: ElevatedButton(
-                    onPressed: () => showReportSheet(
-                      context,
-                      contentType: ModeratedContentType.waypoint,
-                      contentRef: 'wp-42',
-                    ),
-                    child: const Text('open'),
-                  ),
+    overrides: [moderationStoreProvider.overrideWithValue(store)],
+    child: TranslationProvider(
+      child: MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: ElevatedButton(
+                onPressed: () => showReportSheet(
+                  context,
+                  contentType: ModeratedContentType.waypoint,
+                  contentRef: 'wp-42',
                 ),
+                child: const Text('open'),
               ),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   Future<void> openSheet(WidgetTester tester) async {
     await tester.pumpWidget(host());
@@ -77,7 +77,13 @@ void main() {
       await openSheet(tester);
 
       expect(find.text(tr.moderation.reportTitle), findsOneWidget);
-      for (final reason in ['illegal', 'harassment', 'spam', 'dangerous', 'other']) {
+      for (final reason in [
+        'illegal',
+        'harassment',
+        'spam',
+        'dangerous',
+        'other',
+      ]) {
         expect(
           find.byKey(ValueKey('report-reason-$reason')),
           findsOneWidget,
@@ -89,8 +95,9 @@ void main() {
       expect(find.byKey(const ValueKey('report-submit')), findsOneWidget);
     });
 
-    testWidgets('envoi VALIDE cree une notification art 16 complete',
-        (tester) async {
+    testWidgets('envoi VALIDE cree une notification art 16 complete', (
+      tester,
+    ) async {
       await openSheet(tester);
 
       // Choisit un motif different du defaut (sheet defilante : on remonte
@@ -101,9 +108,13 @@ void main() {
       await tester.pump();
       // Detail libre + contact + bonne foi.
       await tester.enterText(
-          find.byKey(const ValueKey('report-details')), 'propos haineux');
+        find.byKey(const ValueKey('report-details')),
+        'propos haineux',
+      );
       await tester.enterText(
-          find.byKey(const ValueKey('report-contact')), 'temoin@example.com');
+        find.byKey(const ValueKey('report-contact')),
+        'temoin@example.com',
+      );
       final goodFaith = find.byKey(const ValueKey('report-good-faith'));
       await tester.ensureVisible(goodFaith);
       await tester.tap(goodFaith);
@@ -127,12 +138,15 @@ void main() {
       expect(find.text('open'), findsOneWidget);
     });
 
-    testWidgets('envoi INVALIDE (bonne foi non cochee) : refuse + erreur',
-        (tester) async {
+    testWidgets('envoi INVALIDE (bonne foi non cochee) : refuse + erreur', (
+      tester,
+    ) async {
       await openSheet(tester);
 
       await tester.enterText(
-          find.byKey(const ValueKey('report-contact')), 'temoin@example.com');
+        find.byKey(const ValueKey('report-contact')),
+        'temoin@example.com',
+      );
       // On NE coche PAS la bonne foi.
       final submit = find.byKey(const ValueKey('report-submit'));
       await tester.ensureVisible(submit);

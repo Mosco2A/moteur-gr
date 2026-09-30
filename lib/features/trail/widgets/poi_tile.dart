@@ -23,11 +23,7 @@ class PoiTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
         children: [
-          StepIcon(
-            style.icon,
-            size: 20,
-            color: theme.colorScheme.secondary,
-          ),
+          StepIcon(style.icon, size: 20, color: theme.colorScheme.secondary),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(

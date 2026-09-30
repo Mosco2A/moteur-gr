@@ -88,10 +88,7 @@ class RecoveryCodeScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
             // Explication : à quoi sert le code + où il ouvre le coffre.
-            Text(
-              tr.recovery.intro,
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text(tr.recovery.intro, style: theme.textTheme.bodyMedium),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Le CODE, en gros, monospace, lisible et copiable.

@@ -16,7 +16,11 @@ final segmentRankingRepositoryProvider = Provider<SegmentRankingRepository>(
 ///
 /// `family` indexe par segmentId. Le widget se contente d'afficher : AUCUN
 /// calcul de classement cote client (R2).
-final segmentRankingProvider =
-    FutureProvider.family<SegmentRanking?, String>((ref, segmentId) {
-  return ref.watch(segmentRankingRepositoryProvider).rankingForSegment(segmentId);
+final segmentRankingProvider = FutureProvider.family<SegmentRanking?, String>((
+  ref,
+  segmentId,
+) {
+  return ref
+      .watch(segmentRankingRepositoryProvider)
+      .rankingForSegment(segmentId);
 });

@@ -50,7 +50,7 @@ class SegmentDetection {
 /// ZERO catch silencieux — toute erreur de persistance est loggee + relancee.
 class SegmentMatchingService {
   SegmentMatchingService({required AppDatabase database})
-      : _dao = SegmentsDao(database);
+    : _dao = SegmentsDao(database);
 
   final SegmentsDao _dao;
 
@@ -176,8 +176,11 @@ class SegmentMatchingService {
         ),
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'SegmentMatchingService.detectAndStore');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'SegmentMatchingService.detectAndStore',
+      );
       rethrow;
     }
   }

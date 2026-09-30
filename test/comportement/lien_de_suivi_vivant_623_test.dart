@@ -69,9 +69,9 @@ class _CibleEspionne {
   final List<String> demandes = <String>[];
 
   http.Client get client => MockClient((requete) async {
-        demandes.add(requete.url.toString());
-        return http.Response(code == 200 ? '<html>suivi</html>' : 'nope', code);
-      });
+    demandes.add(requete.url.toString());
+    return http.Response(code == 200 ? '<html>suivi</html>' : 'nope', code);
+  });
 }
 
 /// Le code source de `lib/`, commentaires RETIRES.
@@ -108,7 +108,8 @@ void main() {
       firebaseService: FirebaseService.testOnly(isAvailable: false),
       linksConfig: config ?? const FollowLinksConfig(),
       verificateurCible: VerificateurCibleSuivi(
-        httpClient: cible?.client ??
+        httpClient:
+            cible?.client ??
             (codeCible == null ? null : _CibleEspionne(codeCible).client),
         connectivityMonitor: reseau ?? _ReseauPilotable(enLigne: enLigne),
       ),
@@ -120,10 +121,14 @@ void main() {
     test('les trois canaux sont NON configures par defaut', () {
       const config = FollowLinksConfig();
 
-      expect(config.aucunCanalConfigure, isTrue,
-          reason: 'le depot ne doit porter AUCUNE adresse : la mesure du 28/09 '
-              'a montre que l adresse en dur rendait 404, et que le domaine du '
-              'projet reel rend 404 lui aussi (hebergement non deploye)');
+      expect(
+        config.aucunCanalConfigure,
+        isTrue,
+        reason:
+            'le depot ne doit porter AUCUNE adresse : la mesure du 28/09 '
+            'a montre que l adresse en dur rendait 404, et que le domaine du '
+            'projet reel rend 404 lui aussi (hebergement non deploye)',
+      );
       for (final canal in CanalSuivi.values) {
         expect(config.estConfigure(canal), isFalse, reason: canal.name);
         expect(config.base(canal), isEmpty, reason: canal.name);
@@ -145,8 +150,10 @@ void main() {
       // exactement comme STEPWAYS_FIREBASE_PROJECT_ID (tache 596).
       expect(FollowLinksConfig.variableAppBase, 'STEPWAYS_FOLLOW_APP_BASE');
       expect(FollowLinksConfig.variableWebBase, 'STEPWAYS_FOLLOW_WEB_BASE');
-      expect(FollowLinksConfig.variableCompagnonBase,
-          'STEPWAYS_FOLLOW_COMPANION_BASE');
+      expect(
+        FollowLinksConfig.variableCompagnonBase,
+        'STEPWAYS_FOLLOW_COMPANION_BASE',
+      );
     });
 
     test('BALAYAGE de lib/ : aucun domaine d hebergement Firebase en dur, pour '
@@ -155,16 +162,22 @@ void main() {
       // qui n est pas le notre. La garde ne nomme donc pas « moteur-gr » : elle
       // refuse la FORME, pour n importe quel projet, y compris le notre tant que
       // rien n est deploye.
-      final motif = RegExp(r'[A-Za-z0-9][A-Za-z0-9-]*\.(web\.app|firebaseapp\.com)');
+      final motif = RegExp(
+        r'[A-Za-z0-9][A-Za-z0-9-]*\.(web\.app|firebaseapp\.com)',
+      );
       final fautifs = <String>[];
       for (final f in _fichiersDart('lib')) {
         if (motif.hasMatch(_codeSeul(f.readAsStringSync()))) {
           fautifs.add(f.path);
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'une adresse d hebergement en dur dans le code : '
-              '${fautifs.join(", ")} — elle arrive par --dart-define');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'une adresse d hebergement en dur dans le code : '
+            '${fautifs.join(", ")} — elle arrive par --dart-define',
+      );
     });
 
     test('BALAYAGE de lib/ : le domaine mort du 28/09 n est nulle part, meme '
@@ -175,9 +188,13 @@ void main() {
           fautifs.add(f.path);
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'l adresse mesuree a 404 le 28/09 est revenue dans '
-              '${fautifs.join(", ")}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'l adresse mesuree a 404 le 28/09 est revenue dans '
+            '${fautifs.join(", ")}',
+      );
     });
   });
 
@@ -189,9 +206,13 @@ void main() {
       for (final type in ShareLinkTypeValues.values) {
         expect(
           svc.generateShareLink(
-              sessionId: 's1', shareCode: 'AB3C7D', type: type),
+            sessionId: 's1',
+            shareCode: 'AB3C7D',
+            type: type,
+          ),
           isNull,
-          reason: 'canal $type : une chaine d allure parfaite est precisement '
+          reason:
+              'canal $type : une chaine d allure parfaite est precisement '
               'ce qui a permis au defaut de vivre',
         );
       }
@@ -202,30 +223,42 @@ void main() {
       );
     });
 
-    test('un canal CONFIGURE produit son lien, sans barre oblique en double',
-        () {
-      final svc = service(
-        config: const FollowLinksConfig(webLinkBase: 'https://exemple.test/f/'),
-      );
-      final lien =
-          svc.generateShareLink(sessionId: 's1', shareCode: 'AB3C7D');
-      expect(lien, isNotNull);
-      expect(lien!.url, 'https://exemple.test/f/AB3C7D');
-    });
+    test(
+      'un canal CONFIGURE produit son lien, sans barre oblique en double',
+      () {
+        final svc = service(
+          config: const FollowLinksConfig(
+            webLinkBase: 'https://exemple.test/f/',
+          ),
+        );
+        final lien = svc.generateShareLink(
+          sessionId: 's1',
+          shareCode: 'AB3C7D',
+        );
+        expect(lien, isNotNull);
+        expect(lien!.url, 'https://exemple.test/f/AB3C7D');
+      },
+    );
 
-    test('LE PASS PAYANT NE REND PLUS DE LIEN MORT — et c etait le pire endroit '
-        'du defaut', () {
-      // Cette methode s appelle APRES un paiement. Avec une base absente elle
-      // interpolait « null?pass=1 » ; avec l ancienne adresse elle rendait un
-      // lien qui repondait 404. Le randonneur avait PAYE dans les deux cas.
-      final achat = IapService(testMode: true);
-      expect(
-        achat.handlePurchaseComplete(
-            sessionId: 's1', shareCode: 'AB3C7D', purchaseVerified: true),
-        isNull,
-        reason: 'un pass sans page de suivi n est pas un pass',
-      );
-    });
+    test(
+      'LE PASS PAYANT NE REND PLUS DE LIEN MORT — et c etait le pire endroit '
+      'du defaut',
+      () {
+        // Cette methode s appelle APRES un paiement. Avec une base absente elle
+        // interpolait « null?pass=1 » ; avec l ancienne adresse elle rendait un
+        // lien qui repondait 404. Le randonneur avait PAYE dans les deux cas.
+        final achat = IapService(testMode: true);
+        expect(
+          achat.handlePurchaseComplete(
+            sessionId: 's1',
+            shareCode: 'AB3C7D',
+            purchaseVerified: true,
+          ),
+          isNull,
+          reason: 'un pass sans page de suivi n est pas un pass',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -235,58 +268,78 @@ void main() {
         '28/09', () async {
       final cible = _CibleEspionne(404);
       final svc = service(
-        config:
-            const FollowLinksConfig(webLinkBase: 'https://exemple.test/follow'),
+        config: const FollowLinksConfig(
+          webLinkBase: 'https://exemple.test/follow',
+        ),
         cible: cible,
       );
 
-      final partage =
-          await svc.preparerPartage(sessionId: 's1', shareCode: 'AB3C7D');
+      final partage = await svc.preparerPartage(
+        sessionId: 's1',
+        shareCode: 'AB3C7D',
+      );
 
       expect(partage.disponibilite, DisponibiliteCibleSuivi.injoignable);
       expect(partage.verdict.codeHttp, 404);
-      expect(partage.lien, isNull,
-          reason: 'c est TOUT le lot : le randonneur ne doit pas recevoir un '
-              'lien que personne ne peut ouvrir');
+      expect(
+        partage.lien,
+        isNull,
+        reason:
+            'c est TOUT le lot : le randonneur ne doit pas recevoir un '
+            'lien que personne ne peut ouvrir',
+      );
       expect(partage.partageable, isFalse);
-      expect(cible.demandes, hasLength(1),
-          reason: 'la cible doit avoir ete REELLEMENT interrogee');
+      expect(
+        cible.demandes,
+        hasLength(1),
+        reason: 'la cible doit avoir ete REELLEMENT interrogee',
+      );
       expect(cible.demandes.single, 'https://exemple.test/follow/AB3C7D');
     });
 
-    test('une cible qui repond OUI rend le lien, et le dit partageable',
-        () async {
-      final cible = _CibleEspionne(200);
-      final svc = service(
-        config:
-            const FollowLinksConfig(webLinkBase: 'https://exemple.test/follow'),
-        cible: cible,
-      );
+    test(
+      'une cible qui repond OUI rend le lien, et le dit partageable',
+      () async {
+        final cible = _CibleEspionne(200);
+        final svc = service(
+          config: const FollowLinksConfig(
+            webLinkBase: 'https://exemple.test/follow',
+          ),
+          cible: cible,
+        );
 
-      final partage =
-          await svc.preparerPartage(sessionId: 's1', shareCode: 'AB3C7D');
+        final partage = await svc.preparerPartage(
+          sessionId: 's1',
+          shareCode: 'AB3C7D',
+        );
 
-      expect(partage.disponibilite, DisponibiliteCibleSuivi.joignable);
-      expect(partage.verdict.codeHttp, 200);
-      expect(partage.lien, isNotNull);
-      expect(partage.lien!.url, 'https://exemple.test/follow/AB3C7D');
-      expect(partage.partageable, isTrue);
-    });
+        expect(partage.disponibilite, DisponibiliteCibleSuivi.joignable);
+        expect(partage.verdict.codeHttp, 200);
+        expect(partage.lien, isNotNull);
+        expect(partage.lien!.url, 'https://exemple.test/follow/AB3C7D');
+        expect(partage.partageable, isTrue);
+      },
+    );
 
-    test('une panne de serveur (500) est distinguee d un 404 dans le verdict',
-        () async {
-      // « Injoignable » sans le code ne permet pas de choisir entre « rien n est
-      // deploye » et « le serveur est tombe » : deux actions differentes.
-      final svc = service(
-        config:
-            const FollowLinksConfig(webLinkBase: 'https://exemple.test/follow'),
-        cible: _CibleEspionne(500),
-      );
-      final partage =
-          await svc.preparerPartage(sessionId: 's1', shareCode: 'AB3C7D');
-      expect(partage.disponibilite, DisponibiliteCibleSuivi.injoignable);
-      expect(partage.verdict.codeHttp, 500);
-    });
+    test(
+      'une panne de serveur (500) est distinguee d un 404 dans le verdict',
+      () async {
+        // « Injoignable » sans le code ne permet pas de choisir entre « rien n est
+        // deploye » et « le serveur est tombe » : deux actions differentes.
+        final svc = service(
+          config: const FollowLinksConfig(
+            webLinkBase: 'https://exemple.test/follow',
+          ),
+          cible: _CibleEspionne(500),
+        );
+        final partage = await svc.preparerPartage(
+          sessionId: 's1',
+          shareCode: 'AB3C7D',
+        );
+        expect(partage.disponibilite, DisponibiliteCibleSuivi.injoignable);
+        expect(partage.verdict.codeHttp, 500);
+      },
+    );
 
     test('un canal NON configure est « nonConfiguree », JAMAIS « injoignable » '
         '— et rien n est interroge', () async {
@@ -294,12 +347,18 @@ void main() {
       final reseau = _ReseauPilotable();
       final svc = service(cible: cible, reseau: reseau);
 
-      final partage =
-          await svc.preparerPartage(sessionId: 's1', shareCode: 'AB3C7D');
+      final partage = await svc.preparerPartage(
+        sessionId: 's1',
+        shareCode: 'AB3C7D',
+      );
 
-      expect(partage.disponibilite, DisponibiliteCibleSuivi.nonConfiguree,
-          reason: 'une fonctionnalite absente n est pas une panne reseau : le '
-              'randonneur doit lire autre chose');
+      expect(
+        partage.disponibilite,
+        DisponibiliteCibleSuivi.nonConfiguree,
+        reason:
+            'une fonctionnalite absente n est pas une panne reseau : le '
+            'randonneur doit lire autre chose',
+      );
       expect(partage.lien, isNull);
       expect(cible.demandes, isEmpty);
       expect(reseau.interrogations, 0);
@@ -309,23 +368,36 @@ void main() {
         'inverse du defaut', () async {
       final cible = _CibleEspionne(200);
       final svc = service(
-        config:
-            const FollowLinksConfig(webLinkBase: 'https://exemple.test/follow'),
+        config: const FollowLinksConfig(
+          webLinkBase: 'https://exemple.test/follow',
+        ),
         cible: cible,
         reseau: _ReseauPilotable(enLigne: false),
       );
 
-      final partage =
-          await svc.preparerPartage(sessionId: 's1', shareCode: 'AB3C7D');
+      final partage = await svc.preparerPartage(
+        sessionId: 's1',
+        shareCode: 'AB3C7D',
+      );
 
-      expect(partage.disponibilite, DisponibiliteCibleSuivi.reseauIndisponible,
-          reason: 'la cible peut etre vivante et le randonneur dans un vallon');
+      expect(
+        partage.disponibilite,
+        DisponibiliteCibleSuivi.reseauIndisponible,
+        reason: 'la cible peut etre vivante et le randonneur dans un vallon',
+      );
       expect(partage.verdict.codeHttp, isNull);
-      expect(cible.demandes, isEmpty,
-          reason: 'on ne tente pas un appel qu on sait impossible');
-      expect(partage.lien, isNull,
-          reason: 'hors reseau, createSession rend null : il n y a de toute '
-              'facon aucune session a partager');
+      expect(
+        cible.demandes,
+        isEmpty,
+        reason: 'on ne tente pas un appel qu on sait impossible',
+      );
+      expect(
+        partage.lien,
+        isNull,
+        reason:
+            'hors reseau, createSession rend null : il n y a de toute '
+            'facon aucune session a partager',
+      );
     });
 
     test('un lien profond n est PAS interrogeable en HTTP, et on ne fait pas '
@@ -344,11 +416,18 @@ void main() {
 
       expect(partage.disponibilite, DisponibiliteCibleSuivi.nonVerifiable);
       expect(cible.demandes, isEmpty);
-      expect(partage.lien, isNotNull,
-          reason: 'le lien est rendu, mais avec un verdict qui dit que rien n a '
-              'ete verifie — pas un succes qu on n a pas mesure');
-      expect(partage.partageable, isFalse,
-          reason: 'non verifie n est pas partageable-sans-reserve');
+      expect(
+        partage.lien,
+        isNotNull,
+        reason:
+            'le lien est rendu, mais avec un verdict qui dit que rien n a '
+            'ete verifie — pas un succes qu on n a pas mesure',
+      );
+      expect(
+        partage.partageable,
+        isFalse,
+        reason: 'non verifie n est pas partageable-sans-reserve',
+      );
     });
   });
 
@@ -367,21 +446,32 @@ void main() {
 
       for (final type in ShareLinkTypeValues.values) {
         await svc.preparerPartage(
-            sessionId: 's1', shareCode: 'AB3C7D', type: type);
+          sessionId: 's1',
+          shareCode: 'AB3C7D',
+          type: type,
+        );
       }
 
       expect(cible.demandes, isEmpty);
-      expect(reseau.interrogations, 0,
-          reason: 'ConnectivityMonitor parle a un greffon : la suite entiere '
-              'doit pouvoir construire un FollowService sans le reveiller');
+      expect(
+        reseau.interrogations,
+        0,
+        reason:
+            'ConnectivityMonitor parle a un greffon : la suite entiere '
+            'doit pouvoir construire un FollowService sans le reveiller',
+      );
     });
 
-    test('le verificateur construit par defaut ne leve jamais sur un canal vide',
-        () async {
-      final verdict = await VerificateurCibleSuivi()
-          .verifier(canal: CanalSuivi.web, url: null);
-      expect(verdict.disponibilite, DisponibiliteCibleSuivi.nonConfiguree);
-      expect(verdict.joignable, isFalse);
-    });
+    test(
+      'le verificateur construit par defaut ne leve jamais sur un canal vide',
+      () async {
+        final verdict = await VerificateurCibleSuivi().verifier(
+          canal: CanalSuivi.web,
+          url: null,
+        );
+        expect(verdict.disponibilite, DisponibiliteCibleSuivi.nonConfiguree);
+        expect(verdict.joignable, isFalse);
+      },
+    );
   });
 }

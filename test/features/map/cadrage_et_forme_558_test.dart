@@ -20,19 +20,24 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 ///    pour cet ecran! » — les six chiffres etaient poses a plat dans un `Wrap`,
 ///    sous une phrase qui expliquait les tirets.
 void main() {
-  StageModel stage(int num, double lat0, double lng0, double lat1, double lng1) =>
-      StageModel(
-        trailId: 'test-trail',
-        stageNumber: num,
-        name: 'Etape $num',
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: lat0,
-        startLng: lng0,
-        endLat: lat1,
-        endLng: lng1,
-      );
+  StageModel stage(
+    int num,
+    double lat0,
+    double lng0,
+    double lat1,
+    double lng1,
+  ) => StageModel(
+    trailId: 'test-trail',
+    stageNumber: num,
+    name: 'Etape $num',
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: lat0,
+    startLng: lng0,
+    endLat: lat1,
+    endLng: lng1,
+  );
 
   // Trois etapes qui se suivent le long d'un meridien : de quoi distinguer sans
   // ambiguite le troncon d'une etape du sentier entier.
@@ -43,14 +48,14 @@ void main() {
   ];
 
   List<TrackPoint> trace() => [
-        for (var i = 0; i <= 30; i++)
-          TrackPoint(
-            lat: 42.00 + i * 0.01,
-            lng: 9.00,
-            altitude: 500,
-            distanceFromStart: i * 1000,
-          ),
-      ];
+    for (var i = 0; i <= 30; i++)
+      TrackPoint(
+        lat: 42.00 + i * 0.01,
+        lng: 9.00,
+        altitude: 500,
+        distanceFromStart: i * 1000,
+      ),
+  ];
 
   // ---------------------------------------------------------------------------
   group('mapFocusStage — l etape sur laquelle la carte s ouvre', () {
@@ -64,10 +69,13 @@ void main() {
       expect(mapFocusStage(stages, 3)!.stageNumber, 3);
     });
 
-    test('un numero hors du sentier ne fait rien inventer : premiere etape', () {
-      expect(mapFocusStage(stages, 99)!.stageNumber, 1);
-      expect(mapFocusStage(stages, 0)!.stageNumber, 1);
-    });
+    test(
+      'un numero hors du sentier ne fait rien inventer : premiere etape',
+      () {
+        expect(mapFocusStage(stages, 99)!.stageNumber, 1);
+        expect(mapFocusStage(stages, 0)!.stageNumber, 1);
+      },
+    );
 
     test('« premiere » = plus petit NUMERO, pas premiere de la liste', () {
       // La base peut rendre les lignes dans n importe quel ordre.
@@ -75,11 +83,13 @@ void main() {
       expect(mapFocusStage(desordre, null)!.stageNumber, 1);
     });
 
-    test('aucune etape chargee : on ne cadre sur rien plutot que sur un devine',
-        () {
-      expect(mapFocusStage(const [], 1), isNull);
-      expect(mapFocusStage(null, 1), isNull);
-    });
+    test(
+      'aucune etape chargee : on ne cadre sur rien plutot que sur un devine',
+      () {
+        expect(mapFocusStage(const [], 1), isNull);
+        expect(mapFocusStage(null, 1), isNull);
+      },
+    );
   });
 
   // ---------------------------------------------------------------------------
@@ -89,8 +99,11 @@ void main() {
       final segment = stageTrackSegment(points, stages[0]);
 
       expect(segment, isNotEmpty);
-      expect(segment.length, lessThan(points.length),
-          reason: 'sinon on cadre encore sur tout le sentier');
+      expect(
+        segment.length,
+        lessThan(points.length),
+        reason: 'sinon on cadre encore sur tout le sentier',
+      );
       // Etape 1 = du point 0 au point 10 sur 30 : environ un tiers du trace.
       expect(segment.first.lat, closeTo(42.00, 1e-6));
       expect(segment.last.lat, closeTo(42.10, 1e-6));
@@ -104,15 +117,20 @@ void main() {
       expect(s3.last.lat, closeTo(42.30, 1e-6));
     });
 
-    test('trace absent ou etape hors trace : liste VIDE, et l appelant se rabat',
-        () {
-      expect(stageTrackSegment(const [], stages[0]), isEmpty);
-      expect(stageTrackSegment([trace().first], stages[0]), isEmpty);
-      // Depart et arrivee qui tombent sur le meme point de trace : rien
-      // d'exploitable, on ne fabrique pas un cadrage sur une donnee manquante.
-      final degenere = stage(9, 42.00, 9.00, 42.001, 9.00);
-      expect(stageTrackSegment([trace().first, trace()[1]], degenere), isEmpty);
-    });
+    test(
+      'trace absent ou etape hors trace : liste VIDE, et l appelant se rabat',
+      () {
+        expect(stageTrackSegment(const [], stages[0]), isEmpty);
+        expect(stageTrackSegment([trace().first], stages[0]), isEmpty);
+        // Depart et arrivee qui tombent sur le meme point de trace : rien
+        // d'exploitable, on ne fabrique pas un cadrage sur une donnee manquante.
+        final degenere = stage(9, 42.00, 9.00, 42.001, 9.00);
+        expect(
+          stageTrackSegment([trace().first, trace()[1]], degenere),
+          isEmpty,
+        );
+      },
+    );
 
     test('nearestTrackPointIndex trouve bien le point le plus proche', () {
       final points = trace();
@@ -128,21 +146,30 @@ void main() {
   // seule ligne ou le defaut peut revenir.
   group('la carte ne s ouvre plus sur le sentier entier', () {
     test('le cadrage d ouverture passe par le troncon de l etape', () {
-      final source =
-          File('lib/features/trek/presentation/map/map_screen.dart')
-              .readAsStringSync();
-      expect(source.contains('stageTrackSegment'), isTrue,
-          reason: 'le cadrage doit porter sur le troncon de l etape');
-      expect(source.contains('currentStageNumberProvider'), isTrue,
-          reason: 'et suivre l etape courante quand la base en connait une');
-      expect(source.contains('focusBounds ?? bounds'), isTrue,
-          reason: 'avec un repli EXPLICITE sur le sentier entier');
+      final source = File(
+        'lib/features/trek/presentation/map/map_screen.dart',
+      ).readAsStringSync();
+      expect(
+        source.contains('stageTrackSegment'),
+        isTrue,
+        reason: 'le cadrage doit porter sur le troncon de l etape',
+      );
+      expect(
+        source.contains('currentStageNumberProvider'),
+        isTrue,
+        reason: 'et suivre l etape courante quand la base en connait une',
+      );
+      expect(
+        source.contains('focusBounds ?? bounds'),
+        isTrue,
+        reason: 'avec un repli EXPLICITE sur le sentier entier',
+      );
     });
 
     test('le laius sur les tirets a quitte l ecran', () {
-      final source =
-          File('lib/features/trek/presentation/map/map_screen.dart')
-              .readAsStringSync();
+      final source = File(
+        'lib/features/trek/presentation/map/map_screen.dart',
+      ).readAsStringSync();
       expect(source.contains('t.map.statsPendingNote'), isFalse);
     });
   });
@@ -150,25 +177,26 @@ void main() {
   // ---------------------------------------------------------------------------
   group('StageProgressBar — FORME GR20 : six cases, deux lignes, centrees', () {
     Widget bar({bool pending = true}) => MaterialApp(
-          home: Scaffold(
-            body: StageProgressBar(
-              stageName: 'Etape 1',
-              distanceRemainingKm: 12,
-              progressRatio: 0,
-              isOffTrack: false,
-              totalDistanceKm: 120.5,
-              distanceCoveredKm: 4.2,
-              elevationGainM: 800,
-              elevationLossM: 600,
-              avgSpeedKmh: 3.4,
-              altitudeM: 1465,
-              showPendingValues: pending,
-            ),
-          ),
-        );
+      home: Scaffold(
+        body: StageProgressBar(
+          stageName: 'Etape 1',
+          distanceRemainingKm: 12,
+          progressRatio: 0,
+          isOffTrack: false,
+          totalDistanceKm: 120.5,
+          distanceCoveredKm: 4.2,
+          elevationGainM: 800,
+          elevationLossM: 600,
+          avgSpeedKmh: 3.4,
+          altitudeM: 1465,
+          showPendingValues: pending,
+        ),
+      ),
+    );
 
-    testWidgets('les six chiffres tiennent sur DEUX lignes de trois',
-        (tester) async {
+    testWidgets('les six chiffres tiennent sur DEUX lignes de trois', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
@@ -198,12 +226,16 @@ void main() {
         hauteurs[y] = (hauteurs[y] ?? 0) + 1;
       }
       expect(hauteurs.length, 2, reason: 'deux lignes, pas un Wrap a plat');
-      expect(hauteurs.values.every((n) => n == 3), isTrue,
-          reason: 'trois cases par ligne, comme la navigation de reference');
+      expect(
+        hauteurs.values.every((n) => n == 3),
+        isTrue,
+        reason: 'trois cases par ligne, comme la navigation de reference',
+      );
     });
 
-    testWidgets('l icone est GROSSE (28 px, parite GR20) et non plus 14',
-        (tester) async {
+    testWidgets('l icone est GROSSE (28 px, parite GR20) et non plus 14', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
@@ -215,13 +247,16 @@ void main() {
         StepwaysIcons.deniveleMoins,
         StepwaysIcons.sommet,
       ]) {
-        final widget = tester.widget<StepIcon>(find.byWidgetPredicate((w) => w is StepIcon && w.asset == icone));
+        final widget = tester.widget<StepIcon>(
+          find.byWidgetPredicate((w) => w is StepIcon && w.asset == icone),
+        );
         expect(widget.size, 28.0, reason: 'grosse icone, lisible en marchant');
       }
     });
 
-    testWidgets('chaque case est CENTREE et occupe le tiers de la largeur',
-        (tester) async {
+    testWidgets('chaque case est CENTREE et occupe le tiers de la largeur', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
@@ -239,22 +274,25 @@ void main() {
       expect(ecart2, closeTo(ecart1, 1.0));
     });
 
-    testWidgets('AUCUNE phrase d explication des tirets sous les chiffres',
-        (tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(
-          body: StageProgressBar(
-            stageName: 'Etape 1',
-            distanceRemainingKm: 12,
-            progressRatio: 0,
-            isOffTrack: false,
-            totalDistanceKm: 120.5,
-            elevationGainM: 800,
-            elevationLossM: 600,
-            showPendingValues: true,
+    testWidgets('AUCUNE phrase d explication des tirets sous les chiffres', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: StageProgressBar(
+              stageName: 'Etape 1',
+              distanceRemainingKm: 12,
+              progressRatio: 0,
+              isOffTrack: false,
+              totalDistanceKm: 120.5,
+              elevationGainM: 800,
+              elevationLossM: 600,
+              showPendingValues: true,
+            ),
           ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       // L acquis du lot 554 tient : les cases absentes portent un TIRET, jamais

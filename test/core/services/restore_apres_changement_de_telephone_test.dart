@@ -62,21 +62,23 @@ void main() {
   // E4.16 Test 2 : RestoreService checkAndRestore + merge LWW
   // ==========================================================
   group('E4.16 RestoreService', () {
-    test('checkAndRestore retourne hasCloudData=false si Firebase indisponible',
-        () async {
-      final restoreService = RestoreService(
-        progressDao: progressDao,
-        journalDao: journalDao,
-        checklistDao: checklistDao,
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: false),
-      );
+    test(
+      'checkAndRestore retourne hasCloudData=false si Firebase indisponible',
+      () async {
+        final restoreService = RestoreService(
+          progressDao: progressDao,
+          journalDao: journalDao,
+          checklistDao: checklistDao,
+          connectivityMonitor: connectivity,
+          firebaseService: FirebaseService.testOnly(isAvailable: false),
+        );
 
-      final check = await restoreService.checkAndRestore('user1');
-      expect(check.hasCloudData, isFalse);
-      expect(check.cloudItemCount, 0);
-      expect(check.lastCloudSync, isNull);
-    });
+        final check = await restoreService.checkAndRestore('user1');
+        expect(check.hasCloudData, isFalse);
+        expect(check.cloudItemCount, 0);
+        expect(check.lastCloudSync, isNull);
+      },
+    );
 
     test('restoreFromCloud retourne erreur si hors ligne', () async {
       connectivity.setStatus(ConnectivityStatusValues.offline);
@@ -98,8 +100,7 @@ void main() {
       expect(progress, isNull);
     });
 
-    test('restoreFromCloud retourne erreur si Firebase indisponible',
-        () async {
+    test('restoreFromCloud retourne erreur si Firebase indisponible', () async {
       final restoreService = RestoreService(
         progressDao: progressDao,
         journalDao: journalDao,

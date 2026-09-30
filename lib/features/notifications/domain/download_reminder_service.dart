@@ -74,8 +74,9 @@ class DownloadReminderService {
 }
 
 /// Provider du service de rappel de telechargement.
-final downloadReminderServiceProvider =
-    Provider<DownloadReminderService>((ref) {
+final downloadReminderServiceProvider = Provider<DownloadReminderService>((
+  ref,
+) {
   final notificationService = NotificationService();
   final db = ref.watch(databaseProvider);
   final manifestsDao = TrailManifestsDao(db);

@@ -64,7 +64,8 @@ abstract final class TransportCatalog {
                     'Ligne de la plaine orientale (cote est), via Aleria. '
                     'Trajet indicatif ~1h30.',
                 price: 'a completer',
-                schedule: 'Horaires saisonniers a verifier aupres du '
+                schedule:
+                    'Horaires saisonniers a verifier aupres du '
                     'transporteur (a completer)',
                 contact: '',
                 contactLabel: 'Autocars de la plaine orientale',

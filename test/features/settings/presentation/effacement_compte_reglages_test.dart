@@ -73,9 +73,15 @@ void main() {
           routerConfig: GoRouter(
             initialLocation: '/settings',
             routes: [
-              GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+              GoRoute(
+                path: '/settings',
+                builder: (_, __) => const SettingsScreen(),
+              ),
               GoRoute(path: '/consent', builder: (_, __) => const SizedBox()),
-              GoRoute(path: '/recovery-code', builder: (_, __) => const SizedBox()),
+              GoRoute(
+                path: '/recovery-code',
+                builder: (_, __) => const SizedBox(),
+              ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
             ],
           ),
@@ -103,109 +109,143 @@ void main() {
 
   final tr = t.erasure;
 
-  group('K1 — la commande d effacement existe la ou le randonneur la cherche',
-      () {
-    testWidgets('les REGLAGES portent la commande, a cote de la vie privee',
+  group(
+    'K1 — la commande d effacement existe la ou le randonneur la cherche',
+    () {
+      testWidgets('les REGLAGES portent la commande, a cote de la vie privee', (
+        tester,
+      ) async {
+        await ouvrirReglages(tester);
+
+        // LE ROUGE HISTORIQUE : ce libelle n'existait nulle part dans l'app.
+        expect(
+          find.text(tr.entry),
+          findsWidgets,
+          reason: 'aucun chemin n offre le droit a l effacement au randonneur',
+        );
+
+        // Et il est dans le voisinage de la vie privee, pas perdu ailleurs : les
+        // deux entrees sont sur le meme ecran.
+        expect(find.text(t.consent.settingsEntry), findsWidgets);
+      });
+
+      testWidgets('le libelle DIT ce qui part, ce qui reste, et que c est '
+          'definitif', (tester) async {
+        await ouvrirReglages(tester);
+        await tester.tap(find.text(tr.entry).last);
+        await tester.pumpAndSettle();
+
+        expect(find.text(tr.dialogTitle), findsOneWidget);
+        expect(
+          find.text(tr.goes),
+          findsOneWidget,
+          reason: 'ce qui part doit etre ecrit, pas devine',
+        );
+        expect(
+          find.text(tr.stays),
+          findsOneWidget,
+          reason: 'K4 : la conservation des achats doit etre DITE',
+        );
+        expect(
+          find.text(tr.finalWarning),
+          findsOneWidget,
+          reason: 'le caractere definitif doit etre annonce avant le geste',
+        );
+        // La conservation des achats est bien ce qui est ecrit (et pas une
+        // formule creuse) : le texte parle de ce qui a ete paye.
+        expect(
+          tr.stays.toLowerCase(),
+          contains('pay'),
+          reason: 'le randonneur doit lire que ses achats survivent',
+        );
+      });
+
+      testWidgets(
+        'UN SIMPLE TAP N EFFACE RIEN : la confirmation est explicite',
         (tester) async {
-      await ouvrirReglages(tester);
+          await ouvrirReglages(tester);
+          await tester.tap(find.text(tr.entry).last);
+          await tester.pumpAndSettle();
 
-      // LE ROUGE HISTORIQUE : ce libelle n'existait nulle part dans l'app.
-      expect(find.text(tr.entry), findsWidgets,
-          reason: 'aucun chemin n offre le droit a l effacement au randonneur');
+          // La case n'est pas cochee : le bouton definitif refuse de partir.
+          await tester.tap(find.text(tr.confirm));
+          await tester.pumpAndSettle();
 
-      // Et il est dans le voisinage de la vie privee, pas perdu ailleurs : les
-      // deux entrees sont sur le meme ecran.
-      expect(find.text(t.consent.settingsEntry), findsWidgets);
-    });
-
-    testWidgets('le libelle DIT ce qui part, ce qui reste, et que c est '
-        'definitif', (tester) async {
-      await ouvrirReglages(tester);
-      await tester.tap(find.text(tr.entry).last);
-      await tester.pumpAndSettle();
-
-      expect(find.text(tr.dialogTitle), findsOneWidget);
-      expect(find.text(tr.goes), findsOneWidget,
-          reason: 'ce qui part doit etre ecrit, pas devine');
-      expect(find.text(tr.stays), findsOneWidget,
-          reason: 'K4 : la conservation des achats doit etre DITE');
-      expect(find.text(tr.finalWarning), findsOneWidget,
-          reason: 'le caractere definitif doit etre annonce avant le geste');
-      // La conservation des achats est bien ce qui est ecrit (et pas une
-      // formule creuse) : le texte parle de ce qui a ete paye.
-      expect(tr.stays.toLowerCase(), contains('pay'),
-          reason: 'le randonneur doit lire que ses achats survivent');
-    });
-
-    testWidgets('UN SIMPLE TAP N EFFACE RIEN : la confirmation est explicite',
-        (tester) async {
-      await ouvrirReglages(tester);
-      await tester.tap(find.text(tr.entry).last);
-      await tester.pumpAndSettle();
-
-      // La case n'est pas cochee : le bouton definitif refuse de partir.
-      await tester.tap(find.text(tr.confirm));
-      await tester.pumpAndSettle();
-
-      expect(find.text(tr.dialogTitle), findsOneWidget,
-          reason: 'le dialogue ne doit pas se fermer sans confirmation cochee');
-      expect((await SharedPreferences.getInstance()).getString('hiker.profile'),
-          isNotNull,
-          reason: 'RIEN ne doit etre efface sans confirmation explicite');
-    });
-
-    testWidgets('ANNULER ne touche a rien', (tester) async {
-      await ouvrirReglages(tester);
-      await tester.tap(find.text(tr.entry).last);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(tr.cancel));
-      await tester.pumpAndSettle();
-
-      expect(find.text(tr.dialogTitle), findsNothing);
-      expect(prefs.getString('hiker.profile'), isNotNull);
-    });
-
-    testWidgets('COCHEE PUIS CONFIRMEE : l effacement a REELLEMENT lieu, et '
-        'l ecran le dit', (tester) async {
-      await ouvrirReglages(tester);
-      await tester.tap(find.text(tr.entry).last);
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(tr.confirmCheckbox));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(tr.confirm));
-      await tester.pumpAndSettle();
-
-      final apres = await SharedPreferences.getInstance();
-      // CE QUI PART, mesure sur l'appareil (pas sur une intention).
-      for (final cle in <String>[
-        'hiker.profile',
-        'hiker.walkTestResult',
-        'auth_display_name',
-        'accommodation_bookings',
-        'bg_gps_points_buffer',
-        'consent_healthData',
-      ]) {
-        expect(apres.get(cle), isNull, reason: '« $cle » a survecu');
-      }
-      // Le code de reconnexion aussi (K2), puisque c'est le meme geste.
-      expect(
-        await const FlutterSecureStorage().read(key: 'stepways.recovery.code.v1'),
-        isNull,
-        reason: 'le code qui ouvre le coffre ailleurs doit partir',
+          expect(
+            find.text(tr.dialogTitle),
+            findsOneWidget,
+            reason:
+                'le dialogue ne doit pas se fermer sans confirmation cochee',
+          );
+          expect(
+            (await SharedPreferences.getInstance()).getString('hiker.profile'),
+            isNotNull,
+            reason: 'RIEN ne doit etre efface sans confirmation explicite',
+          );
+        },
       );
-      // CE QUI RESTE : l'etage monetaire et les reglages d'affichage.
-      expect(apres.getInt('wallet.balanceSteps'), 12,
-          reason: 'K4 : on ne reprend pas au randonneur ce qu il a paye');
-      expect(apres.getStringList('purchased_trail_ids'), <String>['gr20']);
-      expect(apres.getString('settings_language'), 'fr');
 
-      // LE RETOUR A L ECRAN : le dialogue est ferme et l ecran confirme.
-      expect(find.text(tr.dialogTitle), findsNothing);
-      expect(find.text(tr.done), findsOneWidget,
-          reason: 'le randonneur doit savoir que c est fait');
-    });
-  });
+      testWidgets('ANNULER ne touche a rien', (tester) async {
+        await ouvrirReglages(tester);
+        await tester.tap(find.text(tr.entry).last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(tr.cancel));
+        await tester.pumpAndSettle();
+
+        expect(find.text(tr.dialogTitle), findsNothing);
+        expect(prefs.getString('hiker.profile'), isNotNull);
+      });
+
+      testWidgets('COCHEE PUIS CONFIRMEE : l effacement a REELLEMENT lieu, et '
+          'l ecran le dit', (tester) async {
+        await ouvrirReglages(tester);
+        await tester.tap(find.text(tr.entry).last);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(tr.confirmCheckbox));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(tr.confirm));
+        await tester.pumpAndSettle();
+
+        final apres = await SharedPreferences.getInstance();
+        // CE QUI PART, mesure sur l'appareil (pas sur une intention).
+        for (final cle in <String>[
+          'hiker.profile',
+          'hiker.walkTestResult',
+          'auth_display_name',
+          'accommodation_bookings',
+          'bg_gps_points_buffer',
+          'consent_healthData',
+        ]) {
+          expect(apres.get(cle), isNull, reason: '« $cle » a survecu');
+        }
+        // Le code de reconnexion aussi (K2), puisque c'est le meme geste.
+        expect(
+          await const FlutterSecureStorage().read(
+            key: 'stepways.recovery.code.v1',
+          ),
+          isNull,
+          reason: 'le code qui ouvre le coffre ailleurs doit partir',
+        );
+        // CE QUI RESTE : l'etage monetaire et les reglages d'affichage.
+        expect(
+          apres.getInt('wallet.balanceSteps'),
+          12,
+          reason: 'K4 : on ne reprend pas au randonneur ce qu il a paye',
+        );
+        expect(apres.getStringList('purchased_trail_ids'), <String>['gr20']);
+        expect(apres.getString('settings_language'), 'fr');
+
+        // LE RETOUR A L ECRAN : le dialogue est ferme et l ecran confirme.
+        expect(find.text(tr.dialogTitle), findsNothing);
+        expect(
+          find.text(tr.done),
+          findsOneWidget,
+          reason: 'le randonneur doit savoir que c est fait',
+        );
+      });
+    },
+  );
 
   group('K1 — le libelle existe dans les cinq langues', () {
     test('aucune cle vide, et les trois annonces sont presentes partout', () {
@@ -229,15 +269,24 @@ void main() {
           'error': tl.error,
           'a11yEntry': tl.a11y.entry,
         }.entries) {
-          expect(entry.value.trim(), isNotEmpty,
-              reason: '$loc : erasure.${entry.key} est vide');
+          expect(
+            entry.value.trim(),
+            isNotEmpty,
+            reason: '$loc : erasure.${entry.key} est vide',
+          );
         }
         // Pas de repli silencieux sur le francais : chaque langue a son texte.
         if (loc != 'fr') {
-          expect(tl.goes, isNot(AppLocale.fr.buildSync().erasure.goes),
-              reason: '$loc : « ce qui part » est reste en francais');
-          expect(tl.stays, isNot(AppLocale.fr.buildSync().erasure.stays),
-              reason: '$loc : « ce qui reste » est reste en francais');
+          expect(
+            tl.goes,
+            isNot(AppLocale.fr.buildSync().erasure.goes),
+            reason: '$loc : « ce qui part » est reste en francais',
+          );
+          expect(
+            tl.stays,
+            isNot(AppLocale.fr.buildSync().erasure.stays),
+            reason: '$loc : « ce qui reste » est reste en francais',
+          );
         }
       }
     });
@@ -245,8 +294,11 @@ void main() {
     test('la note de sauvegarde sante est traduite dans les cinq langues', () {
       for (final locale in AppLocale.values) {
         final note = locale.buildSync().consent.healthBackupNote;
-        expect(note.trim(), isNotEmpty,
-            reason: '${locale.languageCode} : healthBackupNote est vide');
+        expect(
+          note.trim(),
+          isNotEmpty,
+          reason: '${locale.languageCode} : healthBackupNote est vide',
+        );
       }
     });
   });

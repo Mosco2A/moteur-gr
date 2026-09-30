@@ -57,31 +57,37 @@ void main() {
       expect(drift.countryIso, 'FR');
     });
 
-    test('load rehydrate le miroir Drift depuis les prefs (DB volatile)',
-        () async {
-      // On simule un profil deja present en prefs (ecrit via repo courant),
-      // puis un "redemarrage" : nouvelle DB volatile vierge + memes prefs.
-      // load() doit relire les prefs (source durable) et re-remplir Drift.
-      await repo.saveProfile(const HikerProfile(heightCm: 180, weightKg: 80));
+    test(
+      'load rehydrate le miroir Drift depuis les prefs (DB volatile)',
+      () async {
+        // On simule un profil deja present en prefs (ecrit via repo courant),
+        // puis un "redemarrage" : nouvelle DB volatile vierge + memes prefs.
+        // load() doit relire les prefs (source durable) et re-remplir Drift.
+        await repo.saveProfile(const HikerProfile(heightCm: 180, weightKg: 80));
 
-      final db2 = AppDatabase(NativeDatabase.memory());
-      addTearDown(db2.close);
-      final repo2 = HikerProfileRepository(db: db2, prefs: prefs);
+        final db2 = AppDatabase(NativeDatabase.memory());
+        addTearDown(db2.close);
+        final repo2 = HikerProfileRepository(db: db2, prefs: prefs);
 
-      // Apres load : profil relu depuis prefs ET miroir Drift (re)hydrate.
-      final p = await repo2.load();
-      expect(p.heightCm, 180);
-      expect(await db2.hikerProfileDao.getByUserId(kHikerLocalUserId),
-          isNotNull);
-    });
+        // Apres load : profil relu depuis prefs ET miroir Drift (re)hydrate.
+        final p = await repo2.load();
+        expect(p.heightCm, 180);
+        expect(
+          await db2.hikerProfileDao.getByUserId(kHikerLocalUserId),
+          isNotNull,
+        );
+      },
+    );
 
-    test('deleteProfile efface prefs ET Drift (droit a l effacement)',
-        () async {
-      await repo.saveProfile(const HikerProfile(heightCm: 175, weightKg: 70));
-      await repo.deleteProfile();
-      expect((await repo.getProfile()).isEmpty, isTrue);
-      expect(await db.hikerProfileDao.getByUserId(kHikerLocalUserId), isNull);
-    });
+    test(
+      'deleteProfile efface prefs ET Drift (droit a l effacement)',
+      () async {
+        await repo.saveProfile(const HikerProfile(heightCm: 175, weightKg: 70));
+        await repo.deleteProfile();
+        expect((await repo.getProfile()).isEmpty, isTrue);
+        expect(await db.hikerProfileDao.getByUserId(kHikerLocalUserId), isNull);
+      },
+    );
   });
 
   group('Randos passees — max 5, tri par date', () {
@@ -131,22 +137,26 @@ void main() {
     });
 
     test('save + get du dernier resultat (remplace le precedent)', () async {
-      await repo.saveWalkTestResult(WalkTestResult(
-        distanceMeters: 620,
-        level: WalkTestLevel.good,
-        takenAt: DateTime(2026, 9, 1),
-      ));
+      await repo.saveWalkTestResult(
+        WalkTestResult(
+          distanceMeters: 620,
+          level: WalkTestLevel.good,
+          takenAt: DateTime(2026, 9, 1),
+        ),
+      );
       var r = await repo.getWalkTestResult();
       expect(r, isNotNull);
       expect(r!.distanceMeters, 620);
       expect(r.level, WalkTestLevel.good);
 
       // Nouveau test -> remplace.
-      await repo.saveWalkTestResult(WalkTestResult(
-        distanceMeters: 680,
-        level: WalkTestLevel.excellent,
-        takenAt: DateTime(2026, 10, 1),
-      ));
+      await repo.saveWalkTestResult(
+        WalkTestResult(
+          distanceMeters: 680,
+          level: WalkTestLevel.excellent,
+          takenAt: DateTime(2026, 10, 1),
+        ),
+      );
       r = await repo.getWalkTestResult();
       expect(r!.distanceMeters, 680);
       expect(r.level, WalkTestLevel.excellent);

@@ -71,8 +71,8 @@ class BrandAltiMotif extends StatelessWidget {
     this.variant = BrandAltiVariant.hero,
     this.accent,
     this.height = _defaultHeight,
-  })  : _elevations = elevations,
-        _synthetic = null;
+  }) : _elevations = elevations,
+       _synthetic = null;
 
   /// Motif reproduisant la courbe SYNTHETIQUE historique de la fiche etape
   /// (montee -> sommet -> descente derive de D+/D-), pour la PARITE de trace.
@@ -88,12 +88,12 @@ class BrandAltiMotif extends StatelessWidget {
     this.variant = BrandAltiVariant.hero,
     this.accent,
     this.height = _defaultHeight,
-  })  : _elevations = const <double>[],
-        _synthetic = AltiSyntheticProfile(
-          elevationGain: elevationGain,
-          elevationLoss: elevationLoss,
-          distance: distance,
-        );
+  }) : _elevations = const <double>[],
+       _synthetic = AltiSyntheticProfile(
+         elevationGain: elevationGain,
+         elevationLoss: elevationLoss,
+         distance: distance,
+       );
 
   /// Hauteur par defaut du motif (iso l'encart historique de la fiche etape).
   static const double _defaultHeight = 160;
@@ -239,8 +239,9 @@ class AltiProfilePainter extends CustomPainter {
     // => rien a tracer (mandat L6 : pas de crash, pas de trace bidon).
     if (synthetic == null && elevations.length < 2) return;
 
-    final path =
-        synthetic != null ? _syntheticPath(size) : _elevationsPath(size);
+    final path = synthetic != null
+        ? _syntheticPath(size)
+        : _elevationsPath(size);
     if (path == null) return;
 
     _paintFill(canvas, size, path);
@@ -312,10 +313,10 @@ class AltiProfilePainter extends CustomPainter {
     final peakX = _padding + drawWidth * peakRatio;
     const peakY = _padding;
     final endX = size.width - _padding;
-    final endRatio =
-        total > 0 ? (s.elevationGain - s.elevationLoss) / total : 0.0;
-    final endY =
-        size.height - _padding - drawHeight * endRatio.clamp(0.0, 0.8);
+    final endRatio = total > 0
+        ? (s.elevationGain - s.elevationLoss) / total
+        : 0.0;
+    final endY = size.height - _padding - drawHeight * endRatio.clamp(0.0, 0.8);
 
     return Path()
       ..moveTo(startX, startY)
@@ -354,8 +355,7 @@ class AltiProfilePainter extends CustomPainter {
     }
     final range = maxAlt - minAlt;
 
-    double xFor(int i) =>
-        _padding + drawWidth * (i / (elevations.length - 1));
+    double xFor(int i) => _padding + drawWidth * (i / (elevations.length - 1));
     double yFor(double alt) {
       // range 0 (profil plat) => ligne mediane, aucune division par zero.
       final norm = range == 0 ? 0.5 : (alt - minAlt) / range;
@@ -391,9 +391,9 @@ class AltiProfilePainter extends CustomPainter {
     );
 
     TextPainter tp(String text) => TextPainter(
-          text: TextSpan(text: text, style: textStyle),
-          textDirection: TextDirection.ltr,
-        )..layout();
+      text: TextSpan(text: text, style: textStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
 
     final startLabel = tp('0 km');
     startLabel.paint(canvas, Offset(_padding, startY + 2));
@@ -405,10 +405,7 @@ class AltiProfilePainter extends CustomPainter {
     );
 
     final peakLabel = tp('+${s.elevationGain} m');
-    peakLabel.paint(
-      canvas,
-      Offset(peakX - peakLabel.width / 2, _padding - 14),
-    );
+    peakLabel.paint(canvas, Offset(peakX - peakLabel.width / 2, _padding - 14));
   }
 
   @override

@@ -175,10 +175,7 @@ void main() {
         snowFactor: 0.5,
       );
 
-      final scoreHard = ItineraryCalculator.feasibilityScore(
-        day,
-        hardParams,
-      );
+      final scoreHard = ItineraryCalculator.feasibilityScore(day, hardParams);
 
       expect(scoreHard, lessThan(scoreNeutre));
 

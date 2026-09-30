@@ -35,8 +35,7 @@ class SettingsService {
   // --- Langue ---
 
   /// Lit la langue sauvegardee (fallback: 'fr').
-  String getLanguage() =>
-      _prefs.getString(SettingsKeys.language) ?? 'fr';
+  String getLanguage() => _prefs.getString(SettingsKeys.language) ?? 'fr';
 
   /// Persiste la langue choisie.
   Future<bool> setLanguage(String language) =>
@@ -55,8 +54,7 @@ class SettingsService {
   // --- Theme ---
 
   /// Lit le mode de theme sauvegarde (fallback: 'dark').
-  String getThemeMode() =>
-      _prefs.getString(SettingsKeys.themeMode) ?? 'dark';
+  String getThemeMode() => _prefs.getString(SettingsKeys.themeMode) ?? 'dark';
 
   /// Persiste le mode de theme.
   Future<bool> setThemeMode(String mode) =>
@@ -65,16 +63,14 @@ class SettingsService {
   // --- Cache ---
 
   /// Lit si le cache est active (fallback: true).
-  bool getCacheEnabled() =>
-      _prefs.getBool(SettingsKeys.cacheEnabled) ?? true;
+  bool getCacheEnabled() => _prefs.getBool(SettingsKeys.cacheEnabled) ?? true;
 
   /// Persiste l activation du cache.
   Future<bool> setCacheEnabled(bool enabled) =>
       _prefs.setBool(SettingsKeys.cacheEnabled, enabled);
 
   /// Lit la taille max du cache en Mo (fallback: 500).
-  int getCacheSizeMb() =>
-      _prefs.getInt(SettingsKeys.cacheSizeMb) ?? 500;
+  int getCacheSizeMb() => _prefs.getInt(SettingsKeys.cacheSizeMb) ?? 500;
 
   /// Persiste la taille max du cache.
   Future<bool> setCacheSizeMb(int sizeMb) =>

@@ -52,13 +52,16 @@ void main() {
       // (la seule forme qui partirait au serveur) : aucune coordonnee, aucun
       // horodatage individuel ne doit y figurer.
       final json = result.toJson();
-      expect(json.keys, containsAll(<String>[
-        'distanceMeters',
-        'durationSeconds',
-        'elevationGainMeters',
-        'elevationLossMeters',
-        'sourcePointCount',
-      ]));
+      expect(
+        json.keys,
+        containsAll(<String>[
+          'distanceMeters',
+          'durationSeconds',
+          'elevationGainMeters',
+          'elevationLossMeters',
+          'sourcePointCount',
+        ]),
+      );
       // Aucune cle ne doit exposer de donnee fine.
       for (final forbidden in <String>[
         'points',
@@ -70,17 +73,26 @@ void main() {
         'timestamps',
         'trace',
       ]) {
-        expect(json.containsKey(forbidden), isFalse,
-            reason: 'Le resultat minimise ne doit PAS exposer "$forbidden"');
+        expect(
+          json.containsKey(forbidden),
+          isFalse,
+          reason: 'Le resultat minimise ne doit PAS exposer "$forbidden"',
+        );
       }
 
       // Et la valeur serialisee, recherchee en texte, ne contient aucune des
       // coordonnees fines d'origine (preuve d'absence de la serie).
       final serialized = json.toString();
-      expect(serialized.contains('42.001'), isFalse,
-          reason: 'Aucune latitude fine ne doit subsister');
-      expect(serialized.contains('9.001'), isFalse,
-          reason: 'Aucune longitude fine ne doit subsister');
+      expect(
+        serialized.contains('42.001'),
+        isFalse,
+        reason: 'Aucune latitude fine ne doit subsister',
+      );
+      expect(
+        serialized.contains('9.001'),
+        isFalse,
+        reason: 'Aucune longitude fine ne doit subsister',
+      );
     });
 
     test('calcule la duree entre premier et dernier point horodate', () {

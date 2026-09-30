@@ -69,7 +69,8 @@ class AppGradientHeader extends StatelessWidget {
       paperSurface: scheme.surface,
     );
 
-    final effectivePadding = padding ??
+    final effectivePadding =
+        padding ??
         const EdgeInsets.symmetric(
           horizontal: AppTheme.spacingBase,
           vertical: AppTheme.spacingLg,
@@ -79,18 +80,20 @@ class AppGradientHeader extends StatelessWidget {
     // contraste et famille surchargee par la peau si demande (ex. serif Grand
     // Air, cablage google_fonts en L9 ; ici on respecte titleFontFamily s'il est
     // deja fourni).
-    final titleStyle = (theme.textTheme.headlineSmall ??
-            const TextStyle(fontSize: 22, fontWeight: FontWeight.w700))
-        .copyWith(
-      color: treatment.textColor,
-      fontFamily: skin.titleFontFamily,
-    );
-    final subtitleStyle = (theme.textTheme.titleMedium ??
-            const TextStyle(fontSize: 18, fontWeight: FontWeight.w600))
-        .copyWith(
-      color: treatment.textColor.withValues(alpha: 0.92),
-      fontFamily: skin.titleFontFamily,
-    );
+    final titleStyle =
+        (theme.textTheme.headlineSmall ??
+                const TextStyle(fontSize: 22, fontWeight: FontWeight.w700))
+            .copyWith(
+              color: treatment.textColor,
+              fontFamily: skin.titleFontFamily,
+            );
+    final subtitleStyle =
+        (theme.textTheme.titleMedium ??
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w600))
+            .copyWith(
+              color: treatment.textColor.withValues(alpha: 0.92),
+              fontFamily: skin.titleFontFamily,
+            );
 
     final Widget header = DecoratedBox(
       decoration: BoxDecoration(

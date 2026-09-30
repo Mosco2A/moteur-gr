@@ -61,7 +61,8 @@ void main() {
   final leServeurPublieA = DateTime.utc(2026, 9, 28, 6, 0, 0);
   HorodatageServeur instantServeur([Duration decalage = Duration.zero]) =>
       HorodatageServeur.annonceParLeServeur(
-          leServeurPublieA.add(decalage).toIso8601String())!;
+        leServeurPublieA.add(decalage).toIso8601String(),
+      )!;
 
   setUp(() {
     bac = Directory.systemTemp.createTempSync('horloge610');
@@ -80,73 +81,72 @@ void main() {
     int elevationGain = 800,
     bool avecPoi = true,
     bool etapeAbimee = false,
-  }) =>
+  }) => {
+    'trail_meta': {
+      'id': 'gr-test',
+      'code': 'TEST',
+      'data_version': instant.iso8601,
+      'status': 'active',
+      'rev': instant.iso8601,
+    },
+    'itineraries': [
       {
-        'trail_meta': {
-          'id': 'gr-test',
-          'code': 'TEST',
-          'data_version': instant.iso8601,
-          'status': 'active',
+        'id': 'test-i1',
+        'trail_id': 'gr-test',
+        'code': 'TEST-NS',
+        'name_fr': 'Test nord-sud',
+        'name_en': 'Test north-south',
+        'name_de': 'Test Nord-Sud',
+        'name_it': 'Test nord-sud',
+        'name_es': 'Test norte-sur',
+        'distance_km': 14.0,
+        'elevation_gain': 800,
+        'stage_count': 1,
+        'rev': instant.iso8601,
+      },
+    ],
+    'stages': [
+      {
+        'id': 'test-s1',
+        'itinerary_id': 'test-i1',
+        'stage_number': 1,
+        'name_fr': 'Etape 1',
+        'name_en': 'Stage 1',
+        'name_de': 'Etappe 1',
+        'name_it': 'Tappa 1',
+        'name_es': 'Etapa 1',
+        'start_lat': 44.66,
+        'start_lng': 3.04,
+        'end_lat': 44.63,
+        'end_lng': 2.98,
+        'distance_km': 14.0,
+        'elevation_gain': elevationGain,
+        'elevation_loss': 210,
+        // UNE DUREE MANQUANTE FAIT ECHOUER LA POSE DE CETTE FAMILLE, et c est
+        // ce qui sert a simuler la coupure EN PLEIN MILIEU de la transaction :
+        // les familles precedentes ont deja ete ecrites quand celle-ci leve.
+        if (!etapeAbimee) 'duration_minutes': 240,
+        'difficulty': 'moyen',
+        'rev': instant.iso8601,
+      },
+    ],
+    if (avecPoi)
+      'pois': [
+        {
+          'id': 'test-p1',
+          'stage_id': 'test-s1',
+          'name_fr': 'Fontaine',
+          'name_en': 'Spring',
+          'name_de': 'Quelle',
+          'name_it': 'Fonte',
+          'name_es': 'Fuente',
+          'type': 'water',
+          'lat': 44.65,
+          'lng': 3.0,
           'rev': instant.iso8601,
         },
-        'itineraries': [
-          {
-            'id': 'test-i1',
-            'trail_id': 'gr-test',
-            'code': 'TEST-NS',
-            'name_fr': 'Test nord-sud',
-            'name_en': 'Test north-south',
-            'name_de': 'Test Nord-Sud',
-            'name_it': 'Test nord-sud',
-            'name_es': 'Test norte-sur',
-            'distance_km': 14.0,
-            'elevation_gain': 800,
-            'stage_count': 1,
-            'rev': instant.iso8601,
-          }
-        ],
-        'stages': [
-          {
-            'id': 'test-s1',
-            'itinerary_id': 'test-i1',
-            'stage_number': 1,
-            'name_fr': 'Etape 1',
-            'name_en': 'Stage 1',
-            'name_de': 'Etappe 1',
-            'name_it': 'Tappa 1',
-            'name_es': 'Etapa 1',
-            'start_lat': 44.66,
-            'start_lng': 3.04,
-            'end_lat': 44.63,
-            'end_lng': 2.98,
-            'distance_km': 14.0,
-            'elevation_gain': elevationGain,
-            'elevation_loss': 210,
-            // UNE DUREE MANQUANTE FAIT ECHOUER LA POSE DE CETTE FAMILLE, et c est
-            // ce qui sert a simuler la coupure EN PLEIN MILIEU de la transaction :
-            // les familles precedentes ont deja ete ecrites quand celle-ci leve.
-            if (!etapeAbimee) 'duration_minutes': 240,
-            'difficulty': 'moyen',
-            'rev': instant.iso8601,
-          }
-        ],
-        if (avecPoi)
-          'pois': [
-            {
-              'id': 'test-p1',
-              'stage_id': 'test-s1',
-              'name_fr': 'Fontaine',
-              'name_en': 'Spring',
-              'name_de': 'Quelle',
-              'name_it': 'Fonte',
-              'name_es': 'Fuente',
-              'type': 'water',
-              'lat': 44.65,
-              'lng': 3.0,
-              'rev': instant.iso8601,
-            }
-          ],
-      };
+      ],
+  };
 
   /// Ecrit un fichier de donnees dans le bac et rend son entree de liste.
   ///
@@ -173,35 +173,38 @@ void main() {
   }
 
   MockClient stockage() => MockClient((requete) async {
-        final nom = requete.url.pathSegments.last;
-        final fichier = File('${bac.path}/$nom');
-        if (!fichier.existsSync()) return http.Response('non trouve', 404);
-        return http.Response.bytes(fichier.readAsBytesSync(), 200,
-            headers: {'content-type': 'application/json; charset=utf-8'});
-      });
+    final nom = requete.url.pathSegments.last;
+    final fichier = File('${bac.path}/$nom');
+    if (!fichier.existsSync()) return http.Response('non trouve', 404);
+    return http.Response.bytes(
+      fichier.readAsBytesSync(),
+      200,
+      headers: {'content-type': 'application/json; charset=utf-8'},
+    );
+  });
 
   DeltaUpdateService service() => DeltaUpdateService(
-        db: db,
-        manifestService: ManifestService(
-          dao: manifestes,
-          connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
-        ),
-        trailManifestsDao: manifestes,
-        trailMetaDao: TrailMetaDao(db),
-        trailItinerariesDao: TrailItinerariesDao(db),
-        trailStagesDao: TrailStagesDao(db),
-        trailAccommodationsDao: TrailAccommodationsDao(db),
-        trailPoisDao: TrailPoisDao(db),
-        trailGpxTracksDao: TrailGpxTracksDao(db),
-        trailGpxPointsDao: TrailGpxPointsDao(db),
-        httpClient: stockage(),
-      );
+    db: db,
+    manifestService: ManifestService(
+      dao: manifestes,
+      connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
+    ),
+    trailManifestsDao: manifestes,
+    trailMetaDao: TrailMetaDao(db),
+    trailItinerariesDao: TrailItinerariesDao(db),
+    trailStagesDao: TrailStagesDao(db),
+    trailAccommodationsDao: TrailAccommodationsDao(db),
+    trailPoisDao: TrailPoisDao(db),
+    trailGpxTracksDao: TrailGpxTracksDao(db),
+    trailGpxPointsDao: TrailGpxPointsDao(db),
+    httpClient: stockage(),
+  );
 
   /// Pose la ligne de liste locale, comme le fait la lecture du catalogue.
   Future<void> conserver(TrailManifestEntry entree) => ManifestService(
-        dao: manifestes,
-        connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
-      ).saveLocalManifest(entree);
+    dao: manifestes,
+    connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
+  ).saveLocalManifest(entree);
 
   // =========================================================================
   // 1. L HORLOGE DU TELEPHONE
@@ -216,57 +219,80 @@ void main() {
       // entre 06:00 et 07:00 porterait une date INFERIEURE a son repere, donc ne
       // redescendrait JAMAIS. Sans erreur, sans trace, sans moyen de le voir.
       final horlogeDeLAppareil = leServeurPublieA.add(const Duration(hours: 1));
-      expect(horlogeDeLAppareil.isAfter(leServeurPublieA), isTrue,
-          reason: 'la premisse du test : l appareil est en avance');
+      expect(
+        horlogeDeLAppareil.isAfter(leServeurPublieA),
+        isTrue,
+        reason: 'la premisse du test : l appareil est en avance',
+      );
 
-      final v1 = deposer('v1.json', donnees(instant: instantServeur()),
-          instantAnnonce: instantServeur());
+      final v1 = deposer(
+        'v1.json',
+        donnees(instant: instantServeur()),
+        instantAnnonce: instantServeur(),
+      );
       await conserver(v1);
-      await service().synchroniser('gr-test', 'https://double/v1.json',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+      await service().synchroniser(
+        'gr-test',
+        'https://double/v1.json',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
+        empreinteAttendue: v1.hash,
+      );
 
       // LE REPERE EST CELUI DU SERVEUR, A LA MILLISECONDE. Pas l heure de
       // l appareil, et pas non plus « quelque part entre les deux ».
       final repere = (await manifestes.getByTrailId('gr-test'))!.localVersion;
       expect(repere, instantServeur());
-      expect(repere!.millisecondesEpoch,
-          lessThan(
-              HorodatageServeur.annonceParLeServeur(
-                      horlogeDeLAppareil.toIso8601String())!
-                  .millisecondesEpoch),
-          reason: 'le repere est en ARRIERE de l horloge de l appareil : c est le '
-              'sens qui se repare (on relit), l autre est definitif (on saute)');
+      expect(
+        repere!.millisecondesEpoch,
+        lessThan(
+          HorodatageServeur.annonceParLeServeur(
+            horlogeDeLAppareil.toIso8601String(),
+          )!.millisecondesEpoch,
+        ),
+        reason:
+            'le repere est en ARRIERE de l horloge de l appareil : c est le '
+            'sens qui se repare (on relit), l autre est definitif (on saute)',
+      );
 
       // ET LA PREUVE QUI COMPTE : une donnee publiee 30 MINUTES APRES, donc
       // encore DANS l heure d avance du telephone, DESCEND QUAND MEME.
       final v2 = deposer(
         'v2.json',
         donnees(
-            instant: instantServeur(const Duration(minutes: 30)),
-            elevationGain: 915),
+          instant: instantServeur(const Duration(minutes: 30)),
+          elevationGain: 915,
+        ),
         instantAnnonce: instantServeur(const Duration(minutes: 30)),
       );
       await conserver(v2);
       final bilan = await service().synchroniser(
         'gr-test',
         'https://double/v2.json',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
-      expect(bilan.ecrits, greaterThan(0),
-          reason: 'AVEC UN REPERE PRIS SUR L HORLOGE DE L APPAREIL, ce chiffre '
-              'vaudrait ZERO : 06:30 est anterieur a 07:00, donc rien ne serait '
-              'juge « plus recent ». La donnee serait perdue pour toujours.');
       expect(
-        (await TrailStagesDao(db).getByItineraryId('test-i1'))
-            .single
-            .elevationGain,
+        bilan.ecrits,
+        greaterThan(0),
+        reason:
+            'AVEC UN REPERE PRIS SUR L HORLOGE DE L APPAREIL, ce chiffre '
+            'vaudrait ZERO : 06:30 est anterieur a 07:00, donc rien ne serait '
+            'juge « plus recent ». La donnee serait perdue pour toujours.',
+      );
+      expect(
+        (await TrailStagesDao(
+          db,
+        ).getByItineraryId('test-i1')).single.elevationGain,
         915,
         reason: 'la correction est bien arrivee sur le telephone',
       );
-      expect((await manifestes.getByTrailId('gr-test'))!.localVersion,
-          instantServeur(const Duration(minutes: 30)));
+      expect(
+        (await manifestes.getByTrailId('gr-test'))!.localVersion,
+        instantServeur(const Duration(minutes: 30)),
+      );
     });
 
     test('AUCUN FICHIER DE `lib/` NE POSE D HORODATAGE — la garde est '
@@ -289,26 +315,34 @@ void main() {
           coupables.add(fichier.path);
         }
       }
-      expect(coupables, isEmpty,
-          reason: 'l application ne pose JAMAIS d horodatage : elle LIT celui '
-              'que le serveur annonce. Seul `tool/publication/` a le droit de '
-              'poser, parce qu il est le serveur.');
+      expect(
+        coupables,
+        isEmpty,
+        reason:
+            'l application ne pose JAMAIS d horodatage : elle LIT celui '
+            'que le serveur annonce. Seul `tool/publication/` a le droit de '
+            'poser, parce qu il est le serveur.',
+      );
     });
 
-    test('une date sans fuseau est lue en UTC, jamais en heure de l appareil',
-        () {
-      // Le meme fichier publie doit donner le MEME repere a Paris et a Tokyo.
-      // `DateTime.parse` rendrait un instant LOCAL sur une ecriture sans `Z`.
-      expect(
-        HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000'),
-        HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000Z'),
-      );
-      // Un decalage explicite, lui, est respecte.
-      expect(
-        HorodatageServeur.annonceParLeServeur('2026-09-28T08:00:00.000+02:00'),
-        HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000Z'),
-      );
-    });
+    test(
+      'une date sans fuseau est lue en UTC, jamais en heure de l appareil',
+      () {
+        // Le meme fichier publie doit donner le MEME repere a Paris et a Tokyo.
+        // `DateTime.parse` rendrait un instant LOCAL sur une ecriture sans `Z`.
+        expect(
+          HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000'),
+          HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000Z'),
+        );
+        // Un decalage explicite, lui, est respecte.
+        expect(
+          HorodatageServeur.annonceParLeServeur(
+            '2026-09-28T08:00:00.000+02:00',
+          ),
+          HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.000Z'),
+        );
+      },
+    );
 
     test('la precision est la MILLISECONDE : deux publications dans la meme '
         'seconde restent distinctes', () {
@@ -316,8 +350,12 @@ void main() {
       // meteo et le risque incendie ecriront en rafale. Avec une comparaison
       // stricte, deux enregistrements indiscernables font rater le second POUR
       // TOUJOURS.
-      final a = HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.100Z')!;
-      final b = HorodatageServeur.annonceParLeServeur('2026-09-28T06:00:00.900Z')!;
+      final a = HorodatageServeur.annonceParLeServeur(
+        '2026-09-28T06:00:00.100Z',
+      )!;
+      final b = HorodatageServeur.annonceParLeServeur(
+        '2026-09-28T06:00:00.900Z',
+      )!;
       expect(b > a, isTrue);
       expect(a.iso8601, '2026-09-28T06:00:00.100Z');
     });
@@ -346,21 +384,38 @@ void main() {
       );
       await conserver(v1);
 
-      await service().synchroniser('gr-test', 'https://double/v1.json',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+      await service().synchroniser(
+        'gr-test',
+        'https://double/v1.json',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
+        empreinteAttendue: v1.hash,
+      );
 
-      expect((await manifestes.getByTrailId('gr-test'))!.localVersion, borne,
-          reason: 'le repere est la BORNE (07:00), pas le maximum des '
-              'enregistrements recus (06:00)');
+      expect(
+        (await manifestes.getByTrailId('gr-test'))!.localVersion,
+        borne,
+        reason:
+            'le repere est la BORNE (07:00), pas le maximum des '
+            'enregistrements recus (06:00)',
+      );
     });
 
     test('un enregistrement plus recent que le repere descend, un plus ancien '
         'ne descend pas — et la borne stricte est verifiee', () async {
-      final v1 = deposer('v1.json', donnees(instant: instantServeur()),
-          instantAnnonce: instantServeur());
+      final v1 = deposer(
+        'v1.json',
+        donnees(instant: instantServeur()),
+        instantAnnonce: instantServeur(),
+      );
       await conserver(v1);
-      await service().synchroniser('gr-test', 'https://double/v1.json',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+      await service().synchroniser(
+        'gr-test',
+        'https://double/v1.json',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
+        empreinteAttendue: v1.hash,
+      );
 
       // Republication a la MEME date : rien n est « plus recent », rien ne bouge.
       final memeInstant = deposer(
@@ -372,16 +427,21 @@ void main() {
       final rien = await service().synchroniser(
         'gr-test',
         'https://double/meme.json',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: memeInstant.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: memeInstant.dataVersion,
         empreinteAttendue: memeInstant.hash,
       );
-      expect(rien.rienAFaire, isTrue,
-          reason: 'la comparaison est STRICTE : « plus recent », pas « au moins '
-              'aussi recent »');
       expect(
-        (await TrailStagesDao(db).getByItineraryId('test-i1'))
-            .single
-            .elevationGain,
+        rien.rienAFaire,
+        isTrue,
+        reason:
+            'la comparaison est STRICTE : « plus recent », pas « au moins '
+            'aussi recent »',
+      );
+      expect(
+        (await TrailStagesDao(
+          db,
+        ).getByItineraryId('test-i1')).single.elevationGain,
         800,
       );
     });
@@ -394,11 +454,19 @@ void main() {
     test('COUPURE EN PLEIN MILIEU : la sixieme famille echoue, les precedentes '
         'sont ANNULEES, et le repere ne bouge pas', () async {
       // La premiere copie reussit : le telephone a un sentier et un repere.
-      final v1 = deposer('v1.json', donnees(instant: instantServeur()),
-          instantAnnonce: instantServeur());
+      final v1 = deposer(
+        'v1.json',
+        donnees(instant: instantServeur()),
+        instantAnnonce: instantServeur(),
+      );
       await conserver(v1);
-      await service().synchroniser('gr-test', 'https://double/v1.json',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash);
+      await service().synchroniser(
+        'gr-test',
+        'https://double/v1.json',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
+        empreinteAttendue: v1.hash,
+      );
       expect(await TrailPoisDao(db).getByStageId('test-s1'), hasLength(1));
 
       // La seconde est ABIMEE AU MILIEU : `itineraries` passe, `stages` leve. La
@@ -414,24 +482,34 @@ void main() {
       await conserver(v2);
 
       await expectLater(
-        service().synchroniser('gr-test', 'https://double/v2.json',
-            niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion, empreinteAttendue: v2.hash),
+        service().synchroniser(
+          'gr-test',
+          'https://double/v2.json',
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: v2.dataVersion,
+          empreinteAttendue: v2.hash,
+        ),
         throwsA(anything),
-        reason: 'un echec de pose doit se DIRE : rendre un bilan vide se '
+        reason:
+            'un echec de pose doit se DIRE : rendre un bilan vide se '
             'confondrait avec « deja a jour »',
       );
 
-      expect((await manifestes.getByTrailId('gr-test'))!.localVersion,
-          instantServeur(),
-          reason: 'LE MOT « COMPLET » DE CHRISTOPHE : le repere n avance QUE si '
-              'TOUT a ete recu. Un telephone coupe au milieu qui se croirait a '
-              'jour ne redemanderait plus jamais ce qui manque.');
       expect(
-        (await TrailStagesDao(db).getByItineraryId('test-i1'))
-            .single
-            .elevationGain,
+        (await manifestes.getByTrailId('gr-test'))!.localVersion,
+        instantServeur(),
+        reason:
+            'LE MOT « COMPLET » DE CHRISTOPHE : le repere n avance QUE si '
+            'TOUT a ete recu. Un telephone coupe au milieu qui se croirait a '
+            'jour ne redemanderait plus jamais ce qui manque.',
+      );
+      expect(
+        (await TrailStagesDao(
+          db,
+        ).getByItineraryId('test-i1')).single.elevationGain,
         800,
-        reason: 'retour arriere complet : l etape de la copie precedente est '
+        reason:
+            'retour arriere complet : l etape de la copie precedente est '
             'intacte, la transaction n a rien laisse a moitie',
       );
     });
@@ -445,19 +523,31 @@ void main() {
       // le sentier a chaque ouverture — sans que rien ne le dise. Le mot
       // « complet » de Christophe interdit ce cas : il leve, donc la copie
       // entiere est annulee et le sentier reste honnetement « a prendre ».
-      final v1 = deposer('v1.json', donnees(instant: instantServeur()),
-          instantAnnonce: instantServeur());
+      final v1 = deposer(
+        'v1.json',
+        donnees(instant: instantServeur()),
+        instantAnnonce: instantServeur(),
+      );
       // On NE conserve PAS l entree : pas de ligne dans `trail_manifests`.
 
       await expectLater(
-        service().synchroniser('gr-test', 'https://double/v1.json',
-            niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion, empreinteAttendue: v1.hash),
+        service().synchroniser(
+          'gr-test',
+          'https://double/v1.json',
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: v1.dataVersion,
+          empreinteAttendue: v1.hash,
+        ),
         throwsA(isA<RepereNonInscriptible>()),
       );
 
-      expect(await TrailStagesDao(db).getByItineraryId('test-i1'), isEmpty,
-          reason: 'la transaction a tout annule : pas de sentier pose sans son '
-              'repere');
+      expect(
+        await TrailStagesDao(db).getByItineraryId('test-i1'),
+        isEmpty,
+        reason:
+            'la transaction a tout annule : pas de sentier pose sans son '
+            'repere',
+      );
       expect(await manifestes.getByTrailId('gr-test'), isNull);
     });
   });

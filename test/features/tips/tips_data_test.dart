@@ -37,8 +37,10 @@ void main() {
     });
 
     test('nombre total de conseils est >= 20', () {
-      final total =
-          tipsCategories.fold<int>(0, (sum, c) => sum + c.tips.length);
+      final total = tipsCategories.fold<int>(
+        0,
+        (sum, c) => sum + c.tips.length,
+      );
       expect(total, greaterThanOrEqualTo(20));
     });
 
@@ -54,18 +56,27 @@ void main() {
 
     test('chaque categorie a un icone valide', () {
       for (final category in tipsCategories) {
-        expect(category.icon.isNotEmpty, true,
-            reason: 'Categorie ${category.id} sans icone');
+        expect(
+          category.icon.isNotEmpty,
+          true,
+          reason: 'Categorie ${category.id} sans icone',
+        );
       }
     });
 
     test('chaque tip a un titre et un contenu non vides', () {
       for (final category in tipsCategories) {
         for (final tip in category.tips) {
-          expect(tip.titleKey.isNotEmpty, true,
-              reason: 'Tip ${tip.id} sans titre');
-          expect(tip.contentKey.isNotEmpty, true,
-              reason: 'Tip ${tip.id} sans contenu');
+          expect(
+            tip.titleKey.isNotEmpty,
+            true,
+            reason: 'Tip ${tip.id} sans titre',
+          );
+          expect(
+            tip.contentKey.isNotEmpty,
+            true,
+            reason: 'Tip ${tip.id} sans contenu',
+          );
         }
       }
     });
@@ -88,11 +99,7 @@ void main() {
 
   group('Tip', () {
     test('constructor initialise les champs', () {
-      const tip = Tip(
-        id: 'tip1',
-        titleKey: 'title',
-        contentKey: 'content',
-      );
+      const tip = Tip(id: 'tip1', titleKey: 'title', contentKey: 'content');
       expect(tip.id, 'tip1');
       expect(tip.titleKey, 'title');
       expect(tip.contentKey, 'content');

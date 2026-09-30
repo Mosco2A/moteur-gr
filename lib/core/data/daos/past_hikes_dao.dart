@@ -50,22 +50,25 @@ class PastHikesDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime toutes les randos de [userId] (droit a l'effacement RGPD).
   Future<int> deleteAllForUser(String userId) {
-    return (delete(pastHikeEntries)..where((t) => t.userId.equals(userId)))
-        .go();
+    return (delete(
+      pastHikeEntries,
+    )..where((t) => t.userId.equals(userId))).go();
   }
 
   // --- Note d'experience globale (singleton par userId) --------------------
 
   /// Relit la note d'experience globale de [userId], ou null si absente.
   Future<HikerExperienceNoteData?> getNote(String userId) {
-    return (select(hikerExperienceNote)..where((t) => t.userId.equals(userId)))
-        .getSingleOrNull();
+    return (select(
+      hikerExperienceNote,
+    )..where((t) => t.userId.equals(userId))).getSingleOrNull();
   }
 
   /// Observe la note d'experience globale de [userId] (null si absente).
   Stream<HikerExperienceNoteData?> watchNote(String userId) {
-    return (select(hikerExperienceNote)..where((t) => t.userId.equals(userId)))
-        .watchSingleOrNull();
+    return (select(
+      hikerExperienceNote,
+    )..where((t) => t.userId.equals(userId))).watchSingleOrNull();
   }
 
   /// Cree ou met a jour la note d'experience globale (upsert par [userId]).
@@ -79,7 +82,8 @@ class PastHikesDao extends DatabaseAccessor<AppDatabase>
   /// sante — genoux, essoufflement, coup de chaud : il doit disparaitre avec le
   /// reste de la fiche (tache 561, J1).
   Future<int> deleteNote(String userId) {
-    return (delete(hikerExperienceNote)..where((t) => t.userId.equals(userId)))
-        .go();
+    return (delete(
+      hikerExperienceNote,
+    )..where((t) => t.userId.equals(userId))).go();
   }
 }

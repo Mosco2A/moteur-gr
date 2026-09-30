@@ -115,10 +115,10 @@ enum NiveauDeTelechargement {
   /// hebergement rattache a une etape qui n existe pas encore echoue. Les listes
   /// ci-dessous sont donc DERIVEES de cet ordre, jamais reecrites a la main.
   List<String> get familles => switch (this) {
-        NiveauDeTelechargement.regarder => const <String>[],
-        NiveauDeTelechargement.preparer => _famillesPreparer,
-        NiveauDeTelechargement.realiser => MorceauxDeSentier.tous,
-      };
+    NiveauDeTelechargement.regarder => const <String>[],
+    NiveauDeTelechargement.preparer => _famillesPreparer,
+    NiveauDeTelechargement.realiser => MorceauxDeSentier.tous,
+  };
 
   /// LE VOLUMINEUX, NOMME UNE SEULE FOIS.
   ///
@@ -152,10 +152,10 @@ enum NiveauDeTelechargement {
   /// renommage de la constante Dart : un refactoring d editeur ne doit pas rendre
   /// illisibles les reperes deja poses sur les telephones.
   String get code => switch (this) {
-        NiveauDeTelechargement.regarder => 'regarder',
-        NiveauDeTelechargement.preparer => 'preparer',
-        NiveauDeTelechargement.realiser => 'realiser',
-      };
+    NiveauDeTelechargement.regarder => 'regarder',
+    NiveauDeTelechargement.preparer => 'preparer',
+    NiveauDeTelechargement.realiser => 'realiser',
+  };
 
   /// Relit un niveau persiste. Valeur absente ou inconnue = [regarder].
   ///
@@ -165,9 +165,9 @@ enum NiveauDeTelechargement {
   /// synchronisation periodique n irait jamais les chercher. Repondre [regarder]
   /// fait au pire recopier, jamais rater.
   static NiveauDeTelechargement? depuisLeCode(String? code) => switch (code) {
-        'regarder' => NiveauDeTelechargement.regarder,
-        'preparer' => NiveauDeTelechargement.preparer,
-        'realiser' => NiveauDeTelechargement.realiser,
-        _ => null,
-      };
+    'regarder' => NiveauDeTelechargement.regarder,
+    'preparer' => NiveauDeTelechargement.preparer,
+    'realiser' => NiveauDeTelechargement.realiser,
+    _ => null,
+  };
 }

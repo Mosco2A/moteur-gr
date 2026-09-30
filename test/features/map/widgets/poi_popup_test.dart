@@ -56,23 +56,43 @@ void main() {
     testWidgets('affiche l\'altitude quand disponible', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       expect(find.text('1350 m'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.sommet), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.sommet,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('affiche les horaires quand disponibles', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       expect(find.text('Mai-Octobre'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('masque l\'altitude quand elle vaut 0', (tester) async {
       await tester.pumpWidget(buildPopup(poiMinimal));
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.sommet), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.sommet,
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('masque les horaires quand null', (tester) async {
       await tester.pumpWidget(buildPopup(poiMinimal));
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('masque la description quand vide', (tester) async {
@@ -84,7 +104,12 @@ void main() {
     testWidgets('affiche l\'icône du type de POI', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
       // L'icône shelter (house) est dans l'en-tête du popup
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('est encapsulé dans une AppCard', (tester) async {

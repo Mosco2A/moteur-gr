@@ -93,8 +93,7 @@ class ConsentOnboardingScreen extends ConsumerWidget {
                 ConsentPurposeTile(
                   purpose: purpose,
                   granted: states[purpose]?.granted ?? false,
-                  onChanged: (value) =>
-                      controller.set(purpose, granted: value),
+                  onChanged: (value) => controller.set(purpose, granted: value),
                 ),
 
               const SizedBox(height: AppTheme.spacingLg),
@@ -102,10 +101,8 @@ class ConsentOnboardingScreen extends ConsumerWidget {
               // --- Section SANTE isolee (art 9), avertissement renforce ---
               _HealthSection(
                 granted: states[ConsentPurpose.healthData]?.granted ?? false,
-                onChanged: (value) => controller.set(
-                  ConsentPurpose.healthData,
-                  granted: value,
-                ),
+                onChanged: (value) =>
+                    controller.set(ConsentPurpose.healthData, granted: value),
               ),
 
               const SizedBox(height: AppTheme.spacingLg),
@@ -188,10 +185,7 @@ class _HealthSection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              tr.consent.healthWarning,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(tr.consent.healthWarning, style: theme.textTheme.bodySmall),
             const SizedBox(height: AppTheme.spacingXs),
             // Le PREMIER refus se joue ici : ce que l'autorisation couvre
             // (morphologie) et ce que le refus coute (la fiche medicale ne sera
@@ -202,10 +196,7 @@ class _HealthSection extends StatelessWidget {
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: AppTheme.spacingXs),
-            Text(
-              tr.consent.healthBackupNote,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(tr.consent.healthBackupNote, style: theme.textTheme.bodySmall),
             const SizedBox(height: AppTheme.spacingSm),
             ConsentPurposeTile(
               purpose: ConsentPurpose.healthData,

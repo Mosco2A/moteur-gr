@@ -197,9 +197,10 @@ void main() {
         // LE CATALOGUE EFFECTIF PORTE LE SENTIER GRATUIT DE CE TEST (tache 638) :
         // il n'est plus dans le catalogue livre, mais le modele « prix nul » doit
         // rester teste A L ECRAN.
-        availableTrailsProvider.overrideWithValue(
-          const <TrailConfig>[...TrailCatalog.all, _sentierGratuit],
-        ),
+        availableTrailsProvider.overrideWithValue(const <TrailConfig>[
+          ...TrailCatalog.all,
+          _sentierGratuit,
+        ]),
       ],
     );
     addTearDown(c.dispose);
@@ -272,17 +273,22 @@ void main() {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'la vitrine ne s ouvre QUE par acheterSentier. Un ecran qui '
-              'l ouvre lui-meme refait le chemin de paiement, et refait donc '
-              'le prix.\n  ${fautifs.join('\n  ')}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'la vitrine ne s ouvre QUE par acheterSentier. Un ecran qui '
+            'l ouvre lui-meme refait le chemin de paiement, et refait donc '
+            'le prix.\n  ${fautifs.join('\n  ')}',
+      );
     });
 
     test('les TROIS points d entree empruntent ce geste', () {
       // Les trois endroits que Christophe a nommes : le catalogue, la
       // preparation, et le depart (qui existait deja seul).
       const portes = <String, String>{
-        'catalogue': 'lib/features/trail/presentation/trail_catalog_screen.dart',
+        'catalogue':
+            'lib/features/trail/presentation/trail_catalog_screen.dart',
         'preparation':
             'lib/features/hub/presentation/widgets/hub_buy_trek_button.dart',
         'depart':
@@ -290,12 +296,20 @@ void main() {
       };
       for (final entree in portes.entries) {
         final f = File(entree.value);
-        expect(f.existsSync(), isTrue,
-            reason: 'le point d achat « ${entree.key} » doit exister : '
-                '${entree.value}');
-        expect(f.readAsStringSync(), contains('acheterSentier('),
-            reason: 'l achat depuis « ${entree.key} » doit emprunter le geste '
-                'unique, pas un chemin de paiement a lui');
+        expect(
+          f.existsSync(),
+          isTrue,
+          reason:
+              'le point d achat « ${entree.key} » doit exister : '
+              '${entree.value}',
+        );
+        expect(
+          f.readAsStringSync(),
+          contains('acheterSentier('),
+          reason:
+              'l achat depuis « ${entree.key} » doit emprunter le geste '
+              'unique, pas un chemin de paiement a lui',
+        );
       }
     });
 
@@ -303,11 +317,16 @@ void main() {
       // Un widget qui existe sans etre monte est un bouton que personne ne peut
       // atteindre — c est exactement le defaut que cette tache repare pour la
       // video. On ne le reproduit pas pour l achat.
-      final cockpit =
-          File('lib/features/hub/presentation/hub_screen.dart').readAsStringSync();
-      expect(cockpit, contains('HubBuyTrekButton('),
-          reason: 'le bouton d achat de la preparation doit etre POSE dans le '
-              'cockpit, pas seulement ecrit');
+      final cockpit = File(
+        'lib/features/hub/presentation/hub_screen.dart',
+      ).readAsStringSync();
+      expect(
+        cockpit,
+        contains('HubBuyTrekButton('),
+        reason:
+            'le bouton d achat de la preparation doit etre POSE dans le '
+            'cockpit, pas seulement ecrit',
+      );
     });
   });
 
@@ -325,14 +344,21 @@ void main() {
       await tester.pumpAndSettle();
 
       final bouton = find.byKey(ValueKey('catalog-buy-${_sentierPayant.id}'));
-      expect(bouton, findsOneWidget,
-          reason: 'le randonneur qui DECOUVRE un sentier doit pouvoir l acheter '
-              'sans entrer dedans, preparer trois cartes et rencontrer un refus');
+      expect(
+        bouton,
+        findsOneWidget,
+        reason:
+            'le randonneur qui DECOUVRE un sentier doit pouvoir l acheter '
+            'sans entrer dedans, preparer trois cartes et rencontrer un refus',
+      );
 
       await tester.tap(bouton);
       await tester.pumpAndSettle();
-      expect(find.byType(PaywallSheet), findsOneWidget,
-          reason: 'le bouton doit ouvrir LA vitrine — la meme que partout');
+      expect(
+        find.byType(PaywallSheet),
+        findsOneWidget,
+        reason: 'le bouton doit ouvrir LA vitrine — la meme que partout',
+      );
     });
 
     testWidgets('AUCUN bouton d achat sur un sentier GRATUIT', (tester) async {
@@ -343,34 +369,44 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(ValueKey('catalog-buy-${_sentierGratuit.id}')),
-          findsNothing,
-          reason: 'un sentier gratuit n a rien a vendre : proposer de le '
-              'debloquer est un bouton qui ment');
+      expect(
+        find.byKey(ValueKey('catalog-buy-${_sentierGratuit.id}')),
+        findsNothing,
+        reason:
+            'un sentier gratuit n a rien a vendre : proposer de le '
+            'debloquer est un bouton qui ment',
+      );
       // Et il reste bien au catalogue, avec son entree normale.
-      expect(find.byKey(ValueKey('catalog-enter-${_sentierGratuit.id}')),
-          findsOneWidget);
+      expect(
+        find.byKey(ValueKey('catalog-enter-${_sentierGratuit.id}')),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('le bouton DISPARAIT du catalogue une fois le sentier achete',
-        (tester) async {
+    testWidgets('le bouton DISPARAIT du catalogue une fois le sentier achete', (
+      tester,
+    ) async {
       fenetreHaute(tester);
       final monetisation = await service();
       await tester.pumpWidget(
         monterEcran(monetisation, const TrailCatalogScreen()),
       );
       await tester.pumpAndSettle();
-      expect(find.byKey(ValueKey('catalog-buy-${_sentierPayant.id}')),
-          findsOneWidget);
+      expect(
+        find.byKey(ValueKey('catalog-buy-${_sentierPayant.id}')),
+        findsOneWidget,
+      );
 
       // L achat s ecrit en base. AUCUNE invalidation ici : si la carte se
       // repeint, c est que la condition est branchee sur cette ecriture.
       await marquerAchete(_sentierPayant.id);
       await tester.pumpAndSettle();
 
-      expect(find.byKey(ValueKey('catalog-buy-${_sentierPayant.id}')),
-          findsNothing,
-          reason: 'vendre deux fois la meme chose au meme randonneur');
+      expect(
+        find.byKey(ValueKey('catalog-buy-${_sentierPayant.id}')),
+        findsNothing,
+        reason: 'vendre deux fois la meme chose au meme randonneur',
+      );
     });
   });
 
@@ -390,18 +426,23 @@ void main() {
       await tester.pumpAndSettle();
 
       final bouton = find.byKey(const Key('hub-buy-trek-button'));
-      expect(bouton, findsOneWidget,
-          reason: 'celui qui prepare depuis trois semaines et se decide un soir '
-              'n avait AUCUN bouton : « Démarrer » est grise tant que les trois '
-              'cartes coeur ne sont pas faites');
+      expect(
+        bouton,
+        findsOneWidget,
+        reason:
+            'celui qui prepare depuis trois semaines et se decide un soir '
+            'n avait AUCUN bouton : « Démarrer » est grise tant que les trois '
+            'cartes coeur ne sont pas faites',
+      );
 
       await tester.tap(bouton);
       await tester.pumpAndSettle();
       expect(find.byType(PaywallSheet), findsOneWidget);
     });
 
-    testWidgets('il affiche le PRIX du service, pas une formule a lui',
-        (tester) async {
+    testWidgets('il affiche le PRIX du service, pas une formule a lui', (
+      tester,
+    ) async {
       final monetisation = await service();
       await tester.pumpWidget(
         monterEcran(
@@ -411,12 +452,14 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final attendu =
-          monetisation.eurPriceForTrail(_sentierPayant.id).toStringAsFixed(2);
+      final attendu = monetisation
+          .eurPriceForTrail(_sentierPayant.id)
+          .toStringAsFixed(2);
       expect(
         find.text(t.monetization.buyCtaWithPrice(price: attendu)),
         findsOneWidget,
-        reason: 'un second calcul de prix dans un ecran est la meme faute que '
+        reason:
+            'un second calcul de prix dans un ecran est la meme faute que '
             'un second chemin d achat, sur le montant',
       );
     });
@@ -445,8 +488,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('hub-buy-trek-button')), findsNothing,
-          reason: 'rien a debloquer sur un sentier dont le prix est nul');
+      expect(
+        find.byKey(const Key('hub-buy-trek-button')),
+        findsNothing,
+        reason: 'rien a debloquer sur un sentier dont le prix est nul',
+      );
     });
   });
 
@@ -474,15 +520,22 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('banniere-simulee')), findsOneWidget,
-          reason: 'la publicite est bien affichee dans ce monde');
+      expect(
+        find.byKey(const ValueKey('banniere-simulee')),
+        findsOneWidget,
+        reason: 'la publicite est bien affichee dans ce monde',
+      );
       // TACHE 639 (avenant, DEM-260930-1224) : la banniere porte desormais le
       // CHOIX a deux entrees (s'abonner, ou voir une video) et non plus la video
       // seule. Ce que ce test garde est intact : la banniere porte SA SORTIE, et
       // il y a un endroit ou appuyer.
-      expect(find.byKey(const Key('retirer-les-pubs-button')), findsOneWidget,
-          reason: 'le moteur de la recompense existait en ENTIER et il n y '
-              'avait nulle part ou appuyer : zero bouton dans banner_ad_slot');
+      expect(
+        find.byKey(const Key('retirer-les-pubs-button')),
+        findsOneWidget,
+        reason:
+            'le moteur de la recompense existait en ENTIER et il n y '
+            'avait nulle part ou appuyer : zero bouton dans banner_ad_slot',
+      );
     });
 
     // TACHE 639 (avenant) — CES QUATRE ABSENCES PORTENT DESORMAIS SUR LA CLE QUI
@@ -498,13 +551,20 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
-          reason: 'un bouton qui propose ce qu on a deja est un bouton qui '
-              'ment — et il ne peut pas apparaitre, puisqu il vit sur la '
-              'banniere qui n existe alors pas');
+      expect(
+        find.byKey(const Key('retirer-les-pubs-button')),
+        findsNothing,
+        reason:
+            'un bouton qui propose ce qu on a deja est un bouton qui '
+            'ment — et il ne peut pas apparaitre, puisqu il vit sur la '
+            'banniere qui n existe alors pas',
+      );
       expect(find.byKey(const ValueKey('banniere-simulee')), findsNothing);
-      expect(regie.demandes, isEmpty,
-          reason: 'sans-pub veut dire qu on ne CHARGE pas, pas qu on cache');
+      expect(
+        regie.demandes,
+        isEmpty,
+        reason: 'sans-pub veut dire qu on ne CHARGE pas, pas qu on cache',
+      );
     });
 
     testWidgets('AUCUN bouton sur un trek ACHETE', (tester) async {
@@ -522,51 +582,76 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
-          reason: 'l abonne est sans pub PARTOUT : rien a lui proposer');
+      expect(
+        find.byKey(const Key('retirer-les-pubs-button')),
+        findsNothing,
+        reason: 'l abonne est sans pub PARTOUT : rien a lui proposer',
+      );
     });
 
-    testWidgets('AUCUN bouton quand la publicite n est meme pas disponible',
-        (tester) async {
+    testWidgets('AUCUN bouton quand la publicite n est meme pas disponible', (
+      tester,
+    ) async {
       final monetisation = await service();
       await tester.pumpWidget(
         monterBanniere(monetisation, _sentierPayant.id, pubAutorisee: false),
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
-          reason: 'sans consentement ni SDK, la video n existe pas : un bouton '
-              'qui la promet est un bouton mort');
+      expect(
+        find.byKey(const Key('retirer-les-pubs-button')),
+        findsNothing,
+        reason:
+            'sans consentement ni SDK, la video n existe pas : un bouton '
+            'qui la promet est un bouton mort',
+      );
     });
 
     test('le bouton est le MEME que celui de la vitrine, pas une copie', () {
       // IL VIVAIT EN WIDGET PRIVE DANS LA VITRINE, donc utilisable nulle part
       // ailleurs. Deux boutons auraient voulu dire deux libelles et deux
       // mecaniques a maintenir.
-      final vitrine =
-          File('lib/shared/widgets/paywall_sheet.dart').readAsStringSync();
-      expect(vitrine, contains('RewardedNoAdsButton()'),
-          reason: 'la vitrine doit poser le bouton PARTAGE');
-      expect(vitrine, isNot(contains('class _RewardedNoAdsButton')),
-          reason: 'le bouton prive doit avoir quitte la vitrine, pas y rester '
-              'en double');
+      final vitrine = File(
+        'lib/shared/widgets/paywall_sheet.dart',
+      ).readAsStringSync();
+      expect(
+        vitrine,
+        contains('RewardedNoAdsButton()'),
+        reason: 'la vitrine doit poser le bouton PARTAGE',
+      );
+      expect(
+        vitrine,
+        isNot(contains('class _RewardedNoAdsButton')),
+        reason:
+            'le bouton prive doit avoir quitte la vitrine, pas y rester '
+            'en double',
+      );
       // TACHE 639 (avenant, DEM-260930-1224) — LA BANNIERE POSE LE CHOIX, PAS LA
       // VIDEO SEULE. La regle que ce test garde tient toujours : UN SEUL bouton
       // video dans l'application, jamais une copie. La feuille de choix
       // declenche la MEME mecanique, et la vitrine pose toujours le bouton
       // partage.
-      final emplacement =
-          File('lib/features/ads/presentation/banner_ad_slot.dart')
-              .readAsStringSync();
-      expect(emplacement, contains('RetirerLesPubsButton('),
-          reason: 'la banniere doit poser le CHOIX (abonnement ou video)');
+      final emplacement = File(
+        'lib/features/ads/presentation/banner_ad_slot.dart',
+      ).readAsStringSync();
+      expect(
+        emplacement,
+        contains('RetirerLesPubsButton('),
+        reason: 'la banniere doit poser le CHOIX (abonnement ou video)',
+      );
       final choix = File(
         'lib/features/ads/presentation/retirer_les_pubs_button.dart',
       ).readAsStringSync();
-      expect(choix, contains('watchRewardedForNoAdsProvider'),
-          reason: 'la video du choix doit passer par LA MEME mecanique');
-      expect(choix, isNot(contains('grantRewardNoAds(')),
-          reason: 'aucune regle de recompense APPELEE depuis l interface');
+      expect(
+        choix,
+        contains('watchRewardedForNoAdsProvider'),
+        reason: 'la video du choix doit passer par LA MEME mecanique',
+      );
+      expect(
+        choix,
+        isNot(contains('grantRewardNoAds(')),
+        reason: 'aucune regle de recompense APPELEE depuis l interface',
+      );
     });
   });
 
@@ -587,14 +672,17 @@ void main() {
 
     for (final entree in attendu.entries) {
       test('${entree.key.languageCode} : le gain avant le geste', () {
-        final libelle =
-            entree.key.buildSync().monetization.rewardedCta;
+        final libelle = entree.key.buildSync().monetization.rewardedCta;
         final (gain, geste) = entree.value;
         expect(libelle, contains(gain));
         expect(libelle, contains(geste));
-        expect(libelle.indexOf(gain), lessThan(libelle.indexOf(geste)),
-            reason: 'le libelle doit dire ce qu on OBTIENT avant ce qu on '
-                'fait : « $libelle »');
+        expect(
+          libelle.indexOf(gain),
+          lessThan(libelle.indexOf(geste)),
+          reason:
+              'le libelle doit dire ce qu on OBTIENT avant ce qu on '
+              'fait : « $libelle »',
+        );
       });
     }
   });
@@ -619,32 +707,43 @@ void main() {
   //
   // ON FERME EN RETIRANT LE CHOIX, PAS EN LE SURVEILLANT.
   group('P — le prix vient du catalogue, plus de l appelant', () {
-    test('AUCUN appelant de lib/ ne transmet de nombre d etapes a un achat',
-        () {
-      // La forme du defaut etait « un nombre passe a la caisse ». On verifie
-      // donc qu aucun fichier ne passe plus rien : ni a `buyTrail`, ni a
-      // `resumeTrail`, ni aux deux devis.
-      final fautifs = <String>[];
-      final motif = RegExp(
-        r'(buyTrail|resumeTrail|quoteTrail|quoteResume)\([^)]*totalStages',
-      );
-      for (final f in sourcesDeLib()) {
-        if (motif.hasMatch(f.readAsStringSync())) {
-          fautifs.add(f.path.replaceAll(r'\', '/'));
+    test(
+      'AUCUN appelant de lib/ ne transmet de nombre d etapes a un achat',
+      () {
+        // La forme du defaut etait « un nombre passe a la caisse ». On verifie
+        // donc qu aucun fichier ne passe plus rien : ni a `buyTrail`, ni a
+        // `resumeTrail`, ni aux deux devis.
+        final fautifs = <String>[];
+        final motif = RegExp(
+          r'(buyTrail|resumeTrail|quoteTrail|quoteResume)\([^)]*totalStages',
+        );
+        for (final f in sourcesDeLib()) {
+          if (motif.hasMatch(f.readAsStringSync())) {
+            fautifs.add(f.path.replaceAll(r'\', '/'));
+          }
         }
-      }
-      expect(fautifs, isEmpty,
-          reason: 'le prix est une propriete du catalogue, pas un argument. Un '
+        expect(
+          fautifs,
+          isEmpty,
+          reason:
+              'le prix est une propriete du catalogue, pas un argument. Un '
               'appelant qui le transmet peut le transmettre a zero, et zero '
-              'offre le sentier.\n  ${fautifs.join('\n  ')}');
-    });
+              'offre le sentier.\n  ${fautifs.join('\n  ')}',
+        );
+      },
+    );
 
     test('la signature de buyTrail ne porte PLUS de prix', () {
-      final source =
-          File('lib/core/services/monetization_service.dart').readAsStringSync();
-      expect(source, contains('Future<PurchaseOutcome> buyTrail(String trailId)'),
-          reason: 'buyTrail ne prend qu un identifiant : c est ce qui rend le '
-              'zero impossible a passer, plutot que penible a detecter');
+      final source = File(
+        'lib/core/services/monetization_service.dart',
+      ).readAsStringSync();
+      expect(
+        source,
+        contains('Future<PurchaseOutcome> buyTrail(String trailId)'),
+        reason:
+            'buyTrail ne prend qu un identifiant : c est ce qui rend le '
+            'zero impossible a passer, plutot que penible a detecter',
+      );
     });
 
     test('un sentier INCONNU du catalogue ne se vend pas, et le DIT', () async {
@@ -653,14 +752,24 @@ void main() {
 
       final issue = await monetisation.buyTrail('sentier-qui-n-existe-pas');
 
-      expect(issue.status, PurchaseStatusResult.unknownPrice,
-          reason: 'sans prix au catalogue, la vente est refusee — et nommee, '
-              'parce qu un refus muet serait un bouton qui ne produit rien');
+      expect(
+        issue.status,
+        PurchaseStatusResult.unknownPrice,
+        reason:
+            'sans prix au catalogue, la vente est refusee — et nommee, '
+            'parce qu un refus muet serait un bouton qui ne produit rien',
+      );
       expect(issue.isOwned, isFalse);
-      expect(await monetisation.ownsTrail('sentier-qui-n-existe-pas'), isFalse,
-          reason: 'LE COEUR DU TROU : zero etape posait `owned` sans debit');
-      expect(monetisation.walletSteps, 50,
-          reason: 'et rien n est debite non plus — on n engage rien du tout');
+      expect(
+        await monetisation.ownsTrail('sentier-qui-n-existe-pas'),
+        isFalse,
+        reason: 'LE COEUR DU TROU : zero etape posait `owned` sans debit',
+      );
+      expect(
+        monetisation.walletSteps,
+        50,
+        reason: 'et rien n est debite non plus — on n engage rien du tout',
+      );
     });
 
     test('LE SENTIER GRATUIT N EST PAS VICTIME DE CETTE FERMETURE', () async {
@@ -674,17 +783,33 @@ void main() {
 
       final issue = await monetisation.buyTrail(_sentierGratuit.id);
 
-      expect(issue.status, PurchaseStatusResult.alreadyOwned,
-          reason: 'l acces est deja acquis : idempotent, et surtout PAS refuse');
-      expect(issue.status, isNot(PurchaseStatusResult.unknownPrice),
-          reason: 'ne pas fermer la porte du gratuit en fermant celle du prix '
-              'nul frauduleux');
-      expect(monetisation.walletSteps, 5,
-          reason: 'un sentier gratuit ne coute RIEN');
-      expect(await monetisation.canRealizeTrail(_sentierGratuit.id), isTrue,
-          reason: 'et il reste JOUABLE — c est tout l objet de la decision');
-      expect(await monetisation.ownsTrail(_sentierGratuit.id), isFalse,
-          reason: 'sans devenir un sentier ACHETE pour autant (lot 601)');
+      expect(
+        issue.status,
+        PurchaseStatusResult.alreadyOwned,
+        reason: 'l acces est deja acquis : idempotent, et surtout PAS refuse',
+      );
+      expect(
+        issue.status,
+        isNot(PurchaseStatusResult.unknownPrice),
+        reason:
+            'ne pas fermer la porte du gratuit en fermant celle du prix '
+            'nul frauduleux',
+      );
+      expect(
+        monetisation.walletSteps,
+        5,
+        reason: 'un sentier gratuit ne coute RIEN',
+      );
+      expect(
+        await monetisation.canRealizeTrail(_sentierGratuit.id),
+        isTrue,
+        reason: 'et il reste JOUABLE — c est tout l objet de la decision',
+      );
+      expect(
+        await monetisation.ownsTrail(_sentierGratuit.id),
+        isFalse,
+        reason: 'sans devenir un sentier ACHETE pour autant (lot 601)',
+      );
     });
 
     test('un sentier PAYANT est debite au prix du CATALOGUE', () async {
@@ -694,18 +819,26 @@ void main() {
 
       final issue = await monetisation.buyTrail(_sentierPayant.id);
 
-      expect(issue.isOwned, isTrue,
-          reason: 'le prix lu au catalogue doit etre celui que le '
-              'portefeuille couvre exactement');
-      expect(monetisation.walletSteps, 0,
-          reason: 'le prix a REELLEMENT ete debite, et c est le bon');
-      expect(monetisation.stagesOfTrail(_sentierPayant.id),
-          _sentierPayant.totalStages,
-          reason: 'la source du prix est la donnee du sentier');
+      expect(
+        issue.isOwned,
+        isTrue,
+        reason:
+            'le prix lu au catalogue doit etre celui que le '
+            'portefeuille couvre exactement',
+      );
+      expect(
+        monetisation.walletSteps,
+        0,
+        reason: 'le prix a REELLEMENT ete debite, et c est le bon',
+      );
+      expect(
+        monetisation.stagesOfTrail(_sentierPayant.id),
+        _sentierPayant.totalStages,
+        reason: 'la source du prix est la donnee du sentier',
+      );
     });
 
-    test('LE PRIX AFFICHE EST LE PRIX DEBITE — meme lecture, pas deux',
-        () async {
+    test('LE PRIX AFFICHE EST LE PRIX DEBITE — meme lecture, pas deux', () async {
       // Tant que la vitrine recevait son nombre d etapes et le service le sien,
       // afficher un montant et prelever un autre etait MECANIQUEMENT possible.
       final monetisation = await service();
@@ -718,76 +851,100 @@ void main() {
         reason: 'le prix affiche derive de la meme lecture que le debit',
       );
       expect((await monetisation.buyTrail(_sentierPayant.id)).isOwned, isTrue);
-      expect(monetisation.walletSteps, 0,
-          reason: 'le montant preleve est exactement celui qui etait affiche');
+      expect(
+        monetisation.walletSteps,
+        0,
+        reason: 'le montant preleve est exactement celui qui etait affiche',
+      );
     });
 
-    test('le prix vient du catalogue EFFECTIF, pas seulement du compile',
-        () async {
-      // LA RAISON D ETRE DE L INJECTION. Depuis la tache 605 le catalogue est
-      // DISTANT : un sentier recu par le reseau n est pas dans le catalogue
-      // compile, et son prix ne peut donc pas en venir. Le service accepte un
-      // resolveur — c est celui que branche `monetizationServiceProvider` sur
-      // `availableTrailsProvider`. Ici on le simule sur un sentier que
-      // `TrailCatalog` ne connait pas.
-      const idDistant = 'sentier-venu-du-reseau';
-      expect(TrailCatalog.byId(idDistant), isNull,
-          reason: 'ce sentier ne doit PAS etre au catalogue compile, sinon le '
-              'test ne mesure pas ce qu il croit');
+    test(
+      'le prix vient du catalogue EFFECTIF, pas seulement du compile',
+      () async {
+        // LA RAISON D ETRE DE L INJECTION. Depuis la tache 605 le catalogue est
+        // DISTANT : un sentier recu par le reseau n est pas dans le catalogue
+        // compile, et son prix ne peut donc pas en venir. Le service accepte un
+        // resolveur — c est celui que branche `monetizationServiceProvider` sur
+        // `availableTrailsProvider`. Ici on le simule sur un sentier que
+        // `TrailCatalog` ne connait pas.
+        const idDistant = 'sentier-venu-du-reseau';
+        expect(
+          TrailCatalog.byId(idDistant),
+          isNull,
+          reason:
+              'ce sentier ne doit PAS etre au catalogue compile, sinon le '
+              'test ne mesure pas ce qu il croit',
+        );
 
-      final prefs = await SharedPreferences.getInstance();
-      final iap = WalletIapService(
-        walletStore: portefeuille,
-        noAdsDao: db.noAdsDao,
-        testMode: true,
-      );
-      addTearDown(iap.stopListening);
-      final monetisation = MonetizationService(
-        walletStore: portefeuille,
-        entitlementsDao: db.trekEntitlementsDao,
-        noAdsDao: db.noAdsDao,
-        iapService: iap,
-        connectivityMonitor: _ReseauEnLigne(),
-        nowFn: () => maintenant,
-        prefs: prefs,
-        freeTrailIds: const <String>{},
-        stagesOf: (id) => id == idDistant ? 4 : 0,
-      );
-      await monetisation.load();
-      await portefeuille.credit(4);
+        final prefs = await SharedPreferences.getInstance();
+        final iap = WalletIapService(
+          walletStore: portefeuille,
+          noAdsDao: db.noAdsDao,
+          testMode: true,
+        );
+        addTearDown(iap.stopListening);
+        final monetisation = MonetizationService(
+          walletStore: portefeuille,
+          entitlementsDao: db.trekEntitlementsDao,
+          noAdsDao: db.noAdsDao,
+          iapService: iap,
+          connectivityMonitor: _ReseauEnLigne(),
+          nowFn: () => maintenant,
+          prefs: prefs,
+          freeTrailIds: const <String>{},
+          stagesOf: (id) => id == idDistant ? 4 : 0,
+        );
+        await monetisation.load();
+        await portefeuille.credit(4);
 
-      expect(monetisation.stagesOfTrail(idDistant), 4);
-      expect((await monetisation.buyTrail(idDistant)).isOwned, isTrue,
-          reason: 'un sentier distant doit etre vendable a SON prix');
-      expect(monetisation.walletSteps, 0);
-    });
+        expect(monetisation.stagesOfTrail(idDistant), 4);
+        expect(
+          (await monetisation.buyTrail(idDistant)).isOwned,
+          isTrue,
+          reason: 'un sentier distant doit etre vendable a SON prix',
+        );
+        expect(monetisation.walletSteps, 0);
+      },
+    );
   });
 
   // =========================================================================
   // V3 — L OCTROI DURE BIEN 24 H, ET PAS UNE MINUTE DE PLUS
   // =========================================================================
   group('V3 — vingt-quatre heures, jamais a vie', () {
-    test('la recompense est active tout de suite, et 23 h 59 plus tard',
-        () async {
-      final monetisation = await service();
-      await monetisation.grantRewardNoAds();
+    test(
+      'la recompense est active tout de suite, et 23 h 59 plus tard',
+      () async {
+        final monetisation = await service();
+        await monetisation.grantRewardNoAds();
 
-      expect(await monetisation.isRewardNoAdsActive(), isTrue);
-      maintenant = maintenant.add(const Duration(hours: 23, minutes: 59));
-      expect(await monetisation.isRewardNoAdsActive(), isTrue,
-          reason: 'la contrepartie de la video couvre la journee entiere');
-    });
+        expect(await monetisation.isRewardNoAdsActive(), isTrue);
+        maintenant = maintenant.add(const Duration(hours: 23, minutes: 59));
+        expect(
+          await monetisation.isRewardNoAdsActive(),
+          isTrue,
+          reason: 'la contrepartie de la video couvre la journee entiere',
+        );
+      },
+    );
 
     test('elle ne vaut PLUS rien 24 h 01 plus tard', () async {
       final monetisation = await service();
       await monetisation.grantRewardNoAds();
 
       maintenant = maintenant.add(const Duration(hours: 24, minutes: 1));
-      expect(await monetisation.isRewardNoAdsActive(), isFalse,
-          reason: 'la regle d or #99404 interdit le sans-pub A VIE : une video '
-              'ne peut pas eteindre la publicite pour toujours');
-      expect(await monetisation.isNoAdsActive(_sentierPayant.id), isFalse,
-          reason: 'et la source unique doit le dire aussi');
+      expect(
+        await monetisation.isRewardNoAdsActive(),
+        isFalse,
+        reason:
+            'la regle d or #99404 interdit le sans-pub A VIE : une video '
+            'ne peut pas eteindre la publicite pour toujours',
+      );
+      expect(
+        await monetisation.isNoAdsActive(_sentierPayant.id),
+        isFalse,
+        reason: 'et la source unique doit le dire aussi',
+      );
     });
   });
 }

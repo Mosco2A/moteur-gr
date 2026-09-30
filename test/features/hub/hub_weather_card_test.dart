@@ -98,16 +98,14 @@ void main() {
         ),
       ],
       child: TranslationProvider(
-        child: MaterialApp.router(
-          theme: theme,
-          routerConfig: router,
-        ),
+        child: MaterialApp.router(theme: theme, routerConfig: router),
       ),
     );
   }
 
-  testWidgets('affiche le titre et la pastille orage quand orage prévu',
-      (tester) async {
+  testWidgets('affiche le titre et la pastille orage quand orage prévu', (
+    tester,
+  ) async {
     await WeatherCacheDao(db).upsertForecast(
       trailId: 'test-trail',
       stageNumber: 1,
@@ -127,8 +125,9 @@ void main() {
     expect(find.text(t.hub.weather.alertStorm), findsOneWidget);
   });
 
-  testWidgets('sans données, affiche un état indisponible (pas de crash)',
-      (tester) async {
+  testWidgets('sans données, affiche un état indisponible (pas de crash)', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(390, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -146,10 +145,7 @@ void main() {
   group('non-regression overflow largeurs mobiles', () {
     const mobileWidths = <double>[360, 390, 412];
 
-    Future<List<String>> overflowsAt(
-      WidgetTester tester,
-      double width,
-    ) async {
+    Future<List<String>> overflowsAt(WidgetTester tester, double width) async {
       // Cache avec orage : cas le plus large (titre + pastille orage).
       await WeatherCacheDao(db).upsertForecast(
         trailId: 'test-trail',
@@ -207,8 +203,9 @@ void main() {
   // illisible sur noir ». On verifie que la couleur RESOLUE du sous-titre,
   // composee sur le fond REEL de la carte (surfaceContainerHighest du theme
   // sombre de l'app), atteint le seuil AA texte normal (>= 4.5:1).
-  testWidgets('R1 : sous-titre meteo lisible (WCAG AA) en theme sombre',
-      (tester) async {
+  testWidgets('R1 : sous-titre meteo lisible (WCAG AA) en theme sombre', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(390, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -227,8 +224,11 @@ void main() {
     // Etat « indisponible » (sans cache) : le sous-titre porte notre couleur.
     final subtitle = tester.widget<Text>(find.text(t.hub.weather.unavailable));
     final resolvedColor = subtitle.style?.color;
-    expect(resolvedColor, isNotNull,
-        reason: 'le sous-titre meteo doit porter une couleur explicite');
+    expect(
+      resolvedColor,
+      isNotNull,
+      reason: 'le sous-titre meteo doit porter une couleur explicite',
+    );
 
     // Fond reel de la carte (AppCard -> surfaceContainerHighest en sombre).
     final cardBg = darkTheme.colorScheme.surfaceContainerHighest;
@@ -241,7 +241,8 @@ void main() {
     expect(
       WcagContrast.meetsAA(composed, cardBg),
       isTrue,
-      reason: 'sous-titre meteo sur fond sombre: ratio=${ratio.toStringAsFixed(2)} '
+      reason:
+          'sous-titre meteo sur fond sombre: ratio=${ratio.toStringAsFixed(2)} '
           '(< 4.5:1 = echec AA, R1)',
     );
   });

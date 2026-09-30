@@ -26,11 +26,14 @@ class HeartRateBleService {
   HeartRateBleService();
 
   /// Heart Rate Service (GATT) — UUID court 0x180D.
-  static final Guid heartRateServiceUuid = Guid('0000180d-0000-1000-8000-00805f9b34fb');
+  static final Guid heartRateServiceUuid = Guid(
+    '0000180d-0000-1000-8000-00805f9b34fb',
+  );
 
   /// Heart Rate Measurement characteristic — UUID court 0x2A37.
-  static final Guid heartRateMeasurementUuid =
-      Guid('00002a37-0000-1000-8000-00805f9b34fb');
+  static final Guid heartRateMeasurementUuid = Guid(
+    '00002a37-0000-1000-8000-00805f9b34fb',
+  );
 
   StreamSubscription<List<int>>? _measurementSub;
   BluetoothDevice? _device;
@@ -72,9 +75,11 @@ class HeartRateBleService {
       );
       return FlutterBluePlus.scanResults;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'HeartRateBleService.scanForHeartRateBelts');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'HeartRateBleService.scanForHeartRateBelts',
+      );
       rethrow;
     }
   }
@@ -84,8 +89,11 @@ class HeartRateBleService {
     try {
       await FlutterBluePlus.stopScan();
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'HeartRateBleService.stopScan');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'HeartRateBleService.stopScan',
+      );
       rethrow;
     }
   }
@@ -123,9 +131,11 @@ class HeartRateBleService {
           }
         },
         onError: (Object error, StackTrace stackTrace) {
-          ErrorHandler.log(error,
-              stackTrace: stackTrace,
-              context: 'HeartRateBleService.connectAndListen');
+          ErrorHandler.log(
+            error,
+            stackTrace: stackTrace,
+            context: 'HeartRateBleService.connectAndListen',
+          );
           if (!controller.isClosed) controller.addError(error, stackTrace);
         },
       );
@@ -134,8 +144,11 @@ class HeartRateBleService {
       };
       return controller.stream;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'HeartRateBleService.connectAndListen');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'HeartRateBleService.connectAndListen',
+      );
       rethrow;
     }
   }
@@ -148,8 +161,11 @@ class HeartRateBleService {
       await _device?.disconnect();
       _device = null;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'HeartRateBleService.disconnect');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'HeartRateBleService.disconnect',
+      );
       rethrow;
     }
   }

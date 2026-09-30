@@ -72,9 +72,9 @@ class FeedbackService {
     required FeedbackQueueDao dao,
     required ConnectivityMonitor connectivityMonitor,
     FeedbackSink? sink,
-  })  : _dao = dao,
-        _connectivityMonitor = connectivityMonitor,
-        _sink = sink;
+  }) : _dao = dao,
+       _connectivityMonitor = connectivityMonitor,
+       _sink = sink;
 
   final FeedbackQueueDao _dao;
   final ConnectivityMonitor _connectivityMonitor;
@@ -99,16 +99,21 @@ class FeedbackService {
 
     final int id;
     try {
-      id = await _dao.addFeedback(FeedbackQueueCompanion(
-        trailId: Value(trailId),
-        feedbackType: Value(validCategory),
-        content: Value(content),
-        rating: Value(rating),
-        createdAt: Value(DateTime.now()),
-      ));
+      id = await _dao.addFeedback(
+        FeedbackQueueCompanion(
+          trailId: Value(trailId),
+          feedbackType: Value(validCategory),
+          content: Value(content),
+          rating: Value(rating),
+          createdAt: Value(DateTime.now()),
+        ),
+      );
     } on Object catch (e, st) {
-      _log.e('[FeedbackService] Enregistrement local impossible', error: e,
-          stackTrace: st);
+      _log.e(
+        '[FeedbackService] Enregistrement local impossible',
+        error: e,
+        stackTrace: st,
+      );
       return FeedbackIssue.echec;
     }
 
@@ -128,8 +133,10 @@ class FeedbackService {
   /// Force le flush de la file d'attente (appel manuel ou reconnexion).
   Future<int> flush() async {
     if (_sink == null) {
-      _log.d('[FeedbackService] Flush annule — aucun destinataire branche : '
-          'les retours restent sur ce telephone');
+      _log.d(
+        '[FeedbackService] Flush annule — aucun destinataire branche : '
+        'les retours restent sur ce telephone',
+      );
       return 0;
     }
     final status = await _connectivityMonitor.checkStatus();
@@ -185,7 +192,9 @@ class FeedbackService {
     // Nettoyage des feedbacks REELLEMENT envoyes.
     if (sentCount > 0) {
       await _dao.clearSent();
-      _log.d('[FeedbackService] $sentCount feedback(s) envoye(s) et nettoye(s)');
+      _log.d(
+        '[FeedbackService] $sentCount feedback(s) envoye(s) et nettoye(s)',
+      );
     }
 
     return sentCount;

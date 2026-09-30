@@ -73,59 +73,77 @@ void main() {
         expect(
           find.byKey(ValueKey('pack-etapes-${pack.steps}')),
           findsOneWidget,
-          reason: 'la grille ${pack.steps} etapes / ${pack.priceEur} EUR est '
+          reason:
+              'la grille ${pack.steps} etapes / ${pack.priceEur} EUR est '
               'ecrite dans le code et n etait affichee nulle part',
         );
       }
       // Les prix EXACTS, pas un fragment : « 19,99 » contient « 9,99 ».
       for (final prix in <String>['9,99', '19,99', '34,99']) {
-        expect(find.text(t.monetization.packPrice(price: prix)), findsOneWidget,
-            reason: 'le prix $prix EUR de la grille doit etre affiche tel quel');
+        expect(
+          find.text(t.monetization.packPrice(price: prix)),
+          findsOneWidget,
+          reason: 'le prix $prix EUR de la grille doit etre affiche tel quel',
+        );
       }
     });
 
-    testWidgets('un achat impossible le DIT, il ne se tait pas',
-        (tester) async {
+    testWidgets('un achat impossible le DIT, il ne se tait pas', (
+      tester,
+    ) async {
       await tester.pumpWidget(monter(const WalletRechargeScreen()));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const ValueKey('pack-etapes-11')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SnackBar), findsOneWidget,
-          reason: 'un bouton qui ne produit rien est un mensonge (LOT X)');
+      expect(
+        find.byType(SnackBar),
+        findsOneWidget,
+        reason: 'un bouton qui ne produit rien est un mensonge (LOT X)',
+      );
       expect(find.text(t.monetization.storeUnavailable), findsOneWidget);
     });
   });
 
   group('A3 — l ecran d abonnement', () {
-    testWidgets('dit ce que l abo donne, ET ce qu il ne donne pas',
-        (tester) async {
+    testWidgets('dit ce que l abo donne, ET ce qu il ne donne pas', (
+      tester,
+    ) async {
       await tester.pumpWidget(monter(const SubscriptionScreen()));
       await tester.pumpAndSettle();
 
       expect(find.text(t.monetization.subscriptionTitle), findsOneWidget);
       expect(find.text(t.monetization.subscriptionSubtitle), findsOneWidget);
-      expect(find.text(t.monetization.subscriptionIncludesNoAds),
-          findsOneWidget);
       expect(
-        find.text(t.monetization.subscriptionIncludesAllowance(
-          steps: kSubscriberStepsAllowance!,
-        )),
+        find.text(t.monetization.subscriptionIncludesNoAds),
         findsOneWidget,
-        reason: 'la cagnotte annonce son NOMBRE depuis la decision de Chris '
+      );
+      expect(
+        find.text(
+          t.monetization.subscriptionIncludesAllowance(
+            steps: kSubscriberStepsAllowance!,
+          ),
+        ),
+        findsOneWidget,
+        reason:
+            'la cagnotte annonce son NOMBRE depuis la decision de Chris '
             'du 27/09 : deux etapes par mois',
       );
       // ET SON PRIX. Une page d abonnement sans prix ne vend rien.
-      expect(find.byKey(const ValueKey('abo-prix')), findsOneWidget,
-          reason: 'l abonnement coute 2 euros par mois, et l ecran le dit');
+      expect(
+        find.byKey(const ValueKey('abo-prix')),
+        findsOneWidget,
+        reason: 'l abonnement coute 2 euros par mois, et l ecran le dit',
+      );
       // LE POINT QUI COMPTE : l abo ne debloque NI les outils complets NI la
       // realisation. L ecran doit le dire, sinon il vend autre chose.
       expect(find.text(t.monetization.subscriptionExcludes), findsOneWidget);
     });
 
-    testWidgets('porte le bouton « Restaurer mes achats », et il repond',
-        (tester) async {
+    testWidgets('porte le bouton « Restaurer mes achats », et il repond', (
+      tester,
+    ) async {
       await tester.pumpWidget(monter(const SubscriptionScreen()));
       await tester.pumpAndSettle();
 
@@ -141,13 +159,17 @@ void main() {
       await tester.tap(bouton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(SnackBar), findsOneWidget,
-          reason: 'restaurer sans store disponible doit le DIRE');
+      expect(
+        find.byType(SnackBar),
+        findsOneWidget,
+        reason: 'restaurer sans store disponible doit le DIRE',
+      );
       expect(find.text(t.monetization.restoreUnavailable), findsOneWidget);
     });
 
-    testWidgets('souscrire quand c est impossible le dit aussi',
-        (tester) async {
+    testWidgets('souscrire quand c est impossible le dit aussi', (
+      tester,
+    ) async {
       await tester.pumpWidget(monter(const SubscriptionScreen()));
       await tester.pumpAndSettle();
 
@@ -158,8 +180,9 @@ void main() {
   });
 
   group('A3 — le bouton Debloquer n avale plus son echec', () {
-    testWidgets('un achat qui echoue le dit et NE FERME PAS la feuille',
-        (tester) async {
+    testWidgets('un achat qui echoue le dit et NE FERME PAS la feuille', (
+      tester,
+    ) async {
       // TACHE 614 — ON OUVRE LA VITRINE PAR LE GESTE UNIQUE. `showPaywallSheet`
       // etait publique et chaque ecran ouvrait sa propre vitrine avec son
       // propre prix ; elle est devenue privee et son seul appelant est
@@ -189,12 +212,19 @@ void main() {
       await tester.pumpAndSettle();
 
       // Compte-etapes vide + IAP stub -> complement store non confirme.
-      expect(find.byType(SnackBar), findsOneWidget,
-          reason: 'le bouton appelait buyTrail, JETAIT le resultat et fermait '
-              'la feuille : l utilisateur ne savait jamais que rien ne s etait '
-              'passe');
-      expect(find.byType(PaywallSheet), findsOneWidget,
-          reason: 'on ne ferme pas la porte de sortie sur un echec');
+      expect(
+        find.byType(SnackBar),
+        findsOneWidget,
+        reason:
+            'le bouton appelait buyTrail, JETAIT le resultat et fermait '
+            'la feuille : l utilisateur ne savait jamais que rien ne s etait '
+            'passe',
+      );
+      expect(
+        find.byType(PaywallSheet),
+        findsOneWidget,
+        reason: 'on ne ferme pas la porte de sortie sur un echec',
+      );
 
       // Laisse le message se retirer de lui-meme (son minuteur ne doit pas
       // survivre a la fin du test).

@@ -42,13 +42,16 @@ class ChecklistBottomActions extends ConsumerWidget {
                 state.requiredCheckedCount,
               ),
               icon: StepIcon(
-                allRequiredChecked ? StepwaysIcons.cochePleine : StepwaysIcons.danger,
+                allRequiredChecked
+                    ? StepwaysIcons.cochePleine
+                    : StepwaysIcons.danger,
                 size: 20,
               ),
               label: Text(allRequiredChecked ? ui.bagOk : ui.validateBag),
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    allRequiredChecked ? AppTheme.vertFacile : AppTheme.orangeDifficile,
+                backgroundColor: allRequiredChecked
+                    ? AppTheme.vertFacile
+                    : AppTheme.orangeDifficile,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
@@ -73,7 +76,9 @@ class ChecklistBottomActions extends ConsumerWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.orangeDifficile,
                   side: const BorderSide(
-                      color: AppTheme.orangeDifficile, width: 2),
+                    color: AppTheme.orangeDifficile,
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -118,9 +123,9 @@ class ChecklistBottomActions extends ConsumerWidget {
       byCategory.putIfAbsent(catName, () => []).add(item);
     }
     if (byCategory.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)));
       return;
     }
     showModalBottomSheet<void>(
@@ -129,8 +134,7 @@ class ChecklistBottomActions extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) =>
-          ChecklistShoppingModal(uncheckedByCategory: byCategory),
+      builder: (ctx) => ChecklistShoppingModal(uncheckedByCategory: byCategory),
     );
   }
 
@@ -155,7 +159,10 @@ class ChecklistBottomActions extends ConsumerWidget {
         builder: (ctx) => AlertDialog(
           title: Row(
             children: [
-              const StepIcon(StepwaysIcons.cochePleine, color: AppTheme.vertFacile),
+              const StepIcon(
+                StepwaysIcons.cochePleine,
+                color: AppTheme.vertFacile,
+              ),
               const SizedBox(width: 8),
               Text(ui.bagValidTitle),
             ],
@@ -202,8 +209,9 @@ class ChecklistBottomActions extends ConsumerWidget {
         builder: (ctx) {
           final dialogWidth = MediaQuery.of(context).size.width * 0.85;
           return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: SizedBox(
               width: dialogWidth,
               child: ConstrainedBox(
@@ -218,14 +226,19 @@ class ChecklistBottomActions extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          const StepIcon(StepwaysIcons.danger,
-                              color: AppTheme.orangeDifficile),
+                          const StepIcon(
+                            StepwaysIcons.danger,
+                            color: AppTheme.orangeDifficile,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(ui.missingTitle,
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)),
+                            child: Text(
+                              ui.missingTitle,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -237,25 +250,34 @@ class ChecklistBottomActions extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('$body\n'),
-                              Text(ui.missingList,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                ui.missingList,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               const SizedBox(height: 4),
-                              ...missing.map((m) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 2),
-                                    child: Row(
-                                      children: [
-                                        const StepIcon(StepwaysIcons.croix,
-                                            size: 14,
-                                            color: AppTheme.rougeUrgence),
-                                        const SizedBox(width: 4),
-                                        Flexible(
-                                            child: Text(m,
-                                                style: const TextStyle(
-                                                    fontSize: 16))),
-                                      ],
-                                    ),
-                                  )),
+                              ...missing.map(
+                                (m) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 2),
+                                  child: Row(
+                                    children: [
+                                      const StepIcon(
+                                        StepwaysIcons.croix,
+                                        size: 14,
+                                        color: AppTheme.rougeUrgence,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Flexible(
+                                        child: Text(
+                                          m,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -316,13 +338,15 @@ class ChecklistBottomActions extends ConsumerWidget {
     final state = ref.read(checklistProvider);
     final buffer = StringBuffer('${t.checklist.title}\n');
     buffer.writeln(
-        '${t.checklist.weight.total} : ${state.checkedWeightKg.toStringAsFixed(1)} ${t.checklist.weight.kilograms}');
+      '${t.checklist.weight.total} : ${state.checkedWeightKg.toStringAsFixed(1)} ${t.checklist.weight.kilograms}',
+    );
     // DIRE DE QUOI LE POURCENTAGE EST LE POURCENTAGE (#7-e). Le partage
     // sortait un « 17% » nu : sans denominateur nomme ce chiffre ne veut rien
     // dire, et depuis le 22/09 il ne porte plus sur le poids corporel mais sur
     // la base de charge.
     buffer.writeln(
-        '${t.checklist.weight.percentOfReference.replaceAll('{pct}', (state.backpackRatio * 100).toStringAsFixed(0))}\n');
+      '${t.checklist.weight.percentOfReference.replaceAll('{pct}', (state.backpackRatio * 100).toStringAsFixed(0))}\n',
+    );
 
     // Grouper par categorie (ordre du template).
     for (final category in checklistCategories) {
@@ -333,9 +357,11 @@ class ChecklistBottomActions extends ConsumerWidget {
       buffer.writeln('--- ${_resolveCategoryName(category)} ---');
       for (final item in checkedItems) {
         final name = checklistItemDisplayName(item);
-        buffer.writeln(item.quantity > 1
-            ? '  [x] $name x${item.quantity} (${item.totalWeightGrams}${t.checklist.weight.grams})'
-            : '  [x] $name (${item.weightGrams}${t.checklist.weight.grams})');
+        buffer.writeln(
+          item.quantity > 1
+              ? '  [x] $name x${item.quantity} (${item.totalWeightGrams}${t.checklist.weight.grams})'
+              : '  [x] $name (${item.weightGrams}${t.checklist.weight.grams})',
+        );
       }
       buffer.writeln('');
     }

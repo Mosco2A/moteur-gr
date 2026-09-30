@@ -329,8 +329,9 @@ class _LanguagePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Selection courante = langue des reglages (source de verite persistee),
     // et non plus la seule locale en memoire de Slang.
-    final currentLanguage =
-        ref.watch(settingsProvider.select((s) => s.language));
+    final currentLanguage = ref.watch(
+      settingsProvider.select((s) => s.language),
+    );
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingXl),
       child: Column(
@@ -484,8 +485,11 @@ class _RecoveryNudge extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StepIcon(StepwaysIcons.cle,
-              size: 20, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.cle,
+            size: 20,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

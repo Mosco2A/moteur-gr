@@ -121,9 +121,7 @@ void main() {
       await dao.insertOrReplace(
         makePoi(id: 'p1', stageId: 's1', elevation: 1540.5),
       );
-      await dao.insertOrReplace(
-        makePoi(id: 'p2', stageId: 's1'),
-      );
+      await dao.insertOrReplace(makePoi(id: 'p2', stageId: 's1'));
 
       final withElev = await dao.getById('p1');
       final withoutElev = await dao.getById('p2');
@@ -132,23 +130,25 @@ void main() {
     });
 
     test('les champs i18n description sont corrects', () async {
-      await dao.insertOrReplace(const TrailPoisCompanion(
-        id: Value('p1'),
-        stageId: Value('s1'),
-        nameFr: Value('Bergerie'),
-        nameEn: Value('Sheepfold'),
-        nameDe: Value('Schaeferei'),
-        nameIt: Value('Ovile'),
-        nameEs: Value('Redil'),
-        descriptionFr: Value('Ancienne bergerie en ruine'),
-        descriptionEn: Value('Ancient ruined sheepfold'),
-        descriptionDe: Value('Alte Schaeferei-Ruine'),
-        descriptionIt: Value('Antico ovile in rovina'),
-        descriptionEs: Value('Antiguo redil en ruinas'),
-        type: Value('info'),
-        lat: Value(42.1),
-        lng: Value(9.1),
-      ));
+      await dao.insertOrReplace(
+        const TrailPoisCompanion(
+          id: Value('p1'),
+          stageId: Value('s1'),
+          nameFr: Value('Bergerie'),
+          nameEn: Value('Sheepfold'),
+          nameDe: Value('Schaeferei'),
+          nameIt: Value('Ovile'),
+          nameEs: Value('Redil'),
+          descriptionFr: Value('Ancienne bergerie en ruine'),
+          descriptionEn: Value('Ancient ruined sheepfold'),
+          descriptionDe: Value('Alte Schaeferei-Ruine'),
+          descriptionIt: Value('Antico ovile in rovina'),
+          descriptionEs: Value('Antiguo redil en ruinas'),
+          type: Value('info'),
+          lat: Value(42.1),
+          lng: Value(9.1),
+        ),
+      );
 
       final result = await dao.getById('p1');
       expect(result!.descriptionFr, 'Ancienne bergerie en ruine');

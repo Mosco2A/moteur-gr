@@ -47,9 +47,9 @@ void main() {
 
   /// Les trois signaux HISTORIQUES de la porte (Itineraire + Programme + Date).
   Map<String, Object> socleHistorique() => <String, Object>{
-        'prepare_core_steps_$trailId': <String>['itinerary', 'programme'],
-        'departure_date_$trailId': '2026-10-20T00:00:00.000',
-      };
+    'prepare_core_steps_$trailId': <String>['itinerary', 'programme'],
+    'departure_date_$trailId': '2026-10-20T00:00:00.000',
+  };
 
   /// Laisse les relectures asynchrones de preferences rendre la main.
   Future<void> laisserLirePrefs() =>
@@ -69,7 +69,8 @@ void main() {
         expect(
           c.read(prepareCoreDoneProvider(trailId)),
           isFalse,
-          reason: 'on ne demarre pas un trek sans avoir rempli sa fiche '
+          reason:
+              'on ne demarre pas un trek sans avoir rempli sa fiche '
               'medicale (decision Chris 26/09)',
         );
       },
@@ -109,24 +110,21 @@ void main() {
       },
     );
 
-    test(
-      'les CINQ conditions reunies : la porte s ouvre',
-      () async {
-        SharedPreferences.setMockInitialValues(<String, Object>{
-          ...socleHistorique(),
-          kHealthPrepareStepsKey: <String>[
-            HealthPrepStep.filled.name,
-            HealthPrepStep.adviceRead.name,
-          ],
-        });
-        final c = ProviderContainer();
-        addTearDown(c.dispose);
+    test('les CINQ conditions reunies : la porte s ouvre', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        ...socleHistorique(),
+        kHealthPrepareStepsKey: <String>[
+          HealthPrepStep.filled.name,
+          HealthPrepStep.adviceRead.name,
+        ],
+      });
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
 
-        c.read(prepareCoreDoneProvider(trailId));
-        await laisserLirePrefs();
-        expect(c.read(prepareCoreDoneProvider(trailId)), isTrue);
-      },
-    );
+      c.read(prepareCoreDoneProvider(trailId));
+      await laisserLirePrefs();
+      expect(c.read(prepareCoreDoneProvider(trailId)), isTrue);
+    });
 
     test(
       'A CHAUD : marquer les deux signaux ouvre la porte sans relancer l app',
@@ -185,22 +183,20 @@ void main() {
   });
 
   group('Q4b — le message d aide ne mentionne plus une liste incomplete', () {
-    test(
-      'le texte de la porte fermee NOMME la fiche medicale, avec le meme '
-      'libelle que sa carte',
-      () {
-        // Le message annoncait « Itineraire, Date et Programme » : depuis la
-        // decision de Chris il manquait une condition — un texte qui annonce
-        // autre chose que ce que le code exige est exactement le defaut que
-        // Chris trouve depuis deux jours.
-        expect(
-          t.hub.startGateHint,
-          contains(t.hub.cards.health),
-          reason: 'le message doit nommer la 4e condition, et la nommer comme '
-              'la carte qui y mene',
-        );
-      },
-    );
+    test('le texte de la porte fermee NOMME la fiche medicale, avec le meme '
+        'libelle que sa carte', () {
+      // Le message annoncait « Itineraire, Date et Programme » : depuis la
+      // decision de Chris il manquait une condition — un texte qui annonce
+      // autre chose que ce que le code exige est exactement le defaut que
+      // Chris trouve depuis deux jours.
+      expect(
+        t.hub.startGateHint,
+        contains(t.hub.cards.health),
+        reason:
+            'le message doit nommer la 4e condition, et la nommer comme '
+            'la carte qui y mene',
+      );
+    });
   });
 
   // ==========================================================================
@@ -267,7 +263,8 @@ void main() {
         expect(
           container.read(healthPrepareDoneProvider),
           isFalse,
-          reason: 'la porte de demarrage ne peut pas rester ouverte sur une '
+          reason:
+              'la porte de demarrage ne peut pas rester ouverte sur une '
               'fiche medicale effacee',
         );
       },
@@ -290,29 +287,29 @@ void main() {
     });
 
     Widget wrap() => ProviderScope(
-          overrides: [databaseProvider.overrideWithValue(db)],
-          child: TranslationProvider(
-            child: MaterialApp.router(
-              routerConfig: GoRouter(
-                initialLocation: '/home/health',
+      overrides: [databaseProvider.overrideWithValue(db)],
+      child: TranslationProvider(
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/home/health',
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (_, __) => const Scaffold(body: SizedBox()),
                 routes: [
                   GoRoute(
-                    path: '/home',
-                    builder: (_, __) => const Scaffold(body: SizedBox()),
-                    routes: [
-                      GoRoute(
-                        path: 'health',
-                        builder: (_, __) => const HealthInfoScreen(),
-                      ),
-                    ],
+                    path: 'health',
+                    builder: (_, __) => const HealthInfoScreen(),
                   ),
-                  GoRoute(path: '/consent', builder: (_, __) => const SizedBox()),
-                  GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
                 ],
               ),
-            ),
+              GoRoute(path: '/consent', builder: (_, __) => const SizedBox()),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
           ),
-        );
+        ),
+      ),
+    );
 
     Future<void> pumpEcran(WidgetTester tester) async {
       tester.view.physicalSize = const Size(420, 6000);

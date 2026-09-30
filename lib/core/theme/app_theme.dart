@@ -42,10 +42,10 @@ class AppTheme {
   /// Preferer [dataTextStyle] quand un BuildContext est disponible : la taille
   /// et la couleur y sont alors alignees sur le TextTheme actif.
   static TextStyle get dataTextStyleBase => const TextStyle(
-        fontFamily: fontFamily,
-        fontWeight: FontWeight.w700,
-        fontFeatures: [FontFeature.tabularFigures()],
-      );
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
 
   /// Style du role "data" resolu depuis le [BuildContext].
   ///
@@ -53,7 +53,8 @@ class AppTheme {
   /// courant, en Montserrat w700 + chiffres tabulaires. A utiliser pour les
   /// valeurs de stats (distance, D+, duree) du hub, de la fiche etape et du HUD.
   static TextStyle dataTextStyle(BuildContext context) {
-    final base = Theme.of(context).textTheme.headlineMedium ?? const TextStyle();
+    final base =
+        Theme.of(context).textTheme.headlineMedium ?? const TextStyle();
     return base.copyWith(
       fontFamily: fontFamily,
       fontWeight: FontWeight.w700,
@@ -72,17 +73,17 @@ class AppTheme {
   ///  - display / headline* / title* / label* / body* -> Montserrat.
   static TextTheme _textTheme(Color onColor) {
     TextStyle title(FontWeight weight, double size) => TextStyle(
-          fontFamily: fontFamily,
-          fontWeight: weight,
-          fontSize: size,
-          color: onColor,
-        );
+      fontFamily: fontFamily,
+      fontWeight: weight,
+      fontSize: size,
+      color: onColor,
+    );
     TextStyle body(FontWeight weight, double size) => TextStyle(
-          fontFamily: fontFamily,
-          fontWeight: weight,
-          fontSize: size,
-          color: onColor,
-        );
+      fontFamily: fontFamily,
+      fontWeight: weight,
+      fontSize: size,
+      color: onColor,
+    );
 
     return TextTheme(
       displayLarge: title(FontWeight.w700, 34),
@@ -221,7 +222,8 @@ class AppTheme {
       // sur chacun des vingt-quatre ecrans qui portent une AppBar, et en
       // oublier.
       actionIconTheme: ActionIconThemeData(
-        backButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.flecheArriere),
+        backButtonIconBuilder: (_) =>
+            const StepIcon(StepwaysIcons.flecheArriere),
         closeButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.croix),
         drawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
         endDrawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
@@ -282,9 +284,7 @@ class AppTheme {
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: secondaryLight,
-        ),
+        style: TextButton.styleFrom(foregroundColor: secondaryLight),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -367,7 +367,8 @@ class AppTheme {
       // sur chacun des vingt-quatre ecrans qui portent une AppBar, et en
       // oublier.
       actionIconTheme: ActionIconThemeData(
-        backButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.flecheArriere),
+        backButtonIconBuilder: (_) =>
+            const StepIcon(StepwaysIcons.flecheArriere),
         closeButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.croix),
         drawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
         endDrawerButtonIconBuilder: (_) => const StepIcon(StepwaysIcons.menu),
@@ -424,9 +425,7 @@ class AppTheme {
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: secondaryDark,
-        ),
+        style: TextButton.styleFrom(foregroundColor: secondaryDark),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -462,13 +461,17 @@ class AppTheme {
   /// Eclaircit une couleur
   static Color _lighten(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0)).toColor();
+    return hsl
+        .withLightness((hsl.lightness + amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Assombrit une couleur
   static Color _darken(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
+    return hsl
+        .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Eclaircit une couleur (variante publique, SW-SKIN-L5).

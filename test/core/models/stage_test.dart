@@ -110,23 +110,44 @@ void main() {
 
     test('equality fonctionne avec freezed', () {
       const a = StageModel(
-        trailId: 't1', stageNumber: 1, name: 'A',
-        distanceKm: 10, elevationGainM: 500, elevationLossM: 300,
-        startLat: 42.0, startLng: 9.0, endLat: 42.1, endLng: 9.1,
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'A',
+        distanceKm: 10,
+        elevationGainM: 500,
+        elevationLossM: 300,
+        startLat: 42.0,
+        startLng: 9.0,
+        endLat: 42.1,
+        endLng: 9.1,
       );
       const b = StageModel(
-        trailId: 't1', stageNumber: 1, name: 'A',
-        distanceKm: 10, elevationGainM: 500, elevationLossM: 300,
-        startLat: 42.0, startLng: 9.0, endLat: 42.1, endLng: 9.1,
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'A',
+        distanceKm: 10,
+        elevationGainM: 500,
+        elevationLossM: 300,
+        startLat: 42.0,
+        startLng: 9.0,
+        endLat: 42.1,
+        endLng: 9.1,
       );
       expect(a, equals(b));
     });
 
     test('copyWith modifie un champ sans toucher les autres', () {
       const model = StageModel(
-        trailId: 't1', stageNumber: 1, name: 'Original',
-        distanceKm: 10, elevationGainM: 500, elevationLossM: 300,
-        startLat: 42.0, startLng: 9.0, endLat: 42.1, endLng: 9.1,
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'Original',
+        distanceKm: 10,
+        elevationGainM: 500,
+        elevationLossM: 300,
+        startLat: 42.0,
+        startLng: 9.0,
+        endLat: 42.1,
+        endLng: 9.1,
       );
       final modified = model.copyWith(name: 'Modifie');
       expect(modified.name, 'Modifie');

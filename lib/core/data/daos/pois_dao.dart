@@ -20,12 +20,9 @@ class PoisDao extends DatabaseAccessor<AppDatabase> with _$PoisDaoMixin {
 
   /// Recupere les POI d'une etape specifique
   Future<List<Poi>> getByStage(String trailId, int stageNumber) {
-    return (select(pois)
-          ..where(
-            (t) =>
-                t.trailId.equals(trailId) &
-                t.stageNumber.equals(stageNumber),
-          ))
+    return (select(pois)..where(
+          (t) => t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+        ))
         .get();
   }
 

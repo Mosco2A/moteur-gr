@@ -63,8 +63,9 @@ class StageFireRisk {
   final List<FireRiskDay> days;
 
   /// Niveau de risque MAXIMAL de l'etape (0 si aucune donnee) — tri + badge.
-  int get maxLevel =>
-      days.isEmpty ? 0 : days.map((d) => d.level).reduce((a, b) => a > b ? a : b);
+  int get maxLevel => days.isEmpty
+      ? 0
+      : days.map((d) => d.level).reduce((a, b) => a > b ? a : b);
 
   /// Vrai si l'etape presente au moins un jour a risque (niveau >= 1) — parite
   /// GR20 : seules les etapes a risque sont listees.
@@ -113,8 +114,10 @@ class FireRiskState {
 ///
 /// Retourne un [FireRiskState] toujours non-null : tant que les etapes ne sont
 /// pas chargees -> `isLoading: true`, liste vide (l'ecran montre le loader).
-final trailFireRiskProvider =
-    Provider.family<FireRiskState, String>((ref, trailId) {
+final trailFireRiskProvider = Provider.family<FireRiskState, String>((
+  ref,
+  trailId,
+) {
   // Etapes du sentier (nom + numero). AsyncValue -> valeur chargee seulement.
   final stagesAsync = ref.watch(stagesProvider(trailId));
   final stages = stagesAsync.value;
@@ -154,12 +157,14 @@ final trailFireRiskProvider =
     if (forecast == null || forecast.days.isEmpty) {
       // Pas de prevision pour cette etape : niveau 0 (aucune donnee) — l'etape
       // ne remontera pas dans « a risque » (parite GR20 : filtre niveau >= 1).
-      result.add(StageFireRisk(
-        stageNumber: stage.stageNumber,
-        stageName: stage.name,
-        arrivalName: stage.arrivalName,
-        days: const [],
-      ));
+      result.add(
+        StageFireRisk(
+          stageNumber: stage.stageNumber,
+          stageName: stage.name,
+          arrivalName: stage.arrivalName,
+          days: const [],
+        ),
+      );
       continue;
     }
 
@@ -167,23 +172,27 @@ final trailFireRiskProvider =
     final days = <FireRiskDay>[];
     for (var i = 0; i < forecast.days.length; i++) {
       final d = forecast.days[i];
-      days.add(FireRiskDay(
-        dayIndex: i,
-        level: calculateFireRiskLevel(
-          temperatureMax: d.temperatureMax,
-          windSpeedKmh: d.windSpeedKmh,
-          precipitationMm: d.precipitationMm,
-          precipitationProbability: d.precipitationProbabilityMax,
+      days.add(
+        FireRiskDay(
+          dayIndex: i,
+          level: calculateFireRiskLevel(
+            temperatureMax: d.temperatureMax,
+            windSpeedKmh: d.windSpeedKmh,
+            precipitationMm: d.precipitationMm,
+            precipitationProbability: d.precipitationProbabilityMax,
+          ),
         ),
-      ));
+      );
     }
 
-    result.add(StageFireRisk(
-      stageNumber: stage.stageNumber,
-      stageName: stage.name,
-      arrivalName: stage.arrivalName,
-      days: days,
-    ));
+    result.add(
+      StageFireRisk(
+        stageNumber: stage.stageNumber,
+        stageName: stage.name,
+        arrivalName: stage.arrivalName,
+        days: days,
+      ),
+    );
   }
 
   return FireRiskState(
@@ -199,8 +208,10 @@ final trailFireRiskProvider =
 /// Retourne `null` si le sentier ne fournit pas de reglementation -> l'ecran
 /// masque proprement la section reglementation (le reste reste actif). Family
 /// par `trailId`. Le backend (Phase 4) remplacera la source du catalogue.
-final trailFireRegulationProvider =
-    Provider.family<FireRegulation?, String>((ref, trailId) {
+final trailFireRegulationProvider = Provider.family<FireRegulation?, String>((
+  ref,
+  trailId,
+) {
   final data = FireRiskCatalog.forTrail(trailId);
   return (data != null && data.regulation.hasContent) ? data.regulation : null;
 });
@@ -250,20 +261,20 @@ class FireEmergencyLabelKeys {
 /// local en dur dans le moteur. Family par `trailId`.
 final fireEmergencyNumbersProvider =
     Provider.family<List<FireEmergencyNumber>, String>((ref, trailId) {
-  final config = ref.watch(trailConfigProvider);
+      final config = ref.watch(trailConfigProvider);
 
-  return [
-    // Universels (moteur) : pompiers FR + secours europeens. Libelles i18n.
-    const FireEmergencyNumber(
-      phone: '18',
-      labelKey: FireEmergencyLabelKeys.firefighters,
-    ),
-    const FireEmergencyNumber(
-      phone: '112',
-      labelKey: FireEmergencyLabelKeys.europeanEmergency,
-    ),
-    // Regionaux (donnee du sentier) : secours locaux fournis par la config.
-    for (final n in config.emergencyNumbers)
-      FireEmergencyNumber(phone: n.phone, labelData: n.name),
-  ];
-});
+      return [
+        // Universels (moteur) : pompiers FR + secours europeens. Libelles i18n.
+        const FireEmergencyNumber(
+          phone: '18',
+          labelKey: FireEmergencyLabelKeys.firefighters,
+        ),
+        const FireEmergencyNumber(
+          phone: '112',
+          labelKey: FireEmergencyLabelKeys.europeanEmergency,
+        ),
+        // Regionaux (donnee du sentier) : secours locaux fournis par la config.
+        for (final n in config.emergencyNumbers)
+          FireEmergencyNumber(phone: n.phone, labelData: n.name),
+      ];
+    });

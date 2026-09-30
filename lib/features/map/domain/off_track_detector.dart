@@ -38,9 +38,9 @@ class OffTrackDetector {
     this.exitThresholdMeters = kOffTrackExitThresholdMeters,
     this.returnThresholdMeters = kOffTrackReturnThresholdMeters,
   }) : assert(
-          returnThresholdMeters < exitThresholdMeters,
-          'Le seuil de retour doit etre < seuil de sortie (hysteresis).',
-        );
+         returnThresholdMeters < exitThresholdMeters,
+         'Le seuil de retour doit etre < seuil de sortie (hysteresis).',
+       );
 
   /// Distance au-dela de laquelle on passe hors trace.
   final double exitThresholdMeters;

@@ -32,10 +32,9 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
   final session = ref.watch(
     trekSessionManagerProvider.select((s) => s.session),
   );
-  final status = ref.watch(
-    trekSessionManagerProvider.select((s) => s.status),
-  );
-  final enCours = status == TrackingSessionStatus.recording ||
+  final status = ref.watch(trekSessionManagerProvider.select((s) => s.status));
+  final enCours =
+      status == TrackingSessionStatus.recording ||
       status == TrackingSessionStatus.paused;
   if (!enCours || session == null) return const TrackSegmentStats();
 

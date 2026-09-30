@@ -71,32 +71,43 @@ void main() {
       expect(db.schemaVersion, greaterThanOrEqualTo(30));
     });
 
-    test('les trois colonnes existent, avec le bon type, et toutes nullables',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
+    test(
+      'les trois colonnes existent, avec le bon type, et toutes nullables',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
 
-      final rows =
-          await db.customSelect('PRAGMA table_info(trail_manifests)').get();
-      Map<String, dynamic> colonne(String nom) {
-        final trouvees =
-            rows.where((r) => r.read<String>('name') == nom).toList();
-        expect(trouvees, hasLength(1), reason: 'colonne $nom absente');
-        return {
-          'type': trouvees.single.read<String>('type'),
-          'notnull': trouvees.single.read<int>('notnull'),
-        };
-      }
+        final rows = await db
+            .customSelect('PRAGMA table_info(trail_manifests)')
+            .get();
+        Map<String, dynamic> colonne(String nom) {
+          final trouvees = rows
+              .where((r) => r.read<String>('name') == nom)
+              .toList();
+          expect(trouvees, hasLength(1), reason: 'colonne $nom absente');
+          return {
+            'type': trouvees.single.read<String>('type'),
+            'notnull': trouvees.single.read<int>('notnull'),
+          };
+        }
 
-      expect(colonne('tiles_path')['type'], 'TEXT');
-      expect(colonne('tiles_path')['notnull'], 0,
-          reason: 'null = aucune carte publiee, et c est un cas NORMAL');
-      expect(colonne('tiles_size')['type'], 'INTEGER');
-      expect(colonne('tiles_size')['notnull'], 0);
-      expect(colonne('tiles_hash')['type'], 'TEXT');
-      expect(colonne('tiles_hash')['notnull'], 0,
-          reason: 'sans empreinte, une carte de 260 Mo ne serait pas verifiable');
-    });
+        expect(colonne('tiles_path')['type'], 'TEXT');
+        expect(
+          colonne('tiles_path')['notnull'],
+          0,
+          reason: 'null = aucune carte publiee, et c est un cas NORMAL',
+        );
+        expect(colonne('tiles_size')['type'], 'INTEGER');
+        expect(colonne('tiles_size')['notnull'], 0);
+        expect(colonne('tiles_hash')['type'], 'TEXT');
+        expect(
+          colonne('tiles_hash')['notnull'],
+          0,
+          reason:
+              'sans empreinte, une carte de 260 Mo ne serait pas verifiable',
+        );
+      },
+    );
 
     test('UNE BASE MONTEE DEPUIS LA v29 S OUVRE, et son sentier ne pretend PAS '
         'avoir une carte', () async {
@@ -104,7 +115,9 @@ void main() {
       final db = AppDatabase(NativeDatabase(file));
       addTearDown(db.close);
 
-      final manifeste = await db.trailManifestsDao.getByTrailId('gr-monts-dore');
+      final manifeste = await db.trailManifestsDao.getByTrailId(
+        'gr-monts-dore',
+      );
       expect(manifeste, isNotNull);
       expect(manifeste!.tilesPath, isNull);
       expect(manifeste.tilesSize, isNull);
@@ -115,25 +128,34 @@ void main() {
       // deux faits differents, deux sources differentes. La prochaine lecture du
       // catalogue apportera l adresse de la carte ; d ici la, la descente est
       // refusee avec la cause « aucune carte publiee », jamais tentee a l aveugle.
-      expect(await db.trailManifestsDao.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.realiser);
+      expect(
+        await db.trailManifestsDao.niveauDe('gr-monts-dore'),
+        NiveauDeTelechargement.realiser,
+      );
     });
 
-    test('AUCUNE DONNEE PERDUE : la ligne de liste traverse la marche intacte',
-        () async {
-      final file = await baseEnV29();
-      final db = AppDatabase(NativeDatabase(file));
-      addTearDown(db.close);
+    test(
+      'AUCUNE DONNEE PERDUE : la ligne de liste traverse la marche intacte',
+      () async {
+        final file = await baseEnV29();
+        final db = AppDatabase(NativeDatabase(file));
+        addTearDown(db.close);
 
-      final manifeste = await db.trailManifestsDao.getByTrailId('gr-monts-dore');
-      expect(manifeste!.hash, 'h1');
-      expect(manifeste.filePath, 'montsdore/v1.json');
-      expect(manifeste.fileSize, 4096);
-      expect(manifeste.status, 'active');
-      expect(manifeste.lastUpdated, '2026-09-28T00:00:00Z');
-      expect(manifeste.localVersion, isNotNull,
-          reason: 'la v30 ne touche PAS au repere : elle ajoute trois colonnes');
-    });
+        final manifeste = await db.trailManifestsDao.getByTrailId(
+          'gr-monts-dore',
+        );
+        expect(manifeste!.hash, 'h1');
+        expect(manifeste.filePath, 'montsdore/v1.json');
+        expect(manifeste.fileSize, 4096);
+        expect(manifeste.status, 'active');
+        expect(manifeste.lastUpdated, '2026-09-28T00:00:00Z');
+        expect(
+          manifeste.localVersion,
+          isNotNull,
+          reason: 'la v30 ne touche PAS au repere : elle ajoute trois colonnes',
+        );
+      },
+    );
 
     test('LE SENTIER RESTE DANS LE PERIMETRE DE LA CADENCE', () async {
       final file = await baseEnV29();
@@ -141,9 +163,13 @@ void main() {
       addTearDown(db.close);
 
       final telecharges = await db.trailManifestsDao.getTelecharges();
-      expect(telecharges.map((e) => e.trailId), ['gr-monts-dore'],
-          reason: 'ajouter trois colonnes ne doit pas faire sortir un sentier '
-              'deja copie du perimetre de la mise a jour periodique');
+      expect(
+        telecharges.map((e) => e.trailId),
+        ['gr-monts-dore'],
+        reason:
+            'ajouter trois colonnes ne doit pas faire sortir un sentier '
+            'deja copie du perimetre de la mise a jour periodique',
+      );
     });
 
     test('la migration est REJOUABLE : la relancer ne casse rien', () async {
@@ -185,8 +211,11 @@ void main() {
 
       final ligne = await db.trailManifestsDao.getByTrailId('mare-a-mare');
       expect(ligne!.tilesPath, 'mam/tuiles_v1.mbtiles');
-      expect(ligne.tilesSize, 260000000,
-          reason: '260 Mo : le poids mesure par le chiffrage de la tache 608');
+      expect(
+        ligne.tilesSize,
+        260000000,
+        reason: '260 Mo : le poids mesure par le chiffrage de la tache 608',
+      );
       expect(ligne.tilesHash, 'abc123');
     });
   });

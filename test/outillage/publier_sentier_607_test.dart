@@ -52,45 +52,52 @@ void main() {
   /// L instant qu une publication faite au jour [jour] portera.
   HorodatageServeur instantAuJour(int jour) =>
       HorodatageServeur.annonceParLeServeur(
-          horlogeAuJour(jour).toIso8601String())!;
+        horlogeAuJour(jour).toIso8601String(),
+      )!;
 
-  Publicateur outil({int jour = 1}) => Publicateur(
-        sortie: publie,
-        horloge: horlogeAuJour(jour),
-      );
+  Publicateur outil({int jour = 1}) =>
+      Publicateur(sortie: publie, horloge: horlogeAuJour(jour));
 
   Map<String, dynamic> lireSource() =>
-      jsonDecode(File('$source/${SourceDeSentier.nomDuFichier}').readAsStringSync())
+      jsonDecode(
+            File('$source/${SourceDeSentier.nomDuFichier}').readAsStringSync(),
+          )
           as Map<String, dynamic>;
 
   void ecrireSource(Map<String, dynamic> contenu) => File(
-        '$source/${SourceDeSentier.nomDuFichier}',
-      ).writeAsStringSync(jsonEncode(contenu));
+    '$source/${SourceDeSentier.nomDuFichier}',
+  ).writeAsStringSync(jsonEncode(contenu));
 
   /// LE NOM DU FICHIER PORTE L INSTANT, sous la forme qui tient dans un nom de
   /// fichier Windows et dans une URL (l ISO 8601 porte des deux-points).
   String cheminAuJour(int jour) =>
       'gr_monts_dore/v${instantAuJour(jour).estampilleDeFichier}.json';
 
-  Map<String, dynamic> lirePublication(int jour) => jsonDecode(
-        File('$publie/${cheminAuJour(jour)}').readAsStringSync(),
-      ) as Map<String, dynamic>;
+  Map<String, dynamic> lirePublication(int jour) =>
+      jsonDecode(File('$publie/${cheminAuJour(jour)}').readAsStringSync())
+          as Map<String, dynamic>;
 
   TrailManifestEntry lireLEntree() {
-    final brut = jsonDecode(
-      File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
-    ) as Map<String, dynamic>;
+    final brut =
+        jsonDecode(
+              File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
     return TrailManifest.fromJson(brut).trails.single;
   }
 
   HorodatageServeur revisionDe(
-      Map<String, dynamic> publication, String famille, String id) {
+    Map<String, dynamic> publication,
+    String famille,
+    String id,
+  ) {
     final brut = publication[famille];
     final donnee = brut is List
         ? brut.cast<Map<String, dynamic>>().firstWhere((e) => e['id'] == id)
         : brut as Map<String, dynamic>;
     return HorodatageServeur.annonceParLeServeur(
-        donnee[RevisionDeDonnee.champRevision])!;
+      donnee[RevisionDeDonnee.champRevision],
+    )!;
   }
 
   // =========================================================================
@@ -101,10 +108,14 @@ void main() {
         'republie, UN SEUL enregistrement change de revision', () async {
       final premiere = outil(jour: 1).publier(source);
       expect(premiere.revision, instantAuJour(1));
-      expect(premiere.recalcul.nombreTouches, 19,
-          reason: '1 fiche + 1 itineraire + 2 etapes + 2 hebergements + 2 POI '
-              '+ 1 entete de trace + 10 points : a la premiere publication tout '
-              'est neuf');
+      expect(
+        premiere.recalcul.nombreTouches,
+        19,
+        reason:
+            '1 fiche + 1 itineraire + 2 etapes + 2 hebergements + 2 POI '
+            '+ 1 entete de trace + 10 points : a la premiere publication tout '
+            'est neuf',
+      );
 
       // On corrige UNE altitude, comme le §3.1 de la specification le decrit.
       final contenu = lireSource();
@@ -114,26 +125,34 @@ void main() {
       final seconde = outil(jour: 2).publier(source);
 
       expect(seconde.revision, instantAuJour(2));
-      expect(seconde.recalcul.nombreTouches, 1,
-          reason: 'C EST TOUT L INTERET DU MODELE DE CHRISTOPHE. Si l outil '
-              'reincrementait tout, chaque telephone retelechargerait les 19 '
-              'enregistrements pour une altitude — et le versionnage unitaire '
-              'des lots 605 et 606 ne servirait plus a rien.');
+      expect(
+        seconde.recalcul.nombreTouches,
+        1,
+        reason:
+            'C EST TOUT L INTERET DU MODELE DE CHRISTOPHE. Si l outil '
+            'reincrementait tout, chaque telephone retelechargerait les 19 '
+            'enregistrements pour une altitude — et le versionnage unitaire '
+            'des lots 605 et 606 ne servirait plus a rien.',
+      );
       expect(seconde.recalcul.modifies, ['stages/montsdore-s1']);
 
       final v2 = lirePublication(2);
       expect(revisionDe(v2, 'stages', 'montsdore-s1'), instantAuJour(2));
-      expect(revisionDe(v2, 'stages', 'montsdore-s2'), instantAuJour(1),
-          reason: 'l autre etape n a pas bouge : elle GARDE sa date');
+      expect(
+        revisionDe(v2, 'stages', 'montsdore-s2'),
+        instantAuJour(1),
+        reason: 'l autre etape n a pas bouge : elle GARDE sa date',
+      );
       expect(revisionDe(v2, 'itineraries', 'montsdore-i1'), instantAuJour(1));
       expect(revisionDe(v2, 'pois', 'montsdore-p1'), instantAuJour(1));
       expect(revisionDe(v2, 'gpx_tracks', 'montsdore-t1'), instantAuJour(1));
       expect(
-        (v2['gpx_points'] as List)
-            .cast<Map<String, dynamic>>()
-            .map((p) => p[RevisionDeDonnee.champRevision]),
+        (v2['gpx_points'] as List).cast<Map<String, dynamic>>().map(
+          (p) => p[RevisionDeDonnee.champRevision],
+        ),
         everyElement(instantAuJour(1).iso8601),
-        reason: 'les points de trace sont le gros du volume : ce sont eux qu il '
+        reason:
+            'les points de trace sont le gros du volume : ce sont eux qu il '
             'ne faut surtout pas faire redescendre pour une etape corrigee',
       );
     });
@@ -148,16 +167,24 @@ void main() {
 
       final v2 = lirePublication(2);
       final meta = v2['trail_meta'] as Map<String, dynamic>;
-      expect(meta['data_version'], instantAuJour(2).iso8601,
-          reason: 'l instant courant du sentier suit : le semeur et la pose '
-              'le lisent');
-      expect(meta[RevisionDeDonnee.champRevision], instantAuJour(1).iso8601,
-          reason: 'MESURE FAITE PENDANT LE LOT : tant que `data_version` entrait '
-              'dans la comparaison de contenu, `trail_meta` descendait a CHAQUE '
-              'republication — deux enregistrements pour une altitude corrigee '
-              'au lieu d un. Aucune decision ne lit `trail_meta.data_version` '
-              '(le repere qui fait foi est `trail_manifests.localVersion`), '
-              'donc c est bien du bookkeeping.');
+      expect(
+        meta['data_version'],
+        instantAuJour(2).iso8601,
+        reason:
+            'l instant courant du sentier suit : le semeur et la pose '
+            'le lisent',
+      );
+      expect(
+        meta[RevisionDeDonnee.champRevision],
+        instantAuJour(1).iso8601,
+        reason:
+            'MESURE FAITE PENDANT LE LOT : tant que `data_version` entrait '
+            'dans la comparaison de contenu, `trail_meta` descendait a CHAQUE '
+            'republication — deux enregistrements pour une altitude corrigee '
+            'au lieu d un. Aucune decision ne lit `trail_meta.data_version` '
+            '(le repere qui fait foi est `trail_manifests.localVersion`), '
+            'donc c est bien du bookkeeping.',
+      );
     });
 
     test('LE STATUT, LUI, EST DU CONTENU : le passer a `archived` fait monter '
@@ -169,28 +196,36 @@ void main() {
       final seconde = outil(jour: 2).publier(source);
 
       expect(seconde.recalcul.modifies, ['trail_meta/gr-monts-dore']);
-      expect(revisionDe(lirePublication(2), 'trail_meta', 'gr-monts-dore'),
-          instantAuJour(2),
-          reason: 'un sentier retire doit le DIRE aux telephones deja a jour');
+      expect(
+        revisionDe(lirePublication(2), 'trail_meta', 'gr-monts-dore'),
+        instantAuJour(2),
+        reason: 'un sentier retire doit le DIRE aux telephones deja a jour',
+      );
     });
 
-    test('RIEN N A CHANGE : aucun fichier reecrit, et la revision NE MONTE PAS',
-        () async {
-      outil(jour: 1).publier(source);
-      // MEME AVEC UNE HORLOGE QUI A AVANCE D UN JOUR, l instant du sentier ne
-      // bouge pas : rien n a change, donc il n y a rien a annoncer. C est plus
-      // fort qu avec un compteur, ou l on pouvait croire que la revision ne
-      // montait que faute d incrementation.
-      final resultat = outil(jour: 2).publier(source);
+    test(
+      'RIEN N A CHANGE : aucun fichier reecrit, et la revision NE MONTE PAS',
+      () async {
+        outil(jour: 1).publier(source);
+        // MEME AVEC UNE HORLOGE QUI A AVANCE D UN JOUR, l instant du sentier ne
+        // bouge pas : rien n a change, donc il n y a rien a annoncer. C est plus
+        // fort qu avec un compteur, ou l on pouvait croire que la revision ne
+        // montait que faute d incrementation.
+        final resultat = outil(jour: 2).publier(source);
 
-      expect(resultat.donneesReecrites, isFalse);
-      expect(resultat.revision, instantAuJour(1));
-      expect(resultat.recalcul.aChange, isFalse);
-      expect(File('$publie/${cheminAuJour(2)}').existsSync(), isFalse,
-          reason: 'faire avancer l instant pour rien ferait relire la liste a '
-              'tous les telephones, pour n avoir rien a prendre');
-      expect(lireLEntree().dataVersion, instantAuJour(1));
-    });
+        expect(resultat.donneesReecrites, isFalse);
+        expect(resultat.revision, instantAuJour(1));
+        expect(resultat.recalcul.aChange, isFalse);
+        expect(
+          File('$publie/${cheminAuJour(2)}').existsSync(),
+          isFalse,
+          reason:
+              'faire avancer l instant pour rien ferait relire la liste a '
+              'tous les telephones, pour n avoir rien a prendre',
+        );
+        expect(lireLEntree().dataVersion, instantAuJour(1));
+      },
+    );
 
     test('UN REORDONNANCEMENT DU FICHIER SOURCE NE FAIT MONTER AUCUNE '
         'REVISION — les clefs sont comparees triees', () async {
@@ -206,15 +241,19 @@ void main() {
               clef: clef == 'elevation_gain'
                   ? (etape[clef] as int).toDouble()
                   : etape[clef],
-          }
+          },
       ];
       ecrireSource(contenu);
 
       final resultat = outil(jour: 2).publier(source);
-      expect(resultat.recalcul.aChange, isFalse,
-          reason: '`820` et `820.0` designent le meme denivele : les distinguer '
-              'ferait monter une revision pour une virgule, exactement le '
-              'gaspillage que ce modele existe pour supprimer');
+      expect(
+        resultat.recalcul.aChange,
+        isFalse,
+        reason:
+            '`820` et `820.0` designent le meme denivele : les distinguer '
+            'ferait monter une revision pour une virgule, exactement le '
+            'gaspillage que ce modele existe pour supprimer',
+      );
     });
 
     test('LE MEME SOURCE PRODUIT LES MEMES OCTETS — la publication est '
@@ -229,13 +268,14 @@ void main() {
       ).publier(source);
 
       expect(second.empreinte, premier.empreinte);
-      expect(File('$ailleurs/${second.cheminDonnees}').readAsBytesSync(),
-          octets);
+      expect(
+        File('$ailleurs/${second.cheminDonnees}').readAsBytesSync(),
+        octets,
+      );
     });
 
     test('UNE HORLOGE DE SERVEUR QUI RECULE NE PRODUIT PAS UNE PUBLICATION '
-        'INVISIBLE — l instant avance quand meme, et le fait SE DIT (610)',
-        () async {
+        'INVISIBLE — l instant avance quand meme, et le fait SE DIT (610)', () async {
       // LE SEUL CAS OU L AUTORITE DE TEMPS DOIT ETRE CORRIGEE, ET IL EST REEL :
       // correction NTP, changement de machine, ou deux publications dans la meme
       // milliseconde. Une publication portant un instant ANTERIEUR OU EGAL au
@@ -252,18 +292,29 @@ void main() {
       // L horloge RECULE de neuf jours.
       final seconde = outil(jour: 1).publier(source);
 
-      expect(seconde.revision > premiere.revision, isTrue,
-          reason: 'la monotonie est ce dont le modele a besoin : sans elle, cette '
-              'correction d altitude ne descendrait JAMAIS sur un telephone deja '
-              'a jour');
-      expect(seconde.revision.millisecondesEpoch,
-          premiere.revision.millisecondesEpoch + 1,
-          reason: 'on avance du plus petit ecart acceptable — une milliseconde — '
-              'plutot que d inventer une date');
-      expect(seconde.horlogeCorrigee, isTrue,
-          reason: 'ET CA DOIT SE DIRE : une horloge qui recule sur le serveur de '
-              'publication est un probleme d infrastructure, et tout le modele '
-              'repose sur elle. L avaler serait le cacher.');
+      expect(
+        seconde.revision > premiere.revision,
+        isTrue,
+        reason:
+            'la monotonie est ce dont le modele a besoin : sans elle, cette '
+            'correction d altitude ne descendrait JAMAIS sur un telephone deja '
+            'a jour',
+      );
+      expect(
+        seconde.revision.millisecondesEpoch,
+        premiere.revision.millisecondesEpoch + 1,
+        reason:
+            'on avance du plus petit ecart acceptable — une milliseconde — '
+            'plutot que d inventer une date',
+      );
+      expect(
+        seconde.horlogeCorrigee,
+        isTrue,
+        reason:
+            'ET CA DOIT SE DIRE : une horloge qui recule sur le serveur de '
+            'publication est un probleme d infrastructure, et tout le modele '
+            'repose sur elle. L avaler serait le cacher.',
+      );
     });
   });
 
@@ -286,53 +337,64 @@ void main() {
           .cast<Map<String, dynamic>>()
           .firstWhere((p) => p['id'] == 'montsdore-p1');
       expect(marqueur[RevisionDeDonnee.champSupprime], isTrue);
-      expect(marqueur[RevisionDeDonnee.champRevision],
-          instantAuJour(2).iso8601);
+      expect(
+        marqueur[RevisionDeDonnee.champRevision],
+        instantAuJour(2).iso8601,
+      );
       expect(marqueur.keys, containsAll(['id', 'rev', 'supprime']));
-      expect(marqueur.containsKey('name_fr'), isFalse,
-          reason: 'un marqueur ne porte que son identite (#R7) : la donnee '
-              'n existe plus, la republier en entier serait trompeur');
+      expect(
+        marqueur.containsKey('name_fr'),
+        isFalse,
+        reason:
+            'un marqueur ne porte que son identite (#R7) : la donnee '
+            'n existe plus, la republier en entier serait trompeur',
+      );
     });
 
-    test('UN POINT DE TRACE RETIRE PORTE `track_id` ET `sequence_index` — il n a '
-        'pas d identifiant propre (#R8)', () async {
-      outil(jour: 1).publier(source);
+    test(
+      'UN POINT DE TRACE RETIRE PORTE `track_id` ET `sequence_index` — il n a '
+      'pas d identifiant propre (#R8)',
+      () async {
+        outil(jour: 1).publier(source);
 
-      final contenu = lireSource();
-      // La trace vient du GPX : on la remplace par une trace plus courte.
-      contenu.remove('trace_depuis_gpx');
-      contenu['gpx_tracks'] = [
-        {
-          'id': 'montsdore-t1',
-          'itinerary_id': 'montsdore-i1',
-          'name': 'Tour des Monts Dore (fictif)',
-        }
-      ];
-      contenu['gpx_points'] = [
-        for (var i = 0; i < 8; i++)
+        final contenu = lireSource();
+        // La trace vient du GPX : on la remplace par une trace plus courte.
+        contenu.remove('trace_depuis_gpx');
+        contenu['gpx_tracks'] = [
           {
-            'track_id': 'montsdore-t1',
-            'sequence_index': i,
-            'lat': _traceDeReference[i][0],
-            'lng': _traceDeReference[i][1],
-            'elevation': _traceDeReference[i][2],
-          }
-      ];
-      ecrireSource(contenu);
+            'id': 'montsdore-t1',
+            'itinerary_id': 'montsdore-i1',
+            'name': 'Tour des Monts Dore (fictif)',
+          },
+        ];
+        contenu['gpx_points'] = [
+          for (var i = 0; i < 8; i++)
+            {
+              'track_id': 'montsdore-t1',
+              'sequence_index': i,
+              'lat': _traceDeReference[i][0],
+              'lng': _traceDeReference[i][1],
+              'elevation': _traceDeReference[i][2],
+            },
+        ];
+        ecrireSource(contenu);
 
-      final resultat = outil(jour: 2).publier(source);
+        final resultat = outil(jour: 2).publier(source);
 
-      expect(resultat.recalcul.retires,
-          ['gpx_points/montsdore-t1#8', 'gpx_points/montsdore-t1#9']);
-      final marqueurs = (lirePublication(2)['gpx_points'] as List)
-          .cast<Map<String, dynamic>>()
-          .where((p) => p[RevisionDeDonnee.champSupprime] == true)
-          .toList();
-      expect(marqueurs, hasLength(2));
-      expect(marqueurs.first['track_id'], 'montsdore-t1');
-      expect(marqueurs.first['sequence_index'], 8);
-      expect(marqueurs.first.containsKey('id'), isFalse);
-    });
+        expect(resultat.recalcul.retires, [
+          'gpx_points/montsdore-t1#8',
+          'gpx_points/montsdore-t1#9',
+        ]);
+        final marqueurs = (lirePublication(2)['gpx_points'] as List)
+            .cast<Map<String, dynamic>>()
+            .where((p) => p[RevisionDeDonnee.champSupprime] == true)
+            .toList();
+        expect(marqueurs, hasLength(2));
+        expect(marqueurs.first['track_id'], 'montsdore-t1');
+        expect(marqueurs.first['sequence_index'], 8);
+        expect(marqueurs.first.containsKey('id'), isFalse);
+      },
+    );
 
     test('LA FENETRE DE RETENTION : un marqueur est conserve quatre-vingt-dix '
         'jours puis PURGE — et c est la MEME duree que celle sur laquelle '
@@ -373,32 +435,42 @@ void main() {
         );
 
         if (dansLaFenetre) {
-          expect(marqueurs, hasLength(1),
-              reason: 'jour $jour : le marqueur du jour 2 est encore dans la '
-                  'fenetre de ${RevisionDeDonnee.fenetreDeRetention.inDays} '
-                  'jours, donc un telephone reste au jour 1 le recevra');
+          expect(
+            marqueurs,
+            hasLength(1),
+            reason:
+                'jour $jour : le marqueur du jour 2 est encore dans la '
+                'fenetre de ${RevisionDeDonnee.fenetreDeRetention.inDays} '
+                'jours, donc un telephone reste au jour 1 le recevra',
+          );
           expect(
             RevisionDeDonnee.exigeUneCopieComplete(
               revisionLocale: instantAuJour(1),
               revisionCible: instantAuJour(jour),
             ),
             isFalse,
-            reason: 'et tant que le marqueur est publie, le rattrapage par '
+            reason:
+                'et tant que le marqueur est publie, le rattrapage par '
                 'morceaux suffit : les deux moities disent la meme chose',
           );
         } else {
-          expect(marqueurs, isEmpty,
-              reason: 'jour $jour : le marqueur du jour 2 sort de la fenetre. Un '
-                  'telephone encore au jour 1 a desormais ${jour - 1} jours de '
-                  'retard : il releve de la COPIE COMPLETE, pas du rattrapage '
-                  'par morceaux.');
+          expect(
+            marqueurs,
+            isEmpty,
+            reason:
+                'jour $jour : le marqueur du jour 2 sort de la fenetre. Un '
+                'telephone encore au jour 1 a desormais ${jour - 1} jours de '
+                'retard : il releve de la COPIE COMPLETE, pas du rattrapage '
+                'par morceaux.',
+          );
           expect(
             RevisionDeDonnee.exigeUneCopieComplete(
               revisionLocale: instantAuJour(1),
               revisionCible: instantAuJour(jour),
             ),
             isTrue,
-            reason: 'LES DEUX MOITIES DE LA REGLE SE REJOIGNENT : l outil purge '
+            reason:
+                'LES DEUX MOITIES DE LA REGLE SE REJOIGNENT : l outil purge '
                 'exactement quand l application bascule en copie complete. Deux '
                 'constantes independantes auraient donne un decalage '
                 'silencieux, et du mauvais cote.',
@@ -421,8 +493,10 @@ void main() {
       final resultat = outil(jour: 3).publier(source);
 
       expect(resultat.recalcul.ajoutes, ['pois/montsdore-p1']);
-      expect(revisionDe(lirePublication(3), 'pois', 'montsdore-p1'),
-          instantAuJour(3));
+      expect(
+        revisionDe(lirePublication(3), 'pois', 'montsdore-p1'),
+        instantAuJour(3),
+      );
     });
   });
 
@@ -433,7 +507,9 @@ void main() {
     test('L ENTREE DE LISTE PORTE L EMPREINTE DES OCTETS REELLEMENT ECRITS, et '
         'la taille annoncee est la vraie', () async {
       final resultat = outil(jour: 1).publier(source);
-      final octets = File('$publie/${resultat.cheminDonnees}').readAsBytesSync();
+      final octets = File(
+        '$publie/${resultat.cheminDonnees}',
+      ).readAsBytesSync();
       final entree = lireLEntree();
 
       expect(entree.hash, EmpreinteDePublication.de(octets));
@@ -445,9 +521,13 @@ void main() {
       // noms pour un fait, c est deux autorites dont la plus silencieuse gagne.
       // L outil les ecrit depuis la meme valeur, a un seul endroit.
       expect(entree.lastUpdated, instantAuJour(1).iso8601);
-      expect(entree.fiche, isNotNull,
-          reason: 'SANS FICHE, UN SENTIER NEUF EST INVISIBLE (#M9) : c etait le '
-              'mur du lot 605');
+      expect(
+        entree.fiche,
+        isNotNull,
+        reason:
+            'SANS FICHE, UN SENTIER NEUF EST INVISIBLE (#M9) : c etait le '
+            'mur du lot 605',
+      );
       expect(entree.fiche!.displayName, 'Tour des Monts Dore');
     });
 
@@ -468,20 +548,25 @@ void main() {
       expect(anomalies.join('\n'), contains('EMPREINTE NON CONFORME'));
     });
 
-    test('UNE ENTREE QUI POINTE SUR UN FICHIER ABSENT EST DETECTEE (#P1)',
-        () async {
-      final resultat = outil(jour: 1).publier(source);
-      File('$publie/${resultat.cheminDonnees}').deleteSync();
+    test(
+      'UNE ENTREE QUI POINTE SUR UN FICHIER ABSENT EST DETECTEE (#P1)',
+      () async {
+        final resultat = outil(jour: 1).publier(source);
+        File('$publie/${resultat.cheminDonnees}').deleteSync();
 
-      expect(outil(jour: 1).verifier().join('\n'), contains('absent du depot'));
-    });
+        expect(
+          outil(jour: 1).verifier().join('\n'),
+          contains('absent du depot'),
+        );
+      },
+    );
 
     test('`verifier` REFUSE une liste dont la revision est inferieure a celle '
         'des enregistrements qu elle publie', () async {
       final resultat = outil(jour: 1).publier(source);
       final fichier = File('$publie/${resultat.cheminDonnees}');
-      final donnees = jsonDecode(fichier.readAsStringSync())
-          as Map<String, dynamic>;
+      final donnees =
+          jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
       (donnees['stages'] as List)[0][RevisionDeDonnee.champRevision] =
           instantAuJour(9).iso8601;
       final corps = jsonEncode(donnees);
@@ -491,8 +576,9 @@ void main() {
       // veut voir, pas celle de l empreinte.
       final liste = File('$publie/${Publicateur.nomDeLaListe}');
       final brut = jsonDecode(liste.readAsStringSync()) as Map<String, dynamic>;
-      (brut['trails'] as List)[0]['hash'] =
-          EmpreinteDePublication.duTexte(corps);
+      (brut['trails'] as List)[0]['hash'] = EmpreinteDePublication.duTexte(
+        corps,
+      );
       (brut['trails'] as List)[0]['fileSize'] = utf8.encode(corps).length;
       liste.writeAsStringSync(jsonEncode(brut));
 
@@ -525,7 +611,10 @@ void main() {
   // 4. CE QUE L OUTIL REFUSE DE PUBLIER
   // =========================================================================
   group('607 — l outil refuse ce qui casserait la copie sur le telephone', () {
-    void refuse(void Function(Map<String, dynamic> contenu) abimer, Matcher motif) {
+    void refuse(
+      void Function(Map<String, dynamic> contenu) abimer,
+      Matcher motif,
+    ) {
       final contenu = lireSource();
       abimer(contenu);
       ecrireSource(contenu);
@@ -533,8 +622,11 @@ void main() {
         () => outil(jour: 1).publier(source),
         throwsA(isA<Exception>().having((e) => e.toString(), 'motif', motif)),
       );
-      expect(Directory(publie).existsSync(), isFalse,
-          reason: 'un refus n ecrit RIEN : ni fichier de donnees, ni liste');
+      expect(
+        Directory(publie).existsSync(),
+        isFalse,
+        reason: 'un refus n ecrit RIEN : ni fichier de donnees, ni liste',
+      );
     }
 
     test('une trace rattachee a un itineraire non publie — la carte serait '
@@ -599,10 +691,7 @@ void main() {
 
     test('un sentier sans trace : depuis la tache 606 c est ce qui le rend '
         'MARCHABLE, et c est obligatoire (#F15)', () {
-      refuse(
-        (c) => c.remove('trace_depuis_gpx'),
-        contains('aucune trace'),
-      );
+      refuse((c) => c.remove('trace_depuis_gpx'), contains('aucune trace'));
     });
   });
 
@@ -614,9 +703,9 @@ void main() {
     test('une entree de liste SEULE, en `draft`, sans fichier de donnees', () {
       final pyrenees = '${bac.path.replaceAll(r'\', '/')}/pyrenees';
       Directory(pyrenees).createSync(recursive: true);
-      File('$pyrenees/${SourceDeSentier.nomDuFichier}').writeAsStringSync(
-        jsonEncode(_sourceDesPyrenees),
-      );
+      File(
+        '$pyrenees/${SourceDeSentier.nomDuFichier}',
+      ).writeAsStringSync(jsonEncode(_sourceDesPyrenees));
 
       final resultat = Publicateur(
         sortie: publie,
@@ -628,14 +717,21 @@ void main() {
 
       final entree = lireLEntree();
       expect(entree.status, 'draft');
-      expect(entree.estActive, isFalse,
-          reason: 'UN SENTIER COMPILE ABSENT DE LA LISTE EST CONSERVE au '
-              'catalogue (#M10) : le retrait doit se DIRE. C est ce que rien ne '
-              'savait fabriquer avant ce lot, et c est ce qui sort du catalogue '
-              'un sentier qui n a pas de donnees.');
+      expect(
+        entree.estActive,
+        isFalse,
+        reason:
+            'UN SENTIER COMPILE ABSENT DE LA LISTE EST CONSERVE au '
+            'catalogue (#M10) : le retrait doit se DIRE. C est ce que rien ne '
+            'savait fabriquer avant ce lot, et c est ce qui sort du catalogue '
+            'un sentier qui n a pas de donnees.',
+      );
       expect(entree.filePath, isEmpty);
-      expect(entree.fiche, isNotNull,
-          reason: 'la fiche reste, pour le jour ou le statut repasse a active');
+      expect(
+        entree.fiche,
+        isNotNull,
+        reason: 'la fiche reste, pour le jour ou le statut repasse a active',
+      );
     });
 
     test('la source des Pyrenees DU DEPOT est valide et produit bien un '
@@ -664,8 +760,9 @@ void main() {
         't1#3',
       );
       expect(
-        RevisionSelective.identite(
-            MorceauxDeSentier.pointsDeTrace, const {'track_id': 't1'}),
+        RevisionSelective.identite(MorceauxDeSentier.pointsDeTrace, const {
+          'track_id': 't1',
+        }),
         isNull,
         reason: 'sans rang, deux points du meme trace seraient indiscernables',
       );
@@ -676,9 +773,11 @@ void main() {
       const nue = {'id': 'a', 'lat': 1.0};
       expect(
         RevisionSelective.empreinteDeContenu(nue),
-        RevisionSelective.empreinteDeContenu(
-          {...nue, 'rev': '2026-09-28T00:30:00.000Z', 'supprime': false},
-        ),
+        RevisionSelective.empreinteDeContenu({
+          ...nue,
+          'rev': '2026-09-28T00:30:00.000Z',
+          'supprime': false,
+        }),
       );
     });
   });

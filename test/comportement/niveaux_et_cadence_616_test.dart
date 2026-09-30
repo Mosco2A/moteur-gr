@@ -91,8 +91,9 @@ void main() {
     publie = '${bac.path.replaceAll(r'\', '/')}/publie';
     Directory(source).createSync(recursive: true);
     for (final nom in const ['sentier.json', 'trace.gpx']) {
-      File('test/fixtures/publication/gr-monts-dore/$nom')
-          .copySync('$source/$nom');
+      File(
+        'test/fixtures/publication/gr-monts-dore/$nom',
+      ).copySync('$source/$nom');
     }
     db = AppDatabase(NativeDatabase.memory());
     manifestes = TrailManifestsDao(db);
@@ -111,25 +112,31 @@ void main() {
 
   HorodatageServeur instantAuJour(int jour) =>
       HorodatageServeur.annonceParLeServeur(
-          horlogeAuJour(jour).toIso8601String())!;
+        horlogeAuJour(jour).toIso8601String(),
+      )!;
 
-  ManifestService listeService({ConnectivityStatus? statut, MockClient? client}) =>
-      ManifestService(
-        dao: manifestes,
-        connectivityMonitor:
-            _ReseauPilotable(statut ?? ConnectivityStatusValues.online),
-        httpClient: client,
-      );
+  ManifestService listeService({
+    ConnectivityStatus? statut,
+    MockClient? client,
+  }) => ManifestService(
+    dao: manifestes,
+    connectivityMonitor: _ReseauPilotable(
+      statut ?? ConnectivityStatusValues.online,
+    ),
+    httpClient: client,
+  );
 
   /// Publie l etat courant de la source et conserve son entree en base.
   Future<TrailManifestEntry> publier({int jour = 1}) async {
     Publicateur(sortie: publie, horloge: horlogeAuJour(jour)).publier(source);
-    final brut = jsonDecode(
-      File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
-    ) as Map<String, dynamic>;
-    final entree = TrailManifest.fromJson(brut)
-        .trails
-        .firstWhere((e) => e.trailId == 'gr-monts-dore');
+    final brut =
+        jsonDecode(
+              File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final entree = TrailManifest.fromJson(
+      brut,
+    ).trails.firstWhere((e) => e.trailId == 'gr-monts-dore');
     await listeService().saveLocalManifest(entree);
     return entree;
   }
@@ -145,8 +152,11 @@ void main() {
           continue;
         }
         if (chemin != Publicateur.nomDeLaListe) requetesDonnees.add(chemin);
-        return http.Response.bytes(File(fichier).readAsBytesSync(), 200,
-            headers: {'content-type': 'application/json; charset=utf-8'});
+        return http.Response.bytes(
+          File(fichier).readAsBytesSync(),
+          200,
+          headers: {'content-type': 'application/json; charset=utf-8'},
+        );
       }
       return http.Response('non trouve', 404);
     });
@@ -176,29 +186,36 @@ void main() {
   /// a voir avec ce qu il verifie.
   Future<Map<String, int>> enBase() async {
     final etapes = <String>[];
-    for (final itineraire
-        in await TrailItinerariesDao(db).getByTrailId('gr-monts-dore')) {
-      etapes.addAll((await TrailStagesDao(db).getByItineraryId(itineraire.id))
-          .map((e) => e.id));
+    for (final itineraire in await TrailItinerariesDao(
+      db,
+    ).getByTrailId('gr-monts-dore')) {
+      etapes.addAll(
+        (await TrailStagesDao(
+          db,
+        ).getByItineraryId(itineraire.id)).map((e) => e.id),
+      );
     }
     var hebergements = 0;
     var pointsDInteret = 0;
     for (final etape in etapes) {
-      hebergements +=
-          (await TrailAccommodationsDao(db).getByStageId(etape)).length;
+      hebergements += (await TrailAccommodationsDao(
+        db,
+      ).getByStageId(etape)).length;
       pointsDInteret += (await TrailPoisDao(db).getByStageId(etape)).length;
     }
     return {
       MorceauxDeSentier.fiche:
           await TrailMetaDao(db).getById('gr-monts-dore') == null ? 0 : 1,
-      MorceauxDeSentier.itineraires:
-          (await TrailItinerariesDao(db).getByTrailId('gr-monts-dore')).length,
+      MorceauxDeSentier.itineraires: (await TrailItinerariesDao(
+        db,
+      ).getByTrailId('gr-monts-dore')).length,
       MorceauxDeSentier.etapes: etapes.length,
       MorceauxDeSentier.hebergements: hebergements,
       MorceauxDeSentier.pointsDInteret: pointsDInteret,
       MorceauxDeSentier.traces: (await TrailGpxTracksDao(db).getAll()).length,
-      MorceauxDeSentier.pointsDeTrace:
-          (await TrailGpxPointsDao(db).getAll()).length,
+      MorceauxDeSentier.pointsDeTrace: (await TrailGpxPointsDao(
+        db,
+      ).getAll()).length,
     };
   }
 
@@ -213,20 +230,24 @@ void main() {
     final contenu =
         jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
     (contenu['stages'] as List).first as Map<String, dynamic>;
-    ((contenu['stages'] as List).first as Map<String, dynamic>)['elevation_gain'] =
+    ((contenu['stages'] as List).first
+            as Map<String, dynamic>)['elevation_gain'] =
         nouvelle;
     fichier.writeAsStringSync(jsonEncode(contenu));
   }
 
   ProviderContainer conteneur() {
     final reseau = _ReseauPilotable(ConnectivityStatusValues.online);
-    return ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      connectivityMonitorProvider.overrideWithValue(reseau),
-      manifestServiceProvider
-          .overrideWithValue(listeService(client: stockage())),
-      deltaUpdateServiceProvider.overrideWith((ref) => service()),
-    ]);
+    return ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        connectivityMonitorProvider.overrideWithValue(reseau),
+        manifestServiceProvider.overrideWithValue(
+          listeService(client: stockage()),
+        ),
+        deltaUpdateServiceProvider.overrideWith((ref) => service()),
+      ],
+    );
   }
 
   // =========================================================================
@@ -256,20 +277,28 @@ void main() {
       // ET SURTOUT : LE RESEAU N A PAS ETE TOUCHE. C est la reponse exacte a
       // Christophe — la fiche du catalogue est deja arrivee avec la liste, il n y
       // a rien de plus a chercher pour decider si un sentier plait.
-      expect(requetesDonnees, isEmpty,
-          reason: 'regarder un sentier au catalogue ne doit ouvrir AUCUNE '
-              'connexion vers son fichier de donnees');
+      expect(
+        requetesDonnees,
+        isEmpty,
+        reason:
+            'regarder un sentier au catalogue ne doit ouvrir AUCUNE '
+            'connexion vers son fichier de donnees',
+      );
 
-      expect(await enBase(), {
-        for (final f in MorceauxDeSentier.tous) f: 0,
-      });
+      expect(await enBase(), {for (final f in MorceauxDeSentier.tous) f: 0});
 
       // LE REPERE N EST PAS POSE : le sentier n est pas « telecharge ».
-      expect((await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
-          isNull);
-      expect(await manifestes.getTelecharges(), isEmpty,
-          reason: 'un sentier qu on a seulement regarde ne doit pas entrer dans '
-              'le perimetre de la cadence : il n y a rien a y maintenir a jour');
+      expect(
+        (await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
+        isNull,
+      );
+      expect(
+        await manifestes.getTelecharges(),
+        isEmpty,
+        reason:
+            'un sentier qu on a seulement regarde ne doit pas entrer dans '
+            'le perimetre de la cadence : il n y a rien a y maintenir a jour',
+      );
     });
 
     test('PREPARER descend les CINQ familles de la faisabilite et du sac — '
@@ -284,9 +313,13 @@ void main() {
         niveau: NiveauDeTelechargement.preparer,
       );
 
-      expect(bilan.ecrits, 8,
-          reason: '1 fiche + 1 itineraire + 2 etapes + 2 hebergements + 2 points '
-              'd interet');
+      expect(
+        bilan.ecrits,
+        8,
+        reason:
+            '1 fiche + 1 itineraire + 2 etapes + 2 hebergements + 2 points '
+            'd interet',
+      );
       expect(bilan.retenus, 8);
       expect(bilan.famillesTouchees, const [
         'trail_meta',
@@ -314,211 +347,269 @@ void main() {
       // ont traverse le reseau et sont ecartes a la porte. Le chiffre reste
       // visible parce qu il est genant — c est lui qui dit que l economie de
       // transport n arrivera qu avec une source interrogeable.
-      expect(bilan.ecartesHorsNiveau, 11,
-          reason: '1 entete de trace + 10 points : descendus par le transport '
-              'global, jamais ecrits');
+      expect(
+        bilan.ecartesHorsNiveau,
+        11,
+        reason:
+            '1 entete de trace + 10 points : descendus par le transport '
+            'global, jamais ecrits',
+      );
       expect(bilan.transferes, 19);
       expect(bilan.transferesEnTrop, 11);
     });
 
-    test('REALISER descend TOUT : 19 enregistrements, les sept familles',
-        () async {
-      final entree = await publier();
+    test(
+      'REALISER descend TOUT : 19 enregistrements, les sept familles',
+      () async {
+        final entree = await publier();
 
-      final bilan = await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.realiser,
-      );
-
-      expect(bilan.ecrits, 19);
-      expect(bilan.retenus, 19);
-      expect(bilan.ecartesHorsNiveau, 0,
-          reason: 'a ce niveau rien n est hors perimetre');
-      expect(bilan.famillesTouchees, MorceauxDeSentier.tous);
-      expect(bilan.niveauAtteint, NiveauDeTelechargement.realiser);
-
-      expect(await enBase(), {
-        'trail_meta': 1,
-        'itineraries': 1,
-        'stages': 2,
-        'accommodations': 2,
-        'pois': 2,
-        'gpx_tracks': 1,
-        'gpx_points': 10,
-      });
-    });
-
-    test('LE PERIMETRE DE CHAQUE NIVEAU EST EMBOITE, et le volumineux est nomme '
-        'une seule fois', () {
-      expect(NiveauDeTelechargement.regarder.familles, isEmpty);
-      expect(NiveauDeTelechargement.preparer.familles, hasLength(5));
-      expect(NiveauDeTelechargement.realiser.familles, MorceauxDeSentier.tous);
-
-      // EMBOITEMENT : c est ce qui rend « faut-il completer ? » decidable.
-      for (final bas in NiveauDeTelechargement.values) {
-        for (final haut in NiveauDeTelechargement.values) {
-          if (!haut.couvre(bas)) continue;
-          expect(haut.familles, containsAll(bas.familles),
-              reason: '${haut.code} doit porter tout ce que porte ${bas.code}');
-        }
-      }
-
-      // LA FRONTIERE DE VOLUME EST EXACTEMENT LA TRACE ET SES POINTS.
-      expect(
-        NiveauDeTelechargement.realiser.familles
-            .where((f) => !NiveauDeTelechargement.preparer.porte(f)),
-        NiveauDeTelechargement.volumineux,
-      );
-      expect(NiveauDeTelechargement.volumineux,
-          const ['gpx_tracks', 'gpx_points']);
-
-      // L ORDRE DES CLES ETRANGERES EST PRESERVE PAR CHAQUE NIVEAU : un
-      // hebergement pose avant son etape echouerait.
-      for (final niveau in NiveauDeTelechargement.values) {
-        expect(
-          niveau.familles,
-          MorceauxDeSentier.tous.where(niveau.porte).toList(),
-          reason: '${niveau.code} doit suivre l ordre d insertion, pas un autre',
+        final bilan = await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.realiser,
         );
-      }
-    });
 
-    test('LE CODE PERSISTE SURVIT A UN RENOMMAGE, et une valeur illisible retombe '
-        'au niveau le PLUS BAS', () {
-      for (final niveau in NiveauDeTelechargement.values) {
-        expect(NiveauDeTelechargement.depuisLeCode(niveau.code), niveau);
-      }
-      expect(NiveauDeTelechargement.depuisLeCode(null), isNull);
-      expect(NiveauDeTelechargement.depuisLeCode('niveau-d-une-version-future'),
+        expect(bilan.ecrits, 19);
+        expect(bilan.retenus, 19);
+        expect(
+          bilan.ecartesHorsNiveau,
+          0,
+          reason: 'a ce niveau rien n est hors perimetre',
+        );
+        expect(bilan.famillesTouchees, MorceauxDeSentier.tous);
+        expect(bilan.niveauAtteint, NiveauDeTelechargement.realiser);
+
+        expect(await enBase(), {
+          'trail_meta': 1,
+          'itineraries': 1,
+          'stages': 2,
+          'accommodations': 2,
+          'pois': 2,
+          'gpx_tracks': 1,
+          'gpx_points': 10,
+        });
+      },
+    );
+
+    test(
+      'LE PERIMETRE DE CHAQUE NIVEAU EST EMBOITE, et le volumineux est nomme '
+      'une seule fois',
+      () {
+        expect(NiveauDeTelechargement.regarder.familles, isEmpty);
+        expect(NiveauDeTelechargement.preparer.familles, hasLength(5));
+        expect(
+          NiveauDeTelechargement.realiser.familles,
+          MorceauxDeSentier.tous,
+        );
+
+        // EMBOITEMENT : c est ce qui rend « faut-il completer ? » decidable.
+        for (final bas in NiveauDeTelechargement.values) {
+          for (final haut in NiveauDeTelechargement.values) {
+            if (!haut.couvre(bas)) continue;
+            expect(
+              haut.familles,
+              containsAll(bas.familles),
+              reason: '${haut.code} doit porter tout ce que porte ${bas.code}',
+            );
+          }
+        }
+
+        // LA FRONTIERE DE VOLUME EST EXACTEMENT LA TRACE ET SES POINTS.
+        expect(
+          NiveauDeTelechargement.realiser.familles.where(
+            (f) => !NiveauDeTelechargement.preparer.porte(f),
+          ),
+          NiveauDeTelechargement.volumineux,
+        );
+        expect(NiveauDeTelechargement.volumineux, const [
+          'gpx_tracks',
+          'gpx_points',
+        ]);
+
+        // L ORDRE DES CLES ETRANGERES EST PRESERVE PAR CHAQUE NIVEAU : un
+        // hebergement pose avant son etape echouerait.
+        for (final niveau in NiveauDeTelechargement.values) {
+          expect(
+            niveau.familles,
+            MorceauxDeSentier.tous.where(niveau.porte).toList(),
+            reason:
+                '${niveau.code} doit suivre l ordre d insertion, pas un autre',
+          );
+        }
+      },
+    );
+
+    test(
+      'LE CODE PERSISTE SURVIT A UN RENOMMAGE, et une valeur illisible retombe '
+      'au niveau le PLUS BAS',
+      () {
+        for (final niveau in NiveauDeTelechargement.values) {
+          expect(NiveauDeTelechargement.depuisLeCode(niveau.code), niveau);
+        }
+        expect(NiveauDeTelechargement.depuisLeCode(null), isNull);
+        expect(
+          NiveauDeTelechargement.depuisLeCode('niveau-d-une-version-future'),
           isNull,
-          reason: 'ne pas savoir doit faire RECOPIER, jamais faire croire '
-              'complet : l appelant replie sur « regarder »');
-    });
+          reason:
+              'ne pas savoir doit faire RECOPIER, jamais faire croire '
+              'complet : l appelant replie sur « regarder »',
+        );
+      },
+    );
   });
 
   // =========================================================================
   // 2. LE PIEGE : UN NIVEAU QUI MONTE
   // =========================================================================
   group('616 — LE PIEGE DU NIVEAU QUI MONTE, silencieux et definitif', () {
-    test('PREPARER PUIS REALISER A LA MEME PUBLICATION : la trace ARRIVE — sans '
-        'cette garde le randonneur partait sans trace en croyant avoir tout',
-        () async {
-      final entree = await publier();
+    test(
+      'PREPARER PUIS REALISER A LA MEME PUBLICATION : la trace ARRIVE — sans '
+      'cette garde le randonneur partait sans trace en croyant avoir tout',
+      () async {
+        final entree = await publier();
 
-      // 1. Il prepare. Le repere est pose a l instant de publication.
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.preparer,
-      );
-      expect((await enBase())['gpx_points'], 0);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.preparer);
-
-      // 2. Il decide de partir. LE SERVEUR N A RIEN PUBLIE ENTRE-TEMPS : la date
-      // distante est identique a son repere. Toute la regle de revision dit donc
-      // « tu es a jour » — et les points de trace, dates du jour 1, seraient
-      // refuses un a un, en silence, pour toujours.
-      final bilan = await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.realiser,
-      );
-
-      expect(bilan.ecrits, 19,
-          reason: 'la montee de niveau repart de l origine : tout est repose au '
-              'nouveau niveau, dans la meme transaction');
-      expect((await enBase())['gpx_points'], 10,
-          reason: 'C EST LE DEFAUT QUE CE LOT FERME. Sans la colonne de niveau, '
-              'ce compte resterait a zero et rien ne le dirait jamais.');
-      expect((await enBase())['gpx_tracks'], 1);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.realiser);
-    });
-
-    test('UN NIVEAU QUI BAISSE NE RETIRE RIEN : liberer de la place est un AUTRE '
-        'geste', () async {
-      final entree = await publier();
-
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.realiser,
-      );
-      expect((await enBase())['gpx_points'], 10);
-
-      // Une demande a un niveau INFERIEUR ne doit pas effacer la trace du
-      // randonneur qui part demain.
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.preparer,
-      );
-
-      expect((await enBase())['gpx_points'], 10);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.realiser,
-          reason: 'le niveau inscrit est le PLUS HAUT atteint, pas le dernier '
-              'demande');
-    });
-
-    test('LE NIVEAU EST OUBLIE AVEC LE REPERE quand le sentier est supprime',
-        () async {
-      final entree = await publier();
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.realiser,
-      );
-
-      await manifestes.oublierRevision('gr-monts-dore');
-
-      expect(await manifestes.niveauDe('gr-monts-dore'), isNull,
-          reason: 'un niveau qui survivrait a la suppression dirait « realiser » '
-              'sur un sentier vide, et la reprise croirait n avoir qu une mise a '
-              'jour a faire');
-      expect(await manifestes.getTelecharges(), isEmpty);
-    });
-
-    test('LE NIVEAU SURVIT A UN RAFRAICHISSEMENT DU CATALOGUE, comme le repere',
-        () async {
-      final entree = await publier();
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.preparer,
-      );
-
-      // La lecture du catalogue reecrit la ligne de liste a chaque passage.
-      await listeService().saveLocalManifest(entree);
-
-      expect(await manifestes.niveauDe('gr-monts-dore'),
+        // 1. Il prepare. Le repere est pose a l instant de publication.
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.preparer,
+        );
+        expect((await enBase())['gpx_points'], 0);
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
           NiveauDeTelechargement.preparer,
-          reason: 'un niveau efface a chaque rafraichissement du catalogue '
-              'ferait recopier le sentier entier a chaque ouverture');
-    });
+        );
+
+        // 2. Il decide de partir. LE SERVEUR N A RIEN PUBLIE ENTRE-TEMPS : la date
+        // distante est identique a son repere. Toute la regle de revision dit donc
+        // « tu es a jour » — et les points de trace, dates du jour 1, seraient
+        // refuses un a un, en silence, pour toujours.
+        final bilan = await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.realiser,
+        );
+
+        expect(
+          bilan.ecrits,
+          19,
+          reason:
+              'la montee de niveau repart de l origine : tout est repose au '
+              'nouveau niveau, dans la meme transaction',
+        );
+        expect(
+          (await enBase())['gpx_points'],
+          10,
+          reason:
+              'C EST LE DEFAUT QUE CE LOT FERME. Sans la colonne de niveau, '
+              'ce compte resterait a zero et rien ne le dirait jamais.',
+        );
+        expect((await enBase())['gpx_tracks'], 1);
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
+          NiveauDeTelechargement.realiser,
+        );
+      },
+    );
+
+    test(
+      'UN NIVEAU QUI BAISSE NE RETIRE RIEN : liberer de la place est un AUTRE '
+      'geste',
+      () async {
+        final entree = await publier();
+
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.realiser,
+        );
+        expect((await enBase())['gpx_points'], 10);
+
+        // Une demande a un niveau INFERIEUR ne doit pas effacer la trace du
+        // randonneur qui part demain.
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.preparer,
+        );
+
+        expect((await enBase())['gpx_points'], 10);
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
+          NiveauDeTelechargement.realiser,
+          reason:
+              'le niveau inscrit est le PLUS HAUT atteint, pas le dernier '
+              'demande',
+        );
+      },
+    );
+
+    test(
+      'LE NIVEAU EST OUBLIE AVEC LE REPERE quand le sentier est supprime',
+      () async {
+        final entree = await publier();
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.realiser,
+        );
+
+        await manifestes.oublierRevision('gr-monts-dore');
+
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
+          isNull,
+          reason:
+              'un niveau qui survivrait a la suppression dirait « realiser » '
+              'sur un sentier vide, et la reprise croirait n avoir qu une mise a '
+              'jour a faire',
+        );
+        expect(await manifestes.getTelecharges(), isEmpty);
+      },
+    );
+
+    test(
+      'LE NIVEAU SURVIT A UN RAFRAICHISSEMENT DU CATALOGUE, comme le repere',
+      () async {
+        final entree = await publier();
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.preparer,
+        );
+
+        // La lecture du catalogue reecrit la ligne de liste a chaque passage.
+        await listeService().saveLocalManifest(entree);
+
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
+          NiveauDeTelechargement.preparer,
+          reason:
+              'un niveau efface a chaque rafraichissement du catalogue '
+              'ferait recopier le sentier entier a chaque ouverture',
+        );
+      },
+    );
   });
 
   // =========================================================================
   // 3. LA CADENCE — ELLE N EXISTAIT PAS
   // =========================================================================
-  group('616 — LA CADENCE : au retour du reseau, puis toutes les quatre heures',
-      () {
+  group('616 — LA CADENCE : au retour du reseau, puis toutes les quatre heures', () {
     /// Un ordonnanceur cable sur la vraie chaine, avec une cadence courte.
     ///
     /// LA CADENCE REELLE EST DE QUATRE HEURES et elle vit dans
@@ -530,7 +621,8 @@ void main() {
       OrdonnanceurDeSynchronisation ordonnanceur,
       _ReseauPilotable reseau,
       _CheckerTropLarge checker,
-    }) monter({Duration cadence = const Duration(milliseconds: 25)}) {
+    })
+    monter({Duration cadence = const Duration(milliseconds: 25)}) {
       final reseau = _ReseauPilotable(ConnectivityStatusValues.online);
       final checker = _CheckerTropLarge(
         dao: manifestes,
@@ -558,58 +650,83 @@ void main() {
       );
     }
 
-    test('LA CADENCE BAT : sans rien faire d autre, une passe part toute seule — '
-        'et AVANT CE LOT rien ne reveillait la synchronisation', () async {
-      await publier();
-      final m = monter();
-      addTearDown(m.ordonnanceur.arreter);
+    test(
+      'LA CADENCE BAT : sans rien faire d autre, une passe part toute seule — '
+      'et AVANT CE LOT rien ne reveillait la synchronisation',
+      () async {
+        await publier();
+        final m = monter();
+        addTearDown(m.ordonnanceur.arreter);
 
-      expect(m.ordonnanceur.passesExecutees, 0,
-          reason: 'l ordonnanceur ne synchronise PAS au demarrage : le premier '
-              'ecran ne doit pas attendre le reseau');
+        expect(
+          m.ordonnanceur.passesExecutees,
+          0,
+          reason:
+              'l ordonnanceur ne synchronise PAS au demarrage : le premier '
+              'ecran ne doit pas attendre le reseau',
+        );
 
-      m.ordonnanceur.demarrer();
-      expect(m.ordonnanceur.demarre, isTrue);
-      expect(m.ordonnanceur.passesExecutees, 0);
+        m.ordonnanceur.demarrer();
+        expect(m.ordonnanceur.demarre, isTrue);
+        expect(m.ordonnanceur.passesExecutees, 0);
 
-      await Future<void>.delayed(const Duration(milliseconds: 120));
+        await Future<void>.delayed(const Duration(milliseconds: 120));
 
-      expect(m.ordonnanceur.passesExecutees, greaterThanOrEqualTo(1),
-          reason: 'la mecanique existait depuis E4.11c et AUCUN code de '
-              'production ne l appelait — c est ce lot qui la reveille');
-    });
+        expect(
+          m.ordonnanceur.passesExecutees,
+          greaterThanOrEqualTo(1),
+          reason:
+              'la mecanique existait depuis E4.11c et AUCUN code de '
+              'production ne l appelait — c est ce lot qui la reveille',
+        );
+      },
+    );
 
-    test('LE RETOUR DU RESEAU DECLENCHE UNE PASSE, et le passage HORS ligne n en '
-        'declenche aucune', () async {
-      await publier();
-      // Cadence volontairement lointaine : seul l evenement peut declencher.
-      final m = monter(cadence: const Duration(hours: 4));
-      addTearDown(m.ordonnanceur.arreter);
-      m.ordonnanceur.demarrer();
+    test(
+      'LE RETOUR DU RESEAU DECLENCHE UNE PASSE, et le passage HORS ligne n en '
+      'declenche aucune',
+      () async {
+        await publier();
+        // Cadence volontairement lointaine : seul l evenement peut declencher.
+        final m = monter(cadence: const Duration(hours: 4));
+        addTearDown(m.ordonnanceur.arreter);
+        m.ordonnanceur.demarrer();
 
-      m.reseau.emettre(ConnectivityStatusValues.offline);
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-      expect(m.ordonnanceur.passesExecutees, 0,
-          reason: 'perdre le reseau est l evenement INVERSE : declencher la ne '
-              'produirait qu un echec de transport et un journal trompeur');
+        m.reseau.emettre(ConnectivityStatusValues.offline);
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+        expect(
+          m.ordonnanceur.passesExecutees,
+          0,
+          reason:
+              'perdre le reseau est l evenement INVERSE : declencher la ne '
+              'produirait qu un echec de transport et un journal trompeur',
+        );
 
-      m.reseau.emettre(ConnectivityStatusValues.online);
-      await Future<void>.delayed(const Duration(milliseconds: 40));
-      expect(m.ordonnanceur.passesExecutees, 1,
-          reason: 'un randonneur qui redescend d un col retrouve la 4G et doit '
-              'recevoir ce qui a ete publie pendant qu il marchait');
-    });
+        m.reseau.emettre(ConnectivityStatusValues.online);
+        await Future<void>.delayed(const Duration(milliseconds: 40));
+        expect(
+          m.ordonnanceur.passesExecutees,
+          1,
+          reason:
+              'un randonneur qui redescend d un col retrouve la 4G et doit '
+              'recevoir ce qui a ete publie pendant qu il marchait',
+        );
+      },
+    );
 
-    test('HORS LIGNE, AUCUNE PASSE NE PART, meme si l horloge echoit', () async {
-      await publier();
-      final m = monter();
-      addTearDown(m.ordonnanceur.arreter);
-      m.reseau.statut = ConnectivityStatusValues.offline;
-      m.ordonnanceur.demarrer();
+    test(
+      'HORS LIGNE, AUCUNE PASSE NE PART, meme si l horloge echoit',
+      () async {
+        await publier();
+        final m = monter();
+        addTearDown(m.ordonnanceur.arreter);
+        m.reseau.statut = ConnectivityStatusValues.offline;
+        m.ordonnanceur.demarrer();
 
-      await Future<void>.delayed(const Duration(milliseconds: 120));
-      expect(m.ordonnanceur.passesExecutees, 0);
-    });
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+        expect(m.ordonnanceur.passesExecutees, 0);
+      },
+    );
 
     test('ARRETER ARRETE VRAIMENT : plus une seule passe apres', () async {
       await publier();
@@ -626,28 +743,38 @@ void main() {
       expect(m.ordonnanceur.passesExecutees, avant);
       m.reseau.emettre(ConnectivityStatusValues.online);
       await Future<void>.delayed(const Duration(milliseconds: 40));
-      expect(m.ordonnanceur.passesExecutees, avant,
-          reason: 'l ecoute du reseau est annulee, pas seulement l horloge');
+      expect(
+        m.ordonnanceur.passesExecutees,
+        avant,
+        reason: 'l ecoute du reseau est annulee, pas seulement l horloge',
+      );
     });
 
-    test('LE PERIMETRE EST LES SENTIERS TELECHARGES : un sentier VU AU CATALOGUE '
-        'ne fait descendre AUCUNE donnee', () async {
-      await publier();
-      // Le sentier est au catalogue (sa ligne de liste existe) mais n a jamais
-      // ete copie : `localVersion` est nul.
-      expect(await manifestes.getTelecharges(), isEmpty);
+    test(
+      'LE PERIMETRE EST LES SENTIERS TELECHARGES : un sentier VU AU CATALOGUE '
+      'ne fait descendre AUCUNE donnee',
+      () async {
+        await publier();
+        // Le sentier est au catalogue (sa ligne de liste existe) mais n a jamais
+        // ete copie : `localVersion` est nul.
+        expect(await manifestes.getTelecharges(), isEmpty);
 
-      final m = monter(cadence: const Duration(hours: 4));
-      addTearDown(m.ordonnanceur.arreter);
+        final m = monter(cadence: const Duration(hours: 4));
+        addTearDown(m.ordonnanceur.arreter);
 
-      final bilans = await m.ordonnanceur.passer('test');
+        final bilans = await m.ordonnanceur.passer('test');
 
-      expect(bilans, isEmpty,
-          reason: 'sur quarante sentiers publies, un randonneur qui en a copie '
-              'un seul ne doit pas en synchroniser quarante');
-      expect(requetesDonnees, isEmpty);
-      expect(await enBase(), {for (final f in MorceauxDeSentier.tous) f: 0});
-    });
+        expect(
+          bilans,
+          isEmpty,
+          reason:
+              'sur quarante sentiers publies, un randonneur qui en a copie '
+              'un seul ne doit pas en synchroniser quarante',
+        );
+        expect(requetesDonnees, isEmpty);
+        expect(await enBase(), {for (final f in MorceauxDeSentier.tous) f: 0});
+      },
+    );
 
     test('LA CADENCE NE MONTE JAMAIS LE NIVEAU : un sentier PREPARE reste '
         'prepare, et le volumineux NE DESCEND PAS', () async {
@@ -674,9 +801,13 @@ void main() {
 
       expect(bilans, hasLength(1));
       expect(bilans.single.success, isTrue);
-      expect(bilans.single.niveau, NiveauDeTelechargement.preparer,
-          reason: 'la cadence resynchronise au niveau DEJA descendu, elle n en '
-              'porte pas un a elle');
+      expect(
+        bilans.single.niveau,
+        NiveauDeTelechargement.preparer,
+        reason:
+            'la cadence resynchronise au niveau DEJA descendu, elle n en '
+            'porte pas un a elle',
+      );
 
       // LE POINT DU TEST, ET IL EST LA DEMANDE DU 28/09 11:27 PROTEGEE PAR LA
       // PORTE DE DERRIERE : reveiller la cadence ne doit pas faire arriver 10 000
@@ -684,35 +815,44 @@ void main() {
       // toutes les quatre heures, sans que le randonneur l ait demande.
       expect((await enBase())['gpx_points'], 0);
       expect((await enBase())['gpx_tracks'], 0);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.preparer);
-      expect(bilans.single.tablesUpdated,
-          isNot(contains(MorceauxDeSentier.pointsDeTrace)));
-    });
-
-    test('LA CADENCE ENTRETIENT UN SENTIER COMPLET AU NIVEAU COMPLET', () async {
-      final entree = await publier();
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-        niveau: NiveauDeTelechargement.realiser,
+      expect(
+        await manifestes.niveauDe('gr-monts-dore'),
+        NiveauDeTelechargement.preparer,
       );
-      expect((await enBase())['gpx_points'], 10);
-
-      corrigerUneAltitude(1234);
-      await publier(jour: 2);
-
-      final m = monter(cadence: const Duration(hours: 4));
-      addTearDown(m.ordonnanceur.arreter);
-      final bilans = await m.ordonnanceur.passer('cadence de test');
-
-      expect(bilans.single.niveau, NiveauDeTelechargement.realiser);
-      expect((await enBase())['gpx_points'], 10);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.realiser);
+      expect(
+        bilans.single.tablesUpdated,
+        isNot(contains(MorceauxDeSentier.pointsDeTrace)),
+      );
     });
+
+    test(
+      'LA CADENCE ENTRETIENT UN SENTIER COMPLET AU NIVEAU COMPLET',
+      () async {
+        final entree = await publier();
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+          niveau: NiveauDeTelechargement.realiser,
+        );
+        expect((await enBase())['gpx_points'], 10);
+
+        corrigerUneAltitude(1234);
+        await publier(jour: 2);
+
+        final m = monter(cadence: const Duration(hours: 4));
+        addTearDown(m.ordonnanceur.arreter);
+        final bilans = await m.ordonnanceur.passer('cadence de test');
+
+        expect(bilans.single.niveau, NiveauDeTelechargement.realiser);
+        expect((await enBase())['gpx_points'], 10);
+        expect(
+          await manifestes.niveauDe('gr-monts-dore'),
+          NiveauDeTelechargement.realiser,
+        );
+      },
+    );
 
     test('LA CADENCE PASSE PAR `scheduleBackgroundDownload` : le point '
         'd injection du travail en arriere-plan n est PAS contourne', () async {
@@ -760,9 +900,13 @@ void main() {
 
       final bilans = await ordonnanceur.passer('test');
 
-      expect(taches, ['update_download'],
-          reason: 'le jour ou un runner workmanager est injecte, la cadence doit '
-              'en beneficier sans qu on recable l ordonnanceur');
+      expect(
+        taches,
+        ['update_download'],
+        reason:
+            'le jour ou un runner workmanager est injecte, la cadence doit '
+            'en beneficier sans qu on recable l ordonnanceur',
+      );
       expect(bilans, hasLength(1));
       expect(bilans.single.niveau, NiveauDeTelechargement.realiser);
     });
@@ -789,9 +933,13 @@ void main() {
         m.ordonnanceur.passer('retour du reseau'),
       ]);
 
-      expect(m.ordonnanceur.passesExecutees, 1,
-          reason: 'deux transactions concurrentes sur les memes tables '
-              'pourraient inscrire deux reperes pour un seul jeu de donnees');
+      expect(
+        m.ordonnanceur.passesExecutees,
+        1,
+        reason:
+            'deux transactions concurrentes sur les memes tables '
+            'pourraient inscrire deux reperes pour un seul jeu de donnees',
+      );
       expect(deux.where((b) => b.isEmpty), hasLength(1));
       expect(m.ordonnanceur.enCours, isFalse);
     });
@@ -808,17 +956,23 @@ void main() {
       addTearDown(c.dispose);
 
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail(
+      await c
+          .read(catalogStateProvider.notifier)
+          .downloadTrail(
             'gr-monts-dore',
             niveau: NiveauDeTelechargement.realiser,
           );
 
       expect(await manifestes.needsUpdate('gr-monts-dore'), isFalse);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.realiser);
+      expect(
+        await manifestes.niveauDe('gr-monts-dore'),
+        NiveauDeTelechargement.realiser,
+      );
 
       // LA TRACE S AFFICHE : c est le bout de la chaine, et il doit tenir.
-      final trace = await c.read(traceDuSentierProvider('gr-monts-dore').future);
+      final trace = await c.read(
+        traceDuSentierProvider('gr-monts-dore').future,
+      );
       expect(trace.estVide, isFalse);
       expect(trace.points, hasLength(10));
     });
@@ -830,24 +984,36 @@ void main() {
       addTearDown(c.dispose);
 
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail(
+      await c
+          .read(catalogStateProvider.notifier)
+          .downloadTrail(
             'gr-monts-dore',
             niveau: NiveauDeTelechargement.preparer,
           );
 
       // De quoi calculer la faisabilite et remplir le sac.
-      expect(await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
-          hasLength(2));
-      expect(await TrailAccommodationsDao(db).getByStageId('montsdore-s1'),
-          isNotEmpty);
+      expect(
+        await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
+        hasLength(2),
+      );
+      expect(
+        await TrailAccommodationsDao(db).getByStageId('montsdore-s1'),
+        isNotEmpty,
+      );
 
       // Mais pas de trace : preparer se fait sur les CHIFFRES des etapes.
-      final trace = await c.read(traceDuSentierProvider('gr-monts-dore').future);
-      expect(trace.estVide, isTrue,
-          reason: 'la trace ne sert qu a marcher — la suivre, se situer, mesurer '
-              'l ecart. C est le seul usage qui la justifie, et c est REALISER. '
-              'Une trace vide est NOMMEE (TraceDuSentier.source), jamais un vide '
-              'muet.');
+      final trace = await c.read(
+        traceDuSentierProvider('gr-monts-dore').future,
+      );
+      expect(
+        trace.estVide,
+        isTrue,
+        reason:
+            'la trace ne sert qu a marcher — la suivre, se situer, mesurer '
+            'l ecart. C est le seul usage qui la justifie, et c est REALISER. '
+            'Une trace vide est NOMMEE (TraceDuSentier.source), jamais un vide '
+            'muet.',
+      );
     });
 
     test('LE MODELE DE REVISION DU LOT 610 TIENT AU NIVEAU PREPARER : une etape '
@@ -872,49 +1038,69 @@ void main() {
         niveau: NiveauDeTelechargement.preparer,
       );
 
-      expect(bilan.ecrits, 0,
-          reason: 'la revision unitaire du lot 610 doit rester intacte sous les '
-              'niveaux : republier a l identique n ecrit rien');
+      expect(
+        bilan.ecrits,
+        0,
+        reason:
+            'la revision unitaire du lot 610 doit rester intacte sous les '
+            'niveaux : republier a l identique n ecrit rien',
+      );
       expect(bilan.famillesTouchees, isEmpty);
-      expect(await manifestes.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.preparer);
+      expect(
+        await manifestes.niveauDe('gr-monts-dore'),
+        NiveauDeTelechargement.preparer,
+      );
     });
 
-    test('UNE SOURCE INTERROGEABLE N INTERROGE MEME PAS LE VOLUMINEUX : c est la '
-        'ou l economie de transport est REELLE', () async {
-      final interrogees = <String>[];
-      final source = SourceInterrogeable((trailId, famille, revisionMinimale) async {
-        interrogees.add(famille);
-        return const [];
-      });
+    test(
+      'UNE SOURCE INTERROGEABLE N INTERROGE MEME PAS LE VOLUMINEUX : c est la '
+      'ou l economie de transport est REELLE',
+      () async {
+        final interrogees = <String>[];
+        final source = SourceInterrogeable((
+          trailId,
+          famille,
+          revisionMinimale,
+        ) async {
+          interrogees.add(famille);
+          return const [];
+        });
 
-      final aPrendre = await source.depuisLaRevision(
-        'gr-monts-dore',
-        adresse: 'ignoree',
-        revisionLocale: RevisionDeDonnee.revisionInitiale,
-        revisionCible: instantAuJour(1),
-        famillesDemandees: NiveauDeTelechargement.preparer.familles,
-      );
+        final aPrendre = await source.depuisLaRevision(
+          'gr-monts-dore',
+          adresse: 'ignoree',
+          revisionLocale: RevisionDeDonnee.revisionInitiale,
+          revisionCible: instantAuJour(1),
+          famillesDemandees: NiveauDeTelechargement.preparer.familles,
+        );
 
-      expect(interrogees, NiveauDeTelechargement.preparer.familles,
-          reason: 'les familles hors niveau ne sont pas filtrees a l arrivee : '
-              'elles ne sont PAS DEMANDEES');
-      expect(interrogees, isNot(contains(MorceauxDeSentier.pointsDeTrace)));
-      expect(aPrendre.ecartesHorsNiveau, 0,
-          reason: 'rien n est descendu pour rien, donc rien a ecarter');
+        expect(
+          interrogees,
+          NiveauDeTelechargement.preparer.familles,
+          reason:
+              'les familles hors niveau ne sont pas filtrees a l arrivee : '
+              'elles ne sont PAS DEMANDEES',
+        );
+        expect(interrogees, isNot(contains(MorceauxDeSentier.pointsDeTrace)));
+        expect(
+          aPrendre.ecartesHorsNiveau,
+          0,
+          reason: 'rien n est descendu pour rien, donc rien a ecarter',
+        );
 
-      // Et au niveau REGARDER, pas une seule requete.
-      interrogees.clear();
-      final rien = await source.depuisLaRevision(
-        'gr-monts-dore',
-        adresse: 'ignoree',
-        revisionLocale: RevisionDeDonnee.revisionInitiale,
-        revisionCible: instantAuJour(1),
-        famillesDemandees: NiveauDeTelechargement.regarder.familles,
-      );
-      expect(interrogees, isEmpty);
-      expect(rien.transferes, 0);
-    });
+        // Et au niveau REGARDER, pas une seule requete.
+        interrogees.clear();
+        final rien = await source.depuisLaRevision(
+          'gr-monts-dore',
+          adresse: 'ignoree',
+          revisionLocale: RevisionDeDonnee.revisionInitiale,
+          revisionCible: instantAuJour(1),
+          famillesDemandees: NiveauDeTelechargement.regarder.familles,
+        );
+        expect(interrogees, isEmpty);
+        expect(rien.transferes, 0);
+      },
+    );
   });
 }
 

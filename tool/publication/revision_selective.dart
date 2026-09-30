@@ -104,8 +104,7 @@ abstract final class RevisionSelective {
   static String empreinteDeContenu(Map<String, dynamic> donnee) {
     final utiles = <String, dynamic>{
       for (final entree in donnee.entries)
-        if (!champsDeBookkeeping.contains(entree.key))
-          entree.key: entree.value,
+        if (!champsDeBookkeeping.contains(entree.key)) entree.key: entree.value,
     };
     return jsonEncode(_canonique(utiles));
   }
@@ -155,7 +154,8 @@ abstract final class RevisionSelective {
 
     for (final famille in MorceauxDeSentier.tous) {
       final source = _enregistrements(donneesSource[famille]);
-      final precedents = avant[famille] ?? const <String, Map<String, dynamic>>{};
+      final precedents =
+          avant[famille] ?? const <String, Map<String, dynamic>>{};
       final vus = <String>{};
       final sortie = <Map<String, dynamic>>[];
 
@@ -296,10 +296,10 @@ abstract final class RevisionSelective {
   }
 
   static List<Map<String, dynamic>> _enregistrements(dynamic brut) => [
-        if (brut is Map) Map<String, dynamic>.from(brut),
-        if (brut is List)
-          ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
-      ];
+    if (brut is Map) Map<String, dynamic>.from(brut),
+    if (brut is List)
+      ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
+  ];
 }
 
 /// CE QUE LA PUBLICATION SUIVANTE CONTIENT, ET CE QUI A REELLEMENT BOUGE.
@@ -346,7 +346,10 @@ class Recalcul {
 
 /// Un enregistrement sans identite ne peut etre ni corrige ni retire : refus.
 class EnregistrementSansIdentite implements Exception {
-  const EnregistrementSansIdentite({required this.famille, required this.donnee});
+  const EnregistrementSansIdentite({
+    required this.famille,
+    required this.donnee,
+  });
 
   final String famille;
   final Map<String, dynamic> donnee;
@@ -355,7 +358,7 @@ class EnregistrementSansIdentite implements Exception {
   String toString() {
     final attendu = famille == MorceauxDeSentier.pointsDeTrace
         ? '`track_id` et `sequence_index` (un point de trace n a pas '
-            'd identifiant propre, #R8)'
+              'd identifiant propre, #R8)'
         : 'un `id` non vide';
     return 'Famille « $famille » : un enregistrement ne porte pas $attendu. '
         'Il serait publie sans identite, donc impossible a corriger et '

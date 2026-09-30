@@ -82,7 +82,9 @@ class WaypointFiltersPanel extends ConsumerWidget {
                   selectedColor: style.color,
                   checkmarkColor: Colors.white,
                   labelStyle: TextStyle(
-                    color: selected ? Colors.white : theme.colorScheme.onSurface,
+                    color: selected
+                        ? Colors.white
+                        : theme.colorScheme.onSurface,
                   ),
                   onSelected: (_) => notifier.toggleType(type),
                 ),

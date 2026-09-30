@@ -28,8 +28,28 @@ void main() {
   /// Bande de zoom utile d'une carte de randonnee, du sentier entier au detail
   /// d'un hameau.
   const zoomLevels = [
-    1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0,
-    12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+    11.0,
+    12.0,
+    13.0,
+    14.0,
+    15.0,
+    16.0,
+    17.0,
+    18.0,
+    19.0,
+    20.0,
+    21.0,
+    22.0,
   ];
 
   MapMarkerCandidate<String> pin(String label, double lat, double lng) =>
@@ -50,14 +70,22 @@ void main() {
   /// Les reperes reels du sentier, dans l'ordre de priorite de la carte :
   /// les departs d'etape d'abord, les points d'interet ensuite.
   List<MapMarkerCandidate<String>> reperesReelsDuSentier() {
-    final stages = (jsonDecode(
-      File('assets/data/mare_a_mare_centre/stages.json').readAsStringSync(),
-    ) as List)
-        .cast<Map<String, dynamic>>();
-    final pois = (jsonDecode(
-      File('assets/data/mare_a_mare_centre/pois.json').readAsStringSync(),
-    ) as List)
-        .cast<Map<String, dynamic>>();
+    final stages =
+        (jsonDecode(
+                  File(
+                    'assets/data/mare_a_mare_centre/stages.json',
+                  ).readAsStringSync(),
+                )
+                as List)
+            .cast<Map<String, dynamic>>();
+    final pois =
+        (jsonDecode(
+                  File(
+                    'assets/data/mare_a_mare_centre/pois.json',
+                  ).readAsStringSync(),
+                )
+                as List)
+            .cast<Map<String, dynamic>>();
 
     return [
       for (final stage in stages)
@@ -79,16 +107,10 @@ void main() {
     test('un pixel couvre la distance attendue par la projection carto', () {
       // Valeur de reference de la projection slippy map : a l'equateur et au
       // zoom 0, une tuile de 256 px couvre la Terre entiere.
-      expect(
-        MarkerOverlap.metersPerPixel(0, 0),
-        closeTo(156543.03, 0.01),
-      );
+      expect(MarkerOverlap.metersPerPixel(0, 0), closeTo(156543.03, 0.01));
       // A la latitude du sentier (42° N), un pixel couvre 26 % de metres en
       // moins qu'a l'equateur : ignorer la latitude ferait fusionner trop tard.
-      expect(
-        MarkerOverlap.metersPerPixel(14, 41.9392),
-        closeTo(7.11, 0.02),
-      );
+      expect(MarkerOverlap.metersPerPixel(14, 41.9392), closeTo(7.11, 0.02));
       // Un niveau de zoom en plus = deux fois plus fin.
       expect(
         MarkerOverlap.metersPerPixel(15, 41.9392) * 2,
@@ -124,10 +146,10 @@ void main() {
       'ZOOMS : aucun zoom ne peut separer un seul et meme lieu',
       () {
         for (final zoom in zoomLevels) {
-          final groups = MarkerOverlap.groupByLocation(
-            [departEtape3, giteCozzano],
-            zoom: zoom,
-          );
+          final groups = MarkerOverlap.groupByLocation([
+            departEtape3,
+            giteCozzano,
+          ], zoom: zoom);
           expect(
             groups.length,
             1,
@@ -142,10 +164,11 @@ void main() {
       'le repere fusionne est pose sur l ETAPE, a sa position EXACTE — jamais '
       'sur un centroide',
       () {
-        final groups = MarkerOverlap.groupByLocation(
-          [departEtape3, giteCozzano, epicerieCozzano],
-          zoom: 14,
-        );
+        final groups = MarkerOverlap.groupByLocation([
+          departEtape3,
+          giteCozzano,
+          epicerieCozzano,
+        ], zoom: 14);
         expect(groups.length, 1);
         final groupe = groups.single;
         expect(groupe.anchor.data, 'etape 3');
@@ -160,20 +183,21 @@ void main() {
       'le gite et l epicerie de Cozzano (37 m) fusionnent en vue large et se '
       'separent des que le zoom les rend distinguables',
       () {
-        final enVueLarge = MarkerOverlap.groupByLocation(
-          [giteCozzano, epicerieCozzano],
-          zoom: 14,
-        );
+        final enVueLarge = MarkerOverlap.groupByLocation([
+          giteCozzano,
+          epicerieCozzano,
+        ], zoom: 14);
         expect(enVueLarge.length, 1, reason: '37 m tiennent dans une icone');
 
-        final auPlusPresDuVillage = MarkerOverlap.groupByLocation(
-          [giteCozzano, epicerieCozzano],
-          zoom: 20,
-        );
+        final auPlusPresDuVillage = MarkerOverlap.groupByLocation([
+          giteCozzano,
+          epicerieCozzano,
+        ], zoom: 20);
         expect(
           auPlusPresDuVillage.length,
           2,
-          reason: 'a ce zoom les deux lieux sont a des dizaines de pixels : ils '
+          reason:
+              'a ce zoom les deux lieux sont a des dizaines de pixels : ils '
               'meritent deux reperes',
         );
       },
@@ -189,15 +213,17 @@ void main() {
             epicerieCozzano.position,
             zoom,
           );
-          final fusionnes = MarkerOverlap.groupByLocation(
-            [giteCozzano, epicerieCozzano],
-            zoom: zoom,
-          ).length ==
+          final fusionnes =
+              MarkerOverlap.groupByLocation([
+                giteCozzano,
+                epicerieCozzano,
+              ], zoom: zoom).length ==
               1;
           expect(
             fusionnes,
             gap < pinDiameterPx,
-            reason: 'au zoom $zoom l ecart vaut ${gap.toStringAsFixed(1)} px '
+            reason:
+                'au zoom $zoom l ecart vaut ${gap.toStringAsFixed(1)} px '
                 'pour des reperes de $pinDiameterPx px',
           );
         }
@@ -206,35 +232,33 @@ void main() {
   });
 
   group('MarkerOverlap — le sentier entier, a tous les zooms', () {
-    test(
-      'AUCUN couple de reperes rendus ne se recouvre, a aucun zoom '
-      '(7 departs d etape + 20 points d interet reels)',
-      () {
-        final reperes = reperesReelsDuSentier();
-        expect(reperes.length, 27, reason: 'les donnees du sentier ont change');
+    test('AUCUN couple de reperes rendus ne se recouvre, a aucun zoom '
+        '(7 departs d etape + 20 points d interet reels)', () {
+      final reperes = reperesReelsDuSentier();
+      expect(reperes.length, 27, reason: 'les donnees du sentier ont change');
 
-        for (final zoom in zoomLevels) {
-          final groups = MarkerOverlap.groupByLocation(reperes, zoom: zoom);
-          for (var i = 0; i < groups.length; i++) {
-            for (var j = i + 1; j < groups.length; j++) {
-              final gap = MarkerOverlap.screenGapPx(
-                groups[i].position,
-                groups[j].position,
-                zoom,
-              );
-              expect(
-                gap,
-                greaterThanOrEqualTo(pinDiameterPx),
-                reason: 'zoom $zoom : « ${groups[i].anchor.data} » et '
-                    '« ${groups[j].anchor.data} » sont a '
-                    '${gap.toStringAsFixed(1)} px — deux icones se marchent '
-                    'dessus',
-              );
-            }
+      for (final zoom in zoomLevels) {
+        final groups = MarkerOverlap.groupByLocation(reperes, zoom: zoom);
+        for (var i = 0; i < groups.length; i++) {
+          for (var j = i + 1; j < groups.length; j++) {
+            final gap = MarkerOverlap.screenGapPx(
+              groups[i].position,
+              groups[j].position,
+              zoom,
+            );
+            expect(
+              gap,
+              greaterThanOrEqualTo(pinDiameterPx),
+              reason:
+                  'zoom $zoom : « ${groups[i].anchor.data} » et '
+                  '« ${groups[j].anchor.data} » sont a '
+                  '${gap.toStringAsFixed(1)} px — deux icones se marchent '
+                  'dessus',
+            );
           }
         }
-      },
-    );
+      }
+    });
 
     test(
       'AUCUN repere ne mente sur sa position : il couvre a l ecran la position '
@@ -257,7 +281,8 @@ void main() {
               expect(
                 gap,
                 lessThan(pinDiameterPx),
-                reason: 'zoom $zoom : « ${membre.data} » est a '
+                reason:
+                    'zoom $zoom : « ${membre.data} » est a '
                     '${gap.toStringAsFixed(1)} px du repere qui le represente',
               );
             }
@@ -284,30 +309,27 @@ void main() {
       },
     );
 
-    test(
-      'en vue large le sentier ne montre plus 27 icones empilees mais une '
-      'poignee de reperes lisibles',
-      () {
-        final reperes = reperesReelsDuSentier();
-        final enVueLarge = MarkerOverlap.groupByLocation(reperes, zoom: 11);
-        expect(enVueLarge.length, lessThan(reperes.length));
+    test('en vue large le sentier ne montre plus 27 icones empilees mais une '
+        'poignee de reperes lisibles', () {
+      final reperes = reperesReelsDuSentier();
+      final enVueLarge = MarkerOverlap.groupByLocation(reperes, zoom: 11);
+      expect(enVueLarge.length, lessThan(reperes.length));
 
-        // Au plus fin, chaque lieu retrouve son propre repere — SAUF UN
-        // COUPLE, et c'est la preuve que le critere est bien geographique :
-        // le depart de l'etape 3 et le « Gite d etape de Cozzano » sont au MEME
-        // point (0,0 m). Aucun zoom ne peut separer un seul et meme lieu, et
-        // c'est precisement pour ce cas qu'un decalage de quelques pixels
-        // n'aurait rien regle.
-        final auPlusFin = MarkerOverlap.groupByLocation(reperes, zoom: 22);
-        expect(auPlusFin.length, reperes.length - 1);
-        final encoreFusionne = auPlusFin.singleWhere((g) => g.isMerged);
-        expect(encoreFusionne.anchor.data, 'etape 3');
-        expect(
-          encoreFusionne.members.map((m) => m.data),
-          contains('shelter Gite d etape de Cozzano'),
-        );
-      },
-    );
+      // Au plus fin, chaque lieu retrouve son propre repere — SAUF UN
+      // COUPLE, et c'est la preuve que le critere est bien geographique :
+      // le depart de l'etape 3 et le « Gite d etape de Cozzano » sont au MEME
+      // point (0,0 m). Aucun zoom ne peut separer un seul et meme lieu, et
+      // c'est precisement pour ce cas qu'un decalage de quelques pixels
+      // n'aurait rien regle.
+      final auPlusFin = MarkerOverlap.groupByLocation(reperes, zoom: 22);
+      expect(auPlusFin.length, reperes.length - 1);
+      final encoreFusionne = auPlusFin.singleWhere((g) => g.isMerged);
+      expect(encoreFusionne.anchor.data, 'etape 3');
+      expect(
+        encoreFusionne.members.map((m) => m.data),
+        contains('shelter Gite d etape de Cozzano'),
+      );
+    });
   });
 
   group('MarkerOverlap — la bande de zoom arrondie de la carte', () {
@@ -330,14 +352,15 @@ void main() {
           lessThan(pinDiameterPx),
         );
         // Ce que la regle decide avec le seul zoom que la carte lui donne (16).
-        final groups = MarkerOverlap.groupByLocation(
-          [giteCozzano, epicerieCozzano],
-          zoom: MarkerOverlap.lowestZoomOfBand(16),
-        );
+        final groups = MarkerOverlap.groupByLocation([
+          giteCozzano,
+          epicerieCozzano,
+        ], zoom: MarkerOverlap.lowestZoomOfBand(16));
         expect(
           groups.length,
           1,
-          reason: 'evaluer la bande a 16 tout rond aurait separe deux icones '
+          reason:
+              'evaluer la bande a 16 tout rond aurait separe deux icones '
               'qui se recouvrent encore',
         );
       },
@@ -347,10 +370,7 @@ void main() {
   group('MarkerOverlap — cas limites', () {
     test('une liste vide ne produit aucun repere', () {
       expect(
-        MarkerOverlap.groupByLocation(
-          <MapMarkerCandidate<String>>[],
-          zoom: 14,
-        ),
+        MarkerOverlap.groupByLocation(<MapMarkerCandidate<String>>[], zoom: 14),
         isEmpty,
       );
     });
@@ -366,10 +386,10 @@ void main() {
       'sans etape en jeu, le regroupement marche aussi : deux points d interet '
       'voisins n en font qu un, ancre sur le premier recu',
       () {
-        final groups = MarkerOverlap.groupByLocation(
-          [epicerieCozzano, giteCozzano],
-          zoom: 14,
-        );
+        final groups = MarkerOverlap.groupByLocation([
+          epicerieCozzano,
+          giteCozzano,
+        ], zoom: 14);
         expect(groups.length, 1);
         expect(groups.single.anchor.data, 'epicerie de Cozzano');
         expect(groups.single.position, epicerieCozzano.position);

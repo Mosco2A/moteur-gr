@@ -108,46 +108,47 @@ void main() {
   group('totalStagesDurationMinutes — agregat par etape', () {
     test('somme en respectant la donnee ou l estimation de chaque etape', () {
       // 350 (fournie) + 240 (estimee) = 590.
-      expect(
-        totalStagesDurationMinutes([stageAvecDuree, stageSansDuree]),
-        590,
-      );
+      expect(totalStagesDurationMinutes([stageAvecDuree, stageSansDuree]), 590);
     });
   });
 
   group('ROBUSTESSE champs nuls — DB roundtrip (fallback gracieux)', () {
-    test('un StageModel sans duree survit a un aller-retour DB sans crash',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      final dao = StagesDao(db);
+    test(
+      'un StageModel sans duree survit a un aller-retour DB sans crash',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final dao = StagesDao(db);
 
-      await dao.insertAll([stageSansDuree.toCompanion()]);
-      final rows = await dao.getByTrailId('test-trail');
-      final restored = StageModel.fromDb(rows.first);
+        await dao.insertAll([stageSansDuree.toCompanion()]);
+        final rows = await dao.getByTrailId('test-trail');
+        final restored = StageModel.fromDb(rows.first);
 
-      // La colonne est bien NULL en base (aucune valeur forcee).
-      expect(restored.estimatedDurationMinutes, isNull);
-      // ... et l'affichage retombe proprement sur l'estimation.
-      expect(stageDurationMinutes(restored), 240);
-      expect(formatDurationMinutes(stageDurationMinutes(restored)), '4h');
+        // La colonne est bien NULL en base (aucune valeur forcee).
+        expect(restored.estimatedDurationMinutes, isNull);
+        // ... et l'affichage retombe proprement sur l'estimation.
+        expect(stageDurationMinutes(restored), 240);
+        expect(formatDurationMinutes(stageDurationMinutes(restored)), '4h');
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
 
-    test('un StageModel AVEC duree persiste et relit la valeur exacte',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      final dao = StagesDao(db);
+    test(
+      'un StageModel AVEC duree persiste et relit la valeur exacte',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        final dao = StagesDao(db);
 
-      await dao.insertAll([stageAvecDuree.toCompanion()]);
-      final rows = await dao.getByTrailId('mare-a-mare-centre');
-      final restored = StageModel.fromDb(rows.first);
+        await dao.insertAll([stageAvecDuree.toCompanion()]);
+        final rows = await dao.getByTrailId('mare-a-mare-centre');
+        final restored = StageModel.fromDb(rows.first);
 
-      expect(restored.estimatedDurationMinutes, 350);
-      expect(stageDurationMinutes(restored), 350);
+        expect(restored.estimatedDurationMinutes, 350);
+        expect(stageDurationMinutes(restored), 350);
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
   });
 
   group('JSON — deserialisation du champ optionnel', () {

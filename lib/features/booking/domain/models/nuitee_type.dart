@@ -1,4 +1,3 @@
-
 import '../../../../i18n/translations.g.dart';
 import '../../../../core/branding/stepways_icons.dart';
 

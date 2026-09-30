@@ -102,8 +102,8 @@ class TrekSummaryCard extends StatelessWidget {
             // Barre de progression : uniquement si le trek est engage (evite un
             // 0 % inutile sur un trek juste possede, ou un 100 % redondant avec
             // le badge « Terminé »).
-            if (fraction > 0 && summary.state != TrekLifecycleState.completed)
-              ...[
+            if (fraction > 0 &&
+                summary.state != TrekLifecycleState.completed) ...[
               const SizedBox(height: AppTheme.spacingSm),
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),

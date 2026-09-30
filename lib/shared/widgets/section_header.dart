@@ -26,27 +26,55 @@ class SectionHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-      child: Row(children: [
-        if (icon != null) ...[
-          StepIcon(icon!, size: 20, color: iconColor ?? theme.colorScheme.primary),
-          const SizedBox(width: AppTheme.spacingSm),
-        ],
-        Expanded(child: Text(title, style: theme.textTheme.titleLarge?.copyWith(fontSize: 18))),
-        if (trailing != null) trailing!
-        else if (onSeeAll != null)
-          TextButton(
-            onPressed: onSeeAll,
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingSm),
-              minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Text(seeAllLabel, style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.secondary, fontWeight: FontWeight.w600)),
-              const SizedBox(width: 2),
-              StepIcon(StepwaysIcons.chevronDroite, size: 16, color: theme.colorScheme.secondary),
-            ]),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            StepIcon(
+              icon!,
+              size: 20,
+              color: iconColor ?? theme.colorScheme.primary,
+            ),
+            const SizedBox(width: AppTheme.spacingSm),
+          ],
+          Expanded(
+            child: Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(fontSize: 18),
+            ),
           ),
-      ]),
+          if (trailing != null)
+            trailing!
+          else if (onSeeAll != null)
+            TextButton(
+              onPressed: onSeeAll,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.spacingSm,
+                ),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    seeAllLabel,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  StepIcon(
+                    StepwaysIcons.chevronDroite,
+                    size: 16,
+                    color: theme.colorScheme.secondary,
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

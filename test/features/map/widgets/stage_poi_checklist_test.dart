@@ -70,8 +70,9 @@ void main() {
     return ProviderScope(
       overrides: [
         stagesProvider(trailId).overrideWith((ref) => Future.value(stages)),
-        poisProvider(trailId)
-            .overrideWith((ref) => Future.value(withPois ?? pois)),
+        poisProvider(
+          trailId,
+        ).overrideWith((ref) => Future.value(withPois ?? pois)),
         // Aucune projection GPS : la liste retombe sur la premiere etape du
         // programme — exactement le cas de l'utilisateur qui n'a pas demarre.
         trackPositionProvider.overrideWithValue(const AsyncLoading()),
@@ -86,8 +87,9 @@ void main() {
     );
   }
 
-  testWidgets('liste les points de l ETAPE et pas ceux des autres',
-      (tester) async {
+  testWidgets('liste les points de l ETAPE et pas ceux des autres', (
+    tester,
+  ) async {
     await tester.pumpWidget(harness());
     await tester.pumpAndSettle();
 
@@ -131,8 +133,9 @@ void main() {
     expect(find.byType(Checkbox), findsNothing);
   });
 
-  testWidgets('l altitude n est affichee que si elle est connue',
-      (tester) async {
+  testWidgets('l altitude n est affichee que si elle est connue', (
+    tester,
+  ) async {
     await tester.pumpWidget(harness());
     await tester.pumpAndSettle();
 

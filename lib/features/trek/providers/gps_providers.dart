@@ -78,9 +78,9 @@ class _StageModelsByValue {
 /// d'invalidation, ce recalcul parasite — et l'assertion qu'il provoquait —
 /// n'ont plus lieu d'etre.
 final domainStagesProvider = Provider<List<Stage>>((ref) {
-  final stagesAsync = ref.watch(
-    stagesProvider.select((async) => _StageModelsByValue(async.value)),
-  ).value;
+  final stagesAsync = ref
+      .watch(stagesProvider.select((async) => _StageModelsByValue(async.value)))
+      .value;
   final stages = stagesAsync ?? [];
 
   return stages
@@ -233,7 +233,7 @@ final arrivalCompletionListenerProvider = Provider<void>((ref) {
     final plan = ref.read(currentTrekPlanProvider);
     final completed =
         ref.read(trekSessionManagerProvider).session?.completedStages ??
-            const <String>[];
+        const <String>[];
     final fullyWalked = plan?.isFullyWalked(completed.toSet()) ?? false;
 
     notifier.completeOnArrival(fullyWalked: fullyWalked);

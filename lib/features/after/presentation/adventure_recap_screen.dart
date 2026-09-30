@@ -54,10 +54,8 @@ class AdventureRecapScreen extends ConsumerWidget {
       appBar: AppHeader(title: recapT.title),
       body: statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => _LockedState(
-          title: recapT.lockedTitle,
-          message: recapT.noData,
-        ),
+        error: (_, __) =>
+            _LockedState(title: recapT.lockedTitle, message: recapT.noData),
         data: (stats) => _RecapBody(stats: stats),
       ),
     );
@@ -85,17 +83,26 @@ class _RecapBody extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Statistiques REELLES de la session.
-          SectionHeader(title: recapT.statsSection, icon: StepwaysIcons.statistiques),
+          SectionHeader(
+            title: recapT.statsSection,
+            icon: StepwaysIcons.statistiques,
+          ),
           _StatsCard(stats: stats),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Trace GPS reelle de la session (offline, sans tuiles).
-          SectionHeader(title: recapT.traceSection, icon: StepwaysIcons.itineraire),
+          SectionHeader(
+            title: recapT.traceSection,
+            icon: StepwaysIcons.itineraire,
+          ),
           _TraceCard(stats: stats),
           const SizedBox(height: AppTheme.spacingLg),
 
           // CORRECTIF L5-5 : le detail jour par jour, qui n'existait pas.
-          SectionHeader(title: recapT.daysSection, icon: StepwaysIcons.calendrier),
+          SectionHeader(
+            title: recapT.daysSection,
+            icon: StepwaysIcons.calendrier,
+          ),
           const _DayByDaySection(),
           const SizedBox(height: AppTheme.spacingLg),
 
@@ -149,10 +156,12 @@ class _CongratsBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final recapT = t.recap;
     final title = fullyWalked ? recapT.finisherTitle : recapT.partialTitle;
-    final subtitle =
-        fullyWalked ? recapT.finisherSubtitle : recapT.partialSubtitle;
-    final color =
-        fullyWalked ? theme.colorScheme.primary : AppTheme.grisTexteSecondaire;
+    final subtitle = fullyWalked
+        ? recapT.finisherSubtitle
+        : recapT.partialSubtitle;
+    final color = fullyWalked
+        ? theme.colorScheme.primary
+        : AppTheme.grisTexteSecondaire;
 
     return Semantics(
       container: true,
@@ -222,7 +231,9 @@ class _ShareAdventureButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recapT = t.recap;
-    final trailName = ref.watch(trailConfigProvider.select((c) => c.displayName));
+    final trailName = ref.watch(
+      trailConfigProvider.select((c) => c.displayName),
+    );
     final speed = ref.watch(adventureAverageSpeedProvider).value;
 
     return AppButton(
@@ -243,9 +254,7 @@ class _ShareAdventureButton extends ConsumerWidget {
             subject: recapT.shareHeadline(trail: trailName),
           );
         } catch (_) {
-          messenger.showSnackBar(
-            SnackBar(content: Text(recapT.shareError)),
-          );
+          messenger.showSnackBar(SnackBar(content: Text(recapT.shareError)));
         }
       },
     );
@@ -274,8 +283,8 @@ class _DayByDaySection extends ConsumerWidget {
             child: Text(
               recapT.noDays,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.grisTexteSecondaire,
-                  ),
+                color: AppTheme.grisTexteSecondaire,
+              ),
             ),
           );
         }
@@ -311,8 +320,9 @@ class _DayCard extends StatelessWidget {
 
     String fmtDate(DateTime d) {
       try {
-        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
-            .format(d);
+        return DateFormat.yMMMd(
+          LocaleSettings.currentLocale.languageCode,
+        ).format(d);
       } catch (_) {
         return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
             '${d.day.toString().padLeft(2, '0')}';
@@ -363,13 +373,17 @@ class _DayCard extends StatelessWidget {
             runSpacing: AppTheme.spacingXs,
             children: [
               Text(
-                recapT.distance
-                    .replaceAll('{km}', stats.distanceKm.toStringAsFixed(1)),
+                recapT.distance.replaceAll(
+                  '{km}',
+                  stats.distanceKm.toStringAsFixed(1),
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                recapT.elevation
-                    .replaceAll('{meters}', '${stats.elevationGainM}'),
+                recapT.elevation.replaceAll(
+                  '{meters}',
+                  '${stats.elevationGainM}',
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
@@ -470,8 +484,10 @@ List<RecapRow> adventureRecapRows(
     ),
     (
       icon: StepwaysIcons.distance,
-      label:
-          recapT.distance.replaceAll('{km}', stats.distanceKm.toStringAsFixed(0)),
+      label: recapT.distance.replaceAll(
+        '{km}',
+        stats.distanceKm.toStringAsFixed(0),
+      ),
     ),
     (
       icon: StepwaysIcons.denivelePlus,
@@ -508,8 +524,9 @@ List<RecapRow> adventureRecapRows(
   if (start != null && end != null) {
     String fmtDate(DateTime d) {
       try {
-        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
-            .format(d);
+        return DateFormat.yMMMd(
+          LocaleSettings.currentLocale.languageCode,
+        ).format(d);
       } catch (_) {
         return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
             '${d.day.toString().padLeft(2, '0')}';
@@ -564,12 +581,7 @@ class _StatRow extends StatelessWidget {
         children: [
           StepIcon(icon, color: theme.colorScheme.primary, size: 22),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyLarge,
-            ),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
         ],
       ),
     );
@@ -614,9 +626,7 @@ class _TraceCard extends StatelessWidget {
               )
             : CustomPaint(
                 painter: SessionTracePainter(
-                  points: [
-                    for (final p in points) Offset(p.lng, p.lat),
-                  ],
+                  points: [for (final p in points) Offset(p.lng, p.lat)],
                   color: theme.colorScheme.primary,
                 ),
               ),

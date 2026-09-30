@@ -15,7 +15,7 @@ import 'models/track_point.dart';
 /// - ETA basee sur distance restante + vitesse moyenne
 class TrekStats {
   TrekStats({required double totalDistanceKm})
-      : _totalDistanceKm = totalDistanceKm;
+    : _totalDistanceKm = totalDistanceKm;
 
   /// Seuil minimum de denivele entre 2 points consecutifs (metres).
   /// En dessous, le denivele est considere comme bruit GPS.

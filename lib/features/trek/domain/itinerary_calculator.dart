@@ -106,8 +106,9 @@ class ItineraryCalculator {
       if (currentStages.isNotEmpty &&
           (currentDistance + stage.distanceKm > maxKm ||
               currentHours + stageHours > maxHours)) {
-        days.add(_buildDay(
-            dayNumber, currentStages, currentDistance, currentHours));
+        days.add(
+          _buildDay(dayNumber, currentStages, currentDistance, currentHours),
+        );
         dayNumber++;
         currentStages = [];
         currentDistance = 0.0;
@@ -121,7 +122,8 @@ class ItineraryCalculator {
 
     if (currentStages.isNotEmpty) {
       days.add(
-          _buildDay(dayNumber, currentStages, currentDistance, currentHours));
+        _buildDay(dayNumber, currentStages, currentDistance, currentHours),
+      );
     }
 
     return days;
@@ -134,8 +136,10 @@ class ItineraryCalculator {
     double totalDistance,
     double estimatedHours,
   ) {
-    final totalElevation =
-        stages.fold<int>(0, (sum, s) => sum + s.elevationGainM);
+    final totalElevation = stages.fold<int>(
+      0,
+      (sum, s) => sum + s.elevationGainM,
+    );
 
     return ItineraryDay(
       dayNumber: dayNumber,
@@ -164,7 +168,8 @@ class ItineraryCalculator {
     final heatImpact = day.estimatedHours * 2.0;
     final snowImpact = day.totalDistance * 3.0;
 
-    final score = 100.0 -
+    final score =
+        100.0 -
         params.altitudeFactor * altitudeImpact -
         params.technicalFactor * technicalImpact -
         params.heatFactor * heatImpact -

@@ -135,10 +135,12 @@ class FireRiskScreen extends ConsumerWidget {
           if (stagesAtRisk.isEmpty)
             _NoRiskCard(theme: theme, t: t)
           else
-            ...stagesAtRisk.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-                  child: _StageFireCard(stage: s, theme: theme, t: t),
-                )),
+            ...stagesAtRisk.map(
+              (s) => Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+                child: _StageFireCard(stage: s, theme: theme, t: t),
+              ),
+            ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // 7. Numeros utiles (data-driven).
@@ -193,38 +195,50 @@ class FireRiskScreen extends ConsumerWidget {
     final results = await Future.wait([
       for (final s in stages)
         ref
-            .read(stageWeatherProvider(WeatherStageParams(
-              trailId: trailId,
-              stageNumber: s.stageNumber,
-            )).notifier)
+            .read(
+              stageWeatherProvider(
+                WeatherStageParams(
+                  trailId: trailId,
+                  stageNumber: s.stageNumber,
+                ),
+              ).notifier,
+            )
             .refresh(),
     ]);
 
     if (messenger == null || !context.mounted) return;
     final ok = results.where((r) => r).length;
     if (ok == 0) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.fireRisk.refreshError)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.fireRisk.refreshError)));
     } else if (ok < results.length) {
-      messenger.showSnackBar(SnackBar(
-        content: Text(
-          t.fireRisk.refreshPartial(done: ok, total: results.length),
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            t.fireRisk.refreshPartial(done: ok, total: results.length),
+          ),
         ),
-      ));
+      );
     } else {
       final at = ref
-          .read(stageWeatherProvider(WeatherStageParams(
-            trailId: trailId,
-            stageNumber: stages.first.stageNumber,
-          )))
+          .read(
+            stageWeatherProvider(
+              WeatherStageParams(
+                trailId: trailId,
+                stageNumber: stages.first.stageNumber,
+              ),
+            ),
+          )
           .forecast
           ?.fetchedAt;
-      messenger.showSnackBar(SnackBar(
-        content: Text(t.fireRisk.refreshedAt(
-          date: at == null ? '-' : formatFetchedAt(at),
-        )),
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            t.fireRisk.refreshedAt(
+              date: at == null ? '-' : formatFetchedAt(at),
+            ),
+          ),
+        ),
+      );
     }
   }
 }
@@ -266,8 +280,10 @@ class _UpdateBanner extends ConsumerWidget {
     final params = WeatherStageParams(trailId: trailId, stageNumber: refStage);
     final weather = ref.watch(stageWeatherProvider(params));
 
-    final freshness =
-        weatherFreshness(fetchedAt: weather.forecast?.fetchedAt, t: t);
+    final freshness = weatherFreshness(
+      fetchedAt: weather.forecast?.fetchedAt,
+      t: t,
+    );
     final color = switch (freshness.level) {
       FreshnessLevel.fresh => AppTheme.vertFacile,
       FreshnessLevel.recent => AppTheme.jauneModere,
@@ -289,8 +305,10 @@ class _UpdateBanner extends ConsumerWidget {
           TextButton.icon(
             onPressed: onRefresh,
             icon: const StepIcon(StepwaysIcons.rafraichir, size: 14),
-            label: Text(t.fireRisk.refresh,
-                style: const TextStyle(fontSize: 12)),
+            label: Text(
+              t.fireRisk.refresh,
+              style: const TextStyle(fontSize: 12),
+            ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               minimumSize: Size.zero,
@@ -377,8 +395,11 @@ class _RegulationSection extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const StepIcon(StepwaysIcons.loi,
-                      size: 18, color: AppTheme.orangeDifficile),
+                  const StepIcon(
+                    StepwaysIcons.loi,
+                    size: 18,
+                    color: AppTheme.orangeDifficile,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
                     t.fireRisk.regulation.title,
@@ -406,8 +427,11 @@ class _RegulationSection extends ConsumerWidget {
                     onTap: () => _openUrl(regulation.decreeUrl!),
                     child: Row(
                       children: [
-                        StepIcon(StepwaysIcons.lien,
-                            size: 14, color: theme.colorScheme.secondary),
+                        StepIcon(
+                          StepwaysIcons.lien,
+                          size: 14,
+                          color: theme.colorScheme.secondary,
+                        ),
                         const SizedBox(width: AppTheme.spacingXs),
                         Flexible(
                           child: Text(
@@ -476,16 +500,23 @@ class _Legend extends StatelessWidget {
               child: Text(
                 '$level',
                 style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w700, color: color),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
               ),
             ),
           ),
           const SizedBox(width: AppTheme.spacingMd),
           StepIcon(StepwaysIcons.incendie, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingSm),
-          Text(label,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: color, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -509,14 +540,18 @@ class _NoRiskCard extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            StepIcon(StepwaysIcons.cochePleine,
-                size: 40, color: AppTheme.vertFacile.withAlpha(180)),
+            StepIcon(
+              StepwaysIcons.cochePleine,
+              size: 40,
+              color: AppTheme.vertFacile.withAlpha(180),
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             Text(
               t.fireRisk.noRisk,
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.vertFacile),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.vertFacile,
+              ),
             ),
           ],
         ),
@@ -553,16 +588,19 @@ class _StageFireCard extends StatelessWidget {
               // Badge « E{n} ».
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs),
+                  horizontal: AppTheme.spacingSm,
+                  vertical: AppTheme.spacingXs,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.vertFacile.withAlpha(40),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                 ),
                 child: Text(
                   t.fireRisk.stageBadge(number: stage.stageNumber),
-                  style: theme.textTheme.labelLarge
-                      ?.copyWith(color: AppTheme.vertFacile, fontSize: 12),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: AppTheme.vertFacile,
+                    fontSize: 12,
+                  ),
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -597,8 +635,10 @@ class _StageFireCard extends StatelessWidget {
               Semantics(
                 label: t.fireRisk.a11y.levelBadge(level: maxLevel),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -612,9 +652,10 @@ class _StageFireCard extends StatelessWidget {
                       Text(
                         t.fireRisk.levelBadge(level: maxLevel),
                         style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: color),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
                       ),
                     ],
                   ),
@@ -630,15 +671,20 @@ class _StageFireCard extends StatelessWidget {
               return Expanded(
                 child: Column(
                   children: [
-                    Text(_dayLabel(d.dayIndex, t),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(
+                      _dayLabel(d.dayIndex, t),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 4),
                     StepIcon(StepwaysIcons.incendie, size: 20, color: dColor),
                     Text(
                       t.fireRisk.dayLevel(level: d.level),
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: dColor, fontWeight: FontWeight.w700),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: dColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
@@ -685,11 +731,14 @@ class _EmergencyNumbers extends ConsumerWidget {
   Widget _row(BuildContext context, FireEmergencyNumber n) {
     // Libelle : cle i18n pour les numeros universels (18/112), donnee du sentier
     // pour les secours regionaux (langue de la donnee).
-    final label = n.isUniversal ? _universalLabel(n.labelKey!, t) : n.labelData!;
+    final label = n.isUniversal
+        ? _universalLabel(n.labelKey!, t)
+        : n.labelData!;
     // Couleur : rouge urgence pour les universels, orange pour les regionaux
     // (parite esprit GR20 : hierarchie visuelle 18/112 vs local).
-    final color =
-        n.isUniversal ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
+    final color = n.isUniversal
+        ? AppTheme.rougeUrgence
+        : AppTheme.orangeDifficile;
 
     return Semantics(
       button: true,
@@ -706,12 +755,16 @@ class _EmergencyNumbers extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(label,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
-                    Text(n.phone,
-                        style:
-                            theme.textTheme.bodySmall?.copyWith(color: color)),
+                    Text(
+                      label,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      n.phone,
+                      style: theme.textTheme.bodySmall?.copyWith(color: color),
+                    ),
                   ],
                 ),
               ),
@@ -752,19 +805,25 @@ class _FireRiskEmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingXl),
       children: [
         const SizedBox(height: 80),
-        StepIcon(StepwaysIcons.incendie,
-            size: 72, color: AppTheme.grisGranite.withAlpha(80)),
+        StepIcon(
+          StepwaysIcons.incendie,
+          size: 72,
+          color: AppTheme.grisGranite.withAlpha(80),
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           t.fireRisk.empty.title,
-          style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisGranite),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppTheme.grisGranite,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         Text(
           t.fireRisk.empty.message,
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: AppTheme.grisGranite.withAlpha(180)),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppTheme.grisGranite.withAlpha(180),
+          ),
           textAlign: TextAlign.center,
         ),
       ],

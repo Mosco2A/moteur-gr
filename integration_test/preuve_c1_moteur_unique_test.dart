@@ -87,12 +87,12 @@ class Profil {
   }
 
   HikerProfile toProfile() => HikerProfile(
-        age: age,
-        heightCm: heightCm,
-        weightKg: weightKg,
-        countryIso: 'FR',
-        updatedAt: DateTime.now(),
-      );
+    age: age,
+    heightCm: heightCm,
+    weightKg: weightKg,
+    countryIso: 'FR',
+    updatedAt: DateTime.now(),
+  );
 }
 
 /// Les trois premiers etaient coherents, les trois suivants se contredisaient.
@@ -167,20 +167,28 @@ const List<Profil> kProfils = <Profil>[
 void main() {
   initHarness();
 
-  testWidgets('PREUVE C1 — Faisabilite et Entrainement disent la meme chose',
-      (tester) async {
+  testWidgets('PREUVE C1 — Faisabilite et Entrainement disent la meme chose', (
+    tester,
+  ) async {
     logStep(P, 'boot', 'Lancement de app.main() — preuve C1 moteur unique');
     app.main();
-    await settleAndShoot(tester, P, '01_boot',
-        timeout: const Duration(seconds: 14));
+    await settleAndShoot(
+      tester,
+      P,
+      '01_boot',
+      timeout: const Duration(seconds: 14),
+    );
     await completeOnboardingIfPresent(tester, P);
     await settleAndShoot(tester, P, '02_apres_onboarding');
 
     await _entrerPremierSentier(tester);
     final trailId = _trailIdActif(tester) ?? _trailIdDepuisRoute(tester);
     logStep(P, 'contexte', 'Sentier actif = ${trailId ?? "INTROUVABLE"}');
-    expect(trailId, isNotNull,
-        reason: 'sans sentier actif, aucun des deux ecrans n a de verdict');
+    expect(
+      trailId,
+      isNotNull,
+      reason: 'sans sentier actif, aucun des deux ecrans n a de verdict',
+    );
 
     // L'ecran Entrainement est payant : son bandeau de prudence ne s'affiche
     // que debloque. On debloque par le VRAI chemin (portefeuille + achat), pas
@@ -191,14 +199,21 @@ void main() {
       await _mesurerProfil(tester, trailId, profil);
     }
 
-    logStep(P, 'fin',
-        'Preuve terminee — ${_contradictions.length} contradiction(s)');
+    logStep(
+      P,
+      'fin',
+      'Preuve terminee — ${_contradictions.length} contradiction(s)',
+    );
     await finalizeScenario(tester, P);
     await flushJournal(P);
 
-    expect(_contradictions, isEmpty,
-        reason: 'Les deux ecrans se contredisent encore :\n'
-            '${_contradictions.join('\n')}');
+    expect(
+      _contradictions,
+      isEmpty,
+      reason:
+          'Les deux ecrans se contredisent encore :\n'
+          '${_contradictions.join('\n')}',
+    );
   });
 }
 
@@ -229,20 +244,24 @@ Future<void> _mesurerProfil(
   // --- Ce que disent les providers REELS de l'application, pour le journal ---
   final assessment = await _lireAssessment(tester);
   final perso = await _lirePersonnalisation(tester);
-  final verdictMoteur =
-      assessment == null ? '(muet)' : assessment.globalVerdict.name;
+  final verdictMoteur = assessment == null
+      ? '(muet)'
+      : assessment.globalVerdict.name;
   final verdictEntrainement = perso?.verdict?.name ?? '(aucun)';
 
-  print('PREUVE_C1|${profil.cle}|${libelle ?? "AUCUN"}|'
-      '${bandeau ? "BANDEAU_PRUDENCE" : "aucun_bandeau"}|$verdictMoteur');
+  print(
+    'PREUVE_C1|${profil.cle}|${libelle ?? "AUCUN"}|'
+    '${bandeau ? "BANDEAU_PRUDENCE" : "aucun_bandeau"}|$verdictMoteur',
+  );
   logStep(
-      P,
-      'mesure',
-      '${profil.cle} (${profil.libelle}) : ecran Faisabilite="'
-          '${libelle ?? "AUCUN LIBELLE LU"}" | ecran Entrainement='
-          '${bandeau ? "bandeau de prudence AFFICHE" : "aucun bandeau"} | '
-          'verdict moteur=$verdictMoteur | verdict lu par l Entrainement='
-          '$verdictEntrainement');
+    P,
+    'mesure',
+    '${profil.cle} (${profil.libelle}) : ecran Faisabilite="'
+        '${libelle ?? "AUCUN LIBELLE LU"}" | ecran Entrainement='
+        '${bandeau ? "bandeau de prudence AFFICHE" : "aucun bandeau"} | '
+        'verdict moteur=$verdictMoteur | verdict lu par l Entrainement='
+        '$verdictEntrainement',
+  );
 
   // --- LA CONFRONTATION : un seul moteur, donc une seule reponse ---
   //
@@ -259,36 +278,46 @@ Future<void> _mesurerProfil(
   // dans l'autre sens.
   if (libelle == null) {
     logStep(
-        P,
-        'mesure',
-        '${profil.cle} : aucun verdict affiche — attendu sur un profil '
-            'incomplet depuis la correction D1. On verifie que l Entrainement '
-            'se tait aussi.');
+      P,
+      'mesure',
+      '${profil.cle} : aucun verdict affiche — attendu sur un profil '
+          'incomplet depuis la correction D1. On verifie que l Entrainement '
+          'se tait aussi.',
+    );
     if (bandeau) {
-      _contradiction('${profil.cle} : la Faisabilite ne rend AUCUN verdict '
-          '(criteres incomplets) mais l Entrainement affiche quand meme le '
-          'bandeau de prudence — deux sources subsistent');
+      _contradiction(
+        '${profil.cle} : la Faisabilite ne rend AUCUN verdict '
+        '(criteres incomplets) mais l Entrainement affiche quand meme le '
+        'bandeau de prudence — deux sources subsistent',
+      );
     }
     return;
   }
 
-  final faisableSansReserve = libelle == _libelleAttendu(FeasibilityVerdict.green);
+  final faisableSansReserve =
+      libelle == _libelleAttendu(FeasibilityVerdict.green);
   if (faisableSansReserve && bandeau) {
-    _contradiction('${profil.cle} : la Faisabilite affiche "$libelle" mais '
-        'l Entrainement affiche le bandeau de prudence — c est EXACTEMENT le '
-        'defaut MAJEUR-4');
+    _contradiction(
+      '${profil.cle} : la Faisabilite affiche "$libelle" mais '
+      'l Entrainement affiche le bandeau de prudence — c est EXACTEMENT le '
+      'defaut MAJEUR-4',
+    );
   }
   if (!faisableSansReserve && !bandeau) {
-    _contradiction('${profil.cle} : la Faisabilite affiche "$libelle" (donc '
-        'une reserve) mais l Entrainement n affiche AUCUN bandeau de prudence');
+    _contradiction(
+      '${profil.cle} : la Faisabilite affiche "$libelle" (donc '
+      'une reserve) mais l Entrainement n affiche AUCUN bandeau de prudence',
+    );
   }
 
   // Et le verdict porte par les deux lectures doit etre le MEME objet.
   if (assessment != null && perso != null) {
     if (perso.verdict != assessment.globalVerdict) {
-      _contradiction('${profil.cle} : verdict Faisabilite='
-          '${assessment.globalVerdict.name} mais verdict lu par l Entrainement='
-          '$verdictEntrainement — deux sources subsistent');
+      _contradiction(
+        '${profil.cle} : verdict Faisabilite='
+        '${assessment.globalVerdict.name} mais verdict lu par l Entrainement='
+        '$verdictEntrainement — deux sources subsistent',
+      );
     }
   }
 }
@@ -308,11 +337,9 @@ ProviderContainer? _container(WidgetTester tester) {
 String _routeCourante(WidgetTester tester) {
   try {
     final ctx = tester.element(find.byType(Navigator).first);
-    return GoRouter.maybeOf(ctx)
-            ?.routerDelegate
-            .currentConfiguration
-            .uri
-            .toString() ??
+    return GoRouter.maybeOf(
+          ctx,
+        )?.routerDelegate.currentConfiguration.uri.toString() ??
         '';
   } catch (_) {
     return '';
@@ -331,15 +358,27 @@ String? _trailIdActif(WidgetTester tester) {
 }
 
 Future<void> _entrerPremierSentier(WidgetTester tester) async {
-  await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
-      P, 'contexte', 'Decouvrir des sentiers', warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    textFrEn('Découvrir des sentiers', 'Discover trails'),
+    P,
+    'contexte',
+    'Decouvrir des sentiers',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester);
   // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639. Le libelle
   // « Entrer » n'existe plus nulle part : ce tap ne trouvait plus rien et le
   // scenario continuait sur le sentier par defaut, sans le dire. On vise la
   // CLE du produit, qui n'a pas change.
-  await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P, 'contexte',
-      '« Préparer » le sentier de production', warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    boutonPreparer(kSentierDeProduction),
+    P,
+    'contexte',
+    '« Préparer » le sentier de production',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
 }
 
@@ -374,8 +413,11 @@ Future<bool> _appliquerProfil(WidgetTester tester, Profil profil) async {
     c.invalidate(feasibilityAssessmentProvider);
     c.invalidate(trainingPersonalizationProvider);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
-    logStep(P, 'ecriture',
-        '${profil.cle} ecrit : ${profil.hikes.length} rando(s), age=${profil.age}');
+    logStep(
+      P,
+      'ecriture',
+      '${profil.cle} ecrit : ${profil.hikes.length} rando(s), age=${profil.age}',
+    );
     return true;
   } catch (e) {
     logStep(P, 'ecriture', 'COINCE : ecriture ${profil.cle} impossible : $e');
@@ -400,8 +442,14 @@ Future<void> _ouvrirFaisabilite(WidgetTester tester, String trailId) async {
   // rendre un test aveugle : on lit desormais l'i18n.
   final valider = find.text(t.feasibility.flow.validate);
   if (present(valider)) {
-    await tapIfPresent(tester, valider, P, 'nav', 'valider le flux guide',
-        warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      valider,
+      P,
+      'nav',
+      'valider le flux guide',
+      warnIfMissing: false,
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
   }
 }
@@ -473,7 +521,8 @@ Future<FeasibilityAssessment?> _lireAssessment(WidgetTester tester) async {
 }
 
 Future<TrainingPersonalization?> _lirePersonnalisation(
-    WidgetTester tester) async {
+  WidgetTester tester,
+) async {
   final c = _container(tester);
   if (c == null) return null;
   try {

@@ -39,7 +39,9 @@ final kudosServiceProvider = Provider<KudosService>((ref) {
 });
 
 /// Compteur de kudos d'une activite (cache local), indexe par activityId.
-final kudosCountProvider =
-    FutureProvider.family<int, String>((ref, activityId) {
+final kudosCountProvider = FutureProvider.family<int, String>((
+  ref,
+  activityId,
+) {
   return ref.watch(kudosServiceProvider).kudosCount(activityId);
 });

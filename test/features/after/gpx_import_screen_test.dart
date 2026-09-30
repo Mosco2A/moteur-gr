@@ -39,17 +39,17 @@ void main() {
   );
 
   Stage stage(int n) => Stage(
-        id: '$n',
-        nameFr: 'Etape $n',
-        distance: 12.0,
-        elevationGain: 600,
-        elevationLoss: 400,
-        orderIndex: n,
-        startLat: 45.50 + n * 0.02,
-        startLng: 2.90 + n * 0.02,
-        endLat: 45.52 + n * 0.02,
-        endLng: 2.92 + n * 0.02,
-      );
+    id: '$n',
+    nameFr: 'Etape $n',
+    distance: 12.0,
+    elevationGain: 600,
+    elevationLoss: 400,
+    orderIndex: n,
+    startLat: 45.50 + n * 0.02,
+    startLng: 2.90 + n * 0.02,
+    endLat: 45.52 + n * 0.02,
+    endLng: 2.92 + n * 0.02,
+  );
 
   final stages = [stage(1), stage(2), stage(3)];
 
@@ -57,10 +57,7 @@ void main() {
     final router = GoRouter(
       initialLocation: '/trail/$trailId/import-gpx',
       routes: [
-        GoRoute(
-          path: '/trail/:id/import-gpx',
-          builder: (_, __) => child,
-        ),
+        GoRoute(path: '/trail/:id/import-gpx', builder: (_, __) => child),
         // Cible de navigation post-validation (recap existant) — neutre en test.
         GoRoute(
           path: '/trail/:id/recap',
@@ -102,31 +99,34 @@ void main() {
   });
 
   group('GpxImportScreen (etat initial, i18n)', () {
-    testWidgets('affiche titre, entete et bouton via Slang (zero texte en dur)',
-        (tester) async {
-      await tester.pumpWidget(
-        wrap(
-          child: const GpxImportScreen(trailId: trailId),
-          overrides: [
-            trailConfigProvider.overrideWithValue(config),
-            domainStagesProvider.overrideWithValue(stages),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'affiche titre, entete et bouton via Slang (zero texte en dur)',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            child: const GpxImportScreen(trailId: trailId),
+            overrides: [
+              trailConfigProvider.overrideWithValue(config),
+              domainStagesProvider.overrideWithValue(stages),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text(t.import.title), findsOneWidget);
-      expect(find.text(t.import.headerTitle), findsOneWidget);
-      expect(find.text(t.import.pickButton), findsOneWidget);
-      // Pas de preview tant qu'aucune trace importee.
-      expect(find.text(t.import.validateButton), findsNothing);
-      // Cloisonnement : aucun libelle GR20 / Corse en dur dans l'ecran.
-      expect(find.textContaining('GR20'), findsNothing);
-      expect(find.textContaining('Corse'), findsNothing);
-    });
+        expect(find.text(t.import.title), findsOneWidget);
+        expect(find.text(t.import.headerTitle), findsOneWidget);
+        expect(find.text(t.import.pickButton), findsOneWidget);
+        // Pas de preview tant qu'aucune trace importee.
+        expect(find.text(t.import.validateButton), findsNothing);
+        // Cloisonnement : aucun libelle GR20 / Corse en dur dans l'ecran.
+        expect(find.textContaining('GR20'), findsNothing);
+        expect(find.textContaining('Corse'), findsNothing);
+      },
+    );
 
-    testWidgets('libelles traduits en allemand (accents ä/ü) quand locale de',
-        (tester) async {
+    testWidgets('libelles traduits en allemand (accents ä/ü) quand locale de', (
+      tester,
+    ) async {
       LocaleSettings.setLocaleRaw('de');
       addTearDown(() => LocaleSettings.setLocaleRaw('fr'));
       await tester.pumpWidget(
@@ -148,8 +148,9 @@ void main() {
   });
 
   group('GpxImportRouteScreen (repli trailId)', () {
-    testWidgets('sans trailId explicite -> repli sur le sentier actif',
-        (tester) async {
+    testWidgets('sans trailId explicite -> repli sur le sentier actif', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           child: const GpxImportRouteScreen(),

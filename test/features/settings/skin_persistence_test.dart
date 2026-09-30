@@ -17,20 +17,23 @@ void main() {
       expect(service.getSkin(), isNull);
     });
 
-    test('setSkin persiste et un nouveau service relit le meme choix', () async {
-      SharedPreferences.setMockInitialValues({});
-      final service = SettingsService(await SharedPreferences.getInstance());
+    test(
+      'setSkin persiste et un nouveau service relit le meme choix',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final service = SettingsService(await SharedPreferences.getInstance());
 
-      // Act : choisir Topographique (nom d'enum persiste).
-      await service.setSkin(AppSkin.topographique.name);
+        // Act : choisir Topographique (nom d'enum persiste).
+        await service.setSkin(AppSkin.topographique.name);
 
-      // Assert : relu par le meme service...
-      expect(service.getSkin(), AppSkin.topographique.name);
+        // Assert : relu par le meme service...
+        expect(service.getSkin(), AppSkin.topographique.name);
 
-      // ...et par un service reconstruit (simulation redemarrage).
-      final service2 = SettingsService(await SharedPreferences.getInstance());
-      expect(service2.getSkin(), AppSkin.topographique.name);
-    });
+        // ...et par un service reconstruit (simulation redemarrage).
+        final service2 = SettingsService(await SharedPreferences.getInstance());
+        expect(service2.getSkin(), AppSkin.topographique.name);
+      },
+    );
 
     test('un choix ecrase le precedent', () async {
       SharedPreferences.setMockInitialValues({});

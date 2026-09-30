@@ -19,8 +19,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// accepte 0-16, defaut 7. Voir `domain/forecast_reach.dart` pour la decision
 /// et ses sources.
 class WeatherApiService {
-  WeatherApiService({http.Client? client})
-      : _client = client ?? http.Client();
+  WeatherApiService({http.Client? client}) : _client = client ?? http.Client();
 
   final http.Client _client;
 
@@ -68,8 +67,7 @@ class WeatherApiService {
       }
 
       final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return WeatherForecast.fromOpenMeteo(json)
-          .withFetchedAt(DateTime.now());
+      return WeatherForecast.fromOpenMeteo(json).withFetchedAt(DateTime.now());
     } catch (e) {
       _log.w('[WeatherApiService] Erreur recuperation meteo: $e');
       return null;

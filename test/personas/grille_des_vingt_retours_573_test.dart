@@ -77,7 +77,8 @@ const invariantesStructurelles = <String, String>{
 const grille = <Retour>[
   Retour(
     numero: '1',
-    defaut: 'bouton « Parcourir le catalogue » de l accueil : il ne fait rien. '
+    defaut:
+        'bouton « Parcourir le catalogue » de l accueil : il ne fait rien. '
         'Il navigue vraiment, et la garde du routeur le renvoie aussitot faute '
         'du drapeau d onboarding.',
     persona: 'LE MALADROIT',
@@ -90,7 +91,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '2',
-    defaut: 'depuis le catalogue, le retour arriere ramene sur le cockpit du '
+    defaut:
+        'depuis le catalogue, le retour arriere ramene sur le cockpit du '
         'Mare a Mare — un sentier que l utilisateur n a ni choisi ni '
         'telecharge.',
     persona: 'LE MALADROIT',
@@ -103,7 +105,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '3',
-    defaut: 'sur les randos passees, « enregistrer » dit que la note est '
+    defaut:
+        'sur les randos passees, « enregistrer » dit que la note est '
         'enregistree et ne revient pas a la faisabilite.',
     persona: 'LE MALADROIT',
     trou: 'C — on ne verifie pas ou l appli ramene apres une action',
@@ -115,7 +118,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '4',
-    defaut: 'rien ne dit qui analyse (il n y a AUCUNE IA dans l appli) et la '
+    defaut:
+        'rien ne dit qui analyse (il n y a AUCUNE IA dans l appli) et la '
         'liste des difficultes rencontrees ne sert a rien : saisie, sauvegardee, '
         'synchronisee, restauree — et lue par personne.',
     persona: 'LE MEFIANT',
@@ -127,10 +131,12 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '5',
-    defaut: '« vise 9 jours au lieu de 7 » alors que l utilisateur n a encore '
+    defaut:
+        '« vise 9 jours au lieu de 7 » alors que l utilisateur n a encore '
         'rien choisi : le texte lui reproche un choix qu il n a pas fait.',
     persona: 'LE COMPTABLE',
-    trou: 'E — on ne relit pas les textes pour y trouver jargon et '
+    trou:
+        'E — on ne relit pas les textes pour y trouver jargon et '
         'contradictions',
     fichierTest: 'test/personas/persona_le_comptable_573_test.dart',
     pourquoiPersonneNAVu:
@@ -140,7 +146,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '6',
-    defaut: '« decoupe la journee 1 en 2 === comment on fait ???? » : le conseil '
+    defaut:
+        '« decoupe la journee 1 en 2 === comment on fait ???? » : le conseil '
         'proposait de couper une etape la ou il n y a pas de toit. Chris '
         'tranche : une alerte plus l entrainement, pas un decoupage.',
     persona: 'LE MEFIANT',
@@ -153,7 +160,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '7',
-    defaut: '« ca te dit vise 9 jours, et ca te propose 11 jours normal ? » : '
+    defaut:
+        '« ca te dit vise 9 jours, et ca te propose 11 jours normal ? » : '
         '9 jours de MARCHE plus 2 de REPOS font 11 au TOTAL, et rien ne le '
         'disait.',
     persona: 'LE COMPTABLE',
@@ -165,7 +173,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '8',
-    defaut: '« score 1,30 sans echelle ca ne veut rien dire » : le score est '
+    defaut:
+        '« score 1,30 sans echelle ca ne veut rien dire » : le score est '
         'affiche nu, et le plafond vaut 1,00 sans que rien ne le dise.',
     persona: 'LE COMPTABLE',
     trou: 'E — on ne relit pas les textes',
@@ -176,7 +185,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '9',
-    defaut: '« le verdict c est du blabla d IA, tu m expliques comment c est '
+    defaut:
+        '« le verdict c est du blabla d IA, tu m expliques comment c est '
         'calcule au moment ou ca le fait ? » : un calcul solide qu on ne montre '
         'pas est indiscernable d un baratin.',
     persona: 'LE MEFIANT',
@@ -188,7 +198,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '10',
-    defaut: 'l appli dit qu elle ne peut pas donner la faisabilite faute de date '
+    defaut:
+        'l appli dit qu elle ne peut pas donner la faisabilite faute de date '
         'de depart, et la donne quand meme.',
     persona: 'LE COMPTABLE',
     trou: 'E — on ne relit pas les textes pour y trouver les contradictions',
@@ -202,7 +213,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '11',
-    defaut: 'le plan d entrainement n est pas un plan : pas de frequence '
+    defaut:
+        'le plan d entrainement n est pas un plan : pas de frequence '
         'hebdomadaire, affiche sans connaitre la date de depart, et 8 semaines '
         'est le minimum en dessous duquel on ne propose rien.',
     persona: 'LE CURIEUX',
@@ -214,7 +226,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '12',
-    defaut: '« itineraire ca te dit en faisabilite 11 jours et ca te propose '
+    defaut:
+        '« itineraire ca te dit en faisabilite 11 jours et ca te propose '
         '9 » : deux ecrans, deux unites, aucune annoncee.',
     persona: 'LE COMPTABLE',
     trou: 'D — on ne compare pas les chiffres entre ecrans',
@@ -225,7 +238,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '13',
-    defaut: 'les numeros d etape sont caches par les refuges : une etape se '
+    defaut:
+        'les numeros d etape sont caches par les refuges : une etape se '
         'termine a un refuge, donc les deux marqueurs sont au meme point par '
         'construction, et la couche des lieux est peinte par-dessus.',
     persona: "L OEIL",
@@ -238,7 +252,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '14',
-    defaut: 'pas de difference de peau : trois apparences vendues, une seule '
+    defaut:
+        'pas de difference de peau : trois apparences vendues, une seule '
         'livree. `cardStyle` et `photoScrimOpacity` ne sont lus par personne, et '
         'le selecteur montre un apercu qui promet ce que l appli ne tient pas.',
     persona: "L OEIL",
@@ -253,7 +268,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '15',
-    defaut: 'SOS, fiche medicale et cartes hors ligne INTROUVABLES : zero '
+    defaut:
+        'SOS, fiche medicale et cartes hors ligne INTROUVABLES : zero '
         '`push(\'/emergency\')` dans tout lib/, la fiche medicale joignable '
         'seulement depuis cet ecran mure, et `pack_store_screen.dart` sans meme '
         'une route.',
@@ -268,7 +284,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '16',
-    defaut: 'la meteo doit etre celle des ETAPES, au lieu de l etape, pour le '
+    defaut:
+        'la meteo doit etre celle des ETAPES, au lieu de l etape, pour le '
         'jour de l etape — pas celle d ici et maintenant.',
     persona: 'LE CURIEUX',
     trou: 'demande fonctionnelle neuve, pas un defaut de test',
@@ -280,7 +297,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '17',
-    defaut: '« la mise a jour des donnees meteo ne produit rien » : le bouton de '
+    defaut:
+        '« la mise a jour des donnees meteo ne produit rien » : le bouton de '
         'rafraichissement est cable des deux cotes et l ecran ne bouge pas.',
     persona: 'LE MALADROIT',
     trou: 'A — on ne tape pas tous les boutons visibles',
@@ -292,7 +310,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '18',
-    defaut: 'precision de Chris : « la meteo a l endroit ou on est cense se '
+    defaut:
+        'precision de Chris : « la meteo a l endroit ou on est cense se '
         'trouver le lendemain, puis le surlendemain ».',
     persona: 'LE CURIEUX',
     trou: 'demande fonctionnelle neuve',
@@ -302,7 +321,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '19',
-    defaut: '« incendie MAJ ne produit rien » : meme defaut que la meteo, sur le '
+    defaut:
+        '« incendie MAJ ne produit rien » : meme defaut que la meteo, sur le '
         'risque incendie.',
     persona: 'LE MALADROIT',
     trou: 'A — on ne tape pas tous les boutons visibles',
@@ -313,7 +333,8 @@ const grille = <Retour>[
   ),
   Retour(
     numero: '20',
-    defaut: '« tu me remets tout ca aussi dans les tests a faire et les persona '
+    defaut:
+        '« tu me remets tout ca aussi dans les tests a faire et les persona '
         'qui auraient du le voir » — la demande qui a produit le LOT V.',
     persona: 'aucun : c est la demande elle-meme',
     trou: 'la grille de la campagne n avait pas de grille',
@@ -324,11 +345,13 @@ const grille = <Retour>[
   ),
   Retour(
     numero: 'QUE-003',
-    defaut: '« le curseur est celui conseille et il n est jamais en rouge quand '
+    defaut:
+        '« le curseur est celui conseille et il n est jamais en rouge quand '
         'il est conseille en orange max » : l appli conseillait « vise 9 jours » '
         'et affichait rouge a 9 jours.',
     persona: "L OEIL",
-    trou: 'G et D — regarder l ecran, et comparer deux chiffres de la meme page',
+    trou:
+        'G et D — regarder l ecran, et comparer deux chiffres de la meme page',
     fichierTest:
         'test/features/feasibility/conseil_jamais_rouge_etendu_573_test.dart',
     pourquoiPersonneNAVu:
@@ -357,12 +380,19 @@ void main() {
     test('les vingt retours de la matinee du 26/09 sont tous la', () {
       final numeros = grille.map((r) => r.numero).toList();
       for (var i = 1; i <= 20; i++) {
-        expect(numeros, contains('$i'),
-            reason: 'le retour $i de Chris ne figure pas dans la grille');
+        expect(
+          numeros,
+          contains('$i'),
+          reason: 'le retour $i de Chris ne figure pas dans la grille',
+        );
       }
-      expect(numeros, contains('QUE-003'),
-          reason: 'l arbitrage QUE-003 (jamais rouge a la valeur conseillee) '
-              'doit figurer : c est le plus important structurellement');
+      expect(
+        numeros,
+        contains('QUE-003'),
+        reason:
+            'l arbitrage QUE-003 (jamais rouge a la valeur conseillee) '
+            'doit figurer : c est le plus important structurellement',
+      );
     });
 
     test('chaque fichier de test annonce par la grille EXISTE', () {
@@ -374,9 +404,13 @@ void main() {
           manquants.add('retour ${r.numero} annonce $f — INTROUVABLE');
         }
       }
-      expect(manquants, isEmpty,
-          reason: 'LA GRILLE MENT : elle annonce des tests qui n existent '
-              'pas.\n  ${manquants.join('\n  ')}');
+      expect(
+        manquants,
+        isEmpty,
+        reason:
+            'LA GRILLE MENT : elle annonce des tests qui n existent '
+            'pas.\n  ${manquants.join('\n  ')}',
+      );
     });
 
     test('les cinq personas neufs existent et portent leur nom', () {
@@ -422,15 +456,23 @@ void main() {
       // pourquoi — c'est la liste de ce qui reste a faire apres le LOT V.
       final ouverts = grille.where((r) => r.fichierTest == null).toList();
       for (final r in ouverts) {
-        expect(r.pourquoiPersonneNAVu.length, greaterThan(60),
-            reason: 'le retour ${r.numero} n a pas de test ET pas '
-                'd explication suffisante : c est un trou cache');
+        expect(
+          r.pourquoiPersonneNAVu.length,
+          greaterThan(60),
+          reason:
+              'le retour ${r.numero} n a pas de test ET pas '
+              'd explication suffisante : c est un trou cache',
+        );
       }
       // Etat au 26/09 : quatre retours sans test automatique (10, 14, 16, 18).
-      expect(ouverts.length, lessThanOrEqualTo(4),
-          reason: 'le nombre de retours sans couverture automatique augmente '
-              '(${ouverts.map((r) => r.numero).join(', ')}) : la grille se '
-              'vide au lieu de se remplir');
+      expect(
+        ouverts.length,
+        lessThanOrEqualTo(4),
+        reason:
+            'le nombre de retours sans couverture automatique augmente '
+            '(${ouverts.map((r) => r.numero).join(', ')}) : la grille se '
+            'vide au lieu de se remplir',
+      );
     });
   });
 }

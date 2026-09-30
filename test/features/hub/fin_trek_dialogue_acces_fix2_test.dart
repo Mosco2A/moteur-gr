@@ -83,8 +83,9 @@ void main() {
     );
   });
 
-  testWidgets('le bouton de fin et les deux actions portent une cle stable',
-      (tester) async {
+  testWidgets('le bouton de fin et les deux actions portent une cle stable', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -98,8 +99,9 @@ void main() {
     expect(find.byKey(const ValueKey(kFinishTrekCancelKey)), findsOneWidget);
   });
 
-  testWidgets('le libelle seul est AMBIGU — c est pourquoi il faut les cles',
-      (tester) async {
+  testWidgets('le libelle seul est AMBIGU — c est pourquoi il faut les cles', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -113,13 +115,15 @@ void main() {
     expect(
       find.textContaining(t.hub.finishTrek.confirm),
       findsAtLeast(2),
-      reason: 'si un jour ce libelle devient unique, les cles restent la bonne '
+      reason:
+          'si un jour ce libelle devient unique, les cles restent la bonne '
           'facon de designer les actions, mais le piege aura disparu',
     );
   });
 
-  testWidgets('confirmer par la cle ferme le dialogue ET ouvre le recap',
-      (tester) async {
+  testWidgets('confirmer par la cle ferme le dialogue ET ouvre le recap', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -134,8 +138,9 @@ void main() {
     expect(find.text('RECAP_STUB'), findsOneWidget);
   });
 
-  testWidgets('annuler par la cle ferme le dialogue sans terminer',
-      (tester) async {
+  testWidgets('annuler par la cle ferme le dialogue sans terminer', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 

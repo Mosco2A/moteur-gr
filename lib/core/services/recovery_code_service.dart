@@ -20,7 +20,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// QUE gérer le secret lui-même. Cross-platform (le code est à NOUS, pas à l'OS).
 class RecoveryCodeService {
   RecoveryCodeService({FlutterSecureStorage? secureStorage})
-      : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _secureStorage;
 

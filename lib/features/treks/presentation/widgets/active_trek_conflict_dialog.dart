@@ -39,15 +39,17 @@ Future<ActiveTrekConflictChoice> showActiveTrekConflictDialog(
           // Annuler : ne rien faire (garder la rando en cours).
           TextButton(
             key: const ValueKey('conflict-cancel'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.cancel),
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.cancel),
             child: Text(t.trekState.abandonDialog.cancel),
           ),
           // Abandonner la rando en cours (status=abandoned), puis demarrer.
           TextButton(
             key: const ValueKey('conflict-abandon'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.abandonCurrent),
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.abandonCurrent),
             child: Text(
               t.trekState.abandonDialog.abandon,
               style: const TextStyle(color: AppTheme.rougeUrgence),
@@ -56,8 +58,9 @@ Future<ActiveTrekConflictChoice> showActiveTrekConflictDialog(
           // Terminer la rando en cours (status=completed), puis demarrer.
           FilledButton(
             key: const ValueKey('conflict-finish'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.finishCurrent),
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.finishCurrent),
             child: Text(t.trekState.abandonDialog.finish),
           ),
         ],

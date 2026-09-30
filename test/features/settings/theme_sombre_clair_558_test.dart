@@ -23,28 +23,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   group('AppThemeModeValues.toThemeMode', () {
     test('les trois choix offerts a l ecran sont tous honores', () {
-      expect(AppThemeModeValues.toThemeMode(AppThemeModeValues.dark),
-          ThemeMode.dark);
-      expect(AppThemeModeValues.toThemeMode(AppThemeModeValues.light),
-          ThemeMode.light);
+      expect(
+        AppThemeModeValues.toThemeMode(AppThemeModeValues.dark),
+        ThemeMode.dark,
+      );
+      expect(
+        AppThemeModeValues.toThemeMode(AppThemeModeValues.light),
+        ThemeMode.light,
+      );
       // « Systeme » suit vraiment le telephone : c'est ThemeMode.system qui le
       // fait, pas un choix devine de notre cote.
-      expect(AppThemeModeValues.toThemeMode(AppThemeModeValues.system),
-          ThemeMode.system);
+      expect(
+        AppThemeModeValues.toThemeMode(AppThemeModeValues.system),
+        ThemeMode.system,
+      );
     });
 
-    test('une valeur inconnue retombe sur le defaut du produit, pas au hasard',
-        () {
-      expect(AppThemeModeValues.toThemeMode('crepuscule'), ThemeMode.dark);
-      expect(AppThemeModeValues.toThemeMode(''), ThemeMode.dark);
-    });
+    test(
+      'une valeur inconnue retombe sur le defaut du produit, pas au hasard',
+      () {
+        expect(AppThemeModeValues.toThemeMode('crepuscule'), ThemeMode.dark);
+        expect(AppThemeModeValues.toThemeMode(''), ThemeMode.dark);
+      },
+    );
 
     test('les trois modes donnent trois ThemeMode DISTINCTS', () {
       final modes = AppThemeModeValues.values
           .map(AppThemeModeValues.toThemeMode)
           .toSet();
-      expect(modes.length, 3,
-          reason: 'sans quoi deux choix a l ecran feraient la meme chose');
+      expect(
+        modes.length,
+        3,
+        reason: 'sans quoi deux choix a l ecran feraient la meme chose',
+      );
     });
   });
 
@@ -59,8 +70,10 @@ void main() {
       premier
           .read(settingsProvider.notifier)
           .setThemeMode(AppThemeModeValues.light);
-      expect(premier.read(settingsProvider).themeMode,
-          AppThemeModeValues.light);
+      expect(
+        premier.read(settingsProvider).themeMode,
+        AppThemeModeValues.light,
+      );
       await Future<void>.delayed(Duration.zero);
 
       // Lancement 2 : un container NEUF relit les preferences reelles.
@@ -68,12 +81,15 @@ void main() {
       addTearDown(second.dispose);
       second.read(settingsProvider);
       await Future<void>.delayed(Duration.zero);
-      expect(second.read(settingsProvider).themeMode, AppThemeModeValues.light,
-          reason: 'le choix de theme doit survivre au redemarrage');
       expect(
-          AppThemeModeValues.toThemeMode(
-              second.read(settingsProvider).themeMode),
-          ThemeMode.light);
+        second.read(settingsProvider).themeMode,
+        AppThemeModeValues.light,
+        reason: 'le choix de theme doit survivre au redemarrage',
+      );
+      expect(
+        AppThemeModeValues.toThemeMode(second.read(settingsProvider).themeMode),
+        ThemeMode.light,
+      );
     });
 
     test('« Systeme » aussi : il se relit, il ne se perd pas', () async {
@@ -83,11 +99,15 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       // Etat initial = defaut produit, puis ecrase par la valeur relue.
-      expect(container.read(settingsProvider).themeMode,
-          AppThemeModeValues.dark);
+      expect(
+        container.read(settingsProvider).themeMode,
+        AppThemeModeValues.dark,
+      );
       await Future<void>.delayed(Duration.zero);
-      expect(container.read(settingsProvider).themeMode,
-          AppThemeModeValues.system);
+      expect(
+        container.read(settingsProvider).themeMode,
+        AppThemeModeValues.system,
+      );
     });
   });
 
@@ -103,15 +123,25 @@ void main() {
   group('main.dart ne force plus aucun mode en dur', () {
     test('themeMode est branche sur le reglage, pas ecrit en dur', () {
       final source = File('lib/main.dart').readAsStringSync();
-      expect(source.contains('themeMode: ThemeMode.dark'), isFalse,
-          reason: 'le mode sombre etait force en dur : Chris a signale '
-              '« sombrer clair ca ne fonctionne pas »');
+      expect(
+        source.contains('themeMode: ThemeMode.dark'),
+        isFalse,
+        reason:
+            'le mode sombre etait force en dur : Chris a signale '
+            '« sombrer clair ca ne fonctionne pas »',
+      );
       expect(source.contains('themeMode: ThemeMode.light'), isFalse);
       expect(source.contains('themeMode: ThemeMode.system'), isFalse);
-      expect(source.contains('AppThemeModeValues.toThemeMode'), isTrue,
-          reason: 'le mode doit venir du reglage persiste');
-      expect(source.contains('s.themeMode'), isTrue,
-          reason: 'et etre observe sur le seul champ themeMode');
+      expect(
+        source.contains('AppThemeModeValues.toThemeMode'),
+        isTrue,
+        reason: 'le mode doit venir du reglage persiste',
+      );
+      expect(
+        source.contains('s.themeMode'),
+        isTrue,
+        reason: 'et etre observe sur le seul champ themeMode',
+      );
     });
   });
 }

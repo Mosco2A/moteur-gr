@@ -41,10 +41,9 @@ class TransportEndpoints {
 
 /// Repli sur le nom d'etape quand `departureName`/`arrivalName` manque (sentier
 /// pauvre) : garantit un libelle d'onglet non vide, sans inventer de lieu.
-String _departureOf(StageModel s) =>
-    s.departureName?.trim().isNotEmpty == true
-        ? s.departureName!.trim()
-        : s.name.trim();
+String _departureOf(StageModel s) => s.departureName?.trim().isNotEmpty == true
+    ? s.departureName!.trim()
+    : s.name.trim();
 
 String _arrivalOf(StageModel s) => s.arrivalName?.trim().isNotEmpty == true
     ? s.arrivalName!.trim()
@@ -55,8 +54,10 @@ String _arrivalOf(StageModel s) => s.arrivalName?.trim().isNotEmpty == true
 /// Retourne `null` tant que les etapes ne sont pas chargees (l'ecran affiche un
 /// etat de chargement / fallback). Parametre par `trailId` (family) pour rester
 /// coherent avec [stagesProvider] et le scope multi-sentiers.
-final transportEndpointsProvider =
-    Provider.family<TransportEndpoints?, String>((ref, trailId) {
+final transportEndpointsProvider = Provider.family<TransportEndpoints?, String>((
+  ref,
+  trailId,
+) {
   // Etapes du sentier (socle : departureName / arrivalName). AsyncValue -> on
   // n'a besoin que de la valeur chargee.
   final stages = ref.watch(stagesProvider(trailId)).value;
@@ -72,8 +73,7 @@ final transportEndpointsProvider =
   // Sens de marche : 1er sens declare par le sentier = ordre croissant de
   // reference ; toute autre direction choisie parcourt le sentier a rebours.
   final config = ref.watch(trailConfigProvider);
-  final forward =
-      config.directions.isNotEmpty ? config.directions.first : 'NS';
+  final forward = config.directions.isNotEmpty ? config.directions.first : 'NS';
   final selected = ref.watch(selectedDirectionProvider) ?? forward;
   final isForward = selected == forward;
 
@@ -88,8 +88,9 @@ final transportEndpointsProvider =
   final departure = isForward
       ? _departureOf(officialFirst)
       : _arrivalOf(officialLast);
-  final arrival =
-      isForward ? _arrivalOf(officialLast) : _departureOf(officialFirst);
+  final arrival = isForward
+      ? _arrivalOf(officialLast)
+      : _departureOf(officialFirst);
 
   return TransportEndpoints(departure: departure, arrival: arrival);
 });
@@ -120,15 +121,19 @@ final transportEndpointsProvider =
 /// [transportEndpointsProvider] qui les resout, direction-aware. Tant qu'ils ne
 /// sont pas connus (etapes non chargees), on ne peut pas construire la version
 /// en base — on rend alors le compile, et le provider se recalculera.
-final trailTransportProvider =
-    Provider.family<TrailTransport?, String>((ref, trailId) {
+final trailTransportProvider = Provider.family<TrailTransport?, String>((
+  ref,
+  trailId,
+) {
   final endpoints = ref.watch(transportEndpointsProvider(trailId));
   if (endpoints != null && endpoints.hasNames) {
-    final enBase = ref.watch(transportEnBaseProvider((
-      trailId: trailId,
-      depart: endpoints.departure,
-      arrivee: endpoints.arrival,
-    )));
+    final enBase = ref.watch(
+      transportEnBaseProvider((
+        trailId: trailId,
+        depart: endpoints.departure,
+        arrivee: endpoints.arrival,
+      )),
+    );
     if (enBase != null) return enBase;
   }
   return TransportCatalog.forTrail(trailId);

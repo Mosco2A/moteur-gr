@@ -20,10 +20,7 @@ class PoiRepository {
   /// Recupere les POI par type (String extensible)
   Future<List<PoiModel>> getByType(String trailId, String type) async {
     final rows = await _dao.getByTrailId(trailId);
-    return rows
-        .map(PoiModel.fromDb)
-        .where((poi) => poi.type == type)
-        .toList();
+    return rows.map(PoiModel.fromDb).where((poi) => poi.type == type).toList();
   }
 
   /// Recupere tous les POI d'un sentier

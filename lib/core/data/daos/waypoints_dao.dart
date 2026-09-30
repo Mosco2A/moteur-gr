@@ -41,8 +41,9 @@ class WaypointsDao extends DatabaseAccessor<AppDatabase>
 
   /// Un waypoint par son identifiant (null si absent du cache).
   Future<WaypointData?> waypointById(String waypointId) {
-    return (select(waypoint)..where((t) => t.id.equals(waypointId)))
-        .getSingleOrNull();
+    return (select(
+      waypoint,
+    )..where((t) => t.id.equals(waypointId))).getSingleOrNull();
   }
 
   // --- Commentaires (file de sync) ---
@@ -64,9 +65,11 @@ class WaypointsDao extends DatabaseAccessor<AppDatabase>
   /// recents d'abord. Lecture offline-first.
   Future<List<WaypointCommentData>> visibleComments(String waypointId) {
     return (select(waypointComment)
-          ..where((t) =>
-              t.waypointId.equals(waypointId) &
-              t.moderationState.equals('removed').not())
+          ..where(
+            (t) =>
+                t.waypointId.equals(waypointId) &
+                t.moderationState.equals('removed').not(),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .get();
   }

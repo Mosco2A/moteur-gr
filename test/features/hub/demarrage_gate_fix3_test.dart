@@ -74,15 +74,15 @@ void main() {
 
   /// Le [FilledButton] du CTA. `onPressed == null` = grise (gate fermee).
   FilledButton cta(WidgetTester tester) => tester.widget<FilledButton>(
-        find.ancestor(
-          of: find.text(t.hub.startCta),
-          matching: find.byType(FilledButton),
-        ),
-      );
+    find.ancestor(
+      of: find.text(t.hub.startCta),
+      matching: find.byType(FilledButton),
+    ),
+  );
 
   ProviderContainer scopeOf(WidgetTester tester) => ProviderScope.containerOf(
-        tester.element(find.byType(HubStartTrekButton)),
-      );
+    tester.element(find.byType(HubStartTrekButton)),
+  );
 
   group('FIX-3 — le CTA « Démarrer » s ouvre quand la preparation est faite', () {
     testWidgets(
@@ -224,24 +224,21 @@ void main() {
     /// recalcule pas une liste a partir de l'etat) : il n'y a donc pas de mise
     /// a jour perdue ici. Ce test VERROUILLE cette propriete — si un jour la
     /// date devient derivee d'un etat relu, la regression sera vue tout de suite.
-    test(
-      'une date posee pendant la relecture au build survit',
-      () async {
-        SharedPreferences.setMockInitialValues(<String, Object>{});
-        final c = ProviderContainer();
-        addTearDown(c.dispose);
+    test('une date posee pendant la relecture au build survit', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
 
-        // Premier acces = build() -> relecture des prefs EN VOL.
-        final reminder = c.read(downloadReminderProvider(trailId).notifier);
-        await reminder.setDepartureDate(DateTime(2026, 10, 20));
-        await Future<void>.delayed(Duration.zero);
+      // Premier acces = build() -> relecture des prefs EN VOL.
+      final reminder = c.read(downloadReminderProvider(trailId).notifier);
+      await reminder.setDepartureDate(DateTime(2026, 10, 20));
+      await Future<void>.delayed(Duration.zero);
 
-        expect(
-          c.read(downloadReminderProvider(trailId)).departureDate,
-          isNotNull,
-          reason: 'la relecture des prefs ne doit pas effacer la date posee',
-        );
-      },
-    );
+      expect(
+        c.read(downloadReminderProvider(trailId)).departureDate,
+        isNotNull,
+        reason: 'la relecture des prefs ne doit pas effacer la date posee',
+      );
+    });
   });
 }

@@ -82,12 +82,14 @@ class TrackingEngine {
       }
     }
 
-    _points.add(TrackPoint(
-      lat: lat,
-      lng: lng,
-      altitude: altitude,
-      distanceFromStart: _distanceMeters,
-    ));
+    _points.add(
+      TrackPoint(
+        lat: lat,
+        lng: lng,
+        altitude: altitude,
+        distanceFromStart: _distanceMeters,
+      ),
+    );
   }
 
   /// Met le tracking en pause.

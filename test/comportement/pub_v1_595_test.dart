@@ -262,31 +262,42 @@ void main() {
   // B1 — LA BANNIERE EXISTE, ET ELLE S'AFFICHE
   // =========================================================================
   group('B1 — la banniere qui n existait pas', () {
-    test('un trek libre, la pub consentie : une banniere est DEMANDEE et rendue',
-        () async {
-      final (c, _) = await monterLeMonde();
-      final banniere = await c.read(bannerAdProvider('gr20').future);
+    test(
+      'un trek libre, la pub consentie : une banniere est DEMANDEE et rendue',
+      () async {
+        final (c, _) = await monterLeMonde();
+        final banniere = await c.read(bannerAdProvider('gr20').future);
 
-      expect(banniere, isNotNull,
-          reason: 'la decision d afficher etait deja prise et testee ; ce qui '
-              'manquait, c est la chose qui s affiche');
-      expect(banniere!.height, greaterThan(0),
-          reason: 'une banniere de hauteur nulle n est pas une banniere');
-      expect(regie.demandes, hasLength(1));
-      expect(regie.demandes.single.unitId, isNotEmpty,
-          reason: 'la demande doit porter un emplacement publicitaire');
-    });
+        expect(
+          banniere,
+          isNotNull,
+          reason:
+              'la decision d afficher etait deja prise et testee ; ce qui '
+              'manquait, c est la chose qui s affiche',
+        );
+        expect(
+          banniere!.height,
+          greaterThan(0),
+          reason: 'une banniere de hauteur nulle n est pas une banniere',
+        );
+        expect(regie.demandes, hasLength(1));
+        expect(
+          regie.demandes.single.unitId,
+          isNotEmpty,
+          reason: 'la demande doit porter un emplacement publicitaire',
+        );
+      },
+    );
 
-    testWidgets('l emplacement POSE dans un ecran affiche la banniere',
-        (tester) async {
+    testWidgets('l emplacement POSE dans un ecran affiche la banniere', (
+      tester,
+    ) async {
       final (c, _) = await monterLeMonde();
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(
-              bottomNavigationBar: BannerAdSlot(trailId: 'gr20'),
-            ),
+            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
           ),
         ),
       );
@@ -295,17 +306,16 @@ void main() {
       expect(find.byKey(const ValueKey('banniere-simulee')), findsOneWidget);
     });
 
-    testWidgets('une regie qui ne rend rien ne casse RIEN (zero hauteur)',
-        (tester) async {
+    testWidgets('une regie qui ne rend rien ne casse RIEN (zero hauteur)', (
+      tester,
+    ) async {
       regie = _RegieSimulee(echoue: true);
       final (c, _) = await monterLeMonde();
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(
-              bottomNavigationBar: BannerAdSlot(trailId: 'gr20'),
-            ),
+            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
           ),
         ),
       );
@@ -315,7 +325,8 @@ void main() {
       expect(
         tester.getSize(find.byType(BannerAdSlot)).height,
         0,
-        reason: 'pas de pub disponible ne doit pas reserver un trou blanc au '
+        reason:
+            'pas de pub disponible ne doit pas reserver un trou blanc au '
             'bas de l ecran',
       );
     });
@@ -325,41 +336,58 @@ void main() {
   // B2 — LA REGLE D'OR #99404 : JAMAIS A VIE, TOUJOURS LIEE A UN ETAT ACTIF
   // =========================================================================
   group('B2 — la regle d or commande l affichage', () {
-    test('ABONNE ACTIF : sans pub PARTOUT, et rien n est meme demande',
-        () async {
-      final (c, monetisation) = await monterLeMonde();
-      await monetisation.onSubscriptionValidated();
+    test(
+      'ABONNE ACTIF : sans pub PARTOUT, et rien n est meme demande',
+      () async {
+        final (c, monetisation) = await monterLeMonde();
+        await monetisation.onSubscriptionValidated();
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(await c.read(bannerAdProvider('mare-a-mare').future), isNull,
-          reason: 'l abonnement couvre TOUS les treks, pas celui-la seulement');
-      expect(regie.demandes, isEmpty,
-          reason: 'un abonne ne doit generer AUCUNE demande a la regie — une '
-              'pub chargee puis cachee reste une pub demandee');
-    });
+        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(
+          await c.read(bannerAdProvider('mare-a-mare').future),
+          isNull,
+          reason: 'l abonnement couvre TOUS les treks, pas celui-la seulement',
+        );
+        expect(
+          regie.demandes,
+          isEmpty,
+          reason:
+              'un abonne ne doit generer AUCUNE demande a la regie — une '
+              'pub chargee puis cachee reste une pub demandee',
+        );
+      },
+    );
 
-    test('TREK ACHETE : sans pub sur CE trek, avec pub sur les autres',
-        () async {
-      final (c, _) = await monterLeMonde();
-      await db.trekEntitlementsDao.upsert(
-        TrekEntitlementsCompanion.insert(
-          trailId: 'gr20',
-          owned: const Value(true),
-          updatedAt: maintenant,
-        ),
-      );
+    test(
+      'TREK ACHETE : sans pub sur CE trek, avec pub sur les autres',
+      () async {
+        final (c, _) = await monterLeMonde();
+        await db.trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: 'gr20',
+            owned: const Value(true),
+            updatedAt: maintenant,
+          ),
+        );
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(await c.read(bannerAdProvider('mare-a-mare').future), isNotNull,
-          reason: 'acheter UN trek n achete pas le silence sur les autres');
-    });
+        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(
+          await c.read(bannerAdProvider('mare-a-mare').future),
+          isNotNull,
+          reason: 'acheter UN trek n achete pas le silence sur les autres',
+        );
+      },
+    );
 
     test('RECOMPENSE VIDEO : 24 h de silence, puis la pub revient', () async {
       final (c, monetisation) = await monterLeMonde();
       await monetisation.grantRewardNoAds();
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNull,
-          reason: 'la recompense vient d etre accordee');
+      expect(
+        await c.read(bannerAdProvider('gr20').future),
+        isNull,
+        reason: 'la recompense vient d etre accordee',
+      );
 
       // 24 h plus tard, a la minute pres : l echeance est passee.
       //
@@ -371,8 +399,11 @@ void main() {
       // « sans-pub a vie » que la regle d or interdit.
       maintenant = maintenant.add(const Duration(hours: 24, minutes: 1));
       c.invalidate(shouldShowBannerProvider);
-      expect(await c.read(bannerAdProvider('gr20').future), isNotNull,
-          reason: 'le sans-pub de la recompense est TEMPORAIRE — jamais a vie');
+      expect(
+        await c.read(bannerAdProvider('gr20').future),
+        isNotNull,
+        reason: 'le sans-pub de la recompense est TEMPORAIRE — jamais a vie',
+      );
     });
 
     test('LES CREDITS NE SONT PAS LE SANS-PUB : portefeuille plein, pub quand '
@@ -380,9 +411,13 @@ void main() {
       final (c, _) = await monterLeMonde();
       await portefeuille.credit(50);
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNotNull,
-          reason: 'les credits sont acquis A VIE et SEPARES du sans-pub : ils '
-              'donnent le droit de realiser, pas celui de ne plus voir de pub');
+      expect(
+        await c.read(bannerAdProvider('gr20').future),
+        isNotNull,
+        reason:
+            'les credits sont acquis A VIE et SEPARES du sans-pub : ils '
+            'donnent le droit de realiser, pas celui de ne plus voir de pub',
+      );
     });
 
     testWidgets('ACHETER PENDANT L AFFICHAGE fait DISPARAITRE la banniere, et '
@@ -392,9 +427,7 @@ void main() {
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(
-              bottomNavigationBar: BannerAdSlot(trailId: 'gr20'),
-            ),
+            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
           ),
         ),
       );
@@ -415,20 +448,29 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('banniere-simulee')), findsNothing,
-          reason: 'le sans-pub est immediat, pas au prochain demarrage');
-      expect(regie.liberations, greaterThan(0),
-          reason: 'la banniere chargee doit etre LIBEREE, pas seulement '
-              'retiree de l arbre — sinon elle continue de vivre, de se '
-              'rafraichir et de consommer');
+      expect(
+        find.byKey(const ValueKey('banniere-simulee')),
+        findsNothing,
+        reason: 'le sans-pub est immediat, pas au prochain demarrage',
+      );
+      expect(
+        regie.liberations,
+        greaterThan(0),
+        reason:
+            'la banniere chargee doit etre LIBEREE, pas seulement '
+            'retiree de l arbre — sinon elle continue de vivre, de se '
+            'rafraichir et de consommer',
+      );
     });
 
-    test('la pub NON consentie (CMP) coupe tout, meme sur un trek libre',
-        () async {
-      final (c, _) = await monterLeMonde(pubAutorisee: false);
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(regie.demandes, isEmpty);
-    });
+    test(
+      'la pub NON consentie (CMP) coupe tout, meme sur un trek libre',
+      () async {
+        final (c, _) = await monterLeMonde(pubAutorisee: false);
+        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(regie.demandes, isEmpty);
+      },
+    );
   });
 
   // =========================================================================
@@ -447,8 +489,9 @@ void main() {
     }
 
     test('ANDROID : le manifeste porte un PLACEHOLDER, plus une valeur', () {
-      final manifeste =
-          fichier('android/app/src/main/AndroidManifest.xml').readAsStringSync();
+      final manifeste = fichier(
+        'android/app/src/main/AndroidManifest.xml',
+      ).readAsStringSync();
 
       expect(
         manifeste,
@@ -458,55 +501,98 @@ void main() {
       expect(
         manifeste.contains(appIdTestGoogle),
         isFalse,
-        reason: 'aucune valeur d App ID ne doit plus etre figee dans le '
+        reason:
+            'aucune valeur d App ID ne doit plus etre figee dans le '
             'manifeste — c etait le defaut mesure : non injectable',
       );
     });
 
-    test('ANDROID : le build DEFINIT le placeholder et le lit de l exterieur',
-        () {
-      final gradle = fichier('android/app/build.gradle.kts').readAsStringSync();
+    test(
+      'ANDROID : le build DEFINIT le placeholder et le lit de l exterieur',
+      () {
+        final gradle = fichier(
+          'android/app/build.gradle.kts',
+        ).readAsStringSync();
 
-      expect(gradle, contains('manifestPlaceholders'),
-          reason: 'il n y en avait AUCUN — c est ce qui manquait');
-      expect(gradle, contains('admobAppId'));
-      expect(gradle, contains('ADMOB_APP_ID_ANDROID'),
-          reason: 'le nom du canal d injection doit etre explicite');
-      expect(gradle, contains('System.getenv'),
-          reason: 'une valeur de production arrive par l environnement de '
-              'build ou une propriete gradle — jamais par un fichier versionne');
-      expect(gradle, contains(appIdTestGoogle),
-          reason: 'le DEFAUT reste l App ID de TEST public de Google : un '
-              'build sans injection doit rester fonctionnel et inoffensif');
-    });
+        expect(
+          gradle,
+          contains('manifestPlaceholders'),
+          reason: 'il n y en avait AUCUN — c est ce qui manquait',
+        );
+        expect(gradle, contains('admobAppId'));
+        expect(
+          gradle,
+          contains('ADMOB_APP_ID_ANDROID'),
+          reason: 'le nom du canal d injection doit etre explicite',
+        );
+        expect(
+          gradle,
+          contains('System.getenv'),
+          reason:
+              'une valeur de production arrive par l environnement de '
+              'build ou une propriete gradle — jamais par un fichier versionne',
+        );
+        expect(
+          gradle,
+          contains(appIdTestGoogle),
+          reason:
+              'le DEFAUT reste l App ID de TEST public de Google : un '
+              'build sans injection doit rester fonctionnel et inoffensif',
+        );
+      },
+    );
 
     test('IOS : la cle EXIGEE par le SDK existe, et elle est injectee', () {
       final plist = fichier('ios/Runner/Info.plist').readAsStringSync();
 
-      expect(plist, contains('GADApplicationIdentifier'),
-          reason: 'le SDK AdMob EXIGE cette cle ; elle etait absente — l appli '
-              'iOS ne pouvait pas demarrer le SDK');
-      expect(plist, contains(r'$(ADMOB_APP_ID_IOS)'),
-          reason: 'la valeur vient d un reglage de build, pas du plist');
-      expect(plist, contains('SKAdNetworkItems'),
-          reason: 'Apple exige la liste d attribution des reseaux publicitaires');
-      expect(plist, contains('NSUserTrackingUsageDescription'),
-          reason: 'Apple exige le texte de suivi publicitaire ; sans lui, le '
-              'SDK ne peut rien demander et l app est refusee en revue');
+      expect(
+        plist,
+        contains('GADApplicationIdentifier'),
+        reason:
+            'le SDK AdMob EXIGE cette cle ; elle etait absente — l appli '
+            'iOS ne pouvait pas demarrer le SDK',
+      );
+      expect(
+        plist,
+        contains(r'$(ADMOB_APP_ID_IOS)'),
+        reason: 'la valeur vient d un reglage de build, pas du plist',
+      );
+      expect(
+        plist,
+        contains('SKAdNetworkItems'),
+        reason: 'Apple exige la liste d attribution des reseaux publicitaires',
+      );
+      expect(
+        plist,
+        contains('NSUserTrackingUsageDescription'),
+        reason:
+            'Apple exige le texte de suivi publicitaire ; sans lui, le '
+            'SDK ne peut rien demander et l app est refusee en revue',
+      );
     });
 
-    test('IOS : le reglage de build a un defaut de TEST, jamais une cle reelle',
-        () {
-      final debug = fichier('ios/Flutter/Debug.xcconfig').readAsStringSync();
-      final release = fichier('ios/Flutter/Release.xcconfig').readAsStringSync();
+    test(
+      'IOS : le reglage de build a un defaut de TEST, jamais une cle reelle',
+      () {
+        final debug = fichier('ios/Flutter/Debug.xcconfig').readAsStringSync();
+        final release = fichier(
+          'ios/Flutter/Release.xcconfig',
+        ).readAsStringSync();
 
-      for (final (nom, contenu) in [('Debug', debug), ('Release', release)]) {
-        expect(contenu, contains('ADMOB_APP_ID_IOS'),
-            reason: '$nom doit definir le reglage injecte');
-        expect(contenu, contains(editeurTestGoogle),
-            reason: '$nom doit retomber sur l identifiant de TEST de Google');
-      }
-    });
+        for (final (nom, contenu) in [('Debug', debug), ('Release', release)]) {
+          expect(
+            contenu,
+            contains('ADMOB_APP_ID_IOS'),
+            reason: '$nom doit definir le reglage injecte',
+          );
+          expect(
+            contenu,
+            contains(editeurTestGoogle),
+            reason: '$nom doit retomber sur l identifiant de TEST de Google',
+          );
+        }
+      },
+    );
 
     test('AUCUNE CLE DE PRODUCTION n est ecrite en clair dans le depot', () {
       // Tout identifiant AdMob commence par `ca-app-pub-`. Le SEUL compte
@@ -531,22 +617,31 @@ void main() {
           }
         }
       }
-      expect(fautives, isEmpty,
-          reason: 'UNE CLE ADMOB REELLE EST ECRITE EN CLAIR DANS LE DEPOT. '
-              'Les valeurs de production s injectent au build '
-              '(ADMOB_APP_ID_ANDROID / ADMOB_APP_ID_IOS / --dart-define) et '
-              'ne sont JAMAIS versionnees.\n  ${fautives.join('\n  ')}');
+      expect(
+        fautives,
+        isEmpty,
+        reason:
+            'UNE CLE ADMOB REELLE EST ECRITE EN CLAIR DANS LE DEPOT. '
+            'Les valeurs de production s injectent au build '
+            '(ADMOB_APP_ID_ANDROID / ADMOB_APP_ID_IOS / --dart-define) et '
+            'ne sont JAMAIS versionnees.\n  ${fautives.join('\n  ')}',
+      );
     });
 
-    test('les emplacements publicitaires restent injectables (deja acquis)',
-        () {
-      // Ce point-la etait DEJA propre avant la tache : on le verrouille pour
-      // qu il le reste, sans se l attribuer.
-      expect(AdConfig.bannerUnitId(), isNotEmpty);
-      expect(AdConfig.rewardedUnitId(), isNotEmpty);
-      expect(AdConfig.hasProductionUnits, isFalse,
-          reason: 'un build de test ne porte aucun emplacement de production');
-    });
+    test(
+      'les emplacements publicitaires restent injectables (deja acquis)',
+      () {
+        // Ce point-la etait DEJA propre avant la tache : on le verrouille pour
+        // qu il le reste, sans se l attribuer.
+        expect(AdConfig.bannerUnitId(), isNotEmpty);
+        expect(AdConfig.rewardedUnitId(), isNotEmpty);
+        expect(
+          AdConfig.hasProductionUnits,
+          isFalse,
+          reason: 'un build de test ne porte aucun emplacement de production',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -554,11 +649,18 @@ void main() {
   // =========================================================================
   group('B4 — la publicite entre dans le consentement de l appli', () {
     test('la publicite est une finalite du dispositif, comme les autres', () {
-      expect(ConsentPurpose.values, contains(ConsentPurpose.advertising),
-          reason: 'elle vivait a cote du dispositif ; elle en fait partie');
-      expect(ConsentPurpose.advertising.isReinforced, isFalse,
-          reason: 'la publicite n est pas une donnee de l article 9 — seule la '
-              'sante l est, et son isolement ne doit pas etre dilue');
+      expect(
+        ConsentPurpose.values,
+        contains(ConsentPurpose.advertising),
+        reason: 'elle vivait a cote du dispositif ; elle en fait partie',
+      );
+      expect(
+        ConsentPurpose.advertising.isReinforced,
+        isFalse,
+        reason:
+            'la publicite n est pas une donnee de l article 9 — seule la '
+            'sante l est, et son isolement ne doit pas etre dilue',
+      );
       expect(ConsentPurpose.advertising.storageKey, 'consent_advertising');
     });
 
@@ -576,8 +678,11 @@ void main() {
         await service.revoke(p);
       }
       expect(service.hasConsent(ConsentPurpose.advertising), isFalse);
-      expect(service.stateOf(ConsentPurpose.advertising).decidedAt, isNotNull,
-          reason: 'un refus est une DECISION horodatee, pas un silence');
+      expect(
+        service.stateOf(ConsentPurpose.advertising).decidedAt,
+        isNotNull,
+        reason: 'un refus est une DECISION horodatee, pas un silence',
+      );
     });
 
     test('REFUSER produit un effet MESURABLE : la demande part NON '
@@ -586,10 +691,14 @@ void main() {
       await c.read(bannerAdProvider('gr20').future);
 
       expect(regie.demandes, hasLength(1));
-      expect(regie.demandes.single.personalized, isFalse,
-          reason: 'refuser la publicite personnalisee doit changer CE QUI PART '
-              'de l appareil. Un interrupteur qui ne change rien est un '
-              'mensonge poli.');
+      expect(
+        regie.demandes.single.personalized,
+        isFalse,
+        reason:
+            'refuser la publicite personnalisee doit changer CE QUI PART '
+            'de l appareil. Un interrupteur qui ne change rien est un '
+            'mensonge poli.',
+      );
     });
 
     test('ACCORDER laisse la demande personnalisee', () async {
@@ -599,16 +708,22 @@ void main() {
       expect(regie.demandes.single.personalized, isTrue);
     });
 
-    test('SANS DECISION, la demande part non personnalisee (ferme par defaut)',
-        () async {
-      final (c, _) = await monterLeMonde();
-      await c.read(bannerAdProvider('gr20').future);
+    test(
+      'SANS DECISION, la demande part non personnalisee (ferme par defaut)',
+      () async {
+        final (c, _) = await monterLeMonde();
+        await c.read(bannerAdProvider('gr20').future);
 
-      expect(regie.demandes.single.personalized, isFalse,
-          reason: 'le dispositif est en opt-in : rien n est accorde par '
+        expect(
+          regie.demandes.single.personalized,
+          isFalse,
+          reason:
+              'le dispositif est en opt-in : rien n est accorde par '
               'defaut. Le modele economique tient quand meme — la publicite '
-              'reste affichee, elle est seulement non ciblee.');
-    });
+              'reste affichee, elle est seulement non ciblee.',
+        );
+      },
+    );
 
     testWidgets('« Options de confidentialite » a UNE PORTE dans l ecran de '
         'consentement', (tester) async {
@@ -632,7 +747,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            consentServiceReadyProvider.overrideWith((ref) async => consentement),
+            consentServiceReadyProvider.overrideWith(
+              (ref) async => consentement,
+            ),
             adsPrivacyOptionsRequiredProvider.overrideWith((ref) async => true),
           ],
           child: TranslationProvider(
@@ -660,13 +777,15 @@ void main() {
       expect(
         find.byKey(const ValueKey('consent-ads-privacy-options')),
         findsOneWidget,
-        reason: 'le point d entree des options de confidentialite pub doit '
+        reason:
+            'le point d entree des options de confidentialite pub doit '
             'etre atteignable par un doigt',
       );
       expect(
         find.byKey(const ValueKey('consent-toggle-advertising')),
         findsOneWidget,
-        reason: 'la publicite doit avoir sa bascule sur le MEME ecran que les '
+        reason:
+            'la publicite doit avoir sa bascule sur le MEME ecran que les '
             'autres finalites — c est ca, « en faire partie »',
       );
     });
@@ -719,11 +838,15 @@ void main() {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'AUCUNE monetisation sur le chemin du secours. Ni pub, ni '
-              'paywall, jamais, nulle part. C est la decision la mieux '
-              'respectee du modele et elle le reste.\n  '
-              '${fautifs.join('\n  ')}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'AUCUNE monetisation sur le chemin du secours. Ni pub, ni '
+            'paywall, jamais, nulle part. C est la decision la mieux '
+            'respectee du modele et elle le reste.\n  '
+            '${fautifs.join('\n  ')}',
+      );
     });
 
     test('la publicite ne s invite pas non plus dans le repertoire safety', () {
@@ -737,9 +860,13 @@ void main() {
           fautifs.add(e.path);
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'le module du secours ne doit meme pas CONNAITRE le module '
-              'publicitaire.\n  ${fautifs.join('\n  ')}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason:
+            'le module du secours ne doit meme pas CONNAITRE le module '
+            'publicitaire.\n  ${fautifs.join('\n  ')}',
+      );
     });
   });
 
@@ -777,77 +904,109 @@ void main() {
     test('hors mode trek : le sentier gratuit est AVEC pub', () async {
       final (c, _) = await monterLeMonde(sentiersGratuits: {gratuit});
 
-      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
-          reason: 'gratuit = avec pub (modele eco section 2). Le sans-pub se '
-              'paie : sentier achete, abonnement actif, ou recompense video');
-      expect(regie.demandes, hasLength(1),
-          reason: 'la demande part REELLEMENT a la regie — on ne mesure pas '
-              'des pixels');
+      expect(
+        await c.read(bannerAdProvider(gratuit).future),
+        isNotNull,
+        reason:
+            'gratuit = avec pub (modele eco section 2). Le sans-pub se '
+            'paie : sentier achete, abonnement actif, ou recompense video',
+      );
+      expect(
+        regie.demandes,
+        hasLength(1),
+        reason:
+            'la demande part REELLEMENT a la regie — on ne mesure pas '
+            'des pixels',
+      );
     });
 
-    test('EN MARCHANT sur le sentier gratuit : la pub EST la, et c est voulu',
-        () async {
-      final (c, _) = await monterLeMonde(
-        sentiersGratuits: {gratuit},
-        tracking: TrackingSessionStatus.recording,
-      );
+    test(
+      'EN MARCHANT sur le sentier gratuit : la pub EST la, et c est voulu',
+      () async {
+        final (c, _) = await monterLeMonde(
+          sentiersGratuits: {gratuit},
+          tracking: TrackingSessionStatus.recording,
+        );
 
-      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
-          reason: 'CE TEST DIT L INVERSE DE CE QU IL DISAIT LE MATIN DU 27/09, '
+        expect(
+          await c.read(bannerAdProvider(gratuit).future),
+          isNotNull,
+          reason:
+              'CE TEST DIT L INVERSE DE CE QU IL DISAIT LE MATIN DU 27/09, '
               'et ce n est pas un relachement : Chris a retire sa garde « en '
               'mode trek jamais » a 14:41 — « TOUT PORTER LA PUB sauf si tu es '
               'abonne ou sur le trek que tu as achete .. Pas la peine de mettre '
               'plus de regles ». Deux exceptions, pas trois. Un sentier gratuit '
               'n est ni abonne ni achete, meme quand on le marche. NE REMETS PAS '
-              'DE GARDE ICI : ce serait ajouter la regle qu il vient d enlever');
-      expect(regie.demandes, hasLength(1));
-    });
+              'DE GARDE ICI : ce serait ajouter la regle qu il vient d enlever',
+        );
+        expect(regie.demandes, hasLength(1));
+      },
+    );
 
-    test('marcher un sentier ACHETE reste sans pub — l exception suffit',
-        () async {
+    test('marcher un sentier ACHETE reste sans pub — l exception suffit', () async {
       final (c, monetisation) = await monterLeMonde(
         tracking: TrackingSessionStatus.recording,
       );
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20')).isOwned,
-          isTrue);
+      expect((await monetisation.buyTrail('gr20')).isOwned, isTrue);
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNull,
-          reason: 'VOILA POURQUOI LA GARDE ETAIT REDONDANTE SUR LES SENTIERS '
-              'PAYANTS, et c est le raisonnement que Chris tenait lui-meme le '
-              'matin : « il paye FORCEMENT en mode trek ». On ne realise un trek '
-              'payant qu en l ayant achete (verrou canRealizeTrail, lot 594), et '
-              'un trek achete est deja sans pub. L exception « sentier achete » '
-              'couvre donc toute la realisation payante, sans regle de plus');
+      expect(
+        await c.read(bannerAdProvider('gr20').future),
+        isNull,
+        reason:
+            'VOILA POURQUOI LA GARDE ETAIT REDONDANTE SUR LES SENTIERS '
+            'PAYANTS, et c est le raisonnement que Chris tenait lui-meme le '
+            'matin : « il paye FORCEMENT en mode trek ». On ne realise un trek '
+            'payant qu en l ayant achete (verrou canRealizeTrail, lot 594), et '
+            'un trek achete est deja sans pub. L exception « sentier achete » '
+            'couvre donc toute la realisation payante, sans regle de plus',
+      );
       expect(regie.demandes, isEmpty);
     });
 
-    test('un ABONNE actif : aucune pub sur le sentier gratuit non plus',
-        () async {
-      final (c, monetisation) =
-          await monterLeMonde(sentiersGratuits: {gratuit});
-      await monetisation.onSubscriptionValidated();
+    test(
+      'un ABONNE actif : aucune pub sur le sentier gratuit non plus',
+      () async {
+        final (c, monetisation) = await monterLeMonde(
+          sentiersGratuits: {gratuit},
+        );
+        await monetisation.onSubscriptionValidated();
 
-      expect(await c.read(bannerAdProvider(gratuit).future), isNull,
-          reason: 'l abonnement a 2 euros donne « pub nulle part » tant qu il '
-              'est actif — un sentier gratuit n y fait pas exception');
-      expect(regie.demandes, isEmpty);
-    });
+        expect(
+          await c.read(bannerAdProvider(gratuit).future),
+          isNull,
+          reason:
+              'l abonnement a 2 euros donne « pub nulle part » tant qu il '
+              'est actif — un sentier gratuit n y fait pas exception',
+        );
+        expect(regie.demandes, isEmpty);
+      },
+    );
 
-    test('le sentier gratuit ne porte PAS le sans-pub permanent d un achat',
-        () async {
-      final (c, monetisation) =
-          await monterLeMonde(sentiersGratuits: {gratuit});
-      await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20')).isOwned,
-          isTrue);
+    test(
+      'le sentier gratuit ne porte PAS le sans-pub permanent d un achat',
+      () async {
+        final (c, monetisation) = await monterLeMonde(
+          sentiersGratuits: {gratuit},
+        );
+        await portefeuille.credit(10);
+        expect((await monetisation.buyTrail('gr20')).isOwned, isTrue);
 
-      expect(await c.read(bannerAdProvider('gr20').future), isNull,
-          reason: 'le sentier ACHETE est sans pub, et le reste');
-      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
-          reason: 'le sentier GRATUIT, lui, n a rien paye : cette difference '
+        expect(
+          await c.read(bannerAdProvider('gr20').future),
+          isNull,
+          reason: 'le sentier ACHETE est sans pub, et le reste',
+        );
+        expect(
+          await c.read(bannerAdProvider(gratuit).future),
+          isNotNull,
+          reason:
+              'le sentier GRATUIT, lui, n a rien paye : cette difference '
               'est le coeur de la tache 601 — un achat donne un privilege '
-              'permanent, la gratuite n en donne aucun');
-    });
+              'permanent, la gratuite n en donne aucun',
+        );
+      },
+    );
   });
 }

@@ -55,7 +55,9 @@ void main() {
   }
 
   group('SW-SKIN-L3a — SettingsScreen', () {
-    testWidgets('utilise AppCard et aucune Card Material brute', (tester) async {
+    testWidgets('utilise AppCard et aucune Card Material brute', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const SettingsScreen()));
       await tester.pumpAndSettle();
 
@@ -93,9 +95,7 @@ void main() {
 
   group('SW-SKIN-L3a — DepartureDatePicker', () {
     testWidgets('utilise AppCard (plus de Card brute)', (tester) async {
-      await tester.pumpWidget(wrap(
-        const DepartureDatePicker(trailId: 'gr20'),
-      ));
+      await tester.pumpWidget(wrap(const DepartureDatePicker(trailId: 'gr20')));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppCard), findsOneWidget);
@@ -116,12 +116,13 @@ void main() {
   });
 
   group('SW-SKIN-L3a — ConsentOnboardingScreen', () {
-    testWidgets('utilise AppButton pour la validation + tap fonctionnel',
-        (tester) async {
+    testWidgets('utilise AppButton pour la validation + tap fonctionnel', (
+      tester,
+    ) async {
       var continued = false;
-      await tester.pumpWidget(wrap(
-        ConsentOnboardingScreen(onContinue: () => continued = true),
-      ));
+      await tester.pumpWidget(
+        wrap(ConsentOnboardingScreen(onContinue: () => continued = true)),
+      );
       await tester.pumpAndSettle();
 
       // Plus aucune Card Material brute (section sante = AppCard).

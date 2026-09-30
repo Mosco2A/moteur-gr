@@ -44,45 +44,47 @@ void main() {
       expect(entries.first.text, 'Magnifique vue depuis le Monte Cinto');
     });
 
-    test('getByStage retourne uniquement les notes de l etape demandee',
-        () async {
-      // Ajouter des notes sur differentes etapes
-      await repository.addNote(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        text: 'Depart de Calenzana',
-      );
-      await repository.addNote(
-        trailId: 'sentier-bleu',
-        stageNumber: 2,
-        text: 'Refuge de Carozzu',
-      );
-      await repository.addNote(
-        trailId: 'sentier-bleu',
-        stageNumber: 2,
-        text: 'Piscine naturelle geniale',
-      );
-      await repository.addNote(
-        trailId: 'sentier-bleu',
-        stageNumber: 3,
-        text: 'Haut Asco',
-      );
+    test(
+      'getByStage retourne uniquement les notes de l etape demandee',
+      () async {
+        // Ajouter des notes sur differentes etapes
+        await repository.addNote(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          text: 'Depart de Calenzana',
+        );
+        await repository.addNote(
+          trailId: 'sentier-bleu',
+          stageNumber: 2,
+          text: 'Refuge de Carozzu',
+        );
+        await repository.addNote(
+          trailId: 'sentier-bleu',
+          stageNumber: 2,
+          text: 'Piscine naturelle geniale',
+        );
+        await repository.addNote(
+          trailId: 'sentier-bleu',
+          stageNumber: 3,
+          text: 'Haut Asco',
+        );
 
-      // Lecture filtree par etape 2
-      final stage2Entries = await repository.getByStage('sentier-bleu', 2);
-      expect(stage2Entries.length, 2);
-      for (final entry in stage2Entries) {
-        expect(entry.stageNumber, 2);
-      }
+        // Lecture filtree par etape 2
+        final stage2Entries = await repository.getByStage('sentier-bleu', 2);
+        expect(stage2Entries.length, 2);
+        for (final entry in stage2Entries) {
+          expect(entry.stageNumber, 2);
+        }
 
-      // Etape 1 = 1 note
-      final stage1Entries = await repository.getByStage('sentier-bleu', 1);
-      expect(stage1Entries.length, 1);
-      expect(stage1Entries.first.text, 'Depart de Calenzana');
+        // Etape 1 = 1 note
+        final stage1Entries = await repository.getByStage('sentier-bleu', 1);
+        expect(stage1Entries.length, 1);
+        expect(stage1Entries.first.text, 'Depart de Calenzana');
 
-      // Etape inexistante = vide
-      final stage99 = await repository.getByStage('sentier-bleu', 99);
-      expect(stage99, isEmpty);
-    });
+        // Etape inexistante = vide
+        final stage99 = await repository.getByStage('sentier-bleu', 99);
+        expect(stage99, isEmpty);
+      },
+    );
   });
 }

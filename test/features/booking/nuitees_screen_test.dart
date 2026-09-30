@@ -47,17 +47,17 @@ void main() {
 
   /// Etape minimale (seul `stageNumber` importe pour rattacher l'hebergement).
   StageModel stage(int n) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: 12,
-        elevationGainM: 600,
-        elevationLossM: 500,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: 12,
+    elevationGainM: 600,
+    elevationLossM: 500,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+  );
 
   /// Jour de marche (une nuit) portant l'etape d'arrivee [n].
   PlannedDay walkDay(int dayNumber, int stageNumber) =>
@@ -69,21 +69,21 @@ void main() {
     required String nameFr,
     required String type,
     String? phone,
-  }) =>
-      StageAccommodation(
-        id: '$stageNumber-$type',
-        stageId: 'stage-$stageNumber',
-        stageNumber: stageNumber,
-        nameFr: nameFr,
-        type: type,
-        lat: 0,
-        lng: 0,
-        phone: phone,
-      );
+  }) => StageAccommodation(
+    id: '$stageNumber-$type',
+    stageId: 'stage-$stageNumber',
+    stageNumber: stageNumber,
+    nameFr: nameFr,
+    type: type,
+    lat: 0,
+    lng: 0,
+    phone: phone,
+  );
 
   /// Faux [TrailDataProvider] : ne sert que les hebergements par (trail, etape).
   /// Genericite : aucune donnee en dur dans le moteur, tout vient d'ici.
-  TrailDataProvider fakeData(List<StageAccommodation> all) => _FakeTrailData(all);
+  TrailDataProvider fakeData(List<StageAccommodation> all) =>
+      _FakeTrailData(all);
 
   /// Fait avancer le temps par petits pas bornes, SANS `pumpAndSettle`
   /// (l'ecran charge des FutureProvider — pas de « repos » garanti).
@@ -127,19 +127,18 @@ void main() {
     required AppDatabase db,
     required List<PlannedDay> days,
     required List<StageAccommodation> accommodations,
-  }) =>
-      [
-        databaseProvider.overrideWithValue(db),
-        // `trailIdProvider` pilote le sentier actif lu par le notifier de
-        // selections (persistance par sentier).
-        trailIdProvider.overrideWithValue(trailId),
-        // Programme fige (evite tout le pipeline stages/repartition).
-        plannedDaysProvider(trailId).overrideWith(
-          (ref) => _StaticPlannedDays(ref, days),
-        ),
-        // Source de donnees du sentier (hebergements par etape).
-        trailDataProvider.overrideWithValue(fakeData(accommodations)),
-      ];
+  }) => [
+    databaseProvider.overrideWithValue(db),
+    // `trailIdProvider` pilote le sentier actif lu par le notifier de
+    // selections (persistance par sentier).
+    trailIdProvider.overrideWithValue(trailId),
+    // Programme fige (evite tout le pipeline stages/repartition).
+    plannedDaysProvider(
+      trailId,
+    ).overrideWith((ref) => _StaticPlannedDays(ref, days)),
+    // Source de donnees du sentier (hebergements par etape).
+    trailDataProvider.overrideWithValue(fakeData(accommodations)),
+  ];
 
   /// Enveloppe [child] avec ProviderScope + Translations + un GoRouter minimal.
   Widget wrap({
@@ -153,8 +152,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/n',
-          builder: (_, __) =>
-              child ?? const NuiteesScreen(trailId: trailId),
+          builder: (_, __) => child ?? const NuiteesScreen(trailId: trailId),
         ),
       ],
     );
@@ -174,10 +172,12 @@ void main() {
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailIdProvider.overrideWithValue(trailId),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailIdProvider.overrideWithValue(trailId),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -199,17 +199,13 @@ void main() {
       await container
           .read(nuiteeSelectionsProvider.notifier)
           .setNuiteeType(1, NuiteeType.gite);
-      await container
-          .read(nuiteeSelectionsProvider.notifier)
-          .toggleBooking(1);
+      await container.read(nuiteeSelectionsProvider.notifier).toggleBooking(1);
 
       // Reserver aussi la nuit 2 en bivouac.
       await container
           .read(nuiteeSelectionsProvider.notifier)
           .setNuiteeType(2, NuiteeType.bivouac);
-      await container
-          .read(nuiteeSelectionsProvider.notifier)
-          .toggleBooking(2);
+      await container.read(nuiteeSelectionsProvider.notifier).toggleBooking(2);
 
       // Etat en memoire coherent.
       state = container.read(nuiteeSelectionsProvider);
@@ -230,10 +226,12 @@ void main() {
 
       // RELECTURE via un NOUVEAU container (meme DB) : l'etat est rechargle
       // depuis la persistance (offline-first, comme la checklist).
-      final container2 = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailIdProvider.overrideWithValue(trailId),
-      ]);
+      final container2 = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailIdProvider.overrideWithValue(trailId),
+        ],
+      );
       addTearDown(container2.dispose);
       container2.read(nuiteeSelectionsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 200));
@@ -257,17 +255,18 @@ void main() {
       final dao = NuiteeSelectionsDao(db);
       final rows = await dao.getByTrailId(trailId);
       final row1 = rows.firstWhere((r) => r.dayNumber == 1);
-      expect(row1.isBooked, false,
-          reason: 'Le decochage doit aussi persister en DB');
+      expect(
+        row1.isBooked,
+        false,
+        reason: 'Le decochage doit aussi persister en DB',
+      );
     });
 
     test('les selections sont isolees par sentier', () async {
       // Ecrit sur le sentier actif (test_trail) via le notifier...
       container.read(nuiteeSelectionsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 200));
-      await container
-          .read(nuiteeSelectionsProvider.notifier)
-          .toggleBooking(1);
+      await container.read(nuiteeSelectionsProvider.notifier).toggleBooking(1);
 
       // ... un AUTRE sentier n'a aucune selection (genericite multi-sentiers).
       final dao = NuiteeSelectionsDao(db);
@@ -294,16 +293,19 @@ void main() {
     setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    testWidgets('on revient a « gite » sans decocher, et la nuit reste cochee',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [walkDay(1, 1)],
-        accommodations: [
-          accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
-          accom(1, nameFr: 'Gite du Col', type: 'gite'),
-        ],
-      ));
+    testWidgets('on revient a « gite » sans decocher, et la nuit reste cochee', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: [walkDay(1, 1)],
+          accommodations: [
+            accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
+            accom(1, nameFr: 'Gite du Col', type: 'gite'),
+          ],
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text('J1'));
 
@@ -318,8 +320,11 @@ void main() {
       await tester.tap(find.text('J1').first);
       await settle(tester);
       var rows = await dao.getByTrailId(trailId);
-      expect(rows.single.isBooked, isTrue,
-          reason: 'la nuit est cochee — c est l etat de depart du probleme');
+      expect(
+        rows.single.isBooked,
+        isTrue,
+        reason: 'la nuit est cochee — c est l etat de depart du probleme',
+      );
 
       // 2. LE GESTE QUI ETAIT IMPOSSIBLE : changer le type alors que la nuit est
       //    cochee. Avant, la puce etait grisee et `onTap` valait null : ce tap ne
@@ -328,13 +333,19 @@ void main() {
       await settle(tester);
 
       rows = await dao.getByTrailId(trailId);
-      expect(rows.single.nuiteeType, NuiteeType.gite.storageKey,
-          reason: 'on doit pouvoir revenir a gite sans rien decocher');
+      expect(
+        rows.single.nuiteeType,
+        NuiteeType.gite.storageKey,
+        reason: 'on doit pouvoir revenir a gite sans rien decocher',
+      );
 
       // 3. ET LA COCHE SURVIT : changer le type n'annule pas la reservation
       //    (`setNuiteeType` et `toggleBooking` ecrivent deux champs distincts).
-      expect(rows.single.isBooked, isTrue,
-          reason: 'changer le type ne doit pas decocher la nuit');
+      expect(
+        rows.single.isBooked,
+        isTrue,
+        reason: 'changer le type ne doit pas decocher la nuit',
+      );
 
       // 4. Le retour en arriere marche dans les deux sens.
       await tester.tap(refugeChip.last);
@@ -344,34 +355,41 @@ void main() {
       expect(rows.single.isBooked, isTrue);
     });
 
-    testWidgets('plus aucune puce grisee ni indice invisible sur une nuit cochee',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [walkDay(1, 1)],
-        accommodations: [
-          accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
-          accom(1, nameFr: 'Gite du Col', type: 'gite'),
-        ],
-      ));
-      await settle(tester);
-      await pumpUntil(tester, find.text('J1'));
+    testWidgets(
+      'plus aucune puce grisee ni indice invisible sur une nuit cochee',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            db: db,
+            days: [walkDay(1, 1)],
+            accommodations: [
+              accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
+              accom(1, nameFr: 'Gite du Col', type: 'gite'),
+            ],
+          ),
+        );
+        await settle(tester);
+        await pumpUntil(tester, find.text('J1'));
 
-      await tester.tap(find.text('J1').first);
-      await settle(tester);
+        await tester.tap(find.text('J1').first);
+        await settle(tester);
 
-      // L'attenuation a 35 % des puces non selectionnees a disparu : plus rien
-      // dans la carte ne fait croire a un verrou.
-      final opacites = tester
-          .widgetList<Opacity>(find.byType(Opacity))
-          .where((o) => o.opacity < 1.0);
-      expect(opacites, isEmpty,
-          reason: 'aucune puce de type ne doit plus etre grisee');
+        // L'attenuation a 35 % des puces non selectionnees a disparu : plus rien
+        // dans la carte ne fait croire a un verrou.
+        final opacites = tester
+            .widgetList<Opacity>(find.byType(Opacity))
+            .where((o) => o.opacity < 1.0);
+        expect(
+          opacites,
+          isEmpty,
+          reason: 'aucune puce de type ne doit plus etre grisee',
+        );
 
-      // Et le `Tooltip` « decochez pour changer le type » — qui ne s'affichait
-      // jamais sur mobile — n'est plus monte nulle part.
-      expect(find.byTooltip(t.nuitees.card.lockedHint), findsNothing);
-    });
+        // Et le `Tooltip` « decochez pour changer le type » — qui ne s'affichait
+        // jamais sur mobile — n'est plus monte nulle part.
+        expect(find.byTooltip(t.nuitees.card.lockedHint), findsNothing);
+      },
+    );
   });
 
   // --- Donnees par sentier -------------------------------------------------
@@ -382,16 +400,24 @@ void main() {
     setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    testWidgets('affiche les noms d\'hebergement issus des donnees du sentier',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [walkDay(1, 1), walkDay(2, 2)],
-        accommodations: [
-          accom(1, nameFr: 'Refuge de Test', type: 'refuge', phone: '0102030405'),
-          accom(2, nameFr: 'Gite du Col', type: 'gite'),
-        ],
-      ));
+    testWidgets('affiche les noms d\'hebergement issus des donnees du sentier', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: [walkDay(1, 1), walkDay(2, 2)],
+          accommodations: [
+            accom(
+              1,
+              nameFr: 'Refuge de Test',
+              type: 'refuge',
+              phone: '0102030405',
+            ),
+            accom(2, nameFr: 'Gite du Col', type: 'gite'),
+          ],
+        ),
+      );
       await settle(tester);
 
       // Titre de l'ecran (Slang) present.
@@ -423,29 +449,38 @@ void main() {
     setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    testWidgets('libelle generique quand le sentier n\'a aucun hebergement',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [walkDay(1, 1)],
-        accommodations: const [], // sentier sans donnees d'hebergement
-      ));
+    testWidgets('libelle generique quand le sentier n\'a aucun hebergement', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: [walkDay(1, 1)],
+          accommodations: const [], // sentier sans donnees d'hebergement
+        ),
+      );
       await settle(tester);
 
       // La nuit est listee (J1) mais avec le libelle generique de repli.
       await pumpUntil(tester, find.text('J1'));
       expect(find.text('J1'), findsWidgets);
-      expect(find.text(t.nuitees.card.noPlace), findsWidgets,
-          reason: 'Fallback gracieux : libelle generique sans donnees');
+      expect(
+        find.text(t.nuitees.card.noPlace),
+        findsWidgets,
+        reason: 'Fallback gracieux : libelle generique sans donnees',
+      );
     });
 
-    testWidgets('etat vide quand le programme n\'a aucune nuit',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: const [], // aucun jour de marche
-        accommodations: const [],
-      ));
+    testWidgets('etat vide quand le programme n\'a aucune nuit', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: const [], // aucun jour de marche
+          accommodations: const [],
+        ),
+      );
       await settle(tester);
 
       // Etat vide (parite GR20 `_buildEmptyState`) : invite a configurer.
@@ -458,24 +493,30 @@ void main() {
     // nuits » : c'etait le BUG. Un jour de repos, on dort quand meme — GR20 le
     // comptabilise (jour precedent a `nightCount` 2). L'ancien filtre faisait
     // donc perdre une nuit au randonneur sur son planning de reservation.
-    testWidgets('la nuit du JOUR DE REPOS est comptee (parite GR20)',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [
-          walkDay(1, 1),
-          const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
-          walkDay(3, 2),
-        ],
-        accommodations: const [],
-      ));
+    testWidgets('la nuit du JOUR DE REPOS est comptee (parite GR20)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: [
+            walkDay(1, 1),
+            const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
+            walkDay(3, 2),
+          ],
+          accommodations: const [],
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text('J1'));
 
       // Les 3 nuits apparaissent, J2 (repos) COMPRISE.
       expect(find.text('J1'), findsWidgets);
-      expect(find.text('J2'), findsWidgets,
-          reason: 'La nuit du jour de repos ne doit plus disparaitre');
+      expect(
+        find.text('J2'),
+        findsWidgets,
+        reason: 'La nuit du jour de repos ne doit plus disparaitre',
+      );
       expect(find.text('J3'), findsWidgets);
 
       // Et elle est explicitement identifiee comme un jour de repos (sinon deux
@@ -487,13 +528,16 @@ void main() {
     // Elle manquait a l assistant : on arrive la veille au point de depart et
     // on y dort, mais cette nuit-la n apparaissait nulle part dans la liste
     // des nuits a reserver.
-    testWidgets('la nuit N0 (veille du depart) ouvre la liste et se dit',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        db: db,
-        days: [walkDay(1, 1), walkDay(2, 2)],
-        accommodations: const [],
-      ));
+    testWidgets('la nuit N0 (veille du depart) ouvre la liste et se dit', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          db: db,
+          days: [walkDay(1, 1), walkDay(2, 2)],
+          accommodations: const [],
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text('J1'));
 
@@ -508,24 +552,26 @@ void main() {
       expect(find.text('J2'), findsWidgets);
     });
 
-    test('buildNuiteeSlots : un repos herite du lieu du dernier jour marche',
-        () {
-      final slots = buildNuiteeSlots([
-        walkDay(1, 1),
-        const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
-        walkDay(3, 2),
-      ]);
+    test(
+      'buildNuiteeSlots : un repos herite du lieu du dernier jour marche',
+      () {
+        final slots = buildNuiteeSlots([
+          walkDay(1, 1),
+          const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
+          walkDay(3, 2),
+        ]);
 
-      // L7-2 : la liste ouvre sur la nuit N0 (veille du depart), puis les
-      // 3 jours -> 3 nuits, la nuit du repos comprise. Total 4.
-      expect(slots.length, 4);
-      expect(slots[0].isEveOfDeparture, isTrue);
-      expect(slots[1].stageNumber, 1);
-      // Le repos dort au MEME endroit que la veille : etape d'arrivee du J1.
-      expect(slots[2].day.isRestDay, isTrue);
-      expect(slots[2].stageNumber, 1);
-      expect(slots[3].stageNumber, 2);
-    });
+        // L7-2 : la liste ouvre sur la nuit N0 (veille du depart), puis les
+        // 3 jours -> 3 nuits, la nuit du repos comprise. Total 4.
+        expect(slots.length, 4);
+        expect(slots[0].isEveOfDeparture, isTrue);
+        expect(slots[1].stageNumber, 1);
+        // Le repos dort au MEME endroit que la veille : etape d'arrivee du J1.
+        expect(slots[2].day.isRestDay, isTrue);
+        expect(slots[2].stageNumber, 1);
+        expect(slots[3].stageNumber, 2);
+      },
+    );
 
     test('buildNuiteeSlots : un repos en tete de programme ne plante pas', () {
       final slots = buildNuiteeSlots([
@@ -562,10 +608,12 @@ void main() {
       expect(slots[2].stageNumber, 2);
     });
 
-    test('buildNuiteeSlots : aucun programme, aucune nuit — pas meme la N0',
-        () {
-      expect(buildNuiteeSlots(const []), isEmpty);
-    });
+    test(
+      'buildNuiteeSlots : aucun programme, aucune nuit — pas meme la N0',
+      () {
+        expect(buildNuiteeSlots(const []), isEmpty);
+      },
+    );
   });
 
   // --- Navigation depuis le HUB -------------------------------------------
@@ -576,8 +624,9 @@ void main() {
     setUp(() => db = AppDatabase(NativeDatabase.memory()));
     tearDown(() async => db.close());
 
-    testWidgets('la carte HUB « Nuitees » ouvre l\'ecran, retour sans crash',
-        (tester) async {
+    testWidgets('la carte HUB « Nuitees » ouvre l\'ecran, retour sans crash', (
+      tester,
+    ) async {
       // Routeur minimal reproduisant l'entree HUB : une carte `Icons.cabin`
       // (comme le HUB) qui `push` vers l'ecran Nuitees, puis retour.
       final router = GoRouter(
@@ -597,30 +646,40 @@ void main() {
           ),
           GoRoute(
             path: '/trail/:id/nuitees',
-            builder: (context, state) => NuiteesScreen(
-              trailId: state.pathParameters['id'] ?? '',
-            ),
+            builder: (context, state) =>
+                NuiteesScreen(trailId: state.pathParameters['id'] ?? ''),
           ),
         ],
       );
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: overrides(
-          db: db,
-          days: [walkDay(1, 1)],
-          accommodations: [
-            accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
-          ],
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(
+            db: db,
+            days: [walkDay(1, 1)],
+            accommodations: [
+              accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
+            ],
+          ),
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
+      );
       await settle(tester);
 
       // Aller : taper la carte HUB (icone cabin) ouvre l'ecran Nuitees.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.nuitees,
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.nuitees,
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text(t.nuitees.title));
       expect(find.text(t.nuitees.title), findsWidgets);
@@ -637,7 +696,12 @@ void main() {
       // titre de l'ecran puis la presence de la carte HUB.
       await pumpUntilGone(tester, find.text(t.nuitees.title));
       expect(find.text(t.nuitees.title), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.nuitees), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.nuitees,
+        ),
+        findsOneWidget,
+      );
     });
   });
 }
@@ -655,9 +719,7 @@ class _FakeTrailData implements TrailDataProvider {
     int? stageNumber,
   }) async {
     if (stageNumber == null) return _accommodations;
-    return _accommodations
-        .where((a) => a.stageNumber == stageNumber)
-        .toList();
+    return _accommodations.where((a) => a.stageNumber == stageNumber).toList();
   }
 
   @override
@@ -676,8 +738,7 @@ class _FakeTrailData implements TrailDataProvider {
 /// part d'etapes vides, puis force l'etat sur la liste fournie — aucun calcul
 /// de repartition, aucune dependance aux etapes reelles.
 class _StaticPlannedDays extends PlannedDaysNotifier {
-  _StaticPlannedDays(Ref ref, List<PlannedDay> days)
-      : super(const [], 1, ref) {
+  _StaticPlannedDays(Ref ref, List<PlannedDay> days) : super(const [], 1, ref) {
     state = days;
   }
 }

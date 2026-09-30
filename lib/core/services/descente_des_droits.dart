@@ -170,21 +170,32 @@ class DescenteDesDroits {
 
     try {
       _ecoutes.add(
-        racine.collection("wallet").doc("current").snapshots().listen(
+        racine
+            .collection("wallet")
+            .doc("current")
+            .snapshots()
+            .listen(
               (_) => surChangement("solde"),
               onError: (Object e) =>
                   debugPrint("[DescenteDesDroits] ecoute solde : $e"),
             ),
       );
       _ecoutes.add(
-        racine.collection(kCheminSentiers).snapshots().listen(
+        racine
+            .collection(kCheminSentiers)
+            .snapshots()
+            .listen(
               (_) => surChangement("sentiers"),
               onError: (Object e) =>
                   debugPrint("[DescenteDesDroits] ecoute sentiers : $e"),
             ),
       );
       _ecoutes.add(
-        racine.collection("subscription").doc("current").snapshots().listen(
+        racine
+            .collection("subscription")
+            .doc("current")
+            .snapshots()
+            .listen(
               (_) => surChangement("abonnement"),
               onError: (Object e) =>
                   debugPrint("[DescenteDesDroits] ecoute abonnement : $e"),
@@ -334,7 +345,8 @@ class DescenteDesDroits {
         distant: distant,
       );
 
-      final inchange = local != null &&
+      final inchange =
+          local != null &&
           local.owned == fusion.possede &&
           local.acquiredStages == fusion.etapesAcquises &&
           local.consumedComplementSteps == fusion.complementConsomme;
@@ -363,7 +375,8 @@ class DescenteDesDroits {
     var abonnementApplique = false;
     final distantAbo = annonces.abonnement;
     if (distantAbo != null) {
-      final dejaApplique = HorodatageServeur.annonceParLeServeur(
+      final dejaApplique =
+          HorodatageServeur.annonceParLeServeur(
             preferences.getInt(clePrefsHorodatageAbonnement),
           ) ??
           HorodatageServeur.origine;
@@ -397,9 +410,7 @@ class DescenteDesDroits {
     }
 
     if (!quelqueChose) {
-      return const ResultatDescente.sansEffet(
-        "le telephone etait deja a jour",
-      );
+      return const ResultatDescente.sansEffet("le telephone etait deja a jour");
     }
 
     await apresApplication?.call();
@@ -425,11 +436,11 @@ class ResultatDescente {
 
   /// Une passe qui n a rien ecrit, et qui DIT pourquoi.
   const ResultatDescente.sansEffet(String pourquoi)
-      : appliquee = false,
-        raison = pourquoi,
-        soldeApres = 0,
-        sentiersMisAJour = const [],
-        abonnementApplique = false;
+    : appliquee = false,
+      raison = pourquoi,
+      soldeApres = 0,
+      sentiersMisAJour = const [],
+      abonnementApplique = false;
 
   /// Vrai si quelque chose a ete ecrit dans la base locale.
   final bool appliquee;
@@ -449,10 +460,11 @@ class ResultatDescente {
   @override
   String toString() => appliquee
       ? "ResultatDescente(solde: $soldeApres, "
-          "sentiers: ${sentiersMisAJour.join(", ")}, "
-          "abonnement: $abonnementApplique)"
+            "sentiers: ${sentiersMisAJour.join(", ")}, "
+            "abonnement: $abonnementApplique)"
       : "ResultatDescente(sans effet : $raison)";
 }
+
 /// PROVIDER DE LA DESCENTE DES DROITS (tache 631).
 ///
 /// ASYNCHRONE parce qu il lui faut les preferences, et qu elles le sont. Il est
@@ -470,7 +482,9 @@ class ResultatDescente {
 /// premiere ligne (`firebaseService.isAvailable` faux) et n ecrit rien. C est
 /// l etat du telephone de Christophe aujourd hui, et c est pourquoi la descente
 /// y sera muette tant que la configuration Firebase n entre pas dans le paquet.
-final descenteDesDroitsProvider = FutureProvider<DescenteDesDroits>((ref) async {
+final descenteDesDroitsProvider = FutureProvider<DescenteDesDroits>((
+  ref,
+) async {
   final db = ref.watch(databaseProvider);
   final prefs = await SharedPreferences.getInstance();
   return DescenteDesDroits(
@@ -490,6 +504,7 @@ final descenteDesDroitsProvider = FutureProvider<DescenteDesDroits>((ref) async 
     },
   );
 });
+
 /// ARME L ECOUTE EN DIRECT DES DROITS (tache 631).
 ///
 /// Observe par `_BootstrapGate` dans `main.dart` — la garde qui vit au-dessus du

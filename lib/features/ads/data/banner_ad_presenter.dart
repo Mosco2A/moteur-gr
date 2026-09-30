@@ -45,8 +45,7 @@ class BannerAdRequest {
   int get hashCode => Object.hash(unitId, personalized);
 
   @override
-  String toString() =>
-      'BannerAdRequest($unitId, personnalisee: $personalized)';
+  String toString() => 'BannerAdRequest($unitId, personnalisee: $personalized)';
 }
 
 /// UNE BANNIERE REELLEMENT CHARGEE, prete a etre posee dans l'arbre.
@@ -100,7 +99,7 @@ abstract interface class BannerAdPresenter {
 /// jamais de crash, jamais de fuite.
 class GoogleBannerAdPresenter implements BannerAdPresenter {
   GoogleBannerAdPresenter({Duration budget = budgetParDefaut})
-      : _budget = budget;
+    : _budget = budget;
 
   /// Delai maximum accorde au chargement d'une banniere.
   static const Duration budgetParDefaut = Duration(seconds: 8);
@@ -157,7 +156,9 @@ class GoogleBannerAdPresenter implements BannerAdPresenter {
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          _log.i('[BannerAd] Pas de banniere (${error.code}) : ${error.message}');
+          _log.i(
+            '[BannerAd] Pas de banniere (${error.code}) : ${error.message}',
+          );
           if (!resultat.isCompleted) resultat.complete(null);
         },
       ),
@@ -174,8 +175,8 @@ class GoogleBannerAdPresenter implements BannerAdPresenter {
       final largeur = (vue.physicalSize.width / vue.devicePixelRatio).round();
       final adaptative =
           await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-        largeur,
-      );
+            largeur,
+          );
       return adaptative ?? AdSize.banner;
     } on Object {
       return AdSize.banner;

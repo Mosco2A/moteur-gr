@@ -78,8 +78,9 @@ class ModerationReportController {
 }
 
 /// Provider du [ModerationReportController].
-final moderationReportControllerProvider =
-    Provider<ModerationReportController>(ModerationReportController.new);
+final moderationReportControllerProvider = Provider<ModerationReportController>(
+  ModerationReportController.new,
+);
 
 /// Provider du sink Firestore des plaintes (D4C-03).
 ///
@@ -115,7 +116,9 @@ class ModerationComplaintController {
     required String contentRef,
     required String expose,
   }) {
-    return _ref.read(complaintServiceProvider).fileComplaint(
+    return _ref
+        .read(complaintServiceProvider)
+        .fileComplaint(
           contentType: contentType,
           contentRef: contentRef,
           expose: expose,
@@ -125,6 +128,4 @@ class ModerationComplaintController {
 
 /// Provider du [ModerationComplaintController].
 final moderationComplaintControllerProvider =
-    Provider<ModerationComplaintController>(
-  ModerationComplaintController.new,
-);
+    Provider<ModerationComplaintController>(ModerationComplaintController.new);

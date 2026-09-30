@@ -51,19 +51,19 @@ void main() {
   });
 
   StagesCompanion stage(int n) => StagesCompanion(
-        trailId: const Value(trailId),
-        stageNumber: Value(n),
-        name: Value('Etape $n'),
-        distanceKm: const Value(10.0),
-        elevationGainM: const Value(500),
-        elevationLossM: const Value(400),
-        description: const Value('desc'),
-        startLat: const Value(42.0),
-        startLng: const Value(9.0),
-        endLat: const Value(42.1),
-        endLng: const Value(9.1),
-        difficulty: const Value('moderate'),
-      );
+    trailId: const Value(trailId),
+    stageNumber: Value(n),
+    name: Value('Etape $n'),
+    distanceKm: const Value(10.0),
+    elevationGainM: const Value(500),
+    elevationLossM: const Value(400),
+    description: const Value('desc'),
+    startLat: const Value(42.0),
+    startLng: const Value(9.0),
+    endLat: const Value(42.1),
+    endLng: const Value(9.1),
+    difficulty: const Value('moderate'),
+  );
 
   Future<void> traceAt({
     required DateTime at,
@@ -84,25 +84,27 @@ void main() {
     );
   }
 
-  ProviderContainer makeContainer() => ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(config),
-        currentTrailIdProvider.overrideWith((ref) => trailId),
-        demoModeServiceProvider.overrideWithValue(
-          DemoModeService(),
-        ),
-      ]);
+  ProviderContainer makeContainer() => ProviderContainer(
+    overrides: [
+      databaseProvider.overrideWithValue(db),
+      trailConfigProvider.overrideWithValue(config),
+      currentTrailIdProvider.overrideWith((ref) => trailId),
+      demoModeServiceProvider.overrideWithValue(DemoModeService()),
+    ],
+  );
 
   Future<void> seed() async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    await db.trekSessionsDao.upsertSession(TrekSession(
-      id: 'sess-l5',
-      trailId: trailId,
-      startedAt: DateTime.utc(2026, 6, 10, 8),
-      finishedAt: DateTime.utc(2026, 6, 13, 18),
-      status: 'completed',
-      completedStages: const ['1', '2', '3'],
-    ));
+    await db.trekSessionsDao.upsertSession(
+      TrekSession(
+        id: 'sess-l5',
+        trailId: trailId,
+        startedAt: DateTime.utc(2026, 6, 10, 8),
+        finishedAt: DateTime.utc(2026, 6, 13, 18),
+        status: 'completed',
+        completedStages: const ['1', '2', '3'],
+      ),
+    );
   }
 
   group('L5-5 — journees derivees de la trace', () {
@@ -111,21 +113,24 @@ void main() {
       final base = DateTime.utc(2026, 6, 10, 8);
       await traceAt(at: base, lat: 42.000, dayIndex: 1, stageId: '1');
       await traceAt(
-          at: base.add(const Duration(hours: 3)),
-          lat: 42.020,
-          dayIndex: 1,
-          stageId: '1',
-          altitude: 1200);
+        at: base.add(const Duration(hours: 3)),
+        lat: 42.020,
+        dayIndex: 1,
+        stageId: '1',
+        altitude: 1200,
+      );
       await traceAt(
-          at: base.add(const Duration(days: 1)),
-          lat: 43.000,
-          dayIndex: 2,
-          stageId: '2');
+        at: base.add(const Duration(days: 1)),
+        lat: 43.000,
+        dayIndex: 2,
+        stageId: '2',
+      );
       await traceAt(
-          at: base.add(const Duration(days: 1, hours: 4)),
-          lat: 43.030,
-          dayIndex: 2,
-          stageId: '2');
+        at: base.add(const Duration(days: 1, hours: 4)),
+        lat: 43.030,
+        dayIndex: 2,
+        stageId: '2',
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -145,20 +150,23 @@ void main() {
       final base = DateTime.utc(2026, 6, 10, 6);
       await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
       await traceAt(
-          at: base.add(const Duration(hours: 4)),
-          lat: 42.05,
-          dayIndex: 1,
-          stageId: '1');
+        at: base.add(const Duration(hours: 4)),
+        lat: 42.05,
+        dayIndex: 1,
+        stageId: '1',
+      );
       await traceAt(
-          at: base.add(const Duration(hours: 5)),
-          lat: 42.06,
-          dayIndex: 1,
-          stageId: '2');
+        at: base.add(const Duration(hours: 5)),
+        lat: 42.06,
+        dayIndex: 1,
+        stageId: '2',
+      );
       await traceAt(
-          at: base.add(const Duration(hours: 9)),
-          lat: 42.10,
-          dayIndex: 1,
-          stageId: '2');
+        at: base.add(const Duration(hours: 9)),
+        lat: 42.10,
+        dayIndex: 1,
+        stageId: '2',
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -170,50 +178,63 @@ void main() {
       expect(days.single.stageIds, ['1', '2']);
     });
 
-    test('JOURNEE DE REPOS : aucune etape, la journee existe quand meme',
-        () async {
-      await seed();
-      final base = DateTime.utc(2026, 6, 10, 8);
-      await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
-      await traceAt(
+    test(
+      'JOURNEE DE REPOS : aucune etape, la journee existe quand meme',
+      () async {
+        await seed();
+        final base = DateTime.utc(2026, 6, 10, 8);
+        await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
+        await traceAt(
           at: base.add(const Duration(hours: 2)),
           lat: 42.02,
           dayIndex: 1,
-          stageId: '1');
-      // Jour 2 : une balade autour du village, aucune etape terminee.
-      await traceAt(at: base.add(const Duration(days: 1)), lat: 42.02, dayIndex: 2);
-      await traceAt(
+          stageId: '1',
+        );
+        // Jour 2 : une balade autour du village, aucune etape terminee.
+        await traceAt(
+          at: base.add(const Duration(days: 1)),
+          lat: 42.02,
+          dayIndex: 2,
+        );
+        await traceAt(
           at: base.add(const Duration(days: 1, hours: 1)),
           lat: 42.025,
-          dayIndex: 2);
+          dayIndex: 2,
+        );
 
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      final days = await c.read(adventureDaysProvider.future);
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        final days = await c.read(adventureDaysProvider.future);
 
-      expect(days.length, 2);
-      expect(days.last.stageIds, isEmpty);
-      expect(days.last.stats.hasData, isTrue);
-    });
+        expect(days.length, 2);
+        expect(days.last.stageIds, isEmpty);
+        expect(days.last.stats.hasData, isTrue);
+      },
+    );
 
-    test('trace anterieure a la migration v26 : regroupement calendaire',
-        () async {
-      await seed();
-      final base = DateTime.utc(2026, 6, 10, 8);
-      // Aucun dayIndex : ces points sont des rescapes de l'ancien schema.
-      await traceAt(at: base, lat: 42.00);
-      await traceAt(at: base.add(const Duration(hours: 2)), lat: 42.02);
-      await traceAt(at: base.add(const Duration(days: 1)), lat: 43.00);
-      await traceAt(at: base.add(const Duration(days: 1, hours: 2)), lat: 43.02);
+    test(
+      'trace anterieure a la migration v26 : regroupement calendaire',
+      () async {
+        await seed();
+        final base = DateTime.utc(2026, 6, 10, 8);
+        // Aucun dayIndex : ces points sont des rescapes de l'ancien schema.
+        await traceAt(at: base, lat: 42.00);
+        await traceAt(at: base.add(const Duration(hours: 2)), lat: 42.02);
+        await traceAt(at: base.add(const Duration(days: 1)), lat: 43.00);
+        await traceAt(
+          at: base.add(const Duration(days: 1, hours: 2)),
+          lat: 43.02,
+        );
 
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      final days = await c.read(adventureDaysProvider.future);
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        final days = await c.read(adventureDaysProvider.future);
 
-      expect(days.length, 2);
-      expect(days.every((d) => d.dayIndex == null), isTrue);
-      expect(days.first.date, DateTime(2026, 6, 10));
-    });
+        expect(days.length, 2);
+        expect(days.every((d) => d.dayIndex == null), isTrue);
+        expect(days.first.date, DateTime(2026, 6, 10));
+      },
+    );
 
     test('aucune trace : liste vide, pas une journee fantome', () async {
       await seed();

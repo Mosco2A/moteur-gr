@@ -34,24 +34,22 @@ class ConsentPurposeTile extends StatelessWidget {
 
   /// Libelle localise de la finalite.
   String _label(Translations tr) => switch (purpose) {
-        ConsentPurpose.locationNavigation =>
-          tr.consent.purposes.locationNavigation,
-        ConsentPurpose.socialSharing => tr.consent.purposes.socialSharing,
-        ConsentPurpose.publicReporting => tr.consent.purposes.publicReporting,
-        ConsentPurpose.advertising => tr.consent.purposes.advertising,
-        ConsentPurpose.healthData => tr.consent.purposes.healthData,
-      };
+    ConsentPurpose.locationNavigation => tr.consent.purposes.locationNavigation,
+    ConsentPurpose.socialSharing => tr.consent.purposes.socialSharing,
+    ConsentPurpose.publicReporting => tr.consent.purposes.publicReporting,
+    ConsentPurpose.advertising => tr.consent.purposes.advertising,
+    ConsentPurpose.healthData => tr.consent.purposes.healthData,
+  };
 
   /// Description localisee de la finalite.
   String _description(Translations tr) => switch (purpose) {
-        ConsentPurpose.locationNavigation =>
-          tr.consent.purposes.locationNavigationDesc,
-        ConsentPurpose.socialSharing => tr.consent.purposes.socialSharingDesc,
-        ConsentPurpose.publicReporting =>
-          tr.consent.purposes.publicReportingDesc,
-        ConsentPurpose.advertising => tr.consent.purposes.advertisingDesc,
-        ConsentPurpose.healthData => tr.consent.purposes.healthDataDesc,
-      };
+    ConsentPurpose.locationNavigation =>
+      tr.consent.purposes.locationNavigationDesc,
+    ConsentPurpose.socialSharing => tr.consent.purposes.socialSharingDesc,
+    ConsentPurpose.publicReporting => tr.consent.purposes.publicReportingDesc,
+    ConsentPurpose.advertising => tr.consent.purposes.advertisingDesc,
+    ConsentPurpose.healthData => tr.consent.purposes.healthDataDesc,
+  };
 
   @override
   Widget build(BuildContext context) {

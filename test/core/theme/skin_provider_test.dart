@@ -39,27 +39,26 @@ void main() {
     });
 
     test(
-        'Grand Air choisi + sentier NON eligible -> fallback Sentier Vivant',
-        () {
-      // Par defaut trailHasCoverPhotosProvider = false (defaut sur L7).
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+      'Grand Air choisi + sentier NON eligible -> fallback Sentier Vivant',
+      () {
+        // Par defaut trailHasCoverPhotosProvider = false (defaut sur L7).
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      container.read(skinProvider.notifier).select(AppSkin.grandAir);
+        container.read(skinProvider.notifier).select(AppSkin.grandAir);
 
-      // La peau CHOISIE reste Grand Air (non perdue)...
-      expect(container.read(skinProvider), AppSkin.grandAir);
-      // ...mais la peau EFFECTIVE retombe sur Sentier Vivant (fallback).
-      expect(container.read(effectiveSkinProvider), AppSkin.sentierVivant);
-    });
+        // La peau CHOISIE reste Grand Air (non perdue)...
+        expect(container.read(skinProvider), AppSkin.grandAir);
+        // ...mais la peau EFFECTIVE retombe sur Sentier Vivant (fallback).
+        expect(container.read(effectiveSkinProvider), AppSkin.sentierVivant);
+      },
+    );
 
     test('Grand Air choisi + sentier eligible -> Grand Air effective', () {
       // Simule un sentier eligible en surchargeant l'eligibilite (ce que L9
       // fera via le vrai drapeau hasCoverPhotos du TrailConfig).
       final container = ProviderContainer(
-        overrides: [
-          trailHasCoverPhotosProvider.overrideWithValue(true),
-        ],
+        overrides: [trailHasCoverPhotosProvider.overrideWithValue(true)],
       );
       addTearDown(container.dispose);
 
@@ -68,22 +67,23 @@ void main() {
     });
 
     test(
-        'la preference Grand Air se re-applique des que le sentier devient eligible',
-        () {
-      // 1) Sentier non eligible : effective = Sentier Vivant.
-      final ineligible = ProviderContainer();
-      addTearDown(ineligible.dispose);
-      ineligible.read(skinProvider.notifier).select(AppSkin.grandAir);
-      expect(ineligible.read(effectiveSkinProvider), AppSkin.sentierVivant);
+      'la preference Grand Air se re-applique des que le sentier devient eligible',
+      () {
+        // 1) Sentier non eligible : effective = Sentier Vivant.
+        final ineligible = ProviderContainer();
+        addTearDown(ineligible.dispose);
+        ineligible.read(skinProvider.notifier).select(AppSkin.grandAir);
+        expect(ineligible.read(effectiveSkinProvider), AppSkin.sentierVivant);
 
-      // 2) Meme choix, sentier eligible : effective = Grand Air (choix intact).
-      final eligible = ProviderContainer(
-        overrides: [trailHasCoverPhotosProvider.overrideWithValue(true)],
-      );
-      addTearDown(eligible.dispose);
-      eligible.read(skinProvider.notifier).select(AppSkin.grandAir);
-      expect(eligible.read(effectiveSkinProvider), AppSkin.grandAir);
-    });
+        // 2) Meme choix, sentier eligible : effective = Grand Air (choix intact).
+        final eligible = ProviderContainer(
+          overrides: [trailHasCoverPhotosProvider.overrideWithValue(true)],
+        );
+        addTearDown(eligible.dispose);
+        eligible.read(skinProvider.notifier).select(AppSkin.grandAir);
+        expect(eligible.read(effectiveSkinProvider), AppSkin.grandAir);
+      },
+    );
   });
 
   group('trailHasCoverPhotos — defaut sur L7 (isolation L9)', () {

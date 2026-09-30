@@ -108,8 +108,7 @@ class _FakeTrailDataProvider implements TrailDataProvider {
   Future<List<StageAccommodation>> getAccommodations(
     String trailId, {
     int? stageNumber,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   TrailConfig getTrailConfig() => testTrailConfig;

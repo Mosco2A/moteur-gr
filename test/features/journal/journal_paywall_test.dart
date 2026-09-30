@@ -132,23 +132,26 @@ void main() {
       expect(find.text(t.journal.share), findsOneWidget);
     });
 
-    testWidgets('debloque mais encore vierge : l ecran annonce aussi ses blocs',
-        (tester) async {
-      await tester.pumpWidget(ecran(acces: const AsyncData(false)));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+    testWidgets(
+      'debloque mais encore vierge : l ecran annonce aussi ses blocs',
+      (tester) async {
+        await tester.pumpWidget(ecran(acces: const AsyncData(false)));
+        await tester.pump();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text(t.journal.empty), findsOneWidget);
-      expect(find.text(t.journal.dayTrace), findsOneWidget);
-      expect(find.text(t.journal.daySummary), findsOneWidget);
-      // Et le journal ouvert garde son bouton d ajout.
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-    });
+        expect(find.text(t.journal.empty), findsOneWidget);
+        expect(find.text(t.journal.dayTrace), findsOneWidget);
+        expect(find.text(t.journal.daySummary), findsOneWidget);
+        // Et le journal ouvert garde son bouton d ajout.
+        expect(find.byType(FloatingActionButton), findsOneWidget);
+      },
+    );
   });
 
-  testWidgets('sentier debloque : le journal s ouvre normalement',
-      (tester) async {
+  testWidgets('sentier debloque : le journal s ouvre normalement', (
+    tester,
+  ) async {
     await tester.pumpWidget(ecran(acces: const AsyncData(false)));
     await tester.pump();
     await tester.pump();
@@ -168,10 +171,13 @@ void main() {
     expect(find.text(t.journal.title), findsWidgets);
   });
 
-  testWidgets('FAIL-CLOSED : acces en erreur = verrouille, jamais ouvert',
-      (tester) async {
+  testWidgets('FAIL-CLOSED : acces en erreur = verrouille, jamais ouvert', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      ecran(acces: AsyncError(Exception('droits illisibles'), StackTrace.empty)),
+      ecran(
+        acces: AsyncError(Exception('droits illisibles'), StackTrace.empty),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -188,10 +194,9 @@ void main() {
     /// docstring qui NOMME une API ne la consomme pas. Sans ce filtrage, le
     /// journal se signalerait lui-meme, lui dont le docstring explique
     /// justement pourquoi il ne s appuie PAS sur ces drapeaux.
-    String lireCodeSeul(String chemin) => File(chemin)
-        .readAsLinesSync()
-        .where((l) => !l.trimLeft().startsWith('//'))
-        .join(' ');
+    String lireCodeSeul(String chemin) => File(
+      chemin,
+    ).readAsLinesSync().where((l) => !l.trimLeft().startsWith('//')).join(' ');
 
     List<String> fichiersDeLib() => Directory('lib')
         .listSync(recursive: true)
@@ -215,7 +220,8 @@ void main() {
       expect(
         consommateurs,
         isEmpty,
-        reason: 'Si ce test tombe, quelqu un vient de brancher la structure '
+        reason:
+            'Si ce test tombe, quelqu un vient de brancher la structure '
             'TrailFeatures. Ce n est pas interdit — mais il faut alors '
             'trancher : soit elle devient la source d acces et isDemoModeProvider '
             's aligne dessus, soit elle disparait. Les deux coexistant, on '
@@ -225,12 +231,13 @@ void main() {
 
     test('la SOURCE UNIQUE d acces reste isDemoModeProvider, et on sait qui '
         'l utilise', () {
-      final ecrans = fichiersDeLib()
-          .where((p) => p.contains('presentation'))
-          .where((p) => lireCodeSeul(p).contains('isDemoModeProvider('))
-          .map((p) => p.split(RegExp(r'[\\/]')).last)
-          .toList()
-        ..sort();
+      final ecrans =
+          fichiersDeLib()
+              .where((p) => p.contains('presentation'))
+              .where((p) => lireCodeSeul(p).contains('isDemoModeProvider('))
+              .map((p) => p.split(RegExp(r'[\\/]')).last)
+              .toList()
+            ..sort();
 
       // Etat constate au correctif L7-3 : l entrainement (verrou ecrit en
       // cycle precedent) et le journal (ce correctif). Les autres promesses du

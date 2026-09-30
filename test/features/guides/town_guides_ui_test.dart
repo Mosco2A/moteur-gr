@@ -33,9 +33,9 @@ GuideSectionLabels _stubLabels(String categorie) =>
     GuideSectionLabels(titre: 'titre-$categorie', contenu: 'intro-$categorie');
 
 List<TownGuide> _catalogGuides() => TownGuideCatalog.guidesFor(
-      _trailId,
-      sectionLabelResolver: _stubLabels,
-    ).where((g) => g.hasContent).toList();
+  _trailId,
+  sectionLabelResolver: _stubLabels,
+).where((g) => g.hasContent).toList();
 
 const _trailId = 'mare_a_mare_centre';
 
@@ -45,9 +45,7 @@ void main() {
   // -> le back par defaut de l'AppHeader depile cette route imperative.
   Widget wrap(Widget child, {required GuideDeeplinkLauncher launcher}) {
     return ProviderScope(
-      overrides: [
-        guideDeeplinkLauncherProvider.overrideWithValue(launcher),
-      ],
+      overrides: [guideDeeplinkLauncherProvider.overrideWithValue(launcher)],
       child: TranslationProvider(
         child: MaterialApp.router(
           routerConfig: GoRouter(
@@ -63,18 +61,23 @@ void main() {
   }
 
   group('TownGuidesScreen — liste offline (R3) + facilitateur (#84100)', () {
-    testWidgets('affiche la liste des guides et le bandeau facilitateur',
-        (tester) async {
+    testWidgets('affiche la liste des guides et le bandeau facilitateur', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        wrap(const TownGuidesScreen(trailId: _trailId),
-            launcher: _FakeLauncher()),
+        wrap(
+          const TownGuidesScreen(trailId: _trailId),
+          launcher: _FakeLauncher(),
+        ),
       );
       await tester.pumpAndSettle();
 
       // Liste presente + rappel FACILITATEUR (anti resa/paiement in-app).
       expect(find.byKey(const ValueKey('town-guides-list')), findsOneWidget);
-      expect(find.byKey(const ValueKey('guides-facilitator-note')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('guides-facilitator-note')),
+        findsOneWidget,
+      );
 
       // Une carte par localite porteuse de contenu, rattachee au sentier.
       final guides = _catalogGuides();
@@ -84,10 +87,14 @@ void main() {
       }
     });
 
-    testWidgets('tap sur une localite ouvre le detail du guide', (tester) async {
+    testWidgets('tap sur une localite ouvre le detail du guide', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        wrap(const TownGuidesScreen(trailId: _trailId),
-            launcher: _FakeLauncher()),
+        wrap(
+          const TownGuidesScreen(trailId: _trailId),
+          launcher: _FakeLauncher(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -96,15 +103,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // L'ecran de detail du bon guide est affiche.
-      expect(find.byKey(ValueKey('town-guide-detail-${first.id}')),
-          findsOneWidget);
+      expect(
+        find.byKey(ValueKey('town-guide-detail-${first.id}')),
+        findsOneWidget,
+      );
       expect(find.text(first.nomLieu), findsWidgets);
     });
   });
 
   group('TownGuideDetailScreen — sections + items (offline)', () {
-    testWidgets('affiche toutes les sections pratiques avec leurs items',
-        (tester) async {
+    testWidgets('affiche toutes les sections pratiques avec leurs items', (
+      tester,
+    ) async {
       // Guide resolu via le catalogue (libelles Slang reels cote UI).
       final ref = _catalogGuides().first;
       await tester.pumpWidget(
@@ -115,32 +125,47 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(ValueKey('town-guide-detail-${ref.id}')),
-          findsOneWidget);
+      expect(
+        find.byKey(ValueKey('town-guide-detail-${ref.id}')),
+        findsOneWidget,
+      );
       // Finitions V1 (point 6) : le rappel facilitateur n'est PLUS repete sur le
       // detail (dedup de l'intro — il vit uniquement sur la liste, porte d'entree).
-      expect(find.byKey(const ValueKey('guide-detail-facilitator-note')),
-          findsNothing);
+      expect(
+        find.byKey(const ValueKey('guide-detail-facilitator-note')),
+        findsNothing,
+      );
 
       // Chaque section porteuse d'items a sa carte + ses items rendus (offline).
       // La ListView est paresseuse : on fait defiler jusqu'a chaque section.
-      final expectedSections =
-          ref.sections.where((s) => s.items.isNotEmpty).toList();
+      final expectedSections = ref.sections
+          .where((s) => s.items.isNotEmpty)
+          .toList();
       expect(expectedSections, isNotEmpty);
       final scrollable = find.descendant(
         of: find.byKey(ValueKey('town-guide-detail-${ref.id}')),
         matching: find.byType(Scrollable),
       );
       for (final s in expectedSections) {
-        final sectionFinder =
-            find.byKey(ValueKey('guide-section-${s.normalizedCategorie}'));
-        await tester.scrollUntilVisible(sectionFinder, 200,
-            scrollable: scrollable);
-        expect(sectionFinder, findsOneWidget,
-            reason: 'section ${s.normalizedCategorie} manquante');
+        final sectionFinder = find.byKey(
+          ValueKey('guide-section-${s.normalizedCategorie}'),
+        );
+        await tester.scrollUntilVisible(
+          sectionFinder,
+          200,
+          scrollable: scrollable,
+        );
+        expect(
+          sectionFinder,
+          findsOneWidget,
+          reason: 'section ${s.normalizedCategorie} manquante',
+        );
         for (final item in s.items) {
-          expect(find.text(item.nom), findsWidgets,
-              reason: 'item ${item.nom} manquant');
+          expect(
+            find.text(item.nom),
+            findsWidgets,
+            reason: 'item ${item.nom} manquant',
+          );
         }
       }
     });
@@ -154,42 +179,47 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('town-guide-detail-empty')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('town-guide-detail-empty')),
+        findsOneWidget,
+      );
     });
   });
 
   group('Deeplink facilitateur (#84100) — lien SORTANT uniquement', () {
     /// Construit un guide a une section/un item avec lien deeplink controle.
     TownGuide guideWithDeeplink({String? url}) => TownGuide(
-          id: 'g-test',
-          trailId: _trailId,
-          nomLieu: 'Lieu test',
-          latitude: 0,
-          longitude: 0,
-          sections: [
-            GuideSection(
-              categorie: GuideCategory.hebergement,
-              titre: 'Hebergement',
-              items: [
-                GuideItem(nom: 'Gite test', description: 'desc', deeplinkUrl: url),
-              ],
-            ),
+      id: 'g-test',
+      trailId: _trailId,
+      nomLieu: 'Lieu test',
+      latitude: 0,
+      longitude: 0,
+      sections: [
+        GuideSection(
+          categorie: GuideCategory.hebergement,
+          titre: 'Hebergement',
+          items: [
+            GuideItem(nom: 'Gite test', description: 'desc', deeplinkUrl: url),
           ],
-        );
+        ),
+      ],
+    );
 
-    testWidgets('bouton present si lien -> ouvre le site via le launcher',
-        (tester) async {
+    testWidgets('bouton present si lien -> ouvre le site via le launcher', (
+      tester,
+    ) async {
       final launcher = _FakeLauncher(result: true);
       // guide injecte directement (parametre `guide`) : on teste le rendu + lien.
-      await tester.pumpWidget(wrap(
-        TownGuideDetailScreen(
-          trailId: _trailId,
-          guideId: 'g-test',
-          guide: guideWithDeeplink(url: 'https://example.org/gite'),
+      await tester.pumpWidget(
+        wrap(
+          TownGuideDetailScreen(
+            trailId: _trailId,
+            guideId: 'g-test',
+            guide: guideWithDeeplink(url: 'https://example.org/gite'),
+          ),
+          launcher: launcher,
         ),
-        launcher: launcher,
-      ));
+      );
       await tester.pumpAndSettle();
 
       final btn = find.byKey(const ValueKey('guide-deeplink-Gite test'));
@@ -204,32 +234,39 @@ void main() {
 
     testWidgets('aucun bouton si l item n a pas de lien', (tester) async {
       final launcher = _FakeLauncher();
-      await tester.pumpWidget(wrap(
-        TownGuideDetailScreen(
-          trailId: _trailId,
-          guideId: 'g-test',
-          guide: guideWithDeeplink(url: null),
+      await tester.pumpWidget(
+        wrap(
+          TownGuideDetailScreen(
+            trailId: _trailId,
+            guideId: 'g-test',
+            guide: guideWithDeeplink(url: null),
+          ),
+          launcher: launcher,
         ),
-        launcher: launcher,
-      ));
+      );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('guide-deeplink-Gite test')),
-          findsNothing);
+      expect(
+        find.byKey(const ValueKey('guide-deeplink-Gite test')),
+        findsNothing,
+      );
       expect(launcher.opened, isEmpty);
     });
 
-    testWidgets('echec d ouverture -> message utilisateur (pas de silence)',
-        (tester) async {
+    testWidgets('echec d ouverture -> message utilisateur (pas de silence)', (
+      tester,
+    ) async {
       final launcher = _FakeLauncher(result: false);
-      await tester.pumpWidget(wrap(
-        TownGuideDetailScreen(
-          trailId: _trailId,
-          guideId: 'g-test',
-          guide: guideWithDeeplink(url: 'https://example.org/gite'),
+      await tester.pumpWidget(
+        wrap(
+          TownGuideDetailScreen(
+            trailId: _trailId,
+            guideId: 'g-test',
+            guide: guideWithDeeplink(url: 'https://example.org/gite'),
+          ),
+          launcher: launcher,
         ),
-        launcher: launcher,
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const ValueKey('guide-deeplink-Gite test')));
@@ -237,8 +274,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       final t = TranslationProvider.of(
-              tester.element(find.byType(TownGuideDetailScreen)))
-          .translations;
+        tester.element(find.byType(TownGuideDetailScreen)),
+      ).translations;
       expect(find.text(t.guides.cannotOpen), findsOneWidget);
     });
   });

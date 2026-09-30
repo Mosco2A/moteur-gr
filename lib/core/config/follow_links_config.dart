@@ -120,13 +120,13 @@ class FollowLinksConfig {
   static const String variableWebBase = 'STEPWAYS_FOLLOW_WEB_BASE';
 
   /// Nom de la variable `--dart-define` du canal application compagnon.
-  static const String variableCompagnonBase =
-      'STEPWAYS_FOLLOW_COMPANION_BASE';
+  static const String variableCompagnonBase = 'STEPWAYS_FOLLOW_COMPANION_BASE';
 
   static const String _appInjecte = String.fromEnvironment(variableAppBase);
   static const String _webInjecte = String.fromEnvironment(variableWebBase);
-  static const String _compagnonInjecte =
-      String.fromEnvironment(variableCompagnonBase);
+  static const String _compagnonInjecte = String.fromEnvironment(
+    variableCompagnonBase,
+  );
 
   /// Base du lien profond vers l'application principale (canal app gratuit).
   /// VIDE dans le depot : voir l'en-tete du fichier.
@@ -142,10 +142,10 @@ class FollowLinksConfig {
 
   /// La base d'un canal, telle qu'elle a ete injectee au build (vide si rien).
   String base(CanalSuivi canal) => switch (canal) {
-        CanalSuivi.app => appLinkBase,
-        CanalSuivi.web => webLinkBase,
-        CanalSuivi.compagnon => companionLinkBase,
-      };
+    CanalSuivi.app => appLinkBase,
+    CanalSuivi.web => webLinkBase,
+    CanalSuivi.compagnon => companionLinkBase,
+  };
 
   /// Vrai quand ce canal a recu une base au build. Faux dans le depot.
   bool estConfigure(CanalSuivi canal) => base(canal).trim().isNotEmpty;
@@ -161,8 +161,9 @@ class FollowLinksConfig {
   String? lien(CanalSuivi canal, String shareCode) {
     if (!estConfigure(canal)) return null;
     final racine = base(canal).trim();
-    final sansBarre =
-        racine.endsWith('/') ? racine.substring(0, racine.length - 1) : racine;
+    final sansBarre = racine.endsWith('/')
+        ? racine.substring(0, racine.length - 1)
+        : racine;
     return '$sansBarre/$shareCode';
   }
 

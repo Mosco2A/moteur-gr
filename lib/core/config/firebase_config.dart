@@ -30,8 +30,7 @@ abstract final class FirebaseConfig {
   /// a deviner son nom ni a lire le code.
   static const String variableDeBuild = 'STEPWAYS_FIREBASE_PROJECT_ID';
 
-  static const String _injecte =
-      String.fromEnvironment(variableDeBuild);
+  static const String _injecte = String.fromEnvironment(variableDeBuild);
 
   /// L'identifiant du projet Firebase, ou `null` si rien n'a ete injecte.
   static String? get projectId => _injecte.isEmpty ? null : _injecte;

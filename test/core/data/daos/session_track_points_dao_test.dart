@@ -178,9 +178,15 @@ void main() {
         recordedAt: DateTime(2026, 6, 11, 0, 1),
       );
 
-      final d10 = await dao.getByCalendarDay('sentier-bleu', DateTime(2026, 6, 10));
+      final d10 = await dao.getByCalendarDay(
+        'sentier-bleu',
+        DateTime(2026, 6, 10),
+      );
       expect(d10.single.lat, 45.0);
-      final d11 = await dao.getByCalendarDay('sentier-bleu', DateTime(2026, 6, 11));
+      final d11 = await dao.getByCalendarDay(
+        'sentier-bleu',
+        DateTime(2026, 6, 11),
+      );
       expect(d11.single.lat, 46.0);
     });
 

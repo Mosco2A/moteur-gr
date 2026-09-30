@@ -49,10 +49,7 @@ class OffTrackState {
 /// L'UI (carte) fournit les libelles traduits via [offTrackMessagesProvider]
 /// pour que la notification parte dans la langue de l'utilisateur.
 class OffTrackMessages {
-  const OffTrackMessages({
-    required this.notifTitle,
-    required this.notifBody,
-  });
+  const OffTrackMessages({required this.notifTitle, required this.notifBody});
 
   /// Titre de la notification a la sortie du trace.
   final String notifTitle;
@@ -73,7 +70,8 @@ class OffTrackMessagesNotifier extends Notifier<OffTrackMessages> {
   OffTrackMessages build() {
     return OffTrackMessages(
       notifTitle: 'Vous quittez le sentier',
-      notifBody: (m) => 'Vous vous eloignez du sentier ($m m). '
+      notifBody: (m) =>
+          'Vous vous eloignez du sentier ($m m). '
           'Verifiez votre position.',
     );
   }
@@ -94,7 +92,8 @@ class OffTrackMessagesNotifier extends Notifier<OffTrackMessages> {
 /// Messages de la notification hors-trace (fallback langue de base par defaut).
 final offTrackMessagesProvider =
     NotifierProvider<OffTrackMessagesNotifier, OffTrackMessages>(
-        OffTrackMessagesNotifier.new);
+      OffTrackMessagesNotifier.new,
+    );
 
 /// Notifier de l'alerte hors-trace.
 ///
@@ -104,11 +103,9 @@ final offTrackMessagesProvider =
 /// un [OffTrackDetector] (hysteresis). A la SORTIE : une seule alerte
 /// (notification locale + vibration courte). Au RETOUR : la notification se leve.
 class OffTrackNotifier extends StateNotifier<OffTrackState> {
-  OffTrackNotifier({
-    required this.ref,
-    OffTrackDetector? detector,
-  })  : _detector = detector ?? OffTrackDetector(),
-        super(const OffTrackState());
+  OffTrackNotifier({required this.ref, OffTrackDetector? detector})
+    : _detector = detector ?? OffTrackDetector(),
+      super(const OffTrackState());
 
   final Ref ref;
   final OffTrackDetector _detector;
@@ -194,7 +191,9 @@ class OffTrackNotifier extends StateNotifier<OffTrackState> {
   Future<void> _sendNotification(double distance) async {
     try {
       final messages = ref.read(offTrackMessagesProvider);
-      await ref.read(notificationServiceProvider).showOffTrackAlert(
+      await ref
+          .read(notificationServiceProvider)
+          .showOffTrackAlert(
             title: messages.notifTitle,
             body: messages.notifBody(distance.round()),
           );
@@ -246,8 +245,9 @@ final offTrackGpsStreamProvider = Provider<Stream<Position>>((ref) {
 /// Desactivable via les reglages ([NotificationSettings.offTrackAlerts], ON par
 /// defaut). `keepAlive` pour ne pas suspendre la surveillance quand aucun widget
 /// n'ecoute (ecran verrouille).
-final offTrackProvider =
-    StateNotifierProvider<OffTrackNotifier, OffTrackState>((ref) {
+final offTrackProvider = StateNotifierProvider<OffTrackNotifier, OffTrackState>((
+  ref,
+) {
   ref.keepAlive();
   final notifier = OffTrackNotifier(ref: ref);
 

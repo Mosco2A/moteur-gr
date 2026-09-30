@@ -47,7 +47,8 @@ class BookingConfig {
     return BookingConfig(
       trailId: json['trailId'] as String,
       bookingEnabled: json['bookingEnabled'] as bool? ?? false,
-      bookingMethods: (json['bookingMethods'] as List<dynamic>?)
+      bookingMethods:
+          (json['bookingMethods'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -106,13 +107,13 @@ class BookingConfig {
 
   @override
   int get hashCode => Object.hash(
-        trailId,
-        bookingEnabled,
-        Object.hashAll(bookingMethods),
-        partnerUrl,
-        partnerPhone,
-        partnerEmail,
-      );
+    trailId,
+    bookingEnabled,
+    Object.hashAll(bookingMethods),
+    partnerUrl,
+    partnerPhone,
+    partnerEmail,
+  );
 
   @override
   String toString() =>

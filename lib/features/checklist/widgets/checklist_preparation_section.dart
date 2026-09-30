@@ -38,11 +38,11 @@ class _ChecklistPreparationSectionState
     final theme = Theme.of(context);
     final ui = t.checklist.ui;
 
-    final selectedItems =
-        widget.items.where((i) => i.isChecked).toList();
+    final selectedItems = widget.items.where((i) => i.isChecked).toList();
     final totalItems = selectedItems.length;
-    final preparedCount =
-        selectedItems.where((i) => _preparedIds.contains(i.template.id)).length;
+    final preparedCount = selectedItems
+        .where((i) => _preparedIds.contains(i.template.id))
+        .length;
     final allPrepared = totalItems > 0 && preparedCount == totalItems;
 
     if (totalItems == 0) return const SizedBox.shrink();
@@ -119,8 +119,11 @@ class _ChecklistPreparationSectionState
                           ),
                         ),
                         if (allPrepared)
-                          const StepIcon(StepwaysIcons.coche,
-                              size: 20, color: AppTheme.vertFacile),
+                          const StepIcon(
+                            StepwaysIcons.coche,
+                            size: 20,
+                            color: AppTheme.vertFacile,
+                          ),
                       ],
                     ),
                   ),
@@ -150,8 +153,11 @@ class _ChecklistPreparationSectionState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const StepIcon(StepwaysIcons.cochePleine,
-                      size: 20, color: AppTheme.vertFacile),
+                  const StepIcon(
+                    StepwaysIcons.cochePleine,
+                    size: 20,
+                    color: AppTheme.vertFacile,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
                     '${ui.prepAllReady} \u{1F3D4}\u{FE0F}',
@@ -259,8 +265,8 @@ class _ChecklistPreDepartureSectionState
     final theme = Theme.of(context);
     final ui = t.checklist.ui;
     final items = _items;
-    final allChecked = _checked.length == items.length &&
-        _checked.values.every((v) => v);
+    final allChecked =
+        _checked.length == items.length && _checked.values.every((v) => v);
     final counterLabel = ui.preDepartureCounter
         .replaceAll('{checked}', '${_checked.values.where((v) => v).length}')
         .replaceAll('{total}', '${items.length}');
@@ -292,8 +298,7 @@ class _ChecklistPreDepartureSectionState
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             value: isChecked,
-            onChanged: (val) =>
-                setState(() => _checked[index] = val ?? false),
+            onChanged: (val) => setState(() => _checked[index] = val ?? false),
             title: Text(
               items[index],
               style: theme.textTheme.bodyMedium?.copyWith(

@@ -67,7 +67,10 @@ void main() {
       expect(result.stageNumber, isIn([1, 2]));
       expect(
         result.event,
-        isIn([StageDetectionEventValues.exited, StageDetectionEventValues.entered]),
+        isIn([
+          StageDetectionEventValues.exited,
+          StageDetectionEventValues.entered,
+        ]),
       );
     });
 

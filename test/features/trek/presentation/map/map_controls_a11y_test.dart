@@ -16,13 +16,16 @@ void main() {
   });
 
   Widget wrap(Widget child) => ProviderScope(
-        child: TranslationProvider(
-          child: MaterialApp(home: Scaffold(body: Center(child: child))),
-        ),
-      );
+    child: TranslationProvider(
+      child: MaterialApp(
+        home: Scaffold(body: Center(child: child)),
+      ),
+    ),
+  );
 
-  testWidgets('controles carte : groupe de traversee ordonnee 0->1->2->3',
-      (tester) async {
+  testWidgets('controles carte : groupe de traversee ordonnee 0->1->2->3', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
     );
@@ -47,8 +50,9 @@ void main() {
     expect(orders, [0.0, 1.0, 2.0]);
   });
 
-  testWidgets('controles carte : labels d\'accessibilite (tooltips Slang)',
-      (tester) async {
+  testWidgets('controles carte : labels d\'accessibilite (tooltips Slang)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
     );
@@ -58,8 +62,9 @@ void main() {
     expect(find.byTooltip(t.a11y.centerOnMe), findsOneWidget);
   });
 
-  testWidgets('controles carte : la traversee clavier respecte l\'ordre',
-      (tester) async {
+  testWidgets('controles carte : la traversee clavier respecte l\'ordre', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
     );

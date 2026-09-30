@@ -21,7 +21,10 @@ void main() {
       final branding = ShareCardGenerator.brandingFromConfig(testTrailConfig);
 
       expect(branding.primaryColor, Color(testTrailConfig.primaryColorValue));
-      expect(branding.secondaryColor, Color(testTrailConfig.secondaryColorValue));
+      expect(
+        branding.secondaryColor,
+        Color(testTrailConfig.secondaryColorValue),
+      );
       expect(branding.trailName, testTrailConfig.displayName);
       expect(branding.region, testTrailConfig.region);
     });
@@ -113,8 +116,8 @@ void main() {
       expect(ShareCardGenerator.cardSize, 1080);
       // Le ratio 1:1 est assuré par le AspectRatio(1) dans le screen
       // et la taille fixe de capture
-      const expectedPixels = ShareCardGenerator.cardSize *
-          ShareCardGenerator.cardSize;
+      const expectedPixels =
+          ShareCardGenerator.cardSize * ShareCardGenerator.cardSize;
       expect(expectedPixels, 1080 * 1080);
     });
   });

@@ -33,11 +33,24 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 /// et le fix de navigation : le retour depuis la carte ne plante pas.
 void main() {
   final mockTrackPoints = [
-    const TrackPoint(lat: 45.77, lng: 2.96, altitude: 1465, distanceFromStart: 0),
     const TrackPoint(
-        lat: 45.78, lng: 2.97, altitude: 1500, distanceFromStart: 1200),
+      lat: 45.77,
+      lng: 2.96,
+      altitude: 1465,
+      distanceFromStart: 0,
+    ),
     const TrackPoint(
-        lat: 45.79, lng: 2.98, altitude: 1600, distanceFromStart: 2400),
+      lat: 45.78,
+      lng: 2.97,
+      altitude: 1500,
+      distanceFromStart: 1200,
+    ),
+    const TrackPoint(
+      lat: 45.79,
+      lng: 2.98,
+      altitude: 1600,
+      distanceFromStart: 2400,
+    ),
   ];
 
   final mockStages = [
@@ -68,24 +81,24 @@ void main() {
   ];
 
   Position fakePosition() => Position(
-        latitude: 45.775,
-        longitude: 2.965,
-        timestamp: DateTime.utc(2026, 6, 15, 9),
-        accuracy: 5,
-        altitude: 1480,
-        altitudeAccuracy: 5,
-        heading: 0,
-        headingAccuracy: 0,
-        speed: 1.2,
-        speedAccuracy: 0.5,
-      );
+    latitude: 45.775,
+    longitude: 2.965,
+    timestamp: DateTime.utc(2026, 6, 15, 9),
+    accuracy: 5,
+    altitude: 1480,
+    altitudeAccuracy: 5,
+    heading: 0,
+    headingAccuracy: 0,
+    speed: 1.2,
+    speedAccuracy: 0.5,
+  );
 
   TrekSession recordingSession() => TrekSession(
-        id: 'sess-parite-1',
-        trailId: 'test-trail',
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        status: 'active',
-      );
+    id: 'sess-parite-1',
+    trailId: 'test-trail',
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    status: 'active',
+  );
 
   /// Harnais MapScreen avec surcharge du statut de session.
   Widget harness({
@@ -96,28 +109,35 @@ void main() {
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
         // Trace du sentier courant ET trace 'default' (lu par la projection).
-        gpxTrackProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockTrackPoints)),
-        gpxTrackProvider('default')
-            .overrideWith((ref) => Future.value(mockTrackPoints)),
-        stagesProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockStages)),
-        stagesProvider('default')
-            .overrideWith((ref) => Future.value(mockStages)),
-        poisProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockPois)),
+        gpxTrackProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockTrackPoints)),
+        gpxTrackProvider(
+          'default',
+        ).overrideWith((ref) => Future.value(mockTrackPoints)),
+        stagesProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockStages)),
+        stagesProvider(
+          'default',
+        ).overrideWith((ref) => Future.value(mockStages)),
+        poisProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockPois)),
         // GPS : soit refuse (pas de position), soit une position fixe.
         if (withGps)
           locationProvider.overrideWith((ref) => Stream.value(fakePosition()))
         else
           gpsPermissionProvider.overrideWith(
-              (ref) => Future.value(GpsPermissionStateValues.denied)),
+            (ref) => Future.value(GpsPermissionStateValues.denied),
+          ),
         // Session de tracking figee au statut demande.
         trekSessionManagerProvider.overrideWith(
           () => _FixedStatusNotifier(
             TrackingSessionState(
               status: status,
-              session: status == TrackingSessionStatus.recording ||
+              session:
+                  status == TrackingSessionStatus.recording ||
                       status == TrackingSessionStatus.paused
                   ? recordingSession()
                   : null,
@@ -137,11 +157,17 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // FAB des calques (heroTag mapLayers -> icone layers).
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calques), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.calques,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('SOS overlay masque hors trek (acces unique, aucun SOS de barre)',
-        (tester) async {
+    testWidgets('SOS overlay masque hors trek (acces unique, aucun SOS de barre)', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -151,7 +177,9 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(SosButton),
-          matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
+          matching: find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          ),
         ),
         findsNothing,
         reason: 'overlay SOS invisible hors trek (parite SosButton)',
@@ -161,14 +189,18 @@ void main() {
       // RETIRE. Hors trek, l'overlay est masque ET la barre ne porte plus de SOS
       // -> AUCUNE icone SOS a l'ecran (exactement comme GR20, sans barre SOS).
       expect(
-        find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+        ),
         findsNothing,
-        reason: 'plus de SOS en barre (retire cycle 3) + overlay masque hors trek',
+        reason:
+            'plus de SOS en barre (retire cycle 3) + overlay masque hors trek',
       );
     });
 
-    testWidgets('SOS overlay = SEUL acces pendant un trek (parite GR20)',
-        (tester) async {
+    testWidgets('SOS overlay = SEUL acces pendant un trek (parite GR20)', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -176,27 +208,32 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(SosButton),
-          matching: find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours),
+          matching: find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          ),
         ),
         findsOneWidget,
       );
       expect(
-        find.descendant(
-          of: find.byType(SosButton),
-          matching: find.text('SOS'),
-        ),
+        find.descendant(of: find.byType(SosButton), matching: find.text('SOS')),
         findsOneWidget,
       );
 
       // SOS UNIQUE aligne GR20 (cycle 3) : plus de doublon en barre. En trek,
       // il n'y a donc qu'UNE SEULE icone SOS et un seul texte « SOS » a l'ecran,
       // ceux de l'overlay — a l'identique de GR20 (SosFloatingButton unique).
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+        ),
+        findsOneWidget,
+      );
       expect(find.text('SOS'), findsOneWidget);
     });
 
-    testWidgets('barre d etape active affichee pendant un trek avec fix GPS',
-        (tester) async {
+    testWidgets('barre d etape active affichee pendant un trek avec fix GPS', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         harness(status: TrackingSessionStatus.recording, withGps: true),
       );
@@ -218,8 +255,9 @@ void main() {
     // PERMANENCE. La barre est donc desormais TOUJOURS presente ; hors trek elle
     // porte les chiffres du PROGRAMME et un tiret sur ce qui exige le GPS.
     // -----------------------------------------------------------------------
-    testWidgets('barre d etape TOUJOURS presente, meme hors trek (LOT D)',
-        (tester) async {
+    testWidgets('barre d etape TOUJOURS presente, meme hors trek (LOT D)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         harness(status: TrackingSessionStatus.idle, withGps: true),
       );
@@ -244,24 +282,40 @@ void main() {
       );
     });
 
-    testWidgets('bouton photo vers le journal present sur la carte (LOT D)',
-        (tester) async {
+    testWidgets('bouton photo vers le journal present sur la carte (LOT D)', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
       // Manque reel n°1 : la carte de reference porte ce bouton, StepWays
       // n'en avait aucune occurrence.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.photo), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.photo,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('guide des icones accessible depuis l en-tete (LOT D)',
-        (tester) async {
+    testWidgets('guide des icones accessible depuis l en-tete (LOT D)', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
       // Manque reel n°2 : action (i) de l'en-tete -> guide de la carte.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.info,
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.info,
+        ),
+      );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
@@ -277,7 +331,8 @@ void main() {
       expect(
         find.text(t.map.guide.poi.water),
         findsOneWidget,
-        reason: 'le guide explique chaque type de point, il ne le nomme plus '
+        reason:
+            'le guide explique chaque type de point, il ne le nomme plus '
             'seulement',
       );
       expect(find.text(t.map.guide.position), findsOneWidget);
@@ -308,7 +363,11 @@ void main() {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calques));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.calques,
+        ),
+      );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
@@ -324,8 +383,9 @@ void main() {
   });
 
   group('MapScreen parite GR20 — navigation retour', () {
-    testWidgets('retour depuis la carte (racine de branche) ne plante pas',
-        (tester) async {
+    testWidgets('retour depuis la carte (racine de branche) ne plante pas', (
+      tester,
+    ) async {
       // Router minimal : /home + /map (comme l'onglet Carte du shell). On entre
       // par /map (racine de branche, pile vide) : le bouton retour ne doit PAS
       // tenter de depiler une pile vide (crash) mais revenir a /home.
@@ -348,10 +408,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            gpxTrackProvider(testTrailConfig.id)
-                .overrideWith((ref) => Future.value(mockTrackPoints)),
+            gpxTrackProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) => Future.value(mockTrackPoints)),
             gpsPermissionProvider.overrideWith(
-                (ref) => Future.value(GpsPermissionStateValues.denied)),
+              (ref) => Future.value(GpsPermissionStateValues.denied),
+            ),
             trekSessionManagerProvider.overrideWith(
               () => _FixedStatusNotifier(
                 const TrackingSessionState(status: TrackingSessionStatus.idle),

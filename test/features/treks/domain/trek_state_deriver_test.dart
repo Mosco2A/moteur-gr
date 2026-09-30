@@ -9,11 +9,11 @@ import 'package:moteur_gr/features/treks/domain/trek_state_deriver.dart';
 /// « abandoned -> retombe prepared » (trek rejouable), sans aucune base.
 void main() {
   TrekSession session(String status) => TrekSession(
-        id: 'sess-1',
-        trailId: 'gr20',
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        status: status,
-      );
+    id: 'sess-1',
+    trailId: 'gr20',
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    status: status,
+  );
 
   group('deriveState — priorite inProgress > completed > prepared > owned', () {
     test('session active -> inProgress (prioritaire)', () {
@@ -49,20 +49,14 @@ void main() {
 
     test('planif/progression sans session en cours -> prepared', () {
       expect(
-        deriveState(
-          latestSession: null,
-          hasPlanningOrProgress: true,
-        ),
+        deriveState(latestSession: null, hasPlanningOrProgress: true),
         TrekLifecycleState.prepared,
       );
     });
 
     test('rien fait (ni session ni planif) -> owned', () {
       expect(
-        deriveState(
-          latestSession: null,
-          hasPlanningOrProgress: false,
-        ),
+        deriveState(latestSession: null, hasPlanningOrProgress: false),
         TrekLifecycleState.owned,
       );
     });

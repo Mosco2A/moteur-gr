@@ -79,7 +79,8 @@ class TransportScreen extends ConsumerWidget {
     // Sans aucune donnee transport, il n'y a plus d'onglet du tout, et l'ecran
     // enonce un fait — « Aucune information de transport pour ce sentier » — sans
     // date, sans « prochainement », sans rien a attendre.
-    final aucunContenu = (arrivalTab == null || !arrivalTab.hasContent) &&
+    final aucunContenu =
+        (arrivalTab == null || !arrivalTab.hasContent) &&
         (departureTab == null || !departureTab.hasContent);
     if (aucunContenu) {
       return Scaffold(
@@ -115,14 +116,8 @@ class TransportScreen extends ConsumerWidget {
           actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
           bottom: TabBar(
             tabs: [
-              Tab(
-                icon: const StepIcon(StepwaysIcons.avion),
-                text: joinLabel,
-              ),
-              Tab(
-                icon: const StepIcon(StepwaysIcons.avion),
-                text: leaveLabel,
-              ),
+              Tab(icon: const StepIcon(StepwaysIcons.avion), text: joinLabel),
+              Tab(icon: const StepIcon(StepwaysIcons.avion), text: leaveLabel),
             ],
           ),
         ),
@@ -202,11 +197,11 @@ class _TransportTabView extends StatelessWidget {
         : AppTheme.orangeDifficile;
     final introTitle = role == TransportRole.arrival
         ? (endpointName.isNotEmpty
-            ? t.transport.joinTitle(name: endpointName)
-            : t.transport.tabJoin)
+              ? t.transport.joinTitle(name: endpointName)
+              : t.transport.tabJoin)
         : (endpointName.isNotEmpty
-            ? t.transport.leaveTitle(name: endpointName)
-            : t.transport.tabLeave);
+              ? t.transport.leaveTitle(name: endpointName)
+              : t.transport.tabLeave);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -246,10 +241,7 @@ class _TransportTabView extends StatelessWidget {
           // Sections d'options (parite GR20 : SectionHeader + cartes).
           for (final section in data.sections)
             if (section.options.isNotEmpty) ...[
-              SectionHeader(
-                title: section.title,
-                icon: _iconFor(section.mode),
-              ),
+              SectionHeader(title: section.title, icon: _iconFor(section.mode)),
               const SizedBox(height: AppTheme.spacingSm),
               for (final option in section.options) ...[
                 _TransportOptionCard(option: option),
@@ -259,8 +251,7 @@ class _TransportTabView extends StatelessWidget {
             ],
 
           // Conseils pratiques (parite GR20 : carte « Conseils »).
-          if (data.advices.isNotEmpty)
-            _AdviceCard(advices: data.advices),
+          if (data.advices.isNotEmpty) _AdviceCard(advices: data.advices),
           const SizedBox(height: AppTheme.spacingXl),
         ],
       ),
@@ -319,7 +310,9 @@ class _TransportOptionCard extends StatelessWidget {
                     if (option.description.isNotEmpty)
                       Text(
                         option.description,
-                        style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14,
+                        ),
                       ),
                   ],
                 ),
@@ -327,8 +320,10 @@ class _TransportOptionCard extends StatelessWidget {
               if (option.price.isNotEmpty) ...[
                 const SizedBox(width: AppTheme.spacingSm),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.vertFacile.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -358,8 +353,11 @@ class _TransportOptionCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const StepIcon(StepwaysIcons.duree,
-                      size: 18, color: AppTheme.grisGranite),
+                  const StepIcon(
+                    StepwaysIcons.duree,
+                    size: 18,
+                    color: AppTheme.grisGranite,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -407,13 +405,16 @@ class _TransportOptionCard extends StatelessWidget {
                   Expanded(
                     child: Semantics(
                       button: true,
-                      label: t.transport.a11y
-                          .call(label: option.contactLabel),
+                      label: t.transport.a11y.call(label: option.contactLabel),
                       child: InkWell(
                         onTap: () => _call(option.contact),
                         child: Row(
                           children: [
-                            StepIcon(StepwaysIcons.telephone, size: 18, color: linkColor),
+                            StepIcon(
+                              StepwaysIcons.telephone,
+                              size: 18,
+                              color: linkColor,
+                            ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Column(
@@ -449,8 +450,11 @@ class _TransportOptionCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        const StepIcon(StepwaysIcons.info,
-                            size: 18, color: AppTheme.grisGranite),
+                        const StepIcon(
+                          StepwaysIcons.info,
+                          size: 18,
+                          color: AppTheme.grisGranite,
+                        ),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -469,7 +473,11 @@ class _TransportOptionCard extends StatelessWidget {
                     button: true,
                     label: t.transport.a11y.website,
                     child: IconButton(
-                      icon: StepIcon(StepwaysIcons.lien, size: 18, color: linkColor),
+                      icon: StepIcon(
+                        StepwaysIcons.lien,
+                        size: 18,
+                        color: linkColor,
+                      ),
                       tooltip: t.transport.website,
                       onPressed: () => _openUrl(option.url!),
                     ),
@@ -517,8 +525,11 @@ class _AdviceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const StepIcon(StepwaysIcons.ficheConseil,
-                  color: AppTheme.jauneModere, size: 20),
+              const StepIcon(
+                StepwaysIcons.ficheConseil,
+                color: AppTheme.jauneModere,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 t.transport.adviceTitle,
@@ -535,8 +546,10 @@ class _AdviceCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('- ',
-                      style: TextStyle(color: AppTheme.jauneModere)),
+                  const Text(
+                    '- ',
+                    style: TextStyle(color: AppTheme.jauneModere),
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(advice, style: theme.textTheme.bodySmall),

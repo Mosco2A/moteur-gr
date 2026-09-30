@@ -50,119 +50,131 @@ class TrailSeeder {
   Future<void> seedFromJson(Map<String, dynamic> jsonData) async {
     // 1. Trail meta
     final meta = jsonData['trail_meta'] as Map<String, dynamic>;
-    await _metaDao.insertOrReplace(TrailMetaCompanion(
-      id: Value(meta['id'] as String),
-      code: Value(meta['code'] as String),
-      // UN SENTIER EMBARQUE N A PAS D HORODATAGE DE SERVEUR, et on ne lui en
-      // invente pas : il vaut l ORIGINE. Consequence voulue — tout ce que le
-      // serveur publiera pour ce sentier lui sera posterieur, donc descendra.
-      // L ancienne valeur entiere (`meta['dataVersion']`) n est plus lue : lue
-      // comme un instant elle designerait 1970, ce qui est le meme fait dit moins
-      // clairement, et lue comme un compteur elle serait comparee a des dates.
-      dataVersion: const Value(HorodatageServeur.origine),
-      status: Value(meta['status'] as String? ?? 'active'),
-    ));
+    await _metaDao.insertOrReplace(
+      TrailMetaCompanion(
+        id: Value(meta['id'] as String),
+        code: Value(meta['code'] as String),
+        // UN SENTIER EMBARQUE N A PAS D HORODATAGE DE SERVEUR, et on ne lui en
+        // invente pas : il vaut l ORIGINE. Consequence voulue — tout ce que le
+        // serveur publiera pour ce sentier lui sera posterieur, donc descendra.
+        // L ancienne valeur entiere (`meta['dataVersion']`) n est plus lue : lue
+        // comme un instant elle designerait 1970, ce qui est le meme fait dit moins
+        // clairement, et lue comme un compteur elle serait comparee a des dates.
+        dataVersion: const Value(HorodatageServeur.origine),
+        status: Value(meta['status'] as String? ?? 'active'),
+      ),
+    );
 
     // 2. Itineraires
     final itineraries = jsonData['itineraries'] as List<dynamic>;
     for (final it in itineraries) {
       final m = it as Map<String, dynamic>;
-      await _itinerariesDao.insertOrReplace(TrailItinerariesCompanion(
-        id: Value(m['id'] as String),
-        trailId: Value(m['trailId'] as String),
-        code: Value(m['code'] as String),
-        nameFr: Value(m['nameFr'] as String),
-        nameEn: Value(m['nameEn'] as String),
-        nameDe: Value(m['nameDe'] as String),
-        nameIt: Value(m['nameIt'] as String),
-        nameEs: Value(m['nameEs'] as String),
-        distanceKm: Value((m['distanceKm'] as num).toDouble()),
-        elevationGain: Value(m['elevationGain'] as int),
-        stageCount: Value(m['stageCount'] as int),
-      ));
+      await _itinerariesDao.insertOrReplace(
+        TrailItinerariesCompanion(
+          id: Value(m['id'] as String),
+          trailId: Value(m['trailId'] as String),
+          code: Value(m['code'] as String),
+          nameFr: Value(m['nameFr'] as String),
+          nameEn: Value(m['nameEn'] as String),
+          nameDe: Value(m['nameDe'] as String),
+          nameIt: Value(m['nameIt'] as String),
+          nameEs: Value(m['nameEs'] as String),
+          distanceKm: Value((m['distanceKm'] as num).toDouble()),
+          elevationGain: Value(m['elevationGain'] as int),
+          stageCount: Value(m['stageCount'] as int),
+        ),
+      );
     }
 
     // 3. Etapes
     final stages = jsonData['stages'] as List<dynamic>;
     for (final s in stages) {
       final m = s as Map<String, dynamic>;
-      await _stagesDao.insertOrReplace(TrailStagesCompanion(
-        id: Value(m['id'] as String),
-        itineraryId: Value(m['itineraryId'] as String),
-        stageNumber: Value(m['stageNumber'] as int),
-        nameFr: Value(m['nameFr'] as String),
-        nameEn: Value(m['nameEn'] as String),
-        nameDe: Value(m['nameDe'] as String),
-        nameIt: Value(m['nameIt'] as String),
-        nameEs: Value(m['nameEs'] as String),
-        startLat: Value((m['startLat'] as num).toDouble()),
-        startLng: Value((m['startLng'] as num).toDouble()),
-        endLat: Value((m['endLat'] as num).toDouble()),
-        endLng: Value((m['endLng'] as num).toDouble()),
-        distanceKm: Value((m['distanceKm'] as num).toDouble()),
-        elevationGain: Value(m['elevationGain'] as int),
-        elevationLoss: Value(m['elevationLoss'] as int),
-        durationMinutes: Value(m['durationMinutes'] as int),
-        difficulty: Value(m['difficulty'] as String),
-      ));
+      await _stagesDao.insertOrReplace(
+        TrailStagesCompanion(
+          id: Value(m['id'] as String),
+          itineraryId: Value(m['itineraryId'] as String),
+          stageNumber: Value(m['stageNumber'] as int),
+          nameFr: Value(m['nameFr'] as String),
+          nameEn: Value(m['nameEn'] as String),
+          nameDe: Value(m['nameDe'] as String),
+          nameIt: Value(m['nameIt'] as String),
+          nameEs: Value(m['nameEs'] as String),
+          startLat: Value((m['startLat'] as num).toDouble()),
+          startLng: Value((m['startLng'] as num).toDouble()),
+          endLat: Value((m['endLat'] as num).toDouble()),
+          endLng: Value((m['endLng'] as num).toDouble()),
+          distanceKm: Value((m['distanceKm'] as num).toDouble()),
+          elevationGain: Value(m['elevationGain'] as int),
+          elevationLoss: Value(m['elevationLoss'] as int),
+          durationMinutes: Value(m['durationMinutes'] as int),
+          difficulty: Value(m['difficulty'] as String),
+        ),
+      );
     }
 
     // 4. Hebergements
     final accommodations = jsonData['accommodations'] as List<dynamic>;
     for (final a in accommodations) {
       final m = a as Map<String, dynamic>;
-      await _accommodationsDao.insertOrReplace(TrailAccommodationsCompanion(
-        id: Value(m['id'] as String),
-        stageId: Value(m['stageId'] as String),
-        nameFr: Value(m['nameFr'] as String),
-        nameEn: Value(m['nameEn'] as String),
-        nameDe: Value(m['nameDe'] as String),
-        nameIt: Value(m['nameIt'] as String),
-        nameEs: Value(m['nameEs'] as String),
-        type: Value(m['type'] as String),
-        lat: Value((m['lat'] as num).toDouble()),
-        lng: Value((m['lng'] as num).toDouble()),
-        phone: Value(m['phone'] as String?),
-        email: Value(m['email'] as String?),
-        website: Value(m['website'] as String?),
-        capacity: Value(m['capacity'] as int?),
-        priceRange: Value(m['priceRange'] as String?),
-        bookingUrl: Value(m['bookingUrl'] as String?),
-        // L ADRESSE POSTALE (tache 641, bug 15). La copie embarquee la porte
-        // aussi, sinon un telephone sans reseau afficherait un hebergement sans
-        // adresse la ou la base en a une : le cache doit savoir tout ce que la
-        // source sait dire.
-        address: Value(m['address'] as String?),
-      ));
+      await _accommodationsDao.insertOrReplace(
+        TrailAccommodationsCompanion(
+          id: Value(m['id'] as String),
+          stageId: Value(m['stageId'] as String),
+          nameFr: Value(m['nameFr'] as String),
+          nameEn: Value(m['nameEn'] as String),
+          nameDe: Value(m['nameDe'] as String),
+          nameIt: Value(m['nameIt'] as String),
+          nameEs: Value(m['nameEs'] as String),
+          type: Value(m['type'] as String),
+          lat: Value((m['lat'] as num).toDouble()),
+          lng: Value((m['lng'] as num).toDouble()),
+          phone: Value(m['phone'] as String?),
+          email: Value(m['email'] as String?),
+          website: Value(m['website'] as String?),
+          capacity: Value(m['capacity'] as int?),
+          priceRange: Value(m['priceRange'] as String?),
+          bookingUrl: Value(m['bookingUrl'] as String?),
+          // L ADRESSE POSTALE (tache 641, bug 15). La copie embarquee la porte
+          // aussi, sinon un telephone sans reseau afficherait un hebergement sans
+          // adresse la ou la base en a une : le cache doit savoir tout ce que la
+          // source sait dire.
+          address: Value(m['address'] as String?),
+        ),
+      );
     }
 
     // 5. Points d'interet
     final pois = jsonData['pois'] as List<dynamic>;
     for (final p in pois) {
       final m = p as Map<String, dynamic>;
-      await _poisDao.insertOrReplace(TrailPoisCompanion(
-        id: Value(m['id'] as String),
-        stageId: Value(m['stageId'] as String),
-        nameFr: Value(m['nameFr'] as String),
-        nameEn: Value(m['nameEn'] as String),
-        nameDe: Value(m['nameDe'] as String),
-        nameIt: Value(m['nameIt'] as String),
-        nameEs: Value(m['nameEs'] as String),
-        descriptionFr: Value(m['descriptionFr'] as String?),
-        descriptionEn: Value(m['descriptionEn'] as String?),
-        descriptionDe: Value(m['descriptionDe'] as String?),
-        descriptionIt: Value(m['descriptionIt'] as String?),
-        descriptionEs: Value(m['descriptionEs'] as String?),
-        type: Value(m['type'] as String),
-        lat: Value((m['lat'] as num).toDouble()),
-        lng: Value((m['lng'] as num).toDouble()),
-        elevation: Value(m['elevation'] != null ? (m['elevation'] as num).toDouble() : null),
-        // ADRESSE, TELEPHONE, SITE (tache 641) : memes champs que la source, pour
-        // que le cache embarque puisse porter le transport et le ravitaillement.
-        address: Value(m['address'] as String?),
-        phone: Value(m['phone'] as String?),
-        website: Value(m['website'] as String?),
-      ));
+      await _poisDao.insertOrReplace(
+        TrailPoisCompanion(
+          id: Value(m['id'] as String),
+          stageId: Value(m['stageId'] as String),
+          nameFr: Value(m['nameFr'] as String),
+          nameEn: Value(m['nameEn'] as String),
+          nameDe: Value(m['nameDe'] as String),
+          nameIt: Value(m['nameIt'] as String),
+          nameEs: Value(m['nameEs'] as String),
+          descriptionFr: Value(m['descriptionFr'] as String?),
+          descriptionEn: Value(m['descriptionEn'] as String?),
+          descriptionDe: Value(m['descriptionDe'] as String?),
+          descriptionIt: Value(m['descriptionIt'] as String?),
+          descriptionEs: Value(m['descriptionEs'] as String?),
+          type: Value(m['type'] as String),
+          lat: Value((m['lat'] as num).toDouble()),
+          lng: Value((m['lng'] as num).toDouble()),
+          elevation: Value(
+            m['elevation'] != null ? (m['elevation'] as num).toDouble() : null,
+          ),
+          // ADRESSE, TELEPHONE, SITE (tache 641) : memes champs que la source, pour
+          // que le cache embarque puisse porter le transport et le ravitaillement.
+          address: Value(m['address'] as String?),
+          phone: Value(m['phone'] as String?),
+          website: Value(m['website'] as String?),
+        ),
+      );
     }
   }
 }

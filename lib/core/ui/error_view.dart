@@ -60,9 +60,7 @@ class _ErrorViewState extends State<ErrorView> {
     // Toujours la, donc toujours en erreur : on ne laisse pas l'utilisateur
     // deviner que son appui a bien ete pris et que c'est l'essai qui a rate.
     final messenger = ScaffoldMessenger.maybeOf(context);
-    messenger?.showSnackBar(
-      SnackBar(content: Text(t.common.retryFailed)),
-    );
+    messenger?.showSnackBar(SnackBar(content: Text(t.common.retryFailed)));
   }
 
   @override

@@ -176,15 +176,15 @@ class AccommodationBooking {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        accommodationId,
-        trailId,
-        date,
-        status,
-        contactMethod,
-        bookedAt,
-        notes,
-      );
+    id,
+    accommodationId,
+    trailId,
+    date,
+    status,
+    contactMethod,
+    bookedAt,
+    notes,
+  );
 
   @override
   String toString() =>

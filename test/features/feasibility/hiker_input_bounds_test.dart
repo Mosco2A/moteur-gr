@@ -31,11 +31,17 @@ void main() {
       expect(kAgeMin, 18, reason: 'majorite (decision Chris #100327)');
       expect(kAgeMax, 120, reason: 'record humain documente : 122 ans');
       expect(kHeightMinCm, 60);
-      expect(kHeightMaxCm, 255,
-          reason: 'le plus grand homme vivant mesure 251 cm');
+      expect(
+        kHeightMaxCm,
+        255,
+        reason: 'le plus grand homme vivant mesure 251 cm',
+      );
       expect(kWeightMinKg, 25);
-      expect(kWeightMaxKg, 200,
-          reason: 'au-dela on ne marche plus un sentier (#100328)');
+      expect(
+        kWeightMaxKg,
+        200,
+        reason: 'au-dela on ne marche plus un sentier (#100328)',
+      );
     });
   });
 
@@ -90,10 +96,14 @@ void main() {
       expect(isValidBodyWeightKg(kWeightMaxKg + 0.1), isFalse);
       expect(liveBmiWithinBounds(kHeightMinCm - 1, 70), isNull);
       expect(liveBmiWithinBounds(kHeightMaxCm + 1, 70), isNull);
-      expect(liveBmiWithinBounds(kHeightMinCm, kWeightMinKg.toDouble()),
-          isNotNull);
-      expect(liveBmiWithinBounds(kHeightMaxCm, kWeightMaxKg.toDouble()),
-          isNotNull);
+      expect(
+        liveBmiWithinBounds(kHeightMinCm, kWeightMinKg.toDouble()),
+        isNotNull,
+      );
+      expect(
+        liveBmiWithinBounds(kHeightMaxCm, kWeightMaxKg.toDouble()),
+        isNotNull,
+      );
     });
   });
 
@@ -111,8 +121,11 @@ void main() {
     for (final langue in langues) {
       test('$langue — les 3 messages citent les bonnes valeurs', () {
         final fichier = File('assets/i18n/$langue.i18n.json');
-        expect(fichier.existsSync(), isTrue,
-            reason: 'fichier i18n introuvable : ${fichier.path}');
+        expect(
+          fichier.existsSync(),
+          isTrue,
+          reason: 'fichier i18n introuvable : ${fichier.path}',
+        );
 
         final racine =
             jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
@@ -121,9 +134,13 @@ void main() {
         attendu.forEach((cle, bornes) {
           final message = profil[cle] as String;
           for (final borne in bornes) {
-            expect(message.contains('$borne'), isTrue,
-                reason: '$langue / hikerProfile.$cle doit citer $borne — '
-                    'message affiche : « $message »');
+            expect(
+              message.contains('$borne'),
+              isTrue,
+              reason:
+                  '$langue / hikerProfile.$cle doit citer $borne — '
+                  'message affiche : « $message »',
+            );
           }
         });
       });

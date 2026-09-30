@@ -156,12 +156,12 @@ class WalletIapService {
     SharedPreferences? prefs,
     ReceiptValidator? receiptValidator,
     this.testMode = true,
-  })  : _walletStore = walletStore,
-        _noAdsDao = noAdsDao,
-        _iapOverride = iapInstance,
-        _prefs = prefs,
-        _receiptValidator =
-            receiptValidator ?? const LocalSanityReceiptValidator();
+  }) : _walletStore = walletStore,
+       _noAdsDao = noAdsDao,
+       _iapOverride = iapInstance,
+       _prefs = prefs,
+       _receiptValidator =
+           receiptValidator ?? const LocalSanityReceiptValidator();
 
   final WalletStore _walletStore;
   final NoAdsDao _noAdsDao;
@@ -318,8 +318,10 @@ class WalletIapService {
   /// Verifie puis delivre un achat, avec idempotence par `purchaseID`.
   Future<void> _deliver(PurchaseDetails purchase) async {
     if (await _isAlreadyDelivered(purchase.purchaseID)) {
-      _log.d('[WalletIap] Achat deja delivre (idempotence): '
-          '${purchase.purchaseID}');
+      _log.d(
+        '[WalletIap] Achat deja delivre (idempotence): '
+        '${purchase.purchaseID}',
+      );
       return;
     }
     final verified = await _verify(purchase);
@@ -346,8 +348,10 @@ class WalletIapService {
   Future<bool> _verify(PurchaseDetails purchase) async {
     final ok = await _receiptValidator.isValid(purchase);
     if (!ok) {
-      _log.e('[WalletIap] Recu REFUSE (${purchase.productID}, '
-          'statut=${purchase.status}) : aucun credit applique');
+      _log.e(
+        '[WalletIap] Recu REFUSE (${purchase.productID}, '
+        'statut=${purchase.status}) : aucun credit applique',
+      );
     }
     return ok;
   }
@@ -383,8 +387,10 @@ class WalletIapService {
           expiresAt: Value(now.add(kSubscriptionNoAdsWindow)),
         ),
       );
-      _log.i('[WalletIap] Abo sans-pub pose jusqu au '
-          '${now.add(kSubscriptionNoAdsWindow)} (${purchase.productID})');
+      _log.i(
+        '[WalletIap] Abo sans-pub pose jusqu au '
+        '${now.add(kSubscriptionNoAdsWindow)} (${purchase.productID})',
+      );
       return true;
     }
     _log.w('[WalletIap] ProductId inconnu, rien livre: ${purchase.productID}');

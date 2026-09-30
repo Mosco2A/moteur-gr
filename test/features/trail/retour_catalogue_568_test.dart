@@ -47,7 +47,6 @@ void main() {
   // banniere a son propre test : test/comportement/pub_v1_595_test.dart.
   setUp(brancherAucuneRegiePub);
 
-
   /// Un trek possede, pour que « Mes treks » ait quelque chose a afficher.
   const treks = <TrekSummary>[
     TrekSummary(config: testTrailConfig, state: TrekLifecycleState.owned),
@@ -69,7 +68,10 @@ void main() {
           path: '/home',
           builder: (_, __) => const Scaffold(body: Text('COCKPIT_TEMOIN')),
         ),
-        GoRoute(path: '/catalog', builder: (_, __) => const TrailCatalogScreen()),
+        GoRoute(
+          path: '/catalog',
+          builder: (_, __) => const TrailCatalogScreen(),
+        ),
         GoRoute(path: '/profile', builder: (_, __) => const SizedBox()),
         GoRoute(path: '/settings', builder: (_, __) => const SizedBox()),
       ],
@@ -102,7 +104,9 @@ void main() {
             // Une rando EST active : sans le correctif, l'accueil contextuel
             // renvoie vers le cockpit.
             overrides: [
-              activeTrekIdProvider.overrideWith((ref) async => testTrailConfig.id),
+              activeTrekIdProvider.overrideWith(
+                (ref) async => testTrailConfig.id,
+              ),
             ],
           ),
         );
@@ -144,7 +148,9 @@ void main() {
           wrap(
             initialLocation: '/catalog',
             overrides: [
-              activeTrekIdProvider.overrideWith((ref) async => testTrailConfig.id),
+              activeTrekIdProvider.overrideWith(
+                (ref) async => testTrailConfig.id,
+              ),
             ],
           ),
         );
@@ -157,7 +163,8 @@ void main() {
         expect(
           find.byType(MyTreksScreen),
           findsOneWidget,
-          reason: 'sans historique, le repli du catalogue est « Mes treks » — '
+          reason:
+              'sans historique, le repli du catalogue est « Mes treks » — '
               'jamais le cockpit du sentier courant (defaut Chris 26/09)',
         );
         expect(find.text('COCKPIT_TEMOIN'), findsNothing);
@@ -176,7 +183,9 @@ void main() {
           wrap(
             initialLocation: '/catalog',
             overrides: [
-              activeTrekIdProvider.overrideWith((ref) async => testTrailConfig.id),
+              activeTrekIdProvider.overrideWith(
+                (ref) async => testTrailConfig.id,
+              ),
             ],
           ),
         );

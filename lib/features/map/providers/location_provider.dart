@@ -18,7 +18,13 @@ abstract class GpsPermissionStateValues {
   static const String disabled = 'disabled';
   static const String checking = 'checking';
   static const String fallback = checking;
-  static const List<String> values = [granted, denied, deniedForever, disabled, checking];
+  static const List<String> values = [
+    granted,
+    denied,
+    deniedForever,
+    disabled,
+    checking,
+  ];
   static GpsPermissionState fromString(String value) =>
       values.contains(value) ? value : fallback;
 }
@@ -27,8 +33,7 @@ abstract class GpsPermissionStateValues {
 ///
 /// Vérifie le service de localisation et les permissions,
 /// demande l'autorisation si nécessaire.
-final gpsPermissionProvider =
-    FutureProvider<GpsPermissionState>((ref) async {
+final gpsPermissionProvider = FutureProvider<GpsPermissionState>((ref) async {
   // Vérifier si le service GPS est activé
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
@@ -67,9 +72,7 @@ final locationProvider = StreamProvider<Position>((ref) {
   permissionAsync.when(
     data: (state) {
       if (state != GpsPermissionStateValues.granted) {
-        controller.addError(
-          StateError('Permission GPS non accordée: $state'),
-        );
+        controller.addError(StateError('Permission GPS non accordée: $state'));
         return;
       }
 
@@ -81,10 +84,7 @@ final locationProvider = StreamProvider<Position>((ref) {
 
       final subscription = Geolocator.getPositionStream(
         locationSettings: settings,
-      ).listen(
-        controller.add,
-        onError: controller.addError,
-      );
+      ).listen(controller.add, onError: controller.addError);
 
       ref.onDispose(() {
         subscription.cancel();

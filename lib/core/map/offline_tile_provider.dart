@@ -5,9 +5,7 @@ import 'package:logger/logger.dart';
 
 import 'mbtiles_manager.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Fabrique de TileProvider pour le mode offline/online.
 ///
@@ -49,8 +47,7 @@ class OfflineTileProvider {
 }
 
 /// Provider du OfflineTileProvider.
-final offlineTileProviderFactoryProvider =
-    Provider<OfflineTileProvider>((ref) {
+final offlineTileProviderFactoryProvider = Provider<OfflineTileProvider>((ref) {
   final manager = ref.watch(mbtilesManagerProvider);
   return OfflineTileProvider(mbtilesManager: manager);
 });
@@ -61,6 +58,6 @@ final offlineTileProviderFactoryProvider =
 /// par sentier. Resout automatiquement vers MBTiles local ou OSM online.
 final tileProviderForTrailProvider =
     FutureProvider.family<TileProvider, String>((ref, trailId) async {
-  final factory = ref.watch(offlineTileProviderFactoryProvider);
-  return factory.getTileProvider(trailId);
-});
+      final factory = ref.watch(offlineTileProviderFactoryProvider);
+      return factory.getTileProvider(trailId);
+    });

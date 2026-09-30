@@ -69,9 +69,9 @@ final itineraryProvider = FutureProvider<List<ItineraryDay>>((ref) async {
 /// par [PlannedDay] (source unique [stageDurationMinutes] pour la duree). Un jour
 /// de repos devient un [ItineraryDay] sans etape (l'ecran affiche « repos »).
 ItineraryDay _toItineraryDay(PlannedDay day) => ItineraryDay(
-      dayNumber: day.dayNumber,
-      stages: List.unmodifiable(day.stages),
-      totalDistance: day.totalDistanceKm,
-      totalElevation: day.totalElevationGainM,
-      estimatedHours: day.estimatedHours,
-    );
+  dayNumber: day.dayNumber,
+  stages: List.unmodifiable(day.stages),
+  totalDistance: day.totalDistanceKm,
+  totalElevation: day.totalElevationGainM,
+  estimatedHours: day.estimatedHours,
+);

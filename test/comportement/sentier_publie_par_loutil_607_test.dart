@@ -74,8 +74,9 @@ void main() {
     publie = '${bac.path.replaceAll(r'\', '/')}/publie';
     Directory(source).createSync(recursive: true);
     for (final nom in const ['sentier.json', 'trace.gpx']) {
-      File('test/fixtures/publication/gr-monts-dore/$nom')
-          .copySync('$source/$nom');
+      File(
+        'test/fixtures/publication/gr-monts-dore/$nom',
+      ).copySync('$source/$nom');
     }
     db = AppDatabase(NativeDatabase.memory());
     manifestes = TrailManifestsDao(db);
@@ -97,7 +98,8 @@ void main() {
 
   HorodatageServeur instantAuJour(int jour) =>
       HorodatageServeur.annonceParLeServeur(
-          horlogeAuJour(jour).toIso8601String())!;
+        horlogeAuJour(jour).toIso8601String(),
+      )!;
 
   Publicateur outil(int jour) =>
       Publicateur(sortie: publie, horloge: horlogeAuJour(jour));
@@ -110,12 +112,14 @@ void main() {
   /// aucune ligne et le telephone repart de zero a chaque fois.
   Future<TrailManifestEntry> publier({int jour = 1}) async {
     outil(jour).publier(source);
-    final brut = jsonDecode(
-      File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
-    ) as Map<String, dynamic>;
-    final entree = TrailManifest.fromJson(brut)
-        .trails
-        .firstWhere((e) => e.trailId == 'gr-monts-dore');
+    final brut =
+        jsonDecode(
+              File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final entree = TrailManifest.fromJson(
+      brut,
+    ).trails.firstWhere((e) => e.trailId == 'gr-monts-dore');
     await ManifestService(
       dao: manifestes,
       connectivityMonitor: _FauxReseau(ConnectivityStatusValues.online),
@@ -151,9 +155,11 @@ void main() {
         if (tronquerA != null && chemin != Publicateur.nomDeLaListe) {
           octets = octets.sublist(0, tronquerA);
         }
-        return http.Response.bytes(octets, 200, headers: {
-          'content-type': 'application/json; charset=utf-8',
-        });
+        return http.Response.bytes(
+          octets,
+          200,
+          headers: {'content-type': 'application/json; charset=utf-8'},
+        );
       }
       return http.Response('non trouve', 404);
     });
@@ -179,17 +185,22 @@ void main() {
 
   ProviderContainer conteneur({int? tronquerA}) {
     final reseau = _FauxReseau(ConnectivityStatusValues.online);
-    return ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      connectivityMonitorProvider.overrideWithValue(reseau),
-      manifestServiceProvider.overrideWithValue(ManifestService(
-        dao: manifestes,
-        connectivityMonitor: reseau,
-        httpClient: stockage(),
-      )),
-      deltaUpdateServiceProvider
-          .overrideWith((ref) => service(tronquerA: tronquerA)),
-    ]);
+    return ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        connectivityMonitorProvider.overrideWithValue(reseau),
+        manifestServiceProvider.overrideWithValue(
+          ManifestService(
+            dao: manifestes,
+            connectivityMonitor: reseau,
+            httpClient: stockage(),
+          ),
+        ),
+        deltaUpdateServiceProvider.overrideWith(
+          (ref) => service(tronquerA: tronquerA),
+        ),
+      ],
+    );
   }
 
   // =========================================================================
@@ -205,9 +216,13 @@ void main() {
       // prouverait rien de l outil.
       expect(TrailCatalog.byId('gr-monts-dore'), isNull);
       expect(entree.dataVersion, instantAuJour(1));
-      expect(entree.hash, hasLength(EmpreinteDePublication.longueurHex),
-          reason: 'l empreinte est CALCULEE par l outil : avant ce lot, rien ne '
-              'la produisait et rien ne la verifiait (#X6)');
+      expect(
+        entree.hash,
+        hasLength(EmpreinteDePublication.longueurHex),
+        reason:
+            'l empreinte est CALCULEE par l outil : avant ce lot, rien ne '
+            'la produisait et rien ne la verifiait (#X6)',
+      );
 
       final c = conteneur();
       addTearDown(c.dispose);
@@ -218,25 +233,40 @@ void main() {
       final auCatalogue = c
           .read(availableTrailsProvider)
           .where((s) => s.id == 'gr-monts-dore');
-      expect(auCatalogue, hasLength(1),
-          reason: 'la fiche produite par l outil suffit a peupler le catalogue');
+      expect(
+        auCatalogue,
+        hasLength(1),
+        reason: 'la fiche produite par l outil suffit a peupler le catalogue',
+      );
       expect(auCatalogue.single.displayName, 'Tour des Monts Dore');
       expect(auCatalogue.single.region, 'Auvergne');
-      expect(auCatalogue.single.gpxAssetPath, isEmpty,
-          reason: 'une liste distante ne peut pas inventer un fichier embarque '
-              '(#F14) : la trace ne peut venir que de la base');
+      expect(
+        auCatalogue.single.gpxAssetPath,
+        isEmpty,
+        reason:
+            'une liste distante ne peut pas inventer un fichier embarque '
+            '(#F14) : la trace ne peut venir que de la base',
+      );
 
       // --- 2. IL SE TELECHARGE ---
       await c.read(catalogStateProvider.future);
-      await c.read(catalogStateProvider.notifier).downloadTrail('gr-monts-dore',
-          niveau: NiveauDeTelechargement.realiser);
+      await c
+          .read(catalogStateProvider.notifier)
+          .downloadTrail(
+            'gr-monts-dore',
+            niveau: NiveauDeTelechargement.realiser,
+          );
 
       expect(await manifestes.needsUpdate('gr-monts-dore'), isFalse);
-      expect(await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
-          hasLength(2));
+      expect(
+        await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
+        hasLength(2),
+      );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
-      expect(await TrailAccommodationsDao(db).getByStageId('montsdore-s1'),
-          hasLength(1));
+      expect(
+        await TrailAccommodationsDao(db).getByStageId('montsdore-s1'),
+        hasLength(1),
+      );
 
       // --- 3. IL S OUVRE ---
       c.read(selectedTrailIdProvider.notifier).state = 'gr-monts-dore';
@@ -244,32 +274,48 @@ void main() {
 
       // --- 4. ET SA TRACE S AFFICHE. ELLE VIENT DU .GPX DE LA SOURCE. ---
       final points = await c.read(gpxTrackProvider('gr-monts-dore').future);
-      expect(points, hasLength(10),
-          reason: 'les dix points du GPX source, passes par l outil, poses en '
-              'base, relus par la carte');
+      expect(
+        points,
+        hasLength(10),
+        reason:
+            'les dix points du GPX source, passes par l outil, poses en '
+            'base, relus par la carte',
+      );
       expect(points.first.altitude, 1050.0);
       expect(points.last.altitude, 1260.0);
       expect(points.last.distanceFromStart, greaterThan(0));
 
-      final trace = await c.read(traceDuSentierProvider('gr-monts-dore').future);
+      final trace = await c.read(
+        traceDuSentierProvider('gr-monts-dore').future,
+      );
       expect(trace.source, SourceDeLaTrace.base);
     });
 
-    test('LA REVISION DE CHAQUE ENREGISTREMENT EST CELLE QUE L OUTIL A ECRITE — '
-        'la chaine ne la reinvente pas', () async {
-      final entree = await publier();
-      await service().synchroniser(
-        'gr-monts-dore',
-        'https://double/${entree.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
-        empreinteAttendue: entree.hash,
-      );
+    test(
+      'LA REVISION DE CHAQUE ENREGISTREMENT EST CELLE QUE L OUTIL A ECRITE — '
+      'la chaine ne la reinvente pas',
+      () async {
+        final entree = await publier();
+        await service().synchroniser(
+          'gr-monts-dore',
+          'https://double/${entree.filePath}',
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: entree.dataVersion,
+          empreinteAttendue: entree.hash,
+        );
 
-      expect((await TrailStagesDao(db).getByItineraryId('montsdore-i1'))
-          .map((e) => e.rev), everyElement(instantAuJour(1)));
-      expect((await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
-          everyElement(instantAuJour(1)));
-    });
+        expect(
+          (await TrailStagesDao(
+            db,
+          ).getByItineraryId('montsdore-i1')).map((e) => e.rev),
+          everyElement(instantAuJour(1)),
+        );
+        expect(
+          (await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
+          everyElement(instantAuJour(1)),
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -290,22 +336,30 @@ void main() {
         service(tronquerA: tronque).synchroniser(
           'gr-monts-dore',
           'https://double/${entree.filePath}',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: entree.dataVersion,
           empreinteAttendue: entree.hash,
         ),
         throwsA(isA<EmpreinteInvalide>()),
       );
 
-      expect(await TrailStagesDao(db).getByItineraryId('montsdore-i1'), isEmpty,
-          reason: 'AVANT CE LOT le champ d empreinte n etait verifie par '
-              'PERSONNE : ce fichier passait la copie, sa revision locale etait '
-              'inscrite, et le randonneur partait en montagne avec un sentier '
-              'incomplet QUI SE CROYAIT COMPLET');
+      expect(
+        await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
+        isEmpty,
+        reason:
+            'AVANT CE LOT le champ d empreinte n etait verifie par '
+            'PERSONNE : ce fichier passait la copie, sa revision locale etait '
+            'inscrite, et le randonneur partait en montagne avec un sentier '
+            'incomplet QUI SE CROYAIT COMPLET',
+      );
       expect(await TrailGpxPointsDao(db).getAll(), isEmpty);
-      expect((await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
-          isNull,
-          reason: 'la revision locale n avance pas : le sentier reste « a '
-              'prendre » plutot qu a moitie copie (#C1)');
+      expect(
+        (await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
+        isNull,
+        reason:
+            'la revision locale n avance pas : le sentier reste « a '
+            'prendre » plutot qu a moitie copie (#C1)',
+      );
       expect(await manifestes.needsUpdate('gr-monts-dore'), isTrue);
     });
 
@@ -319,35 +373,49 @@ void main() {
         service(appels: appels, tronquerA: octets.length - 50).synchroniser(
           'gr-monts-dore',
           'https://double/${entree.filePath}',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: entree.dataVersion,
           empreinteAttendue: entree.hash,
         ),
         throwsA(isA<EmpreinteInvalide>()),
       );
-      expect(appels, hasLength(1),
-          reason: 'trois tentatives donneraient trois fois le meme fichier et '
-              'masqueraient la cause derriere un message de reseau');
+      expect(
+        appels,
+        hasLength(1),
+        reason:
+            'trois tentatives donneraient trois fois le meme fichier et '
+            'masqueraient la cause derriere un message de reseau',
+      );
     });
 
     test('AUCUNE EMPREINTE ANNONCEE = REFUS, PAS « SANS VERIFICATION ». Le '
         'controle est a fermeture par defaut', () async {
       final entree = await publier();
 
-      for (final annoncee in <String?>[null, '', 'h', 'sha256-pas-une-empreinte']) {
+      for (final annoncee in <String?>[
+        null,
+        '',
+        'h',
+        'sha256-pas-une-empreinte',
+      ]) {
         await expectLater(
           service().synchroniser(
             'gr-monts-dore',
             'https://double/${entree.filePath}',
-            niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: entree.dataVersion,
             empreinteAttendue: annoncee,
           ),
           throwsA(isA<EmpreinteInvalide>()),
-          reason: 'empreinte annoncee « $annoncee » : un editeur qui ecrit '
+          reason:
+              'empreinte annoncee « $annoncee » : un editeur qui ecrit '
               'n importe quoi dans `hash` desactiverait sinon le controle sans '
               'que personne ne s en apercoive',
         );
-        expect(await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
-            isEmpty);
+        expect(
+          await TrailStagesDao(db).getByItineraryId('montsdore-i1'),
+          isEmpty,
+        );
       }
     });
 
@@ -357,7 +425,8 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${entree.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: entree.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: entree.dataVersion,
         empreinteAttendue: 'SHA256-${entree.hash.toUpperCase()}',
       );
       expect(bilan.ecrits, 19);
@@ -374,7 +443,8 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
 
@@ -385,24 +455,31 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v2.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
-      expect(bilan.ecrits, 1,
-          reason: 'C EST LA PREUVE DE BOUT EN BOUT. Si l outil reincrementait '
-              'tout, ce chiffre vaudrait 19 et chaque telephone retelechargerait '
-              'le sentier entier pour une altitude corrigee.');
+      expect(
+        bilan.ecrits,
+        1,
+        reason:
+            'C EST LA PREUVE DE BOUT EN BOUT. Si l outil reincrementait '
+            'tout, ce chiffre vaudrait 19 et chaque telephone retelechargerait '
+            'le sentier entier pour une altitude corrigee.',
+      );
       expect(bilan.famillesTouchees, [MorceauxDeSentier.etapes]);
       expect(
-        (await TrailStagesDao(db).getByItineraryId('montsdore-i1'))
-            .firstWhere((e) => e.id == 'montsdore-s1')
-            .elevationGain,
+        (await TrailStagesDao(db).getByItineraryId(
+          'montsdore-i1',
+        )).firstWhere((e) => e.id == 'montsdore-s1').elevationGain,
         915,
       );
-      expect((await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
-          everyElement(instantAuJour(1)),
-          reason: 'la trace est le gros du volume, et elle n a pas bouge');
+      expect(
+        (await TrailGpxPointsDao(db).getAll()).map((p) => p.rev),
+        everyElement(instantAuJour(1)),
+        reason: 'la trace est le gros du volume, et elle n a pas bouge',
+      );
     });
 
     test('UN POI RETIRE DE LA SOURCE DISPARAIT DU TELEPHONE — le marqueur '
@@ -411,19 +488,23 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
 
-      modifierLaSource((c) =>
-          (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'));
+      modifierLaSource(
+        (c) =>
+            (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'),
+      );
       final v2 = await publier(jour: 2);
 
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v2.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v2.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v2.dataVersion,
         empreinteAttendue: v2.hash,
       );
 
@@ -447,14 +528,17 @@ void main() {
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
       expect(await TrailPoisDao(db).getByStageId('montsdore-s1'), hasLength(2));
 
       // Jour 2 : un POI disparait cote serveur. Le telephone ne le sait pas.
-      modifierLaSource((c) =>
-          (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'));
+      modifierLaSource(
+        (c) =>
+            (c['pois'] as List).removeWhere((p) => p['id'] == 'montsdore-p1'),
+      );
       await publier(jour: 2);
 
       // Puis le serveur vit sa vie pendant plus de trois mois, et le marqueur du
@@ -463,20 +547,22 @@ void main() {
       TrailManifestEntry derniere = v1;
       for (final jour in const [17, 32, 47, 62, 77, 92, 107]) {
         modifierLaSource(
-            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour);
+          (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour,
+        );
         derniere = await publier(jour: jour);
       }
       expect(derniere.dataVersion, instantAuJour(107));
 
-      final publication = jsonDecode(
-        File('$publie/${derniere.filePath}').readAsStringSync(),
-      ) as Map<String, dynamic>;
+      final publication =
+          jsonDecode(File('$publie/${derniere.filePath}').readAsStringSync())
+              as Map<String, dynamic>;
       expect(
-        (publication['pois'] as List)
-            .cast<Map<String, dynamic>>()
-            .where((p) => p[RevisionDeDonnee.champSupprime] == true),
+        (publication['pois'] as List).cast<Map<String, dynamic>>().where(
+          (p) => p[RevisionDeDonnee.champSupprime] == true,
+        ),
         isEmpty,
-        reason: 'le marqueur du jour 2 a ete PURGE : le telephone, reste au '
+        reason:
+            'le marqueur du jour 2 a ete PURGE : le telephone, reste au '
             'jour 1, ne peut plus apprendre cette suppression par morceaux',
       );
       expect(
@@ -490,34 +576,44 @@ void main() {
       final bilan = await service().synchroniser(
         'gr-monts-dore',
         'https://double/${derniere.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: derniere.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: derniere.dataVersion,
         empreinteAttendue: derniere.hash,
       );
 
       expect(
         (await TrailPoisDao(db).getByStageId('montsdore-s1')).map((p) => p.id),
         ['montsdore-p2'],
-        reason: 'SANS LA COPIE COMPLETE, ce POI serait reste A VIE sur le '
+        reason:
+            'SANS LA COPIE COMPLETE, ce POI serait reste A VIE sur le '
             'telephone : sa suppression n a jamais ete transmise et son '
             'marqueur n existe plus. Sur un sentier de montagne, un point d eau '
             'tari qui reste affiche est un risque, pas un defaut de confort.',
       );
-      expect(bilan.ecrits, 18,
-          reason: 'tout le sentier est repose (19 enregistrements moins le POI '
-              'supprime), et c est le prix assume du rattrapage');
+      expect(
+        bilan.ecrits,
+        18,
+        reason:
+            'tout le sentier est repose (19 enregistrements moins le POI '
+            'supprime), et c est le prix assume du rattrapage',
+      );
       expect(await manifestes.getByTrailId('gr-monts-dore'), isNotNull);
-      expect((await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
-          instantAuJour(107));
+      expect(
+        (await manifestes.getByTrailId('gr-monts-dore'))!.localVersion,
+        instantAuJour(107),
+      );
     });
 
     test('LA COPIE COMPLETE N EFFACE QUE LE SENTIER CONCERNE — les autres '
         'sentiers deja copies restent entiers', () async {
       // Un autre sentier deja en base, avec ses donnees.
-      await TrailMetaDao(db).insertOrReplace(TrailMetaCompanion(
-        id: const Value('gr-autre'),
-        code: const Value('AUTRE'),
-        dataVersion: Value(instantAuJour(1)),
-      ));
+      await TrailMetaDao(db).insertOrReplace(
+        TrailMetaCompanion(
+          id: const Value('gr-autre'),
+          code: const Value('AUTRE'),
+          dataVersion: Value(instantAuJour(1)),
+        ),
+      );
       await TrailItinerariesDao(db).insertOrReplace(
         const TrailItinerariesCompanion(
           id: Value('autre-i1'),
@@ -539,30 +635,39 @@ void main() {
       await service1.synchroniser(
         'gr-monts-dore',
         'https://double/${v1.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v1.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v1.dataVersion,
         empreinteAttendue: v1.hash,
       );
 
       TrailManifestEntry derniere = v1;
       for (final jour in const [17, 32, 47, 62, 77, 92, 107]) {
         modifierLaSource(
-            (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour);
+          (c) => (c['stages'] as List)[0]['elevation_gain'] = 800 + jour,
+        );
         derniere = await publier(jour: jour);
       }
 
       await service().synchroniser(
         'gr-monts-dore',
         'https://double/${derniere.filePath}',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: derniere.dataVersion,
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: derniere.dataVersion,
         empreinteAttendue: derniere.hash,
       );
 
-      expect(await TrailMetaDao(db).getById('gr-autre'), isNotNull,
-          reason: 'un DELETE non borne aurait efface les autres sentiers deja '
-              'copies sur le telephone — la portee de l effacement est le '
-              'sentier, pas la base');
-      expect(await TrailItinerariesDao(db).getByTrailId('gr-autre'),
-          hasLength(1));
+      expect(
+        await TrailMetaDao(db).getById('gr-autre'),
+        isNotNull,
+        reason:
+            'un DELETE non borne aurait efface les autres sentiers deja '
+            'copies sur le telephone — la portee de l effacement est le '
+            'sentier, pas la base',
+      );
+      expect(
+        await TrailItinerariesDao(db).getByTrailId('gr-autre'),
+        hasLength(1),
+      );
     });
   });
 }

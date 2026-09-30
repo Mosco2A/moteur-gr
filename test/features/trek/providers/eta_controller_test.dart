@@ -4,15 +4,15 @@ import 'package:moteur_gr/features/trek/domain/eta_service.dart';
 import 'package:moteur_gr/features/trek/providers/eta_providers.dart';
 
 EtaInput _input({double pace = 1.1, bool degraded = false}) => EtaInput(
-      distanceToWaypointM: 1000,
-      ascentToWaypointM: 50,
-      descentToWaypointM: 0,
-      distanceToStageEndM: 5000,
-      ascentToStageEndM: 300,
-      descentToStageEndM: 100,
-      observedPaceMps: pace,
-      gpsDegraded: degraded,
-    );
+  distanceToWaypointM: 1000,
+  ascentToWaypointM: 50,
+  descentToWaypointM: 0,
+  distanceToStageEndM: 5000,
+  ascentToStageEndM: 300,
+  descentToStageEndM: 100,
+  observedPaceMps: pace,
+  gpsDegraded: degraded,
+);
 
 /// Tests du contrôleur d'ETA piloté par événement (F6B-02).
 ///
@@ -37,22 +37,28 @@ void main() {
       final est = container.read(etaControllerProvider);
       expect(est, isNotNull);
       expect(est!.toNextWaypoint.inSeconds, greaterThan(0));
-      expect(est.toStageEnd.inSeconds, greaterThan(est.toNextWaypoint.inSeconds));
-    });
-
-    test('débounce : un 2e événement trop rapproché est ignoré (pas forcé)', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      final ctrl = container.read(etaControllerProvider.notifier);
-      final t0 = DateTime(2026, 6, 14, 8);
-
-      expect(ctrl.onEvent(_input(), now: t0), isTrue);
-      // +10 s < 30 s -> ignoré.
       expect(
-        ctrl.onEvent(_input(), now: t0.add(const Duration(seconds: 10))),
-        isFalse,
+        est.toStageEnd.inSeconds,
+        greaterThan(est.toNextWaypoint.inSeconds),
       );
     });
+
+    test(
+      'débounce : un 2e événement trop rapproché est ignoré (pas forcé)',
+      () {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        final ctrl = container.read(etaControllerProvider.notifier);
+        final t0 = DateTime(2026, 6, 14, 8);
+
+        expect(ctrl.onEvent(_input(), now: t0), isTrue);
+        // +10 s < 30 s -> ignoré.
+        expect(
+          ctrl.onEvent(_input(), now: t0.add(const Duration(seconds: 10))),
+          isFalse,
+        );
+      },
+    );
 
     test('après l intervalle minimal, un nouvel événement recalcule', () {
       final container = ProviderContainer();
@@ -75,8 +81,11 @@ void main() {
 
       ctrl.onEvent(_input(), now: t0);
       expect(
-        ctrl.onEvent(_input(),
-            force: true, now: t0.add(const Duration(seconds: 5))),
+        ctrl.onEvent(
+          _input(),
+          force: true,
+          now: t0.add(const Duration(seconds: 5)),
+        ),
         isTrue,
       );
     });

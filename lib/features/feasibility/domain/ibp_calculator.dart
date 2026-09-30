@@ -86,8 +86,10 @@ class IbpCalculator {
     }
 
     // Lisse le bruit d'altitude avant d'integrer les pentes.
-    final pts =
-        trek_simplifier.DouglasPeucker.simplify(trace, simplifyEpsilonDegrees);
+    final pts = trek_simplifier.DouglasPeucker.simplify(
+      trace,
+      simplifyEpsilonDegrees,
+    );
     final ref = pts.length >= 2 ? pts : trace;
 
     double distanceM = 0;
@@ -98,8 +100,7 @@ class IbpCalculator {
     for (var i = 1; i < ref.length; i++) {
       final a = ref[i - 1];
       final b = ref[i];
-      final segDist =
-          GeoUtils.haversineDistance(a.lat, a.lng, b.lat, b.lng);
+      final segDist = GeoUtils.haversineDistance(a.lat, a.lng, b.lat, b.lng);
       final dAlt = b.elevation - a.elevation;
       distanceM += segDist;
 

@@ -52,8 +52,9 @@ void main() {
       "4096, 'active', '2026-09-28T00:00:00Z', 1759017600000)",
     );
     // Le niveau est mis a NULL explicitement : c est l etat d avant la v29.
-    await seedDb
-        .customStatement('UPDATE trail_manifests SET niveau_local = NULL');
+    await seedDb.customStatement(
+      'UPDATE trail_manifests SET niveau_local = NULL',
+    );
 
     await seedDb.customStatement('PRAGMA user_version = 28');
     await seedDb.close();
@@ -71,20 +72,31 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
 
-      final rows =
-          await db.customSelect('PRAGMA table_info(trail_manifests)').get();
+      final rows = await db
+          .customSelect('PRAGMA table_info(trail_manifests)')
+          .get();
       final colonne = rows
           .where((r) => r.read<String>('name') == 'niveau_local')
           .toList();
 
-      expect(colonne, hasLength(1),
-          reason: 'sans cette colonne, monter de niveau est un echec silencieux');
-      expect(colonne.single.read<String>('type'), 'TEXT',
-          reason: 'on y range le CODE STABLE du niveau, pas son index : un '
-              'renommage de constante Dart ne doit pas rendre illisibles les '
-              'reperes deja poses sur les telephones');
-      expect(colonne.single.read<int>('notnull'), 0,
-          reason: 'null = jamais telecharge, comme `local_version`');
+      expect(
+        colonne,
+        hasLength(1),
+        reason: 'sans cette colonne, monter de niveau est un echec silencieux',
+      );
+      expect(
+        colonne.single.read<String>('type'),
+        'TEXT',
+        reason:
+            'on y range le CODE STABLE du niveau, pas son index : un '
+            'renommage de constante Dart ne doit pas rendre illisibles les '
+            'reperes deja poses sur les telephones',
+      );
+      expect(
+        colonne.single.read<int>('notnull'),
+        0,
+        reason: 'null = jamais telecharge, comme `local_version`',
+      );
     });
 
     test('UNE BASE MONTEE DEPUIS LA v28 S OUVRE, et son sentier sans niveau est '
@@ -93,33 +105,44 @@ void main() {
       final db = AppDatabase(NativeDatabase(file));
       addTearDown(db.close);
 
-      final manifeste = await db.trailManifestsDao.getByTrailId('gr-monts-dore');
+      final manifeste = await db.trailManifestsDao.getByTrailId(
+        'gr-monts-dore',
+      );
       expect(manifeste, isNotNull);
       expect(manifeste!.niveauLocal, isNull);
-      expect(manifeste.localVersion, isNotNull,
-          reason: 'la v29 ne touche PAS au repere : elle ajoute une colonne');
+      expect(
+        manifeste.localVersion,
+        isNotNull,
+        reason: 'la v29 ne touche PAS au repere : elle ajoute une colonne',
+      );
 
       // LE REPLI EST ASYMETRIQUE, ET C EST LE MEME RAISONNEMENT QUE LA v28. Ne pas
       // savoir jusqu ou un sentier est descendu doit faire RECOPIER (cout : un
       // telechargement, une fois), jamais faire croire complet (cout : une trace
       // absente que rien ne signale et que rien ne va plus chercher).
-      expect(await db.trailManifestsDao.niveauDe('gr-monts-dore'),
-          NiveauDeTelechargement.regarder);
+      expect(
+        await db.trailManifestsDao.niveauDe('gr-monts-dore'),
+        NiveauDeTelechargement.regarder,
+      );
     });
 
-    test('AUCUNE DONNEE PERDUE : la ligne de liste traverse la marche intacte',
-        () async {
-      final file = await baseEnV28();
-      final db = AppDatabase(NativeDatabase(file));
-      addTearDown(db.close);
+    test(
+      'AUCUNE DONNEE PERDUE : la ligne de liste traverse la marche intacte',
+      () async {
+        final file = await baseEnV28();
+        final db = AppDatabase(NativeDatabase(file));
+        addTearDown(db.close);
 
-      final manifeste = await db.trailManifestsDao.getByTrailId('gr-monts-dore');
-      expect(manifeste!.hash, 'h1');
-      expect(manifeste.filePath, 'montsdore/v1.json');
-      expect(manifeste.fileSize, 4096);
-      expect(manifeste.status, 'active');
-      expect(manifeste.lastUpdated, '2026-09-28T00:00:00Z');
-    });
+        final manifeste = await db.trailManifestsDao.getByTrailId(
+          'gr-monts-dore',
+        );
+        expect(manifeste!.hash, 'h1');
+        expect(manifeste.filePath, 'montsdore/v1.json');
+        expect(manifeste.fileSize, 4096);
+        expect(manifeste.status, 'active');
+        expect(manifeste.lastUpdated, '2026-09-28T00:00:00Z');
+      },
+    );
 
     test('LE SENTIER RESTE DANS LE PERIMETRE DE LA CADENCE : son repere est '
         'toujours la', () async {
@@ -128,9 +151,13 @@ void main() {
       addTearDown(db.close);
 
       final telecharges = await db.trailManifestsDao.getTelecharges();
-      expect(telecharges.map((e) => e.trailId), ['gr-monts-dore'],
-          reason: 'ajouter une colonne ne doit pas faire sortir un sentier deja '
-              'copie du perimetre de la mise a jour periodique');
+      expect(
+        telecharges.map((e) => e.trailId),
+        ['gr-monts-dore'],
+        reason:
+            'ajouter une colonne ne doit pas faire sortir un sentier deja '
+            'copie du perimetre de la mise a jour periodique',
+      );
     });
 
     test('la migration est REJOUABLE : la relancer ne casse rien', () async {
@@ -159,21 +186,24 @@ void main() {
       );
     });
 
-    test('LE NIVEAU SE RELIT TEL QU IL A ETE ECRIT, pour les trois valeurs',
-        () async {
-      final file = await baseEnV28();
-      final db = AppDatabase(NativeDatabase(file));
-      addTearDown(db.close);
+    test(
+      'LE NIVEAU SE RELIT TEL QU IL A ETE ECRIT, pour les trois valeurs',
+      () async {
+        final file = await baseEnV28();
+        final db = AppDatabase(NativeDatabase(file));
+        addTearDown(db.close);
 
-      for (final niveau in NiveauDeTelechargement.values) {
-        await db.trailManifestsDao.inscrireRevision(
-          'gr-monts-dore',
-          (await db.trailManifestsDao.getByTrailId('gr-monts-dore'))!
-              .localVersion!,
-          niveau: niveau,
-        );
-        expect(await db.trailManifestsDao.niveauDe('gr-monts-dore'), niveau);
-      }
-    });
+        for (final niveau in NiveauDeTelechargement.values) {
+          await db.trailManifestsDao.inscrireRevision(
+            'gr-monts-dore',
+            (await db.trailManifestsDao.getByTrailId(
+              'gr-monts-dore',
+            ))!.localVersion!,
+            niveau: niveau,
+          );
+          expect(await db.trailManifestsDao.niveauDe('gr-monts-dore'), niveau);
+        }
+      },
+    );
   });
 }

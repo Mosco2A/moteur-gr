@@ -17,9 +17,7 @@ void main() {
       recorder = TrekRecorder(
         bufferSize: 10,
         onFlush: (sessionId, points) async {
-          flushedPoints
-              .putIfAbsent(sessionId, () => [])
-              .addAll(points);
+          flushedPoints.putIfAbsent(sessionId, () => []).addAll(points);
         },
         onSessionPersist: (session) async {
           persistedSessions.add(session);
@@ -29,11 +27,11 @@ void main() {
 
     /// Helper : genere un TrackPoint avec index comme altitude.
     TrackPoint makePoint(int index) => TrackPoint(
-          lat: 42.0 + index * 0.001,
-          lng: 9.0 + index * 0.001,
-          elevation: index.toDouble(),
-          timestamp: DateTime.utc(2026, 6, 15, 8, index),
-        );
+      lat: 42.0 + index * 0.001,
+      lng: 9.0 + index * 0.001,
+      elevation: index.toDouble(),
+      timestamp: DateTime.utc(2026, 6, 15, 8, index),
+    );
 
     test('buffer flush a 10 points', () async {
       // Demarrer une session
@@ -151,27 +149,18 @@ void main() {
     });
 
     test('stop sans session active leve StateError', () {
-      expect(
-        () => recorder.stop(),
-        throwsA(isA<StateError>()),
-      );
+      expect(() => recorder.stop(), throwsA(isA<StateError>()));
     });
 
     test('pause hors enregistrement leve StateError', () {
-      expect(
-        () => recorder.pause(),
-        throwsA(isA<StateError>()),
-      );
+      expect(() => recorder.pause(), throwsA(isA<StateError>()));
     });
 
     test('resume hors pause leve StateError', () async {
       await recorder.start('sentier-bleu-nord');
 
       // resume sans pause prealable
-      expect(
-        () => recorder.resume(),
-        throwsA(isA<StateError>()),
-      );
+      expect(() => recorder.resume(), throwsA(isA<StateError>()));
 
       await recorder.stop();
     });

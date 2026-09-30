@@ -5,9 +5,9 @@ import 'package:moteur_gr/features/trail/widgets/trail_catalog_card.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 
 import '../../../fixtures/horodatage_de_serveur.dart';
+
 /// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
 HorodatageServeur v(int n) => aJPlus(n);
-
 
 /// Tests E5.3b — pas d'overflow a textScale 2x sur le catalogue (ecran principal).
 void main() {
@@ -47,13 +47,15 @@ void main() {
     expect(find.textContaining('sentier-des-grands-causses'), findsOneWidget);
   });
 
-  testWidgets('TrailCatalogCard ne deborde pas a textScale 2x sur ecran etroit',
-      (tester) async {
-    await tester.pumpWidget(
-      wrapAtScale(TrailCatalogCard(entry: updateEntry), 2.0, width: 320),
-    );
-    await tester.pump();
+  testWidgets(
+    'TrailCatalogCard ne deborde pas a textScale 2x sur ecran etroit',
+    (tester) async {
+      await tester.pumpWidget(
+        wrapAtScale(TrailCatalogCard(entry: updateEntry), 2.0, width: 320),
+      );
+      await tester.pump();
 
-    expect(tester.takeException(), isNull);
-  });
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

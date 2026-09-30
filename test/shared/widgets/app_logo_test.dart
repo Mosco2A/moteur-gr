@@ -18,7 +18,9 @@ import 'package:moteur_gr/shared/widgets/app_logo.dart';
 void main() {
   Future<void> montrer(WidgetTester tester, Widget logo) async {
     await tester.pumpWidget(
-      MaterialApp(home: Scaffold(body: Center(child: logo))),
+      MaterialApp(
+        home: Scaffold(body: Center(child: logo)),
+      ),
     );
     // Le decodage du SVG est asynchrone : sans cette passe, on mesurerait le
     // cadre vide d'avant le rendu et le test passerait pour de mauvaises

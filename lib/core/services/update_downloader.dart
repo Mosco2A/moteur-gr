@@ -72,10 +72,8 @@ class UpdateDownloadResult {
 ///
 /// Abstraction du background work manager pour permettre
 /// l injection en test sans dependance directe a workmanager.
-typedef BackgroundTaskRunner = Future<void> Function(
-  String taskName,
-  Future<void> Function() task,
-);
+typedef BackgroundTaskRunner =
+    Future<void> Function(String taskName, Future<void> Function() task);
 
 /// Runner par defaut : execute la tache directement (foreground).
 Future<void> _defaultTaskRunner(
@@ -116,9 +114,9 @@ class UpdateDownloader {
     this.dataBaseUrl,
     FlutterLocalNotificationsPlugin? notificationsPlugin,
     BackgroundTaskRunner? backgroundRunner,
-  })  : _notificationsPlugin =
-            notificationsPlugin ?? FlutterLocalNotificationsPlugin(),
-        _backgroundRunner = backgroundRunner ?? _defaultTaskRunner;
+  }) : _notificationsPlugin =
+           notificationsPlugin ?? FlutterLocalNotificationsPlugin(),
+       _backgroundRunner = backgroundRunner ?? _defaultTaskRunner;
 
   final UpdateChecker updateChecker;
   final DeltaUpdateService deltaUpdateService;
@@ -206,8 +204,8 @@ class UpdateDownloader {
       final result = await _downloadDelta(
         trailId: update.trailId,
         remoteManifest: remoteManifest,
-        niveau: niveauParSentier[update.trailId] ??
-            NiveauDeTelechargement.regarder,
+        niveau:
+            niveauParSentier[update.trailId] ?? NiveauDeTelechargement.regarder,
       );
       results.add(result);
     }
@@ -336,7 +334,9 @@ class UpdateDownloader {
       final niveauCouvert = niveauDeja != null && niveauDeja.couvre(niveau);
 
       if (ecart == null && niveauCouvert) {
-        _log.d('[UpdateDownloader] $trailId deja a jour au niveau ${niveau.code}');
+        _log.d(
+          '[UpdateDownloader] $trailId deja a jour au niveau ${niveau.code}',
+        );
         return UpdateDownloadResult(
           trailId: trailId,
           success: true,
@@ -345,8 +345,9 @@ class UpdateDownloader {
         );
       }
 
-      final remoteEntry =
-          remoteManifest.trails.where((t) => t.trailId == trailId).firstOrNull;
+      final remoteEntry = remoteManifest.trails
+          .where((t) => t.trailId == trailId)
+          .firstOrNull;
 
       if (remoteEntry == null) {
         return UpdateDownloadResult(
@@ -358,8 +359,12 @@ class UpdateDownloader {
 
       _log.d(
         '[UpdateDownloader] $trailId : '
-        '${ecart == null ? "MONTEE DE NIVEAU" : ecart.premiereCopie ? "PREMIERE "
-            "COPIE" : "mise a jour"} '
+        '${ecart == null
+            ? "MONTEE DE NIVEAU"
+            : ecart.premiereCopie
+            ? "PREMIERE "
+                  "COPIE"
+            : "mise a jour"} '
         '${ecart?.fromVersion ?? "(date inchangee)"} -> '
         '${remoteEntry.dataVersion}, niveau ${niveauDeja?.code ?? "aucun"} -> '
         '${niveau.code}',

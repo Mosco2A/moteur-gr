@@ -19,9 +19,7 @@ class OffTrackBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOffTrack = ref.watch(
-      offTrackProvider.select((s) => s.isOffTrack),
-    );
+    final isOffTrack = ref.watch(offTrackProvider.select((s) => s.isOffTrack));
     if (!isOffTrack) {
       return const SizedBox.shrink();
     }

@@ -91,10 +91,7 @@ class _StatItem extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            Text(
-              value,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(value, style: theme.textTheme.titleMedium),
           ],
         ),
       ],
@@ -104,10 +101,7 @@ class _StatItem extends StatelessWidget {
 
 /// Section coordonnées départ / arrivée d'une étape
 class StageCoordinatesSection extends StatelessWidget {
-  const StageCoordinatesSection({
-    super.key,
-    required this.stage,
-  });
+  const StageCoordinatesSection({super.key, required this.stage});
 
   final StageModel stage;
 
@@ -121,17 +115,9 @@ class StageCoordinatesSection extends StatelessWidget {
           icon: StepwaysIcons.maPosition,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        _CoordRow(
-          label: 'Départ',
-          lat: stage.startLat,
-          lng: stage.startLng,
-        ),
+        _CoordRow(label: 'Départ', lat: stage.startLat, lng: stage.startLng),
         const SizedBox(height: AppTheme.spacingSm),
-        _CoordRow(
-          label: 'Arrivée',
-          lat: stage.endLat,
-          lng: stage.endLng,
-        ),
+        _CoordRow(label: 'Arrivée', lat: stage.endLat, lng: stage.endLng),
       ],
     );
   }
@@ -139,11 +125,7 @@ class StageCoordinatesSection extends StatelessWidget {
 
 /// Ligne de coordonnées (départ ou arrivée)
 class _CoordRow extends StatelessWidget {
-  const _CoordRow({
-    required this.label,
-    required this.lat,
-    required this.lng,
-  });
+  const _CoordRow({required this.label, required this.lat, required this.lng});
 
   final String label;
   final double lat;

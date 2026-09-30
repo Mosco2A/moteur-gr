@@ -11,9 +11,7 @@ import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 import 'package:drift/drift.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Service de gestion du manifeste des sentiers.
 ///
@@ -63,9 +61,7 @@ class ManifestService {
   ///
   /// Retourne la liste des entrees necessitant une mise a jour
   /// (nouvelle version, nouveau sentier, ou jamais telecharge).
-  Future<List<TrailManifestEntry>> checkForUpdates(
-    TrailManifest remote,
-  ) async {
+  Future<List<TrailManifestEntry>> checkForUpdates(TrailManifest remote) async {
     final needsUpdateList = <TrailManifestEntry>[];
 
     for (final entry in remote.trails) {

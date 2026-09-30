@@ -14,15 +14,17 @@ void main() {
   ];
 
   group('EmergencyContactsService', () {
-    test('112 universel toujours present, sans secours regional hardcode',
-        () {
+    test('112 universel toujours present, sans secours regional hardcode', () {
       // Service SANS config sentier : seul le 112 est propose
       final service = EmergencyContactsService();
       final contacts = service.getContacts();
 
       final autoContacts = contacts.where((c) => c.isAutomatic).toList();
-      expect(autoContacts.length, equals(1),
-          reason: 'sans config sentier, seul le 112 doit etre present');
+      expect(
+        autoContacts.length,
+        equals(1),
+        reason: 'sans config sentier, seul le 112 doit etre present',
+      );
 
       final sos112 = autoContacts.where((c) => c.phone == '112');
       expect(sos112, isNotEmpty, reason: '112 doit etre present');
@@ -89,12 +91,14 @@ void main() {
       final service = EmergencyContactsService(
         trailEmergencyNumbers: volcansEmergencyNumbers,
       );
-      service.addContact(const EmergencyContact(
-        id: 'perso-1',
-        name: 'Contact perso',
-        phone: '06 00 00 00 01',
-        priority: 1,
-      ));
+      service.addContact(
+        const EmergencyContact(
+          id: 'perso-1',
+          name: 'Contact perso',
+          phone: '06 00 00 00 01',
+          priority: 1,
+        ),
+      );
       final contacts = service.getContacts();
 
       // Le premier contact doit etre personnel

@@ -28,8 +28,10 @@ void main() {
       // age seul = une donnee saisie -> plus "empty" (mais pas de morpho).
       expect(const HikerProfile(age: 40).isEmpty, isFalse);
       expect(const HikerProfile(age: 40).hasMorphology, isFalse);
-      expect(const HikerProfile(heightCm: 175, weightKg: 70).hasMorphology,
-          isTrue);
+      expect(
+        const HikerProfile(heightCm: 175, weightKg: 70).hasMorphology,
+        isTrue,
+      );
       expect(const HikerProfile(heightCm: 175).hasMorphology, isFalse);
     });
 

@@ -14,14 +14,17 @@ void main() {
     FlutterSecureStorage.setMockInitialValues({});
   });
 
-  test('getOrCreate génère un code au 1er appel puis le renvoie STABLE', () async {
-    final service = RecoveryCodeService();
-    final first = await service.getOrCreate();
-    expect(first, isNotEmpty);
-    // Idempotent : le même code est renvoyé (c'est la clé du coffre).
-    final second = await service.getOrCreate();
-    expect(second, first);
-  });
+  test(
+    'getOrCreate génère un code au 1er appel puis le renvoie STABLE',
+    () async {
+      final service = RecoveryCodeService();
+      final first = await service.getOrCreate();
+      expect(first, isNotEmpty);
+      // Idempotent : le même code est renvoyé (c'est la clé du coffre).
+      final second = await service.getOrCreate();
+      expect(second, first);
+    },
+  );
 
   test('peek renvoie null tant que le code n\'a jamais été créé', () async {
     final service = RecoveryCodeService();
@@ -30,18 +33,23 @@ void main() {
     expect(await service.peek(), created);
   });
 
-  test('le code a le format lisible XXXX-XXXX-XXXX-XXXX, sans caractères ambigus',
-      () async {
-    final service = RecoveryCodeService();
-    final code = await service.getOrCreate();
-    // 4 groupes de 4 séparés par des tirets.
-    expect(RegExp(r'^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$').hasMatch(code), isTrue);
-    // Aucun caractère ambigu (0/O/1/I/L) — recopie manuelle fiable.
-    for (final ambiguous in ['0', 'O', '1', 'I', 'L']) {
-      expect(code.contains(ambiguous), isFalse,
-          reason: 'le code ne doit pas contenir « $ambiguous »');
-    }
-  });
+  test(
+    'le code a le format lisible XXXX-XXXX-XXXX-XXXX, sans caractères ambigus',
+    () async {
+      final service = RecoveryCodeService();
+      final code = await service.getOrCreate();
+      // 4 groupes de 4 séparés par des tirets.
+      expect(RegExp(r'^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$').hasMatch(code), isTrue);
+      // Aucun caractère ambigu (0/O/1/I/L) — recopie manuelle fiable.
+      for (final ambiguous in ['0', 'O', '1', 'I', 'L']) {
+        expect(
+          code.contains(ambiguous),
+          isFalse,
+          reason: 'le code ne doit pas contenir « $ambiguous »',
+        );
+      }
+    },
+  );
 
   test('persistance : un nouveau service lit le code déjà stocké', () async {
     final a = RecoveryCodeService();

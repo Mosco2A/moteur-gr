@@ -1,8 +1,6 @@
 import 'package:logger/logger.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 2),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 2));
 
 /// Classification des erreurs applicatives.
 enum ErrorCategory {
@@ -36,11 +34,7 @@ class ErrorHandler {
   /// [error] — l'erreur attrapee
   /// [stackTrace] — la stack trace associee
   /// [context] — contexte metier (ex: "chargement etape 3")
-  static void log(
-    Object error, {
-    StackTrace? stackTrace,
-    String? context,
-  }) {
+  static void log(Object error, {StackTrace? stackTrace, String? context}) {
     final category = classify(error);
     final prefix = context != null ? '[$context] ' : '';
     _log.e(

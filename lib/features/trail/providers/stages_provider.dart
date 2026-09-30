@@ -8,8 +8,10 @@ import '../../../core/providers/database_provider.dart';
 ///
 /// Charge les etapes depuis la DB Drift, les convertit en StageModel,
 /// et les trie par numero d'etape.
-final stagesProvider =
-    FutureProvider.family<List<StageModel>, String>((ref, trailId) async {
+final stagesProvider = FutureProvider.family<List<StageModel>, String>((
+  ref,
+  trailId,
+) async {
   final db = ref.watch(databaseProvider);
   final dao = StagesDao(db);
   final rows = await dao.getByTrailId(trailId);

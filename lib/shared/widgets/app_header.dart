@@ -79,9 +79,8 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
 
   @override
-  Size get preferredSize => Size.fromHeight(
-        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
-      );
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 
   /// Geste retour : pop si possible, sinon route vers l'accueil ([home] résolu).
   void _handleBack(BuildContext context, String home) {

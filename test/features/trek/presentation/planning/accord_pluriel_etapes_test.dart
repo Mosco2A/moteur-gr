@@ -57,17 +57,17 @@ void main() {
       itineraryProvider.overrideWith((ref) => Future.value(days));
 
   Widget wrap(String trailId) => MaterialApp.router(
-        routerConfig: GoRouter(
-          initialLocation: '/itinerary',
-          routes: [
-            GoRoute(
-              path: '/itinerary',
-              builder: (_, __) => ItineraryScreen(trailId: trailId),
-            ),
-            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-          ],
+    routerConfig: GoRouter(
+      initialLocation: '/itinerary',
+      routes: [
+        GoRoute(
+          path: '/itinerary',
+          builder: (_, __) => ItineraryScreen(trailId: trailId),
         ),
-      );
+        GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+      ],
+    ),
+  );
 
   setUp(() => LocaleSettings.setLocaleRaw('fr'));
   tearDown(() => LocaleSettings.setLocaleRaw('fr'));
@@ -81,33 +81,48 @@ void main() {
         final plusieurs = t.itinerary.stageCount(n: 7);
 
         // Le nombre est bien injecte (pas de gabarit reste en place).
-        expect(une, contains('1'),
-            reason: '${locale.languageCode} : le nombre manque');
+        expect(
+          une,
+          contains('1'),
+          reason: '${locale.languageCode} : le nombre manque',
+        );
         expect(plusieurs, contains('7'));
-        expect(une, isNot(contains('{')),
-            reason: '${locale.languageCode} : gabarit non substitue');
+        expect(
+          une,
+          isNot(contains('{')),
+          reason: '${locale.languageCode} : gabarit non substitue',
+        );
         expect(plusieurs, isNot(contains('{')));
 
         // ET LA FORME CHANGE. C'est tout le defaut : « 1 etapes ».
         final singulier = une.replaceAll('1', '').trim();
         final pluriel = plusieurs.replaceAll('7', '').trim();
-        expect(singulier, isNot(equals(pluriel)),
-            reason: '${locale.languageCode} : « $une » et « $plusieurs » '
-                'portent le MEME mot — le pluriel n est pas accorde');
+        expect(
+          singulier,
+          isNot(equals(pluriel)),
+          reason:
+              '${locale.languageCode} : « $une » et « $plusieurs » '
+              'portent le MEME mot — le pluriel n est pas accorde',
+        );
       }
     });
 
     test('le francais accorde 0 comme 1 (regle CLDR fr), l anglais non', () {
       LocaleSettings.setLocaleRaw('fr');
-      expect(t.itinerary.stageCount(n: 0).replaceAll('0', '').trim(),
-          t.itinerary.stageCount(n: 1).replaceAll('1', '').trim());
+      expect(
+        t.itinerary.stageCount(n: 0).replaceAll('0', '').trim(),
+        t.itinerary.stageCount(n: 1).replaceAll('1', '').trim(),
+      );
       LocaleSettings.setLocaleRaw('en');
-      expect(t.itinerary.stageCount(n: 0).replaceAll('0', '').trim(),
-          isNot(t.itinerary.stageCount(n: 1).replaceAll('1', '').trim()));
+      expect(
+        t.itinerary.stageCount(n: 0).replaceAll('0', '').trim(),
+        isNot(t.itinerary.stageCount(n: 1).replaceAll('1', '').trim()),
+      );
     });
 
-    testWidgets('l ecran affiche « 1 etape » et non « 1 etapes »',
-        (tester) async {
+    testWidgets('l ecran affiche « 1 etape » et non « 1 etapes »', (
+      tester,
+    ) async {
       final unSeulJour = [
         const ItineraryDay(
           dayNumber: 1,
@@ -117,16 +132,20 @@ void main() {
           estimatedHours: 5.75,
         ),
       ];
-      await tester.pumpWidget(ProviderScope(
-        overrides: [daysOverride(unSeulJour)],
-        child: wrap('test-trail'),
-      ));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [daysOverride(unSeulJour)],
+          child: wrap('test-trail'),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.textContaining(t.itinerary.stageCount(n: 1)), findsOneWidget);
       // Le defaut exact de la campagne, nomme : plus jamais « 1 etapes ».
-      expect(find.textContaining('1 ${t.itinerary.stages.toLowerCase()}s'),
-          findsNothing);
+      expect(
+        find.textContaining('1 ${t.itinerary.stages.toLowerCase()}s'),
+        findsNothing,
+      );
       expect(find.textContaining('1 étapes'), findsNothing);
     });
 
@@ -140,10 +159,12 @@ void main() {
           estimatedHours: 7.5,
         ),
       ];
-      await tester.pumpWidget(ProviderScope(
-        overrides: [daysOverride(deuxEtapes)],
-        child: wrap('test-trail'),
-      ));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [daysOverride(deuxEtapes)],
+          child: wrap('test-trail'),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.textContaining(t.itinerary.stageCount(n: 2)), findsOneWidget);

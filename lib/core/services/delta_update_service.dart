@@ -104,8 +104,9 @@ class DeltaUpdateService {
     String trailId, {
     required TrailManifest remoteManifest,
   }) async {
-    final distant =
-        remoteManifest.trails.where((t) => t.trailId == trailId).firstOrNull;
+    final distant = remoteManifest.trails
+        .where((t) => t.trailId == trailId)
+        .firstOrNull;
     if (distant == null) return null;
 
     final locale = await revisionLocale(trailId);
@@ -371,8 +372,8 @@ class DeltaUpdateService {
     );
     if (retardTropGrand) {
       final retard = Duration(
-        milliseconds: revisionCible.millisecondesEpoch -
-            locale.millisecondesEpoch,
+        milliseconds:
+            revisionCible.millisecondesEpoch - locale.millisecondesEpoch,
       );
       _log.w(
         '[Revision] $trailId : retard de ${retard.inDays} jour(s), au-dela de '
@@ -384,8 +385,7 @@ class DeltaUpdateService {
     }
 
     final copieComplete = niveauMonte || retardTropGrand;
-    final depuis =
-        copieComplete ? RevisionDeDonnee.revisionInitiale : locale;
+    final depuis = copieComplete ? RevisionDeDonnee.revisionInitiale : locale;
 
     final aPrendre = await source.depuisLaRevision(
       trailId,
@@ -438,9 +438,9 @@ class DeltaUpdateService {
   /// requete a chaque niveau : un `DELETE` non borne effacerait les autres
   /// sentiers deja copies sur le telephone.
   Future<void> _effacerLeSentier(String trailId) async {
-    final itineraires = (await trailItinerariesDao.getByTrailId(trailId))
-        .map((i) => i.id)
-        .toList();
+    final itineraires = (await trailItinerariesDao.getByTrailId(
+      trailId,
+    )).map((i) => i.id).toList();
 
     final etapes = <String>[];
     for (final itineraire in itineraires) {
@@ -451,29 +451,33 @@ class DeltaUpdateService {
 
     final traces = itineraires.isEmpty
         ? const <String>[]
-        : (await (db.select(db.trailGpxTracks)
-                  ..where((t) => t.itineraryId.isIn(itineraires)))
-                .get())
-            .map((t) => t.id)
-            .toList();
+        : (await (db.select(
+                db.trailGpxTracks,
+              )..where((t) => t.itineraryId.isIn(itineraires))).get())
+              .map((t) => t.id)
+              .toList();
 
     if (traces.isNotEmpty) {
-      await (db.delete(db.trailGpxPoints)
-            ..where((t) => t.trackId.isIn(traces)))
-          .go();
-      await (db.delete(db.trailGpxTracks)..where((t) => t.id.isIn(traces))).go();
+      await (db.delete(
+        db.trailGpxPoints,
+      )..where((t) => t.trackId.isIn(traces))).go();
+      await (db.delete(
+        db.trailGpxTracks,
+      )..where((t) => t.id.isIn(traces))).go();
     }
     if (etapes.isNotEmpty) {
-      await (db.delete(db.trailPois)..where((t) => t.stageId.isIn(etapes))).go();
-      await (db.delete(db.trailAccommodations)
-            ..where((t) => t.stageId.isIn(etapes)))
-          .go();
+      await (db.delete(
+        db.trailPois,
+      )..where((t) => t.stageId.isIn(etapes))).go();
+      await (db.delete(
+        db.trailAccommodations,
+      )..where((t) => t.stageId.isIn(etapes))).go();
       await (db.delete(db.trailStages)..where((t) => t.id.isIn(etapes))).go();
     }
     if (itineraires.isNotEmpty) {
-      await (db.delete(db.trailItineraries)
-            ..where((t) => t.id.isIn(itineraires)))
-          .go();
+      await (db.delete(
+        db.trailItineraries,
+      )..where((t) => t.id.isIn(itineraires))).go();
     }
     await (db.delete(db.trailMeta)..where((t) => t.id.equals(trailId))).go();
   }
@@ -488,8 +492,7 @@ class DeltaUpdateService {
     // `trail_meta` est un objet unique, les six autres des listes.
     final enregistrements = <Map<String, dynamic>>[
       if (brut is Map<String, dynamic>) brut,
-      if (brut is List)
-        ...brut.map((e) => Map<String, dynamic>.from(e as Map)),
+      if (brut is List) ...brut.map((e) => Map<String, dynamic>.from(e as Map)),
     ];
 
     var ecrits = 0;
@@ -530,92 +533,134 @@ class DeltaUpdateService {
   ) async {
     switch (famille) {
       case MorceauxDeSentier.fiche:
-        await trailMetaDao.insertOrReplace(TrailMetaCompanion(
-          id: Value(d['id'] as String), code: Value(d['code'] as String),
-          dataVersion: Value(
-              HorodatageServeur.annonceParLeServeur(d['data_version']) ?? rev),
-          lastSync: Value(DateTime.now().toIso8601String()),
-          status: Value(d['status'] as String? ?? 'active'),
-          rev: Value(rev)));
+        await trailMetaDao.insertOrReplace(
+          TrailMetaCompanion(
+            id: Value(d['id'] as String),
+            code: Value(d['code'] as String),
+            dataVersion: Value(
+              HorodatageServeur.annonceParLeServeur(d['data_version']) ?? rev,
+            ),
+            lastSync: Value(DateTime.now().toIso8601String()),
+            status: Value(d['status'] as String? ?? 'active'),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.itineraires:
-        await trailItinerariesDao.insertOrReplace(TrailItinerariesCompanion(
-          id: Value(d['id'] as String), trailId: Value(d['trail_id'] as String),
-          code: Value(d['code'] as String), nameFr: Value(d['name_fr'] as String),
-          nameEn: Value(d['name_en'] as String), nameDe: Value(d['name_de'] as String),
-          nameIt: Value(d['name_it'] as String), nameEs: Value(d['name_es'] as String),
-          distanceKm: Value((d['distance_km'] as num).toDouble()),
-          elevationGain: Value(d['elevation_gain'] as int),
-          stageCount: Value(d['stage_count'] as int),
-          rev: Value(rev)));
+        await trailItinerariesDao.insertOrReplace(
+          TrailItinerariesCompanion(
+            id: Value(d['id'] as String),
+            trailId: Value(d['trail_id'] as String),
+            code: Value(d['code'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            distanceKm: Value((d['distance_km'] as num).toDouble()),
+            elevationGain: Value(d['elevation_gain'] as int),
+            stageCount: Value(d['stage_count'] as int),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.etapes:
-        await trailStagesDao.insertOrReplace(TrailStagesCompanion(
-          id: Value(d['id'] as String), itineraryId: Value(d['itinerary_id'] as String),
-          stageNumber: Value(d['stage_number'] as int),
-          nameFr: Value(d['name_fr'] as String), nameEn: Value(d['name_en'] as String),
-          nameDe: Value(d['name_de'] as String), nameIt: Value(d['name_it'] as String),
-          nameEs: Value(d['name_es'] as String),
-          startLat: Value((d['start_lat'] as num).toDouble()),
-          startLng: Value((d['start_lng'] as num).toDouble()),
-          endLat: Value((d['end_lat'] as num).toDouble()),
-          endLng: Value((d['end_lng'] as num).toDouble()),
-          distanceKm: Value((d['distance_km'] as num).toDouble()),
-          elevationGain: Value(d['elevation_gain'] as int),
-          elevationLoss: Value(d['elevation_loss'] as int),
-          durationMinutes: Value(d['duration_minutes'] as int),
-          difficulty: Value(d['difficulty'] as String),
-          rev: Value(rev)));
+        await trailStagesDao.insertOrReplace(
+          TrailStagesCompanion(
+            id: Value(d['id'] as String),
+            itineraryId: Value(d['itinerary_id'] as String),
+            stageNumber: Value(d['stage_number'] as int),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            startLat: Value((d['start_lat'] as num).toDouble()),
+            startLng: Value((d['start_lng'] as num).toDouble()),
+            endLat: Value((d['end_lat'] as num).toDouble()),
+            endLng: Value((d['end_lng'] as num).toDouble()),
+            distanceKm: Value((d['distance_km'] as num).toDouble()),
+            elevationGain: Value(d['elevation_gain'] as int),
+            elevationLoss: Value(d['elevation_loss'] as int),
+            durationMinutes: Value(d['duration_minutes'] as int),
+            difficulty: Value(d['difficulty'] as String),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.hebergements:
-        await trailAccommodationsDao.insertOrReplace(TrailAccommodationsCompanion(
-          id: Value(d['id'] as String), stageId: Value(d['stage_id'] as String),
-          nameFr: Value(d['name_fr'] as String), nameEn: Value(d['name_en'] as String),
-          nameDe: Value(d['name_de'] as String), nameIt: Value(d['name_it'] as String),
-          nameEs: Value(d['name_es'] as String), type: Value(d['type'] as String),
-          lat: Value((d['lat'] as num).toDouble()), lng: Value((d['lng'] as num).toDouble()),
-          phone: Value(d['phone'] as String?), email: Value(d['email'] as String?),
-          website: Value(d['website'] as String?), capacity: Value(d['capacity'] as int?),
-          priceRange: Value(d['price_range'] as String?),
-          bookingUrl: Value(d['booking_url'] as String?),
-          // L ADRESSE POSTALE (tache 641, bug 15). Absente du schema jusqu ici :
-          // un hebergement n avait que des coordonnees, donc rien a donner a un
-          // taxi ni a ecrire dans un courriel de reservation.
-          address: Value(d['address'] as String?),
-          rev: Value(rev)));
+        await trailAccommodationsDao.insertOrReplace(
+          TrailAccommodationsCompanion(
+            id: Value(d['id'] as String),
+            stageId: Value(d['stage_id'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            type: Value(d['type'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            phone: Value(d['phone'] as String?),
+            email: Value(d['email'] as String?),
+            website: Value(d['website'] as String?),
+            capacity: Value(d['capacity'] as int?),
+            priceRange: Value(d['price_range'] as String?),
+            bookingUrl: Value(d['booking_url'] as String?),
+            // L ADRESSE POSTALE (tache 641, bug 15). Absente du schema jusqu ici :
+            // un hebergement n avait que des coordonnees, donc rien a donner a un
+            // taxi ni a ecrire dans un courriel de reservation.
+            address: Value(d['address'] as String?),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.pointsDInteret:
-        await trailPoisDao.insertOrReplace(TrailPoisCompanion(
-          id: Value(d['id'] as String), stageId: Value(d['stage_id'] as String),
-          nameFr: Value(d['name_fr'] as String), nameEn: Value(d['name_en'] as String),
-          nameDe: Value(d['name_de'] as String), nameIt: Value(d['name_it'] as String),
-          nameEs: Value(d['name_es'] as String),
-          descriptionFr: Value(d['description_fr'] as String?),
-          descriptionEn: Value(d['description_en'] as String?),
-          descriptionDe: Value(d['description_de'] as String?),
-          descriptionIt: Value(d['description_it'] as String?),
-          descriptionEs: Value(d['description_es'] as String?),
-          type: Value(d['type'] as String),
-          lat: Value((d['lat'] as num).toDouble()),
-          lng: Value((d['lng'] as num).toDouble()),
-          elevation: Value((d['elevation'] as num?)?.toDouble()),
-          // ADRESSE, TELEPHONE, SITE (tache 641). Ce sont eux qui permettent au
-          // TRANSPORT et au RAVITAILLEMENT de vivre en base au lieu de deux
-          // constantes Dart : un arret d autocar sans exploitant a appeler et
-          // sans site ou lire les horaires ne sert a rien.
-          address: Value(d['address'] as String?),
-          phone: Value(d['phone'] as String?),
-          website: Value(d['website'] as String?),
-          rev: Value(rev)));
+        await trailPoisDao.insertOrReplace(
+          TrailPoisCompanion(
+            id: Value(d['id'] as String),
+            stageId: Value(d['stage_id'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            descriptionFr: Value(d['description_fr'] as String?),
+            descriptionEn: Value(d['description_en'] as String?),
+            descriptionDe: Value(d['description_de'] as String?),
+            descriptionIt: Value(d['description_it'] as String?),
+            descriptionEs: Value(d['description_es'] as String?),
+            type: Value(d['type'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            elevation: Value((d['elevation'] as num?)?.toDouble()),
+            // ADRESSE, TELEPHONE, SITE (tache 641). Ce sont eux qui permettent au
+            // TRANSPORT et au RAVITAILLEMENT de vivre en base au lieu de deux
+            // constantes Dart : un arret d autocar sans exploitant a appeler et
+            // sans site ou lire les horaires ne sert a rien.
+            address: Value(d['address'] as String?),
+            phone: Value(d['phone'] as String?),
+            website: Value(d['website'] as String?),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.traces:
-        await trailGpxTracksDao.insertOrReplace(TrailGpxTracksCompanion(
-          id: Value(d['id'] as String), itineraryId: Value(d['itinerary_id'] as String),
-          name: Value(d['name'] as String), sourceUrl: Value(d['source_url'] as String?),
-          rev: Value(rev)));
+        await trailGpxTracksDao.insertOrReplace(
+          TrailGpxTracksCompanion(
+            id: Value(d['id'] as String),
+            itineraryId: Value(d['itinerary_id'] as String),
+            name: Value(d['name'] as String),
+            sourceUrl: Value(d['source_url'] as String?),
+            rev: Value(rev),
+          ),
+        );
       case MorceauxDeSentier.pointsDeTrace:
-        await trailGpxPointsDao.insertOrReplace(TrailGpxPointsCompanion(
-          trackId: Value(d['track_id'] as String),
-          lat: Value((d['lat'] as num).toDouble()),
-          lng: Value((d['lng'] as num).toDouble()),
-          elevation: Value((d['elevation'] as num).toDouble()),
-          sequenceIndex: Value(d['sequence_index'] as int),
-          rev: Value(rev)));
+        await trailGpxPointsDao.insertOrReplace(
+          TrailGpxPointsCompanion(
+            trackId: Value(d['track_id'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            elevation: Value((d['elevation'] as num).toDouble()),
+            sequenceIndex: Value(d['sequence_index'] as int),
+            rev: Value(rev),
+          ),
+        );
     }
   }
 
@@ -638,32 +683,34 @@ class DeltaUpdateService {
         return (db.delete(db.trailMeta)..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.itineraires:
         if (id == null) break;
-        return (db.delete(db.trailItineraries)..where((t) => t.id.equals(id)))
-            .go();
+        return (db.delete(
+          db.trailItineraries,
+        )..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.etapes:
         if (id == null) break;
         return (db.delete(db.trailStages)..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.hebergements:
         if (id == null) break;
-        return (db.delete(db.trailAccommodations)
-              ..where((t) => t.id.equals(id)))
-            .go();
+        return (db.delete(
+          db.trailAccommodations,
+        )..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.pointsDInteret:
         if (id == null) break;
         return (db.delete(db.trailPois)..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.traces:
         if (id == null) break;
-        return (db.delete(db.trailGpxTracks)..where((t) => t.id.equals(id)))
-            .go();
+        return (db.delete(
+          db.trailGpxTracks,
+        )..where((t) => t.id.equals(id))).go();
       case MorceauxDeSentier.pointsDeTrace:
         final trackId = d['track_id'] as String?;
         final rang = d['sequence_index'] as int?;
         if (trackId == null) break;
-        return (db.delete(db.trailGpxPoints)
-              ..where((t) => rang == null
+        return (db.delete(db.trailGpxPoints)..where(
+              (t) => rang == null
                   ? t.trackId.equals(trackId)
-                  : t.trackId.equals(trackId) &
-                      t.sequenceIndex.equals(rang)))
+                  : t.trackId.equals(trackId) & t.sequenceIndex.equals(rang),
+            ))
             .go();
     }
 
@@ -692,12 +739,17 @@ class _Bilan {
 /// question part maintenant a Firestore, ou le sentier est reellement publie.
 final deltaUpdateServiceProvider = Provider<DeltaUpdateService>((ref) {
   final db = ref.watch(databaseProvider);
-  return DeltaUpdateService(db: db,
+  return DeltaUpdateService(
+    db: db,
     source: ref.watch(sourceDeDonneesSentierProvider),
     manifestService: ref.watch(manifestServiceProvider),
     trailManifestsDao: TrailManifestsDao(db),
     trailMetaDao: TrailMetaDao(db),
-    trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
-    trailAccommodationsDao: TrailAccommodationsDao(db), trailPoisDao: TrailPoisDao(db),
-    trailGpxTracksDao: TrailGpxTracksDao(db), trailGpxPointsDao: TrailGpxPointsDao(db));
+    trailItinerariesDao: TrailItinerariesDao(db),
+    trailStagesDao: TrailStagesDao(db),
+    trailAccommodationsDao: TrailAccommodationsDao(db),
+    trailPoisDao: TrailPoisDao(db),
+    trailGpxTracksDao: TrailGpxTracksDao(db),
+    trailGpxPointsDao: TrailGpxPointsDao(db),
+  );
 });

@@ -28,10 +28,10 @@ void main() {
 
   /// Construit la valeur stockee pour une finalite accordee (version courante).
   String grantedJson() => jsonEncode(<String, dynamic>{
-        'granted': true,
-        'decidedAt': DateTime.now().millisecondsSinceEpoch,
-        'policyVersion': ConsentService.currentPolicyVersion,
-      });
+    'granted': true,
+    'decidedAt': DateTime.now().millisecondsSinceEpoch,
+    'policyVersion': ConsentService.currentPolicyVersion,
+  });
 
   // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
   Widget buildApp({VoidCallback? onPolicy}) {
@@ -83,10 +83,14 @@ void main() {
       final toggle = find.byKey(
         const ValueKey('consent-toggle-locationNavigation'),
       );
-      expect(tester.widget<Switch>(find.descendant(
-        of: toggle,
-        matching: find.byType(Switch),
-      )).value, isTrue);
+      expect(
+        tester
+            .widget<Switch>(
+              find.descendant(of: toggle, matching: find.byType(Switch)),
+            )
+            .value,
+        isTrue,
+      );
 
       // Retrait : l'utilisateur desactive.
       await tester.tap(toggle);
@@ -134,13 +138,19 @@ void main() {
 
       final note = find.text(tr.consent.healthBackupNote);
       await tester.scrollUntilVisible(note, 120);
-      expect(note, findsOneWidget,
-          reason: 'le randonneur doit lire ce qu il perd en refusant');
+      expect(
+        note,
+        findsOneWidget,
+        reason: 'le randonneur doit lire ce qu il perd en refusant',
+      );
 
       final morpho = find.text(tr.consent.healthDataMorphoNote);
       await tester.scrollUntilVisible(morpho, 120);
-      expect(morpho, findsOneWidget,
-          reason: 'le texte existait en cinq langues et n etait jamais affiche');
+      expect(
+        morpho,
+        findsOneWidget,
+        reason: 'le texte existait en cinq langues et n etait jamais affiche',
+      );
     });
 
     testWidgets('lien politique de confidentialite present', (tester) async {

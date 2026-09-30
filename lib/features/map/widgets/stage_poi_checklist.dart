@@ -66,18 +66,17 @@ class StagePoiChecklist extends ConsumerWidget {
 
     final checked = ref.watch(stagePoiChecksProvider);
     final total = water.length + shelters.length;
-    final done = [...water, ...shelters]
-        .where((p) => checked.contains(p.id))
-        .length;
+    final done = [
+      ...water,
+      ...shelters,
+    ].where((p) => checked.contains(p.id)).length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // En-tete : l'etape concernee + le compteur de points pointes.
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
           child: Row(
             children: [
               StepIcon(StepwaysIcons.sacADos, color: theme.colorScheme.primary),
@@ -161,16 +160,12 @@ class _ChecklistGroup extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
           child: Row(
             children: [
               StepIcon(icon, size: 18, color: color),
               const SizedBox(width: AppTheme.spacingSm),
-              Expanded(
-                child: Text(title, style: theme.textTheme.titleSmall),
-              ),
+              Expanded(child: Text(title, style: theme.textTheme.titleSmall)),
               if (countLabel != null)
                 Text(
                   countLabel!,
@@ -198,9 +193,8 @@ class _ChecklistGroup extends ConsumerWidget {
           for (final poi in pois)
             CheckboxListTile(
               value: checked.contains(poi.id),
-              onChanged: (_) => ref
-                  .read(stagePoiChecksProvider.notifier)
-                  .toggle(poi.id),
+              onChanged: (_) =>
+                  ref.read(stagePoiChecksProvider.notifier).toggle(poi.id),
               controlAffinity: ListTileControlAffinity.leading,
               dense: true,
               title: Text(

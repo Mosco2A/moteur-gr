@@ -48,19 +48,19 @@ void main() {
   late AppDatabase db;
 
   StagesCompanion stage(int n) => StagesCompanion(
-        trailId: const Value(trailId),
-        stageNumber: Value(n),
-        name: Value('Etape $n'),
-        distanceKm: const Value(10.0),
-        elevationGainM: const Value(500),
-        elevationLossM: const Value(400),
-        description: const Value('desc'),
-        startLat: const Value(42.0),
-        startLng: const Value(9.0),
-        endLat: const Value(42.1),
-        endLng: const Value(9.1),
-        difficulty: const Value('moderate'),
-      );
+    trailId: const Value(trailId),
+    stageNumber: Value(n),
+    name: Value('Etape $n'),
+    distanceKm: const Value(10.0),
+    elevationGainM: const Value(500),
+    elevationLossM: const Value(400),
+    description: const Value('desc'),
+    startLat: const Value(42.0),
+    startLng: const Value(9.0),
+    endLat: const Value(42.1),
+    endLng: const Value(9.1),
+    difficulty: const Value('moderate'),
+  );
 
   Future<void> pumpDiploma(WidgetTester tester) async {
     LocaleSettings.setLocaleRaw('fr');
@@ -78,7 +78,9 @@ void main() {
             initialLocation: '/diploma',
             routes: [
               GoRoute(
-                  path: '/diploma', builder: (_, __) => const DiplomaScreen()),
+                path: '/diploma',
+                builder: (_, __) => const DiplomaScreen(),
+              ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
             ],
           ),
@@ -103,67 +105,89 @@ void main() {
   testWidgets('trek non fini : diplome VERROUILLE', (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
     // Session terminee mais parcours PAS entierement marche.
-    await db.trekSessionsDao.upsertSession(TrekSession(
-      id: 'sess',
-      trailId: trailId,
-      startedAt: DateTime.utc(2026, 6, 15),
-      finishedAt: DateTime.utc(2026, 6, 16),
-      status: 'completed',
-      completedStages: const ['1', '2'],
-      parcoursFullyWalked: false,
-    ));
+    await db.trekSessionsDao.upsertSession(
+      TrekSession(
+        id: 'sess',
+        trailId: trailId,
+        startedAt: DateTime.utc(2026, 6, 15),
+        finishedAt: DateTime.utc(2026, 6, 16),
+        status: 'completed',
+        completedStages: const ['1', '2'],
+        parcoursFullyWalked: false,
+      ),
+    );
 
     await pumpDiploma(tester);
 
     // Etat verrouille : titre + cadenas ; pas de champ « votre nom ».
     expect(find.text(t.diploma.lockedTitle), findsOneWidget);
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+      ),
+      findsOneWidget,
+    );
     expect(find.text(t.diploma.yourName), findsNothing);
   });
 
-  testWidgets('AUCUNE SESSION : diplome VERROUILLE, meme en demonstration',
-      (tester) async {
+  testWidgets('AUCUNE SESSION : diplome VERROUILLE, meme en demonstration', (
+    tester,
+  ) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
     // Aucune session. AVANT LA TACHE 601, un sentier declare vitrine
     // deverrouillait ici le diplome sans une seule etape marchee.
     await pumpDiploma(tester);
 
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget,
-        reason: 'un diplome se gagne par la marche, jamais par le prix du '
-            'sentier. Le sentier de demonstration est gratuit et court : on '
-            'y gagne le diplome pour de vrai, ce qui vaut infiniment mieux '
-            'en demonstration qu un diplome donne');
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+      ),
+      findsOneWidget,
+      reason:
+          'un diplome se gagne par la marche, jamais par le prix du '
+          'sentier. Le sentier de demonstration est gratuit et court : on '
+          'y gagne le diplome pour de vrai, ce qui vaut infiniment mieux '
+          'en demonstration qu un diplome donne',
+    );
     expect(find.text(t.diploma.yourName), findsNothing);
   });
 
   testWidgets(
-      'FINISHER reel : diplome deverrouille + libelle Integral + chiffres reels',
-      (tester) async {
-    await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    await db.trekSessionsDao.upsertSession(TrekSession(
-      id: 'sess',
-      trailId: trailId,
-      startedAt: DateTime.utc(2026, 6, 15),
-      finishedAt: DateTime.utc(2026, 6, 18),
-      status: 'completed',
-      completedStages: const ['1', '2', '3', '4'],
-      parcoursFullyWalked: true,
-    ));
+    'FINISHER reel : diplome deverrouille + libelle Integral + chiffres reels',
+    (tester) async {
+      await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
+      await db.trekSessionsDao.upsertSession(
+        TrekSession(
+          id: 'sess',
+          trailId: trailId,
+          startedAt: DateTime.utc(2026, 6, 15),
+          finishedAt: DateTime.utc(2026, 6, 18),
+          status: 'completed',
+          completedStages: const ['1', '2', '3', '4'],
+          parcoursFullyWalked: true,
+        ),
+      );
 
-    await pumpDiploma(tester);
+      await pumpDiploma(tester);
 
-    // Deverrouille + libelle Integral (parcours entier reellement fini).
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
-    expect(find.text(t.diploma.labelIntegral), findsOneWidget);
-    // Chiffres REELS (4 etapes / 40 km / 2000 m) — ici egaux au sentier car
-    // parcours entier, mais issus de la session (etapes marchees).
-    expect(
-      find.text(t.diploma.recapStages.replaceAll('{count}', '4')),
-      findsOneWidget,
-    );
-    expect(
-      find.text(t.diploma.recapDistance.replaceAll('{km}', '40')),
-      findsOneWidget,
-    );
-  });
+      // Deverrouille + libelle Integral (parcours entier reellement fini).
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+        ),
+        findsNothing,
+      );
+      expect(find.text(t.diploma.labelIntegral), findsOneWidget);
+      // Chiffres REELS (4 etapes / 40 km / 2000 m) — ici egaux au sentier car
+      // parcours entier, mais issus de la session (etapes marchees).
+      expect(
+        find.text(t.diploma.recapStages.replaceAll('{count}', '4')),
+        findsOneWidget,
+      );
+      expect(
+        find.text(t.diploma.recapDistance.replaceAll('{km}', '40')),
+        findsOneWidget,
+      );
+    },
+  );
 }

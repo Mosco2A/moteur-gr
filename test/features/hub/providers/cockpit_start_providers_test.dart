@@ -17,17 +17,17 @@ import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 ///   - [startProximityProvider] : proximité au départ de l'étape 1 (300 m) +
 ///     `gpsAvailable` (false si pas de fix).
 Position _pos({required double lat, required double lng}) => Position(
-      latitude: lat,
-      longitude: lng,
-      altitude: 0,
-      accuracy: 5,
-      altitudeAccuracy: 5,
-      heading: 0,
-      headingAccuracy: 0,
-      speed: 0,
-      speedAccuracy: 0,
-      timestamp: DateTime.now(),
-    );
+  latitude: lat,
+  longitude: lng,
+  altitude: 0,
+  accuracy: 5,
+  altitudeAccuracy: 5,
+  heading: 0,
+  headingAccuracy: 0,
+  speed: 0,
+  speedAccuracy: 0,
+  timestamp: DateTime.now(),
+);
 
 /// Étape 1 démarre à (42.0, 9.0).
 const _stages = [
@@ -114,9 +114,9 @@ void main() {
     }) {
       return ProviderContainer(
         overrides: [
-          prepareCoreStepsProvider('t').overrideWith(
-            () => _FakeStepsNotifier(steps),
-          ),
+          prepareCoreStepsProvider(
+            't',
+          ).overrideWith(() => _FakeStepsNotifier(steps)),
           downloadReminderProvider('t').overrideWith(
             () => _FakeReminderNotifier(
               DepartureReminderState(departureDate: departureDate),
@@ -129,15 +129,17 @@ void main() {
       );
     }
 
-    test('vrai seulement si Itinéraire ET Programme ET Date ET Fiche médicale',
-        () {
-      final c = make(
-        steps: {PrepCoreStep.itinerary, PrepCoreStep.programme},
-        departureDate: DateTime(2026, 7, 1),
-      );
-      addTearDown(c.dispose);
-      expect(c.read(prepareCoreDoneProvider('t')), isTrue);
-    });
+    test(
+      'vrai seulement si Itinéraire ET Programme ET Date ET Fiche médicale',
+      () {
+        final c = make(
+          steps: {PrepCoreStep.itinerary, PrepCoreStep.programme},
+          departureDate: DateTime(2026, 7, 1),
+        );
+        addTearDown(c.dispose);
+        expect(c.read(prepareCoreDoneProvider('t')), isTrue);
+      },
+    );
 
     test('faux si Itinéraire manque', () {
       final c = make(
@@ -218,42 +220,49 @@ void main() {
       return c;
     }
 
-    test('atDeparture=true si la position est a moins de 300 m du depart',
-        () async {
-      final controller = StreamController<Position>();
-      final c = make(controller);
-      addTearDown(() {
-        c.dispose();
-        controller.close();
-      });
-      // ~15 m au nord du départ (42.0, 9.0) — bien sous la tolérance de 300 m.
-      controller.add(_pos(lat: 42.00013, lng: 9.0));
-      await Future<void>.delayed(Duration.zero);
+    test(
+      'atDeparture=true si la position est a moins de 300 m du depart',
+      () async {
+        final controller = StreamController<Position>();
+        final c = make(controller);
+        addTearDown(() {
+          c.dispose();
+          controller.close();
+        });
+        // ~15 m au nord du départ (42.0, 9.0) — bien sous la tolérance de 300 m.
+        controller.add(_pos(lat: 42.00013, lng: 9.0));
+        await Future<void>.delayed(Duration.zero);
 
-      final prox = c.read(startProximityProvider);
-      expect(prox.gpsAvailable, isTrue);
-      expect(prox.distanceMeters, isNotNull);
-      expect(prox.distanceMeters!, lessThan(kStartProximityToleranceMeters));
-      expect(prox.atDeparture, isTrue);
-    });
+        final prox = c.read(startProximityProvider);
+        expect(prox.gpsAvailable, isTrue);
+        expect(prox.distanceMeters, isNotNull);
+        expect(prox.distanceMeters!, lessThan(kStartProximityToleranceMeters));
+        expect(prox.atDeparture, isTrue);
+      },
+    );
 
-    test('atDeparture=false si la position est a plus de 300 m du depart',
-        () async {
-      final controller = StreamController<Position>();
-      final c = make(controller);
-      addTearDown(() {
-        c.dispose();
-        controller.close();
-      });
-      // ~1.1 km au nord (0.01° de latitude) -> hors tolérance.
-      controller.add(_pos(lat: 42.01, lng: 9.0));
-      await Future<void>.delayed(Duration.zero);
+    test(
+      'atDeparture=false si la position est a plus de 300 m du depart',
+      () async {
+        final controller = StreamController<Position>();
+        final c = make(controller);
+        addTearDown(() {
+          c.dispose();
+          controller.close();
+        });
+        // ~1.1 km au nord (0.01° de latitude) -> hors tolérance.
+        controller.add(_pos(lat: 42.01, lng: 9.0));
+        await Future<void>.delayed(Duration.zero);
 
-      final prox = c.read(startProximityProvider);
-      expect(prox.gpsAvailable, isTrue);
-      expect(prox.distanceMeters!, greaterThan(kStartProximityToleranceMeters));
-      expect(prox.atDeparture, isFalse);
-    });
+        final prox = c.read(startProximityProvider);
+        expect(prox.gpsAvailable, isTrue);
+        expect(
+          prox.distanceMeters!,
+          greaterThan(kStartProximityToleranceMeters),
+        );
+        expect(prox.atDeparture, isFalse);
+      },
+    );
 
     // gpsAvailable=false couvre indistinctement « pas encore de fix » (loading),
     // stream en erreur et permission refusée : dans tous ces cas le stream n'a

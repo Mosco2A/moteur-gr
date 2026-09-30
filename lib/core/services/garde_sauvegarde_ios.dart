@@ -110,10 +110,10 @@ class BilanBalayageSauvegarde {
   /// Balayage sans objet : ce n'est pas un iPhone (sur Android la protection est
   /// DECLARATIVE, voir [SauvegardeSysteme.inclusions]).
   const BilanBalayageSauvegarde.sansObjet()
-      : exclus = 0,
-        epargnes = 0,
-        echecs = 0,
-        sansObjet = true;
+    : exclus = 0,
+      epargnes = 0,
+      echecs = 0,
+      sansObjet = true;
 
   /// Nombre de chemins pour lesquels l'attribut a ete pose.
   final int exclus;
@@ -145,11 +145,12 @@ class GardeSauvegardeIos {
     Future<Directory> Function()? documents,
     Future<Directory> Function()? support,
     bool? cibleIos,
-  })  : _cibleIos = cibleIos ?? Platform.isIOS,
-        _exclusion = exclusion ??
-            ExclusionSauvegardeIcloud(cibleIos: cibleIos ?? Platform.isIOS),
-        _documents = documents ?? getApplicationDocumentsDirectory,
-        _support = support ?? getApplicationSupportDirectory;
+  }) : _cibleIos = cibleIos ?? Platform.isIOS,
+       _exclusion =
+           exclusion ??
+           ExclusionSauvegardeIcloud(cibleIos: cibleIos ?? Platform.isIOS),
+       _documents = documents ?? getApplicationDocumentsDirectory,
+       _support = support ?? getApplicationSupportDirectory;
 
   final bool _cibleIos;
   final ExclusionSauvegardeIcloud _exclusion;
@@ -248,14 +249,18 @@ class GardeSauvegardeIos {
     }
 
     if (traites >= plafondChemins) {
-      _log.w('[GardeSauvegardeIos] Plafond de $plafondChemins chemins atteint : '
-          'les suivants ne portent que l exclusion de leur dossier parent');
+      _log.w(
+        '[GardeSauvegardeIos] Plafond de $plafondChemins chemins atteint : '
+        'les suivants ne portent que l exclusion de leur dossier parent',
+      );
     }
     if (echecs > 0) {
       _log.e('[GardeSauvegardeIos] $echecs chemin(s) NON exclus de iCloud');
     } else {
-      _log.d('[GardeSauvegardeIos] $exclus chemin(s) exclus, '
-          '$epargnes epargne(s) (copies acceptees)');
+      _log.d(
+        '[GardeSauvegardeIos] $exclus chemin(s) exclus, '
+        '$epargnes epargne(s) (copies acceptees)',
+      );
     }
 
     return BilanBalayageSauvegarde(
@@ -292,8 +297,10 @@ class GardeSauvegardeIos {
           .listSync(recursive: true, followLinks: false)
           .map((e) => e.path);
     } catch (e) {
-      _log.e('[GardeSauvegardeIos] Parcours de « ${racine.path} » impossible '
-          '($e)');
+      _log.e(
+        '[GardeSauvegardeIos] Parcours de « ${racine.path} » impossible '
+        '($e)',
+      );
       return const [];
     }
   }

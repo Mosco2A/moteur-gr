@@ -16,27 +16,31 @@ import 'package:moteur_gr/core/models/stage.dart';
 ///   4. la colonne accepte NULL (sentier pauvre) ET une valeur (sentier riche).
 void main() {
   group('Drift migration v20 -> v21 (stages.estimatedDurationMinutes)', () {
-    test('la version du schema est au moins 21 (introduction de la colonne)',
-        () {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      // La colonne `estimated_duration_minutes` est introduite en v21 ; le
-      // schema continue d'evoluer (ex. v22 : table nuitee_selections). On
-      // verifie donc le seuil d'introduction, sans fige a une version exacte
-      // qui casserait a chaque migration ulterieure.
-      expect(db.schemaVersion, greaterThanOrEqualTo(21));
-    });
+    test(
+      'la version du schema est au moins 21 (introduction de la colonne)',
+      () {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+        // La colonne `estimated_duration_minutes` est introduite en v21 ; le
+        // schema continue d'evoluer (ex. v22 : table nuitee_selections). On
+        // verifie donc le seuil d'introduction, sans fige a une version exacte
+        // qui casserait a chaque migration ulterieure.
+        expect(db.schemaVersion, greaterThanOrEqualTo(21));
+      },
+    );
 
     test('la colonne estimated_duration_minutes existe sur stages', () async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
 
-      final columns =
-          await db.customSelect('PRAGMA table_info(stages)').get();
+      final columns = await db.customSelect('PRAGMA table_info(stages)').get();
       final names = columns.map((r) => r.read<String>('name')).toList();
 
-      expect(names, contains('estimated_duration_minutes'),
-          reason: 'Colonne ajoutee en migration v21');
+      expect(
+        names,
+        contains('estimated_duration_minutes'),
+        reason: 'Colonne ajoutee en migration v21',
+      );
 
       // Non-regression : les colonnes historiques de stages sont preservees.
       for (final expected in [
@@ -54,13 +58,15 @@ void main() {
         'end_lng',
         'difficulty',
       ]) {
-        expect(names, contains(expected),
-            reason: 'Colonne historique $expected preservee');
+        expect(
+          names,
+          contains(expected),
+          reason: 'Colonne historique $expected preservee',
+        );
       }
     });
 
-    test('la colonne accepte NULL et une valeur (fallback gracieux)',
-        () async {
+    test('la colonne accepte NULL et une valeur (fallback gracieux)', () async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       final dao = StagesDao(db);
@@ -95,10 +101,8 @@ void main() {
         ).toCompanion(),
       ]);
 
-      final poor =
-          StageModel.fromDb((await dao.getByTrailId('poor')).first);
-      final rich =
-          StageModel.fromDb((await dao.getByTrailId('rich')).first);
+      final poor = StageModel.fromDb((await dao.getByTrailId('poor')).first);
+      final rich = StageModel.fromDb((await dao.getByTrailId('rich')).first);
 
       expect(poor.estimatedDurationMinutes, isNull);
       expect(rich.estimatedDurationMinutes, 350);

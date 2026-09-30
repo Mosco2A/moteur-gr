@@ -68,8 +68,7 @@ void main() {
       final container = _container(controller);
       addTearDown(container.dispose);
 
-      final state =
-          container.read(batteryAwareLocationControllerProvider);
+      final state = container.read(batteryAwareLocationControllerProvider);
       expect(state.mode, GpsAccuracyMode.walking);
       expect(state.deferSync, isFalse);
       expect(state.isForeground, isTrue);

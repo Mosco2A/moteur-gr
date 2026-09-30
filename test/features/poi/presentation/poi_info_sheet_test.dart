@@ -87,7 +87,10 @@ void main() {
 
       // Icone du type refuge (house) presente
       final style = PoiTypeConfig.getStyle('refuge');
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == style.icon), findsOneWidget);
+      expect(
+        find.byWidgetPredicate((w) => w is StepIcon && w.asset == style.icon),
+        findsOneWidget,
+      );
     });
 
     test('est un StatelessWidget', () {
@@ -154,7 +157,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // Pas d horaires affiches
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.duree), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('masque description si vide', (tester) async {

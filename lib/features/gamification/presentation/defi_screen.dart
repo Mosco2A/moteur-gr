@@ -37,7 +37,10 @@ class DefiScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            Text(defi.description, style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              defi.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _ProgressCard(progress: progress),
             const SizedBox(height: AppTheme.spacingLg),
@@ -53,8 +56,7 @@ class DefiScreen extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingMd),
             rankingAsync.when(
               data: (ranking) => _DefiRankingView(ranking: ranking),
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (_, __) => _Notice(message: t.gamification.defi.noDefi),
             ),
           ],
@@ -65,8 +67,10 @@ class DefiScreen extends ConsumerWidget {
 }
 
 /// Classement du defi, indexe par defiId (lecture cache, R2).
-final _defiRankingProvider =
-    FutureProvider.family<DefiRanking?, String>((ref, defiId) {
+final _defiRankingProvider = FutureProvider.family<DefiRanking?, String>((
+  ref,
+  defiId,
+) {
   return ref.watch(defiServiceProvider).ranking(defiId);
 });
 
@@ -94,8 +98,10 @@ class _ProgressCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(t.gamification.defi.inProgress,
-                style: theme.textTheme.labelMedium),
+            Text(
+              t.gamification.defi.inProgress,
+              style: theme.textTheme.labelMedium,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             LinearProgressIndicator(value: progress.ratio),
             const SizedBox(height: AppTheme.spacingSm),
@@ -138,9 +144,7 @@ class _DefiRankingView extends StatelessWidget {
               ),
             )
           else
-            ...tranche.entries.map(
-              (e) => _DefiEntryRow(entry: e),
-            ),
+            ...tranche.entries.map((e) => _DefiEntryRow(entry: e)),
           const SizedBox(height: AppTheme.spacingMd),
         ],
       ],
@@ -158,7 +162,8 @@ class _DefiEntryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Semantics(
-      label: '${entry.rank} ${entry.pseudonym} ${entry.value.toStringAsFixed(0)}',
+      label:
+          '${entry.rank} ${entry.pseudonym} ${entry.value.toStringAsFixed(0)}',
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
         child: Row(
@@ -174,12 +179,16 @@ class _DefiEntryRow extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
-              child: Text(entry.pseudonym,
-                  style: theme.textTheme.bodyLarge,
-                  overflow: TextOverflow.ellipsis),
+              child: Text(
+                entry.pseudonym,
+                style: theme.textTheme.bodyLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            Text(entry.value.toStringAsFixed(0),
-                style: theme.textTheme.bodyMedium),
+            Text(
+              entry.value.toStringAsFixed(0),
+              style: theme.textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
@@ -204,8 +213,11 @@ class _Notice extends StatelessWidget {
       ),
       child: Row(
         children: [
-          StepIcon(StepwaysIcons.info,
-              size: 18, color: theme.colorScheme.onSecondaryContainer),
+          StepIcon(
+            StepwaysIcons.info,
+            size: 18,
+            color: theme.colorScheme.onSecondaryContainer,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

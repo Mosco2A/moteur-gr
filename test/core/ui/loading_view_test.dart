@@ -7,11 +7,7 @@ void main() {
   group('LoadingView', () {
     testWidgets('affiche un indicateur de progression', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: LoadingView(),
-          ),
-        ),
+        const MaterialApp(home: Scaffold(body: LoadingView())),
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -20,9 +16,7 @@ void main() {
     testWidgets('affiche le message optionnel', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: LoadingView(message: 'Chargement en cours...'),
-          ),
+          home: Scaffold(body: LoadingView(message: 'Chargement en cours...')),
         ),
       );
 
@@ -31,11 +25,7 @@ void main() {
 
     testWidgets('cache le message quand il est null', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: LoadingView(),
-          ),
-        ),
+        const MaterialApp(home: Scaffold(body: LoadingView())),
       );
 
       // Seul le CircularProgressIndicator, pas de Text

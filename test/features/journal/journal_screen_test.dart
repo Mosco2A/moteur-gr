@@ -27,8 +27,7 @@ void main() {
           databaseProvider.overrideWithValue(db),
           // L7-3 : le journal est verrouille en mode demo ; ces tests
           // regardent le journal OUVERT, on le declare deverrouille.
-          isDemoModeProvider('sentier-bleu')
-              .overrideWith((ref) async => false),
+          isDemoModeProvider('sentier-bleu').overrideWith((ref) async => false),
           trailIdProvider.overrideWithValue('sentier-bleu'),
         ],
         // AppHeader (Ph5/L6a) utilise GoRouter -> on heberge l'ecran dans un
@@ -39,7 +38,8 @@ void main() {
             routes: [
               GoRoute(
                 path: '/journal',
-                builder: (_, __) => const JournalScreen(trailId: 'sentier-bleu'),
+                builder: (_, __) =>
+                    const JournalScreen(trailId: 'sentier-bleu'),
               ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
             ],
@@ -59,10 +59,20 @@ void main() {
 
     // Verifier le FAB d ajout
     expect(find.byType(FloatingActionButton), findsOneWidget);
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.plus), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.plus,
+      ),
+      findsOneWidget,
+    );
 
     // Verifier l etat vide (icone livre)
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.journal), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.journal,
+      ),
+      findsOneWidget,
+    );
 
     await db.close();
   });
@@ -79,54 +89,67 @@ void main() {
     const trailId = 'sentier-bleu';
 
     StageModel stage(int n) => StageModel(
-          id: n,
-          trailId: trailId,
-          stageNumber: n,
-          name: 'Etape $n',
-          distanceKm: 10,
-          elevationGainM: 500,
-          elevationLossM: 400,
-          startLat: 42.0,
-          startLng: 9.0,
-          endLat: 42.1,
-          endLng: 9.1,
-        );
+      id: n,
+      trailId: trailId,
+      stageNumber: n,
+      name: 'Etape $n',
+      distanceKm: 10,
+      elevationGainM: 500,
+      elevationLossM: 400,
+      startLat: 42.0,
+      startLng: 9.0,
+      endLat: 42.1,
+      endLng: 9.1,
+    );
 
     /// 7 etapes = le compte reel du Mare a Mare Centre (et non 16).
     final sevenStages = List.generate(7, (i) => stage(i + 1));
 
     test('journalStageCountProvider suit le nombre REEL d\'etapes', () async {
-      final container = ProviderContainer(overrides: [
-        stagesProvider(trailId).overrideWith((ref) async => sevenStages),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          stagesProvider(trailId).overrideWith((ref) async => sevenStages),
+        ],
+      );
       addTearDown(container.dispose);
 
       await container.read(stagesProvider(trailId).future);
 
-      expect(container.read(journalStageCountProvider(trailId)), 7,
-          reason: 'Ni 16 (GR20), ni le total declare : le compte reel');
+      expect(
+        container.read(journalStageCountProvider(trailId)),
+        7,
+        reason: 'Ni 16 (GR20), ni le total declare : le compte reel',
+      );
     });
 
-    test('repli sur TrailConfig.totalStages quand aucune etape n\'est chargee',
-        () async {
-      final container = ProviderContainer(overrides: [
-        stagesProvider(trailId).overrideWith((ref) async => <StageModel>[]),
-      ]);
-      addTearDown(container.dispose);
+    test(
+      'repli sur TrailConfig.totalStages quand aucune etape n\'est chargee',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            stagesProvider(trailId).overrideWith((ref) async => <StageModel>[]),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      await container.read(stagesProvider(trailId).future);
+        await container.read(stagesProvider(trailId).future);
 
-      // Repli sur le sentier declare par defaut (jamais 16, jamais 0).
-      final declared =
-          container.read(trailConfigProvider.select((c) => c.totalStages));
-      expect(container.read(journalStageCountProvider(trailId)), declared);
-      expect(container.read(journalStageCountProvider(trailId)),
+        // Repli sur le sentier declare par defaut (jamais 16, jamais 0).
+        final declared = container.read(
+          trailConfigProvider.select((c) => c.totalStages),
+        );
+        expect(container.read(journalStageCountProvider(trailId)), declared);
+        expect(
+          container.read(journalStageCountProvider(trailId)),
           greaterThanOrEqualTo(1),
-          reason: 'Un menu deroulant vide leverait une assertion Flutter');
-    });
+          reason: 'Un menu deroulant vide leverait une assertion Flutter',
+        );
+      },
+    );
 
-    testWidgets('le menu deroulant propose 7 etapes, et JAMAIS une 8e',
-        (tester) async {
+    testWidgets('le menu deroulant propose 7 etapes, et JAMAIS une 8e', (
+      tester,
+    ) async {
       LocaleSettings.setLocaleRaw('fr');
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
@@ -151,7 +174,9 @@ void main() {
                     builder: (_, __) => const JournalScreen(trailId: trailId),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -194,9 +219,8 @@ void main() {
     /// Hauteur de la miniature (parite GR20) — doit rester bornee.
     const photoHeight = 120.0;
 
-    Finder photoFrame() => find.byWidgetPredicate(
-          (w) => w is SizedBox && w.height == photoHeight,
-        );
+    Finder photoFrame() =>
+        find.byWidgetPredicate((w) => w is SizedBox && w.height == photoHeight);
 
     Future<void> pumpJournal(WidgetTester tester, AppDatabase db) async {
       LocaleSettings.setLocaleRaw('fr');
@@ -220,7 +244,9 @@ void main() {
                     builder: (_, __) => const JournalScreen(trailId: trailId),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -230,8 +256,9 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
     }
 
-    testWidgets('le TEXTE est AU-DESSUS de la photo, dans un cadre borne',
-        (tester) async {
+    testWidgets('le TEXTE est AU-DESSUS de la photo, dans un cadre borne', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await JournalRepository(JournalDao(db)).addPhotoNote(
@@ -259,8 +286,9 @@ void main() {
       );
     });
 
-    testWidgets('une entree SANS photo garde son rendu (aucun cadre image)',
-        (tester) async {
+    testWidgets('une entree SANS photo garde son rendu (aucun cadre image)', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await JournalRepository(JournalDao(db)).addNote(

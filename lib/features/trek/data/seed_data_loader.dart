@@ -57,9 +57,9 @@ class SeedDataLoader {
     required AppDatabase db,
     required SharedPreferences prefs,
     required TrailConfig trailConfig,
-  })  : _db = db,
-        _prefs = prefs,
-        _trailConfig = trailConfig;
+  }) : _db = db,
+       _prefs = prefs,
+       _trailConfig = trailConfig;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
@@ -98,8 +98,10 @@ class SeedDataLoader {
 
     final dejaEnBase = await StagesDao(_db).getByTrailId(trailId);
     if (dejaEnBase.isNotEmpty) {
-      _log.d('Sentier $trailId deja en base '
-          '(${dejaEnBase.length} etapes), pas de seed');
+      _log.d(
+        'Sentier $trailId deja en base '
+        '(${dejaEnBase.length} etapes), pas de seed',
+      );
       return false;
     }
 
@@ -122,11 +124,9 @@ class SeedDataLoader {
     // inchange (`simplifiedTrackProvider`) — il travaillait deja sur une trace
     // deja simplifiee, soit deux fois.
     final trekPoints = allPoints
-        .map((p) => trek.TrackPoint(
-              lat: p.lat,
-              lng: p.lng,
-              elevation: p.altitude,
-            ))
+        .map(
+          (p) => trek.TrackPoint(lat: p.lat, lng: p.lng, elevation: p.altitude),
+        )
         .toList();
 
     // --- 4. Batch insert stages ---

@@ -262,18 +262,21 @@ class DataRetentionService {
     FicheMedicaleEraser? ficheMedicaleEraser,
     SecureKeystoreErasure? secureKeystoreErasure,
     DateTime Function()? now,
-  })  : _db = database,
-        _prefs = prefs,
-        _serverDeletion = serverDeletion,
-        _policy = policy,
-        _hikerFileEraser = hikerFileEraser ??
-            HikerProfileRepository(db: database, prefs: prefs)
-                .eraseAllPersonalData,
-        _ficheMedicaleEraser =
-            ficheMedicaleEraser ?? FicheMedicaleFichier().effacer,
-        _secureKeystoreErasure =
-            secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
-        _now = now ?? DateTime.now;
+  }) : _db = database,
+       _prefs = prefs,
+       _serverDeletion = serverDeletion,
+       _policy = policy,
+       _hikerFileEraser =
+           hikerFileEraser ??
+           HikerProfileRepository(
+             db: database,
+             prefs: prefs,
+           ).eraseAllPersonalData,
+       _ficheMedicaleEraser =
+           ficheMedicaleEraser ?? FicheMedicaleFichier().effacer,
+       _secureKeystoreErasure =
+           secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
+       _now = now ?? DateTime.now;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
@@ -387,9 +390,11 @@ class DataRetentionService {
   /// `allTables` moins les deux exceptions. Une table ajoutee au schema sans
   /// etre classee tombe automatiquement ici (et sera donc effacee).
   List<TableInfo> get userTables => _db.allTables
-      .where((t) =>
-          !referenceTableNames.contains(t.actualTableName) &&
-          !retainedOnErasureTableNames.contains(t.actualTableName))
+      .where(
+        (t) =>
+            !referenceTableNames.contains(t.actualTableName) &&
+            !retainedOnErasureTableNames.contains(t.actualTableName),
+      )
       .toList(growable: false);
 
   /// Noms SQL des tables effacees (lecture, tracabilite et tests).
@@ -429,40 +434,50 @@ class DataRetentionService {
     //    l'application a efface le bulletin qu'il n'a plus aucun moyen de
     //    retelecharger. On purge desormais sur l'AGE du bulletin, avec la meme
     //    horloge que le reste de la purge (D4B-02).
-    final expiredWeather = await _db.weatherCacheDao
-        .clearFetchedBefore(now.subtract(_policy.cartoCache));
+    final expiredWeather = await _db.weatherCacheDao.clearFetchedBefore(
+      now.subtract(_policy.cartoCache),
+    );
 
     // 2. File de synchro terminee et ancienne.
-    final oldSync = await _db.syncQueueDao
-        .cleanOldCompleted(_policy.completedSyncQueue.inDays);
+    final oldSync = await _db.syncQueueDao.cleanOldCompleted(
+      _policy.completedSyncQueue.inDays,
+    );
 
     // 3. Signalements synchronises et anciens.
-    final reports = await (_db.delete(_db.reportLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final reports =
+        await (_db.delete(_db.reportLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 4. Efforts de segment synchronises et anciens (date = startedAt).
-    final efforts = await (_db.delete(_db.segmentEffortLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.startedAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final efforts =
+        await (_db.delete(_db.segmentEffortLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.startedAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 5. Kudos synchronises et anciens.
-    final kudos = await (_db.delete(_db.kudosLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final kudos =
+        await (_db.delete(_db.kudosLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 6. Commentaires de waypoint synchronises et anciens.
-    final comments = await (_db.delete(_db.waypointComment)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final comments =
+        await (_db.delete(_db.waypointComment)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     return PurgeReport(
       expiredWeatherCache: expiredWeather,

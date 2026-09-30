@@ -26,7 +26,8 @@ abstract final class WeatherRecommendation {
   static WeatherRecommendationLevel forDay(DayForecast day) {
     // Danger : orage certain, vent violent, pluie très forte, proba d'orage
     // élevée.
-    final bool danger = day.isStorm ||
+    final bool danger =
+        day.isStorm ||
         day.windSpeedKmh >= 80 ||
         day.precipitationMm >= 40 ||
         day.stormProbability >= 80;
@@ -34,7 +35,8 @@ abstract final class WeatherRecommendation {
 
     // Vigilance : vent fort, pluie notable, UV très élevé, neige, proba
     // d'orage modérée.
-    final bool watch = day.windSpeedKmh >= 60 ||
+    final bool watch =
+        day.windSpeedKmh >= 60 ||
         day.precipitationMm >= 20 ||
         day.uvIndex >= 8 ||
         (day.weatherCode >= 71 && day.weatherCode <= 77) ||

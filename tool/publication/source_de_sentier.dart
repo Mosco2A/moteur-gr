@@ -179,8 +179,8 @@ class SourceDeSentier {
       donnees[famille] = valeur is Map
           ? Map<String, dynamic>.from(valeur)
           : (valeur as List)
-              .map((e) => Map<String, dynamic>.from(e as Map))
-              .toList();
+                .map((e) => Map<String, dynamic>.from(e as Map))
+                .toList();
     }
 
     final depuisGpx = brut['trace_depuis_gpx'];
@@ -373,13 +373,13 @@ class SourceDeSentier {
         ['end_lat', 'end_lng'],
       ],
       MorceauxDeSentier.hebergements: [
-        ['lat', 'lng']
+        ['lat', 'lng'],
       ],
       MorceauxDeSentier.pointsDInteret: [
-        ['lat', 'lng']
+        ['lat', 'lng'],
       ],
       MorceauxDeSentier.pointsDeTrace: [
-        ['lat', 'lng']
+        ['lat', 'lng'],
       ],
     };
     for (final paire in paires[famille] ?? const <List<String>>[]) {
@@ -429,24 +429,61 @@ class SourceDeSentier {
       );
     }
 
-    _exigerLeParent(donnees, MorceauxDeSentier.itineraires, 'trail_id',
-        {trailId}, 'le sentier lui-meme', trailId);
-    _exigerLeParent(donnees, MorceauxDeSentier.etapes, 'itinerary_id',
-        itineraires, 'un itineraire publie', trailId);
-    _exigerLeParent(donnees, MorceauxDeSentier.hebergements, 'stage_id', etapes,
-        'une etape publiee', trailId);
-    _exigerLeParent(donnees, MorceauxDeSentier.pointsDInteret, 'stage_id',
-        etapes, 'une etape publiee', trailId);
-    _exigerLeParent(donnees, MorceauxDeSentier.traces, 'itinerary_id',
-        itineraires, 'un itineraire publie', trailId);
-    _exigerLeParent(donnees, MorceauxDeSentier.pointsDeTrace, 'track_id',
-        traces, 'une entete de trace publiee', trailId);
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.itineraires,
+      'trail_id',
+      {trailId},
+      'le sentier lui-meme',
+      trailId,
+    );
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.etapes,
+      'itinerary_id',
+      itineraires,
+      'un itineraire publie',
+      trailId,
+    );
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.hebergements,
+      'stage_id',
+      etapes,
+      'une etape publiee',
+      trailId,
+    );
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.pointsDInteret,
+      'stage_id',
+      etapes,
+      'une etape publiee',
+      trailId,
+    );
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.traces,
+      'itinerary_id',
+      itineraires,
+      'un itineraire publie',
+      trailId,
+    );
+    _exigerLeParent(
+      donnees,
+      MorceauxDeSentier.pointsDeTrace,
+      'track_id',
+      traces,
+      'une entete de trace publiee',
+      trailId,
+    );
 
     // #F15 : publier l entete sans les points, ou l inverse, donne une carte
     // vide alors que tout le reste du sentier fonctionne.
     final aDesTraces = traces.isNotEmpty;
-    final aDesPoints =
-        _liste(donnees[MorceauxDeSentier.pointsDeTrace]).isNotEmpty;
+    final aDesPoints = _liste(
+      donnees[MorceauxDeSentier.pointsDeTrace],
+    ).isNotEmpty;
     if (aDesTraces != aDesPoints) {
       throw SourceInvalide(
         '$trailId : « gpx_tracks » et « gpx_points » vont ensemble. Publier '
@@ -541,10 +578,10 @@ class SourceDeSentier {
   }
 
   static List<Map<String, dynamic>> _liste(dynamic brut) => [
-        if (brut is Map) Map<String, dynamic>.from(brut),
-        if (brut is List)
-          ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
-      ];
+    if (brut is Map) Map<String, dynamic>.from(brut),
+    if (brut is List)
+      ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
+  ];
 
   static Set<String> _identites(Map<String, dynamic> donnees, String famille) =>
       {

@@ -53,10 +53,7 @@ class ContextualAction {
 /// urgence et `AppTheme.rougeUrgence` — la barre le rend en pastille pleine
 /// accentuee, jamais un item de nav parmi d'autres.
 class ContextualActionBar extends StatelessWidget {
-  const ContextualActionBar({
-    super.key,
-    required this.actions,
-  });
+  const ContextualActionBar({super.key, required this.actions});
 
   /// Actions a afficher (max 3-4 recommande, AUDIT §3). Barre absente si vide.
   final List<ContextualAction> actions;
@@ -74,9 +71,7 @@ class ContextualActionBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           for (final action in actions)
-            Expanded(
-              child: _ActionButton(action: action),
-            ),
+            Expanded(child: _ActionButton(action: action)),
         ],
       ),
     );

@@ -35,12 +35,14 @@ class JournalRepository {
     required String text,
   }) async {
     final now = DateTime.now();
-    final id = await _dao.insertEntry(JournalEntriesCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      content: Value(text),
-      createdAt: Value(now),
-    ));
+    final id = await _dao.insertEntry(
+      JournalEntriesCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        content: Value(text),
+        createdAt: Value(now),
+      ),
+    );
     return JournalEntryModel(
       id: id,
       trailId: trailId,
@@ -67,14 +69,16 @@ class JournalRepository {
     required int photoSizeBytes,
   }) async {
     final now = DateTime.now();
-    final id = await _dao.insertEntry(JournalEntriesCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      content: Value(text),
-      photoPath: Value(photoPath),
-      photoSizeBytes: Value(photoSizeBytes),
-      createdAt: Value(now),
-    ));
+    final id = await _dao.insertEntry(
+      JournalEntriesCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        content: Value(text),
+        photoPath: Value(photoPath),
+        photoSizeBytes: Value(photoSizeBytes),
+        createdAt: Value(now),
+      ),
+    );
     return JournalEntryModel(
       id: id,
       trailId: trailId,

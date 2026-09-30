@@ -31,8 +31,7 @@ class TrekEntitlements extends Table {
       integer().withDefault(const Constant(0))();
 
   /// Origine de l'achat ('none' par defaut, puis 'wallet' / 'store' / ...).
-  TextColumn get purchaseSource =>
-      text().withDefault(const Constant('none'))();
+  TextColumn get purchaseSource => text().withDefault(const Constant('none'))();
 
   /// Date d'achat (null tant que non achete).
   DateTimeColumn get purchasedAt => dateTime().nullable()();

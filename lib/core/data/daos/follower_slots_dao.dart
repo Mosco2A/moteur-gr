@@ -17,8 +17,9 @@ class FollowerSlotsDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere tous les slots d une session
   Future<List<FollowerSlotRow>> getBySession(String sessionId) {
-    return (select(followerSlots)..where((t) => t.sessionId.equals(sessionId)))
-        .get();
+    return (select(
+      followerSlots,
+    )..where((t) => t.sessionId.equals(sessionId))).get();
   }
 
   /// Compte les slots d une session
@@ -39,7 +40,8 @@ class FollowerSlotsDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime tous les slots d une session
   Future<int> deleteBySession(String sessionId) {
-    return (delete(followerSlots)..where((t) => t.sessionId.equals(sessionId)))
-        .go();
+    return (delete(
+      followerSlots,
+    )..where((t) => t.sessionId.equals(sessionId))).go();
   }
 }

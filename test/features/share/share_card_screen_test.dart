@@ -31,17 +31,14 @@ void main() {
       );
     });
 
-    testWidgets('affiche preview, templates et bouton partager',
-        (tester) async {
+    testWidgets('affiche preview, templates et bouton partager', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            trailConfigProvider.overrideWithValue(testTrailConfig),
-          ],
+          overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
           child: TranslationProvider(
-            child: MaterialApp(
-              home: ShareCardScreen(data: testData),
-            ),
+            child: MaterialApp(home: ShareCardScreen(data: testData)),
           ),
         ),
       );
@@ -60,7 +57,12 @@ void main() {
       expect(find.text('Étape'), findsOneWidget);
 
       // Verifie que le bouton partager est present
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.partager), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.partager,
+        ),
+        findsOneWidget,
+      );
 
       // Verifie que le label choix template est present
       expect(find.text('Choisir un template'), findsOneWidget);

@@ -18,32 +18,34 @@ void main() {
   /// Catalogue de test : commerces aux etapes 1, 3 et 9.
   /// Ecarts : apres 1 -> 2 etapes, apres 3 -> 6 etapes.
   TrailShops catalogue({int seuil = 2}) => TrailShops(
-        trailId: trailId,
-        gapThreshold: seuil,
-        shops: const [
-          Shop(name: 'Epicerie du depart', type: ShopKind.epicerie,
-              stageNumber: 1),
-          Shop(name: 'Bar du col', type: ShopKind.bar, stageNumber: 3),
-          Shop(name: 'Epicerie du village', type: ShopKind.epicerie,
-              stageNumber: 9),
-        ],
-      );
+    trailId: trailId,
+    gapThreshold: seuil,
+    shops: const [
+      Shop(name: 'Epicerie du depart', type: ShopKind.epicerie, stageNumber: 1),
+      Shop(name: 'Bar du col', type: ShopKind.bar, stageNumber: 3),
+      Shop(
+        name: 'Epicerie du village',
+        type: ShopKind.epicerie,
+        stageNumber: 9,
+      ),
+    ],
+  );
 
   TrackPositionState positionSurEtape(int stageNumber) => TrackPositionState(
-        userLat: 42.0,
-        userLng: 9.0,
-        projectedLat: 42.0,
-        projectedLng: 9.0,
-        distanceToTrackM: 5,
-        distanceFromStartM: 1000,
-        distanceRemainingM: 2000,
-        trackIndex: 3,
-        stageDetection: (
-          stageNumber: stageNumber,
-          event: StageDetectionEventValues.between,
-        ),
-        isOffTrack: false,
-      );
+    userLat: 42.0,
+    userLng: 9.0,
+    projectedLat: 42.0,
+    projectedLng: 9.0,
+    distanceToTrackM: 5,
+    distanceFromStartM: 1000,
+    distanceRemainingM: 2000,
+    trackIndex: 3,
+    stageDetection: (
+      stageNumber: stageNumber,
+      event: StageDetectionEventValues.between,
+    ),
+    isOffTrack: false,
+  );
 
   ProviderContainer conteneur({
     required AsyncValue<TrackPositionState> position,

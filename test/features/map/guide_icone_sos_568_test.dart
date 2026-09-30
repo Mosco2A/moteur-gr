@@ -40,27 +40,28 @@ void main() {
   String source(String chemin) => File(chemin).readAsStringSync();
 
   Widget wrap() => ProviderScope(
-        overrides: [
-          // Aucun POI : la legende des points disparait, celle des BOUTONS
-          // (dont le SOS) reste — c'est elle qu'on examine ici.
-          availablePoiTypesProvider(trailId)
-              .overrideWith((ref) async => const <String>{}),
-        ],
-        child: TranslationProvider(
-          child: MaterialApp(
-            home: Builder(
-              builder: (context) => Scaffold(
-                body: Center(
-                  child: ElevatedButton(
-                    onPressed: () => showMapGuideSheet(context, trailId),
-                    child: const Text('OUVRIR'),
-                  ),
-                ),
+    overrides: [
+      // Aucun POI : la legende des points disparait, celle des BOUTONS
+      // (dont le SOS) reste — c'est elle qu'on examine ici.
+      availablePoiTypesProvider(
+        trailId,
+      ).overrideWith((ref) async => const <String>{}),
+    ],
+    child: TranslationProvider(
+      child: MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: Center(
+              child: ElevatedButton(
+                onPressed: () => showMapGuideSheet(context, trailId),
+                child: const Text('OUVRIR'),
               ),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   Future<void> ouvrirGuide(WidgetTester tester) async {
     tester.view.physicalSize = const Size(420, 2400);
@@ -82,14 +83,20 @@ void main() {
 
         // La ligne existe toujours (la fonction existe : on ne ment pas par
         // omission non plus).
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          ),
+          findsOneWidget,
+        );
         expect(find.text(t.a11y.sos), findsOneWidget);
 
         // Et son explication porte desormais la condition.
         expect(
           find.textContaining(t.map.guide.onlyInTrek),
           findsOneWidget,
-          reason: 'la pastille SOS se masque hors rando : le guide doit le dire '
+          reason:
+              'la pastille SOS se masque hors rando : le guide doit le dire '
               'au lieu de laisser chercher un bouton absent',
         );
       },
@@ -113,14 +120,18 @@ void main() {
       'l icone documentee n est pas un fantome : elle est bien portee par un '
       'widget de lib/, et ce widget est pose sur la carte',
       () {
-        final bouton = source('lib/features/safety/presentation/sos_button.dart');
+        final bouton = source(
+          'lib/features/safety/presentation/sos_button.dart',
+        );
         expect(
           bouton.contains('StepwaysIcons.secours'),
           isTrue,
           reason: 'c est ce widget qui dessine l icone que le guide explique',
         );
         // Et il est REELLEMENT pose sur l ecran depuis lequel le guide s ouvre.
-        final carte = source('lib/features/trek/presentation/map/map_screen.dart');
+        final carte = source(
+          'lib/features/trek/presentation/map/map_screen.dart',
+        );
         expect(carte.contains('SosButton()'), isTrue);
         expect(carte.contains('showMapGuideSheet'), isTrue);
       },

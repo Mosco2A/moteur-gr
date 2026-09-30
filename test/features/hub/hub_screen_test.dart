@@ -277,19 +277,20 @@ void main() {
       // Cycle de vie du trek (tache 558) : indispensable pour atteindre la
       // phase APRES, ou le Journal doit se trouver.
       TrekLifecycleState? lifecycle,
-    }) =>
-        wrap(
-          child: const HubScreen(),
-          overrides: [
-            userWith('Alex'),
-            trekWith(TrackingSessionState(status: status)),
-            if (lifecycle != null)
-              currentTrailSummaryProvider.overrideWith((ref) async =>
-                  TrekSummary(
-                      config: ref.watch(trailConfigProvider),
-                      state: lifecycle)),
-          ],
-        );
+    }) => wrap(
+      child: const HubScreen(),
+      overrides: [
+        userWith('Alex'),
+        trekWith(TrackingSessionState(status: status)),
+        if (lifecycle != null)
+          currentTrailSummaryProvider.overrideWith(
+            (ref) async => TrekSummary(
+              config: ref.watch(trailConfigProvider),
+              state: lifecycle,
+            ),
+          ),
+      ],
+    );
 
     /// Rend le HUB sur une surface TRES haute pour que le [ListView] construise
     /// toutes ses sections d'un coup (sinon les cartes sous la ligne de flottaison
@@ -380,14 +381,16 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
-        await tester.pumpWidget(wrap(
-          child: const HubScreen(),
-          overrides: [
-            userWith('Alex'),
-            trekWith(TrackingSessionState(status: status)),
-            if (lifecycle != null) summaryWith(lifecycle),
-          ],
-        ));
+        await tester.pumpWidget(
+          wrap(
+            child: const HubScreen(),
+            overrides: [
+              userWith('Alex'),
+              trekWith(TrackingSessionState(status: status)),
+              if (lifecycle != null) summaryWith(lifecycle),
+            ],
+          ),
+        );
         await tester.pumpAndSettle();
       }
 
@@ -418,8 +421,9 @@ void main() {
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 
-      testWidgets('EN RANDO : Journal a sa place GR20, sans DOUBLON',
-          (tester) async {
+      testWidgets('EN RANDO : Journal a sa place GR20, sans DOUBLON', (
+        tester,
+      ) async {
         await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         expect(find.text(t.hub.sections.hike), findsOneWidget);
@@ -429,8 +433,9 @@ void main() {
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 
-      testWidgets('EN RANDO : la carte Journal OUVRE l\'ecran journal',
-          (tester) async {
+      testWidgets('EN RANDO : la carte Journal OUVRE l\'ecran journal', (
+        tester,
+      ) async {
         await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         await tester.tap(find.text(t.hub.cards.journal));
@@ -442,8 +447,9 @@ void main() {
         expect(find.text(t.hub.sections.info), findsNothing);
       });
 
-      testWidgets('APRES LE TREK : la carte Journal OUVRE l\'ecran journal',
-          (tester) async {
+      testWidgets('APRES LE TREK : la carte Journal OUVRE l\'ecran journal', (
+        tester,
+      ) async {
         await pumpPhase(tester, lifecycle: TrekLifecycleState.completed);
 
         await tester.tap(find.text(t.hub.cards.journal));
@@ -454,29 +460,28 @@ void main() {
       });
     });
 
-    testWidgets(
-      'R2e : AUCUNE meteo en PREPARATION, sans salutation redondante',
-      (tester) async {
-        await pumpTallHub(tester);
+    testWidgets('R2e : AUCUNE meteo en PREPARATION, sans salutation redondante', (
+      tester,
+    ) async {
+      await pumpTallHub(tester);
 
-        // R2e (retour Chris, LOT L8) : la tuile meteo du jour qui ouvrait le
-        // cockpit a ete RETIREE. En preparation, la meteo n'a aucun sens (on
-        // prepare un trek des mois a l'avance) — parite GR20, dont le HUB n'a
-        // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
-        // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
-        expect(find.text(t.hub.weather.title), findsNothing);
-        // La cle `hub.weather.stub` (« La meteo de votre etape arrive
-        // bientot. ») a ete SUPPRIMEE des cinq langues par la tache 552 : plus
-        // rien ne l'affichait depuis le retrait de la tuile, et c'etait une
-        // promesse creuse. Il n'y a donc plus de texte a chercher ici.
-        expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
-        expect(find.text(t.hub.cards.weather), findsNothing);
-        // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
-        // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
-        // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
-        expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
-      },
-    );
+      // R2e (retour Chris, LOT L8) : la tuile meteo du jour qui ouvrait le
+      // cockpit a ete RETIREE. En preparation, la meteo n'a aucun sens (on
+      // prepare un trek des mois a l'avance) — parite GR20, dont le HUB n'a
+      // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
+      // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
+      expect(find.text(t.hub.weather.title), findsNothing);
+      // La cle `hub.weather.stub` (« La meteo de votre etape arrive
+      // bientot. ») a ete SUPPRIMEE des cinq langues par la tache 552 : plus
+      // rien ne l'affichait depuis le retrait de la tuile, et c'etait une
+      // promesse creuse. Il n'y a donc plus de texte a chercher ici.
+      expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
+      expect(find.text(t.hub.cards.weather), findsNothing);
+      // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
+      // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
+      // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
+      expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
+    });
 
     testWidgets(
       'R11 : la meteo du JOUR est affichee PENDANT la rando (section Randonner)',
@@ -529,7 +534,8 @@ void main() {
       expect(
         basDeLEcran,
         isA<BannerAdSlot>(),
-        reason: 'le SEUL occupant autorise du bas du cockpit est '
+        reason:
+            'le SEUL occupant autorise du bas du cockpit est '
             "l'emplacement publicitaire ; tout le reste serait une barre de "
             'navigation deguisee, et la decision D1 les a retirees',
       );
@@ -557,8 +563,11 @@ void main() {
       await pumpTallHub(tester, status: TrackingSessionStatus.recording);
 
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.bottomNavigationBar, isNull,
-          reason: 'en rando, rien du tout sous la pastille SOS');
+      expect(
+        scaffold.bottomNavigationBar,
+        isNull,
+        reason: 'en rando, rien du tout sous la pastille SOS',
+      );
       expect(find.byType(BannerAdSlot), findsNothing);
       // Et la pastille SOS, elle, est bien la : c est ce qui donne son sens a
       // l assertion ci-dessus.
@@ -624,8 +633,9 @@ void main() {
     // elle se lit maintenant juste apres « Calendrier », parce que
     // l'entrainement se decide avec les dates.
     // -----------------------------------------------------------------------
-    testWidgets('#6 : « Preparation physique » est JUSTE APRES « Calendrier »',
-        (tester) async {
+    testWidgets('#6 : « Preparation physique » est JUSTE APRES « Calendrier »', (
+      tester,
+    ) async {
       await pumpTallHub(tester);
 
       final calendar = tester.getTopLeft(find.text(t.hub.cards.calendar));
@@ -637,12 +647,21 @@ void main() {
       // comme « dans la meme foulee que le calendrier », pas comme « sur la
       // ligne du dessous ». Ce qui compte et se verifie : l'entrainement n'est
       // plus APRES les nuitees ni APRES la checklist — il est avant les deux.
-      expect(training.dy, greaterThanOrEqualTo(calendar.dy),
-          reason: 'l entrainement ne remonte pas au-dessus du calendrier');
-      expect(training.dy, lessThanOrEqualTo(nuitees.dy),
-          reason: 'l entrainement passe AVANT les nuitees');
-      expect(training.dy, lessThan(checklist.dy),
-          reason: 'l entrainement n est plus la derniere carte de la prepa');
+      expect(
+        training.dy,
+        greaterThanOrEqualTo(calendar.dy),
+        reason: 'l entrainement ne remonte pas au-dessus du calendrier',
+      );
+      expect(
+        training.dy,
+        lessThanOrEqualTo(nuitees.dy),
+        reason: 'l entrainement passe AVANT les nuitees',
+      );
+      expect(
+        training.dy,
+        lessThan(checklist.dy),
+        reason: 'l entrainement n est plus la derniere carte de la prepa',
+      );
     });
 
     // -----------------------------------------------------------------------

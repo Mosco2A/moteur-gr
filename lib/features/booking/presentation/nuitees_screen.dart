@@ -100,10 +100,7 @@ List<NuiteeSlot> buildNuiteeSlots(List<PlannedDay> days) {
   // Nuit N0 : jour synthetique numerote 0, en tete de liste.
   slots.add(
     const NuiteeSlot(
-      day: PlannedDay(
-        dayNumber: kEveOfDepartureDayNumber,
-        stages: [],
-      ),
+      day: PlannedDay(dayNumber: kEveOfDepartureDayNumber, stages: []),
       stageNumber: 0,
       isEveOfDeparture: true,
     ),
@@ -220,8 +217,9 @@ class NuiteesScreen extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(AppTheme.radiusBottomSheet)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.radiusBottomSheet),
+        ),
       ),
       builder: (ctx) => Padding(
         padding: const EdgeInsets.all(AppTheme.spacingLg),
@@ -261,13 +259,18 @@ class NuiteesScreen extends ConsumerWidget {
             _infoItem(theme, NuiteeType.bivouac, t.nuitees.guide.bivouac),
             const SizedBox(height: AppTheme.spacingMd),
             _infoItem(
-                theme, NuiteeType.autreHebergement, t.nuitees.guide.autre),
+              theme,
+              NuiteeType.autreHebergement,
+              t.nuitees.guide.autre,
+            ),
             const SizedBox(height: AppTheme.spacingLg),
             Center(
               child: TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(t.nuitees.guide.close,
-                    style: const TextStyle(fontSize: 16)),
+                child: Text(
+                  t.nuitees.guide.close,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -347,8 +350,11 @@ class _CompactInfoBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.info,
-                  size: 20, color: theme.colorScheme.primary.withAlpha(180)),
+              StepIcon(
+                StepwaysIcons.info,
+                size: 20,
+                color: theme.colorScheme.primary.withAlpha(180),
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -360,8 +366,7 @@ class _CompactInfoBar extends StatelessWidget {
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: barColor.withAlpha(40),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -442,9 +447,10 @@ class _NuiteeCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final accommodationsAsync = ref.watch(
-      nuiteeStageAccommodationsProvider(
-        (trailId: trailId, stageNumber: stageNumber),
-      ),
+      nuiteeStageAccommodationsProvider((
+        trailId: trailId,
+        stageNumber: stageNumber,
+      )),
     );
     final accommodations = accommodationsAsync.maybeWhen(
       data: (l) => l,
@@ -453,7 +459,8 @@ class _NuiteeCard extends ConsumerWidget {
 
     // Hebergement correspondant au type choisi (sinon 1er dispo = fallback).
     final selectedAccom = _findForType(accommodations, nuiteeType);
-    final accom = selectedAccom ??
+    final accom =
+        selectedAccom ??
         (accommodations.isNotEmpty ? accommodations.first : null);
 
     // Nom du lieu (donnees sentier) sinon libelle generique (fallback).
@@ -485,314 +492,336 @@ class _NuiteeCard extends ConsumerWidget {
       // geste qui reserve est grise.
       child: GriseEnDemo(
         child: InkWell(
-        onTap: onToggle,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Badge numero de jour.
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: isBooked
-                          ? scheme.primary.withAlpha(30)
-                          : scheme.primary.withAlpha(40),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusCard),
-                      border: Border.all(
+          onTap: onToggle,
+          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badge numero de jour.
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
                         color: isBooked
-                            ? scheme.primary
-                            : scheme.primary.withAlpha(80),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        dayLabel,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: scheme.primary,
-                          fontSize: 14,
+                            ? scheme.primary.withAlpha(30)
+                            : scheme.primary.withAlpha(40),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusCard,
+                        ),
+                        border: Border.all(
+                          color: isBooked
+                              ? scheme.primary
+                              : scheme.primary.withAlpha(80),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.spacingMd),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          placeName,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            decoration:
-                                isBooked ? TextDecoration.lineThrough : null,
+                      child: Center(
+                        child: Text(
+                          dayLabel,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: scheme.primary,
+                            fontSize: 14,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
-                        // R5 (LOT L10) : la nuit d'un jour de REPOS est bien
-                        // comptee, au MEME endroit que la veille. On le dit
-                        // explicitement, sinon deux lignes consecutives
-                        // affichent le meme hebergement sans explication.
-                        // Libelle Slang existant (`t.programme.restDay`,
-                        // 5 langues) — aucune cle nouvelle.
-                        if (day.isRestDay) ...[
+                      ),
+                    ),
+                    const SizedBox(width: AppTheme.spacingMd),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            placeName,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              decoration: isBooked
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          // R5 (LOT L10) : la nuit d'un jour de REPOS est bien
+                          // comptee, au MEME endroit que la veille. On le dit
+                          // explicitement, sinon deux lignes consecutives
+                          // affichent le meme hebergement sans explication.
+                          // Libelle Slang existant (`t.programme.restDay`,
+                          // 5 langues) — aucune cle nouvelle.
+                          if (day.isRestDay) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppTheme.grisGranite.withAlpha(30),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusChip,
+                                ),
+                              ),
+                              child: Text(
+                                t.programme.restDay,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.grisGranite,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                          ],
+                          // L7-2 : on dit explicitement que cette nuit-la est
+                          // celle de l'ARRIVEE sur place, pas une etape. Sans ce
+                          // libelle, la premiere ligne ressemblerait a une nuit
+                          // de marche sans hebergement renseigne.
+                          if (isEveOfDeparture) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppTheme.grisGranite.withAlpha(30),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusChip,
+                                ),
+                              ),
+                              child: Text(
+                                t.nuitees.card.eveOfDeparture,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.grisGranite,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                          ],
+                          // Badge type courant.
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
-                              color: AppTheme.grisGranite.withAlpha(30),
-                              borderRadius:
-                                  BorderRadius.circular(AppTheme.radiusChip),
+                              color: scheme.secondary.withAlpha(30),
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusChip,
+                              ),
                             ),
                             child: Text(
-                              t.programme.restDay,
+                              nuiteeType.label,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppTheme.grisGranite,
+                                color: scheme.secondary,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 2),
-                        ],
-                        // L7-2 : on dit explicitement que cette nuit-la est
-                        // celle de l'ARRIVEE sur place, pas une etape. Sans ce
-                        // libelle, la premiere ligne ressemblerait a une nuit
-                        // de marche sans hebergement renseigne.
-                        if (isEveOfDeparture) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: AppTheme.grisGranite.withAlpha(30),
-                              borderRadius:
-                                  BorderRadius.circular(AppTheme.radiusChip),
-                            ),
-                            child: Text(
-                              t.nuitees.card.eveOfDeparture,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.grisGranite,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                        ],
-                        // Badge type courant.
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: scheme.secondary.withAlpha(30),
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.radiusChip),
-                          ),
-                          child: Text(
-                            nuiteeType.label,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: scheme.secondary,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        // SELECTEUR DE TYPE — TOUJOURS MODIFIABLE (retour Chris
-                        // #7, tache 553). Mot pour mot : « reservation nuitee, on
-                        // ne peut pas revenir a gite », puis, sur la coche :
-                        // « NON OK = c'est bon ! ».
-                        //
-                        // CE QUI N'ALLAIT PAS. Les puces de type etaient
-                        // DESACTIVEES des que la nuit etait cochee : grisees a
-                        // 35 %, `onTap` a null, et la seule explication tenait
-                        // dans un `Tooltip` (« decochez pour changer le type »)
-                        // QUI NE S'AFFICHE PAS SUR MOBILE — un tooltip Material
-                        // demande un survol souris ou un appui long, deux gestes
-                        // que personne ne tente sur une puce grisee. Chris a donc
-                        // vu un ecran qui refusait un retour en arriere, sans un
-                        // mot pour dire pourquoi, ni comment en sortir.
-                        //
-                        // ET SURTOUT, LE VERROU REPOSAIT SUR UN CONTRESENS. La
-                        // coche ne veut pas dire « verrouille » : elle veut dire
-                        // « c'est bon, cette nuit est reglee ». Faire d'un signe
-                        // de CONFIRMATION un signe d'INTERDICTION, c'est punir
-                        // celui qui avance dans sa preparation : on coche ses
-                        // nuits au fur et a mesure, puis le refuge est complet et
-                        // il faut passer en gite. Le verrou tombait pile au
-                        // moment ou le changement devient utile.
-                        //
-                        // ON CHANGE DONC LE TYPE MEME QUAND LA NUIT EST COCHEE,
-                        // et la coche SURVIT au changement : `setNuiteeType` et
-                        // `toggleBooking` ecrivent deux champs distincts
-                        // (`nuiteeTypes` / `bookings`), changer l'un ne touche
-                        // pas l'autre. Plus de puce grisee, plus de tooltip
-                        // invisible : ce qu'on voit est ce qu'on peut faire.
-                        Wrap(
-                          spacing: 4,
-                          runSpacing: 4,
-                          children: availableTypes.map((type) {
-                            final isSelected = type == nuiteeType;
-                            return ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                  minHeight: 48, minWidth: 48),
-                              child: GriseEnDemo(
-                                child: GestureDetector(
-                                onTap: () => onNuiteeTypeChanged(type),
-                                child: Tooltip(
-                                  message: type.label,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? scheme.primary.withAlpha(40)
-                                          : AppTheme.grisGranite.withAlpha(15),
-                                      borderRadius: BorderRadius.circular(
-                                          AppTheme.radiusChip),
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? scheme.primary
-                                            : AppTheme.grisGranite
-                                                .withAlpha(60),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        StepIcon(
-                                          type.icon,
-                                          size: 16,
-                                          color: isSelected
-                                              ? scheme.primary
-                                              : AppTheme.grisGranite,
+                          const SizedBox(height: 4),
+                          // SELECTEUR DE TYPE — TOUJOURS MODIFIABLE (retour Chris
+                          // #7, tache 553). Mot pour mot : « reservation nuitee, on
+                          // ne peut pas revenir a gite », puis, sur la coche :
+                          // « NON OK = c'est bon ! ».
+                          //
+                          // CE QUI N'ALLAIT PAS. Les puces de type etaient
+                          // DESACTIVEES des que la nuit etait cochee : grisees a
+                          // 35 %, `onTap` a null, et la seule explication tenait
+                          // dans un `Tooltip` (« decochez pour changer le type »)
+                          // QUI NE S'AFFICHE PAS SUR MOBILE — un tooltip Material
+                          // demande un survol souris ou un appui long, deux gestes
+                          // que personne ne tente sur une puce grisee. Chris a donc
+                          // vu un ecran qui refusait un retour en arriere, sans un
+                          // mot pour dire pourquoi, ni comment en sortir.
+                          //
+                          // ET SURTOUT, LE VERROU REPOSAIT SUR UN CONTRESENS. La
+                          // coche ne veut pas dire « verrouille » : elle veut dire
+                          // « c'est bon, cette nuit est reglee ». Faire d'un signe
+                          // de CONFIRMATION un signe d'INTERDICTION, c'est punir
+                          // celui qui avance dans sa preparation : on coche ses
+                          // nuits au fur et a mesure, puis le refuge est complet et
+                          // il faut passer en gite. Le verrou tombait pile au
+                          // moment ou le changement devient utile.
+                          //
+                          // ON CHANGE DONC LE TYPE MEME QUAND LA NUIT EST COCHEE,
+                          // et la coche SURVIT au changement : `setNuiteeType` et
+                          // `toggleBooking` ecrivent deux champs distincts
+                          // (`nuiteeTypes` / `bookings`), changer l'un ne touche
+                          // pas l'autre. Plus de puce grisee, plus de tooltip
+                          // invisible : ce qu'on voit est ce qu'on peut faire.
+                          Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children: availableTypes.map((type) {
+                              final isSelected = type == nuiteeType;
+                              return ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minHeight: 48,
+                                  minWidth: 48,
+                                ),
+                                child: GriseEnDemo(
+                                  child: GestureDetector(
+                                    onTap: () => onNuiteeTypeChanged(type),
+                                    child: Tooltip(
+                                      message: type.label,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
                                         ),
-                                        const SizedBox(width: 3),
-                                        Text(
-                                          type.label,
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                            fontSize: 14,
-                                            fontWeight: isSelected
-                                                ? FontWeight.w700
-                                                : FontWeight.w400,
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? scheme.primary.withAlpha(40)
+                                              : AppTheme.grisGranite.withAlpha(
+                                                  15,
+                                                ),
+                                          borderRadius: BorderRadius.circular(
+                                            AppTheme.radiusChip,
+                                          ),
+                                          border: Border.all(
                                             color: isSelected
                                                 ? scheme.primary
-                                                : AppTheme.grisGranite,
+                                                : AppTheme.grisGranite
+                                                      .withAlpha(60),
                                           ),
                                         ),
-                                      ],
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            StepIcon(
+                                              type.icon,
+                                              size: 16,
+                                              color: isSelected
+                                                  ? scheme.primary
+                                                  : AppTheme.grisGranite,
+                                            ),
+                                            const SizedBox(width: 3),
+                                            Text(
+                                              type.label,
+                                              style: theme.textTheme.bodySmall
+                                                  ?.copyWith(
+                                                    fontSize: 14,
+                                                    fontWeight: isSelected
+                                                        ? FontWeight.w700
+                                                        : FontWeight.w400,
+                                                    color: isSelected
+                                                        ? scheme.primary
+                                                        : AppTheme.grisGranite,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                        if (accommodations.length > 1) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            t.nuitees.card.available.replaceAll(
-                                '{count}', accommodations.length.toString()),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              color: AppTheme.grisGranite.withAlpha(150),
-                            ),
+                              );
+                            }).toList(),
                           ),
+                          if (accommodations.length > 1) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              t.nuitees.card.available.replaceAll(
+                                '{count}',
+                                accommodations.length.toString(),
+                              ),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                                color: AppTheme.grisGranite.withAlpha(150),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                  // Case reserve.
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: isBooked
-                          ? scheme.primary.withAlpha(30)
-                          : AppTheme.orangeDifficile.withAlpha(20),
-                      borderRadius:
-                          BorderRadius.circular(AppTheme.radiusCard),
-                      border: Border.all(
+                    // Case reserve.
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: isBooked
+                            ? scheme.primary.withAlpha(30)
+                            : AppTheme.orangeDifficile.withAlpha(20),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusCard,
+                        ),
+                        border: Border.all(
+                          color: isBooked
+                              ? scheme.primary
+                              : AppTheme.orangeDifficile.withAlpha(80),
+                          width: 2,
+                        ),
+                      ),
+                      child: StepIcon(
+                        isBooked ? StepwaysIcons.coche : StepwaysIcons.radio,
+                        size: 20,
                         color: isBooked
                             ? scheme.primary
-                            : AppTheme.orangeDifficile.withAlpha(80),
-                        width: 2,
-                      ),
-                    ),
-                    child: StepIcon(
-                      isBooked ? StepwaysIcons.coche : StepwaysIcons.radio,
-                      size: 20,
-                      color: isBooked
-                          ? scheme.primary
-                          : AppTheme.orangeDifficile.withAlpha(120),
-                    ),
-                  ),
-                ],
-              ),
-              // ADRESSE ET POINT GPS CLIQUABLE DE L'HEBERGEMENT (tache 641,
-              // bug 15).
-              //
-              // Demande de Christophe du 30/09 10:23, verbatim : « hebergement il
-              // doit avoir une adresse et un point GPS qui link sur Maps ». La
-              // fiche montrait le nom, le type et le telephone ; ni adresse, ni
-              // moyen d'ouvrir les cartes — alors que trouver la porte d'un gite
-              // dans un village corse a la tombee du jour est precisement le
-              // moment ou l'on en a besoin.
-              //
-              // MASQUE POUR « AUTRE HEBERGEMENT », comme le bouton Appeler : ce
-              // choix ne designe aucun etablissement, donc aucun lieu.
-              if (accom != null && nuiteeType != NuiteeType.autreHebergement)
-                Padding(
-                  padding: const EdgeInsets.only(top: AppTheme.spacingXs),
-                  child: LigneDeLieu(
-                    lieu: LieuCliquable(
-                      nom: accom.name,
-                      adresse: accom.address,
-                      lat: accom.lat,
-                      lng: accom.lng,
-                    ),
-                    compact: true,
-                  ),
-                ),
-
-              // Action Appeler (masquee pour « autre hebergement », parite GR20).
-              if (phone.isNotEmpty &&
-                  nuiteeType != NuiteeType.autreHebergement) ...[
-                const SizedBox(height: AppTheme.spacingSm),
-                Row(
-                  children: [
-                    TextButton.icon(
-                      onPressed: () => _callPhone(phone),
-                      icon: const StepIcon(StepwaysIcons.telephone, size: 18),
-                      label: Text(
-                        t.nuitees.card.call.replaceAll('{phone}', phone),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingSm),
-                        foregroundColor: AppTheme.orangeDifficile,
+                            : AppTheme.orangeDifficile.withAlpha(120),
                       ),
                     ),
                   ],
                 ),
+                // ADRESSE ET POINT GPS CLIQUABLE DE L'HEBERGEMENT (tache 641,
+                // bug 15).
+                //
+                // Demande de Christophe du 30/09 10:23, verbatim : « hebergement il
+                // doit avoir une adresse et un point GPS qui link sur Maps ». La
+                // fiche montrait le nom, le type et le telephone ; ni adresse, ni
+                // moyen d'ouvrir les cartes — alors que trouver la porte d'un gite
+                // dans un village corse a la tombee du jour est precisement le
+                // moment ou l'on en a besoin.
+                //
+                // MASQUE POUR « AUTRE HEBERGEMENT », comme le bouton Appeler : ce
+                // choix ne designe aucun etablissement, donc aucun lieu.
+                if (accom != null && nuiteeType != NuiteeType.autreHebergement)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+                    child: LigneDeLieu(
+                      lieu: LieuCliquable(
+                        nom: accom.name,
+                        adresse: accom.address,
+                        lat: accom.lat,
+                        lng: accom.lng,
+                      ),
+                      compact: true,
+                    ),
+                  ),
+
+                // Action Appeler (masquee pour « autre hebergement », parite GR20).
+                if (phone.isNotEmpty &&
+                    nuiteeType != NuiteeType.autreHebergement) ...[
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () => _callPhone(phone),
+                        icon: const StepIcon(StepwaysIcons.telephone, size: 18),
+                        label: Text(
+                          t.nuitees.card.call.replaceAll('{phone}', phone),
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.spacingSm,
+                          ),
+                          foregroundColor: AppTheme.orangeDifficile,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -875,10 +904,12 @@ class _CompactSummary extends StatelessWidget {
 
     if (days.isEmpty) return const SizedBox.shrink();
 
-    final missingDays =
-        days.where((d) => !selections.isBooked(d.dayNumber)).toList();
-    final bookedDays =
-        days.where((d) => selections.isBooked(d.dayNumber)).toList();
+    final missingDays = days
+        .where((d) => !selections.isBooked(d.dayNumber))
+        .toList();
+    final bookedDays = days
+        .where((d) => selections.isBooked(d.dayNumber))
+        .toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -897,12 +928,17 @@ class _CompactSummary extends StatelessWidget {
         children: [
           Row(
             children: [
-              const StepIcon(StepwaysIcons.danger,
-                  size: 16, color: AppTheme.orangeDifficile),
+              const StepIcon(
+                StepwaysIcons.danger,
+                size: 16,
+                color: AppTheme.orangeDifficile,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
-                t.nuitees.summary.remaining
-                    .replaceAll('{count}', missingDays.length.toString()),
+                t.nuitees.summary.remaining.replaceAll(
+                  '{count}',
+                  missingDays.length.toString(),
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppTheme.orangeDifficile,
@@ -911,12 +947,17 @@ class _CompactSummary extends StatelessWidget {
               ),
               if (bookedDays.isNotEmpty) ...[
                 const Spacer(),
-                StepIcon(StepwaysIcons.cochePleine,
-                    size: 14, color: AppTheme.vertFacile.withAlpha(180)),
+                StepIcon(
+                  StepwaysIcons.cochePleine,
+                  size: 14,
+                  color: AppTheme.vertFacile.withAlpha(180),
+                ),
                 const SizedBox(width: 4),
                 Text(
-                  t.nuitees.summary.done
-                      .replaceAll('{count}', bookedDays.length.toString()),
+                  t.nuitees.summary.done.replaceAll(
+                    '{count}',
+                    bookedDays.length.toString(),
+                  ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontSize: 14,
                     color: AppTheme.vertFacile,
@@ -932,20 +973,22 @@ class _CompactSummary extends StatelessWidget {
             runSpacing: 4,
             children: missingDays.map((day) {
               return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppTheme.orangeDifficile.withAlpha(20),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  border:
-                      Border.all(color: AppTheme.orangeDifficile.withAlpha(60)),
+                  border: Border.all(
+                    color: AppTheme.orangeDifficile.withAlpha(60),
+                  ),
                 ),
                 child: Text(
                   // L7-2 : la nuit de la veille porte son badge, pas un « J0 ».
                   day.dayNumber == kEveOfDepartureDayNumber
                       ? t.nuitees.card.eveBadge
-                      : t.nuitees.card.dayLabel
-                          .replaceAll('{n}', day.dayNumber.toString()),
+                      : t.nuitees.card.dayLabel.replaceAll(
+                          '{n}',
+                          day.dayNumber.toString(),
+                        ),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -977,20 +1020,25 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            StepIcon(StepwaysIcons.nuitees,
-                size: 80, color: AppTheme.grisGranite.withAlpha(80)),
+            StepIcon(
+              StepwaysIcons.nuitees,
+              size: 80,
+              color: AppTheme.grisGranite.withAlpha(80),
+            ),
             const SizedBox(height: AppTheme.spacingLg),
             Text(
               t.nuitees.empty.title,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.grisGranite),
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingSm),
             Text(
               t.nuitees.empty.message,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisGranite.withAlpha(180)),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.grisGranite.withAlpha(180),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),

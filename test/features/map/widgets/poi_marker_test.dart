@@ -45,7 +45,16 @@ void main() {
 
     group('colorFor', () {
       test('chaque type a une couleur unique', () {
-        final types = ['shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop'];
+        final types = [
+          'shelter',
+          'water',
+          'viewpoint',
+          'campsite',
+          'restaurant',
+          'emergency',
+          'danger',
+          'shop',
+        ];
         final colors = types.map(PoiMarker.colorFor).toSet();
         expect(colors.length, greaterThanOrEqualTo(6));
       });
@@ -67,10 +76,7 @@ void main() {
       });
 
       test('emergency est rouge', () {
-        expect(
-          PoiMarker.colorFor('emergency'),
-          const Color(0xFFC62828),
-        );
+        expect(PoiMarker.colorFor('emergency'), const Color(0xFFC62828));
       });
     });
 
@@ -83,17 +89,32 @@ void main() {
 
       testWidgets('affiche l\'icône correcte pour shelter', (tester) async {
         await tester.pumpWidget(buildMarker('shelter'));
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+          findsOneWidget,
+        );
       });
 
       testWidgets('affiche l\'icône correcte pour water', (tester) async {
         await tester.pumpWidget(buildMarker('water'));
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pluie), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.pluie,
+          ),
+          findsOneWidget,
+        );
       });
 
       testWidgets('affiche l\'icône correcte pour danger', (tester) async {
         await tester.pumpWidget(buildMarker('danger'));
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+          ),
+          findsOneWidget,
+        );
       });
 
       testWidgets('l\'icône est blanche', (tester) async {
@@ -102,8 +123,7 @@ void main() {
         expect(icon.color, Colors.white);
       });
 
-      testWidgets('le conteneur est rond avec bordure blanche',
-          (tester) async {
+      testWidgets('le conteneur est rond avec bordure blanche', (tester) async {
         await tester.pumpWidget(buildMarker('campsite'));
         final container = tester.widget<Container>(find.byType(Container));
         final decoration = container.decoration as BoxDecoration;

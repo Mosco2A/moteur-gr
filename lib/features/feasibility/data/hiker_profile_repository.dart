@@ -88,10 +88,10 @@ class HikerProfileRepository {
     SharedPreferences? prefs,
     String userId = kHikerLocalUserId,
     ProfilRandonneurFichier? fichier,
-  })  : _db = db,
-        _prefs = prefs,
-        _userId = userId,
-        _fichier = fichier ?? ProfilRandonneurFichier();
+  }) : _db = db,
+       _prefs = prefs,
+       _userId = userId,
+       _fichier = fichier ?? ProfilRandonneurFichier();
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
@@ -178,26 +178,33 @@ class HikerProfileRepository {
         try {
           contenu = contenu.copyWith(
             profil: HikerProfile.fromJson(
-                json.decode(brutProfil) as Map<String, dynamic>),
+              json.decode(brutProfil) as Map<String, dynamic>,
+            ),
           );
         } catch (e) {
-          _log.e('[HikerProfileRepository] Profil herite illisible, retire '
-              'sans etre transporte: $e');
+          _log.e(
+            '[HikerProfileRepository] Profil herite illisible, retire '
+            'sans etre transporte: $e',
+          );
         }
       }
 
       if (contenu.randosPassees.isEmpty && brutRandos != null) {
         try {
-          final liste = (json.decode(brutRandos) as List<dynamic>)
-              .whereType<Map<String, dynamic>>()
-              .map(PastHike.fromJson)
-              .toList()
-            ..sort((a, b) => b.date.compareTo(a.date));
-          contenu =
-              contenu.copyWith(randosPassees: liste.take(kMaxPastHikes).toList());
+          final liste =
+              (json.decode(brutRandos) as List<dynamic>)
+                  .whereType<Map<String, dynamic>>()
+                  .map(PastHike.fromJson)
+                  .toList()
+                ..sort((a, b) => b.date.compareTo(a.date));
+          contenu = contenu.copyWith(
+            randosPassees: liste.take(kMaxPastHikes).toList(),
+          );
         } catch (e) {
-          _log.e('[HikerProfileRepository] Randos heritees illisibles, '
-              'retirees sans etre transportees: $e');
+          _log.e(
+            '[HikerProfileRepository] Randos heritees illisibles, '
+            'retirees sans etre transportees: $e',
+          );
         }
       }
 
@@ -205,11 +212,14 @@ class HikerProfileRepository {
         try {
           contenu = contenu.copyWith(
             testDeMarche: WalkTestResult.fromJson(
-                json.decode(brutTest) as Map<String, dynamic>),
+              json.decode(brutTest) as Map<String, dynamic>,
+            ),
           );
         } catch (e) {
-          _log.e('[HikerProfileRepository] Test de marche herite illisible, '
-              'retire sans etre transporte: $e');
+          _log.e(
+            '[HikerProfileRepository] Test de marche herite illisible, '
+            'retire sans etre transporte: $e',
+          );
         }
       }
 
@@ -229,11 +239,15 @@ class HikerProfileRepository {
       await prefs.remove(kWalkTestResultPrefsKey);
       await prefs.remove(kHikerExperienceNotePrefsKey);
 
-      _log.i('[HikerProfileRepository] Profil migre des preferences vers le '
-          'stockage protege (age/taille/poids hors sauvegarde iCloud)');
+      _log.i(
+        '[HikerProfileRepository] Profil migre des preferences vers le '
+        'stockage protege (age/taille/poids hors sauvegarde iCloud)',
+      );
     } catch (e) {
-      _log.e('[HikerProfileRepository] Migration impossible ($e) — les cles '
-          'heritees restent en place, la migration se rejouera');
+      _log.e(
+        '[HikerProfileRepository] Migration impossible ($e) — les cles '
+        'heritees restent en place, la migration se rejouera',
+      );
     }
   }
 
@@ -321,8 +335,10 @@ class HikerProfileRepository {
     await _profileDao.deleteByUserId(_userId);
     await _pastHikesDao.deleteAllForUser(_userId);
     await _pastHikesDao.deleteNote(_userId);
-    _log.d('[HikerProfileRepository] Fiche randonneur effacee (art. 17) : '
-        'fichier protege, cles heritees ET miroir Drift');
+    _log.d(
+      '[HikerProfileRepository] Fiche randonneur effacee (art. 17) : '
+      'fichier protege, cles heritees ET miroir Drift',
+    );
   }
 
   /// EFFACE LA MORPHOLOGIE — age, taille, poids — des deux etages de stockage
@@ -387,11 +403,13 @@ class HikerProfileRepository {
     // physique, donc de l'article 9 au meme titre que le poids (tache 562, K2a).
     // Un seul enregistrement atomique au lieu de deux ecritures : il n'existe
     // aucun instant ou la morphologie est partie et pas le test.
-    await _enregistrer(contenu.copyWith(
-      profil: resteDuNonArticle9 ? erased : null,
-      effacerProfil: !resteDuNonArticle9,
-      effacerTestDeMarche: true,
-    ));
+    await _enregistrer(
+      contenu.copyWith(
+        profil: resteDuNonArticle9 ? erased : null,
+        effacerProfil: !resteDuNonArticle9,
+        effacerTestDeMarche: true,
+      ),
+    );
 
     if (resteDuNonArticle9) {
       await _mirrorProfileToDrift(erased);
@@ -400,9 +418,11 @@ class HikerProfileRepository {
       // trace de passage, a un autre etage — et [load] la re-ecrirait au boot.
       await _profileDao.deleteByUserId(_userId);
     }
-    _log.d('[HikerProfileRepository] Morphologie ET test de marche effaces '
-        '(consentement art. 9 refuse ou retire) — fiche '
-        '${resteDuNonArticle9 ? "conservee sans morphologie" : "supprimee"}');
+    _log.d(
+      '[HikerProfileRepository] Morphologie ET test de marche effaces '
+      '(consentement art. 9 refuse ou retire) — fiche '
+      '${resteDuNonArticle9 ? "conservee sans morphologie" : "supprimee"}',
+    );
     return resteDuNonArticle9 ? erased : HikerProfile.empty;
   }
 
@@ -502,8 +522,10 @@ class HikerProfileRepository {
   Future<void> saveWalkTestResult(WalkTestResult result) async {
     final contenu = await _charger();
     await _enregistrer(contenu.copyWith(testDeMarche: result));
-    _log.d('[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
-        '-> ${result.level}');
+    _log.d(
+      '[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
+      '-> ${result.level}',
+    );
   }
 }
 
@@ -511,8 +533,7 @@ class HikerProfileRepository {
 ///
 /// Branche sur la meme instance Drift que le reste de l'app
 /// ([databaseProvider]). Convention identique au `walletStoreProvider`.
-final hikerProfileRepositoryProvider =
-    Provider<HikerProfileRepository>((ref) {
+final hikerProfileRepositoryProvider = Provider<HikerProfileRepository>((ref) {
   final db = ref.watch(databaseProvider);
   return HikerProfileRepository(db: db);
 });

@@ -16,9 +16,8 @@ class WaypointFilterState {
   });
 
   /// Tous les types visibles par defaut (aucun filtre actif).
-  factory WaypointFilterState.all() => WaypointFilterState(
-        visibleTypes: WaypointType.values.toSet(),
-      );
+  factory WaypointFilterState.all() =>
+      WaypointFilterState(visibleTypes: WaypointType.values.toSet());
 
   /// Types de waypoint actuellement affiches.
   final Set<String> visibleTypes;
@@ -66,15 +65,15 @@ class WaypointFilterNotifier extends StateNotifier<WaypointFilterState> {
   void hideAll() => state = state.copyWith(visibleTypes: <String>{});
 
   /// Bascule le filtre "condition recente uniquement".
-  void toggleRecentConditionOnly() => state =
-      state.copyWith(recentConditionOnly: !state.recentConditionOnly);
+  void toggleRecentConditionOnly() =>
+      state = state.copyWith(recentConditionOnly: !state.recentConditionOnly);
 }
 
 /// Provider des filtres de la carte des waypoints (F8A-04).
 final waypointFilterProvider =
     StateNotifierProvider<WaypointFilterNotifier, WaypointFilterState>(
-  (ref) => WaypointFilterNotifier(),
-);
+      (ref) => WaypointFilterNotifier(),
+    );
 
 /// Waypoints d'un sentier lus depuis le CACHE LOCAL (offline-first, R3).
 ///
@@ -83,26 +82,31 @@ final waypointFilterProvider =
 /// cote widget a partir de [waypointFilterProvider] (etat UI).
 final trailWaypointsProvider =
     FutureProvider.family<List<WaypointView>, String>((ref, trailId) {
-  return ref.watch(waypointServiceProvider).waypointsForTrail(trailId);
-});
+      return ref.watch(waypointServiceProvider).waypointsForTrail(trailId);
+    });
 
 /// Commentaires VISIBLES d'un waypoint (cache local, 'removed' masque, DSA).
 ///
 /// `FutureProvider.family` indexe par waypointId. Lecture offline-first.
 final waypointCommentsProvider =
-    FutureProvider.family<List<WaypointCommentView>, String>(
-        (ref, waypointId) async {
-  final rows =
-      await ref.watch(waypointServiceProvider).visibleComments(waypointId);
-  return rows
-      .map((c) => WaypointCommentView(
-            texte: c.texte,
-            condition: c.condition,
-            createdAt: c.createdAt,
-            synced: c.syncState == 'synced',
-          ))
-      .toList(growable: false);
-});
+    FutureProvider.family<List<WaypointCommentView>, String>((
+      ref,
+      waypointId,
+    ) async {
+      final rows = await ref
+          .watch(waypointServiceProvider)
+          .visibleComments(waypointId);
+      return rows
+          .map(
+            (c) => WaypointCommentView(
+              texte: c.texte,
+              condition: c.condition,
+              createdAt: c.createdAt,
+              synced: c.syncState == 'synced',
+            ),
+          )
+          .toList(growable: false);
+    });
 
 /// Vue lisible d'un commentaire de condition pour l'UI (F8A-04).
 class WaypointCommentView {

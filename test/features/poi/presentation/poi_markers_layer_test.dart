@@ -69,9 +69,7 @@ void main() {
       expect(layer.visibleTypes.length, 2);
 
       // Verifier que seuls 2 markers (water + refuge) sont generes
-      final markerLayer = tester.widget<MarkerLayer>(
-        find.byType(MarkerLayer),
-      );
+      final markerLayer = tester.widget<MarkerLayer>(find.byType(MarkerLayer));
       expect(markerLayer.markers.length, 2);
     });
 
@@ -90,10 +88,7 @@ void main() {
             body: FlutterMap(
               options: const MapOptions(),
               children: [
-                PoiMarkersLayer(
-                  pois: pois,
-                  visibleTypes: visibleTypes,
-                ),
+                PoiMarkersLayer(pois: pois, visibleTypes: visibleTypes),
               ],
             ),
           ),
@@ -101,9 +96,7 @@ void main() {
       );
 
       // Le MarkerLayer doit contenir 1 marker (parking_lot seul visible)
-      final markerLayer = tester.widget<MarkerLayer>(
-        find.byType(MarkerLayer),
-      );
+      final markerLayer = tester.widget<MarkerLayer>(find.byType(MarkerLayer));
       expect(markerLayer.markers.length, 1);
 
       // Verifier que PoiTypeConfig retourne le fallback pour un type inconnu

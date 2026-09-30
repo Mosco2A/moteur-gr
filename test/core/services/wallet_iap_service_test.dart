@@ -57,10 +57,12 @@ void main() {
       expect(kWalletIapRealModeEnabled, isFalse);
     });
 
-    test('purchaseEnabled reflete le kill-switch (false = pas de bouton achat)',
-        () {
-      expect(makeService().purchaseEnabled, isFalse);
-    });
+    test(
+      'purchaseEnabled reflete le kill-switch (false = pas de bouton achat)',
+      () {
+        expect(makeService().purchaseEnabled, isFalse);
+      },
+    );
 
     test('isAvailable = false en mode stub', () async {
       expect(await makeService().isAvailable(), isFalse);
@@ -75,18 +77,20 @@ void main() {
       expect(await makeService().queryProducts(), isEmpty);
     });
 
-    test('les achats sont court-circuites en stub (aucun paiement reel)',
-        () async {
-      final service = makeService();
-      expect(await service.buyCredits(kWalletCredits11), isFalse);
-      expect(await service.buyNoAdsSubscription(), isFalse);
-      // restore et startListening sont des no-op silencieux en stub.
-      await service.restorePurchases();
-      service.startListening();
-      // Aucune livraison : wallet inchange, aucune source sans-pub.
-      expect(walletStore.balanceSteps, 0);
-      expect(await db.noAdsDao.getAll(), isEmpty);
-    });
+    test(
+      'les achats sont court-circuites en stub (aucun paiement reel)',
+      () async {
+        final service = makeService();
+        expect(await service.buyCredits(kWalletCredits11), isFalse);
+        expect(await service.buyNoAdsSubscription(), isFalse);
+        // restore et startListening sont des no-op silencieux en stub.
+        await service.restorePurchases();
+        service.startListening();
+        // Aucune livraison : wallet inchange, aucune source sans-pub.
+        expect(walletStore.balanceSteps, 0);
+        expect(await db.noAdsDao.getAll(), isEmpty);
+      },
+    );
   });
 
   group('ST3 productIds (SANS prefixe pack_) + grille credits', () {
@@ -96,8 +100,11 @@ void main() {
       expect(kWalletCredits50, 'stepways_credits_50');
       expect(kWalletSubNoAdsMonthly, 'stepways_sub_noads_monthly');
       for (final id in kWalletProductIds) {
-        expect(id.startsWith('pack_'), isFalse,
-            reason: 'prefixe pack_ deja pris par les packs de cartes');
+        expect(
+          id.startsWith('pack_'),
+          isFalse,
+          reason: 'prefixe pack_ deja pris par les packs de cartes',
+        );
       }
     });
 

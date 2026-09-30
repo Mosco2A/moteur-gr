@@ -43,7 +43,7 @@ import 'source_de_sentier.dart';
 /// reste du mecanisme ne connait que « l instant annonce ».
 class Publicateur {
   Publicateur({required this.sortie, DateTime? horloge})
-      : _horloge = horloge ?? DateTime.now().toUtc();
+    : _horloge = horloge ?? DateTime.now().toUtc();
 
   /// Nom de la liste publiee.
   static const String nomDeLaListe = 'manifest.json';
@@ -156,10 +156,12 @@ class Publicateur {
     // tient dans un nom de fichier Windows et dans une URL (l ISO 8601 porte des
     // deux-points, interdits). Elle se trie dans l ordre chronologique, qui est
     // aussi l ordre des publications.
-    final chemin = '${_dossierDe(source.trailId)}/'
+    final chemin =
+        '${_dossierDe(source.trailId)}/'
         'v${nouvelleRevision.estampilleDeFichier}.json';
-    final corps =
-        _encoder(_ordonner(recalcul.donnees, revision: nouvelleRevision));
+    final corps = _encoder(
+      _ordonner(recalcul.donnees, revision: nouvelleRevision),
+    );
     final octets = utf8.encode(corps);
     final fichier = File('$sortie/$chemin');
     fichier.parent.createSync(recursive: true);
@@ -321,7 +323,10 @@ class Publicateur {
     ];
   }
 
-  List<String> _verifierLesRevisions(TrailManifestEntry entree, List<int> octets) {
+  List<String> _verifierLesRevisions(
+    TrailManifestEntry entree,
+    List<int> octets,
+  ) {
     final anomalies = <String>[];
     final Map<String, dynamic> donnees;
     try {
@@ -498,11 +503,10 @@ class Publicateur {
       propre[entree.key] = valeur is Map<String, dynamic>
           ? _sansNul(valeur)
           : valeur is List
-              ? valeur
-                  .map((e) =>
-                      e is Map<String, dynamic> ? _sansNul(e) : e)
-                  .toList()
-              : valeur;
+          ? valeur
+                .map((e) => e is Map<String, dynamic> ? _sansNul(e) : e)
+                .toList()
+          : valeur;
     }
     return propre;
   }

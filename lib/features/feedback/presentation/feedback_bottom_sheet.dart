@@ -169,7 +169,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                         StepwaysIcons.note,
                         color: starValue <= (_rating ?? 0)
                             ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                            : theme.colorScheme.onSurface.withValues(
+                                alpha: 0.3,
+                              ),
                         size: 32,
                       ),
                       onPressed: () => setState(() => _rating = starValue),

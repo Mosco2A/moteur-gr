@@ -102,11 +102,11 @@ abstract class AppThemeModeValues {
   /// `system` suit le telephone. Une valeur inconnue retombe sur le defaut du
   /// produit ([fallback] = sombre), jamais sur une supposition.
   static ThemeMode toThemeMode(AppThemeMode mode) => switch (mode) {
-        light => ThemeMode.light,
-        system => ThemeMode.system,
-        dark => ThemeMode.dark,
-        _ => ThemeMode.dark,
-      };
+    light => ThemeMode.light,
+    system => ThemeMode.system,
+    dark => ThemeMode.dark,
+    _ => ThemeMode.dark,
+  };
 }
 
 /// Main dominante (lateralite) — ergonomie thumb zone (nav V2, R9/R10).

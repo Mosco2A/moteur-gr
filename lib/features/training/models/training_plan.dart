@@ -32,8 +32,7 @@ abstract class TrainingPlan with _$TrainingPlan {
   }) = _TrainingPlan;
 
   /// Nombre total de seances du plan (toutes phases confondues).
-  int get totalSessions =>
-      phases.fold(0, (sum, p) => sum + p.sessions.length);
+  int get totalSessions => phases.fold(0, (sum, p) => sum + p.sessions.length);
 
   /// Deserialisation depuis JSON (asset `training_plans.json`).
   factory TrainingPlan.fromJson(Map<String, dynamic> json) =>

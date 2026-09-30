@@ -147,7 +147,8 @@ String normalizeBloodType(String raw) =>
 /// non renseigne), c'est une valeur INVENTEE qui est refusee. « Je ne sais pas »
 /// n'est PAS un groupe sanguin : il est reconnu par [valeurListeGroupeSanguin],
 /// pas ici.
-bool isValidBloodType(String raw) => kBloodTypes.contains(normalizeBloodType(raw));
+bool isValidBloodType(String raw) =>
+    kBloodTypes.contains(normalizeBloodType(raw));
 
 /// LA VALEUR A SELECTIONNER DANS LA LISTE FERMEE POUR CE QUI EST SUR LE DISQUE.
 ///

@@ -19,9 +19,24 @@ import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 void main() {
   // Points de test fictifs (Auvergne)
   final mockTrackPoints = [
-    const TrackPoint(lat: 45.77, lng: 2.96, altitude: 1465, distanceFromStart: 0),
-    const TrackPoint(lat: 45.78, lng: 2.97, altitude: 1500, distanceFromStart: 1200),
-    const TrackPoint(lat: 45.79, lng: 2.98, altitude: 1600, distanceFromStart: 2400),
+    const TrackPoint(
+      lat: 45.77,
+      lng: 2.96,
+      altitude: 1465,
+      distanceFromStart: 0,
+    ),
+    const TrackPoint(
+      lat: 45.78,
+      lng: 2.97,
+      altitude: 1500,
+      distanceFromStart: 1200,
+    ),
+    const TrackPoint(
+      lat: 45.79,
+      lng: 2.98,
+      altitude: 1600,
+      distanceFromStart: 2400,
+    ),
   ];
 
   // Etapes de test fictives
@@ -33,8 +48,10 @@ void main() {
       distanceKm: 12.0,
       elevationGainM: 450,
       elevationLossM: 200,
-      startLat: 45.77, startLng: 2.96,
-      endLat: 45.78, endLng: 2.97,
+      startLat: 45.77,
+      startLng: 2.96,
+      endLat: 45.78,
+      endLng: 2.97,
     ),
     const StageModel(
       trailId: 'test-trail',
@@ -43,27 +60,26 @@ void main() {
       distanceKm: 15.0,
       elevationGainM: 600,
       elevationLossM: 350,
-      startLat: 45.78, startLng: 2.97,
-      endLat: 45.79, endLng: 2.98,
+      startLat: 45.78,
+      startLng: 2.97,
+      endLat: 45.79,
+      endLng: 2.98,
     ),
   ];
 
   group('MapScreen E2.3f assemblage', () {
-    testWidgets('affiche loading puis structure complete',
-        (tester) async {
+    testWidgets('affiche loading puis structure complete', (tester) async {
       final completer = Completer<List<TrackPoint>>();
 
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            gpxTrackProvider(testTrailConfig.id).overrideWith(
-              (ref) => completer.future,
-            ),
+            gpxTrackProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) => completer.future),
           ],
-          child: const MaterialApp(
-            home: MapScreen(trailId: 'test-trail'),
-          ),
+          child: const MaterialApp(home: MapScreen(trailId: 'test-trail')),
         ),
       );
 
@@ -75,8 +91,7 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('affiche ErrorView quand le chargement echoue',
-        (tester) async {
+    testWidgets('affiche ErrorView quand le chargement echoue', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -87,9 +102,7 @@ void main() {
               ),
             ),
           ],
-          child: const MaterialApp(
-            home: MapScreen(trailId: 'test-trail'),
-          ),
+          child: const MaterialApp(home: MapScreen(trailId: 'test-trail')),
         ),
       );
 
@@ -103,13 +116,11 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            gpxTrackProvider(testTrailConfig.id).overrideWith(
-              (ref) => Future.value(<TrackPoint>[]),
-            ),
+            gpxTrackProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) => Future.value(<TrackPoint>[])),
           ],
-          child: const MaterialApp(
-            home: MapScreen(trailId: 'test-trail'),
-          ),
+          child: const MaterialApp(home: MapScreen(trailId: 'test-trail')),
         ),
       );
 
@@ -126,8 +137,9 @@ void main() {
       expect(screen, isA<ConsumerStatefulWidget>());
     });
 
-    testWidgets('assemblage complet -- tous layers avec donnees mock',
-        (tester) async {
+    testWidgets('assemblage complet -- tous layers avec donnees mock', (
+      tester,
+    ) async {
       // Ce test verifie que MapScreen se construit sans erreur
       // avec stagesProvider et locationProvider overrides.
       // FlutterMap ne rend pas les tuiles en test, mais les layers
@@ -137,20 +149,18 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            gpxTrackProvider(testTrailConfig.id).overrideWith(
-              (ref) => Future.value(mockTrackPoints),
-            ),
-            stagesProvider(testTrailConfig.id).overrideWith(
-              (ref) => Future.value(mockStages),
-            ),
+            gpxTrackProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) => Future.value(mockTrackPoints)),
+            stagesProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) => Future.value(mockStages)),
             // GPS non accorde en test -> position null (SizedBox.shrink)
             gpsPermissionProvider.overrideWith(
               (ref) => Future.value(GpsPermissionStateValues.denied),
             ),
           ],
-          child: const MaterialApp(
-            home: MapScreen(trailId: 'test-trail'),
-          ),
+          child: const MaterialApp(home: MapScreen(trailId: 'test-trail')),
         ),
       );
 

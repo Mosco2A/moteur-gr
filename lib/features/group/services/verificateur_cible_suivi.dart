@@ -127,7 +127,8 @@ class VerdictCibleSuivi {
   bool get joignable => disponibilite == DisponibiliteCibleSuivi.joignable;
 
   @override
-  String toString() => 'VerdictCibleSuivi(${canal.name}, '
+  String toString() =>
+      'VerdictCibleSuivi(${canal.name}, '
       '${disponibilite.name}${codeHttp != null ? ', HTTP $codeHttp' : ''})';
 }
 
@@ -141,8 +142,8 @@ class VerificateurCibleSuivi {
   VerificateurCibleSuivi({
     http.Client? httpClient,
     ConnectivityMonitor? connectivityMonitor,
-  })  : _http = httpClient ?? http.Client(),
-        _connectivite = connectivityMonitor ?? ConnectivityMonitor();
+  }) : _http = httpClient ?? http.Client(),
+       _connectivite = connectivityMonitor ?? ConnectivityMonitor();
 
   final http.Client _http;
   final ConnectivityMonitor _connectivite;
@@ -209,8 +210,10 @@ class VerificateurCibleSuivi {
       final code = reponse.statusCode;
       final ok = code >= 200 && code < 400;
       if (!ok) {
-        _log.e('[CibleSuivi] ${canal.name} : « $url » repond $code — '
-            'personne ne pourrait suivre ce lien');
+        _log.e(
+          '[CibleSuivi] ${canal.name} : « $url » repond $code — '
+          'personne ne pourrait suivre ce lien',
+        );
       }
       return VerdictCibleSuivi(
         canal: canal,

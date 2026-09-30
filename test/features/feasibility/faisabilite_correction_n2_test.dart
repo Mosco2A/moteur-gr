@@ -46,35 +46,31 @@ void main() {
   setUpAll(() => LocaleSettings.setLocaleRaw('fr'));
   setUp(() => SharedPreferences.setMockInitialValues(<String, Object>{}));
 
-  StageEffort effort(int i, String name, double dist, int elev) => StageEffort(
-        index: i,
-        name: name,
-        distanceKm: dist,
-        elevationGainM: elev,
-      );
+  StageEffort effort(int i, String name, double dist, int elev) =>
+      StageEffort(index: i, name: name, distanceKm: dist, elevationGainM: elev);
 
   /// Une etape seedee du sentier de test (5 etapes -> bornes de duree [3..7]).
   StageModel stage(int n) => StageModel(
-        trailId: 'test-trail',
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: 42.0,
-        startLng: 9.0,
-        endLat: 42.1,
-        endLng: 9.1,
-      );
+    trailId: 'test-trail',
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: 42.0,
+    startLng: 9.0,
+    endLat: 42.1,
+    endLng: 9.1,
+  );
 
   /// Rando passee credible : elle remplit le critere « au moins une rando ».
   PastHike aPastHike() => PastHike(
-        date: DateTime(2026, 6, 1),
-        days: 3,
-        avgWalkHoursPerDay: 6,
-        totalElevationGain: 2400,
-        totalDistanceKm: 54,
-      );
+    date: DateTime(2026, 6, 1),
+    days: 3,
+    avgWalkHoursPerDay: 6,
+    totalElevationGain: 2400,
+    totalDistanceKm: 54,
+  );
 
   /// Evaluation dont le decoupage conseille (7 jours) DIFFERE de la duree par
   /// defaut du sentier de test (5) : sans cet ecart, « appliquer » et « ne
@@ -126,9 +122,11 @@ void main() {
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
           stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([for (var n = 1; n <= 5; n++) stage(n)])),
-          feasibilityAssessmentProvider
-              .overrideWith((ref) async => assessmentSuggesting7Days()),
+            (ref) => Future.value([for (var n = 1; n <= 5; n++) stage(n)]),
+          ),
+          feasibilityAssessmentProvider.overrideWith(
+            (ref) async => assessmentSuggesting7Days(),
+          ),
           hikerProfileProvider.overrideWith(() => _FixedProfile(profile)),
           pastHikesProvider.overrideWith(() => _FixedHikes(pastHikes)),
           walkTestResultProvider.overrideWith((ref) async => null),
@@ -154,54 +152,64 @@ void main() {
   // D1 — AUCUN VERDICT TANT QUE LES CRITERES NE SONT PAS TOUS LA
   // =========================================================================
   group('D1 — le verdict attend TOUS les criteres (parite GR20)', () {
-    testWidgets('morphologie SEULE -> aucun verdict, l ecran dit ce qui manque',
-        (tester) async {
-      // Exactement le geste de Chris : age + taille + poids, rien d'autre.
+    testWidgets(
+      'morphologie SEULE -> aucun verdict, l ecran dit ce qui manque',
+      (tester) async {
+        // Exactement le geste de Chris : age + taille + poids, rien d'autre.
+        await pumpFeasibility(
+          tester,
+          profile: const HikerProfile(age: 45, heightCm: 178, weightKg: 76),
+          pastHikes: const [],
+        );
+
+        // AUCUN verdict : ni feu tricolore, ni tableau etape par etape, ni
+        // conseils de programme.
+        expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
+        expect(find.text(t.feasibility.formula.verdicts.red), findsNothing);
+        expect(find.text(t.feasibility.formula.verdicts.orange), findsNothing);
+        expect(find.text(t.feasibility.formula.verdicts.green), findsNothing);
+        expect(find.text(t.feasibility.formula.adviceTitle), findsNothing);
+
+        // A la place : ce qu'il manque, nomme.
+        expect(find.text(t.feasibility.flow.missingTitle), findsOneWidget);
+        expect(find.text(t.feasibility.flow.missingPastHikes), findsOneWidget);
+        // La fiche est remplie : elle ne doit PAS etre listee comme manquante.
+        expect(find.text(t.feasibility.flow.missingProfile), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'fiche INCOMPLETE (age seul) -> la fiche est listee manquante',
+      (tester) async {
+        await pumpFeasibility(
+          tester,
+          profile: const HikerProfile(age: 45),
+          pastHikes: const [],
+        );
+        expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
+        expect(find.text(t.feasibility.flow.missingProfile), findsOneWidget);
+        expect(find.text(t.feasibility.flow.missingPastHikes), findsOneWidget);
+      },
+    );
+
+    testWidgets('bouton « Valider » DESACTIVE tant que les criteres manquent', (
+      tester,
+    ) async {
       await pumpFeasibility(
         tester,
         profile: const HikerProfile(age: 45, heightCm: 178, weightKg: 76),
         pastHikes: const [],
       );
-
-      // AUCUN verdict : ni feu tricolore, ni tableau etape par etape, ni
-      // conseils de programme.
-      expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
-      expect(find.text(t.feasibility.formula.verdicts.red), findsNothing);
-      expect(find.text(t.feasibility.formula.verdicts.orange), findsNothing);
-      expect(find.text(t.feasibility.formula.verdicts.green), findsNothing);
-      expect(find.text(t.feasibility.formula.adviceTitle), findsNothing);
-
-      // A la place : ce qu'il manque, nomme.
-      expect(find.text(t.feasibility.flow.missingTitle), findsOneWidget);
-      expect(find.text(t.feasibility.flow.missingPastHikes), findsOneWidget);
-      // La fiche est remplie : elle ne doit PAS etre listee comme manquante.
-      expect(find.text(t.feasibility.flow.missingProfile), findsNothing);
-    });
-
-    testWidgets('fiche INCOMPLETE (age seul) -> la fiche est listee manquante',
-        (tester) async {
-      await pumpFeasibility(
-        tester,
-        profile: const HikerProfile(age: 45),
-        pastHikes: const [],
+      final finder = find.widgetWithText(
+        ElevatedButton,
+        t.feasibility.flow.validate,
       );
-      expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
-      expect(find.text(t.feasibility.flow.missingProfile), findsOneWidget);
-      expect(find.text(t.feasibility.flow.missingPastHikes), findsOneWidget);
-    });
-
-    testWidgets('bouton « Valider » DESACTIVE tant que les criteres manquent',
-        (tester) async {
-      await pumpFeasibility(
-        tester,
-        profile: const HikerProfile(age: 45, heightCm: 178, weightKg: 76),
-        pastHikes: const [],
-      );
-      final finder =
-          find.widgetWithText(ElevatedButton, t.feasibility.flow.validate);
       expect(finder, findsOneWidget);
-      expect(tester.widget<ElevatedButton>(finder).onPressed, isNull,
-          reason: 'incomplet -> le bouton ne doit mener a aucun verdict');
+      expect(
+        tester.widget<ElevatedButton>(finder).onPressed,
+        isNull,
+        reason: 'incomplet -> le bouton ne doit mener a aucun verdict',
+      );
 
       // Et taper dessus ne fait apparaitre aucun verdict.
       await tester.tap(finder, warnIfMissed: false);
@@ -236,15 +244,20 @@ void main() {
           pastHikes: [aPastHike()],
         );
 
-    testWidgets('AVANT le choix : l ecran dit qu aucun decoupage n est retenu',
-        (tester) async {
-      await pumpVerdict(tester);
-      expect(
-        find.text(t.feasibility.formula
-            .retainedPlanNone(days: testTrailConfig.defaultDuration)),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      'AVANT le choix : l ecran dit qu aucun decoupage n est retenu',
+      (tester) async {
+        await pumpVerdict(tester);
+        expect(
+          find.text(
+            t.feasibility.formula.retainedPlanNone(
+              days: testTrailConfig.defaultDuration,
+            ),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('taper le decoupage CHANGE LE PROGRAMME REEL', (tester) async {
       final container = await pumpVerdict(tester);
@@ -271,8 +284,9 @@ void main() {
       expect(prefs.getInt(retainedDurationPrefsKey('test-trail')), 7);
     });
 
-    testWidgets('le decoupage retenu est VISIBLE au retour sur l ecran',
-        (tester) async {
+    testWidgets('le decoupage retenu est VISIBLE au retour sur l ecran', (
+      tester,
+    ) async {
       await pumpVerdict(tester);
       final button = find.widgetWithText(
         ElevatedButton,
@@ -286,7 +300,8 @@ void main() {
       await tester.pageBack();
       await tester.pumpAndSettle();
       await tester.ensureVisible(
-          find.text(t.feasibility.formula.retainedPlan(days: 7)));
+        find.text(t.feasibility.formula.retainedPlan(days: 7)),
+      );
       expect(
         find.text(t.feasibility.formula.retainedPlan(days: 7)),
         findsOneWidget,
@@ -307,8 +322,10 @@ void main() {
       );
       addTearDown(first.dispose);
       first.listen(selectedDurationProvider, (_, __) {});
-      expect(first.read(selectedDurationProvider),
-          testTrailConfig.defaultDuration);
+      expect(
+        first.read(selectedDurationProvider),
+        testTrailConfig.defaultDuration,
+      );
       first.read(selectedDurationProvider.notifier).set(7);
       expect(first.read(selectedDurationProvider), 7);
       // Laisse l'ecriture durable se faire.
@@ -323,8 +340,11 @@ void main() {
       // Hydratation asynchrone depuis le stockage durable.
       await Future<void>.delayed(const Duration(milliseconds: 20));
 
-      expect(second.read(selectedDurationProvider), 7,
-          reason: 'le decoupage retenu doit survivre au redemarrage');
+      expect(
+        second.read(selectedDurationProvider),
+        7,
+        reason: 'le decoupage retenu doit survivre au redemarrage',
+      );
     });
   });
 }

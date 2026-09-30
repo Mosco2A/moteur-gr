@@ -210,8 +210,11 @@ Future<bool> tapIfPresent(
       return true;
     }
     // Present mais NON atteignable (recouvert/hors zone) : signal QA honnete.
-    logStep(persona, etape,
-        'COINCE : cible presente mais NON atteignable (hit-test vide) -> $quoi');
+    logStep(
+      persona,
+      etape,
+      'COINCE : cible presente mais NON atteignable (hit-test vide) -> $quoi',
+    );
     return false;
   }
   if (warnIfMissing) {
@@ -252,8 +255,11 @@ Future<bool> scrollUntil(
       return true;
     }
   }
-  logStep(persona, etape,
-      'COINCE : cible non atteinte apres defilement -> $quoi');
+  logStep(
+    persona,
+    etape,
+    'COINCE : cible non atteinte apres defilement -> $quoi',
+  );
   return false;
 }
 
@@ -328,17 +334,24 @@ Future<bool> dismissBackupConsentIfPresent(
   WidgetTester tester,
   String persona,
 ) async {
-  final valider =
-      find.byKey(const ValueKey('refus-sauvegarde-systeme-valider'));
+  final valider = find.byKey(
+    const ValueKey('refus-sauvegarde-systeme-valider'),
+  );
   if (valider.evaluate().isEmpty) return false;
   logStep(
-      persona,
-      'consent_sauvegarde',
-      'Porte de consentement de la sauvegarde systeme (tache 617) presente — '
-          'on VALIDE sans toucher a la case (le refus est le defaut).');
-  await tapIfPresent(tester, valider, persona, 'consent_sauvegarde',
-      'bouton de validation de la porte de consentement',
-      warnIfMissing: false);
+    persona,
+    'consent_sauvegarde',
+    'Porte de consentement de la sauvegarde systeme (tache 617) presente — '
+        'on VALIDE sans toucher a la case (le refus est le defaut).',
+  );
+  await tapIfPresent(
+    tester,
+    valider,
+    persona,
+    'consent_sauvegarde',
+    'bouton de validation de la porte de consentement',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester);
   return true;
 }
@@ -351,21 +364,39 @@ Future<bool> dismissAdsConsentIfPresent(
   WidgetTester tester,
   String persona,
 ) async {
-  final refuse = find.byWidgetPredicate((w) =>
-      w is Text &&
-      (w.data == 'Do not consent' ||
-          w.data == 'Ne pas consentir' ||
-          w.data == 'Gérer les options' ||
-          w.data == 'Manage options'));
-  final consent = find.byWidgetPredicate((w) =>
-      w is Text && (w.data == 'Consent' || w.data == 'Consentir'));
+  final refuse = find.byWidgetPredicate(
+    (w) =>
+        w is Text &&
+        (w.data == 'Do not consent' ||
+            w.data == 'Ne pas consentir' ||
+            w.data == 'Gérer les options' ||
+            w.data == 'Manage options'),
+  );
+  final consent = find.byWidgetPredicate(
+    (w) => w is Text && (w.data == 'Consent' || w.data == 'Consentir'),
+  );
   if (present(refuse) || present(consent)) {
-    logStep(persona, 'consent',
-        'Formulaire consentement pub (UMP) present — on refuse pour debloquer');
-    if (!await tapIfPresent(tester, refuse, persona, 'consent',
-        'Ne pas consentir/Do not consent', warnIfMissing: false)) {
-      await tapIfPresent(tester, consent, persona, 'consent',
-          'Consent (repli)', warnIfMissing: false);
+    logStep(
+      persona,
+      'consent',
+      'Formulaire consentement pub (UMP) present — on refuse pour debloquer',
+    );
+    if (!await tapIfPresent(
+      tester,
+      refuse,
+      persona,
+      'consent',
+      'Ne pas consentir/Do not consent',
+      warnIfMissing: false,
+    )) {
+      await tapIfPresent(
+        tester,
+        consent,
+        persona,
+        'consent',
+        'Consent (repli)',
+        warnIfMissing: false,
+      );
     }
     await pumpAndSettleTolerant(tester);
     return true;
@@ -389,7 +420,11 @@ Future<bool> completeOnboardingIfPresent(
   final next = textFrEn('Suivant', 'Next');
   final start = textFrEn('Commencer', 'Get started');
   // Laisse le boot poser l'onboarding (ou le catalogue/mes-treks) a l'ecran.
-  final appeared = await waitFor(tester, skip, timeout: const Duration(seconds: 10));
+  final appeared = await waitFor(
+    tester,
+    skip,
+    timeout: const Duration(seconds: 10),
+  );
   if (!appeared && !present(next)) {
     logStep(persona, 'onboarding', 'Onboarding absent (deja complete)');
     return false;
@@ -415,11 +450,20 @@ Future<bool> completeOnboardingIfPresent(
   // question s'ouvrir, on y REPOND, et seulement ensuite on appuie sur
   // « Passer ». Cela rend la campagne DETERMINISTE. La course, elle, reste un
   // defaut produit a part entiere : elle est rapportee, pas masquee.
-  await attendreEtFranchirLaPorteDeConsentement(tester, persona,
-      timeout: const Duration(seconds: 8));
+  await attendreEtFranchirLaPorteDeConsentement(
+    tester,
+    persona,
+    timeout: const Duration(seconds: 8),
+  );
   // Voie rapide : « Passer / Skip ».
-  if (await tapIfPresent(tester, skip, persona, 'onboarding', 'Passer/Skip',
-      warnIfMissing: false)) {
+  if (await tapIfPresent(
+    tester,
+    skip,
+    persona,
+    'onboarding',
+    'Passer/Skip',
+    warnIfMissing: false,
+  )) {
     await pumpAndSettleTolerant(tester);
     // LA QUESTION QUI ATTEND DERRIERE L'ONBOARDING (tache 617). Elle s'ouvre en
     // post-frame juste apres la sortie : sans cette reponse, la route reste
@@ -430,13 +474,25 @@ Future<bool> completeOnboardingIfPresent(
   }
   // Repli : enchainer Suivant/Next (max 4) puis Commencer/Get started.
   for (var i = 0; i < 4; i++) {
-    if (!await tapIfPresent(tester, next, persona, 'onboarding',
-        'Suivant/Next (${i + 1})', warnIfMissing: false)) {
+    if (!await tapIfPresent(
+      tester,
+      next,
+      persona,
+      'onboarding',
+      'Suivant/Next (${i + 1})',
+      warnIfMissing: false,
+    )) {
       break;
     }
   }
-  await tapIfPresent(tester, start, persona, 'onboarding',
-      'Commencer/Get started', warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    start,
+    persona,
+    'onboarding',
+    'Commencer/Get started',
+    warnIfMissing: false,
+  );
   await attendreEtFranchirLaPorteDeConsentement(tester, persona);
   await _sortirVraimentDeLOnboarding(tester, persona);
   return true;
@@ -472,20 +528,31 @@ Future<void> _sortirVraimentDeLOnboarding(
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 2));
     if (!present(skip)) {
       if (i > 0) {
-        logStep(persona, 'onboarding',
-            'Sortie de l onboarding obtenue apres ${i + 1} appui(s) sur '
-            '« Passer ».');
+        logStep(
+          persona,
+          'onboarding',
+          'Sortie de l onboarding obtenue apres ${i + 1} appui(s) sur '
+              '« Passer ».',
+        );
       }
       return;
     }
     if (i > 0) {
-      logStep(persona, 'onboarding',
-          'L onboarding est TOUJOURS a l ecran : nouvel appui sur « Passer » '
-          '(essai ${i + 1}).');
+      logStep(
+        persona,
+        'onboarding',
+        'L onboarding est TOUJOURS a l ecran : nouvel appui sur « Passer » '
+            '(essai ${i + 1}).',
+      );
     }
-    await tapIfPresent(tester, skip, persona, 'onboarding',
-        'Passer/Skip (essai ${i + 1})',
-        warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      skip,
+      persona,
+      'onboarding',
+      'Passer/Skip (essai ${i + 1})',
+      warnIfMissing: false,
+    );
     // 2. ON LAISSE DU TEMPS REEL A L'ECRITURE, ET C'EST LE POINT DELICAT.
     //    `_finish()` de l'onboarding fait `await completeOnboarding(ref)` —
     //    une ecriture SharedPreferences, donc un aller-retour de canal de
@@ -494,18 +561,23 @@ Future<void> _sortirVraimentDeLOnboarding(
     //    bouton, bien avant la reponse du canal, et le scenario repartait en
     //    croyant l'onboarding ferme. On pompe donc en continu jusqu'a ce que
     //    l'ecran disparaisse VRAIMENT.
-    if (await _attendreDisparition(
-        tester, skip, const Duration(seconds: 8))) {
-      logStep(persona, 'onboarding',
-          'Onboarding ferme (appui ${i + 1}) — la navigation a suivi '
-          'l ecriture du drapeau.');
+    if (await _attendreDisparition(tester, skip, const Duration(seconds: 8))) {
+      logStep(
+        persona,
+        'onboarding',
+        'Onboarding ferme (appui ${i + 1}) — la navigation a suivi '
+            'l ecriture du drapeau.',
+      );
       return;
     }
   }
   if (present(skip)) {
-    logStep(persona, 'onboarding',
-        'COINCE : l onboarding ne se ferme pas apres $essais appuis sur '
-        '« Passer » — A RAPPORTER, ce n est plus une course.');
+    logStep(
+      persona,
+      'onboarding',
+      'COINCE : l onboarding ne se ferme pas apres $essais appuis sur '
+          '« Passer » — A RAPPORTER, ce n est plus une course.',
+    );
   }
 }
 
@@ -539,8 +611,9 @@ Future<bool> attendreEtFranchirLaPorteDeConsentement(
   String persona, {
   Duration timeout = const Duration(seconds: 6),
 }) async {
-  final valider =
-      find.byKey(const ValueKey('refus-sauvegarde-systeme-valider'));
+  final valider = find.byKey(
+    const ValueKey('refus-sauvegarde-systeme-valider'),
+  );
   await waitFor(tester, valider, timeout: timeout);
   return dismissBackupConsentIfPresent(tester, persona);
 }
@@ -584,14 +657,20 @@ Future<void> finalizeScenario(WidgetTester tester, String persona) async {
     // passait par la meme porte. Le message d'une `FlutterError` porte le
     // widget en cause (« The widget which was currently being built... ») bien
     // au-dela de 160 caracteres.
-    logStep(persona, 'teardown',
-        'Exception NON FATALE drainee (artefact de disposal, parcours deja '
-        'termine) : ${msg.length > 900 ? msg.substring(0, 900) : msg}');
+    logStep(
+      persona,
+      'teardown',
+      'Exception NON FATALE drainee (artefact de disposal, parcours deja '
+          'termine) : ${msg.length > 900 ? msg.substring(0, 900) : msg}',
+    );
     await tester.pump(const Duration(milliseconds: 80));
   }
   if (drained == 0) {
-    logStep(persona, 'teardown',
-        'Aucune exception de teardown a drainer (cloture propre).');
+    logStep(
+      persona,
+      'teardown',
+      'Aucune exception de teardown a drainer (cloture propre).',
+    );
   }
 }
 
@@ -691,14 +770,13 @@ Future<bool> exigeVisible(
 
 /// EXIGENCE : [finder] doit etre ABSENT de l'ecran (verification de non-regression,
 /// p. ex. « aucun bandeau de prudence sur un profil vert »).
-bool exigeAbsent(
-  Finder finder,
-  String persona,
-  String etape,
-  String quoi,
-) =>
-    exige(persona, etape, finder.evaluate().isEmpty,
-        'ne doit PAS etre affiche : $quoi');
+bool exigeAbsent(Finder finder, String persona, String etape, String quoi) =>
+    exige(
+      persona,
+      etape,
+      finder.evaluate().isEmpty,
+      'ne doit PAS etre affiche : $quoi',
+    );
 
 /// EXIGENCE : la cible doit etre reellement TAPABLE (presente ET hit-testable).
 ///
@@ -711,8 +789,14 @@ Future<bool> exigeTap(
   String etape,
   String quoi,
 ) async {
-  final ok = await tapIfPresent(tester, finder, persona, etape, quoi,
-      warnIfMissing: false);
+  final ok = await tapIfPresent(
+    tester,
+    finder,
+    persona,
+    etape,
+    quoi,
+    warnIfMissing: false,
+  );
   return exige(persona, etape, ok, 'doit etre ATTEIGNABLE et tapable : $quoi');
 }
 
@@ -726,7 +810,12 @@ Future<bool> exigeSaisie(
   String quoi,
 ) async {
   final ok = await enterIfPresent(tester, finder, text, persona, etape, quoi);
-  return exige(persona, etape, ok, 'champ saisissable : $quoi (valeur "$text")');
+  return exige(
+    persona,
+    etape,
+    ok,
+    'champ saisissable : $quoi (valeur "$text")',
+  );
 }
 
 /// CLOTURE DU SCENARIO : fait ECHOUER le test si une exigence n'est pas tenue.
@@ -735,18 +824,31 @@ Future<bool> exigeSaisie(
 /// qui n'evalue AUCUNE exigence est desormais ROUGE, pas verte.
 void verdictPersona(String persona, {int minimumExigences = 1}) {
   final total = kExigencesTenues + kExigencesEchouees.length;
-  print('PERSONA_VERDICT|$persona|$kExigencesTenues|'
-      '${kExigencesEchouees.length}');
-  logStep(persona, 'verdict',
-      'BILAN EXIGENCES : $kExigencesTenues tenue(s), '
-      '${kExigencesEchouees.length} non tenue(s) sur $total evaluee(s).');
-  expect(total >= minimumExigences, isTrue,
-      reason: 'HARNAIS AVEUGLE : $persona n a evalue que $total exigence(s) '
-          '(minimum attendu $minimumExigences). Un scenario qui ne verifie '
-          'rien ne peut pas etre vert.');
-  expect(kExigencesEchouees, isEmpty,
-      reason: 'Exigences NON TENUES par le produit :\n'
-          '${kExigencesEchouees.join('\n')}');
+  print(
+    'PERSONA_VERDICT|$persona|$kExigencesTenues|'
+    '${kExigencesEchouees.length}',
+  );
+  logStep(
+    persona,
+    'verdict',
+    'BILAN EXIGENCES : $kExigencesTenues tenue(s), '
+        '${kExigencesEchouees.length} non tenue(s) sur $total evaluee(s).',
+  );
+  expect(
+    total >= minimumExigences,
+    isTrue,
+    reason:
+        'HARNAIS AVEUGLE : $persona n a evalue que $total exigence(s) '
+        '(minimum attendu $minimumExigences). Un scenario qui ne verifie '
+        'rien ne peut pas etre vert.',
+  );
+  expect(
+    kExigencesEchouees,
+    isEmpty,
+    reason:
+        'Exigences NON TENUES par le produit :\n'
+        '${kExigencesEchouees.join('\n')}',
+  );
 }
 
 // ===========================================================================
@@ -776,19 +878,23 @@ class _VeilleEcranSysteme with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      logStep(persona, 'ecran_systeme',
-          'Retour au premier plan (resumed) : l ecran systeme est referme.');
+      logStep(
+        persona,
+        'ecran_systeme',
+        'Retour au premier plan (resumed) : l ecran systeme est referme.',
+      );
       return;
     }
     final trace = '${state.name} @ ${DateTime.now().toIso8601String()}';
     kEcransSystemeDetectes.add(trace);
     print('PERSONA_ECRAN_SYSTEME|$persona|${state.name}');
     logStep(
-        persona,
-        'ecran_systeme',
-        'ECRAN SYSTEME DETECTE : l application a PERDU le premier plan '
-            '(${state.name}). Une fenetre Android (dialogue de permission, '
-            'par exemple) recouvre l app — INVISIBLE dans l arbre Flutter.');
+      persona,
+      'ecran_systeme',
+      'ECRAN SYSTEME DETECTE : l application a PERDU le premier plan '
+          '(${state.name}). Une fenetre Android (dialogue de permission, '
+          'par exemple) recouvre l app — INVISIBLE dans l arbre Flutter.',
+    );
   }
 }
 
@@ -799,8 +905,11 @@ void installerVeilleEcranSysteme(String persona) {
   if (_veilleur != null) return;
   _veilleur = _VeilleEcranSysteme(persona);
   WidgetsBinding.instance.addObserver(_veilleur!);
-  logStep(persona, 'ecran_systeme',
-      'Veille des ecrans SYSTEME installee (cycle de vie de l activite).');
+  logStep(
+    persona,
+    'ecran_systeme',
+    'Veille des ecrans SYSTEME installee (cycle de vie de l activite).',
+  );
 }
 
 /// Retire le veilleur (a appeler avant la cloture pour ne rien laisser vivant).
@@ -830,9 +939,9 @@ List<String> ecransSystemeBloquants() => kEcransSystemeDetectes
 int marqueEcranSysteme() => kEcransSystemeDetectes.length;
 
 /// Evenements systeme survenus DEPUIS [marque].
-List<String> ecransSystemeDepuis(int marque) =>
-    kEcransSystemeDetectes.sublist(
-        marque.clamp(0, kEcransSystemeDetectes.length));
+List<String> ecransSystemeDepuis(int marque) => kEcransSystemeDetectes.sublist(
+  marque.clamp(0, kEcransSystemeDetectes.length),
+);
 
 // ===========================================================================
 // LE MONDE DU BUILD 8 : PLUS DE SENTIER GRATUIT, UNE DEMO, ET UN MUR PAYANT
@@ -927,7 +1036,10 @@ Future<bool> acheterLeSentierPourDeVrai(
     final element = tester.element(find.byType(Navigator).first);
     final c = ProviderScope.containerOf(element, listen: false);
     final etapes = TrailCatalog.byId(trailId)?.totalStages ?? 0;
-    await c.read(databaseProvider).trekEntitlementsDao.upsert(
+    await c
+        .read(databaseProvider)
+        .trekEntitlementsDao
+        .upsert(
           TrekEntitlementsCompanion.insert(
             trailId: trailId,
             owned: const Value(true),
@@ -942,10 +1054,11 @@ Future<bool> acheterLeSentierPourDeVrai(
         .timeout(const Duration(seconds: 20));
     final possede = await service.ownsTrail(trailId);
     logStep(
-        persona,
-        'achat',
-        'Droit d acquisition ecrit pour $trailId ($etapes etapes) ; '
-            'le service de production repond possede = $possede');
+      persona,
+      'achat',
+      'Droit d acquisition ecrit pour $trailId ($etapes etapes) ; '
+          'le service de production repond possede = $possede',
+    );
     return possede;
   } catch (e) {
     logStep(persona, 'achat', 'COINCE : acquisition impossible : $e');

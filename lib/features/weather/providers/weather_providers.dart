@@ -55,10 +55,7 @@ final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
 
 /// Parametres pour identifier une etape meteo.
 class WeatherStageParams {
-  const WeatherStageParams({
-    required this.trailId,
-    required this.stageNumber,
-  });
+  const WeatherStageParams({required this.trailId, required this.stageNumber});
 
   final String trailId;
   final int stageNumber;
@@ -154,9 +151,7 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
   @override
   WeatherState build() {
     // select() sur le repository — ne reconstruit que si l'instance change
-    _repo = ref.watch(
-      weatherRepositoryProvider.select((repo) => repo),
-    );
+    _repo = ref.watch(weatherRepositoryProvider.select((repo) => repo));
 
     // select() sur la connectivite — ne reconstruit que sur changement de statut
     _connectivity = ref.watch(
@@ -188,7 +183,8 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
       state = WeatherState(
         forecast: forecast,
         alerts: alerts,
-        isFromCache: _connectivity == ConnectivityStatusValues.offline ||
+        isFromCache:
+            _connectivity == ConnectivityStatusValues.offline ||
             (age != null &&
                 age > const Duration(hours: WeatherCacheDao.cacheTtlHours)),
       );
@@ -203,9 +199,9 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
     state = WeatherState(
       errorMessage: _connectivity == ConnectivityStatusValues.offline
           ? 'hors ligne et aucun bulletin en cache pour '
-              '${_params.trailId}/${_params.stageNumber}'
+                '${_params.trailId}/${_params.stageNumber}'
           : 'chargement impossible pour '
-              '${_params.trailId}/${_params.stageNumber}',
+                '${_params.trailId}/${_params.stageNumber}',
     );
   }
 
@@ -243,8 +239,12 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
 /// Auto-refresh via select() sur la connectivite :
 /// quand le statut change (offline -> online), le build() est relance
 /// et recharge les donnees depuis l'API.
-final stageWeatherProvider = NotifierProvider.family<StageWeatherNotifier,
-    WeatherState, WeatherStageParams>(StageWeatherNotifier.new);
+final stageWeatherProvider =
+    NotifierProvider.family<
+      StageWeatherNotifier,
+      WeatherState,
+      WeatherStageParams
+    >(StageWeatherNotifier.new);
 
 // ---------------------------------------------------------------------------
 // Providers derives avec select() pour performance UI
@@ -254,10 +254,8 @@ final stageWeatherProvider = NotifierProvider.family<StageWeatherNotifier,
 /// Evite de reconstruire le widget si seules les alertes changent.
 final weatherForecastProvider =
     Provider.family<WeatherForecast?, WeatherStageParams>((ref, params) {
-  return ref.watch(
-    stageWeatherProvider(params).select((s) => s.forecast),
-  );
-});
+      return ref.watch(stageWeatherProvider(params).select((s) => s.forecast));
+    });
 
 // TACHE 572 — `weatherAlertsProvider`, `weatherLoadingProvider` et
 // `weatherFromCacheProvider` ont ete RETIRES : trois providers derives

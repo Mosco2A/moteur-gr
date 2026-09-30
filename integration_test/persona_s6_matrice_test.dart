@@ -103,43 +103,408 @@ class _Cellule {
 /// Ne pas les retoucher a la main : elles doivent rester le miroir du JSON.
 // ignore: library_private_types_in_public_api
 const List<_Cellule> kCellulesJ1 = <_Cellule>[
-  _Cellule('P1-J1-R0', 'Marc', 0, 28, 178, 72.0, 'male', 12, 180.0, 10000, 6, 'beginner', <String>['orange', 'green', 'green', 'green', 'orange', 'green', 'green'], 1.0875),
-  _Cellule('P1-J1-R1', 'Marc', 1, 28, 178, 72.0, 'male', 12, 180.0, 10000, 6, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9799),
-  _Cellule('P1-J1-R2', 'Marc', 2, 28, 178, 72.0, 'male', 12, 180.0, 10000, 6, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9799),
-  _Cellule('P1-J1-R3', 'Marc', 3, 28, 178, 72.0, 'male', 12, 180.0, 10000, 6, 'confirmed', <String>['green', 'green', 'green', 'green', 'green', 'green', 'green'], 0.6818),
-  _Cellule('P2-J1-R0', 'Lea', 0, 34, 165, 58.0, 'female', 1, 9.0, 200, 9, 'beginner', <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'], 1.4015),
-  _Cellule('P2-J1-R1', 'Lea', 1, 34, 165, 58.0, 'female', 1, 9.0, 200, 9, 'beginner', <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'], 1.4015),
-  _Cellule('P2-J1-R2', 'Lea', 2, 34, 165, 58.0, 'female', 1, 9.0, 200, 9, 'beginner', <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'], 1.4015),
-  _Cellule('P2-J1-R3', 'Lea', 3, 34, 165, 58.0, 'female', 1, 9.0, 200, 9, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9113),
-  _Cellule('P3-J1-R0', 'Jean-Pierre', 0, 68, 176, 82.0, 'male', 10, 170.0, 10000, 5, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8635),
-  _Cellule('P3-J1-R1', 'Jean-Pierre', 1, 68, 176, 82.0, 'male', 10, 170.0, 10000, 5, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8635),
-  _Cellule('P3-J1-R2', 'Jean-Pierre', 2, 68, 176, 82.0, 'male', 10, 170.0, 10000, 5, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8635),
-  _Cellule('P3-J1-R3', 'Jean-Pierre', 3, 68, 176, 82.0, 'male', 10, 170.0, 10000, 5, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8635),
-  _Cellule('P4-J1-R0', 'Ines', 0, 41, 168, 63.0, 'female', 6, 85.0, 6000, 4, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9279),
-  _Cellule('P4-J1-R1', 'Ines', 1, 41, 168, 63.0, 'female', 6, 85.0, 6000, 4, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9279),
-  _Cellule('P4-J1-R2', 'Ines', 2, 41, 168, 63.0, 'female', 6, 85.0, 6000, 4, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9279),
-  _Cellule('P4-J1-R3', 'Ines', 3, 41, 168, 63.0, 'female', 6, 85.0, 6000, 4, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9113),
-  _Cellule('P5-J1-R0', 'Thomas', 0, 22, 183, 75.0, 'male', 7, 140.0, 1400, 7, 'beginner', <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'], 1.5070),
-  _Cellule('P5-J1-R1', 'Thomas', 1, 22, 183, 75.0, 'male', 7, 140.0, 1400, 7, 'beginner', <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'], 1.5070),
-  _Cellule('P5-J1-R2', 'Thomas', 2, 22, 183, 75.0, 'male', 7, 140.0, 1400, 7, 'beginner', <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'], 1.5070),
-  _Cellule('P5-J1-R3', 'Thomas', 3, 22, 183, 75.0, 'male', 7, 140.0, 1400, 7, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.9799),
-  _Cellule('P6-J1-R0', 'Sabine', 0, 47, 172, 68.0, 'female', 7, 126.0, 6300, 9, 'beginner', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8937),
-  _Cellule('P6-J1-R1', 'Sabine', 1, 47, 172, 68.0, 'female', 7, 126.0, 6300, 9, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8937),
-  _Cellule('P6-J1-R2', 'Sabine', 2, 47, 172, 68.0, 'female', 7, 126.0, 6300, 9, 'intermediate', <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'], 0.8937),
-  _Cellule('P6-J1-R3', 'Sabine', 3, 47, 172, 68.0, 'female', 7, 126.0, 6300, 9, 'confirmed', <String>['green', 'green', 'green', 'green', 'green', 'green', 'green'], 0.6341),
+  _Cellule(
+    'P1-J1-R0',
+    'Marc',
+    0,
+    28,
+    178,
+    72.0,
+    'male',
+    12,
+    180.0,
+    10000,
+    6,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'orange', 'green', 'green'],
+    1.0875,
+  ),
+  _Cellule(
+    'P1-J1-R1',
+    'Marc',
+    1,
+    28,
+    178,
+    72.0,
+    'male',
+    12,
+    180.0,
+    10000,
+    6,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9799,
+  ),
+  _Cellule(
+    'P1-J1-R2',
+    'Marc',
+    2,
+    28,
+    178,
+    72.0,
+    'male',
+    12,
+    180.0,
+    10000,
+    6,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9799,
+  ),
+  _Cellule(
+    'P1-J1-R3',
+    'Marc',
+    3,
+    28,
+    178,
+    72.0,
+    'male',
+    12,
+    180.0,
+    10000,
+    6,
+    'confirmed',
+    <String>['green', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.6818,
+  ),
+  _Cellule(
+    'P2-J1-R0',
+    'Lea',
+    0,
+    34,
+    165,
+    58.0,
+    'female',
+    1,
+    9.0,
+    200,
+    9,
+    'beginner',
+    <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'],
+    1.4015,
+  ),
+  _Cellule(
+    'P2-J1-R1',
+    'Lea',
+    1,
+    34,
+    165,
+    58.0,
+    'female',
+    1,
+    9.0,
+    200,
+    9,
+    'beginner',
+    <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'],
+    1.4015,
+  ),
+  _Cellule(
+    'P2-J1-R2',
+    'Lea',
+    2,
+    34,
+    165,
+    58.0,
+    'female',
+    1,
+    9.0,
+    200,
+    9,
+    'beginner',
+    <String>['red', 'orange', 'green', 'orange', 'red', 'orange', 'green'],
+    1.4015,
+  ),
+  _Cellule(
+    'P2-J1-R3',
+    'Lea',
+    3,
+    34,
+    165,
+    58.0,
+    'female',
+    1,
+    9.0,
+    200,
+    9,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9113,
+  ),
+  _Cellule(
+    'P3-J1-R0',
+    'Jean-Pierre',
+    0,
+    68,
+    176,
+    82.0,
+    'male',
+    10,
+    170.0,
+    10000,
+    5,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8635,
+  ),
+  _Cellule(
+    'P3-J1-R1',
+    'Jean-Pierre',
+    1,
+    68,
+    176,
+    82.0,
+    'male',
+    10,
+    170.0,
+    10000,
+    5,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8635,
+  ),
+  _Cellule(
+    'P3-J1-R2',
+    'Jean-Pierre',
+    2,
+    68,
+    176,
+    82.0,
+    'male',
+    10,
+    170.0,
+    10000,
+    5,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8635,
+  ),
+  _Cellule(
+    'P3-J1-R3',
+    'Jean-Pierre',
+    3,
+    68,
+    176,
+    82.0,
+    'male',
+    10,
+    170.0,
+    10000,
+    5,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8635,
+  ),
+  _Cellule(
+    'P4-J1-R0',
+    'Ines',
+    0,
+    41,
+    168,
+    63.0,
+    'female',
+    6,
+    85.0,
+    6000,
+    4,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9279,
+  ),
+  _Cellule(
+    'P4-J1-R1',
+    'Ines',
+    1,
+    41,
+    168,
+    63.0,
+    'female',
+    6,
+    85.0,
+    6000,
+    4,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9279,
+  ),
+  _Cellule(
+    'P4-J1-R2',
+    'Ines',
+    2,
+    41,
+    168,
+    63.0,
+    'female',
+    6,
+    85.0,
+    6000,
+    4,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9279,
+  ),
+  _Cellule(
+    'P4-J1-R3',
+    'Ines',
+    3,
+    41,
+    168,
+    63.0,
+    'female',
+    6,
+    85.0,
+    6000,
+    4,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9113,
+  ),
+  _Cellule(
+    'P5-J1-R0',
+    'Thomas',
+    0,
+    22,
+    183,
+    75.0,
+    'male',
+    7,
+    140.0,
+    1400,
+    7,
+    'beginner',
+    <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'],
+    1.5070,
+  ),
+  _Cellule(
+    'P5-J1-R1',
+    'Thomas',
+    1,
+    22,
+    183,
+    75.0,
+    'male',
+    7,
+    140.0,
+    1400,
+    7,
+    'beginner',
+    <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'],
+    1.5070,
+  ),
+  _Cellule(
+    'P5-J1-R2',
+    'Thomas',
+    2,
+    22,
+    183,
+    75.0,
+    'male',
+    7,
+    140.0,
+    1400,
+    7,
+    'beginner',
+    <String>['red', 'red', 'green', 'orange', 'red', 'orange', 'green'],
+    1.5070,
+  ),
+  _Cellule(
+    'P5-J1-R3',
+    'Thomas',
+    3,
+    22,
+    183,
+    75.0,
+    'male',
+    7,
+    140.0,
+    1400,
+    7,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.9799,
+  ),
+  _Cellule(
+    'P6-J1-R0',
+    'Sabine',
+    0,
+    47,
+    172,
+    68.0,
+    'female',
+    7,
+    126.0,
+    6300,
+    9,
+    'beginner',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8937,
+  ),
+  _Cellule(
+    'P6-J1-R1',
+    'Sabine',
+    1,
+    47,
+    172,
+    68.0,
+    'female',
+    7,
+    126.0,
+    6300,
+    9,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8937,
+  ),
+  _Cellule(
+    'P6-J1-R2',
+    'Sabine',
+    2,
+    47,
+    172,
+    68.0,
+    'female',
+    7,
+    126.0,
+    6300,
+    9,
+    'intermediate',
+    <String>['orange', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.8937,
+  ),
+  _Cellule(
+    'P6-J1-R3',
+    'Sabine',
+    3,
+    47,
+    172,
+    68.0,
+    'female',
+    7,
+    126.0,
+    6300,
+    9,
+    'confirmed',
+    <String>['green', 'green', 'green', 'green', 'green', 'green', 'green'],
+    0.6341,
+  ),
 ];
 
 void main() {
   initHarness();
 
-  testWidgets('S6 — les 24 cellules du sentier de production, sur le produit',
-      (tester) async {
+  testWidgets('S6 — les 24 cellules du sentier de production, sur le produit', (
+    tester,
+  ) async {
     reinitialiserExigences();
     logStep(P, 'boot', 'Lancement de app.main()');
     installerVeilleEcranSysteme(P);
     app.main();
-    await settleAndShoot(tester, P, '01_boot',
-        timeout: const Duration(seconds: 12));
+    await settleAndShoot(
+      tester,
+      P,
+      '01_boot',
+      timeout: const Duration(seconds: 12),
+    );
     await completeOnboardingIfPresent(tester, P);
     await settleAndShoot(tester, P, '02_apres_onboarding');
 
@@ -156,8 +521,12 @@ void main() {
     await settleAndShoot(tester, P, '03_faisabilite');
 
     final container = _container(tester);
-    exige(P, 'container', container != null,
-        'le conteneur de providers de PRODUCTION est accessible');
+    exige(
+      P,
+      'container',
+      container != null,
+      'le conteneur de providers de PRODUCTION est accessible',
+    );
     if (container == null) {
       verdictPersona(P, minimumExigences: 1);
       return;
@@ -175,20 +544,35 @@ void main() {
       // la pompe de frames est arretee : le chargement d'asset dont depend
       // `trailMaxAltitudeProvider` ne progresse jamais et le scenario se fige
       // (constate : 8 min 56 sans une seule cellule jouee).
-      final conditionsSansDate = await tester.runAsync(() => container
-          .read(trekConditionsProvider.future)
-          .timeout(kAttenteProvider, onTimeout: () => throw StateError(
-              'trekConditionsProvider ne repond pas en '
-              '${kAttenteProvider.inSeconds} s : le sentier n est pas charge')));
-      exige(P, 'saison_absente', conditionsSansDate?.season == null,
-          'sans date de depart, la saison est INCONNUE (et non devinee)');
-      exige(P, 'saison_absente', conditionsSansDate?.heatFactor == 1.0,
-          'sans date de depart, k_chaleur vaut 1,00');
+      final conditionsSansDate = await tester.runAsync(
+        () => container
+            .read(trekConditionsProvider.future)
+            .timeout(
+              kAttenteProvider,
+              onTimeout: () => throw StateError(
+                'trekConditionsProvider ne repond pas en '
+                '${kAttenteProvider.inSeconds} s : le sentier n est pas charge',
+              ),
+            ),
+      );
       exige(
-          P,
-          'saison_absente',
-          conditionsSansDate?.seasonNeutralReason == NeutralReason.missingData,
-          'et la raison est DECLAREE : donnee manquante, pas absence de source');
+        P,
+        'saison_absente',
+        conditionsSansDate?.season == null,
+        'sans date de depart, la saison est INCONNUE (et non devinee)',
+      );
+      exige(
+        P,
+        'saison_absente',
+        conditionsSansDate?.heatFactor == 1.0,
+        'sans date de depart, k_chaleur vaut 1,00',
+      );
+      exige(
+        P,
+        'saison_absente',
+        conditionsSansDate?.seasonNeutralReason == NeutralReason.missingData,
+        'et la raison est DECLAREE : donnee manquante, pas absence de source',
+      );
     }
 
     var cellulesJouees = 0;
@@ -197,15 +581,23 @@ void main() {
       if (ok) cellulesJouees++;
     }
 
-    exige(P, 'couverture', cellulesJouees == kCellulesJ1.length,
-        'les ${kCellulesJ1.length} cellules ont ete jouees '
-        '(jouees : $cellulesJouees)');
+    exige(
+      P,
+      'couverture',
+      cellulesJouees == kCellulesJ1.length,
+      'les ${kCellulesJ1.length} cellules ont ete jouees '
+          '(jouees : $cellulesJouees)',
+    );
 
     // Aucune fenetre systeme n'a du recouvrir l'app (voir la note du harnais :
     // seuls `paused` et `hidden` sont bloquants, `inactive` est du bruit).
-    exige(P, 'ecran_systeme', ecransSystemeBloquants().isEmpty,
-        'aucune fenetre systeme pendant le balayage '
-        '(bloquants : ${ecransSystemeBloquants().join(", ")})');
+    exige(
+      P,
+      'ecran_systeme',
+      ecransSystemeBloquants().isEmpty,
+      'aucune fenetre systeme pendant le balayage '
+          '(bloquants : ${ecransSystemeBloquants().join(", ")})',
+    );
 
     await settleAndShoot(tester, P, '99_fin_matrice');
     retirerVeilleEcranSysteme();
@@ -227,36 +619,54 @@ Future<bool> _jouerCellule(
 ) async {
   await _ecrireProfil(tester, c, cellule);
 
-  final FeasibilityAssessment? a =
-      await tester.runAsync<FeasibilityAssessment?>(() async => c
-          .read(feasibilityAssessmentProvider.future)
-          .timeout(kAttenteProvider, onTimeout: () => null));
+  final FeasibilityAssessment? a = await tester
+      .runAsync<FeasibilityAssessment?>(
+        () async => c
+            .read(feasibilityAssessmentProvider.future)
+            .timeout(kAttenteProvider, onTimeout: () => null),
+      );
   if (a == null) {
-    exige(P, cellule.id, false,
-        'le produit rend une evaluation pour ${cellule.id} '
-        '(${cellule.persona}, rang ${cellule.rangForme})');
+    exige(
+      P,
+      cellule.id,
+      false,
+      'le produit rend une evaluation pour ${cellule.id} '
+      '(${cellule.persona}, rang ${cellule.rangForme})',
+    );
     return false;
   }
 
   // 1. LE NIVEAU DERIVE — il vient des randos passees et du rang de forme,
   //    donc de tout le chemin fiche -> profil objectif -> niveau.
-  exige(P, cellule.id, a.level.name == cellule.niveauAttendu,
-      '${cellule.id} niveau : attendu ${cellule.niveauAttendu}, '
-      'produit ${a.level.name}');
+  exige(
+    P,
+    cellule.id,
+    a.level.name == cellule.niveauAttendu,
+    '${cellule.id} niveau : attendu ${cellule.niveauAttendu}, '
+    'produit ${a.level.name}',
+  );
 
   // 2. LES SEPT VERDICTS D'ETAPE — ils ne dependent d'aucun jour de repos.
   final n = cellule.verdictsEtapeAttendus.length;
   if (a.stageVerdicts.length != n) {
-    exige(P, cellule.id, false,
-        '${cellule.id} : ${a.stageVerdicts.length} etapes evaluees contre $n '
-        'attendues — le sentier charge n est pas celui de la matrice');
+    exige(
+      P,
+      cellule.id,
+      false,
+      '${cellule.id} : ${a.stageVerdicts.length} etapes evaluees contre $n '
+      'attendues — le sentier charge n est pas celui de la matrice',
+    );
     return false;
   }
   for (var i = 0; i < n; i++) {
     final obtenu = a.stageVerdicts[i].verdict.name;
-    exige(P, cellule.id, obtenu == cellule.verdictsEtapeAttendus[i],
-        '${cellule.id} etape ${i + 1} : attendu '
-        '${cellule.verdictsEtapeAttendus[i]}, produit $obtenu');
+    exige(
+      P,
+      cellule.id,
+      obtenu == cellule.verdictsEtapeAttendus[i],
+      '${cellule.id} etape ${i + 1} : attendu '
+      '${cellule.verdictsEtapeAttendus[i]}, produit $obtenu',
+    );
   }
 
   // 2-bis. LA SAISON A BIEN ETE PRISE EN COMPTE. Les six personnages partent
@@ -264,33 +674,43 @@ Future<bool> _jouerCellule(
   //    (1,00). On l'exige, sinon une cellule d'ete tournerait en silence avec
   //    la mauvaise capacite et C1 serait faux sans que rien ne le dise.
   final chaleurAttendue = _estEnEte(cellule.moisDepart) ? 0.93 : 1.00;
-  exige(P, cellule.id,
-      (a.conditions.heatFactor - chaleurAttendue).abs() <= kEps,
-      '${cellule.id} k_chaleur : attendu $chaleurAttendue '
-      '(depart au mois ${cellule.moisDepart}), '
-      'produit ${a.conditions.heatFactor}');
+  exige(
+    P,
+    cellule.id,
+    (a.conditions.heatFactor - chaleurAttendue).abs() <= kEps,
+    '${cellule.id} k_chaleur : attendu $chaleurAttendue '
+    '(depart au mois ${cellule.moisDepart}), '
+    'produit ${a.conditions.heatFactor}',
+  );
 
   // 3. C1, LA PIRE ETAPE — grandeur chiffree, independante du repos.
   final c1 = a.circuit?.worstStage ?? double.nan;
-  exige(P, cellule.id, (c1 - cellule.c1Attendu).abs() <= kEps,
-      '${cellule.id} C1 : attendu ${cellule.c1Attendu}, '
-      'produit ${c1.toStringAsFixed(4)}');
+  exige(
+    P,
+    cellule.id,
+    (c1 - cellule.c1Attendu).abs() <= kEps,
+    '${cellule.id} C1 : attendu ${cellule.c1Attendu}, '
+    'produit ${c1.toStringAsFixed(4)}',
+  );
 
   // 4. LE CIRCUIT : ENREGISTRE, PAS EXIGE (voir l en-tete). C est cette ligne
   //    que la re-mesure de la colonne C3 lira.
   final circuit = a.circuit;
-  print('PERSONA_MATRICE_C3|${cellule.id}|${a.level.name}|'
-      'C1=${c1.toStringAsFixed(4)}|'
-      'C3=${circuit?.rest?.toStringAsFixed(4) ?? "non-applicable"}|'
-      'monotonie=${circuit?.monotony?.toStringAsFixed(4) ?? "non-applicable"}|'
-      'repos=${a.restDaysPlanned}|'
-      'dominante=${circuit?.dominant.name}|'
-      'circuit=${circuit?.verdict.name}');
+  print(
+    'PERSONA_MATRICE_C3|${cellule.id}|${a.level.name}|'
+    'C1=${c1.toStringAsFixed(4)}|'
+    'C3=${circuit?.rest?.toStringAsFixed(4) ?? "non-applicable"}|'
+    'monotonie=${circuit?.monotony?.toStringAsFixed(4) ?? "non-applicable"}|'
+    'repos=${a.restDaysPlanned}|'
+    'dominante=${circuit?.dominant.name}|'
+    'circuit=${circuit?.verdict.name}',
+  );
   logStep(
-      P,
-      cellule.id,
-      'circuit ENREGISTRE (non exige) : ${circuit?.verdict.name}, '
-      'dominante ${circuit?.dominant.name}, ${a.restDaysPlanned} repos');
+    P,
+    cellule.id,
+    'circuit ENREGISTRE (non exige) : ${circuit?.verdict.name}, '
+    'dominante ${circuit?.dominant.name}, ${a.restDaysPlanned} repos',
+  );
 
   return true;
 }
@@ -319,19 +739,26 @@ Future<void> _ecrireProfil(
   });
   // Le RANG DE FORME vient du test de marche : on ecrit un resultat DATE par le
   // meme depot que le controleur du test 6 minutes (aucune surcharge).
-  await tester.runAsync(() => c.read(hikerProfileRepositoryProvider)
-      .saveWalkTestResult(WalkTestResult(
-        distanceMeters: 500,
-        level: WalkTestLevel.ordered[cellule.rangForme],
-        takenAt: DateTime.now(),
-      )));
+  await tester.runAsync(
+    () => c
+        .read(hikerProfileRepositoryProvider)
+        .saveWalkTestResult(
+          WalkTestResult(
+            distanceMeters: 500,
+            level: WalkTestLevel.ordered[cellule.rangForme],
+            takenAt: DateTime.now(),
+          ),
+        ),
+  );
   // LA DATE DE DEPART — c'est elle, et elle seule, qui porte la SAISON
   // (`trekConditionsProvider` la lit dans `downloadReminderProvider`). Sans
   // elle, `k_chaleur` vaut 1,00 et les cellules d'ete seraient fausses.
   final trailId = c.read(trailIdProvider);
-  await tester.runAsync(() => c
-      .read(downloadReminderProvider(trailId).notifier)
-      .setDepartureDate(DateTime(2027, cellule.moisDepart, 8)));
+  await tester.runAsync(
+    () => c
+        .read(downloadReminderProvider(trailId).notifier)
+        .setDepartureDate(DateTime(2027, cellule.moisDepart, 8)),
+  );
   // Delais courts et assumes : ce scenario ne rend AUCUN ecran, il ecrit par
   // les notifiers et lit un provider. Attendre 4 s par cellule couterait
   // 3 minutes pour rien et ferait deborder le run.
@@ -345,10 +772,10 @@ Future<void> _ecrireProfil(
 bool _estEnEte(int mois) => mois >= 6 && mois <= 8;
 
 String? _sexe(String s) => switch (s) {
-      'male' => HikerSex.male,
-      'female' => HikerSex.female,
-      _ => null,
-    };
+  'male' => HikerSex.male,
+  'female' => HikerSex.female,
+  _ => null,
+};
 
 void _invalider(ProviderContainer c) {
   c.invalidate(hikerProfileProvider);

@@ -12,8 +12,8 @@ import '../../../core/branding/stepways_icons.dart';
 /// reserve precisement a cet usage. Une seule regle, un seul endroit.
 Color dayNeutralColor(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
-        ? AppTheme.grisTexteSecondaire
-        : AppTheme.grisGranite;
+    ? AppTheme.grisTexteSecondaire
+    : AppTheme.grisGranite;
 
 /// Role semantique d'une action de jour — la COULEUR en est derivee.
 ///

@@ -37,14 +37,15 @@ class FirebaseService {
 
   /// Constructeur pour les tests unitaires.
   FirebaseService.testOnly({required this.isAvailable})
-      : raisonIndisponible =
-            isAvailable ? null : FirebaseIndisponible.configurationAbsente;
+    : raisonIndisponible = isAvailable
+          ? null
+          : FirebaseIndisponible.configurationAbsente;
 
   /// Factory pour un service Firebase indisponible (mode local/test).
   factory FirebaseService.unavailable() => FirebaseService._(
-        isAvailable: false,
-        raisonIndisponible: FirebaseIndisponible.configurationAbsente,
-      );
+    isAvailable: false,
+    raisonIndisponible: FirebaseIndisponible.configurationAbsente,
+  );
 
   /// Indique si Firebase est disponible et initialise
   final bool isAvailable;
@@ -110,8 +111,10 @@ class FirebaseService {
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
 
-      _log.i('[FirebaseService] Services en ligne actifs (projet '
-          '$firebaseProjectId) — rapports de plantage et statistiques armes.');
+      _log.i(
+        '[FirebaseService] Services en ligne actifs (projet '
+        '$firebaseProjectId) — rapports de plantage et statistiques armes.',
+      );
       return FirebaseService._(isAvailable: true);
     } on Object catch (e, st) {
       // En cas d'echec OU de TIMEOUT (TimeoutException) d'init, fallback en mode
@@ -122,10 +125,16 @@ class FirebaseService {
       // A ETE fourni et l'initialisation a echoue. C'est une anomalie, pas un
       // choix. Cas le plus probable : les options natives manquent encore
       // (`google-services.json` / `GoogleService-Info.plist` / greffon Gradle).
-      ErrorHandler.log(e, stackTrace: st, context: 'FirebaseService.initialize');
-      _log.w('[FirebaseService] MODE LOCAL FORCE : le projet '
-          '$firebaseProjectId est configure mais l\'initialisation a ECHOUE. '
-          'Aucun rapport de plantage ne remontera.');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'FirebaseService.initialize',
+      );
+      _log.w(
+        '[FirebaseService] MODE LOCAL FORCE : le projet '
+        '$firebaseProjectId est configure mais l\'initialisation a ECHOUE. '
+        'Aucun rapport de plantage ne remontera.',
+      );
       return FirebaseService._(
         isAvailable: false,
         raisonIndisponible: FirebaseIndisponible.echecInitialisation,

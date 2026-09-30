@@ -60,8 +60,9 @@ void main() {
   });
 
   group('L4-4 — action de partage dans le menu de l entree', () {
-    testWidgets('le menu propose Partager en plus de Supprimer',
-        (tester) async {
+    testWidgets('le menu propose Partager en plus de Supprimer', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await db.journalDao.insertEntry(
@@ -92,7 +93,9 @@ void main() {
                     builder: (_, __) => const JournalScreen(trailId: trailId),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),

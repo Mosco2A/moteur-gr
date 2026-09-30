@@ -19,14 +19,15 @@ void main() {
     test('start passe en recording', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final container = ProviderContainer(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-        ],
+        overrides: [databaseProvider.overrideWithValue(db)],
       );
 
       final notifier = container.read(trackingProvider.notifier);
 
-      expect(container.read(trackingProvider).status, TrackingStatusValues.idle);
+      expect(
+        container.read(trackingProvider).status,
+        TrackingStatusValues.idle,
+      );
 
       notifier.start('sentier-volcans');
       expect(
@@ -43,9 +44,7 @@ void main() {
     test('pause passe en paused', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final container = ProviderContainer(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-        ],
+        overrides: [databaseProvider.overrideWithValue(db)],
       );
 
       final notifier = container.read(trackingProvider.notifier);
@@ -65,9 +64,7 @@ void main() {
     test('stop revient a idle et sauvegarde', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final container = ProviderContainer(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-        ],
+        overrides: [databaseProvider.overrideWithValue(db)],
       );
 
       final notifier = container.read(trackingProvider.notifier);

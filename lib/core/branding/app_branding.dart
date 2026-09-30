@@ -74,8 +74,9 @@ abstract final class AppBranding {
   static const bool splashSurFondSombre = splashVariant != 'aube';
 
   /// Le logo horizontal a poser sur le fond de demarrage actif.
-  static const String logoSurFondSplash =
-      splashSurFondSombre ? logoHorizontalClair : logoHorizontal;
+  static const String logoSurFondSplash = splashSurFondSombre
+      ? logoHorizontalClair
+      : logoHorizontal;
 
   /// Le vert de la charte. C'est la couleur du trait des icones de rubrique en
   /// duo et le fond de l'ecran de demarrage Foret.

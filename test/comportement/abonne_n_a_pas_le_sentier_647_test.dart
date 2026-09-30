@@ -53,8 +53,7 @@ class _Reseau extends ConnectivityMonitor {
   final TypeDeLien lien;
 
   @override
-  Future<ConnectivityStatus> checkStatus() async =>
-      lien == TypesDeLien.aucun
+  Future<ConnectivityStatus> checkStatus() async => lien == TypesDeLien.aucun
       ? ConnectivityStatusValues.offline
       : ConnectivityStatusValues.online;
 
@@ -126,28 +125,31 @@ void main() {
   }
 
   group('647 — l abonnement ne donne AUCUN droit sur un sentier', () {
-    test('abonne + sentier NON achete : le droit de realiser n est pas acquis',
-        () async {
-      final service = await monetisation();
-      await service.onSubscriptionValidated();
+    test(
+      'abonne + sentier NON achete : le droit de realiser n est pas acquis',
+      () async {
+        final service = await monetisation();
+        await service.onSubscriptionValidated();
 
-      expect(
-        await service.isSubscriberActive(),
-        isTrue,
-        reason: 'l abonnement doit bien etre actif, sinon le test ne prouve rien',
-      );
-      expect(
-        await service.accessFor('mare-a-mare-centre'),
-        TrailAccess.subscriber,
-      );
-      expect(
-        await service.canRealizeTrail('mare-a-mare-centre'),
-        isFalse,
-        reason:
-            'pour faire le trek il faut ACHETER le sentier — l abonnement ne '
-            'remplace pas l achat',
-      );
-    });
+        expect(
+          await service.isSubscriberActive(),
+          isTrue,
+          reason:
+              'l abonnement doit bien etre actif, sinon le test ne prouve rien',
+        );
+        expect(
+          await service.accessFor('mare-a-mare-centre'),
+          TrailAccess.subscriber,
+        );
+        expect(
+          await service.canRealizeTrail('mare-a-mare-centre'),
+          isFalse,
+          reason:
+              'pour faire le trek il faut ACHETER le sentier — l abonnement ne '
+              'remplace pas l achat',
+        );
+      },
+    );
 
     test('abonne + sentier NON achete : la carte hors ligne est REFUSEE, et le '
         'refus nomme le droit manquant', () async {
@@ -176,38 +178,41 @@ void main() {
       );
     });
 
-    test('ACHETER le sentier, lui, ouvre la carte — c est la contre-epreuve',
-        () async {
-      final service = await monetisation();
-      await publierUneCarte();
-      await db.trekEntitlementsDao.upsert(
-        TrekEntitlementsCompanion.insert(
-          trailId: 'mare-a-mare-centre',
-          owned: const Value(true),
-          acquiredStages: const Value(7),
-          totalStages: const Value(7),
-          updatedAt: DateTime(2026, 9, 30),
-        ),
-      );
+    test(
+      'ACHETER le sentier, lui, ouvre la carte — c est la contre-epreuve',
+      () async {
+        final service = await monetisation();
+        await publierUneCarte();
+        await db.trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: 'mare-a-mare-centre',
+            owned: const Value(true),
+            acquiredStages: const Value(7),
+            totalStages: const Value(7),
+            updatedAt: DateTime(2026, 9, 30),
+          ),
+        );
 
-      expect(await service.canRealizeTrail('mare-a-mare-centre'), isTrue);
+        expect(await service.canRealizeTrail('mare-a-mare-centre'), isTrue);
 
-      final decision = await DescenteDesCartes(
-        cartes: MBTilesManager(),
-        dao: manifestes,
-        monetization: service,
-        connectivityMonitor: _Reseau(TypesDeLien.wifi),
-      ).examiner(
-        'mare-a-mare-centre',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+        final decision =
+            await DescenteDesCartes(
+              cartes: MBTilesManager(),
+              dao: manifestes,
+              monetization: service,
+              connectivityMonitor: _Reseau(TypesDeLien.wifi),
+            ).examiner(
+              'mare-a-mare-centre',
+              niveau: NiveauDeTelechargement.realiser,
+            );
 
-      expect(
-        decision.refus,
-        isNot(RefusDeDescente.droitDeRealiserManquant),
-        reason: 'le sentier achete, le droit est acquis',
-      );
-    });
+        expect(
+          decision.refus,
+          isNot(RefusDeDescente.droitDeRealiserManquant),
+          reason: 'le sentier achete, le droit est acquis',
+        );
+      },
+    );
 
     test('l abonnement ne change QUE la publicite et la cagnotte', () async {
       final service = await monetisation();

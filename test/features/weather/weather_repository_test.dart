@@ -105,71 +105,86 @@ void main() {
         trailId: 'sentier-bleu',
         stageNumber: 1,
       );
-      expect(cached, isNotNull,
-          reason: 'La prevision doit etre en cache apres l appel API');
+      expect(
+        cached,
+        isNotNull,
+        reason: 'La prevision doit etre en cache apres l appel API',
+      );
 
       repo.dispose();
     });
   });
 
   group('WeatherCache -- expiration apres 1h', () {
-    test('cache valide retourne la prevision, cache expire retourne null',
-        () async {
-      // ARRANGE : cache avec TTL 0 secondes pour simuler expiration
-      final cacheExpired = WeatherCache(
-        dao: weatherCacheDao,
-        cacheTtl: Duration.zero,
-      );
-      final cacheValid = WeatherCache(
-        dao: weatherCacheDao,
-        cacheTtl: const Duration(hours: 2),
-      );
-
-      // Creer une prevision mock et la sauvegarder
-      final mockClient = http_testing.MockClient((request) async {
-        return http.Response(
-          jsonEncode(_mockApiResponse),
-          200,
-          headers: {'content-type': 'application/json'},
+    test(
+      'cache valide retourne la prevision, cache expire retourne null',
+      () async {
+        // ARRANGE : cache avec TTL 0 secondes pour simuler expiration
+        final cacheExpired = WeatherCache(
+          dao: weatherCacheDao,
+          cacheTtl: Duration.zero,
         );
-      });
-      final apiService = WeatherApiService(client: mockClient);
+        final cacheValid = WeatherCache(
+          dao: weatherCacheDao,
+          cacheTtl: const Duration(hours: 2),
+        );
 
-      // Sauvegarder via API pour remplir le cache
-      final forecast = await apiService.fetchForecast(
-        latitude: 42.472,
-        longitude: 8.927,
-      );
-      expect(forecast, isNotNull);
-      expect(forecast!.fetchedAt, isNotNull,
-          reason: 'TACHE 572 : un bulletin sans instant de releve ne permet a '
+        // Creer une prevision mock et la sauvegarder
+        final mockClient = http_testing.MockClient((request) async {
+          return http.Response(
+            jsonEncode(_mockApiResponse),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        });
+        final apiService = WeatherApiService(client: mockClient);
+
+        // Sauvegarder via API pour remplir le cache
+        final forecast = await apiService.fetchForecast(
+          latitude: 42.472,
+          longitude: 8.927,
+        );
+        expect(forecast, isNotNull);
+        expect(
+          forecast!.fetchedAt,
+          isNotNull,
+          reason:
+              'TACHE 572 : un bulletin sans instant de releve ne permet a '
               'aucun ecran de dire s\'il est frais : c\'etait la cause des '
-              'deux boutons de mise a jour muets.');
+              'deux boutons de mise a jour muets.',
+        );
 
-      await cacheValid.saveForecast(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-        forecast: forecast,
-      );
+        await cacheValid.saveForecast(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+          forecast: forecast,
+        );
 
-      // ACT & ASSERT : cache avec TTL long => retourne la prevision
-      final validResult = await cacheValid.getFreshForecast(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-      );
-      expect(validResult, isNotNull,
-          reason: 'Cache valide (TTL 2h) doit retourner la prevision');
-      expect(validResult!.days.length, 3);
+        // ACT & ASSERT : cache avec TTL long => retourne la prevision
+        final validResult = await cacheValid.getFreshForecast(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+        );
+        expect(
+          validResult,
+          isNotNull,
+          reason: 'Cache valide (TTL 2h) doit retourner la prevision',
+        );
+        expect(validResult!.days.length, 3);
 
-      // ACT & ASSERT : cache avec TTL 0 => expire immediatement
-      final expiredResult = await cacheExpired.getFreshForecast(
-        trailId: 'sentier-bleu',
-        stageNumber: 1,
-      );
-      expect(expiredResult, isNull,
-          reason: 'Cache expire (TTL 0s) doit retourner null');
+        // ACT & ASSERT : cache avec TTL 0 => expire immediatement
+        final expiredResult = await cacheExpired.getFreshForecast(
+          trailId: 'sentier-bleu',
+          stageNumber: 1,
+        );
+        expect(
+          expiredResult,
+          isNull,
+          reason: 'Cache expire (TTL 0s) doit retourner null',
+        );
 
-      apiService.dispose();
-    });
+        apiService.dispose();
+      },
+    );
   });
 }

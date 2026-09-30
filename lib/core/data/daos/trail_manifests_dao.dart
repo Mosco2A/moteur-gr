@@ -66,16 +66,16 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// LE FILTRE EST DANS LA REQUETE, pas apres la lecture : sur un catalogue qui
   /// grandit, on ne remonte pas quarante lignes pour en garder une.
   Future<List<TrailManifest>> getTelecharges() {
-    return (select(trailManifests)
-          ..where((t) => t.localVersion.isNotNull()))
-        .get();
+    return (select(
+      trailManifests,
+    )..where((t) => t.localVersion.isNotNull())).get();
   }
 
   /// Recupere une entree par son trailId
   Future<TrailManifest?> getByTrailId(String trailId) {
-    return (select(trailManifests)
-          ..where((t) => t.trailId.equals(trailId)))
-        .getSingleOrNull();
+    return (select(
+      trailManifests,
+    )..where((t) => t.trailId.equals(trailId))).getSingleOrNull();
   }
 
   /// Insere ou remplace une entree du manifeste
@@ -85,9 +85,9 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime une entree par son trailId
   Future<int> deleteByTrailId(String trailId) {
-    return (delete(trailManifests)
-          ..where((t) => t.trailId.equals(trailId)))
-        .go();
+    return (delete(
+      trailManifests,
+    )..where((t) => t.trailId.equals(trailId))).go();
   }
 
   /// Verifie si un sentier necessite une mise a jour.
@@ -153,11 +153,14 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
     required NiveauDeTelechargement niveau,
   }) async {
     final lignes =
-        await (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
-            .write(TrailManifestsCompanion(
-      localVersion: Value(revision),
-      niveauLocal: Value(niveau.code),
-    ));
+        await (update(
+          trailManifests,
+        )..where((t) => t.trailId.equals(trailId))).write(
+          TrailManifestsCompanion(
+            localVersion: Value(revision),
+            niveauLocal: Value(niveau.code),
+          ),
+        );
     if (lignes == 0) {
       throw RepereNonInscriptible(trailId);
     }
@@ -188,10 +191,13 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// des donnees dirait « realiser » sur un sentier vide, et la reprise croirait
   /// n avoir qu une mise a jour a faire.
   Future<int> oublierRevision(String trailId) {
-    return (update(trailManifests)..where((t) => t.trailId.equals(trailId)))
-        .write(const TrailManifestsCompanion(
-      localVersion: Value(null),
-      niveauLocal: Value(null),
-    ));
+    return (update(
+      trailManifests,
+    )..where((t) => t.trailId.equals(trailId))).write(
+      const TrailManifestsCompanion(
+        localVersion: Value(null),
+        niveauLocal: Value(null),
+      ),
+    );
   }
 }

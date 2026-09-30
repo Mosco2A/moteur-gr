@@ -16,7 +16,7 @@ void main() {
   const code = 'MON-CODE-TEST';
 
   Future<(LocalAuthService, WalletStore, AccountVaultService, AppDatabase)>
-      makePhone() async {
+  makePhone() async {
     final auth = LocalAuthService();
     await auth.initialize(); // auto-connexion anonyme
     final db = AppDatabase(NativeDatabase.memory());
@@ -33,38 +33,40 @@ void main() {
     return (auth, wallet, service, db);
   }
 
-  test('export chiffre profil + wallet, restore sur tél B les restaure',
-      () async {
-    SharedPreferences.setMockInitialValues({});
-    final (authA, walletA, serviceA, dbA) = await makePhone();
-    addTearDown(dbA.close);
+  test(
+    'export chiffre profil + wallet, restore sur tél B les restaure',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final (authA, walletA, serviceA, dbA) = await makePhone();
+      addTearDown(dbA.close);
 
-    // Profil + solde sur le tél A.
-    await authA.updateDisplayName('Steve');
-    await authA.updateAvatarIndex(3);
-    await walletA.credit(120);
+      // Profil + solde sur le tél A.
+      await authA.updateDisplayName('Steve');
+      await authA.updateAvatarIndex(3);
+      await walletA.credit(120);
 
-    final blob = await serviceA.exportWithCode(code);
-    expect(blob, isNotNull);
-    // Zéro-knowledge : le pseudo n'apparaît pas en clair dans le blob.
-    expect(blob!.contains('Steve'), isFalse);
+      final blob = await serviceA.exportWithCode(code);
+      expect(blob, isNotNull);
+      // Zéro-knowledge : le pseudo n'apparaît pas en clair dans le blob.
+      expect(blob!.contains('Steve'), isFalse);
 
-    // --- Tél B : NEUF (prefs vides, DB vide), même code ---
-    SharedPreferences.setMockInitialValues({});
-    final (authB, walletB, serviceB, dbB) = await makePhone();
-    addTearDown(dbB.close);
+      // --- Tél B : NEUF (prefs vides, DB vide), même code ---
+      SharedPreferences.setMockInitialValues({});
+      final (authB, walletB, serviceB, dbB) = await makePhone();
+      addTearDown(dbB.close);
 
-    // Avant restauration : profil B anonyme sans pseudo, solde 0.
-    expect(authB.currentUser?.displayName, isNull);
-    expect(walletB.snapshot.balanceSteps, 0);
+      // Avant restauration : profil B anonyme sans pseudo, solde 0.
+      expect(authB.currentUser?.displayName, isNull);
+      expect(walletB.snapshot.balanceSteps, 0);
 
-    await serviceB.restoreWithCode(code, blob);
+      await serviceB.restoreWithCode(code, blob);
 
-    // Profil + solde restaurés à l'identique.
-    expect(authB.currentUser?.displayName, 'Steve');
-    expect(authB.currentUser?.avatarIndex, 3);
-    expect(walletB.snapshot.balanceSteps, 120);
-  });
+      // Profil + solde restaurés à l'identique.
+      expect(authB.currentUser?.displayName, 'Steve');
+      expect(authB.currentUser?.avatarIndex, 3);
+      expect(walletB.snapshot.balanceSteps, 120);
+    },
+  );
 
   test('includeWallet:false exclut le solde du transfert', () async {
     SharedPreferences.setMockInitialValues({});

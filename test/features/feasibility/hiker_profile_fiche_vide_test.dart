@@ -40,8 +40,9 @@ void main() {
     return ProviderScope(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider
-            .overrideWithValue(HikerProfileRepository(db: db, prefs: prefs)),
+        hikerProfileRepositoryProvider.overrideWithValue(
+          HikerProfileRepository(db: db, prefs: prefs),
+        ),
       ],
       child: TranslationProvider(
         child: MaterialApp.router(
@@ -76,16 +77,19 @@ void main() {
 
   final tp = t.hikerProfile;
 
-  testWidgets('tous champs vides : refus avec message, rien enregistre',
-      (tester) async {
+  testWidgets('tous champs vides : refus avec message, rien enregistre', (
+    tester,
+  ) async {
     await ouvrir(tester);
 
     await tester.tap(find.text(tp.save));
     await tester.pumpAndSettle();
 
     // Le refus est DIT, et il est visible la ou l'on vient d'appuyer.
-    expect(find.byKey(const ValueKey('hiker-profile-empty-error')),
-        findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('hiker-profile-empty-error')),
+      findsOneWidget,
+    );
     expect(find.text(tp.errorEmpty), findsOneWidget);
     // L'ecran n'est PAS quitte : le formulaire est toujours la.
     expect(find.text(tp.fieldAge), findsOneWidget);
@@ -93,8 +97,11 @@ void main() {
     expect(find.text(tp.saved), findsNothing);
 
     final persiste = await HikerProfileRepository(db: db, prefs: prefs).load();
-    expect(persiste.isEmpty, isTrue,
-        reason: 'aucun profil 0/0/0 ne doit atteindre la faisabilite');
+    expect(
+      persiste.isEmpty,
+      isTrue,
+      reason: 'aucun profil 0/0/0 ne doit atteindre la faisabilite',
+    );
   });
 
   testWidgets('saisir une donnee efface le refus', (tester) async {
@@ -105,22 +112,31 @@ void main() {
     expect(find.text(tp.errorEmpty), findsOneWidget);
 
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldAge), '42');
+      find.widgetWithText(TextFormField, tp.fieldAge),
+      '42',
+    );
     await tester.pumpAndSettle();
 
     expect(find.text(tp.errorEmpty), findsNothing);
   });
 
-  testWidgets('une fiche renseignee passe toujours (le chemin normal tient)',
-      (tester) async {
+  testWidgets('une fiche renseignee passe toujours (le chemin normal tient)', (
+    tester,
+  ) async {
     await ouvrir(tester);
 
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldAge), '42');
+      find.widgetWithText(TextFormField, tp.fieldAge),
+      '42',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldHeight), '175');
+      find.widgetWithText(TextFormField, tp.fieldHeight),
+      '175',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldWeight), '72');
+      find.widgetWithText(TextFormField, tp.fieldWeight),
+      '72',
+    );
     await tester.pumpAndSettle();
 
     // LE CHEMIN NORMAL PASSE PAR L'AUTORISATION (tache 560, N1). Ce test

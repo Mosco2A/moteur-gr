@@ -73,14 +73,16 @@ void main() {
             expect(
               points.length,
               pointsPerCard,
-              reason: '$asset/$id: points$lang = ${points.length}, '
+              reason:
+                  '$asset/$id: points$lang = ${points.length}, '
                   '$pointsPerCard attendus (calibre GR20)',
             );
             for (var i = 0; i < points.length; i++) {
               expect(
                 points[i].trim().length,
                 greaterThanOrEqualTo(40),
-                reason: '$asset/$id: points$lang[$i] est un moignon, '
+                reason:
+                    '$asset/$id: points$lang[$i] est un moignon, '
                     'pas un point de conseil',
               );
             }
@@ -94,7 +96,8 @@ void main() {
             expect(
               raw.containsKey('content$lang'),
               isFalse,
-              reason: '${raw['id']}: content$lang subsiste, la fiche doit '
+              reason:
+                  '${raw['id']}: content$lang subsiste, la fiche doit '
                   'porter des points',
             );
           }
@@ -106,7 +109,8 @@ void main() {
           expect(
             card.isAtCalibre,
             isTrue,
-            reason: '${card.id} n est pas au calibre '
+            reason:
+                '${card.id} n est pas au calibre '
                 '(${card.localizedPoints.length} points)',
           );
         }
@@ -136,7 +140,8 @@ void main() {
         expect(
           blob.contains(term.toLowerCase()),
           isFalse,
-          reason: 'Le socle multi-sentiers contient le terme '
+          reason:
+              'Le socle multi-sentiers contient le terme '
               'sentier-specifique "$term" : il appartient aux fiches du '
               'sentier concerne, pas au socle commun',
         );
@@ -181,15 +186,17 @@ void main() {
       expect(legacy.localizedContent, contains('paragraphe historique'));
     });
 
-    test('localizedContent joint les points quand il n y a pas de paragraphe',
-        () {
-      const card = TipCard(
-        id: 'x',
-        titleFr: 'T',
-        pointsFr: ['premier point', 'second point'],
-      );
-      expect(card.localizedContent, 'premier point\nsecond point');
-    });
+    test(
+      'localizedContent joint les points quand il n y a pas de paragraphe',
+      () {
+        const card = TipCard(
+          id: 'x',
+          titleFr: 'T',
+          pointsFr: ['premier point', 'second point'],
+        );
+        expect(card.localizedContent, 'premier point\nsecond point');
+      },
+    );
 
     test('une fiche sans contenu du tout ne casse pas', () {
       const empty = TipCard(id: 'vide', titleFr: 'T');
@@ -221,7 +228,9 @@ void main() {
       }
     });
 
-    testWidgets('maxPoints limite l apercu sans perdre le reste', (tester) async {
+    testWidgets('maxPoints limite l apercu sans perdre le reste', (
+      tester,
+    ) async {
       final card = readCards(socleAsset).first;
       await tester.pumpWidget(
         MaterialApp(

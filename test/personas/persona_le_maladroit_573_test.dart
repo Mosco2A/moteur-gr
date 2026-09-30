@@ -32,37 +32,43 @@ import '../structurel/parcours_reel.dart';
 void main() {
   group('LE MALADROIT — le retour arriere, que personne ne joue', () {
     testWidgets(
-        'au premier lancement, aucun retour arriere ne doit ouvrir un sentier '
-        'que l utilisateur n a pas choisi', (tester) async {
-      // LE SCENARIO EXACT DE CHRIS. Premiere ouverture : la garde pose sur
-      // l'accueil. On passe au catalogue comme le fait le bouton « Commencer »,
-      // puis on appuie sur retour — le geste que la campagne ne joue jamais.
-      await monterAppliReelle(tester, etat: EtatAppli.premierLancement);
-      expect(cheminAffiche(), '/onboarding');
+      'au premier lancement, aucun retour arriere ne doit ouvrir un sentier '
+      'que l utilisateur n a pas choisi',
+      (tester) async {
+        // LE SCENARIO EXACT DE CHRIS. Premiere ouverture : la garde pose sur
+        // l'accueil. On passe au catalogue comme le fait le bouton « Commencer »,
+        // puis on appuie sur retour — le geste que la campagne ne joue jamais.
+        await monterAppliReelle(tester, etat: EtatAppli.premierLancement);
+        expect(cheminAffiche(), '/onboarding');
 
-      // L'accueil est franchi : le drapeau passe, comme `completeOnboarding` le
-      // fait, puis on va au catalogue.
-      await monterAppliReelle(tester,
-          etat: EtatAppli.sansSentier, depart: '/catalog');
-      expect(cheminAffiche(), '/catalog');
+        // L'accueil est franchi : le drapeau passe, comme `completeOnboarding` le
+        // fait, puis on va au catalogue.
+        await monterAppliReelle(
+          tester,
+          etat: EtatAppli.sansSentier,
+          depart: '/catalog',
+        );
+        expect(cheminAffiche(), '/catalog');
 
-      await tester.binding.handlePopRoute();
-      await stabiliser(tester);
-      final apresRetour = cheminAffiche();
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
+        await tester.binding.handlePopRoute();
+        await stabiliser(tester);
+        final apresRetour = cheminAffiche();
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
 
-      expect(
-        apresRetour,
-        isNot(anyOf('/home', startsWith('/trail/'))),
-        reason: 'RETOUR ARRIERE VERS UN SENTIER NON CHOISI : depuis le '
-            'catalogue, a la premiere ouverture et sans aucun sentier '
-            'telecharge, le retour arriere pose l utilisateur sur '
-            '$apresRetour. C est le retour 2 de Chris, mot pour mot. Cause : '
-            '`context.go()` REMPLACE la pile au lieu d empiler, donc il n y a '
-            'aucun historique et le retour tombe sur la route par defaut.',
-      );
-    });
+        expect(
+          apresRetour,
+          isNot(anyOf('/home', startsWith('/trail/'))),
+          reason:
+              'RETOUR ARRIERE VERS UN SENTIER NON CHOISI : depuis le '
+              'catalogue, a la premiere ouverture et sans aucun sentier '
+              'telecharge, le retour arriere pose l utilisateur sur '
+              '$apresRetour. C est le retour 2 de Chris, mot pour mot. Cause : '
+              '`context.go()` REMPLACE la pile au lieu d empiler, donc il n y a '
+              'aucun historique et le retour tombe sur la route par defaut.',
+        );
+      },
+    );
 
     testWidgets('depuis chaque ecran, le retour arriere mene quelque part de '
         'sense', (tester) async {
@@ -85,9 +91,9 @@ void main() {
         await stabiliser(tester, coups: 3);
         final apres = cheminAffiche();
         final textes = textesVisibles(tester);
-        final erreurs = erreursDeRendu(tester)
-            .where((e) => !estDebordement(e))
-            .toList();
+        final erreurs = erreursDeRendu(
+          tester,
+        ).where((e) => !estDebordement(e)).toList();
         if (textes.isEmpty) {
           fautes.add('$concret : retour arriere -> ecran NU ($apres)');
         }
@@ -95,15 +101,21 @@ void main() {
           fautes.add('$concret : retour arriere -> ${erreurs.first}');
         }
         if (apres == avant) {
-          fautes.add('$concret : empile depuis l accueil, le retour arriere ne '
-              'recule pas');
+          fautes.add(
+            '$concret : empile depuis l accueil, le retour arriere ne '
+            'recule pas',
+          );
         }
       }
       await demonterAppli(tester);
       erreursDeRendu(tester);
-      expect(fautes, isEmpty,
-          reason: 'LE RETOUR ARRIERE, QUE LA CAMPAGNE NE JOUE JAMAIS :\n'
-              '  ${fautes.join('\n  ')}');
+      expect(
+        fautes,
+        isEmpty,
+        reason:
+            'LE RETOUR ARRIERE, QUE LA CAMPAGNE NE JOUE JAMAIS :\n'
+            '  ${fautes.join('\n  ')}',
+      );
     });
   });
 
@@ -127,9 +139,9 @@ void main() {
         final concret = cheminConcret(gabarit);
         if (concret == null) continue;
         await monterAppliReelle(tester, depart: concret);
-        final gestes = gestesDisponibles(tester)
-            .where((g) => !estGesteEvite(g.libelle))
-            .toList();
+        final gestes = gestesDisponibles(
+          tester,
+        ).where((g) => !estGesteEvite(g.libelle)).toList();
         for (final g in gestes.take(6)) {
           await revenirSurLaRoute(tester, concret);
           try {
@@ -141,9 +153,9 @@ void main() {
             continue; // le geste a change de place : rien a conclure
           }
           final textes = textesVisibles(tester);
-          final erreurs = erreursDeRendu(tester)
-              .where((e) => !estDebordement(e))
-              .toList();
+          final erreurs = erreursDeRendu(
+            tester,
+          ).where((e) => !estDebordement(e)).toList();
           if (erreurs.isNotEmpty) {
             fautes.add('$concret / $g : double appui -> ${erreurs.first}');
           }
@@ -159,8 +171,9 @@ void main() {
   });
 
   group('LE MALADROIT — il tape a cote', () {
-    testWidgets('un appui dans le vide ne produit rien de destructeur',
-        (tester) async {
+    testWidgets('un appui dans le vide ne produit rien de destructeur', (
+      tester,
+    ) async {
       final fautes = <String>[];
       for (final gabarit in <String>['/my-treks', '/home', '/settings']) {
         final concret = cheminConcret(gabarit)!;
@@ -188,9 +201,9 @@ void main() {
         await tester.tapAt(vide);
         await stabiliser(tester, coups: 2);
         final apres = cheminAffiche();
-        final erreurs = erreursDeRendu(tester)
-            .where((e) => !estDebordement(e))
-            .toList();
+        final erreurs = erreursDeRendu(
+          tester,
+        ).where((e) => !estDebordement(e)).toList();
         if (erreurs.isNotEmpty) {
           fautes.add('$concret : appui dans le vide -> ${erreurs.first}');
         }
@@ -224,14 +237,22 @@ void main() {
       await stabiliser(tester, coups: 3);
       await allerA(tester, concret);
       final textes = textesVisibles(tester);
-      final erreurs =
-          erreursDeRendu(tester).where((e) => !estDebordement(e)).toList();
+      final erreurs = erreursDeRendu(
+        tester,
+      ).where((e) => !estDebordement(e)).toList();
       await demonterAppli(tester);
       erreursDeRendu(tester);
-      expect(erreurs, isEmpty,
-          reason: 'revenir sur une saisie abandonnee leve : ${erreurs.join(' | ')}');
-      expect(textes, isNotEmpty,
-          reason: 'revenir sur une saisie abandonnee donne un ecran nu');
+      expect(
+        erreurs,
+        isEmpty,
+        reason:
+            'revenir sur une saisie abandonnee leve : ${erreurs.join(' | ')}',
+      );
+      expect(
+        textes,
+        isNotEmpty,
+        reason: 'revenir sur une saisie abandonnee donne un ecran nu',
+      );
     });
   });
 }

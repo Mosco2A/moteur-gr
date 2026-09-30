@@ -133,44 +133,49 @@ void main() {
         );
       });
 
-      test('l empreinte est acceptee avec ou sans le prefixe sha256:', () async {
-        final c = carte(1024);
-        final manager = MBTilesManager(httpClient: serveur(c.contenu));
+      test(
+        'l empreinte est acceptee avec ou sans le prefixe sha256:',
+        () async {
+          final c = carte(1024);
+          final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
-        final bilan = await manager.descendre(
-          trailId: 'prefixe',
-          url: 'https://example.com/p.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: 'sha256:${c.empreinte.toUpperCase()}',
-        );
+          final bilan = await manager.descendre(
+            trailId: 'prefixe',
+            url: 'https://example.com/p.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: 'sha256:${c.empreinte.toUpperCase()}',
+          );
 
-        expect(bilan.reussie, isTrue);
-      });
+          expect(bilan.reussie, isTrue);
+        },
+      );
 
-      test('la progression annonce le poids total, pas seulement le recu',
-          () async {
-        final c = carte(2 * 1024 * 1024);
-        final manager = MBTilesManager(httpClient: serveur(c.contenu));
-        final points = <ProgressionDeCarte>[];
+      test(
+        'la progression annonce le poids total, pas seulement le recu',
+        () async {
+          final c = carte(2 * 1024 * 1024);
+          final manager = MBTilesManager(httpClient: serveur(c.contenu));
+          final points = <ProgressionDeCarte>[];
 
-        await manager.descendre(
-          trailId: 'poids',
-          url: 'https://example.com/poids.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-          progression: points.add,
-        );
+          await manager.descendre(
+            trailId: 'poids',
+            url: 'https://example.com/poids.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: c.empreinte,
+            progression: points.add,
+          );
 
-        expect(points, isNotEmpty);
-        expect(points.last.octetsRecus, c.contenu.length);
-        expect(points.last.octetsTotal, c.contenu.length);
-        expect(points.last.fraction, 1.0);
-        // 2 097 152 octets = 2,1 Mo tels qu on les annonce a un randonneur.
-        expect(
-          ProgressionDeCarte.enMegaoctets(c.contenu.length),
-          closeTo(2.097, 0.001),
-        );
-      });
+          expect(points, isNotEmpty);
+          expect(points.last.octetsRecus, c.contenu.length);
+          expect(points.last.octetsTotal, c.contenu.length);
+          expect(points.last.fraction, 1.0);
+          // 2 097 152 octets = 2,1 Mo tels qu on les annonce a un randonneur.
+          expect(
+            ProgressionDeCarte.enMegaoctets(c.contenu.length),
+            closeTo(2.097, 0.001),
+          );
+        },
+      );
     });
 
     group('UNE CARTE A MOITIE ECRITE NE DOIT JAMAIS PORTER LE NOM DEFINITIF', () {
@@ -193,27 +198,29 @@ void main() {
         expect(await manager.hasMbtiles('coupe'), isFalse);
       });
 
-      test('une empreinte fausse DETRUIT le fichier en cours et ne pose rien',
-          () async {
-        final c = carte(4096);
-        final manager = MBTilesManager(httpClient: serveur(c.contenu));
+      test(
+        'une empreinte fausse DETRUIT le fichier en cours et ne pose rien',
+        () async {
+          final c = carte(4096);
+          final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
-        final bilan = await manager.descendre(
-          trailId: 'menteur',
-          url: 'https://example.com/m.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: 'a' * 64,
-        );
+          final bilan = await manager.descendre(
+            trailId: 'menteur',
+            url: 'https://example.com/m.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: 'a' * 64,
+          );
 
-        expect(bilan.echec, EchecDeCarte.empreinteInvalide);
-        expect(await manager.hasMbtiles('menteur'), isFalse);
-        // DETRUIT, et pas conserve : reprendre sur un contenu faux ne pourrait
-        // jamais produire la bonne empreinte.
-        expect(
-          File(await manager.cheminPartiel('menteur')).existsSync(),
-          isFalse,
-        );
-      });
+          expect(bilan.echec, EchecDeCarte.empreinteInvalide);
+          expect(await manager.hasMbtiles('menteur'), isFalse);
+          // DETRUIT, et pas conserve : reprendre sur un contenu faux ne pourrait
+          // jamais produire la bonne empreinte.
+          expect(
+            File(await manager.cheminPartiel('menteur')).existsSync(),
+            isFalse,
+          );
+        },
+      );
 
       test('un code HTTP inattendu ne cree aucun fichier', () async {
         final manager = MBTilesManager(
@@ -233,141 +240,158 @@ void main() {
     });
 
     group('LA REPRISE : une coupure ne fait pas recommencer 260 Mo', () {
-      test('le second appel demande la suite et ne retelecharge pas le debut',
-          () async {
-        final c = carte(10000);
-        final demandes = <String?>[];
+      test(
+        'le second appel demande la suite et ne retelecharge pas le debut',
+        () async {
+          final c = carte(10000);
+          final demandes = <String?>[];
 
-        // Premier essai : le serveur coupe a 4000 octets.
-        final bilanCoupe = await MBTilesManager(
-          httpClient: serveur(c.contenu, demandes: demandes, couperApres: 4000),
-        ).descendre(
-          trailId: 'reprise',
-          url: 'https://example.com/r.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-        );
-        expect(bilanCoupe.reussie, isFalse);
+          // Premier essai : le serveur coupe a 4000 octets.
+          final bilanCoupe =
+              await MBTilesManager(
+                httpClient: serveur(
+                  c.contenu,
+                  demandes: demandes,
+                  couperApres: 4000,
+                ),
+              ).descendre(
+                trailId: 'reprise',
+                url: 'https://example.com/r.mbtiles',
+                octetsAttendus: c.contenu.length,
+                empreinteAttendue: c.empreinte,
+              );
+          expect(bilanCoupe.reussie, isFalse);
 
-        // La taille inattendue detruit le partiel : on recommence proprement, mais
-        // cette fois le serveur coupe APRES une ecriture reussie du debut.
-        // On simule donc la vraie coupure reseau : un flux qui s arrete.
-        final partiel = File(
-          await MBTilesManager().cheminPartiel('reprise'),
-        );
-        await partiel.writeAsBytes(
-          Uint8List.sublistView(c.contenu, 0, 4000),
-          flush: true,
-        );
+          // La taille inattendue detruit le partiel : on recommence proprement, mais
+          // cette fois le serveur coupe APRES une ecriture reussie du debut.
+          // On simule donc la vraie coupure reseau : un flux qui s arrete.
+          final partiel = File(await MBTilesManager().cheminPartiel('reprise'));
+          await partiel.writeAsBytes(
+            Uint8List.sublistView(c.contenu, 0, 4000),
+            flush: true,
+          );
 
-        demandes.clear();
-        final reprise = MBTilesManager(
-          httpClient: serveur(c.contenu, demandes: demandes),
-        );
-        final bilan = await reprise.descendre(
-          trailId: 'reprise',
-          url: 'https://example.com/r.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-        );
+          demandes.clear();
+          final reprise = MBTilesManager(
+            httpClient: serveur(c.contenu, demandes: demandes),
+          );
+          final bilan = await reprise.descendre(
+            trailId: 'reprise',
+            url: 'https://example.com/r.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: c.empreinte,
+          );
 
-        expect(bilan.reussie, isTrue);
-        expect(demandes.single, 'bytes=4000-');
-        // LE CHIFFRE DU FORFAIT : 6000 octets ont voyage, pas 10 000.
-        expect(bilan.octetsTransferes, 6000);
-        expect(bilan.octetsReprisDuDisque, 4000);
-        expect(bilan.estUneReprise, isTrue);
-        expect(await reprise.hasMbtiles('reprise'), isTrue);
-      });
+          expect(bilan.reussie, isTrue);
+          expect(demandes.single, 'bytes=4000-');
+          // LE CHIFFRE DU FORFAIT : 6000 octets ont voyage, pas 10 000.
+          expect(bilan.octetsTransferes, 6000);
+          expect(bilan.octetsReprisDuDisque, 4000);
+          expect(bilan.estUneReprise, isTrue);
+          expect(await reprise.hasMbtiles('reprise'), isTrue);
+        },
+      );
 
-      test('un fichier deja complet est verifie et pose SANS aucun transport',
-          () async {
-        final c = carte(5000);
-        final manager = MBTilesManager(
-          httpClient: MockClient((_) async {
-            fail('aucune requete ne doit partir : tout est deja la');
-          }),
-        );
-        await File(await manager.cheminPartiel('deja'))
-            .writeAsBytes(c.contenu, flush: true);
+      test(
+        'un fichier deja complet est verifie et pose SANS aucun transport',
+        () async {
+          final c = carte(5000);
+          final manager = MBTilesManager(
+            httpClient: MockClient((_) async {
+              fail('aucune requete ne doit partir : tout est deja la');
+            }),
+          );
+          await File(
+            await manager.cheminPartiel('deja'),
+          ).writeAsBytes(c.contenu, flush: true);
 
-        final bilan = await manager.descendre(
-          trailId: 'deja',
-          url: 'https://example.com/d.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-        );
+          final bilan = await manager.descendre(
+            trailId: 'deja',
+            url: 'https://example.com/d.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: c.empreinte,
+          );
 
-        expect(bilan.reussie, isTrue);
-        expect(bilan.octetsTransferes, 0);
-        expect(bilan.octetsReprisDuDisque, c.contenu.length);
-        expect(await manager.hasMbtiles('deja'), isTrue);
-      });
+          expect(bilan.reussie, isTrue);
+          expect(bilan.octetsTransferes, 0);
+          expect(bilan.octetsReprisDuDisque, c.contenu.length);
+          expect(await manager.hasMbtiles('deja'), isTrue);
+        },
+      );
 
-      test('un fichier en cours plus GROS que la carte annoncee repart de zero',
-          () async {
-        final c = carte(3000);
-        final demandes = <String?>[];
-        final manager = MBTilesManager(
-          httpClient: serveur(c.contenu, demandes: demandes),
-        );
-        // Une carte republiee, plus petite que le fichier laisse par la descente
-        // precedente : reprendre dessus produirait un contenu melange.
-        await File(await manager.cheminPartiel('republie'))
-            .writeAsBytes(Uint8List(9000), flush: true);
+      test(
+        'un fichier en cours plus GROS que la carte annoncee repart de zero',
+        () async {
+          final c = carte(3000);
+          final demandes = <String?>[];
+          final manager = MBTilesManager(
+            httpClient: serveur(c.contenu, demandes: demandes),
+          );
+          // Une carte republiee, plus petite que le fichier laisse par la descente
+          // precedente : reprendre dessus produirait un contenu melange.
+          await File(
+            await manager.cheminPartiel('republie'),
+          ).writeAsBytes(Uint8List(9000), flush: true);
 
-        final bilan = await manager.descendre(
-          trailId: 'republie',
-          url: 'https://example.com/rep.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-        );
+          final bilan = await manager.descendre(
+            trailId: 'republie',
+            url: 'https://example.com/rep.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: c.empreinte,
+          );
 
-        expect(bilan.reussie, isTrue);
-        expect(demandes.single, isNull, reason: 'aucun Range : on repart de zero');
-        expect(bilan.octetsReprisDuDisque, 0);
-      });
+          expect(bilan.reussie, isTrue);
+          expect(
+            demandes.single,
+            isNull,
+            reason: 'aucun Range : on repart de zero',
+          );
+          expect(bilan.octetsReprisDuDisque, 0);
+        },
+      );
     });
 
     group('LE MOYEN D ANNULER', () {
-      test('annuler arrete le transport, conserve le deja-la, et ne pose rien',
-          () async {
-        final c = carte(3 * 1024 * 1024);
-        final jeton = AnnulationDeDescente();
-        final manager = MBTilesManager(
-          httpClient: MockClient.streaming((_, __) async {
-            // Un flux en morceaux, comme une vraie liaison.
-            Stream<List<int>> morceaux() async* {
-              for (var i = 0; i < c.contenu.length; i += 256 * 1024) {
-                final fin = (i + 256 * 1024).clamp(0, c.contenu.length);
-                yield Uint8List.sublistView(c.contenu, i, fin);
-                await Future<void>.delayed(Duration.zero);
+      test(
+        'annuler arrete le transport, conserve le deja-la, et ne pose rien',
+        () async {
+          final c = carte(3 * 1024 * 1024);
+          final jeton = AnnulationDeDescente();
+          final manager = MBTilesManager(
+            httpClient: MockClient.streaming((_, __) async {
+              // Un flux en morceaux, comme une vraie liaison.
+              Stream<List<int>> morceaux() async* {
+                for (var i = 0; i < c.contenu.length; i += 256 * 1024) {
+                  final fin = (i + 256 * 1024).clamp(0, c.contenu.length);
+                  yield Uint8List.sublistView(c.contenu, i, fin);
+                  await Future<void>.delayed(Duration.zero);
+                }
               }
-            }
 
-            return http.StreamedResponse(morceaux(), HttpStatus.ok);
-          }),
-        );
+              return http.StreamedResponse(morceaux(), HttpStatus.ok);
+            }),
+          );
 
-        final bilan = await manager.descendre(
-          trailId: 'annule',
-          url: 'https://example.com/a.mbtiles',
-          octetsAttendus: c.contenu.length,
-          empreinteAttendue: c.empreinte,
-          annulation: jeton,
-          // Le randonneur appuie sur « annuler » des qu il voit la progression.
-          progression: (_) => jeton.annuler(),
-        );
+          final bilan = await manager.descendre(
+            trailId: 'annule',
+            url: 'https://example.com/a.mbtiles',
+            octetsAttendus: c.contenu.length,
+            empreinteAttendue: c.empreinte,
+            annulation: jeton,
+            // Le randonneur appuie sur « annuler » des qu il voit la progression.
+            progression: (_) => jeton.annuler(),
+          );
 
-        expect(bilan.echec, EchecDeCarte.annulee);
-        expect(await manager.hasMbtiles('annule'), isFalse);
-        // ANNULER NE PUNIT PAS : ce qui est descendu reste, pour la reprise.
-        expect(bilan.octetsSurLeTelephone, greaterThan(0));
-        expect(
-          File(await manager.cheminPartiel('annule')).existsSync(),
-          isTrue,
-        );
-      });
+          expect(bilan.echec, EchecDeCarte.annulee);
+          expect(await manager.hasMbtiles('annule'), isFalse);
+          // ANNULER NE PUNIT PAS : ce qui est descendu reste, pour la reprise.
+          expect(bilan.octetsSurLeTelephone, greaterThan(0));
+          expect(
+            File(await manager.cheminPartiel('annule')).existsSync(),
+            isTrue,
+          );
+        },
+      );
 
       test('un jeton deja annule empeche toute requete', () async {
         final jeton = AnnulationDeDescente()..annuler();
@@ -441,8 +465,9 @@ void main() {
         );
         expect(await manager.hasMbtiles('trail_del'), isTrue);
 
-        await File(await manager.cheminPartiel('trail_del'))
-            .writeAsBytes(Uint8List(10), flush: true);
+        await File(
+          await manager.cheminPartiel('trail_del'),
+        ).writeAsBytes(Uint8List(10), flush: true);
 
         await manager.deleteMbtiles('trail_del');
         expect(await manager.hasMbtiles('trail_del'), isFalse);
@@ -466,8 +491,9 @@ void main() {
 
       test('retourne FALSE sur une descente seulement commencee', () async {
         final manager = MBTilesManager();
-        await File(await manager.cheminPartiel('en_cours'))
-            .writeAsBytes(Uint8List(1000), flush: true);
+        await File(
+          await manager.cheminPartiel('en_cours'),
+        ).writeAsBytes(Uint8List(1000), flush: true);
 
         // C EST LA GARDE QUI EMPECHE LA CARTE D OUVRIR UNE BASE TRONQUEE.
         expect(await manager.hasMbtiles('en_cours'), isFalse);

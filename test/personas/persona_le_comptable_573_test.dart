@@ -60,8 +60,9 @@ const joursNusAdmis = <String, String>{};
 
 void main() {
   group('LE COMPTABLE — tout nombre de jours dit ce qu il compte', () {
-    testWidgets('aucun ecran n affiche un nombre de jours sans sa nature',
-        (tester) async {
+    testWidgets('aucun ecran n affiche un nombre de jours sans sa nature', (
+      tester,
+    ) async {
       // On balaie TOUS les ecrans atteignables. C'est le point : la regle ne vaut
       // rien si elle n'est appliquee que sur l'ecran ou Chris l'a vue. L'ecran
       // ajoute le mois prochain est couvert le jour ou il est ecrit.
@@ -81,12 +82,16 @@ void main() {
       }
       await demonterAppli(tester);
       erreursDeRendu(tester);
-      expect(nus, isEmpty,
-          reason: 'NOMBRES DE JOURS SANS LEUR NATURE. Chris a rencontre ce '
-              'defaut trois fois en vingt minutes (retours 5, 7 et 12) : 9 ici, '
-              '11 la, et jamais l unite. Tout nombre de jours affiche doit dire '
-              's il compte de la marche, du repos, ou un total.\n'
-              '  ${nus.join('\n  ')}');
+      expect(
+        nus,
+        isEmpty,
+        reason:
+            'NOMBRES DE JOURS SANS LEUR NATURE. Chris a rencontre ce '
+            'defaut trois fois en vingt minutes (retours 5, 7 et 12) : 9 ici, '
+            '11 la, et jamais l unite. Tout nombre de jours affiche doit dire '
+            's il compte de la marche, du repos, ou un total.\n'
+            '  ${nus.join('\n  ')}',
+      );
     });
   });
 
@@ -125,15 +130,20 @@ void main() {
       }
       await demonterAppli(tester);
       erreursDeRendu(tester);
-      expect(nus, isEmpty,
-          reason: 'NOMBRES A VIRGULE AFFICHES NUS, sans unite ni echelle :\n'
-              '  ${nus.join('\n  ')}');
+      expect(
+        nus,
+        isEmpty,
+        reason:
+            'NOMBRES A VIRGULE AFFICHES NUS, sans unite ni echelle :\n'
+            '  ${nus.join('\n  ')}',
+      );
     });
   });
 
   group('LE COMPTABLE — le meme chiffre dit la meme chose partout', () {
-    testWidgets('faisabilite et itineraire ne se contredisent pas sur la duree',
-        (tester) async {
+    testWidgets('faisabilite et itineraire ne se contredisent pas sur la duree', (
+      tester,
+    ) async {
       // LE RETOUR 12, REJOUE. On releve les nombres de jours de l'ecran de
       // faisabilite, puis ceux de l'itineraire, et on exige que chacun porte sa
       // nature — c'est la seule facon qu'un lecteur ait de comprendre pourquoi 11
@@ -143,10 +153,9 @@ void main() {
       Future<List<String>> phrasesDeJours(String gabarit) async {
         final concret = cheminConcret(gabarit)!;
         await monterAppliReelle(tester, depart: concret);
-        final out = textesVisibles(tester)
-            .where(rejour.hasMatch)
-            .map((t) => t.trim())
-            .toList();
+        final out = textesVisibles(
+          tester,
+        ).where(rejour.hasMatch).map((t) => t.trim()).toList();
         return out;
       }
 
@@ -159,11 +168,15 @@ void main() {
         for (final t in [...faisabilite, ...itineraire])
           if (!naturesDeJours.any(t.toLowerCase().contains)) t,
       ];
-      expect(sansNature, isEmpty,
-          reason: 'DEUX ECRANS, DEUX CHIFFRES, AUCUNE UNITE — le defaut exact '
-              'du retour 12. Faisabilite : ${faisabilite.join(' / ')} ; '
-              'Itineraire : ${itineraire.join(' / ')}.\n'
-              'Sans nature : ${sansNature.join(' / ')}');
+      expect(
+        sansNature,
+        isEmpty,
+        reason:
+            'DEUX ECRANS, DEUX CHIFFRES, AUCUNE UNITE — le defaut exact '
+            'du retour 12. Faisabilite : ${faisabilite.join(' / ')} ; '
+            'Itineraire : ${itineraire.join(' / ')}.\n'
+            'Sans nature : ${sansNature.join(' / ')}',
+      );
     });
   });
 }

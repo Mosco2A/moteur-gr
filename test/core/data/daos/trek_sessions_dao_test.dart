@@ -70,22 +70,27 @@ void main() {
       );
     });
 
-    test('SURVIE au redemarrage : DAO frais relit la session persistee',
-        () async {
-      // Ecriture avec un premier DAO.
-      await db.trekSessionsDao.upsertSession(
-        session(completed: const ['s1', 's2'], status: 'active'),
-      );
+    test(
+      'SURVIE au redemarrage : DAO frais relit la session persistee',
+      () async {
+        // Ecriture avec un premier DAO.
+        await db.trekSessionsDao.upsertSession(
+          session(completed: const ['s1', 's2'], status: 'active'),
+        );
 
-      // « Redemarrage » simule : nouvelle instance de DAO sur la MEME base
-      // (les donnees vivent en base, pas dans l'etat en memoire du manager).
-      final freshDao = TrekSessionsDao(db);
-      final restored = await freshDao.getById('sess-1');
+        // « Redemarrage » simule : nouvelle instance de DAO sur la MEME base
+        // (les donnees vivent en base, pas dans l'etat en memoire du manager).
+        final freshDao = TrekSessionsDao(db);
+        final restored = await freshDao.getById('sess-1');
 
-      expect(restored, isNotNull);
-      expect(restored!.completedStages, ['s1', 's2'],
-          reason: 'Les etapes marchees survivent au redemarrage.');
-    });
+        expect(restored, isNotNull);
+        expect(
+          restored!.completedStages,
+          ['s1', 's2'],
+          reason: 'Les etapes marchees survivent au redemarrage.',
+        );
+      },
+    );
 
     test('upsert idempotent : meme id -> derniere ecriture gagnante', () async {
       final dao = db.trekSessionsDao;
@@ -103,21 +108,26 @@ void main() {
       expect(actives.where((x) => x.id == 'sess-1').length, 1);
     });
 
-    test('findActiveSessions renvoie les sessions active ET paused (C4a)',
-        () async {
-      // StepWays LOT 2, gap C4a : `paused` compte comme « en cours » (occupe
-      // l'unique creneau de rando active + candidate a la reprise orpheline).
-      final dao = db.trekSessionsDao;
-      await dao.upsertSession(session(id: 'a', status: 'active'));
-      await dao.upsertSession(session(id: 'b', status: 'completed'));
-      await dao.upsertSession(session(id: 'c', status: 'active'));
-      await dao.upsertSession(session(id: 'd', status: 'paused'));
-      await dao.upsertSession(session(id: 'e', status: 'abandoned'));
+    test(
+      'findActiveSessions renvoie les sessions active ET paused (C4a)',
+      () async {
+        // StepWays LOT 2, gap C4a : `paused` compte comme « en cours » (occupe
+        // l'unique creneau de rando active + candidate a la reprise orpheline).
+        final dao = db.trekSessionsDao;
+        await dao.upsertSession(session(id: 'a', status: 'active'));
+        await dao.upsertSession(session(id: 'b', status: 'completed'));
+        await dao.upsertSession(session(id: 'c', status: 'active'));
+        await dao.upsertSession(session(id: 'd', status: 'paused'));
+        await dao.upsertSession(session(id: 'e', status: 'abandoned'));
 
-      final actives = await dao.findActiveSessions();
-      expect(actives.map((s) => s.id).toSet(), {'a', 'c', 'd'},
-          reason: 'active + paused seulement ; completed/abandoned exclus.');
-    });
+        final actives = await dao.findActiveSessions();
+        expect(
+          actives.map((s) => s.id).toSet(),
+          {'a', 'c', 'd'},
+          reason: 'active + paused seulement ; completed/abandoned exclus.',
+        );
+      },
+    );
 
     test('updateStatus / deleteSession', () async {
       final dao = db.trekSessionsDao;
@@ -130,20 +140,25 @@ void main() {
       expect(await dao.getById('a'), isNull);
     });
 
-    test('completedStages JSON corrompu -> liste vide (pas de faux finisher)',
-        () async {
-      // Insertion directe d'une valeur JSON invalide dans la colonne.
-      await db.customStatement(
-        "INSERT INTO trek_sessions "
-        "(id, trail_id, started_at, status, completed_stages_json, "
-        "parcours_fully_walked) VALUES "
-        "('bad', 'x', 0, 'active', 'not-json', 0)",
-      );
+    test(
+      'completedStages JSON corrompu -> liste vide (pas de faux finisher)',
+      () async {
+        // Insertion directe d'une valeur JSON invalide dans la colonne.
+        await db.customStatement(
+          "INSERT INTO trek_sessions "
+          "(id, trail_id, started_at, status, completed_stages_json, "
+          "parcours_fully_walked) VALUES "
+          "('bad', 'x', 0, 'active', 'not-json', 0)",
+        );
 
-      final restored = await db.trekSessionsDao.getById('bad');
-      expect(restored, isNotNull);
-      expect(restored!.completedStages, isEmpty,
-          reason: 'Une valeur non-JSON retombe sur une liste vide.');
-    });
+        final restored = await db.trekSessionsDao.getById('bad');
+        expect(restored, isNotNull);
+        expect(
+          restored!.completedStages,
+          isEmpty,
+          reason: 'Une valeur non-JSON retombe sur une liste vide.',
+        );
+      },
+    );
   });
 }

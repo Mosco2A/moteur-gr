@@ -15,11 +15,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// (warning = orange, danger = rouge). Libelles i18n (LOT-B, D-5). Pour les
 /// alertes incendie (type == fire), affiche un CTA vers la fiche conseil.
 class WeatherAlertBanner extends StatelessWidget {
-  const WeatherAlertBanner({
-    super.key,
-    required this.alerts,
-    this.fireTipCard,
-  });
+  const WeatherAlertBanner({super.key, required this.alerts, this.fireTipCard});
 
   final List<WeatherAlert> alerts;
 
@@ -33,8 +29,7 @@ class WeatherAlertBanner extends StatelessWidget {
     final t = Translations.of(context);
     final hasDanger = alerts.any((a) => a.severity == 'danger');
     final hasFireAlert = alerts.any((a) => a.type == AlertType.fire);
-    final accent =
-        hasDanger ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
+    final accent = hasDanger ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
 
     return Container(
       decoration: BoxDecoration(
@@ -49,9 +44,7 @@ class WeatherAlertBanner extends StatelessWidget {
           Row(
             children: [
               StepIcon(
-                hasFireAlert
-                    ? StepwaysIcons.incendie
-                    : StepwaysIcons.danger,
+                hasFireAlert ? StepwaysIcons.incendie : StepwaysIcons.danger,
                 color: accent,
               ),
               const SizedBox(width: AppTheme.spacingSm),

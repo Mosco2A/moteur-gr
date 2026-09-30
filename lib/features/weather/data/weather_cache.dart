@@ -28,12 +28,10 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// gouverne. Le TTL est desormais celui du DAO ([WeatherCacheDao.cacheTtlHours])
 /// et il n'y en a plus qu'un.
 class WeatherCache {
-  WeatherCache({
-    required WeatherCacheDao dao,
-    Duration? cacheTtl,
-  })  : _dao = dao,
-        _cacheTtl = cacheTtl ??
-            const Duration(hours: WeatherCacheDao.cacheTtlHours);
+  WeatherCache({required WeatherCacheDao dao, Duration? cacheTtl})
+    : _dao = dao,
+      _cacheTtl =
+          cacheTtl ?? const Duration(hours: WeatherCacheDao.cacheTtlHours);
 
   final WeatherCacheDao _dao;
 
@@ -58,8 +56,10 @@ class WeatherCache {
     if (last?.fetchedAt == null) return null;
     final age = DateTime.now().difference(last!.fetchedAt!);
     if (age > _cacheTtl) {
-      _log.d('[WeatherCache] Cache expire pour $trailId/$stageNumber '
-          '(age ${age.inMinutes} min)');
+      _log.d(
+        '[WeatherCache] Cache expire pour $trailId/$stageNumber '
+        '(age ${age.inMinutes} min)',
+      );
       return null;
     }
     return last;

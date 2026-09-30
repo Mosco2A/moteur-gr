@@ -85,8 +85,11 @@ void main() {
         trailId: 'sentier-bleu',
         stageNumber: 1,
       );
-      expect(forecast, isNotNull,
-          reason: 'La prevision API doit fonctionner pour remplir le cache');
+      expect(
+        forecast,
+        isNotNull,
+        reason: 'La prevision API doit fonctionner pour remplir le cache',
+      );
       expect(forecast!.days.length, 3);
 
       // 2. Simuler le mode offline : client qui echoue systematiquement
@@ -108,18 +111,29 @@ void main() {
       );
 
       // ASSERT : le cache retourne les donnees meme sans reseau
-      expect(cachedForecast, isNotNull,
-          reason: 'Le cache doit retourner les donnees en mode offline');
+      expect(
+        cachedForecast,
+        isNotNull,
+        reason: 'Le cache doit retourner les donnees en mode offline',
+      );
       expect(cachedForecast!.days.length, 3);
       expect(cachedForecast.days[0].temperatureMax, 25.0);
       expect(cachedForecast.days[1].precipitationMm, 5.0);
       expect(cachedForecast.days[2].weatherCode, 1);
 
       // Verifier que les params du provider sont corrects
-      const params = WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1);
+      const params = WeatherStageParams(
+        trailId: 'sentier-bleu',
+        stageNumber: 1,
+      );
       expect(params.trailId, 'sentier-bleu');
       expect(params.stageNumber, 1);
-      expect(params, equals(const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1)));
+      expect(
+        params,
+        equals(
+          const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1),
+        ),
+      );
 
       apiService.dispose();
       offlineApiService.dispose();

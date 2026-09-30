@@ -14,9 +14,7 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 void main() {
   Widget wrap(SegmentRankingRepository repo, {String segmentId = 'seg-1'}) {
     return ProviderScope(
-      overrides: [
-        segmentRankingRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [segmentRankingRepositoryProvider.overrideWithValue(repo)],
       child: TranslationProvider(
         child: MaterialApp(home: LeaderboardScreen(segmentId: segmentId)),
       ),
@@ -50,8 +48,9 @@ void main() {
     );
   }
 
-  testWidgets('tranche publiee : affiche les pseudonymes par tranche',
-      (tester) async {
+  testWidgets('tranche publiee : affiche les pseudonymes par tranche', (
+    tester,
+  ) async {
     final repo = InMemorySegmentRankingRepository()
       ..put(ranking(published: true));
     await tester.pumpWidget(wrap(repo));
@@ -64,8 +63,9 @@ void main() {
     expect(find.text(t.leaderboard.notEnoughParticipants), findsNothing);
   });
 
-  testWidgets('tranche < 5 : message k-anonymat, aucune entree',
-      (tester) async {
+  testWidgets('tranche < 5 : message k-anonymat, aucune entree', (
+    tester,
+  ) async {
     final repo = InMemorySegmentRankingRepository()
       ..put(ranking(published: false));
     await tester.pumpWidget(wrap(repo));
@@ -83,8 +83,9 @@ void main() {
     expect(find.text(t.leaderboard.empty), findsOneWidget);
   });
 
-  testWidgets('AUCUN texte visible ne contient le mot "anonyme" (R1)',
-      (tester) async {
+  testWidgets('AUCUN texte visible ne contient le mot "anonyme" (R1)', (
+    tester,
+  ) async {
     final repo = InMemorySegmentRankingRepository()
       ..put(ranking(published: true));
     await tester.pumpWidget(wrap(repo));
@@ -94,8 +95,11 @@ void main() {
         .widgetList<Text>(find.byType(Text))
         .map((w) => (w.data ?? '').toLowerCase());
     for (final s in texts) {
-      expect(s.contains('anonym'), isFalse,
-          reason: 'Texte interdit (R1): "$s"');
+      expect(
+        s.contains('anonym'),
+        isFalse,
+        reason: 'Texte interdit (R1): "$s"',
+      );
     }
   });
 }

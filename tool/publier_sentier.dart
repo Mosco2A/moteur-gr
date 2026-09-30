@@ -64,9 +64,11 @@ int _publier(_Options options) {
       : options.positionnels;
 
   if (dossiers.isEmpty) {
-    print(options.tout
-        ? 'Aucune source dans « ${options.sources} ».'
-        : 'Indiquez le dossier source du sentier, ou --tout.');
+    print(
+      options.tout
+          ? 'Aucune source dans « ${options.sources} ».'
+          : 'Indiquez le dossier source du sentier, ou --tout.',
+    );
     return 64;
   }
 
@@ -99,27 +101,35 @@ int _publier(_Options options) {
   }
 
   print('');
-  print('Depot pret dans « ${options.sortie} ». Ordre de copie : les fichiers '
-      'de donnees D ABORD, « ${Publicateur.nomDeLaListe} » ENSUITE (#P1).');
+  print(
+    'Depot pret dans « ${options.sortie} ». Ordre de copie : les fichiers '
+    'de donnees D ABORD, « ${Publicateur.nomDeLaListe} » ENSUITE (#P1).',
+  );
   return 0;
 }
 
 void _direLaPublication(String dossier, ResultatDePublication r) {
   if (r.listeSeulement) {
     print('${r.trailId} — entree de liste SEULE, aucun fichier de donnees.');
-    print('  Le sentier est retire du catalogue tant que son statut n est pas '
-        '« active » (#M6), meme s il est compile dans l application.');
+    print(
+      '  Le sentier est retire du catalogue tant que son statut n est pas '
+      '« active » (#M6), meme s il est compile dans l application.',
+    );
     return;
   }
 
   if (!r.donneesReecrites) {
     print('${r.trailId} — RIEN A PUBLIER : aucune donnee n a change.');
-    print('  Instant maintenu a ${r.revision.iso8601}. Le faire avancer pour '
-        'rien ferait '
-        'relire la liste a tous les telephones sans rien a prendre.');
+    print(
+      '  Instant maintenu a ${r.revision.iso8601}. Le faire avancer pour '
+      'rien ferait '
+      'relire la liste a tous les telephones sans rien a prendre.',
+    );
     if (r.ficheRafraichie) {
-      print('  (fiche ou statut rafraichis dans la liste, sans toucher aux '
-          'donnees ni a la revision)');
+      print(
+        '  (fiche ou statut rafraichis dans la liste, sans toucher aux '
+        'donnees ni a la revision)',
+      );
     }
     return;
   }
@@ -127,36 +137,46 @@ void _direLaPublication(String dossier, ResultatDePublication r) {
   final rc = r.recalcul;
   print('${r.trailId} — publie a ${r.revision.iso8601}, ${r.octets} octets');
   if (r.horlogeCorrigee) {
-    print('  ATTENTION : l horloge de publication n avancait pas. L instant a ete '
-        'avance d une milliseconde pour rester posterieur a la publication '
-        'precedente. Une horloge qui recule sur le serveur de publication est un '
-        'probleme d infrastructure — tout le modele de synchronisation repose sur '
-        'elle.');
+    print(
+      '  ATTENTION : l horloge de publication n avancait pas. L instant a ete '
+      'avance d une milliseconde pour rester posterieur a la publication '
+      'precedente. Une horloge qui recule sur le serveur de publication est un '
+      'probleme d infrastructure — tout le modele de synchronisation repose sur '
+      'elle.',
+    );
   }
   print('  ${r.cheminDonnees}  sha256 ${r.empreinte}');
-  print('  ${rc.nombreTouches} enregistrement(s) a l instant '
-      '${r.revision.iso8601} : '
-      '${rc.modifies.length} modifie(s), ${rc.ajoutes.length} ajoute(s), '
-      '${rc.retires.length} retire(s).');
+  print(
+    '  ${rc.nombreTouches} enregistrement(s) a l instant '
+    '${r.revision.iso8601} : '
+    '${rc.modifies.length} modifie(s), ${rc.ajoutes.length} ajoute(s), '
+    '${rc.retires.length} retire(s).',
+  );
   if (rc.modifies.isNotEmpty) print('  modifies : ${_extrait(rc.modifies)}');
   if (rc.retires.isNotEmpty) {
     print('  retires (marqueurs) : ${_extrait(rc.retires)}');
   }
   if (rc.marqueursConserves.isNotEmpty) {
-    print('  ${rc.marqueursConserves.length} marqueur(s) conserve(s) dans la '
-        'fenetre de retention.');
+    print(
+      '  ${rc.marqueursConserves.length} marqueur(s) conserve(s) dans la '
+      'fenetre de retention.',
+    );
   }
   if (rc.marqueursPurges.isNotEmpty) {
-    print('  ${rc.marqueursPurges.length} marqueur(s) purge(s) — au-dela de la '
-        'fenetre, un telephone aussi en retard releve de la COPIE COMPLETE.');
+    print(
+      '  ${rc.marqueursPurges.length} marqueur(s) purge(s) — au-dela de la '
+      'fenetre, un telephone aussi en retard releve de la COPIE COMPLETE.',
+    );
   }
 }
 
 int _verifier(_Options options) {
   final anomalies = Publicateur(sortie: options.sortie).verifier();
   if (anomalies.isEmpty) {
-    print('« ${options.sortie} » : liste et fichiers de donnees CONFORMES — '
-        'empreintes, tailles et revisions se correspondent.');
+    print(
+      '« ${options.sortie} » : liste et fichiers de donnees CONFORMES — '
+      'empreintes, tailles et revisions se correspondent.',
+    );
     return 0;
   }
   print('« ${options.sortie} » : ${anomalies.length} anomalie(s).');
@@ -184,17 +204,23 @@ String _extrait(List<String> valeurs) {
 }
 
 void _usage() {
-  print('publier_sentier — fabrique la liste des sentiers disponibles et les '
-      'fichiers de donnees que l application sait lire.');
+  print(
+    'publier_sentier — fabrique la liste des sentiers disponibles et les '
+    'fichiers de donnees que l application sait lire.',
+  );
   print('');
   print('  dart run tool/publier_sentier.dart publier <dossier-source>');
   print('  dart run tool/publier_sentier.dart publier --tout');
   print('  dart run tool/publier_sentier.dart verifier');
   print('');
-  print('  --sortie  <dossier>  depot a copier sur le serveur '
-      '(defaut publication/publie)');
-  print('  --sources <dossier>  racine des sources avec --tout '
-      '(defaut publication/sources)');
+  print(
+    '  --sortie  <dossier>  depot a copier sur le serveur '
+    '(defaut publication/publie)',
+  );
+  print(
+    '  --sources <dossier>  racine des sources avec --tout '
+    '(defaut publication/sources)',
+  );
 }
 
 class _Options {

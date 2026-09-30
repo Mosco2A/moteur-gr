@@ -12,10 +12,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// la distance totale, le dénivelé et la durée estimée.
 /// Si c'est un jour de repos, affiche un message dédié.
 class DayPlanCard extends StatelessWidget {
-  const DayPlanCard({
-    super.key,
-    required this.dayPlan,
-  });
+  const DayPlanCard({super.key, required this.dayPlan});
 
   /// Le plan du jour à afficher
   final DayPlan dayPlan;
@@ -70,8 +67,7 @@ class _DayHeader extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: theme.colorScheme.secondary.withAlpha(40),
-              borderRadius:
-                  BorderRadius.circular(AppTheme.radiusChip),
+              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
             ),
             child: Text(
               t.planning.restDay,
@@ -120,10 +116,7 @@ class _RestDayContent extends StatelessWidget {
 
 /// Contenu affiché pour un jour de marche
 class _WalkDayContent extends StatelessWidget {
-  const _WalkDayContent({
-    required this.dayPlan,
-    required this.theme,
-  });
+  const _WalkDayContent({required this.dayPlan, required this.theme});
 
   final DayPlan dayPlan;
   final ThemeData theme;
@@ -137,9 +130,7 @@ class _WalkDayContent extends StatelessWidget {
         // Liste des noms d'étapes
         ...dayPlan.stages.map(
           (stage) => Padding(
-            padding: const EdgeInsets.only(
-              bottom: AppTheme.spacingXs,
-            ),
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
             child: Row(
               children: [
                 StepIcon(
@@ -149,10 +140,7 @@ class _WalkDayContent extends StatelessWidget {
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
-                  child: Text(
-                    stage.name,
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  child: Text(stage.name, style: theme.textTheme.bodySmall),
                 ),
               ],
             ),
@@ -182,24 +170,30 @@ class _DayStats extends StatelessWidget {
 
     return Row(
       children: [
-        StepIcon(StepwaysIcons.distance, size: 14,
-            color: theme.colorScheme.primary),
+        StepIcon(
+          StepwaysIcons.distance,
+          size: 14,
+          color: theme.colorScheme.primary,
+        ),
         const SizedBox(width: 4),
         Text(
           '${dayPlan.totalDistanceKm.toStringAsFixed(1)} km',
           style: statStyle,
         ),
         const SizedBox(width: AppTheme.spacingBase),
-        StepIcon(StepwaysIcons.denivelePlus, size: 14,
-            color: theme.colorScheme.primary),
-        const SizedBox(width: 4),
-        Text(
-          '${dayPlan.totalElevationGainM} m D+',
-          style: statStyle,
+        StepIcon(
+          StepwaysIcons.denivelePlus,
+          size: 14,
+          color: theme.colorScheme.primary,
         ),
+        const SizedBox(width: 4),
+        Text('${dayPlan.totalElevationGainM} m D+', style: statStyle),
         const SizedBox(width: AppTheme.spacingBase),
-        StepIcon(StepwaysIcons.duree, size: 14,
-            color: theme.colorScheme.primary),
+        StepIcon(
+          StepwaysIcons.duree,
+          size: 14,
+          color: theme.colorScheme.primary,
+        ),
         const SizedBox(width: 4),
         Text(
           '${dayPlan.estimatedDurationHours.toStringAsFixed(1)} h',

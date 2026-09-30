@@ -22,8 +22,8 @@ import '../../shared/widgets/contextual_action_bar.dart';
 /// (hub-and-push : un écran plein écran à l'avant-plan).
 final contextualActionsProvider =
     NotifierProvider<ContextualActionsNotifier, List<ContextualAction>>(
-  ContextualActionsNotifier.new,
-);
+      ContextualActionsNotifier.new,
+    );
 
 /// Notifier de la liste d'actions courantes (set au montage / clear au démontage).
 class ContextualActionsNotifier extends Notifier<List<ContextualAction>> {

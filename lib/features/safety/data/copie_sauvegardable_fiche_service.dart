@@ -7,7 +7,8 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../core/services/exclusion_sauvegarde_icloud.dart';
 import '../../../core/services/sauvegarde_systeme.dart';
-import '../presentation/health_info_screen.dart' show healthInfoRepositoryProvider;
+import '../presentation/health_info_screen.dart'
+    show healthInfoRepositoryProvider;
 import 'health_info_repository.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -52,9 +53,9 @@ class CopieSauvegardableFicheService {
     required HealthInfoRepository healthRepository,
     Future<Directory> Function()? baseDirProvider,
     ExclusionSauvegardeIcloud? exclusionIcloud,
-  })  : _health = healthRepository,
-        _baseDirProvider = baseDirProvider ?? getApplicationSupportDirectory,
-        _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
+  }) : _health = healthRepository,
+       _baseDirProvider = baseDirProvider ?? getApplicationSupportDirectory,
+       _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
 
   final HealthInfoRepository _health;
   final Future<Directory> Function() _baseDirProvider;
@@ -158,7 +159,7 @@ class CopieSauvegardableFicheService {
 /// Provider Riverpod du service de copie sauvegardable de la fiche medicale.
 final copieSauvegardableFicheServiceProvider =
     Provider<CopieSauvegardableFicheService>((ref) {
-  return CopieSauvegardableFicheService(
-    healthRepository: ref.watch(healthInfoRepositoryProvider),
-  );
-});
+      return CopieSauvegardableFicheService(
+        healthRepository: ref.watch(healthInfoRepositoryProvider),
+      );
+    });

@@ -69,9 +69,7 @@ void main() {
       corps.add(lignes[i]);
     }
     bloc = corps.join('\n');
-    blocUtile = corps
-        .where((l) => !RegExp(r'^\s*#').hasMatch(l))
-        .join('\n');
+    blocUtile = corps.where((l) => !RegExp(r'^\s*#').hasMatch(l)).join('\n');
   });
 
   group('621 — la chaine de depot TestFlight', () {
@@ -113,7 +111,8 @@ void main() {
       expect(
         bloc,
         contains('submit_to_testflight: true'),
-        reason: 'sans cela le paquet monte chez Apple sans jamais devenir '
+        reason:
+            'sans cela le paquet monte chez Apple sans jamais devenir '
             'installable pour un testeur',
       );
       expect(
@@ -232,7 +231,8 @@ void main() {
         expect(
           source,
           contains('  $nom:'),
-          reason: 'la chaine $nom a disparu — la tache 621 n ajoutait qu une '
+          reason:
+              'la chaine $nom a disparu — la tache 621 n ajoutait qu une '
               'septieme chaine, elle ne devait en retirer aucune',
         );
       }

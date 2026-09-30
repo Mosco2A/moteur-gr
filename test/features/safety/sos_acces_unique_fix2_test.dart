@@ -42,10 +42,11 @@ void main() {
     test('AUCUNE action de barre contextuelle ne declare un SOS', () {
       final fautifs = <String>[];
 
-      for (final fichier in Directory('lib')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.dart'))) {
+      for (final fichier
+          in Directory('lib')
+              .listSync(recursive: true)
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.dart'))) {
         final contenu = fichier.readAsStringSync();
         // On isole chaque declaration `ContextualAction( ... )` et on refuse
         // qu'elle porte l'icone d'urgence ou un libelle SOS.
@@ -60,7 +61,8 @@ void main() {
       expect(
         fautifs,
         isEmpty,
-        reason: 'le SOS a ete retire des barres contextuelles en cycle 3 '
+        reason:
+            'le SOS a ete retire des barres contextuelles en cycle 3 '
             '(parite GR20 : le SOS vit dans le Stack, jamais dans la barre). '
             'Le remettre recree le double acces du finding M1.',
       );
@@ -68,8 +70,9 @@ void main() {
 
     test('la carte n a plus AUCUNE barre du bas — donc plus aucun endroit ou '
         'un second SOS pourrait reapparaitre (L6-3)', () {
-      final carte =
-          source('lib/features/trek/presentation/map/map_screen.dart');
+      final carte = source(
+        'lib/features/trek/presentation/map/map_screen.dart',
+      );
 
       // Le correctif L6-3 a retire la barre contextuelle de la carte : la
       // navigation de reference n en a aucune sur son ecran terrain. Ce test
@@ -94,8 +97,9 @@ void main() {
       // comparaison qui a fait retirer la barre de la carte ne tient pas pour
       // lui. Ce test existe pour qu un futur passage ne retire pas cette
       // barre-la « par coherence ».
-      final maison =
-          source('lib/features/treks/presentation/my_treks_screen.dart');
+      final maison = source(
+        'lib/features/treks/presentation/my_treks_screen.dart',
+      );
       expect(maison.contains('bottomNavigationBar:'), isTrue);
     });
 
@@ -106,8 +110,10 @@ void main() {
       // commentaire, qui documente quand et pourquoi l'ecran a ete supprime),
       // ni instanciation de l'ecran.
       expect(
-        RegExp(r"^\s*import\s+.*nav_pilote_screen\.dart", multiLine: true)
-            .hasMatch(routeur),
+        RegExp(
+          r"^\s*import\s+.*nav_pilote_screen\.dart",
+          multiLine: true,
+        ).hasMatch(routeur),
         isFalse,
         reason: 'le routeur ne doit pas importer l ecran de demo supprime',
       );
@@ -128,7 +134,8 @@ void main() {
       expect(
         instanciations,
         isEmpty,
-        reason: 'cet ecran portait une SECONDE pastille SOS a l origine du faux '
+        reason:
+            'cet ecran portait une SECONDE pastille SOS a l origine du faux '
             'positif M1 ; le reintroduire recreerait le double acces',
       );
     });
@@ -142,7 +149,8 @@ void main() {
           '.startFloat',
         ),
         isTrue,
-        reason: 'au coin bas-droit par defaut, la pastille SOS recouvrait la '
+        reason:
+            'au coin bas-droit par defaut, la pastille SOS recouvrait la '
             'fin du bouton pleine largeur « Terminer le trek » ; GR20 place ce '
             'meme FAB en startFloat sur son accueil',
       );
@@ -151,28 +159,32 @@ void main() {
 
   group('M1 — le bouton SOS lui-meme : present en trek, absent sinon', () {
     Widget wrap(TrackingSessionStatus status) => ProviderScope(
-          overrides: [
-            trekSessionManagerProvider
-                .overrideWith(() => _FakeTrek(TrackingSessionState(
-                      status: status,
-                    ))),
-          ],
-          child: TranslationProvider(
-            child: const MaterialApp(
-              home: Scaffold(
-                floatingActionButton: SosButton(),
-                body: SizedBox.shrink(),
-              ),
-            ),
+      overrides: [
+        trekSessionManagerProvider.overrideWith(
+          () => _FakeTrek(TrackingSessionState(status: status)),
+        ),
+      ],
+      child: TranslationProvider(
+        child: const MaterialApp(
+          home: Scaffold(
+            floatingActionButton: SosButton(),
+            body: SizedBox.shrink(),
           ),
-        );
+        ),
+      ),
+    );
 
     testWidgets('trek en cours -> EXACTEMENT un acces SOS', (tester) async {
       await tester.pumpWidget(wrap(TrackingSessionStatus.recording));
       await tester.pumpAndSettle();
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+        ),
+        findsOneWidget,
+      );
       expect(
         find.byWidgetPredicate(
           (w) => w is FloatingActionButton && w.heroTag == 'sos_e515',
@@ -181,12 +193,18 @@ void main() {
       );
     });
 
-    testWidgets('trek en pause -> l acces SOS reste disponible',
-        (tester) async {
+    testWidgets('trek en pause -> l acces SOS reste disponible', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(TrackingSessionStatus.paused));
       await tester.pumpAndSettle();
 
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('hors trek -> AUCUN acces SOS', (tester) async {
@@ -194,7 +212,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FloatingActionButton), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.secours), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+        ),
+        findsNothing,
+      );
     });
   });
 }

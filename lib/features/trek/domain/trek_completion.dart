@@ -189,8 +189,9 @@ class TrekPlan {
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
 
     // Restreindre au parcours si un sous-ensemble est fourni.
-    final Set<String>? subset =
-        (stageIds == null || stageIds.isEmpty) ? null : stageIds.toSet();
+    final Set<String>? subset = (stageIds == null || stageIds.isEmpty)
+        ? null
+        : stageIds.toSet();
     final scoped = subset == null
         ? ordered
         : ordered.where((s) => subset.contains(s.id)).toList();
@@ -230,16 +231,15 @@ class TrekArrivalOutcome {
   const TrekArrivalOutcome._(this.action, this.nextStageId);
 
   /// Ne rien faire.
-  const TrekArrivalOutcome.ignored()
-      : this._(TrekArrivalAction.ignore, null);
+  const TrekArrivalOutcome.ignored() : this._(TrekArrivalAction.ignore, null);
 
   /// Avancer vers [next].
   const TrekArrivalOutcome.advance(String next)
-      : this._(TrekArrivalAction.advance, next);
+    : this._(TrekArrivalAction.advance, next);
 
   /// Terminer le trek.
   const TrekArrivalOutcome.complete()
-      : this._(TrekArrivalAction.complete, null);
+    : this._(TrekArrivalAction.complete, null);
 
   /// Action a effectuer.
   final TrekArrivalAction action;
@@ -277,10 +277,7 @@ class TrekArrivalOutcome {
 /// parcours partiel) reste a la charge de l'UI (i18n) — ici, aucune chaine en
 /// dur.
 class TrekCongratulations {
-  const TrekCongratulations({
-    required this.kind,
-    this.partialLabel,
-  });
+  const TrekCongratulations({required this.kind, this.partialLabel});
 
   /// Complet (sentier entier) ou partiel (demi-parcours, section).
   final TrekCompletionKind kind;
@@ -296,10 +293,7 @@ class TrekCongratulations {
   bool get isPartial => kind == TrekCompletionKind.partial;
 
   /// Deduit les felicitations depuis le plan de marche (+ libelle partiel).
-  factory TrekCongratulations.forPlan(
-    TrekPlan plan, {
-    String? partialLabel,
-  }) {
+  factory TrekCongratulations.forPlan(TrekPlan plan, {String? partialLabel}) {
     return TrekCongratulations(
       kind: plan.isFullTrail
           ? TrekCompletionKind.full

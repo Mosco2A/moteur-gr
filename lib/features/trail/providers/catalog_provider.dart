@@ -19,9 +19,7 @@ import '../../../core/services/delta_update_service.dart';
 import '../../../core/services/descente_des_cartes.dart';
 import '../../../core/services/manifest_service.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 // --- Modeles internes au catalogue ---
 
@@ -36,7 +34,12 @@ abstract class TrailLocalStatusValues {
   static const String downloaded = 'downloaded';
   static const String updateAvailable = 'updateAvailable';
   static const String fallback = notDownloaded;
-  static const List<String> values = [notDownloaded, downloading, downloaded, updateAvailable];
+  static const List<String> values = [
+    notDownloaded,
+    downloading,
+    downloaded,
+    updateAvailable,
+  ];
   static TrailLocalStatus fromString(String value) =>
       values.contains(value) ? value : fallback;
 }
@@ -117,8 +120,7 @@ class CatalogState {
   /// C est exactement le cas qui produisait un ecran vide muet. L ecran doit
   /// afficher un message et un bouton « reessayer » ([CatalogNotifier.refresh]),
   /// jamais une liste vide sans explication.
-  bool get doitExpliquerAuLieuDeRienMontrer =>
-      entries.isEmpty && echec != null;
+  bool get doitExpliquerAuLieuDeRienMontrer => entries.isEmpty && echec != null;
 
   CatalogState copyWith({
     List<CatalogEntry>? entries,
@@ -177,15 +179,17 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       final localManifests = await _manifestsDao.getAll();
       final entries = localManifests
           .where((m) => m.localVersion != null)
-          .map((m) => CatalogEntry(
-                trailId: m.trailId,
-                dataVersion: m.dataVersion,
-                fileSize: m.fileSize,
-                status: m.status,
-                lastUpdated: m.lastUpdated,
-                localStatus: TrailLocalStatusValues.downloaded,
-                localVersion: m.localVersion,
-              ))
+          .map(
+            (m) => CatalogEntry(
+              trailId: m.trailId,
+              dataVersion: m.dataVersion,
+              fileSize: m.fileSize,
+              status: m.status,
+              lastUpdated: m.lastUpdated,
+              localStatus: TrailLocalStatusValues.downloaded,
+              localVersion: m.localVersion,
+            ),
+          )
           .toList();
 
       // HORS LIGNE : NON NEGOCIABLE. Les sentiers deja telecharges restent
@@ -243,15 +247,17 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
         localStatus = TrailLocalStatusValues.downloaded;
       }
 
-      entries.add(CatalogEntry(
-        trailId: remote.trailId,
-        dataVersion: remote.dataVersion,
-        fileSize: remote.fileSize,
-        status: remote.status,
-        lastUpdated: remote.lastUpdated,
-        localStatus: localStatus,
-        localVersion: localVersion,
-      ));
+      entries.add(
+        CatalogEntry(
+          trailId: remote.trailId,
+          dataVersion: remote.dataVersion,
+          fileSize: remote.fileSize,
+          status: remote.status,
+          lastUpdated: remote.lastUpdated,
+          localStatus: localStatus,
+          localVersion: localVersion,
+        ),
+      );
     }
 
     return CatalogState(entries: entries, isOffline: false);
@@ -261,8 +267,8 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   CatalogEntry _buildEntryFromLocal(TrailManifest local) {
     final localStatus = local.localVersion != null
         ? (local.dataVersion > local.localVersion!
-            ? TrailLocalStatusValues.updateAvailable
-            : TrailLocalStatusValues.downloaded)
+              ? TrailLocalStatusValues.updateAvailable
+              : TrailLocalStatusValues.downloaded)
         : TrailLocalStatusValues.notDownloaded;
 
     return CatalogEntry(
@@ -365,18 +371,22 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     }
 
     final progression = ref.read(downloadProgressProvider(trailId).notifier);
-    progression.setProgress(DownloadProgress(
-      trailId: trailId,
-      status: DownloadStatusValues.downloading,
-      bytesDownloaded: 0,
-      totalBytes: manifestEntry.fileSize,
-      currentStep: 'downloading',
-    ));
+    progression.setProgress(
+      DownloadProgress(
+        trailId: trailId,
+        status: DownloadStatusValues.downloading,
+        bytesDownloaded: 0,
+        totalBytes: manifestEntry.fileSize,
+        currentStep: 'downloading',
+      ),
+    );
 
     var donneesPosees = false;
 
     try {
-      final bilan = await ref.read(deltaUpdateServiceProvider).synchroniser(
+      final bilan = await ref
+          .read(deltaUpdateServiceProvider)
+          .synchroniser(
             trailId,
             TrailDataSource.urlDonneesSentier(manifestEntry.filePath),
             revisionCible: manifestEntry.dataVersion,
@@ -397,13 +407,15 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
         'comme hors niveau.',
       );
 
-      progression.setProgress(DownloadProgress(
-        trailId: trailId,
-        status: DownloadStatusValues.completed,
-        bytesDownloaded: manifestEntry.fileSize,
-        totalBytes: manifestEntry.fileSize,
-        currentStep: 'completed',
-      ));
+      progression.setProgress(
+        DownloadProgress(
+          trailId: trailId,
+          status: DownloadStatusValues.completed,
+          bytesDownloaded: manifestEntry.fileSize,
+          totalBytes: manifestEntry.fileSize,
+          currentStep: 'completed',
+        ),
+      );
       _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
       donneesPosees = true;
     } catch (e) {
@@ -411,14 +423,16 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       // prendre » et l echec est DIT. C est la contrepartie de la copie atomique,
       // et elle vaut mieux qu un demi-sentier presente comme disponible.
       _log.e('[CatalogNotifier] Copie de $trailId echouee : $e');
-      progression.setProgress(DownloadProgress(
-        trailId: trailId,
-        status: DownloadStatusValues.error,
-        bytesDownloaded: 0,
-        totalBytes: manifestEntry.fileSize,
-        currentStep: 'downloading',
-        error: e.toString(),
-      ));
+      progression.setProgress(
+        DownloadProgress(
+          trailId: trailId,
+          status: DownloadStatusValues.error,
+          bytesDownloaded: 0,
+          totalBytes: manifestEntry.fileSize,
+          currentStep: 'downloading',
+          error: e.toString(),
+        ),
+      );
       _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
     }
 
@@ -446,9 +460,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       if (bilanDesCartes.posee) {
         _log.d(
           '[CatalogNotifier] $trailId : carte hors ligne posee, '
-          '${ProgressionDeCarte.enMegaoctets(
-                bilanDesCartes.carte!.octetsSurLeTelephone,
-              ).toStringAsFixed(1)} Mo.',
+          '${ProgressionDeCarte.enMegaoctets(bilanDesCartes.carte!.octetsSurLeTelephone).toStringAsFixed(1)} Mo.',
         );
         return;
       }
@@ -500,8 +512,8 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       _log.w(
         '[CatalogNotifier] Suppression de $trailId refusee : '
         '${refus == RefusDeSuppression.sentierAchete ? "sentier ACHETE — ses "
-            "donnees ne peuvent pas etre effacees" : "rien a supprimer, le "
-            "sentier n est pas sur le telephone"}.',
+                  "donnees ne peuvent pas etre effacees" : "rien a supprimer, le "
+                  "sentier n est pas sur le telephone"}.',
       );
       return refus;
     }
@@ -524,7 +536,8 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
 
     return DisponibiliteDuSentier(
       trailId: trailId,
-      copieComplete: revisionLocale != null &&
+      copieComplete:
+          revisionLocale != null &&
           revisionLocale > RevisionDeDonnee.revisionInitiale &&
           (ligne == null || revisionLocale >= ligne.dataVersion),
       achete: possedes.contains(trailId),
@@ -589,7 +602,9 @@ class DownloadProgressNotifier extends AsyncNotifier<DownloadProgress?> {
 }
 
 /// Provider de progression par trailId.
-final downloadProgressProvider = AsyncNotifierProvider.family<
-    DownloadProgressNotifier, DownloadProgress?, String>(
-  DownloadProgressNotifier.new,
-);
+final downloadProgressProvider =
+    AsyncNotifierProvider.family<
+      DownloadProgressNotifier,
+      DownloadProgress?,
+      String
+    >(DownloadProgressNotifier.new);

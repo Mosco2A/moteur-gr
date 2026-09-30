@@ -144,16 +144,23 @@ void main() {
 
   group('PurchaseGateWidget', () {
     testWidgets('trek non achete : bandeau demo affiche', (tester) async {
-      await tester.pumpWidget(wrap(
-        const PurchaseGateWidget(
-          trailId: 'gr-pyrenees',
-          child: Text('Contenu du trek'),
+      await tester.pumpWidget(
+        wrap(
+          const PurchaseGateWidget(
+            trailId: 'gr-pyrenees',
+            child: Text('Contenu du trek'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.text(t.monetization.demoBanner), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });
@@ -161,29 +168,37 @@ void main() {
     testWidgets('trek achete : contenu nu, pas de bandeau', (tester) async {
       await svc.buyTrail('gr-pyrenees');
 
-      await tester.pumpWidget(wrap(
-        const PurchaseGateWidget(
-          trailId: 'gr-pyrenees',
-          child: Text('Contenu du trek'),
+      await tester.pumpWidget(
+        wrap(
+          const PurchaseGateWidget(
+            trailId: 'gr-pyrenees',
+            child: Text('Contenu du trek'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.text(t.monetization.demoBanner), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+        ),
+        findsNothing,
+      );
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });
 
-    testWidgets(
-        'achat pendant affichage : le bandeau demo disparait sans remount '
+    testWidgets('achat pendant affichage : le bandeau demo disparait sans remount '
         '(reserve QA)', (tester) async {
-      await tester.pumpWidget(wrap(
-        const PurchaseGateWidget(
-          trailId: 'gr-pyrenees',
-          child: Text('Contenu du trek'),
+      await tester.pumpWidget(
+        wrap(
+          const PurchaseGateWidget(
+            trailId: 'gr-pyrenees',
+            child: Text('Contenu du trek'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       // Etat initial : trek en demo -> bandeau visible.
@@ -195,19 +210,27 @@ void main() {
 
       // isDemoModeProvider relance via le stream d'entitlements : bandeau parti.
       expect(find.text(t.monetization.demoBanner), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.cadenas), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+        ),
+        findsNothing,
+      );
       expect(find.text('Contenu du trek'), findsOneWidget);
       await tearDownTree(tester);
     });
 
-    testWidgets('tap bandeau ouvre le paywall, achat debloque via wallet',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        const PurchaseGateWidget(
-          trailId: 'gr-pyrenees',
-          child: Text('Contenu du trek'),
+    testWidgets('tap bandeau ouvre le paywall, achat debloque via wallet', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const PurchaseGateWidget(
+            trailId: 'gr-pyrenees',
+            child: Text('Contenu du trek'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       // Ouvrir le paywall via le bandeau.

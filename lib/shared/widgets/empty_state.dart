@@ -27,18 +27,38 @@ class EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingXl),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          StepIcon(icon, size: iconSize, color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120)),
-          const SizedBox(height: AppTheme.spacingBase),
-          Text(title, style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisTexteSecondaire),
-            textAlign: TextAlign.center),
-          if (subtitle != null) ...[
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(subtitle!, style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.grisTexteSecondaire.withAlpha(180)), textAlign: TextAlign.center),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            StepIcon(
+              icon,
+              size: iconSize,
+              color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120),
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+            Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (subtitle != null) ...[
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.grisTexteSecondaire.withAlpha(180),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (action != null) ...[
+              const SizedBox(height: AppTheme.spacingLg),
+              action!,
+            ],
           ],
-          if (action != null) ...[const SizedBox(height: AppTheme.spacingLg), action!],
-        ]),
+        ),
       ),
     );
   }

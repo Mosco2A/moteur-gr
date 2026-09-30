@@ -33,15 +33,15 @@ class EmergencyContactsService {
   EmergencyContactsService({
     List<TrailEmergencyNumber> trailEmergencyNumbers = const [],
   }) : _trailContacts = [
-          for (var i = 0; i < trailEmergencyNumbers.length; i++)
-            EmergencyContact(
-              id: 'auto-trail-$i',
-              name: trailEmergencyNumbers[i].name,
-              phone: trailEmergencyNumbers[i].phone,
-              priority: 901 + i,
-              isAutomatic: true,
-            ),
-        ];
+         for (var i = 0; i < trailEmergencyNumbers.length; i++)
+           EmergencyContact(
+             id: 'auto-trail-$i',
+             name: trailEmergencyNumbers[i].name,
+             phone: trailEmergencyNumbers[i].phone,
+             priority: 901 + i,
+             isAutomatic: true,
+           ),
+       ];
 
   /// Secours regionaux du sentier actif (depuis TrailConfig).
   final List<EmergencyContact> _trailContacts;
@@ -99,8 +99,9 @@ class EmergencyContactsService {
 
   /// Retourne uniquement les contacts de secours automatiques.
   List<EmergencyContact> getAutomaticContacts() {
-    return List.unmodifiable(
-      [...kUniversalEmergencyContacts, ..._trailContacts],
-    );
+    return List.unmodifiable([
+      ...kUniversalEmergencyContacts,
+      ..._trailContacts,
+    ]);
   }
 }

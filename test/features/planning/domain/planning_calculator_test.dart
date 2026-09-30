@@ -67,17 +67,13 @@ void main() {
 
         expect(plan.length, 3);
         // Toutes les étapes doivent être présentes
-        final allStages =
-            plan.expand((d) => d.stages).toList();
+        final allStages = plan.expand((d) => d.stages).toList();
         expect(allStages.length, 5);
         // Aucun jour de repos
         expect(plan.where((d) => d.isRestDay).length, 0);
         // Ordre séquentiel préservé
         for (var i = 0; i < allStages.length - 1; i++) {
-          expect(
-            allStages[i].stageNumber < allStages[i + 1].stageNumber,
-            true,
-          );
+          expect(allStages[i].stageNumber < allStages[i + 1].stageNumber, true);
         }
       });
 
@@ -126,7 +122,8 @@ void main() {
           expect(
             ecart < 0.35,
             true,
-            reason: 'Écart $ecart dépasse 35% '
+            reason:
+                'Écart $ecart dépasse 35% '
                 '(score=$score, moyenne=$avg)',
           );
         }

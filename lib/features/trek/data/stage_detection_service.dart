@@ -22,9 +22,7 @@ class StageDetectionService {
   /// [hysteresisMeters] -- marge anti flip-flop en metres (defaut 200m).
   /// Une nouvelle etape n'est emise que si sa distance minimale
   /// est inferieure a (distance etape courante - hysteresis).
-  StageDetectionService({
-    this.hysteresisMeters = 200.0,
-  });
+  StageDetectionService({this.hysteresisMeters = 200.0});
 
   /// Marge d'hysteresis en metres pour empecher le flip-flop.
   final double hysteresisMeters;
@@ -92,40 +90,44 @@ class StageDetectionService {
 
     String? lastEmittedId;
 
-    return positionStream.map((position) {
-      final lat = position.latitude;
-      final lng = position.longitude;
+    return positionStream
+        .map((position) {
+          final lat = position.latitude;
+          final lng = position.longitude;
 
-      final closest = _findClosestStage(lat, lng, stages);
-      if (closest == null) return null;
+          final closest = _findClosestStage(lat, lng, stages);
+          if (closest == null) return null;
 
-      // Premier point -- pas d'hysteresis
-      if (lastEmittedId == null) {
-        lastEmittedId = closest.stageId;
-        return closest.stageId;
-      }
+          // Premier point -- pas d'hysteresis
+          if (lastEmittedId == null) {
+            lastEmittedId = closest.stageId;
+            return closest.stageId;
+          }
 
-      // Meme etape -- pas de changement
-      if (closest.stageId == lastEmittedId) {
-        return closest.stageId;
-      }
+          // Meme etape -- pas de changement
+          if (closest.stageId == lastEmittedId) {
+            return closest.stageId;
+          }
 
-      // Etape differente -- verifier l'hysteresis
-      // On compare la distance a la nouvelle etape candidate
-      // avec la distance a l'etape courante.
-      // Le changement ne se fait que si la nouvelle est plus proche
-      // d'au moins hysteresisMeters.
-      final currentStage = stages.where((s) => s.id == lastEmittedId).first;
-      final currentDist = _distanceToStage(lat, lng, currentStage);
+          // Etape differente -- verifier l'hysteresis
+          // On compare la distance a la nouvelle etape candidate
+          // avec la distance a l'etape courante.
+          // Le changement ne se fait que si la nouvelle est plus proche
+          // d'au moins hysteresisMeters.
+          final currentStage = stages.where((s) => s.id == lastEmittedId).first;
+          final currentDist = _distanceToStage(lat, lng, currentStage);
 
-      if (closest.distance < currentDist - hysteresisMeters) {
-        lastEmittedId = closest.stageId;
-        return closest.stageId;
-      }
+          if (closest.distance < currentDist - hysteresisMeters) {
+            lastEmittedId = closest.stageId;
+            return closest.stageId;
+          }
 
-      // Hysteresis bloque le changement -- garder l'etape courante
-      return lastEmittedId;
-    }).where((id) => id != null).cast<String>().distinct();
+          // Hysteresis bloque le changement -- garder l'etape courante
+          return lastEmittedId;
+        })
+        .where((id) => id != null)
+        .cast<String>()
+        .distinct();
   }
 }
 

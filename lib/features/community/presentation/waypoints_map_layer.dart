@@ -37,8 +37,9 @@ class WaypointsMapLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtered =
-        waypoints.where((w) => visibleTypes.contains(w.type)).toList();
+    final filtered = waypoints
+        .where((w) => visibleTypes.contains(w.type))
+        .toList();
 
     if (filtered.isEmpty) {
       return const SizedBox.shrink();

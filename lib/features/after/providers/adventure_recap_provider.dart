@@ -209,7 +209,6 @@ final adventureCongratulationsProvider = Provider<TrekCongratulations?>((ref) {
   return TrekCongratulations.forPlan(plan);
 });
 
-
 /// Une journee de marche du recapitulatif (CORRECTIF L5-5).
 class AdventureDay {
   const AdventureDay({
@@ -273,12 +272,14 @@ final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
         stageIds.add(id);
       }
     }
-    days.add(AdventureDay(
-      dayIndex: entry.key is int ? entry.key as int : null,
-      date: dayOf(dayPoints.first.recordedAt),
-      stats: computeTrackStats(dayPoints),
-      stageIds: stageIds,
-    ));
+    days.add(
+      AdventureDay(
+        dayIndex: entry.key is int ? entry.key as int : null,
+        date: dayOf(dayPoints.first.recordedAt),
+        stats: computeTrackStats(dayPoints),
+        stageIds: stageIds,
+      ),
+    );
   }
 
   days.sort((a, b) => a.date.compareTo(b.date));

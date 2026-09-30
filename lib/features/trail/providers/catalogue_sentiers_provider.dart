@@ -235,16 +235,18 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
 
       final entrees = <TrailManifestEntry>[];
       for (final ligne in lignes) {
-        entrees.add(TrailManifestEntry(
-          trailId: ligne.trailId,
-          dataVersion: ligne.dataVersion,
-          hash: ligne.hash,
-          filePath: ligne.filePath,
-          fileSize: ligne.fileSize,
-          status: ligne.status,
-          lastUpdated: ligne.lastUpdated,
-          fiche: ManifestService.ficheDepuisJson(ligne.ficheJson),
-        ));
+        entrees.add(
+          TrailManifestEntry(
+            trailId: ligne.trailId,
+            dataVersion: ligne.dataVersion,
+            hash: ligne.hash,
+            filePath: ligne.filePath,
+            fileSize: ligne.fileSize,
+            status: ligne.status,
+            lastUpdated: ligne.lastUpdated,
+            fiche: ManifestService.ficheDepuisJson(ligne.ficheJson),
+          ),
+        );
       }
 
       final fusion = _fusionner(entrees);
@@ -353,5 +355,5 @@ class _Fusion {
 /// Provider du catalogue effectif (distant > dernier recu > compile).
 final catalogueSentiersProvider =
     NotifierProvider<CatalogueSentiersNotifier, CatalogueSentiers>(
-  CatalogueSentiersNotifier.new,
-);
+      CatalogueSentiersNotifier.new,
+    );

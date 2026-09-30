@@ -49,9 +49,9 @@ void main() {
     test('retourne tous les POIs quand tous les types sont actifs', () async {
       final container = ProviderContainer(
         overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(testPois),
-          ),
+          poisProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testPois)),
         ],
       );
       addTearDown(container.dispose);
@@ -63,15 +63,24 @@ void main() {
     test('filtre correctement quand un type est désactivé', () async {
       final container = ProviderContainer(
         overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(testPois),
-          ),
+          poisProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testPois)),
         ],
       );
       addTearDown(container.dispose);
 
       // Désactiver le type water
-      final activeTypes = <String>{'shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop'};
+      final activeTypes = <String>{
+        'shelter',
+        'water',
+        'viewpoint',
+        'campsite',
+        'restaurant',
+        'emergency',
+        'danger',
+        'shop',
+      };
       activeTypes.remove('water');
       container.read(activePoiTypesProvider.notifier).state = activeTypes;
 
@@ -80,38 +89,40 @@ void main() {
       expect(result.any((p) => p.type == 'water'), isFalse);
     });
 
-    test('retourne une liste vide quand tous les types sont désactivés',
-        () async {
-      final container = ProviderContainer(
-        overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(testPois),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
+    test(
+      'retourne une liste vide quand tous les types sont désactivés',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(testPois)),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      // Tout désactiver
-      container.read(activePoiTypesProvider.notifier).state = {};
+        // Tout désactiver
+        container.read(activePoiTypesProvider.notifier).state = {};
 
-      final result = await container.read(mapPoisProvider('test-trail').future);
-      expect(result, isEmpty);
-    });
+        final result = await container.read(
+          mapPoisProvider('test-trail').future,
+        );
+        expect(result, isEmpty);
+      },
+    );
 
     test('filtre pour un seul type activé', () async {
       final container = ProviderContainer(
         overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(testPois),
-          ),
+          poisProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testPois)),
         ],
       );
       addTearDown(container.dispose);
 
       // N'activer que shelter
-      container.read(activePoiTypesProvider.notifier).state = {
-        'shelter',
-      };
+      container.read(activePoiTypesProvider.notifier).state = {'shelter'};
 
       final result = await container.read(mapPoisProvider('test-trail').future);
       expect(result.length, 1);
@@ -133,7 +144,19 @@ void main() {
       addTearDown(container.dispose);
 
       final notifier = container.read(activePoiTypesProvider.notifier);
-      final current = Set<String>.from(notifier.state ?? {'shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop'});
+      final current = Set<String>.from(
+        notifier.state ??
+            {
+              'shelter',
+              'water',
+              'viewpoint',
+              'campsite',
+              'restaurant',
+              'emergency',
+              'danger',
+              'shop',
+            },
+      );
       current.remove('danger');
       notifier.state = current;
 
@@ -148,9 +171,9 @@ void main() {
     test('retourne les types présents dans les données', () async {
       final container = ProviderContainer(
         overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(testPois),
-          ),
+          poisProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(testPois)),
         ],
       );
       addTearDown(container.dispose);
@@ -158,18 +181,15 @@ void main() {
       final result = await container.read(
         availablePoiTypesProvider('test-trail').future,
       );
-      expect(
-        result,
-        {'water', 'viewpoint', 'shelter', 'danger'},
-      );
+      expect(result, {'water', 'viewpoint', 'shelter', 'danger'});
     });
 
     test('retourne un ensemble vide quand il n\'y a pas de POIs', () async {
       final container = ProviderContainer(
         overrides: [
-          poisProvider('test-trail').overrideWith(
-            (ref) => Future.value(<PoiModel>[]),
-          ),
+          poisProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(<PoiModel>[])),
         ],
       );
       addTearDown(container.dispose);

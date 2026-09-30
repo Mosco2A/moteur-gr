@@ -9,8 +9,9 @@ import '../../../core/providers/database_provider.dart';
 /// Finitions V8 F3 : points persistés au fil de l'eau par le tracking
 /// (table session_track_points), affichés dans le récap diplôme.
 /// Liste vide si aucune session enregistrée.
-final sessionTraceProvider =
-    FutureProvider<List<SessionTrackPoint>>((ref) async {
+final sessionTraceProvider = FutureProvider<List<SessionTrackPoint>>((
+  ref,
+) async {
   final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
   final db = ref.watch(databaseProvider);
   return db.sessionTrackPointsDao.getByTrailId(trailId);

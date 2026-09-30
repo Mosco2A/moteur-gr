@@ -47,12 +47,14 @@ void main() {
 
   group('AppHeader — contenu & boutons', () {
     testWidgets('rend le titre + Retour + Accueil', (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Titre'),
-          body: SizedBox(),
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Titre'),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -60,16 +62,23 @@ void main() {
       expect(find.text('Titre'), findsOneWidget);
       expect(find.byTooltip(t.nav.back), findsOneWidget);
       expect(find.byTooltip(t.nav.home), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('showBack=false : pas de bouton Retour', (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Racine', showBack: false),
-          body: SizedBox(),
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Racine', showBack: false),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -79,12 +88,14 @@ void main() {
     });
 
     testWidgets('showHome=false : pas de bouton Accueil', (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Titre', showHome: false),
-          body: SizedBox(),
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Titre', showHome: false),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -93,40 +104,56 @@ void main() {
       expect(find.byTooltip(t.nav.back), findsOneWidget);
     });
 
-    testWidgets('actions additionnelles rendues avant l\'Accueil',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: Scaffold(
-          appBar: AppHeader(
-            title: 'Titre',
-            actions: [
-              IconButton(
-                icon: const StepIcon(StepwaysIcons.info),
-                onPressed: () {},
-              ),
-            ],
+    testWidgets('actions additionnelles rendues avant l\'Accueil', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          headerHost: Scaffold(
+            appBar: AppHeader(
+              title: 'Titre',
+              actions: [
+                IconButton(
+                  icon: const StepIcon(StepwaysIcons.info),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            body: const SizedBox(),
           ),
-          body: const SizedBox(),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
 
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.info), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.info,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+        ),
+        findsOneWidget,
+      );
     });
   });
 
   group('AppHeader — navigation', () {
-    testWidgets('Retour dépile quand canPop (retour à l\'écran précédent)',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Titre'),
-          body: SizedBox(),
+    testWidgets('Retour dépile quand canPop (retour à l\'écran précédent)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Titre'),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -138,14 +165,17 @@ void main() {
       expect(find.text('Titre'), findsNothing);
     });
 
-    testWidgets('Accueil route vers /my-treks (ne quitte pas l\'app)',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Titre'),
-          body: SizedBox(),
+    testWidgets('Accueil route vers /my-treks (ne quitte pas l\'app)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Titre'),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -155,8 +185,9 @@ void main() {
       expect(find.text('MY_TREKS_STUB'), findsOneWidget);
     });
 
-    testWidgets('Ph3 : Accueil CONTEXTUEL -> /home quand une rando est active',
-        (tester) async {
+    testWidgets('Ph3 : Accueil CONTEXTUEL -> /home quand une rando est active', (
+      tester,
+    ) async {
       // Accueil contextuel (homeLocationProvider) : un trek actif -> le bouton
       // Accueil route vers le cockpit /home (terrain), pas /my-treks (maison).
       final router = GoRouter(
@@ -190,14 +221,16 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(ProviderScope(
-        overrides: [
-          activeTrekIdProvider.overrideWith((ref) async => 'volcans'),
-        ],
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            activeTrekIdProvider.overrideWith((ref) async => 'volcans'),
+          ],
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -210,12 +243,14 @@ void main() {
 
     testWidgets('onBack surcharge le geste retour', (tester) async {
       var custom = false;
-      await tester.pumpWidget(wrap(
-        headerHost: Scaffold(
-          appBar: AppHeader(title: 'Titre', onBack: () => custom = true),
-          body: const SizedBox(),
+      await tester.pumpWidget(
+        wrap(
+          headerHost: Scaffold(
+            appBar: AppHeader(title: 'Titre', onBack: () => custom = true),
+            body: const SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -227,8 +262,9 @@ void main() {
       expect(find.text('Titre'), findsOneWidget);
     });
 
-    testWidgets('à la racine (pile vide), Retour route vers l\'accueil',
-        (tester) async {
+    testWidgets('à la racine (pile vide), Retour route vers l\'accueil', (
+      tester,
+    ) async {
       // AppHeader monté à la RACINE (initialLocation) : canPop faux -> le bouton
       // Retour route vers l'accueil (homeLocation), jamais de cul-de-sac.
       final router = GoRouter(
@@ -247,11 +283,13 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(ProviderScope(
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip(t.nav.back));
@@ -261,8 +299,9 @@ void main() {
   });
 
   group('AppHeader — back Android (PopScope)', () {
-    testWidgets('à la racine, PopScope garde la main (canPop=false)',
-        (tester) async {
+    testWidgets('à la racine, PopScope garde la main (canPop=false)', (
+      tester,
+    ) async {
       // À la racine (pile vide), le back Android ne doit PAS quitter en silence :
       // l'AppHeader installe un PopScope(canPop:false) qui intercepte le geste
       // système pour demander confirmation (fixed start destination, AUDIT §M-3).
@@ -279,11 +318,13 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(ProviderScope(
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       final popScope = tester.widget<PopScope<Object?>>(
@@ -292,21 +333,27 @@ void main() {
           matching: find.byType(PopScope<Object?>),
         ),
       );
-      expect(popScope.canPop, isFalse,
-          reason: 'racine -> PopScope garde la main (pas de sortie silencieuse)');
+      expect(
+        popScope.canPop,
+        isFalse,
+        reason: 'racine -> PopScope garde la main (pas de sortie silencieuse)',
+      );
       expect(popScope.onPopInvokedWithResult, isNotNull);
     });
 
-    testWidgets('hors racine, PopScope laisse dépiler (canPop=true)',
-        (tester) async {
+    testWidgets('hors racine, PopScope laisse dépiler (canPop=true)', (
+      tester,
+    ) async {
       // Hors racine (une page empilée), le retour est normal : PopScope(canPop:
       // true) laisse le Navigator dépiler (animation predictive Android préservée).
-      await tester.pumpWidget(wrap(
-        headerHost: const Scaffold(
-          appBar: AppHeader(title: 'Titre'),
-          body: SizedBox(),
+      await tester.pumpWidget(
+        wrap(
+          headerHost: const Scaffold(
+            appBar: AppHeader(title: 'Titre'),
+            body: SizedBox(),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('PUSH'));
       await tester.pumpAndSettle();
@@ -317,8 +364,11 @@ void main() {
           matching: find.byType(PopScope<Object?>),
         ),
       );
-      expect(popScope.canPop, isTrue,
-          reason: 'hors racine -> le Navigator dépile normalement');
+      expect(
+        popScope.canPop,
+        isTrue,
+        reason: 'hors racine -> le Navigator dépile normalement',
+      );
     });
   });
 }

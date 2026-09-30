@@ -38,8 +38,11 @@ void main() {
         type: ShareLinkTypeValues.app,
       );
 
-      expect(link, isNotNull,
-          reason: 'le canal app est configure dans ce test : un lien doit sortir');
+      expect(
+        link,
+        isNotNull,
+        reason: 'le canal app est configure dans ce test : un lien doit sortir',
+      );
       expect(link!.sessionId, 'sess-001');
       expect(link.type, ShareLinkTypeValues.app);
       expect(link.url, 'montrek://follow/XK9P2L');
@@ -114,10 +117,7 @@ void main() {
     });
 
     test('addFollower retourne null si Firebase indisponible', () async {
-      final slot = await svc.addFollower(
-        sessionId: 'sess-001',
-        name: 'Marie',
-      );
+      final slot = await svc.addFollower(sessionId: 'sess-001', name: 'Marie');
       expect(slot, isNull);
     });
   });

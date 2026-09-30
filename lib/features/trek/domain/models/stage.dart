@@ -87,8 +87,7 @@ abstract class Stage with _$Stage {
   }) = _Stage;
 
   /// Duree estimee sous forme de Duration
-  Duration get estimatedDuration =>
-      Duration(seconds: estimatedDurationSeconds);
+  Duration get estimatedDuration => Duration(seconds: estimatedDurationSeconds);
 
   /// Deserialisation depuis JSON
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);

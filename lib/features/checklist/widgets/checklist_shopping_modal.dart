@@ -44,9 +44,9 @@ class _ChecklistShoppingModalState
       buffer.writeln('${entry.key} :');
       for (final item in remaining) {
         final name = checklistItemDisplayName(item);
-        buffer.writeln(item.quantity > 1
-            ? '  - $name (x${item.quantity})'
-            : '  - $name');
+        buffer.writeln(
+          item.quantity > 1 ? '  - $name (x${item.quantity})' : '  - $name',
+        );
       }
       buffer.writeln('');
     }
@@ -114,7 +114,10 @@ class _ChecklistShoppingModalState
               ),
               child: Row(
                 children: [
-                  StepIcon(StepwaysIcons.panier, color: theme.colorScheme.primary),
+                  StepIcon(
+                    StepwaysIcons.panier,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(ui.shoppingListTitle, style: theme.textTheme.titleLarge),
                 ],
@@ -174,8 +177,11 @@ class _ChecklistShoppingModalState
                       ),
                       child: Row(
                         children: [
-                          const StepIcon(StepwaysIcons.cochePleine,
-                              size: 18, color: AppTheme.vertFacile),
+                          const StepIcon(
+                            StepwaysIcons.cochePleine,
+                            size: 18,
+                            color: AppTheme.vertFacile,
+                          ),
                           const SizedBox(width: AppTheme.spacingSm),
                           Text(
                             ui.shoppingPurchased,

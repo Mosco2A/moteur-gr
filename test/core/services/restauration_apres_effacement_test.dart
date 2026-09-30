@@ -72,18 +72,17 @@ void main() {
   RestoreService makeRestore({
     ConsentCheck? consent,
     LocalErasureCheck? erasure,
-  }) =>
-      RestoreService(
-        progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
-        checklistDao: ChecklistDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        hikerProfileDao: db.hikerProfileDao,
-        pastHikesDao: db.pastHikesDao,
-        consentCheck: consent,
-        localErasureCheck: erasure,
-      );
+  }) => RestoreService(
+    progressDao: ProgressDao(db),
+    journalDao: JournalDao(db),
+    checklistDao: ChecklistDao(db),
+    connectivityMonitor: connectivity,
+    firebaseService: FirebaseService.testOnly(isAvailable: true),
+    hikerProfileDao: db.hikerProfileDao,
+    pastHikesDao: db.pastHikesDao,
+    consentCheck: consent,
+    localErasureCheck: erasure,
+  );
 
   /// Joue l'effacement REEL de l'article 17, par le chemin de l'application.
   Future<void> effacerVraiment() async {
@@ -92,32 +91,52 @@ void main() {
   }
 
   group('N2 — l effacement laisse une trace que la restauration peut lire', () {
-    test('l effacement pose le marqueur, et il SURVIT a sa propre purge de cles',
-        () async {
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString(kLocalErasureMarkerPrefsKey), isNull,
-          reason: 'le test ne prouve rien si le marqueur etait deja la');
+    test(
+      'l effacement pose le marqueur, et il SURVIT a sa propre purge de cles',
+      () async {
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getString(kLocalErasureMarkerPrefsKey),
+          isNull,
+          reason: 'le test ne prouve rien si le marqueur etait deja la',
+        );
 
-      await effacerVraiment();
+        await effacerVraiment();
 
-      final marqueur = prefs.getString(kLocalErasureMarkerPrefsKey);
-      expect(marqueur, isNotNull,
-          reason: 'sans cette trace, aucune garde ne peut savoir');
-      expect(DateTime.tryParse(marqueur!), isNotNull,
-          reason: 'une date lisible, pas un drapeau muet : on doit pouvoir dire '
-              'QUAND le droit a ete exerce');
-    });
+        final marqueur = prefs.getString(kLocalErasureMarkerPrefsKey);
+        expect(
+          marqueur,
+          isNotNull,
+          reason: 'sans cette trace, aucune garde ne peut savoir',
+        );
+        expect(
+          DateTime.tryParse(marqueur!),
+          isNotNull,
+          reason:
+              'une date lisible, pas un drapeau muet : on doit pouvoir dire '
+              'QUAND le droit a ete exerce',
+        );
+      },
+    );
 
-    test('la lecture par defaut du marqueur dit la verite dans les deux sens',
-        () async {
-      expect(await localErasureFromStore(), isFalse,
-          reason: 'aucun effacement : rien ne doit etre refuse');
+    test(
+      'la lecture par defaut du marqueur dit la verite dans les deux sens',
+      () async {
+        expect(
+          await localErasureFromStore(),
+          isFalse,
+          reason: 'aucun effacement : rien ne doit etre refuse',
+        );
 
-      await effacerVraiment();
+        await effacerVraiment();
 
-      expect(await localErasureFromStore(), isTrue,
-          reason: 'c est cette lecture que branche la garde par defaut');
-    });
+        expect(
+          await localErasureFromStore(),
+          isTrue,
+          reason: 'c est cette lecture que branche la garde par defaut',
+        );
+      },
+    );
   });
 
   group('N2 — la restauration refuse ce qui vient d etre efface', () {
@@ -127,11 +146,18 @@ void main() {
       final result = await makeRestore().restoreFromCloud('hash-anon');
 
       expect(result.success, isFalse);
-      expect(result.error, kRestoreErrorErasedLocally,
-          reason: 'le refus ne doit se confondre ni avec un hors-ligne ni '
-              'avec un Firebase indisponible');
-      expect((await db.select(db.userProgressEntries).get()), isEmpty,
-          reason: 'aucune ligne ne doit avoir ete re-hydratee');
+      expect(
+        result.error,
+        kRestoreErrorErasedLocally,
+        reason:
+            'le refus ne doit se confondre ni avec un hors-ligne ni '
+            'avec un Firebase indisponible',
+      );
+      expect(
+        (await db.select(db.userProgressEntries).get()),
+        isEmpty,
+        reason: 'aucune ligne ne doit avoir ete re-hydratee',
+      );
       expect((await db.select(db.journalEntries).get()), isEmpty);
     });
 
@@ -148,10 +174,16 @@ void main() {
 
       final result = await makeRestore().restoreHikerProfile('hash-anon');
 
-      expect(result.error, kRestoreErrorErasedLocally,
-          reason: 'la garde art. 9 n est pas une garde d effacement');
-      expect((await db.select(db.hikerProfile).get()), isEmpty,
-          reason: 'aucune donnee de sante ne doit redescendre');
+      expect(
+        result.error,
+        kRestoreErrorErasedLocally,
+        reason: 'la garde art. 9 n est pas une garde d effacement',
+      );
+      expect(
+        (await db.select(db.hikerProfile).get()),
+        isEmpty,
+        reason: 'aucune donnee de sante ne doit redescendre',
+      );
       expect((await db.select(db.pastHikeEntries).get()), isEmpty);
     });
 
@@ -160,56 +192,79 @@ void main() {
 
       final check = await makeRestore().checkAndRestore('hash-anon');
 
-      expect(check.hasCloudData, isFalse,
-          reason: 'proposer une restauration apres un effacement, c est '
-              'proposer de defaire le droit qu on vient d exercer');
-      expect(check.erasedLocally, isTrue,
-          reason: 'un « rien a restaurer » muet serait un autre mensonge : '
-              'l appelant doit pouvoir dire au randonneur POURQUOI');
+      expect(
+        check.hasCloudData,
+        isFalse,
+        reason:
+            'proposer une restauration apres un effacement, c est '
+            'proposer de defaire le droit qu on vient d exercer',
+      );
+      expect(
+        check.erasedLocally,
+        isTrue,
+        reason:
+            'un « rien a restaurer » muet serait un autre mensonge : '
+            'l appelant doit pouvoir dire au randonneur POURQUOI',
+      );
     });
   });
 
-  group('N2 — la garde est fermee par defaut, et elle ne bloque rien d autre',
-      () {
-    test('etat du marqueur ILLISIBLE -> refus (le doute protege la personne)',
+  group(
+    'N2 — la garde est fermee par defaut, et elle ne bloque rien d autre',
+    () {
+      test(
+        'etat du marqueur ILLISIBLE -> refus (le doute protege la personne)',
         () async {
-      final result = await makeRestore(
-        erasure: () async => throw Exception('prefs indisponibles'),
-      ).restoreFromCloud('hash-anon');
+          final result = await makeRestore(
+            erasure: () async => throw Exception('prefs indisponibles'),
+          ).restoreFromCloud('hash-anon');
 
-      expect(result.error, kRestoreErrorErasedLocally,
-          reason: 'un doute sur l effacement se tranche par le refus, jamais '
-              'par la restauration');
-    });
+          expect(
+            result.error,
+            kRestoreErrorErasedLocally,
+            reason:
+                'un doute sur l effacement se tranche par le refus, jamais '
+                'par la restauration',
+          );
+        },
+      );
 
-    test('sans effacement, la garde laisse passer les deux chemins', () async {
-      final restore = makeRestore();
+      test('sans effacement, la garde laisse passer les deux chemins', () async {
+        final restore = makeRestore();
 
-      final cloud = await restore.restoreFromCloud('hash-anon');
-      final profil = await makeRestore(consent: (_) async => true)
-          .restoreHikerProfile('hash-anon');
-      final check = await restore.checkAndRestore('hash-anon');
+        final cloud = await restore.restoreFromCloud('hash-anon');
+        final profil = await makeRestore(
+          consent: (_) async => true,
+        ).restoreHikerProfile('hash-anon');
+        final check = await restore.checkAndRestore('hash-anon');
 
-      // Firestore n'est pas joignable en test : on n'exige pas un succes, on
-      // exige que l'effacement ne soit PAS la raison de l'echec.
-      expect(cloud.error, isNot(kRestoreErrorErasedLocally));
-      expect(profil.error, isNot(kRestoreErrorErasedLocally));
-      expect(check.erasedLocally, isFalse);
-    });
+        // Firestore n'est pas joignable en test : on n'exige pas un succes, on
+        // exige que l'effacement ne soit PAS la raison de l'echec.
+        expect(cloud.error, isNot(kRestoreErrorErasedLocally));
+        expect(profil.error, isNot(kRestoreErrorErasedLocally));
+        expect(check.erasedLocally, isFalse);
+      });
 
-    test('la garde est consultee AVANT le consentement art. 9', () async {
-      await effacerVraiment();
-      var consentementInterroge = false;
+      test('la garde est consultee AVANT le consentement art. 9', () async {
+        await effacerVraiment();
+        var consentementInterroge = false;
 
-      final result = await makeRestore(consent: (_) async {
-        consentementInterroge = true;
-        return true;
-      }).restoreHikerProfile('hash-anon');
+        final result = await makeRestore(
+          consent: (_) async {
+            consentementInterroge = true;
+            return true;
+          },
+        ).restoreHikerProfile('hash-anon');
 
-      expect(result.error, kRestoreErrorErasedLocally);
-      expect(consentementInterroge, isFalse,
-          reason: 'un droit exerce se tranche avant toute autre question : '
-              'le refus le plus fort doit etre celui qui est NOMME');
-    });
-  });
+        expect(result.error, kRestoreErrorErasedLocally);
+        expect(
+          consentementInterroge,
+          isFalse,
+          reason:
+              'un droit exerce se tranche avant toute autre question : '
+              'le refus le plus fort doit etre celui qui est NOMME',
+        );
+      });
+    },
+  );
 }

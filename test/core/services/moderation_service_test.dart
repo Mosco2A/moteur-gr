@@ -25,8 +25,10 @@ import 'package:moteur_gr/core/services/moderation_service.dart';
 class _FakeModerationStore implements ModerationStore {
   final List<ModerationReport> saved = <ModerationReport>[];
   final List<ModerationReport> updated = <ModerationReport>[];
-  final List<({ModeratedContentType type, String ref, ContentModerationState state})>
-      applied = [];
+  final List<
+    ({ModeratedContentType type, String ref, ContentModerationState state})
+  >
+  applied = [];
 
   @override
   Future<void> saveReport(ModerationReport report) async {
@@ -53,10 +55,10 @@ void main() {
   final DateTime fixedNow = DateTime.utc(2026, 6, 15, 16, 30);
 
   ModerationService buildService() => ModerationService(
-        store: store,
-        idGenerator: () => 'report-fixed-id',
-        now: () => fixedNow,
-      );
+    store: store,
+    idGenerator: () => 'report-fixed-id',
+    now: () => fixedNow,
+  );
 
   setUp(() {
     store = _FakeModerationStore();
@@ -219,30 +221,34 @@ void main() {
       ModerationService service, {
       ModeratedContentType type = ModeratedContentType.waypoint,
       String ref = 'wp-1',
-    }) =>
-        service.reportContent(
-          contentType: type,
-          contentRef: ref,
-          motif: 'motif',
-          notifierContact: 'a@b.fr',
-          bonneFoi: true,
+    }) => service.reportContent(
+      contentType: type,
+      contentRef: ref,
+      motif: 'motif',
+      notifierContact: 'a@b.fr',
+      bonneFoi: true,
+    );
+
+    test(
+      'remove -> contenu cible passe removed sur la bonne collection',
+      () async {
+        final service = buildService();
+        final report = await seedReport(
+          service,
+          type: ModeratedContentType.waypoint,
+          ref: 'wp-42',
         );
 
-    test('remove -> contenu cible passe removed sur la bonne collection',
-        () async {
-      final service = buildService();
-      final report = await seedReport(service,
-          type: ModeratedContentType.waypoint, ref: 'wp-42');
+        final decided = await service.decide(report, ModerationDecision.remove);
 
-      final decided = await service.decide(report, ModerationDecision.remove);
-
-      expect(decided.status, ModerationStatus.traitee);
-      expect(decided.decision, ModerationDecision.remove);
-      expect(store.applied, hasLength(1));
-      expect(store.applied.single.type, ModeratedContentType.waypoint);
-      expect(store.applied.single.ref, 'wp-42');
-      expect(store.applied.single.state, ContentModerationState.removed);
-    });
+        expect(decided.status, ModerationStatus.traitee);
+        expect(decided.decision, ModerationDecision.remove);
+        expect(store.applied, hasLength(1));
+        expect(store.applied.single.type, ModeratedContentType.waypoint);
+        expect(store.applied.single.ref, 'wp-42');
+        expect(store.applied.single.state, ContentModerationState.removed);
+      },
+    );
 
     test('restrict -> contenu cible passe flagged', () async {
       final service = buildService();
@@ -264,17 +270,19 @@ void main() {
       expect(store.applied.single.state, ContentModerationState.visible);
     });
 
-    test('la decision met aussi a jour la notification (statut traitee)',
-        () async {
-      final service = buildService();
-      final report = await seedReport(service);
+    test(
+      'la decision met aussi a jour la notification (statut traitee)',
+      () async {
+        final service = buildService();
+        final report = await seedReport(service);
 
-      await service.decide(report, ModerationDecision.remove);
+        await service.decide(report, ModerationDecision.remove);
 
-      expect(store.updated, hasLength(1));
-      expect(store.updated.single.status, ModerationStatus.traitee);
-      expect(store.updated.single.decision, ModerationDecision.remove);
-    });
+        expect(store.updated, hasLength(1));
+        expect(store.updated.single.status, ModerationStatus.traitee);
+        expect(store.updated.single.decision, ModerationDecision.remove);
+      },
+    );
   });
 
   group('serialisation et enums', () {
@@ -322,8 +330,10 @@ void main() {
       expect(ModeratedContentType.trailReport.collectionName, 'trail_reports');
       expect(ModeratedContentType.activity.collectionName, 'activities');
       expect(ModeratedContentType.waypoint.collectionName, 'waypoints');
-      expect(ModeratedContentType.waypointComment.collectionName,
-          'waypoint_comments');
+      expect(
+        ModeratedContentType.waypointComment.collectionName,
+        'waypoint_comments',
+      );
     });
 
     test('ModeratedContentType.fromStorageKey reversible, leve si inconnu', () {
@@ -347,12 +357,18 @@ void main() {
     });
 
     test('ModerationDecision porte l\'etat resultant attendu', () {
-      expect(ModerationDecision.keep.resultingState,
-          ContentModerationState.visible);
-      expect(ModerationDecision.restrict.resultingState,
-          ContentModerationState.flagged);
-      expect(ModerationDecision.remove.resultingState,
-          ContentModerationState.removed);
+      expect(
+        ModerationDecision.keep.resultingState,
+        ContentModerationState.visible,
+      );
+      expect(
+        ModerationDecision.restrict.resultingState,
+        ContentModerationState.flagged,
+      );
+      expect(
+        ModerationDecision.remove.resultingState,
+        ContentModerationState.removed,
+      );
     });
   });
 }

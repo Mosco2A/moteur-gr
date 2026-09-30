@@ -21,9 +21,7 @@ void main() {
             FirebaseService.testOnly(isAvailable: false),
           ),
         ],
-        child: MaterialApp(
-          home: FollowWebScreen(shareCode: shareCode),
-        ),
+        child: MaterialApp(home: FollowWebScreen(shareCode: shareCode)),
       );
     }
 
@@ -36,7 +34,12 @@ void main() {
 
       // Firebase indisponible => ecran erreur affiche
       expect(find.text(t.follow.invalidLink), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lienRompu), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.lienRompu,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('sans shareCode affiche ecran erreur', (tester) async {

@@ -56,20 +56,28 @@ void main() {
       expect(diplomaT.downloadPdf, isNotEmpty);
 
       // THEN: interpolation fonctionne pour les stats
-      final stagesLabel = diplomaT.recapStages
-          .replaceAll('{count}', '${data.totalStages}');
+      final stagesLabel = diplomaT.recapStages.replaceAll(
+        '{count}',
+        '${data.totalStages}',
+      );
       expect(stagesLabel, contains('16'));
 
-      final distanceLabel = diplomaT.recapDistance
-          .replaceAll('{km}', data.totalDistanceKm.toStringAsFixed(0));
+      final distanceLabel = diplomaT.recapDistance.replaceAll(
+        '{km}',
+        data.totalDistanceKm.toStringAsFixed(0),
+      );
       expect(distanceLabel, contains('180'));
 
-      final elevationLabel = diplomaT.recapElevation
-          .replaceAll('{meters}', '${data.totalElevationGain}');
+      final elevationLabel = diplomaT.recapElevation.replaceAll(
+        '{meters}',
+        '${data.totalElevationGain}',
+      );
       expect(elevationLabel, contains('12000'));
 
-      final durationLabel = diplomaT.recapDuration
-          .replaceAll('{days}', '${data.durationDays}');
+      final durationLabel = diplomaT.recapDuration.replaceAll(
+        '{days}',
+        '${data.durationDays}',
+      );
       expect(durationLabel, contains('14'));
 
       // THEN: textes Slang diplome existants toujours OK
@@ -83,14 +91,26 @@ void main() {
       // THEN: 5 langues supportees
       for (final locale in ['fr', 'en', 'de', 'es', 'it']) {
         LocaleSettings.setLocaleRaw(locale);
-        expect(t.diploma.recapTitle, isNotEmpty,
-            reason: 'recapTitle manquant pour $locale');
-        expect(t.diploma.recapStats, isNotEmpty,
-            reason: 'recapStats manquant pour $locale');
-        expect(t.diploma.downloadPdf, isNotEmpty,
-            reason: 'downloadPdf manquant pour $locale');
-        expect(t.diploma.recapJournalPhotos, isNotEmpty,
-            reason: 'recapJournalPhotos manquant pour $locale');
+        expect(
+          t.diploma.recapTitle,
+          isNotEmpty,
+          reason: 'recapTitle manquant pour $locale',
+        );
+        expect(
+          t.diploma.recapStats,
+          isNotEmpty,
+          reason: 'recapStats manquant pour $locale',
+        );
+        expect(
+          t.diploma.downloadPdf,
+          isNotEmpty,
+          reason: 'downloadPdf manquant pour $locale',
+        );
+        expect(
+          t.diploma.recapJournalPhotos,
+          isNotEmpty,
+          reason: 'recapJournalPhotos manquant pour $locale',
+        );
       }
 
       // Retour au francais

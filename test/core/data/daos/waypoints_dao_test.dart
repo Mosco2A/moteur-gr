@@ -104,9 +104,7 @@ void main() {
 
   group('WaypointsDao — commentaires offline-first', () {
     test('addCommentLocal cree un commentaire pending sans reseau', () async {
-      final id = await dao.addCommentLocal(
-        makeComment(condition: 'eau_a_sec'),
-      );
+      final id = await dao.addCommentLocal(makeComment(condition: 'eau_a_sec'));
       expect(id, greaterThan(0));
       final pending = await dao.pendingComments();
       expect(pending.length, 1);
@@ -116,11 +114,14 @@ void main() {
       expect(pending.first.syncState, 'pending');
     });
 
-    test('markCommentSynced retire le commentaire de la file pending', () async {
-      final id = await dao.addCommentLocal(makeComment());
-      await dao.markCommentSynced(id);
-      expect(await dao.pendingComments(), isEmpty);
-    });
+    test(
+      'markCommentSynced retire le commentaire de la file pending',
+      () async {
+        final id = await dao.addCommentLocal(makeComment());
+        await dao.markCommentSynced(id);
+        expect(await dao.pendingComments(), isEmpty);
+      },
+    );
 
     test('markCommentFailed + requeue refait passer pending', () async {
       final id = await dao.addCommentLocal(makeComment());

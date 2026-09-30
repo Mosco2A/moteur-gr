@@ -36,7 +36,8 @@ void main() {
   Future<List<String>> erreursPendant(Future<void> Function() body) async {
     final captees = <String>[];
     final precedent = FlutterError.onError;
-    FlutterError.onError = (details) => captees.add(details.exceptionAsString());
+    FlutterError.onError = (details) =>
+        captees.add(details.exceptionAsString());
     try {
       await body();
     } finally {
@@ -50,76 +51,79 @@ void main() {
 
   group('GATE 0 — le harnais sait dire non', () {
     testWidgets(
-        'un provider laisse « a recalculer » SANS auditeur actif, puis observe '
-        'pour la premiere fois pendant un build, leve bien l assertion',
-        (tester) async {
-      // Reproduction du mecanisme commun aux trois foyers, dans l'ordre exact
-      // ou il se produit sur l'appareil :
-      //   1. la source est invalidee alors qu'AUCUN ecran ne l'ecoute -> elle
-      //      n'est pas rafraichie par l'ordonnanceur (elle n'est pas active) ;
-      //   2. un widget se monte et l'observe POUR LA PREMIERE FOIS -> le
-      //      recalcul se fait en pleine phase de build ;
-      //   3. la valeur change, le derive se re-invalide et reclame un
-      //      rafraichissement du `ProviderScope` : setState() pendant le build.
-      var graine = 0;
-      final source = FutureProvider<int>((ref) {
-        ref.keepAlive();
-        return Future<int>.value(graine);
-      });
-      final derive = Provider<int>((ref) {
-        ref.keepAlive();
-        return ref.watch(source).value ?? -1;
-      });
+      'un provider laisse « a recalculer » SANS auditeur actif, puis observe '
+      'pour la premiere fois pendant un build, leve bien l assertion',
+      (tester) async {
+        // Reproduction du mecanisme commun aux trois foyers, dans l'ordre exact
+        // ou il se produit sur l'appareil :
+        //   1. la source est invalidee alors qu'AUCUN ecran ne l'ecoute -> elle
+        //      n'est pas rafraichie par l'ordonnanceur (elle n'est pas active) ;
+        //   2. un widget se monte et l'observe POUR LA PREMIERE FOIS -> le
+        //      recalcul se fait en pleine phase de build ;
+        //   3. la valeur change, le derive se re-invalide et reclame un
+        //      rafraichissement du `ProviderScope` : setState() pendant le build.
+        var graine = 0;
+        final source = FutureProvider<int>((ref) {
+          ref.keepAlive();
+          return Future<int>.value(graine);
+        });
+        final derive = Provider<int>((ref) {
+          ref.keepAlive();
+          return ref.watch(source).value ?? -1;
+        });
 
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(home: Scaffold(body: _HoteBascule(derive: derive))),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('valeur 0'), findsOneWidget);
-
-      final hote = tester.state<_HoteBasculeState>(find.byType(_HoteBascule));
-      // On retire l'observateur : le derive n'a plus aucun auditeur actif.
-      hote.montrer(false);
-      await tester.pumpAndSettle();
-
-      final erreurs = await erreursPendant(() async {
-        // Meme frame : la source change ET l'observateur revient. Le recalcul
-        // ne peut donc se faire que pendant le build de l'observateur.
-        graine = 1;
-        hote.invaliderPuisMontrer(source);
-        await tester.pump();
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              home: Scaffold(body: _HoteBascule(derive: derive)),
+            ),
+          ),
+        );
         await tester.pumpAndSettle();
-      });
+        expect(find.text('valeur 0'), findsOneWidget);
 
-      expect(
-        erreurs.where(estSetStatePendantBuild),
-        isNotEmpty,
-        reason: 'le harnais doit voir l assertion quand elle est la — sans ce '
-            'rouge, les verts des tests suivants ne prouvent rien',
-      );
-    });
+        final hote = tester.state<_HoteBasculeState>(find.byType(_HoteBascule));
+        // On retire l'observateur : le derive n'a plus aucun auditeur actif.
+        hote.montrer(false);
+        await tester.pumpAndSettle();
+
+        final erreurs = await erreursPendant(() async {
+          // Meme frame : la source change ET l'observateur revient. Le recalcul
+          // ne peut donc se faire que pendant le build de l'observateur.
+          graine = 1;
+          hote.invaliderPuisMontrer(source);
+          await tester.pump();
+          await tester.pumpAndSettle();
+        });
+
+        expect(
+          erreurs.where(estSetStatePendantBuild),
+          isNotEmpty,
+          reason:
+              'le harnais doit voir l assertion quand elle est la — sans ce '
+              'rouge, les verts des tests suivants ne prouvent rien',
+        );
+      },
+    );
   });
 
   group('Foyer 3 — chaine des etapes stable (domainStagesProvider)', () {
     StageModel etape(int n) => StageModel(
-          trailId: 'sentier-test',
-          stageNumber: n,
-          name: 'Etape $n',
-          description: '',
-          distanceKm: 10 + n.toDouble(),
-          elevationGainM: 500 + n * 10,
-          elevationLossM: 400 + n * 10,
-          startLat: 42.0 + n / 100,
-          startLng: 9.0 + n / 100,
-          endLat: 42.1 + n / 100,
-          endLng: 9.1 + n / 100,
-          difficulty: 'moderate',
-        );
+      trailId: 'sentier-test',
+      stageNumber: n,
+      name: 'Etape $n',
+      description: '',
+      distanceKm: 10 + n.toDouble(),
+      elevationGainM: 500 + n * 10,
+      elevationLossM: 400 + n * 10,
+      startLat: 42.0 + n / 100,
+      startLng: 9.0 + n / 100,
+      endLat: 42.1 + n / 100,
+      endLng: 9.1 + n / 100,
+      difficulty: 'moderate',
+    );
 
-    test(
-        'des etapes IDENTIQUES ne reveillent pas la chaine du trek '
+    test('des etapes IDENTIQUES ne reveillent pas la chaine du trek '
         '(aucune invalidation, donc aucun recalcul paresseux a flusher '
         'pendant un build)', () async {
       var executions = 0;
@@ -154,40 +158,53 @@ void main() {
       expect(
         recalculs,
         0,
-        reason: 'des etapes identiques ne doivent RIEN invalider en aval : '
+        reason:
+            'des etapes identiques ne doivent RIEN invalider en aval : '
             'sinon toute la chaine du trek (plan de marche, detection '
             'd etape, arrivees) reste « a recalculer » et se fait flusher '
             'pendant le premier build qui la remonte',
       );
     });
 
-    test('des etapes REELLEMENT differentes propagent bien le changement',
-        () async {
-      var seconde = false;
-      final container = ProviderContainer(
-        overrides: [
-          stagesProvider.overrideWith((ref) async =>
-              seconde ? [etape(1), etape(2)] : [etape(1), etape(2), etape(3)]),
-        ],
-      );
-      addTearDown(container.dispose);
+    test(
+      'des etapes REELLEMENT differentes propagent bien le changement',
+      () async {
+        var seconde = false;
+        final container = ProviderContainer(
+          overrides: [
+            stagesProvider.overrideWith(
+              (ref) async => seconde
+                  ? [etape(1), etape(2)]
+                  : [etape(1), etape(2), etape(3)],
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      container.listen(domainStagesProvider, (_, __) {}, fireImmediately: true);
-      await container.read(stagesProvider.future);
-      expect(container.read(domainStagesProvider), hasLength(3));
+        container.listen(
+          domainStagesProvider,
+          (_, __) {},
+          fireImmediately: true,
+        );
+        await container.read(stagesProvider.future);
+        expect(container.read(domainStagesProvider), hasLength(3));
 
-      var recalculs = 0;
-      container.listen(domainStagesProvider, (_, __) => recalculs++);
+        var recalculs = 0;
+        container.listen(domainStagesProvider, (_, __) => recalculs++);
 
-      seconde = true;
-      container.invalidate(stagesProvider);
-      await container.read(stagesProvider.future);
-      await Future<void>.delayed(Duration.zero);
+        seconde = true;
+        container.invalidate(stagesProvider);
+        await container.read(stagesProvider.future);
+        await Future<void>.delayed(Duration.zero);
 
-      expect(container.read(domainStagesProvider), hasLength(2));
-      expect(recalculs, greaterThan(0),
-          reason: 'un vrai changement doit toujours se propager');
-    });
+        expect(container.read(domainStagesProvider), hasLength(2));
+        expect(
+          recalculs,
+          greaterThan(0),
+          reason: 'un vrai changement doit toujours se propager',
+        );
+      },
+    );
   });
 }
 
@@ -210,9 +227,9 @@ class _HoteBasculeState extends State<_HoteBascule> {
   void montrer(bool valeur) => setState(() => _montre = valeur);
 
   void invaliderPuisMontrer(FutureProvider<int> source) => setState(() {
-        _aInvalider = source;
-        _montre = true;
-      });
+    _aInvalider = source;
+    _montre = true;
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -62,9 +62,7 @@ void main() {
     });
 
     test('service desactive -> serviceDisabled', () async {
-      final service = GpsService(
-        isLocationServiceEnabled: () async => false,
-      );
+      final service = GpsService(isLocationServiceEnabled: () async => false);
 
       final result = await service.requestPermission();
 
@@ -237,10 +235,7 @@ void main() {
         },
       );
 
-      expect(
-        service.getPositionStream().first,
-        throwsA(isA<StateError>()),
-      );
+      expect(service.getPositionStream().first, throwsA(isA<StateError>()));
     });
   });
 }

@@ -86,18 +86,18 @@ void main() {
   );
 
   StageModel stage(int n, String name, String arrival) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: name,
-        distanceKm: 12,
-        elevationGainM: 700,
-        elevationLossM: 300,
-        startLat: 45.50 + n * 0.05,
-        startLng: 2.90 + n * 0.05,
-        endLat: 45.55 + n * 0.05,
-        endLng: 2.95 + n * 0.05,
-        arrivalName: arrival,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: name,
+    distanceKm: 12,
+    elevationGainM: 700,
+    elevationLossM: 300,
+    startLat: 45.50 + n * 0.05,
+    startLng: 2.90 + n * 0.05,
+    endLat: 45.55 + n * 0.05,
+    endLng: 2.95 + n * 0.05,
+    arrivalName: arrival,
+  );
 
   final threeStages = [
     stage(1, 'Depart - Bergerie', 'Bergerie de Colga'),
@@ -107,23 +107,26 @@ void main() {
 
   /// Prevision de [dayCount] jours a partir de [from], neutre (aucune alerte).
   WeatherForecast forecastFrom(DateTime from, int dayCount) => WeatherForecast(
-        latitude: 45.55,
-        longitude: 2.95,
-        days: [
-          for (var i = 0; i < dayCount; i++)
-            DayForecast(
-              date: DateTime(from.year, from.month, from.day)
-                  .add(Duration(days: i)),
-              temperatureMax: 18 + i.toDouble(),
-              temperatureMin: 8 + i.toDouble(),
-              precipitationMm: 0,
-              windSpeedKmh: 10,
-              uvIndex: 4,
-              weatherCode: 0,
-              precipitationProbabilityMax: 0,
-            ),
-        ],
-      );
+    latitude: 45.55,
+    longitude: 2.95,
+    days: [
+      for (var i = 0; i < dayCount; i++)
+        DayForecast(
+          date: DateTime(
+            from.year,
+            from.month,
+            from.day,
+          ).add(Duration(days: i)),
+          temperatureMax: 18 + i.toDouble(),
+          temperatureMin: 8 + i.toDouble(),
+          precipitationMm: 0,
+          windSpeedKmh: 10,
+          uvIndex: 4,
+          weatherCode: 0,
+          precipitationProbabilityMax: 0,
+        ),
+    ],
+  );
 
   Override weatherOverride(int stageNumber, WeatherState state) =>
       stageWeatherProvider(
@@ -167,57 +170,64 @@ void main() {
   // ==========================================================================
 
   group('U2/U3 — la ligne MAJ montre l\'instant du releve', () {
-    testWidgets(
-        'U2-A incendie : la MAJ n\'affiche PAS la date du bulletin',
-        (tester) async {
+    testWidgets('U2-A incendie : la MAJ n\'affiche PAS la date du bulletin', (
+      tester,
+    ) async {
       // Un bulletin dont le premier jour est le 15/07/2026 : c'est la date de la
       // PREVISION, pas celle du releve. Avant la tache 572 l'ecran affichait
       // « MAJ : 15/07/2026 00:00 » — un horodatage qui ne bouge jamais quand on
       // rafraichit, puisqu'il ne decrit pas le rafraichissement.
       final forecast = forecastFrom(DateTime(2026, 7, 15), 3);
 
-      await tester.pumpWidget(wrapScreen(
-        const FireRiskScreen(trailId: trailId),
-        [
+      await tester.pumpWidget(
+        wrapScreen(const FireRiskScreen(trailId: trailId), [
           trailConfigProvider.overrideWithValue(testConfig),
-          stagesProvider(trailId)
-              .overrideWith((ref) => Future.value(threeStages)),
+          stagesProvider(
+            trailId,
+          ).overrideWith((ref) => Future.value(threeStages)),
           for (var n = 1; n <= 3; n++)
             weatherOverride(
-                n, WeatherState(forecast: forecast, isLoading: false)),
-        ],
-      ));
+              n,
+              WeatherState(forecast: forecast, isLoading: false),
+            ),
+        ]),
+      );
       await settle(tester);
 
       expect(
         screenText(tester),
         isNot(contains('15/07/2026')),
-        reason: 'Le bandeau MAJ affichait la date du BULLETIN au lieu de '
+        reason:
+            'Le bandeau MAJ affichait la date du BULLETIN au lieu de '
             'l\'instant du releve : un rafraichissement reussi ne changeait '
             'donc rien a l\'ecran — cause exacte de U3.',
       );
     });
 
-    testWidgets('U2-A meteo : la MAJ n\'affiche PAS la date du bulletin',
-        (tester) async {
+    testWidgets('U2-A meteo : la MAJ n\'affiche PAS la date du bulletin', (
+      tester,
+    ) async {
       final forecast = forecastFrom(DateTime(2026, 7, 15), 3);
 
-      await tester.pumpWidget(wrapScreen(
-        const WeatherScreen(trailId: trailId, stageNumber: 1),
-        [
+      await tester.pumpWidget(
+        wrapScreen(const WeatherScreen(trailId: trailId, stageNumber: 1), [
           trailConfigProvider.overrideWithValue(testConfig),
-          stagesProvider(trailId)
-              .overrideWith((ref) => Future.value(threeStages)),
+          stagesProvider(
+            trailId,
+          ).overrideWith((ref) => Future.value(threeStages)),
           weatherOverride(
-              1, WeatherState(forecast: forecast, isLoading: false)),
-        ],
-      ));
+            1,
+            WeatherState(forecast: forecast, isLoading: false),
+          ),
+        ]),
+      );
       await settle(tester);
 
       expect(
         screenText(tester),
         isNot(contains('15 Jul')),
-        reason: 'WeatherSourceBanner recevait `today?.date` (le jour du '
+        reason:
+            'WeatherSourceBanner recevait `today?.date` (le jour du '
             'bulletin) comme horodatage de mise a jour : meme cause que U3.',
       );
     });
@@ -228,16 +238,17 @@ void main() {
   // ==========================================================================
 
   group('U2 — l\'echec de mise a jour se voit', () {
-    testWidgets('U2-B : l\'errorMessage de l\'etat est affiche au randonneur',
-        (tester) async {
+    testWidgets('U2-B : l\'errorMessage de l\'etat est affiche au randonneur', (
+      tester,
+    ) async {
       final forecast = forecastFrom(DateTime(2026, 7, 15), 3);
 
-      await tester.pumpWidget(wrapScreen(
-        const WeatherScreen(trailId: trailId, stageNumber: 1),
-        [
+      await tester.pumpWidget(
+        wrapScreen(const WeatherScreen(trailId: trailId, stageNumber: 1), [
           trailConfigProvider.overrideWithValue(testConfig),
-          stagesProvider(trailId)
-              .overrideWith((ref) => Future.value(threeStages)),
+          stagesProvider(
+            trailId,
+          ).overrideWith((ref) => Future.value(threeStages)),
           weatherOverride(
             1,
             WeatherState(
@@ -246,14 +257,15 @@ void main() {
               errorMessage: 'boom',
             ),
           ),
-        ],
-      ));
+        ]),
+      );
       await settle(tester);
 
       expect(
         screenText(tester),
         contains('Mise à jour impossible'),
-        reason: 'Avant la tache 572, `WeatherState.errorMessage` etait ecrit '
+        reason:
+            'Avant la tache 572, `WeatherState.errorMessage` etait ecrit '
             'par refresh() et lu par AUCUN widget du module : un bouton qui '
             'echoue etait indistinguable d\'un bouton qui reussit.',
       );
@@ -266,38 +278,45 @@ void main() {
 
   group('U3 — le bouton incendie dit la verite sur ce qu\'il a fait', () {
     testWidgets(
-        'U3-C : aucune etape resolue -> pas de « Donnees mises a jour »',
-        (tester) async {
-      // Etapes jamais resolues -> `trailFireRiskProvider.stages` vide ->
-      // `_refreshAll` faisait `Future.wait([])` (ZERO appel) puis affichait
-      // quand meme le SnackBar de succes.
-      final never = Completer<List<StageModel>>();
+      'U3-C : aucune etape resolue -> pas de « Donnees mises a jour »',
+      (tester) async {
+        // Etapes jamais resolues -> `trailFireRiskProvider.stages` vide ->
+        // `_refreshAll` faisait `Future.wait([])` (ZERO appel) puis affichait
+        // quand meme le SnackBar de succes.
+        final never = Completer<List<StageModel>>();
 
-      await tester.pumpWidget(wrapScreen(
-        const FireRiskScreen(trailId: trailId),
-        [
-          trailConfigProvider.overrideWithValue(testConfig),
-          stagesProvider(trailId).overrideWith((ref) => never.future),
-        ],
-      ));
-      await settle(tester);
+        await tester.pumpWidget(
+          wrapScreen(const FireRiskScreen(trailId: trailId), [
+            trailConfigProvider.overrideWithValue(testConfig),
+            stagesProvider(trailId).overrideWith((ref) => never.future),
+          ]),
+        );
+        await settle(tester);
 
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.rafraichir).first);
-      await settle(tester);
+        await tester.tap(
+          find
+              .byWidgetPredicate(
+                (w) => w is StepIcon && w.asset == StepwaysIcons.rafraichir,
+              )
+              .first,
+        );
+        await settle(tester);
 
-      expect(
-        find.text(t.fireRisk.refreshed),
-        findsNothing,
-        reason: 'Zero etape rafraichie ne peut pas s\'annoncer « Donnees mises '
-            'a jour » : c\'est le bouton qui « ne produit rien » tout en '
-            'pretendant le contraire.',
-      );
-      expect(
-        find.text(t.fireRisk.refreshNothing),
-        findsOneWidget,
-        reason: 'Un bouton qui n\'a rien a faire doit le DIRE.',
-      );
-    });
+        expect(
+          find.text(t.fireRisk.refreshed),
+          findsNothing,
+          reason:
+              'Zero etape rafraichie ne peut pas s\'annoncer « Donnees mises '
+              'a jour » : c\'est le bouton qui « ne produit rien » tout en '
+              'pretendant le contraire.',
+        );
+        expect(
+          find.text(t.fireRisk.refreshNothing),
+          findsOneWidget,
+          reason: 'Un bouton qui n\'a rien a faire doit le DIRE.',
+        );
+      },
+    );
   });
 
   // ==========================================================================
@@ -309,8 +328,11 @@ void main() {
     // d'un randonneur qui consulte la veille du depart. Une date figee dans le
     // passe ne testerait rien de la portee (tout serait deja derriere).
     final today = DateTime.now();
-    final departure = DateTime(today.year, today.month, today.day)
-        .add(const Duration(days: 1));
+    final departure = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).add(const Duration(days: 1));
 
     List<Override> programOverrides({
       required int durationDays,
@@ -320,10 +342,12 @@ void main() {
       final forecast = forecastFrom(today, forecastDays);
       return [
         trailConfigProvider.overrideWithValue(testConfig),
-        stagesProvider(trailId)
-            .overrideWith((ref) => Future.value(threeStages)),
-        selectedDurationProvider
-            .overrideWith(() => _FixedDurationNotifier(durationDays)),
+        stagesProvider(
+          trailId,
+        ).overrideWith((ref) => Future.value(threeStages)),
+        selectedDurationProvider.overrideWith(
+          () => _FixedDurationNotifier(durationDays),
+        ),
         downloadReminderProvider(trailId).overrideWith(
           () => _FixedDepartureNotifier(
             DepartureReminderState(departureDate: departureDate),
@@ -331,72 +355,95 @@ void main() {
         ),
         for (var n = 1; n <= 3; n++)
           weatherOverride(
-              n, WeatherState(forecast: forecast, isLoading: false)),
+            n,
+            WeatherState(forecast: forecast, isLoading: false),
+          ),
       ];
     }
 
-    testWidgets('U1-D : chaque jour de programme est NOMME par son arrivee',
-        (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        const WeatherScreen(trailId: trailId, stageNumber: 1),
-        programOverrides(
-          durationDays: 3,
-          forecastDays: 10,
-          departureDate: departure,
+    testWidgets('U1-D : chaque jour de programme est NOMME par son arrivee', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapScreen(
+          const WeatherScreen(trailId: trailId, stageNumber: 1),
+          programOverrides(
+            durationDays: 3,
+            forecastDays: 10,
+            departureDate: departure,
+          ),
         ),
-      ));
+      );
       await settle(tester, frames: 24);
 
       final text = screenText(tester);
-      expect(text, contains(t.weather.program.title),
-          reason: 'La section « etape par etape » demandee par Chris.');
-      expect(text, contains('Refuge de Sega'),
-          reason: 'Un bulletin sans nom de lieu ne sert a rien : le lieu '
-              'd\'arrivee du jour 2 doit etre NOMME a l\'ecran.');
-      expect(text, contains('Village de Cozzano'),
-          reason: 'Idem pour le jour 3 (« puis le surlendemain etc »).');
-    });
-
-    testWidgets(
-        'U1-E : au-dela de la portee, l\'ecran le DIT (ni vide, ni invente)',
-        (tester) async {
-      // Programme de 12 jours, prevision de 10 : les jours 11 et 12 sont hors
-      // portee. On n'invente pas, on l'ecrit.
-      await tester.pumpWidget(wrapScreen(
-        const WeatherScreen(trailId: trailId, stageNumber: 1),
-        programOverrides(
-          durationDays: 12,
-          forecastDays: 10,
-          departureDate: departure,
-        ),
-      ));
-      await settle(tester, frames: 24);
-
       expect(
-        screenText(tester),
-        contains(t.weather.program.beyondHorizon(horizon: 10)),
-        reason: 'Jamais de blanc sans explication : la portee reelle du '
-            'fournisseur est annoncee.',
+        text,
+        contains(t.weather.program.title),
+        reason: 'La section « etape par etape » demandee par Chris.',
+      );
+      expect(
+        text,
+        contains('Refuge de Sega'),
+        reason:
+            'Un bulletin sans nom de lieu ne sert a rien : le lieu '
+            'd\'arrivee du jour 2 doit etre NOMME a l\'ecran.',
+      );
+      expect(
+        text,
+        contains('Village de Cozzano'),
+        reason: 'Idem pour le jour 3 (« puis le surlendemain etc »).',
       );
     });
 
     testWidgets(
-        'U1-F : sans date de depart, l\'ecran la demande au lieu de supposer',
-        (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        const WeatherScreen(trailId: trailId, stageNumber: 1),
-        programOverrides(durationDays: 3, forecastDays: 10),
-      ));
-      await settle(tester, frames: 24);
+      'U1-E : au-dela de la portee, l\'ecran le DIT (ni vide, ni invente)',
+      (tester) async {
+        // Programme de 12 jours, prevision de 10 : les jours 11 et 12 sont hors
+        // portee. On n'invente pas, on l'ecrit.
+        await tester.pumpWidget(
+          wrapScreen(
+            const WeatherScreen(trailId: trailId, stageNumber: 1),
+            programOverrides(
+              durationDays: 12,
+              forecastDays: 10,
+              departureDate: departure,
+            ),
+          ),
+        );
+        await settle(tester, frames: 24);
 
-      expect(
-        screenText(tester),
-        contains(t.weather.program.unknownDeparture),
-        reason: 'Le trek n\'est pas forcement pour aujourd\'hui (meme regle '
-            'que la faisabilite, LOT R) : sans date de depart on ne peut pas '
-            'dire quel jour le randonneur sera a quelle etape.',
-      );
-    });
+        expect(
+          screenText(tester),
+          contains(t.weather.program.beyondHorizon(horizon: 10)),
+          reason:
+              'Jamais de blanc sans explication : la portee reelle du '
+              'fournisseur est annoncee.',
+        );
+      },
+    );
+
+    testWidgets(
+      'U1-F : sans date de depart, l\'ecran la demande au lieu de supposer',
+      (tester) async {
+        await tester.pumpWidget(
+          wrapScreen(
+            const WeatherScreen(trailId: trailId, stageNumber: 1),
+            programOverrides(durationDays: 3, forecastDays: 10),
+          ),
+        );
+        await settle(tester, frames: 24);
+
+        expect(
+          screenText(tester),
+          contains(t.weather.program.unknownDeparture),
+          reason:
+              'Le trek n\'est pas forcement pour aujourd\'hui (meme regle '
+              'que la faisabilite, LOT R) : sans date de depart on ne peut pas '
+              'dire quel jour le randonneur sera a quelle etape.',
+        );
+      },
+    );
   });
 
   // ==========================================================================
@@ -450,18 +497,21 @@ void main() {
           ),
         ],
       );
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion(
-            trailId: const Value(trailId),
-            stageNumber: const Value(1),
-            forecastJson: Value(jsonEncode(forecast.toJson())),
-            fetchedAt: Value(fetchedAt),
-            // Perime : le TTL disque (3 h) est passe.
-            expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
-          ));
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion(
+              trailId: const Value(trailId),
+              stageNumber: const Value(1),
+              forecastJson: Value(jsonEncode(forecast.toJson())),
+              fetchedAt: Value(fetchedAt),
+              // Perime : le TTL disque (3 h) est passe.
+              expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
+            ),
+          );
     }
 
-    test(
-        'OFF-G : sans reseau et au-dela du TTL, getForecast rend le DERNIER '
+    test('OFF-G : sans reseau et au-dela du TTL, getForecast rend le DERNIER '
         'bulletin connu au lieu de rien', () async {
       final fetchedAt = DateTime.now().subtract(const Duration(hours: 4));
       await seedStaleCache(fetchedAt);
@@ -475,13 +525,13 @@ void main() {
         stagesDao: stagesDao,
       );
 
-      final forecast =
-          await repo.getForecast(trailId: trailId, stageNumber: 1);
+      final forecast = await repo.getForecast(trailId: trailId, stageNumber: 1);
 
       expect(
         forecast,
         isNotNull,
-        reason: 'Le TTL doit gouverner le RE-TELECHARGEMENT, pas le DROIT '
+        reason:
+            'Le TTL doit gouverner le RE-TELECHARGEMENT, pas le DROIT '
             'D\'AFFICHER. `getValidCache` filtrait sur `expiresAt` : apres 3 h '
             'hors ligne le randonneur perdait la meteo telechargee avant de '
             'partir.',
@@ -538,17 +588,20 @@ void main() {
           ),
         ],
       );
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion(
-            trailId: const Value(trailId),
-            stageNumber: const Value(1),
-            forecastJson: Value(jsonEncode(forecast.toJson())),
-            fetchedAt: Value(fetchedAt),
-            expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
-          ));
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion(
+              trailId: const Value(trailId),
+              stageNumber: const Value(1),
+              forecastJson: Value(jsonEncode(forecast.toJson())),
+              fetchedAt: Value(fetchedAt),
+              expiresAt: Value(fetchedAt.add(const Duration(hours: 3))),
+            ),
+          );
     }
 
-    test(
-        'MAJ-K : un rafraichissement REUSSI change l\'instant du releve '
+    test('MAJ-K : un rafraichissement REUSSI change l\'instant du releve '
         '(c\'est ce qui « ne produisait rien »)', () async {
       final morning = DateTime.now().subtract(const Duration(hours: 6));
       await seedCache(morning);
@@ -562,18 +615,24 @@ void main() {
         stagesDao: stagesDao,
       );
 
-      final before = await WeatherCache(dao: cacheDao)
-          .getLastKnownForecast(trailId: trailId, stageNumber: 1);
-      final result =
-          await repo.refreshForecast(trailId: trailId, stageNumber: 1);
+      final before = await WeatherCache(
+        dao: cacheDao,
+      ).getLastKnownForecast(trailId: trailId, stageNumber: 1);
+      final result = await repo.refreshForecast(
+        trailId: trailId,
+        stageNumber: 1,
+      );
 
       expect(result.failed, isFalse);
-      expect(before!.fetchedAt!.difference(morning).inSeconds.abs(),
-          lessThan(2));
+      expect(
+        before!.fetchedAt!.difference(morning).inSeconds.abs(),
+        lessThan(2),
+      );
       expect(
         result.forecast!.fetchedAt!.isAfter(before.fetchedAt!),
         isTrue,
-        reason: 'C\'EST LA PREUVE DU CORRECTIF U2/U3 : l\'instant du releve a '
+        reason:
+            'C\'EST LA PREUVE DU CORRECTIF U2/U3 : l\'instant du releve a '
             'avance, donc la ligne « MAJ » de l\'ecran change. Avant, cette '
             'ligne etait calculee sur le jour du bulletin et restait identique '
             'au caractere pres apres un rafraichissement reussi.',
@@ -582,35 +641,50 @@ void main() {
     });
 
     test(
-        'OFF-H : un rafraichissement qui echoue est NOMME et ne detruit pas le '
-        'dernier bulletin connu', () async {
-      final morning = DateTime.now().subtract(const Duration(hours: 6));
-      await seedCache(morning);
+      'OFF-H : un rafraichissement qui echoue est NOMME et ne detruit pas le '
+      'dernier bulletin connu',
+      () async {
+        final morning = DateTime.now().subtract(const Duration(hours: 6));
+        await seedCache(morning);
 
-      final deadClient = http_testing.MockClient(
-        (_) async => http.Response('nope', 503),
-      );
-      final repo = WeatherRepository(
-        apiService: WeatherApiService(client: deadClient),
-        cache: WeatherCache(dao: cacheDao),
-        stagesDao: stagesDao,
-      );
+        final deadClient = http_testing.MockClient(
+          (_) async => http.Response('nope', 503),
+        );
+        final repo = WeatherRepository(
+          apiService: WeatherApiService(client: deadClient),
+          cache: WeatherCache(dao: cacheDao),
+          stagesDao: stagesDao,
+        );
 
-      final result =
-          await repo.refreshForecast(trailId: trailId, stageNumber: 1);
+        final result = await repo.refreshForecast(
+          trailId: trailId,
+          stageNumber: 1,
+        );
 
-      expect(result.failed, isTrue,
-          reason: 'L\'echec doit etre NOMME pour que l\'ecran puisse le dire : '
-              'avant, `refresh()` rendait `null` et personne ne le lisait.');
-      expect(result.hasData, isTrue,
-          reason: 'Un echec de mise a jour ne vide pas l\'ecran : le randonneur '
-              'garde le dernier bulletin connu, avec son age.');
-      expect(result.forecast!.fetchedAt!.difference(morning).inSeconds.abs(),
+        expect(
+          result.failed,
+          isTrue,
+          reason:
+              'L\'echec doit etre NOMME pour que l\'ecran puisse le dire : '
+              'avant, `refresh()` rendait `null` et personne ne le lisait.',
+        );
+        expect(
+          result.hasData,
+          isTrue,
+          reason:
+              'Un echec de mise a jour ne vide pas l\'ecran : le randonneur '
+              'garde le dernier bulletin connu, avec son age.',
+        );
+        expect(
+          result.forecast!.fetchedAt!.difference(morning).inSeconds.abs(),
           lessThan(2),
-          reason: 'Et l\'age affiche est celui du VRAI releve, pas de '
-              'maintenant.');
-      repo.dispose();
-    });
+          reason:
+              'Et l\'age affiche est celui du VRAI releve, pas de '
+              'maintenant.',
+        );
+        repo.dispose();
+      },
+    );
   });
 
   // ==========================================================================
@@ -619,34 +693,50 @@ void main() {
 
   group('Portee honnete des previsions', () {
     test('PORT-J : la portee demandee reste dans la borne du fournisseur', () {
-      expect(forecastHorizonDays, lessThanOrEqualTo(16),
-          reason: 'Open-Meteo : `forecast_days` accepte 0-16.');
-      expect(reliableForecastDays, lessThan(forecastHorizonDays),
-          reason: 'NOAA : ~80 % de justesse a 7 jours, ~50 % a 10. Les jours '
-              'au-dela du 7e sont une tendance, pas une prevision.');
+      expect(
+        forecastHorizonDays,
+        lessThanOrEqualTo(16),
+        reason: 'Open-Meteo : `forecast_days` accepte 0-16.',
+      );
+      expect(
+        reliableForecastDays,
+        lessThan(forecastHorizonDays),
+        reason:
+            'NOAA : ~80 % de justesse a 7 jours, ~50 % a 10. Les jours '
+            'au-dela du 7e sont une tendance, pas une prevision.',
+      );
     });
 
     test('PORT-K : chaque rang de jour recoit la portee qui lui revient', () {
       expect(forecastReachFor(daysAhead: 0), ForecastReach.forecast);
-      expect(forecastReachFor(daysAhead: reliableForecastDays - 1),
-          ForecastReach.forecast);
-      expect(forecastReachFor(daysAhead: reliableForecastDays),
-          ForecastReach.trend);
-      expect(forecastReachFor(daysAhead: forecastHorizonDays - 1),
-          ForecastReach.trend);
-      expect(forecastReachFor(daysAhead: forecastHorizonDays),
-          ForecastReach.beyondHorizon,
-          reason: 'L\'API ne rend que les jours 0 a horizon-1 : le jour '
-              'suivant est inconnu, et on le DIT.');
+      expect(
+        forecastReachFor(daysAhead: reliableForecastDays - 1),
+        ForecastReach.forecast,
+      );
+      expect(
+        forecastReachFor(daysAhead: reliableForecastDays),
+        ForecastReach.trend,
+      );
+      expect(
+        forecastReachFor(daysAhead: forecastHorizonDays - 1),
+        ForecastReach.trend,
+      );
+      expect(
+        forecastReachFor(daysAhead: forecastHorizonDays),
+        ForecastReach.beyondHorizon,
+        reason:
+            'L\'API ne rend que les jours 0 a horizon-1 : le jour '
+            'suivant est inconnu, et on le DIT.',
+      );
     });
 
-    test(
-        'PORT-L : un jour DANS la portee mais absent du bulletin n\'est pas '
+    test('PORT-L : un jour DANS la portee mais absent du bulletin n\'est pas '
         'extrapole', () {
       expect(
         reachForProgramDay(daysAhead: 2, hasForecast: false),
         ForecastReach.noData,
-        reason: 'Un bulletin en cache peut etre plus vieux que le programme : '
+        reason:
+            'Un bulletin en cache peut etre plus vieux que le programme : '
             'on ne comble pas le trou avec une valeur voisine.',
       );
       expect(
@@ -674,25 +764,28 @@ void main() {
       );
     });
 
-    test('PORT-I : l\'appel Open-Meteo demande la portee annoncee a l\'ecran',
-        () async {
-      String? asked;
-      final client = http_testing.MockClient((request) async {
-        asked = request.url.toString();
-        return http.Response(jsonEncode(_okResponse), 200);
-      });
-      final api = WeatherApiService(client: client);
-      await api.fetchForecast(latitude: 45.6, longitude: 3.0);
-      api.dispose();
+    test(
+      'PORT-I : l\'appel Open-Meteo demande la portee annoncee a l\'ecran',
+      () async {
+        String? asked;
+        final client = http_testing.MockClient((request) async {
+          asked = request.url.toString();
+          return http.Response(jsonEncode(_okResponse), 200);
+        });
+        final api = WeatherApiService(client: client);
+        await api.fetchForecast(latitude: 45.6, longitude: 3.0);
+        api.dispose();
 
-      expect(
-        asked,
-        contains('forecast_days=$forecastHorizonDays'),
-        reason: 'Open-Meteo accepte forecast_days 0-16 (defaut 7). On demande '
-            'la portee qu\'on annonce : a 7 jours un trek de 10 jours perdait '
-            'ses trois derniers jours, et rien ne le disait.',
-      );
-    });
+        expect(
+          asked,
+          contains('forecast_days=$forecastHorizonDays'),
+          reason:
+              'Open-Meteo accepte forecast_days 0-16 (defaut 7). On demande '
+              'la portee qu\'on annonce : a 7 jours un trek de 10 jours perdait '
+              'ses trois derniers jours, et rien ne le disait.',
+        );
+      },
+    );
   });
 
   // ==========================================================================
@@ -701,99 +794,130 @@ void main() {
 
   group('Programme — dates et lieux (tache 572, U1)', () {
     final today = DateTime.now();
-    final departure = DateTime(today.year, today.month, today.day)
-        .add(const Duration(days: 1));
+    final departure = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).add(const Duration(days: 1));
 
     ProviderContainer containerFor({required int durationDays}) {
       final forecast = forecastFrom(today, 10);
-      return ProviderContainer(overrides: [
-        trailConfigProvider.overrideWithValue(testConfig),
-        stagesProvider(trailId)
-            .overrideWith((ref) => Future.value(threeStages)),
-        selectedDurationProvider
-            .overrideWith(() => _FixedDurationNotifier(durationDays)),
-        downloadReminderProvider(trailId).overrideWith(
-          () => _FixedDepartureNotifier(
-            DepartureReminderState(departureDate: departure),
+      return ProviderContainer(
+        overrides: [
+          trailConfigProvider.overrideWithValue(testConfig),
+          stagesProvider(
+            trailId,
+          ).overrideWith((ref) => Future.value(threeStages)),
+          selectedDurationProvider.overrideWith(
+            () => _FixedDurationNotifier(durationDays),
           ),
-        ),
-        for (var n = 1; n <= 3; n++)
-          weatherOverride(
-              n, WeatherState(forecast: forecast, isLoading: false)),
-      ]);
+          downloadReminderProvider(trailId).overrideWith(
+            () => _FixedDepartureNotifier(
+              DepartureReminderState(departureDate: departure),
+            ),
+          ),
+          for (var n = 1; n <= 3; n++)
+            weatherOverride(
+              n,
+              WeatherState(forecast: forecast, isLoading: false),
+            ),
+        ],
+      );
     }
 
     test(
-        'PROG-N : la DATE de chaque journee vient du programme et de la date de '
-        'depart, pas de l\'index du bulletin', () async {
-      final container = containerFor(durationDays: 3);
-      addTearDown(container.dispose);
-      // Laisser les etapes se resoudre.
-      await container.read(stagesProvider(trailId).future);
+      'PROG-N : la DATE de chaque journee vient du programme et de la date de '
+      'depart, pas de l\'index du bulletin',
+      () async {
+        final container = containerFor(durationDays: 3);
+        addTearDown(container.dispose);
+        // Laisser les etapes se resoudre.
+        await container.read(stagesProvider(trailId).future);
 
-      final state = container.read(programWeatherProvider(trailId));
-      expect(state.days.length, greaterThanOrEqualTo(3));
-      expect(state.days[0].date.day, departure.day);
-      expect(
-        calendarDaysBetween(state.days[0].date, state.days[1].date),
-        1,
-        reason: 'Jour 2 = jour 1 + 1 : « le lendemain, puis le surlendemain ».',
-      );
-      expect(state.days[0].dayNumber, 1);
-    });
-
-    test(
-        'PROG-O : le lieu d\'une journee est l\'ARRIVEE de sa DERNIERE etape',
-        () async {
-      // 3 etapes sur 2 jours : une journee regroupe forcement deux etapes. Elle
-      // se termine a l'arrivee de la SECONDE, pas de la premiere.
-      final container = containerFor(durationDays: 2);
-      addTearDown(container.dispose);
-      await container.read(stagesProvider(trailId).future);
-
-      final state = container.read(programWeatherProvider(trailId));
-      final places = state.days.map((d) => d.placeName).toList();
-      expect(places.last, 'Village de Cozzano',
-          reason: 'La derniere journee finit a l\'arrivee de la 3e etape.');
-      expect(places.every((p) => p.isNotEmpty), isTrue,
-          reason: 'Un bulletin sans nom de lieu ne sert a rien : AUCUNE journee '
-              'ne doit rester anonyme.');
-    });
+        final state = container.read(programWeatherProvider(trailId));
+        expect(state.days.length, greaterThanOrEqualTo(3));
+        expect(state.days[0].date.day, departure.day);
+        expect(
+          calendarDaysBetween(state.days[0].date, state.days[1].date),
+          1,
+          reason:
+              'Jour 2 = jour 1 + 1 : « le lendemain, puis le surlendemain ».',
+        );
+        expect(state.days[0].dayNumber, 1);
+      },
+    );
 
     test(
-        'PROG-P : sans date de depart, aucune journee n\'est datee et l\'etat le '
-        'DECLARE', () async {
-      final forecast = forecastFrom(today, 10);
-      final container = ProviderContainer(overrides: [
-        trailConfigProvider.overrideWithValue(testConfig),
-        stagesProvider(trailId)
-            .overrideWith((ref) => Future.value(threeStages)),
-        selectedDurationProvider.overrideWith(() => _FixedDurationNotifier(3)),
-        downloadReminderProvider(trailId).overrideWith(
-          () => _FixedDepartureNotifier(const DepartureReminderState()),
-        ),
-        for (var n = 1; n <= 3; n++)
-          weatherOverride(
-              n, WeatherState(forecast: forecast, isLoading: false)),
-      ]);
-      addTearDown(container.dispose);
-      await container.read(stagesProvider(trailId).future);
+      'PROG-O : le lieu d\'une journee est l\'ARRIVEE de sa DERNIERE etape',
+      () async {
+        // 3 etapes sur 2 jours : une journee regroupe forcement deux etapes. Elle
+        // se termine a l'arrivee de la SECONDE, pas de la premiere.
+        final container = containerFor(durationDays: 2);
+        addTearDown(container.dispose);
+        await container.read(stagesProvider(trailId).future);
 
-      final state = container.read(programWeatherProvider(trailId));
-      expect(state.departureUnknown, isTrue);
-      expect(
-        state.days.every((d) => d.reach == ForecastReach.unknownDeparture),
-        isTrue,
-        reason: 'On ne suppose pas que le trek part aujourd\'hui (meme regle '
-            'que la faisabilite, LOT R).',
-      );
-      expect(
-        state.days.every((d) => !d.hasValue),
-        isTrue,
-        reason: 'Et on n\'affiche AUCUN chiffre qu\'on ne sait pas rattacher a '
-            'une date.',
-      );
-    });
+        final state = container.read(programWeatherProvider(trailId));
+        final places = state.days.map((d) => d.placeName).toList();
+        expect(
+          places.last,
+          'Village de Cozzano',
+          reason: 'La derniere journee finit a l\'arrivee de la 3e etape.',
+        );
+        expect(
+          places.every((p) => p.isNotEmpty),
+          isTrue,
+          reason:
+              'Un bulletin sans nom de lieu ne sert a rien : AUCUNE journee '
+              'ne doit rester anonyme.',
+        );
+      },
+    );
+
+    test(
+      'PROG-P : sans date de depart, aucune journee n\'est datee et l\'etat le '
+      'DECLARE',
+      () async {
+        final forecast = forecastFrom(today, 10);
+        final container = ProviderContainer(
+          overrides: [
+            trailConfigProvider.overrideWithValue(testConfig),
+            stagesProvider(
+              trailId,
+            ).overrideWith((ref) => Future.value(threeStages)),
+            selectedDurationProvider.overrideWith(
+              () => _FixedDurationNotifier(3),
+            ),
+            downloadReminderProvider(trailId).overrideWith(
+              () => _FixedDepartureNotifier(const DepartureReminderState()),
+            ),
+            for (var n = 1; n <= 3; n++)
+              weatherOverride(
+                n,
+                WeatherState(forecast: forecast, isLoading: false),
+              ),
+          ],
+        );
+        addTearDown(container.dispose);
+        await container.read(stagesProvider(trailId).future);
+
+        final state = container.read(programWeatherProvider(trailId));
+        expect(state.departureUnknown, isTrue);
+        expect(
+          state.days.every((d) => d.reach == ForecastReach.unknownDeparture),
+          isTrue,
+          reason:
+              'On ne suppose pas que le trek part aujourd\'hui (meme regle '
+              'que la faisabilite, LOT R).',
+        );
+        expect(
+          state.days.every((d) => !d.hasValue),
+          isTrue,
+          reason:
+              'Et on n\'affiche AUCUN chiffre qu\'on ne sait pas rattacher a '
+              'une date.',
+        );
+      },
+    );
   });
 }
 
@@ -821,7 +945,7 @@ class _NetworkDown implements Exception {
 /// Notifier meteo de test : etat fixe, aucune DB ni reseau.
 class _FixedWeatherNotifier extends StageWeatherNotifier {
   _FixedWeatherNotifier(this._fixed)
-      : super(const WeatherStageParams(trailId: 'test-trail', stageNumber: 0));
+    : super(const WeatherStageParams(trailId: 'test-trail', stageNumber: 0));
 
   final WeatherState _fixed;
 

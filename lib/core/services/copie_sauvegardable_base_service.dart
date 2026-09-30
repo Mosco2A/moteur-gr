@@ -133,18 +133,24 @@ Future<bool> adopterCopieSiBaseAbsente({
     if (!copie.existsSync()) return false;
 
     if (!_porteEnteteSqlite(copie)) {
-      _log.e('[CopieBase] La copie restauree n est pas une base SQLite : elle '
-          'n est PAS adoptee (une base tronquee empecherait le demarrage)');
+      _log.e(
+        '[CopieBase] La copie restauree n est pas une base SQLite : elle '
+        'n est PAS adoptee (une base tronquee empecherait le demarrage)',
+      );
       return false;
     }
 
     copie.copySync(base.path);
-    _log.i('[CopieBase] Base restauree depuis la copie sauvegardable '
-        '(${copie.lengthSync()} octets) : le randonneur avait decoche la case');
+    _log.i(
+      '[CopieBase] Base restauree depuis la copie sauvegardable '
+      '(${copie.lengthSync()} octets) : le randonneur avait decoche la case',
+    );
     return true;
   } catch (e) {
-    _log.e('[CopieBase] Adoption de la copie impossible ($e) : l application '
-        'demarre sur une base neuve');
+    _log.e(
+      '[CopieBase] Adoption de la copie impossible ($e) : l application '
+      'demarre sur une base neuve',
+    );
     return false;
   }
 }
@@ -175,9 +181,9 @@ class CopieSauvegardableBaseService {
     required AppDatabase db,
     Future<Directory> Function()? supportDirProvider,
     ExclusionSauvegardeIcloud? exclusionIcloud,
-  })  : _db = db,
-        _support = supportDirProvider ?? getApplicationSupportDirectory,
-        _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
+  }) : _db = db,
+       _support = supportDirProvider ?? getApplicationSupportDirectory,
+       _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
 
   final AppDatabase _db;
   final Future<Directory> Function() _support;
@@ -187,8 +193,7 @@ class CopieSauvegardableBaseService {
   /// meme raison : sans lui, decocher n'aurait aucun effet sur iPhone.
   final ExclusionSauvegardeIcloud _exclusion;
 
-  Future<File> _fichierCopie() async =>
-      File(cheminCopieBase(await _support()));
+  Future<File> _fichierCopie() async => File(cheminCopieBase(await _support()));
 
   /// Vrai si une copie sauvegardable de la base existe en ce moment.
   Future<bool> copiePresente() async {
@@ -228,7 +233,9 @@ class CopieSauvegardableBaseService {
       // LE CHEMIN INVERSE DE LA TACHE 615, POSE A CHAQUE ECRITURE parce que
       // l'attribut appartient au FICHIER, donc a celui qui existe MAINTENANT.
       await _exclusion.inclure(fichier.path);
-      _log.d('[CopieBase] Copie sauvegardable de la base ecrite (refus decoche)');
+      _log.d(
+        '[CopieBase] Copie sauvegardable de la base ecrite (refus decoche)',
+      );
       return true;
     } catch (e) {
       // ON NE FABRIQUE NI FAUX SUCCES NI COPIE DOUTEUSE. Voir l'en-tete : pas de
@@ -262,5 +269,5 @@ class CopieSauvegardableBaseService {
 /// Provider Riverpod du service de copie sauvegardable de la base.
 final copieSauvegardableBaseServiceProvider =
     Provider<CopieSauvegardableBaseService>((ref) {
-  return CopieSauvegardableBaseService(db: ref.watch(databaseProvider));
-});
+      return CopieSauvegardableBaseService(db: ref.watch(databaseProvider));
+    });

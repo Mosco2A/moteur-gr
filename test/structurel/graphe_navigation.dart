@@ -254,7 +254,8 @@ Set<String> routesDeRedirectionPure(List<RouteDeclaree> routes) {
   for (var i = 0; i < indices.length; i++) {
     final fin = i + 1 < indices.length ? indices[i + 1] : lignes.length;
     final bloc = lignes.sublist(indices[i], fin).join('\n');
-    final construit = bloc.contains('builder:') || bloc.contains('pageBuilder:');
+    final construit =
+        bloc.contains('builder:') || bloc.contains('pageBuilder:');
     if (!construit && bloc.contains('redirect:')) out.add(routes[i].gabarit);
   }
   return out;
@@ -366,31 +367,37 @@ bool memeRoute(String a, String b) {
         continue;
       }
       for (final m in reChemin.allMatches(l)) {
-        aretes.add(AreteNavigation(
-          fichier: f.path,
-          ligne: i + 1,
-          geste: m.group(1)!,
-          cible: gabaritDe(m.group(3)!),
-          parNom: false,
-        ));
+        aretes.add(
+          AreteNavigation(
+            fichier: f.path,
+            ligne: i + 1,
+            geste: m.group(1)!,
+            cible: gabaritDe(m.group(3)!),
+            parNom: false,
+          ),
+        );
       }
       for (final m in reIndirect.allMatches(l)) {
-        aretes.add(AreteNavigation(
-          fichier: f.path,
-          ligne: i + 1,
-          geste: 'indirect',
-          cible: gabaritDe(m.group(2)!),
-          parNom: false,
-        ));
+        aretes.add(
+          AreteNavigation(
+            fichier: f.path,
+            ligne: i + 1,
+            geste: 'indirect',
+            cible: gabaritDe(m.group(2)!),
+            parNom: false,
+          ),
+        );
       }
       for (final m in reNom.allMatches(l)) {
-        aretes.add(AreteNavigation(
-          fichier: f.path,
-          ligne: i + 1,
-          geste: m.group(1)!,
-          cible: m.group(3)!,
-          parNom: true,
-        ));
+        aretes.add(
+          AreteNavigation(
+            fichier: f.path,
+            ligne: i + 1,
+            geste: m.group(1)!,
+            cible: m.group(3)!,
+            parNom: true,
+          ),
+        );
       }
       if (reDynamique.hasMatch(l)) {
         nonResolues.add('${f.path}:${i + 1} ${l.trim()}');
@@ -474,9 +481,7 @@ Set<String> routesPorteusesDuGeste(
 /// listees : une garde qui gagnerait une destination l'ajouterait ici toute
 /// seule.
 Set<String> portesDEntree(List<RouteDeclaree> routes) {
-  final out = <String>{
-    appRouter.routeInformationProvider.value.uri.path,
-  };
+  final out = <String>{appRouter.routeInformationProvider.value.uri.path};
   final memoOnboarding = hasCompletedOnboarding;
   final memoSentiers = hasDownloadedTrails;
   try {

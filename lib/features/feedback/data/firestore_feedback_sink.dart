@@ -24,8 +24,8 @@ class FirestoreFeedbackSink implements FeedbackSink {
   FirestoreFeedbackSink({
     required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
-  })  : _firebaseService = firebaseService,
-        _firestore = firestore;
+  }) : _firebaseService = firebaseService,
+       _firestore = firestore;
 
   final FirebaseService _firebaseService;
   FirebaseFirestore? _firestore;

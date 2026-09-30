@@ -66,8 +66,9 @@ class PlanSummaryScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final days = ref.watch(plannedDaysProvider(trailId));
     final stats = ref.watch(planningStatsProvider(trailId));
-    final startDate =
-        ref.watch(downloadReminderProvider(trailId)).departureDate;
+    final startDate = ref
+        .watch(downloadReminderProvider(trailId))
+        .departureDate;
 
     return Scaffold(
       // Ph5 (L6b) : AppHeader universel. Le back custom (pop sinon go '/home') est
@@ -134,11 +135,7 @@ class _SummaryContent extends StatelessWidget {
             // Date du jour : depart + index chronologique (le modele StepWays ne
             // porte pas de date propre, cf. Calendrier). Null si pas de depart.
             final date = startDate?.add(Duration(days: i));
-            return _DaySummaryTile(
-              trailId: trailId,
-              day: days[i],
-              date: date,
-            );
+            return _DaySummaryTile(trailId: trailId, day: days[i], date: date);
           }),
 
           const SizedBox(height: AppTheme.spacingLg),
@@ -226,8 +223,9 @@ class _ConfigSummaryCard extends ConsumerWidget {
     final config = ref.watch(trailConfigProvider);
     // Sens de marche : 1er sens declare par le sentier par defaut (jamais un
     // code en dur), meme regle que Transport / moteur de fin de trek.
-    final forward =
-        config.directions.isNotEmpty ? config.directions.first : 'NS';
+    final forward = config.directions.isNotEmpty
+        ? config.directions.first
+        : 'NS';
     final direction = ref.watch(selectedDirectionProvider) ?? forward;
 
     final durationValue = stats.restDays > 0
@@ -241,10 +239,7 @@ class _ConfigSummaryCard extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            scheme.primary.withAlpha(60),
-            scheme.primary.withAlpha(30),
-          ],
+          colors: [scheme.primary.withAlpha(60), scheme.primary.withAlpha(30)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -362,9 +357,7 @@ class _ConfigRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -555,8 +548,9 @@ class _DaySummaryTile extends ConsumerWidget {
 
     // Sens de marche courant (defaut = 1er sens du sentier).
     final config = ref.watch(trailConfigProvider);
-    final forward =
-        config.directions.isNotEmpty ? config.directions.first : 'NS';
+    final forward = config.directions.isNotEmpty
+        ? config.directions.first
+        : 'NS';
     final selected = ref.watch(selectedDirectionProvider) ?? forward;
     final isForward = selected == forward;
 
@@ -573,8 +567,9 @@ class _DaySummaryTile extends ConsumerWidget {
         .toList(growable: false);
 
     // Icone hebergement (lot Nuitees) : type choisi pour ce jour (defaut refuge).
-    final nuiteeType =
-        ref.watch(nuiteeSelectionsProvider).typeFor(day.dayNumber);
+    final nuiteeType = ref
+        .watch(nuiteeSelectionsProvider)
+        .typeFor(day.dayNumber);
 
     return Semantics(
       button: true,
@@ -624,8 +619,9 @@ class _DaySummaryTile extends ConsumerWidget {
                     if (date != null)
                       Text(
                         _formatDate(date!, 'EEE d MMM'),
-                        style:
-                            theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14,
+                        ),
                       ),
                   ],
                 ),
@@ -672,8 +668,11 @@ class _DaySummaryTile extends ConsumerWidget {
 
               // Chevron (affordance tap).
               const SizedBox(width: AppTheme.spacingXs),
-              const StepIcon(StepwaysIcons.chevronDroite,
-                  size: 20, color: AppTheme.grisGranite),
+              const StepIcon(
+                StepwaysIcons.chevronDroite,
+                size: 20,
+                color: AppTheme.grisGranite,
+              ),
             ],
           ),
         ),
@@ -689,8 +688,9 @@ class _DaySummaryTile extends ConsumerWidget {
   ) {
     // Type de nuitee du jour de repos (lot Nuitees) pour l'afficher dans la
     // fiche (equivalent du « Lieu » GR20, generique : type d'hebergement).
-    final nuiteeType =
-        ref.watch(nuiteeSelectionsProvider).typeFor(day.dayNumber);
+    final nuiteeType = ref
+        .watch(nuiteeSelectionsProvider)
+        .typeFor(day.dayNumber);
 
     return Semantics(
       button: true,
@@ -708,8 +708,11 @@ class _DaySummaryTile extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        StepIcon(StepwaysIcons.preparationPhysique,
-                            size: 24, color: scheme.secondary),
+                        StepIcon(
+                          StepwaysIcons.preparationPhysique,
+                          size: 24,
+                          color: scheme.secondary,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Text(
                           t.summary.restDayTitle(n: day.dayNumber.toString()),
@@ -758,7 +761,11 @@ class _DaySummaryTile extends ConsumerWidget {
                   ),
                 ),
               ),
-              StepIcon(StepwaysIcons.preparationPhysique, size: 20, color: scheme.secondary),
+              StepIcon(
+                StepwaysIcons.preparationPhysique,
+                size: 20,
+                color: scheme.secondary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 t.summary.restDay,
@@ -779,8 +786,11 @@ class _DaySummaryTile extends ConsumerWidget {
                 ),
               ],
               const SizedBox(width: AppTheme.spacingXs),
-              const StepIcon(StepwaysIcons.chevronDroite,
-                  size: 20, color: AppTheme.grisGranite),
+              const StepIcon(
+                StepwaysIcons.chevronDroite,
+                size: 20,
+                color: AppTheme.grisGranite,
+              ),
             ],
           ),
         ),
@@ -829,10 +839,10 @@ class _ActionButtons extends ConsumerWidget {
               final forward = config.directions.isNotEmpty
                   ? config.directions.first
                   : 'NS';
-              final selected =
-                  ref.read(selectedDirectionProvider) ?? forward;
-              final startDate =
-                  ref.read(downloadReminderProvider(trailId)).departureDate;
+              final selected = ref.read(selectedDirectionProvider) ?? forward;
+              final startDate = ref
+                  .read(downloadReminderProvider(trailId))
+                  .departureDate;
               final text = _buildShareText(
                 trailName: config.displayName,
                 isForward: selected == forward,
@@ -884,31 +894,30 @@ class _ActionButtons extends ConsumerWidget {
     buffer.writeln('');
 
     if (startDate != null && stats.totalDays > 0) {
-      buffer.writeln(t.summary.share.dates(
-        start: _formatDate(startDate, 'd MMMM yyyy'),
-        end: _formatDate(
-          startDate.add(Duration(days: stats.totalDays - 1)),
-          'd MMMM yyyy',
+      buffer.writeln(
+        t.summary.share.dates(
+          start: _formatDate(startDate, 'd MMMM yyyy'),
+          end: _formatDate(
+            startDate.add(Duration(days: stats.totalDays - 1)),
+            'd MMMM yyyy',
+          ),
         ),
-      ));
+      );
       buffer.writeln('');
     }
 
     buffer.writeln(t.summary.share.planning);
     for (final day in days) {
       if (day.isRestDay) {
-        buffer.writeln(
-          t.summary.share.dayRest(n: day.dayNumber.toString()),
-        );
+        buffer.writeln(t.summary.share.dayRest(n: day.dayNumber.toString()));
       } else {
         // Titre depart -> arrivee du jour DANS LE SENS de marche (parite GR20).
         final label = day.stages
             .map((s) => directionalStageTitle(s, isForward: isForward))
             .join(' + ');
-        buffer.writeln(t.summary.share.dayStages(
-          n: day.dayNumber.toString(),
-          stages: label,
-        ));
+        buffer.writeln(
+          t.summary.share.dayStages(n: day.dayNumber.toString(), stages: label),
+        );
       }
     }
 

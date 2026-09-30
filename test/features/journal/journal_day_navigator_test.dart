@@ -56,7 +56,10 @@ void main() {
                   path: '/journal',
                   builder: (_, __) => const JournalScreen(trailId: trailId),
                 ),
-                GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+                GoRoute(
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -82,8 +85,9 @@ void main() {
       expect(find.text('Jour deux sous la pluie'), findsNothing);
     });
 
-    testWidgets('la fleche gauche remonte le temps, jour par jour',
-        (tester) async {
+    testWidgets('la fleche gauche remonte le temps, jour par jour', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un du Mare a Mare');
@@ -92,11 +96,19 @@ void main() {
 
       await pumpJournal(tester, db);
 
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Jour deux sous la pluie'), findsOneWidget);
 
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Jour un du Mare a Mare'), findsOneWidget);
 
@@ -114,17 +126,21 @@ void main() {
       await pumpJournal(tester, db);
 
       IconButton buttonOf(String icon) => tester.widget<IconButton>(
-            find.ancestor(
-              of: find.byWidgetPredicate((w) => w is StepIcon && w.asset == icon),
-              matching: find.byType(IconButton),
-            ),
-          );
+        find.ancestor(
+          of: find.byWidgetPredicate((w) => w is StepIcon && w.asset == icon),
+          matching: find.byType(IconButton),
+        ),
+      );
 
       // Sur la journee la plus recente : suivant mort, precedent vivant.
       expect(buttonOf(StepwaysIcons.chevronDroite).onPressed, isNull);
       expect(buttonOf(StepwaysIcons.chevronGauche).onPressed, isNotNull);
 
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Sur la plus ancienne : l'inverse.
@@ -132,15 +148,26 @@ void main() {
       expect(buttonOf(StepwaysIcons.chevronDroite).onPressed, isNotNull);
     });
 
-    testWidgets('journal vide : aucun navigateur, etat vide conserve',
-        (tester) async {
+    testWidgets('journal vide : aucun navigateur, etat vide conserve', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
 
       await pumpJournal(tester, db);
 
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.journal), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.journal,
+        ),
+        findsOneWidget,
+      );
     });
   });
 
@@ -151,13 +178,15 @@ void main() {
       await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un');
       await noteAt(db, DateTime(2026, 6, 11, 9), 'Jour deux');
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        // L7-3 : le journal est verrouille en mode demo ; ces tests
-        // regardent le journal OUVERT, on le declare deverrouille.
-        isDemoModeProvider(trailId).overrideWith((ref) async => false),
-        trailIdProvider.overrideWithValue(trailId),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          // L7-3 : le journal est verrouille en mode demo ; ces tests
+          // regardent le journal OUVERT, on le declare deverrouille.
+          isDemoModeProvider(trailId).overrideWith((ref) async => false),
+          trailIdProvider.overrideWithValue(trailId),
+        ],
+      );
       addTearDown(container.dispose);
 
       // Laisser le chargement initial aboutir.

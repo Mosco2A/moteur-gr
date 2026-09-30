@@ -63,110 +63,117 @@ class DayForecastCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            // Date + icône météo
-            Row(
-              children: [
-                WeatherIcon(
-                  iconName: day.weatherIconName,
-                  size: 28,
-                  color: isAlert
-                      ? AppTheme.rougeUrgence
-                      : theme.colorScheme.primary,
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              title ??
-                                  formatWeatherDate(
-                                      day.date, 'EEEE d MMM', languageCode),
-                              style: theme.textTheme.titleMedium,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (trailing != null) ...[
-                            const SizedBox(width: AppTheme.spacingXs),
-                            trailing!,
-                          ],
-                        ],
-                      ),
-                      Text(
-                        subtitle ?? day.weatherDescription,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withAlpha(180),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                // Température
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+          // Date + icône météo
+          Row(
+            children: [
+              WeatherIcon(
+                iconName: day.weatherIconName,
+                size: 28,
+                color: isAlert
+                    ? AppTheme.rougeUrgence
+                    : theme.colorScheme.primary,
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${day.temperatureMax.round()}°',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: _tempColor(day.temperatureMax),
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title ??
+                                formatWeatherDate(
+                                  day.date,
+                                  'EEEE d MMM',
+                                  languageCode,
+                                ),
+                            style: theme.textTheme.titleMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (trailing != null) ...[
+                          const SizedBox(width: AppTheme.spacingXs),
+                          trailing!,
+                        ],
+                      ],
                     ),
                     Text(
-                      '${day.temperatureMin.round()}°',
+                      subtitle ?? day.weatherDescription,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withAlpha(150),
+                        color: theme.colorScheme.onSurface.withAlpha(180),
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            // Détails : précipitations, vent, UV.
-            // Wrap (pas Row) : évite tout débordement horizontal aux largeurs
-            // mobiles étroites (retour Lot A #95062).
-            Wrap(
-              spacing: AppTheme.spacingSm,
-              runSpacing: AppTheme.spacingXs,
-              children: [
-                _detailChip(
-                  context,
-                  StepwaysIcons.pluie,
-                  '${day.precipitationMm.round()} mm',
-                  day.precipitationMm >= 20,
-                ),
-                _detailChip(
-                  context,
-                  StepwaysIcons.vent,
-                  '${day.windSpeedKmh.round()} km/h',
-                  day.windSpeedKmh >= 60,
-                ),
-                _detailChip(
-                  context,
-                  StepwaysIcons.meteo,
-                  'UV ${day.uvIndex.round()}',
-                  day.uvIndex >= 8,
-                ),
-                ...extraChips,
-              ],
-            ),
-            if (footnote != null) ...[
-              const SizedBox(height: AppTheme.spacingXs),
-              footnote!,
+              ),
+              // Température
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${day.temperatureMax.round()}°',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: _tempColor(day.temperatureMax),
+                    ),
+                  ),
+                  Text(
+                    '${day.temperatureMin.round()}°',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(150),
+                    ),
+                  ),
+                ],
+              ),
             ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Détails : précipitations, vent, UV.
+          // Wrap (pas Row) : évite tout débordement horizontal aux largeurs
+          // mobiles étroites (retour Lot A #95062).
+          Wrap(
+            spacing: AppTheme.spacingSm,
+            runSpacing: AppTheme.spacingXs,
+            children: [
+              _detailChip(
+                context,
+                StepwaysIcons.pluie,
+                '${day.precipitationMm.round()} mm',
+                day.precipitationMm >= 20,
+              ),
+              _detailChip(
+                context,
+                StepwaysIcons.vent,
+                '${day.windSpeedKmh.round()} km/h',
+                day.windSpeedKmh >= 60,
+              ),
+              _detailChip(
+                context,
+                StepwaysIcons.meteo,
+                'UV ${day.uvIndex.round()}',
+                day.uvIndex >= 8,
+              ),
+              ...extraChips,
+            ],
+          ),
+          if (footnote != null) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            footnote!,
           ],
-        ),
+        ],
+      ),
     );
   }
 
   Widget _detailChip(
-      BuildContext context, String icon, String label, bool isDanger) {
+    BuildContext context,
+    String icon,
+    String label,
+    bool isDanger,
+  ) {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -182,8 +189,11 @@ class DayForecastCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          StepIcon(icon, size: 14,
-              color: isDanger ? AppTheme.rougeUrgence : null),
+          StepIcon(
+            icon,
+            size: 14,
+            color: isDanger ? AppTheme.rougeUrgence : null,
+          ),
           const SizedBox(width: 4),
           Text(
             label,

@@ -52,8 +52,8 @@ class JournalSelectedDayNotifier extends Notifier<DateTime?> {
 
 final journalSelectedDayRawProvider =
     NotifierProvider<JournalSelectedDayNotifier, DateTime?>(
-  JournalSelectedDayNotifier.new,
-);
+      JournalSelectedDayNotifier.new,
+    );
 
 /// Journee REELLEMENT affichee.
 ///
@@ -82,9 +82,7 @@ final journalEntriesOfDayProvider = Provider<List<JournalEntryModel>>((ref) {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const <JournalEntryModel>[];
   final entries = ref.watch(journalScreenProvider.select((s) => s.entries));
-  final ofDay = entries
-      .where((e) => journalDayOf(e.createdAt) == day)
-      .toList()
+  final ofDay = entries.where((e) => journalDayOf(e.createdAt) == day).toList()
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   return ofDay;
 });
@@ -94,8 +92,9 @@ final journalEntriesOfDayProvider = Provider<List<JournalEntryModel>>((ref) {
 /// Depend du socle L3-1 : avant lui, la table de trace n'etait indexee que
 /// par sentier et etait EFFACEE a chaque nouvelle randonnee — la trace
 /// d'une journee passee n'existait tout simplement plus.
-final journalDayTraceProvider =
-    FutureProvider<List<SessionTrackPoint>>((ref) async {
+final journalDayTraceProvider = FutureProvider<List<SessionTrackPoint>>((
+  ref,
+) async {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const <SessionTrackPoint>[];
   final trailId = ref.watch(trailIdProvider);
@@ -127,8 +126,9 @@ final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
 /// des journees distinctes evite de compter le trajet qui relie le dernier
 /// point d'un soir au premier point du lendemain matin (souvent un transfert
 /// en voiture, parfois des dizaines de kilometres).
-final journalCumulativeStatsProvider =
-    FutureProvider<JournalDayStats>((ref) async {
+final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
+  ref,
+) async {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);

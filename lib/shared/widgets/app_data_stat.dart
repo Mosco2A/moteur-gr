@@ -89,7 +89,8 @@ class AppDataStat extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
 
-    final labelStyle = theme.textTheme.bodySmall?.copyWith(
+    final labelStyle =
+        theme.textTheme.bodySmall?.copyWith(
           color: labelColor ?? AppTheme.grisTexteSecondaire,
           fontSize: 12,
         ) ??

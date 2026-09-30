@@ -87,7 +87,7 @@ class ResultatPhotoCarte {
 
   /// Des octets sont revenus.
   const ResultatPhotoCarte.reussite(List<int> octets)
-      : this._(IssuePhotoCarte.reussite, octets);
+    : this._(IssuePhotoCarte.reussite, octets);
 
   /// Le randonneur a annule.
   const ResultatPhotoCarte.annule() : this._(IssuePhotoCarte.annule, null);
@@ -106,9 +106,8 @@ class ResultatPhotoCarte {
 }
 
 /// Signature de la prise de photo — injectable, donc testable sans appareil.
-typedef PriseDePhotoCarte = Future<ResultatPhotoCarte> Function(
-  ImageSource source,
-);
+typedef PriseDePhotoCarte =
+    Future<ResultatPhotoCarte> Function(ImageSource source);
 
 /// Prise de photo REELLE, par l'appareil photo ou la galerie.
 ///

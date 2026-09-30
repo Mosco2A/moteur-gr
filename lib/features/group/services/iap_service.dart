@@ -141,9 +141,11 @@ class IapService {
 
     final base = linksConfig.webLink(shareCode);
     if (base == null) {
-      _log.e('[IapService] Pass suivi web achete mais le canal web n a AUCUNE '
-          'adresse dans ce build (${FollowLinksConfig.variableWebBase}) : '
-          'aucun lien remis pour la session $sessionId');
+      _log.e(
+        '[IapService] Pass suivi web achete mais le canal web n a AUCUNE '
+        'adresse dans ce build (${FollowLinksConfig.variableWebBase}) : '
+        'aucun lien remis pour la session $sessionId',
+      );
       return null;
     }
 

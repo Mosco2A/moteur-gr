@@ -32,20 +32,22 @@ void main() {
   });
 
   group('PhotoService', () {
-    test('compression retourne les octets tels quels si deja sous 500 Ko',
-        () async {
-      // Creer des octets factices sous la limite (100 octets)
-      final smallBytes = Uint8List(100);
-      for (var i = 0; i < 100; i++) {
-        smallBytes[i] = i % 256;
-      }
+    test(
+      'compression retourne les octets tels quels si deja sous 500 Ko',
+      () async {
+        // Creer des octets factices sous la limite (100 octets)
+        final smallBytes = Uint8List(100);
+        for (var i = 0; i < 100; i++) {
+          smallBytes[i] = i % 256;
+        }
 
-      final result = await service.compressPhoto(smallBytes);
+        final result = await service.compressPhoto(smallBytes);
 
-      expect(result, isNotNull);
-      expect(result!.length, equals(100));
-      expect(result.length, lessThanOrEqualTo(PhotoService.maxSizeBytes));
-    });
+        expect(result, isNotNull);
+        expect(result!.length, equals(100));
+        expect(result.length, lessThanOrEqualTo(PhotoService.maxSizeBytes));
+      },
+    );
 
     test('limite 3 photos/jour respectee — la 4eme est refusee', () async {
       const trailId = 'sentier-bleu';
@@ -53,14 +55,16 @@ void main() {
 
       // Inserer 3 photos pour aujourd'hui
       for (var i = 0; i < 3; i++) {
-        await dao.insertEntry(JournalEntriesCompanion(
-          trailId: const Value(trailId),
-          stageNumber: const Value(1),
-          content: Value('photo $i'),
-          photoPath: Value('/photos/$i.jpg'),
-          photoSizeBytes: const Value(1024),
-          createdAt: Value(today),
-        ));
+        await dao.insertEntry(
+          JournalEntriesCompanion(
+            trailId: const Value(trailId),
+            stageNumber: const Value(1),
+            content: Value('photo $i'),
+            photoPath: Value('/photos/$i.jpg'),
+            photoSizeBytes: const Value(1024),
+            createdAt: Value(today),
+          ),
+        );
       }
 
       // La 4eme photo doit etre refusee

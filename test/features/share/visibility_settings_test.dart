@@ -44,8 +44,9 @@ void main() {
       expectNoAnonyme(tester);
     });
 
-    testWidgets('opt-in granulaire : activer un toggle change son etat',
-        (tester) async {
+    testWidgets('opt-in granulaire : activer un toggle change son etat', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const VisibilitySettingsScreen()));
       await tester.pumpAndSettle();
 
@@ -73,12 +74,13 @@ void main() {
       expect(prefs.getBool(VisibilityKeys.shareActivityFeed), isTrue);
     });
 
-    testWidgets('lien de consentement (design D4) present et cliquable',
-        (tester) async {
+    testWidgets('lien de consentement (design D4) present et cliquable', (
+      tester,
+    ) async {
       var opened = false;
-      await tester.pumpWidget(wrap(
-        VisibilitySettingsScreen(onOpenConsent: () => opened = true),
-      ));
+      await tester.pumpWidget(
+        wrap(VisibilitySettingsScreen(onOpenConsent: () => opened = true)),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(t.shareVisibility.consentLink));
@@ -89,18 +91,19 @@ void main() {
 
   group('StageShareScreen — partage gate par opt-in', () {
     Widget shareScreen({void Function(dynamic)? onShare}) => wrap(
-          StageShareScreen(
-            authorUidHash: 'deadbeefcafe',
-            stageName: 'Etape 3',
-            distanceKm: 12.4,
-            elevationGainM: 800,
-            durationSeconds: 14400,
-            onShare: onShare,
-          ),
-        );
+      StageShareScreen(
+        authorUidHash: 'deadbeefcafe',
+        stageName: 'Etape 3',
+        distanceKm: 12.4,
+        elevationGainM: 800,
+        durationSeconds: 14400,
+        onShare: onShare,
+      ),
+    );
 
-    testWidgets('partage OFF par defaut : message prive, pas de carte',
-        (tester) async {
+    testWidgets('partage OFF par defaut : message prive, pas de carte', (
+      tester,
+    ) async {
       await tester.pumpWidget(shareScreen());
       await tester.pumpAndSettle();
 

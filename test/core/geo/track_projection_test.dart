@@ -66,10 +66,14 @@ void main() {
         trackPoints: straightTrack,
       );
 
-      expect(resultStart.distanceRemainingM,
-          greaterThan(resultEnd.distanceRemainingM));
-      expect(resultStart.distanceFromStartM,
-          lessThan(resultEnd.distanceFromStartM));
+      expect(
+        resultStart.distanceRemainingM,
+        greaterThan(resultEnd.distanceRemainingM),
+      );
+      expect(
+        resultStart.distanceFromStartM,
+        lessThan(resultEnd.distanceFromStartM),
+      );
     });
 
     test('optimisation fenetre avec lastKnownIndex', () {
@@ -127,8 +131,10 @@ void main() {
         trackPoints: straightTrack,
       );
 
-      expect(resultDebut.trackIndexPosition,
-          lessThan(resultFin.trackIndexPosition));
+      expect(
+        resultDebut.trackIndexPosition,
+        lessThan(resultFin.trackIndexPosition),
+      );
     });
   });
 }

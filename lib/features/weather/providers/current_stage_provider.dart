@@ -43,8 +43,10 @@ final localizedStageNumberProvider = Provider<int>((ref) {
 /// Chargée directement via [StagesDao] à partir d'un `trailId` explicite
 /// (celui de la route météo), sans dépendre de `currentTrailIdProvider`.
 /// Sert la vue « Toutes les étapes » de l'écran météo.
-final trailStagesProvider =
-    FutureProvider.family<List<Stage>, String>((ref, trailId) async {
+final trailStagesProvider = FutureProvider.family<List<Stage>, String>((
+  ref,
+  trailId,
+) async {
   if (trailId.isEmpty) return const [];
   final dao = ref.watch(stagesDaoProvider);
   return dao.getByTrailId(trailId);

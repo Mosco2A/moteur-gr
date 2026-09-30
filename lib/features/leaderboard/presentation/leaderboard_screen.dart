@@ -36,14 +36,11 @@ class LeaderboardScreen extends ConsumerWidget {
     final rankingAsync = ref.watch(segmentRankingProvider(segmentId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(segmentName ?? t.leaderboard.title),
-      ),
+      appBar: AppBar(title: Text(segmentName ?? t.leaderboard.title)),
       body: SafeArea(
         child: rankingAsync.when(
           data: (ranking) => _RankingBody(ranking: ranking),
-          loading: () =>
-              const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => _EmptyState(message: t.leaderboard.unavailable),
         ),
       ),
@@ -229,9 +226,7 @@ class _InfoCard extends StatelessWidget {
         children: [
           StepIcon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(message, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );

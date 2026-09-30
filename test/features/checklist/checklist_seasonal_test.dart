@@ -60,17 +60,19 @@ void main() {
       expect(resolved.length, greaterThan(defaultChecklistTemplate.length));
     });
 
-    test('saison sans donnee -> template de base identique (84 inchange)',
-        () async {
-      // 'spring' du bloc default n'a qu'un item, mais un sentier+saison sans
-      // aucune donnee (ex. auton inexistant) doit rendre la base telle quelle.
-      final resolved = await ChecklistSeasonalAdapter.resolveTemplate(
-        trailId: 'sentier-inconnu',
-        season: 'saison-inexistante',
-        base: defaultChecklistTemplate,
-      );
-      expect(resolved.length, defaultChecklistTemplate.length);
-      expect(identical(resolved, defaultChecklistTemplate), isTrue);
-    });
+    test(
+      'saison sans donnee -> template de base identique (84 inchange)',
+      () async {
+        // 'spring' du bloc default n'a qu'un item, mais un sentier+saison sans
+        // aucune donnee (ex. auton inexistant) doit rendre la base telle quelle.
+        final resolved = await ChecklistSeasonalAdapter.resolveTemplate(
+          trailId: 'sentier-inconnu',
+          season: 'saison-inexistante',
+          base: defaultChecklistTemplate,
+        );
+        expect(resolved.length, defaultChecklistTemplate.length);
+        expect(identical(resolved, defaultChecklistTemplate), isTrue);
+      },
+    );
   });
 }

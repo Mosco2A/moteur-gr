@@ -57,21 +57,20 @@ void main() {
     int loss = 500,
     String? departureName,
     String? arrivalName,
-  }) =>
-      StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: distanceKm,
-        elevationGainM: gain,
-        elevationLossM: loss,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-        departureName: departureName,
-        arrivalName: arrivalName,
-      );
+  }) => StageModel(
+    trailId: trailId,
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: distanceKm,
+    elevationGainM: gain,
+    elevationLossM: loss,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+    departureName: departureName,
+    arrivalName: arrivalName,
+  );
 
   PlannedDay walkDay(int dayNumber, int stageNumber) =>
       PlannedDay(dayNumber: dayNumber, stages: [stage(stageNumber)]);
@@ -121,10 +120,10 @@ void main() {
   /// carte Statistiques utilisent RichText, comme GR20). `find.text` ne matche
   /// pas RichText : on inspecte le texte concatene de chaque RichText.
   Finder findStatValue(String value) => find.byWidgetPredicate(
-        (w) =>
-            w is RichText &&
-            w.text.toPlainText().replaceAll(' ', ' ').contains(value),
-      );
+    (w) =>
+        w is RichText &&
+        w.text.toPlainText().replaceAll(' ', ' ').contains(value),
+  );
 
   Future<void> settle(WidgetTester tester) async {
     for (var i = 0; i < 8; i++) {
@@ -163,21 +162,20 @@ void main() {
     DateTime? startDate,
     Map<int, NuiteeType> nuiteeTypes = const {},
     String? direction,
-  }) =>
-      [
-        plannedDaysProvider(trailId).overrideWith(
-          (ref) => _StaticPlannedDays(ref, days),
-        ),
-        planningStatsProvider(trailId).overrideWithValue(statsFor(days)),
-        downloadReminderProvider(trailId).overrideWith(
-          () => _FakeReminderNotifier(startDate),
-        ),
-        nuiteeSelectionsProvider.overrideWith(
-          () => _FakeNuiteeNotifier(nuiteeTypes),
-        ),
-        if (direction != null)
-          selectedDirectionProvider.overrideWith((ref) => direction),
-      ];
+  }) => [
+    plannedDaysProvider(
+      trailId,
+    ).overrideWith((ref) => _StaticPlannedDays(ref, days)),
+    planningStatsProvider(trailId).overrideWithValue(statsFor(days)),
+    downloadReminderProvider(
+      trailId,
+    ).overrideWith(() => _FakeReminderNotifier(startDate)),
+    nuiteeSelectionsProvider.overrideWith(
+      () => _FakeNuiteeNotifier(nuiteeTypes),
+    ),
+    if (direction != null)
+      selectedDirectionProvider.overrideWith((ref) => direction),
+  ];
 
   Widget wrap({
     required List<PlannedDay> days,
@@ -197,9 +195,7 @@ void main() {
         GoRoute(
           path: '/stages/:num',
           builder: (_, state) => Scaffold(
-            body: Center(
-              child: Text('STAGE ${state.pathParameters['num']}'),
-            ),
+            body: Center(child: Text('STAGE ${state.pathParameters['num']}')),
           ),
         ),
       ],
@@ -227,7 +223,12 @@ void main() {
       expect(find.text(t.summary.empty.title), findsOneWidget);
       expect(find.text(t.summary.empty.message), findsOneWidget);
       expect(find.text(t.summary.empty.action), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+        ),
+        findsOneWidget,
+      );
       // Aucune section (pas de « Jour par jour ») en etat vide.
       expect(find.text(t.summary.dayByDay), findsNothing);
     });
@@ -236,14 +237,14 @@ void main() {
   // --- Les 3 cartes alimentees par les providers --------------------------
 
   group('cartes config / stats / jour par jour', () {
-    testWidgets('les 3 sections sont rendues depuis les providers',
-        (tester) async {
+    testWidgets('les 3 sections sont rendues depuis les providers', (
+      tester,
+    ) async {
       useTallSurface(tester);
       final days = [walkDay(1, 1), restDay(2), walkDay(3, 2)];
-      await tester.pumpWidget(wrap(
-        days: days,
-        startDate: DateTime(2030, 6, 1),
-      ));
+      await tester.pumpWidget(
+        wrap(days: days, startDate: DateTime(2030, 6, 1)),
+      );
       await settle(tester);
 
       // Carte Configuration : titre « Mon {sentier} » (displayName du sentier de
@@ -275,22 +276,26 @@ void main() {
     // valeurs sans jamais casser un mot.
     testWidgets('#8 : « Direction » tient sur UNE SEULE LIGNE', (tester) async {
       useTallSurface(tester);
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1)],
-        startDate: DateTime(2030, 6, 1),
-      ));
+      await tester.pumpWidget(
+        wrap(days: [walkDay(1, 1)], startDate: DateTime(2030, 6, 1)),
+      );
       await settle(tester);
 
       // « Duree » est court et n'a jamais debordé : il donne la hauteur d'UNE
       // ligne dans ce meme style. Si « Direction » fait la meme hauteur, il est
       // sur une ligne — une mesure qui ne depend ni de la police ni de l'ecran.
-      final hauteurUneLigne =
-          tester.getSize(find.text(t.summary.duration)).height;
-      final hauteurDirection =
-          tester.getSize(find.text(t.summary.direction)).height;
+      final hauteurUneLigne = tester
+          .getSize(find.text(t.summary.duration))
+          .height;
+      final hauteurDirection = tester
+          .getSize(find.text(t.summary.direction))
+          .height;
 
-      expect(hauteurDirection, hauteurUneLigne,
-          reason: '« Direction » ne doit plus se couper sur deux lignes');
+      expect(
+        hauteurDirection,
+        hauteurUneLigne,
+        reason: '« Direction » ne doit plus se couper sur deux lignes',
+      );
 
       // Et les libelles restent ALIGNES : c'etait la raison d'etre du 80 en dur,
       // on ne l'a pas perdue en le remplacant par un plancher.
@@ -304,30 +309,33 @@ void main() {
       );
     });
 
-    testWidgets('les stats agregees sont coherentes (distance / etapes / repos)',
-        (tester) async {
-      // 2 jours de marche (12 km chacun, D+ 600, D- 500) + 1 repos.
-      useTallSurface(tester);
-      final days = [walkDay(1, 1), walkDay(2, 2), restDay(3)];
-      await tester.pumpWidget(wrap(days: days));
-      await settle(tester);
+    testWidgets(
+      'les stats agregees sont coherentes (distance / etapes / repos)',
+      (tester) async {
+        // 2 jours de marche (12 km chacun, D+ 600, D- 500) + 1 repos.
+        useTallSurface(tester);
+        final days = [walkDay(1, 1), walkDay(2, 2), restDay(3)];
+        await tester.pumpWidget(wrap(days: days));
+        await settle(tester);
 
-      // Distance totale = 24.0 km (RichText de la carte Statistiques).
-      expect(findStatValue('24.0'), findsOneWidget);
-      // D+ total = 1200 m, D- total = 1000 m.
-      expect(findStatValue('1200'), findsOneWidget);
-      expect(findStatValue('1000'), findsOneWidget);
-      // Etapes = 2, jours de repos = 1 (KPI compteurs, RichText).
-      expect(findStatValue('2'), findsWidgets);
-      expect(findStatValue('1'), findsWidgets);
-    });
+        // Distance totale = 24.0 km (RichText de la carte Statistiques).
+        expect(findStatValue('24.0'), findsOneWidget);
+        // D+ total = 1200 m, D- total = 1000 m.
+        expect(findStatValue('1200'), findsOneWidget);
+        expect(findStatValue('1000'), findsOneWidget);
+        // Etapes = 2, jours de repos = 1 (KPI compteurs, RichText).
+        expect(findStatValue('2'), findsWidgets);
+        expect(findStatValue('1'), findsWidgets);
+      },
+    );
   });
 
   // --- Tuile jour de marche -> detail d'etape -----------------------------
 
   group('navigation tuile jour de marche', () {
-    testWidgets('tap sur un jour de marche ouvre le detail d\'etape',
-        (tester) async {
+    testWidgets('tap sur un jour de marche ouvre le detail d\'etape', (
+      tester,
+    ) async {
       // Jour 1 porte l'etape 5 -> tap doit pousser /stages/5.
       useTallSurface(tester);
       final days = [
@@ -341,8 +349,7 @@ void main() {
       final tile = find.byWidgetPredicate(
         (w) =>
             w is Semantics &&
-            (w.properties.label
-                    ?.contains(t.summary.a11y.dayTile(day: '1')) ??
+            (w.properties.label?.contains(t.summary.a11y.dayTile(day: '1')) ??
                 false),
       );
       expect(tile, findsOneWidget);
@@ -358,13 +365,14 @@ void main() {
   // --- Tuile jour de repos -> bottom sheet --------------------------------
 
   group('jour de repos', () {
-    testWidgets('tap sur un jour de repos ouvre un bottom sheet', (tester) async {
+    testWidgets('tap sur un jour de repos ouvre un bottom sheet', (
+      tester,
+    ) async {
       useTallSurface(tester);
       final days = [walkDay(1, 1), restDay(2)];
-      await tester.pumpWidget(wrap(
-        days: days,
-        startDate: DateTime(2030, 6, 1),
-      ));
+      await tester.pumpWidget(
+        wrap(days: days, startDate: DateTime(2030, 6, 1)),
+      );
       await settle(tester);
 
       await tester.tap(find.text(t.summary.restDay));
@@ -396,16 +404,22 @@ void main() {
       useTallSurface(tester);
       await tester.pumpWidget(wrap(days: directionalDays, direction: 'NS'));
       await settle(tester);
-      expect(find.text('+800 m'), findsOneWidget,
-          reason: 'Sens aller : D+ = elevationGain (800)');
+      expect(
+        find.text('+800 m'),
+        findsOneWidget,
+        reason: 'Sens aller : D+ = elevationGain (800)',
+      );
     });
 
     testWidgets('sens retour (SN) : D+ affiche = D- officiel', (tester) async {
       useTallSurface(tester);
       await tester.pumpWidget(wrap(days: directionalDays, direction: 'SN'));
       await settle(tester);
-      expect(find.text('+300 m'), findsOneWidget,
-          reason: 'Sens retour : D+ affiche = D- officiel (300)');
+      expect(
+        find.text('+300 m'),
+        findsOneWidget,
+        reason: 'Sens retour : D+ affiche = D- officiel (300)',
+      );
     });
   });
 
@@ -420,14 +434,25 @@ void main() {
     // tu ne les a pas tu ne met rien ». Les deux boutons sont retires avec leurs
     // libelles et leurs annonces ; on verrouille leur ABSENCE, et le fait que
     // « Partager » — le seul qui fait vraiment quelque chose — reste la.
-    testWidgets('aucun bouton stub : ni Export PDF ni Cartes offline',
-        (tester) async {
+    testWidgets('aucun bouton stub : ni Export PDF ni Cartes offline', (
+      tester,
+    ) async {
       useTallSurface(tester);
       await tester.pumpWidget(wrap(days: [walkDay(1, 1)]));
       await settle(tester);
 
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pdf), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telecharger), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.pdf,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.telecharger,
+        ),
+        findsNothing,
+      );
       for (final promesse in <String>[
         'bientôt',
         'bientot',
@@ -435,25 +460,28 @@ void main() {
         'EXPORTER EN PDF',
         'TÉLÉCHARGER LES CARTES OFFLINE',
       ]) {
-        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'le resume promet encore « $promesse »');
+        expect(
+          find.textContaining(promesse, skipOffstage: false),
+          findsNothing,
+          reason: 'le resume promet encore « $promesse »',
+        );
       }
       // Le bouton qui MARCHE, lui, est toujours la.
       expect(find.text(t.summary.actions.share), findsOneWidget);
     });
 
-    testWidgets('le bouton Partager appelle share_plus avec le texte du plan',
-        (tester) async {
+    testWidgets('le bouton Partager appelle share_plus avec le texte du plan', (
+      tester,
+    ) async {
       // Mock du canal plateforme share_plus : capture le texte partage.
       useTallSurface(tester);
       _installShareMock(tester);
       addTearDown(() => _removeShareMock(tester));
 
       final days = [walkDay(1, 1), restDay(2), walkDay(3, 2)];
-      await tester.pumpWidget(wrap(
-        days: days,
-        startDate: DateTime(2030, 6, 1),
-      ));
+      await tester.pumpWidget(
+        wrap(days: days, startDate: DateTime(2030, 6, 1)),
+      );
       await settle(tester);
 
       await tester.tap(find.text(t.summary.actions.share));
@@ -473,8 +501,9 @@ void main() {
   // --- Navigation depuis le HUB -------------------------------------------
 
   group('navigation HUB', () {
-    testWidgets('la carte HUB « Resume » ouvre l\'ecran, retour sans crash',
-        (tester) async {
+    testWidgets('la carte HUB « Resume » ouvre l\'ecran, retour sans crash', (
+      tester,
+    ) async {
       useTallSurface(tester);
       // Routeur minimal reproduisant l'entree HUB : une carte `Icons.summarize`
       // (comme le HUB) qui `push` vers le Resume.
@@ -494,27 +523,37 @@ void main() {
           ),
           GoRoute(
             path: '/trail/:id/summary',
-            builder: (context, state) => PlanSummaryScreen(
-              trailId: state.pathParameters['id'] ?? '',
-            ),
+            builder: (context, state) =>
+                PlanSummaryScreen(trailId: state.pathParameters['id'] ?? ''),
           ),
         ],
       );
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: overrides(
-          days: [walkDay(1, 1), walkDay(2, 2)],
-          startDate: DateTime(2030, 6, 1),
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(
+            days: [walkDay(1, 1), walkDay(2, 2)],
+            startDate: DateTime(2030, 6, 1),
+          ),
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
+      );
       await settle(tester);
 
       // Aller : taper la carte HUB (icone summarize) ouvre le Resume.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text(t.summary.title));
       expect(find.text(t.summary.title), findsWidgets);
@@ -525,7 +564,12 @@ void main() {
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.summary.title));
       expect(find.text(t.summary.title), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.programme), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+        ),
+        findsOneWidget,
+      );
     });
   });
 
@@ -545,15 +589,17 @@ void main() {
       expect(back.gain, 250, reason: 'sens retour : D+ = D- officiel');
     });
 
-    test('directionalStageTitle inverse depart/arrivee et retombe sur le nom',
-        () {
-      final s = stage(1, departureName: 'A', arrivalName: 'B');
-      expect(directionalStageTitle(s, isForward: true), 'A -> B');
-      expect(directionalStageTitle(s, isForward: false), 'B -> A');
-      // Sentier pauvre (pas de noms d'endpoints) -> repli sur le nom d'etape.
-      final poor = stage(2);
-      expect(directionalStageTitle(poor, isForward: true), poor.name);
-    });
+    test(
+      'directionalStageTitle inverse depart/arrivee et retombe sur le nom',
+      () {
+        final s = stage(1, departureName: 'A', arrivalName: 'B');
+        expect(directionalStageTitle(s, isForward: true), 'A -> B');
+        expect(directionalStageTitle(s, isForward: false), 'B -> A');
+        // Sentier pauvre (pas de noms d'endpoints) -> repli sur le nom d'etape.
+        final poor = stage(2);
+        expect(directionalStageTitle(poor, isForward: true), poor.name);
+      },
+    );
   });
 }
 
@@ -566,24 +612,22 @@ final List<String> _sharedTexts = <String>[];
 /// (evite `MissingPluginException` en test et permet de verifier l'appel).
 void _installShareMock(WidgetTester tester) {
   const channel = MethodChannel('dev.fluttercommunity.plus/share');
-  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-    channel,
-    (call) async {
-      if (call.method == 'share' || call.method == 'shareWithResult') {
-        final args = call.arguments;
-        if (args is Map && args['text'] is String) {
-          _sharedTexts.add(args['text'] as String);
-        }
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+    call,
+  ) async {
+    if (call.method == 'share' || call.method == 'shareWithResult') {
+      final args = call.arguments;
+      if (args is Map && args['text'] is String) {
+        _sharedTexts.add(args['text'] as String);
       }
-      return 'dev.fluttercommunity.plus/share/success';
-    },
-  );
+    }
+    return 'dev.fluttercommunity.plus/share/success';
+  });
 }
 
 void _removeShareMock(WidgetTester tester) {
   const channel = MethodChannel('dev.fluttercommunity.plus/share');
-  tester.binding.defaultBinaryMessenger
-      .setMockMethodCallHandler(channel, null);
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
 }
 
 /// Notifier de programme statique (parite avec les tests Calendrier / Nuitees) :

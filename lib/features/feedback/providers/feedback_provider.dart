@@ -49,7 +49,13 @@ abstract class FeedbackTypeValues {
   static const String compliment = 'compliment';
   static const String other = 'other';
   static const String fallback = other;
-  static const List<String> values = [bug, suggestion, compliment, question, other];
+  static const List<String> values = [
+    bug,
+    suggestion,
+    compliment,
+    question,
+    other,
+  ];
 
   static const Map<String, String> labels = {
     bug: 'Bug / Probleme',
@@ -128,8 +134,11 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
     _trailId = ref.read(trailIdProvider);
     // L'etat du reseau reconstruit le notifier : un retour garde hors ligne
     // repart tout seul au retour de la connexion.
-    ref.watch(connectivityProvider.select(
-        (asyncVal) => asyncVal.value ?? ConnectivityStatusValues.offline));
+    ref.watch(
+      connectivityProvider.select(
+        (asyncVal) => asyncVal.value ?? ConnectivityStatusValues.offline,
+      ),
+    );
     _loadPendingCount();
     return FeedbackState(envoiPossible: _service.envoiPossible);
   }
@@ -175,5 +184,6 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
 }
 
 /// Provider du feedback pour le sentier actif
-final feedbackProvider =
-    NotifierProvider<FeedbackNotifier, FeedbackState>(FeedbackNotifier.new);
+final feedbackProvider = NotifierProvider<FeedbackNotifier, FeedbackState>(
+  FeedbackNotifier.new,
+);

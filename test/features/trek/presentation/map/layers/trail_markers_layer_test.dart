@@ -102,22 +102,21 @@ void main() {
       },
     );
 
-    testWidgets(
-      'un point d interet seul garde EXACTEMENT son icone d avant',
-      (tester) async {
-        await pumpLayer(
-          tester,
-          stages: const [],
-          pois: const [gite],
-          zoom: 14,
-        );
+    testWidgets('un point d interet seul garde EXACTEMENT son icone d avant', (
+      tester,
+    ) async {
+      await pumpLayer(tester, stages: const [], pois: const [gite], zoom: 14);
 
-        expect(markersOf(tester).length, 1);
-        expect(find.byType(PoiMarker), findsOneWidget);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
-        expect(find.byType(StageNumberCircle), findsNothing);
-      },
-    );
+      expect(markersOf(tester).length, 1);
+      expect(find.byType(PoiMarker), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(StageNumberCircle), findsNothing);
+    });
 
     testWidgets(
       'etape et gite au meme point : UN SEUL repere, qui porte le numero ET '
@@ -136,12 +135,24 @@ void main() {
           reason: 'deux marqueurs au meme point doivent n en faire qu un',
         );
         expect(find.text('3'), findsOneWidget);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+          findsOneWidget,
+        );
 
         // Et le numero reste lisible : sa surface ne croise pas la pastille.
         expect(
-          tester.getRect(find.text('3')).overlaps(
-                tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement)),
+          tester
+              .getRect(find.text('3'))
+              .overlaps(
+                tester.getRect(
+                  find.byWidgetPredicate(
+                    (w) =>
+                        w is StepIcon && w.asset == StepwaysIcons.hebergement,
+                  ),
+                ),
               ),
           isFalse,
         );
@@ -163,8 +174,18 @@ void main() {
         expect(find.text('3'), findsOneWidget);
         // Le couchage passe devant le commerce : c est l ordre des decisions
         // d un randonneur, et la pastille porte donc le gite.
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+          findsNothing,
+        );
         // Un lieu de plus est reuni ici, et le repere le dit.
         expect(find.text('+1'), findsOneWidget);
       },
@@ -182,19 +203,40 @@ void main() {
         );
 
         expect(markersOf(tester).length, 2);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement), findsOneWidget);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier), findsOneWidget);
         expect(
-          tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement)).overlaps(
-                tester.getRect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier)),
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          tester
+              .getRect(
+                find.byWidgetPredicate(
+                  (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+                ),
+              )
+              .overlaps(
+                tester.getRect(
+                  find.byWidgetPredicate(
+                    (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+                  ),
+                ),
               ),
           isFalse,
         );
       },
     );
 
-    testWidgets('sans etape ni point d interet, la couche ne rend rien',
-        (tester) async {
+    testWidgets('sans etape ni point d interet, la couche ne rend rien', (
+      tester,
+    ) async {
       await pumpLayer(tester, stages: const [], pois: const [], zoom: 14);
       expect(find.byType(MarkerLayer), findsNothing);
     });

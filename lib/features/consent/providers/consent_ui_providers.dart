@@ -38,14 +38,15 @@ import '../../feasibility/providers/hiker_profile_provider.dart';
 ///
 /// Reste invalidable (l'effacement art. 17 retire les cles SANS prendre de
 /// decision, donc sans evenement sur le flux : voir `accountErasureProvider`).
-final consentStatesProvider =
-    StreamProvider<Map<ConsentPurpose, ConsentState>>((ref) async* {
-  final service = await ref.watch(consentServiceReadyProvider.future);
-  yield service.allStates();
-  await for (final _ in service.changes) {
+final consentStatesProvider = StreamProvider<Map<ConsentPurpose, ConsentState>>(
+  (ref) async* {
+    final service = await ref.watch(consentServiceReadyProvider.future);
     yield service.allStates();
-  }
-});
+    await for (final _ in service.changes) {
+      yield service.allStates();
+    }
+  },
+);
 
 /// Vrai si au moins une finalite necessite une (re)demande de consentement.
 ///
@@ -139,8 +140,10 @@ class ConsentController {
   Future<void> declineAll() async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     for (final purpose in ConsentPurpose.values) {
-      await service.revoke(purpose,
-          declencheur: DeclencheurDeConsentement.reglages);
+      await service.revoke(
+        purpose,
+        declencheur: DeclencheurDeConsentement.reglages,
+      );
       await _effacerCeQueProtege(purpose);
     }
     _ref.invalidate(consentStatesProvider);

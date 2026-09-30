@@ -39,7 +39,6 @@ import '../fixtures/horodatage_de_serveur.dart';
 /// `3 < 4` disait. Sur le fil, l instant s ecrit en ISO 8601 UTC.
 HorodatageServeur v(int n) => aJPlus(n);
 
-
 /// TACHE 605 — LE MUR N1 : LE CATALOGUE VIENT DU RESEAU, ET LA DONNEE PORTE SA
 /// REVISION.
 ///
@@ -133,8 +132,9 @@ String _empreinteServie(String chemin) => _empreintesServies[chemin]!;
 /// Un client HTTP qui sert le manifeste et les fichiers de donnees du double.
 MockClient _faussesDonnees(Map<String, Object> parChemin) {
   for (final entree in parChemin.entries) {
-    _empreintesServies[entree.key] =
-        EmpreinteDePublication.duTexte(jsonEncode(entree.value));
+    _empreintesServies[entree.key] = EmpreinteDePublication.duTexte(
+      jsonEncode(entree.value),
+    );
   }
   return MockClient((requete) async {
     for (final entree in parChemin.entries) {
@@ -153,9 +153,9 @@ MockClient _faussesDonnees(Map<String, Object> parChemin) {
 
 /// Manifeste tel qu il sera depose dans l espace de stockage.
 Map<String, Object> _manifeste(List<TrailManifestEntry> entrees) => {
-      'schemaVersion': 2,
-      'trails': entrees.map((e) => e.toJson()).toList(),
-    };
+  'schemaVersion': 2,
+  'trails': entrees.map((e) => e.toJson()).toList(),
+};
 
 /// Une etape, dans le schema MONOLITHE (MODOP 603 §3.5) + sa revision.
 Map<String, Object?> _etape({
@@ -163,48 +163,46 @@ Map<String, Object?> _etape({
   required int elevationGain,
   int? rev,
   bool supprime = false,
-}) =>
-    {
-      'id': id,
-      'itinerary_id': 'aubrac-i1',
-      'stage_number': 1,
-      'name_fr': 'Nasbinals - Aubrac',
-      'name_en': 'Nasbinals - Aubrac',
-      'name_de': 'Nasbinals - Aubrac',
-      'name_it': 'Nasbinals - Aubrac',
-      'name_es': 'Nasbinals - Aubrac',
-      'start_lat': 44.66,
-      'start_lng': 3.04,
-      'end_lat': 44.63,
-      'end_lng': 2.98,
-      'distance_km': 14.0,
-      'elevation_gain': elevationGain,
-      'elevation_loss': 210,
-      'duration_minutes': 240,
-      'difficulty': 'moyen',
-      if (rev != null) 'rev': v(rev).iso8601,
-      if (supprime) 'supprime': true,
-    };
+}) => {
+  'id': id,
+  'itinerary_id': 'aubrac-i1',
+  'stage_number': 1,
+  'name_fr': 'Nasbinals - Aubrac',
+  'name_en': 'Nasbinals - Aubrac',
+  'name_de': 'Nasbinals - Aubrac',
+  'name_it': 'Nasbinals - Aubrac',
+  'name_es': 'Nasbinals - Aubrac',
+  'start_lat': 44.66,
+  'start_lng': 3.04,
+  'end_lat': 44.63,
+  'end_lng': 2.98,
+  'distance_km': 14.0,
+  'elevation_gain': elevationGain,
+  'elevation_loss': 210,
+  'duration_minutes': 240,
+  'difficulty': 'moyen',
+  if (rev != null) 'rev': v(rev).iso8601,
+  if (supprime) 'supprime': true,
+};
 
 Map<String, Object?> _poi({
   required String id,
   int? rev,
   bool supprime = false,
-}) =>
-    {
-      'id': id,
-      'stage_id': 'aubrac-s1',
-      'name_fr': 'Fontaine des Rajas',
-      'name_en': 'Rajas spring',
-      'name_de': 'Rajas-Quelle',
-      'name_it': 'Fonte Rajas',
-      'name_es': 'Fuente Rajas',
-      'type': 'water',
-      'lat': 44.65,
-      'lng': 3.0,
-      if (rev != null) 'rev': v(rev).iso8601,
-      if (supprime) 'supprime': true,
-    };
+}) => {
+  'id': id,
+  'stage_id': 'aubrac-s1',
+  'name_fr': 'Fontaine des Rajas',
+  'name_en': 'Rajas spring',
+  'name_de': 'Rajas-Quelle',
+  'name_it': 'Fonte Rajas',
+  'name_es': 'Fuente Rajas',
+  'type': 'water',
+  'lat': 44.65,
+  'lng': 3.0,
+  if (rev != null) 'rev': v(rev).iso8601,
+  if (supprime) 'supprime': true,
+};
 
 void main() {
   // =========================================================================
@@ -221,60 +219,85 @@ void main() {
       Map<String, Object>? servi,
     }) {
       final reseauDouble = FauxReseau(reseau);
-      return ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        connectivityMonitorProvider.overrideWithValue(reseauDouble),
-        manifestServiceProvider.overrideWithValue(ManifestService(
-          dao: TrailManifestsDao(db),
-          connectivityMonitor: reseauDouble,
-          httpClient: _faussesDonnees(servi ?? const {}),
-        )),
-      ]);
+      return ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          connectivityMonitorProvider.overrideWithValue(reseauDouble),
+          manifestServiceProvider.overrideWithValue(
+            ManifestService(
+              dao: TrailManifestsDao(db),
+              connectivityMonitor: reseauDouble,
+              httpClient: _faussesDonnees(servi ?? const {}),
+            ),
+          ),
+        ],
+      );
     }
 
-    test('TEST 1 — UN SENTIER CONNU SEULEMENT DU DISTANT APPARAIT AU CATALOGUE, '
-        'sans republication au magasin', () async {
-      final c = conteneur(
-        reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([_sentierDistantSeul])},
-      );
-      addTearDown(c.dispose);
+    test(
+      'TEST 1 — UN SENTIER CONNU SEULEMENT DU DISTANT APPARAIT AU CATALOGUE, '
+      'sans republication au magasin',
+      () async {
+        final c = conteneur(
+          reseau: ConnectivityStatusValues.online,
+          servi: {
+            'manifest.json': _manifeste([_sentierDistantSeul]),
+          },
+        );
+        addTearDown(c.dispose);
 
-      // Le binaire ne connait PAS ce sentier : c est tout le sujet.
-      expect(TrailCatalog.byId('gr-aubrac'), isNull,
-          reason: 'si le compile le connaissait, le test ne prouverait rien');
+        // Le binaire ne connait PAS ce sentier : c est tout le sujet.
+        expect(
+          TrailCatalog.byId('gr-aubrac'),
+          isNull,
+          reason: 'si le compile le connaissait, le test ne prouverait rien',
+        );
 
-      c.read(catalogueSentiersProvider); // declenche la lecture distante
-      await _laisserLaLectureSeFaire(c);
+        c.read(catalogueSentiersProvider); // declenche la lecture distante
+        await _laisserLaLectureSeFaire(c);
 
-      final catalogue = c.read(availableTrailsProvider);
-      final aubrac = catalogue.where((s) => s.id == 'gr-aubrac');
+        final catalogue = c.read(availableTrailsProvider);
+        final aubrac = catalogue.where((s) => s.id == 'gr-aubrac');
 
-      expect(aubrac, hasLength(1),
-          reason: 'C EST LE CRITERE DE REUSSITE DU LOT : un sentier decrit '
+        expect(
+          aubrac,
+          hasLength(1),
+          reason:
+              'C EST LE CRITERE DE REUSSITE DU LOT : un sentier decrit '
               'entierement a distance doit arriver chez le randonneur sans '
-              'passer par le magasin.');
-      expect(aubrac.single.displayName, 'Traversee de l Aubrac');
-      expect(aubrac.single.region, 'Aubrac');
-      expect(aubrac.single.totalStages, 6);
-      expect(aubrac.single.totalDistanceKm, 118.0);
-      expect(aubrac.single.emergencyNumbers.single.phone, '+33565000000',
-          reason: 'un sentier neuf apporte ses propres secours regionaux');
-      expect(c.read(catalogueSentiersProvider).source,
-          SourceDuCatalogue.distant);
-    });
+              'passer par le magasin.',
+        );
+        expect(aubrac.single.displayName, 'Traversee de l Aubrac');
+        expect(aubrac.single.region, 'Aubrac');
+        expect(aubrac.single.totalStages, 6);
+        expect(aubrac.single.totalDistanceKm, 118.0);
+        expect(
+          aubrac.single.emergencyNumbers.single.phone,
+          '+33565000000',
+          reason: 'un sentier neuf apporte ses propres secours regionaux',
+        );
+        expect(
+          c.read(catalogueSentiersProvider).source,
+          SourceDuCatalogue.distant,
+        );
+      },
+    );
 
     test('TEST 2 — HORS LIGNE, LE CATALOGUE DEJA RECU RESTE ENTIER, y compris '
         'les sentiers que le binaire ne connait pas', () async {
       // Premier passage EN LIGNE : la liste est recue et conservee.
       final enLigne = conteneur(
         reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([_sentierDistantSeul])},
+        servi: {
+          'manifest.json': _manifeste([_sentierDistantSeul]),
+        },
       );
       enLigne.read(catalogueSentiersProvider);
       await _laisserLaLectureSeFaire(enLigne);
-      expect(enLigne.read(availableTrailsProvider).map((s) => s.id),
-          contains('gr-aubrac'));
+      expect(
+        enLigne.read(availableTrailsProvider).map((s) => s.id),
+        contains('gr-aubrac'),
+      );
       enLigne.dispose();
 
       // Second passage HORS LIGNE, meme base : rien n est demande au reseau.
@@ -284,42 +307,60 @@ void main() {
       await _laisserLaLectureSeFaire(horsLigne);
 
       final etat = horsLigne.read(catalogueSentiersProvider);
-      expect(etat.sentiers.map((s) => s.id), contains('gr-aubrac'),
-          reason: 'le randonneur sans reseau GARDE le catalogue qu il avait — '
-              'sans la conservation de la fiche, ce sentier disparaitrait');
+      expect(
+        etat.sentiers.map((s) => s.id),
+        contains('gr-aubrac'),
+        reason:
+            'le randonneur sans reseau GARDE le catalogue qu il avait — '
+            'sans la conservation de la fiche, ce sentier disparaitrait',
+      );
       expect(etat.source, SourceDuCatalogue.dernierDistantRecu);
-      expect(etat.echec, EchecDuCatalogue.horsLigne,
-          reason: 'la cause est nommee pour que l ecran dise « liste non '
-              'rafraichie » — ce n est PAS une panne');
+      expect(
+        etat.echec,
+        EchecDuCatalogue.horsLigne,
+        reason:
+            'la cause est nommee pour que l ecran dise « liste non '
+            'rafraichie » — ce n est PAS une panne',
+      );
       // Les sentiers compiles restent la eux aussi.
       for (final compile in TrailCatalog.all) {
         expect(etat.sentiers.map((s) => s.id), contains(compile.id));
       }
     });
 
-    test('TEST 3 — PREMIERE OUVERTURE SANS RESEAU : le compile prend le relais, '
-        'sans un mot d erreur et sans ecran vide', () async {
-      final c = conteneur(reseau: ConnectivityStatusValues.offline);
-      addTearDown(c.dispose);
+    test(
+      'TEST 3 — PREMIERE OUVERTURE SANS RESEAU : le compile prend le relais, '
+      'sans un mot d erreur et sans ecran vide',
+      () async {
+        final c = conteneur(reseau: ConnectivityStatusValues.offline);
+        addTearDown(c.dispose);
 
-      // AVANT toute attente : l etat initial est deja utilisable. C est la
-      // raison d etre de l etat synchrone — aucun ecran n attend.
-      final immediat = c.read(catalogueSentiersProvider);
-      expect(immediat.sentiers, isNotEmpty);
-      expect(immediat.source, SourceDuCatalogue.compile);
-      expect(immediat.echec, isNull);
+        // AVANT toute attente : l etat initial est deja utilisable. C est la
+        // raison d etre de l etat synchrone — aucun ecran n attend.
+        final immediat = c.read(catalogueSentiersProvider);
+        expect(immediat.sentiers, isNotEmpty);
+        expect(immediat.source, SourceDuCatalogue.compile);
+        expect(immediat.echec, isNull);
 
-      await _laisserLaLectureSeFaire(c);
+        await _laisserLaLectureSeFaire(c);
 
-      final apres = c.read(catalogueSentiersProvider);
-      expect(apres.sentiers.map((s) => s.id), TrailCatalog.ids,
-          reason: 'les quatre sentiers embarques sont tous la : le lot '
+        final apres = c.read(catalogueSentiersProvider);
+        expect(
+          apres.sentiers.map((s) => s.id),
+          TrailCatalog.ids,
+          reason:
+              'les quatre sentiers embarques sont tous la : le lot '
               'precedent avait refuse de brancher precisement pour ne pas les '
-              'remplacer par un ecran d erreur');
-      expect(apres.source, SourceDuCatalogue.compile);
-      expect(apres.sentiers, isNotEmpty,
-          reason: 'JAMAIS d ecran vide quand un secours existe');
-    });
+              'remplacer par un ecran d erreur',
+        );
+        expect(apres.source, SourceDuCatalogue.compile);
+        expect(
+          apres.sentiers,
+          isNotEmpty,
+          reason: 'JAMAIS d ecran vide quand un secours existe',
+        );
+      },
+    );
 
     test('la liste distante INJOIGNABLE ne vide pas le catalogue et nomme sa '
         'cause', () async {
@@ -333,9 +374,13 @@ void main() {
       await _laisserLaLectureSeFaire(c);
 
       final etat = c.read(catalogueSentiersProvider);
-      expect(etat.sentiers, isNotEmpty,
-          reason: 'l espace de stockage n existe pas encore : c est exactement '
-              'l etat du produit aujourd hui, et le catalogue doit tenir');
+      expect(
+        etat.sentiers,
+        isNotEmpty,
+        reason:
+            'l espace de stockage n existe pas encore : c est exactement '
+            'l etat du produit aujourd hui, et le catalogue doit tenir',
+      );
       expect(etat.echec, EchecDuCatalogue.listeInjoignable);
       expect(etat.source, SourceDuCatalogue.compile);
     });
@@ -367,7 +412,9 @@ void main() {
 
       final c = conteneur(
         reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([corrige])},
+        servi: {
+          'manifest.json': _manifeste([corrige]),
+        },
       );
       addTearDown(c.dispose);
       c.read(catalogueSentiersProvider);
@@ -378,14 +425,23 @@ void main() {
           .where((s) => s.id == compile.id)
           .single;
 
-      expect(resolu.totalElevationGain, compile.totalElevationGain + 500,
-          reason: 'le distant est la source de verite sur les DONNEES');
-      expect(resolu.gpxAssetPath, compile.gpxAssetPath,
-          reason: 'mais le compile garde ses ASSETS : un manifeste ne peut pas '
-              'inventer un fichier embarque dans le binaire');
-      expect(c.read(availableTrailsProvider).where((s) => s.id == compile.id),
-          hasLength(1),
-          reason: 'un sentier present des deux cotes n est pas deux sentiers');
+      expect(
+        resolu.totalElevationGain,
+        compile.totalElevationGain + 500,
+        reason: 'le distant est la source de verite sur les DONNEES',
+      );
+      expect(
+        resolu.gpxAssetPath,
+        compile.gpxAssetPath,
+        reason:
+            'mais le compile garde ses ASSETS : un manifeste ne peut pas '
+            'inventer un fichier embarque dans le binaire',
+      );
+      expect(
+        c.read(availableTrailsProvider).where((s) => s.id == compile.id),
+        hasLength(1),
+        reason: 'un sentier present des deux cotes n est pas deux sentiers',
+      );
     });
 
     test('un sentier ARCHIVE a distance quitte le catalogue, meme s il est '
@@ -403,62 +459,85 @@ void main() {
 
       final c = conteneur(
         reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([retire])},
+        servi: {
+          'manifest.json': _manifeste([retire]),
+        },
       );
       addTearDown(c.dispose);
       c.read(catalogueSentiersProvider);
       await _laisserLaLectureSeFaire(c);
 
-      expect(c.read(availableTrailsProvider).map((s) => s.id),
-          isNot(contains(compile.id)));
+      expect(
+        c.read(availableTrailsProvider).map((s) => s.id),
+        isNot(contains(compile.id)),
+      );
     });
 
-    test('une entree SANS fiche et inconnue du binaire est ecartee, et elle est '
-        'NOMMEE — jamais une carte vide', () async {
-      final muette = TrailManifestEntry(
-        trailId: 'sentier-sans-nom',
-        dataVersion: v(1),
-        hash: 'h',
-        filePath: 'x.json',
-        fileSize: 1,
-        status: 'active',
-        lastUpdated: '2026-09-27T20:00:00Z',
-      );
+    test(
+      'une entree SANS fiche et inconnue du binaire est ecartee, et elle est '
+      'NOMMEE — jamais une carte vide',
+      () async {
+        final muette = TrailManifestEntry(
+          trailId: 'sentier-sans-nom',
+          dataVersion: v(1),
+          hash: 'h',
+          filePath: 'x.json',
+          fileSize: 1,
+          status: 'active',
+          lastUpdated: '2026-09-27T20:00:00Z',
+        );
 
-      final c = conteneur(
-        reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([muette])},
-      );
-      addTearDown(c.dispose);
-      c.read(catalogueSentiersProvider);
-      await _laisserLaLectureSeFaire(c);
+        final c = conteneur(
+          reseau: ConnectivityStatusValues.online,
+          servi: {
+            'manifest.json': _manifeste([muette]),
+          },
+        );
+        addTearDown(c.dispose);
+        c.read(catalogueSentiersProvider);
+        await _laisserLaLectureSeFaire(c);
 
-      final etat = c.read(catalogueSentiersProvider);
-      expect(etat.sentiers.map((s) => s.id),
-          isNot(contains('sentier-sans-nom')));
-      expect(etat.ignores, contains('sentier-sans-nom'),
-          reason: 'un sentier silencieusement absent est indiagnosticable : '
-              'la lecon de la tache 604');
-    });
+        final etat = c.read(catalogueSentiersProvider);
+        expect(
+          etat.sentiers.map((s) => s.id),
+          isNot(contains('sentier-sans-nom')),
+        );
+        expect(
+          etat.ignores,
+          contains('sentier-sans-nom'),
+          reason:
+              'un sentier silencieusement absent est indiagnosticable : '
+              'la lecon de la tache 604',
+        );
+      },
+    );
 
-    test('un sentier venu du SEUL distant est resoluble comme sentier ACTIF',
-        () async {
-      final c = conteneur(
-        reseau: ConnectivityStatusValues.online,
-        servi: {'manifest.json': _manifeste([_sentierDistantSeul])},
-      );
-      addTearDown(c.dispose);
-      c.read(catalogueSentiersProvider);
-      await _laisserLaLectureSeFaire(c);
+    test(
+      'un sentier venu du SEUL distant est resoluble comme sentier ACTIF',
+      () async {
+        final c = conteneur(
+          reseau: ConnectivityStatusValues.online,
+          servi: {
+            'manifest.json': _manifeste([_sentierDistantSeul]),
+          },
+        );
+        addTearDown(c.dispose);
+        c.read(catalogueSentiersProvider);
+        await _laisserLaLectureSeFaire(c);
 
-      c.read(selectedTrailIdProvider.notifier).state = 'gr-aubrac';
+        c.read(selectedTrailIdProvider.notifier).state = 'gr-aubrac';
 
-      expect(c.read(resolvedTrailConfigProvider).id, 'gr-aubrac',
-          reason: 'le resolveur ne lisait que le catalogue COMPILE : un '
+        expect(
+          c.read(resolvedTrailConfigProvider).id,
+          'gr-aubrac',
+          reason:
+              'le resolveur ne lisait que le catalogue COMPILE : un '
               'randonneur choisissant un sentier distant etait silencieusement '
               'ramene sur le sentier par defaut, et tout le moteur suivait le '
-              'mauvais sentier');
-    });
+              'mauvais sentier',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -470,21 +549,21 @@ void main() {
 
     /// Service cable sur un double qui sert le fichier de donnees.
     DeltaUpdateService service(Map<String, Object> servi) => DeltaUpdateService(
-          db: db,
-          manifestService: ManifestService(
-            dao: manifestes,
-            connectivityMonitor: FauxReseau(ConnectivityStatusValues.online),
-          ),
-          trailManifestsDao: manifestes,
-          trailMetaDao: TrailMetaDao(db),
-          trailItinerariesDao: TrailItinerariesDao(db),
-          trailStagesDao: TrailStagesDao(db),
-          trailAccommodationsDao: TrailAccommodationsDao(db),
-          trailPoisDao: TrailPoisDao(db),
-          trailGpxTracksDao: TrailGpxTracksDao(db),
-          trailGpxPointsDao: TrailGpxPointsDao(db),
-          httpClient: _faussesDonnees(servi),
-        );
+      db: db,
+      manifestService: ManifestService(
+        dao: manifestes,
+        connectivityMonitor: FauxReseau(ConnectivityStatusValues.online),
+      ),
+      trailManifestsDao: manifestes,
+      trailMetaDao: TrailMetaDao(db),
+      trailItinerariesDao: TrailItinerariesDao(db),
+      trailStagesDao: TrailStagesDao(db),
+      trailAccommodationsDao: TrailAccommodationsDao(db),
+      trailPoisDao: TrailPoisDao(db),
+      trailGpxTracksDao: TrailGpxTracksDao(db),
+      trailGpxPointsDao: TrailGpxPointsDao(db),
+      httpClient: _faussesDonnees(servi),
+    );
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
@@ -493,15 +572,17 @@ void main() {
     tearDown(() async => db.close());
 
     Future<void> poserLeManifeste({int revision = 3}) {
-      return manifestes.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('gr-aubrac'),
-        dataVersion: Value(v(revision)),
-        hash: const Value('h'),
-        filePath: const Value('gr_aubrac/v3.json'),
-        fileSize: const Value(1024),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-09-27T20:00:00Z'),
-      ));
+      return manifestes.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('gr-aubrac'),
+          dataVersion: Value(v(revision)),
+          hash: const Value('h'),
+          filePath: const Value('gr_aubrac/v3.json'),
+          fileSize: const Value(1024),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-09-27T20:00:00Z'),
+        ),
+      );
     }
 
     test('PREMIERE COPIE ET MISE A JOUR SONT LE MEME CHEMIN : a la revision '
@@ -514,20 +595,25 @@ void main() {
         },
       });
 
-      expect(await svc.revisionLocale('gr-aubrac'),
-          RevisionDeDonnee.revisionInitiale);
+      expect(
+        await svc.revisionLocale('gr-aubrac'),
+        RevisionDeDonnee.revisionInitiale,
+      );
 
       final bilan = await svc.synchroniser(
         'gr-aubrac',
         'https://double/gr_aubrac/v3.json',
-        niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
         empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'),
       );
 
       expect(bilan.ecrits, 2);
       expect(bilan.famillesTouchees, ['stages', 'pois']);
-      expect((await TrailStagesDao(db).getByItineraryId('aubrac-i1')),
-          hasLength(1));
+      expect(
+        (await TrailStagesDao(db).getByItineraryId('aubrac-i1')),
+        hasLength(1),
+      );
     });
 
     test('LE DEFAUT MESURE EST FERME : la revision locale est REELLEMENT '
@@ -541,18 +627,30 @@ void main() {
 
       expect(await manifestes.needsUpdate('gr-aubrac'), isTrue);
 
-      await svc.synchroniser('gr-aubrac', 'https://double/gr_aubrac/v3.json',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3),
-          empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'));
+      await svc.synchroniser(
+        'gr-aubrac',
+        'https://double/gr_aubrac/v3.json',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'),
+      );
 
-      expect(await svc.revisionLocale('gr-aubrac'), v(3),
-          reason: 'PERSONNE n ecrivait localVersion : `UpdateDownloader` '
-              'recevait meme un TrailManifestsDao inutilise. Comme '
-              '`needsUpdate` s en sert pour decider, chaque ouverture '
-              'retelechargeait TOUT.');
-      expect(await manifestes.needsUpdate('gr-aubrac'), isFalse,
-          reason: 'sans cette ligne, l application retelechargeait a chaque '
-              'demarrage');
+      expect(
+        await svc.revisionLocale('gr-aubrac'),
+        v(3),
+        reason:
+            'PERSONNE n ecrivait localVersion : `UpdateDownloader` '
+            'recevait meme un TrailManifestsDao inutilise. Comme '
+            '`needsUpdate` s en sert pour decider, chaque ouverture '
+            'retelechargeait TOUT.',
+      );
+      expect(
+        await manifestes.needsUpdate('gr-aubrac'),
+        isFalse,
+        reason:
+            'sans cette ligne, l application retelechargeait a chaque '
+            'demarrage',
+      );
     });
 
     test('UNE ALTITUDE CORRIGEE FAIT REDESCENDRE UNE ETAPE, PAS SEPT TABLES — '
@@ -564,31 +662,50 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+      }).synchroniser(
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
 
       // Revision 4 : SEULE l etape a bouge (denivele corrige). Le point
       // d interet est republie tel quel, avec son ancienne revision.
-      final bilan = await service({
-        'v4': {
-          'stages': [_etape(id: 'aubrac-s1', elevationGain: 915, rev: 4)],
-          'pois': [_poi(id: 'aubrac-p1', rev: 3)],
-        },
-      }).synchroniser('gr-aubrac', 'https://double/v4',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(4), empreinteAttendue: _empreinteServie('v4'));
+      final bilan =
+          await service({
+            'v4': {
+              'stages': [_etape(id: 'aubrac-s1', elevationGain: 915, rev: 4)],
+              'pois': [_poi(id: 'aubrac-p1', rev: 3)],
+            },
+          }).synchroniser(
+            'gr-aubrac',
+            'https://double/v4',
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: v(4),
+            empreinteAttendue: _empreinteServie('v4'),
+          );
 
-      expect(bilan.famillesTouchees, ['stages'],
-          reason: 'AVANT : `_inferChangedTables(from, to)` rendait les sept '
-              'tables en dur sans lire ses parametres, et le journal annoncait '
-              'toujours « 7 tables a MAJ, 0 ignorees ».');
+      expect(
+        bilan.famillesTouchees,
+        ['stages'],
+        reason:
+            'AVANT : `_inferChangedTables(from, to)` rendait les sept '
+            'tables en dur sans lire ses parametres, et le journal annoncait '
+            'toujours « 7 tables a MAJ, 0 ignorees ».',
+      );
       expect(bilan.ecrits, 1);
       expect(bilan.supprimes, 0);
 
-      final etape =
-          (await TrailStagesDao(db).getByItineraryId('aubrac-i1')).single;
+      final etape = (await TrailStagesDao(
+        db,
+      ).getByItineraryId('aubrac-i1')).single;
       expect(etape.elevationGain, 915, reason: 'la correction est bien posee');
-      expect(etape.rev, v(4),
-          reason: 'la donnee porte son propre horodatage (tache 610)');
+      expect(
+        etape.rev,
+        v(4),
+        reason: 'la donnee porte son propre horodatage (tache 610)',
+      );
     });
 
     test('rien de plus recent : rien n est reecrit', () async {
@@ -598,12 +715,21 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
         },
       };
-      await service(donnees).synchroniser('gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+      await service(donnees).synchroniser(
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
 
       final bilan = await service(donnees).synchroniser(
-          'gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -617,27 +743,42 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v3',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('v3'));
+      }).synchroniser(
+        'gr-aubrac',
+        'https://double/v3',
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: v(3),
+        empreinteAttendue: _empreinteServie('v3'),
+      );
 
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
       // Revision 5 : le point d eau est tari. Il redescend avec sa revision ET
       // sa marque de suppression — une ABSENCE ne se transmet pas.
-      final bilan = await service({
-        'v5': {
-          'pois': [
-            {'id': 'aubrac-p1', 'rev': v(5).iso8601, 'supprime': true},
-          ],
-        },
-      }).synchroniser('gr-aubrac', 'https://double/v5',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(5), empreinteAttendue: _empreinteServie('v5'));
+      final bilan =
+          await service({
+            'v5': {
+              'pois': [
+                {'id': 'aubrac-p1', 'rev': v(5).iso8601, 'supprime': true},
+              ],
+            },
+          }).synchroniser(
+            'gr-aubrac',
+            'https://double/v5',
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: v(5),
+            empreinteAttendue: _empreinteServie('v5'),
+          );
 
       expect(bilan.supprimes, 1);
-      expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
-          reason: 'SANS marqueur de suppression, la correction de donnees ne '
-              'marcherait que dans un sens : un point d eau tari, un refuge '
-              'ferme resteraient A VIE sur le telephone du randonneur.');
+      expect(
+        await TrailPoisDao(db).getByStageId('aubrac-s1'),
+        isEmpty,
+        reason:
+            'SANS marqueur de suppression, la correction de donnees ne '
+            'marcherait que dans un sens : un point d eau tari, un refuge '
+            'ferme resteraient A VIE sur le telephone du randonneur.',
+      );
       expect(await service(const {}).revisionLocale('gr-aubrac'), v(5));
     });
 
@@ -656,49 +797,75 @@ void main() {
       });
 
       await expectLater(
-        svc.synchroniser('gr-aubrac', 'https://double/casse',
-            niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('casse')),
+        svc.synchroniser(
+          'gr-aubrac',
+          'https://double/casse',
+          niveau: NiveauDeTelechargement.realiser,
+          revisionCible: v(3),
+          empreinteAttendue: _empreinteServie('casse'),
+        ),
         throwsA(anything),
       );
 
-      expect(await TrailStagesDao(db).getByItineraryId('aubrac-i1'), isEmpty,
-          reason: 'POINT 1 DE CHRISTOPHE : « il faut la copie du sentier sur le '
-              'tel ». Un sentier a moitie copie ne doit jamais exister — sur le '
-              'GR20 il n y a pas de reseau pour finir le travail.');
-      expect(await svc.revisionLocale('gr-aubrac'),
-          RevisionDeDonnee.revisionInitiale,
-          reason: 'la revision ne doit pas certifier des donnees absentes');
-    });
-
-    test('une donnee SANS revision est rattachee a la revision du sentier — les '
-        'fichiers deja deposes restent copiables', () async {
-      await poserLeManifeste();
-      final bilan = await service({
-        'sansrev': {
-          'stages': [_etape(id: 'aubrac-s1', elevationGain: 800)],
-        },
-      }).synchroniser('gr-aubrac', 'https://double/sansrev',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('sansrev'));
-
-      expect(bilan.ecrits, 1);
       expect(
-        (await TrailStagesDao(db).getByItineraryId('aubrac-i1')).single.rev,
-        v(3),
+        await TrailStagesDao(db).getByItineraryId('aubrac-i1'),
+        isEmpty,
+        reason:
+            'POINT 1 DE CHRISTOPHE : « il faut la copie du sentier sur le '
+            'tel ». Un sentier a moitie copie ne doit jamais exister — sur le '
+            'GR20 il n y a pas de reseau pour finir le travail.',
+      );
+      expect(
+        await svc.revisionLocale('gr-aubrac'),
+        RevisionDeDonnee.revisionInitiale,
+        reason: 'la revision ne doit pas certifier des donnees absentes',
       );
     });
+
+    test(
+      'une donnee SANS revision est rattachee a la revision du sentier — les '
+      'fichiers deja deposes restent copiables',
+      () async {
+        await poserLeManifeste();
+        final bilan =
+            await service({
+              'sansrev': {
+                'stages': [_etape(id: 'aubrac-s1', elevationGain: 800)],
+              },
+            }).synchroniser(
+              'gr-aubrac',
+              'https://double/sansrev',
+              niveau: NiveauDeTelechargement.realiser,
+              revisionCible: v(3),
+              empreinteAttendue: _empreinteServie('sansrev'),
+            );
+
+        expect(bilan.ecrits, 1);
+        expect(
+          (await TrailStagesDao(db).getByItineraryId('aubrac-i1')).single.rev,
+          v(3),
+        );
+      },
+    );
 
     test('une famille inconnue de cette version de l application est ignoree, '
         'pas fatale', () async {
       await poserLeManifeste();
-      final bilan = await service({
-        'inconnue': {
-          'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
-          'tuiles_de_carte': [
-            {'id': 'x', 'rev': v(3).iso8601},
-          ],
-        },
-      }).synchroniser('gr-aubrac', 'https://double/inconnue',
-          niveau: NiveauDeTelechargement.realiser, revisionCible: v(3), empreinteAttendue: _empreinteServie('inconnue'));
+      final bilan =
+          await service({
+            'inconnue': {
+              'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
+              'tuiles_de_carte': [
+                {'id': 'x', 'rev': v(3).iso8601},
+              ],
+            },
+          }).synchroniser(
+            'gr-aubrac',
+            'https://double/inconnue',
+            niveau: NiveauDeTelechargement.realiser,
+            revisionCible: v(3),
+            empreinteAttendue: _empreinteServie('inconnue'),
+          );
 
       expect(bilan.famillesTouchees, ['stages']);
     });
@@ -718,9 +885,13 @@ void main() {
       expect(d.etat, EtatDuSentier.auCatalogue);
       expect(d.peutTelecharger, isTrue);
       expect(d.peutSupprimer, isFalse);
-      expect(d.refusDeSuppression, RefusDeSuppression.pasSurLeTelephone,
-          reason: 'un bouton indisponible doit DIRE pourquoi — pas etre grise '
-              'sans explication');
+      expect(
+        d.refusDeSuppression,
+        RefusDeSuppression.pasSurLeTelephone,
+        reason:
+            'un bouton indisponible doit DIRE pourquoi — pas etre grise '
+            'sans explication',
+      );
     });
 
     test('ETAT 2 — telecharge, non achete : la suppression est PERMISE', () {
@@ -735,21 +906,27 @@ void main() {
       expect(d.refusDeSuppression, isNull);
     });
 
-    test('ETAT 3 — ACHETE : LA SUPPRESSION EST INTERDITE, et la cause est dite',
-        () {
-      const d = DisponibiliteDuSentier(
-        trailId: 'gr-aubrac',
-        copieComplete: true,
-        achete: true,
-      );
-      expect(d.etat, EtatDuSentier.achete);
-      expect(d.peutSupprimer, isFalse,
-          reason: 'REGLE DE CHRISTOPHE, 27/09 20:41 : « on peut aussi le '
+    test(
+      'ETAT 3 — ACHETE : LA SUPPRESSION EST INTERDITE, et la cause est dite',
+      () {
+        const d = DisponibiliteDuSentier(
+          trailId: 'gr-aubrac',
+          copieComplete: true,
+          achete: true,
+        );
+        expect(d.etat, EtatDuSentier.achete);
+        expect(
+          d.peutSupprimer,
+          isFalse,
+          reason:
+              'REGLE DE CHRISTOPHE, 27/09 20:41 : « on peut aussi le '
               'supprimer sauf si on l a achete ». Un randonneur ne doit pas '
               'pouvoir effacer, la veille du depart, ce qu il a paye et se '
-              'retrouver sans donnees sur un sentier sans reseau.');
-      expect(d.refusDeSuppression, RefusDeSuppression.sentierAchete);
-    });
+              'retrouver sans donnees sur un sentier sans reseau.',
+        );
+        expect(d.refusDeSuppression, RefusDeSuppression.sentierAchete);
+      },
+    );
 
     test('TELECHARGER N EST PAS ACHETER : un sentier achete mais pas encore '
         'copie se telecharge, et reste deja insupprimable', () {
@@ -758,13 +935,21 @@ void main() {
         copieComplete: false,
         achete: true,
       );
-      expect(d.peutTelecharger, isTrue,
-          reason: 'le niveau gratuit du modele eco (§2) consulte et PREPARE, et '
-              'le sentier demo est gratuit et jouable : les deux verrous sont '
-              'independants');
-      expect(d.refusDeSuppression, RefusDeSuppression.sentierAchete,
-          reason: 'l interdiction porte sur le DROIT acquis, pas sur la '
-              'presence des fichiers');
+      expect(
+        d.peutTelecharger,
+        isTrue,
+        reason:
+            'le niveau gratuit du modele eco (§2) consulte et PREPARE, et '
+            'le sentier demo est gratuit et jouable : les deux verrous sont '
+            'independants',
+      );
+      expect(
+        d.refusDeSuppression,
+        RefusDeSuppression.sentierAchete,
+        reason:
+            'l interdiction porte sur le DROIT acquis, pas sur la '
+            'presence des fichiers',
+      );
     });
 
     // -----------------------------------------------------------------------
@@ -778,36 +963,44 @@ void main() {
         db = AppDatabase(NativeDatabase.memory());
         manifestes = TrailManifestsDao(db);
         // Sentier COPIE sur le telephone (revision locale au niveau publie).
-        await manifestes.insertOrReplace(TrailManifestsCompanion(
-          trailId: const Value('gr-aubrac'),
-          dataVersion: Value(v(3)),
-          hash: const Value('h'),
-          filePath: const Value('gr_aubrac/v3.json'),
-          fileSize: const Value(1024),
-          status: const Value('active'),
-          lastUpdated: const Value('2026-09-27T20:00:00Z'),
-          localVersion: Value(v(3)),
-        ));
-        await TrailMetaDao(db).insertOrReplace(TrailMetaCompanion(
-          id: const Value('gr-aubrac'),
-          code: const Value('AUBRAC'),
-          dataVersion: Value(v(3)),
-        ));
+        await manifestes.insertOrReplace(
+          TrailManifestsCompanion(
+            trailId: const Value('gr-aubrac'),
+            dataVersion: Value(v(3)),
+            hash: const Value('h'),
+            filePath: const Value('gr_aubrac/v3.json'),
+            fileSize: const Value(1024),
+            status: const Value('active'),
+            lastUpdated: const Value('2026-09-27T20:00:00Z'),
+            localVersion: Value(v(3)),
+          ),
+        );
+        await TrailMetaDao(db).insertOrReplace(
+          TrailMetaCompanion(
+            id: const Value('gr-aubrac'),
+            code: const Value('AUBRAC'),
+            dataVersion: Value(v(3)),
+          ),
+        );
       });
       tearDown(() async => db.close());
 
       ProviderContainer conteneur({required Set<String> possedes}) {
         final reseau = FauxReseau(ConnectivityStatusValues.offline);
-        return ProviderContainer(overrides: [
-          databaseProvider.overrideWithValue(db),
-          connectivityMonitorProvider.overrideWithValue(reseau),
-          manifestServiceProvider.overrideWithValue(ManifestService(
-            dao: manifestes,
-            connectivityMonitor: reseau,
-            httpClient: _faussesDonnees(const {}),
-          )),
-          ownedTrailIdsProvider.overrideWith((ref) async => possedes),
-        ]);
+        return ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            connectivityMonitorProvider.overrideWithValue(reseau),
+            manifestServiceProvider.overrideWithValue(
+              ManifestService(
+                dao: manifestes,
+                connectivityMonitor: reseau,
+                httpClient: _faussesDonnees(const {}),
+              ),
+            ),
+            ownedTrailIdsProvider.overrideWith((ref) async => possedes),
+          ],
+        );
       }
 
       test('UN SENTIER ACHETE RESISTE A UNE DEMANDE DE SUPPRESSION — et ses '
@@ -820,15 +1013,25 @@ void main() {
             .read(catalogStateProvider.notifier)
             .deleteTrailData('gr-aubrac');
 
-        expect(refus, RefusDeSuppression.sentierAchete,
-            reason: 'LA REGLE EST PORTEE PAR LE NOTIFIER, pas seulement par un '
-                'bouton masque : un bouton protege le randonneur qui regarde '
-                'l ecran, une garde ici protege ses donnees quel que soit '
-                'l appelant.');
-        expect(await TrailMetaDao(db).getById('gr-aubrac'), isNotNull,
-            reason: 'les donnees du sentier paye ne doivent PAS avoir bouge');
-        expect((await manifestes.getByTrailId('gr-aubrac'))!.localVersion, v(3),
-            reason: 'la revision locale reste : le sentier est toujours copie');
+        expect(
+          refus,
+          RefusDeSuppression.sentierAchete,
+          reason:
+              'LA REGLE EST PORTEE PAR LE NOTIFIER, pas seulement par un '
+              'bouton masque : un bouton protege le randonneur qui regarde '
+              'l ecran, une garde ici protege ses donnees quel que soit '
+              'l appelant.',
+        );
+        expect(
+          await TrailMetaDao(db).getById('gr-aubrac'),
+          isNotNull,
+          reason: 'les donnees du sentier paye ne doivent PAS avoir bouge',
+        );
+        expect(
+          (await manifestes.getByTrailId('gr-aubrac'))!.localVersion,
+          v(3),
+          reason: 'la revision locale reste : le sentier est toujours copie',
+        );
       });
 
       test('un sentier NON achete se supprime, et il redevient « a '
@@ -843,10 +1046,13 @@ void main() {
 
         expect(refus, isNull, reason: 'rien ne s y oppose');
         expect(await TrailMetaDao(db).getById('gr-aubrac'), isNull);
-        expect((await manifestes.getByTrailId('gr-aubrac'))!.localVersion,
-            isNull,
-            reason: 'oublier la revision fait redescendre TOUT au prochain '
-                'telechargement, par le meme chemin que la premiere copie');
+        expect(
+          (await manifestes.getByTrailId('gr-aubrac'))!.localVersion,
+          isNull,
+          reason:
+              'oublier la revision fait redescendre TOUT au prochain '
+              'telechargement, par le meme chemin que la premiere copie',
+        );
         expect(await manifestes.needsUpdate('gr-aubrac'), isTrue);
       });
     });

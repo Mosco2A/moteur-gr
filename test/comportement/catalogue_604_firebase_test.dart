@@ -22,7 +22,6 @@ import '../fixtures/horodatage_de_serveur.dart';
 /// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
 HorodatageServeur v(int n) => aJPlus(n);
 
-
 /// TACHE 604 — MUR-003 : LE CATALOGUE, SON ADRESSE, ET SON SILENCE.
 ///
 /// Trois choses sont verrouillees ici, et chacune correspond a un defaut
@@ -97,10 +96,16 @@ void main() {
   group('604 — l adresse des donnees ne pointe plus sur un espace mort', () {
     test('le manifeste est demande a l espace de stockage de StepWays', () {
       final url = CatalogNotifier.defaultManifestUrl;
-      expect(url, contains('stepways-app'),
-          reason: 'le catalogue doit interroger le projet Firebase de StepWays');
-      expect(url, isNot(contains('moteur-gr')),
-          reason: 'storage.googleapis.com/moteur-gr n a JAMAIS existe : 404');
+      expect(
+        url,
+        contains('stepways-app'),
+        reason: 'le catalogue doit interroger le projet Firebase de StepWays',
+      );
+      expect(
+        url,
+        isNot(contains('moteur-gr')),
+        reason: 'storage.googleapis.com/moteur-gr n a JAMAIS existe : 404',
+      );
       expect(url, contains('manifest.json'));
     });
 
@@ -109,10 +114,11 @@ void main() {
       // expliquer ce qui etait casse : on ne balaye donc que le code executable,
       // sinon la documentation du defaut declencherait le test qui le garde.
       final fautifs = <String>[];
-      for (final f in Directory('lib')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.dart'))) {
+      for (final f
+          in Directory('lib')
+              .listSync(recursive: true)
+              .whereType<File>()
+              .where((f) => f.path.endsWith('.dart'))) {
         final code = f
             .readAsLinesSync()
             .where((l) => !l.trimLeft().startsWith('//'))
@@ -121,32 +127,50 @@ void main() {
           fautifs.add(f.path);
         }
       }
-      expect(fautifs, isEmpty,
-          reason: 'adresse morte encore en dur dans : ${fautifs.join(", ")}');
+      expect(
+        fautifs,
+        isEmpty,
+        reason: 'adresse morte encore en dur dans : ${fautifs.join(", ")}',
+      );
     });
 
     test('une SEULE source de verite, et elle est surchargeable au build', () {
-      expect(TrailDataSource.variableDeBuild, 'STEPWAYS_TRAIL_DATA_BUCKET',
-          reason: 'le nom doit etre publie pour que Chris ou la CI le passe '
-              'sans avoir a le deviner');
+      expect(
+        TrailDataSource.variableDeBuild,
+        'STEPWAYS_TRAIL_DATA_BUCKET',
+        reason:
+            'le nom doit etre publie pour que Chris ou la CI le passe '
+            'sans avoir a le deviner',
+      );
       expect(TrailDataSource.bucket, isNotEmpty);
-      expect(CatalogNotifier.defaultManifestUrl, TrailDataSource.urlManifeste,
-          reason: 'le catalogue ne doit PAS reconstruire l adresse lui-meme');
+      expect(
+        CatalogNotifier.defaultManifestUrl,
+        TrailDataSource.urlManifeste,
+        reason: 'le catalogue ne doit PAS reconstruire l adresse lui-meme',
+      );
     });
 
     test('le chemin est encode — un sous-dossier ne casse pas l URL', () {
       final url = TrailDataSource.urlDe('data/mare_a_mare/v4.json');
-      expect(url, contains('data%2Fmare_a_mare%2Fv4.json'),
-          reason: 'la forme REST Firebase Storage exige un chemin encode ; une '
-              'simple concatenation produisait une URL invalide');
+      expect(
+        url,
+        contains('data%2Fmare_a_mare%2Fv4.json'),
+        reason:
+            'la forme REST Firebase Storage exige un chemin encode ; une '
+            'simple concatenation produisait une URL invalide',
+      );
       expect(url, endsWith('?alt=media'));
     });
 
     test('une URL absolue dans le manifeste est respectee telle quelle', () {
       const ailleurs = 'https://miroir.example.org/sentier/v9.json';
-      expect(TrailDataSource.urlDonneesSentier(ailleurs), ailleurs,
-          reason: 'servir un sentier depuis un autre hebergeur ne doit pas '
-              'exiger de reconstruire le moteur');
+      expect(
+        TrailDataSource.urlDonneesSentier(ailleurs),
+        ailleurs,
+        reason:
+            'servir un sentier depuis un autre hebergeur ne doit pas '
+            'exiger de reconstruire le moteur',
+      );
     });
   });
 
@@ -171,8 +195,9 @@ void main() {
       return ProviderContainer(
         overrides: [
           databaseProvider.overrideWithValue(db),
-          connectivityMonitorProvider
-              .overrideWithValue(FakeConnectivityMonitor(reseau)),
+          connectivityMonitorProvider.overrideWithValue(
+            FakeConnectivityMonitor(reseau),
+          ),
           manifestServiceProvider.overrideWithValue(
             FakeManifestService(
               dao: dao,
@@ -194,30 +219,46 @@ void main() {
 
       final etat = await c.read(catalogStateProvider.future);
 
-      expect(etat.entries, isEmpty,
-          reason: 'a l installation il n y a rien en local : c est normal');
-      expect(etat.echec, CatalogEchec.manifesteInjoignable,
-          reason: 'C EST LE POINT DU LOT : avant, echec == null et l ecran '
-              'recevait une liste vide sans la moindre explication');
-      expect(etat.doitExpliquerAuLieuDeRienMontrer, isTrue,
-          reason: 'l ecran doit afficher un message et un bouton reessayer');
-      expect(etat.isOffline, isFalse,
-          reason: 'le reseau est la : ce n est PAS un probleme de connexion, '
-              'et confondre les deux rend le diagnostic impossible');
+      expect(
+        etat.entries,
+        isEmpty,
+        reason: 'a l installation il n y a rien en local : c est normal',
+      );
+      expect(
+        etat.echec,
+        CatalogEchec.manifesteInjoignable,
+        reason:
+            'C EST LE POINT DU LOT : avant, echec == null et l ecran '
+            'recevait une liste vide sans la moindre explication',
+      );
+      expect(
+        etat.doitExpliquerAuLieuDeRienMontrer,
+        isTrue,
+        reason: 'l ecran doit afficher un message et un bouton reessayer',
+      );
+      expect(
+        etat.isOffline,
+        isFalse,
+        reason:
+            'le reseau est la : ce n est PAS un probleme de connexion, '
+            'et confondre les deux rend le diagnostic impossible',
+      );
     });
 
     test('HORS LIGNE NON NEGOCIABLE : les sentiers deja telecharges restent '
         'la, et rien ne se presente comme une panne', () async {
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('mare-a-mare-centre'),
-        dataVersion: Value(v(4)),
-        hash: const Value('hash-v4'),
-        filePath: const Value('mare_a_mare_centre/v4.json'),
-        fileSize: const Value(812345),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-09-27T12:00:00Z'),
-        localVersion: Value(v(4)),
-      ));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('mare-a-mare-centre'),
+          dataVersion: Value(v(4)),
+          hash: const Value('hash-v4'),
+          filePath: const Value('mare_a_mare_centre/v4.json'),
+          fileSize: const Value(812345),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-09-27T12:00:00Z'),
+          localVersion: Value(v(4)),
+        ),
+      );
 
       final c = conteneur(
         reseau: ConnectivityStatusValues.offline,
@@ -227,16 +268,28 @@ void main() {
 
       final etat = await c.read(catalogStateProvider.future);
 
-      expect(etat.entries.map((e) => e.trailId), ['mare-a-mare-centre'],
-          reason: 'un randonneur sans reseau GARDE ses sentiers telecharges');
-      expect(etat.entries.single.localStatus,
-          TrailLocalStatusValues.downloaded);
+      expect(
+        etat.entries.map((e) => e.trailId),
+        ['mare-a-mare-centre'],
+        reason: 'un randonneur sans reseau GARDE ses sentiers telecharges',
+      );
+      expect(
+        etat.entries.single.localStatus,
+        TrailLocalStatusValues.downloaded,
+      );
       expect(etat.isOffline, isTrue);
-      expect(etat.echec, CatalogEchec.horsLigne,
-          reason: 'la cause est nommee pour que l ecran puisse dire « liste non '
-              'rafraichie » — mais ce n est pas une panne');
-      expect(etat.doitExpliquerAuLieuDeRienMontrer, isFalse,
-          reason: 'il y a quelque chose a montrer : pas d ecran d erreur');
+      expect(
+        etat.echec,
+        CatalogEchec.horsLigne,
+        reason:
+            'la cause est nommee pour que l ecran puisse dire « liste non '
+            'rafraichie » — mais ce n est pas une panne',
+      );
+      expect(
+        etat.doitExpliquerAuLieuDeRienMontrer,
+        isFalse,
+        reason: 'il y a quelque chose a montrer : pas d ecran d erreur',
+      );
     });
 
     test('hors ligne ET rien de telecharge : la cause est dite, l ecran '
@@ -253,41 +306,48 @@ void main() {
       expect(etat.doitExpliquerAuLieuDeRienMontrer, isTrue);
     });
 
-    test('manifeste lu : AUCUN echec, et le sentier distant apparait',
-        () async {
-      final c = conteneur(
-        reseau: ConnectivityStatusValues.online,
-        manifeste: TrailManifest(
-          schemaVersion: 1,
-          trails: [_entreeDistante],
-        ),
-      );
-      addTearDown(c.dispose);
+    test(
+      'manifeste lu : AUCUN echec, et le sentier distant apparait',
+      () async {
+        final c = conteneur(
+          reseau: ConnectivityStatusValues.online,
+          manifeste: TrailManifest(schemaVersion: 1, trails: [_entreeDistante]),
+        );
+        addTearDown(c.dispose);
 
-      final etat = await c.read(catalogStateProvider.future);
+        final etat = await c.read(catalogStateProvider.future);
 
-      expect(etat.echec, isNull,
-          reason: 'un succes ne doit pas trainer l echec du chargement '
-              'precedent');
-      expect(etat.doitExpliquerAuLieuDeRienMontrer, isFalse);
-      expect(etat.entries.single.trailId, 'mare-a-mare-centre');
-      expect(etat.entries.single.localStatus,
+        expect(
+          etat.echec,
+          isNull,
+          reason:
+              'un succes ne doit pas trainer l echec du chargement '
+              'precedent',
+        );
+        expect(etat.doitExpliquerAuLieuDeRienMontrer, isFalse);
+        expect(etat.entries.single.trailId, 'mare-a-mare-centre');
+        expect(
+          etat.entries.single.localStatus,
           TrailLocalStatusValues.notDownloaded,
-          reason: 'jamais telecharge localement');
-    });
+          reason: 'jamais telecharge localement',
+        );
+      },
+    );
 
     test('un echec laisse ce qui est deja telecharge visible — le repli ne '
         'sacrifie rien', () async {
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('mare-a-mare-centre'),
-        dataVersion: Value(v(4)),
-        hash: const Value('hash-v4'),
-        filePath: const Value('mare_a_mare_centre/v4.json'),
-        fileSize: const Value(812345),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-09-27T12:00:00Z'),
-        localVersion: Value(v(4)),
-      ));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('mare-a-mare-centre'),
+          dataVersion: Value(v(4)),
+          hash: const Value('hash-v4'),
+          filePath: const Value('mare_a_mare_centre/v4.json'),
+          fileSize: const Value(812345),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-09-27T12:00:00Z'),
+          localVersion: Value(v(4)),
+        ),
+      );
 
       final c = conteneur(
         reseau: ConnectivityStatusValues.online,
@@ -298,31 +358,41 @@ void main() {
       final etat = await c.read(catalogStateProvider.future);
       expect(etat.entries.single.trailId, 'mare-a-mare-centre');
       expect(etat.echec, CatalogEchec.manifesteInjoignable);
-      expect(etat.doitExpliquerAuLieuDeRienMontrer, isFalse,
-          reason: 'il reste quelque chose a montrer : un bandeau suffit');
+      expect(
+        etat.doitExpliquerAuLieuDeRienMontrer,
+        isFalse,
+        reason: 'il reste quelque chose a montrer : un bandeau suffit',
+      );
     });
 
     test('reessayer est POSSIBLE : refresh relance bien la demande', () async {
       final service = FakeManifestService(
         dao: dao,
-        connectivityMonitor:
-            FakeConnectivityMonitor(ConnectivityStatusValues.online),
+        connectivityMonitor: FakeConnectivityMonitor(
+          ConnectivityStatusValues.online,
+        ),
         reponse: null,
       );
-      final c = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        connectivityMonitorProvider.overrideWithValue(
-            FakeConnectivityMonitor(ConnectivityStatusValues.online)),
-        manifestServiceProvider.overrideWithValue(service),
-      ]);
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          connectivityMonitorProvider.overrideWithValue(
+            FakeConnectivityMonitor(ConnectivityStatusValues.online),
+          ),
+          manifestServiceProvider.overrideWithValue(service),
+        ],
+      );
       addTearDown(c.dispose);
 
       await c.read(catalogStateProvider.future);
       final apresPremier = service.appels;
       await c.read(catalogStateProvider.notifier).refresh();
 
-      expect(service.appels, greaterThan(apresPremier),
-          reason: 'sans cela, le bouton « reessayer » mentirait');
+      expect(
+        service.appels,
+        greaterThan(apresPremier),
+        reason: 'sans cela, le bouton « reessayer » mentirait',
+      );
     });
   });
 
@@ -334,21 +404,25 @@ void main() {
     const cible = 'com.only1cent.stepways';
 
     test('Android : namespace ET applicationId valent la cible', () {
-      final gradle =
-          File('android/app/build.gradle.kts').readAsStringSync();
+      final gradle = File('android/app/build.gradle.kts').readAsStringSync();
       expect(gradle, contains('namespace = "$cible"'));
       expect(gradle, contains('applicationId = "$cible"'));
       expect(gradle, isNot(contains('com.only1cent.moteur_gr')));
     });
 
     test('Android : le paquet Kotlin a suivi le renommage', () {
-      final dossier =
-          Directory('android/app/src/main/kotlin/com/only1cent/stepways');
-      expect(dossier.existsSync(), isTrue,
-          reason: 'le chemin des sources Kotlin doit refleter le paquet');
+      final dossier = Directory(
+        'android/app/src/main/kotlin/com/only1cent/stepways',
+      );
       expect(
-        Directory('android/app/src/main/kotlin/com/only1cent/moteur_gr')
-            .existsSync(),
+        dossier.existsSync(),
+        isTrue,
+        reason: 'le chemin des sources Kotlin doit refleter le paquet',
+      );
+      expect(
+        Directory(
+          'android/app/src/main/kotlin/com/only1cent/moteur_gr',
+        ).existsSync(),
         isFalse,
       );
       for (final f in dossier.listSync().whereType<File>()) {
@@ -357,13 +431,18 @@ void main() {
     });
 
     test('iOS : PRODUCT_BUNDLE_IDENTIFIER vaut la MEME cible qu Android', () {
-      final pbx =
-          File('ios/Runner.xcodeproj/project.pbxproj').readAsStringSync();
+      final pbx = File(
+        'ios/Runner.xcodeproj/project.pbxproj',
+      ).readAsStringSync();
       expect(pbx, contains('PRODUCT_BUNDLE_IDENTIFIER = $cible;'));
       expect(pbx, contains('PRODUCT_BUNDLE_IDENTIFIER = $cible.RunnerTests;'));
-      expect(pbx, isNot(contains('com.only1cent.moteurGr')),
-          reason: 'LES DEUX PLATEFORMES DIVERGEAIENT : moteur_gr sur Android, '
-              'moteurGr sur iOS');
+      expect(
+        pbx,
+        isNot(contains('com.only1cent.moteurGr')),
+        reason:
+            'LES DEUX PLATEFORMES DIVERGEAIENT : moteur_gr sur Android, '
+            'moteurGr sur iOS',
+      );
     });
 
     test('iOS : le groupe d application a suivi (widget + entitlements)', () {
@@ -374,9 +453,13 @@ void main() {
       ]) {
         final texte = File(chemin).readAsStringSync();
         expect(texte, contains('group.$cible'), reason: chemin);
-        expect(texte, isNot(contains('group.com.only1cent.moteurGr')),
-            reason: '$chemin : un groupe d application desaccorde casse le '
-                'widget natif silencieusement');
+        expect(
+          texte,
+          isNot(contains('group.com.only1cent.moteurGr')),
+          reason:
+              '$chemin : un groupe d application desaccorde casse le '
+              'widget natif silencieusement',
+        );
       }
     });
 
@@ -419,10 +502,16 @@ void main() {
       final app = File('android/app/build.gradle.kts').readAsStringSync();
       expect(app, contains('apply(plugin = "com.google.gms.google-services")'));
       expect(
-          app, contains('apply(plugin = "com.google.firebase.crashlytics")'));
-      expect(app, contains('file("google-services.json")'),
-          reason: 'la pose des greffons doit dependre de la presence du '
-              'fichier de configuration, sinon le build casse sans lui');
+        app,
+        contains('apply(plugin = "com.google.firebase.crashlytics")'),
+      );
+      expect(
+        app,
+        contains('file("google-services.json")'),
+        reason:
+            'la pose des greffons doit dependre de la presence du '
+            'fichier de configuration, sinon le build casse sans lui',
+      );
     });
 
     // LES DEUX FICHIERS DE CONFIGURATION NATIFS NE SONT PAS VERSIONNES, et ce
@@ -446,12 +535,20 @@ void main() {
         if (!f.existsSync()) continue;
         final texte = f.readAsStringSync();
         expect(texte, contains('stepways-app'), reason: f.path);
-        expect(texte, contains('com.only1cent.stepways'),
-            reason: '${f.path} : la configuration doit viser le paquet REEL, '
-                'sinon Firebase refuse l application au demarrage');
-        expect(texte, isNot(contains('gr20-app')),
-            reason: '${f.path} : ZERO mutualisation avec le legacy GR20 '
-                '(#326 divorce)');
+        expect(
+          texte,
+          contains('com.only1cent.stepways'),
+          reason:
+              '${f.path} : la configuration doit viser le paquet REEL, '
+              'sinon Firebase refuse l application au demarrage',
+        );
+        expect(
+          texte,
+          isNot(contains('gr20-app')),
+          reason:
+              '${f.path} : ZERO mutualisation avec le legacy GR20 '
+              '(#326 divorce)',
+        );
       }
     });
 
@@ -459,9 +556,13 @@ void main() {
         'catalogue interroge', () {
       final android = File('android/app/google-services.json');
       if (!android.existsSync()) return;
-      expect(android.readAsStringSync(), contains(TrailDataSource.bucket),
-          reason: 'si les deux divergent, le catalogue interroge un espace que '
-              'l application n est pas autorisee a lire');
+      expect(
+        android.readAsStringSync(),
+        contains(TrailDataSource.bucket),
+        reason:
+            'si les deux divergent, le catalogue interroge un espace que '
+            'l application n est pas autorisee a lire',
+      );
     });
 
     test('la configuration Firebase reste HORS du depot tant que Chris n a pas '
@@ -474,9 +575,13 @@ void main() {
       expect(ignores, contains('**/google-services.json'));
       expect(ignores, contains('**/GoogleService-Info.plist'));
       expect(ignores, contains('lib/firebase_options.dart'));
-      expect(File('lib/firebase_options.dart').existsSync(), isFalse,
-          reason: 'genere, il porterait des cles dans lib/ — ce que le '
-              'balayage de la tache 596 refuse');
+      expect(
+        File('lib/firebase_options.dart').existsSync(),
+        isFalse,
+        reason:
+            'genere, il porterait des cles dans lib/ — ce que le '
+            'balayage de la tache 596 refuse',
+      );
     });
   });
 }
