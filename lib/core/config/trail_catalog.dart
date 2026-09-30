@@ -1,4 +1,3 @@
-import 'mare_a_mare_centre_demo_trail_config.dart';
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
@@ -29,11 +28,30 @@ abstract final class TrailCatalog {
     // [defaultTrail] : l'app demarre dessus. Reste une DONNEE (TrailConfig), le
     // moteur ne hardcode aucune localite.
     mareAMareCentreTrailConfig,
-    // Sentier de DEMONSTRATION, GRATUIT (tache 601). Decision de Chris du
-    // 27/09 12:24 : « il y a mare a mare ET mare a mare demo des le catalogue ».
-    // Deux entrees distinctes et visibles, pas une entree bridee. Il suit
-    // immediatement le sentier qu'il fait decouvrir : on les voit ensemble.
-    mareAMareCentreDemoTrailConfig,
+    // IL N'Y A PLUS DE SENTIER « MARE A MARE CENTRE DEMO » (tache 638, bugs 1 et
+    // 8 — DEM-260930-1005 et DEM-260930-1014). Le lot 601 avait ajoute ici un
+    // SECOND Mare a Mare, gratuit et ampute a deux etapes, sur la decision de
+    // Christophe du 27/09 : « il y a mare a mare ET mare a mare demo des le
+    // catalogue ». Son test du 30/09 a renverse les deux moities de cette
+    // decision, verbatim : « il reste Mare a Mare Centre Demo gratuite en doublon
+    // avec Essayer la demo » (bug 1) et « la demo de Mare a Mare ce doit etre la
+    // demo de Mare a Mare, pas un truc avec 2 etapes !! » (bug 8).
+    //
+    // LA DEMO N'EST DONC PLUS UN SENTIER, C'EST UN MODE, et il s'applique au
+    // sentier ci-dessus — entier. Le doublon disparait du catalogue avec
+    // l'entree, et le bouton orange « Essayer la demo » reste la seule porte
+    // d'entree de la demonstration (cf. `session_demo.dart`).
+    //
+    // LE SENTIER DE DEMONSTRATION D'AUVERGNE PREND SA PLACE DE SENTIER GRATUIT.
+    // Le modele du lot 601 — « un sentier gratuit est une ENTREE du modele, dont
+    // le prix est nul ; une exemption serait un trou » — n'est pas remis en
+    // cause : il perdait seulement son unique instance. Le laisser sans instance
+    // rendait le niveau gratuit du modele eco INATTEIGNABLE (aucun sentier
+    // jouable sans payer), ce qui se mesure : « Mes treks » devenait vide au
+    // premier lancement et plusieurs ecrans se retrouvaient sans aucun sentier
+    // atteignable. Le sentier de demonstration generique, qui n'a jamais eu de
+    // prix a lui, porte donc desormais le prix nul — et ce n'est PAS un second
+    // Mare a Mare : c'est un autre sentier, dans une autre region.
     testTrailConfig,
     pyreneesTrailConfig,
   ];
@@ -43,8 +61,7 @@ abstract final class TrailCatalog {
   static TrailConfig get defaultTrail => all.first;
 
   /// Identifiants de tous les sentiers du catalogue (ordre d'affichage).
-  static List<String> get ids =>
-      all.map((c) => c.id).toList(growable: false);
+  static List<String> get ids => all.map((c) => c.id).toList(growable: false);
 
   /// Identifiants des sentiers GRATUITS — ceux dont le PRIX est nul.
   ///

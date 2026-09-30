@@ -866,6 +866,28 @@ class _Translations$demo$de extends Translations$demo$fr {
 	@override String get simulerEtape => 'Nächste Etappe simulieren';
 	@override String get simulerFin => 'Ankunft simulieren';
 	@override String get simulerRelancer => 'Demo neu starten';
+	@override String get sortieTitre => 'Ende der Demo';
+	@override String get sortieEnTeteCatalogue => 'Sie finden die Demo oben in der Liste der Wege.';
+	@override String get sortieDansMonCompte => 'Die Schaltfläche erscheint nicht mehr im Katalog. Sie finden die Demo unter „Mein Konto“.';
+	@override String get cacherLabel => 'Demo-Modus ausblenden';
+	@override String get sortieConfirmer => 'Demo verlassen';
+	@override String get sortieAnnuler => 'Demo fortsetzen';
+	@override String get indisponible => 'In der Demo nicht verfügbar';
+	@override String get departSimule => 'In der Demo startet der Aufbruch eine simulierte Wanderung: nichts wird gespeichert.';
+	@override String get compteTitre => 'Demo-Modus';
+	@override String get compteRelancer => 'Demo erneut ansehen';
+	@override String get compteRelancerSous => 'Entdecken Sie die App von A bis Z, ohne Verpflichtung';
+	@override String get compteReafficher => 'Demo-Schaltfläche im Katalog anzeigen';
+	@override String get compteReafficherSous => 'Die Schaltfläche erscheint wieder oben in der Liste der Wege';
+	@override String get collecteTitre => 'Worauf die Antwort beruht';
+	@override String get collecteIntro => 'Diese Angaben verwendet die App, um die Machbarkeit zu berechnen.';
+	@override String get collecteProfil => 'Ihr Profil';
+	@override String get collecteForme => 'Ihre Form';
+	@override String get collecteExperience => 'Ihre Erfahrung';
+	@override String get collecteSaison => 'Jahreszeit des Aufbruchs';
+	@override String get collecteSentier => 'Der Weg';
+	@override String get collecteJours => 'Anzahl der Tage';
+	@override String get collecteAbsent => 'Nicht angegeben';
 }
 
 // Path: updates
@@ -5115,6 +5137,28 @@ extension on TranslationsDe {
 			'demo.simulerEtape' => 'Nächste Etappe simulieren',
 			'demo.simulerFin' => 'Ankunft simulieren',
 			'demo.simulerRelancer' => 'Demo neu starten',
+			'demo.sortieTitre' => 'Ende der Demo',
+			'demo.sortieEnTeteCatalogue' => 'Sie finden die Demo oben in der Liste der Wege.',
+			'demo.sortieDansMonCompte' => 'Die Schaltfläche erscheint nicht mehr im Katalog. Sie finden die Demo unter „Mein Konto“.',
+			'demo.cacherLabel' => 'Demo-Modus ausblenden',
+			'demo.sortieConfirmer' => 'Demo verlassen',
+			'demo.sortieAnnuler' => 'Demo fortsetzen',
+			'demo.indisponible' => 'In der Demo nicht verfügbar',
+			'demo.departSimule' => 'In der Demo startet der Aufbruch eine simulierte Wanderung: nichts wird gespeichert.',
+			'demo.compteTitre' => 'Demo-Modus',
+			'demo.compteRelancer' => 'Demo erneut ansehen',
+			'demo.compteRelancerSous' => 'Entdecken Sie die App von A bis Z, ohne Verpflichtung',
+			'demo.compteReafficher' => 'Demo-Schaltfläche im Katalog anzeigen',
+			'demo.compteReafficherSous' => 'Die Schaltfläche erscheint wieder oben in der Liste der Wege',
+			'demo.collecteTitre' => 'Worauf die Antwort beruht',
+			'demo.collecteIntro' => 'Diese Angaben verwendet die App, um die Machbarkeit zu berechnen.',
+			'demo.collecteProfil' => 'Ihr Profil',
+			'demo.collecteForme' => 'Ihre Form',
+			'demo.collecteExperience' => 'Ihre Erfahrung',
+			'demo.collecteSaison' => 'Jahreszeit des Aufbruchs',
+			'demo.collecteSentier' => 'Der Weg',
+			'demo.collecteJours' => 'Anzahl der Tage',
+			'demo.collecteAbsent' => 'Nicht angegeben',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5158,6 +5202,8 @@ extension on TranslationsDe {
 			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.storeUnavailable' => 'Die Zahlung ist derzeit nicht verfügbar.',
 			'monetization.restoreUnavailable' => 'Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.',
 			'monetization.restoreRequested' => 'Wiederherstellung angefordert. Ihre Käufe erscheinen gleich wieder.',
@@ -5180,8 +5226,6 @@ extension on TranslationsDe {
 			'monetization.subscriptionInactive' => 'Kein aktives Abo',
 			'monetization.subscriptionAllowancePending' => 'Die Höhe des Guthabens steht noch nicht fest.',
 			'monetization.realizationLockedTitle' => 'Diese Wanderung ist nicht freigeschaltet',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.',
 			'monetization.buyOutcomeOwned' => 'Wanderung freigeschaltet. Gute Tour!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
@@ -5672,6 +5716,8 @@ extension on TranslationsDe {
 			'programme.mergeBlocked.tooLong' => 'Zu lang: {hours}h (max. {max}h/Tag)',
 			'programme.mergeBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.replan' => 'Neu planen',
+			_ => null,
+		} ?? switch (path) {
 			'programme.replanButton' => 'NEU PLANEN',
 			'programme.replanDialog.title' => 'Neu planen',
 			'programme.replanDialog.message' => 'Die Neuplanung setzt Ihr Programm zurück.\nIhre Ruhetage bleiben an denselben Positionen erhalten.',
@@ -5694,8 +5740,6 @@ extension on TranslationsDe {
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => 'Verstanden!',
 			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',

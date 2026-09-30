@@ -866,6 +866,28 @@ class _Translations$demo$es extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simular la siguiente etapa';
 	@override String get simulerFin => 'Simular la llegada';
 	@override String get simulerRelancer => 'Reiniciar la demo';
+	@override String get sortieTitre => 'Fin de la demo';
+	@override String get sortieEnTeteCatalogue => 'Encontrarás la demo en la parte superior de la lista de senderos.';
+	@override String get sortieDansMonCompte => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.';
+	@override String get cacherLabel => 'Ocultar el modo demo';
+	@override String get sortieConfirmer => 'Salir de la demo';
+	@override String get sortieAnnuler => 'Seguir con la demo';
+	@override String get indisponible => 'No disponible en demo';
+	@override String get departSimule => 'En demo, la salida inicia una excursión simulada: no se guarda nada.';
+	@override String get compteTitre => 'Modo demo';
+	@override String get compteRelancer => 'Ver la demo de nuevo';
+	@override String get compteRelancerSous => 'Descubre la aplicación de la A a la Z, sin compromiso';
+	@override String get compteReafficher => 'Mostrar el botón demo en el catálogo';
+	@override String get compteReafficherSous => 'El botón vuelve a la parte superior de la lista de senderos';
+	@override String get collecteTitre => 'En qué se basa la respuesta';
+	@override String get collecteIntro => 'Esta es la información que la aplicación usa para calcular la viabilidad.';
+	@override String get collecteProfil => 'Tu perfil';
+	@override String get collecteForme => 'Tu forma física';
+	@override String get collecteExperience => 'Tu experiencia';
+	@override String get collecteSaison => 'Temporada de salida';
+	@override String get collecteSentier => 'El sendero';
+	@override String get collecteJours => 'Número de días';
+	@override String get collecteAbsent => 'No indicado';
 }
 
 // Path: updates
@@ -5115,6 +5137,28 @@ extension on TranslationsEs {
 			'demo.simulerEtape' => 'Simular la siguiente etapa',
 			'demo.simulerFin' => 'Simular la llegada',
 			'demo.simulerRelancer' => 'Reiniciar la demo',
+			'demo.sortieTitre' => 'Fin de la demo',
+			'demo.sortieEnTeteCatalogue' => 'Encontrarás la demo en la parte superior de la lista de senderos.',
+			'demo.sortieDansMonCompte' => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.',
+			'demo.cacherLabel' => 'Ocultar el modo demo',
+			'demo.sortieConfirmer' => 'Salir de la demo',
+			'demo.sortieAnnuler' => 'Seguir con la demo',
+			'demo.indisponible' => 'No disponible en demo',
+			'demo.departSimule' => 'En demo, la salida inicia una excursión simulada: no se guarda nada.',
+			'demo.compteTitre' => 'Modo demo',
+			'demo.compteRelancer' => 'Ver la demo de nuevo',
+			'demo.compteRelancerSous' => 'Descubre la aplicación de la A a la Z, sin compromiso',
+			'demo.compteReafficher' => 'Mostrar el botón demo en el catálogo',
+			'demo.compteReafficherSous' => 'El botón vuelve a la parte superior de la lista de senderos',
+			'demo.collecteTitre' => 'En qué se basa la respuesta',
+			'demo.collecteIntro' => 'Esta es la información que la aplicación usa para calcular la viabilidad.',
+			'demo.collecteProfil' => 'Tu perfil',
+			'demo.collecteForme' => 'Tu forma física',
+			'demo.collecteExperience' => 'Tu experiencia',
+			'demo.collecteSaison' => 'Temporada de salida',
+			'demo.collecteSentier' => 'El sendero',
+			'demo.collecteJours' => 'Número de días',
+			'demo.collecteAbsent' => 'No indicado',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -5158,6 +5202,8 @@ extension on TranslationsEs {
 			'monetization.walletTitle' => 'Cuenta de etapas',
 			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
 			'monetization.walletUnit' => 'etapas',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.storeUnavailable' => 'El pago no está disponible por ahora.',
 			'monetization.restoreUnavailable' => 'No se puede restaurar: el pago no está disponible por ahora.',
 			'monetization.restoreRequested' => 'Restauración solicitada. Tus compras volverán en un momento.',
@@ -5180,8 +5226,6 @@ extension on TranslationsEs {
 			'monetization.subscriptionInactive' => 'Ninguna suscripción activa',
 			'monetization.subscriptionAllowancePending' => 'El importe del bote aún no está fijado.',
 			'monetization.realizationLockedTitle' => 'Esta ruta no está desbloqueada',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.',
 			'monetization.buyOutcomeOwned' => 'Ruta desbloqueada. ¡Buen camino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
@@ -5672,6 +5716,8 @@ extension on TranslationsEs {
 			'programme.mergeBlocked.tooLong' => 'Demasiado largo: {hours}h (máx {max}h/día)',
 			'programme.mergeBlocked.locked' => 'Día ya caminado: ya no se puede modificar',
 			'programme.replan' => 'Replanificar',
+			_ => null,
+		} ?? switch (path) {
 			'programme.replanButton' => 'REPLANIFICAR',
 			'programme.replanDialog.title' => 'Replanificar',
 			'programme.replanDialog.message' => 'La replanificación reiniciará tu programa.\nTus días de descanso se mantendrán en las mismas posiciones.',
@@ -5694,8 +5740,6 @@ extension on TranslationsEs {
 			'programme.info.colors.title' => 'Colores',
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => '¡Entendido!',
 			'programme.splitBlocked.single' => 'No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.',
 			'programme.splitBlocked.locked' => 'Día ya caminado: ya no se puede modificar',

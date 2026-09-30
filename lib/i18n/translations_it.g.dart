@@ -866,6 +866,28 @@ class _Translations$demo$it extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simula la tappa successiva';
 	@override String get simulerFin => 'Simula l\'arrivo';
 	@override String get simulerRelancer => 'Ricomincia la demo';
+	@override String get sortieTitre => 'Fine della demo';
+	@override String get sortieEnTeteCatalogue => 'Ritroverai la demo in cima all\'elenco dei sentieri.';
+	@override String get sortieDansMonCompte => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.';
+	@override String get cacherLabel => 'Nascondi la modalità demo';
+	@override String get sortieConfirmer => 'Uscire dalla demo';
+	@override String get sortieAnnuler => 'Continuare la demo';
+	@override String get indisponible => 'Non disponibile in demo';
+	@override String get departSimule => 'In demo, la partenza avvia un\'escursione simulata: nulla viene salvato.';
+	@override String get compteTitre => 'Modalità demo';
+	@override String get compteRelancer => 'Rivedere la demo';
+	@override String get compteRelancerSous => 'Scopri l\'applicazione dalla A alla Z, senza impegno';
+	@override String get compteReafficher => 'Mostrare il pulsante demo nel catalogo';
+	@override String get compteReafficherSous => 'Il pulsante torna in cima all\'elenco dei sentieri';
+	@override String get collecteTitre => 'Su cosa si basa la risposta';
+	@override String get collecteIntro => 'Ecco le informazioni che l\'applicazione usa per calcolare la fattibilità.';
+	@override String get collecteProfil => 'Il tuo profilo';
+	@override String get collecteForme => 'La tua forma';
+	@override String get collecteExperience => 'La tua esperienza';
+	@override String get collecteSaison => 'Stagione della partenza';
+	@override String get collecteSentier => 'Il sentiero';
+	@override String get collecteJours => 'Numero di giorni';
+	@override String get collecteAbsent => 'Non indicato';
 }
 
 // Path: updates
@@ -5115,6 +5137,28 @@ extension on TranslationsIt {
 			'demo.simulerEtape' => 'Simula la tappa successiva',
 			'demo.simulerFin' => 'Simula l\'arrivo',
 			'demo.simulerRelancer' => 'Ricomincia la demo',
+			'demo.sortieTitre' => 'Fine della demo',
+			'demo.sortieEnTeteCatalogue' => 'Ritroverai la demo in cima all\'elenco dei sentieri.',
+			'demo.sortieDansMonCompte' => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.',
+			'demo.cacherLabel' => 'Nascondi la modalità demo',
+			'demo.sortieConfirmer' => 'Uscire dalla demo',
+			'demo.sortieAnnuler' => 'Continuare la demo',
+			'demo.indisponible' => 'Non disponibile in demo',
+			'demo.departSimule' => 'In demo, la partenza avvia un\'escursione simulata: nulla viene salvato.',
+			'demo.compteTitre' => 'Modalità demo',
+			'demo.compteRelancer' => 'Rivedere la demo',
+			'demo.compteRelancerSous' => 'Scopri l\'applicazione dalla A alla Z, senza impegno',
+			'demo.compteReafficher' => 'Mostrare il pulsante demo nel catalogo',
+			'demo.compteReafficherSous' => 'Il pulsante torna in cima all\'elenco dei sentieri',
+			'demo.collecteTitre' => 'Su cosa si basa la risposta',
+			'demo.collecteIntro' => 'Ecco le informazioni che l\'applicazione usa per calcolare la fattibilità.',
+			'demo.collecteProfil' => 'Il tuo profilo',
+			'demo.collecteForme' => 'La tua forma',
+			'demo.collecteExperience' => 'La tua esperienza',
+			'demo.collecteSaison' => 'Stagione della partenza',
+			'demo.collecteSentier' => 'Il sentiero',
+			'demo.collecteJours' => 'Numero di giorni',
+			'demo.collecteAbsent' => 'Non indicato',
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
@@ -5158,6 +5202,8 @@ extension on TranslationsIt {
 			'monetization.walletTitle' => 'Conto tappe',
 			'monetization.walletSubtitle' => 'Le tue tappe servono a sbloccare le escursioni',
 			'monetization.walletUnit' => 'tappe',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.storeUnavailable' => 'Il pagamento non è disponibile al momento.',
 			'monetization.restoreUnavailable' => 'Ripristino impossibile: il pagamento non è disponibile al momento.',
 			'monetization.restoreRequested' => 'Ripristino richiesto. I tuoi acquisti torneranno tra poco.',
@@ -5180,8 +5226,6 @@ extension on TranslationsIt {
 			'monetization.subscriptionInactive' => 'Nessun abbonamento attivo',
 			'monetization.subscriptionAllowancePending' => 'L\'importo del bonus non è ancora stabilito.',
 			'monetization.realizationLockedTitle' => 'Questa escursione non è sbloccata',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Per realizzare un\'escursione bisogna averla sbloccata. La preparazione resta gratuita.',
 			'monetization.buyOutcomeOwned' => 'Escursione sbloccata. Buon cammino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
@@ -5672,6 +5716,8 @@ extension on TranslationsIt {
 			'programme.mergeBlocked.tooLong' => 'Troppo lungo: {hours}h (max {max}h/giorno)',
 			'programme.mergeBlocked.locked' => 'Giorno già percorso: non è più modificabile',
 			'programme.replan' => 'Ripianifica',
+			_ => null,
+		} ?? switch (path) {
 			'programme.replanButton' => 'RIPIANIFICA',
 			'programme.replanDialog.title' => 'Ripianifica',
 			'programme.replanDialog.message' => 'La ripianificazione azzererà il tuo programma.\nI giorni di riposo saranno mantenuti nelle stesse posizioni.',
@@ -5694,8 +5740,6 @@ extension on TranslationsIt {
 			'programme.info.colors.title' => 'Colori',
 			'programme.info.colors.body' => 'Verde = facile, Arancione = medio, Rosso = difficile (distanza + dislivello).',
 			'programme.info.note' => 'Il profilo altimetrico in basso mostra il dislivello di ogni giorno.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => 'Capito!',
 			'programme.splitBlocked.single' => 'Impossibile dividere: questa giornata porta una sola tappa, non c\'è nulla da separare.',
 			'programme.splitBlocked.locked' => 'Giorno già percorso: non è più modificabile',

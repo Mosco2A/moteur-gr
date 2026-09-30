@@ -48,7 +48,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
-import 'package:moteur_gr/core/config/mare_a_mare_centre_demo_trail_config.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/data/database.dart';
@@ -66,9 +66,15 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/paywall_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Le sentier PAYANT du catalogue, et le sentier GRATUIT qui le fait decouvrir.
+/// Le sentier PAYANT du catalogue, et le sentier GRATUIT du catalogue.
+///
+/// TACHE 638 : le sentier gratuit n'est plus le « Mare a Mare Centre Demo » (il a
+/// ete supprime avec le doublon du bug 1 et l'amputation du bug 8) mais le sentier
+/// des Volcans, en Auvergne. Ce que ce fichier teste — un sentier gratuit ne
+/// s'achete pas, se realise sans achat, et n'est pas « possede » — porte sur le
+/// MODELE (prix nul), pas sur une localite : il tient a l'identique.
 const _sentierPayant = mareAMareCentreTrailConfig;
-const _sentierGratuit = mareAMareCentreDemoTrailConfig;
+const _sentierGratuit = testTrailConfig;
 
 /// Regie de publicite SIMULEE : elle ne contacte rien, et elle COMPTE.
 ///
