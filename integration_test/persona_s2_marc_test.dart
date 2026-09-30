@@ -5,8 +5,17 @@
 // Objectif persona : evaluer vite un trek dur et se lancer.
 // Parcours vise (PLAN_TEST_PERSONAS S2) :
 //   selectionne un trek dur -> faisabilite « go » rapide -> « Mes treks »
-//   multi-treks -> cockpit -> reglages (change la langue, voit la version
-//   v0.1.2) -> profil.
+//   multi-treks -> cockpit -> reglages (change la langue, voit la version du
+//   paquet installe) -> profil.
+//
+// TACHE 650 — DEUX ATTENTES PERIMEES CORRIGEES ICI, ET AUCUNE AFFAIBLIE :
+//   * le bouton du catalogue s'appelle « Préparer » depuis le lot 639 (la cle
+//     `catalog-enter-<id>`, elle, n'a pas bouge) ;
+//   * la version n'est plus recopiee a la main (elle disait encore 0.1.2 alors
+//     que le build 8 est en 0.1.4+8) : elle est LUE sur le paquet installe.
+// « Mes treks » est VIDE au premier lancement depuis le lot 638 — plus aucun
+// sentier n'est offert — donc le repli catalogue est desormais le chemin
+// NORMAL de ce scenario, et non plus un signal QA.
 //
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
@@ -14,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -27,9 +37,25 @@ import 'persona_harness.dart';
 
 const String P = 'S2_Marc';
 
-/// Version attendue dans les reglages, lue dans le PUBSPEC du projet (0.1.2+3).
-/// On garde la partie « 0.1.2 » : le build number bouge, pas la version.
-const String kVersionAttendue = '0.1.2';
+/// LA VERSION ATTENDUE DANS LES REGLAGES — LUE, PLUS JAMAIS RECOPIEE
+/// (tache 650).
+///
+/// CE QUI N'ALLAIT PAS. Ce fichier portait `const kVersionAttendue = '0.1.2'`,
+/// recopie a la main du pubspec du jour. Le pubspec dit 0.1.4+8 depuis le
+/// build 8 : le scenario exigeait donc l'affichage d'une version que
+/// l'application n'a plus. C'est la meme faute que « Entrer » — une valeur du
+/// produit figee dans le test, qui vieillit en silence et finit par rendre le
+/// test menteur.
+///
+/// CE QU'ON FAIT. On lit la version PAR LE MEME CHEMIN QUE L'ECRAN
+/// ([PackageInfo.fromPlatform], `settings_screen.dart`), c'est-a-dire sur le
+/// paquet reellement installe. L'exigence ne faiblit pas, elle se durcit : elle
+/// devient « les reglages affichent la version DU PAQUET INSTALLE », ce qui est
+/// la vraie question, et elle ne peut plus se perimer.
+Future<String> _versionDuPaquet() async {
+  final info = await PackageInfo.fromPlatform();
+  return info.version;
+}
 
 /// Ecrit la fiche et la rando de Marc par le chemin de production.
 Future<void> _poserLeProfilDeMarc(WidgetTester tester) async {
@@ -106,22 +132,25 @@ void main() {
       await pumpAndSettleTolerant(tester);
       logStep(P, 'selection', 'TAP OK : ouverture du 1er trek possede -> cockpit');
     } else {
-      logStep(P, 'selection',
-          'FINDING : « Mes treks » VIDE apres skip onboarding (0 trek possede). '
-          'Repli catalogue.');
+      logStep(
+          P,
+          'selection',
+          '« Mes treks » est VIDE au premier lancement (0 trek possede) — '
+          'ce n est PLUS un signal QA depuis le lot 638 : c est la decision de '
+          'Christophe du 29/09 14:17 (« je n ai droit a rien »). On passe donc '
+          'par le catalogue, qui est le chemin normal.');
       if (!present(textFrEn('Catalogue des sentiers', 'Trail catalog'))) {
         await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
             P, 'selection', 'Decouvrir des sentiers (repli)', warnIfMissing: false);
       }
-      await tapIfPresent(
-          tester,
-          find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
-          P,
-          'selection',
-          'Entrer dans la vitrine (repli)');
-      // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT /home
-      // (prepa), plus la carte live. `_goHome` reste un filet idempotent (etat
-      // connu) au cas ou l'entree serait detournee.
+      // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639, et la
+      // preparation sans achat est ROUVERTE (decision du 30/09 12:41, avec
+      // publicite). La CLE, elle, n'a pas bouge : on vise la cle.
+      await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P,
+          'selection', '« Préparer » le sentier de production (repli)');
+      // « Preparer » ouvre le COCKPIT /home (prepa), pas la carte live.
+      // `_goHome` reste un filet idempotent (etat connu) au cas ou l'entree
+      // serait detournee.
       await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '04_cockpit');
@@ -208,7 +237,10 @@ void main() {
 
     // --- Reglages : changer la langue + voir la version ---
     // Acces reglages via l icone parametres du header du cockpit.
-    final gearBtn = find.byIcon(Icons.settings_outlined);
+    // TACHE 650 — L'ICONE N'EST PLUS UNE ICONE MATERIAL (lot 632). On vise
+    // l'infobulle, qui est aussi le libelle d'accessibilite, et on la LIT dans
+    // l'i18n : `find.byIcon(Icons.settings_outlined)` ne trouvait plus rien.
+    final gearBtn = find.byTooltip(t.nav.settings);
     await exigeTap(
         tester, gearBtn, P, 'reglages', 'icone Reglages du header du cockpit');
     await settleAndShoot(tester, P, '07_reglages');
@@ -240,23 +272,26 @@ void main() {
           'le retour au francais bascule l interface dans l autre sens');
     }
 
-    // Voir la version : defiler jusqu a la section version et lire « 0.1.2 »
-    // (version courante — pubspec 0.1.2+3, lue via PackageInfo).
-    await scrollUntil(tester, find.textContaining(kVersionAttendue), P, 'version',
-        'numero de version ($kVersionAttendue)');
-    final versionShown = present(find.textContaining(kVersionAttendue));
+    // Voir la version : defiler jusqu'a la section version et la comparer a
+    // celle du PAQUET INSTALLE (tache 650 — plus aucune version recopiee ici).
+    final versionAttendue = await _versionDuPaquet();
+    await scrollUntil(tester, find.textContaining(versionAttendue), P, 'version',
+        'numero de version ($versionAttendue)');
+    final versionShown = present(find.textContaining(versionAttendue));
     logStep(P, 'version',
-        'Version $kVersionAttendue visible dans les reglages = $versionShown');
-    // EXIGENCE — la version affichee est celle du pubspec. C'est ce qui permet
-    // a Chris de savoir QUELLE version il tient en main.
+        'Version du paquet installe = $versionAttendue ; visible dans les '
+        'reglages = $versionShown');
+    // EXIGENCE — la version affichee est celle du paquet reellement installe.
+    // C'est ce qui permet a Christophe de savoir QUELLE version il tient en main.
     exige(P, 'version', versionShown,
-        'la version $kVersionAttendue est affichee dans les reglages');
+        'les reglages affichent la version DU PAQUET INSTALLE ($versionAttendue)');
     await settleAndShoot(tester, P, '09_version');
 
     // --- Profil ---
     await _back(tester, P, 'profil');
     // Icone profil du header du cockpit.
-    await exigeTap(tester, find.byIcon(Icons.person_outline), P, 'profil',
+    // TACHE 650 — meme cause, meme parade que pour les reglages (lot 632).
+    await exigeTap(tester, find.byTooltip(t.hub.profileTooltip), P, 'profil',
         'icone Profil du header du cockpit');
     await settleAndShoot(tester, P, '10_profil');
     _logLocation(tester, P, 'profil');
@@ -483,7 +518,7 @@ Future<bool> _openHubCard(
 Future<void> _openSettings(WidgetTester tester, String persona) async {
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
-  await tapIfPresent(tester, find.byIcon(Icons.settings_outlined), persona,
+  await tapIfPresent(tester, find.byTooltip(t.nav.settings), persona,
       'reglages', 'ouvrir Reglages (icone parametres)');
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
@@ -618,7 +653,7 @@ Future<void> _logisticsAndAccountTour(
   // simuler. On ouvre le Profil et on consigne l'absence.
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
-  await tapIfPresent(tester, find.byIcon(Icons.person_outline), persona,
+  await tapIfPresent(tester, find.byTooltip(t.hub.profileTooltip), persona,
       'wallet', 'ouvrir Profil (Mon compte)', warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   await settleAndShoot(tester, persona, 'S2E_01dec_profil_wallet');

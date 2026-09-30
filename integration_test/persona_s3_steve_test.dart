@@ -20,6 +20,12 @@
 //   (`adb shell pm grant com.only1cent.stepways android.permission.
 //    ACCESS_FINE_LOCATION`) — fait par le lanceur.
 //
+// TACHE 650 — STEVE ACHETE SON SENTIER AVANT DE PARTIR. La premisse « la
+// vitrine est jouable sans achat » est morte le 29/09 (lot 638) : plus aucun
+// sentier n'est offert, et le lot 594 reserve la REALISATION au sentier achete.
+// Steve achete donc par le chemin de production, puis marche. Rien de ce que ce
+// scenario verifiait n'est retire — une marche est ajoutee devant.
+//
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
 import 'package:flutter/material.dart';
@@ -27,7 +33,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
 // QA cycle4 : lecture DIRECTE du gate de demarrage pour prouver factuellement
 // si « Démarrer » est activable ou non (pas de supposition).
 import 'package:moteur_gr/features/hub/presentation/widgets/finish_trek_button.dart';
@@ -82,16 +90,41 @@ void main() {
     } else {
       await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
           P, 'entree', 'Decouvrir des sentiers');
-      await tapIfPresent(
-          tester,
-          find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
-          P,
-          'entree',
-          'Entrer dans la vitrine');
+      // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » (lot 639) ; cle inchangee.
+      await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P,
+          'entree', '« Préparer » le sentier de production');
       await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '03_cockpit');
     _logLocation(tester, P, 'cockpit');
+
+    // ================================================================
+    // STEVE ACHETE SON SENTIER — SANS CA, IL NE PART PAS (tache 650)
+    // ================================================================
+    //
+    // CE QUI A CHANGE, ET C'EST UNE DECISION, PAS UN DEFAUT. Ce scenario partait
+    // de la premisse « la vitrine est jouable sans achat ». Le lot 638 a retire
+    // TOUT sentier gratuit du catalogue (Christophe, 29/09 14:17 : « je n'ai
+    // droit a rien ») et le lot 594 reserve la REALISATION au sentier achete.
+    // Sans achat, `ensureSingleActiveThenStart` rend `purchaseRequired` et la
+    // carte ne s'ouvre jamais : tout le terrain de Steve — carte, suivi, SOS,
+    // fin, diplome, journal — deviendrait intestable.
+    //
+    // ON N'AFFAIBLIT RIEN, ON AJOUTE UNE MARCHE. Steve est le marcheur : il a
+    // achete son sentier, comme n'importe quel randonneur qui part vraiment.
+    // L'achat emprunte le SERVICE DE PRODUCTION (portefeuille + `buyTrail`),
+    // pas une surcharge de provider : le droit obtenu est le vrai droit `owned`,
+    // et c'est lui que la suite du scenario eprouve.
+    //
+    // LE MUR PAYANT, LUI, EST EPROUVE PAR S1 : le verifier deux fois allongerait
+    // ce run sans rien prouver de plus.
+    final possede =
+        await acheterLeSentierPourDeVrai(tester, kSentierDeProduction, P);
+    exige(P, 'achat', possede,
+        'Steve POSSEDE le sentier avant de partir — la realisation est '
+        'reservee au sentier achete (lot 594, decision du 29/09 14:17)');
+    await _goHome(tester, P);
+    await settleAndShoot(tester, P, '03b_apres_achat');
 
     // --- QA cycle4 : SATISFAIRE LE GATE DE DEMARRAGE ---------------------
     // CONSTAT cycle4 : le CTA « Démarrer la randonnée » est DESACTIVE tant que
@@ -268,8 +301,37 @@ void main() {
     final sos = find.byWidgetPredicate((w) =>
         w is FloatingActionButton && (w.heroTag == 'sos_e515'));
     final nbAccesSos = tester.widgetList(sos).length;
-    final nbIconesUrgence =
-        tester.widgetList(find.byIcon(Icons.emergency)).length;
+    // TACHE 650 — CE QU'ON COMPTE, ET POURQUOI PAS AUTRE CHOSE.
+    //
+    // Le dessin du SOS n'est plus une icone Material (lot 632) : c'est
+    // `StepIcon(StepwaysIcons.secours)`. Compter `Icons.emergency` rendait
+    // toujours zero — l'exigence etait rouge pour un changement de dessin.
+    //
+    // MAIS COMPTER LE DESSIN PARTOUT SERAIT TOUT AUSSI FAUX, et c'est mesure :
+    // le meme dessin sert legitimement a la carte « Urgence » du cockpit, a la
+    // feuille de guidage de la carte, a un type de point d'interet et a la fiche
+    // sante. Ce que le doublon du cycle 3 etait, c'etait un SECOND POINT
+    // D'ENTREE : une action de barre contextuelle a cote du bouton flottant.
+    // On compte donc les POINTS D'ENTREE : les dessins de secours poses dans un
+    // bouton flottant ou dans les actions d'une barre de titre.
+    final nbIconesUrgence = tester
+        .widgetList<StepIcon>(
+          find.descendant(
+            of: find.byType(FloatingActionButton),
+            matching: find.byType(StepIcon),
+          ),
+        )
+        .where((i) => i.asset == StepwaysIcons.secours)
+        .length +
+        tester
+            .widgetList<StepIcon>(
+              find.descendant(
+                of: find.byType(AppBar),
+                matching: find.byType(StepIcon),
+              ),
+            )
+            .where((i) => i.asset == StepwaysIcons.secours)
+            .length;
     logStep(
         P,
         'sos',
@@ -284,7 +346,8 @@ void main() {
     exige(P, 'sos', nbAccesSos == 1,
         'il existe EXACTEMENT un point d entree SOS sur la carte (compte : $nbAccesSos)');
     exige(P, 'sos', nbIconesUrgence == 1,
-        'aucune icone d urgence EN DEHORS du bouton SOS (compte : $nbIconesUrgence)');
+        'aucun SECOND point d entree SOS : un seul dessin de secours dans un '
+        'bouton flottant ou une barre de titre (compte : $nbIconesUrgence)');
     if (present(sos)) {
       await tester.tap(sos.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
@@ -596,6 +659,26 @@ Future<void> _satisfaireGateDemarrage(
   await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 
+  // LA QUATRIEME CONDITION : LA FICHE MEDICALE (tache 650, decision du 26/09).
+  // Le gate ([prepareCoreDoneProvider]) ne compte plus trois signaux mais
+  // QUATRE : la fiche medicale remplie ET ses conseils lus
+  // ([healthPrepareDoneProvider]). Ce scenario en posait trois et accusait le
+  // produit de ne pas laisser partir un randonneur qui n avait pas tout fait.
+  // On passe par le VRAI notifier de production, celui que l ecran appelle.
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final c = ProviderScope.containerOf(element, listen: false);
+    final sante = c.read(healthPrepareStepsProvider.notifier);
+    await sante.setFilled(true);
+    await sante.markAdviceRead();
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    logStep(persona, 'gate',
+        'Fiche medicale posee (4e condition du gate, decision du 26/09) : '
+        'etat lu = ${c.read(healthPrepareDoneProvider)}');
+  } catch (e) {
+    logStep(persona, 'gate', 'COINCE : fiche medicale impossible a poser : $e');
+  }
+
   // Le notifier recharge ses etapes depuis SharedPreferences de maniere ASYNC
   // (`_loadFromPrefs`, cockpit_start_providers.dart:69). Une lecture immediate
   // peut donc voir un ensemble encore VIDE : on laisse le temps au rechargement
@@ -620,6 +703,7 @@ Future<void> _satisfaireGateDemarrage(
   // un simple commentaire « signal QA » dans un log.
   exige(persona, 'gate', apres == true,
       'le gate de demarrage s ouvre apres Itineraire + Programme + date '
+      '+ fiche medicale '
       '(lu = ${apres?.toString() ?? "illisible"}, etapes = $etapes)');
 }
 

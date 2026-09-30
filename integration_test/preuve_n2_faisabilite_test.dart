@@ -171,15 +171,32 @@ void main() {
     // =====================================================================
     final joursAvant = _joursDuProgramme(tester, trailId);
     final dureeParDefaut = _dureeParDefaut(tester);
-    final propose = _joursProposesParLeBouton(tester);
+    final propose = await _joursProposesParLeBouton(tester);
     _constat(
         'D2_avant',
         'programme = $joursAvant jour(s), duree par defaut du sentier = '
             '$dureeParDefaut, decoupage propose par le bouton = '
             '${propose ?? "INTROUVABLE"}');
 
-    if (propose == null) {
-      _ecart('D2 : le bouton « Generer mon programme » est introuvable');
+    // PAS DE BOUTON N'EST PARFOIS LA BONNE REPONSE (tache 650, decision du
+    // lot 569 R1-c). Quand la recherche a essaye TOUTES les valeurs du curseur
+    // et qu'aucune ne fait mieux que rouge, l'ecran N'OFFRE PAS le bouton :
+    // l'appliquer poserait une duree que l'ecran vient de declarer mauvaise
+    // trois lignes plus haut (`assessment.isDurationAdvised`, ecran
+    // trek_feasibility_screen.dart:936). Cette preuve comptait son absence
+    // comme un ecart et accusait le produit d'appliquer sa propre decision.
+    // On LIT donc la decision du moteur avant de conclure.
+    final dureeConseillee = _dureeEstConseillee(tester);
+    if (propose == null && dureeConseillee == false) {
+      _constat(
+          'D2_sans_bouton',
+          'aucun bouton « Generer mon programme », et c est JUSTE : le moteur '
+              'declare qu aucune duree n est conseillable (isDurationAdvised = '
+              'false, lot 569 R1-c). Le conseil franc le dit a sa place.');
+    } else if (propose == null) {
+      _ecart('D2 : le bouton « Generer mon programme » est introuvable alors '
+          'que le moteur conseille une duree (isDurationAdvised = '
+          '${dureeConseillee ?? "illisible"})');
     } else if (propose == joursAvant) {
       // Sans ecart entre le propose et l'existant, « appliquer » et « ne rien
       // faire » donnent le meme ecran : la preuve serait creuse. On le DIT.
@@ -343,25 +360,61 @@ String? _trailIdActif(WidgetTester tester) {
   }
 }
 
-int _dureeParDefaut(WidgetTester tester) =>
-    _container(tester)?.read(trailConfigProvider).defaultDuration ?? 0;
+/// LA DUREE PAR DEFAUT ANNONCEE A L'ECRAN, REPOS CONSEILLES COMPRIS (GO-61).
+///
+/// CE QUI NE COLLAIT PLUS (tache 650). Ce lecteur rendait la duree NUE du
+/// sentier (`trailConfigProvider.defaultDuration`), alors que la ligne
+/// « aucun decoupage retenu » annonce depuis le lot 545 la duree qui
+/// S'APPLIQUE REELLEMENT — celle du sentier plus les jours de repos conseilles
+/// ([defaultDurationWithRestProvider], `trek_feasibility_screen.dart:971`).
+/// La preuve cherchait donc une phrase avec le mauvais nombre et rapportait
+/// « l'ecran ne dit pas qu'aucun decoupage n'est retenu » alors qu'il le disait,
+/// avec le bon chiffre. On lit desormais LE MEME provider que l'ecran.
+int _dureeParDefaut(WidgetTester tester) {
+  final c = _container(tester);
+  if (c == null) return 0;
+  final trailId = c.read(trailConfigProvider).id;
+  return c.read(defaultDurationWithRestProvider(trailId));
+}
 
 int _joursDuProgramme(WidgetTester tester, String trailId) =>
     _container(tester)?.read(plannedDaysProvider(trailId)).length ?? -1;
 
 /// Lit le nombre de jours ANNONCE par le bouton, en balayant les durees
 /// possibles du sentier : on ne devine rien, on lit le libelle affiche.
-int? _joursProposesParLeBouton(WidgetTester tester) {
+/// LE BOUTON EST EN BAS DE L'ECRAN, ET L'ECRAN DEFILE (tache 650).
+///
+/// CE QUI MANQUAIT, ET C'EST MESURE : ce lecteur cherchait le libelle dans
+/// l'arbre CONSTRUIT. L'ecran de faisabilite est une liste defilante, et le
+/// bouton « Generer mon programme » vit apres le verdict, les explications et
+/// le curseur : il n'est donc pas construit tant qu'on n'est pas descendu. La
+/// preuve rapportait « bouton introuvable » — un ecart imputable au produit —
+/// alors que le bouton etait simplement hors champ. On DESCEND d'abord.
+Future<int?> _joursProposesParLeBouton(WidgetTester tester) async {
   final c = _container(tester);
   if (c == null) return null;
   final trailId = c.read(trailConfigProvider).id;
   final bounds = c.read(durationBoundsProvider(trailId));
-  for (final jours in bounds.options) {
-    if (present(find.text(t.feasibility.formula.generateProgram(days: jours)))) {
-      return jours;
+  int? lu() {
+    for (final jours in bounds.options) {
+      if (present(
+          find.text(t.feasibility.formula.generateProgram(days: jours)))) {
+        return jours;
+      }
     }
+    return null;
   }
-  return null;
+
+  var trouve = lu();
+  if (trouve != null) return trouve;
+  final scrollable = find.byType(Scrollable);
+  if (scrollable.evaluate().isEmpty) return null;
+  for (var i = 0; i < 12 && trouve == null; i++) {
+    await tester.drag(scrollable.first, const Offset(0, -320));
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
+    trouve = lu();
+  }
+  return trouve;
 }
 
 Future<void> _entrerPremierSentier(WidgetTester tester) async {
@@ -370,9 +423,12 @@ Future<void> _entrerPremierSentier(WidgetTester tester) async {
       'contexte', 'Decouvrir des sentiers',
       warnIfMissing: false);
   await pumpAndSettleTolerant(tester);
-  await tapIfPresent(tester, textFrEn('Entrer', 'Enter'), P, 'contexte',
-      'Entrer dans le sentier',
-      warnIfMissing: false);
+  // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639. Le libelle
+  // « Entrer » n'existe plus nulle part : ce tap ne trouvait plus rien et le
+  // scenario continuait sur le sentier par defaut, sans le dire. On vise la
+  // CLE du produit, qui n'a pas change.
+  await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P, 'contexte',
+      '« Préparer » le sentier de production', warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
 }
 
@@ -481,5 +537,19 @@ Future<int?> _relireApresRedemarrage(WidgetTester tester) async {
     return null;
   } finally {
     neuf.dispose();
+  }
+}
+
+/// Le moteur conseille-t-il une duree ? (`assessment.isDurationAdvised`)
+///
+/// Null si l'evaluation n'est pas lisible. C'est CETTE decision qui commande la
+/// presence du bouton « Generer mon programme » depuis le lot 569.
+bool? _dureeEstConseillee(WidgetTester tester) {
+  try {
+    final c = _container(tester);
+    if (c == null) return null;
+    return c.read(feasibilityAssessmentProvider).value?.isDurationAdvised;
+  } catch (_) {
+    return null;
   }
 }
