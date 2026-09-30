@@ -16,6 +16,8 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/bouton_simulation_demo.dart';
+import '../../../../shared/widgets/grise_en_demo.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
 import '../../../journal/providers/journal_providers.dart';
@@ -174,6 +176,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         // du Programme), et cela n'ajoute pas un huitieme bouton flottant sur
         // une carte de terrain.
         actions: [
+          // FAIRE AVANCER LA RANDONNEE SIMULEE, DEPUIS LA CARTE (tache 638,
+          // bugs 11 et 16). C'est ici qu'on regarde quand on marche : le bouton
+          // de simulation doit donc etre atteignable sans repasser par le
+          // cockpit. Invisible hors demo et hors randonnee simulee.
+          const BoutonSimulationDemo(compact: true),
           IconButton(
             icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.map.title,
@@ -313,7 +320,13 @@ class _MapContentState extends State<_MapContent> {
                 PoiFilterBar(trailId: widget.trailId),
                 const Divider(height: AppTheme.spacingLg),
                 // Les points de l'etape en cours, coches au passage (LOT D).
-                StagePoiChecklist(trailId: widget.trailId),
+                //
+                // GRISES EN DEMO (tache 638, bug 14) : cocher un point de
+                // passage ecrit la progression du sentier REEL en base. C'etait
+                // la 8e des ecritures laissees ouvertes par le lot 634. La liste
+                // reste LISIBLE — la demo doit montrer ce que l'ecran fait — mais
+                // les coches sont visiblement indisponibles.
+                GriseEnDemo(child: StagePoiChecklist(trailId: widget.trailId)),
               ],
             ),
           ),

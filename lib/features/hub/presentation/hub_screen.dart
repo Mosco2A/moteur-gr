@@ -6,6 +6,7 @@ import '../../../core/branding/stepways_icons.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/bouton_simulation_demo.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../treks/providers/my_treks_provider.dart';
@@ -203,8 +204,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // la raison de geometrie ci-dessus — mais ailleurs, un randonneur qui
       // marche un sentier GRATUIT verra de la publicite, et c'est assume : voir
       // `shouldShowBannerProvider`, qui porte la raison en entier.
-      bottomNavigationBar:
-          showHike ? null : BannerAdSlot(trailId: trailId),
+      bottomNavigationBar: showHike ? null : BannerAdSlot(trailId: trailId),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -707,6 +707,15 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // prennent le relais). Reutilise la garde d'unicite C4 + le filet de
             // proximite GPS (jamais de cul-de-sac).
             if (!showHike && !showAfter) HubStartTrekButton(trailId: trailId),
+
+            // --- LA SIMULATION DE LA DEMO VIT ICI (tache 638, bugs 11 et 16) ---
+            // Le lot 634 la portait dans un bandeau pose EN BAS DE TOUS LES
+            // ECRANS, qui masquait le bas de chacun — c'est le defaut du bug 11
+            // (DEM-260930-1020 : « le bandeau du bas du mode demo cache une
+            // partie de l appli »). Elle est desormais un bouton, dans le
+            // cockpit, invisible hors demo et invisible tant que la randonnee
+            // simulee n'est pas partie.
+            const BoutonSimulationDemo(),
 
             // --- « Terminer le trek » (Finitions V1, point 3) ---
             // Bouton ORANGE en FIN DE SCROLL (décision Chris), symétrique du
