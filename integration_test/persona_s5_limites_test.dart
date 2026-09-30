@@ -144,19 +144,75 @@ void main() {
         'l ecran n est PAS quitte quand la fiche vide est refusee');
     await settleAndShoot(tester, P, '12_fiche_vide');
 
-    // === BLOC 4 — LE PAYS =================================================
-    // Finding m3 du cycle 4 : le champ pays acceptait « ZZ », code inexistant.
+    // === BLOC 3bis — LE REFUS DE L'ACCORD ARTICLE 9 (tache 650) ============
+    //
+    // POURQUOI CE BLOC NAIT ICI. Le lot 560 a fait du consentement morphologie
+    // une CONDITION D'ECRITURE : sans accord, la fiche n'est pas enregistree et
+    // l'ecran RESTE, avec sa raison. C'est un refus propre de plus — donc, par
+    // la regle d'attribution de ce scenario, un COMPORTEMENT CORRECT a
+    // verifier, pas un defaut. Il manquait a la famille 2.
     await _assurerFicheInfo(tester);
-    await _saisirPays(tester, 'ZZ');
-    await _enregistrer(tester);
-    await exigeVisible(tester, find.text(tp.errorCountry), P, 'pays_zz',
-        'un code pays inexistant est refuse AVEC son message');
-    await _saisirPays(tester, 'FR');
+    await _viderTousLesChamps(tester);
     await _saisir(tester, kChampAge, '40');
+    await _refuserLaMorphologie(tester);
     await _enregistrer(tester);
-    exige(P, 'pays_fr', find.text(tp.errorCountry).evaluate().isEmpty,
-        'un code pays valide n est PAS refuse, et le message de refus '
-        'DISPARAIT une fois la valeur corrigee (contre-preuve)');
+    await exigeVisible(tester, find.text(tp.errorConsentRequired), P,
+        'consentement_refuse',
+        'sans l accord article 9, l enregistrement est refuse AVEC sa raison');
+    exige(P, 'consentement_refuse', _surLaFicheInfo(),
+        'l ecran n est PAS quitte quand l accord article 9 manque — la saisie '
+        'reste, il suffit d accorder et de reenregistrer');
+    await settleAndShoot(tester, P, '12b_consentement_refuse');
+
+    // === BLOC 4 — LE PAYS : UNE LISTE FERMEE, PLUS UNE SAISIE =============
+    //
+    // CE QUE CE BLOC VERIFIAIT, ET POURQUOI IL A CHANGE DE FORME (tache 650).
+    // Le finding m3 du cycle 4 disait : « le champ pays acceptait ZZ, code
+    // inexistant ». Le scenario tapait donc « ZZ » au clavier et exigeait un
+    // refus explique. Depuis la tache 634, LE PAYS NE SE TAPE PLUS : le champ
+    // est un bouton qui ouvre un SELECTEUR de pays trie dans la langue
+    // courante. Taper dedans ne leve meme plus d'erreur metier — ca casse le
+    // harnais (`enterText` sur un widget sans champ de saisie).
+    //
+    // LA PROTECTION N'A PAS DISPARU, ELLE A CHANGE DE NATURE, et c'est la
+    // meme decision que le groupe sanguin du lot 630 : une liste fermee rend
+    // la valeur aberrante IMPOSSIBLE au lieu de la refuser apres coup. On
+    // verifie donc les deux choses qui comptent maintenant : le champ n'accepte
+    // AUCUNE frappe, et le choix par la liste fonctionne.
+    await _assurerFicheInfo(tester);
+    await _viderTousLesChamps(tester);
+    await _saisir(tester, kChampAge, '40');
+    final champPays = find.byKey(const ValueKey('hiker-profile-country-field'));
+    await exigeVisible(tester, champPays, P, 'pays_liste',
+        'le champ Pays de la fiche d info');
+    exige(P, 'pays_liste',
+        find.descendant(of: champPays, matching: find.byType(EditableText))
+            .evaluate()
+            .isEmpty,
+        'le Pays n est PLUS un champ de saisie : un code inexistant comme '
+        '« ZZ » n est plus TAPABLE (liste fermee, tache 634 — meme decision '
+        'que le groupe sanguin du lot 630)');
+    await exigeTap(tester, champPays, P, 'pays_liste',
+        'le champ Pays ouvre le selecteur de pays');
+    await exigeVisible(tester, find.byKey(const ValueKey('country-picker-list')),
+        P, 'pays_liste', 'la liste fermee des pays');
+    // La liste est longue et virtualisee : on passe par sa RECHERCHE, comme un
+    // randonneur le ferait, plutot que de faire defiler deux cents pays.
+    await enterIfPresent(
+        tester,
+        find.byKey(const ValueKey('country-picker-search')),
+        'Fran',
+        P,
+        'pays_liste',
+        'recherche du selecteur de pays');
+    await settleAndShoot(tester, P, '13a_selecteur_pays');
+    await exigeTap(tester, find.byKey(const ValueKey('country-picker-FR')), P,
+        'pays_liste', 'le pays « FR » dans la liste');
+    await _accorderLaMorphologie(tester);
+    await _enregistrer(tester);
+    exige(P, 'pays_liste', find.text(tp.errorCountry).evaluate().isEmpty,
+        'un pays CHOISI dans la liste n est jamais refuse (contre-preuve : '
+        'l ecran ne refuse pas tout)');
     await settleAndShoot(tester, P, '13_pays');
 
     // === BLOC 5 — LES CROISEMENTS QUE LES NOUVELLES BORNES OUVRENT ========
@@ -241,15 +297,19 @@ bool _surLaFicheInfo() => find.text(t.hikerProfile.title).evaluate().isNotEmpty;
 Finder _champ(int index) => find.byType(TextFormField).at(index);
 
 Future<void> _saisir(WidgetTester tester, int index, String valeur) async {
-  await tester.enterText(_champ(index), valeur);
+  final champ = _champ(index);
+  if (champ.evaluate().isEmpty) {
+    logStep(P, 'saisie', 'COINCE : champ n°$index introuvable sur la fiche');
+    return;
+  }
+  // Meme precaution que pour le pays : la fiche defile, et un champ hors ecran
+  // n'est pas construit.
+  await tester.ensureVisible(champ);
+  await pumpAndSettleTolerant(tester);
+  await tester.enterText(champ, valeur);
   await pumpAndSettleTolerant(tester);
 }
 
-Future<void> _saisirPays(WidgetTester tester, String code) async {
-  await tester.enterText(
-      find.byKey(const ValueKey('hiker-profile-country-field')), code);
-  await pumpAndSettleTolerant(tester);
-}
 
 Future<void> _enregistrer(WidgetTester tester) async {
   await tapIfPresent(tester, find.text(t.hikerProfile.save), P, 'enregistrer',
@@ -286,6 +346,14 @@ Future<void> _accepte(WidgetTester tester, int champ, String valeur,
   await _assurerFicheInfo(tester);
   await _viderTousLesChamps(tester);
   await _saisir(tester, champ, valeur);
+  // L'ACCORD ARTICLE 9 EST UNE CONDITION D'ECRITURE DEPUIS LE LOT 560 (tache
+  // 650, mesure du 30/09). Age, taille et poids sont des donnees de sante :
+  // sans l'accord explicite, l'ecran REFUSE d'ecrire et RESTE ouvert avec
+  // `errorConsentRequired`. Ce scenario mesurait « l'ecran est quitte » sans
+  // jamais donner cet accord : il exigeait donc une ecriture que l'application
+  // a desormais raison de refuser. On donne l'accord, comme un randonneur le
+  // ferait, et la contre-partie redevient mesurable.
+  await _accorderLaMorphologie(tester);
   await _enregistrer(tester);
   exige(P, etape, find.text(messageBorne).evaluate().isEmpty,
       'ACCEPTE : « $valeur » — $quoi');
@@ -294,8 +362,42 @@ Future<void> _accepte(WidgetTester tester, int champ, String valeur,
   // se contente pas de s'y adapter.
   exige(P, etape, !_surLaFicheInfo(),
       'l ecran est bien QUITTE apres un enregistrement valide de « $valeur » '
-      '(contre-partie du refus, qui lui doit rester)');
+      '(accord article 9 donne ; contre-partie du refus, qui lui doit rester)');
   await _assurerFicheInfo(tester);
+}
+
+/// Met l'accord article 9 sur ON s'il ne l'est pas deja.
+///
+/// L'interrupteur est le `SwitchListTile` titre [t.hikerProfile.consentToggle].
+/// On LIT sa valeur avant d'agir : le basculer a l'aveugle le mettrait sur OFF
+/// une fois sur deux, et le scenario deviendrait intermittent.
+Future<void> _accorderLaMorphologie(WidgetTester tester) async {
+  final bascule = find.byType(SwitchListTile);
+  if (bascule.evaluate().isEmpty) {
+    logStep(P, 'consentement',
+        'COINCE : aucun interrupteur d accord article 9 sur la fiche d info');
+    return;
+  }
+  await tester.ensureVisible(bascule.first);
+  await pumpAndSettleTolerant(tester);
+  if (tester.widget<SwitchListTile>(bascule.first).value) return;
+  await tester.tap(bascule.first, warnIfMissed: false);
+  await pumpAndSettleTolerant(tester);
+  logStep(P, 'consentement',
+      'Accord article 9 (morphologie) donne — sans lui, l ecran refuse '
+      'd ecrire et reste ouvert (lot 560).');
+}
+
+/// Met l'accord article 9 sur OFF s'il ne l'est pas deja (contre-preuve).
+Future<void> _refuserLaMorphologie(WidgetTester tester) async {
+  final bascule = find.byType(SwitchListTile);
+  if (bascule.evaluate().isEmpty) return;
+  await tester.ensureVisible(bascule.first);
+  await pumpAndSettleTolerant(tester);
+  if (!tester.widget<SwitchListTile>(bascule.first).value) return;
+  await tester.tap(bascule.first, warnIfMissed: false);
+  await pumpAndSettleTolerant(tester);
+  logStep(P, 'consentement', 'Accord article 9 RETIRE (contre-preuve).');
 }
 
 /// Une valeur qui n'est pas un nombre exploitable : quoi qu'il arrive, AUCUNE

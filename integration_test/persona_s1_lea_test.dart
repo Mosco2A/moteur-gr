@@ -10,9 +10,33 @@
 //   demarre.
 //
 // Ce test PILOTE l'UI reelle et CAPTURE chaque etape. Il ne modifie pas l'app.
-// La vitrine (mare-a-mare-centre) est jouable sans achat : Lea peut donc tout
-// parcourir en mode demo. Chaque coincement (widget introuvable, ecran faux)
-// est LOGue comme signal QA, sans stopper le scenario.
+//
+// ---------------------------------------------------------------------------
+// TACHE 650 — LA PREMISSE DE CE SCENARIO A CHANGE, ET C'EST UNE DECISION
+// ---------------------------------------------------------------------------
+//
+// CE QUI ETAIT ECRIT ICI JUSQU'AU 30/09, ET QUI EST FAUX DEPUIS : « La vitrine
+// (mare-a-mare-centre) est jouable sans achat : Lea peut donc tout parcourir en
+// mode demo. » Cette phrase est morte le 29/09 a 14:17, sur une decision de
+// Christophe, verbatim : « la prochaine fois que j'ouvre l'application je n'ai
+// droit a rien ». Le lot 638 a retire TOUT sentier gratuit du catalogue ; le lot
+// 639 a renomme « Entrer » en « Preparer » et pose « Acheter » a cote.
+//
+// CE QUE LEA VIT MAINTENANT, ET C'EST PLUS EXIGEANT QU'AVANT :
+//   1. elle PREPARE gratuitement — faisabilite, entrainement, calendrier, sac —
+//      parce que la preparation sans achat est ROUVERTE depuis le 30/09 12:41,
+//      avec publicite (« je suis en prepa avec pub » est un etat legitime) ;
+//   2. quand elle veut PARTIR, elle rencontre le MUR PAYANT, et ce mur doit
+//      DIRE pourquoi et ou acheter — c'est la regle du lot 594 ;
+//   3. elle achete alors le sentier par le VRAI chemin, et SEULEMENT ALORS le
+//      terrain s'ouvre : carte, SOS, fin, diplome, journal.
+//
+// RIEN N'EST RETIRE DE CE QUE CE SCENARIO VERIFIAIT : tout le parcours terrain
+// et apres-trek est conserve a l'identique, le mur payant s'INTERCALE. Le
+// niveau gratuit du modele — la demo — est joue, lui, par S8.
+//
+// Chaque coincement (widget introuvable, ecran faux) est LOGue comme signal QA,
+// sans stopper le scenario.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +48,7 @@ import 'package:moteur_gr/features/hub/presentation/widgets/finish_trek_button.d
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_start_trek_button.dart';
 import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
+import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/main.dart' as app;
 
@@ -92,16 +117,38 @@ void main() {
           warnIfMissing: false);
     }
     await settleAndShoot(tester, P, '06_catalogue');
-    final enterBtn = textFrEn('Entrer', 'Enter');
-    logStep(P, 'catalogue',
+    // LE LIBELLE A CHANGE, LA CLE N'A PAS CHANGE (lot 639). On vise desormais la
+    // CLE du produit : un renommage de libelle ne doit plus rendre ce scenario
+    // aveugle, c'est exactement ce qui vient de se passer avec « Entrer ».
+    final preparerBtn = find.text(t.catalog.prepare);
+    logStep(
+        P,
+        'catalogue',
         'Catalogue affiche = ${present(catTitle)} ; '
-        'sentiers avec bouton Entrer = ${enterBtn.evaluate().length}');
+            'sentiers avec bouton « ${t.catalog.prepare} » = '
+            '${preparerBtn.evaluate().length} ; bouton demo en tete = '
+            '${present(boutonDemo)}');
     // EXIGENCE — Lea doit pouvoir DECOUVRIR un sentier : sans catalogue
     // utilisable, tout le parcours qui suit est sans objet.
-    exige(P, 'catalogue', present(catTitle) || present(enterBtn),
-        'le catalogue des sentiers est atteint (titre ou bouton Entrer)');
-    exige(P, 'catalogue', enterBtn.evaluate().isNotEmpty,
-        'au moins un sentier propose « Entrer »');
+    exige(P, 'catalogue', present(catTitle) || present(preparerBtn),
+        'le catalogue des sentiers est atteint (titre ou bouton « Préparer »)');
+    exige(P, 'catalogue', preparerBtn.evaluate().isNotEmpty,
+        'au moins un sentier propose « ${t.catalog.prepare} » (lot 639)');
+    // EXIGENCE NOUVELLE (tache 650) — LE SENTIER DE PRODUCTION EST A VENDRE, ET
+    // IL LE DIT. Le bouton « Acheter » est la contre-preuve de la decision du
+    // 29/09 : plus aucun sentier n'est offert, donc celui-ci porte son prix.
+    exige(P, 'catalogue', present(boutonAcheter(kSentierDeProduction)),
+        'le sentier de production porte « Acheter » : il n est PAS gratuit '
+        '(decision du 29/09 14:17)');
+    // EXIGENCE NOUVELLE (tache 650) — LE NIVEAU GRATUIT EXISTE, ET C'EST LA
+    // DEMO. Elle est en TETE du catalogue (lots 634/638).
+    exige(P, 'catalogue', present(boutonDemo),
+        'le bouton « ${t.demo.boutonTitre} » est en tete du catalogue : le '
+        'niveau gratuit du modele est la demo, pas un sentier offert');
+    // EXIGENCE NOUVELLE (tache 650) — AUCUNE PASTILLE « Gratuit » AU CATALOGUE.
+    // C'est la trace visible qu'aucun sentier n'est offert.
+    exigeAbsent(find.text(t.catalog.freeBadge), P, 'catalogue',
+        'la pastille « Gratuit » sur un sentier du catalogue');
 
     // --- Etape 3 : entree dans le sentier -> COCKPIT DE PREPARATION ---
     // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT (`/home`,
@@ -110,13 +157,13 @@ void main() {
     // carte terrain. La carte reste reservee au demarrage effectif du trek.
     final entered = await tapIfPresent(
         tester,
-        find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
+        boutonPreparer(kSentierDeProduction),
         P,
         'cockpit',
-        'Entrer dans le sentier vitrine (cle catalog-enter)');
+        '« Préparer » le sentier de production (cle catalog-enter)');
     if (!entered) {
-      await tapIfPresent(tester, enterBtn, P, 'cockpit',
-          'Entrer (1er sentier du catalogue)');
+      await tapIfPresent(tester, preparerBtn, P, 'cockpit',
+          '« Préparer » (1er sentier du catalogue)');
     }
     await settleAndShoot(tester, P, '07_apres_entrer');
     _logLocation(tester, P, 'apres_entrer');
@@ -129,10 +176,10 @@ void main() {
     // EXIGENCE — issue 1 (FIX CYCLE 2). Ce test PRETEND verifier que « Entrer »
     // mene au cockpit et non a la carte de navigation : jusqu'ici il se
     // contentait de le LOGuer. C'est desormais une exigence.
-    exige(P, 'cockpit', entered || present(enterBtn),
-        '« Entrer » est atteignable sur le sentier vitrine');
+    exige(P, 'cockpit', entered || present(preparerBtn),
+        '« Préparer » est atteignable sur le sentier de production');
     exige(P, 'cockpit', !onMapAfterEnter,
-        '« Entrer » ouvre le COCKPIT de preparation, PAS la carte terrain');
+        '« Préparer » ouvre le COCKPIT de preparation, PAS la carte terrain');
 
     // Filet : si (regression) on atterrissait quand meme sur la carte, on
     // rejoint le cockpit par le chemin utilisateur (Mes treks -> trek possede).
@@ -555,13 +602,34 @@ void main() {
     // ou il n'est plus : faux positif garanti. On repart du haut (etat connu,
     // la liste est virtualisee) PUIS on DESCEND jusqu'au bouton.
     await _scrollToTop(tester, P);
+    // ================================================================
+    // LA PORTE DE DEPART A QUATRE CONDITIONS, PLUS TROIS (tache 650)
+    // ================================================================
+    //
+    // CE QUE CE SCENARIO CROYAIT, ET QUI EST FAUX DEPUIS LE 26/09. Il exigeait
+    // « le gate est OUVERT apres Itineraire + Programme + date ». Le gate
+    // ([prepareCoreDoneProvider]) en compte QUATRE depuis la decision du 26/09 :
+    // la FICHE MEDICALE remplie ET ses conseils lus
+    // ([healthPrepareDoneProvider]) sont la quatrieme. Lea faisait donc trois
+    // choses sur quatre et le scenario accusait le produit de ne pas la laisser
+    // partir : c'etait le produit qui avait raison.
+    //
+    // ON VERIFIE DESORMAIS LA PORTE ELLE-MEME, ET C'EST PLUS FORT QU'AVANT :
+    // fermee tant que la fiche medicale manque, ouverte des qu'elle est la.
+    // Une porte qu'on ne voit jamais fermee n'est pas une porte.
+    final gateAvantSante = _logGateDemarrage(tester, P, 'avant_fiche_medicale');
+    exige(P, 'demarrer', gateAvantSante == false,
+        'la porte de depart reste FERMEE tant que la fiche medicale manque, '
+        'meme avec Itineraire + Programme + date (4e condition, decision du '
+        '26/09 — lu = ${gateAvantSante ?? "illisible"})');
+    await _poserLaFicheMedicale(tester, P);
     final gate = _logGateDemarrage(tester, P, 'avant_demarrage');
     // EXIGENCE — Lea a fait TOUT ce que l'app lui demande (Itineraire, Programme,
-    // date de depart) : le gate DOIT etre ouvert. Un gate ferme ici signifierait
-    // qu'un randonneur qui a tout prepare ne peut pas partir.
+    // date de depart, fiche medicale) : le gate DOIT etre ouvert. Un gate ferme
+    // ici signifierait qu'un randonneur qui a tout prepare ne peut pas partir.
     exige(P, 'demarrer', gate == true,
         'le gate de demarrage est OUVERT apres Itineraire + Programme + date '
-        '(lu = ${gate ?? "illisible"})');
+        '+ fiche medicale (lu = ${gate ?? "illisible"})');
     final startCta = textFrEn('Démarrer la randonnée', 'Start the trek');
     await scrollUntil(tester, startCta, P, 'demarrer',
         'CTA Demarrer la randonnee (BAS du cockpit, apres ~12 cartes)',
@@ -573,6 +641,39 @@ void main() {
     exige(P, 'demarrer', ctaActif == true,
         'le CTA « Démarrer la randonnée » est present ET actif '
         '(lu = ${ctaActif?.toString() ?? "absent de l arbre"})');
+
+    // ================================================================
+    // LE MUR PAYANT, ET IL S'INTERCALE ICI (tache 650, decisions 638 + 594)
+    // ================================================================
+    //
+    // POURQUOI CE BLOC EXISTE DEPUIS LE 30/09. Lea a tout prepare, et elle le
+    // pouvait : la preparation est gratuite. Mais REALISER la randonnee demande
+    // d'avoir achete le sentier — il n'y a plus aucun sentier offert au
+    // catalogue (lot 638, decision de Christophe du 29/09 14:17), et
+    // l'abonnement n'y change RIEN (regle du 30/09 16:20 : il ne touche que la
+    // publicite et la cagnotte).
+    //
+    // CE QU'ON EXIGE, ET C'EST LA REGLE DU LOT 594 : le refus n'est pas un
+    // bouton qui ne repond pas. Il DIT pourquoi (« Réaliser une randonnée
+    // demande de l'avoir débloquée. La préparation reste gratuite. ») et il
+    // OUVRE le chemin d'achat. Un bouton actif qui ne produirait rien serait un
+    // geste mort ; un mur muet serait une panne.
+    final prevolDejaVuEtRefuse = await _verifierLeMurPayant(tester, P, startCta);
+
+    // Lea achete alors le sentier — par le VRAI service de production, avec ses
+    // regles et son verdict (aucune surcharge de provider). C'est SEULEMENT
+    // apres cet achat que le terrain doit s'ouvrir, et tout ce qui suit le
+    // verifie.
+    final possede =
+        await acheterLeSentierPourDeVrai(tester, kSentierDeProduction, P);
+    exige(P, 'achat', possede,
+        'apres l achat par le chemin de production, le sentier est POSSEDE '
+        '(c est la seule cle qui ouvre la realisation)');
+    await _goHome(tester, P);
+    await _scrollToTop(tester, P);
+    await scrollUntil(tester, startCta, P, 'demarrer',
+        'CTA Demarrer la randonnee (apres achat)', maxScrolls: 25);
+    await settleAndShoot(tester, P, '19b2_apres_achat');
 
     // ============ C2 — LE DEMARRAGE NE DOIT PLUS ETRE RECOUVERT ============
     // CE QUI S'EST PASSE EN N1 (MAJEUR-1) : au tout premier « Démarrer », un
@@ -618,8 +719,17 @@ void main() {
     // si la permission de fond n'est ni accordee ni deja refusee.
     final prevol =
         find.byKey(const ValueKey('background-tracking-rationale-dialog'));
-    final prevolVu = await waitFor(tester, prevol,
-        timeout: const Duration(seconds: 8));
+    // LE PRE-VOL NE SE POSE QU'UNE FOIS, ET IL S'EST DEJA POSE (tache 650).
+    //
+    // `ensureBackgroundTrackingExplained` n'ouvre son explication que si la
+    // permission de fond n'est NI accordee NI deja refusee. Or Lea vient de la
+    // refuser (« Plus tard ») au premier « Démarrer », celui qui a rencontre le
+    // mur payant : l'application a donc DEJA explique, et elle a raison de ne
+    // pas reposer la question. L'exigence C2 reste entiere — un pre-vol
+    // explique s'affiche AVANT toute demande systeme — elle est simplement
+    // satisfaite par l'observation faite au premier depart.
+    final prevolVu = prevolDejaVuEtRefuse ||
+        await waitFor(tester, prevol, timeout: const Duration(seconds: 8));
     await settleAndShoot(tester, P, '19c_prevol_permission');
     logStep(
         P,
@@ -629,7 +739,7 @@ void main() {
     exige(P, 'demarrer', prevolVu,
         'C2 : un PRE-VOL EXPLIQUE s affiche DANS l application avant toute '
         'demande systeme de suivi de fond');
-    if (prevolVu) {
+    if (present(prevol)) {
       exige(P, 'demarrer', present(find.text(t.tracking.backgroundRationale.body)),
           'le pre-vol EXPLIQUE a quoi sert la permission avant de la demander');
       exige(
@@ -956,6 +1066,146 @@ void main() {
         '${ecransSystemeBloquants().join(", ")}');
     verdictPersona(P, minimumExigences: 20);
   });
+}
+
+/// POSE LA QUATRIEME CONDITION DE LA PORTE DE DEPART : LA FICHE MEDICALE
+/// (tache 650, decision du 26/09).
+///
+/// POURQUOI PAR LE NOTIFIER ET NON PAR L'ECRAN. La fiche medicale a son propre
+/// ecran, ses propres bornes et son propre consentement article 9 — et ils sont
+/// deja eprouves ailleurs (`test/comportement/`, personas 573, et la fiche
+/// d'urgence du lot 630). Rejouer ici la saisie complete allongerait S1 de
+/// plusieurs minutes sans rien prouver de plus. Ce que S1 doit prouver, c'est
+/// LA PORTE : fermee sans la fiche, ouverte avec.
+///
+/// On passe donc par le VRAI notifier de production
+/// ([healthPrepareStepsProvider]), celui-la meme que l'ecran appelle — aucune
+/// surcharge, aucun drapeau invente : les deux signaux poses sont ceux que
+/// l'ecran pose, et la porte les lit comme elle lit les autres.
+Future<void> _poserLaFicheMedicale(WidgetTester tester, String persona) async {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final c = ProviderScope.containerOf(element, listen: false);
+    final notifier = c.read(healthPrepareStepsProvider.notifier);
+    await notifier.setFilled(true);
+    await notifier.markAdviceRead();
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    logStep(
+        persona,
+        'demarrer',
+        'Fiche medicale posee par le notifier de production (remplie + '
+            'conseils lus) : etat lu = ${c.read(healthPrepareDoneProvider)}');
+  } catch (e) {
+    logStep(persona, 'demarrer',
+        'COINCE : impossible de poser la fiche medicale : $e');
+  }
+}
+
+/// LE MUR PAYANT DE LA REALISATION, EPROUVE SUR L'ECRAN (tache 650).
+///
+/// CE QU'IL VERIFIE, ET DANS CET ORDRE :
+///   1. le CTA « Démarrer la randonnée » repond — un bouton actif qui ne
+///      produirait RIEN serait un geste mort (regle du LOT X) ;
+///   2. ce qu'il produit est le REFUS EXPLIQUE du lot 594, pas la carte : le
+///      dialogue `realisation-verrouillee`, avec sa raison ECRITE ;
+///   3. la raison dit les DEUX moities de la decision du 30/09 : realiser
+///      demande l'achat, ET la preparation reste gratuite ;
+///   4. le mur propose d'ACHETER — il ne laisse pas le randonneur sans porte ;
+///   5. on peut en sortir sans acheter, et on n'est PAS parti en rando.
+///
+/// LE MOT « ABONNEMENT » N'A RIEN A FAIRE ICI, et c'est exige : regle de
+/// Christophe du 30/09 16:20, « l'abonnement c'est SEULEMENT pour ne pas voir la
+/// pub ». Un mur qui proposerait un abonnement pour partir en rando mentirait
+/// sur le modele economique.
+Future<bool> _verifierLeMurPayant(
+  WidgetTester tester,
+  String persona,
+  Finder startCta,
+) async {
+  final pasEncorePossede = !await sentierPossede(tester, kSentierDeProduction);
+  exige(persona, 'mur_payant', pasEncorePossede,
+      'AVANT tout achat, le sentier de production n est PAS possede '
+      '(plus aucun sentier gratuit au catalogue — decision du 29/09 14:17)');
+
+  final tape = await tapIfPresent(
+      tester, startCta, persona, 'mur_payant', 'CTA Demarrer sans avoir achete');
+  exige(persona, 'mur_payant', tape,
+      'le CTA « Démarrer la randonnée » repond a l appui (un bouton actif qui '
+      'ne produit rien serait un geste mort)');
+  // La proximite GPS peut poser d'abord « Démarrer quand même ? » : le mur est
+  // DERRIERE cette confirmation, pas devant. On la franchit.
+  await tapIfPresent(
+      tester,
+      textFrEn('Démarrer quand même', 'Start anyway'),
+      persona,
+      'mur_payant',
+      'confirmer « Démarrer quand même » (position indispo)',
+      warnIfMissing: false);
+  // ET LE PRE-VOL DE PERMISSION PASSE ENCORE AVANT (mesure du 30/09).
+  //
+  // CE QUE L'APPLICATION FAIT, DANS CET ORDRE : `_start()` appelle
+  // `ensureBackgroundTrackingExplained` AVANT `ensureSingleActiveThenStart`
+  // (hub_start_trek_button.dart:169-175). Sur un sentier NON ACHETE, elle
+  // demande donc la localisation « Toujours » pour une randonnee qu'elle va
+  // refuser deux secondes plus tard. Le mur payant est DERRIERE ce dialogue :
+  // sans y repondre, on ne le voit jamais.
+  //
+  // CET ORDRE EST RAPPORTE comme une observation (demander une permission
+  // sensible pour un geste qu'on va refuser), il n'est PAS corrige ici : ce
+  // scenario mesure, il ne repare pas.
+  final prevolAvantLeMur = await waitFor(
+      tester, find.byKey(const ValueKey('background-tracking-rationale-dialog')),
+      timeout: const Duration(seconds: 6));
+  logStep(
+      persona,
+      'mur_payant',
+      'Pre-vol de permission de suivi affiche AVANT le controle d achat = '
+          '$prevolAvantLeMur (l application demande la localisation '
+          '« Toujours » pour une rando qu elle va refuser faute d achat).');
+  if (prevolAvantLeMur) {
+    await tapIfPresent(tester, find.text(t.tracking.backgroundRationale.later),
+        persona, 'mur_payant', '« Plus tard » du pre-vol (avant le mur)',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+  }
+  final murVu =
+      await waitFor(tester, murDeRealisation, timeout: const Duration(seconds: 10));
+  await settleAndShoot(tester, persona, '19b1_mur_payant');
+  exige(persona, 'mur_payant', murVu,
+      'le refus d achat s AFFICHE (dialogue « realisation-verrouillee ») au '
+      'lieu d ouvrir la carte : realiser exige l achat (lot 594)');
+  if (murVu) {
+    exige(
+        persona,
+        'mur_payant',
+        present(find.text(t.monetization.realizationLockedTitle)),
+        'le mur porte son TITRE : « ${t.monetization.realizationLockedTitle} »');
+    exige(
+        persona,
+        'mur_payant',
+        present(find.text(t.monetization.realizationLockedBody)),
+        'le mur DIT pourquoi, et dit que la preparation reste gratuite');
+    exige(persona, 'mur_payant', present(find.text(t.monetization.buyCta)),
+        'le mur OUVRE le chemin d achat (« ${t.monetization.buyCta} »)');
+    // REGLE #100945 A L'ECRAN : pas un mot d'abonnement sur un droit de sentier.
+    exige(
+        persona,
+        'mur_payant',
+        find.textContaining('bonnement', findRichText: true).evaluate().isEmpty,
+        'le mur ne parle JAMAIS d abonnement : l abonnement ne donne aucun '
+        'droit sur un sentier (regle de Christophe du 30/09 16:20)');
+    // On SORT sans acheter : le mur ne doit pas etre un cul-de-sac.
+    await tapIfPresent(tester, find.text(t.navPilote.startCancel), persona,
+        'mur_payant', 'refermer le mur sans acheter', warnIfMissing: false);
+    await pumpAndSettleTolerant(tester);
+    exigeAbsent(murDeRealisation, persona, 'mur_payant',
+        'le mur payant apres l avoir referme (aucun cul-de-sac)');
+  }
+  // CONTRE-PREUVE : sans achat, on n est PAS parti en randonnee.
+  exige(persona, 'mur_payant', !_onMap(tester),
+      'sans achat, la carte de navigation NE s ouvre PAS (la realisation est '
+      'bien refusee, pas seulement commentee)');
+  return prevolAvantLeMur;
 }
 
 /// Retour arriere (bouton back de l AppBar ou pop du routeur).
@@ -1310,14 +1560,29 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
         'SAISIE morpho par index ($n champs) : 32/165/62 (repli label partiel=$filledByLabel)');
   }
   // Consentement morpho (art. 9) : activer le SwitchListTile s'il est off.
+  //
+  // ON LE FAIT DEFILER JUSQU'A L'ECRAN AVANT DE LE TOUCHER (tache 650, mesure
+  // du 30/09). La fiche est une liste defilante et la bascule d'accord est SOUS
+  // les trois champs : une fois le clavier ouvert, elle sort de l'ecran. Le tap
+  // partait donc dans le vide — et `warnIfMissed: false` le taisait. L'accord
+  // n'etait jamais donne, l'enregistrement etait refuse (lot 560), et le
+  // scenario exigeait ensuite un verdict de faisabilite qui ne POUVAIT PAS
+  // exister : il accusait le produit d'un defaut qui etait dans le harnais.
+  // On lit aussi la valeur APRES le geste : un tap qui ne bascule rien se voit.
   final consentSwitch = find.byType(SwitchListTile);
   if (consentSwitch.evaluate().isNotEmpty) {
+    await tester.ensureVisible(consentSwitch.first);
+    await pumpAndSettleTolerant(tester);
     final tile = tester.widget<SwitchListTile>(consentSwitch.first);
     if (tile.value != true) {
       await tester.tap(consentSwitch.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(persona, 'fiche_info',
-          'Consentement morpho (art. 9) ACTIVE (requis pour enregistrer la morpho)');
+      final apres = tester.widget<SwitchListTile>(consentSwitch.first).value;
+      logStep(
+          persona,
+          'fiche_info',
+          'Consentement morpho (art. 9) : bascule tapee, valeur lue APRES = '
+              '$apres (requis pour enregistrer la morpho)');
     } else {
       logStep(persona, 'fiche_info', 'Consentement morpho deja actif');
     }

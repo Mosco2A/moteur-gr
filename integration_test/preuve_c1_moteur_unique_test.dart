@@ -29,7 +29,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
@@ -246,9 +245,30 @@ Future<void> _mesurerProfil(
           '$verdictEntrainement');
 
   // --- LA CONFRONTATION : un seul moteur, donc une seule reponse ---
+  //
+  // PAS DE VERDICT N'EST UNE REPONSE, ET C'EST MEME LA BONNE (tache 650).
+  // Depuis la correction D1 (tache 555), l'ecran de faisabilite N'ANNONCE RIEN
+  // tant que tous les criteres ne sont pas remplis : sur un profil VIERGE, il
+  // est donc NORMAL qu'aucun libelle de verdict ne soit lisible. Cette preuve
+  // le comptait comme une contradiction et rapportait un defaut la ou le
+  // produit applique une decision.
+  //
+  // LA COHERENCE RESTE EXIGEE, ET ELLE EST MEME PLUS FINE : quand la
+  // Faisabilite se TAIT, l'Entrainement doit se taire aussi. Un bandeau de
+  // prudence sans verdict serait la meme faute de fond que le defaut MAJEUR-4,
+  // dans l'autre sens.
   if (libelle == null) {
-    _contradiction('${profil.cle} : aucun libelle de verdict lisible sur '
-        'l ecran Faisabilite — impossible de confronter');
+    logStep(
+        P,
+        'mesure',
+        '${profil.cle} : aucun verdict affiche — attendu sur un profil '
+            'incomplet depuis la correction D1. On verifie que l Entrainement '
+            'se tait aussi.');
+    if (bandeau) {
+      _contradiction('${profil.cle} : la Faisabilite ne rend AUCUN verdict '
+          '(criteres incomplets) mais l Entrainement affiche quand meme le '
+          'bandeau de prudence — deux sources subsistent');
+    }
     return;
   }
 
@@ -314,35 +334,28 @@ Future<void> _entrerPremierSentier(WidgetTester tester) async {
   await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
       P, 'contexte', 'Decouvrir des sentiers', warnIfMissing: false);
   await pumpAndSettleTolerant(tester);
-  await tapIfPresent(tester, textFrEn('Entrer', 'Enter'), P, 'contexte',
-      'Entrer dans le sentier', warnIfMissing: false);
+  // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639. Le libelle
+  // « Entrer » n'existe plus nulle part : ce tap ne trouvait plus rien et le
+  // scenario continuait sur le sentier par defaut, sans le dire. On vise la
+  // CLE du produit, qui n'a pas change.
+  await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P, 'contexte',
+      '« Préparer » le sentier de production', warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
 }
 
-/// Debloque l'ecran Entrainement par le VRAI chemin : on recharge le
-/// portefeuille puis on achete le sentier (le wallet couvre tout -> `owned`).
+/// DEBLOQUE L'ECRAN ENTRAINEMENT — PAR L'ACQUISITION, PLUS PAR LA BOUTIQUE.
+///
+/// CE QUI NE MARCHE PLUS, ET C'EST MESURE (tache 650). Ce helper rechargeait le
+/// portefeuille avec un identifiant de produit invente
+/// (`productId: 'preuve_c1_interne'`). `wallet_iap_service.dart:240` l'interdit
+/// desormais par une assertion : « productId recharge inconnu ». Le deblocage
+/// echouait donc en silence, et les six profils rendaient tous
+/// « aucun libelle de verdict lisible » — une preuve qui ne prouvait rien.
+///
+/// ON PASSE PAR L'ACQUISITION DU HARNAIS, qui ecrit le droit dans la table que
+/// l'achat confirme ecrit lui-meme, et que le VRAI service relit.
 Future<void> _debloquerEntrainement(WidgetTester tester, String trailId) async {
-  final c = _container(tester);
-  if (c == null) return;
-  try {
-    final service = await c
-        .read(monetizationReadyProvider.future)
-        .timeout(const Duration(seconds: 15));
-    await service.rechargeWallet(const StepPack(
-      steps: 999,
-      priceEur: 0,
-      productId: 'preuve_c1_interne',
-    ));
-    // LE PRIX N'EST PLUS PASSE (avenant 614) : le service le lit au catalogue
-    // effectif. Ce test lisait `trailConfigProvider.totalStages` pour le lui
-    // donner — c'est desormais exactement ce que le service fait lui-meme.
-    final outcome = await service.buyTrail(trailId);
-    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
-    logStep(P, 'deblocage',
-        'Entrainement debloque par le portefeuille : ${outcome.status.name}');
-  } catch (e) {
-    logStep(P, 'deblocage', 'COINCE : deblocage impossible : $e');
-  }
+  await acheterLeSentierPourDeVrai(tester, trailId, P);
 }
 
 /// Ecrit le profil par les VRAIS notifiers, puis invalide la chaine de calcul
