@@ -10,6 +10,7 @@ import '../config/trail_catalog.dart';
 import '../config/trail_selection.dart';
 import '../data/daos/no_ads_dao.dart';
 import '../data/daos/trek_entitlements_dao.dart';
+import '../config/ad_config.dart';
 import '../data/database.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
@@ -1181,6 +1182,27 @@ class MonetizationService {
   /// Aucune UI ne recalcule cette règle ; `AdService.shouldShowAd(isPaid: …)`
   /// se branche dessus (branchement app-wide = ST7, hors périmètre ST4).
   Future<bool> isNoAdsActive(String trailId) async {
+    // MODE PUBS DE TEST : SEUL L'ABONNEMENT ETEINT LA PUBLICITE
+    // (tache 639, DEM-260930-1224).
+    //
+    // La demande de Christophe : « Et j aimerais voir les pubs sur la version de
+    // test », et la règle posée avec Skynet : « bannière et vidéo de test
+    // visibles sur tout sentier tant qu'on n'est pas abonné ». Sans cette
+    // dérogation, un testeur qui possède le sentier qu'il teste ne voit JAMAIS de
+    // publicité — l'exception « acheté » suffit à tout éteindre, et c'est
+    // exactement ce qui s'est passé quand le sentier gratuit a disparu du
+    // catalogue.
+    //
+    // L'ABONNEMENT RESTE RESPECTE, ET C'EST VOULU : c'est le seul des trois états
+    // qui se PAIE en argent tous les mois. Le priver de ce qu'il paie, même sur un
+    // build de test, serait la mauvaise dérogation — et c'est aussi ce qui permet
+    // de VERIFIER que l'abonnement éteint bien la publicité.
+    //
+    // ELLE NE PEUT PAS ATTEINDRE LA PRODUCTION : [AdConfig.testAdsForced] rend
+    // `false` dès qu'un ad-unit de production est injecté, quel que soit le
+    // `--dart-define`. Un build de release porte ses vrais identifiants.
+    if (AdConfig.testAdsForced) return isSubscriberActive();
+
     // ACHETÉ : permanent, sans échéance (le « sauf » de la règle de Chris).
     if (await accessFor(trailId) == TrailAccess.owned) return true;
     if (await isSubscriberActive()) return true;

@@ -73,12 +73,12 @@ bool _pubPossible(Ref ref) => ref.watch(adsReadyProvider).value ?? false;
 /// par `choisirSentier` (voir sa documentation dans `trail_engine.dart`, qui
 /// porte la mécanique complète). On garde la garde parce qu'elle évite un
 /// abonnement inutile ; on ne lui laisse pas un mérite qu'elle n'a pas.
-final _trekDroitChangeProvider =
-    StreamProvider.autoDispose.family<TrekEntitlement?, String>((ref, trailId) {
-  if (trailId.isEmpty) return const Stream.empty();
-  if (!_pubPossible(ref)) return const Stream.empty();
-  return ref.watch(monetizationServiceProvider).watchEntitlement(trailId);
-});
+final _trekDroitChangeProvider = StreamProvider.autoDispose
+    .family<TrekEntitlement?, String>((ref, trailId) {
+      if (trailId.isEmpty) return const Stream.empty();
+      if (!_pubPossible(ref)) return const Stream.empty();
+      return ref.watch(monetizationServiceProvider).watchEntitlement(trailId);
+    });
 
 /// Les mouvements de l'état sans-pub APP-WIDE (abonnement, récompense 24 h).
 ///
@@ -86,11 +86,12 @@ final _trekDroitChangeProvider =
 /// pas au prochain démarrage : c'est la contrepartie que le randonneur vient
 /// littéralement de regarder. Silencieux tant qu'aucune publicité n'est
 /// possible (même raison que [_trekDroitChangeProvider]).
-final _sansPubChangeProvider =
-    StreamProvider.autoDispose<List<NoAdsStateData>>((ref) {
-  if (!_pubPossible(ref)) return const Stream.empty();
-  return ref.watch(databaseProvider).noAdsDao.watchAll();
-});
+final _sansPubChangeProvider = StreamProvider.autoDispose<List<NoAdsStateData>>(
+  (ref) {
+    if (!_pubPossible(ref)) return const Stream.empty();
+    return ref.watch(databaseProvider).noAdsDao.watchAll();
+  },
+);
 
 /// Faut-il AFFICHER une bannière pour ce trek ? (source unique #99404 + UMP)
 ///
@@ -118,8 +119,10 @@ final _sansPubChangeProvider =
 /// qui expire pendant qu'un écran reste ouvert n'est donc vue qu'au montage
 /// suivant. On ne pose pas de minuterie pour cela : réveiller l'application
 /// toutes les minutes pour rallumer une publicité serait un mauvais échange.
-final shouldShowBannerProvider =
-    FutureProvider.autoDispose.family<bool, String>((ref, trailId) async {
+final shouldShowBannerProvider = FutureProvider.autoDispose.family<bool, String>((
+  ref,
+  trailId,
+) async {
   // DEUX EXCEPTIONS A LA PUBLICITE, PAS PLUS. Regle de Chris, 27/09 14:41,
   // verbatim : « TOUT PORTER LA PUB sauf si tu es abonne ou sur le trek que tu
   // as achete .. Pas la peine de mettre plus de regles ». Plus la recompense
@@ -253,25 +256,27 @@ const String adContextHorsTrek = '';
 /// ([MonetizationService.isNoAdsActive]) via [shouldShowBannerProvider]. Les
 /// 24 h de la recompense sont deja comptees en base avec leur echeance — on
 /// s'y branche, on ne les refait pas.
-final bannerAdProvider =
-    FutureProvider.autoDispose.family<LoadedBanner?, String>((
-  ref,
-  trailId,
-) async {
-  final autorisee = await ref.watch(shouldShowBannerProvider(trailId).future);
-  if (!autorisee) return null;
-
-  final personnalisee =
-      await ref.watch(adPersonalizationAllowedProvider.future);
-  final banniere = await ref.watch(bannerAdPresenterProvider).load(
-        BannerAdRequest(
-          unitId: AdConfig.bannerUnitId(),
-          personalized: personnalisee,
-        ),
+final bannerAdProvider = FutureProvider.autoDispose
+    .family<LoadedBanner?, String>((ref, trailId) async {
+      final autorisee = await ref.watch(
+        shouldShowBannerProvider(trailId).future,
       );
-  if (banniere != null) ref.onDispose(banniere.dispose);
-  return banniere;
-});
+      if (!autorisee) return null;
+
+      final personnalisee = await ref.watch(
+        adPersonalizationAllowedProvider.future,
+      );
+      final banniere = await ref
+          .watch(bannerAdPresenterProvider)
+          .load(
+            BannerAdRequest(
+              unitId: AdConfig.bannerUnitId(),
+              personalized: personnalisee,
+            ),
+          );
+      if (banniere != null) ref.onDispose(banniere.dispose);
+      return banniere;
+    });
 
 /// Demande une pub rewarded et, si récompensée, crédite le sans-pub 24 h via la
 /// SOURCE UNIQUE [MonetizationService.grantRewardNoAds].
@@ -283,10 +288,23 @@ final watchRewardedForNoAdsProvider = FutureProvider.autoDispose<bool>((
 ) async {
   final rewarded = ref.watch(rewardedAdServiceProvider);
   final outcome = await rewarded.showRewarded();
-  if (outcome == RewardedOutcome.earned) {
-    final monetization = await ref.read(monetizationReadyProvider.future);
-    await monetization.grantRewardNoAds();
-    return true;
-  }
-  return false;
+  if (outcome != RewardedOutcome.earned) return false;
+  final monetization = await ref.read(monetizationReadyProvider.future);
+  await monetization.grantRewardNoAds();
+  // ON REND CE QUI S'EST REELLEMENT PASSE, PAS CE QU'ON A DEMANDE
+  // (tache 639, avenant).
+  //
+  // LE MENSONGE MESURE : `grantRewardNoAds` ne fait RIEN en mode demo (barriere
+  // d'ecriture du lot 634, « rien ne s'ecrit en demo »), et cette fonction
+  // rendait quand meme `true`. L'interface annoncait donc « Merci ! Sans
+  // publicite pendant 24 h » alors qu'aucune heure n'avait ete accordee, et la
+  // publicite restait a l'ecran. C'est exactement le bouton qui ment que le
+  // projet refuse depuis la tache 579 — et c'etait d'autant plus visible que la
+  // demo montre desormais la banniere de test.
+  //
+  // ON RELIT DONC L'ETAT : la recompense est-elle active ? Si oui, elle a ete
+  // ecrite ; si non, on le dit, et le message devient « Aucune video disponible
+  // pour le moment ». Aucune regle n'est recalculee : on interroge la meme source
+  // unique que celle qui vient d'ecrire.
+  return monetization.isRewardNoAdsActive();
 });

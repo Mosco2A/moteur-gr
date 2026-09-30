@@ -3,11 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'error_handler.dart';
 
 /// Signature d'un rapporteur de plantage (Crashlytics en production).
-typedef RapporteurDePlantage = void Function(
-  Object error,
-  StackTrace? stack, {
-  bool fatal,
-});
+typedef RapporteurDePlantage =
+    void Function(Object error, StackTrace? stack, {bool fatal});
 
 /// LES FILETS D'ERREUR DE L'APPLICATION (596 C4).
 ///
@@ -87,7 +84,32 @@ abstract final class ErrorNets {
     _installes = false;
   }
 
-  static void _rapporter(Object error, StackTrace? stack, {required bool fatal}) {
+  /// SIGNALE UNE ERREUR ATTRAPEE VOLONTAIREMENT — journal LOCAL **et** Crashlytics.
+  ///
+  /// LE TROU MESURE (tache 639, DEM-260930-1224). [ErrorHandler.log] n'ecrit que
+  /// dans le journal LOCAL du telephone, et le rapporteur Crashlytics n'etait
+  /// atteint que par les deux filets globaux ([FlutterError.onError] et
+  /// [PlatformDispatcher.instance.onError]). Or une erreur ATTRAPEE ne passe par
+  /// aucun des deux. Consequence : toutes les pannes que l'application gere
+  /// proprement — dont chaque echec du consentement publicitaire UMP, qui est
+  /// justement ce que Christophe voulait pouvoir constater — restaient invisibles
+  /// a distance. Il fallait les chercher dans les journaux d'un telephone.
+  ///
+  /// A EMPLOYER SUR LES ECHECS QU'ON ABSORBE ET QU'ON VEUT POUVOIR LIRE APRES
+  /// COUP. Toujours NON FATAL : l'application continue, c'est tout le principe
+  /// d'une erreur absorbee. Tant qu'aucun rapporteur n'est branche (mode local,
+  /// sans cloud), le comportement est exactement celui d'avant : le journal
+  /// local, et rien de plus.
+  static void signaler(Object error, {StackTrace? stack, String? context}) {
+    ErrorHandler.log(error, stackTrace: stack, context: context);
+    _rapporter(error, stack, fatal: false);
+  }
+
+  static void _rapporter(
+    Object error,
+    StackTrace? stack, {
+    required bool fatal,
+  }) {
     final rapporteur = _rapporteur;
     if (rapporteur == null) return;
     try {
