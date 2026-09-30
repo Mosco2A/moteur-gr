@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/monetization_service.dart';
 import '../../../../core/services/session_demo.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
@@ -160,13 +161,35 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
   /// arrive : le suivi premier plan n'a pas besoin de la permission de fond.
   Future<void> _start(BuildContext context) async {
     final notifier = ref.read(trekSessionManagerProvider.notifier);
-    // Avant tout : la permission de fond, expliquee puis demandee une seule
-    // fois. Ne jette jamais, ne bloque jamais le demarrage.
+    // LE DROIT D'ABORD, LA PERMISSION ENSUITE (tache 651, defaut C).
     //
-    // SAUF EN DEMO : demander la localisation « Toujours » pour une simulation
-    // serait demander une permission de fond pour une randonnee qui n'aura pas
-    // lieu. La demo ne demande AUCUNE permission.
+    // CET ORDRE ETAIT INVERSE, et il faisait payer au randonneur une question
+    // intime pour un service qu'on allait lui refuser : on lui demandait la
+    // localisation « Toujours » — la permission la plus lourde du systeme, celle
+    // qui suit ses pas quand l'application est fermee — puis on lui annoncait
+    // que la randonnee demandait un achat. Deux gestes dans le mauvais ordre :
+    // la permission obtenue ne servait a rien, et le refus arrivait apres coup.
+    //
+    // MEME SOURCE DE VERITE que la garde d'unicite ([canRealizeTrail]) : on ne
+    // duplique aucune regle de droit, on la consulte simplement AVANT de
+    // deranger le systeme. La garde reste en place derriere (defense en
+    // profondeur), et la branche `purchaseRequired` ci-dessous aussi : un droit
+    // peut disparaitre entre les deux lectures.
+    //
+    // EN DEMO, NI L'UN NI L'AUTRE : la demo ne demande aucune permission (une
+    // permission de fond pour une randonnee qui n'aura pas lieu) et ne demande
+    // aucun droit (elle simule, cf. `demarrerSimulationDemo`).
     if (!ref.read(enDemoProvider)) {
+      final monetization = ref.read(monetizationServiceProvider);
+      if (!await monetization.canRealizeTrail(widget.trailId)) {
+        if (!context.mounted || !mounted) return;
+        await _direPourquoiEtOuAcheter(context);
+        return;
+      }
+      if (!context.mounted || !mounted) return;
+      // La permission de fond, expliquee puis demandee une seule fois. Ne jette
+      // jamais, ne bloque jamais le demarrage : le suivi premier plan n'en a
+      // pas besoin.
       await ensureBackgroundTrackingExplained(context, ref);
     }
     if (!context.mounted || !mounted) return;

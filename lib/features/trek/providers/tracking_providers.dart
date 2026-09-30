@@ -8,6 +8,13 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../map/providers/track_position_provider.dart';
+// TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
+// diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
+// relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
+// (cf. `_finalize`). Sens unique : `adventure_recap_provider` n'importe pas ce
+// fichier, aucun cycle d'import.
+import '../../after/providers/adventure_recap_provider.dart'
+    show latestTrekSessionProvider;
 // TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
 // et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
 // fichier, aucun cycle d'import.
@@ -734,6 +741,38 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     ref.invalidate(currentTrailSummaryProvider);
     ref.invalidate(myTreksProvider);
     ref.invalidate(activeTrekIdProvider);
+
+    // TACHE 651, DEFAUT A (MAJEUR) — ET LA SOURCE DE L'APRES-TREK AVEC ELLES.
+    // FIX-2 avait rafraichi les trois vues du CYCLE DE VIE ci-dessus, mais pas
+    // [latestTrekSessionProvider], qui est la source UNIQUE de tout ce qui
+    // vient apres : `isRecapAvailableProvider`, `isDiplomaUnlockedProvider`,
+    // `adventureStatsProvider` (donc « Mon aventure », le diplome, le journal,
+    // les chiffres, la trace, le partage), et le verrou d'edition du programme
+    // (`trekEditLockProvider`). C'est un `FutureProvider` qui lit la base UNE
+    // fois, et il est tenu VIVANT pendant la rando par ce meme verrou : sa
+    // valeur en cache restait la session `active` d'avant la fin. Le cockpit
+    // basculait donc en phase « Apres » pendant que l'ecran de recap lisait
+    // encore « en cours » et affichait « Disponible a la fin du trek » — deux
+    // verites sur le meme trek au meme instant. Les DONNEES etaient justes en
+    // base ; seule la RELECTURE manquait. Relue ici, donc pour les trois
+    // chemins de sortie (fin manuelle, abandon, arrivee GPS).
+    //
+    // RELECTURE ATTENDUE, et non simplement invalidee : `isRecapAvailableProvider`
+    // est fail-closed pendant le chargement (jamais de faux deverrouillage), et
+    // la fin manuelle ouvre le recap DANS LA FOULEE de ce `stop()`. Une simple
+    // invalidation, paresseuse, laissait donc l'ecran s'ouvrir sur l'etat
+    // verrouille pendant la relecture — le meme ecran faux, pour une raison
+    // differente. On attend la lecture (base locale, quelques millisecondes) ;
+    // best-effort, car un echec de relecture ne doit pas empecher la fin du
+    // trek, qui est deja ecrite en base.
+    ref.invalidate(latestTrekSessionProvider);
+    try {
+      // La lecture qui suit VIDE l'invalidation en attente et attend la base :
+      // a la sortie de `stop()`, l'apres-trek est deja deverrouille.
+      await ref.read(latestTrekSessionProvider.future);
+    } catch (_) {
+      // Best-effort : le trek est termine quoi qu'il arrive.
+    }
   }
 
   /// GO-85 inc2 (persistance ALPHA, porte du finisher) — enregistre l'etape

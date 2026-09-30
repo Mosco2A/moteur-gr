@@ -53,7 +53,8 @@ class TrainingScreen extends ConsumerWidget {
       body: SafeArea(
         child: isDemoAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => _DemoBridledView(trail: trail, planAsync: planAsync),
+          error: (_, __) =>
+              _DemoBridledView(trail: trail, planAsync: planAsync),
           data: (isDemo) => isDemo
               ? _DemoBridledView(trail: trail, planAsync: planAsync)
               : _UnlockedView(trail: trail, planAsync: planAsync),
@@ -151,14 +152,18 @@ class _DemoBridledBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.eprouvette,
-                  size: 20, color: theme.colorScheme.secondary),
+              StepIcon(
+                StepwaysIcons.eprouvette,
+                size: 20,
+                color: theme.colorScheme.secondary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   t.training.demoBridledTitle,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -251,7 +256,11 @@ class _PaywallCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.cadenas, color: theme.colorScheme.primary, size: 22),
+              StepIcon(
+                StepwaysIcons.cadenas,
+                color: theme.colorScheme.primary,
+                size: 22,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -356,6 +365,21 @@ class _PlanContent extends ConsumerWidget {
     // DANS LES DEUX CAS L'ECRAN RESTE DEBOUT ET UTILE : l'encart d'effort du
     // sentier reste (il informe sans rien promettre), et c'est la raison du
     // refus qui prend la place du plan — jamais un ecran vide.
+    // ET LE RAPPEL DE PRUDENCE PART AVEC EUX (tache 651, defaut B — MAJEUR).
+    //
+    // MAJEUR-4 (campagne du 21/09) exige que la Preparation physique ne puisse
+    // pas contredire la Faisabilite : verdict autre que vert -> rappel de
+    // prudence. Ce rappel vit plus bas, dans la SEULE branche « plan deroule ».
+    // Les deux retours anticipes ci-dessous, arrives avec la tache 570, le
+    // court-circuitaient donc : la Faisabilite disait « Rythme a alleger » et
+    // cet ecran ne disait rien (S1 Lea, campagne 650, reproduit trois fois —
+    // elle visite la Preparation physique AVANT de poser sa date).
+    //
+    // Le refus ne bouge pas d'un iota : sans date et sous huit semaines, aucun
+    // programme n'est propose et le motif reste affiche. Seul le rappel les
+    // rejoint — parce qu'un randonneur a qui on ne peut proposer AUCUNE
+    // preparation est precisement celui a qui la prudence doit etre dite.
+    final needsCaution = perso?.needsCaution ?? false;
     if (daysUntil == null) {
       return _NoPlanYet(
         trail: trail,
@@ -364,6 +388,7 @@ class _PlanContent extends ConsumerWidget {
         headline: tr.inviteSetDate,
         explanation: tr.noDateWhy,
         explanationKey: const ValueKey('training-no-date-why'),
+        needsCaution: needsCaution,
       );
     }
     if (belowMinimum) {
@@ -373,11 +398,9 @@ class _PlanContent extends ConsumerWidget {
         daysUntilDeparture: daysUntil,
         icon: StepwaysIcons.sablier,
         headline: tr.tooShortTitle,
-        explanation: tr.tooShortWhy(
-          days: daysUntil,
-          weeks: kTrainingMinWeeks,
-        ),
+        explanation: tr.tooShortWhy(days: daysUntil, weeks: kTrainingMinWeeks),
         explanationKey: const ValueKey('training-too-short-why'),
+        needsCaution: needsCaution,
       );
     }
 
@@ -426,8 +449,9 @@ class _PlanContent extends ConsumerWidget {
         // --- Titre de section ---
         Text(
           tr.planOverWeeks(n: plan.durationWeeks),
-          style: theme.textTheme.titleMedium
-              ?.copyWith(fontWeight: FontWeight.w700),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
 
@@ -445,8 +469,9 @@ class _PlanContent extends ConsumerWidget {
             key: ValueKey('training-phase-${phase.id}'),
             phase: phase,
             isDone: progress.isDone,
-            onToggle: (id) =>
-                ref.read(trainingProgressProvider(trail.id).notifier).toggle(id),
+            onToggle: (id) => ref
+                .read(trainingProgressProvider(trail.id).notifier)
+                .toggle(id),
           ),
         const SizedBox(height: AppTheme.spacingSm),
 
@@ -502,8 +527,11 @@ class _IntroEffortCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const StepIcon(StepwaysIcons.preparationPhysique,
-              color: AppTheme.bleuRepos, size: 24),
+          const StepIcon(
+            StepwaysIcons.preparationPhysique,
+            color: AppTheme.bleuRepos,
+            size: 24,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -517,8 +545,7 @@ class _IntroEffortCard extends StatelessWidget {
                   ),
                   style: theme.textTheme.bodyMedium,
                 ),
-                if (daysUntilDeparture != null &&
-                    daysUntilDeparture! >= 0) ...[
+                if (daysUntilDeparture != null && daysUntilDeparture! >= 0) ...[
                   const SizedBox(height: AppTheme.spacingXs),
                   Text(
                     tr.countdown(days: daysUntilDeparture!),
@@ -579,15 +606,19 @@ class _PhaseBlock extends StatelessWidget {
       child: ExpansionTile(
         // 1re phase ouverte par defaut (maquette).
         initiallyExpanded: phase.id == 'foundation',
-        leading: StepIcon(_phaseIcon(phase.icon), color: theme.colorScheme.primary),
+        leading: StepIcon(
+          _phaseIcon(phase.icon),
+          color: theme.colorScheme.primary,
+        ),
         title: Text(
           tr.phaseWeeks(
             start: phase.weekStart,
             end: phase.weekEnd,
             title: title,
           ),
-          style: theme.textTheme.titleSmall
-              ?.copyWith(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         subtitle: subtitle.isEmpty
             ? null
@@ -654,8 +685,11 @@ class _ObjectiveCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const StepIcon(StepwaysIcons.maPosition,
-              color: AppTheme.orangeDifficile, size: 22),
+          const StepIcon(
+            StepwaysIcons.maPosition,
+            color: AppTheme.orangeDifficile,
+            size: 22,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -756,7 +790,11 @@ class _InviteBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          StepIcon(icon, size: 20, color: theme.colorScheme.onSecondaryContainer),
+          StepIcon(
+            icon,
+            size: 20,
+            color: theme.colorScheme.onSecondaryContainer,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -790,12 +828,13 @@ class _WarningBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const StepIcon(StepwaysIcons.danger,
-              size: 20, color: AppTheme.orangeDifficile),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodySmall),
+          const StepIcon(
+            StepwaysIcons.danger,
+            size: 20,
+            color: AppTheme.orangeDifficile,
           ),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(child: Text(message, style: theme.textTheme.bodySmall)),
         ],
       ),
     );
@@ -835,6 +874,7 @@ class _NoPlanYet extends StatelessWidget {
     required this.headline,
     required this.explanation,
     required this.explanationKey,
+    required this.needsCaution,
     this.daysUntilDeparture,
   });
 
@@ -851,6 +891,14 @@ class _NoPlanYet extends StatelessWidget {
   /// Cle de reperage du motif (distingue les deux refus a l'oeil comme en test).
   final Key explanationKey;
 
+  /// Le verdict du moteur unique appelle-t-il un rappel de prudence ?
+  ///
+  /// TACHE 651, DEFAUT B : le rappel de MAJEUR-4 ne vivait que dans la branche
+  /// « plan deroule ». Il doit suivre le VERDICT, pas la disponibilite du
+  /// programme — sinon les deux ecrans se contredisent a nouveau des que le
+  /// programme n'est pas proposable.
+  final bool needsCaution;
+
   /// Compte a rebours, quand il existe (refus « trop court » seulement).
   final int? daysUntilDeparture;
 
@@ -866,6 +914,12 @@ class _NoPlanYet extends StatelessWidget {
           daysUntilDeparture: daysUntilDeparture,
         ),
         const SizedBox(height: AppTheme.spacingBase),
+        // Le rappel de prudence AVANT le motif du refus : il parle du
+        // randonneur face au sentier, le refus ne parle que du calendrier.
+        if (needsCaution) ...[
+          _WarningBanner(message: t.training.cautionVerdictNotice),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
         AppCard(
           key: const ValueKey('training-no-plan'),
           backgroundColor: AppTheme.orangeDifficile.withAlpha(20),
@@ -882,8 +936,9 @@ class _NoPlanYet extends StatelessWidget {
                   Expanded(
                     child: Text(
                       headline,
-                      style: theme.textTheme.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
