@@ -14,9 +14,12 @@
 //   fenetre marquee « OFFLINE » de ce test. Le test, lui, OBSERVE que le contenu
 //   (entrainement, carte) reste accessible.
 //
-// NB ACHAT : la vitrine est deja debloquee (jouable) sans achat ; on documente
-//   le parcours d achat demo s il est atteignable, et on VERIFIE surtout la
-//   NON-REGRESSION hors-ligne du contenu premium.
+// NB ACHAT (corrige — tache 650) : IL N'Y A PLUS AUCUN SENTIER GRATUIT au
+//   catalogue depuis le lot 638 (decision de Christophe du 29/09 14:17). Ines
+//   ACHETE donc son sentier par le chemin de production AVANT la coupure, et ce
+//   que ce scenario prouve devient exactement sa promesse : le PAYEUR n'est
+//   jamais bloque hors-ligne. L'abonnement n'entre pas ici — il ne donne aucun
+//   droit sur un sentier (regle de Christophe du 30/09 16:20).
 //
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
@@ -24,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -66,23 +70,37 @@ void main() {
     } else {
       await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
           P, 'entree', 'Decouvrir des sentiers');
-      await tapIfPresent(
-          tester,
-          find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
-          P,
-          'entree',
-          'Entrer dans la vitrine');
+      // TACHE 650 — « PREPARER » remplace « Entrer » (lot 639) ; cle inchangee.
+      await tapIfPresent(tester, boutonPreparer(kSentierDeProduction), P,
+          'entree', '« Préparer » le sentier de production');
       await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '03_cockpit');
     _logLocation(tester, P, 'cockpit');
 
-    // --- Achat (demo) : documenter le parcours si un CTA d achat existe ---
-    // La vitrine est deja jouable ; on cherche un eventuel « Debloquer » (paywall
-    // entrainement) pour montrer le geste d achat, sinon on note l etat.
-    logStep(P, 'achat',
-        'Vitrine deja debloquee (jouable sans achat). Recherche d un CTA achat/'
-        'Debloquer a titre de demonstration.');
+    // ================================================================
+    // INES ACHETE — ELLE EST LA PAYEUSE, ET IL N'Y A PLUS RIEN D'OFFERT
+    // (tache 650)
+    // ================================================================
+    //
+    // CE QUI ETAIT ECRIT ICI, ET QUI EST FAUX DEPUIS LE 29/09 : « la vitrine est
+    // deja debloquee (jouable sans achat) ». Le lot 638 a retire tout sentier
+    // gratuit du catalogue. Ce scenario mesurait donc la non-regression
+    // hors-ligne d'un contenu que personne n'avait paye — c'est-a-dire pas le
+    // cas d'Ines. LA PREMISSE CORRIGEE REND LE SCENARIO PLUS JUSTE, PAS PLUS
+    // FAIBLE : Ines PAIE, puis on coupe le reseau, et son droit doit tenir.
+    //
+    // L'achat emprunte le SERVICE DE PRODUCTION (portefeuille + `buyTrail`) :
+    // aucune surcharge de provider, le droit obtenu est le vrai `owned`, stocke
+    // en local (Drift) — et c'est justement ce stockage local qui doit resister
+    // a la coupure reseau.
+    final possede =
+        await acheterLeSentierPourDeVrai(tester, kSentierDeProduction, P);
+    exige(P, 'achat', possede,
+        'Ines POSSEDE le sentier apres son achat (c est le droit qui devra '
+        'survivre a la coupure reseau)');
+    await _goHome(tester, P);
+    await settleAndShoot(tester, P, '03b_apres_achat');
 
     // --- FENETRE ONLINE : verifier l acces AVANT coupure ---
     // Entrainement (contenu premium).
@@ -96,16 +114,25 @@ void main() {
     final unlockOnline = present(find.textContaining('Débloquer'));
     final sessionsOnline = present(find.byWidgetPredicate(
         (w) => w.key.toString().contains('training-session-')));
+    // TROISIEME ETAT LISIBLE, MESURE LE 30/09 : l'ecran invite a POSER LA DATE
+    // DE DEPART (« Sans date de depart, ce plan n'a pas de fin »). Ines a
+    // achete son sentier mais n'a pas encore de date : elle ne voit donc ni
+    // teaser d'achat, ni seances, et pourtant l'ecran DIT quelque chose de
+    // clair. Le detecteur n'en connaissait que deux etats et rapportait un
+    // ecran muet la ou l'application parle.
+    final inviteDateOnline = present(find.text(t.training.inviteSetDate));
     logStep(P, 'entrainement_online',
         'Paywall « Débloquer » visible ONLINE = $unlockOnline ; '
-        'seances presentes ONLINE = $sessionsOnline');
+        'seances presentes ONLINE = $sessionsOnline ; invitation a poser la '
+        'date ONLINE = $inviteDateOnline');
     // EXIGENCE — l'ecran doit dire quelque chose de LISIBLE en ligne : soit le
     // plan (debloque), soit le teaser d'achat. C'est l'etat de REFERENCE auquel
     // on comparera l'etat hors-ligne : sans reference, « rien n'a change » ne
     // veut rien dire.
-    exige(P, 'entrainement_online', unlockOnline || sessionsOnline,
-        'EN LIGNE, l Entrainement affiche un etat lisible (plan debloque ou '
-        'teaser d achat)');
+    exige(P, 'entrainement_online',
+        unlockOnline || sessionsOnline || inviteDateOnline,
+        'EN LIGNE, l Entrainement affiche un etat lisible (plan debloque, '
+        'teaser d achat, ou invitation a poser la date de depart)');
     await _back(tester, P, 'entrainement_online');
 
     // Carte offline (contenu premium terrain).
@@ -138,6 +165,7 @@ void main() {
     final blockedOffline = present(find.textContaining('Débloquer'));
     final sessionsOffline = present(find
         .byWidgetPredicate((w) => w.key.toString().contains('training-session-')));
+    final inviteDateOffline = present(find.text(t.training.inviteSetDate));
     logStep(
         P,
         'entrainement_offline',
@@ -153,10 +181,14 @@ void main() {
     exige(
         P,
         'entrainement_offline',
-        sessionsOffline == sessionsOnline && blockedOffline == unlockOnline,
+        sessionsOffline == sessionsOnline &&
+            blockedOffline == unlockOnline &&
+            inviteDateOffline == inviteDateOnline,
         'couper le reseau NE CHANGE RIEN a l acces a l Entrainement '
-            '(en ligne : seances=$sessionsOnline paywall=$unlockOnline ; '
-            'hors ligne : seances=$sessionsOffline paywall=$blockedOffline)');
+            '(en ligne : seances=$sessionsOnline paywall=$unlockOnline '
+            'invite-date=$inviteDateOnline ; hors ligne : '
+            'seances=$sessionsOffline paywall=$blockedOffline '
+            'invite-date=$inviteDateOffline)');
     await _back(tester, P, 'entrainement_offline');
 
     // 2) Carte offline : le fond OSM (reseau) peut ne pas charger, mais l ecran

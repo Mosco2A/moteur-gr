@@ -86,18 +86,21 @@ Future<void> _shoot(
 void main() {
   initHarness();
 
-  testWidgets('PREUVE N2 — D1 le verdict attend, D2 le choix est retenu',
-      (tester) async {
+  testWidgets('PREUVE N2 — D1 le verdict attend, D2 le choix est retenu', (
+    tester,
+  ) async {
     logStep(P, 'boot', 'Lancement de app.main() — preuve correction N2');
     app.main();
-    await _shoot(tester, '00_boot',
-        timeout: const Duration(seconds: 14));
+    await _shoot(tester, '00_boot', timeout: const Duration(seconds: 14));
     await completeOnboardingIfPresent(tester, P);
     await _entrerPremierSentier(tester);
 
     final trailId = _trailIdActif(tester) ?? _trailIdDepuisRoute(tester);
-    expect(trailId, isNotNull,
-        reason: 'sans sentier actif, la faisabilite n a rien a evaluer');
+    expect(
+      trailId,
+      isNotNull,
+      reason: 'sans sentier actif, la faisabilite n a rien a evaluer',
+    );
     _constat('contexte', 'sentier actif = $trailId');
 
     // =====================================================================
@@ -130,8 +133,10 @@ void main() {
     if (present(find.text(t.feasibility.flow.missingProfile))) {
       _ecart('02 : la fiche est remplie mais reste annoncee comme manquante');
     }
-    _constat('D1_morphologie_seule',
-        'aucun verdict + « ${t.feasibility.flow.missingPastHikes} » affiche');
+    _constat(
+      'D1_morphologie_seule',
+      'aucun verdict + « ${t.feasibility.flow.missingPastHikes} » affiche',
+    );
 
     // (c) Le dernier critere obligatoire arrive : une rando passee.
     //
@@ -171,21 +176,44 @@ void main() {
     // =====================================================================
     final joursAvant = _joursDuProgramme(tester, trailId);
     final dureeParDefaut = _dureeParDefaut(tester);
-    final propose = _joursProposesParLeBouton(tester);
+    final propose = await _joursProposesParLeBouton(tester);
     _constat(
-        'D2_avant',
-        'programme = $joursAvant jour(s), duree par defaut du sentier = '
-            '$dureeParDefaut, decoupage propose par le bouton = '
-            '${propose ?? "INTROUVABLE"}');
+      'D2_avant',
+      'programme = $joursAvant jour(s), duree par defaut du sentier = '
+          '$dureeParDefaut, decoupage propose par le bouton = '
+          '${propose ?? "INTROUVABLE"}',
+    );
 
-    if (propose == null) {
-      _ecart('D2 : le bouton « Generer mon programme » est introuvable');
+    // PAS DE BOUTON N'EST PARFOIS LA BONNE REPONSE (tache 650, decision du
+    // lot 569 R1-c). Quand la recherche a essaye TOUTES les valeurs du curseur
+    // et qu'aucune ne fait mieux que rouge, l'ecran N'OFFRE PAS le bouton :
+    // l'appliquer poserait une duree que l'ecran vient de declarer mauvaise
+    // trois lignes plus haut (`assessment.isDurationAdvised`, ecran
+    // trek_feasibility_screen.dart:936). Cette preuve comptait son absence
+    // comme un ecart et accusait le produit d'appliquer sa propre decision.
+    // On LIT donc la decision du moteur avant de conclure.
+    final dureeConseillee = _dureeEstConseillee(tester);
+    if (propose == null && dureeConseillee == false) {
+      _constat(
+        'D2_sans_bouton',
+        'aucun bouton « Generer mon programme », et c est JUSTE : le moteur '
+            'declare qu aucune duree n est conseillable (isDurationAdvised = '
+            'false, lot 569 R1-c). Le conseil franc le dit a sa place.',
+      );
+    } else if (propose == null) {
+      _ecart(
+        'D2 : le bouton « Generer mon programme » est introuvable alors '
+        'que le moteur conseille une duree (isDurationAdvised = '
+        '${dureeConseillee ?? "illisible"})',
+      );
     } else if (propose == joursAvant) {
       // Sans ecart entre le propose et l'existant, « appliquer » et « ne rien
       // faire » donnent le meme ecran : la preuve serait creuse. On le DIT.
-      _ecart('D2 : le decoupage propose ($propose) est deja celui du programme '
-          '($joursAvant) — ce parcours ne peut rien prouver, il faut un profil '
-          'dont la reco differe de la duree du sentier');
+      _ecart(
+        'D2 : le decoupage propose ($propose) est deja celui du programme '
+        '($joursAvant) — ce parcours ne peut rien prouver, il faut un profil '
+        'dont la reco differe de la duree du sentier',
+      );
     }
 
     // Capture AVANT : la ligne dit qu'aucun decoupage n'est retenu.
@@ -195,68 +223,139 @@ void main() {
     // hors champ. `scrollUntil` les trouve sans jamais faire defiler, et la
     // capture montre alors le HAUT de l'ecran — la ligne a prouver reste hors
     // cadre. `ensureVisible` amene reellement la ligne sous les yeux.
-    await _amenerSousLesYeux(tester,
-        find.text(t.feasibility.formula.retainedPlanNone(days: dureeParDefaut)));
+    await _amenerSousLesYeux(
+      tester,
+      find.text(t.feasibility.formula.retainedPlanNone(days: dureeParDefaut)),
+    );
     await _shoot(tester, '04_avant_choix_aucun_decoupage');
-    if (!present(find
-        .text(t.feasibility.formula.retainedPlanNone(days: dureeParDefaut)))) {
+    if (!present(
+      find.text(t.feasibility.formula.retainedPlanNone(days: dureeParDefaut)),
+    )) {
       _ecart('04 : l ecran ne dit pas qu aucun decoupage n est retenu');
     }
     final prefsAvant = await _decoupageStocke(trailId);
     if (prefsAvant != null) {
-      _ecart('04 : un decoupage ($prefsAvant) est deja stocke avant tout choix');
+      _ecart(
+        '04 : un decoupage ($prefsAvant) est deja stocke avant tout choix',
+      );
+    }
+
+    // LE GESTE N EXISTE PAS TOUJOURS, ET LA PREUVE DOIT LE RECONNAITRE
+    // (tache 651, mesure sur emulateur).
+    //
+    // La preuve savait deja dire que l ABSENCE du bouton est parfois la bonne
+    // reponse (lot 569, R1-c : quand la recherche a essaye toutes les durees et
+    // qu aucune ne fait mieux que rouge, proposer un bouton appliquerait une
+    // duree que l ecran vient de declarer mauvaise). Mais elle le disait puis
+    // continuait quand meme : elle cherchait un bouton inexistant, ne pouvait
+    // pas le taper, et enchainait TROIS ecarts — programme inchange, stockage
+    // vide, rien de retenu au retour — qui sont exactement ce qu on ATTEND
+    // quand aucun choix n a ete propose. Le rejeu du 30/09 le mesure noir sur
+    // blanc : « isDurationAdvised = false », suivi de trois ecarts imputes au
+    // produit.
+    //
+    // Ce qui suit — le geste et ses quatre effets — n a donc de sens que si le
+    // moteur PROPOSE quelque chose. Sinon la preuve s arrete ici en DISANT
+    // pourquoi, et la moitie deja etablie (« aucun decoupage retenu », capture
+    // 04) reste acquise : sans conseil, il est JUSTE que rien ne soit retenu.
+    if (propose == null) {
+      _constat(
+        'D2_non_applicable',
+        'moteur sans conseil de duree (isDurationAdvised = '
+            '${dureeConseillee ?? "illisible"}) : aucun geste n est offert, '
+            'donc aucun effet a prouver. Le stockage reste vide et la '
+            'faisabilite annonce toujours la duree par defaut — c est la '
+            'decision du lot 569 R1-c, pas un defaut.',
+      );
+      logStep(
+        P,
+        'fin',
+        'Preuve terminee (D2 non applicable) — '
+            '${_ecarts.length} ecart(s)',
+      );
+      await finalizeScenario(tester, P);
+      await flushJournal(P);
+      expect(
+        _ecarts,
+        isEmpty,
+        reason: 'La correction N2 n est pas prouvee :\n${_ecarts.join('\n')}',
+      );
+      return;
     }
 
     // LE GESTE : choisir le decoupage propose.
-    final bouton = find.text(t.feasibility.formula.generateProgram(
-        days: propose ?? dureeParDefaut));
+    final bouton = find.text(
+      t.feasibility.formula.generateProgram(days: propose),
+    );
     await _amenerSousLesYeux(tester, bouton);
     final tape = await tapIfPresent(
-        tester, bouton, P, 'D2_choix', 'choisir le decoupage propose');
+      tester,
+      bouton,
+      P,
+      'D2_choix',
+      'choisir le decoupage propose',
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
     await _shoot(tester, '05_programme_apres_choix');
     if (!tape) _ecart('D2 : le bouton n a pas pu etre tape');
 
     // EFFET 1 — le programme reel a change.
     final joursApres = _joursDuProgramme(tester, trailId);
-    _constat('D2_effet_programme',
-        'programme : $joursAvant jour(s) avant -> $joursApres apres');
-    if (propose != null && joursApres != propose) {
-      _ecart('D2 : le programme fait $joursApres jours alors que le decoupage '
-          'choisi en annonce $propose');
+    _constat(
+      'D2_effet_programme',
+      'programme : $joursAvant jour(s) avant -> $joursApres apres',
+    );
+    if (joursApres != propose) {
+      _ecart(
+        'D2 : le programme fait $joursApres jours alors que le decoupage '
+        'choisi en annonce $propose',
+      );
     }
 
     // EFFET 2 — c'est ECRIT dans le stockage durable.
     final prefsApres = await _decoupageStocke(trailId);
-    _constat('D2_effet_stockage',
-        'decoupage ecrit dans le stockage durable = ${prefsApres ?? "RIEN"}');
+    _constat(
+      'D2_effet_stockage',
+      'decoupage ecrit dans le stockage durable = ${prefsApres ?? "RIEN"}',
+    );
     if (prefsApres != propose) {
-      _ecart('D2 : stockage durable = ${prefsApres ?? "RIEN"}, attendu $propose');
+      _ecart(
+        'D2 : stockage durable = ${prefsApres ?? "RIEN"}, attendu $propose',
+      );
     }
 
     // EFFET 3 — c'est VISIBLE au retour sur la faisabilite.
     await _ouvrirFaisabilite(tester, trailId);
-    final ligneRetenue = find
-        .text(t.feasibility.formula.retainedPlan(days: propose ?? joursApres));
+    final ligneRetenue = find.text(
+      t.feasibility.formula.retainedPlan(days: propose),
+    );
     await _amenerSousLesYeux(tester, ligneRetenue);
     await _shoot(tester, '06_retour_decoupage_retenu');
     if (!present(ligneRetenue)) {
-      _ecart('D2 : de retour sur la faisabilite, le decoupage retenu ne se '
-          'voit nulle part');
+      _ecart(
+        'D2 : de retour sur la faisabilite, le decoupage retenu ne se '
+        'voit nulle part',
+      );
     } else {
-      _constat('D2_visible',
-          '« ${t.feasibility.formula.retainedPlan(days: propose ?? joursApres)} »');
+      _constat(
+        'D2_visible',
+        '« ${t.feasibility.formula.retainedPlan(days: propose)} »',
+      );
     }
 
     // EFFET 4 — REDEMARRAGE : un graphe de providers tout neuf, lisant le VRAI
     // stockage de l'appareil, retrouve le decoupage retenu. C'est ce que fait
     // l'application au prochain lancement.
     final relu = await _relireApresRedemarrage(tester);
-    _constat('D2_apres_redemarrage',
-        'duree relue par un graphe neuf = ${relu ?? "RIEN"}');
+    _constat(
+      'D2_apres_redemarrage',
+      'duree relue par un graphe neuf = ${relu ?? "RIEN"}',
+    );
     if (relu != propose) {
-      _ecart('D2 : apres redemarrage la duree retombe a ${relu ?? "RIEN"} '
-          'au lieu de $propose');
+      _ecart(
+        'D2 : apres redemarrage la duree retombe a ${relu ?? "RIEN"} '
+        'au lieu de $propose',
+      );
     }
     await _shoot(tester, '07_apres_redemarrage');
 
@@ -264,8 +363,11 @@ void main() {
     await finalizeScenario(tester, P);
     await flushJournal(P);
 
-    expect(_ecarts, isEmpty,
-        reason: 'La correction N2 n est pas prouvee :\n${_ecarts.join('\n')}');
+    expect(
+      _ecarts,
+      isEmpty,
+      reason: 'La correction N2 n est pas prouvee :\n${_ecarts.join('\n')}',
+    );
   });
 }
 
@@ -285,8 +387,10 @@ void _verifierAucunVerdict(WidgetTester tester, String etape) {
   };
   for (final entry in interdits.entries) {
     if (present(entry.value)) {
-      _ecart('$etape : « ${entry.key} » est affiche alors que les criteres ne '
-          'sont pas tous fournis');
+      _ecart(
+        '$etape : « ${entry.key} » est affiche alors que les criteres ne '
+        'sont pas tous fournis',
+      );
     }
   }
 }
@@ -321,11 +425,9 @@ ProviderContainer? _container(WidgetTester tester) {
 String _routeCourante(WidgetTester tester) {
   try {
     final ctx = tester.element(find.byType(Navigator).first);
-    return GoRouter.maybeOf(ctx)
-            ?.routerDelegate
-            .currentConfiguration
-            .uri
-            .toString() ??
+    return GoRouter.maybeOf(
+          ctx,
+        )?.routerDelegate.currentConfiguration.uri.toString() ??
         '';
   } catch (_) {
     return '';
@@ -343,36 +445,86 @@ String? _trailIdActif(WidgetTester tester) {
   }
 }
 
-int _dureeParDefaut(WidgetTester tester) =>
-    _container(tester)?.read(trailConfigProvider).defaultDuration ?? 0;
+/// LA DUREE PAR DEFAUT ANNONCEE A L'ECRAN, REPOS CONSEILLES COMPRIS (GO-61).
+///
+/// CE QUI NE COLLAIT PLUS (tache 650). Ce lecteur rendait la duree NUE du
+/// sentier (`trailConfigProvider.defaultDuration`), alors que la ligne
+/// « aucun decoupage retenu » annonce depuis le lot 545 la duree qui
+/// S'APPLIQUE REELLEMENT — celle du sentier plus les jours de repos conseilles
+/// ([defaultDurationWithRestProvider], `trek_feasibility_screen.dart:971`).
+/// La preuve cherchait donc une phrase avec le mauvais nombre et rapportait
+/// « l'ecran ne dit pas qu'aucun decoupage n'est retenu » alors qu'il le disait,
+/// avec le bon chiffre. On lit desormais LE MEME provider que l'ecran.
+int _dureeParDefaut(WidgetTester tester) {
+  final c = _container(tester);
+  if (c == null) return 0;
+  final trailId = c.read(trailConfigProvider).id;
+  return c.read(defaultDurationWithRestProvider(trailId));
+}
 
 int _joursDuProgramme(WidgetTester tester, String trailId) =>
     _container(tester)?.read(plannedDaysProvider(trailId)).length ?? -1;
 
 /// Lit le nombre de jours ANNONCE par le bouton, en balayant les durees
 /// possibles du sentier : on ne devine rien, on lit le libelle affiche.
-int? _joursProposesParLeBouton(WidgetTester tester) {
+/// LE BOUTON EST EN BAS DE L'ECRAN, ET L'ECRAN DEFILE (tache 650).
+///
+/// CE QUI MANQUAIT, ET C'EST MESURE : ce lecteur cherchait le libelle dans
+/// l'arbre CONSTRUIT. L'ecran de faisabilite est une liste defilante, et le
+/// bouton « Generer mon programme » vit apres le verdict, les explications et
+/// le curseur : il n'est donc pas construit tant qu'on n'est pas descendu. La
+/// preuve rapportait « bouton introuvable » — un ecart imputable au produit —
+/// alors que le bouton etait simplement hors champ. On DESCEND d'abord.
+Future<int?> _joursProposesParLeBouton(WidgetTester tester) async {
   final c = _container(tester);
   if (c == null) return null;
   final trailId = c.read(trailConfigProvider).id;
   final bounds = c.read(durationBoundsProvider(trailId));
-  for (final jours in bounds.options) {
-    if (present(find.text(t.feasibility.formula.generateProgram(days: jours)))) {
-      return jours;
+  int? lu() {
+    for (final jours in bounds.options) {
+      if (present(
+        find.text(t.feasibility.formula.generateProgram(days: jours)),
+      )) {
+        return jours;
+      }
     }
+    return null;
   }
-  return null;
+
+  var trouve = lu();
+  if (trouve != null) return trouve;
+  final scrollable = find.byType(Scrollable);
+  if (scrollable.evaluate().isEmpty) return null;
+  for (var i = 0; i < 12 && trouve == null; i++) {
+    await tester.drag(scrollable.first, const Offset(0, -320));
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
+    trouve = lu();
+  }
+  return trouve;
 }
 
 Future<void> _entrerPremierSentier(WidgetTester tester) async {
   await tapIfPresent(
-      tester, textFrEn('Découvrir des sentiers', 'Discover trails'), P,
-      'contexte', 'Decouvrir des sentiers',
-      warnIfMissing: false);
+    tester,
+    textFrEn('Découvrir des sentiers', 'Discover trails'),
+    P,
+    'contexte',
+    'Decouvrir des sentiers',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester);
-  await tapIfPresent(tester, textFrEn('Entrer', 'Enter'), P, 'contexte',
-      'Entrer dans le sentier',
-      warnIfMissing: false);
+  // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639. Le libelle
+  // « Entrer » n'existe plus nulle part : ce tap ne trouvait plus rien et le
+  // scenario continuait sur le sentier par defaut, sans le dire. On vise la
+  // CLE du produit, qui n'a pas change.
+  await tapIfPresent(
+    tester,
+    boutonPreparer(kSentierDeProduction),
+    P,
+    'contexte',
+    '« Préparer » le sentier de production',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
 }
 
@@ -391,16 +543,27 @@ Future<void> _ouvrirFaisabilite(WidgetTester tester, String trailId) async {
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
   // Une fois les criteres complets, le verdict s'affiche tout seul ; s'il
   // reste un bouton « Valider » ACTIF (cas du re-parcours), on le suit.
-  final valider =
-      textFrEn('Valider et voir mon résultat', 'Confirm and see my result');
+  final valider = textFrEn(
+    'Valider et voir mon résultat',
+    'Confirm and see my result',
+  );
   if (present(valider)) {
     final bouton = find.ancestor(
-        of: valider.first, matching: find.byType(ElevatedButton));
-    final actif = bouton.evaluate().isNotEmpty &&
+      of: valider.first,
+      matching: find.byType(ElevatedButton),
+    );
+    final actif =
+        bouton.evaluate().isNotEmpty &&
         tester.widget<ElevatedButton>(bouton.first).onPressed != null;
     if (actif) {
-      await tapIfPresent(tester, valider, P, 'nav', 'voir le resultat',
-          warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        valider,
+        P,
+        'nav',
+        'voir le resultat',
+        warnIfMissing: false,
+      );
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
     }
   }
@@ -433,9 +596,12 @@ Future<void> _ecrireProfil(
     await c.read(pastHikesProvider.notifier).saveAll(randos);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
     _invalider(c);
-    logStep(P, 'ecriture',
-        'fiche age=${profil.age} ${profil.heightCm}cm ${profil.weightKg}kg, '
-        '${randos.length} rando(s)');
+    logStep(
+      P,
+      'ecriture',
+      'fiche age=${profil.age} ${profil.heightCm}cm ${profil.weightKg}kg, '
+          '${randos.length} rando(s)',
+    );
   } catch (e) {
     _ecart('ecriture du profil impossible : $e');
   }
@@ -481,5 +647,19 @@ Future<int?> _relireApresRedemarrage(WidgetTester tester) async {
     return null;
   } finally {
     neuf.dispose();
+  }
+}
+
+/// Le moteur conseille-t-il une duree ? (`assessment.isDurationAdvised`)
+///
+/// Null si l'evaluation n'est pas lisible. C'est CETTE decision qui commande la
+/// presence du bouton « Generer mon programme » depuis le lot 569.
+bool? _dureeEstConseillee(WidgetTester tester) {
+  try {
+    final c = _container(tester);
+    if (c == null) return null;
+    return c.read(feasibilityAssessmentProvider).value?.isDurationAdvised;
+  } catch (_) {
+    return null;
   }
 }

@@ -20,9 +20,17 @@
 //    le rapport agrege.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:integration_test/integration_test.dart';
+
+import 'package:drift/drift.dart' show Value;
+
+import 'package:moteur_gr/core/config/trail_catalog.dart';
+import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 
 /// Journal partage des scenarios (une ligne par pas).
 ///
@@ -131,6 +139,10 @@ Future<void> settleAndShoot(
   // On le referme A CHAQUE capture (pas seulement au boot). C'est un widget
   // Flutter (contrairement aux dialogs systeme, geres host-side) donc tapable.
   await dismissAdsConsentIfPresent(tester, persona);
+  // La porte de consentement de la sauvegarde systeme (tache 617) s'ouvre en
+  // POST-FRAME : elle peut donc surgir a n'importe quelle capture, pas seulement
+  // au boot. On la franchit ici aussi, exactement comme la pub.
+  await dismissBackupConsentIfPresent(tester, persona);
   // Consomme les rejets de polices en attente (voir _drainFontFutures) : chaque
   // ecran rendu a pu declencher un chargement google_fonts qui rejette sans
   // handler. On draine ICI, a chaque capture, pour que rien n'echappe au test.
@@ -289,6 +301,48 @@ Future<bool> waitFor(
   return finder.evaluate().isNotEmpty;
 }
 
+/// LA PORTE DE CONSENTEMENT DE LA SAUVEGARDE SYSTEME (tache 617, mesuree le
+/// 30/09 par la campagne 650).
+///
+/// CE QUE LA MESURE A MONTRE, ET POURQUOI CE HELPER EXISTE. Au premier
+/// lancement du build 8, juste apres l'onboarding, l'application pose une
+/// question de protection des donnees : « Tes donnees restent sur ce telephone »
+/// ([PorteConsentementSauvegarde] -> [RefusSauvegardeSystemeDialog]). C'est un
+/// dialogue MODAL, et il recouvre tout. Le harnais ne le connaissait pas : il
+/// tapait « Passer » sur l'onboarding, le dialogue s'ouvrait par-dessus, et la
+/// route restait `/onboarding` pour le reste du scenario. TOUTE la campagne
+/// tombait ensuite — catalogue introuvable, cockpit introuvable, faisabilite
+/// introuvable — pour UNE seule cause, et cette cause n'etait pas un defaut du
+/// produit : c'etait un ecran que le harnais ne savait pas franchir.
+///
+/// CE QU'ON FAIT, ET CE QU'ON NE FAIT PAS. On VALIDE la question telle qu'elle
+/// se presente, sans toucher a la case : la case est cochee d'avance (le REFUS
+/// de la sauvegarde cloud est le defaut) et c'est le choix le plus protecteur.
+/// On ne decoche donc rien — un harnais qui changerait un consentement au
+/// passage fausserait tous les scenarios RGPD qui suivent. On se contente de
+/// REPONDRE, et on le journalise.
+///
+/// Best effort : ne casse rien si la question n'est pas posee (elle ne l'est
+/// qu'une fois par installation).
+Future<bool> dismissBackupConsentIfPresent(
+  WidgetTester tester,
+  String persona,
+) async {
+  final valider =
+      find.byKey(const ValueKey('refus-sauvegarde-systeme-valider'));
+  if (valider.evaluate().isEmpty) return false;
+  logStep(
+      persona,
+      'consent_sauvegarde',
+      'Porte de consentement de la sauvegarde systeme (tache 617) presente — '
+          'on VALIDE sans toucher a la case (le refus est le defaut).');
+  await tapIfPresent(tester, valider, persona, 'consent_sauvegarde',
+      'bouton de validation de la porte de consentement',
+      warnIfMissing: false);
+  await pumpAndSettleTolerant(tester);
+  return true;
+}
+
 /// Ferme le formulaire de consentement pub (UMP/AdMob « Publisher Test Ads »)
 /// s'il s'affiche au 1er lancement (surtout en ligne). On refuse le consentement
 /// (« Do not consent / Ne pas consentir ») — c'est neutre pour la demo et ca
@@ -341,10 +395,37 @@ Future<bool> completeOnboardingIfPresent(
     return false;
   }
   logStep(persona, 'onboarding', 'Onboarding present — completion (bilingue)');
+  // ===================================================================
+  // ON REPOND A LA QUESTION AVANT DE TOUCHER A L'ONBOARDING (tache 650)
+  // ===================================================================
+  //
+  // L'ORDRE N'EST PAS UN DETAIL, ET C'EST UNE MESURE, PAS UNE PRECAUTION.
+  // La porte de consentement de la sauvegarde (tache 617) s'ouvre en post-frame
+  // juste apres l'affichage de l'onboarding. Deux ordres sont possibles, et ils
+  // ne donnent PAS le meme resultat :
+  //   * la question est DEJA la quand on appuie sur « Passer » : l'appui est
+  //     absorbe par la barriere modale, on repond, on reappuie, tout va bien —
+  //     c'est ce qu'on a observe sur S2 et S8 ;
+  //   * l'appui passe JUSTE AVANT l'ouverture de la question : il declenche
+  //     `_finish()` (ecriture du drapeau puis navigation) pendant que le
+  //     dialogue s'installe — et la, sur C1 et N2, l'onboarding n'est plus
+  //     jamais reparti, meme apres quatre appuis et un vrai appui `adb`.
+  //
+  // Le harnais choisit donc l'ordre du randonneur attentif : on laisse la
+  // question s'ouvrir, on y REPOND, et seulement ensuite on appuie sur
+  // « Passer ». Cela rend la campagne DETERMINISTE. La course, elle, reste un
+  // defaut produit a part entiere : elle est rapportee, pas masquee.
+  await attendreEtFranchirLaPorteDeConsentement(tester, persona,
+      timeout: const Duration(seconds: 8));
   // Voie rapide : « Passer / Skip ».
   if (await tapIfPresent(tester, skip, persona, 'onboarding', 'Passer/Skip',
       warnIfMissing: false)) {
     await pumpAndSettleTolerant(tester);
+    // LA QUESTION QUI ATTEND DERRIERE L'ONBOARDING (tache 617). Elle s'ouvre en
+    // post-frame juste apres la sortie : sans cette reponse, la route reste
+    // `/onboarding` et le scenario entier se joue derriere un dialogue modal.
+    await attendreEtFranchirLaPorteDeConsentement(tester, persona);
+    await _sortirVraimentDeLOnboarding(tester, persona);
     return true;
   }
   // Repli : enchainer Suivant/Next (max 4) puis Commencer/Get started.
@@ -356,7 +437,112 @@ Future<bool> completeOnboardingIfPresent(
   }
   await tapIfPresent(tester, start, persona, 'onboarding',
       'Commencer/Get started', warnIfMissing: false);
+  await attendreEtFranchirLaPorteDeConsentement(tester, persona);
+  await _sortirVraimentDeLOnboarding(tester, persona);
   return true;
+}
+
+/// VERIFIE QU'ON EST VRAIMENT SORTI DE L'ONBOARDING, ET REESSAIE SINON.
+///
+/// CE QUI A ETE MESURE LE 30/09 (tache 650), ET C'EST UNE COURSE, PAS UNE
+/// SUPPOSITION. Le premier appui sur « Passer » declenche `_finish()` :
+/// `await completeOnboarding(ref)` (ecriture SharedPreferences) PUIS
+/// `context.go('/catalog')`. Au meme instant, la porte de consentement de la
+/// sauvegarde (tache 617) s'ouvre en post-frame par-dessus. Resultat mesure sur
+/// l'emulateur : apres avoir repondu a la question, l'application est REVENUE
+/// sur la page 1 de l'onboarding, et la route est restee `/onboarding` — donc
+/// le drapeau n'avait pas ete pose et la garde du routeur renvoyait l'ecran.
+///
+/// CE QU'ON FAIT ICI, ET POURQUOI CE N'EST PAS UN CONTOURNEMENT. On refait le
+/// geste qu'un randonneur referait de lui-meme : reappuyer sur « Passer », une
+/// fois la question fermee. Chaque tentative est JOURNALISEE, et le nombre
+/// d'appuis necessaires est dit — si le premier appui ne suffit jamais, ca se
+/// lit dans le journal au lieu de se perdre dans une cascade d'exigences
+/// rouges sans rapport.
+Future<void> _sortirVraimentDeLOnboarding(
+  WidgetTester tester,
+  String persona, {
+  int essais = 4,
+}) async {
+  final skip = textFrEn('Passer', 'Skip');
+  for (var i = 0; i < essais; i++) {
+    // 1. LA QUESTION PASSE D'ABORD. Tant que le dialogue modal est la, le
+    //    bouton « Passer » est couvert et l'appui est absorbe par la barriere.
+    await dismissBackupConsentIfPresent(tester, persona);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 2));
+    if (!present(skip)) {
+      if (i > 0) {
+        logStep(persona, 'onboarding',
+            'Sortie de l onboarding obtenue apres ${i + 1} appui(s) sur '
+            '« Passer ».');
+      }
+      return;
+    }
+    if (i > 0) {
+      logStep(persona, 'onboarding',
+          'L onboarding est TOUJOURS a l ecran : nouvel appui sur « Passer » '
+          '(essai ${i + 1}).');
+    }
+    await tapIfPresent(tester, skip, persona, 'onboarding',
+        'Passer/Skip (essai ${i + 1})',
+        warnIfMissing: false);
+    // 2. ON LAISSE DU TEMPS REEL A L'ECRITURE, ET C'EST LE POINT DELICAT.
+    //    `_finish()` de l'onboarding fait `await completeOnboarding(ref)` —
+    //    une ecriture SharedPreferences, donc un aller-retour de canal de
+    //    plateforme — AVANT de naviguer. Pomper « jusqu'au repos de l'arbre »
+    //    ne suffit pas : l'arbre se repose des la fin de l'animation du
+    //    bouton, bien avant la reponse du canal, et le scenario repartait en
+    //    croyant l'onboarding ferme. On pompe donc en continu jusqu'a ce que
+    //    l'ecran disparaisse VRAIMENT.
+    if (await _attendreDisparition(
+        tester, skip, const Duration(seconds: 8))) {
+      logStep(persona, 'onboarding',
+          'Onboarding ferme (appui ${i + 1}) — la navigation a suivi '
+          'l ecriture du drapeau.');
+      return;
+    }
+  }
+  if (present(skip)) {
+    logStep(persona, 'onboarding',
+        'COINCE : l onboarding ne se ferme pas apres $essais appuis sur '
+        '« Passer » — A RAPPORTER, ce n est plus une course.');
+  }
+}
+
+/// Pompe EN CONTINU jusqu'a ce que [finder] disparaisse, ou jusqu'a [timeout].
+///
+/// Contrairement a `pumpAndSettleTolerant`, on ne s'arrete PAS au repos de
+/// l'arbre : on attend un EVENEMENT (la disparition), qui peut venir d'un
+/// aller-retour de canal de plateforme pendant lequel aucune frame n'est
+/// programmee.
+Future<bool> _attendreDisparition(
+  WidgetTester tester,
+  Finder finder,
+  Duration timeout, {
+  Duration pas = const Duration(milliseconds: 200),
+}) async {
+  final fin = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(fin)) {
+    await tester.pump(pas);
+    if (finder.evaluate().isEmpty) return true;
+  }
+  return finder.evaluate().isEmpty;
+}
+
+/// ATTEND que la porte de consentement de la sauvegarde s'ouvre (elle arrive en
+/// POST-FRAME, donc quelques centaines de millisecondes apres la sortie de
+/// l'onboarding) puis la franchit. Sans l'attente, on la manquerait d'un cheveu
+/// et le scenario reprendrait derriere un dialogue modal — c'est exactement ce
+/// que la mesure du 30/09 a constate.
+Future<bool> attendreEtFranchirLaPorteDeConsentement(
+  WidgetTester tester,
+  String persona, {
+  Duration timeout = const Duration(seconds: 6),
+}) async {
+  final valider =
+      find.byKey(const ValueKey('refus-sauvegarde-systeme-valider'));
+  await waitFor(tester, valider, timeout: timeout);
+  return dismissBackupConsentIfPresent(tester, persona);
 }
 
 /// Finalise proprement un scenario AVANT le teardown du framework (FIX CYCLE 3).
@@ -647,3 +833,136 @@ int marqueEcranSysteme() => kEcransSystemeDetectes.length;
 List<String> ecransSystemeDepuis(int marque) =>
     kEcransSystemeDetectes.sublist(
         marque.clamp(0, kEcransSystemeDetectes.length));
+
+// ===========================================================================
+// LE MONDE DU BUILD 8 : PLUS DE SENTIER GRATUIT, UNE DEMO, ET UN MUR PAYANT
+// (tache 650 — remise en accord des attentes avec les decisions du 29-30/09).
+// ===========================================================================
+//
+// CE QUI A CHANGE, ET CE QUI N'A PAS CHANGE. La campagne posait en premisse,
+// depuis la tache 518, que « la vitrine (mare-a-mare-centre) est jouable sans
+// achat ». Cette premisse est MORTE le 29/09 a 14:17, sur une phrase de
+// Christophe : « la prochaine fois que j'ouvre l'application je n'ai droit a
+// rien ». Le lot 638 a donc retire TOUT sentier gratuit du catalogue, et le lot
+// 639 a renomme le bouton « Entrer » en « Preparer » (avec « Acheter » a cote).
+//
+// CE QUE LA CAMPAGNE DOIT VERIFIER MAINTENANT, ET C'EST PLUS EXIGEANT QU'AVANT :
+//   * la PREPARATION reste gratuite, avec publicite (decision du 30/09 12:41) ;
+//   * la REALISATION est refusee sans achat, et le refus DIT pourquoi et ou
+//     acheter ([murDeRealisation], lot 594) ;
+//   * la DEMO montre l'application de A a Z sur le VRAI sentier, sans rien
+//     debloquer et sans rien ecrire (lots 634/638) ;
+//   * l'ABONNEMENT ne donne AUCUN droit sur un sentier — pub et cagnotte
+//     seulement (regle de Christophe du 30/09 16:20, base #100945).
+//
+// Les finders ci-dessous s'appuient sur les CLES du produit, pas sur les
+// libelles : un renommage de libelle ne doit plus rendre la campagne aveugle,
+// c'est precisement ce qui vient de se passer avec « Entrer ».
+
+/// Le sentier de production, et le seul du catalogue qui soit payant.
+const String kSentierDeProduction = 'mare-a-mare-centre';
+
+/// Le bouton « Préparer » d'un sentier du catalogue (ex-« Entrer », lot 639).
+/// Il ouvre le cockpit de preparation, achat ou pas.
+Finder boutonPreparer(String trailId) =>
+    find.byKey(ValueKey('catalog-enter-$trailId'));
+
+/// Le bouton « Acheter <prix> » d'un sentier encore a vendre (lot 639).
+Finder boutonAcheter(String trailId) =>
+    find.byKey(ValueKey('catalog-buy-$trailId'));
+
+/// La carte d'un sentier au catalogue.
+Finder carteSentier(String trailId) =>
+    find.byKey(ValueKey('catalog-trail-$trailId'));
+
+/// Le bouton orange « Essayer la démo », en tete du catalogue (lots 634/638).
+Finder get boutonDemo => find.byKey(const ValueKey('catalog-demo-button'));
+
+/// Le bandeau orange « MODE DÉMO » qui POUSSE l'ecran (lot 649).
+Finder get bandeauDemo => find.byKey(const ValueKey('demo-bandeau'));
+
+/// Le « Quitter » du bandeau de demo : un seul appui suffit (lot 649).
+Finder get sortieDemo => find.byKey(const ValueKey('demo-sortie'));
+
+/// Le bouton « Simuler l'étape suivante / l'arrivée » (lot 638), visible
+/// uniquement en demo et uniquement quand une rando simulee est en cours.
+Finder get simulerDemo => find.byKey(const ValueKey('demo-simuler'));
+
+/// La phrase qui dit que le depart est SIMULE (lot 638).
+Finder get departSimule => find.byKey(const ValueKey('demo-depart-simule'));
+
+/// LE MUR PAYANT DE LA REALISATION (lot 594) : le refus qui dit pourquoi et ou
+/// acheter, pose quand on appuie sur « Démarrer » sans posseder le sentier.
+Finder get murDeRealisation =>
+    find.byKey(const ValueKey('realisation-verrouillee'));
+
+/// ACQUIERT LE SENTIER — LE DROIT REEL, ECRIT LA OU UN ACHAT L'ECRIT.
+///
+/// POURQUOI PAS LE GESTE D'ACHAT DE L'ECRAN, ET C'EST MESURE. Le chemin d'achat
+/// passe par la boutique du telephone (`rechargeWallet` -> `buyCredits` ->
+/// in_app_purchase). Sur l'emulateur, aucune boutique ne repond : le premier
+/// appel casse meme sur une assertion de `wallet_iap_service.dart`
+/// (« productId recharge inconnu ») des qu'on invente un identifiant de
+/// produit. Aucun scenario ne peut donc PAYER pour de bon ici.
+///
+/// CE QU'ON FAIT A LA PLACE. On ecrit le DROIT, dans la table que l'achat
+/// confirme ecrit lui-meme (`trek_entitlements`, ce que fait `_markOwned` a la
+/// fin de `buyTrail`), par le DAO de production — la meme porte que le service.
+/// Ce n'est PAS une surcharge de provider : rien n'est remplace par une
+/// doublure. Tout ce qui suit lit ce droit par le VRAI service
+/// ([MonetizationService.ownsTrail], `canRealizeTrail`), et c'est bien lui qui
+/// decide. C'est exactement ce que font les tests de comportement du lot 647.
+///
+/// CE QUE CELA NE PROUVE PAS, ET IL FAUT LE DIRE : le parcours de PAIEMENT
+/// lui-meme (boutique, prix, complement store) n'est pas joue ici. Il est
+/// couvert par `test/comportement/achat_et_video_614_test.dart`.
+///
+/// Retourne vrai si le sentier est bien possede a la sortie, lu sur le service.
+Future<bool> acheterLeSentierPourDeVrai(
+  WidgetTester tester,
+  String trailId,
+  String persona,
+) async {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final c = ProviderScope.containerOf(element, listen: false);
+    final etapes = TrailCatalog.byId(trailId)?.totalStages ?? 0;
+    await c.read(databaseProvider).trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: trailId,
+            owned: const Value(true),
+            acquiredStages: Value(etapes),
+            totalStages: Value(etapes),
+            updatedAt: DateTime.now(),
+          ),
+        );
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    final service = await c
+        .read(monetizationReadyProvider.future)
+        .timeout(const Duration(seconds: 20));
+    final possede = await service.ownsTrail(trailId);
+    logStep(
+        persona,
+        'achat',
+        'Droit d acquisition ecrit pour $trailId ($etapes etapes) ; '
+            'le service de production repond possede = $possede');
+    return possede;
+  } catch (e) {
+    logStep(persona, 'achat', 'COINCE : acquisition impossible : $e');
+    return false;
+  }
+}
+
+/// Vrai si [trailId] est POSSEDE, lu sur le service de production.
+Future<bool> sentierPossede(WidgetTester tester, String trailId) async {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final c = ProviderScope.containerOf(element, listen: false);
+    final service = await c
+        .read(monetizationReadyProvider.future)
+        .timeout(const Duration(seconds: 15));
+    return service.ownsTrail(trailId);
+  } catch (_) {
+    return false;
+  }
+}
