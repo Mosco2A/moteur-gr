@@ -37,6 +37,8 @@ class HubWalletCard extends ConsumerWidget {
     // qu'il existe, c'est ici qu'on y entre — a l'endroit ou l'on constate
     // qu'il manque des etapes.
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       padding: EdgeInsets.zero,
       child: InkWell(
         key: const ValueKey('hub-wallet-recharge'),

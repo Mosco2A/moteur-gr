@@ -45,14 +45,18 @@ class ChecklistDemoBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.eprouvette,
-                  size: 20, color: theme.colorScheme.secondary),
+              StepIcon(
+                StepwaysIcons.eprouvette,
+                size: 20,
+                color: theme.colorScheme.secondary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   t.checklist.demoBridledTitle,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -101,6 +105,8 @@ class ChecklistLockedCategory extends ConsumerWidget {
     final theme = Theme.of(context);
     final grise = theme.colorScheme.onSurface.withAlpha(110);
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       key: ValueKey('checklist-locked-$categoryKey'),
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,

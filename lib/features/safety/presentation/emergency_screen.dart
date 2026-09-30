@@ -187,10 +187,16 @@ class _HealthInfoEntry extends StatelessWidget {
         AppTheme.spacingBase,
         0,
       ),
-      // SW-SKIN-L3e : Card -> AppCard. elevation 1 conservee ; padding zero
-      // car le ListTile porte son padding interne (iso-rendu de la tuile).
+      // SW-SKIN-L3e : Card -> AppCard ; padding zero car le ListTile porte son
+      // padding interne (iso-rendu de la tuile).
+      //
+      // TACHE 639 (bug 4) : cette tuile porte un geste (le ListTile ouvre le
+      // numero), elle le DECLARE et prend donc le relief standard du cliquable.
+      // L'`elevation: 1` heritee de la `Card` Material est retiree : deux
+      // reliefs differents pour deux cartes cliquables, c'etait deja un debut de
+      // brouillage.
       child: AppCard(
-        elevation: 1,
+        interactif: true,
         padding: EdgeInsets.zero,
         child: ListTile(
           leading: CircleAvatar(
@@ -225,11 +231,19 @@ class _EmergencyContactTile extends StatelessWidget {
     final theme = Theme.of(context);
     final isAuto = contact.isAutomatic;
 
-    // SW-SKIN-L3e : Card -> AppCard. elevation dynamique conservee ; le fond
-    // teinte rouge (contact automatique = SOS) porte par backgroundColor ;
-    // padding zero car le ListTile porte son padding interne (iso-rendu).
+    // SW-SKIN-L3e : Card -> AppCard. Le fond teinte rouge (contact automatique =
+    // SOS) porte par backgroundColor ; padding zero car le ListTile porte son
+    // padding interne (iso-rendu).
+    //
+    // TACHE 639 (bug 4) — CETTE FICHE DE CONTACT EST UNE INFORMATION.
+    //
+    // Le geste n'est pas sur la carte : il est sur le BOUTON D'APPEL, a droite,
+    // et lui seul (c'est voulu — on n'appelle pas les secours par un appui
+    // distrait sur une fiche). La carte se lit donc, elle ne s'appuie pas :
+    // l'`elevation: isAuto ? 2 : 1` heritee de la `Card` Material est retiree, et
+    // la regle la dessine a plat. Le contact AUTOMATIQUE reste distingue par son
+    // fond rouge et son titre en gras — un sens, pas un relief.
     return AppCard(
-      elevation: isAuto ? 2 : 1,
       backgroundColor: isAuto
           ? AppTheme.rougeUrgence.withAlpha(20)
           : theme.colorScheme.surface,

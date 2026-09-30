@@ -134,6 +134,8 @@ class _PackTileState extends ConsumerState<_PackTile> {
     final theme = Theme.of(context);
     final pack = widget.pack;
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       key: ValueKey('pack-etapes-${pack.steps}'),
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,

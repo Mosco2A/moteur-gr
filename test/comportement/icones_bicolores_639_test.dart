@@ -177,12 +177,12 @@ void main() {
     ) async {
       await poser(
         tester,
-        SizedBox(
+        const SizedBox(
           width: 360,
           child: HubSection(
             title: 'Mes treks',
             icon: StepwaysIcons.catalogueSentiers,
-            cards: const [],
+            cards: [],
           ),
         ),
       );
