@@ -168,6 +168,12 @@ void main() {
           findsNothing,
           reason: 'aucun ecran de la demo ne reste derriere',
         );
+
+        // Le message de fin se ferme tout seul (bug 11 : un bandeau du bas qui
+        // reste cache une partie de l'appli).
+        await tester.pump(kDureeMessageSortieDemo);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('demo-sortie-faite')), findsNothing);
       },
     );
 

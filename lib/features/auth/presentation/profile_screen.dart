@@ -282,13 +282,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  /// Section « Mode demo » (tache 638, bug 18).
+  /// Section « Mode demo » (tache 638, bug 18 ; tache 649).
   ///
   /// DEUX LIGNES, ET PAS PLUS. « Revoir la demo » la relance (elle est toujours
   /// relancable, un nombre illimite de fois : rien ne s'ecrit, donc il n'y a rien
-  /// a epuiser). « Afficher le bouton demo au catalogue » n'apparait QUE s'il a
-  /// ete cache : proposer de reafficher quelque chose qui est deja affiche serait
-  /// un geste sans effet.
+  /// a epuiser).
+  ///
+  /// LA SECONDE LIGNE EST DEVENUE UN INTERRUPTEUR, ET ELLE EST TOUJOURS LA
+  /// (tache 649). Elle n'apparaissait qu'une fois le bouton CACHE, parce que le
+  /// seul endroit ou l'on pouvait le cacher etait le dialogue de fin de demo. Ce
+  /// dialogue ne s'ouvrait JAMAIS — il etait pose au-dessus du `Navigator` — donc
+  /// le reglage etait en pratique inatteignable dans les deux sens. Il vit
+  /// desormais ici en permanence, ou Christophe a dit qu'on retrouve la demo, et
+  /// il se defait aussi bien qu'il se fait.
   Widget _buildDemoSection(
     BuildContext context,
     WidgetRef ref,
@@ -308,20 +314,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             onTap: () => relancerLaDemoDepuisMonCompte(ref, context),
           ),
         ),
-        if (cache) ...[
-          const SizedBox(height: AppTheme.spacingSm),
-          AppCard(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              key: const ValueKey('compte-reafficher-bouton-demo'),
-              leading: const StepIcon(StepwaysIcons.catalogueSentiers),
-              title: Text(i18n.demo.compteReafficher),
-              subtitle: Text(i18n.demo.compteReafficherSous),
-              onTap: () =>
-                  ref.read(boutonDemoCacheProvider.notifier).definir(false),
-            ),
+        const SizedBox(height: AppTheme.spacingSm),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: SwitchListTile(
+            key: const ValueKey('compte-reafficher-bouton-demo'),
+            secondary: const StepIcon(StepwaysIcons.catalogueSentiers),
+            title: Text(i18n.demo.compteReafficher),
+            subtitle: Text(i18n.demo.compteReafficherSous),
+            // L'INTERRUPTEUR DIT « AFFICHER », LE REGLAGE STOCKE « CACHER » :
+            // il est donc l'inverse de la valeur en base, et il faut le lire
+            // comme ca pour que l'etiquette ne mente pas.
+            value: !cache,
+            onChanged: (afficher) =>
+                ref.read(boutonDemoCacheProvider.notifier).definir(!afficher),
           ),
-        ],
+        ),
       ],
     );
   }
