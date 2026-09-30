@@ -2211,7 +2211,9 @@
       "trekCard": "Tour $nom, $state",
       "openTrek": "Tour $nom öffnen"
     },
-    "settingsSubtitle": "Sprache, Einheiten, Thema"
+    "settingsSubtitle": "Sprache, Einheiten, Thema",
+    "emptyCatalogueOuDemo": "Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen, oder probieren Sie die Demo oben in der Liste.",
+    "emptyCatalogueSeul": "Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen."
   },
   "trekState": {
     "abandonDialog": {

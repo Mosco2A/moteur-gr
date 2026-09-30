@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/contextual_actions_provider.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
@@ -52,32 +53,32 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
   /// Barre contextuelle de l'accueil maison (SPEC §4) : Découvrir / Mon compte.
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
-        // Q2 (tache 568) — `push` ET NON `go`. Le `go` REMPLACAIT la pile : une
-        // fois au catalogue il n'y avait plus d'historique, et le retour (bouton
-        // comme geste systeme Android) retombait sur l'accueil contextuel, donc
-        // sur le COCKPIT d'un sentier non choisi — le defaut de Chris du 26/09.
-        // En empilant, le retour DEPILE naturellement vers « Mes treks ».
-        ContextualAction(
-          icon: StepwaysIcons.catalogueSentiers,
-          label: t.myTreks.discoverTitle,
-          onPressed: () => context.push('/catalog'),
-        ),
-        ContextualAction(
-          icon: StepwaysIcons.monCompte,
-          label: t.myTreks.accountTitle,
-          onPressed: () => context.push('/profile'),
-        ),
-        // Finitions V1 (point 1) : acces REGLAGES depuis l'accueil « maison ».
-        // Le big-bang hub-and-push (L3) a retire l'onglet « Plus », seule porte
-        // vers /settings -> langue/unites/theme/confidentialite etaient perdus
-        // apres l'onboarding. On retablit l'acces ici (SPEC §4 : reglages dans
-        // l'aire « Mon compte » de l'accueil). push -> retour propre.
-        ContextualAction(
-          icon: StepwaysIcons.reglages,
-          label: t.nav.settings,
-          onPressed: () => context.push('/settings'),
-        ),
-      ];
+    // Q2 (tache 568) — `push` ET NON `go`. Le `go` REMPLACAIT la pile : une
+    // fois au catalogue il n'y avait plus d'historique, et le retour (bouton
+    // comme geste systeme Android) retombait sur l'accueil contextuel, donc
+    // sur le COCKPIT d'un sentier non choisi — le defaut de Chris du 26/09.
+    // En empilant, le retour DEPILE naturellement vers « Mes treks ».
+    ContextualAction(
+      icon: StepwaysIcons.catalogueSentiers,
+      label: t.myTreks.discoverTitle,
+      onPressed: () => context.push('/catalog'),
+    ),
+    ContextualAction(
+      icon: StepwaysIcons.monCompte,
+      label: t.myTreks.accountTitle,
+      onPressed: () => context.push('/profile'),
+    ),
+    // Finitions V1 (point 1) : acces REGLAGES depuis l'accueil « maison ».
+    // Le big-bang hub-and-push (L3) a retire l'onglet « Plus », seule porte
+    // vers /settings -> langue/unites/theme/confidentialite etaient perdus
+    // apres l'onboarding. On retablit l'acces ici (SPEC §4 : reglages dans
+    // l'aire « Mon compte » de l'accueil). push -> retour propre.
+    ContextualAction(
+      icon: StepwaysIcons.reglages,
+      label: t.nav.settings,
+      onPressed: () => context.push('/settings'),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -141,23 +142,34 @@ class _MyTreksBody extends ConsumerWidget {
       key: const ValueKey('my-treks-list'),
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingMd),
       children: [
-        // Etat vide : aucun trek possede (cas theorique — la vitrine en fournit
-        // au moins un — mais l'ecran ne doit jamais paraitre casse).
+        // ETAT VIDE : LE CAS NORMAL DU PREMIER LANCEMENT (tache 638).
         //
-        // FIX CYCLE 2 (issue 4) : empty-state PROPRE « Découvrir » (icone + titre
-        // + invite + CTA explicite vers le catalogue), au lieu d'un simple texte
-        // centre. Reutilise le widget maison [EmptyState] (meme grammaire que le
-        // catalogue vide) — le bandeau « Découvrir / Mon compte » en bas de liste
-        // reste present, mais on offre ici une porte d'entree claire et saillante
-        // pour explorer. Aucune donnee inventee : « Mes treks » n'est jamais
-        // vraiment vide en usage nominal (la vitrine est un trek possede).
+        // CE COMMENTAIRE DISAIT LE CONTRAIRE, ET IL AVAIT CESSE D ETRE VRAI. Il
+        // annoncait un « cas theorique — la vitrine en fournit au moins un ».
+        // La vitrine a disparu avec le lot 601, et le dernier sentier gratuit du
+        // catalogue avec la tache 638 : un randonneur qui n a rien achete n a
+        // donc AUCUN trek, et c est VOULU. Scenario d acceptation de Christophe
+        // du 29/09 14:17, verbatim : « la prochaine fois que j ouvre
+        // l application je n ai droit a rien ».
+        //
+        // UN ACCUEIL VIDE QUI EXPLIQUE N EST PAS UNE PANNE. L ecran dit qu il n y
+        // a pas encore de sentier et renvoie vers le catalogue — ou vers la demo,
+        // qui est en tete du catalogue. Le texte SUIT le reglage « cacher le mode
+        // demo » : promettre une demo en tete de liste a qui l a masquee serait
+        // un mensonge, exactement celui que le dialogue de sortie evite deja.
+        //
+        // Reutilise le widget maison [EmptyState] (meme grammaire que le
+        // catalogue vide) ; le bandeau « Decouvrir / Mon compte » en bas de liste
+        // reste present, et le bouton d ici est la porte saillante.
         if (isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXl),
             child: EmptyState(
               icon: StepwaysIcons.catalogueSentiers,
               title: t.myTreks.emptyTitle,
-              subtitle: t.myTreks.empty,
+              subtitle: ref.watch(boutonDemoCacheProvider)
+                  ? t.myTreks.emptyCatalogueSeul
+                  : t.myTreks.emptyCatalogueOuDemo,
               action: FilledButton.icon(
                 key: const ValueKey('my-treks-empty-discover'),
                 // Q2 (tache 568) : `push`, pour que le retour depile vers ici.

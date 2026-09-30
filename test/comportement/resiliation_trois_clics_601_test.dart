@@ -77,9 +77,23 @@ void main() {
       var gestes = 0;
 
       // Geste 1 — les reglages, depuis l'accueil.
+      //
+      // ON FAIT DEFILER AVANT D'APPUYER (tache 638). L'accueil d'un randonneur
+      // QUI N'A RIEN ACHETE est desormais VIDE — plus aucun sentier gratuit au
+      // catalogue, decision de Christophe du 29/09 14:17 (« Donc la prochaine
+      // fois que j ouvre l application je n ai droit a rien ») — et il porte donc
+      // son etat vide : un pave d'explication et un bouton vers le catalogue. La
+      // carte « Reglages », en bas du meme scroll, passe sous la vitre sur un
+      // ecran de telephone. LE COMPTE DE GESTES NE CHANGE PAS : faire defiler
+      // n'est pas un geste de plus (meme convention que le balayage du LOT X,
+      // cf. [amenerALEcran]) ; c'est le doigt qu'on amene sur le bouton.
       final reglages = find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.reglages);
       expect(reglages, findsWidgets,
           reason: 'l accueil doit offrir une entree vers les reglages');
+      final reglagesAtteignable = await amenerALEcran(tester, reglages.first);
+      expect(reglagesAtteignable, isTrue,
+          reason: 'l entree « reglages » doit rester atteignable depuis '
+              'l accueil, y compris quand il affiche son etat vide');
       await tester.tap(reglages.first);
       await stabiliser(tester);
       gestes++;

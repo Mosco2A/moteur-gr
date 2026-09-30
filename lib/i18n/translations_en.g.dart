@@ -1680,6 +1680,8 @@ class _Translations$myTreks$en extends Translations$myTreks$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % of the trail';
 	@override late final _Translations$myTreks$a11y$en a11y = _Translations$myTreks$a11y$en._(_root);
 	@override String get settingsSubtitle => 'Language, units, theme';
+	@override String get emptyCatalogueOuDemo => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.';
+	@override String get emptyCatalogueSeul => 'You do not have a trail yet. Open the catalogue to choose one.';
 }
 
 // Path: trekState
@@ -5989,6 +5991,8 @@ extension on TranslationsEn {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Language, units, theme',
+			'myTreks.emptyCatalogueOuDemo' => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.',
+			'myTreks.emptyCatalogueSeul' => 'You do not have a trail yet. Open the catalogue to choose one.',
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',

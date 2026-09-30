@@ -88,16 +88,24 @@ void main() {
       );
     });
 
-    test('le niveau GRATUIT du modele garde une instance, ailleurs', () {
-      // Le modele du lot 601 (prix nul = sentier gratuit) n'est pas remis en
-      // cause : il change d'instance. Sans instance, plus aucun sentier n'est
-      // jouable sans payer — ce qui vide « Mes treks » au premier lancement.
-      expect(TrailCatalog.freeIds, isNotEmpty);
-      expect(TrailCatalog.freeIds, contains(testTrailConfig.id));
+    test('et AUCUN sentier gratuit ne le remplace : on n a droit a rien', () {
+      // DECISION DE CHRISTOPHE, scenario d acceptation du 29/09 14:17, verbatim :
+      // « Donc la prochaine fois que j ouvre l application je n ai droit a
+      // rien. » Le niveau gratuit du modele eco, c est la DEMO (bouton orange),
+      // pas un sentier offert : un sentier gratuit au catalogue lui donnerait
+      // droit a quelque chose sans qu il ait rien achete.
       expect(
         TrailCatalog.freeIds,
-        isNot(contains(mareAMareCentreTrailConfig.id)),
-        reason: 'le Mare a Mare reste PAYANT : la demo ne le debloque pas',
+        isEmpty,
+        reason: 'aucun sentier du catalogue ne doit etre jouable sans achat',
+      );
+      // LE MODELE, LUI, RESTE ECRIT ET TESTE : un prix nul fait un sentier
+      // gratuit. Il n a simplement plus d instance livree, et c est un etat
+      // legitime — achat_et_video_614_test pose la sienne pour le verifier.
+      expect(
+        TrailCatalog.all.every((c) => c.priceInStages > 0),
+        isTrue,
+        reason: 'tout sentier livre a un prix',
       );
     });
   });

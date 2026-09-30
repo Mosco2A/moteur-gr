@@ -3534,6 +3534,12 @@ class Translations$myTreks$fr {
 
 	/// fr: 'Langue, unités, thème'
 	String get settingsSubtitle => 'Langue, unités, thème';
+
+	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.'
+	String get emptyCatalogueOuDemo => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.';
+
+	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.'
+	String get emptyCatalogueSeul => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.';
 }
 
 // Path: trekState
@@ -9978,6 +9984,8 @@ extension on Translations {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Ouvrir le trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Langue, unités, thème',
+			'myTreks.emptyCatalogueOuDemo' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.',
+			'myTreks.emptyCatalogueSeul' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.',
 			'trekState.abandonDialog.title' => 'Un trek est déjà en cours',
 			'trekState.abandonDialog.message' => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.',
 			'trekState.abandonDialog.finish' => 'Terminer',

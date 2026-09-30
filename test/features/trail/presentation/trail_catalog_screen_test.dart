@@ -194,7 +194,7 @@ void main() {
       );
     });
 
-    testWidgets('le sentier GRATUIT du catalogue porte toujours sa pastille', (
+    testWidgets('AUCUNE pastille GRATUIT au catalogue : on n a droit a rien', (
       tester,
     ) async {
       fenetreHaute(tester);
@@ -208,31 +208,29 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Le modele du lot 601 (un sentier gratuit est une ENTREE du modele, prix
-      // nul) survit a la suppression de son ancienne instance : il en a une
-      // autre, dans une autre region (cf. `test_trail_config.dart`).
-      final gratuits = TrailCatalog.freeIds;
+      // DECISION DE CHRISTOPHE, scenario d acceptation du 29/09 14:17 : « Donc
+      // la prochaine fois que j ouvre l application je n ai droit a rien. » Le
+      // catalogue ne montre donc AUCUNE pastille « Gratuit » : le niveau gratuit
+      // du modele eco, c est le bouton demo, pas un sentier offert.
       expect(
-        gratuits,
-        isNotEmpty,
-        reason: 'le niveau GRATUIT du modele eco doit avoir une instance',
-      );
-      final gratuit = TrailCatalog.byId(gratuits.first)!;
-      expect(
-        find.byKey(ValueKey('catalog-free-badge-${gratuit.id}')),
-        findsOneWidget,
-        reason: 'un sentier gratuit le DIT, sinon le randonneur doit deviner',
+        TrailCatalog.freeIds,
+        isEmpty,
+        reason: 'aucun sentier livre n est gratuit',
       );
       expect(
-        find.byKey(const ValueKey('catalog-free-badge-mare-a-mare-centre')),
+        find.text(t.catalog.freeBadge),
         findsNothing,
-        reason: 'le sentier payant n est pas gratuit',
+        reason:
+            'une pastille Gratuit promettrait un droit que personne n a '
+            'decide d accorder',
       );
-      expect(
-        find.text(t.catalog.freeTrailName(nom: gratuit.displayName)),
-        findsOneWidget,
-        reason: 'le nom du sentier gratuit est COMPOSE dans les cinq langues',
-      );
+      for (final trail in TrailCatalog.all) {
+        expect(
+          find.byKey(ValueKey('catalog-free-badge-${trail.id}')),
+          findsNothing,
+          reason: '${trail.id} ne doit pas se declarer gratuit',
+        );
+      }
     });
   });
 }

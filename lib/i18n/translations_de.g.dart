@@ -1680,6 +1680,8 @@ class _Translations$myTreks$de extends Translations$myTreks$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % des Weges';
 	@override late final _Translations$myTreks$a11y$de a11y = _Translations$myTreks$a11y$de._(_root);
 	@override String get settingsSubtitle => 'Sprache, Einheiten, Thema';
+	@override String get emptyCatalogueOuDemo => 'Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen, oder probieren Sie die Demo oben in der Liste.';
+	@override String get emptyCatalogueSeul => 'Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen.';
 }
 
 // Path: trekState
@@ -5989,6 +5991,8 @@ extension on TranslationsDe {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Tour ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Tour ${nom} öffnen',
 			'myTreks.settingsSubtitle' => 'Sprache, Einheiten, Thema',
+			'myTreks.emptyCatalogueOuDemo' => 'Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen, oder probieren Sie die Demo oben in der Liste.',
+			'myTreks.emptyCatalogueSeul' => 'Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen.',
 			'trekState.abandonDialog.title' => 'Eine Tour läuft bereits',
 			'trekState.abandonDialog.message' => 'Du hast eine laufende Wanderung. Beende oder brich sie ab, bevor du eine neue startest.',
 			'trekState.abandonDialog.finish' => 'Beenden',

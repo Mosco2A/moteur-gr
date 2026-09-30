@@ -78,17 +78,19 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final service = DemoModeService(prefs: prefs);
 
-      // Le catalogue porte bien un sentier gratuit. TACHE 638 : ce n'est plus le
-      // « Mare a Mare Centre Demo » (supprime avec le doublon du bug 1 et
-      // l'amputation du bug 8) mais le sentier des Volcans. Ce qui compte ici est
-      // inchange : le niveau GRATUIT du modele eco a une INSTANCE, et il n'a
-      // toujours aucune exemption posee sur un sentier payant.
+      // TACHE 638 — LE CATALOGUE NE PORTE PLUS AUCUN SENTIER GRATUIT, et c'est
+      // une decision de Christophe (scenario d'acceptation du 29/09 14:17 :
+      // « Donc la prochaine fois que j ouvre l application je n ai droit a
+      // rien »). Ce que ce test protege est inchange, et meme renforce : ce
+      // service n'a PLUS AUCUNE liste de privilegies a consulter, et aucune
+      // exemption n'est posee sur un sentier payant. La demonstration se fait par
+      // le MODE demo, jamais par un droit.
       expect(
         TrailCatalog.freeIds,
-        isNotEmpty,
+        isEmpty,
         reason:
-            'le niveau gratuit du modele repose sur un sentier au PRIX '
-            'NUL, pas sur une exemption posee sur un sentier payant',
+            'aucun sentier livre n est jouable sans achat ; le niveau gratuit '
+            'du modele eco, c est la demo',
       );
       expect(
         TrailCatalog.freeIds,

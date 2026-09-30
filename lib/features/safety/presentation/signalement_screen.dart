@@ -199,13 +199,27 @@ class _TypeOption extends StatelessWidget {
         : theme.colorScheme.outline;
 
     return Semantics(
-      button: true,
+      // L'OPTION DEJA CHOISIE NE SE RE-CHOISIT PAS (tache 638).
+      //
+      // GESTE INERTE PREEXISTANT, TROUVE PAR MESURE. Le type « Obstacle sur le
+      // sentier » est selectionne par defaut, et son option restait tapable :
+      // appuyer dessus ne changeait RIEN a l'ecran — ni effet, ni message. Le
+      // balayage « aucun geste mort » (tache 573) ne l'atteignait pas, parce
+      // qu'un geste joue avant lui changeait d'ecran et faisait classer tous les
+      // suivants « non joues ». La suppression du sentier gratuit du catalogue a
+      // decale ce balayage, et le defaut est apparu — il etait la depuis le
+      // debut.
+      //
+      // MEME GRAMMAIRE QUE L'ECRAN DE SELECTION DE SENTIER, qui desactive deja
+      // son bouton sur le sentier actif : ce qui est deja choisi se VOIT (fond
+      // teinte, bordure, coche) et ne se repropose pas.
+      button: !selected,
       selected: selected,
       label: label,
       child: InkWell(
         key: ValueKey('signalement-type-$type'),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        onTap: onTap,
+        onTap: selected ? null : onTap,
         child: Container(
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           decoration: BoxDecoration(
@@ -221,7 +235,10 @@ class _TypeOption extends StatelessWidget {
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
               if (selected)
-                StepIcon(StepwaysIcons.cochePleine, color: theme.colorScheme.primary),
+                StepIcon(
+                  StepwaysIcons.cochePleine,
+                  color: theme.colorScheme.primary,
+                ),
             ],
           ),
         ),

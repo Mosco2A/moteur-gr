@@ -2211,7 +2211,9 @@
       "trekCard": "Trek $nom, $state",
       "openTrek": "Apri il trek $nom"
     },
-    "settingsSubtitle": "Lingua, unità, tema"
+    "settingsSubtitle": "Lingua, unità, tema",
+    "emptyCatalogueOuDemo": "Non hai ancora un sentiero. Apri il catalogo per sceglierne uno, o prova la demo in cima all'elenco.",
+    "emptyCatalogueSeul": "Non hai ancora un sentiero. Apri il catalogo per sceglierne uno."
   },
   "trekState": {
     "abandonDialog": {

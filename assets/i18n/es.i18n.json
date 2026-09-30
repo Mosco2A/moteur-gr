@@ -2211,7 +2211,9 @@
       "trekCard": "Ruta $nom, $state",
       "openTrek": "Abrir la ruta $nom"
     },
-    "settingsSubtitle": "Idioma, unidades, tema"
+    "settingsSubtitle": "Idioma, unidades, tema",
+    "emptyCatalogueOuDemo": "Todavía no tienes ningún sendero. Abre el catálogo para elegir uno, o prueba la demo en la parte superior de la lista.",
+    "emptyCatalogueSeul": "Todavía no tienes ningún sendero. Abre el catálogo para elegir uno."
   },
   "trekState": {
     "abandonDialog": {

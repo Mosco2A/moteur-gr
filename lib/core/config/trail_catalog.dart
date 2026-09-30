@@ -42,16 +42,24 @@ abstract final class TrailCatalog {
     // l'entree, et le bouton orange « Essayer la demo » reste la seule porte
     // d'entree de la demonstration (cf. `session_demo.dart`).
     //
-    // LE SENTIER DE DEMONSTRATION D'AUVERGNE PREND SA PLACE DE SENTIER GRATUIT.
-    // Le modele du lot 601 — « un sentier gratuit est une ENTREE du modele, dont
-    // le prix est nul ; une exemption serait un trou » — n'est pas remis en
-    // cause : il perdait seulement son unique instance. Le laisser sans instance
-    // rendait le niveau gratuit du modele eco INATTEIGNABLE (aucun sentier
-    // jouable sans payer), ce qui se mesure : « Mes treks » devenait vide au
-    // premier lancement et plusieurs ecrans se retrouvaient sans aucun sentier
-    // atteignable. Le sentier de demonstration generique, qui n'a jamais eu de
-    // prix a lui, porte donc desormais le prix nul — et ce n'est PAS un second
-    // Mare a Mare : c'est un autre sentier, dans une autre region.
+    // ET IL N'Y A PLUS AUCUN SENTIER GRATUIT AU CATALOGUE. C'est une decision de
+    // Christophe, pas une consequence : son scenario d'acceptation du 29/09
+    // 14:17 dit, verbatim, « la prochaine fois que j'ouvre l'application je n'ai
+    // droit a rien ». Un sentier gratuit au catalogue lui donnerait droit a
+    // quelque chose sans qu'il ait rien achete — exactement ce qu'il refuse.
+    //
+    // LE NIVEAU GRATUIT DU MODELE ECO, C'EST LA DEMO, PAS UN SENTIER. Le modele
+    // du lot 601 — « un sentier gratuit est une ENTREE du modele, dont le prix
+    // est nul ; une exemption serait un trou » — reste ecrit et teste
+    // ([TrailConfig.isFreeTrail], [freeIds]) : il n'a simplement plus d'instance,
+    // et c'est un etat legitime. Ce que le randonneur qui n'a rien achete peut
+    // faire, il le fait par le bouton orange : il VOIT tout, il n'ACQUIERT rien.
+    //
+    // COROLLAIRE ASSUME : « Mes treks » est VIDE au premier lancement, et il le
+    // DIT (cf. `my_treks_screen.dart`, etat vide) en renvoyant vers le catalogue
+    // et vers la demo. Un accueil vide qui explique n'est pas une panne ; un
+    // sentier offert pour eviter un ecran vide serait un cadeau que personne n'a
+    // decide.
     testTrailConfig,
     pyreneesTrailConfig,
   ];

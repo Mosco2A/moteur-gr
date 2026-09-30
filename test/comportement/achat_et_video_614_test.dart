@@ -48,9 +48,10 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
-import 'package:moteur_gr/core/config/test_trail_config.dart';
+import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
+import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
@@ -68,13 +69,36 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Le sentier PAYANT du catalogue, et le sentier GRATUIT du catalogue.
 ///
-/// TACHE 638 : le sentier gratuit n'est plus le « Mare a Mare Centre Demo » (il a
-/// ete supprime avec le doublon du bug 1 et l'amputation du bug 8) mais le sentier
-/// des Volcans, en Auvergne. Ce que ce fichier teste — un sentier gratuit ne
-/// s'achete pas, se realise sans achat, et n'est pas « possede » — porte sur le
-/// MODELE (prix nul), pas sur une localite : il tient a l'identique.
+/// TACHE 638 — IL N'Y A PLUS AUCUN SENTIER GRATUIT AU CATALOGUE, et c'est une
+/// decision de Christophe (scenario d'acceptation du 29/09 14:17 : « Donc la
+/// prochaine fois que j ouvre l application je n ai droit a rien »). Le niveau
+/// gratuit du modele eco, c'est la DEMO, pas un sentier.
+///
+/// CE QUE CE FICHIER TESTE N'A PAS CHANGE POUR AUTANT : un sentier au PRIX NUL ne
+/// s'achete pas, reste jouable sans achat, et n'est pas « possede ». C'est le
+/// MODELE (lot 601), et un modele se teste meme sans instance livree — sinon la
+/// regle disparait le jour ou plus personne ne l'incarne, et c'est exactement ce
+/// qui vient d'arriver. Le sentier gratuit est donc DECLARE ICI : injecte au
+/// service (`freeTrailIds`) et au catalogue effectif
+/// (`availableTrailsProvider`), ce qui rend ces tests independants du contenu du
+/// catalogue livre.
 const _sentierPayant = mareAMareCentreTrailConfig;
-const _sentierGratuit = testTrailConfig;
+const _sentierGratuit = TrailConfig(
+  id: 'sentier-gratuit-de-test',
+  name: 'Sentier gratuit de test',
+  displayName: 'Sentier gratuit de test',
+  tagline: 'Prix nul, pose par le test',
+  totalStages: 3,
+  totalDistanceKm: 30.0,
+  totalElevationGain: 900,
+  region: 'Nulle part',
+  country: 'France',
+  primaryColorValue: 0xFF2E7D32,
+  secondaryColorValue: 0xFF1565C0,
+  gpxAssetPath: 'assets/gpx/test_trail.gpx',
+  // LE PRIX EST NUL — c'est TOUT ce qui fait de lui un sentier gratuit.
+  priceStages: 0,
+);
 
 /// Regie de publicite SIMULEE : elle ne contacte rien, et elle COMPTE.
 ///
@@ -144,7 +168,7 @@ void main() {
       connectivityMonitor: _ReseauEnLigne(),
       nowFn: () => maintenant,
       prefs: prefs,
-      freeTrailIds: TrailCatalog.freeIds,
+      freeTrailIds: {...TrailCatalog.freeIds, _sentierGratuit.id},
     );
     await monetisation.load();
     return monetisation;
@@ -170,6 +194,12 @@ void main() {
         monetizationReadyProvider.overrideWith((ref) async => monetisation),
         adsReadyProvider.overrideWith((ref) async => pubAutorisee),
         bannerAdPresenterProvider.overrideWithValue(regie),
+        // LE CATALOGUE EFFECTIF PORTE LE SENTIER GRATUIT DE CE TEST (tache 638) :
+        // il n'est plus dans le catalogue livre, mais le modele « prix nul » doit
+        // rester teste A L ECRAN.
+        availableTrailsProvider.overrideWithValue(
+          const <TrailConfig>[...TrailCatalog.all, _sentierGratuit],
+        ),
       ],
     );
     addTearDown(c.dispose);

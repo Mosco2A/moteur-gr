@@ -195,7 +195,10 @@ void brancherLesPlugins() {
       .createTempSync('stepways_parcours_reel_')
       .path;
   repondre('plugins.flutter.io/path_provider', (appel) async => dossier);
-  repondre('plugins.flutter.io/path_provider_android', (appel) async => dossier);
+  repondre(
+    'plugins.flutter.io/path_provider_android',
+    (appel) async => dossier,
+  );
 
   // AUCUNE REGIE PUBLICITAIRE (tache 595). Depuis que la banniere est branchee,
   // le cockpit et le catalogue touchent le SDK Google Mobile Ads — dont les
@@ -264,10 +267,9 @@ Future<void> revenirSurLaRoute(WidgetTester tester, String chemin) async {
 
 /// Retire les messages (`SnackBar`) encore affiches, sans attendre leur duree.
 void fermerLesMessages(WidgetTester tester) {
-  for (final m
-      in tester.stateList<ScaffoldMessengerState>(
-        find.byType(ScaffoldMessenger),
-      )) {
+  for (final m in tester.stateList<ScaffoldMessengerState>(
+    find.byType(ScaffoldMessenger),
+  )) {
     m.clearSnackBars();
   }
 }
@@ -353,9 +355,22 @@ bool estSousLeDoigt(WidgetTester tester, Finder f) {
 /// C'est la difference entre « le bouton a navigue » et « l'utilisateur est
 /// arrive » : `go('/catalog')` suivi d'une garde qui renvoie sur `/onboarding`
 /// laisse cette valeur a `/onboarding`.
+///
+/// IL LIT LE HAUT DE LA PILE, PAS L'ADRESSE DE BASE (tache 638). Cette fonction
+/// rendait `currentConfiguration.uri.path`, qui NE BOUGE PAS sur un `push`
+/// imperatif : apres `context.push('/catalog')` depuis « Mes treks », l'ecran du
+/// catalogue est bel et bien a l'ecran (mesure : sa cle y est trouvee) et cette
+/// fonction repondait encore `/my-treks`. Tout ce depot navigue en
+/// « hub-and-push » : l'instrument etait donc AVEUGLE au geste le plus courant de
+/// l'application, et deux gestes inertes reels s'etaient caches derriere cette
+/// cecite (l'option de signalement deja choisie, le bouton du sentier deja
+/// actif). Le dernier `match` porte la route effectivement empilee ; la garde de
+/// redirection l'a deja traversee, donc la promesse de l'en-tete tient.
 String cheminAffiche() {
   final config = appRouter.routerDelegate.currentConfiguration;
-  return config.uri.path;
+  if (config.matches.isEmpty) return config.uri.path;
+  final haut = config.matches.last.matchedLocation;
+  return haut.isEmpty ? config.uri.path : haut;
 }
 
 // ---------------------------------------------------------------------------
@@ -455,8 +470,10 @@ String empreinteEcran(WidgetTester tester) {
   final textes = <String>[];
   for (final w in tester.widgetList<Text>(find.byType(Text))) {
     final s = w.data ?? w.textSpan?.toPlainText() ?? '';
-    textes.add('$s#${w.style?.color?.toARGB32() ?? '-'}'
-        '#${w.style?.fontWeight?.value ?? '-'}');
+    textes.add(
+      '$s#${w.style?.color?.toARGB32() ?? '-'}'
+      '#${w.style?.fontWeight?.value ?? '-'}',
+    );
   }
   final icones = tester
       .widgetList<StepIcon>(find.byType(StepIcon))
@@ -488,11 +505,16 @@ String empreinteEcran(WidgetTester tester) {
   // boutons d'unites des reglages seraient declares morts alors qu'ils marchent.
   final selections = <String>[
     for (final w in tester.allWidgets)
-      if (w is SegmentedButton) 'seg:${w.selected.join('+')}'
-      else if (w is ToggleButtons) 'tog:${w.isSelected.join('+')}'
-      else if (w is ChoiceChip) 'cho:${w.selected}'
-      else if (w is FilterChip) 'fil:${w.selected}'
-      else if (w is Tab) 'tab:${w.text}',
+      if (w is SegmentedButton)
+        'seg:${w.selected.join('+')}'
+      else if (w is ToggleButtons)
+        'tog:${w.isSelected.join('+')}'
+      else if (w is ChoiceChip)
+        'cho:${w.selected}'
+      else if (w is FilterChip)
+        'fil:${w.selected}'
+      else if (w is Tab)
+        'tab:${w.text}',
   ];
   return '${cheminAffiche()}|T${textes.join('~')}|I${icones.join(',')}'
       '|F${fonds.join(',')}|C${champs.join('~')}'
@@ -684,11 +706,13 @@ List<GesteDisponible> gestesDisponibles(WidgetTester tester) {
       final libelle = libelleDe(e);
       final cle = '$T|$libelle';
       if (!vus.add(cle)) continue;
-      out.add(GesteDisponible(
-        libelle: libelle,
-        type: T.toString(),
-        finder: find.byType(T).at(i),
-      ));
+      out.add(
+        GesteDisponible(
+          libelle: libelle,
+          type: T.toString(),
+          finder: find.byType(T).at(i),
+        ),
+      );
     }
   }
 

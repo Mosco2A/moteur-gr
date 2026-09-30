@@ -2211,7 +2211,9 @@
       "trekCard": "Trek $nom, $state",
       "openTrek": "Open trek $nom"
     },
-    "settingsSubtitle": "Language, units, theme"
+    "settingsSubtitle": "Language, units, theme",
+    "emptyCatalogueOuDemo": "You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.",
+    "emptyCatalogueSeul": "You do not have a trail yet. Open the catalogue to choose one."
   },
   "trekState": {
     "abandonDialog": {

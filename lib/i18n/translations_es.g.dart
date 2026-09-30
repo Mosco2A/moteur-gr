@@ -1680,6 +1680,8 @@ class _Translations$myTreks$es extends Translations$myTreks$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % del sendero';
 	@override late final _Translations$myTreks$a11y$es a11y = _Translations$myTreks$a11y$es._(_root);
 	@override String get settingsSubtitle => 'Idioma, unidades, tema';
+	@override String get emptyCatalogueOuDemo => 'Todavía no tienes ningún sendero. Abre el catálogo para elegir uno, o prueba la demo en la parte superior de la lista.';
+	@override String get emptyCatalogueSeul => 'Todavía no tienes ningún sendero. Abre el catálogo para elegir uno.';
 }
 
 // Path: trekState
@@ -5989,6 +5991,8 @@ extension on TranslationsEs {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Ruta ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Abrir la ruta ${nom}',
 			'myTreks.settingsSubtitle' => 'Idioma, unidades, tema',
+			'myTreks.emptyCatalogueOuDemo' => 'Todavía no tienes ningún sendero. Abre el catálogo para elegir uno, o prueba la demo en la parte superior de la lista.',
+			'myTreks.emptyCatalogueSeul' => 'Todavía no tienes ningún sendero. Abre el catálogo para elegir uno.',
 			'trekState.abandonDialog.title' => 'Ya hay una ruta en curso',
 			'trekState.abandonDialog.message' => 'Tienes una excursión en curso. Termínala o abandónala antes de empezar otra.',
 			'trekState.abandonDialog.finish' => 'Terminar',
