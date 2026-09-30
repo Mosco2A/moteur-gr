@@ -18,7 +18,20 @@ param(
   [ValidateSet('avant-plan', 'complet')][string]$Perm = 'avant-plan',
   [int]$Duree = 1800,
   [string]$Serial = 'emulator-5554',
-  [string]$Base = 'data/campagne_547'
+  [string]$Base = 'data/campagne_547',
+  # 5. LES --dart-define DU RUN, PASSES AU TEST (tache 651).
+  #
+  # CE QUI MANQUAIT. La recette passait `flutter test` SANS aucun define : le
+  # run tournait donc sans identite Firebase (« Descente des droits : sans
+  # effet, Firebase indisponible ») et sans ad-units de test, alors que la
+  # campagne, elle, se mesure avec. Un persona rejoue sans les defines ne
+  # reproduit pas ce qu'on a mesure — et l'ecart ne se voit nulle part dans le
+  # journal. On les rend donc explicites, avec le jeu de la campagne par
+  # defaut.
+  [string[]]$Defines = @(
+    'STEPWAYS_FIREBASE_PROJECT_ID=stepways-app',
+    'STEPWAYS_TEST_ADS=true'
+  )
 )
 
 $ErrorActionPreference = 'Continue'
@@ -55,8 +68,10 @@ $procs += Start-Demon 'perm' $permArgs
 
 Start-Sleep -Seconds 3
 $debut = Get-Date
-Write-Output "[$Tag] run : flutter test $Scenario -d $Serial (>> $log)"
-& flutter test $Scenario -d $Serial --reporter expanded | Out-File -FilePath $log -Append -Encoding utf8
+$defArgs = @()
+foreach ($d in $Defines) { if ($d) { $defArgs += "--dart-define=$d" } }
+Write-Output "[$Tag] run : flutter test $Scenario -d $Serial $($defArgs -join ' ') (>> $log)"
+& flutter test $Scenario -d $Serial --reporter expanded @defArgs | Out-File -FilePath $log -Append -Encoding utf8
 $code = $LASTEXITCODE
 $duree = [int]((Get-Date) - $debut).TotalSeconds
 
