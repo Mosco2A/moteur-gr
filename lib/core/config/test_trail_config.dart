@@ -1,3 +1,4 @@
+import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
 /// Configuration du sentier fictif pour les tests.
@@ -22,5 +23,5 @@ const testTrailConfig = TrailConfig(
   defaultDuration: 5,
   offlineFirst: true,
   hasPremium: false,
-  privacyPolicyUrl: 'https://example.org/test-trail/privacy',
+  privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

@@ -10,19 +10,30 @@
 > juridique doivent être **rédigées/validées par un juriste** avant
 > publication (réserve de forme #86142, design D4 #86166, C-3 / A4-5).
 > StepWays a le statut d'**hébergeur** (obligations de base, **pas
-> VLOP** — A4-6). Les champs `[ENTITE]`, `[CONTACT-EMAIL]`,
-> `[CONTACT-MODERATION]` sont à compléter.
+> VLOP** — A4-6).
+>
+> **PUBLIÉ LE 30/09/2026** sur <https://only1cent.com/stepways/conditions>
+> (version anglaise : `/stepways/conditions-en`), hébergement Firebase du
+> projet `gr20-app`, comme les pages du GR20 (tâche 642). Éditeur et
+> contacts renseignés ci-dessous ; la page en ligne **déclare
+> explicitement** que les stipulations générales restantes
+> (responsabilité, propriété intellectuelle, droit applicable,
+> résiliation) sont en cours de rédaction, plutôt que de laisser croire
+> qu'elle est complète.
 
-**Dernière mise à jour : 15 juin 2026** (lot SEC-D, D4D-04)
+**Dernière mise à jour : 30 septembre 2026** (tâche 642 — éditeur
+renseigné et publication en ligne. Rédaction : 15 juin 2026, lot SEC-D,
+D4D-04)
 
 ## 1. Objet et statut
 
 StepWays permet à ses utilisateurs de publier des contenus
 communautaires : **commentaires de points d'intérêt**, **signalements
-de sentier**, **activités** partagées. À ce titre, l'éditeur **[ENTITE]**
-agit comme **hébergeur** au sens du DSA : il ne contrôle pas les
-contenus avant leur publication et applique une **modération a
-posteriori** sur signalement.
+de sentier**, **activités** partagées. À ce titre, l'éditeur
+**Only1Cent**, représenté par **Christophe Mosconi**
+(**contact@only1cent.com**), agit comme **hébergeur** au sens du DSA :
+il ne contrôle pas les contenus avant leur publication et applique une
+**modération a posteriori** sur signalement.
 
 ## 2. Règles de contenu (ce qui est interdit)
 
@@ -65,11 +76,23 @@ le registre des traitements (T8).
 
 Ces conditions et la page de transparence (`transparence.md`) sont
 accessibles **dans l'application**, depuis **Réglages -> Confidentialité
-/ Mentions légales** (section existante D4A-02). Le lien doit pointer
-vers la version publiée (FR/EN).
+/ Mentions légales** (section existante D4A-02). Le lien pointe vers la
+version publiée, dans la langue du randonneur (français si son
+application est en français, anglais dans les quatre autres cas) :
+adresses portées par `StepwaysLegal` (`lib/core/branding/`).
 
-> **[JURISTE]** : prévoir l'URL publique stable des CGU et de la page de
-> transparence, et leur acceptation à l'inscription si requis.
+**URL publiques stables (tâche 642)** :
+- <https://only1cent.com/stepways/conditions> (FR)
+- <https://only1cent.com/stepways/conditions-en> (EN)
+
+La page de transparence n'a pas d'URL propre : son contenu est intégré à
+la page des conditions (§ 5 « Transparence sur la modération »), qui
+annonce que le **premier rapport chiffré** sera publié à l'issue de la
+première période de référence — publier des gabarits `[N]` vides n'aurait
+aucun sens.
+
+> **[JURISTE]** : reste à arbitrer l'**acceptation à l'inscription** si
+> elle est requise, et la fréquence de publication du rapport.
 
 ## 6. Réserves
 

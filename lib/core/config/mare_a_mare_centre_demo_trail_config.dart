@@ -1,3 +1,4 @@
+import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
 /// Configuration du sentier MARE A MARE CENTRE DEMO — le sentier de
@@ -67,5 +68,5 @@ const mareAMareCentreDemoTrailConfig = TrailConfig(
   seedAssetsBase: 'assets/data/mare_a_mare_centre_demo',
   accommodationsAssetPath: 'assets/data/mare_a_mare_centre_demo.json',
   tipAssetPaths: ['assets/tips/mare_a_mare_tips.json'],
-  privacyPolicyUrl: 'https://example.org/mare-a-mare-centre/privacy',
+  privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

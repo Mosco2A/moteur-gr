@@ -9,8 +9,10 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../ads/providers/ads_providers.dart';
 import '../providers/consent_ui_providers.dart';
+import '../providers/legal_pages_provider.dart';
 import 'consent_purpose_tile.dart';
 import '../../../core/branding/stepways_icons.dart';
+import '../../../core/branding/stepways_legal.dart';
 
 /// Ecran de gestion du consentement dans les REGLAGES (D4A-02, design #86166).
 ///
@@ -67,10 +69,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                     title: Text(tr.consent.reviewNeeded),
                   ),
                 ),
-              Text(
-                tr.consent.settingsIntro,
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(tr.consent.settingsIntro, style: theme.textTheme.bodyMedium),
               const SizedBox(height: AppTheme.spacingMd),
 
               // --- TOUT REFUSER (tache 580, Y1) ---
@@ -169,8 +168,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
 
               // --- Section SANTE isolee (art 9) ---
               AppCard(
-                backgroundColor:
-                    theme.colorScheme.errorContainer.withAlpha(40),
+                backgroundColor: theme.colorScheme.errorContainer.withAlpha(40),
                 padding: const EdgeInsets.all(AppTheme.spacingMd),
                 child: Semantics(
                   container: true,
@@ -222,17 +220,15 @@ class ConsentSettingsScreen extends ConsumerWidget {
                       ),
                       ConsentPurposeTile(
                         purpose: ConsentPurpose.healthData,
-                        granted: states[ConsentPurpose.healthData]?.granted ??
-                            false,
+                        granted:
+                            states[ConsentPurpose.healthData]?.granted ?? false,
                         onChanged: (value) => controller.set(
                           ConsentPurpose.healthData,
                           granted: value,
                         ),
                         hideDescription: true,
                       ),
-                      _DecisionDate(
-                        state: states[ConsentPurpose.healthData],
-                      ),
+                      _DecisionDate(state: states[ConsentPurpose.healthData]),
                     ],
                   ),
                 ),
@@ -240,11 +236,23 @@ class ConsentSettingsScreen extends ConsumerWidget {
               const SizedBox(height: AppTheme.spacingLg),
 
               // --- Lien politique de confidentialite ---
+              //
+              // LE BOUTON N'OUVRAIT RIEN (tache 642). `onOpenPrivacyPolicy`
+              // est un rappel injecte pour la testabilite, et la seule route
+              // qui ouvre cet ecran (`/consent`) construisait
+              // `const ConsentSettingsScreen()` — sans rappel. `onPressed:
+              // null` grise le bouton : la politique de confidentialite etait
+              // INATTEIGNABLE depuis l'application, alors que le RGPD
+              // (art. 13) la veut accessible et que le texte juste au-dessus
+              // la cite. Le rappel injecte reste prioritaire (les tests le
+              // verifient) ; a defaut, l'ecran ouvre desormais lui-meme
+              // l'adresse publiee.
               Semantics(
                 button: true,
                 label: tr.consent.a11y.policyButton,
                 child: TextButton.icon(
-                  onPressed: onOpenPrivacyPolicy,
+                  key: const ValueKey('consent-privacy-policy'),
+                  onPressed: onOpenPrivacyPolicy ?? () => _ouvrirPolitique(ref),
                   icon: const StepIcon(StepwaysIcons.cgu),
                   label: Text(tr.consent.privacyPolicyLink),
                 ),
@@ -256,6 +264,26 @@ class ConsentSettingsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// OUVRE LA POLITIQUE DE CONFIDENTIALITE PUBLIEE (tache 642).
+///
+/// L'adresse vient de [StepwaysLegal] : la politique decrit ce que fait
+/// L'APPLICATION (un consentement, un identifiant pseudonymise, un hebergeur),
+/// pas ce que fait un sentier donne — elle est donc la meme pour tous les
+/// sentiers de la maison. Le champ parametrique
+/// `TrailConfig.privacyPolicyUrl` reste, lui, ce qui est PUBLIE sur la fiche
+/// store et en base (lot 641) et ce qu'un sentier tiers pourra surcharger ; il
+/// n'est pas lu ici pour ne pas faire dependre cet ecran de la resolution du
+/// catalogue de sentiers.
+///
+/// La langue suit celle de l'application : francais si elle est en francais,
+/// anglais dans les quatre autres cas — seules ces deux versions sont en ligne.
+void _ouvrirPolitique(WidgetRef ref) {
+  final langue = LocaleSettings.currentLocale.languageCode;
+  ref
+      .read(legalPageLauncherProvider)
+      .open(StepwaysLegal.privacyPolicyPour(langue));
 }
 
 /// LA CONFIRMATION DU REFUS GLOBAL (tache 580, Y1).
@@ -305,7 +333,8 @@ class _DecisionDate extends StatelessWidget {
     final label = decidedAt == null
         ? tr.consent.notDecided
         : tr.consent.decidedOn(
-            date: '${decidedAt.day.toString().padLeft(2, '0')}/'
+            date:
+                '${decidedAt.day.toString().padLeft(2, '0')}/'
                 '${decidedAt.month.toString().padLeft(2, '0')}/'
                 '${decidedAt.year}',
           );

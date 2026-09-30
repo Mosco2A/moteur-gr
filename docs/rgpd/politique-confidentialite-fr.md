@@ -1,53 +1,82 @@
 # Politique de confidentialité — StepWays
 
-> **ZONE JURISTE — validation obligatoire avant publication.**
+> **CE DOCUMENT EST LA SOURCE ; LA PAGE EN LIGNE EN EST LE RENDU.**
+> Publiée le 30/09/2026 sur <https://only1cent.com/stepways/privacy>
+> (version anglaise : `/stepways/privacy-en`), hébergement Firebase du
+> projet `gr20-app`, comme la politique du GR20 — décision de Christophe
+> du 30/09 13:39 : « Regarde celle de GR20 et fais pareil ! » (tâche 642).
+> L'adresse est portée par `StepwaysLegal` (`lib/core/branding/`), d'où
+> les quatre configurations de sentier la tirent. Toute modification de
+> ce texte doit être reportée sur les deux pages en ligne, et
+> réciproquement : deux vérités qui divergent ne valent pas mieux
+> qu'aucune.
+>
+> **ZONE JURISTE — validation encore requise sur la forme.**
 > Ce document décrit fidèlement le comportement du code de l'application
 > à la date ci-dessous. Il a été rédigé par l'équipe technique sur la
 > base de sources documentaires (recommandations CNIL, textes RGPD/DSA)
-> et **NON par un avocat**. Avant toute mise en production ou dépôt store,
-> il doit être **relu et validé par un juriste / DPO** (réserve de forme,
-> design D4 #86166, audit #86142). Les passages marqués **[JURISTE]**
-> et les champs entre crochets `[ENTITE]`, `[ADRESSE]`, `[CONTACT-EMAIL]`,
-> `[DPO-CONTACT]` doivent être complétés/arbitrés avant publication.
-> Toute évolution fonctionnelle (analytics réel, crash reporting, sync
-> photos, publicité réelle…) impose la mise à jour préalable de ce texte.
+> et **NON par un avocat**. Les passages marqués **[JURISTE]** restent à
+> arbitrer. Champ encore ouvert : **`[ADRESSE]`** (siège social), qui
+> n'est volontairement PAS inventé et n'apparaît pas sur la page publiée.
+> Toute évolution fonctionnelle (analytics activé, sync photos, partage
+> de position réellement ouvert…) impose la mise à jour préalable de ce
+> texte.
 
-**Dernière mise à jour : 15 juin 2026** (consolidation lot SEC-D, design D4 #86166)
+**Dernière mise à jour : 30 septembre 2026** (tâche 642 — mise en
+conformité du texte avec le code mesuré, et publication en ligne.
+Consolidation précédente : 15 juin 2026, lot SEC-D, design D4 #86166)
 
 ## 1. Qui sommes-nous ?
 
-L'application StepWays (« l'Application ») est éditée par **[ENTITE]**,
-dont le siège est situé **[ADRESSE]** (« nous »). Nous sommes le
+L'application StepWays (« l'Application ») est éditée par **Only1Cent**,
+représentée par **Christophe Mosconi** (« nous »). Nous sommes le
 responsable du traitement des données décrites dans ce document.
 
 Contact pour toute question relative aux données personnelles :
-**[CONTACT-EMAIL]**.
+**contact@only1cent.com**.
 
-> **[JURISTE] — Délégué à la protection des données (DPO).** Désigner
-> un DPO ou un référent « protection des données » et indiquer son
-> contact **[DPO-CONTACT]**. La désignation d'un DPO n'est pas
-> systématiquement obligatoire pour une petite structure, mais un point
-> de contact identifiable pour les personnes concernées (art. 13.1.b
-> RGPD) est requis. À arbitrer par le juriste.
+> **[JURISTE] — siège social et DPO.** L'adresse du siège
+> (**`[ADRESSE]`**) reste à renseigner ; elle n'est pas publiée tant
+> qu'elle n'est pas vérifiée. La désignation d'un DPO n'est pas
+> systématiquement obligatoire pour une petite structure ; le point de
+> contact identifiable exigé par l'art. 13.1.b RGPD est assuré par
+> `contact@only1cent.com`. Reste à arbitrer : faut-il un contact de
+> modération distinct ?
 
 ## 2. Notre principe : minimisation dès la conception
 
 StepWays est conçue pour fonctionner **d'abord en local, sur votre
 téléphone**, y compris entièrement hors ligne en montagne :
 
-- **Aucun compte nominatif n'est requis ni créé.** Lorsque vous
-  connectez un compte Apple ou Google, l'Application n'enregistre **ni
-  votre nom, ni votre adresse e-mail, ni votre photo** : le modèle de
-  données de l'Application ne comporte tout simplement pas ces champs
-  (garantie vérifiable dans le code, identité pseudonymisée par
-  empreinte SHA-256 — réf. interne #85383). Seul un **identifiant
-  technique pseudonymisé** (empreinte cryptographique SHA-256 de
-  l'identifiant de session) est conservé.
+- **Aucun compte nominatif n'est requis ni créé.** À la première
+  utilisation, l'Application ouvre un **compte anonyme** auprès de
+  Firebase Authentication. Lorsque vous connectez un compte Apple ou
+  Google, l'Application n'enregistre **ni votre nom, ni votre adresse
+  e-mail, ni votre photo** : le modèle de données de l'Application ne
+  comporte tout simplement pas ces champs (garantie vérifiable dans le
+  code — réf. interne #85383).
 - L'authentification Apple est demandée **sans** les autorisations
   « nom » et « e-mail ».
-- Vos **photos de journal**, votre **carnet de bord**, vos **données de
-  santé et contacts d'urgence** restent **exclusivement sur votre
-  appareil** et ne sont jamais transmis à nos serveurs.
+- Vos **photos de journal**, votre **carnet de bord**, vos **traces GPS
+  détaillées**, votre **morphologie**, vos **données de santé et
+  contacts d'urgence** restent **exclusivement sur votre appareil** et
+  ne sont jamais transmis à nos serveurs.
+- **Ce qui sort est une LISTE FERMÉE, pas une liste d'exclusions**
+  (tâches 612 et 617). Le code n'énumère pas ce qui reste dehors — il
+  énumère ce qui a le droit de partir, et refuse tout le reste **avant
+  le réseau**, dans les deux sens. Voir § 8.
+
+> **Deux identifiants, et il faut les distinguer (corrigé tâche 642).**
+> Les documents rangés sur nos serveurs le sont sous
+> `users/{uid}`, où `uid` est l'**identifiant du compte anonyme Firebase**
+> — attribué automatiquement, sans nom ni e-mail. Ce n'est PAS une
+> empreinte SHA-256 : les règles de sécurité Firestore n'autorisent
+> l'accès que si `request.auth.uid == userId`, ce qui impose l'identifiant
+> brut comme chemin. L'empreinte SHA-256 salée existe bien, mais elle sert
+> ailleurs : d'identifiant « métier » exposé aux écrans, et de
+> `complainantUidHash` sur les plaintes de modération. Les versions
+> antérieures de ce document annonçaient l'empreinte comme clé des
+> données synchronisées — c'était inexact.
 
 > **Pseudonyme, pas anonyme.** Lorsque l'Application affiche un
 > classement, un pseudonyme ou une contribution communautaire, les
@@ -63,18 +92,42 @@ téléphone**, y compris entièrement hors ligne en montagne :
 Vous décidez, **finalité par finalité**, ce que l'Application est
 autorisée à faire. Le consentement est recueilli par un **acte positif
 clair** (aucune case pré-cochée, recommandation CNIL), il est
-**horodaté**, **versionné** (si la politique change, votre accord est
-redemandé) et **révocable à tout moment** depuis les réglages
-(Réglages → Confidentialité). Le détail technique du recueil figure
-dans le service de consentement de l'Application (ConsentService,
-D4A-01/D4A-02).
+**horodaté** (`decidedAt`), **versionné** (`policyVersion` : si la
+politique change, votre accord est redemandé) et **révocable à tout
+moment** depuis les réglages (Réglages → Confidentialité), où un bouton
+**« Tout refuser »** retire les quatre finalités standard d'un seul geste
+(tâche 580). Le détail technique du recueil figure dans le service de
+consentement de l'Application (ConsentService, D4A-01/D4A-02).
+
+**Le défaut est FERMÉ** : en l'absence d'état lisible, l'Application
+considère qu'il n'y a pas consentement.
+
+> **OÙ VIVENT CES ENREGISTREMENTS — mesuré tâche 642.** Les
+> consentements sont horodatés et versionnés **sur l'appareil**
+> (`SharedPreferences`, clé `consent_<finalité>`), et **non sur nos
+> serveurs** : aucune collection de consentements n'existe dans
+> `firestore.rules` ni dans les fonctions. C'est un choix de
+> minimisation — ils n'ont pas besoin d'un serveur pour faire leur
+> travail — mais il a une conséquence qu'il faut assumer : **nous ne
+> détenons aucune preuve de consentement côté serveur**, et un effacement
+> de l'application efface aussi la trace de la décision. Si la preuve
+> opposable devient nécessaire (contrôle, litige publicitaire), il faudra
+> monter ces enregistrements en base — et ce document devra alors être
+> corrigé AVANT. **Ne pas écrire, d'ici là, que les consentements sont
+> conservés en base.**
 
 | Finalité | Ce qu'elle autorise | Donnée sensible ? |
 |---|---|---|
 | **Navigation / position** <!-- #301 --> | Carte, suivi sur le sentier, enregistrement d'une randonnée | Géolocalisation précise |
 | **Partage social** | Classements pseudonymes, fil d'activité, kudos, contributions communautaires | Pseudonyme |
 | **Signalement public** | Signaler un contenu / un problème sur le sentier (modération DSA) | Contact du notifiant |
-| **Données de santé** | Fréquence cardiaque / lecture santé (capteur BLE / Health), **optionnel** | **Oui — art. 9 RGPD** |
+| **Publicité** (tâche 595) | Annonces **personnalisées**. Refusée, la publicité reste affichée mais devient non personnalisée | Identifiant publicitaire |
+| **Données de santé** | Fréquence cardiaque / lecture santé (capteur BLE / Health), morphologie, montée des mesures d'effort, **optionnel** | **Oui — art. 9 RGPD** |
+
+Une décision **distincte** de ces cinq finalités gouverne la
+**sauvegarde système Google / Apple** (tâche 617) : elle est **refusée
+par défaut**, avant même que la question ait été vue. Elle n'est, à ce
+jour, **pas horodatée** — c'est un simple booléen.
 
 > **Données de santé (article 9 RGPD).** Les données de santé
 > (fréquence cardiaque, lecture santé) sont une **catégorie
@@ -89,44 +142,75 @@ D4A-01/D4A-02).
 ### 4.1 Géolocalisation (précise)
 
 - **Quand ?** Uniquement lorsque vous utilisez la carte, la navigation
-  sur le sentier, l'enregistrement d'une randonnée, ou la fonction de
-  **suivi en temps réel** que vous déclenchez vous-même. Le suivi en
-  arrière-plan ne sert qu'à l'enregistrement de votre randonnée en
-  cours et à la publication des positions de la session de suivi que
-  vous avez activée.
-- **Minimisation technique.** Nous **ne stockons pas la trace GPS fine
-  complète côté serveur** lorsque seul le résultat (statistique,
-  classement) est utile : la donnée est **agrégée / tronquée** avant
-  envoi, et l'échantillonnage GPS est réduit à la source (politique
-  `PrivacyDataPolicy`, D4B-01). Par défaut, votre trace reste **locale**.
-- **Où vont les données ?** Si — et seulement si — vous activez le
-  **partage de position en temps réel**, vos positions (latitude,
-  longitude, horodatage) sont publiées vers notre base hébergée par
-  Google Firebase (Cloud Firestore) afin que vos proches puissent vous
-  suivre via un lien de partage. Ces sessions **expirent
-  automatiquement au bout de 48 heures**. Le lien de partage n'expose
-  jamais votre identifiant : la page suivie n'accède qu'aux positions
-  d'une session active et valide.
+  sur le sentier, ou l'enregistrement d'une randonnée. Le suivi en
+  **arrière-plan** (service de premier plan Android, mode `location`
+  iOS) démarre **au lancement d'un trek**, sur le geste du randonneur,
+  et s'arrête à l'arrêt ou à l'abandon du trek. Il n'est **jamais actif
+  hors randonnée en cours**.
+- **Pendant combien de temps ?** Aussi longtemps que dure la randonnée,
+  **sans mise en pause automatique** : une étape de sept heures doit
+  être enregistrée en entier (le seuil des 30 minutes a été retiré —
+  la capture continue EST le besoin). Une **notification permanente**
+  reste affichée pendant tout le suivi : il ne peut pas être discret.
+- **Minimisation technique.** Filtre de distance d'une douzaine de
+  mètres à la source ; politique `PrivacyDataPolicy` (D4B-01) pour les
+  agrégats.
+- **Où vont les points ?** Dans la **base locale (Drift/SQLite) du
+  téléphone, et nulle part ailleurs.** Aucune trace, aucun point de
+  position ne monte vers nos serveurs.
 - **Base légale :** consentement (article 6.1.a RGPD) — activation
   volontaire, désactivable à tout moment ; permission système requise.
 
+> **LE PARTAGE DE POSITION EN TEMPS RÉEL N'EST PAS ACTIF — corrigé
+> tâche 642.** Les versions antérieures de ce document décrivaient la
+> publication de positions vers Cloud Firestore avec expiration à 48 h.
+> **Mesure du code : ce chemin n'est appelé par aucun geste de
+> l'application** (`FollowService.publishPosition`,
+> `GroupSyncService` : zéro appelant), et les écritures de la
+> fonctionnalité « groupe », elles, sont **refusées par les règles
+> Firestore** (la collection `groups` n'a aucune règle, donc tombe sur le
+> refus global). La carte « Mon groupe » a d'ailleurs été retirée du HUB.
+> **Aucune position ne quitte donc l'appareil.** Le jour où cette
+> fonction sera ouverte, ce document et les deux pages en ligne devront
+> être mis à jour AVANT, et le consentement demandé.
+
 ### 4.2 Synchronisation cloud (optionnelle)
 
-- **Quoi ?** Votre progression sur le sentier, vos notes de journal
-  (texte) et vos listes de préparation peuvent être sauvegardées sur
-  Cloud Firestore, associées à votre identifiant pseudonymisé, pour
-  restauration en cas de changement d'appareil. Les **photos ne sont
-  pas synchronisées** (stockage local uniquement).
-- **Base légale :** consentement — la synchronisation suppose la
-  connexion volontaire d'un compte ; sans connexion, l'Application
-  fonctionne intégralement en local.
+- **Quoi ?** La **liste fermée** de ce qui monte, sous `users/{uid}` :
+  1. **la progression** sur le sentier (`user_progress`) : étape
+     courante, distance, dénivelé, temps de marche, dates, sentier
+     terminé ou non ;
+  2. **la liste de préparation** (`checklist_items`) : l'état du sac ;
+  3. **les mesures d'effort des randonnées passées** (`past_hikes`) :
+     date, nombre de jours, heures de marche moyennes, dénivelé et
+     distance totaux — **gardées par le consentement santé**, qui est
+     vérifié AVANT même la lecture de la base locale ;
+  4. **la fiche technique de l'appareil** : huit champs et huit
+     seulement (première/dernière utilisation, version de
+     l'application, build, plateforme, version du système, langue,
+     fuseau), réécrits à chaque retour au premier plan ;
+  5. **vos retours** (`user_feedback` : sentier, type, texte libre,
+     note) et les **signalements / plaintes de modération**.
+- **Ce qui NE monte PLUS, et qui montait avant** (à ne pas réintroduire
+  dans le texte sans réintroduire le code) : le **journal** (texte et
+  chemins de photos), la **morphologie** (âge, taille, poids, sexe), et
+  le **compte** (solde, droits, abonnement) — ce dernier étant en outre
+  refusé côté serveur par `firestore.rules`. Les **photos** n'ont jamais
+  été synchronisées.
+- **Base légale :** exécution des fonctionnalités demandées
+  (article 6.1.b RGPD) pour la progression et le sac ; consentement
+  explicite art. 9.2.a pour les mesures d'effort ; intérêt légitime
+  (6.1.f) pour la fiche technique de l'appareil.
 
-### 4.3 Identifiant pseudonymisé
+### 4.3 Identifiant du compte anonyme
 
-- **Quoi ?** Une empreinte SHA-256 salée de l'identifiant
-  d'authentification, utilisée comme clé technique des données
-  synchronisées. Ni nom, ni e-mail, ni photo, ni identifiant
-  publicitaire n'y sont associés.
+- **Quoi ?** L'identifiant attribué par Firebase Authentication au
+  **compte anonyme** ouvert à la première utilisation. C'est la clé
+  technique des données synchronisées (`users/{uid}`). Ni nom, ni
+  e-mail, ni photo, ni identifiant publicitaire n'y sont associés.
+- **À ne pas confondre** avec l'empreinte SHA-256 salée (voir l'encadré
+  du § 2), qui sert d'identifiant « métier » côté écrans et de
+  `complainantUidHash` sur les plaintes.
 - **Base légale :** exécution des fonctionnalités demandées
   (article 6.1.b RGPD).
 
@@ -144,7 +228,9 @@ D4A-01/D4A-02).
   contenus a priori. Les règles de modération, la procédure de
   signalement, l'exposé des motifs (article 17) et le droit de
   contestation (article 20) figurent dans les **CGU et la page
-  modération** (`docs/legal/cgu-moderation.md`).
+  modération** (`docs/legal/cgu-moderation.md`), publiées le 30/09/2026
+  sur <https://only1cent.com/stepways/conditions> (version anglaise :
+  `/stepways/conditions-en`).
 - **Base légale :** consentement (publication volontaire / signalement)
   et respect d'obligations légales (DSA) pour le traitement des
   signalements. Le contact du notifiant est une **donnée personnelle**
@@ -152,20 +238,47 @@ D4A-01/D4A-02).
 
 ### 4.5 Publicité (Google AdMob)
 
-L'Application intègre le SDK Google AdMob pour afficher des annonces
-sur certains écrans (au-delà de deux suiveurs sur une session de
-partage). **À ce jour, l'Application est configurée exclusivement avec
-des identifiants publicitaires de test (sandbox)** ; aucune campagne
-réelle n'est servie. Le SDK AdMob peut collecter automatiquement :
-adresse IP, identifiant publicitaire de l'appareil, interactions avec
-les annonces, données de diagnostic (voir la documentation Google
-« AdMob data disclosure »).
+L'Application intègre le SDK Google AdMob. **Deux formats seulement :
+bannières et vidéos récompensées. Aucun interstitiel** — aucune API
+interstitielle n'est exposée dans le code. Le SDK AdMob peut collecter
+automatiquement : adresse IP, identifiant publicitaire de l'appareil,
+interactions avec les annonces, données de diagnostic (voir la
+documentation Google « AdMob data disclosure »).
 
-Avant toute mise en production publicitaire : recueil du consentement
-via une plateforme de gestion du consentement (CMP compatible
-TCF/UMP) dans l'Union européenne, et affichage de l'invite App
-Tracking Transparency sur iOS. **Base légale :** consentement
-(article 6.1.a RGPD ; directive ePrivacy).
+**Le recueil du consentement est EN PLACE, pas à venir — corrigé
+tâche 642.** Les versions antérieures de ce document annonçaient une
+CMP « avant toute mise en production publicitaire » ; la plateforme de
+consentement de Google (**UMP** : `ConsentInformation`, `ConsentForm`)
+est **implémentée et appelée** (tâche 595) :
+
+- dans l'EEE, le formulaire est présenté **avant toute demande
+  d'annonce** ; son affichage est **reporté** s'il sort de la fenêtre
+  d'amorçage (budget borné à 6 s, pour ne pas retarder le démarrage) ;
+- un **point d'entrée permanent** (Réglages → Confidentialité) permet de
+  rouvrir le choix publicitaire à tout moment, comme le CMP l'exige ;
+- **aucun formulaire n'est demandé** sur un build sans identifiants de
+  production : il n'ouvrirait sur rien ;
+- sur iOS, l'invite **App Tracking Transparency** s'ajoute au formulaire
+  (`NSUserTrackingUsageDescription` déclaré ; un seul réseau
+  `SKAdNetwork`, celui de Google).
+
+**Refus de la personnalisation ≠ disparition de la publicité** : la
+bannière reste affichée, mais l'Application demande explicitement des
+annonces **non personnalisées** (`nonPersonalizedAds: true`). C'est à
+dire au randonneur sans ambiguïté.
+
+**Quatre situations sans publicité** (source unique
+`MonetizationService.isNoAdsActive`) : sentier acheté, abonnement actif,
+24 h offertes par une vidéo récompensée, mode vitrine. **Conséquence
+assumée** : sur le sentier de démonstration gratuit, une bannière peut
+apparaître en marchant.
+
+Les identifiants présents dans le dépôt sont les **identifiants de test
+officiels de Google** ; ceux de production sont injectés à la
+fabrication (`--dart-define`).
+
+**Base légale :** consentement (article 6.1.a RGPD ; directive
+ePrivacy).
 
 > **[JURISTE] — évaluer le maintien d'AdMob.** L'identifiant
 > publicitaire est la donnée la plus sensible du point de vue store et
@@ -192,18 +305,36 @@ test : aucun paiement réel ne peut être déclenché.
 
 ### 4.8 Données strictement locales (jamais transmises)
 
-Restent exclusivement sur votre appareil : photos du journal, traces
-GPS détaillées des sessions enregistrées, **données de santé** (groupe
-sanguin, allergies, traitements, fréquence cardiaque) et contacts
-d'urgence, préférences de l'Application. La désinstallation de
+Restent exclusivement sur votre appareil : photos du journal, **texte du
+carnet de bord**, traces GPS détaillées des sessions enregistrées,
+**données de santé** (groupe sanguin, allergies, traitements,
+antécédents, fréquence cardiaque) et **toute la fiche d'urgence**
+(identité, date de naissance, adresse, contacts, médecin, numéro
+d'assuré, photos des cartes de santé), **morphologie** (âge, taille,
+poids, sexe), préférences de l'Application. La désinstallation de
 l'Application les supprime.
+
+Stockages locaux employés : **Drift/SQLite** (`stepways.sqlite`) pour la
+progression, le journal, la trace et les randonnées faites ;
+**SharedPreferences** pour les consentements, les réglages et le tampon
+GPS de fond ; **flutter_secure_storage** (Keystore Android / Keychain
+iOS) pour la clé du coffre et le code de reconnexion ; des **fichiers
+dédiés** sous le répertoire privé pour `medical/` et le profil du
+randonneur. Le coffre local est chiffré en **AES-GCM 256 bits** avec
+dérivation de clé ; cette clé **ne quitte jamais l'appareil**.
 
 ## 5. Ce que nous ne faisons pas
 
 - Pas de collecte de nom, e-mail, photo de profil, carnet d'adresses.
-- Pas d'outil d'analyse d'audience ni de rapport de plantage tiers
-  intégré à ce jour (toute intégration future fera l'objet d'une mise à
-  jour préalable de cette politique).
+- **Pas de mesure d'audience ACTIVE** : Firebase Analytics est présent
+  mais **coupé au démarrage** (`setConsent(granted: false)`) et ne
+  s'active que sur accord explicite. **En revanche, les rapports de
+  plantage REMONTENT** : Firebase Crashlytics est actif, indépendamment
+  de la mesure d'audience — corrigé tâche 642, les versions antérieures
+  de ce document affirmaient qu'aucun rapport de plantage tiers n'était
+  intégré, ce qui était faux et devait être déclaré aux magasins.
+- Pas de notifications push : `firebase_messaging` est **absent** du
+  projet.
 - Pas de vente ni de location de données personnelles.
 - Pas d'appel automatique aux services de secours, ni de transmission
   de vos données de santé à quiconque.
@@ -214,10 +345,19 @@ l'Application les supprime.
 
 | Destinataire | Rôle | Données concernées |
 |---|---|---|
-| Google Ireland Ltd / Google LLC (Firebase : Authentication, Cloud Firestore) <!-- #302 --> | Sous-traitant (hébergement) | Identifiant pseudonymisé, positions de suivi, données synchronisées, signalements/modération |
-| Google (AdMob) | Partenaire publicitaire (mode test à ce jour) | Identifiant publicitaire, IP, interactions publicitaires |
+| Google Ireland Ltd / Google LLC (Firebase Authentication) <!-- #302 --> | Sous-traitant | Identifiant du compte anonyme ; connexion Google / Apple si choisie |
+| Google (Cloud Firestore) | Sous-traitant (hébergement) | Progression, liste de préparation, mesures d'effort, fiche technique de l'appareil, retours, signalements et plaintes de modération |
+| Google (Firebase Crashlytics) | Sous-traitant | Rapports de plantage, version du système, modèle d'appareil |
+| Google (Firebase Analytics) | Sous-traitant | **Aucune donnée par défaut** — coupé au démarrage, activé sur accord seulement |
+| Google (AdMob) | Partenaire publicitaire (identifiants de test dans le dépôt) | Identifiant publicitaire, IP, interactions publicitaires |
+| Google Cloud Storage | Sous-traitant | Téléchargement des données de sentier et des mises à jour — **descente uniquement** |
 | Fondation OpenStreetMap | Fournisseur de tuiles cartographiques | Adresse IP, tuiles demandées |
 | Open-Meteo | Fournisseur météo | Adresse IP, coordonnées du point météo demandé |
+| Apple / Google Play | Encaissement des achats intégrés | Traité par le magasin ; **aucune donnée bancaire ne nous parvient** |
+
+> `firebase_storage` est déclaré dans `pubspec.yaml` mais **n'est utilisé
+> nulle part** dans `lib/` : il n'est donc pas destinataire de données.
+> À retirer du projet, ou à documenter le jour où il sert.
 
 Les traitements Google sont couverts par les *Google Data Processing
 Terms*. La **localisation des données** (région Firebase/Firestore) et
@@ -235,7 +375,9 @@ immédiate à votre demande.
 
 | Donnée | Durée | Mécanisme |
 |---|---|---|
-| Sessions de suivi temps réel (positions partagées) <!-- #303 --> | Expiration automatique **48 h** après création de la session | Champ `expiresAt` + purge serveur (politique TTL Firestore à activer en production) |
+| Sessions de suivi temps réel (positions partagées) <!-- #303 --> | *Sans objet à ce jour* : la fonction n'est pas active (§ 4.1). Le champ `expiresAt` et l'expiration à **48 h** sont écrits dans le code et s'appliqueront le jour de son ouverture (politique TTL Firestore à activer alors) | Champ `expiresAt` + purge serveur |
+| Fiche technique de l'appareil (serveur) | Réécrite à chaque retour au premier plan ; supprimée avec le compte | Effacement du compte |
+| Rapports de plantage (Crashlytics) | **90 jours**, politique de rétention de Google | Rétention Firebase |
 | Caches cartographiques / météo (local) | **7 jours** (données recalculables) | `purgeExpired()` (RetentionPolicy.cartoCache) |
 | Contributions déjà synchronisées (signalements, efforts, kudos, commentaires) — copie locale | **30 jours** après synchronisation | `purgeExpired()` (RetentionPolicy.syncedContributions) ; la donnée de référence vit côté serveur |
 | File de synchronisation terminée (local) | **7 jours** | `purgeExpired()` (RetentionPolicy.completedSyncQueue) |
@@ -259,11 +401,41 @@ RGPD** (catégorie particulière). À ce titre :
 - leur traitement repose sur un **consentement explicite et renforcé**,
   séparé des autres finalités (§ 3) ;
 - elles restent **strictement locales** : aucun canal d'envoi vers nos
-  serveurs n'existe dans le code ;
+  serveurs n'existe dans le code. Cette promesse est tenue par **deux
+  listes fermées**, et il faut les distinguer :
+  1. **la liste du coffre distant** (tâche 612,
+     `DocumentsDuCoffreDistant.autorises` dans `cloud_sync_service.dart`) :
+     elle ne contient qu'**une seule entrée**, `account`. Tout autre
+     document est refusé **avant le réseau et avant toute lecture**, avec
+     une raison nommée, et **symétriquement en descente** — une fiche
+     déposée par une version antérieure ne peut pas redescendre ;
+  2. **la liste de la sauvegarde système Google / Apple** (tâche 617,
+     `sauvegarde_systeme.dart`) : **une seule inclusion**
+     (`sauvegarde_systeme/`), plus une **exclusion explicite** du dossier
+     `medical/` comme second verrou, appliquée aux deux sections
+     (`cloud-backup` et `device-transfer`). Une `<include>` désactivant le
+     défaut d'Android, tout le reste — base, photos, préférences, tuiles,
+     fiche médicale — est **dehors par défaut** ;
+- la fiche médicale vit dans son **dossier dédié** (`medical/`), avec
+  écriture atomique et `NSURLIsExcludedFromBackupKey` **reposé à chaque
+  enregistrement** sur iOS (tâche 615) ;
+- seules les **mesures d'effort** des randonnées passées (durée,
+  distance, dénivelé) peuvent monter, sous garde du consentement santé
+  (§ 4.2) : ce sont des mesures de marche, pas des mesures médicales ;
 - elles sont couvertes par une **analyse d'impact** dédiée (AIPD,
   `docs/rgpd/AIPD-capteurs-sante.md`) ;
 - vous pouvez les supprimer à tout moment (effacement du compte, § 9, ou
   désinstallation).
+
+> **DEUX TROUS NOMMÉS PLUTÔT QUE CACHÉS** (mesurés tâche 642, à traiter).
+> 1. La section `<cross-platform-transfer>` (Android 16 QPR2) **n'est pas
+>    déclarée** dans les règles de sauvegarde : son absence vaut
+>    autorisation complète vers un appareil non-Android. Bloqué faute de
+>    `teamId` Apple. Les deux pages publiées le disent au randonneur.
+> 2. Sur iOS, `NSUserDefaults` / `SharedPreferences` **ne peut pas** être
+>    exclu d'iCloud par l'éditeur. La morphologie en est sortie
+>    (tâche 623) ; il y reste le **solde d'étapes et les réglages** —
+>    jamais la fiche médicale, qui est dans un dossier séparé et exclu.
 
 ## 9. Vos droits
 
@@ -280,9 +452,10 @@ portabilité sur vos données.
   mais **complet et traçable**.
 - **Retrait du consentement.** À tout moment, finalité par finalité,
   depuis Réglages → Confidentialité.
-- **Exercice des autres droits :** **[CONTACT-EMAIL]**. Compte tenu de
-  la pseudonymisation, nous pourrons vous demander des éléments
-  techniques (identifiant de session) pour localiser vos données.
+- **Exercice des autres droits :** **contact@only1cent.com**, réponse
+  sous 30 jours. Compte tenu de la pseudonymisation, nous pourrons vous
+  demander des éléments techniques (identifiant de session) pour
+  localiser vos données.
 
 Vous pouvez introduire une réclamation auprès de la CNIL
 (www.cnil.fr) ou de l'autorité de contrôle de votre pays.

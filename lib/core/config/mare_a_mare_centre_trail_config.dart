@@ -1,3 +1,4 @@
+import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
 /// Configuration du sentier Mare a Mare Centre (Corse).
@@ -53,5 +54,5 @@ const mareAMareCentreTrailConfig = TrailConfig(
   accommodationsAssetPath: 'assets/data/mare_a_mare_centre.json',
   // Fiches conseils rattachees au sentier (chargees au seed).
   tipAssetPaths: ['assets/tips/mare_a_mare_tips.json'],
-  privacyPolicyUrl: 'https://example.org/mare-a-mare-centre/privacy',
+  privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

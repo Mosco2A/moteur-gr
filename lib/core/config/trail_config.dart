@@ -177,7 +177,15 @@ class TrailConfig {
   ///
   /// Parametrique (jamais codee en dur dans le moteur) : fournie par la
   /// configuration du sentier. Requise pour les fiches store (Google Play /
-  /// App Store) et l'ecran « Confidentialite ». Null = non renseignee
-  /// (l'UI masque alors le lien). Exemple : 'https://exemple.org/privacy'.
+  /// App Store) et publiee en base par l'outil du lot 641. Null = non
+  /// renseignee.
+  ///
+  /// LES SENTIERS DE LA MAISON PASSENT PAR [StepwaysLegal] (tache 642), et
+  /// c'est la seule valeur qu'il faut employer ici : les quatre
+  /// configurations portaient auparavant quatre adresses en `example.org`,
+  /// c'est-a-dire quatre pages qui ne repondaient pas. Un test de garde
+  /// (`test/comportement/urls_legales_642_test.dart`) interdit leur retour.
+  /// Un sentier TIERS peut fournir la sienne — c'est a ca que sert le
+  /// parametre — a condition qu'elle reponde.
   final String? privacyPolicyUrl;
 }
