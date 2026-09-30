@@ -70,13 +70,14 @@ void main() {
     required FeasibilityVerdict? verdict,
     int? daysUntilDeparture,
     bool hasProfile = true,
+    bool enDemo = false,
   }) {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
         isDemoModeProvider(
           testTrailConfig.id,
-        ).overrideWith((ref) async => false),
+        ).overrideWith((ref) async => enDemo),
         trainingPlanProvider.overrideWith((ref) async => plan),
         trainingDepartureDateProvider.overrideWithValue(
           daysUntilDeparture == null
@@ -181,6 +182,55 @@ void main() {
         find.byKey(const ValueKey('training-too-short-why')),
         findsNothing,
       );
+    },
+  );
+
+  testWidgets(
+    'DEFAUT B — EN DEMO, l essai bride porte AUSSI le rappel de prudence '
+    '(c est l etat ou le persona S1 rencontrait la contradiction)',
+    (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          verdict: FeasibilityVerdict.red,
+          daysUntilDeparture: 90,
+          enDemo: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // L'essai bride SERT UN PROGRAMME : phases et seances sont la, jouables.
+      expect(
+        find.byKey(const ValueKey('training-demo-banner')),
+        findsOneWidget,
+      );
+      expect(
+        rappel,
+        findsOneWidget,
+        reason:
+            'un plan d entrainement complet servi pendant que la '
+            'Faisabilite dit « Rythme a alleger », c est la contradiction de '
+            'MAJEUR-4 — et c est l ecran que tout le monde voit AVANT d acheter',
+      );
+    },
+  );
+
+  testWidgets(
+    'EN DEMO, verdict vert — aucun rappel non plus (le bandeau suit le feu)',
+    (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          verdict: FeasibilityVerdict.green,
+          daysUntilDeparture: 90,
+          enDemo: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('training-demo-banner')),
+        findsOneWidget,
+      );
+      expect(rappel, findsNothing);
     },
   );
 

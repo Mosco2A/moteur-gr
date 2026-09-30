@@ -107,11 +107,37 @@ class _DemoBridledViewState extends ConsumerState<_DemoBridledView> {
     final jouables = phases.take(kDemoTrainingPhasesPlayable).toList();
     final grisees = phases.skip(kDemoTrainingPhasesPlayable).toList();
 
+    // TACHE 651, DEFAUT B — LE RAPPEL DE PRUDENCE MANQUAIT AUSSI ICI, ET C EST
+    // ICI QU IL MANQUAIT POUR DE VRAI.
+    //
+    // La campagne 650 notait « en demo l ecran est verrouille et n affiche
+    // AUCUN bandeau », donc que la contre-preuve C1 ne s appliquait pas a cet
+    // etat. La mesure du rejeu dit l inverse : cet ecran-la SERT UN PROGRAMME,
+    // phases depliables et seances cochables comprises (c est tout l objet du
+    // bridage « jouable pour de faux »). Un randonneur y lit donc un plan
+    // d entrainement complet pendant que la Faisabilite lui dit « Rythme a
+    // alleger » — exactement la contradiction que MAJEUR-4 a fait corriger le
+    // 21/09, et le persona S1 la rencontre AVANT d acheter, c est-a-dire dans
+    // l etat par lequel tout le monde passe.
+    //
+    // (Au passage : le detecteur de la campagne lisait l etat « verrouille » a
+    // la presence de l encart d achat, DERNIER enfant d une liste paresseuse —
+    // non construit tant qu on n a pas defile. Il rendait donc « ni verrouille
+    // ni debloque » sur cet ecran. Le bandeau, lui, manquait bel et bien.)
+    final needsCaution =
+        ref.watch(trainingPersonalizationProvider).value?.needsCaution ?? false;
+
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
         _IntroEffortCard(trail: widget.trail, plan: plan),
         const SizedBox(height: AppTheme.spacingBase),
+        // Avant le bandeau d essai : la prudence parle du randonneur face au
+        // sentier, l essai ne parle que de ce qui est enregistre ou non.
+        if (needsCaution) ...[
+          _WarningBanner(message: t.training.cautionVerdictNotice),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
         if (phases.isNotEmpty) ...[
           const _DemoBridledBanner(),
           const SizedBox(height: AppTheme.spacingBase),

@@ -98,7 +98,12 @@ void main() {
     // de l'activite : toute perte du premier plan est tracee et exigible.
     installerVeilleEcranSysteme(P);
     app.main();
-    await settleAndShoot(tester, P, '01_boot', timeout: const Duration(seconds: 12));
+    await settleAndShoot(
+      tester,
+      P,
+      '01_boot',
+      timeout: const Duration(seconds: 12),
+    );
 
     // --- Etape 1 : consentement pub + onboarding (bilingue, robuste) ---
     // Au 1er lancement : un formulaire UMP (« Publisher Test Ads ») peut
@@ -112,9 +117,14 @@ void main() {
     // (Apres onboarding l app va deja sur /catalog.)
     final catTitle = textFrEn('Catalogue des sentiers', 'Trail catalog');
     if (!present(catTitle)) {
-      await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
-          P, 'catalogue', 'Decouvrir des sentiers (accueil -> catalogue)',
-          warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        textFrEn('Découvrir des sentiers', 'Discover trails'),
+        P,
+        'catalogue',
+        'Decouvrir des sentiers (accueil -> catalogue)',
+        warnIfMissing: false,
+      );
     }
     await settleAndShoot(tester, P, '06_catalogue');
     // LE LIBELLE A CHANGE, LA CLE N'A PAS CHANGE (lot 639). On vise desormais la
@@ -122,33 +132,54 @@ void main() {
     // aveugle, c'est exactement ce qui vient de se passer avec « Entrer ».
     final preparerBtn = find.text(t.catalog.prepare);
     logStep(
-        P,
-        'catalogue',
-        'Catalogue affiche = ${present(catTitle)} ; '
-            'sentiers avec bouton « ${t.catalog.prepare} » = '
-            '${preparerBtn.evaluate().length} ; bouton demo en tete = '
-            '${present(boutonDemo)}');
+      P,
+      'catalogue',
+      'Catalogue affiche = ${present(catTitle)} ; '
+          'sentiers avec bouton « ${t.catalog.prepare} » = '
+          '${preparerBtn.evaluate().length} ; bouton demo en tete = '
+          '${present(boutonDemo)}',
+    );
     // EXIGENCE — Lea doit pouvoir DECOUVRIR un sentier : sans catalogue
     // utilisable, tout le parcours qui suit est sans objet.
-    exige(P, 'catalogue', present(catTitle) || present(preparerBtn),
-        'le catalogue des sentiers est atteint (titre ou bouton « Préparer »)');
-    exige(P, 'catalogue', preparerBtn.evaluate().isNotEmpty,
-        'au moins un sentier propose « ${t.catalog.prepare} » (lot 639)');
+    exige(
+      P,
+      'catalogue',
+      present(catTitle) || present(preparerBtn),
+      'le catalogue des sentiers est atteint (titre ou bouton « Préparer »)',
+    );
+    exige(
+      P,
+      'catalogue',
+      preparerBtn.evaluate().isNotEmpty,
+      'au moins un sentier propose « ${t.catalog.prepare} » (lot 639)',
+    );
     // EXIGENCE NOUVELLE (tache 650) — LE SENTIER DE PRODUCTION EST A VENDRE, ET
     // IL LE DIT. Le bouton « Acheter » est la contre-preuve de la decision du
     // 29/09 : plus aucun sentier n'est offert, donc celui-ci porte son prix.
-    exige(P, 'catalogue', present(boutonAcheter(kSentierDeProduction)),
-        'le sentier de production porte « Acheter » : il n est PAS gratuit '
-        '(decision du 29/09 14:17)');
+    exige(
+      P,
+      'catalogue',
+      present(boutonAcheter(kSentierDeProduction)),
+      'le sentier de production porte « Acheter » : il n est PAS gratuit '
+          '(decision du 29/09 14:17)',
+    );
     // EXIGENCE NOUVELLE (tache 650) — LE NIVEAU GRATUIT EXISTE, ET C'EST LA
     // DEMO. Elle est en TETE du catalogue (lots 634/638).
-    exige(P, 'catalogue', present(boutonDemo),
-        'le bouton « ${t.demo.boutonTitre} » est en tete du catalogue : le '
-        'niveau gratuit du modele est la demo, pas un sentier offert');
+    exige(
+      P,
+      'catalogue',
+      present(boutonDemo),
+      'le bouton « ${t.demo.boutonTitre} » est en tete du catalogue : le '
+          'niveau gratuit du modele est la demo, pas un sentier offert',
+    );
     // EXIGENCE NOUVELLE (tache 650) — AUCUNE PASTILLE « Gratuit » AU CATALOGUE.
     // C'est la trace visible qu'aucun sentier n'est offert.
-    exigeAbsent(find.text(t.catalog.freeBadge), P, 'catalogue',
-        'la pastille « Gratuit » sur un sentier du catalogue');
+    exigeAbsent(
+      find.text(t.catalog.freeBadge),
+      P,
+      'catalogue',
+      'la pastille « Gratuit » sur un sentier du catalogue',
+    );
 
     // --- Etape 3 : entree dans le sentier -> COCKPIT DE PREPARATION ---
     // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT (`/home`,
@@ -156,38 +187,54 @@ void main() {
     // VERIFIE ce comportement corrige : apres le tap, on ne doit PAS etre sur la
     // carte terrain. La carte reste reservee au demarrage effectif du trek.
     final entered = await tapIfPresent(
+      tester,
+      boutonPreparer(kSentierDeProduction),
+      P,
+      'cockpit',
+      '« Préparer » le sentier de production (cle catalog-enter)',
+    );
+    if (!entered) {
+      await tapIfPresent(
         tester,
-        boutonPreparer(kSentierDeProduction),
+        preparerBtn,
         P,
         'cockpit',
-        '« Préparer » le sentier de production (cle catalog-enter)');
-    if (!entered) {
-      await tapIfPresent(tester, preparerBtn, P, 'cockpit',
-          '« Préparer » (1er sentier du catalogue)');
+        '« Préparer » (1er sentier du catalogue)',
+      );
     }
     await settleAndShoot(tester, P, '07_apres_entrer');
     _logLocation(tester, P, 'apres_entrer');
     final onMapAfterEnter = _onMap(tester);
     logStep(
-        P,
-        'cockpit',
-        'VERIF issue 1 : apres « Entrer », carte terrain = $onMapAfterEnter '
-            '(ATTENDU false — « Entrer » catalogue -> cockpit /home, pas /map).');
+      P,
+      'cockpit',
+      'VERIF issue 1 : apres « Entrer », carte terrain = $onMapAfterEnter '
+          '(ATTENDU false — « Entrer » catalogue -> cockpit /home, pas /map).',
+    );
     // EXIGENCE — issue 1 (FIX CYCLE 2). Ce test PRETEND verifier que « Entrer »
     // mene au cockpit et non a la carte de navigation : jusqu'ici il se
     // contentait de le LOGuer. C'est desormais une exigence.
-    exige(P, 'cockpit', entered || present(preparerBtn),
-        '« Préparer » est atteignable sur le sentier de production');
-    exige(P, 'cockpit', !onMapAfterEnter,
-        '« Préparer » ouvre le COCKPIT de preparation, PAS la carte terrain');
+    exige(
+      P,
+      'cockpit',
+      entered || present(preparerBtn),
+      '« Préparer » est atteignable sur le sentier de production',
+    );
+    exige(
+      P,
+      'cockpit',
+      !onMapAfterEnter,
+      '« Préparer » ouvre le COCKPIT de preparation, PAS la carte terrain',
+    );
 
     // Filet : si (regression) on atterrissait quand meme sur la carte, on
     // rejoint le cockpit par le chemin utilisateur (Mes treks -> trek possede).
     if (onMapAfterEnter) {
       await _goMyTreks(tester, P);
       await settleAndShoot(tester, P, '07b_mes_treks');
-      final trekCard = find
-          .byWidgetPredicate((w) => w.key.toString().contains('trek-summary-'));
+      final trekCard = find.byWidgetPredicate(
+        (w) => w.key.toString().contains('trek-summary-'),
+      );
       if (present(trekCard)) {
         await tester.tap(trekCard.first, warnIfMissed: false);
         await pumpAndSettleTolerant(tester);
@@ -202,21 +249,32 @@ void main() {
     // --- Etape 4 : faisabilite (fiche info + test 6 min + 5 randos) ---
     // Carte « Faisabilite » de la section Preparer.
     final feasCard = textFrEn('Faisabilité', 'Feasibility');
-    await scrollUntil(tester, feasCard, P, 'faisabilite',
-        'carte Faisabilite (section Preparer)');
+    await scrollUntil(
+      tester,
+      feasCard,
+      P,
+      'faisabilite',
+      'carte Faisabilite (section Preparer)',
+    );
     await exigeTap(
-        tester, feasCard, P, 'faisabilite', 'carte Faisabilite du cockpit');
+      tester,
+      feasCard,
+      P,
+      'faisabilite',
+      'carte Faisabilite du cockpit',
+    );
     await settleAndShoot(tester, P, '08_faisabilite');
     // EXIGENCE — l'ecran de faisabilite doit REELLEMENT s'ouvrir : soit sur le
     // FLUX GUIDE (profil vide, cas de Lea au premier acces), soit directement
     // sur le verdict. Un ecran blanc ou une carte inerte est un defaut.
     exige(
-        P,
-        'faisabilite',
-        present(find.text(t.feasibility.flow.title)) ||
-            present(find.text(t.feasibility.formula.title)) ||
-            _verdictReelAffiche(),
-        'l ecran Faisabilite s ouvre (flux guide ou verdict)');
+      P,
+      'faisabilite',
+      present(find.text(t.feasibility.flow.title)) ||
+          present(find.text(t.feasibility.formula.title)) ||
+          _verdictReelAffiche(),
+      'l ecran Faisabilite s ouvre (flux guide ou verdict)',
+    );
     // Verdict AVANT profil : le croisement produit deja un verdict reel (souvent
     // « Déconseillé » car aucune experience saisie -> ecart bloquant), mais la
     // SOURCE reste « questionnaire (en attendant votre profil) ». On capture cet
@@ -233,22 +291,36 @@ void main() {
     // l'ecran affiche le FLUX GUIDE, ou la meme action s'appelle « Ta fiche
     // d'info ». Le « COINCE : Ma fiche d'info introuvable » de la campagne N1
     // etait donc un defaut du TEST. On cherche les DEUX libelles reels.
-    final ficheInfo = find.byWidgetPredicate((w) =>
-        w is Text &&
-        (w.data == t.feasibility.openProfile ||
-            w.data == t.feasibility.flow.stepProfile));
-    if (await exigeTap(tester, ficheInfo, P, 'faisabilite',
-        'acces a la fiche d info (« Ma fiche d info » ou « Ta fiche d info »)')) {
+    final ficheInfo = find.byWidgetPredicate(
+      (w) =>
+          w is Text &&
+          (w.data == t.feasibility.openProfile ||
+              w.data == t.feasibility.flow.stepProfile),
+    );
+    if (await exigeTap(
+      tester,
+      ficheInfo,
+      P,
+      'faisabilite',
+      'acces a la fiche d info (« Ma fiche d info » ou « Ta fiche d info »)',
+    )) {
       await settleAndShoot(tester, P, '09_fiche_info');
       await _fillHikerProfile(tester, P);
       await settleAndShoot(tester, P, '09b_fiche_info_remplie');
       // « Enregistrer » repop vers la faisabilite (Navigator.pop dans _save).
       final saved = await exigeTap(
-          tester, textFrEn('Enregistrer', 'Save'), P, 'fiche_info',
-          'bouton Enregistrer de la fiche morpho');
-      logStep(P, 'fiche_info',
-          'Fiche morpho remplie (age/taille/poids + consentement art.9) et '
-          'enregistree = $saved. Profil desormais COMPLET pour la faisabilite.');
+        tester,
+        textFrEn('Enregistrer', 'Save'),
+        P,
+        'fiche_info',
+        'bouton Enregistrer de la fiche morpho',
+      );
+      logStep(
+        P,
+        'fiche_info',
+        'Fiche morpho remplie (age/taille/poids + consentement art.9) et '
+            'enregistree = $saved. Profil desormais COMPLET pour la faisabilite.',
+      );
       await settleAndShoot(tester, P, '09c_apres_enregistrer_fiche');
       // EXIGENCE — C3 (contre-preuve). La fiche VIDE est desormais refusee
       // (correctif C3) ; il faut donc prouver que le CHEMIN NORMAL n'a PAS ete
@@ -256,15 +328,22 @@ void main() {
       // doit etre QUITTE, et le message d erreur « fiche vide » ne doit PAS
       // apparaitre. Sans cette contre-preuve, un correctif qui refuserait TOUT
       // passerait pour un succes.
-      exigeAbsent(find.text(t.hikerProfile.errorEmpty), P, 'fiche_info',
-          'le message « fiche vide » sur une fiche CORRECTEMENT renseignee');
+      exigeAbsent(
+        find.text(t.hikerProfile.errorEmpty),
+        P,
+        'fiche_info',
+        'le message « fiche vide » sur une fiche CORRECTEMENT renseignee',
+      );
       // Filet : si on n'est pas revenu sur la faisabilite, y retourner.
       if (!present(ficheInfo) && !present(feasCard)) {
         await _back(tester, P, 'faisabilite');
       }
     } else {
-      logStep(P, 'faisabilite',
-          'Acces a la fiche d info introuvable — capture pour analyse');
+      logStep(
+        P,
+        'faisabilite',
+        'Acces a la fiche d info introuvable — capture pour analyse',
+      );
     }
 
     // 4b — Test 6 minutes : on OUVRE l'ecran et on DEMARRE pour observer le
@@ -276,27 +355,42 @@ void main() {
     // On ne PRETEND donc PAS l'avoir joue en entier ; on capture le demarrage +
     // on documente. Le profil objectif reste alimente par les 5 randos (4c).
     // Libelles REELS (double jeu selon la vue : verdict vs flux guide).
-    final testSixMin = find.byWidgetPredicate((w) =>
-        w is Text &&
-        (w.data == t.feasibility.openWalkTest ||
-            w.data == t.feasibility.flow.stepWalkTest));
-    if (await exigeTap(tester, testSixMin, P, 'faisabilite',
-        'acces au test de marche 6 minutes')) {
+    final testSixMin = find.byWidgetPredicate(
+      (w) =>
+          w is Text &&
+          (w.data == t.feasibility.openWalkTest ||
+              w.data == t.feasibility.flow.stepWalkTest),
+    );
+    if (await exigeTap(
+      tester,
+      testSixMin,
+      P,
+      'faisabilite',
+      'acces au test de marche 6 minutes',
+    )) {
       await settleAndShoot(tester, P, '10_test_6min');
       // Demarrer pour rendre le mecanisme OBSERVABLE (compte a rebours 3-2-1).
       // QA cycle4 : le libelle REEL est `t.walkTest.start` = « Démarrer le test »
       // (FR, avec accent) / « Start the test » (EN). L'ancien finder cherchait
       // « Demarrer »/« Start » — introuvable -> le chrono n'etait JAMAIS lance et
       // le coincement etait un FAUX POSITIF du test, pas un defaut de l'appli.
-      await tapIfPresent(tester, textFrEn('Démarrer le test', 'Start the test'),
-          P, 'test_6min',
-          'demarrer le test 6 min (observation du chrono)', warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        textFrEn('Démarrer le test', 'Start the test'),
+        P,
+        'test_6min',
+        'demarrer le test 6 min (observation du chrono)',
+        warnIfMissing: false,
+      );
       await settleAndShoot(tester, P, '10b_test_6min_demarre');
-      logStep(P, 'test_6min',
-          'Test 6 min OUVERT + demarrage observe (compte a rebours puis chrono). '
-          'NON joue en entier : chrono wall-clock de 6:00 a arret auto, sans mode '
-          'fast-forward -> resultat distance->niveau exige 6 min de marche GPS '
-          'reelle, hors rejeu rapide (mecanisme documente, regle L3).');
+      logStep(
+        P,
+        'test_6min',
+        'Test 6 min OUVERT + demarrage observe (compte a rebours puis chrono). '
+            'NON joue en entier : chrono wall-clock de 6:00 a arret auto, sans mode '
+            'fast-forward -> resultat distance->niveau exige 6 min de marche GPS '
+            'reelle, hors rejeu rapide (mecanisme documente, regle L3).',
+      );
       await _back(tester, P, 'faisabilite');
     }
 
@@ -305,12 +399,19 @@ void main() {
     // FAUX POSITIF N1 CORRIGE : l'ancien finder cherchait « Mes 5 dernieres
     // randos » SANS ACCENT — introuvable dans une app qui ecrit « dernières ».
     // On lit desormais les DEUX libelles reels de l'i18n.
-    final cinqRandos = find.byWidgetPredicate((w) =>
-        w is Text &&
-        (w.data == t.feasibility.openPastHikes ||
-            w.data == t.feasibility.flow.stepPastHikes));
+    final cinqRandos = find.byWidgetPredicate(
+      (w) =>
+          w is Text &&
+          (w.data == t.feasibility.openPastHikes ||
+              w.data == t.feasibility.flow.stepPastHikes),
+    );
     if (await exigeTap(
-        tester, cinqRandos, P, 'faisabilite', 'acces aux 5 dernieres randos')) {
+      tester,
+      cinqRandos,
+      P,
+      'faisabilite',
+      'acces aux 5 dernieres randos',
+    )) {
       await settleAndShoot(tester, P, '11_past_hikes');
       // === SAISIE D'UNE RANDO — REECRIT EN EXIGENCES (tache 544) ===
       //
@@ -330,10 +431,19 @@ void main() {
       // porteur devient une EXIGENCE, et on prouve l'EFFET — la rando doit
       // exister APRES, et AILLEURS que la ou on l'a saisie.
       final tph = t.pastHikes;
-      exige(P, 'past_hikes', present(find.text(tph.empty)),
-          'avant saisie, la liste declare qu aucune rando n est enregistree');
-      await exigeTap(tester, find.text(tph.addHike), P, 'past_hikes',
-          'ouvrir le formulaire « ${tph.addHike} »');
+      exige(
+        P,
+        'past_hikes',
+        present(find.text(tph.empty)),
+        'avant saisie, la liste declare qu aucune rando n est enregistree',
+      );
+      await exigeTap(
+        tester,
+        find.text(tph.addHike),
+        P,
+        'past_hikes',
+        'ouvrir le formulaire « ${tph.addHike} »',
+      );
       await settleAndShoot(tester, P, '12_past_hikes_form');
 
       // Les valeurs de Lea, telles que son prompt les donne : des sorties du
@@ -355,21 +465,36 @@ void main() {
           of: find.text(libelles[cle]!),
           matching: find.byType(TextFormField),
         );
-        await exigeSaisie(tester, champ, valeur, P, 'past_hikes',
-            'champ « ${libelles[cle]} »');
+        await exigeSaisie(
+          tester,
+          champ,
+          valeur,
+          P,
+          'past_hikes',
+          'champ « ${libelles[cle]} »',
+        );
       }
       await settleAndShoot(tester, P, '12a_past_hikes_rempli');
 
-      await exigeTap(tester, find.text(tph.save), P, 'past_hikes',
-          'enregistrer la rando');
+      await exigeTap(
+        tester,
+        find.text(tph.save),
+        P,
+        'past_hikes',
+        'enregistrer la rando',
+      );
       await settleAndShoot(tester, P, '12b_past_hikes_saved');
 
       // PREUVE D'EFFET, pas preuve d'affichage : la liste ne doit plus dire
       // qu'elle est vide. C'est constate APRES l'action et AILLEURS que dans
       // le formulaire (ligne L5 de la grille #100297).
-      exige(P, 'past_hikes', !present(find.text(tph.empty)),
-          'APRES enregistrement, la liste ne declare plus etre vide — '
-          'la rando existe vraiment');
+      exige(
+        P,
+        'past_hikes',
+        !present(find.text(tph.empty)),
+        'APRES enregistrement, la liste ne declare plus etre vide — '
+            'la rando existe vraiment',
+      );
 
       // Revenir sur la faisabilite pour la reouvrir proprement.
       if (!present(feasCard)) {
@@ -389,9 +514,12 @@ void main() {
     await settleAndShoot(tester, P, '12c_faisabilite_verdict_reel');
     final verdictReel = _logVisibleVerdict(tester, P, phase: 'apres_profil');
     _logVerdictSource(tester, P, phase: 'apres_profil');
-    logStep(P, 'verdict',
-        'VERDICT REEL (profil complet) capture = ${verdictReel ?? "(non lu)"} '
-        '— voir capture 12c_faisabilite_verdict_reel.');
+    logStep(
+      P,
+      'verdict',
+      'VERDICT REEL (profil complet) capture = ${verdictReel ?? "(non lu)"} '
+          '— voir capture 12c_faisabilite_verdict_reel.',
+    );
     // ===================== LE COEUR DU DEFAUT N1 =====================
     // C'est ICI que le harnais etait aveugle : il cherchait « Déconseillé » et
     // « Préparation nécessaire », DEUX LIBELLES DISPARUS. Il ne trouvait donc
@@ -400,25 +528,34 @@ void main() {
     // EXIGENCE — avec un profil renseigne (morpho + 1 rando), l'ecran doit
     // afficher l'UN DES TROIS verdicts reels du feu tricolore.
     exige(
-        P,
-        'verdict',
-        verdictReel != null,
-        'apres profil complet, l ecran affiche un verdict REEL parmi '
-            '"${t.feasibility.formula.verdicts.green}" / '
-            '"${t.feasibility.formula.verdicts.orange}" / '
-            '"${t.feasibility.formula.verdicts.red}"');
+      P,
+      'verdict',
+      verdictReel != null,
+      'apres profil complet, l ecran affiche un verdict REEL parmi '
+          '"${t.feasibility.formula.verdicts.green}" / '
+          '"${t.feasibility.formula.verdicts.orange}" / '
+          '"${t.feasibility.formula.verdicts.red}"',
+    );
     // EXIGENCE — le verdict ne doit plus venir du QUESTIONNAIRE de depannage :
     // Lea a renseigne sa fiche et une rando, le moteur a de quoi trancher.
-    exigeAbsent(find.text(t.feasibility.sourceFallback), P, 'verdict',
-        'le repli « questionnaire » alors que le profil est renseigne');
+    exigeAbsent(
+      find.text(t.feasibility.sourceFallback),
+      P,
+      'verdict',
+      'le repli « questionnaire » alors que le profil est renseigne',
+    );
     // EXIGENCE RETOURNEE (tache 552) : l'ecran ne doit PLUS porter la mention
     // hors-perimetre « le poids de ton sac n entre pas dans ce feu, de 0 a
     // 45 kg... ». Elle expliquait une absence sans rien changer au resultat.
     // Regle Chris du 25/09 : on se tait sur ce qu on n a pas, on parle de ce que
     // ca change. Le sac parle desormais la ou il sert : dans le Sac.
-    exigeAbsent(find.byIcon(Icons.visibility_off_outlined), P, 'verdict',
-        'la mention hors-perimetre « le sac n entre pas dans ce feu » '
-        '(supprimee, tache 552)');
+    exigeAbsent(
+      find.byIcon(Icons.visibility_off_outlined),
+      P,
+      'verdict',
+      'la mention hors-perimetre « le sac n entre pas dans ce feu » '
+          '(supprimee, tache 552)',
+    );
 
     // Retour au COCKPIT par le routeur (etat connu, evite le cumul de piles).
     await _goHome(tester, P);
@@ -428,10 +565,20 @@ void main() {
     // physique » de la section Preparer, route /training). ---
     await _scrollToTop(tester, P);
     final trainingCard = textFrEn('Préparation physique', 'Physical prep');
-    await scrollUntil(tester, trainingCard, P, 'entrainement',
-        'carte Preparation physique (section Preparer)');
-    await exigeTap(tester, trainingCard, P, 'entrainement',
-        'carte Preparation physique du cockpit');
+    await scrollUntil(
+      tester,
+      trainingCard,
+      P,
+      'entrainement',
+      'carte Preparation physique (section Preparer)',
+    );
+    await exigeTap(
+      tester,
+      trainingCard,
+      P,
+      'entrainement',
+      'carte Preparation physique du cockpit',
+    );
     await settleAndShoot(tester, P, '14_entrainement');
     // EXIGENCE — l'ecran Entrainement doit s'ouvrir dans l'UN DE SES DEUX ETATS
     // LEGITIMES : verrouille (Lea est en demo sur la vitrine -> teaser +
@@ -451,27 +598,42 @@ void main() {
     // seances ne sont dans l'arbre qu'une fois une phase depliee. On cherche
     // donc le TITRE DU PLAN (« Plan sur N semaines »), qui est ce qu'un
     // utilisateur voit vraiment quand l'ecran est debloque.
-    final titrePlan = find.byWidgetPredicate((w) =>
-        w is Text && (w.data?.startsWith('Plan sur ') ?? false));
-    Finder etatEntrainement() => find.byWidgetPredicate((w) =>
-        (w is Text &&
-            (w.data == t.training.paywallTitle ||
-                (w.data?.startsWith('Plan sur ') ?? false))) ||
-        w.key.toString().contains('training-session-'));
-    await waitFor(tester, etatEntrainement(),
-        timeout: const Duration(seconds: 10));
+    final titrePlan = find.byWidgetPredicate(
+      (w) => w is Text && (w.data?.startsWith('Plan sur ') ?? false),
+    );
+    Finder etatEntrainement() => find.byWidgetPredicate(
+      (w) =>
+          (w is Text &&
+              (w.data == t.training.paywallTitle ||
+                  (w.data?.startsWith('Plan sur ') ?? false))) ||
+          w.key.toString().contains('training-session-'),
+    );
+    await waitFor(
+      tester,
+      etatEntrainement(),
+      timeout: const Duration(seconds: 10),
+    );
     final entrainementVerrouille = present(find.text(t.training.paywallTitle));
-    final entrainementDebloque = present(titrePlan) ||
-        present(find.byWidgetPredicate(
-            (w) => w.key.toString().contains('training-session-')));
+    final entrainementDebloque =
+        present(titrePlan) ||
+        present(
+          find.byWidgetPredicate(
+            (w) => w.key.toString().contains('training-session-'),
+          ),
+        );
     logStep(
-        P,
-        'entrainement',
-        'Etat de l ecran Entrainement : verrouille=$entrainementVerrouille, '
-            'debloque=$entrainementDebloque');
-    exige(P, 'entrainement', entrainementVerrouille || entrainementDebloque,
-        'l ecran Entrainement s ouvre dans un etat lisible (teaser paywall '
-        'en demo, ou plan de seances si debloque)');
+      P,
+      'entrainement',
+      'Etat de l ecran Entrainement : verrouille=$entrainementVerrouille, '
+          'debloque=$entrainementDebloque',
+    );
+    exige(
+      P,
+      'entrainement',
+      entrainementVerrouille || entrainementDebloque,
+      'l ecran Entrainement s ouvre dans un etat lisible (teaser paywall '
+          'en demo, ou plan de seances si debloque)',
+    );
     // ============ C1 — LA CONTRE-PREUVE, SUR UN PROFIL REEL ============
     // Lea est debutante et n a qu une sortie modeste : son feu n est PAS vert.
     // L ecran Entrainement DOIT donc porter le bandeau de prudence. Si le
@@ -482,34 +644,44 @@ void main() {
         verdictReel != null &&
         verdictReel != t.feasibility.formula.verdicts.green) {
       await exigeVisible(
-          tester,
-          find.text(t.training.cautionVerdictNotice),
-          P,
-          'entrainement',
-          'C1 contre-preuve : le bandeau de prudence EST affiche, puisque la '
-              'Faisabilite a rendu "$verdictReel" (le bandeau n a pas ete '
-              'supprime pour tout le monde)');
+        tester,
+        find.text(t.training.cautionVerdictNotice),
+        P,
+        'entrainement',
+        'C1 contre-preuve : le bandeau de prudence EST affiche, puisque la '
+            'Faisabilite a rendu "$verdictReel" (le bandeau n a pas ete '
+            'supprime pour tout le monde)',
+      );
     } else {
       logStep(
-          P,
-          'entrainement',
-          'Contre-preuve C1 non applicable ici (debloque=$entrainementDebloque, '
-              'verdict=${verdictReel ?? "non lu"}) — elle est portee par S6 et '
-              'par preuve_c1.');
+        P,
+        'entrainement',
+        'Contre-preuve C1 non applicable ici (debloque=$entrainementDebloque, '
+            'verdict=${verdictReel ?? "non lu"}) — elle est portee par S6 et '
+            'par preuve_c1.',
+      );
     }
 
     // Cocher une seance si des cartes de seance sont presentes (cle
     // training-session-*).
-    final sessionCard =
-        find.byWidgetPredicate((w) => w.key.toString().contains('training-session-'));
+    final sessionCard = find.byWidgetPredicate(
+      (w) => w.key.toString().contains('training-session-'),
+    );
     if (present(sessionCard)) {
       await tester.tap(sessionCard.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(P, 'entrainement', 'TAP OK : 1re seance d entrainement cochee/ouverte');
+      logStep(
+        P,
+        'entrainement',
+        'TAP OK : 1re seance d entrainement cochee/ouverte',
+      );
     } else {
-      logStep(P, 'entrainement',
-          'Aucune carte de seance (training-session-*) — paywall/plan generique '
-          'possible. Capture pour analyse.');
+      logStep(
+        P,
+        'entrainement',
+        'Aucune carte de seance (training-session-*) — paywall/plan generique '
+            'possible. Capture pour analyse.',
+      );
     }
     await settleAndShoot(tester, P, '15_entrainement_seance');
 
@@ -519,15 +691,27 @@ void main() {
     // l'Itineraire cote Lea (seul le Programme etait visite, via le tour de
     // prepa) : le gate ne pouvait donc pas s'ouvrir, quoi qu'il arrive ensuite.
     // L'ouverture de l'ecran suffit (markSeen a l'ouverture).
-    await _openHubCard(tester, P, 'itineraire', 'Itinéraire', 'Itinéraire',
-        shot: '15b_itineraire', fallbackPath: (id) => '/trail/$id/itinerary');
+    await _openHubCard(
+      tester,
+      P,
+      'itineraire',
+      'Itinéraire',
+      'Itinéraire',
+      shot: '15b_itineraire',
+      fallbackPath: (id) => '/trail/$id/itinerary',
+    );
     await _goHome(tester, P);
 
     // --- Etape 6 : calendrier (POSE REELLEMENT une date de depart) ---
     await _goHome(tester, P);
     final calCard = textFrEn('Calendrier', 'Calendar');
-    await scrollUntil(tester, calCard, P, 'calendrier',
-        'carte Calendrier (section Preparer)');
+    await scrollUntil(
+      tester,
+      calCard,
+      P,
+      'calendrier',
+      'carte Calendrier (section Preparer)',
+    );
     await tapIfPresent(tester, calCard, P, 'calendrier', 'ouvrir Calendrier');
     await settleAndShoot(tester, P, '16_calendrier');
     // QA cycle4 — PORT DU CORRECTIF H5, jusqu'ici applique a persona_s3 SEUL.
@@ -543,8 +727,12 @@ void main() {
     // EXIGENCE — la date de depart doit etre REELLEMENT persistee. C'est le 3e
     // signal du gate de demarrage : sans elle, le CTA « Démarrer » reste grise
     // et TOUTE la phase Randonner est hors d'atteinte pour Lea.
-    exige(P, 'calendrier', _dateDepartPosee(tester),
-        'la date de depart est REELLEMENT enregistree apres le OK du selecteur');
+    exige(
+      P,
+      'calendrier',
+      _dateDepartPosee(tester),
+      'la date de depart est REELLEMENT enregistree apres le OK du selecteur',
+    );
 
     // --- Etape 7 : checklist / sac ---
     await _goHome(tester, P);
@@ -553,23 +741,43 @@ void main() {
     // les deux coincements « carte Materiel & Sac introuvable » etaient des FAUX
     // POSITIFS du harnais. La carte EXISTE bien (hub_screen.dart:277).
     final checklistCard = textFrEn('Matériel & Sac', 'Gear & Pack');
-    await scrollUntil(tester, checklistCard, P, 'checklist',
-        'carte Materiel & Sac (section Preparer)');
-    await exigeTap(tester, checklistCard, P, 'checklist',
-        'carte Materiel & Sac du cockpit');
+    await scrollUntil(
+      tester,
+      checklistCard,
+      P,
+      'checklist',
+      'carte Materiel & Sac (section Preparer)',
+    );
+    await exigeTap(
+      tester,
+      checklistCard,
+      P,
+      'checklist',
+      'carte Materiel & Sac du cockpit',
+    );
     await settleAndShoot(tester, P, '18_checklist');
     // Les items sont ranges par CATEGORIES pliables (Sac & portage, Couchage...).
     // On DEPLIE d'abord une categorie (tap sur son entete) pour faire apparaitre
     // les cases a cocher, puis on coche le 1er item.
-    await tapIfPresent(tester, textFrEn('Sac & portage', 'Pack & carry'), P,
-        'checklist', 'deplier la categorie « Sac & portage »',
-        warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      textFrEn('Sac & portage', 'Pack & carry'),
+      P,
+      'checklist',
+      'deplier la categorie « Sac & portage »',
+      warnIfMissing: false,
+    );
     await settleAndShoot(tester, P, '18b_checklist_categorie');
     // Cocher un item (premiere Checkbox / CheckboxListTile presente).
     final checkbox = find.byWidgetPredicate(
-        (w) => w is Checkbox || w is CheckboxListTile);
-    if (exige(P, 'checklist', present(checkbox),
-        'la checklist propose des cases a cocher apres depliage d une categorie')) {
+      (w) => w is Checkbox || w is CheckboxListTile,
+    );
+    if (exige(
+      P,
+      'checklist',
+      present(checkbox),
+      'la checklist propose des cases a cocher apres depliage d une categorie',
+    )) {
       await tester.tap(checkbox.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
       logStep(P, 'checklist', 'TAP OK : 1er item de checklist coche');
@@ -618,29 +826,46 @@ void main() {
     // fermee tant que la fiche medicale manque, ouverte des qu'elle est la.
     // Une porte qu'on ne voit jamais fermee n'est pas une porte.
     final gateAvantSante = _logGateDemarrage(tester, P, 'avant_fiche_medicale');
-    exige(P, 'demarrer', gateAvantSante == false,
-        'la porte de depart reste FERMEE tant que la fiche medicale manque, '
-        'meme avec Itineraire + Programme + date (4e condition, decision du '
-        '26/09 — lu = ${gateAvantSante ?? "illisible"})');
+    exige(
+      P,
+      'demarrer',
+      gateAvantSante == false,
+      'la porte de depart reste FERMEE tant que la fiche medicale manque, '
+          'meme avec Itineraire + Programme + date (4e condition, decision du '
+          '26/09 — lu = ${gateAvantSante ?? "illisible"})',
+    );
     await _poserLaFicheMedicale(tester, P);
     final gate = _logGateDemarrage(tester, P, 'avant_demarrage');
     // EXIGENCE — Lea a fait TOUT ce que l'app lui demande (Itineraire, Programme,
     // date de depart, fiche medicale) : le gate DOIT etre ouvert. Un gate ferme
     // ici signifierait qu'un randonneur qui a tout prepare ne peut pas partir.
-    exige(P, 'demarrer', gate == true,
-        'le gate de demarrage est OUVERT apres Itineraire + Programme + date '
-        '+ fiche medicale (lu = ${gate ?? "illisible"})');
+    exige(
+      P,
+      'demarrer',
+      gate == true,
+      'le gate de demarrage est OUVERT apres Itineraire + Programme + date '
+          '+ fiche medicale (lu = ${gate ?? "illisible"})',
+    );
     final startCta = textFrEn('Démarrer la randonnée', 'Start the trek');
-    await scrollUntil(tester, startCta, P, 'demarrer',
-        'CTA Demarrer la randonnee (BAS du cockpit, apres ~12 cartes)',
-        maxScrolls: 25);
+    await scrollUntil(
+      tester,
+      startCta,
+      P,
+      'demarrer',
+      'CTA Demarrer la randonnee (BAS du cockpit, apres ~12 cartes)',
+      maxScrolls: 25,
+    );
     await settleAndShoot(tester, P, '19b_cta_demarrer');
     // Le CTA est GRISE (onPressed null) tant que le gate est ferme : on LIT son
     // etat reel pour distinguer « bouton introuvable » de « bouton inactif ».
     final ctaActif = _logCtaActif(tester, P);
-    exige(P, 'demarrer', ctaActif == true,
-        'le CTA « Démarrer la randonnée » est present ET actif '
-        '(lu = ${ctaActif?.toString() ?? "absent de l arbre"})');
+    exige(
+      P,
+      'demarrer',
+      ctaActif == true,
+      'le CTA « Démarrer la randonnée » est present ET actif '
+          '(lu = ${ctaActif?.toString() ?? "absent de l arbre"})',
+    );
 
     // ================================================================
     // LE MUR PAYANT, ET IL S'INTERCALE ICI (tache 650, decisions 638 + 594)
@@ -658,21 +883,38 @@ void main() {
     // demande de l'avoir débloquée. La préparation reste gratuite. ») et il
     // OUVRE le chemin d'achat. Un bouton actif qui ne produirait rien serait un
     // geste mort ; un mur muet serait une panne.
-    final prevolDejaVuEtRefuse = await _verifierLeMurPayant(tester, P, startCta);
+    final prevolDejaVuEtRefuse = await _verifierLeMurPayant(
+      tester,
+      P,
+      startCta,
+    );
 
     // Lea achete alors le sentier — par le VRAI service de production, avec ses
     // regles et son verdict (aucune surcharge de provider). C'est SEULEMENT
     // apres cet achat que le terrain doit s'ouvrir, et tout ce qui suit le
     // verifie.
-    final possede =
-        await acheterLeSentierPourDeVrai(tester, kSentierDeProduction, P);
-    exige(P, 'achat', possede,
-        'apres l achat par le chemin de production, le sentier est POSSEDE '
-        '(c est la seule cle qui ouvre la realisation)');
+    final possede = await acheterLeSentierPourDeVrai(
+      tester,
+      kSentierDeProduction,
+      P,
+    );
+    exige(
+      P,
+      'achat',
+      possede,
+      'apres l achat par le chemin de production, le sentier est POSSEDE '
+          '(c est la seule cle qui ouvre la realisation)',
+    );
     await _goHome(tester, P);
     await _scrollToTop(tester, P);
-    await scrollUntil(tester, startCta, P, 'demarrer',
-        'CTA Demarrer la randonnee (apres achat)', maxScrolls: 25);
+    await scrollUntil(
+      tester,
+      startCta,
+      P,
+      'demarrer',
+      'CTA Demarrer la randonnee (apres achat)',
+      maxScrolls: 25,
+    );
     await settleAndShoot(tester, P, '19b2_apres_achat');
 
     // ============ C2 — LE DEMARRAGE NE DOIT PLUS ETRE RECOUVERT ============
@@ -695,30 +937,51 @@ void main() {
     // Le chemin 2 (bouton Démarrer de l'overlay de carte) est joue par S3.
     final marqueSysteme = marqueEcranSysteme();
     final started = await tapIfPresent(
-        tester, startCta, P, 'demarrer', 'CTA Demarrer la randonnee');
+      tester,
+      startCta,
+      P,
+      'demarrer',
+      'CTA Demarrer la randonnee',
+    );
     if (!started) {
-      await tapIfPresent(tester, find.byIcon(Icons.play_arrow), P, 'demarrer',
-          'CTA Demarrer (icone play)', warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        find.byIcon(Icons.play_arrow),
+        P,
+        'demarrer',
+        'CTA Demarrer (icone play)',
+        warnIfMissing: false,
+      );
       // Trek deja actif d'un run precedent -> « Reprendre la navigation ».
-      await tapIfPresent(tester,
-          textFrEn('Reprendre la navigation', 'Resume navigation'), P,
-          'demarrer', 'Reprendre la navigation (trek deja actif)',
-          warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        textFrEn('Reprendre la navigation', 'Resume navigation'),
+        P,
+        'demarrer',
+        'Reprendre la navigation (trek deja actif)',
+        warnIfMissing: false,
+      );
     }
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 
     // ETAPE 1 — le filet « position indisponible / hors depart » (correctif H6).
     // Sur emulateur sans fix GPS, ce dialogue est SYSTEMATIQUE : sans cette
     // confirmation le trek ne demarre jamais et toute la suite tombe a vide.
-    await tapIfPresent(tester, textFrEn('Démarrer quand même', 'Start anyway'),
-        P, 'demarrer', 'confirmer « Démarrer quand même » (position indispo)',
-        warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      textFrEn('Démarrer quand même', 'Start anyway'),
+      P,
+      'demarrer',
+      'confirmer « Démarrer quand même » (position indispo)',
+      warnIfMissing: false,
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 
     // ETAPE 2 — (a) LE PRE-VOL EXPLIQUE, qui n'arrive qu'ICI. Il ne s'ouvre que
     // si la permission de fond n'est ni accordee ni deja refusee.
-    final prevol =
-        find.byKey(const ValueKey('background-tracking-rationale-dialog'));
+    final prevol = find.byKey(
+      const ValueKey('background-tracking-rationale-dialog'),
+    );
     // LE PRE-VOL NE SE POSE QU'UNE FOIS, ET IL S'EST DEJA POSE (tache 650).
     //
     // `ensureBackgroundTrackingExplained` n'ouvre son explication que si la
@@ -728,34 +991,56 @@ void main() {
     // pas reposer la question. L'exigence C2 reste entiere — un pre-vol
     // explique s'affiche AVANT toute demande systeme — elle est simplement
     // satisfaite par l'observation faite au premier depart.
-    final prevolVu = prevolDejaVuEtRefuse ||
+    final prevolVu =
+        prevolDejaVuEtRefuse ||
         await waitFor(tester, prevol, timeout: const Duration(seconds: 8));
     await settleAndShoot(tester, P, '19c_prevol_permission');
     logStep(
+      P,
+      'demarrer',
+      'C2 — pre-vol explique affiche = $prevolVu '
+          '(libelle attendu : "${t.tracking.backgroundRationale.title}")',
+    );
+    exige(
+      P,
+      'demarrer',
+      prevolVu,
+      'C2 : un PRE-VOL EXPLIQUE s affiche DANS l application avant toute '
+          'demande systeme de suivi de fond',
+    );
+    if (present(prevol)) {
+      exige(
         P,
         'demarrer',
-        'C2 — pre-vol explique affiche = $prevolVu '
-            '(libelle attendu : "${t.tracking.backgroundRationale.title}")');
-    exige(P, 'demarrer', prevolVu,
-        'C2 : un PRE-VOL EXPLIQUE s affiche DANS l application avant toute '
-        'demande systeme de suivi de fond');
-    if (present(prevol)) {
-      exige(P, 'demarrer', present(find.text(t.tracking.backgroundRationale.body)),
-          'le pre-vol EXPLIQUE a quoi sert la permission avant de la demander');
+        present(find.text(t.tracking.backgroundRationale.body)),
+        'le pre-vol EXPLIQUE a quoi sert la permission avant de la demander',
+      );
       exige(
-          P,
-          'demarrer',
-          present(find.text(t.tracking.backgroundRationale.ifRefused)),
-          'le pre-vol dit AVANT ce qui se passe en cas de refus');
+        P,
+        'demarrer',
+        present(find.text(t.tracking.backgroundRationale.ifRefused)),
+        'le pre-vol dit AVANT ce qui se passe en cas de refus',
+      );
       // (b) LE REFUS. « Plus tard » : la rando doit demarrer quand meme.
-      await exigeTap(tester, find.text(t.tracking.backgroundRationale.later), P,
-          'demarrer', 'bouton « Plus tard » du pre-vol (chemin du REFUS)');
+      await exigeTap(
+        tester,
+        find.text(t.tracking.backgroundRationale.later),
+        P,
+        'demarrer',
+        'bouton « Plus tard » du pre-vol (chemin du REFUS)',
+      );
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
     }
 
     // Conflit trek (C4) : un autre trek tourne -> resoudre (Terminer l'autre).
-    await tapIfPresent(tester, find.textContaining('Terminer'), P, 'demarrer',
-        'resoudre conflit trek (Terminer l autre)', warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      find.textContaining('Terminer'),
+      P,
+      'demarrer',
+      'resoudre conflit trek (Terminer l autre)',
+      warnIfMissing: false,
+    );
     // Laisse la sequence de demarrage aboutir (ouverture de /map par l'app).
     for (var i = 0; i < 20 && !_onMap(tester); i++) {
       await tester.pump(const Duration(milliseconds: 250));
@@ -768,18 +1053,23 @@ void main() {
     // — la seule sonde capable de voir une fenetre hors arbre Flutter.
     final systemePendantDemarrage = ecransSystemeDepuis(marqueSysteme);
     exige(
-        P,
-        'demarrer',
-        systemePendantDemarrage.isEmpty,
-        'AUCUN ecran systeme ne recouvre le demarrage sur le chemin du refus '
-            '(detecte : ${systemePendantDemarrage.isEmpty ? "aucun" : systemePendantDemarrage.join(", ")})');
+      P,
+      'demarrer',
+      systemePendantDemarrage.isEmpty,
+      'AUCUN ecran systeme ne recouvre le demarrage sur le chemin du refus '
+          '(detecte : ${systemePendantDemarrage.isEmpty ? "aucun" : systemePendantDemarrage.join(", ")})',
+    );
     // (b suite) LE REFUS LAISSE L'APPLICATION UTILISABLE : apres « Plus tard »,
     // c'est L'APPLICATION qui doit ouvrir la carte (aucun ecran mort). On ne
     // force RIEN ici : forcer /map masquerait justement le defaut.
     final surCarteApresRefus = _onMap(tester);
-    exige(P, 'demarrer', surCarteApresRefus,
-        'apres un REFUS du suivi de fond, la rando demarre quand meme et '
-        'L APPLICATION ouvre la carte d elle-meme (aucun ecran mort)');
+    exige(
+      P,
+      'demarrer',
+      surCarteApresRefus,
+      'apres un REFUS du suivi de fond, la rando demarre quand meme et '
+          'L APPLICATION ouvre la carte d elle-meme (aucun ecran mort)',
+    );
 
     // ================================================================
     // CIRCUIT COMPLET (directive Chris 12/09) — Lea vit AUSSI la phase
@@ -797,18 +1087,21 @@ void main() {
     }
     await settleAndShoot(tester, P, '21_carte');
     logStep(
-        P,
-        'carte',
-        'Sur la carte = ${_onMap(tester)} ; FlutterMap present = '
-            '${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))}.');
+      P,
+      'carte',
+      'Sur la carte = ${_onMap(tester)} ; FlutterMap present = '
+          '${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))}.',
+    );
     // EXIGENCE — la carte de rando doit etre REELLEMENT rendue (moteur de carte
     // monte), pas une page vide.
     exige(
-        P,
-        'carte',
-        present(find.byWidgetPredicate(
-            (w) => w.runtimeType.toString() == 'FlutterMap')),
-        'le moteur de carte est monte sur l ecran de rando');
+      P,
+      'carte',
+      present(
+        find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'),
+      ),
+      'le moteur de carte est monte sur l ecran de rando',
+    );
     // EXIGENCE — et rien de systeme ne la recouvre. C'est la PREUVE PHOTO de la
     // campagne N1 (s3_carte_pendant_gps.png) transformee en exigence.
     final marqueCarte = marqueEcranSysteme();
@@ -816,16 +1109,28 @@ void main() {
     // Fenetre d'injection GPS (~40 s) : l'hote pousse les points du trace via
     // `adb emu geo fix` (tool/persona_s3_geo_push.py). On observe + on capture le
     // suivi (carte qui suit, barre d'etape, distance restante).
-    logStep(P, 'gps',
-        'DEBUT fenetre injection GPS (~40 s). Observation + captures periodiques.');
+    logStep(
+      P,
+      'gps',
+      'DEBUT fenetre injection GPS (~40 s). Observation + captures periodiques.',
+    );
     for (var i = 0; i < 8; i++) {
       await _observe(tester, const Duration(seconds: 5));
-      await settleAndShoot(tester, P, '22_gps_tick_${i.toString().padLeft(2, '0')}',
-          timeout: const Duration(seconds: 2));
-      final suivi = _firstTextMatching(tester,
-          RegExp(r'\betape\b|\bEtape\b|\bkm\b|restant', caseSensitive: false));
-      logStep(P, 'gps',
-          'tick $i — indice suivi visible: ${suivi ?? "(aucun texte etape/km capte)"}');
+      await settleAndShoot(
+        tester,
+        P,
+        '22_gps_tick_${i.toString().padLeft(2, '0')}',
+        timeout: const Duration(seconds: 2),
+      );
+      final suivi = _firstTextMatching(
+        tester,
+        RegExp(r'\betape\b|\bEtape\b|\bkm\b|restant', caseSensitive: false),
+      );
+      logStep(
+        P,
+        'gps',
+        'tick $i — indice suivi visible: ${suivi ?? "(aucun texte etape/km capte)"}',
+      );
     }
     logStep(P, 'gps', 'FIN fenetre injection GPS');
     await settleAndShoot(tester, P, '23_apres_gps');
@@ -833,25 +1138,30 @@ void main() {
     // presence sur la carte, AUCUNE fenetre systeme ne doit surgir.
     final systemeSurCarte = ecransSystemeDepuis(marqueCarte);
     exige(
-        P,
-        'carte',
-        systemeSurCarte.isEmpty,
-        'AUCUN ecran systeme ne recouvre la CARTE pendant la rando '
-            '(detecte : ${systemeSurCarte.isEmpty ? "aucun" : systemeSurCarte.join(", ")})');
+      P,
+      'carte',
+      systemeSurCarte.isEmpty,
+      'AUCUN ecran systeme ne recouvre la CARTE pendant la rando '
+          '(detecte : ${systemeSurCarte.isEmpty ? "aucun" : systemeSurCarte.join(", ")})',
+    );
     // NOTE HONNETE (limite d'environnement, PAS un defaut produit) : sans fix
     // GPS injectable sur cet emulateur, la barre de suivi (_ActiveStageBar) se
     // rend a vide PAR CONCEPTION. On ne l'exige donc pas ici.
 
     // --- Etape 10 : SOS (acces unique aligne GR20, overlay heroTag sos_e515) ---
-    final sos = find.byWidgetPredicate((w) =>
-        w is FloatingActionButton && (w.heroTag == 'sos_e515'));
-    logStep(P, 'sos',
-        'FAB SOS overlay present = ${present(sos)}.');
+    final sos = find.byWidgetPredicate(
+      (w) => w is FloatingActionButton && (w.heroTag == 'sos_e515'),
+    );
+    logStep(P, 'sos', 'FAB SOS overlay present = ${present(sos)}.');
     var sosTapped = false;
     // EXIGENCE — le SOS est la fonction de securite : sur une rando active, il
     // doit etre a l'ecran. Son absence serait un defaut grave.
-    if (exige(P, 'sos', present(sos),
-        'le bouton SOS est present sur la carte pendant une rando active')) {
+    if (exige(
+      P,
+      'sos',
+      present(sos),
+      'le bouton SOS est present sur la carte pendant une rando active',
+    )) {
       await tester.tap(sos.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
       sosTapped = true;
@@ -860,17 +1170,25 @@ void main() {
     await settleAndShoot(tester, P, '24_sos_dialog');
     if (sosTapped) {
       exige(
-          P,
-          'sos',
-          present(find.byType(Dialog)) || present(find.byType(AlertDialog)),
-          'le SOS ouvre une confirmation avant tout appel');
+        P,
+        'sos',
+        present(find.byType(Dialog)) || present(find.byType(AlertDialog)),
+        'le SOS ouvre une confirmation avant tout appel',
+      );
       logStep(
-          P,
-          'sos',
-          'Dialog SOS ouvert = ${present(find.byType(Dialog)) || present(find.byType(AlertDialog))}. '
-              'On NE confirme PAS l appel 112 (pas d appel reel en test).');
-      await tapIfPresent(tester, find.textContaining('Annuler'), P, 'sos',
-          'fermer le dialog SOS (Annuler)', warnIfMissing: false);
+        P,
+        'sos',
+        'Dialog SOS ouvert = ${present(find.byType(Dialog)) || present(find.byType(AlertDialog))}. '
+            'On NE confirme PAS l appel 112 (pas d appel reel en test).',
+      );
+      await tapIfPresent(
+        tester,
+        find.textContaining('Annuler'),
+        P,
+        'sos',
+        'fermer le dialog SOS (Annuler)',
+        warnIfMissing: false,
+      );
       if (present(find.byType(Dialog)) || present(find.byType(AlertDialog))) {
         await tester.tapAt(const Offset(20, 20));
         await pumpAndSettleTolerant(tester);
@@ -891,30 +1209,44 @@ void main() {
     // HARNAIS S1, pas une regression de l'app (S3, qui utilise deja les cles,
     // passe le meme parcours sur la meme build).
     final finished = await scrollUntil(
+      tester,
+      find.byKey(const ValueKey(kFinishTrekButtonKey)),
+      P,
+      'terminer',
+      'bouton Terminer le trek (fin de scroll)',
+    );
+    exige(
+      P,
+      'terminer',
+      finished,
+      'le bouton « Terminer le trek » est atteignable en fin de rando',
+    );
+    if (finished) {
+      await exigeTap(
         tester,
         find.byKey(const ValueKey(kFinishTrekButtonKey)),
         P,
         'terminer',
-        'bouton Terminer le trek (fin de scroll)');
-    exige(P, 'terminer', finished,
-        'le bouton « Terminer le trek » est atteignable en fin de rando');
-    if (finished) {
-      await exigeTap(tester, find.byKey(const ValueKey(kFinishTrekButtonKey)),
-          P, 'terminer', 'bouton Terminer le trek');
+        'bouton Terminer le trek',
+      );
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
       await exigeTap(
-          tester,
-          find.byKey(const ValueKey(kFinishTrekConfirmKey)),
-          P,
-          'terminer',
-          'action de confirmation du dialogue de fin de trek');
+        tester,
+        find.byKey(const ValueKey(kFinishTrekConfirmKey)),
+        P,
+        'terminer',
+        'action de confirmation du dialogue de fin de trek',
+      );
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
       // SONDE DECISIVE : si le dialogue est encore la, la barriere bloque tout
       // le post-trek et les « hit-test vide » qui suivent en decoulent.
-      exigeAbsent(find.byKey(const ValueKey(kFinishTrekDialogKey)), P,
-          'terminer',
-          'le dialogue de confirmation, qui doit etre REFERME apres validation '
-          '(sinon sa barriere modale bloque tout le post-trek)');
+      exigeAbsent(
+        find.byKey(const ValueKey(kFinishTrekDialogKey)),
+        P,
+        'terminer',
+        'le dialogue de confirmation, qui doit etre REFERME apres validation '
+            '(sinon sa barriere modale bloque tout le post-trek)',
+      );
     }
     await settleAndShoot(tester, P, '27_apres_terminer');
 
@@ -939,71 +1271,144 @@ void main() {
     // Meme detour que persona_s3_steve_test.dart, pour que les deux personas
     // empruntent exactement le meme chemin.
     var diploma = await tapIfPresent(
-        tester, find.byKey(const ValueKey('completed-diploma')),
-        P, 'diplome', 'bouton Diplome (carte trek termine)', warnIfMissing: false);
+      tester,
+      find.byKey(const ValueKey('completed-diploma')),
+      P,
+      'diplome',
+      'bouton Diplome (carte trek termine)',
+      warnIfMissing: false,
+    );
     if (!diploma) {
       final recap = await tapIfPresent(
-          tester, find.byKey(const ValueKey('completed-review')),
-          P, 'diplome', 'ouvrir Mon aventure (porte unique apres-trek)',
-          warnIfMissing: false);
+        tester,
+        find.byKey(const ValueKey('completed-review')),
+        P,
+        'diplome',
+        'ouvrir Mon aventure (porte unique apres-trek)',
+        warnIfMissing: false,
+      );
       if (recap) {
-        await scrollUntil(tester, find.byKey(const ValueKey('recap-diploma')),
-            P, 'diplome', 'bouton Diplome du recapitulatif');
+        await scrollUntil(
+          tester,
+          find.byKey(const ValueKey('recap-diploma')),
+          P,
+          'diplome',
+          'bouton Diplome du recapitulatif',
+        );
         diploma = await tapIfPresent(
-            tester, find.byKey(const ValueKey('recap-diploma')),
-            P, 'diplome', 'ouvrir Diplome depuis Mon aventure');
+          tester,
+          find.byKey(const ValueKey('recap-diploma')),
+          P,
+          'diplome',
+          'ouvrir Diplome depuis Mon aventure',
+        );
       }
     }
     if (!diploma) {
-      await scrollUntil(tester, find.text('Diplôme'), P, 'diplome',
-          'carte Diplome (section Apres, repli)');
+      await scrollUntil(
+        tester,
+        find.text('Diplôme'),
+        P,
+        'diplome',
+        'carte Diplome (section Apres, repli)',
+      );
       diploma = await tapIfPresent(
-          tester, find.text('Diplôme'), P, 'diplome', 'ouvrir Diplome');
+        tester,
+        find.text('Diplôme'),
+        P,
+        'diplome',
+        'ouvrir Diplome',
+      );
     }
     await settleAndShoot(tester, P, '28_diplome');
     _logLocation(tester, P, 'diplome');
     logStep(P, 'diplome', 'Diplome ouvert = $diploma.');
     // EXIGENCE — la recompense de fin de trek doit exister et s'ouvrir.
-    exige(P, 'diplome', diploma,
-        'le diplome s ouvre apres un trek termine (porte « Mon aventure »)');
+    exige(
+      P,
+      'diplome',
+      diploma,
+      'le diplome s ouvre apres un trek termine (porte « Mon aventure »)',
+    );
 
     // --- Etape 13 : APRES-TREK — Journal « Vos notes et souvenirs » ---
     await _goHome(tester, P);
     final journalCard = textFrEn('Journal', 'Journal');
-    await scrollUntil(tester, journalCard, P, 'apres_journal',
-        'carte Journal (Vos notes et souvenirs)');
-    await tapIfPresent(tester, journalCard, P, 'apres_journal',
-        'ouvrir le Journal', warnIfMissing: false);
+    await scrollUntil(
+      tester,
+      journalCard,
+      P,
+      'apres_journal',
+      'carte Journal (Vos notes et souvenirs)',
+    );
+    await tapIfPresent(
+      tester,
+      journalCard,
+      P,
+      'apres_journal',
+      'ouvrir le Journal',
+      warnIfMissing: false,
+    );
     await settleAndShoot(tester, P, '29_journal_ouvert');
     _logLocation(tester, P, 'apres_journal');
     // Ouvrir le dialog d'ajout de note (FloatingActionButton + du journal).
-    await tapIfPresent(tester, find.byIcon(Icons.add), P, 'apres_journal',
-        'bouton + (ajouter une note/souvenir)', warnIfMissing: false);
+    // LE « + » DU JOURNAL N EST PLUS UNE ICONE MATERIAL (tache 651, mesure).
+    //
+    // Depuis le lot 632, le bouton flottant porte un DESSIN SVG
+    // (`StepIcon(StepwaysIcons.plus)`) : `find.byIcon(Icons.add)` ne trouve donc
+    // plus rien, le dialogue d ajout ne s ouvrait jamais, et les deux exigences
+    // du journal tombaient en rouge en accusant le produit. C est la meme
+    // cecite que les icones du header relevees par la campagne 650 (point 7).
+    // On vise le BOUTON, pas son dessin.
+    await tapIfPresent(
+      tester,
+      find.byType(FloatingActionButton),
+      P,
+      'apres_journal',
+      'bouton + (ajouter une note/souvenir)',
+      warnIfMissing: false,
+    );
     await settleAndShoot(tester, P, '30_journal_add_dialog');
     // Saisir un vrai souvenir de debutante dans le champ texte du dialog.
     final noteField = find.byType(TextField);
     const souvenir =
         'Ma toute premiere rando bouclee. Fiere de moi, la vue valait chaque pas !';
-    if (exige(P, 'apres_journal', present(noteField),
-        'le journal propose un champ de saisie pour un souvenir')) {
+    if (exige(
+      P,
+      'apres_journal',
+      present(noteField),
+      'le journal propose un champ de saisie pour un souvenir',
+    )) {
       await tester.enterText(noteField.first, souvenir);
       await pumpAndSettleTolerant(tester);
       logStep(P, 'apres_journal', 'SAISIE souvenir : "$souvenir"');
     }
     await settleAndShoot(tester, P, '31_journal_note_saisie');
     final noteSaved = await tapIfPresent(
-        tester, textFrEn('Enregistrer', 'Save'), P, 'apres_journal',
-        'enregistrer le souvenir', warnIfMissing: false);
+      tester,
+      textFrEn('Enregistrer', 'Save'),
+      P,
+      'apres_journal',
+      'enregistrer le souvenir',
+      warnIfMissing: false,
+    );
     await settleAndShoot(tester, P, '32_journal_note_enregistree');
     final noteVisible = present(find.textContaining('premiere rando'));
-    logStep(P, 'apres_journal',
-        'Souvenir enregistre = $noteSaved ; visible dans le journal = '
-        '$noteVisible (le journal n\'est plus vide -> apres-trek couvert).');
+    logStep(
+      P,
+      'apres_journal',
+      'Souvenir enregistre = $noteSaved ; visible dans le journal = '
+          '$noteVisible (le journal n\'est plus vide -> apres-trek couvert).',
+    );
     // EXIGENCE — ce que Lea ecrit doit etre CONSERVE et RELU. Une note perdue
     // est une perte de donnees utilisateur.
-    exige(P, 'apres_journal', noteSaved && noteVisible,
-        'le souvenir saisi est enregistre ET relu dans le journal '
-        '(enregistre=$noteSaved, relu=$noteVisible)');
+    exige(
+      P,
+      'apres_journal',
+      noteSaved && noteVisible,
+      'le souvenir saisi est enregistre ET relu dans le journal '
+          '(enregistre=$noteSaved, relu=$noteVisible)',
+    );
 
     // --- Etape 14 : APRES-TREK — Recap « Mon aventure » ---
     // LIBELLE PERIME CORRIGE (campagne N2) : l'ancien finder cherchait
@@ -1016,32 +1421,58 @@ void main() {
     await _remonterEnHaut(tester, P, 'apres_recap');
     final recapCard = find.text(t.recap.title);
     var recapOpened = await tapIfPresent(
-        tester, find.byKey(const ValueKey('completed-review')), P, 'apres_recap',
-        'ouvrir « Mon aventure » (cle completed-review)',
-        warnIfMissing: false);
+      tester,
+      find.byKey(const ValueKey('completed-review')),
+      P,
+      'apres_recap',
+      'ouvrir « Mon aventure » (cle completed-review)',
+      warnIfMissing: false,
+    );
     if (!recapOpened) {
-      await scrollUntil(tester, recapCard, P, 'apres_recap',
-          'carte « Mon aventure » (section Apres)');
-      recapOpened = await tapIfPresent(tester, recapCard, P, 'apres_recap',
-          'ouvrir le recap post-trek', warnIfMissing: false);
+      await scrollUntil(
+        tester,
+        recapCard,
+        P,
+        'apres_recap',
+        'carte « Mon aventure » (section Apres)',
+      );
+      recapOpened = await tapIfPresent(
+        tester,
+        recapCard,
+        P,
+        'apres_recap',
+        'ouvrir le recap post-trek',
+        warnIfMissing: false,
+      );
     }
     await settleAndShoot(tester, P, '33_recap_apres_trek');
     _logLocation(tester, P, 'apres_recap');
-    final recapContent = present(find.text(t.diploma.recapTitle)) ||
+    final recapContent =
+        present(find.text(t.diploma.recapTitle)) ||
         present(find.text(t.recap.finisherTitle)) ||
         present(find.text(t.recap.title)) ||
         present(find.textContaining('Statistiques'));
-    logStep(P, 'apres_recap',
-        'Recap post-trek ouvert = $recapOpened ; contenu bilan visible = '
-        '$recapContent.');
+    logStep(
+      P,
+      'apres_recap',
+      'Recap post-trek ouvert = $recapOpened ; contenu bilan visible = '
+          '$recapContent.',
+    );
     // EXIGENCE — la phase APRES doit exister pour de vrai : le recap s'ouvre
     // ET montre un bilan, pas une page vide.
-    exige(P, 'apres_recap', recapOpened && recapContent,
-        'le recapitulatif post-trek s ouvre et affiche un bilan '
-        '(ouvert=$recapOpened, contenu=$recapContent)');
+    exige(
+      P,
+      'apres_recap',
+      recapOpened && recapContent,
+      'le recapitulatif post-trek s ouvre et affiche un bilan '
+          '(ouvert=$recapOpened, contenu=$recapContent)',
+    );
 
-    logStep(P, 'fin',
-        'Scenario S1 termine — CIRCUIT COMPLET (preparer -> randonner -> apres).');
+    logStep(
+      P,
+      'fin',
+      'Scenario S1 termine — CIRCUIT COMPLET (preparer -> randonner -> apres).',
+    );
     // Cloture propre : draine les artefacts de teardown (trek deja termine).
     poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
@@ -1059,11 +1490,15 @@ void main() {
     // Faisabilite, capture 12c a l'appui). On EXIGE donc que le run n'ait pas
     // ete couvert : ainsi un run invalide se declare invalide, au lieu de se
     // faire passer pour un rapport de defauts.
-    exige(P, 'run_valide', ecransSystemeBloquants().isEmpty,
-        'aucune fenetre systeme n a recouvert l application pendant le run '
-        '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
-        'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
-        '${ecransSystemeBloquants().join(", ")}');
+    exige(
+      P,
+      'run_valide',
+      ecransSystemeBloquants().isEmpty,
+      'aucune fenetre systeme n a recouvert l application pendant le run '
+          '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
+          'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
+          '${ecransSystemeBloquants().join(", ")}',
+    );
     verdictPersona(P, minimumExigences: 20);
   });
 }
@@ -1091,13 +1526,17 @@ Future<void> _poserLaFicheMedicale(WidgetTester tester, String persona) async {
     await notifier.markAdviceRead();
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     logStep(
-        persona,
-        'demarrer',
-        'Fiche medicale posee par le notifier de production (remplie + '
-            'conseils lus) : etat lu = ${c.read(healthPrepareDoneProvider)}');
+      persona,
+      'demarrer',
+      'Fiche medicale posee par le notifier de production (remplie + '
+          'conseils lus) : etat lu = ${c.read(healthPrepareDoneProvider)}',
+    );
   } catch (e) {
-    logStep(persona, 'demarrer',
-        'COINCE : impossible de poser la fiche medicale : $e');
+    logStep(
+      persona,
+      'demarrer',
+      'COINCE : impossible de poser la fiche medicale : $e',
+    );
   }
 }
 
@@ -1123,24 +1562,38 @@ Future<bool> _verifierLeMurPayant(
   Finder startCta,
 ) async {
   final pasEncorePossede = !await sentierPossede(tester, kSentierDeProduction);
-  exige(persona, 'mur_payant', pasEncorePossede,
-      'AVANT tout achat, le sentier de production n est PAS possede '
-      '(plus aucun sentier gratuit au catalogue — decision du 29/09 14:17)');
+  exige(
+    persona,
+    'mur_payant',
+    pasEncorePossede,
+    'AVANT tout achat, le sentier de production n est PAS possede '
+        '(plus aucun sentier gratuit au catalogue — decision du 29/09 14:17)',
+  );
 
   final tape = await tapIfPresent(
-      tester, startCta, persona, 'mur_payant', 'CTA Demarrer sans avoir achete');
-  exige(persona, 'mur_payant', tape,
-      'le CTA « Démarrer la randonnée » repond a l appui (un bouton actif qui '
-      'ne produit rien serait un geste mort)');
+    tester,
+    startCta,
+    persona,
+    'mur_payant',
+    'CTA Demarrer sans avoir achete',
+  );
+  exige(
+    persona,
+    'mur_payant',
+    tape,
+    'le CTA « Démarrer la randonnée » repond a l appui (un bouton actif qui '
+        'ne produit rien serait un geste mort)',
+  );
   // La proximite GPS peut poser d'abord « Démarrer quand même ? » : le mur est
   // DERRIERE cette confirmation, pas devant. On la franchit.
   await tapIfPresent(
-      tester,
-      textFrEn('Démarrer quand même', 'Start anyway'),
-      persona,
-      'mur_payant',
-      'confirmer « Démarrer quand même » (position indispo)',
-      warnIfMissing: false);
+    tester,
+    textFrEn('Démarrer quand même', 'Start anyway'),
+    persona,
+    'mur_payant',
+    'confirmer « Démarrer quand même » (position indispo)',
+    warnIfMissing: false,
+  );
   // ET LE PRE-VOL DE PERMISSION PASSE ENCORE AVANT (mesure du 30/09).
   //
   // CE QUE L'APPLICATION FAIT, DANS CET ORDRE : `_start()` appelle
@@ -1154,57 +1607,93 @@ Future<bool> _verifierLeMurPayant(
   // sensible pour un geste qu'on va refuser), il n'est PAS corrige ici : ce
   // scenario mesure, il ne repare pas.
   final prevolAvantLeMur = await waitFor(
-      tester, find.byKey(const ValueKey('background-tracking-rationale-dialog')),
-      timeout: const Duration(seconds: 6));
+    tester,
+    find.byKey(const ValueKey('background-tracking-rationale-dialog')),
+    timeout: const Duration(seconds: 6),
+  );
   logStep(
+    persona,
+    'mur_payant',
+    'Pre-vol de permission de suivi affiche AVANT le controle d achat = '
+        '$prevolAvantLeMur (l application demande la localisation '
+        '« Toujours » pour une rando qu elle va refuser faute d achat).',
+  );
+  if (prevolAvantLeMur) {
+    await tapIfPresent(
+      tester,
+      find.text(t.tracking.backgroundRationale.later),
       persona,
       'mur_payant',
-      'Pre-vol de permission de suivi affiche AVANT le controle d achat = '
-          '$prevolAvantLeMur (l application demande la localisation '
-          '« Toujours » pour une rando qu elle va refuser faute d achat).');
-  if (prevolAvantLeMur) {
-    await tapIfPresent(tester, find.text(t.tracking.backgroundRationale.later),
-        persona, 'mur_payant', '« Plus tard » du pre-vol (avant le mur)',
-        warnIfMissing: false);
+      '« Plus tard » du pre-vol (avant le mur)',
+      warnIfMissing: false,
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
   }
-  final murVu =
-      await waitFor(tester, murDeRealisation, timeout: const Duration(seconds: 10));
+  final murVu = await waitFor(
+    tester,
+    murDeRealisation,
+    timeout: const Duration(seconds: 10),
+  );
   await settleAndShoot(tester, persona, '19b1_mur_payant');
-  exige(persona, 'mur_payant', murVu,
-      'le refus d achat s AFFICHE (dialogue « realisation-verrouillee ») au '
-      'lieu d ouvrir la carte : realiser exige l achat (lot 594)');
+  exige(
+    persona,
+    'mur_payant',
+    murVu,
+    'le refus d achat s AFFICHE (dialogue « realisation-verrouillee ») au '
+        'lieu d ouvrir la carte : realiser exige l achat (lot 594)',
+  );
   if (murVu) {
     exige(
-        persona,
-        'mur_payant',
-        present(find.text(t.monetization.realizationLockedTitle)),
-        'le mur porte son TITRE : « ${t.monetization.realizationLockedTitle} »');
+      persona,
+      'mur_payant',
+      present(find.text(t.monetization.realizationLockedTitle)),
+      'le mur porte son TITRE : « ${t.monetization.realizationLockedTitle} »',
+    );
     exige(
-        persona,
-        'mur_payant',
-        present(find.text(t.monetization.realizationLockedBody)),
-        'le mur DIT pourquoi, et dit que la preparation reste gratuite');
-    exige(persona, 'mur_payant', present(find.text(t.monetization.buyCta)),
-        'le mur OUVRE le chemin d achat (« ${t.monetization.buyCta} »)');
+      persona,
+      'mur_payant',
+      present(find.text(t.monetization.realizationLockedBody)),
+      'le mur DIT pourquoi, et dit que la preparation reste gratuite',
+    );
+    exige(
+      persona,
+      'mur_payant',
+      present(find.text(t.monetization.buyCta)),
+      'le mur OUVRE le chemin d achat (« ${t.monetization.buyCta} »)',
+    );
     // REGLE #100945 A L'ECRAN : pas un mot d'abonnement sur un droit de sentier.
     exige(
-        persona,
-        'mur_payant',
-        find.textContaining('bonnement', findRichText: true).evaluate().isEmpty,
-        'le mur ne parle JAMAIS d abonnement : l abonnement ne donne aucun '
-        'droit sur un sentier (regle de Christophe du 30/09 16:20)');
+      persona,
+      'mur_payant',
+      find.textContaining('bonnement', findRichText: true).evaluate().isEmpty,
+      'le mur ne parle JAMAIS d abonnement : l abonnement ne donne aucun '
+          'droit sur un sentier (regle de Christophe du 30/09 16:20)',
+    );
     // On SORT sans acheter : le mur ne doit pas etre un cul-de-sac.
-    await tapIfPresent(tester, find.text(t.navPilote.startCancel), persona,
-        'mur_payant', 'refermer le mur sans acheter', warnIfMissing: false);
+    await tapIfPresent(
+      tester,
+      find.text(t.navPilote.startCancel),
+      persona,
+      'mur_payant',
+      'refermer le mur sans acheter',
+      warnIfMissing: false,
+    );
     await pumpAndSettleTolerant(tester);
-    exigeAbsent(murDeRealisation, persona, 'mur_payant',
-        'le mur payant apres l avoir referme (aucun cul-de-sac)');
+    exigeAbsent(
+      murDeRealisation,
+      persona,
+      'mur_payant',
+      'le mur payant apres l avoir referme (aucun cul-de-sac)',
+    );
   }
   // CONTRE-PREUVE : sans achat, on n est PAS parti en randonnee.
-  exige(persona, 'mur_payant', !_onMap(tester),
-      'sans achat, la carte de navigation NE s ouvre PAS (la realisation est '
-      'bien refusee, pas seulement commentee)');
+  exige(
+    persona,
+    'mur_payant',
+    !_onMap(tester),
+    'sans achat, la carte de navigation NE s ouvre PAS (la realisation est '
+        'bien refusee, pas seulement commentee)',
+  );
   return prevolAvantLeMur;
 }
 
@@ -1289,8 +1778,9 @@ Future<void> _goMyTreks(WidgetTester tester, String persona) async {
 
 /// Heuristique : l ecran carte (MapScreen) est-il monte ?
 bool _onMap(WidgetTester tester) {
-  return present(find.byWidgetPredicate(
-          (w) => w.runtimeType.toString() == 'FlutterMap')) ||
+  return present(
+        find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'),
+      ) ||
       present(find.text('Étape en cours'));
 }
 
@@ -1347,14 +1837,21 @@ Future<void> _scrollToTop(WidgetTester tester, String persona) async {
 /// situee DERRIERE la barriere modale (tap avale, date jamais posee).
 Future<void> _poserDateDepart(WidgetTester tester, String persona) async {
   final ouvert = await tapIfPresent(
-      tester, textFrEn('DÉPART', 'DEPARTURE'), persona, 'calendrier',
-      'ouvrir le selecteur de date de depart (carte DÉPART)',
-      warnIfMissing: false);
+    tester,
+    textFrEn('DÉPART', 'DEPARTURE'),
+    persona,
+    'calendrier',
+    'ouvrir le selecteur de date de depart (carte DÉPART)',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester);
   final dialog = find.byType(DatePickerDialog);
   final dansPicker = dialog.evaluate().isNotEmpty;
-  logStep(persona, 'calendrier',
-      'Carte DÉPART tapee = $ouvert ; DatePickerDialog ouvert = $dansPicker');
+  logStep(
+    persona,
+    'calendrier',
+    'Carte DÉPART tapee = $ouvert ; DatePickerDialog ouvert = $dansPicker',
+  );
 
   Finder cible(String txt) => dansPicker
       ? find.descendant(of: dialog, matching: find.text(txt))
@@ -1364,22 +1861,40 @@ Future<void> _poserDateDepart(WidgetTester tester, String persona) async {
   // jours forcement selectionnables dans le mois affiche.
   var pose = false;
   for (final jour in ['15', '16', '17', '18', '20', '22']) {
-    if (await tapIfPresent(tester, cible(jour), persona, 'calendrier',
-        'choisir le jour $jour', warnIfMissing: false)) {
+    if (await tapIfPresent(
+      tester,
+      cible(jour),
+      persona,
+      'calendrier',
+      'choisir le jour $jour',
+      warnIfMissing: false,
+    )) {
       pose = true;
       break;
     }
   }
   // CONFIRMATION : c'est `picked != null` qui ecrit la date. Indispensable.
-  final confirme = await tapIfPresent(tester, cible('OK'), persona, 'calendrier',
-      'confirmer la date (OK du date picker)', warnIfMissing: false);
+  final confirme = await tapIfPresent(
+    tester,
+    cible('OK'),
+    persona,
+    'calendrier',
+    'confirmer la date (OK du date picker)',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
-  logStep(persona, 'calendrier',
-      'Date de depart : jour choisi=$pose, OK du picker=$confirme');
+  logStep(
+    persona,
+    'calendrier',
+    'Date de depart : jour choisi=$pose, OK du picker=$confirme',
+  );
   if (!pose || !confirme) {
-    logStep(persona, 'calendrier',
-        'COINCE : date de depart NON posee (jour=$pose, OK=$confirme) — '
-        'le gate de demarrage restera ferme');
+    logStep(
+      persona,
+      'calendrier',
+      'COINCE : date de depart NON posee (jour=$pose, OK=$confirme) — '
+          'le gate de demarrage restera ferme',
+    );
   }
 }
 
@@ -1421,9 +1936,12 @@ bool? _logGateDemarrage(WidgetTester tester, String persona, String etape) {
     logStep(persona, etape, 'Gate de demarrage illisible : $e');
     return null;
   }
-  logStep(persona, etape,
-      'GATE DEMARRAGE = $ouvert | etapes coeur persistees = $etapes '
-      '(sentier $id)');
+  logStep(
+    persona,
+    etape,
+    'GATE DEMARRAGE = $ouvert | etapes coeur persistees = $etapes '
+    '(sentier $id)',
+  );
   return ouvert;
 }
 
@@ -1435,17 +1953,24 @@ bool? _logGateDemarrage(WidgetTester tester, String persona, String etape) {
 /// est absent de l'arbre.
 bool? _logCtaActif(WidgetTester tester, String persona) {
   final bouton = find.descendant(
-      of: find.byType(HubStartTrekButton),
-      matching: find.byType(FilledButton));
+    of: find.byType(HubStartTrekButton),
+    matching: find.byType(FilledButton),
+  );
   if (bouton.evaluate().isEmpty) {
-    logStep(persona, 'demarrer',
-        'CTA : HubStartTrekButton/FilledButton ABSENT de l arbre construit '
-        '(hors phase de preparation, ou pas encore atteint par le defilement)');
+    logStep(
+      persona,
+      'demarrer',
+      'CTA : HubStartTrekButton/FilledButton ABSENT de l arbre construit '
+          '(hors phase de preparation, ou pas encore atteint par le defilement)',
+    );
     return null;
   }
   final w = tester.widget<FilledButton>(bouton.first);
-  logStep(persona, 'demarrer',
-      'CTA « Démarrer la randonnée » : present=true, ACTIF=${w.onPressed != null}');
+  logStep(
+    persona,
+    'demarrer',
+    'CTA « Démarrer la randonnée » : present=true, ACTIF=${w.onPressed != null}',
+  );
   return w.onPressed != null;
 }
 
@@ -1474,8 +1999,11 @@ void _logLocation(WidgetTester tester, String persona, String etape) {
 /// important n'etait jamais verifie. Les libelles sont desormais lus DANS
 /// L'APPLICATION (`t.feasibility.formula.verdicts`) : un renommage cote produit
 /// casse la compilation du test au lieu de le rendre aveugle.
-String? _logVisibleVerdict(WidgetTester tester, String persona,
-    {String phase = ''}) {
+String? _logVisibleVerdict(
+  WidgetTester tester,
+  String persona, {
+  String phase = '',
+}) {
   final v = t.feasibility.formula.verdicts;
   // ORDRE IMPORTANT : « Faisable » est un PREFIXE de « Faisable avec
   // préparation ». `find.text` teste l'egalite exacte du Text, mais on garde
@@ -1488,9 +2016,12 @@ String? _logVisibleVerdict(WidgetTester tester, String persona,
       return libelle;
     }
   }
-  logStep(persona, 'verdict',
-      'Aucun des TROIS verdicts reels visible$tag (flux guide encore affiche, '
-      'profil vide ou ecran en chargement) — voir capture.');
+  logStep(
+    persona,
+    'verdict',
+    'Aucun des TROIS verdicts reels visible$tag (flux guide encore affiche, '
+        'profil vide ou ecran en chargement) — voir capture.',
+  );
   return null;
 }
 
@@ -1503,17 +2034,26 @@ String? _logVisibleVerdict(WidgetTester tester, String persona,
 /// `_FallbackToQuestionnaire` quand le moteur n'a pas d'etapes. On ne cherche
 /// donc plus un texte qui n'existe pas : on constate la presence, ou l'absence,
 /// du REPLI.
-void _logVerdictSource(WidgetTester tester, String persona,
-    {String phase = ''}) {
+void _logVerdictSource(
+  WidgetTester tester,
+  String persona, {
+  String phase = '',
+}) {
   final tag = phase.isEmpty ? '' : ' [$phase]';
   final fallback = find.text(t.feasibility.sourceFallback);
   if (present(fallback)) {
-    logStep(persona, 'verdict',
-        'SOURCE verdict$tag = REPLI QUESTIONNAIRE (le moteur n a pas rendu '
-        'd evaluation : aucune etape chargee).');
+    logStep(
+      persona,
+      'verdict',
+      'SOURCE verdict$tag = REPLI QUESTIONNAIRE (le moteur n a pas rendu '
+          'd evaluation : aucune etape chargee).',
+    );
   } else {
-    logStep(persona, 'verdict',
-        'SOURCE verdict$tag = MOTEUR (aucun repli questionnaire affiche).');
+    logStep(
+      persona,
+      'verdict',
+      'SOURCE verdict$tag = MOTEUR (aucun repli questionnaire affiche).',
+    );
   }
 }
 
@@ -1525,11 +2065,7 @@ void _logVerdictSource(WidgetTester tester, String persona,
 /// morpho, art. 9 RGPD) — sans quoi `_save` ne persiste pas la morphologie.
 Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
   // Saisie par label si possible (robuste a l'ordre), sinon par index.
-  final byLabel = <String, String>{
-    'Age': '32',
-    'Taille': '165',
-    'Poids': '62',
-  };
+  final byLabel = <String, String>{'Age': '32', 'Taille': '165', 'Poids': '62'};
   var filledByLabel = 0;
   // IMPORTANT : sous LiveTestWidgetsFlutterBinding (framePolicy fullyLive),
   // `enterText` est une API guardee qui DOIT etre awaitee — un `forEach` avec
@@ -1545,8 +2081,11 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
     }
   }
   if (filledByLabel >= 3) {
-    logStep(persona, 'fiche_info',
-        'SAISIE morpho par label : Age=32, Taille=165, Poids=62');
+    logStep(
+      persona,
+      'fiche_info',
+      'SAISIE morpho par label : Age=32, Taille=165, Poids=62',
+    );
   } else {
     // Repli : les 3 premiers TextFormField = age, taille, poids (ordre du form).
     final fields = find.byType(TextFormField);
@@ -1556,8 +2095,11 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
       await tester.enterText(fields.at(i), order[i]);
       await pumpAndSettleTolerant(tester);
     }
-    logStep(persona, 'fiche_info',
-        'SAISIE morpho par index ($n champs) : 32/165/62 (repli label partiel=$filledByLabel)');
+    logStep(
+      persona,
+      'fiche_info',
+      'SAISIE morpho par index ($n champs) : 32/165/62 (repli label partiel=$filledByLabel)',
+    );
   }
   // Consentement morpho (art. 9) : activer le SwitchListTile s'il est off.
   //
@@ -1579,16 +2121,20 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
       await pumpAndSettleTolerant(tester);
       final apres = tester.widget<SwitchListTile>(consentSwitch.first).value;
       logStep(
-          persona,
-          'fiche_info',
-          'Consentement morpho (art. 9) : bascule tapee, valeur lue APRES = '
-              '$apres (requis pour enregistrer la morpho)');
+        persona,
+        'fiche_info',
+        'Consentement morpho (art. 9) : bascule tapee, valeur lue APRES = '
+            '$apres (requis pour enregistrer la morpho)',
+      );
     } else {
       logStep(persona, 'fiche_info', 'Consentement morpho deja actif');
     }
   } else {
-    logStep(persona, 'fiche_info',
-        'COINCE : SwitchListTile de consentement morpho introuvable');
+    logStep(
+      persona,
+      'fiche_info',
+      'COINCE : SwitchListTile de consentement morpho introuvable',
+    );
   }
 }
 
@@ -1596,10 +2142,20 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
 Future<void> _reopenFeasibility(WidgetTester tester, String persona) async {
   await _scrollToTop(tester, persona);
   final feasCard = textFrEn('Faisabilité', 'Feasibility');
-  await scrollUntil(tester, feasCard, persona, 'faisabilite',
-      'carte Faisabilite (reouverture verdict reel)');
-  await tapIfPresent(tester, feasCard, persona, 'faisabilite',
-      'rouvrir Faisabilite (verdict profil complet)');
+  await scrollUntil(
+    tester,
+    feasCard,
+    persona,
+    'faisabilite',
+    'carte Faisabilite (reouverture verdict reel)',
+  );
+  await tapIfPresent(
+    tester,
+    feasCard,
+    persona,
+    'faisabilite',
+    'rouvrir Faisabilite (verdict profil complet)',
+  );
   // Laisse le temps aux FutureProvider (profil/randos/trek) de recalculer.
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
@@ -1689,8 +2245,14 @@ Future<bool> _openHubCard(
       await pumpAndSettleTolerant(tester);
     }
   }
-  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »',
-      warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    card,
+    persona,
+    etape,
+    'ouvrir « $cardLabel »',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   var reached = present(find.text(expectedTitle));
   if (!reached && fallbackPath != null) {
@@ -1699,14 +2261,20 @@ Future<bool> _openHubCard(
       _push(tester, fallbackPath(id), persona);
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
       reached = present(find.text(expectedTitle));
-      logStep(persona, etape,
-          'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
-          '${fallbackPath(id)} (cible identique au hub).');
+      logStep(
+        persona,
+        etape,
+        'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
+        '${fallbackPath(id)} (cible identique au hub).',
+      );
     }
   }
   if (shot != null) await settleAndShoot(tester, persona, shot);
-  logStep(persona, etape,
-      'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
+  logStep(
+    persona,
+    etape,
+    'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).',
+  );
   return reached;
 }
 
@@ -1718,9 +2286,15 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // Decision : repartition jour par jour du sentier (parite GR20). Element
   // metier verifie : badges de jour « J1 » (ReorderableListView de _DayCard) ou
   // l'etat vide assume (aucune etape chargee -> CTA itineraire).
-  if (await _openHubCard(tester, persona, 'programme', 'Programme', 'Programme',
-      shot: 'S1E_20_programme',
-      fallbackPath: (id) => '/trail/$id/planning')) {
+  if (await _openHubCard(
+    tester,
+    persona,
+    'programme',
+    'Programme',
+    'Programme',
+    shot: 'S1E_20_programme',
+    fallbackPath: (id) => '/trail/$id/planning',
+  )) {
     // Capte l'identifiant du sentier actif pour les ecrans sans carte HUB
     // (#P31 fiche sentier, #P32 detail etape). Source fiable : le conteneur
     // Riverpod (trailConfigProvider), sinon la localisation si trail-scoped.
@@ -1729,44 +2303,67 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
       _capturedTrailId = trailId;
       logStep(persona, 'programme', 'trailId actif capte = $trailId');
     }
-    final hasDays = present(find.text('J1')) ||
-        present(find.byType(ReorderableListView));
+    final hasDays =
+        present(find.text('J1')) || present(find.byType(ReorderableListView));
     final emptyState = present(find.byIcon(Icons.route));
-    logStep(persona, 'programme',
-        'Programme (parite GR20) : jours planifies visibles = $hasDays ; '
-        'etat vide (aucune etape) = $emptyState. #P20 couvert.');
+    logStep(
+      persona,
+      'programme',
+      'Programme (parite GR20) : jours planifies visibles = $hasDays ; '
+          'etat vide (aucune etape) = $emptyState. #P20 couvert.',
+    );
   }
 
   // --- #P21 RESUME (carte HUB « Résumé » -> /trail/:id/summary) ---
   // Decision : synthese agregee du plan (config + stats + jour par jour). On
   // verifie une KPI de la carte statistiques (unite « km ») ou l'etat vide.
   if (await _openHubCard(
-      tester, persona, 'resume', 'Résumé', 'Résumé du plan',
-      shot: 'S1E_21_resume',
-      fallbackPath: (id) => '/trail/$id/summary')) {
-    final hasStats = present(find.textContaining('km')) ||
+    tester,
+    persona,
+    'resume',
+    'Résumé',
+    'Résumé du plan',
+    shot: 'S1E_21_resume',
+    fallbackPath: (id) => '/trail/$id/summary',
+  )) {
+    final hasStats =
+        present(find.textContaining('km')) ||
         present(find.text('Jour par jour'));
-    logStep(persona, 'resume',
-        'Resume du plan (agregateur) : contenu synthese visible = $hasStats. '
-        '#P21 couvert.');
+    logStep(
+      persona,
+      'resume',
+      'Resume du plan (agregateur) : contenu synthese visible = $hasStats. '
+          '#P21 couvert.',
+    );
   }
 
   // --- #P22 NUITEES (carte HUB « Nuitées » -> /trail/:id/nuitees) ---
   // Decision : assistant « Reserver vos nuits » (type + reserve par nuit). On
   // COCHE une nuit (tap sur la 1re carte _NuiteeCard) pour jouer le geste metier.
   if (await _openHubCard(
-      tester, persona, 'nuitees', 'Nuitées', 'Réservations nuitées',
-      shot: 'S1E_22_nuitees',
-      fallbackPath: (id) => '/trail/$id/nuitees')) {
+    tester,
+    persona,
+    'nuitees',
+    'Nuitées',
+    'Réservations nuitées',
+    shot: 'S1E_22_nuitees',
+    fallbackPath: (id) => '/trail/$id/nuitees',
+  )) {
     final nuiteeCard = find.byType(Card);
     if (present(nuiteeCard)) {
       await tester.tap(nuiteeCard.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(persona, 'nuitees',
-          'TAP OK : 1re nuit basculee (reserve/a reserver). #P22 couvert.');
+      logStep(
+        persona,
+        'nuitees',
+        'TAP OK : 1re nuit basculee (reserve/a reserver). #P22 couvert.',
+      );
     } else {
-      logStep(persona, 'nuitees',
-          'Aucune carte de nuit (programme vide ?) — etat vide. #P22 atteint.');
+      logStep(
+        persona,
+        'nuitees',
+        'Aucune carte de nuit (programme vide ?) — etat vide. #P22 atteint.',
+      );
     }
     await settleAndShoot(tester, persona, 'S1E_22b_nuitees_cochee');
   }
@@ -1774,34 +2371,59 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // --- #P24 RAVITAILLEMENT (carte HUB « Ravitaillement » -> /trail/:id/shop) ---
   // Decision : commerces par etape + filtres par type (parite GR20). On tape le
   // filtre « Épicerie » (ChoiceChip/filtre) pour jouer le filtrage.
-  if (await _openHubCard(tester, persona, 'ravitaillement', 'Ravitaillement',
-      'Ravitaillement',
-      shot: 'S1E_24_ravitaillement',
-      fallbackPath: (id) => '/trail/$id/shop')) {
-    await tapIfPresent(tester, find.text('Épicerie'), persona, 'ravitaillement',
-        'filtre « Épicerie »', warnIfMissing: false);
-    logStep(persona, 'ravitaillement',
-        'Ravitaillement (commerces par etape, filtres type) atteint. '
-        '#P24 couvert.');
+  if (await _openHubCard(
+    tester,
+    persona,
+    'ravitaillement',
+    'Ravitaillement',
+    'Ravitaillement',
+    shot: 'S1E_24_ravitaillement',
+    fallbackPath: (id) => '/trail/$id/shop',
+  )) {
+    await tapIfPresent(
+      tester,
+      find.text('Épicerie'),
+      persona,
+      'ravitaillement',
+      'filtre « Épicerie »',
+      warnIfMissing: false,
+    );
+    logStep(
+      persona,
+      'ravitaillement',
+      'Ravitaillement (commerces par etape, filtres type) atteint. '
+          '#P24 couvert.',
+    );
     await settleAndShoot(tester, persona, 'S1E_24b_ravitaillement_filtre');
   }
 
   // --- #P27 CONSEILS (carte HUB « Fiches conseils » -> /trail/:id/tips) ---
   // Decision : fiches conseils rangees par THEMES (deroulables). On deplie une
   // section (1er ExpansionTile) pour montrer le contenu.
-  if (await _openHubCard(tester, persona, 'conseils', 'Fiches conseils',
-      'Fiches conseils',
-      shot: 'S1E_27_conseils',
-      fallbackPath: (id) => '/trail/$id/tips')) {
+  if (await _openHubCard(
+    tester,
+    persona,
+    'conseils',
+    'Fiches conseils',
+    'Fiches conseils',
+    shot: 'S1E_27_conseils',
+    fallbackPath: (id) => '/trail/$id/tips',
+  )) {
     final expTile = find.byType(ExpansionTile);
     if (present(expTile)) {
       await tester.tap(expTile.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(persona, 'conseils',
-          'TAP OK : 1er theme de conseils deplie. #P27 couvert.');
+      logStep(
+        persona,
+        'conseils',
+        'TAP OK : 1er theme de conseils deplie. #P27 couvert.',
+      );
     } else {
-      logStep(persona, 'conseils',
-          'Aucun ExpansionTile (contenu a plat ?) — ecran atteint. #P27.');
+      logStep(
+        persona,
+        'conseils',
+        'Aucun ExpansionTile (contenu a plat ?) — ecran atteint. #P27.',
+      );
     }
     await settleAndShoot(tester, persona, 'S1E_27b_conseils_deplie');
   }
@@ -1810,11 +2432,19 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   //     /accommodations-nearby). Decision : facilitateur « ou dormir a
   //     proximite » (A/R). On verifie le titre reel de l'ecran. ---
   if (await _openHubCard(
-      tester, persona, 'hebergements', 'Hébergements', 'Hébergements',
-      shot: 'S1E_30_hebergements',
-      fallbackPath: (_) => '/accommodations-nearby')) {
-    logStep(persona, 'hebergements',
-        'Hebergements peripheriques (facilitateur) atteint. #P30 couvert.');
+    tester,
+    persona,
+    'hebergements',
+    'Hébergements',
+    'Hébergements',
+    shot: 'S1E_30_hebergements',
+    fallbackPath: (_) => '/accommodations-nearby',
+  )) {
+    logStep(
+      persona,
+      'hebergements',
+      'Hebergements peripheriques (facilitateur) atteint. #P30 couvert.',
+    );
   }
 
   // --- #P25 METEO (tuile HubWeatherCard -> /trail/:id/weather) ---
@@ -1823,8 +2453,13 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
   var weatherReached = await tapIfPresent(
-      tester, find.text('Météo'), persona, 'meteo',
-      'tuile meteo (HubWeatherCard)', warnIfMissing: false);
+    tester,
+    find.text('Météo'),
+    persona,
+    'meteo',
+    'tuile meteo (HubWeatherCard)',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   // La tuile meteo peut manquer (virtualisation / tuile en chargement) : filet
   // deep-link vers la route meteo trail-scopee (cible identique au hub).
@@ -1833,14 +2468,18 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
     if (id != null) {
       _push(tester, '/trail/$id/weather', persona);
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
-      weatherReached = _currentLocation(tester).contains('/weather') ||
+      weatherReached =
+          _currentLocation(tester).contains('/weather') ||
           present(find.byType(Scaffold));
     }
   }
   await settleAndShoot(tester, persona, 'S1E_25_meteo');
-  logStep(persona, 'meteo',
-      'Ecran meteo ouvert = $weatherReached '
-      '(loc=${_currentLocation(tester)}). #P25 couvert.');
+  logStep(
+    persona,
+    'meteo',
+    'Ecran meteo ouvert = $weatherReached '
+        '(loc=${_currentLocation(tester)}). #P25 couvert.',
+  );
 
   // --- #P31 FICHE SENTIER (/trail/:id) + #P32 DETAIL ETAPE
   //     (/trail/:id/stage/1). Pas de carte HUB dediee -> deep-link via le
@@ -1852,24 +2491,33 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
     _push(tester, '/trail/$trailId', persona);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S1E_31_fiche_sentier');
-    logStep(persona, 'fiche_sentier',
-        'Fiche sentier /trail/$trailId ouverte (loc=${_currentLocation(tester)} '
-        '; Scaffold=${present(find.byType(Scaffold))}). #P31 couvert.');
+    logStep(
+      persona,
+      'fiche_sentier',
+      'Fiche sentier /trail/$trailId ouverte (loc=${_currentLocation(tester)} '
+          '; Scaffold=${present(find.byType(Scaffold))}). #P31 couvert.',
+    );
 
     _push(tester, '/trail/$trailId/stage/1', persona);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S1E_32_detail_etape');
     // La fiche etape porte des sections metier (profil altimetrique, stats,
     // points d'eau, conseils) — on verifie au moins une ancre metier.
-    final stageContent = present(find.textContaining('km')) ||
-        present(find.byType(Scaffold));
-    logStep(persona, 'detail_etape',
-        'Detail etape /trail/$trailId/stage/1 ouvert (contenu metier=$stageContent). '
-        '#P32 couvert.');
+    final stageContent =
+        present(find.textContaining('km')) || present(find.byType(Scaffold));
+    logStep(
+      persona,
+      'detail_etape',
+      'Detail etape /trail/$trailId/stage/1 ouvert (contenu metier=$stageContent). '
+          '#P32 couvert.',
+    );
   } else {
-    logStep(persona, 'fiche_sentier',
-        'COINCE : trailId actif non capte -> #P31/#P32 non joues (deep-link '
-        'impossible sans id). Signal QA.');
+    logStep(
+      persona,
+      'fiche_sentier',
+      'COINCE : trailId actif non capte -> #P31/#P32 non joues (deep-link '
+          'impossible sans id). Signal QA.',
+    );
   }
 
   // --- #D05 ETAT ENTRAINEMENT (gratuit bride vs achete) ---
@@ -1878,18 +2526,30 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // DEBLOQUEE -> on DOCUMENTE l'etat observe (l'etat gratuit-bride avec seances
   // grisees releve d'un trek NON possede, couvert par S4/S5). On rouvre
   // l'entrainement et on lit l'etat (paywall present ou seances visibles).
-  if (await _openHubCard(tester, persona, 'entrainement_etat',
-      'Préparation physique', 'Préparation physique',
-      shot: 'S1E_05dec_entrainement_etat',
-      fallbackPath: (_) => '/training')) {
-    final locked = present(find.textContaining('Débloquer')) ||
+  if (await _openHubCard(
+    tester,
+    persona,
+    'entrainement_etat',
+    'Préparation physique',
+    'Préparation physique',
+    shot: 'S1E_05dec_entrainement_etat',
+    fallbackPath: (_) => '/training',
+  )) {
+    final locked =
+        present(find.textContaining('Débloquer')) ||
         present(find.text('Debloquer'));
-    final sessions = present(find
-        .byWidgetPredicate((w) => w.key.toString().contains('training-session-')));
-    logStep(persona, 'entrainement_etat',
-        'Etat entrainement (#D05) : paywall « Debloquer » = $locked ; '
-        'seances visibles = $sessions. Vitrine = DEBLOQUE attendu '
-        '(l\'etat gratuit-bride/seances grisees = trek non possede, cf. S4/S5).');
+    final sessions = present(
+      find.byWidgetPredicate(
+        (w) => w.key.toString().contains('training-session-'),
+      ),
+    );
+    logStep(
+      persona,
+      'entrainement_etat',
+      'Etat entrainement (#D05) : paywall « Debloquer » = $locked ; '
+          'seances visibles = $sessions. Vitrine = DEBLOQUE attendu '
+          '(l\'etat gratuit-bride/seances grisees = trek non possede, cf. S4/S5).',
+    );
   }
 
   // --- #D19 PAYS ISO (fiche randonneur) ---
@@ -1898,22 +2558,34 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // verifie la presence d'un selecteur de pays (champ « Pays »/DropdownButton).
   await _goHome(tester, persona);
   await _reopenFeasibility(tester, persona);
-  if (await tapIfPresent(tester, textFrEn("Ma fiche d'info", 'My details'),
-      persona, 'pays_iso', 'rouvrir Ma fiche d info (pays ISO)',
-      warnIfMissing: false)) {
+  if (await tapIfPresent(
+    tester,
+    textFrEn("Ma fiche d'info", 'My details'),
+    persona,
+    'pays_iso',
+    'rouvrir Ma fiche d info (pays ISO)',
+    warnIfMissing: false,
+  )) {
     await settleAndShoot(tester, persona, 'S1E_19dec_fiche_pays');
-    final hasCountry = present(find.textContaining('Pays')) ||
+    final hasCountry =
+        present(find.textContaining('Pays')) ||
         present(find.textContaining('Country')) ||
         present(find.byType(DropdownButton<String>)) ||
         present(find.byType(DropdownButtonFormField<String>));
-    logStep(persona, 'pays_iso',
-        'Fiche randonneur : selecteur de pays (ISO-3166 + drapeau) present = '
-        '$hasCountry. #D19 couvert (champ pays inspecte).');
+    logStep(
+      persona,
+      'pays_iso',
+      'Fiche randonneur : selecteur de pays (ISO-3166 + drapeau) present = '
+          '$hasCountry. #D19 couvert (champ pays inspecte).',
+    );
     await _back(tester, persona, 'pays_iso');
   } else {
-    logStep(persona, 'pays_iso',
-        'Raccourci « Ma fiche d info » introuvable pour inspecter le pays '
-        '(#D19). Signal QA.');
+    logStep(
+      persona,
+      'pays_iso',
+      'Raccourci « Ma fiche d info » introuvable pour inspecter le pays '
+          '(#D19). Signal QA.',
+    );
   }
 
   // Retour cockpit propre avant la suite (demarrage du trek).
