@@ -21,8 +21,8 @@ typedef GuideSectionLabelResolver = GuideSectionLabels Function(String categorie
 /// Catalogue de town guides (F8C-01, Phase 8 P8-C, offline R3).
 ///
 /// Fournit des town guides FICTIFS en P2-P3 (#84627) destines a etre consultes
-/// 100 % OFFLINE (contenu embarque dans le pack via [PackManifest.townGuideRefs]
-/// F8B-01). Fonctions PURES (aucune dependance Flutter/Slang) : l'UI fournit le
+/// 100 % OFFLINE (contenu descendu avec les donnees du sentier, AVANT le
+/// depart). Fonctions PURES (aucune dependance Flutter/Slang) : l'UI fournit le
 /// [GuideSectionLabelResolver] pour les titres de section localises (5 langues).
 ///
 /// Le moteur reste GENERIQUE (#84627) : les guides sont parametres par [trailId]

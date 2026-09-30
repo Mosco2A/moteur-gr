@@ -115,31 +115,22 @@ void main() {
       erreursDeRendu(tester);
     });
 
-    testWidgets(
-        '/trail/:id/packs — « Telecharger » passe EN COURS des l appui',
-        (tester) async {
-      await monterAppliReelle(tester, depart: '/trail/mare-a-mare-centre/packs');
-      final avant = empreinteEcran(tester);
-      await appuyerSur(
-        tester,
-        find.widgetWithText(ElevatedButton, 'Télécharger'),
-      );
-      // LE DEFAUT EXACT : le controleur posait « en cours », le premier
-      // evenement du flux (`pending`) l'ecrasait aussitot, et la carte
-      // retrouvait son etat d'avant l'appui — « Non telecharge / Telecharger ».
-      expect(empreinteEcran(tester) != avant, isTrue,
-          reason: 'l appui doit se voir tout de suite ; il etait annule par le '
-              'premier evenement du flux');
-      expect(find.byType(LinearProgressIndicator), findsWidgets,
-          reason: 'la carte doit montrer la progression, pas ses boutons');
-      // La suite du parcours — echec de la source, etat d erreur, message — ne
-      // peut pas etre jouee ici : elle demande des entrees-sorties REELLES, que
-      // le temps feint d un test de widgets ne fait jamais revenir. Elle est
-      // couverte sans widgets par
-      // `test/features/packs/pack_telechargement_579_test.dart`.
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-    });
+    // LE MAGASIN DE PACKS N EXISTE PLUS (tache 640, bugs 9 et 10 du 30/09).
+    //
+    // CE TEST VERIFIAIT UN ECRAN QUI NE POUVAIT PAS TELECHARGER. Il montait
+    // `/trail/:id/packs` et appuyait sur « Telecharger » d un pack partiel. Le
+    // defaut qu il gardait — l appui qui ne se voyait pas, ecrase par le premier
+    // evenement du flux — etait reel et corrige par la tache 579 ; mais l ecran
+    // lui-meme etait une facade qui ne descendait aucune tuile et ecrivait dans
+    // un dossier que la carte ne lit pas. Christophe a appuye dessus le 30/09 :
+    // « en demo comme en vrai telecharger les cartes plante » (DEM-260930-1016),
+    // et « on ne propose pas de demi-Mare a Mare » (DEM-260930-1017).
+    //
+    // La garantie a donc demenage AVEC son sujet : l ecran « Cartes hors ligne »
+    // (`/trail/:id/cartes`, un geste, tout le circuit) est couvert par
+    // `test/comportement/cartes_du_circuit_640_test.dart`, qui verifie que
+    // l appui se voit, que la progression s affiche, que la reprise s annonce et
+    // qu aucun appui ne peut plus lever.
 
     testWidgets(
         '/trail/:id/walk-test — « Demarrer le test » sans GPS explique au lieu '

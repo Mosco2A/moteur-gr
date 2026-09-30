@@ -84,7 +84,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
 	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
 	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
-	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
+	late final Translations$cartesHorsLigne$fr cartesHorsLigne = Translations$cartesHorsLigne$fr.internal(_root);
 	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
 	late final Translations$health$fr health = Translations$health$fr.internal(_root);
 	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
@@ -2444,36 +2444,93 @@ class Translations$waypoints$fr {
 	late final Translations$waypoints$contribution$fr contribution = Translations$waypoints$contribution$fr.internal(_root);
 }
 
-// Path: packs
-class Translations$packs$fr {
-	Translations$packs$fr.internal(this._root);
+// Path: cartesHorsLigne
+class Translations$cartesHorsLigne$fr {
+	Translations$cartesHorsLigne$fr.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// fr: 'Packs sentier'
-	String get title => 'Packs sentier';
+	/// fr: 'Cartes hors ligne'
+	String get title => 'Cartes hors ligne';
 
-	/// fr: 'Téléchargez un pack pour randonner 100% hors-ligne.'
-	String get subtitle => 'Téléchargez un pack pour randonner 100% hors-ligne.';
+	/// fr: 'Un seul téléchargement : les cartes de tout le circuit, pour marcher sans réseau.'
+	String get intro => 'Un seul téléchargement : les cartes de tout le circuit, pour marcher sans réseau.';
 
-	/// fr: 'À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.'
-	String get alaCarteNote => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.';
+	/// fr: 'Tout le circuit en une fois, pas de morceaux à choisir.'
+	String get unSeulGeste => 'Tout le circuit en une fois, pas de morceaux à choisir.';
 
-	/// fr: '$mo Mo'
-	String size({required Object mo}) => '${mo} Mo';
+	/// fr: '$mo Mo à télécharger'
+	String poids({required Object mo}) => '${mo} Mo à télécharger';
 
-	late final Translations$packs$states$fr states = Translations$packs$states$fr.internal(_root);
-	late final Translations$packs$actions$fr actions = Translations$packs$actions$fr.internal(_root);
-	late final Translations$packs$progress$fr progress = Translations$packs$progress$fr.internal(_root);
-	late final Translations$packs$delete$fr delete = Translations$packs$delete$fr.internal(_root);
+	/// fr: 'Poids total du circuit : $mo Mo'
+	String poidsTotal({required Object mo}) => 'Poids total du circuit : ${mo} Mo';
 
-	/// fr: 'Aucun pack disponible pour ce sentier.'
-	String get empty => 'Aucun pack disponible pour ce sentier.';
+	/// fr: '$mo Mo sont déjà sur le téléphone : la reprise ne téléchargera que le reste.'
+	String reprise({required Object mo}) => '${mo} Mo sont déjà sur le téléphone : la reprise ne téléchargera que le reste.';
 
-	late final Translations$packs$a11y$fr a11y = Translations$packs$a11y$fr.internal(_root);
-	late final Translations$packs$types$fr types = Translations$packs$types$fr.internal(_root);
+	/// fr: 'TÉLÉCHARGER LES CARTES DU CIRCUIT'
+	String get telecharger => 'TÉLÉCHARGER LES CARTES DU CIRCUIT';
+
+	/// fr: 'REPRENDRE LE TÉLÉCHARGEMENT'
+	String get reprendre => 'REPRENDRE LE TÉLÉCHARGEMENT';
+
+	/// fr: 'RÉESSAYER'
+	String get reessayer => 'RÉESSAYER';
+
+	/// fr: 'ANNULER'
+	String get annuler => 'ANNULER';
+
+	/// fr: 'SUPPRIMER LES CARTES'
+	String get supprimer => 'SUPPRIMER LES CARTES';
+
+	/// fr: '$recus Mo sur $total Mo'
+	String enCours({required Object recus, required Object total}) => '${recus} Mo sur ${total} Mo';
+
+	/// fr: 'Vérification de la carte'
+	String get verification => 'Vérification de la carte';
+
+	/// fr: 'Cartes prêtes hors ligne'
+	String get pretes => 'Cartes prêtes hors ligne';
+
+	/// fr: '$mo Mo sur le téléphone'
+	String pretesPoids({required Object mo}) => '${mo} Mo sur le téléphone';
+
+	/// fr: 'Cartes supprimées, espace libéré.'
+	String get libere => 'Cartes supprimées, espace libéré.';
+
+	/// fr: 'Supprimer les cartes ?'
+	String get supprimerTitre => 'Supprimer les cartes ?';
+
+	/// fr: 'Les cartes seront retirées du téléphone pour libérer de l'espace. Vous pourrez les retélécharger.'
+	String get supprimerCorps => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Vous pourrez les retélécharger.';
+
+	/// fr: 'Annuler'
+	String get supprimerAnnuler => 'Annuler';
+
+	/// fr: 'Supprimer'
+	String get supprimerConfirmer => 'Supprimer';
+
+	/// fr: '$mo Mo sur votre forfait ?'
+	String horsWifiTitre({required Object mo}) => '${mo} Mo sur votre forfait ?';
+
+	/// fr: 'Vous n'êtes pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.'
+	String get horsWifiCorps => 'Vous n\'êtes pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.';
+
+	/// fr: 'Attendre le Wi-Fi'
+	String get horsWifiAttendre => 'Attendre le Wi-Fi';
+
+	/// fr: 'Télécharger quand même'
+	String get horsWifiContinuer => 'Télécharger quand même';
+
+	late final Translations$cartesHorsLigne$refus$fr refus = Translations$cartesHorsLigne$refus$fr.internal(_root);
+	late final Translations$cartesHorsLigne$echec$fr echec = Translations$cartesHorsLigne$echec$fr.internal(_root);
+
+	/// fr: 'Le téléchargement des cartes n'est pas disponible pendant la démonstration.'
+	String get demoIndisponible => 'Le téléchargement des cartes n\'est pas disponible pendant la démonstration.';
+
+	late final Translations$cartesHorsLigne$a11y$fr a11y = Translations$cartesHorsLigne$a11y$fr.internal(_root);
 }
 
 // Path: guides
@@ -2584,8 +2641,8 @@ class Translations$trailSelection$fr {
 	/// fr: 'Changer de sentier'
 	String get title => 'Changer de sentier';
 
-	/// fr: 'Choisis le sentier à explorer. Toute l'app (carte, étapes, points d'intérêt, packs, guides) suit ta sélection.'
-	String get subtitle => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, packs, guides) suit ta sélection.';
+	/// fr: 'Choisis le sentier à explorer. Toute l'app (carte, étapes, points d'intérêt, cartes hors ligne, guides) suit ta sélection.'
+	String get subtitle => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, cartes hors ligne, guides) suit ta sélection.';
 
 	/// fr: 'Sentier actif'
 	String get current => 'Sentier actif';
@@ -4111,10 +4168,10 @@ class Translations$hub$cards$fr {
 	String get healthSub => 'À remplir avant de partir';
 
 	/// fr: 'Cartes hors ligne'
-	String get packs => 'Cartes hors ligne';
+	String get cartes => 'Cartes hors ligne';
 
-	/// fr: 'Télécharger les cartes du sentier'
-	String get packsSub => 'Télécharger les cartes du sentier';
+	/// fr: 'Télécharger les cartes du circuit'
+	String get cartesSub => 'Télécharger les cartes du circuit';
 
 	/// fr: 'Découvrir des sentiers'
 	String get offline => 'Découvrir des sentiers';
@@ -5950,131 +6007,76 @@ class Translations$waypoints$contribution$fr {
 	String get error => 'Enregistrement impossible pour le moment.';
 }
 
-// Path: packs.states
-class Translations$packs$states$fr {
-	Translations$packs$states$fr.internal(this._root);
+// Path: cartesHorsLigne.refus
+class Translations$cartesHorsLigne$refus$fr {
+	Translations$cartesHorsLigne$refus$fr.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// fr: 'Non téléchargé'
-	String get notDownloaded => 'Non téléchargé';
+	/// fr: 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.'
+	String get niveauInsuffisant => 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.';
 
-	/// fr: 'Téléchargé'
-	String get downloaded => 'Téléchargé';
+	/// fr: 'Ce circuit n'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.'
+	String get sentierInconnu => 'Ce circuit n\'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.';
 
-	/// fr: 'Mise à jour disponible'
-	String get updateAvailable => 'Mise à jour disponible';
+	/// fr: 'Aucune carte hors ligne n'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.'
+	String get aucuneCartePubliee => 'Aucune carte hors ligne n\'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.';
+
+	/// fr: 'Les cartes hors ligne font partie du circuit acheté.'
+	String get droitDeRealiserManquant => 'Les cartes hors ligne font partie du circuit acheté.';
+
+	/// fr: 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.'
+	String get horsLigne => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.';
+
+	/// fr: 'Le téléphone n'a pas répondu. Réessayez ; s'il insiste, redémarrez-le.'
+	String get stockageIndisponible => 'Le téléphone n\'a pas répondu. Réessayez ; s\'il insiste, redémarrez-le.';
 }
 
-// Path: packs.actions
-class Translations$packs$actions$fr {
-	Translations$packs$actions$fr.internal(this._root);
+// Path: cartesHorsLigne.echec
+class Translations$cartesHorsLigne$echec$fr {
+	Translations$cartesHorsLigne$echec$fr.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// fr: 'Télécharger'
-	String get download => 'Télécharger';
+	/// fr: 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.'
+	String get reseau => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.';
 
-	/// fr: 'Mettre à jour'
-	String get update => 'Mettre à jour';
+	/// fr: 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.'
+	String get empreinteInvalide => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.';
 
-	/// fr: 'Supprimer'
-	String get delete => 'Supprimer';
+	/// fr: 'La carte reçue est incomplète : elle a été écartée. Réessayez.'
+	String get tailleInattendue => 'La carte reçue est incomplète : elle a été écartée. Réessayez.';
 
-	/// fr: 'Réessayer'
-	String get retry => 'Réessayer';
+	/// fr: 'Il n'y a plus de place sur le téléphone. Libérez de l'espace, puis reprenez.'
+	String get plusDePlace => 'Il n\'y a plus de place sur le téléphone. Libérez de l\'espace, puis reprenez.';
 
-	/// fr: 'Acheter ce pack'
-	String get buy => 'Acheter ce pack';
+	/// fr: 'L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.'
+	String get ecritureImpossible => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.';
 
-	/// fr: 'Acheter ce pack — $price'
-	String buyWithPrice({required Object price}) => 'Acheter ce pack — ${price}';
+	/// fr: 'Le téléphone n'a pas rendu son espace de stockage. Réessayez ; s'il insiste, redémarrez-le.'
+	String get stockageIndisponible => 'Le téléphone n\'a pas rendu son espace de stockage. Réessayez ; s\'il insiste, redémarrez-le.';
 
-	/// fr: 'L'achat n'est pas disponible sur cet appareil.'
-	String get buyUnavailable => 'L\'achat n\'est pas disponible sur cet appareil.';
+	/// fr: 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.'
+	String get annulee => 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.';
 }
 
-// Path: packs.progress
-class Translations$packs$progress$fr {
-	Translations$packs$progress$fr.internal(this._root);
+// Path: cartesHorsLigne.a11y
+class Translations$cartesHorsLigne$a11y$fr {
+	Translations$cartesHorsLigne$a11y$fr.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// fr: 'Téléchargement… $done/$total'
-	String downloading({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}';
+	/// fr: 'Télécharger les cartes de tout le circuit'
+	String get bouton => 'Télécharger les cartes de tout le circuit';
 
-	/// fr: 'Vérification de l'intégrité…'
-	String get verifying => 'Vérification de l\'intégrité…';
-
-	/// fr: 'Pack prêt hors-ligne'
-	String get completed => 'Pack prêt hors-ligne';
-
-	/// fr: 'Échec du téléchargement'
-	String get error => 'Échec du téléchargement';
-
-	/// fr: 'Le téléchargement n'a pas abouti.'
-	String get errorSnack => 'Le téléchargement n\'a pas abouti.';
-}
-
-// Path: packs.delete
-class Translations$packs$delete$fr {
-	Translations$packs$delete$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Supprimer ce pack ?'
-	String get confirmTitle => 'Supprimer ce pack ?';
-
-	/// fr: 'Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.'
-	String get confirmBody => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.';
-
-	/// fr: 'Annuler'
-	String get cancel => 'Annuler';
-
-	/// fr: 'Supprimer'
-	String get confirm => 'Supprimer';
-
-	/// fr: 'Espace libéré.'
-	String get freed => 'Espace libéré.';
-}
-
-// Path: packs.a11y
-class Translations$packs$a11y$fr {
-	Translations$packs$a11y$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Pack $nom, $state'
-	String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
-
-	/// fr: 'Télécharger le pack $nom'
-	String downloadButton({required Object nom}) => 'Télécharger le pack ${nom}';
-
-	/// fr: 'Supprimer le pack $nom'
-	String deleteButton({required Object nom}) => 'Supprimer le pack ${nom}';
-}
-
-// Path: packs.types
-class Translations$packs$types$fr {
-	Translations$packs$types$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-	late final Translations$packs$types$nord$fr nord = Translations$packs$types$nord$fr.internal(_root);
-	late final Translations$packs$types$sud$fr sud = Translations$packs$types$sud$fr.internal(_root);
-	late final Translations$packs$types$complet$fr complet = Translations$packs$types$complet$fr.internal(_root);
-	late final Translations$packs$types$mam$fr mam = Translations$packs$types$mam$fr.internal(_root);
+	/// fr: 'Téléchargement des cartes : $pourcent %'
+	String progression({required Object pourcent}) => 'Téléchargement des cartes : ${pourcent} %';
 }
 
 // Path: guides.categories
@@ -7877,66 +7879,6 @@ class Translations$gamification$badge$challenger$fr {
 	String get description => 'Tu as réussi ton premier défi saisonnier.';
 }
 
-// Path: packs.types.nord
-class Translations$packs$types$nord$fr {
-	Translations$packs$types$nord$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: '$trail — Nord'
-	String nom({required Object trail}) => '${trail} — Nord';
-
-	/// fr: 'La moitié nord du sentier, hors-ligne.'
-	String get description => 'La moitié nord du sentier, hors-ligne.';
-}
-
-// Path: packs.types.sud
-class Translations$packs$types$sud$fr {
-	Translations$packs$types$sud$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: '$trail — Sud'
-	String nom({required Object trail}) => '${trail} — Sud';
-
-	/// fr: 'La moitié sud du sentier, hors-ligne.'
-	String get description => 'La moitié sud du sentier, hors-ligne.';
-}
-
-// Path: packs.types.complet
-class Translations$packs$types$complet$fr {
-	Translations$packs$types$complet$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: '$trail — Complet'
-	String nom({required Object trail}) => '${trail} — Complet';
-
-	/// fr: 'Tout le sentier, hors-ligne.'
-	String get description => 'Tout le sentier, hors-ligne.';
-}
-
-// Path: packs.types.mam
-class Translations$packs$types$mam$fr {
-	Translations$packs$types$mam$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: '$trail'
-	String nom({required Object trail}) => '${trail}';
-
-	/// fr: 'Tout le sentier $trail, hors-ligne.'
-	String description({required Object trail}) => 'Tout le sentier ${trail}, hors-ligne.';
-}
-
 // Path: programme.info.days
 class Translations$programme$info$days$fr {
 	Translations$programme$info$days$fr.internal(this._root);
@@ -8214,8 +8156,8 @@ extension on Translations {
 			'hub.cards.trainingSub' => 'Votre programme d\'entraînement',
 			'hub.cards.health' => 'Fiche médicale',
 			'hub.cards.healthSub' => 'À remplir avant de partir',
-			'hub.cards.packs' => 'Cartes hors ligne',
-			'hub.cards.packsSub' => 'Télécharger les cartes du sentier',
+			'hub.cards.cartes' => 'Cartes hors ligne',
+			'hub.cards.cartesSub' => 'Télécharger les cartes du circuit',
 			'hub.cards.offline' => 'Découvrir des sentiers',
 			'hub.cards.offlineSub' => 'Parcourez le catalogue',
 			'hub.cards.group' => 'Mon groupe',
@@ -9313,42 +9255,46 @@ extension on Translations {
 			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
 			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
 			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
-			'packs.title' => 'Packs sentier',
-			'packs.subtitle' => 'Téléchargez un pack pour randonner 100% hors-ligne.',
-			'packs.alaCarteNote' => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.',
-			'packs.size' => ({required Object mo}) => '${mo} Mo',
-			'packs.states.notDownloaded' => 'Non téléchargé',
-			'packs.states.downloaded' => 'Téléchargé',
-			'packs.states.updateAvailable' => 'Mise à jour disponible',
-			'packs.actions.download' => 'Télécharger',
-			'packs.actions.update' => 'Mettre à jour',
-			'packs.actions.delete' => 'Supprimer',
-			'packs.actions.retry' => 'Réessayer',
-			'packs.actions.buy' => 'Acheter ce pack',
-			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
-			'packs.actions.buyUnavailable' => 'L\'achat n\'est pas disponible sur cet appareil.',
-			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
-			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
-			'packs.progress.completed' => 'Pack prêt hors-ligne',
-			'packs.progress.error' => 'Échec du téléchargement',
-			'packs.progress.errorSnack' => 'Le téléchargement n\'a pas abouti.',
-			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
-			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
-			'packs.delete.cancel' => 'Annuler',
-			'packs.delete.confirm' => 'Supprimer',
-			'packs.delete.freed' => 'Espace libéré.',
-			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
-			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
-			'packs.a11y.downloadButton' => ({required Object nom}) => 'Télécharger le pack ${nom}',
-			'packs.a11y.deleteButton' => ({required Object nom}) => 'Supprimer le pack ${nom}',
-			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Nord',
-			'packs.types.nord.description' => 'La moitié nord du sentier, hors-ligne.',
-			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Sud',
-			'packs.types.sud.description' => 'La moitié sud du sentier, hors-ligne.',
-			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Complet',
-			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
-			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
-			'packs.types.mam.description' => ({required Object trail}) => 'Tout le sentier ${trail}, hors-ligne.',
+			'cartesHorsLigne.title' => 'Cartes hors ligne',
+			'cartesHorsLigne.intro' => 'Un seul téléchargement : les cartes de tout le circuit, pour marcher sans réseau.',
+			'cartesHorsLigne.unSeulGeste' => 'Tout le circuit en une fois, pas de morceaux à choisir.',
+			'cartesHorsLigne.poids' => ({required Object mo}) => '${mo} Mo à télécharger',
+			'cartesHorsLigne.poidsTotal' => ({required Object mo}) => 'Poids total du circuit : ${mo} Mo',
+			'cartesHorsLigne.reprise' => ({required Object mo}) => '${mo} Mo sont déjà sur le téléphone : la reprise ne téléchargera que le reste.',
+			'cartesHorsLigne.telecharger' => 'TÉLÉCHARGER LES CARTES DU CIRCUIT',
+			'cartesHorsLigne.reprendre' => 'REPRENDRE LE TÉLÉCHARGEMENT',
+			'cartesHorsLigne.reessayer' => 'RÉESSAYER',
+			'cartesHorsLigne.annuler' => 'ANNULER',
+			'cartesHorsLigne.supprimer' => 'SUPPRIMER LES CARTES',
+			'cartesHorsLigne.enCours' => ({required Object recus, required Object total}) => '${recus} Mo sur ${total} Mo',
+			'cartesHorsLigne.verification' => 'Vérification de la carte',
+			'cartesHorsLigne.pretes' => 'Cartes prêtes hors ligne',
+			'cartesHorsLigne.pretesPoids' => ({required Object mo}) => '${mo} Mo sur le téléphone',
+			'cartesHorsLigne.libere' => 'Cartes supprimées, espace libéré.',
+			'cartesHorsLigne.supprimerTitre' => 'Supprimer les cartes ?',
+			'cartesHorsLigne.supprimerCorps' => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Vous pourrez les retélécharger.',
+			'cartesHorsLigne.supprimerAnnuler' => 'Annuler',
+			'cartesHorsLigne.supprimerConfirmer' => 'Supprimer',
+			'cartesHorsLigne.horsWifiTitre' => ({required Object mo}) => '${mo} Mo sur votre forfait ?',
+			'cartesHorsLigne.horsWifiCorps' => 'Vous n\'êtes pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.',
+			'cartesHorsLigne.horsWifiAttendre' => 'Attendre le Wi-Fi',
+			'cartesHorsLigne.horsWifiContinuer' => 'Télécharger quand même',
+			'cartesHorsLigne.refus.niveauInsuffisant' => 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.',
+			'cartesHorsLigne.refus.sentierInconnu' => 'Ce circuit n\'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.',
+			'cartesHorsLigne.refus.aucuneCartePubliee' => 'Aucune carte hors ligne n\'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.',
+			'cartesHorsLigne.refus.droitDeRealiserManquant' => 'Les cartes hors ligne font partie du circuit acheté.',
+			'cartesHorsLigne.refus.horsLigne' => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.',
+			'cartesHorsLigne.refus.stockageIndisponible' => 'Le téléphone n\'a pas répondu. Réessayez ; s\'il insiste, redémarrez-le.',
+			'cartesHorsLigne.echec.reseau' => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.',
+			'cartesHorsLigne.echec.empreinteInvalide' => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.',
+			'cartesHorsLigne.echec.tailleInattendue' => 'La carte reçue est incomplète : elle a été écartée. Réessayez.',
+			'cartesHorsLigne.echec.plusDePlace' => 'Il n\'y a plus de place sur le téléphone. Libérez de l\'espace, puis reprenez.',
+			'cartesHorsLigne.echec.ecritureImpossible' => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.',
+			'cartesHorsLigne.echec.stockageIndisponible' => 'Le téléphone n\'a pas rendu son espace de stockage. Réessayez ; s\'il insiste, redémarrez-le.',
+			'cartesHorsLigne.echec.annulee' => 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.',
+			'cartesHorsLigne.demoIndisponible' => 'Le téléchargement des cartes n\'est pas disponible pendant la démonstration.',
+			'cartesHorsLigne.a11y.bouton' => 'Télécharger les cartes de tout le circuit',
+			'cartesHorsLigne.a11y.progression' => ({required Object pourcent}) => 'Téléchargement des cartes : ${pourcent} %',
 			'guides.title' => 'Guides des villes',
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
@@ -9457,7 +9403,7 @@ extension on Translations {
 			'health.localOnlyPriceTitle' => 'Changer de téléphone veut dire la ressaisir',
 			'health.localOnlyPrice' => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.',
 			'trailSelection.title' => 'Changer de sentier',
-			'trailSelection.subtitle' => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, packs, guides) suit ta sélection.',
+			'trailSelection.subtitle' => 'Choisis le sentier à explorer. Toute l\'app (carte, étapes, points d\'intérêt, cartes hors ligne, guides) suit ta sélection.',
 			'trailSelection.current' => 'Sentier actif',
 			'trailSelection.select' => 'Choisir ce sentier',
 			'trailSelection.selected' => 'Sentier sélectionné',
@@ -9635,12 +9581,12 @@ extension on Translations {
 			'programme.info.rest.title' => 'Jour de repos',
 			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
 			'programme.info.mergeSplit.title' => 'Regrouper / Séparer',
+			_ => null,
+		} ?? switch (path) {
 			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',

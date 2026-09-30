@@ -368,21 +368,26 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   subtitle: t.hub.cards.healthSub,
                   onTap: () => context.push('/health'),
                 ),
-                // CARTES HORS LIGNE — ECRAN RESSUSCITE (tache 568, LOT Q, Q4c).
+                // CARTES HORS LIGNE — UN SEUL GESTE, TOUT LE CIRCUIT (tache 640).
                 //
-                // `PackStoreScreen`, `PackCard` et `pack_providers.dart`
-                // existaient, testes (`pack_store_ui_test.dart`), et n'avaient
-                // MEME PAS DE ROUTE declaree dans le routeur : aucune URL ne
-                // designait cet ecran, donc aucun geste ne pouvait l'atteindre.
-                // La route `/trail/:id/packs` est creee par la meme tache et
-                // cette carte en est la porte. Telecharger les cartes d'un
-                // sentier est un geste de PREPARATION (on part couvert), pas de
-                // terrain : c'est trop tard une fois sans reseau.
+                // CETTE CARTE MENAIT A UNE FACADE. Elle ouvrait le magasin de
+                // packs de la tache 568, qui proposait quatre demi-circuits et
+                // ne telechargeait rien : sa source de fichiers levait a chaque
+                // appel et son stockage ecrivait dans un dossier que la carte ne
+                // lit pas. C'etait la seule porte atteignable, donc celle que
+                // Christophe a poussee le 30/09 — d'ou « telecharger les cartes
+                // plante » (bug 9) et « on ne propose pas de demi-Mare a Mare »
+                // (bug 10).
+                //
+                // Elle mene desormais a l'unique telechargeur de cartes du
+                // depot. Telecharger les cartes d'un circuit reste un geste de
+                // PREPARATION (on part couvert), pas de terrain : c'est trop
+                // tard une fois sans reseau.
                 QuickAccessCard(
                   icon: StepwaysIcons.horsLigne,
-                  title: t.hub.cards.packs,
-                  subtitle: t.hub.cards.packsSub,
-                  onTap: () => context.push('/trail/$trailId/packs'),
+                  title: t.hub.cards.cartes,
+                  subtitle: t.hub.cards.cartesSub,
+                  onTap: () => context.push('/trail/$trailId/cartes'),
                 ),
                 // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
                 // nuits » (type de nuitee + reserve par nuit du programme).

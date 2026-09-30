@@ -7,7 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
-import 'package:moteur_gr/features/packs/presentation/pack_store_screen.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
+import 'package:moteur_gr/core/network/connectivity_monitor.dart';
+import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// TACHE 634 — RETOUR 7 DE CHRISTOPHE (DEM-260929-1326).
@@ -23,6 +26,16 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///
 /// C'est le piege que le brief nommait : lire la configuration ne suffisait
 /// pas, il fallait remonter jusqu'au widget qui affiche.
+///
+/// MISE A JOUR PAR LA TACHE 640 (bug 10, DEM-260930-1017). Christophe a tranche
+/// le 30/09 : « On ne propose pas de demi-Mare a Mare, pas besoin de telecharger
+/// de demi-cartes ». Les quatre libelles de pack n'existent donc PLUS — ni eux,
+/// ni le magasin de packs. Le test qui verifiait qu'ils attendaient le nom du
+/// sentier a disparu avec son sujet ; les DEUX garanties de fond, elles, sont
+/// conservees et portees sur le nouvel ecran « Cartes hors ligne » :
+///   1. aucun libelle des cinq langues ne nomme un sentier particulier ;
+///   2. l'ecran des cartes affiche le nom COMPLET du circuit qu'il montre, et
+///      jamais celui d'un autre.
 void main() {
   group('plus aucun nom de sentier ecrit en dur dans les traductions', () {
     test('les cinq fichiers de traduction ne nomment plus aucun sentier', () {
@@ -47,24 +60,25 @@ void main() {
         reason: 'nom de sentier en dur dans les traductions : $fautifs',
       );
     });
-
-    test(
-      'les quatre libelles de pack attendent desormais le nom du sentier',
-      () {
-        for (final langue in AppLocale.values) {
-          final types = langue.buildSync().packs.types;
-          const nom = 'Sentier Temoin';
-          expect(types.nord.nom(trail: nom), contains(nom));
-          expect(types.sud.nom(trail: nom), contains(nom));
-          expect(types.complet.nom(trail: nom), contains(nom));
-          expect(types.mam.nom(trail: nom), nom);
-          expect(types.mam.description(trail: nom), contains(nom));
-        }
-      },
-    );
   });
 
-  group('le magasin de cartes affiche le nom COMPLET du sentier', () {
+  group('l ecran des cartes hors ligne affiche le nom COMPLET du sentier', () {
+    Widget ecran(String trailId, AppLocale langue) => ProviderScope(
+      overrides: [
+        // L'ecran n'est pas le sujet ici : on fige sa decision pour ne
+        // mesurer QUE le nom affiche, sans base ni reseau.
+        descenteDesCartesProvider.overrideWithValue(_DescenteFigee()),
+      ],
+      child: MaterialApp(
+        locale: langue.flutterLocale,
+        supportedLocales: AppLocaleUtils.supportedLocales,
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        home: TranslationProvider(
+          child: CartesHorsLigneScreen(trailId: trailId),
+        ),
+      ),
+    );
+
     testWidgets('« Centre » est a l ecran, dans les cinq langues', (
       tester,
     ) async {
@@ -77,22 +91,11 @@ void main() {
 
       for (final langue in AppLocale.values) {
         LocaleSettings.setLocale(langue);
-        await tester.pumpWidget(
-          ProviderScope(
-            child: MaterialApp(
-              locale: langue.flutterLocale,
-              supportedLocales: AppLocaleUtils.supportedLocales,
-              localizationsDelegates: GlobalMaterialLocalizations.delegates,
-              home: TranslationProvider(
-                child: const PackStoreScreen(trailId: 'mare-a-mare-centre'),
-              ),
-            ),
-          ),
-        );
-        await tester.pump();
+        await tester.pumpWidget(ecran('mare-a-mare-centre', langue));
+        await tester.pumpAndSettle();
 
-        // LE MOT QUI MANQUAIT. Il doit apparaitre au moins une fois par pack
-        // nomme, dans chacune des cinq langues.
+        // LE MOT QUI MANQUAIT. Il doit apparaitre a l'ecran dans chacune des
+        // cinq langues, et il vient du SENTIER, pas d'un libelle.
         expect(
           find.textContaining('Mare a Mare Centre', findRichText: true),
           findsWidgets,
@@ -123,19 +126,8 @@ void main() {
       );
 
       LocaleSettings.setLocale(AppLocale.fr);
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            locale: AppLocale.fr.flutterLocale,
-            supportedLocales: AppLocaleUtils.supportedLocales,
-            localizationsDelegates: GlobalMaterialLocalizations.delegates,
-            home: TranslationProvider(
-              child: PackStoreScreen(trailId: temoin.id),
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
+      await tester.pumpWidget(ecran(temoin.id, AppLocale.fr));
+      await tester.pumpAndSettle();
 
       expect(
         find.textContaining('Mare a Mare', findRichText: true),
@@ -150,6 +142,25 @@ void main() {
       );
     });
   });
+}
+
+/// UNE DECISION FIGEE : aucune carte publiee, donc rien a transporter.
+///
+/// C'est le cas normal d'un sentier dont les tuiles ne sont pas encore
+/// fabriquees, et il suffit a dessiner l'ecran en entier sans base ni reseau.
+class _DescenteFigee extends Fake implements DescenteDesCartes {
+  @override
+  Future<DecisionDeDescente> examiner(
+    String trailId, {
+    required NiveauDeTelechargement niveau,
+    bool confirmeHorsWifi = false,
+  }) async => DecisionDeDescente(
+    trailId: trailId,
+    octetsTotal: 0,
+    octetsDejaLa: 0,
+    lien: TypesDeLien.wifi,
+    refus: RefusDeDescente.aucuneCartePubliee,
+  );
 }
 
 /// Aplatit un arbre de traductions en « a.b.c » -> valeur texte.

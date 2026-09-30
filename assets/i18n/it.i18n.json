@@ -130,8 +130,8 @@
       "trainingSub": "Il tuo programma di allenamento",
       "health": "Scheda medica",
       "healthSub": "Da compilare prima di partire",
-      "packs": "Mappe offline",
-      "packsSub": "Scarica le mappe del sentiero",
+      "cartes": "Mappe offline",
+      "cartesSub": "Scarica le mappe del percorso",
       "offline": "Scopri i sentieri",
       "offlineSub": "Sfoglia il catalogo",
       "group": "Il mio gruppo",
@@ -1422,62 +1422,52 @@
       "error": "Impossibile salvare in questo momento."
     }
   },
-  "packs": {
-    "title": "Pacchetti sentiero",
-    "subtitle": "Scarica un pacchetto per camminare 100% offline.",
-    "alaCarteNote": "A la carte: acquista solo il pacchetto che ti serve, nessun abbonamento.",
-    "size": "$mo MB",
-    "states": {
-      "notDownloaded": "Non scaricato",
-      "downloaded": "Scaricato",
-      "updateAvailable": "Aggiornamento disponibile"
+  "cartesHorsLigne": {
+    "title": "Mappe offline",
+    "intro": "Un solo download: le mappe di tutto il percorso, per camminare senza rete.",
+    "unSeulGeste": "Tutto il percorso in una volta, nessun pezzo da scegliere.",
+    "poids": "$mo MB da scaricare",
+    "poidsTotal": "Peso totale del percorso: $mo MB",
+    "reprise": "$mo MB sono già sul telefono: la ripresa scaricherà solo il resto.",
+    "telecharger": "SCARICA LE MAPPE DEL PERCORSO",
+    "reprendre": "RIPRENDI LO SCARICAMENTO",
+    "reessayer": "RIPROVA",
+    "annuler": "ANNULLA",
+    "supprimer": "ELIMINA LE MAPPE",
+    "enCours": "$recus MB su $total MB",
+    "verification": "Verifica della mappa",
+    "pretes": "Mappe pronte offline",
+    "pretesPoids": "$mo MB sul telefono",
+    "libere": "Mappe eliminate, spazio liberato.",
+    "supprimerTitre": "Eliminare le mappe?",
+    "supprimerCorps": "Le mappe saranno rimosse dal telefono per liberare spazio. Potrai scaricarle di nuovo.",
+    "supprimerAnnuler": "Annulla",
+    "supprimerConfirmer": "Elimina",
+    "horsWifiTitre": "$mo MB sul tuo piano dati?",
+    "horsWifiCorps": "Non sei in Wi-Fi. Le mappe di un percorso possono pesare molto su un piano mobile.",
+    "horsWifiAttendre": "Aspetta il Wi-Fi",
+    "horsWifiContinuer": "Scarica comunque",
+    "refus": {
+      "niveauInsuffisant": "Le mappe arrivano quando prepari il percorso per camminarlo davvero.",
+      "sentierInconnu": "Questo percorso non è ancora sul telefono. Scaricalo dalla lista dei sentieri.",
+      "aucuneCartePubliee": "Nessuna mappa offline è ancora pubblicata per questo percorso. Il tracciato resta disponibile.",
+      "droitDeRealiserManquant": "Le mappe offline fanno parte del percorso acquistato.",
+      "horsLigne": "Senza rete una mappa non può essere scaricata. Riconnettiti, poi riprova.",
+      "stockageIndisponible": "Il telefono non ha risposto. Riprova; se insiste, riavvialo."
     },
-    "actions": {
-      "download": "Scarica",
-      "update": "Aggiorna",
-      "delete": "Elimina",
-      "retry": "Riprova",
-      "buy": "Acquista questo pacchetto",
-      "buyWithPrice": "Acquista questo pacchetto — $price",
-      "buyUnavailable": "L'acquisto non è disponibile su questo dispositivo."
+    "echec": {
+      "reseau": "La connessione si è interrotta. Ciò che è già scaricato è conservato: riprendi quando vuoi.",
+      "empreinteInvalide": "La mappa ricevuta non corrisponde a quella pubblicata: è stata scartata. Riprova.",
+      "tailleInattendue": "La mappa ricevuta è incompleta: è stata scartata. Riprova.",
+      "plusDePlace": "Non c'è più spazio sul telefono. Libera spazio, poi riprendi.",
+      "ecritureImpossible": "La scrittura sul telefono è fallita. Ciò che è scaricato è conservato: riprendi.",
+      "stockageIndisponible": "Il telefono non ha reso il suo spazio di archiviazione. Riprova; se insiste, riavvialo.",
+      "annulee": "Scaricamento annullato. Ciò che è già scaricato è conservato."
     },
-    "progress": {
-      "downloading": "Scaricamento… $done/$total",
-      "verifying": "Verifica integrità…",
-      "completed": "Pacchetto pronto offline",
-      "error": "Scaricamento non riuscito",
-      "errorSnack": "Il download non è andato a buon fine."
-    },
-    "delete": {
-      "confirmTitle": "Eliminare questo pacchetto?",
-      "confirmBody": "Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.",
-      "cancel": "Annulla",
-      "confirm": "Elimina",
-      "freed": "Spazio liberato."
-    },
-    "empty": "Nessun pacchetto disponibile per questo sentiero.",
+    "demoIndisponible": "Lo scaricamento delle mappe non è disponibile durante la dimostrazione.",
     "a11y": {
-      "packCard": "Pacchetto $nom, $state",
-      "downloadButton": "Scarica il pacchetto $nom",
-      "deleteButton": "Elimina il pacchetto $nom"
-    },
-    "types": {
-      "nord": {
-        "nom": "$trail — Nord",
-        "description": "La metà nord del sentiero, offline."
-      },
-      "sud": {
-        "nom": "$trail — Sud",
-        "description": "La metà sud del sentiero, offline."
-      },
-      "complet": {
-        "nom": "$trail — Completo",
-        "description": "Tutto il sentiero, offline."
-      },
-      "mam": {
-        "nom": "$trail",
-        "description": "Tutto il sentiero $trail, offline."
-      }
+      "bouton": "Scarica le mappe di tutto il percorso",
+      "progression": "Scaricamento mappe: $pourcent %"
     }
   },
   "guides": {
@@ -1623,7 +1613,7 @@
   },
   "trailSelection": {
     "title": "Cambia sentiero",
-    "subtitle": "Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, pacchetti, guide) segue la tua selezione.",
+    "subtitle": "Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, mappe offline, guide) segue la tua selezione.",
     "current": "Sentiero attivo",
     "select": "Scegli questo sentiero",
     "selected": "Sentiero selezionato",

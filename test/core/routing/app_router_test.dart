@@ -195,12 +195,14 @@ void main() {
       // +1 : 'adjust' (R12 LOT L9, « Adapter l'itineraire » : modifier la
       //      rando EN COURS sur les seuls jours/etapes non faits). Placee
       //      juste apres 'planning' (meme programme, autre moment de vie).
-      // +1 : 'packs' (tache 568, LOT Q — Q4c). La BOUTIQUE DE CARTES HORS LIGNE
-      //      (`PackStoreScreen`, `PackCard`, `pack_providers.dart`) existait,
-      //      etait localisee en 5 langues et couverte par `pack_store_ui_test`
-      //      — et n'avait AUCUNE route : seul un test savait l'instancier,
-      //      aucun geste utilisateur ne pouvait l'atteindre. Placee juste apres
+      // +1 : 'cartes' (tache 568 pour la route, tache 640 pour l'ecran). LES
+      //      CARTES HORS LIGNE existaient, localisees en 5 langues et testees,
+      //      sans AUCUNE route : seul un test savait les instancier, aucun
+      //      geste utilisateur ne pouvait les atteindre. Placee juste apres
       //      'checklist' (meme moment de prepa : ce qu'on emporte).
+      //      La tache 640 a remplace le magasin de quatre demi-circuits par UN
+      //      seul geste — tout le circuit (bug 10, DEM-260930-1017) — d'ou le
+      //      chemin 'cartes' a la place de 'packs'.
       final trail = trailRoute();
       expect(trail.routes.length, 25);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
@@ -215,7 +217,7 @@ void main() {
         'summary',
         'itinerary',
         'checklist',
-        'packs',
+        'cartes',
         'nuitees',
         'feasibility',
         'hiker-profile',
@@ -247,8 +249,8 @@ void main() {
         'trail-summary',
         'trail-itinerary',
         'trail-checklist',
-        // tache 568, LOT Q : boutique de cartes hors ligne (ecran ressuscite).
-        'trail-packs',
+        // tache 568 (route) + tache 640 (un geste, tout le circuit).
+        'trail-cartes',
         'trail-nuitees',
         'trail-feasibility',
         'trail-hiker-profile',
