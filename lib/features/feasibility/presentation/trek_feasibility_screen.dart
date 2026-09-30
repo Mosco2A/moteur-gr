@@ -558,7 +558,13 @@ class _LaReponse extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final f = t.feasibility.formula;
-    final jours = assessment.suggestedTotalDays;
+    // LA DUREE ANNONCEE EST CELLE DU SENTIER (DEM-260930-1238).
+    //
+    // Cette ligne lisait `suggestedTotalDays` — marche PLUS repos — donc le Mare a
+    // Mare Centre, sept etapes, s'annoncait « a votre portee en 9 jours ».
+    // Verbatim de Christophe le 30/09 a 12:37 : « Si c est 7 jours c est 7 jours ».
+    // Le repos reste dit, juste en dessous, comme un CONSEIL.
+    final jours = assessment.suggestedPlanDays;
     final conseille = assessment.isDurationAdvised;
     final rouge = assessment.globalVerdict == FeasibilityVerdict.red;
 
@@ -749,7 +755,7 @@ class _AdviceFirst extends StatelessWidget {
         if (assessment.isDurationAdvised) ...[
           _GenerateProgramButton(
             trailId: trailId,
-            suggestedTotalDays: assessment.suggestedTotalDays,
+            suggestedPlanDays: assessment.suggestedPlanDays,
           ),
           const SizedBox(height: AppTheme.spacingSm),
         ],
@@ -828,7 +834,7 @@ class _RetainedPlanLine extends ConsumerWidget {
 /// borne aux durees possibles. Trois grandeurs combinees ICI, dans la couche
 /// d'affichage, alors que le verdict se calcule ailleurs — c'est exactement par
 /// la que le conseil et le verdict pouvaient se contredire. Il applique
-/// desormais [FeasibilityAssessment.suggestedTotalDays], une valeur qui A ETE
+/// desormais [FeasibilityAssessment.suggestedPlanDays], une valeur qui A ETE
 /// ESSAYEE par la recherche : son verdict est vert ou orange, jamais rouge. Et
 /// comme le curseur s'ouvre deja sur elle (R1-a), appuyer sur ce bouton ne
 /// deplace plus rien tant que le randonneur n'a pas bouge le curseur lui-meme —
@@ -841,13 +847,17 @@ class _RetainedPlanLine extends ConsumerWidget {
 class _GenerateProgramButton extends ConsumerWidget {
   const _GenerateProgramButton({
     required this.trailId,
-    required this.suggestedTotalDays,
+    required this.suggestedPlanDays,
   });
 
   final String trailId;
 
-  /// Jours TOTAUX (marche + repos) du programme conseille — l'unite du curseur.
-  final int suggestedTotalDays;
+  /// LA DUREE DU PLAN conseille : les jours de MARCHE (DEM-260930-1238).
+  ///
+  /// Ce parametre s'appelait `suggestedTotalDays` et portait marche PLUS repos :
+  /// le bouton appliquait donc au curseur une duree gonflee par le repos, et
+  /// l'annoncait dans son libelle. « Si c est 7 jours c est 7 jours ».
+  final int suggestedPlanDays;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -855,7 +865,7 @@ class _GenerateProgramButton extends ConsumerWidget {
     // La reco est deja cherchee DANS les bornes du curseur ; le clamp ne reste
     // que comme garde-fou pour les etats transitoires (etapes qui arrivent).
     final bounds = ref.watch(durationBoundsProvider(trailId));
-    final target = bounds.clampDuration(suggestedTotalDays);
+    final target = bounds.clampDuration(suggestedPlanDays);
 
     return AppButton(
       minHeight: 52,
@@ -1751,22 +1761,27 @@ String _adviceText(ProgramAdvice advice) {
       return a.balancedOk;
     case 'balanced':
       return a.balanced;
-    // TACHE 569 (R2) : le conseil de duree porte SES TROIS NOMBRES — jours de
-    // marche, jours de repos, total — et ne dit « au lieu de » que si le
-    // randonneur a reellement choisi un programme.
+    // TACHE 569 (R2) : le conseil de duree porte ses nombres — jours de marche et
+    // jours de repos — et ne dit « au lieu de » que si le randonneur a reellement
+    // choisi un programme.
+    //
+    // TACHE 639 (DEM-260930-1238) : LE TOTAL A DISPARU DU LIBELLE. Il annoncait
+    // « Vise 9 jours au total : 7 de marche et 2 de repos » pour un sentier de
+    // sept etapes. Verbatim de Christophe : « Si c est 7 jours c est 7 jours ». Le
+    // conseil vise donc les jours de MARCHE, et le repos se lit comme un conseil
+    // en plus. Le parametre `days` (le total) n'est plus employe ; il reste dans
+    // les parametres du conseil parce que le moteur le calcule, et il ne coute
+    // rien.
     case 'optimalDays':
       return a.optimalDays(
-        days: advice.params['days'] ?? '',
         walk: advice.params['walk'] ?? '',
         rest: advice.params['rest'] ?? '',
         current: advice.params['current'] ?? '',
       );
     case 'optimalDaysNoChoice':
       return a.optimalDaysNoChoice(
-        days: advice.params['days'] ?? '',
         walk: advice.params['walk'] ?? '',
         rest: advice.params['rest'] ?? '',
-        current: advice.params['current'] ?? '',
       );
     // TACHE 569 (R4) : les cles `split` et `splitImpossible` ont DISPARU. On ne
     // conseille plus de couper une etape en deux — une etape se termine la ou il

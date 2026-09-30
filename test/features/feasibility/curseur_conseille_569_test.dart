@@ -158,14 +158,21 @@ void main() {
       // TACHE 634 (DEM-260929-1132) — LE CONSEIL EST LE PLAN DU SENTIER. Ce
       // test exigeait l'inverse : que le conseil S'ECARTE du decoupage du topo,
       // parce que le lot 558 devait couper des etapes pour sortir du rouge. Le
-      // moteur ne propose plus de plan a lui : 7 etapes, 7 journees de marche,
-      // plus le repos conseille.
+      // moteur ne propose plus de plan a lui : 7 etapes, 7 journees de marche.
+      //
+      // TACHE 639 (DEM-260930-1238) — ET LE REPOS N'EST PLUS COMPTE DEDANS. Ce
+      // test attendait `stages.length + programme.restDays` : le curseur
+      // s'ouvrait donc sur NEUF jours pour sept etapes. Verbatim de Christophe le
+      // 30/09 a 12:37 : « Si c est 7 jours c est 7 jours ». Le repos reste
+      // CONSEILLE et s'affiche comme tel, il ne gonfle plus la duree.
       final programme = await c.read(advisedSuggestedProgramProvider.future);
       expect(programme!.walkingDays, stages.length);
-      expect(conseil, stages.length + programme.restDays);
-      // Et c'est exactement la duree de reference du sentier, repos compris :
-      // l'application n'ecarte plus le randonneur de son propre topo.
-      expect(conseil, c.read(defaultDurationWithRestProvider('test-trail')));
+      expect(
+        conseil,
+        stages.length,
+        reason: 'sept etapes font sept jours : le repos est un conseil, pas une '
+            'duree',
+      );
       expect(
         c.read(selectedDurationProvider),
         conseil,
@@ -202,13 +209,18 @@ void main() {
             'recherche — sinon l estimation de lissage revient par la fenetre',
       );
       expect(a.isDurationAdvised, isTrue);
+      // TACHE 639 (DEM-260930-1238) : c'est la duree du PLAN qui doit coincider
+      // avec le curseur, pas le total repos compris. La regle verrouillee ici ne
+      // change pas de nature — « le conseil affiche et la position du curseur
+      // doivent etre le meme nombre » — elle porte sur le bon nombre.
       expect(
-        a.suggestedTotalDays,
+        a.suggestedPlanDays,
         ouverture,
         reason:
             'le conseil affiche et la position du curseur doivent etre '
             'le meme nombre',
       );
+      expect(a.suggestedPlanDays, a.suggestedDays);
       expect(a.suggestedDays + a.suggestedRestDays, a.suggestedTotalDays);
     });
 

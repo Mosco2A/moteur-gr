@@ -2515,7 +2515,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String answerGreen({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.';
 	@override String answerOrange({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.';
 	@override String get answerRed => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.';
-	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — eine Empfehlung, sie ändert das Urteil nicht.';
 	@override String answerNoRest({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.';
 	@override String get explainToggle => 'Wie dieses Ergebnis berechnet wird';
 	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
@@ -2529,8 +2529,8 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Begrenzender Faktor: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Empfohlenes Training: ${weeks} Wochen vor dem Start';
 	@override String get adviceTitle => 'Tipps für deinen Plan';
-	@override String generateProgram({required Object days}) => 'Meinen Plan erstellen (${days} Tage insgesamt)';
-	@override String generateProgramDone({required Object days}) => 'Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.';
+	@override String generateProgram({required Object days}) => 'Meinen Plan erstellen (${days} Wandertage)';
+	@override String generateProgramDone({required Object days}) => 'Plan über ${days} Wandertage erstellt — passe ihn nach Wunsch an.';
 	@override String get noStages => 'Noch kein Tag zu bewerten.';
 	@override late final _Translations$feasibility$formula$levels$de levels = _Translations$feasibility$formula$levels$de._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$de verdicts = _Translations$feasibility$formula$verdicts$de._(_root);
@@ -3913,11 +3913,11 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	// Translations
 	@override String get balancedOk => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.';
 	@override String get balanced => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.';
-	@override String optimalDays({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.';
+	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Plane ${walk} Wandertage, statt der heutigen ${current}. Wir empfehlen zusätzlich ${rest} Ruhetag(e): das ist ein Rat, er ändert das Urteil nicht.';
 	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
-	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrem Referenzplan, ${current} Tage insgesamt.';
+	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Plane ${walk} Wandertage: das ist der Referenzplan der Tour. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — ein Rat, er ändert das Urteil nicht.';
 	@override String hardStageAlert({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.';
 	@override String noViableDuration({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.';
 	@override String restReference({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.';
@@ -4965,7 +4965,7 @@ extension on TranslationsDe {
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.',
 			'feasibility.formula.answerRed' => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — eine Empfehlung, sie ändert das Urteil nicht.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.',
 			'feasibility.formula.explainToggle' => 'Wie dieses Ergebnis berechnet wird',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
@@ -4979,8 +4979,8 @@ extension on TranslationsDe {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Begrenzender Faktor: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Empfohlenes Training: ${weeks} Wochen vor dem Start',
 			'feasibility.formula.adviceTitle' => 'Tipps für deinen Plan',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Meinen Plan erstellen (${days} Tage insgesamt)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Meinen Plan erstellen (${days} Wandertage)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan über ${days} Wandertage erstellt — passe ihn nach Wunsch an.',
 			'feasibility.formula.noStages' => 'Noch kein Tag zu bewerten.',
 			'feasibility.formula.levels.beginner' => 'Anfänger',
 			'feasibility.formula.levels.intermediate' => 'Fortgeschritten',
@@ -4997,11 +4997,11 @@ extension on TranslationsDe {
 			'feasibility.formula.limitingFactors.heat' => 'die Hitze der Jahreszeit',
 			'feasibility.formula.advice.balancedOk' => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.',
 			'feasibility.formula.advice.balanced' => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Plane ${walk} Wandertage, statt der heutigen ${current}. Wir empfehlen zusätzlich ${rest} Ruhetag(e): das ist ein Rat, er ändert das Urteil nicht.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrem Referenzplan, ${current} Tage insgesamt.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Plane ${walk} Wandertage: das ist der Referenzplan der Tour. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — ein Rat, er ändert das Urteil nicht.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.',
 			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.',
 			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.',

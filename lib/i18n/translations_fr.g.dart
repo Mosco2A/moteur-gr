@@ -5372,8 +5372,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme d'ici le départ, ou partez hors été — c'est une journée qui décide, pas tout le sentier.'
 	String get answerRed => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.';
 
-	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche, ${rest} de repos.'
-	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.';
+	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.'
+	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.';
 
 	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche.'
 	String answerNoRest({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.';
@@ -5414,11 +5414,11 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Conseils pour ton programme'
 	String get adviceTitle => 'Conseils pour ton programme';
 
-	/// fr: 'Générer mon programme (${days} jours au total)'
-	String generateProgram({required Object days}) => 'Générer mon programme (${days} jours au total)';
+	/// fr: 'Générer mon programme (${days} jours de marche)'
+	String generateProgram({required Object days}) => 'Générer mon programme (${days} jours de marche)';
 
-	/// fr: 'Programme généré sur ${days} jours au total — à toi de l'ajuster.'
-	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours au total — à toi de l\'ajuster.';
+	/// fr: 'Programme généré sur ${days} jours de marche — à toi de l'ajuster.'
+	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours de marche — à toi de l\'ajuster.';
 
 	/// fr: 'Aucune journée à évaluer pour le moment.'
 	String get noStages => 'Aucune journée à évaluer pour le moment.';
@@ -7780,8 +7780,8 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Répartis les étapes pour lisser l'effort au fil des jours.'
 	String get balanced => 'Répartis les étapes pour lisser l\'effort au fil des jours.';
 
-	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d'aujourd'hui.'
-	String optimalDays({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d\'aujourd\'hui.';
+	/// fr: 'Vise ${walk} jours de marche, au lieu des ${current} jours d'aujourd'hui. Nous conseillons en plus ${rest} jour(s) de repos : c'est un conseil, ils ne changent pas le verdict.'
+	String optimalDays({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche, au lieu des ${current} jours d\'aujourd\'hui. Nous conseillons en plus ${rest} jour(s) de repos : c\'est un conseil, ils ne changent pas le verdict.';
 
 	/// fr: 'Prévois un jour de repos après la journée ${stages} de ton programme.'
 	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.';
@@ -7792,8 +7792,8 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
 	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 
-	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.'
-	String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.';
+	/// fr: 'Vise ${walk} jours de marche : c'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.'
+	String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Vise ${walk} jours de marche : c\'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.';
 
 	/// fr: 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s'arrête là où il y a un toit. La réponse, c'est l'entraînement : monter d'un cran relève ton plafond, et cette journée repasse dessous.'
 	String hardStageAlert({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.';
@@ -8938,7 +8938,7 @@ extension on Translations {
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.',
 			'feasibility.formula.answerRed' => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.',
 			'feasibility.formula.explainToggle' => 'Comment ce résultat est calculé',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.',
@@ -8952,8 +8952,8 @@ extension on Translations {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Facteur limitant : ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Entraînement conseillé : ${weeks} semaines avant le départ',
 			'feasibility.formula.adviceTitle' => 'Conseils pour ton programme',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours au total)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours au total — à toi de l\'ajuster.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours de marche)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours de marche — à toi de l\'ajuster.',
 			'feasibility.formula.noStages' => 'Aucune journée à évaluer pour le moment.',
 			'feasibility.formula.levels.beginner' => 'débutant',
 			'feasibility.formula.levels.intermediate' => 'intermédiaire',
@@ -8970,11 +8970,11 @@ extension on Translations {
 			'feasibility.formula.limitingFactors.heat' => 'la chaleur de la saison',
 			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré : garde une marge et écoute ton corps.',
 			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d\'aujourd\'hui.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche, au lieu des ${current} jours d\'aujourd\'hui. Nous conseillons en plus ${rest} jour(s) de repos : c\'est un conseil, ils ne changent pas le verdict.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Vise ${walk} jours de marche : c\'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.',
 			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c\'est l\'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t\'attend.',
 			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien.',

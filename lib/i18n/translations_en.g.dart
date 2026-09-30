@@ -2515,7 +2515,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String answerGreen({required Object days}) => 'Yes. This trail is within your reach in ${days} days.';
 	@override String answerOrange({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.';
 	@override String get answerRed => 'Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.';
-	@override String answerDaysNote({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days. We advise ${rest} rest day(s) on top — advice only, it does not change the verdict.';
 	@override String answerNoRest({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.';
 	@override String get explainToggle => 'How this result is worked out';
 	@override String get intro => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.';
@@ -2529,8 +2529,8 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Limiting factor: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure';
 	@override String get adviceTitle => 'Tips for your plan';
-	@override String generateProgram({required Object days}) => 'Generate my plan (${days} days in total)';
-	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} days in total — tweak it as you like.';
+	@override String generateProgram({required Object days}) => 'Generate my plan (${days} walking days)';
+	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} walking days — tweak it as you like.';
 	@override String get noStages => 'No day to assess yet.';
 	@override late final _Translations$feasibility$formula$levels$en levels = _Translations$feasibility$formula$levels$en._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
@@ -3913,11 +3913,11 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	// Translations
 	@override String get balancedOk => 'Your plan is balanced: keep a margin and listen to your body.';
 	@override String get balanced => 'Spread the stages out to smooth the effort across the days.';
-	@override String optimalDays({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days, instead of today\'s ${current} days.';
+	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Aim for ${walk} walking days, instead of today\'s ${current}. We also advise ${rest} rest day(s): that is advice, they do not change the verdict.';
 	@override String rest({required Object stages}) => 'Plan a rest day after day ${stages} of your plan.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
-	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference plan, ${current} days in total.';
+	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Aim for ${walk} walking days: that is the trail\'s reference plan. We also advise ${rest} rest day(s) — advice only, they do not change the verdict.';
 	@override String hardStageAlert({required Object stage}) => 'Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.';
 	@override String noViableDuration({required Object stage}) => 'Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail\'s most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.';
 	@override String restReference({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference plan — you have not chosen your own yet.';
@@ -4965,7 +4965,7 @@ extension on TranslationsEn {
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Yes. This trail is within your reach in ${days} days.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.',
 			'feasibility.formula.answerRed' => 'Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days. We advise ${rest} rest day(s) on top — advice only, it does not change the verdict.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.',
 			'feasibility.formula.explainToggle' => 'How this result is worked out',
 			'feasibility.formula.intro' => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.',
@@ -4979,8 +4979,8 @@ extension on TranslationsEn {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Limiting factor: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure',
 			'feasibility.formula.adviceTitle' => 'Tips for your plan',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} days in total)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} days in total — tweak it as you like.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} walking days)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} walking days — tweak it as you like.',
 			'feasibility.formula.noStages' => 'No day to assess yet.',
 			'feasibility.formula.levels.beginner' => 'beginner',
 			'feasibility.formula.levels.intermediate' => 'intermediate',
@@ -4997,11 +4997,11 @@ extension on TranslationsEn {
 			'feasibility.formula.limitingFactors.heat' => 'the heat of the season',
 			'feasibility.formula.advice.balancedOk' => 'Your plan is balanced: keep a margin and listen to your body.',
 			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort across the days.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days, instead of today\'s ${current} days.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Aim for ${walk} walking days, instead of today\'s ${current}. We also advise ${rest} rest day(s): that is advice, they do not change the verdict.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after day ${stages} of your plan.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference plan, ${current} days in total.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Aim for ${walk} walking days: that is the trail\'s reference plan. We also advise ${rest} rest day(s) — advice only, they do not change the verdict.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.',
 			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail\'s most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.',
 			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference plan — you have not chosen your own yet.',

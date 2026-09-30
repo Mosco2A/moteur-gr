@@ -289,11 +289,14 @@ void main() {
       tester,
     ) async {
       await pumpWithPlanningRoute(tester, mixedAssessment());
-      // Reco = 5 jours de MARCHE + 1 jour de REPOS conseille = 6 (bornee
-      // [3..7]). GO-61 : le bouton ne reprend pas au randonneur les repos que
-      // le programme par defaut vient de lui poser.
+      // TACHE 639 (DEM-260930-1238) — LE BOUTON ANNONCE LA DUREE DU PLAN.
+      //
+      // Il annoncait « 6 jours au total » : 5 jours de MARCHE plus 1 jour de
+      // REPOS conseille. Verbatim de Christophe le 30/09 a 12:37 : « Si c est 7
+      // jours c est 7 jours ». Le repos reste CONSEILLE et se lit a cote ; le
+      // bouton applique et annonce les 5 jours de marche.
       expect(
-        find.text(t.feasibility.formula.generateProgram(days: 6)),
+        find.text(t.feasibility.formula.generateProgram(days: 5)),
         findsOneWidget,
       );
     });
@@ -313,14 +316,15 @@ void main() {
         // Le bouton est en bas de la vue scrollable -> le rendre visible avant tap.
         final button = find.widgetWithText(
           ElevatedButton,
-          t.feasibility.formula.generateProgram(days: 6),
+          t.feasibility.formula.generateProgram(days: 5),
         );
         await tester.ensureVisible(button);
         await tester.tap(button);
         await tester.pumpAndSettle();
 
-        // La SOURCE UNIQUE des jours est passee a la reco, REPOS COMPRIS (6).
-        expect(container.read(selectedDurationProvider), 6);
+        // La SOURCE UNIQUE des jours est passee a la duree du PLAN (5 jours de
+        // marche), plus au total repos compris (tache 639, DEM-260930-1238).
+        expect(container.read(selectedDurationProvider), 5);
         // On a navigue vers le Programme du sentier (parite GR20 CONTINUER).
         expect(find.text('PLANNING test-trail'), findsOneWidget);
       },

@@ -123,12 +123,18 @@ final advisedProgramProvider = FutureProvider<ProgramDurationAdvice?>((
   return found?.toAdvice() ?? ProgramDurationAdvice.impossible;
 });
 
-/// LE TOTAL DE JOURS SUR LEQUEL LE CURSEUR S'OUVRE (tache 569, R1-a).
+/// LA DUREE SUR LAQUELLE LE CURSEUR S'OUVRE (tache 569, R1-a ; corrigee par la
+/// decision du 30/09 12:37, DEM-260930-1238).
+///
+/// LES JOURS DE MARCHE, PAS LE TOTAL. Verbatim de Christophe : « Si c est 7 jours
+/// c est 7 jours ». Ce provider rendait `totalDays` — marche PLUS repos — donc le
+/// curseur du Programme s'ouvrait sur neuf jours pour un sentier de sept etapes,
+/// et la faisabilite annoncait le meme neuf. Le repos reste CONSEILLE, il n'est
+/// plus COMPTE dans la duree.
 ///
 /// `null` quand aucune duree n'est conseillee — le sentier garde alors son
-/// programme de reference, repos conseilles compris
-/// ([defaultDurationWithRestProvider]).
+/// programme de reference ([defaultDurationWithRestProvider]).
 final advisedTotalDaysProvider = FutureProvider<int?>((ref) async {
   final found = await ref.watch(advisedSuggestedProgramProvider.future);
-  return found?.totalDays;
+  return found?.toAdvice().planDays;
 });

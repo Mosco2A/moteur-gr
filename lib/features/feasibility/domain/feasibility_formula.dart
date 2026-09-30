@@ -586,8 +586,29 @@ class ProgramDurationAdvice {
   /// Jours de REPOS du programme conseille.
   final int restDays;
 
-  /// Jours TOTAUX — l'unite du curseur, et celle dans laquelle le conseil
-  /// s'ecrit (retour 7 de Chris : « vise 9 jours et ca propose 11 »).
+  /// LA DUREE DU PLAN — les jours de MARCHE, et eux seuls.
+  ///
+  /// DECISION DE CHRISTOPHE DU 30/09 12:37 (DEM-260930-1238), verbatim : « les
+  /// jours de repos, ca ne presage que de l enchainement pas de la capacite a
+  /// faire les etapes suivantes. On peut mettre en conseil de prendre n jours de
+  /// repos c est tout. Si c est 7 jours c est 7 jours ».
+  ///
+  /// CE QUI SE PASSAIT, ET POURQUOI C'ETAIT FAUX POUR LUI. Le conseil s'ecrivait
+  /// en jours TOTAUX, repos compris : le Mare a Mare Centre, sept etapes, etait
+  /// donc annonce « en 9 jours ». Or le sentier fait SEPT jours — c'est ce que dit
+  /// le topo, c'est ce que le randonneur a en tete, et lui annoncer autre chose
+  /// lui donne l'impression qu'on lui refait son itineraire.
+  ///
+  /// LE REPOS N'A PAS DISPARU, IL A CHANGE DE STATUT : il reste CONSEILLE
+  /// ([restDays], « nous conseillons n jours de repos »), il n'est plus COMPTE
+  /// dans la duree du plan. C'est coherent avec ce que le moteur fait deja depuis
+  /// GO-61 : le repos est affiche et conseille, il ne decide JAMAIS du verdict.
+  int get planDays => walkingDays;
+
+  /// Jours totaux, marche PLUS repos — valeur INFORMATIVE.
+  ///
+  /// Ce n'est PAS la duree du plan (voir [planDays]) : ne pas l'employer pour
+  /// annoncer une duree ni pour regler le curseur.
   int get totalDays => walkingDays + restDays;
 
   /// Vrai quand une duree est reellement conseillee.
@@ -677,12 +698,26 @@ class FeasibilityAssessment {
   /// Nombre de jours de REPOS du programme conseille.
   final int suggestedRestDays;
 
-  /// Jours TOTAUX du programme conseille — L'UNITE DU CURSEUR (tache 569, R1-a).
+  /// LA DUREE DU PLAN CONSEILLE — les jours de MARCHE, et eux seuls
+  /// (DEM-260930-1238 : « Si c est 7 jours c est 7 jours »).
   ///
-  /// C'est cette valeur, et aucune autre, que le bouton « Generer mon
-  /// programme » applique et sur laquelle le curseur s'ouvre. Le retour 7 de
-  /// Chris — « vise 9 jours et ca propose 11 » — venait precisement de l'ecart
-  /// entre [suggestedDays] (marche) et ce total.
+  /// C'est cette valeur, et aucune autre, que le bouton « Generer mon programme »
+  /// applique et que la reponse annonce. Voir [ProgramDurationAdvice.planDays]
+  /// pour le raisonnement complet.
+  int get suggestedPlanDays => suggestedDays;
+
+  /// Jours totaux conseilles (marche + repos) — valeur INFORMATIVE.
+  ///
+  /// CE COMMENTAIRE DISAIT L'INVERSE, ET C'EST CE QUI A PRODUIT LE DEFAUT. Il
+  /// annoncait : « C'est cette valeur, et aucune autre, que le bouton Generer mon
+  /// programme applique et sur laquelle le curseur s'ouvre » (tache 569, R1-a).
+  /// L'ecran l'appliquait donc, et le Mare a Mare Centre — SEPT etapes —
+  /// s'annoncait « en 9 jours ». Verbatim de Christophe le 30/09 a 12:37 : « Si c
+  /// est 7 jours c est 7 jours ».
+  ///
+  /// LE REPOS N'EST PAS PERDU : il reste CONSEILLE ([suggestedRestDays], « nous
+  /// conseillons n jours de repos »). Ce total ne sert plus qu'a dire combien de
+  /// jours on passe dehors en suivant AUSSI ce conseil.
   int get suggestedTotalDays => suggestedDays + suggestedRestDays;
 
   /// Vrai quand une RECHERCHE de duree a eu lieu (tache 569, R1).
