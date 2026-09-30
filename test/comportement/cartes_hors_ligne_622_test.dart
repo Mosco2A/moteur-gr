@@ -81,9 +81,9 @@ void main() {
   /// Chaque appel est trace : c est ce qui permet d AFFIRMER qu un niveau qui ne
   /// porte pas les cartes n ouvre aucune connexion, au lieu de le supposer.
   http.Client serveurDeTuiles() => MockClient((requete) async {
-        requetes.add(requete.url.toString());
-        return http.Response.bytes(tuiles, HttpStatus.ok);
-      });
+    requetes.add(requete.url.toString());
+    return http.Response.bytes(tuiles, HttpStatus.ok);
+  });
 
   /// Pose une ligne de liste locale pour `mare-a-mare`, avec ou sans tuiles.
   Future<void> publier({
@@ -95,18 +95,20 @@ void main() {
       dao: manifestes,
       connectivityMonitor: _Reseau(TypesDeLien.wifi),
     );
-    await service.saveLocalManifest(TrailManifestEntry(
-      trailId: 'mare-a-mare',
-      dataVersion: HorodatageServeur.annonceParLeServeur(1700000000000)!,
-      hash: 'd' * 64,
-      filePath: 'mare_a_mare/v1.json',
-      fileSize: 2048,
-      status: 'active',
-      lastUpdated: '2026-09-28T00:00:00Z',
-      tilesPath: tilesPath,
-      tilesSize: tilesSize,
-      tilesHash: tilesHash ?? empreinteDesTuiles,
-    ));
+    await service.saveLocalManifest(
+      TrailManifestEntry(
+        trailId: 'mare-a-mare',
+        dataVersion: HorodatageServeur.annonceParLeServeur(1700000000000)!,
+        hash: 'd' * 64,
+        filePath: 'mare_a_mare/v1.json',
+        fileSize: 2048,
+        status: 'active',
+        lastUpdated: '2026-09-28T00:00:00Z',
+        tilesPath: tilesPath,
+        tilesSize: tilesSize,
+        tilesHash: tilesHash ?? empreinteDesTuiles,
+      ),
+    );
   }
 
   MBTilesManager cartes() => MBTilesManager(httpClient: serveurDeTuiles());
@@ -115,52 +117,54 @@ void main() {
     required bool droitDeRealiser,
     TypeDeLien lien = TypesDeLien.wifi,
     MBTilesManager? avecCartes,
-  }) =>
-      DescenteDesCartes(
-        cartes: avecCartes ?? cartes(),
-        dao: manifestes,
-        monetization: _Droits(droitDeRealiser),
-        connectivityMonitor: _Reseau(lien),
-      );
+  }) => DescenteDesCartes(
+    cartes: avecCartes ?? cartes(),
+    dao: manifestes,
+    monetization: _Droits(droitDeRealiser),
+    connectivityMonitor: _Reseau(lien),
+  );
 
   // =========================================================================
   // 1. LES TROIS NIVEAUX : LE VOLUME EST COMPTE EN REQUETES
   // =========================================================================
   group('622 — LES TROIS NIVEAUX : ce qui descend est COMPTE', () {
-    test('REGARDER ne descend AUCUNE carte, et n ouvre AUCUNE connexion',
-        () async {
-      await publier();
+    test(
+      'REGARDER ne descend AUCUNE carte, et n ouvre AUCUNE connexion',
+      () async {
+        await publier();
 
-      final bilan = await descente(droitDeRealiser: true).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.regarder,
-      );
+        final bilan = await descente(
+          droitDeRealiser: true,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.regarder);
 
-      expect(bilan.refus, RefusDeDescente.niveauInsuffisant);
-      expect(requetes, isEmpty);
-      expect(bilan.carte, isNull);
-    });
+        expect(bilan.refus, RefusDeDescente.niveauInsuffisant);
+        expect(requetes, isEmpty);
+        expect(bilan.carte, isNull);
+      },
+    );
 
-    test('PREPARER ne descend AUCUNE carte — la demande de Christophe du 27/09, '
-        'et elle vaut AUSSI quand le sentier est ACHETE', () async {
-      await publier();
+    test(
+      'PREPARER ne descend AUCUNE carte — la demande de Christophe du 27/09, '
+      'et elle vaut AUSSI quand le sentier est ACHETE',
+      () async {
+        await publier();
 
-      // Les deux cas de preparation : sans droit, puis avec. MEME resultat.
-      for (final achete in [false, true]) {
-        requetes.clear();
-        final bilan = await descente(droitDeRealiser: achete).descendre(
-          'mare-a-mare',
-          niveau: NiveauDeTelechargement.preparer,
-        );
+        // Les deux cas de preparation : sans droit, puis avec. MEME resultat.
+        for (final achete in [false, true]) {
+          requetes.clear();
+          final bilan = await descente(
+            droitDeRealiser: achete,
+          ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.preparer);
 
-        expect(
-          bilan.refus,
-          RefusDeDescente.niveauInsuffisant,
-          reason: 'achete=$achete : preparer ne porte pas les tuiles',
-        );
-        expect(requetes, isEmpty, reason: 'achete=$achete : zero octet');
-      }
-    });
+          expect(
+            bilan.refus,
+            RefusDeDescente.niveauInsuffisant,
+            reason: 'achete=$achete : preparer ne porte pas les tuiles',
+          );
+          expect(requetes, isEmpty, reason: 'achete=$achete : zero octet');
+        }
+      },
+    );
 
     test('REALISER descend la carte, la verifie, et la pose sous son nom '
         'definitif', () async {
@@ -192,137 +196,147 @@ void main() {
     test('sans le droit de realiser, AUCUNE connexion ne s ouvre', () async {
       await publier();
 
-      final bilan = await descente(droitDeRealiser: false).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+      final bilan = await descente(
+        droitDeRealiser: false,
+      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
       expect(bilan.refus, RefusDeDescente.droitDeRealiserManquant);
       expect(requetes, isEmpty);
     });
 
-    test('le sentier GRATUIT recoit ses cartes : son prix est nul, donc le droit '
-        'de realiser est acquis — c est la meme source, pas une exception',
-        () async {
-      await publier();
-      // `canRealizeTrail` rend vrai pour un sentier ACHETE **et** pour un sentier
-      // gratuit (`accessFor.isPlayable`). La descente ne connait donc qu un seul
-      // fait, et n a aucune regle propre a ajouter.
-      final bilan = await descente(droitDeRealiser: true).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+    test(
+      'le sentier GRATUIT recoit ses cartes : son prix est nul, donc le droit '
+      'de realiser est acquis — c est la meme source, pas une exception',
+      () async {
+        await publier();
+        // `canRealizeTrail` rend vrai pour un sentier ACHETE **et** pour un sentier
+        // gratuit (`accessFor.isPlayable`). La descente ne connait donc qu un seul
+        // fait, et n a aucune regle propre a ajouter.
+        final bilan = await descente(
+          droitDeRealiser: true,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      expect(bilan.posee, isTrue);
-    });
+        expect(bilan.posee, isTrue);
+      },
+    );
 
-    test('le refus du droit est rendu AVANT toute question de reseau', () async {
-      await publier();
+    test(
+      'le refus du droit est rendu AVANT toute question de reseau',
+      () async {
+        await publier();
 
-      final bilan = await descente(
-        droitDeRealiser: false,
-        lien: TypesDeLien.mobile,
-      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        final bilan = await descente(
+          droitDeRealiser: false,
+          lien: TypesDeLien.mobile,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      // Pas « confirme ton forfait » sur une carte qu on n a pas le droit de
-      // prendre : la question serait posee pour rien.
-      expect(bilan.refus, RefusDeDescente.droitDeRealiserManquant);
-    });
+        // Pas « confirme ton forfait » sur une carte qu on n a pas le droit de
+        // prendre : la question serait posee pour rien.
+        expect(bilan.refus, RefusDeDescente.droitDeRealiserManquant);
+      },
+    );
   });
 
   // =========================================================================
   // 3. LE POIDS, LE FORFAIT, ET LA CONFIRMATION HORS WIFI
   // =========================================================================
   group('622 — le poids est annonce AVANT le premier octet', () {
-    test('hors wifi, la descente DEMANDE confirmation et ne transfere rien',
-        () async {
-      await publier();
+    test(
+      'hors wifi, la descente DEMANDE confirmation et ne transfere rien',
+      () async {
+        await publier();
 
-      final bilan = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.mobile,
-      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        final bilan = await descente(
+          droitDeRealiser: true,
+          lien: TypesDeLien.mobile,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      expect(bilan.refus, RefusDeDescente.confirmationHorsWifiRequise);
-      expect(requetes, isEmpty);
-      // ET LE POIDS EST DEJA CONNU : c est ce que l ecran affiche pour poser la
-      // question.
-      expect(bilan.decision.octetsTotal, 4096);
-      expect(bilan.decision.octetsAPrendre, 4096);
-    });
+        expect(bilan.refus, RefusDeDescente.confirmationHorsWifiRequise);
+        expect(requetes, isEmpty);
+        // ET LE POIDS EST DEJA CONNU : c est ce que l ecran affiche pour poser la
+        // question.
+        expect(bilan.decision.octetsTotal, 4096);
+        expect(bilan.decision.octetsAPrendre, 4096);
+      },
+    );
 
     test('hors wifi AVEC confirmation, la carte descend', () async {
       await publier();
 
-      final bilan = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.mobile,
-      ).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-        confirmeHorsWifi: true,
-      );
+      final bilan =
+          await descente(
+            droitDeRealiser: true,
+            lien: TypesDeLien.mobile,
+          ).descendre(
+            'mare-a-mare',
+            niveau: NiveauDeTelechargement.realiser,
+            confirmeHorsWifi: true,
+          );
 
       expect(bilan.posee, isTrue);
       expect(requetes, hasLength(1));
     });
 
-    test('un lien NON IDENTIFIE est traite comme payant — « hors wifi » se prend '
-        'au mot', () async {
-      await publier();
+    test(
+      'un lien NON IDENTIFIE est traite comme payant — « hors wifi » se prend '
+      'au mot',
+      () async {
+        await publier();
 
-      final bilan = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.autre,
-      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        final bilan = await descente(
+          droitDeRealiser: true,
+          lien: TypesDeLien.autre,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      expect(bilan.refus, RefusDeDescente.confirmationHorsWifiRequise);
-      expect(requetes, isEmpty);
-    });
+        expect(bilan.refus, RefusDeDescente.confirmationHorsWifiRequise);
+        expect(requetes, isEmpty);
+      },
+    );
 
     test('la confirmation du forfait ne leve AUCUNE autre garde', () async {
       await publier();
 
       // Ni le niveau...
-      var bilan = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.mobile,
-      ).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.preparer,
-        confirmeHorsWifi: true,
-      );
+      var bilan =
+          await descente(
+            droitDeRealiser: true,
+            lien: TypesDeLien.mobile,
+          ).descendre(
+            'mare-a-mare',
+            niveau: NiveauDeTelechargement.preparer,
+            confirmeHorsWifi: true,
+          );
       expect(bilan.refus, RefusDeDescente.niveauInsuffisant);
 
       // ...ni le droit de realiser.
-      bilan = await descente(
-        droitDeRealiser: false,
-        lien: TypesDeLien.mobile,
-      ).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-        confirmeHorsWifi: true,
-      );
+      bilan = await descente(droitDeRealiser: false, lien: TypesDeLien.mobile)
+          .descendre(
+            'mare-a-mare',
+            niveau: NiveauDeTelechargement.realiser,
+            confirmeHorsWifi: true,
+          );
       expect(bilan.refus, RefusDeDescente.droitDeRealiserManquant);
       expect(requetes, isEmpty);
     });
 
-    test('LE POIDS REEL D UN SENTIER COMPLET, MESURE : 260 Mo (chiffrage 608) '
-        'sont annonces comme 260,0 Mo, et pas un octet ne bouge avant le oui',
-        () async {
-      // 260 Mo en z10-16 pour un sentier, mesure par la tache 608.
-      const deuxCentSoixanteMo = 260 * 1000 * 1000;
-      await publier(tilesSize: deuxCentSoixanteMo);
+    test(
+      'LE POIDS REEL D UN SENTIER COMPLET, MESURE : 260 Mo (chiffrage 608) '
+      'sont annonces comme 260,0 Mo, et pas un octet ne bouge avant le oui',
+      () async {
+        // 260 Mo en z10-16 pour un sentier, mesure par la tache 608.
+        const deuxCentSoixanteMo = 260 * 1000 * 1000;
+        await publier(tilesSize: deuxCentSoixanteMo);
 
-      final decision = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.mobile,
-      ).examiner('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        final decision = await descente(
+          droitDeRealiser: true,
+          lien: TypesDeLien.mobile,
+        ).examiner('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      expect(decision.refus, RefusDeDescente.confirmationHorsWifiRequise);
-      expect(decision.megaoctetsAPrendre, 260.0);
-      expect(requetes, isEmpty, reason: 'examiner ne transporte rien');
-    });
+        expect(decision.refus, RefusDeDescente.confirmationHorsWifiRequise);
+        expect(decision.megaoctetsAPrendre, 260.0);
+        expect(requetes, isEmpty, reason: 'examiner ne transporte rien');
+      },
+    );
   });
 
   // =========================================================================
@@ -333,10 +347,9 @@ void main() {
         'l aveugle', () async {
       await publier(tilesPath: null, tilesSize: null);
 
-      final bilan = await descente(droitDeRealiser: true).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+      final bilan = await descente(
+        droitDeRealiser: true,
+      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
       expect(bilan.refus, RefusDeDescente.aucuneCartePubliee);
       expect(requetes, isEmpty);
@@ -352,45 +365,51 @@ void main() {
       expect(ligne!.tilesPath, isNull);
       expect(ligne.tilesHash, isNull);
 
-      final bilan = await descente(droitDeRealiser: true).descendre(
-        'mare-a-mare',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+      final bilan = await descente(
+        droitDeRealiser: true,
+      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
       expect(bilan.refus, RefusDeDescente.aucuneCartePubliee);
     });
 
-    test('un sentier inconnu de la liste locale est REFUSE, pas devine',
-        () async {
-      final bilan = await descente(droitDeRealiser: true).descendre(
-        'jamais-publie',
-        niveau: NiveauDeTelechargement.realiser,
-      );
+    test(
+      'un sentier inconnu de la liste locale est REFUSE, pas devine',
+      () async {
+        final bilan = await descente(
+          droitDeRealiser: true,
+        ).descendre('jamais-publie', niveau: NiveauDeTelechargement.realiser);
 
-      expect(bilan.refus, RefusDeDescente.sentierInconnu);
-      expect(requetes, isEmpty);
-    });
+        expect(bilan.refus, RefusDeDescente.sentierInconnu);
+        expect(requetes, isEmpty);
+      },
+    );
 
-    test('hors ligne, la descente est refusee sans tenter le transport',
-        () async {
-      await publier();
+    test(
+      'hors ligne, la descente est refusee sans tenter le transport',
+      () async {
+        await publier();
 
-      final bilan = await descente(
-        droitDeRealiser: true,
-        lien: TypesDeLien.aucun,
-      ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        final bilan = await descente(
+          droitDeRealiser: true,
+          lien: TypesDeLien.aucun,
+        ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
-      expect(bilan.refus, RefusDeDescente.horsLigne);
-      expect(requetes, isEmpty);
-    });
+        expect(bilan.refus, RefusDeDescente.horsLigne);
+        expect(requetes, isEmpty);
+      },
+    );
 
     test('une carte deja posee ne se retelecharge pas', () async {
       await publier();
       final gestionnaire = cartes();
       final service = descente(droitDeRealiser: true, avecCartes: gestionnaire);
 
-      expect((await service.descendre('mare-a-mare',
-              niveau: NiveauDeTelechargement.realiser))
-          .posee, isTrue);
+      expect(
+        (await service.descendre(
+          'mare-a-mare',
+          niveau: NiveauDeTelechargement.realiser,
+        )).posee,
+        isTrue,
+      );
       expect(requetes, hasLength(1));
 
       final second = await service.descendre(
@@ -426,40 +445,51 @@ void main() {
       TypeDeLien lien = TypesDeLien.wifi,
     }) {
       final reseau = _Reseau(lien);
-      return ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        connectivityMonitorProvider.overrideWithValue(reseau),
-        mbtilesManagerProvider.overrideWithValue(gestionnaire),
-        monetizationServiceProvider.overrideWithValue(_Droits(droitDeRealiser)),
-        // La liste distante est injoignable : le catalogue retombe sur le local,
-        // ce qui suffit — ce groupe teste le GESTE, pas la lecture du catalogue.
-        manifestServiceProvider.overrideWithValue(ManifestService(
-          dao: manifestes,
-          connectivityMonitor: reseau,
-          httpClient: MockClient((_) async => http.Response('non', 404)),
-        )),
-        deltaUpdateServiceProvider.overrideWith((_) => _CopieQuiReussit()),
-      ]);
+      return ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          connectivityMonitorProvider.overrideWithValue(reseau),
+          mbtilesManagerProvider.overrideWithValue(gestionnaire),
+          monetizationServiceProvider.overrideWithValue(
+            _Droits(droitDeRealiser),
+          ),
+          // La liste distante est injoignable : le catalogue retombe sur le local,
+          // ce qui suffit — ce groupe teste le GESTE, pas la lecture du catalogue.
+          manifestServiceProvider.overrideWithValue(
+            ManifestService(
+              dao: manifestes,
+              connectivityMonitor: reseau,
+              httpClient: MockClient((_) async => http.Response('non', 404)),
+            ),
+          ),
+          deltaUpdateServiceProvider.overrideWith((_) => _CopieQuiReussit()),
+        ],
+      );
     }
 
-    test('downloadTrail(realiser) pose les donnees ET la carte hors ligne',
-        () async {
-      await publier();
-      final gestionnaire = cartes();
-      final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
-      addTearDown(c.dispose);
-      await c.read(catalogStateProvider.future);
+    test(
+      'downloadTrail(realiser) pose les donnees ET la carte hors ligne',
+      () async {
+        await publier();
+        final gestionnaire = cartes();
+        final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
+        addTearDown(c.dispose);
+        await c.read(catalogStateProvider.future);
 
-      await c
-          .read(catalogStateProvider.notifier)
-          .downloadTrail('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+        await c
+            .read(catalogStateProvider.notifier)
+            .downloadTrail(
+              'mare-a-mare',
+              niveau: NiveauDeTelechargement.realiser,
+            );
 
-      expect(await gestionnaire.hasMbtiles('mare-a-mare'), isTrue);
-      expect(requetes, hasLength(1));
-      final etat = c.read(controleurDesCartesProvider('mare-a-mare'));
-      expect(etat.bilan!.posee, isTrue);
-      expect(etat.enCours, isFalse);
-    });
+        expect(await gestionnaire.hasMbtiles('mare-a-mare'), isTrue);
+        expect(requetes, hasLength(1));
+        final etat = c.read(controleurDesCartesProvider('mare-a-mare'));
+        expect(etat.bilan!.posee, isTrue);
+        expect(etat.enCours, isFalse);
+      },
+    );
 
     test('downloadTrail(preparer) ne demande AUCUNE tuile', () async {
       await publier();
@@ -470,7 +500,10 @@ void main() {
 
       await c
           .read(catalogStateProvider.notifier)
-          .downloadTrail('mare-a-mare', niveau: NiveauDeTelechargement.preparer);
+          .downloadTrail(
+            'mare-a-mare',
+            niveau: NiveauDeTelechargement.preparer,
+          );
 
       expect(requetes, isEmpty);
       expect(await gestionnaire.hasMbtiles('mare-a-mare'), isFalse);
@@ -490,7 +523,10 @@ void main() {
 
       await c
           .read(catalogStateProvider.notifier)
-          .downloadTrail('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
+          .downloadTrail(
+            'mare-a-mare',
+            niveau: NiveauDeTelechargement.realiser,
+          );
 
       expect(requetes, isEmpty);
       final etat = c.read(controleurDesCartesProvider('mare-a-mare'));
@@ -513,8 +549,9 @@ void main() {
       final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
       addTearDown(c.dispose);
 
-      final controleur =
-          c.read(controleurDesCartesProvider('mare-a-mare').notifier);
+      final controleur = c.read(
+        controleurDesCartesProvider('mare-a-mare').notifier,
+      );
       controleur.annuler(); // aucun effet : rien ne tourne
 
       final bilan = await controleur.demarrer(
@@ -535,8 +572,7 @@ void main() {
         .toList();
 
     test('AUCUN code de production n appelle le transport des tuiles en dehors de '
-        'DescenteDesCartes — c est la faute que la tache 606 a du corriger',
-        () {
+        'DescenteDesCartes — c est la faute que la tache 606 a du corriger', () {
       // Les seules apparitions legitimes : la definition du transport lui-meme, et
       // l unique orchestrateur qui le pilote.
       const tolerees = [
@@ -561,7 +597,8 @@ void main() {
       expect(
         coupables,
         isEmpty,
-        reason: 'Un second chemin de descente des cartes est apparu : '
+        reason:
+            'Un second chemin de descente des cartes est apparu : '
             '${coupables.join(", ")}. Le lot 606 a du defaire exactement cela '
             '(un geste « telecharger » qui empruntait un second chemin ignorant '
             'tout le modele). Passe par DescenteDesCartes.',
@@ -579,8 +616,9 @@ void main() {
       expect(ordonnanceur.contains('descente_des_cartes'), isFalse);
       expect(ordonnanceur.contains('DescenteDesCartes'), isFalse);
 
-      final telechargeur =
-          File('lib/core/services/update_downloader.dart').readAsStringSync();
+      final telechargeur = File(
+        'lib/core/services/update_downloader.dart',
+      ).readAsStringSync();
       expect(telechargeur.contains('DescenteDesCartes'), isFalse);
       expect(telechargeur.contains('mbtiles'), isFalse);
     });
@@ -636,12 +674,11 @@ class _CopieQuiReussit extends Fake implements DeltaUpdateService {
     required String? empreinteAttendue,
     required NiveauDeTelechargement niveau,
     HorodatageServeur? revisionLocaleConnue,
-  }) async =>
-      ResultatSynchronisation(
-        famillesTouchees: const ['trail_meta'],
-        ecrits: 1,
-        supprimes: 0,
-        revisionAtteinte: revisionCible,
-        niveauAtteint: niveau,
-      );
+  }) async => ResultatSynchronisation(
+    famillesTouchees: const ['trail_meta'],
+    ecrits: 1,
+    supprimes: 0,
+    revisionAtteinte: revisionCible,
+    niveauAtteint: niveau,
+  );
 }

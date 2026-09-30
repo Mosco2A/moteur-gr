@@ -6,10 +6,7 @@ import '../domain/models/trek_session.dart';
 /// Contient la session active trouvee en base et son age
 /// pour permettre a l'UI de proposer la reprise ou l'abandon.
 class PendingSession {
-  const PendingSession({
-    required this.session,
-    required this.age,
-  });
+  const PendingSession({required this.session, required this.age});
 
   /// La session active trouvee en base.
   final TrekSession session;
@@ -28,10 +25,8 @@ typedef FindActiveSessionsCallback = Future<List<TrekSession>> Function();
 typedef DeleteSessionCallback = Future<void> Function(String sessionId);
 
 /// Callback pour mettre a jour le statut d'une session en Drift.
-typedef UpdateSessionStatusCallback = Future<void> Function(
-  String sessionId,
-  String status,
-);
+typedef UpdateSessionStatusCallback =
+    Future<void> Function(String sessionId, String status);
 
 /// Gestionnaire de reprise apres crash pour les sessions de trek.
 ///
@@ -47,10 +42,10 @@ class TrekSessionManager {
     required DeleteSessionCallback onDeleteSession,
     required UpdateSessionStatusCallback onUpdateSessionStatus,
     DateTime Function()? clock,
-  })  : _onFindActiveSessions = onFindActiveSessions,
-        _onDeleteSession = onDeleteSession,
-        _onUpdateSessionStatus = onUpdateSessionStatus,
-        _clock = clock ?? DateTime.now;
+  }) : _onFindActiveSessions = onFindActiveSessions,
+       _onDeleteSession = onDeleteSession,
+       _onUpdateSessionStatus = onUpdateSessionStatus,
+       _clock = clock ?? DateTime.now;
 
   final FindActiveSessionsCallback _onFindActiveSessions;
   final DeleteSessionCallback _onDeleteSession;

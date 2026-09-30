@@ -33,9 +33,24 @@ void main() {
   /// 71 m de D+ par kilometre, bien au-dessus du point de bascule de leur cran.
   /// Ce sont des bascules ATTENDUES, listees par la campagne (#9-c).
   const stages = <StageEffort>[
-    StageEffort(index: 0, name: 'Depart -> Col', distanceKm: 14, elevationGainM: 1000),
-    StageEffort(index: 1, name: 'Col -> Refuge', distanceKm: 12, elevationGainM: 600),
-    StageEffort(index: 2, name: 'Refuge -> Village', distanceKm: 9, elevationGainM: 250),
+    StageEffort(
+      index: 0,
+      name: 'Depart -> Col',
+      distanceKm: 14,
+      elevationGainM: 1000,
+    ),
+    StageEffort(
+      index: 1,
+      name: 'Col -> Refuge',
+      distanceKm: 12,
+      elevationGainM: 600,
+    ),
+    StageEffort(
+      index: 2,
+      name: 'Refuge -> Village',
+      distanceKm: 9,
+      elevationGainM: 250,
+    ),
   ];
 
   /// Un profil de la campagne : ce qu'il a deja fait + son age.
@@ -46,7 +61,8 @@ void main() {
     ObjectiveProfile objectif,
     HikerProfile fiche,
     FeasibilityVerdict attendu,
-  }) profil(
+  })
+  profil(
     String cle, {
     required double dPlusParJour,
     required double kmParJour,
@@ -63,62 +79,83 @@ void main() {
         // E_max_realise et charge habituelle, dans l unite d energie V2 : la
         // MEME journee sert aux deux, sinon on fabriquerait une journee que
         // personne n a faite (#2-g).
-        maxDailyEnergyKmDone:
-            FeasibilityScale.v2.energyOf(distanceKm: kmParJour, elevationGainM: dPlusParJour),
+        maxDailyEnergyKmDone: FeasibilityScale.v2.energyOf(
+          distanceKm: kmParJour,
+          elevationGainM: dPlusParJour,
+        ),
         habitualDailyEnergyKm: kmParJour <= 0 && dPlusParJour <= 0
             ? null
-            : FeasibilityScale.v2.energyOf(distanceKm: kmParJour, elevationGainM: dPlusParJour),
+            : FeasibilityScale.v2.energyOf(
+                distanceKm: kmParJour,
+                elevationGainM: dPlusParJour,
+              ),
         // Rang de forme median (aucun test 6 min) : le fallback de prod.
         fitnessLevelRank: 1,
         hasWalkTest: false,
       ),
-      fiche: HikerProfile(age: age, heightCm: age == 0 ? 0 : 172, weightKg: age == 0 ? 0 : 70),
+      fiche: HikerProfile(
+        age: age,
+        heightCm: age == 0 ? 0 : 172,
+        weightKg: age == 0 ? 0 : 70,
+      ),
       attendu: attendu,
     );
   }
 
   /// Les 6 profils de la campagne personas (rapport #100277, famille 3).
   final profils = [
-    profil('vierge',
-        dPlusParJour: 0,
-        kmParJour: 0,
-        joursConsecutifs: 0,
-        attendu: FeasibilityVerdict.red),
-    profil('debutante',
-        dPlusParJour: 200,
-        kmParJour: 10,
-        joursConsecutifs: 1,
-        age: 32,
-        attendu: FeasibilityVerdict.red),
+    profil(
+      'vierge',
+      dPlusParJour: 0,
+      kmParJour: 0,
+      joursConsecutifs: 0,
+      attendu: FeasibilityVerdict.red,
+    ),
+    profil(
+      'debutante',
+      dPlusParJour: 200,
+      kmParJour: 10,
+      joursConsecutifs: 1,
+      age: 32,
+      attendu: FeasibilityVerdict.red,
+    ),
     // Les 3 profils qui se contredisaient : ecran « Faisable », entrainement
     // « prudence ». C'est LE coeur de la non-regression.
     // Bascule V2 assumee : 0,68 (vert) en V1 -> 0,98 (orange) en V2.
-    profil('occasionnel',
-        dPlusParJour: 500,
-        kmParJour: 16,
-        joursConsecutifs: 2,
-        age: 38,
-        attendu: FeasibilityVerdict.orange),
-    profil('confirme',
-        dPlusParJour: 900,
-        kmParJour: 23,
-        joursConsecutifs: 5,
-        age: 45,
-        attendu: FeasibilityVerdict.green),
+    profil(
+      'occasionnel',
+      dPlusParJour: 500,
+      kmParJour: 16,
+      joursConsecutifs: 2,
+      age: 38,
+      attendu: FeasibilityVerdict.orange,
+    ),
+    profil(
+      'confirme',
+      dPlusParJour: 900,
+      kmParJour: 23,
+      joursConsecutifs: 5,
+      age: 45,
+      attendu: FeasibilityVerdict.green,
+    ),
     // Bascule V2 assumee : l age lui coute un cran, et son plancher demontre
     // (44,4) devient sa base -> 0,85 franchi d un cheveu.
-    profil('senior',
-        dPlusParJour: 900,
-        kmParJour: 23,
-        joursConsecutifs: 5,
-        age: 68,
-        attendu: FeasibilityVerdict.orange),
-    profil('expert',
-        dPlusParJour: 1300,
-        kmParJour: 28,
-        joursConsecutifs: 8,
-        age: 40,
-        attendu: FeasibilityVerdict.green),
+    profil(
+      'senior',
+      dPlusParJour: 900,
+      kmParJour: 23,
+      joursConsecutifs: 5,
+      age: 68,
+      attendu: FeasibilityVerdict.orange,
+    ),
+    profil(
+      'expert',
+      dPlusParJour: 1300,
+      kmParJour: 28,
+      joursConsecutifs: 8,
+      age: 40,
+      attendu: FeasibilityVerdict.green,
+    ),
   ];
 
   ProviderContainer conteneurPour(
@@ -130,8 +167,7 @@ void main() {
         // Donnees BRUTES seulement : tout le calcul reste celui de la prod.
         stageEffortsProvider.overrideWith((ref) async => stages),
         objectiveProfileProvider.overrideWith((ref) async => objectif),
-        hikerProfileProvider
-            .overrideWith(() => _FicheFigee(fiche)),
+        hikerProfileProvider.overrideWith(() => _FicheFigee(fiche)),
         // PROGRAMME AVEC DEUX JOURS DE REPOS. Sans repos, la monotonie de
         // Foster rend C3 dominante pour TOUT LE MONDE et les six profils
         // deviennent rouges : le test ne discriminerait plus rien, et ce
@@ -141,8 +177,9 @@ void main() {
         // Conditions NEUTRES : ce test porte sur l unicite du moteur, pas sur
         // l altitude ni sur la saison. Les figer evite aussi d aller chercher
         // la trace GPX et les prefs, absentes d un test pur.
-        trekConditionsProvider
-            .overrideWith((ref) async => TrekConditions.unknown),
+        trekConditionsProvider.overrideWith(
+          (ref) async => TrekConditions.unknown,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -150,29 +187,44 @@ void main() {
   }
 
   for (final p in profils) {
-    test('${p.cle} : Faisabilite et Entrainement rendent le MEME verdict',
-        () async {
-      final container = conteneurPour(p.objectif, p.fiche);
+    test(
+      '${p.cle} : Faisabilite et Entrainement rendent le MEME verdict',
+      () async {
+        final container = conteneurPour(p.objectif, p.fiche);
 
-      // Lecture 1 — ce qu'affiche l'ecran Faisabilite (feu tricolore).
-      final assessment =
-          await container.read(feasibilityAssessmentProvider.future);
-      // Lecture 2 — ce que lit le bandeau de l'ecran Entrainement.
-      final perso =
-          await container.read(trainingPersonalizationProvider.future);
+        // Lecture 1 — ce qu'affiche l'ecran Faisabilite (feu tricolore).
+        final assessment = await container.read(
+          feasibilityAssessmentProvider.future,
+        );
+        // Lecture 2 — ce que lit le bandeau de l'ecran Entrainement.
+        final perso = await container.read(
+          trainingPersonalizationProvider.future,
+        );
 
-      expect(assessment, isNotNull,
-          reason: '${p.cle} : l ecran Faisabilite doit rendre un verdict');
-      expect(assessment!.globalVerdict, p.attendu,
-          reason: '${p.cle} : verdict remesure sur le moteur V2');
-      // L'EGALITE STRICTE : un seul moteur, donc une seule reponse.
-      expect(perso.verdict, assessment.globalVerdict,
-          reason: '${p.cle} : les deux ecrans doivent dire la meme chose');
-      // Et sa traduction UI : le bandeau de prudence suit le feu tricolore.
-      expect(perso.needsCaution,
+        expect(
+          assessment,
+          isNotNull,
+          reason: '${p.cle} : l ecran Faisabilite doit rendre un verdict',
+        );
+        expect(
+          assessment!.globalVerdict,
+          p.attendu,
+          reason: '${p.cle} : verdict remesure sur le moteur V2',
+        );
+        // L'EGALITE STRICTE : un seul moteur, donc une seule reponse.
+        expect(
+          perso.verdict,
+          assessment.globalVerdict,
+          reason: '${p.cle} : les deux ecrans doivent dire la meme chose',
+        );
+        // Et sa traduction UI : le bandeau de prudence suit le feu tricolore.
+        expect(
+          perso.needsCaution,
           assessment.globalVerdict != FeasibilityVerdict.green,
-          reason: '${p.cle} : bandeau de prudence = tout sauf le vert');
-    });
+          reason: '${p.cle} : bandeau de prudence = tout sauf le vert',
+        );
+      },
+    );
   }
 
   test('aucun trek charge : verdict indisponible des deux cotes', () async {
@@ -180,16 +232,16 @@ void main() {
       overrides: [
         stageEffortsProvider.overrideWith((ref) async => const <StageEffort>[]),
         objectiveProfileProvider.overrideWith(
-          (ref) async => ObjectiveProfile.from(
-            pastHikes: const [],
-            walkTest: null,
-          ),
+          (ref) async =>
+              ObjectiveProfile.from(pastHikes: const [], walkTest: null),
         ),
-        hikerProfileProvider
-            .overrideWith(() => _FicheFigee(HikerProfile.empty)),
+        hikerProfileProvider.overrideWith(
+          () => _FicheFigee(HikerProfile.empty),
+        ),
         restDaysAfterStageProvider.overrideWithValue(const <int>{}),
-        trekConditionsProvider
-            .overrideWith((ref) async => TrekConditions.unknown),
+        trekConditionsProvider.overrideWith(
+          (ref) async => TrekConditions.unknown,
+        ),
       ],
     );
     addTearDown(container.dispose);

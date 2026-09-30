@@ -55,17 +55,17 @@ class TrackSegmentStats {
 
   /// Somme de deux segments (pour un cumul).
   TrackSegmentStats plus(TrackSegmentStats other) => TrackSegmentStats(
-        distanceKm: distanceKm + other.distanceKm,
-        elevationGainM: elevationGainM + other.elevationGainM,
-        elevationLossM: elevationLossM + other.elevationLossM,
-        duration: duration + other.duration,
-        maxAltitudeM: switch ((maxAltitudeM, other.maxAltitudeM)) {
-          (null, final b) => b,
-          (final a, null) => a,
-          (final a?, final b?) => a > b ? a : b,
-        },
-        pointCount: pointCount + other.pointCount,
-      );
+    distanceKm: distanceKm + other.distanceKm,
+    elevationGainM: elevationGainM + other.elevationGainM,
+    elevationLossM: elevationLossM + other.elevationLossM,
+    duration: duration + other.duration,
+    maxAltitudeM: switch ((maxAltitudeM, other.maxAltitudeM)) {
+      (null, final b) => b,
+      (final a, null) => a,
+      (final a?, final b?) => a > b ? a : b,
+    },
+    pointCount: pointCount + other.pointCount,
+  );
 }
 
 /// Calcule les chiffres d'une suite de points GPS.

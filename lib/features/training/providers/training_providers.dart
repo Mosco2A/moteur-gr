@@ -15,10 +15,7 @@ const _prefsDoneKey = 'training_done_offsets';
 /// terminées est persisté UNIQUEMENT en local (SharedPreferences). AUCUNE
 /// donnée de santé/perso n'est envoyée à un serveur (minimisation RGPD).
 class TrainingState {
-  const TrainingState({
-    required this.programme,
-    this.doneOffsets = const {},
-  });
+  const TrainingState({required this.programme, this.doneOffsets = const {}});
 
   /// Programme généré (séances ordonnées par jourOffset).
   final ProgrammeEntrainement programme;
@@ -55,8 +52,9 @@ class TrainingParams {
 }
 
 /// Paramètres courants du programme (modifiable par l'UI).
-final trainingParamsProvider =
-    StateProvider<TrainingParams>((ref) => const TrainingParams());
+final trainingParamsProvider = StateProvider<TrainingParams>(
+  (ref) => const TrainingParams(),
+);
 
 /// Notifier du programme d'entraînement (F6E-02), persistance locale.
 class TrainingNotifier extends Notifier<TrainingState> {
@@ -114,8 +112,11 @@ class TrainingNotifier extends Notifier<TrainingState> {
     for (var i = 0; i < seances.length; i++) {
       final seance = seances[i];
       if (state.isDone(seance.jourOffset)) continue;
-      final day = DateTime(startDate.year, startDate.month, startDate.day)
-          .add(Duration(days: seance.jourOffset));
+      final day = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+      ).add(Duration(days: seance.jourOffset));
       final when = DateTime(day.year, day.month, day.day, hour);
       if (when.isBefore(DateTime.now())) continue;
       await service.scheduleTrainingReminder(
@@ -131,5 +132,6 @@ class TrainingNotifier extends Notifier<TrainingState> {
 }
 
 /// Provider du programme d'entraînement (F6E-02).
-final trainingProvider =
-    NotifierProvider<TrainingNotifier, TrainingState>(TrainingNotifier.new);
+final trainingProvider = NotifierProvider<TrainingNotifier, TrainingState>(
+  TrainingNotifier.new,
+);

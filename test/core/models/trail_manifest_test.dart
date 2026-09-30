@@ -80,13 +80,21 @@ void main() {
 
     test('equality fonctionne avec freezed', () {
       final a = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
-        filePath: 'p', fileSize: 100, status: 'active',
+        trailId: 'sentier-bleu',
+        dataVersion: v(1),
+        hash: 'h1',
+        filePath: 'p',
+        fileSize: 100,
+        status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
       final b = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
-        filePath: 'p', fileSize: 100, status: 'active',
+        trailId: 'sentier-bleu',
+        dataVersion: v(1),
+        hash: 'h1',
+        filePath: 'p',
+        fileSize: 100,
+        status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
       expect(a, equals(b));
@@ -94,8 +102,12 @@ void main() {
 
     test('copyWith modifie un champ', () {
       final entry = TrailManifestEntry(
-        trailId: 'sentier-bleu', dataVersion: v(1), hash: 'h1',
-        filePath: 'p', fileSize: 100, status: 'active',
+        trailId: 'sentier-bleu',
+        dataVersion: v(1),
+        hash: 'h1',
+        filePath: 'p',
+        fileSize: 100,
+        status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
       final modified = entry.copyWith(dataVersion: v(2));
@@ -138,10 +150,7 @@ void main() {
     });
 
     test('fromJson avec liste vide', () {
-      final json = {
-        'schemaVersion': 1,
-        'trails': <Map<String, dynamic>>[],
-      };
+      final json = {'schemaVersion': 1, 'trails': <Map<String, dynamic>>[]};
 
       final manifest = TrailManifest.fromJson(json);
       expect(manifest.schemaVersion, 1);

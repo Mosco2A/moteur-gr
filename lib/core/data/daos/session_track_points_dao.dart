@@ -40,16 +40,16 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
   /// NE PAS appeler au démarrage d'une session : c'était le défaut
   /// corrigé par L3-1 (la randonnée en cours effaçait la précédente).
   Future<void> clearTrail(String trailId) async {
-    await (delete(sessionTrackPoints)
-          ..where((t) => t.trailId.equals(trailId)))
-        .go();
+    await (delete(
+      sessionTrackPoints,
+    )..where((t) => t.trailId.equals(trailId))).go();
   }
 
   /// Efface le tracé d'UNE session (reprise d'un enregistrement raté).
   Future<void> clearSession(String sessionId) async {
-    await (delete(sessionTrackPoints)
-          ..where((t) => t.sessionId.equals(sessionId)))
-        .go();
+    await (delete(
+      sessionTrackPoints,
+    )..where((t) => t.sessionId.equals(sessionId))).go();
   }
 
   /// Insère un point GPS du tracé en cours d'enregistrement.

@@ -62,8 +62,7 @@ class _FakeLauncher implements GuideDeeplinkLauncher {
 /// DiplomaScreen declenche en post-frame. On garde le DAO reel (base memoire)
 /// pour satisfaire le constructeur, mais on court-circuite la demande.
 class _NoReviewService extends InAppReviewService {
-  _NoReviewService(ReviewRequestsDao dao)
-      : super(reviewRequestsDao: dao);
+  _NoReviewService(ReviewRequestsDao dao) : super(reviewRequestsDao: dao);
 
   @override
   Future<bool> requestReviewIfEligible(String trailId) async => false;
@@ -75,9 +74,9 @@ GuideSectionLabels _stubLabels(String categorie) =>
     GuideSectionLabels(titre: 'titre-$categorie', contenu: 'intro-$categorie');
 
 List<TownGuide> _catalogGuides() => TownGuideCatalog.guidesFor(
-      _guidesTrailId,
-      sectionLabelResolver: _stubLabels,
-    ).where((g) => g.hasContent).toList();
+  _guidesTrailId,
+  sectionLabelResolver: _stubLabels,
+).where((g) => g.hasContent).toList();
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -95,9 +94,7 @@ void main() {
     // AppHeader (Ph5/L6c) utilise GoRouter -> GoRouter minimal (+ /my-treks).
     Widget wrapGuides(Widget child, {required GuideDeeplinkLauncher launcher}) {
       return ProviderScope(
-        overrides: [
-          guideDeeplinkLauncherProvider.overrideWithValue(launcher),
-        ],
+        overrides: [guideDeeplinkLauncherProvider.overrideWithValue(launcher)],
         child: TranslationProvider(
           child: MaterialApp.router(
             routerConfig: GoRouter(
@@ -105,7 +102,9 @@ void main() {
               routes: [
                 GoRoute(path: '/screen', builder: (_, __) => child),
                 GoRoute(
-                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -116,8 +115,10 @@ void main() {
     testWidgets('TownGuidesScreen : les localites sont des AppCard '
         '(plus de Card brute)', (tester) async {
       await tester.pumpWidget(
-        wrapGuides(const TownGuidesScreen(trailId: _guidesTrailId),
-            launcher: _FakeLauncher()),
+        wrapGuides(
+          const TownGuidesScreen(trailId: _guidesTrailId),
+          launcher: _FakeLauncher(),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -127,8 +128,10 @@ void main() {
       // Les cles de carte (clic -> detail) sont preservees sur l'AppCard.
       final guides = _catalogGuides();
       expect(guides, isNotEmpty);
-      expect(find.byKey(ValueKey('town-guide-card-${guides.first.id}')),
-          findsOneWidget);
+      expect(
+        find.byKey(ValueKey('town-guide-card-${guides.first.id}')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('TownGuideDetailScreen : sections en AppCard, bouton lien = '
@@ -155,14 +158,16 @@ void main() {
         ],
       );
 
-      await tester.pumpWidget(wrapGuides(
-        const TownGuideDetailScreen(
-          trailId: _guidesTrailId,
-          guideId: 'g-test',
-          guide: guide,
+      await tester.pumpWidget(
+        wrapGuides(
+          const TownGuideDetailScreen(
+            trailId: _guidesTrailId,
+            guideId: 'g-test',
+            guide: guide,
+          ),
+          launcher: launcher,
         ),
-        launcher: launcher,
-      ));
+      );
       await tester.pumpAndSettle();
 
       // Section thematique = AppCard, aucune Card brute.
@@ -212,15 +217,17 @@ void main() {
             difficulty: const Value('moderate'),
           ),
       ]);
-      await db.trekSessionsDao.upsertSession(TrekSession(
-        id: 'sess-skin-diploma',
-        trailId: testTrailConfig.id,
-        startedAt: DateTime.utc(2026, 6, 15),
-        finishedAt: DateTime.utc(2026, 6, 20),
-        status: 'completed',
-        completedStages: const ['1', '2', '3', '4', '5'],
-        parcoursFullyWalked: true,
-      ));
+      await db.trekSessionsDao.upsertSession(
+        TrekSession(
+          id: 'sess-skin-diploma',
+          trailId: testTrailConfig.id,
+          startedAt: DateTime.utc(2026, 6, 15),
+          finishedAt: DateTime.utc(2026, 6, 20),
+          status: 'completed',
+          completedStages: const ['1', '2', '3', '4', '5'],
+          parcoursFullyWalked: true,
+        ),
+      );
 
       await tester.pumpWidget(
         ProviderScope(
@@ -245,10 +252,13 @@ void main() {
                 initialLocation: '/diploma',
                 routes: [
                   GoRoute(
-                      path: '/diploma',
-                      builder: (_, __) => const DiplomaScreen()),
+                    path: '/diploma',
+                    builder: (_, __) => const DiplomaScreen(),
+                  ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),

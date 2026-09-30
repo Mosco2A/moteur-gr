@@ -26,10 +26,7 @@ class TipCategoryConfig {
       labelKey: 'tipCategorySafety',
       icon: 'health_and_safety',
     ),
-    'nature': TipCategoryMeta(
-      labelKey: 'tipCategoryNature',
-      icon: 'forest',
-    ),
+    'nature': TipCategoryMeta(labelKey: 'tipCategoryNature', icon: 'forest'),
     'recovery': TipCategoryMeta(
       labelKey: 'tipCategoryRecovery',
       icon: 'self_improvement',
@@ -59,10 +56,7 @@ class TipCategoryConfig {
 
 /// Metadata associee a une categorie de conseils.
 class TipCategoryMeta {
-  const TipCategoryMeta({
-    required this.labelKey,
-    required this.icon,
-  });
+  const TipCategoryMeta({required this.labelKey, required this.icon});
 
   /// Cle i18n pour le label affiche
   final String labelKey;

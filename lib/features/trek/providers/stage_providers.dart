@@ -13,8 +13,9 @@ import '../../trail/providers/trail_providers.dart';
 /// cela il restait a chaine vide et JAMAIS ecrit (#99423 §4.1), d'ou une liste
 /// d'etapes toujours vide. Reste un [StateProvider] surchargeable/ecrasable
 /// (ex. tests, ou l'amorce qui le reaffirme apres le seed).
-final currentTrailIdProvider =
-    StateProvider<String>((ref) => ref.watch(trailConfigProvider).id);
+final currentTrailIdProvider = StateProvider<String>(
+  (ref) => ref.watch(trailConfigProvider).id,
+);
 
 /// Provider des etapes du sentier actif.
 ///
@@ -37,8 +38,10 @@ final stagesProvider = FutureProvider<List<StageModel>>((ref) async {
 /// Parametre : id (String) -- le stageNumber converti en String.
 /// Charge toutes les etapes du sentier actif, puis filtre par stageNumber.
 /// Leve StateError si l'etape n'existe pas.
-final stageByIdProvider =
-    FutureProvider.family<StageModel, String>((ref, id) async {
+final stageByIdProvider = FutureProvider.family<StageModel, String>((
+  ref,
+  id,
+) async {
   final stageNumber = int.tryParse(id);
   if (stageNumber == null) {
     throw StateError('ID etape invalide: $id');

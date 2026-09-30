@@ -35,8 +35,10 @@ class WeatherGuideSheet extends StatelessWidget {
                 StepIcon(StepwaysIcons.aide, color: theme.colorScheme.primary),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
-                  child: Text(t.weather.guideTitle,
-                      style: theme.textTheme.titleLarge),
+                  child: Text(
+                    t.weather.guideTitle,
+                    style: theme.textTheme.titleLarge,
+                  ),
                 ),
               ],
             ),

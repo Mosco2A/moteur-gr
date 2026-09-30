@@ -29,13 +29,15 @@ void main() {
         overrides: [
           stageDistanceCoveredProvider.overrideWithValue(5200.0),
           trekSessionManagerProvider.overrideWith(() {
-            return _FakeNotifier(const TrackingSessionState(
-              status: TrackingSessionStatus.recording,
-              distanceKm: 9.9, // cumul brut gonfle -> NE doit PAS s'afficher
-              elevationGainM: 350.0,
-              elapsedDuration: Duration(hours: 2, minutes: 15),
-              currentSpeedKmh: 4.3,
-            ));
+            return _FakeNotifier(
+              const TrackingSessionState(
+                status: TrackingSessionStatus.recording,
+                distanceKm: 9.9, // cumul brut gonfle -> NE doit PAS s'afficher
+                elevationGainM: 350.0,
+                elapsedDuration: Duration(hours: 2, minutes: 15),
+                currentSpeedKmh: 4.3,
+              ),
+            );
           }),
         ],
       );
@@ -44,9 +46,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: const MaterialApp(
-            home: Scaffold(
-              body: TrackingOverlay(trailId: 'mare-a-mare'),
-            ),
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
           ),
         ),
       );
@@ -68,8 +68,18 @@ void main() {
       expect(find.text('Stop'), findsOneWidget);
 
       // Icones des boutons
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pause), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.pause,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.stop,
+        ),
+        findsOneWidget,
+      );
 
       container.dispose();
     });
@@ -78,9 +88,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           trekSessionManagerProvider.overrideWith(() {
-            return _FakeNotifier(const TrackingSessionState(
-              status: TrackingSessionStatus.idle,
-            ));
+            return _FakeNotifier(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            );
           }),
         ],
       );
@@ -89,16 +99,19 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: const MaterialApp(
-            home: Scaffold(
-              body: TrackingOverlay(trailId: 'mare-a-mare'),
-            ),
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
           ),
         ),
       );
 
       // Bouton Demarrer visible
       expect(find.text('Démarrer'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+        ),
+        findsOneWidget,
+      );
 
       // Pas de stats en mode idle
       expect(find.text('Distance'), findsNothing);
@@ -111,13 +124,15 @@ void main() {
         overrides: [
           stageDistanceCoveredProvider.overrideWithValue(3100.0),
           trekSessionManagerProvider.overrideWith(() {
-            return _FakeNotifier(const TrackingSessionState(
-              status: TrackingSessionStatus.paused,
-              distanceKm: 3.1,
-              elevationGainM: 200.0,
-              elapsedDuration: Duration(hours: 1, minutes: 30),
-              currentSpeedKmh: 0.0,
-            ));
+            return _FakeNotifier(
+              const TrackingSessionState(
+                status: TrackingSessionStatus.paused,
+                distanceKm: 3.1,
+                elevationGainM: 200.0,
+                elapsedDuration: Duration(hours: 1, minutes: 30),
+                currentSpeedKmh: 0.0,
+              ),
+            );
           }),
         ],
       );
@@ -126,9 +141,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: const MaterialApp(
-            home: Scaffold(
-              body: TrackingOverlay(trailId: 'mare-a-mare'),
-            ),
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
           ),
         ),
       );
@@ -139,8 +152,18 @@ void main() {
       // Boutons Reprendre + Stop
       expect(find.text('Reprendre'), findsOneWidget);
       expect(find.text('Stop'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.stop,
+        ),
+        findsOneWidget,
+      );
 
       container.dispose();
     });
@@ -184,8 +207,9 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('Pause porte actionPause et Stop rougeUrgence en recording',
-        (tester) async {
+    testWidgets('Pause porte actionPause et Stop rougeUrgence en recording', (
+      tester,
+    ) async {
       final container = ProviderContainer(
         overrides: [
           stageDistanceCoveredProvider.overrideWithValue(1000.0),

@@ -33,8 +33,9 @@ class InertTileProvider extends TileProvider {
   ///
   /// Reutilise l'octet-buffer fourni par flutter_map pour eviter toute
   /// allocation superflue.
-  static final MemoryImage _transparentTile =
-      MemoryImage(TileProvider.transparentImage);
+  static final MemoryImage _transparentTile = MemoryImage(
+    TileProvider.transparentImage,
+  );
 
   @override
   ImageProvider getImage(TileCoordinates coordinates, TileLayer options) {
@@ -50,8 +51,7 @@ class InertTileProvider extends TileProvider {
 /// production -> `bool.fromEnvironment` vaut `false` : aucun effet hors demande
 /// explicite. La detection automatique ci-dessous ([_isRunningUnderFlutterTest])
 /// suffit deja pour les tests personas, sans aucun flag a passer.
-const bool _kForceInertMapTiles =
-    bool.fromEnvironment('STEPWAYS_INERT_TILES');
+const bool _kForceInertMapTiles = bool.fromEnvironment('STEPWAYS_INERT_TILES');
 
 /// Vrai si le code s'execute SOUS un binding de test Flutter
 /// (`flutter test` / `integration_test`), faux en production.
@@ -80,8 +80,7 @@ bool _isRunningUnderFlutterTest() {
 ///
 /// Actif automatiquement sous un binding de test, ou si l'override de
 /// compilation [_kForceInertMapTiles] est pose. FAUX en production.
-bool get kInertMapTiles =>
-    _kForceInertMapTiles || _isRunningUnderFlutterTest();
+bool get kInertMapTiles => _kForceInertMapTiles || _isRunningUnderFlutterTest();
 
 /// Renvoie un [InertTileProvider] SI et seulement si [kInertMapTiles] est vrai
 /// (contexte de test), sinon `null`.

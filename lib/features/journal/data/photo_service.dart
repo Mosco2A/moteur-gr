@@ -15,11 +15,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// Contient le chemin local et la taille finale en octets,
 /// ou un code erreur si la sauvegarde a echoue.
 class PhotoSaveResult {
-  const PhotoSaveResult._({
-    this.path,
-    this.sizeBytes,
-    this.error,
-  });
+  const PhotoSaveResult._({this.path, this.sizeBytes, this.error});
 
   /// Succes : chemin + taille
   factory PhotoSaveResult.success({
@@ -72,11 +68,9 @@ enum PhotoError {
 /// et applique les limites : 500 Ko max, 3 photos/jour (#81462).
 /// Fonctionne entierement offline (galerie locale).
 class PhotoService {
-  PhotoService({
-    required JournalDao journalDao,
-    String? storagePath,
-  })  : _dao = journalDao,
-        _customStoragePath = storagePath;
+  PhotoService({required JournalDao journalDao, String? storagePath})
+    : _dao = journalDao,
+      _customStoragePath = storagePath;
 
   final JournalDao _dao;
   final String? _customStoragePath;
@@ -193,9 +187,7 @@ class PhotoService {
       );
       canvas.drawImageRect(
         image,
-        Rect.fromLTWH(
-          0, 0, image.width.toDouble(), image.height.toDouble(),
-        ),
+        Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
         Rect.fromLTWH(0, 0, fw.toDouble(), fh.toDouble()),
         Paint()..filterQuality = FilterQuality.medium,
       );
@@ -206,9 +198,7 @@ class PhotoService {
     }
 
     // Encoder en PNG et verifier la taille
-    final byteData = await resized.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
+    final byteData = await resized.toByteData(format: ui.ImageByteFormat.png);
     if (byteData == null) return null;
 
     final pngBytes = byteData.buffer.asUint8List();
@@ -237,18 +227,14 @@ class PhotoService {
     );
     canvas.drawImageRect(
       source,
-      Rect.fromLTWH(
-        0, 0, source.width.toDouble(), source.height.toDouble(),
-      ),
+      Rect.fromLTWH(0, 0, source.width.toDouble(), source.height.toDouble()),
       Rect.fromLTWH(0, 0, hw.toDouble(), hh.toDouble()),
       Paint()..filterQuality = FilterQuality.medium,
     );
     final picture = recorder.endRecording();
     final small = await picture.toImage(hw, hh);
 
-    final byteData = await small.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
+    final byteData = await small.toByteData(format: ui.ImageByteFormat.png);
     return byteData?.buffer.asUint8List();
   }
 
@@ -263,10 +249,12 @@ class PhotoService {
     final files = dir
         .listSync()
         .whereType<File>()
-        .where((f) =>
-            f.path.endsWith('.jpg') ||
-            f.path.endsWith('.jpeg') ||
-            f.path.endsWith('.png'))
+        .where(
+          (f) =>
+              f.path.endsWith('.jpg') ||
+              f.path.endsWith('.jpeg') ||
+              f.path.endsWith('.png'),
+        )
         .toList();
 
     // Trier par date de modification descendante (plus recent d'abord)

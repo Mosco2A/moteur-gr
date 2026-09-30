@@ -62,7 +62,8 @@ class NotificationSchedulerState {
 /// - N rappels quotidiens pendant le trek (chaque matin a 7h)
 ///
 /// Utilise les textes Slang (5 langues). Aucun texte en dur.
-class NotificationSchedulerNotifier extends Notifier<NotificationSchedulerState> {
+class NotificationSchedulerNotifier
+    extends Notifier<NotificationSchedulerState> {
   late NotificationService _service;
 
   @override
@@ -104,7 +105,10 @@ class NotificationSchedulerNotifier extends Notifier<NotificationSchedulerState>
   }
 
   /// Planifie la notification J-2 avant le depart.
-  Future<void> _scheduleCountdown(DateTime departureDate, Translations t) async {
+  Future<void> _scheduleCountdown(
+    DateTime departureDate,
+    Translations t,
+  ) async {
     final countdownDate = departureDate.subtract(
       const Duration(days: _daysBeforeDeparture),
     );
@@ -178,8 +182,8 @@ class NotificationSchedulerNotifier extends Notifier<NotificationSchedulerState>
 /// Provider du scheduler de notifications.
 final notificationSchedulerProvider =
     NotifierProvider<NotificationSchedulerNotifier, NotificationSchedulerState>(
-  NotificationSchedulerNotifier.new,
-);
+      NotificationSchedulerNotifier.new,
+    );
 
 /// Calcule la date J-2 pour une date de depart donnee.
 ///

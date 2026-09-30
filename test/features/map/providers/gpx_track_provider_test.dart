@@ -36,9 +36,7 @@ void main() {
 
     test('trailConfigProvider est accessible avec la config test', () {
       final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-        ],
+        overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
       );
 
       addTearDown(container.dispose);

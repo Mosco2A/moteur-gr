@@ -12,17 +12,17 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Position fixe pour les tests (pas de GPS réel).
 Position _fakePosition() => Position(
-      latitude: 42.1,
-      longitude: 9.1,
-      timestamp: DateTime.utc(2026, 6, 14),
-      accuracy: 5,
-      altitude: 1000,
-      altitudeAccuracy: 5,
-      heading: 0,
-      headingAccuracy: 0,
-      speed: 0,
-      speedAccuracy: 0,
-    );
+  latitude: 42.1,
+  longitude: 9.1,
+  timestamp: DateTime.utc(2026, 6, 14),
+  accuracy: 5,
+  altitude: 1000,
+  altitudeAccuracy: 5,
+  heading: 0,
+  headingAccuracy: 0,
+  speed: 0,
+  speedAccuracy: 0,
+);
 
 /// Tests widget de l'écran de signalement terrain (F6C-03).
 ///
@@ -32,25 +32,24 @@ Position _fakePosition() => Position(
 /// AppHeader (Ph5/L6c) utilise GoRouter -> heberge un [child] dans un GoRouter
 /// minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
 Widget _hostRouter(Widget child) => MaterialApp.router(
-      routerConfig: GoRouter(
-        initialLocation: '/screen',
-        routes: [
-          GoRoute(path: '/screen', builder: (_, __) => child),
-          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-        ],
-      ),
-    );
+  routerConfig: GoRouter(
+    initialLocation: '/screen',
+    routes: [
+      GoRoute(path: '/screen', builder: (_, __) => child),
+      GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+    ],
+  ),
+);
 
 void main() {
   Widget wrap(List<Override> overrides) => ProviderScope(
-        overrides: overrides,
-        child: TranslationProvider(
-          child: _hostRouter(const SignalementScreen()),
-        ),
-      );
+    overrides: overrides,
+    child: TranslationProvider(child: _hostRouter(const SignalementScreen())),
+  );
 
-  final locationOverride =
-      locationProvider.overrideWith((ref) => Stream.value(_fakePosition()));
+  final locationOverride = locationProvider.overrideWith(
+    (ref) => Stream.value(_fakePosition()),
+  );
 
   group('SignalementScreen', () {
     testWidgets('affiche le titre et les 3 types', (tester) async {
@@ -63,16 +62,18 @@ void main() {
       expect(find.text(t.signalement.types.danger), findsOneWidget);
     });
 
-    testWidgets('affiche le bandeau de latence (pas de temps réel)',
-        (tester) async {
+    testWidgets('affiche le bandeau de latence (pas de temps réel)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap([locationOverride]));
       await tester.pumpAndSettle();
 
       expect(find.text(t.signalement.latencyBanner), findsOneWidget);
     });
 
-    testWidgets('la confirmation crée un signalement local et bascule la vue',
-        (tester) async {
+    testWidgets('la confirmation crée un signalement local et bascule la vue', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap([locationOverride]));
       await tester.pumpAndSettle();
 
@@ -85,8 +86,9 @@ void main() {
       expect(find.text(t.signalement.savedPendingSync), findsOneWidget);
     });
 
-    testWidgets('le signalement créé est bien en file locale pending',
-        (tester) async {
+    testWidgets('le signalement créé est bien en file locale pending', (
+      tester,
+    ) async {
       final container = ProviderContainer(overrides: [locationOverride]);
       addTearDown(container.dispose);
 

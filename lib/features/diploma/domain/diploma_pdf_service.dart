@@ -143,10 +143,7 @@ class DiplomaPdfService {
     String locale = 'fr',
     String? logoSvg,
   }) async {
-    final pdf = pw.Document(
-      title: labels.title,
-      author: data.hikerName,
-    );
+    final pdf = pw.Document(title: labels.title, author: data.hikerName);
 
     // Couleurs du diplome
     const headerColor = PdfColor.fromInt(0xFF1B5E20);
@@ -176,7 +173,11 @@ class DiplomaPdfService {
                 _buildHeader(labels, headerColor, subtitleColor, accentColor),
                 pw.SizedBox(height: 20),
                 _buildHikerBlock(
-                  data, labels, headerColor, textColor, subtitleColor,
+                  data,
+                  labels,
+                  headerColor,
+                  textColor,
+                  subtitleColor,
                 ),
                 pw.SizedBox(height: 20),
                 _buildStatsRow(labels, accentColor, textColor),
@@ -239,11 +240,12 @@ class DiplomaPdfService {
   static String diplomaFileName(String trailId, {DateTime? at}) {
     final when = at ?? DateTime.now();
     final safeTrail = trailId.toLowerCase().replaceAll(
-          RegExp(r'[^a-z0-9-]'),
-          '-',
-        );
+      RegExp(r'[^a-z0-9-]'),
+      '-',
+    );
     String two(int v) => v.toString().padLeft(2, '0');
-    final stamp = '${when.year}${two(when.month)}${two(when.day)}'
+    final stamp =
+        '${when.year}${two(when.month)}${two(when.day)}'
         '-${two(when.hour)}${two(when.minute)}${two(when.second)}';
     return 'diplome-$safeTrail-$stamp.pdf';
   }
@@ -374,10 +376,7 @@ class DiplomaPdfService {
   }
 
   /// Image optionnelle du trace carte
-  static pw.Widget _buildMapImage(
-    Uint8List mapBytes,
-    PdfColor accentColor,
-  ) {
+  static pw.Widget _buildMapImage(Uint8List mapBytes, PdfColor accentColor) {
     return pw.Column(
       children: [
         pw.Container(
@@ -389,10 +388,7 @@ class DiplomaPdfService {
           child: pw.ClipRRect(
             horizontalRadius: 8,
             verticalRadius: 8,
-            child: pw.Image(
-              pw.MemoryImage(mapBytes),
-              fit: pw.BoxFit.contain,
-            ),
+            child: pw.Image(pw.MemoryImage(mapBytes), fit: pw.BoxFit.contain),
           ),
         ),
         pw.SizedBox(height: 16),

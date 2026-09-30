@@ -156,8 +156,9 @@ class ContenuProfilRandonneur {
     return ContenuProfilRandonneur(
       profil: effacerProfil ? null : (profil ?? this.profil),
       randosPassees: randosPassees ?? this.randosPassees,
-      testDeMarche:
-          effacerTestDeMarche ? null : (testDeMarche ?? this.testDeMarche),
+      testDeMarche: effacerTestDeMarche
+          ? null
+          : (testDeMarche ?? this.testDeMarche),
       noteExperienceHeritee: effacerNote
           ? null
           : (noteExperienceHeritee ?? this.noteExperienceHeritee),
@@ -165,15 +166,16 @@ class ContenuProfilRandonneur {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        if (profil != null) ProfilRandonneurFichier.clefProfil: profil!.toJson(),
-        if (randosPassees.isNotEmpty)
-          ProfilRandonneurFichier.clefRandosPassees:
-              randosPassees.map((h) => h.toJson()).toList(),
-        if (testDeMarche != null)
-          ProfilRandonneurFichier.clefTestDeMarche: testDeMarche!.toJson(),
-        if (noteExperienceHeritee != null && noteExperienceHeritee!.isNotEmpty)
-          ProfilRandonneurFichier.clefNoteExperience: noteExperienceHeritee,
-      };
+    if (profil != null) ProfilRandonneurFichier.clefProfil: profil!.toJson(),
+    if (randosPassees.isNotEmpty)
+      ProfilRandonneurFichier.clefRandosPassees: randosPassees
+          .map((h) => h.toJson())
+          .toList(),
+    if (testDeMarche != null)
+      ProfilRandonneurFichier.clefTestDeMarche: testDeMarche!.toJson(),
+    if (noteExperienceHeritee != null && noteExperienceHeritee!.isNotEmpty)
+      ProfilRandonneurFichier.clefNoteExperience: noteExperienceHeritee,
+  };
 
   /// Relecture TOLERANTE : une section illisible ne fait pas perdre les autres.
   ///
@@ -229,9 +231,8 @@ class ProfilRandonneurFichier {
   ProfilRandonneurFichier({
     Future<Directory> Function()? dossierApplicatif,
     ExclusionSauvegardeIcloud? exclusionIcloud,
-  })  : _dossierApplicatif =
-            dossierApplicatif ?? getApplicationSupportDirectory,
-        _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
+  }) : _dossierApplicatif = dossierApplicatif ?? getApplicationSupportDirectory,
+       _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
 
   /// Resolution du stockage applicatif. Sur Android
   /// `getApplicationSupportDirectory()` donne `files/`, donc le domaine `file`
@@ -269,9 +270,7 @@ class ProfilRandonneurFichier {
   /// Le document : `<stockage applicatif>/medical/profil_randonneur.json`.
   Future<File> fichier() async {
     final base = await _dossierApplicatif();
-    return File(
-      '${base.path}/${SauvegardeSysteme.dossierExclu}/$nomFichier',
-    );
+    return File('${base.path}/${SauvegardeSysteme.dossierExclu}/$nomFichier');
   }
 
   /// Lit le document. Rend un contenu VIDE si rien n'a jamais ete ecrit, et

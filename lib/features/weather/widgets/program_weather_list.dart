@@ -68,14 +68,16 @@ class ProgramWeatherList extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppTheme.orangeDifficile.withAlpha(15),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-              border:
-                  Border.all(color: AppTheme.orangeDifficile.withAlpha(60)),
+              border: Border.all(color: AppTheme.orangeDifficile.withAlpha(60)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const StepIcon(StepwaysIcons.calendrier,
-                    size: 18, color: AppTheme.orangeDifficile),
+                const StepIcon(
+                  StepwaysIcons.calendrier,
+                  size: 18,
+                  color: AppTheme.orangeDifficile,
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -165,7 +167,7 @@ class _ProgramDayCard extends StatelessWidget {
     final dated = day.reach != ForecastReach.unknownDeparture;
     final title = dated
         ? '${t.weather.program.dayLabel(day: day.dayNumber)} · '
-            '${formatWeatherDate(day.date, 'EEE d MMM', languageCode)}'
+              '${formatWeatherDate(day.date, 'EEE d MMM', languageCode)}'
         : t.weather.program.dayLabel(day: day.dayNumber);
     final subtitle = day.placeName.isEmpty
         ? ''
@@ -192,8 +194,9 @@ class _ProgramDayCard extends StatelessWidget {
             if (subtitle.isNotEmpty)
               Text(
                 subtitle,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -247,13 +250,17 @@ class _TrendChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const StepIcon(StepwaysIcons.denivelePlus,
-              size: 14, color: AppTheme.orangeDifficile),
+          const StepIcon(
+            StepwaysIcons.denivelePlus,
+            size: 14,
+            color: AppTheme.orangeDifficile,
+          ),
           const SizedBox(width: 4),
           Text(
             label,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: AppTheme.orangeDifficile),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.orangeDifficile,
+            ),
           ),
         ],
       ),
@@ -273,13 +280,13 @@ class _Absence extends StatelessWidget {
     final theme = Theme.of(context);
     final (String icon, String message) = switch (reach) {
       ForecastReach.beyondHorizon => (
-          StepwaysIcons.sablier,
-          t.weather.program.beyondHorizon(horizon: forecastHorizonDays),
-        ),
+        StepwaysIcons.sablier,
+        t.weather.program.beyondHorizon(horizon: forecastHorizonDays),
+      ),
       ForecastReach.unknownDeparture => (
-          StepwaysIcons.calendrier,
-          t.weather.program.unknownDeparture,
-        ),
+        StepwaysIcons.calendrier,
+        t.weather.program.unknownDeparture,
+      ),
       _ => (StepwaysIcons.horsLigne, t.weather.program.noData),
     };
     return Padding(
@@ -320,10 +327,10 @@ class _Badge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: color, fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

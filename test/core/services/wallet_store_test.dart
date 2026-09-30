@@ -139,32 +139,34 @@ void main() {
       expect(row!.balanceSteps, 30);
     });
 
-    test('round-trip: le solde survit a un redemarrage (prefs = source)',
-        () async {
-      // Instance 1 : credite, puis "meurt".
-      final store1 = await makeStore();
-      await store1.load();
-      await store1.credit(11);
-      await store1.credit(25);
-      await store1.debit(6);
-      expect(store1.balanceSteps, 30);
+    test(
+      'round-trip: le solde survit a un redemarrage (prefs = source)',
+      () async {
+        // Instance 1 : credite, puis "meurt".
+        final store1 = await makeStore();
+        await store1.load();
+        await store1.credit(11);
+        await store1.credit(25);
+        await store1.debit(6);
+        expect(store1.balanceSteps, 30);
 
-      // Simule le redemarrage : DB Drift NEUVE (volatile) mais MEMES prefs.
-      await db.close();
-      db = AppDatabase(NativeDatabase.memory());
-      // Au boot, le miroir Drift est vide.
-      expect(await db.walletDao.getByUserId(kWalletLocalUserId), isNull);
+        // Simule le redemarrage : DB Drift NEUVE (volatile) mais MEMES prefs.
+        await db.close();
+        db = AppDatabase(NativeDatabase.memory());
+        // Au boot, le miroir Drift est vide.
+        expect(await db.walletDao.getByUserId(kWalletLocalUserId), isNull);
 
-      final store2 = await makeStore();
-      await store2.load();
+        final store2 = await makeStore();
+        await store2.load();
 
-      // Le solde est reconstruit depuis les prefs (source durable).
-      expect(store2.balanceSteps, 30);
-      expect(store2.snapshot.lifetimeEarnedSteps, 36);
-      expect(store2.snapshot.lifetimeSpentSteps, 6);
-      // Et le miroir Drift a ete re-hydrate.
-      final row = await db.walletDao.getByUserId(kWalletLocalUserId);
-      expect(row!.balanceSteps, 30);
-    });
+        // Le solde est reconstruit depuis les prefs (source durable).
+        expect(store2.balanceSteps, 30);
+        expect(store2.snapshot.lifetimeEarnedSteps, 36);
+        expect(store2.snapshot.lifetimeSpentSteps, 6);
+        // Et le miroir Drift a ete re-hydrate.
+        final row = await db.walletDao.getByUserId(kWalletLocalUserId);
+        expect(row!.balanceSteps, 30);
+      },
+    );
   });
 }

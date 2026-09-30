@@ -109,9 +109,13 @@ void main() {
   group('A1 — realiser un trek n est plus gratuit', () {
     test('un trek non achete ne peut PAS etre realise', () async {
       final svc = await makeService();
-      expect(await svc.canRealizeTrail('gr20'), isFalse,
-          reason: 'le modele reserve la REALISATION au trek achete ; sans ce '
-              'refus, n importe qui enregistre et termine le parcours entier');
+      expect(
+        await svc.canRealizeTrail('gr20'),
+        isFalse,
+        reason:
+            'le modele reserve la REALISATION au trek achete ; sans ce '
+            'refus, n importe qui enregistre et termine le parcours entier',
+      );
     });
 
     test('un trek achete peut etre realise', () async {
@@ -121,44 +125,63 @@ void main() {
       expect(await svc.canRealizeTrail('gr20'), isTrue);
     });
 
-    test('un sentier VITRINE reste realisable sans achat (parite GR20)',
-        () async {
-      final svc = await makeService(showcase: {'gr20'});
-      expect(await svc.canRealizeTrail('gr20'), isTrue);
-    });
+    test(
+      'un sentier VITRINE reste realisable sans achat (parite GR20)',
+      () async {
+        final svc = await makeService(showcase: {'gr20'});
+        expect(await svc.canRealizeTrail('gr20'), isTrue);
+      },
+    );
 
-    test('un ABONNE ne peut pas realiser : l abo ne debloque PAS la realisation',
-        () async {
-      final svc = await makeService();
-      await svc.onSubscriptionValidated();
-      expect(await svc.isSubscriberActive(), isTrue);
-      expect(await svc.canRealizeTrail('gr20'), isFalse,
-          reason: 'arbitrage du 08/09, qui prime sur #99405 : l abo light ne '
-              'debloque NI les outils complets NI la realisation');
-    });
+    test(
+      'un ABONNE ne peut pas realiser : l abo ne debloque PAS la realisation',
+      () async {
+        final svc = await makeService();
+        await svc.onSubscriptionValidated();
+        expect(await svc.isSubscriberActive(), isTrue);
+        expect(
+          await svc.canRealizeTrail('gr20'),
+          isFalse,
+          reason:
+              'arbitrage du 08/09, qui prime sur #99405 : l abo light ne '
+              'debloque NI les outils complets NI la realisation',
+        );
+      },
+    );
 
-    test('le demarrage REFUSE un trek non achete, et ne cree aucune session',
-        () async {
-      final svc = await makeService();
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        monetizationServiceProvider.overrideWithValue(svc),
-      ]);
-      addTearDown(container.dispose);
+    test(
+      'le demarrage REFUSE un trek non achete, et ne cree aucune session',
+      () async {
+        final svc = await makeService();
+        final container = ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            monetizationServiceProvider.overrideWithValue(svc),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      final notifier = container.read(trekSessionManagerProvider.notifier);
-      final outcome = await notifier.ensureSingleActiveThenStart(
-        'gr20',
-        resolve: (_) async => ActiveTrekConflictChoice.cancel,
-      );
+        final notifier = container.read(trekSessionManagerProvider.notifier);
+        final outcome = await notifier.ensureSingleActiveThenStart(
+          'gr20',
+          resolve: (_) async => ActiveTrekConflictChoice.cancel,
+        );
 
-      expect(outcome, StartOutcome.purchaseRequired,
-          reason: 'le demarrage doit dire POURQUOI il refuse, pas echouer en '
-              'silence ni demarrer quand meme');
-      expect(container.read(trekSessionManagerProvider).session, isNull,
-          reason: 'un refus ne laisse aucune session derriere lui');
-      expect(await db.trekSessionsDao.findActiveSessions(), isEmpty);
-    });
+        expect(
+          outcome,
+          StartOutcome.purchaseRequired,
+          reason:
+              'le demarrage doit dire POURQUOI il refuse, pas echouer en '
+              'silence ni demarrer quand meme',
+        );
+        expect(
+          container.read(trekSessionManagerProvider).session,
+          isNull,
+          reason: 'un refus ne laisse aucune session derriere lui',
+        );
+        expect(await db.trekSessionsDao.findActiveSessions(), isEmpty);
+      },
+    );
   });
 
   // =========================================================================
@@ -176,25 +199,39 @@ void main() {
       final svc = await makeService();
       await svc.onSubscriptionValidated();
       expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
-      expect(await svc.isDemoMode('gr20'), isTrue,
-          reason: 'pour les outils complets d un trek, il faut l ACHETER '
-              '(comme le gratuit)');
+      expect(
+        await svc.isDemoMode('gr20'),
+        isTrue,
+        reason:
+            'pour les outils complets d un trek, il faut l ACHETER '
+            '(comme le gratuit)',
+      );
     });
 
-    test('l abonne n a PAS les outils complets mais il n a PAS de pub non plus',
-        () async {
-      final svc = await makeService();
-      await svc.onSubscriptionValidated();
-      final f = await svc.featuresForTrail('gr20');
-      expect(f.hasGpsTracking, isFalse);
-      expect(f.hasJournal, isFalse);
-      expect(f.hasDiploma, isFalse);
-      expect(f.hasPreparation, isTrue, reason: 'la demo bridee reste jouable');
-      expect(f.hasAds, isFalse,
-          reason: 'l abo light donne le SANS-PUB PARTOUT — c est tout ce qu il '
-              'donne, mais il le donne vraiment');
-      expect(await svc.isNoAdsActive('gr20'), isTrue);
-    });
+    test(
+      'l abonne n a PAS les outils complets mais il n a PAS de pub non plus',
+      () async {
+        final svc = await makeService();
+        await svc.onSubscriptionValidated();
+        final f = await svc.featuresForTrail('gr20');
+        expect(f.hasGpsTracking, isFalse);
+        expect(f.hasJournal, isFalse);
+        expect(f.hasDiploma, isFalse);
+        expect(
+          f.hasPreparation,
+          isTrue,
+          reason: 'la demo bridee reste jouable',
+        );
+        expect(
+          f.hasAds,
+          isFalse,
+          reason:
+              'l abo light donne le SANS-PUB PARTOUT — c est tout ce qu il '
+              'donne, mais il le donne vraiment',
+        );
+        expect(await svc.isNoAdsActive('gr20'), isTrue);
+      },
+    );
   });
 
   // =========================================================================
@@ -208,27 +245,36 @@ void main() {
       expect(await svc.isSubscriberActive(), isTrue);
 
       now = now.add(kSubscriptionNoAdsWindow + const Duration(minutes: 1));
-      expect(await svc.isSubscriberActive(), isFalse,
-          reason: 'rien n expirait jamais l abo : une fois pose, le sans-pub '
-              'etait acquis A VIE, ce que la regle d or interdit');
+      expect(
+        await svc.isSubscriberActive(),
+        isFalse,
+        reason:
+            'rien n expirait jamais l abo : une fois pose, le sans-pub '
+            'etait acquis A VIE, ce que la regle d or interdit',
+      );
       expect(await svc.isNoAdsActive('gr20'), isFalse);
     });
 
-    test('un renouvellement repousse l echeance, il n en empile pas deux',
-        () async {
-      final svc = await makeService();
-      await svc.onSubscriptionValidated();
-      now = now.add(const Duration(days: 20));
-      await svc.onSubscriptionValidated();
+    test(
+      'un renouvellement repousse l echeance, il n en empile pas deux',
+      () async {
+        final svc = await makeService();
+        await svc.onSubscriptionValidated();
+        now = now.add(const Duration(days: 20));
+        await svc.onSubscriptionValidated();
 
-      final rows = await db.noAdsDao.getAll();
-      final abos = rows.where((r) => r.source == 'subscription').toList();
-      expect(abos.length, 1,
-          reason: 'un abonnement est un ETAT, pas une collection de lignes');
+        final rows = await db.noAdsDao.getAll();
+        final abos = rows.where((r) => r.source == 'subscription').toList();
+        expect(
+          abos.length,
+          1,
+          reason: 'un abonnement est un ETAT, pas une collection de lignes',
+        );
 
-      now = now.add(kSubscriptionNoAdsWindow - const Duration(days: 1));
-      expect(await svc.isSubscriberActive(), isTrue);
-    });
+        now = now.add(kSubscriptionNoAdsWindow - const Duration(days: 1));
+        expect(await svc.isSubscriberActive(), isTrue);
+      },
+    );
 
     test('une annulation revoque le sans-pub immediatement', () async {
       final svc = await makeService();
@@ -236,24 +282,34 @@ void main() {
       expect(await svc.isSubscriberActive(), isTrue);
 
       await svc.onSubscriptionCanceled();
-      expect(await svc.isSubscriberActive(), isFalse,
-          reason: 'PurchaseStatus.canceled ne faisait que journaliser');
+      expect(
+        await svc.isSubscriberActive(),
+        isFalse,
+        reason: 'PurchaseStatus.canceled ne faisait que journaliser',
+      );
     });
 
-    test('une ligne d abo SANS echeance (legacy) n est plus acceptee', () async {
-      final svc = await makeService();
-      await db.noAdsDao.insertState(
-        NoAdsStateCompanion.insert(
-          source: 'subscription',
-          startedAt: now,
-          updatedAt: now,
-          expiresAt: const Value(null),
-        ),
-      );
-      expect(await svc.isSubscriberActive(), isFalse,
-          reason: 'une ligne sans echeance, c est exactement le « a vie » que '
-              'la regle d or interdit');
-    });
+    test(
+      'une ligne d abo SANS echeance (legacy) n est plus acceptee',
+      () async {
+        final svc = await makeService();
+        await db.noAdsDao.insertState(
+          NoAdsStateCompanion.insert(
+            source: 'subscription',
+            startedAt: now,
+            updatedAt: now,
+            expiresAt: const Value(null),
+          ),
+        );
+        expect(
+          await svc.isSubscriberActive(),
+          isFalse,
+          reason:
+              'une ligne sans echeance, c est exactement le « a vie » que '
+              'la regle d or interdit',
+        );
+      },
+    );
 
     test('la purge des expires emporte aussi un abo echu', () async {
       final svc = await makeService();
@@ -277,21 +333,27 @@ void main() {
       expect(svc.walletSteps, 0);
     });
 
-    test('abonne + montant NON DECIDE -> rien n est verse, et on le DIT',
-        () async {
-      final svc = await makeService();
-      await svc.onSubscriptionValidated();
-      final r = await svc.grantSubscriberAllowance();
-      if (kSubscriberStepsAllowance == null) {
-        expect(r, SubscriberAllowanceOutcome.pendingDecision,
-            reason: 'le montant n est chiffre NI dans le code NI dans le '
-                'modele : on ne l invente pas, on le signale');
-        expect(svc.walletSteps, 0);
-      } else {
-        expect(r, SubscriberAllowanceOutcome.granted);
-        expect(svc.walletSteps, kSubscriberStepsAllowance);
-      }
-    });
+    test(
+      'abonne + montant NON DECIDE -> rien n est verse, et on le DIT',
+      () async {
+        final svc = await makeService();
+        await svc.onSubscriptionValidated();
+        final r = await svc.grantSubscriberAllowance();
+        if (kSubscriberStepsAllowance == null) {
+          expect(
+            r,
+            SubscriberAllowanceOutcome.pendingDecision,
+            reason:
+                'le montant n est chiffre NI dans le code NI dans le '
+                'modele : on ne l invente pas, on le signale',
+          );
+          expect(svc.walletSteps, 0);
+        } else {
+          expect(r, SubscriberAllowanceOutcome.granted);
+          expect(svc.walletSteps, kSubscriberStepsAllowance);
+        }
+      },
+    );
 
     test('la cagnotte n est versee qu une fois par periode', () async {
       final svc = await makeService();
@@ -304,7 +366,8 @@ void main() {
           SubscriberAllowanceOutcome.pendingDecision,
           SubscriberAllowanceOutcome.alreadyGranted,
         ),
-        reason: 'une cagnotte versee deux fois dans la meme periode est un '
+        reason:
+            'une cagnotte versee deux fois dans la meme periode est un '
             'credit gratuit',
       );
     });
@@ -356,8 +419,7 @@ void main() {
       );
     });
 
-    test(
-        'sans validateur serveur, meme un recu bien forme est refuse — on ne '
+    test('sans validateur serveur, meme un recu bien forme est refuse — on ne '
         'credite pas sur une parole', () async {
       const v = LocalSanityReceiptValidator();
       expect(await v.isValid(recu(productId: kWalletCredits11)), isFalse);
@@ -377,9 +439,13 @@ void main() {
       );
       addTearDown(iap.stopListening);
       await iap.debugHandlePurchases([recu(productId: kWalletCredits11)]);
-      expect(wallet.balanceSteps, 0,
-          reason: '`_verify` retournait `true` pour tout : n importe quel recu '
-              'creditait le compte-etapes');
+      expect(
+        wallet.balanceSteps,
+        0,
+        reason:
+            '`_verify` retournait `true` pour tout : n importe quel recu '
+            'creditait le compte-etapes',
+      );
     });
 
     test('un achat verifie credite le compte-etapes une seule fois', () async {
@@ -387,8 +453,9 @@ void main() {
         walletStore: wallet,
         noAdsDao: db.noAdsDao,
         testMode: true,
-        receiptValidator:
-            const LocalSanityReceiptValidator(serverValidationAvailable: true),
+        receiptValidator: const LocalSanityReceiptValidator(
+          serverValidationAvailable: true,
+        ),
       );
       addTearDown(iap.stopListening);
       await iap.debugHandlePurchases([recu(productId: kWalletCredits11)]);
@@ -396,23 +463,30 @@ void main() {
       expect(wallet.balanceSteps, 11);
     });
 
-    test('un abo livre par le store porte une echeance, jamais nulle', () async {
-      final iap = WalletIapService(
-        walletStore: wallet,
-        noAdsDao: db.noAdsDao,
-        testMode: true,
-        receiptValidator:
-            const LocalSanityReceiptValidator(serverValidationAvailable: true),
-      );
-      addTearDown(iap.stopListening);
-      await iap.debugHandlePurchases([
-        recu(productId: kWalletSubNoAdsMonthly),
-      ]);
-      final rows = await db.noAdsDao.getAll();
-      expect(rows.single.source, 'subscription');
-      expect(rows.single.expiresAt, isNotNull,
-          reason: 'le store posait `expiresAt = null` : sans-pub a vie');
-    });
+    test(
+      'un abo livre par le store porte une echeance, jamais nulle',
+      () async {
+        final iap = WalletIapService(
+          walletStore: wallet,
+          noAdsDao: db.noAdsDao,
+          testMode: true,
+          receiptValidator: const LocalSanityReceiptValidator(
+            serverValidationAvailable: true,
+          ),
+        );
+        addTearDown(iap.stopListening);
+        await iap.debugHandlePurchases([
+          recu(productId: kWalletSubNoAdsMonthly),
+        ]);
+        final rows = await db.noAdsDao.getAll();
+        expect(rows.single.source, 'subscription');
+        expect(
+          rows.single.expiresAt,
+          isNotNull,
+          reason: 'le store posait `expiresAt = null` : sans-pub a vie',
+        );
+      },
+    );
   });
 
   // =========================================================================
@@ -423,8 +497,11 @@ void main() {
     test('sans paiement in-app disponible, la restauration le DIT', () async {
       final svc = await makeService();
       final outcome = await svc.restorePurchases();
-      expect(outcome.status, PurchaseRestoreStatus.storeUnavailable,
-          reason: 'un bouton qui ne produit rien est un mensonge (LOT X)');
+      expect(
+        outcome.status,
+        PurchaseRestoreStatus.storeUnavailable,
+        reason: 'un bouton qui ne produit rien est un mensonge (LOT X)',
+      );
     });
   });
 }

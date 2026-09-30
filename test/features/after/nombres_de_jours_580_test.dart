@@ -43,35 +43,41 @@ import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 void main() {
-  group('Y4-a — la table dit, dans les cinq langues, ce que le nombre compte',
-      () {
-    for (final langue in AppLocale.values) {
-      test('${langue.languageCode} : diplome et recap nomment le TOTAL', () {
-        final tr = langue.buildSync();
-        // La facon dont CETTE langue dit « jours au total », telle que
-        // l'itineraire l'ecrit deja. Aucune chaine inventee ici.
-        final natureTotal = tr.itinerary.daysTotal.toLowerCase();
-        expect(natureTotal, isNotEmpty,
-            reason: 'reference de vocabulaire absente : lecture cassee');
-
-        for (final entree in <String, String>{
-          'diploma.recapDuration': tr.diploma.recapDuration,
-          'recap.duration': tr.recap.duration,
-        }.entries) {
+  group(
+    'Y4-a — la table dit, dans les cinq langues, ce que le nombre compte',
+    () {
+      for (final langue in AppLocale.values) {
+        test('${langue.languageCode} : diplome et recap nomment le TOTAL', () {
+          final tr = langue.buildSync();
+          // La facon dont CETTE langue dit « jours au total », telle que
+          // l'itineraire l'ecrit deja. Aucune chaine inventee ici.
+          final natureTotal = tr.itinerary.daysTotal.toLowerCase();
           expect(
-            entree.value.toLowerCase().contains(natureTotal),
-            isTrue,
-            reason: 'UN NOMBRE DE JOURS SANS SA NATURE : « ${entree.value} » '
-                '(${entree.key}, ${langue.languageCode}) ne dit pas s il '
-                'compte les jours de marche ou le total. Le chiffre vient de '
-                'AdventureStats.durationDays, qui compte du depart a '
-                'l arrivee : il doit le DIRE, avec le vocabulaire deja '
-                'traduit « ${tr.itinerary.daysTotal} ».',
+            natureTotal,
+            isNotEmpty,
+            reason: 'reference de vocabulaire absente : lecture cassee',
           );
-        }
-      });
-    }
-  });
+
+          for (final entree in <String, String>{
+            'diploma.recapDuration': tr.diploma.recapDuration,
+            'recap.duration': tr.recap.duration,
+          }.entries) {
+            expect(
+              entree.value.toLowerCase().contains(natureTotal),
+              isTrue,
+              reason:
+                  'UN NOMBRE DE JOURS SANS SA NATURE : « ${entree.value} » '
+                  '(${entree.key}, ${langue.languageCode}) ne dit pas s il '
+                  'compte les jours de marche ou le total. Le chiffre vient de '
+                  'AdventureStats.durationDays, qui compte du depart a '
+                  'l arrivee : il doit le DIRE, avec le vocabulaire deja '
+                  'traduit « ${tr.itinerary.daysTotal} ».',
+            );
+          }
+        });
+      }
+    },
+  );
 
   // Y4-b — LES DEUX ECRANS AFFICHENT BIEN CE LIBELLE.
   //
@@ -117,33 +123,35 @@ void main() {
     tearDown(() async => db.close());
 
     StagesCompanion etape(int n) => StagesCompanion(
-          trailId: const Value(trailId),
-          stageNumber: Value(n),
-          name: Value('Etape $n'),
-          distanceKm: const Value(10.0),
-          elevationGainM: const Value(500),
-          elevationLossM: const Value(400),
-          description: const Value('desc'),
-          startLat: const Value(42.0),
-          startLng: const Value(9.0),
-          endLat: const Value(42.1),
-          endLng: const Value(9.1),
-          difficulty: const Value('moderate'),
-        );
+      trailId: const Value(trailId),
+      stageNumber: Value(n),
+      name: Value('Etape $n'),
+      distanceKm: const Value(10.0),
+      elevationGainM: const Value(500),
+      elevationLossM: const Value(400),
+      description: const Value('desc'),
+      startLat: const Value(42.0),
+      startLng: const Value(9.0),
+      endLat: const Value(42.1),
+      endLng: const Value(9.1),
+      difficulty: const Value('moderate'),
+    );
 
     /// Pose l'aventure REELLE que les deux ecrans racontent : quatre etapes
     /// marchees, du 15 au 18 juin — donc quatre jours au TOTAL.
     Future<void> poserAventure() async {
       await db.stagesDao.insertAll([etape(1), etape(2), etape(3), etape(4)]);
-      await db.trekSessionsDao.upsertSession(TrekSession(
-        id: 'sess-jours',
-        trailId: trailId,
-        startedAt: DateTime.utc(2026, 6, 15),
-        finishedAt: DateTime.utc(2026, 6, 18),
-        status: 'completed',
-        completedStages: const ['1', '2', '3', '4'],
-        parcoursFullyWalked: true,
-      ));
+      await db.trekSessionsDao.upsertSession(
+        TrekSession(
+          id: 'sess-jours',
+          trailId: trailId,
+          startedAt: DateTime.utc(2026, 6, 15),
+          finishedAt: DateTime.utc(2026, 6, 18),
+          status: 'completed',
+          completedStages: const ['1', '2', '3', '4'],
+          parcoursFullyWalked: true,
+        ),
+      );
     }
 
     Future<void> monter(WidgetTester tester, Widget ecran) async {
@@ -161,7 +169,10 @@ void main() {
               initialLocation: '/ecran',
               routes: [
                 GoRoute(path: '/ecran', builder: (_, __) => ecran),
-                GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+                GoRoute(
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -187,7 +198,8 @@ void main() {
       expect(
         textesDe(tester).any((txt) => txt.toLowerCase().contains(nature)),
         isTrue,
-        reason: 'LE DIPLOME AFFICHE UN NOMBRE DE JOURS SANS DIRE CE QU IL '
+        reason:
+            'LE DIPLOME AFFICHE UN NOMBRE DE JOURS SANS DIRE CE QU IL '
             'COMPTE. Le chiffre vient de AdventureStats.durationDays, qui '
             'compte du depart a l arrivee : il doit le DIRE, avec le '
             'vocabulaire deja traduit « ${t.itinerary.daysTotal} ». '
@@ -203,7 +215,8 @@ void main() {
       expect(
         textesDe(tester).any((txt) => txt.toLowerCase().contains(nature)),
         isTrue,
-        reason: 'LE RECAP AFFICHE UN NOMBRE DE JOURS SANS DIRE CE QU IL '
+        reason:
+            'LE RECAP AFFICHE UN NOMBRE DE JOURS SANS DIRE CE QU IL '
             'COMPTE (meme calcul, meme exigence que le diplome). '
             'Textes lus : ${textesDe(tester).join(' | ')}',
       );

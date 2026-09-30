@@ -172,39 +172,37 @@ void main() {
     });
 
     test(
-        'contraste : le cumul brut (TrackingEngine) gonfle sur un aller-retour, '
-        'la source projetee non', () {
-      // Meme aller-retour, alimente dans le moteur de cumul Haversine.
-      final engine = TrackingEngine();
-      // Aller : du debut (3.000) au milieu (3.025).
-      engine.addPosition(45.0, 3.000, 500.0);
-      engine.addPosition(45.0, 3.025, 500.0);
-      final cumulAtMid = engine.distanceMeters;
-      // On pousse jusqu'a 3.030 puis on REVIENT au milieu (3.025).
-      engine.addPosition(45.0, 3.030, 500.0);
-      engine.addPosition(45.0, 3.025, 500.0);
-      final cumulAfterRoundTrip = engine.distanceMeters;
+      'contraste : le cumul brut (TrackingEngine) gonfle sur un aller-retour, '
+      'la source projetee non',
+      () {
+        // Meme aller-retour, alimente dans le moteur de cumul Haversine.
+        final engine = TrackingEngine();
+        // Aller : du debut (3.000) au milieu (3.025).
+        engine.addPosition(45.0, 3.000, 500.0);
+        engine.addPosition(45.0, 3.025, 500.0);
+        final cumulAtMid = engine.distanceMeters;
+        // On pousse jusqu'a 3.030 puis on REVIENT au milieu (3.025).
+        engine.addPosition(45.0, 3.030, 500.0);
+        engine.addPosition(45.0, 3.025, 500.0);
+        final cumulAfterRoundTrip = engine.distanceMeters;
 
-      // Le cumul brut a AUGMENTE alors qu'on est physiquement au meme endroit.
-      expect(cumulAfterRoundTrip, greaterThan(cumulAtMid));
+        // Le cumul brut a AUGMENTE alors qu'on est physiquement au meme endroit.
+        expect(cumulAfterRoundTrip, greaterThan(cumulAtMid));
 
-      // La source projetee, elle, est revenue a la meme valeur : c'est la
-      // raison pour laquelle la progression affichee lit le projete, pas
-      // le cumul.
-      final projAtMid = projectedCoveredM(3.025);
-      final projAfterRoundTrip = projectedCoveredM(3.025);
-      expect(projAfterRoundTrip, closeTo(projAtMid, 1.0));
+        // La source projetee, elle, est revenue a la meme valeur : c'est la
+        // raison pour laquelle la progression affichee lit le projete, pas
+        // le cumul.
+        final projAtMid = projectedCoveredM(3.025);
+        final projAfterRoundTrip = projectedCoveredM(3.025);
+        expect(projAfterRoundTrip, closeTo(projAtMid, 1.0));
 
-      // L'ecart (gonflement) est bien un ~aller-retour 3.025->3.030->3.025.
-      final legM = GeoUtils.haversineDistance(45.0, 3.025, 45.0, 3.030);
-      expect(
-        cumulAfterRoundTrip - cumulAtMid,
-        closeTo(legM * 2, legM * 0.1),
-      );
-    });
+        // L'ecart (gonflement) est bien un ~aller-retour 3.025->3.030->3.025.
+        final legM = GeoUtils.haversineDistance(45.0, 3.025, 45.0, 3.030);
+        expect(cumulAfterRoundTrip - cumulAtMid, closeTo(legM * 2, legM * 0.1));
+      },
+    );
 
-    test(
-        'distanceFromStartM (source projetee unique) croit de facon monotone '
+    test('distanceFromStartM (source projetee unique) croit de facon monotone '
         'le long du trace', () {
       // Progression le long du trace -> valeurs strictement croissantes.
       final atStart = projectedCoveredM(3.005);

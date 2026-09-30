@@ -164,14 +164,14 @@ class SkinTheme extends ThemeExtension<SkinTheme> {
 
   @override
   int get hashCode => Object.hash(
-        skin,
-        titleFontFamily,
-        headerStyle,
-        cardStyle,
-        usesImagery,
-        usesMonoData,
-        scrimOpacity,
-      );
+    skin,
+    titleFontFamily,
+    headerStyle,
+    cardStyle,
+    usesImagery,
+    usesMonoData,
+    scrimOpacity,
+  );
 
   @override
   String toString() => 'SkinTheme(${skin.name})';

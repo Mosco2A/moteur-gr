@@ -57,11 +57,11 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
     // paused), puis, à défaut (session persistée pas encore reprise en mémoire
     // après un redémarrage), l'état DÉRIVÉ `inProgress` du sentier actif.
     final tracking = ref.watch(trekSessionManagerProvider);
-    final liveActive = tracking.status == TrackingSessionStatus.recording ||
+    final liveActive =
+        tracking.status == TrackingSessionStatus.recording ||
         tracking.status == TrackingSessionStatus.paused;
-    final derivedInProgress = ref.watch(
-          currentTrailSummaryProvider.select((a) => a.value?.state),
-        ) ==
+    final derivedInProgress =
+        ref.watch(currentTrailSummaryProvider.select((a) => a.value?.state)) ==
         TrekLifecycleState.inProgress;
 
     // Rien à terminer -> pas de bouton (jamais de « Terminer » hors rando).

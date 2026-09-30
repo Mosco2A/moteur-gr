@@ -18,9 +18,7 @@ void main() {
     testWidgets('retourne SizedBox.shrink si position null', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: UserPositionLayer(position: null),
-          ),
+          home: Scaffold(body: UserPositionLayer(position: null)),
         ),
       );
 
@@ -37,12 +35,7 @@ void main() {
           home: Scaffold(
             body: FlutterMap(
               options: MapOptions(),
-              children: [
-                UserPositionLayer(
-                  position: pos,
-                  accuracy: 50.0,
-                ),
-              ],
+              children: [UserPositionLayer(position: pos, accuracy: 50.0)],
             ),
           ),
         ),
@@ -66,11 +59,7 @@ void main() {
           home: Scaffold(
             body: FlutterMap(
               options: MapOptions(),
-              children: [
-                UserPositionLayer(
-                  position: pos,
-                ),
-              ],
+              children: [UserPositionLayer(position: pos)],
             ),
           ),
         ),

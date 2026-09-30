@@ -18,8 +18,11 @@ void main() {
     test('contient au moins 2 sentiers de regions differentes', () {
       expect(TrailCatalog.all.length, greaterThanOrEqualTo(2));
       final regions = TrailCatalog.all.map((c) => c.region).toSet();
-      expect(regions.length, greaterThanOrEqualTo(2),
-          reason: 'les sentiers doivent couvrir des regions distinctes');
+      expect(
+        regions.length,
+        greaterThanOrEqualTo(2),
+        reason: 'les sentiers doivent couvrir des regions distinctes',
+      );
     });
 
     test('ids uniques et non vides', () {
@@ -51,7 +54,8 @@ void main() {
         expect(
           File(sentier.gpxAssetPath).existsSync(),
           isTrue,
-          reason: '${sentier.id} declare « ${sentier.gpxAssetPath} », absent du '
+          reason:
+              '${sentier.id} declare « ${sentier.gpxAssetPath} », absent du '
               'depot. Un asset DECLARE qui ne se lit pas est une ERREUR a '
               'l affichage de la carte, volontairement : mieux vaut un chemin '
               'VIDE — une absence NOMMEE, que la carte sait traiter — qu un '
@@ -74,13 +78,20 @@ void main() {
       // sont celles du premier. Le sentier gratuit a le meme droit que celui
       // qu'il fait decouvrir a nommer sa vraie localite : c'est une DONNEE, et
       // la genericite du moteur se prouve ailleurs (test dedie plus bas).
-      const interdits = ['corse', 'corsica', 'mare a mare', 'mare-a-mare', 'mam'];
+      const interdits = [
+        'corse',
+        'corsica',
+        'mare a mare',
+        'mare-a-mare',
+        'mam',
+      ];
       final sentiersMareAMare = <String>{
         TrailCatalog.defaultTrail.id,
         ...TrailCatalog.freeIds,
       };
-      final autres = TrailCatalog.all
-          .where((c) => !sentiersMareAMare.contains(c.id));
+      final autres = TrailCatalog.all.where(
+        (c) => !sentiersMareAMare.contains(c.id),
+      );
       for (final c in autres) {
         final blob = [
           c.id,
@@ -91,9 +102,13 @@ void main() {
           c.country,
         ].join(' ').toLowerCase();
         for (final mot in interdits) {
-          expect(blob.contains(mot), isFalse,
-              reason: 'config ${c.id} contient "$mot" (hardcode Corse interdit '
-                  'hors sentier de demo)');
+          expect(
+            blob.contains(mot),
+            isFalse,
+            reason:
+                'config ${c.id} contient "$mot" (hardcode Corse interdit '
+                'hors sentier de demo)',
+          );
         }
       }
     });
@@ -104,12 +119,18 @@ void main() {
     });
 
     test('resolveOrDefault retombe sur le defaut si id invalide/null', () {
-      expect(TrailCatalog.resolveOrDefault(null).id,
-          TrailCatalog.defaultTrail.id);
-      expect(TrailCatalog.resolveOrDefault('zzz').id,
-          TrailCatalog.defaultTrail.id);
-      expect(TrailCatalog.resolveOrDefault(pyreneesTrailConfig.id).id,
-          pyreneesTrailConfig.id);
+      expect(
+        TrailCatalog.resolveOrDefault(null).id,
+        TrailCatalog.defaultTrail.id,
+      );
+      expect(
+        TrailCatalog.resolveOrDefault('zzz').id,
+        TrailCatalog.defaultTrail.id,
+      );
+      expect(
+        TrailCatalog.resolveOrDefault(pyreneesTrailConfig.id).id,
+        pyreneesTrailConfig.id,
+      );
     });
 
     test('defaultTrail est le premier du catalogue', () {
@@ -150,8 +171,10 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      expect(container.read(trailConfigProvider).id,
-          TrailCatalog.defaultTrail.id);
+      expect(
+        container.read(trailConfigProvider).id,
+        TrailCatalog.defaultTrail.id,
+      );
     });
 
     test('changer la selection bascule la config active (F8D-02)', () {
@@ -167,8 +190,10 @@ void main() {
       expect(active.region, 'Pyrenees');
       // trailIdProvider / trailNameProvider suivent la bascule.
       expect(container.read(trailIdProvider), pyreneesTrailConfig.id);
-      expect(container.read(trailNameProvider),
-          pyreneesTrailConfig.displayName);
+      expect(
+        container.read(trailNameProvider),
+        pyreneesTrailConfig.displayName,
+      );
     });
 
     test('une selection invalide retombe sur le defaut (robustesse)', () {
@@ -176,15 +201,15 @@ void main() {
       addTearDown(container.dispose);
 
       container.read(selectedTrailIdProvider.notifier).state = 'obsolete';
-      expect(container.read(trailConfigProvider).id,
-          TrailCatalog.defaultTrail.id);
+      expect(
+        container.read(trailConfigProvider).id,
+        TrailCatalog.defaultTrail.id,
+      );
     });
 
     test('override de trailConfigProvider prime sur la selection', () {
       final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(pyreneesTrailConfig),
-        ],
+        overrides: [trailConfigProvider.overrideWithValue(pyreneesTrailConfig)],
       );
       addTearDown(container.dispose);
 

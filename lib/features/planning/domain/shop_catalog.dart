@@ -243,12 +243,7 @@ abstract final class ShopCatalog {
         stageNumber: 6,
         latitude: 42.0028,
         longitude: 9.0694,
-        products: [
-          'Petit-dejeuner',
-          'Restauration rapide',
-          'Bar',
-          'Boissons',
-        ],
+        products: ['Petit-dejeuner', 'Restauration rapide', 'Bar', 'Boissons'],
         openingHours: 'Ouvert a l\'annee (horaires a completer)',
       ),
       Shop(

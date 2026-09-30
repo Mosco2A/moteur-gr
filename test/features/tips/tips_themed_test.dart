@@ -19,7 +19,12 @@ void main() {
 
   group('TipCard — theme + liens reseau', () {
     test('resolvedTheme derive de la categorie si theme vide', () {
-      const c = TipCard(id: 'x', titleFr: 'T', contentFr: 'C', category: 'safety');
+      const c = TipCard(
+        id: 'x',
+        titleFr: 'T',
+        contentFr: 'C',
+        category: 'safety',
+      );
       expect(c.resolvedTheme, TipTheme.safety);
     });
 
@@ -79,30 +84,32 @@ void main() {
       expect(withTrail.any((c) => c.id == 'mam-gestion-eau'), isTrue);
     });
 
-    test('le socle est riche (>= 20 fiches, R7) et i18n 5 langues complet',
-        () async {
-      final socle = await TipCardsLoader.load(trailTipAssetPaths: const []);
-      // R7 : catalogue restaure facon GR20 (seed enrichi depuis les fiches
-      // communes/generiques). Garde-fou contre une nouvelle regression de seed.
-      expect(socle.length, greaterThanOrEqualTo(20));
-      // Toutes les fiches du socle sont "communes" (scope=all).
-      expect(socle.every((c) => c.scope == 'all'), isTrue);
-      // Contenu i18n INLINE renseigne dans les 5 langues (aucune traduction
-      // vide -> le repli FR ne masque pas un trou de donnees). Depuis la tache
-      // 555 le contenu est une LISTE DE POINTS, plus un paragraphe unique.
-      for (final c in socle) {
-        expect(c.titleFr, isNotEmpty, reason: '${c.id} titleFr');
-        expect(c.titleEn, isNotEmpty, reason: '${c.id} titleEn');
-        expect(c.titleDe, isNotEmpty, reason: '${c.id} titleDe');
-        expect(c.titleIt, isNotEmpty, reason: '${c.id} titleIt');
-        expect(c.titleEs, isNotEmpty, reason: '${c.id} titleEs');
-        expect(c.pointsFr, isNotEmpty, reason: '${c.id} pointsFr');
-        expect(c.pointsEn, isNotEmpty, reason: '${c.id} pointsEn');
-        expect(c.pointsDe, isNotEmpty, reason: '${c.id} pointsDe');
-        expect(c.pointsIt, isNotEmpty, reason: '${c.id} pointsIt');
-        expect(c.pointsEs, isNotEmpty, reason: '${c.id} pointsEs');
-      }
-    });
+    test(
+      'le socle est riche (>= 20 fiches, R7) et i18n 5 langues complet',
+      () async {
+        final socle = await TipCardsLoader.load(trailTipAssetPaths: const []);
+        // R7 : catalogue restaure facon GR20 (seed enrichi depuis les fiches
+        // communes/generiques). Garde-fou contre une nouvelle regression de seed.
+        expect(socle.length, greaterThanOrEqualTo(20));
+        // Toutes les fiches du socle sont "communes" (scope=all).
+        expect(socle.every((c) => c.scope == 'all'), isTrue);
+        // Contenu i18n INLINE renseigne dans les 5 langues (aucune traduction
+        // vide -> le repli FR ne masque pas un trou de donnees). Depuis la tache
+        // 555 le contenu est une LISTE DE POINTS, plus un paragraphe unique.
+        for (final c in socle) {
+          expect(c.titleFr, isNotEmpty, reason: '${c.id} titleFr');
+          expect(c.titleEn, isNotEmpty, reason: '${c.id} titleEn');
+          expect(c.titleDe, isNotEmpty, reason: '${c.id} titleDe');
+          expect(c.titleIt, isNotEmpty, reason: '${c.id} titleIt');
+          expect(c.titleEs, isNotEmpty, reason: '${c.id} titleEs');
+          expect(c.pointsFr, isNotEmpty, reason: '${c.id} pointsFr');
+          expect(c.pointsEn, isNotEmpty, reason: '${c.id} pointsEn');
+          expect(c.pointsDe, isNotEmpty, reason: '${c.id} pointsDe');
+          expect(c.pointsIt, isNotEmpty, reason: '${c.id} pointsIt');
+          expect(c.pointsEs, isNotEmpty, reason: '${c.id} pointsEs');
+        }
+      },
+    );
 
     test('le socle couvre les themes principaux du menu (R7)', () async {
       final socle = await TipCardsLoader.load(trailTipAssetPaths: const []);
@@ -126,11 +133,13 @@ void main() {
     test('regroupe par theme et trie les sections', () {
       final container = ProviderContainer(
         overrides: [
-          tipCardsProvider.overrideWith((ref) async => const [
-                TipCard(id: '1', titleFr: 'A', contentFr: 'c', theme: 'safety'),
-                TipCard(id: '2', titleFr: 'B', contentFr: 'c', theme: 'gear'),
-                TipCard(id: '3', titleFr: 'C', contentFr: 'c', theme: 'gear'),
-              ]),
+          tipCardsProvider.overrideWith(
+            (ref) async => const [
+              TipCard(id: '1', titleFr: 'A', contentFr: 'c', theme: 'safety'),
+              TipCard(id: '2', titleFr: 'B', contentFr: 'c', theme: 'gear'),
+              TipCard(id: '3', titleFr: 'C', contentFr: 'c', theme: 'gear'),
+            ],
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -150,34 +159,34 @@ void main() {
 
   group('TipsScreen (ecran par themes)', () {
     Widget wrap(List<TipCard> cards) => ProviderScope(
-          overrides: [
-            tipCardsProvider.overrideWith((ref) async => cards),
-          ],
-          child: TranslationProvider(
-            child: MaterialApp.router(
-              routerConfig: GoRouter(
-                initialLocation: '/tips',
-                routes: [
-                  GoRoute(path: '/tips', builder: (_, __) => const TipsScreen()),
-                  GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
-                ],
-              ),
-            ),
+      overrides: [tipCardsProvider.overrideWith((ref) async => cards)],
+      child: TranslationProvider(
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/tips',
+            routes: [
+              GoRoute(path: '/tips', builder: (_, __) => const TipsScreen()),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
           ),
-        );
-
-    testWidgets('affiche des titres de theme + le bouton reseau si url',
-        (tester) async {
-      await tester.pumpWidget(wrap(const [
-        TipCard(
-          id: '1',
-          titleFr: 'Dangers du sentier',
-          contentFr: 'Contenu danger',
-          theme: 'safety',
-          urlFacebook: 'https://facebook.com/brand',
         ),
-      ]));
+      ),
+    );
+
+    testWidgets('affiche des titres de theme + le bouton reseau si url', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(const [
+          TipCard(
+            id: '1',
+            titleFr: 'Dangers du sentier',
+            contentFr: 'Contenu danger',
+            theme: 'safety',
+            urlFacebook: 'https://facebook.com/brand',
+          ),
+        ]),
+      );
       await tester.pumpAndSettle();
 
       // Titre de theme (Securite, en majuscules dans l'UI).
@@ -189,9 +198,16 @@ void main() {
     });
 
     testWidgets('fiche sans url -> aucun bouton reseau', (tester) async {
-      await tester.pumpWidget(wrap(const [
-        TipCard(id: '1', titleFr: 'Sans lien', contentFr: 'Contenu', theme: 'gear'),
-      ]));
+      await tester.pumpWidget(
+        wrap(const [
+          TipCard(
+            id: '1',
+            titleFr: 'Sans lien',
+            contentFr: 'Contenu',
+            theme: 'gear',
+          ),
+        ]),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Sans lien'));
       await tester.pumpAndSettle();

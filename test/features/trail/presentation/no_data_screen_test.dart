@@ -33,7 +33,9 @@ void main() {
 
       // Icone downloading_rounded presente
       expect(
-        find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telecharger),
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.telecharger,
+        ),
         findsOneWidget,
       );
     });

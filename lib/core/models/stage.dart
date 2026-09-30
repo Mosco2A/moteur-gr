@@ -131,8 +131,9 @@ abstract class StageModel with _$StageModel {
       departureName: departureName == null
           ? const Value.absent()
           : Value(departureName),
-      arrivalName:
-          arrivalName == null ? const Value.absent() : Value(arrivalName),
+      arrivalName: arrivalName == null
+          ? const Value.absent()
+          : Value(arrivalName),
     );
   }
 

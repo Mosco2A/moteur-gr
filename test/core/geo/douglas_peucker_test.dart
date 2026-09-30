@@ -9,12 +9,14 @@ void main() {
       final points = <TrackPoint>[];
       for (var i = 0; i < count; i++) {
         final t = i / (count - 1);
-        points.add(TrackPoint(
-          lat: 45.0 + t * 0.1,
-          lng: 3.0 + t * 0.1,
-          altitude: 500 + t * 100,
-          distanceFromStart: t * 10000,
-        ));
+        points.add(
+          TrackPoint(
+            lat: 45.0 + t * 0.1,
+            lng: 3.0 + t * 0.1,
+            altitude: 500 + t * 100,
+            distanceFromStart: t * 10000,
+          ),
+        );
       }
       return points;
     }
@@ -23,15 +25,35 @@ void main() {
       // Trace quelconque avec des ecarts
       final points = [
         const TrackPoint(
-            lat: 45.000, lng: 3.000, altitude: 500, distanceFromStart: 0),
+          lat: 45.000,
+          lng: 3.000,
+          altitude: 500,
+          distanceFromStart: 0,
+        ),
         const TrackPoint(
-            lat: 45.010, lng: 3.005, altitude: 600, distanceFromStart: 1000),
+          lat: 45.010,
+          lng: 3.005,
+          altitude: 600,
+          distanceFromStart: 1000,
+        ),
         const TrackPoint(
-            lat: 45.005, lng: 3.010, altitude: 550, distanceFromStart: 2000),
+          lat: 45.005,
+          lng: 3.010,
+          altitude: 550,
+          distanceFromStart: 2000,
+        ),
         const TrackPoint(
-            lat: 44.990, lng: 3.015, altitude: 650, distanceFromStart: 3000),
+          lat: 44.990,
+          lng: 3.015,
+          altitude: 650,
+          distanceFromStart: 3000,
+        ),
         const TrackPoint(
-            lat: 45.015, lng: 3.030, altitude: 480, distanceFromStart: 4000),
+          lat: 45.015,
+          lng: 3.030,
+          altitude: 480,
+          distanceFromStart: 4000,
+        ),
       ];
 
       final simplified = DouglasPeucker.simplify(points, 0);
@@ -48,26 +70,36 @@ void main() {
 
       // Branche horizontale : 10 points a lat=45.0, lng de 3.0 a 3.01
       for (var i = 0; i < 10; i++) {
-        points.add(TrackPoint(
-          lat: 45.0,
-          lng: 3.0 + i * 0.001,
-          altitude: 500,
-          distanceFromStart: i * 100.0,
-        ));
+        points.add(
+          TrackPoint(
+            lat: 45.0,
+            lng: 3.0 + i * 0.001,
+            altitude: 500,
+            distanceFromStart: i * 100.0,
+          ),
+        );
       }
 
       // Coude : un point nettement hors-axe (~500m d ecart)
-      points.add(const TrackPoint(
-          lat: 45.005, lng: 3.010, altitude: 600, distanceFromStart: 1000));
+      points.add(
+        const TrackPoint(
+          lat: 45.005,
+          lng: 3.010,
+          altitude: 600,
+          distanceFromStart: 1000,
+        ),
+      );
 
       // Branche verticale : 10 points a lng=3.01, lat de 45.005 a 45.015
       for (var i = 1; i <= 10; i++) {
-        points.add(TrackPoint(
-          lat: 45.005 + i * 0.001,
-          lng: 3.010,
-          altitude: 700,
-          distanceFromStart: 1000.0 + i * 100.0,
-        ));
+        points.add(
+          TrackPoint(
+            lat: 45.005 + i * 0.001,
+            lng: 3.010,
+            altitude: 700,
+            distanceFromStart: 1000.0 + i * 100.0,
+          ),
+        );
       }
 
       final simplified = DouglasPeucker.simplify(points, 50);
@@ -94,9 +126,17 @@ void main() {
     test('moins de 3 points retourne la liste originale', () {
       final points = [
         const TrackPoint(
-            lat: 45.0, lng: 3.0, altitude: 500, distanceFromStart: 0),
+          lat: 45.0,
+          lng: 3.0,
+          altitude: 500,
+          distanceFromStart: 0,
+        ),
         const TrackPoint(
-            lat: 45.1, lng: 3.1, altitude: 600, distanceFromStart: 1000),
+          lat: 45.1,
+          lng: 3.1,
+          altitude: 600,
+          distanceFromStart: 1000,
+        ),
       ];
 
       final simplified = DouglasPeucker.simplify(points, 100);
@@ -116,14 +156,16 @@ void main() {
         final zigzag = (i % 4 == 1)
             ? 0.005
             : (i % 4 == 3)
-                ? -0.00005
-                : 0.0;
-        points.add(TrackPoint(
-          lat: 45.0 + i * 0.0001 + zigzag,
-          lng: 3.0 + i * 0.0001,
-          altitude: 500.0 + i,
-          distanceFromStart: i * 100.0,
-        ));
+            ? -0.00005
+            : 0.0;
+        points.add(
+          TrackPoint(
+            lat: 45.0 + i * 0.0001 + zigzag,
+            lng: 3.0 + i * 0.0001,
+            altitude: 500.0 + i,
+            distanceFromStart: i * 100.0,
+          ),
+        );
       }
 
       // Ne doit pas planter (version iterative)

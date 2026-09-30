@@ -11,7 +11,8 @@ import '../domain/past_hike.dart';
 /// fiche info consomment ce provider.
 final hikerProfileProvider =
     AsyncNotifierProvider<HikerProfileNotifier, HikerProfile>(
-        HikerProfileNotifier.new);
+      HikerProfileNotifier.new,
+    );
 
 /// Notifier du profil randonneur.
 class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
@@ -55,7 +56,8 @@ class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
 /// Randos passees du randonneur (max 5) — StepWays LOT 4, Ph3.
 final pastHikesProvider =
     AsyncNotifierProvider<PastHikesNotifier, List<PastHike>>(
-        PastHikesNotifier.new);
+      PastHikesNotifier.new,
+    );
 
 /// Notifier des randos passees.
 class PastHikesNotifier extends AsyncNotifier<List<PastHike>> {

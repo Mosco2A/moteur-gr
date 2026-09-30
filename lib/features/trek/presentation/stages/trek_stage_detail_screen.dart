@@ -194,7 +194,9 @@ class _StageDetailContent extends ConsumerWidget {
   /// quand ils sont fournis ; (2) a defaut, on derive les deux extremites du
   /// NOM de l'etape lui-meme (convention socle « Depart — Arrivee », separateur
   /// tiret demi-cadratin ou trait d'union). Aucune localite codee en dur.
-  ({String departure, String arrival})? _departureArrival(BuildContext context) {
+  ({String departure, String arrival})? _departureArrival(
+    BuildContext context,
+  ) {
     final dep = stage.departureName.trim();
     final arr = stage.arrivalName.trim();
     if (dep.isNotEmpty && arr.isNotEmpty) {
@@ -501,7 +503,11 @@ class _DepartureArrivalLine extends StatelessWidget {
           .replaceAll('{to}', arrival),
       child: Row(
         children: [
-          StepIcon(StepwaysIcons.enregistrer, size: 22, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.enregistrer,
+            size: 22,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -689,11 +695,7 @@ class _WaterPointTile extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: LigneDeLieu(
-              lieu: LieuCliquable(
-                nom: poi.name,
-                lat: poi.lat,
-                lng: poi.lng,
-              ),
+              lieu: LieuCliquable(nom: poi.name, lat: poi.lat, lng: poi.lng),
               compact: true,
             ),
           ),
@@ -985,7 +987,11 @@ class _AccommodationSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const StepIcon(StepwaysIcons.hebergement, size: 20, color: AppTheme.orangeDifficile),
+            const StepIcon(
+              StepwaysIcons.hebergement,
+              size: 20,
+              color: AppTheme.orangeDifficile,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.accommodation.title,

@@ -192,23 +192,17 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final content = _contentController.text.trim();
     if (content.isEmpty) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.feedback.emptyMessage)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.feedback.emptyMessage)));
       return;
     }
 
-    final issue = await ref.read(feedbackProvider.notifier).submitFeedback(
-          type: _selectedType,
-          content: content,
-          rating: _rating,
-        );
+    final issue = await ref
+        .read(feedbackProvider.notifier)
+        .submitFeedback(type: _selectedType, content: content, rating: _rating);
 
     if (!mounted) return;
     if (issue == FeedbackIssue.echec) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.feedback.sendFailed)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.feedback.sendFailed)));
       return;
     }
 
@@ -217,10 +211,14 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     // TROIS ISSUES, TROIS PHRASES (tache 596, C1). « Merci pour votre retour »
     // est reserve a un message REELLEMENT parti ; garde sur le telephone, on
     // le dit tel quel.
-    messenger.showSnackBar(SnackBar(
-      content: Text(issue == FeedbackIssue.envoye
-          ? t.feedback.sentThanks
-          : t.feedback.keptLocally),
-    ));
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          issue == FeedbackIssue.envoye
+              ? t.feedback.sentThanks
+              : t.feedback.keptLocally,
+        ),
+      ),
+    );
   }
 }

@@ -130,7 +130,8 @@ class Shop {
         orElse: () => ShopKind.epicerie,
       ),
       stageNumber: (json['stageNumber'] as num?)?.toInt() ?? 0,
-      products: (json['products'] as List<dynamic>?)
+      products:
+          (json['products'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const <String>[],
@@ -241,7 +242,8 @@ class TrailShops {
   factory TrailShops.fromJson(Map<String, dynamic> json) {
     return TrailShops(
       trailId: json['trailId'] as String? ?? '',
-      shops: (json['shops'] as List<dynamic>?)
+      shops:
+          (json['shops'] as List<dynamic>?)
               ?.whereType<Map<String, dynamic>>()
               .map(Shop.fromJson)
               .toList() ??

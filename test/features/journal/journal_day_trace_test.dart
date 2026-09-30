@@ -65,7 +65,10 @@ void main() {
                   path: '/journal',
                   builder: (_, __) => const JournalScreen(trailId: trailId),
                 ),
-                GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+                GoRoute(
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -76,45 +79,50 @@ void main() {
   }
 
   group('L4-2 — trace du jour', () {
-    test('la trace suit la journee selectionnee, pas le sentier entier',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un');
-      await noteAt(db, DateTime(2026, 6, 12, 9), 'Jour trois');
-      await traceAt(db, DateTime(2026, 6, 10, 10), 42.10);
-      await traceAt(db, DateTime(2026, 6, 10, 11), 42.11);
-      await traceAt(db, DateTime(2026, 6, 12, 10), 42.30);
+    test(
+      'la trace suit la journee selectionnee, pas le sentier entier',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+        await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un');
+        await noteAt(db, DateTime(2026, 6, 12, 9), 'Jour trois');
+        await traceAt(db, DateTime(2026, 6, 10, 10), 42.10);
+        await traceAt(db, DateTime(2026, 6, 10, 11), 42.11);
+        await traceAt(db, DateTime(2026, 6, 12, 10), 42.30);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        // L7-3 : le journal est verrouille en mode demo ; ces tests
-        // regardent le journal OUVERT, on le declare deverrouille.
-        isDemoModeProvider(trailId).overrideWith((ref) async => false),
-        trailIdProvider.overrideWithValue(trailId),
-      ]);
-      addTearDown(container.dispose);
+        final container = ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            // L7-3 : le journal est verrouille en mode demo ; ces tests
+            // regardent le journal OUVERT, on le declare deverrouille.
+            isDemoModeProvider(trailId).overrideWith((ref) async => false),
+            trailIdProvider.overrideWithValue(trailId),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      container.read(journalDaysProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+        container.read(journalDaysProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      // Par defaut, la journee la plus recente : 1 point.
-      var trace = await container.read(journalDayTraceProvider.future);
-      expect(trace.length, 1);
-      expect(trace.single.lat, 42.30);
+        // Par defaut, la journee la plus recente : 1 point.
+        var trace = await container.read(journalDayTraceProvider.future);
+        expect(trace.length, 1);
+        expect(trace.single.lat, 42.30);
 
-      // On remonte au jour 1 : sa trace est TOUJOURS la (c'est le point du
-      // socle L3-1) et elle porte bien 2 points.
-      container
-          .read(journalSelectedDayRawProvider.notifier)
-          .select(DateTime(2026, 6, 10));
-      trace = await container.read(journalDayTraceProvider.future);
-      expect(trace.length, 2);
-      expect(trace.first.lat, 42.10);
-    });
+        // On remonte au jour 1 : sa trace est TOUJOURS la (c'est le point du
+        // socle L3-1) et elle porte bien 2 points.
+        container
+            .read(journalSelectedDayRawProvider.notifier)
+            .select(DateTime(2026, 6, 10));
+        trace = await container.read(journalDayTraceProvider.future);
+        expect(trace.length, 2);
+        expect(trace.first.lat, 42.10);
+      },
+    );
 
-    testWidgets('la carte du jour apparait quand la journee porte une trace',
-        (tester) async {
+    testWidgets('la carte du jour apparait quand la journee porte une trace', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un');
@@ -127,8 +135,9 @@ void main() {
       expect(find.text(t.journal.dayTrace), findsOneWidget);
     });
 
-    testWidgets('aucune carte quand la journee n a pas de trace',
-        (tester) async {
+    testWidgets('aucune carte quand la journee n a pas de trace', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
       await noteAt(db, DateTime(2026, 6, 10, 9), 'Jour un sans GPS');

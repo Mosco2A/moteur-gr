@@ -1,4 +1,3 @@
-
 import '../../../i18n/translations.g.dart';
 import '../domain/models/stage_accommodation.dart';
 import '../../../core/branding/stepways_icons.dart';

@@ -47,9 +47,9 @@ class NoAdsDao extends DatabaseAccessor<AppDatabase> with _$NoAdsDaoMixin {
   /// #99404 interdit. Il n'en est plus ecrit, et [MonetizationService.
   /// isSubscriberActive] n'en accepte plus.
   Future<int> deleteExpired(DateTime now) {
-    return (delete(noAdsState)
-          ..where((t) => t.expiresAt.isSmallerThanValue(now)))
-        .go();
+    return (delete(
+      noAdsState,
+    )..where((t) => t.expiresAt.isSmallerThanValue(now))).go();
   }
 
   /// Supprime toutes les sources sans-pub d'une [source] donnee.

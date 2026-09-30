@@ -27,9 +27,15 @@ void main() {
   const secondary = Color(0xFF1565C0);
 
   ThemeData light(AppSkin skin) => AppTheme.buildLightTheme(
-      primaryColor: primary, secondaryColor: secondary, skin: skin);
+    primaryColor: primary,
+    secondaryColor: secondary,
+    skin: skin,
+  );
   ThemeData dark(AppSkin skin) => AppTheme.buildDarkTheme(
-      primaryColor: primary, secondaryColor: secondary, skin: skin);
+    primaryColor: primary,
+    secondaryColor: secondary,
+    skin: skin,
+  );
 
   /// Laisse la future de chargement google_fonts se resoudre puis absorbe
   /// l'exception benigne (police non bundlee + offline en test). Toute AUTRE
@@ -38,8 +44,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1));
     final ex = tester.takeException();
     if (ex != null) {
-      expect(ex.toString().toLowerCase(), contains('font'),
-          reason: 'seule l\'exception de chargement google_fonts est toleree');
+      expect(
+        ex.toString().toLowerCase(),
+        contains('font'),
+        reason: 'seule l\'exception de chargement google_fonts est toleree',
+      );
     }
   }
 
@@ -179,14 +188,17 @@ void main() {
 
     test('une difference de champ casse l\'egalite', () {
       expect(SentierVivantSkin == TopographiqueSkin, isFalse);
-      expect(SentierVivantSkin.copyWith(scrimOpacity: 0.1) == SentierVivantSkin,
-          isFalse);
+      expect(
+        SentierVivantSkin.copyWith(scrimOpacity: 0.1) == SentierVivantSkin,
+        isFalse,
+      );
     });
   });
 
   group('SW-SKIN-L2 — injection dans ThemeData.extensions', () {
-    testWidgets('buildLightTheme(skin: topographique) expose la peau topo',
-        (tester) async {
+    testWidgets('buildLightTheme(skin: topographique) expose la peau topo', (
+      tester,
+    ) async {
       final ext = light(AppSkin.topographique).extension<SkinTheme>();
       expect(ext, isNotNull);
       expect(ext, TopographiqueSkin);
@@ -194,21 +206,28 @@ void main() {
       await drainFontLoad(tester);
     });
 
-    testWidgets('buildDarkTheme(skin: grandAir) expose la peau grand air',
-        (tester) async {
+    testWidgets('buildDarkTheme(skin: grandAir) expose la peau grand air', (
+      tester,
+    ) async {
       final ext = dark(AppSkin.grandAir).extension<SkinTheme>();
       expect(ext, GrandAirSkin);
       await drainFontLoad(tester);
     });
 
-    testWidgets('defaut sentierVivant expose bien Sentier Vivant (clair + sombre)',
-        (tester) async {
-      expect(light(AppSkin.sentierVivant).extension<SkinTheme>(),
-          SentierVivantSkin);
-      expect(dark(AppSkin.sentierVivant).extension<SkinTheme>(),
-          SentierVivantSkin);
-      await drainFontLoad(tester);
-    });
+    testWidgets(
+      'defaut sentierVivant expose bien Sentier Vivant (clair + sombre)',
+      (tester) async {
+        expect(
+          light(AppSkin.sentierVivant).extension<SkinTheme>(),
+          SentierVivantSkin,
+        );
+        expect(
+          dark(AppSkin.sentierVivant).extension<SkinTheme>(),
+          SentierVivantSkin,
+        );
+        await drainFontLoad(tester);
+      },
+    );
   });
 
   group('SkinTheme.of — helper de lecture avec fallback', () {
@@ -217,27 +236,32 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: light(AppSkin.topographique),
-          home: Builder(builder: (context) {
-            lue = SkinTheme.of(context);
-            return const SizedBox.shrink();
-          }),
+          home: Builder(
+            builder: (context) {
+              lue = SkinTheme.of(context);
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       );
       expect(lue, TopographiqueSkin);
       await drainFontLoad(tester);
     });
 
-    testWidgets('fallback SentierVivant si aucune extension injectee',
-        (tester) async {
+    testWidgets('fallback SentierVivant si aucune extension injectee', (
+      tester,
+    ) async {
       late SkinTheme lue;
       await tester.pumpWidget(
         MaterialApp(
           // Theme SANS extension SkinTheme (ThemeData.light() brut).
           theme: ThemeData.light(),
-          home: Builder(builder: (context) {
-            lue = SkinTheme.of(context);
-            return const SizedBox.shrink();
-          }),
+          home: Builder(
+            builder: (context) {
+              lue = SkinTheme.of(context);
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       );
       expect(lue, SentierVivantSkin);
@@ -255,8 +279,9 @@ void main() {
   // ne peut changer tant que les composants ne lisent pas SkinTheme (L5/L6).
   // -------------------------------------------------------------------------
   group('SW-SKIN-L2 — neutralite visuelle (non-regression ThemeData)', () {
-    testWidgets('ColorScheme clair inchange (valeurs attendues avant L2)',
-        (tester) async {
+    testWidgets('ColorScheme clair inchange (valeurs attendues avant L2)', (
+      tester,
+    ) async {
       final cs = light(AppSkin.sentierVivant).colorScheme;
       expect(cs.brightness, Brightness.light);
       expect(cs.primary, primary);
@@ -270,8 +295,9 @@ void main() {
       await drainFontLoad(tester);
     });
 
-    testWidgets('ColorScheme sombre inchange (valeurs attendues avant L2)',
-        (tester) async {
+    testWidgets('ColorScheme sombre inchange (valeurs attendues avant L2)', (
+      tester,
+    ) async {
       final cs = dark(AppSkin.sentierVivant).colorScheme;
       expect(cs.brightness, Brightness.dark);
       expect(cs.primaryContainer, primary);
@@ -283,21 +309,25 @@ void main() {
       await drainFontLoad(tester);
     });
 
-    testWidgets('scaffold / appbar / bottom nav inchanges (clair)',
-        (tester) async {
+    testWidgets('scaffold / appbar / bottom nav inchanges (clair)', (
+      tester,
+    ) async {
       final th = light(AppSkin.sentierVivant);
       expect(th.scaffoldBackgroundColor, AppTheme.grisFond);
       expect(th.appBarTheme.backgroundColor, primary);
       expect(th.appBarTheme.elevation, 4);
       expect(th.appBarTheme.centerTitle, isTrue);
       expect(th.bottomNavigationBarTheme.backgroundColor, AppTheme.blancNeige);
-      expect(th.bottomNavigationBarTheme.unselectedItemColor,
-          AppTheme.grisGranite);
+      expect(
+        th.bottomNavigationBarTheme.unselectedItemColor,
+        AppTheme.grisGranite,
+      );
       await drainFontLoad(tester);
     });
 
-    testWidgets('typographie inchangee (familles + tailles/poids, clair)',
-        (tester) async {
+    testWidgets('typographie inchangee (familles + tailles/poids, clair)', (
+      tester,
+    ) async {
       final tt = light(AppSkin.sentierVivant).textTheme;
       // Familles (retour Chris 09/09 : parite GR20) : Montserrat partout.
       expect(tt.displayLarge?.fontFamily, contains('Montserrat'));
@@ -312,8 +342,9 @@ void main() {
       await drainFontLoad(tester);
     });
 
-    testWidgets('les 3 peaux produisent le MEME ThemeData hors extension (L2)',
-        (tester) async {
+    testWidgets('les 3 peaux produisent le MEME ThemeData hors extension (L2)', (
+      tester,
+    ) async {
       // En L2, aucune peau ne modifie encore couleurs/typo/boutons : seul le
       // SkinTheme injecte differe. On le prouve sur les champs les plus visibles.
       final sv = light(AppSkin.sentierVivant);
@@ -325,15 +356,23 @@ void main() {
         expect(other.colorScheme.surface, sv.colorScheme.surface);
         expect(other.colorScheme.onSurface, sv.colorScheme.onSurface);
         expect(other.scaffoldBackgroundColor, sv.scaffoldBackgroundColor);
-        expect(other.appBarTheme.backgroundColor,
-            sv.appBarTheme.backgroundColor);
+        expect(
+          other.appBarTheme.backgroundColor,
+          sv.appBarTheme.backgroundColor,
+        );
         // Typo identique (familles + tailles/poids/couleur).
-        expect(other.textTheme.displayLarge?.fontFamily,
-            sv.textTheme.displayLarge?.fontFamily);
-        expect(other.textTheme.displayLarge?.fontSize,
-            sv.textTheme.displayLarge?.fontSize);
-        expect(other.textTheme.bodyMedium?.color,
-            sv.textTheme.bodyMedium?.color);
+        expect(
+          other.textTheme.displayLarge?.fontFamily,
+          sv.textTheme.displayLarge?.fontFamily,
+        );
+        expect(
+          other.textTheme.displayLarge?.fontSize,
+          sv.textTheme.displayLarge?.fontSize,
+        );
+        expect(
+          other.textTheme.bodyMedium?.color,
+          sv.textTheme.bodyMedium?.color,
+        );
       }
 
       // Seule l'extension differe -> c'est la SEULE chose que L2 ajoute.

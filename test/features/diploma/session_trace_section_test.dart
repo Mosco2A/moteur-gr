@@ -14,21 +14,18 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// session (SessionTracePainter) et retombe sur le message
 /// recapNoMap si aucun trace n'est disponible.
 void main() {
-  SessionTrackPoint point(int id, double lat, double lng) =>
-      SessionTrackPoint(
-        id: id,
-        trailId: 'sentier-bleu',
-        lat: lat,
-        lng: lng,
-        altitude: 1000,
-        recordedAt: DateTime.utc(2026, 6, 1, 8, id),
-      );
+  SessionTrackPoint point(int id, double lat, double lng) => SessionTrackPoint(
+    id: id,
+    trailId: 'sentier-bleu',
+    lat: lat,
+    lng: lng,
+    altitude: 1000,
+    recordedAt: DateTime.utc(2026, 6, 1, 8, id),
+  );
 
   Widget harness(List<SessionTrackPoint> points) {
     return ProviderScope(
-      overrides: [
-        sessionTraceProvider.overrideWith((ref) async => points),
-      ],
+      overrides: [sessionTraceProvider.overrideWith((ref) async => points)],
       child: MaterialApp(
         home: Scaffold(
           body: Consumer(
@@ -39,9 +36,7 @@ void main() {
                     ? Text(t.diploma.recapNoMap)
                     : CustomPaint(
                         painter: SessionTracePainter(
-                          points: [
-                            for (final p in pts) Offset(p.lng, p.lat),
-                          ],
+                          points: [for (final p in pts) Offset(p.lng, p.lat)],
                           color: Colors.green,
                         ),
                       ),
@@ -56,22 +51,20 @@ void main() {
   }
 
   group('Recap diplome — trace GPS reel (F3)', () {
-    testWidgets('trace present : painter rendu, pas de placeholder',
-        (tester) async {
-      await tester.pumpWidget(harness([
-        point(1, 45.10, 3.10),
-        point(2, 45.12, 3.13),
-        point(3, 45.15, 3.16),
-      ]));
+    testWidgets('trace present : painter rendu, pas de placeholder', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        harness([
+          point(1, 45.10, 3.10),
+          point(2, 45.12, 3.13),
+          point(3, 45.15, 3.16),
+        ]),
+      );
       await tester.pumpAndSettle();
 
-      final custom = tester.widgetList<CustomPaint>(
-        find.byType(CustomPaint),
-      );
-      expect(
-        custom.any((w) => w.painter is SessionTracePainter),
-        isTrue,
-      );
+      final custom = tester.widgetList<CustomPaint>(find.byType(CustomPaint));
+      expect(custom.any((w) => w.painter is SessionTracePainter), isTrue);
       expect(find.text(t.diploma.recapNoMap), findsNothing);
     });
 

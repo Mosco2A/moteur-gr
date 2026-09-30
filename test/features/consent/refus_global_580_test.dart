@@ -45,8 +45,9 @@ import '../../structurel/parcours_reel.dart';
 void main() {
   group('Y1-a — le refus global est OFFERT sur l ecran atteignable', () {
     for (final langue in AppLocale.values) {
-      testWidgets('/consent offre « tout refuser » en ${langue.languageCode}',
-          (tester) async {
+      testWidgets('/consent offre « tout refuser » en ${langue.languageCode}', (
+        tester,
+      ) async {
         LocaleSettings.setLocale(langue);
         addTearDown(() => LocaleSettings.setLocaleRaw('fr'));
 
@@ -57,12 +58,16 @@ void main() {
         await demonterAppli(tester);
         erreursDeRendu(tester);
 
-        expect(arrivee, '/consent',
-            reason: 'la route du consentement doit rester atteignable');
+        expect(
+          arrivee,
+          '/consent',
+          reason: 'la route du consentement doit rester atteignable',
+        );
         expect(
           gestes.any((l) => l.toLowerCase().contains(attendu.toLowerCase())),
           isTrue,
-          reason: 'AUCUN MOYEN DE TOUT REFUSER sur le seul ecran de '
+          reason:
+              'AUCUN MOYEN DE TOUT REFUSER sur le seul ecran de '
               'consentement atteignable. Le libelle « $attendu » existe dans '
               'les cinq langues et ne vit que sur un ecran sans route. Le RGPD '
               'veut qu un refus soit aussi simple qu un accord.\n'
@@ -87,92 +92,114 @@ void main() {
       await db.close();
     });
 
-    HikerProfileRepository depot() => HikerProfileRepository(db: db, prefs: prefs);
+    HikerProfileRepository depot() =>
+        HikerProfileRepository(db: db, prefs: prefs);
 
     testWidgets(
-        'apres « tout refuser » : les quatre finalites sont refusees ET la '
-        'morphologie a disparu du stockage', (tester) async {
-      // ETAT DE DEPART : tout accorde, et une morphologie enregistree — la
-      // donnee de sante (art. 9) que le consentement healthData protege.
-      final service = ConsentService();
-      await service.initialize();
-      for (final purpose in ConsentPurpose.values) {
-        await service.grant(purpose);
-      }
-      await depot().saveProfile(
-        HikerProfile.empty.copyWith(age: 72, heightCm: 172, weightKg: 88),
-      );
-      expect((await depot().load()).age, 72, reason: 'mise en place cassee');
+      'apres « tout refuser » : les quatre finalites sont refusees ET la '
+      'morphologie a disparu du stockage',
+      (tester) async {
+        // ETAT DE DEPART : tout accorde, et une morphologie enregistree — la
+        // donnee de sante (art. 9) que le consentement healthData protege.
+        final service = ConsentService();
+        await service.initialize();
+        for (final purpose in ConsentPurpose.values) {
+          await service.grant(purpose);
+        }
+        await depot().saveProfile(
+          HikerProfile.empty.copyWith(age: 72, heightCm: 172, weightKg: 88),
+        );
+        expect((await depot().load()).age, 72, reason: 'mise en place cassee');
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            databaseProvider.overrideWithValue(db),
-            hikerProfileRepositoryProvider.overrideWithValue(depot()),
-          ],
-          child: TranslationProvider(
-            // `AppHeader` interroge le routeur : l'ecran se monte dans un
-            // GoRouter minimal, comme en production.
-            child: MaterialApp.router(
-              routerConfig: GoRouter(
-                initialLocation: '/consent',
-                routes: [
-                  GoRoute(
-                    path: '/consent',
-                    builder: (_, __) => const ConsentSettingsScreen(),
-                  ),
-                  GoRoute(
-                    path: '/my-treks',
-                    builder: (_, __) => const SizedBox(),
-                  ),
-                ],
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              databaseProvider.overrideWithValue(db),
+              hikerProfileRepositoryProvider.overrideWithValue(depot()),
+            ],
+            child: TranslationProvider(
+              // `AppHeader` interroge le routeur : l'ecran se monte dans un
+              // GoRouter minimal, comme en production.
+              child: MaterialApp.router(
+                routerConfig: GoRouter(
+                  initialLocation: '/consent',
+                  routes: [
+                    GoRoute(
+                      path: '/consent',
+                      builder: (_, __) => const ConsentSettingsScreen(),
+                    ),
+                    GoRoute(
+                      path: '/my-treks',
+                      builder: (_, __) => const SizedBox(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // LE GESTE COMPLET : le bouton de l'ecran, puis la confirmation qui dit
-      // ce qu'il emporte. Refuser reste le chemin le plus court de l'ecran —
-      // deux gestes contre quatre bascules.
-      await tester.tap(find.text(t.consent.declineAll));
-      await tester.pumpAndSettle();
-      expect(find.byType(AlertDialog), findsOneWidget,
-          reason: 'le refus global doit dire ce qu il efface AVANT d effacer');
-      expect(find.text(t.consent.declineAllNote), findsOneWidget,
-          reason: 'la confirmation doit nommer ce que le refus emporte');
-      await tester.tap(find.byKey(const ValueKey('consent-decline-all-confirm')));
-      await tester.pumpAndSettle();
+        // LE GESTE COMPLET : le bouton de l'ecran, puis la confirmation qui dit
+        // ce qu'il emporte. Refuser reste le chemin le plus court de l'ecran —
+        // deux gestes contre quatre bascules.
+        await tester.tap(find.text(t.consent.declineAll));
+        await tester.pumpAndSettle();
+        expect(
+          find.byType(AlertDialog),
+          findsOneWidget,
+          reason: 'le refus global doit dire ce qu il efface AVANT d effacer',
+        );
+        expect(
+          find.text(t.consent.declineAllNote),
+          findsOneWidget,
+          reason: 'la confirmation doit nommer ce que le refus emporte',
+        );
+        await tester.tap(
+          find.byKey(const ValueKey('consent-decline-all-confirm')),
+        );
+        await tester.pumpAndSettle();
 
-      // (1) LES QUATRE FINALITES PORTENT UNE DECISION NEGATIVE HORODATEE. Un
-      // refus est une decision, pas un silence : l application ne doit plus
-      // redemander, et le journal doit pouvoir dire quand il a ete pose.
-      final relu = ConsentService();
-      await relu.initialize();
-      for (final purpose in ConsentPurpose.values) {
-        final etat = relu.stateOf(purpose);
-        expect(etat.granted, isFalse,
-            reason: '$purpose reste accorde apres un refus global');
-        expect(etat.decidedAt, isNotNull,
-            reason: '$purpose n a pas ete DECIDE : un refus global doit poser '
+        // (1) LES QUATRE FINALITES PORTENT UNE DECISION NEGATIVE HORODATEE. Un
+        // refus est une decision, pas un silence : l application ne doit plus
+        // redemander, et le journal doit pouvoir dire quand il a ete pose.
+        final relu = ConsentService();
+        await relu.initialize();
+        for (final purpose in ConsentPurpose.values) {
+          final etat = relu.stateOf(purpose);
+          expect(
+            etat.granted,
+            isFalse,
+            reason: '$purpose reste accorde apres un refus global',
+          );
+          expect(
+            etat.decidedAt,
+            isNotNull,
+            reason:
+                '$purpose n a pas ete DECIDE : un refus global doit poser '
                 'une decision, sinon l application redemande comme si rien '
-                'n avait ete dit');
-        expect(relu.needsPrompt(purpose), isFalse,
-            reason: '$purpose serait redemande : le refus n a pas ete entendu');
-      }
+                'n avait ete dit',
+          );
+          expect(
+            relu.needsPrompt(purpose),
+            isFalse,
+            reason: '$purpose serait redemande : le refus n a pas ete entendu',
+          );
+        }
 
-      // (2) ET LA DONNEE PROTEGEE S EN VA. Relue par un depot NEUF, donc
-      // depuis le stockage et jamais depuis un cache d ecran.
-      final profil = await depot().load();
-      expect(
-        [profil.age, profil.heightCm, profil.weightKg],
-        [0, 0, 0],
-        reason: 'LA MORPHOLOGIE A SURVECU AU REFUS GLOBAL. Un refus qui laisse '
-            'la donnee sur l appareil est un affichage, pas un refus — c est '
-            'exactement le defaut N1 corrige par le LOT I sur la fiche '
-            'randonneur.',
-      );
-    });
+        // (2) ET LA DONNEE PROTEGEE S EN VA. Relue par un depot NEUF, donc
+        // depuis le stockage et jamais depuis un cache d ecran.
+        final profil = await depot().load();
+        expect(
+          [profil.age, profil.heightCm, profil.weightKg],
+          [0, 0, 0],
+          reason:
+              'LA MORPHOLOGIE A SURVECU AU REFUS GLOBAL. Un refus qui laisse '
+              'la donnee sur l appareil est un affichage, pas un refus — c est '
+              'exactement le defaut N1 corrige par le LOT I sur la fiche '
+              'randonneur.',
+        );
+      },
+    );
   });
 }

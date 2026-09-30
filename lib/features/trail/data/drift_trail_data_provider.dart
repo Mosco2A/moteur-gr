@@ -18,8 +18,8 @@ class DriftTrailDataProvider implements TrailDataProvider {
   DriftTrailDataProvider({
     required AppDatabase db,
     required TrailConfig trailConfig,
-  })  : _db = db,
-        _trailConfig = trailConfig;
+  }) : _db = db,
+       _trailConfig = trailConfig;
 
   final AppDatabase _db;
   final TrailConfig _trailConfig;
@@ -59,8 +59,7 @@ class DriftTrailDataProvider implements TrailDataProvider {
     // 2. Etapes (optionnellement filtrees par numero)
     final stages = <TrailStage>[];
     for (final itinerary in itineraries) {
-      final itineraryStages =
-          await stagesDao.getByItineraryId(itinerary.id);
+      final itineraryStages = await stagesDao.getByItineraryId(itinerary.id);
       stages.addAll(
         stageNumber == null
             ? itineraryStages
@@ -72,7 +71,9 @@ class DriftTrailDataProvider implements TrailDataProvider {
     final result = <StageAccommodation>[];
     for (final stage in stages) {
       final rows = await accommodationsDao.getByStageId(stage.id);
-      result.addAll(rows.map((row) => StageAccommodation(
+      result.addAll(
+        rows.map(
+          (row) => StageAccommodation(
             id: row.id,
             stageId: row.stageId,
             stageNumber: stage.stageNumber,
@@ -92,7 +93,9 @@ class DriftTrailDataProvider implements TrailDataProvider {
             // L ADRESSE POSTALE (tache 641, bug 15) : elle vient de la base,
             // comme tout le reste de la fiche.
             address: row.address,
-          )));
+          ),
+        ),
+      );
     }
     return result;
   }

@@ -80,79 +80,116 @@ void main() {
   group('LOT 596 C2 — l etat du coffre est DECLARE, et la declaration est '
       'verifiee sur le code', () {
     test('aujourd hui le coffre n est pas alimente', () {
-      expect(CoffreDeReconnexion.alimente, isFalse,
-          reason: 'si quelqu un a branche un ecrivain, il doit basculer cette '
-              'declaration — et l invariante ci-dessous l y oblige');
+      expect(
+        CoffreDeReconnexion.alimente,
+        isFalse,
+        reason:
+            'si quelqu un a branche un ecrivain, il doit basculer cette '
+            'declaration — et l invariante ci-dessous l y oblige',
+      );
     });
 
     test('INVARIANTE : « alimente » et le code reel disent la MEME chose', () {
       // `backupToCloud` ne figure plus dans ce compte : la methode n'existe
       // plus (tache 612). La chercher aurait donne un zero rassurant qui ne
       // mesurait rien.
-      final ecrivains = _appelantsHorsChaine('exportWithCode') +
+      final ecrivains =
+          _appelantsHorsChaine('exportWithCode') +
           _appelantsHorsChaine('pushEncryptedBackup');
 
       if (CoffreDeReconnexion.alimente) {
-        expect(ecrivains, greaterThan(0),
-            reason: 'le coffre est declare alimente mais AUCUN code de '
-                'production n y ecrit : la promesse serait de nouveau creuse');
+        expect(
+          ecrivains,
+          greaterThan(0),
+          reason:
+              'le coffre est declare alimente mais AUCUN code de '
+              'production n y ecrit : la promesse serait de nouveau creuse',
+        );
       } else {
-        expect(ecrivains, 0,
-            reason: 'du code alimente desormais le coffre : basculez '
-                'CoffreDeReconnexion.alimente a vrai et retablissez la '
-                'promesse a l ecran');
+        expect(
+          ecrivains,
+          0,
+          reason:
+              'du code alimente desormais le coffre : basculez '
+              'CoffreDeReconnexion.alimente a vrai et retablissez la '
+              'promesse a l ecran',
+        );
       }
     });
 
-    test('la declaration NOMME ce qui manque, pour que ce soit actionnable',
-        () {
-      expect(CoffreDeReconnexion.ecrivainAttendu, isNotEmpty);
-      expect(CoffreDeReconnexion.transportAttendu, isNotEmpty);
-      expect(CoffreDeReconnexion.ecranDeSaisieAttendu, isNotEmpty);
-    });
+    test(
+      'la declaration NOMME ce qui manque, pour que ce soit actionnable',
+      () {
+        expect(CoffreDeReconnexion.ecrivainAttendu, isNotEmpty);
+        expect(CoffreDeReconnexion.transportAttendu, isNotEmpty);
+        expect(CoffreDeReconnexion.ecranDeSaisieAttendu, isNotEmpty);
+      },
+    );
   });
 
   group('LOT 596 C2 — l ecran ne promet plus un coffre vide', () {
     testWidgets(
-        '/recovery-code — l ecran DIT qu il n y a rien a rouvrir, et ne '
-        'promet plus', (tester) async {
-      // L'APPLICATION REELLE, par sa vraie route (socle du LOT V) : un test
-      // qui instancie l'ecran ne prouverait pas qu'on peut y arriver.
-      await monterAppliReelle(tester, depart: '/recovery-code');
+      '/recovery-code — l ecran DIT qu il n y a rien a rouvrir, et ne '
+      'promet plus',
+      (tester) async {
+        // L'APPLICATION REELLE, par sa vraie route (socle du LOT V) : un test
+        // qui instancie l'ecran ne prouverait pas qu'on peut y arriver.
+        await monterAppliReelle(tester, depart: '/recovery-code');
 
-      expect(find.byType(RecoveryCodeScreen), findsOneWidget,
-          reason: 'la porte du LOT Q doit rester : on retire la promesse, '
-              'pas l ecran');
+        expect(
+          find.byType(RecoveryCodeScreen),
+          findsOneWidget,
+          reason:
+              'la porte du LOT Q doit rester : on retire la promesse, '
+              'pas l ecran',
+        );
 
-      final textes = textesVisibles(tester);
-      expect(textes, contains(_tr.recovery.noVaultTitle),
-          reason: 'l ecran doit dire l etat reel au lieu de promettre');
-      expect(textes, isNot(contains(_tr.recovery.intro)),
-          reason: 'la promesse « ce code ouvre votre coffre sur un autre '
-              'telephone » ne doit plus etre affichee : elle est fausse');
-      expect(textes, isNot(contains(_tr.recovery.warning)),
-          reason: 'inutile d avertir sur la perte d un code qui n ouvre rien');
+        final textes = textesVisibles(tester);
+        expect(
+          textes,
+          contains(_tr.recovery.noVaultTitle),
+          reason: 'l ecran doit dire l etat reel au lieu de promettre',
+        );
+        expect(
+          textes,
+          isNot(contains(_tr.recovery.intro)),
+          reason:
+              'la promesse « ce code ouvre votre coffre sur un autre '
+              'telephone » ne doit plus etre affichee : elle est fausse',
+        );
+        expect(
+          textes,
+          isNot(contains(_tr.recovery.warning)),
+          reason: 'inutile d avertir sur la perte d un code qui n ouvre rien',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+      },
+    );
 
-    testWidgets('/recovery-code — AUCUN code de 4x4 n est affiche ni fabrique',
-        (tester) async {
-      await monterAppliReelle(tester, depart: '/recovery-code');
+    testWidgets(
+      '/recovery-code — AUCUN code de 4x4 n est affiche ni fabrique',
+      (tester) async {
+        await monterAppliReelle(tester, depart: '/recovery-code');
 
-      // Le code a la forme XXXX-XXXX-XXXX-XXXX. Aucun texte a l'ecran ne doit
-      // y ressembler : l'ecran le FABRIQUAIT (getOrCreate) rien qu'en
-      // s'affichant, posant dans le coffre-fort du telephone un secret qui
-      // n'ouvre rien — et qu'il faudrait ensuite effacer avec les autres.
-      final motif = RegExp(r'^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$');
-      final codes = textesVisibles(tester).where(motif.hasMatch).toList();
-      expect(codes, isEmpty,
-          reason: 'un code de reconnexion est affiche alors qu il n ouvre '
-              'rien : ${codes.join(", ")}');
+        // Le code a la forme XXXX-XXXX-XXXX-XXXX. Aucun texte a l'ecran ne doit
+        // y ressembler : l'ecran le FABRIQUAIT (getOrCreate) rien qu'en
+        // s'affichant, posant dans le coffre-fort du telephone un secret qui
+        // n'ouvre rien — et qu'il faudrait ensuite effacer avec les autres.
+        final motif = RegExp(r'^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$');
+        final codes = textesVisibles(tester).where(motif.hasMatch).toList();
+        expect(
+          codes,
+          isEmpty,
+          reason:
+              'un code de reconnexion est affiche alors qu il n ouvre '
+              'rien : ${codes.join(", ")}',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+      },
+    );
   });
 }

@@ -97,10 +97,7 @@ const String kCheminAbonnement = "subscription/current";
 /// se RECALCULE (`gagne - depense`) apres fusion. Lire un solde tout fait
 /// laisserait passer une valeur incoherente avec ses propres cumuls.
 class SoldeDistant {
-  const SoldeDistant({
-    required this.cumulGagne,
-    required this.cumulDepense,
-  });
+  const SoldeDistant({required this.cumulGagne, required this.cumulDepense});
 
   /// Total cumule d etapes GAGNEES. Ne descend jamais.
   final int cumulGagne;
@@ -119,10 +116,7 @@ class SoldeDistant {
     final gagne = _entier(brut["lifetime_earned"]);
     final depense = _entier(brut["lifetime_spent"]);
     if (gagne == null && depense == null) return null;
-    return SoldeDistant(
-      cumulGagne: gagne ?? 0,
-      cumulDepense: depense ?? 0,
-    );
+    return SoldeDistant(cumulGagne: gagne ?? 0, cumulDepense: depense ?? 0);
   }
 
   @override
@@ -170,7 +164,8 @@ class DroitDeSentierDistant {
   }
 
   @override
-  String toString() => "DroitDeSentierDistant($trailId, possede: $possede, "
+  String toString() =>
+      "DroitDeSentierDistant($trailId, possede: $possede, "
       "acquises: $etapesAcquises)";
 }
 
@@ -209,8 +204,9 @@ class AbonnementDistant {
   ///  * `expires_at` illisible.
   static AbonnementDistant? lire(Map<String, Object?>? brut) {
     if (brut == null) return null;
-    final horodatage =
-        HorodatageServeur.annonceParLeServeur(brut["updated_at"]);
+    final horodatage = HorodatageServeur.annonceParLeServeur(
+      brut["updated_at"],
+    );
     if (horodatage == null) return null;
 
     final actif = brut["active"] == true;
@@ -232,17 +228,12 @@ class AbonnementDistant {
   }
 
   @override
-  String toString() =>
-      "AbonnementDistant(actif: $actif, echeance: $echeance)";
+  String toString() => "AbonnementDistant(actif: $actif, echeance: $echeance)";
 }
 
 /// TOUT CE QUE LE SERVEUR ANNONCE EN UNE PASSE.
 class DroitsDistants {
-  const DroitsDistants({
-    this.solde,
-    this.sentiers = const [],
-    this.abonnement,
-  });
+  const DroitsDistants({this.solde, this.sentiers = const [], this.abonnement});
 
   /// Le solde, ou `null` si le serveur n en annonce pas.
   final SoldeDistant? solde;
@@ -257,16 +248,14 @@ class DroitsDistants {
   bool get estVide => solde == null && sentiers.isEmpty && abonnement == null;
 
   @override
-  String toString() => "DroitsDistants(solde: $solde, "
+  String toString() =>
+      "DroitsDistants(solde: $solde, "
       "sentiers: ${sentiers.length}, abonnement: $abonnement)";
 }
 
 /// LE SOLDE APRES FUSION — deux cumuls et le solde qui en decoule.
 class SoldeFusionne {
-  const SoldeFusionne({
-    required this.cumulGagne,
-    required this.cumulDepense,
-  });
+  const SoldeFusionne({required this.cumulGagne, required this.cumulDepense});
 
   final int cumulGagne;
   final int cumulDepense;
@@ -299,8 +288,9 @@ SoldeFusionne fusionnerSolde({
   required SoldeDistant distant,
 }) {
   return SoldeFusionne(
-    cumulGagne:
-        distant.cumulGagne > gagneLocal ? distant.cumulGagne : gagneLocal,
+    cumulGagne: distant.cumulGagne > gagneLocal
+        ? distant.cumulGagne
+        : gagneLocal,
     cumulDepense: distant.cumulDepense > depenseLocal
         ? distant.cumulDepense
         : depenseLocal,
@@ -322,7 +312,8 @@ class DroitDeSentierFusionne {
   final int complementConsomme;
 
   @override
-  String toString() => "DroitDeSentierFusionne($trailId, possede: $possede, "
+  String toString() =>
+      "DroitDeSentierFusionne($trailId, possede: $possede, "
       "acquises: $etapesAcquises)";
 }
 

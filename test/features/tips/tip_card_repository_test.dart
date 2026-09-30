@@ -86,25 +86,19 @@ void main() {
       );
     });
 
-    test('filtre saison winter retourne uniquement les fiches hiver et all', () {
-      final results = repo.filterCards(currentSeason: 'winter');
+    test(
+      'filtre saison winter retourne uniquement les fiches hiver et all',
+      () {
+        final results = repo.filterCards(currentSeason: 'winter');
 
-      // Doit contenir : tip-winter-all, tip-all-all, tip-altitude-high
-      // Ne doit PAS contenir : tip-summer-bleu, tip-summer-mare
-      expect(results.length, 3);
-      expect(
-        results.any((c) => c.id == 'tip-summer-bleu'),
-        false,
-      );
-      expect(
-        results.any((c) => c.id == 'tip-summer-mare'),
-        false,
-      );
-      expect(
-        results.any((c) => c.id == 'tip-winter-all'),
-        true,
-      );
-    });
+        // Doit contenir : tip-winter-all, tip-all-all, tip-altitude-high
+        // Ne doit PAS contenir : tip-summer-bleu, tip-summer-mare
+        expect(results.length, 3);
+        expect(results.any((c) => c.id == 'tip-summer-bleu'), false);
+        expect(results.any((c) => c.id == 'tip-summer-mare'), false);
+        expect(results.any((c) => c.id == 'tip-winter-all'), true);
+      },
+    );
 
     test('filtre scope + saison combine correctement', () {
       final results = repo.filterCards(

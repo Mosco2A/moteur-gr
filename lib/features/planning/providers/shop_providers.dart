@@ -32,8 +32,7 @@ final shopTypeFilterProvider = StateProvider<ShopKind?>((ref) => null);
 /// honnetete : tant qu'un sentier n'est pas publie en base, son ancien contenu
 /// vaut mieux qu'un ecran vide. Il disparaitra quand tous les sentiers seront
 /// publies.
-final trailShopsProvider =
-    Provider.family<TrailShops?, String>((ref, trailId) {
+final trailShopsProvider = Provider.family<TrailShops?, String>((ref, trailId) {
   return ref.watch(ravitaillementEnBaseProvider(trailId)) ??
       ShopCatalog.forTrail(trailId);
 });

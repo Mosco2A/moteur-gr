@@ -59,27 +59,29 @@ void main() {
       expect(stages.last.name, contains('Porticcio'));
     });
 
-    test('le boot synchronise currentTrailIdProvider sur le sentier actif',
-        () async {
-      SharedPreferences.setMockInitialValues({});
+    test(
+      'le boot synchronise currentTrailIdProvider sur le sentier actif',
+      () async {
+        SharedPreferences.setMockInitialValues({});
 
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
 
-      final container = ProviderContainer(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-          trailConfigProvider.overrideWithValue(mareAMareCentreTrailConfig),
-        ],
-      );
-      addTearDown(container.dispose);
+        final container = ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            trailConfigProvider.overrideWithValue(mareAMareCentreTrailConfig),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      await container.read(appBootstrapProvider.future);
+        await container.read(appBootstrapProvider.future);
 
-      expect(
-        container.read(currentTrailIdProvider),
-        mareAMareCentreTrailConfig.id,
-      );
-    });
+        expect(
+          container.read(currentTrailIdProvider),
+          mareAMareCentreTrailConfig.id,
+        );
+      },
+    );
   });
 }

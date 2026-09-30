@@ -25,17 +25,17 @@ class TodayStageWeatherCard extends StatelessWidget {
     final level = WeatherRecommendation.forDay(day);
     final (Color recoColor, String recoLabel) = switch (level) {
       WeatherRecommendationLevel.ok => (
-          AppTheme.vertFacile,
-          t.weather.recommendation.ok
-        ),
+        AppTheme.vertFacile,
+        t.weather.recommendation.ok,
+      ),
       WeatherRecommendationLevel.watch => (
-          AppTheme.orangeDifficile,
-          t.weather.recommendation.watch
-        ),
+        AppTheme.orangeDifficile,
+        t.weather.recommendation.watch,
+      ),
       WeatherRecommendationLevel.danger => (
-          AppTheme.rougeUrgence,
-          t.weather.recommendation.danger
-        ),
+        AppTheme.rougeUrgence,
+        t.weather.recommendation.danger,
+      ),
     };
 
     // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). Le Padding interne est
@@ -45,97 +45,99 @@ class TodayStageWeatherCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            // En-tête : « Aujourd'hui » + condition + températures.
-            Row(
-              children: [
-                WeatherIcon(
-                  iconName: day.weatherIconName,
-                  size: 44,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: AppTheme.spacingBase),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(t.weather.today,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withAlpha(160),
-                          )),
-                      Text(
-                        day.weatherDescription,
-                        style: theme.textTheme.titleMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Text(
-                  '${day.temperatureMax.round()}° / ${day.temperatureMin.round()}°',
-                  style: theme.textTheme.titleLarge,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingMd),
-            // 4 indicateurs clés (wrap : jamais d'overflow horizontal).
-            Wrap(
-              spacing: AppTheme.spacingSm,
-              runSpacing: AppTheme.spacingSm,
-              children: [
-                _Indicator(
-                  icon: StepwaysIcons.pluie,
-                  label: '${day.precipitationMm.round()} mm',
-                  danger: day.precipitationMm >= 20,
-                ),
-                _Indicator(
-                  icon: StepwaysIcons.vent,
-                  label: '${day.windSpeedKmh.round()} km/h',
-                  danger: day.windSpeedKmh >= 60,
-                ),
-                _Indicator(
-                  icon: StepwaysIcons.meteo,
-                  label: 'UV ${day.uvIndex.round()}',
-                  danger: day.uvIndex >= 8,
-                ),
-                _Indicator(
-                  icon: StepwaysIcons.orage,
-                  label: '${day.stormProbability.round()} %',
-                  danger: day.stormProbability >= 50,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingMd),
-            // Bandeau recommandation.
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingMd,
-                vertical: AppTheme.spacingSm,
+          // En-tête : « Aujourd'hui » + condition + températures.
+          Row(
+            children: [
+              WeatherIcon(
+                iconName: day.weatherIconName,
+                size: 44,
+                color: theme.colorScheme.primary,
               ),
-              decoration: BoxDecoration(
-                color: recoColor.withAlpha(28),
-                borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-              ),
-              child: Row(
-                children: [
-                  StepIcon(_recoIcon(level), size: 18, color: recoColor),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: Text(
-                      recoLabel,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: recoColor,
-                        fontWeight: FontWeight.w600,
+              const SizedBox(width: AppTheme.spacingBase),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.weather.today,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withAlpha(160),
                       ),
                     ),
-                  ),
-                ],
+                    Text(
+                      day.weatherDescription,
+                      style: theme.textTheme.titleMedium,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Text(
+                '${day.temperatureMax.round()}° / ${day.temperatureMin.round()}°',
+                style: theme.textTheme.titleLarge,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          // 4 indicateurs clés (wrap : jamais d'overflow horizontal).
+          Wrap(
+            spacing: AppTheme.spacingSm,
+            runSpacing: AppTheme.spacingSm,
+            children: [
+              _Indicator(
+                icon: StepwaysIcons.pluie,
+                label: '${day.precipitationMm.round()} mm',
+                danger: day.precipitationMm >= 20,
+              ),
+              _Indicator(
+                icon: StepwaysIcons.vent,
+                label: '${day.windSpeedKmh.round()} km/h',
+                danger: day.windSpeedKmh >= 60,
+              ),
+              _Indicator(
+                icon: StepwaysIcons.meteo,
+                label: 'UV ${day.uvIndex.round()}',
+                danger: day.uvIndex >= 8,
+              ),
+              _Indicator(
+                icon: StepwaysIcons.orage,
+                label: '${day.stormProbability.round()} %',
+                danger: day.stormProbability >= 50,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          // Bandeau recommandation.
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingMd,
+              vertical: AppTheme.spacingSm,
             ),
-          ],
-        ),
+            decoration: BoxDecoration(
+              color: recoColor.withAlpha(28),
+              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+            ),
+            child: Row(
+              children: [
+                StepIcon(_recoIcon(level), size: 18, color: recoColor),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    recoLabel,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: recoColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -183,8 +185,7 @@ class _Indicator extends StatelessWidget {
         children: [
           StepIcon(icon, size: 16, color: color),
           const SizedBox(width: 4),
-          Text(label,
-              style: theme.textTheme.bodySmall?.copyWith(color: color)),
+          Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
         ],
       ),
     );

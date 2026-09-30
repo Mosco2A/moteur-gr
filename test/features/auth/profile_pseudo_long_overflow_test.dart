@@ -86,24 +86,36 @@ void main() {
   }
 
   group('MINEUR-1 — le pseudo le plus long tient dans l ecran Profil', () {
-    testWidgets('30 caracteres ne declenchent aucun debordement de rendu',
-        (tester) async {
+    testWidgets('30 caracteres ne declenchent aucun debordement de rendu', (
+      tester,
+    ) async {
       await afficherPseudo(tester, pseudoLePlusLong);
 
-      expect(find.text(pseudoLePlusLong), findsOneWidget,
-          reason: 'le pseudo enregistre doit rester affiche en entier');
-      expect(tester.takeException(), isNull,
-          reason: 'aucun debordement de rendu (RenderFlex overflow) ne doit '
-              'etre signale par l ecran Profil');
+      expect(
+        find.text(pseudoLePlusLong),
+        findsOneWidget,
+        reason: 'le pseudo enregistre doit rester affiche en entier',
+      );
+      expect(
+        tester.takeException(),
+        isNull,
+        reason:
+            'aucun debordement de rendu (RenderFlex overflow) ne doit '
+            'etre signale par l ecran Profil',
+      );
     });
 
-    testWidgets('le pseudo affiche reste dans la largeur de l ecran',
-        (tester) async {
+    testWidgets('le pseudo affiche reste dans la largeur de l ecran', (
+      tester,
+    ) async {
       await afficherPseudo(tester, pseudoLePlusLong);
 
       final largeurPseudo = tester.getSize(find.text(pseudoLePlusLong)).width;
-      expect(largeurPseudo, lessThanOrEqualTo(largeurEcran),
-          reason: 'le pseudo ne doit pas depasser la largeur de l appareil');
+      expect(
+        largeurPseudo,
+        lessThanOrEqualTo(largeurEcran),
+        reason: 'le pseudo ne doit pas depasser la largeur de l appareil',
+      );
     });
 
     testWidgets('un pseudo court reste centre et intact', (tester) async {
@@ -113,8 +125,10 @@ void main() {
       expect(tester.takeException(), isNull);
       // Contre-preuve : la correction ne doit pas etirer un pseudo court sur
       // toute la largeur (la rangee reste dimensionnee sur son contenu).
-      expect(tester.getSize(find.text('Lea')).width,
-          lessThan(largeurEcran / 2));
+      expect(
+        tester.getSize(find.text('Lea')).width,
+        lessThan(largeurEcran / 2),
+      );
     });
   });
 }

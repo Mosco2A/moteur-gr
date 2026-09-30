@@ -16,8 +16,8 @@ class ChecklistRepository {
   ChecklistRepository({
     required AppDatabase db,
     required TrailConfig trailConfig,
-  })  : _dao = ChecklistDao(db),
-        _trailConfig = trailConfig;
+  }) : _dao = ChecklistDao(db),
+       _trailConfig = trailConfig;
 
   final ChecklistDao _dao;
 
@@ -44,9 +44,7 @@ class ChecklistRepository {
   }
 
   /// Charge les items d'une categorie pour le sentier actif.
-  Future<List<ChecklistItemModel>> getItemsByCategory(
-    String category,
-  ) async {
+  Future<List<ChecklistItemModel>> getItemsByCategory(String category) async {
     final dbItems = await _dao.getByCategory(trailId, category);
     return dbItems.map(_fromDbRow).toList();
   }
@@ -58,11 +56,13 @@ class ChecklistRepository {
 
   /// Met a jour la note personnelle d'un item.
   Future<void> updateNote(String itemId, String? note) {
-    return _dao.upsertItem(ChecklistItemsCompanion(
-      trailId: Value(trailId),
-      itemId: Value(itemId),
-      isChecked: const Value(false), // preserve par upsert
-    ));
+    return _dao.upsertItem(
+      ChecklistItemsCompanion(
+        trailId: Value(trailId),
+        itemId: Value(itemId),
+        isChecked: const Value(false), // preserve par upsert
+      ),
+    );
   }
 
   /// Reinitialise la checklist du sentier actif (tout decocher).

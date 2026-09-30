@@ -67,7 +67,7 @@ abstract class TypesDeLien {
 /// Moniteur de connectivite avec debounce online (5s).
 class ConnectivityMonitor {
   ConnectivityMonitor({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity();
+    : _connectivity = connectivity ?? Connectivity();
 
   final Connectivity _connectivity;
   static const _onlineDebounce = Duration(seconds: 5);
@@ -175,8 +175,7 @@ final connectivityMonitorProvider = Provider<ConnectivityMonitor>((ref) {
   return ConnectivityMonitor();
 });
 
-final connectivityProvider =
-    StreamProvider<ConnectivityStatus>((ref) async* {
+final connectivityProvider = StreamProvider<ConnectivityStatus>((ref) async* {
   final monitor = ref.watch(connectivityMonitorProvider);
   final initial = await monitor.checkStatus();
   yield initial;

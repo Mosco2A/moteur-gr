@@ -14,11 +14,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// durée estimée (calculée), badge de difficulté coloré.
 /// Un tap déclenche [onTap] pour naviguer vers le détail.
 class StageListTile extends StatelessWidget {
-  const StageListTile({
-    super.key,
-    required this.stage,
-    this.onTap,
-  });
+  const StageListTile({super.key, required this.stage, this.onTap});
 
   /// Modèle de l'étape à afficher
   final StageModel stage;
@@ -124,4 +120,3 @@ class StageListTile extends StatelessWidget {
     );
   }
 }
-

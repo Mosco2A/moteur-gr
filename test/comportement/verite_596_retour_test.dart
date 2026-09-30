@@ -41,7 +41,7 @@ final _tr = AppLocale.fr.buildSync();
 
 class FauxReseau extends ConnectivityMonitor {
   FauxReseau({this.statut = ConnectivityStatusValues.online})
-      : super(connectivity: Connectivity());
+    : super(connectivity: Connectivity());
 
   String statut;
 
@@ -91,95 +91,159 @@ void main() {
         content: 'La carte se fige au col',
       );
 
-      expect(resultat, FeedbackIssue.gardeLocalement,
-          reason: 'sans destinataire, le service doit DIRE qu il garde, pas '
-              'pretendre qu il a envoye');
+      expect(
+        resultat,
+        FeedbackIssue.gardeLocalement,
+        reason:
+            'sans destinataire, le service doit DIRE qu il garde, pas '
+            'pretendre qu il a envoye',
+      );
       final enAttente = await dao.getPending();
-      expect(enAttente, hasLength(1),
-          reason: 'le retour a ete marque envoye sans destinataire — et la '
-              'file a ete videe : le message de l utilisateur est PERDU');
+      expect(
+        enAttente,
+        hasLength(1),
+        reason:
+            'le retour a ete marque envoye sans destinataire — et la '
+            'file a ete videe : le message de l utilisateur est PERDU',
+      );
       expect(enAttente.single.content, 'La carte se fige au col');
     });
 
     test('le comptage des retours en attente ne ment pas non plus', () async {
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: null);
+      final service = FeedbackService(
+        dao: dao,
+        connectivityMonitor: reseau,
+        sink: null,
+      );
       await service.submit(
-          trailId: 't', category: FeedbackCategory.bug, content: 'un');
+        trailId: 't',
+        category: FeedbackCategory.bug,
+        content: 'un',
+      );
       await service.submit(
-          trailId: 't', category: FeedbackCategory.suggestion, content: 'deux');
-      expect(await service.pendingCount(), 2,
-          reason: 'l ecran affichait zero en attente alors que rien n etait '
-              'parti');
+        trailId: 't',
+        category: FeedbackCategory.suggestion,
+        content: 'deux',
+      );
+      expect(
+        await service.pendingCount(),
+        2,
+        reason:
+            'l ecran affichait zero en attente alors que rien n etait '
+            'parti',
+      );
     });
 
     test('flush sans puits n envoie rien et ne vide rien', () async {
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: null);
+      final service = FeedbackService(
+        dao: dao,
+        connectivityMonitor: reseau,
+        sink: null,
+      );
       await service.submit(
-          trailId: 't', category: FeedbackCategory.bug, content: 'garde-moi');
+        trailId: 't',
+        category: FeedbackCategory.bug,
+        content: 'garde-moi',
+      );
       expect(await service.flush(), 0);
       expect(await dao.getPending(), hasLength(1));
     });
   });
 
   group('LOT 596 C1 — avec un vrai destinataire, le retour part vraiment', () {
-    test('le contenu est REMIS au puits, puis seulement marque envoye',
-        () async {
-      final puits = PuitsEspion();
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: puits);
+    test(
+      'le contenu est REMIS au puits, puis seulement marque envoye',
+      () async {
+        final puits = PuitsEspion();
+        final service = FeedbackService(
+          dao: dao,
+          connectivityMonitor: reseau,
+          sink: puits,
+        );
 
-      final resultat = await service.submit(
-        trailId: 'mare-a-mare-centre',
-        category: FeedbackCategory.compliment,
-        content: 'Le decoupage des etapes est parfait',
-      );
+        final resultat = await service.submit(
+          trailId: 'mare-a-mare-centre',
+          category: FeedbackCategory.compliment,
+          content: 'Le decoupage des etapes est parfait',
+        );
 
-      expect(resultat, FeedbackIssue.envoye);
-      expect(puits.recus, ['Le decoupage des etapes est parfait'],
-          reason: 'le retour doit REELLEMENT etre remis au destinataire');
-      expect(await dao.getPending(), isEmpty);
-    });
+        expect(resultat, FeedbackIssue.envoye);
+        expect(
+          puits.recus,
+          ['Le decoupage des etapes est parfait'],
+          reason: 'le retour doit REELLEMENT etre remis au destinataire',
+        );
+        expect(await dao.getPending(), isEmpty);
+      },
+    );
 
-    test('un envoi qui ECHOUE laisse le retour recuperable, jamais efface',
-        () async {
-      final puits = PuitsEspion(accepte: false);
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: puits);
+    test(
+      'un envoi qui ECHOUE laisse le retour recuperable, jamais efface',
+      () async {
+        final puits = PuitsEspion(accepte: false);
+        final service = FeedbackService(
+          dao: dao,
+          connectivityMonitor: reseau,
+          sink: puits,
+        );
 
-      final resultat = await service.submit(
-          trailId: 't', category: FeedbackCategory.bug, content: 'un bug');
+        final resultat = await service.submit(
+          trailId: 't',
+          category: FeedbackCategory.bug,
+          content: 'un bug',
+        );
 
-      expect(resultat, FeedbackIssue.gardeLocalement);
-      final tout = await dao.getByTrailId('t');
-      expect(tout, hasLength(1),
-          reason: 'un envoi rate ne doit jamais faire disparaitre le message');
-    });
+        expect(resultat, FeedbackIssue.gardeLocalement);
+        final tout = await dao.getByTrailId('t');
+        expect(
+          tout,
+          hasLength(1),
+          reason: 'un envoi rate ne doit jamais faire disparaitre le message',
+        );
+      },
+    );
 
-    test('un retour echoue REPART au flush suivant quand le reseau revient',
-        () async {
-      final puits = PuitsEspion(accepte: false);
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: puits);
-      await service.submit(
-          trailId: 't', category: FeedbackCategory.bug, content: 'a renvoyer');
+    test(
+      'un retour echoue REPART au flush suivant quand le reseau revient',
+      () async {
+        final puits = PuitsEspion(accepte: false);
+        final service = FeedbackService(
+          dao: dao,
+          connectivityMonitor: reseau,
+          sink: puits,
+        );
+        await service.submit(
+          trailId: 't',
+          category: FeedbackCategory.bug,
+          content: 'a renvoyer',
+        );
 
-      puits.accepte = true;
-      expect(await service.flush(), 1,
-          reason: 'un retour marque « echoue » restait bloque pour toujours : '
-              'seuls les « pending » etaient repris');
-      expect(puits.recus, ['a renvoyer']);
-    });
+        puits.accepte = true;
+        expect(
+          await service.flush(),
+          1,
+          reason:
+              'un retour marque « echoue » restait bloque pour toujours : '
+              'seuls les « pending » etaient repris',
+        );
+        expect(puits.recus, ['a renvoyer']);
+      },
+    );
 
     test('hors ligne, on garde — et on le dit', () async {
       reseau.statut = ConnectivityStatusValues.offline;
       final puits = PuitsEspion();
-      final service =
-          FeedbackService(dao: dao, connectivityMonitor: reseau, sink: puits);
+      final service = FeedbackService(
+        dao: dao,
+        connectivityMonitor: reseau,
+        sink: puits,
+      );
 
       final resultat = await service.submit(
-          trailId: 't', category: FeedbackCategory.bug, content: 'au refuge');
+        trailId: 't',
+        category: FeedbackCategory.bug,
+        content: 'au refuge',
+      );
 
       expect(resultat, FeedbackIssue.gardeLocalement);
       expect(puits.recus, isEmpty);
@@ -189,51 +253,78 @@ void main() {
 
   group('LOT 596 C1 — CE QUE L ECRAN DIT AU RANDONNEUR', () {
     testWidgets(
-        '/trail/:id/feedback — l ecran annonce AVANT d ecrire que le retour '
-        'reste sur le telephone', (tester) async {
-      // L'APPLICATION REELLE, par sa vraie route (socle du LOT V). Sans
-      // configuration cloud, aucun destinataire n'est branche : l'ecran doit le
-      // dire d'entree, pas apres avoir remercie.
-      await monterAppliReelle(tester,
-          depart: '/trail/mare-a-mare-centre/feedback');
+      '/trail/:id/feedback — l ecran annonce AVANT d ecrire que le retour '
+      'reste sur le telephone',
+      (tester) async {
+        // L'APPLICATION REELLE, par sa vraie route (socle du LOT V). Sans
+        // configuration cloud, aucun destinataire n'est branche : l'ecran doit le
+        // dire d'entree, pas apres avoir remercie.
+        await monterAppliReelle(
+          tester,
+          depart: '/trail/mare-a-mare-centre/feedback',
+        );
 
-      final textes = textesVisibles(tester);
-      expect(textes, contains(_tr.feedback.keptLocallyNotice),
-          reason: 'l utilisateur doit savoir AVANT d ecrire que son message ne '
-              'partira pas encore');
-      expect(textes, isNot(contains(_tr.feedback.thanks)),
-          reason: 'aucun merci ne doit s afficher avant meme un envoi');
+        final textes = textesVisibles(tester);
+        expect(
+          textes,
+          contains(_tr.feedback.keptLocallyNotice),
+          reason:
+              'l utilisateur doit savoir AVANT d ecrire que son message ne '
+              'partira pas encore',
+        );
+        expect(
+          textes,
+          isNot(contains(_tr.feedback.thanks)),
+          reason: 'aucun merci ne doit s afficher avant meme un envoi',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+      },
+    );
 
     testWidgets(
-        '/trail/:id/feedback — apres envoi sans destinataire, l ecran dit '
-        '« garde ici » et JAMAIS merci', (tester) async {
-      await monterAppliReelle(tester,
-          depart: '/trail/mare-a-mare-centre/feedback');
+      '/trail/:id/feedback — apres envoi sans destinataire, l ecran dit '
+      '« garde ici » et JAMAIS merci',
+      (tester) async {
+        await monterAppliReelle(
+          tester,
+          depart: '/trail/mare-a-mare-centre/feedback',
+        );
 
-      await tester.enterText(
-          find.byType(TextField).first, 'La carte se fige au col');
-      await stabiliser(tester, coups: 4);
+        await tester.enterText(
+          find.byType(TextField).first,
+          'La carte se fige au col',
+        );
+        await stabiliser(tester, coups: 4);
 
-      final bouton = find.widgetWithText(ElevatedButton, _tr.feedback.send);
-      expect(bouton, findsWidgets, reason: 'le bouton d envoi doit etre la');
-      await tester.tap(bouton.first, warnIfMissed: false);
-      await stabiliser(tester, coups: 12);
+        final bouton = find.widgetWithText(ElevatedButton, _tr.feedback.send);
+        expect(bouton, findsWidgets, reason: 'le bouton d envoi doit etre la');
+        await tester.tap(bouton.first, warnIfMissed: false);
+        await stabiliser(tester, coups: 12);
 
-      final textes = textesVisibles(tester);
-      expect(textes, contains(_tr.feedback.keptLocally),
-          reason: 'le retour est garde sur le telephone : l ecran doit le dire');
-      expect(textes, isNot(contains(_tr.feedback.thanks)),
-          reason: 'C EST LE DEFAUT CORRIGE : l ecran remerciait pour un '
-              'message que personne n allait jamais lire');
-      expect(textes, isNot(contains(_tr.feedback.sentThanks)),
-          reason: 'le merci d envoi est reserve a un message reellement parti');
+        final textes = textesVisibles(tester);
+        expect(
+          textes,
+          contains(_tr.feedback.keptLocally),
+          reason: 'le retour est garde sur le telephone : l ecran doit le dire',
+        );
+        expect(
+          textes,
+          isNot(contains(_tr.feedback.thanks)),
+          reason:
+              'C EST LE DEFAUT CORRIGE : l ecran remerciait pour un '
+              'message que personne n allait jamais lire',
+        );
+        expect(
+          textes,
+          isNot(contains(_tr.feedback.sentThanks)),
+          reason: 'le merci d envoi est reserve a un message reellement parti',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+      },
+    );
   });
 }

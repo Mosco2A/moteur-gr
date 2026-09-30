@@ -138,7 +138,9 @@ class DownloadReminderNotifier extends Notifier<DepartureReminderState> {
 /// Provider par sentier pour la gestion des rappels de depart.
 ///
 /// Usage : ref.watch(downloadReminderProvider('gr10'))
-final downloadReminderProvider = NotifierProvider.family<
-    DownloadReminderNotifier, DepartureReminderState, String>(
-  DownloadReminderNotifier.new,
-);
+final downloadReminderProvider =
+    NotifierProvider.family<
+      DownloadReminderNotifier,
+      DepartureReminderState,
+      String
+    >(DownloadReminderNotifier.new);

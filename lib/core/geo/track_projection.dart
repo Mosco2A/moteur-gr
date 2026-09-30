@@ -72,9 +72,12 @@ class TrackProjector {
       final b = trackPoints[i + 1];
 
       final proj = GeoUtils.projectPointOnSegment(
-        userLat, userLng,
-        a.lat, a.lng,
-        b.lat, b.lng,
+        userLat,
+        userLng,
+        a.lat,
+        a.lng,
+        b.lat,
+        b.lng,
       );
 
       if (proj.distanceToSegment < bestDistance) {
@@ -89,11 +92,12 @@ class TrackProjector {
     // = distance cumulée jusqu'au segment + distance du point A au projeté
     final segmentStart = trackPoints[bestIndex];
     final distAlongSegment = GeoUtils.haversineDistance(
-      segmentStart.lat, segmentStart.lng,
-      bestLat, bestLng,
+      segmentStart.lat,
+      segmentStart.lng,
+      bestLat,
+      bestLng,
     );
-    final distanceFromStart =
-        segmentStart.distanceFromStart + distAlongSegment;
+    final distanceFromStart = segmentStart.distanceFromStart + distAlongSegment;
 
     // Distance totale du tracé = distanceFromStart du dernier point
     final totalDistance = trackPoints.last.distanceFromStart;

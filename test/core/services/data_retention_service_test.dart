@@ -56,20 +56,24 @@ void main() {
   group('RetentionPolicy — durees documentees (D4B-02)', () {
     test('durees par categorie exposees et non nulles', () {
       const policy = RetentionPolicy();
-      expect(policy.durationFor(RetentionCategory.cartoCache),
-          const Duration(days: 7));
-      expect(policy.durationFor(RetentionCategory.syncedContributions),
-          const Duration(days: 30));
-      expect(policy.durationFor(RetentionCategory.completedSyncQueue),
-          const Duration(days: 7));
+      expect(
+        policy.durationFor(RetentionCategory.cartoCache),
+        const Duration(days: 7),
+      );
+      expect(
+        policy.durationFor(RetentionCategory.syncedContributions),
+        const Duration(days: 30),
+      );
+      expect(
+        policy.durationFor(RetentionCategory.completedSyncQueue),
+        const Duration(days: 7),
+      );
     });
   });
 
   group('purgeExpired — D4B-02', () {
-    test(
-        'supprime le cache meteo plus vieux que la politique ecrite (7 j), '
-        'GARDE le bulletin du matin dont le randonneur a besoin hors ligne',
-        () async {
+    test('supprime le cache meteo plus vieux que la politique ecrite (7 j), '
+        'GARDE le bulletin du matin dont le randonneur a besoin hors ligne', () async {
       // TACHE 572 — LA POLITIQUE ECRITE ET LE CODE NE DISAIENT PAS LA MEME
       // CHOSE. `RetentionPolicy.cartoCache` documente « caches carto/meteo :
       // 7 jours » alors que la purge effacait sur `expiresAt`, donc TROIS HEURES
@@ -80,105 +84,144 @@ void main() {
 
       // Bulletin de ce matin : perime pour le RE-TELECHARGEMENT (expiresAt
       // passe), mais c'est la seule meteo du randonneur -> il RESTE.
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
-            trailId: 'gr20',
-            stageNumber: 1,
-            forecastJson: '{}',
-            fetchedAt: fixedNow.subtract(const Duration(hours: 6)),
-            expiresAt: fixedNow.subtract(const Duration(hours: 3)),
-          ));
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion.insert(
+              trailId: 'gr20',
+              stageNumber: 1,
+              forecastJson: '{}',
+              fetchedAt: fixedNow.subtract(const Duration(hours: 6)),
+              expiresAt: fixedNow.subtract(const Duration(hours: 3)),
+            ),
+          );
       // Bulletin tout frais -> il reste aussi, evidemment.
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
-            trailId: 'gr20',
-            stageNumber: 2,
-            forecastJson: '{}',
-            fetchedAt: fixedNow,
-            expiresAt: fixedNow.add(const Duration(hours: 3)),
-          ));
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion.insert(
+              trailId: 'gr20',
+              stageNumber: 2,
+              forecastJson: '{}',
+              fetchedAt: fixedNow,
+              expiresAt: fixedNow.add(const Duration(hours: 3)),
+            ),
+          );
       // Bulletin de dix jours : plus aucune valeur pour personne -> il part.
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
-            trailId: 'gr20',
-            stageNumber: 3,
-            forecastJson: '{}',
-            fetchedAt: fixedNow.subtract(const Duration(days: 10)),
-            expiresAt: fixedNow.subtract(const Duration(days: 10)),
-          ));
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion.insert(
+              trailId: 'gr20',
+              stageNumber: 3,
+              forecastJson: '{}',
+              fetchedAt: fixedNow.subtract(const Duration(days: 10)),
+              expiresAt: fixedNow.subtract(const Duration(days: 10)),
+            ),
+          );
 
       final service = await buildService();
       final report = await service.purgeExpired();
 
       expect(report.expiredWeatherCache, 1);
       final remaining = await db.select(db.weatherCache).get();
-      expect(remaining.map((r) => r.stageNumber).toList()..sort(), [1, 2],
-          reason: 'Le bulletin de ce matin survit a la purge : sans reseau, '
-              'c\'est tout ce que le randonneur a.');
-    });
-
-    test('supprime les contributions SYNCHRONISEES anciennes, garde le reste',
-        () async {
-      // Signalement synchronise ANCIEN (35 j > retention 30 j) -> purge.
-      await db.into(db.reportLocal).insert(ReportLocalCompanion.insert(
-            type: 'obstacle',
-            latitude: 42,
-            longitude: 9,
-            createdAt: fixedNow.subtract(const Duration(days: 35)),
-            syncState: const Value('synced'),
-          ));
-      // Signalement synchronise RECENT (5 j) -> conserve.
-      await db.into(db.reportLocal).insert(ReportLocalCompanion.insert(
-            type: 'obstacle',
-            latitude: 42,
-            longitude: 9,
-            createdAt: fixedNow.subtract(const Duration(days: 5)),
-            syncState: const Value('synced'),
-          ));
-      // Signalement ANCIEN mais NON synchronise (pending) -> JAMAIS purge.
-      await db.into(db.reportLocal).insert(ReportLocalCompanion.insert(
-            type: 'obstacle',
-            latitude: 42,
-            longitude: 9,
-            createdAt: fixedNow.subtract(const Duration(days: 90)),
-            syncState: const Value('pending'),
-          ));
-
-      final service = await buildService();
-      final report = await service.purgeExpired();
-
-      expect(report.syncedReports, 1, reason: 'Seul le synchronise ancien part');
-      final remaining = await db.select(db.reportLocal).get();
-      expect(remaining.length, 2);
-      // Le pending ancien et le synced recent subsistent.
       expect(
-        remaining.where((r) => r.syncState == 'pending').length,
-        1,
+        remaining.map((r) => r.stageNumber).toList()..sort(),
+        [1, 2],
+        reason:
+            'Le bulletin de ce matin survit a la purge : sans reseau, '
+            'c\'est tout ce que le randonneur a.',
       );
     });
 
-    test('supprime les efforts synchronises anciens (date = startedAt)',
-        () async {
-      await db.into(db.segmentEffortLocal).insert(
-            SegmentEffortLocalCompanion.insert(
-              segmentId: 's1',
-              userUidHash: 'h',
-              durationSeconds: 600,
-              startedAt: fixedNow.subtract(const Duration(days: 40)),
+    test(
+      'supprime les contributions SYNCHRONISEES anciennes, garde le reste',
+      () async {
+        // Signalement synchronise ANCIEN (35 j > retention 30 j) -> purge.
+        await db
+            .into(db.reportLocal)
+            .insert(
+              ReportLocalCompanion.insert(
+                type: 'obstacle',
+                latitude: 42,
+                longitude: 9,
+                createdAt: fixedNow.subtract(const Duration(days: 35)),
+                syncState: const Value('synced'),
+              ),
+            );
+        // Signalement synchronise RECENT (5 j) -> conserve.
+        await db
+            .into(db.reportLocal)
+            .insert(
+              ReportLocalCompanion.insert(
+                type: 'obstacle',
+                latitude: 42,
+                longitude: 9,
+                createdAt: fixedNow.subtract(const Duration(days: 5)),
+                syncState: const Value('synced'),
+              ),
+            );
+        // Signalement ANCIEN mais NON synchronise (pending) -> JAMAIS purge.
+        await db
+            .into(db.reportLocal)
+            .insert(
+              ReportLocalCompanion.insert(
+                type: 'obstacle',
+                latitude: 42,
+                longitude: 9,
+                createdAt: fixedNow.subtract(const Duration(days: 90)),
+                syncState: const Value('pending'),
+              ),
+            );
+
+        final service = await buildService();
+        final report = await service.purgeExpired();
+
+        expect(
+          report.syncedReports,
+          1,
+          reason: 'Seul le synchronise ancien part',
+        );
+        final remaining = await db.select(db.reportLocal).get();
+        expect(remaining.length, 2);
+        // Le pending ancien et le synced recent subsistent.
+        expect(remaining.where((r) => r.syncState == 'pending').length, 1);
+      },
+    );
+
+    test(
+      'supprime les efforts synchronises anciens (date = startedAt)',
+      () async {
+        await db
+            .into(db.segmentEffortLocal)
+            .insert(
+              SegmentEffortLocalCompanion.insert(
+                segmentId: 's1',
+                userUidHash: 'h',
+                durationSeconds: 600,
+                startedAt: fixedNow.subtract(const Duration(days: 40)),
+                syncState: const Value('synced'),
+              ),
+            );
+        final service = await buildService();
+        final report = await service.purgeExpired();
+        expect(report.syncedEfforts, 1);
+        expect((await db.select(db.segmentEffortLocal).get()).isEmpty, isTrue);
+      },
+    );
+
+    test('purge idempotente : un second appel ne supprime plus rien', () async {
+      await db
+          .into(db.reportLocal)
+          .insert(
+            ReportLocalCompanion.insert(
+              type: 'obstacle',
+              latitude: 42,
+              longitude: 9,
+              createdAt: fixedNow.subtract(const Duration(days: 35)),
               syncState: const Value('synced'),
             ),
           );
-      final service = await buildService();
-      final report = await service.purgeExpired();
-      expect(report.syncedEfforts, 1);
-      expect((await db.select(db.segmentEffortLocal).get()).isEmpty, isTrue);
-    });
-
-    test('purge idempotente : un second appel ne supprime plus rien', () async {
-      await db.into(db.reportLocal).insert(ReportLocalCompanion.insert(
-            type: 'obstacle',
-            latitude: 42,
-            longitude: 9,
-            createdAt: fixedNow.subtract(const Duration(days: 35)),
-            syncState: const Value('synced'),
-          ));
       final service = await buildService();
       final first = await service.purgeExpired();
       final second = await service.purgeExpired();
@@ -190,19 +233,29 @@ void main() {
   group('deleteAccountData — droit a l effacement art 17 (D4B-02)', () {
     /// Remplit plusieurs tables utilisateur avec des donnees variees.
     Future<void> seedUserData() async {
-      await db.into(db.reportLocal).insert(ReportLocalCompanion.insert(
-            type: 'obstacle',
-            latitude: 42,
-            longitude: 9,
-            createdAt: fixedNow,
-            syncState: const Value('pending'),
-          ));
-      await db.into(db.kudosLocal).insert(KudosLocalCompanion.insert(
-            targetActivityId: 'a1',
-            fromUidHash: 'h',
-            createdAt: fixedNow,
-          ));
-      await db.into(db.sessionTrackPoints).insert(
+      await db
+          .into(db.reportLocal)
+          .insert(
+            ReportLocalCompanion.insert(
+              type: 'obstacle',
+              latitude: 42,
+              longitude: 9,
+              createdAt: fixedNow,
+              syncState: const Value('pending'),
+            ),
+          );
+      await db
+          .into(db.kudosLocal)
+          .insert(
+            KudosLocalCompanion.insert(
+              targetActivityId: 'a1',
+              fromUidHash: 'h',
+              createdAt: fixedNow,
+            ),
+          );
+      await db
+          .into(db.sessionTrackPoints)
+          .insert(
             SessionTrackPointsCompanion.insert(
               trailId: 'gr20',
               lat: 42,
@@ -211,58 +264,70 @@ void main() {
               recordedAt: fixedNow,
             ),
           );
-      await db.into(db.journalEntries).insert(JournalEntriesCompanion.insert(
-            trailId: 'gr20',
-            stageNumber: 1,
-            content: const Value('note perso'),
-            createdAt: fixedNow,
-          ));
-      await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
-            trailId: 'gr20',
-            stageNumber: 1,
-            forecastJson: '{}',
-            fetchedAt: fixedNow,
-            expiresAt: fixedNow.add(const Duration(hours: 3)),
-          ));
+      await db
+          .into(db.journalEntries)
+          .insert(
+            JournalEntriesCompanion.insert(
+              trailId: 'gr20',
+              stageNumber: 1,
+              content: const Value('note perso'),
+              createdAt: fixedNow,
+            ),
+          );
+      await db
+          .into(db.weatherCache)
+          .insert(
+            WeatherCacheCompanion.insert(
+              trailId: 'gr20',
+              stageNumber: 1,
+              forecastJson: '{}',
+              fetchedAt: fixedNow,
+              expiresAt: fixedNow.add(const Duration(hours: 3)),
+            ),
+          );
     }
 
-    test('VIDE reellement toutes les tables utilisateur ET les consentements',
-        () async {
-      await seedUserData();
-      // Pose un consentement, pour verifier qu'il est efface.
-      final prefs = await SharedPreferences.getInstance();
-      final consent = ConsentService(prefs: prefs);
-      await consent.grant(ConsentPurpose.locationNavigation);
-      expect(consent.hasConsent(ConsentPurpose.locationNavigation), isTrue);
+    test(
+      'VIDE reellement toutes les tables utilisateur ET les consentements',
+      () async {
+        await seedUserData();
+        // Pose un consentement, pour verifier qu'il est efface.
+        final prefs = await SharedPreferences.getInstance();
+        final consent = ConsentService(prefs: prefs);
+        await consent.grant(ConsentPurpose.locationNavigation);
+        expect(consent.hasConsent(ConsentPurpose.locationNavigation), isTrue);
 
-      String? deletedUid;
-      final service = DataRetentionService(
-        database: db,
-        prefs: prefs,
-        now: () => fixedNow,
-        serverDeletion: (uid) async => deletedUid = uid,
-      );
+        String? deletedUid;
+        final service = DataRetentionService(
+          database: db,
+          prefs: prefs,
+          now: () => fixedNow,
+          serverDeletion: (uid) async => deletedUid = uid,
+        );
 
-      final report = await service.deleteAccountData(uidHash: 'abc123');
+        final report = await service.deleteAccountData(uidHash: 'abc123');
 
-      // Toutes les tables utilisateur sont vides.
-      expect((await db.select(db.reportLocal).get()).isEmpty, isTrue);
-      expect((await db.select(db.kudosLocal).get()).isEmpty, isTrue);
-      expect((await db.select(db.sessionTrackPoints).get()).isEmpty, isTrue);
-      expect((await db.select(db.journalEntries).get()).isEmpty, isTrue);
-      expect((await db.select(db.weatherCache).get()).isEmpty, isTrue);
+        // Toutes les tables utilisateur sont vides.
+        expect((await db.select(db.reportLocal).get()).isEmpty, isTrue);
+        expect((await db.select(db.kudosLocal).get()).isEmpty, isTrue);
+        expect((await db.select(db.sessionTrackPoints).get()).isEmpty, isTrue);
+        expect((await db.select(db.journalEntries).get()).isEmpty, isTrue);
+        expect((await db.select(db.weatherCache).get()).isEmpty, isTrue);
 
-      // Consentements effaces (re-lecture => non accorde).
-      final consentAfter = ConsentService(prefs: prefs);
-      expect(consentAfter.hasConsent(ConsentPurpose.locationNavigation),
-          isFalse);
+        // Consentements effaces (re-lecture => non accorde).
+        final consentAfter = ConsentService(prefs: prefs);
+        expect(
+          consentAfter.hasConsent(ConsentPurpose.locationNavigation),
+          isFalse,
+        );
 
-      // Demande serveur emise avec l'UID hache.
-      expect(deletedUid, 'abc123');
-      expect(report.serverDeletionRequested, isTrue);
-      expect(report.consentsCleared, isTrue);
-      expect(report.localRowsDeleted, greaterThanOrEqualTo(5));
-    });
+        // Demande serveur emise avec l'UID hache.
+        expect(deletedUid, 'abc123');
+        expect(report.serverDeletionRequested, isTrue);
+        expect(report.consentsCleared, isTrue);
+        expect(report.localRowsDeleted, greaterThanOrEqualTo(5));
+      },
+    );
 
     test('sans uidHash : efface le local, AUCUN appel serveur', () async {
       await seedUserData();
@@ -278,8 +343,11 @@ void main() {
       final report = await service.deleteAccountData();
 
       expect((await db.select(db.reportLocal).get()).isEmpty, isTrue);
-      expect(serverCalled, isFalse,
-          reason: 'Pas d UID => pas de suppression serveur');
+      expect(
+        serverCalled,
+        isFalse,
+        reason: 'Pas d UID => pas de suppression serveur',
+      );
       expect(report.serverDeletionRequested, isFalse);
       expect(report.localRowsDeleted, greaterThan(0));
     });

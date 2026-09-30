@@ -25,14 +25,16 @@ class HikerProfileDao extends DatabaseAccessor<AppDatabase>
 
   /// Relit le profil de [userId], ou null si absent.
   Future<HikerProfileData?> getByUserId(String userId) {
-    return (select(hikerProfile)..where((t) => t.userId.equals(userId)))
-        .getSingleOrNull();
+    return (select(
+      hikerProfile,
+    )..where((t) => t.userId.equals(userId))).getSingleOrNull();
   }
 
   /// Observe le profil de [userId] (emet a chaque modification, null si absent).
   Stream<HikerProfileData?> watchByUserId(String userId) {
-    return (select(hikerProfile)..where((t) => t.userId.equals(userId)))
-        .watchSingleOrNull();
+    return (select(
+      hikerProfile,
+    )..where((t) => t.userId.equals(userId))).watchSingleOrNull();
   }
 
   /// Cree ou met a jour le profil (upsert par [userId]).

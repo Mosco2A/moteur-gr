@@ -53,7 +53,8 @@ int estimatedStageDurationMinutes({
   required int elevationGainM,
 }) {
   final hours =
-      distanceKm / kWalkingKmPerHour + elevationGainM / kWalkingElevationMPerHour;
+      distanceKm / kWalkingKmPerHour +
+      elevationGainM / kWalkingElevationMPerHour;
   return (hours * 60).round();
 }
 

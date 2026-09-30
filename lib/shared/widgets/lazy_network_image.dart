@@ -77,11 +77,7 @@ class LazyNetworkImage extends StatelessWidget {
 
 /// Boite neutre (gris clair) avec une icone centree — placeholder/fallback.
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder({
-    required this.icon,
-    this.width,
-    this.height,
-  });
+  const _ImagePlaceholder({required this.icon, this.width, this.height});
 
   final String icon;
   final double? width;

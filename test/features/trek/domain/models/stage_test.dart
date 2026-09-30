@@ -42,8 +42,14 @@ void main() {
       expect(restored.difficulty, equals('hard'));
       expect(restored.orderIndex, equals(1));
       expect(restored.startLat, equals(42.5082));
-      expect(restored.descriptionFr, equals('Premiere etape du Sentier Bleu Nord'));
-      expect(restored.descriptionEn, equals('First stage of the Sentier Bleu North'));
+      expect(
+        restored.descriptionFr,
+        equals('Premiere etape du Sentier Bleu Nord'),
+      );
+      expect(
+        restored.descriptionEn,
+        equals('First stage of the Sentier Bleu North'),
+      );
     });
 
     test('difficulty String inconnue ne crash pas', () {

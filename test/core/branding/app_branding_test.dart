@@ -32,12 +32,15 @@ void main() {
     for (final famille in familles) {
       test('$famille : les six traces SVG sont la', () {
         for (final forme in formes) {
-          final fichier = File('assets/branding/svg/$famille/'
-              '$famille-$forme.svg');
+          final fichier = File(
+            'assets/branding/svg/$famille/'
+            '$famille-$forme.svg',
+          );
           expect(
             fichier.existsSync(),
             isTrue,
-            reason: 'manque ${fichier.path} — changer de famille pour '
+            reason:
+                'manque ${fichier.path} — changer de famille pour '
                 '$famille echouerait a moitie',
           );
         }
@@ -47,7 +50,8 @@ void main() {
         expect(
           File('assets/branding/png/$famille-icone-app-1024.png').existsSync(),
           isTrue,
-          reason: 'sans ce PNG, tool/set_branding.py ne peut pas fabriquer '
+          reason:
+              'sans ce PNG, tool/set_branding.py ne peut pas fabriquer '
               'l\'icone ni la couche avant Android',
         );
       });
@@ -72,30 +76,29 @@ void main() {
       expect(familles, contains(AppBranding.family));
     });
 
-    test(
-      'flutter_launcher_icons.yaml a ete regenere pour la famille active',
-      () {
-        final config = File('flutter_launcher_icons.yaml').readAsStringSync();
-        expect(
-          config,
-          contains('famille active : ${AppBranding.family}'),
-          reason: 'la constante Dart dit ${AppBranding.family} mais la config '
-              'de l\'icone dit autre chose : relancer '
-              'tool/set_branding.py puis dart run flutter_launcher_icons',
-        );
-        // Le fond de l'icone doit etre celui de la famille, sinon le picto se
-        // detache sur la mauvaise couleur une fois masque par le lanceur.
-        final fond =
-            '#${AppBranding.couleurFondIcone.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
-        expect(config, contains('adaptive_icon_background: "$fond"'));
-      },
-    );
+    test('flutter_launcher_icons.yaml a ete regenere pour la famille active', () {
+      final config = File('flutter_launcher_icons.yaml').readAsStringSync();
+      expect(
+        config,
+        contains('famille active : ${AppBranding.family}'),
+        reason:
+            'la constante Dart dit ${AppBranding.family} mais la config '
+            'de l\'icone dit autre chose : relancer '
+            'tool/set_branding.py puis dart run flutter_launcher_icons',
+      );
+      // Le fond de l'icone doit etre celui de la famille, sinon le picto se
+      // detache sur la mauvaise couleur une fois masque par le lanceur.
+      final fond =
+          '#${AppBranding.couleurFondIcone.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+      expect(config, contains('adaptive_icon_background: "$fond"'));
+    });
 
     test('la couche avant de l\'icone adaptative a ete fabriquee', () {
       expect(
         File('assets/branding/icons/adaptive-foreground.png').existsSync(),
         isTrue,
-        reason: 'sans elle, Android 8+ rogne l\'icone pleine n\'importe '
+        reason:
+            'sans elle, Android 8+ rogne l\'icone pleine n\'importe '
             'comment selon le lanceur',
       );
       expect(
@@ -120,18 +123,21 @@ void main() {
           contains('assets/splash/${AppBranding.splashVariant}-android12.png'),
         );
         expect(
-          File('assets/splash/${AppBranding.splashVariant}-android12.png')
-              .existsSync(),
+          File(
+            'assets/splash/${AppBranding.splashVariant}-android12.png',
+          ).existsSync(),
           isTrue,
         );
         expect(
-          File('assets/splash/${AppBranding.splashVariant}-logo.png')
-              .existsSync(),
+          File(
+            'assets/splash/${AppBranding.splashVariant}-logo.png',
+          ).existsSync(),
           isTrue,
         );
         expect(
-          File('assets/splash/${AppBranding.splashVariant}-background.png')
-              .existsSync(),
+          File(
+            'assets/splash/${AppBranding.splashVariant}-background.png',
+          ).existsSync(),
           isTrue,
         );
       },
@@ -143,13 +149,15 @@ void main() {
       // Montagne grise sur #37474F, posee en E5.7b comme « a remplacer par le
       // logo produit final ». C'est exactement ce que la tache 632 fait.
       expect(
-        File('android/app/src/main/res/drawable/ic_launcher_foreground.xml')
-            .existsSync(),
+        File(
+          'android/app/src/main/res/drawable/ic_launcher_foreground.xml',
+        ).existsSync(),
         isFalse,
       );
       expect(
-        File('android/app/src/main/res/drawable/ic_launcher_background.xml')
-            .existsSync(),
+        File(
+          'android/app/src/main/res/drawable/ic_launcher_background.xml',
+        ).existsSync(),
         isFalse,
       );
     });

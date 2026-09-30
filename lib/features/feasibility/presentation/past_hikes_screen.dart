@@ -37,9 +37,9 @@ class PastHikesScreen extends ConsumerStatefulWidget {
 class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
   Future<void> _addOrEdit({PastHike? existing, required int count}) async {
     if (existing == null && count >= 5) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.maxReached)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.pastHikes.maxReached)));
       return;
     }
     final result = await showModalBottomSheet<PastHike>(
@@ -77,9 +77,9 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
       // revenu la d'ou il venait. On ne depile PAS l'ecran ici — il en saisit
       // jusqu'a cinq et redige sa note de difficultes en dessous. Le bouton qui
       // conclut le passage sur l'ecran, et qui depile, est `_saveNote`.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.saved)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.pastHikes.saved)));
     }
   }
 
@@ -133,7 +133,8 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
               if (hikes.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.spacingLg),
+                    vertical: AppTheme.spacingLg,
+                  ),
                   child: Text(
                     ph.empty,
                     textAlign: TextAlign.center,
@@ -190,7 +191,8 @@ class _HikeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ph = t.pastHikes;
-    final date = '${hike.date.day.toString().padLeft(2, '0')}/'
+    final date =
+        '${hike.date.day.toString().padLeft(2, '0')}/'
         '${hike.date.month.toString().padLeft(2, '0')}/${hike.date.year}';
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -323,8 +325,8 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
   /// enregistre.
   void _submit() {
     final fieldsOk = _formKey.currentState?.validate() ?? false;
-    final hasEffort = _elevCtrl.text.trim().isNotEmpty ||
-        _distCtrl.text.trim().isNotEmpty;
+    final hasEffort =
+        _elevCtrl.text.trim().isNotEmpty || _distCtrl.text.trim().isNotEmpty;
     if (!fieldsOk || !hasEffort) {
       setState(() => _formError = hasEffort ? null : t.pastHikes.errorEffort);
       return;
@@ -389,44 +391,74 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             // SAISIE (maxLength) ET A LA VALIDATION (min/max metier + message
             // clair). Bornes = mandat : jours 1-60, marche 0-24 h/j,
             // denivele 0-5000 m, distance 0-100 km.
-            _num(_daysCtrl, ph.fieldDays, StepwaysIcons.calendrier,
-                decimal: false,
-                min: 1,
-                max: 60,
-                maxLength: 2,
-                required: true,
-                error: ph.errorDays),
-            _num(_hoursCtrl, ph.fieldAvgHours, StepwaysIcons.duree,
-                min: 0, max: 24, maxLength: 4, error: ph.errorHours),
-            _num(_elevCtrl, ph.fieldElevation, StepwaysIcons.denivelePlus,
-                decimal: false,
-                min: 0,
-                max: 5000,
-                maxLength: 4,
-                error: ph.errorElevation),
-            _num(_distCtrl, ph.fieldDistance, StepwaysIcons.distance,
-                min: 0, max: 100, maxLength: 5, error: ph.errorDistance),
+            _num(
+              _daysCtrl,
+              ph.fieldDays,
+              StepwaysIcons.calendrier,
+              decimal: false,
+              min: 1,
+              max: 60,
+              maxLength: 2,
+              required: true,
+              error: ph.errorDays,
+            ),
+            _num(
+              _hoursCtrl,
+              ph.fieldAvgHours,
+              StepwaysIcons.duree,
+              min: 0,
+              max: 24,
+              maxLength: 4,
+              error: ph.errorHours,
+            ),
+            _num(
+              _elevCtrl,
+              ph.fieldElevation,
+              StepwaysIcons.denivelePlus,
+              decimal: false,
+              min: 0,
+              max: 5000,
+              maxLength: 4,
+              error: ph.errorElevation,
+            ),
+            _num(
+              _distCtrl,
+              ph.fieldDistance,
+              StepwaysIcons.distance,
+              min: 0,
+              max: 100,
+              maxLength: 5,
+              error: ph.errorDistance,
+            ),
             if (_formError case final message?)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 child: Row(
                   children: [
-                    StepIcon(StepwaysIcons.danger,
-                        size: 18, color: theme.colorScheme.error),
+                    StepIcon(
+                      StepwaysIcons.danger,
+                      size: 18,
+                      color: theme.colorScheme.error,
+                    ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Expanded(
                       child: Text(
                         message,
                         key: const ValueKey('past-hike-form-error'),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: theme.colorScheme.error),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.error,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             const SizedBox(height: AppTheme.spacingLg),
-            AppButton(icon: StepwaysIcons.coche, label: ph.save, onPressed: _submit),
+            AppButton(
+              icon: StepwaysIcons.coche,
+              label: ph.save,
+              onPressed: _submit,
+            ),
           ],
         ),
       ),

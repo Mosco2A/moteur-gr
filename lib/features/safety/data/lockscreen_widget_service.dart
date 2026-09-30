@@ -122,7 +122,7 @@ class LockscreenWidgetService {
     required this.trailName,
     FlutterLocalNotificationsPlugin? notificationsPlugin,
   }) : _notificationsPlugin =
-            notificationsPlugin ?? FlutterLocalNotificationsPlugin();
+           notificationsPlugin ?? FlutterLocalNotificationsPlugin();
 
   final EmergencyContactsService contactsService;
 
@@ -206,7 +206,9 @@ class LockscreenWidgetService {
       stageName: stageName,
       stageIndex: stageIndex,
     );
-    if (_isActive) { await refresh(); }
+    if (_isActive) {
+      await refresh();
+    }
   }
 
   Future<void> activate() async {
@@ -260,9 +262,7 @@ class LockscreenWidgetService {
   /// the lock screen ». Un randonneur qui masque les notifications sensibles sur
   /// son ecran verrouille masque celle-ci. C'est pour cela que la recopie dans la
   /// fiche du telephone reste une ETAPE, et pas un conseil.
-  Future<void> _showAndroidNotification(
-    List<EmergencyContact> contacts,
-  ) async {
+  Future<void> _showAndroidNotification(List<EmergencyContact> contacts) async {
     final enrichedBody = buildNotificationContent(contacts);
 
     final androidDetails = AndroidNotificationDetails(
@@ -285,7 +285,10 @@ class LockscreenWidgetService {
 
     final details = NotificationDetails(android: androidDetails);
     await _notificationsPlugin.show(
-      _notificationId, notificationTitle, enrichedBody, details,
+      _notificationId,
+      notificationTitle,
+      enrichedBody,
+      details,
     );
   }
 
@@ -314,8 +317,7 @@ class LockscreenWidgetService {
         if (health.bloodType.isNotEmpty) 'Sang: ${health.bloodType}',
         if (health.organDonor.isNotEmpty)
           'Don d\'organes: ${health.organDonor}',
-        if (health.doctorContact.isNotEmpty)
-          'Medecin: ${health.doctorContact}',
+        if (health.doctorContact.isNotEmpty) 'Medecin: ${health.doctorContact}',
         if (health.insuranceNumber.isNotEmpty)
           'Assurance: ${health.insuranceNumber}',
       ];
@@ -330,7 +332,9 @@ class LockscreenWidgetService {
 
     if (_securityData.hasGpsPosition) {
       buffer.writeln();
-      buffer.writeln('GPS: ${_securityData.latitude!.toStringAsFixed(5)}, ${_securityData.longitude!.toStringAsFixed(5)}');
+      buffer.writeln(
+        'GPS: ${_securityData.latitude!.toStringAsFixed(5)}, ${_securityData.longitude!.toStringAsFixed(5)}',
+      );
     }
 
     if (_securityData.stageName != null) {
@@ -349,9 +353,7 @@ class LockscreenWidgetService {
     List<EmergencyContact> contacts,
   ) {
     final contactsJson = contacts.map((c) => c.toJson()).toList();
-    final securityPayload = <String, dynamic>{
-      'contacts': contactsJson,
-    };
+    final securityPayload = <String, dynamic>{'contacts': contactsJson};
     if (_securityData.hasHealthInfo) {
       securityPayload['health_info'] = _securityData.healthInfo!.toJson();
     }

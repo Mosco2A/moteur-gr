@@ -84,9 +84,9 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
     Battery? battery,
     Connectivity? connectivity,
     AnalyticsService? analytics,
-  })  : _battery = battery,
-        _connectivity = connectivity,
-        _analyticsOverride = analytics;
+  }) : _battery = battery,
+       _connectivity = connectivity,
+       _analyticsOverride = analytics;
 
   final Battery? _battery;
   final Connectivity? _connectivity;
@@ -127,15 +127,20 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
       final connectivity = await _connectivityInstance.checkConnectivity();
       _applyConnectivity(connectivity);
 
-      _connectivitySub = _connectivityInstance.onConnectivityChanged
-          .listen(_applyConnectivity, onError: _onSignalError);
+      _connectivitySub = _connectivityInstance.onConnectivityChanged.listen(
+        _applyConnectivity,
+        onError: _onSignalError,
+      );
       _batterySub = _batteryInstance.onBatteryStateChanged.listen(
         (_) => _refreshBattery(),
         onError: _onSignalError,
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'BatteryAwareLocationController.start');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BatteryAwareLocationController.start',
+      );
       rethrow;
     }
   }
@@ -144,7 +149,9 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
   /// En foreground/ecran on, ce regime est applique tel quel ; en background,
   /// il est plafonne a walking (jamais high).
   void onMovementRegime(GpsAccuracyMode detected) {
-    final effective = state.isForeground ? detected : _capForBackground(detected);
+    final effective = state.isForeground
+        ? detected
+        : _capForBackground(detected);
     _updateState(state.copyWith(mode: effective));
   }
 
@@ -169,10 +176,12 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         // Background / ecran off -> forcer walking (jamais high).
-        _updateState(current.copyWith(
-          isForeground: false,
-          mode: _capForBackground(current.mode),
-        ));
+        _updateState(
+          current.copyWith(
+            isForeground: false,
+            mode: _capForBackground(current.mode),
+          ),
+        );
     }
   }
 
@@ -187,9 +196,11 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
       }
       _updateState(next);
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'BatteryAwareLocationController._refreshBattery');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BatteryAwareLocationController._refreshBattery',
+      );
     }
   }
 
@@ -199,9 +210,11 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
   }
 
   void _onSignalError(Object error, StackTrace stackTrace) {
-    ErrorHandler.log(error,
-        stackTrace: stackTrace,
-        context: 'BatteryAwareLocationController.signal');
+    ErrorHandler.log(
+      error,
+      stackTrace: stackTrace,
+      context: 'BatteryAwareLocationController.signal',
+    );
   }
 
   /// Applique le nouvel etat et emet la telemetrie SI le regime, le defer ou
@@ -226,9 +239,11 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
         deferSync: s.deferSync,
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'BatteryAwareLocationController._emitTelemetry');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BatteryAwareLocationController._emitTelemetry',
+      );
     }
   }
 
@@ -245,5 +260,5 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
 /// Provider du controller batterie-aware (F6A-04).
 final batteryAwareLocationControllerProvider =
     NotifierProvider<BatteryAwareLocationController, BatteryLocationState>(
-  BatteryAwareLocationController.new,
-);
+      BatteryAwareLocationController.new,
+    );

@@ -40,6 +40,5 @@ abstract class PastHike with _$PastHike {
   double get avgDistancePerDayKm => days > 0 ? totalDistanceKm / days : 0;
 
   /// Denivele positif moyen PAR JOUR, en metres (0 si nb de jours invalide).
-  double get avgElevationGainPerDay =>
-      days > 0 ? totalElevationGain / days : 0;
+  double get avgElevationGainPerDay => days > 0 ? totalElevationGain / days : 0;
 }

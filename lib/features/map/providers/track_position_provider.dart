@@ -54,8 +54,7 @@ class TrackPositionState {
   final bool isOffTrack;
 
   /// Distance restante en kilometres, arrondie a 1 decimale
-  double get distanceRemainingKm =>
-      (distanceRemainingM / 100).round() / 10;
+  double get distanceRemainingKm => (distanceRemainingM / 100).round() / 10;
 
   /// Pourcentage de progression sur le trace (0.0 a 1.0)
   double get progressRatio {
@@ -76,16 +75,15 @@ class _LastTrackIndexNotifier extends Notifier<int?> {
   void set(int? index) => state = index;
 }
 
-final _lastTrackIndexProvider =
-    NotifierProvider<_LastTrackIndexNotifier, int?>(
-        _LastTrackIndexNotifier.new);
+final _lastTrackIndexProvider = NotifierProvider<_LastTrackIndexNotifier, int?>(
+  _LastTrackIndexNotifier.new,
+);
 
 /// Provider principal : combine position GPS + trace + etapes.
 ///
 /// Calcule la projection en temps reel et expose un [TrackPositionState]
 /// complet pour l'UI (carte + barre de progression).
-final trackPositionProvider =
-    Provider<AsyncValue<TrackPositionState>>((ref) {
+final trackPositionProvider = Provider<AsyncValue<TrackPositionState>>((ref) {
   final positionAsync = ref.watch(locationProvider);
 
   return positionAsync.when(
@@ -96,10 +94,7 @@ final trackPositionProvider =
 });
 
 /// Calcule la projection a partir d'une position GPS recue.
-AsyncValue<TrackPositionState> _computeProjection(
-  Ref ref,
-  Position position,
-) {
+AsyncValue<TrackPositionState> _computeProjection(Ref ref, Position position) {
   // Sentier ACTIF (correctif L6-2 suite, 21/09/2026).
   //
   // Cette ligne lisait un identifiant 'default' ECRIT EN DUR. Or
@@ -190,8 +185,5 @@ AsyncValue<TrackPositionState> _computeProjection(
 /// distance parcourue erronee issue d'une autre source.
 final stageDistanceCoveredProvider = Provider<double>((ref) {
   final trackPos = ref.watch(trackPositionProvider);
-  return trackPos.whenOrNull(
-        data: (state) => state.distanceFromStartM,
-      ) ??
-      0.0;
+  return trackPos.whenOrNull(data: (state) => state.distanceFromStartM) ?? 0.0;
 });

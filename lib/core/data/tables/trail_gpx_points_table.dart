@@ -23,6 +23,7 @@ class TrailGpxPoints extends Table {
 
   /// Index de sequence pour l'ordre des points
   IntColumn get sequenceIndex => integer()();
+
   /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
   /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
   ///

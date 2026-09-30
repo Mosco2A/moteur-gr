@@ -146,34 +146,36 @@ class _PackTileState extends ConsumerState<_PackTile> {
       // desormais non AVANT qu'on appuie.
       child: GriseEnDemo(
         child: InkWell(
-        onTap: _occupe ? null : _acheter,
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Row(
-            children: [
-              StepIcon(StepwaysIcons.plus, color: theme.colorScheme.primary),
-              const SizedBox(width: AppTheme.spacingMd),
-              Expanded(
-                child: Text(
-                  t.monetization.packSteps(steps: pack.steps),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+          onTap: _occupe ? null : _acheter,
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Row(
+              children: [
+                StepIcon(StepwaysIcons.plus, color: theme.colorScheme.primary),
+                const SizedBox(width: AppTheme.spacingMd),
+                Expanded(
+                  child: Text(
+                    t.monetization.packSteps(steps: pack.steps),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                t.monetization.packPrice(
-                  price: pack.priceEur.toStringAsFixed(2).replaceAll('.', ','),
+                Text(
+                  t.monetization.packPrice(
+                    price: pack.priceEur
+                        .toStringAsFixed(2)
+                        .replaceAll('.', ','),
+                  ),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

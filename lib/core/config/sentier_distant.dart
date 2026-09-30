@@ -58,14 +58,17 @@ extension EntreeManifesteEnSentier on TrailManifestEntry {
       region: f.region,
       country: f.country,
       // --- Ce que le distant PEUT dire, avec repli sur le compile ---
-      primaryColorValue: f.primaryColorValue ??
+      primaryColorValue:
+          f.primaryColorValue ??
           compile?.primaryColorValue ??
           _couleurPrimaireParDefaut,
-      secondaryColorValue: f.secondaryColorValue ??
+      secondaryColorValue:
+          f.secondaryColorValue ??
           compile?.secondaryColorValue ??
           _couleurSecondaireParDefaut,
       directions: f.directions ?? compile?.directions ?? const ['NS', 'SN'],
-      availableDurations: f.availableDurations ??
+      availableDurations:
+          f.availableDurations ??
           compile?.availableDurations ??
           const [7, 9, 12, 14, 16],
       defaultDuration: f.defaultDuration ?? compile?.defaultDuration ?? 14,
@@ -75,9 +78,9 @@ extension EntreeManifesteEnSentier on TrailManifestEntry {
       // offrirait un sentier payant a tout le monde sur un simple oubli de
       // champ dans le manifeste.
       priceStages: f.priceStages ?? compile?.priceStages,
-      emergencyNumbers: f.emergencyNumbers
-              ?.map((n) =>
-                  TrailEmergencyNumber(name: n.name, phone: n.phone))
+      emergencyNumbers:
+          f.emergencyNumbers
+              ?.map((n) => TrailEmergencyNumber(name: n.name, phone: n.phone))
               .toList() ??
           compile?.emergencyNumbers ??
           const [],

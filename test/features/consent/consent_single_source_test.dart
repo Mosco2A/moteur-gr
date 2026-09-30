@@ -83,94 +83,124 @@ void main() {
       false;
 
   group('M2 — une seule source, lue pareil des deux cotes', () {
-    test('accorder depuis la FICHE se lit sur l ecran Confidentialite',
-        () async {
-      final container = chauffer();
-      await ouvrirEcranConfidentialite(container);
-      expect(luSurEcranConfidentialite(container), isFalse,
-          reason: 'etat de depart : aucune decision prise');
+    test(
+      'accorder depuis la FICHE se lit sur l ecran Confidentialite',
+      () async {
+        final container = chauffer();
+        await ouvrirEcranConfidentialite(container);
+        expect(
+          luSurEcranConfidentialite(container),
+          isFalse,
+          reason: 'etat de depart : aucune decision prise',
+        );
 
-      // Le chemin REEL de la fiche randonneur : elle ecrit sur le service,
-      // directement, sans passer par le controleur de l'ecran Confidentialite.
-      final service = await container.read(consentServiceReadyProvider.future);
-      await service.grant(ConsentPurpose.healthData);
-      await pumpEventQueue();
+        // Le chemin REEL de la fiche randonneur : elle ecrit sur le service,
+        // directement, sans passer par le controleur de l'ecran Confidentialite.
+        final service = await container.read(
+          consentServiceReadyProvider.future,
+        );
+        await service.grant(ConsentPurpose.healthData);
+        await pumpEventQueue();
 
-      expect(luSurEcranConfidentialite(container), isTrue,
-          reason: 'l ecran Confidentialite affichait « non accorde » sur une '
-              'donnee accordee — c est ce qui rendait la revocation impossible');
-    });
+        expect(
+          luSurEcranConfidentialite(container),
+          isTrue,
+          reason:
+              'l ecran Confidentialite affichait « non accorde » sur une '
+              'donnee accordee — c est ce qui rendait la revocation impossible',
+        );
+      },
+    );
 
-    test('retirer depuis la FICHE se lit aussi sur l ecran Confidentialite',
-        () async {
-      final container = chauffer();
-      final service = await container.read(consentServiceReadyProvider.future);
-      await service.grant(ConsentPurpose.healthData);
-      await ouvrirEcranConfidentialite(container);
-      expect(luSurEcranConfidentialite(container), isTrue);
+    test(
+      'retirer depuis la FICHE se lit aussi sur l ecran Confidentialite',
+      () async {
+        final container = chauffer();
+        final service = await container.read(
+          consentServiceReadyProvider.future,
+        );
+        await service.grant(ConsentPurpose.healthData);
+        await ouvrirEcranConfidentialite(container);
+        expect(luSurEcranConfidentialite(container), isTrue);
 
-      await service.revoke(ConsentPurpose.healthData);
-      await pumpEventQueue();
+        await service.revoke(ConsentPurpose.healthData);
+        await pumpEventQueue();
 
-      expect(luSurEcranConfidentialite(container), isFalse);
-    });
+        expect(luSurEcranConfidentialite(container), isFalse);
+      },
+    );
 
-    test('accorder depuis l ecran Confidentialite se lit depuis la FICHE',
-        () async {
-      final container = chauffer();
-      await ouvrirEcranConfidentialite(container);
+    test(
+      'accorder depuis l ecran Confidentialite se lit depuis la FICHE',
+      () async {
+        final container = chauffer();
+        await ouvrirEcranConfidentialite(container);
 
-      await container
-          .read(consentControllerProvider)
-          .set(ConsentPurpose.healthData, granted: true);
-      await pumpEventQueue();
+        await container
+            .read(consentControllerProvider)
+            .set(ConsentPurpose.healthData, granted: true);
+        await pumpEventQueue();
 
-      // La fiche randonneur relit le service a chaque ouverture (`_load`).
-      final service = container.read(consentServiceProvider);
-      await service.initialize();
-      expect(service.hasConsent(ConsentPurpose.healthData), isTrue);
-      expect(luSurEcranConfidentialite(container), isTrue);
-    });
+        // La fiche randonneur relit le service a chaque ouverture (`_load`).
+        final service = container.read(consentServiceProvider);
+        await service.initialize();
+        expect(service.hasConsent(ConsentPurpose.healthData), isTrue);
+        expect(luSurEcranConfidentialite(container), isTrue);
+      },
+    );
   });
 
   group('M2 — la revocation depuis les Reglages efface, et on peut enfin le '
       'jouer', () {
-    test('retirer l autorisation sante depuis les Reglages efface la morphologie',
-        () async {
-      final container = chauffer();
-      final repo = container.read(hikerProfileRepositoryProvider);
+    test(
+      'retirer l autorisation sante depuis les Reglages efface la morphologie',
+      () async {
+        final container = chauffer();
+        final repo = container.read(hikerProfileRepositoryProvider);
 
-      // Morphologie accordee et enregistree DEPUIS LA FICHE, comme la campagne.
-      final service = await container.read(consentServiceReadyProvider.future);
-      await service.grant(ConsentPurpose.healthData);
-      await repo.saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-        sex: 'male',
-        countryIso: 'FR',
-      ));
-      await ouvrirEcranConfidentialite(container);
+        // Morphologie accordee et enregistree DEPUIS LA FICHE, comme la campagne.
+        final service = await container.read(
+          consentServiceReadyProvider.future,
+        );
+        await service.grant(ConsentPurpose.healthData);
+        await repo.saveProfile(
+          const HikerProfile(
+            age: 72,
+            heightCm: 172,
+            weightKg: 88,
+            sex: 'male',
+            countryIso: 'FR',
+          ),
+        );
+        await ouvrirEcranConfidentialite(container);
 
-      // L'ecran doit maintenant montrer « accorde » — sans quoi le geste qui
-      // suit accorderait au lieu de retirer (defaut mesure par la campagne).
-      expect(luSurEcranConfidentialite(container), isTrue,
-          reason: 'on ne peut pas retirer ce qui s affiche comme non accorde');
+        // L'ecran doit maintenant montrer « accorde » — sans quoi le geste qui
+        // suit accorderait au lieu de retirer (defaut mesure par la campagne).
+        expect(
+          luSurEcranConfidentialite(container),
+          isTrue,
+          reason: 'on ne peut pas retirer ce qui s affiche comme non accorde',
+        );
 
-      // LE GESTE : la bascule est deja a vrai, on la met a faux.
-      await container
-          .read(consentControllerProvider)
-          .set(ConsentPurpose.healthData, granted: false);
-      await pumpEventQueue();
+        // LE GESTE : la bascule est deja a vrai, on la met a faux.
+        await container
+            .read(consentControllerProvider)
+            .set(ConsentPurpose.healthData, granted: false);
+        await pumpEventQueue();
 
-      expect(luSurEcranConfidentialite(container), isFalse);
-      final reste = await repo.getProfile();
-      expect(reste.age, 0, reason: 'une revocation efface ce qui etait deja la');
-      expect(reste.heightCm, 0);
-      expect(reste.weightKg, 0);
-      expect(await repo.getWalkTestResult(), isNull);
-      // Ce qui ne releve pas de l'article 9 survit (sexe declare, pays).
-      expect(reste.countryIso, 'FR');
-    });
+        expect(luSurEcranConfidentialite(container), isFalse);
+        final reste = await repo.getProfile();
+        expect(
+          reste.age,
+          0,
+          reason: 'une revocation efface ce qui etait deja la',
+        );
+        expect(reste.heightCm, 0);
+        expect(reste.weightKg, 0);
+        expect(await repo.getWalkTestResult(), isNull);
+        // Ce qui ne releve pas de l'article 9 survit (sexe declare, pays).
+        expect(reste.countryIso, 'FR');
+      },
+    );
   });
 }

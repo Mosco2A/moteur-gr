@@ -46,10 +46,30 @@ void main() {
 
       // Icones attendues. Le pinceau (selecteur de peaux) est retire : on
       // exige son ABSENCE, pour qu'il ne revienne pas par inadvertance.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.palette), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.plus), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.moins), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.maPosition), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.palette,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.plus,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.moins,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.maPosition,
+        ),
+        findsOneWidget,
+      );
     });
 
     test('est un StatelessWidget', () {

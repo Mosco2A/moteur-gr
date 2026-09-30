@@ -19,9 +19,9 @@ class FirestoreComplaintSink implements ComplaintSink {
     required String Function() currentUidHash,
     required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
-  })  : _currentUidHash = currentUidHash,
-        _firebaseService = firebaseService,
-        _firestore = firestore;
+  }) : _currentUidHash = currentUidHash,
+       _firebaseService = firebaseService,
+       _firestore = firestore;
 
   /// Fournit l'UID hache de l'utilisateur authentifie (== auth.uid).
   final String Function() _currentUidHash;

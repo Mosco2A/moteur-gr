@@ -85,38 +85,43 @@ class _NatifEspion {
   void brancher() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel(ExclusionSauvegardeIcloud.nomDuCanal),
-      (appel) async {
-        final chemin =
-            (appel.arguments as Map)[ExclusionSauvegardeIcloud.argumentChemin]
-                as String;
-        final f = File(chemin);
-        int? octets;
-        try {
-          if (f.existsSync()) octets = f.lengthSync();
-        } on FileSystemException {
-          octets = null;
-        }
-        appels.add(_Appel(appel.method, chemin.replaceAll(r'\', '/'), octets));
-        return true;
-      },
-    );
+          const MethodChannel(ExclusionSauvegardeIcloud.nomDuCanal),
+          (appel) async {
+            final chemin =
+                (appel.arguments
+                        as Map)[ExclusionSauvegardeIcloud.argumentChemin]
+                    as String;
+            final f = File(chemin);
+            int? octets;
+            try {
+              if (f.existsSync()) octets = f.lengthSync();
+            } on FileSystemException {
+              octets = null;
+            }
+            appels.add(
+              _Appel(appel.method, chemin.replaceAll(r'\', '/'), octets),
+            );
+            return true;
+          },
+        );
   }
 
   void debrancher() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel(ExclusionSauvegardeIcloud.nomDuCanal),
-      null,
-    );
+          const MethodChannel(ExclusionSauvegardeIcloud.nomDuCanal),
+          null,
+        );
   }
 
   void oublier() => appels.clear();
 
   List<_Appel> exclusionsDe(String chemin) => appels
-      .where((a) =>
-          a.methode == ExclusionSauvegardeIcloud.methodeExclure &&
-          a.chemin == chemin.replaceAll(r'\', '/'))
+      .where(
+        (a) =>
+            a.methode == ExclusionSauvegardeIcloud.methodeExclure &&
+            a.chemin == chemin.replaceAll(r'\', '/'),
+      )
       .toList();
 }
 
@@ -177,8 +182,7 @@ void main() {
 
   // =========================================================================
   group('630 — la fiche dit enfin QUI, et QUI PREVENIR', () {
-    test(
-        'l identite et les contacts a prevenir survivent a un aller-retour '
+    test('l identite et les contacts a prevenir survivent a un aller-retour '
         'disque', () async {
       await repo.save(laFicheComplete);
       final relue = await repo.get();
@@ -199,8 +203,7 @@ void main() {
       expect(relue.organDonor, kOrganDonorYes);
     });
 
-    test('une fiche qui ne porte QUE des contacts compte comme remplie',
-        () async {
+    test('une fiche qui ne porte QUE des contacts compte comme remplie', () async {
       // `hasData` pilote DEUX choses : la porte de demarrage du trek et
       // l ECRITURE MEME du fichier (une fiche sans donnee est effacee, pour ne
       // pas laisser de trace de passage). Un champ oublie dans `hasData` serait
@@ -208,7 +211,11 @@ void main() {
       const rienQueDesContacts = HealthInfo(
         emergencyContacts: [
           EmergencyContact(
-              id: 'perso-0', name: 'Marie', phone: '0612345678', priority: 1),
+            id: 'perso-0',
+            name: 'Marie',
+            phone: '0612345678',
+            priority: 1,
+          ),
         ],
       );
       expect(rienQueDesContacts.hasData, isTrue);
@@ -230,9 +237,13 @@ void main() {
         'carteMutuelleFichier': HealthInfo(carteMutuelleFichier: 'x.jpg'),
       };
       for (final entree in parChamp.entries) {
-        expect(entree.value.hasData, isTrue,
-            reason: 'le champ ${entree.key} doit rendre la fiche NON vide, '
-                'sinon il ne s enregistre jamais');
+        expect(
+          entree.value.hasData,
+          isTrue,
+          reason:
+              'le champ ${entree.key} doit rendre la fiche NON vide, '
+              'sinon il ne s enregistre jamais',
+        );
       }
     });
 
@@ -295,74 +306,84 @@ void main() {
 
   // =========================================================================
   group('630 — MIGRATION : une fiche deja saisie ne perd RIEN', () {
-    test('un fichier a CINQ champs se relit avec ses cinq valeurs intactes',
-        () async {
-      // Le JSON exact qu ecrivait la version precedente, ecrit A LA MAIN pour ne
-      // pas dependre du modele actuel : c est ce qui est REELLEMENT sur le
-      // telephone de Christophe.
-      final f = File(
-        '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-        '${FicheMedicaleFichier.nomFichier}',
-      );
-      f.parent.createSync(recursive: true);
-      f.writeAsStringSync(jsonEncode({
-        'bloodType': 'O-',
-        'allergies': 'Penicilline',
-        'treatments': 'Levothyrox 50mg/j',
-        'doctorContact': 'Dr Dupont',
-        'insuranceNumber': 'CEAM 80123456789',
-      }));
+    test(
+      'un fichier a CINQ champs se relit avec ses cinq valeurs intactes',
+      () async {
+        // Le JSON exact qu ecrivait la version precedente, ecrit A LA MAIN pour ne
+        // pas dependre du modele actuel : c est ce qui est REELLEMENT sur le
+        // telephone de Christophe.
+        final f = File(
+          '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
+          '${FicheMedicaleFichier.nomFichier}',
+        );
+        f.parent.createSync(recursive: true);
+        f.writeAsStringSync(
+          jsonEncode({
+            'bloodType': 'O-',
+            'allergies': 'Penicilline',
+            'treatments': 'Levothyrox 50mg/j',
+            'doctorContact': 'Dr Dupont',
+            'insuranceNumber': 'CEAM 80123456789',
+          }),
+        );
 
-      final relue = await repo.get();
-      expect(relue.bloodType, 'O-');
-      expect(relue.allergies, 'Penicilline');
-      expect(relue.treatments, 'Levothyrox 50mg/j');
-      expect(relue.doctorContact, 'Dr Dupont');
-      expect(relue.insuranceNumber, 'CEAM 80123456789');
+        final relue = await repo.get();
+        expect(relue.bloodType, 'O-');
+        expect(relue.allergies, 'Penicilline');
+        expect(relue.treatments, 'Levothyrox 50mg/j');
+        expect(relue.doctorContact, 'Dr Dupont');
+        expect(relue.insuranceNumber, 'CEAM 80123456789');
 
-      // ET LES HUIT CHAMPS AJOUTES SONT VIDES, pas absents : la fiche est
-      // utilisable telle quelle, le randonneur complete ce qu il veut.
-      expect(relue.fullName, '');
-      expect(relue.birthDate, '');
-      expect(relue.address, '');
-      expect(relue.conditions, '');
-      expect(relue.organDonor, '');
-      expect(relue.carteVitaleFichier, '');
-      expect(relue.carteMutuelleFichier, '');
-      expect(relue.emergencyContacts, isEmpty);
-    });
+        // ET LES HUIT CHAMPS AJOUTES SONT VIDES, pas absents : la fiche est
+        // utilisable telle quelle, le randonneur complete ce qu il veut.
+        expect(relue.fullName, '');
+        expect(relue.birthDate, '');
+        expect(relue.address, '');
+        expect(relue.conditions, '');
+        expect(relue.organDonor, '');
+        expect(relue.carteVitaleFichier, '');
+        expect(relue.carteMutuelleFichier, '');
+        expect(relue.emergencyContacts, isEmpty);
+      },
+    );
 
-    test('completer une fiche heritee ne perd aucune de ses cinq valeurs',
-        () async {
-      final f = File(
-        '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-        '${FicheMedicaleFichier.nomFichier}',
-      );
-      f.parent.createSync(recursive: true);
-      f.writeAsStringSync(jsonEncode({
-        'bloodType': 'O-',
-        'allergies': 'Penicilline',
-        'treatments': 'Levothyrox 50mg/j',
-        'doctorContact': 'Dr Dupont',
-        'insuranceNumber': 'CEAM 80123456789',
-      }));
+    test(
+      'completer une fiche heritee ne perd aucune de ses cinq valeurs',
+      () async {
+        final f = File(
+          '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
+          '${FicheMedicaleFichier.nomFichier}',
+        );
+        f.parent.createSync(recursive: true);
+        f.writeAsStringSync(
+          jsonEncode({
+            'bloodType': 'O-',
+            'allergies': 'Penicilline',
+            'treatments': 'Levothyrox 50mg/j',
+            'doctorContact': 'Dr Dupont',
+            'insuranceNumber': 'CEAM 80123456789',
+          }),
+        );
 
-      final heritee = await repo.get();
-      await repo.save(heritee.copyWith(fullName: 'Christophe Mosconi'));
+        final heritee = await repo.get();
+        await repo.save(heritee.copyWith(fullName: 'Christophe Mosconi'));
 
-      final relue = await repo.get();
-      expect(relue.fullName, 'Christophe Mosconi');
-      expect(relue.allergies, 'Penicilline');
-      expect(relue.insuranceNumber, 'CEAM 80123456789');
-    });
+        final relue = await repo.get();
+        expect(relue.fullName, 'Christophe Mosconi');
+        expect(relue.allergies, 'Penicilline');
+        expect(relue.insuranceNumber, 'CEAM 80123456789');
+      },
+    );
 
-    test('une valeur de groupe sanguin non reconnue reste SUR LE DISQUE',
-        () async {
-      // Elle n est pas effacee : l ecran la montre au randonneur et lui demande
-      // de choisir. « Les fiches deja saisies ne perdent RIEN. »
-      await repo.save(const HealthInfo(bloodType: 'XYZ123!!'));
-      expect((await repo.get()).bloodType, 'XYZ123!!');
-    });
+    test(
+      'une valeur de groupe sanguin non reconnue reste SUR LE DISQUE',
+      () async {
+        // Elle n est pas effacee : l ecran la montre au randonneur et lui demande
+        // de choisir. « Les fiches deja saisies ne perdent RIEN. »
+        await repo.save(const HealthInfo(bloodType: 'XYZ123!!'));
+        expect((await repo.get()).bloodType, 'XYZ123!!');
+      },
+    );
   });
 
   // =========================================================================
@@ -376,72 +397,92 @@ void main() {
       );
     }
 
-    test('la notification porte la fiche ENTIERE, plus trois champs sur cinq',
-        () async {
-      final service = serviceAvec(laFicheComplete);
-      await service.updateSecurityData(healthInfo: laFicheComplete);
-      final corps =
-          service.buildNotificationContent(service.contactsService.getContacts());
+    test(
+      'la notification porte la fiche ENTIERE, plus trois champs sur cinq',
+      () async {
+        final service = serviceAvec(laFicheComplete);
+        await service.updateSecurityData(healthInfo: laFicheComplete);
+        final corps = service.buildNotificationContent(
+          service.contactsService.getContacts(),
+        );
 
-      // LES TROIS CHAMPS QUI Y ETAIENT DEJA.
-      expect(corps, contains('Penicilline'));
-      expect(corps, contains('Levothyrox 50mg/j'));
-      expect(corps, contains('O-'));
-      // LES DEUX QUI MANQUAIENT — c est le defaut nomme par la consigne.
-      expect(corps, contains('Dr Dupont 04 95 00 00 00'),
-          reason: 'le medecin traitant n etait PAS recopie');
-      expect(corps, contains('CEAM 80123456789'),
-          reason: 'l assurance n etait PAS recopiee');
-      // ET TOUT CE QUI N EXISTAIT MEME PAS.
-      expect(corps, contains('Christophe Mosconi'));
-      expect(corps, contains('1972-04-03'));
-      expect(corps, contains('12 rue des Lilas, 20000 Ajaccio'));
-      expect(corps, contains('Marie Mosconi'));
-      expect(corps, contains('06 12 34 56 78'));
-      expect(corps, contains('Diabete type 1'));
-      expect(corps, contains(kOrganDonorYes));
-    });
+        // LES TROIS CHAMPS QUI Y ETAIENT DEJA.
+        expect(corps, contains('Penicilline'));
+        expect(corps, contains('Levothyrox 50mg/j'));
+        expect(corps, contains('O-'));
+        // LES DEUX QUI MANQUAIENT — c est le defaut nomme par la consigne.
+        expect(
+          corps,
+          contains('Dr Dupont 04 95 00 00 00'),
+          reason: 'le medecin traitant n etait PAS recopie',
+        );
+        expect(
+          corps,
+          contains('CEAM 80123456789'),
+          reason: 'l assurance n etait PAS recopiee',
+        );
+        // ET TOUT CE QUI N EXISTAIT MEME PAS.
+        expect(corps, contains('Christophe Mosconi'));
+        expect(corps, contains('1972-04-03'));
+        expect(corps, contains('12 rue des Lilas, 20000 Ajaccio'));
+        expect(corps, contains('Marie Mosconi'));
+        expect(corps, contains('06 12 34 56 78'));
+        expect(corps, contains('Diabete type 1'));
+        expect(corps, contains(kOrganDonorYes));
+      },
+    );
 
-    test('l ordre lu est celui de la fiche : qui, qui prevenir, puis le vital',
-        () async {
-      final service = serviceAvec(laFicheComplete);
-      await service.updateSecurityData(healthInfo: laFicheComplete);
-      final corps =
-          service.buildNotificationContent(service.contactsService.getContacts());
+    test(
+      'l ordre lu est celui de la fiche : qui, qui prevenir, puis le vital',
+      () async {
+        final service = serviceAvec(laFicheComplete);
+        await service.updateSecurityData(healthInfo: laFicheComplete);
+        final corps = service.buildNotificationContent(
+          service.contactsService.getContacts(),
+        );
 
-      final rangIdentite = corps.indexOf('Christophe Mosconi');
-      final rangContact = corps.indexOf('Marie Mosconi');
-      final rangAllergies = corps.indexOf('Penicilline');
-      final rangTraitements = corps.indexOf('Levothyrox');
-      final rangAntecedents = corps.indexOf('Diabete');
-      final rangSang = corps.indexOf('O-');
+        final rangIdentite = corps.indexOf('Christophe Mosconi');
+        final rangContact = corps.indexOf('Marie Mosconi');
+        final rangAllergies = corps.indexOf('Penicilline');
+        final rangTraitements = corps.indexOf('Levothyrox');
+        final rangAntecedents = corps.indexOf('Diabete');
+        final rangSang = corps.indexOf('O-');
 
-      expect(rangIdentite, lessThan(rangContact),
-          reason: 'un secouriste qui appelle un proche doit pouvoir dire de QUI '
-              'il parle des la premiere seconde');
-      expect(rangContact, lessThan(rangAllergies),
-          reason: 'Apple : « who to contact in case of an emergency » est ce que '
-              'voient les premiers intervenants');
-      // ORDRE SAMPLE : Allergies, Medicaments, Antecedents. Une allergie tue au
-      // moment du soin, sur le sentier ; le groupe sanguin sert a l hopital.
-      expect(rangAllergies, lessThan(rangTraitements));
-      expect(rangTraitements, lessThan(rangAntecedents));
-      expect(rangAntecedents, lessThan(rangSang));
-    });
+        expect(
+          rangIdentite,
+          lessThan(rangContact),
+          reason:
+              'un secouriste qui appelle un proche doit pouvoir dire de QUI '
+              'il parle des la premiere seconde',
+        );
+        expect(
+          rangContact,
+          lessThan(rangAllergies),
+          reason:
+              'Apple : « who to contact in case of an emergency » est ce que '
+              'voient les premiers intervenants',
+        );
+        // ORDRE SAMPLE : Allergies, Medicaments, Antecedents. Une allergie tue au
+        // moment du soin, sur le sentier ; le groupe sanguin sert a l hopital.
+        expect(rangAllergies, lessThan(rangTraitements));
+        expect(rangTraitements, lessThan(rangAntecedents));
+        expect(rangAntecedents, lessThan(rangSang));
+      },
+    );
 
     test('une fiche vide ne fabrique pas un bloc SANTE vide', () async {
       final service = serviceAvec(const HealthInfo());
       await service.updateSecurityData(healthInfo: const HealthInfo());
-      final corps =
-          service.buildNotificationContent(service.contactsService.getContacts());
+      final corps = service.buildNotificationContent(
+        service.contactsService.getContacts(),
+      );
       expect(corps, isNot(contains('SANTE')));
       // Mais le 112 reste : c est une constante de l application, pas une donnee
       // du randonneur.
       expect(corps, contains('112'));
     });
 
-    test(
-        'la notification est DECLAREE integralement visible sur l ecran '
+    test('la notification est DECLAREE integralement visible sur l ecran '
         'verrouille', () {
       // SANS `VISIBILITY_PUBLIC`, Android n affiche que le titre : le defaut est
       // `VISIBILITY_PRIVATE`, « only basic information [...] shows on the lock
@@ -451,31 +492,38 @@ void main() {
       final source = File(
         'lib/features/safety/data/lockscreen_widget_service.dart',
       ).readAsStringSync();
-      expect(source, contains('visibility: NotificationVisibility.public'),
-          reason: 'la fiche d urgence doit etre lisible EN ENTIER sans code');
+      expect(
+        source,
+        contains('visibility: NotificationVisibility.public'),
+        reason: 'la fiche d urgence doit etre lisible EN ENTIER sans code',
+      );
     });
   });
 
   // =========================================================================
   group('630 — les deux photos de carte passent par la MEME porte', () {
-    test('elles atterrissent dans le dossier de la fiche, pas ailleurs',
-        () async {
-      await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale, _photo);
+    test(
+      'elles atterrissent dans le dossier de la fiche, pas ailleurs',
+      () async {
+        await fichier.enregistrerCarte(
+          FicheMedicaleFichier.nomCarteVitale,
+          _photo,
+        );
 
-      final image = File(
-        '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-        '${FicheMedicaleFichier.nomCarteVitale}',
-      );
-      expect(image.existsSync(), isTrue);
-      expect(image.lengthSync(), _photo.length);
+        final image = File(
+          '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
+          '${FicheMedicaleFichier.nomCarteVitale}',
+        );
+        expect(image.existsSync(), isTrue);
+        expect(image.lengthSync(), _photo.length);
 
-      // VOISINE DE `fiche.json` : c est CE qui lui donne la protection du lot
-      // 612 (exclusion Android de `file/medical/`) et celle du lot 617
-      // (inclusion unique : tout le reste est dehors).
-      final laFiche = await fichier.fichier();
-      expect(_n(image.parent.path), _n(laFiche.parent.path));
-    });
+        // VOISINE DE `fiche.json` : c est CE qui lui donne la protection du lot
+        // 612 (exclusion Android de `file/medical/`) et celle du lot 617
+        // (inclusion unique : tout le reste est dehors).
+        final laFiche = await fichier.fichier();
+        expect(_n(image.parent.path), _n(laFiche.parent.path));
+      },
+    );
 
     test('elles ne sont PAS dans le seul dossier que la sauvegarde emporte', () {
       // Le lot 617 a renverse la regle : une SEULE inclusion, tout le reste
@@ -483,8 +531,10 @@ void main() {
       // sauvegardable — donc dehors par construction, et pas par une liste a
       // tenir a jour.
       expect(SauvegardeSysteme.inclusions, hasLength(1));
-      expect(SauvegardeSysteme.inclusions.single.chemin,
-          '${SauvegardeSysteme.dossierSauvegardable}/');
+      expect(
+        SauvegardeSysteme.inclusions.single.chemin,
+        '${SauvegardeSysteme.dossierSauvegardable}/',
+      );
       expect(
         SauvegardeSysteme.dossierExclu,
         isNot(SauvegardeSysteme.dossierSauvegardable),
@@ -499,23 +549,29 @@ void main() {
       );
     });
 
-    test(
-        'l exclusion iCloud est posee sur le temporaire AVANT le renommage et '
+    test('l exclusion iCloud est posee sur le temporaire AVANT le renommage et '
         'sur le fichier final APRES', () async {
       natif.oublier();
       await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale, _photo);
+        FicheMedicaleFichier.nomCarteVitale,
+        _photo,
+      );
 
-      final chemin = '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
+      final chemin =
+          '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
           '${FicheMedicaleFichier.nomCarteVitale}';
       final temporaire = '$chemin${FicheMedicaleFichier.suffixeTemporaire}';
 
       // LE TEMPORAIRE : l image est deja sur le disque quand on l exclut, sinon
       // il existe une fenetre ou une carte Vitale est en clair sans attribut.
       final surLeTmp = natif.exclusionsDe(temporaire);
-      expect(surLeTmp, isNotEmpty,
-          reason: 'sans cette pose, la photo existe sur le disque sans '
-              'attribut pendant toute l ecriture');
+      expect(
+        surLeTmp,
+        isNotEmpty,
+        reason:
+            'sans cette pose, la photo existe sur le disque sans '
+            'attribut pendant toute l ecriture',
+      );
       expect(surLeTmp.last.octetsAuMomentDeLAppel, _photo.length);
 
       // LE FICHIER FINAL : c est CE geste qui ferme le piege de l ecriture
@@ -523,9 +579,13 @@ void main() {
       // fichier final est l ancien `.tmp`, qui ne l a jamais porte).
       final surLeFinal = natif.exclusionsDe(chemin);
       expect(surLeFinal, isNotEmpty);
-      expect(surLeFinal.last.octetsAuMomentDeLAppel, _photo.length,
-          reason: 'l exclusion doit etre posee APRES le renommage, donc sur un '
-              'chemin qui porte deja la photo');
+      expect(
+        surLeFinal.last.octetsAuMomentDeLAppel,
+        _photo.length,
+        reason:
+            'l exclusion doit etre posee APRES le renommage, donc sur un '
+            'chemin qui porte deja la photo',
+      );
 
       // ET LE DOSSIER.
       expect(
@@ -535,17 +595,24 @@ void main() {
     });
 
     test('effacer la fiche emporte les DEUX photos', () async {
-      await repo.save(laFicheComplete.copyWith(
-        carteVitaleFichier: FicheMedicaleFichier.nomCarteVitale,
-        carteMutuelleFichier: FicheMedicaleFichier.nomCarteMutuelle,
-      ));
+      await repo.save(
+        laFicheComplete.copyWith(
+          carteVitaleFichier: FicheMedicaleFichier.nomCarteVitale,
+          carteMutuelleFichier: FicheMedicaleFichier.nomCarteMutuelle,
+        ),
+      );
       await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale, _photo);
+        FicheMedicaleFichier.nomCarteVitale,
+        _photo,
+      );
       await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteMutuelle, _photo);
+        FicheMedicaleFichier.nomCarteMutuelle,
+        _photo,
+      );
 
-      final dossier =
-          Directory('${bac.path}/${SauvegardeSysteme.dossierExclu}');
+      final dossier = Directory(
+        '${bac.path}/${SauvegardeSysteme.dossierExclu}',
+      );
       expect(dossier.listSync(), hasLength(3));
 
       await repo.delete();
@@ -556,24 +623,30 @@ void main() {
       expect(dossier.existsSync() ? dossier.listSync() : const [], isEmpty);
     });
 
-    test('garantirExclusion repose l attribut sur des photos deja presentes',
-        () async {
-      // Le cas du randonneur qui a photographie sa carte avec la version
-      // precedente puis met a jour : `enregistrerCarte` ne repassera jamais, et
-      // sans cette reprise l image resterait dans iCloud pour toujours. Meme
-      // raisonnement que la tache 615 pour la fiche elle-meme.
-      await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale, _photo);
-      natif.oublier();
+    test(
+      'garantirExclusion repose l attribut sur des photos deja presentes',
+      () async {
+        // Le cas du randonneur qui a photographie sa carte avec la version
+        // precedente puis met a jour : `enregistrerCarte` ne repassera jamais, et
+        // sans cette reprise l image resterait dans iCloud pour toujours. Meme
+        // raisonnement que la tache 615 pour la fiche elle-meme.
+        await fichier.enregistrerCarte(
+          FicheMedicaleFichier.nomCarteVitale,
+          _photo,
+        );
+        natif.oublier();
 
-      await fichier.garantirExclusion();
+        await fichier.garantirExclusion();
 
-      expect(
-        natif.exclusionsDe('${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-            '${FicheMedicaleFichier.nomCarteVitale}'),
-        isNotEmpty,
-      );
-    });
+        expect(
+          natif.exclusionsDe(
+            '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
+            '${FicheMedicaleFichier.nomCarteVitale}',
+          ),
+          isNotEmpty,
+        );
+      },
+    );
 
     test('un nom d image qui ne vient pas de nous est REFUSE', () async {
       // Reprendre le nom rendu par l appareil photo ferait entrer dans le
@@ -650,9 +723,13 @@ void main() {
           'dart:io\' show HttpClient',
           'http_client',
         ]) {
-          expect(imports.contains(transport), isFalse,
-              reason: '$chemin ne doit importer AUCUN transport distant '
-                  '(trouve : $transport)');
+          expect(
+            imports.contains(transport),
+            isFalse,
+            reason:
+                '$chemin ne doit importer AUCUN transport distant '
+                '(trouve : $transport)',
+          );
         }
       }
     });

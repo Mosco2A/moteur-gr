@@ -25,12 +25,14 @@ void main() {
     });
 
     test('upsert cree une nouvelle progression', () async {
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-        currentStage: const Value(3),
-        totalDistanceWalkedKm: const Value(25.5),
-        totalElevationGainedM: const Value(1500),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'trail1',
+          currentStage: const Value(3),
+          totalDistanceWalkedKm: const Value(25.5),
+          totalElevationGainedM: const Value(1500),
+        ),
+      );
 
       final result = await dao.getByTrailId('trail1');
       expect(result, isNotNull);
@@ -41,16 +43,20 @@ void main() {
     });
 
     test('upsert met a jour une progression existante', () async {
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-        currentStage: const Value(1),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'trail1',
+          currentStage: const Value(1),
+        ),
+      );
 
-      await dao.upsert(const UserProgressEntriesCompanion(
-        trailId: Value('trail1'),
-        currentStage: Value(5),
-        totalDistanceWalkedKm: Value(42.0),
-      ));
+      await dao.upsert(
+        const UserProgressEntriesCompanion(
+          trailId: Value('trail1'),
+          currentStage: Value(5),
+          totalDistanceWalkedKm: Value(42.0),
+        ),
+      );
 
       final result = await dao.getByTrailId('trail1');
       expect(result!.currentStage, 5);
@@ -67,10 +73,12 @@ void main() {
     });
 
     test('updateCurrentStage met a jour letape courante', () async {
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-        currentStage: const Value(1),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'trail1',
+          currentStage: const Value(1),
+        ),
+      );
 
       await dao.updateCurrentStage('trail1', 7);
 
@@ -79,10 +87,12 @@ void main() {
     });
 
     test('markCompleted marque le sentier comme termine', () async {
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-        currentStage: const Value(10),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'trail1',
+          currentStage: const Value(10),
+        ),
+      );
 
       await dao.markCompleted('trail1');
 
@@ -99,9 +109,7 @@ void main() {
     });
 
     test('isCompleted est false par defaut', () async {
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-      ));
+      await dao.upsert(UserProgressEntriesCompanion.insert(trailId: 'trail1'));
 
       final result = await dao.getByTrailId('trail1');
       expect(result!.isCompleted, isFalse);

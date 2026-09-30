@@ -55,8 +55,9 @@ class ChecklistRecommendationBanner extends StatelessWidget {
       heightCm: bodyHeightCm,
       bodyWeightKg: bodyWeightKg,
     );
-    final recommendedKg =
-        _refugeReferenceKg > minByBody ? _refugeReferenceKg : minByBody;
+    final recommendedKg = _refugeReferenceKg > minByBody
+        ? _refugeReferenceKg
+        : minByBody;
     const color = AppTheme.orangeDifficile;
 
     return Container(

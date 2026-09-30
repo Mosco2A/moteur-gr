@@ -15,8 +15,8 @@ class InAppReviewService {
   InAppReviewService({
     required ReviewRequestsDao reviewRequestsDao,
     InAppReview? inAppReview,
-  })  : _reviewRequestsDao = reviewRequestsDao,
-        _inAppReview = inAppReview ?? InAppReview.instance;
+  }) : _reviewRequestsDao = reviewRequestsDao,
+       _inAppReview = inAppReview ?? InAppReview.instance;
 
   final ReviewRequestsDao _reviewRequestsDao;
   final InAppReview _inAppReview;

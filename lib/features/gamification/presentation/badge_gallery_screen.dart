@@ -74,8 +74,9 @@ class _BadgeTile extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final obtained = badge.isObtained;
-    final stateLabel =
-        obtained ? t.gamification.obtained : t.gamification.locked;
+    final stateLabel = obtained
+        ? t.gamification.obtained
+        : t.gamification.locked;
     final tierLabel = badge.tier == BadgeTier.expert
         ? t.gamification.tierExpert
         : t.gamification.tierDebutant;
@@ -109,7 +110,9 @@ class _BadgeTile extends StatelessWidget {
                 ),
                 const Spacer(),
                 StepIcon(
-                  obtained ? StepwaysIcons.cochePleine : StepwaysIcons.cadenas, // laisse en Material :
+                  obtained
+                      ? StepwaysIcons.cochePleine
+                      : StepwaysIcons.cadenas, // laisse en Material :
                   // les deux etats passent par le MEME Icon, on ne peut pas
                   // en remplacer un seul sans dedoubler le widget.
                   size: 18,

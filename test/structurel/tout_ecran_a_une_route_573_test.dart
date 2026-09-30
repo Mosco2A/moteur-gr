@@ -120,7 +120,8 @@ void main() {
       expect(
         orphelins,
         isEmpty,
-        reason: 'CES ECRANS SONT ECRITS ET PERSONNE NE PEUT LES OUVRIR : ni '
+        reason:
+            'CES ECRANS SONT ECRITS ET PERSONNE NE PEUT LES OUVRIR : ni '
             'route au routeur, ni citation ailleurs dans lib/. Ecrire un ecran '
             'sans route, c est livrer du code mort que la suite de tests '
             'declare vert.\n  ${orphelins.join('\n  ')}\n'
@@ -142,11 +143,15 @@ void main() {
           .map((e) => e.key)
           .where((g) => !redirections.contains(g))
           .toList();
-      expect(sansEcran, isEmpty,
-          reason: 'routes dont l ecran n a pas ete identifie dans '
-              'app_router.dart : la lecture du routeur doit etre corrigee '
-              'avant de faire confiance aux invariantes.\n'
-              '  ${sansEcran.join('\n  ')}');
+      expect(
+        sansEcran,
+        isEmpty,
+        reason:
+            'routes dont l ecran n a pas ete identifie dans '
+            'app_router.dart : la lecture du routeur doit etre corrigee '
+            'avant de faire confiance aux invariantes.\n'
+            '  ${sansEcran.join('\n  ')}',
+      );
     });
   });
 
@@ -164,7 +169,8 @@ void main() {
       expect(
         inconnus,
         isEmpty,
-        reason: 'CES ENTREES NE DESIGNENT PLUS RIEN : l ecran a ete supprime '
+        reason:
+            'CES ENTREES NE DESIGNENT PLUS RIEN : l ecran a ete supprime '
             'ou renomme, et son entree a survecu. Une exception pour un ecran '
             'qui n existe plus n endort rien — elle entretient l illusion '
             'qu on sait de quoi on parle. Retirez-la.\n'
@@ -183,7 +189,8 @@ void main() {
       expect(
         reveilles,
         isEmpty,
-        reason: 'CES ECRANS SONT DESORMAIS ATTEIGNABLES et restent declares '
+        reason:
+            'CES ECRANS SONT DESORMAIS ATTEIGNABLES et restent declares '
             'dormants. Le travail est fait : retirez leur entree du registre, '
             'la garde reprend ses droits sur eux.\n  ${reveilles.join('\n  ')}',
       );
@@ -195,17 +202,22 @@ void main() {
       final bacles = <String>[];
       registreDesDormants.forEach((nom, dormant) {
         if (dormant.raison.trim().length < 60) {
-          bacles.add('$nom : raison trop courte pour expliquer quoi que ce '
-              'soit (« ${dormant.raison.trim()} »)');
+          bacles.add(
+            '$nom : raison trop courte pour expliquer quoi que ce '
+            'soit (« ${dormant.raison.trim()} »)',
+          );
         }
         if (dormant.reveil.trim().length < 20) {
-          bacles.add('$nom : aucun reveil nomme (« ${dormant.reveil.trim()} »)');
+          bacles.add(
+            '$nom : aucun reveil nomme (« ${dormant.reveil.trim()} »)',
+          );
         }
       });
       expect(
         bacles,
         isEmpty,
-        reason: 'UNE ENTREE DE REGISTRE N EST PAS UNE LIGNE DE TODO. Chaque '
+        reason:
+            'UNE ENTREE DE REGISTRE N EST PAS UNE LIGNE DE TODO. Chaque '
             'dormant doit dire POURQUOI il dort et CE QUI LE REVEILLERA — '
             'sinon la dette redevient muette, et le registre n est qu une '
             'liste d exceptions de plus.\n  ${bacles.join('\n  ')}',
@@ -236,13 +248,18 @@ void main() {
         // d'arrivee, lui, ne soit pas nu.
         await demonterAppli(tester);
         erreursDeRendu(tester); // vide ce que le demontage a pu ajouter
-        expect(autres, isEmpty,
-            reason: 'la route $concret leve en se montant : '
-                '${autres.join(' | ')}');
+        expect(
+          autres,
+          isEmpty,
+          reason:
+              'la route $concret leve en se montant : '
+              '${autres.join(' | ')}',
+        );
         expect(
           textes,
           isNotEmpty,
-          reason: 'ECRAN NU : la route $concret affiche zero texte '
+          reason:
+              'ECRAN NU : la route $concret affiche zero texte '
               '(arrivee reelle : $arrivee). Un ecran qui se monte sans rien '
               'montrer passe tous les tests de widget et ne sert a personne.',
         );

@@ -99,8 +99,7 @@ class WalkTestController extends Notifier<WalkTestState> {
   String? _reminderTitle;
   String? _reminderBody;
 
-  HikerProfileRepository get _repo =>
-      ref.read(hikerProfileRepositoryProvider);
+  HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
 
   @override
   WalkTestState build() {
@@ -146,8 +145,7 @@ class WalkTestController extends Notifier<WalkTestState> {
 
     // Compte a rebours de preparation.
     var cd = kWalkTestCountdown;
-    _countdownTicker =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
+    _countdownTicker = Timer.periodic(const Duration(seconds: 1), (timer) {
       cd -= const Duration(seconds: 1);
       if (cd <= Duration.zero) {
         timer.cancel();
@@ -263,8 +261,7 @@ class WalkTestController extends Notifier<WalkTestState> {
 
 /// Provider du controleur de test 6 minutes.
 final walkTestControllerProvider =
-    NotifierProvider<WalkTestController, WalkTestState>(
-        WalkTestController.new);
+    NotifierProvider<WalkTestController, WalkTestState>(WalkTestController.new);
 
 /// Dernier resultat DATE du test 6 min (null = jamais fait -> fallback).
 final walkTestResultProvider = FutureProvider<WalkTestResult?>((ref) {

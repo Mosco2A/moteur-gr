@@ -76,7 +76,8 @@ const gestesInertesAssumes = <String, String>{
   // arrive jusqu'ici. Son voisin « centrer sur moi » etait, lui, VRAIMENT muet
   // sans position — il a ete corrige (il dit desormais pourquoi il recentre sur
   // le trace) et reste donc mesure.
-  'icone-58646': 'zoom arriere de la carte : l empreinte d ecran ne contient '
+  'icone-58646':
+      'zoom arriere de la carte : l empreinte d ecran ne contient '
       'pas la camera de la carte, donc aucun geste de camera ne peut y '
       'apparaitre (le zoom avant est dans le meme cas, ecarte par gestesEvites)',
 };
@@ -86,8 +87,9 @@ void main() {
     final concret = cheminConcret(r.gabarit);
     if (concret == null) continue;
 
-    testWidgets('V3 — ${r.gabarit} : chaque bouton produit un effet',
-        (tester) async {
+    testWidgets('V3 — ${r.gabarit} : chaque bouton produit un effet', (
+      tester,
+    ) async {
       await monterAppliReelle(tester, depart: concret);
       final arrivee = cheminAffiche();
       final gestes = gestesDisponibles(tester);
@@ -176,7 +178,8 @@ void main() {
       expect(
         morts,
         isEmpty,
-        reason: 'GESTES MORTS sur $concret (affiche : $arrivee) — appuyer '
+        reason:
+            'GESTES MORTS sur $concret (affiche : $arrivee) — appuyer '
             'dessus ne change RIEN a l ecran : ni navigation, ni contenu, ni '
             'message. C est le defaut du bouton « Parcourir le catalogue », du '
             'rafraichissement meteo et du rafraichissement incendie.\n'

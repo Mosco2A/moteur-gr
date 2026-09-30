@@ -41,49 +41,59 @@ void main() {
       expect(state.doneCount, 0);
     });
 
-    test('toggleDone marque puis démarque une séance (persisté localement)',
-        () async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'toggleDone marque puis démarque une séance (persisté localement)',
+      () async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      final notifier = container.read(trainingProvider.notifier);
-      final offset = container.read(trainingProvider).programme.seances.first
-          .jourOffset;
+        final notifier = container.read(trainingProvider.notifier);
+        final offset = container
+            .read(trainingProvider)
+            .programme
+            .seances
+            .first
+            .jourOffset;
 
-      await notifier.toggleDone(offset);
-      expect(container.read(trainingProvider).isDone(offset), isTrue);
+        await notifier.toggleDone(offset);
+        expect(container.read(trainingProvider).isDone(offset), isTrue);
 
-      // Persistance locale effective.
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getStringList('training_done_offsets'),
-          contains(offset.toString()));
+        // Persistance locale effective.
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getStringList('training_done_offsets'),
+          contains(offset.toString()),
+        );
 
-      await notifier.toggleDone(offset);
-      expect(container.read(trainingProvider).isDone(offset), isFalse);
-    });
+        await notifier.toggleDone(offset);
+        expect(container.read(trainingProvider).isDone(offset), isFalse);
+      },
+    );
 
-    test('scheduleReminders planifie des rappels locaux pour les séances à venir',
-        () async {
-      final fake = _FakeNotificationService();
-      final container = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(fake),
-      ]);
-      addTearDown(container.dispose);
+    test(
+      'scheduleReminders planifie des rappels locaux pour les séances à venir',
+      () async {
+        final fake = _FakeNotificationService();
+        final container = ProviderContainer(
+          overrides: [notificationServiceProvider.overrideWithValue(fake)],
+        );
+        addTearDown(container.dispose);
 
-      final notifier = container.read(trainingProvider.notifier);
-      final count = await notifier.scheduleReminders(
-        startDate: DateTime.now(),
-      );
+        final notifier = container.read(trainingProvider.notifier);
+        final count = await notifier.scheduleReminders(
+          startDate: DateTime.now(),
+        );
 
-      expect(count, greaterThan(0));
-      expect(fake.scheduled, count);
-    });
+        expect(count, greaterThan(0));
+        expect(fake.scheduled, count);
+      },
+    );
 
     test('une séance déjà faite n est pas reprogrammée', () async {
       final fake = _FakeNotificationService();
-      final container = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(fake),
-      ]);
+      final container = ProviderContainer(
+        overrides: [notificationServiceProvider.overrideWithValue(fake)],
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(trainingProvider.notifier);
@@ -99,11 +109,13 @@ void main() {
       );
       // Le nombre planifié exclut la séance faite.
       final futureCount = seances
-          .where((s) =>
-              DateTime.now()
-                  .add(Duration(days: s.jourOffset))
-                  .isAfter(DateTime.now()) &&
-              s.jourOffset != futureOffset)
+          .where(
+            (s) =>
+                DateTime.now()
+                    .add(Duration(days: s.jourOffset))
+                    .isAfter(DateTime.now()) &&
+                s.jourOffset != futureOffset,
+          )
           .length;
       expect(scheduled, lessThanOrEqualTo(futureCount + 1));
     });

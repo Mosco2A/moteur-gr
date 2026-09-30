@@ -84,49 +84,46 @@ void main() {
   }
 
   group('Q3 — apres un enregistrement reussi, on est ramene', () {
-    testWidgets(
-      'le bouton du bas RAMENE a la faisabilite (et ne laisse pas le '
-      'randonneur chercher le retour)',
-      (tester) async {
-        tester.view.physicalSize = const Size(390, 2400);
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
+    testWidgets('le bouton du bas RAMENE a la faisabilite (et ne laisse pas le '
+        'randonneur chercher le retour)', (tester) async {
+      tester.view.physicalSize = const Size(390, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-        await tester.pumpWidget(wrap());
-        await tester.pumpAndSettle();
-        expect(find.byType(PastHikesScreen), findsOneWidget);
+      await tester.pumpWidget(wrap());
+      await tester.pumpAndSettle();
+      expect(find.byType(PastHikesScreen), findsOneWidget);
 
-        // PLUS DE NOTE A SAISIR AVANT (tache 570, S2) : le champ texte libre
-        // « difficultes » a ete retire. Le geste teste reste EXACTEMENT celui
-        // du defaut de Chris — appuyer sur le bouton du bas de l'ecran — et
-        // c'est son RETOUR qui est sous test, pas ce qu'il enregistrait.
-        await tester.tap(find.text(t.pastHikes.backToFeasibility));
-        await tester.pumpAndSettle();
+      // PLUS DE NOTE A SAISIR AVANT (tache 570, S2) : le champ texte libre
+      // « difficultes » a ete retire. Le geste teste reste EXACTEMENT celui
+      // du defaut de Chris — appuyer sur le bouton du bas de l'ecran — et
+      // c'est son RETOUR qui est sous test, pas ce qu'il enregistrait.
+      await tester.tap(find.text(t.pastHikes.backToFeasibility));
+      await tester.pumpAndSettle();
 
-        expect(
-          find.byType(PastHikesScreen),
-          findsNothing,
-          reason: 'apres le geste de conclusion, l ecran est depile',
-        );
-        expect(
-          find.text('FAISABILITE_TEMOIN'),
-          findsOneWidget,
-          reason: 'on revient LA D OU L ON VENAIT (defaut Chris 26/09 09:59)',
-        );
+      expect(
+        find.byType(PastHikesScreen),
+        findsNothing,
+        reason: 'apres le geste de conclusion, l ecran est depile',
+      );
+      expect(
+        find.text('FAISABILITE_TEMOIN'),
+        findsOneWidget,
+        reason: 'on revient LA D OU L ON VENAIT (defaut Chris 26/09 09:59)',
+      );
 
-        // LA NOTE N'EXISTE PLUS, LE RETOUR SI (tache 570, S2). Le champ texte
-        // libre « difficultes » a ete retire : il etait stocke sur trois etages
-        // et lu par personne. L'ACQUIS DE LA 568 EST ICI, et il est verifie
-        // au-dessus : le bouton ramene toujours a la faisabilite. Ce qui a
-        // change, c'est qu'il ne promet plus d'enregistrer ce qui n'existe pas.
-        expect(
-          prefs.getString(kHikerExperienceNotePrefsKey),
-          isNull,
-          reason: 'plus rien ne doit ecrire la note de difficultes',
-        );
-      },
-    );
+      // LA NOTE N'EXISTE PLUS, LE RETOUR SI (tache 570, S2). Le champ texte
+      // libre « difficultes » a ete retire : il etait stocke sur trois etages
+      // et lu par personne. L'ACQUIS DE LA 568 EST ICI, et il est verifie
+      // au-dessus : le bouton ramene toujours a la faisabilite. Ce qui a
+      // change, c'est qu'il ne promet plus d'enregistrer ce qui n'existe pas.
+      expect(
+        prefs.getString(kHikerExperienceNotePrefsKey),
+        isNull,
+        reason: 'plus rien ne doit ecrire la note de difficultes',
+      );
+    });
 
     testWidgets(
       'l ajout d une rando ramene A LA LISTE : la feuille se ferme, la rando '
@@ -161,7 +158,8 @@ void main() {
         expect(
           find.byType(PastHikesScreen),
           findsOneWidget,
-          reason: 'on reste sur la liste : on en saisit jusqu a cinq, et la '
+          reason:
+              'on reste sur la liste : on en saisit jusqu a cinq, et la '
               'note de difficultes se redige en dessous',
         );
         expect(find.text('FAISABILITE_TEMOIN'), findsNothing);

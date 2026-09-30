@@ -21,20 +21,20 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// AppHeader (Ph5/L6c) utilise GoRouter -> heberge l'ecran detail d'etape dans un
 /// GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
 Widget _host(int stageNumber) => MaterialApp.router(
-      routerConfig: GoRouter(
-        initialLocation: '/stage',
-        routes: [
-          GoRoute(
-            path: '/stage',
-            builder: (_, __) => TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: stageNumber,
-            ),
-          ),
-          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-        ],
+  routerConfig: GoRouter(
+    initialLocation: '/stage',
+    routes: [
+      GoRoute(
+        path: '/stage',
+        builder: (_, __) => TrailStageDetailScreen(
+          trailId: 'test-trail',
+          stageNumber: stageNumber,
+        ),
       ),
-    );
+      GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+    ],
+  ),
+);
 
 void main() {
   /// Étape de test
@@ -97,12 +97,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(testPois),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(testPois)),
           ],
           child: _host(2),
         ),
@@ -118,12 +118,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -131,10 +131,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Traversée spectaculaire du col.'),
-        findsOneWidget,
-      );
+      expect(find.text('Traversée spectaculaire du col.'), findsOneWidget);
     });
 
     testWidgets('affiche la distance et le dénivelé', (tester) async {
@@ -142,12 +139,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -165,12 +162,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -186,12 +183,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value([...testPois, otherPoi]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([...testPois, otherPoi])),
           ],
           child: _host(2),
         ),
@@ -211,12 +208,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -224,24 +221,22 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(
-        find.text(t.common.noPoiForStage),
-        findsOneWidget,
-      );
+      expect(find.text(t.common.noPoiForStage), findsOneWidget);
     });
 
-    testWidgets('affiche "Étape introuvable" pour un numéro invalide',
-        (tester) async {
+    testWidgets('affiche "Étape introuvable" pour un numéro invalide', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(99),
         ),
@@ -260,12 +255,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => completer.future,
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => completer.future),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -285,12 +280,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),
@@ -309,12 +304,12 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value([testStage]),
-            ),
-            poisProvider('test-trail').overrideWith(
-              (ref) => Future.value(<PoiModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<PoiModel>[])),
           ],
           child: _host(2),
         ),

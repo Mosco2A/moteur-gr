@@ -90,7 +90,8 @@ WeatherFreshness weatherFreshness({
   }
   return WeatherFreshness(
     level: FreshnessLevel.stale,
-    label: t.weather.freshness
-        .stale(duration: formatFreshnessDuration(diff, t)),
+    label: t.weather.freshness.stale(
+      duration: formatFreshnessDuration(diff, t),
+    ),
   );
 }

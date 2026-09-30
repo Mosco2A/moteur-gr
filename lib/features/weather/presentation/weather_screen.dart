@@ -78,15 +78,15 @@ class WeatherScreen extends ConsumerWidget {
             onPressed: () => WeatherGuideSheet.show(context),
           ),
           IconButton(
-            icon: StepIcon(stormAlertsEnabled
-                ? StepwaysIcons.orage
-                : StepwaysIcons.orage),
+            icon: StepIcon(
+              stormAlertsEnabled ? StepwaysIcons.orage : StepwaysIcons.orage,
+            ),
             tooltip: stormAlertsEnabled
                 ? t.weather.stormAlertsToggleOn
                 : t.weather.stormAlertsToggleOff,
-            onPressed: () => ref
-                .read(stormAlertsEnabledProvider.notifier)
-                .state = !stormAlertsEnabled,
+            onPressed: () =>
+                ref.read(stormAlertsEnabledProvider.notifier).state =
+                    !stormAlertsEnabled,
           ),
           IconButton(
             icon: const StepIcon(StepwaysIcons.rafraichir),
@@ -129,35 +129,35 @@ class WeatherScreen extends ConsumerWidget {
     final results = await Future.wait([
       for (final n in stageNumbers)
         ref
-            .read(stageWeatherProvider(
-              WeatherStageParams(trailId: trailId, stageNumber: n),
-            ).notifier)
+            .read(
+              stageWeatherProvider(
+                WeatherStageParams(trailId: trailId, stageNumber: n),
+              ).notifier,
+            )
             .refresh(),
     ]);
 
     if (messenger == null || !context.mounted) return;
     final ok = results.where((r) => r).length;
     if (ok == results.length) {
-      final at = ref
-          .read(stageWeatherProvider(params))
-          .forecast
-          ?.fetchedAt;
-      messenger.showSnackBar(SnackBar(
-        content: Text(t.weather.refreshedAt(
-          date: at == null ? '-' : formatFetchedAt(at),
-        )),
-      ));
-    } else if (ok == 0) {
+      final at = ref.read(stageWeatherProvider(params)).forecast?.fetchedAt;
       messenger.showSnackBar(
-        SnackBar(content: Text(t.weather.error)),
+        SnackBar(
+          content: Text(
+            t.weather.refreshedAt(date: at == null ? '-' : formatFetchedAt(at)),
+          ),
+        ),
       );
+    } else if (ok == 0) {
+      messenger.showSnackBar(SnackBar(content: Text(t.weather.error)));
     } else {
-      messenger.showSnackBar(SnackBar(
-        content: Text(t.weather.refreshPartial(
-          done: ok,
-          total: results.length,
-        )),
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            t.weather.refreshPartial(done: ok, total: results.length),
+          ),
+        ),
+      );
     }
   }
 
@@ -191,8 +191,9 @@ class WeatherScreen extends ConsumerWidget {
     var source = _resolveSource(ref, weather);
     if (forecast == null) {
       final stages = ref.watch(trailStagesProvider(trailId)).value;
-      final stage =
-          stages?.where((s) => s.stageNumber == stageNumber).firstOrNull;
+      final stage = stages
+          ?.where((s) => s.stageNumber == stageNumber)
+          .firstOrNull;
       if (stage != null) {
         forecast = WeatherSeed.forCoords(
           latitude: stage.startLat,
@@ -288,9 +289,8 @@ class WeatherScreen extends ConsumerWidget {
   /// online/offline selon la connectivité courante.
   WeatherSource _resolveSource(WidgetRef ref, WeatherState weather) {
     if (weather.isFromCache) return WeatherSource.cache;
-    final status = ref
-            .watch(connectivityProvider)
-            .value ??
+    final status =
+        ref.watch(connectivityProvider).value ??
         ConnectivityStatusValues.offline;
     return status == ConnectivityStatusValues.online
         ? WeatherSource.api
@@ -332,8 +332,10 @@ class _RefreshFailedBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: color, height: 1.4),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: color,
+                height: 1.4,
+              ),
             ),
           ),
         ],

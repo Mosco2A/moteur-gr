@@ -254,7 +254,7 @@ class OrdonnanceurDeSynchronisation {
       for (final ligne in telecharges) {
         niveaux[ligne.trailId] =
             NiveauDeTelechargement.depuisLeCode(ligne.niveauLocal) ??
-                NiveauDeTelechargement.regarder;
+            NiveauDeTelechargement.regarder;
       }
 
       _log.d(
@@ -316,25 +316,25 @@ class OrdonnanceurDeSynchronisation {
 /// ([ordonnanceurDemarreProvider]).
 final ordonnanceurDeSynchronisationProvider =
     Provider<OrdonnanceurDeSynchronisation>((ref) {
-  final db = ref.watch(databaseProvider);
-  final ordonnanceur = OrdonnanceurDeSynchronisation(
-    downloader: ref.watch(updateDownloaderProvider),
-    dao: TrailManifestsDao(db),
-    connectivityMonitor: ref.watch(connectivityMonitorProvider),
-    urlManifeste: TrailDataSource.urlManifeste,
-    // TACHE 631 — LA DESCENTE DES DROITS SE BRANCHE ICI, et l ordonnanceur
-    // n en sait rien d autre que « appelle ca quand tu te reveilles ».
-    // `ref.read` DANS le rappel : le service est construit au premier reveil,
-    // pas a la creation de l ordonnanceur — il a besoin des preferences, qui
-    // sont asynchrones.
-    descendreLesDroits: () async {
-      final descente = await ref.read(descenteDesDroitsProvider.future);
-      return descente.executer();
-    },
-  );
-  ref.onDispose(ordonnanceur.arreter);
-  return ordonnanceur;
-});
+      final db = ref.watch(databaseProvider);
+      final ordonnanceur = OrdonnanceurDeSynchronisation(
+        downloader: ref.watch(updateDownloaderProvider),
+        dao: TrailManifestsDao(db),
+        connectivityMonitor: ref.watch(connectivityMonitorProvider),
+        urlManifeste: TrailDataSource.urlManifeste,
+        // TACHE 631 — LA DESCENTE DES DROITS SE BRANCHE ICI, et l ordonnanceur
+        // n en sait rien d autre que « appelle ca quand tu te reveilles ».
+        // `ref.read` DANS le rappel : le service est construit au premier reveil,
+        // pas a la creation de l ordonnanceur — il a besoin des preferences, qui
+        // sont asynchrones.
+        descendreLesDroits: () async {
+          final descente = await ref.read(descenteDesDroitsProvider.future);
+          return descente.executer();
+        },
+      );
+      ref.onDispose(ordonnanceur.arreter);
+      return ordonnanceur;
+    });
 
 /// LE GESTE QUI REVEILLE LA CADENCE, ET IL N EXISTAIT PAS.
 ///

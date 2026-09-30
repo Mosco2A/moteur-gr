@@ -55,34 +55,36 @@ void main() {
   });
 
   CloudSyncService makeSync() => CloudSyncService(
-        progressDao: ProgressDao(db),
-        checklistDao: ChecklistDao(db),
-        syncQueueDao: SyncQueueDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        pastHikesDao: db.pastHikesDao,
-      );
+    progressDao: ProgressDao(db),
+    checklistDao: ChecklistDao(db),
+    syncQueueDao: SyncQueueDao(db),
+    connectivityMonitor: connectivity,
+    firebaseService: FirebaseService.testOnly(isAvailable: true),
+    pastHikesDao: db.pastHikesDao,
+  );
 
   RestoreService makeRestore({ConsentCheck? consent}) => RestoreService(
-        progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
-        checklistDao: ChecklistDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        hikerProfileDao: db.hikerProfileDao,
-        pastHikesDao: db.pastHikesDao,
-        consentCheck: consent,
-      );
+    progressDao: ProgressDao(db),
+    journalDao: JournalDao(db),
+    checklistDao: ChecklistDao(db),
+    connectivityMonitor: connectivity,
+    firebaseService: FirebaseService.testOnly(isAvailable: true),
+    hikerProfileDao: db.hikerProfileDao,
+    pastHikesDao: db.pastHikesDao,
+    consentCheck: consent,
+  );
 
   Future<void> seedRandoPassee() async {
-    await db.pastHikesDao.insertHike(PastHikeEntriesCompanion.insert(
-      userId: 'local',
-      date: DateTime.utc(2026, 6, 15),
-      days: const Value(4),
-      totalElevationGain: const Value(3200),
-      totalDistanceKm: const Value(58),
-      updatedAt: DateTime.utc(2026, 6, 20),
-    ));
+    await db.pastHikesDao.insertHike(
+      PastHikeEntriesCompanion.insert(
+        userId: 'local',
+        date: DateTime.utc(2026, 6, 15),
+        days: const Value(4),
+        totalElevationGain: const Value(3200),
+        totalDistanceKm: const Value(58),
+        updatedAt: DateTime.utc(2026, 6, 20),
+      ),
+    );
   }
 
   // LES RANDOS PASSEES SONT SORTIES DE CETTE GARDE, ET C EST CHRISTOPHE QUI A
@@ -100,24 +102,32 @@ void main() {
   // rien, dans ce service, ne subordonne plus les randos passees a un
   // consentement. Et il verifie que le chemin de sortie de la fiche medicale
   // reste FERME, lui — c est la seule chose que la case doit encore garder.
-  group('CloudSyncService.syncPastHikes — plus aucune garde de consentement',
-      () {
-    test('sans consentement sante, les randos passees montent quand meme',
-        () async {
-      await seedRandoPassee();
-      // Prefs vides : AUCUN consentement n a jamais ete donne.
-      final result = await makeSync().syncPastHikes('uid-auth');
+  group('CloudSyncService.syncPastHikes — plus aucune garde de consentement', () {
+    test(
+      'sans consentement sante, les randos passees montent quand meme',
+      () async {
+        await seedRandoPassee();
+        // Prefs vides : AUCUN consentement n a jamais ete donne.
+        final result = await makeSync().syncPastHikes('uid-auth');
 
-      // FIREBASE N EST PAS JOIGNABLE EN TEST : on n exige donc pas un succes.
-      // Ce qui se mesure ici est que la methode VA JUSQU AU TRANSPORT au lieu
-      // de refuser avant — l erreur rendue est celle du cloud absent, plus
-      // jamais celle d un consentement manquant.
-      expect(result.error, isNot(contains('consent')),
-          reason: 'un refus de consentement ne peut plus etre la raison');
-      expect(result.error, contains('Firebase'),
-          reason: 'la methode est allee jusqu au transport, comme pour la '
-              'progression et le sac');
-    });
+        // FIREBASE N EST PAS JOIGNABLE EN TEST : on n exige donc pas un succes.
+        // Ce qui se mesure ici est que la methode VA JUSQU AU TRANSPORT au lieu
+        // de refuser avant — l erreur rendue est celle du cloud absent, plus
+        // jamais celle d un consentement manquant.
+        expect(
+          result.error,
+          isNot(contains('consent')),
+          reason: 'un refus de consentement ne peut plus etre la raison',
+        );
+        expect(
+          result.error,
+          contains('Firebase'),
+          reason:
+              'la methode est allee jusqu au transport, comme pour la '
+              'progression et le sac',
+        );
+      },
+    );
 
     test('un consentement sante REVOQUE ne bloque plus les randos', () async {
       await seedRandoPassee();
@@ -132,55 +142,79 @@ void main() {
       consent.dispose();
     });
 
-    test('le service ne connait plus aucune verification de consentement',
-        () async {
-      final source = File('lib/core/services/cloud_sync_service.dart')
-          .readAsStringSync();
-      // ON CHERCHE LA DECLARATION, PAS LE MOT : les commentaires de ce service
-      // expliquent longuement pourquoi la garde a ete retiree, et ils doivent
-      // pouvoir le dire sans faire echouer l invariante.
-      expect(source, isNot(contains('final ConsentCheck consentCheck')),
-          reason: 'un champ de verification qui survit a sa garde laisse '
-              'croire qu une garde vit encore ici');
-      expect(source, isNot(contains('ConsentCheck? consentCheck')));
-      expect(source, isNot(contains('await consentCheck(')));
-      expect(source, isNot(contains('ConsentPurpose.healthData)')));
-    });
+    test(
+      'le service ne connait plus aucune verification de consentement',
+      () async {
+        final source = File(
+          'lib/core/services/cloud_sync_service.dart',
+        ).readAsStringSync();
+        // ON CHERCHE LA DECLARATION, PAS LE MOT : les commentaires de ce service
+        // expliquent longuement pourquoi la garde a ete retiree, et ils doivent
+        // pouvoir le dire sans faire echouer l invariante.
+        expect(
+          source,
+          isNot(contains('final ConsentCheck consentCheck')),
+          reason:
+              'un champ de verification qui survit a sa garde laisse '
+              'croire qu une garde vit encore ici',
+        );
+        expect(source, isNot(contains('ConsentCheck? consentCheck')));
+        expect(source, isNot(contains('await consentCheck(')));
+        expect(source, isNot(contains('ConsentPurpose.healthData)')));
+      },
+    );
 
-    test('LA FICHE MEDICALE, ELLE, N A TOUJOURS AUCUN CHEMIN DE SORTIE',
-        () async {
-      // C est ce que la case garde encore, et ce lot n y touche pas : la liste
-      // fermee de la tache 612 refuse tout document de sante, consentement ou
-      // pas.
-      for (final nom in const ['health', 'sante', 'medical', 'fiche_medicale']) {
-        expect(DocumentsDuCoffreDistant.autorise(nom), isFalse,
-            reason: '« $nom » ne doit avoir aucun chemin vers nos serveurs');
-      }
-    });
+    test(
+      'LA FICHE MEDICALE, ELLE, N A TOUJOURS AUCUN CHEMIN DE SORTIE',
+      () async {
+        // C est ce que la case garde encore, et ce lot n y touche pas : la liste
+        // fermee de la tache 612 refuse tout document de sante, consentement ou
+        // pas.
+        for (final nom in const [
+          'health',
+          'sante',
+          'medical',
+          'fiche_medicale',
+        ]) {
+          expect(
+            DocumentsDuCoffreDistant.autorise(nom),
+            isFalse,
+            reason: '« $nom » ne doit avoir aucun chemin vers nos serveurs',
+          );
+        }
+      },
+    );
   });
 
-  group('RestoreService.restoreHikerProfile — garde art. 9 DANS la methode',
-      () {
-    test('consentement sante ABSENT -> refus, rien ne redescend', () async {
-      final result = await makeRestore().restoreHikerProfile('hash-anon');
+  group(
+    'RestoreService.restoreHikerProfile — garde art. 9 DANS la methode',
+    () {
+      test('consentement sante ABSENT -> refus, rien ne redescend', () async {
+        final result = await makeRestore().restoreHikerProfile('hash-anon');
 
-      expect(result.success, isFalse);
-      expect(result.error, kRestoreErrorHealthConsentMissing);
-      expect((await db.select(db.hikerProfile).get()), isEmpty,
-          reason: 'aucune donnee de sante ne doit atterrir sur l appareil');
-    });
+        expect(result.success, isFalse);
+        expect(result.error, kRestoreErrorHealthConsentMissing);
+        expect(
+          (await db.select(db.hikerProfile).get()),
+          isEmpty,
+          reason: 'aucune donnee de sante ne doit atterrir sur l appareil',
+        );
+      });
 
-    test('consentement ACCORDE -> la garde laisse passer', () async {
-      var checked = false;
-      final result = await makeRestore(consent: (purpose) async {
-        checked = purpose == ConsentPurpose.healthData;
-        return true;
-      }).restoreHikerProfile('hash-anon');
+      test('consentement ACCORDE -> la garde laisse passer', () async {
+        var checked = false;
+        final result = await makeRestore(
+          consent: (purpose) async {
+            checked = purpose == ConsentPurpose.healthData;
+            return true;
+          },
+        ).restoreHikerProfile('hash-anon');
 
-      expect(checked, isTrue);
-      expect(result.error, isNot(kRestoreErrorHealthConsentMissing));
-    });
-  });
+        expect(checked, isTrue);
+        expect(result.error, isNot(kRestoreErrorHealthConsentMissing));
+      });
+    },
+  );
 
   // TACHE 562 (LOT K, K3) — LE BLOB DE FICHE SANTE : CE GROUPE N'EXISTE PLUS,
   // ET SON SUJET NON PLUS (retire par la tache 612).
@@ -225,12 +259,14 @@ void main() {
       consent.dispose();
     });
 
-    test('etat corrompu -> false (fail-closed, pas d exception qui remonte)',
-        () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'consent_healthData': '{{{',
-      });
-      expect(await consentFromLocalStore(ConsentPurpose.healthData), isFalse);
-    });
+    test(
+      'etat corrompu -> false (fail-closed, pas d exception qui remonte)',
+      () async {
+        SharedPreferences.setMockInitialValues(<String, Object>{
+          'consent_healthData': '{{{',
+        });
+        expect(await consentFromLocalStore(ConsentPurpose.healthData), isFalse);
+      },
+    );
   });
 }

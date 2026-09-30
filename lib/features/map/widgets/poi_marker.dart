@@ -45,11 +45,7 @@ class PoiMarker extends StatelessWidget {
           ),
         ],
       ),
-      child: StepIcon(
-        style.icon,
-        color: Colors.white,
-        size: size * 0.5,
-      ),
+      child: StepIcon(style.icon, color: Colors.white, size: size * 0.5),
     );
   }
 }

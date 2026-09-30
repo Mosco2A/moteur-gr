@@ -88,9 +88,9 @@ class ChecklistItemWidget extends StatelessWidget {
     // Texte du poids (parite GR20 : unitaire, ou "NNNg xQ = total").
     final weightText = item.weightGrams > 0
         ? (item.quantity > 1
-            ? '${item.weightGrams}$unit x${item.quantity} = '
-                '${formatChecklistGrams(item.totalWeightGrams)}'
-            : formatChecklistGrams(item.weightGrams))
+              ? '${item.weightGrams}$unit x${item.quantity} = '
+                    '${formatChecklistGrams(item.totalWeightGrams)}'
+              : formatChecklistGrams(item.weightGrams))
         : null;
 
     return GestureDetector(
@@ -124,8 +124,9 @@ class ChecklistItemWidget extends StatelessWidget {
                   child: Text(
                     item.quantity > 1 ? '$name (x${item.quantity})' : name,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      decoration:
-                          item.isChecked ? TextDecoration.lineThrough : null,
+                      decoration: item.isChecked
+                          ? TextDecoration.lineThrough
+                          : null,
                       color: item.isChecked ? AppTheme.grisGranite : null,
                     ),
                     maxLines: 2,
@@ -134,8 +135,10 @@ class ChecklistItemWidget extends StatelessWidget {
                 ),
                 if (isRequired)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 1,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.rougeUrgence.withAlpha(20),
                       borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -143,8 +146,11 @@ class ChecklistItemWidget extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const StepIcon(StepwaysIcons.cadenas,
-                            size: 14, color: AppTheme.rougeUrgence),
+                        const StepIcon(
+                          StepwaysIcons.cadenas,
+                          size: 14,
+                          color: AppTheme.rougeUrgence,
+                        ),
                         const SizedBox(width: 2),
                         Text(
                           ui.requirementRequired,
@@ -168,7 +174,9 @@ class ChecklistItemWidget extends StatelessWidget {
                     Flexible(
                       child: Text(
                         weightText,
-                        style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -189,98 +197,115 @@ class ChecklistItemWidget extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                  // Panier — ajouter/retirer de la liste de courses (non coche).
-                  if (!item.isChecked)
-                    IconButton(
-                      icon: StepIcon(
-                        item.inShoppingList
-                            ? StepwaysIcons.panier
-                            : StepwaysIcons.panier,
-                        size: 18,
-                      ),
-                      color: item.inShoppingList
-                          ? AppTheme.vertFacile
-                          : AppTheme.grisGranite,
-                      padding: EdgeInsets.zero,
-                      constraints:
-                          const BoxConstraints(minWidth: 36, minHeight: 36),
-                      onPressed: onToggleShoppingList,
-                      tooltip: item.inShoppingList
-                          ? ui.removeFromShoppingList
-                          : ui.addToShoppingList,
-                    ),
-                  // Bouton - (toujours actif : deselectionne sous 1).
-                  IconButton(
-                    icon: const StepIcon(StepwaysIcons.moins, size: 18),
-                    color: AppTheme.rougeUrgence,
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 36, minHeight: 36),
-                    onPressed: () => onQuantityChanged(item.quantity - 1),
-                    tooltip: ui.reduceQuantity,
-                  ),
-                  SizedBox(
-                    width: 24,
-                    child: Text(
-                      '${item.quantity}',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  // Bouton +
-                  IconButton(
-                    icon: const StepIcon(StepwaysIcons.plus, size: 18),
-                    color: AppTheme.vertFacile,
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 36, minHeight: 36),
-                    onPressed: () => onQuantityChanged(item.quantity + 1),
-                    tooltip: ui.increaseQuantity,
-                  ),
-                  // Menu edit + delete (delete si custom).
-                  PopupMenuButton<String>(
-                    icon: const StepIcon(StepwaysIcons.menu, size: 18),
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 36, minHeight: 36),
-                    itemBuilder: (ctx) => [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            const StepIcon(StepwaysIcons.crayon,
-                                size: 14, color: AppTheme.grisGranite),
-                            const SizedBox(width: 8),
-                            Text(ui.modify),
-                          ],
+                        // Panier — ajouter/retirer de la liste de courses (non coche).
+                        if (!item.isChecked)
+                          IconButton(
+                            icon: StepIcon(
+                              item.inShoppingList
+                                  ? StepwaysIcons.panier
+                                  : StepwaysIcons.panier,
+                              size: 18,
+                            ),
+                            color: item.inShoppingList
+                                ? AppTheme.vertFacile
+                                : AppTheme.grisGranite,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
+                              minWidth: 36,
+                              minHeight: 36,
+                            ),
+                            onPressed: onToggleShoppingList,
+                            tooltip: item.inShoppingList
+                                ? ui.removeFromShoppingList
+                                : ui.addToShoppingList,
+                          ),
+                        // Bouton - (toujours actif : deselectionne sous 1).
+                        IconButton(
+                          icon: const StepIcon(StepwaysIcons.moins, size: 18),
+                          color: AppTheme.rougeUrgence,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 36,
+                            minHeight: 36,
+                          ),
+                          onPressed: () => onQuantityChanged(item.quantity - 1),
+                          tooltip: ui.reduceQuantity,
                         ),
-                      ),
-                      if (item.isCustom)
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              const StepIcon(StepwaysIcons.corbeille,
-                                  size: 14, color: AppTheme.rougeUrgence),
-                              const SizedBox(width: 8),
-                              Text(ui.delete,
-                                  style: const TextStyle(
-                                      color: AppTheme.rougeUrgence)),
-                            ],
+                        SizedBox(
+                          width: 24,
+                          child: Text(
+                            '${item.quantity}',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
-                    ],
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        onEdit();
-                      } else if (value == 'delete') {
-                        onDelete?.call();
-                      }
-                    },
-                  ),
+                        // Bouton +
+                        IconButton(
+                          icon: const StepIcon(StepwaysIcons.plus, size: 18),
+                          color: AppTheme.vertFacile,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 36,
+                            minHeight: 36,
+                          ),
+                          onPressed: () => onQuantityChanged(item.quantity + 1),
+                          tooltip: ui.increaseQuantity,
+                        ),
+                        // Menu edit + delete (delete si custom).
+                        PopupMenuButton<String>(
+                          icon: const StepIcon(StepwaysIcons.menu, size: 18),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 36,
+                            minHeight: 36,
+                          ),
+                          itemBuilder: (ctx) => [
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  const StepIcon(
+                                    StepwaysIcons.crayon,
+                                    size: 14,
+                                    color: AppTheme.grisGranite,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(ui.modify),
+                                ],
+                              ),
+                            ),
+                            if (item.isCustom)
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    const StepIcon(
+                                      StepwaysIcons.corbeille,
+                                      size: 14,
+                                      color: AppTheme.rougeUrgence,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      ui.delete,
+                                      style: const TextStyle(
+                                        color: AppTheme.rougeUrgence,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              onEdit();
+                            } else if (value == 'delete') {
+                              onDelete?.call();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),

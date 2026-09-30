@@ -77,20 +77,23 @@ void main() {
       expect(result, OfflineMapStatusValues.online);
     });
 
-    test('online avec tuiles locales -> OfflineMapStatus.offlineAvailable', () async {
-      fakeConnectivity.setStatus(ConnectivityStatusValues.online);
-      fakeMbtiles.addTrail('trail2');
+    test(
+      'online avec tuiles locales -> OfflineMapStatus.offlineAvailable',
+      () async {
+        fakeConnectivity.setStatus(ConnectivityStatusValues.online);
+        fakeMbtiles.addTrail('trail2');
 
-      // Voir note BC-05 ci-dessus : listener actif pour reveiller le StreamProvider.
-      container.listen(connectivityProvider, (_, _) {});
-      await container.read(connectivityProvider.future);
+        // Voir note BC-05 ci-dessus : listener actif pour reveiller le StreamProvider.
+        container.listen(connectivityProvider, (_, _) {});
+        await container.read(connectivityProvider.future);
 
-      final result = await container.read(
-        offlineMapStatusProvider('trail2').future,
-      );
+        final result = await container.read(
+          offlineMapStatusProvider('trail2').future,
+        );
 
-      expect(result, OfflineMapStatusValues.offlineAvailable);
-    });
+        expect(result, OfflineMapStatusValues.offlineAvailable);
+      },
+    );
 
     test('offline avec tuiles locales -> OfflineMapStatus.offlineOnly', () async {
       fakeConnectivity.setStatus(ConnectivityStatusValues.offline);
@@ -129,9 +132,7 @@ void main() {
     setUp(() {
       fakeMbtiles = FakeMBTilesManager();
       container = ProviderContainer(
-        overrides: [
-          mbtilesManagerProvider.overrideWithValue(fakeMbtiles),
-        ],
+        overrides: [mbtilesManagerProvider.overrideWithValue(fakeMbtiles)],
       );
     });
 

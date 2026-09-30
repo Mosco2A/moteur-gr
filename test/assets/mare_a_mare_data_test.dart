@@ -10,8 +10,7 @@ void main() {
   group('Mare a Mare Centre data', () {
     test('stages.json est valide et contient 7 etapes', () {
       final file = File('assets/data/mare_a_mare_centre/stages.json');
-      expect(file.existsSync(), isTrue,
-          reason: 'stages.json doit exister');
+      expect(file.existsSync(), isTrue, reason: 'stages.json doit exister');
 
       final content = file.readAsStringSync();
       final List<dynamic> stages = jsonDecode(content);
@@ -88,10 +87,16 @@ void main() {
         final map = stage as Map<String, dynamic>;
 
         // Les noms riches sont fournis (donnee du sentier de reference).
-        expect(map.containsKey('departureName'), isTrue,
-            reason: 'departureName requis sur l etape ${map["stageNumber"]}');
-        expect(map.containsKey('arrivalName'), isTrue,
-            reason: 'arrivalName requis sur l etape ${map["stageNumber"]}');
+        expect(
+          map.containsKey('departureName'),
+          isTrue,
+          reason: 'departureName requis sur l etape ${map["stageNumber"]}',
+        );
+        expect(
+          map.containsKey('arrivalName'),
+          isTrue,
+          reason: 'arrivalName requis sur l etape ${map["stageNumber"]}',
+        );
 
         final departure = map['departureName'] as String;
         final arrival = map['arrivalName'] as String;
@@ -101,25 +106,33 @@ void main() {
         // Coherence : les noms correspondent aux deux extremites du nom
         // « Depart — Arrivee » de l etape.
         final nameFr = map['nameFr'] as String;
-        expect(nameFr, contains(departure),
-            reason: 'departureName coherent avec nameFr');
-        expect(nameFr, contains(arrival),
-            reason: 'arrivalName coherent avec nameFr');
+        expect(
+          nameFr,
+          contains(departure),
+          reason: 'departureName coherent avec nameFr',
+        );
+        expect(
+          nameFr,
+          contains(arrival),
+          reason: 'arrivalName coherent avec nameFr',
+        );
       }
 
       // Chainage : l arrivee d une etape = le depart de la suivante.
       for (int i = 0; i < stages.length - 1; i++) {
         final current = stages[i] as Map<String, dynamic>;
         final next = stages[i + 1] as Map<String, dynamic>;
-        expect(current['arrivalName'], next['departureName'],
-            reason: 'Chainage etape ${i + 1} -> ${i + 2}');
+        expect(
+          current['arrivalName'],
+          next['departureName'],
+          reason: 'Chainage etape ${i + 1} -> ${i + 2}',
+        );
       }
     });
 
     test('pois.json est valide et contient 20 POIs', () {
       final file = File('assets/data/mare_a_mare_centre/pois.json');
-      expect(file.existsSync(), isTrue,
-          reason: 'pois.json doit exister');
+      expect(file.existsSync(), isTrue, reason: 'pois.json doit exister');
 
       final content = file.readAsStringSync();
       final List<dynamic> pois = jsonDecode(content);
@@ -127,7 +140,18 @@ void main() {
       expect(pois.length, 20, reason: 'Au moins 20 POIs attendus');
 
       // Types valides
-      final validTypes = {'shelter', 'water', 'viewpoint', 'info', 'shop', 'danger', 'campsite', 'restaurant', 'emergency', 'village'};
+      final validTypes = {
+        'shelter',
+        'water',
+        'viewpoint',
+        'info',
+        'shop',
+        'danger',
+        'campsite',
+        'restaurant',
+        'emergency',
+        'village',
+      };
 
       for (final poi in pois) {
         final map = poi as Map<String, dynamic>;
@@ -139,8 +163,11 @@ void main() {
         expect(map.containsKey('lng'), isTrue);
 
         // Type connu
-        expect(validTypes.contains(map['type']), isTrue,
-            reason: 'Type POI inconnu: ${map["type"]}');
+        expect(
+          validTypes.contains(map['type']),
+          isTrue,
+          reason: 'Type POI inconnu: ${map["type"]}',
+        );
 
         // Coordonnees en Corse
         final lat = (map['lat'] as num).toDouble();
@@ -154,8 +181,7 @@ void main() {
 
     test('track.gpx est valide et contient des points', () {
       final file = File('assets/data/mare_a_mare_centre/track.gpx');
-      expect(file.existsSync(), isTrue,
-          reason: 'track.gpx doit exister');
+      expect(file.existsSync(), isTrue, reason: 'track.gpx doit exister');
 
       final content = file.readAsStringSync();
 
@@ -169,8 +195,11 @@ void main() {
 
       // Compter les points de trace
       final trkptCount = RegExp(r'<trkpt').allMatches(content).length;
-      expect(trkptCount, greaterThanOrEqualTo(40),
-          reason: 'Au moins 40 points de trace attendus');
+      expect(
+        trkptCount,
+        greaterThanOrEqualTo(40),
+        reason: 'Au moins 40 points de trace attendus',
+      );
     });
 
     test('coherence stages-pois: chaque POI reference un stage valide', () {
@@ -184,8 +213,12 @@ void main() {
 
       for (final poi in pois) {
         final map = poi as Map<String, dynamic>;
-        expect(stageIds.contains(map['stageId']), isTrue,
-            reason: 'POI ${map["id"]} reference un stage inexistant: ${map["stageId"]}');
+        expect(
+          stageIds.contains(map['stageId']),
+          isTrue,
+          reason:
+              'POI ${map["id"]} reference un stage inexistant: ${map["stageId"]}',
+        );
       }
     });
   });

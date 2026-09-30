@@ -6,9 +6,9 @@ import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 
 import '../../../fixtures/horodatage_de_serveur.dart';
+
 /// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
 HorodatageServeur v(int n) => aJPlus(n);
-
 
 /// Tests du DAO TrailMeta sur une base in-memory.
 void main() {
@@ -66,8 +66,12 @@ void main() {
     });
 
     test('insertOrReplace met a jour un sentier existant', () async {
-      await dao.insertOrReplace(makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 1));
-      await dao.insertOrReplace(makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 2));
+      await dao.insertOrReplace(
+        makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 1),
+      );
+      await dao.insertOrReplace(
+        makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 2),
+      );
 
       final result = await dao.getById('tr1');
       expect(result!.dataVersion, v(2));
@@ -98,7 +102,11 @@ void main() {
 
     test('lastSync nullable fonctionne', () async {
       await dao.insertOrReplace(
-        makeMeta(id: 'tr1', code: 'sentier-bleu', lastSync: '2026-05-26T12:00:00Z'),
+        makeMeta(
+          id: 'tr1',
+          code: 'sentier-bleu',
+          lastSync: '2026-05-26T12:00:00Z',
+        ),
       );
 
       final result = await dao.getById('tr1');

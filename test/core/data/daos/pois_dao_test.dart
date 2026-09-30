@@ -82,9 +82,7 @@ void main() {
     });
 
     test('getByStage retourne vide si etape sans POI', () async {
-      await dao.insertAll([
-        makePoi(trailId: 'trail1', stageNumber: 1),
-      ]);
+      await dao.insertAll([makePoi(trailId: 'trail1', stageNumber: 1)]);
 
       final result = await dao.getByStage('trail1', 99);
       expect(result, isEmpty);

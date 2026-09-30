@@ -16,9 +16,9 @@ class ProgressDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere la progression pour un sentier
   Future<UserProgressEntry?> getByTrailId(String trailId) {
-    return (select(userProgressEntries)
-          ..where((t) => t.trailId.equals(trailId)))
-        .getSingleOrNull();
+    return (select(
+      userProgressEntries,
+    )..where((t) => t.trailId.equals(trailId))).getSingleOrNull();
   }
 
   /// TOUTES les progressions connues, un sentier par ligne (tache 635).
@@ -38,9 +38,9 @@ class ProgressDao extends DatabaseAccessor<AppDatabase>
     final trailId = entry.trailId.value;
     final existing = await getByTrailId(trailId);
     if (existing != null) {
-      await (update(userProgressEntries)
-            ..where((t) => t.trailId.equals(trailId)))
-          .write(entry);
+      await (update(
+        userProgressEntries,
+      )..where((t) => t.trailId.equals(trailId))).write(entry);
     } else {
       await into(userProgressEntries).insert(entry);
     }
@@ -50,12 +50,10 @@ class ProgressDao extends DatabaseAccessor<AppDatabase>
   Future<void> updateCurrentStage(String trailId, int stageNumber) async {
     final existing = await getByTrailId(trailId);
     if (existing != null) {
-      await (update(userProgressEntries)
-            ..where((t) => t.trailId.equals(trailId)))
-          .write(
-        UserProgressEntriesCompanion(
-          currentStage: Value(stageNumber),
-        ),
+      await (update(
+        userProgressEntries,
+      )..where((t) => t.trailId.equals(trailId))).write(
+        UserProgressEntriesCompanion(currentStage: Value(stageNumber)),
       );
     } else {
       await into(userProgressEntries).insert(
@@ -72,9 +70,9 @@ class ProgressDao extends DatabaseAccessor<AppDatabase>
   Future<void> markCompleted(String trailId) async {
     final existing = await getByTrailId(trailId);
     if (existing != null) {
-      await (update(userProgressEntries)
-            ..where((t) => t.trailId.equals(trailId)))
-          .write(
+      await (update(
+        userProgressEntries,
+      )..where((t) => t.trailId.equals(trailId))).write(
         UserProgressEntriesCompanion(
           isCompleted: const Value(true),
           completedAt: Value(DateTime.now()),

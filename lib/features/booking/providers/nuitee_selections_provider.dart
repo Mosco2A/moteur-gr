@@ -14,17 +14,18 @@ import '../domain/models/nuitee_type.dart';
 /// Parametre par (trailId, stageNumber) pour rester generique multi-sentiers,
 /// sans dependre d'un provider d'etat courant. Retourne une liste vide si le
 /// sentier n'a pas de donnees d'hebergement (fallback gracieux).
-final nuiteeStageAccommodationsProvider = FutureProvider.family<
-    List<StageAccommodation>, ({String trailId, int stageNumber})>(
-  (ref, key) async {
-    if (key.trailId.isEmpty) return const [];
-    final dataProvider = ref.watch(trailDataProvider);
-    return dataProvider.getAccommodations(
-      key.trailId,
-      stageNumber: key.stageNumber,
-    );
-  },
-);
+final nuiteeStageAccommodationsProvider =
+    FutureProvider.family<
+      List<StageAccommodation>,
+      ({String trailId, int stageNumber})
+    >((ref, key) async {
+      if (key.trailId.isEmpty) return const [];
+      final dataProvider = ref.watch(trailDataProvider);
+      return dataProvider.getAccommodations(
+        key.trailId,
+        stageNumber: key.stageNumber,
+      );
+    });
 
 /// Etat des nuitees du PROGRAMME (PARITE GR20 `BookingData`).
 ///
@@ -72,8 +73,8 @@ class NuiteeSelectionsState {
 /// via [NuiteeSelectionsDao] (offline-first, meme strategie que la checklist).
 final nuiteeSelectionsProvider =
     NotifierProvider<NuiteeSelectionsNotifier, NuiteeSelectionsState>(
-  NuiteeSelectionsNotifier.new,
-);
+      NuiteeSelectionsNotifier.new,
+    );
 
 /// Notifier de l'etat des nuitees (charge/sauvegarde en Drift, par sentier).
 class NuiteeSelectionsNotifier extends Notifier<NuiteeSelectionsState> {
@@ -105,9 +106,7 @@ class NuiteeSelectionsNotifier extends Notifier<NuiteeSelectionsState> {
   /// Bascule l'etat reserve d'une nuit et persiste (parite GR20 `toggleBooking`).
   Future<void> toggleBooking(int dayNumber) async {
     final next = !state.isBooked(dayNumber);
-    state = state.copyWith(
-      bookings: {...state.bookings, dayNumber: next},
-    );
+    state = state.copyWith(bookings: {...state.bookings, dayNumber: next});
     await _dao.setBooked(_trailId, dayNumber, next);
   }
 

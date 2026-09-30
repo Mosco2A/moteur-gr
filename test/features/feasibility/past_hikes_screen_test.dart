@@ -77,8 +77,7 @@ void main() {
       expect(find.text(t.pastHikes.backToFeasibility), findsOneWidget);
     });
 
-    testWidgets('affiche les randos deja saisies (seed prefs)',
-        (tester) async {
+    testWidgets('affiche les randos deja saisies (seed prefs)', (tester) async {
       // Seed 2 randos via le repo (prefs = source durable).
       final repo = HikerProfileRepository(db: db, prefs: prefs);
       await repo.savePastHikes([

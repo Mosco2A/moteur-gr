@@ -85,10 +85,8 @@ void main() {
 
       expect(restored.dayNumber, original.dayNumber);
       expect(restored.totalDistanceKm, original.totalDistanceKm);
-      expect(restored.totalElevationGainM,
-          original.totalElevationGainM);
-      expect(restored.estimatedDurationHours,
-          original.estimatedDurationHours);
+      expect(restored.totalElevationGainM, original.totalElevationGainM);
+      expect(restored.estimatedDurationHours, original.estimatedDurationHours);
       expect(restored.isRestDay, original.isRestDay);
       expect(restored.stages.length, original.stages.length);
     });

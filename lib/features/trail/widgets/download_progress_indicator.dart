@@ -57,10 +57,7 @@ class _ProgressLabels {
 /// Affiche une barre de progression animee avec le pourcentage
 /// et le libelle de l'etape en cours du pipeline d'insertion.
 class DownloadProgressIndicator extends StatelessWidget {
-  const DownloadProgressIndicator({
-    super.key,
-    required this.progress,
-  });
+  const DownloadProgressIndicator({super.key, required this.progress});
 
   /// Progression courante du telechargement
   final DownloadProgress progress;

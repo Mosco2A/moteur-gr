@@ -29,10 +29,7 @@ class CompactForecastRow extends StatelessWidget {
         for (var i = 0; i < upcoming.length; i++) ...[
           if (i > 0) const SizedBox(width: AppTheme.spacingSm),
           Expanded(
-            child: _CompactTile(
-              label: labels[i],
-              day: upcoming[i],
-            ),
+            child: _CompactTile(label: labels[i], day: upcoming[i]),
           ),
         ],
       ],

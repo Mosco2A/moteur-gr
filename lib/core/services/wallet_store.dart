@@ -40,9 +40,9 @@ class WalletSnapshot {
 
   /// Solde vide (etat initial avant tout credit).
   const WalletSnapshot.empty()
-      : balanceSteps = 0,
-        lifetimeEarnedSteps = 0,
-        lifetimeSpentSteps = 0;
+    : balanceSteps = 0,
+      lifetimeEarnedSteps = 0,
+      lifetimeSpentSteps = 0;
 
   /// Solde courant du compte-etapes, en etapes.
   final int balanceSteps;
@@ -65,7 +65,8 @@ class WalletSnapshot {
       Object.hash(balanceSteps, lifetimeEarnedSteps, lifetimeSpentSteps);
 
   @override
-  String toString() => 'WalletSnapshot(balance: $balanceSteps, '
+  String toString() =>
+      'WalletSnapshot(balance: $balanceSteps, '
       'earned: $lifetimeEarnedSteps, spent: $lifetimeSpentSteps)';
 }
 
@@ -101,9 +102,9 @@ class WalletStore {
     required AppDatabase db,
     SharedPreferences? prefs,
     String userId = kWalletLocalUserId,
-  })  : _db = db,
-        _prefs = prefs,
-        _userId = userId;
+  }) : _db = db,
+       _prefs = prefs,
+       _userId = userId;
 
   final AppDatabase _db;
   SharedPreferences? _prefs;

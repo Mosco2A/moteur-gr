@@ -32,16 +32,21 @@ class WeatherCacheDao extends DatabaseAccessor<AppDatabase>
   /// Sert la decision « faut-il rappeler le fournisseur ? ». Ne sert JAMAIS a
   /// decider de ce qu'on affiche (voir [getLastCache]).
   Future<WeatherCacheData?> getValidCache(
-      String trailId, int stageNumber) async {
+    String trailId,
+    int stageNumber,
+  ) async {
     final now = DateTime.now();
-    final result = await (select(weatherCache)
-          ..where((t) =>
-              t.trailId.equals(trailId) &
-              t.stageNumber.equals(stageNumber) &
-              t.expiresAt.isBiggerThanValue(now))
-          ..orderBy([(t) => OrderingTerm.desc(t.fetchedAt)])
-          ..limit(1))
-        .getSingleOrNull();
+    final result =
+        await (select(weatherCache)
+              ..where(
+                (t) =>
+                    t.trailId.equals(trailId) &
+                    t.stageNumber.equals(stageNumber) &
+                    t.expiresAt.isBiggerThanValue(now),
+              )
+              ..orderBy([(t) => OrderingTerm.desc(t.fetchedAt)])
+              ..limit(1))
+            .getSingleOrNull();
     return result;
   }
 
@@ -52,10 +57,14 @@ class WeatherCacheDao extends DatabaseAccessor<AppDatabase>
   /// jamais l'utiliser pour decider d'un appel reseau — c'est [getValidCache]
   /// qui porte le TTL.
   Future<WeatherCacheData?> getLastCache(
-      String trailId, int stageNumber) async {
+    String trailId,
+    int stageNumber,
+  ) async {
     return (select(weatherCache)
-          ..where((t) =>
-              t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber))
+          ..where(
+            (t) =>
+                t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.fetchedAt)])
           ..limit(1))
         .getSingleOrNull();
@@ -71,20 +80,21 @@ class WeatherCacheDao extends DatabaseAccessor<AppDatabase>
     final expires = now.add(const Duration(hours: cacheTtlHours));
 
     // Supprimer l'ancien cache pour cette étape
-    await (delete(weatherCache)
-          ..where((t) =>
-              t.trailId.equals(trailId) &
-              t.stageNumber.equals(stageNumber)))
+    await (delete(weatherCache)..where(
+          (t) => t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+        ))
         .go();
 
     // Insérer le nouveau
-    await into(weatherCache).insert(WeatherCacheCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      forecastJson: Value(forecastJson),
-      fetchedAt: Value(now),
-      expiresAt: Value(expires),
-    ));
+    await into(weatherCache).insert(
+      WeatherCacheCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        forecastJson: Value(forecastJson),
+        fetchedAt: Value(now),
+        expiresAt: Value(expires),
+      ),
+    );
   }
 
   /// Supprime les bulletins RELEVES avant [cutoff] (retention disque).
@@ -102,8 +112,8 @@ class WeatherCacheDao extends DatabaseAccessor<AppDatabase>
   /// `expiresAt` (la borne du re-telechargement). [cutoff] vient de l'appelant,
   /// qui partage son horloge avec le reste de la purge (D4B-02).
   Future<int> clearFetchedBefore(DateTime cutoff) {
-    return (delete(weatherCache)
-          ..where((t) => t.fetchedAt.isSmallerThanValue(cutoff)))
-        .go();
+    return (delete(
+      weatherCache,
+    )..where((t) => t.fetchedAt.isSmallerThanValue(cutoff))).go();
   }
 }

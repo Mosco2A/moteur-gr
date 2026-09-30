@@ -45,8 +45,9 @@ import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
 /// asynchrone ; la base vient de [databaseProvider], donc de la meme instance
 /// que le reste de l'app (un effacement sur une autre instance n'effacerait
 /// rien de ce que le randonneur voit).
-final dataRetentionServiceProvider =
-    FutureProvider<DataRetentionService>((ref) async {
+final dataRetentionServiceProvider = FutureProvider<DataRetentionService>((
+  ref,
+) async {
   final db = ref.watch(databaseProvider);
   final prefs = await SharedPreferences.getInstance();
   return DataRetentionService(

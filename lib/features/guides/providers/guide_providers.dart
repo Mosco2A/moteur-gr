@@ -64,10 +64,7 @@ GuideSectionLabels guideSectionLabels(BuildContext context, String categorie) {
         contenu: g.intro.transport,
       );
     case GuideCategory.eau:
-      return GuideSectionLabels(
-        titre: g.categories.eau,
-        contenu: g.intro.eau,
-      );
+      return GuideSectionLabels(titre: g.categories.eau, contenu: g.intro.eau);
     case GuideCategory.sante:
       return GuideSectionLabels(
         titre: g.categories.sante,
@@ -90,8 +87,7 @@ GuideSectionLabels guideSectionLabels(BuildContext context, String categorie) {
 List<TownGuide> townGuidesForContext(BuildContext context, String trailId) {
   return TownGuideCatalog.guidesFor(
     trailId,
-    sectionLabelResolver: (categorie) =>
-        guideSectionLabels(context, categorie),
+    sectionLabelResolver: (categorie) => guideSectionLabels(context, categorie),
   );
 }
 
@@ -104,7 +100,6 @@ TownGuide? townGuideByIdForContext(
   return TownGuideCatalog.guideById(
     trailId,
     guideId,
-    sectionLabelResolver: (categorie) =>
-        guideSectionLabels(context, categorie),
+    sectionLabelResolver: (categorie) => guideSectionLabels(context, categorie),
   );
 }

@@ -97,7 +97,9 @@ void main() {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        isDemoModeProvider(testTrailConfig.id).overrideWith((ref) async => false),
+        isDemoModeProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) async => false),
         trainingPlanProvider.overrideWith((ref) async => plan),
         trainingDepartureDateProvider.overrideWithValue(
           daysUntilDeparture == null
@@ -112,7 +114,9 @@ void main() {
             initialLocation: '/training',
             routes: [
               GoRoute(
-                  path: '/training', builder: (_, __) => const TrainingScreen()),
+                path: '/training',
+                builder: (_, __) => const TrainingScreen(),
+              ),
             ],
           ),
         ),
@@ -130,30 +134,40 @@ void main() {
 
       final plans = <Map<String, dynamic>>[
         json['default'] as Map<String, dynamic>,
-        ...(json['trails'] as Map<String, dynamic>)
-            .values
+        ...(json['trails'] as Map<String, dynamic>).values
             .cast<Map<String, dynamic>>(),
       ];
 
       var checked = 0;
       for (final p in plans) {
-        for (final phase in (p['phases'] as List).cast<Map<String, dynamic>>()) {
+        for (final phase
+            in (p['phases'] as List).cast<Map<String, dynamic>>()) {
           for (final s
               in (phase['sessions'] as List).cast<Map<String, dynamic>>()) {
             final occurrence = s['occurrence'] as String?;
-            expect(occurrence, isNotNull,
-                reason: 'seance ${s['id']} sans rythme declare');
+            expect(
+              occurrence,
+              isNotNull,
+              reason: 'seance ${s['id']} sans rythme declare',
+            );
             if (occurrence == 'weekly') {
-              expect(s['timesPerWeek'] as int? ?? 0, greaterThan(0),
-                  reason: 'seance hebdomadaire ${s['id']} sans frequence : '
-                      'c est un TYPE de seance, pas une seance');
+              expect(
+                s['timesPerWeek'] as int? ?? 0,
+                greaterThan(0),
+                reason:
+                    'seance hebdomadaire ${s['id']} sans frequence : '
+                    'c est un TYPE de seance, pas une seance',
+              );
             }
             checked++;
           }
         }
       }
-      expect(checked, greaterThanOrEqualTo(9),
-          reason: 'le plan par defaut compte au moins 9 seances');
+      expect(
+        checked,
+        greaterThanOrEqualTo(9),
+        reason: 'le plan par defaut compte au moins 9 seances',
+      );
     });
 
     testWidgets('l ecran affiche le rythme de chaque seance', (tester) async {
@@ -162,10 +176,16 @@ void main() {
       await tester.pumpAndSettle();
 
       // Phase 1 ouverte par defaut : ses deux rythmes doivent etre lisibles.
-      expect(find.text(t.training.freqPerWeek(n: 2)), findsWidgets,
-          reason: 'la seance cardio est a 2 fois par semaine, il faut le dire');
-      expect(find.text(t.training.freqPerWeek(n: 1)), findsWidgets,
-          reason: 'la marche reguliere est a 1 fois par semaine');
+      expect(
+        find.text(t.training.freqPerWeek(n: 2)),
+        findsWidgets,
+        reason: 'la seance cardio est a 2 fois par semaine, il faut le dire',
+      );
+      expect(
+        find.text(t.training.freqPerWeek(n: 1)),
+        findsWidgets,
+        reason: 'la marche reguliere est a 1 fois par semaine',
+      );
 
       // Et l origine des chiffres est declaree : aucune frequence maison.
       expect(
@@ -175,20 +195,28 @@ void main() {
       );
     });
 
-    testWidgets('les rythmes non hebdomadaires sont dits en clair',
-        (tester) async {
+    testWidgets('les rythmes non hebdomadaires sont dits en clair', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(daysUntilDeparture: 90));
       await tester.pumpAndSettle();
 
       // Deplie la phase Endurance pour atteindre ses deux seances singulieres.
-      await tester.tap(find.text(
-          t.training.phaseWeeks(start: 6, end: 8, title: 'Endurance')));
+      await tester.tap(
+        find.text(t.training.phaseWeeks(start: 6, end: 8, title: 'Endurance')),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text(t.training.freqOncePerPhase), findsOneWidget,
-          reason: 'le test du materiel est un rendez-vous, pas un rythme');
-      expect(find.text(t.training.freqFinalWeek), findsOneWidget,
-          reason: 'l affutage est la derniere semaine, et seulement elle');
+      expect(
+        find.text(t.training.freqOncePerPhase),
+        findsOneWidget,
+        reason: 'le test du materiel est un rendez-vous, pas un rythme',
+      );
+      expect(
+        find.text(t.training.freqFinalWeek),
+        findsOneWidget,
+        reason: 'l affutage est la derniere semaine, et seulement elle',
+      );
     });
   });
 
@@ -196,8 +224,9 @@ void main() {
   // (b) PAS DE DATE DE DEPART -> PAS DE PLAN
   // =========================================================================
   group('S3-b — sans date de depart, pas de plan', () {
-    testWidgets('aucune seance affichee, une invite et sa raison',
-        (tester) async {
+    testWidgets('aucune seance affichee, une invite et sa raison', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -206,8 +235,11 @@ void main() {
         findsNothing,
         reason: 'un plan progressif sans date ne sait pas ou il commence',
       );
-      expect(find.text(t.training.objectiveTitle), findsNothing,
-          reason: 'pas de plan affiche, donc pas d objectif de plan');
+      expect(
+        find.text(t.training.objectiveTitle),
+        findsNothing,
+        reason: 'pas de plan affiche, donc pas d objectif de plan',
+      );
       expect(find.text(t.training.inviteSetDate), findsOneWidget);
       expect(
         find.text(t.training.noDateWhy, skipOffstage: false),
@@ -221,8 +253,9 @@ void main() {
   // (c) MOINS DE 8 SEMAINES -> AUCUNE PREPA, ET ON DIT POURQUOI
   // =========================================================================
   group('S3-c — sous le plancher de 8 semaines, aucune prepa', () {
-    testWidgets('a 30 jours du depart : rien de propose, raison donnee',
-        (tester) async {
+    testWidgets('a 30 jours du depart : rien de propose, raison donnee', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(daysUntilDeparture: 30));
       await tester.pumpAndSettle();
 
@@ -234,20 +267,23 @@ void main() {
       expect(find.text(t.training.tooShortTitle), findsOneWidget);
       expect(
         find.text(
-            t.training.tooShortWhy(days: 30, weeks: kTrainingMinWeeks),
-            skipOffstage: false),
+          t.training.tooShortWhy(days: 30, weeks: kTrainingMinWeeks),
+          skipOffstage: false,
+        ),
         findsOneWidget,
         reason: 'le refus doit etre motive, plancher et source nommes',
       );
     });
 
     testWidgets('a 8 semaines pile, le plan s affiche', (tester) async {
-      await tester.pumpWidget(
-          wrap(daysUntilDeparture: kTrainingMinWeeks * 7));
+      await tester.pumpWidget(wrap(daysUntilDeparture: kTrainingMinWeeks * 7));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CheckboxListTile), findsWidgets,
-          reason: '8 semaines est le MINIMUM, donc 8 semaines suffisent');
+      expect(
+        find.byType(CheckboxListTile),
+        findsWidgets,
+        reason: '8 semaines est le MINIMUM, donc 8 semaines suffisent',
+      );
       expect(find.text(t.training.tooShortTitle), findsNothing);
     });
 

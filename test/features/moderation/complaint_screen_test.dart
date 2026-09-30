@@ -34,20 +34,21 @@ void main() {
   setUp(() => sink = _FakeSink());
 
   Widget host() => ProviderScope(
-        overrides: [complaintSinkProvider.overrideWithValue(sink)],
-        child: TranslationProvider(
-          child: const MaterialApp(
-            home: ComplaintScreen(
-              contentType: ModeratedContentType.waypoint,
-              contentRef: 'wp-7',
-            ),
-          ),
+    overrides: [complaintSinkProvider.overrideWithValue(sink)],
+    child: TranslationProvider(
+      child: const MaterialApp(
+        home: ComplaintScreen(
+          contentType: ModeratedContentType.waypoint,
+          contentRef: 'wp-7',
         ),
-      );
+      ),
+    ),
+  );
 
   group('ComplaintScreen — DSA art 20', () {
-    testWidgets('depot valide : la plainte est transmise au service',
-        (tester) async {
+    testWidgets('depot valide : la plainte est transmise au service', (
+      tester,
+    ) async {
       await tester.pumpWidget(host());
       await tester.pumpAndSettle();
 
@@ -62,8 +63,10 @@ void main() {
       final complaint = sink.saved.single;
       expect(complaint.contentType, ModeratedContentType.waypoint);
       expect(complaint.contentRef, 'wp-7');
-      expect(complaint.expose,
-          'Mon contenu est licite, je conteste le retrait.');
+      expect(
+        complaint.expose,
+        'Mon contenu est licite, je conteste le retrait.',
+      );
       expect(complaint.status, 'ouverte');
     });
 

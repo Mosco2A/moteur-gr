@@ -105,8 +105,11 @@ void main() {
       // sens (base vide apres restauration de preferences ; base pleine apres un
       // effacement de compte, qui purge les preferences mais CONSERVE les tables
       // de reference du sentier — un re-seed y dupliquerait tout).
-      expect(prefs.getBool(SeedDataLoader.kDataSeededPrefsKey), isNull,
-          reason: 'l ancienne cle globale n est plus posee, seulement nettoyee');
+      expect(
+        prefs.getBool(SeedDataLoader.kDataSeededPrefsKey),
+        isNull,
+        reason: 'l ancienne cle globale n est plus posee, seulement nettoyee',
+      );
 
       // --- Act : deuxieme appel (idempotent) ---
       final result2 = await loader.seedIfNeeded();
@@ -119,66 +122,72 @@ void main() {
       await db.close();
     });
 
-    test('le seed charge la duree riche par etape (parite GR20 socle donnees)',
-        () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final db = AppDatabase(NativeDatabase.memory());
+    test(
+      'le seed charge la duree riche par etape (parite GR20 socle donnees)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final db = AppDatabase(NativeDatabase.memory());
 
-      final loader = SeedDataLoader(
-        db: db,
-        prefs: prefs,
-        trailConfig: _seedTrailConfig,
-      );
-      await loader.seedIfNeeded();
+        final loader = SeedDataLoader(
+          db: db,
+          prefs: prefs,
+          trailConfig: _seedTrailConfig,
+        );
+        await loader.seedIfNeeded();
 
-      final stagesDao = StagesDao(db);
-      final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
+        final stagesDao = StagesDao(db);
+        final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
 
-      // Toutes les etapes Mare a Mare portent une duree (donnee du sentier).
-      expect(
-        stages.every((s) => s.estimatedDurationMinutes != null),
-        isTrue,
-        reason: 'estimatedDurationMinutes alimente depuis stages.json',
-      );
-      // Valeur exacte de l etape 1 (Ghisonaccia — Catastaghju = 350 min).
-      final s1 = stages.firstWhere((s) => s.stageNumber == 1);
-      expect(s1.estimatedDurationMinutes, 350);
+        // Toutes les etapes Mare a Mare portent une duree (donnee du sentier).
+        expect(
+          stages.every((s) => s.estimatedDurationMinutes != null),
+          isTrue,
+          reason: 'estimatedDurationMinutes alimente depuis stages.json',
+        );
+        // Valeur exacte de l etape 1 (Ghisonaccia — Catastaghju = 350 min).
+        final s1 = stages.firstWhere((s) => s.stageNumber == 1);
+        expect(s1.estimatedDurationMinutes, 350);
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
 
-    test('le seed charge les noms depart/arrivee par etape (parite GR20)',
-        () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final db = AppDatabase(NativeDatabase.memory());
+    test(
+      'le seed charge les noms depart/arrivee par etape (parite GR20)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final db = AppDatabase(NativeDatabase.memory());
 
-      final loader = SeedDataLoader(
-        db: db,
-        prefs: prefs,
-        trailConfig: _seedTrailConfig,
-      );
-      await loader.seedIfNeeded();
+        final loader = SeedDataLoader(
+          db: db,
+          prefs: prefs,
+          trailConfig: _seedTrailConfig,
+        );
+        await loader.seedIfNeeded();
 
-      final stagesDao = StagesDao(db);
-      final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
+        final stagesDao = StagesDao(db);
+        final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
 
-      // Toutes les etapes portent des noms depart/arrivee (donnee du sentier).
-      expect(
-        stages.every((s) =>
-            (s.departureName?.isNotEmpty ?? false) &&
-            (s.arrivalName?.isNotEmpty ?? false)),
-        isTrue,
-        reason: 'departureName/arrivalName alimentes depuis stages.json',
-      );
-      // Valeurs exactes de l etape 1 (Ghisonaccia — Catastaghju).
-      final s1 = stages.firstWhere((s) => s.stageNumber == 1);
-      expect(s1.departureName, 'Ghisonaccia');
-      expect(s1.arrivalName, 'Catastaghju');
+        // Toutes les etapes portent des noms depart/arrivee (donnee du sentier).
+        expect(
+          stages.every(
+            (s) =>
+                (s.departureName?.isNotEmpty ?? false) &&
+                (s.arrivalName?.isNotEmpty ?? false),
+          ),
+          isTrue,
+          reason: 'departureName/arrivalName alimentes depuis stages.json',
+        );
+        // Valeurs exactes de l etape 1 (Ghisonaccia — Catastaghju).
+        final s1 = stages.firstWhere((s) => s.stageNumber == 1);
+        expect(s1.departureName, 'Ghisonaccia');
+        expect(s1.arrivalName, 'Catastaghju');
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
   });
 
   // --- R4 : hebergements charges et lisibles par getAccommodations ---
@@ -194,15 +203,22 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
 
-      await SeedDataLoader(db: db, prefs: prefs, trailConfig: _seedTrailConfig)
-          .seedIfNeeded();
+      await SeedDataLoader(
+        db: db,
+        prefs: prefs,
+        trailConfig: _seedTrailConfig,
+      ).seedIfNeeded();
 
-      final data =
-          DriftTrailDataProvider(db: db, trailConfig: _seedTrailConfig);
-      final accommodations =
-          await data.getAccommodations('mare-a-mare-centre');
-      expect(accommodations, isEmpty,
-          reason: 'sans chemin hebergements, la table riche reste vide');
+      final data = DriftTrailDataProvider(
+        db: db,
+        trailConfig: _seedTrailConfig,
+      );
+      final accommodations = await data.getAccommodations('mare-a-mare-centre');
+      expect(
+        accommodations,
+        isEmpty,
+        reason: 'sans chemin hebergements, la table riche reste vide',
+      );
     });
 
     test('avec accommodationsAssetPath : getAccommodations renvoie les noms '
@@ -225,18 +241,27 @@ void main() {
 
       // Total : 11 hebergements reels sur les 7 etapes (seed monolithique).
       final all = await data.getAccommodations('mare-a-mare-centre');
-      expect(all.length, 11,
-          reason: '11 hebergements reels dans mare_a_mare_centre.json');
-      expect(all.every((a) => a.nameFr.isNotEmpty), isTrue,
-          reason: 'tous les hebergements portent un nom reel (nameFr)');
+      expect(
+        all.length,
+        11,
+        reason: '11 hebergements reels dans mare_a_mare_centre.json',
+      );
+      expect(
+        all.every((a) => a.nameFr.isNotEmpty),
+        isTrue,
+        reason: 'tous les hebergements portent un nom reel (nameFr)',
+      );
 
       // Etape 1 : au moins un hebergement nomme (le cas du 1er retour Chris).
       final stage1 = await data.getAccommodations(
         'mare-a-mare-centre',
         stageNumber: 1,
       );
-      expect(stage1, isNotEmpty,
-          reason: 'l etape 1 a des hebergements (mam-ew-s1)');
+      expect(
+        stage1,
+        isNotEmpty,
+        reason: 'l etape 1 a des hebergements (mam-ew-s1)',
+      );
       expect(
         stage1.any((a) => a.nameFr.contains('Serra di Fiumorbu')),
         isTrue,

@@ -89,8 +89,8 @@ class FakeAndroidPlateforme extends Fake
   Future<void> cancel(int id, {String? tag}) async {}
 
   @override
-  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async =>
-      <PendingNotificationRequest>[];
+  Future<List<PendingNotificationRequest>>
+  pendingNotificationRequests() async => <PendingNotificationRequest>[];
 }
 
 /// Fait defiler l'ecran de bout en bout et rend TOUT ce que l'utilisateur peut
@@ -121,16 +121,15 @@ void main() {
   tz_data.initializeTimeZones();
 
   group('LOT 596 C3 — un reglage qu on coupe reste coupe', () {
-    test(
-        'ON COUPE, ON RELANCE : le rappel du matin est TOUJOURS coupe '
+    test('ON COUPE, ON RELANCE : le rappel du matin est TOUJOURS coupe '
         '(le constat de Chris)', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final service = ServiceEspion();
 
       // Premiere « session » de l'appli : l'utilisateur coupe le rappel.
-      final premier = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(service),
-      ]);
+      final premier = ProviderContainer(
+        overrides: [notificationServiceProvider.overrideWithValue(service)],
+      );
       premier.read(notificationSettingsProvider); // force le build
       await Future<void>.delayed(Duration.zero); // laisse le chargement passer
       premier
@@ -145,20 +144,30 @@ void main() {
       premier.dispose();
 
       // L'appli redemarre : MEME stockage, nouveau container.
-      final second = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(service),
-      ]);
+      final second = ProviderContainer(
+        overrides: [notificationServiceProvider.overrideWithValue(service)],
+      );
       second.read(notificationSettingsProvider);
       await Future<void>.delayed(Duration.zero);
       final apresRelance = second.read(notificationSettingsProvider);
 
-      expect(apresRelance.morningReminderEnabled, isFalse,
-          reason: 'coupe puis relance : le rappel du matin est revenu tout '
-              'seul — le reglage n a jamais ete ecrit');
-      expect(apresRelance.offTrackAlerts, isFalse,
-          reason: 'l alerte hors-trace coupee est revenue toute seule');
-      expect(apresRelance.morningReminderHour, 9,
-          reason: 'l heure choisie par l utilisateur n a pas survecu');
+      expect(
+        apresRelance.morningReminderEnabled,
+        isFalse,
+        reason:
+            'coupe puis relance : le rappel du matin est revenu tout '
+            'seul — le reglage n a jamais ete ecrit',
+      );
+      expect(
+        apresRelance.offTrackAlerts,
+        isFalse,
+        reason: 'l alerte hors-trace coupee est revenue toute seule',
+      );
+      expect(
+        apresRelance.morningReminderHour,
+        9,
+        reason: 'l heure choisie par l utilisateur n a pas survecu',
+      );
       expect(apresRelance.morningReminderMinute, 30);
       second.dispose();
     });
@@ -166,15 +175,21 @@ void main() {
     test('les valeurs par defaut restent celles du produit au tout premier '
         'demarrage', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
-      final container = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(ServiceEspion()),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          notificationServiceProvider.overrideWithValue(ServiceEspion()),
+        ],
+      );
       // LECTURE SYNCHRONE, sans attendre : les consommateurs existants
       // (off_track_provider_test) lisent l'etat juste apres le build.
       final immediat = container.read(notificationSettingsProvider);
-      expect(immediat.offTrackAlerts, isTrue,
-          reason: 'la securite hors-trace doit etre ON tant que rien n est '
-              'charge — jamais un trou de securite pendant le chargement');
+      expect(
+        immediat.offTrackAlerts,
+        isTrue,
+        reason:
+            'la securite hors-trace doit etre ON tant que rien n est '
+            'charge — jamais un trou de securite pendant le chargement',
+      );
       expect(immediat.morningReminderEnabled, isTrue);
       container.dispose();
     });
@@ -182,22 +197,29 @@ void main() {
     test('COUPER le rappel du matin ANNULE la notification systeme', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final service = ServiceEspion();
-      final container = ProviderContainer(overrides: [
-        notificationServiceProvider.overrideWithValue(service),
-      ]);
+      final container = ProviderContainer(
+        overrides: [notificationServiceProvider.overrideWithValue(service)],
+      );
       container.read(notificationSettingsProvider);
       await Future<void>.delayed(Duration.zero);
 
       final notifier = container.read(notificationSettingsProvider.notifier);
       notifier.toggleMorningReminder(true);
-      expect(service.planificationsMatin, greaterThan(0),
-          reason: 'activer doit planifier');
+      expect(
+        service.planificationsMatin,
+        greaterThan(0),
+        reason: 'activer doit planifier',
+      );
 
       notifier.toggleMorningReminder(false);
       await Future<void>.delayed(Duration.zero);
-      expect(service.annules, isNotEmpty,
-          reason: 'couper le rappel du matin laisse la notification armee dans '
-              'le systeme : l utilisateur la recevra quand meme');
+      expect(
+        service.annules,
+        isNotEmpty,
+        reason:
+            'couper le rappel du matin laisse la notification armee dans '
+            'le systeme : l utilisateur la recevra quand meme',
+      );
       container.dispose();
     });
   });
@@ -216,35 +238,51 @@ void main() {
       final service = NotificationService();
       final accorde = await service.checkPermissions();
 
-      expect(plateforme.aEteInterroge, isTrue,
-          reason: 'checkPermissions repond sans jamais demander au systeme : '
-              'l appli croit avoir le droit de notifier');
-      expect(accorde, isFalse,
-          reason: 'le systeme a REFUSE les notifications et l appli repond '
-              'quand meme oui');
+      expect(
+        plateforme.aEteInterroge,
+        isTrue,
+        reason:
+            'checkPermissions repond sans jamais demander au systeme : '
+            'l appli croit avoir le droit de notifier',
+      );
+      expect(
+        accorde,
+        isFalse,
+        reason:
+            'le systeme a REFUSE les notifications et l appli repond '
+            'quand meme oui',
+      );
     });
 
-    test('sur Android, un systeme qui autorise est rapporte comme tel',
-        () async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      final plateforme = FakeAndroidPlateforme(autorise: true);
-      FlutterLocalNotificationsPlatform.instance = plateforme;
+    test(
+      'sur Android, un systeme qui autorise est rapporte comme tel',
+      () async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        final plateforme = FakeAndroidPlateforme(autorise: true);
+        FlutterLocalNotificationsPlatform.instance = plateforme;
 
-      expect(await NotificationService().checkPermissions(), isTrue);
-    });
+        expect(await NotificationService().checkPermissions(), isTrue);
+      },
+    );
 
     test('le refus du systeme se voit dans l etat des reglages', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
-      final container = ProviderContainer(overrides: [
-        notificationServiceProvider
-            .overrideWithValue(ServiceEspion(permission: false)),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          notificationServiceProvider.overrideWithValue(
+            ServiceEspion(permission: false),
+          ),
+        ],
+      );
       container.read(notificationSettingsProvider);
       await Future<void>.delayed(Duration.zero);
-      expect(container.read(notificationSettingsProvider).permissionGranted,
-          isFalse,
-          reason: 'le randonneur a refuse les notifications au systeme et '
-              'l ecran de reglages ne le sait pas');
+      expect(
+        container.read(notificationSettingsProvider).permissionGranted,
+        isFalse,
+        reason:
+            'le randonneur a refuse les notifications au systeme et '
+            'l ecran de reglages ne le sait pas',
+      );
       container.dispose();
     });
   });
@@ -255,47 +293,63 @@ void main() {
     });
 
     testWidgets(
-        '/settings — le refus du systeme est ANNONCE, avec de quoi l autoriser',
-        (tester) async {
-      // Le systeme refuse. On monte L APPLICATION REELLE (socle du LOT V) :
-      // `notificationServiceProvider` construit un vrai NotificationService,
-      // qui interrogera cette plateforme.
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      FlutterLocalNotificationsPlatform.instance =
-          FakeAndroidPlateforme(autorise: false);
+      '/settings — le refus du systeme est ANNONCE, avec de quoi l autoriser',
+      (tester) async {
+        // Le systeme refuse. On monte L APPLICATION REELLE (socle du LOT V) :
+        // `notificationServiceProvider` construit un vrai NotificationService,
+        // qui interrogera cette plateforme.
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        FlutterLocalNotificationsPlatform.instance = FakeAndroidPlateforme(
+          autorise: false,
+        );
 
-      await monterAppliReelle(tester, depart: '/settings');
-      final textes = await _textesDeToutLEcran(tester);
+        await monterAppliReelle(tester, depart: '/settings');
+        final textes = await _textesDeToutLEcran(tester);
 
-      expect(textes, contains(_tr.notifications.permissionBlockedTitle),
-          reason: 'le randonneur reglait quatre rappels avec soin alors '
+        expect(
+          textes,
+          contains(_tr.notifications.permissionBlockedTitle),
+          reason:
+              'le randonneur reglait quatre rappels avec soin alors '
               'qu aucun ne lui parviendrait : `permissionGranted` n etait lu '
-              'par personne');
-      expect(textes, contains(_tr.notifications.permissionAsk),
-          reason: 'annoncer le blocage sans offrir de le lever laisse '
-              'l utilisateur devant un mur');
+              'par personne',
+        );
+        expect(
+          textes,
+          contains(_tr.notifications.permissionAsk),
+          reason:
+              'annoncer le blocage sans offrir de le lever laisse '
+              'l utilisateur devant un mur',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-      debugDefaultTargetPlatformOverride = null;
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+        debugDefaultTargetPlatformOverride = null;
+      },
+    );
 
-    testWidgets('/settings — quand le systeme autorise, aucune alarme inutile',
-        (tester) async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.android;
-      FlutterLocalNotificationsPlatform.instance =
-          FakeAndroidPlateforme(autorise: true);
+    testWidgets(
+      '/settings — quand le systeme autorise, aucune alarme inutile',
+      (tester) async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        FlutterLocalNotificationsPlatform.instance = FakeAndroidPlateforme(
+          autorise: true,
+        );
 
-      await monterAppliReelle(tester, depart: '/settings');
+        await monterAppliReelle(tester, depart: '/settings');
 
-      expect(await _textesDeToutLEcran(tester),
+        expect(
+          await _textesDeToutLEcran(tester),
           isNot(contains(_tr.notifications.permissionBlockedTitle)),
-          reason: 'une alerte qui crie au loup use la confiance : elle ne doit '
-              'apparaitre que si le telephone bloque vraiment');
+          reason:
+              'une alerte qui crie au loup use la confiance : elle ne doit '
+              'apparaitre que si le telephone bloque vraiment',
+        );
 
-      await demonterAppli(tester);
-      erreursDeRendu(tester);
-      debugDefaultTargetPlatformOverride = null;
-    });
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+        debugDefaultTargetPlatformOverride = null;
+      },
+    );
   });
 }

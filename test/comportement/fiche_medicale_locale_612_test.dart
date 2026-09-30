@@ -179,15 +179,15 @@ void main() {
     tearDown(() async => db.close());
 
     CloudSyncService transport() => CloudSyncService(
-          progressDao: ProgressDao(db),
-          checklistDao: ChecklistDao(db),
-          syncQueueDao: SyncQueueDao(db),
-          connectivityMonitor: reseau,
-          // FIREBASE DECLARE DISPONIBLE, ET C'EST VOULU : on ne veut pas d'un
-          // refus qui viendrait d'un cloud absent. Le seul refus acceptable ici
-          // est celui de la decision.
-          firebaseService: FirebaseService.testOnly(isAvailable: true),
-        );
+      progressDao: ProgressDao(db),
+      checklistDao: ChecklistDao(db),
+      syncQueueDao: SyncQueueDao(db),
+      connectivityMonitor: reseau,
+      // FIREBASE DECLARE DISPONIBLE, ET C'EST VOULU : on ne veut pas d'un
+      // refus qui viendrait d'un cloud absent. Le seul refus acceptable ici
+      // est celui de la decision.
+      firebaseService: FirebaseService.testOnly(isAvailable: true),
+    );
 
     /// Les noms sous lesquels quelqu'un redeposerait une fiche medicale.
     const nomsPlausibles = [
@@ -201,70 +201,105 @@ void main() {
     ];
 
     for (final nom in nomsPlausibles) {
-      test('deposer « $nom » est REFUSE, et le reseau n est meme pas consulte',
-          () async {
-        final res = await transport()
-            .pushEncryptedBackup('hash-anon', nom, 'blob-chiffre');
+      test(
+        'deposer « $nom » est REFUSE, et le reseau n est meme pas consulte',
+        () async {
+          final res = await transport().pushEncryptedBackup(
+            'hash-anon',
+            nom,
+            'blob-chiffre',
+          );
 
-        expect(res.error, kSyncErrorDocumentNonAutorise,
-            reason: 'le refus doit porter SON nom, pas celui d une panne');
-        expect(res.status, CloudSyncStatusValues.idle,
-            reason: 'un refus assume n est pas une erreur technique');
-        expect(res.itemsSynced, 0);
-        expect(reseau.consulte, isFalse,
-            reason: 'la garde doit passer AVANT le reseau : un chemin de sortie '
-                'de la fiche medicale ne se refuse pas selon l etat du telephone');
-      });
+          expect(
+            res.error,
+            kSyncErrorDocumentNonAutorise,
+            reason: 'le refus doit porter SON nom, pas celui d une panne',
+          );
+          expect(
+            res.status,
+            CloudSyncStatusValues.idle,
+            reason: 'un refus assume n est pas une erreur technique',
+          );
+          expect(res.itemsSynced, 0);
+          expect(
+            reseau.consulte,
+            isFalse,
+            reason:
+                'la garde doit passer AVANT le reseau : un chemin de sortie '
+                'de la fiche medicale ne se refuse pas selon l etat du telephone',
+          );
+        },
+      );
 
-      test('lire « $nom » est REFUSE, et le reseau n est pas consulte non plus',
-          () async {
-        final blob = await transport().pullEncryptedBackup('hash-anon', nom);
+      test(
+        'lire « $nom » est REFUSE, et le reseau n est pas consulte non plus',
+        () async {
+          final blob = await transport().pullEncryptedBackup('hash-anon', nom);
 
-        expect(blob, isNull);
-        expect(reseau.consulte, isFalse,
-            reason: 'fermer la montee sans fermer la descente laisserait le '
+          expect(blob, isNull);
+          expect(
+            reseau.consulte,
+            isFalse,
+            reason:
+                'fermer la montee sans fermer la descente laisserait le '
                 'telephone aller chercher une fiche deposee par une version '
-                'anterieure');
-      });
+                'anterieure',
+          );
+        },
+      );
     }
 
-    test('le document du COMPTE, lui, passe la garde (on ne casse pas le reste)',
-        () async {
-      // Il n'ira pas au bout (aucun Firebase reel), mais il doit FRANCHIR la
-      // garde : la preuve est que le reseau a ete consulte. Sans cette
-      // verification, une liste fermee vide passerait pour une liste correcte.
-      await transport().pushEncryptedBackup(
-        'hash-anon',
-        DocumentsDuCoffreDistant.compte,
-        'blob-chiffre',
-      );
-      expect(reseau.consulte, isTrue,
-          reason: 'le coffre profil + solde d etapes n est pas concerne par la '
-              'decision du 28/09 : il ne doit pas etre ferme par erreur');
-    });
+    test(
+      'le document du COMPTE, lui, passe la garde (on ne casse pas le reste)',
+      () async {
+        // Il n'ira pas au bout (aucun Firebase reel), mais il doit FRANCHIR la
+        // garde : la preuve est que le reseau a ete consulte. Sans cette
+        // verification, une liste fermee vide passerait pour une liste correcte.
+        await transport().pushEncryptedBackup(
+          'hash-anon',
+          DocumentsDuCoffreDistant.compte,
+          'blob-chiffre',
+        );
+        expect(
+          reseau.consulte,
+          isTrue,
+          reason:
+              'le coffre profil + solde d etapes n est pas concerne par la '
+              'decision du 28/09 : il ne doit pas etre ferme par erreur',
+        );
+      },
+    );
   });
 
   group('612 — INVARIANTE : la liste des documents autorises est fermee et ne '
       'porte RIEN de medical', () {
     test('aucun document autorise ne sent la donnee de sante', () {
       for (final doc in DocumentsDuCoffreDistant.autorises) {
-        expect(_sentLaSante(doc), isFalse,
-            reason: 'le document « $doc » a ete ajoute a la liste des documents '
-                'que le coffre distant peut porter, et son nom evoque une '
-                'donnee de sante. Decision de Christophe du 28/09 10:42 : les '
-                'donnees medicales ne sortent JAMAIS du telephone. Si ce n est '
-                'pas une donnee de sante, renommez-le sans ambiguite.');
+        expect(
+          _sentLaSante(doc),
+          isFalse,
+          reason:
+              'le document « $doc » a ete ajoute a la liste des documents '
+              'que le coffre distant peut porter, et son nom evoque une '
+              'donnee de sante. Decision de Christophe du 28/09 10:42 : les '
+              'donnees medicales ne sortent JAMAIS du telephone. Si ce n est '
+              'pas une donnee de sante, renommez-le sans ambiguite.',
+        );
       }
     });
 
-    test('la liste est REELLEMENT fermee : tout ce qui n y est pas est refuse',
-        () {
-      expect(DocumentsDuCoffreDistant.autorise('health'), isFalse);
-      expect(DocumentsDuCoffreDistant.autorise(''), isFalse);
-      expect(DocumentsDuCoffreDistant.autorise('n importe quoi'), isFalse);
-      expect(DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.compte),
-          isTrue);
-    });
+    test(
+      'la liste est REELLEMENT fermee : tout ce qui n y est pas est refuse',
+      () {
+        expect(DocumentsDuCoffreDistant.autorise('health'), isFalse);
+        expect(DocumentsDuCoffreDistant.autorise(''), isFalse);
+        expect(DocumentsDuCoffreDistant.autorise('n importe quoi'), isFalse);
+        expect(
+          DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.compte),
+          isTrue,
+        );
+      },
+    );
 
     test('le service de sauvegarde distante de la fiche N EXISTE PLUS en '
         'production, sous aucun nom', () {
@@ -282,9 +317,13 @@ void main() {
           }
         }
       }
-      expect(coupables, isEmpty,
-          reason: 'un chemin de sauvegarde distante de la fiche medicale est '
-              'reapparu :\n  ${coupables.join("\n  ")}');
+      expect(
+        coupables,
+        isEmpty,
+        reason:
+            'un chemin de sauvegarde distante de la fiche medicale est '
+            'reapparu :\n  ${coupables.join("\n  ")}',
+      );
     });
   });
 
@@ -330,24 +369,34 @@ void main() {
         final sort = sortieReseau.where(contenu.contains).toList();
         if (sort.isNotEmpty) coupables.add('$chemin : ${sort.join(", ")}');
       }
-      expect(coupables, isEmpty,
-          reason: 'ces fichiers lisent la fiche medicale ET portent une sortie '
-              'reseau :\n  ${coupables.join("\n  ")}\n'
-              'Decision de Christophe du 28/09 10:42 : la fiche medicale ne '
-              'part JAMAIS vers nos serveurs. Si le besoin est la sauvegarde du '
-              'telephone par Google ou Apple, c est un AUTRE sujet, et il passe '
-              'par CopieSauvegardableFicheService, qui n ouvre aucune connexion.');
+      expect(
+        coupables,
+        isEmpty,
+        reason:
+            'ces fichiers lisent la fiche medicale ET portent une sortie '
+            'reseau :\n  ${coupables.join("\n  ")}\n'
+            'Decision de Christophe du 28/09 10:42 : la fiche medicale ne '
+            'part JAMAIS vers nos serveurs. Si le besoin est la sauvegarde du '
+            'telephone par Google ou Apple, c est un AUTRE sujet, et il passe '
+            'par CopieSauvegardableFicheService, qui n ouvre aucune connexion.',
+      );
     });
 
     test('le service de copie sauvegardable n ouvre AUCUNE connexion', () {
-      final source = _codeSeul(File(
-        'lib/features/safety/data/copie_sauvegardable_fiche_service.dart',
-      ).readAsStringSync());
+      final source = _codeSeul(
+        File(
+          'lib/features/safety/data/copie_sauvegardable_fiche_service.dart',
+        ).readAsStringSync(),
+      );
       for (final sortie in sortieReseau) {
-        expect(source.contains(sortie), isFalse,
-            reason: 'la copie destinee a la sauvegarde du telephone doit rester '
-                'un FICHIER LOCAL : « $sortie » en ferait un chemin vers un '
-                'serveur, et les deux sujets se confondraient');
+        expect(
+          source.contains(sortie),
+          isFalse,
+          reason:
+              'la copie destinee a la sauvegarde du telephone doit rester '
+              'un FICHIER LOCAL : « $sortie » en ferait un chemin vers un '
+              'serveur, et les deux sujets se confondraient',
+        );
       }
     });
   });
@@ -369,12 +418,17 @@ void main() {
     /// pour rester verte est une mauvaise garde.
     String lire(String chemin) {
       final f = File(chemin);
-      expect(f.existsSync(), isTrue,
-          reason: 'le fichier de regles « $chemin » est declare par '
-              'SauvegardeSysteme mais il n existe pas sur le disque');
-      return f
-          .readAsStringSync()
-          .replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+      expect(
+        f.existsSync(),
+        isTrue,
+        reason:
+            'le fichier de regles « $chemin » est declare par '
+            'SauvegardeSysteme mais il n existe pas sur le disque',
+      );
+      return f.readAsStringSync().replaceAll(
+        RegExp(r'<!--.*?-->', dotAll: true),
+        '',
+      );
     }
 
     /// Les exclusions REELLEMENT ecrites dans un fichier de regles Android.
@@ -394,12 +448,19 @@ void main() {
 
     test('le manifeste Android REFERENCE les deux fichiers de regles', () {
       final manifeste = lire(SauvegardeSysteme.manifesteAndroid);
-      expect(manifeste, contains('android:dataExtractionRules'),
-          reason: 'sans cet attribut, Android 12 et au-dela sauvegardent tout');
-      expect(manifeste, contains('android:fullBackupContent'),
-          reason: 'sans cet attribut, Android 11 et en dessous sauvegardent '
-              'tout, et c est le randonneur au telephone le plus vieux qui y '
-              'perd');
+      expect(
+        manifeste,
+        contains('android:dataExtractionRules'),
+        reason: 'sans cet attribut, Android 12 et au-dela sauvegardent tout',
+      );
+      expect(
+        manifeste,
+        contains('android:fullBackupContent'),
+        reason:
+            'sans cet attribut, Android 11 et en dessous sauvegardent '
+            'tout, et c est le randonneur au telephone le plus vieux qui y '
+            'perd',
+      );
       expect(manifeste, contains('@xml/regles_sauvegarde_donnees'));
       expect(manifeste, contains('@xml/regles_sauvegarde_complete'));
     });
@@ -407,11 +468,15 @@ void main() {
     test('Android 12 et au-dela : les exclusions du XML sont EXACTEMENT celles '
         'declarees, dans les deux sens', () {
       final xml = lire(SauvegardeSysteme.reglesAndroid12EtPlus);
-      expect(exclusionsDuXml(xml), attendues,
-          reason: 'le XML et SauvegardeSysteme.exclusions ont divergé. Retirer '
-              'une exclusion du XML rouvre la sauvegarde de la fiche medicale '
-              'chez Google ; en ajouter une sans la declarer fait mentir la '
-              'declaration.');
+      expect(
+        exclusionsDuXml(xml),
+        attendues,
+        reason:
+            'le XML et SauvegardeSysteme.exclusions ont divergé. Retirer '
+            'une exclusion du XML rouvre la sauvegarde de la fiche medicale '
+            'chez Google ; en ajouter une sans la declarer fait mentir la '
+            'declaration.',
+      );
     });
 
     test('la MONTEE et le TRANSFERT direct sont exclus tous les deux', () {
@@ -424,24 +489,33 @@ void main() {
       final sections = xml.split('<device-transfer>');
       expect(sections.length, 2);
       for (final section in sections) {
-        expect(exclusionsDuXml(section), attendues,
-            reason: 'les deux sections doivent porter les MEMES exclusions');
+        expect(
+          exclusionsDuXml(section),
+          attendues,
+          reason: 'les deux sections doivent porter les MEMES exclusions',
+        );
       }
     });
 
-    test('Android 11 et en dessous : mêmes exclusions, même source de verite',
-        () {
-      final xml = lire(SauvegardeSysteme.reglesAndroidAvant12);
-      expect(exclusionsDuXml(xml), attendues);
-    });
+    test(
+      'Android 11 et en dessous : mêmes exclusions, même source de verite',
+      () {
+        final xml = lire(SauvegardeSysteme.reglesAndroidAvant12);
+        expect(exclusionsDuXml(xml), attendues);
+      },
+    );
 
     test('la fiche medicale est bien dans ce qui est EXCLU', () {
       final exclus = SauvegardeSysteme.exclusions
           .map((e) => '${e.domaine}/${e.chemin}')
           .join(' ');
-      expect(exclus, contains(SauvegardeSysteme.dossierExclu),
-          reason: 'le dossier ou vit la fiche medicale doit figurer dans les '
-              'exclusions, sinon la declaration ne protege rien');
+      expect(
+        exclus,
+        contains(SauvegardeSysteme.dossierExclu),
+        reason:
+            'le dossier ou vit la fiche medicale doit figurer dans les '
+            'exclusions, sinon la declaration ne protege rien',
+      );
       // TACHE 613 — CETTE EXIGENCE A ETE RENVERSEE, ET LA RAISON EST ECRITE.
       // Le lot 612 exigeait ici l exclusion du domaine `database` TOUT ENTIER,
       // parce que la table de la fiche partageait le fichier de la progression.
@@ -450,12 +524,13 @@ void main() {
       // au changement de telephone — alors que le modele economique promet qu un
       // trek realise garde A VIE sa trace et son carnet.
       expect(
-          SauvegardeSysteme.exclusions
-              .any((e) => e.domaine == 'database'),
-          isFalse,
-          reason: 'la base ne contient plus rien de medical (tache 613) et doit '
-              'redevenir sauvegardable, sinon le randonneur perd sa progression '
-              'et son journal en changeant de telephone');
+        SauvegardeSysteme.exclusions.any((e) => e.domaine == 'database'),
+        isFalse,
+        reason:
+            'la base ne contient plus rien de medical (tache 613) et doit '
+            'redevenir sauvegardable, sinon le randonneur perd sa progression '
+            'et son journal en changeant de telephone',
+      );
     });
 
     test('l emplacement de la COPIE sauvegardable n est PAS exclu, sinon la '
@@ -465,9 +540,13 @@ void main() {
           .where((c) => c.isNotEmpty)
           .toList();
       for (final chemin in exclus) {
-        expect(chemin.contains(SauvegardeSysteme.dossierSauvegardable), isFalse,
-            reason: 'decocher la case doit produire une copie que la sauvegarde '
-                'du telephone emporte VRAIMENT');
+        expect(
+          chemin.contains(SauvegardeSysteme.dossierSauvegardable),
+          isFalse,
+          reason:
+              'decocher la case doit produire une copie que la sauvegarde '
+              'du telephone emporte VRAIMENT',
+        );
       }
     });
 
@@ -487,11 +566,18 @@ void main() {
       const exigence = SauvegardeSysteme.exigenceIosExclusion;
       expect(exigence, contains('NSURLIsExcludedFromBackupKey'));
       expect(exigence, contains(SauvegardeSysteme.dossierExclu));
-      expect(exigence.length, greaterThan(80),
-          reason: 'une exigence trop courte pour etre suivie ne sera pas suivie');
-      expect(File(ExclusionSauvegardeIcloud.fichierNatif).existsSync(), isTrue,
-          reason: 'l exigence est devenue un CANAL : sans le fichier natif qui en '
-              'tient l autre bout, elle redeviendrait une intention');
+      expect(
+        exigence.length,
+        greaterThan(80),
+        reason: 'une exigence trop courte pour etre suivie ne sera pas suivie',
+      );
+      expect(
+        File(ExclusionSauvegardeIcloud.fichierNatif).existsSync(),
+        isTrue,
+        reason:
+            'l exigence est devenue un CANAL : sans le fichier natif qui en '
+            'tient l autre bout, elle redeviendrait une intention',
+      );
     });
   });
 
@@ -527,24 +613,33 @@ void main() {
     });
 
     File fichierCopie() => File(
-          '${racine.path}/${SauvegardeSysteme.dossierSauvegardable}'
-          '/${SauvegardeSysteme.fichierCopieFiche}',
-        );
+      '${racine.path}/${SauvegardeSysteme.dossierSauvegardable}'
+      '/${SauvegardeSysteme.fichierCopieFiche}',
+    );
 
     test('LE DEFAUT EST LE REFUS, avant meme que la case ait ete vue', () {
-      expect(kRefusSauvegardeSystemeParDefaut, isTrue,
-          reason: 'Christophe a demande une case PRE-COCHEE : la protection ne '
-              'doit pas dependre de la vigilance du randonneur');
+      expect(
+        kRefusSauvegardeSystemeParDefaut,
+        isTrue,
+        reason:
+            'Christophe a demande une case PRE-COCHEE : la protection ne '
+            'doit pas dependre de la vigilance du randonneur',
+      );
     });
 
-    test('refus (le defaut) : AUCUNE copie, meme avec une fiche remplie',
-        () async {
-      await fiche.save(laFiche);
-      final presente = await copie.appliquer(refuse: true);
-      expect(presente, isFalse);
-      expect(fichierCopie().existsSync(), isFalse,
-          reason: 'le defaut ne fait RIEN partir');
-    });
+    test(
+      'refus (le defaut) : AUCUNE copie, meme avec une fiche remplie',
+      () async {
+        await fiche.save(laFiche);
+        final presente = await copie.appliquer(refuse: true);
+        expect(presente, isFalse);
+        expect(
+          fichierCopie().existsSync(),
+          isFalse,
+          reason: 'le defaut ne fait RIEN partir',
+        );
+      },
+    );
 
     test('decoche : une copie apparait, et elle porte la fiche', () async {
       await fiche.save(laFiche);
@@ -555,9 +650,13 @@ void main() {
       final relu = HealthInfo.fromJson(
         jsonDecode(fichierCopie().readAsStringSync()) as Map<String, dynamic>,
       );
-      expect(relu, laFiche,
-          reason: 'une copie vide ou partielle serait une deception au '
-              'changement de telephone, pas une protection');
+      expect(
+        relu,
+        laFiche,
+        reason:
+            'une copie vide ou partielle serait une deception au '
+            'changement de telephone, pas une protection',
+      );
     });
 
     test('RE-COCHER LE REFUS SUPPRIME LA COPIE DEJA ECRITE', () async {
@@ -567,9 +666,13 @@ void main() {
 
       await copie.appliquer(refuse: true);
 
-      expect(fichierCopie().existsSync(), isFalse,
-          reason: 'un refus qui laisse une trace de passage n est pas un refus : '
-              'c est le defaut mesure au LOT Y, et il vaut ici aussi');
+      expect(
+        fichierCopie().existsSync(),
+        isFalse,
+        reason:
+            'un refus qui laisse une trace de passage n est pas un refus : '
+            'c est le defaut mesure au LOT Y, et il vaut ici aussi',
+      );
     });
 
     test('EFFACER LA FICHE EMPORTE SA COPIE, meme si le randonneur avait '
@@ -582,18 +685,24 @@ void main() {
       // Le re-alignement, c est ce que fait l ecran apres un effacement.
       await copie.appliquer(refuse: false);
 
-      expect(fichierCopie().existsSync(), isFalse,
-          reason: 'effacer la fiche en laissant sa copie dans l emplacement '
-              'sauvegarde, c est un effacement qui ne tient pas : le changement '
-              'de telephone la ferait revenir');
+      expect(
+        fichierCopie().existsSync(),
+        isFalse,
+        reason:
+            'effacer la fiche en laissant sa copie dans l emplacement '
+            'sauvegarde, c est un effacement qui ne tient pas : le changement '
+            'de telephone la ferait revenir',
+      );
     });
 
-    test('fiche vide et case decochee : rien a copier, donc rien de copie',
-        () async {
-      final presente = await copie.appliquer(refuse: false);
-      expect(presente, isFalse);
-      expect(fichierCopie().existsSync(), isFalse);
-    });
+    test(
+      'fiche vide et case decochee : rien a copier, donc rien de copie',
+      () async {
+        final presente = await copie.appliquer(refuse: false);
+        expect(presente, isFalse);
+        expect(fichierCopie().existsSync(), isFalse);
+      },
+    );
 
     test('la copie est ecrite dans l emplacement SAUVEGARDABLE, jamais dans '
         'l emplacement exclu', () async {
@@ -602,22 +711,28 @@ void main() {
 
       final chemin = fichierCopie().path.replaceAll(r'\', '/');
       expect(chemin, contains(SauvegardeSysteme.dossierSauvegardable));
-      expect(chemin.contains('/${SauvegardeSysteme.dossierExclu}/'), isFalse,
-          reason: 'une copie ecrite dans l emplacement exclu ne serait jamais '
-              'sauvegardee : decocher la case n aurait aucun effet, et ce serait '
-              'un faux succes');
+      expect(
+        chemin.contains('/${SauvegardeSysteme.dossierExclu}/'),
+        isFalse,
+        reason:
+            'une copie ecrite dans l emplacement exclu ne serait jamais '
+            'sauvegardee : decocher la case n aurait aucun effet, et ce serait '
+            'un faux succes',
+      );
     });
 
-    test('idempotent dans les deux sens (une case se bascule plusieurs fois)',
-        () async {
-      await fiche.save(laFiche);
-      await copie.appliquer(refuse: false);
-      await copie.appliquer(refuse: false);
-      expect(fichierCopie().existsSync(), isTrue);
-      await copie.appliquer(refuse: true);
-      await copie.appliquer(refuse: true);
-      expect(fichierCopie().existsSync(), isFalse);
-    });
+    test(
+      'idempotent dans les deux sens (une case se bascule plusieurs fois)',
+      () async {
+        await fiche.save(laFiche);
+        await copie.appliquer(refuse: false);
+        await copie.appliquer(refuse: false);
+        expect(fichierCopie().existsSync(), isTrue);
+        await copie.appliquer(refuse: true);
+        await copie.appliquer(refuse: true);
+        expect(fichierCopie().existsSync(), isFalse);
+      },
+    );
 
     test('UNE COPIE ORPHELINE EST RAMASSEE : le disque CONVERGE vers la '
         'decision', () async {
@@ -639,10 +754,14 @@ void main() {
 
       await copie.appliquer(refuse: kRefusSauvegardeSystemeParDefaut);
 
-      expect(orpheline.existsSync(), isFalse,
-          reason: 'une copie qui a survecu a une session doit disparaitre des '
-              'que la decision est relue : sans cette convergence, le fait de ne '
-              'pas attendre le re-alignement ouvrirait un trou durable');
+      expect(
+        orpheline.existsSync(),
+        isFalse,
+        reason:
+            'une copie qui a survecu a une session doit disparaitre des '
+            'que la decision est relue : sans cette convergence, le fait de ne '
+            'pas attendre le re-alignement ouvrirait un trou durable',
+      );
     });
 
     test('ELLE NE LEVE JAMAIS, meme si le stockage est inaccessible', () async {
@@ -659,9 +778,13 @@ void main() {
             throw const FileSystemException('stockage indisponible'),
       );
 
-      expect(await cassee.appliquer(refuse: false), isFalse,
-          reason: 'elle doit RENDRE faux, pas lever : l appelant doit pouvoir '
-              'confirmer l enregistrement quand meme');
+      expect(
+        await cassee.appliquer(refuse: false),
+        isFalse,
+        reason:
+            'elle doit RENDRE faux, pas lever : l appelant doit pouvoir '
+            'confirmer l enregistrement quand meme',
+      );
       expect(await cassee.appliquer(refuse: true), isFalse);
       expect(await cassee.copiePresente(), isFalse);
     });
@@ -678,65 +801,92 @@ void main() {
 
       test('$langue : le prix de la promesse est ecrit', () {
         expect(tr.health.localOnlyPriceTitle.trim(), isNotEmpty);
-        expect(tr.health.localOnlyPrice.trim().length, greaterThan(80),
-            reason: 'le prix doit etre dit en entier : changer de telephone, '
-                'c est ressaisir groupe sanguin, allergies et traitements');
+        expect(
+          tr.health.localOnlyPrice.trim().length,
+          greaterThan(80),
+          reason:
+              'le prix doit etre dit en entier : changer de telephone, '
+              'c est ressaisir groupe sanguin, allergies et traitements',
+        );
       });
 
       test('$langue : la case de refus existe dans ses DEUX formulations', () {
         final sb = tr.systemBackup;
         expect(sb.refuseGoogle.trim(), isNotEmpty);
         expect(sb.refuseApple.trim(), isNotEmpty);
-        expect(sb.refuseGoogle, isNot(sb.refuseApple),
-            reason: 'une case qui parle de Google sur un iPhone decredibilise '
-                'tout le reste');
+        expect(
+          sb.refuseGoogle,
+          isNot(sb.refuseApple),
+          reason:
+              'une case qui parle de Google sur un iPhone decredibilise '
+              'tout le reste',
+        );
         expect(sb.explainGoogle, isNot(sb.explainApple));
       });
 
       test('$langue : le texte DIT que nos serveurs ne sont pas concernes', () {
-        expect(tr.systemBackup.notOurServers.trim().length,
-            greaterThan(80),
-            reason: 'sans cette phrase, le randonneur qui decoche croira que '
-                'NOUS recuperons sa fiche. Nous ne l avons jamais.');
+        expect(
+          tr.systemBackup.notOurServers.trim().length,
+          greaterThan(80),
+          reason:
+              'sans cette phrase, le randonneur qui decoche croira que '
+              'NOUS recuperons sa fiche. Nous ne l avons jamais.',
+        );
       });
 
-      test('$langue : AUCUN cadratin dans les textes de ce lot (tache 599)', () {
-        final textes = <String>[
-          tr.health.localOnlyPriceTitle,
-          tr.health.localOnlyPrice,
-          tr.systemBackup.title,
-          tr.systemBackup.refuseGoogle,
-          tr.systemBackup.refuseApple,
-          tr.systemBackup.explainGoogle,
-          tr.systemBackup.explainApple,
-          tr.systemBackup.notOurServers,
-          tr.systemBackup.confirm,
-          tr.systemBackup.a11yCheckbox,
-          tr.consent.healthBackupNote,
-        ];
-        for (final texte in textes) {
-          expect(texte.contains('—'), isFalse,
-              reason: 'cadratin dans « $texte »');
-          expect(texte.contains('–'), isFalse,
-              reason: 'demi-cadratin dans « $texte »');
-        }
-      });
+      test(
+        '$langue : AUCUN cadratin dans les textes de ce lot (tache 599)',
+        () {
+          final textes = <String>[
+            tr.health.localOnlyPriceTitle,
+            tr.health.localOnlyPrice,
+            tr.systemBackup.title,
+            tr.systemBackup.refuseGoogle,
+            tr.systemBackup.refuseApple,
+            tr.systemBackup.explainGoogle,
+            tr.systemBackup.explainApple,
+            tr.systemBackup.notOurServers,
+            tr.systemBackup.confirm,
+            tr.systemBackup.a11yCheckbox,
+            tr.consent.healthBackupNote,
+          ];
+          for (final texte in textes) {
+            expect(
+              texte.contains('—'),
+              isFalse,
+              reason: 'cadratin dans « $texte »',
+            );
+            expect(
+              texte.contains('–'),
+              isFalse,
+              reason: 'demi-cadratin dans « $texte »',
+            );
+          }
+        },
+      );
     }
 
-    test('les quatre traductions sont REELLES, pas un repli sur le francais',
-        () {
-      final fr = _langues['fr']!;
-      for (final entree in _langues.entries) {
-        if (entree.key == 'fr') continue;
-        expect(entree.value.health.localOnlyPrice,
+    test(
+      'les quatre traductions sont REELLES, pas un repli sur le francais',
+      () {
+        final fr = _langues['fr']!;
+        for (final entree in _langues.entries) {
+          if (entree.key == 'fr') continue;
+          expect(
+            entree.value.health.localOnlyPrice,
             isNot(fr.health.localOnlyPrice),
-            reason: '${entree.key} se rabat sur le francais : Slang le fait en '
-                'silence quand une cle manque');
-        expect(entree.value.systemBackup.refuseGoogle,
+            reason:
+                '${entree.key} se rabat sur le francais : Slang le fait en '
+                'silence quand une cle manque',
+          );
+          expect(
+            entree.value.systemBackup.refuseGoogle,
             isNot(fr.systemBackup.refuseGoogle),
-            reason: '${entree.key} se rabat sur le francais');
-      }
-    });
+            reason: '${entree.key} se rabat sur le francais',
+          );
+        }
+      },
+    );
 
     test('LE TEXTE QUI MENTAIT NE MENT PLUS : le consentement ne promet plus de '
         'retrouver la fiche ailleurs', () {
@@ -748,10 +898,14 @@ void main() {
       // decrit. Il n y a plus AUCUNE sauvegarde, autorisation ou pas.
       for (final entree in _langues.entries) {
         final note = entree.value.consent.healthBackupNote.toLowerCase();
-        expect(note.contains('sans cette autorisation'), isFalse,
-            reason: '${entree.key} : le texte suggere encore que '
-                'l autorisation changerait quelque chose a la sauvegarde de la '
-                'fiche medicale');
+        expect(
+          note.contains('sans cette autorisation'),
+          isFalse,
+          reason:
+              '${entree.key} : le texte suggere encore que '
+              'l autorisation changerait quelque chose a la sauvegarde de la '
+              'fiche medicale',
+        );
         expect(note.trim(), isNotEmpty);
       }
     });
@@ -784,11 +938,15 @@ void main() {
           'ficha personal',
           'scheda informativa',
         ]) {
-          expect(intro.contains(piege), isFalse,
-              reason: '${entree.key} : le coffre de reconnexion annonce encore '
-                  '« $piege », qui designe la fiche medicale dans ce depot. '
-                  'Decision du 28/09 10:42 : elle ne quitte jamais le '
-                  'telephone, donc elle n est pas dans le coffre.');
+          expect(
+            intro.contains(piege),
+            isFalse,
+            reason:
+                '${entree.key} : le coffre de reconnexion annonce encore '
+                '« $piege », qui designe la fiche medicale dans ce depot. '
+                'Decision du 28/09 10:42 : elle ne quitte jamais le '
+                'telephone, donc elle n est pas dans le coffre.',
+          );
         }
         expect(intro.trim(), isNotEmpty);
       }
@@ -796,14 +954,19 @@ void main() {
   });
 
   group('612 — l ecran de la fiche DIT le prix, au moment ou on la remplit', () {
-    testWidgets('/health affiche le prix de la promesse, avant les champs',
-        (tester) async {
+    testWidgets('/health affiche le prix de la promesse, avant les champs', (
+      tester,
+    ) async {
       await monterAppliReelle(tester, depart: '/health');
 
       final prix = find.byKey(const ValueKey('health-local-only-price'));
-      expect(prix, findsOneWidget,
-          reason: 'le prix doit etre lu AU MOMENT OU la fiche se remplit, pas '
-              'decouvert le jour du changement d appareil');
+      expect(
+        prix,
+        findsOneWidget,
+        reason:
+            'le prix doit etre lu AU MOMENT OU la fiche se remplit, pas '
+            'decouvert le jour du changement d appareil',
+      );
 
       final textes = textesVisibles(tester);
       final tr = _langues['fr']!;
@@ -826,13 +989,19 @@ void main() {
 
       // LA FICHE RESTE ENTIERE ET LOCALE : c est celle qu on montre aux secours,
       // c est sa raison d etre. On a retire un chemin de sortie, pas la fiche.
-      expect(find.byKey(const ValueKey('health-blood-type-field')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('health-blood-type-field')),
+        findsOneWidget,
+      );
       expect(textes, contains(tr.health.field.allergies));
       expect(textes, contains(tr.health.field.treatments));
-      expect(textes, contains(tr.health.advice.title),
-          reason: 'les conseils du LOT Q restent : la fiche doit etre '
-              'applicable sur le sentier');
+      expect(
+        textes,
+        contains(tr.health.advice.title),
+        reason:
+            'les conseils du LOT Q restent : la fiche doit etre '
+            'applicable sur le sentier',
+      );
 
       await demonterAppli(tester);
       erreursDeRendu(tester);
@@ -841,32 +1010,35 @@ void main() {
 
   group('612 — la case, telle que le randonneur la voit a la connexion', () {
     Widget dialogue(TargetPlatform plateforme) => ProviderScope(
-          child: TranslationProvider(
-            child: MaterialApp(
-              theme: ThemeData(platform: plateforme),
-              home: const Scaffold(
-                body: RefusSauvegardeSystemeDialog(),
-              ),
-            ),
-          ),
-        );
+      child: TranslationProvider(
+        child: MaterialApp(
+          theme: ThemeData(platform: plateforme),
+          home: const Scaffold(body: RefusSauvegardeSystemeDialog()),
+        ),
+      ),
+    );
 
     setUp(() {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       brancherLesPlugins();
     });
 
-    testWidgets('elle est PRE-COCHEE (decision de Christophe, mot pour mot)',
-        (tester) async {
+    testWidgets('elle est PRE-COCHEE (decision de Christophe, mot pour mot)', (
+      tester,
+    ) async {
       await tester.pumpWidget(dialogue(TargetPlatform.android));
       await tester.pumpAndSettle();
 
       final caseALocher = tester.widget<CheckboxListTile>(
         find.byKey(RefusSauvegardeSystemeDialog.cleCase),
       );
-      expect(caseALocher.value, isTrue,
-          reason: 'le refus est le DEFAUT, coche d avance : le randonneur peut '
-              'le decocher s il prefere la commodite, c est son choix, eclaire');
+      expect(
+        caseALocher.value,
+        isTrue,
+        reason:
+            'le refus est le DEFAUT, coche d avance : le randonneur peut '
+            'le decocher s il prefere la commodite, c est son choix, eclaire',
+      );
     });
 
     testWidgets('sur Android elle parle du cloud GOOGLE', (tester) async {
@@ -891,22 +1063,29 @@ void main() {
       expect(textes, contains(tr.systemBackup.explainApple));
     });
 
-    testWidgets('elle DIT que nos serveurs ne sont pas concernes, dans les deux '
-        'plateformes', (tester) async {
-      final tr = _langues['fr']!;
-      for (final plateforme in [TargetPlatform.android, TargetPlatform.iOS]) {
-        await tester.pumpWidget(dialogue(plateforme));
-        await tester.pumpAndSettle();
-        expect(textesVisibles(tester),
+    testWidgets(
+      'elle DIT que nos serveurs ne sont pas concernes, dans les deux '
+      'plateformes',
+      (tester) async {
+        final tr = _langues['fr']!;
+        for (final plateforme in [TargetPlatform.android, TargetPlatform.iOS]) {
+          await tester.pumpWidget(dialogue(plateforme));
+          await tester.pumpAndSettle();
+          expect(
+            textesVisibles(tester),
             contains(tr.systemBackup.notOurServers),
-            reason: 'sans cette phrase, decocher voudrait dire « StepWays '
+            reason:
+                'sans cette phrase, decocher voudrait dire « StepWays '
                 'recupere ma fiche » dans la tete du randonneur, et ce serait '
-                'faux');
-      }
-    });
+                'faux',
+          );
+        }
+      },
+    );
 
-    testWidgets('valider ENREGISTRE la decision (elle ne reste pas en vol)',
-        (tester) async {
+    testWidgets('valider ENREGISTRE la decision (elle ne reste pas en vol)', (
+      tester,
+    ) async {
       await tester.pumpWidget(dialogue(TargetPlatform.android));
       await tester.pumpAndSettle();
 
@@ -914,9 +1093,13 @@ void main() {
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(kRefusSauvegardeSystemeKey), isTrue,
-          reason: 'sans ecriture, la question serait reposee a chaque connexion '
-              'et la decision du randonneur ne vaudrait rien');
+      expect(
+        prefs.getBool(kRefusSauvegardeSystemeKey),
+        isTrue,
+        reason:
+            'sans ecriture, la question serait reposee a chaque connexion '
+            'et la decision du randonneur ne vaudrait rien',
+      );
     });
 
     testWidgets('decocher puis valider enregistre le CHOIX INVERSE (la case '
@@ -935,7 +1118,9 @@ void main() {
       // defilement. Sans cet appel, `tap` viserait un point hors de la fenetre de
       // defilement et ne changerait RIEN, ce qui est exactement le defaut que ce
       // test doit attraper si un jour il revient pour de bon.
-      await tester.ensureVisible(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
+      await tester.ensureVisible(
+        find.byKey(RefusSauvegardeSystemeDialog.cleCase),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
       await tester.pumpAndSettle();
@@ -943,9 +1128,13 @@ void main() {
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(kRefusSauvegardeSystemeKey), isFalse,
-          reason: 'le randonneur qui accepte la commodite doit etre entendu : '
-              'une case qu on ne peut pas decocher n est pas un choix');
+      expect(
+        prefs.getBool(kRefusSauvegardeSystemeKey),
+        isFalse,
+        reason:
+            'le randonneur qui accepte la commodite doit etre entendu : '
+            'une case qu on ne peut pas decocher n est pas un choix',
+      );
     });
   });
 }

@@ -59,22 +59,25 @@ void main() {
     gpxAssetPath: 'assets/test.gpx',
     directions: ['NS', 'SN'],
     emergencyNumbers: [
-      TrailEmergencyNumber(name: 'Secours test regional', phone: '+33123456789'),
+      TrailEmergencyNumber(
+        name: 'Secours test regional',
+        phone: '+33123456789',
+      ),
     ],
   );
 
   StageModel stage(int n, String name) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: name,
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: name,
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+  );
 
   final testStages = [
     stage(1, 'Etape Alpha'),
@@ -85,29 +88,31 @@ void main() {
   /// Construit une prevision 3 jours a temperatures donnees (les autres facteurs
   /// neutres : vent faible, pas de pluie) pour piloter le niveau derive.
   WeatherForecast forecastAt(List<double> tempsMax) => WeatherForecast(
-        latitude: 0,
-        longitude: 0,
-        days: [
-          for (var i = 0; i < tempsMax.length; i++)
-            DayForecast(
-              date: DateTime(2026, 7, 15).add(Duration(days: i)),
-              temperatureMax: tempsMax[i],
-              temperatureMin: 15,
-              precipitationMm: 0,
-              windSpeedKmh: 5,
-              uvIndex: 8,
-              weatherCode: 0,
-              precipitationProbabilityMax: 0,
-            ),
-        ],
-      );
+    latitude: 0,
+    longitude: 0,
+    days: [
+      for (var i = 0; i < tempsMax.length; i++)
+        DayForecast(
+          date: DateTime(2026, 7, 15).add(Duration(days: i)),
+          temperatureMax: tempsMax[i],
+          temperatureMin: 15,
+          precipitationMm: 0,
+          windSpeedKmh: 5,
+          uvIndex: 8,
+          weatherCode: 0,
+          precipitationProbabilityMax: 0,
+        ),
+    ],
+  );
 
   /// Override d'une etape meteo par un etat fixe (parite : le socle meteo est la
   /// source ; ici on injecte une prevision deterministe pour tester l'agregation
   /// du risque sans DB ni reseau).
   Override weatherOverride(int stageNumber, WeatherForecast? forecast) {
-    final params =
-        WeatherStageParams(trailId: trailId, stageNumber: stageNumber);
+    final params = WeatherStageParams(
+      trailId: trailId,
+      stageNumber: stageNumber,
+    );
     return stageWeatherProvider(params).overrideWith(
       () => _FixedWeatherNotifier(
         WeatherState(forecast: forecast, isLoading: false),
@@ -119,7 +124,8 @@ void main() {
     List<StageModel>? stages,
     Map<int, WeatherForecast?>? forecasts,
   }) {
-    final fc = forecasts ??
+    final fc =
+        forecasts ??
         {
           // Alpha : 27 C -> niveau 1 (Faible). Beta : 36 C -> niveau 3 (Eleve).
           // Gamma : 20 C -> niveau 0 (pas de risque, ne remonte pas).
@@ -129,8 +135,9 @@ void main() {
         };
     return [
       trailConfigProvider.overrideWithValue(testConfig),
-      stagesProvider(trailId)
-          .overrideWith((ref) => Future.value(stages ?? testStages)),
+      stagesProvider(
+        trailId,
+      ).overrideWith((ref) => Future.value(stages ?? testStages)),
       for (final entry in fc.entries) weatherOverride(entry.key, entry.value),
     ];
   }
@@ -218,15 +225,18 @@ void main() {
       );
     });
 
-    test('canicule (36 C) + vent fort (45 km/h), sec => niveau eleve borne', () {
-      // 36 C (>= 35 => +3) + 45 km/h (>= 40 => +2) = 5, borne a 5 (Extreme).
-      final level = calculateFireRiskLevel(
-        temperatureMax: 36,
-        windSpeedKmh: 45,
-        precipitationMm: 0,
-      );
-      expect(level, 5);
-    });
+    test(
+      'canicule (36 C) + vent fort (45 km/h), sec => niveau eleve borne',
+      () {
+        // 36 C (>= 35 => +3) + 45 km/h (>= 40 => +2) = 5, borne a 5 (Extreme).
+        final level = calculateFireRiskLevel(
+          temperatureMax: 36,
+          windSpeedKmh: 45,
+          precipitationMm: 0,
+        );
+        expect(level, 5);
+      },
+    );
 
     test('resultat toujours borne dans [0..5]', () {
       for (final temp in [0.0, 20.0, 25.0, 30.0, 35.0, 45.0]) {
@@ -241,19 +251,21 @@ void main() {
       }
     });
 
-    test('proba de pluie manquante (null) traitee comme 0 (pas d\'attenuation)',
-        () {
-      // 30 C (+2), pas de pluie, proba null -> aucune attenuation -> niveau 2.
-      expect(
-        calculateFireRiskLevel(
-          temperatureMax: 30,
-          windSpeedKmh: 5,
-          precipitationMm: 0,
-          precipitationProbability: null,
-        ),
-        2,
-      );
-    });
+    test(
+      'proba de pluie manquante (null) traitee comme 0 (pas d\'attenuation)',
+      () {
+        // 30 C (+2), pas de pluie, proba null -> aucune attenuation -> niveau 2.
+        expect(
+          calculateFireRiskLevel(
+            temperatureMax: 30,
+            windSpeedKmh: 5,
+            precipitationMm: 0,
+            precipitationProbability: null,
+          ),
+          2,
+        );
+      },
+    );
   });
 
   // --- Catalogue reglementation (data-driven, honnete) ---------------------
@@ -274,10 +286,12 @@ void main() {
       expect(reg.decreeUrl, contains('risque-prevention-incendie.fr'));
     });
 
-    test('un sentier inconnu ne fournit pas de reglementation (section masquee)',
-        () {
-      expect(FireRiskCatalog.forTrail('sentier-inexistant'), isNull);
-    });
+    test(
+      'un sentier inconnu ne fournit pas de reglementation (section masquee)',
+      () {
+        expect(FireRiskCatalog.forTrail('sentier-inexistant'), isNull);
+      },
+    );
   });
 
   // --- Agregation par etape (providers) ------------------------------------
@@ -314,11 +328,13 @@ void main() {
 
     test('aucune etape a risque quand toute la meteo est fraiche/humide', () {
       final container = ProviderContainer(
-        overrides: baseOverrides(forecasts: {
-          1: forecastAt([18, 17, 16]),
-          2: forecastAt([19, 18, 17]),
-          3: forecastAt([20, 19, 18]),
-        }),
+        overrides: baseOverrides(
+          forecasts: {
+            1: forecastAt([18, 17, 16]),
+            2: forecastAt([19, 18, 17]),
+            3: forecastAt([20, 19, 18]),
+          },
+        ),
       );
       addTearDown(container.dispose);
       container.read(stagesProvider(trailId));
@@ -366,8 +382,9 @@ void main() {
   // --- Ecran : sections + contenu data-driven ------------------------------
 
   group('ecran risque incendie', () {
-    testWidgets('affiche les sections cle (titre, legende, numeros)',
-        (tester) async {
+    testWidgets('affiche les sections cle (titre, legende, numeros)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -383,8 +400,9 @@ void main() {
       expect(find.text(t.fireRisk.level.extreme), findsWidgets);
     });
 
-    testWidgets('etapes a risque affichees, triees, avec badge etape',
-        (tester) async {
+    testWidgets('etapes a risque affichees, triees, avec badge etape', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -397,8 +415,9 @@ void main() {
       expect(find.text(t.fireRisk.stageBadge(number: 1)), findsOneWidget);
     });
 
-    testWidgets('numeros d\'urgence tappables affiches (18/112 + regional)',
-        (tester) async {
+    testWidgets('numeros d\'urgence tappables affiches (18/112 + regional)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -411,82 +430,107 @@ void main() {
     });
 
     testWidgets(
-        'section reglementation rendue (data-driven) avec message + lien',
-        (tester) async {
-      // Injecte une reglementation de sentier (data-driven) : la section doit
-      // s'afficher avec son titre, son message et le lien vers les arretes.
-      const reg = FireRegulation(
-        regionLabel: 'Testland',
-        periodStartMonth: 6,
-        periodEndMonth: 9,
-        message: 'Message reglementaire de test.',
-        decreeUrl: 'https://example.org/arretes',
-      );
-      await tester.pumpWidget(wrap(
-        overrides: [
-          ...baseOverrides(),
-          trailFireRegulationProvider(trailId).overrideWithValue(reg),
-        ],
-      ));
-      await settle(tester);
+      'section reglementation rendue (data-driven) avec message + lien',
+      (tester) async {
+        // Injecte une reglementation de sentier (data-driven) : la section doit
+        // s'afficher avec son titre, son message et le lien vers les arretes.
+        const reg = FireRegulation(
+          regionLabel: 'Testland',
+          periodStartMonth: 6,
+          periodEndMonth: 9,
+          message: 'Message reglementaire de test.',
+          decreeUrl: 'https://example.org/arretes',
+        );
+        await tester.pumpWidget(
+          wrap(
+            overrides: [
+              ...baseOverrides(),
+              trailFireRegulationProvider(trailId).overrideWithValue(reg),
+            ],
+          ),
+        );
+        await settle(tester);
 
-      expect(find.text(t.fireRisk.regulation.title), findsOneWidget);
-      expect(find.text('Message reglementaire de test.'), findsOneWidget);
-      // Lien vers les arretes (libelle traduit + icone open_in_new, parite GR20).
-      expect(find.text(t.fireRisk.regulation.decreeLink), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lien), findsOneWidget);
-    });
+        expect(find.text(t.fireRisk.regulation.title), findsOneWidget);
+        expect(find.text('Message reglementaire de test.'), findsOneWidget);
+        // Lien vers les arretes (libelle traduit + icone open_in_new, parite GR20).
+        expect(find.text(t.fireRisk.regulation.decreeLink), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.lien,
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('section reglementation masquee quand le sentier n\'en a pas',
-        (tester) async {
+    testWidgets('section reglementation masquee quand le sentier n\'en a pas', (
+      tester,
+    ) async {
       // test-trail n'a pas d'entree au catalogue -> section masquee proprement.
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
       expect(find.text(t.fireRisk.regulation.title), findsNothing);
     });
 
-    testWidgets('detail par jour affiche un niveau par jour de prevision',
-        (tester) async {
+    testWidgets('detail par jour affiche un niveau par jour de prevision', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
       // Beta a 3 jours de prevision -> plusieurs pastilles « Niv. X » (detail
       // par jour, parite GR20). Au moins un badge de niveau visible.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.incendie,
+        ),
+        findsWidgets,
+      );
       expect(find.textContaining('Niv.'), findsWidgets);
     });
 
-    testWidgets('etat « aucun risque » quand aucune etape a risque',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        overrides: baseOverrides(forecasts: {
-          1: forecastAt([18, 17, 16]),
-          2: forecastAt([19, 18, 17]),
-          3: forecastAt([20, 19, 18]),
-        }),
-      ));
+    testWidgets('etat « aucun risque » quand aucune etape a risque', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          overrides: baseOverrides(
+            forecasts: {
+              1: forecastAt([18, 17, 16]),
+              2: forecastAt([19, 18, 17]),
+              3: forecastAt([20, 19, 18]),
+            },
+          ),
+        ),
+      );
       await settle(tester);
 
       expect(find.text(t.fireRisk.noRisk), findsOneWidget);
     });
 
-    testWidgets('sans donnee meteo : fallback informatif propre, pas de crash',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        overrides: baseOverrides(forecasts: {1: null, 2: null, 3: null}),
-      ));
-      await settle(tester);
+    testWidgets(
+      'sans donnee meteo : fallback informatif propre, pas de crash',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            overrides: baseOverrides(forecasts: {1: null, 2: null, 3: null}),
+          ),
+        );
+        await settle(tester);
 
-      expect(find.text(t.fireRisk.empty.title), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.text(t.fireRisk.empty.title), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   // --- Navigation depuis le HUB --------------------------------------------
 
   group('navigation HUB', () {
-    testWidgets('la carte HUB « Incendie » ouvre l\'ecran, retour sans crash',
-        (tester) async {
+    testWidgets('la carte HUB « Incendie » ouvre l\'ecran, retour sans crash', (
+      tester,
+    ) async {
       final router = GoRouter(
         initialLocation: '/home',
         routes: [
@@ -503,24 +547,34 @@ void main() {
           ),
           GoRoute(
             path: '/trail/:id/fire-risk',
-            builder: (context, state) => FireRiskScreen(
-              trailId: state.pathParameters['id'] ?? '',
-            ),
+            builder: (context, state) =>
+                FireRiskScreen(trailId: state.pathParameters['id'] ?? ''),
           ),
         ],
       );
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: baseOverrides(),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: baseOverrides(),
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-      ));
+      );
       await settle(tester);
 
       // Aller : taper la carte HUB (icone local_fire_department) ouvre l'ecran.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.incendie,
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.incendie,
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text(t.fireRisk.title));
       expect(find.text(t.fireRisk.title), findsWidgets);
@@ -532,7 +586,12 @@ void main() {
       await settle(tester);
       await pumpUntilGone(tester, find.text(t.fireRisk.title));
       expect(find.text(t.fireRisk.title), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.incendie), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.incendie,
+        ),
+        findsOneWidget,
+      );
     });
   });
 }
@@ -544,7 +603,7 @@ void main() {
 /// d'etape, sans monter le repository reel.
 class _FixedWeatherNotifier extends StageWeatherNotifier {
   _FixedWeatherNotifier(this._fixed)
-      : super(const WeatherStageParams(trailId: 'test-trail', stageNumber: 0));
+    : super(const WeatherStageParams(trailId: 'test-trail', stageNumber: 0));
 
   final WeatherState _fixed;
 

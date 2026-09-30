@@ -16,13 +16,13 @@ void main() {
   setUp(() => LocaleSettings.setLocaleRaw('fr'));
 
   SessionTrackPoint point(DateTime at, double lat) => SessionTrackPoint(
-        id: 0,
-        trailId: 'sentier',
-        lat: lat,
-        lng: 9.0,
-        altitude: 900,
-        recordedAt: at,
-      );
+    id: 0,
+    trailId: 'sentier',
+    lat: lat,
+    lng: 9.0,
+    altitude: 900,
+    recordedAt: at,
+  );
 
   group('L5-6 — la vitesse ne sort que des points mesures', () {
     test('vitesse plausible : elle est rendue', () {
@@ -59,8 +59,9 @@ void main() {
     test('moins de deux points : aucune vitesse', () {
       expect(computeTrackStats(const []).averageSpeedKmh, isNull);
       expect(
-        computeTrackStats([point(DateTime(2026, 6, 10, 8), 42.0)])
-            .averageSpeedKmh,
+        computeTrackStats([
+          point(DateTime(2026, 6, 10, 8), 42.0),
+        ]).averageSpeedKmh,
         isNull,
       );
     });

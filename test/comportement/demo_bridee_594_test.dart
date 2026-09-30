@@ -52,9 +52,7 @@ void main() {
         weekStart: 3,
         weekEnd: 5,
         titleFr: 'Denivele',
-        sessions: [
-          TrainingSession(id: 'denivele-s1', labelFr: 'Cotes'),
-        ],
+        sessions: [TrainingSession(id: 'denivele-s1', labelFr: 'Cotes')],
       ),
       TrainingPhase(
         id: 'endurance',
@@ -75,8 +73,9 @@ void main() {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        isDemoModeProvider(testTrailConfig.id)
-            .overrideWith((ref) async => isDemo),
+        isDemoModeProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) async => isDemo),
         trainingPlanProvider.overrideWith((ref) async => plan),
         trainingDepartureDateProvider.overrideWithValue(
           DateTime.now().add(const Duration(days: 90)),
@@ -99,14 +98,19 @@ void main() {
   }
 
   group('A2c — la prepa physique est JOUABLE en demo, pas verrouillee', () {
-    testWidgets('en demo, la premiere phase est reellement cochable',
-        (tester) async {
+    testWidgets('en demo, la premiere phase est reellement cochable', (
+      tester,
+    ) async {
       await tester.pumpWidget(ecranEntrainement(isDemo: true));
       await tester.pumpAndSettle();
 
-      expect(find.byType(CheckboxListTile), findsWidgets,
-          reason: 'le modele demande la prepa physique JOUABLE en version '
-              'bridee ; l ecran la verrouillait derriere un apercu grise');
+      expect(
+        find.byType(CheckboxListTile),
+        findsWidgets,
+        reason:
+            'le modele demande la prepa physique JOUABLE en version '
+            'bridee ; l ecran la verrouillait derriere un apercu grise',
+      );
 
       final avant = tester
           .widgetList<CheckboxListTile>(find.byType(CheckboxListTile))
@@ -118,9 +122,13 @@ void main() {
           .widgetList<CheckboxListTile>(find.byType(CheckboxListTile))
           .where((c) => c.value == true)
           .length;
-      expect(apres, avant + 1,
-          reason: 'jouable « pour de faux » veut dire que le geste produit '
-              'quelque chose a l ecran');
+      expect(
+        apres,
+        avant + 1,
+        reason:
+            'jouable « pour de faux » veut dire que le geste produit '
+            'quelque chose a l ecran',
+      );
     });
 
     testWidgets('en demo, le bridage est dit, et il est borne', (tester) async {
@@ -131,12 +139,19 @@ void main() {
       expect(find.text(t.training.demoBridledTitle), findsOneWidget);
       // Seules les phases bridees sont jouables : les suivantes sont GRISEES,
       // visibles, verrouillees — jamais cachees.
-      expect(find.byKey(const ValueKey('training-demo-locked-denivele')),
-          findsOneWidget);
-      expect(find.byKey(const ValueKey('training-demo-locked-endurance')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('training-demo-locked-denivele')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('training-demo-locked-endurance')),
+        findsOneWidget,
+      );
       // Leur titre reste LISIBLE (visible, pas cache).
-      expect(find.textContaining('Denivele', skipOffstage: false), findsWidgets);
+      expect(
+        find.textContaining('Denivele', skipOffstage: false),
+        findsWidgets,
+      );
       // Et leurs seances, elles, ne sont pas servies.
       expect(find.text('Cotes', skipOffstage: false), findsNothing);
       expect(find.text('Sortie longue', skipOffstage: false), findsNothing);
@@ -148,12 +163,15 @@ void main() {
       await tester.pumpWidget(ecranEntrainement(isDemo: true));
       await tester.pumpAndSettle();
       expect(find.text(t.training.unlock, skipOffstage: false), findsOneWidget);
-      expect(find.text(t.training.paywallTitle, skipOffstage: false),
-          findsOneWidget);
+      expect(
+        find.text(t.training.paywallTitle, skipOffstage: false),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('debloque : le plan entier, sans bandeau d essai',
-        (tester) async {
+    testWidgets('debloque : le plan entier, sans bandeau d essai', (
+      tester,
+    ) async {
       await tester.pumpWidget(ecranEntrainement(isDemo: false));
       await tester.pumpAndSettle();
       expect(find.text(t.training.demoBridledTitle), findsNothing);

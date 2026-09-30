@@ -51,8 +51,16 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'preparation',
     icon: 'checklist',
     tips: [
-      Tip(id: 'prep1', titleKey: 'prepTraining', contentKey: 'prepTrainingContent'),
-      Tip(id: 'prep2', titleKey: 'prepPlanning', contentKey: 'prepPlanningContent'),
+      Tip(
+        id: 'prep1',
+        titleKey: 'prepTraining',
+        contentKey: 'prepTrainingContent',
+      ),
+      Tip(
+        id: 'prep2',
+        titleKey: 'prepPlanning',
+        contentKey: 'prepPlanningContent',
+      ),
       Tip(id: 'prep3', titleKey: 'prepAdmin', contentKey: 'prepAdminContent'),
     ],
   ),
@@ -61,10 +69,26 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'equipment',
     icon: 'backpack',
     tips: [
-      Tip(id: 'equip1', titleKey: 'equipShoes', contentKey: 'equipShoesContent'),
-      Tip(id: 'equip2', titleKey: 'equipLayers', contentKey: 'equipLayersContent'),
-      Tip(id: 'equip3', titleKey: 'equipWeight', contentKey: 'equipWeightContent'),
-      Tip(id: 'equip4', titleKey: 'equipElectronics', contentKey: 'equipElectronicsContent'),
+      Tip(
+        id: 'equip1',
+        titleKey: 'equipShoes',
+        contentKey: 'equipShoesContent',
+      ),
+      Tip(
+        id: 'equip2',
+        titleKey: 'equipLayers',
+        contentKey: 'equipLayersContent',
+      ),
+      Tip(
+        id: 'equip3',
+        titleKey: 'equipWeight',
+        contentKey: 'equipWeightContent',
+      ),
+      Tip(
+        id: 'equip4',
+        titleKey: 'equipElectronics',
+        contentKey: 'equipElectronicsContent',
+      ),
     ],
   ),
   TipCategory(
@@ -72,9 +96,21 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'nutrition',
     icon: 'restaurant',
     tips: [
-      Tip(id: 'nutri1', titleKey: 'nutriHydration', contentKey: 'nutriHydrationContent'),
-      Tip(id: 'nutri2', titleKey: 'nutriEnergy', contentKey: 'nutriEnergyContent'),
-      Tip(id: 'nutri3', titleKey: 'nutriMeals', contentKey: 'nutriMealsContent'),
+      Tip(
+        id: 'nutri1',
+        titleKey: 'nutriHydration',
+        contentKey: 'nutriHydrationContent',
+      ),
+      Tip(
+        id: 'nutri2',
+        titleKey: 'nutriEnergy',
+        contentKey: 'nutriEnergyContent',
+      ),
+      Tip(
+        id: 'nutri3',
+        titleKey: 'nutriMeals',
+        contentKey: 'nutriMealsContent',
+      ),
     ],
   ),
   TipCategory(
@@ -82,10 +118,26 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'safety',
     icon: 'health_and_safety',
     tips: [
-      Tip(id: 'safe1', titleKey: 'safeWeather', contentKey: 'safeWeatherContent'),
-      Tip(id: 'safe2', titleKey: 'safeFirstAid', contentKey: 'safeFirstAidContent'),
-      Tip(id: 'safe3', titleKey: 'safeNavigation', contentKey: 'safeNavigationContent'),
-      Tip(id: 'safe4', titleKey: 'safeEmergency', contentKey: 'safeEmergencyContent'),
+      Tip(
+        id: 'safe1',
+        titleKey: 'safeWeather',
+        contentKey: 'safeWeatherContent',
+      ),
+      Tip(
+        id: 'safe2',
+        titleKey: 'safeFirstAid',
+        contentKey: 'safeFirstAidContent',
+      ),
+      Tip(
+        id: 'safe3',
+        titleKey: 'safeNavigation',
+        contentKey: 'safeNavigationContent',
+      ),
+      Tip(
+        id: 'safe4',
+        titleKey: 'safeEmergency',
+        contentKey: 'safeEmergencyContent',
+      ),
     ],
   ),
   TipCategory(
@@ -93,8 +145,16 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'nature',
     icon: 'forest',
     tips: [
-      Tip(id: 'nat1', titleKey: 'natLeaveNoTrace', contentKey: 'natLeaveNoTraceContent'),
-      Tip(id: 'nat2', titleKey: 'natWildlife', contentKey: 'natWildlifeContent'),
+      Tip(
+        id: 'nat1',
+        titleKey: 'natLeaveNoTrace',
+        contentKey: 'natLeaveNoTraceContent',
+      ),
+      Tip(
+        id: 'nat2',
+        titleKey: 'natWildlife',
+        contentKey: 'natWildlifeContent',
+      ),
       Tip(id: 'nat3', titleKey: 'natWater', contentKey: 'natWaterContent'),
     ],
   ),
@@ -103,8 +163,16 @@ const List<TipCategory> tipsCategories = [
     nameKey: 'recovery',
     icon: 'self_improvement',
     tips: [
-      Tip(id: 'recov1', titleKey: 'recovStretching', contentKey: 'recovStretchingContent'),
-      Tip(id: 'recov2', titleKey: 'recovSleep', contentKey: 'recovSleepContent'),
+      Tip(
+        id: 'recov1',
+        titleKey: 'recovStretching',
+        contentKey: 'recovStretchingContent',
+      ),
+      Tip(
+        id: 'recov2',
+        titleKey: 'recovSleep',
+        contentKey: 'recovSleepContent',
+      ),
       Tip(id: 'recov3', titleKey: 'recovFeet', contentKey: 'recovFeetContent'),
     ],
   ),

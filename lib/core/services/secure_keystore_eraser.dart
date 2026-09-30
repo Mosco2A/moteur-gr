@@ -44,7 +44,7 @@ typedef SecureKeystoreErasure = Future<int> Function();
 /// exceptions nommees dans [preservedKeys] survivent.
 class SecureKeystoreEraser {
   SecureKeystoreEraser({FlutterSecureStorage? secureStorage})
-      : _storage = secureStorage ?? const FlutterSecureStorage();
+    : _storage = secureStorage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 
@@ -76,8 +76,10 @@ class SecureKeystoreEraser {
       deleted++;
     }
     if (deleted > 0) {
-      _log.d('[SecureKeystore] $deleted cle(s) effacee(s) du keystore OS '
-          '(art. 17)');
+      _log.d(
+        '[SecureKeystore] $deleted cle(s) effacee(s) du keystore OS '
+        '(art. 17)',
+      );
     }
     return deleted;
   }

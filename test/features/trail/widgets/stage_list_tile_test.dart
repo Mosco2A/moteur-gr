@@ -29,9 +29,7 @@ void main() {
     testWidgets('affiche le nom de l\'étape', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -41,9 +39,7 @@ void main() {
     testWidgets('affiche la distance en km', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -53,9 +49,7 @@ void main() {
     testWidgets('affiche le dénivelé positif et négatif', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -66,9 +60,7 @@ void main() {
     testWidgets('affiche le numéro de l\'étape', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -78,9 +70,7 @@ void main() {
     testWidgets('affiche le badge de difficulté', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -90,9 +80,7 @@ void main() {
     testWidgets('affiche la durée estimée formatée', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageListTile(stage: testStage),
-          ),
+          home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
@@ -105,10 +93,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: StageListTile(
-              stage: testStage,
-              onTap: () => tapped = true,
-            ),
+            body: StageListTile(stage: testStage, onTap: () => tapped = true),
           ),
         ),
       );

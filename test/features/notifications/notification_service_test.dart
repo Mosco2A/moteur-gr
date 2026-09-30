@@ -27,7 +27,8 @@ class FakeNotificationsPlatform extends Fake
   Future<void> cancel(int id, {String? tag}) async {}
 
   @override
-  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async => [];
+  Future<List<PendingNotificationRequest>>
+  pendingNotificationRequests() async => [];
 }
 
 /// Tests du service de notifications E3.8a.
@@ -61,31 +62,36 @@ void main() {
       expect(NotificationService.channelOffTrackDesc, isNotEmpty);
     });
 
-    test('showOffTrackAlert / cancelOffTrackAlert n echouent pas (pipeline)',
-        () async {
-      // Le plugin route show/cancel via MethodChannel natif (non observable ici
-      // sans mock du channel) ; on valide surtout que le pipeline du service ne
-      // leve pas. Le CABLAGE transitions -> notification est couvert par le test
-      // d'integration off_track_provider_test (spy sur le service).
-      await service.showOffTrackAlert(title: 'T', body: 'B');
-      await service.cancelOffTrackAlert();
-    });
+    test(
+      'showOffTrackAlert / cancelOffTrackAlert n echouent pas (pipeline)',
+      () async {
+        // Le plugin route show/cancel via MethodChannel natif (non observable ici
+        // sans mock du channel) ; on valide surtout que le pipeline du service ne
+        // leve pas. Le CABLAGE transitions -> notification est couvert par le test
+        // d'integration off_track_provider_test (spy sur le service).
+        await service.showOffTrackAlert(title: 'T', body: 'B');
+        await service.cancelOffTrackAlert();
+      },
+    );
 
     test('checkPermissions retourne true en environnement test', () async {
       expect(await service.checkPermissions(), true);
     });
 
-    test('scheduleWeatherAlert ignore les dates passees et retourne id correct', () async {
-      final pastDate = DateTime.now().subtract(const Duration(days: 1));
-      final id = await service.scheduleWeatherAlert(
-        dateTime: pastDate,
-        title: 'Orage prevu',
-        body: 'Evitez les cretes',
-        alertIndex: 3,
-      );
-      // Id = _weatherBaseId + alertIndex = 2003
-      expect(id, 2003);
-    });
+    test(
+      'scheduleWeatherAlert ignore les dates passees et retourne id correct',
+      () async {
+        final pastDate = DateTime.now().subtract(const Duration(days: 1));
+        final id = await service.scheduleWeatherAlert(
+          dateTime: pastDate,
+          title: 'Orage prevu',
+          body: 'Evitez les cretes',
+          alertIndex: 3,
+        );
+        // Id = _weatherBaseId + alertIndex = 2003
+        expect(id, 2003);
+      },
+    );
 
     test('cancelAll delegue au plugin', () async {
       await service.cancelAll();

@@ -43,63 +43,72 @@ void main() {
     // google_fonts (SW-SKIN-L1) : le chargement de police echoue en test
     // hors-ligne et remonte une exception benigne, drainee ici via
     // takeException (le TextStyle renvoye porte bien la bonne famille).
-    testWidgets('buildLightTheme et buildDarkTheme produisent la bonne brightness',
-        (tester) async {
-      final light = AppTheme.buildLightTheme(
+    testWidgets(
+      'buildLightTheme et buildDarkTheme produisent la bonne brightness',
+      (tester) async {
+        final light = AppTheme.buildLightTheme(
           primaryColor: primary,
           secondaryColor: secondary,
-          skin: AppSkin.sentierVivant);
-      final dark = AppTheme.buildDarkTheme(
+          skin: AppSkin.sentierVivant,
+        );
+        final dark = AppTheme.buildDarkTheme(
           primaryColor: primary,
           secondaryColor: secondary,
-          skin: AppSkin.sentierVivant);
+          skin: AppSkin.sentierVivant,
+        );
 
-      expect(light.brightness, Brightness.light);
-      expect(dark.brightness, Brightness.dark);
-      expect(light.useMaterial3, isTrue);
-      expect(dark.useMaterial3, isTrue);
-      // Couleurs injectees depuis TrailConfig dans les deux themes.
-      expect(light.colorScheme.primary, primary);
-      expect(dark.colorScheme.primaryContainer, primary);
+        expect(light.brightness, Brightness.light);
+        expect(dark.brightness, Brightness.dark);
+        expect(light.useMaterial3, isTrue);
+        expect(dark.useMaterial3, isTrue);
+        // Couleurs injectees depuis TrailConfig dans les deux themes.
+        expect(light.colorScheme.primary, primary);
+        expect(dark.colorScheme.primaryContainer, primary);
 
-      // Draine l'eventuelle exception de chargement google_fonts (offline).
-      await tester.pump(const Duration(milliseconds: 1));
-      final ex = tester.takeException();
-      if (ex != null) {
-        expect(ex.toString().toLowerCase(), contains('font'));
-      }
-    });
+        // Draine l'eventuelle exception de chargement google_fonts (offline).
+        await tester.pump(const Duration(milliseconds: 1));
+        final ex = tester.takeException();
+        if (ex != null) {
+          expect(ex.toString().toLowerCase(), contains('font'));
+        }
+      },
+    );
   });
 
   group('Bascule de theme — aucun ecran casse', () {
     Widget app({required ThemeData theme}) => ProviderScope(
-          overrides: [
-            trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail')
-                .overrideWith((ref) => Future.value([testStage])),
-            poisProvider('test-trail')
-                .overrideWith((ref) => Future.value(const [])),
-          ],
-          child: TranslationProvider(
-            child: MaterialApp(
-              theme: theme,
-              home: TrailDetailScreen(trailId: testTrailConfig.id),
-            ),
-          ),
-        );
+      overrides: [
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value([testStage])),
+        poisProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(const [])),
+      ],
+      child: TranslationProvider(
+        child: MaterialApp(
+          theme: theme,
+          home: TrailDetailScreen(trailId: testTrailConfig.id),
+        ),
+      ),
+    );
 
     for (final entry in {
       'clair': AppTheme.buildLightTheme(
-          primaryColor: primary,
-          secondaryColor: secondary,
-          skin: AppSkin.sentierVivant),
+        primaryColor: primary,
+        secondaryColor: secondary,
+        skin: AppSkin.sentierVivant,
+      ),
       'sombre': AppTheme.buildDarkTheme(
-          primaryColor: primary,
-          secondaryColor: secondary,
-          skin: AppSkin.sentierVivant),
+        primaryColor: primary,
+        secondaryColor: secondary,
+        skin: AppSkin.sentierVivant,
+      ),
     }.entries) {
-      testWidgets('TrailDetailScreen s\'affiche en theme ${entry.key}',
-          (tester) async {
+      testWidgets('TrailDetailScreen s\'affiche en theme ${entry.key}', (
+        tester,
+      ) async {
         await tester.pumpWidget(app(theme: entry.value));
         await tester.pumpAndSettle();
 
@@ -112,24 +121,28 @@ void main() {
       });
     }
 
-    testWidgets('TrailStageDetailScreen s\'affiche en theme clair (Hero badge)',
-        (tester) async {
+    testWidgets('TrailStageDetailScreen s\'affiche en theme clair (Hero badge)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail')
-                .overrideWith((ref) => Future.value([testStage])),
-            poisProvider('test-trail')
-                .overrideWith((ref) => Future.value(const [])),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value([testStage])),
+            poisProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(const [])),
           ],
           // AppHeader (Ph5/L6c) utilise GoRouter -> MaterialApp.router (theme clair
           // conserve) + GoRouter minimal (+ /my-treks).
           child: MaterialApp.router(
             theme: AppTheme.buildLightTheme(
-                primaryColor: primary,
-                secondaryColor: secondary,
-                skin: AppSkin.sentierVivant),
+              primaryColor: primary,
+              secondaryColor: secondary,
+              skin: AppSkin.sentierVivant,
+            ),
             routerConfig: GoRouter(
               initialLocation: '/stage',
               routes: [
@@ -141,7 +154,9 @@ void main() {
                   ),
                 ),
                 GoRoute(
-                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+                  path: '/my-treks',
+                  builder: (_, __) => const SizedBox(),
+                ),
               ],
             ),
           ),

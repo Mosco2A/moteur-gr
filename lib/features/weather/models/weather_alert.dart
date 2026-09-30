@@ -18,14 +18,7 @@ enum AlertType {
 /// i18n (`weather.alert.*`, 5 langues). Le modele reste une donnee pure,
 /// sans texte en dur ni BuildContext : la resolution du libelle se fait au
 /// niveau widget via [Translations]. Chaque valeur mappe une cle Slang.
-enum WeatherAlertKind {
-  storm,
-  wind,
-  rain,
-  snow,
-  uv,
-  fire,
-}
+enum WeatherAlertKind { storm, wind, rain, snow, uv, fire }
 
 /// Alerte météo générée à partir des prévisions.
 ///
@@ -78,52 +71,62 @@ class WeatherAlert {
     for (final day in forecast.days) {
       // Orage
       if (day.weatherCode >= 95) {
-        alerts.add(WeatherAlert(
-          severity: 'danger',
-          kind: WeatherAlertKind.storm,
-          date: day.date,
-          conditionLabel: day.weatherDescription,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: 'danger',
+            kind: WeatherAlertKind.storm,
+            date: day.date,
+            conditionLabel: day.weatherDescription,
+          ),
+        );
       }
 
       // Vent fort
       if (day.windSpeedKmh >= 60) {
-        alerts.add(WeatherAlert(
-          severity: day.windSpeedKmh >= 80 ? 'danger' : 'warning',
-          kind: WeatherAlertKind.wind,
-          date: day.date,
-          amount: day.windSpeedKmh,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: day.windSpeedKmh >= 80 ? 'danger' : 'warning',
+            kind: WeatherAlertKind.wind,
+            date: day.date,
+            amount: day.windSpeedKmh,
+          ),
+        );
       }
 
       // Pluie forte
       if (day.precipitationMm >= 20) {
-        alerts.add(WeatherAlert(
-          severity: day.precipitationMm >= 40 ? 'danger' : 'warning',
-          kind: WeatherAlertKind.rain,
-          date: day.date,
-          amount: day.precipitationMm,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: day.precipitationMm >= 40 ? 'danger' : 'warning',
+            kind: WeatherAlertKind.rain,
+            date: day.date,
+            amount: day.precipitationMm,
+          ),
+        );
       }
 
       // Neige
       if (day.weatherCode >= 71 && day.weatherCode <= 77) {
-        alerts.add(WeatherAlert(
-          severity: 'warning',
-          kind: WeatherAlertKind.snow,
-          date: day.date,
-          conditionLabel: day.weatherDescription,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: 'warning',
+            kind: WeatherAlertKind.snow,
+            date: day.date,
+            conditionLabel: day.weatherDescription,
+          ),
+        );
       }
 
       // UV extrême
       if (day.uvIndex >= 8) {
-        alerts.add(WeatherAlert(
-          severity: 'warning',
-          kind: WeatherAlertKind.uv,
-          date: day.date,
-          amount: day.uvIndex,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: 'warning',
+            kind: WeatherAlertKind.uv,
+            date: day.date,
+            amount: day.uvIndex,
+          ),
+        );
       }
     }
 
@@ -149,14 +152,16 @@ class WeatherAlert {
         temperatureMax: day.temperatureMax,
         region: region,
       )) {
-        alerts.add(WeatherAlert(
-          severity: 'danger',
-          kind: WeatherAlertKind.fire,
-          date: day.date,
-          amount: day.temperatureMax,
-          type: AlertType.fire,
-          fireTipId: fireConfig.fireTipId,
-        ));
+        alerts.add(
+          WeatherAlert(
+            severity: 'danger',
+            kind: WeatherAlertKind.fire,
+            date: day.date,
+            amount: day.temperatureMax,
+            type: AlertType.fire,
+            fireTipId: fireConfig.fireTipId,
+          ),
+        );
       }
     }
 

@@ -38,36 +38,35 @@ void main() {
   ];
 
   List<StageEffort> effortsDe(List<(double, int)> seed) => [
-        for (var i = 0; i < seed.length; i++)
-          StageEffort(
-            index: i,
-            name: 'E${i + 1}',
-            distanceKm: seed[i].$1,
-            elevationGainM: seed[i].$2,
-          ),
-      ];
+    for (var i = 0; i < seed.length; i++)
+      StageEffort(
+        index: i,
+        name: 'E${i + 1}',
+        distanceKm: seed[i].$1,
+        elevationGainM: seed[i].$2,
+      ),
+  ];
 
   List<double> energiesDe(List<(double, int)> seed) => [
-        for (final s in seed)
-          FeasibilityScale.v2.energyOf(distanceKm: s.$1, elevationGainM: s.$2),
-      ];
+    for (final s in seed)
+      FeasibilityScale.v2.energyOf(distanceKm: s.$1, elevationGainM: s.$2),
+  ];
 
   StageModel stageModel(int n, double km, int gain) => StageModel(
-        trailId: 'test-trail',
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: km,
-        elevationGainM: gain,
-        elevationLossM: gain,
-        startLat: 42.0,
-        startLng: 9.0,
-        endLat: 42.1,
-        endLng: 9.1,
-      );
+    trailId: 'test-trail',
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: km,
+    elevationGainM: gain,
+    elevationLossM: gain,
+    startLat: 42.0,
+    startLng: 9.0,
+    endLat: 42.1,
+    endLng: 9.1,
+  );
 
   group('LE MIROIR PLANIFICATEUR / MOTEUR — la garde principale', () {
-    test(
-        'pour tout sentier et tout nombre de repos, les deux conventions '
+    test('pour tout sentier et tout nombre de repos, les deux conventions '
         'designent LE MEME JOUR', () {
       // Le planificateur raisonne en « repos AVANT l etape i », le moteur en
       // « repos APRES l etape i-1 ». Une inversion d un cran passerait
@@ -75,7 +74,8 @@ void main() {
       final ecarts = <String>[];
       for (var n = 2; n <= 12; n++) {
         final stages = [
-          for (var i = 1; i <= n; i++) stageModel(i, 10 + i.toDouble(), 300 + i),
+          for (var i = 1; i <= n; i++)
+            stageModel(i, 10 + i.toDouble(), 300 + i),
         ];
         for (var r = 0; r < n; r++) {
           final duMoteur = FeasibilityFormula.restAfterStageIndexFor(
@@ -118,38 +118,46 @@ void main() {
 
   group('LE CONSEIL DE REPOS — minimal, source, et jamais invente', () {
     test('sentier de production : 2 repos, apres les etapes 2 et 5', () {
-      final conseil =
-          FeasibilityFormula.recommendedRestAfterStageIndex(
-              energiesDe(seedProduction));
+      final conseil = FeasibilityFormula.recommendedRestAfterStageIndex(
+        energiesDe(seedProduction),
+      );
       expect(conseil, {1, 4});
     });
 
-    test('le conseil est le PLUS PETIT qui ramene la monotonie sous le seuil',
-        () {
-      // Propriete, pas anecdote : on verifie que le nombre conseille SUFFIT et
-      // que le nombre juste en dessous NE SUFFIT PAS. Un conseil qui ne serait
-      // pas minimal ferait poser des repos inutiles ; un conseil insuffisant
-      // laisserait le chiffre au-dessus de son seuil apres application.
-      final energies = energiesDe(seedProduction);
-      final conseil =
-          FeasibilityFormula.recommendedRestAfterStageIndex(energies);
-      expect(conseil, isNotEmpty);
+    test(
+      'le conseil est le PLUS PETIT qui ramene la monotonie sous le seuil',
+      () {
+        // Propriete, pas anecdote : on verifie que le nombre conseille SUFFIT et
+        // que le nombre juste en dessous NE SUFFIT PAS. Un conseil qui ne serait
+        // pas minimal ferait poser des repos inutiles ; un conseil insuffisant
+        // laisserait le chiffre au-dessus de son seuil apres application.
+        final energies = energiesDe(seedProduction);
+        final conseil = FeasibilityFormula.recommendedRestAfterStageIndex(
+          energies,
+        );
+        expect(conseil, isNotEmpty);
 
-      double? monotonieAvec(int repos) => FeasibilityFormula.worstMonotonyWindow(
-            FeasibilityFormula.dailyLoads(
-              stageEnergies: energies,
-              restAfterStageIndex: FeasibilityFormula.restAfterStageIndexFor(
-                stageCount: energies.length,
-                restDays: repos,
+        double? monotonieAvec(int repos) =>
+            FeasibilityFormula.worstMonotonyWindow(
+              FeasibilityFormula.dailyLoads(
+                stageEnergies: energies,
+                restAfterStageIndex: FeasibilityFormula.restAfterStageIndexFor(
+                  stageCount: energies.length,
+                  restDays: repos,
+                ),
               ),
-            ),
-          ).monotony;
+            ).monotony;
 
-      expect(monotonieAvec(conseil.length),
-          lessThanOrEqualTo(FeasibilityFormula.monotonyThreshold));
-      expect(monotonieAvec(conseil.length - 1),
-          greaterThan(FeasibilityFormula.monotonyThreshold));
-    });
+        expect(
+          monotonieAvec(conseil.length),
+          lessThanOrEqualTo(FeasibilityFormula.monotonyThreshold),
+        );
+        expect(
+          monotonieAvec(conseil.length - 1),
+          greaterThan(FeasibilityFormula.monotonyThreshold),
+        );
+      },
+    );
 
     test('appliquer le conseil fait passer le chiffre du repos sous 1', () {
       final efforts = effortsDe(seedProduction);
@@ -171,17 +179,19 @@ void main() {
       expect(avec.globalVerdict, sans.globalVerdict);
     });
 
-    test('aucun conseil quand le chiffre n existe pas (sentier d UNE etape)',
-        () {
-      final a = FeasibilityFormula.evaluate(
-        stages: effortsDe(const [(15.0, 850)]),
-        level: HikerLevel.beginner,
-      );
-      expect(a.circuit!.isRestApplicable, isFalse);
-      expect(a.recommendedRestDays, 0);
-      expect(a.isRestAdvised, isFalse);
-      expect(a.advice.map((c) => c.key), isNot(contains('restAdvised')));
-    });
+    test(
+      'aucun conseil quand le chiffre n existe pas (sentier d UNE etape)',
+      () {
+        final a = FeasibilityFormula.evaluate(
+          stages: effortsDe(const [(15.0, 850)]),
+          level: HikerLevel.beginner,
+        );
+        expect(a.circuit!.isRestApplicable, isFalse);
+        expect(a.recommendedRestDays, 0);
+        expect(a.isRestAdvised, isFalse);
+        expect(a.advice.map((c) => c.key), isNot(contains('restAdvised')));
+      },
+    );
 
     test('aucun conseil quand la monotonie est deja sous son seuil', () {
       // Des charges tres inegales creusent l ecart-type : le rythme est sain,
@@ -192,8 +202,10 @@ void main() {
         (30.0, 1000),
         (5.0, 100),
       ]);
-      expect(FeasibilityFormula.recommendedRestAfterStageIndex(energies),
-          isEmpty);
+      expect(
+        FeasibilityFormula.recommendedRestAfterStageIndex(energies),
+        isEmpty,
+      );
     });
 
     test('les chiffres de la spec #2-t sont ceux du conseil', () {
@@ -201,13 +213,18 @@ void main() {
       // pas, il en faut deux » (#2-t). Le conseil doit dire exactement cela sur
       // une semaine d etapes quasi identiques — sinon il aurait invente son
       // propre seuil au lieu de servir celui de la spec.
-      final conseil = FeasibilityFormula.recommendedRestAfterStageIndex(
-          const [30.0, 30.1, 29.9, 30.05, 29.95, 30.02]);
+      final conseil = FeasibilityFormula.recommendedRestAfterStageIndex(const [
+        30.0,
+        30.1,
+        29.9,
+        30.05,
+        29.95,
+        30.02,
+      ]);
       expect(conseil.length, 2);
     });
 
-    test(
-        'charges STRICTEMENT egales : rien n est calculable, donc rien n est '
+    test('charges STRICTEMENT egales : rien n est calculable, donc rien n est '
         'conseille — et c est le comportement voulu', () {
       // TROU CONNU ET DECLARE (#10-e). Avec des charges toutes identiques et
       // aucun repos, l ecart-type vaut zero : la monotonie DIVERGE, elle n est
@@ -215,13 +232,11 @@ void main() {
       // que de la remplacer par un chiffre, et le conseil suit la meme regle.
       // C est un cas de laboratoire — deux etapes reelles n ont jamais
       // exactement la meme energie — mais il doit etre DIT, pas decouvert.
-      expect(
-        FeasibilityFormula.monotonyOf(List<double>.filled(6, 30)),
-        isNull,
-      );
+      expect(FeasibilityFormula.monotonyOf(List<double>.filled(6, 30)), isNull);
       expect(
         FeasibilityFormula.recommendedRestAfterStageIndex(
-            List<double>.filled(6, 30)),
+          List<double>.filled(6, 30),
+        ),
         isEmpty,
       );
     });
@@ -256,16 +271,16 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(config),
-          stagesProvider('test-trail')
-              .overrideWith((ref) => Future.value(stages)),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(stages)),
         ],
       );
       addTearDown(container.dispose);
       return container;
     }
 
-    test(
-        'bout en bout : le programme par defaut porte les repos conseilles, '
+    test('bout en bout : le programme par defaut porte les repos conseilles, '
         'aux memes places que le moteur', () async {
       final c = conteneur();
       // Les etapes arrivent d abord (avant, on ne conseille rien : on ne
@@ -286,7 +301,8 @@ void main() {
       expect(
         c.read(restDaysAfterStageProvider),
         FeasibilityFormula.recommendedRestAfterStageIndex(
-            energiesDe(seedProduction)),
+          energiesDe(seedProduction),
+        ),
       );
     });
 

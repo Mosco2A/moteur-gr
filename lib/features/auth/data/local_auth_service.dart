@@ -57,7 +57,8 @@ class LocalAuthService implements AuthService {
 
     if (uid != null) {
       final name = prefs.getString(_keyName);
-      final methodStr = prefs.getString(_keyMethod) ?? AuthMethodValues.anonymous;
+      final methodStr =
+          prefs.getString(_keyMethod) ?? AuthMethodValues.anonymous;
       final avatarIdx = prefs.getInt(_keyAvatarIndex) ?? 0;
 
       _currentUser = AuthUser(

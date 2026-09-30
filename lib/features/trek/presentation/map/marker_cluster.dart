@@ -189,7 +189,7 @@ class ClusteredMarkerLayer<T> extends StatelessWidget {
 
   /// Constructeur d'un marqueur pour un point isole.
   final Marker Function(BuildContext context, ClusterPoint<T> point)
-      singleMarkerBuilder;
+  singleMarkerBuilder;
 
   /// Seuil d'activation du clustering.
   final int threshold;

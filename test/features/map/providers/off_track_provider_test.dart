@@ -41,14 +41,14 @@ class _SpyNotificationService extends NotificationService {
 /// Trace de test rectiligne le long d'un meridien (lng constant), pas ~78 m.
 /// S'ecarter en longitude = distance perpendiculaire quasi pure.
 List<TrackPoint> _straightTrack() => List.generate(
-      60,
-      (i) => TrackPoint(
-        lat: 42.0 + i * 0.0007,
-        lng: 9.0,
-        altitude: 500,
-        distanceFromStart: i * 78.0,
-      ),
-    );
+  60,
+  (i) => TrackPoint(
+    lat: 42.0 + i * 0.0007,
+    lng: 9.0,
+    altitude: 500,
+    distanceFromStart: i * 78.0,
+  ),
+);
 
 /// Position a [meters] metres a l'EST du trace (approx : 1 deg lng ~ 82.6 km a
 /// 42 deg de latitude -> on decale la longitude pour obtenir l'ecart voulu).
@@ -83,8 +83,9 @@ void main() {
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
         // Trace pleine resolution prete (synchrone) pour l'id du sentier test.
-        gpxTrackProvider(testTrailConfig.id)
-            .overrideWith((ref) async => _straightTrack()),
+        gpxTrackProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) async => _straightTrack()),
         // Flux GPS controle par le test.
         offTrackGpsStreamProvider.overrideWithValue(gps.stream),
         notificationServiceProvider.overrideWithValue(spy),
@@ -104,17 +105,16 @@ void main() {
   }
 
   test('reglage offTrackAlerts ON par defaut', () {
-    expect(
-      container.read(notificationSettingsProvider).offTrackAlerts,
-      isTrue,
-    );
+    expect(container.read(notificationSettingsProvider).offTrackAlerts, isTrue);
   });
 
   test('SORTIE puis RETOUR : 1 notification affichee, 1 levee', () async {
     // Le retour haptique n'existe pas en test : on avale l'appel plateforme.
-    TestWidgetsFlutterBinding.ensureInitialized()
-        .defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, (call) async => null);
+    TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          SystemChannels.platform,
+          (call) async => null,
+        );
 
     await primeTrack();
 
@@ -143,35 +143,45 @@ void main() {
     expect(spy.cancels, 1);
   });
 
-  test('alerte desactivee : aucune surveillance, aucune notification', () async {
-    container.read(notificationSettingsProvider.notifier)
-        .toggleOffTrackAlerts(false);
-    await primeTrack();
+  test(
+    'alerte desactivee : aucune surveillance, aucune notification',
+    () async {
+      container
+          .read(notificationSettingsProvider.notifier)
+          .toggleOffTrackAlerts(false);
+      await primeTrack();
 
-    gps.add(_posOffsetEast(200)); // tres loin
-    await Future<void>.delayed(Duration.zero);
+      gps.add(_posOffsetEast(200)); // tres loin
+      await Future<void>.delayed(Duration.zero);
 
-    expect(container.read(offTrackProvider).isOffTrack, isFalse);
-    expect(spy.shows, 0);
-  });
+      expect(container.read(offTrackProvider).isOffTrack, isFalse);
+      expect(spy.shows, 0);
+    },
+  );
 
-  test('libelles de notification injectables (i18n) via le provider messages',
-      () async {
-    container.read(offTrackMessagesProvider.notifier).setMessages(
-          OffTrackMessages(
-            notifTitle: 'TITRE-TEST',
-            notifBody: (m) => 'CORPS-TEST $m',
-          ),
-        );
-    TestWidgetsFlutterBinding.ensureInitialized()
-        .defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, (call) async => null);
+  test(
+    'libelles de notification injectables (i18n) via le provider messages',
+    () async {
+      container
+          .read(offTrackMessagesProvider.notifier)
+          .setMessages(
+            OffTrackMessages(
+              notifTitle: 'TITRE-TEST',
+              notifBody: (m) => 'CORPS-TEST $m',
+            ),
+          );
+      TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            SystemChannels.platform,
+            (call) async => null,
+          );
 
-    await primeTrack();
-    gps.add(_posOffsetEast(120));
-    await Future<void>.delayed(Duration.zero);
+      await primeTrack();
+      gps.add(_posOffsetEast(120));
+      await Future<void>.delayed(Duration.zero);
 
-    expect(spy.lastTitle, 'TITRE-TEST');
-    expect(spy.lastBody, startsWith('CORPS-TEST'));
-  });
+      expect(spy.lastTitle, 'TITRE-TEST');
+      expect(spy.lastBody, startsWith('CORPS-TEST'));
+    },
+  );
 }

@@ -61,7 +61,8 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
 
     final interval = _prefs?.getInt(SyncSettingsKeys.batchInterval) ?? 60;
     final onRefuge = _prefs?.getBool(SyncSettingsKeys.syncOnRefuge) ?? true;
-    final onReconnect = _prefs?.getBool(SyncSettingsKeys.syncOnReconnect) ?? true;
+    final onReconnect =
+        _prefs?.getBool(SyncSettingsKeys.syncOnReconnect) ?? true;
     final lastSync = _prefs?.getString(SyncSettingsKeys.lastSyncTimestamp);
 
     state = SyncConfig(
@@ -98,8 +99,9 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
 }
 
 /// Provider de la configuration sync cloud.
-final syncConfigProvider =
-    NotifierProvider<SyncConfigNotifier, SyncConfig>(SyncConfigNotifier.new);
+final syncConfigProvider = NotifierProvider<SyncConfigNotifier, SyncConfig>(
+  SyncConfigNotifier.new,
+);
 
 /// Notifier pour le statut de synchronisation.
 class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
@@ -127,8 +129,11 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
 
     state = SyncStatusInfo(
       lastSyncTimestamp: timestamp,
-      lastStatus: CloudSyncStatusValues.values[
-          statusIndex.clamp(0, CloudSyncStatusValues.values.length - 1)],
+      lastStatus:
+          CloudSyncStatusValues.values[statusIndex.clamp(
+            0,
+            CloudSyncStatusValues.values.length - 1,
+          )],
       isEnabled: enabled,
     );
   }
@@ -139,7 +144,10 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
       lastStatus: status,
       lastSyncTimestamp: timestamp ?? state.lastSyncTimestamp,
     );
-    _prefs?.setInt(SyncSettingsKeys.lastSyncStatus, CloudSyncStatusValues.values.indexOf(status));
+    _prefs?.setInt(
+      SyncSettingsKeys.lastSyncStatus,
+      CloudSyncStatusValues.values.indexOf(status),
+    );
     if (timestamp != null) {
       _prefs?.setString(SyncSettingsKeys.lastSyncTimestamp, timestamp);
     }
@@ -153,9 +161,9 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
 }
 
 /// Provider du statut de synchronisation.
-final syncStatusProvider =
-    NotifierProvider<SyncStatusNotifier, SyncStatusInfo>(
-        SyncStatusNotifier.new);
+final syncStatusProvider = NotifierProvider<SyncStatusNotifier, SyncStatusInfo>(
+  SyncStatusNotifier.new,
+);
 
 /// Provider pour activer/desactiver la sync cloud.
 final toggleSyncProvider = Provider<void Function(bool)>((ref) {

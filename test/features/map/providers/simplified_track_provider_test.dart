@@ -60,7 +60,8 @@ void main() {
         expect(
           simplified,
           isNotEmpty,
-          reason: 'Le tracé simplifié (epsilon=$epsilon) ne doit jamais '
+          reason:
+              'Le tracé simplifié (epsilon=$epsilon) ne doit jamais '
               'être vide',
         );
       }

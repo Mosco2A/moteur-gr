@@ -132,9 +132,7 @@ class TrailMarkersLayer extends StatelessWidget {
     );
 
     return MarkerLayer(
-      markers: [
-        for (final group in groups) _marker(context, group),
-      ],
+      markers: [for (final group in groups) _marker(context, group)],
     );
   }
 
@@ -144,39 +142,39 @@ class TrailMarkersLayer extends StatelessWidget {
       final subject = group.anchor.data;
       return switch (subject) {
         StagePinSubject(:final stage, :final color) => Marker(
-            point: group.position,
-            width: stageMarkerSize,
-            height: stageMarkerSize,
-            child: Semantics(
-              button: onStageTap != null,
-              label: t.a11y.stageMarker(number: stage.orderIndex),
-              child: GestureDetector(
-                onTap: onStageTap == null ? null : () => onStageTap!(stage),
-                child: ExcludeSemantics(
-                  child: StageNumberCircle(
-                    number: stage.orderIndex,
-                    color: color,
-                    size: stageMarkerSize,
-                  ),
+          point: group.position,
+          width: stageMarkerSize,
+          height: stageMarkerSize,
+          child: Semantics(
+            button: onStageTap != null,
+            label: t.a11y.stageMarker(number: stage.orderIndex),
+            child: GestureDetector(
+              onTap: onStageTap == null ? null : () => onStageTap!(stage),
+              child: ExcludeSemantics(
+                child: StageNumberCircle(
+                  number: stage.orderIndex,
+                  color: color,
+                  size: stageMarkerSize,
                 ),
               ),
             ),
           ),
+        ),
         PoiPinSubject(:final poi) => Marker(
-            point: group.position,
-            width: poiMarkerSize,
-            height: poiMarkerSize,
-            child: Semantics(
-              button: true,
-              label: t.a11y.poiMarker(name: poi.name),
-              child: GestureDetector(
-                onTap: onPoiTap == null ? null : () => onPoiTap!(poi),
-                child: ExcludeSemantics(
-                  child: PoiMarker(type: poi.type, size: poiMarkerSize),
-                ),
+          point: group.position,
+          width: poiMarkerSize,
+          height: poiMarkerSize,
+          child: Semantics(
+            button: true,
+            label: t.a11y.poiMarker(name: poi.name),
+            child: GestureDetector(
+              onTap: onPoiTap == null ? null : () => onPoiTap!(poi),
+              child: ExcludeSemantics(
+                child: PoiMarker(type: poi.type, size: poiMarkerSize),
               ),
             ),
           ),
+        ),
       };
     }
 
@@ -206,8 +204,9 @@ class TrailMarkersLayer extends StatelessWidget {
 
   static String _memberLabel(MapMarkerCandidate<TrailPinSubject> member) {
     return switch (member.data) {
-      StagePinSubject(:final stage) =>
-        t.a11y.stageMarker(number: stage.orderIndex),
+      StagePinSubject(:final stage) => t.a11y.stageMarker(
+        number: stage.orderIndex,
+      ),
       PoiPinSubject(:final poi) => t.a11y.poiMarker(name: poi.name),
     };
   }
@@ -384,12 +383,11 @@ List<PoiModel> _poisOf(MapMarkerGroup<TrailPinSubject> group) {
     return 2;
   }
 
-  final indexed = [
-    for (var i = 0; i < pois.length; i++) (i, pois[i]),
-  ]..sort((a, b) {
-    final byRank = rank(a.$2).compareTo(rank(b.$2));
-    return byRank != 0 ? byRank : a.$1.compareTo(b.$1);
-  });
+  final indexed = [for (var i = 0; i < pois.length; i++) (i, pois[i])]
+    ..sort((a, b) {
+      final byRank = rank(a.$2).compareTo(rank(b.$2));
+      return byRank != 0 ? byRank : a.$1.compareTo(b.$1);
+    });
   return [for (final entry in indexed) entry.$2];
 }
 
@@ -500,14 +498,8 @@ class _StageBlock extends StatelessWidget {
               label: t.stage.distance,
               value: '${stage.distance.toStringAsFixed(1)} km',
             ),
-            _Figure(
-              label: t.stage.dPlus,
-              value: '${stage.elevationGain} m',
-            ),
-            _Figure(
-              label: t.stage.dMinus,
-              value: '${stage.elevationLoss} m',
-            ),
+            _Figure(label: t.stage.dPlus, value: '${stage.elevationGain} m'),
+            _Figure(label: t.stage.dMinus, value: '${stage.elevationLoss} m'),
           ],
         ),
       ],

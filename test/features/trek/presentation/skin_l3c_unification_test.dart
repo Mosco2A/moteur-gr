@@ -77,7 +77,12 @@ void main() {
 
       // Iso-rendu du contenu (numero + chevron toujours la).
       expect(find.text('3'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite,
+        ),
+        findsOneWidget,
+      );
 
       // Tap fonctionnel (onTap porte par l'InkWell interne d'AppCard).
       await tester.tap(find.byType(StageCard));
@@ -166,8 +171,18 @@ void main() {
         expect(foregroundOf(tester, pause), Colors.white);
 
         // Icones conservees.
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.pause), findsOneWidget);
-        expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.stop), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.pause,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.stop,
+          ),
+          findsOneWidget,
+        );
       },
     );
 

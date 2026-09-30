@@ -54,34 +54,34 @@ final deeplinkLauncherProvider = Provider<DeeplinkLauncher>(
 /// Paramétré par `trailId` pour rester générique (zéro marque en dur).
 final hebergementsPeripheriquesProvider =
     Provider.family<List<HebergementPeripherique>, String>((ref, trailId) {
-  // Jeu de données générique de démonstration (pas de marque réelle).
-  return const [
-    HebergementPeripherique(
-      id: 'hp-1',
-      nom: 'Gîte du Vallon',
-      type: HebergementType.gite,
-      latitude: 42.12,
-      longitude: 9.05,
-      distanceAllerRetourKm: 2.4,
-      deeplinkUrl: 'https://example.org/gite-du-vallon',
-    ),
-    HebergementPeripherique(
-      id: 'hp-2',
-      nom: 'Refuge des Crêtes',
-      type: HebergementType.refuge,
-      latitude: 42.15,
-      longitude: 9.08,
-      distanceAllerRetourKm: 5.0,
-      deeplinkUrl: 'https://example.org/refuge-des-cretes',
-    ),
-    HebergementPeripherique(
-      id: 'hp-3',
-      nom: 'Camping de la Rivière',
-      type: HebergementType.camping,
-      latitude: 42.10,
-      longitude: 9.02,
-      distanceAllerRetourKm: 1.2,
-      deeplinkUrl: 'https://example.org/camping-riviere',
-    ),
-  ];
-});
+      // Jeu de données générique de démonstration (pas de marque réelle).
+      return const [
+        HebergementPeripherique(
+          id: 'hp-1',
+          nom: 'Gîte du Vallon',
+          type: HebergementType.gite,
+          latitude: 42.12,
+          longitude: 9.05,
+          distanceAllerRetourKm: 2.4,
+          deeplinkUrl: 'https://example.org/gite-du-vallon',
+        ),
+        HebergementPeripherique(
+          id: 'hp-2',
+          nom: 'Refuge des Crêtes',
+          type: HebergementType.refuge,
+          latitude: 42.15,
+          longitude: 9.08,
+          distanceAllerRetourKm: 5.0,
+          deeplinkUrl: 'https://example.org/refuge-des-cretes',
+        ),
+        HebergementPeripherique(
+          id: 'hp-3',
+          nom: 'Camping de la Rivière',
+          type: HebergementType.camping,
+          latitude: 42.10,
+          longitude: 9.02,
+          distanceAllerRetourKm: 1.2,
+          deeplinkUrl: 'https://example.org/camping-riviere',
+        ),
+      ];
+    });

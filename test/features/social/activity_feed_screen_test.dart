@@ -59,8 +59,9 @@ void main() {
     );
   }
 
-  testWidgets('affiche les activites visibles du cache (pas les removed)',
-      (tester) async {
+  testWidgets('affiche les activites visibles du cache (pas les removed)', (
+    tester,
+  ) async {
     await seedActivities();
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
@@ -72,8 +73,9 @@ void main() {
     expect(find.text('rndr-aaaabbbb'), findsNothing);
   });
 
-  testWidgets('bouton kudos present et cliquable (cree un kudo local)',
-      (tester) async {
+  testWidgets('bouton kudos present et cliquable (cree un kudo local)', (
+    tester,
+  ) async {
     await seedActivities();
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
@@ -97,30 +99,37 @@ void main() {
     expect(find.text(t.social.report), findsWidgets);
   });
 
-  testWidgets('le formulaire de signalement renvoie un motif (notice-and-action)',
-      (tester) async {
-    await seedActivities();
-    String? reportedActivity;
-    String? reportedReason;
-    await tester.pumpWidget(wrap(onReport: (a, r) {
-      reportedActivity = a;
-      reportedReason = r;
-    }));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'le formulaire de signalement renvoie un motif (notice-and-action)',
+    (tester) async {
+      await seedActivities();
+      String? reportedActivity;
+      String? reportedReason;
+      await tester.pumpWidget(
+        wrap(
+          onReport: (a, r) {
+            reportedActivity = a;
+            reportedReason = r;
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const ValueKey('report-act-1')));
-    await tester.pumpAndSettle();
-    // Le formulaire s ouvre avec le bouton d envoi.
-    expect(find.text(t.social.reportSend), findsOneWidget);
-    await tester.tap(find.text(t.social.reportSend));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('report-act-1')));
+      await tester.pumpAndSettle();
+      // Le formulaire s ouvre avec le bouton d envoi.
+      expect(find.text(t.social.reportSend), findsOneWidget);
+      await tester.tap(find.text(t.social.reportSend));
+      await tester.pumpAndSettle();
 
-    expect(reportedActivity, 'act-1');
-    expect(reportedReason, isNotNull);
-  });
+      expect(reportedActivity, 'act-1');
+      expect(reportedReason, isNotNull);
+    },
+  );
 
-  testWidgets('AUCUN texte visible ne contient le mot "anonyme" (R1)',
-      (tester) async {
+  testWidgets('AUCUN texte visible ne contient le mot "anonyme" (R1)', (
+    tester,
+  ) async {
     await seedActivities();
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();

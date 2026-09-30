@@ -18,8 +18,9 @@ void main() {
 
   group('training_plans.json (contrat de donnees)', () {
     test('le bloc default a 3 phases, une duree et un objectif', () async {
-      final raw =
-          await rootBundle.loadString('assets/data/training_plans.json');
+      final raw = await rootBundle.loadString(
+        'assets/data/training_plans.json',
+      );
       final data = json.decode(raw) as Map<String, dynamic>;
 
       final def = data['default'] as Map<String, dynamic>;
@@ -29,8 +30,10 @@ void main() {
       expect(plan.durationWeeks, 8);
       // 3 phases progressives (Fondation / Denivele / Endurance).
       expect(plan.phases.length, 3);
-      expect(plan.phases.map((p) => p.id),
-          containsAll(<String>['foundation', 'elevation', 'endurance']));
+      expect(
+        plan.phases.map((p) => p.id),
+        containsAll(<String>['foundation', 'elevation', 'endurance']),
+      );
       // Objectif chiffre present.
       expect(plan.objective, isNotNull);
       // Au moins une seance par phase (cochable).
@@ -39,28 +42,38 @@ void main() {
       }
     });
 
-    test('chaque seance porte un id STABLE unique (cle de persistance)',
-        () async {
-      final raw =
-          await rootBundle.loadString('assets/data/training_plans.json');
-      final data = json.decode(raw) as Map<String, dynamic>;
-      final plan =
-          TrainingPlan.fromJson(data['default'] as Map<String, dynamic>);
+    test(
+      'chaque seance porte un id STABLE unique (cle de persistance)',
+      () async {
+        final raw = await rootBundle.loadString(
+          'assets/data/training_plans.json',
+        );
+        final data = json.decode(raw) as Map<String, dynamic>;
+        final plan = TrainingPlan.fromJson(
+          data['default'] as Map<String, dynamic>,
+        );
 
-      final ids = [
-        for (final ph in plan.phases)
-          for (final s in ph.sessions) s.id,
-      ];
-      expect(ids.toSet().length, ids.length, reason: 'ids doivent etre uniques');
-      expect(ids.every((id) => id.isNotEmpty), isTrue);
-    });
+        final ids = [
+          for (final ph in plan.phases)
+            for (final s in ph.sessions) s.id,
+        ];
+        expect(
+          ids.toSet().length,
+          ids.length,
+          reason: 'ids doivent etre uniques',
+        );
+        expect(ids.every((id) => id.isNotEmpty), isTrue);
+      },
+    );
 
     test('les 5 langues sont renseignees pour les titres de phase', () async {
-      final raw =
-          await rootBundle.loadString('assets/data/training_plans.json');
+      final raw = await rootBundle.loadString(
+        'assets/data/training_plans.json',
+      );
       final data = json.decode(raw) as Map<String, dynamic>;
-      final plan =
-          TrainingPlan.fromJson(data['default'] as Map<String, dynamic>);
+      final plan = TrainingPlan.fromJson(
+        data['default'] as Map<String, dynamic>,
+      );
 
       for (final phase in plan.phases) {
         expect(phase.titleFr, isNotEmpty);
@@ -76,17 +89,25 @@ void main() {
     test('sentier connu -> plan specifique', () async {
       final plan = await TrainingPlanLoader.loadForTrail('mare-a-mare-centre');
       expect(plan.trailId, 'mare-a-mare-centre');
-      expect(await TrainingPlanLoader.hasSpecificPlan('mare-a-mare-centre'),
-          isTrue);
+      expect(
+        await TrainingPlanLoader.hasSpecificPlan('mare-a-mare-centre'),
+        isTrue,
+      );
     });
 
-    test('sentier inconnu -> repli sur le plan default (jamais casse)',
-        () async {
-      final plan = await TrainingPlanLoader.loadForTrail('sentier-inexistant');
-      expect(plan.trailId, 'default');
-      expect(plan.phases, isNotEmpty);
-      expect(await TrainingPlanLoader.hasSpecificPlan('sentier-inexistant'),
-          isFalse);
-    });
+    test(
+      'sentier inconnu -> repli sur le plan default (jamais casse)',
+      () async {
+        final plan = await TrainingPlanLoader.loadForTrail(
+          'sentier-inexistant',
+        );
+        expect(plan.trailId, 'default');
+        expect(plan.phases, isNotEmpty);
+        expect(
+          await TrainingPlanLoader.hasSpecificPlan('sentier-inexistant'),
+          isFalse,
+        );
+      },
+    );
   });
 }

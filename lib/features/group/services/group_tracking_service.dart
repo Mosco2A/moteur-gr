@@ -15,8 +15,10 @@ const _codeLength = 6;
 /// Service de localisation partagee en groupe.
 /// Design #81460 : 2 mateurs gratuits, mode horaire + mode refuge.
 class GroupTrackingService {
-  GroupTrackingService({required this.firebaseService, FirebaseFirestore? firestore})
-      : _firestore = firestore;
+  GroupTrackingService({
+    required this.firebaseService,
+    FirebaseFirestore? firestore,
+  }) : _firestore = firestore;
 
   final FirebaseService firebaseService;
   FirebaseFirestore? _firestore;
@@ -33,17 +35,35 @@ class GroupTrackingService {
     _currentUid = uid;
     try {
       await firestore.collection('groups').doc(code).set({
-        'groupCode': code, 'trailId': trailId, 'createdBy': uid,
-        'maxFreeWatchers': 2, 'createdAt': FieldValue.serverTimestamp(),
-        'members': [{'uid': uid, 'displayName': null, 'lastLat': 0.0, 'lastLng': 0.0,
-            'lastUpdate': DateTime.now().toIso8601String(), 'currentStageId': null}],
+        'groupCode': code,
+        'trailId': trailId,
+        'createdBy': uid,
+        'maxFreeWatchers': 2,
+        'createdAt': FieldValue.serverTimestamp(),
+        'members': [
+          {
+            'uid': uid,
+            'displayName': null,
+            'lastLat': 0.0,
+            'lastLng': 0.0,
+            'lastUpdate': DateTime.now().toIso8601String(),
+            'currentStageId': null,
+          },
+        ],
       });
       _activeGroupCode = code;
       return code;
-    } catch (e) { _log.e('[GroupTracking] Erreur create: $e'); return null; }
+    } catch (e) {
+      _log.e('[GroupTracking] Erreur create: $e');
+      return null;
+    }
   }
 
-  Future<bool> joinGroup(String groupCode, {required String uid, String? displayName}) async {
+  Future<bool> joinGroup(
+    String groupCode, {
+    required String uid,
+    String? displayName,
+  }) async {
     if (!firebaseService.isAvailable) return false;
     _currentUid = uid;
     try {
@@ -51,13 +71,23 @@ class GroupTrackingService {
       final doc = await docRef.get();
       if (!doc.exists) return false;
       await docRef.update({
-        'members': FieldValue.arrayUnion([{'uid': uid, 'displayName': displayName,
-            'lastLat': 0.0, 'lastLng': 0.0,
-            'lastUpdate': DateTime.now().toIso8601String(), 'currentStageId': null}]),
+        'members': FieldValue.arrayUnion([
+          {
+            'uid': uid,
+            'displayName': displayName,
+            'lastLat': 0.0,
+            'lastLng': 0.0,
+            'lastUpdate': DateTime.now().toIso8601String(),
+            'currentStageId': null,
+          },
+        ]),
       });
       _activeGroupCode = groupCode;
       return true;
-    } catch (e) { _log.e('[GroupTracking] Erreur join: $e'); return false; }
+    } catch (e) {
+      _log.e('[GroupTracking] Erreur join: $e');
+      return false;
+    }
   }
 
   Future<void> leaveGroup() async {
@@ -68,11 +98,17 @@ class GroupTrackingService {
       if (doc.exists) {
         final data = doc.data()!;
         final members = (data['members'] as List<dynamic>?) ?? [];
-        final updated = members.where((m) => (m as Map<String, dynamic>)['uid'] != _currentUid).toList();
+        final updated = members
+            .where((m) => (m as Map<String, dynamic>)['uid'] != _currentUid)
+            .toList();
         await docRef.update({'members': updated});
       }
-      _hourlyTimer?.cancel(); _hourlyBuffer.clear(); _activeGroupCode = null;
-    } catch (e) { _log.e('[GroupTracking] Erreur leave: $e'); }
+      _hourlyTimer?.cancel();
+      _hourlyBuffer.clear();
+      _activeGroupCode = null;
+    } catch (e) {
+      _log.e('[GroupTracking] Erreur leave: $e');
+    }
   }
 
   Future<void> sharePosition(double lat, double lng, {String? stageId}) async {
@@ -83,16 +119,23 @@ class GroupTrackingService {
       return;
     }
     _hourlyBuffer.add(_PendingPosition(lat: lat, lng: lng, stageId: stageId));
-    _hourlyTimer ??= Timer.periodic(const Duration(hours: 1), (_) => _flushHourlyBuffer());
+    _hourlyTimer ??= Timer.periodic(
+      const Duration(hours: 1),
+      (_) => _flushHourlyBuffer(),
+    );
   }
 
   Stream<List<GroupMember>> membersStream(String groupCode) {
     if (!firebaseService.isAvailable) return const Stream.empty();
-    return firestore.collection('groups').doc(groupCode).snapshots().map((snapshot) {
+    return firestore.collection('groups').doc(groupCode).snapshots().map((
+      snapshot,
+    ) {
       if (!snapshot.exists) return <GroupMember>[];
       final data = snapshot.data()!;
       final members = (data['members'] as List<dynamic>?) ?? [];
-      return members.map((m) => GroupMember.fromJson(m as Map<String, dynamic>)).toList();
+      return members
+          .map((m) => GroupMember.fromJson(m as Map<String, dynamic>))
+          .toList();
     });
   }
 
@@ -103,7 +146,8 @@ class GroupTrackingService {
 
   Future<void> _flushHourlyBuffer() async {
     if (_hourlyBuffer.isEmpty || _activeGroupCode == null) return;
-    final last = _hourlyBuffer.last; _hourlyBuffer.clear();
+    final last = _hourlyBuffer.last;
+    _hourlyBuffer.clear();
     await _pushPosition(last.lat, last.lng, stageId: last.stageId);
   }
 
@@ -124,27 +168,41 @@ class GroupTrackingService {
       final updated = members.map((m) {
         final member = m as Map<String, dynamic>;
         if (member['uid'] == _currentUid) {
-          return {...member, 'lastLat': lat, 'lastLng': lng,
+          return {
+            ...member,
+            'lastLat': lat,
+            'lastLng': lng,
             'lastUpdate': DateTime.now().toIso8601String(),
-            'currentStageId': stageId ?? member['currentStageId']};
+            'currentStageId': stageId ?? member['currentStageId'],
+          };
         }
         return member;
       }).toList();
       await docRef.update({'members': updated});
-    } catch (e) { _log.e('[GroupTracking] Erreur push: $e'); }
+    } catch (e) {
+      _log.e('[GroupTracking] Erreur push: $e');
+    }
   }
 
   String _generateCode() {
     final random = Random.secure();
-    return List.generate(_codeLength, (_) => _codeChars[random.nextInt(_codeChars.length)]).join();
+    return List.generate(
+      _codeLength,
+      (_) => _codeChars[random.nextInt(_codeChars.length)],
+    ).join();
   }
 
-  void dispose() { _hourlyTimer?.cancel(); _hourlyBuffer.clear(); }
+  void dispose() {
+    _hourlyTimer?.cancel();
+    _hourlyBuffer.clear();
+  }
 }
 
 class _PendingPosition {
   const _PendingPosition({required this.lat, required this.lng, this.stageId});
-  final double lat; final double lng; final String? stageId;
+  final double lat;
+  final double lng;
+  final String? stageId;
 }
 
 final groupTrackingServiceProvider = Provider<GroupTrackingService>((ref) {

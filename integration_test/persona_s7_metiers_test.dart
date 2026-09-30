@@ -67,8 +67,12 @@ void main() {
     logStep(P, 'boot', 'Lancement de app.main()');
     installerVeilleEcranSysteme(P);
     app.main();
-    await settleAndShoot(tester, P, '01_boot',
-        timeout: const Duration(seconds: 12));
+    await settleAndShoot(
+      tester,
+      P,
+      '01_boot',
+      timeout: const Duration(seconds: 12),
+    );
     await completeOnboardingIfPresent(tester, P);
 
     // OUVRIR LE SENTIER AVANT TOUT (lecon de la tache 543) : depuis le
@@ -77,7 +81,12 @@ void main() {
     await settleAndShoot(tester, P, '02_faisabilite');
 
     final c = _container(tester);
-    exige(P, 'container', c != null, 'les providers de production sont lisibles');
+    exige(
+      P,
+      'container',
+      c != null,
+      'les providers de production sont lisibles',
+    );
     if (c == null) {
       verdictPersona(P, minimumExigences: 1);
       return;
@@ -99,30 +108,44 @@ void main() {
       verdictPersona(P, minimumExigences: 2);
       return;
     }
-    exige(P, 'altitude', base.conditions.maxAltitudeM != null,
-        'la trace du sentier de production PORTE une altitude '
-        '(${base.conditions.maxAltitudeM} m)');
     exige(
-        P,
-        'altitude',
-        base.conditions.altitudeNeutralReason == NeutralReason.belowThreshold,
-        'altitude neutre parce qu elle est SOUS LE SEUIL, et non faute de '
-        'donnee — les deux ne se disent pas pareil (#8-b)');
-    exige(P, 'altitude', base.conditions.altitudeFactor == 1.0,
-        'k_altitude vaut 1,00 sous 1 500 m');
+      P,
+      'altitude',
+      base.conditions.maxAltitudeM != null,
+      'la trace du sentier de production PORTE une altitude '
+          '(${base.conditions.maxAltitudeM} m)',
+    );
+    exige(
+      P,
+      'altitude',
+      base.conditions.altitudeNeutralReason == NeutralReason.belowThreshold,
+      'altitude neutre parce qu elle est SOUS LE SEUIL, et non faute de '
+          'donnee — les deux ne se disent pas pareil (#8-b)',
+    );
+    exige(
+      P,
+      'altitude',
+      base.conditions.altitudeFactor == 1.0,
+      'k_altitude vaut 1,00 sous 1 500 m',
+    );
     // Et la phrase correspondante doit exister dans les 5 langues.
-    _exigeCinqLangues('altitude', (tr) => tr.feasibility.formula.altitudeMissing,
-        'la phrase « altitude absente »');
     _exigeCinqLangues(
-        'altitude',
-        (tr) => tr.feasibility.formula.altitudeBelowThreshold(value: 1050),
-        'la phrase « altitude sous le seuil »');
+      'altitude',
+      (tr) => tr.feasibility.formula.altitudeMissing,
+      'la phrase « altitude absente »',
+    );
+    _exigeCinqLangues(
+      'altitude',
+      (tr) => tr.feasibility.formula.altitudeBelowThreshold(value: 1050),
+      'la phrase « altitude sous le seuil »',
+    );
     exige(
-        P,
-        'altitude',
-        tf.altitudeMissing != tf.altitudeBelowThreshold(value: 1050),
-        'les deux phrases sont DIFFERENTES : une dimension neutre faute de '
-        'donnee n a pas le meme statut qu une dimension neutre par mesure');
+      P,
+      'altitude',
+      tf.altitudeMissing != tf.altitudeBelowThreshold(value: 1050),
+      'les deux phrases sont DIFFERENTES : une dimension neutre faute de '
+          'donnee n a pas le meme statut qu une dimension neutre par mesure',
+    );
 
     // ===================================================================
     // F3-12 — LE CONSTAT DE DUREE : FACTUEL, JAMAIS UN VERDICT
@@ -130,11 +153,19 @@ void main() {
     // Le moteur enonce « ce trek dure N jours ; ta plus longue sortie enchainee
     // est de M jours ». Aucun seuil publie ne permet de scorer la duree cumulee
     // (#M06) : on ENONCE, on ne juge pas.
-    exige(P, 'duree', base.walkingDays == 7,
-        'le constat connait le nombre de jours de marche du trek '
-        '(${base.walkingDays})');
-    exige(P, 'duree', base.hasDurationStatement,
-        'le constat de duree est enoncable (les deux chiffres existent)');
+    exige(
+      P,
+      'duree',
+      base.walkingDays == 7,
+      'le constat connait le nombre de jours de marche du trek '
+          '(${base.walkingDays})',
+    );
+    exige(
+      P,
+      'duree',
+      base.hasDurationStatement,
+      'le constat de duree est enoncable (les deux chiffres existent)',
+    );
     // LA PREUVE QUE C'EST UN CONSTAT : on rejoue la MEME evaluation en faisant
     // varier la seule duree deja realisee. Rien de decisionnel ne doit bouger.
     final refDuree = FeasibilityFormula.evaluate(
@@ -153,25 +184,29 @@ void main() {
         longestConsecutiveDaysDone: jours,
       );
       exige(
-          P,
-          'duree',
-          variante.globalVerdict == refDuree.globalVerdict &&
-              (variante.circuit!.score - refDuree.circuit!.score).abs() < 1e-12 &&
-              variante.circuit!.dominant == refDuree.circuit!.dominant &&
-              variante.limitingFactor == refDuree.limitingFactor &&
-              variante.recommendedTrainingWeeks ==
-                  refDuree.recommendedTrainingWeeks,
-          'la duree deja realisee ($jours jours) ne change AUCUNE sortie '
-          'decisionnelle — c est un constat, pas un verdict');
+        P,
+        'duree',
+        variante.globalVerdict == refDuree.globalVerdict &&
+            (variante.circuit!.score - refDuree.circuit!.score).abs() < 1e-12 &&
+            variante.circuit!.dominant == refDuree.circuit!.dominant &&
+            variante.limitingFactor == refDuree.limitingFactor &&
+            variante.recommendedTrainingWeeks ==
+                refDuree.recommendedTrainingWeeks,
+        'la duree deja realisee ($jours jours) ne change AUCUNE sortie '
+            'decisionnelle — c est un constat, pas un verdict',
+      );
     }
     // Et le texte lui-meme doit se presenter comme un constat.
     _exigeCinqLangues(
-        'duree',
-        (tr) => tr.feasibility.formula.durationStatement(days: 7, done: 5),
-        'la phrase du constat de duree');
-    _exigeCinqLangues('duree',
-        (tr) => tr.feasibility.formula.durationStatementInfo,
-        'la phrase qui dit que ce constat NE DECIDE PAS');
+      'duree',
+      (tr) => tr.feasibility.formula.durationStatement(days: 7, done: 5),
+      'la phrase du constat de duree',
+    );
+    _exigeCinqLangues(
+      'duree',
+      (tr) => tr.feasibility.formula.durationStatementInfo,
+      'la phrase qui dit que ce constat NE DECIDE PAS',
+    );
 
     // ===================================================================
     // F3-7 — LA MORPHOLOGIE NE PESE PAS, ET C'EST ASSUME
@@ -183,36 +218,52 @@ void main() {
     final leger = await _evaluer(tester, c);
     await _poser(tester, c, age: 40, taille: 176, poids: 95, moisDepart: 5);
     final lourd = await _evaluer(tester, c);
-    exige(P, 'morphologie', leger != null && lourd != null,
-        'les deux evaluations (65 kg et 95 kg) sont rendues');
+    exige(
+      P,
+      'morphologie',
+      leger != null && lourd != null,
+      'les deux evaluations (65 kg et 95 kg) sont rendues',
+    );
     if (leger != null && lourd != null) {
       exige(
-          P,
-          'morphologie',
-          leger.globalVerdict == lourd.globalVerdict &&
-              (leger.dailyCapacityEnergyKm - lourd.dailyCapacityEnergyKm).abs() <
-                  kEps,
-          'MEME VERDICT a 65 kg et a 95 kg, capacite du jour identique '
-          '(${leger.dailyCapacityEnergyKm.toStringAsFixed(4)} contre '
-          '${lourd.dailyCapacityEnergyKm.toStringAsFixed(4)})');
+        P,
+        'morphologie',
+        leger.globalVerdict == lourd.globalVerdict &&
+            (leger.dailyCapacityEnergyKm - lourd.dailyCapacityEnergyKm).abs() <
+                kEps,
+        'MEME VERDICT a 65 kg et a 95 kg, capacite du jour identique '
+            '(${leger.dailyCapacityEnergyKm.toStringAsFixed(4)} contre '
+            '${lourd.dailyCapacityEnergyKm.toStringAsFixed(4)})',
+      );
       final memesEtapes = List.generate(
-          leger.stageVerdicts.length,
-          (i) =>
-              leger.stageVerdicts[i].verdict == lourd.stageVerdicts[i].verdict &&
-              (leger.stageVerdicts[i].score - lourd.stageVerdicts[i].score)
-                      .abs() <
-                  kEps);
-      exige(P, 'morphologie', memesEtapes.every((ok) => ok),
-          'les 7 verdicts d etape sont identiques au chiffre pres');
+        leger.stageVerdicts.length,
+        (i) =>
+            leger.stageVerdicts[i].verdict == lourd.stageVerdicts[i].verdict &&
+            (leger.stageVerdicts[i].score - lourd.stageVerdicts[i].score)
+                    .abs() <
+                kEps,
+      );
+      exige(
+        P,
+        'morphologie',
+        memesEtapes.every((ok) => ok),
+        'les 7 verdicts d etape sont identiques au chiffre pres',
+      );
     }
-    _exigeCinqLangues('morphologie',
-        (tr) => tr.feasibility.formula.massNotCounted,
-        'la phrase qui assume que la morphologie n entre pas dans le verdict');
+    _exigeCinqLangues(
+      'morphologie',
+      (tr) => tr.feasibility.formula.massNotCounted,
+      'la phrase qui assume que la morphologie n entre pas dans le verdict',
+    );
     // GARDE-FOU DE REDACTION (#7-d) : la phrase qui parle du poids ne doit
     // porter AUCUN mot de jugement, dans AUCUNE des 5 langues.
     for (final mot in <String>['surpoids', 'obésité', 'corpulence', 'IMC']) {
-      exige(P, 'morphologie', !tf.massNotCounted.contains(mot),
-          'le mot proscrit « $mot » n est pas dans la phrase du poids');
+      exige(
+        P,
+        'morphologie',
+        !tf.massNotCounted.contains(mot),
+        'le mot proscrit « $mot » n est pas dans la phrase du poids',
+      );
     }
 
     // ===================================================================
@@ -225,22 +276,34 @@ void main() {
     final hiver = await _evaluer(tester, c);
     exige(P, 'hiver', hiver != null, 'le moteur rend une evaluation en hiver');
     if (hiver != null) {
-      exige(P, 'hiver', hiver.conditions.isWinterDeparture,
-          'un depart en janvier est reconnu comme un depart d HIVER');
-      exige(P, 'hiver', hiver.conditions.heatFactor == 1.0,
-          'AUCUN coefficient de durcissement en hiver : k_chaleur reste a 1,00');
+      exige(
+        P,
+        'hiver',
+        hiver.conditions.isWinterDeparture,
+        'un depart en janvier est reconnu comme un depart d HIVER',
+      );
+      exige(
+        P,
+        'hiver',
+        hiver.conditions.heatFactor == 1.0,
+        'AUCUN coefficient de durcissement en hiver : k_chaleur reste a 1,00',
+      );
       // Le calcul est INCHANGE par rapport au printemps : seule la validite
       // du verdict change. C'est la difference entre « plus dur » et
       // « ne tient plus ».
       exige(
-          P,
-          'hiver',
-          (hiver.dailyCapacityEnergyKm - base.dailyCapacityEnergyKm).abs() < kEps,
-          'la capacite du jour en hiver est IDENTIQUE a celle du printemps : '
-          'l hiver ne durcit rien, il invalide');
+        P,
+        'hiver',
+        (hiver.dailyCapacityEnergyKm - base.dailyCapacityEnergyKm).abs() < kEps,
+        'la capacite du jour en hiver est IDENTIQUE a celle du printemps : '
+            'l hiver ne durcit rien, il invalide',
+      );
     }
-    _exigeCinqLangues('hiver', (tr) => tr.feasibility.formula.winterInvalid,
-        'la declaration de non-validite hivernale');
+    _exigeCinqLangues(
+      'hiver',
+      (tr) => tr.feasibility.formula.winterInvalid,
+      'la declaration de non-validite hivernale',
+    );
     await settleAndShoot(tester, P, '03_hiver');
 
     // ===================================================================
@@ -251,37 +314,54 @@ void main() {
     // randonneur de 120 kg passe de 24,0 a 15,8 kg, un randonneur de 70 kg
     // reste a 14,0 — STRICTEMENT inchange. Et par-dessus tout : le sac ne
     // bouge PAS le verdict, ce qui est la contre-preuve de #8-a.
-    exige(P, 'poids', base.stageVerdicts.isNotEmpty,
-        'le verdict de reference est disponible pour la contre-preuve du sac');
+    exige(
+      P,
+      'poids',
+      base.stageVerdicts.isNotEmpty,
+      'le verdict de reference est disponible pour la contre-preuve du sac',
+    );
     // LA MENTION HORS-PERIMETRE A ETE SUPPRIMEE (tache 552). Elle disait que le
     // sac n entre pas dans le feu : une absence qui ne change RIEN au resultat,
     // donc du jargon interne. Ce qui est exige desormais, c est que le sac parle
     // LA OU IL SERT — l alerte descente du Sac — et qu il y parle juste.
-    _exigeCinqLangues('poids', (tr) => tr.checklist.weight.descentAlertBody,
-        'l alerte descente qui porte desormais le poids du sac');
     _exigeCinqLangues(
-        'poids',
-        (tr) => tr.checklist.weight.descentAlertBodyPackOnly,
-        'la variante sac seul de l alerte descente');
+      'poids',
+      (tr) => tr.checklist.weight.descentAlertBody,
+      'l alerte descente qui porte desormais le poids du sac',
+    );
+    _exigeCinqLangues(
+      'poids',
+      (tr) => tr.checklist.weight.descentAlertBodyPackOnly,
+      'la variante sac seul de l alerte descente',
+    );
     // Locale figee : le chiffre s ecrit « 3,46 » en fr/de/es/it et « 3.46 » en
     // anglais. On lit donc la langue de base, pas la langue courante du run.
     final alerte = AppLocale.fr.buildSync().checklist.weight.descentAlertBody;
     exige(
-        P,
-        'poids',
-        alerte.contains('{pack}') && alerte.contains('{above}'),
-        'l alerte descente enonce les DEUX nombres SEPAREMENT (kilos de sac et '
-        'kilos au-dessus du poids de forme), plus jamais un total');
-    exige(P, 'poids', alerte.contains('3,46') && alerte.contains('2,61'),
-        'l alerte descente porte UN SEUL chiffre mecanique, et c est le chiffre '
-        'source #S23-a Kutzner 2010 (3,46 en descente contre 2,61 a plat)');
+      P,
+      'poids',
+      alerte.contains('{pack}') && alerte.contains('{above}'),
+      'l alerte descente enonce les DEUX nombres SEPAREMENT (kilos de sac et '
+          'kilos au-dessus du poids de forme), plus jamais un total',
+    );
+    exige(
+      P,
+      'poids',
+      alerte.contains('3,46') && alerte.contains('2,61'),
+      'l alerte descente porte UN SEUL chiffre mecanique, et c est le chiffre '
+          'source #S23-a Kutzner 2010 (3,46 en descente contre 2,61 a plat)',
+    );
 
     // ===================================================================
     // CLOTURE
     // ===================================================================
-    exige(P, 'run_valide', ecransSystemeBloquants().isEmpty,
-        'aucune fenetre systeme n a recouvert l application '
-        '(bloquants : ${ecransSystemeBloquants().join(", ")})');
+    exige(
+      P,
+      'run_valide',
+      ecransSystemeBloquants().isEmpty,
+      'aucune fenetre systeme n a recouvert l application '
+          '(bloquants : ${ecransSystemeBloquants().join(", ")})',
+    );
     await settleAndShoot(tester, P, '04_fin');
     poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
@@ -313,8 +393,12 @@ void _exigeCinqLangues(
     } catch (_) {
       valeur = '';
     }
-    exige(P, etape, valeur.trim().isNotEmpty,
-        '$quoi existe en ${locale.languageCode}');
+    exige(
+      P,
+      etape,
+      valeur.trim().isNotEmpty,
+      '$quoi existe en ${locale.languageCode}',
+    );
   }
 }
 
@@ -344,12 +428,16 @@ Future<void> _poser(
 }) async {
   final trailId = c.read(trailIdProvider);
   await tester.runAsync(() async {
-    await c.read(hikerProfileProvider.notifier).save(HikerProfile(
-          age: age,
-          heightCm: taille,
-          weightKg: poids,
-          sex: HikerSex.male,
-        ));
+    await c
+        .read(hikerProfileProvider.notifier)
+        .save(
+          HikerProfile(
+            age: age,
+            heightCm: taille,
+            weightKg: poids,
+            sex: HikerSex.male,
+          ),
+        );
     await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[
       PastHike(
         date: DateTime(2026, 6, 1),
@@ -373,7 +461,10 @@ Future<void> _poser(
 }
 
 Future<FeasibilityAssessment?> _evaluer(
-        WidgetTester tester, ProviderContainer c) async =>
-    tester.runAsync<FeasibilityAssessment?>(() async => c
-        .read(feasibilityAssessmentProvider.future)
-        .timeout(kAttente, onTimeout: () => null));
+  WidgetTester tester,
+  ProviderContainer c,
+) async => tester.runAsync<FeasibilityAssessment?>(
+  () async => c
+      .read(feasibilityAssessmentProvider.future)
+      .timeout(kAttente, onTimeout: () => null),
+);

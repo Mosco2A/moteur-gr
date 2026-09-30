@@ -54,8 +54,9 @@ void main() {
 
   final tr = t.tracking.backgroundRationale;
 
-  testWidgets('explique AVANT de demander : le dialogue precede le systeme',
-      (tester) async {
+  testWidgets('explique AVANT de demander : le dialogue precede le systeme', (
+    tester,
+  ) async {
     final service = _FauxService(doitDemander: true);
     await pumpEcran(tester, service);
 
@@ -71,8 +72,9 @@ void main() {
     expect(service.demandesSysteme, 0);
   });
 
-  testWidgets('accepter l explication declenche UNE demande systeme',
-      (tester) async {
+  testWidgets('accepter l explication declenche UNE demande systeme', (
+    tester,
+  ) async {
     final service = _FauxService(doitDemander: true);
     await pumpEcran(tester, service);
 
@@ -87,23 +89,26 @@ void main() {
     expect(find.text(tr.title), findsNothing);
   });
 
-  testWidgets('« Plus tard » : aucun ecran systeme, refus memorise, on continue',
-      (tester) async {
-    final service = _FauxService(doitDemander: true);
-    await pumpEcran(tester, service);
+  testWidgets(
+    '« Plus tard » : aucun ecran systeme, refus memorise, on continue',
+    (tester) async {
+      final service = _FauxService(doitDemander: true);
+      await pumpEcran(tester, service);
 
-    await tester.tap(find.text('Demarrer'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(tr.later));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Demarrer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(tr.later));
+      await tester.pumpAndSettle();
 
-    expect(service.demandesSysteme, 0);
-    expect(service.refusMemorise, isTrue);
-    expect(find.text(tr.title), findsNothing);
-  });
+      expect(service.demandesSysteme, 0);
+      expect(service.refusMemorise, isTrue);
+      expect(find.text(tr.title), findsNothing);
+    },
+  );
 
-  testWidgets('rien a demander : aucun dialogue, aucun ecran systeme',
-      (tester) async {
+  testWidgets('rien a demander : aucun dialogue, aucun ecran systeme', (
+    tester,
+  ) async {
     final service = _FauxService(doitDemander: false);
     await pumpEcran(tester, service);
 

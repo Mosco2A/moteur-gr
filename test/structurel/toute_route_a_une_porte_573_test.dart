@@ -48,15 +48,15 @@ import 'registre_des_routes_dormantes.dart';
 const exceptionsDocumentees = <String, String>{
   '/follow/:code':
       'Suivi web temps reel : la porte est un LIEN PARTAGE par le randonneur '
-          '(hors application, E4.12a). Aucun geste interne ne doit y mener — '
-          'suivre sa propre position n a pas de sens.',
+      '(hors application, E4.12a). Aucun geste interne ne doit y mener — '
+      'suivre sa propre position n a pas de sens.',
   '/onboarding':
       'Accueil du PREMIER lancement : la porte est la garde de redirection '
-          'elle-meme, pas un geste. Elle est verifiee par le test des portes '
-          'd entree ci-dessous.',
+      'elle-meme, pas un geste. Elle est verifiee par le test des portes '
+      'd entree ci-dessous.',
   '/no-data':
       'Ecran bloquant : la porte est la garde de redirection quand aucun '
-          'sentier n est telecharge. Verifiee par le test des portes d entree.',
+      'sentier n est telecharge. Verifiee par le test des portes d entree.',
 };
 
 /// Une route est-elle DISPENSEE de porte — par conception, ou parce qu'elle est
@@ -117,8 +117,11 @@ void main() {
     for (final a in aretes) {
       final cible = cibleDe(a);
       if (cible == null) continue;
-      final depuis =
-          routesPorteusesDuGeste(a.fichier, routeVersFichiers, importeurs);
+      final depuis = routesPorteusesDuGeste(
+        a.fichier,
+        routeVersFichiers,
+        importeurs,
+      );
       if (depuis.isEmpty) {
         orphelines?.add('$a');
         continue;
@@ -160,7 +163,8 @@ void main() {
       expect(
         sansPorte,
         isEmpty,
-        reason: 'CES ROUTES N ONT AUCUNE PORTE : rien dans lib/ ne navigue '
+        reason:
+            'CES ROUTES N ONT AUCUNE PORTE : rien dans lib/ ne navigue '
             'vers elles, et la garde ne les impose pas. Un ecran ecrit et '
             'inatteignable est un ecran qui n existe pas.\n'
             '  ${sansPorte.join('\n  ')}\n'
@@ -184,7 +188,8 @@ void main() {
       expect(
         injoignables,
         isEmpty,
-        reason: 'CES ROUTES NE SONT PAS ATTEIGNABLES depuis une porte '
+        reason:
+            'CES ROUTES NE SONT PAS ATTEIGNABLES depuis une porte '
             'd entree. Certaines ont bien un geste qui y mene — mais ce geste '
             'vit sur un ecran qu on ne peut pas atteindre non plus. C est le '
             'cas exact de la fiche medicale, joignable seulement depuis un '
@@ -207,10 +212,14 @@ void main() {
       final fantomes = registreDesRoutesDormantes.keys
           .where((g) => !gabarits.contains(g))
           .toList();
-      expect(fantomes, isEmpty,
-          reason: 'CES ENTREES NE CORRESPONDENT A AUCUNE ROUTE : la route a ete '
-              'supprimee ou renommee, l entree ne protege plus rien et doit '
-              'partir du registre.\n  ${fantomes.join('\n  ')}');
+      expect(
+        fantomes,
+        isEmpty,
+        reason:
+            'CES ENTREES NE CORRESPONDENT A AUCUNE ROUTE : la route a ete '
+            'supprimee ou renommee, l entree ne protege plus rien et doit '
+            'partir du registre.\n  ${fantomes.join('\n  ')}',
+      );
 
       // 2. Une route dormante qui a RETROUVE une porte doit sortir du registre.
       //    Sans ce verrou, une route cablee resterait couverte a vie, et la
@@ -225,21 +234,30 @@ void main() {
       final reveillees = registreDesRoutesDormantes.keys
           .where(routesAtteintesDepuisLesPortes().contains)
           .toList();
-      expect(reveillees, isEmpty,
-          reason: 'CES ROUTES ONT RETROUVE UNE PORTE : tres bien — mais elles '
-              'doivent alors SORTIR du registre des dormantes, sinon la garde '
-              'cesse de veiller sur elles.\n  ${reveillees.join('\n  ')}');
+      expect(
+        reveillees,
+        isEmpty,
+        reason:
+            'CES ROUTES ONT RETROUVE UNE PORTE : tres bien — mais elles '
+            'doivent alors SORTIR du registre des dormantes, sinon la garde '
+            'cesse de veiller sur elles.\n  ${reveillees.join('\n  ')}',
+      );
 
       // 3. Raison ET reveil ecrits : c'est ce qui distingue une dette assumee
       //    d'une exception muette.
       final bavardes = <String>[];
       registreDesRoutesDormantes.forEach((g, d) {
-        if (d.raison.trim().length < 40) bavardes.add('$g : raison trop courte');
+        if (d.raison.trim().length < 40)
+          bavardes.add('$g : raison trop courte');
         if (d.reveil.trim().length < 20) bavardes.add('$g : reveil trop court');
       });
-      expect(bavardes, isEmpty,
-          reason: 'UNE ROUTE ENDORMIE SANS RAISON NI REVEIL ECRITS est une '
-              'exception muette deguisee.\n  ${bavardes.join('\n  ')}');
+      expect(
+        bavardes,
+        isEmpty,
+        reason:
+            'UNE ROUTE ENDORMIE SANS RAISON NI REVEIL ECRITS est une '
+            'exception muette deguisee.\n  ${bavardes.join('\n  ')}',
+      );
     });
 
     test('les portes d entree existent VRAIMENT a l ecran', () {
@@ -247,29 +265,48 @@ void main() {
       // fausses, tout le raisonnement serait faux : on les verifie donc a
       // l'execution, sur l'application reelle.
       expect(portes, isNotEmpty);
-      expect(portes, contains('/my-treks'),
-          reason: 'l entree du routeur doit etre une porte');
-      expect(portes, contains('/onboarding'),
-          reason: 'la garde impose l accueil au premier lancement');
-      expect(portes, contains('/catalog'),
-          reason: 'la garde impose le catalogue quand aucun sentier n est la');
+      expect(
+        portes,
+        contains('/my-treks'),
+        reason: 'l entree du routeur doit etre une porte',
+      );
+      expect(
+        portes,
+        contains('/onboarding'),
+        reason: 'la garde impose l accueil au premier lancement',
+      );
+      expect(
+        portes,
+        contains('/catalog'),
+        reason: 'la garde impose le catalogue quand aucun sentier n est la',
+      );
     });
 
-    testWidgets('l application POSEE sur son entree affiche bien cette entree',
-        (tester) async {
-      await monterAppliReelle(tester);
-      expect(cheminAffiche(), '/my-treks');
-      expect(textesVisibles(tester), isNotEmpty,
-          reason: 'la porte d entree de l application est un ecran nu');
-    });
+    testWidgets(
+      'l application POSEE sur son entree affiche bien cette entree',
+      (tester) async {
+        await monterAppliReelle(tester);
+        expect(cheminAffiche(), '/my-treks');
+        expect(
+          textesVisibles(tester),
+          isNotEmpty,
+          reason: 'la porte d entree de l application est un ecran nu',
+        );
+      },
+    );
 
-    testWidgets('au PREMIER lancement, la garde pose sur l accueil',
-        (tester) async {
+    testWidgets('au PREMIER lancement, la garde pose sur l accueil', (
+      tester,
+    ) async {
       await monterAppliReelle(tester, etat: EtatAppli.premierLancement);
-      expect(cheminAffiche(), '/onboarding',
-          reason: 'un utilisateur qui ouvre l appli la premiere fois doit '
-              'tomber sur l accueil, pas sur le cockpit d un sentier qu il n a '
-              'ni choisi ni telecharge');
+      expect(
+        cheminAffiche(),
+        '/onboarding',
+        reason:
+            'un utilisateur qui ouvre l appli la premiere fois doit '
+            'tomber sur l accueil, pas sur le cockpit d un sentier qu il n a '
+            'ni choisi ni telecharge',
+      );
     });
   });
 }

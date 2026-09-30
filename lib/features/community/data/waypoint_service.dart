@@ -36,12 +36,8 @@ abstract final class WaypointSource {
 /// Mirroir des resultats [SignalementService]/[KudosService] : on ne lance
 /// JAMAIS d'exception silencieuse, le service decide du requeue/abandon.
 class WaypointPushResult {
-  const WaypointPushResult.success([this.remoteId])
-      : ok = true,
-        error = null;
-  const WaypointPushResult.failure(this.error)
-      : ok = false,
-        remoteId = null;
+  const WaypointPushResult.success([this.remoteId]) : ok = true, error = null;
+  const WaypointPushResult.failure(this.error) : ok = false, remoteId = null;
 
   final bool ok;
   final String? remoteId;
@@ -83,10 +79,7 @@ abstract interface class WaypointRemoteSink {
   ///
   /// [since] est `null` au premier pull. Le service fusionne le resultat par
   /// `lastUpdatedAt` (last-write-wins). Renvoie un lot vide hors-ligne.
-  Future<WaypointRemotePull> pull({
-    required String trailId,
-    DateTime? since,
-  });
+  Future<WaypointRemotePull> pull({required String trailId, DateTime? since});
 }
 
 /// Vue lisible d'un waypoint avec sa fraicheur (F8A-02).
@@ -103,15 +96,15 @@ class WaypointView {
   });
 
   factory WaypointView.fromData(WaypointData d) => WaypointView(
-        id: d.id,
-        trailId: d.trailId,
-        type: d.type,
-        latitude: d.latitude,
-        longitude: d.longitude,
-        titre: d.titre,
-        lastUpdatedAt: d.lastUpdatedAt,
-        source: d.source,
-      );
+    id: d.id,
+    trailId: d.trailId,
+    type: d.type,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    titre: d.titre,
+    lastUpdatedAt: d.lastUpdatedAt,
+    source: d.source,
+  );
 
   final String id;
   final String trailId;
@@ -162,8 +155,8 @@ class WaypointService {
   WaypointService({
     required AppDatabase database,
     required WaypointRemoteSink remoteSink,
-  })  : _dao = WaypointsDao(database),
-        _remoteSink = remoteSink;
+  }) : _dao = WaypointsDao(database),
+       _remoteSink = remoteSink;
 
   final WaypointsDao _dao;
   final WaypointRemoteSink _remoteSink;
@@ -236,8 +229,7 @@ class WaypointService {
     DateTime? now,
   }) async {
     if (!WaypointType.values.contains(type)) {
-      final err =
-          ArgumentError.value(type, 'type', 'Type de waypoint inconnu');
+      final err = ArgumentError.value(type, 'type', 'Type de waypoint inconnu');
       ErrorHandler.log(err, context: 'WaypointService.contributeWaypoint');
       throw err;
     }
@@ -255,8 +247,11 @@ class WaypointService {
         ),
       ]);
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'WaypointService.contributeWaypoint');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'WaypointService.contributeWaypoint',
+      );
       rethrow;
     }
   }
@@ -287,8 +282,11 @@ class WaypointService {
         ),
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'WaypointService.contributeComment');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'WaypointService.contributeComment',
+      );
       rethrow;
     }
   }
@@ -368,8 +366,7 @@ class WaypointService {
     final toUpsert = <WaypointCompanion>[];
     for (final remote in pull.waypoints) {
       final local = await _dao.waypointById(remote.id);
-      if (local == null ||
-          remote.lastUpdatedAt.isAfter(local.lastUpdatedAt)) {
+      if (local == null || remote.lastUpdatedAt.isAfter(local.lastUpdatedAt)) {
         toUpsert.add(
           WaypointCompanion(
             id: Value(remote.id),

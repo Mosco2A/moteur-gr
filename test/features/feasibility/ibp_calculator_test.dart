@@ -45,20 +45,34 @@ void main() {
     test('une montee raide coute plus qu une montee douce (meme D+)', () {
       // Meme D+ (+200 m) mais concentre sur une distance courte (raide) vs
       // etale sur une distance longue (doux).
-      final steep = _linearTrace(n: 11, stepMeters: 20, gainPerStep: 20); // 200m dist, +200m
-      final gentle =
-          _linearTrace(n: 41, stepMeters: 50, gainPerStep: 5); // 2000m dist, +200m
+      final steep = _linearTrace(
+        n: 11,
+        stepMeters: 20,
+        gainPerStep: 20,
+      ); // 200m dist, +200m
+      final gentle = _linearTrace(
+        n: 41,
+        stepMeters: 50,
+        gainPerStep: 5,
+      ); // 2000m dist, +200m
       final rSteep = IbpCalculator.compute(steep);
       final rGentle = IbpCalculator.compute(gentle);
       expect(rSteep.elevationGainM, closeTo(rGentle.elevationGainM, 5));
-      expect(rSteep.score, greaterThan(rGentle.score),
-          reason: 'la raideur majore l effort a D+ egal');
+      expect(
+        rSteep.score,
+        greaterThan(rGentle.score),
+        reason: 'la raideur majore l effort a D+ egal',
+      );
     });
 
     test('la descente coute moins que la montee (meme denivele)', () {
       final up = _linearTrace(n: 21, stepMeters: 50, gainPerStep: 10);
       final down = _linearTrace(
-          n: 21, stepMeters: 50, gainPerStep: -10, startAlt: 200);
+        n: 21,
+        stepMeters: 50,
+        gainPerStep: -10,
+        startAlt: 200,
+      );
       final rUp = IbpCalculator.compute(up);
       final rDown = IbpCalculator.compute(down);
       expect(rUp.elevationGainM, closeTo(rDown.elevationLossM, 5));
@@ -68,13 +82,23 @@ void main() {
     test('effort croit avec la distance sur du plat', () {
       final short = _linearTrace(n: 11, stepMeters: 50, gainPerStep: 0);
       final long = _linearTrace(n: 101, stepMeters: 50, gainPerStep: 0);
-      expect(IbpCalculator.compute(long).score,
-          greaterThan(IbpCalculator.compute(short).score));
+      expect(
+        IbpCalculator.compute(long).score,
+        greaterThan(IbpCalculator.compute(short).score),
+      );
     });
 
     test('niveau croit avec l effort (barème standard)', () {
-      final easy = _linearTrace(n: 11, stepMeters: 50, gainPerStep: 0); // court plat
-      final hard = _linearTrace(n: 201, stepMeters: 50, gainPerStep: 15); // long + raide
+      final easy = _linearTrace(
+        n: 11,
+        stepMeters: 50,
+        gainPerStep: 0,
+      ); // court plat
+      final hard = _linearTrace(
+        n: 201,
+        stepMeters: 50,
+        gainPerStep: 15,
+      ); // long + raide
       final le = IbpCalculator.compute(easy).effortLevel;
       final lh = IbpCalculator.compute(hard).effortLevel;
       expect(le, lessThan(lh));
@@ -103,16 +127,24 @@ void main() {
     });
 
     test('JSON invalide -> barème standard', () {
-      expect(IbpBareme.fromJson(const {'thresholds': [1, 2]}).thresholds,
-          IbpBareme.standard.thresholds);
-      expect(IbpBareme.fromJson(const {}).thresholds,
-          IbpBareme.standard.thresholds);
+      expect(
+        IbpBareme.fromJson(const {
+          'thresholds': [1, 2],
+        }).thresholds,
+        IbpBareme.standard.thresholds,
+      );
+      expect(
+        IbpBareme.fromJson(const {}).thresholds,
+        IbpBareme.standard.thresholds,
+      );
     });
 
     test('barème custom applique par compute', () {
       final trace = _linearTrace(n: 41, stepMeters: 50, gainPerStep: 5);
-      final strict = IbpCalculator.compute(trace,
-          bareme: const IbpBareme([1, 2, 3, 4]));
+      final strict = IbpCalculator.compute(
+        trace,
+        bareme: const IbpBareme([1, 2, 3, 4]),
+      );
       // Barème tres bas -> tout devient niveau max.
       expect(strict.effortLevel, 5);
     });

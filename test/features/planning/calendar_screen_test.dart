@@ -215,8 +215,18 @@ void main() {
 
       // Le calendrier est rendu (en-tete de mois localise present).
       final locale = LocaleSettings.currentLocale.languageCode;
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite,
+        ),
+        findsOneWidget,
+      );
 
       // Un jour de repos existe -> le label repos « R » apparait dans la grille.
       expect(
@@ -273,7 +283,12 @@ void main() {
       expect(find.text(t.calendar.empty.title), findsOneWidget);
       expect(find.text(t.calendar.empty.action), findsOneWidget);
       // Pas de calendrier / pas de picker auto (aucun jour a dater).
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche), findsNothing);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronGauche,
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('itineraire present mais aucune date : invite a choisir', (
@@ -411,8 +426,17 @@ void main() {
       await settle(tester);
 
       // Aller : taper la carte HUB (icone calendar_month) ouvre le Calendrier.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier));
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.calendrier,
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.calendrier,
+        ),
+      );
       await settle(tester);
       await pumpUntil(tester, find.text(t.calendar.title));
       expect(find.text(t.calendar.title), findsWidgets);
@@ -425,7 +449,12 @@ void main() {
       await pumpUntilGone(tester, find.text(t.calendar.title));
       expect(find.text(t.calendar.title), findsNothing);
       // La carte HUB est de nouveau la (retour propre, pile preservee).
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.calendrier), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.calendrier,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('retour #10 : « Valider les dates » retourne au cockpit, JAMAIS au '

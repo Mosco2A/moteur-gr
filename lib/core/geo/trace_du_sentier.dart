@@ -39,8 +39,8 @@ class TraceDuSentier {
 
   /// Trace vide, source nommee.
   const TraceDuSentier.aucune()
-      : points = const [],
-        source = SourceDeLaTrace.aucune;
+    : points = const [],
+      source = SourceDeLaTrace.aucune;
 
   /// Les points, ordonnes, avec leur distance cumulee depuis le depart.
   final List<TrackPoint> points;
@@ -85,8 +85,8 @@ class LecteurDeTrace {
   LecteurDeTrace({
     required AppDatabase db,
     Future<List<TrackPoint>> Function(String chemin)? lireLAsset,
-  })  : _db = db,
-        _lireLAsset = lireLAsset ?? GpxParser.parseFromAsset;
+  }) : _db = db,
+       _lireLAsset = lireLAsset ?? GpxParser.parseFromAsset;
 
   final AppDatabase _db;
 
@@ -131,7 +131,10 @@ class LecteurDeTrace {
     }
 
     final deLAsset = await _lireLAsset(cheminAsset);
-    return TraceDuSentier(points: deLAsset, source: SourceDeLaTrace.assetCompile);
+    return TraceDuSentier(
+      points: deLAsset,
+      source: SourceDeLaTrace.assetCompile,
+    );
   }
 
   /// Les points des traces de [trailId], dans l ordre, ou une liste vide.
@@ -151,19 +154,20 @@ class LecteurDeTrace {
   /// `gpx_tracks` sans son `itineraries` pose donc des points que personne ne
   /// lira.
   Future<List<TrackPoint>> _depuisLaBase(String trailId) async {
-    final itineraires = await (_db.select(_db.trailItineraries)
-          ..where((t) => t.trailId.equals(trailId)))
-        .get();
+    final itineraires = await (_db.select(
+      _db.trailItineraries,
+    )..where((t) => t.trailId.equals(trailId))).get();
 
     final rattachements = <String>{
       for (final i in itineraires) i.id,
       trailId, // forme de l amorce embarquee : itineraryId == trailId
     };
 
-    final traces = await (_db.select(_db.trailGpxTracks)
-          ..where((t) => t.itineraryId.isIn(rattachements))
-          ..orderBy([(t) => OrderingTerm.asc(t.id)]))
-        .get();
+    final traces =
+        await (_db.select(_db.trailGpxTracks)
+              ..where((t) => t.itineraryId.isIn(rattachements))
+              ..orderBy([(t) => OrderingTerm.asc(t.id)]))
+            .get();
 
     if (traces.isEmpty) return const [];
 
@@ -181,10 +185,11 @@ class LecteurDeTrace {
   ) async {
     if (identifiantsDeTrace.isEmpty) return const [];
 
-    final lignes = await (_db.select(_db.trailGpxPoints)
-          ..where((t) => t.trackId.isIn(identifiantsDeTrace))
-          ..orderBy([(t) => OrderingTerm.asc(t.sequenceIndex)]))
-        .get();
+    final lignes =
+        await (_db.select(_db.trailGpxPoints)
+              ..where((t) => t.trackId.isIn(identifiantsDeTrace))
+              ..orderBy([(t) => OrderingTerm.asc(t.sequenceIndex)]))
+            .get();
 
     // Regroupement dans l ordre DEMANDE : une requete unique ne peut pas rendre
     // les traces dans l ordre d une liste Dart, et l ordre des traces decide de
@@ -208,12 +213,14 @@ class LecteurDeTrace {
             ligne.lng,
           );
         }
-        points.add(TrackPoint(
-          lat: ligne.lat,
-          lng: ligne.lng,
-          altitude: ligne.elevation,
-          distanceFromStart: distanceCumulee,
-        ));
+        points.add(
+          TrackPoint(
+            lat: ligne.lat,
+            lng: ligne.lng,
+            altitude: ligne.elevation,
+            distanceFromStart: distanceCumulee,
+          ),
+        );
       }
     }
 

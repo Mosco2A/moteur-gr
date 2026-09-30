@@ -170,7 +170,8 @@ void main() {
       expect(
         conseil,
         stages.length,
-        reason: 'sept etapes font sept jours : le repos est un conseil, pas une '
+        reason:
+            'sept etapes font sept jours : le repos est un conseil, pas une '
             'duree',
       );
       expect(

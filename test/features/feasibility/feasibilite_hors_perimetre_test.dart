@@ -35,12 +35,8 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 void main() {
   setUpAll(() => LocaleSettings.setLocaleRaw('fr'));
 
-  StageEffort etape(int i, String nom, double dist, int elev) => StageEffort(
-        index: i,
-        name: nom,
-        distanceKm: dist,
-        elevationGainM: elev,
-      );
+  StageEffort etape(int i, String nom, double dist, int elev) =>
+      StageEffort(index: i, name: nom, distanceKm: dist, elevationGainM: elev);
 
   /// Trek exigeant : la pire journee depasse largement le plafond debutant.
   FeasibilityAssessment evaluationDure(HikerLevel niveau) =>
@@ -55,10 +51,7 @@ void main() {
   /// Trek facile : toutes les etapes sont vertes, meme loin du plafond.
   FeasibilityAssessment evaluationFacile(HikerLevel niveau) =>
       FeasibilityFormula.evaluate(
-        stages: [
-          etape(0, 'Vallee', 10, 300),
-          etape(1, 'Plateau', 8, 200),
-        ],
+        stages: [etape(0, 'Vallee', 10, 300), etape(1, 'Plateau', 8, 200)],
         level: niveau,
       );
 
@@ -74,11 +67,13 @@ void main() {
           // au complet. Ce test porte sur la MENTION hors-perimetre, pas sur
           // la regle de declenchement (testee dans
           // faisabilite_correction_n2_test.dart) : on se place donc au complet.
-          feasibilityCriteriaProvider.overrideWith((ref) async =>
-              const FeasibilityCriteria(
-                  profileComplete: true,
-                  hasPastHike: true,
-                  hasWalkTest: true)),
+          feasibilityCriteriaProvider.overrideWith(
+            (ref) async => const FeasibilityCriteria(
+              profileComplete: true,
+              hasPastHike: true,
+              hasWalkTest: true,
+            ),
+          ),
           hasObjectiveProfileProvider.overrideWith((ref) async => true),
         ],
         child: MaterialApp.router(
@@ -86,7 +81,10 @@ void main() {
           routerConfig: GoRouter(
             initialLocation: '/',
             routes: [
-              GoRoute(path: '/', builder: (_, __) => const TrekFeasibilityScreen()),
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const TrekFeasibilityScreen(),
+              ),
             ],
           ),
         ),
@@ -99,10 +97,13 @@ void main() {
 
   /// Temoin d'ecran de la mention supprimee : son icone, unique dans l'ecran
   /// Faisabilite (`Icons.visibility_off_outlined` n'y servait qu'a elle).
-  final temoinMention = find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.oeilBarre);
+  final temoinMention = find.byWidgetPredicate(
+    (w) => w is StepIcon && w.asset == StepwaysIcons.oeilBarre,
+  );
 
-  testWidgets('AUCUNE mention hors-perimetre sous un feu ROUGE',
-      (tester) async {
+  testWidgets('AUCUNE mention hors-perimetre sous un feu ROUGE', (
+    tester,
+  ) async {
     final rouge = evaluationDure(HikerLevel.beginner);
     expect(rouge.worstStageVerdict, FeasibilityVerdict.red);
     await pumpEcran(tester, rouge);
@@ -112,8 +113,9 @@ void main() {
     expect(find.textContaining('45 kg'), findsNothing);
   });
 
-  testWidgets('AUCUNE mention hors-perimetre sous un feu VERT non plus',
-      (tester) async {
+  testWidgets('AUCUNE mention hors-perimetre sous un feu VERT non plus', (
+    tester,
+  ) async {
     // C'etait le cas qu'on croyait dangereux : on pensait qu'un feu vert
     // obligeait a dire que le sac n'avait pas ete compte. Mesure faite, cette
     // phrase ne changeait AUCUN resultat — elle n'informait pas, elle se
@@ -125,8 +127,9 @@ void main() {
     expect(find.textContaining('45 kg'), findsNothing);
   });
 
-  testWidgets('CE QUI MODIFIE un resultat, LUI, reste affiche : l hiver',
-      (tester) async {
+  testWidgets('CE QUI MODIFIE un resultat, LUI, reste affiche : l hiver', (
+    tester,
+  ) async {
     // La contre-epreuve de la regle. « On se tait sur ce qu'on n'a pas, on
     // parle de ce que ca change » n'autorise pas a tout retirer : le depart en
     // hiver INVALIDE le verdict, donc il continue de s'afficher. Si ce test
@@ -146,11 +149,16 @@ void main() {
     for (final langue in <String>['fr', 'en', 'de', 'es', 'it']) {
       final brut = File('assets/i18n/$langue.i18n.json').readAsStringSync();
       final racine = jsonDecode(brut) as Map<String, dynamic>;
-      final formula = (racine['feasibility'] as Map<String, dynamic>)['formula']
-          as Map<String, dynamic>;
-      expect(formula.containsKey('outOfScopeNotice'), isFalse,
-          reason: '$langue : la mention hors-perimetre est revenue dans '
-              'assets/i18n/$langue.i18n.json');
+      final formula =
+          (racine['feasibility'] as Map<String, dynamic>)['formula']
+              as Map<String, dynamic>;
+      expect(
+        formula.containsKey('outOfScopeNotice'),
+        isFalse,
+        reason:
+            '$langue : la mention hors-perimetre est revenue dans '
+            'assets/i18n/$langue.i18n.json',
+      );
     }
   });
 }

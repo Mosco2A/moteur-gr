@@ -101,8 +101,12 @@ bool bgShouldKeepPosition({
   double threshold = kBgMinKeepDistanceMeters,
 }) {
   if (lastKeptLat == null || lastKeptLon == null) return true;
-  final meters =
-      Geolocator.distanceBetween(lastKeptLat, lastKeptLon, newLat, newLon);
+  final meters = Geolocator.distanceBetween(
+    lastKeptLat,
+    lastKeptLon,
+    newLat,
+    newLon,
+  );
   return meters >= threshold;
 }
 
@@ -116,8 +120,7 @@ bool bgIsKeepAliveDue(
   DateTime? lastKeptAt,
   DateTime now, {
   Duration threshold = kBgKeepAliveThreshold,
-}) =>
-    lastKeptAt == null || now.difference(lastKeptAt) >= threshold;
+}) => lastKeptAt == null || now.difference(lastKeptAt) >= threshold;
 
 /// Faut-il (re)s'abonner au flux GPS ?
 ///
@@ -150,18 +153,17 @@ Map<String, dynamic> bgEncodePoint({
   required double accuracy,
   required double speed,
   required DateTime timestamp,
-}) =>
-    <String, dynamic>{
-      'id': id,
-      'sessionId': sessionId,
-      'trailId': trailId,
-      'latitude': latitude,
-      'longitude': longitude,
-      'altitude': altitude,
-      'accuracy': accuracy,
-      'speed': speed,
-      'timestamp': timestamp.toIso8601String(),
-    };
+}) => <String, dynamic>{
+  'id': id,
+  'sessionId': sessionId,
+  'trailId': trailId,
+  'latitude': latitude,
+  'longitude': longitude,
+  'altitude': altitude,
+  'accuracy': accuracy,
+  'speed': speed,
+  'timestamp': timestamp.toIso8601String(),
+};
 
 /// Etat de demarrage du foreground service, tel que verifie par
 /// l'auto-diagnostic (~4 s apres start). Rend VISIBLE un echec silencieux : le
@@ -194,9 +196,9 @@ class BgCaptureStats {
   });
 
   const BgCaptureStats.initial()
-      : positionsReceived = 0,
-        lastFixAt = null,
-        lastEventAt = null;
+    : positionsReceived = 0,
+      lastFixAt = null,
+      lastEventAt = null;
 
   /// Nombre de positions RETENUES par l'isolate depuis le demarrage.
   final int positionsReceived;
@@ -211,12 +213,11 @@ class BgCaptureStats {
     int? positionsReceived,
     DateTime? lastFixAt,
     DateTime? lastEventAt,
-  }) =>
-      BgCaptureStats(
-        positionsReceived: positionsReceived ?? this.positionsReceived,
-        lastFixAt: lastFixAt ?? this.lastFixAt,
-        lastEventAt: lastEventAt ?? this.lastEventAt,
-      );
+  }) => BgCaptureStats(
+    positionsReceived: positionsReceived ?? this.positionsReceived,
+    lastFixAt: lastFixAt ?? this.lastFixAt,
+    lastEventAt: lastEventAt ?? this.lastEventAt,
+  );
 }
 
 /// Service GPS de fond FIABILISE (re-portage socle, generalise).
@@ -240,7 +241,7 @@ class BgCaptureStats {
 /// ZERO catch silencieux cote UI : toute erreur passe par [ErrorHandler].
 class BackgroundGpsService {
   BackgroundGpsService({FlutterBackgroundService? service})
-      : _service = service ?? FlutterBackgroundService();
+    : _service = service ?? FlutterBackgroundService();
 
   final FlutterBackgroundService _service;
 
@@ -314,8 +315,11 @@ class BackgroundGpsService {
       await configureService();
       _initialized = true;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'BackgroundGpsService.initialize');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BackgroundGpsService.initialize',
+      );
       rethrow;
     }
   }
@@ -335,8 +339,10 @@ class BackgroundGpsService {
       enableVibration: false,
     );
     final plugin = FlutterLocalNotificationsPlugin();
-    final android = plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final android = plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     await android?.createNotificationChannel(channel);
   }
 
@@ -431,7 +437,11 @@ class BackgroundGpsService {
     } on Exception catch (e, st) {
       _running = false;
       startStatus.value = GpsServiceStartStatus.failedToStart;
-      ErrorHandler.log(e, stackTrace: st, context: 'BackgroundGpsService.start');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BackgroundGpsService.start',
+      );
       rethrow;
     }
 
@@ -483,7 +493,8 @@ class BackgroundGpsService {
         altitude: (event['altitude'] as num?)?.toDouble() ?? 0,
         accuracy: (event['accuracy'] as num?)?.toDouble() ?? 0,
         speed: (event['speed'] as num?)?.toDouble() ?? 0,
-        timestamp: DateTime.tryParse(event['timestamp'] as String? ?? '') ??
+        timestamp:
+            DateTime.tryParse(event['timestamp'] as String? ?? '') ??
             DateTime.now(),
       );
       if (!_trackPointController.isClosed) _trackPointController.add(point);
@@ -605,17 +616,20 @@ class BackgroundGpsService {
       final points = <BgTrackPoint>[];
       for (final line in raw) {
         try {
-          points.add(BgTrackPoint.fromJson(
-              jsonDecode(line) as Map<String, dynamic>));
+          points.add(
+            BgTrackPoint.fromJson(jsonDecode(line) as Map<String, dynamic>),
+          );
         } catch (_) {
           // Point corrompu ignore (best-effort).
         }
       }
       return points;
     } catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'BackgroundGpsService.drainBackgroundPoints');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'BackgroundGpsService.drainBackgroundPoints',
+      );
       return const [];
     }
   }
@@ -646,17 +660,18 @@ class BgTrackPoint {
   });
 
   factory BgTrackPoint.fromJson(Map<String, dynamic> json) => BgTrackPoint(
-        id: json['id'] as String? ?? '',
-        sessionId: json['sessionId'] as String? ?? '',
-        trailId: json['trailId'] as String? ?? '',
-        latitude: (json['latitude'] as num?)?.toDouble() ?? 0,
-        longitude: (json['longitude'] as num?)?.toDouble() ?? 0,
-        altitude: (json['altitude'] as num?)?.toDouble() ?? 0,
-        accuracy: (json['accuracy'] as num?)?.toDouble() ?? 0,
-        speed: (json['speed'] as num?)?.toDouble() ?? 0,
-        timestamp: DateTime.tryParse(json['timestamp'] as String? ?? '') ??
-            DateTime.fromMillisecondsSinceEpoch(0),
-      );
+    id: json['id'] as String? ?? '',
+    sessionId: json['sessionId'] as String? ?? '',
+    trailId: json['trailId'] as String? ?? '',
+    latitude: (json['latitude'] as num?)?.toDouble() ?? 0,
+    longitude: (json['longitude'] as num?)?.toDouble() ?? 0,
+    altitude: (json['altitude'] as num?)?.toDouble() ?? 0,
+    accuracy: (json['accuracy'] as num?)?.toDouble() ?? 0,
+    speed: (json['speed'] as num?)?.toDouble() ?? 0,
+    timestamp:
+        DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+        DateTime.fromMillisecondsSinceEpoch(0),
+  );
 
   final String id;
   final String sessionId;
@@ -669,16 +684,16 @@ class BgTrackPoint {
   final DateTime timestamp;
 
   Map<String, dynamic> toJson() => bgEncodePoint(
-        id: id,
-        sessionId: sessionId,
-        trailId: trailId,
-        latitude: latitude,
-        longitude: longitude,
-        altitude: altitude,
-        accuracy: accuracy,
-        speed: speed,
-        timestamp: timestamp,
-      );
+    id: id,
+    sessionId: sessionId,
+    trailId: trailId,
+    latitude: latitude,
+    longitude: longitude,
+    altitude: altitude,
+    accuracy: accuracy,
+    speed: speed,
+    timestamp: timestamp,
+  );
 }
 
 /// Provider du service GPS de fond.
@@ -788,8 +803,11 @@ Future<void> _onServiceStart(ServiceInstance service) async {
   /// Traite UNE position (flux ou filet) : filtre de distance, compteur,
   /// persistance tampon, IPC vers l'UI, notification. [force] bypasse le filtre
   /// (point keep-alive). Retourne true si le point a ete RETENU.
-  Future<bool> handlePosition(Position position,
-      {required String via, bool force = false}) async {
+  Future<bool> handlePosition(
+    Position position, {
+    required String via,
+    bool force = false,
+  }) async {
     if (!force &&
         !bgShouldKeepPosition(
           lastKeptLat: lastKeptLat,
@@ -808,10 +826,12 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     lastKeptLon = position.longitude;
     final pointId = uuid.v4();
 
-    _logBg('[bg] point #$positionsReceived via=$via'
-        '${force ? ' keep-alive' : ''} '
-        'lat=${position.latitude.toStringAsFixed(5)} '
-        'lon=${position.longitude.toStringAsFixed(5)}');
+    _logBg(
+      '[bg] point #$positionsReceived via=$via'
+      '${force ? ' keep-alive' : ''} '
+      'lat=${position.latitude.toStringAsFixed(5)} '
+      'lon=${position.longitude.toStringAsFixed(5)}',
+    );
 
     final pointMap = bgEncodePoint(
       id: pointId,
@@ -846,32 +866,39 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     }
     positionSub?.cancel();
     resubscribeTimer?.cancel();
-    _logBg('[bg] abonnement Geolocator distanceFilter=${distanceFilter.round()}m '
-        'session=$sessionId');
-    positionSub = Geolocator.getPositionStream(
-      locationSettings: buildSettings(),
-    ).listen(
-      (position) => handlePosition(position, via: 'stream'),
-      onError: (Object error, StackTrace _) {
-        // NE PAS avaler : un onError vide tue la capture en silence. On logue
-        // et on re-tente (le stream errore est mort, il faut le recreer).
-        _logBg('[bg] ERREUR stream Geolocator: $error -> re-abo dans 5s');
-        positionSub?.cancel();
-        positionSub = null;
-        resubscribeTimer?.cancel();
-        resubscribeTimer = Timer(const Duration(seconds: 5), startGpsListening);
-      },
-      cancelOnError: true,
+    _logBg(
+      '[bg] abonnement Geolocator distanceFilter=${distanceFilter.round()}m '
+      'session=$sessionId',
     );
+    positionSub =
+        Geolocator.getPositionStream(locationSettings: buildSettings()).listen(
+          (position) => handlePosition(position, via: 'stream'),
+          onError: (Object error, StackTrace _) {
+            // NE PAS avaler : un onError vide tue la capture en silence. On logue
+            // et on re-tente (le stream errore est mort, il faut le recreer).
+            _logBg('[bg] ERREUR stream Geolocator: $error -> re-abo dans 5s');
+            positionSub?.cancel();
+            positionSub = null;
+            resubscribeTimer?.cancel();
+            resubscribeTimer = Timer(
+              const Duration(seconds: 5),
+              startGpsListening,
+            );
+          },
+          cancelOnError: true,
+        );
   }
 
   void sendHeartbeat() {
     final now = DateTime.now();
-    final ageSec =
-        lastFixAt == null ? null : now.difference(lastFixAt!).inSeconds;
-    _logBg('[bg] HEARTBEAT positionsReceived=$positionsReceived '
-        'dernierFix=${ageSec == null ? "aucun" : "${ageSec}s"} '
-        'abonne=${positionSub != null}');
+    final ageSec = lastFixAt == null
+        ? null
+        : now.difference(lastFixAt!).inSeconds;
+    _logBg(
+      '[bg] HEARTBEAT positionsReceived=$positionsReceived '
+      'dernierFix=${ageSec == null ? "aucun" : "${ageSec}s"} '
+      'abonne=${positionSub != null}',
+    );
     service.invoke('heartbeat', {
       'positionsReceived': positionsReceived,
       'lastFixTs': lastFixAt?.toIso8601String(),
@@ -922,13 +949,14 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       await p.reload();
       sessionId = p.getString(kPrefsBgSessionId) ?? sessionId;
       trailId = p.getString(kPrefsBgTrailId) ?? trailId;
-      distanceFilter =
-          p.getDouble(kPrefsBgDistanceFilter) ?? distanceFilter;
+      distanceFilter = p.getDouble(kPrefsBgDistanceFilter) ?? distanceFilter;
       final storedStageInfo = p.getString(kPrefsBgStageInfo) ?? '';
       final s = service;
       if (s is AndroidServiceInstance && storedStageInfo.isNotEmpty) {
         s.setForegroundNotificationInfo(
-            title: 'Suivi GPS', content: storedStageInfo);
+          title: 'Suivi GPS',
+          content: storedStageInfo,
+        );
       }
     }
   } catch (_) {

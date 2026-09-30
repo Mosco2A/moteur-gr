@@ -33,7 +33,7 @@ class SosButton extends ConsumerWidget {
     final trackingState = ref.watch(trekSessionManagerProvider);
     final isTrekActive =
         trackingState.status == TrackingSessionStatus.recording ||
-            trackingState.status == TrackingSessionStatus.paused;
+        trackingState.status == TrackingSessionStatus.paused;
 
     // Masque si pas de trek actif
     if (!isTrekActive) return const SizedBox.shrink();

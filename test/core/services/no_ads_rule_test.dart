@@ -143,9 +143,13 @@ void main() {
     test('un ABONNE n a pas de pub, meme sur le sentier GRATUIT', () async {
       final svc = await makeService(gratuits: {'gratuit'});
       await svc.onSubscriptionValidated();
-      expect(await svc.isNoAdsActive('gratuit'), isTrue,
-          reason: 'l abo a 2 euros donne le sans-pub PARTOUT tant qu il est '
-              'actif : un sentier gratuit n y fait pas exception');
+      expect(
+        await svc.isNoAdsActive('gratuit'),
+        isTrue,
+        reason:
+            'l abo a 2 euros donne le sans-pub PARTOUT tant qu il est '
+            'actif : un sentier gratuit n y fait pas exception',
+      );
       expect(await showAdsFor(svc, 'gratuit'), isFalse);
     });
   });

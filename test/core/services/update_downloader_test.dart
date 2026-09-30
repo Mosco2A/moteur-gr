@@ -38,7 +38,7 @@ class FakeConnectivityMonitor extends ConnectivityMonitor {
 /// Fake FirebaseService pour les tests.
 class FakeFirebaseService extends FirebaseService {
   FakeFirebaseService({required bool available})
-      : super.testOnly(isAvailable: available);
+    : super.testOnly(isAvailable: available);
 }
 
 /// Fake UpdateChecker qui retourne des resultats predetermines.
@@ -108,8 +108,10 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
   int downloadCallCount = 0;
 
   @override
-  Future<DeltaUpdate?> checkForUpdates(String trailId,
-      {required TrailManifest remoteManifest}) async {
+  Future<DeltaUpdate?> checkForUpdates(
+    String trailId, {
+    required TrailManifest remoteManifest,
+  }) async {
     return fakeDelta;
   }
 
@@ -163,8 +165,7 @@ void main() {
   });
 
   group('UpdateDownloader delta download', () {
-    test('delta download ne retelecharge que les tables changees, pas tout',
-        () async {
+    test('delta download ne retelecharge que les tables changees, pas tout', () async {
       // Setup: manifeste avec sentier volcans v5
       final manifest = TrailManifest(
         schemaVersion: 1,
@@ -196,28 +197,30 @@ void main() {
         fakeManifest: manifest,
       );
 
-      final fakeDeltaService = FakeDeltaUpdateService(
-        db: db,
-        manifestService: fakeManifestService,
-        trailManifestsDao: dao,
-        trailMetaDao: TrailMetaDao(db),
-        trailItinerariesDao: TrailItinerariesDao(db),
-        trailStagesDao: TrailStagesDao(db),
-        trailAccommodationsDao: TrailAccommodationsDao(db),
-        trailPoisDao: TrailPoisDao(db),
-        trailGpxTracksDao: TrailGpxTracksDao(db),
-        trailGpxPointsDao: TrailGpxPointsDao(db),
-        fakeDelta: delta,
-      )..bilan = ResultatSynchronisation(
-          // SEULES CES DEUX FAMILLES ONT REELLEMENT BOUGE. Avant la tache 605,
-          // ces listes venaient de `_inferChangedTables` qui rendait les sept
-          // tables en dur : le rapport disait toujours 7/0. Elles viennent
-          // desormais du bilan de ce qui a ete pose.
-          famillesTouchees: const ['stages', 'pois'],
-          ecrits: 3,
-          supprimes: 0,
-          revisionAtteinte: v(5),
-        );
+      final fakeDeltaService =
+          FakeDeltaUpdateService(
+              db: db,
+              manifestService: fakeManifestService,
+              trailManifestsDao: dao,
+              trailMetaDao: TrailMetaDao(db),
+              trailItinerariesDao: TrailItinerariesDao(db),
+              trailStagesDao: TrailStagesDao(db),
+              trailAccommodationsDao: TrailAccommodationsDao(db),
+              trailPoisDao: TrailPoisDao(db),
+              trailGpxTracksDao: TrailGpxTracksDao(db),
+              trailGpxPointsDao: TrailGpxPointsDao(db),
+              fakeDelta: delta,
+            )
+            ..bilan = ResultatSynchronisation(
+              // SEULES CES DEUX FAMILLES ONT REELLEMENT BOUGE. Avant la tache 605,
+              // ces listes venaient de `_inferChangedTables` qui rendait les sept
+              // tables en dur : le rapport disait toujours 7/0. Elles viennent
+              // desormais du bilan de ce qui a ete pose.
+              famillesTouchees: const ['stages', 'pois'],
+              ecrits: 3,
+              supprimes: 0,
+              revisionAtteinte: v(5),
+            );
 
       final fakeChecker = FakeUpdateChecker(
         dao: dao,
@@ -251,9 +254,7 @@ void main() {
       // le sentier COMPLET, donc il le dit.
       final results = await downloader.downloadAllUpdates(
         manifestUrl: 'https://example.com/manifest.json',
-        niveauParSentier: const {
-          'volcans': NiveauDeTelechargement.realiser,
-        },
+        niveauParSentier: const {'volcans': NiveauDeTelechargement.realiser},
       );
 
       // Verification: 1 resultat, succes
@@ -288,9 +289,13 @@ void main() {
       // controle d integrite est a fermeture par defaut, precisement pour qu un
       // nouveau chemin de descente ne puisse pas l oublier comme le second
       // chemin supprime au lot 606 avait oublie tout le modele de revision.
-      expect(fakeDeltaService.derniereEmpreinteAttendue, 'new_hash',
-          reason: 'elle vient de la liste DISTANTE (le fichier qu on va '
-              'chercher), pas du cache local');
+      expect(
+        fakeDeltaService.derniereEmpreinteAttendue,
+        'new_hash',
+        reason:
+            'elle vient de la liste DISTANTE (le fichier qu on va '
+            'chercher), pas du cache local',
+      );
 
       // Verification: l URL du delta est construite depuis la base
       // injectee + filePath du manifeste (pas de bucket code en dur)

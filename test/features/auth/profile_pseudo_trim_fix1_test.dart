@@ -77,44 +77,58 @@ void main() {
     await settle(tester);
 
     final display = find.text('Randonneuse');
-    expect(display, findsWidgets,
-        reason: 'le pseudo courant doit etre affiche avant edition');
+    expect(
+      display,
+      findsWidgets,
+      reason: 'le pseudo courant doit etre affiche avant edition',
+    );
     await tester.ensureVisible(display.first);
     await settle(tester);
     await tester.tap(display.first);
     await settle(tester);
   }
 
-  AppButton saveButton(WidgetTester tester) => tester
-      .widget<AppButton>(find.byKey(const ValueKey('profile-pseudo-save')));
+  AppButton saveButton(WidgetTester tester) => tester.widget<AppButton>(
+    find.byKey(const ValueKey('profile-pseudo-save')),
+  );
 
   group('m2 — pseudo : trim et refus visible du pseudo vide', () {
-    testWidgets('un pseudo de 3 espaces laisse le bouton DESACTIVE',
-        (tester) async {
+    testWidgets('un pseudo de 3 espaces laisse le bouton DESACTIVE', (
+      tester,
+    ) async {
       await openPseudoEditor(tester);
 
       await tester.enterText(
-          find.byKey(const ValueKey('profile-pseudo-field')), '   ');
+        find.byKey(const ValueKey('profile-pseudo-field')),
+        '   ',
+      );
       await settle(tester);
 
-      expect(saveButton(tester).onPressed, isNull,
-          reason: 'un pseudo vide apres trim ne peut pas etre enregistre');
+      expect(
+        saveButton(tester).onPressed,
+        isNull,
+        reason: 'un pseudo vide apres trim ne peut pas etre enregistre',
+      );
       expect(service.currentUser!.displayName, 'Randonneuse');
     });
 
-    testWidgets('les espaces autour du pseudo sont retires a l enregistrement',
-        (tester) async {
-      await openPseudoEditor(tester);
+    testWidgets(
+      'les espaces autour du pseudo sont retires a l enregistrement',
+      (tester) async {
+        await openPseudoEditor(tester);
 
-      await tester.enterText(
-          find.byKey(const ValueKey('profile-pseudo-field')), '  Lea  ');
-      await settle(tester);
+        await tester.enterText(
+          find.byKey(const ValueKey('profile-pseudo-field')),
+          '  Lea  ',
+        );
+        await settle(tester);
 
-      expect(saveButton(tester).onPressed, isNotNull);
-      await tester.tap(find.byKey(const ValueKey('profile-pseudo-save')));
-      await settle(tester);
+        expect(saveButton(tester).onPressed, isNotNull);
+        await tester.tap(find.byKey(const ValueKey('profile-pseudo-save')));
+        await settle(tester);
 
-      expect(service.currentUser!.displayName, 'Lea');
-    });
+        expect(service.currentUser!.displayName, 'Lea');
+      },
+    );
   });
 }

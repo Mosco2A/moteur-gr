@@ -13,14 +13,16 @@ void main() {
       final dao = ProgressDao(db);
       final now = DateTime.now();
 
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'trail1',
-        currentStage: const Value(5),
-        totalDistanceWalkedKm: const Value(35.2),
-        totalElevationGainedM: const Value(2100),
-        isCompleted: const Value(false),
-        startedAt: Value(now),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'trail1',
+          currentStage: const Value(5),
+          totalDistanceWalkedKm: const Value(35.2),
+          totalElevationGainedM: const Value(2100),
+          isCompleted: const Value(false),
+          startedAt: Value(now),
+        ),
+      );
 
       final row = await dao.getByTrailId('trail1');
       final model = UserProgressModel.fromDb(row!);
@@ -58,16 +60,21 @@ void main() {
       final dao = ProgressDao(db);
 
       // Creer une progression initiale
-      await dao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: 'roundtrip',
-        currentStage: const Value(2),
-        totalDistanceWalkedKm: const Value(15.0),
-      ));
+      await dao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: 'roundtrip',
+          currentStage: const Value(2),
+          totalDistanceWalkedKm: const Value(15.0),
+        ),
+      );
 
       // Lire, convertir en modele, modifier, reinserer
       final row1 = await dao.getByTrailId('roundtrip');
       final model1 = UserProgressModel.fromDb(row1!);
-      final modified = model1.copyWith(currentStage: 4, totalDistanceWalkedKm: 30.0);
+      final modified = model1.copyWith(
+        currentStage: 4,
+        totalDistanceWalkedKm: 30.0,
+      );
       await dao.upsert(modified.toCompanion());
 
       // Verifier le resultat

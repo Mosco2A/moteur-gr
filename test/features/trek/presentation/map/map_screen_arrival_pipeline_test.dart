@@ -28,9 +28,18 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 /// (le mount ne s'abonne que si la session est recording/paused).
 void main() {
   final mockTrackPoints = [
-    const TrackPoint(lat: 45.77, lng: 2.96, altitude: 1465, distanceFromStart: 0),
     const TrackPoint(
-        lat: 45.79, lng: 2.98, altitude: 1600, distanceFromStart: 2400),
+      lat: 45.77,
+      lng: 2.96,
+      altitude: 1465,
+      distanceFromStart: 0,
+    ),
+    const TrackPoint(
+      lat: 45.79,
+      lng: 2.98,
+      altitude: 1600,
+      distanceFromStart: 2400,
+    ),
   ];
 
   const plan = TrekPlan(
@@ -40,11 +49,11 @@ void main() {
   );
 
   TrekSession recordingSession() => TrekSession(
-        id: 'sess-map-1',
-        trailId: 'test-trail',
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        status: 'active',
-      );
+    id: 'sess-map-1',
+    trailId: 'test-trail',
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    status: 'active',
+  );
 
   Widget harness(
     StreamController<ArrivalEvent> ctrl, {
@@ -60,11 +69,13 @@ void main() {
           return db;
         }),
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        gpxTrackProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockTrackPoints)),
+        gpxTrackProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockTrackPoints)),
         // GPS non accorde -> pas de couche position (rendu neutre).
-        gpsPermissionProvider
-            .overrideWith((ref) => Future.value(GpsPermissionStateValues.denied)),
+        gpsPermissionProvider.overrideWith(
+          (ref) => Future.value(GpsPermissionStateValues.denied),
+        ),
         // Plan + flux d'arrivee pilotables (pas de vrai GPS).
         currentTrekPlanProvider.overrideWithValue(plan),
         arrivalEventsProvider.overrideWith((ref) => ctrl.stream),
@@ -77,38 +88,47 @@ void main() {
   }
 
   ArrivalEvent evt(String stageId, {required bool isFinal}) => ArrivalEvent(
-        type: isFinal ? 'trailEnd' : 'stageEnd',
-        stageId: stageId,
-        timestamp: DateTime.now(),
-      );
+    type: isFinal ? 'trailEnd' : 'stageEnd',
+    stageId: stageId,
+    timestamp: DateTime.now(),
+  );
 
   testWidgets(
-      'trek en cours : arrivee simulee (parcours complet) -> finisher declenche',
-      (tester) async {
-    final ctrl = StreamController<ArrivalEvent>();
-    final notifier = _GateNotifier(TrackingSessionState(
-      status: TrackingSessionStatus.recording,
-      session: recordingSession(),
-    ));
-    addTearDown(() => ctrl.close());
+    'trek en cours : arrivee simulee (parcours complet) -> finisher declenche',
+    (tester) async {
+      final ctrl = StreamController<ArrivalEvent>();
+      final notifier = _GateNotifier(
+        TrackingSessionState(
+          status: TrackingSessionStatus.recording,
+          session: recordingSession(),
+        ),
+      );
+      addTearDown(() => ctrl.close());
 
-    await tester.pumpWidget(harness(ctrl, notifier: notifier));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpWidget(harness(ctrl, notifier: notifier));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
-    // Le listener est monte (trek actif) : on simule la marche complete.
-    ctrl.add(evt('1', isFinal: false));
-    ctrl.add(evt('2', isFinal: false));
-    ctrl.add(evt('3', isFinal: true)); // derniere etape reelle
-    await tester.pump(const Duration(milliseconds: 50));
+      // Le listener est monte (trek actif) : on simule la marche complete.
+      ctrl.add(evt('1', isFinal: false));
+      ctrl.add(evt('2', isFinal: false));
+      ctrl.add(evt('3', isFinal: true)); // derniere etape reelle
+      await tester.pump(const Duration(milliseconds: 50));
 
-    final session = notifier.state.session;
-    expect(session?.completedStages, containsAll(<String>['1', '2', '3']),
-        reason: 'Chaque arrivee marque l etape via le pont monte par l ecran.');
-    expect(notifier.stopCallCount, 1,
-        reason: 'Parcours complet marche -> la porte du finisher s ouvre.');
-    expect(notifier.fullyWalkedAtStop, isTrue);
-  });
+      final session = notifier.state.session;
+      expect(
+        session?.completedStages,
+        containsAll(<String>['1', '2', '3']),
+        reason: 'Chaque arrivee marque l etape via le pont monte par l ecran.',
+      );
+      expect(
+        notifier.stopCallCount,
+        1,
+        reason: 'Parcours complet marche -> la porte du finisher s ouvre.',
+      );
+      expect(notifier.fullyWalkedAtStop, isTrue);
+    },
+  );
 }
 
 /// Notifier de test : garde la vraie logique de gate (recordStageCompleted /

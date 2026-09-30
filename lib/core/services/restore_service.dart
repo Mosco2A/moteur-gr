@@ -17,9 +17,7 @@ import '../providers/database_provider.dart';
 import 'consent_service.dart';
 import 'data_retention_service.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Code d erreur : appareil hors ligne.
 const kRestoreErrorOffline = 'offline';
@@ -95,9 +93,9 @@ class RestoreService {
     ConsentCheck? consentCheck,
     LocalErasureCheck? localErasureCheck,
     FirebaseFirestore? firestore,
-  })  : consentCheck = consentCheck ?? consentFromLocalStore,
-        localErasureCheck = localErasureCheck ?? localErasureFromStore,
-        _firestore = firestore;
+  }) : consentCheck = consentCheck ?? consentFromLocalStore,
+       localErasureCheck = localErasureCheck ?? localErasureFromStore,
+       _firestore = firestore;
 
   final ProgressDao progressDao;
   final JournalDao journalDao;
@@ -175,14 +173,17 @@ class RestoreService {
 
       final trailsSnap = await userDoc.collection('trails').get();
       for (final trailDoc in trailsSnap.docs) {
-        final progressSnap =
-            await trailDoc.reference.collection('user_progress').get();
+        final progressSnap = await trailDoc.reference
+            .collection('user_progress')
+            .get();
         totalItems += progressSnap.docs.length;
-        final journalSnap =
-            await trailDoc.reference.collection('journal_entries').get();
+        final journalSnap = await trailDoc.reference
+            .collection('journal_entries')
+            .get();
         totalItems += journalSnap.docs.length;
-        final checklistSnap =
-            await trailDoc.reference.collection('checklist_items').get();
+        final checklistSnap = await trailDoc.reference
+            .collection('checklist_items')
+            .get();
         totalItems += checklistSnap.docs.length;
 
         for (final doc in progressSnap.docs) {
@@ -241,18 +242,21 @@ class RestoreService {
 
       for (final trailDoc in trailsSnap.docs) {
         final trailId = trailDoc.id;
-        final progressSnap =
-            await trailDoc.reference.collection('user_progress').get();
+        final progressSnap = await trailDoc.reference
+            .collection('user_progress')
+            .get();
         for (final doc in progressSnap.docs) {
           if (await _mergeProgress(trailId, doc.data())) itemsRestored++;
         }
-        final journalSnap =
-            await trailDoc.reference.collection('journal_entries').get();
+        final journalSnap = await trailDoc.reference
+            .collection('journal_entries')
+            .get();
         for (final doc in journalSnap.docs) {
           if (await _mergeJournalEntry(trailId, doc.data())) itemsRestored++;
         }
-        final checklistSnap =
-            await trailDoc.reference.collection('checklist_items').get();
+        final checklistSnap = await trailDoc.reference
+            .collection('checklist_items')
+            .get();
         for (final doc in checklistSnap.docs) {
           if (await _mergeChecklistItem(trailId, doc.data())) itemsRestored++;
         }
@@ -325,17 +329,20 @@ class RestoreService {
       final profileSnap = await base.collection('profile').doc('hiker').get();
       final pdata = profileSnap.data();
       if (pdata != null) {
-        await hikerProfileDao!.upsert(HikerProfileCompanion(
-          userId: Value(userId),
-          age: Value(pdata['age'] as int? ?? 0),
-          heightCm: Value(pdata['height_cm'] as int? ?? 0),
-          weightKg: Value((pdata['weight_kg'] as num?)?.toDouble() ?? 0),
-          sex: Value(pdata['sex'] as String?),
-          countryIso: Value(pdata['country_iso'] as String? ?? ''),
-          updatedAt: Value(DateTime.tryParse(
-                  pdata['updated_at'] as String? ?? '') ??
-              DateTime.now()),
-        ));
+        await hikerProfileDao!.upsert(
+          HikerProfileCompanion(
+            userId: Value(userId),
+            age: Value(pdata['age'] as int? ?? 0),
+            heightCm: Value(pdata['height_cm'] as int? ?? 0),
+            weightKg: Value((pdata['weight_kg'] as num?)?.toDouble() ?? 0),
+            sex: Value(pdata['sex'] as String?),
+            countryIso: Value(pdata['country_iso'] as String? ?? ''),
+            updatedAt: Value(
+              DateTime.tryParse(pdata['updated_at'] as String? ?? '') ??
+                  DateTime.now(),
+            ),
+          ),
+        );
         restored++;
       }
 
@@ -345,38 +352,49 @@ class RestoreService {
         await pastHikesDao!.deleteAllForUser(userId);
         for (final doc in hikesSnap.docs) {
           final h = doc.data();
-          await pastHikesDao!.insertHike(PastHikeEntriesCompanion(
-            userId: Value(userId),
-            date: Value(
-                DateTime.tryParse(h['date'] as String? ?? '') ??
-                    DateTime.now()),
-            days: Value(h['days'] as int? ?? 1),
-            avgWalkHoursPerDay:
-                Value((h['avg_walk_hours_per_day'] as num?)?.toDouble() ?? 0),
-            totalElevationGain: Value(h['total_elevation_gain'] as int? ?? 0),
-            totalDistanceKm:
-                Value((h['total_distance_km'] as num?)?.toDouble() ?? 0),
-            updatedAt: Value(DateTime.tryParse(
-                    h['updated_at'] as String? ?? '') ??
-                DateTime.now()),
-          ));
+          await pastHikesDao!.insertHike(
+            PastHikeEntriesCompanion(
+              userId: Value(userId),
+              date: Value(
+                DateTime.tryParse(h['date'] as String? ?? '') ?? DateTime.now(),
+              ),
+              days: Value(h['days'] as int? ?? 1),
+              avgWalkHoursPerDay: Value(
+                (h['avg_walk_hours_per_day'] as num?)?.toDouble() ?? 0,
+              ),
+              totalElevationGain: Value(h['total_elevation_gain'] as int? ?? 0),
+              totalDistanceKm: Value(
+                (h['total_distance_km'] as num?)?.toDouble() ?? 0,
+              ),
+              updatedAt: Value(
+                DateTime.tryParse(h['updated_at'] as String? ?? '') ??
+                    DateTime.now(),
+              ),
+            ),
+          );
           restored++;
         }
       }
 
       // 3. Note d'experience globale.
-      final noteSnap =
-          await base.collection('profile').doc('experience_note').get();
+      final noteSnap = await base
+          .collection('profile')
+          .doc('experience_note')
+          .get();
       final ndata = noteSnap.data();
       if (ndata != null) {
-        await pastHikesDao!.upsertNote(HikerExperienceNoteCompanion(
-          userId: Value(userId),
-          freeTextDifficulties:
-              Value(ndata['free_text_difficulties'] as String? ?? ''),
-          updatedAt: Value(DateTime.tryParse(
-                  ndata['updated_at'] as String? ?? '') ??
-              DateTime.now()),
-        ));
+        await pastHikesDao!.upsertNote(
+          HikerExperienceNoteCompanion(
+            userId: Value(userId),
+            freeTextDifficulties: Value(
+              ndata['free_text_difficulties'] as String? ?? '',
+            ),
+            updatedAt: Value(
+              DateTime.tryParse(ndata['updated_at'] as String? ?? '') ??
+                  DateTime.now(),
+            ),
+          ),
+        );
         restored++;
       }
 
@@ -390,69 +408,91 @@ class RestoreService {
 
   /// Merge une progression avec strategie LWW.
   Future<bool> _mergeProgress(
-      String trailId, Map<String, dynamic> remoteData) async {
+    String trailId,
+    Map<String, dynamic> remoteData,
+  ) async {
     final remoteUpdatedAt = remoteData['updated_at'] as String?;
     final localProgress = await progressDao.getByTrailId(trailId);
     if (localProgress != null && remoteUpdatedAt != null) {
-      final localUpdatedAt = localProgress.completedAt?.toIso8601String() ??
+      final localUpdatedAt =
+          localProgress.completedAt?.toIso8601String() ??
           localProgress.startedAt?.toIso8601String();
       if (localUpdatedAt != null &&
           localUpdatedAt.compareTo(remoteUpdatedAt) > 0) {
         return false;
       }
     }
-    await progressDao.upsert(UserProgressEntriesCompanion(
-      trailId: Value(trailId),
-      currentStage: Value(remoteData['current_stage'] as int? ?? 1),
-      totalDistanceWalkedKm: Value(
-          (remoteData['total_distance_walked_km'] as num?)?.toDouble() ?? 0.0),
-      totalElevationGainedM:
-          Value(remoteData['total_elevation_gained_m'] as int? ?? 0),
-      totalTimeMinutes: Value(remoteData['total_time_minutes'] as int? ?? 0),
-      isCompleted: Value(remoteData['is_completed'] as bool? ?? false),
-      startedAt: Value(remoteData['started_at'] != null
-          ? DateTime.tryParse(remoteData['started_at'] as String)
-          : null),
-      completedAt: Value(remoteData['completed_at'] != null
-          ? DateTime.tryParse(remoteData['completed_at'] as String)
-          : null),
-    ));
+    await progressDao.upsert(
+      UserProgressEntriesCompanion(
+        trailId: Value(trailId),
+        currentStage: Value(remoteData['current_stage'] as int? ?? 1),
+        totalDistanceWalkedKm: Value(
+          (remoteData['total_distance_walked_km'] as num?)?.toDouble() ?? 0.0,
+        ),
+        totalElevationGainedM: Value(
+          remoteData['total_elevation_gained_m'] as int? ?? 0,
+        ),
+        totalTimeMinutes: Value(remoteData['total_time_minutes'] as int? ?? 0),
+        isCompleted: Value(remoteData['is_completed'] as bool? ?? false),
+        startedAt: Value(
+          remoteData['started_at'] != null
+              ? DateTime.tryParse(remoteData['started_at'] as String)
+              : null,
+        ),
+        completedAt: Value(
+          remoteData['completed_at'] != null
+              ? DateTime.tryParse(remoteData['completed_at'] as String)
+              : null,
+        ),
+      ),
+    );
     return true;
   }
 
   /// Merge une entree journal avec strategie LWW.
   Future<bool> _mergeJournalEntry(
-      String trailId, Map<String, dynamic> remoteData) async {
+    String trailId,
+    Map<String, dynamic> remoteData,
+  ) async {
     final remoteUpdatedAt = remoteData['updated_at'] as String?;
     final stageNumber = remoteData['stage_number'] as int? ?? 0;
     final localEntries = await journalDao.getByTrailId(trailId);
     final localEntry = localEntries.where((e) => e.stageNumber == stageNumber);
     if (localEntry.isNotEmpty && remoteUpdatedAt != null) {
       final local = localEntry.first;
-      final localUpdatedAt = local.updatedAt?.toIso8601String() ??
+      final localUpdatedAt =
+          local.updatedAt?.toIso8601String() ??
           local.createdAt.toIso8601String();
       if (localUpdatedAt.compareTo(remoteUpdatedAt) > 0) return false;
     }
-    await journalDao.insertEntry(JournalEntriesCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      content: Value(remoteData['content'] as String? ?? ''),
-      photoPath: Value(remoteData['photo_path'] as String?),
-      photoSizeBytes: Value(remoteData['photo_size_bytes'] as int?),
-      createdAt: Value(remoteData['created_at'] != null
-          ? DateTime.tryParse(remoteData['created_at'] as String) ??
-              DateTime.now()
-          : DateTime.now()),
-      updatedAt: Value(remoteData['updated_at'] != null
-          ? DateTime.tryParse(remoteData['updated_at'] as String)
-          : null),
-    ));
+    await journalDao.insertEntry(
+      JournalEntriesCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        content: Value(remoteData['content'] as String? ?? ''),
+        photoPath: Value(remoteData['photo_path'] as String?),
+        photoSizeBytes: Value(remoteData['photo_size_bytes'] as int?),
+        createdAt: Value(
+          remoteData['created_at'] != null
+              ? DateTime.tryParse(remoteData['created_at'] as String) ??
+                    DateTime.now()
+              : DateTime.now(),
+        ),
+        updatedAt: Value(
+          remoteData['updated_at'] != null
+              ? DateTime.tryParse(remoteData['updated_at'] as String)
+              : null,
+        ),
+      ),
+    );
     return true;
   }
 
   /// Merge un item checklist avec strategie LWW.
   Future<bool> _mergeChecklistItem(
-      String trailId, Map<String, dynamic> remoteData) async {
+    String trailId,
+    Map<String, dynamic> remoteData,
+  ) async {
     final remoteUpdatedAt = remoteData['updated_at'] as String?;
     final itemId = remoteData['item_id'] as String? ?? '';
     final localItems = await checklistDao.getByTrailId(trailId);
@@ -465,15 +505,19 @@ class RestoreService {
         return false;
       }
     }
-    await checklistDao.upsertItem(ChecklistItemsCompanion(
-      trailId: Value(trailId),
-      itemId: Value(itemId),
-      category: Value(remoteData['category'] as String? ?? ''),
-      isChecked: Value(remoteData['is_checked'] as bool? ?? false),
-      updatedAt: Value(remoteData['updated_at'] != null
-          ? DateTime.tryParse(remoteData['updated_at'] as String)
-          : null),
-    ));
+    await checklistDao.upsertItem(
+      ChecklistItemsCompanion(
+        trailId: Value(trailId),
+        itemId: Value(itemId),
+        category: Value(remoteData['category'] as String? ?? ''),
+        isChecked: Value(remoteData['is_checked'] as bool? ?? false),
+        updatedAt: Value(
+          remoteData['updated_at'] != null
+              ? DateTime.tryParse(remoteData['updated_at'] as String)
+              : null,
+        ),
+      ),
+    );
     return true;
   }
 }

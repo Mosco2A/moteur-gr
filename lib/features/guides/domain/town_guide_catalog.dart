@@ -16,7 +16,8 @@ class GuideSectionLabels {
 }
 
 /// Resout les libelles d'une section a partir de sa categorie ([GuideCategory]).
-typedef GuideSectionLabelResolver = GuideSectionLabels Function(String categorie);
+typedef GuideSectionLabelResolver =
+    GuideSectionLabels Function(String categorie);
 
 /// Catalogue de town guides (F8C-01, Phase 8 P8-C, offline R3).
 ///
@@ -86,8 +87,7 @@ abstract final class TownGuideCatalog {
             GuideItem(
               nom: 'Fontaine de la place',
               description: 'Eau potable toute l\'annee.',
-              coordonnees:
-                  GuideCoordinates(latitude: 42.001, longitude: 9.001),
+              coordonnees: GuideCoordinates(latitude: 42.001, longitude: 9.001),
             ),
           ]),
           section(GuideCategory.services, const [
@@ -122,8 +122,7 @@ abstract final class TownGuideCatalog {
             GuideItem(
               nom: 'Gare routiere',
               description: 'Bus vers les principales villes.',
-              coordonnees:
-                  GuideCoordinates(latitude: 42.301, longitude: 9.201),
+              coordonnees: GuideCoordinates(latitude: 42.301, longitude: 9.201),
             ),
           ]),
         ],

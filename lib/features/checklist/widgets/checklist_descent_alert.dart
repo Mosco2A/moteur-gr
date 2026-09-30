@@ -91,9 +91,9 @@ class ChecklistDescentAlert extends ConsumerWidget {
     final stages = assessment == null
         ? const <StageVerdict>[]
         : assessment.stagesByDescentDesc
-            .where((v) => v.stage.elevationLossM > 0)
-            .take(maxStages)
-            .toList();
+              .where((v) => v.stage.elevationLossM > 0)
+              .take(maxStages)
+              .toList();
 
     final theme = Theme.of(context);
     final w = t.checklist.weight;
@@ -119,7 +119,11 @@ class ChecklistDescentAlert extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const StepIcon(StepwaysIcons.deniveleMoins, size: 20, color: color),
+              const StepIcon(
+                StepwaysIcons.deniveleMoins,
+                size: 20,
+                color: color,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -139,10 +143,12 @@ class ChecklistDescentAlert extends ConsumerWidget {
             // alors a la variante qui ne parle que du sac.
             aboveReferenceKg >= 0.05
                 ? w.descentAlertBody
-                    .replaceAll('{pack}', nombre.format(packKg))
-                    .replaceAll('{above}', nombre.format(aboveReferenceKg))
-                : w.descentAlertBodyPackOnly
-                    .replaceAll('{pack}', nombre.format(packKg)),
+                      .replaceAll('{pack}', nombre.format(packKg))
+                      .replaceAll('{above}', nombre.format(aboveReferenceKg))
+                : w.descentAlertBodyPackOnly.replaceAll(
+                    '{pack}',
+                    nombre.format(packKg),
+                  ),
             style: theme.textTheme.bodySmall,
           ),
           // Les etapes qui descendent le plus, nommees. Pas de seuil : un

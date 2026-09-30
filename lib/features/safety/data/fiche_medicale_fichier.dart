@@ -90,9 +90,8 @@ class FicheMedicaleFichier {
   FicheMedicaleFichier({
     Future<Directory> Function()? dossierApplicatif,
     ExclusionSauvegardeIcloud? exclusionIcloud,
-  })  : _dossierApplicatif =
-            dossierApplicatif ?? getApplicationSupportDirectory,
-        _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
+  }) : _dossierApplicatif = dossierApplicatif ?? getApplicationSupportDirectory,
+       _exclusion = exclusionIcloud ?? ExclusionSauvegardeIcloud();
 
   /// Resolution du stockage applicatif. Sur Android
   /// `getApplicationSupportDirectory()` donne `files/`, donc le domaine `file`
@@ -137,9 +136,7 @@ class FicheMedicaleFichier {
   /// Le fichier de la fiche : `<stockage applicatif>/medical/fiche.json`.
   Future<File> fichier() async {
     final base = await _dossierApplicatif();
-    return File(
-      '${base.path}/${SauvegardeSysteme.dossierExclu}/$nomFichier',
-    );
+    return File('${base.path}/${SauvegardeSysteme.dossierExclu}/$nomFichier');
   }
 
   /// LE FICHIER D'UNE PHOTO DE CARTE — DANS LE MEME DOSSIER QUE LA FICHE

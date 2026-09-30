@@ -94,10 +94,12 @@ void main() {
     late ProviderContainer container;
 
     setUp(() {
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(testTrail),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrail),
+        ],
+      );
     });
 
     tearDown(() => container.dispose());
@@ -135,8 +137,11 @@ void main() {
 
       notifier.setBodyWeight(kWeightMinKg - 0.1);
       notifier.setBodyWeight(kWeightMaxKg + 0.1);
-      expect(container.read(checklistProvider).bodyWeightKg, kWeightMaxKg,
-          reason: 'hors bornes = refus, on garde la derniere valeur valide');
+      expect(
+        container.read(checklistProvider).bodyWeightKg,
+        kWeightMaxKg,
+        reason: 'hors bornes = refus, on garde la derniere valeur valide',
+      );
     });
 
     test('un randonneur de 160 kg pilote la jauge comme les autres', () async {
@@ -157,8 +162,10 @@ void main() {
 
       notifier.seedBodyWeightFromProfile(double.infinity);
       notifier.seedBodyWeightFromProfile(900);
-      expect(container.read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+      expect(
+        container.read(checklistProvider).bodyWeightKg,
+        kDefaultBodyWeightKg,
+      );
 
       notifier.seedBodyWeightFromProfile(64);
       expect(container.read(checklistProvider).bodyWeightKg, 64);
@@ -166,8 +173,9 @@ void main() {
   });
 
   group('B1 (BLOQUANT) — poids corporel : l ecran filtre et dit pourquoi', () {
-    testWidgets('« Infinity » et « abc » n entrent meme pas dans le champ',
-        (tester) async {
+    testWidgets('« Infinity » et « abc » n entrent meme pas dans le champ', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -182,16 +190,19 @@ void main() {
       expect(tester.widget<TextField>(field).controller!.text, '');
       // Et surtout : le bandeau n'affiche PAS de verdict absurde.
       expect(find.textContaining('Infinity'), findsNothing);
-      expect(containerOf(tester).read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+      expect(
+        containerOf(tester).read(checklistProvider).bodyWeightKg,
+        kDefaultBodyWeightKg,
+      );
 
       await tester.enterText(field, 'abc');
       await tester.pumpAndSettle();
       expect(tester.widget<TextField>(field).controller!.text, '');
     });
 
-    testWidgets('890 kg est REFUSE avec le message borne de la morpho',
-        (tester) async {
+    testWidgets('890 kg est REFUSE avec le message borne de la morpho', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -204,31 +215,39 @@ void main() {
       expect(error, findsOneWidget);
       expect(tester.widget<Text>(error).data, t.hikerProfile.errorWeight);
       // La jauge garde le dernier poids valide.
-      expect(containerOf(tester).read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+      expect(
+        containerOf(tester).read(checklistProvider).bodyWeightKg,
+        kDefaultBodyWeightKg,
+      );
     });
 
-    testWidgets('une saisie valide efface le message et pilote la jauge',
-        (tester) async {
+    testWidgets('une saisie valide efface le message et pilote la jauge', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
       final field = find.byKey(const ValueKey('checklist-body-weight-field'));
       await tester.enterText(field, '890');
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('checklist-body-weight-error')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('checklist-body-weight-error')),
+        findsOneWidget,
+      );
 
       await tester.enterText(field, '62');
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('checklist-body-weight-error')),
-          findsNothing);
+      expect(
+        find.byKey(const ValueKey('checklist-body-weight-error')),
+        findsNothing,
+      );
       expect(containerOf(tester).read(checklistProvider).bodyWeightKg, 62);
     });
 
-    testWidgets('la saisie est physiquement limitee a 5 caracteres',
-        (tester) async {
+    testWidgets('la saisie est physiquement limitee a 5 caracteres', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -238,16 +257,21 @@ void main() {
 
       expect(tester.widget<TextField>(field).controller!.text, '15000');
       // Depassement SIGNALE (pas de troncature muette) et valeur refusee.
-      expect(find.byKey(const ValueKey('checklist-body-weight-error')),
-          findsOneWidget);
-      expect(containerOf(tester).read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+      expect(
+        find.byKey(const ValueKey('checklist-body-weight-error')),
+        findsOneWidget,
+      );
+      expect(
+        containerOf(tester).read(checklistProvider).bodyWeightKg,
+        kDefaultBodyWeightKg,
+      );
     });
   });
 
   group('M3 — poids d article : refus motive, plus de clamp silencieux', () {
-    testWidgets('99999999 g et 21 chiffres sont impossibles a saisir',
-        (tester) async {
+    testWidgets('99999999 g et 21 chiffres sont impossibles a saisir', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -261,8 +285,9 @@ void main() {
       await tester.tap(addButton);
       await tester.pumpAndSettle();
 
-      final weightField =
-          find.byKey(const ValueKey('checklist-add-weight-field'));
+      final weightField = find.byKey(
+        const ValueKey('checklist-add-weight-field'),
+      );
       expect(weightField, findsOneWidget);
 
       await tester.enterText(weightField, '99999999');
@@ -277,12 +302,12 @@ void main() {
       expect(tester.widget<TextField>(weightField).controller!.text, '99999');
     });
 
-    testWidgets('au-dela de 50 000 g : refus avec message, rien n est ajoute',
-        (tester) async {
+    testWidgets('au-dela de 50 000 g : refus avec message, rien n est ajoute', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
-      final before =
-          containerOf(tester).read(checklistProvider).items.length;
+      final before = containerOf(tester).read(checklistProvider).items.length;
 
       await tester.tap(find.byType(ExpansionTile).first);
       await tester.pumpAndSettle();
@@ -292,11 +317,14 @@ void main() {
       await tester.tap(addButton);
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const ValueKey('checklist-add-weight-field')),
-          '60000');
       await tester.enterText(
-          find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
-          'Rechaud');
+        find.byKey(const ValueKey('checklist-add-weight-field')),
+        '60000',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
+        'Rechaud',
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(t.checklist.ui.add));
@@ -305,13 +333,16 @@ void main() {
       // Le dialogue RESTE ouvert avec le message : aucun article n'a ete cree
       // avec un poids invente.
       expect(find.text(t.checklist.ui.errorWeightGrams), findsOneWidget);
-      expect(find.byKey(const ValueKey('checklist-add-weight-field')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('checklist-add-weight-field')),
+        findsOneWidget,
+      );
       expect(containerOf(tester).read(checklistProvider).items.length, before);
     });
 
-    testWidgets('un nom vide est refuse avec un message (plus de no-op muet)',
-        (tester) async {
+    testWidgets('un nom vide est refuse avec un message (plus de no-op muet)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -329,8 +360,9 @@ void main() {
       expect(find.text(t.checklist.ui.errorNameRequired), findsOneWidget);
     });
 
-    testWidgets('une saisie valide ajoute bien l article avec SON poids',
-        (tester) async {
+    testWidgets('une saisie valide ajoute bien l article avec SON poids', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
       final container = containerOf(tester);
@@ -345,10 +377,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
-          'Rechaud');
+        find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
+        'Rechaud',
+      );
       await tester.enterText(
-          find.byKey(const ValueKey('checklist-add-weight-field')), '450');
+        find.byKey(const ValueKey('checklist-add-weight-field')),
+        '450',
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text(t.checklist.ui.add));
       await tester.pumpAndSettle();
@@ -356,8 +391,11 @@ void main() {
       final items = container.read(checklistProvider).items;
       expect(items.length, before + 1);
       final added = items.firstWhere((i) => i.customName == 'Rechaud');
-      expect(added.weightGrams, 450,
-          reason: 'le poids saisi est celui enregistre, sans clamp muet');
+      expect(
+        added.weightGrams,
+        450,
+        reason: 'le poids saisi est celui enregistre, sans clamp muet',
+      );
     });
   });
 
@@ -365,10 +403,12 @@ void main() {
     late ProviderContainer container;
 
     setUp(() {
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(testTrail),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrail),
+        ],
+      );
     });
 
     tearDown(() => container.dispose());
@@ -384,8 +424,11 @@ void main() {
           .read(checklistProvider)
           .items
           .firstWhere((i) => i.template.id == 'backpack');
-      expect(item.quantity, kItemQuantityMax,
-          reason: 'affichage et etat recharge doivent converger');
+      expect(
+        item.quantity,
+        kItemQuantityMax,
+        reason: 'affichage et etat recharge doivent converger',
+      );
     });
   });
 }

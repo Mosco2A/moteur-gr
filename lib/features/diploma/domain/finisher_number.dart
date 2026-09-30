@@ -24,7 +24,8 @@ String buildFinisherNumber({
   required DateTime finishedAt,
 }) {
   String two(int v) => v.toString().padLeft(2, '0');
-  final date = '${finishedAt.year}${two(finishedAt.month)}'
+  final date =
+      '${finishedAt.year}${two(finishedAt.month)}'
       '${two(finishedAt.day)}';
   return 'SW-$date-${_shortHash(sessionId)}';
 }

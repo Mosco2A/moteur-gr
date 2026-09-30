@@ -42,9 +42,9 @@ class AccountVaultService {
     required SecureVaultService vault,
     required AuthService auth,
     required WalletStore wallet,
-  })  : _vault = vault,
-        _auth = auth,
-        _wallet = wallet;
+  }) : _vault = vault,
+       _auth = auth,
+       _wallet = wallet;
 
   final SecureVaultService _vault;
   final AuthService _auth;
@@ -64,7 +64,10 @@ class AccountVaultService {
   /// Chiffre le profil (+ solde wallet si [includeWallet]) avec une clé dérivée
   /// du [code]. Retourne le blob chiffré à déposer (miroir cloud anonyme / cloud
   /// OS), ou `null` s'il n'y a rien à sauvegarder (pas d'utilisateur).
-  Future<String?> exportWithCode(String code, {bool includeWallet = true}) async {
+  Future<String?> exportWithCode(
+    String code, {
+    bool includeWallet = true,
+  }) async {
     final user = _auth.currentUser;
     if (user == null) return null;
 

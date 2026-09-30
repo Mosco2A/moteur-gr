@@ -45,11 +45,11 @@ class PendingGroupPosition {
   final String? stageId;
 
   Map<String, dynamic> toJson() => {
-        'lat': lat,
-        'lng': lng,
-        'timestamp': timestamp.toIso8601String(),
-        if (stageId != null) 'stageId': stageId,
-      };
+    'lat': lat,
+    'lng': lng,
+    'timestamp': timestamp.toIso8601String(),
+    if (stageId != null) 'stageId': stageId,
+  };
 }
 
 /// Service de synchronisation groupe eco-batterie (E4.12b).
@@ -71,8 +71,8 @@ class GroupSyncService {
     required this.connectivityMonitor,
     FirebaseFirestore? firestore,
     Connectivity? connectivity,
-  })  : _firestore = firestore,
-        _connectivity = connectivity ?? Connectivity();
+  }) : _firestore = firestore,
+       _connectivity = connectivity ?? Connectivity();
 
   final FirebaseService firebaseService;
   final ConnectivityMonitor connectivityMonitor;
@@ -157,12 +157,14 @@ class GroupSyncService {
     required double lng,
     String? stageId,
   }) {
-    _buffer.add(PendingGroupPosition(
-      lat: lat,
-      lng: lng,
-      timestamp: DateTime.now(),
-      stageId: stageId,
-    ));
+    _buffer.add(
+      PendingGroupPosition(
+        lat: lat,
+        lng: lng,
+        timestamp: DateTime.now(),
+        stageId: stageId,
+      ),
+    );
   }
 
   /// Force un envoi immediat du buffer (ex: fermeture app).

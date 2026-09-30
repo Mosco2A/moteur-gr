@@ -97,5 +97,5 @@ class VisibilitySettingsNotifier extends Notifier<VisibilitySettings> {
 /// Provider des reglages de visibilite sociale (F7D-02).
 final visibilitySettingsProvider =
     NotifierProvider<VisibilitySettingsNotifier, VisibilitySettings>(
-  VisibilitySettingsNotifier.new,
-);
+      VisibilitySettingsNotifier.new,
+    );

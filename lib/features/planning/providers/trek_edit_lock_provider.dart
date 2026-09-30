@@ -29,7 +29,8 @@ import '../domain/trek_edit_lock.dart';
 final trekEditLockProvider = Provider<TrekEditLock>((ref) {
   // --- Vue vivante (tracking en memoire) ---
   final tracking = ref.watch(trekSessionManagerProvider);
-  final liveActive = tracking.status == TrackingSessionStatus.recording ||
+  final liveActive =
+      tracking.status == TrackingSessionStatus.recording ||
       tracking.status == TrackingSessionStatus.paused;
   final liveDone = tracking.session?.completedStages ?? const <String>[];
 
@@ -39,7 +40,8 @@ final trekEditLockProvider = Provider<TrekEditLock>((ref) {
   // blocage de l'ecran.
   final persisted = ref.watch(latestTrekSessionProvider).value;
   final persistedOngoing =
-      persisted != null && (persisted.status == 'active' || persisted.status == 'paused');
+      persisted != null &&
+      (persisted.status == 'active' || persisted.status == 'paused');
   final persistedDone = persisted?.completedStages ?? const <String>[];
 
   final started = liveActive || persistedOngoing;

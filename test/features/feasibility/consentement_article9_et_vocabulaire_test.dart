@@ -132,11 +132,17 @@ void main() {
   /// La saisie de Gerard, mot pour mot celle de la campagne.
   Future<void> saisirGerard(WidgetTester tester) async {
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldAge), '72');
+      find.widgetWithText(TextFormField, tp.fieldAge),
+      '72',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldHeight), '172');
+      find.widgetWithText(TextFormField, tp.fieldHeight),
+      '172',
+    );
     await tester.enterText(
-        find.widgetWithText(TextFormField, tp.fieldWeight), '88');
+      find.widgetWithText(TextFormField, tp.fieldWeight),
+      '88',
+    );
     await tester.pumpAndSettle();
   }
 
@@ -147,38 +153,52 @@ void main() {
 
   group('N1 — le refus du consentement article 9 est APPLIQUE', () {
     testWidgets(
-        'consentement refuse : rien n est enregistre, l ecran reste ouvert, '
-        'le refus est dit', (tester) async {
-      await ouvrir(tester);
-      await saisirGerard(tester);
-      // La bascule de consentement n'est PAS touchee : elle reste a « refuse »,
-      // exactement comme dans la campagne.
+      'consentement refuse : rien n est enregistre, l ecran reste ouvert, '
+      'le refus est dit',
+      (tester) async {
+        await ouvrir(tester);
+        await saisirGerard(tester);
+        // La bascule de consentement n'est PAS touchee : elle reste a « refuse »,
+        // exactement comme dans la campagne.
 
-      await tester.tap(find.text(tp.save));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text(tp.save));
+        await tester.pumpAndSettle();
 
-      // 1. RIEN N'EST SUR L'APPAREIL. C'est l'assertion qui etait fausse : la
-      //    campagne relisait 72 / 172 / 88 apres redemarrage.
-      final persiste = await depot().getProfile();
-      expect(persiste.age, 0, reason: 'l age a ete enregistre malgre le refus');
-      expect(persiste.heightCm, 0,
-          reason: 'la taille a ete enregistree malgre le refus');
-      expect(persiste.weightKg, 0,
-          reason: 'le poids a ete enregistre malgre le refus');
+        // 1. RIEN N'EST SUR L'APPAREIL. C'est l'assertion qui etait fausse : la
+        //    campagne relisait 72 / 172 / 88 apres redemarrage.
+        final persiste = await depot().getProfile();
+        expect(
+          persiste.age,
+          0,
+          reason: 'l age a ete enregistre malgre le refus',
+        );
+        expect(
+          persiste.heightCm,
+          0,
+          reason: 'la taille a ete enregistree malgre le refus',
+        );
+        expect(
+          persiste.weightKg,
+          0,
+          reason: 'le poids a ete enregistre malgre le refus',
+        );
 
-      // 2. L'ecran ne se ferme PAS comme un succes.
-      expect(find.text(tp.fieldAge), findsOneWidget);
-      expect(find.text(tp.saved), findsNothing);
+        // 2. L'ecran ne se ferme PAS comme un succes.
+        expect(find.text(tp.fieldAge), findsOneWidget);
+        expect(find.text(tp.saved), findsNothing);
 
-      // 3. Le refus est DIT, la ou l'on vient d'appuyer.
-      expect(find.byKey(const ValueKey('hiker-profile-consent-error')),
-          findsOneWidget);
-      expect(find.text(tp.errorConsentRequired), findsOneWidget);
+        // 3. Le refus est DIT, la ou l'on vient d'appuyer.
+        expect(
+          find.byKey(const ValueKey('hiker-profile-consent-error')),
+          findsOneWidget,
+        );
+        expect(find.text(tp.errorConsentRequired), findsOneWidget);
 
-      // 4. Et le refus est trace cote consentement.
-      final consent = await consentement();
-      expect(consent.hasConsent(ConsentPurpose.healthData), isFalse);
-    });
+        // 4. Et le refus est trace cote consentement.
+        final consent = await consentement();
+        expect(consent.hasConsent(ConsentPurpose.healthData), isFalse);
+      },
+    );
 
     testWidgets('la saisie n est pas perdue : un tap sur la bascule, un second '
         'sur Enregistrer, et la fiche part', (tester) async {
@@ -186,14 +206,18 @@ void main() {
       await saisirGerard(tester);
       await tester.tap(find.text(tp.save));
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('hiker-profile-consent-error')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('hiker-profile-consent-error')),
+        findsOneWidget,
+      );
 
       await basculerConsentement(tester);
       // Le message disparait des que l'autorisation est donnee : il dirait le
       // contraire de ce que la bascule montre.
-      expect(find.byKey(const ValueKey('hiker-profile-consent-error')),
-          findsNothing);
+      expect(
+        find.byKey(const ValueKey('hiker-profile-consent-error')),
+        findsNothing,
+      );
 
       await tester.tap(find.text(tp.save));
       await tester.pumpAndSettle();
@@ -209,20 +233,24 @@ void main() {
     testWidgets('UNE REVOCATION EFFACE : la morpho deja enregistree ne survit '
         'pas au retrait du consentement', (tester) async {
       // Etat de depart : fiche complete enregistree AVEC consentement.
-      await depot().saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-        sex: HikerSex.male,
-        countryIso: 'FR',
-      ));
+      await depot().saveProfile(
+        const HikerProfile(
+          age: 72,
+          heightCm: 172,
+          weightKg: 88,
+          sex: HikerSex.male,
+          countryIso: 'FR',
+        ),
+      );
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
 
       await ouvrir(tester);
       // L'ecran relit l'accord : la bascule est sur « autorise ».
-      expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
-          isTrue);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isTrue,
+      );
 
       // Le randonneur retire son accord, puis enregistre.
       await basculerConsentement(tester);
@@ -249,19 +277,23 @@ void main() {
 
     test('MEME REGLE DEPUIS LES REGLAGES : retirer l autorisation sante y '
         'efface aussi la morphologie', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 68,
-        heightCm: 170,
-        weightKg: 92,
-        countryIso: 'IT',
-      ));
+      await depot().saveProfile(
+        const HikerProfile(
+          age: 68,
+          heightCm: 170,
+          weightKg: 92,
+          countryIso: 'IT',
+        ),
+      );
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider.overrideWithValue(depot()),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          hikerProfileRepositoryProvider.overrideWithValue(depot()),
+        ],
+      );
       addTearDown(container.dispose);
 
       await container
@@ -273,8 +305,10 @@ void main() {
       expect(persiste.heightCm, 0);
       expect(persiste.weightKg, 0);
       expect(persiste.countryIso, 'IT');
-      expect((await consentement()).hasConsent(ConsentPurpose.healthData),
-          isFalse);
+      expect(
+        (await consentement()).hasConsent(ConsentPurpose.healthData),
+        isFalse,
+      );
     });
 
     // TACHE 562 (LOT K, K2a) — LA QUATRIEME MESURE DE SANTE.
@@ -289,35 +323,45 @@ void main() {
     // formulaire.
     test('LE TEST DE MARCHE 6 MIN PART AUSSI : une mesure de capacite physique '
         'ne survit pas au refus du consentement', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-        countryIso: 'FR',
-      ));
-      await depot().saveWalkTestResult(WalkTestResult(
-        distanceMeters: 420,
-        level: 'slow',
-        takenAt: DateTime(2026, 9, 1),
-      ));
+      await depot().saveProfile(
+        const HikerProfile(
+          age: 72,
+          heightCm: 172,
+          weightKg: 88,
+          countryIso: 'FR',
+        ),
+      );
+      await depot().saveWalkTestResult(
+        WalkTestResult(
+          distanceMeters: 420,
+          level: 'slow',
+          takenAt: DateTime(2026, 9, 1),
+        ),
+      );
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
       // La mesure existe AVANT : sans cela le test ne prouverait rien.
       expect(await depot().getWalkTestResult(), isNotNull);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider.overrideWithValue(depot()),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          hikerProfileRepositoryProvider.overrideWithValue(depot()),
+        ],
+      );
       addTearDown(container.dispose);
 
       await container
           .read(consentControllerProvider)
           .revoke(ConsentPurpose.healthData);
 
-      expect(await depot().getWalkTestResult(), isNull,
-          reason: 'la distance parcourue en 6 minutes est une mesure de '
-              'capacite physique : elle releve de l article 9 comme le poids');
+      expect(
+        await depot().getWalkTestResult(),
+        isNull,
+        reason:
+            'la distance parcourue en 6 minutes est une mesure de '
+            'capacite physique : elle releve de l article 9 comme le poids',
+      );
       // Et la morphologie part toujours, evidemment.
       final persiste = await depot().getProfile();
       expect(persiste.age, 0);
@@ -326,19 +370,19 @@ void main() {
     });
 
     test('une autre finalite retiree ne touche PAS a la morphologie', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 40,
-        heightCm: 175,
-        weightKg: 70,
-      ));
+      await depot().saveProfile(
+        const HikerProfile(age: 40, heightCm: 175, weightKg: 70),
+      );
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
       await consent.grant(ConsentPurpose.socialSharing);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider.overrideWithValue(depot()),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          hikerProfileRepositoryProvider.overrideWithValue(depot()),
+        ],
+      );
       addTearDown(container.dispose);
 
       await container
@@ -395,72 +439,100 @@ void main() {
       await tester.tap(find.text(tp.save));
       await tester.pumpAndSettle();
 
-      expect(await profilStockeBrut(), isNull,
-          reason: 'l ecran promet « rien n est enregistre » : un document cree '
-              'et horodate est une trace de passage, meme vide de sante');
-      expect(prefs.getString(kHikerProfilePrefsKey), isNull,
-          reason: 'et la cle heritee ne doit jamais revenir (tache 623)');
+      expect(
+        await profilStockeBrut(),
+        isNull,
+        reason:
+            'l ecran promet « rien n est enregistre » : un document cree '
+            'et horodate est une trace de passage, meme vide de sante',
+      );
+      expect(
+        prefs.getString(kHikerProfilePrefsKey),
+        isNull,
+        reason: 'et la cle heritee ne doit jamais revenir (tache 623)',
+      );
     });
 
-    test('meme regle depuis les Reglages : une fiche qui ne contenait que de la '
-        'morphologie ne laisse AUCUNE cle', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-      ));
-      expect(await profilStockeBrut(), isNotNull,
-          reason: 'le test ne prouve rien si le document n existait pas avant');
-      final consent = await consentement();
-      await consent.grant(ConsentPurpose.healthData);
+    test(
+      'meme regle depuis les Reglages : une fiche qui ne contenait que de la '
+      'morphologie ne laisse AUCUNE cle',
+      () async {
+        await depot().saveProfile(
+          const HikerProfile(age: 72, heightCm: 172, weightKg: 88),
+        );
+        expect(
+          await profilStockeBrut(),
+          isNotNull,
+          reason: 'le test ne prouve rien si le document n existait pas avant',
+        );
+        final consent = await consentement();
+        await consent.grant(ConsentPurpose.healthData);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider.overrideWithValue(depot()),
-      ]);
-      addTearDown(container.dispose);
+        final container = ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            hikerProfileRepositoryProvider.overrideWithValue(depot()),
+          ],
+        );
+        addTearDown(container.dispose);
 
-      await container
-          .read(consentControllerProvider)
-          .revoke(ConsentPurpose.healthData);
+        await container
+            .read(consentControllerProvider)
+            .revoke(ConsentPurpose.healthData);
 
-      expect(await profilStockeBrut(), isNull,
-          reason: 'il ne restait que de l article 9 : le document doit partir, '
-              'pas etre reecrit a zero');
-    });
+        expect(
+          await profilStockeBrut(),
+          isNull,
+          reason:
+              'il ne restait que de l article 9 : le document doit partir, '
+              'pas etre reecrit a zero',
+        );
+      },
+    );
 
     test('le MIROIR Drift ne garde pas non plus une ligne a zero', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-      ));
-      expect(await db.select(db.hikerProfile).get(), isNotEmpty,
-          reason: 'le test ne prouve rien si le miroir etait deja vide');
+      await depot().saveProfile(
+        const HikerProfile(age: 72, heightCm: 172, weightKg: 88),
+      );
+      expect(
+        await db.select(db.hikerProfile).get(),
+        isNotEmpty,
+        reason: 'le test ne prouve rien si le miroir etait deja vide',
+      );
 
       await depot().eraseMorphology();
 
-      expect(await db.select(db.hikerProfile).get(), isEmpty,
-          reason: 'une ligne a zero dans le miroir est la meme trace de '
-              'passage, a un autre etage');
+      expect(
+        await db.select(db.hikerProfile).get(),
+        isEmpty,
+        reason:
+            'une ligne a zero dans le miroir est la meme trace de '
+            'passage, a un autre etage',
+      );
     });
 
     test('LE CAS VOISIN : le pays survit, donc la cle reste — mais sans la '
         'morphologie', () async {
-      await depot().saveProfile(const HikerProfile(
-        age: 72,
-        heightCm: 172,
-        weightKg: 88,
-        sex: HikerSex.male,
-        countryIso: 'FR',
-      ));
+      await depot().saveProfile(
+        const HikerProfile(
+          age: 72,
+          heightCm: 172,
+          weightKg: 88,
+          sex: HikerSex.male,
+          countryIso: 'FR',
+        ),
+      );
 
       await depot().eraseMorphology();
 
       final brut = await profilStockeBrut();
-      expect(brut, isNotNull,
-          reason: 'le sexe et le pays ne relevent pas de l article 9 : les '
-              'supprimer depasserait le refus que le randonneur a exprime');
+      expect(
+        brut,
+        isNotNull,
+        reason:
+            'le sexe et le pays ne relevent pas de l article 9 : les '
+            'supprimer depasserait le refus que le randonneur a exprime',
+      );
       final stocke = json.decode(brut!) as Map<String, dynamic>;
       expect(stocke['countryIso'], 'FR');
       expect(stocke['sex'], HikerSex.male);
@@ -469,16 +541,21 @@ void main() {
       expect(stocke['weightKg'], 0);
     });
 
-    test('un pays seul, sans morphologie, garde sa cle intacte apres un refus',
-        () async {
-      await depot().saveProfile(const HikerProfile(countryIso: 'IT'));
+    test(
+      'un pays seul, sans morphologie, garde sa cle intacte apres un refus',
+      () async {
+        await depot().saveProfile(const HikerProfile(countryIso: 'IT'));
 
-      await depot().eraseMorphology();
+        await depot().eraseMorphology();
 
-      final brut = await profilStockeBrut();
-      expect(brut, isNotNull);
-      expect((json.decode(brut!) as Map<String, dynamic>)['countryIso'], 'IT');
-    });
+        final brut = await profilStockeBrut();
+        expect(brut, isNotNull);
+        expect(
+          (json.decode(brut!) as Map<String, dynamic>)['countryIso'],
+          'IT',
+        );
+      },
+    );
   });
 
   group('N2 — aucun jugement sur le corps, dans aucune langue', () {
@@ -496,9 +573,9 @@ void main() {
 
     /// Tous les textes de la section `hikerProfile` d'une langue, a plat.
     List<String> textesFiche(String langue) {
-      final racine = jsonDecode(
-        File('assets/i18n/$langue.i18n.json').readAsStringSync(),
-      ) as Map<String, dynamic>;
+      final racine =
+          jsonDecode(File('assets/i18n/$langue.i18n.json').readAsStringSync())
+              as Map<String, dynamic>;
       final out = <String>[];
       void visiter(Object? noeud) {
         if (noeud is Map) {
@@ -519,13 +596,20 @@ void main() {
     test('la table de traduction ne porte plus l IMC ni ses categories', () {
       for (final entree in interdits.entries) {
         final textes = textesFiche(entree.key);
-        expect(textes, isNotEmpty,
-            reason: '${entree.key} : section hikerProfile introuvable');
+        expect(
+          textes,
+          isNotEmpty,
+          reason: '${entree.key} : section hikerProfile introuvable',
+        );
         for (final mot in entree.value) {
           for (final texte in textes) {
-            expect(texte.toLowerCase(), isNot(contains(mot)),
-                reason: '${entree.key} : la fiche d info dit « $mot » '
-                    '(« $texte »)');
+            expect(
+              texte.toLowerCase(),
+              isNot(contains(mot)),
+              reason:
+                  '${entree.key} : la fiche d info dit « $mot » '
+                  '(« $texte »)',
+            );
           }
         }
       }
@@ -534,16 +618,22 @@ void main() {
     test('les cles bmiLabel / bmiCategories n existent plus nulle part', () {
       for (final locale in AppLocale.values) {
         final tr = locale.buildSync();
-        expect(tr['hikerProfile.bmiLabel'], isNull,
-            reason: '${locale.languageCode} : bmiLabel est revenu');
+        expect(
+          tr['hikerProfile.bmiLabel'],
+          isNull,
+          reason: '${locale.languageCode} : bmiLabel est revenu',
+        );
         for (final cle in const [
           'underweight',
           'normal',
           'overweight',
           'obese',
         ]) {
-          expect(tr['hikerProfile.bmiCategories.$cle'], isNull,
-              reason: '${locale.languageCode} : bmiCategories.$cle est revenu');
+          expect(
+            tr['hikerProfile.bmiCategories.$cle'],
+            isNull,
+            reason: '${locale.languageCode} : bmiCategories.$cle est revenu',
+          );
         }
       }
     });
@@ -555,11 +645,13 @@ void main() {
         await ouvrir(tester);
         // IMC 29.7 : exactement la saisie de la capture S9 de la campagne.
         await tester.enterText(
-            find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight),
-            '172');
+          find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight),
+          '172',
+        );
         await tester.enterText(
-            find.widgetWithText(TextFormField, t.hikerProfile.fieldWeight),
-            '88');
+          find.widgetWithText(TextFormField, t.hikerProfile.fieldWeight),
+          '88',
+        );
         await tester.pumpAndSettle();
 
         final affiches = tester
@@ -568,17 +660,27 @@ void main() {
             .toList();
         for (final mot in interdits[locale.languageCode]!) {
           for (final texte in affiches) {
-            expect(texte, isNot(contains(mot)),
-                reason: '${locale.languageCode} : l ecran affiche « $mot » '
-                    '(« $texte »)');
+            expect(
+              texte,
+              isNot(contains(mot)),
+              reason:
+                  '${locale.languageCode} : l ecran affiche « $mot » '
+                  '(« $texte »)',
+            );
           }
         }
         // Et aucun nombre d IMC non plus : 88 / 1,72^2 = 29.7.
         for (final texte in affiches) {
-          expect(texte, isNot(contains('29.7')),
-              reason: '${locale.languageCode} : l IMC calcule est affiche');
-          expect(texte, isNot(contains('29,7')),
-              reason: '${locale.languageCode} : l IMC calcule est affiche');
+          expect(
+            texte,
+            isNot(contains('29.7')),
+            reason: '${locale.languageCode} : l IMC calcule est affiche',
+          );
+          expect(
+            texte,
+            isNot(contains('29,7')),
+            reason: '${locale.languageCode} : l IMC calcule est affiche',
+          );
         }
       }
     });

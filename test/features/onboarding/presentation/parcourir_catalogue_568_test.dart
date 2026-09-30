@@ -73,9 +73,7 @@ void main() {
 
     return ProviderScope(
       overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
-      child: TranslationProvider(
-        child: MaterialApp.router(routerConfig: r),
-      ),
+      child: TranslationProvider(child: MaterialApp.router(routerConfig: r)),
     );
   }
 
@@ -109,7 +107,8 @@ void main() {
         expect(
           prefs.getBool(kOnboardingCompletedKey),
           isTrue,
-          reason: 'sans persistance, le catalogue renverrait a l onboarding au '
+          reason:
+              'sans persistance, le catalogue renverrait a l onboarding au '
               'prochain lancement',
         );
 
@@ -118,7 +117,8 @@ void main() {
         expect(
           router.hasCompletedOnboarding,
           isTrue,
-          reason: 'la garde du routeur lit cette globale, pas le provider : '
+          reason:
+              'la garde du routeur lit cette globale, pas le provider : '
               'sans elle, /catalog est renvoye sur /onboarding et le bouton '
               'parait mort',
         );
@@ -146,7 +146,8 @@ void main() {
         expect(
           find.text(tr.onboarding.getStarted),
           findsNothing,
-          reason: 'le doublon du bas disparait sur la page qui porte deja le '
+          reason:
+              'le doublon du bas disparait sur la page qui porte deja le '
               'geste explicite (decision Skynet, tache 568)',
         );
         // Le bouton « Suivant » n'a plus rien a faire ici non plus.

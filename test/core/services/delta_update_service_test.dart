@@ -41,44 +41,89 @@ void main() {
     svc = DeltaUpdateService(
       db: db,
       manifestService: ManifestService(dao: dao, connectivityMonitor: conn),
-      trailManifestsDao: dao, trailMetaDao: TrailMetaDao(db),
-      trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
-      trailAccommodationsDao: TrailAccommodationsDao(db), trailPoisDao: TrailPoisDao(db),
-      trailGpxTracksDao: TrailGpxTracksDao(db), trailGpxPointsDao: TrailGpxPointsDao(db));
+      trailManifestsDao: dao,
+      trailMetaDao: TrailMetaDao(db),
+      trailItinerariesDao: TrailItinerariesDao(db),
+      trailStagesDao: TrailStagesDao(db),
+      trailAccommodationsDao: TrailAccommodationsDao(db),
+      trailPoisDao: TrailPoisDao(db),
+      trailGpxTracksDao: TrailGpxTracksDao(db),
+      trailGpxPointsDao: TrailGpxPointsDao(db),
+    );
   });
-  tearDown(() async { await db.close(); });
+  tearDown(() async {
+    await db.close();
+  });
 
-  TrailManifest mk({int v = 3}) => TrailManifest(schemaVersion: 1, trails: [
-    TrailManifestEntry(trailId: 'sentier-volcans', dataVersion: ins(v), hash: 'h',
-      filePath: 'p', fileSize: 524288, status: 'active', lastUpdated: '2026-05-26T12:00:00Z')]);
+  TrailManifest mk({int v = 3}) => TrailManifest(
+    schemaVersion: 1,
+    trails: [
+      TrailManifestEntry(
+        trailId: 'sentier-volcans',
+        dataVersion: ins(v),
+        hash: 'h',
+        filePath: 'p',
+        fileSize: 524288,
+        status: 'active',
+        lastUpdated: '2026-05-26T12:00:00Z',
+      ),
+    ],
+  );
 
   group('checkForUpdates', () {
     test('null si absent', () async {
-      expect(await svc.checkForUpdates('sentier-volcans',
-        remoteManifest: const TrailManifest(schemaVersion: 1, trails: [])), isNull);
+      expect(
+        await svc.checkForUpdates(
+          'sentier-volcans',
+          remoteManifest: const TrailManifest(schemaVersion: 1, trails: []),
+        ),
+        isNull,
+      );
     });
     test('null si a jour', () async {
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'), dataVersion: Value(ins(3)),
-        hash: const Value('h'),
-        filePath: const Value('p'), fileSize: const Value(100),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-01-01'), localVersion: Value(ins(3))));
-      expect(await svc.checkForUpdates('sentier-volcans', remoteManifest: mk(v: 3)), isNull);
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(ins(3)),
+          hash: const Value('h'),
+          filePath: const Value('p'),
+          fileSize: const Value(100),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-01-01'),
+          localVersion: Value(ins(3)),
+        ),
+      );
+      expect(
+        await svc.checkForUpdates('sentier-volcans', remoteManifest: mk(v: 3)),
+        isNull,
+      );
     });
     test('DeltaUpdate si MAJ dispo', () async {
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'), dataVersion: Value(ins(1)),
-        hash: const Value('h'),
-        filePath: const Value('p'), fileSize: const Value(100),
-        status: const Value('active'),
-        lastUpdated: const Value('2026-01-01'), localVersion: Value(ins(1))));
-      final r = await svc.checkForUpdates('sentier-volcans', remoteManifest: mk(v: 3));
-      expect(r, isNotNull); expect(r!.fromVersion, ins(1));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(ins(1)),
+          hash: const Value('h'),
+          filePath: const Value('p'),
+          fileSize: const Value(100),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-01-01'),
+          localVersion: Value(ins(1)),
+        ),
+      );
+      final r = await svc.checkForUpdates(
+        'sentier-volcans',
+        remoteManifest: mk(v: 3),
+      );
+      expect(r, isNotNull);
+      expect(r!.fromVersion, ins(1));
       expect(r.toVersion, ins(3));
     });
     test('DeltaUpdate si jamais telecharge', () async {
-      final r = await svc.checkForUpdates('sentier-volcans', remoteManifest: mk(v: 2));
+      final r = await svc.checkForUpdates(
+        'sentier-volcans',
+        remoteManifest: mk(v: 2),
+      );
       expect(r, isNotNull);
       expect(r!.fromVersion, HorodatageServeur.origine);
     });
@@ -94,24 +139,52 @@ void main() {
     // lieu de l en eloigner. Le cas « pas de ligne » a desormais son propre test
     // (test/comportement/horloge_du_telephone_610_test.dart).
     setUp(() async {
-      await dao.insertOrReplace(TrailManifestsCompanion(
-        trailId: const Value('sentier-volcans'), dataVersion: Value(ins(1)),
-        hash: const Value('h'), filePath: const Value('p'),
-        fileSize: const Value(100), status: const Value('active'),
-        lastUpdated: const Value('2026-01-01')));
+      await dao.insertOrReplace(
+        TrailManifestsCompanion(
+          trailId: const Value('sentier-volcans'),
+          dataVersion: Value(ins(1)),
+          hash: const Value('h'),
+          filePath: const Value('p'),
+          fileSize: const Value(100),
+          status: const Value('active'),
+          lastUpdated: const Value('2026-01-01'),
+        ),
+      );
     });
 
     test('applique stages', () async {
-      await svc.appliquerRevisions('sentier-volcans',
+      await svc.appliquerRevisions(
+        'sentier-volcans',
         revisionLocale: HorodatageServeur.origine,
-        niveau: NiveauDeTelechargement.realiser, revisionCible: ins(1), {'stages': [
-        {'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'Cal',
-          'name_en': 'C', 'name_de': 'C', 'name_it': 'C', 'name_es': 'C',
-          'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.4, 'end_lng': 3.0,
-          'distance_km': 12.0, 'elevation_gain': 1500, 'elevation_loss': 200,
-          'duration_minutes': 420, 'difficulty': 'difficile'}]});
+        niveau: NiveauDeTelechargement.realiser,
+        revisionCible: ins(1),
+        {
+          'stages': [
+            {
+              'id': 's1',
+              'itinerary_id': 'i1',
+              'stage_number': 1,
+              'name_fr': 'Cal',
+              'name_en': 'C',
+              'name_de': 'C',
+              'name_it': 'C',
+              'name_es': 'C',
+              'start_lat': 45.5,
+              'start_lng': 2.9,
+              'end_lat': 45.4,
+              'end_lng': 3.0,
+              'distance_km': 12.0,
+              'elevation_gain': 1500,
+              'elevation_loss': 200,
+              'duration_minutes': 420,
+              'difficulty': 'difficile',
+            },
+          ],
+        },
+      );
       final stages = await TrailStagesDao(db).getByItineraryId('i1');
-      expect(stages.length, 1); expect(stages.first.nameFr, 'Cal');
+      expect(stages.length, 1);
+      expect(stages.first.nameFr, 'Cal');
     });
     // CE TEST S APPELAIT « respecte changedTables » ET IL BORNAIT LA POSE PAR
     // `famillesLimitees: ['stages']` (tache 616). Le parametre a disparu : le
@@ -121,41 +194,81 @@ void main() {
     // pas — « la pose n ecrit que ce que la borne autorise » — il est simplement
     // exprime avec la borne reelle, et sur la frontiere qui compte : le
     // volumineux.
-    test('le niveau borne la pose : PREPARER n ecrit pas le volumineux',
-        () async {
-      final bilan = await svc.appliquerRevisions('sentier-volcans',
-        revisionLocale: HorodatageServeur.origine,
-        niveau: NiveauDeTelechargement.preparer, revisionCible: ins(1), {
-        'stages': [{'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'A',
-          'name_en': 'A', 'name_de': 'A', 'name_it': 'A', 'name_es': 'A',
-          'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.6, 'end_lng': 3.0,
-          'distance_km': 10.0, 'elevation_gain': 500, 'elevation_loss': 200,
-          'duration_minutes': 300, 'difficulty': 'moyen'}],
-        'pois': [{'id': 'p1', 'stage_id': 's1', 'name_fr': 'S', 'name_en': 'S',
-          'name_de': 'Q', 'name_it': 'S', 'name_es': 'F', 'type': 'water',
-          'lat': 45.55, 'lng': 2.95}],
-        'gpx_tracks': [{'id': 't1', 'itinerary_id': 'i1', 'name': 'trace'}],
-        'gpx_points': [
-          for (var i = 0; i < 5; i++)
-            {'track_id': 't1', 'lat': 45.5, 'lng': 2.9, 'elevation': 1200.0,
-              'sequence_index': i},
-        ],
-      });
+    test(
+      'le niveau borne la pose : PREPARER n ecrit pas le volumineux',
+      () async {
+        final bilan = await svc.appliquerRevisions(
+          'sentier-volcans',
+          revisionLocale: HorodatageServeur.origine,
+          niveau: NiveauDeTelechargement.preparer,
+          revisionCible: ins(1),
+          {
+            'stages': [
+              {
+                'id': 's1',
+                'itinerary_id': 'i1',
+                'stage_number': 1,
+                'name_fr': 'A',
+                'name_en': 'A',
+                'name_de': 'A',
+                'name_it': 'A',
+                'name_es': 'A',
+                'start_lat': 45.5,
+                'start_lng': 2.9,
+                'end_lat': 45.6,
+                'end_lng': 3.0,
+                'distance_km': 10.0,
+                'elevation_gain': 500,
+                'elevation_loss': 200,
+                'duration_minutes': 300,
+                'difficulty': 'moyen',
+              },
+            ],
+            'pois': [
+              {
+                'id': 'p1',
+                'stage_id': 's1',
+                'name_fr': 'S',
+                'name_en': 'S',
+                'name_de': 'Q',
+                'name_it': 'S',
+                'name_es': 'F',
+                'type': 'water',
+                'lat': 45.55,
+                'lng': 2.95,
+              },
+            ],
+            'gpx_tracks': [
+              {'id': 't1', 'itinerary_id': 'i1', 'name': 'trace'},
+            ],
+            'gpx_points': [
+              for (var i = 0; i < 5; i++)
+                {
+                  'track_id': 't1',
+                  'lat': 45.5,
+                  'lng': 2.9,
+                  'elevation': 1200.0,
+                  'sequence_index': i,
+                },
+            ],
+          },
+        );
 
-      // CE QUI EST ECRIT : de quoi calculer la faisabilite et remplir le sac.
-      expect((await TrailStagesDao(db).getByItineraryId('i1')).length, 1);
-      expect(await TrailPoisDao(db).getByStageId('s1'), hasLength(1));
+        // CE QUI EST ECRIT : de quoi calculer la faisabilite et remplir le sac.
+        expect((await TrailStagesDao(db).getByItineraryId('i1')).length, 1);
+        expect(await TrailPoisDao(db).getByStageId('s1'), hasLength(1));
 
-      // CE QUI N EST PAS ECRIT, ET C EST LA DEMANDE DE CHRISTOPHE DU 28/09 11:27.
-      // Les cinq points de trace etaient DANS les donnees posees : ils sont
-      // refuses par le niveau, pas absents de la source.
-      expect(await TrailGpxTracksDao(db).getAll(), isEmpty);
-      expect(await TrailGpxPointsDao(db).getAll(), isEmpty);
+        // CE QUI N EST PAS ECRIT, ET C EST LA DEMANDE DE CHRISTOPHE DU 28/09 11:27.
+        // Les cinq points de trace etaient DANS les donnees posees : ils sont
+        // refuses par le niveau, pas absents de la source.
+        expect(await TrailGpxTracksDao(db).getAll(), isEmpty);
+        expect(await TrailGpxPointsDao(db).getAll(), isEmpty);
 
-      // ET LE BILAN LE COMPTE, au lieu de le laisser deviner.
-      expect(bilan.ecrits, 2, reason: '1 etape + 1 point d interet');
-      expect(bilan.famillesTouchees, ['stages', 'pois']);
-      expect(bilan.niveauAtteint, NiveauDeTelechargement.preparer);
-    });
+        // ET LE BILAN LE COMPTE, au lieu de le laisser deviner.
+        expect(bilan.ecrits, 2, reason: '1 etape + 1 point d interet');
+        expect(bilan.famillesTouchees, ['stages', 'pois']);
+        expect(bilan.niveauAtteint, NiveauDeTelechargement.preparer);
+      },
+    );
   });
 }

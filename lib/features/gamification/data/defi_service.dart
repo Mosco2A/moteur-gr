@@ -16,7 +16,7 @@ abstract interface class DefiRankingRepository {
 /// par la sync du doc `defi_rankings/{defiId}` quand Firestore sera actif.
 class InMemoryDefiRankingRepository implements DefiRankingRepository {
   InMemoryDefiRankingRepository([Map<String, DefiRanking>? cache])
-      : _cache = {...?cache};
+    : _cache = {...?cache};
 
   final Map<String, DefiRanking> _cache;
 
@@ -36,7 +36,7 @@ class InMemoryDefiRankingRepository implements DefiRankingRepository {
 ///   ne calcule JAMAIS le classement.
 class DefiService {
   DefiService({required DefiRankingRepository rankingRepository})
-      : _rankingRepository = rankingRepository;
+    : _rankingRepository = rankingRepository;
 
   final DefiRankingRepository _rankingRepository;
 
@@ -49,11 +49,7 @@ class DefiService {
       DefiObjectif.segments => stats.segmentsCompleted.toDouble(),
       _ => 0.0,
     };
-    return DefiProgress(
-      defiId: defi.id,
-      current: current,
-      target: defi.cible,
-    );
+    return DefiProgress(defiId: defi.id, current: current, target: defi.cible);
   }
 
   /// Classement du defi, lu depuis le cache local (offline-first, R2).

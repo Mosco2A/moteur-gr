@@ -126,16 +126,17 @@ class TrainingPersonalization {
 }
 
 /// Personnalisation courante (fiche L4 + verdict du moteur unique).
-final trainingPersonalizationProvider =
-    FutureProvider<TrainingPersonalization>((ref) async {
-  final profile = await ref.watch(hikerProfileProvider.future);
-  // Le verdict peut etre indisponible (pas d'etapes) -> null tolere.
-  final assessment = await ref.watch(feasibilityAssessmentProvider.future);
-  return TrainingPersonalization(
-    hasProfile: profile.hasMorphology,
-    verdict: assessment?.globalVerdict,
-  );
-});
+final trainingPersonalizationProvider = FutureProvider<TrainingPersonalization>(
+  (ref) async {
+    final profile = await ref.watch(hikerProfileProvider.future);
+    // Le verdict peut etre indisponible (pas d'etapes) -> null tolere.
+    final assessment = await ref.watch(feasibilityAssessmentProvider.future);
+    return TrainingPersonalization(
+      hasProfile: profile.hasMorphology,
+      verdict: assessment?.globalVerdict,
+    );
+  },
+);
 
 // --- Suivi local des seances cochees -------------------------------------
 
@@ -198,7 +199,9 @@ class TrainingProgressNotifier extends Notifier<TrainingProgressState> {
 }
 
 /// Provider du suivi d'entrainement (seances cochees), indexe par sentier.
-final trainingProgressProvider = NotifierProvider.family<
-    TrainingProgressNotifier, TrainingProgressState, String>(
-  TrainingProgressNotifier.new,
-);
+final trainingProgressProvider =
+    NotifierProvider.family<
+      TrainingProgressNotifier,
+      TrainingProgressState,
+      String
+    >(TrainingProgressNotifier.new);

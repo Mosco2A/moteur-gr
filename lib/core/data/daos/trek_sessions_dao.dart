@@ -33,9 +33,9 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
 
   /// Relit la session [id], ou null si absente.
   Future<TrekSession?> getById(String id) async {
-    final row = await (select(trekSessions)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final row = await (select(
+      trekSessions,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
     return row == null ? null : _fromRow(row);
   }
 
@@ -49,14 +49,15 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
   /// cette session pour refleter le parcours REELLEMENT effectue (etapes
   /// marchees + drapeau finisher), y compris apres un redemarrage.
   Future<TrekSession?> getLatestByTrailId(String trailId) async {
-    final row = await (select(trekSessions)
-          ..where((t) => t.trailId.equals(trailId))
-          ..orderBy([
-            (t) => OrderingTerm.desc(t.startedAt),
-            (t) => OrderingTerm.desc(t.finishedAt),
-          ])
-          ..limit(1))
-        .getSingleOrNull();
+    final row =
+        await (select(trekSessions)
+              ..where((t) => t.trailId.equals(trailId))
+              ..orderBy([
+                (t) => OrderingTerm.desc(t.startedAt),
+                (t) => OrderingTerm.desc(t.finishedAt),
+              ])
+              ..limit(1))
+            .getSingleOrNull();
     return row == null ? null : _fromRow(row);
   }
 
@@ -74,16 +75,17 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
   /// mise en pause echappait a l'invariant « au plus 1 rando en cours » et a la
   /// reprise orpheline. On inclut donc `paused` ([kOngoingStatuses]).
   Future<List<TrekSession>> findActiveSessions() async {
-    final rows = await (select(trekSessions)
-          ..where((t) => t.status.isIn(kOngoingStatuses)))
-        .get();
+    final rows = await (select(
+      trekSessions,
+    )..where((t) => t.status.isIn(kOngoingStatuses))).get();
     return rows.map(_fromRow).toList();
   }
 
   /// Met a jour le seul statut de la session [id] (ex. `abandoned`).
   Future<void> updateStatus(String id, String status) async {
-    await (update(trekSessions)..where((t) => t.id.equals(id)))
-        .write(TrekSessionsCompanion(status: Value(status)));
+    await (update(trekSessions)..where((t) => t.id.equals(id))).write(
+      TrekSessionsCompanion(status: Value(status)),
+    );
   }
 
   /// Supprime la session [id].

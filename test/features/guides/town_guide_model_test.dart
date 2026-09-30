@@ -89,9 +89,7 @@ void main() {
         GuideSection(
           categorie: GuideCategory.sante,
           titre: 'Sante',
-          items: [
-            GuideItem(nom: 'Pharmacie', description: 'Premiers soins.'),
-          ],
+          items: [GuideItem(nom: 'Pharmacie', description: 'Premiers soins.')],
         ),
       ],
     );
@@ -138,8 +136,10 @@ void main() {
   });
 
   group('TownGuideCatalog — donnees fictives P2-P3 (#84627)', () {
-    GuideSectionLabels resolver(String categorie) =>
-        GuideSectionLabels(titre: 'Titre $categorie', contenu: 'Intro $categorie');
+    GuideSectionLabels resolver(String categorie) => GuideSectionLabels(
+      titre: 'Titre $categorie',
+      contenu: 'Intro $categorie',
+    );
 
     test('guidesFor retourne des guides rattaches au sentier demande', () {
       final guides = TownGuideCatalog.guidesFor(

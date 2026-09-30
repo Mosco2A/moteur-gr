@@ -6,10 +6,7 @@ import 'package:moteur_gr/features/trek/data/stage_detection_service.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage.dart';
 
 /// Helper : cree une Position de test avec les champs requis.
-Position _fakePosition({
-  required double lat,
-  required double lng,
-}) {
+Position _fakePosition({required double lat, required double lng}) {
   return Position(
     latitude: lat,
     longitude: lng,
@@ -107,37 +104,39 @@ void main() {
       expect(emitted.length, greaterThanOrEqualTo(2));
     });
 
-    test('hysteresis empeche le flip-flop a la frontiere entre etapes',
-        () async {
-      // Hysteresis de 5000m pour forcer le blocage
-      // (la frontiere stage-1/stage-2 est a 42.1, 9.1)
-      final service = StageDetectionService(hysteresisMeters: 5000.0);
+    test(
+      'hysteresis empeche le flip-flop a la frontiere entre etapes',
+      () async {
+        // Hysteresis de 5000m pour forcer le blocage
+        // (la frontiere stage-1/stage-2 est a 42.1, 9.1)
+        final service = StageDetectionService(hysteresisMeters: 5000.0);
 
-      final positions = [
-        // Depart sur etape 1
-        _fakePosition(lat: 42.0, lng: 9.0),
-        // Juste de l'autre cote de la frontiere -> stage-2 est plus proche
-        // MAIS l'hysteresis (5000m) empeche le flip
-        // car la difference de distance n'est pas assez grande
-        _fakePosition(lat: 42.102, lng: 9.102),
-        // Revient cote etape 1
-        _fakePosition(lat: 42.098, lng: 9.098),
-        // Repart cote etape 2 (tres legerement)
-        _fakePosition(lat: 42.103, lng: 9.103),
-      ];
+        final positions = [
+          // Depart sur etape 1
+          _fakePosition(lat: 42.0, lng: 9.0),
+          // Juste de l'autre cote de la frontiere -> stage-2 est plus proche
+          // MAIS l'hysteresis (5000m) empeche le flip
+          // car la difference de distance n'est pas assez grande
+          _fakePosition(lat: 42.102, lng: 9.102),
+          // Revient cote etape 1
+          _fakePosition(lat: 42.098, lng: 9.098),
+          // Repart cote etape 2 (tres legerement)
+          _fakePosition(lat: 42.103, lng: 9.103),
+        ];
 
-      final positionStream = Stream.fromIterable(positions);
+        final positionStream = Stream.fromIterable(positions);
 
-      final emitted = await service
-          .currentStageId(positionStream, stages)
-          .toList();
+        final emitted = await service
+            .currentStageId(positionStream, stages)
+            .toList();
 
-      // Avec une hysteresis de 5000m, on ne devrait PAS changer d'etape
-      // car les positions oscillent autour de la frontiere (42.1, 9.1)
-      // et la difference de distance est < 5000m.
-      // Tous les points doivent rester sur stage-1 (premier detecte).
-      expect(emitted.length, equals(1));
-      expect(emitted.first, equals('stage-1'));
-    });
+        // Avec une hysteresis de 5000m, on ne devrait PAS changer d'etape
+        // car les positions oscillent autour de la frontiere (42.1, 9.1)
+        // et la difference de distance est < 5000m.
+        // Tous les points doivent rester sur stage-1 (premier detecte).
+        expect(emitted.length, equals(1));
+        expect(emitted.first, equals('stage-1'));
+      },
+    );
   });
 }

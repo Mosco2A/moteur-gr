@@ -13,7 +13,8 @@ final kudosFeedDaoProvider = Provider<KudosFeedDao>((ref) {
 ///
 /// Masque les activites 'removed' (DSA, F7B-01.visibleActivities). Le widget
 /// se contente d'afficher : AUCUNE logique reseau/moderation ici.
-final visibleActivitiesProvider =
-    FutureProvider<List<ActivityFeedCacheData>>((ref) {
+final visibleActivitiesProvider = FutureProvider<List<ActivityFeedCacheData>>((
+  ref,
+) {
   return ref.watch(kudosFeedDaoProvider).visibleActivities();
 });

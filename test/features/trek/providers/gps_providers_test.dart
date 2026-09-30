@@ -10,10 +10,7 @@ import 'package:moteur_gr/features/trek/domain/models/stage.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 
 /// Helper : cree une Position de test avec les champs requis.
-Position _fakePosition({
-  required double lat,
-  required double lng,
-}) {
+Position _fakePosition({required double lat, required double lng}) {
   return Position(
     latitude: lat,
     longitude: lng,
@@ -178,12 +175,14 @@ void main() {
 
       // Verifier que le container a bien les services injectes
       final gps = container.read(gpsServiceProvider);
-      expect(gps, isA<GpsService>(),
-          reason: 'Le mock GPS doit etre injecte');
+      expect(gps, isA<GpsService>(), reason: 'Le mock GPS doit etre injecte');
 
       final stages = container.read(domainStagesProvider);
-      expect(stages.length, equals(3),
-          reason: 'Les 3 etapes domain doivent etre presentes');
+      expect(
+        stages.length,
+        equals(3),
+        reason: 'Les 3 etapes domain doivent etre presentes',
+      );
 
       // Verifier que stageDetectionServiceProvider fonctionne
       final detection = container.read(stageDetectionServiceProvider);

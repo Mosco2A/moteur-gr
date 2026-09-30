@@ -63,8 +63,8 @@ class FollowService {
     this.linksConfig = const FollowLinksConfig(),
     FirebaseFirestore? firestore,
     VerificateurCibleSuivi? verificateurCible,
-  })  : _firestore = firestore,
-        verificateurCible = verificateurCible ?? VerificateurCibleSuivi();
+  }) : _firestore = firestore,
+       verificateurCible = verificateurCible ?? VerificateurCibleSuivi();
 
   final FirebaseService firebaseService;
 
@@ -128,10 +128,7 @@ class FollowService {
     }
 
     try {
-      await firestore
-          .collection('follow_sessions_public')
-          .doc(sessionId)
-          .set({
+      await firestore.collection('follow_sessions_public').doc(sessionId).set({
         'shareCode': shareCode,
         'isActive': true,
         'expiresAtTs': Timestamp.fromDate(expiresAt),
@@ -172,8 +169,10 @@ class FollowService {
       final currentCount = snapshot.docs.length;
 
       if (!canAddFreeFollower(currentCount)) {
-        _log.w('[FollowService] Limite $kMaxFreeFollowers suiveurs gratuits '
-            'atteinte pour session $sessionId');
+        _log.w(
+          '[FollowService] Limite $kMaxFreeFollowers suiveurs gratuits '
+          'atteinte pour session $sessionId',
+        );
         return null;
       }
 
@@ -193,8 +192,10 @@ class FollowService {
           .doc(slotId)
           .set(slot.toJson());
 
-      _log.i('[FollowService] Suiveur ajoute: $name '
-          '(${currentCount + 1}/$kMaxFreeFollowers)');
+      _log.i(
+        '[FollowService] Suiveur ajoute: $name '
+        '(${currentCount + 1}/$kMaxFreeFollowers)',
+      );
       return slot;
     } catch (e) {
       _log.e('[FollowService] Erreur addFollower: $e');
@@ -218,10 +219,10 @@ class FollowService {
           .doc(sessionId)
           .collection('positions')
           .add({
-        'lat': lat,
-        'lng': lng,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+            'lat': lat,
+            'lng': lng,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
 
       return true;
     } catch (e) {
@@ -256,10 +257,12 @@ class FollowService {
     final resolvedType = ShareLinkTypeValues.fromString(type);
     final url = linksConfig.lien(canalDe(resolvedType), shareCode);
     if (url == null) {
-      _log.w('[FollowService] Canal $resolvedType sans adresse dans ce build : '
-          'aucun lien produit (variables ${FollowLinksConfig.variableAppBase} / '
-          '${FollowLinksConfig.variableWebBase} / '
-          '${FollowLinksConfig.variableCompagnonBase})');
+      _log.w(
+        '[FollowService] Canal $resolvedType sans adresse dans ce build : '
+        'aucun lien produit (variables ${FollowLinksConfig.variableAppBase} / '
+        '${FollowLinksConfig.variableWebBase} / '
+        '${FollowLinksConfig.variableCompagnonBase})',
+      );
       return null;
     }
 
@@ -332,12 +335,11 @@ class FollowService {
 
     final lien = switch (verdict.disponibilite) {
       DisponibiliteCibleSuivi.joignable ||
-      DisponibiliteCibleSuivi.nonVerifiable =>
-        generateShareLink(
-          sessionId: sessionId,
-          shareCode: shareCode,
-          type: resolvedType,
-        ),
+      DisponibiliteCibleSuivi.nonVerifiable => generateShareLink(
+        sessionId: sessionId,
+        shareCode: shareCode,
+        type: resolvedType,
+      ),
       _ => null,
     };
 

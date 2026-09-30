@@ -53,16 +53,19 @@ void main() {
   }
 
   group('TrailManifestsDao CRUD', () {
-    test('insertOrReplace puis getByTrailId retourne le bon manifest', () async {
-      await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
+    test(
+      'insertOrReplace puis getByTrailId retourne le bon manifest',
+      () async {
+        await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
 
-      final result = await dao.getByTrailId('sentier-bleu');
-      expect(result, isNotNull);
-      expect(result!.trailId, 'sentier-bleu');
-      expect(result.dataVersion, v(1));
-      expect(result.hash, 'test_hash_sha256');
-      expect(result.status, 'active');
-    });
+        final result = await dao.getByTrailId('sentier-bleu');
+        expect(result, isNotNull);
+        expect(result!.trailId, 'sentier-bleu');
+        expect(result.dataVersion, v(1));
+        expect(result.hash, 'test_hash_sha256');
+        expect(result.status, 'active');
+      },
+    );
 
     test('getAll retourne tous les manifests', () async {
       await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
@@ -79,16 +82,12 @@ void main() {
     });
 
     test('insertOrReplace met a jour un manifest existant', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 1,
-        hash: 'old_hash',
-      ));
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 2,
-        hash: 'new_hash',
-      ));
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 1, hash: 'old_hash'),
+      );
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 2, hash: 'new_hash'),
+      );
 
       final result = await dao.getByTrailId('sentier-bleu');
       expect(result!.dataVersion, v(2));
@@ -120,11 +119,9 @@ void main() {
     });
 
     test('localVersion se met a jour correctement', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 3,
-        localVersion: 2,
-      ));
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 3, localVersion: 2),
+      );
 
       final result = await dao.getByTrailId('sentier-bleu');
       expect(result!.localVersion, v(2));
@@ -139,44 +136,40 @@ void main() {
     });
 
     test('retourne true si localVersion est null', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 3,
-        localVersion: null,
-      ));
+      await dao.insertOrReplace(
+        makeManifest(
+          trailId: 'sentier-bleu',
+          dataVersion: 3,
+          localVersion: null,
+        ),
+      );
 
       final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isTrue);
     });
 
     test('retourne true si dataVersion > localVersion', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 5,
-        localVersion: 3,
-      ));
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 5, localVersion: 3),
+      );
 
       final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isTrue);
     });
 
     test('retourne false si dataVersion == localVersion', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 3,
-        localVersion: 3,
-      ));
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 3, localVersion: 3),
+      );
 
       final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isFalse);
     });
 
     test('retourne false si dataVersion < localVersion', () async {
-      await dao.insertOrReplace(makeManifest(
-        trailId: 'sentier-bleu',
-        dataVersion: 2,
-        localVersion: 3,
-      ));
+      await dao.insertOrReplace(
+        makeManifest(trailId: 'sentier-bleu', dataVersion: 2, localVersion: 3),
+      );
 
       final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isFalse);
@@ -193,36 +186,50 @@ void main() {
   group('TrailManifestsDao getPossedes', () {
     test('ne rend QUE les sentiers dont une copie a ete posee ici', () async {
       await dao.insertOrReplace(
-          makeManifest(trailId: 'copie', localVersion: 3));
+        makeManifest(trailId: 'copie', localVersion: 3),
+      );
       await dao.insertOrReplace(makeManifest(trailId: 'vu-au-catalogue'));
       await dao.insertOrReplace(makeManifest(trailId: 'vu-aussi'));
 
-      expect(await dao.getAll(), hasLength(3),
-          reason: 'les trois sont au catalogue, et c est voulu : c est ce qui '
-              'fait survivre la liste au hors-ligne');
+      expect(
+        await dao.getAll(),
+        hasLength(3),
+        reason:
+            'les trois sont au catalogue, et c est voulu : c est ce qui '
+            'fait survivre la liste au hors-ligne',
+      );
       expect((await dao.getTelecharges()).map((e) => e.trailId), ['copie']);
     });
 
     test('un sentier supprime du telephone sort du perimetre', () async {
       await dao.insertOrReplace(
-          makeManifest(trailId: 'copie', localVersion: 3));
+        makeManifest(trailId: 'copie', localVersion: 3),
+      );
       await dao.oublierRevision('copie');
 
-      expect(await dao.getTelecharges(), isEmpty,
-          reason: 'le repere oublie, il n y a plus de copie a maintenir a jour');
-    });
-
-    test('inscrireRevision LEVE quand aucune ligne de liste n existe (#X10)',
-        () async {
-      // LE FAUX SUCCES QUE CECI FERME. C est un `UPDATE` : sans ligne il rendait
-      // 0 EN SILENCE, la copie etait annoncee reussie et le telephone
-      // retelechargeait tout a l ouverture suivante. Le mot « complet » de
-      // Christophe l interdit.
-      await expectLater(
-        dao.inscrireRevision('inexistant', v(3),
-            niveau: NiveauDeTelechargement.realiser),
-        throwsA(isA<RepereNonInscriptible>()),
+      expect(
+        await dao.getTelecharges(),
+        isEmpty,
+        reason: 'le repere oublie, il n y a plus de copie a maintenir a jour',
       );
     });
+
+    test(
+      'inscrireRevision LEVE quand aucune ligne de liste n existe (#X10)',
+      () async {
+        // LE FAUX SUCCES QUE CECI FERME. C est un `UPDATE` : sans ligne il rendait
+        // 0 EN SILENCE, la copie etait annoncee reussie et le telephone
+        // retelechargeait tout a l ouverture suivante. Le mot « complet » de
+        // Christophe l interdit.
+        await expectLater(
+          dao.inscrireRevision(
+            'inexistant',
+            v(3),
+            niveau: NiveauDeTelechargement.realiser,
+          ),
+          throwsA(isA<RepereNonInscriptible>()),
+        );
+      },
+    );
   });
 }

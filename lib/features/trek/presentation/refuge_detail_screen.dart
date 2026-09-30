@@ -18,11 +18,11 @@ import '../../../core/branding/stepways_icons.dart';
 /// Aucune donnee d'hebergement n'est hardcodee dans le moteur.
 final accommodationsByStageProvider =
     FutureProvider.family<List<StageAccommodation>, int>((ref, stage) async {
-  final trailId = ref.watch(currentTrailIdProvider);
-  if (trailId.isEmpty) return [];
-  final dataProvider = ref.watch(trailDataProvider);
-  return dataProvider.getAccommodations(trailId, stageNumber: stage);
-});
+      final trailId = ref.watch(currentTrailIdProvider);
+      if (trailId.isEmpty) return [];
+      final dataProvider = ref.watch(trailDataProvider);
+      return dataProvider.getAccommodations(trailId, stageNumber: stage);
+    });
 
 /// TREK-06 : Fiche hebergement sur place.
 ///
@@ -41,8 +41,7 @@ class RefugeDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final stage = stageNumber ?? 1;
-    final accommodationsAsync =
-        ref.watch(accommodationsByStageProvider(stage));
+    final accommodationsAsync = ref.watch(accommodationsByStageProvider(stage));
 
     return Scaffold(
       appBar: AppBar(
@@ -154,8 +153,9 @@ class RefugeDetailScreen extends ConsumerWidget {
                       children: [
                         _badge(
                           theme,
-                          accommodationTypeLabel(accommodation.type)
-                              .toUpperCase(),
+                          accommodationTypeLabel(
+                            accommodation.type,
+                          ).toUpperCase(),
                           theme.colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
@@ -214,12 +214,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _quickStat(
-    ThemeData theme,
-    String icon,
-    String value,
-    String label,
-  ) {
+  Widget _quickStat(ThemeData theme, String icon, String value, String label) {
     return Column(
       children: [
         StepIcon(icon, color: theme.colorScheme.secondary, size: 20),
@@ -241,11 +236,21 @@ class RefugeDetailScreen extends ConsumerWidget {
   ) {
     final rows = <Widget>[
       if (accommodation.phone != null)
-        _infoRow(theme, StepwaysIcons.telephone, 'Telephone', accommodation.phone!),
+        _infoRow(
+          theme,
+          StepwaysIcons.telephone,
+          'Telephone',
+          accommodation.phone!,
+        ),
       if (accommodation.email != null)
         _infoRow(theme, StepwaysIcons.courrier, 'Email', accommodation.email!),
       if (accommodation.website != null)
-        _infoRow(theme, StepwaysIcons.langue, 'Site web', accommodation.website!),
+        _infoRow(
+          theme,
+          StepwaysIcons.langue,
+          'Site web',
+          accommodation.website!,
+        ),
     ];
 
     if (rows.isEmpty) return const SizedBox.shrink();
@@ -271,12 +276,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _infoRow(
-    ThemeData theme,
-    String icon,
-    String label,
-    String value,
-  ) {
+  Widget _infoRow(ThemeData theme, String icon, String label, String value) {
     return Row(
       children: [
         StepIcon(icon, size: 20, color: theme.colorScheme.secondary),
@@ -318,10 +318,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          title: 'Reserver',
-          icon: StepwaysIcons.repere,
-        ),
+        const SectionHeader(title: 'Reserver', icon: StepwaysIcons.repere),
         if (hasPhone)
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -331,8 +328,7 @@ class RefugeDetailScreen extends ConsumerWidget {
               variant: AppButtonVariant.secondary,
               onPressed: () async {
                 _logBookingAttempt('phone', accommodation.name);
-                final phoneNumber =
-                    accommodation.phone!.replaceAll(' ', '');
+                final phoneNumber = accommodation.phone!.replaceAll(' ', '');
                 final uri = Uri(scheme: 'tel', path: phoneNumber);
                 if (await canLaunchUrl(uri)) {
                   await launchUrl(uri);
@@ -369,9 +365,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                 } else {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Email : ${accommodation.email}'),
-                      ),
+                      SnackBar(content: Text('Email : ${accommodation.email}')),
                     );
                   }
                 }
@@ -390,11 +384,9 @@ class RefugeDetailScreen extends ConsumerWidget {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
               } else {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Site : $website'),
-                    ),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Site : $website')));
                 }
               }
             },
@@ -504,5 +496,4 @@ class RefugeDetailScreen extends ConsumerWidget {
       ],
     );
   }
-
 }

@@ -134,7 +134,10 @@ class _IdleView extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                const StepIcon(StepwaysIcons.favori, color: AppTheme.orangeDifficile),
+                const StepIcon(
+                  StepwaysIcons.favori,
+                  color: AppTheme.orangeDifficile,
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -150,11 +153,12 @@ class _IdleView extends ConsumerWidget {
             minHeight: 52,
             icon: StepwaysIcons.enregistrer,
             label: wt.start,
-            onPressed: () =>
-                ref.read(walkTestControllerProvider.notifier).start(
-                      reminderTitle: wt.title,
-                      reminderBody: wt.monthlyReminderBody,
-                    ),
+            onPressed: () => ref
+                .read(walkTestControllerProvider.notifier)
+                .start(
+                  reminderTitle: wt.title,
+                  reminderBody: wt.monthlyReminderBody,
+                ),
           ),
         ],
       ),
@@ -196,8 +200,7 @@ class _RunningView extends ConsumerWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final wt = t.walkTest;
-    final progress =
-        1.0 - (remaining.inSeconds / (6 * 60)).clamp(0.0, 1.0);
+    final progress = 1.0 - (remaining.inSeconds / (6 * 60)).clamp(0.0, 1.0);
     return Padding(
       padding: const EdgeInsets.all(AppTheme.spacingLg),
       child: Column(
@@ -272,8 +275,7 @@ class _ResultView extends ConsumerWidget {
     // le meme libelle dans les deux cas ferait passer une lecture brute pour une
     // comparaison a une reference.
     final profile = ref.watch(hikerProfileProvider).value;
-    final normalized =
-        profile != null && WalkTestNorms.isNormalized(profile);
+    final normalized = profile != null && WalkTestNorms.isNormalized(profile);
     final ageClamped = profile != null && profile.age > WalkTestNorms.maxAge;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingLg),
@@ -316,7 +318,11 @@ class _ResultView extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StepIcon(StepwaysIcons.distance, size: 18, color: colors.primary),
+                StepIcon(
+                  StepwaysIcons.distance,
+                  size: 18,
+                  color: colors.primary,
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -351,7 +357,11 @@ class _ResultView extends ConsumerWidget {
           // Info rappel mensuel (planifie a la fin du test).
           Row(
             children: [
-              StepIcon(StepwaysIcons.calendrier, size: 18, color: colors.primary),
+              StepIcon(
+                StepwaysIcons.calendrier,
+                size: 18,
+                color: colors.primary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -424,8 +434,11 @@ class _GpsDeniedView extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            StepIcon(StepwaysIcons.gpsPerdu,
-                size: 56, color: theme.colorScheme.error),
+            StepIcon(
+              StepwaysIcons.gpsPerdu,
+              size: 56,
+              color: theme.colorScheme.error,
+            ),
             const SizedBox(height: AppTheme.spacingBase),
             // DEUX CAUSES, DEUX PHRASES (tache 579). « Autorisez la
             // localisation » n'a aucun sens quand il n'y a RIEN a autoriser :
@@ -433,8 +446,8 @@ class _GpsDeniedView extends ConsumerWidget {
             // cause envoie le randonneur chercher un reglage qui n'existe pas.
             Text(
               ref.watch(
-                walkTestControllerProvider.select((s) => s.gpsUnavailable),
-              )
+                    walkTestControllerProvider.select((s) => s.gpsUnavailable),
+                  )
                   ? wt.gpsUnavailable
                   : wt.gpsDenied,
               textAlign: TextAlign.center,

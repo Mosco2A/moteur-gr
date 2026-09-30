@@ -20,14 +20,16 @@ class WalletDao extends DatabaseAccessor<AppDatabase> with _$WalletDaoMixin {
 
   /// Relit le solde de [userId], ou null si absent.
   Future<WalletBalanceData?> getByUserId(String userId) {
-    return (select(walletBalance)..where((t) => t.userId.equals(userId)))
-        .getSingleOrNull();
+    return (select(
+      walletBalance,
+    )..where((t) => t.userId.equals(userId))).getSingleOrNull();
   }
 
   /// Observe le solde de [userId] (emet a chaque modification, null si absent).
   Stream<WalletBalanceData?> watchByUserId(String userId) {
-    return (select(walletBalance)..where((t) => t.userId.equals(userId)))
-        .watchSingleOrNull();
+    return (select(
+      walletBalance,
+    )..where((t) => t.userId.equals(userId))).watchSingleOrNull();
   }
 
   /// Cree ou met a jour le solde (upsert par [userId]).

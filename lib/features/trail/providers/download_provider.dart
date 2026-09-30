@@ -83,5 +83,6 @@ class DownloadNotifier extends AsyncNotifier<void> {
 }
 
 /// Provider du notifier de telechargement
-final downloadNotifierProvider =
-    AsyncNotifierProvider<DownloadNotifier, void>(DownloadNotifier.new);
+final downloadNotifierProvider = AsyncNotifierProvider<DownloadNotifier, void>(
+  DownloadNotifier.new,
+);

@@ -53,28 +53,27 @@ class NuiteeSelectionsDao extends DatabaseAccessor<AppDatabase>
     int dayNumber,
     NuiteeSelectionsCompanion patch,
   ) async {
-    final existing = await (select(nuiteeSelections)
-          ..where((t) =>
-              t.trailId.equals(trailId) & t.dayNumber.equals(dayNumber)))
-        .getSingleOrNull();
+    final existing =
+        await (select(nuiteeSelections)..where(
+              (t) => t.trailId.equals(trailId) & t.dayNumber.equals(dayNumber),
+            ))
+            .getSingleOrNull();
 
     if (existing != null) {
-      await (update(nuiteeSelections)
-            ..where((t) => t.id.equals(existing.id)))
-          .write(patch);
+      await (update(
+        nuiteeSelections,
+      )..where((t) => t.id.equals(existing.id))).write(patch);
     } else {
       await into(nuiteeSelections).insert(
-        patch.copyWith(
-          trailId: Value(trailId),
-          dayNumber: Value(dayNumber),
-        ),
+        patch.copyWith(trailId: Value(trailId), dayNumber: Value(dayNumber)),
       );
     }
   }
 
   /// Supprime toutes les selections d'un sentier (reset).
   Future<int> deleteByTrailId(String trailId) {
-    return (delete(nuiteeSelections)..where((t) => t.trailId.equals(trailId)))
-        .go();
+    return (delete(
+      nuiteeSelections,
+    )..where((t) => t.trailId.equals(trailId))).go();
   }
 }

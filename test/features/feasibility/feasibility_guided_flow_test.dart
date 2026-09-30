@@ -22,20 +22,16 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 void main() {
   setUpAll(() => LocaleSettings.setLocaleRaw('fr'));
 
-  StageEffort stage(int i, String name, double dist, int elev) => StageEffort(
-        index: i,
-        name: name,
-        distanceKm: dist,
-        elevationGainM: elev,
-      );
+  StageEffort stage(int i, String name, double dist, int elev) =>
+      StageEffort(index: i, name: name, distanceKm: dist, elevationGainM: elev);
 
   FeasibilityAssessment sampleAssessment() => FeasibilityFormula.evaluate(
-        stages: [
-          stage(0, 'Depart -> Col', 24, 1600),
-          stage(1, 'Col -> Village', 10, 200),
-        ],
-        level: HikerLevel.intermediate,
-      );
+    stages: [
+      stage(0, 'Depart -> Col', 24, 1600),
+      stage(1, 'Col -> Village', 10, 200),
+    ],
+    level: HikerLevel.intermediate,
+  );
 
   /// Monte l'ecran avec un profil objectif VIDE (1er acces) mais des etapes
   /// disponibles (assessment non-null) -> le flux guide doit s'afficher.
@@ -49,8 +45,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          feasibilityAssessmentProvider
-              .overrideWith((ref) async => sampleAssessment()),
+          feasibilityAssessmentProvider.overrideWith(
+            (ref) async => sampleAssessment(),
+          ),
           // Profil objectif ABSENT -> flux guide (R2a).
           hasObjectiveProfileProvider.overrideWith((ref) async => false),
           // Etats de completion des etapes : tous vides (barre a 0/3).
@@ -69,23 +66,25 @@ void main() {
     }
   }
 
-  testWidgets('1er acces (profil vide) -> flux guide + barre + Valider (R2a/c)',
-      (tester) async {
-    await pumpEmptyProfile(tester);
+  testWidgets(
+    '1er acces (profil vide) -> flux guide + barre + Valider (R2a/c)',
+    (tester) async {
+      await pumpEmptyProfile(tester);
 
-    // Titre du flux guide (pas le verdict).
-    expect(find.text(t.feasibility.flow.title), findsOneWidget);
-    // Barre de progression presente.
-    expect(find.byType(LinearProgressIndicator), findsOneWidget);
-    // Les 3 etapes du flux.
-    expect(find.text(t.feasibility.flow.stepProfile), findsOneWidget);
-    expect(find.text(t.feasibility.flow.stepWalkTest), findsOneWidget);
-    expect(find.text(t.feasibility.flow.stepPastHikes), findsOneWidget);
-    // Bouton « Valider / Voir mon resultat » (R2c).
-    expect(find.text(t.feasibility.flow.validate), findsOneWidget);
-    // Le verdict n'est PAS encore affiche (pas de badge tricolore).
-    expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
-  });
+      // Titre du flux guide (pas le verdict).
+      expect(find.text(t.feasibility.flow.title), findsOneWidget);
+      // Barre de progression presente.
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+      // Les 3 etapes du flux.
+      expect(find.text(t.feasibility.flow.stepProfile), findsOneWidget);
+      expect(find.text(t.feasibility.flow.stepWalkTest), findsOneWidget);
+      expect(find.text(t.feasibility.flow.stepPastHikes), findsOneWidget);
+      // Bouton « Valider / Voir mon resultat » (R2c).
+      expect(find.text(t.feasibility.flow.validate), findsOneWidget);
+      // Le verdict n'est PAS encore affiche (pas de badge tricolore).
+      expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
+    },
+  );
 
   // R2d EST REMPLACE par la regle de Chris du 22/09 (mandat #100293, D1).
   //
@@ -95,13 +94,16 @@ void main() {
   // randos deja faites — un verdict rendu sur du vide. La regle en vigueur est
   // celle de GR20 : aucun verdict tant que les criteres necessaires ne sont
   // pas tous fournis. Ce test verifie donc l'INVERSE de l'ancien, exprès.
-  testWidgets('profil VIDE -> Valider est inerte, aucun verdict (D1)',
-      (tester) async {
+  testWidgets('profil VIDE -> Valider est inerte, aucun verdict (D1)', (
+    tester,
+  ) async {
     await pumpEmptyProfile(tester);
 
     // Le bouton existe mais ne mene nulle part tant que rien n'est rempli.
-    final bouton =
-        find.widgetWithText(ElevatedButton, t.feasibility.flow.validate);
+    final bouton = find.widgetWithText(
+      ElevatedButton,
+      t.feasibility.flow.validate,
+    );
     expect(bouton, findsOneWidget);
     expect(tester.widget<ElevatedButton>(bouton).onPressed, isNull);
 

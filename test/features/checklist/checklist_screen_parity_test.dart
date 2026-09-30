@@ -20,35 +20,35 @@ void main() {
   // AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> heberge l'ecran dans un
   // GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
   Widget wrap(AppDatabase db) => ProviderScope(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-          // LE SAC EST BRIDE EN DEMO (tache 594, A2c) : l ecran observe le droit
-          // d achat, qui arrive par un stream Drift. On le resout d office ici —
-          // ce fichier teste le sac, pas le verrou d achat — sinon l annulation
-          // de la souscription laisse un minuteur vivant a la destruction de
-          // l arbre. Le bridage a ses propres tests.
-          isDemoModeProvider.overrideWith((ref, trailId) async => false),
-        ],
-        child: TranslationProvider(
-          child: MaterialApp.router(
-            routerConfig: GoRouter(
-              initialLocation: '/checklist',
-              routes: [
-                GoRoute(
-                  path: '/checklist',
-                  builder: (_, __) => const ChecklistScreen(),
-                ),
-                GoRoute(
-                    path: '/my-treks', builder: (_, __) => const SizedBox()),
-              ],
+    overrides: [
+      databaseProvider.overrideWithValue(db),
+      trailConfigProvider.overrideWithValue(testTrailConfig),
+      // LE SAC EST BRIDE EN DEMO (tache 594, A2c) : l ecran observe le droit
+      // d achat, qui arrive par un stream Drift. On le resout d office ici —
+      // ce fichier teste le sac, pas le verrou d achat — sinon l annulation
+      // de la souscription laisse un minuteur vivant a la destruction de
+      // l arbre. Le bridage a ses propres tests.
+      isDemoModeProvider.overrideWith((ref, trailId) async => false),
+    ],
+    child: TranslationProvider(
+      child: MaterialApp.router(
+        routerConfig: GoRouter(
+          initialLocation: '/checklist',
+          routes: [
+            GoRoute(
+              path: '/checklist',
+              builder: (_, __) => const ChecklistScreen(),
             ),
-          ),
+            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 
-  testWidgets('le NOM de l ecran est celui de GR20 (Materiel & Sac)',
-      (tester) async {
+  testWidgets('le NOM de l ecran est celui de GR20 (Materiel & Sac)', (
+    tester,
+  ) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(() async => db.close());
 
@@ -57,15 +57,21 @@ void main() {
 
     // Titre GR20 dans l'AppBar (via Slang, base fr = « Materiel & Sac »).
     expect(find.text(t.checklist.title), findsOneWidget);
-    expect(t.checklist.title.toLowerCase().contains('sac'), true,
-        reason: 'le titre doit reprendre le nom GR20 « Sac »');
+    expect(
+      t.checklist.title.toLowerCase().contains('sac'),
+      true,
+      reason: 'le titre doit reprendre le nom GR20 « Sac »',
+    );
     // Aucun libelle « checklist » (ancien nom) visible a l'ecran.
-    expect(find.textContaining('Checklist mat', findRichText: true),
-        findsNothing);
+    expect(
+      find.textContaining('Checklist mat', findRichText: true),
+      findsNothing,
+    );
   });
 
-  testWidgets('les blocs GR20 sont presents (banniere poids, reco, actions)',
-      (tester) async {
+  testWidgets('les blocs GR20 sont presents (banniere poids, reco, actions)', (
+    tester,
+  ) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(() async => db.close());
 
@@ -108,8 +114,11 @@ void main() {
     ]) {
       final name = t['checklist.categories.$key'];
       expect(name is String, true);
-      expect(find.text(name as String), findsWidgets,
-          reason: 'categorie $key ($name) absente');
+      expect(
+        find.text(name as String),
+        findsWidgets,
+        reason: 'categorie $key ($name) absente',
+      );
     }
   });
 }

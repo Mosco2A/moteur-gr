@@ -119,23 +119,21 @@ void main() {
       ProviderScope(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
-          gpxTrackProvider(testTrailConfig.id).overrideWith(
-            (ref) => Future.value(trackCozzanoGuitera),
-          ),
-          stagesProvider(testTrailConfig.id).overrideWith(
-            (ref) => Future.value(stages),
-          ),
-          mapPoisProvider(testTrailConfig.id).overrideWith(
-            (ref) => Future.value(pois),
-          ),
+          gpxTrackProvider(
+            testTrailConfig.id,
+          ).overrideWith((ref) => Future.value(trackCozzanoGuitera)),
+          stagesProvider(
+            testTrailConfig.id,
+          ).overrideWith((ref) => Future.value(stages)),
+          mapPoisProvider(
+            testTrailConfig.id,
+          ).overrideWith((ref) => Future.value(pois)),
           // GPS non accorde en test -> aucune position, aucun flux ouvert.
           gpsPermissionProvider.overrideWith(
             (ref) => Future.value(GpsPermissionStateValues.denied),
           ),
         ],
-        child: const MaterialApp(
-          home: MapScreen(trailId: 'test-trail'),
-        ),
+        child: const MaterialApp(home: MapScreen(trailId: 'test-trail')),
       ),
     );
     await tester.pump();
@@ -145,10 +143,8 @@ void main() {
 
   /// Les reperes vivent DANS la carte ; la barre d'etape et l'en-tete vivent
   /// au-dessus. On ne mesure donc que ce qui est peint dans [FlutterMap].
-  Finder inMap(Finder matching) => find.descendant(
-        of: find.byType(FlutterMap),
-        matching: matching,
-      );
+  Finder inMap(Finder matching) =>
+      find.descendant(of: find.byType(FlutterMap), matching: matching);
 
   group('Carte — marqueurs poses au meme endroit (tache 571)', () {
     testWidgets(
@@ -162,7 +158,11 @@ void main() {
         );
 
         final numero = inMap(find.text('3'));
-        final refuge = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement));
+        final refuge = inMap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+        );
 
         expect(
           numero,
@@ -181,7 +181,8 @@ void main() {
         expect(
           rectNumero.overlaps(rectRefuge),
           isFalse,
-          reason: 'le numero d etape $rectNumero est recouvert par l icone du '
+          reason:
+              'le numero d etape $rectNumero est recouvert par l icone du '
               'refuge $rectRefuge — les deux points sont au meme endroit '
               '(0,0 m) et il faut UN repere qui porte les deux informations, '
               'pas deux marqueurs empiles',
@@ -215,7 +216,8 @@ void main() {
         expect(
           find.text(epicerieCozzano.name),
           findsOneWidget,
-          reason: 'l epicerie, au meme endroit elle aussi, ne doit pas '
+          reason:
+              'l epicerie, au meme endroit elle aussi, ne doit pas '
               'disparaitre du repere fusionne',
         );
       },
@@ -233,8 +235,16 @@ void main() {
           pois: const [giteCozzano, epicerieCozzano],
         );
 
-        final refuge = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.hebergement));
-        final epicerie = inMap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.panier));
+        final refuge = inMap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.hebergement,
+          ),
+        );
+        final epicerie = inMap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+        );
 
         expect(refuge, findsOneWidget);
 
@@ -249,7 +259,8 @@ void main() {
         expect(
           rectRefuge.overlaps(rectEpicerie),
           isFalse,
-          reason: 'l icone du gite $rectRefuge recouvre celle de l epicerie '
+          reason:
+              'l icone du gite $rectRefuge recouvre celle de l epicerie '
               '$rectEpicerie : deux reperes distincts doivent etre lisibles, '
               'ou etre fusionnes en un seul',
         );

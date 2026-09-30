@@ -46,12 +46,14 @@ void main() {
 
   /// Conteneur cable sur la base in-memory, avec le sentier de test actif.
   ProviderContainer conteneur(TrekRecorder recorder) {
-    final container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      trailConfigProvider.overrideWithValue(_config),
-      trekRecorderProvider.overrideWithValue(recorder),
-      backgroundGpsServiceProvider.overrideWithValue(_NoopBgService()),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(_config),
+        trekRecorderProvider.overrideWithValue(recorder),
+        backgroundGpsServiceProvider.overrideWithValue(_NoopBgService()),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -66,10 +68,8 @@ void main() {
   /// (`getLatestByTrailId`) — un artefact de montage qui masquerait ce qu'on
   /// veut mesurer. On laisse donc la seule ecriture autoritaire, celle de
   /// `_finalize`.
-  TrekRecorder recorderSurBase() => TrekRecorder(
-        onFlush: (_, __) async {},
-        onSessionPersist: (_) async {},
-      );
+  TrekRecorder recorderSurBase() =>
+      TrekRecorder(onFlush: (_, __) async {}, onSessionPersist: (_) async {});
 
   /// Pose une session EN COURS sur le sentier de test, en base et en memoire.
   Future<void> demarrerSession(
@@ -87,8 +87,9 @@ void main() {
     await db.trekSessionsDao.upsertSession(session);
     // Le recorder doit avoir une session vivante : `_finalize` appelle stop().
     await recorder.start(_config.id);
-    container.read(trekSessionManagerProvider.notifier).state =
-        TrackingSessionState(
+    container
+        .read(trekSessionManagerProvider.notifier)
+        .state = TrackingSessionState(
       status: TrackingSessionStatus.recording,
       session: session,
     );
@@ -119,33 +120,36 @@ void main() {
       expect(
         apres?.state,
         TrekLifecycleState.completed,
-        reason: 'sans invalidation, le cockpit reste bloque sur inProgress : '
+        reason:
+            'sans invalidation, le cockpit reste bloque sur inProgress : '
             'section « Apres la randonnee » jamais construite, Diplome et '
             'Recapitulatif inatteignables (finding M4)',
       );
     },
   );
 
-  test('stop() -> plus aucun trek en cours (activeTrekIdProvider relu)',
-      () async {
-    final recorder = recorderSurBase();
-    final container = conteneur(recorder);
-    await demarrerSession(container, recorder, id: 'sess-fin-002');
+  test(
+    'stop() -> plus aucun trek en cours (activeTrekIdProvider relu)',
+    () async {
+      final recorder = recorderSurBase();
+      final container = conteneur(recorder);
+      await demarrerSession(container, recorder, id: 'sess-fin-002');
 
-    expect(await container.read(activeTrekIdProvider.future), _config.id);
+      expect(await container.read(activeTrekIdProvider.future), _config.id);
 
-    await container.read(trekSessionManagerProvider.notifier).stop();
+      await container.read(trekSessionManagerProvider.notifier).stop();
 
-    expect(
-      await container.read(activeTrekIdProvider.future),
-      isNull,
-      reason: 'le creneau d unicite C4 doit etre libere pour l UI des la fin '
-          'du trek, sans attendre un redemarrage',
-    );
-  });
+      expect(
+        await container.read(activeTrekIdProvider.future),
+        isNull,
+        reason:
+            'le creneau d unicite C4 doit etre libere pour l UI des la fin '
+            'du trek, sans attendre un redemarrage',
+      );
+    },
+  );
 
-  test('abandon() rafraichit aussi les vues derivees (meme _finalize)',
-      () async {
+  test('abandon() rafraichit aussi les vues derivees (meme _finalize)', () async {
     final recorder = recorderSurBase();
     final container = conteneur(recorder);
     await demarrerSession(container, recorder, id: 'sess-fin-003');
@@ -166,17 +170,21 @@ void main() {
     expect(await container.read(activeTrekIdProvider.future), isNull);
   });
 
-  test('finalisation hors session active -> no-op, aucune vue faussee',
-      () async {
-    final container = conteneur(recorderSurBase());
+  test(
+    'finalisation hors session active -> no-op, aucune vue faussee',
+    () async {
+      final container = conteneur(recorderSurBase());
 
-    // Etat idle : rien a finaliser.
-    await container.read(trekSessionManagerProvider.notifier).stop();
+      // Etat idle : rien a finaliser.
+      await container.read(trekSessionManagerProvider.notifier).stop();
 
-    expect(container.read(trekSessionManagerProvider).status,
-        TrackingSessionStatus.idle);
-    expect(await container.read(activeTrekIdProvider.future), isNull);
-  });
+      expect(
+        container.read(trekSessionManagerProvider).status,
+        TrackingSessionStatus.idle,
+      );
+      expect(await container.read(activeTrekIdProvider.future), isNull);
+    },
+  );
 }
 
 /// Fake d'isolate GPS de fond : no-op (appels best-effort dans `_finalize`).

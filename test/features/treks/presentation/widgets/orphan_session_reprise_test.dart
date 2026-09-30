@@ -44,10 +44,12 @@ void main() {
   /// Container cable sur la DB in-memory + une session orpheline eventuelle.
   /// [pending] null => aucune orpheline detectee.
   ProviderContainer makeContainer(PendingSession? pending) {
-    final container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      pendingSessionProvider.overrideWith((ref) async => pending),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        pendingSessionProvider.overrideWith((ref) async => pending),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -87,9 +89,13 @@ void main() {
   });
 
   testWidgets('session orpheline detectee -> dialog affiche', (tester) async {
-    await tester.pumpWidget(wrap(makeContainer(
-      PendingSession(session: orphan(), age: const Duration(hours: 2)),
-    )));
+    await tester.pumpWidget(
+      wrap(
+        makeContainer(
+          PendingSession(session: orphan(), age: const Duration(hours: 2)),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(
@@ -98,8 +104,9 @@ void main() {
     );
   });
 
-  testWidgets('Reprendre -> ecrit selectedTrailId + navigue /home',
-      (tester) async {
+  testWidgets('Reprendre -> ecrit selectedTrailId + navigue /home', (
+    tester,
+  ) async {
     final container = makeContainer(
       PendingSession(session: orphan(), age: const Duration(hours: 2)),
     );
@@ -116,8 +123,9 @@ void main() {
     expect(find.text('HOME_STUB'), findsOneWidget);
   });
 
-  testWidgets('Abandonner -> session soldee en base (status=abandoned)',
-      (tester) async {
+  testWidgets('Abandonner -> session soldee en base (status=abandoned)', (
+    tester,
+  ) async {
     // La session orpheline existe en base (comme apres un crash) : on doit
     // pouvoir la relire soldee apres l'abandon.
     final session = orphan();
@@ -148,8 +156,9 @@ void main() {
     expect(ongoing, isEmpty);
   });
 
-  testWidgets('le dialog ne se represente pas apres traitement',
-      (tester) async {
+  testWidgets('le dialog ne se represente pas apres traitement', (
+    tester,
+  ) async {
     final session = orphan();
     await db.trekSessionsDao.upsertSession(session);
     final container = makeContainer(

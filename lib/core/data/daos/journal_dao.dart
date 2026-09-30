@@ -10,8 +10,7 @@ part 'journal_dao.g.dart';
 /// Fournit les méthodes CRUD pour la table JournalEntries,
 /// filtrées par sentier et/ou étape. Limite à 3 photos/jour.
 @DriftAccessor(tables: [JournalEntries])
-class JournalDao extends DatabaseAccessor<AppDatabase>
-    with _$JournalDaoMixin {
+class JournalDao extends DatabaseAccessor<AppDatabase> with _$JournalDaoMixin {
   JournalDao(super.db);
 
   /// Nombre maximum de photos par jour
@@ -31,9 +30,10 @@ class JournalDao extends DatabaseAccessor<AppDatabase>
   /// Récupère les entrées d'une étape pour un sentier
   Future<List<JournalEntry>> getByStage(String trailId, int stageNumber) {
     return (select(journalEntries)
-          ..where((t) =>
-              t.trailId.equals(trailId) &
-              t.stageNumber.equals(stageNumber))
+          ..where(
+            (t) =>
+                t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+          )
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .get();
   }
@@ -45,8 +45,9 @@ class JournalDao extends DatabaseAccessor<AppDatabase>
 
   /// Met à jour une entrée existante
   Future<int> updateEntry(JournalEntriesCompanion entry, int entryId) {
-    return (update(journalEntries)..where((t) => t.id.equals(entryId)))
-        .write(entry);
+    return (update(
+      journalEntries,
+    )..where((t) => t.id.equals(entryId))).write(entry);
   }
 
   /// Supprime une entrée par son identifiant
@@ -60,13 +61,15 @@ class JournalDao extends DatabaseAccessor<AppDatabase>
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    final entries = await (select(journalEntries)
-          ..where((t) =>
-              t.trailId.equals(trailId) &
-              t.photoPath.isNotNull() &
-              t.createdAt.isBiggerOrEqualValue(startOfDay) &
-              t.createdAt.isSmallerThanValue(endOfDay)))
-        .get();
+    final entries =
+        await (select(journalEntries)..where(
+              (t) =>
+                  t.trailId.equals(trailId) &
+                  t.photoPath.isNotNull() &
+                  t.createdAt.isBiggerOrEqualValue(startOfDay) &
+                  t.createdAt.isSmallerThanValue(endOfDay),
+            ))
+            .get();
     return entries.length;
   }
 
@@ -78,9 +81,9 @@ class JournalDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime toutes les entrées d'un sentier
   Future<int> deleteByTrailId(String trailId) {
-    return (delete(journalEntries)
-          ..where((t) => t.trailId.equals(trailId)))
-        .go();
+    return (delete(
+      journalEntries,
+    )..where((t) => t.trailId.equals(trailId))).go();
   }
 
   /// Compte le total d'entrées pour un sentier

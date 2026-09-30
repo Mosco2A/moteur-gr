@@ -26,9 +26,9 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => completer.future,
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => completer.future),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
@@ -49,15 +49,14 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('affiche le header avec les infos du sentier',
-        (tester) async {
+    testWidgets('affiche le header avec les infos du sentier', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(<StageModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<StageModel>[])),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
@@ -80,9 +79,9 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(<StageModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<StageModel>[])),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
@@ -147,9 +146,9 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(stages),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(stages)),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
@@ -167,8 +166,9 @@ void main() {
       expect(find.text('Vallée Secrète'), findsOneWidget);
     });
 
-    testWidgets('affiche une erreur quand le chargement échoue',
-        (tester) async {
+    testWidgets('affiche une erreur quand le chargement échoue', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -189,10 +189,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(
-        find.text(t.common.cannotLoadStages),
-        findsOneWidget,
-      );
+      expect(find.text(t.common.cannotLoadStages), findsOneWidget);
     });
 
     testWidgets('affiche le bouton "Voir la carte"', (tester) async {
@@ -200,9 +197,9 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(<StageModel>[]),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(<StageModel>[])),
           ],
           child: TranslationProvider(
             child: const MaterialApp(
@@ -217,17 +214,18 @@ void main() {
       expect(find.text('Voir la carte'), findsOneWidget);
     });
 
-    testWidgets(
-        'le bouton Entrer active le sentier et ouvre le cockpit /home '
-        '(#88246 ; FIX CYCLE 2 issue 1)',
-        (tester) async {
+    testWidgets('le bouton Entrer active le sentier et ouvre le cockpit /home '
+        '(#88246 ; FIX CYCLE 2 issue 1)', (tester) async {
       // Container partage pour lire la selection apres l'action UI.
-      final container = ProviderContainer(overrides: [
-        trailConfigProvider.overrideWithValue(testTrailConfig),
-        selectedTrailIdProvider.overrideWith((ref) => 'autre-sentier'),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(<StageModel>[])),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+          selectedTrailIdProvider.overrideWith((ref) => 'autre-sentier'),
+          stagesProvider(
+            'test-trail',
+          ).overrideWith((ref) => Future.value(<StageModel>[])),
+        ],
+      );
       addTearDown(container.dispose);
 
       // Routeur minimal : detail en racine + stub /home (cockpit) pour observer

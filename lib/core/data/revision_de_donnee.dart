@@ -113,10 +113,8 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
   /// s appeler par son instant ISO. Cette forme compacte garde les deux proprietes
   /// qui comptent — elle se TRIE dans l ordre chronologique, et elle se relit a
   /// l oeil (`20260928T093200123Z`).
-  String get estampilleDeFichier => iso8601
-      .replaceAll('-', '')
-      .replaceAll(':', '')
-      .replaceAll('.', '');
+  String get estampilleDeFichier =>
+      iso8601.replaceAll('-', '').replaceAll(':', '').replaceAll('.', '');
 
   /// Cet instant avance d au moins une milliseconde par rapport a [plancher].
   ///
@@ -132,10 +130,9 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
   /// depot : la monotonie est ce dont le modele a besoin, et l ecart introduit est
   /// d une milliseconde. Le fait est REMONTE a l appelant (cf.
   /// `ResultatDePublication.horlogeCorrigee`), jamais avale.
-  HorodatageServeur auMoinsApres(HorodatageServeur plancher) =>
-      this > plancher
-          ? this
-          : HorodatageServeur._(plancher.millisecondesEpoch + 1);
+  HorodatageServeur auMoinsApres(HorodatageServeur plancher) => this > plancher
+      ? this
+      : HorodatageServeur._(plancher.millisecondesEpoch + 1);
 
   /// LA SEULE PORTE D ENTREE : CE QUE LE SERVEUR A ANNONCE.
   ///
@@ -170,7 +167,8 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
       final secondes = brut['seconds'] ?? brut['_seconds'];
       if (secondes is! num) return null;
       final nanos = brut['nanoseconds'] ?? brut['_nanoseconds'];
-      final millis = secondes.toInt() * 1000 +
+      final millis =
+          secondes.toInt() * 1000 +
           (nanos is num ? (nanos.toInt() ~/ 1000000) : 0);
       return millis < 0 ? null : HorodatageServeur._(millis);
     }
@@ -210,7 +208,8 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
     if (texte.endsWith('Z') || texte.endsWith('z')) return texte;
     // Un decalage `+02:00` / `-05:00` en fin de chaine, apres l heure.
     final apresLaDate = texte.substring(10);
-    final porteUnDecalage = apresLaDate.contains('+') ||
+    final porteUnDecalage =
+        apresLaDate.contains('+') ||
         apresLaDate.lastIndexOf('-') > apresLaDate.indexOf(':');
     return porteUnDecalage ? texte : '${texte}Z';
   }
@@ -237,8 +236,7 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
   int get hashCode => millisecondesEpoch.hashCode;
 
   @override
-  String toString() =>
-      this == origine ? 'HorodatageServeur.origine' : iso8601;
+  String toString() => this == origine ? 'HorodatageServeur.origine' : iso8601;
 }
 
 /// LECTURE ET ECRITURE DE L HORODATAGE DANS LA BASE LOCALE.
@@ -260,8 +258,7 @@ final class HorodatageServeur implements Comparable<HorodatageServeur> {
 /// `DateTimeColumn` de Drift, lui, stocke par defaut des SECONDES : deux
 /// publications dans la meme seconde deviennent indiscernables, et la seconde est
 /// ratee pour toujours par une comparaison stricte.
-class HorodatageServeurConverter
-    extends TypeConverter<HorodatageServeur, int> {
+class HorodatageServeurConverter extends TypeConverter<HorodatageServeur, int> {
   const HorodatageServeurConverter();
 
   @override
@@ -281,8 +278,7 @@ class HorodatageServeurConverter
 /// exception : une entree de liste mal formee ne doit pas rendre TOUT le catalogue
 /// illisible. Consequence, et elle est du bon cote : le sentier est vu comme
 /// jamais publie, donc jamais pris pour plus recent que le repere du telephone.
-class HorodatageServeurJson
-    extends JsonConverter<HorodatageServeur, Object?> {
+class HorodatageServeurJson extends JsonConverter<HorodatageServeur, Object?> {
   const HorodatageServeurJson();
 
   @override
@@ -352,7 +348,8 @@ abstract final class RevisionDeDonnee {
     required HorodatageServeur revisionCible,
   }) {
     if (revisionLocale <= revisionInitiale) return false;
-    return revisionCible.millisecondesEpoch - revisionLocale.millisecondesEpoch >
+    return revisionCible.millisecondesEpoch -
+            revisionLocale.millisecondesEpoch >
         fenetreDeRetention.inMilliseconds;
   }
 

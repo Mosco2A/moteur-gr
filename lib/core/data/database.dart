@@ -190,356 +190,374 @@ class AppDatabase extends _$AppDatabase {
   /// autres ne l'etaient pas, et elles le sont depuis la tache 613.
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {
-          // Migration v1 -> v2 : ajout colonne totalTimeMinutes
-          if (from < 2) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              userProgressEntries,
-              userProgressEntries.totalTimeMinutes,
-            );
-          }
-          // Migration v2 -> v3 : creation table journal_entries (E3.1)
-          if (from < 3) {
-            await migrator.createTable(journalEntries);
-          }
-          // Migration v3 -> v4 : creation table checklist_items (E3.2)
-          if (from < 4) {
-            await migrator.createTable(checklistItems);
-          }
-          // Migration v4 -> v5 : creation table weather_cache (E3.5a)
-          if (from < 5) {
-            await migrator.createTable(weatherCache);
-          }
-          // Migration v5 -> v6 : creation table feedback_queue (E3.10)
-          if (from < 6) {
-            await migrator.createTable(feedbackQueue);
-          }
-          // Migration v6 -> v7 : 7 tables donnees sentier (Phase 4 E4.2)
-          if (from < 7) {
-            await migrator.createTable(trailMeta);
-            await migrator.createTable(trailItineraries);
-            await migrator.createTable(trailStages);
-            await migrator.createTable(trailAccommodations);
-            await migrator.createTable(trailPois);
-            await migrator.createTable(trailGpxTracks);
-            await migrator.createTable(trailGpxPoints);
-          }
-          // Migration v7 -> v8 : table manifeste sentier (Phase 4 E4.3)
-          if (from < 8) {
-            await migrator.createTable(trailManifests);
-          }
-          // Migration v8 -> v9 : table sync_queue (Phase 4 E4.4)
-          if (from < 9) {
-            await migrator.createTable(syncQueue);
-          }
-          // Migration v9 -> v10 : table review_requests (Phase 5 E5.17)
-          if (from < 10) {
-            await migrator.createTable(reviewRequests);
-          }
-          // Migration v10 -> v11 : table health_info (Phase 5 E5.16)
-          if (from < 11) {
-            await migrator.createTable(healthInfoEntries);
-          }
-          // Migration v11 -> v12 : tables suivi trekkeur (Phase 4 E4.10)
-          if (from < 12) {
-            await migrator.createTable(followSessions);
-            await migrator.createTable(followerSlots);
-          }
-          // Migration v12 -> v13 : table session_track_points
-          // (trace GPS reelle du recap diplome, finitions V8 F3)
-          if (from < 13) {
-            await migrator.createTable(sessionTrackPoints);
-          }
-          // Migration v13 -> v14 : table report_local
-          // (signalements terrain offline-first, Phase 6 F6C-01)
-          if (from < 14) {
-            await migrator.createTable(reportLocal);
-          }
-          // Migration v14 -> v15 : tables segments + efforts (Phase 7 F7A-01)
-          // (segments comparables + file d'efforts offline-first)
-          if (from < 15) {
-            await migrator.createTable(segments);
-            await migrator.createTable(segmentEffortLocal);
-          }
-          // Migration v15 -> v16 : tables kudos + fil d'activite (Phase 7 F7B-01)
-          // (kudos offline-first + cache du fil avec moderationState DSA)
-          if (from < 16) {
-            await migrator.createTable(kudosLocal);
-            await migrator.createTable(activityFeedCache);
-          }
-          // Migration v16 -> v17 : tables waypoint + commentaire (Phase 8 F8A-01)
-          // (points terrain FarOut-like + commentaires offline-first, DSA)
-          if (from < 17) {
-            await migrator.createTable(waypoint);
-            await migrator.createTable(waypointComment);
-          }
-          // Migration v17 -> v18 : table trek_sessions (PARITE GR20, LOT 2)
-          // (persistance locale de la session + memoire du finisher :
-          // completedStages/parcoursFullyWalked survivent au redemarrage)
-          if (from < 18) {
-            await migrator.createTable(trekSessions);
-          }
-          // Migration v18 -> v19 : colonne weightGrams sur checklist_items
-          // (PARITE GR20 « Materiel & Sac » : poids par article + total).
-          if (from < 19) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              checklistItems,
-              checklistItems.weightGrams,
-            );
-          }
-          // Migration v19 -> v20 : parite GR20 « Materiel & Sac » — clone
-          // integral (quantite par article, articles personnalises, liste de
-          // courses, nom custom) sur checklist_items.
-          if (from < 20) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              checklistItems,
-              checklistItems.quantity,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              checklistItems,
-              checklistItems.isCustom,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              checklistItems,
-              checklistItems.inShoppingList,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              checklistItems,
-              checklistItems.customName,
-            );
-          }
-          // Migration v20 -> v21 : parite GR20 « socle donnees » — colonne
-          // estimatedDurationMinutes (nullable) sur stages. Champ riche par
-          // etape (duree estimee) alimente par les donnees du sentier
-          // (stages.json, backend P4), affiche sur Itineraire et Programme.
-          if (from < 21) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              stages,
-              stages.estimatedDurationMinutes,
-            );
-          }
-          // Migration v21 -> v22 : parite GR20 « Reserver vos nuits » — table
-          // nuitee_selections (etat par nuit du PROGRAMME : type de nuitee +
-          // reserve). Persistance 100 % locale (pas de Firebase avant Phase 4).
-          if (from < 22) {
-            await migrator.createTable(nuiteeSelections);
-          }
-          // Migration v22 -> v23 : parite GR20 « socle donnees » — colonnes
-          // departureName / arrivalName (nullable) sur stages. Noms des points
-          // de depart/arrivee par etape, alimentes par les donnees du sentier
-          // (stages.json, backend P4), affiches sur la sous-ligne « Depart ->
-          // Arrivee » de la fiche etape.
-          if (from < 23) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              stages,
-              stages.departureName,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              stages,
-              stages.arrivalName,
-            );
-          }
-          // Migration v23 -> v24 : socle wallet StepWays (LOT 1, compte-etapes).
-          // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables, aucune
-          // table/colonne existante touchee. Le legacy (2 cles prefs d'achats)
-          // est migre en RUNTIME (couche WalletStore/MonetizationService), pas
-          // ici en SQL.
-          if (from < 24) {
-            await migrator.createTable(walletBalance);
-            await migrator.createTable(trekEntitlements);
-            await migrator.createTable(noAdsState);
-          }
-          // Migration v24 -> v25 : socle faisabilite StepWays (LOT 4).
-          // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables
-          // (profil randonneur SENSIBLE + randos passees + note d'experience
-          // globale), aucune table/colonne existante touchee. Donnees local
-          // durable (prefs) + miroir cloud anonyme (hash), zero nominatif.
-          if (from < 25) {
-            await migrator.createTable(hikerProfile);
-            await migrator.createTable(pastHikeEntries);
-            await migrator.createTable(hikerExperienceNote);
-          }
-          // Migration v25 -> v26 : socle de la trace GPS StepWays (LOT L3-1).
-          // STRICTEMENT ADDITIF (addColumn only, 3 colonnes NULLABLES sur
-          // session_track_points) : sessionId, dayIndex, stageId. Donne au
-          // trace la granularite par session, par jour de marche et par
-          // etape ; les points anterieurs restent lisibles (colonnes nulles).
-          // C'est ce qui permet d'arreter d'EFFACER le trace precedent au
-          // demarrage d'une nouvelle randonnee.
-          if (from < 26) {
-            await _ajouterColonneSiAbsente(
-              migrator,
-              sessionTrackPoints,
-              sessionTrackPoints.sessionId,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              sessionTrackPoints,
-              sessionTrackPoints.dayIndex,
-            );
-            await _ajouterColonneSiAbsente(
-              migrator,
-              sessionTrackPoints,
-              sessionTrackPoints.stageId,
-            );
-          }
-          // Migration v26 -> v27 : LE CATALOGUE DISTANT, ET LA REVISION PORTEE
-          // PAR CHAQUE DONNEE (StepWays tache 605, MUR N1 — decisions de
-          // Christophe des 27/09 19:57, 20:11 et 20:43).
-          //
-          // STRICTEMENT ADDITIVE, ET CE N EST PAS UN HASARD MAIS UN CHOIX :
-          // 8 colonnes NULLABLES ajoutees, aucune colonne existante touchee,
-          // supprimee ni reinterpretee. CETTE MIGRATION NE CASSE RIEN — une base
-          // en v26 monte en place, toutes ses lignes restent lisibles, et un
-          // sentier deja copie garde sa version locale.
-          //
-          //  * `trail_manifests.ficheJson` conserve le dernier catalogue distant
-          //    RECU. Sans lui, un sentier que le binaire ne connait pas
-          //    disparaitrait de l ecran du randonneur des qu il perd le reseau.
-          //
-          //  * `rev` sur les SEPT tables telechargeables porte la revision de
-          //    chaque enregistrement. L application demande « tout ce qui porte
-          //    un numero plus recent que le mien » : une seule question, et une
-          //    altitude corrigee fait redescendre UNE etape, pas sept tables.
-          //
-          // CE QUI A ETE ECARTE, ET POURQUOI. Une premiere version de ce lot
-          // creait une table `trail_piece_versions` (une version locale par
-          // famille de donnees). Elle est abandonnee sur la simplification de
-          // Christophe du 27/09 20:43 : la version vit DANS la donnee, et le
-          // telephone n a besoin que d UNE valeur par sentier — la revision
-          // jusqu ou il est a jour, soit `trail_manifests.localVersion`, qui
-          // existe deja. Une table en moins, un concept en moins.
-          //
-          // `localVersion` CHANGE DE METIER SANS CHANGER DE FORME : il est le
-          // REPERE DE REVISION du sentier (« je suis a jour jusqu a N »), et il
-          // est desormais REELLEMENT REECRIT apres une copie reussie — ce qui
-          // etait precisement le defaut mesure : personne ne l ecrivait, alors
-          // que `needsUpdate` s en sert pour decider, donc chaque ouverture
-          // retelechargeait tout.
-          if (from < 27) {
-            await _ajouterColonneSiAbsente(
-                migrator, trailManifests, trailManifests.ficheJson);
-            await _ajouterColonneSiAbsente(migrator, trailMeta, trailMeta.rev);
-            await _ajouterColonneSiAbsente(
-                migrator, trailItineraries, trailItineraries.rev);
-            await _ajouterColonneSiAbsente(
-                migrator, trailStages, trailStages.rev);
-            await _ajouterColonneSiAbsente(
-                migrator, trailAccommodations, trailAccommodations.rev);
-            await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.rev);
-            await _ajouterColonneSiAbsente(
-                migrator, trailGpxTracks, trailGpxTracks.rev);
-            await _ajouterColonneSiAbsente(
-                migrator, trailGpxPoints, trailGpxPoints.rev);
-          }
-          // LA v28 PORTE DEUX CHANGEMENTS, ET C EST VOULU (tache 616). Les lots
-          // 610 et 613 ont ete construits en PARALLELE depuis la 607, et chacun a
-          // pose « sa » v28 de son cote : la fiche medicale qui quitte la base
-          // (613) et la revision qui passe du numero a l horodatage (610). Les
-          // reunir sous DEUX numeros de schema successifs serait une reecriture de
-          // l histoire de l un des deux ; les reunir sous le MEME numero est exact,
-          // parce qu aucun des deux n a ete publie : aucun telephone au monde ne
-          // porte une base en v28 partielle. Les deux marches sont independantes
-          // (tables disjointes) et idempotentes, donc leur ordre ici n a pas
-          // d effet.
-          if (from < 28) {
-            await _v28FicheMedicaleQuitteLaBase();
-            await _v28RevisionDevientHorodatage();
-          }
-          // Migration v28 -> v29 : LE NIVEAU DESCENDU SE NOTE A COTE DU REPERE
-          // (tache 616). Une seule colonne, `trail_manifests.niveauLocal`, posee
-          // par la precaution habituelle du depot : `ALTER TABLE ADD COLUMN`
-          // echoue sur une colonne deja presente, et une migration qui echoue
-          // EMPECHE LA BASE DE S OUVRIR sur le telephone d un randonneur.
-          //
-          // ELLE RESTE NULLE SUR LES BASES EXISTANTES, ET C EST LE BON DEFAUT :
-          // la v28 vient de remettre tous les reperes a « rien de copie », donc
-          // aucun sentier ne pretend avoir un niveau. Un niveau nul face a un
-          // repere nul est coherent — le premier telechargement ecrira les deux
-          // dans la meme transaction.
-          if (from < 29) {
-            await _ajouterColonneSiAbsente(
-                migrator, trailManifests, trailManifests.niveauLocal);
-          }
-          // Migration v29 -> v30 : LA LISTE DISTANTE DECLARE SES CARTES HORS LIGNE
-          // (tache 622). Trois colonnes nullables sur `trail_manifests` —
-          // `tilesPath`, `tilesSize`, `tilesHash` — posees par la meme precaution
-          // que les precedentes : `ALTER TABLE ADD COLUMN` echoue sur une colonne
-          // deja presente, et une migration qui echoue EMPECHE LA BASE DE S OUVRIR
-          // sur le telephone d un randonneur.
-          //
-          // ELLES RESTENT NULLES SUR LES BASES EXISTANTES, ET C EST EXACT : elles
-          // decrivent un fait SERVEUR (« voila la carte publiee pour ce sentier »),
-          // que seule la prochaine lecture du catalogue peut apporter. Nulles, elles
-          // signifient « aucune carte publiee », et la descente est alors refusee
-          // avec cette cause NOMMEE — jamais tentee a l aveugle sur une adresse
-          // devinee.
-          //
-          // AUCUNE CARTE DEJA PRESENTE N EST PERDUE : ces trois colonnes n ont
-          // jamais existe, et les tuiles qu un telephone porterait deja vivent dans
-          // des FICHIERS (`documents/mbtiles/`), hors de la base.
-          if (from < 30) {
-            await _ajouterColonneSiAbsente(
-                migrator, trailManifests, trailManifests.tilesPath);
-            await _ajouterColonneSiAbsente(
-                migrator, trailManifests, trailManifests.tilesSize);
-            await _ajouterColonneSiAbsente(
-                migrator, trailManifests, trailManifests.tilesHash);
-          }
+    onUpgrade: (migrator, from, to) async {
+      // Migration v1 -> v2 : ajout colonne totalTimeMinutes
+      if (from < 2) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          userProgressEntries,
+          userProgressEntries.totalTimeMinutes,
+        );
+      }
+      // Migration v2 -> v3 : creation table journal_entries (E3.1)
+      if (from < 3) {
+        await migrator.createTable(journalEntries);
+      }
+      // Migration v3 -> v4 : creation table checklist_items (E3.2)
+      if (from < 4) {
+        await migrator.createTable(checklistItems);
+      }
+      // Migration v4 -> v5 : creation table weather_cache (E3.5a)
+      if (from < 5) {
+        await migrator.createTable(weatherCache);
+      }
+      // Migration v5 -> v6 : creation table feedback_queue (E3.10)
+      if (from < 6) {
+        await migrator.createTable(feedbackQueue);
+      }
+      // Migration v6 -> v7 : 7 tables donnees sentier (Phase 4 E4.2)
+      if (from < 7) {
+        await migrator.createTable(trailMeta);
+        await migrator.createTable(trailItineraries);
+        await migrator.createTable(trailStages);
+        await migrator.createTable(trailAccommodations);
+        await migrator.createTable(trailPois);
+        await migrator.createTable(trailGpxTracks);
+        await migrator.createTable(trailGpxPoints);
+      }
+      // Migration v7 -> v8 : table manifeste sentier (Phase 4 E4.3)
+      if (from < 8) {
+        await migrator.createTable(trailManifests);
+      }
+      // Migration v8 -> v9 : table sync_queue (Phase 4 E4.4)
+      if (from < 9) {
+        await migrator.createTable(syncQueue);
+      }
+      // Migration v9 -> v10 : table review_requests (Phase 5 E5.17)
+      if (from < 10) {
+        await migrator.createTable(reviewRequests);
+      }
+      // Migration v10 -> v11 : table health_info (Phase 5 E5.16)
+      if (from < 11) {
+        await migrator.createTable(healthInfoEntries);
+      }
+      // Migration v11 -> v12 : tables suivi trekkeur (Phase 4 E4.10)
+      if (from < 12) {
+        await migrator.createTable(followSessions);
+        await migrator.createTable(followerSlots);
+      }
+      // Migration v12 -> v13 : table session_track_points
+      // (trace GPS reelle du recap diplome, finitions V8 F3)
+      if (from < 13) {
+        await migrator.createTable(sessionTrackPoints);
+      }
+      // Migration v13 -> v14 : table report_local
+      // (signalements terrain offline-first, Phase 6 F6C-01)
+      if (from < 14) {
+        await migrator.createTable(reportLocal);
+      }
+      // Migration v14 -> v15 : tables segments + efforts (Phase 7 F7A-01)
+      // (segments comparables + file d'efforts offline-first)
+      if (from < 15) {
+        await migrator.createTable(segments);
+        await migrator.createTable(segmentEffortLocal);
+      }
+      // Migration v15 -> v16 : tables kudos + fil d'activite (Phase 7 F7B-01)
+      // (kudos offline-first + cache du fil avec moderationState DSA)
+      if (from < 16) {
+        await migrator.createTable(kudosLocal);
+        await migrator.createTable(activityFeedCache);
+      }
+      // Migration v16 -> v17 : tables waypoint + commentaire (Phase 8 F8A-01)
+      // (points terrain FarOut-like + commentaires offline-first, DSA)
+      if (from < 17) {
+        await migrator.createTable(waypoint);
+        await migrator.createTable(waypointComment);
+      }
+      // Migration v17 -> v18 : table trek_sessions (PARITE GR20, LOT 2)
+      // (persistance locale de la session + memoire du finisher :
+      // completedStages/parcoursFullyWalked survivent au redemarrage)
+      if (from < 18) {
+        await migrator.createTable(trekSessions);
+      }
+      // Migration v18 -> v19 : colonne weightGrams sur checklist_items
+      // (PARITE GR20 « Materiel & Sac » : poids par article + total).
+      if (from < 19) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          checklistItems,
+          checklistItems.weightGrams,
+        );
+      }
+      // Migration v19 -> v20 : parite GR20 « Materiel & Sac » — clone
+      // integral (quantite par article, articles personnalises, liste de
+      // courses, nom custom) sur checklist_items.
+      if (from < 20) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          checklistItems,
+          checklistItems.quantity,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          checklistItems,
+          checklistItems.isCustom,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          checklistItems,
+          checklistItems.inShoppingList,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          checklistItems,
+          checklistItems.customName,
+        );
+      }
+      // Migration v20 -> v21 : parite GR20 « socle donnees » — colonne
+      // estimatedDurationMinutes (nullable) sur stages. Champ riche par
+      // etape (duree estimee) alimente par les donnees du sentier
+      // (stages.json, backend P4), affiche sur Itineraire et Programme.
+      if (from < 21) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          stages,
+          stages.estimatedDurationMinutes,
+        );
+      }
+      // Migration v21 -> v22 : parite GR20 « Reserver vos nuits » — table
+      // nuitee_selections (etat par nuit du PROGRAMME : type de nuitee +
+      // reserve). Persistance 100 % locale (pas de Firebase avant Phase 4).
+      if (from < 22) {
+        await migrator.createTable(nuiteeSelections);
+      }
+      // Migration v22 -> v23 : parite GR20 « socle donnees » — colonnes
+      // departureName / arrivalName (nullable) sur stages. Noms des points
+      // de depart/arrivee par etape, alimentes par les donnees du sentier
+      // (stages.json, backend P4), affiches sur la sous-ligne « Depart ->
+      // Arrivee » de la fiche etape.
+      if (from < 23) {
+        await _ajouterColonneSiAbsente(migrator, stages, stages.departureName);
+        await _ajouterColonneSiAbsente(migrator, stages, stages.arrivalName);
+      }
+      // Migration v23 -> v24 : socle wallet StepWays (LOT 1, compte-etapes).
+      // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables, aucune
+      // table/colonne existante touchee. Le legacy (2 cles prefs d'achats)
+      // est migre en RUNTIME (couche WalletStore/MonetizationService), pas
+      // ici en SQL.
+      if (from < 24) {
+        await migrator.createTable(walletBalance);
+        await migrator.createTable(trekEntitlements);
+        await migrator.createTable(noAdsState);
+      }
+      // Migration v24 -> v25 : socle faisabilite StepWays (LOT 4).
+      // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables
+      // (profil randonneur SENSIBLE + randos passees + note d'experience
+      // globale), aucune table/colonne existante touchee. Donnees local
+      // durable (prefs) + miroir cloud anonyme (hash), zero nominatif.
+      if (from < 25) {
+        await migrator.createTable(hikerProfile);
+        await migrator.createTable(pastHikeEntries);
+        await migrator.createTable(hikerExperienceNote);
+      }
+      // Migration v25 -> v26 : socle de la trace GPS StepWays (LOT L3-1).
+      // STRICTEMENT ADDITIF (addColumn only, 3 colonnes NULLABLES sur
+      // session_track_points) : sessionId, dayIndex, stageId. Donne au
+      // trace la granularite par session, par jour de marche et par
+      // etape ; les points anterieurs restent lisibles (colonnes nulles).
+      // C'est ce qui permet d'arreter d'EFFACER le trace precedent au
+      // demarrage d'une nouvelle randonnee.
+      if (from < 26) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          sessionTrackPoints,
+          sessionTrackPoints.sessionId,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          sessionTrackPoints,
+          sessionTrackPoints.dayIndex,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          sessionTrackPoints,
+          sessionTrackPoints.stageId,
+        );
+      }
+      // Migration v26 -> v27 : LE CATALOGUE DISTANT, ET LA REVISION PORTEE
+      // PAR CHAQUE DONNEE (StepWays tache 605, MUR N1 — decisions de
+      // Christophe des 27/09 19:57, 20:11 et 20:43).
+      //
+      // STRICTEMENT ADDITIVE, ET CE N EST PAS UN HASARD MAIS UN CHOIX :
+      // 8 colonnes NULLABLES ajoutees, aucune colonne existante touchee,
+      // supprimee ni reinterpretee. CETTE MIGRATION NE CASSE RIEN — une base
+      // en v26 monte en place, toutes ses lignes restent lisibles, et un
+      // sentier deja copie garde sa version locale.
+      //
+      //  * `trail_manifests.ficheJson` conserve le dernier catalogue distant
+      //    RECU. Sans lui, un sentier que le binaire ne connait pas
+      //    disparaitrait de l ecran du randonneur des qu il perd le reseau.
+      //
+      //  * `rev` sur les SEPT tables telechargeables porte la revision de
+      //    chaque enregistrement. L application demande « tout ce qui porte
+      //    un numero plus recent que le mien » : une seule question, et une
+      //    altitude corrigee fait redescendre UNE etape, pas sept tables.
+      //
+      // CE QUI A ETE ECARTE, ET POURQUOI. Une premiere version de ce lot
+      // creait une table `trail_piece_versions` (une version locale par
+      // famille de donnees). Elle est abandonnee sur la simplification de
+      // Christophe du 27/09 20:43 : la version vit DANS la donnee, et le
+      // telephone n a besoin que d UNE valeur par sentier — la revision
+      // jusqu ou il est a jour, soit `trail_manifests.localVersion`, qui
+      // existe deja. Une table en moins, un concept en moins.
+      //
+      // `localVersion` CHANGE DE METIER SANS CHANGER DE FORME : il est le
+      // REPERE DE REVISION du sentier (« je suis a jour jusqu a N »), et il
+      // est desormais REELLEMENT REECRIT apres une copie reussie — ce qui
+      // etait precisement le defaut mesure : personne ne l ecrivait, alors
+      // que `needsUpdate` s en sert pour decider, donc chaque ouverture
+      // retelechargeait tout.
+      if (from < 27) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailManifests,
+          trailManifests.ficheJson,
+        );
+        await _ajouterColonneSiAbsente(migrator, trailMeta, trailMeta.rev);
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailItineraries,
+          trailItineraries.rev,
+        );
+        await _ajouterColonneSiAbsente(migrator, trailStages, trailStages.rev);
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailAccommodations,
+          trailAccommodations.rev,
+        );
+        await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.rev);
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailGpxTracks,
+          trailGpxTracks.rev,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailGpxPoints,
+          trailGpxPoints.rev,
+        );
+      }
+      // LA v28 PORTE DEUX CHANGEMENTS, ET C EST VOULU (tache 616). Les lots
+      // 610 et 613 ont ete construits en PARALLELE depuis la 607, et chacun a
+      // pose « sa » v28 de son cote : la fiche medicale qui quitte la base
+      // (613) et la revision qui passe du numero a l horodatage (610). Les
+      // reunir sous DEUX numeros de schema successifs serait une reecriture de
+      // l histoire de l un des deux ; les reunir sous le MEME numero est exact,
+      // parce qu aucun des deux n a ete publie : aucun telephone au monde ne
+      // porte une base en v28 partielle. Les deux marches sont independantes
+      // (tables disjointes) et idempotentes, donc leur ordre ici n a pas
+      // d effet.
+      if (from < 28) {
+        await _v28FicheMedicaleQuitteLaBase();
+        await _v28RevisionDevientHorodatage();
+      }
+      // Migration v28 -> v29 : LE NIVEAU DESCENDU SE NOTE A COTE DU REPERE
+      // (tache 616). Une seule colonne, `trail_manifests.niveauLocal`, posee
+      // par la precaution habituelle du depot : `ALTER TABLE ADD COLUMN`
+      // echoue sur une colonne deja presente, et une migration qui echoue
+      // EMPECHE LA BASE DE S OUVRIR sur le telephone d un randonneur.
+      //
+      // ELLE RESTE NULLE SUR LES BASES EXISTANTES, ET C EST LE BON DEFAUT :
+      // la v28 vient de remettre tous les reperes a « rien de copie », donc
+      // aucun sentier ne pretend avoir un niveau. Un niveau nul face a un
+      // repere nul est coherent — le premier telechargement ecrira les deux
+      // dans la meme transaction.
+      if (from < 29) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailManifests,
+          trailManifests.niveauLocal,
+        );
+      }
+      // Migration v29 -> v30 : LA LISTE DISTANTE DECLARE SES CARTES HORS LIGNE
+      // (tache 622). Trois colonnes nullables sur `trail_manifests` —
+      // `tilesPath`, `tilesSize`, `tilesHash` — posees par la meme precaution
+      // que les precedentes : `ALTER TABLE ADD COLUMN` echoue sur une colonne
+      // deja presente, et une migration qui echoue EMPECHE LA BASE DE S OUVRIR
+      // sur le telephone d un randonneur.
+      //
+      // ELLES RESTENT NULLES SUR LES BASES EXISTANTES, ET C EST EXACT : elles
+      // decrivent un fait SERVEUR (« voila la carte publiee pour ce sentier »),
+      // que seule la prochaine lecture du catalogue peut apporter. Nulles, elles
+      // signifient « aucune carte publiee », et la descente est alors refusee
+      // avec cette cause NOMMEE — jamais tentee a l aveugle sur une adresse
+      // devinee.
+      //
+      // AUCUNE CARTE DEJA PRESENTE N EST PERDUE : ces trois colonnes n ont
+      // jamais existe, et les tuiles qu un telephone porterait deja vivent dans
+      // des FICHIERS (`documents/mbtiles/`), hors de la base.
+      if (from < 30) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailManifests,
+          trailManifests.tilesPath,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailManifests,
+          trailManifests.tilesSize,
+        );
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailManifests,
+          trailManifests.tilesHash,
+        );
+      }
 
-          // Migration v30 -> v31 : UNE ADRESSE, UN TELEPHONE, UN SITE — POUR QUE
-          // LES LIEUX SOIENT ATTEIGNABLES (tache 641).
-          //
-          // DEUX DEMANDES DE CHRISTOPHE TOMBENT SUR CES QUATRE COLONNES.
-          //
-          //  * BUG 15 (30/09 10:23) : « hebergement il doit avoir une adresse et
-          //    un point GPS qui link sur Maps [...] appliquer la meme regle a tout
-          //    lieu physique ». Les coordonnees existaient deja ; l ADRESSE
-          //    n existait nulle part, ni sur les hebergements ni sur les points
-          //    d interet.
-          //
-          //  * BUGS 12, 13 ET 17 (transport et ravitaillement vides) : la mesure du
-          //    30/09 a montre que ces deux rubriques n existaient PAS en base. Elles
-          //    vivaient dans deux constantes Dart derriere un `switch (trailId)`,
-          //    donc muettes pour tout autre sentier et pour le mode demo. Les
-          //    deplacer en base demandait que la table des points d interet puisse
-          //    porter un TELEPHONE (l exploitant d une ligne d autocar, le gite qui
-          //    prepare les paniers) et un SITE (ou les horaires sont publies, parce
-          //    qu un horaire d autocar corse change quatre fois par an et n a rien
-          //    a faire dans un binaire).
-          //
-          // QUATRE `ALTER TABLE ADD COLUMN`, TOUS SUR DES COLONNES NULLABLES : c est
-          // la seule forme d ajout qui ne peut pas echouer sur une table peuplee, et
-          // UNE MIGRATION QUI ECHOUE EMPECHE LA BASE DE S OUVRIR sur le telephone
-          // d un randonneur, sans recours. Passage par
-          // [_ajouterColonneSiAbsente] comme l exige la regle posee a la tache 613 :
-          // si l application est tuee au milieu de la marche, `user_version` reste
-          // en arriere et la marche se rejoue sur des colonnes deja posees.
-          //
-          // AUCUNE DONNEE N EST PERDUE NI REMISE A ZERO. Ces quatre colonnes
-          // n ont jamais existe : elles naissent nulles, et la prochaine
-          // synchronisation a la source les remplit pour les sentiers publies.
-          if (from < 31) {
-            await _ajouterColonneSiAbsente(
-                migrator, trailAccommodations, trailAccommodations.address);
-            await _ajouterColonneSiAbsente(
-                migrator, trailPois, trailPois.address);
-            await _ajouterColonneSiAbsente(
-                migrator, trailPois, trailPois.phone);
-            await _ajouterColonneSiAbsente(
-                migrator, trailPois, trailPois.website);
-          }
-        },
-      );
+      // Migration v30 -> v31 : UNE ADRESSE, UN TELEPHONE, UN SITE — POUR QUE
+      // LES LIEUX SOIENT ATTEIGNABLES (tache 641).
+      //
+      // DEUX DEMANDES DE CHRISTOPHE TOMBENT SUR CES QUATRE COLONNES.
+      //
+      //  * BUG 15 (30/09 10:23) : « hebergement il doit avoir une adresse et
+      //    un point GPS qui link sur Maps [...] appliquer la meme regle a tout
+      //    lieu physique ». Les coordonnees existaient deja ; l ADRESSE
+      //    n existait nulle part, ni sur les hebergements ni sur les points
+      //    d interet.
+      //
+      //  * BUGS 12, 13 ET 17 (transport et ravitaillement vides) : la mesure du
+      //    30/09 a montre que ces deux rubriques n existaient PAS en base. Elles
+      //    vivaient dans deux constantes Dart derriere un `switch (trailId)`,
+      //    donc muettes pour tout autre sentier et pour le mode demo. Les
+      //    deplacer en base demandait que la table des points d interet puisse
+      //    porter un TELEPHONE (l exploitant d une ligne d autocar, le gite qui
+      //    prepare les paniers) et un SITE (ou les horaires sont publies, parce
+      //    qu un horaire d autocar corse change quatre fois par an et n a rien
+      //    a faire dans un binaire).
+      //
+      // QUATRE `ALTER TABLE ADD COLUMN`, TOUS SUR DES COLONNES NULLABLES : c est
+      // la seule forme d ajout qui ne peut pas echouer sur une table peuplee, et
+      // UNE MIGRATION QUI ECHOUE EMPECHE LA BASE DE S OUVRIR sur le telephone
+      // d un randonneur, sans recours. Passage par
+      // [_ajouterColonneSiAbsente] comme l exige la regle posee a la tache 613 :
+      // si l application est tuee au milieu de la marche, `user_version` reste
+      // en arriere et la marche se rejoue sur des colonnes deja posees.
+      //
+      // AUCUNE DONNEE N EST PERDUE NI REMISE A ZERO. Ces quatre colonnes
+      // n ont jamais existe : elles naissent nulles, et la prochaine
+      // synchronisation a la source les remplit pour les sentiers publies.
+      if (from < 31) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trailAccommodations,
+          trailAccommodations.address,
+        );
+        await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.address);
+        await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.phone);
+        await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.website);
+      }
+    },
+  );
 
   /// Migration v27 -> v28 : LA FICHE MEDICALE QUITTE LA BASE (tache 613).
   ///
@@ -644,8 +662,9 @@ class AppDatabase extends _$AppDatabase {
     TableInfo<Table, dynamic> table,
     GeneratedColumn<Object> colonne,
   ) async {
-    final infos =
-        await customSelect('PRAGMA table_info(${table.actualTableName})').get();
+    final infos = await customSelect(
+      'PRAGMA table_info(${table.actualTableName})',
+    ).get();
     final presentes = infos.map((r) => r.read<String>('name')).toSet();
     if (presentes.contains(colonne.name)) return;
     await migrator.addColumn(table, colonne);

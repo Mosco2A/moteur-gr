@@ -67,7 +67,9 @@ void main() {
   // R1 — TROIS GESTES DEPUIS L'ACCUEIL, COMPTES
   // =========================================================================
   group('R1 — arreter son abonnement en trois gestes depuis l accueil', () {
-    testWidgets('le chemin existe et ne coute que TROIS gestes', (tester) async {
+    testWidgets('le chemin existe et ne coute que TROIS gestes', (
+      tester,
+    ) async {
       // L'ACCUEIL REEL : `depart` nul = exactement ou l'on arrive en ouvrant
       // l'icone de l'application. Aucun raccourci de route, aucun provider
       // simule : un bouton qui ne se trouve qu'avec six surcharges n'est pas un
@@ -87,13 +89,22 @@ void main() {
       // ecran de telephone. LE COMPTE DE GESTES NE CHANGE PAS : faire defiler
       // n'est pas un geste de plus (meme convention que le balayage du LOT X,
       // cf. [amenerALEcran]) ; c'est le doigt qu'on amene sur le bouton.
-      final reglages = find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.reglages);
-      expect(reglages, findsWidgets,
-          reason: 'l accueil doit offrir une entree vers les reglages');
+      final reglages = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.reglages,
+      );
+      expect(
+        reglages,
+        findsWidgets,
+        reason: 'l accueil doit offrir une entree vers les reglages',
+      );
       final reglagesAtteignable = await amenerALEcran(tester, reglages.first);
-      expect(reglagesAtteignable, isTrue,
-          reason: 'l entree « reglages » doit rester atteignable depuis '
-              'l accueil, y compris quand il affiche son etat vide');
+      expect(
+        reglagesAtteignable,
+        isTrue,
+        reason:
+            'l entree « reglages » doit rester atteignable depuis '
+            'l accueil, y compris quand il affiche son etat vide',
+      );
       await tester.tap(reglages.first);
       await stabiliser(tester);
       gestes++;
@@ -101,9 +112,13 @@ void main() {
       // Geste 2 — l'abonnement, depuis les reglages.
       final abonnement = find.byKey(const ValueKey('reglages-abonnement'));
       final atteignable = await amenerALEcran(tester, abonnement);
-      expect(atteignable, isTrue,
-          reason: 'l entree « abonnement » doit etre atteignable dans les '
-              'reglages, pas enterree dans un sous-sous-menu');
+      expect(
+        atteignable,
+        isTrue,
+        reason:
+            'l entree « abonnement » doit etre atteignable dans les '
+            'reglages, pas enterree dans un sous-sous-menu',
+      );
       await tester.tap(abonnement);
       await stabiliser(tester);
       gestes++;
@@ -111,19 +126,27 @@ void main() {
       // Geste 3 — arreter. LE BOUTON DOIT ETRE LA, SUR CET ECRAN.
       final arreter = find.byKey(const ValueKey('abo-arreter'));
       final visible = await amenerALEcran(tester, arreter);
-      expect(visible, isTrue,
-          reason: 'CE QUE LA LOI EXIGE : un acces DIRECT, PERMANENT et FACILE. '
-              'Le bouton d arret doit vivre sur l ecran d abonnement lui-meme — '
-              'celui qui dit deja ce que l abo donne et ce qu il ne donne pas. '
-              'Un niveau de plus, et le compte passe a quatre');
+      expect(
+        visible,
+        isTrue,
+        reason:
+            'CE QUE LA LOI EXIGE : un acces DIRECT, PERMANENT et FACILE. '
+            'Le bouton d arret doit vivre sur l ecran d abonnement lui-meme — '
+            'celui qui dit deja ce que l abo donne et ce qu il ne donne pas. '
+            'Un niveau de plus, et le compte passe a quatre',
+      );
       await tester.tap(arreter);
       await stabiliser(tester);
       gestes++;
 
-      expect(gestes, lessThanOrEqualTo(3),
-          reason: 'trois gestes au plus depuis l accueil (Chris, 27/09 13:09 : '
-              '« en 3 clics comme le prevoit la loi, et pas planque au fin fond '
-              'de l appli »). Mesure : $gestes');
+      expect(
+        gestes,
+        lessThanOrEqualTo(3),
+        reason:
+            'trois gestes au plus depuis l accueil (Chris, 27/09 13:09 : '
+            '« en 3 clics comme le prevoit la loi, et pas planque au fin fond '
+            'de l appli »). Mesure : $gestes',
+      );
 
       // ET LE GESTE PRODUIT QUELQUE CHOSE. Le telephone de ce harnais ne sait
       // ouvrir aucun lien (`url_launcher` rend false) : l ecran doit donc DIRE
@@ -131,7 +154,8 @@ void main() {
       expect(
         find.text(t.monetization.cancelStoreUnavailable),
         findsOneWidget,
-        reason: 'un appareil incapable d ouvrir la boutique doit l entendre '
+        reason:
+            'un appareil incapable d ouvrir la boutique doit l entendre '
             'dire — jamais un bouton muet (regle du LOT X)',
       );
 
@@ -146,13 +170,19 @@ void main() {
       // Les trois phrases doivent cohabiter sur le MEME ecran : ce que l abo
       // donne, ce qu il ne donne pas, et comment on l arrete. Un ecran qui vend
       // sans dire comment resilier est exactement ce que la loi vise.
-      expect(find.text(t.monetization.subscriptionIncludesNoAds),
-          findsOneWidget);
+      expect(
+        find.text(t.monetization.subscriptionIncludesNoAds),
+        findsOneWidget,
+      );
       expect(find.text(t.monetization.subscriptionExcludes), findsOneWidget);
       expect(find.text(t.monetization.cancelCta), findsOneWidget);
-      expect(find.text(t.monetization.cancelExplains), findsOneWidget,
-          reason: 'l ecran explique que l arret se fait dans la boutique qui '
-              'facture, et que l acces court jusqu a la fin de la periode payee');
+      expect(
+        find.text(t.monetization.cancelExplains),
+        findsOneWidget,
+        reason:
+            'l ecran explique que l arret se fait dans la boutique qui '
+            'facture, et que l acces court jusqu a la fin de la periode payee',
+      );
 
       await demonterAppli(tester);
       erreursDeRendu(tester);
@@ -179,9 +209,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            deeplinkLauncherProvider.overrideWithValue(espion),
-          ],
+          overrides: [deeplinkLauncherProvider.overrideWithValue(espion)],
           child: TranslationProvider(
             child: MaterialApp.router(
               routerConfig: GoRouter(
@@ -192,7 +220,9 @@ void main() {
                     builder: (_, __) => const SubscriptionScreen(),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -203,25 +233,34 @@ void main() {
       return espion;
     }
 
-    testWidgets('sur Android : la page Google Play de CET abonnement',
-        (tester) async {
-      final espion =
-          await monterEcran(tester, plateforme: TargetPlatform.android);
+    testWidgets('sur Android : la page Google Play de CET abonnement', (
+      tester,
+    ) async {
+      final espion = await monterEcran(
+        tester,
+        plateforme: TargetPlatform.android,
+      );
 
       await tester.tap(find.byKey(const ValueKey('abo-arreter')));
       await tester.pumpAndSettle();
 
-      expect(espion.ouverts, hasLength(1),
-          reason: 'un lien part REELLEMENT — on ne mesure pas des pixels');
+      expect(
+        espion.ouverts,
+        hasLength(1),
+        reason: 'un lien part REELLEMENT — on ne mesure pas des pixels',
+      );
       expect(
         espion.ouverts.single,
         StoreSubscriptionLinks.googlePlay(productId: kWalletSubNoAdsMonthly),
-        reason: 'forme documentee par Google : la page de gestion de CET '
+        reason:
+            'forme documentee par Google : la page de gestion de CET '
             'abonnement, pas une liste ou il faut le retrouver',
       );
       expect(espion.ouverts.single, contains('sku=$kWalletSubNoAdsMonthly'));
-      expect(espion.ouverts.single,
-          contains('package=${StoreSubscriptionLinks.androidPackageName}'));
+      expect(
+        espion.ouverts.single,
+        contains('package=${StoreSubscriptionLinks.androidPackageName}'),
+      );
       debugDefaultTargetPlatformOverride = null;
     });
 
@@ -246,10 +285,16 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('abo-arreter')));
       await tester.pumpAndSettle();
 
-      expect(espion.ouverts, hasLength(1),
-          reason: 'la tentative a bien eu lieu');
-      expect(find.text(t.monetization.cancelStoreUnavailable), findsOneWidget,
-          reason: 'et l echec se voit : le randonneur sait quoi faire');
+      expect(
+        espion.ouverts,
+        hasLength(1),
+        reason: 'la tentative a bien eu lieu',
+      );
+      expect(
+        find.text(t.monetization.cancelStoreUnavailable),
+        findsOneWidget,
+        reason: 'et l echec se voit : le randonneur sait quoi faire',
+      );
       debugDefaultTargetPlatformOverride = null;
     });
 

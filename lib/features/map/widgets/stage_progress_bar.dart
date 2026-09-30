@@ -121,8 +121,7 @@ class StageProgressBar extends StatelessWidget {
       altitudeM != null;
 
   /// Libellé d'un chiffre : sa valeur si elle existe, sinon le tiret d'attente.
-  String _valueOrPending(String? formatted) =>
-      formatted ?? pendingValueLabel;
+  String _valueOrPending(String? formatted) => formatted ?? pendingValueLabel;
 
   /// Vrai si la case doit être rendue : valeur connue, ou mode « en attente ».
   bool _shows(Object? value) => value != null || showPendingValues;
@@ -176,9 +175,7 @@ class StageProgressBar extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.rougeUrgence.withAlpha(30),
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.radiusChip,
-                    ),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -251,65 +248,71 @@ class StageProgressBar extends StatelessWidget {
                 children: [
                   // Ligne 1 — CE QUI AVANCE : total du sentier, parcouru,
                   // vitesse moyenne.
-                  _StatRow(children: [
-                    if (_shows(totalDistanceKm))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.distance,
-                        label: t.tracking.total,
-                        value: _valueOrPending(
-                          totalDistanceKm == null
-                              ? null
-                              : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                  _StatRow(
+                    children: [
+                      if (_shows(totalDistanceKm))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.distance,
+                          label: t.tracking.total,
+                          value: _valueOrPending(
+                            totalDistanceKm == null
+                                ? null
+                                : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                          ),
                         ),
-                      ),
-                    if (_shows(distanceCoveredKm))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.pas,
-                        label: t.tracking.covered,
-                        value: _valueOrPending(
-                          distanceCoveredKm == null
-                              ? null
-                              : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                      if (_shows(distanceCoveredKm))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.pas,
+                          label: t.tracking.covered,
+                          value: _valueOrPending(
+                            distanceCoveredKm == null
+                                ? null
+                                : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                          ),
                         ),
-                      ),
-                    if (_shows(avgSpeedKmh))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.vitesse,
-                        label: t.tracking.avgSpeed,
-                        value: _valueOrPending(
-                          avgSpeedKmh == null
-                              ? null
-                              : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                      if (_shows(avgSpeedKmh))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.vitesse,
+                          label: t.tracking.avgSpeed,
+                          value: _valueOrPending(
+                            avgSpeedKmh == null
+                                ? null
+                                : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                          ),
                         ),
-                      ),
-                  ]),
+                    ],
+                  ),
                   // Ligne 2 — LE RELIEF : D+, D-, altitude.
-                  _StatRow(children: [
-                    if (_shows(elevationGainM))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.denivelePlus,
-                        label: t.tracking.dPlus,
-                        value: _valueOrPending(
-                          elevationGainM == null ? null : '$elevationGainM m',
+                  _StatRow(
+                    children: [
+                      if (_shows(elevationGainM))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.denivelePlus,
+                          label: t.tracking.dPlus,
+                          value: _valueOrPending(
+                            elevationGainM == null ? null : '$elevationGainM m',
+                          ),
                         ),
-                      ),
-                    if (_shows(elevationLossM))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.deniveleMoins,
-                        label: t.tracking.dMinus,
-                        value: _valueOrPending(
-                          elevationLossM == null ? null : '$elevationLossM m',
+                      if (_shows(elevationLossM))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.deniveleMoins,
+                          label: t.tracking.dMinus,
+                          value: _valueOrPending(
+                            elevationLossM == null ? null : '$elevationLossM m',
+                          ),
                         ),
-                      ),
-                    if (_shows(altitudeM))
-                      _MeasuredStat(
-                        icon: StepwaysIcons.sommet,
-                        label: t.tracking.altitude,
-                        value: _valueOrPending(
-                          altitudeM == null ? null : '${altitudeM!.round()} m',
+                      if (_shows(altitudeM))
+                        _MeasuredStat(
+                          icon: StepwaysIcons.sommet,
+                          label: t.tracking.altitude,
+                          value: _valueOrPending(
+                            altitudeM == null
+                                ? null
+                                : '${altitudeM!.round()} m',
+                          ),
                         ),
-                      ),
-                  ]),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -346,9 +349,7 @@ class _StatRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final child in children) Expanded(child: child),
-        ],
+        children: [for (final child in children) Expanded(child: child)],
       ),
     );
   }

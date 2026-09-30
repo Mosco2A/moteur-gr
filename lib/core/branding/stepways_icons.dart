@@ -22,23 +22,33 @@ import 'app_branding.dart';
 abstract final class StepwaysIcons {
   static const info = 'assets/icons/info.svg'; // MAT-001 Information
   static const coche = 'assets/icons/coche.svg'; // MAT-002 Coche
-  static const cocheCercle = 'assets/icons/coche-cercle.svg'; // MAT-002 Coche contour
-  static const cochePleine = 'assets/icons/coche-pleine.svg'; // MAT-002 Coche pleine
+  static const cocheCercle =
+      'assets/icons/coche-cercle.svg'; // MAT-002 Coche contour
+  static const cochePleine =
+      'assets/icons/coche-pleine.svg'; // MAT-002 Coche pleine
   static const radio = 'assets/icons/radio.svg'; // MAT-005 Radio vide
-  static const radioCoche = 'assets/icons/radio-coche.svg'; // MAT-005 Radio choisi
-  static const pastille = 'assets/icons/pastille.svg'; // MAT-005 Pastille d'état
-  static const chevronDroite = 'assets/icons/chevron-droite.svg'; // MAT-003 Chevron droite
-  static const chevronGauche = 'assets/icons/chevron-gauche.svg'; // MAT-003 Chevron gauche
-  static const flecheHaut = 'assets/icons/fleche-haut.svg'; // MAT-004 Flèche haut
+  static const radioCoche =
+      'assets/icons/radio-coche.svg'; // MAT-005 Radio choisi
+  static const pastille =
+      'assets/icons/pastille.svg'; // MAT-005 Pastille d'état
+  static const chevronDroite =
+      'assets/icons/chevron-droite.svg'; // MAT-003 Chevron droite
+  static const chevronGauche =
+      'assets/icons/chevron-gauche.svg'; // MAT-003 Chevron gauche
+  static const flecheHaut =
+      'assets/icons/fleche-haut.svg'; // MAT-004 Flèche haut
   static const flecheBas = 'assets/icons/fleche-bas.svg'; // MAT-004 Flèche bas
-  static const flecheAvant = 'assets/icons/fleche-avant.svg'; // MAT-004 Flèche avant
-  static const flecheArriere = 'assets/icons/fleche-arriere.svg'; // MAT-004 Flèche arrière
+  static const flecheAvant =
+      'assets/icons/fleche-avant.svg'; // MAT-004 Flèche avant
+  static const flecheArriere =
+      'assets/icons/fleche-arriere.svg'; // MAT-004 Flèche arrière
   static const deplier = 'assets/icons/deplier.svg'; // MAT-011 Déplier
   static const replier = 'assets/icons/replier.svg'; // MAT-011 Replier
   static const plus = 'assets/icons/plus.svg'; // MAT-007 Plus
   static const moins = 'assets/icons/moins.svg'; // MAT-007 Moins
   static const rafraichir = 'assets/icons/rafraichir.svg'; // MAT-006 Rafraîchir
-  static const annuler = 'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
+  static const annuler =
+      'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
   static const corbeille = 'assets/icons/corbeille.svg'; // MAT-008 Corbeille
   static const crayon = 'assets/icons/crayon.svg'; // MAT-010 Crayon
   static const copier = 'assets/icons/copier.svg'; // MAT-014 Copier
@@ -47,10 +57,13 @@ abstract final class StepwaysIcons {
   static const menu = 'assets/icons/menu.svg'; // MAT-013 Menu trois points
   static const croix = 'assets/icons/croix.svg'; // MAT-009 Croix / fermer
   static const refuser = 'assets/icons/refuser.svg'; // MAT-009 Refuser
-  static const interdit = 'assets/icons/interdit.svg'; // MAT-009 Bloqué / interdit
+  static const interdit =
+      'assets/icons/interdit.svg'; // MAT-009 Bloqué / interdit
   static const compresser = 'assets/icons/compresser.svg'; // MAT-016 Compresser
-  static const imageManquante = 'assets/icons/image-manquante.svg'; // MAT-017 Image manquante
-  static const eprouvette = 'assets/icons/eprouvette.svg'; // MAT-018 Expérimental
+  static const imageManquante =
+      'assets/icons/image-manquante.svg'; // MAT-017 Image manquante
+  static const eprouvette =
+      'assets/icons/eprouvette.svg'; // MAT-018 Expérimental
   static const geste = 'assets/icons/geste.svg'; // MAT-019 Geste / toucher
   static const pouce = 'assets/icons/pouce.svg'; // MAT-019 Pouce / approuver
   static const oeil = 'assets/icons/oeil.svg'; // MAT-020 Afficher
@@ -58,18 +71,22 @@ abstract final class StepwaysIcons {
   static const palette = 'assets/icons/palette.svg'; // MAT-021 Thème / palette
   static const ville = 'assets/icons/ville.svg'; // MAT-022 Ville
   static const echelle = 'assets/icons/echelle.svg'; // MAT-023 Échelle
-  static const catalogueSentiers = 'assets/icons/catalogue-sentiers.svg'; // Catalogue sentiers
+  static const catalogueSentiers =
+      'assets/icons/catalogue-sentiers.svg'; // Catalogue sentiers
   static const monCompte = 'assets/icons/mon-compte.svg'; // Mon compte
   static const reglages = 'assets/icons/reglages.svg'; // Paramètres
   static const faisabilite = 'assets/icons/faisabilite.svg'; // Faisabilité
   static const itineraire = 'assets/icons/itineraire.svg'; // Itinéraires
   static const programme = 'assets/icons/programme.svg'; // Programme
   static const calendrier = 'assets/icons/calendrier.svg'; // Calendrier
-  static const preparationPhysique = 'assets/icons/preparation-physique.svg'; // Préparation physique
-  static const ficheMedicale = 'assets/icons/fiche-medicale.svg'; // Fiche médicale
+  static const preparationPhysique =
+      'assets/icons/preparation-physique.svg'; // Préparation physique
+  static const ficheMedicale =
+      'assets/icons/fiche-medicale.svg'; // Fiche médicale
   static const meteo = 'assets/icons/meteo.svg'; // Météo
   static const incendie = 'assets/icons/incendie.svg'; // Incendie
-  static const ravitaillement = 'assets/icons/ravitaillement.svg'; // Ravitaillement
+  static const ravitaillement =
+      'assets/icons/ravitaillement.svg'; // Ravitaillement
   static const nuitees = 'assets/icons/nuitees.svg'; // Nuitées
   static const transport = 'assets/icons/transport.svg'; // Transport
   static const carte = 'assets/icons/carte.svg'; // Cartes
@@ -134,33 +151,44 @@ abstract final class StepwaysIcons {
   static const sansReseau = 'assets/icons/sans-reseau.svg'; // Sans réseau
   static const signaler = 'assets/icons/signaler.svg'; // Signaler
   static const cadenas = 'assets/icons/cadenas.svg'; // ICO-001 Cadenas fermé
-  static const cadenasOuvert = 'assets/icons/cadenas-ouvert.svg'; // ICO-001 Cadenas ouvert
-  static const bouclier = 'assets/icons/bouclier.svg'; // ICO-005 Confidentialité
+  static const cadenasOuvert =
+      'assets/icons/cadenas-ouvert.svg'; // ICO-001 Cadenas ouvert
+  static const bouclier =
+      'assets/icons/bouclier.svg'; // ICO-005 Confidentialité
   static const cle = 'assets/icons/cle.svg'; // ICO-015 Clé / code
   static const connexion = 'assets/icons/connexion.svg'; // ICO-027 Connexion
-  static const deconnexion = 'assets/icons/deconnexion.svg'; // ICO-027 Déconnexion
-  static const effacerTelephone = 'assets/icons/effacer-telephone.svg'; // ICO-026 Tout effacer
+  static const deconnexion =
+      'assets/icons/deconnexion.svg'; // ICO-027 Déconnexion
+  static const effacerTelephone =
+      'assets/icons/effacer-telephone.svg'; // ICO-026 Tout effacer
   static const langue = 'assets/icons/langue.svg'; // ICO-008 Langue
   static const aide = 'assets/icons/aide.svg'; // ICO-009 Aide
   static const loi = 'assets/icons/loi.svg'; // ICO-017 Loi
   static const cgu = 'assets/icons/cgu.svg'; // ICO-017 Conditions (CGU)
   static const panier = 'assets/icons/panier.svg'; // ICO-002 Panier
-  static const portefeuille = 'assets/icons/portefeuille.svg'; // ICO-007 Portefeuille
+  static const portefeuille =
+      'assets/icons/portefeuille.svg'; // ICO-007 Portefeuille
   static const prix = 'assets/icons/prix.svg'; // ICO-007 Prix
   static const boutique = 'assets/icons/boutique.svg'; // ICO-007 Boutique
   static const video = 'assets/icons/video.svg'; // ICO-016 Vidéo
-  static const telecharger = 'assets/icons/telecharger.svg'; // ICO-004 Téléchargement
-  static const miseAJour = 'assets/icons/mise-a-jour.svg'; // ICO-004 Mise à jour
-  static const synchronise = 'assets/icons/synchronise.svg'; // ICO-004 Synchronisé
+  static const telecharger =
+      'assets/icons/telecharger.svg'; // ICO-004 Téléchargement
+  static const miseAJour =
+      'assets/icons/mise-a-jour.svg'; // ICO-004 Mise à jour
+  static const synchronise =
+      'assets/icons/synchronise.svg'; // ICO-004 Synchronisé
   static const sablier = 'assets/icons/sablier.svg'; // ICO-020 En attente
   static const historique = 'assets/icons/historique.svg'; // ICO-019 Historique
-  static const statistiques = 'assets/icons/statistiques.svg'; // ICO-006 Statistiques
-  static const questionnaire = 'assets/icons/questionnaire.svg'; // ICO-021 Questionnaire
+  static const statistiques =
+      'assets/icons/statistiques.svg'; // ICO-006 Statistiques
+  static const questionnaire =
+      'assets/icons/questionnaire.svg'; // ICO-021 Questionnaire
   static const pdf = 'assets/icons/pdf.svg'; // ICO-023 Document PDF
   static const telephone = 'assets/icons/telephone.svg'; // ICO-003 Appel
   static const courrier = 'assets/icons/courrier.svg'; // ICO-018 Courrier
   static const envoyer = 'assets/icons/envoyer.svg'; // ICO-018 Envoyer
-  static const notifications = 'assets/icons/notifications.svg'; // ICO-011 Notifications
+  static const notifications =
+      'assets/icons/notifications.svg'; // ICO-011 Notifications
   static const suiveurs = 'assets/icons/suiveurs.svg'; // ICO-013 Suiveurs
   static const lien = 'assets/icons/lien.svg'; // ICO-025 Lien
   static const lienRompu = 'assets/icons/lien-rompu.svg'; // ICO-025 Lien rompu

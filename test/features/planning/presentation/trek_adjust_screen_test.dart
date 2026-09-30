@@ -27,39 +27,40 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 ///     etapes ne se touche pas depuis cet ecran.
 void main() {
   StageModel makeStage(int num) => StageModel(
-        trailId: 'test-trail',
-        stageNumber: num,
-        name: 'Etape $num - Refuge $num',
-        distanceKm: 10.0,
-        elevationGainM: 500,
-        elevationLossM: 400,
-        startLat: 42.0,
-        startLng: 9.0,
-        endLat: 42.1,
-        endLng: 9.1,
-      );
+    trailId: 'test-trail',
+    stageNumber: num,
+    name: 'Etape $num - Refuge $num',
+    distanceKm: 10.0,
+    elevationGainM: 500,
+    elevationLossM: 400,
+    startLat: 42.0,
+    startLng: 9.0,
+    endLat: 42.1,
+    endLng: 9.1,
+  );
 
   final testStages = [for (var i = 1; i <= 5; i++) makeStage(i)];
 
   List<Override> overridesWith(TrekEditLock lock) => [
-        trailConfigProvider.overrideWithValue(testTrailConfig),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(testStages)),
-        trekEditLockProvider.overrideWithValue(lock),
-      ];
+    trailConfigProvider.overrideWithValue(testTrailConfig),
+    stagesProvider(
+      'test-trail',
+    ).overrideWith((ref) => Future.value(testStages)),
+    trekEditLockProvider.overrideWithValue(lock),
+  ];
 
   Widget wrap({ThemeData? theme}) => MaterialApp.router(
-        theme: theme,
-        routerConfig: GoRouter(
-          initialLocation: '/adjust',
-          routes: [
-            GoRoute(
-              path: '/adjust',
-              builder: (_, __) => const TrekAdjustScreen(trailId: 'test-trail'),
-            ),
-          ],
+    theme: theme,
+    routerConfig: GoRouter(
+      initialLocation: '/adjust',
+      routes: [
+        GoRoute(
+          path: '/adjust',
+          builder: (_, __) => const TrekAdjustScreen(trailId: 'test-trail'),
         ),
-      );
+      ],
+    ),
+  );
 
   /// Monte l'ecran avec un verrou donne, sur une surface haute pour que toutes
   /// les cartes de jour soient rendues (pas de culling de viewport).
@@ -89,42 +90,53 @@ void main() {
   }
 
   testWidgets(
-      'un jour DEJA MARCHE est rendu verrouille et sans aucune action',
-      (tester) async {
-    await pumpScreen(
-      tester,
-      lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
-    );
+    'un jour DEJA MARCHE est rendu verrouille et sans aucune action',
+    (tester) async {
+      await pumpScreen(
+        tester,
+        lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
+      );
 
-    // Les deux sections sont annoncees : ce qui est fait / ce qui reste.
-    expect(find.text(t.programme.inTrek.doneSection), findsOneWidget);
-    expect(find.text(t.programme.inTrek.upcomingSection), findsOneWidget);
+      // Les deux sections sont annoncees : ce qui est fait / ce qui reste.
+      expect(find.text(t.programme.inTrek.doneSection), findsOneWidget);
+      expect(find.text(t.programme.inTrek.upcomingSection), findsOneWidget);
 
-    // Les 2 jours marches portent le badge « Fait » — et eux seuls.
-    expect(find.text(t.programme.inTrek.doneBadge), findsNWidgets(2));
+      // Les 2 jours marches portent le badge « Fait » — et eux seuls.
+      expect(find.text(t.programme.inTrek.doneBadge), findsNWidgets(2));
 
-    // Les actions d'edition n'existent QUE sur les 3 jours a venir : aucun
-    // chip, meme grise, sur un jour fige.
-    expect(find.text(t.programme.actions.merge), findsNWidgets(3));
-    expect(find.text(t.programme.actions.split), findsNWidgets(3));
-    expect(find.text(t.programme.actions.rest), findsNWidgets(3));
-  });
+      // Les actions d'edition n'existent QUE sur les 3 jours a venir : aucun
+      // chip, meme grise, sur un jour fige.
+      expect(find.text(t.programme.actions.merge), findsNWidgets(3));
+      expect(find.text(t.programme.actions.split), findsNWidgets(3));
+      expect(find.text(t.programme.actions.rest), findsNWidgets(3));
+    },
+  );
 
-  testWidgets('AUCUNE inversion possible : pas de liste reordonnable',
-      (tester) async {
+  testWidgets('AUCUNE inversion possible : pas de liste reordonnable', (
+    tester,
+  ) async {
     await pumpScreen(
       tester,
       lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1'}),
     );
 
-    expect(find.byType(ReorderableListView), findsNothing,
-        reason: 'l ordre des etapes ne se glisse pas une fois parti');
-    expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.poignee), findsNothing,
-        reason: 'aucune poignee de glissement ne doit etre offerte');
+    expect(
+      find.byType(ReorderableListView),
+      findsNothing,
+      reason: 'l ordre des etapes ne se glisse pas une fois parti',
+    );
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.poignee,
+      ),
+      findsNothing,
+      reason: 'aucune poignee de glissement ne doit etre offerte',
+    );
   });
 
-  testWidgets('taper REGROUPER modifie reellement le programme partage',
-      (tester) async {
+  testWidgets('taper REGROUPER modifie reellement le programme partage', (
+    tester,
+  ) async {
     final container = await pumpScreen(
       tester,
       lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1', '2'}),
@@ -147,57 +159,67 @@ void main() {
   });
 
   testWidgets(
-      'les chips s habillent du THEME du sentier et restent lisibles en sombre',
-      (tester) async {
-    // Theme du sentier actif, construit comme l'app (`lib/main.dart`) : brun
-    // volcanique + orange terre, en mode SOMBRE (defaut produit).
-    const trailPrimary = Color(0xFF8B4513);
-    const trailSecondary = Color(0xFFD2691E);
-    final darkTheme = AppTheme.buildDarkTheme(
-      primaryColor: trailPrimary,
-      secondaryColor: trailSecondary,
-      skin: AppSkin.sentierVivant,
-    );
+    'les chips s habillent du THEME du sentier et restent lisibles en sombre',
+    (tester) async {
+      // Theme du sentier actif, construit comme l'app (`lib/main.dart`) : brun
+      // volcanique + orange terre, en mode SOMBRE (defaut produit).
+      const trailPrimary = Color(0xFF8B4513);
+      const trailSecondary = Color(0xFFD2691E);
+      final darkTheme = AppTheme.buildDarkTheme(
+        primaryColor: trailPrimary,
+        secondaryColor: trailSecondary,
+        skin: AppSkin.sentierVivant,
+      );
 
-    await pumpScreen(
-      tester,
-      lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1'}),
-      theme: darkTheme,
-    );
+      await pumpScreen(
+        tester,
+        lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1'}),
+        theme: darkTheme,
+      );
 
-    // 1) Chip ACTIF (« Regrouper ») = couleur PRIMAIRE du sentier telle que le
-    //    theme la resout. Aucune valeur en dur : sur un sentier vert, ce test
-    //    suivrait le vert. Le bleu Material d'avant echouait ici.
-    final merge =
-        tester.widget<Text>(find.text(t.programme.actions.merge).first);
-    expect(merge.style?.color, darkTheme.colorScheme.primary);
-    expect(merge.style?.color, isNot(AppTheme.bleuRepos),
-        reason: 'le chip ne doit plus porter un bleu etranger au sentier');
+      // 1) Chip ACTIF (« Regrouper ») = couleur PRIMAIRE du sentier telle que le
+      //    theme la resout. Aucune valeur en dur : sur un sentier vert, ce test
+      //    suivrait le vert. Le bleu Material d'avant echouait ici.
+      final merge = tester.widget<Text>(
+        find.text(t.programme.actions.merge).first,
+      );
+      expect(merge.style?.color, darkTheme.colorScheme.primary);
+      expect(
+        merge.style?.color,
+        isNot(AppTheme.bleuRepos),
+        reason: 'le chip ne doit plus porter un bleu etranger au sentier',
+      );
 
-    // 2) Chip INDISPONIBLE = gris LISIBLE sur fond sombre. Regression R1 :
-    //    `grisGranite` (~2,6:1 en sombre), qui plus est a 47 % d'opacite,
-    //    etait illisible.
-    //
-    //    LE CHIP TEMOIN A CHANGE (tache 558), pas la regle testee. Ce test
-    //    lisait « Separer » sur un jour mono-etape : c'etait alors le cas
-    //    d'indisponibilite le plus simple a produire. Depuis la tache 558, un
-    //    jour mono-etape SE SEPARE (l'etape se coupe en deux portions de meme
-    //    energie), donc ce chip est desormais ACTIF. On prend donc l'autre cas
-    //    d'indisponibilite structurelle, aussi stable que le precedent :
-    //    « Regrouper » sur le DERNIER jour, qui n'a aucun jour suivant.
-    final mergeLast =
-        tester.widget<Text>(find.text(t.programme.actions.merge).last);
-    expect(mergeLast.style?.color, AppTheme.grisTexteSecondaire);
-    expect(mergeLast.style?.color, isNot(AppTheme.grisGranite));
-    expect(mergeLast.style?.color?.a, 1.0,
-        reason: 'un chip desactive s aplatit, il ne devient pas transparent');
+      // 2) Chip INDISPONIBLE = gris LISIBLE sur fond sombre. Regression R1 :
+      //    `grisGranite` (~2,6:1 en sombre), qui plus est a 47 % d'opacite,
+      //    etait illisible.
+      //
+      //    LE CHIP TEMOIN A CHANGE (tache 558), pas la regle testee. Ce test
+      //    lisait « Separer » sur un jour mono-etape : c'etait alors le cas
+      //    d'indisponibilite le plus simple a produire. Depuis la tache 558, un
+      //    jour mono-etape SE SEPARE (l'etape se coupe en deux portions de meme
+      //    energie), donc ce chip est desormais ACTIF. On prend donc l'autre cas
+      //    d'indisponibilite structurelle, aussi stable que le precedent :
+      //    « Regrouper » sur le DERNIER jour, qui n'a aucun jour suivant.
+      final mergeLast = tester.widget<Text>(
+        find.text(t.programme.actions.merge).last,
+      );
+      expect(mergeLast.style?.color, AppTheme.grisTexteSecondaire);
+      expect(mergeLast.style?.color, isNot(AppTheme.grisGranite));
+      expect(
+        mergeLast.style?.color?.a,
+        1.0,
+        reason: 'un chip desactive s aplatit, il ne devient pas transparent',
+      );
 
-    // 3) ... et il reste bien DISTINCT du chip actif : l'etat se lit.
-    expect(mergeLast.style?.color, isNot(merge.style?.color));
-  });
+      // 3) ... et il reste bien DISTINCT du chip actif : l'etat se lit.
+      expect(mergeLast.style?.color, isNot(merge.style?.color));
+    },
+  );
 
-  testWidgets('tout marche : plus rien a adapter, message explicite',
-      (tester) async {
+  testWidgets('tout marche : plus rien a adapter, message explicite', (
+    tester,
+  ) async {
     await pumpScreen(
       tester,
       lock: const TrekEditLock(

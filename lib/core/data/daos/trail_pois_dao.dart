@@ -21,8 +21,7 @@ class TrailPoisDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un POI par son id
   Future<TrailPoi?> getById(String id) {
-    return (select(trailPois)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(trailPois)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les POI d'une etape

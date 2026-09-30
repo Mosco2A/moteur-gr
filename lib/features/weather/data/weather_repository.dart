@@ -23,7 +23,7 @@ class WeatherRefreshResult {
 
   /// Rafraichissement reussi : bulletin neuf.
   const WeatherRefreshResult.refreshed(WeatherForecast forecast)
-      : this(forecast: forecast, failed: false);
+    : this(forecast: forecast, failed: false);
 
   /// Echec du rafraichissement. [forecast] porte le dernier bulletin connu s'il
   /// en existe un (l'ecran garde son contenu et affiche son age), `null` sinon.
@@ -69,9 +69,9 @@ class WeatherRepository {
     required WeatherApiService apiService,
     required WeatherCache cache,
     required StagesDao stagesDao,
-  })  : _apiService = apiService,
-        _cache = cache,
-        _stagesDao = stagesDao;
+  }) : _apiService = apiService,
+       _cache = cache,
+       _stagesDao = stagesDao;
 
   final WeatherApiService _apiService;
   final WeatherCache _cache;
@@ -116,8 +116,10 @@ class WeatherRepository {
 
     // 3. Appel echoue : le DERNIER bulletin connu vaut mieux qu'un ecran vide.
     if (forecast == null) {
-      _log.w('[WeatherRepository] API echec pour $trailId/$stageNumber, '
-          'repli sur le dernier bulletin connu');
+      _log.w(
+        '[WeatherRepository] API echec pour $trailId/$stageNumber, '
+        'repli sur le dernier bulletin connu',
+      );
       return _cache.getLastKnownForecast(
         trailId: trailId,
         stageNumber: stageNumber,
@@ -145,10 +147,8 @@ class WeatherRepository {
     required String trailId,
     required int stageNumber,
   }) async {
-    Future<WeatherForecast?> lastKnown() => _cache.getLastKnownForecast(
-          trailId: trailId,
-          stageNumber: stageNumber,
-        );
+    Future<WeatherForecast?> lastKnown() =>
+        _cache.getLastKnownForecast(trailId: trailId, stageNumber: stageNumber);
 
     final stage = await _stagesDao.getByStageNumber(trailId, stageNumber);
     if (stage == null) {

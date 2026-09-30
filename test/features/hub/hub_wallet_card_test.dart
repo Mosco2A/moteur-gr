@@ -16,9 +16,7 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 void main() {
   Widget harnais(StreamController<int> flux) {
     return ProviderScope(
-      overrides: [
-        walletStepsProvider.overrideWith((ref) => flux.stream),
-      ],
+      overrides: [walletStepsProvider.overrideWith((ref) => flux.stream)],
       child: const MaterialApp(home: Scaffold(body: HubWalletCard())),
     );
   }

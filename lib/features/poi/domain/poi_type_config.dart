@@ -99,11 +99,12 @@ class PoiTypeConfig {
   /// danger, viewpoint, info, campsite, restaurant, emergency.
   /// Types inconnus: fallback generique (location_on, gris, type brut).
   static PoiTypeStyle getStyle(String type) {
-    return _styles[type] ?? PoiTypeStyle(
-      icon: _fallback.icon,
-      color: _fallback.color,
-      labelKey: type,
-    );
+    return _styles[type] ??
+        PoiTypeStyle(
+          icon: _fallback.icon,
+          color: _fallback.color,
+          labelKey: type,
+        );
   }
 
   /// Liste de tous les types connus

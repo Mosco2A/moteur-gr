@@ -59,10 +59,12 @@ void main() {
       }
     });
 
-    test('une saison inconnue garde sa valeur plutot que d en inventer une',
-        () {
-      expect(tipSeasonLabel('mousson'), 'mousson');
-    });
+    test(
+      'une saison inconnue garde sa valeur plutot que d en inventer une',
+      () {
+        expect(tipSeasonLabel('mousson'), 'mousson');
+      },
+    );
   });
 
   group('Guide de la carte — chaque signe porte son explication', () {
@@ -89,10 +91,12 @@ void main() {
       expect(poiTypeGuide('refuge'), poiTypeGuide('shelter'));
     });
 
-    test('un type inconnu perd son paragraphe, il n en emprunte pas un autre',
-        () {
-      expect(poiTypeGuide('teleporteur'), isNull);
-    });
+    test(
+      'un type inconnu perd son paragraphe, il n en emprunte pas un autre',
+      () {
+        expect(poiTypeGuide('teleporteur'), isNull);
+      },
+    );
 
     test('les deux types que la table oubliait sont traduits', () {
       // `accommodation` et `info` retombaient sur le libelle FRANCAIS du
@@ -124,20 +128,23 @@ void main() {
     // ne revienne pas par la porte de l'i18n. Ce que le test protegeait par
     // ailleurs tient toujours : la barre ne doit pas se remettre a emprunter la
     // phrase du cockpit, qui est ecrite pour un tout autre ecran.
-    test('le laius sur les tirets a quitte les CINQ fichiers de traduction',
-        () {
-      for (final langue in ['fr', 'en', 'de', 'es', 'it']) {
-        final brut = File('assets/i18n/$langue.i18n.json').readAsStringSync();
-        expect(
-          brut.contains('statsPendingNote'),
-          isFalse,
-          reason: 'la cle map.statsPendingNote est revenue dans '
-              'assets/i18n/$langue.i18n.json',
-        );
-      }
-      // La phrase du cockpit, elle, reste : c'est son ecran a elle.
-      expect(t.hub.trekCard.noTrekBody, isNotEmpty);
-    });
+    test(
+      'le laius sur les tirets a quitte les CINQ fichiers de traduction',
+      () {
+        for (final langue in ['fr', 'en', 'de', 'es', 'it']) {
+          final brut = File('assets/i18n/$langue.i18n.json').readAsStringSync();
+          expect(
+            brut.contains('statsPendingNote'),
+            isFalse,
+            reason:
+                'la cle map.statsPendingNote est revenue dans '
+                'assets/i18n/$langue.i18n.json',
+          );
+        }
+        // La phrase du cockpit, elle, reste : c'est son ecran a elle.
+        expect(t.hub.trekCard.noTrekBody, isNotEmpty);
+      },
+    );
 
     test('la photo prise depuis la carte est confirmee, pas titree', () {
       expect(t.journal.photoAdded, isNotEmpty);
@@ -153,18 +160,18 @@ void main() {
   group('Detail d etape — le nom ne repart plus du francais', () {
     /// Etape minimale portant un nom francais et un nom allemand.
     Stage stage({String nameDe = 'Deutscher Name'}) => Stage(
-          id: 'e1',
-          nameFr: 'Depart — Arrivee',
-          nameDe: nameDe,
-          distance: 10,
-          elevationGain: 100,
-          elevationLoss: 100,
-          orderIndex: 1,
-          startLat: 42,
-          startLng: 9,
-          endLat: 42.1,
-          endLng: 9.1,
-        );
+      id: 'e1',
+      nameFr: 'Depart — Arrivee',
+      nameDe: nameDe,
+      distance: 10,
+      elevationGain: 100,
+      elevationLoss: 100,
+      orderIndex: 1,
+      startLat: 42,
+      startLng: 9,
+      endLat: 42.1,
+      endLng: 9.1,
+    );
 
     /// Resout [localizedStageName] sous une locale donnee.
     Future<String> nomSous(
@@ -194,13 +201,15 @@ void main() {
       return resolu;
     }
 
-    testWidgets('en allemand le nom est allemand — l AppBar lisait nameFr',
-        (tester) async {
+    testWidgets('en allemand le nom est allemand — l AppBar lisait nameFr', (
+      tester,
+    ) async {
       expect(await nomSous(tester, const Locale('de')), 'Deutscher Name');
     });
 
-    testWidgets('repli sur le francais quand la traduction est vide',
-        (tester) async {
+    testWidgets('repli sur le francais quand la traduction est vide', (
+      tester,
+    ) async {
       expect(
         await nomSous(tester, const Locale('de'), nameDe: ''),
         'Depart — Arrivee',

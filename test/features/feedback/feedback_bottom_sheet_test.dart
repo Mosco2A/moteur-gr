@@ -71,14 +71,21 @@ void main() {
       expect(find.widgetWithText(ChoiceChip, 'Compliment'), findsOneWidget);
     });
 
-    testWidgets('affiche le champ message et le bouton envoyer', (tester) async {
+    testWidgets('affiche le champ message et le bouton envoyer', (
+      tester,
+    ) async {
       await openSheet(tester, db);
 
       // Champ de saisie du message
       expect(find.byType(TextFormField), findsOneWidget);
 
       // Bouton envoyer avec icone send
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.envoyer), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.envoyer,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('affiche 5 etoiles pour la note', (tester) async {
@@ -106,9 +113,11 @@ void main() {
       // se lit donc a la COULEUR, et c'est ce qu'on mesure ici.
       final allumees = tester
           .widgetList<StepIcon>(stars)
-          .where((s) => s.color == Theme.of(tester.element(stars.first))
-              .colorScheme
-              .primary)
+          .where(
+            (s) =>
+                s.color ==
+                Theme.of(tester.element(stars.first)).colorScheme.primary,
+          )
           .length;
       expect(stars, findsNWidgets(5));
       expect(allumees, 3);

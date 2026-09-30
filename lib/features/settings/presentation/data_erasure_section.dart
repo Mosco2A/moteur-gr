@@ -53,13 +53,17 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
           padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
           child: Row(
             children: [
-              StepIcon(StepwaysIcons.corbeille,
-                  size: 20, color: theme.colorScheme.primary),
+              StepIcon(
+                StepwaysIcons.corbeille,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 tr.section,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(color: theme.colorScheme.primary),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
               ),
             ],
           ),
@@ -70,8 +74,10 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
             button: true,
             label: tr.a11y.entry,
             child: ListTile(
-              leading: const StepIcon(StepwaysIcons.corbeille,
-                  color: AppTheme.rougeUrgence),
+              leading: const StepIcon(
+                StepwaysIcons.corbeille,
+                color: AppTheme.rougeUrgence,
+              ),
               title: Text(tr.entry),
               subtitle: Text(tr.entryDesc),
               trailing: _erasing
@@ -103,10 +109,12 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
     String message;
     try {
       final report = await ref.read(accountErasureProvider)();
-      _log.i('[Erasure] Art. 17 : ${report.tablesWiped} table(s), '
-          '${report.localRowsDeleted} ligne(s), '
-          '${report.prefsKeysDeleted} cle(s) de prefs, '
-          '${report.secureKeysDeleted} cle(s) de keystore');
+      _log.i(
+        '[Erasure] Art. 17 : ${report.tablesWiped} table(s), '
+        '${report.localRowsDeleted} ligne(s), '
+        '${report.prefsKeysDeleted} cle(s) de prefs, '
+        '${report.secureKeysDeleted} cle(s) de keystore',
+      );
       message = tr.done;
     } catch (e) {
       // Pas de catch silencieux : l'echec est journalise ET dit au randonneur.
@@ -138,16 +146,16 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
     final tr = Translations.of(context).erasure;
 
     Widget bloc(String titre, String corps) => Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(titre, style: theme.textTheme.titleSmall),
-              const SizedBox(height: AppTheme.spacingXs),
-              Text(corps, style: theme.textTheme.bodyMedium),
-            ],
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(titre, style: theme.textTheme.titleSmall),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(corps, style: theme.textTheme.bodyMedium),
+        ],
+      ),
+    );
 
     return AlertDialog(
       title: Text(tr.dialogTitle),
@@ -159,8 +167,9 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
             bloc(tr.staysTitle, tr.stays),
             Text(
               tr.finalWarning,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.rougeUrgence),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.rougeUrgence,
+              ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
             // L'ACTE POSITIF. Sans lui, le bouton d'a cote ne fait rien.
@@ -169,8 +178,10 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
               onChanged: (v) => setState(() => _understood = v ?? false),
               controlAffinity: ListTileControlAffinity.leading,
               contentPadding: EdgeInsets.zero,
-              title: Text(tr.confirmCheckbox,
-                  style: theme.textTheme.bodyMedium),
+              title: Text(
+                tr.confirmCheckbox,
+                style: theme.textTheme.bodyMedium,
+              ),
             ),
           ],
         ),
@@ -187,8 +198,7 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
           tone: AppTheme.rougeUrgence,
           isFullWidth: false,
           label: tr.confirm,
-          onPressed:
-              _understood ? () => Navigator.of(context).pop(true) : null,
+          onPressed: _understood ? () => Navigator.of(context).pop(true) : null,
         ),
       ],
     );

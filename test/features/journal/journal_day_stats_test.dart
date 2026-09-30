@@ -53,8 +53,7 @@ void main() {
       expect(stats.hasData, isTrue);
     });
 
-    test('le tremblement d altimetre sous 3 m ne fabrique pas de denivele',
-        () {
+    test('le tremblement d altimetre sous 3 m ne fabrique pas de denivele', () {
       final base = DateTime(2026, 6, 10, 8);
       final stats = computeDayStats([
         for (var i = 0; i < 40; i++)
@@ -95,40 +94,46 @@ void main() {
       );
     }
 
-    test('le cumul s arrete a la journee affichee, jours transferts exclus',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      await noteAt(db, DateTime(2026, 6, 10, 9));
-      await noteAt(db, DateTime(2026, 6, 11, 9));
-      await noteAt(db, DateTime(2026, 6, 12, 9));
-      // Jour 1 : deux points proches. Jour 2 : deux points proches, mais
-      // TRES loin du jour 1 (transfert nocturne). Jour 3 : idem.
-      await traceAt(db, DateTime(2026, 6, 10, 8), 42.000);
-      await traceAt(db, DateTime(2026, 6, 10, 9), 42.010);
-      await traceAt(db, DateTime(2026, 6, 11, 8), 43.000);
-      await traceAt(db, DateTime(2026, 6, 11, 9), 43.010);
-      await traceAt(db, DateTime(2026, 6, 12, 8), 44.000);
-      await traceAt(db, DateTime(2026, 6, 12, 9), 44.010);
+    test(
+      'le cumul s arrete a la journee affichee, jours transferts exclus',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+        await noteAt(db, DateTime(2026, 6, 10, 9));
+        await noteAt(db, DateTime(2026, 6, 11, 9));
+        await noteAt(db, DateTime(2026, 6, 12, 9));
+        // Jour 1 : deux points proches. Jour 2 : deux points proches, mais
+        // TRES loin du jour 1 (transfert nocturne). Jour 3 : idem.
+        await traceAt(db, DateTime(2026, 6, 10, 8), 42.000);
+        await traceAt(db, DateTime(2026, 6, 10, 9), 42.010);
+        await traceAt(db, DateTime(2026, 6, 11, 8), 43.000);
+        await traceAt(db, DateTime(2026, 6, 11, 9), 43.010);
+        await traceAt(db, DateTime(2026, 6, 12, 8), 44.000);
+        await traceAt(db, DateTime(2026, 6, 12, 9), 44.010);
 
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailIdProvider.overrideWithValue(trailId),
-      ]);
-      addTearDown(container.dispose);
-      container.read(journalDaysProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+        final container = ProviderContainer(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            trailIdProvider.overrideWithValue(trailId),
+          ],
+        );
+        addTearDown(container.dispose);
+        container.read(journalDaysProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      // Sur le jour 2 : cumul = jour 1 + jour 2, PAS le jour 3.
-      container
-          .read(journalSelectedDayRawProvider.notifier)
-          .select(DateTime(2026, 6, 11));
-      final cumul = await container.read(journalCumulativeStatsProvider.future);
+        // Sur le jour 2 : cumul = jour 1 + jour 2, PAS le jour 3.
+        container
+            .read(journalSelectedDayRawProvider.notifier)
+            .select(DateTime(2026, 6, 11));
+        final cumul = await container.read(
+          journalCumulativeStatsProvider.future,
+        );
 
-      // 2 x ~1,11 km, et surtout PAS les ~111 km du transfert nocturne :
-      // additionner les journees separement est ce qui l'evite.
-      expect(cumul.distanceKm, closeTo(2.22, 0.1));
-      expect(cumul.pointCount, 4);
-    });
+        // 2 x ~1,11 km, et surtout PAS les ~111 km du transfert nocturne :
+        // additionner les journees separement est ce qui l'evite.
+        expect(cumul.distanceKm, closeTo(2.22, 0.1));
+        expect(cumul.pointCount, 4);
+      },
+    );
   });
 }

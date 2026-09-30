@@ -50,8 +50,8 @@ class KudosService {
   KudosService({
     required AppDatabase database,
     required KudoRemoteSink remoteSink,
-  })  : _dao = KudosFeedDao(database),
-        _remoteSink = remoteSink;
+  }) : _dao = KudosFeedDao(database),
+       _remoteSink = remoteSink;
 
   final KudosFeedDao _dao;
   final KudoRemoteSink _remoteSink;

@@ -1,4 +1,3 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/native.dart';
 
@@ -34,23 +33,38 @@ void main() {
 
       // Verifier que les tables de base existent en executant
       // une requete simple sur chaque table fondamentale
-      final stagesResult = await db.customSelect(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='stages'",
-      ).get();
-      expect(stagesResult, isNotEmpty,
-          reason: 'Table stages doit exister dans le schema');
+      final stagesResult = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='stages'",
+          )
+          .get();
+      expect(
+        stagesResult,
+        isNotEmpty,
+        reason: 'Table stages doit exister dans le schema',
+      );
 
-      final poisResult = await db.customSelect(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='pois'",
-      ).get();
-      expect(poisResult, isNotEmpty,
-          reason: 'Table pois doit exister dans le schema');
+      final poisResult = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='pois'",
+          )
+          .get();
+      expect(
+        poisResult,
+        isNotEmpty,
+        reason: 'Table pois doit exister dans le schema',
+      );
 
-      final progressResult = await db.customSelect(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='user_progress_entries'",
-      ).get();
-      expect(progressResult, isNotEmpty,
-          reason: 'Table user_progress_entries doit exister dans le schema');
+      final progressResult = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='user_progress_entries'",
+          )
+          .get();
+      expect(
+        progressResult,
+        isNotEmpty,
+        reason: 'Table user_progress_entries doit exister dans le schema',
+      );
 
       await db.close();
     });
@@ -58,34 +72,46 @@ void main() {
     // -----------------------------------------------------------------------
     // TEST 2 : Migration v1->v2 sans perte de donnees
     // -----------------------------------------------------------------------
-    test('migration v1->v2 — colonne totalTimeMinutes ajoutee sans perte',
-        () async {
-      // Simuler un schema v1 minimal (sans totalTimeMinutes)
-      final rawDb = NativeDatabase.memory();
-      final executor = rawDb;
-      final db = AppDatabase(executor);
+    test(
+      'migration v1->v2 — colonne totalTimeMinutes ajoutee sans perte',
+      () async {
+        // Simuler un schema v1 minimal (sans totalTimeMinutes)
+        final rawDb = NativeDatabase.memory();
+        final executor = rawDb;
+        final db = AppDatabase(executor);
 
-      // Verifier que la colonne total_time_minutes existe dans le schema actuel
-      // (resultat de la migration v1->v2+)
-      final columns = await db.customSelect(
-        "PRAGMA table_info(user_progress_entries)",
-      ).get();
+        // Verifier que la colonne total_time_minutes existe dans le schema actuel
+        // (resultat de la migration v1->v2+)
+        final columns = await db
+            .customSelect("PRAGMA table_info(user_progress_entries)")
+            .get();
 
-      final columnNames =
-          columns.map((row) => row.read<String>('name')).toList();
+        final columnNames = columns
+            .map((row) => row.read<String>('name'))
+            .toList();
 
-      expect(columnNames, contains('total_time_minutes'),
+        expect(
+          columnNames,
+          contains('total_time_minutes'),
           reason:
-              'Colonne total_time_minutes doit exister apres migration v1->v2');
+              'Colonne total_time_minutes doit exister apres migration v1->v2',
+        );
 
-      // Verifier que les autres colonnes de base sont preservees
-      expect(columnNames, contains('stage_id'),
-          reason: 'Colonne stage_id doit etre preservee');
-      expect(columnNames, contains('completed'),
-          reason: 'Colonne completed doit etre preservee');
+        // Verifier que les autres colonnes de base sont preservees
+        expect(
+          columnNames,
+          contains('stage_id'),
+          reason: 'Colonne stage_id doit etre preservee',
+        );
+        expect(
+          columnNames,
+          contains('completed'),
+          reason: 'Colonne completed doit etre preservee',
+        );
 
-      await db.close();
-    });
+        await db.close();
+      },
+    );
 
     // -----------------------------------------------------------------------
     // TEST 3 : Detection rollback (version future)
@@ -94,16 +120,20 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
 
       // Verifier la version du schema
-      expect(db.schemaVersion, equals(9),
-          reason: 'Version du schema doit etre 9 (derniere migration)');
+      expect(
+        db.schemaVersion,
+        equals(9),
+        reason: 'Version du schema doit etre 9 (derniere migration)',
+      );
 
       // Verifier que toutes les tables attendues existent
-      final tables = await db.customSelect(
-        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name",
-      ).get();
+      final tables = await db
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name",
+          )
+          .get();
 
-      final tableNames =
-          tables.map((row) => row.read<String>('name')).toList();
+      final tableNames = tables.map((row) => row.read<String>('name')).toList();
 
       // Tables Phase 4 (ajoutees en v7+)
       final expectedTables = [
@@ -126,8 +156,11 @@ void main() {
       ];
 
       for (final tableName in expectedTables) {
-        expect(tableNames, contains(tableName),
-            reason: 'Table $tableName doit exister en schema v9');
+        expect(
+          tableNames,
+          contains(tableName),
+          reason: 'Table $tableName doit exister en schema v9',
+        );
       }
 
       await db.close();

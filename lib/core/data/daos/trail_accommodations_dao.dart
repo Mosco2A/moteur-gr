@@ -21,15 +21,16 @@ class TrailAccommodationsDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un hebergement par son id
   Future<TrailAccommodation?> getById(String id) {
-    return (select(trailAccommodations)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailAccommodations,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les hebergements d'une etape
   Future<List<TrailAccommodation>> getByStageId(String stageId) {
-    return (select(trailAccommodations)
-          ..where((t) => t.stageId.equals(stageId)))
-        .get();
+    return (select(
+      trailAccommodations,
+    )..where((t) => t.stageId.equals(stageId))).get();
   }
 
   /// Insere ou remplace un hebergement

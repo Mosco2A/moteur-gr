@@ -6,9 +6,7 @@ import '../domain/models/tip_card.dart';
 /// et l altitude courante. Tri par priorite decroissante.
 /// Aucune dependance vers poi/, trek/, after/, planning/, feedback/.
 class TipCardRepository {
-  TipCardRepository({
-    required List<TipCard> allCards,
-  }) : _allCards = allCards;
+  TipCardRepository({required List<TipCard> allCards}) : _allCards = allCards;
 
   final List<TipCard> _allCards;
 
@@ -64,7 +62,9 @@ class TipCardRepository {
     String? currentSeason,
     int? currentAltitudeM,
   }) {
-    final byCategory = _allCards.where((card) => card.category == category).toList();
+    final byCategory = _allCards
+        .where((card) => card.category == category)
+        .toList();
     final subRepo = TipCardRepository(allCards: byCategory);
     return subRepo.filterCards(
       trailScope: trailScope,

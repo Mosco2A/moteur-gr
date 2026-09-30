@@ -20,8 +20,9 @@ class TrailGpxTracksDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere une trace par son id
   Future<TrailGpxTrack?> getById(String id) {
-    return (select(trailGpxTracks)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailGpxTracks,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Insere ou remplace une trace

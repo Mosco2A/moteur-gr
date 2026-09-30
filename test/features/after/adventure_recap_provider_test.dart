@@ -47,19 +47,19 @@ void main() {
   late AppDatabase db;
 
   StagesCompanion stage(int n) => StagesCompanion(
-        trailId: const Value(trailId),
-        stageNumber: Value(n),
-        name: Value('Etape $n'),
-        distanceKm: const Value(10.0),
-        elevationGainM: const Value(500),
-        elevationLossM: const Value(400),
-        description: const Value('desc'),
-        startLat: const Value(42.0),
-        startLng: const Value(9.0),
-        endLat: const Value(42.1),
-        endLng: const Value(9.1),
-        difficulty: const Value('moderate'),
-      );
+    trailId: const Value(trailId),
+    stageNumber: Value(n),
+    name: Value('Etape $n'),
+    distanceKm: const Value(10.0),
+    elevationGainM: const Value(500),
+    elevationLossM: const Value(400),
+    description: const Value('desc'),
+    startLat: const Value(42.0),
+    startLng: const Value(9.0),
+    endLat: const Value(42.1),
+    endLng: const Value(9.1),
+    difficulty: const Value('moderate'),
+  );
 
   Future<void> seedStages() async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
@@ -74,26 +74,27 @@ void main() {
     List<String> completed = const [],
     bool fullyWalked = false,
     DateTime? finishedAt,
-  }) =>
-      TrekSession(
-        id: 'sess-lot3',
-        trailId: trailId,
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        finishedAt: finishedAt,
-        status: status,
-        completedStages: completed,
-        parcoursFullyWalked: fullyWalked,
-      );
+  }) => TrekSession(
+    id: 'sess-lot3',
+    trailId: trailId,
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    finishedAt: finishedAt,
+    status: status,
+    completedStages: completed,
+    parcoursFullyWalked: fullyWalked,
+  );
 
   /// Container de test. Plus aucune bascule « vitrine » (tache 601) : le
   /// diplome et le recap ne dependent QUE de la session reellement marchee.
   ProviderContainer makeContainer() {
-    return ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      trailConfigProvider.overrideWithValue(config),
-      currentTrailIdProvider.overrideWith((ref) => trailId),
-      demoModeServiceProvider.overrideWithValue(DemoModeService()),
-    ]);
+    return ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(config),
+        currentTrailIdProvider.overrideWith((ref) => trailId),
+        demoModeServiceProvider.overrideWithValue(DemoModeService()),
+      ],
+    );
   }
 
   setUp(() {
@@ -106,15 +107,16 @@ void main() {
 
   group('DAO getLatestByTrailId', () {
     test('retourne la session la plus recente du sentier', () async {
-      await persistSession(sess().copyWith(
-        id: 'older',
-        startedAt: DateTime.utc(2026, 6, 10),
-      ));
-      await persistSession(sess().copyWith(
-        id: 'newer',
-        startedAt: DateTime.utc(2026, 6, 20),
-        status: 'completed',
-      ));
+      await persistSession(
+        sess().copyWith(id: 'older', startedAt: DateTime.utc(2026, 6, 10)),
+      );
+      await persistSession(
+        sess().copyWith(
+          id: 'newer',
+          startedAt: DateTime.utc(2026, 6, 20),
+          status: 'completed',
+        ),
+      );
 
       final latest = await db.trekSessionsDao.getLatestByTrailId(trailId);
       expect(latest, isNotNull);
@@ -131,62 +133,79 @@ void main() {
     test('trek non fini -> diplome VERROUILLE', () async {
       await seedStages();
       // Session enregistree mais parcours non entierement marche.
-      await persistSession(sess(
-        status: 'completed',
-        completed: const ['1', '2'],
-        fullyWalked: false,
-      ));
+      await persistSession(
+        sess(
+          status: 'completed',
+          completed: const ['1', '2'],
+          fullyWalked: false,
+        ),
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
 
-      expect(c.read(isDiplomaUnlockedProvider), isFalse,
-          reason: '!parcoursFullyWalked => verrouille.');
+      expect(
+        c.read(isDiplomaUnlockedProvider),
+        isFalse,
+        reason: '!parcoursFullyWalked => verrouille.',
+      );
     });
 
     test('trek FINI (fullyWalked) -> diplome DEVERROUILLE', () async {
       await seedStages();
-      await persistSession(sess(
-        status: 'completed',
-        completed: const ['1', '2', '3', '4'],
-        fullyWalked: true,
-      ));
+      await persistSession(
+        sess(
+          status: 'completed',
+          completed: const ['1', '2', '3', '4'],
+          fullyWalked: true,
+        ),
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
 
-      expect(c.read(isDiplomaUnlockedProvider), isTrue,
-          reason: 'parcoursFullyWalked => deverrouille.');
+      expect(
+        c.read(isDiplomaUnlockedProvider),
+        isTrue,
+        reason: 'parcoursFullyWalked => deverrouille.',
+      );
     });
 
-    test('AUCUNE SESSION -> diplome VERROUILLE (plus d exception demo)',
-        () async {
-      await seedStages();
-      // AVANT LA TACHE 601 : un sentier declare « vitrine » deverrouillait
-      // ici le diplome sans une seule etape marchee. Cette exception n existe
-      // plus, et le sentier de demonstration n en a pas besoin — il est
-      // gratuit et court, donc son diplome se GAGNE.
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      await c.read(latestTrekSessionProvider.future);
+    test(
+      'AUCUNE SESSION -> diplome VERROUILLE (plus d exception demo)',
+      () async {
+        await seedStages();
+        // AVANT LA TACHE 601 : un sentier declare « vitrine » deverrouillait
+        // ici le diplome sans une seule etape marchee. Cette exception n existe
+        // plus, et le sentier de demonstration n en a pas besoin — il est
+        // gratuit et court, donc son diplome se GAGNE.
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        await c.read(latestTrekSessionProvider.future);
 
-      expect(c.read(isDiplomaUnlockedProvider), isFalse,
-          reason: 'sans session marchee, aucun diplome — pour personne.');
-    });
+        expect(
+          c.read(isDiplomaUnlockedProvider),
+          isFalse,
+          reason: 'sans session marchee, aucun diplome — pour personne.',
+        );
+      },
+    );
   });
 
   group('(b) Stats REELLES (session, pas totaux statiques)', () {
     test('distance/D+/etapes = somme des etapes REELLEMENT marchees', () async {
       await seedStages();
       // 3 etapes marchees sur 4 : 30 km, 1500 m D+ (vs 999 km / 99999 config).
-      await persistSession(sess(
-        status: 'abandoned',
-        completed: const ['1', '2', '3'],
-        fullyWalked: false,
-        finishedAt: DateTime.utc(2026, 6, 17, 18),
-      ));
+      await persistSession(
+        sess(
+          status: 'abandoned',
+          completed: const ['1', '2', '3'],
+          fullyWalked: false,
+          finishedAt: DateTime.utc(2026, 6, 17, 18),
+        ),
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -205,21 +224,23 @@ void main() {
       expect(stats.elevationGainM, isNot(equals(config.totalElevationGain)));
     });
 
-    test('aucune etape marchee -> stats a zero (hasWalkedStages=false)',
-        () async {
-      await seedStages();
-      await persistSession(sess(status: 'abandoned'));
+    test(
+      'aucune etape marchee -> stats a zero (hasWalkedStages=false)',
+      () async {
+        await seedStages();
+        await persistSession(sess(status: 'abandoned'));
 
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      final stats = await c.read(adventureStatsProvider.future);
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        final stats = await c.read(adventureStatsProvider.future);
 
-      expect(stats.stagesWalked, 0);
-      expect(stats.hasWalkedStages, isFalse);
-      expect(stats.distanceKm, 0.0);
-      expect(stats.elevationGainM, 0);
-      expect(stats.elevationLossM, 0);
-    });
+        expect(stats.stagesWalked, 0);
+        expect(stats.hasWalkedStages, isFalse);
+        expect(stats.distanceKm, 0.0);
+        expect(stats.elevationGainM, 0);
+        expect(stats.elevationLossM, 0);
+      },
+    );
 
     // CORRECTIF L5-2 — le D- cumule. Stage.elevationLoss existait deja et la
     // carte des etapes marchees etait deja construite : seul le D+ etait
@@ -227,11 +248,13 @@ void main() {
     // genoux du randonneur, elle n'apparaissait nulle part dans son recap.
     test('L5-2 : le D- se cumule comme le D+, sur les memes etapes', () async {
       await seedStages();
-      await persistSession(sess(
-        status: 'abandoned',
-        completed: const ['1', '2', '3'],
-        finishedAt: DateTime.utc(2026, 6, 17, 18),
-      ));
+      await persistSession(
+        sess(
+          status: 'abandoned',
+          completed: const ['1', '2', '3'],
+          finishedAt: DateTime.utc(2026, 6, 17, 18),
+        ),
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -261,8 +284,7 @@ void main() {
       expect(c.read(isRecapAvailableProvider), isTrue);
     });
 
-    test('ACTIF (ni fini ni abandonne) -> recap indisponible',
-        () async {
+    test('ACTIF (ni fini ni abandonne) -> recap indisponible', () async {
       await persistSession(sess(status: 'active'));
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -270,16 +292,22 @@ void main() {
       expect(c.read(isRecapAvailableProvider), isFalse);
     });
 
-    test('AUCUNE SESSION -> recap INDISPONIBLE (plus d exception demo)',
-        () async {
-      // La vitrine ouvrait « Mon aventure » sur une aventure inexistante.
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      await c.read(latestTrekSessionProvider.future);
-      expect(c.read(isRecapAvailableProvider), isFalse,
-          reason: 'un recap sans aventure ne raconte rien ; sur le sentier '
-              'gratuit le trek se termine vraiment');
-    });
+    test(
+      'AUCUNE SESSION -> recap INDISPONIBLE (plus d exception demo)',
+      () async {
+        // La vitrine ouvrait « Mon aventure » sur une aventure inexistante.
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        await c.read(latestTrekSessionProvider.future);
+        expect(
+          c.read(isRecapAvailableProvider),
+          isFalse,
+          reason:
+              'un recap sans aventure ne raconte rien ; sur le sentier '
+              'gratuit le trek se termine vraiment',
+        );
+      },
+    );
   });
 
   group('(d) Libelle Integral / partiel (TrekCongratulations)', () {
@@ -291,8 +319,11 @@ void main() {
       await c.read(stagesProvider.future);
       final congrats = c.read(adventureCongratulationsProvider);
       expect(congrats, isNotNull);
-      expect(congrats!.isFull, isTrue,
-          reason: 'Parcours = sentier entier => Integral.');
+      expect(
+        congrats!.isFull,
+        isTrue,
+        reason: 'Parcours = sentier entier => Integral.',
+      );
     });
   });
 }

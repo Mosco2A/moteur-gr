@@ -5,11 +5,7 @@ import '../../../core/geo/track_point.dart';
 
 /// Metadata extraites de l'en-tete GPX.
 class GpxMetadata {
-  const GpxMetadata({
-    this.name,
-    this.desc,
-    this.author,
-  });
+  const GpxMetadata({this.name, this.desc, this.author});
 
   /// Nom du trace (balise <name> dans <metadata>)
   final String? name;
@@ -110,12 +106,14 @@ class GpxParser {
             );
           }
 
-          points.add(TrackPoint(
-            lat: lat.toDouble(),
-            lng: lng.toDouble(),
-            altitude: alt?.toDouble() ?? 0.0,
-            distanceFromStart: cumulativeDistance,
-          ));
+          points.add(
+            TrackPoint(
+              lat: lat.toDouble(),
+              lng: lng.toDouble(),
+              altitude: alt?.toDouble() ?? 0.0,
+              distanceFromStart: cumulativeDistance,
+            ),
+          );
         }
 
         if (points.isNotEmpty) {
@@ -133,12 +131,14 @@ class GpxParser {
 
       if (lat == null || lng == null) continue;
 
-      waypoints.add(TrackPoint(
-        lat: lat.toDouble(),
-        lng: lng.toDouble(),
-        altitude: alt?.toDouble() ?? 0.0,
-        distanceFromStart: 0.0,
-      ));
+      waypoints.add(
+        TrackPoint(
+          lat: lat.toDouble(),
+          lng: lng.toDouble(),
+          altitude: alt?.toDouble() ?? 0.0,
+          distanceFromStart: 0.0,
+        ),
+      );
     }
 
     return GpxParseResult(

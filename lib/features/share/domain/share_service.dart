@@ -93,7 +93,11 @@ class ShareService {
         badgeTitle: badgeTitle == null ? null : _stripPii(badgeTitle),
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e, stackTrace: st, context: 'ShareService.buildStageCard');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'ShareService.buildStageCard',
+      );
       rethrow;
     }
   }

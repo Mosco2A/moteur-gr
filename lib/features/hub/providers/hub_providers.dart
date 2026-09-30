@@ -20,9 +20,7 @@ import '../../auth/providers/auth_provider.dart';
 ///
 /// Aucun etat cree : simple derivation `select` de l'auth (respecte AM-5).
 final displayNameProvider = Provider<String?>((ref) {
-  final name = ref.watch(
-    authStateProvider.select((user) => user?.displayName),
-  );
+  final name = ref.watch(authStateProvider.select((user) => user?.displayName));
   if (name == null) return null;
   final trimmed = name.trim();
   return trimmed.isEmpty ? null : trimmed;

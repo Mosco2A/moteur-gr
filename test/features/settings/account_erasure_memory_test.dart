@@ -106,110 +106,153 @@ void main() {
   /// fiche randonneur, par le chemin REEL de l'application.
   Future<void> saisirLaFiche(ProviderContainer container) async {
     final repo = container.read(hikerProfileRepositoryProvider);
-    await repo.saveProfile(const HikerProfile(
-      age: 72,
-      heightCm: 172,
-      weightKg: 88,
-      sex: 'male',
-      countryIso: 'FR',
-    ));
+    await repo.saveProfile(
+      const HikerProfile(
+        age: 72,
+        heightCm: 172,
+        weightKg: 88,
+        sex: 'male',
+        countryIso: 'FR',
+      ),
+    );
     await repo.savePastHikes([randoSaisie]);
     // Note de difficultes HERITEE d'une version precedente : l'application ne
     // sait plus l'ecrire (tache 570, S2) mais doit toujours savoir l'effacer.
     // Semee sur ses deux etages, comme une mise a jour la trouverait.
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-        kHikerExperienceNotePrefsKey, 'genoux douloureux en descente');
-    await container.read(databaseProvider).pastHikesDao.upsertNote(
+      kHikerExperienceNotePrefsKey,
+      'genoux douloureux en descente',
+    );
+    await container
+        .read(databaseProvider)
+        .pastHikesDao
+        .upsertNote(
           HikerExperienceNoteCompanion.insert(
             userId: kHikerLocalUserId,
             freeTextDifficulties: const Value('genoux douloureux en descente'),
             updatedAt: DateTime.utc(2026, 9, 25),
           ),
         );
-    await repo.saveWalkTestResult(WalkTestResult(
-      distanceMeters: 480,
-      level: 'moyen',
-      takenAt: DateTime.utc(2026, 9, 25),
-    ));
+    await repo.saveWalkTestResult(
+      WalkTestResult(
+        distanceMeters: 480,
+        level: 'moyen',
+        takenAt: DateTime.utc(2026, 9, 25),
+      ),
+    );
   }
 
-  group('M1 — la cause : le disque est propre, la memoire vive ne l etait pas',
-      () {
-    test('les randos passees ne sont plus SERVIES apres l effacement', () async {
-      final container = chauffer();
-      await saisirLaFiche(container);
-
-      // L'ecran a ete ouvert AVANT l'effacement : le provider est chaud.
-      expect(await container.read(pastHikesProvider.future), hasLength(1),
-          reason: 'le test ne prouve rien si la rando n a pas ete saisie');
-
-      await container.read(accountErasureProvider)();
-
-      // Le disque : deja propre avant cette tache (verrouille par
-      // data_retention_completeness_test).
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString(kHikerPastHikesPrefsKey), isNull,
-          reason: 'la source durable des randos passees doit etre vide');
-
-      // La memoire vive : c'est ICI que la campagne voyait la rando survivre.
-      expect(await container.read(pastHikesProvider.future), isEmpty,
-          reason: '« Vos 5 dernieres randos » resservait un cache perime');
-    });
-
-    test('la fiche randonneur et le test de marche ne sont plus servis non plus',
+  group(
+    'M1 — la cause : le disque est propre, la memoire vive ne l etait pas',
+    () {
+      test(
+        'les randos passees ne sont plus SERVIES apres l effacement',
         () async {
-      final container = chauffer();
-      await saisirLaFiche(container);
-      expect((await container.read(hikerProfileProvider.future)).age, 72);
-      expect(await container.read(walkTestResultProvider.future), isNotNull);
-      expect(
-          (await SharedPreferences.getInstance())
-              .getString(kHikerExperienceNotePrefsKey),
-          isNotNull,
-          reason: 'le test ne prouve rien si la note heritee n a pas ete semee');
+          final container = chauffer();
+          await saisirLaFiche(container);
 
-      await container.read(accountErasureProvider)();
+          // L'ecran a ete ouvert AVANT l'effacement : le provider est chaud.
+          expect(
+            await container.read(pastHikesProvider.future),
+            hasLength(1),
+            reason: 'le test ne prouve rien si la rando n a pas ete saisie',
+          );
 
-      expect((await container.read(hikerProfileProvider.future)).isEmpty, isTrue);
-      expect(await container.read(walkTestResultProvider.future), isNull);
-      expect(
-          (await SharedPreferences.getInstance())
-              .getString(kHikerExperienceNotePrefsKey),
-          isNull,
-          reason: 'la note de difficultes heritee doit partir avec le reste');
-    });
-  });
+          await container.read(accountErasureProvider)();
+
+          // Le disque : deja propre avant cette tache (verrouille par
+          // data_retention_completeness_test).
+          final prefs = await SharedPreferences.getInstance();
+          expect(
+            prefs.getString(kHikerPastHikesPrefsKey),
+            isNull,
+            reason: 'la source durable des randos passees doit etre vide',
+          );
+
+          // La memoire vive : c'est ICI que la campagne voyait la rando survivre.
+          expect(
+            await container.read(pastHikesProvider.future),
+            isEmpty,
+            reason: '« Vos 5 dernieres randos » resservait un cache perime',
+          );
+        },
+      );
+
+      test(
+        'la fiche randonneur et le test de marche ne sont plus servis non plus',
+        () async {
+          final container = chauffer();
+          await saisirLaFiche(container);
+          expect((await container.read(hikerProfileProvider.future)).age, 72);
+          expect(
+            await container.read(walkTestResultProvider.future),
+            isNotNull,
+          );
+          expect(
+            (await SharedPreferences.getInstance()).getString(
+              kHikerExperienceNotePrefsKey,
+            ),
+            isNotNull,
+            reason:
+                'le test ne prouve rien si la note heritee n a pas ete semee',
+          );
+
+          await container.read(accountErasureProvider)();
+
+          expect(
+            (await container.read(hikerProfileProvider.future)).isEmpty,
+            isTrue,
+          );
+          expect(await container.read(walkTestResultProvider.future), isNull);
+          expect(
+            (await SharedPreferences.getInstance()).getString(
+              kHikerExperienceNotePrefsKey,
+            ),
+            isNull,
+            reason: 'la note de difficultes heritee doit partir avec le reste',
+          );
+        },
+      );
+    },
+  );
 
   group('M1 — la consequence : plus de reecriture depuis un cache perime', () {
-    test('ajouter une rando APRES l effacement ne ressuscite pas les effacees',
-        () async {
-      final container = chauffer();
-      await saisirLaFiche(container);
-      await container.read(pastHikesProvider.future); // l'ecran a lu
+    test(
+      'ajouter une rando APRES l effacement ne ressuscite pas les effacees',
+      () async {
+        final container = chauffer();
+        await saisirLaFiche(container);
+        await container.read(pastHikesProvider.future); // l'ecran a lu
 
-      await container.read(accountErasureProvider)();
+        await container.read(accountErasureProvider)();
 
-      // Le geste exact de l'ecran : il repart de ce que le provider lui rend,
-      // puis persiste la liste entiere (`past_hikes_screen.dart` _addOrEdit).
-      final avant = await container.read(pastHikesProvider.future);
-      final nouvelle = PastHike(
-        date: DateTime.utc(2026, 9, 26),
-        days: 1,
-        avgWalkHoursPerDay: 4,
-        totalElevationGain: 300,
-        totalDistanceKm: 9,
-      );
-      await container
-          .read(pastHikesProvider.notifier)
-          .saveAll([...avant, nouvelle]);
+        // Le geste exact de l'ecran : il repart de ce que le provider lui rend,
+        // puis persiste la liste entiere (`past_hikes_screen.dart` _addOrEdit).
+        final avant = await container.read(pastHikesProvider.future);
+        final nouvelle = PastHike(
+          date: DateTime.utc(2026, 9, 26),
+          days: 1,
+          avgWalkHoursPerDay: 4,
+          totalElevationGain: 300,
+          totalDistanceKm: 9,
+        );
+        await container.read(pastHikesProvider.notifier).saveAll([
+          ...avant,
+          nouvelle,
+        ]);
 
-      final relues =
-          await container.read(hikerProfileRepositoryProvider).loadPastHikes();
-      expect(relues, hasLength(1),
-          reason: 'la rando effacee est revenue SUR LE DISQUE par ce chemin');
-      expect(relues.single.date, nouvelle.date);
-    });
+        final relues = await container
+            .read(hikerProfileRepositoryProvider)
+            .loadPastHikes();
+        expect(
+          relues,
+          hasLength(1),
+          reason: 'la rando effacee est revenue SUR LE DISQUE par ce chemin',
+        );
+        expect(relues.single.date, nouvelle.date);
+      },
+    );
   });
 
   group('M1 — le moteur n a plus de quoi juger', () {
@@ -217,14 +260,20 @@ void main() {
       final container = chauffer();
       await saisirLaFiche(container);
       final avant = await container.read(feasibilityCriteriaProvider.future);
-      expect(avant.doneCount, 3,
-          reason: 'le moteur doit avoir de quoi juger AVANT l effacement');
+      expect(
+        avant.doneCount,
+        3,
+        reason: 'le moteur doit avoir de quoi juger AVANT l effacement',
+      );
 
       await container.read(accountErasureProvider)();
 
       final apres = await container.read(feasibilityCriteriaProvider.future);
-      expect(apres.doneCount, 0,
-          reason: 'le moteur rendait encore un verdict apres l effacement');
+      expect(
+        apres.doneCount,
+        0,
+        reason: 'le moteur rendait encore un verdict apres l effacement',
+      );
       expect(await container.read(hasObjectiveProfileProvider.future), isFalse);
     });
   });
@@ -248,17 +297,25 @@ void main() {
 
       final apres = container.read(consentStatesProvider).value!;
       for (final purpose in ConsentPurpose.values) {
-        expect(apres[purpose]!.granted, isFalse,
-            reason: 'l autorisation « ${purpose.name} » restait accordee');
-        expect(apres[purpose]!.decidedAt, isNull,
-            reason: 'un consentement est un acte positif : il se re-demande');
+        expect(
+          apres[purpose]!.granted,
+          isFalse,
+          reason: 'l autorisation « ${purpose.name} » restait accordee',
+        );
+        expect(
+          apres[purpose]!.decidedAt,
+          isNull,
+          reason: 'un consentement est un acte positif : il se re-demande',
+        );
       }
     });
 
     test('le journal n est plus servi', () async {
       final container = chauffer();
       final trailId = container.read(trailIdProvider);
-      await container.read(journalRepositoryProvider).addNote(
+      await container
+          .read(journalRepositoryProvider)
+          .addNote(
             trailId: trailId,
             stageNumber: 3,
             text: 'orage au col, bivouac avance',
@@ -267,32 +324,46 @@ void main() {
       final sub = container.listen(journalScreenProvider, (_, __) {});
       addTearDown(sub.close);
       await pumpEventQueue();
-      expect(container.read(journalScreenProvider).entries, hasLength(1),
-          reason: 'le test ne prouve rien si le journal etait vide');
+      expect(
+        container.read(journalScreenProvider).entries,
+        hasLength(1),
+        reason: 'le test ne prouve rien si le journal etait vide',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
-      expect(container.read(journalScreenProvider).entries, isEmpty,
-          reason: 'le dialogue promet « votre journal »');
+      expect(
+        container.read(journalScreenProvider).entries,
+        isEmpty,
+        reason: 'le dialogue promet « votre journal »',
+      );
     });
 
     test('les etapes marchees ne sont plus servies', () async {
       final container = chauffer();
       final trailId = container.read(trailIdProvider);
-      await db.progressDao.upsert(UserProgressEntriesCompanion.insert(
-        trailId: trailId,
-        currentStage: const Value(5),
-        totalDistanceWalkedKm: const Value(82.4),
-        totalElevationGainedM: const Value(4100),
-      ));
-      expect(await container.read(progressProvider(trailId).future), isNotNull,
-          reason: 'le test ne prouve rien sans progression enregistree');
+      await db.progressDao.upsert(
+        UserProgressEntriesCompanion.insert(
+          trailId: trailId,
+          currentStage: const Value(5),
+          totalDistanceWalkedKm: const Value(82.4),
+          totalElevationGainedM: const Value(4100),
+        ),
+      );
+      expect(
+        await container.read(progressProvider(trailId).future),
+        isNotNull,
+        reason: 'le test ne prouve rien sans progression enregistree',
+      );
 
       await container.read(accountErasureProvider)();
 
-      expect(await container.read(progressProvider(trailId).future), isNull,
-          reason: 'le dialogue promet « vos etapes marchees »');
+      expect(
+        await container.read(progressProvider(trailId).future),
+        isNull,
+        reason: 'le dialogue promet « vos etapes marchees »',
+      );
     });
 
     test('les nuitees choisies ne sont plus servies', () async {
@@ -302,14 +373,20 @@ void main() {
       final sub = container.listen(nuiteeSelectionsProvider, (_, __) {});
       addTearDown(sub.close);
       await pumpEventQueue();
-      expect(container.read(nuiteeSelectionsProvider).bookings[2], isTrue,
-          reason: 'le test ne prouve rien sans nuitee reservee');
+      expect(
+        container.read(nuiteeSelectionsProvider).bookings[2],
+        isTrue,
+        reason: 'le test ne prouve rien sans nuitee reservee',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
-      expect(container.read(nuiteeSelectionsProvider).bookings, isEmpty,
-          reason: 'le dialogue promet « vos nuitees »');
+      expect(
+        container.read(nuiteeSelectionsProvider).bookings,
+        isEmpty,
+        reason: 'le dialogue promet « vos nuitees »',
+      );
     });
 
     test('les traces GPS ne sont plus servies', () async {
@@ -320,7 +397,9 @@ void main() {
       // entree, aucun jour n'est selectionne et ce provider rend vide d'entree
       // de jeu — le test ne mesurerait alors rien du tout.
       final aujourdhui = DateTime.now();
-      await container.read(journalRepositoryProvider).addNote(
+      await container
+          .read(journalRepositoryProvider)
+          .addNote(
             trailId: trailId,
             stageNumber: 4,
             text: 'longue journee, orage au col',
@@ -337,60 +416,87 @@ void main() {
       final subTrace = container.listen(journalDayTraceProvider, (_, __) {});
       addTearDown(subTrace.close);
       await pumpEventQueue();
-      expect(await container.read(journalDayTraceProvider.future), hasLength(1),
-          reason: 'le test ne prouve rien si la trace n etait pas servie');
+      expect(
+        await container.read(journalDayTraceProvider.future),
+        hasLength(1),
+        reason: 'le test ne prouve rien si la trace n etait pas servie',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
-      expect(await container.read(journalDayTraceProvider.future), isEmpty,
-          reason: 'le dialogue promet « vos traces GPS »');
+      expect(
+        await container.read(journalDayTraceProvider.future),
+        isEmpty,
+        reason: 'le dialogue promet « vos traces GPS »',
+      );
       expect((await db.sessionTrackPointsDao.getByTrailId(trailId)), isEmpty);
     });
 
-    test('le code de reconnexion ne survit pas, et n est plus affiche non plus',
-        () async {
-      final container = chauffer();
-      const storage = FlutterSecureStorage();
-      await storage.write(key: RecoveryCodeService.storageKey, value: 'ABCD-1234');
-      // L'ecran du code l'a affiche : le provider garde la valeur rendue. C'est
-      // le piege de cette ligne de la promesse — on croit qu'un secret lu dans le
-      // keystore n'est jamais en cache, et il l'est.
-      expect(await container.read(recoveryCodeProvider.future), 'ABCD-1234',
-          reason: 'le test ne prouve rien sans code affiche');
+    test(
+      'le code de reconnexion ne survit pas, et n est plus affiche non plus',
+      () async {
+        final container = chauffer();
+        const storage = FlutterSecureStorage();
+        await storage.write(
+          key: RecoveryCodeService.storageKey,
+          value: 'ABCD-1234',
+        );
+        // L'ecran du code l'a affiche : le provider garde la valeur rendue. C'est
+        // le piege de cette ligne de la promesse — on croit qu'un secret lu dans le
+        // keystore n'est jamais en cache, et il l'est.
+        expect(
+          await container.read(recoveryCodeProvider.future),
+          'ABCD-1234',
+          reason: 'le test ne prouve rien sans code affiche',
+        );
 
-      final rapport = await container.read(accountErasureProvider)();
+        final rapport = await container.read(accountErasureProvider)();
 
-      expect(rapport.secureKeysDeleted, greaterThan(0));
-      expect(await storage.read(key: RecoveryCodeService.storageKey), isNull,
-          reason: 'le dialogue promet « votre code de reconnexion »');
-      // L'ancien code ne doit plus etre servi. Ce qui est relu est un code NEUF
-      // (la lecture est un `getOrCreate`) : ce qu'on exige, c'est qu'il soit
-      // DIFFERENT — un randonneur ne doit pas pouvoir recopier un code efface.
-      expect(await container.read(recoveryCodeProvider.future),
+        expect(rapport.secureKeysDeleted, greaterThan(0));
+        expect(
+          await storage.read(key: RecoveryCodeService.storageKey),
+          isNull,
+          reason: 'le dialogue promet « votre code de reconnexion »',
+        );
+        // L'ancien code ne doit plus etre servi. Ce qui est relu est un code NEUF
+        // (la lecture est un `getOrCreate`) : ce qu'on exige, c'est qu'il soit
+        // DIFFERENT — un randonneur ne doit pas pouvoir recopier un code efface.
+        expect(
+          await container.read(recoveryCodeProvider.future),
           isNot('ABCD-1234'),
-          reason: 'l ancien code de reconnexion restait affiche');
-    });
+          reason: 'l ancien code de reconnexion restait affiche',
+        );
+      },
+    );
 
     test('la fiche de renseignement medical n est plus servie', () async {
       final container = chauffer();
       final repo = container.read(healthInfoRepositoryProvider);
-      await repo.save(const HealthInfo(
-        bloodType: 'A+',
-        allergies: 'penicilline',
-        treatments: 'inhalateur',
-        doctorContact: 'Dr Rossi 04 95 00 00 00',
-        insuranceNumber: 'FR-123456',
-      ));
+      await repo.save(
+        const HealthInfo(
+          bloodType: 'A+',
+          allergies: 'penicilline',
+          treatments: 'inhalateur',
+          doctorContact: 'Dr Rossi 04 95 00 00 00',
+          insuranceNumber: 'FR-123456',
+        ),
+      );
       final avant = await container.read(healthInfoProvider.future);
-      expect(avant.hasData, isTrue,
-          reason: 'le test ne prouve rien si la fiche medicale etait vide');
+      expect(
+        avant.hasData,
+        isTrue,
+        reason: 'le test ne prouve rien si la fiche medicale etait vide',
+      );
 
       await container.read(accountErasureProvider)();
 
       final apres = await container.read(healthInfoProvider.future);
-      expect(apres.hasData, isFalse,
-          reason: 'la fiche medicale restait affichee apres l effacement');
+      expect(
+        apres.hasData,
+        isFalse,
+        reason: 'la fiche medicale restait affichee apres l effacement',
+      );
     });
   });
 
@@ -418,133 +524,188 @@ void main() {
       // Le geste reel : « Generer mon programme (9 jours) », ou le curseur du
       // Programme. Les deux passent par `retain`.
       await container.read(retainedDurationProvider.notifier).retain(9);
-      expect(container.read(retainedDurationProvider), 9,
-          reason: 'le test ne prouve rien si aucun decoupage n etait retenu');
-      expect(container.read(selectedDurationProvider), 9,
-          reason: 'c est cette duree que lisent le Programme et le Calendrier');
+      expect(
+        container.read(retainedDurationProvider),
+        9,
+        reason: 'le test ne prouve rien si aucun decoupage n etait retenu',
+      );
+      expect(
+        container.read(selectedDurationProvider),
+        9,
+        reason: 'c est cette duree que lisent le Programme et le Calendrier',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt(retainedDurationPrefsKey(trailId)), isNull,
-          reason: 'la source durable du decoupage doit etre vide');
-      expect(container.read(retainedDurationProvider), isNull,
-          reason: 'le dialogue promet le decoupage retenu');
+      expect(
+        prefs.getInt(retainedDurationPrefsKey(trailId)),
+        isNull,
+        reason: 'la source durable du decoupage doit etre vide',
+      );
+      expect(
+        container.read(retainedDurationProvider),
+        isNull,
+        reason: 'le dialogue promet le decoupage retenu',
+      );
     });
 
-    test('les jours de repos ajoutes A LA MAIN au programme ne survivent pas',
-        () async {
-      final container = chauffer();
-      // Le cache est pose par le notifier lui-meme a chaque edition
-      // (`_updateRestDayCache`). On le pose ici comme il le fait : c'est LA
-      // trace qui echappe a l'invalidation du notifier, puisqu'elle est faite
-      // pour lui survivre.
-      container.read(manualRestDayCacheProvider.notifier).state = const [2, 5];
+    test(
+      'les jours de repos ajoutes A LA MAIN au programme ne survivent pas',
+      () async {
+        final container = chauffer();
+        // Le cache est pose par le notifier lui-meme a chaque edition
+        // (`_updateRestDayCache`). On le pose ici comme il le fait : c'est LA
+        // trace qui echappe a l'invalidation du notifier, puisqu'elle est faite
+        // pour lui survivre.
+        container.read(manualRestDayCacheProvider.notifier).state = const [
+          2,
+          5,
+        ];
 
-      await container.read(accountErasureProvider)();
-      await pumpEventQueue();
+        await container.read(accountErasureProvider)();
+        await pumpEventQueue();
 
-      expect(container.read(manualRestDayCacheProvider), isEmpty,
-          reason: 'le programme edite a la main revenait apres l effacement, '
-              'jusque dans un programme reconstruit');
-    });
+        expect(
+          container.read(manualRestDayCacheProvider),
+          isEmpty,
+          reason:
+              'le programme edite a la main revenait apres l effacement, '
+              'jusque dans un programme reconstruit',
+        );
+      },
+    );
 
     test('la date de depart n est plus servie', () async {
       final container = chauffer();
       final trailId = container.read(trailIdProvider);
-      final sub = container.listen(downloadReminderProvider(trailId), (_, __) {});
+      final sub = container.listen(
+        downloadReminderProvider(trailId),
+        (_, __) {},
+      );
       addTearDown(sub.close);
       await container
           .read(downloadReminderProvider(trailId).notifier)
           .setDepartureDate(DateTime.utc(2026, 7, 1));
-      expect(container.read(downloadReminderProvider(trailId)).departureDate,
-          isNotNull,
-          reason: 'le test ne prouve rien sans date de depart choisie');
+      expect(
+        container.read(downloadReminderProvider(trailId)).departureDate,
+        isNotNull,
+        reason: 'le test ne prouve rien sans date de depart choisie',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('departure_date_$trailId'), isNull);
-      expect(container.read(downloadReminderProvider(trailId)).departureDate,
-          isNull,
-          reason: 'le dialogue promet la date de depart');
+      expect(
+        container.read(downloadReminderProvider(trailId)).departureDate,
+        isNull,
+        reason: 'le dialogue promet la date de depart',
+      );
     });
 
     test('la progression de preparation physique n est plus servie', () async {
       final container = chauffer();
       final trailId = container.read(trailIdProvider);
-      final sub =
-          container.listen(trainingProgressProvider(trailId), (_, __) {});
+      final sub = container.listen(
+        trainingProgressProvider(trailId),
+        (_, __) {},
+      );
       addTearDown(sub.close);
       await container
           .read(trainingProgressProvider(trailId).notifier)
           .toggle('semaine3-sortie-longue');
       expect(
-          container.read(trainingProgressProvider(trailId)).doneSessionIds,
-          contains('semaine3-sortie-longue'),
-          reason: 'le test ne prouve rien sans seance cochee');
+        container.read(trainingProgressProvider(trailId)).doneSessionIds,
+        contains('semaine3-sortie-longue'),
+        reason: 'le test ne prouve rien sans seance cochee',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getStringList(trainingDoneKey(trailId)), isNull);
-      expect(container.read(trainingProgressProvider(trailId)).doneSessionIds,
+      expect(
+        container.read(trainingProgressProvider(trailId)).doneSessionIds,
+        isEmpty,
+        reason: 'le dialogue promet la progression d entrainement',
+      );
+    });
+
+    test(
+      'les etapes de preparation deja validees ne sont plus servies',
+      () async {
+        final container = chauffer();
+        final trailId = container.read(trailIdProvider);
+        final sub = container.listen(
+          prepareCoreStepsProvider(trailId),
+          (_, __) {},
+        );
+        addTearDown(sub.close);
+        await container
+            .read(prepareCoreStepsProvider(trailId).notifier)
+            .markSeen(PrepCoreStep.itinerary);
+        await container
+            .read(prepareCoreStepsProvider(trailId).notifier)
+            .markSeen(PrepCoreStep.programme);
+        expect(
+          container.read(prepareCoreStepsProvider(trailId)),
+          hasLength(2),
+          reason: 'le test ne prouve rien sans etape de preparation validee',
+        );
+
+        await container.read(accountErasureProvider)();
+        await pumpEventQueue();
+
+        expect(
+          container.read(prepareCoreStepsProvider(trailId)),
           isEmpty,
-          reason: 'le dialogue promet la progression d entrainement');
-    });
+          reason: 'le dialogue promet ce qui a ete valide dans Preparer',
+        );
+      },
+    );
 
-    test('les etapes de preparation deja validees ne sont plus servies',
-        () async {
-      final container = chauffer();
-      final trailId = container.read(trailIdProvider);
-      final sub =
-          container.listen(prepareCoreStepsProvider(trailId), (_, __) {});
-      addTearDown(sub.close);
-      await container
-          .read(prepareCoreStepsProvider(trailId).notifier)
-          .markSeen(PrepCoreStep.itinerary);
-      await container
-          .read(prepareCoreStepsProvider(trailId).notifier)
-          .markSeen(PrepCoreStep.programme);
-      expect(container.read(prepareCoreStepsProvider(trailId)), hasLength(2),
-          reason: 'le test ne prouve rien sans etape de preparation validee');
+    test(
+      'les reglages de partage et de visibilite ne sont plus servis',
+      () async {
+        final container = chauffer();
+        final sub = container.listen(visibilitySettingsProvider, (_, __) {});
+        addTearDown(sub.close);
+        // L'ecran a fini de charger ses prefs : sans cela le notifier n'a pas
+        // encore sa reference au store et n'ecrirait rien de durable.
+        await pumpEventQueue();
+        container.read(visibilitySettingsProvider.notifier)
+          ..setShareLeaderboard(true)
+          ..setShareActivityFeed(true);
+        expect(
+          container.read(visibilitySettingsProvider).shareLeaderboard,
+          isTrue,
+          reason: 'le test ne prouve rien sans opt-in de partage',
+        );
 
-      await container.read(accountErasureProvider)();
-      await pumpEventQueue();
+        await container.read(accountErasureProvider)();
+        await pumpEventQueue();
 
-      expect(container.read(prepareCoreStepsProvider(trailId)), isEmpty,
-          reason: 'le dialogue promet ce qui a ete valide dans Preparer');
-    });
-
-    test('les reglages de partage et de visibilite ne sont plus servis',
-        () async {
-      final container = chauffer();
-      final sub = container.listen(visibilitySettingsProvider, (_, __) {});
-      addTearDown(sub.close);
-      // L'ecran a fini de charger ses prefs : sans cela le notifier n'a pas
-      // encore sa reference au store et n'ecrirait rien de durable.
-      await pumpEventQueue();
-      container.read(visibilitySettingsProvider.notifier)
-        ..setShareLeaderboard(true)
-        ..setShareActivityFeed(true);
-      expect(container.read(visibilitySettingsProvider).shareLeaderboard, isTrue,
-          reason: 'le test ne prouve rien sans opt-in de partage');
-
-      await container.read(accountErasureProvider)();
-      await pumpEventQueue();
-
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(VisibilityKeys.shareLeaderboard), isNull);
-      final apres = container.read(visibilitySettingsProvider);
-      expect(apres.shareLeaderboard, isFalse,
-          reason: 'le dialogue promet les reglages de partage et visibilite');
-      expect(apres.shareActivityFeed, isFalse);
-      expect(apres.shareStageResults, isFalse,
-          reason: 'prive par defaut : c est l etat d un compte qui repart a zero');
-    });
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getBool(VisibilityKeys.shareLeaderboard), isNull);
+        final apres = container.read(visibilitySettingsProvider);
+        expect(
+          apres.shareLeaderboard,
+          isFalse,
+          reason: 'le dialogue promet les reglages de partage et visibilite',
+        );
+        expect(apres.shareActivityFeed, isFalse);
+        expect(
+          apres.shareStageResults,
+          isFalse,
+          reason:
+              'prive par defaut : c est l etat d un compte qui repart a zero',
+        );
+      },
+    );
 
     test('les points d etape coches ne sont plus servis', () async {
       final container = chauffer();
@@ -554,14 +715,20 @@ void main() {
       // l'invalidation le fait partir, et c'est bien une donnee personnelle : le
       // pense-bete du marcheur sur son etape.
       container.read(stagePoiChecksProvider.notifier).toggle(1408);
-      expect(container.read(stagePoiChecksProvider), contains(1408),
-          reason: 'le test ne prouve rien sans point coche');
+      expect(
+        container.read(stagePoiChecksProvider),
+        contains(1408),
+        reason: 'le test ne prouve rien sans point coche',
+      );
 
       await container.read(accountErasureProvider)();
       await pumpEventQueue();
 
-      expect(container.read(stagePoiChecksProvider), isEmpty,
-          reason: 'le dialogue promet les points d etape coches');
+      expect(
+        container.read(stagePoiChecksProvider),
+        isEmpty,
+        reason: 'le dialogue promet les points d etape coches',
+      );
     });
   });
 
@@ -684,16 +851,22 @@ void main() {
     tearDownAll(() => LocaleSettings.setLocaleRaw('fr'));
 
     for (final entree in promesse.entries) {
-      test('« Ce qui part » (${entree.key}) ne promet que ce qui est prouve',
-          () {
-        LocaleSettings.setLocaleRaw(entree.key);
-        final texte = t.erasure.goes;
-        for (final element in entree.value) {
-          expect(texte, contains(element),
-              reason: 'la promesse ne nomme plus « $element » : si cet element '
-                  'ne part plus, retirer aussi sa preuve ci-dessus');
-        }
-      });
+      test(
+        '« Ce qui part » (${entree.key}) ne promet que ce qui est prouve',
+        () {
+          LocaleSettings.setLocaleRaw(entree.key);
+          final texte = t.erasure.goes;
+          for (final element in entree.value) {
+            expect(
+              texte,
+              contains(element),
+              reason:
+                  'la promesse ne nomme plus « $element » : si cet element '
+                  'ne part plus, retirer aussi sa preuve ci-dessus',
+            );
+          }
+        },
+      );
     }
 
     // L'EMPREINTE. La liste de mots-cles ci-dessus attrape un RETRAIT, pas un
@@ -712,7 +885,8 @@ void main() {
         'votre date de départ, votre progression de préparation physique, ce '
         'que vous avez déjà validé dans Préparer, vos réglages de partage et '
         "de visibilité, et les points d'étape que vous avez cochés.",
-        reason: 'LA PROMESSE A CHANGE. Si un element a ete AJOUTE : ecrire sa '
+        reason:
+            'LA PROMESSE A CHANGE. Si un element a ete AJOUTE : ecrire sa '
             'preuve dans le groupe « ligne a ligne » ci-dessus, l ajouter aux '
             'mots-cles des cinq langues, puis mettre ce texte a jour. Si un '
             'element a ete RETIRE : retirer aussi sa preuve. Ne jamais mettre '

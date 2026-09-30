@@ -58,19 +58,19 @@ void main() {
   );
 
   StageModel stage(int n, String dep, String arr) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: '$dep - $arr',
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-        departureName: dep,
-        arrivalName: arr,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: '$dep - $arr',
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+    departureName: dep,
+    arrivalName: arr,
+  );
 
   // 3 etapes : Alpha -> Beta -> Gamma -> Delta (endpoints = Alpha / Delta).
   final testStages = [
@@ -189,15 +189,15 @@ void main() {
     List<StageModel>? stages,
     TrailTransport? transport = testTransport,
     String? direction,
-  }) =>
-      [
-        trailConfigProvider.overrideWithValue(testConfig),
-        stagesProvider(trailId)
-            .overrideWith((ref) => Future.value(stages ?? testStages)),
-        trailTransportProvider(trailId).overrideWithValue(transport),
-        if (direction != null)
-          selectedDirectionProvider.overrideWith((ref) => direction),
-      ];
+  }) => [
+    trailConfigProvider.overrideWithValue(testConfig),
+    stagesProvider(
+      trailId,
+    ).overrideWith((ref) => Future.value(stages ?? testStages)),
+    trailTransportProvider(trailId).overrideWithValue(transport),
+    if (direction != null)
+      selectedDirectionProvider.overrideWith((ref) => direction),
+  ];
 
   Future<void> settle(WidgetTester tester) async {
     for (var i = 0; i < 8; i++) {
@@ -263,8 +263,9 @@ void main() {
     });
 
     test('sens inverse (SN) : depart et arrivee sont echanges', () {
-      final container =
-          ProviderContainer(overrides: baseOverrides(direction: 'SN'));
+      final container = ProviderContainer(
+        overrides: baseOverrides(direction: 'SN'),
+      );
       addTearDown(container.dispose);
       container.read(stagesProvider(trailId));
       return Future<void>.delayed(const Duration(milliseconds: 50), () {
@@ -292,8 +293,9 @@ void main() {
           endLng: 0,
         ),
       ];
-      final container =
-          ProviderContainer(overrides: baseOverrides(stages: poor));
+      final container = ProviderContainer(
+        overrides: baseOverrides(stages: poor),
+      );
       addTearDown(container.dispose);
       container.read(stagesProvider(trailId));
       return Future<void>.delayed(const Duration(milliseconds: 50), () {
@@ -319,10 +321,7 @@ void main() {
         data!.forEndpoint('Ghisonaccia', TransportRole.arrival),
         isNotNull,
       );
-      expect(
-        data.forEndpoint('Porticcio', TransportRole.departure),
-        isNotNull,
-      );
+      expect(data.forEndpoint('Porticcio', TransportRole.departure), isNotNull);
       // Les 2 autres combinaisons (sens inverse) sont aussi fournies.
       expect(
         data.forEndpoint('Ghisonaccia', TransportRole.departure),
@@ -334,8 +333,11 @@ void main() {
     test('chaque onglet MaM a du contenu (sections avec options)', () {
       final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
       for (final ep in data.endpoints) {
-        expect(ep.hasContent, isTrue,
-            reason: '${ep.endpointName}/${ep.role} doit avoir des options');
+        expect(
+          ep.hasContent,
+          isTrue,
+          reason: '${ep.endpointName}/${ep.role} doit avoir des options',
+        );
       }
     });
 
@@ -347,8 +349,9 @@ void main() {
   // --- Ecran : 2 onglets + contenu data-driven -----------------------------
 
   group('ecran transport (2 onglets, data-driven)', () {
-    testWidgets('affiche 2 onglets aller/retour avec les endpoints resolus',
-        (tester) async {
+    testWidgets('affiche 2 onglets aller/retour avec les endpoints resolus', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -365,8 +368,9 @@ void main() {
       expect(find.byType(Tab), findsNWidgets(2));
     });
 
-    testWidgets('onglet ALLER : contenu venant des donnees du sentier',
-        (tester) async {
+    testWidgets('onglet ALLER : contenu venant des donnees du sentier', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -381,20 +385,32 @@ void main() {
       expect(find.text('Conseil Alpha 1'), findsOneWidget);
     });
 
-    testWidgets('actions tel + lien presentes sur une option qui les porte',
-        (tester) async {
+    testWidgets('actions tel + lien presentes sur une option qui les porte', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
       // Contact telephonique cliquable (numero affiche) + bouton site (icone
       // open_in_new) — parite GR20 (facilitateur tel:/url).
       expect(find.text('+33123456789'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.lien), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.telephone), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.lien,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.telephone,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('bascule sur l\'onglet RETOUR : contenu de l\'arrivee',
-        (tester) async {
+    testWidgets('bascule sur l\'onglet RETOUR : contenu de l\'arrivee', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -407,8 +423,9 @@ void main() {
       expect(find.text('Conseil Delta 1'), findsOneWidget);
     });
 
-    testWidgets('direction inverse (SN) : les onglets suivent le sens choisi',
-        (tester) async {
+    testWidgets('direction inverse (SN) : les onglets suivent le sens choisi', (
+      tester,
+    ) async {
       // LES DONNEES DU SENS EXAMINE (tache 579, LOT X). Ce test tournait avec
       // le catalogue du sens NS, qui ne porte AUCUNE information pour le sens
       // SN : les deux onglets etaient donc vides. Depuis le LOT X, un ecran
@@ -447,29 +464,30 @@ void main() {
     // declares morts, et elle avait raison. La reponse n'est pas de remettre
     // une promesse : c'est de RETIRER le geste. Sans aucune donnee transport,
     // il n'y a plus d'onglet, et l'ecran enonce un fait, sans date.
-    testWidgets('sentier sans donnees : aucun onglet, un fait, pas de crash',
-        (tester) async {
+    testWidgets('sentier sans donnees : aucun onglet, un fait, pas de crash', (
+      tester,
+    ) async {
       // Endpoints resolus (etapes presentes) mais AUCUNE donnee transport.
-      await tester.pumpWidget(
-        wrap(overrides: baseOverrides(transport: null)),
-      );
+      await tester.pumpWidget(wrap(overrides: baseOverrides(transport: null)));
       await settle(tester);
 
       // PLUS AUCUN ONGLET : il n'y a rien derriere, donc rien a appuyer.
-      expect(find.byType(TabBar), findsNothing,
-          reason: 'deux onglets vides sont deux boutons qui ne produisent rien');
+      expect(
+        find.byType(TabBar),
+        findsNothing,
+        reason: 'deux onglets vides sont deux boutons qui ne produisent rien',
+      );
       expect(find.byType(Tab), findsNothing);
       expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsNothing);
 
       // L'ecran DIT pourquoi il est vide — un fait, pas une promesse.
       expect(find.text(t.transport.noneForTrail), findsOneWidget);
-      for (final promesse in <String>[
-        'bientôt',
-        'bientot',
-        'prochainement',
-      ]) {
-        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'l ecran transport vide promet encore « $promesse »');
+      for (final promesse in <String>['bientôt', 'bientot', 'prochainement']) {
+        expect(
+          find.textContaining(promesse, skipOffstage: false),
+          findsNothing,
+          reason: 'l ecran transport vide promet encore « $promesse »',
+        );
       }
       // Aucune exception de layout/plugin n'a ete levee.
       expect(tester.takeException(), isNull);
@@ -479,56 +497,73 @@ void main() {
   // --- Navigation depuis le HUB --------------------------------------------
 
   group('navigation', () {
-    testWidgets('la carte HUB « Transport » ouvre l\'ecran, retour sans crash',
-        (tester) async {
-      // Routeur minimal reproduisant l'entree HUB : une carte
-      // `Icons.directions_bus` (comme le HUB) qui `push` vers Transport.
-      final router = GoRouter(
-        initialLocation: '/home',
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => Scaffold(
-              body: Center(
-                child: InkWell(
-                  onTap: () => context.push('/trail/$trailId/transport'),
-                  child: const StepIcon(StepwaysIcons.transport),
+    testWidgets(
+      'la carte HUB « Transport » ouvre l\'ecran, retour sans crash',
+      (tester) async {
+        // Routeur minimal reproduisant l'entree HUB : une carte
+        // `Icons.directions_bus` (comme le HUB) qui `push` vers Transport.
+        final router = GoRouter(
+          initialLocation: '/home',
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => Scaffold(
+                body: Center(
+                  child: InkWell(
+                    onTap: () => context.push('/trail/$trailId/transport'),
+                    child: const StepIcon(StepwaysIcons.transport),
+                  ),
                 ),
               ),
             ),
-          ),
-          GoRoute(
-            path: '/trail/:id/transport',
-            builder: (context, state) => TransportScreen(
-              trailId: state.pathParameters['id'] ?? '',
+            GoRoute(
+              path: '/trail/:id/transport',
+              builder: (context, state) =>
+                  TransportScreen(trailId: state.pathParameters['id'] ?? ''),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: baseOverrides(),
+            child: TranslationProvider(
+              child: MaterialApp.router(routerConfig: router),
             ),
           ),
-        ],
-      );
+        );
+        await settle(tester);
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: baseOverrides(),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
-      await settle(tester);
+        // Aller : taper la carte HUB (icone directions_bus) ouvre Transport.
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+          findsOneWidget,
+        );
+        await tester.tap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+        );
+        await settle(tester);
+        await pumpUntil(tester, find.text(t.transport.title));
+        expect(find.text(t.transport.title), findsWidgets);
 
-      // Aller : taper la carte HUB (icone directions_bus) ouvre Transport.
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport), findsOneWidget);
-      await tester.tap(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport));
-      await settle(tester);
-      await pumpUntil(tester, find.text(t.transport.title));
-      expect(find.text(t.transport.title), findsWidgets);
-
-      // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
-      // sans crash (pile preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byType(BackButtonIcon));
-      await tester.tap(find.byType(BackButtonIcon));
-      await settle(tester);
-      await pumpUntilGone(tester, find.text(t.transport.title));
-      expect(find.text(t.transport.title), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.transport), findsOneWidget);
-    });
+        // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
+        // sans crash (pile preservee, jamais context.go qui viderait la pile).
+        await pumpUntil(tester, find.byType(BackButtonIcon));
+        await tester.tap(find.byType(BackButtonIcon));
+        await settle(tester);
+        await pumpUntilGone(tester, find.text(t.transport.title));
+        expect(find.text(t.transport.title), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

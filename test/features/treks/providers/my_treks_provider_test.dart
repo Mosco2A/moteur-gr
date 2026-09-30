@@ -90,13 +90,15 @@ void main() {
   /// Container cable sur la DB in-memory. Le catalogue (availableTrailsProvider)
   /// est injecte pour maitriser vitrine + presence au catalogue.
   ProviderContainer makeContainer(List<TrailConfig> catalog) {
-    final container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      availableTrailsProvider.overrideWithValue(catalog),
-      // Seul le fait que le boot soit "pret" compte : on court-circuite la
-      // chaine ST4 en fournissant un service deja charge.
-      monetizationReadyProvider.overrideWith((ref) => readyService()),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        availableTrailsProvider.overrideWithValue(catalog),
+        // Seul le fait que le boot soit "pret" compte : on court-circuite la
+        // chaine ST4 en fournissant un service deja charge.
+        monetizationReadyProvider.overrideWith((ref) => readyService()),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -118,47 +120,49 @@ void main() {
     DateTime? startedAt,
     DateTime? finishedAt,
     List<String> completed = const [],
-  }) =>
-      TrekSession(
-        id: id,
-        trailId: trailId,
-        startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
-        finishedAt: finishedAt,
-        status: status,
-        completedStages: completed,
-      );
+  }) => TrekSession(
+    id: id,
+    trailId: trailId,
+    startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
+    finishedAt: finishedAt,
+    status: status,
+    completedStages: completed,
+  );
 
-  group('ownedTrailIdsProvider — owned ∪ sentiers GRATUITS (branche wallet)', () {
-    test('union des droits owned et des sentiers GRATUITS', () async {
-      await markOwned('gr20');
-      // gr10 non owned -> exclu ; le sentier GRATUIT est inclus sans achat,
-      // parce que son prix est nul (tache 601) — pas par exemption.
-      final container = makeContainer([
-        _config('gr20'),
-        _config('gr10'),
-        _config('demo', gratuit: true),
-      ]);
+  group(
+    'ownedTrailIdsProvider — owned ∪ sentiers GRATUITS (branche wallet)',
+    () {
+      test('union des droits owned et des sentiers GRATUITS', () async {
+        await markOwned('gr20');
+        // gr10 non owned -> exclu ; le sentier GRATUIT est inclus sans achat,
+        // parce que son prix est nul (tache 601) — pas par exemption.
+        final container = makeContainer([
+          _config('gr20'),
+          _config('gr10'),
+          _config('demo', gratuit: true),
+        ]);
 
-      final ids = await container.read(ownedTrailIdsProvider.future);
-      expect(ids, {'gr20', 'demo'});
-    });
+        final ids = await container.read(ownedTrailIdsProvider.future);
+        expect(ids, {'gr20', 'demo'});
+      });
 
-    test('trek abandonne (owned=false, acquis>0) N EST PAS possede', () async {
-      // Simule un abandon : owned repasse false mais acquiredStages conserve.
-      await db.trekEntitlementsDao.upsert(
-        TrekEntitlementsCompanion.insert(
-          trailId: 'gr20',
-          owned: const Value(false),
-          acquiredStages: const Value(3),
-          updatedAt: DateTime.utc(2026, 6, 1),
-        ),
-      );
-      final container = makeContainer([_config('gr20')]);
+      test('trek abandonne (owned=false, acquis>0) N EST PAS possede', () async {
+        // Simule un abandon : owned repasse false mais acquiredStages conserve.
+        await db.trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: 'gr20',
+            owned: const Value(false),
+            acquiredStages: const Value(3),
+            updatedAt: DateTime.utc(2026, 6, 1),
+          ),
+        );
+        final container = makeContainer([_config('gr20')]);
 
-      final ids = await container.read(ownedTrailIdsProvider.future);
-      expect(ids, isEmpty, reason: 'owned=false -> pas dans Mes treks.');
-    });
-  });
+        final ids = await container.read(ownedTrailIdsProvider.future);
+        expect(ids, isEmpty, reason: 'owned=false -> pas dans Mes treks.');
+      });
+    },
+  );
 
   group('myTreksProvider — TrekSummary trie', () {
     test('derive l etat de chaque trek possede', () async {
@@ -169,12 +173,14 @@ void main() {
       await db.trekSessionsDao.upsertSession(
         session('gr20', id: 'a', status: 'active'),
       );
-      await db.trekSessionsDao.upsertSession(session(
-        'gr10',
-        id: 'b',
-        status: 'completed',
-        finishedAt: DateTime.utc(2026, 5, 20, 17),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        session(
+          'gr10',
+          id: 'b',
+          status: 'completed',
+          finishedAt: DateTime.utc(2026, 5, 20, 17),
+        ),
+      );
 
       final container = makeContainer([
         _config('gr20'),
@@ -195,14 +201,17 @@ void main() {
       await markOwned('gr10');
       await markOwned('tmb');
 
-      await db.trekSessionsDao
-          .upsertSession(session('gr20', id: 'a', status: 'active'));
-      await db.trekSessionsDao.upsertSession(session(
-        'gr10',
-        id: 'b',
-        status: 'completed',
-        finishedAt: DateTime.utc(2026, 5, 20, 17),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        session('gr20', id: 'a', status: 'active'),
+      );
+      await db.trekSessionsDao.upsertSession(
+        session(
+          'gr10',
+          id: 'b',
+          status: 'completed',
+          finishedAt: DateTime.utc(2026, 5, 20, 17),
+        ),
+      );
       // tmb : prepared (progression sans session).
       await db.progressDao.upsert(
         UserProgressEntriesCompanion.insert(
@@ -218,10 +227,16 @@ void main() {
       ]);
 
       final treks = await container.read(myTreksProvider.future);
-      expect(treks.first.trailId, 'gr20',
-          reason: 'La rando en cours est en tete.');
-      expect(treks.last.state, TrekLifecycleState.completed,
-          reason: 'Les termines ferment la liste.');
+      expect(
+        treks.first.trailId,
+        'gr20',
+        reason: 'La rando en cours est en tete.',
+      );
+      expect(
+        treks.last.state,
+        TrekLifecycleState.completed,
+        reason: 'Les termines ferment la liste.',
+      );
     });
 
     test('id possede absent du catalogue -> ignore', () async {
@@ -238,10 +253,12 @@ void main() {
     // Le provider watch trailConfigProvider : on l'override directement avec le
     // sentier de test (le catalogue statique ne connait pas ces ids fictifs).
     ProviderContainer cockpitContainer(TrailConfig active) {
-      final container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(active),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(active),
+        ],
+      );
       addTearDown(container.dispose);
       return container;
     }
@@ -255,39 +272,50 @@ void main() {
       expect(summary.trailId, 'gr20');
     });
 
-    test('derive inProgress quand une session active existe sur le sentier',
-        () async {
-      await db.trekSessionsDao
-          .upsertSession(session('gr20', id: 'a', status: 'active'));
-      final container = cockpitContainer(_config('gr20'));
+    test(
+      'derive inProgress quand une session active existe sur le sentier',
+      () async {
+        await db.trekSessionsDao.upsertSession(
+          session('gr20', id: 'a', status: 'active'),
+        );
+        final container = cockpitContainer(_config('gr20'));
 
-      final summary = await container.read(currentTrailSummaryProvider.future);
-      expect(summary!.state, TrekLifecycleState.inProgress);
-    });
+        final summary = await container.read(
+          currentTrailSummaryProvider.future,
+        );
+        expect(summary!.state, TrekLifecycleState.inProgress);
+      },
+    );
 
     test('derive completed quand la derniere session est completed', () async {
-      await db.trekSessionsDao.upsertSession(session(
-        'gr20',
-        id: 'a',
-        status: 'completed',
-        finishedAt: DateTime.utc(2026, 5, 20, 17),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        session(
+          'gr20',
+          id: 'a',
+          status: 'completed',
+          finishedAt: DateTime.utc(2026, 5, 20, 17),
+        ),
+      );
       final container = cockpitContainer(_config('gr20'));
 
       final summary = await container.read(currentTrailSummaryProvider.future);
       expect(summary!.state, TrekLifecycleState.completed);
     });
 
-    test('ne depend PAS des droits : reflete meme un sentier non possede',
-        () async {
-      // Aucun entitlement pose, mais le sentier actif est jouable (GRATUIT) :
-      // le cockpit doit tout de meme refleter son etat (owned = point de depart).
-      final container = cockpitContainer(_config('demo', gratuit: true));
+    test(
+      'ne depend PAS des droits : reflete meme un sentier non possede',
+      () async {
+        // Aucun entitlement pose, mais le sentier actif est jouable (GRATUIT) :
+        // le cockpit doit tout de meme refleter son etat (owned = point de depart).
+        final container = cockpitContainer(_config('demo', gratuit: true));
 
-      final summary = await container.read(currentTrailSummaryProvider.future);
-      expect(summary, isNotNull);
-      expect(summary!.state, TrekLifecycleState.owned);
-    });
+        final summary = await container.read(
+          currentTrailSummaryProvider.future,
+        );
+        expect(summary, isNotNull);
+        expect(summary!.state, TrekLifecycleState.owned);
+      },
+    );
   });
 
   group('activeTrekIdProvider — invariant C4', () {
@@ -297,17 +325,20 @@ void main() {
     });
 
     test('renvoie le trek de la session active OU paused', () async {
-      await db.trekSessionsDao
-          .upsertSession(session('gr20', id: 'a', status: 'paused'));
+      await db.trekSessionsDao.upsertSession(
+        session('gr20', id: 'a', status: 'paused'),
+      );
       final container = makeContainer([_config('gr20')]);
       expect(await container.read(activeTrekIdProvider.future), 'gr20');
     });
 
     test('ignore les sessions completed/abandoned', () async {
       await db.trekSessionsDao.upsertSession(
-          session('gr20', id: 'a', status: 'completed'));
+        session('gr20', id: 'a', status: 'completed'),
+      );
       await db.trekSessionsDao.upsertSession(
-          session('gr10', id: 'b', status: 'abandoned'));
+        session('gr10', id: 'b', status: 'abandoned'),
+      );
       final container = makeContainer([_config('gr20'), _config('gr10')]);
       expect(await container.read(activeTrekIdProvider.future), isNull);
     });

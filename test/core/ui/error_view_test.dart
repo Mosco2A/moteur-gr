@@ -10,18 +10,22 @@ void main() {
     testWidgets('affiche le message d erreur', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: ErrorView(message: 'Une erreur est survenue'),
-          ),
+          home: Scaffold(body: ErrorView(message: 'Une erreur est survenue')),
         ),
       );
 
       expect(find.text('Une erreur est survenue'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('affiche le bouton retry quand onRetry est fourni',
-        (tester) async {
+    testWidgets('affiche le bouton retry quand onRetry est fourni', (
+      tester,
+    ) async {
       var retryCount = 0;
 
       await tester.pumpWidget(
@@ -54,13 +58,10 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('cache le bouton retry quand onRetry est null',
-        (tester) async {
+    testWidgets('cache le bouton retry quand onRetry est null', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: ErrorView(message: 'Erreur'),
-          ),
+          home: Scaffold(body: ErrorView(message: 'Erreur')),
         ),
       );
 

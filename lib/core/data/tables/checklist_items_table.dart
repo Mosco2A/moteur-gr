@@ -18,8 +18,7 @@ class ChecklistItems extends Table {
   TextColumn get category => text()();
 
   /// Item coche ou non
-  BoolColumn get isChecked =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isChecked => boolean().withDefault(const Constant(false))();
 
   /// Poids unitaire en grammes (parite GR20 « Materiel & Sac », migration v19).
   ///

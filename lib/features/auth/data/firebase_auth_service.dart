@@ -19,8 +19,8 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService({
     fb.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
-  })  : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn();
+  }) : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
+       _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   final fb.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -115,8 +115,9 @@ class FirebaseAuthService implements AuthService {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
       if (userCredential.user == null) return null;
 
       // Anonymisation : on ne garde PAS nom/email/photo
@@ -139,8 +140,9 @@ class FirebaseAuthService implements AuthService {
       // Aucun scope email/name demande : on n en a pas besoin,
       // l identifiant anonymise suffit (RGPD #81775 — minimisation).
 
-      final userCredential =
-          await _firebaseAuth.signInWithProvider(appleProvider);
+      final userCredential = await _firebaseAuth.signInWithProvider(
+        appleProvider,
+      );
       if (userCredential.user == null) return null;
 
       // Anonymisation : on ne garde PAS nom/email/photo
@@ -211,13 +213,11 @@ class FirebaseAuthService implements AuthService {
   ///
   /// Le UID est hache via SHA-256. Nom, email, photo sont
   /// deliberement ignores — zero PII stocke (#81775).
-  AuthUser _toAnonymizedUser(
-    fb.User fbUser, {
-    String? method,
-  }) {
+  AuthUser _toAnonymizedUser(fb.User fbUser, {String? method}) {
     final anonymizedUid = AnonymousIdService.hashUserId(fbUser.uid);
     final isAnon = fbUser.isAnonymous;
-    final authMethod = method ??
+    final authMethod =
+        method ??
         (isAnon ? AuthMethodValues.anonymous : AuthMethodValues.google);
 
     return AuthUser(

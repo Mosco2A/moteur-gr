@@ -86,8 +86,9 @@ void main() {
   }
 
   group('HealthInfoScreen — câblage du stockage de la fiche', () {
-    testWidgets('le stockage de la fiche se câble sans erreur (rendu OK)',
-        (tester) async {
+    testWidgets('le stockage de la fiche se câble sans erreur (rendu OK)', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -110,8 +111,9 @@ void main() {
       expect(find.text(t.health.save), findsOneWidget);
     });
 
-    testWidgets('pré-remplit les champs depuis le fichier de la fiche',
-        (tester) async {
+    testWidgets('pré-remplit les champs depuis le fichier de la fiche', (
+      tester,
+    ) async {
       // Seed d'un profil santé existant dans le fichier de la fiche.
       await HealthInfoRepository(fichier: fiche).save(
         const HealthInfo(bloodType: 'AB+', allergies: 'Test-allergie-XYZ'),
@@ -130,8 +132,9 @@ void main() {
       expect(find.text('Test-allergie-XYZ'), findsOneWidget);
     });
 
-    testWidgets('sauvegarde : écrit dans le fichier et ferme (snackbar)',
-        (tester) async {
+    testWidgets('sauvegarde : écrit dans le fichier et ferme (snackbar)', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -166,9 +169,13 @@ void main() {
       // Écrit bien dans le fichier local (LOCAL ONLY).
       final saved = await HealthInfoRepository(fichier: fiche).get();
       expect(saved.bloodType, 'O-');
-      expect(saved.fullName, 'Christophe Mosconi',
-          reason: 'l identite est la premiere chose que lit un secouriste : '
-              'elle doit s enregistrer comme le reste');
+      expect(
+        saved.fullName,
+        'Christophe Mosconi',
+        reason:
+            'l identite est la premiere chose que lit un secouriste : '
+            'elle doit s enregistrer comme le reste',
+      );
     });
   });
 
@@ -191,10 +198,7 @@ void main() {
   group('non-regression overflow largeurs mobiles', () {
     const mobileWidths = <double>[360, 390, 412];
 
-    Future<List<String>> overflowsAt(
-      WidgetTester tester,
-      double width,
-    ) async {
+    Future<List<String>> overflowsAt(WidgetTester tester, double width) async {
       final captured = <String>[];
       final previous = FlutterError.onError;
       FlutterError.onError = (details) {
@@ -234,8 +238,7 @@ void main() {
         expect(
           overflows,
           isEmpty,
-          reason:
-              'HealthInfoScreen deborde a ${width.toInt()} px : $overflows',
+          reason: 'HealthInfoScreen deborde a ${width.toInt()} px : $overflows',
         );
       });
     }

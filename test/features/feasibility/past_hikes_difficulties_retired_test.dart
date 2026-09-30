@@ -75,8 +75,9 @@ void main() {
     );
   }
 
-  testWidgets('aucun champ de texte libre « difficultes » a l ecran',
-      (tester) async {
+  testWidgets('aucun champ de texte libre « difficultes » a l ecran', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -102,8 +103,9 @@ void main() {
     }
   });
 
-  testWidgets('le bouton ramene a la faisabilite, sans promettre de note',
-      (tester) async {
+  testWidgets('le bouton ramene a la faisabilite, sans promettre de note', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -119,7 +121,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // ACQUIS DE LA TACHE 568 PRESERVE : on revient bien d ou l on venait.
-    expect(find.text('FAISABILITE'), findsOneWidget,
-        reason: 'la tache 568 avait corrige ce retour, il ne regresse pas');
+    expect(
+      find.text('FAISABILITE'),
+      findsOneWidget,
+      reason: 'la tache 568 avait corrige ce retour, il ne regresse pas',
+    );
   });
 }

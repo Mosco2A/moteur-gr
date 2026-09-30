@@ -34,8 +34,10 @@ class VisibilitySettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            Text(t.shareVisibility.intro,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              t.shareVisibility.intro,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _VisibilityToggle(
               keyValue: 'toggle-stage-results',

@@ -95,16 +95,10 @@ void main() {
 
     test('GPX invalide — retourne erreur propre (pas crash)', () {
       // Contenu vide
-      expect(
-        () => GpxParser.parse(''),
-        throwsA(isA<FormatException>()),
-      );
+      expect(() => GpxParser.parse(''), throwsA(isA<FormatException>()));
 
       // Espaces seuls
-      expect(
-        () => GpxParser.parse('   '),
-        throwsA(isA<FormatException>()),
-      );
+      expect(() => GpxParser.parse('   '), throwsA(isA<FormatException>()));
 
       // GPX sans tracks ni waypoints — ne crash pas, retourne vide
       const emptyGpx = '''

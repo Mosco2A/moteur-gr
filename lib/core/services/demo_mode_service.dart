@@ -36,8 +36,8 @@ class DemoModeService {
   DemoModeService({
     SharedPreferences? prefs,
     Future<bool> Function(String trailId)? demoResolver,
-  })  : _prefs = prefs,
-        _demoResolver = demoResolver;
+  }) : _prefs = prefs,
+       _demoResolver = demoResolver;
 
   /// Instance SharedPreferences (injectee ou chargee au premier appel).
   SharedPreferences? _prefs;

@@ -1,4 +1,3 @@
-
 import '../../../i18n/translations.g.dart';
 import '../models/weather_alert.dart';
 import '../../../core/branding/stepways_icons.dart';

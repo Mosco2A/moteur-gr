@@ -21,8 +21,10 @@ import '../../../core/geo/track_point.dart';
 ///
 /// La resolution des sources vit dans [LecteurDeTrace], chemin UNIQUE partage
 /// avec `DriftTrailDataProvider.getTrackPoints`.
-final gpxTrackProvider =
-    FutureProvider.family<List<TrackPoint>, String>((ref, trailId) async {
+final gpxTrackProvider = FutureProvider.family<List<TrackPoint>, String>((
+  ref,
+  trailId,
+) async {
   final config = ref.watch(trailConfigProvider);
 
   // Verifier que le trailId correspond a la config active
@@ -32,10 +34,9 @@ final gpxTrackProvider =
     );
   }
 
-  final trace = await ref.watch(lecteurDeTraceProvider).lire(
-        trailId: trailId,
-        cheminAsset: config.gpxAssetPath,
-      );
+  final trace = await ref
+      .watch(lecteurDeTraceProvider)
+      .lire(trailId: trailId, cheminAsset: config.gpxAssetPath);
   return trace.points;
 });
 
@@ -47,10 +48,14 @@ final gpxTrackProvider =
 /// avoir a deviner : « la trace s affiche » et « la trace vient de la base » sont
 /// deux affirmations differentes, et c est la seconde qui prouve que le mur est
 /// tombe.
-final traceDuSentierProvider =
-    FutureProvider.family<TraceDuSentier, String>((ref, trailId) async {
+final traceDuSentierProvider = FutureProvider.family<TraceDuSentier, String>((
+  ref,
+  trailId,
+) async {
   final config = ref.watch(trailConfigProvider);
-  return ref.watch(lecteurDeTraceProvider).lire(
+  return ref
+      .watch(lecteurDeTraceProvider)
+      .lire(
         trailId: trailId,
         cheminAsset: config.id == trailId ? config.gpxAssetPath : '',
       );

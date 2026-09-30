@@ -32,7 +32,10 @@ class DepartureDatePicker extends ConsumerWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: StepIcon(StepwaysIcons.calendrier, color: theme.colorScheme.primary),
+        leading: StepIcon(
+          StepwaysIcons.calendrier,
+          color: theme.colorScheme.primary,
+        ),
         title: Text(t.settings.departureDate),
         subtitle: Text(
           reminderState.departureDate != null

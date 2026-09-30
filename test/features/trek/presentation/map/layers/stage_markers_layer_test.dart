@@ -37,10 +37,7 @@ void main() {
             body: FlutterMap(
               options: const MapOptions(),
               children: [
-                StageMarkersLayer(
-                  stages: stages,
-                  onStageTap: (id) {},
-                ),
+                StageMarkersLayer(stages: stages, onStageTap: (id) {}),
               ],
             ),
           ),
@@ -71,10 +68,7 @@ void main() {
     });
 
     test('accepte une taille personnalisee', () {
-      const layer = StageMarkersLayer(
-        stages: [],
-        markerSize: 48.0,
-      );
+      const layer = StageMarkersLayer(stages: [], markerSize: 48.0);
       expect(layer.markerSize, 48.0);
     });
   });

@@ -121,9 +121,7 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     Translations tr,
   ) {
-    final language = ref.watch(
-      settingsProvider.select((s) => s.language),
-    );
+    final language = ref.watch(settingsProvider.select((s) => s.language));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,9 +135,7 @@ class SettingsScreen extends ConsumerWidget {
               return ListTile(
                 title: Text(AppLanguageValues.labelFor(lang)),
                 leading: StepIcon(
-                  selected
-                      ? StepwaysIcons.radioCoche
-                      : StepwaysIcons.radio,
+                  selected ? StepwaysIcons.radioCoche : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -180,10 +176,12 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(tr.settings.distance),
                 trailing: SegmentedButton<String>(
                   segments: DistanceUnitValues.values
-                      .map((u) => ButtonSegment(
-                            value: u,
-                            label: Text(DistanceUnitValues.symbolFor(u)),
-                          ))
+                      .map(
+                        (u) => ButtonSegment(
+                          value: u,
+                          label: Text(DistanceUnitValues.symbolFor(u)),
+                        ),
+                      )
                       .toList(),
                   selected: {distanceUnit},
                   onSelectionChanged: (values) {
@@ -199,10 +197,12 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(tr.settings.temperature),
                 trailing: SegmentedButton<String>(
                   segments: TemperatureUnitValues.values
-                      .map((u) => ButtonSegment(
-                            value: u,
-                            label: Text(TemperatureUnitValues.symbolFor(u)),
-                          ))
+                      .map(
+                        (u) => ButtonSegment(
+                          value: u,
+                          label: Text(TemperatureUnitValues.symbolFor(u)),
+                        ),
+                      )
                       .toList(),
                   selected: {temperatureUnit},
                   onSelectionChanged: (values) {
@@ -226,9 +226,7 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     Translations tr,
   ) {
-    final themeMode = ref.watch(
-      settingsProvider.select((s) => s.themeMode),
-    );
+    final themeMode = ref.watch(settingsProvider.select((s) => s.themeMode));
 
     /// Labels Slang pour chaque mode de theme.
     String themeModeLabel(String mode) {
@@ -252,9 +250,7 @@ class SettingsScreen extends ConsumerWidget {
               return ListTile(
                 title: Text(themeModeLabel(mode)),
                 leading: StepIcon(
-                  selected
-                      ? StepwaysIcons.radioCoche
-                      : StepwaysIcons.radio,
+                  selected ? StepwaysIcons.radioCoche : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -361,8 +357,11 @@ class SettingsScreen extends ConsumerWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const StepIcon(StepwaysIcons.notifications,
-                          color: AppTheme.orangeDifficile, size: 22),
+                      const StepIcon(
+                        StepwaysIcons.notifications,
+                        color: AppTheme.orangeDifficile,
+                        size: 22,
+                      ),
                       const SizedBox(width: AppTheme.spacingSm),
                       Expanded(
                         child: Text(
@@ -381,8 +380,10 @@ class SettingsScreen extends ConsumerWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: OutlinedButton.icon(
-                      icon: const StepIcon(StepwaysIcons.notifications,
-                          size: 18),
+                      icon: const StepIcon(
+                        StepwaysIcons.notifications,
+                        size: 18,
+                      ),
                       label: Text(tr.notifications.permissionAsk),
                       onPressed: () => ref
                           .read(notificationSettingsProvider.notifier)
@@ -505,11 +506,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(
-          theme,
-          StepwaysIcons.bouclier,
-          tr.consent.settingsEntry,
-        ),
+        _sectionHeader(theme, StepwaysIcons.bouclier, tr.consent.settingsEntry),
         AppCard(
           padding: EdgeInsets.zero,
           child: Semantics(
@@ -554,9 +551,11 @@ class SettingsScreen extends ConsumerWidget {
               // — mais son sous-titre ne promet plus un code qui ne sera pas
               // affiche. Tant que le coffre n'est pas alimente, il annonce
               // l'etat reel, que l'ecran detaille ensuite.
-              subtitle: Text(CoffreDeReconnexion.alimente
-                  ? tr.recovery.sectionDesc
-                  : tr.recovery.noVaultTitle),
+              subtitle: Text(
+                CoffreDeReconnexion.alimente
+                    ? tr.recovery.sectionDesc
+                    : tr.recovery.noVaultTitle,
+              ),
               trailing: const StepIcon(StepwaysIcons.chevronDroite),
               onTap: () => context.push('/recovery-code'),
             ),
@@ -648,10 +647,7 @@ class SettingsScreen extends ConsumerWidget {
                   : '...';
               return ListTile(
                 title: Text(tr.settings.versionLabel),
-                trailing: Text(
-                  version,
-                  style: theme.textTheme.bodySmall,
-                ),
+                trailing: Text(version, style: theme.textTheme.bodySmall),
               );
             },
           ),
@@ -723,4 +719,3 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 }
-

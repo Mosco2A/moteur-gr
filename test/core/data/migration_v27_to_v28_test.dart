@@ -73,90 +73,111 @@ void main() {
       expect(db.schemaVersion, greaterThanOrEqualTo(28));
     });
 
-    test('AUCUN ALTER TABLE : les colonnes de revision restent des INTEGER',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
+    test(
+      'AUCUN ALTER TABLE : les colonnes de revision restent des INTEGER',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
 
-      Future<String?> typeDe(String table, String colonne) async {
-        final rows = await db.customSelect('PRAGMA table_info($table)').get();
-        for (final r in rows) {
-          if (r.read<String>('name') == colonne) return r.read<String>('type');
+        Future<String?> typeDe(String table, String colonne) async {
+          final rows = await db.customSelect('PRAGMA table_info($table)').get();
+          for (final r in rows) {
+            if (r.read<String>('name') == colonne)
+              return r.read<String>('type');
+          }
+          return null;
         }
-        return null;
-      }
 
-      // C EST CE FAIT QUI REND LA MIGRATION INCASSABLE. Si le type SQL avait
-      // change (TEXT pour de l ISO 8601, par exemple), il aurait fallu
-      // reconstruire sept tables sur le telephone du randonneur.
-      expect(await typeDe('trail_manifests', 'data_version'), 'INTEGER');
-      expect(await typeDe('trail_manifests', 'local_version'), 'INTEGER');
-      for (final table in const [
-        'trail_meta',
-        'trail_itineraries',
-        'trail_stages',
-        'trail_accommodations',
-        'trail_pois',
-        'trail_gpx_tracks',
-        'trail_gpx_points',
-      ]) {
-        expect(await typeDe(table, 'rev'), 'INTEGER',
-            reason: '$table garde sa colonne INTEGER : on y range des '
-                'millisecondes depuis l epoch');
-      }
-    });
+        // C EST CE FAIT QUI REND LA MIGRATION INCASSABLE. Si le type SQL avait
+        // change (TEXT pour de l ISO 8601, par exemple), il aurait fallu
+        // reconstruire sept tables sur le telephone du randonneur.
+        expect(await typeDe('trail_manifests', 'data_version'), 'INTEGER');
+        expect(await typeDe('trail_manifests', 'local_version'), 'INTEGER');
+        for (final table in const [
+          'trail_meta',
+          'trail_itineraries',
+          'trail_stages',
+          'trail_accommodations',
+          'trail_pois',
+          'trail_gpx_tracks',
+          'trail_gpx_points',
+        ]) {
+          expect(
+            await typeDe(table, 'rev'),
+            'INTEGER',
+            reason:
+                '$table garde sa colonne INTEGER : on y range des '
+                'millisecondes depuis l epoch',
+          );
+        }
+      },
+    );
 
-    test('le repere herite du compteur est REMIS A ZERO, pas relu comme une date',
-        () async {
-      final file = await baseEnV27();
-      final db = AppDatabase(NativeDatabase(file));
-      addTearDown(db.close);
+    test(
+      'le repere herite du compteur est REMIS A ZERO, pas relu comme une date',
+      () async {
+        final file = await baseEnV27();
+        final db = AppDatabase(NativeDatabase(file));
+        addTearDown(db.close);
 
-      final manifeste =
-          await db.trailManifestsDao.getByTrailId('mare-a-mare-centre');
-      expect(manifeste, isNotNull);
-      expect(manifeste!.localVersion, isNull,
-          reason: 'un « 4 » relu comme un instant designerait le 1er janvier '
-              '1970 : on ne le laisse pas s interpreter, on le remet a zero');
-      expect(manifeste.dataVersion, HorodatageServeur.origine,
-          reason: 'l instant de publication sera reecrit par la prochaine '
-              'lecture du catalogue, avec la valeur que le SERVEUR annonce');
+        final manifeste = await db.trailManifestsDao.getByTrailId(
+          'mare-a-mare-centre',
+        );
+        expect(manifeste, isNotNull);
+        expect(
+          manifeste!.localVersion,
+          isNull,
+          reason:
+              'un « 4 » relu comme un instant designerait le 1er janvier '
+              '1970 : on ne le laisse pas s interpreter, on le remet a zero',
+        );
+        expect(
+          manifeste.dataVersion,
+          HorodatageServeur.origine,
+          reason:
+              'l instant de publication sera reecrit par la prochaine '
+              'lecture du catalogue, avec la valeur que le SERVEUR annonce',
+        );
 
-      // Les revisions d enregistrement aussi : aucun compteur ne doit pouvoir se
-      // faire passer pour une date, meme dans une colonne que personne ne lit
-      // aujourd hui pour decider.
-      final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
-      expect(etapes, hasLength(1));
-      expect(etapes.single.rev, isNull);
-      final fiche = await db.trailMetaDao.getById('mare-a-mare-centre');
-      expect(fiche, isNotNull);
-      expect(fiche!.rev, isNull);
-      expect(fiche.dataVersion, HorodatageServeur.origine);
-    });
+        // Les revisions d enregistrement aussi : aucun compteur ne doit pouvoir se
+        // faire passer pour une date, meme dans une colonne que personne ne lit
+        // aujourd hui pour decider.
+        final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
+        expect(etapes, hasLength(1));
+        expect(etapes.single.rev, isNull);
+        final fiche = await db.trailMetaDao.getById('mare-a-mare-centre');
+        expect(fiche, isNotNull);
+        expect(fiche!.rev, isNull);
+        expect(fiche.dataVersion, HorodatageServeur.origine);
+      },
+    );
 
-    test('AUCUNE DONNEE DE SENTIER PERDUE : seules les revisions sont remises a '
-        'zero', () async {
-      final file = await baseEnV27();
-      final db = AppDatabase(NativeDatabase(file));
-      addTearDown(db.close);
+    test(
+      'AUCUNE DONNEE DE SENTIER PERDUE : seules les revisions sont remises a '
+      'zero',
+      () async {
+        final file = await baseEnV27();
+        final db = AppDatabase(NativeDatabase(file));
+        addTearDown(db.close);
 
-      final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
-      expect(etapes, hasLength(1));
-      expect(etapes.single.nameFr, 'Etape 1');
-      expect(etapes.single.nameEs, 'Etapa 1');
-      expect(etapes.single.elevationGain, 800);
-      expect(etapes.single.distanceKm, 12.5);
+        final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
+        expect(etapes, hasLength(1));
+        expect(etapes.single.nameFr, 'Etape 1');
+        expect(etapes.single.nameEs, 'Etapa 1');
+        expect(etapes.single.elevationGain, 800);
+        expect(etapes.single.distanceKm, 12.5);
 
-      final manifeste =
-          await db.trailManifestsDao.getByTrailId('mare-a-mare-centre');
-      expect(manifeste!.hash, 'h4');
-      expect(manifeste.filePath, 'mam/v4.json');
-      expect(manifeste.fileSize, 812345);
-      expect(manifeste.status, 'active');
-    });
+        final manifeste = await db.trailManifestsDao.getByTrailId(
+          'mare-a-mare-centre',
+        );
+        expect(manifeste!.hash, 'h4');
+        expect(manifeste.filePath, 'mam/v4.json');
+        expect(manifeste.fileSize, 812345);
+        expect(manifeste.status, 'active');
+      },
+    );
 
-    test('APRES LA MIGRATION, LE SENTIER EST A REPRENDRE — et c est voulu',
-        () async {
+    test('APRES LA MIGRATION, LE SENTIER EST A REPRENDRE — et c est voulu', () async {
       final file = await baseEnV27();
       final db = AppDatabase(NativeDatabase(file));
       addTearDown(db.close);
@@ -164,7 +185,10 @@ void main() {
       // `needsUpdate` rend vrai parce que le repere est nul : le sentier sera
       // recopie UNE fois, par le chemin normal et transactionnel, et le telephone
       // repartira avec un repere que le serveur aura annonce.
-      expect(await db.trailManifestsDao.needsUpdate('mare-a-mare-centre'), isTrue);
+      expect(
+        await db.trailManifestsDao.needsUpdate('mare-a-mare-centre'),
+        isTrue,
+      );
 
       // ET IL N EST PLUS COMPTE COMME POSSEDE PAR LA MISE A JOUR PERIODIQUE, tant
       // qu il n a pas ete recopie. C est coherent : son contenu local n est plus
@@ -191,8 +215,9 @@ void main() {
       final rouverte = AppDatabase(NativeDatabase(file));
       addTearDown(rouverte.close);
       await expectLater(rouverte.customSelect('SELECT 1').get(), completes);
-      final manifeste =
-          await rouverte.trailManifestsDao.getByTrailId('mare-a-mare-centre');
+      final manifeste = await rouverte.trailManifestsDao.getByTrailId(
+        'mare-a-mare-centre',
+      );
       expect(manifeste!.localVersion, isNull);
     });
   });

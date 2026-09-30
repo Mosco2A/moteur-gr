@@ -40,9 +40,7 @@ import '../structurel/parcours_reel.dart';
 /// geste. Toute entree ajoutee au guide doit etre inscrite ici avec ce qu'elle
 /// ouvre — sinon le guide peut recommencer a documenter un bouton fantome sans
 /// que rien ne le signale.
-const gestesDocumentesParLeGuide = <String, String>{
-  'sos': '/emergency',
-};
+const gestesDocumentesParLeGuide = <String, String>{'sos': '/emergency'};
 
 /// Les donnees que l'application demande a l'utilisateur, et le provider ou le
 /// champ qui les LIT ensuite.
@@ -53,13 +51,14 @@ const gestesDocumentesParLeGuide = <String, String>{
 const donneesEtLeurLecteur = <String, String>{
   'experienceNoteProvider':
       'la liste libre des difficultes rencontrees — Chris a tranche le 26/09 : '
-          'si personne ne la lit, on la retire',
+      'si personne ne la lit, on la retire',
 };
 
 void main() {
   group('LE MEFIANT — un refus doit etre tenu', () {
-    testWidgets('sur l ecran des consentements, tout refuser reste refuse',
-        (tester) async {
+    testWidgets('sur l ecran des consentements, tout refuser reste refuse', (
+      tester,
+    ) async {
       final concret = cheminConcret('/consent')!;
       await monterAppliReelle(tester, depart: concret);
 
@@ -67,18 +66,23 @@ void main() {
       // HORS ECRAN aussi (`skipOffstage: false`) : sur un telephone, le bouton
       // « tout refuser » est en bas d'une liste qui defile — le chercher
       // seulement parmi les widgets rendus ferait croire qu'il n'existe pas.
-      final i18n = jsonDecode(File('assets/i18n/fr.i18n.json').readAsStringSync())
-          as Map<String, dynamic>;
-      final libelleRefus =
-          ((i18n['consent'] as Map)['declineAll'] as String).trim();
+      final i18n =
+          jsonDecode(File('assets/i18n/fr.i18n.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final libelleRefus = ((i18n['consent'] as Map)['declineAll'] as String)
+          .trim();
       final cible = find.text(libelleRefus, skipOffstage: false);
       if (cible.evaluate().isEmpty) {
-        final libelles = gestesDisponibles(tester).map((g) => g.libelle).toList();
+        final libelles = gestesDisponibles(
+          tester,
+        ).map((g) => g.libelle).toList();
         await demonterAppli(tester);
-        fail('AUCUN GESTE DE REFUS GLOBAL sur /consent : le libelle i18n '
-            '« $libelleRefus » n existe pas a l ecran. Un ecran de consentement '
-            'sans refus en un geste est un ecran qui pousse au oui. Gestes '
-            'trouves : $libelles');
+        fail(
+          'AUCUN GESTE DE REFUS GLOBAL sur /consent : le libelle i18n '
+          '« $libelleRefus » n existe pas a l ecran. Un ecran de consentement '
+          'sans refus en un geste est un ecran qui pousse au oui. Gestes '
+          'trouves : $libelles',
+        );
       }
       await tester.ensureVisible(cible.first);
       await stabiliser(tester, coups: 2);
@@ -92,13 +96,21 @@ void main() {
       await demonterAppli(tester);
       erreursDeRendu(tester);
 
-      expect(apresRefus, contains('refus'),
-          reason: 'apres avoir tout refuse, l ecran ne dit pas que c est '
-              'refuse');
-      expect(auRetour, contains('refus'),
-          reason: 'LE REFUS N A PAS SURVECU : en revenant sur l ecran des '
-              'consentements, l etat refuse a disparu. Un refus qu il faut '
-              'redire est un refus qu on n a pas entendu.');
+      expect(
+        apresRefus,
+        contains('refus'),
+        reason:
+            'apres avoir tout refuse, l ecran ne dit pas que c est '
+            'refuse',
+      );
+      expect(
+        auRetour,
+        contains('refus'),
+        reason:
+            'LE REFUS N A PAS SURVECU : en revenant sur l ecran des '
+            'consentements, l etat refuse a disparu. Un refus qu il faut '
+            'redire est un refus qu on n a pas entendu.',
+      );
     });
   });
 
@@ -112,7 +124,8 @@ void main() {
       expect(i18n.existsSync(), isTrue);
       final tout = jsonDecode(i18n.readAsStringSync()) as Map<String, dynamic>;
       final guide =
-          (tout['map'] as Map<String, dynamic>?)?['guide'] as Map<String, dynamic>?;
+          (tout['map'] as Map<String, dynamic>?)?['guide']
+              as Map<String, dynamic>?;
       expect(guide, isNotNull, reason: 'guide de la carte introuvable en i18n');
 
       // Les routes reellement atteignables, calculees par le graphe.
@@ -139,8 +152,11 @@ void main() {
       for (final a in aretes) {
         final cible = cibleDe(a);
         if (cible == null) continue;
-        for (final d
-            in routesPorteusesDuGeste(a.fichier, routeVersFichiers, importeurs)) {
+        for (final d in routesPorteusesDuGeste(
+          a.fichier,
+          routeVersFichiers,
+          importeurs,
+        )) {
           sortantes[d]?.add(cible);
         }
       }
@@ -156,14 +172,20 @@ void main() {
       for (final e in gestesDocumentesParLeGuide.entries) {
         if (!guide!.containsKey(e.key)) continue; // le guide n'en parle plus
         if (atteintes.contains(e.value)) continue;
-        fantomes.add('map.guide.${e.key} explique un geste qui ouvre '
-            '${e.value} — route INATTEIGNABLE : «'
-            ' ${guide[e.key]} »');
+        fantomes.add(
+          'map.guide.${e.key} explique un geste qui ouvre '
+          '${e.value} — route INATTEIGNABLE : «'
+          ' ${guide[e.key]} »',
+        );
       }
-      expect(fantomes, isEmpty,
-          reason: 'BOUTONS FANTOMES DOCUMENTES : le guide explique a '
-              'l utilisateur des gestes que l application n offre pas.\n'
-              '  ${fantomes.join('\n  ')}');
+      expect(
+        fantomes,
+        isEmpty,
+        reason:
+            'BOUTONS FANTOMES DOCUMENTES : le guide explique a '
+            'l utilisateur des gestes que l application n offre pas.\n'
+            '  ${fantomes.join('\n  ')}',
+      );
     });
   });
 
@@ -199,18 +221,25 @@ void main() {
           final s = p.toLowerCase();
           return !s.contains('provider') && !s.contains('presentation');
         }).toList();
-        final ecransLecteurs =
-            fichiers.where((p) => p.contains('/presentation/')).toList();
+        final ecransLecteurs = fichiers
+            .where((p) => p.contains('/presentation/'))
+            .toList();
         if (lecteursUtiles.isEmpty && ecransLecteurs.length <= 1) {
-          orphelines.add('${e.key} : ${e.value}\n      lue seulement par '
-              '${fichiers.join(', ')}');
+          orphelines.add(
+            '${e.key} : ${e.value}\n      lue seulement par '
+            '${fichiers.join(', ')}',
+          );
         }
       }
-      expect(orphelines, isEmpty,
-          reason: 'DONNEES COLLECTEES QUE PERSONNE NE LIT : l application les '
-              'demande, les sauvegarde, les synchronise, les restaure — et '
-              'aucun calcul ni aucun ecran ne s en sert.\n'
-              '  ${orphelines.join('\n  ')}');
+      expect(
+        orphelines,
+        isEmpty,
+        reason:
+            'DONNEES COLLECTEES QUE PERSONNE NE LIT : l application les '
+            'demande, les sauvegarde, les synchronise, les restaure — et '
+            'aucun calcul ni aucun ecran ne s en sert.\n'
+            '  ${orphelines.join('\n  ')}',
+      );
     });
   });
 
@@ -233,14 +262,17 @@ void main() {
       // l'application de ne pas afficher ce qu'elle n'a pas encore. On ne juge
       // donc que quand le verdict est la — et on le DIT quand ce n'est pas le
       // cas, au lieu de passer en silence.
-      final verdictAffiche = textes.contains('decoupage') ||
+      final verdictAffiche =
+          textes.contains('decoupage') ||
           textes.contains('découpage') ||
           textes.contains('plafond conseill');
       if (!verdictAffiche) {
-        markTestSkipped('le verdict n est pas affiche sur une installation '
-            'neuve (parcours guide en cours) : ce controle demande un profil '
-            'randonneur seme. TROU CONNU, a fermer avec un jeu de preferences '
-            'de depart.');
+        markTestSkipped(
+          'le verdict n est pas affiche sur une installation '
+          'neuve (parcours guide en cours) : ce controle demande un profil '
+          'randonneur seme. TROU CONNU, a fermer avec un jeu de preferences '
+          'de depart.',
+        );
         return;
       }
 
@@ -252,10 +284,14 @@ void main() {
       if (!textes.contains('42')) {
         manques.add('les 42 m de denivele qui valent 1 km de plat (Minetti)');
       }
-      expect(manques, isEmpty,
-          reason: 'LE VERDICT NE MONTRE PAS SON CALCUL : ${manques.join(', ')}. '
-              'Un randonneur a qui on dit « tu ne passeras pas » sans montrer '
-              'pourquoi n a aucun recours.');
+      expect(
+        manques,
+        isEmpty,
+        reason:
+            'LE VERDICT NE MONTRE PAS SON CALCUL : ${manques.join(', ')}. '
+            'Un randonneur a qui on dit « tu ne passeras pas » sans montrer '
+            'pourquoi n a aucun recours.',
+      );
     });
   });
 }

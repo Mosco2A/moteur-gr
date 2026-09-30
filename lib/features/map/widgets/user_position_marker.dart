@@ -35,13 +35,15 @@ class _UserPositionMarkerState extends State<UserPositionMarker>
       vsync: this,
     )..repeat();
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 2.5,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _opacityAnimation = Tween<double>(begin: 0.4, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _opacityAnimation = Tween<double>(
+      begin: 0.4,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -85,10 +87,7 @@ class _UserPositionMarkerState extends State<UserPositionMarker>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: widget.color,
-              border: Border.all(
-                color: Colors.white,
-                width: 3.0,
-              ),
+              border: Border.all(color: Colors.white, width: 3.0),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(64),

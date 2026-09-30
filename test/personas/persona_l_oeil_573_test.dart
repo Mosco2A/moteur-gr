@@ -50,8 +50,9 @@ const debordementsAdmis = <String, String>{};
 
 void main() {
   group('L OEIL — rien ne deborde de l ecran', () {
-    testWidgets('aucun ecran ne coupe son contenu sur un telephone courant',
-        (tester) async {
+    testWidgets('aucun ecran ne coupe son contenu sur un telephone courant', (
+      tester,
+    ) async {
       // MESURE DU 26/09 sur ce depot : deux ecrans debordent — `/follow/:code`
       // de 67 pixels et `/accommodations-nearby` de 117. Un debordement coupe du
       // texte a l'ecran sans rien lever : l'utilisateur voit une phrase
@@ -70,10 +71,14 @@ void main() {
       }
       await demonterAppli(tester);
       erreursDeRendu(tester);
-      expect(debordent, isEmpty,
-          reason: 'DU CONTENU EST COUPE A L ECRAN. La campagne ne peut pas le '
-              'voir : le texte tronque est bien present dans l arbre des '
-              'widgets, donc « trouve ».\n  ${debordent.join('\n  ')}');
+      expect(
+        debordent,
+        isEmpty,
+        reason:
+            'DU CONTENU EST COUPE A L ECRAN. La campagne ne peut pas le '
+            'voir : le texte tronque est bien present dans l arbre des '
+            'widgets, donc « trouve ».\n  ${debordent.join('\n  ')}',
+      );
     });
   });
 
@@ -113,8 +118,12 @@ void main() {
     /// mesurait donc des coincidences sur des donnees que l'ecran n'affiche
     /// pas.
     List<Map<String, dynamic>> lire(String fichier) =>
-        (jsonDecode(File('assets/data/mare_a_mare_centre/$fichier')
-                .readAsStringSync()) as List)
+        (jsonDecode(
+                  File(
+                    'assets/data/mare_a_mare_centre/$fichier',
+                  ).readAsStringSync(),
+                )
+                as List)
             .cast<Map<String, dynamic>>();
 
     /// Distance geodesique en metres (haversine), calculee ici : le test ne
@@ -124,7 +133,8 @@ void main() {
       double rad(double d) => d * math.pi / 180.0;
       final dLat = rad(la2 - la1);
       final dLng = rad(ln2 - ln1);
-      final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+      final a =
+          math.sin(dLat / 2) * math.sin(dLat / 2) +
           math.cos(rad(la1)) *
               math.cos(rad(la2)) *
               math.sin(dLng / 2) *
@@ -172,8 +182,28 @@ void main() {
     /// La bande de zoom utile d'une carte de randonnee, du sentier entier au
     /// detail d'un hameau.
     const zooms = <double>[
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-      12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
     ];
 
     /// Monte la couche de reperes du sentier et rend CE QUE LA CARTE DESSINE.
@@ -188,8 +218,10 @@ void main() {
           home: Scaffold(
             body: FlutterMap(
               options: MapOptions(
-                initialCenter: LatLng(stages.first.startLat,
-                    stages.first.startLng),
+                initialCenter: LatLng(
+                  stages.first.startLat,
+                  stages.first.startLng,
+                ),
                 initialZoom: zoom,
               ),
               children: [
@@ -222,9 +254,13 @@ void main() {
           coincidences.add('etape ${s.orderIndex} et ${p.type} « ${p.name} »');
         }
       }
-      expect(coincidences, isNotEmpty,
-          reason: 'aucune coincidence trouvee dans les donnees livrees : la '
-              'lecture est cassee, et ce test ne prouverait plus rien');
+      expect(
+        coincidences,
+        isNotEmpty,
+        reason:
+            'aucune coincidence trouvee dans les donnees livrees : la '
+            'lecture est cassee, et ce test ne prouverait plus rien',
+      );
     });
 
     testWidgets(
@@ -261,19 +297,25 @@ void main() {
               // descend sous la somme de leurs rayons.
               final minimum = (a.width + b.width) / 2;
               if (ecartPx >= minimum) continue;
-              recouvrements.add('zoom $zoom : deux reperes a '
-                  '${ecartPx.toStringAsFixed(1)} px l un de l autre, alors '
-                  'qu il en faut ${minimum.toStringAsFixed(0)}');
+              recouvrements.add(
+                'zoom $zoom : deux reperes a '
+                '${ecartPx.toStringAsFixed(1)} px l un de l autre, alors '
+                'qu il en faut ${minimum.toStringAsFixed(0)}',
+              );
             }
           }
         }
 
-        expect(recouvrements, isEmpty,
-            reason: 'DES MARQUEURS SE MARCHENT DESSUS SUR LA CARTE LIVREE. Le '
-                'numero d etape passe sous l icone du lieu — le retour 13 de '
-                'Chris, verbatim : « 14rando les numeros d etapes son caches '
-                'par les refucge, il ne faut pas que les icones se '
-                'superposent ».\n  ${recouvrements.take(10).join('\n  ')}');
+        expect(
+          recouvrements,
+          isEmpty,
+          reason:
+              'DES MARQUEURS SE MARCHENT DESSUS SUR LA CARTE LIVREE. Le '
+              'numero d etape passe sous l icone du lieu — le retour 13 de '
+              'Chris, verbatim : « 14rando les numeros d etapes son caches '
+              'par les refucge, il ne faut pas que les icones se '
+              'superposent ».\n  ${recouvrements.take(10).join('\n  ')}',
+        );
       },
     );
 
@@ -288,18 +330,34 @@ void main() {
         final (stages, pois) = sentierReel();
         final total = stages.length + pois.length;
 
-        final large = await reperesRendus(tester,
-            stages: stages, pois: pois, zoom: 11);
-        expect(large.length, lessThan(total),
-            reason: 'en vue large, $total icones restent empilees : rien n est '
-                'fusionne');
+        final large = await reperesRendus(
+          tester,
+          stages: stages,
+          pois: pois,
+          zoom: 11,
+        );
+        expect(
+          large.length,
+          lessThan(total),
+          reason:
+              'en vue large, $total icones restent empilees : rien n est '
+              'fusionne',
+        );
 
-        final fin = await reperesRendus(tester,
-            stages: stages, pois: pois, zoom: 22);
+        final fin = await reperesRendus(
+          tester,
+          stages: stages,
+          pois: pois,
+          zoom: 22,
+        );
         expect(fin.length, lessThanOrEqualTo(total));
-        expect(fin.length, greaterThan(large.length),
-            reason: 'au plus fin, les lieux distincts doivent reprendre chacun '
-                'leur repere : on ne fusionne pas ce qui se distingue');
+        expect(
+          fin.length,
+          greaterThan(large.length),
+          reason:
+              'au plus fin, les lieux distincts doivent reprendre chacun '
+              'leur repere : on ne fusionne pas ce qui se distingue',
+        );
       },
     );
   });
@@ -318,28 +376,34 @@ void main() {
       await demonterAppli(tester);
       erreursDeRendu(tester);
 
-      final conseil = textes.where((t) => t.toLowerCase().contains('vise ')).toList();
+      final conseil = textes
+          .where((t) => t.toLowerCase().contains('vise '))
+          .toList();
       // Le libelle rouge du verdict, tel que l'i18n le definit.
-      final i18n = jsonDecode(
-              File('assets/i18n/fr.i18n.json').readAsStringSync())
-          as Map<String, dynamic>;
-      final rouge = ((((i18n['feasibility'] as Map)['formula'] as Map)['verdicts']
-              as Map)['red'] as String)
-          .trim();
+      final i18n =
+          jsonDecode(File('assets/i18n/fr.i18n.json').readAsStringSync())
+              as Map<String, dynamic>;
+      final rouge =
+          ((((i18n['feasibility'] as Map)['formula'] as Map)['verdicts']
+                      as Map)['red']
+                  as String)
+              .trim();
       final verdictRouge = textes.any((t) => t.trim() == rouge);
 
       expect(
         conseil.isNotEmpty && verdictRouge,
         isFalse,
-        reason: 'LA MEME PAGE CONSEILLE ET CONDAMNE : elle affiche '
+        reason:
+            'LA MEME PAGE CONSEILLE ET CONDAMNE : elle affiche '
             '${conseil.join(' / ')} et le verdict « $rouge ». C est ce que '
             'Chris a lu le 26/09 a 10:30. Quand aucune duree ne convient, '
             'l application doit le DIRE au lieu de pointer une valeur.',
       );
     });
 
-    testWidgets('aucun ecran ne promet une fonction en la nommant sans y mener',
-        (tester) async {
+    testWidgets('aucun ecran ne promet une fonction en la nommant sans y mener', (
+      tester,
+    ) async {
       // Un texte qui nomme une fonction s'engage. Le guide des icones de la
       // carte documentait un bouton SOS que l'application n'offrait nulle part :
       // on avait fait ecrire le mode d'emploi d'un bouton fantome. Ici, version
@@ -357,10 +421,14 @@ void main() {
         final b = l.toLowerCase();
         return b.contains('sos') || b.contains('urgence');
       });
-      expect(offreSos, isTrue,
-          reason: 'LA CARTE PARLE DU SOS ET NE L OFFRE PAS : les textes de '
-              'l ecran mentionnent l urgence, aucun geste visible n y mene. '
-              'Gestes disponibles : ${gestes.join(' / ')}');
+      expect(
+        offreSos,
+        isTrue,
+        reason:
+            'LA CARTE PARLE DU SOS ET NE L OFFRE PAS : les textes de '
+            'l ecran mentionnent l urgence, aucun geste visible n y mene. '
+            'Gestes disponibles : ${gestes.join(' / ')}',
+      );
     });
   });
 }

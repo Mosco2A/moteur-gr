@@ -135,8 +135,10 @@ class ProgramWeatherState {
 /// 600 appels/minute, 10 000/jour), divise par le cache. Deux journees qui
 /// finissent au meme endroit, ou un jour de repos qui suit une etape, partagent
 /// la meme ligne de cache et ne declenchent rien de plus.
-final programWeatherProvider =
-    Provider.family<ProgramWeatherState, String>((ref, trailId) {
+final programWeatherProvider = Provider.family<ProgramWeatherState, String>((
+  ref,
+  trailId,
+) {
   final plan = ref.watch(plannedDaysProvider(trailId));
 
   // Meme source de date que la faisabilite (LOT R) et la checklist : le trek
@@ -174,20 +176,25 @@ final programWeatherProvider =
 
     final date = departure == null
         ? today
-        : DateTime(departure.year, departure.month, departure.day)
-            .add(Duration(days: planned.dayNumber - 1));
+        : DateTime(
+            departure.year,
+            departure.month,
+            departure.day,
+          ).add(Duration(days: planned.dayNumber - 1));
 
     if (departure == null) {
       // Sans calendrier, on ne peut pas dire quel jour est quel jour. On nomme
       // quand meme le lieu (c'est une information sure) et on le declare.
-      result.add(ProgramDayWeather(
-        dayNumber: planned.dayNumber,
-        date: date,
-        placeName: _placeNameOf(stage),
-        stageNumber: stage?.stageNumber ?? 0,
-        isRestDay: planned.isRestDay,
-        reach: ForecastReach.unknownDeparture,
-      ));
+      result.add(
+        ProgramDayWeather(
+          dayNumber: planned.dayNumber,
+          date: date,
+          placeName: _placeNameOf(stage),
+          stageNumber: stage?.stageNumber ?? 0,
+          isRestDay: planned.isRestDay,
+          reach: ForecastReach.unknownDeparture,
+        ),
+      );
       continue;
     }
 
@@ -195,34 +202,39 @@ final programWeatherProvider =
 
     // Au-dela de la portee du fournisseur, on ne demande RIEN : pas d'appel
     // inutile, pas de chiffre invente. On le dit, c'est tout.
-    if (forecastReachFor(daysAhead: daysAhead) ==
-        ForecastReach.beyondHorizon) {
-      result.add(ProgramDayWeather(
-        dayNumber: planned.dayNumber,
-        date: date,
-        placeName: _placeNameOf(stage),
-        stageNumber: stage?.stageNumber ?? 0,
-        isRestDay: planned.isRestDay,
-        reach: ForecastReach.beyondHorizon,
-      ));
+    if (forecastReachFor(daysAhead: daysAhead) == ForecastReach.beyondHorizon) {
+      result.add(
+        ProgramDayWeather(
+          dayNumber: planned.dayNumber,
+          date: date,
+          placeName: _placeNameOf(stage),
+          stageNumber: stage?.stageNumber ?? 0,
+          isRestDay: planned.isRestDay,
+          reach: ForecastReach.beyondHorizon,
+        ),
+      );
       continue;
     }
 
     if (stage == null) {
-      result.add(ProgramDayWeather(
-        dayNumber: planned.dayNumber,
-        date: date,
-        placeName: _placeNameOf(null),
-        stageNumber: 0,
-        isRestDay: planned.isRestDay,
-        reach: ForecastReach.noData,
-      ));
+      result.add(
+        ProgramDayWeather(
+          dayNumber: planned.dayNumber,
+          date: date,
+          placeName: _placeNameOf(null),
+          stageNumber: 0,
+          isRestDay: planned.isRestDay,
+          reach: ForecastReach.noData,
+        ),
+      );
       continue;
     }
 
-    final weather = ref.watch(stageWeatherProvider(
-      WeatherStageParams(trailId: trailId, stageNumber: stage.stageNumber),
-    ));
+    final weather = ref.watch(
+      stageWeatherProvider(
+        WeatherStageParams(trailId: trailId, stageNumber: stage.stageNumber),
+      ),
+    );
     final forecast = weather.forecast;
     if (weather.isLoading && forecast == null) anyLoading = true;
 
@@ -232,16 +244,18 @@ final programWeatherProvider =
       hasForecast: dayForecast != null,
     );
 
-    result.add(ProgramDayWeather(
-      dayNumber: planned.dayNumber,
-      date: date,
-      placeName: _placeNameOf(stage),
-      stageNumber: stage.stageNumber,
-      isRestDay: planned.isRestDay,
-      reach: reach,
-      day: dayForecast,
-      fetchedAt: forecast?.fetchedAt,
-    ));
+    result.add(
+      ProgramDayWeather(
+        dayNumber: planned.dayNumber,
+        date: date,
+        placeName: _placeNameOf(stage),
+        stageNumber: stage.stageNumber,
+        isRestDay: planned.isRestDay,
+        reach: reach,
+        day: dayForecast,
+        fetchedAt: forecast?.fetchedAt,
+      ),
+    );
   }
 
   return ProgramWeatherState(

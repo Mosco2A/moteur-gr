@@ -123,9 +123,12 @@ class EtaService {
     final distance = distanceMetres.isFinite && distanceMetres > 0
         ? distanceMetres
         : 0.0;
-    final ascent = ascentMetres.isFinite && ascentMetres > 0 ? ascentMetres : 0.0;
-    final descent =
-        descentMetres.isFinite && descentMetres > 0 ? descentMetres : 0.0;
+    final ascent = ascentMetres.isFinite && ascentMetres > 0
+        ? ascentMetres
+        : 0.0;
+    final descent = descentMetres.isFinite && descentMetres > 0
+        ? descentMetres
+        : 0.0;
 
     final flatSeconds = distance / pace;
     final ascentSeconds = ascent * ascentSecondsPerMetre;
@@ -151,10 +154,9 @@ class EtaService {
     );
     // Confiance basse si GPS degrade OU si aucune vitesse observee exploitable
     // (on s'appuie alors sur le profil/pente + cadence, marge plus large).
-    final confidence =
-        input.gpsDegraded || input.observedPaceMps <= 0
-            ? EtaConfidence.low
-            : EtaConfidence.high;
+    final confidence = input.gpsDegraded || input.observedPaceMps <= 0
+        ? EtaConfidence.low
+        : EtaConfidence.high;
     return EtaEstimate(
       toNextWaypoint: toWaypoint,
       toStageEnd: toEnd,

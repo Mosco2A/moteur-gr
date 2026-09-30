@@ -74,8 +74,7 @@ void main() {
       expect(restored.activatedAt, isNull);
     });
 
-    test('ShareLinkType couvre les 3 canaux et tolere une valeur inconnue',
-        () {
+    test('ShareLinkType couvre les 3 canaux et tolere une valeur inconnue', () {
       // 3 canaux de suivi (#81753) : app gratuite, web payant,
       // app complementaire payante.
       expect(ShareLinkTypeValues.values, hasLength(3));
@@ -133,9 +132,8 @@ void main() {
       // Le second insert avec le meme shareCode mais un id different
       // doit echouer car shareCode est unique
       expect(
-        () async => db
-            .into(db.followSessions)
-            .insert(entry2, mode: InsertMode.insert),
+        () async =>
+            db.into(db.followSessions).insert(entry2, mode: InsertMode.insert),
         throwsA(isA<Object>()),
       );
     });

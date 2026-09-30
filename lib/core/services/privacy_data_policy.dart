@@ -79,12 +79,12 @@ class AggregatedTrace {
   /// Serialise le RESULTAT agrege (ce JSON est sans point fin, donc
   /// transmissible au serveur). Aucune coordonnee, aucun horodatage individuel.
   Map<String, Object> toJson() => <String, Object>{
-        'distanceMeters': distanceMeters,
-        'durationSeconds': duration.inSeconds,
-        'elevationGainMeters': elevationGainMeters,
-        'elevationLossMeters': elevationLossMeters,
-        'sourcePointCount': sourcePointCount,
-      };
+    'distanceMeters': distanceMeters,
+    'durationSeconds': duration.inSeconds,
+    'elevationGainMeters': elevationGainMeters,
+    'elevationLossMeters': elevationLossMeters,
+    'sourcePointCount': sourcePointCount,
+  };
 }
 
 /// Politique transverse de minimisation (helpers purs, sans etat).
@@ -175,7 +175,8 @@ class PrivacyDataPolicy {
     final dLat = _toRadians(b.lat - a.lat);
     final dLng = _toRadians(b.lng - a.lng);
 
-    final h = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final h =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(lat1) *
             math.cos(lat2) *
             math.sin(dLng / 2) *

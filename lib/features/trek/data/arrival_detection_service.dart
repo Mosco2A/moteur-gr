@@ -132,8 +132,9 @@ class ArrivalDetectionService {
     // Fin de sentier direction-aware : id de la derniere etape du parcours dans
     // le sens de marche si un plan est fourni, sinon plus grand orderIndex.
     final String? finalStageId = plan?.finalStageId;
-    final int maxOrderIndex =
-        stages.map((s) => s.orderIndex).reduce((a, b) => a > b ? a : b);
+    final int maxOrderIndex = stages
+        .map((s) => s.orderIndex)
+        .reduce((a, b) => a > b ? a : b);
 
     return positionStream.expand((position) {
       final lat = position.latitude;
@@ -170,8 +171,13 @@ class ArrivalDetectionService {
         // en sens direct c'est `start`, en sens inverse c'est `end`. L'arrivee
         // reelle (l'autre extremite / distToEnd) passe.
         if (plan != null && plan.isStartStage(stage.id)) {
-          final distToDeparture =
-              _distanceToDeparturePoint(lat, lng, stage, stages, plan);
+          final distToDeparture = _distanceToDeparturePoint(
+            lat,
+            lng,
+            stage,
+            stages,
+            plan,
+          );
           if (distToDeparture != null &&
               distToDeparture <= departureRadiusMeters) {
             // Faux positif au refuge de depart : on n'emet rien pour cette etape
@@ -189,11 +195,13 @@ class ArrivalDetectionService {
               ? stage.id == finalStageId
               : stage.orderIndex == maxOrderIndex;
 
-          events.add(ArrivalEvent(
-            type: isFinal ? 'trailEnd' : 'stageEnd',
-            stageId: stage.id,
-            timestamp: DateTime.now(),
-          ));
+          events.add(
+            ArrivalEvent(
+              type: isFinal ? 'trailEnd' : 'stageEnd',
+              stageId: stage.id,
+              timestamp: DateTime.now(),
+            ),
+          );
         }
       }
 
@@ -237,15 +245,25 @@ class ArrivalDetectionService {
     // Extremite de l'etape de depart la plus proche de l'etape suivante = point
     // d'ARRIVEE (jonction) ; l'autre extremite = point de DEPART (trailhead).
     double nearestOf(double aLat, double aLng) {
-      final d1 =
-          GeoUtils.haversineDistance(aLat, aLng, next!.startLat, next.startLng);
-      final d2 =
-          GeoUtils.haversineDistance(aLat, aLng, next.endLat, next.endLng);
+      final d1 = GeoUtils.haversineDistance(
+        aLat,
+        aLng,
+        next!.startLat,
+        next.startLng,
+      );
+      final d2 = GeoUtils.haversineDistance(
+        aLat,
+        aLng,
+        next.endLat,
+        next.endLng,
+      );
       return d1 < d2 ? d1 : d2;
     }
 
-    final startEndProximity =
-        nearestOf(startStage.startLat, startStage.startLng);
+    final startEndProximity = nearestOf(
+      startStage.startLat,
+      startStage.startLng,
+    );
     final endEndProximity = nearestOf(startStage.endLat, startStage.endLng);
 
     // Le depart est l'extremite la PLUS ELOIGNEE de l'etape suivante.
@@ -268,7 +286,8 @@ class ArrivalDetectionService {
 ///
 /// Fournit une instance avec le rayon par defaut (150m).
 /// Overridable dans les tests.
-final arrivalDetectionServiceProvider =
-    Provider<ArrivalDetectionService>((ref) {
+final arrivalDetectionServiceProvider = Provider<ArrivalDetectionService>((
+  ref,
+) {
   return ArrivalDetectionService();
 });

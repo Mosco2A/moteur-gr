@@ -60,21 +60,24 @@ void main() {
 
     test('contient des articles obligatoires (required)', () {
       final required = defaultChecklistTemplate.where(
-          (i) => i.requirement == ChecklistRequirement.required);
+        (i) => i.requirement == ChecklistRequirement.required,
+      );
       expect(required.length, greaterThanOrEqualTo(5));
     });
 
     test('chaque categorie a au moins un article', () {
       for (final category in checklistCategories) {
-        final items =
-            defaultChecklistTemplate.where((i) => i.category == category);
+        final items = defaultChecklistTemplate.where(
+          (i) => i.category == category,
+        );
         expect(items.isNotEmpty, true, reason: 'Categorie vide: $category');
       }
     });
 
     test('les obligatoires incluent la veste impermeable (parite GR20)', () {
-      final rainJacket =
-          defaultChecklistTemplate.firstWhere((i) => i.id == 'rainJacket');
+      final rainJacket = defaultChecklistTemplate.firstWhere(
+        (i) => i.id == 'rainJacket',
+      );
       expect(rainJacket.requirement, ChecklistRequirement.required);
       expect(rainJacket.isEssential, true);
     });
@@ -83,40 +86,48 @@ void main() {
         'la lampe frontale (parite GR20)', () {
       for (final id in ['whistle', 'emergencyBlanket', 'headlamp']) {
         final item = defaultChecklistTemplate.firstWhere((i) => i.id == id);
-        expect(item.requirement, ChecklistRequirement.required,
-            reason: '$id doit etre obligatoire');
+        expect(
+          item.requirement,
+          ChecklistRequirement.required,
+          reason: '$id doit etre obligatoire',
+        );
       }
     });
 
     test('les quantites par defaut clonent GR20 (ex: t-shirt x2, gaz x2)', () {
       expect(
-          defaultChecklistTemplate
-              .firstWhere((i) => i.id == 'techTshirt')
-              .quantity,
-          2);
+        defaultChecklistTemplate
+            .firstWhere((i) => i.id == 'techTshirt')
+            .quantity,
+        2,
+      );
       expect(
-          defaultChecklistTemplate
-              .firstWhere((i) => i.id == 'gasCanister')
-              .quantity,
-          2);
+        defaultChecklistTemplate
+            .firstWhere((i) => i.id == 'gasCanister')
+            .quantity,
+        2,
+      );
       expect(
-          defaultChecklistTemplate
-              .firstWhere((i) => i.id == 'dogPoopBags')
-              .quantity,
-          10);
+        defaultChecklistTemplate
+            .firstWhere((i) => i.id == 'dogPoopBags')
+            .quantity,
+        10,
+      );
     });
 
     test('les articles portes ont un poids 0 (chaussures, batons) — GR20', () {
       expect(
-          defaultChecklistTemplate
-              .firstWhere((i) => i.id == 'hikingBoots')
-              .weightGrams,
-          0);
+        defaultChecklistTemplate
+            .firstWhere((i) => i.id == 'hikingBoots')
+            .weightGrams,
+        0,
+      );
       expect(
-          defaultChecklistTemplate
-              .firstWhere((i) => i.id == 'hikingPoles')
-              .weightGrams,
-          0);
+        defaultChecklistTemplate
+            .firstWhere((i) => i.id == 'hikingPoles')
+            .weightGrams,
+        0,
+      );
     });
   });
 
@@ -147,8 +158,12 @@ void main() {
 
     test('ordre GR20 : Femme, Homme, Divers, Chien en fin', () {
       final n = checklistCategories.length;
-      expect(checklistCategories.sublist(n - 4),
-          ['women', 'men', 'misc', 'dog']);
+      expect(checklistCategories.sublist(n - 4), [
+        'women',
+        'men',
+        'misc',
+        'dog',
+      ]);
     });
 
     test('pas de doublons', () {
@@ -158,8 +173,11 @@ void main() {
 
     test('chaque categorie a une icone', () {
       for (final c in checklistCategories) {
-        expect(checklistCategoryIcons.containsKey(c), true,
-            reason: 'Icone manquante pour $c');
+        expect(
+          checklistCategoryIcons.containsKey(c),
+          true,
+          reason: 'Icone manquante pour $c',
+        );
       }
     });
   });

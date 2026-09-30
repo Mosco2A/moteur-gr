@@ -33,8 +33,7 @@ void main() {
       expect(db.schemaVersion, greaterThanOrEqualTo(27));
     });
 
-    test('migration reelle 26 -> 27 : 8 colonnes ajoutees, AUCUNE donnee perdue',
-        () async {
+    test('migration reelle 26 -> 27 : 8 colonnes ajoutees, AUCUNE donnee perdue', () async {
       final dir = await Directory.systemTemp.createTemp('gr_mig_v27_');
       addTearDown(() async {
         if (await dir.exists()) await dir.delete(recursive: true);
@@ -104,9 +103,13 @@ void main() {
         return rows.map((r) => r.read<String>('name')).toSet();
       }
 
-      expect(await colonnesDe('trail_manifests'), contains('fiche_json'),
-          reason: 'sans elle, le dernier catalogue distant recu ne survit pas au '
-              'hors-ligne');
+      expect(
+        await colonnesDe('trail_manifests'),
+        contains('fiche_json'),
+        reason:
+            'sans elle, le dernier catalogue distant recu ne survit pas au '
+            'hors-ligne',
+      );
       for (final table in const [
         'trail_meta',
         'trail_itineraries',
@@ -116,13 +119,17 @@ void main() {
         'trail_gpx_tracks',
         'trail_gpx_points',
       ]) {
-        expect(await colonnesDe(table), contains('rev'),
-            reason: '$table doit porter la revision de chaque enregistrement');
+        expect(
+          await colonnesDe(table),
+          contains('rev'),
+          reason: '$table doit porter la revision de chaque enregistrement',
+        );
       }
 
       // --- AUCUNE PERTE, et la revision locale est intacte ---
-      final manifeste =
-          await db.trailManifestsDao.getByTrailId('mare-a-mare-centre');
+      final manifeste = await db.trailManifestsDao.getByTrailId(
+        'mare-a-mare-centre',
+      );
       expect(manifeste, isNotNull);
       // CETTE ASSERTION A CHANGE A LA TACHE 610, ET C EST LA v28 QUI LA CHANGE,
       // PAS LA v27. La v27 conservait la valeur 4 telle quelle, parce que
@@ -135,23 +142,35 @@ void main() {
       //
       // La migration v26 -> v28 passe par les deux etapes d affilee : ce test ouvre
       // la base au schema COURANT, donc il observe le resultat des deux.
-      expect(manifeste!.localVersion, isNull,
-          reason: 'LE POINT LE PLUS IMPORTANT DE LA v28 : un repere herite du '
-              'modele en compteur ne doit pas etre relu comme un instant. Il est '
-              'remis a zero, le sentier est recopie UNE fois, et le telephone '
-              'repart avec un repere juste (cf. migration_v27_to_v28_test).');
-      expect(manifeste.ficheJson, isNull,
-          reason: 'la fiche n a jamais ete recue : la colonne est nullable '
-              'precisement pour que les lignes d avant restent lisibles');
+      expect(
+        manifeste!.localVersion,
+        isNull,
+        reason:
+            'LE POINT LE PLUS IMPORTANT DE LA v28 : un repere herite du '
+            'modele en compteur ne doit pas etre relu comme un instant. Il est '
+            'remis a zero, le sentier est recopie UNE fois, et le telephone '
+            'repart avec un repere juste (cf. migration_v27_to_v28_test).',
+      );
+      expect(
+        manifeste.ficheJson,
+        isNull,
+        reason:
+            'la fiche n a jamais ete recue : la colonne est nullable '
+            'precisement pour que les lignes d avant restent lisibles',
+      );
 
       final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
       expect(etapes, hasLength(1));
       expect(etapes.single.nameFr, 'Etape 1');
       expect(etapes.single.elevationGain, 800);
-      expect(etapes.single.rev, isNull,
-          reason: 'une donnee d avant le modele n a pas de revision propre : '
-              'elle sera rattachee a la revision du sentier a la prochaine '
-              'synchronisation (cf. RevisionDeDonnee.revisionDe)');
+      expect(
+        etapes.single.rev,
+        isNull,
+        reason:
+            'une donnee d avant le modele n a pas de revision propre : '
+            'elle sera rattachee a la revision du sentier a la prochaine '
+            'synchronisation (cf. RevisionDeDonnee.revisionDe)',
+      );
     });
 
     test('la migration est REJOUABLE : la relancer sur une base deja migree ne '

@@ -27,7 +27,8 @@ class GeoUtils {
     final dLat = _toRadians(lat2 - lat1);
     final dLng = _toRadians(lng2 - lng1);
 
-    final a = sin(dLat / 2) * sin(dLat / 2) +
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(_toRadians(lat1)) *
             cos(_toRadians(lat2)) *
             sin(dLng / 2) *
@@ -41,12 +42,7 @@ class GeoUtils {
   /// Calcule le cap (bearing) en degres depuis le point 1 vers le point 2.
   ///
   /// Retourne une valeur entre 0 et 360 degres (0 = nord, 90 = est).
-  static double bearing(
-    double lat1,
-    double lng1,
-    double lat2,
-    double lng2,
-  ) {
+  static double bearing(double lat1, double lng1, double lat2, double lng2) {
     final dLng = _toRadians(lng2 - lng1);
     final lat1Rad = _toRadians(lat1);
     final lat2Rad = _toRadians(lat2);
@@ -69,11 +65,8 @@ class GeoUtils {
   ///
   /// Si la projection tombe en dehors du segment,
   /// le point le plus proche (segA ou segB) est utilise.
-  static ({
-    double projectedLat,
-    double projectedLng,
-    double distanceToSegment,
-  }) projectPointOnSegment(
+  static ({double projectedLat, double projectedLng, double distanceToSegment})
+  projectPointOnSegment(
     double pointLat,
     double pointLng,
     double segALat,

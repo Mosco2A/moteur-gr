@@ -87,21 +87,21 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     stockageDuTest = Directory.systemTemp.createTempSync('sw_stockage_');
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(canalChemins, (appel) async {
-      final racine = stockageDuTest;
-      if (racine == null) return null;
-      switch (appel.method) {
-        case 'getApplicationDocumentsDirectory':
-          return _sousDossier(racine, 'documents');
-        case 'getApplicationSupportDirectory':
-          return _sousDossier(racine, 'support');
-        case 'getApplicationCacheDirectory':
-        case 'getTemporaryDirectory':
-          return _sousDossier(racine, 'cache');
-        case 'getLibraryDirectory':
-          return _sousDossier(racine, 'library');
-      }
-      return null;
-    });
+          final racine = stockageDuTest;
+          if (racine == null) return null;
+          switch (appel.method) {
+            case 'getApplicationDocumentsDirectory':
+              return _sousDossier(racine, 'documents');
+            case 'getApplicationSupportDirectory':
+              return _sousDossier(racine, 'support');
+            case 'getApplicationCacheDirectory':
+            case 'getTemporaryDirectory':
+              return _sousDossier(racine, 'cache');
+            case 'getLibraryDirectory':
+              return _sousDossier(racine, 'library');
+          }
+          return null;
+        });
   });
 
   tearDown(() {

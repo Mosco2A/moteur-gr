@@ -8,9 +8,7 @@ import '../firebase/firebase_service.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Resultat de la detection de mise a jour pour un sentier.
 class UpdateCheckResult {
@@ -83,10 +81,11 @@ class UpdateChecker {
       final remoteData = doc.data()!;
       final remoteVersion =
           HorodatageServeur.annonceParLeServeur(remoteData['data_version']) ??
-              HorodatageServeur.origine;
+          HorodatageServeur.origine;
 
       final localEntry = await dao.getByTrailId(trailId);
-      final localVersion = localEntry?.localVersion ?? HorodatageServeur.origine;
+      final localVersion =
+          localEntry?.localVersion ?? HorodatageServeur.origine;
 
       final hasUpdate = remoteVersion > localVersion;
 

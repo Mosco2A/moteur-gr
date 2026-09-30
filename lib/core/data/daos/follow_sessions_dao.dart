@@ -22,21 +22,23 @@ class FollowSessionsDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere une session par son id
   Future<FollowSessionRow?> getById(String id) {
-    return (select(followSessions)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      followSessions,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere une session par son shareCode
   Future<FollowSessionRow?> getByShareCode(String code) {
-    return (select(followSessions)..where((t) => t.shareCode.equals(code)))
-        .getSingleOrNull();
+    return (select(
+      followSessions,
+    )..where((t) => t.shareCode.equals(code))).getSingleOrNull();
   }
 
   /// Recupere les sessions actives d un randonneur
   Future<List<FollowSessionRow>> getActiveByUser(String userId) {
-    return (select(followSessions)
-          ..where(
-              (t) => t.trekkerUserId.equals(userId) & t.isActive.equals(true)))
+    return (select(followSessions)..where(
+          (t) => t.trekkerUserId.equals(userId) & t.isActive.equals(true),
+        ))
         .get();
   }
 
@@ -47,8 +49,9 @@ class FollowSessionsDao extends DatabaseAccessor<AppDatabase>
 
   /// Desactive une session
   Future<int> deactivate(String id) {
-    return (update(followSessions)..where((t) => t.id.equals(id)))
-        .write(const FollowSessionsCompanion(isActive: Value(false)));
+    return (update(followSessions)..where((t) => t.id.equals(id))).write(
+      const FollowSessionsCompanion(isActive: Value(false)),
+    );
   }
 
   /// Supprime une session par son id

@@ -43,8 +43,9 @@ void main() {
   // LES DEUX PORTES DU SELECTEUR SONT FERMEES
   // =========================================================================
   group('S4 — plus aucune porte vers le selecteur de peaux', () {
-    testWidgets('la carte n offre plus « changer de peau » (3 FAB, pas 4)',
-        (tester) async {
+    testWidgets('la carte n offre plus « changer de peau » (3 FAB, pas 4)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           child: TranslationProvider(
@@ -63,10 +64,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // Zoom +, zoom -, centrer : trois gestes de carte, et c'est tout.
-      expect(find.byType(FloatingActionButton), findsNWidgets(3),
-          reason: 'le 4e FAB ouvrait le selecteur de peaux, il est retire');
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.palette), findsNothing,
-          reason: 'l icone pinceau etait l entree du selecteur');
+      expect(
+        find.byType(FloatingActionButton),
+        findsNWidgets(3),
+        reason: 'le 4e FAB ouvrait le selecteur de peaux, il est retire',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.palette,
+        ),
+        findsNothing,
+        reason: 'l icone pinceau etait l entree du selecteur',
+      );
     });
 
     testWidgets('les Reglages n ont plus de section Apparence', (tester) async {
@@ -89,13 +98,21 @@ void main() {
                 initialLocation: '/settings',
                 routes: [
                   GoRoute(
-                      path: '/settings',
-                      builder: (_, __) => const SettingsScreen()),
-                  GoRoute(path: '/consent', builder: (_, __) => const SizedBox()),
+                    path: '/settings',
+                    builder: (_, __) => const SettingsScreen(),
+                  ),
                   GoRoute(
-                      path: '/recovery-code',
-                      builder: (_, __) => const SizedBox()),
-                  GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/consent',
+                    builder: (_, __) => const SizedBox(),
+                  ),
+                  GoRoute(
+                    path: '/recovery-code',
+                    builder: (_, __) => const SizedBox(),
+                  ),
+                  GoRoute(
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -121,9 +138,16 @@ void main() {
         findsOneWidget,
         reason: 'une seconde palette = la section Apparence est de retour',
       );
-      for (final nom in <String>['Sentier Vivant', 'Topographique', 'Grand Air']) {
-        expect(find.textContaining(nom, skipOffstage: false), findsNothing,
-            reason: 'le selecteur propose encore la peau « $nom »');
+      for (final nom in <String>[
+        'Sentier Vivant',
+        'Topographique',
+        'Grand Air',
+      ]) {
+        expect(
+          find.textContaining(nom, skipOffstage: false),
+          findsNothing,
+          reason: 'le selecteur propose encore la peau « $nom »',
+        );
       }
     });
   });
@@ -136,8 +160,11 @@ void main() {
       expect(AppSkin.values.length, 3);
       for (final skin in AppSkin.values) {
         final theme = SkinTheme.fromSkin(skin);
-        expect(theme.headerStyle, isNotNull,
-            reason: 'la peau $skin doit garder son style d en-tete');
+        expect(
+          theme.headerStyle,
+          isNotNull,
+          reason: 'la peau $skin doit garder son style d en-tete',
+        );
       }
     });
 

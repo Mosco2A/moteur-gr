@@ -24,8 +24,7 @@ class NuiteeSelections extends Table {
 
   /// Type de nuitee choisi (nom de l'enum NuiteeType : refuge / gite /
   /// bivouac / autreHebergement). String pour tolerer l'evolution de l'enum.
-  TextColumn get nuiteeType =>
-      text().withDefault(const Constant('refuge'))();
+  TextColumn get nuiteeType => text().withDefault(const Constant('refuge'))();
 
   /// Date de derniere modification.
   DateTimeColumn get updatedAt => dateTime().nullable()();

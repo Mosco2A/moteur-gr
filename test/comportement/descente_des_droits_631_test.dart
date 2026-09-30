@@ -123,16 +123,21 @@ void main() {
       expect(deux.solde, une.solde);
     });
 
-    test("un solde ne devient jamais negatif, meme sur un serveur incoherent",
-        () {
-      final fusion = fusionnerSolde(
-        gagneLocal: 0,
-        depenseLocal: 40,
-        distant: const SoldeDistant(cumulGagne: 10, cumulDepense: 40),
-      );
-      expect(fusion.solde, 0,
-          reason: "un solde negatif bloquerait tout achat futur sans rien dire");
-    });
+    test(
+      "un solde ne devient jamais negatif, meme sur un serveur incoherent",
+      () {
+        final fusion = fusionnerSolde(
+          gagneLocal: 0,
+          depenseLocal: 40,
+          distant: const SoldeDistant(cumulGagne: 10, cumulDepense: 40),
+        );
+        expect(
+          fusion.solde,
+          0,
+          reason: "un solde negatif bloquerait tout achat futur sans rien dire",
+        );
+      },
+    );
 
     test("un droit de sentier est un LOQUET : une lecture en retard ne le "
         "retire pas", () {
@@ -148,26 +153,31 @@ void main() {
         ),
       );
       expect(fusion.possede, isTrue);
-      expect(fusion.etapesAcquises, 12,
-          reason: "les etapes acquises ne se repaient jamais (modele 2.5)");
+      expect(
+        fusion.etapesAcquises,
+        12,
+        reason: "les etapes acquises ne se repaient jamais (modele 2.5)",
+      );
     });
 
-    test("un achat fait AILLEURS arrive sur un telephone qui ne le connait pas",
-        () {
-      final fusion = fusionnerDroitDeSentier(
-        possedeLocal: false,
-        etapesAcquisesLocal: 0,
-        complementConsommeLocal: 0,
-        distant: const DroitDeSentierDistant(
-          trailId: "mare-a-mare-centre",
-          possede: true,
-          etapesAcquises: 12,
-          complementConsomme: 0,
-        ),
-      );
-      expect(fusion.possede, isTrue);
-      expect(fusion.etapesAcquises, 12);
-    });
+    test(
+      "un achat fait AILLEURS arrive sur un telephone qui ne le connait pas",
+      () {
+        final fusion = fusionnerDroitDeSentier(
+          possedeLocal: false,
+          etapesAcquisesLocal: 0,
+          complementConsommeLocal: 0,
+          distant: const DroitDeSentierDistant(
+            trailId: "mare-a-mare-centre",
+            possede: true,
+            etapesAcquises: 12,
+            complementConsomme: 0,
+          ),
+        );
+        expect(fusion.possede, isTrue);
+        expect(fusion.etapesAcquises, 12);
+      },
+    );
 
     test("un abonnement ACTIF sans echeance est REFUSE (jamais d abonnement "
         "a vie)", () {
@@ -184,9 +194,13 @@ void main() {
         "active": true,
         "expires_at": "2026-10-30T12:00:00.000Z",
       });
-      expect(lu, isNull,
-          reason: "sans instant de serveur, impossible de savoir si cette "
-              "annonce est plus recente que ce qui est deja applique");
+      expect(
+        lu,
+        isNull,
+        reason:
+            "sans instant de serveur, impossible de savoir si cette "
+            "annonce est plus recente que ce qui est deja applique",
+      );
     });
 
     test("une annonce d abonnement PLUS ANCIENNE que la derniere appliquee est "
@@ -244,13 +258,15 @@ void main() {
       );
     }
 
-    test("Firebase absent : sans effet, et le solde local est intact",
-        () async {
-      final r = await fabriquer(firebase: _FirebaseAbsent()).executer();
-      expect(r.appliquee, isFalse);
-      expect(r.raison, "Firebase indisponible");
-      expect(compte.balanceSteps, 7);
-    });
+    test(
+      "Firebase absent : sans effet, et le solde local est intact",
+      () async {
+        final r = await fabriquer(firebase: _FirebaseAbsent()).executer();
+        expect(r.appliquee, isFalse);
+        expect(r.raison, "Firebase indisponible");
+        expect(compte.balanceSteps, 7);
+      },
+    );
 
     test("hors ligne : sans effet, et le solde local est intact", () async {
       final r = await fabriquer(
@@ -307,23 +323,23 @@ void main() {
 
     /// Ce que Skynet ecrira dans Firestore pour debloquer Christophe.
     DroitsDistants lExemple() => DroitsDistants(
-          solde: const SoldeDistant(cumulGagne: 62, cumulDepense: 12),
-          sentiers: const [
-            DroitDeSentierDistant(
-              trailId: "mare-a-mare-centre",
-              possede: true,
-              etapesAcquises: 12,
-              complementConsomme: 0,
-            ),
-          ],
-          abonnement: AbonnementDistant(
-            actif: true,
-            echeance: DateTime.utc(2026, 10, 30),
-            horodatage: HorodatageServeur.annonceParLeServeur(
-              "2026-09-29T13:00:00.000Z",
-            )!,
-          ),
-        );
+      solde: const SoldeDistant(cumulGagne: 62, cumulDepense: 12),
+      sentiers: const [
+        DroitDeSentierDistant(
+          trailId: "mare-a-mare-centre",
+          possede: true,
+          etapesAcquises: 12,
+          complementConsomme: 0,
+        ),
+      ],
+      abonnement: AbonnementDistant(
+        actif: true,
+        echeance: DateTime.utc(2026, 10, 30),
+        horodatage: HorodatageServeur.annonceParLeServeur(
+          "2026-09-29T13:00:00.000Z",
+        )!,
+      ),
+    );
 
     test("50 etapes, le sentier possede, l abonnement actif", () async {
       final r = await descente.appliquer(lExemple());
@@ -332,8 +348,9 @@ void main() {
       expect(compte.balanceSteps, 50, reason: "62 gagnees - 12 depensees");
       expect(r.sentiersMisAJour, contains("mare-a-mare-centre"));
 
-      final droit =
-          await TrekEntitlementsDao(db).getByTrailId("mare-a-mare-centre");
+      final droit = await TrekEntitlementsDao(
+        db,
+      ).getByTrailId("mare-a-mare-centre");
       expect(droit, isNotNull);
       expect(droit!.owned, isTrue);
       expect(droit.acquiredStages, 12);
@@ -368,48 +385,58 @@ void main() {
       // Le serveur, lui, annonce toujours la meme chose : il n a rien vu.
       final seconde = await descente.appliquer(lExemple());
 
-      expect(compte.balanceSteps, 30,
-          reason: "LE CAS QUI COMPTE : le serveur ne rend pas les etapes "
-              "depensees hors ligne");
+      expect(
+        compte.balanceSteps,
+        30,
+        reason:
+            "LE CAS QUI COMPTE : le serveur ne rend pas les etapes "
+            "depensees hors ligne",
+      );
       expect(seconde.appliquee, isFalse);
     });
 
-    test("une resiliation annoncee par le serveur RETIRE l abonnement",
-        () async {
-      await descente.appliquer(lExemple());
-      expect(await NoAdsDao(db).getAll(), isNotEmpty);
+    test(
+      "une resiliation annoncee par le serveur RETIRE l abonnement",
+      () async {
+        await descente.appliquer(lExemple());
+        expect(await NoAdsDao(db).getAll(), isNotEmpty);
 
-      final resiliation = DroitsDistants(
-        abonnement: AbonnementDistant(
-          actif: false,
-          echeance: null,
-          horodatage: HorodatageServeur.annonceParLeServeur(
-            "2026-09-29T14:00:00.000Z",
-          )!,
-        ),
-      );
-      final r = await descente.appliquer(resiliation);
+        final resiliation = DroitsDistants(
+          abonnement: AbonnementDistant(
+            actif: false,
+            echeance: null,
+            horodatage: HorodatageServeur.annonceParLeServeur(
+              "2026-09-29T14:00:00.000Z",
+            )!,
+          ),
+        );
+        final r = await descente.appliquer(resiliation);
 
-      expect(r.appliquee, isTrue);
-      expect(
-        (await NoAdsDao(db).getAll()).where((a) => a.source == "subscription"),
-        isEmpty,
-        reason: "« jamais a vie, toujours lie a un etat actif » (#99404)",
-      );
-    });
+        expect(r.appliquee, isTrue);
+        expect(
+          (await NoAdsDao(
+            db,
+          ).getAll()).where((a) => a.source == "subscription"),
+          isEmpty,
+          reason: "« jamais a vie, toujours lie a un etat actif » (#99404)",
+        );
+      },
+    );
 
     test("une annonce d abonnement PERIMEE ne ressuscite pas un abonnement "
         "resilie", () async {
       await descente.appliquer(lExemple());
-      await descente.appliquer(DroitsDistants(
-        abonnement: AbonnementDistant(
-          actif: false,
-          echeance: null,
-          horodatage: HorodatageServeur.annonceParLeServeur(
-            "2026-09-29T14:00:00.000Z",
-          )!,
+      await descente.appliquer(
+        DroitsDistants(
+          abonnement: AbonnementDistant(
+            actif: false,
+            echeance: null,
+            horodatage: HorodatageServeur.annonceParLeServeur(
+              "2026-09-29T14:00:00.000Z",
+            )!,
+          ),
         ),
-      ));
+      );
 
       // Une annonce plus VIEILLE que la resiliation arrive en retard.
       final r = await descente.appliquer(lExemple());
@@ -422,6 +449,7 @@ void main() {
     });
   });
 }
+
 /// LE TELEPHONE NE PEUT PAS S ECRIRE SES PROPRES DROITS (tache 631).
 ///
 /// GARDE STRUCTURELLE SUR `firestore.rules`. C est la regle qui tient tout le
@@ -460,14 +488,25 @@ void verifierLesRegles() {
       test("$chemin : lecture par le proprietaire, ecriture par PERSONNE", () {
         expect(fichier.existsSync(), isTrue);
         final regles = bloc(chemin);
-        expect(regles, isNotEmpty,
-            reason: "le chemin $chemin n a plus de regle propre : il retombe "
-                "dans la regle generique, qui autorise l ECRITURE");
-        expect(regles, contains("allow write: if false;"),
-            reason: "un telephone qui ecrit ses propres droits se sert "
-                "lui-meme");
-        expect(regles, contains("request.auth.uid == userId"),
-            reason: "on ne lit que SES droits, pas ceux d un autre");
+        expect(
+          regles,
+          isNotEmpty,
+          reason:
+              "le chemin $chemin n a plus de regle propre : il retombe "
+              "dans la regle generique, qui autorise l ECRITURE",
+        );
+        expect(
+          regles,
+          contains("allow write: if false;"),
+          reason:
+              "un telephone qui ecrit ses propres droits se sert "
+              "lui-meme",
+        );
+        expect(
+          regles,
+          contains("request.auth.uid == userId"),
+          reason: "on ne lit que SES droits, pas ceux d un autre",
+        );
       });
     }
   });

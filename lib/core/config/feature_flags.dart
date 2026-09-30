@@ -15,7 +15,6 @@ class FeatureFlags {
     return _overrides['goodies:$trailId'] ?? false;
   }
 
-
   /// Verifie si la reservation est activee pour un sentier donne.
   ///
   /// Retourne false par defaut -- activation explicite requise.
@@ -35,7 +34,11 @@ class FeatureFlags {
   /// Definit un override pour un flag donne.
   ///
   /// Utilise pour les tests et la configuration dynamique.
-  static void setOverride(String feature, String trailId, {required bool enabled}) {
+  static void setOverride(
+    String feature,
+    String trailId, {
+    required bool enabled,
+  }) {
     _overrides['$feature:$trailId'] = enabled;
   }
 

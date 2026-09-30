@@ -35,11 +35,11 @@ class MorceauxAPrendre {
 
   /// Rien a prendre : le telephone est deja a jour, ou le niveau ne demande rien.
   const MorceauxAPrendre.rien()
-      : parFamille = const {},
-        transferes = 0,
-        retenus = 0,
-        octetsRecus = 0,
-        ecartesHorsNiveau = 0;
+    : parFamille = const {},
+      transferes = 0,
+      retenus = 0,
+      octetsRecus = 0,
+      ecartesHorsNiveau = 0;
 
   /// Les enregistrements a poser, par famille, dans la forme du fichier publie.
   final Map<String, dynamic> parFamille;
@@ -137,11 +137,13 @@ class _Tri {
     required HorodatageServeur revisionCible,
   }) {
     return enregistrements
-        .where((e) => RevisionDeDonnee.aPrendre(
-              e,
-              revisionLocale: revisionLocale,
-              revisionDuSentier: revisionCible,
-            ))
+        .where(
+          (e) => RevisionDeDonnee.aPrendre(
+            e,
+            revisionLocale: revisionLocale,
+            revisionDuSentier: revisionCible,
+          ),
+        )
         .toList();
   }
 
@@ -151,10 +153,10 @@ class _Tri {
   /// valeur d un autre type est ignoree — le serveur peut preparer des familles
   /// que cette version de l application ne connait pas (#S10).
   static List<Map<String, dynamic>> enregistrements(dynamic brut) => [
-        if (brut is Map<String, dynamic>) brut,
-        if (brut is List)
-          ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
-      ];
+    if (brut is Map<String, dynamic>) brut,
+    if (brut is List)
+      ...brut.whereType<Map>().map((e) => Map<String, dynamic>.from(e)),
+  ];
 }
 
 /// SOURCE « FICHIER ENTIER » — FIREBASE STORAGE, EN HTTP REST.
@@ -317,8 +319,8 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
               attendue: empreinteAttendue,
               obtenue:
                   EmpreinteDePublication.normaliser(empreinteAttendue) == null
-                      ? null
-                      : EmpreinteDePublication.de(reponse.bodyBytes),
+                  ? null
+                  : EmpreinteDePublication.de(reponse.bodyBytes),
               octets: reponse.bodyBytes.length,
             );
           }
@@ -372,11 +374,12 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
 /// s arrete a cette signature, ce qui permet de l eprouver contre un double
 /// aujourd hui — aucun des deux services n est provisionne — et de la brancher le
 /// jour ou la console existe, sans toucher a la logique.
-typedef RequeteParRevision = Future<List<Map<String, dynamic>>> Function(
-  String trailId,
-  String famille,
-  HorodatageServeur revisionMinimale,
-);
+typedef RequeteParRevision =
+    Future<List<Map<String, dynamic>>> Function(
+      String trailId,
+      String famille,
+      HorodatageServeur revisionMinimale,
+    );
 
 /// SOURCE INTERROGEABLE — FIRESTORE : LA QUESTION PART AU SERVEUR.
 ///
@@ -391,7 +394,10 @@ typedef RequeteParRevision = Future<List<Map<String, dynamic>>> Function(
 /// par enregistrement, marqueurs de suppression compris. Premiere copie et mise a
 /// jour restent LE MEME chemin : a la revision zero, `rev > 0` selectionne tout.
 class SourceInterrogeable implements SourceDeDonneesSentier {
-  const SourceInterrogeable(this.interroger, {this.familles = MorceauxDeSentier.tous});
+  const SourceInterrogeable(
+    this.interroger, {
+    this.familles = MorceauxDeSentier.tous,
+  });
 
   /// La requete par revision, une par famille.
   final RequeteParRevision interroger;
@@ -425,8 +431,9 @@ class SourceInterrogeable implements SourceDeDonneesSentier {
     // L INTERSECTION SE FAIT DANS L ORDRE DE [familles], jamais dans celui de
     // l appelant : cet ordre est celui des cles etrangeres, et le perdre ferait
     // echouer un hebergement pose avant son etape.
-    final aInterroger =
-        familles.where(famillesDemandees.contains).toList(growable: false);
+    final aInterroger = familles
+        .where(famillesDemandees.contains)
+        .toList(growable: false);
 
     if (aInterroger.isEmpty) {
       _log.d(

@@ -31,9 +31,7 @@ final myTreksProvider = FutureProvider<List<TrekSummary>>((ref) async {
 
   // Catalogue via le provider (overridable en test + futur catalogue distant),
   // coherent avec `ownedTrailIdsProvider` (jamais le catalogue statique en dur).
-  final catalog = {
-    for (final c in ref.watch(availableTrailsProvider)) c.id: c,
-  };
+  final catalog = {for (final c in ref.watch(availableTrailsProvider)) c.id: c};
 
   final summaries = <TrekSummary>[];
   for (final trailId in ownedIds) {
@@ -49,12 +47,14 @@ final myTreksProvider = FutureProvider<List<TrekSummary>>((ref) async {
       hasPlanningOrProgress: hasPlanningOrProgress,
     );
 
-    summaries.add(TrekSummary(
-      config: config,
-      state: state,
-      latestSession: latestSession,
-      progress: progress,
-    ));
+    summaries.add(
+      TrekSummary(
+        config: config,
+        state: state,
+        latestSession: latestSession,
+        progress: progress,
+      ),
+    );
   }
 
   _sortForHome(summaries);

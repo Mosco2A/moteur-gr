@@ -113,8 +113,9 @@ void main() {
     // groupe, qui porte sur la table de reference elle-meme.
     // ========================================================================
 
-    testWidgets('il n existe AUCUN champ de saisie pour le groupe sanguin',
-        (tester) async {
+    testWidgets('il n existe AUCUN champ de saisie pour le groupe sanguin', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -128,7 +129,8 @@ void main() {
       expect(
         find.descendant(of: champ, matching: find.byType(EditableText)),
         findsNothing,
-        reason: 'plus aucun clavier ne s ouvre sur le groupe sanguin : '
+        reason:
+            'plus aucun clavier ne s ouvre sur le groupe sanguin : '
             '« XYZ123!! » n est plus refuse, il est INSAISISSABLE',
       );
     });
@@ -153,14 +155,18 @@ void main() {
       // qui est une REPONSE et non un champ vide.
       expect(kBloodTypeChoices.length, 9);
       for (final groupe in kBloodTypes) {
-        expect(find.text(groupe), findsWidgets,
-            reason: 'le groupe $groupe doit etre proposable');
+        expect(
+          find.text(groupe),
+          findsWidgets,
+          reason: 'le groupe $groupe doit etre proposable',
+        );
       }
       expect(find.text(t.health.bloodTypeUnknown), findsWidgets);
     });
 
-    testWidgets('un groupe choisi dans la liste est enregistre tel quel',
-        (tester) async {
+    testWidgets('un groupe choisi dans la liste est enregistre tel quel', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -178,17 +184,23 @@ void main() {
       await tapSave(tester);
 
       final saved = await HealthInfoRepository(fichier: fiche).get();
-      expect(saved.bloodType, 'AB+',
-          reason: 'la valeur vient d une liste fermee : elle est deja '
-              'canonique, il n y a plus rien a normaliser');
+      expect(
+        saved.bloodType,
+        'AB+',
+        reason:
+            'la valeur vient d une liste fermee : elle est deja '
+            'canonique, il n y a plus rien a normaliser',
+      );
     });
 
-    testWidgets('une valeur heritee non reconnue est MONTREE, jamais effacee',
-        (tester) async {
+    testWidgets('une valeur heritee non reconnue est MONTREE, jamais effacee', (
+      tester,
+    ) async {
       // CONSIGNE 630, mot pour mot : « les fiches deja saisies ne perdent
       // RIEN ». Une fiche remplie avant FIX-1 peut porter n importe quoi.
-      await HealthInfoRepository(fichier: fiche)
-          .save(const HealthInfo(bloodType: 'XYZ123!!'));
+      await HealthInfoRepository(
+        fichier: fiche,
+      ).save(const HealthInfo(bloodType: 'XYZ123!!'));
 
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
@@ -200,12 +212,15 @@ void main() {
 
       // L avertissement existe ET il porte la valeur d origine : le randonneur
       // voit ce qu il avait ecrit, et choisit.
-      expect(find.byKey(const ValueKey('health-blood-type-legacy')),
-          findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('health-blood-type-legacy')),
+        findsOneWidget,
+      );
       expect(
         find.textContaining('XYZ123!!'),
         findsOneWidget,
-        reason: 'la valeur heritee doit etre LUE par le randonneur, pas '
+        reason:
+            'la valeur heritee doit etre LUE par le randonneur, pas '
             'effacee dans son dos',
       );
       // Et le fichier, lui, n a pas ete touche par la simple ouverture.
@@ -224,17 +239,22 @@ void main() {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
-      final allergies =
-          find.widgetWithText(TextFormField, t.health.field.allergies);
+      final allergies = find.widgetWithText(
+        TextFormField,
+        t.health.field.allergies,
+      );
       await tester.enterText(allergies, 'a' * 2000);
       await tester.pumpAndSettle();
 
       final input = tester.widget<TextField>(
-          find.descendant(of: allergies, matching: find.byType(TextField)));
+        find.descendant(of: allergies, matching: find.byType(TextField)),
+      );
       expect(input.controller!.text.length, kHealthFreeTextMaxLength);
       // La limite est VISIBLE (compteur), pas une coupe muette.
-      expect(find.text('$kHealthFreeTextMaxLength/$kHealthFreeTextMaxLength'),
-          findsOneWidget);
+      expect(
+        find.text('$kHealthFreeTextMaxLength/$kHealthFreeTextMaxLength'),
+        findsOneWidget,
+      );
     });
   });
 }

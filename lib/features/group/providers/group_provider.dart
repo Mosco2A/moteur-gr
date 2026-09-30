@@ -11,8 +11,9 @@ class GroupCodeNotifier extends Notifier<String?> {
   void set(String? code) => state = code;
 }
 
-final groupCodeProvider =
-    NotifierProvider<GroupCodeNotifier, String?>(GroupCodeNotifier.new);
+final groupCodeProvider = NotifierProvider<GroupCodeNotifier, String?>(
+  GroupCodeNotifier.new,
+);
 
 /// Stream des membres du groupe actif.
 final groupMembersProvider = StreamProvider<List<GroupMember>>((ref) {

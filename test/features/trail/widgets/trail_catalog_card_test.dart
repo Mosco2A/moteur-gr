@@ -5,9 +5,9 @@ import 'package:moteur_gr/features/trail/widgets/trail_catalog_card.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 
 import '../../../fixtures/horodatage_de_serveur.dart';
+
 /// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
 HorodatageServeur v(int n) => aJPlus(n);
-
 
 /// Tests du widget TrailCatalogCard.
 void main() {
@@ -44,9 +44,7 @@ void main() {
     testWidgets('affiche le trailId', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: testEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: testEntry)),
         ),
       );
       expect(find.text('sentier-volcans'), findsOneWidget);
@@ -55,9 +53,7 @@ void main() {
     testWidgets('affiche la taille formatee', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: testEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: testEntry)),
         ),
       );
       expect(find.text('512 Ko'), findsOneWidget);
@@ -66,54 +62,46 @@ void main() {
     testWidgets('affiche le badge Non telecharge', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: testEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: testEntry)),
         ),
       );
       expect(find.text('Non telecharge'), findsOneWidget);
     });
 
-    testWidgets('affiche le bouton Telecharger quand non telecharge',
-        (tester) async {
+    testWidgets('affiche le bouton Telecharger quand non telecharge', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: testEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: testEntry)),
         ),
       );
       expect(find.text('Telecharger'), findsOneWidget);
     });
 
-    testWidgets('affiche le bouton Supprimer quand telecharge',
-        (tester) async {
+    testWidgets('affiche le bouton Supprimer quand telecharge', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: downloadedEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: downloadedEntry)),
         ),
       );
       expect(find.text('Supprimer'), findsOneWidget);
       expect(find.text('Telecharge'), findsOneWidget);
     });
 
-    testWidgets('affiche le bouton Mettre a jour quand MAJ dispo',
-        (tester) async {
+    testWidgets('affiche le bouton Mettre a jour quand MAJ dispo', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: TrailCatalogCard(entry: updateEntry),
-          ),
+          home: Scaffold(body: TrailCatalogCard(entry: updateEntry)),
         ),
       );
       expect(find.text('Mettre a jour'), findsOneWidget);
       expect(find.text('MAJ disponible'), findsOneWidget);
     });
 
-    testWidgets('appelle onDownload quand on tape Telecharger',
-        (tester) async {
+    testWidgets('appelle onDownload quand on tape Telecharger', (tester) async {
       var called = false;
       await tester.pumpWidget(
         MaterialApp(
@@ -164,12 +152,16 @@ void main() {
 
   group('TrailCatalogCard.statusColor', () {
     test('retourne gris pour notDownloaded', () {
-      final color = TrailCatalogCard.statusColor(TrailLocalStatusValues.notDownloaded);
+      final color = TrailCatalogCard.statusColor(
+        TrailLocalStatusValues.notDownloaded,
+      );
       expect(color, isNotNull);
     });
 
     test('retourne vert pour downloaded', () {
-      final color = TrailCatalogCard.statusColor(TrailLocalStatusValues.downloaded);
+      final color = TrailCatalogCard.statusColor(
+        TrailLocalStatusValues.downloaded,
+      );
       expect(color, isNotNull);
     });
   });

@@ -207,32 +207,31 @@ class ModerationReport {
   ModerationReport copyWith({
     ModerationStatus? status,
     ModerationDecision? decision,
-  }) =>
-      ModerationReport(
-        id: id,
-        contentType: contentType,
-        contentRef: contentRef,
-        motif: motif,
-        notifierContact: notifierContact,
-        bonneFoi: bonneFoi,
-        createdAt: createdAt,
-        status: status ?? this.status,
-        decision: decision ?? this.decision,
-      );
+  }) => ModerationReport(
+    id: id,
+    contentType: contentType,
+    contentRef: contentRef,
+    motif: motif,
+    notifierContact: notifierContact,
+    bonneFoi: bonneFoi,
+    createdAt: createdAt,
+    status: status ?? this.status,
+    decision: decision ?? this.decision,
+  );
 
   /// Serialise la notification pour la persistance (collection
   /// reports_moderation, cf. regles D4C-02). Le schema des cles est borne par
   /// les regles Firestore a la creation.
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'contentType': contentType.storageKey,
-        'contentRef': contentRef,
-        'motif': motif,
-        'notifierContact': notifierContact,
-        'bonneFoi': bonneFoi,
-        'createdAt': createdAt,
-        'status': status.wireValue,
-        if (decision != null) 'decision': decision!.name,
-      };
+    'contentType': contentType.storageKey,
+    'contentRef': contentRef,
+    'motif': motif,
+    'notifierContact': notifierContact,
+    'bonneFoi': bonneFoi,
+    'createdAt': createdAt,
+    'status': status.wireValue,
+    if (decision != null) 'decision': decision!.name,
+  };
 }
 
 /// Contrat de persistance des notifications de moderation.
@@ -283,9 +282,9 @@ class ModerationService {
     required ModerationStore store,
     String Function()? idGenerator,
     DateTime Function()? now,
-  })  : _store = store,
-        _idGenerator = idGenerator ?? _defaultIdGenerator,
-        _now = now ?? DateTime.now;
+  }) : _store = store,
+       _idGenerator = idGenerator ?? _defaultIdGenerator,
+       _now = now ?? DateTime.now;
 
   /// Backend de persistance (Firestore en prod, faux en test).
   final ModerationStore _store;

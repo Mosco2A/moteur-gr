@@ -44,7 +44,11 @@ class SosConfirmationDialog extends StatelessWidget {
       backgroundColor: theme.colorScheme.surface,
       title: Row(
         children: [
-          const StepIcon(StepwaysIcons.secours, color: AppTheme.rougeUrgence, size: 28),
+          const StepIcon(
+            StepwaysIcons.secours,
+            color: AppTheme.rougeUrgence,
+            size: 28,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

@@ -20,13 +20,11 @@ const _walkTestReminderId = 6000;
 const _offTrackId = 5000;
 
 class NotificationService {
-  NotificationService({
-    FlutterLocalNotificationsPlugin? plugin,
-  }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  NotificationService({FlutterLocalNotificationsPlugin? plugin})
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
   bool _initialized = false;
-
 
   static const String channelMorning = 'morning_reminder';
   static const String channelWeather = 'weather_alert';
@@ -41,20 +39,27 @@ class NotificationService {
   static const String channelMorningDesc = 'Morning departure reminders';
   static const String channelWeatherDesc = 'Weather alerts for the trail';
   static const String channelCountdownDesc = 'D-2 countdown before departure';
-  static const String channelTrainingDesc = 'Pre-trek training session reminders';
-  static const String channelWalkTestDesc = 'Monthly 6-minute walk test reminder';
+  static const String channelTrainingDesc =
+      'Pre-trek training session reminders';
+  static const String channelWalkTestDesc =
+      'Monthly 6-minute walk test reminder';
   static const String channelOffTrackDesc =
       'Alerts when you move away from the trail';
 
   Future<void> initialize() async {
     if (_initialized) return;
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
-    const settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    const settings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
     await _plugin.initialize(settings);
     _initialized = true;
     _log.d('[NotificationService] Plugin initialise');
@@ -70,13 +75,19 @@ class NotificationService {
     const id = _morningBaseId;
     final scheduledTime = _nextInstanceOfTime(hour, minute);
     await _plugin.zonedSchedule(
-      id, title, body, scheduledTime,
+      id,
+      title,
+      body,
+      scheduledTime,
       _notificationDetails(channelMorning, channelMorningDesc),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
-    _log.d('[NotificationService] Rappel matin planifie a $hour:$minute (id=$id)');
+    _log.d(
+      '[NotificationService] Rappel matin planifie a $hour:$minute (id=$id)',
+    );
     return id;
   }
 
@@ -96,17 +107,25 @@ class NotificationService {
     await _ensureInitialized();
     final id = _weatherBaseId + alertIndex;
     if (dateTime.isBefore(DateTime.now())) {
-      _log.d('[NotificationService] Alerte meteo ignoree (date passee: $dateTime)');
+      _log.d(
+        '[NotificationService] Alerte meteo ignoree (date passee: $dateTime)',
+      );
       return id;
     }
     final scheduledTime = tz.TZDateTime.from(dateTime, tz.local);
     await _plugin.zonedSchedule(
-      id, title, body, scheduledTime,
+      id,
+      title,
+      body,
+      scheduledTime,
       _notificationDetails(channelWeather, channelWeatherDesc),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
-    _log.d('[NotificationService] Alerte meteo planifiee pour $dateTime (id=$id)');
+    _log.d(
+      '[NotificationService] Alerte meteo planifiee pour $dateTime (id=$id)',
+    );
     return id;
   }
 
@@ -117,20 +136,34 @@ class NotificationService {
   }) async {
     await _ensureInitialized();
     final notifDate = departureDate.subtract(const Duration(days: 2));
-    final scheduledDateTime = DateTime(notifDate.year, notifDate.month, notifDate.day, 18, 0);
+    final scheduledDateTime = DateTime(
+      notifDate.year,
+      notifDate.month,
+      notifDate.day,
+      18,
+      0,
+    );
     final id = _countdownBaseId + (departureDate.hashCode.abs() % 500);
     if (scheduledDateTime.isBefore(DateTime.now())) {
-      _log.d('[NotificationService] J-2 ignoree (date passee: $scheduledDateTime)');
+      _log.d(
+        '[NotificationService] J-2 ignoree (date passee: $scheduledDateTime)',
+      );
       return id;
     }
     final scheduledTime = tz.TZDateTime.from(scheduledDateTime, tz.local);
     await _plugin.zonedSchedule(
-      id, title, body, scheduledTime,
+      id,
+      title,
+      body,
+      scheduledTime,
       _notificationDetails(channelCountdown, channelCountdownDesc),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
-    _log.d('[NotificationService] J-2 planifiee pour $scheduledDateTime (id=$id)');
+    _log.d(
+      '[NotificationService] J-2 planifiee pour $scheduledDateTime (id=$id)',
+    );
     return id;
   }
 
@@ -147,17 +180,25 @@ class NotificationService {
     await _ensureInitialized();
     final id = _trainingBaseId + sessionIndex;
     if (dateTime.isBefore(DateTime.now())) {
-      _log.d('[NotificationService] Rappel entrainement ignore (date passee: $dateTime)');
+      _log.d(
+        '[NotificationService] Rappel entrainement ignore (date passee: $dateTime)',
+      );
       return id;
     }
     final scheduledTime = tz.TZDateTime.from(dateTime, tz.local);
     await _plugin.zonedSchedule(
-      id, title, body, scheduledTime,
+      id,
+      title,
+      body,
+      scheduledTime,
       _notificationDetails(channelTraining, channelTrainingDesc),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
-    _log.d('[NotificationService] Rappel entrainement planifie pour $dateTime (id=$id)');
+    _log.d(
+      '[NotificationService] Rappel entrainement planifie pour $dateTime (id=$id)',
+    );
     return id;
   }
 
@@ -176,15 +217,17 @@ class NotificationService {
     const id = _walkTestReminderId;
     final target = DateTime.now().add(Duration(days: afterDays));
     // Rappel a 10h le jour cible (heure raisonnable pour une marche de check).
-    final scheduled =
-        DateTime(target.year, target.month, target.day, 10, 0);
+    final scheduled = DateTime(target.year, target.month, target.day, 10, 0);
     if (scheduled.isBefore(DateTime.now())) {
       _log.d('[NotificationService] Rappel test 6 min ignore (date passee)');
       return id;
     }
     final scheduledTime = tz.TZDateTime.from(scheduled, tz.local);
     await _plugin.zonedSchedule(
-      id, title, body, scheduledTime,
+      id,
+      title,
+      body,
+      scheduledTime,
       _notificationDetails(channelWalkTest, channelWalkTestDesc),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -222,7 +265,9 @@ class NotificationService {
       ),
     );
     await _plugin.show(_offTrackId, title, body, details);
-    _log.d('[NotificationService] Alerte hors-trace affichee (id=$_offTrackId)');
+    _log.d(
+      '[NotificationService] Alerte hors-trace affichee (id=$_offTrackId)',
+    );
   }
 
   /// Leve l'alerte hors-trace (retour sur le trace).
@@ -261,28 +306,41 @@ class NotificationService {
   /// ni autoriser ni refuser — on ne bloque pas l'appli et ON LE DIT dans les
   /// journaux.
   Future<bool> checkPermissions() async {
-    final androidPlugin = _sansLever(() => _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>());
+    final androidPlugin = _sansLever(
+      () => _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >(),
+    );
     if (androidPlugin != null) {
       return _demander(() async => androidPlugin.areNotificationsEnabled());
     }
-    final iosPlugin = _sansLever(() => _plugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>());
+    final iosPlugin = _sansLever(
+      () => _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >(),
+    );
     if (iosPlugin != null) {
       return _demander(
-          () async => (await iosPlugin.checkPermissions())?.isEnabled);
+        () async => (await iosPlugin.checkPermissions())?.isEnabled,
+      );
     }
-    final macPlugin = _sansLever(() => _plugin
-        .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin>());
+    final macPlugin = _sansLever(
+      () => _plugin
+          .resolvePlatformSpecificImplementation<
+            MacOSFlutterLocalNotificationsPlugin
+          >(),
+    );
     if (macPlugin != null) {
       return _demander(
-          () async => (await macPlugin.checkPermissions())?.isEnabled);
+        () async => (await macPlugin.checkPermissions())?.isEnabled,
+      );
     }
-    _log.d('[NotificationService] Aucune plateforme de notification branchee '
-        "(bureau ou test) — permission non verifiable, on n'empeche rien");
+    _log.d(
+      '[NotificationService] Aucune plateforme de notification branchee '
+      "(bureau ou test) — permission non verifiable, on n'empeche rien",
+    );
     return true;
   }
 
@@ -314,15 +372,24 @@ class NotificationService {
 
   Future<bool> requestPermissions() async {
     await _ensureInitialized();
-    final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (androidPlugin != null) {
       return await androidPlugin.requestNotificationsPermission() ?? false;
     }
-    final iosPlugin = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final iosPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
     if (iosPlugin != null) {
-      return await iosPlugin.requestPermissions(alert: true, badge: true, sound: true) ?? false;
+      return await iosPlugin.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
     }
     return true;
   }
@@ -338,17 +405,28 @@ class NotificationService {
 
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }
     return scheduled;
   }
 
-  NotificationDetails _notificationDetails(String channelId, String channelDescription) {
+  NotificationDetails _notificationDetails(
+    String channelId,
+    String channelDescription,
+  ) {
     return NotificationDetails(
       android: AndroidNotificationDetails(
-        channelId, channelId,
+        channelId,
+        channelId,
         channelDescription: channelDescription,
         importance: Importance.high,
         priority: Priority.high,

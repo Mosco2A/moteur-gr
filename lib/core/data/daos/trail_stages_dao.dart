@@ -21,8 +21,9 @@ class TrailStagesDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere une etape par son id
   Future<TrailStage?> getById(String id) {
-    return (select(trailStages)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailStages,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les etapes d'un itineraire, triees par numero

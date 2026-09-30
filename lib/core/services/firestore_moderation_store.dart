@@ -27,8 +27,8 @@ class FirestoreModerationStore implements ModerationStore {
   FirestoreModerationStore({
     required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
-  })  : _firebaseService = firebaseService,
-        _firestore = firestore;
+  }) : _firebaseService = firebaseService,
+       _firestore = firestore;
 
   /// 596 C4 — GARDE DE DISPONIBILITE. Les trois ecritures de ce magasin
   /// (`saveReport`, `updateReport`, `applyContentState`) dereferencaient
@@ -77,9 +77,8 @@ class FirestoreModerationStore implements ModerationStore {
     // Transition A POSTERIORI du moderationState du contenu cible. Les regles
     // (D4C-02) garantissent que SEUL un moderateur peut muter ce champ, et que
     // seul moderationState bouge (contenu utilisateur immuable).
-    await _db
-        .collection(contentType.collectionName)
-        .doc(contentRef)
-        .update(<String, dynamic>{'moderationState': state.wireValue});
+    await _db.collection(contentType.collectionName).doc(contentRef).update(
+      <String, dynamic>{'moderationState': state.wireValue},
+    );
   }
 }

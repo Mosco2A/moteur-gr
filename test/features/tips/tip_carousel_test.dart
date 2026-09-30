@@ -66,9 +66,7 @@ void main() {
           body: SizedBox(
             width: 1200,
             height: 600,
-            child: SingleChildScrollView(
-              child: TipCarousel(),
-            ),
+            child: SingleChildScrollView(child: TipCarousel()),
           ),
         ),
       ),
@@ -76,7 +74,9 @@ void main() {
   }
 
   group('TipCarousel -- swipe + filtrage', () {
-    testWidgets('affiche toutes les fiches sans filtre et chips categories', (tester) async {
+    testWidgets('affiche toutes les fiches sans filtre et chips categories', (
+      tester,
+    ) async {
       // Surface large pour les chips
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
@@ -107,10 +107,7 @@ void main() {
       expect(find.text('Entrainement progressif'), findsOneWidget);
 
       // Swipe vers la gauche pour passer a la fiche suivante
-      await tester.drag(
-        find.byType(PageView),
-        const Offset(-300, 0),
-      );
+      await tester.drag(find.byType(PageView), const Offset(-300, 0));
       await tester.pumpAndSettle();
 
       // La deuxieme fiche est maintenant visible
@@ -151,10 +148,17 @@ void main() {
 
       // Message vide affiche
       expect(find.text(t.tips.noTips), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.ficheConseil), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.ficheConseil,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('indicateur priorite haute sur les fiches prioritaires', (tester) async {
+    testWidgets('indicateur priorite haute sur les fiches prioritaires', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -163,7 +167,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // La premiere fiche a priorite 10 >= 8, donc icone priority_high presente
-      expect(find.byWidgetPredicate((w) => w is StepIcon && w.asset == StepwaysIcons.danger), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+        ),
+        findsWidgets,
+      );
     });
 
     testWidgets('categories dynamiques extraites des donnees', (tester) async {
