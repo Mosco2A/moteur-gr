@@ -10,7 +10,7 @@ import 'analytics_service.dart';
 /// qui reste ainsi testable sans dependance native.
 class FirebaseAnalyticsSink implements AnalyticsSink {
   FirebaseAnalyticsSink({FirebaseAnalytics? analytics})
-      : _analytics = analytics ?? FirebaseAnalytics.instance;
+    : _analytics = analytics ?? FirebaseAnalytics.instance;
 
   final FirebaseAnalytics _analytics;
 
@@ -36,7 +36,7 @@ class FirebaseAnalyticsSink implements AnalyticsSink {
 /// Puits crash adosse a Firebase Crashlytics (E5.4) — fatals + non-fatals.
 class FirebaseCrashSink implements CrashSink {
   FirebaseCrashSink({FirebaseCrashlytics? crashlytics})
-      : _crashlytics = crashlytics ?? FirebaseCrashlytics.instance;
+    : _crashlytics = crashlytics ?? FirebaseCrashlytics.instance;
 
   final FirebaseCrashlytics _crashlytics;
 
@@ -45,10 +45,20 @@ class FirebaseCrashSink implements CrashSink {
     Object error,
     StackTrace? stack, {
     required bool fatal,
-  }) =>
-      _crashlytics.recordError(error, stack, fatal: fatal);
+  }) => _crashlytics.recordError(error, stack, fatal: fatal);
 
   @override
   Future<void> setCollectionEnabled(bool enabled) =>
       _crashlytics.setCrashlyticsCollectionEnabled(enabled);
+
+  /// TACHE 637 — LES MIETTES DE PISTE. Ni `log` ni `setCustomKey` n'emettent
+  /// quoi que ce soit par eux-memes : Crashlytics les garde en local et ne les
+  /// joint qu'au prochain rapport, s'il y en a un. Aucun trafic, aucune donnee
+  /// envoyee pour une session qui se passe bien.
+  @override
+  Future<void> log(String message) => _crashlytics.log(message);
+
+  @override
+  Future<void> setCustomKey(String key, String value) =>
+      _crashlytics.setCustomKey(key, value);
 }

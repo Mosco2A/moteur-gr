@@ -798,6 +798,16 @@ void main() {
   // =========================================================================
   group('617 — la porte de l ouverture pose la question a qui ne se connecte '
       'jamais', () {
+    // LE VERROU DE LA TACHE 637 EST UN ETAT DE PROCESSUS, DONC IL SE REMET A
+    // ZERO ENTRE DEUX TESTS. `poserSiNecessaire` ne laisse qu'un seul dialogue en
+    // vol dans toute l'application — c'est ce qui ferme la course entre la porte
+    // de l'ouverture et l'ecran de profil. Un test qui laisse son dialogue OUVERT
+    // (aucun ne le referme ici) laisse donc le verrou pris, et le test suivant ne
+    // verrait aucune question posee. En production c'est le comportement voulu
+    // (la question EST en train d'etre posee) ; dans une suite de tests, c'est une
+    // fuite d'etat, et elle se soigne ici.
+    setUp(RefusSauvegardeSystemeDialog.reinitialiserLeVerrou);
+
     Widget appli(Widget corps) => ProviderScope(
           child: MaterialApp(
             home: PorteConsentementSauvegarde(child: corps),

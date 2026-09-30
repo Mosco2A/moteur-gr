@@ -434,26 +434,63 @@ TableUpdateQuery _tablesQuiFontMonter(AppDatabase db) {
 /// EN MODE LOCAL (aucun `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID`), le
 /// service d authentification n est pas celui de Firebase : rien ne s arme, et
 /// c est le comportement attendu, pas une panne.
+/// TACHE 637 (VOLET 2) — LA LECTURE DE L'IDENTITE POUVAIT NOIRCIR TOUTE
+/// L'APPLICATION, ET « NON BLOQUANT » ETAIT FAUX.
+///
+/// `authServiceProvider` CONSTRUIT `FirebaseAuthService`, donc il touche
+/// `FirebaseAuth.instance` pendant son `create`. Tout ce qui leve la — Firebase
+/// non initialise, services Google Play absents ou trop vieux, authentification
+/// non activee sur le projet — sortait de ce provider, remontait dans le
+/// `ref.watch` que [BootstrapGate] fait de lui, et faisait LEVER LE `build` de la
+/// garde qui enveloppe TOUS les ecrans. Flutter remplace alors l'arbre entier par
+/// un `ErrorWidget` : en release, un rectangle noir sans une ligne de texte. Et
+/// comme la garde se reconstruit a chaque changement de provider, il revient.
+///
+/// C'est la forme exacte du « Mon compte depuis le menu trek = ecran noir » de
+/// Christophe (DEM-260930-1103), et c'est aussi pourquoi « depuis la demo ca
+/// fonctionne » : la montee en base est l'un des services que le mode demo
+/// n'arme pas.
+///
+/// LA MONTEE EST UN SERVICE DE FOND : son echec doit couter LA MONTEE, jamais
+/// l'ecran. On renonce, on le dit au journal, et l'application vit.
 final monteeEnBaseDemarreeProvider = Provider<void>((ref) {
   final montee = ref.watch(syncSchedulerProvider);
   final db = ref.watch(databaseProvider);
-  final auth = ref.read(authServiceProvider);
 
-  if (auth is! FirebaseAuthService) {
-    _log.d("[Montee] Mode local : aucune identite serveur, montee inactive.");
+  // `Object` et non `AuthService` : le type de l'interface n'est pas importe ici.
+  final Object service;
+  try {
+    service = ref.read(authServiceProvider);
+  } catch (erreur) {
+    _log.d('[Montee] Identite indisponible ($erreur) — montee non armee.');
     return;
   }
 
+  if (service is! FirebaseAuthService) {
+    _log.d("[Montee] Mode local : aucune identite serveur, montee inactive.");
+    return;
+  }
+  // Recopie APRES la promotion : une variable promue ne garde pas son type a
+  // l'interieur d'une fermeture.
+  final auth = service;
+
   unawaited(() async {
-    await auth.garantirUneIdentite();
-    final uid = auth.identifiantDeCompte;
-    if (uid == null || uid.isEmpty) {
-      _log.d("[Montee] Identite absente au demarrage — montee non armee.");
-      return;
+    try {
+      await auth.garantirUneIdentite();
+      final uid = auth.identifiantDeCompte;
+      if (uid == null || uid.isEmpty) {
+        _log.d("[Montee] Identite absente au demarrage — montee non armee.");
+        return;
+      }
+      await montee.demarrer(
+        userId: uid,
+        ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
+      );
+    } catch (erreur) {
+      // MEME REGLE DANS LA SUITE ASYNCHRONE. Une erreur laissee libre ici part
+      // dans le gestionnaire de zone et remonte en plantage ; elle ne coûte
+      // pourtant que la montee, qui se rearmera a la prochaine ouverture.
+      _log.d('[Montee] Armement abandonne ($erreur).');
     }
-    await montee.demarrer(
-      userId: uid,
-      ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
-    );
   }());
 });

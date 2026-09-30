@@ -556,11 +556,26 @@ class BackgroundGpsService {
   }
 
   /// Arrete la capture de fond.
+  ///
+  /// TACHE 637 (VOLET 2) — L'ARRET NE PEUT PLUS LEVER, ET C'EST CE QUI REND LES
+  /// TESTS DE TREK REEL POSSIBLES. `flutter_background_service` n'existe QUE sur
+  /// Android et iOS : ailleurs — bureau, et surtout `flutter test` — son interface
+  /// de plateforme LEVE des le premier acces. Comme `stop()` est appele par
+  /// `dispose()`, donc par la destruction d'un provider, l'erreur remontait dans
+  /// le `runGuarded` de Riverpod : signalee en production, mais FATALE pour un
+  /// test, qui echouait alors sur son environnement et non sur l'application.
+  /// Aucun test ne pouvait donc demarrer un trek reel — c'est-a-dire exactement
+  /// le scenario ou Christophe a trouve l'ecran noir. Arreter un service qui
+  /// n'existe pas est un succes, pas une panne.
   Future<void> stop() async {
     if (!_running) return;
     _running = false;
     startStatus.value = GpsServiceStartStatus.idle;
-    _service.invoke('stop');
+    try {
+      _service.invoke('stop');
+    } catch (e) {
+      _logBg('[ui] arret sans objet du service de fond ($e)');
+    }
     await _eventSubscription?.cancel();
     _eventSubscription = null;
     await _heartbeatSubscription?.cancel();
