@@ -889,7 +889,8 @@
     "changeAvatar": "Change avatar",
     "chooseAvatar": "Choose an avatar",
     "errorLoading": "Loading error",
-    "appVersion": "StepWays v$version (build $build)"
+    "appVersion": "StepWays v$version (build $build)",
+    "errorTimeout": "Your account did not respond. Check your connection, then try again."
   },
   "feasibility": {
     "restart": "Start over",
@@ -1129,7 +1130,8 @@
     "collecteSaison": "Departure season",
     "collecteSentier": "The trail",
     "collecteJours": "Number of days",
-    "collecteAbsent": "Not provided"
+    "collecteAbsent": "Not provided",
+    "sortieFaite": "You have left the demo."
   },
   "updates": {
     "readyTitle": "Update ready",

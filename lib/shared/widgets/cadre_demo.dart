@@ -1,44 +1,74 @@
-/// LE SIGNAL DE LA DEMO ET SA SORTIE : UNE PASTILLE ORANGE, EN HAUT, ET RIEN
-/// D'AUTRE (tache 638, bug 11 — DEM-260930-1020).
+/// LE SIGNAL DE LA DEMO ET SA SORTIE : UN BANDEAU ORANGE QUI PREND SA PROPRE
+/// PLACE, ET UN « QUITTER » QUI REPOND DU PREMIER APPUI (tache 649).
 ///
-/// Retour de test de Christophe du 30/09 10:20, verbatim : « le bandeau du bas du
-/// mode demo cache une partie de l appli. En haut un Quitter orange suffirait et
-/// il ne faut pas qu il pete le visuel de la page ».
+/// ---------------------------------------------------------------------------
+/// CE QUE CHRISTOPHE A VU SUR LE BUILD 8, ET LES DEUX DEFAUTS MESURES
+/// ---------------------------------------------------------------------------
 ///
-/// CE QU'IL Y AVAIT, ET CE QUI PART. Le lot 634 posait TROIS choses par-dessus
-/// l'arbre route : un liston orange de 5 px sur les quatre bords, une pastille de
-/// sortie en haut, et une BARRE DE SIMULATION en bas (« Simuler l'etape
-/// suivante » + la phrase « rien n'est enregistre »). La barre du bas masquait le
-/// bas de chaque ecran — c'est le defaut signale — et le liston rognait les
-/// bords. Les deux disparaissent :
-///   * `barre_simulation_demo.dart` est SUPPRIME. La simulation vit desormais
-///     dans le cockpit et sur la carte ([BoutonSimulationDemo]), la ou le
-///     randonneur regarde quand il marche ;
-///   * le liston orange est SUPPRIME. Il ne reste qu'une pastille.
+/// Passage sur emulateur du 30/09 (AAB 0.1.4+8, build release) :
+///   1. la pastille orange RECOUVRAIT le titre de la barre sur tous les ecrans
+///      — et, sur le cockpit, elle mordait aussi sur l'action « infos » ;
+///   2. son « Quitter » ne repondait a AUCUN appui — trois appuis, deux
+///      positions, deux ecrans, alors que tous les autres appuis marchaient.
 ///
-/// OU SE POSE LA PASTILLE, ET POURQUOI LA. Elle est peinte par-dessus l'arbre
-/// route (`Stack`), donc AUCUN ecran n'est deplace d'un pixel : ni marge, ni
-/// `SafeArea` ajoutee, ni encoche faussee. Elle est CENTREE EN HAUT, a la hauteur
-/// de la barre de titre :
-///   * a gauche de la barre vit le RETOUR, a droite les ACTIONS et l'ACCUEIL —
-///     tous actifs. La pastille ne les atteint jamais : elle est centree et
-///     bornee en largeur, et un test le mesure sur les trois tailles de
-///     reference (iPhone SE 375x667, petit Android 360x640, Pixel 5 393x851) ;
-///   * au centre il n'y a que le TITRE de l'ecran, qui ne se touche pas. C'est
-///     le seul endroit de l'ecran ou l'on peut poser un signal permanent sans
-///     recouvrir une commande.
-/// Le titre cede donc sa place au signal pendant la demo, et c'est un echange
-/// voulu : le bug 19 disait « on est toujours en mode demo sans le savoir » — le
-/// signal doit etre a l'endroit que l'oeil balaie en premier.
+/// LE BOUTON MUET, CAUSE MESUREE ET NON SUPPOSEE. A chaque appui, l'emulateur
+/// n'ecrivait qu'une ligne : « FirebaseCrashlytics: Timeout exceeded while
+/// awaiting app exception callback from Analytics listener ». L'appui ARRIVAIT
+/// donc bien, une exception etait levee, Crashlytics l'enregistrait, et rien ne
+/// s'affichait. Le harnais de `sortie_de_demo_649_test.dart` la nomme :
 ///
-/// LA SORTIE PASSE PAR UN DIALOGUE, ET IL PORTE LA CASE A COCHER (bug 18,
-/// precision de Christophe du 30/09 10:30) : « Cacher le mode demo ». Cochee, le
-/// bouton orange quitte le catalogue et se retrouve dans Mon compte ; decochee,
-/// il reste en tete du catalogue. Le message dit OU la retrouver, et il change
-/// avec la case — jamais une phrase qui annonce autre chose que ce que le reglage
-/// va faire.
+///     Navigator operation requested with a context that does not include a
+///     Navigator.
+///       Navigator.of         (navigator.dart:2936)
+///       showDialog           (dialog.dart:1504)
+///       afficherSortieDeDemo (cadre_demo.dart:169)
+///       _PastilleDeSortie.build.<anonymous>  (cadre_demo.dart:117)
+///       _InkResponseState.handleTap
 ///
-/// HORS DEMO, CE WIDGET EST TRANSPARENT : il rend son enfant tel quel, sans
+/// C'EST LE DEFAUT DE LA TACHE 637, AU MEME ENDROIT DE L'ARBRE. `CadreDemo` est
+/// pose dans le `builder` de `MaterialApp.router` (`main.dart`), et `WidgetsApp`
+/// passe le `Router` EN ARGUMENT de ce `builder` : tout ce que le `builder`
+/// enveloppe est AU-DESSUS du `Navigator` de GoRouter. `showDialog` remonte les
+/// ANCETRES a la recherche d'un `Navigator` ; au-dessus du `Router`, il n'y en a
+/// aucun. Le dialogue de fin de demo ne pouvait donc JAMAIS s'ouvrir. En debug
+/// c'est l'assertion de `navigator.dart:2929` qui parle ; en release elle est
+/// retiree et il ne reste que le `!` de la ligne 2936 — meme chemin, meme cause,
+/// et un bouton mort sans un mot.
+///
+/// ---------------------------------------------------------------------------
+/// CE QUE CE FICHIER FAIT MAINTENANT
+/// ---------------------------------------------------------------------------
+///
+/// 1. LA SORTIE TIENT EN UN APPUI, ET NE PASSE PLUS PAR UN DIALOGUE. Il n'y a
+///    plus de `showDialog` du tout : l'appui appelle [quitterLaDemo], qui est
+///    deja la sortie atomique du lot 638 (six gestes) et finit par revenir a
+///    « Mes treks ». Un dialogue depuis ce contexte etait, par construction,
+///    impossible a ouvrir ; le supprimer n'est donc pas un choix de confort,
+///    c'est la seule forme qui marche a cet endroit de l'arbre.
+///
+/// 2. LE CHOIX « CACHER LE MODE DEMO » N'EST PAS PERDU (bug 18, precision de
+///    Christophe du 30/09 10:30). Il est propose APRES la sortie, dans un
+///    bandeau de message qui ne bloque rien : on est deja sur « Mes treks »
+///    quand la question se pose, et on peut l'ignorer. Il reste reversible dans
+///    Mon compte, comme avant.
+///
+/// 3. LE BANDEAU PREND SA PROPRE PLACE — IL NE RECOUVRE PLUS RIEN. C'est le
+///    changement de forme qui repond au defaut 1. L'ancienne pastille etait
+///    PEINTE par-dessus l'arbre route (`Stack`) : elle ne deplacait rien, mais
+///    elle masquait forcement ce qu'il y avait dessous, et au centre de la barre
+///    il y a le TITRE. Le lot 638 assumait cet echange ; Christophe l'a refuse.
+///    Le bandeau est donc pose AU-DESSUS de l'application, dans une `Column` :
+///    il pousse l'ecran de sa hauteur au lieu de le couvrir, et plus un seul
+///    pixel de l'application ne disparait. La barre de titre garde son titre,
+///    son retour et ses actions, entiers.
+///
+///    LE DECALAGE EST LE PRIX, ET IL EST ASSUME : mieux vaut une application
+///    poussee de [kHauteurBandeauDemo] pixels pendant la demo qu'un titre
+///    illisible. Le haut de la zone sure est retire au sous-arbre
+///    (`MediaQuery.removePadding`) : sans cela, l'application ajouterait une
+///    SECONDE fois la marge de la barre d'etat, deja mangee par le bandeau.
+///
+/// HORS DEMO, CE WIDGET RESTE TRANSPARENT : il rend son enfant tel quel, sans
 /// ajouter le moindre noeud a l'arbre.
 library;
 
@@ -51,21 +81,21 @@ import '../../core/services/session_demo.dart';
 import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
 
-/// Largeur MAXIMALE de la pastille de sortie, en pixels logiques.
+/// Hauteur UTILE du bandeau de demo, hors marge de la barre d'etat.
 ///
-/// Bornee pour ne jamais atteindre les zones actives de la barre de titre : le
-/// retour occupe les 56 px de gauche, l'accueil et les actions les 56 px (ou
-/// plus) de droite. 180 px centres laissent au moins 90 px de marge de chaque
-/// cote sur la plus petite largeur de reference (360 px).
+/// 44 px : la taille de cible tactile recommandee. Le « Quitter » du build 8
+/// etait dans une pastille de 30 px de haut, centree sur la barre de titre — et
+/// c'est cette meme hauteur qui la faisait chevaucher le titre.
+const double kHauteurBandeauDemo = 44;
+
+/// Largeur MAXIMALE du bouton de sortie, en pixels logiques.
+///
+/// Conserve du lot 638 : le bouton reste borne, meme quand la police du
+/// telephone est agrandie. Il n'a plus a se tenir loin des bords — il ne
+/// partage plus sa ligne avec la barre de titre.
 const double kLargeurMaxPastilleDemo = 180;
 
-/// Decalage vertical de la pastille sous le haut de la zone sure.
-///
-/// La barre de titre Material fait 56 px de haut ; la pastille en fait environ
-/// 30 : 13 px la centrent dessus.
-const double kDecalagePastilleDemo = 13;
-
-/// Enveloppe l'arbre route : pendant la demo, une pastille « Quitter » orange.
+/// Enveloppe l'arbre route : pendant la demo, un bandeau orange en tete.
 class CadreDemo extends ConsumerWidget {
   const CadreDemo({super.key, required this.child});
 
@@ -75,25 +105,18 @@ class CadreDemo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(enDemoProvider)) return child;
 
-    return Stack(
+    return Column(
       children: [
-        Positioned.fill(child: child),
-        // LA SORTIE, TOUJOURS VISIBLE, ET SEULE. Centree en haut, bornee en
-        // largeur : elle ne recouvre ni le retour ni les actions d'en-tete.
-        Positioned(
-          top: kDecalagePastilleDemo,
-          left: 0,
-          right: 0,
-          child: SafeArea(
-            bottom: false,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: kLargeurMaxPastilleDemo,
-                ),
-                child: const _PastilleDeSortie(),
-              ),
-            ),
+        const _BandeauDemo(),
+        Expanded(
+          // LE HAUT DE LA ZONE SURE EST DEJA MANGE PAR LE BANDEAU. Sans ce
+          // retrait, chaque `Scaffold` du dessous ajouterait une seconde fois
+          // la marge de la barre d'etat, et l'application descendrait deux fois
+          // trop bas.
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: child,
           ),
         ),
       ],
@@ -101,56 +124,97 @@ class CadreDemo extends ConsumerWidget {
   }
 }
 
-class _PastilleDeSortie extends ConsumerWidget {
-  const _PastilleDeSortie();
+/// LE BANDEAU : le signal a gauche, la sortie a droite, et rien dessous.
+class _BandeauDemo extends StatelessWidget {
+  const _BandeauDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      key: const ValueKey('demo-bandeau'),
+      color: AppTheme.orangeDifficile,
+      // L'ORANGE MONTE JUSQUE DERRIERE LA BARRE D'ETAT — « en demo le tour de
+      // l'ecran devient orange » — mais le CONTENU, lui, reste sous les icones
+      // du systeme.
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: kHauteurBandeauDemo,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingSm + 4,
+            ),
+            child: Row(
+              children: [
+                const StepIcon(
+                  StepwaysIcons.eprouvette,
+                  size: 16,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    t.demo.bandeau,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppTheme.spacingSm),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: kLargeurMaxPastilleDemo,
+                  ),
+                  child: const _BoutonDeSortie(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// LE « QUITTER » : blanc sur orange, et il sort du premier appui.
+class _BoutonDeSortie extends ConsumerWidget {
+  const _BoutonDeSortie();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return Material(
-      color: AppTheme.orangeDifficile,
+      color: Colors.white,
       borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-      elevation: 3,
       child: InkWell(
         key: const ValueKey('demo-sortie'),
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-        onTap: () => afficherSortieDeDemo(context, ref),
+        onTap: () => sortirDeLaDemoDUnAppui(ref, context),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const StepIcon(
-                StepwaysIcons.eprouvette,
-                size: 14,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 5),
               Flexible(
                 child: Text(
-                  t.demo.bandeau,
+                  t.demo.quitter,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: Colors.white,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: AppTheme.orangeDifficile,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Text(
-                t.demo.quitter,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 3),
+              const SizedBox(width: 4),
               const StepIcon(
                 StepwaysIcons.croix,
-                size: 12,
-                color: Colors.white,
+                size: 13,
+                color: AppTheme.orangeDifficile,
               ),
             ],
           ),
@@ -160,73 +224,36 @@ class _PastilleDeSortie extends ConsumerWidget {
   }
 }
 
-/// LE DIALOGUE DE FIN DE DEMO : ou la retrouver, et veut-on la cacher.
+/// LA SORTIE D'UN SEUL APPUI, ET L'OFFRE QUI NE BLOQUE PAS (tache 649).
 ///
-/// Un seul endroit dans l'application demande a quitter la demo, et c'est lui :
-/// il porte le message du bug 18 et la case a cocher du 30/09 10:30. La sortie
-/// elle-meme est faite par [quitterLaDemo] (bug 19, atomique).
-Future<void> afficherSortieDeDemo(BuildContext context, WidgetRef ref) async {
-  final choix = await showDialog<bool>(
-    context: context,
-    builder: (ctx) => const _DialogueSortieDemo(),
-  );
-  if (choix == null || !context.mounted) return;
-  // `choix` porte la case a cocher : on ne quitte que si le dialogue a ete
-  // confirme (il rend `null` sur annulation).
-  await quitterLaDemo(ref, context: context, cacherBouton: choix);
-}
+/// Un appui, et c'est fini : [quitterLaDemo] coupe la demo, remet le sentier
+/// d'avant, jette ce qui n'a vecu qu'en memoire et ramene a « Mes treks ». La
+/// question « cacher le bouton demo ? » (bug 18) est posee APRES, dans un
+/// bandeau de message, et le randonneur peut l'ignorer.
+///
+/// LE MESSAGER ET LE CONTENEUR SONT PRIS AVANT LA SORTIE, ET C'EST LE POINT
+/// DELICAT : des que la demo s'arrete, [CadreDemo] rend son enfant tel quel et
+/// ce bouton est DEMONTE. Son `context` et son `ref` ne valent plus rien apres.
+/// Le messager (`ScaffoldMessengerState`) et le conteneur Riverpod, eux, vivent
+/// au-dessus de toute l'application : ils survivent a ce demontage.
+Future<void> sortirDeLaDemoDUnAppui(WidgetRef ref, BuildContext context) async {
+  final messager = ScaffoldMessenger.maybeOf(context);
+  final conteneur = ProviderScope.containerOf(context, listen: false);
 
-class _DialogueSortieDemo extends StatefulWidget {
-  const _DialogueSortieDemo();
+  await quitterLaDemo(ref, context: context);
 
-  @override
-  State<_DialogueSortieDemo> createState() => _DialogueSortieDemoState();
-}
-
-class _DialogueSortieDemoState extends State<_DialogueSortieDemo> {
-  bool _cacher = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      key: const ValueKey('demo-dialogue-sortie'),
-      icon: const StepIcon(StepwaysIcons.eprouvette),
-      title: Text(t.demo.sortieTitre),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // LE MESSAGE SUIT LA CASE : cochee, la demo se retrouve dans Mon
-          // compte ; decochee, en tete du catalogue. Un message fixe mentirait
-          // dans l'un des deux cas.
-          Text(
-            _cacher ? t.demo.sortieDansMonCompte : t.demo.sortieEnTeteCatalogue,
-            key: const ValueKey('demo-sortie-message'),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          CheckboxListTile(
-            key: const ValueKey('demo-sortie-cacher'),
-            value: _cacher,
-            onChanged: (v) => setState(() => _cacher = v ?? false),
-            title: Text(t.demo.cacherLabel),
-            contentPadding: EdgeInsets.zero,
-            controlAffinity: ListTileControlAffinity.leading,
-            dense: true,
-          ),
-        ],
+  messager
+    ?..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        key: const ValueKey('demo-sortie-faite'),
+        content: Text(t.demo.sortieFaite),
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(
+          label: t.demo.cacherLabel,
+          onPressed: () =>
+              conteneur.read(boutonDemoCacheProvider.notifier).definir(true),
+        ),
       ),
-      actions: [
-        TextButton(
-          key: const ValueKey('demo-sortie-annuler'),
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(t.demo.sortieAnnuler),
-        ),
-        FilledButton(
-          key: const ValueKey('demo-sortie-confirmer'),
-          onPressed: () => Navigator.of(context).pop(_cacher),
-          child: Text(t.demo.sortieConfirmer),
-        ),
-      ],
     );
-  }
 }

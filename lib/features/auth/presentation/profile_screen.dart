@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -72,7 +74,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // Ph5 (L6d) : AppHeader universel (Mon compte — §4 header standard).
       appBar: AppHeader(title: i18n.auth.profile),
       body: userAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        // L'ATTENTE EST BORNEE (tache 649). Mesure sur l'emulateur du 30/09 :
+        // « Mon compte » ouvert depuis le menu du trek tournait SANS FIN — le
+        // flux d'identite n'emettait jamais (Firestore repondait
+        // `permission-denied` en boucle dans le journal), donc `loading` ne se
+        // terminait pas et le randonneur n'avait plus qu'a tuer l'application.
+        // La cause du refus Firestore n'est PAS traitee ici : ce lot ferme le
+        // silence, pas le refus.
+        loading: () => _AttenteBornee(
+          message: i18n.auth.errorTimeout,
+          libelleReessayer: i18n.common.retry,
+          onReessayer: () => ref.invalidate(currentUserProvider),
+        ),
         error: (_, __) => Center(child: Text(i18n.auth.errorLoading)),
         data: (user) => _buildProfile(context, ref, theme, i18n, user),
       ),
@@ -696,6 +709,101 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// UNE ATTENTE QUI FINIT TOUJOURS PAR DIRE QUELQUE CHOSE (tache 649).
+///
+/// CE QUI A ETE MESURE. Sur l'emulateur, « Mon compte » ouvert depuis le menu du
+/// trek tournait indefiniment : le flux d'identite n'emettait jamais, le journal
+/// repetait des refus Firestore (`permission-denied`), et l'ecran restait un
+/// rond qui tourne. Un rond qui tourne ne dit RIEN : ni « patiente », ni « c'est
+/// casse ». Le randonneur ne pouvait que tuer l'application.
+///
+/// CE WIDGET NE CHANGE RIEN QUAND CA MARCHE : pendant [kDelaiAvantEchecCompte]
+/// il montre exactement le meme rond qu'avant, et une reponse qui arrive dans ce
+/// delai le fait disparaitre sans que rien d'autre ne s'affiche. Passe ce delai,
+/// il remplace le rond par un message et un bouton « Reessayer ».
+///
+/// LE DELAI N'EST PAS UN DELAI DE RESEAU, C'EST UN DELAI DE PATIENCE : il ne
+/// coupe aucune requete et n'annule rien. La requete continue ; si elle finit
+/// par repondre, l'ecran se remplit tout seul.
+class _AttenteBornee extends StatefulWidget {
+  const _AttenteBornee({
+    required this.message,
+    required this.libelleReessayer,
+    required this.onReessayer,
+  });
+
+  final String message;
+  final String libelleReessayer;
+  final VoidCallback onReessayer;
+
+  @override
+  State<_AttenteBornee> createState() => _AttenteBorneeState();
+}
+
+/// Au-dela de ce delai, une attente devient un echec qui se dit.
+///
+/// Huit secondes : assez pour un reseau lent et un demarrage a froid de
+/// Firebase, trop peu pour laisser croire que l'ecran est mort.
+const Duration kDelaiAvantEchecCompte = Duration(seconds: 8);
+
+class _AttenteBorneeState extends State<_AttenteBornee> {
+  Timer? _minuteur;
+  bool _tropLong = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _armer();
+  }
+
+  void _armer() {
+    _minuteur?.cancel();
+    _minuteur = Timer(kDelaiAvantEchecCompte, () {
+      if (mounted) setState(() => _tropLong = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _minuteur?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_tropLong) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return Center(
+      key: const ValueKey('compte-echec-attente'),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const StepIcon(StepwaysIcons.danger, size: 40),
+            const SizedBox(height: AppTheme.spacingBase),
+            Text(widget.message, textAlign: TextAlign.center),
+            const SizedBox(height: AppTheme.spacingBase),
+            AppButton(
+              key: const ValueKey('compte-reessayer'),
+              isFullWidth: false,
+              label: widget.libelleReessayer,
+              onPressed: () {
+                // ON REPART POUR UN TOUR, PAS POUR L'ETERNITE : le minuteur est
+                // rearme, donc un second echec se dira aussi.
+                setState(() => _tropLong = false);
+                _armer();
+                widget.onReessayer();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

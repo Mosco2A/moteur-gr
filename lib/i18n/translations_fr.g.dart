@@ -1545,6 +1545,9 @@ class Translations$auth$fr {
 
 	/// fr: 'StepWays v$version (build $build)'
 	String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
+
+	/// fr: 'Le compte n'a pas répondu. Vérifiez votre connexion, puis réessayez.'
+	String get errorTimeout => 'Le compte n\'a pas répondu. Vérifiez votre connexion, puis réessayez.';
 }
 
 // Path: feasibility
@@ -1855,6 +1858,9 @@ class Translations$demo$fr {
 
 	/// fr: 'Non renseigné'
 	String get collecteAbsent => 'Non renseigné';
+
+	/// fr: 'Vous avez quitté la démo.'
+	String get sortieFaite => 'Vous avez quitté la démo.';
 }
 
 // Path: updates
@@ -9015,6 +9021,7 @@ extension on Translations {
 			'auth.chooseAvatar' => 'Choisir un avatar',
 			'auth.errorLoading' => 'Erreur de chargement',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
+			'auth.errorTimeout' => 'Le compte n\'a pas répondu. Vérifiez votre connexion, puis réessayez.',
 			'feasibility.restart' => 'Recommencer',
 			'feasibility.objectiveTitle' => 'Faisabilité pour ce trek',
 			'feasibility.objectiveIntro' => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.',
@@ -9223,6 +9230,7 @@ extension on Translations {
 			'demo.collecteSentier' => 'Le sentier',
 			'demo.collecteJours' => 'Nombre de jours',
 			'demo.collecteAbsent' => 'Non renseigné',
+			'demo.sortieFaite' => 'Vous avez quitté la démo.',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -9262,10 +9270,10 @@ extension on Translations {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acheter — ${price} €',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
-			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
-			'monetization.walletTitle' => 'Compte-étapes',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
+			'monetization.walletTitle' => 'Compte-étapes',
 			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
 			'monetization.storeUnavailable' => 'Le paiement n\'est pas disponible pour le moment.',
@@ -9776,10 +9784,10 @@ extension on Translations {
 			'programme.duration.daysWithRest' => '{total} j au total (dont {rest} de repos)',
 			'programme.duration.splitNote' => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.',
 			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
-			'programme.duration.daysTotal' => '{count} j au total',
-			'programme.stats.distance' => 'Distance',
 			_ => null,
 		} ?? switch (path) {
+			'programme.duration.daysTotal' => '{count} j au total',
+			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
 			'programme.stats.stages' => 'Étapes',

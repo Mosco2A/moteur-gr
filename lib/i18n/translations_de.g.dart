@@ -748,6 +748,7 @@ class _Translations$auth$de extends Translations$auth$fr {
 	@override String get chooseAvatar => 'Avatar wählen';
 	@override String get errorLoading => 'Ladefehler';
 	@override String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
+	@override String get errorTimeout => 'Das Konto hat nicht geantwortet. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.';
 }
 
 // Path: feasibility
@@ -890,6 +891,7 @@ class _Translations$demo$de extends Translations$demo$fr {
 	@override String get collecteSentier => 'Der Weg';
 	@override String get collecteJours => 'Anzahl der Tage';
 	@override String get collecteAbsent => 'Nicht angegeben';
+	@override String get sortieFaite => 'Sie haben die Demo verlassen.';
 }
 
 // Path: updates
@@ -4950,6 +4952,7 @@ extension on TranslationsDe {
 			'auth.chooseAvatar' => 'Avatar wählen',
 			'auth.errorLoading' => 'Ladefehler',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
+			'auth.errorTimeout' => 'Das Konto hat nicht geantwortet. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
 			'feasibility.restart' => 'Start over',
 			'feasibility.objectiveTitle' => 'Machbarkeit für diesen Trek',
 			'feasibility.objectiveIntro' => 'Urteil auf Basis Ihres echten Profils, gekreuzt mit den Anforderungen des Treks.',
@@ -5158,6 +5161,7 @@ extension on TranslationsDe {
 			'demo.collecteSentier' => 'Der Weg',
 			'demo.collecteJours' => 'Anzahl der Tage',
 			'demo.collecteAbsent' => 'Nicht angegeben',
+			'demo.sortieFaite' => 'Sie haben die Demo verlassen.',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5197,10 +5201,10 @@ extension on TranslationsDe {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Kaufen — ${price} €',
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
-			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
-			'monetization.walletTitle' => 'Etappenkonto',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
+			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
 			'monetization.storeUnavailable' => 'Die Zahlung ist derzeit nicht verfügbar.',
@@ -5711,10 +5715,10 @@ extension on TranslationsDe {
 			'programme.duration.daysWithRest' => '{total} T insgesamt (davon {rest} Ruhe)',
 			'programme.duration.splitNote' => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.',
 			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
-			'programme.duration.daysTotal' => '{count} T insgesamt',
-			'programme.stats.distance' => 'Distanz',
 			_ => null,
 		} ?? switch (path) {
+			'programme.duration.daysTotal' => '{count} T insgesamt',
+			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',
 			'programme.stats.stages' => 'Etappen',
