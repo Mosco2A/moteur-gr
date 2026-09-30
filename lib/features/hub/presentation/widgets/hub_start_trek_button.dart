@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/session_demo.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
@@ -54,7 +55,21 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
     final orange = CategoryIconColors.of(context).orange;
 
     // Gate « infos minimum » : Itineraire + Date + Programme (retour Chris #3).
-    final canStart = ref.watch(prepareCoreDoneProvider(widget.trailId));
+    //
+    // EN DEMO, LA PORTE EST OUVERTE (tache 638, bug 16 — DEM-260930-1024),
+    // verbatim de Christophe : « le bouton demarrer la rando doit etre accessible
+    // en mode demo ! ».
+    //
+    // POURQUOI LA PORTE NE PEUT PAS SE FRANCHIR HONNETEMENT EN DEMO : une de ses
+    // quatre conditions est la FICHE MEDICALE remplie (decision du 26/09), et
+    // remplir la fiche medicale est une ECRITURE — barree en demo, et qui doit
+    // l'etre (c'est une donnee de sante). La gate ne pouvait donc JAMAIS s'ouvrir
+    // pendant une demonstration : le bouton restait grise a vie, ce qui est
+    // exactement ce que Christophe a constate. On l'ouvre, et le message sous le
+    // bouton DIT que c'est la demo qui l'ouvre — pas une gate qui aurait cede.
+    final enDemo = ref.watch(enDemoProvider);
+    final canStart =
+        enDemo || ref.watch(prepareCoreDoneProvider(widget.trailId));
     final enabled = canStart && !_starting;
 
     return Padding(
@@ -78,6 +93,20 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
               ),
             ),
           ),
+          // EN DEMO, ON DIT CE QUE LE BOUTON VA FAIRE : il lance une SIMULATION,
+          // pas une randonnee. Sans cette ligne, un bouton « Demarrer » actif
+          // sur un sentier non achete ressemblerait a un droit accorde.
+          if (enDemo) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            Text(
+              t.demo.departSimule,
+              key: const ValueKey('demo-depart-simule'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
           // Message d'aide tant que la gate est fermee (retour Chris #3 :
           // « grise tant que les infos minimum n'ont pas ete rentrees »).
           if (!canStart) ...[
@@ -98,6 +127,15 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
   /// Clic sur « Démarrer » (gate ouverte). Choisit le CHEMIN selon la proximite
   /// GPS : direct si au depart, sinon dialog de secours (jamais de cul-de-sac).
   Future<void> _onStartPressed(BuildContext context) async {
+    // EN DEMO, PAS DE QUESTION DE PROXIMITE (tache 638, bug 16). Le GPS n'est
+    // meme pas arme pendant une demonstration (`_startBackgroundCapture` sort en
+    // demo) : la proximite est donc TOUJOURS inconnue, et le dialogue
+    // « Démarrer quand même ? » surgirait a chaque fois pour une question qui n'a
+    // pas de sens quand on ne marche pas.
+    if (ref.read(enDemoProvider)) {
+      await _start(context);
+      return;
+    }
     final proximity = ref.read(startProximityProvider);
     if (proximity.atDeparture) {
       await _start(context);
@@ -124,7 +162,13 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
     final notifier = ref.read(trekSessionManagerProvider.notifier);
     // Avant tout : la permission de fond, expliquee puis demandee une seule
     // fois. Ne jette jamais, ne bloque jamais le demarrage.
-    await ensureBackgroundTrackingExplained(context, ref);
+    //
+    // SAUF EN DEMO : demander la localisation « Toujours » pour une simulation
+    // serait demander une permission de fond pour une randonnee qui n'aura pas
+    // lieu. La demo ne demande AUCUNE permission.
+    if (!ref.read(enDemoProvider)) {
+      await ensureBackgroundTrackingExplained(context, ref);
+    }
     if (!context.mounted || !mounted) return;
     setState(() => _starting = true);
     try {
