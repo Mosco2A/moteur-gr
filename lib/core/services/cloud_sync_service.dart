@@ -14,16 +14,23 @@ import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
-import "consent_service.dart";
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
-/// Raison de refus : consentement art. 9 (donnee de sante) absent ou revoque.
-///
-/// Porte par [CloudSyncResult.error] avec un statut `idle` : ce n'est pas une
-/// panne, c'est un REFUS assume — et il doit rester distinguable d'un
-/// hors-ligne (tache 561, J2).
-const String kSyncErrorHealthConsentMissing = 'health_consent_missing';
+// LA RAISON DE REFUS « CONSENTEMENT SANTE ABSENT » N EXISTE PLUS ICI, ET ELLE
+// N A PLUS DE SENS (DEM du 30/09 12:33).
+//
+// Elle nommait le refus de la seule garde de consentement que ce service
+// portait, devant la montee des randos passees. Christophe a detache les randos
+// de la case sante : ce service n a donc plus AUCUN refus de consentement a
+// nommer, et garder la constante — comme garder le champ `consentCheck` qui
+// allait avec — laisserait croire qu une garde vit encore ici. Elle ne vit plus.
+//
+// LA GARDE ART. 9 N A PAS DISPARU DU DEPOT, elle a change de porte :
+// `RestoreService.restoreHikerProfile` la tient toujours dans l autre sens (la
+// morphologie que le telephone peut RECEVOIR), avec sa propre raison nommee
+// `kRestoreErrorHealthConsentMissing`. Et la fiche medicale, elle, n a aucun
+// chemin de sortie du tout (liste fermee de la tache 612).
 
 /// Raison de refus : le document demande n'est PAS dans
 /// [DocumentsDuCoffreDistant.autorises] (tache 612).
@@ -138,10 +145,8 @@ class CloudSyncService {
     required this.connectivityMonitor,
     required this.firebaseService,
     this.pastHikesDao,
-    ConsentCheck? consentCheck,
     FirebaseFirestore? firestore,
-  })  : consentCheck = consentCheck ?? consentFromLocalStore,
-        _firestore = firestore;
+  }) : _firestore = firestore;
 
   final ProgressDao progressDao;
   final ChecklistDao checklistDao;
@@ -152,12 +157,6 @@ class CloudSyncService {
   /// DAO des randos passees (miroir cloud ANONYME, LOT 4). Nullable pour
   /// retro-compat des instances/tests qui ne montent pas les randos.
   final PastHikesDao? pastHikesDao;
-
-  /// Verification de consentement utilisee par les gardes de ce service
-  /// (tache 561, J2). JAMAIS nulle : a defaut d'injection, elle lit l'etat REEL
-  /// du stockage local ([consentFromLocalStore]). Une garde qu'on peut
-  /// desactiver en oubliant un parametre n'est pas une garde.
-  final ConsentCheck consentCheck;
 
   FirebaseFirestore? _firestore;
 
@@ -437,13 +436,21 @@ class CloudSyncService {
   // RANDOS PASSEES montent : des metriques d effort (jours, D+, distance,
   // temps moyen), sans trace, sans lieu, sans rien qui dise qui.
   //
-  // LA GARDE ART. 9 EST CONSERVEE, ET CE N EST PAS DE LA PRUDENCE DECORATIVE.
-  // Une rando passee decrit l effort physique d une personne ; croisee avec le
-  // reste elle se lit comme une donnee de forme. Sans consentement
-  // `healthData` EFFECTIF, rien ne part, et la methode ne lit meme pas la base
-  // locale ([kSyncErrorHealthConsentMissing]). CONSEQUENCE A CONNAITRE : tant
-  // que le randonneur n a pas accorde ce consentement, `past_hikes` reste vide
-  // au serveur — c est un REFUS assume, pas une panne.
+  // LA GARDE ART. 9 A ETE RETIREE D ICI, ET C EST CHRISTOPHE QUI A TRANCHE
+  // (DEM du 30/09 12:33). La tache 635 avait conserve le consentement
+  // `healthData` devant cette montee, par prudence : une rando passee decrit
+  // l effort physique d une personne. CONSEQUENCE MESUREE, et signalee dans le
+  // rapport du lot : tant que la case n etait pas cochee, `past_hikes` restait
+  // VIDE au serveur — Christophe ne voyait pas ses randos, et la prudence
+  // produisait exactement le silence qu il reprochait a l application.
+  //
+  // SA DECISION : les randos passees montent COMME la progression et le sac,
+  // sans dependre de la case. Ce sont des metriques d effort — jours, D+,
+  // distance, temps moyen — sans trace, sans lieu, sans rien qui dise qui. LA
+  // CASE RESTE, et elle garde ce qu elle a toujours garde : la fiche medicale,
+  // qui n a AUCUN chemin de sortie (liste fermee de la tache 612, intacte), et
+  // la morphologie, qui ne monte pas (tache 635). Demarrer une rando exige
+  // toujours la fiche sante validee : cela ne change pas.
   //
   // DEUX IDENTIFIANTS, ET ILS NE SONT PAS LE MEME. C est le defaut que ce lot a
   // trouve en branchant : la version precedente passait UN SEUL identifiant, a
@@ -478,8 +485,9 @@ class CloudSyncService {
   /// [identifiantLocal] = la cle sous laquelle les randos sont rangees dans la
   /// base du telephone (`kHikerLocalUserId` tant qu aucun compte n est lie).
   ///
-  /// GARDE ART. 9 : sans consentement `healthData` EFFECTIF, la methode refuse
-  /// et ne lit meme pas la donnee locale ([kSyncErrorHealthConsentMissing]).
+  /// PAS DE GARDE DE CONSENTEMENT ICI (DEM du 30/09 12:33) : les randos passees
+  /// montent comme la progression et le sac. Le commentaire au-dessus de ce
+  /// bloc dit pourquoi, et ce que la case continue de garder.
   ///
   /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAO non injecte
   /// (retourne `idle` sans rien ecrire).
@@ -487,18 +495,6 @@ class CloudSyncService {
     String uid, {
     String identifiantLocal = "local",
   }) async {
-    // GARDE ART. 9, EN PREMIER : avant les DAOs, avant le reseau, avant toute
-    // lecture de la donnee. Un refus n'est pas une panne -> statut `idle`, mais
-    // avec une RAISON nommee (sinon il se confond avec un hors-ligne et devient
-    // indebuggable).
-    if (!await consentCheck(ConsentPurpose.healthData)) {
-      _log.w("[CloudSync] Consentement sante absent -> randos passees REFUSEES");
-      return CloudSyncResult(
-        status: CloudSyncStatusValues.idle,
-        syncedAt: DateTime.now(),
-        error: kSyncErrorHealthConsentMissing,
-      );
-    }
     if (pastHikesDao == null) {
       _log.d("[CloudSync] DAO randos non injecte, montee ignoree");
       return CloudSyncResult(

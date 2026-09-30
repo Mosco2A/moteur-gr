@@ -82,6 +82,28 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // --- LE REGISTRE DE CONSENTEMENT (tache 638) ---
+      //
+      // DECISION DE CHRISTOPHE DU 30/09 12:32, verbatim : « Le consentement est
+      // dans nos bases, horodate, c est les donnees qui n y sont pas ».
+      //
+      // CE QUE CE CHEMIN PORTE : une decision par finalite — accorde ou refuse,
+      // quand, sous quelle version du texte, et ce qui a provoque la demande.
+      // JAMAIS la donnee protegee : pas de groupe sanguin, pas d allergie, pas
+      // de traitement, pas d age ni de poids. La fiche medicale n a aucun chemin
+      // de sortie (liste fermee de la tache 612) et la morphologie non plus
+      // (tache 635).
+      //
+      // ECRITURE PAR LE PROPRIETAIRE SEUL, et c est volontairement le meme
+      // regime que la progression : c est le randonneur qui consent, donc c est
+      // son telephone qui en fait foi. A l inverse du COMPTE (wallet /
+      // entitlements / subscription), qu il ne doit jamais pouvoir s ecrire.
+      // Cette regle est DECLAREE A PART plutot que laissee a la regle generique
+      // juste en dessous : ecrite noir sur blanc, elle se relit et se verifie.
+      match /consents/{finalite} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
       // --- LA PROGRESSION ET LE SAC D UN SENTIER (tache 635) ---
       //
       // CETTE REGLE MANQUAIT, ET C EST ELLE QUI EMPECHAIT TOUTE MONTEE. La

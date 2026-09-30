@@ -13,6 +13,8 @@
 // garde : ces tests exigent qu'elle soit DANS la methode, et qu'elle soit
 // FERMEE PAR DEFAUT (pas de consentement lisible = refus).
 
+import 'dart:io';
+
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,14 +54,13 @@ void main() {
     await db.close();
   });
 
-  CloudSyncService makeSync({ConsentCheck? consent}) => CloudSyncService(
+  CloudSyncService makeSync() => CloudSyncService(
         progressDao: ProgressDao(db),
         checklistDao: ChecklistDao(db),
         syncQueueDao: SyncQueueDao(db),
         connectivityMonitor: connectivity,
         firebaseService: FirebaseService.testOnly(isAvailable: true),
         pastHikesDao: db.pastHikesDao,
-        consentCheck: consent,
       );
 
   RestoreService makeRestore({ConsentCheck? consent}) => RestoreService(
@@ -84,28 +85,41 @@ void main() {
     ));
   }
 
-  // LA GARDE A CHANGE DE PORTE, PAS DE NATURE (tache 635). Elle protegeait
-  // `syncHikerProfile`, qui poussait la MORPHOLOGIE. Cette montee n existe plus
-  // — la morphologie reste sur le telephone, decision de Christophe du 29/09 :
-  // « Sauf les donnees persos ». La garde tient desormais `syncPastHikes` : une
-  // rando passee decrit l effort physique d une personne, et sans consentement
-  // `healthData` EFFECTIF elle ne sort pas plus que le reste.
-  group('CloudSyncService.syncPastHikes — garde art. 9 DANS la methode', () {
-    test('consentement sante ABSENT -> refus, aucune ecriture tentee',
+  // LES RANDOS PASSEES SONT SORTIES DE CETTE GARDE, ET C EST CHRISTOPHE QUI A
+  // TRANCHE (DEM du 30/09 12:33).
+  //
+  // HISTORIQUE EN DEUX TEMPS. La garde protegeait `syncHikerProfile`, qui
+  // poussait la MORPHOLOGIE ; la tache 635 a supprime cette montee (la
+  // morphologie reste sur le telephone) et a REPORTE la garde sur les randos
+  // passees, par prudence. Le bilan de ce lot signalait la consequence : tant
+  // que la case sante n etait pas cochee, `past_hikes` restait VIDE au serveur.
+  // Christophe l a lue et a tranche l inverse — les randos montent comme la
+  // progression et le sac, la case garde la fiche medicale seule.
+  //
+  // CE GROUPE PROUVE DONC MAINTENANT LE CONTRAIRE DE CE QU IL PROUVAIT : que
+  // rien, dans ce service, ne subordonne plus les randos passees a un
+  // consentement. Et il verifie que le chemin de sortie de la fiche medicale
+  // reste FERME, lui — c est la seule chose que la case doit encore garder.
+  group('CloudSyncService.syncPastHikes — plus aucune garde de consentement',
+      () {
+    test('sans consentement sante, les randos passees montent quand meme',
         () async {
       await seedRandoPassee();
-      // Consentement jamais donne (prefs vides) : la garde par defaut lit le
-      // stockage reel et doit refuser.
+      // Prefs vides : AUCUN consentement n a jamais ete donne.
       final result = await makeSync().syncPastHikes('uid-auth');
 
-      expect(result.status, CloudSyncStatusValues.idle);
-      expect(result.itemsSynced, 0);
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'le refus doit etre NOMME, pas confondu avec un hors-ligne');
+      // FIREBASE N EST PAS JOIGNABLE EN TEST : on n exige donc pas un succes.
+      // Ce qui se mesure ici est que la methode VA JUSQU AU TRANSPORT au lieu
+      // de refuser avant — l erreur rendue est celle du cloud absent, plus
+      // jamais celle d un consentement manquant.
+      expect(result.error, isNot(contains('consent')),
+          reason: 'un refus de consentement ne peut plus etre la raison');
+      expect(result.error, contains('Firebase'),
+          reason: 'la methode est allee jusqu au transport, comme pour la '
+              'progression et le sac');
     });
 
-    test('consentement sante REVOQUE -> refus (le retrait est immediat)',
-        () async {
+    test('un consentement sante REVOQUE ne bloque plus les randos', () async {
       await seedRandoPassee();
       final prefs = await SharedPreferences.getInstance();
       final consent = ConsentService(prefs: prefs);
@@ -114,49 +128,34 @@ void main() {
 
       final result = await makeSync().syncPastHikes('uid-auth');
 
-      expect(result.error, kSyncErrorHealthConsentMissing);
+      expect(result.error, isNot(contains('consent')));
       consent.dispose();
     });
 
-    test('une AUTRE finalite accordee n ouvre PAS la porte a la sante',
+    test('le service ne connait plus aucune verification de consentement',
         () async {
-      await seedRandoPassee();
-      final prefs = await SharedPreferences.getInstance();
-      final consent = ConsentService(prefs: prefs);
-      await consent.grant(ConsentPurpose.locationNavigation);
-      await consent.grant(ConsentPurpose.socialSharing);
-
-      final result = await makeSync().syncPastHikes('uid-auth');
-
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'art. 9 : consentement SEPARE, jamais groupe');
-      consent.dispose();
+      final source = File('lib/core/services/cloud_sync_service.dart')
+          .readAsStringSync();
+      // ON CHERCHE LA DECLARATION, PAS LE MOT : les commentaires de ce service
+      // expliquent longuement pourquoi la garde a ete retiree, et ils doivent
+      // pouvoir le dire sans faire echouer l invariante.
+      expect(source, isNot(contains('final ConsentCheck consentCheck')),
+          reason: 'un champ de verification qui survit a sa garde laisse '
+              'croire qu une garde vit encore ici');
+      expect(source, isNot(contains('ConsentCheck? consentCheck')));
+      expect(source, isNot(contains('await consentCheck(')));
+      expect(source, isNot(contains('ConsentPurpose.healthData)')));
     });
 
-    test('la garde est FERMEE PAR DEFAUT si l etat est illisible', () async {
-      await seedRandoPassee();
-      // Etat de consentement corrompu : impossible de conclure => on refuse.
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'consent_healthData': 'ceci n est pas du JSON',
-      });
-      final result = await makeSync().syncPastHikes('uid-auth');
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'un doute sur le consentement se tranche par le refus');
-    });
-
-    test('consentement ACCORDE -> la garde laisse passer', () async {
-      await seedRandoPassee();
-      var checked = false;
-      final result = await makeSync(consent: (purpose) async {
-        checked = purpose == ConsentPurpose.healthData;
-        return true;
-      }).syncPastHikes('uid-auth');
-
-      expect(checked, isTrue,
-          reason: 'la garde doit interroger la finalite SANTE');
-      // Firestore n'est pas joignable en test : on n'exige pas un succes, mais
-      // on exige que le refus de consentement ne soit PLUS la raison.
-      expect(result.error, isNot(kSyncErrorHealthConsentMissing));
+    test('LA FICHE MEDICALE, ELLE, N A TOUJOURS AUCUN CHEMIN DE SORTIE',
+        () async {
+      // C est ce que la case garde encore, et ce lot n y touche pas : la liste
+      // fermee de la tache 612 refuse tout document de sante, consentement ou
+      // pas.
+      for (final nom in const ['health', 'sante', 'medical', 'fiche_medicale']) {
+        expect(DocumentsDuCoffreDistant.autorise(nom), isFalse,
+            reason: '« $nom » ne doit avoir aucun chemin vers nos serveurs');
+      }
     });
   });
 

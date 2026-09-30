@@ -90,18 +90,66 @@ enum ConsentPurpose {
   String get storageKey => 'consent_$name';
 }
 
+/// CE QUI A PROVOQUE LA DEMANDE DE CONSENTEMENT (DEM du 30/09 12:33).
+///
+/// POURQUOI LE DECLENCHEUR EST UNE DONNEE ET PAS UN COMMENTAIRE. Christophe :
+/// « en cas de modification des donnees, on redemande le consentement ». Un
+/// registre de consentement qui dit « accorde le 30/09 » sans dire POURQUOI on
+/// a demande ce jour-la ne prouve rien : on ne peut pas distinguer un premier
+/// accord d'une re-confirmation apres modification des donnees, ni savoir si la
+/// re-demande a bien eu lieu. Le declencheur monte donc en base avec la
+/// decision.
+enum DeclencheurDeConsentement {
+  /// Aucune decision anterieure : c'est la premiere fois qu'on demande.
+  premiereDemande("premiere_demande"),
+
+  /// LES DONNEES COUVERTES PAR LA FINALITE ONT ETE MODIFIEES. C'est le cas
+  /// ajoute par la decision du 30/09 : la fiche de sante ou la morphologie
+  /// vient de changer, donc on re-demande.
+  modificationDesDonnees("modification_des_donnees"),
+
+  /// Le texte de la politique a evolue : les accords anterieurs sont caducs.
+  evolutionDePolitique("evolution_de_politique"),
+
+  /// Le randonneur a lui-meme ouvert l'ecran Confidentialite et tranche.
+  reglages("reglages"),
+
+  /// Origine non renseignee. Vaut pour les decisions ANTERIEURES a ce lot, qui
+  /// existent deja sur le telephone de Christophe : on ne va pas leur inventer
+  /// un declencheur qu'on ne connait pas.
+  inconnu("inconnu");
+
+  const DeclencheurDeConsentement(this.code);
+
+  /// La forme stockee et publiee. Stable : c'est elle qui vit en base, jamais
+  /// l'index de l'enum.
+  final String code;
+
+  /// Relit un code stocke. Un code inconnu devient [inconnu] plutot que de
+  /// faire echouer la lecture de tout l'etat de consentement.
+  static DeclencheurDeConsentement depuisLeCode(String? code) {
+    for (final d in DeclencheurDeConsentement.values) {
+      if (d.code == code) return d;
+    }
+    return DeclencheurDeConsentement.inconnu;
+  }
+}
+
 /// Etat de consentement immuable pour une finalite donnee.
 ///
-/// Contient la decision ([granted]), son horodatage ([decidedAt]) et la
-/// version de politique en vigueur au moment de la decision
-/// ([policyVersion]). Sert a determiner si une re-demande est necessaire
-/// apres un changement de politique.
+/// Contient la decision ([granted]), son horodatage ([decidedAt]), la version
+/// de politique en vigueur au moment de la decision ([policyVersion]), le
+/// [declencheur] de la demande et la [revisionDesDonnees] couverte au moment du
+/// choix. Sert a determiner si une re-demande est necessaire — apres un
+/// changement de politique, ou apres une modification des donnees.
 class ConsentState {
   const ConsentState({
     required this.purpose,
     required this.granted,
     required this.decidedAt,
     required this.policyVersion,
+    this.declencheur = DeclencheurDeConsentement.inconnu,
+    this.revisionDesDonnees = 0,
   });
 
   /// Etat initial : consentement NON accorde (acte positif requis).
@@ -118,6 +166,12 @@ class ConsentState {
   ///
   /// Leve une [FormatException] si le JSON est invalide — pas de catch
   /// silencieux : un etat corrompu doit etre visible, pas masque.
+  /// TOLERANTE AUX DECISIONS DEJA PRISES (tache 638). Les deux champs ajoutes
+  /// par ce lot — [declencheur] et [revisionDesDonnees] — sont ABSENTS des
+  /// enregistrements presents sur les telephones deja installes, celui de
+  /// Christophe compris. Les exiger aurait rendu illisible chaque consentement
+  /// deja donne, donc fait re-demander tout le monde pour une raison purement
+  /// technique. Absents => « inconnu » et revision 0.
   factory ConsentState.fromJson(ConsentPurpose purpose, String raw) {
     final Map<String, dynamic> map = jsonDecode(raw) as Map<String, dynamic>;
     final int? decidedMs = map['decidedAt'] as int?;
@@ -128,6 +182,10 @@ class ConsentState {
           ? null
           : DateTime.fromMillisecondsSinceEpoch(decidedMs),
       policyVersion: map['policyVersion'] as int?,
+      declencheur: DeclencheurDeConsentement.depuisLeCode(
+        map['declencheur'] as String?,
+      ),
+      revisionDesDonnees: map['revisionDesDonnees'] as int? ?? 0,
     );
   }
 
@@ -143,11 +201,29 @@ class ConsentState {
   /// Version de politique en vigueur au moment de la decision. Null si aucune.
   final int? policyVersion;
 
+  /// Ce qui avait provoque la demande (tache 638).
+  final DeclencheurDeConsentement declencheur;
+
+  /// LA REVISION DES DONNEES COUVERTES, AU MOMENT DU CHOIX (tache 638).
+  ///
+  /// C'est le pendant exact de [policyVersion], mais du cote des DONNEES au lieu
+  /// du cote du TEXTE. Un compteur qui monte d'un cran a chaque modification des
+  /// donnees que cette finalite protege. Quand il ne correspond plus au compteur
+  /// courant, le consentement porte sur des donnees qui ne sont plus celles
+  /// d'aujourd'hui : il se re-demande. C'est la mecanique demandee par Christophe
+  /// le 30/09 (« en cas de modification des donnees, on redemande le
+  /// consentement »), et c'est aussi ce qui garantit qu'on ne re-demande PAS en
+  /// boucle : afficher un ecran ne modifie aucune donnee, donc ne bouge pas ce
+  /// compteur.
+  final int revisionDesDonnees;
+
   /// Serialise l'etat pour le stockage local.
   String toJson() => jsonEncode(<String, dynamic>{
         'granted': granted,
         'decidedAt': decidedAt?.millisecondsSinceEpoch,
         'policyVersion': policyVersion,
+        'declencheur': declencheur.code,
+        'revisionDesDonnees': revisionDesDonnees,
       });
 
   /// Vrai si cet etat est EFFECTIF pour [currentPolicyVersion].
@@ -230,41 +306,109 @@ class ConsentService {
   bool hasConsent(ConsentPurpose purpose) =>
       stateOf(purpose).isEffectiveFor(_policyVersion);
 
+  /// Cle du compteur de revisions des donnees couvertes par [purpose].
+  static String cleDeRevision(ConsentPurpose purpose) =>
+      'consent_revision_${purpose.name}';
+
+  /// LA REVISION COURANTE DES DONNEES couvertes par [purpose] (tache 638).
+  ///
+  /// Monte d'un cran a chaque appel de [noterUneModificationDesDonnees]. Zero
+  /// tant qu'aucune modification n'a ete enregistree.
+  int revisionDesDonnees(ConsentPurpose purpose) {
+    final prefs = _prefs;
+    if (prefs == null) {
+      throw StateError(
+        'ConsentService non initialise : appeler initialize() d\'abord.',
+      );
+    }
+    return prefs.getInt(cleDeRevision(purpose)) ?? 0;
+  }
+
+  /// LES DONNEES COUVERTES PAR [purpose] VIENNENT D'ETRE MODIFIEES (tache 638).
+  ///
+  /// DECISION DE CHRISTOPHE DU 30/09 12:33, verbatim : « en cas de modification
+  /// des donnees, on redemande le consentement ». Cette methode est le SEUL
+  /// endroit qui declenche une re-demande cote donnees : elle s'appelle depuis
+  /// les ecrans qui ECRIVENT (la fiche de sante, la morphologie), jamais depuis
+  /// ceux qui affichent. C'est ce qui garantit « une fois par modification,
+  /// jamais au simple affichage » : un affichage n'ecrit rien, donc n'appelle
+  /// rien.
+  ///
+  /// ELLE N'EMET PAS SUR [changes]. Le flux porte les DECISIONS de consentement,
+  /// et noter une modification n'en est pas une — c'est ce qui rend une decision
+  /// NECESSAIRE. Les ecrans qui veulent savoir s'il faut re-demander lisent
+  /// [needsPrompt].
+  Future<int> noterUneModificationDesDonnees(ConsentPurpose purpose) async {
+    await initialize();
+    final suivante = revisionDesDonnees(purpose) + 1;
+    await _prefs!.setInt(cleDeRevision(purpose), suivante);
+    return suivante;
+  }
+
   /// Vrai si une (re)demande de consentement est necessaire pour [purpose].
   ///
-  /// Cas : jamais decide, ou consentement accorde sous une version de
-  /// politique anterieure (caduc). Un refus explicite sous la version
-  /// courante n'est PAS re-demande (l'utilisateur a tranche).
+  /// Trois cas, et le troisieme est celui du 30/09 :
+  ///  1. jamais decide ;
+  ///  2. consentement accorde sous une version de politique anterieure (caduc) ;
+  ///  3. LES DONNEES COUVERTES ONT CHANGE depuis la decision.
+  ///
+  /// Un refus explicite sous la version courante n'est PAS re-demande tant que
+  /// les donnees ne bougent pas (l'utilisateur a tranche). Mais un refus suivi
+  /// d'une MODIFICATION des donnees l'est : c'est le cas ou quelqu'un a refuse,
+  /// puis a quand meme rempli ou change sa fiche — il faut lui reposer la
+  /// question sur ce qu'il vient d'ecrire.
   bool needsPrompt(ConsentPurpose purpose) {
     final state = stateOf(purpose);
     if (state.decidedAt == null) return true; // jamais decide
     if (state.granted && state.policyVersion != _policyVersion) {
       return true; // accord caduc apres evolution de politique
     }
+    if (state.revisionDesDonnees != revisionDesDonnees(purpose)) {
+      return true; // les donnees couvertes ont change depuis le choix
+    }
     return false;
   }
 
   /// Accorde le consentement pour [purpose] (acte positif explicite).
   ///
-  /// Horodate la decision et la rattache a la version de politique courante.
-  /// Emet l'evenement sur [changes].
-  Future<void> grant(ConsentPurpose purpose) =>
-      _record(purpose, granted: true);
+  /// Horodate la decision, la rattache a la version de politique courante, a la
+  /// revision courante des donnees et au [declencheur] de la demande. Emet
+  /// l'evenement sur [changes].
+  Future<void> grant(
+    ConsentPurpose purpose, {
+    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+  }) =>
+      _record(purpose, granted: true, declencheur: declencheur);
 
   /// Retire le consentement pour [purpose] (retractable a tout moment).
   ///
   /// Horodate la decision. Emet l'evenement sur [changes].
-  Future<void> revoke(ConsentPurpose purpose) =>
-      _record(purpose, granted: false);
+  Future<void> revoke(
+    ConsentPurpose purpose, {
+    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+  }) =>
+      _record(purpose, granted: false, declencheur: declencheur);
 
   /// Enregistre une decision de consentement et notifie les ecouteurs.
-  Future<void> _record(ConsentPurpose purpose, {required bool granted}) async {
+  ///
+  /// LA DECISION CAPTURE LA REVISION COURANTE DES DONNEES, et c'est ce qui ferme
+  /// la boucle : re-demander apres une modification pose une decision qui porte
+  /// la NOUVELLE revision, donc [needsPrompt] retombe a faux tout de suite. Sans
+  /// cette capture, l'application re-demanderait a chaque ouverture jusqu'a la
+  /// modification suivante.
+  Future<void> _record(
+    ConsentPurpose purpose, {
+    required bool granted,
+    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+  }) async {
     await initialize();
     final state = ConsentState(
       purpose: purpose,
       granted: granted,
       decidedAt: DateTime.now(),
       policyVersion: _policyVersion,
+      declencheur: declencheur,
+      revisionDesDonnees: revisionDesDonnees(purpose),
     );
     await _prefs!.setString(purpose.storageKey, state.toJson());
     _controller.add(purpose);
