@@ -3,9 +3,11 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:mbtiles/mbtiles.dart';
 import 'package:moteur_gr/core/config/trail_data_source.dart';
 import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/map/mbtiles_manager.dart';
@@ -126,6 +128,53 @@ void main() {
         'SQLite format 3',
         reason:
             'un .mbtiles est une base SQLite — sinon la carte ne s ouvre pas',
+      );
+
+      // 5. LA CARTE REND BIEN UNE IMAGE A L ENDROIT DEMANDE — ET C EST LE PIEGE
+      //    DU FORMAT. Un `.mbtiles` range ses lignes en TMS (origine EN BAS)
+      //    alors que la carte compte en XYZ (origine EN HAUT) :
+      //    `flutter_map_mbtiles` calcule `tmsY = (1 << z) - 1 - y` AVANT
+      //    d interroger la base. Une carte ecrite dans le mauvais sens s ouvre
+      //    parfaitement et n affiche que du vide — le defaut ne se verrait qu en
+      //    montagne. On refait donc ici le calcul exact du paquet, sur le
+      //    milieu de l emprise, et on exige une IMAGE PNG.
+      final base = MbTiles(mbtilesPath: carte.path);
+      addTearDown(base.dispose);
+      final metadonnees = base.getMetadata();
+      expect(metadonnees.format, 'png');
+      expect(
+        metadonnees.attributionHtml,
+        contains('OpenStreetMap'),
+        reason:
+            'les tuiles sont derivees d OpenStreetMap : le fichier doit porter '
+            'son attribution, c est l obligation ODbL',
+      );
+      final bornes = metadonnees.bounds!;
+      const zoom = 14;
+      final n = 1 << zoom;
+      final lon = (bornes.left + bornes.right) / 2;
+      final lat = (bornes.top + bornes.bottom) / 2;
+      final x = ((lon + 180.0) / 360.0 * n).floor();
+      final radians = lat * math.pi / 180.0;
+      final y =
+          ((1.0 -
+                      math.log(math.tan(radians) + 1.0 / math.cos(radians)) /
+                          math.pi) /
+                  2.0 *
+                  n)
+              .floor();
+      final tuile = base.getTile(z: zoom, x: x, y: n - 1 - y);
+      expect(
+        tuile,
+        isNotNull,
+        reason:
+            'aucune tuile a z$zoom x$x y$y : soit l emprise ne couvre pas le '
+            'sentier, soit les lignes ont ete ecrites en XYZ au lieu de TMS.',
+      );
+      expect(
+        tuile!.take(8).toList(),
+        <int>[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+        reason: 'la carte doit rendre un PNG : c est ce que la couche affiche',
       );
     },
     timeout: const Timeout(Duration(minutes: 10)),
