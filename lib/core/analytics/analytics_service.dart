@@ -327,15 +327,36 @@ class AnalyticsService {
 /// Firebase indisponible -> service inerte (no-op, zero crash).
 /// Firebase disponible -> backend reel, collecte DESACTIVEE par defaut
 /// (opt-in : appeler [AnalyticsService.setConsent] apres consentement).
+/// TACHE 637 (VOLET 2) — CE PROVIDER NE PEUT PLUS LEVER, ET C'EST ESSENTIEL.
+///
+/// `FirebaseAnalyticsSink()` et `FirebaseCrashSink()` touchent
+/// `FirebaseAnalytics.instance` / `FirebaseCrashlytics.instance` DANS LEUR
+/// CONSTRUCTEUR. Si Firebase se declare disponible mais que l'application native
+/// n'est pas joignable (`[core/no-app]`, services Google Play absents ou trop
+/// vieux), ce `create` levait — et `ref.read(analyticsServiceProvider)` levait
+/// chez tous ses appelants.
+///
+/// LA CONSEQUENCE ETAIT GRAVE ET PARADOXALE : le service qui sert a SAVOIR que
+/// l'application casse etait lui-meme capable de la casser. Il est lu sur le
+/// chemin de la question de sauvegarde (tache 637, volet 1) et depuis la garde
+/// d'amorce, c'est-a-dire aux deux endroits ou une exception coûte l'ecran entier.
+///
+/// UN JOURNAL QUI NE PEUT PAS S'OUVRIR NE DOIT RIEN COÛTER : on retombe sur le
+/// service inerte, exactement comme en mode local.
 final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
   final available = ref.watch(isFirebaseAvailableProvider);
   if (!available) {
     return AnalyticsService.disabled();
   }
-  final service = AnalyticsService(
-    analytics: FirebaseAnalyticsSink(),
-    crash: FirebaseCrashSink(),
-  );
+  final AnalyticsService service;
+  try {
+    service = AnalyticsService(
+      analytics: FirebaseAnalyticsSink(),
+      crash: FirebaseCrashSink(),
+    );
+  } catch (_) {
+    return AnalyticsService.disabled();
+  }
   // Opt-in strict sur la MESURE D'USAGE : coupee tant que le consentement
   // n'est pas donne. TACHE 596 (C4) : cet appel eteignait aussi Crashlytics —
   // il ne touche plus que les evenements d'usage.

@@ -36,10 +36,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
-import 'package:moteur_gr/features/safety/presentation/porte_consentement_sauvegarde.dart';
-import 'package:moteur_gr/features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
-import 'package:moteur_gr/shared/widgets/cadre_demo.dart';
+import 'package:moteur_gr/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'regie_pub_absente.dart';
@@ -121,6 +119,7 @@ Future<void> monterAppliReelle(
   EtatAppli etat = EtatAppli.enRoute,
   Map<String, Object> prefs = const {},
   bool avecEnveloppesDeMain = false,
+  List<Object> surcharges = const [],
 }) async {
   etat.appliquer();
   _erreursCaptees.clear();
@@ -135,26 +134,35 @@ Future<void> monterAppliReelle(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   if (depart != null) appRouter.go(depart);
-  await tester.pumpWidget(
-    ProviderScope(
-      child: TranslationProvider(
-        child: MaterialApp.router(
-          routerConfig: appRouter,
-          builder: avecEnveloppesDeMain
-              // L'ORDRE EST CELUI DE `main.dart`, A LA LETTRE : le cadre demo
-              // dehors (il doit entourer jusqu'aux dialogues), puis la porte de
-              // consentement, puis la reprise orpheline.
-              ? (context, child) => CadreDemo(
-                  child: PorteConsentementSauvegarde(
-                    child: OrphanSessionReprise(
-                      child: child ?? const SizedBox.shrink(),
-                    ),
-                  ),
-                )
-              : null,
-        ),
-      ),
+
+  final appli = TranslationProvider(
+    child: MaterialApp.router(
+      routerConfig: appRouter,
+      // C'EST LA LIGNE DE `main.dart`, A L'IDENTIQUE (`main.dart:261`). La garde
+      // d'amorce porte elle-meme les trois autres enveloppes (cadre demo, porte
+      // de consentement, reprise orpheline) : la recopier ici les ferait DEUX
+      // fois, et l'arbre ne serait plus celui de l'application.
+      builder: avecEnveloppesDeMain
+          ? (context, child) => BootstrapGate(child: child)
+          : null,
     ),
+  );
+
+  // [surcharges] RESTE VIDE PAR DEFAUT, et c'est la propriete de ce socle : les
+  // providers de PRODUCTION tournent, sans une seule surcharge. On ne s'en sert
+  // que pour placer l'appareil dans un etat que le test ne peut PAS atteindre
+  // autrement — typiquement « un service de fond leve a la construction ».
+  //
+  // `List<Object>` ET `.cast()`, ET C'EST UNE CONTRAINTE, PAS UN GOUT : le type
+  // `Override` n'est pas exporte par l'API publique de Riverpod 3.3.2, on ne peut
+  // donc pas le nommer dans cette signature. `.cast()` le retrouve par inference
+  // depuis le parametre de `ProviderScope`. On garde `ProviderScope` (et non un
+  // `UncontrolledProviderScope` avec un conteneur fourni) pour que l'ARBRE
+  // possede le conteneur et le detruise en se demontant : un conteneur detenu par
+  // le test laisse derriere lui les horloges des services de fond, et le cadre de
+  // test refuse un minuteur survivant.
+  await tester.pumpWidget(
+    ProviderScope(overrides: surcharges.cast(), child: appli),
   );
   await stabiliser(tester);
 }

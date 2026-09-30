@@ -144,8 +144,26 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
   @visibleForTesting
   static void reinitialiserLeVerrou() => _enVol = null;
 
+  /// Le journal des miettes — et il ne peut PAS faire echouer ce qu'il instrumente.
+  ///
+  /// TACHE 637 (VOLET 2) — CE FILET EXISTE PARCE QUE LE VOLET 1 AVAIT OUVERT LE
+  /// MEME TROU QU'IL FERMAIT. `analyticsServiceProvider` construit les puits
+  /// Firebase, dont les constructeurs touchent `FirebaseAnalytics.instance` : une
+  /// application native injoignable (`[core/no-app]`, services Google Play absents
+  /// ou trop vieux) faisait LEVER ce `ref.read`, donc lever `poserSiNecessaire`
+  /// depuis un `addPostFrameCallback` — le chemin exact du plantage du volet 1. Le
+  /// provider est corrige a la source ; ce filet reste, parce qu'un traceur qui
+  /// casse la trace est le genre de defaut qu'on ne veut pas revoir.
+  static AnalyticsService _journal(WidgetRef ref) {
+    try {
+      return ref.read(analyticsServiceProvider);
+    } catch (_) {
+      return AnalyticsService.disabled();
+    }
+  }
+
   static Future<void> _poser(BuildContext context, WidgetRef ref) async {
-    final journal = ref.read(analyticsServiceProvider);
+    final journal = _journal(ref);
     // L'HOTE EST RESOLU AVANT LA MOINDRE ATTENTE, ET C'EST VOULU : aucun
     // `BuildContext` ne traverse ainsi de trou asynchrone. Ce que
     // [contexteDeDialogue] rend est, dans l'application reelle, le contexte du

@@ -347,6 +347,16 @@ final ordonnanceurDeSynchronisationProvider =
 /// IL NE BLOQUE PAS LE DEMARRAGE : il ne rend rien, ne declenche aucune passe a la
 /// creation, et se contente d armer l horloge et l ecoute du reseau. Le premier
 /// ecran s affiche sans attendre le moindre octet.
+/// ET IL NE PEUT PLUS EMPORTER L ECRAN AVEC LUI (tache 637, volet 2).
+/// `demarrer()` etait appele NU dans ce `create` : tout ce qu il levait sortait du
+/// provider, remontait dans le `ref.watch` que `BootstrapGate` fait de lui, et
+/// faisait lever le `build` de la garde qui enveloppe TOUS les ecrans — donc un
+/// `ErrorWidget` plein cadre, un rectangle noir en release. Une cadence qui ne
+/// s arme pas coûte une cadence ; elle ne doit pas coûter l application.
 final ordonnanceurDemarreProvider = Provider<void>((ref) {
-  ref.watch(ordonnanceurDeSynchronisationProvider).demarrer();
+  try {
+    ref.watch(ordonnanceurDeSynchronisationProvider).demarrer();
+  } catch (erreur) {
+    _log.d('[Ordonnanceur] Armement abandonne ($erreur).');
+  }
 });

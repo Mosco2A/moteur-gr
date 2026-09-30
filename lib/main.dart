@@ -258,7 +258,7 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
       // actif (appBootstrapProvider) est declenche et ATTENDU avant le premier
       // rendu des ecrans data. Sans cette garde, seedIfNeeded() n'etait appele
       // nulle part : carte/etapes/POI vides et meteo « introuvable ».
-      builder: (context, child) => _BootstrapGate(child: child),
+      builder: (context, child) => BootstrapGate(child: child),
     );
   }
 }
@@ -284,19 +284,93 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
 /// `isLoading` vrai) : sans ca, l'app afficherait 1 frame l'ancien sentier
 /// (carte/etapes de l'ancien trek) avant le re-seed. On regarde donc
 /// `isLoading`/`isReloading` en plus du `hasValue` pour couvrir ce cas.
-class _BootstrapGate extends ConsumerWidget {
-  const _BootstrapGate({required this.child});
+///
+/// PUBLIQUE DEPUIS LA TACHE 637, ET CE N'EST PAS UN DETAIL D'ORGANISATION. Elle
+/// etait privee a ce fichier, donc AUCUN test de `test/` ne pouvait la monter :
+/// le socle « parcours reel » montait `MaterialApp.router` sans le `builder`
+/// ci-dessus, et les trois enveloppes de l'application — cette garde, le cadre
+/// demo et la porte de consentement — n'existaient dans aucun test. C'est ce trou
+/// qui a laisse passer le plantage du consentement (28 rapports Crashlytics sur
+/// les builds 6 et 7) ET qui empechait de mesurer l'ecran noir de Christophe :
+/// le loader de cette garde peint le vert sombre du splash, ce qui, sur un
+/// telephone, se lit « ecran noir ».
+class BootstrapGate extends ConsumerWidget {
+  const BootstrapGate({required this.child, super.key});
 
   /// Arbre route fourni par GoRouter (peut etre null tres tot dans le cycle de
   /// vie de MaterialApp.router — on affiche alors le loader).
   final Widget? child;
+
+  /// ARME UN SERVICE DE FOND SANS JAMAIS POUVOIR EMPORTER L'ECRAN AVEC LUI.
+  ///
+  /// ---------------------------------------------------------------------------
+  /// TACHE 637, VOLET 2 — L'ECRAN NOIR QUI BOUCLE, ET SA CAUSE MESUREE
+  /// ---------------------------------------------------------------------------
+  ///
+  /// Retour de Christophe, 30/09 11:02 (DEM-260930-1103), verbatim : « Mon compte
+  /// depuis le menu trek = ecran noir ; depuis la demo ca fonctionne ».
+  ///
+  /// CETTE GARDE ENVELOPPE TOUS LES ECRANS. Quand son `build` leve, Flutter
+  /// remplace l'arbre ENTIER par un `ErrorWidget` — en debug un cadre rouge qui
+  /// nomme la panne, en RELEASE un rectangle gris-noir SANS UN MOT. Et comme la
+  /// garde se reconstruit a chaque changement de provider qu'elle observe, elle
+  /// releve, et le noir revient : « boucle sur ecran noir », mot pour mot.
+  ///
+  /// CE QUI LEVAIT. Les cinq lectures ci-dessous arment des services de fond, et
+  /// chacun de leurs commentaires promettait « NON BLOQUANT », « best-effort »,
+  /// « l'app demarre meme si la pub echoue ». C'ETAIT FAUX : trois d'entre eux
+  /// sont des `Provider<void>` SYNCHRONES, et `ref.watch` d'un provider dont la
+  /// creation leve RELEVE la meme erreur ici, dans ce `build`. La montee en base
+  /// (tache 635) lisait `authServiceProvider`, qui CONSTRUIT
+  /// `FirebaseAuthService`, donc touche `FirebaseAuth.instance` : tout ce qui leve
+  /// la — Firebase non initialise, services Google Play absents ou trop vieux,
+  /// authentification non activee — noircissait l'application entiere. Mesure
+  /// faite : `ProviderException: Tried to use a provider that is in error state`
+  /// « thrown building BootstrapGate ».
+  ///
+  /// ET C'EST POURQUOI LA DEMO MARCHAIT. Le mode demo n'arme ni la montee en base
+  /// ni les ecritures du trek (gardes `enDemoProvider`) : les providers qui
+  /// levaient n'etaient jamais construits. Le meme geste, hors demo, les
+  /// construisait — d'ou « depuis le menu trek » et pas « depuis la demo ».
+  ///
+  /// LA REGLE POSEE ICI, ET ELLE VAUT POUR TOUT CE QU'ON AJOUTERA. Un service de
+  /// fond qui echoue coûte SON service, jamais l'ecran. La cause est corrigee
+  /// aussi chez chacun d'eux (ils ne levent plus) ; cette garde-ci est le filet
+  /// qui empeche le prochain ajout de rouvrir le meme trou.
+  static void _armer(String nom, void Function() armement) {
+    try {
+      armement();
+    } catch (erreur) {
+      // Volontairement muet a l'ecran : un service de fond qui ne s'arme pas ne
+      // se raconte pas au randonneur. Il se rearmera a la prochaine ouverture.
+      debugPrint('[Amorce] Service de fond « $nom » non arme : $erreur');
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Barriere de re-seed : le changement de sentier actif doit rejouer l'amorce
     // (le provider d'amorce watch deja la config ; cette lecture rend la
     // dependance explicite et documente l'invalidation au niveau de la garde).
-    ref.watch(trailConfigProvider.select((c) => c.id));
+    //
+    // CELLE-CI EST PORTANTE, pas best-effort : sans configuration de sentier il
+    // n'y a rien a afficher. Mais un ecran noir muet reste le pire des refus, donc
+    // si elle leve on montre l'ECRAN D'ERREUR de cette garde — le meme que pour
+    // une amorce en echec, qui au moins nomme la panne (tache 637, volet 2).
+    try {
+      ref.watch(trailConfigProvider.select((c) => c.id));
+    } catch (erreur) {
+      return _BootstrapScaffold(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(
+            '$erreur',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
 
     // ACCUEIL CONTEXTUEL TENU A JOUR AU NIVEAU DE L'APPLICATION (tache 548).
     //
@@ -318,13 +392,13 @@ class _BootstrapGate extends ConsumerWidget {
     // actif en permanence, donc il est rafraichi par l'ordonnanceur AVANT la
     // phase de build, jamais pendant. Aucun effet visuel : la garde rend le
     // meme arbre route.
-    ref.watch(homeLocationProvider);
+    _armer('accueil contextuel', () => ref.watch(homeLocationProvider));
 
     // StepWays L6/A6 : amorce PUB NON bloquante — resout le consentement UMP/CMP
     // puis initialise le SDK AdMob en tache de fond. On `watch` sans gater le
     // rendu dessus (best-effort) : l'app demarre meme si la pub echoue, et
     // aucune banniere ne s'affiche tant que le consentement n'est pas obtenu.
-    ref.watch(adsReadyProvider);
+    _armer('publicite', () => ref.watch(adsReadyProvider));
 
     // LA CADENCE DE SYNCHRONISATION EST ARMEE ICI (tache 616), ET RIEN NE L ARMAIT.
     //
@@ -344,7 +418,10 @@ class _BootstrapGate extends ConsumerWidget {
     // NON BLOQUANT : l'ordonnanceur arme une horloge et une ecoute de
     // connectivite, il ne declenche aucune passe au demarrage et ne retarde donc
     // pas le premier ecran.
-    ref.watch(ordonnanceurDemarreProvider);
+    _armer(
+      'cadence de synchronisation',
+      () => ref.watch(ordonnanceurDemarreProvider),
+    );
 
     // L ECOUTE EN DIRECT DES DROITS (tache 631), ARMEE AU MEME ENDROIT ET POUR
     // LA MEME RAISON. Le scenario d acceptation de Christophe est : on ecrit ses
@@ -353,7 +430,7 @@ class _BootstrapGate extends ConsumerWidget {
     // pour le reste du temps ; ceci est le direct. Cette garde ne se demonte
     // jamais et n est jamais mise en pause : l ecoute vit aussi longtemps que
     // l application.
-    ref.watch(descenteEnDirectProvider);
+    _armer('descente des droits', () => ref.watch(descenteEnDirectProvider));
 
     // LA MONTEE EN BASE, ARMEE ICI ET NULLE PART AILLEURS (tache 635).
     //
@@ -373,7 +450,7 @@ class _BootstrapGate extends ConsumerWidget {
     //
     // NON BLOQUANT : elle attend l identite en tache de fond et n empeche pas le
     // premier rendu.
-    ref.watch(monteeEnBaseDemarreeProvider);
+    _armer('montee en base', () => ref.watch(monteeEnBaseDemarreeProvider));
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);
