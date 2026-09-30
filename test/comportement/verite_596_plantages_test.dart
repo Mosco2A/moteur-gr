@@ -51,6 +51,17 @@ class _CrashEspion implements CrashSink {
 
   @override
   Future<void> setCollectionEnabled(bool enabled) async => collecte = enabled;
+
+  /// Miettes de piste (tache 637), retenues pour pouvoir etre verifiees.
+  final List<String> miettes = <String>[];
+  final Map<String, String> cles = <String, String>{};
+
+  @override
+  Future<void> log(String message) async => miettes.add(message);
+
+  @override
+  Future<void> setCustomKey(String key, String value) async =>
+      cles[key] = value;
 }
 
 void main() {

@@ -72,7 +72,8 @@ class RefusSauvegardeSystemeNotifier extends Notifier<bool> {
       await prefs.remove(kRefusSauvegardeSystemeKeyLegacy);
     }
     if (!ref.mounted || _ecritureLocale) return;
-    state = prefs.getBool(kRefusSauvegardeSystemeKey) ??
+    state =
+        prefs.getBool(kRefusSauvegardeSystemeKey) ??
         kRefusSauvegardeSystemeParDefaut;
     // ON CONVERGE LE DISQUE A CHAQUE OUVERTURE, ET C'EST CE QUI REND LES AUTRES
     // APPELS SUREMENT NON BLOQUANTS.
@@ -150,8 +151,8 @@ class RefusSauvegardeSystemeNotifier extends Notifier<bool> {
 /// refuse).
 final refusSauvegardeSystemeProvider =
     NotifierProvider<RefusSauvegardeSystemeNotifier, bool>(
-  RefusSauvegardeSystemeNotifier.new,
-);
+      RefusSauvegardeSystemeNotifier.new,
+    );
 
 /// Vrai quand le randonneur a DEJA tranche, faux quand la question reste a poser.
 ///
@@ -159,7 +160,31 @@ final refusSauvegardeSystemeProvider =
 /// (refus par defaut), celui-ci dit s'il faut encore poser la question. Confondre
 /// les deux ferait l'un des deux defauts : soit reposer la question a chaque
 /// ouverture, soit ne pas proteger avant de l'avoir posee.
-final decisionSauvegardeSystemePriseProvider = FutureProvider<bool>((ref) async {
+///
+/// TACHE 637 — IL N'Y A QU'UN SEUL LECTEUR DE CE PROVIDER, ET CE N'EST PAS UN
+/// HASARD QU'IL SOIT SEUL.
+///
+/// Le second rapport Crashlytics du build 6 (`Cannot use the Ref of
+/// FutureProvider<bool> after it has been disposed`,
+/// `riverpod/src/core/ref.dart:240`) portait sur ce provider. Il n'est PAS une
+/// cause : c'est une CONSEQUENCE du plantage principal — l'application mourait
+/// pendant que ce `build` attendait `SharedPreferences.getInstance()`, donc le
+/// `ProviderScope` etait detruit en pleine attente. Un seul cas contre 28 pour
+/// le plantage lui-meme, et il disparait avec lui.
+///
+/// UNE PISTE A ETE MESUREE PUIS ABANDONNEE : `ref.keepAlive()` ne fait PAS
+/// survivre une lecture invalidee en vol. Avec Riverpod 3.3.2, `invalidate`
+/// pendant un `build` en attente laisse le `Future` de `.future` EN PLAN — ni
+/// valeur, ni erreur (mesure dans
+/// `test/comportement/plantage_null_check_refus_sauvegarde_637_test.dart`).
+/// Aucune garde locale ne rattrape cela, donc la course est fermee en amont :
+/// [RefusSauvegardeSystemeDialog.poserSiNecessaire] tient un verrou qui garantit
+/// une seule lecture en vol a la fois, et [definir] — seul appelant de
+/// `invalidate` — tourne DANS ce dialogue, donc apres la resolution de cette
+/// lecture.
+final decisionSauvegardeSystemePriseProvider = FutureProvider<bool>((
+  ref,
+) async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.containsKey(kRefusSauvegardeSystemeKey);
 });

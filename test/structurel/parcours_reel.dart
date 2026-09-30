@@ -36,7 +36,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
+import 'package:moteur_gr/features/safety/presentation/porte_consentement_sauvegarde.dart';
+import 'package:moteur_gr/features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/cadre_demo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'regie_pub_absente.dart';
@@ -87,11 +90,37 @@ enum EtatAppli {
 /// donnees de sentier embarquees sont lues, la garde de redirection s'applique.
 /// C'est le point : si un ecran ne se monte qu'avec six providers simules, ce
 /// n'est pas un ecran que l'utilisateur atteint.
+///
+/// ---------------------------------------------------------------------------
+/// [avecEnveloppesDeMain] — LE TROU DE CE SOCLE, NOMME PAR LA TACHE 637
+/// ---------------------------------------------------------------------------
+///
+/// Ce socle montait `MaterialApp.router(routerConfig: appRouter)` SANS le
+/// `builder` de `main.dart`. Or c'est dans ce `builder` que vivent TROIS
+/// enveloppes de production : le cadre demo (tache 634), la porte de consentement
+/// de sauvegarde (617) et la garde de reprise orpheline. Aucune n'existait donc
+/// dans « l'application reelle » de ces tests.
+///
+/// LE PRIX A ETE PAYE EN PRODUCTION. La porte de consentement plantait a TOUS les
+/// lancements des builds 6 et 7 (28 rapports Crashlytics, zero session sans
+/// plantage) parce qu'elle appelait `showDialog` depuis un contexte pose
+/// AU-DESSUS du `Navigator` — ce que le `builder` implique et que rien ici ne
+/// reproduisait. Le socle disait « application reelle » et il lui manquait trois
+/// widgets, dont celui qui cassait.
+///
+/// L'option est OPT-IN et non le defaut, parce que ces enveloppes changent ce que
+/// les tests existants mesurent (la porte ouvre un dialogue modal au premier
+/// rendu, ce qui masquerait l'ecran qu'un test observe). Tout test qui touche a
+/// l'ouverture de l'application doit la passer a `true`.
+///
+/// La garde d'amorce (`_BootstrapGate`) reste hors de portee : elle est privee a
+/// `main.dart`. C'est ce qui reste ouvert de ce trou.
 Future<void> monterAppliReelle(
   WidgetTester tester, {
   String? depart,
   EtatAppli etat = EtatAppli.enRoute,
   Map<String, Object> prefs = const {},
+  bool avecEnveloppesDeMain = false,
 }) async {
   etat.appliquer();
   _erreursCaptees.clear();
@@ -109,7 +138,21 @@ Future<void> monterAppliReelle(
   await tester.pumpWidget(
     ProviderScope(
       child: TranslationProvider(
-        child: MaterialApp.router(routerConfig: appRouter),
+        child: MaterialApp.router(
+          routerConfig: appRouter,
+          builder: avecEnveloppesDeMain
+              // L'ORDRE EST CELUI DE `main.dart`, A LA LETTRE : le cadre demo
+              // dehors (il doit entourer jusqu'aux dialogues), puis la porte de
+              // consentement, puis la reprise orpheline.
+              ? (context, child) => CadreDemo(
+                  child: PorteConsentementSauvegarde(
+                    child: OrphanSessionReprise(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ),
+                )
+              : null,
+        ),
       ),
     ),
   );
@@ -195,7 +238,10 @@ void brancherLesPlugins() {
       .createTempSync('stepways_parcours_reel_')
       .path;
   repondre('plugins.flutter.io/path_provider', (appel) async => dossier);
-  repondre('plugins.flutter.io/path_provider_android', (appel) async => dossier);
+  repondre(
+    'plugins.flutter.io/path_provider_android',
+    (appel) async => dossier,
+  );
 
   // AUCUNE REGIE PUBLICITAIRE (tache 595). Depuis que la banniere est branchee,
   // le cockpit et le catalogue touchent le SDK Google Mobile Ads — dont les
@@ -264,10 +310,9 @@ Future<void> revenirSurLaRoute(WidgetTester tester, String chemin) async {
 
 /// Retire les messages (`SnackBar`) encore affiches, sans attendre leur duree.
 void fermerLesMessages(WidgetTester tester) {
-  for (final m
-      in tester.stateList<ScaffoldMessengerState>(
-        find.byType(ScaffoldMessenger),
-      )) {
+  for (final m in tester.stateList<ScaffoldMessengerState>(
+    find.byType(ScaffoldMessenger),
+  )) {
     m.clearSnackBars();
   }
 }
@@ -455,8 +500,10 @@ String empreinteEcran(WidgetTester tester) {
   final textes = <String>[];
   for (final w in tester.widgetList<Text>(find.byType(Text))) {
     final s = w.data ?? w.textSpan?.toPlainText() ?? '';
-    textes.add('$s#${w.style?.color?.toARGB32() ?? '-'}'
-        '#${w.style?.fontWeight?.value ?? '-'}');
+    textes.add(
+      '$s#${w.style?.color?.toARGB32() ?? '-'}'
+      '#${w.style?.fontWeight?.value ?? '-'}',
+    );
   }
   final icones = tester
       .widgetList<StepIcon>(find.byType(StepIcon))
@@ -488,11 +535,16 @@ String empreinteEcran(WidgetTester tester) {
   // boutons d'unites des reglages seraient declares morts alors qu'ils marchent.
   final selections = <String>[
     for (final w in tester.allWidgets)
-      if (w is SegmentedButton) 'seg:${w.selected.join('+')}'
-      else if (w is ToggleButtons) 'tog:${w.isSelected.join('+')}'
-      else if (w is ChoiceChip) 'cho:${w.selected}'
-      else if (w is FilterChip) 'fil:${w.selected}'
-      else if (w is Tab) 'tab:${w.text}',
+      if (w is SegmentedButton)
+        'seg:${w.selected.join('+')}'
+      else if (w is ToggleButtons)
+        'tog:${w.isSelected.join('+')}'
+      else if (w is ChoiceChip)
+        'cho:${w.selected}'
+      else if (w is FilterChip)
+        'fil:${w.selected}'
+      else if (w is Tab)
+        'tab:${w.text}',
   ];
   return '${cheminAffiche()}|T${textes.join('~')}|I${icones.join(',')}'
       '|F${fonds.join(',')}|C${champs.join('~')}'
@@ -684,11 +736,13 @@ List<GesteDisponible> gestesDisponibles(WidgetTester tester) {
       final libelle = libelleDe(e);
       final cle = '$T|$libelle';
       if (!vus.add(cle)) continue;
-      out.add(GesteDisponible(
-        libelle: libelle,
-        type: T.toString(),
-        finder: find.byType(T).at(i),
-      ));
+      out.add(
+        GesteDisponible(
+          libelle: libelle,
+          type: T.toString(),
+          finder: find.byType(T).at(i),
+        ),
+      );
     }
   }
 

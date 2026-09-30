@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../i18n/translations.g.dart';
+import 'navigateur_racine.dart';
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
@@ -64,7 +65,12 @@ import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
 /// Depuis le big-bang, il n'y a plus de branches d'onglet (StatefulShellRoute
 /// supprime) : une seule pile racine, sur laquelle on POUSSE les ecrans. Les
 /// cles de branche (`_shellHomeKey`, etc.) ont ete retirees avec le shell.
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+///
+/// TACHE 637 — ELLE N'EST PLUS PRIVEE, ET ELLE A DEMENAGE. Les gardes
+/// d'ouverture posees dans le `builder` de `MaterialApp.router` vivent AU-DESSUS
+/// de ce navigateur ; sans un moyen de le designer, leur `showDialog` plantait a
+/// tous les lancements. Voir [cleNavigateurRacine] et [contexteDeDialogue].
+final _rootNavigatorKey = cleNavigateurRacine;
 
 /// Configuration du routeur GoRouter.
 ///
@@ -183,8 +189,7 @@ final appRouter = GoRouter(
           name: 'stage-by-id',
           builder: (context, state) {
             final trailId = state.uri.queryParameters['trailId'];
-            final stageId =
-                int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
+            final stageId = int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
             return _TrailScopedScreen(
               explicitTrailId: trailId,
               builder: (id) => trek_detail.TrekStageDetailScreen(
@@ -242,7 +247,10 @@ final appRouter = GoRouter(
             final trailId = state.pathParameters['id'] ?? '';
             final stageNum =
                 int.tryParse(state.pathParameters['num'] ?? '') ?? 1;
-            return TrailStageDetailScreen(trailId: trailId, stageNumber: stageNum);
+            return TrailStageDetailScreen(
+              trailId: trailId,
+              stageNumber: stageNum,
+            );
           },
         ),
         GoRoute(

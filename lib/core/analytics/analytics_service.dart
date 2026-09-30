@@ -22,6 +22,65 @@ abstract final class AnalyticsEvents {
   static const String trekStats = 'trek_stats';
 }
 
+/// UNE ETAPE NOMMEE SUR UN CHEMIN SURVEILLE (tache 637).
+///
+/// Type ferme, instances CONSTANTES : c'est ce qui rend l'absence de donnee
+/// personnelle structurelle et non declarative. [AnalyticsService.marquerEtape]
+/// n'accepte que ce type, donc rien qui vienne du randonneur ne peut partir par
+/// ce tuyau.
+///
+/// LE CHEMIN SURVEILLE DE LA TACHE 637 est celui de la question de sauvegarde,
+/// parce qu'il a plante a TOUS les lancements des builds 6 et 7 sans qu'aucun
+/// rapport ne dise a quelle etape. Les quatre etapes decoupent exactement les
+/// quatre endroits ou il pouvait s'arreter.
+final class Etape {
+  const Etape._(this.chemin, this.nom);
+
+  /// Nom de la cle Crashlytics (le chemin surveille).
+  final String chemin;
+
+  /// Valeur de la cle (l'etape atteinte).
+  final String nom;
+
+  static const String _sauvegarde = 'consentement_sauvegarde';
+
+  /// La garde a decide de poser la question (avant toute attente).
+  static const Etape sauvegardeDemandee = Etape._(_sauvegarde, 'demandee');
+
+  /// La lecture « la decision est-elle deja prise ? » a rendu sa reponse.
+  static const Etape sauvegardeDecisionLue = Etape._(
+    _sauvegarde,
+    'decision_lue',
+  );
+
+  /// AUCUN contexte portant un `Navigator` : la question est abandonnee pour
+  /// cette ouverture (elle sera reposee a la suivante). C'est l'etape qui
+  /// manquait aux builds 6 et 7 — elle y plantait au lieu de se nommer.
+  static const Etape sauvegardeSansNavigateur = Etape._(
+    _sauvegarde,
+    'sans_navigateur',
+  );
+
+  /// Le dialogue a ete ouvert.
+  static const Etape sauvegardeDialogueOuvert = Etape._(
+    _sauvegarde,
+    'dialogue_ouvert',
+  );
+
+  /// Le dialogue s'est referme normalement.
+  static const Etape sauvegardeDialogueFerme = Etape._(
+    _sauvegarde,
+    'dialogue_ferme',
+  );
+
+  /// La lecture de la decision a echoue (provider invalide pendant l'attente) :
+  /// la question est abandonnee pour cette ouverture.
+  static const Etape sauvegardeLecturePerdue = Etape._(
+    _sauvegarde,
+    'lecture_perdue',
+  );
+}
+
 /// Puits analytics abstrait — decouple de Firebase pour la testabilite.
 abstract interface class AnalyticsSink {
   Future<void> logEvent(String name, Map<String, Object?> params);
@@ -37,6 +96,19 @@ abstract interface class CrashSink {
     required bool fatal,
   });
   Future<void> setCollectionEnabled(bool enabled);
+
+  /// MIETTE DE PISTE attachee au prochain rapport (tache 637).
+  ///
+  /// Un rapport de plantage dit OU ca casse ; il ne dit pas A QUELLE ETAPE le
+  /// chemin en etait. Le defaut 637 a coûte deux builds precisement pour cette
+  /// raison : la ligne incriminee n'etait qu'une reprise apres attente, et le `!`
+  /// reel etait trois cadres plus bas, dans le framework, sous une assertion
+  /// retiree en release.
+  Future<void> log(String message);
+
+  /// CLE DE CONTEXTE lue en tete du prochain rapport (tache 637). Jamais de
+  /// donnee personnelle : des constantes du code, rien d'autre.
+  Future<void> setCustomKey(String key, String value);
 }
 
 /// Puits analytics inerte (Firebase indisponible / mode degrade).
@@ -61,6 +133,10 @@ class NoOpCrashSink implements CrashSink {
   }) async {}
   @override
   Future<void> setCollectionEnabled(bool enabled) async {}
+  @override
+  Future<void> log(String message) async {}
+  @override
+  Future<void> setCustomKey(String key, String value) async {}
 }
 
 /// Service analytics ANONYME (E5.4).
@@ -79,16 +155,16 @@ class AnalyticsService {
     required AnalyticsSink analytics,
     required CrashSink crash,
     bool operational = true,
-  })  : _analytics = analytics,
-        _crash = crash,
-        _operational = operational;
+  }) : _analytics = analytics,
+       _crash = crash,
+       _operational = operational;
 
   /// Service inerte (Firebase indisponible) — toutes les operations no-op.
   factory AnalyticsService.disabled() => AnalyticsService(
-        analytics: const NoOpAnalyticsSink(),
-        crash: const NoOpCrashSink(),
-        operational: false,
-      );
+    analytics: const NoOpAnalyticsSink(),
+    crash: const NoOpCrashSink(),
+    operational: false,
+  );
 
   final AnalyticsSink _analytics;
   final CrashSink _crash;
@@ -151,13 +227,12 @@ class AnalyticsService {
     required String trailId,
     required double distanceKm,
     required Duration duration,
-  }) =>
-      _log(AnalyticsEvents.trekCompleted, {
-        'trail': anonymize(trailId),
-        // Valeurs grossieres (anti-fingerprinting) : km et minutes entieres.
-        'distance_km': distanceKm.round(),
-        'duration_min': duration.inMinutes,
-      });
+  }) => _log(AnalyticsEvents.trekCompleted, {
+    'trail': anonymize(trailId),
+    // Valeurs grossieres (anti-fingerprinting) : km et minutes entieres.
+    'distance_km': distanceKm.round(),
+    'duration_min': duration.inMinutes,
+  });
 
   Future<void> logShareCard({required String template}) =>
       _log(AnalyticsEvents.shareCard, {'template': template});
@@ -173,13 +248,12 @@ class AnalyticsService {
     required String regime,
     required int batteryPct,
     required bool deferSync,
-  }) =>
-      _log(AnalyticsEvents.gpsRegime, {
-        'regime': regime,
-        // Palier de 10 % (ex. 23 % -> 20) : grossier, non identifiant.
-        'battery_bucket': (batteryPct ~/ 10) * 10,
-        'defer_sync': deferSync,
-      });
+  }) => _log(AnalyticsEvents.gpsRegime, {
+    'regime': regime,
+    // Palier de 10 % (ex. 23 % -> 20) : grossier, non identifiant.
+    'battery_bucket': (batteryPct ~/ 10) * 10,
+    'defer_sync': deferSync,
+  });
 
   /// Stats agregees de fin d'etape (F6B-03). Zero-PII : uniquement des mesures
   /// arrondies grossierement (km/m/minutes/bpm entiers), aucune position ni
@@ -191,17 +265,16 @@ class AnalyticsService {
     required Duration activeDuration,
     required int pauseCount,
     int? avgHeartRateBpm,
-  }) =>
-      _log(AnalyticsEvents.trekStats, {
-        'trail': anonymize(trailId),
-        'distance_km': distanceKm.round(),
-        'elevation_gain_m': elevationGainM.round(),
-        'active_min': activeDuration.inMinutes,
-        'pauses': pauseCount,
-        if (avgHeartRateBpm != null)
-          // Palier de 10 bpm (anti-fingerprinting).
-          'hr_bucket': (avgHeartRateBpm ~/ 10) * 10,
-      });
+  }) => _log(AnalyticsEvents.trekStats, {
+    'trail': anonymize(trailId),
+    'distance_km': distanceKm.round(),
+    'elevation_gain_m': elevationGainM.round(),
+    'active_min': activeDuration.inMinutes,
+    'pauses': pauseCount,
+    if (avgHeartRateBpm != null)
+      // Palier de 10 bpm (anti-fingerprinting).
+      'hr_bucket': (avgHeartRateBpm ~/ 10) * 10,
+  });
 
   /// Erreur non fatale (capturee/geree).
   ///
@@ -219,6 +292,28 @@ class AnalyticsService {
   Future<void> recordFatal(Object error, StackTrace? stack) async {
     if (!_operational) return;
     await _crash.recordError(error, stack, fatal: true);
+  }
+
+  /// ETAPE FRANCHIE SUR UN CHEMIN SURVEILLE (tache 637) — pour que le PROCHAIN
+  /// rapport de plantage dise ou le chemin en etait, et pas seulement ou il a
+  /// casse.
+  ///
+  /// POURQUOI CETTE METHODE EXISTE. Le defaut 637 a survecu a deux publications
+  /// parce que son rapport ne disait rien d'exploitable : « Null check operator
+  /// used on a null value », une ligne qui n'etait qu'une reprise apres attente,
+  /// et un `!` situe dans le framework sous une assertion retiree des builds de
+  /// release. Une cle et deux miettes auraient nomme l'etape en une lecture.
+  ///
+  /// ZERO DONNEE PERSONNELLE, ET C'EST STRUCTUREL, pas une consigne : la
+  /// signature n'accepte que [Etape], c'est-a-dire des constantes du code. Il
+  /// n'y a aucun moyen de faire passer une valeur du randonneur par ici.
+  ///
+  /// SUIT [setCrashCollection], PAS [setConsent] : une miette de plantage n'est
+  /// pas une mesure d'usage (meme separation qu'a la tache 596).
+  Future<void> marquerEtape(Etape etape) async {
+    if (!_operational) return;
+    await _crash.setCustomKey(etape.chemin, etape.nom);
+    await _crash.log('${etape.chemin}: ${etape.nom}');
   }
 
   Future<void> _log(String name, Map<String, Object?> params) async {

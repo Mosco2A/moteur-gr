@@ -38,11 +38,19 @@ import 'refus_sauvegarde_systeme_dialog.dart';
 /// LE PATRON EST CELUI D'`OrphanSessionReprise`, ET CE N'EST PAS UN HASARD
 /// ---------------------------------------------------------------------------
 ///
-/// Meme place dans l'arbre (sous le `builder` de `MaterialApp.router`, donc sous
-/// un `Navigator`), meme declenchement en post-frame (`showDialog` a besoin d'un
-/// `Navigator` monte, et l'arbre route est en cours de premier rendu), meme garde
-/// contre le double affichage. Un widget qui ouvre un dialogue pendant `build`
-/// leve ; un widget qui ne se garde pas en ouvre deux.
+/// Meme place dans l'arbre (dans le `builder` de `MaterialApp.router`), meme
+/// declenchement en post-frame (l'arbre route est en cours de premier rendu),
+/// meme garde contre le double affichage. Un widget qui ouvre un dialogue pendant
+/// `build` leve ; un widget qui ne se garde pas en ouvre deux.
+///
+/// ET MEME DEFAUT, CORRIGE A LA TACHE 637 AU MEME ENDROIT POUR LES DEUX. Cette
+/// phrase disait « donc SOUS un `Navigator` ». C'est FAUX, et c'est ce qui a
+/// coûte deux builds : `WidgetsApp` passe le `Router` EN ARGUMENT du `builder`,
+/// donc ce que le `builder` enveloppe est AU-DESSUS du navigateur que GoRouter
+/// construit. `showDialog` depuis ce contexte remonte les ancetres, n'en trouve
+/// aucun, et meurt sur le `!` de `Navigator.of`. Le contexte hote est desormais
+/// resolu par `contexteDeDialogue` ; voir
+/// [RefusSauvegardeSystemeDialog.poserSiNecessaire].
 ///
 /// TRANSPARENT QUAND IL N'Y A RIEN A DEMANDER : il rend simplement [child].
 class PorteConsentementSauvegarde extends ConsumerStatefulWidget {

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/config/trail_selection.dart';
 import '../../../../core/engine/trail_engine.dart';
+import '../../../../core/routing/navigateur_racine.dart';
 import '../../../trek/domain/models/trek_session.dart';
 import '../../../trek/providers/session_recovery_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
@@ -14,8 +15,10 @@ import 'resume_orphan_session_dialog.dart';
 ///
 /// La detection + le nettoyage sont deja cables au boot
 /// ([pendingSessionProvider], awaite par `appBootstrapProvider`) ; il manquait
-/// l'UI PROACTIVE. Ce widget, insere juste sous l'arbre route une fois l'amorce
-/// resolue (dans le `builder` de `MaterialApp.router`, donc SOUS un Navigator),
+/// l'UI PROACTIVE. Ce widget, insere une fois l'amorce resolue dans le `builder`
+/// de `MaterialApp.router` — donc AU-DESSUS du Navigator, et cette phrase
+/// affirmait le contraire jusqu'a la tache 637, ce qui est exactement la cause du
+/// defaut corrige dans [_OrphanSessionRepriseState._promptReprise] —
 /// lit la session orpheline eventuelle et, s'il y en a une, presente UNE SEULE
 /// FOIS le dialog Reprendre / Abandonner ([showResumeOrphanSessionDialog]) au
 /// premier rendu :
@@ -74,10 +77,37 @@ class _OrphanSessionRepriseState extends ConsumerState<OrphanSessionReprise> {
   }
 
   /// Presente le dialog et applique le choix (Reprendre / Abandonner).
+  ///
+  /// TACHE 637 — LE MEME DEFAUT QUE LA PORTE DE CONSENTEMENT, AU MEME ENDROIT,
+  /// ET DEUX FOIS.
+  ///
+  /// Le commentaire d'en-tete de ce fichier affirmait que cette garde est « dans
+  /// le `builder` de `MaterialApp.router`, donc SOUS un Navigator ». C'est
+  /// l'inverse : `WidgetsApp` passe le `Router` EN ARGUMENT de ce `builder`, donc
+  /// tout ce qu'il enveloppe est AU-DESSUS du navigateur. Les deux remontees
+  /// d'ancetres de cette methode etaient donc vouees a rendre null, et les deux
+  /// se terminent par un `!` dans une dependance :
+  ///  * `showDialog` -> `Navigator.of` -> `return navigator!`
+  ///    (`navigator.dart:2937`) ;
+  ///  * `context.go` -> `GoRouter.of` -> `return inherited!`
+  ///    (`go_router/src/router.dart:508`).
+  /// Dans les deux cas l'assertion qui NOMME le probleme est retiree des builds
+  /// de release, et il ne reste que « Null check operator used on a null value ».
+  ///
+  /// Le defaut de la porte de consentement, lui, a ete mesure en production (28
+  /// plantages, builds 6 et 7). Celui-ci ne s'etait pas encore montre parce qu'il
+  /// demande une condition de plus : une rando laissee par un arret brutal.
+  ///
+  /// [contexteDeDialogue] rend un contexte qui est DESSOUS le `Router` — donc qui
+  /// porte a la fois le `Navigator` et `InheritedGoRouter` — ou rien, et « rien »
+  /// fait renoncer : l'orpheline sera reproposee au prochain lancement, ce que le
+  /// code prevoyait deja pour le cas `null`.
   Future<void> _promptReprise(TrekSession session) async {
     if (!mounted) return;
+    final hote = contexteDeDialogue(context);
+    if (hote == null) return;
 
-    final choice = await showResumeOrphanSessionDialog(context);
+    final choice = await showResumeOrphanSessionDialog(hote);
     if (!mounted) return;
 
     switch (choice) {
@@ -86,7 +116,9 @@ class _OrphanSessionRepriseState extends ConsumerState<OrphanSessionReprise> {
         // naviguer (la session reste en cours, la carte s'affichera « active »).
         // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
         choisirSentier(ref, session.trailId);
-        context.go('/home');
+        // `maybeOf` sur l'HOTE, pas `context.go` : voir l'en-tete de cette
+        // methode — `context` n'a jamais eu de `GoRouter` au-dessus de lui.
+        if (hote.mounted) GoRouter.maybeOf(hote)?.go('/home');
       case ResumeOrphanChoice.abandon:
         // Solder la session en base, puis invalider les vues derivees pour
         // qu'elles refletent l'abandon (le trek retombe `prepared`).

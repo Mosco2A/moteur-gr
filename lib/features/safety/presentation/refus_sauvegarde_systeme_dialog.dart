@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/analytics_service.dart';
+import '../../../core/routing/navigateur_racine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -87,18 +91,118 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
   /// depart ([kRefusSauvegardeSystemeParDefaut]) — poser la question et proteger
   /// sont deux choses, et les confondre ferait l'un des deux defauts (redemander
   /// sans cesse, ou ne pas proteger avant d'avoir demande).
+  /// ---------------------------------------------------------------------------
+  /// TACHE 637 — CETTE METHODE PLANTAIT A TOUS LES LANCEMENTS, SANS QUE CA SE
+  /// VOIE
+  /// ---------------------------------------------------------------------------
+  ///
+  /// Crashlytics, builds 6 ET 7 : 28 plantages, 9 utilisateurs, ZERO session sans
+  /// plantage sur sept jours. `Null check operator used on a null value`,
+  /// premiere frame applicative ici meme — ligne 96 dans la numerotation du
+  /// build 6, c'est-a-dire l'appel a `showDialog` lui-meme.
+  ///
+  /// Le `!` n'etait pas dans ce fichier : `Navigator.of` finit par
+  /// `return navigator!` (`navigator.dart:2937`), et il etait atteint parce que
+  /// le contexte recu venait d'une garde posee AU-DESSUS du `Navigator`. Tout est
+  /// mesure et explique dans [contexteDeDialogue], qui est la reponse : elle rend
+  /// un contexte qui porte VRAIMENT un navigateur, ou rien — et « rien » fait
+  /// RENONCER au lieu de lever.
+  ///
+  /// LE VRAI PRIX DU DEFAUT N'ETAIT PAS LE PLANTAGE, C'ETAIT SON SILENCE : la
+  /// question n'etait JAMAIS posee. L'exception partait d'un
+  /// `addPostFrameCallback`, donc le filet d'erreurs de Flutter l'avalait et
+  /// l'application continuait. Le randonneur restait protege (le refus est le
+  /// defaut) mais ne pouvait pas choisir la commodite — c'est-a-dire exactement
+  /// le trou que la tache 617 etait censee fermer.
+  ///
+  /// UN SEUL DIALOGUE EN VOL DANS TOUTE L'APPLICATION. Deux appelants existent
+  /// (la porte de l'ouverture et l'ecran de profil apres connexion Google) et ils
+  /// peuvent se croiser : une connexion Google pendant que la question de
+  /// l'ouverture est encore en vol en posait DEUX, et la premiere reponse
+  /// invalidait le provider que la seconde attendait encore — c'est le SECOND
+  /// rapport Crashlytics, `Cannot use the Ref of FutureProvider<bool> after it
+  /// has been disposed`. Le verrou [_enVol] ferme les deux defauts d'un geste.
   static Future<void> poserSiNecessaire(
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final dejaTranche =
-        await ref.read(decisionSauvegardeSystemePriseProvider.future);
-    if (dejaTranche || !context.mounted) return;
+    final enCours = _enVol;
+    if (enCours != null) return enCours;
+    final futur = _poser(context, ref);
+    _enVol = futur;
+    try {
+      await futur;
+    } finally {
+      _enVol = null;
+    }
+  }
+
+  /// Le dialogue en vol, s'il y en a un. Voir [poserSiNecessaire].
+  static Future<void>? _enVol;
+
+  /// Relache le verrou entre deux tests — il est statique, donc partage.
+  @visibleForTesting
+  static void reinitialiserLeVerrou() => _enVol = null;
+
+  static Future<void> _poser(BuildContext context, WidgetRef ref) async {
+    final journal = ref.read(analyticsServiceProvider);
+    // L'HOTE EST RESOLU AVANT LA MOINDRE ATTENTE, ET C'EST VOULU : aucun
+    // `BuildContext` ne traverse ainsi de trou asynchrone. Ce que
+    // [contexteDeDialogue] rend est, dans l'application reelle, le contexte du
+    // navigateur RACINE — celui qui vit aussi longtemps que l'application. Il est
+    // tout de meme re-verifie apres les attentes, plus bas : un contexte valide a
+    // l'aller n'est pas un contexte valide au retour.
+    final hote = contexteDeDialogue(context);
+    await journal.marquerEtape(Etape.sauvegardeDemandee);
+
+    final bool dejaTranche;
+    try {
+      dejaTranche = await ref.read(
+        decisionSauvegardeSystemePriseProvider.future,
+      );
+    } catch (erreur, pile) {
+      // LA LECTURE PEUT ETRE PERDUE, ET RENONCER EST ALORS LE BON CHOIX.
+      //
+      // Le provider est invalide par [RefusSauvegardeSystemeNotifier.definir]
+      // des qu'une decision est prise : une lecture encore en vol a ce
+      // moment-la meurt avec lui (`UnmountedRefException` — le second rapport
+      // Crashlytics du build 6). Ce type n'est PAS exporte par l'API publique de
+      // Riverpod 3.3.2, d'ou une prise large, assumee, et TRACEE : l'erreur
+      // remonte en non-fatale, donc elle reste visible ; elle ne plante plus.
+      //
+      // Renoncer est sans consequence : le refus s'applique deja
+      // ([kRefusSauvegardeSystemeParDefaut]) et la question sera reposee au
+      // lancement suivant si elle n'a pas ete tranchee.
+      await journal.marquerEtape(Etape.sauvegardeLecturePerdue);
+      await journal.recordError(erreur, pile);
+      return;
+    }
+    await journal.marquerEtape(Etape.sauvegardeDecisionLue);
+    if (dejaTranche) return;
+
+    // AUCUN NAVIGATEUR, OU PLUS DE NAVIGATEUR : ON RENONCE, ON NE LEVE PAS.
+    // C'est le cas qui plantait 28 fois. La question revient au lancement
+    // suivant, et la protection n'a jamais dependu de cette question.
+    if (hote == null) {
+      await journal.marquerEtape(Etape.sauvegardeSansNavigateur);
+      return;
+    }
+    if (!hote.mounted || !porteUnNavigateur(hote)) {
+      await journal.marquerEtape(Etape.sauvegardeSansNavigateur);
+      return;
+    }
+    // LA MIETTE N'EST PAS ATTENDUE, ET CE N'EST PAS UN OUBLI. Toute attente
+    // placee entre la garde `mounted` ci-dessus et l'ouverture ci-dessous
+    // ROUVRIRAIT la fenetre que la garde vient de fermer — c'est-a-dire le
+    // defaut meme de ce lot. L'analyseur le signale (`use_build_context_
+    // synchronously`), et il a raison : rien ne doit s'intercaler ici.
+    unawaited(journal.marquerEtape(Etape.sauvegardeDialogueOuvert));
     await showDialog<void>(
-      context: context,
+      context: hote,
       barrierDismissible: false,
       builder: (_) => const RefusSauvegardeSystemeDialog(),
     );
+    await journal.marquerEtape(Etape.sauvegardeDialogueFerme);
   }
 
   @override
@@ -117,11 +221,11 @@ class _RefusSauvegardeSystemeDialogState
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final textes = t.systemBackup;
-    final surIphone = theme.platform == TargetPlatform.iOS ||
+    final surIphone =
+        theme.platform == TargetPlatform.iOS ||
         theme.platform == TargetPlatform.macOS;
     final libelle = surIphone ? textes.refuseApple : textes.refuseGoogle;
-    final explication =
-        surIphone ? textes.explainApple : textes.explainGoogle;
+    final explication = surIphone ? textes.explainApple : textes.explainGoogle;
 
     return AlertDialog(
       title: Text(textes.title),
@@ -185,13 +289,18 @@ class _RefusSauvegardeSystemeDialogState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StepIcon(StepwaysIcons.cadenas, size: 18, color: colors.primary),
+                  StepIcon(
+                    StepwaysIcons.cadenas,
+                    size: 18,
+                    color: colors.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
                       textes.notOurServers,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: colors.primary),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -212,7 +321,15 @@ class _RefusSauvegardeSystemeDialogState
             await ref
                 .read(refusSauvegardeSystemeProvider.notifier)
                 .definir(refuse: _refuse);
-            if (context.mounted) Navigator.of(context).pop();
+            // `maybeOf` ET `mounted`, PAS `of` (tache 637). `definir` traverse
+            // trois attentes (disque + les deux copies) : le dialogue peut avoir
+            // ete depile entre-temps, et `Navigator.of` sur un contexte retire
+            // finit par `return navigator!` — le meme `!` du framework, au meme
+            // endroit, que celui qui a coûte deux builds. `mounted` seul ne
+            // suffit pas : un element desactive mais pas encore demonte le dit
+            // encore vrai.
+            if (!context.mounted) return;
+            Navigator.maybeOf(context)?.pop();
           },
         ),
       ],
