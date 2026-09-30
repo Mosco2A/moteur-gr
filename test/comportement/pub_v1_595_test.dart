@@ -708,6 +708,13 @@ void main() {
           // monetisation sur le chemin du secours.
           'acheterSentier',
           'RewardedNoAdsButton',
+          // TACHE 639 (avenant) : les deux nouveaux visages de la publicite
+          // suivent la meme interdiction. Une marque « avec publicite » ou un
+          // bouton « retirer les pubs » sur l'ecran de secours seraient de la
+          // monetisation sur le chemin du secours, exactement comme les autres.
+          'RetirerLesPubsButton',
+          'BadgeEtatPublicite',
+          'ouvrirLeChoixSansPub',
         ]) {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');
         }
