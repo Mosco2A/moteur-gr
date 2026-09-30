@@ -7,7 +7,10 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
-import 'package:moteur_gr/features/packs/presentation/pack_store_screen.dart';
+import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
+import 'package:moteur_gr/core/network/connectivity_monitor.dart';
+import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
@@ -26,8 +29,9 @@ import '../../structurel/regie_pub_absente.dart';
 ///  (b) La FICHE MEDICALE (`/health`) n'etait atteignable QUE depuis cet ecran
 ///      inatteignable (`emergency_screen.dart` l.184, unique porte). Une
 ///      fonction derriere une fonction fermee.
-///  (c) La BOUTIQUE DE CARTES HORS LIGNE (`PackStoreScreen`, `PackCard`,
-///      `pack_providers.dart`) n'avait MEME PAS DE ROUTE declaree.
+///  (c) LES CARTES HORS LIGNE n'avaient MEME PAS DE ROUTE declaree.
+///      (A l'epoque c'etait `PackStoreScreen` ; la tache 640 l'a remplace par
+///      `CartesHorsLigneScreen` — un seul geste, tout le circuit, bug 10.)
 ///
 /// DECISION DE CHRIS DU 26/09 10:29, verbatim : « ca doit faire partie de la
 /// prepa, on ne demarre pas un trek sans avoir rempli sa fiche medicale et lu
@@ -37,7 +41,7 @@ import '../../structurel/regie_pub_absente.dart';
 /// visible en rando.
 ///
 /// TOUS CES TESTS ONT ETE ECRITS ROUGES : aucune des trois portes n'existait, et
-/// la route des packs n'existait pas du tout.
+/// la route des cartes hors ligne n'existait pas du tout.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -49,44 +53,52 @@ void main() {
   // banniere a son propre test : test/comportement/pub_v1_595_test.dart.
   setUp(brancherAucuneRegiePub);
 
-
   final String trailId = testTrailConfig.id;
 
   // ==========================================================================
   // (c) LA ROUTE QUI N EXISTAIT PAS
   // ==========================================================================
-  group('Q4c — la boutique de cartes hors ligne a enfin une ROUTE', () {
+  group('Q4c — les cartes hors ligne ont enfin une ROUTE', () {
     GoRoute trailRoute() => appRouter.configuration.routes
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('/trail/:id/packs est declaree et nommee', () {
+    test('/trail/:id/cartes est declaree et nommee', () {
       final sous = trailRoute().routes.whereType<GoRoute>();
-      final packs = sous.where((r) => r.path == 'packs');
+      final cartes = sous.where((r) => r.path == 'cartes');
       expect(
-        packs,
+        cartes,
         hasLength(1),
-        reason: 'PackStoreScreen etait ecrit, teste, et sans route : un ecran '
-            'qu aucune URL ne designe est un ecran mort',
+        reason:
+            'l ecran des cartes hors ligne etait ecrit, teste, et sans '
+            'route : un ecran qu aucune URL ne designe est un ecran mort',
       );
-      expect(packs.first.name, 'trail-packs');
+      expect(cartes.first.name, 'trail-cartes');
+      // ET L ANCIENNE FACADE N A PLUS DE ROUTE (tache 640, bug 10) : elle
+      // proposait quatre demi-circuits et ne telechargeait rien.
+      expect(sous.where((r) => r.path == 'packs'), isEmpty);
     });
 
-    testWidgets('la route construit bien la boutique de packs', (tester) async {
+    testWidgets('la route construit bien l ecran des cartes du circuit', (
+      tester,
+    ) async {
       final router = GoRouter(
-        initialLocation: '/trail/$trailId/packs',
+        initialLocation: '/trail/$trailId/cartes',
         routes: appRouter.configuration.routes,
       );
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
+          overrides: [
+            trailConfigProvider.overrideWithValue(testTrailConfig),
+            descenteDesCartesProvider.overrideWithValue(_DescenteFigee()),
+          ],
           child: TranslationProvider(
             child: MaterialApp.router(routerConfig: router),
           ),
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(PackStoreScreen), findsOneWidget);
+      expect(find.byType(CartesHorsLigneScreen), findsOneWidget);
     });
   });
 
@@ -96,10 +108,7 @@ void main() {
   group('Q4 — les portes d entree du cockpit', () {
     /// Routes REELLES visees par les nouvelles portes, plus les cibles deja
     /// cablees (pour qu aucun tap ne casse la navigation).
-    Widget wrap({
-      required Widget child,
-      List<Override> overrides = const [],
-    }) {
+    Widget wrap({required Widget child, List<Override> overrides = const []}) {
       final router = GoRouter(
         initialLocation: '/home',
         routes: [
@@ -143,8 +152,8 @@ void main() {
               ])
                 GoRoute(path: p, builder: (_, __) => const SizedBox()),
               GoRoute(
-                path: 'packs',
-                builder: (_, __) => const Scaffold(body: Text('PACKS_CIBLE')),
+                path: 'cartes',
+                builder: (_, __) => const Scaffold(body: Text('CARTES_CIBLE')),
               ),
             ],
           ),
@@ -219,15 +228,15 @@ void main() {
     );
 
     testWidgets(
-      'Q4c — la BOUTIQUE DE CARTES HORS LIGNE a une carte de preparation qui '
-      'ouvre sa route',
+      'Q4c — LES CARTES HORS LIGNE ont une carte de preparation qui ouvre sa '
+      'route',
       (tester) async {
         await pumpCockpit(tester);
 
-        expect(find.text(t.hub.cards.packs), findsOneWidget);
-        await tester.tap(find.text(t.hub.cards.packs));
+        expect(find.text(t.hub.cards.cartes), findsOneWidget);
+        await tester.tap(find.text(t.hub.cards.cartes));
         await tester.pumpAndSettle();
-        expect(find.text('PACKS_CIBLE'), findsOneWidget);
+        expect(find.text('CARTES_CIBLE'), findsOneWidget);
       },
     );
 
@@ -239,7 +248,8 @@ void main() {
         expect(
           find.text(t.hub.cards.emergency),
           findsOneWidget,
-          reason: 'zero push(/emergency) existait dans tout lib/ : la fonction '
+          reason:
+              'zero push(/emergency) existait dans tout lib/ : la fonction '
               'entiere etait inatteignable',
         );
 
@@ -275,7 +285,8 @@ void main() {
         expect(
           find.text(t.hub.cards.health),
           findsOneWidget,
-          reason: 'la fiche medicale est une donnee de personne : elle reste '
+          reason:
+              'la fiche medicale est une donnee de personne : elle reste '
               'atteignable dans toutes les phases du trek',
         );
       },
@@ -289,4 +300,24 @@ class _FakeTrek extends TrekSessionManagerNotifier {
 
   @override
   TrackingSessionState build() => _initial;
+}
+
+/// UNE DECISION FIGEE : aucune carte publiee, donc rien a transporter.
+///
+/// Ce test verifie une ROUTE, pas un telechargement : figer la decision evite
+/// d'ouvrir la base et d'interroger le reseau pour verifier qu'une URL construit
+/// bien son ecran.
+class _DescenteFigee extends Fake implements DescenteDesCartes {
+  @override
+  Future<DecisionDeDescente> examiner(
+    String trailId, {
+    required NiveauDeTelechargement niveau,
+    bool confirmeHorsWifi = false,
+  }) async => DecisionDeDescente(
+    trailId: trailId,
+    octetsTotal: 0,
+    octetsDejaLa: 0,
+    lien: TypesDeLien.wifi,
+    refus: RefusDeDescente.aucuneCartePubliee,
+  );
 }

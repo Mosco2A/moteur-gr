@@ -130,8 +130,8 @@
       "trainingSub": "Ihr Trainingsprogramm",
       "health": "Medizinische Daten",
       "healthSub": "Vor dem Start ausfüllen",
-      "packs": "Offline-Karten",
-      "packsSub": "Kartenpakete des Weges laden",
+      "cartes": "Offline-Karten",
+      "cartesSub": "Karten der Route herunterladen",
       "offline": "Wege entdecken",
       "offlineSub": "Katalog durchsuchen",
       "group": "Meine Gruppe",
@@ -1458,62 +1458,52 @@
       "error": "Speichern derzeit nicht möglich."
     }
   },
-  "packs": {
-    "title": "Wegpakete",
-    "subtitle": "Lade ein Paket herunter, um 100% offline zu wandern.",
-    "alaCarteNote": "A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.",
-    "size": "$mo MB",
-    "states": {
-      "notDownloaded": "Nicht heruntergeladen",
-      "downloaded": "Heruntergeladen",
-      "updateAvailable": "Update verfügbar"
+  "cartesHorsLigne": {
+    "title": "Offline-Karten",
+    "intro": "Ein einziger Download: die Karten der gesamten Route, um ohne Netz zu wandern.",
+    "unSeulGeste": "Die ganze Route in einem Mal, keine Teile zum Auswählen.",
+    "poids": "$mo MB zum Herunterladen",
+    "poidsTotal": "Gesamtgröße der Route: $mo MB",
+    "reprise": "$mo MB sind schon auf dem Telefon: die Fortsetzung lädt nur den Rest.",
+    "telecharger": "KARTEN DER ROUTE HERUNTERLADEN",
+    "reprendre": "DOWNLOAD FORTSETZEN",
+    "reessayer": "ERNEUT VERSUCHEN",
+    "annuler": "ABBRECHEN",
+    "supprimer": "KARTEN LÖSCHEN",
+    "enCours": "$recus MB von $total MB",
+    "verification": "Karte wird geprüft",
+    "pretes": "Karten offline bereit",
+    "pretesPoids": "$mo MB auf dem Telefon",
+    "libere": "Karten gelöscht, Speicher freigegeben.",
+    "supprimerTitre": "Karten löschen?",
+    "supprimerCorps": "Die Karten werden vom Telefon entfernt, um Speicher freizugeben. Sie können sie erneut herunterladen.",
+    "supprimerAnnuler": "Abbrechen",
+    "supprimerConfirmer": "Löschen",
+    "horsWifiTitre": "$mo MB über Ihr Datenvolumen?",
+    "horsWifiCorps": "Sie sind nicht im WLAN. Die Karten einer Route können ein Mobilfunkvolumen stark belasten.",
+    "horsWifiAttendre": "Auf WLAN warten",
+    "horsWifiContinuer": "Trotzdem herunterladen",
+    "refus": {
+      "niveauInsuffisant": "Die Karten kommen, wenn Sie die Route zum Wandern vorbereiten.",
+      "sentierInconnu": "Diese Route ist noch nicht auf Ihrem Telefon. Laden Sie sie aus der Wegeliste.",
+      "aucuneCartePubliee": "Für diese Route ist noch keine Offline-Karte veröffentlicht. Der Track bleibt verfügbar.",
+      "droitDeRealiserManquant": "Offline-Karten gehören zur gekauften Route.",
+      "horsLigne": "Ohne Netz lässt sich keine Karte laden. Verbinden Sie sich, dann erneut versuchen.",
+      "stockageIndisponible": "Das Telefon hat nicht geantwortet. Erneut versuchen; wenn es bleibt, Telefon neu starten."
     },
-    "actions": {
-      "download": "Herunterladen",
-      "update": "Aktualisieren",
-      "delete": "Löschen",
-      "retry": "Erneut versuchen",
-      "buy": "Dieses Paket kaufen",
-      "buyWithPrice": "Dieses Paket kaufen — $price",
-      "buyUnavailable": "Der Kauf ist auf diesem Gerät nicht verfügbar."
+    "echec": {
+      "reseau": "Die Verbindung wurde unterbrochen. Das Geladene bleibt erhalten: jederzeit fortsetzen.",
+      "empreinteInvalide": "Die empfangene Karte passt nicht zur veröffentlichten: sie wurde verworfen. Erneut versuchen.",
+      "tailleInattendue": "Die empfangene Karte ist unvollständig: sie wurde verworfen. Erneut versuchen.",
+      "plusDePlace": "Auf dem Telefon ist kein Platz mehr. Speicher freigeben, dann fortsetzen.",
+      "ecritureImpossible": "Das Schreiben auf das Telefon ist fehlgeschlagen. Das Geladene bleibt: fortsetzen.",
+      "stockageIndisponible": "Das Telefon hat seinen Speicher nicht freigegeben. Erneut versuchen; wenn es bleibt, neu starten.",
+      "annulee": "Download abgebrochen. Das bereits Geladene bleibt erhalten."
     },
-    "progress": {
-      "downloading": "Wird heruntergeladen… $done/$total",
-      "verifying": "Integrität wird geprüft…",
-      "completed": "Paket offline bereit",
-      "error": "Download fehlgeschlagen",
-      "errorSnack": "Der Download wurde nicht abgeschlossen."
-    },
-    "delete": {
-      "confirmTitle": "Dieses Paket löschen?",
-      "confirmBody": "Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.",
-      "cancel": "Abbrechen",
-      "confirm": "Löschen",
-      "freed": "Speicher freigegeben."
-    },
-    "empty": "Kein Paket für diesen Weg verfügbar.",
+    "demoIndisponible": "Der Kartendownload ist während der Demo nicht verfügbar.",
     "a11y": {
-      "packCard": "Paket $nom, $state",
-      "downloadButton": "Paket $nom herunterladen",
-      "deleteButton": "Paket $nom löschen"
-    },
-    "types": {
-      "nord": {
-        "nom": "$trail — Nord",
-        "description": "Die nördliche Hälfte des Wegs, offline."
-      },
-      "sud": {
-        "nom": "$trail — Süd",
-        "description": "Die südliche Hälfte des Wegs, offline."
-      },
-      "complet": {
-        "nom": "$trail — Komplett",
-        "description": "Der ganze Weg, offline."
-      },
-      "mam": {
-        "nom": "$trail",
-        "description": "Der ganze Weg $trail, offline."
-      }
+      "bouton": "Die Karten der gesamten Route herunterladen",
+      "progression": "Karten werden geladen: $pourcent %"
     }
   },
   "guides": {
@@ -1659,7 +1649,7 @@
   },
   "trailSelection": {
     "title": "Weg wechseln",
-    "subtitle": "Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.",
+    "subtitle": "Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Offline-Karten, Reiseführer) folgt deiner Auswahl.",
     "current": "Aktiver Weg",
     "select": "Diesen Weg wählen",
     "selected": "Ausgewählter Weg",

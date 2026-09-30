@@ -130,8 +130,8 @@
       "trainingSub": "Your training programme",
       "health": "Medical card",
       "healthSub": "Fill it in before you leave",
-      "packs": "Offline maps",
-      "packsSub": "Download the trail maps",
+      "cartes": "Offline maps",
+      "cartesSub": "Download the maps for the route",
       "offline": "Discover trails",
       "offlineSub": "Browse the catalogue",
       "group": "My group",
@@ -1458,62 +1458,52 @@
       "error": "Cannot save right now."
     }
   },
-  "packs": {
-    "title": "Trail packs",
-    "subtitle": "Download a pack to hike 100% offline.",
-    "alaCarteNote": "A la carte: buy only the pack you need, no subscription.",
-    "size": "$mo MB",
-    "states": {
-      "notDownloaded": "Not downloaded",
-      "downloaded": "Downloaded",
-      "updateAvailable": "Update available"
+  "cartesHorsLigne": {
+    "title": "Offline maps",
+    "intro": "One single download: the maps for the whole route, so you can walk without a network.",
+    "unSeulGeste": "The whole route at once, no parts to choose from.",
+    "poids": "$mo MB to download",
+    "poidsTotal": "Total size for the route: $mo MB",
+    "reprise": "$mo MB are already on the phone: resuming will only download the rest.",
+    "telecharger": "DOWNLOAD THE MAPS FOR THE ROUTE",
+    "reprendre": "RESUME THE DOWNLOAD",
+    "reessayer": "TRY AGAIN",
+    "annuler": "CANCEL",
+    "supprimer": "DELETE THE MAPS",
+    "enCours": "$recus MB of $total MB",
+    "verification": "Checking the map",
+    "pretes": "Maps ready offline",
+    "pretesPoids": "$mo MB on the phone",
+    "libere": "Maps deleted, space freed.",
+    "supprimerTitre": "Delete the maps?",
+    "supprimerCorps": "The maps will be removed from the phone to free up space. You can download them again.",
+    "supprimerAnnuler": "Cancel",
+    "supprimerConfirmer": "Delete",
+    "horsWifiTitre": "$mo MB on your mobile data?",
+    "horsWifiCorps": "You are not on Wi-Fi. A route's maps can weigh heavily on a mobile plan.",
+    "horsWifiAttendre": "Wait for Wi-Fi",
+    "horsWifiContinuer": "Download anyway",
+    "refus": {
+      "niveauInsuffisant": "The maps come down when you prepare the route to actually walk it.",
+      "sentierInconnu": "This route is not on your phone yet. Download it from the trail list.",
+      "aucuneCartePubliee": "No offline map has been published for this route yet. The track itself is still available.",
+      "droitDeRealiserManquant": "Offline maps are part of the route you buy.",
+      "horsLigne": "Without a network a map cannot be downloaded. Reconnect, then try again.",
+      "stockageIndisponible": "The phone did not answer. Try again; if it persists, restart it."
     },
-    "actions": {
-      "download": "Download",
-      "update": "Update",
-      "delete": "Delete",
-      "retry": "Retry",
-      "buy": "Buy this pack",
-      "buyWithPrice": "Buy this pack — $price",
-      "buyUnavailable": "Purchase is not available on this device."
+    "echec": {
+      "reseau": "The connection dropped. What is already downloaded is kept: resume whenever you like.",
+      "empreinteInvalide": "The map received does not match the published one: it was discarded. Try again.",
+      "tailleInattendue": "The map received is incomplete: it was discarded. Try again.",
+      "plusDePlace": "There is no space left on the phone. Free up some space, then resume.",
+      "ecritureImpossible": "Writing to the phone failed. What is downloaded is kept: resume.",
+      "stockageIndisponible": "The phone did not give up its storage. Try again; if it persists, restart it.",
+      "annulee": "Download cancelled. What is already downloaded is kept."
     },
-    "progress": {
-      "downloading": "Downloading… $done/$total",
-      "verifying": "Verifying integrity…",
-      "completed": "Pack ready offline",
-      "error": "Download failed",
-      "errorSnack": "The download did not complete."
-    },
-    "delete": {
-      "confirmTitle": "Delete this pack?",
-      "confirmBody": "The pack will be removed from the device to free up space. You can download it again later.",
-      "cancel": "Cancel",
-      "confirm": "Delete",
-      "freed": "Space freed."
-    },
-    "empty": "No pack available for this trail.",
+    "demoIndisponible": "Downloading the maps is not available during the demo.",
     "a11y": {
-      "packCard": "Pack $nom, $state",
-      "downloadButton": "Download pack $nom",
-      "deleteButton": "Delete pack $nom"
-    },
-    "types": {
-      "nord": {
-        "nom": "$trail — North",
-        "description": "The northern half of the trail, offline."
-      },
-      "sud": {
-        "nom": "$trail — South",
-        "description": "The southern half of the trail, offline."
-      },
-      "complet": {
-        "nom": "$trail — Full",
-        "description": "The whole trail, offline."
-      },
-      "mam": {
-        "nom": "$trail",
-        "description": "The whole $trail trail, offline."
-      }
+      "bouton": "Download the maps for the whole route",
+      "progression": "Downloading maps: $pourcent %"
     }
   },
   "guides": {
@@ -1659,7 +1649,7 @@
   },
   "trailSelection": {
     "title": "Switch trail",
-    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.",
+    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, offline maps, guides) follows your selection.",
     "current": "Active trail",
     "select": "Choose this trail",
     "selected": "Selected trail",

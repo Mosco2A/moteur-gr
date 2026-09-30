@@ -9,7 +9,8 @@ part 'town_guide.g.dart';
 /// d'etape regroupees par theme (ravitaillement, hebergement, transport,
 /// services, eau, sante).
 ///
-/// String extensible volontairement (meme principe que [PackType] F8B-01) : une
+/// String extensible volontairement (meme principe que les autres types ouverts
+/// du moteur, cf. [GuideCategory.fallback]) : une
 /// categorie inconnue recue d'un futur catalogue serveur retombe sur [fallback]
 /// sans planter — le moteur reste generique (#84627).
 abstract final class GuideCategory {
@@ -138,8 +139,8 @@ abstract class GuideSection with _$GuideSection {
 /// Town guide d'une ville/village d'etape (F8C-01, Phase 8 P8-C, offline R3).
 ///
 /// Infos pratiques d'une localite du sentier (modele FarOut « town guides »,
-/// A3-7), consultees 100 % OFFLINE : le contenu est embarque dans le pack via
-/// [PackManifest.townGuideRefs] (F8B-01) et rapatrie AVANT le depart (R3). Le
+/// A3-7), consultees 100 % OFFLINE : le contenu descend avec les donnees du
+/// sentier, AVANT le depart (R3). Le
 /// moteur reste generique (#84627) : [trailId] rattache le guide a un sentier,
 /// AUCUNE localite n'est hardcodee.
 ///

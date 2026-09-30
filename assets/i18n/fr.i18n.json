@@ -130,8 +130,8 @@
       "trainingSub": "Votre programme d'entraînement",
       "health": "Fiche médicale",
       "healthSub": "À remplir avant de partir",
-      "packs": "Cartes hors ligne",
-      "packsSub": "Télécharger les cartes du sentier",
+      "cartes": "Cartes hors ligne",
+      "cartesSub": "Télécharger les cartes du circuit",
       "offline": "Découvrir des sentiers",
       "offlineSub": "Parcourez le catalogue",
       "group": "Mon groupe",
@@ -1458,62 +1458,52 @@
       "error": "Enregistrement impossible pour le moment."
     }
   },
-  "packs": {
-    "title": "Packs sentier",
-    "subtitle": "Téléchargez un pack pour randonner 100% hors-ligne.",
-    "alaCarteNote": "À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.",
-    "size": "$mo Mo",
-    "states": {
-      "notDownloaded": "Non téléchargé",
-      "downloaded": "Téléchargé",
-      "updateAvailable": "Mise à jour disponible"
+  "cartesHorsLigne": {
+    "title": "Cartes hors ligne",
+    "intro": "Un seul téléchargement : les cartes de tout le circuit, pour marcher sans réseau.",
+    "unSeulGeste": "Tout le circuit en une fois, pas de morceaux à choisir.",
+    "poids": "$mo Mo à télécharger",
+    "poidsTotal": "Poids total du circuit : $mo Mo",
+    "reprise": "$mo Mo sont déjà sur le téléphone : la reprise ne téléchargera que le reste.",
+    "telecharger": "TÉLÉCHARGER LES CARTES DU CIRCUIT",
+    "reprendre": "REPRENDRE LE TÉLÉCHARGEMENT",
+    "reessayer": "RÉESSAYER",
+    "annuler": "ANNULER",
+    "supprimer": "SUPPRIMER LES CARTES",
+    "enCours": "$recus Mo sur $total Mo",
+    "verification": "Vérification de la carte",
+    "pretes": "Cartes prêtes hors ligne",
+    "pretesPoids": "$mo Mo sur le téléphone",
+    "libere": "Cartes supprimées, espace libéré.",
+    "supprimerTitre": "Supprimer les cartes ?",
+    "supprimerCorps": "Les cartes seront retirées du téléphone pour libérer de l'espace. Vous pourrez les retélécharger.",
+    "supprimerAnnuler": "Annuler",
+    "supprimerConfirmer": "Supprimer",
+    "horsWifiTitre": "$mo Mo sur votre forfait ?",
+    "horsWifiCorps": "Vous n'êtes pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.",
+    "horsWifiAttendre": "Attendre le Wi-Fi",
+    "horsWifiContinuer": "Télécharger quand même",
+    "refus": {
+      "niveauInsuffisant": "Les cartes descendent au moment où vous préparez le circuit pour le marcher.",
+      "sentierInconnu": "Ce circuit n'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.",
+      "aucuneCartePubliee": "Aucune carte hors ligne n'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.",
+      "droitDeRealiserManquant": "Les cartes hors ligne font partie du circuit acheté.",
+      "horsLigne": "Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.",
+      "stockageIndisponible": "Le téléphone n'a pas répondu. Réessayez ; s'il insiste, redémarrez-le."
     },
-    "actions": {
-      "download": "Télécharger",
-      "update": "Mettre à jour",
-      "delete": "Supprimer",
-      "retry": "Réessayer",
-      "buy": "Acheter ce pack",
-      "buyWithPrice": "Acheter ce pack — $price",
-      "buyUnavailable": "L'achat n'est pas disponible sur cet appareil."
+    "echec": {
+      "reseau": "La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.",
+      "empreinteInvalide": "La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.",
+      "tailleInattendue": "La carte reçue est incomplète : elle a été écartée. Réessayez.",
+      "plusDePlace": "Il n'y a plus de place sur le téléphone. Libérez de l'espace, puis reprenez.",
+      "ecritureImpossible": "L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.",
+      "stockageIndisponible": "Le téléphone n'a pas rendu son espace de stockage. Réessayez ; s'il insiste, redémarrez-le.",
+      "annulee": "Téléchargement annulé. Ce qui est déjà téléchargé est gardé."
     },
-    "progress": {
-      "downloading": "Téléchargement… $done/$total",
-      "verifying": "Vérification de l'intégrité…",
-      "completed": "Pack prêt hors-ligne",
-      "error": "Échec du téléchargement",
-      "errorSnack": "Le téléchargement n'a pas abouti."
-    },
-    "delete": {
-      "confirmTitle": "Supprimer ce pack ?",
-      "confirmBody": "Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.",
-      "cancel": "Annuler",
-      "confirm": "Supprimer",
-      "freed": "Espace libéré."
-    },
-    "empty": "Aucun pack disponible pour ce sentier.",
+    "demoIndisponible": "Le téléchargement des cartes n'est pas disponible pendant la démonstration.",
     "a11y": {
-      "packCard": "Pack $nom, $state",
-      "downloadButton": "Télécharger le pack $nom",
-      "deleteButton": "Supprimer le pack $nom"
-    },
-    "types": {
-      "nord": {
-        "nom": "$trail — Nord",
-        "description": "La moitié nord du sentier, hors-ligne."
-      },
-      "sud": {
-        "nom": "$trail — Sud",
-        "description": "La moitié sud du sentier, hors-ligne."
-      },
-      "complet": {
-        "nom": "$trail — Complet",
-        "description": "Tout le sentier, hors-ligne."
-      },
-      "mam": {
-        "nom": "$trail",
-        "description": "Tout le sentier $trail, hors-ligne."
-      }
+      "bouton": "Télécharger les cartes de tout le circuit",
+      "progression": "Téléchargement des cartes : $pourcent %"
     }
   },
   "guides": {
@@ -1659,7 +1649,7 @@
   },
   "trailSelection": {
     "title": "Changer de sentier",
-    "subtitle": "Choisis le sentier à explorer. Toute l'app (carte, étapes, points d'intérêt, packs, guides) suit ta sélection.",
+    "subtitle": "Choisis le sentier à explorer. Toute l'app (carte, étapes, points d'intérêt, cartes hors ligne, guides) suit ta sélection.",
     "current": "Sentier actif",
     "select": "Choisir ce sentier",
     "selected": "Sentier sélectionné",

@@ -83,7 +83,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gamification$es gamification = _Translations$gamification$es._(_root);
 	@override late final _Translations$shareVisibility$es shareVisibility = _Translations$shareVisibility$es._(_root);
 	@override late final _Translations$waypoints$es waypoints = _Translations$waypoints$es._(_root);
-	@override late final _Translations$packs$es packs = _Translations$packs$es._(_root);
+	@override late final _Translations$cartesHorsLigne$es cartesHorsLigne = _Translations$cartesHorsLigne$es._(_root);
 	@override late final _Translations$guides$es guides = _Translations$guides$es._(_root);
 	@override late final _Translations$health$es health = _Translations$health$es._(_root);
 	@override late final _Translations$trailSelection$es trailSelection = _Translations$trailSelection$es._(_root);
@@ -1213,24 +1213,41 @@ class _Translations$waypoints$es extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$contribution$es contribution = _Translations$waypoints$contribution$es._(_root);
 }
 
-// Path: packs
-class _Translations$packs$es extends Translations$packs$fr {
-	_Translations$packs$es._(TranslationsEs root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne
+class _Translations$cartesHorsLigne$es extends Translations$cartesHorsLigne$fr {
+	_Translations$cartesHorsLigne$es._(TranslationsEs root) : this._root = root, super.internal(root);
 
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Packs de sendero';
-	@override String get subtitle => 'Descarga un pack para caminar 100% sin conexión.';
-	@override String get alaCarteNote => 'A la carte: compra solo el pack que necesitas, sin suscripción.';
-	@override String size({required Object mo}) => '${mo} MB';
-	@override late final _Translations$packs$states$es states = _Translations$packs$states$es._(_root);
-	@override late final _Translations$packs$actions$es actions = _Translations$packs$actions$es._(_root);
-	@override late final _Translations$packs$progress$es progress = _Translations$packs$progress$es._(_root);
-	@override late final _Translations$packs$delete$es delete = _Translations$packs$delete$es._(_root);
-	@override String get empty => 'No hay pack disponible para este sendero.';
-	@override late final _Translations$packs$a11y$es a11y = _Translations$packs$a11y$es._(_root);
-	@override late final _Translations$packs$types$es types = _Translations$packs$types$es._(_root);
+	@override String get title => 'Mapas sin conexión';
+	@override String get intro => 'Una sola descarga: los mapas de todo el recorrido, para caminar sin cobertura.';
+	@override String get unSeulGeste => 'Todo el recorrido de una vez, sin trozos que elegir.';
+	@override String poids({required Object mo}) => '${mo} MB por descargar';
+	@override String poidsTotal({required Object mo}) => 'Peso total del recorrido: ${mo} MB';
+	@override String reprise({required Object mo}) => '${mo} MB ya están en el teléfono: al reanudar solo se descargará el resto.';
+	@override String get telecharger => 'DESCARGAR LOS MAPAS DEL RECORRIDO';
+	@override String get reprendre => 'REANUDAR LA DESCARGA';
+	@override String get reessayer => 'VOLVER A INTENTAR';
+	@override String get annuler => 'CANCELAR';
+	@override String get supprimer => 'ELIMINAR LOS MAPAS';
+	@override String enCours({required Object recus, required Object total}) => '${recus} MB de ${total} MB';
+	@override String get verification => 'Comprobación del mapa';
+	@override String get pretes => 'Mapas listos sin conexión';
+	@override String pretesPoids({required Object mo}) => '${mo} MB en el teléfono';
+	@override String get libere => 'Mapas eliminados, espacio liberado.';
+	@override String get supprimerTitre => '¿Eliminar los mapas?';
+	@override String get supprimerCorps => 'Los mapas se retirarán del teléfono para liberar espacio. Podrás volver a descargarlos.';
+	@override String get supprimerAnnuler => 'Cancelar';
+	@override String get supprimerConfirmer => 'Eliminar';
+	@override String horsWifiTitre({required Object mo}) => '¿${mo} MB de tus datos móviles?';
+	@override String get horsWifiCorps => 'No estás en Wi-Fi. Los mapas de un recorrido pueden pesar mucho en una tarifa móvil.';
+	@override String get horsWifiAttendre => 'Esperar el Wi-Fi';
+	@override String get horsWifiContinuer => 'Descargar igualmente';
+	@override late final _Translations$cartesHorsLigne$refus$es refus = _Translations$cartesHorsLigne$refus$es._(_root);
+	@override late final _Translations$cartesHorsLigne$echec$es echec = _Translations$cartesHorsLigne$echec$es._(_root);
+	@override String get demoIndisponible => 'La descarga de los mapas no está disponible durante la demostración.';
+	@override late final _Translations$cartesHorsLigne$a11y$es a11y = _Translations$cartesHorsLigne$a11y$es._(_root);
 }
 
 // Path: guides
@@ -1294,7 +1311,7 @@ class _Translations$trailSelection$es extends Translations$trailSelection$fr {
 
 	// Translations
 	@override String get title => 'Cambiar de sendero';
-	@override String get subtitle => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.';
+	@override String get subtitle => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, mapas sin conexión, guías) sigue tu selección.';
 	@override String get current => 'Sendero activo';
 	@override String get select => 'Elegir este sendero';
 	@override String get selected => 'Sendero seleccionado';
@@ -2013,8 +2030,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get trainingSub => 'Tu programa de entrenamiento';
 	@override String get health => 'Ficha médica';
 	@override String get healthSub => 'Rellénala antes de salir';
-	@override String get packs => 'Mapas sin conexión';
-	@override String get packsSub => 'Descarga los mapas del sendero';
+	@override String get cartes => 'Mapas sin conexión';
+	@override String get cartesSub => 'Descargar los mapas del recorrido';
 	@override String get offline => 'Descubrir senderos';
 	@override String get offlineSub => 'Explora el catálogo';
 	@override String get group => 'Mi grupo';
@@ -2874,85 +2891,46 @@ class _Translations$waypoints$contribution$es extends Translations$waypoints$con
 	@override String get error => 'No se puede guardar ahora mismo.';
 }
 
-// Path: packs.states
-class _Translations$packs$states$es extends Translations$packs$states$fr {
-	_Translations$packs$states$es._(TranslationsEs root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.refus
+class _Translations$cartesHorsLigne$refus$es extends Translations$cartesHorsLigne$refus$fr {
+	_Translations$cartesHorsLigne$refus$es._(TranslationsEs root) : this._root = root, super.internal(root);
 
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get notDownloaded => 'No descargado';
-	@override String get downloaded => 'Descargado';
-	@override String get updateAvailable => 'Actualización disponible';
+	@override String get niveauInsuffisant => 'Los mapas bajan cuando preparas el recorrido para caminarlo de verdad.';
+	@override String get sentierInconnu => 'Este recorrido aún no está en tu teléfono. Descárgalo desde la lista de senderos.';
+	@override String get aucuneCartePubliee => 'Todavía no hay mapa sin conexión publicado para este recorrido. El trazado sigue disponible.';
+	@override String get droitDeRealiserManquant => 'Los mapas sin conexión forman parte del recorrido comprado.';
+	@override String get horsLigne => 'Sin cobertura no se puede descargar un mapa. Conéctate y vuelve a intentarlo.';
+	@override String get stockageIndisponible => 'El teléfono no ha respondido. Vuelve a intentarlo; si insiste, reinícialo.';
 }
 
-// Path: packs.actions
-class _Translations$packs$actions$es extends Translations$packs$actions$fr {
-	_Translations$packs$actions$es._(TranslationsEs root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.echec
+class _Translations$cartesHorsLigne$echec$es extends Translations$cartesHorsLigne$echec$fr {
+	_Translations$cartesHorsLigne$echec$es._(TranslationsEs root) : this._root = root, super.internal(root);
 
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get download => 'Descargar';
-	@override String get update => 'Actualizar';
-	@override String get delete => 'Eliminar';
-	@override String get retry => 'Reintentar';
-	@override String get buy => 'Comprar este pack';
-	@override String buyWithPrice({required Object price}) => 'Comprar este pack — ${price}';
-	@override String get buyUnavailable => 'La compra no está disponible en este dispositivo.';
+	@override String get reseau => 'Se ha cortado la conexión. Lo ya descargado se conserva: reanuda cuando quieras.';
+	@override String get empreinteInvalide => 'El mapa recibido no coincide con el publicado: se ha descartado. Vuelve a intentarlo.';
+	@override String get tailleInattendue => 'El mapa recibido está incompleto: se ha descartado. Vuelve a intentarlo.';
+	@override String get plusDePlace => 'No queda espacio en el teléfono. Libera espacio y reanuda.';
+	@override String get ecritureImpossible => 'La escritura en el teléfono ha fallado. Lo descargado se conserva: reanuda.';
+	@override String get stockageIndisponible => 'El teléfono no ha entregado su almacenamiento. Vuelve a intentarlo; si insiste, reinícialo.';
+	@override String get annulee => 'Descarga cancelada. Lo ya descargado se conserva.';
 }
 
-// Path: packs.progress
-class _Translations$packs$progress$es extends Translations$packs$progress$fr {
-	_Translations$packs$progress$es._(TranslationsEs root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.a11y
+class _Translations$cartesHorsLigne$a11y$es extends Translations$cartesHorsLigne$a11y$fr {
+	_Translations$cartesHorsLigne$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
 
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String downloading({required Object done, required Object total}) => 'Descargando… ${done}/${total}';
-	@override String get verifying => 'Verificando integridad…';
-	@override String get completed => 'Pack listo sin conexión';
-	@override String get error => 'Error de descarga';
-	@override String get errorSnack => 'La descarga no se ha completado.';
-}
-
-// Path: packs.delete
-class _Translations$packs$delete$es extends Translations$packs$delete$fr {
-	_Translations$packs$delete$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String get confirmTitle => '¿Eliminar este pack?';
-	@override String get confirmBody => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.';
-	@override String get cancel => 'Cancelar';
-	@override String get confirm => 'Eliminar';
-	@override String get freed => 'Espacio liberado.';
-}
-
-// Path: packs.a11y
-class _Translations$packs$a11y$es extends Translations$packs$a11y$fr {
-	_Translations$packs$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
-	@override String downloadButton({required Object nom}) => 'Descargar el pack ${nom}';
-	@override String deleteButton({required Object nom}) => 'Eliminar el pack ${nom}';
-}
-
-// Path: packs.types
-class _Translations$packs$types$es extends Translations$packs$types$fr {
-	_Translations$packs$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override late final _Translations$packs$types$nord$es nord = _Translations$packs$types$nord$es._(_root);
-	@override late final _Translations$packs$types$sud$es sud = _Translations$packs$types$sud$es._(_root);
-	@override late final _Translations$packs$types$complet$es complet = _Translations$packs$types$complet$es._(_root);
-	@override late final _Translations$packs$types$mam$es mam = _Translations$packs$types$mam$es._(_root);
+	@override String get bouton => 'Descargar los mapas de todo el recorrido';
+	@override String progression({required Object pourcent}) => 'Descarga de mapas: ${pourcent} %';
 }
 
 // Path: guides.categories
@@ -4063,50 +4041,6 @@ class _Translations$gamification$badge$challenger$es extends Translations$gamifi
 	@override String get description => 'Has completado tu primer reto de temporada.';
 }
 
-// Path: packs.types.nord
-class _Translations$packs$types$nord$es extends Translations$packs$types$nord$fr {
-	_Translations$packs$types$nord$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String nom({required Object trail}) => '${trail} — Norte';
-	@override String get description => 'La mitad norte del sendero, sin conexión.';
-}
-
-// Path: packs.types.sud
-class _Translations$packs$types$sud$es extends Translations$packs$types$sud$fr {
-	_Translations$packs$types$sud$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String nom({required Object trail}) => '${trail} — Sur';
-	@override String get description => 'La mitad sur del sendero, sin conexión.';
-}
-
-// Path: packs.types.complet
-class _Translations$packs$types$complet$es extends Translations$packs$types$complet$fr {
-	_Translations$packs$types$complet$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String nom({required Object trail}) => '${trail} — Completo';
-	@override String get description => 'Todo el sendero, sin conexión.';
-}
-
-// Path: packs.types.mam
-class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
-	_Translations$packs$types$mam$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String nom({required Object trail}) => '${trail}';
-	@override String description({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.';
-}
-
 // Path: programme.info.days
 class _Translations$programme$info$days$es extends Translations$programme$info$days$fr {
 	_Translations$programme$info$days$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -4343,8 +4277,8 @@ extension on TranslationsEs {
 			'hub.cards.trainingSub' => 'Tu programa de entrenamiento',
 			'hub.cards.health' => 'Ficha médica',
 			'hub.cards.healthSub' => 'Rellénala antes de salir',
-			'hub.cards.packs' => 'Mapas sin conexión',
-			'hub.cards.packsSub' => 'Descarga los mapas del sendero',
+			'hub.cards.cartes' => 'Mapas sin conexión',
+			'hub.cards.cartesSub' => 'Descargar los mapas del recorrido',
 			'hub.cards.offline' => 'Descubrir senderos',
 			'hub.cards.offlineSub' => 'Explora el catálogo',
 			'hub.cards.group' => 'Mi grupo',
@@ -5478,42 +5412,46 @@ extension on TranslationsEs {
 			'waypoints.contribution.emptyComment' => 'Escribe tu observación.',
 			'waypoints.contribution.noLocation' => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.',
 			'waypoints.contribution.error' => 'No se puede guardar ahora mismo.',
-			'packs.title' => 'Packs de sendero',
-			'packs.subtitle' => 'Descarga un pack para caminar 100% sin conexión.',
-			'packs.alaCarteNote' => 'A la carte: compra solo el pack que necesitas, sin suscripción.',
-			'packs.size' => ({required Object mo}) => '${mo} MB',
-			'packs.states.notDownloaded' => 'No descargado',
-			'packs.states.downloaded' => 'Descargado',
-			'packs.states.updateAvailable' => 'Actualización disponible',
-			'packs.actions.download' => 'Descargar',
-			'packs.actions.update' => 'Actualizar',
-			'packs.actions.delete' => 'Eliminar',
-			'packs.actions.retry' => 'Reintentar',
-			'packs.actions.buy' => 'Comprar este pack',
-			'packs.actions.buyWithPrice' => ({required Object price}) => 'Comprar este pack — ${price}',
-			'packs.actions.buyUnavailable' => 'La compra no está disponible en este dispositivo.',
-			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Descargando… ${done}/${total}',
-			'packs.progress.verifying' => 'Verificando integridad…',
-			'packs.progress.completed' => 'Pack listo sin conexión',
-			'packs.progress.error' => 'Error de descarga',
-			'packs.progress.errorSnack' => 'La descarga no se ha completado.',
-			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
-			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
-			'packs.delete.cancel' => 'Cancelar',
-			'packs.delete.confirm' => 'Eliminar',
-			'packs.delete.freed' => 'Espacio liberado.',
-			'packs.empty' => 'No hay pack disponible para este sendero.',
-			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
-			'packs.a11y.downloadButton' => ({required Object nom}) => 'Descargar el pack ${nom}',
-			'packs.a11y.deleteButton' => ({required Object nom}) => 'Eliminar el pack ${nom}',
-			'packs.types.nord.nom' => ({required Object trail}) => '${trail} — Norte',
-			'packs.types.nord.description' => 'La mitad norte del sendero, sin conexión.',
-			'packs.types.sud.nom' => ({required Object trail}) => '${trail} — Sur',
-			'packs.types.sud.description' => 'La mitad sur del sendero, sin conexión.',
-			'packs.types.complet.nom' => ({required Object trail}) => '${trail} — Completo',
-			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
-			'packs.types.mam.nom' => ({required Object trail}) => '${trail}',
-			'packs.types.mam.description' => ({required Object trail}) => 'Todo el sendero ${trail}, sin conexión.',
+			'cartesHorsLigne.title' => 'Mapas sin conexión',
+			'cartesHorsLigne.intro' => 'Una sola descarga: los mapas de todo el recorrido, para caminar sin cobertura.',
+			'cartesHorsLigne.unSeulGeste' => 'Todo el recorrido de una vez, sin trozos que elegir.',
+			'cartesHorsLigne.poids' => ({required Object mo}) => '${mo} MB por descargar',
+			'cartesHorsLigne.poidsTotal' => ({required Object mo}) => 'Peso total del recorrido: ${mo} MB',
+			'cartesHorsLigne.reprise' => ({required Object mo}) => '${mo} MB ya están en el teléfono: al reanudar solo se descargará el resto.',
+			'cartesHorsLigne.telecharger' => 'DESCARGAR LOS MAPAS DEL RECORRIDO',
+			'cartesHorsLigne.reprendre' => 'REANUDAR LA DESCARGA',
+			'cartesHorsLigne.reessayer' => 'VOLVER A INTENTAR',
+			'cartesHorsLigne.annuler' => 'CANCELAR',
+			'cartesHorsLigne.supprimer' => 'ELIMINAR LOS MAPAS',
+			'cartesHorsLigne.enCours' => ({required Object recus, required Object total}) => '${recus} MB de ${total} MB',
+			'cartesHorsLigne.verification' => 'Comprobación del mapa',
+			'cartesHorsLigne.pretes' => 'Mapas listos sin conexión',
+			'cartesHorsLigne.pretesPoids' => ({required Object mo}) => '${mo} MB en el teléfono',
+			'cartesHorsLigne.libere' => 'Mapas eliminados, espacio liberado.',
+			'cartesHorsLigne.supprimerTitre' => '¿Eliminar los mapas?',
+			'cartesHorsLigne.supprimerCorps' => 'Los mapas se retirarán del teléfono para liberar espacio. Podrás volver a descargarlos.',
+			'cartesHorsLigne.supprimerAnnuler' => 'Cancelar',
+			'cartesHorsLigne.supprimerConfirmer' => 'Eliminar',
+			'cartesHorsLigne.horsWifiTitre' => ({required Object mo}) => '¿${mo} MB de tus datos móviles?',
+			'cartesHorsLigne.horsWifiCorps' => 'No estás en Wi-Fi. Los mapas de un recorrido pueden pesar mucho en una tarifa móvil.',
+			'cartesHorsLigne.horsWifiAttendre' => 'Esperar el Wi-Fi',
+			'cartesHorsLigne.horsWifiContinuer' => 'Descargar igualmente',
+			'cartesHorsLigne.refus.niveauInsuffisant' => 'Los mapas bajan cuando preparas el recorrido para caminarlo de verdad.',
+			'cartesHorsLigne.refus.sentierInconnu' => 'Este recorrido aún no está en tu teléfono. Descárgalo desde la lista de senderos.',
+			'cartesHorsLigne.refus.aucuneCartePubliee' => 'Todavía no hay mapa sin conexión publicado para este recorrido. El trazado sigue disponible.',
+			'cartesHorsLigne.refus.droitDeRealiserManquant' => 'Los mapas sin conexión forman parte del recorrido comprado.',
+			'cartesHorsLigne.refus.horsLigne' => 'Sin cobertura no se puede descargar un mapa. Conéctate y vuelve a intentarlo.',
+			'cartesHorsLigne.refus.stockageIndisponible' => 'El teléfono no ha respondido. Vuelve a intentarlo; si insiste, reinícialo.',
+			'cartesHorsLigne.echec.reseau' => 'Se ha cortado la conexión. Lo ya descargado se conserva: reanuda cuando quieras.',
+			'cartesHorsLigne.echec.empreinteInvalide' => 'El mapa recibido no coincide con el publicado: se ha descartado. Vuelve a intentarlo.',
+			'cartesHorsLigne.echec.tailleInattendue' => 'El mapa recibido está incompleto: se ha descartado. Vuelve a intentarlo.',
+			'cartesHorsLigne.echec.plusDePlace' => 'No queda espacio en el teléfono. Libera espacio y reanuda.',
+			'cartesHorsLigne.echec.ecritureImpossible' => 'La escritura en el teléfono ha fallado. Lo descargado se conserva: reanuda.',
+			'cartesHorsLigne.echec.stockageIndisponible' => 'El teléfono no ha entregado su almacenamiento. Vuelve a intentarlo; si insiste, reinícialo.',
+			'cartesHorsLigne.echec.annulee' => 'Descarga cancelada. Lo ya descargado se conserva.',
+			'cartesHorsLigne.demoIndisponible' => 'La descarga de los mapas no está disponible durante la demostración.',
+			'cartesHorsLigne.a11y.bouton' => 'Descargar los mapas de todo el recorrido',
+			'cartesHorsLigne.a11y.progression' => ({required Object pourcent}) => 'Descarga de mapas: ${pourcent} %',
 			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones prácticas',
@@ -5622,7 +5560,7 @@ extension on TranslationsEs {
 			'health.localOnlyPriceTitle' => 'Cambiar de teléfono significa volver a escribirla',
 			'health.localOnlyPrice' => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.',
 			'trailSelection.title' => 'Cambiar de sendero',
-			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.',
+			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, mapas sin conexión, guías) sigue tu selección.',
 			'trailSelection.current' => 'Sendero activo',
 			'trailSelection.select' => 'Elegir este sendero',
 			'trailSelection.selected' => 'Sendero seleccionado',
@@ -5764,12 +5702,12 @@ extension on TranslationsEs {
 			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
+			_ => null,
+		} ?? switch (path) {
 			'programme.stats.days' => 'Días',
 			'programme.stats.stages' => 'Etapas',
 			'programme.stats.restCount' => '{count} descanso',
 			'programme.legend.easy' => 'Fácil',
-			_ => null,
-		} ?? switch (path) {
 			'programme.legend.moderate' => 'Moderado',
 			'programme.legend.hard' => 'Difícil',
 			'programme.legend.extreme' => 'Extremo',

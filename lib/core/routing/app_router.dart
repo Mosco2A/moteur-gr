@@ -48,7 +48,7 @@ import '../../features/training/presentation/training_screen.dart';
 import '../../features/monetization/presentation/subscription_screen.dart';
 import '../../features/monetization/presentation/wallet_recharge_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
-import '../../features/packs/presentation/pack_store_screen.dart';
+import '../../features/map/presentation/cartes_hors_ligne_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
 import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
@@ -99,7 +99,7 @@ final _rootNavigatorKey = cleNavigateurRacine;
 ///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
 ///   /trail/:id/shop              - RAVITAILLEMENT (commerces par etape, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
-///   /trail/:id/packs             - Boutique de cartes hors ligne (LOT Q, 568)
+///   /trail/:id/cartes            - Cartes hors ligne du circuit (tache 640)
 ///   /trail/:id/feasibility       - Verdict de faisabilite (tricolore)
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
@@ -371,26 +371,29 @@ final appRouter = GoRouter(
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
         ),
-        // BOUTIQUE DE CARTES HORS LIGNE (tache 568, LOT Q — Q4c).
+        // CARTES HORS LIGNE — UN SEUL GESTE, TOUT LE CIRCUIT (tache 640, bug 10).
         //
-        // L'ECRAN EXISTAIT SANS ROUTE. `PackStoreScreen`, `PackCard` et
-        // `pack_providers.dart` etaient ecrits, localises en 5 langues et
-        // couverts par `pack_store_ui_test.dart` — et AUCUNE route ne les
-        // designait. Ce n'etait pas une route morte (S8 interdit une carte sans
-        // cible) : c'etait l'inverse, un ECRAN INATTEIGNABLE, que seul un test
-        // savait instancier. Chris l'a trouve en 40 minutes d'usage reel.
+        // CETTE ROUTE REMPLACE CELLE DU MAGASIN DE PACKS, ET CE N EST PAS UN
+        // RENOMMAGE. L ancienne ouvrait un magasin de quatre demi-circuits
+        // achetables (Nord / Sud / Complet / nom du sentier) qui ne telechargeait
+        // rien du tout : sa source de fichiers levait a chaque appel et son
+        // stockage ecrivait dans un dossier que la carte ne lit pas. C etait la
+        // seule porte que Christophe pouvait pousser, d ou « telecharger les
+        // cartes plante » (bug 9, DEM-260930-1016), et elle proposait des
+        // morceaux, d ou le bug 10 (DEM-260930-1017).
         //
-        // Sous-route de `/trail/:id` parce que les packs sont PAR SENTIER
-        // ([PackStoreScreen.trailId], catalogue `PackCatalog.availablePacks`) :
-        // meme forme que checklist / tips / feasibility. Atteinte via
-        // `context.push` depuis la carte « Cartes hors ligne » de la section
-        // Preparer du HUB -> retour propre par la pile.
+        // La nouvelle route ouvre l unique telechargeur de cartes du depot
+        // ([DescenteDesCartes], lot 622) : un bouton, le poids du circuit
+        // ENTIER, la progression, la reprise, l annulation. Sous-route de
+        // `/trail/:id` parce que les cartes sont PAR CIRCUIT — meme forme que
+        // checklist / tips / feasibility, atteinte par `context.push` depuis la
+        // carte « Cartes hors ligne » de la section Preparer du HUB.
         GoRoute(
-          path: 'packs',
-          name: 'trail-packs',
+          path: 'cartes',
+          name: 'trail-cartes',
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
-            return PackStoreScreen(trailId: trailId);
+            return CartesHorsLigneScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos nuits »

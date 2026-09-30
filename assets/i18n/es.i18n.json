@@ -130,8 +130,8 @@
       "trainingSub": "Tu programa de entrenamiento",
       "health": "Ficha médica",
       "healthSub": "Rellénala antes de salir",
-      "packs": "Mapas sin conexión",
-      "packsSub": "Descarga los mapas del sendero",
+      "cartes": "Mapas sin conexión",
+      "cartesSub": "Descargar los mapas del recorrido",
       "offline": "Descubrir senderos",
       "offlineSub": "Explora el catálogo",
       "group": "Mi grupo",
@@ -1458,62 +1458,52 @@
       "error": "No se puede guardar ahora mismo."
     }
   },
-  "packs": {
-    "title": "Packs de sendero",
-    "subtitle": "Descarga un pack para caminar 100% sin conexión.",
-    "alaCarteNote": "A la carte: compra solo el pack que necesitas, sin suscripción.",
-    "size": "$mo MB",
-    "states": {
-      "notDownloaded": "No descargado",
-      "downloaded": "Descargado",
-      "updateAvailable": "Actualización disponible"
+  "cartesHorsLigne": {
+    "title": "Mapas sin conexión",
+    "intro": "Una sola descarga: los mapas de todo el recorrido, para caminar sin cobertura.",
+    "unSeulGeste": "Todo el recorrido de una vez, sin trozos que elegir.",
+    "poids": "$mo MB por descargar",
+    "poidsTotal": "Peso total del recorrido: $mo MB",
+    "reprise": "$mo MB ya están en el teléfono: al reanudar solo se descargará el resto.",
+    "telecharger": "DESCARGAR LOS MAPAS DEL RECORRIDO",
+    "reprendre": "REANUDAR LA DESCARGA",
+    "reessayer": "VOLVER A INTENTAR",
+    "annuler": "CANCELAR",
+    "supprimer": "ELIMINAR LOS MAPAS",
+    "enCours": "$recus MB de $total MB",
+    "verification": "Comprobación del mapa",
+    "pretes": "Mapas listos sin conexión",
+    "pretesPoids": "$mo MB en el teléfono",
+    "libere": "Mapas eliminados, espacio liberado.",
+    "supprimerTitre": "¿Eliminar los mapas?",
+    "supprimerCorps": "Los mapas se retirarán del teléfono para liberar espacio. Podrás volver a descargarlos.",
+    "supprimerAnnuler": "Cancelar",
+    "supprimerConfirmer": "Eliminar",
+    "horsWifiTitre": "¿$mo MB de tus datos móviles?",
+    "horsWifiCorps": "No estás en Wi-Fi. Los mapas de un recorrido pueden pesar mucho en una tarifa móvil.",
+    "horsWifiAttendre": "Esperar el Wi-Fi",
+    "horsWifiContinuer": "Descargar igualmente",
+    "refus": {
+      "niveauInsuffisant": "Los mapas bajan cuando preparas el recorrido para caminarlo de verdad.",
+      "sentierInconnu": "Este recorrido aún no está en tu teléfono. Descárgalo desde la lista de senderos.",
+      "aucuneCartePubliee": "Todavía no hay mapa sin conexión publicado para este recorrido. El trazado sigue disponible.",
+      "droitDeRealiserManquant": "Los mapas sin conexión forman parte del recorrido comprado.",
+      "horsLigne": "Sin cobertura no se puede descargar un mapa. Conéctate y vuelve a intentarlo.",
+      "stockageIndisponible": "El teléfono no ha respondido. Vuelve a intentarlo; si insiste, reinícialo."
     },
-    "actions": {
-      "download": "Descargar",
-      "update": "Actualizar",
-      "delete": "Eliminar",
-      "retry": "Reintentar",
-      "buy": "Comprar este pack",
-      "buyWithPrice": "Comprar este pack — $price",
-      "buyUnavailable": "La compra no está disponible en este dispositivo."
+    "echec": {
+      "reseau": "Se ha cortado la conexión. Lo ya descargado se conserva: reanuda cuando quieras.",
+      "empreinteInvalide": "El mapa recibido no coincide con el publicado: se ha descartado. Vuelve a intentarlo.",
+      "tailleInattendue": "El mapa recibido está incompleto: se ha descartado. Vuelve a intentarlo.",
+      "plusDePlace": "No queda espacio en el teléfono. Libera espacio y reanuda.",
+      "ecritureImpossible": "La escritura en el teléfono ha fallado. Lo descargado se conserva: reanuda.",
+      "stockageIndisponible": "El teléfono no ha entregado su almacenamiento. Vuelve a intentarlo; si insiste, reinícialo.",
+      "annulee": "Descarga cancelada. Lo ya descargado se conserva."
     },
-    "progress": {
-      "downloading": "Descargando… $done/$total",
-      "verifying": "Verificando integridad…",
-      "completed": "Pack listo sin conexión",
-      "error": "Error de descarga",
-      "errorSnack": "La descarga no se ha completado."
-    },
-    "delete": {
-      "confirmTitle": "¿Eliminar este pack?",
-      "confirmBody": "El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.",
-      "cancel": "Cancelar",
-      "confirm": "Eliminar",
-      "freed": "Espacio liberado."
-    },
-    "empty": "No hay pack disponible para este sendero.",
+    "demoIndisponible": "La descarga de los mapas no está disponible durante la demostración.",
     "a11y": {
-      "packCard": "Pack $nom, $state",
-      "downloadButton": "Descargar el pack $nom",
-      "deleteButton": "Eliminar el pack $nom"
-    },
-    "types": {
-      "nord": {
-        "nom": "$trail — Norte",
-        "description": "La mitad norte del sendero, sin conexión."
-      },
-      "sud": {
-        "nom": "$trail — Sur",
-        "description": "La mitad sur del sendero, sin conexión."
-      },
-      "complet": {
-        "nom": "$trail — Completo",
-        "description": "Todo el sendero, sin conexión."
-      },
-      "mam": {
-        "nom": "$trail",
-        "description": "Todo el sendero $trail, sin conexión."
-      }
+      "bouton": "Descargar los mapas de todo el recorrido",
+      "progression": "Descarga de mapas: $pourcent %"
     }
   },
   "guides": {
@@ -1659,7 +1649,7 @@
   },
   "trailSelection": {
     "title": "Cambiar de sendero",
-    "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.",
+    "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, mapas sin conexión, guías) sigue tu selección.",
     "current": "Sendero activo",
     "select": "Elegir este sendero",
     "selected": "Sendero seleccionado",

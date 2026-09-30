@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
+import '../analytics/analytics_service.dart';
 import '../config/trail_data_source.dart';
 import '../data/daos/trail_manifests_dao.dart';
 import '../data/database.dart';
+import '../error/error_handler.dart';
 import '../map/mbtiles_manager.dart';
 import '../models/niveau_de_telechargement.dart';
 import '../network/connectivity_monitor.dart';
@@ -57,6 +61,24 @@ enum RefusDeDescente {
   /// refus est donc une QUESTION, pas une porte fermee : l ecran affiche le poids,
   /// le randonneur decide, et le meme appel repart avec `confirmeHorsWifi: true`.
   confirmationHorsWifiRequise,
+
+  /// LE TELEPHONE N A PAS PU REPONDRE A LA QUESTION (tache 640, bug 9).
+  ///
+  /// Base verrouillee ou fermee, espace de stockage injoignable, lecture des
+  /// droits ou du type de lien en echec : l examen ne SAIT pas si la descente est
+  /// permise, et « je ne sais pas » ne vaut pas « oui ».
+  ///
+  /// CETTE CAUSE EXISTE PARCE QU AVANT ELLE, C ETAIT UN PLANTAGE. [examiner] et
+  /// [DescenteDesCartes.descendre] ne rattrapaient rien ; l exception traversait
+  /// [ControleurDesCartes.demarrer], dont le `try` n avait pas de `catch`, et
+  /// ressortait dans le futur d un bouton — que personne n attend. Resultat :
+  /// erreur asynchrone non traitee, remontee comme plantage FATAL. Retour de
+  /// Christophe du 30/09 : « en demo comme en vrai telecharger les cartes
+  /// plante ».
+  ///
+  /// C est un refus RETENTABLE : la cause peut disparaitre (base rouverte,
+  /// telephone redemarre), et l ecran propose donc de reessayer.
+  stockageIndisponible,
 }
 
 /// CE QU ON SAIT AVANT DE DESCENDRE : le poids, le lien, et le refus s il y en a.
@@ -102,10 +124,7 @@ class DecisionDeDescente {
 
 /// CE QU UNE DEMANDE DE DESCENTE A DONNE : un refus, ou un transport et son sort.
 class BilanDeDescente {
-  const BilanDeDescente({
-    required this.decision,
-    this.carte,
-  });
+  const BilanDeDescente({required this.decision, this.carte});
 
   /// Ce qui a ete decide avant de transporter (poids, lien, refus eventuel).
   final DecisionDeDescente decision;
@@ -126,16 +145,24 @@ class BilanDeDescente {
 /// production. Consequence : un randonneur qui preparait son sentier puis montait
 /// SANS RESEAU n avait pas ses cartes — c est-a-dire le coeur du produit.
 ///
-/// CE QUI RESSEMBLAIT A UN CHEMIN ET N EN ETAIT PAS. Le depot contient un second
-/// telechargeur, `PackDownloadService`, dont le manifeste nomme explicitement des
-/// « cartes mbtiles », avec un ecran route (`PackStoreScreen`) et un bouton. Il ne
-/// descend rien, et ne le pourrait pas : sa source de fichiers est
-/// `UnavailablePackFileSource`, qui LEVE a chaque appel (« source de pack non
-/// connectee, pre-Phase 4 »), et son stockage ecrit sous `documents/packs/<packId>/`
-/// alors que la carte lit `documents/mbtiles/<trailId>.mbtiles`. Meme branche a un
-/// serveur, il remplirait un dossier que rien ne regarde. Ce n est donc PAS le
-/// chemin existant qu il aurait fallu reutiliser — c est une facade, et elle est
-/// signalee comme telle dans le bilan du lot.
+/// CE QUI RESSEMBLAIT A UN CHEMIN ET N EN ETAIT PAS — ET IL A FINI PAR COUTER UN
+/// PLANTAGE A CHRISTOPHE. Le depot portait un SECOND telechargeur, avec son
+/// magasin de packs, son ecran route et son bouton, et un manifeste qui nommait
+/// explicitement des « cartes mbtiles ». Il ne descendait rien, et ne le pouvait
+/// pas : sa source de fichiers levait a chaque appel (non connectee avant la
+/// phase 4), et son stockage ecrivait sous `documents/packs/`, alors que la carte
+/// lit `documents/mbtiles/<trailId>.mbtiles`. Meme branche a un serveur, il aurait
+/// rempli un dossier que rien ne regarde. Ce n etait donc PAS le chemin existant
+/// qu il aurait fallu reutiliser : c etait une facade, signalee comme telle dans
+/// le bilan du lot 622.
+///
+/// ET C ETAIT POURTANT LA SEULE PORTE ATTEIGNABLE. La carte du HUB « Cartes hors
+/// ligne » menait a cette facade, pas ici. Christophe a donc appuye dessus le
+/// 30/09 et a vu le geste echouer — « en demo comme en vrai telecharger les
+/// cartes plante » (bug 9, DEM-260930-1016) — sur un ecran qui lui proposait en
+/// plus des demi-circuits (bug 10, DEM-260930-1017). La tache 640 a retire la
+/// facade ENTIERE et branche la carte du HUB sur ce service-ci, par
+/// `CartesHorsLigneScreen` : un bouton, tout le circuit.
 ///
 /// POURQUOI LA DESCENTE N EST PAS DANS `DeltaUpdateService.synchroniser`, ALORS QUE
 /// C EST LE CHEMIN UNIQUE DES DONNEES. Parce que la cadence l emprunte. Depuis la
@@ -177,7 +204,42 @@ class DescenteDesCartes {
   /// DERNIER. Demander a un randonneur de confirmer 260 Mo sur son forfait avant de
   /// decouvrir qu il n a pas le droit de realiser le sentier serait une question
   /// posee pour rien.
+  /// CET EXAMEN NE LEVE JAMAIS (tache 640, bug 9) : il rend une decision, et une
+  /// panne de ses sources devient [RefusDeDescente.stockageIndisponible].
+  ///
+  /// Il interroge la base, les droits, le stockage et le reseau — quatre sources
+  /// qui peuvent toutes echouer sur un telephone reel. Avant ce filet, chacune de
+  /// ces pannes remontait jusqu au bouton et plantait l application.
   Future<DecisionDeDescente> examiner(
+    String trailId, {
+    required NiveauDeTelechargement niveau,
+    bool confirmeHorsWifi = false,
+  }) async {
+    try {
+      return await _examiner(
+        trailId,
+        niveau: niveau,
+        confirmeHorsWifi: confirmeHorsWifi,
+      );
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'DescenteDesCartes.examiner($trailId) — une source de la '
+            'decision n a pas repondu (base, droits, stockage ou reseau)',
+      );
+      return DecisionDeDescente(
+        trailId: trailId,
+        octetsTotal: 0,
+        octetsDejaLa: 0,
+        lien: TypesDeLien.aucun,
+        refus: RefusDeDescente.stockageIndisponible,
+      );
+    }
+  }
+
+  Future<DecisionDeDescente> _examiner(
     String trailId, {
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
@@ -262,8 +324,7 @@ class DescenteDesCartes {
 
     if (!TypesDeLien.sansSupplement(lien) && !confirmeHorsWifi) {
       _log.d(
-        '[Cartes] $trailId : ${ProgressionDeCarte.enMegaoctets(total - dejaLa)
-            .toStringAsFixed(1)} Mo a prendre sur un lien « $lien » — '
+        '[Cartes] $trailId : ${ProgressionDeCarte.enMegaoctets(total - dejaLa).toStringAsFixed(1)} Mo a prendre sur un lien « $lien » — '
         'confirmation demandee avant tout transfert.',
       );
       return DecisionDeDescente(
@@ -311,7 +372,30 @@ class DescenteDesCartes {
       return BilanDeDescente(decision: decision);
     }
 
-    final ligne = await dao.getByTrailId(trailId);
+    // LA SECONDE LECTURE EST AUSSI FRAGILE QUE LA PREMIERE (tache 640). La base
+    // peut se fermer entre l examen et le transport ; ce n est pas un plantage,
+    // c est le meme refus retentable.
+    final TrailManifest? ligne;
+    try {
+      ligne = await dao.getByTrailId(trailId);
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'DescenteDesCartes.descendre($trailId) — la liste locale n a '
+            'pas repondu avant le transport',
+      );
+      return BilanDeDescente(
+        decision: DecisionDeDescente(
+          trailId: trailId,
+          octetsTotal: decision.octetsTotal,
+          octetsDejaLa: decision.octetsDejaLa,
+          lien: decision.lien,
+          refus: RefusDeDescente.stockageIndisponible,
+        ),
+      );
+    }
     // La ligne existait a l examen ; si elle a disparu entre-temps, on ne devine
     // rien — on refuse comme a l examen.
     if (ligne == null || !_tuilesPubliees(ligne)) {
@@ -329,10 +413,8 @@ class DescenteDesCartes {
     _log.d(
       '[Cartes] $trailId : descente de '
       '${decision.megaoctetsAPrendre.toStringAsFixed(1)} Mo '
-      '(total ${ProgressionDeCarte.enMegaoctets(decision.octetsTotal)
-          .toStringAsFixed(1)} Mo, '
-      '${ProgressionDeCarte.enMegaoctets(decision.octetsDejaLa)
-          .toStringAsFixed(1)} Mo deja la) sur lien « ${decision.lien} ».',
+      '(total ${ProgressionDeCarte.enMegaoctets(decision.octetsTotal).toStringAsFixed(1)} Mo, '
+      '${ProgressionDeCarte.enMegaoctets(decision.octetsDejaLa).toStringAsFixed(1)} Mo deja la) sur lien « ${decision.lien} ».',
     );
 
     final resultat = await cartes.descendre(
@@ -345,6 +427,32 @@ class DescenteDesCartes {
     );
 
     return BilanDeDescente(decision: decision, carte: resultat);
+  }
+
+  /// RETIRE LA CARTE HORS LIGNE DE [trailId] POUR LIBERER L ESPACE (tache 640).
+  ///
+  /// LE MENAGE N AVAIT AUCUN APPELANT, ET C ETAIT MESURE, PAS SUPPOSE :
+  /// `MBTilesManager.deleteMbtiles` se documentait lui-meme « AUCUN CODE DE
+  /// PRODUCTION N APPELLE ENCORE CETTE METHODE » (bilan du lot 622). Un
+  /// telechargement de 260 Mo sans moyen de le defaire n est pas une
+  /// fonctionnalite complete : le randonneur qui a fini son circuit doit pouvoir
+  /// rendre la place.
+  ///
+  /// LA SUPPRESSION PASSE PAR ICI, PAS PAR L ECRAN. Meme raison que la descente :
+  /// un seul endroit touche aux fichiers de tuiles, et il ne leve jamais.
+  /// Rend vrai si la carte n est plus la apres l appel.
+  Future<bool> supprimer(String trailId) async {
+    try {
+      await cartes.deleteMbtiles(trailId);
+      return true;
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'DescenteDesCartes.supprimer($trailId)',
+      );
+      return false;
+    }
   }
 
   /// Les trois champs de tuiles vont ensemble ou pas du tout (cf.
@@ -439,7 +547,9 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
     state = EtatDesCartes(bilan: state.bilan, enCours: true);
 
     try {
-      final bilan = await ref.read(descenteDesCartesProvider).descendre(
+      final bilan = await ref
+          .read(descenteDesCartesProvider)
+          .descendre(
             trailId,
             niveau: niveau,
             confirmeHorsWifi: confirmeHorsWifi,
@@ -452,6 +562,43 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
       if (ref.mounted) {
         state = EtatDesCartes(progression: state.progression, bilan: bilan);
       }
+      _poserLaMiette(bilan);
+      return bilan;
+    } on Object catch (e, st) {
+      // LE `catch` QUI MANQUAIT, ET C EST LE BUG 9 (tache 640).
+      //
+      // Ce `try` n avait qu un `finally`. Tout ce qui levait sous lui —
+      // `path_provider` muet, base fermee, droits illisibles, reseau qui refuse
+      // de dire son type — remontait donc TELLE QUELLE jusqu a l appelant. Le
+      // seul appelant de production etait la copie d un sentier, qui rattrape ;
+      // des qu un BOUTON appelle cette methode, plus personne n attend le futur,
+      // et l exception devient une erreur asynchrone non traitee que
+      // `PlatformDispatcher.onError` remonte comme plantage FATAL.
+      //
+      // MIETTE POUR LE PROCHAIN RAPPORT : la panne est journalisee ICI avec le
+      // sentier et l etape, et signalee en NON FATALE a la collecte de plantages
+      // (`AnalyticsService.recordError`, inerte tant que Firebase est absent).
+      // Le randonneur, lui, recoit un refus nomme et retentable.
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'ControleurDesCartes.demarrer($trailId) — le geste '
+            '« telecharger les cartes » a rencontre une panne imprevue',
+      );
+      unawaited(ref.read(analyticsServiceProvider).recordError(e, st));
+      final bilan = BilanDeDescente(
+        decision: DecisionDeDescente(
+          trailId: trailId,
+          octetsTotal: 0,
+          octetsDejaLa: 0,
+          lien: TypesDeLien.aucun,
+          refus: RefusDeDescente.stockageIndisponible,
+        ),
+      );
+      if (ref.mounted) {
+        state = EtatDesCartes(progression: state.progression, bilan: bilan);
+      }
       return bilan;
     } finally {
       _jeton = null;
@@ -459,7 +606,10 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
       // sur une barre qui n avance plus est pire qu un message d erreur : le
       // randonneur attend un transport qui n existe plus.
       if (ref.mounted && state.enCours) {
-        state = EtatDesCartes(progression: state.progression, bilan: state.bilan);
+        state = EtatDesCartes(
+          progression: state.progression,
+          bilan: state.bilan,
+        );
       }
     }
   }
@@ -472,10 +622,58 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
     _jeton?.annuler();
     _log.d('[Cartes] $trailId : annulation demandee par le randonneur.');
   }
+
+  /// LA MIETTE CRASHLYTIQUE DU CHEMIN DES CARTES (tache 640, bug 9).
+  ///
+  /// POURQUOI UN ECHEC RATTRAPE MERITE QUAND MEME D ETRE SIGNALE. La tache 640 a
+  /// transforme trois plantages en causes nommees. C est bon pour le randonneur —
+  /// et mauvais pour le diagnostic si on s arrete la : un plantage remonte tout
+  /// seul dans la console, un refus propre ne remonte nulle part. Les deux causes
+  /// ci-dessous sont les seules qui signalent un telephone qui ne repond pas
+  /// comme prevu ; elles partent donc en NON FATALES, pour que le prochain
+  /// rapport dise ce que ce lot a rendu muet.
+  ///
+  /// CE QUI NE PART PAS : un reseau coupe, une place manquante, une annulation,
+  /// un droit non acquis, une carte non publiee. Ce sont des situations NORMALES
+  /// de randonneur, pas des pannes — les signaler noierait les vraies.
+  ///
+  /// Le rapporteur est inerte tant que Firebase est absent
+  /// ([AnalyticsService.disabled]) : aucun appel reseau en test ni en local.
+  void _poserLaMiette(BilanDeDescente bilan) {
+    final echec = bilan.echec;
+    final refus = bilan.refus;
+    final anormal =
+        echec == EchecDeCarte.stockageIndisponible ||
+        echec == EchecDeCarte.ecritureImpossible ||
+        echec == EchecDeCarte.empreinteInvalide ||
+        echec == EchecDeCarte.tailleInattendue ||
+        refus == RefusDeDescente.stockageIndisponible;
+    if (!anormal) return;
+    final panne = StateError(
+      'descente des cartes de $trailId : refus « ${refus?.name ?? "aucun"} », '
+      'echec « ${echec?.name ?? "aucun"} »',
+    );
+    ErrorHandler.log(panne, context: 'ControleurDesCartes.demarrer($trailId)');
+    unawaited(
+      ref.read(analyticsServiceProvider).recordError(panne, StackTrace.current),
+    );
+  }
+
+  /// RETIRE LA CARTE DU TELEPHONE POUR LIBERER L ESPACE (tache 640).
+  ///
+  /// L ETAT EST REMIS A NEUF APRES COUP, et c est necessaire : sans cela l ecran
+  /// continuerait d afficher « cartes pretes hors ligne » sur un bilan devenu
+  /// faux, exactement le genre d ecran qui ment que le lot 638 a eu a corriger
+  /// ailleurs.
+  Future<bool> supprimer() async {
+    final ok = await ref.read(descenteDesCartesProvider).supprimer(trailId);
+    if (ref.mounted) state = const EtatDesCartes();
+    return ok;
+  }
 }
 
 /// Controleur de descente par sentier.
 final controleurDesCartesProvider =
     NotifierProvider.family<ControleurDesCartes, EtatDesCartes, String>(
-  ControleurDesCartes.new,
-);
+      ControleurDesCartes.new,
+    );

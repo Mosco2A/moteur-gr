@@ -7,10 +7,9 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/empreinte_de_publication.dart';
+import '../error/error_handler.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// CE QUI SE PASSE PENDANT UNE DESCENTE DE CARTE, VU DU RANDONNEUR.
 ///
@@ -49,7 +48,8 @@ class ProgressionDeCarte {
   static double enMegaoctets(int octets) => octets / 1000000;
 
   @override
-  String toString() => '[$trailId] ${enMegaoctets(octetsRecus).toStringAsFixed(1)}'
+  String toString() =>
+      '[$trailId] ${enMegaoctets(octetsRecus).toStringAsFixed(1)}'
       ' / ${enMegaoctets(octetsTotal).toStringAsFixed(1)} Mo';
 }
 
@@ -91,6 +91,24 @@ enum EchecDeCarte {
   /// L ecriture locale a echoue pour une autre raison (permission, support
   /// retire). Le partiel est conserve : la cause peut disparaitre.
   ecritureImpossible,
+
+  /// LE TELEPHONE NE REND PAS SON ESPACE DE STOCKAGE (tache 640, bug 9).
+  ///
+  /// C est le cas ou l on ne sait meme pas OU ecrire : `path_provider` ne repond
+  /// pas (canal de plateforme absent, processus recycle, profil restreint), ou la
+  /// creation du dossier `mbtiles` echoue. Il est distinct de
+  /// [ecritureImpossible] parce que RIEN n a ete tente : aucune connexion n est
+  /// ouverte, aucun octet n est ecrit, et il n y a donc aucun partiel a garder.
+  ///
+  /// POURQUOI CETTE CAUSE EXISTE MAINTENANT. Avant la tache 640 ce cas ne
+  /// produisait pas un echec : il LEVAIT. `getMbtilesPath` etait la premiere
+  /// ligne de [MBTilesManager.descendre], hors de tout filet ; l exception
+  /// traversait [DescenteDesCartes] puis le controleur (dont le `try` n avait pas
+  /// de `catch`) et ressortait dans un futur que personne n attend — donc en
+  /// erreur asynchrone non traitee, remontee comme un plantage FATAL. C est la
+  /// forme exacte du retour de Christophe du 30/09 : « en demo comme en vrai
+  /// telecharger les cartes plante ».
+  stockageIndisponible,
 
   /// Le randonneur a annule.
   ///
@@ -153,9 +171,10 @@ class AnnulationDeDescente {
 /// LES FICHIERS VIVENT DANS `documents/mbtiles/{trailId}.mbtiles`, et cet
 /// emplacement n est pas un detail : c est LA ou la carte les lit
 /// (`OfflineTileProvider` -> `MbTilesTileProvider.fromPath`). Un second stockage de
-/// tuiles existe dans le depot — `FilePackStorage` ecrit sous `documents/packs/` —
-/// et il est deconnecte de la carte : ce qu il telechargerait ne serait JAMAIS
-/// affiche. Ne pas les confondre (voir le bilan de la tache 622).
+/// tuiles a existe dans le depot — le stockage du magasin de packs, sous
+/// `documents/packs/` — et il etait deconnecte de la carte : ce qu il aurait
+/// telecharge n aurait JAMAIS ete affiche. Il a ete RETIRE par la tache 640, avec
+/// le magasin qu il servait (bugs 9 et 10 du test de Christophe du 30/09).
 ///
 /// CE QUE CETTE CLASSE FAISAIT AVANT LA TACHE 622, ET POURQUOI C ETAIT
 /// INUTILISABLE. `downloadMbtiles` tenait en six lignes : `_httpClient.get(url)`
@@ -183,10 +202,9 @@ class MBTilesManager {
     http.Client? httpClient,
     Future<Directory> Function()? dossierDocuments,
     IOSink Function(File fichier, {required bool enAjout})? ouvrirEnEcriture,
-  })  : _httpClient = httpClient ?? http.Client(),
-        _dossierDocuments =
-            dossierDocuments ?? getApplicationDocumentsDirectory,
-        _ouvrirEnEcriture = ouvrirEnEcriture ?? _ouvertureParDefaut;
+  }) : _httpClient = httpClient ?? http.Client(),
+       _dossierDocuments = dossierDocuments ?? getApplicationDocumentsDirectory,
+       _ouvrirEnEcriture = ouvrirEnEcriture ?? _ouvertureParDefaut;
 
   final http.Client _httpClient;
   final Future<Directory> Function() _dossierDocuments;
@@ -199,7 +217,8 @@ class MBTilesManager {
   /// injectable, si. Le test de ce lot fournit un puits qui leve `ENOSPC` apres
   /// quelques milliers d octets, et VERIFIE qu aucun `.mbtiles` definitif
   /// n apparait.
-  final IOSink Function(File fichier, {required bool enAjout}) _ouvrirEnEcriture;
+  final IOSink Function(File fichier, {required bool enAjout})
+  _ouvrirEnEcriture;
 
   static IOSink _ouvertureParDefaut(File fichier, {required bool enAjout}) =>
       fichier.openWrite(mode: enAjout ? FileMode.append : FileMode.write);
@@ -282,6 +301,14 @@ class MBTilesManager {
   /// cette methode en production. Un transport qui decide des droits est un
   /// transport qu on ne peut plus tester, et deux endroits qui decident du meme
   /// droit finissent par ne plus etre d accord.
+  /// CETTE METHODE NE LEVE JAMAIS (tache 640, bug 9). Elle rend toujours un
+  /// [ResultatDeCarte] : une carte posee, ou un [EchecDeCarte] NOMME.
+  ///
+  /// Le filet ci-dessous est le DERNIER, pas le premier : chaque maillon du
+  /// transport classe deja sa propre panne. Il est la pour ce qu on n a pas
+  /// prevu — un canal de plateforme qui disparait, un support retire en cours de
+  /// route — parce qu une exception qui sort d ici sort dans un futur que
+  /// personne n attend, et devient un plantage au lieu d un message.
   Future<ResultatDeCarte> descendre({
     required String trailId,
     required String url,
@@ -290,10 +317,68 @@ class MBTilesManager {
     void Function(ProgressionDeCarte)? progression,
     AnnulationDeDescente? annulation,
   }) async {
-    final cheminFinal = await getMbtilesPath(trailId);
+    try {
+      return await _descendre(
+        trailId: trailId,
+        url: url,
+        octetsAttendus: octetsAttendus,
+        empreinteAttendue: empreinteAttendue,
+        progression: progression,
+        annulation: annulation,
+      );
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'MBTilesManager.descendre($trailId) — panne imprevue du '
+            'transport des tuiles',
+      );
+      return ResultatDeCarte(
+        trailId: trailId,
+        octetsSurLeTelephone: 0,
+        octetsTransferes: 0,
+        octetsReprisDuDisque: 0,
+        echec: EchecDeCarte.stockageIndisponible,
+      );
+    }
+  }
+
+  Future<ResultatDeCarte> _descendre({
+    required String trailId,
+    required String url,
+    required int octetsAttendus,
+    required String empreinteAttendue,
+    void Function(ProgressionDeCarte)? progression,
+    AnnulationDeDescente? annulation,
+  }) async {
+    // OU ECRIRE EST LA PREMIERE QUESTION, ET ELLE PEUT ECHOUER (tache 640).
+    // `path_provider` passe par un canal de plateforme : il repond par une
+    // exception quand la vue native n est plus la, et la creation du dossier
+    // echoue sur un support plein ou en lecture seule. Aucune connexion n est
+    // encore ouverte — c est donc un refus a cout nul, jamais un plantage.
+    final String cheminFinal;
+    try {
+      cheminFinal = await getMbtilesPath(trailId);
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'MBTilesManager.descendre($trailId) — le telephone ne rend pas '
+            'son espace de stockage',
+      );
+      return ResultatDeCarte(
+        trailId: trailId,
+        octetsSurLeTelephone: 0,
+        octetsTransferes: 0,
+        octetsReprisDuDisque: 0,
+        echec: EchecDeCarte.stockageIndisponible,
+      );
+    }
     final partiel = File('$cheminFinal$suffixePartiel');
 
-    var deja = await partiel.exists() ? await partiel.length() : 0;
+    var deja = await _tailleSure(partiel);
 
     // UN PARTIEL PLUS GROS QUE LE FICHIER ANNONCE NE PEUT PAS ETRE LE BON. C est
     // le cas d une carte REPUBLIEE pendant qu une descente dormait : reprendre
@@ -305,7 +390,10 @@ class MBTilesManager {
         'la taille annoncee ($octetsAttendus) — la carte a ete republiee depuis. '
         'Descente reprise depuis zero.',
       );
-      await partiel.delete();
+      // LA SUPPRESSION EST TENTEE, PAS EXIGEE (tache 640). Si elle echoue, on ne
+      // plante pas pour autant : l ouverture en mode ecriture (et non en ajout,
+      // puisque `deja` retombe a zero) tronque le fichier de toute facon.
+      await _supprimerSiPresent(partiel);
       deja = 0;
     }
 
@@ -316,11 +404,13 @@ class MBTilesManager {
         '[MBTilesManager] $trailId : les $octetsAttendus octets sont deja la — '
         'verification et pose, aucun transport.',
       );
-      progression?.call(ProgressionDeCarte(
-        trailId: trailId,
-        octetsRecus: deja,
-        octetsTotal: octetsAttendus,
-      ));
+      progression?.call(
+        ProgressionDeCarte(
+          trailId: trailId,
+          octetsRecus: deja,
+          octetsTotal: octetsAttendus,
+        ),
+      );
       return _verifierEtPoser(
         trailId: trailId,
         partiel: partiel,
@@ -419,11 +509,13 @@ class MBTilesManager {
         transferes += morceau.length;
         if (surLeTelephone - dernierPointAnnonce >= pasDeProgression) {
           dernierPointAnnonce = surLeTelephone;
-          progression?.call(ProgressionDeCarte(
-            trailId: trailId,
-            octetsRecus: surLeTelephone,
-            octetsTotal: octetsAttendus,
-          ));
+          progression?.call(
+            ProgressionDeCarte(
+              trailId: trailId,
+              octetsRecus: surLeTelephone,
+              octetsTotal: octetsAttendus,
+            ),
+          );
         }
       }
     } on FileSystemException catch (e) {
@@ -445,7 +537,9 @@ class MBTilesManager {
       try {
         await puits.close();
       } on Object catch (e) {
-        _log.w('[MBTilesManager] $trailId : fermeture du fichier en echec — $e');
+        _log.w(
+          '[MBTilesManager] $trailId : fermeture du fichier en echec — $e',
+        );
       }
     }
 
@@ -453,7 +547,7 @@ class MBTilesManager {
       // LE PARTIEL RESTE — c est ce qui rend la reprise possible. Le fichier
       // definitif, lui, n a jamais existe : la carte continue de repondre
       // « pas de carte » et repasse en ligne, au lieu d ouvrir une base tronquee.
-      final taille = await partiel.exists() ? await partiel.length() : 0;
+      final taille = await _tailleSure(partiel);
       return ResultatDeCarte(
         trailId: trailId,
         octetsSurLeTelephone: taille,
@@ -463,11 +557,13 @@ class MBTilesManager {
       );
     }
 
-    progression?.call(ProgressionDeCarte(
-      trailId: trailId,
-      octetsRecus: surLeTelephone,
-      octetsTotal: octetsAttendus,
-    ));
+    progression?.call(
+      ProgressionDeCarte(
+        trailId: trailId,
+        octetsRecus: surLeTelephone,
+        octetsTotal: octetsAttendus,
+      ),
+    );
 
     return _verifierEtPoser(
       trailId: trailId,
@@ -494,7 +590,7 @@ class MBTilesManager {
     required int octetsTransferes,
     required int octetsReprisDuDisque,
   }) async {
-    final taille = await partiel.exists() ? await partiel.length() : 0;
+    final taille = await _tailleSure(partiel);
 
     if (taille != octetsAttendus) {
       _log.e(
@@ -518,7 +614,27 @@ class MBTilesManager {
     // JAMAIS, elle ne vaut pas « pas de verification ». Une seconde regle de
     // comparaison, c est la porte par laquelle un descripteur fantaisiste
     // desactiverait le controle sans que personne s en apercoive.
-    final empreinte = await _empreinteDuFichier(partiel);
+    // LIRE 260 Mo PEUT ECHOUER, ET CE N EST PAS UNE RAISON DE PLANTER (tache
+    // 640). Un support retire, un fichier verrouille par le systeme : on ne sait
+    // alors PAS si la carte est bonne, et une carte dont on ne sait rien ne se
+    // pose pas. Le partiel est garde : la lecture pourra reussir plus tard.
+    final String empreinte;
+    try {
+      empreinte = await _empreinteDuFichier(partiel);
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'MBTilesManager.verifier($trailId) — empreinte illisible',
+      );
+      return ResultatDeCarte(
+        trailId: trailId,
+        octetsSurLeTelephone: taille,
+        octetsTransferes: octetsTransferes,
+        octetsReprisDuDisque: octetsReprisDuDisque,
+        echec: EchecDeCarte.ecritureImpossible,
+      );
+    }
     if (EmpreinteDePublication.normaliser(empreinteAttendue) != empreinte) {
       _log.e(
         '[MBTilesManager] $trailId : empreinte $empreinte, attendue '
@@ -547,8 +663,10 @@ class MBTilesManager {
     await _supprimerSiPresent(definitif);
     try {
       await partiel.rename(cheminFinal);
-    } on FileSystemException catch (e) {
-      final echec = _classerEchecDEcriture(e);
+    } on Object catch (e) {
+      final echec = e is FileSystemException
+          ? _classerEchecDEcriture(e)
+          : EchecDeCarte.ecritureImpossible;
       _log.e('[MBTilesManager] $trailId : pose de la carte impossible — $e');
       return ResultatDeCarte(
         trailId: trailId,
@@ -608,9 +726,44 @@ class MBTilesManager {
     return EchecDeCarte.ecritureImpossible;
   }
 
+  /// TAILLE D UN FICHIER, SANS JAMAIS LEVER (tache 640). Zero si absent OU
+  /// illisible.
+  ///
+  /// « Illisible » est traite comme « absent » a dessein : la seule decision que
+  /// cette valeur commande est « peut-on reprendre ? », et on ne reprend pas sur
+  /// un fichier qu on ne sait pas mesurer. Le pire cas est donc un transport
+  /// complet au lieu d une reprise — jamais une carte fausse, jamais un plantage.
+  Future<int> _tailleSure(File fichier) async {
+    try {
+      return await fichier.exists() ? await fichier.length() : 0;
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'MBTilesManager — taille illisible pour ${fichier.path}',
+      );
+      return 0;
+    }
+  }
+
+  /// SUPPRESSION TENTEE, JAMAIS EXIGEE (tache 640).
+  ///
+  /// Les trois appelants de cette methode l utilisent pour FAIRE DE LA PLACE ou
+  /// pour retirer un fichier dont on vient d etablir qu il est faux. Aucun n a
+  /// besoin d une garantie : si la suppression echoue, l ecriture suivante
+  /// tronque, et une verification suivante refusera de nouveau la carte fausse.
+  /// Une exception ici, en revanche, sortait de tout le chemin et plantait.
   Future<void> _supprimerSiPresent(File fichier) async {
-    if (await fichier.exists()) {
-      await fichier.delete();
+    try {
+      if (await fichier.exists()) {
+        await fichier.delete();
+      }
+    } on Object catch (e, st) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'MBTilesManager — suppression impossible de ${fichier.path}',
+      );
     }
   }
 
