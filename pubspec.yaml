@@ -168,6 +168,13 @@ dev_dependencies:
   plugin_platform_interface: ^2.1.8
   flutter_local_notifications_platform_interface: ^8.0.0
   path_provider_platform_interface: ^2.1.2
+  # INTEGRATION 647 — LECTURE DIRECTE D UN .mbtiles DANS UN TEST (tache 648).
+  # `mbtiles` arrivait jusqu ici en transitif, par `flutter_map_mbtiles`. Le test
+  # test/outillage/cartes_publiees_648_test.dart l importe DIRECTEMENT pour ouvrir
+  # la carte publiee et relire une tuile : s appuyer sur un transitif, c est
+  # dependre d un choix que fait un autre paquet, et l analyse le dit
+  # (depend_on_referenced_packages). Dependance de TEST uniquement.
+  mbtiles: ^0.4.0
   build_runner: ^2.4.0
   drift_dev: ^2.22.1
   freezed: ^3.2.5

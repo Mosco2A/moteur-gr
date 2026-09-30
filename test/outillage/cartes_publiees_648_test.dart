@@ -151,7 +151,7 @@ void main() {
       );
       final bornes = metadonnees.bounds!;
       const zoom = 14;
-      final n = 1 << zoom;
+      const n = 1 << zoom;
       final lon = (bornes.left + bornes.right) / 2;
       final lat = (bornes.top + bornes.bottom) / 2;
       final x = ((lon + 180.0) / 360.0 * n).floor();
