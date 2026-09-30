@@ -52,7 +52,14 @@ class HubWalletCard extends ConsumerWidget {
             excludeSemantics: true,
             child: Row(
               children: [
-                StepIcon(StepwaysIcons.portefeuille, color: accent),
+                // TACHE 639 (bug 3) — « Compte etapes » EN BICOLORE.
+                //
+                // Verbatim de Christophe (30/09 10:09) : « Compte etapes et pret
+                // a partir non plus ». Le portefeuille portait la couleur verte
+                // categorielle, donc le trace monochrome teinte. Le chiffre du
+                // solde, lui, GARDE cette couleur : c'est une donnee, pas un
+                // dessin d'identite.
+                const StepIcon.tuile(StepwaysIcons.portefeuille),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
                   child: Column(
@@ -94,8 +101,11 @@ class HubWalletCard extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(width: AppTheme.spacingXs),
-                const StepIcon(StepwaysIcons.chevronDroite,
-                    size: 18, color: AppTheme.grisTexteSecondaire),
+                const StepIcon(
+                  StepwaysIcons.chevronDroite,
+                  size: 18,
+                  color: AppTheme.grisTexteSecondaire,
+                ),
               ],
             ),
           ),

@@ -38,9 +38,14 @@ class QuickAccessCard extends StatelessWidget {
          'Stepways (monochrome)',
        );
 
-  /// Chemin d'une icone Stepways MONOCHROME ([StepwaysIcons]) — pour les cartes
-  /// qui ne sont pas l'une des 20 rubriques (secours, signaler, cartes hors
-  /// ligne...). Exclusif avec [rubrique].
+  /// Chemin d'une icone Stepways ([StepwaysIcons]) — pour les cartes qui ne sont
+  /// pas l'une des 20 rubriques (secours, signaler, cartes hors ligne...).
+  /// Exclusif avec [rubrique].
+  ///
+  /// TACHE 639 : ce chemin N'IMPOSE PLUS le monochrome. Si le dessin a un trace
+  /// bicolore ([iconeBicolorePour]), la carte l'affiche — comme si la rubrique
+  /// avait ete nommee. Passer par [rubrique] reste la voie explicite ; les deux
+  /// donnent desormais le meme rendu.
   final String? icon;
 
   /// L'une des 20 rubriques de l'application. C'est la voie normale : la carte
@@ -87,11 +92,18 @@ class QuickAccessCard extends StatelessWidget {
   /// — carte verrouillee, ou couleur demandee par l'appelant — on passe au trace
   /// monochrome : le bicolore fige ignorerait la couleur et la carte grisee
   /// garderait une icone vive, ce qui brouillerait le verrou.
+  /// TACHE 639 (bug 3) : la carte d'acces est une TUILE PRINCIPALE, donc un
+  /// sujet. Son dessin sort en bicolore qu'il ait ete nomme par [rubrique] ou
+  /// passe a plat dans [icon] — c'est la regle de [iconeBicolorePour] qui
+  /// repond, plus la forme de l'appel. Sans cela, les trois cartes du bandeau de
+  /// « Mes treks » restaient monochromes alors que les seize du cockpit etaient
+  /// bicolores : deux langages pour la meme carte.
   Widget _icone(Color couleurEffective) {
-    if (rubrique case final r?) {
+    final dessin = rubrique ?? (icon != null ? iconeBicolorePour(icon!) : null);
+    if (dessin != null) {
       final impose = !enabled || iconColor != null;
       return IconeStepways(
-        r,
+        dessin,
         taille: 24,
         couleur: impose ? couleurEffective : null,
       );

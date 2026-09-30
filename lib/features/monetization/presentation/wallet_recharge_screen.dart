@@ -55,7 +55,11 @@ class WalletRechargeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(AppTheme.spacingBase),
                 child: Row(
                   children: [
-                    StepIcon(StepwaysIcons.portefeuille, color: accent),
+                    // TACHE 639 (bug 3) : meme dessin, meme regle que la tuile du
+                    // cockpit — l'ecran « Compte-etapes » ne peut pas montrer un
+                    // portefeuille monochrome quand le cockpit en montre un
+                    // bicolore.
+                    const StepIcon.tuile(StepwaysIcons.portefeuille),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Text(
@@ -144,8 +148,9 @@ class _PackTileState extends ConsumerState<_PackTile> {
               Expanded(
                 child: Text(
                   t.monetization.packSteps(steps: pack.steps),
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               Text(
