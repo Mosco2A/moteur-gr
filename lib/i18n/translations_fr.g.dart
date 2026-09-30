@@ -1786,6 +1786,72 @@ class Translations$demo$fr {
 
 	/// fr: 'Recommencer la démo'
 	String get simulerRelancer => 'Recommencer la démo';
+
+	/// fr: 'Fin de la démo'
+	String get sortieTitre => 'Fin de la démo';
+
+	/// fr: 'Vous retrouverez la démo en haut de la liste des sentiers.'
+	String get sortieEnTeteCatalogue => 'Vous retrouverez la démo en haut de la liste des sentiers.';
+
+	/// fr: 'Le bouton ne s'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».'
+	String get sortieDansMonCompte => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».';
+
+	/// fr: 'Cacher le mode démo'
+	String get cacherLabel => 'Cacher le mode démo';
+
+	/// fr: 'Quitter la démo'
+	String get sortieConfirmer => 'Quitter la démo';
+
+	/// fr: 'Continuer la démo'
+	String get sortieAnnuler => 'Continuer la démo';
+
+	/// fr: 'Indisponible en démo'
+	String get indisponible => 'Indisponible en démo';
+
+	/// fr: 'En démo, le départ lance une randonnée simulée : rien n'est enregistré.'
+	String get departSimule => 'En démo, le départ lance une randonnée simulée : rien n\'est enregistré.';
+
+	/// fr: 'Mode démo'
+	String get compteTitre => 'Mode démo';
+
+	/// fr: 'Revoir la démo'
+	String get compteRelancer => 'Revoir la démo';
+
+	/// fr: 'Découvrez l'application de A à Z, sans rien engager'
+	String get compteRelancerSous => 'Découvrez l\'application de A à Z, sans rien engager';
+
+	/// fr: 'Afficher le bouton démo au catalogue'
+	String get compteReafficher => 'Afficher le bouton démo au catalogue';
+
+	/// fr: 'Le bouton revient en haut de la liste des sentiers'
+	String get compteReafficherSous => 'Le bouton revient en haut de la liste des sentiers';
+
+	/// fr: 'Ce sur quoi repose la réponse'
+	String get collecteTitre => 'Ce sur quoi repose la réponse';
+
+	/// fr: 'Voici les informations que l'application utilise pour calculer la faisabilité.'
+	String get collecteIntro => 'Voici les informations que l\'application utilise pour calculer la faisabilité.';
+
+	/// fr: 'Votre profil'
+	String get collecteProfil => 'Votre profil';
+
+	/// fr: 'Votre forme'
+	String get collecteForme => 'Votre forme';
+
+	/// fr: 'Votre expérience'
+	String get collecteExperience => 'Votre expérience';
+
+	/// fr: 'Saison du départ'
+	String get collecteSaison => 'Saison du départ';
+
+	/// fr: 'Le sentier'
+	String get collecteSentier => 'Le sentier';
+
+	/// fr: 'Nombre de jours'
+	String get collecteJours => 'Nombre de jours';
+
+	/// fr: 'Non renseigné'
+	String get collecteAbsent => 'Non renseigné';
 }
 
 // Path: updates
@@ -3468,6 +3534,12 @@ class Translations$myTreks$fr {
 
 	/// fr: 'Langue, unités, thème'
 	String get settingsSubtitle => 'Langue, unités, thème';
+
+	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.'
+	String get emptyCatalogueOuDemo => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.';
+
+	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.'
+	String get emptyCatalogueSeul => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.';
 }
 
 // Path: trekState
@@ -9060,6 +9132,28 @@ extension on Translations {
 			'demo.simulerEtape' => 'Simuler l\'étape suivante',
 			'demo.simulerFin' => 'Simuler l\'arrivée',
 			'demo.simulerRelancer' => 'Recommencer la démo',
+			'demo.sortieTitre' => 'Fin de la démo',
+			'demo.sortieEnTeteCatalogue' => 'Vous retrouverez la démo en haut de la liste des sentiers.',
+			'demo.sortieDansMonCompte' => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».',
+			'demo.cacherLabel' => 'Cacher le mode démo',
+			'demo.sortieConfirmer' => 'Quitter la démo',
+			'demo.sortieAnnuler' => 'Continuer la démo',
+			'demo.indisponible' => 'Indisponible en démo',
+			'demo.departSimule' => 'En démo, le départ lance une randonnée simulée : rien n\'est enregistré.',
+			'demo.compteTitre' => 'Mode démo',
+			'demo.compteRelancer' => 'Revoir la démo',
+			'demo.compteRelancerSous' => 'Découvrez l\'application de A à Z, sans rien engager',
+			'demo.compteReafficher' => 'Afficher le bouton démo au catalogue',
+			'demo.compteReafficherSous' => 'Le bouton revient en haut de la liste des sentiers',
+			'demo.collecteTitre' => 'Ce sur quoi repose la réponse',
+			'demo.collecteIntro' => 'Voici les informations que l\'application utilise pour calculer la faisabilité.',
+			'demo.collecteProfil' => 'Votre profil',
+			'demo.collecteForme' => 'Votre forme',
+			'demo.collecteExperience' => 'Votre expérience',
+			'demo.collecteSaison' => 'Saison du départ',
+			'demo.collecteSentier' => 'Le sentier',
+			'demo.collecteJours' => 'Nombre de jours',
+			'demo.collecteAbsent' => 'Non renseigné',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -9103,6 +9197,8 @@ extension on Translations {
 			'monetization.walletTitle' => 'Compte-étapes',
 			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.storeUnavailable' => 'Le paiement n\'est pas disponible pour le moment.',
 			'monetization.restoreUnavailable' => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.',
 			'monetization.restoreRequested' => 'Restauration demandée. Vos achats réapparaîtront dans un instant.',
@@ -9125,8 +9221,6 @@ extension on Translations {
 			'monetization.subscriptionInactive' => 'Aucun abonnement actif',
 			'monetization.subscriptionAllowancePending' => 'Le montant de la cagnotte n\'est pas encore fixé.',
 			'monetization.realizationLockedTitle' => 'Cette randonnée n\'est pas débloquée',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
 			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
@@ -9617,6 +9711,8 @@ extension on Translations {
 			'programme.mergeBlocked.tooLong' => 'Trop long : {hours}h (max {max}h/jour)',
 			'programme.mergeBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.replan' => 'Replanifier',
+			_ => null,
+		} ?? switch (path) {
 			'programme.replanButton' => 'REPLANIFIER',
 			'programme.replanDialog.title' => 'Replanifier',
 			'programme.replanDialog.message' => 'La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.',
@@ -9639,8 +9735,6 @@ extension on Translations {
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
@@ -9890,6 +9984,8 @@ extension on Translations {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Ouvrir le trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Langue, unités, thème',
+			'myTreks.emptyCatalogueOuDemo' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.',
+			'myTreks.emptyCatalogueSeul' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.',
 			'trekState.abandonDialog.title' => 'Un trek est déjà en cours',
 			'trekState.abandonDialog.message' => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.',
 			'trekState.abandonDialog.finish' => 'Terminer',

@@ -5,6 +5,7 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/category_icon_colors.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -133,7 +134,12 @@ class _PackTileState extends ConsumerState<_PackTile> {
       key: ValueKey('pack-etapes-${pack.steps}'),
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,
-      child: InkWell(
+      // GRISE EN DEMO (tache 638, bug 14) : recharger le compte-etapes engage de
+      // l'argent reel. Le service refusait deja, mais par un message
+      // d'indisponibilite du magasin qui ressemblait a une panne. Le bouton dit
+      // desormais non AVANT qu'on appuie.
+      child: GriseEnDemo(
+        child: InkWell(
         onTap: _occupe ? null : _acheter,
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -160,6 +166,7 @@ class _PackTileState extends ConsumerState<_PackTile> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

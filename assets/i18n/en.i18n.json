@@ -1103,7 +1103,29 @@
     "rienNeCompte": "You are in demo mode: nothing you do here is saved. No stages earned, no diploma, no purchase.",
     "simulerEtape": "Simulate the next stage",
     "simulerFin": "Simulate the finish",
-    "simulerRelancer": "Restart the demo"
+    "simulerRelancer": "Restart the demo",
+    "sortieTitre": "End of demo",
+    "sortieEnTeteCatalogue": "You will find the demo at the top of the trail list.",
+    "sortieDansMonCompte": "The button will no longer appear in the catalogue. You will find the demo in “My account”.",
+    "cacherLabel": "Hide demo mode",
+    "sortieConfirmer": "Leave the demo",
+    "sortieAnnuler": "Continue the demo",
+    "indisponible": "Not available in demo",
+    "departSimule": "In demo, starting launches a simulated hike: nothing is saved.",
+    "compteTitre": "Demo mode",
+    "compteRelancer": "See the demo again",
+    "compteRelancerSous": "Discover the app from A to Z, with no commitment",
+    "compteReafficher": "Show the demo button in the catalogue",
+    "compteReafficherSous": "The button comes back to the top of the trail list",
+    "collecteTitre": "What the answer is based on",
+    "collecteIntro": "Here is the information the app uses to work out feasibility.",
+    "collecteProfil": "Your profile",
+    "collecteForme": "Your fitness",
+    "collecteExperience": "Your experience",
+    "collecteSaison": "Departure season",
+    "collecteSentier": "The trail",
+    "collecteJours": "Number of days",
+    "collecteAbsent": "Not provided"
   },
   "updates": {
     "readyTitle": "Update ready",
@@ -2189,7 +2211,9 @@
       "trekCard": "Trek $nom, $state",
       "openTrek": "Open trek $nom"
     },
-    "settingsSubtitle": "Language, units, theme"
+    "settingsSubtitle": "Language, units, theme",
+    "emptyCatalogueOuDemo": "You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.",
+    "emptyCatalogueSeul": "You do not have a trail yet. Open the catalogue to choose one."
   },
   "trekState": {
     "abandonDialog": {

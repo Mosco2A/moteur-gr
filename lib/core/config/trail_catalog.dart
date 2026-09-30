@@ -1,4 +1,3 @@
-import 'mare_a_mare_centre_demo_trail_config.dart';
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
@@ -29,11 +28,38 @@ abstract final class TrailCatalog {
     // [defaultTrail] : l'app demarre dessus. Reste une DONNEE (TrailConfig), le
     // moteur ne hardcode aucune localite.
     mareAMareCentreTrailConfig,
-    // Sentier de DEMONSTRATION, GRATUIT (tache 601). Decision de Chris du
-    // 27/09 12:24 : « il y a mare a mare ET mare a mare demo des le catalogue ».
-    // Deux entrees distinctes et visibles, pas une entree bridee. Il suit
-    // immediatement le sentier qu'il fait decouvrir : on les voit ensemble.
-    mareAMareCentreDemoTrailConfig,
+    // IL N'Y A PLUS DE SENTIER « MARE A MARE CENTRE DEMO » (tache 638, bugs 1 et
+    // 8 — DEM-260930-1005 et DEM-260930-1014). Le lot 601 avait ajoute ici un
+    // SECOND Mare a Mare, gratuit et ampute a deux etapes, sur la decision de
+    // Christophe du 27/09 : « il y a mare a mare ET mare a mare demo des le
+    // catalogue ». Son test du 30/09 a renverse les deux moities de cette
+    // decision, verbatim : « il reste Mare a Mare Centre Demo gratuite en doublon
+    // avec Essayer la demo » (bug 1) et « la demo de Mare a Mare ce doit etre la
+    // demo de Mare a Mare, pas un truc avec 2 etapes !! » (bug 8).
+    //
+    // LA DEMO N'EST DONC PLUS UN SENTIER, C'EST UN MODE, et il s'applique au
+    // sentier ci-dessus — entier. Le doublon disparait du catalogue avec
+    // l'entree, et le bouton orange « Essayer la demo » reste la seule porte
+    // d'entree de la demonstration (cf. `session_demo.dart`).
+    //
+    // ET IL N'Y A PLUS AUCUN SENTIER GRATUIT AU CATALOGUE. C'est une decision de
+    // Christophe, pas une consequence : son scenario d'acceptation du 29/09
+    // 14:17 dit, verbatim, « la prochaine fois que j'ouvre l'application je n'ai
+    // droit a rien ». Un sentier gratuit au catalogue lui donnerait droit a
+    // quelque chose sans qu'il ait rien achete — exactement ce qu'il refuse.
+    //
+    // LE NIVEAU GRATUIT DU MODELE ECO, C'EST LA DEMO, PAS UN SENTIER. Le modele
+    // du lot 601 — « un sentier gratuit est une ENTREE du modele, dont le prix
+    // est nul ; une exemption serait un trou » — reste ecrit et teste
+    // ([TrailConfig.isFreeTrail], [freeIds]) : il n'a simplement plus d'instance,
+    // et c'est un etat legitime. Ce que le randonneur qui n'a rien achete peut
+    // faire, il le fait par le bouton orange : il VOIT tout, il n'ACQUIERT rien.
+    //
+    // COROLLAIRE ASSUME : « Mes treks » est VIDE au premier lancement, et il le
+    // DIT (cf. `my_treks_screen.dart`, etat vide) en renvoyant vers le catalogue
+    // et vers la demo. Un accueil vide qui explique n'est pas une panne ; un
+    // sentier offert pour eviter un ecran vide serait un cadeau que personne n'a
+    // decide.
     testTrailConfig,
     pyreneesTrailConfig,
   ];
@@ -43,8 +69,7 @@ abstract final class TrailCatalog {
   static TrailConfig get defaultTrail => all.first;
 
   /// Identifiants de tous les sentiers du catalogue (ordre d'affichage).
-  static List<String> get ids =>
-      all.map((c) => c.id).toList(growable: false);
+  static List<String> get ids => all.map((c) => c.id).toList(growable: false);
 
   /// Identifiants des sentiers GRATUITS — ceux dont le PRIX est nul.
   ///

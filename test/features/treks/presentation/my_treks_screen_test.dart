@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/config/trail_selection.dart';
+import 'package:moteur_gr/core/services/session_demo.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/presentation/my_treks_screen.dart';
@@ -11,6 +12,7 @@ import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
 import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// StepWays LOT 2, Phase 4 — ecran « Mes treks ».
 ///
@@ -36,6 +38,8 @@ TrekSummary _summary(String id, TrekLifecycleState state) =>
     TrekSummary(config: _config(id), state: state);
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
   /// Construit un container cable sur des [treks] figes (provider override).
   /// Renvoie aussi le container pour lire l'etat apres interaction.
   ProviderContainer makeContainer(List<TrekSummary> treks) {
@@ -100,11 +104,38 @@ void main() {
     expect(find.text(t.myTreks.sectionCompleted), findsNothing);
   });
 
-  testWidgets('etat vide affiche le message dedie', (tester) async {
+  testWidgets('etat vide : il DIT qu il n y a pas de sentier, et ou en trouver',
+      (tester) async {
+    // TACHE 638 — C EST LE CAS NORMAL DU PREMIER LANCEMENT, pas un cas
+    // theorique : il n y a plus aucun sentier gratuit au catalogue (decision de
+    // Christophe, scenario d acceptation du 29/09 14:17 : « Donc la prochaine
+    // fois que j ouvre l application je n ai droit a rien »). L ecran doit donc
+    // EXPLIQUER, pas paraitre casse.
     await tester.pumpWidget(wrap(makeContainer(const [])));
     await tester.pumpAndSettle();
 
-    expect(find.text(t.myTreks.empty), findsOneWidget);
+    expect(find.text(t.myTreks.emptyTitle), findsOneWidget);
+    expect(find.text(t.myTreks.emptyCatalogueOuDemo), findsOneWidget,
+        reason: 'le texte renvoie vers le catalogue ET vers la demo, qui est en '
+            'tete du catalogue');
+    expect(find.byKey(const ValueKey('my-treks-empty-discover')),
+        findsOneWidget,
+        reason: 'et la porte est la, pas seulement la phrase');
+  });
+
+  testWidgets('etat vide : le texte NE PROMET PAS la demo si elle est cachee',
+      (tester) async {
+    // Le randonneur peut avoir coche « Cacher le mode demo » en quittant la demo
+    // (bug 18). Lui promettre une demo « en tete de la liste » serait alors un
+    // mensonge — exactement celui que le dialogue de sortie evite deja.
+    final container = makeContainer(const []);
+    await container.read(boutonDemoCacheProvider.notifier).definir(true);
+
+    await tester.pumpWidget(wrap(container));
+    await tester.pumpAndSettle();
+
+    expect(find.text(t.myTreks.emptyCatalogueSeul), findsOneWidget);
+    expect(find.text(t.myTreks.emptyCatalogueOuDemo), findsNothing);
   });
 
   testWidgets('selectionner un trek ecrit selectedTrailId puis va a /home',

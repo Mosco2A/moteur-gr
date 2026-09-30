@@ -302,7 +302,17 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     var dbItems = await dao.getByTrailId(_trailId);
 
     // Premiere ouverture : initialiser depuis le template
-    if (dbItems.isEmpty) {
+    //
+    // SAUF EN DEMO : LE SEED N'ATTEINT PAS LA BASE (tache 638, bug 14). Ce seed
+    // etait la DERNIERE ecriture non barree du sac : ouvrir le sac pendant une
+    // demo inserait les 84 lignes du template. Tant que la demo tournait sur un
+    // sentier a elle (lot 601), ces lignes restaient dans un coin ; depuis que la
+    // demo est celle du sentier REEL (bug 8), elles s'ecriraient sous SON
+    // identifiant et survivraient a la demo. On garde donc le template EN MEMOIRE
+    // — l'ecran est identique, les coches fonctionnent, et le telephone n'a rien
+    // appris. Si le randonneur a DEJA un sac sur ce sentier, il est relu tel quel
+    // (lire n'a jamais rien ecrit) : la demo montre alors son vrai sac.
+    if (dbItems.isEmpty && !ref.read(enDemoProvider)) {
       await _initFromTemplate(dao);
       dbItems = await dao.getByTrailId(_trailId);
     }
@@ -412,26 +422,43 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   }
 
   /// Coche ou decoche un item et persiste en DB (parite GR20).
+  ///
+  /// EN DEMO, LA COCHE MARCHE — ET C'EST LE DEFAUT QUE CHRISTOPHE A TROUVE
+  /// (tache 638, bug 14 — DEM-260930-1022, verbatim : « sac ne fonctionne pas en
+  /// mode demo, laisser 2 menus et griser les autres sinon le comportement doit
+  /// rester le meme »).
+  ///
+  /// CE QUI SE PASSAIT : le lot 634 sortait AVANT le `_emit`. La case ne bougeait
+  /// donc pas d'un pixel quand on appuyait dessus — l'ecran paraissait casse. La
+  /// barriere protegeait la base, et cassait l'ecran au passage.
+  ///
+  /// CE QUI SE PASSE : l'etat change EN MEMOIRE, exactement comme en reel ; seule
+  /// l'ECRITURE est sautee. Le changement meurt a la sortie de la demo
+  /// (`quitterLaDemo` jette ce provider), et le vrai sac du randonneur revient
+  /// intact. C'est la premiere des deux actions que Christophe demande de garder
+  /// vivantes ; la seconde est la lecture de la liste elle-meme.
   Future<void> toggle(String itemId) async {
-    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
-    // DEM-260929-1123).
-    if (ref.read(enDemoProvider)) return;
-    final dao = ChecklistDao(_db);
     final currentItem = state.items.firstWhere((i) => i.template.id == itemId);
     final newChecked = !currentItem.isChecked;
 
-    await dao.toggleItem(_trailId, itemId, newChecked);
+    if (!ref.read(enDemoProvider)) {
+      final dao = ChecklistDao(_db);
+      await dao.toggleItem(_trailId, itemId, newChecked);
+    }
     _emit(_mapItem(itemId, (i) => i.copyWith(isChecked: newChecked)));
   }
 
   /// Force le decochage d'un article (parite GR20 : apres confirmation du
   /// garde-fou sur un article obligatoire).
+  ///
+  /// MEME REGLE QUE [toggle] EN DEMO : l'effet est visible, rien n'est ecrit.
+  /// Sans cela, le garde-fou « article obligatoire » posait une question dont la
+  /// reponse « oui » ne faisait rien.
   Future<void> forceUncheck(String itemId) async {
-    // DEMO : le sac se manipule, mais rien n'est enregistre (tache 634,
-    // DEM-260929-1123).
-    if (ref.read(enDemoProvider)) return;
-    final dao = ChecklistDao(_db);
-    await dao.toggleItem(_trailId, itemId, false);
+    if (!ref.read(enDemoProvider)) {
+      final dao = ChecklistDao(_db);
+      await dao.toggleItem(_trailId, itemId, false);
+    }
     _emit(_mapItem(itemId, (i) => i.copyWith(isChecked: false)));
   }
 

@@ -365,6 +365,21 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // L'ABONNE EST REFUSE LUI AUSSI : l'abo light ne debloque pas la
     // realisation (arbitrage du 08/09, qui prime sur #99405). La vitrine
     // (parite GR20) passe, elle est resolue `owned` par `accessFor`.
+    //
+    // EN DEMO, ON NE DEMANDE PAS LE DROIT : ON SIMULE (tache 638, bug 16,
+    // DEM-260930-1024). Christophe, 30/09 10:24 : « le bouton demarrer la rando
+    // doit etre accessible en mode demo ! ». La demo NE DEBLOQUE PAS le droit —
+    // `canRealizeTrail` repond exactement la meme chose qu'avant, et personne ne
+    // le change : elle ouvre une SIMULATION, dont pas une ligne n'atteint la
+    // base (toutes les persistances de session sont barrees plus haut dans ce
+    // fichier). C'est la difference de fond avec le drapeau d'exemption
+    // `isShowcaseTrail` que le lot 601 a supprime : la, le sentier payant
+    // devenait realisable POUR DE VRAI et invendable ; ici il ne se passe
+    // strictement rien de durable.
+    if (ref.read(enDemoProvider)) {
+      return demarrerSimulationDemo(trailId);
+    }
+
     final monetization = ref.read(monetizationServiceProvider);
     if (!await monetization.canRealizeTrail(trailId)) {
       return StartOutcome.purchaseRequired;
@@ -404,6 +419,74 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
     await start(trailId);
     return StartOutcome.started;
+  }
+
+  /// DEMARRE LA SIMULATION DE LA RANDONNEE EN DEMO (tache 638, bug 16).
+  ///
+  /// Le chemin reel pose trois questions avant de demarrer : le DROIT
+  /// (`canRealizeTrail`), l'UNICITE de rando active (une requete en base) et la
+  /// capture GPS de fond. Aucune des trois n'a de sens pour une demonstration :
+  /// la premiere refuserait (la demo ne debloque rien), la deuxieme ferait
+  /// dependre une demonstration d'une vraie rando en cours, et la troisieme
+  /// demanderait une permission de localisation pour marcher sans bouger.
+  ///
+  /// ON NE TOUCHE DONC PAS A LA BASE, NI A LA VRAIE RANDO. Si une vraie session
+  /// est en cours en memoire, on REFUSE la simulation plutot que de l'ecraser :
+  /// une demonstration ne doit jamais faire perdre son trek a quelqu'un. Le
+  /// refus est type et l'ecran le dit.
+  ///
+  /// Le GPS de fond n'est pas arme (`_startBackgroundCapture` sort en demo), et
+  /// la session creee ne s'ecrit nulle part (`_persistSession` sort en demo) :
+  /// elle vit en memoire et meurt avec [arreterSimulationDemo].
+  Future<StartOutcome> demarrerSimulationDemo(String trailId) async {
+    if (!ref.read(enDemoProvider)) return StartOutcome.purchaseRequired;
+    if (state.status == TrackingSessionStatus.recording ||
+        state.status == TrackingSessionStatus.paused) {
+      // Deja en cours : idempotent si c'est la simulation, refus si c'est une
+      // vraie rando (on ne la remplace pas).
+      return _activeTrailId == trailId
+          ? StartOutcome.alreadyActiveSameTrail
+          : StartOutcome.cancelled;
+    }
+    await start(trailId);
+    return StartOutcome.started;
+  }
+
+  /// ARRETE LA SIMULATION DE DEMO SANS RIEN FINALISER NI RIEN ECRIRE
+  /// (tache 638, bug 19 — la sortie atomique).
+  ///
+  /// A NE PAS CONFONDRE AVEC [stop] NI [abandon] : ceux-la FINALISENT une vraie
+  /// randonnee (statut en base, fiche d'urgence eteinte, rafraichissement des
+  /// vues de trek, drapeau finisher). Une simulation, elle, n'a rien a
+  /// finaliser : elle n'existe nulle part. On rend donc le recorder disponible
+  /// pour une VRAIE rando et on remet l'etat a zero, point.
+  ///
+  /// Appelee par `quitterLaDemo` PENDANT que la barriere d'ecriture est encore
+  /// posee — c'est ce qui garantit que l'arret lui-meme n'ecrit rien.
+  Future<void> arreterSimulationDemo() async {
+    await _bgPointsSub?.cancel();
+    _bgPointsSub = null;
+    _activeTrailId = null;
+    _currentStageId = null;
+    // Le recorder doit repartir de zero, sinon un vrai demarrage ulterieur
+    // leverait `StateError: session deja active`. En demo son unique ecriture
+    // (`_onSessionPersist`) est barree, et son tampon de points est vide puisque
+    // le GPS n'a jamais ete arme : cet arret n'ecrit rien.
+    //
+    // ON DEMANDE AVANT D'ARRETER (`isStopped`) : quitter la demo sans avoir
+    // demarre de simulation est le cas le PLUS courant, et appeler `stop()` a
+    // vide faisait remonter un `StateError` a l'ErrorHandler — un incident
+    // rapporte pour un fonctionnement normal.
+    final recorder = ref.read(trekRecorderProvider);
+    if (!recorder.isStopped) {
+      try {
+        await recorder.stop();
+      } catch (_) {
+        // Best-effort : l'arret d'une simulation ne doit rien casser.
+      }
+    }
+    ref.read(trekStatsProvider).reset();
+    state = const TrackingSessionState();
   }
 
   /// Solde la session EN COURS [current] avant d'en demarrer une autre.

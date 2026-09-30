@@ -406,9 +406,22 @@ bool estSousLeDoigt(WidgetTester tester, Finder f) {
 /// C'est la difference entre « le bouton a navigue » et « l'utilisateur est
 /// arrive » : `go('/catalog')` suivi d'une garde qui renvoie sur `/onboarding`
 /// laisse cette valeur a `/onboarding`.
+///
+/// IL LIT LE HAUT DE LA PILE, PAS L'ADRESSE DE BASE (tache 638). Cette fonction
+/// rendait `currentConfiguration.uri.path`, qui NE BOUGE PAS sur un `push`
+/// imperatif : apres `context.push('/catalog')` depuis « Mes treks », l'ecran du
+/// catalogue est bel et bien a l'ecran (mesure : sa cle y est trouvee) et cette
+/// fonction repondait encore `/my-treks`. Tout ce depot navigue en
+/// « hub-and-push » : l'instrument etait donc AVEUGLE au geste le plus courant de
+/// l'application, et deux gestes inertes reels s'etaient caches derriere cette
+/// cecite (l'option de signalement deja choisie, le bouton du sentier deja
+/// actif). Le dernier `match` porte la route effectivement empilee ; la garde de
+/// redirection l'a deja traversee, donc la promesse de l'en-tete tient.
 String cheminAffiche() {
   final config = appRouter.routerDelegate.currentConfiguration;
-  return config.uri.path;
+  if (config.matches.isEmpty) return config.uri.path;
+  final haut = config.matches.last.matchedLocation;
+  return haut.isEmpty ? config.uri.path : haut;
 }
 
 // ---------------------------------------------------------------------------

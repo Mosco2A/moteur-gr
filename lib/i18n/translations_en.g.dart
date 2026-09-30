@@ -866,6 +866,28 @@ class _Translations$demo$en extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simulate the next stage';
 	@override String get simulerFin => 'Simulate the finish';
 	@override String get simulerRelancer => 'Restart the demo';
+	@override String get sortieTitre => 'End of demo';
+	@override String get sortieEnTeteCatalogue => 'You will find the demo at the top of the trail list.';
+	@override String get sortieDansMonCompte => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.';
+	@override String get cacherLabel => 'Hide demo mode';
+	@override String get sortieConfirmer => 'Leave the demo';
+	@override String get sortieAnnuler => 'Continue the demo';
+	@override String get indisponible => 'Not available in demo';
+	@override String get departSimule => 'In demo, starting launches a simulated hike: nothing is saved.';
+	@override String get compteTitre => 'Demo mode';
+	@override String get compteRelancer => 'See the demo again';
+	@override String get compteRelancerSous => 'Discover the app from A to Z, with no commitment';
+	@override String get compteReafficher => 'Show the demo button in the catalogue';
+	@override String get compteReafficherSous => 'The button comes back to the top of the trail list';
+	@override String get collecteTitre => 'What the answer is based on';
+	@override String get collecteIntro => 'Here is the information the app uses to work out feasibility.';
+	@override String get collecteProfil => 'Your profile';
+	@override String get collecteForme => 'Your fitness';
+	@override String get collecteExperience => 'Your experience';
+	@override String get collecteSaison => 'Departure season';
+	@override String get collecteSentier => 'The trail';
+	@override String get collecteJours => 'Number of days';
+	@override String get collecteAbsent => 'Not provided';
 }
 
 // Path: updates
@@ -1658,6 +1680,8 @@ class _Translations$myTreks$en extends Translations$myTreks$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % of the trail';
 	@override late final _Translations$myTreks$a11y$en a11y = _Translations$myTreks$a11y$en._(_root);
 	@override String get settingsSubtitle => 'Language, units, theme';
+	@override String get emptyCatalogueOuDemo => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.';
+	@override String get emptyCatalogueSeul => 'You do not have a trail yet. Open the catalogue to choose one.';
 }
 
 // Path: trekState
@@ -5115,6 +5139,28 @@ extension on TranslationsEn {
 			'demo.simulerEtape' => 'Simulate the next stage',
 			'demo.simulerFin' => 'Simulate the finish',
 			'demo.simulerRelancer' => 'Restart the demo',
+			'demo.sortieTitre' => 'End of demo',
+			'demo.sortieEnTeteCatalogue' => 'You will find the demo at the top of the trail list.',
+			'demo.sortieDansMonCompte' => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.',
+			'demo.cacherLabel' => 'Hide demo mode',
+			'demo.sortieConfirmer' => 'Leave the demo',
+			'demo.sortieAnnuler' => 'Continue the demo',
+			'demo.indisponible' => 'Not available in demo',
+			'demo.departSimule' => 'In demo, starting launches a simulated hike: nothing is saved.',
+			'demo.compteTitre' => 'Demo mode',
+			'demo.compteRelancer' => 'See the demo again',
+			'demo.compteRelancerSous' => 'Discover the app from A to Z, with no commitment',
+			'demo.compteReafficher' => 'Show the demo button in the catalogue',
+			'demo.compteReafficherSous' => 'The button comes back to the top of the trail list',
+			'demo.collecteTitre' => 'What the answer is based on',
+			'demo.collecteIntro' => 'Here is the information the app uses to work out feasibility.',
+			'demo.collecteProfil' => 'Your profile',
+			'demo.collecteForme' => 'Your fitness',
+			'demo.collecteExperience' => 'Your experience',
+			'demo.collecteSaison' => 'Departure season',
+			'demo.collecteSentier' => 'The trail',
+			'demo.collecteJours' => 'Number of days',
+			'demo.collecteAbsent' => 'Not provided',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5158,6 +5204,8 @@ extension on TranslationsEn {
 			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.storeUnavailable' => 'Payment is not available right now.',
 			'monetization.restoreUnavailable' => 'Cannot restore: payment is not available right now.',
 			'monetization.restoreRequested' => 'Restore requested. Your purchases will reappear shortly.',
@@ -5180,8 +5228,6 @@ extension on TranslationsEn {
 			'monetization.subscriptionInactive' => 'No active subscription',
 			'monetization.subscriptionAllowancePending' => 'The allowance amount has not been set yet.',
 			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
 			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
@@ -5672,6 +5718,8 @@ extension on TranslationsEn {
 			'programme.mergeBlocked.tooLong' => 'Too long: {hours}h (max {max}h/day)',
 			'programme.mergeBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.replan' => 'Replan',
+			_ => null,
+		} ?? switch (path) {
 			'programme.replanButton' => 'REPLAN',
 			'programme.replanDialog.title' => 'Replan',
 			'programme.replanDialog.message' => 'Replanning will reset your programme.\nYour rest days will be kept at the same positions.',
@@ -5694,8 +5742,6 @@ extension on TranslationsEn {
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.close' => 'Got it!',
 			'programme.splitBlocked.single' => 'Cannot split: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
@@ -5945,6 +5991,8 @@ extension on TranslationsEn {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Language, units, theme',
+			'myTreks.emptyCatalogueOuDemo' => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.',
+			'myTreks.emptyCatalogueSeul' => 'You do not have a trail yet. Open the catalogue to choose one.',
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',

@@ -11,6 +11,9 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../../../core/services/pilote_demo.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
@@ -101,9 +104,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Mon compte » (connexion / deconnexion).
-          SectionHeader(title: i18n.auth.profile, icon: StepwaysIcons.monCompte),
+          SectionHeader(
+            title: i18n.auth.profile,
+            icon: StepwaysIcons.monCompte,
+          ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildAccountSection(context, ref, theme, i18n, user),
+          // GRISEE EN DEMO (tache 638, bug 14) : se connecter a Google, se
+          // deconnecter, changer son pseudo ou son avatar touchent a l'IDENTITE
+          // du randonneur, et l'identite n'est pas une demonstration. La section
+          // reste lisible, ses gestes sont visiblement indisponibles.
+          GriseEnDemo(
+            child: _buildAccountSection(context, ref, theme, i18n, user),
+          ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Main dominante » (lateralite, R9/R10) : place le SOS et
@@ -114,7 +126,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             icon: StepwaysIcons.geste,
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildDominantHandSection(context, ref, theme, i18n),
+          GriseEnDemo(
+            child: _buildDominantHandSection(context, ref, theme, i18n),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // SECTION « MODE DEMO » (tache 638, bug 18 — precision de Christophe du
+          // 30/09 10:30, verbatim : « on pourra le retrouver dans Mon compte »).
+          //
+          // C'est l'autre porte d'entree de la demo, et la SEULE quand le
+          // randonneur a coche « Cacher le mode demo » en sortant. Elle ne parle
+          // jamais de droits : la demo ne debloque rien, elle montre.
+          SectionHeader(
+            title: i18n.demo.compteTitre,
+            icon: StepwaysIcons.eprouvette,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildDemoSection(context, ref, i18n),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Zone dangereuse — suppression de compte (parite GR20 : section
@@ -125,7 +153,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             iconColor: AppTheme.rougeUrgence,
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildDangerZone(context, ref, theme, i18n),
+          // GRISEE EN DEMO : on ne supprime pas un compte depuis une demo.
+          GriseEnDemo(child: _buildDangerZone(context, ref, theme, i18n)),
           const SizedBox(height: AppTheme.spacingXl),
 
           // Version + build en bas de page (parite GR20, tache 517) :
@@ -149,9 +178,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   ) {
     return Column(
       children: [
-        _buildAvatarSection(context, ref, theme, i18n, user),
+        // GRISES EN DEMO (bug 14) : avatar et pseudo s'ecrivent dans le compte.
+        GriseEnDemo(
+          child: _buildAvatarSection(context, ref, theme, i18n, user),
+        ),
         const SizedBox(height: AppTheme.spacingXs),
-        _buildPseudoSection(context, ref, theme, i18n, user),
+        GriseEnDemo(
+          child: _buildPseudoSection(context, ref, theme, i18n, user),
+        ),
         const SizedBox(height: AppTheme.spacingSm),
         Center(
           child: Container(
@@ -209,7 +243,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // rien a lui demander, la protection s'applique deja pour lui.
             // Elle ne se repose pas une fois tranchee.
             if (context.mounted) {
-              await RefusSauvegardeSystemeDialog.poserSiNecessaire(context, ref);
+              await RefusSauvegardeSystemeDialog.poserSiNecessaire(
+                context,
+                ref,
+              );
             }
           },
         ),
@@ -225,6 +262,50 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         subtitle: Text(i18n.auth.signOutDesc),
         onTap: () => _confirmSignOut(context, ref, i18n),
       ),
+    );
+  }
+
+  /// Section « Mode demo » (tache 638, bug 18).
+  ///
+  /// DEUX LIGNES, ET PAS PLUS. « Revoir la demo » la relance (elle est toujours
+  /// relancable, un nombre illimite de fois : rien ne s'ecrit, donc il n'y a rien
+  /// a epuiser). « Afficher le bouton demo au catalogue » n'apparait QUE s'il a
+  /// ete cache : proposer de reafficher quelque chose qui est deja affiche serait
+  /// un geste sans effet.
+  Widget _buildDemoSection(
+    BuildContext context,
+    WidgetRef ref,
+    Translations i18n,
+  ) {
+    final cache = ref.watch(boutonDemoCacheProvider);
+    return Column(
+      children: [
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: ListTile(
+            key: const ValueKey('compte-revoir-demo'),
+            leading: const StepIcon(StepwaysIcons.eprouvette),
+            title: Text(i18n.demo.compteRelancer),
+            subtitle: Text(i18n.demo.compteRelancerSous),
+            trailing: const StepIcon(StepwaysIcons.chevronDroite),
+            onTap: () => relancerLaDemoDepuisMonCompte(ref, context),
+          ),
+        ),
+        if (cache) ...[
+          const SizedBox(height: AppTheme.spacingSm),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              key: const ValueKey('compte-reafficher-bouton-demo'),
+              leading: const StepIcon(StepwaysIcons.catalogueSentiers),
+              title: Text(i18n.demo.compteReafficher),
+              subtitle: Text(i18n.demo.compteReafficherSous),
+              onTap: () =>
+                  ref.read(boutonDemoCacheProvider.notifier).definir(false),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -504,8 +585,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : () {
                           ref
                               .read(authServiceProvider)
-                              .updateDisplayName(
-                                  _pseudoController.text.trim());
+                              .updateDisplayName(_pseudoController.text.trim());
                           setState(() => _isEditingPseudo = false);
                         },
                 ),
@@ -547,7 +627,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             const SizedBox(width: AppTheme.spacingXs),
-            StepIcon(StepwaysIcons.crayon, size: 18, color: theme.colorScheme.primary),
+            StepIcon(
+              StepwaysIcons.crayon,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
           ],
         ),
       ),

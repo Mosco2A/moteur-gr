@@ -7,10 +7,12 @@ import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/home_location_provider.dart';
 import '../../../core/services/monetization_service.dart';
+import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
@@ -93,6 +95,13 @@ class TrailCatalogScreen extends ConsumerWidget {
                 // BOUTON DEMO ORANGE TOUT BETE, au-dessus des sentiers non
                 // achetes : quand tu cliques dessus tu arrives a la demo Mare a
                 // Mare ». Il est ici, et il est orange.
+                //
+                // IL RESTE A LA MEME PLACE, AVANT ET APRES UNE DEMO, ET MEME
+                // AVEC DES SENTIERS ACHETES (tache 638, bug 18 —
+                // DEM-260930-1027) : aucun drapeau « deja vue » ne le cache.
+                // Seul le randonneur peut le faire disparaitre, en cochant
+                // « Cacher le mode demo » en sortant — et il le retrouve alors
+                // dans Mon compte (precision du 30/09 10:30).
                 const _BoutonDemo(),
                 for (final trail in trails)
                   _AvailableTrailCard(
@@ -149,17 +158,27 @@ class TrailCatalogScreen extends ConsumerWidget {
 /// sentiers non achetes : quand tu cliques dessus tu arrives a la demo Mare a
 /// Mare » ; « un bouton demo qui montre comment marche l appli de A a Z ».
 ///
-/// IL N'OUVRE QU'UN SENTIER, ET TOUJOURS LE MEME : le sentier de demonstration
-/// du lot 601, deux etapes, GRATUIT pour tout le monde. Il n'accorde donc aucun
-/// droit a personne — la demo MONTRE, elle ne DEBLOQUE jamais, et c'est le
-/// garde-fou que le lot 601 avait paye cher (suppression du drapeau
-/// `isShowcaseTrail`, une exemption etant un trou dans le modele d'acces).
+/// IL N'OUVRE QU'UN SENTIER, ET TOUJOURS LE MEME : le MARE A MARE CENTRE
+/// COMPLET, sept etapes (tache 638, bug 8 — DEM-260930-1014, verbatim : « la demo
+/// de Mare a Mare ce doit etre la demo de Mare a Mare, pas un truc avec 2
+/// etapes !! »). Il n'accorde aucun droit a personne : `ownsTrail`,
+/// `canRealizeTrail` et `isDemoMode` repondent la meme chose pendant la demo
+/// qu'en dehors. La demo MONTRE, elle ne DEBLOQUE jamais — c'est le garde-fou que
+/// le lot 601 avait paye cher (suppression du drapeau `isShowcaseTrail`, une
+/// exemption etant un trou dans le modele d'acces).
+///
+/// IL DISPARAIT SI, ET SEULEMENT SI, LE RANDONNEUR L'A DEMANDE
+/// ([boutonDemoCacheProvider], case « Cacher le mode demo » du dialogue de
+/// sortie). Il reste alors relancable depuis Mon compte, et rien d'autre ne peut
+/// le faire disparaitre : ni une demo deja faite, ni un sentier achete.
 class _BoutonDemo extends ConsumerWidget {
   const _BoutonDemo();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    // Cache par le randonneur : le catalogue n'en parle plus, Mon compte oui.
+    if (ref.watch(boutonDemoCacheProvider)) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppTheme.spacingBase,
@@ -174,10 +193,12 @@ class _BoutonDemo extends ConsumerWidget {
           key: const ValueKey('catalog-demo-button'),
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           onTap: () {
-            // On entre en demo AVANT de choisir le sentier : le cadre orange
-            // et la sortie sont donc deja poses quand le cockpit s'affiche.
-            ref.read(sessionDemoProvider.notifier).entrer();
-            choisirSentier(ref, kSentierDeDemo);
+            // UNE SEULE PORTE D'ENTREE, ET ELLE SE SOUVIENT D'OU L'ON VENAIT
+            // ([entrerEnDemo]) : le sentier selectionne avant la demo est note
+            // pour etre restaure a la sortie (bug 19, DEM-260930-1028). Sans
+            // cela, quitter la demo laissait le sentier de demo actif — « on est
+            // toujours en mode demo sans le savoir ».
+            entrerEnDemo(ref);
             context.go('/home');
           },
           child: Padding(
@@ -378,19 +399,26 @@ class _AvailableTrailCard extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingMd),
           // Action primaire : entrer dans le sentier (cablage nav #88246).
-          SizedBox(
-            width: double.infinity,
-            child: Semantics(
-              button: true,
-              label: t.catalog.a11y.enterButton(nom: nom),
-              // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
-              // #A5), pleine largeur (SizedBox width infinity conserve).
-              // key/Semantics(button+label) preserves.
-              child: AppButton(
-                key: ValueKey('catalog-enter-${trail.id}'),
-                icon: StepwaysIcons.flecheAvant,
-                label: t.catalog.enter,
-                onPressed: onEnter,
+          //
+          // GRISEE PENDANT LA DEMO (tache 638, bug 14) : une demo porte sur UN
+          // sentier, et basculer de sentier en pleine demo est exactement l'etat
+          // hybride que le bug 19 denonce. La regle est celle de tous les ecrans :
+          // actif et identique, ou grise et visiblement indisponible.
+          GriseEnDemo(
+            child: SizedBox(
+              width: double.infinity,
+              child: Semantics(
+                button: true,
+                label: t.catalog.a11y.enterButton(nom: nom),
+                // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+                // #A5), pleine largeur (SizedBox width infinity conserve).
+                // key/Semantics(button+label) preserves.
+                child: AppButton(
+                  key: ValueKey('catalog-enter-${trail.id}'),
+                  icon: StepwaysIcons.flecheAvant,
+                  label: t.catalog.enter,
+                  onPressed: onEnter,
+                ),
               ),
             ),
           ),
@@ -399,19 +427,24 @@ class _AvailableTrailCard extends ConsumerWidget {
           // gratuit, ou couvert par un abonnement.
           if (achetable) ...[
             const SizedBox(height: AppTheme.spacingSm),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                key: ValueKey('catalog-buy-${trail.id}'),
-                variant: AppButtonVariant.outline,
-                icon: StepwaysIcons.cadenasOuvert,
-                label: t.monetization.buyCtaWithPrice(
-                  price: monetisation
-                      .eurPriceForTrail(trail.id)
-                      .toStringAsFixed(2),
+            // GRISE EN DEMO (tache 638, bug 14) : le refus d'achat en demo
+            // existait deja cote service (`refuseEnDemo`), mais le bouton avait
+            // l'air actif. Il est desormais visiblement indisponible.
+            GriseEnDemo(
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  key: ValueKey('catalog-buy-${trail.id}'),
+                  variant: AppButtonVariant.outline,
+                  icon: StepwaysIcons.cadenasOuvert,
+                  label: t.monetization.buyCtaWithPrice(
+                    price: monetisation
+                        .eurPriceForTrail(trail.id)
+                        .toStringAsFixed(2),
+                  ),
+                  onPressed: () =>
+                      acheterSentier(context, ref, trailId: trail.id),
                 ),
-                onPressed: () =>
-                    acheterSentier(context, ref, trailId: trail.id),
               ),
             ),
           ],

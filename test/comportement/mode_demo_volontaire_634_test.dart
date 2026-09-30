@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/config/mare_a_mare_centre_demo_trail_config.dart';
 import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
+import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
+import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/services/session_demo.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/cadre_demo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// TACHE 634 — RETOUR 1 DE CHRISTOPHE (DEM-260929-1123).
+/// TACHE 634 — RETOUR 1 DE CHRISTOPHE (DEM-260929-1123), MIS A JOUR PAR LA
+/// TACHE 638 (test du 30/09).
 ///
 /// Verbatim du 29/09 11:23, pendant son premier test sur telephone : « il faut
 /// mettre demo en haut des sentiers juste un bouton "paasez en mode demo", le
@@ -15,8 +18,15 @@ import 'package:moteur_gr/shared/widgets/cadre_demo.dart';
 /// ORANGE TOUT BETE, au-dessus des sentiers non achetes » ; « LE MODE DEMO
 /// c est juste un mode demo, on prend Mare a Mare, ce sera toujours lui » ;
 /// « un bouton demo qui montre comment marche l appli de A a Z » ; « simuler le
-/// trek ca serait bien » ; « ON EST EN MODE DEMO » = rien ne compte. Et le
-/// refus du mode SUBI : « MAIS NON !!! il s ouvre en mode prepa AVEC PUB !!! ».
+/// trek ca serait bien » ; « ON EST EN MODE DEMO » = rien ne compte.
+///
+/// DEUX DE SES DECISIONS ONT ETE RENVERSEES PAR SON TEST DU 30/09, et ce fichier
+/// suit :
+///   * le sentier de la demo n'est plus une config amputee a deux etapes, c'est
+///     le MARE A MARE CENTRE COMPLET (bug 8, DEM-260930-1014) ;
+///   * « le tour des ecran devient orange » et la barre du bas sont remplaces par
+///     une seule pastille « Quitter » en haut (bug 11, DEM-260930-1020 : « le
+///     bandeau du bas du mode demo cache une partie de l appli »).
 void main() {
   group('la demo se CHOISIT, elle ne se subit plus', () {
     test('au demarrage, on n est pas en demo', () {
@@ -38,37 +48,52 @@ void main() {
       expect(c.read(enDemoProvider), isFalse);
     });
 
-    test('la demo ne porte QUE le sentier de demonstration', () {
-      // « on prend Mare a Mare, ce sera toujours lui ».
-      expect(kSentierDeDemo, mareAMareCentreDemoTrailConfig.id);
-      expect(mareAMareCentreDemoTrailConfig.totalStages, 2);
+    test('la demo porte le MARE A MARE CENTRE COMPLET, sept etapes', () {
+      // « on prend Mare a Mare, ce sera toujours lui » (29/09), et « la demo de
+      // Mare a Mare ce doit etre la demo de Mare a Mare, pas un truc avec 2
+      // etapes !! » (30/09, bug 8).
+      expect(kSentierDeDemo, mareAMareCentreTrailConfig.id);
+      expect(mareAMareCentreTrailConfig.totalStages, 7);
     });
   });
 
   group('LA DEMO MONTRE, ELLE NE DEBLOQUE JAMAIS (garde-fou du lot 601)', () {
-    test('elle refuse d ouvrir un sentier PAYANT', () {
+    test('elle refuse d ouvrir un AUTRE sentier que celui de la demo', () {
       // LE TROU QUE LE LOT 601 A FERME, ET QU ON NE ROUVRE PAS. Ce lot avait
-      // supprime le drapeau `isShowcaseTrail` parce qu'une exemption d'acces
-      // est un trou dans le modele. Faire ouvrir un sentier payant par la demo
-      // serait le meme trou sous un autre nom.
+      // supprime le drapeau `isShowcaseTrail` parce qu'une exemption d'acces est
+      // un trou dans le modele. La demo porte UN sentier, et un seul : lui en
+      // faire ouvrir un autre serait rouvrir ce trou sous un autre nom.
       final c = ProviderContainer();
       addTearDown(c.dispose);
 
       c
           .read(sessionDemoProvider.notifier)
-          .entrer(trailId: mareAMareCentreTrailConfig.id);
+          .entrer(trailId: pyreneesTrailConfig.id);
       expect(
         c.read(enDemoProvider),
         isFalse,
-        reason: 'la demo ne doit pas pouvoir ouvrir le sentier payant',
+        reason: 'la demo ne porte que le Mare a Mare Centre',
       );
     });
 
-    test('le sentier de demonstration est GRATUIT pour tout le monde', () {
-      // C'est ce qui rend la demo inoffensive : elle n'accorde aucun droit,
-      // elle ouvre un sentier que le catalogue donne deja a tous.
-      expect(mareAMareCentreDemoTrailConfig.isFreeTrail, isTrue);
+    test('entrer en demo ne rend GRATUIT aucun sentier', () {
+      // LE GARDE-FOU, MESURE APRES LA TACHE 638. La demo ouvre desormais un
+      // sentier PAYANT : la seule chose qui garantit qu'elle ne le debloque pas,
+      // c'est qu'aucun verdict de droit ne change. Le prix du Mare a Mare reste
+      // le meme, et la liste des sentiers gratuits ne bouge pas d'un iota.
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
+
+      final gratuitsAvant = TrailCatalog.freeIds;
       expect(mareAMareCentreTrailConfig.isFreeTrail, isFalse);
+
+      c.read(sessionDemoProvider.notifier).entrer();
+      expect(TrailCatalog.freeIds, gratuitsAvant);
+      expect(
+        mareAMareCentreTrailConfig.isFreeTrail,
+        isFalse,
+        reason: 'la demo MONTRE le sentier payant, elle ne le rend pas gratuit',
+      );
     });
 
     test('la demo ne vit QU EN MEMOIRE : rien a persister, rien a nettoyer', () {
@@ -86,7 +111,9 @@ void main() {
     });
   });
 
-  group('le tour de l ecran devient orange, et la sortie est visible', () {
+  group('une pastille QUITTER en haut, et rien d autre (bug 11)', () {
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
     Widget pomper(ProviderContainer c) => UncontrolledProviderScope(
       container: c,
       child: const MaterialApp(
@@ -94,18 +121,17 @@ void main() {
       ),
     );
 
-    testWidgets('hors demo, le cadre n existe pas du tout', (tester) async {
+    testWidgets('hors demo, aucun signal de demo n existe', (tester) async {
       final c = ProviderContainer();
       addTearDown(c.dispose);
       await tester.pumpWidget(pomper(c));
       await tester.pump();
 
-      expect(find.byKey(const ValueKey('demo-cadre')), findsNothing);
       expect(find.byKey(const ValueKey('demo-sortie')), findsNothing);
       expect(find.text('ecran'), findsOneWidget);
     });
 
-    testWidgets('en demo, le cadre orange et la sortie sont la', (
+    testWidgets('en demo, la pastille de sortie est la — et elle seule', (
       tester,
     ) async {
       final c = ProviderContainer();
@@ -115,17 +141,27 @@ void main() {
       await tester.pumpWidget(pomper(c));
       await tester.pump();
 
-      expect(find.byKey(const ValueKey('demo-cadre')), findsOneWidget);
       expect(find.byKey(const ValueKey('demo-sortie')), findsOneWidget);
-      // L'ecran est toujours la : le cadre est PEINT par-dessus, il ne
+      // L'ecran est toujours la : la pastille est PEINTE par-dessus, elle ne
       // remplace rien et ne deplace rien.
       expect(find.text('ecran'), findsOneWidget);
 
-      // ET LA PHRASE QUI COMPTE EST SOUS LES YEUX DU RANDONNEUR.
-      expect(find.byKey(const ValueKey('demo-rien-ne-compte')), findsOneWidget);
+      // BUG 11 : PLUS DE CADRE QUI ROGNE, PLUS DE BANDEAU EN BAS.
+      expect(
+        find.byKey(const ValueKey('demo-cadre')),
+        findsNothing,
+        reason: 'le liston orange des quatre bords est supprime',
+      );
+      expect(
+        find.byKey(const ValueKey('demo-barre-simulation')),
+        findsNothing,
+        reason:
+            'le bandeau du bas est supprime : il cachait une partie de '
+            'l application',
+      );
     });
 
-    testWidgets('la sortie fonctionne, et le cadre disparait', (tester) async {
+    testWidgets('la pastille ouvre le dialogue de fin de demo', (tester) async {
       final c = ProviderContainer();
       addTearDown(c.dispose);
       c.read(sessionDemoProvider.notifier).entrer();
@@ -134,30 +170,15 @@ void main() {
       await tester.pump();
 
       await tester.tap(find.byKey(const ValueKey('demo-sortie')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(c.read(enDemoProvider), isFalse);
-      expect(find.byKey(const ValueKey('demo-cadre')), findsNothing);
-    });
-
-    testWidgets('le cadre est bien ORANGE, et de la bonne epaisseur', (
-      tester,
-    ) async {
-      final c = ProviderContainer();
-      addTearDown(c.dispose);
-      c.read(sessionDemoProvider.notifier).entrer();
-      await tester.pumpWidget(pomper(c));
-      await tester.pump();
-
-      final decore = tester.widget<DecoratedBox>(
-        find.byKey(const ValueKey('demo-cadre')),
+      // La sortie n'est plus immediate : elle passe par le dialogue qui dit OU
+      // retrouver la demo et propose de la cacher (bug 18).
+      expect(
+        find.byKey(const ValueKey('demo-dialogue-sortie')),
+        findsOneWidget,
       );
-      final bordure = (decore.decoration as BoxDecoration).border!.top;
-      expect(bordure.width, kEpaisseurCadreDemo);
-      expect(bordure.color.a, 1.0);
-      // Orange : rouge fort, vert moyen, bleu nul.
-      expect(bordure.color.r, greaterThan(0.9));
-      expect(bordure.color.b, lessThan(0.1));
+      expect(c.read(enDemoProvider), isTrue);
     });
   });
 
@@ -173,6 +194,29 @@ void main() {
           d.rienNeCompte,
           d.simulerEtape,
           d.simulerFin,
+          // Les libelles ajoutes par la tache 638.
+          d.sortieTitre,
+          d.sortieEnTeteCatalogue,
+          d.sortieDansMonCompte,
+          d.cacherLabel,
+          d.sortieConfirmer,
+          d.sortieAnnuler,
+          d.indisponible,
+          d.departSimule,
+          d.compteTitre,
+          d.compteRelancer,
+          d.compteRelancerSous,
+          d.compteReafficher,
+          d.compteReafficherSous,
+          d.collecteTitre,
+          d.collecteIntro,
+          d.collecteProfil,
+          d.collecteForme,
+          d.collecteExperience,
+          d.collecteSaison,
+          d.collecteSentier,
+          d.collecteJours,
+          d.collecteAbsent,
         ]) {
           expect(libelle.trim(), isNotEmpty, reason: langue.languageCode);
         }

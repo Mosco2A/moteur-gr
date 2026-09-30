@@ -1103,7 +1103,29 @@
     "rienNeCompte": "Sie sind im Demo-Modus: nichts davon wird gespeichert. Keine Etappen, kein Diplom, kein Kauf.",
     "simulerEtape": "Nächste Etappe simulieren",
     "simulerFin": "Ankunft simulieren",
-    "simulerRelancer": "Demo neu starten"
+    "simulerRelancer": "Demo neu starten",
+    "sortieTitre": "Ende der Demo",
+    "sortieEnTeteCatalogue": "Sie finden die Demo oben in der Liste der Wege.",
+    "sortieDansMonCompte": "Die Schaltfläche erscheint nicht mehr im Katalog. Sie finden die Demo unter „Mein Konto“.",
+    "cacherLabel": "Demo-Modus ausblenden",
+    "sortieConfirmer": "Demo verlassen",
+    "sortieAnnuler": "Demo fortsetzen",
+    "indisponible": "In der Demo nicht verfügbar",
+    "departSimule": "In der Demo startet der Aufbruch eine simulierte Wanderung: nichts wird gespeichert.",
+    "compteTitre": "Demo-Modus",
+    "compteRelancer": "Demo erneut ansehen",
+    "compteRelancerSous": "Entdecken Sie die App von A bis Z, ohne Verpflichtung",
+    "compteReafficher": "Demo-Schaltfläche im Katalog anzeigen",
+    "compteReafficherSous": "Die Schaltfläche erscheint wieder oben in der Liste der Wege",
+    "collecteTitre": "Worauf die Antwort beruht",
+    "collecteIntro": "Diese Angaben verwendet die App, um die Machbarkeit zu berechnen.",
+    "collecteProfil": "Ihr Profil",
+    "collecteForme": "Ihre Form",
+    "collecteExperience": "Ihre Erfahrung",
+    "collecteSaison": "Jahreszeit des Aufbruchs",
+    "collecteSentier": "Der Weg",
+    "collecteJours": "Anzahl der Tage",
+    "collecteAbsent": "Nicht angegeben"
   },
   "updates": {
     "readyTitle": "Update bereit",
@@ -2189,7 +2211,9 @@
       "trekCard": "Tour $nom, $state",
       "openTrek": "Tour $nom öffnen"
     },
-    "settingsSubtitle": "Sprache, Einheiten, Thema"
+    "settingsSubtitle": "Sprache, Einheiten, Thema",
+    "emptyCatalogueOuDemo": "Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen, oder probieren Sie die Demo oben in der Liste.",
+    "emptyCatalogueSeul": "Sie haben noch keinen Weg. Öffnen Sie den Katalog, um einen auszuwählen."
   },
   "trekState": {
     "abandonDialog": {

@@ -1103,7 +1103,29 @@
     "rienNeCompte": "Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.",
     "simulerEtape": "Simular la siguiente etapa",
     "simulerFin": "Simular la llegada",
-    "simulerRelancer": "Reiniciar la demo"
+    "simulerRelancer": "Reiniciar la demo",
+    "sortieTitre": "Fin de la demo",
+    "sortieEnTeteCatalogue": "Encontrarás la demo en la parte superior de la lista de senderos.",
+    "sortieDansMonCompte": "El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.",
+    "cacherLabel": "Ocultar el modo demo",
+    "sortieConfirmer": "Salir de la demo",
+    "sortieAnnuler": "Seguir con la demo",
+    "indisponible": "No disponible en demo",
+    "departSimule": "En demo, la salida inicia una excursión simulada: no se guarda nada.",
+    "compteTitre": "Modo demo",
+    "compteRelancer": "Ver la demo de nuevo",
+    "compteRelancerSous": "Descubre la aplicación de la A a la Z, sin compromiso",
+    "compteReafficher": "Mostrar el botón demo en el catálogo",
+    "compteReafficherSous": "El botón vuelve a la parte superior de la lista de senderos",
+    "collecteTitre": "En qué se basa la respuesta",
+    "collecteIntro": "Esta es la información que la aplicación usa para calcular la viabilidad.",
+    "collecteProfil": "Tu perfil",
+    "collecteForme": "Tu forma física",
+    "collecteExperience": "Tu experiencia",
+    "collecteSaison": "Temporada de salida",
+    "collecteSentier": "El sendero",
+    "collecteJours": "Número de días",
+    "collecteAbsent": "No indicado"
   },
   "updates": {
     "readyTitle": "Actualización lista",
@@ -2189,7 +2211,9 @@
       "trekCard": "Ruta $nom, $state",
       "openTrek": "Abrir la ruta $nom"
     },
-    "settingsSubtitle": "Idioma, unidades, tema"
+    "settingsSubtitle": "Idioma, unidades, tema",
+    "emptyCatalogueOuDemo": "Todavía no tienes ningún sendero. Abre el catálogo para elegir uno, o prueba la demo en la parte superior de la lista.",
+    "emptyCatalogueSeul": "Todavía no tienes ningún sendero. Abre el catálogo para elegir uno."
   },
   "trekState": {
     "abandonDialog": {

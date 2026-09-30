@@ -21,16 +21,17 @@ import 'package:moteur_gr/shared/widgets/app_button.dart';
 /// AppHeader (Ph5/L6d) utilise GoRouter -> heberge l'ecran dans un GoRouter
 /// minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
 Widget _hostTrailSelection() => MaterialApp.router(
-      routerConfig: GoRouter(
-        initialLocation: '/trail-selection',
-        routes: [
-          GoRoute(
-              path: '/trail-selection',
-              builder: (_, __) => const TrailSelectionScreen()),
-          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-        ],
+  routerConfig: GoRouter(
+    initialLocation: '/trail-selection',
+    routes: [
+      GoRoute(
+        path: '/trail-selection',
+        builder: (_, __) => const TrailSelectionScreen(),
       ),
-    );
+      GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+    ],
+  ),
+);
 
 void main() {
   /// LA LISTE DES SENTIERS EST PLUS LONGUE DEPUIS LA TACHE 601 : le catalogue
@@ -49,9 +50,7 @@ void main() {
   Widget wrap({List<Override> overrides = const []}) {
     return ProviderScope(
       overrides: overrides,
-      child: TranslationProvider(
-        child: _hostTrailSelection(),
-      ),
+      child: TranslationProvider(child: _hostTrailSelection()),
     );
   }
 
@@ -63,13 +62,25 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('trail-selection-list')), findsOneWidget);
+    final actif = TrailCatalog.defaultTrail.id;
     for (final trail in TrailCatalog.all) {
       expect(find.byKey(ValueKey('trail-choice-${trail.id}')), findsOneWidget);
-      expect(find.byKey(ValueKey('trail-select-${trail.id}')), findsOneWidget);
+      // TACHE 638 — LE SENTIER ACTIF N A PLUS DE BOUTON. Il portait un bouton
+      // DESACTIVE qui repetait la pastille « actif » posee au-dessus, et qui
+      // laissait dans l arbre une zone inerte : le balayage « aucun geste mort »
+      // (tache 573) finissait par la taper en croyant taper un geste vivant. Un
+      // etat n est pas une commande.
+      expect(
+        find.byKey(ValueKey('trail-select-${trail.id}')),
+        trail.id == actif ? findsNothing : findsOneWidget,
+        reason: trail.id == actif
+            ? 'le sentier ACTIF n a rien a changer : pas de bouton'
+            : 'chaque autre sentier garde son bouton de bascule',
+      );
     }
   });
 
-  testWidgets('le sentier actif porte le badge + bouton desactive', (
+  testWidgets('le sentier actif porte le badge, et AUCUN bouton', (
     tester,
   ) async {
     fenetreHaute(tester);
@@ -93,16 +104,18 @@ void main() {
       findsNothing,
     );
 
-    // Bouton du sentier actif desactive (deja selectionne), l'autre actif.
-    // SW-SKIN-L3e : FilledButton unifie en AppButton ; la key est portee par
-    // l'AppButton, on lit donc son onPressed (null = desactive) directement.
-    final activeBtn = tester.widget<AppButton>(
+    // TACHE 638 — LE SENTIER ACTIF N A PLUS DE BOUTON DU TOUT, et l autre garde
+    // le sien, actif. Avant, le sentier actif portait un bouton DESACTIVE : un
+    // etat deja dit par la pastille, double d une zone inerte dans l arbre que
+    // le balayage « aucun geste mort » finissait par taper.
+    expect(
       find.byKey(ValueKey('trail-select-${testTrailConfig.id}')),
+      findsNothing,
+      reason: 'rien a changer sur le sentier deja actif',
     );
     final otherBtn = tester.widget<AppButton>(
       find.byKey(ValueKey('trail-select-${pyreneesTrailConfig.id}')),
     );
-    expect(activeBtn.onPressed, isNull);
     expect(otherBtn.onPressed, isNotNull);
   });
 
@@ -121,9 +134,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: TranslationProvider(
-          child: _hostTrailSelection(),
-        ),
+        child: TranslationProvider(child: _hostTrailSelection()),
       ),
     );
     await tester.pumpAndSettle();
@@ -150,7 +161,7 @@ void main() {
     );
   });
 
-  testWidgets('re-selectionner le sentier deja actif est un no-op', (
+  testWidgets('le sentier deja actif n offre AUCUN geste a re-jouer', (
     tester,
   ) async {
     final container = ProviderContainer(
@@ -163,19 +174,26 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: TranslationProvider(
-          child: _hostTrailSelection(),
-        ),
+        child: TranslationProvider(child: _hostTrailSelection()),
       ),
     );
     await tester.pumpAndSettle();
 
-    // Le bouton du sentier actif est desactive : aucun changement possible.
-    // SW-SKIN-L3e : FilledButton unifie en AppButton (la key est sur l'AppButton).
-    final activeBtn = tester.widget<AppButton>(
+    // TACHE 638 — LE GESTE N EXISTE PLUS, donc il ne peut plus etre inerte.
+    // C est la garantie la plus forte du « no-op » qu on puisse donner : au lieu
+    // d un bouton desactive qu on peut encore designer, il n y a rien a designer.
+    // Le garde-fou du moteur reste en place par ailleurs (`_selectTrail` sort
+    // immediatement si le sentier est deja actif) : la porte est fermee des DEUX
+    // cotes, a l ecran et dans le code.
+    expect(
       find.byKey(ValueKey('trail-select-${pyreneesTrailConfig.id}')),
+      findsNothing,
     );
-    expect(activeBtn.onPressed, isNull);
+    expect(
+      find.byKey(ValueKey('trail-current-${pyreneesTrailConfig.id}')),
+      findsOneWidget,
+      reason: 'et l etat actif se VOIT, par la pastille',
+    );
     expect(container.read(selectedTrailIdProvider), pyreneesTrailConfig.id);
   });
 }

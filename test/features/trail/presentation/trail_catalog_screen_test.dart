@@ -85,15 +85,17 @@ void main() {
     }
   });
 
-  testWidgets(
-      'taper Entrer ecrit la selection et ouvre le cockpit /home',
-      (tester) async {
+  testWidgets('taper Entrer ecrit la selection et ouvre le cockpit /home', (
+    tester,
+  ) async {
     fenetreHaute(tester);
     // Container partage : selection initiale sur le sentier de test, on lira
     // l'etat apres l'action UI.
-    final container = ProviderContainer(overrides: [
-      selectedTrailIdProvider.overrideWith((ref) => testTrailConfig.id),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        selectedTrailIdProvider.overrideWith((ref) => testTrailConfig.id),
+      ],
+    );
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
@@ -127,18 +129,19 @@ void main() {
   });
 
   // =========================================================================
-  // TACHE 601 — DEUX ENTREES AU CATALOGUE, ET LA GRATUITE SE LIT
+  // TACHE 638 -- UNE SEULE ENTREE MARE A MARE, ET LE BOUTON DEMO EN TETE
   // =========================================================================
   //
-  // Decision de Chris, 27/09 12:24, verbatim : « il faut un sentier demo, pas un
-  // sentier bride demo. Les donnees peuvent etre celle de mare a mare. Mais il y
-  // a mare a mare ET mare a mare demo des le catalogue ».
-  //
-  // Ce que ce groupe verifie est exactement ce qu'il voit a l'ecran : les deux
-  // entrees, et de quoi les distinguer SANS ouvrir ni l'une ni l'autre.
-  group('601 — le sentier payant et le sentier demo, tous deux au catalogue',
-      () {
-    testWidgets('les deux entrees Mare a Mare sont affichees', (tester) async {
+  // CE QUE CE GROUPE REMPLACE. Il verifiait la decision de Christophe du 27/09
+  // 12:24 : « il y a mare a mare ET mare a mare demo des le catalogue ». Son test
+  // du 30/09 a renverse cette decision, verbatim (bug 1, DEM-260930-1005) : « il
+  // reste Mare a Mare Centre Demo gratuite en doublon avec Essayer la demo ». Il
+  // n'y a donc plus DEUX entrees a verifier, il y en a UNE -- et c'est ce que ce
+  // groupe mesure desormais, au meme endroit.
+  group('638 -- une seule entree Mare a Mare, et la demo par le bouton', () {
+    testWidgets('le catalogue ne porte plus qu UNE entree Mare a Mare', (
+      tester,
+    ) async {
       fenetreHaute(tester);
       await tester.pumpWidget(
         ProviderScope(
@@ -156,14 +159,16 @@ void main() {
       );
       expect(
         find.byKey(const ValueKey('catalog-trail-mare-a-mare-centre-demo')),
-        findsOneWidget,
-        reason: 'et le sentier DEMO gratuit y est aussi : deux entrees, pas '
-            'une entree bridee',
+        findsNothing,
+        reason:
+            'BUG 1 : le doublon « Mare a Mare Centre Demo » a disparu du '
+            'catalogue -- la demo n est plus un sentier, c est un mode',
       );
     });
 
-    testWidgets('le sentier demo porte la pastille GRATUIT, le payant non',
-        (tester) async {
+    testWidgets('le bouton demo est en TETE, avant le premier sentier', (
+      tester,
+    ) async {
       fenetreHaute(tester);
       await tester.pumpWidget(
         ProviderScope(
@@ -174,21 +179,24 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(
-        find.byKey(const ValueKey('catalog-free-badge-mare-a-mare-centre-demo')),
-        findsOneWidget,
-        reason: 'un sentier gratuit le DIT, sinon le randonneur doit deviner',
+      final bouton = find.byKey(const ValueKey('catalog-demo-button'));
+      final premierSentier = find.byKey(
+        const ValueKey('catalog-trail-mare-a-mare-centre'),
       );
+      expect(bouton, findsOneWidget);
+      expect(premierSentier, findsOneWidget);
       expect(
-        find.byKey(const ValueKey('catalog-free-badge-mare-a-mare-centre')),
-        findsNothing,
-        reason: 'le sentier payant n est pas gratuit',
+        tester.getTopLeft(bouton).dy,
+        lessThan(tester.getTopLeft(premierSentier).dy),
+        reason:
+            'BUG 18 : « il faut mettre demo en haut des sentiers » -- le '
+            'bouton est AU-DESSUS du premier sentier, pas a cote',
       );
-      expect(find.text(t.catalog.freeBadge), findsOneWidget);
     });
 
-    testWidgets('le sentier demo porte SON nom, dans la langue affichee',
-        (tester) async {
+    testWidgets('AUCUNE pastille GRATUIT au catalogue : on n a droit a rien', (
+      tester,
+    ) async {
       fenetreHaute(tester);
       LocaleSettings.setLocaleRaw('fr');
       await tester.pumpWidget(
@@ -200,25 +208,29 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final demo = TrailCatalog.byId('mare-a-mare-centre-demo')!;
-      final paye = TrailCatalog.byId('mare-a-mare-centre')!;
-
-      // Le nom du sentier gratuit est COMPOSE : le nom propre du terrain, plus
-      // la mention de gratuite traduite. Les cinq langues portent la cle
-      // `catalog.freeTrailName` (parite verrouillee par test/i18n).
+      // DECISION DE CHRISTOPHE, scenario d acceptation du 29/09 14:17 : « Donc
+      // la prochaine fois que j ouvre l application je n ai droit a rien. » Le
+      // catalogue ne montre donc AUCUNE pastille « Gratuit » : le niveau gratuit
+      // du modele eco, c est le bouton demo, pas un sentier offert.
       expect(
-        find.text(t.catalog.freeTrailName(nom: demo.displayName)),
-        findsOneWidget,
-        reason: 'Chris a demande que le sentier demo ait son propre nom dans '
-            'les cinq langues',
+        TrailCatalog.freeIds,
+        isEmpty,
+        reason: 'aucun sentier livre n est gratuit',
       );
-      expect(find.text(paye.displayName), findsOneWidget,
-          reason: 'le sentier payant garde son nom propre, non traduit');
-      // Et il annonce ce qu'il contient : les deux premieres etapes.
       expect(
-        find.text(t.catalog.freeTrailTagline(etapes: demo.totalStages)),
-        findsOneWidget,
+        find.text(t.catalog.freeBadge),
+        findsNothing,
+        reason:
+            'une pastille Gratuit promettrait un droit que personne n a '
+            'decide d accorder',
       );
+      for (final trail in TrailCatalog.all) {
+        expect(
+          find.byKey(ValueKey('catalog-free-badge-${trail.id}')),
+          findsNothing,
+          reason: '${trail.id} ne doit pas se declarer gratuit',
+        );
+      }
     });
   });
 }

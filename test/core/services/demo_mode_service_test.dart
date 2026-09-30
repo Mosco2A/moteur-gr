@@ -78,28 +78,55 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final service = DemoModeService(prefs: prefs);
 
-      // Le catalogue porte bien un sentier gratuit (le sentier de demo).
-      expect(TrailCatalog.freeIds, isNotEmpty,
-          reason: 'la demonstration se fait sur un sentier GRATUIT du '
-              'catalogue, pas sur une exemption posee sur un sentier payant');
+      // TACHE 638 — LE CATALOGUE NE PORTE PLUS AUCUN SENTIER GRATUIT, et c'est
+      // une decision de Christophe (scenario d'acceptation du 29/09 14:17 :
+      // « Donc la prochaine fois que j ouvre l application je n ai droit a
+      // rien »). Ce que ce test protege est inchange, et meme renforce : ce
+      // service n'a PLUS AUCUNE liste de privilegies a consulter, et aucune
+      // exemption n'est posee sur un sentier payant. La demonstration se fait par
+      // le MODE demo, jamais par un droit.
+      expect(
+        TrailCatalog.freeIds,
+        isEmpty,
+        reason:
+            'aucun sentier livre n est jouable sans achat ; le niveau gratuit '
+            'du modele eco, c est la demo',
+      );
+      expect(
+        TrailCatalog.freeIds,
+        isNot(contains('mare-a-mare-centre')),
+        reason:
+            'le Mare a Mare Centre est PAYANT, et la demo ne le rend pas '
+            'gratuit : elle montre, elle ne debloque rien',
+      );
 
       for (final id in TrailCatalog.ids) {
-        expect(service.isDemoMode(id), isTrue,
-            reason: 'sans achat et sans delegue, ce service repond « demo » '
-                'pour TOUS les sentiers, y compris $id. Il n a plus de liste '
-                'de privilegies a consulter');
+        expect(
+          service.isDemoMode(id),
+          isTrue,
+          reason:
+              'sans achat et sans delegue, ce service repond « demo » '
+              'pour TOUS les sentiers, y compris $id. Il n a plus de liste '
+              'de privilegies a consulter',
+        );
       }
     });
 
     test('le sentier par defaut du catalogue est PAYANT (il est redevenu '
         'vendable)', () async {
-      expect(TrailCatalog.defaultTrail.isFreeTrail, isFalse,
-          reason: 'le Mare a Mare portait le drapeau vitrine, qui le rendait '
-              'jouable et sans-pub sans achat : il etait INVENDABLE. Le sentier '
-              'par defaut est de nouveau un sentier payant');
-      expect(TrailCatalog.defaultTrail.priceInStages,
-          TrailCatalog.defaultTrail.totalStages,
-          reason: 'son prix vaut une etape par etape — le defaut du modele');
+      expect(
+        TrailCatalog.defaultTrail.isFreeTrail,
+        isFalse,
+        reason:
+            'le Mare a Mare portait le drapeau vitrine, qui le rendait '
+            'jouable et sans-pub sans achat : il etait INVENDABLE. Le sentier '
+            'par defaut est de nouveau un sentier payant',
+      );
+      expect(
+        TrailCatalog.defaultTrail.priceInStages,
+        TrailCatalog.defaultTrail.totalStages,
+        reason: 'son prix vaut une etape par etape — le defaut du modele',
+      );
     });
 
     test('le delegue de droits fait foi quand il est cable', () async {

@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../data/pack_purchase_service.dart';
 import '../domain/pack_download_progress.dart';
 import '../domain/pack_manifest.dart';
@@ -329,8 +330,13 @@ class _PackActions extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         // Bouton telecharger / mettre a jour / reessayer.
+        // LES TROIS ACTIONS SONT GRISEES EN DEMO (tache 638, bug 14).
+        // Telecharger ecrit des tuiles sur le telephone, supprimer les efface,
+        // acheter engage de l'argent : aucune des trois n'a sa place dans une
+        // demonstration, et aucune ne doit avoir l'air active.
         if (!downloaded || updateAvailable || state.isError)
-          Semantics(
+          GriseEnDemo(
+            child: Semantics(
             button: true,
             label: t.packs.a11y.downloadButton(nom: pack.nom),
             // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
@@ -344,9 +350,11 @@ class _PackActions extends StatelessWidget {
               onPressed: onDownload,
             ),
           ),
+          ),
         // Bouton supprimer (gestion de l'espace) si telecharge.
         if (downloaded)
-          Semantics(
+          GriseEnDemo(
+            child: Semantics(
             button: true,
             label: t.packs.a11y.deleteButton(nom: pack.nom),
             // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline.
@@ -360,6 +368,7 @@ class _PackActions extends StatelessWidget {
               onPressed: onDelete,
             ),
           ),
+          ),
         // Bouton acheter — UNIQUEMENT si la monetisation est activee (R2).
         // Tant que Christophe ne l'active pas, AUCUN bouton d'achat, AUCUN abo.
         //
@@ -370,10 +379,12 @@ class _PackActions extends StatelessWidget {
         // desormais l'achat reel, et quand celui-ci n'est pas possible il le
         // DIT au lieu de se taire.
         if (purchaseEnabled && !downloaded)
-          TextButton(
-            key: ValueKey('pack-buy-${pack.id}'),
-            onPressed: onBuy,
-            child: Text(t.packs.actions.buy),
+          GriseEnDemo(
+            child: TextButton(
+              key: ValueKey('pack-buy-${pack.id}'),
+              onPressed: onBuy,
+              child: Text(t.packs.actions.buy),
+            ),
           ),
       ],
     );

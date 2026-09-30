@@ -7,7 +7,9 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../feasibility/domain/hiker_profile.dart';
 import '../../feasibility/providers/hiker_profile_provider.dart';
 import '../data/checklist_template.dart';
@@ -115,7 +117,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             onPressed: () => _showInfoSheet(context),
           ),
           // Badge compteur sur icone chariot (liste de courses).
-          Stack(
+          // GRISE EN DEMO (tache 638, bug 14) : la liste de courses se construit
+          // en base, article par article — rien a en faire dans une demo.
+          GriseEnDemo(
+            child: Stack(
             children: [
               IconButton(
                 icon: const StepIcon(StepwaysIcons.panier),
@@ -147,10 +152,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                 ),
             ],
           ),
-          IconButton(
-            icon: const StepIcon(StepwaysIcons.rafraichir),
-            tooltip: checklistT.reset,
-            onPressed: () => _showResetDialog(context, checklistT),
+          ),
+          // GRISE EN DEMO : reinitialiser le sac est une suppression en base.
+          GriseEnDemo(
+            child: IconButton(
+              icon: const StepIcon(StepwaysIcons.rafraichir),
+              tooltip: checklistT.reset,
+              onPressed: () => _showResetDialog(context, checklistT),
+            ),
           ),
         ],
       ),
@@ -180,11 +189,16 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               bodyHeightCm: state.bodyHeightCm,
             ),
             // --- Poids corporel + ratio ---
-            ChecklistBodyWeightRow(
-              bodyWeightKg: state.bodyWeightKg,
-              backpackRatio: state.backpackRatio,
-              onBodyWeightChanged: (kg) =>
-                  ref.read(checklistProvider.notifier).setBodyWeight(kg),
+            // GRISE EN DEMO (tache 638, bug 14) : le poids corporel est une
+            // donnee de personne, et le modifier ici retombe sur la fiche du
+            // randonneur. On ne touche pas au corps de quelqu'un dans une demo.
+            GriseEnDemo(
+              child: ChecklistBodyWeightRow(
+                bodyWeightKg: state.bodyWeightKg,
+                backpackRatio: state.backpackRatio,
+                onBodyWeightChanged: (kg) =>
+                    ref.read(checklistProvider.notifier).setBodyWeight(kg),
+              ),
             ),
             // --- Jauge poids relatif (base de charge, pas poids reel) ---
             ChecklistWeightGauge(
@@ -235,7 +249,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                   // --- Checklist avant depart ---
                   const ChecklistPreDepartureSection(),
                   // --- Boutons du bas ---
-                  const ChecklistBottomActions(),
+                  // GRISEES EN DEMO (tache 638, bug 14) : valider le sac,
+                  // construire la liste de courses et exporter ecrivent ou
+                  // sortent des donnees. Rien de tout cela dans une demo.
+                  const GriseEnDemo(child: ChecklistBottomActions()),
                 ],
               ),
             ),
@@ -312,6 +329,13 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   }
 
   Future<void> _showAddItemDialog(String category) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
     final nameCtrl = TextEditingController();
     final weightCtrl = TextEditingController(text: '100');
@@ -418,6 +442,13 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   /// - article du template : poids modifiable, nom en lecture seule ;
   /// - article custom : nom ET poids modifiables.
   Future<void> _showEditItemDialog(String itemId) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
     final weightT = t.checklist.weight;
     final item =
@@ -539,6 +570,13 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   }
 
   Future<void> _showDeleteItemDialog(String itemId) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
     final item =
         ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
