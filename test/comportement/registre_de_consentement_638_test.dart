@@ -442,6 +442,190 @@ void main() {
   });
 
   // =========================================================================
+  // 4 bis. LA RE-DEMANDE APRES MODIFICATION DES DONNEES (DEM 30/09 12:33)
+  // =========================================================================
+  group("638 — une modification des donnees redemande le consentement", () {
+    test(
+      "apres un accord, rien n est redemande tant que rien ne change",
+      () async {
+        await consentement.grant(
+          ConsentPurpose.healthData,
+          declencheur: DeclencheurDeConsentement.reglages,
+        );
+        expect(consentement.needsPrompt(ConsentPurpose.healthData), isFalse);
+      },
+    );
+
+    test("LIRE l etat ne redemande rien — un affichage n est pas une "
+        "modification", () async {
+      await consentement.grant(ConsentPurpose.healthData);
+      // Ce que fait un ecran qui affiche : il lit, plusieurs fois.
+      for (var i = 0; i < 5; i++) {
+        consentement.hasConsent(ConsentPurpose.healthData);
+        consentement.stateOf(ConsentPurpose.healthData);
+        consentement.allStates();
+        expect(
+          consentement.needsPrompt(ConsentPurpose.healthData),
+          isFalse,
+          reason:
+              "« jamais au simple affichage » : un ecran qui regarde ne "
+              "doit pas declencher de question",
+        );
+      }
+    });
+
+    test(
+      "MODIFIER les donnees redemande — c est la decision du 30/09",
+      () async {
+        await consentement.grant(ConsentPurpose.healthData);
+        expect(consentement.needsPrompt(ConsentPurpose.healthData), isFalse);
+
+        // Le randonneur ajoute un traitement dans sa fiche.
+        await consentement.noterUneModificationDesDonnees(
+          ConsentPurpose.healthData,
+        );
+
+        expect(
+          consentement.needsPrompt(ConsentPurpose.healthData),
+          isTrue,
+          reason:
+              "un consentement donne il y a six mois porte sur ce qu il y "
+              "avait dans la fiche il y a six mois",
+        );
+      },
+    );
+
+    test(
+      "UNE FOIS par modification : repondre suffit, on ne boucle pas",
+      () async {
+        await consentement.grant(ConsentPurpose.healthData);
+        await consentement.noterUneModificationDesDonnees(
+          ConsentPurpose.healthData,
+        );
+        expect(consentement.needsPrompt(ConsentPurpose.healthData), isTrue);
+
+        // La question est posee, le randonneur repond.
+        await consentement.grant(
+          ConsentPurpose.healthData,
+          declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        );
+
+        expect(
+          consentement.needsPrompt(ConsentPurpose.healthData),
+          isFalse,
+          reason:
+              "la decision capture la NOUVELLE revision ; sans cela "
+              "l application reposerait la question a chaque ouverture",
+        );
+      },
+    );
+
+    test(
+      "un REFUS suivi d une modification est re-demande lui aussi",
+      () async {
+        await consentement.revoke(ConsentPurpose.healthData);
+        expect(
+          consentement.needsPrompt(ConsentPurpose.healthData),
+          isFalse,
+          reason: "un refus est une decision : on ne harcele pas",
+        );
+
+        await consentement.noterUneModificationDesDonnees(
+          ConsentPurpose.healthData,
+        );
+        expect(
+          consentement.needsPrompt(ConsentPurpose.healthData),
+          isTrue,
+          reason:
+              "quelqu un a refuse, puis a quand meme rempli sa fiche : il "
+              "faut lui reposer la question sur ce qu il vient d ecrire",
+        );
+      },
+    );
+
+    test(
+      "la modification d une finalite ne redemande pas les autres",
+      () async {
+        for (final purpose in ConsentPurpose.values) {
+          await consentement.grant(purpose);
+        }
+        await consentement.noterUneModificationDesDonnees(
+          ConsentPurpose.healthData,
+        );
+
+        expect(consentement.needsPrompt(ConsentPurpose.healthData), isTrue);
+        for (final purpose in ConsentPurpose.values) {
+          if (purpose == ConsentPurpose.healthData) continue;
+          expect(
+            consentement.needsPrompt(purpose),
+            isFalse,
+            reason:
+                "les finalites sont independantes (art. 9 : consentement "
+                "SEPARE, jamais groupe)",
+          );
+        }
+      },
+    );
+
+    test("la re-demande monte en base avec son declencheur", () async {
+      await consentement.grant(
+        ConsentPurpose.healthData,
+        declencheur: DeclencheurDeConsentement.reglages,
+      );
+      final r = registre();
+      await r.monter();
+      expect(
+        serveur.documents[cheminDe(ConsentPurpose.healthData)]!["declencheur"],
+        "reglages",
+      );
+
+      // La fiche change, on redemande, le randonneur re-accorde.
+      await consentement.noterUneModificationDesDonnees(
+        ConsentPurpose.healthData,
+      );
+      serveur.instant = DateTime.utc(2026, 10, 2, 14);
+      await consentement.grant(
+        ConsentPurpose.healthData,
+        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      );
+
+      expect(await r.monter(), 1, reason: "la decision a change, elle repart");
+      final document = serveur.documents[cheminDe(ConsentPurpose.healthData)]!;
+      expect(document["declencheur"], "modification_des_donnees");
+      expect(document["decided_at"], DateTime.utc(2026, 10, 2, 14));
+    });
+
+    test(
+      "une decision ANTERIEURE a ce lot n est pas re-demandee pour rien",
+      () async {
+        // Le telephone de Christophe porte deja des consentements, ecrits sans
+        // les deux champs ajoutes par ce lot. Les relire ne doit pas produire une
+        // re-demande pour une raison purement technique.
+        SharedPreferences.setMockInitialValues(<String, Object>{
+          'consent_healthData':
+              '{"granted":true,"decidedAt":1759000000000,"policyVersion":1}',
+        });
+        final anciennes = await SharedPreferences.getInstance();
+        final service = ConsentService(prefs: anciennes);
+        await service.initialize();
+
+        final etat = service.stateOf(ConsentPurpose.healthData);
+        expect(etat.granted, isTrue);
+        expect(etat.declencheur, DeclencheurDeConsentement.inconnu);
+        expect(etat.revisionDesDonnees, 0);
+        expect(
+          service.needsPrompt(ConsentPurpose.healthData),
+          isFalse,
+          reason:
+              "exiger les nouveaux champs aurait fait re-demander tout le "
+              "monde pour une raison purement technique",
+        );
+        service.dispose();
+      },
+    );
+  });
+
+  // =========================================================================
   // 5. LES REGLES
   // =========================================================================
   group("638 — les regles Firestore du registre", () {

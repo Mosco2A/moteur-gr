@@ -18,7 +18,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/providers/service_providers.dart';
+import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../consent/providers/consent_ui_providers.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
@@ -43,7 +46,8 @@ final ficheMedicaleFichierProvider = Provider<FicheMedicaleFichier>(
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(
-  (ref) => HealthInfoRepository(fichier: ref.watch(ficheMedicaleFichierProvider)),
+  (ref) =>
+      HealthInfoRepository(fichier: ref.watch(ficheMedicaleFichierProvider)),
 );
 
 /// Provider des donnees sante actuelles.
@@ -191,6 +195,30 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           duration: const Duration(seconds: 2),
         ),
       );
+
+      // LA FICHE VIENT DE CHANGER : ON REDEMANDE LE CONSENTEMENT (DEM 30/09
+      // 12:33). Decision de Christophe, verbatim : « en cas de modification des
+      // donnees, on redemande le consentement ».
+      //
+      // APRES LA CONFIRMATION D'ENREGISTREMENT, ET AVANT LE DEPILEMENT, et les
+      // deux bornes sont mesurees.
+      //
+      // APRES, parce que placee AVANT, la question laissait le bouton
+      // « Enregistrer » tourner pendant qu'elle attendait une reponse :
+      // `_isSaving` n'etait rabaisse qu'apres, donc le spinner tournait sous le
+      // dialogue. Ce n'est pas qu'inelegant — c'est le defaut deja paye par la
+      // tache 612 sur cet ecran meme, et deux tests l'ont attrape ici encore
+      // (`pumpAndSettle timed out` : un indicateur qui tourne pour toujours ne
+      // laisse jamais l'arbre se stabiliser). LA CONFIRMATION D'UN
+      // ENREGISTREMENT REUSSI NE DOIT DEPENDRE DE RIEN D'AUTRE QUE DE
+      // L'ENREGISTREMENT : la fiche est ecrite, on le dit, PUIS on pose la
+      // question.
+      //
+      // AVANT LE DEPILEMENT, parce qu'une question posee apres le `pop()`
+      // s'ouvrirait sur l'ecran precedent, detachee de ce qui l'a provoquee.
+      await _redemanderLeConsentementApresModification();
+      if (!mounted) return;
+
       // ON NE DEPILE QUE S'IL Y A QUELQUE CHOSE SOUS LA PAGE (tache 579, LOT X).
       // Ce `pop()` etait inconditionnel. Quand la fiche est ouverte DIRECTEMENT
       // — lien profond, notification, retour du systeme sur cette route — elle
@@ -202,6 +230,83 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       // le message, lui, confirme l'enregistrement dans les deux cas.
       final navigateur = Navigator.of(context);
       if (navigateur.canPop()) navigateur.pop();
+    }
+  }
+
+  /// LA FICHE A CHANGE, DONC ON REPOSE LA QUESTION (DEM du 30/09 12:33).
+  ///
+  /// DECISION DE CHRISTOPHE, verbatim : « en cas de modification des donnees, on
+  /// redemande le consentement ». Un consentement donne il y a six mois porte sur
+  /// ce qu'il y avait dans la fiche il y a six mois ; le randonneur qui ajoute
+  /// aujourd'hui un traitement ou une allergie n'a jamais consenti POUR CELA.
+  ///
+  /// UNE FOIS PAR MODIFICATION, JAMAIS AU SIMPLE AFFICHAGE, et c'est structurel
+  /// et non une precaution : la question ne se pose que depuis cette methode,
+  /// appelee par [_save], donc uniquement quand une ECRITURE a eu lieu. Ouvrir la
+  /// fiche, la relire, en sortir : rien n'est ecrit, rien n'est demande. Et la
+  /// decision prise ici CAPTURE la nouvelle revision des donnees, donc
+  /// `needsPrompt` retombe a faux tout de suite — sans quoi l'application
+  /// reposerait la question a chaque enregistrement suivant.
+  ///
+  /// ON PASSE PAR LE CONTROLEUR, PAS PAR LE SERVICE, et c'est deliberé : c'est
+  /// lui qui sait CE QUE LE RETRAIT DE CETTE FINALITE EMPORTE de l'appareil
+  /// (tache 560). Appeler `ConsentService.revoke` en direct d'ici donnerait une
+  /// seconde definition de « ce que ce consentement protege », et c'est
+  /// exactement l'ecart que la tache 564 a paye.
+  ///
+  /// ELLE NE LEVE JAMAIS. Un stockage de consentement illisible ne doit pas faire
+  /// echouer l'enregistrement d'une fiche medicale — la fiche est deja ecrite a ce
+  /// stade, et c'est elle qui compte pour un secouriste.
+  Future<void> _redemanderLeConsentementApresModification() async {
+    final service = ref.read(consentServiceProvider);
+    try {
+      await service.initialize();
+      await service.noterUneModificationDesDonnees(ConsentPurpose.healthData);
+      if (!service.needsPrompt(ConsentPurpose.healthData)) return;
+    } on Object catch (e) {
+      debugPrint(
+        '[FicheSante] consentement illisible ($e) — pas de re-demande',
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    // PAS DE FERMETURE PAR L'EXTERIEUR : une question de consentement se repond,
+    // et les deux reponses sont aussi accessibles l'une que l'autre (RGPD art.
+    // 7-3 : le retrait doit etre aussi simple que l'octroi).
+    final accorde = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.consent.purposes.healthData),
+        content: Text(t.health.consent.purpose),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.consent.revoke),
+          ),
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            isFullWidth: false,
+            label: t.consent.grant,
+            onPressed: () => Navigator.of(ctx).pop(true),
+          ),
+        ],
+      ),
+    );
+    if (accorde == null) return;
+
+    final controleur = ref.read(consentControllerProvider);
+    if (accorde) {
+      await controleur.grant(
+        ConsentPurpose.healthData,
+        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      );
+    } else {
+      await controleur.revoke(
+        ConsentPurpose.healthData,
+        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      );
     }
   }
 
@@ -376,7 +481,8 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         textCapitalization: TextCapitalization.characters,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'[ABOabo+\-]')),
+                            RegExp(r'[ABOabo+\-]'),
+                          ),
                         ],
                         validator: (v) {
                           final s = v?.trim() ?? '';
@@ -631,9 +737,9 @@ class _UsageAdvice extends ConsumerWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final a = t.health.advice;
-    final lu = ref.watch(healthPrepareStepsProvider).contains(
-          HealthPrepStep.adviceRead,
-        );
+    final lu = ref
+        .watch(healthPrepareStepsProvider)
+        .contains(HealthPrepStep.adviceRead);
 
     return Container(
       key: const ValueKey('health-usage-advice'),
@@ -666,7 +772,10 @@ class _UsageAdvice extends ConsumerWidget {
           // elle est, ensuite comment la montrer, puis les deux filets (fiche du
           // telephone, papier).
           _AdviceLine(icon: Icons.place_outlined, text: a.whereToFind),
-          _AdviceLine(icon: Icons.volunteer_activism_outlined, text: a.showToRescue),
+          _AdviceLine(
+            icon: Icons.volunteer_activism_outlined,
+            text: a.showToRescue,
+          ),
           _AdviceLine(icon: Icons.phonelink_lock_outlined, text: a.phoneCard),
           _AdviceLine(icon: Icons.description_outlined, text: a.paper),
           const SizedBox(height: AppTheme.spacingSm),

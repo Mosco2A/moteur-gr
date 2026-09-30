@@ -73,14 +73,17 @@ class ConsentController {
 
   /// Accorde le consentement pour [purpose] (acte positif explicite) puis
   /// rafraichit l'etat affiche.
-  Future<void> grant(ConsentPurpose purpose) async {
+  /// [declencheur] par defaut « reglages » : la decision vient de l ecran
+  /// Confidentialite, ou le randonneur est venu de lui-meme. Une re-demande
+  /// APRES MODIFICATION DES DONNEES passe par le meme chemin mais le dit
+  /// (`modificationDesDonnees`) — et le registre en base doit pouvoir les
+  /// distinguer, sinon il ne prouve pas que la re-demande a eu lieu.
+  Future<void> grant(
+    ConsentPurpose purpose, {
+    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.reglages,
+  }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    // DECLENCHEUR « REGLAGES » (tache 638) : la decision vient de l ecran
-    // Confidentialite, ou le randonneur est venu de lui-meme. Ce n est ni une
-    // premiere demande imposee, ni une re-demande apres modification — et le
-    // registre en base doit pouvoir les distinguer.
-    await service.grant(purpose,
-        declencheur: DeclencheurDeConsentement.reglages);
+    await service.grant(purpose, declencheur: declencheur);
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
   }
@@ -102,10 +105,12 @@ class ConsentController {
   /// traitements, pas un enregistrement local : leur revocation les arrete, il
   /// n'y a rien a retirer de l'appareil. Le jour ou l'une d'elles stocke
   /// quelque chose, c'est ici que son effacement se branche.
-  Future<void> revoke(ConsentPurpose purpose) async {
+  Future<void> revoke(
+    ConsentPurpose purpose, {
+    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.reglages,
+  }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    await service.revoke(purpose,
-        declencheur: DeclencheurDeConsentement.reglages);
+    await service.revoke(purpose, declencheur: declencheur);
     await _effacerCeQueProtege(purpose);
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);

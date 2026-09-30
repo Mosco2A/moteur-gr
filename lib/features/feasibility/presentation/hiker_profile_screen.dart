@@ -191,9 +191,25 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     final consent = ref.read(consentServiceProvider);
     await consent.initialize();
 
+    // LA MORPHOLOGIE VA CHANGER, DONC LA REVISION DES DONNEES MONTE D UN CRAN
+    // (DEM du 30/09 12:33). Decision de Christophe : « en cas de modification
+    // des donnees, on redemande le consentement ».
+    //
+    // ICI IL N Y A RIEN A REDEMANDER, ET C EST LA BONNE NOUVELLE : cet ecran
+    // POSE DEJA la question dans le meme geste que l ecriture (la bascule juste
+    // au-dessus du bouton). Noter la modification AVANT la decision suffit donc :
+    // la decision qui suit capture la NOUVELLE revision, `needsPrompt` retombe a
+    // faux, et on ne repose pas une question a laquelle le randonneur vient de
+    // repondre. L ordre compte — inverse, l application aurait redemande son
+    // accord a l ouverture suivante, pour une morphologie qu il venait d accorder.
+    await consent.noterUneModificationDesDonnees(ConsentPurpose.healthData);
+
     if (!_morphoConsent) {
       // 1. Le refus est trace et horodate (retractable a tout moment, D4A-01).
-      await consent.revoke(ConsentPurpose.healthData);
+      await consent.revoke(
+        ConsentPurpose.healthData,
+        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      );
       // 2. Le refus EFFACE : une revocation fait disparaitre ce qui a deja ete
       //    enregistre, elle ne se contente pas de cesser d'ecrire. Sans ce
       //    temps-la, les 72 ans / 172 cm / 88 kg de la campagne resteraient sur
@@ -212,7 +228,10 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
 
     // Accord explicite : le consentement est accorde AVANT l'ecriture, jamais
     // apres — l'ordre importe si l'ecriture echoue.
-    await consent.grant(ConsentPurpose.healthData);
+    await consent.grant(
+      ConsentPurpose.healthData,
+      declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+    );
     await ref.read(hikerProfileProvider.notifier).save(profile);
 
     if (!mounted) return;
