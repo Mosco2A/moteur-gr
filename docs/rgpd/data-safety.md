@@ -1,24 +1,34 @@
 # Déclarations stores — Play Data Safety & Apple App Privacy / ATT
 
-> Mapping **exact** entre le comportement du code (au 07/06/2026,
-> branche d'assainissement audit #327) et les formulaires des stores.
-> À reporter tel quel dans Play Console (Data Safety) et App Store
-> Connect (App Privacy) au moment de la publication (wagon 3).
+> Mapping **exact** entre le comportement du code et les formulaires des
+> stores. À reporter tel quel dans Play Console (Data Safety) et App Store
+> Connect (App Privacy) au moment de la publication.
 > Toute évolution du code (analytics, crash reporting, sync photos,
 > ads réelles) invalide ce mapping et impose sa mise à jour.
+>
+> **PASSE DE CORRECTION DU 30/09/2026 (tâche 642).** Ce document affirmait
+> encore trois choses que le code ne fait pas : des positions de suivi
+> montant en base avec un TTL de 48 h, le journal texte synchronisé, et les
+> données rangées sous une empreinte SHA-256. Les trois sont corrigées
+> ci-dessous, ainsi que le contact d'effacement. Une entrée est ajoutée :
+> le **registre des consentements** en base (tâche 635). La source de
+> vérité de ces corrections est la mesure du code faite pour la tâche 642,
+> et les deux pages publiées
+> (<https://only1cent.com/stepways/privacy>, `/stepways/privacy-en`).
+> Rédaction initiale : 07/06/2026, branche d'assainissement audit #327.
 
 ## Inventaire factuel des SDK embarqués (pubspec, code vérifié)
 
 | SDK | Collecte effective dans l'app | Note |
 |---|---|---|
-| geolocator | Position précise (foreground + background) | Transmise au serveur UNIQUEMENT si suivi temps réel/groupe activé ; sinon locale |
-| firebase_auth | Identifiant de connexion → haché SHA-256 ; AUCUN nom/e-mail/photo persisté | Scopes Apple nom/e-mail non demandés |
-| cloud_firestore | Positions de suivi (TTL 48 h), progression/journal texte/checklists si sync activée | Owner-only par règles testées |
+| geolocator <!-- #D01 --> | Position précise (foreground + background) | **JAMAIS transmise** (corrigé tâche 642) : les points vont en base locale Drift et nulle part ailleurs. Le suivi temps réel / groupe n'est appelé par AUCUN geste, et les écritures « groupe » sont refusées par les règles |
+| firebase_auth <!-- #D02 --> | **uid du compte ANONYME** = clé des documents `users/{uid}` (corrigé tâche 642 : ce n'est PAS le haché SHA-256, les règles imposent l'uid brut) ; AUCUN nom/e-mail/photo persisté | Scopes Apple nom/e-mail non demandés. Le haché SHA-256 sert d'identifiant métier et de `complainantUidHash` |
+| cloud_firestore <!-- #D03 --> | Progression, checklists, mesures d'effort des randos passées, **registre des consentements** (tâche 635, e3170ca0/d92d5cd5), fiche technique de l'appareil (8 champs), retours, signalements. **PAS de positions** et **PAS le journal texte** (corrigé tâche 642 : ces deux chemins sont fermés) | Owner-only par règles testées ; `consents/{finalité}` déclarée à part |
 | firebase_storage | **Aucun usage dans le code** (dépendance présente, zéro appel) | Ne rien déclarer ; retirer ou câbler en wagon 3 |
 | google_mobile_ads (AdMob) | SDK embarqué — **ad units de TEST uniquement** | Le SDK collecte automatiquement : AdID, IP, interactions pub, diagnostics (doc Google) → à déclarer dès que le SDK est livré dans le binaire |
 | in_app_purchase | Achats via stores — **verrouillé mode test** (kill-switch) | Aucune donnée bancaire côté app |
 | http (Open-Meteo, OSM) | IP transitoire + coordonnées du point demandé | Pas du « user data » au sens des formulaires, documenté par transparence |
-| Crashlytics / Analytics | **ABSENTS du code main** | Ne PAS déclarer « Crash logs »/« Analytics » tant que non mergés |
+| Crashlytics / Analytics <!-- #D05 --> | ~~ABSENTS du code main~~ — **PÉRIMÉ**. Crashlytics est **ACTIF**, Analytics est **câblé mais coupé au démarrage** | Voir la mise à jour du 26/09 juste dessous, qui remplace cette ligne. **Crashlytics EST à déclarer en « Crash logs »** (rappelé tâche 642 : les deux pages publiées le disent désormais au randonneur) |
 
 ### Mise à jour du 26/09/2026 — tâche 596 (remplace la ligne « Crashlytics / Analytics » ci-dessus)
 
@@ -63,7 +73,7 @@ sous-traitant (service provider).
 |---|---|---|
 | Does your app collect or share any of the required user data types? | **Yes** | Position si suivi activé ; Device/other IDs via SDK AdMob |
 | Is all of the user data collected by your app encrypted in transit? | **Yes** | Firestore/HTTPS (TLS) ; tuiles/météo en HTTPS |
-| Do you provide a way for users to request that their data is deleted? | **Yes** | Suppression du compte/données sur demande ([CONTACT-EMAIL]) ; sessions de suivi auto-expirantes 48 h |
+| Do you provide a way for users to request that their data is deleted? <!-- #D04 --> | **Yes** | Effacement depuis les réglages de l'application (base locale, caches, consentements locaux) + demande de suppression des documents serveur, et sur demande à **contact@only1cent.com** (corrigé tâche 642 : le contact est renseigné, et la mention « sessions de suivi auto-expirantes 48 h » est retirée — cette fonction n'est pas active) |
 
 ### Data types
 
@@ -93,9 +103,22 @@ lignes App interactions / Diagnostics / Device or other IDs passent à
 - [ ] Déclarer l'**Advertising ID** dans la section dédiée de Play
       Console (obligatoire dès que com.google.android.gms.permission.AD_ID
       est présent via le SDK AdMob).
-- [ ] CMP certifiée Google (UMP) pour le consentement UE (TCF).
-- [ ] Lien public vers la politique de confidentialité (FR/EN).
-- [ ] Activer la politique TTL Firestore sur follow_sessions (purge 48 h).
+- [x] **CMP certifiée Google (UMP) pour le consentement UE** — FAIT
+      (tâche 595) : `ConsentInformation` / `ConsentForm` appelés avant toute
+      demande d'annonce, plus un point d'entrée permanent dans
+      Réglages → Confidentialité. Corrigé tâche 642.
+- [x] **Lien public vers la politique de confidentialité (FR/EN)** — FAIT
+      (tâche 642), en ligne et vérifié HTTP 200 :
+      <https://only1cent.com/stepways/privacy> et `/stepways/privacy-en`.
+      Conditions : `/stepways/conditions` et `/stepways/conditions-en`.
+- [ ] ~~Activer la politique TTL Firestore sur follow_sessions (purge
+      48 h)~~ — **SANS OBJET à ce jour** (tâche 642) : la fonction de suivi
+      temps réel n'est appelée par aucun geste de l'application. À faire le
+      jour de son ouverture, et à déclarer alors dans cette fiche.
+- [ ] **Déclarer le registre des consentements** (`users/{uid}/consents`,
+      tâche 635) le jour du dépôt : c'est une donnée serveur de plus, même
+      si elle ne porte aucune donnée personnelle au sens des formulaires
+      Play (un booléen, des dates, une version, un déclencheur).
 
 ---
 

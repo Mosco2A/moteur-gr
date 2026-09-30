@@ -102,19 +102,65 @@ consentement de l'Application (ConsentService, D4A-01/D4A-02).
 **Le défaut est FERMÉ** : en l'absence d'état lisible, l'Application
 considère qu'il n'y a pas consentement.
 
-> **OÙ VIVENT CES ENREGISTREMENTS — mesuré tâche 642.** Les
-> consentements sont horodatés et versionnés **sur l'appareil**
-> (`SharedPreferences`, clé `consent_<finalité>`), et **non sur nos
-> serveurs** : aucune collection de consentements n'existe dans
-> `firestore.rules` ni dans les fonctions. C'est un choix de
-> minimisation — ils n'ont pas besoin d'un serveur pour faire leur
-> travail — mais il a une conséquence qu'il faut assumer : **nous ne
-> détenons aucune preuve de consentement côté serveur**, et un effacement
-> de l'application efface aussi la trace de la décision. Si la preuve
-> opposable devient nécessaire (contrôle, litige publicitaire), il faudra
-> monter ces enregistrements en base — et ce document devra alors être
-> corrigé AVANT. **Ne pas écrire, d'ici là, que les consentements sont
-> conservés en base.**
+### 3.1 Le registre de consentement vit EN BASE (commits e3170ca0, d92d5cd5)
+
+Décision de Christophe, verbatim : « Le consentement est dans nos bases,
+horodaté, c'est les données qui n'y sont pas ».
+
+Chaque décision tranchée est écrite sous
+**`users/{uid}/consents/{finalité}`** — un document par finalité, liste
+**fermée** de champs :
+
+| Champ <!-- #304 --> | Contenu |
+|---|---|
+| `granted` | accordé ou refusé |
+| `decided_at` | horodatage **serveur** : c'est lui qui fait foi |
+| `updated_at` | dernière écriture du document |
+| `version_du_texte` | version de cette politique que l'accord couvrait |
+| `declencheur` | `premiere_demande`, `modification_des_donnees`, `evolution_de_politique`, `reglages`, `inconnu` |
+| `decide_sur_le_telephone_le` | date de la **prise** de décision, distincte de sa transmission |
+
+**Pourquoi deux dates.** Le serveur date l'ÉCRITURE ; une décision prise
+hors réseau en montagne n'arrive que des jours plus tard. Dater le
+consentement du jour de sa transmission serait une inexactitude
+matérielle pour la preuve (art. 7-1 RGPD). L'arbitre reste le serveur.
+
+**Aucun refus inventé.** Une finalité jamais tranchée n'a **pas** de
+document : écrire `granted: false` sans décision fabriquerait un choix
+qui n'a pas eu lieu. L'absence est une information.
+
+**Le piège fermé.** `decided_at` étant un horodatage serveur, le renvoyer
+à chaque réveil déplacerait la date du consentement à chaque lancement. Le
+service retient l'empreinte de la dernière décision poussée et ne repousse
+que ce qui a bougé ; l'empreinte ne se pose qu'**après** une écriture
+réussie.
+
+**Règle Firestore :** `users/{uid}/consents/{finalité}`, lecture et
+écriture par le **propriétaire seul**, déclarée à part dans
+`firestore.rules` (ligne 103) plutôt que laissée à la règle générique.
+
+**UNE MODIFICATION DES DONNÉES REDEMANDE LE CONSENTEMENT** (d92d5cd5).
+Décision de Christophe : « en cas de modification des données, on
+redemande le consentement ». `ConsentState` porte une **révision des
+données** à côté de sa version de texte ; quand elle ne correspond plus au
+compteur courant, l'accord porte sur des données qui ne sont plus celles
+d'aujourd'hui, et la question est reposée. **Une fois par modification,
+jamais au simple affichage** : la notation part des écrans qui ÉCRIVENT,
+pas de ceux qui affichent. Conséquence à connaître, et écrite sur les
+pages publiées : répondre « Retirer » après enregistrement de la fiche
+médicale **efface la morphologie**, parce que c'est ce que le retrait du
+consentement santé a toujours emporté.
+
+**CE QUI NE MONTE TOUJOURS PAS : la donnée protégée.** Le registre
+enregistre le CHOIX, jamais son objet. La fiche médicale n'a aucun chemin
+de sortie (liste fermée 612, intacte) et la morphologie non plus (635).
+
+> **ÉTAT D'INTÉGRATION — à connaître (tâche 642, 30/09).** Ce code vit sur
+> la branche `claude/feat/635-montee-en-base` (e3170ca0, d92d5cd5) et
+> **n'est pas encore fusionné dans `main`**. Les deux pages publiées
+> décrivent donc le comportement du build qui portera ce lot. **Un build
+> livré sans le lot 635 rendrait ces paragraphes faux** : ne pas publier de
+> version de l'application sans lui, ou corriger les pages avant.
 
 | Finalité | Ce qu'elle autorise | Donnée sensible ? |
 |---|---|---|
@@ -190,7 +236,10 @@ jour, **pas horodatée** — c'est un simple booléen.
      l'application, build, plateforme, version du système, langue,
      fuseau), réécrits à chaque retour au premier plan ;
   5. **vos retours** (`user_feedback` : sentier, type, texte libre,
-     note) et les **signalements / plaintes de modération**.
+     note) et les **signalements / plaintes de modération** ;
+  6. **le registre de vos consentements** (`consents/{finalité}`,
+     commits e3170ca0 et d92d5cd5) : le CHOIX et sa preuve, jamais son
+     objet. Détail au § 3.1.
 - **Ce qui NE monte PLUS, et qui montait avant** (à ne pas réintroduire
   dans le texte sans réintroduire le code) : le **journal** (texte et
   chemins de photos), la **morphologie** (âge, taille, poids, sexe), et
@@ -376,6 +425,7 @@ immédiate à votre demande.
 | Donnée | Durée | Mécanisme |
 |---|---|---|
 | Sessions de suivi temps réel (positions partagées) <!-- #303 --> | *Sans objet à ce jour* : la fonction n'est pas active (§ 4.1). Le champ `expiresAt` et l'expiration à **48 h** sont écrits dans le code et s'appliqueront le jour de son ouverture (politique TTL Firestore à activer alors) | Champ `expiresAt` + purge serveur |
+| Registre des consentements (serveur) | Tant que le compte existe. C'est une **preuve** : elle doit survivre à la décision elle-même, sinon elle ne prouve rien | Effacement du compte |
 | Fiche technique de l'appareil (serveur) | Réécrite à chaque retour au premier plan ; supprimée avec le compte | Effacement du compte |
 | Rapports de plantage (Crashlytics) | **90 jours**, politique de rétention de Google | Rétention Firebase |
 | Caches cartographiques / météo (local) | **7 jours** (données recalculables) | `purgeExpired()` (RetentionPolicy.cartoCache) |

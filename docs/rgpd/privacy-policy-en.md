@@ -94,17 +94,66 @@ of consent collection are handled by the App's consent service
 **The default is CLOSED**: where no readable state exists, the App treats
 it as no consent.
 
-> **WHERE THESE RECORDS LIVE — measured task 642.** Consents are
-> timestamped and versioned **on the device** (`SharedPreferences`, key
-> `consent_<purpose>`), and **not on our servers**: no consent collection
-> exists in `firestore.rules` or in the functions. This is a minimisation
-> choice — they do not need a server to do their job — but it has a
-> consequence that must be owned: **we hold no server-side proof of
-> consent**, and erasing the app also erases the trace of the decision. If
-> enforceable proof becomes necessary (an audit, an advertising dispute),
-> these records will have to be moved to the database — and this document
-> must be corrected BEFORE that. **Until then, do not write that consents
-> are stored in the database.**
+### 3.1 The consent register lives IN THE DATABASE (commits e3170ca0, d92d5cd5)
+
+Christophe's decision, verbatim: "Le consentement est dans nos bases,
+horodaté, c'est les données qui n'y sont pas" — consent lives in our
+databases, timestamped; it is the data that does not.
+
+Every decided choice is written under
+**`users/{uid}/consents/{purpose}`** — one document per purpose, a
+**closed** list of fields:
+
+| Field <!-- #314 --> | Contents |
+|---|---|
+| `granted` | granted or declined |
+| `decided_at` | **server** timestamp: this is the authoritative one |
+| `updated_at` | last write of the document |
+| `version_du_texte` | version of this policy the agreement covered |
+| `declencheur` | `premiere_demande`, `modification_des_donnees`, `evolution_de_politique`, `reglages`, `inconnu` |
+| `decide_sur_le_telephone_le` | date the decision was **made**, distinct from its transmission |
+
+**Why two dates.** The server dates the WRITE; a decision made offline in
+the mountains only arrives days later. Dating the consent from the day it
+was transmitted would be a material inaccuracy for proof purposes
+(Art. 7(1) GDPR). The server remains the arbiter.
+
+**No invented refusals.** A purpose never decided has **no** document:
+writing `granted: false` without a decision would manufacture a choice
+that never happened. Absence is itself information.
+
+**The closed trap.** Since `decided_at` is a server timestamp, resending
+it on every wake-up would move the consent date to every launch. The
+service keeps the fingerprint of the last pushed decision and only
+re-pushes what changed; the fingerprint is only set **after** a successful
+write.
+
+**Firestore rule:** `users/{uid}/consents/{purpose}`, read and write by
+the **owner only**, declared separately in `firestore.rules` (line 103)
+rather than left to the generic rule.
+
+**A CHANGE TO THE DATA RE-ASKS FOR CONSENT** (d92d5cd5). Christophe's
+decision: "en cas de modification des données, on redemande le
+consentement". `ConsentState` carries a **data revision** alongside its
+text version; when it no longer matches the current counter, the agreement
+covers data that is no longer today's, and the question is asked again.
+**Once per change, never on mere display**: the notation comes from the
+screens that WRITE, not from those that display. A consequence to know,
+and stated on the published pages: answering "Withdraw" after saving the
+medical card **erases the body measurements**, because that is what
+withdrawing health consent has always carried.
+
+**WHAT STILL DOES NOT GO UP: the protected data.** The register records
+the CHOICE, never its object. The medical card has no exit path (closed
+list 612, intact) and neither do the body measurements (635).
+
+> **INTEGRATION STATUS — to be aware of (task 642, 30/09).** This code
+> lives on the `claude/feat/635-montee-en-base` branch (e3170ca0,
+> d92d5cd5) and is **not yet merged into `main`**. Both published pages
+> therefore describe the behaviour of the build that will carry this
+> batch. **A build shipped without batch 635 would make these paragraphs
+> false**: do not release a version of the app without it, or correct the
+> pages first.
 
 | Purpose | What it allows | Sensitive data? |
 |---|---|---|
@@ -173,7 +222,10 @@ timestamped** — it is a plain boolean.
      and last use, app version, build, platform, OS version, language,
      time zone), rewritten on each return to the foreground;
   5. **your feedback** (`user_feedback`: trail, type, free text, rating)
-     and **reports / moderation complaints**.
+     and **reports / moderation complaints**;
+  6. **the register of your consents** (`consents/{purpose}`, commits
+     e3170ca0 and d92d5cd5): the CHOICE and its proof, never its object.
+     Details in § 3.1.
 - **What NO LONGER goes up, and used to** (not to be reintroduced into
   the text without reintroducing the code): the **journal** (text and
   photo paths), **body measurements** (age, height, weight, sex), and the
@@ -348,6 +400,7 @@ deletion at your request.
 | Data | Duration | Mechanism |
 |---|---|---|
 | Real-time sharing sessions (shared positions) <!-- #313 --> | *Not applicable to date*: the feature is not active (§ 4.1). The `expiresAt` field and the **48 h** expiry are written in the code and will apply the day it is opened (Firestore TTL policy to enable then) | `expiresAt` field + server purge |
+| Consent register (server) | As long as the account exists. It is **proof**: it has to outlive the decision itself, or it proves nothing | Account erasure |
 | Device technical record (server) | Rewritten on each return to the foreground; deleted with the account | Account erasure |
 | Crash reports (Crashlytics) | **90 days**, Google's retention policy | Firebase retention |
 | Map/weather caches (local) | **7 days** (recomputable data) | `purgeExpired()` (RetentionPolicy.cartoCache) |
