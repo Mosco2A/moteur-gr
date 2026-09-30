@@ -46,11 +46,11 @@ final _fallbackFitnessRankProvider = FutureProvider<int>((ref) async {
 });
 
 /// Profil OBJECTIF deduit (fiche + test 6 min + 5 randos).
-final objectiveProfileProvider =
-    FutureProvider<ObjectiveProfile>((ref) async {
+final objectiveProfileProvider = FutureProvider<ObjectiveProfile>((ref) async {
   final pastHikes = await ref.watch(pastHikesProvider.future);
-  final WalkTestResult? walkTest =
-      await ref.watch(walkTestResultProvider.future);
+  final WalkTestResult? walkTest = await ref.watch(
+    walkTestResultProvider.future,
+  );
   final fallbackRank = await ref.watch(_fallbackFitnessRankProvider.future);
   return ObjectiveProfile.from(
     pastHikes: pastHikes,
@@ -111,8 +111,9 @@ class FeasibilityCriteria {
 }
 
 /// Completude des criteres du verdict (fiche, randos, test 6 min).
-final feasibilityCriteriaProvider =
-    FutureProvider<FeasibilityCriteria>((ref) async {
+final feasibilityCriteriaProvider = FutureProvider<FeasibilityCriteria>((
+  ref,
+) async {
   final profile = await ref.watch(hikerProfileProvider.future);
   final pastHikes = await ref.watch(pastHikesProvider.future);
   final walkTest = await ref.watch(walkTestResultProvider.future);
@@ -235,8 +236,9 @@ final stageEffortsProvider = FutureProvider<List<StageEffort>>((ref) async {
 /// Niveau de randonneur deduit du profil objectif (fiche + test 6 min + randos),
 /// corrige age + condition — entree de la formule de faisabilite.
 final hikerLevelProvider = FutureProvider<HikerLevel>((ref) async {
-  final ObjectiveProfile objective =
-      await ref.watch(objectiveProfileProvider.future);
+  final ObjectiveProfile objective = await ref.watch(
+    objectiveProfileProvider.future,
+  );
   final HikerProfile profile = await ref.watch(hikerProfileProvider.future);
   return FeasibilityFormula.deriveLevel(
     maxElevationGainPerDayDone: objective.maxElevationGainPerDayDone,
@@ -260,7 +262,7 @@ final hikerLevelProvider = FutureProvider<HikerLevel>((ref) async {
 /// Le calcul etait juste, c'est l'alimentation qui manquait.
 ///
 /// LA SOURCE EST LE PROGRAMME, PAS UNE SUPPOSITION. [plannedDaysProvider] porte
-/// le decoupage reel choisi par le randonneur — jours de marche et jours de
+/// le programme reel choisi par le randonneur — jours de marche et jours de
 /// repos, dans l'ordre. On le parcourt en comptant les etapes consommees : un
 /// jour de repos est enregistre APRES la derniere etape marchee avant lui. Un
 /// jour qui regroupe deux etapes en consomme deux, donc l'index suit.
@@ -298,14 +300,14 @@ final restDaysAfterStageProvider = Provider<Set<int>>((ref) {
 // par JOUR DE MARCHE de [plannedDaysProvider]. Un jour qui regroupe deux etapes
 // pese la SOMME des deux — c'est la journee qui se marche, pas la ligne du topo
 // — et les jours de repos sont a leur place dans la sequence. Bouger le curseur
-// des jours change le decoupage, donc les charges, donc le verdict : a la baisse
+// des jours change le programme, donc les charges, donc le verdict : a la baisse
 // (regroupement -> journees plus lourdes) comme a la hausse (separation ->
 // journees plus legeres). C'est la boucle demandee au retour 6.
 //
 // LE REPLI EST EXPLICITE, ET IL NE REND JAMAIS UN VERDICT SUR DU VIDE. Tant
 // qu'aucun programme n'existe (etapes pas encore chargees, container de test
 // sans programme), on retombe sur les etapes brutes — une etape par jour — qui
-// sont exactement le decoupage de reference du sentier. [fromProgram] dit
+// sont exactement le programme de reference du sentier. [fromProgram] dit
 // laquelle des deux sources a parle, pour que ce soit verifiable et non suppose.
 //
 // TACHE 569 : la classe [FeasibilityProgram] et sa conversion sont passees dans
@@ -319,8 +321,9 @@ final restDaysAfterStageProvider = Provider<Set<int>>((ref) {
 /// Lit le PROGRAMME du randonneur ([plannedDaysProvider] : jours reellement
 /// choisis, etapes regroupees, jours de repos) et le traduit en charges
 /// journalieres. Repli sur les etapes brutes quand aucun programme n'existe.
-final feasibilityProgramProvider =
-    FutureProvider<FeasibilityProgram>((ref) async {
+final feasibilityProgramProvider = FutureProvider<FeasibilityProgram>((
+  ref,
+) async {
   // Le sentier courant peut etre indisponible (container de test minimal) : une
   // lecture de config ne doit pas emporter l'evaluation avec elle.
   List<PlannedDay> days;
@@ -333,11 +336,11 @@ final feasibilityProgramProvider =
 
   // LA CONVERSION EST ECRITE UNE SEULE FOIS (tache 569) : la meme que celle
   // qu'emprunte la recherche du conseil, pour que le conseil porte exactement
-  // sur le decoupage que l'ecran affichera.
+  // sur le programme que l'ecran affichera.
   final fromDays = FeasibilityProgram.fromPlannedDays(days);
   if (!fromDays.isEmpty) return fromDays;
 
-  // REPLI : le decoupage de reference du sentier, une etape par jour.
+  // REPLI : le programme de reference du sentier, une etape par jour.
   final rawStages = await ref.watch(stageEffortsProvider.future);
   if (rawStages.isEmpty) return FeasibilityProgram.empty;
   Set<int> rawRest;
@@ -346,16 +349,19 @@ final feasibilityProgramProvider =
   } catch (_) {
     rawRest = const {};
   }
-  return FeasibilityProgram.fromRawStages(rawStages,
-      restAfterStageIndex: rawRest);
+  return FeasibilityProgram.fromRawStages(
+    rawStages,
+    restAfterStageIndex: rawRest,
+  );
 });
 
 /// Evaluation complete de faisabilite (etapes + circuit + conseils) — V2.
 ///
 /// Null si aucune etape (pas de sentier charge) -> l'UI retombe sur le
 /// questionnaire de dépannage, comme le verdict objectif.
-final feasibilityAssessmentProvider =
-    FutureProvider<FeasibilityAssessment?>((ref) async {
+final feasibilityAssessmentProvider = FutureProvider<FeasibilityAssessment?>((
+  ref,
+) async {
   final program = await ref.watch(feasibilityProgramProvider.future);
   if (program.isEmpty) return null;
   final level = await ref.watch(hikerLevelProvider.future);
@@ -371,9 +377,9 @@ final feasibilityAssessmentProvider =
     level: level,
     durationAdvice: advice,
     // R2 : sans choix du randonneur, les numeros de journees et le « au lieu de
-    // N » designent le decoupage de REFERENCE du sentier, pas le sien.
+    // N » designent le programme de REFERENCE du sentier, pas le sien.
     fromProgram: program.fromProgram,
-    // PLAFOND DU CONSEIL : jamais plus de jours de marche que le decoupage
+    // PLAFOND DU CONSEIL : jamais plus de jours de marche que le programme
     // n'en permet — deux journees par etape depuis la tache 558. Sans cette
     // borne, l'ecran pouvait conseiller un nombre de jours que le curseur du
     // Programme ne sait pas atteindre — un conseil inapplicable.

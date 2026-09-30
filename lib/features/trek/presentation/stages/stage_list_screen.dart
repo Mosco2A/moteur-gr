@@ -8,7 +8,6 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../trail/providers/stages_provider.dart';
-import '../../../../core/branding/stepways_icons.dart';
 
 /// Ecran liste des etapes d'un sentier.
 ///
@@ -72,6 +71,22 @@ class _StageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // SW-SKIN-L3c : Card Material -> AppCard. padding zero pour garder la
     // ListTile bord a bord (elle porte son propre rembourrage).
+    //
+    // TACHE 639 (bug 4) — LE CHEVRON QUI MENTAIT EST RETIRE.
+    //
+    // Cette carte ne portait AUCUN geste — ni sur l'AppCard, ni sur la ListTile
+    // — et affichait pourtant un chevron droit, c'est-a-dire la promesse
+    // universelle « il y a quelque chose derriere ». Le randonneur appuyait, et
+    // rien. C'est la faute symetrique de celle de Christophe sur « Pret a
+    // partir » (DEM-260930-1010, verbatim : « il faut differencier visuellement
+    // ce qui est clicable de ce qui ne l est pas ») : la, une information avait
+    // le relief d'un bouton ; ici, elle en avait la fleche.
+    //
+    // ON RETIRE LA PROMESSE, ON N'INVENTE PAS LA DESTINATION : cet ecran est un
+    // placeholder (« sera remplacee par un widget riche en E2.4b ») et la carte
+    // d'etape CLIQUABLE existe deja ailleurs ([StageCard], qui porte son `onTap`
+    // et garde donc son chevron a bon droit). Brancher une navigation ici serait
+    // ajouter une fonction non demandee.
     return AppCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: EdgeInsets.zero,
@@ -82,7 +97,6 @@ class _StageCard extends StatelessWidget {
           '${stage.distanceKm.toStringAsFixed(1)} km  '
           'D+ ${stage.elevationGainM} m',
         ),
-        trailing: const StepIcon(StepwaysIcons.chevronDroite),
       ),
     );
   }

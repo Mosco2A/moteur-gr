@@ -10,6 +10,8 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../ads/domain/etat_publicite.dart';
+import '../../ads/presentation/badge_etat_publicite.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
@@ -27,9 +29,10 @@ import '../../../core/branding/stepways_icons.dart';
 /// ([availableTrailsProvider] = catalogue statique [TrailCatalog]) — toujours
 /// presents et resolvables, donc navigables hors ligne. Le manifeste distant
 /// Drift ([catalogStateProvider]) reste reserve a la Phase 4 (telechargement
-/// reel). Chaque sentier propose un bouton "Entrer" qui ecrit la selection
-/// ([selectedTrailIdProvider]) puis ouvre le shell sur /map : c'est l'entree
-/// du coeur de l'app (anciennement orpheline).
+/// reel). Chaque sentier propose UNE action, celle qui correspond a son etat
+/// (tache 639, bug 2) : ACHETER quand il n'est pas possede, PREPARER quand il
+/// l'est — « Preparer » ecrit la selection ([selectedTrailIdProvider]) puis
+/// ouvre le cockpit de preparation, c'est l'entree du coeur de l'app.
 class TrailCatalogScreen extends ConsumerWidget {
   const TrailCatalogScreen({super.key});
 
@@ -126,23 +129,28 @@ class TrailCatalogScreen extends ConsumerWidget {
   /// `push` d'ecran de detail — c'est un changement d'accueil contextuel, tout le
   /// contexte du sentier suit la selection (trailConfigProvider en derive).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
-    // UN SENTIER NON ACHETE NE S'OUVRE PLUS DU TOUT (tache 634, DEM-1123).
+    // « PREPARER » PREPARE, MEME SANS ACHAT (tache 639 avenant, DEM-260930-1241).
     //
-    // CE QUI SE PASSAIT, MESURE. Cette methode n'avait AUCUNE garde d'acces :
-    // taper « Entrer » sur un sentier payant qu'on ne possede pas ouvrait son
-    // cockpit de preparation, avec la banniere publicitaire, sans un mot. Pas
-    // de bandeau, pas d'explication — le « mode demo » etait SUBI. Verbatim de
-    // Christophe : « MAIS NON !!! il s ouvre en mode prepa AVEC PUB !!! ».
+    // HISTOIRE DE CETTE GARDE, EN TROIS TEMPS, PARCE QU'ELLE A CHANGE DEUX FOIS.
     //
-    // CE QUI SE PASSE MAINTENANT : un sentier qu'on ne peut pas jouer mene au
-    // PARCOURS DE DEBLOCAGE qui existait deja (la vitrine : etapes ou
-    // paiement). Pour DECOUVRIR l'application, il y a le bouton demo, en tete
-    // de cette liste — un mode qu'on choisit, pas un bridage qu'on subit.
-    final jouable = !(ref.read(isDemoModeProvider(trailId)).value ?? false);
-    if (!jouable) {
-      acheterSentier(context, ref, trailId: trailId);
-      return;
-    }
+    //  1. AVANT LE LOT 634 : aucune garde. Taper « Entrer » sur un sentier payant
+    //     qu'on ne possede pas ouvrait son cockpit avec la banniere, sans un mot
+    //     d'explication — le mode gratuit etait SUBI, pas choisi. Verbatim de
+    //     Christophe : « MAIS NON !!! il s ouvre en mode prepa AVEC PUB !!! ».
+    //  2. LOT 634 : un sentier non achete ne s'ouvrait PLUS DU TOUT, il menait au
+    //     parcours de deblocage. Ca reglait le « subi », mais ca FERMAIT la
+    //     preparation gratuite, qui est un niveau du modele eco.
+    //  3. DECISION DU 30/09 12:41 : la preparation sans achat est ROUVERTE, AVEC
+    //     publicite, et elle est ANNONCEE. « je suis en prepa avec pub » est un
+    //     etat legitime — le troisieme des trois que Christophe veut voir
+    //     distingues. Ce qui reste ferme, c'est la REALISATION : partir en rando
+    //     exige l'achat, et c'est `canRealizeTrail` (lot 594) qui le tient, en
+    //     bas du cockpit, la ou on appuie sur « Demarrer ».
+    //
+    // CE QUI FAIT QUE CE N'EST PLUS « SUBI » : la carte le DIT avant d'ouvrir —
+    // l'icone pub sur le bouton et la marque « Avec publicite » juste au-dessus
+    // ([BadgeEtatPublicite]). Le randonneur sait ce qu'il va trouver, et il a
+    // « Acheter » a cote s'il n'en veut pas.
 
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
     // bascule est resolue avant la navigation ([choisirSentier] dit pourquoi :
@@ -271,9 +279,14 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// La carte portait une seule action — « Entrer » — donc le randonneur qui
 /// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
 /// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
-/// enfin un refus qui lui proposait de payer. Le bouton d'achat est desormais
-/// sur la carte, a cote de « Entrer », et il emprunte le geste unique
-/// [acheterSentier] — le meme que la preparation et que le depart.
+/// enfin un refus qui lui proposait de payer. L'achat est desormais sur la
+/// carte, et il emprunte le geste unique [acheterSentier] — le meme que la
+/// preparation et que le depart.
+///
+/// UNE SEULE ACTION A LA FOIS (tache 639, bug 2). Le lot 614 avait pose l'achat
+/// A COTE de « Entrer », si bien qu'un sentier non possede portait DEUX boutons
+/// pour la MEME destination : « Entrer » y menait aussi, par la garde du lot 634.
+/// La carte ne montre plus que l'action de son etat.
 class _AvailableTrailCard extends ConsumerWidget {
   const _AvailableTrailCard({required this.trail, required this.onEnter});
 
@@ -291,6 +304,14 @@ class _AvailableTrailCard extends ConsumerWidget {
     // un sentier deja acquis ou gratuit serait un bouton qui ment, exactement
     // comme le bouton video sur une banniere qui n'existe pas.
     final achetable = ref.watch(isDemoModeProvider(trail.id)).value ?? false;
+    // L'ICONE PUB SUR « PREPARER » (tache 639 avenant, DEM-260930-1223). Elle
+    // n'apparait que quand une publicite va EFFECTIVEMENT s'afficher : ni
+    // abonne, ni sentier achete, ni recompense video en cours. L'etat est LU
+    // ([etatPubliciteProvider], qui consulte la source unique), jamais recalcule
+    // ici — un second calcul finirait par dire autre chose que la banniere.
+    // Pendant la lecture des droits, on ne promet pas de publicite : `false`.
+    final avecPub =
+        ref.watch(etatPubliciteProvider(trail.id)).value?.pubAffichee ?? false;
     // LE PRIX SE DEMANDE AU SERVICE, il ne se recalcule pas ici — et depuis
     // l'avenant 614 le service le LIT AU CATALOGUE, donc cet ecran ne lui
     // transmet meme plus le nombre d'etapes du sentier. Une seconde formule
@@ -397,53 +418,98 @@ class _AvailableTrailCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.spacingMd),
-          // Action primaire : entrer dans le sentier (cablage nav #88246).
+          const SizedBox(height: AppTheme.spacingSm),
+          // LA MARQUE DE L'ETAT PUBLICITAIRE (tache 639 avenant, DEM-260930-1241).
           //
-          // GRISEE PENDANT LA DEMO (tache 638, bug 14) : une demo porte sur UN
-          // sentier, et basculer de sentier en pleine demo est exactement l'etat
-          // hybride que le bug 19 denonce. La regle est celle de tous les ecrans :
-          // actif et identique, ou grise et visiblement indisponible.
+          // Elle dit LEQUEL des trois etats on vit — abonne, achete, ou
+          // preparation avec publicite — parce que Christophe veut les
+          // distinguer a l'oeil : « Il faut que l on fasse la diff entre = je
+          // suis abonne et je n ai pas de pub en prepa, j ai achete un trek sans
+          // pub, je suis en prepa avec pub ».
+          Align(
+            alignment: Alignment.centerLeft,
+            child: BadgeEtatPublicite(trailId: trail.id),
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          // PREPARER TOUJOURS, ACHETER EN PLUS QUAND IL Y A QUELQUE CHOSE A
+          // ACHETER (tache 639 avenant, DEM-260930-1241).
+          //
+          // CE QUE J'AVAIS FAIT, ET POURQUOI C'ETAIT TROP. Le premier passage de
+          // la tache 639 (commit 11e3b8eb) avait mis UNE SEULE action par etat :
+          // « Acheter » SEUL sur un sentier non possede. C'etait la bonne
+          // correction du defaut d'origine (deux boutons pour une seule
+          // destination, « Entrer » qui n'entrait pas) mais c'etait une de trop :
+          // ca FERMAIT la preparation gratuite. Christophe l'a rouverte le meme
+          // jour a 12:41 : la preparation sans achat reste possible, AVEC
+          // publicite — c'est le niveau gratuit du modele eco, et l'achat
+          // debloque la REALISATION, pas la preparation.
+          //
+          // LA CARTE PORTE DONC :
+          //   * TOUJOURS « Preparer », qui ouvre le cockpit. Quand une publicite
+          //     va s'afficher, le bouton porte l'icone pub qui le PREVIENT
+          //     (DEM-260930-1223, « je parlais de l icone pub sur le bouton
+          //     Preparer si on n est pas abonne ») ;
+          //   * EN PLUS « Acheter », avec son prix, quand le sentier est encore
+          //     a vendre — ni possede, ni gratuit, ni couvert par un abonnement.
+          //
+          // LA REGLE DES PUBS N'EST PAS REDEFINIE ICI, ET C'EST VOULU. Le cockpit
+          // porte deja son emplacement ([BannerAdSlot] dans `hub_screen`), branche
+          // sur la SOURCE UNIQUE [MonetizationService.isNoAdsActive]. L'icone et
+          // la marque LISENT cette meme decision ([etatPubliciteProvider]) : elles
+          // annoncent, elles ne decident pas.
+          //
+          // INTEGRATION 647 — ET GRISEE PENDANT LA DEMO (tache 638, bug 14). Les
+          // deux lots ecrivaient ce bouton : 638 l enveloppe dans [GriseEnDemo]
+          // parce qu une demo porte sur UN sentier et que basculer de sentier en
+          // pleine demo est l etat hybride que le bug 19 denonce ; 639 lui donne
+          // son nouveau nom, sa nouvelle icone et son libelle d accessibilite.
+          // Les deux tiennent ensemble : le grisage dit QUAND le geste est
+          // indisponible, 639 dit LEQUEL c est.
           GriseEnDemo(
             child: SizedBox(
               width: double.infinity,
               child: Semantics(
                 button: true,
-                label: t.catalog.a11y.enterButton(nom: nom),
+                label: t.catalog.a11y.prepareButton(nom: nom),
                 // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
                 // #A5), pleine largeur (SizedBox width infinity conserve).
-                // key/Semantics(button+label) preserves.
                 child: AppButton(
                   key: ValueKey('catalog-enter-${trail.id}'),
-                  icon: StepwaysIcons.flecheAvant,
-                  label: t.catalog.enter,
+                  icon: avecPub
+                      ? StepwaysIcons.panneau
+                      : StepwaysIcons.programme,
+                  label: t.catalog.prepare,
                   onPressed: onEnter,
                 ),
               ),
             ),
           ),
-          // ACHETER DEPUIS LE CATALOGUE (tache 614) — premier des trois points
-          // d'entree. Absent des que le sentier n'est plus a vendre : possede,
-          // gratuit, ou couvert par un abonnement.
           if (achetable) ...[
             const SizedBox(height: AppTheme.spacingSm),
             // GRISE EN DEMO (tache 638, bug 14) : le refus d'achat en demo
             // existait deja cote service (`refuseEnDemo`), mais le bouton avait
             // l'air actif. Il est desormais visiblement indisponible.
+            //
+            // INTEGRATION 647 — l enveloppe vient de 638, le panier et le libelle
+            // d accessibilite viennent de 639. Rien n est abandonne.
             GriseEnDemo(
               child: SizedBox(
                 width: double.infinity,
-                child: AppButton(
-                  key: ValueKey('catalog-buy-${trail.id}'),
-                  variant: AppButtonVariant.outline,
-                  icon: StepwaysIcons.cadenasOuvert,
-                  label: t.monetization.buyCtaWithPrice(
-                    price: monetisation
-                        .eurPriceForTrail(trail.id)
-                        .toStringAsFixed(2),
+                child: Semantics(
+                  button: true,
+                  label: t.catalog.a11y.buyButton(nom: nom),
+                  child: AppButton(
+                    key: ValueKey('catalog-buy-${trail.id}'),
+                    variant: AppButtonVariant.outline,
+                    icon: StepwaysIcons.panier,
+                    label: t.monetization.buyCtaWithPrice(
+                      price: monetisation
+                          .eurPriceForTrail(trail.id)
+                          .toStringAsFixed(2),
+                    ),
+                    onPressed: () =>
+                        acheterSentier(context, ref, trailId: trail.id),
                   ),
-                  onPressed: () =>
-                      acheterSentier(context, ref, trailId: trail.id),
                 ),
               ),
             ),

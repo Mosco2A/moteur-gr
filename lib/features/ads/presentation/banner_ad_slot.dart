@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../providers/ads_providers.dart';
-import 'rewarded_no_ads_button.dart';
+import 'retirer_les_pubs_button.dart';
 
 /// L'EMPLACEMENT DE LA BANNIERE — la chose qui manquait (tache 595, B1).
 ///
@@ -69,6 +69,24 @@ class BannerAdSlot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final banniere = ref.watch(bannerAdProvider(trailId)).value;
+
+    // ZERO HAUTEUR QUAND IL N'Y A PAS DE BANNIERE — PROPRIETE CONSERVEE.
+    //
+    // J'AI ESSAYE DE POSER LA MARQUE D'ETAT ICI, ET C'ETAIT UNE FAUTE. La tache
+    // 639 (avenant, DEM-260930-1241) demande que les trois etats publicitaires
+    // soient visibles « sur la carte du sentier et en preparation », et deux de
+    // ces etats sont justement ceux ou aucune banniere ne s'affiche. Y mettre la
+    // marque cassait la propriete 2 ci-dessus, et un test l'a dit tout de suite
+    // (`pub_v1_595_test.dart`, « une regie qui ne rend rien ne casse RIEN ») :
+    // une regie qui ne rend rien laissait desormais un bandeau a l'ecran.
+    //
+    // ET LE TEST AVAIT RAISON SUR LE FOND, PAS SEULEMENT SUR LA MESURE : quand
+    // la regie ne rend rien, la publicite est AUTORISEE mais ABSENTE. Une marque
+    // « Avec publicite » y aurait annonce une publicite qui n'existe pas.
+    //
+    // LA MARQUE EST DONC POSEE PAR L'ECRAN, au-dessus de cet emplacement
+    // ([BandeauEtatPublicite] dans le cockpit) : elle parle de l'ETAT DES DROITS,
+    // qui ne depend pas de ce que la regie a bien voulu rendre.
     if (banniere == null) return const SizedBox.shrink();
 
     // La hauteur est celle que la regie a reellement rendue : on ne devine
@@ -84,12 +102,19 @@ class BannerAdSlot extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(
+          // LA SORTIE, ET LA MARQUE QUI DIT OU L'ON EST (tache 639 avenant).
+          //
+          // Le bouton ne propose plus SEULEMENT la video : il ouvre les DEUX
+          // choix de Christophe (DEM-260930-1224, « qui amene a 2 choix : 1 s
+          // abonner, 2 voir une video pour etre sans pub 24h »). La video reste
+          // exactement ce qu'elle etait — ce widget-la n'a pas change — elle
+          // n'est plus la seule porte.
+          Padding(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.spacingBase,
               vertical: AppTheme.spacingXs,
             ),
-            child: RewardedNoAdsButton(compact: true),
+            child: RetirerLesPubsButton(trailId: trailId, compact: true),
           ),
           SizedBox(
             height: banniere.height,

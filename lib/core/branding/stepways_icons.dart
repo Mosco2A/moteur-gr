@@ -184,6 +184,9 @@ abstract final class StepwaysIcons {
 /// ambiant si aucune n'est donnee, donc elle suit le theme, l'etat d'un bouton,
 /// la couleur d'un onglet selectionne. Les parametres portent les MEMES noms que
 /// ceux d'`Icon` (`size`, `color`) : une substitution ne deplace rien d'autre.
+///
+/// POUR UNE TUILE, UTILISER [StepIcon.tuile] : c'est la porte d'entree de la
+/// regle mono / duo decrite sur [iconeBicolorePour].
 class StepIcon extends StatelessWidget {
   const StepIcon(
     this.asset, {
@@ -191,9 +194,27 @@ class StepIcon extends StatelessWidget {
     this.size,
     this.color,
     this.semanticLabel,
-  });
+  }) : sujet = false;
+
+  /// LE DESSIN EST LE SUJET DE CE QU'ON REGARDE (tache 639, bug 3).
+  ///
+  /// A employer pour l'icone d'une tuile principale, d'un en-tete de rubrique,
+  /// d'une carte d'accueil : le dessin sort alors en BICOLORE des qu'il a un
+  /// trace duo, exactement comme s'il avait ete appele par [IconeStepways]. Une
+  /// couleur imposee retombe sur le monochrome, et un dessin sans trace duo
+  /// (les icones du terrain) reste monochrome : la regle decide, pas l'ecran.
+  const StepIcon.tuile(
+    this.asset, {
+    super.key,
+    this.size,
+    this.color,
+    this.semanticLabel,
+  }) : sujet = true;
 
   final String asset;
+
+  /// Vrai quand cet appel vient d'une TUILE (cf. [StepIcon.tuile]).
+  final bool sujet;
 
   /// Laissee a null, la taille vient de l'[IconTheme] ambiant — comme pour une
   /// `Icon`. C'est ce qui fait qu'un `IconButton(iconSize: 18)` obtient bien
@@ -207,6 +228,13 @@ class StepIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = IconTheme.of(context);
     final t = size ?? theme.size ?? 24;
+    // LA REGLE, APPLIQUEE ICI ET NULLE PART AILLEURS (tache 639).
+    if (sujet && color == null) {
+      final dessin = iconeBicolorePour(asset);
+      if (dessin != null && dessin.duoParDefaut) {
+        return IconeStepways(dessin, taille: t, semanticLabel: semanticLabel);
+      }
+    }
     final c = color ?? theme.color ?? AppBranding.vertSentier;
     return SvgPicture.asset(
       asset,
@@ -217,6 +245,63 @@ class StepIcon extends StatelessWidget {
     );
   }
 }
+
+/// LA REGLE MONO / DUO, ECRITE UNE FOIS (tache 639, bug 3 du test du 30/09).
+///
+/// CE QUE LE LOT 632 AVAIT REELLEMENT POSE, MESURE AVANT DE CHANGER QUOI QUE CE
+/// SOIT. Les trois familles bicolores etaient bien branchees, mais le duo ne
+/// s'obtenait qu'en NOMMANT la rubrique a l'appel
+/// (`rubrique: RubriqueStepways.carte`). Un seul ecran le faisait — le cockpit,
+/// 17 fois. Les 14 autres tuiles de l'application, « Mes treks » et
+/// « Compte-etapes » compris, passaient le chemin A PLAT (`icon:
+/// StepwaysIcons.catalogueSentiers`), et retombaient donc sur le monochrome
+/// teinte. Rien n'etait casse : la regle dependait de la FORME de l'appel, donc
+/// de la memoire de celui qui ecrivait l'ecran. Verbatim de Christophe (30/09
+/// 10:09) : « les icones de Mes treks ne sont pas bicolores / Compte etapes et
+/// pret a partir non plus ».
+///
+/// LA REGLE NE DEPEND PLUS DE LA FORME DE L'APPEL, MAIS DU ROLE DU DESSIN :
+///
+///   * SUJET — icone de rubrique, tuile principale, en-tete de section, carte
+///     d'acces : BICOLORE. C'est le dessin qu'on regarde, il porte l'identite.
+///     Voie d'appel : [IconeStepways], [StepIcon.tuile], ou `rubrique:`.
+///   * SERVICE — icone d'action en ligne, chevron, coche, puce, icone dont la
+///     COULEUR porte un etat (verrou, alerte, onglet actif) : MONOCHROME
+///     teinte. Voie d'appel : [StepIcon] tout court.
+///
+/// DEUX GARDE-FOUS PORTES PAR LA REGLE ELLE-MEME, pas par les ecrans :
+///   1. une couleur imposee retombe TOUJOURS sur le monochrome — un trace
+///      bicolore fige ignorerait la couleur et rendrait l'etat illisible ;
+///   2. un dessin qui n'a PAS de trace duo (les icones du terrain : meteo de
+///      detail, points d'interet, navigation, materiel) reste monochrome, quel
+///      que soit le role. La famille repond, l'ecran ne decide pas.
+///
+/// Les 38 icones de mecanique (MAT) restent monochromes meme en tuile, parce que
+/// [AppBranding.mecaniqueEnDuo] est faux : un chevron orange sur chaque ligne
+/// crierait partout. Un seul mot a changer pour que ca bascule.
+IconeBicolore? iconeBicolorePour(String asset) =>
+    _parNomDeFichier[_nomDeFichier(asset)];
+
+/// Le nom nu d'un fichier d'icone : sans dossier, sans extension. C'est la SEULE
+/// chose que les quatre traces d'un meme dessin ont en commun — `carte.svg`,
+/// `rubriques-duo/carte.svg`, `rubriques-duo-mono/carte.svg` et
+/// `rubriques-duo-clair/carte.svg` donnent tous « carte ». La resolution par nom
+/// evite d'ecrire quatre tables qui divergeraient.
+String _nomDeFichier(String asset) {
+  final barre = asset.lastIndexOf('/');
+  final nom = barre < 0 ? asset : asset.substring(barre + 1);
+  return nom.endsWith('.svg') ? nom.substring(0, nom.length - 4) : nom;
+}
+
+/// Table nom de fichier -> famille. Les rubriques sont posees EN DERNIER : si un
+/// jour un nom existait dans deux familles, c'est la rubrique qui gagnerait (un
+/// dessin de rubrique est toujours un sujet). Au 30/09 les 101 noms des trois
+/// familles sont distincts — un test le verrouille.
+final Map<String, IconeBicolore> _parNomDeFichier = <String, IconeBicolore>{
+  for (final i in MatStepways.values) i.fichier: i,
+  for (final i in IcoStepways.values) i.fichier: i,
+  for (final i in RubriqueStepways.values) i.fichier: i,
+};
 
 /// Un dessin qui existe en TROIS traces : bicolore, bicolore clair, monochrome.
 ///
@@ -292,88 +377,130 @@ enum RubriqueStepways implements IconeBicolore {
 enum IcoStepways implements IconeBicolore {
   /// ICO-012 Âge
   age('age'),
+
   /// ICO-009 Aide
   aide('aide'),
+
   /// ICO-022 Chiens / animaux
   animaux('animaux'),
+
   /// ICO-010 Avion
   avion('avion'),
+
   /// ICO-010 Bateau
   bateau('bateau'),
+
   /// ICO-005 Confidentialité
   bouclier('bouclier'),
+
   /// ICO-007 Boutique
   boutique('boutique'),
+
   /// ICO-001 Cadenas ouvert
   cadenasOuvert('cadenas-ouvert'),
+
   /// ICO-001 Cadenas fermé
   cadenas('cadenas'),
+
   /// ICO-017 Conditions (CGU)
   cgu('cgu'),
+
   /// ICO-015 Clé / code
   cle('cle'),
+
   /// ICO-027 Connexion
   connexion('connexion'),
+
   /// ICO-018 Courrier
   courrier('courrier'),
+
   /// ICO-027 Déconnexion
   deconnexion('deconnexion'),
+
   /// ICO-026 Tout effacer
   effacerTelephone('effacer-telephone'),
+
   /// ICO-018 Envoyer
   envoyer('envoyer'),
+
   /// ICO-014 GPS perdu
   gpsPerdu('gps-perdu'),
+
   /// ICO-019 Historique
   historique('historique'),
+
   /// ICO-024 Hygiène
   hygiene('hygiene'),
+
   /// ICO-008 Langue
   langue('langue'),
+
   /// ICO-025 Lien rompu
   lienRompu('lien-rompu'),
+
   /// ICO-025 Lien
   lien('lien'),
+
   /// ICO-017 Loi
   loi('loi'),
+
   /// ICO-004 Mise à jour
   miseAJour('mise-a-jour'),
+
   /// ICO-011 Notifications
   notifications('notifications'),
+
   /// ICO-002 Panier
   panier('panier'),
+
   /// ICO-023 Document PDF
   pdf('pdf'),
+
   /// ICO-012 Poids
   poids('poids'),
+
   /// ICO-007 Portefeuille
   portefeuille('portefeuille'),
+
   /// ICO-007 Prix
   prix('prix'),
+
   /// ICO-021 Questionnaire
   questionnaire('questionnaire'),
+
   /// ICO-024 Réchaud
   rechaud('rechaud'),
+
   /// ICO-020 En attente
   sablier('sablier'),
+
   /// ICO-012 Sexe
   sexe('sexe'),
+
   /// ICO-006 Statistiques
   statistiques('statistiques'),
+
   /// ICO-013 Suiveurs
   suiveurs('suiveurs'),
+
   /// ICO-004 Synchronisé
   synchronise('synchronise'),
+
   /// ICO-012 Taille
   taille('taille'),
+
   /// ICO-010 Voiture / taxi
   taxi('taxi'),
+
   /// ICO-004 Téléchargement
   telecharger('telecharger'),
+
   /// ICO-003 Appel
   telephone('telephone'),
+
   /// ICO-010 Train
   train('train'),
+
   /// ICO-016 Vidéo
   video('video');
 
@@ -404,78 +531,115 @@ enum IcoStepways implements IconeBicolore {
 enum MatStepways implements IconeBicolore {
   /// MAT-006 Annuler (défaire)
   annuler('annuler'),
+
   /// MAT-003 Chevron droite
   chevronDroite('chevron-droite'),
+
   /// MAT-003 Chevron gauche
   chevronGauche('chevron-gauche'),
+
   /// MAT-002 Coche contour
   cocheCercle('coche-cercle'),
+
   /// MAT-002 Coche pleine
   cochePleine('coche-pleine'),
+
   /// MAT-002 Coche
   coche('coche'),
+
   /// MAT-016 Compresser
   compresser('compresser'),
+
   /// MAT-014 Copier
   copier('copier'),
+
   /// MAT-008 Corbeille
   corbeille('corbeille'),
+
   /// MAT-010 Crayon
   crayon('crayon'),
+
   /// MAT-009 Croix / fermer
   croix('croix'),
+
   /// MAT-011 Déplier
   deplier('deplier'),
+
   /// MAT-023 Échelle
   echelle('echelle'),
+
   /// MAT-018 Expérimental
   eprouvette('eprouvette'),
+
   /// MAT-004 Flèche arrière
   flecheArriere('fleche-arriere'),
+
   /// MAT-004 Flèche avant
   flecheAvant('fleche-avant'),
+
   /// MAT-004 Flèche bas
   flecheBas('fleche-bas'),
+
   /// MAT-004 Flèche haut
   flecheHaut('fleche-haut'),
+
   /// MAT-019 Geste / toucher
   geste('geste'),
+
   /// MAT-017 Image manquante
   imageManquante('image-manquante'),
+
   /// MAT-001 Information
   info('info'),
+
   /// MAT-009 Bloqué / interdit
   interdit('interdit'),
+
   /// MAT-015 Inverser
   inverser('inverser'),
+
   /// MAT-013 Menu trois points
   menu('menu'),
+
   /// MAT-007 Moins
   moins('moins'),
+
   /// MAT-020 Masquer
   oeilBarre('oeil-barre'),
+
   /// MAT-020 Afficher
   oeil('oeil'),
+
   /// MAT-021 Thème / palette
   palette('palette'),
+
   /// MAT-005 Pastille d'état
   pastille('pastille'),
+
   /// MAT-007 Plus
   plus('plus'),
+
   /// MAT-012 Poignée
   poignee('poignee'),
+
   /// MAT-019 Pouce / approuver
   pouce('pouce'),
+
   /// MAT-005 Radio choisi
   radioCoche('radio-coche'),
+
   /// MAT-005 Radio vide
   radio('radio'),
+
   /// MAT-006 Rafraîchir
   rafraichir('rafraichir'),
+
   /// MAT-009 Refuser
   refuser('refuser'),
+
   /// MAT-011 Replier
   replier('replier'),
+
   /// MAT-022 Ville
   ville('ville');
 

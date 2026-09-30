@@ -476,11 +476,21 @@ void main() {
 
       expect(find.byKey(const ValueKey('banniere-simulee')), findsOneWidget,
           reason: 'la publicite est bien affichee dans ce monde');
-      expect(find.byKey(const Key('rewarded-no-ads-button')), findsOneWidget,
+      // TACHE 639 (avenant, DEM-260930-1224) : la banniere porte desormais le
+      // CHOIX a deux entrees (s'abonner, ou voir une video) et non plus la video
+      // seule. Ce que ce test garde est intact : la banniere porte SA SORTIE, et
+      // il y a un endroit ou appuyer.
+      expect(find.byKey(const Key('retirer-les-pubs-button')), findsOneWidget,
           reason: 'le moteur de la recompense existait en ENTIER et il n y '
               'avait nulle part ou appuyer : zero bouton dans banner_ad_slot');
     });
 
+    // TACHE 639 (avenant) — CES QUATRE ABSENCES PORTENT DESORMAIS SUR LA CLE QUI
+    // EXISTE. La banniere pose « retirer-les-pubs-button » (le choix a deux
+    // entrees) et non plus « rewarded-no-ads-button » (la video seule) : laisser
+    // l'ancienne cle aurait fait passer les quatre tests en ne verifiant plus
+    // RIEN — une cle absente est introuvable, donc `findsNothing` est toujours
+    // vrai. C'est exactement le defaut de garde morte que le lot 601 a paye.
     testWidgets('AUCUN bouton quand le sans-pub est DEJA actif (recompense en '
         'cours)', (tester) async {
       final monetisation = await service();
@@ -488,7 +498,7 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('rewarded-no-ads-button')), findsNothing,
+      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
           reason: 'un bouton qui propose ce qu on a deja est un bouton qui '
               'ment — et il ne peut pas apparaitre, puisqu il vit sur la '
               'banniere qui n existe alors pas');
@@ -503,7 +513,7 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('rewarded-no-ads-button')), findsNothing);
+      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing);
     });
 
     testWidgets('AUCUN bouton pour un ABONNE actif', (tester) async {
@@ -512,7 +522,7 @@ void main() {
       await tester.pumpWidget(monterBanniere(monetisation, _sentierPayant.id));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('rewarded-no-ads-button')), findsNothing,
+      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
           reason: 'l abonne est sans pub PARTOUT : rien a lui proposer');
     });
 
@@ -524,7 +534,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('rewarded-no-ads-button')), findsNothing,
+      expect(find.byKey(const Key('retirer-les-pubs-button')), findsNothing,
           reason: 'sans consentement ni SDK, la video n existe pas : un bouton '
               'qui la promet est un bouton mort');
     });
@@ -540,11 +550,23 @@ void main() {
       expect(vitrine, isNot(contains('class _RewardedNoAdsButton')),
           reason: 'le bouton prive doit avoir quitte la vitrine, pas y rester '
               'en double');
+      // TACHE 639 (avenant, DEM-260930-1224) — LA BANNIERE POSE LE CHOIX, PAS LA
+      // VIDEO SEULE. La regle que ce test garde tient toujours : UN SEUL bouton
+      // video dans l'application, jamais une copie. La feuille de choix
+      // declenche la MEME mecanique, et la vitrine pose toujours le bouton
+      // partage.
       final emplacement =
           File('lib/features/ads/presentation/banner_ad_slot.dart')
               .readAsStringSync();
-      expect(emplacement, contains('RewardedNoAdsButton('),
-          reason: 'la banniere doit poser LE MEME bouton');
+      expect(emplacement, contains('RetirerLesPubsButton('),
+          reason: 'la banniere doit poser le CHOIX (abonnement ou video)');
+      final choix = File(
+        'lib/features/ads/presentation/retirer_les_pubs_button.dart',
+      ).readAsStringSync();
+      expect(choix, contains('watchRewardedForNoAdsProvider'),
+          reason: 'la video du choix doit passer par LA MEME mecanique');
+      expect(choix, isNot(contains('grantRewardNoAds(')),
+          reason: 'aucune regle de recompense APPELEE depuis l interface');
     });
   });
 

@@ -32,21 +32,32 @@ void main() {
   // R2 — LES UNITES
   // -------------------------------------------------------------------------
   group('R2 — aucun nombre de jours ne s affiche sans son unite', () {
-    test('le conseil de duree porte SES TROIS NOMBRES, dans les 5 langues', () {
+    // TACHE 639 (DEM-260930-1238) — LE TOTAL A QUITTE CE CONSEIL, ET C EST LA
+    // DECISION DE CHRISTOPHE. Ce test exigeait TROIS nombres, dont le TOTAL
+    // (marche + repos), « c est l unite du curseur ». Verbatim du 30/09 12:37 :
+    // « les jours de repos, ca ne presage que de l enchainement pas de la
+    // capacite a faire les etapes suivantes. On peut mettre en conseil de prendre
+    // n jours de repos c est tout. Si c est 7 jours c est 7 jours ». Le conseil
+    // vise donc les jours de MARCHE ; le repos se lit a cote, comme un conseil.
+    // Ce qui est verrouille n a pas change de nature : aucun nombre sans son
+    // unite, et le repos toujours nomme.
+    test('le conseil de duree porte SES DEUX NOMBRES, dans les 5 langues', () {
       for (final locale in AppLocale.values) {
         final a = locale.buildSync().feasibility.formula.advice;
         for (final texte in [
-          a.optimalDays(days: 11, walk: 9, rest: 2, current: 7),
-          a.optimalDaysNoChoice(days: 11, walk: 9, rest: 2, current: 7),
+          a.optimalDays(walk: 9, rest: 2, current: 7),
+          a.optimalDaysNoChoice(walk: 9, rest: 2),
         ]) {
-          expect(texte, contains('11'),
-              reason: '${locale.languageCode} : le TOTAL manque — c est '
-                  'l unite du curseur');
           expect(texte, contains('9'),
               reason: '${locale.languageCode} : les jours de MARCHE manquent');
           expect(texte, contains('2'),
               reason: '${locale.languageCode} : les jours de REPOS manquent');
         }
+        // ET LE TOTAL N EST PLUS LA : un sentier de 7 etapes ne s annonce pas
+        // « en 9 jours ».
+        expect(a.optimalDaysNoChoice(walk: 7, rest: 2), isNot(contains('9')),
+            reason: '${locale.languageCode} : le total est revenu dans le '
+                'conseil');
       }
     });
 
@@ -65,8 +76,7 @@ void main() {
       for (final entree in interdits.entries) {
         final a = entree.key.buildSync().feasibility.formula.advice;
         final sansChoix =
-            a.optimalDaysNoChoice(days: 11, walk: 9, rest: 2, current: 7)
-                .toLowerCase();
+            a.optimalDaysNoChoice(walk: 9, rest: 2).toLowerCase();
         for (final mot in entree.value) {
           expect(sansChoix, isNot(contains(mot)),
               reason: '${entree.key.languageCode} : « $mot » suppose un choix '
@@ -74,8 +84,7 @@ void main() {
         }
         // Et la variante AVEC choix, elle, le dit : les deux formulations
         // doivent reellement differer, sinon le drapeau ne sert a rien.
-        final avecChoix =
-            a.optimalDays(days: 11, walk: 9, rest: 2, current: 7);
+        final avecChoix = a.optimalDays(walk: 9, rest: 2, current: 7);
         expect(avecChoix, isNot(sansChoix));
       }
     });
@@ -138,10 +147,16 @@ void main() {
       }
     });
 
-    test('la ligne « decoupage retenu » ne dit plus « jours de marche »', () {
-      // C EST UN TOTAL, ET C EN ETAIT DEJA UN. `retainedDurationProvider` porte
-      // la valeur du CURSEUR, marche et repos compris : le libelle annoncait
-      // donc une unite qui n etait pas la sienne.
+    test('chaque libelle de duree annonce SON unite, et la bonne', () {
+      // LA REGLE NE CHANGE PAS : aucun nombre de jours sans son unite. CE QUI
+      // CHANGE, C EST L UNITE DE DEUX DE CES LIBELLES (tache 639,
+      // DEM-260930-1238, « Si c est 7 jours c est 7 jours ») :
+      //   * `retainedPlan` / `retainedPlanNone` portent la valeur du CURSEUR,
+      //     marche et repos compris : ce sont bien des TOTAUX, et ils le disent ;
+      //   * `generateProgram` / `generateProgramDone` portent desormais la duree
+      //     du PLAN — les jours de MARCHE — parce que c est ce que le bouton
+      //     applique. Ce test exigeait l inverse, et c est justement ce qui
+      //     faisait annoncer « 9 jours au total » pour un sentier de sept etapes.
       const marche = <AppLocale, List<String>>{
         AppLocale.fr: ['jours de marche'],
         AppLocale.en: ['walking days'],
@@ -158,11 +173,10 @@ void main() {
       };
       for (final locale in AppLocale.values) {
         final f = locale.buildSync().feasibility.formula;
+        // LES TOTAUX : ils le disent, et ils ne parlent pas de marche.
         for (final texte in [
           f.retainedPlan(days: 11),
           f.retainedPlanNone(days: 9),
-          f.generateProgram(days: 11),
-          f.generateProgramDone(days: 11),
         ]) {
           final bas = texte.toLowerCase();
           for (final mot in marche[locale]!) {
@@ -173,6 +187,22 @@ void main() {
           expect(bas, contains(total[locale]!),
               reason: '${locale.languageCode} : « $texte » ne dit pas que le '
                   'nombre est un total');
+        }
+        // LA DUREE DU PLAN : elle nomme la MARCHE, et elle ne dit plus « total ».
+        for (final texte in [
+          f.generateProgram(days: 7),
+          f.generateProgramDone(days: 7),
+        ]) {
+          final bas = texte.toLowerCase();
+          expect(
+            marche[locale]!.any(bas.contains),
+            isTrue,
+            reason: '${locale.languageCode} : « $texte » ne dit pas de quels '
+                'jours il parle',
+          );
+          expect(bas, isNot(contains(total[locale]!)),
+              reason: '${locale.languageCode} : « $texte » compte encore le '
+                  'repos dans la duree du plan');
         }
       }
     });

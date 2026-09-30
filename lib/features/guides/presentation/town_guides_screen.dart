@@ -141,6 +141,8 @@ class _TownGuideTile extends StatelessWidget {
       button: true,
       label: t.guides.a11y.guideCard(lieu: guide.nomLieu),
       child: AppCard(
+        // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+        interactif: true,
         key: ValueKey('town-guide-card-${guide.id}'),
         padding: EdgeInsets.zero,
         margin: const EdgeInsets.symmetric(
@@ -148,7 +150,10 @@ class _TownGuideTile extends StatelessWidget {
           vertical: AppTheme.spacingXs,
         ),
         child: ListTile(
-          leading: const StepIcon(StepwaysIcons.ville, color: AppTheme.vertFacile),
+          leading: const StepIcon(
+            StepwaysIcons.ville,
+            color: AppTheme.vertFacile,
+          ),
           title: Text(
             guide.nomLieu,
             style: theme.textTheme.titleMedium?.copyWith(

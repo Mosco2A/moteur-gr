@@ -226,6 +226,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // SW-SKIN-L3e : Card -> AppCard. padding zero car le ListTile porte
       // deja son padding interne (iso-rendu de la tuile cliquable).
       return AppCard(
+        // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+        interactif: true,
         padding: EdgeInsets.zero,
         child: ListTile(
           key: const ValueKey('profil-connexion-google'),
@@ -255,6 +257,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     // Connecte : proposer la deconnexion.
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       padding: EdgeInsets.zero,
       child: ListTile(
         leading: const StepIcon(StepwaysIcons.deconnexion),
@@ -410,6 +414,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   ) {
     // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       padding: EdgeInsets.zero,
       borderColor: AppTheme.rougeUrgence.withValues(alpha: 0.4),
       child: ListTile(

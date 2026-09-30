@@ -21,15 +21,13 @@ class HubSection extends StatelessWidget {
     this.iconColor,
     this.showHeader = true,
   }) : assert(
-         !showHeader ||
-             (icon == null) != (rubrique == null),
+         !showHeader || (icon == null) != (rubrique == null),
          'un en-tete de section porte UNE icone : une rubrique (bicolore) ou '
          'une icone Stepways (monochrome)',
        );
 
   /// L'une des 20 rubriques de l'application (tache 632). Voie normale.
   final RubriqueStepways? rubrique;
-
 
   /// Titre de la section (libelle localise).
   final String title;
@@ -40,8 +38,12 @@ class HubSection extends StatelessWidget {
   /// Randonner / Après », inutile de le repeter juste en dessous (fin doublon).
   final bool showHeader;
 
-  /// Chemin d'une icone Stepways MONOCHROME ([StepwaysIcons]) — pour les
-  /// sections qui ne sont pas l'une des 20 rubriques. Exclusif avec [rubrique].
+  /// Chemin d'une icone Stepways ([StepwaysIcons]) — pour les sections qui ne
+  /// sont pas l'une des 20 rubriques. Exclusif avec [rubrique].
+  ///
+  /// TACHE 639 : ce chemin N'IMPOSE PLUS le monochrome (voir
+  /// [iconeBicolorePour]). Un en-tete de section est un sujet : si le dessin a un
+  /// trace bicolore, il sort en bicolore.
   final String? icon;
 
   /// Couleur categorielle de l'icone d'en-tete (retour Chris 09/09, reco
@@ -53,13 +55,21 @@ class HubSection extends StatelessWidget {
   /// Cartes d'acces rapide de la section.
   final List<QuickAccessCard> cards;
 
-  /// Le dessin de l'en-tete (tache 632). La rubrique reste bicolore tant
-  /// qu'aucune couleur categorielle n'est imposee ; une couleur imposee bascule
-  /// sur le trace monochrome, sinon elle serait simplement ignoree.
+  /// Le dessin de l'en-tete (tache 632, regle unifiee par la tache 639).
+  ///
+  /// UN EN-TETE DE SECTION EST UN SUJET : il sort en bicolore des que son dessin
+  /// a un trace duo, que l'appelant ait nomme la [rubrique] ou passe le chemin a
+  /// plat dans [icon]. C'etait la faute mesuree du bug 3 : seul le cockpit
+  /// nommait la rubrique, donc seul le cockpit etait bicolore. La regle vit
+  /// maintenant dans [iconeBicolorePour] ; ici on ne fait que la consulter.
+  ///
+  /// Une couleur categorielle imposee bascule sur le trace monochrome, sinon
+  /// elle serait simplement ignoree.
   Widget _icone(Color couleur) {
-    if (rubrique case final r?) {
+    final dessin = rubrique ?? (icon != null ? iconeBicolorePour(icon!) : null);
+    if (dessin != null) {
       return IconeStepways(
-        r,
+        dessin,
         taille: 22,
         couleur: iconColor != null ? couleur : null,
       );

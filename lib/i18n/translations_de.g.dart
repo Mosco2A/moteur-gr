@@ -472,8 +472,8 @@ class _Translations$checklist$de extends Translations$checklist$fr {
 	@override String seasonalWeight({required Object g}) => '${g} g';
 	@override String get demoBridledTitle => 'Testversion';
 	@override String get demoBridledBody => 'Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.';
-	@override String get demoLockedCategory => 'Wanderung freischalten für diese Kategorie';
-	@override String get demoUnlockCta => 'Wanderung freischalten';
+	@override String get demoLockedCategory => 'Wanderung kaufen für diese Kategorie';
+	@override String get demoUnlockCta => 'Wanderung kaufen';
 }
 
 // Path: journal
@@ -522,7 +522,7 @@ class _Translations$journal$de extends Translations$journal$fr {
 	@override String get shareError => 'Teilen nicht möglich';
 	@override String get lockedTitle => 'Das Tagebuch gehört zum Paket';
 	@override String get lockedBody => 'Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.';
-	@override String get lockedUnlock => 'Freischalten';
+	@override String get lockedUnlock => 'Kaufen';
 }
 
 // Path: weather
@@ -837,7 +837,7 @@ class _Translations$catalog$de extends Translations$catalog$fr {
 
 	// Translations
 	@override String get title => 'Wegekatalog';
-	@override String get enter => 'Öffnen';
+	@override String get prepare => 'Vorbereiten';
 	@override String get mustDownload => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.';
 	@override String get emptyTitle => 'Kein Weg verfügbar';
 	@override String get emptySubtitle => 'Im Katalog wird noch kein Weg angeboten.';
@@ -968,8 +968,8 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get featureDiploma => 'Trek-Abschlussdiplom';
 	@override String get featureFollowers => '2 kostenlose Follower';
 	@override String get featureNoAds => 'Keine Werbung';
-	@override String get buyCta => 'Diesen Trek freischalten';
-	@override String buyCtaWithPrice({required Object price}) => 'Diesen Trek freischalten — ${price} €';
+	@override String get buyCta => 'Kaufen';
+	@override String buyCtaWithPrice({required Object price}) => 'Kaufen — ${price} €';
 	@override String get rewardedCta => 'Ein Tag ohne Werbung — Video ansehen';
 	@override String get rewardedEarned => 'Danke! 24 h werbefrei.';
 	@override String get rewardedUnavailable => 'Derzeit kein Video verfügbar.';
@@ -1010,6 +1010,19 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get cancelCta => 'Abo beenden';
 	@override String get cancelExplains => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.';
 	@override String get cancelStoreUnavailable => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.';
+	@override String get adsBadgePub => 'Mit Werbung';
+	@override String get adsBadgeAbonne => 'Abonniert — werbefrei';
+	@override String get adsBadgeAchete => 'Gekauft — werbefrei';
+	@override String adsBadgeVideo({required Object reste}) => 'Werbefrei — ${reste}';
+	@override String get adsA11yPub => 'Bei der Vorbereitung wird Werbung angezeigt';
+	@override String adsResteHeures({required Object heures}) => 'noch ${heures} Std.';
+	@override String adsResteMinutes({required Object minutes}) => 'noch ${minutes} Min.';
+	@override String get removeAdsCta => 'Werbung entfernen';
+	@override String get removeAdsTitle => 'Werbung entfernen';
+	@override String get removeAdsSubscribe => 'Abonnieren';
+	@override String get removeAdsSubscribeBody => 'Überall werbefrei, solange das Abo aktiv ist.';
+	@override String get removeAdsWatch => 'Video ansehen';
+	@override String get removeAdsWatchBody => 'Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung.';
 }
 
 // Path: signalement
@@ -1068,7 +1081,7 @@ class _Translations$training$de extends Translations$training$fr {
 	@override String get paywallTitle => 'Personalisierter Trainingsplan';
 	@override String paywallIncludedIn({required Object trail}) => 'Im Paket « ${trail} » enthalten.';
 	@override String get paywallSubtitle => 'Plan angepasst an Ihr Profil und Ihr Abreisedatum.';
-	@override String get unlock => 'Freischalten';
+	@override String get unlock => 'Kaufen';
 	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan für die ${km} km und rund ${elevation} m Höhenmeter.';
 	@override String countdown({required Object days}) => 'Abreise in ${days} Tagen';
 	@override String planOverWeeks({required Object n}) => 'Plan über ${n} Wochen';
@@ -1484,7 +1497,7 @@ class _Translations$calendar$de extends Translations$calendar$fr {
 	@override String get adjustStages => 'ETAPPEN ANPASSEN';
 	@override String get stageSingular => 'Etappe {n}';
 	@override String get stagesPlural => 'Etappen {list}';
-	@override String get splitStages => 'Etappen trennen';
+	@override String get splitStages => 'Tag auflösen';
 	@override String get mergeWithNext => 'Mit dem nächsten Tag zusammenlegen';
 	@override late final _Translations$calendar$weekdays$de weekdays = _Translations$calendar$weekdays$de._(_root);
 	@override late final _Translations$calendar$legend$de legend = _Translations$calendar$legend$de._(_root);
@@ -2525,9 +2538,9 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get answerTitle => 'Schaffen Sie das?';
 	@override String answerGreen({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.';
 	@override String answerOrange({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.';
-	@override String get answerRed => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.';
-	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
-	@override String answerNoRest({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.';
+	@override String get answerRed => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — eine Empfehlung, sie ändert das Urteil nicht.';
+	@override String answerNoRest({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.';
 	@override String get explainToggle => 'Wie dieses Ergebnis berechnet wird';
 	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})';
@@ -2540,15 +2553,15 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Begrenzender Faktor: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Empfohlenes Training: ${weeks} Wochen vor dem Start';
 	@override String get adviceTitle => 'Tipps für deinen Plan';
-	@override String generateProgram({required Object days}) => 'Meinen Plan erstellen (${days} Tage insgesamt)';
-	@override String generateProgramDone({required Object days}) => 'Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.';
+	@override String generateProgram({required Object days}) => 'Meinen Plan erstellen (${days} Wandertage)';
+	@override String generateProgramDone({required Object days}) => 'Plan über ${days} Wandertage erstellt — passe ihn nach Wunsch an.';
 	@override String get noStages => 'Noch kein Tag zu bewerten.';
 	@override late final _Translations$feasibility$formula$levels$de levels = _Translations$feasibility$formula$levels$de._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$de verdicts = _Translations$feasibility$formula$verdicts$de._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$de limitingFactors = _Translations$feasibility$formula$limitingFactors$de._(_root);
 	@override late final _Translations$feasibility$formula$advice$de advice = _Translations$feasibility$formula$advice$de._(_root);
-	@override String retainedPlan({required Object days}) => 'Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.';
-	@override String retainedPlanNone({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.';
+	@override String retainedPlan({required Object days}) => 'Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.';
+	@override String retainedPlanNone({required Object days}) => 'Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.';
 	@override String get energyUnitNotice => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.';
 	@override String get circuitTitle => 'Urteil zur Runde';
 	@override String circuitScore({required Object value, required Object green, required Object orange}) => 'Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.';
@@ -2585,7 +2598,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.';
 	@override String verdictHowCeiling({required Object capacity, required Object level}) => 'Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).';
 	@override String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.';
-	@override String get verdictHowNoBlackBox => 'Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.';
+	@override String get verdictHowNoBlackBox => 'Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.';
 }
 
 // Path: feasibility.flow
@@ -2653,7 +2666,8 @@ class _Translations$catalog$a11y$de extends Translations$catalog$a11y$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String enterButton({required Object nom}) => 'Weg ${nom} öffnen';
+	@override String prepareButton({required Object nom}) => 'Weg ${nom} vorbereiten';
+	@override String buyButton({required Object nom}) => 'Weg ${nom} kaufen';
 	@override String get freeTrailBadge => 'Kostenloser Weg';
 }
 
@@ -3282,7 +3296,7 @@ class _Translations$programme$actions$de extends Translations$programme$actions$
 
 	// Translations
 	@override String get merge => 'Zusammenlegen';
-	@override String get split => 'Aufteilen';
+	@override String get split => 'Auflösen';
 	@override String get rest => 'Ruhe';
 	@override String get removeRest => 'Diesen Ruhetag entfernen';
 }
@@ -3349,7 +3363,7 @@ class _Translations$programme$splitBlocked$de extends Translations$programme$spl
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.';
+	@override String get single => 'Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.';
 	@override String get locked => 'Tag bereits gelaufen: nicht mehr änderbar';
 }
 
@@ -3894,9 +3908,9 @@ class _Translations$feasibility$formula$verdicts$de extends Translations$feasibi
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Aufteilung machbar';
-	@override String get orange => 'Aufteilung fordernd';
-	@override String get red => 'Aufteilung zu knapp';
+	@override String get green => 'Angenehmes Tempo';
+	@override String get orange => 'Forderndes Tempo';
+	@override String get red => 'Tempo entlasten';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3923,15 +3937,15 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	// Translations
 	@override String get balancedOk => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.';
 	@override String get balanced => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.';
-	@override String optimalDays({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.';
+	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Plane ${walk} Wandertage, statt der heutigen ${current}. Wir empfehlen zusätzlich ${rest} Ruhetag(e): das ist ein Rat, er ändert das Urteil nicht.';
 	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
-	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.';
+	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Plane ${walk} Wandertage: das ist der Referenzplan der Tour. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — ein Rat, er ändert das Urteil nicht.';
 	@override String hardStageAlert({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.';
-	@override String noViableDuration({required Object stage}) => 'Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.';
-	@override String restReference({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.';
-	@override String restAdvisedReference({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
+	@override String noViableDuration({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.';
+	@override String restReference({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.';
+	@override String restAdvisedReference({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
 }
 
 // Path: signalement.water.states
@@ -4097,8 +4111,8 @@ class _Translations$programme$info$mergeSplit$de extends Translations$programme$
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Zusammenlegen / Aufteilen';
-	@override String get body => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.';
+	@override String get title => 'Zusammenlegen / Auflösen';
+	@override String get body => 'Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts.';
 }
 
 // Path: programme.info.colors
@@ -4156,7 +4170,7 @@ class _Translations$programme$inTrek$info$upcoming$de extends Translations$progr
 
 	// Translations
 	@override String get title => 'Kommende Tage';
-	@override String get body => 'Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein.';
+	@override String get body => 'Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein.';
 }
 
 // Path: programme.inTrek.info.order
@@ -4721,8 +4735,8 @@ extension on TranslationsDe {
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'checklist.demoBridledTitle' => 'Testversion',
 			'checklist.demoBridledBody' => 'Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.',
-			'checklist.demoLockedCategory' => 'Wanderung freischalten für diese Kategorie',
-			'checklist.demoUnlockCta' => 'Wanderung freischalten',
+			'checklist.demoLockedCategory' => 'Wanderung kaufen für diese Kategorie',
+			'checklist.demoUnlockCta' => 'Wanderung kaufen',
 			'journal.title' => 'Wandertagebuch',
 			'journal.empty' => 'Ihr Tagebuch ist leer',
 			'journal.emptySubtitle' => 'Notieren Sie Ihre Eindrücke und Erinnerungen',
@@ -4762,7 +4776,7 @@ extension on TranslationsDe {
 			'journal.shareError' => 'Teilen nicht möglich',
 			'journal.lockedTitle' => 'Das Tagebuch gehört zum Paket',
 			'journal.lockedBody' => 'Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.',
-			'journal.lockedUnlock' => 'Freischalten',
+			'journal.lockedUnlock' => 'Kaufen',
 			'weather.title' => 'Wetter',
 			'weather.loading' => 'Wetter wird geladen...',
 			'weather.offline' => 'Keine Verbindung. Wetterdaten nicht verfügbar.',
@@ -4974,9 +4988,9 @@ extension on TranslationsDe {
 			'feasibility.formula.answerTitle' => 'Schaffen Sie das?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.',
-			'feasibility.formula.answerRed' => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
-			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.',
+			'feasibility.formula.answerRed' => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — eine Empfehlung, sie ändert das Urteil nicht.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.',
 			'feasibility.formula.explainToggle' => 'Wie dieses Ergebnis berechnet wird',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})',
@@ -4989,16 +5003,16 @@ extension on TranslationsDe {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Begrenzender Faktor: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Empfohlenes Training: ${weeks} Wochen vor dem Start',
 			'feasibility.formula.adviceTitle' => 'Tipps für deinen Plan',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Meinen Plan erstellen (${days} Tage insgesamt)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Meinen Plan erstellen (${days} Wandertage)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan über ${days} Wandertage erstellt — passe ihn nach Wunsch an.',
 			'feasibility.formula.noStages' => 'Noch kein Tag zu bewerten.',
 			'feasibility.formula.levels.beginner' => 'Anfänger',
 			'feasibility.formula.levels.intermediate' => 'Fortgeschritten',
 			'feasibility.formula.levels.confirmed' => 'Erfahren',
 			'feasibility.formula.levels.expert' => 'Experte',
-			'feasibility.formula.verdicts.green' => 'Aufteilung machbar',
-			'feasibility.formula.verdicts.orange' => 'Aufteilung fordernd',
-			'feasibility.formula.verdicts.red' => 'Aufteilung zu knapp',
+			'feasibility.formula.verdicts.green' => 'Angenehmes Tempo',
+			'feasibility.formula.verdicts.orange' => 'Forderndes Tempo',
+			'feasibility.formula.verdicts.red' => 'Tempo entlasten',
 			'feasibility.formula.limitingFactors.distance' => 'die Tagesdistanz',
 			'feasibility.formula.limitingFactors.elevation' => 'der Höhenunterschied',
 			'feasibility.formula.limitingFactors.chaining' => 'die Abfolge der Tage',
@@ -5007,17 +5021,17 @@ extension on TranslationsDe {
 			'feasibility.formula.limitingFactors.heat' => 'die Hitze der Jahreszeit',
 			'feasibility.formula.advice.balancedOk' => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.',
 			'feasibility.formula.advice.balanced' => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Plane ${walk} Wandertage, statt der heutigen ${current}. Wir empfehlen zusätzlich ${rest} Ruhetag(e): das ist ein Rat, er ändert das Urteil nicht.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Plane ${walk} Wandertage: das ist der Referenzplan der Tour. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — ein Rat, er ändert das Urteil nicht.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.',
 			'feasibility.formula.energyUnitNotice' => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
 			'feasibility.formula.circuitTitle' => 'Urteil zur Runde',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.',
@@ -5054,7 +5068,7 @@ extension on TranslationsDe {
 			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.',
 			'feasibility.flow.title' => 'Bist du bereit für diese Tour?',
 			'feasibility.flow.intro' => 'Beantworte 3 kurze Schritte: Wir ermitteln dein echtes Niveau und sagen dir, ob die Tour machbar ist.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} Schritte erledigt',
@@ -5118,11 +5132,12 @@ extension on TranslationsDe {
 			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
 			'noData.browseCta' => 'Wege durchsuchen',
 			'catalog.title' => 'Wegekatalog',
-			'catalog.enter' => 'Öffnen',
+			'catalog.prepare' => 'Vorbereiten',
 			'catalog.mustDownload' => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.',
 			'catalog.emptyTitle' => 'Kein Weg verfügbar',
 			'catalog.emptySubtitle' => 'Im Katalog wird noch kein Weg angeboten.',
-			'catalog.a11y.enterButton' => ({required Object nom}) => 'Weg ${nom} öffnen',
+			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Weg ${nom} vorbereiten',
+			'catalog.a11y.buyButton' => ({required Object nom}) => 'Weg ${nom} kaufen',
 			'catalog.a11y.freeTrailBadge' => 'Kostenloser Weg',
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Kostenlose Demo',
 			'catalog.freeBadge' => 'Kostenlos',
@@ -5196,16 +5211,16 @@ extension on TranslationsDe {
 			'monetization.featureDiploma' => 'Trek-Abschlussdiplom',
 			'monetization.featureFollowers' => '2 kostenlose Follower',
 			'monetization.featureNoAds' => 'Keine Werbung',
-			'monetization.buyCta' => 'Diesen Trek freischalten',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
+			'monetization.buyCta' => 'Kaufen',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Kaufen — ${price} €',
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
 			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
-			'monetization.walletUnit' => 'Etappen',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.walletUnit' => 'Etappen',
 			'monetization.storeUnavailable' => 'Die Zahlung ist derzeit nicht verfügbar.',
 			'monetization.restoreUnavailable' => 'Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.',
 			'monetization.restoreRequested' => 'Wiederherstellung angefordert. Ihre Käufe erscheinen gleich wieder.',
@@ -5240,6 +5255,19 @@ extension on TranslationsDe {
 			'monetization.cancelCta' => 'Abo beenden',
 			'monetization.cancelExplains' => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.',
 			'monetization.cancelStoreUnavailable' => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.',
+			'monetization.adsBadgePub' => 'Mit Werbung',
+			'monetization.adsBadgeAbonne' => 'Abonniert — werbefrei',
+			'monetization.adsBadgeAchete' => 'Gekauft — werbefrei',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Werbefrei — ${reste}',
+			'monetization.adsA11yPub' => 'Bei der Vorbereitung wird Werbung angezeigt',
+			'monetization.adsResteHeures' => ({required Object heures}) => 'noch ${heures} Std.',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => 'noch ${minutes} Min.',
+			'monetization.removeAdsCta' => 'Werbung entfernen',
+			'monetization.removeAdsTitle' => 'Werbung entfernen',
+			'monetization.removeAdsSubscribe' => 'Abonnieren',
+			'monetization.removeAdsSubscribeBody' => 'Überall werbefrei, solange das Abo aktiv ist.',
+			'monetization.removeAdsWatch' => 'Video ansehen',
+			'monetization.removeAdsWatchBody' => 'Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung.',
 			'signalement.title' => 'Melden',
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
@@ -5289,7 +5317,7 @@ extension on TranslationsDe {
 			'training.paywallTitle' => 'Personalisierter Trainingsplan',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Im Paket « ${trail} » enthalten.',
 			'training.paywallSubtitle' => 'Plan angepasst an Ihr Profil und Ihr Abreisedatum.',
-			'training.unlock' => 'Freischalten',
+			'training.unlock' => 'Kaufen',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan für die ${km} km und rund ${elevation} m Höhenmeter.',
 			'training.countdown' => ({required Object days}) => 'Abreise in ${days} Tagen',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan über ${n} Wochen',
@@ -5704,13 +5732,15 @@ extension on TranslationsDe {
 			'programme.stats.stages' => 'Etappen',
 			'programme.stats.restCount' => '{count} Ruhe',
 			'programme.legend.easy' => 'Leicht',
+			_ => null,
+		} ?? switch (path) {
 			'programme.legend.moderate' => 'Mittel',
 			'programme.legend.hard' => 'Schwer',
 			'programme.legend.extreme' => 'Extrem',
 			'programme.restDay' => 'Ruhetag',
 			'programme.restDayLabel' => 'R',
 			'programme.actions.merge' => 'Zusammenlegen',
-			'programme.actions.split' => 'Aufteilen',
+			'programme.actions.split' => 'Auflösen',
 			'programme.actions.rest' => 'Ruhe',
 			'programme.actions.removeRest' => 'Diesen Ruhetag entfernen',
 			'programme.mergeBlocked.noNext' => 'Kein Folgetag',
@@ -5718,8 +5748,6 @@ extension on TranslationsDe {
 			'programme.mergeBlocked.tooLong' => 'Zu lang: {hours}h (max. {max}h/Tag)',
 			'programme.mergeBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.replan' => 'Neu planen',
-			_ => null,
-		} ?? switch (path) {
 			'programme.replanButton' => 'NEU PLANEN',
 			'programme.replanDialog.title' => 'Neu planen',
 			'programme.replanDialog.message' => 'Die Neuplanung setzt Ihr Programm zurück.\nIhre Ruhetage bleiben an denselben Positionen erhalten.',
@@ -5737,13 +5765,13 @@ extension on TranslationsDe {
 			'programme.info.reorder.body' => 'Ziehen Sie den Griff rechts, um die Reihenfolge der Tage zu ändern.',
 			'programme.info.rest.title' => 'Ruhetag',
 			'programme.info.rest.body' => 'Fügen Sie einen Erholungstag zwischen zwei Etappen ein.',
-			'programme.info.mergeSplit.title' => 'Zusammenlegen / Aufteilen',
-			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.',
+			'programme.info.mergeSplit.title' => 'Zusammenlegen / Auflösen',
+			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts.',
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
-			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
+			'programme.splitBlocked.single' => 'Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.reorderBlocked' => 'Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr',
 			'programme.inTrek.title' => 'Route anpassen',
@@ -5760,7 +5788,7 @@ extension on TranslationsDe {
 			'programme.inTrek.info.done.title' => 'Bereits gelaufene Tage',
 			'programme.inTrek.info.done.body' => 'Sie sind ausgegraut und gesperrt: was gelaufen ist, bleibt.',
 			'programme.inTrek.info.upcoming.title' => 'Kommende Tage',
-			'programme.inTrek.info.upcoming.body' => 'Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein.',
+			'programme.inTrek.info.upcoming.body' => 'Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein.',
 			'programme.inTrek.info.order.title' => 'Reihenfolge der Etappen',
 			'programme.inTrek.info.order.body' => 'Unterwegs ändert sich die Reihenfolge nie: bereits begonnene Etappen werden nicht getauscht.',
 			'programme.inTrek.info.close' => 'Verstanden',
@@ -5779,7 +5807,7 @@ extension on TranslationsDe {
 			'calendar.adjustStages' => 'ETAPPEN ANPASSEN',
 			'calendar.stageSingular' => 'Etappe {n}',
 			'calendar.stagesPlural' => 'Etappen {list}',
-			'calendar.splitStages' => 'Etappen trennen',
+			'calendar.splitStages' => 'Tag auflösen',
 			'calendar.mergeWithNext' => 'Mit dem nächsten Tag zusammenlegen',
 			'calendar.weekdays.mon' => 'Mo',
 			'calendar.weekdays.tue' => 'Di',

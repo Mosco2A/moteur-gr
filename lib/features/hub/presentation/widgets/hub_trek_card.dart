@@ -222,12 +222,16 @@ class _StartTrekCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Icone "carte" en vert categoriel (parite GR20 Navigation ->
-              // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              StepIcon(
-                StepwaysIcons.carte,
-                color: CategoryIconColors.of(context).green,
-              ),
+              // TACHE 639 (bug 3) — LE DESSIN DE CETTE TUILE EST BICOLORE.
+              //
+              // Il portait la couleur categorielle verte, donc le trace
+              // monochrome teinte : c'est exactement ce que Christophe a vu
+              // (« pret a partir non plus »). Sur la tuile d'etat du cockpit, le
+              // vert categoriel n'apporte rien que le bicolore ne dise mieux —
+              // le trace duo porte deja le vert #1F3D2B de l'identite. On retire
+              // donc la couleur imposee, et la regle de [iconeBicolorePour] fait
+              // sortir « carte » en bicolore.
+              const StepIcon.tuile(StepwaysIcons.carte),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -276,10 +280,9 @@ class _CompletedTrekCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const StepIcon(
-                StepwaysIcons.diplome,
-                color: AppTheme.vertFacile,
-              ),
+              // TACHE 639 (bug 3) : tuile d'etat de fin de trek = un sujet. Le
+              // diplome est l'une des 20 rubriques, il a un trace bicolore.
+              const StepIcon.tuile(StepwaysIcons.diplome),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

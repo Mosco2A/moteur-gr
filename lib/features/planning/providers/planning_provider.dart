@@ -230,8 +230,8 @@ final planningProvider = FutureProvider.family<List<DayPlan>, String>((
 ///  - min = moitie du nombre d'etapes (arrondi au superieur, plancher 1) :
 ///    borne basse raisonnable de regroupement (~2 etapes/jour au plus dense) ;
 ///  - max = tous les jours de marche atteignables (une etape peut occuper
-///    jusqu'a [PlanningCalculator.maxDaysPerStage] journees) + la marge de
-///    repos. Voir ci-dessous.
+///    jusqu'a UNE journee depuis le lot 634 : `maxDaysPerStage` n'existe plus,
+///    et cette ligne le nommait encore) + la marge de repos. Voir ci-dessous.
 ///
 /// TACHE 558 — POURQUOI LA BORNE HAUTE A ETE ELARGIE. Elle valait « nombre
 /// d'etapes + un tiers » : pour les 7 etapes du sentier de reference, 9 jours,
@@ -307,7 +307,7 @@ class DurationBounds implements DurationSearchBounds {
     final int min = (stageCount / 2).ceil().clamp(1, stageCount);
     final int restMargin = (stageCount / 3).round().clamp(1, stageCount);
     final int rest = math.max(restMargin, recommendedRestDays);
-    // Tous les jours de MARCHE atteignables (decoupage compris) + le repos.
+    // Tous les jours de MARCHE atteignables (une par etape) + le repos.
     return DurationBounds(
       min: min,
       max: stageCount + rest,
@@ -324,8 +324,12 @@ class DurationBounds implements DurationSearchBounds {
   int clampDuration(int duration) => duration.clamp(min, max);
 
   /// Ramene une duree dans les bornes du programme PAR DEFAUT (tache 558) :
-  /// jamais au-dela de [naturalMax], pour qu'aucun sentier ne s'ouvre sur des
-  /// etapes deja coupees en deux. Le decoupage se demande, il ne s'impose pas.
+  /// jamais au-dela de [naturalMax].
+  ///
+  /// TACHE 639 : cette doc justifiait la borne par « qu'aucun sentier ne s'ouvre
+  /// sur des etapes deja coupees en deux ». Plus aucune etape ne se coupe depuis
+  /// le lot 634 ; la borne reste utile pour qu'un sentier ne s'ouvre pas sur plus
+  /// de jours de repos que necessaire.
   int clampDefaultDuration(int duration) => duration.clamp(min, naturalMax);
 }
 

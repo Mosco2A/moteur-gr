@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Testversion",
     "demoBridledBody": "Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.",
-    "demoLockedCategory": "Wanderung freischalten für diese Kategorie",
-    "demoUnlockCta": "Wanderung freischalten"
+    "demoLockedCategory": "Wanderung kaufen für diese Kategorie",
+    "demoUnlockCta": "Wanderung kaufen"
   },
   "journal": {
     "title": "Wandertagebuch",
@@ -657,7 +657,7 @@
     "shareError": "Teilen nicht möglich",
     "lockedTitle": "Das Tagebuch gehört zum Paket",
     "lockedBody": "Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.",
-    "lockedUnlock": "Freischalten"
+    "lockedUnlock": "Kaufen"
   },
   "weather": {
     "title": "Wetter",
@@ -912,9 +912,9 @@
       "answerTitle": "Schaffen Sie das?",
       "answerGreen": "Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.",
       "answerOrange": "Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.",
-      "answerRed": "So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.",
-      "answerDaysNote": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.",
-      "answerNoRest": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.",
+      "answerRed": "Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.",
+      "answerDaysNote": "Das ist der Plan des Weges selbst: ${walking} Wandertage. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — eine Empfehlung, sie ändert das Urteil nicht.",
+      "answerNoRest": "Das ist der Plan des Weges selbst: ${walking} Wandertage.",
       "explainToggle": "Wie dieses Ergebnis berechnet wird",
       "intro": "Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
@@ -927,8 +927,8 @@
       "limitingLabel": "Begrenzender Faktor: ${factor}",
       "trainingReco": "Empfohlenes Training: ${weeks} Wochen vor dem Start",
       "adviceTitle": "Tipps für deinen Plan",
-      "generateProgram": "Meinen Plan erstellen (${days} Tage insgesamt)",
-      "generateProgramDone": "Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.",
+      "generateProgram": "Meinen Plan erstellen (${days} Wandertage)",
+      "generateProgramDone": "Plan über ${days} Wandertage erstellt — passe ihn nach Wunsch an.",
       "noStages": "Noch kein Tag zu bewerten.",
       "levels": {
         "beginner": "Anfänger",
@@ -937,9 +937,9 @@
         "expert": "Experte"
       },
       "verdicts": {
-        "green": "Aufteilung machbar",
-        "orange": "Aufteilung fordernd",
-        "red": "Aufteilung zu knapp"
+        "green": "Angenehmes Tempo",
+        "orange": "Forderndes Tempo",
+        "red": "Tempo entlasten"
       },
       "limitingFactors": {
         "distance": "die Tagesdistanz",
@@ -952,18 +952,18 @@
       "advice": {
         "balancedOk": "Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.",
         "balanced": "Verteile die Etappen, um den Aufwand über die Tage zu glätten.",
-        "optimalDays": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.",
+        "optimalDays": "Plane ${walk} Wandertage, statt der heutigen ${current}. Wir empfehlen zusätzlich ${rest} Ruhetag(e): das ist ein Rat, er ändert das Urteil nicht.",
         "rest": "Plane einen Ruhetag nach Tag ${stages} deines Plans.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
         "restAdvised": "Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.",
-        "optimalDaysNoChoice": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.",
+        "optimalDaysNoChoice": "Plane ${walk} Wandertage: das ist der Referenzplan der Tour. Wir empfehlen zusätzlich ${rest} Ruhetag(e) — ein Rat, er ändert das Urteil nicht.",
         "hardStageAlert": "Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.",
-        "noViableDuration": "Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.",
-        "restReference": "Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.",
-        "restAdvisedReference": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
+        "noViableDuration": "Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.",
+        "restReference": "Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.",
+        "restAdvisedReference": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
       },
-      "retainedPlan": "Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.",
-      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.",
+      "retainedPlan": "Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.",
+      "retainedPlanNone": "Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.",
       "energyUnitNotice": "1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
       "circuitTitle": "Urteil zur Runde",
       "circuitScore": "Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.",
@@ -1000,7 +1000,7 @@
       "verdictHowEnergy": "In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
       "verdictHowCeiling": "Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).",
       "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.",
-      "verdictHowNoBlackBox": "Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze."
+      "verdictHowNoBlackBox": "Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze."
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Wegekatalog",
-    "enter": "Öffnen",
+    "prepare": "Vorbereiten",
     "mustDownload": "Laden Sie diesen Weg herunter, um ihn zu erkunden.",
     "emptyTitle": "Kein Weg verfügbar",
     "emptySubtitle": "Im Katalog wird noch kein Weg angeboten.",
     "a11y": {
-      "enterButton": "Weg $nom öffnen",
+      "prepareButton": "Weg $nom vorbereiten",
+      "buyButton": "Weg $nom kaufen",
       "freeTrailBadge": "Kostenloser Weg"
     },
     "freeTrailName": "$nom — Kostenlose Demo",
@@ -1171,8 +1172,8 @@
     "featureDiploma": "Trek-Abschlussdiplom",
     "featureFollowers": "2 kostenlose Follower",
     "featureNoAds": "Keine Werbung",
-    "buyCta": "Diesen Trek freischalten",
-    "buyCtaWithPrice": "Diesen Trek freischalten — $price €",
+    "buyCta": "Kaufen",
+    "buyCtaWithPrice": "Kaufen — $price €",
     "rewardedCta": "Ein Tag ohne Werbung — Video ansehen",
     "rewardedEarned": "Danke! 24 h werbefrei.",
     "rewardedUnavailable": "Derzeit kein Video verfügbar.",
@@ -1212,7 +1213,20 @@
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
     "cancelCta": "Abo beenden",
     "cancelExplains": "Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.",
-    "cancelStoreUnavailable": "Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos."
+    "cancelStoreUnavailable": "Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.",
+    "adsBadgePub": "Mit Werbung",
+    "adsBadgeAbonne": "Abonniert — werbefrei",
+    "adsBadgeAchete": "Gekauft — werbefrei",
+    "adsBadgeVideo": "Werbefrei — $reste",
+    "adsA11yPub": "Bei der Vorbereitung wird Werbung angezeigt",
+    "adsResteHeures": "noch ${heures} Std.",
+    "adsResteMinutes": "noch ${minutes} Min.",
+    "removeAdsCta": "Werbung entfernen",
+    "removeAdsTitle": "Werbung entfernen",
+    "removeAdsSubscribe": "Abonnieren",
+    "removeAdsSubscribeBody": "Überall werbefrei, solange das Abo aktiv ist.",
+    "removeAdsWatch": "Video ansehen",
+    "removeAdsWatchBody": "Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung."
   },
   "signalement": {
     "title": "Melden",
@@ -1280,7 +1294,7 @@
     "paywallTitle": "Personalisierter Trainingsplan",
     "paywallIncludedIn": "Im Paket « $trail » enthalten.",
     "paywallSubtitle": "Plan angepasst an Ihr Profil und Ihr Abreisedatum.",
-    "unlock": "Freischalten",
+    "unlock": "Kaufen",
     "effortIntro": "Ein progressiver $weeks-Wochen-Plan für die $km km und rund $elevation m Höhenmeter.",
     "countdown": "Abreise in $days Tagen",
     "planOverWeeks": "Plan über $n Wochen",
@@ -1830,7 +1844,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Zusammenlegen",
-      "split": "Aufteilen",
+      "split": "Auflösen",
       "rest": "Ruhe",
       "removeRest": "Diesen Ruhetag entfernen"
     },
@@ -1870,8 +1884,8 @@
         "body": "Fügen Sie einen Erholungstag zwischen zwei Etappen ein."
       },
       "mergeSplit": {
-        "title": "Zusammenlegen / Aufteilen",
-        "body": "Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt."
+        "title": "Zusammenlegen / Auflösen",
+        "body": "Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts."
       },
       "colors": {
         "title": "Farben",
@@ -1881,7 +1895,7 @@
       "close": "Verstanden!"
     },
     "splitBlocked": {
-      "single": "Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.",
+      "single": "Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.",
       "locked": "Tag bereits gelaufen: nicht mehr änderbar"
     },
     "reorderBlocked": "Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr",
@@ -1904,7 +1918,7 @@
         },
         "upcoming": {
           "title": "Kommende Tage",
-          "body": "Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein."
+          "body": "Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein."
         },
         "order": {
           "title": "Reihenfolge der Etappen",
@@ -1932,7 +1946,7 @@
     "adjustStages": "ETAPPEN ANPASSEN",
     "stageSingular": "Etappe {n}",
     "stagesPlural": "Etappen {list}",
-    "splitStages": "Etappen trennen",
+    "splitStages": "Tag auflösen",
     "mergeWithNext": "Mit dem nächsten Tag zusammenlegen",
     "weekdays": {
       "mon": "Mo",

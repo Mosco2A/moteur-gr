@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 
 import '../../../core/config/ad_config.dart';
 import '../../../core/error/error_handler.dart';
+import '../../../core/error/error_nets.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -79,7 +80,9 @@ class AdsConsentService {
            updateRequestConfiguration ??
            MobileAds.instance.updateRequestConfiguration,
        _testDeviceIds = testDeviceIds,
-       _consentFormEnabled = consentFormEnabled ?? AdConfig.hasProductionUnits;
+       _consentFormEnabled =
+           consentFormEnabled ??
+           (AdConfig.hasProductionUnits || AdConfig.testAdsForced);
 
   final ConsentInformation _consentInformation;
   final Future<void> Function(OnConsentFormDismissedListener)
@@ -165,7 +168,8 @@ class AdsConsentService {
   /// Un resultat `false` est donc DEFINITIF pour ce processus : c'est voulu, la
   /// pub n'est pas critique et un formulaire ne se re-tente pas dans le dos du
   /// randonneur.
-  Future<bool> ensureConsentAndInit() => _boot ??= _ensureConsentAndInitBounded();
+  Future<bool> ensureConsentAndInit() =>
+      _boot ??= _ensureConsentAndInitBounded();
 
   Future<bool> _ensureConsentAndInitBounded() async {
     _bootClock.reset();
@@ -203,16 +207,17 @@ class AdsConsentService {
   /// du délai posé par [ensureConsentAndInit] (sinon : erreur asynchrone non
   /// gérée, finding M2).
   Future<bool> _ensureConsentAndInitGuarded() {
-    return _ensureConsentAndInitUnbounded().catchError(
-      (Object e, StackTrace st) {
-        ErrorHandler.log(
-          e,
-          stackTrace: st,
-          context: 'AdsConsentService.ensureConsentAndInit',
-        );
-        return false;
-      },
-    );
+    return _ensureConsentAndInitUnbounded().catchError((
+      Object e,
+      StackTrace st,
+    ) {
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.ensureConsentAndInit',
+      );
+      return false;
+    });
   }
 
   /// Cœur non borné de la résolution consentement + init (cf. wrapper borné).
@@ -239,9 +244,9 @@ class AdsConsentService {
       try {
         await _initialize();
       } on Object catch (e, st) {
-        ErrorHandler.log(
+        ErrorNets.signaler(
           e,
-          stackTrace: st,
+          stack: st,
           context: 'AdsConsentService.initialize',
         );
         return false;
@@ -251,14 +256,34 @@ class AdsConsentService {
   }
 
   /// Met à jour l'état de consentement UMP (API à callbacks -> `Future`).
+  ///
+  /// SOUS LE MODE PUBS DE TEST, ON SE DECLARE EN EUROPE (tache 639,
+  /// DEM-260930-1224). Christophe teste depuis la France : l'UMP le classe donc
+  /// dans l'EEE, ou un consentement est REQUIS avant toute publicité — et sans
+  /// formulaire, `canRequestAds()` reste `false`, donc aucune bannière, même de
+  /// test. Les paramètres de DEBUG de l'UMP servent exactement à ça : forcer la
+  /// géographie EEE et déclarer l'appareil comme appareil de test, pour que le
+  /// formulaire s'affiche et que le consentement puisse être donné.
+  ///
+  /// POURQUOI FORCER L'EEE ALORS QU'IL Y EST DEJA : parce que les paramètres de
+  /// debug UMP n'ont d'effet QUE sur un appareil déclaré de test. Demander la
+  /// géographie EEE sans déclarer l'appareil ne fait rien ; déclarer l'appareil
+  /// sans demander de géographie laisserait le comportement dépendre du réseau du
+  /// moment. On demande les deux, et le chemin testé est alors celui du pire cas
+  /// réglementaire — donc celui de la production européenne.
   Future<void> _requestConsentInfoUpdate() {
     final completer = Completer<void>();
     _consentInformation.requestConsentInfoUpdate(
-      ConsentRequestParameters(),
+      _parametresDeDemande(),
       completer.complete,
       (error) {
-        // Échec UMP loggé mais NON bloquant (best-effort) : on complète.
-        ErrorHandler.log(
+        // Échec UMP tracé, NON bloquant (best-effort) : on complète.
+        //
+        // TACHE 639 : il passe désormais par [ErrorNets.signaler], donc il
+        // remonte dans Crashlytics. Avant, il n'allait que dans le journal local
+        // du téléphone : un consentement qui échoue en Europe — la cause la plus
+        // probable d'une absence de publicité — était invisible à distance.
+        ErrorNets.signaler(
           StateError('UMP update failed: ${error.message}'),
           context: 'AdsConsentService.requestConsentInfoUpdate',
         );
@@ -266,6 +291,19 @@ class AdsConsentService {
       },
     );
     return completer.future;
+  }
+
+  /// Les paramètres de la demande de consentement.
+  ///
+  /// Sans le mode pubs de test : rien de particulier, le comportement réel.
+  ConsentRequestParameters _parametresDeDemande() {
+    if (!AdConfig.testAdsForced) return ConsentRequestParameters();
+    return ConsentRequestParameters(
+      consentDebugSettings: ConsentDebugSettings(
+        debugGeography: DebugGeography.debugGeographyEea,
+        testIdentifiers: _testDeviceIds,
+      ),
+    );
   }
 
   /// Chronomètre de la séquence d'amorce : sert à savoir si l'on est ENCORE à
@@ -279,8 +317,7 @@ class AdsConsentService {
   /// La marge (un quart du budget) tient compte du fait que le formulaire lui
   /// -même met du temps à se charger : arriver ici à 5,9 s sur un budget de 6 s,
   /// c'est arriver trop tard.
-  bool get _formWithinBootWindow =>
-      _bootClock.elapsed * 4 < _bootBudget * 3;
+  bool get _formWithinBootWindow => _bootClock.elapsed * 4 < _bootBudget * 3;
 
   /// Affiche l'écran de consentement (CMP) si l'UMP l'exige — ET SEULEMENT SI
   /// c'est le bon moment et le bon build (tache 560, N3).
@@ -315,7 +352,7 @@ class AdsConsentService {
     _consentFormRequests++;
     await _loadAndShowIfRequired((formError) {
       if (formError != null) {
-        ErrorHandler.log(
+        ErrorNets.signaler(
           StateError('UMP form error: ${formError.message}'),
           context: 'AdsConsentService.loadForm',
         );
@@ -328,9 +365,9 @@ class AdsConsentService {
     try {
       return await _consentInformation.canRequestAds();
     } on Object catch (e, st) {
-      ErrorHandler.log(
+      ErrorNets.signaler(
         e,
-        stackTrace: st,
+        stack: st,
         context: 'AdsConsentService.canRequestAds',
       );
       return false;

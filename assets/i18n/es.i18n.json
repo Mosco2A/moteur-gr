@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Versión de prueba",
     "demoBridledBody": "Las primeras categorías se pueden jugar de mentira. La mochila completa, adaptada a la ruta y a la temporada, se abre con la ruta.",
-    "demoLockedCategory": "Desbloquea la ruta para esta categoría",
-    "demoUnlockCta": "Desbloquear la ruta"
+    "demoLockedCategory": "Compra la ruta para esta categoría",
+    "demoUnlockCta": "Comprar la ruta"
   },
   "journal": {
     "title": "Diario de trekking",
@@ -657,7 +657,7 @@
     "shareError": "No se ha podido compartir",
     "lockedTitle": "El diario forma parte del pack",
     "lockedBody": "Anota tus impresiones, añade tus fotos y relee cada jornada de marcha. El diario se desbloquea con la ruta.",
-    "lockedUnlock": "Desbloquear"
+    "lockedUnlock": "Comprar"
   },
   "weather": {
     "title": "Meteorología",
@@ -912,9 +912,9 @@
       "answerTitle": "¿Está a su alcance?",
       "answerGreen": "Sí. Este sendero está a su alcance en ${days} días.",
       "answerOrange": "Sí, en ${days} días — pero una jornada será exigente para usted.",
-      "answerRed": "Así no: una jornada de este sendero supera lo que su perfil puede aguantar.",
-      "answerDaysNote": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha, ${rest} de descanso.",
-      "answerNoRest": "Es el reparto del sendero tal como existe: ${walking} jornadas de marcha.",
+      "answerRed": "Todavía no: una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma antes de salir, o salga fuera del verano — lo decide una jornada, no todo el sendero.",
+      "answerDaysNote": "Es el programa del sendero tal como existe: ${walking} jornadas de marcha. Aconsejamos ${rest} día(s) de descanso además — es un consejo, no cambia el veredicto.",
+      "answerNoRest": "Es el programa del sendero tal como existe: ${walking} jornadas de marcha.",
       "explainToggle": "Cómo se calcula este resultado",
       "intro": "Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.",
       "ceilingLabel": "Tope recomendado: ${value} km-energía/día (${level})",
@@ -927,8 +927,8 @@
       "limitingLabel": "Factor limitante: ${factor}",
       "trainingReco": "Entrenamiento recomendado: ${weeks} semanas antes de salir",
       "adviceTitle": "Consejos para tu programa",
-      "generateProgram": "Generar mi programa (${days} días en total)",
-      "generateProgramDone": "Programa generado en ${days} días en total — ajústalo a tu gusto.",
+      "generateProgram": "Generar mi programa (${days} días de marcha)",
+      "generateProgramDone": "Programa generado en ${days} días de marcha — ajústalo a tu gusto.",
       "noStages": "Aún no hay ninguna jornada que evaluar.",
       "levels": {
         "beginner": "principiante",
@@ -937,9 +937,9 @@
         "expert": "experto"
       },
       "verdicts": {
-        "green": "Reparto viable",
-        "orange": "Reparto exigente",
-        "red": "Reparto muy apretado"
+        "green": "Ritmo cómodo",
+        "orange": "Ritmo exigente",
+        "red": "Ritmo a aliviar"
       },
       "limitingFactors": {
         "distance": "la distancia por día",
@@ -952,18 +952,18 @@
       "advice": {
         "balancedOk": "Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.",
         "balanced": "Reparte las etapas para suavizar el esfuerzo a lo largo de los días.",
-        "optimalDays": "Apunta a ${days} días en total: ${walk} días de marcha y ${rest} días de descanso, en vez de los ${current} días de hoy.",
+        "optimalDays": "Apunta a ${walk} días de marcha, en vez de los ${current} de hoy. Aconsejamos además ${rest} día(s) de descanso: es un consejo, no cambian el veredicto.",
         "rest": "Prevé un día de descanso tras la jornada ${stages} de tu programa.",
         "training": "Entrena ${weeks} semanas antes de salir (preparación física).",
         "restAdvised": "Pon ${days} día(s) de descanso en tu programa, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.",
-        "optimalDaysNoChoice": "Apunta a ${days} días en total: ${walk} días de marcha y ${rest} días de descanso. Aún no has elegido nada: el sendero sigue en su división de referencia, ${current} días en total.",
+        "optimalDaysNoChoice": "Apunta a ${walk} días de marcha: es el programa de referencia del sendero. Aconsejamos además ${rest} día(s) de descanso — un consejo, no cambian el veredicto.",
         "hardStageAlert": "La jornada ${stage} será muy dura: supera tu tope del día. No te aconsejamos partirla en dos — una etapa termina donde hay un techo. La respuesta es el entrenamiento: subir un nivel eleva tu tope, y esta jornada vuelve a quedar debajo.",
-        "noViableDuration": "Ningún número de días hace que este sendero te resulte llevadero hoy: la jornada ${stage} sigue por encima de tu tope incluso en la división más repartida. Por eso no te aconsejamos ninguna duración — ya no es una cuestión de programa. Entrena, o elige un sendero menos exigente.",
-        "restReference": "Prevé un día de descanso tras la jornada ${stages} de la división de referencia del sendero — aún no has elegido la tuya.",
-        "restAdvisedReference": "Pon ${days} día(s) de descanso, tras las jornadas ${stages} de la división de referencia del sendero — aún no has elegido la tuya: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto."
+        "noViableDuration": "Añadir días no cambiará este veredicto: la jornada ${stage} sigue por encima de tu tope, incluso en el programa más holgado del sendero. Lo que sí lo cambia es el entrenamiento — sube tu tope — o salir fuera del verano. Si no, te espera un sendero menos exigente.",
+        "restReference": "Prevé un día de descanso tras la jornada ${stages} del programa de referencia del sendero — aún no has elegido el tuyo.",
+        "restAdvisedReference": "Pon ${days} día(s) de descanso, tras las jornadas ${stages} del programa de referencia del sendero — aún no has elegido el tuyo: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto."
       },
-      "retainedPlan": "División elegida: ${days} días en total, marcha y descanso incluidos.",
-      "retainedPlanNone": "Ninguna división elegida: el sendero se queda en sus ${days} días en total por defecto, marcha y descanso incluidos.",
+      "retainedPlan": "Programa elegido: ${days} días en total, marcha y descanso incluidos.",
+      "retainedPlanNone": "Ningún programa elegido: el sendero se queda en sus ${days} días en total por defecto, marcha y descanso incluidos.",
       "energyUnitNotice": "1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta, no una regla de la casa.",
       "circuitTitle": "Veredicto del circuito",
       "circuitScore": "Puntuación del circuito: ${value} — verde hasta ${green}, naranja hasta ${orange}, rojo más allá.",
@@ -1000,7 +1000,7 @@
       "verdictHowEnergy": "En km-energía: ${distance} + ${elevation} ÷ 42 = ${energy}. Los 42 m de desnivel que equivalen a 1 km de llano son el coste medido de caminar en cuesta, no una regla de la casa.",
       "verdictHowCeiling": "Tu tope del día es ${capacity} km-energía (nivel ${level}).",
       "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Hasta ${green} es verde, hasta ${orange} naranja, más allá rojo.",
-      "verdictHowNoBlackBox": "Aquí nada sale de una caja negra: es esta división, y la alimentan tres trabajos publicados — Minetti 2002 para la unidad de energía, MOVE 2026 para la altitud, Linsell 2020 para el calor."
+      "verdictHowNoBlackBox": "Aquí nada sale de una caja negra: es esta simple razón, y la alimentan tres trabajos publicados — Minetti 2002 para la unidad de energía, MOVE 2026 para la altitud, Linsell 2020 para el calor."
     },
     "flow": {
       "title": "¿Estás listo para este trek?",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Catálogo de senderos",
-    "enter": "Entrar",
+    "prepare": "Preparar",
     "mustDownload": "Descarga este sendero para explorarlo.",
     "emptyTitle": "Ningún sendero disponible",
     "emptySubtitle": "Aún no hay ningún sendero en el catálogo.",
     "a11y": {
-      "enterButton": "Entrar en el sendero $nom",
+      "prepareButton": "Preparar el sendero $nom",
+      "buyButton": "Comprar el sendero $nom",
       "freeTrailBadge": "Sendero gratuito"
     },
     "freeTrailName": "$nom — Demo gratis",
@@ -1171,8 +1172,8 @@
     "featureDiploma": "Diploma de fin de trek",
     "featureFollowers": "2 seguidores gratuitos",
     "featureNoAds": "Cero publicidad",
-    "buyCta": "Desbloquear este trek",
-    "buyCtaWithPrice": "Desbloquear este trek — $price €",
+    "buyCta": "Comprar",
+    "buyCtaWithPrice": "Comprar — $price €",
     "rewardedCta": "Un día sin anuncios — ver un vídeo",
     "rewardedEarned": "¡Gracias! Sin publicidad durante 24 h.",
     "rewardedUnavailable": "No hay vídeo disponible ahora mismo.",
@@ -1212,7 +1213,20 @@
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",
     "cancelExplains": "La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.",
-    "cancelStoreUnavailable": "No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones."
+    "cancelStoreUnavailable": "No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones.",
+    "adsBadgePub": "Con publicidad",
+    "adsBadgeAbonne": "Suscrito — sin publicidad",
+    "adsBadgeAchete": "Comprado — sin publicidad",
+    "adsBadgeVideo": "Sin publicidad — $reste",
+    "adsA11yPub": "Se mostrará publicidad al preparar",
+    "adsResteHeures": "quedan ${heures} h",
+    "adsResteMinutes": "quedan ${minutes} min",
+    "removeAdsCta": "Quitar la publicidad",
+    "removeAdsTitle": "Quitar la publicidad",
+    "removeAdsSubscribe": "Suscribirse",
+    "removeAdsSubscribeBody": "Sin publicidad en todas partes, mientras la suscripción esté activa.",
+    "removeAdsWatch": "Ver un vídeo",
+    "removeAdsWatchBody": "Sin publicidad durante 24 h. Nada más: ni etapas, ni ruta desbloqueada."
   },
   "signalement": {
     "title": "Notificar",
@@ -1280,7 +1294,7 @@
     "paywallTitle": "Programa de entrenamiento personalizado",
     "paywallIncludedIn": "Incluido en el pack « $trail ».",
     "paywallSubtitle": "Plan adaptado a tu perfil y a tu fecha de salida.",
-    "unlock": "Desbloquear",
+    "unlock": "Comprar",
     "effortIntro": "Un plan progresivo de $weeks semanas para afrontar los $km km y unos $elevation m de desnivel.",
     "countdown": "Salida en $days días",
     "planOverWeeks": "Plan de $n semanas",
@@ -1830,7 +1844,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Agrupar",
-      "split": "Separar",
+      "split": "Desagrupar",
       "rest": "Descanso",
       "removeRest": "Eliminar este día de descanso"
     },
@@ -1870,8 +1884,8 @@
         "body": "Inserta un día de recuperación entre dos etapas."
       },
       "mergeSplit": {
-        "title": "Agrupar / Separar",
-        "body": "Agrupar une dos días en uno; Separar corta un día en dos — sus etapas si estaban unidas, y si no la etapa misma en dos mitades de igual esfuerzo. El veredicto lo fija tu jornada más dura: partirla es la única forma de aliviarla, un día de descanso no cambia nada. Una etapa partida supone una parada a mitad de camino: compruebe que haya dónde dormir."
+        "title": "Agrupar / Desagrupar",
+        "body": "Agrupar une dos días en uno; Desagrupar devuelve a cada etapa unida su propia jornada. Una etapa queda entera: termina donde hay un techo. El veredicto lo fija tu jornada más dura — aliviarla pasa por la forma o la temporada, un día de descanso no cambia nada."
       },
       "colors": {
         "title": "Colores",
@@ -1881,7 +1895,7 @@
       "close": "¡Entendido!"
     },
     "splitBlocked": {
-      "single": "No se puede separar: esta jornada lleva una sola etapa, no hay nada que desagrupar.",
+      "single": "No se puede desagrupar: esta jornada lleva una sola etapa, no hay nada que desagrupar.",
       "locked": "Día ya caminado: ya no se puede modificar"
     },
     "reorderBlocked": "Ruta iniciada: el orden de las etapas ya no cambia",
@@ -1904,7 +1918,7 @@
         },
         "upcoming": {
           "title": "Días por venir",
-          "body": "Agrupa, separa o añade un día de descanso en el resto del recorrido."
+          "body": "Agrupa, desagrupa o añade un día de descanso en el resto del recorrido."
         },
         "order": {
           "title": "Orden de las etapas",
@@ -1932,7 +1946,7 @@
     "adjustStages": "AJUSTAR LAS ETAPAS",
     "stageSingular": "Etapa {n}",
     "stagesPlural": "Etapas {list}",
-    "splitStages": "Separar las etapas",
+    "splitStages": "Desagrupar la jornada",
     "mergeWithNext": "Agrupar con el día siguiente",
     "weekdays": {
       "mon": "Lun",

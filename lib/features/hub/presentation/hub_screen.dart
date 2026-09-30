@@ -7,6 +7,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/bouton_simulation_demo.dart';
+import '../../ads/presentation/badge_etat_publicite.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../treks/providers/my_treks_provider.dart';
@@ -209,6 +210,24 @@ class _HubScreenState extends ConsumerState<HubScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
+            // L'ETAT PUBLICITAIRE DE LA PREPARATION, EN UNE LIGNE
+            // (tache 639 avenant, DEM-260930-1241).
+            //
+            // Verbatim de Christophe (30/09 12:41) : « Il faut que l on fasse la
+            // diff entre = je suis abonne et je n ai pas de pub en prepa, j ai
+            // achete un trek sans pub, je suis en prepa avec pub ». Les trois
+            // etats doivent se distinguer « sur la carte du sentier ET EN
+            // PREPARATION » : la carte du catalogue porte sa marque, voici celle
+            // de la preparation.
+            //
+            // POURQUOI ICI ET PAS SUR L'EMPLACEMENT PUBLICITAIRE : deux des trois
+            // etats (abonne, achete) sont precisement ceux ou aucune banniere ne
+            // s'affiche, et [BannerAdSlot] doit garder sa hauteur NULLE quand il
+            // n'y a pas de publicite — un abonne ne paie rien, pas meme en
+            // pixels. La marque parle de l'etat des DROITS, l'emplacement parle
+            // de ce que la regie a rendu : deux choses, deux endroits.
+            const BandeauEtatPublicite(),
+            const SizedBox(height: AppTheme.spacingSm),
             // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour,
             // randonneur » + nom du sentier (HubHeader) a ete RETIRE : il faisait
             // DOUBLON avec le titre du sentier deja affiche dans l'AppBar juste

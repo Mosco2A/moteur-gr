@@ -114,7 +114,10 @@ class TrailCatalogCard extends StatelessWidget {
           Row(
             children: [
               ExcludeSemantics(
-                child: StepIcon(StepwaysIcons.sommet, color: theme.colorScheme.primary),
+                child: StepIcon(
+                  StepwaysIcons.sommet,
+                  color: theme.colorScheme.primary,
+                ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -277,20 +280,24 @@ class TrailCatalogCard extends StatelessWidget {
     }
   }
 
-  /// Bouton primaire "Entrer dans le sentier" (i18n catalog.enter, design #88246).
+  /// Bouton primaire « Preparer » (i18n `catalog.prepare`, design #88246).
+  ///
+  /// TACHE 639 (bug 2) : il disait « Entrer ». Le sentier est deja telecharge,
+  /// donc deja possede — l'action est bien la PREPARATION, et elle porte le meme
+  /// verbe que sur la carte du catalogue et sur la fiche du sentier.
   Widget _buildEnterButton(BuildContext context) {
     final t = Translations.of(context);
     return SizedBox(
       width: double.infinity,
       child: Semantics(
         button: true,
-        label: t.catalog.a11y.enterButton(nom: entry.trailId),
+        label: t.catalog.a11y.prepareButton(nom: entry.trailId),
         // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage #A5),
         // pleine largeur (SizedBox width infinity conserve). key/Semantics gardees.
         child: AppButton(
           key: ValueKey('trail-enter-${entry.trailId}'),
-          icon: StepwaysIcons.flecheAvant,
-          label: t.catalog.enter,
+          icon: StepwaysIcons.programme,
+          label: t.catalog.prepare,
           onPressed: onEnter,
         ),
       ),

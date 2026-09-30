@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Trial version",
     "demoBridledBody": "The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.",
-    "demoLockedCategory": "Unlock the hike for this category",
-    "demoUnlockCta": "Unlock the hike"
+    "demoLockedCategory": "Buy the hike for this category",
+    "demoUnlockCta": "Buy the hike"
   },
   "journal": {
     "title": "Trek journal",
@@ -657,7 +657,7 @@
     "shareError": "Sharing failed",
     "lockedTitle": "The journal is part of the pack",
     "lockedBody": "Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.",
-    "lockedUnlock": "Unlock"
+    "lockedUnlock": "Buy"
   },
   "weather": {
     "title": "Weather",
@@ -912,8 +912,8 @@
       "answerTitle": "Can you do it?",
       "answerGreen": "Yes. This trail is within your reach in ${days} days.",
       "answerOrange": "Yes, in ${days} days — but one day will be demanding for you.",
-      "answerRed": "Not as it stands: one day of this trail is beyond what your profile can hold.",
-      "answerDaysNote": "That is the trail's own plan: ${walking} walking days, ${rest} rest days.",
+      "answerRed": "Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.",
+      "answerDaysNote": "That is the trail's own plan: ${walking} walking days. We advise ${rest} rest day(s) on top — advice only, it does not change the verdict.",
       "answerNoRest": "That is the trail's own plan: ${walking} walking days.",
       "explainToggle": "How this result is worked out",
       "intro": "We compare each walking day's effort to what your profile can handle. Green, orange or red light.",
@@ -927,8 +927,8 @@
       "limitingLabel": "Limiting factor: ${factor}",
       "trainingReco": "Recommended training: ${weeks} weeks before departure",
       "adviceTitle": "Tips for your plan",
-      "generateProgram": "Generate my plan (${days} days in total)",
-      "generateProgramDone": "Plan generated over ${days} days in total — tweak it as you like.",
+      "generateProgram": "Generate my plan (${days} walking days)",
+      "generateProgramDone": "Plan generated over ${days} walking days — tweak it as you like.",
       "noStages": "No day to assess yet.",
       "levels": {
         "beginner": "beginner",
@@ -937,9 +937,9 @@
         "expert": "expert"
       },
       "verdicts": {
-        "green": "Feasible split",
-        "orange": "Demanding split",
-        "red": "Split too tight"
+        "green": "Comfortable pace",
+        "orange": "Demanding pace",
+        "red": "Pace to ease off"
       },
       "limitingFactors": {
         "distance": "the daily distance",
@@ -952,18 +952,18 @@
       "advice": {
         "balancedOk": "Your plan is balanced: keep a margin and listen to your body.",
         "balanced": "Spread the stages out to smooth the effort across the days.",
-        "optimalDays": "Aim for ${days} days in total: ${walk} walking days and ${rest} rest days, instead of today's ${current} days.",
+        "optimalDays": "Aim for ${walk} walking days, instead of today's ${current}. We also advise ${rest} rest day(s): that is advice, they do not change the verdict.",
         "rest": "Plan a rest day after day ${stages} of your plan.",
         "training": "Train for ${weeks} weeks before departure (physical preparation).",
         "restAdvised": "Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.",
-        "optimalDaysNoChoice": "Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference split, ${current} days in total.",
+        "optimalDaysNoChoice": "Aim for ${walk} walking days: that is the trail's reference plan. We also advise ${rest} rest day(s) — advice only, they do not change the verdict.",
         "hardStageAlert": "Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.",
-        "noViableDuration": "No number of days makes this trail manageable for you today: day ${stage} stays above your ceiling even on the most spread-out split. We therefore advise no duration — this is no longer a matter of scheduling. Train, or pick a less demanding trail.",
-        "restReference": "Plan a rest day after day ${stages} of the trail's reference split — you have not chosen your own yet.",
-        "restAdvisedReference": "Add ${days} rest day(s), after days ${stages} of the trail's reference split — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict."
+        "noViableDuration": "Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail's most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.",
+        "restReference": "Plan a rest day after day ${stages} of the trail's reference plan — you have not chosen your own yet.",
+        "restAdvisedReference": "Add ${days} rest day(s), after days ${stages} of the trail's reference plan — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict."
       },
-      "retainedPlan": "Retained split: ${days} days in total, walking and rest included.",
-      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days in total, walking and rest included.",
+      "retainedPlan": "Retained plan: ${days} days in total, walking and rest included.",
+      "retainedPlanNone": "No plan retained: the trail stays on its default ${days} days in total, walking and rest included.",
       "energyUnitNotice": "1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.",
       "circuitTitle": "Circuit verdict",
       "circuitScore": "Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.",
@@ -1000,7 +1000,7 @@
       "verdictHowEnergy": "In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}. The 42 m of ascent worth 1 km of flat ground are the measured cost of walking uphill, not a house rule.",
       "verdictHowCeiling": "Your daily ceiling is ${capacity} energy-km (${level} level).",
       "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.",
-      "verdictHowNoBlackBox": "Nothing here comes out of a black box: it is this division, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat."
+      "verdictHowNoBlackBox": "Nothing here comes out of a black box: it is this simple ratio, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat."
     },
     "flow": {
       "title": "Are you ready for this trek?",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Trail catalog",
-    "enter": "Enter",
+    "prepare": "Prepare",
     "mustDownload": "Download this trail to explore it.",
     "emptyTitle": "No trail available",
     "emptySubtitle": "No trail is offered in the catalog yet.",
     "a11y": {
-      "enterButton": "Enter trail $nom",
+      "prepareButton": "Prepare trail $nom",
+      "buyButton": "Buy trail $nom",
       "freeTrailBadge": "Free trail"
     },
     "freeTrailName": "$nom — Free demo",
@@ -1171,8 +1172,8 @@
     "featureDiploma": "End-of-trek diploma",
     "featureFollowers": "2 free followers",
     "featureNoAds": "Zero ads",
-    "buyCta": "Unlock this trek",
-    "buyCtaWithPrice": "Unlock this trek — €$price",
+    "buyCta": "Buy",
+    "buyCtaWithPrice": "Buy — €$price",
     "rewardedCta": "A day without ads — watch a video",
     "rewardedEarned": "Thanks! Ad-free for 24 h.",
     "rewardedUnavailable": "No video available right now.",
@@ -1212,7 +1213,20 @@
     "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",
     "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.",
-    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions."
+    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions.",
+    "adsBadgePub": "With ads",
+    "adsBadgeAbonne": "Subscriber — ad-free",
+    "adsBadgeAchete": "Purchased — ad-free",
+    "adsBadgeVideo": "Ad-free — $reste",
+    "adsA11yPub": "An ad will be shown when preparing",
+    "adsResteHeures": "${heures} h left",
+    "adsResteMinutes": "${minutes} min left",
+    "removeAdsCta": "Remove ads",
+    "removeAdsTitle": "Remove advertising",
+    "removeAdsSubscribe": "Subscribe",
+    "removeAdsSubscribeBody": "Ad-free everywhere, as long as the subscription is active.",
+    "removeAdsWatch": "Watch a video",
+    "removeAdsWatchBody": "Ad-free for 24 h. Nothing else: no steps, no hike unlocked."
   },
   "signalement": {
     "title": "Report",
@@ -1280,7 +1294,7 @@
     "paywallTitle": "Personalised training plan",
     "paywallIncludedIn": "Included in the « $trail » pack.",
     "paywallSubtitle": "Plan tailored to your profile and departure date.",
-    "unlock": "Unlock",
+    "unlock": "Buy",
     "effortIntro": "A progressive $weeks-week plan to tackle the $km km and about $elevation m of elevation gain.",
     "countdown": "Departure in $days days",
     "planOverWeeks": "$n-week plan",
@@ -1830,7 +1844,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Merge",
-      "split": "Split",
+      "split": "Ungroup",
       "rest": "Rest",
       "removeRest": "Remove this rest day"
     },
@@ -1870,8 +1884,8 @@
         "body": "Insert a recovery day between two stages."
       },
       "mergeSplit": {
-        "title": "Merge / Split",
-        "body": "Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep."
+        "title": "Merge / Ungroup",
+        "body": "Merge joins two days into one; Ungroup gives each joined stage its own day back. A stage stays whole: it ends where there is a roof. The verdict follows your hardest day — easing it goes through fitness or the season, a rest day changes nothing."
       },
       "colors": {
         "title": "Colours",
@@ -1881,7 +1895,7 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: this day carries a single stage, there is nothing to ungroup.",
+      "single": "Cannot ungroup: this day carries a single stage, there is nothing to ungroup.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",
@@ -1904,7 +1918,7 @@
         },
         "upcoming": {
           "title": "Upcoming days",
-          "body": "Merge, split or add a rest day on the rest of your route."
+          "body": "Merge, ungroup or add a rest day on the rest of your route."
         },
         "order": {
           "title": "Stage order",
@@ -1932,7 +1946,7 @@
     "adjustStages": "ADJUST STAGES",
     "stageSingular": "Stage {n}",
     "stagesPlural": "Stages {list}",
-    "splitStages": "Split the stages",
+    "splitStages": "Ungroup the day",
     "mergeWithNext": "Merge with the next day",
     "weekdays": {
       "mon": "Mon",
