@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/session_demo.dart';
+
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Cle de prefix pour les dates de depart en SharedPreferences.
@@ -84,11 +86,19 @@ class DownloadReminderNotifier extends Notifier<DepartureReminderState> {
 
   /// Definit la date de depart pour le sentier.
   Future<void> setDepartureDate(DateTime date) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      '$_departureDatePrefix$_trailId',
-      date.toIso8601String(),
-    );
+    // EN DEMO, LA DATE VIT EN MEMOIRE (tache 638, bug 14). C'etait la 1re des
+    // huit ecritures laissees ouvertes par le lot 634 : choisir une date de
+    // depart pendant une demo l'ecrivait en preferences pour le sentier REEL, et
+    // elle survivait a la demo. Le calendrier reste ACTIF (la date entre bien
+    // dans la faisabilite et le programme, ce que la demo doit montrer) ; seule
+    // l'ecriture est sautee, et `quitterLaDemo` jette ce provider.
+    if (!ref.read(enDemoProvider)) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        '$_departureDatePrefix$_trailId',
+        date.toIso8601String(),
+      );
+    }
 
     state = state.copyWith(departureDate: date);
 
@@ -104,16 +114,23 @@ class DownloadReminderNotifier extends Notifier<DepartureReminderState> {
   bool isReminderScheduled() => state.isReminderScheduled;
 
   /// Marque le rappel comme planifie.
+  ///
+  /// EN DEMO, EN MEMOIRE SEULEMENT (tache 638, bug 14) : meme raison que
+  /// [setDepartureDate] — la cle porte le prefixe du sentier REEL.
   Future<void> markReminderScheduled() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('$_reminderScheduledPrefix$_trailId', true);
+    if (!ref.read(enDemoProvider)) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('$_reminderScheduledPrefix$_trailId', true);
+    }
     state = state.copyWith(isReminderScheduled: true);
   }
 
   /// Annule le marquage du rappel.
   Future<void> clearReminderScheduled() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('$_reminderScheduledPrefix$_trailId', false);
+    if (!ref.read(enDemoProvider)) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('$_reminderScheduledPrefix$_trailId', false);
+    }
     state = state.copyWith(isReminderScheduled: false);
   }
 }

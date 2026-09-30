@@ -12,6 +12,8 @@ import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -62,6 +64,20 @@ class JournalScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // EN DEMO, LE JOURNAL S'OUVRE — EN LECTURE (tache 638, bugs 14 et 16).
+    //
+    // Sans cette branche, la demo tombait sur la vue VERROUILLEE : le sentier
+    // reel n'est pas achete, donc `isDemoMode` vaut vrai, donc le journal
+    // proposait de le debloquer. Or la demande de Christophe est de « montrer
+    // comment marche l appli de A a Z », journal compris, et la simulation du
+    // trek (bug 16) passe par le journal du jour.
+    //
+    // CE N'EST PAS UN DROIT ACCORDE : rien ne s'ecrit (les quatre gestes du
+    // journal sont barres en demo), et l'ajout de note est visiblement
+    // indisponible. On OUVRE UNE VITRINE, on ne deverrouille pas un carnet.
+    if (ref.watch(enDemoProvider)) {
+      return _UnlockedJournal(trailId: trailId);
+    }
     // Acces REACTIF (L7-3) : il se reevalue des qu'un achat pose le droit.
     final accesAsync = ref.watch(isDemoModeProvider(trailId));
     return accesAsync.when(
@@ -313,9 +329,13 @@ class _UnlockedJournal extends ConsumerWidget {
           : entryCount == 0
           ? _EmptyJournalView(journalT: journalT)
           : const _JournalDayView(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddNoteDialog(context, ref, stageCount),
-        child: const StepIcon(StepwaysIcons.plus),
+      // GRISE EN DEMO (tache 638, bug 14) : une note de journal s'ecrit en base.
+      // Le journal se LIT en demo, il ne s'ecrit pas — et le bouton le montre.
+      floatingActionButton: GriseEnDemo(
+        child: FloatingActionButton(
+          onPressed: () => _showAddNoteDialog(context, ref, stageCount),
+          child: const StepIcon(StepwaysIcons.plus),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_item_widget.dart';
@@ -85,28 +86,34 @@ class ChecklistCategorySection extends StatelessWidget {
           bottom: AppTheme.spacingSm,
         ),
         children: [
-          ...items.map((item) => ChecklistItemWidget(
-                item: item,
-                onToggle: () => onToggle(item.template.id),
-                onEdit: () => onEditItem(item.template.id),
-                onDelete: item.isCustom
-                    ? () => onDeleteItem(item.template.id)
-                    : null,
-                onQuantityChanged: (newQty) =>
-                    onQuantityChanged(item.template.id, newQty),
-                onToggleShoppingList: () =>
-                    onToggleShoppingList(item.template.id),
-              )),
+          ...items.map(
+            (item) => ChecklistItemWidget(
+              item: item,
+              onToggle: () => onToggle(item.template.id),
+              onEdit: () => onEditItem(item.template.id),
+              onDelete: item.isCustom
+                  ? () => onDeleteItem(item.template.id)
+                  : null,
+              onQuantityChanged: (newQty) =>
+                  onQuantityChanged(item.template.id, newQty),
+              onToggleShoppingList: () =>
+                  onToggleShoppingList(item.template.id),
+            ),
+          ),
           // Bouton « Ajouter un item » (parite GR20).
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: onAddItem,
-              icon: const StepIcon(StepwaysIcons.plus, size: 16),
-              label: Text(t.checklist.ui.addItem),
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                minimumSize: Size.zero,
+          // GRISE EN DEMO (tache 638, bug 14) : ajouter un article ecrit une
+          // ligne en base. Grise et visiblement indisponible, pas muet.
+          GriseEnDemo(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: onAddItem,
+                icon: const StepIcon(StepwaysIcons.plus, size: 16),
+                label: Text(t.checklist.ui.addItem),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: Size.zero,
+                ),
               ),
             ),
           ),

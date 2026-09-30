@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
@@ -477,7 +478,12 @@ class _NuiteeCard extends ConsumerWidget {
             ? BorderSide(color: scheme.primary, width: 1.5)
             : BorderSide.none,
       ),
-      child: InkWell(
+      // GRISE EN DEMO (tache 638, bug 14) : reserver une nuit ecrit en base
+      // (`NuiteeSelectionsDao`) sous l'identifiant du sentier REEL. La fiche de
+      // la nuitee reste LISIBLE (c'est ce que la demo doit montrer) ; seul le
+      // geste qui reserve est grise.
+      child: GriseEnDemo(
+        child: InkWell(
         onTap: onToggle,
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         child: Padding(
@@ -638,7 +644,8 @@ class _NuiteeCard extends ConsumerWidget {
                             return ConstrainedBox(
                               constraints: const BoxConstraints(
                                   minHeight: 48, minWidth: 48),
-                              child: GestureDetector(
+                              child: GriseEnDemo(
+                                child: GestureDetector(
                                 onTap: () => onNuiteeTypeChanged(type),
                                 child: Tooltip(
                                   message: type.label,
@@ -686,6 +693,7 @@ class _NuiteeCard extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
+                              ),
                               ),
                             );
                           }).toList(),
@@ -757,6 +765,7 @@ class _NuiteeCard extends ConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

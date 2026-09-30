@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_weight_banner.dart' show formatChecklistGrams;
@@ -173,6 +174,21 @@ class ChecklistItemWidget extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(width: 8),
+                  // TOUT CE QUI SUIT EST GRISE EN DEMO (tache 638, bug 14 —
+                  // DEM-260930-1022, verbatim : « laisser 2 menus et griser les
+                  // autres »).
+                  //
+                  // Les deux actions VIVANTES du sac en demo sont la LECTURE de
+                  // la liste et la COCHE (qui change bien l'etat, en memoire).
+                  // Tout le reste — liste de courses, quantite, modifier,
+                  // supprimer — ecrirait en base : c'est donc grise et
+                  // visiblement indisponible, jamais un bouton qui repond au
+                  // doigt sans rien faire. Le POIDS de l'article, lui, reste
+                  // lisible : c'est une information, pas une commande.
+                  GriseEnDemo(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                   // Panier — ajouter/retirer de la liste de courses (non coche).
                   if (!item.isChecked)
                     IconButton(
@@ -264,6 +280,9 @@ class ChecklistItemWidget extends StatelessWidget {
                         onDelete?.call();
                       }
                     },
+                  ),
+                      ],
+                    ),
                   ),
                 ],
               ),

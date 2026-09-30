@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../features/trail/providers/stages_provider.dart';
 import '../../feasibility/domain/feasibility_formula.dart';
 import '../../feasibility/domain/program_plan_search.dart';
@@ -56,12 +57,20 @@ class RetainedDurationNotifier extends Notifier<int?> {
   Future<void> retain(int days) async {
     if (days <= 0) return;
     state = days;
+    // EN DEMO, LE CHOIX VIT EN MEMOIRE (tache 638, bug 14). C'etait la 2e des
+    // huit ecritures que le lot 634 avait laissees ouvertes : choisir un nombre
+    // de jours pendant une demo ecrivait durablement le decoupage du sentier
+    // REEL — le randonneur retrouvait ensuite un programme qu'il n'avait jamais
+    // valide. Le curseur reste ACTIF et se comporte exactement comme en reel ;
+    // seule l'ecriture est sautee, et `quitterLaDemo` jette ce provider.
+    if (ref.read(enDemoProvider)) return;
     await ref.read(retainedPlanStoreProvider).write(_trailId, days);
   }
 
   /// Oublie le decoupage retenu : le sentier revient a sa duree par defaut.
   Future<void> forget() async {
     state = null;
+    if (ref.read(enDemoProvider)) return;
     await ref.read(retainedPlanStoreProvider).clear(_trailId);
   }
 }
