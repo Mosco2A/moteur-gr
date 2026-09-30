@@ -1191,7 +1191,20 @@
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
     "cancelCta": "Abo beenden",
     "cancelExplains": "Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.",
-    "cancelStoreUnavailable": "Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos."
+    "cancelStoreUnavailable": "Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.",
+    "adsBadgePub": "Mit Werbung",
+    "adsBadgeAbonne": "Abonniert — werbefrei",
+    "adsBadgeAchete": "Gekauft — werbefrei",
+    "adsBadgeVideo": "Werbefrei — $reste",
+    "adsA11yPub": "Bei der Vorbereitung wird Werbung angezeigt",
+    "adsResteHeures": "noch ${heures} Std.",
+    "adsResteMinutes": "noch ${minutes} Min.",
+    "removeAdsCta": "Werbung entfernen",
+    "removeAdsTitle": "Werbung entfernen",
+    "removeAdsSubscribe": "Abonnieren",
+    "removeAdsSubscribeBody": "Überall werbefrei, solange das Abo aktiv ist.",
+    "removeAdsWatch": "Video ansehen",
+    "removeAdsWatchBody": "Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung."
   },
   "signalement": {
     "title": "Melden",

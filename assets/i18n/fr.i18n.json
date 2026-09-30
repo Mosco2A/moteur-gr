@@ -1191,7 +1191,20 @@
     "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.",
     "cancelCta": "Arrêter mon abonnement",
     "cancelExplains": "L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.",
-    "cancelStoreUnavailable": "Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements."
+    "cancelStoreUnavailable": "Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.",
+    "adsBadgePub": "Avec publicité",
+    "adsBadgeAbonne": "Abonné — sans publicité",
+    "adsBadgeAchete": "Acheté — sans publicité",
+    "adsBadgeVideo": "Sans publicité — $reste",
+    "adsA11yPub": "Une publicité sera affichée à la préparation",
+    "adsResteHeures": "encore ${heures} h",
+    "adsResteMinutes": "encore ${minutes} min",
+    "removeAdsCta": "Retirer les pubs",
+    "removeAdsTitle": "Retirer la publicité",
+    "removeAdsSubscribe": "S'abonner",
+    "removeAdsSubscribeBody": "Sans publicité partout, tant que l'abonnement est actif.",
+    "removeAdsWatch": "Voir une vidéo",
+    "removeAdsWatchBody": "Sans publicité pendant 24 h. Rien d'autre : ni étapes, ni randonnée débloquée."
   },
   "signalement": {
     "title": "Signaler",

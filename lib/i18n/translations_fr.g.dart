@@ -2062,6 +2062,45 @@ class Translations$monetization$fr {
 
 	/// fr: 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.'
 	String get cancelStoreUnavailable => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.';
+
+	/// fr: 'Avec publicité'
+	String get adsBadgePub => 'Avec publicité';
+
+	/// fr: 'Abonné — sans publicité'
+	String get adsBadgeAbonne => 'Abonné — sans publicité';
+
+	/// fr: 'Acheté — sans publicité'
+	String get adsBadgeAchete => 'Acheté — sans publicité';
+
+	/// fr: 'Sans publicité — $reste'
+	String adsBadgeVideo({required Object reste}) => 'Sans publicité — ${reste}';
+
+	/// fr: 'Une publicité sera affichée à la préparation'
+	String get adsA11yPub => 'Une publicité sera affichée à la préparation';
+
+	/// fr: 'encore ${heures} h'
+	String adsResteHeures({required Object heures}) => 'encore ${heures} h';
+
+	/// fr: 'encore ${minutes} min'
+	String adsResteMinutes({required Object minutes}) => 'encore ${minutes} min';
+
+	/// fr: 'Retirer les pubs'
+	String get removeAdsCta => 'Retirer les pubs';
+
+	/// fr: 'Retirer la publicité'
+	String get removeAdsTitle => 'Retirer la publicité';
+
+	/// fr: 'S'abonner'
+	String get removeAdsSubscribe => 'S\'abonner';
+
+	/// fr: 'Sans publicité partout, tant que l'abonnement est actif.'
+	String get removeAdsSubscribeBody => 'Sans publicité partout, tant que l\'abonnement est actif.';
+
+	/// fr: 'Voir une vidéo'
+	String get removeAdsWatch => 'Voir une vidéo';
+
+	/// fr: 'Sans publicité pendant 24 h. Rien d'autre : ni étapes, ni randonnée débloquée.'
+	String get removeAdsWatchBody => 'Sans publicité pendant 24 h. Rien d\'autre : ni étapes, ni randonnée débloquée.';
 }
 
 // Path: signalement
@@ -9143,6 +9182,19 @@ extension on Translations {
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
 			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
 			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
+			'monetization.adsBadgePub' => 'Avec publicité',
+			'monetization.adsBadgeAbonne' => 'Abonné — sans publicité',
+			'monetization.adsBadgeAchete' => 'Acheté — sans publicité',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Sans publicité — ${reste}',
+			'monetization.adsA11yPub' => 'Une publicité sera affichée à la préparation',
+			'monetization.adsResteHeures' => ({required Object heures}) => 'encore ${heures} h',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => 'encore ${minutes} min',
+			'monetization.removeAdsCta' => 'Retirer les pubs',
+			'monetization.removeAdsTitle' => 'Retirer la publicité',
+			'monetization.removeAdsSubscribe' => 'S\'abonner',
+			'monetization.removeAdsSubscribeBody' => 'Sans publicité partout, tant que l\'abonnement est actif.',
+			'monetization.removeAdsWatch' => 'Voir une vidéo',
+			'monetization.removeAdsWatchBody' => 'Sans publicité pendant 24 h. Rien d\'autre : ni étapes, ni randonnée débloquée.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -9629,6 +9681,8 @@ extension on Translations {
 			'programme.validate' => 'VALIDER MON PROGRAMME',
 			'programme.validateNext' => 'Valider et choisir les dates',
 			'programme.empty.title' => 'Configurez d\'abord votre itinéraire',
+			_ => null,
+		} ?? switch (path) {
 			'programme.empty.message' => 'Choisissez votre parcours et la durée pour générer votre programme.',
 			'programme.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'programme.info.title' => 'Programme',
@@ -9642,8 +9696,6 @@ extension on Translations {
 			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s\'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l\'alléger passe par la forme ou la saison, un jour de repos n\'y change rien.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Dégrouper impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',

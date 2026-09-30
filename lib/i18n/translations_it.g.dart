@@ -988,6 +988,19 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get cancelCta => 'Interrompere l’abbonamento';
 	@override String get cancelExplains => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.';
 	@override String get cancelStoreUnavailable => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.';
+	@override String get adsBadgePub => 'Con pubblicità';
+	@override String get adsBadgeAbonne => 'Abbonato — senza pubblicità';
+	@override String get adsBadgeAchete => 'Acquistato — senza pubblicità';
+	@override String adsBadgeVideo({required Object reste}) => 'Senza pubblicità — ${reste}';
+	@override String get adsA11yPub => 'Alla preparazione verrà mostrata una pubblicità';
+	@override String adsResteHeures({required Object heures}) => 'ancora ${heures} h';
+	@override String adsResteMinutes({required Object minutes}) => 'ancora ${minutes} min';
+	@override String get removeAdsCta => 'Togliere la pubblicità';
+	@override String get removeAdsTitle => 'Togliere la pubblicità';
+	@override String get removeAdsSubscribe => 'Abbonarsi';
+	@override String get removeAdsSubscribeBody => 'Senza pubblicità in tutta l\'app, finché l\'abbonamento è attivo.';
+	@override String get removeAdsWatch => 'Guarda un video';
+	@override String get removeAdsWatchBody => 'Senza pubblicità per 24 h. Nulla di più: né tappe, né escursione sbloccata.';
 }
 
 // Path: signalement
@@ -5196,6 +5209,19 @@ extension on TranslationsIt {
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',
 			'monetization.cancelExplains' => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.',
 			'monetization.cancelStoreUnavailable' => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.',
+			'monetization.adsBadgePub' => 'Con pubblicità',
+			'monetization.adsBadgeAbonne' => 'Abbonato — senza pubblicità',
+			'monetization.adsBadgeAchete' => 'Acquistato — senza pubblicità',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Senza pubblicità — ${reste}',
+			'monetization.adsA11yPub' => 'Alla preparazione verrà mostrata una pubblicità',
+			'monetization.adsResteHeures' => ({required Object heures}) => 'ancora ${heures} h',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => 'ancora ${minutes} min',
+			'monetization.removeAdsCta' => 'Togliere la pubblicità',
+			'monetization.removeAdsTitle' => 'Togliere la pubblicità',
+			'monetization.removeAdsSubscribe' => 'Abbonarsi',
+			'monetization.removeAdsSubscribeBody' => 'Senza pubblicità in tutta l\'app, finché l\'abbonamento è attivo.',
+			'monetization.removeAdsWatch' => 'Guarda un video',
+			'monetization.removeAdsWatchBody' => 'Senza pubblicità per 24 h. Nulla di più: né tappe, né escursione sbloccata.',
 			'signalement.title' => 'Segnala',
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
@@ -5682,6 +5708,8 @@ extension on TranslationsIt {
 			'programme.validate' => 'CONFERMA IL MIO PROGRAMMA',
 			'programme.validateNext' => 'Conferma e scegli le date',
 			'programme.empty.title' => 'Configura prima il tuo itinerario',
+			_ => null,
+		} ?? switch (path) {
 			'programme.empty.message' => 'Scegli il percorso e la durata per generare il tuo programma.',
 			'programme.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'programme.info.title' => 'Programma',
@@ -5695,8 +5723,6 @@ extension on TranslationsIt {
 			'programme.info.mergeSplit.body' => 'Raggruppa unisce due giorni in uno; Separa restituisce a ogni tappa unita la propria giornata. Una tappa resta intera: finisce dove c\'è un tetto. Il verdetto è fissato dalla giornata più dura — alleggerirla passa dalla forma o dalla stagione, un giorno di riposo non cambia nulla.',
 			'programme.info.colors.title' => 'Colori',
 			'programme.info.colors.body' => 'Verde = facile, Arancione = medio, Rosso = difficile (distanza + dislivello).',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.note' => 'Il profilo altimetrico in basso mostra il dislivello di ogni giorno.',
 			'programme.info.close' => 'Capito!',
 			'programme.splitBlocked.single' => 'Impossibile separare: questa giornata porta una sola tappa, non c\'è nulla da separare.',

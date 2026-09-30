@@ -988,6 +988,19 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get cancelCta => 'Cancelar mi suscripción';
 	@override String get cancelExplains => 'La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.';
 	@override String get cancelStoreUnavailable => 'No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones.';
+	@override String get adsBadgePub => 'Con publicidad';
+	@override String get adsBadgeAbonne => 'Suscrito — sin publicidad';
+	@override String get adsBadgeAchete => 'Comprado — sin publicidad';
+	@override String adsBadgeVideo({required Object reste}) => 'Sin publicidad — ${reste}';
+	@override String get adsA11yPub => 'Se mostrará publicidad al preparar';
+	@override String adsResteHeures({required Object heures}) => 'quedan ${heures} h';
+	@override String adsResteMinutes({required Object minutes}) => 'quedan ${minutes} min';
+	@override String get removeAdsCta => 'Quitar la publicidad';
+	@override String get removeAdsTitle => 'Quitar la publicidad';
+	@override String get removeAdsSubscribe => 'Suscribirse';
+	@override String get removeAdsSubscribeBody => 'Sin publicidad en todas partes, mientras la suscripción esté activa.';
+	@override String get removeAdsWatch => 'Ver un vídeo';
+	@override String get removeAdsWatchBody => 'Sin publicidad durante 24 h. Nada más: ni etapas, ni ruta desbloqueada.';
 }
 
 // Path: signalement
@@ -5196,6 +5209,19 @@ extension on TranslationsEs {
 			'monetization.cancelCta' => 'Cancelar mi suscripción',
 			'monetization.cancelExplains' => 'La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.',
 			'monetization.cancelStoreUnavailable' => 'No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones.',
+			'monetization.adsBadgePub' => 'Con publicidad',
+			'monetization.adsBadgeAbonne' => 'Suscrito — sin publicidad',
+			'monetization.adsBadgeAchete' => 'Comprado — sin publicidad',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Sin publicidad — ${reste}',
+			'monetization.adsA11yPub' => 'Se mostrará publicidad al preparar',
+			'monetization.adsResteHeures' => ({required Object heures}) => 'quedan ${heures} h',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => 'quedan ${minutes} min',
+			'monetization.removeAdsCta' => 'Quitar la publicidad',
+			'monetization.removeAdsTitle' => 'Quitar la publicidad',
+			'monetization.removeAdsSubscribe' => 'Suscribirse',
+			'monetization.removeAdsSubscribeBody' => 'Sin publicidad en todas partes, mientras la suscripción esté activa.',
+			'monetization.removeAdsWatch' => 'Ver un vídeo',
+			'monetization.removeAdsWatchBody' => 'Sin publicidad durante 24 h. Nada más: ni etapas, ni ruta desbloqueada.',
 			'signalement.title' => 'Notificar',
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
@@ -5682,6 +5708,8 @@ extension on TranslationsEs {
 			'programme.validate' => 'CONFIRMAR MI PROGRAMA',
 			'programme.validateNext' => 'Confirmar y elegir las fechas',
 			'programme.empty.title' => 'Configura primero tu itinerario',
+			_ => null,
+		} ?? switch (path) {
 			'programme.empty.message' => 'Elige tu ruta y la duración para generar tu programa.',
 			'programme.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'programme.info.title' => 'Programa',
@@ -5695,8 +5723,6 @@ extension on TranslationsEs {
 			'programme.info.mergeSplit.body' => 'Agrupar une dos días en uno; Desagrupar devuelve a cada etapa unida su propia jornada. Una etapa queda entera: termina donde hay un techo. El veredicto lo fija tu jornada más dura — aliviarla pasa por la forma o la temporada, un día de descanso no cambia nada.',
 			'programme.info.colors.title' => 'Colores',
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
 			'programme.splitBlocked.single' => 'No se puede desagrupar: esta jornada lleva una sola etapa, no hay nada que desagrupar.',

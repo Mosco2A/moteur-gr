@@ -988,6 +988,19 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get cancelCta => 'Abo beenden';
 	@override String get cancelExplains => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.';
 	@override String get cancelStoreUnavailable => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.';
+	@override String get adsBadgePub => 'Mit Werbung';
+	@override String get adsBadgeAbonne => 'Abonniert — werbefrei';
+	@override String get adsBadgeAchete => 'Gekauft — werbefrei';
+	@override String adsBadgeVideo({required Object reste}) => 'Werbefrei — ${reste}';
+	@override String get adsA11yPub => 'Bei der Vorbereitung wird Werbung angezeigt';
+	@override String adsResteHeures({required Object heures}) => 'noch ${heures} Std.';
+	@override String adsResteMinutes({required Object minutes}) => 'noch ${minutes} Min.';
+	@override String get removeAdsCta => 'Werbung entfernen';
+	@override String get removeAdsTitle => 'Werbung entfernen';
+	@override String get removeAdsSubscribe => 'Abonnieren';
+	@override String get removeAdsSubscribeBody => 'Überall werbefrei, solange das Abo aktiv ist.';
+	@override String get removeAdsWatch => 'Video ansehen';
+	@override String get removeAdsWatchBody => 'Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung.';
 }
 
 // Path: signalement
@@ -5196,6 +5209,19 @@ extension on TranslationsDe {
 			'monetization.cancelCta' => 'Abo beenden',
 			'monetization.cancelExplains' => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.',
 			'monetization.cancelStoreUnavailable' => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.',
+			'monetization.adsBadgePub' => 'Mit Werbung',
+			'monetization.adsBadgeAbonne' => 'Abonniert — werbefrei',
+			'monetization.adsBadgeAchete' => 'Gekauft — werbefrei',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Werbefrei — ${reste}',
+			'monetization.adsA11yPub' => 'Bei der Vorbereitung wird Werbung angezeigt',
+			'monetization.adsResteHeures' => ({required Object heures}) => 'noch ${heures} Std.',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => 'noch ${minutes} Min.',
+			'monetization.removeAdsCta' => 'Werbung entfernen',
+			'monetization.removeAdsTitle' => 'Werbung entfernen',
+			'monetization.removeAdsSubscribe' => 'Abonnieren',
+			'monetization.removeAdsSubscribeBody' => 'Überall werbefrei, solange das Abo aktiv ist.',
+			'monetization.removeAdsWatch' => 'Video ansehen',
+			'monetization.removeAdsWatchBody' => 'Werbefrei für 24 Std. Nichts weiter: keine Etappen, keine freigeschaltete Wanderung.',
 			'signalement.title' => 'Melden',
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
@@ -5682,6 +5708,8 @@ extension on TranslationsDe {
 			'programme.validate' => 'PROGRAMM BESTÄTIGEN',
 			'programme.validateNext' => 'Bestätigen und Daten wählen',
 			'programme.empty.title' => 'Richten Sie zuerst Ihre Route ein',
+			_ => null,
+		} ?? switch (path) {
 			'programme.empty.message' => 'Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.',
 			'programme.empty.action' => 'ROUTE EINRICHTEN',
 			'programme.info.title' => 'Programm',
@@ -5695,8 +5723,6 @@ extension on TranslationsDe {
 			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts.',
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
 			'programme.splitBlocked.single' => 'Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.',

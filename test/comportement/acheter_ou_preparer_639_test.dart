@@ -25,9 +25,19 @@ import '../structurel/regie_pub_absente.dart';
 /// libelles, une seule destination — et un verbe qui promettait autre chose que
 /// ce qu'il faisait.
 ///
+/// LA REGLE A CHANGE LE MEME JOUR, A 12:41 (DEM-260930-1241), ET CE FICHIER LE
+/// PORTE. Le premier passage avait mis UNE SEULE action par etat — donc
+/// « Acheter » SEUL sur un sentier non possede. Christophe a rouvert la
+/// preparation gratuite : « je suis en prepa avec pub » est un etat legitime.
+/// Verbatim : « Il faut que l on fasse la diff entre = je suis abonne et je n ai
+/// pas de pub en prepa, j ai achete un trek sans pub, je suis en prepa avec pub ».
+/// Ce qui etait faux n'etait donc pas « deux boutons » mais « deux boutons pour
+/// la MEME destination » : « Preparer » prepare vraiment maintenant, et
+/// « Acheter » mene au paiement. Deux actions, deux destinations.
+///
 /// CE QUE CES TESTS VERROUILLENT :
-///   1. un sentier non possede montre ACHETER, avec son prix, et rien d'autre ;
-///   2. un sentier jouable montre PREPARER, et rien d'autre ;
+///   1. un sentier non possede montre PREPARER (avec l'icone pub) ET ACHETER ;
+///   2. un sentier qui n'est plus a vendre montre PREPARER seul ;
 ///   3. le mot « debloquer » a quitte les libelles d'action, dans les 5 langues ;
 ///   4. « Entrer » aussi : c'etait le verbe qui mentait.
 void main() {
@@ -91,7 +101,9 @@ void main() {
   }
 
   group('une seule action, celle de l etat du sentier', () {
-    testWidgets('sentier NON POSSEDE : ACHETER, avec son prix', (tester) async {
+    testWidgets('sentier NON POSSEDE : PREPARER **et** ACHETER', (
+      tester,
+    ) async {
       await poserCatalogue(tester, aVendre: true);
 
       expect(
@@ -101,19 +113,27 @@ void main() {
       );
       expect(
         find.byKey(ValueKey('catalog-enter-${payant.id}')),
-        findsNothing,
+        findsOneWidget,
         reason:
-            'deux boutons pour la meme destination : c est le defaut corrige',
+            'la preparation gratuite, AVEC publicite, reste possible '
+            '(DEM-260930-1241) — la fermer etait la faute du premier passage',
       );
 
-      final bouton = tester.widget<AppButton>(
+      final achat = tester.widget<AppButton>(
         find.byKey(ValueKey('catalog-buy-${payant.id}')),
       );
-      expect(bouton.label, startsWith(t.monetization.buyCta));
-      expect(bouton.onPressed, isNotNull);
+      expect(achat.label, startsWith(t.monetization.buyCta));
+      expect(achat.onPressed, isNotNull);
+      final prepa = tester.widget<AppButton>(
+        find.byKey(ValueKey('catalog-enter-${payant.id}')),
+      );
+      expect(prepa.label, t.catalog.prepare);
+      expect(prepa.onPressed, isNotNull);
     });
 
-    testWidgets('sentier JOUABLE : PREPARER, et rien de plus', (tester) async {
+    testWidgets('sentier PLUS A VENDRE : PREPARER, et rien de plus', (
+      tester,
+    ) async {
       await poserCatalogue(tester, aVendre: false);
 
       expect(
@@ -137,22 +157,24 @@ void main() {
 
     for (final aVendre in [true, false]) {
       testWidgets(
-        'jamais les deux boutons sur une meme carte (a vendre : $aVendre)',
+        'PREPARER est toujours la, ACHETER seulement s il y a a acheter '
+        '(a vendre : $aVendre)',
         (tester) async {
           await poserCatalogue(tester, aVendre: aVendre);
           for (final trail in TrailCatalog.all) {
-            final nbAchat = tester
-                .widgetList(find.byKey(ValueKey('catalog-buy-${trail.id}')))
-                .length;
-            final nbPrepa = tester
-                .widgetList(find.byKey(ValueKey('catalog-enter-${trail.id}')))
-                .length;
             expect(
-              nbAchat + nbPrepa,
-              1,
+              find.byKey(ValueKey('catalog-enter-${trail.id}')),
+              findsOneWidget,
+              reason: '${trail.id} : on doit TOUJOURS pouvoir preparer',
+            );
+            expect(
+              tester
+                  .widgetList(find.byKey(ValueKey('catalog-buy-${trail.id}')))
+                  .length,
+              aVendre ? 1 : 0,
               reason:
-                  '${trail.id} porte $nbAchat achat + $nbPrepa preparation '
-                  '— il en faut exactement un',
+                  '${trail.id} : un bouton d achat sur un sentier qui n est '
+                  'plus a vendre est un bouton qui ment',
             );
           }
         },

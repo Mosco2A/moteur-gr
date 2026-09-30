@@ -1191,7 +1191,20 @@
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",
     "cancelExplains": "La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.",
-    "cancelStoreUnavailable": "No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones."
+    "cancelStoreUnavailable": "No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones.",
+    "adsBadgePub": "Con publicidad",
+    "adsBadgeAbonne": "Suscrito — sin publicidad",
+    "adsBadgeAchete": "Comprado — sin publicidad",
+    "adsBadgeVideo": "Sin publicidad — $reste",
+    "adsA11yPub": "Se mostrará publicidad al preparar",
+    "adsResteHeures": "quedan ${heures} h",
+    "adsResteMinutes": "quedan ${minutes} min",
+    "removeAdsCta": "Quitar la publicidad",
+    "removeAdsTitle": "Quitar la publicidad",
+    "removeAdsSubscribe": "Suscribirse",
+    "removeAdsSubscribeBody": "Sin publicidad en todas partes, mientras la suscripción esté activa.",
+    "removeAdsWatch": "Ver un vídeo",
+    "removeAdsWatchBody": "Sin publicidad durante 24 h. Nada más: ni etapas, ni ruta desbloqueada."
   },
   "signalement": {
     "title": "Notificar",

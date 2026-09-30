@@ -1191,7 +1191,20 @@
     "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.",
     "cancelCta": "Interrompere l’abbonamento",
     "cancelExplains": "La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.",
-    "cancelStoreUnavailable": "Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti."
+    "cancelStoreUnavailable": "Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.",
+    "adsBadgePub": "Con pubblicità",
+    "adsBadgeAbonne": "Abbonato — senza pubblicità",
+    "adsBadgeAchete": "Acquistato — senza pubblicità",
+    "adsBadgeVideo": "Senza pubblicità — $reste",
+    "adsA11yPub": "Alla preparazione verrà mostrata una pubblicità",
+    "adsResteHeures": "ancora ${heures} h",
+    "adsResteMinutes": "ancora ${minutes} min",
+    "removeAdsCta": "Togliere la pubblicità",
+    "removeAdsTitle": "Togliere la pubblicità",
+    "removeAdsSubscribe": "Abbonarsi",
+    "removeAdsSubscribeBody": "Senza pubblicità in tutta l'app, finché l'abbonamento è attivo.",
+    "removeAdsWatch": "Guarda un video",
+    "removeAdsWatchBody": "Senza pubblicità per 24 h. Nulla di più: né tappe, né escursione sbloccata."
   },
   "signalement": {
     "title": "Segnala",

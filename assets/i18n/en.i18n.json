@@ -1191,7 +1191,20 @@
     "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",
     "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.",
-    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions."
+    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions.",
+    "adsBadgePub": "With ads",
+    "adsBadgeAbonne": "Subscriber — ad-free",
+    "adsBadgeAchete": "Purchased — ad-free",
+    "adsBadgeVideo": "Ad-free — $reste",
+    "adsA11yPub": "An ad will be shown when preparing",
+    "adsResteHeures": "${heures} h left",
+    "adsResteMinutes": "${minutes} min left",
+    "removeAdsCta": "Remove ads",
+    "removeAdsTitle": "Remove advertising",
+    "removeAdsSubscribe": "Subscribe",
+    "removeAdsSubscribeBody": "Ad-free everywhere, as long as the subscription is active.",
+    "removeAdsWatch": "Watch a video",
+    "removeAdsWatchBody": "Ad-free for 24 h. Nothing else: no steps, no hike unlocked."
   },
   "signalement": {
     "title": "Report",

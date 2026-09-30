@@ -988,6 +988,19 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get cancelCta => 'Stop my subscription';
 	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.';
 	@override String get cancelStoreUnavailable => 'The store could not be opened. Open it yourself, then go to Subscriptions.';
+	@override String get adsBadgePub => 'With ads';
+	@override String get adsBadgeAbonne => 'Subscriber — ad-free';
+	@override String get adsBadgeAchete => 'Purchased — ad-free';
+	@override String adsBadgeVideo({required Object reste}) => 'Ad-free — ${reste}';
+	@override String get adsA11yPub => 'An ad will be shown when preparing';
+	@override String adsResteHeures({required Object heures}) => '${heures} h left';
+	@override String adsResteMinutes({required Object minutes}) => '${minutes} min left';
+	@override String get removeAdsCta => 'Remove ads';
+	@override String get removeAdsTitle => 'Remove advertising';
+	@override String get removeAdsSubscribe => 'Subscribe';
+	@override String get removeAdsSubscribeBody => 'Ad-free everywhere, as long as the subscription is active.';
+	@override String get removeAdsWatch => 'Watch a video';
+	@override String get removeAdsWatchBody => 'Ad-free for 24 h. Nothing else: no steps, no hike unlocked.';
 }
 
 // Path: signalement
@@ -5196,6 +5209,19 @@ extension on TranslationsEn {
 			'monetization.cancelCta' => 'Stop my subscription',
 			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
+			'monetization.adsBadgePub' => 'With ads',
+			'monetization.adsBadgeAbonne' => 'Subscriber — ad-free',
+			'monetization.adsBadgeAchete' => 'Purchased — ad-free',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Ad-free — ${reste}',
+			'monetization.adsA11yPub' => 'An ad will be shown when preparing',
+			'monetization.adsResteHeures' => ({required Object heures}) => '${heures} h left',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => '${minutes} min left',
+			'monetization.removeAdsCta' => 'Remove ads',
+			'monetization.removeAdsTitle' => 'Remove advertising',
+			'monetization.removeAdsSubscribe' => 'Subscribe',
+			'monetization.removeAdsSubscribeBody' => 'Ad-free everywhere, as long as the subscription is active.',
+			'monetization.removeAdsWatch' => 'Watch a video',
+			'monetization.removeAdsWatchBody' => 'Ad-free for 24 h. Nothing else: no steps, no hike unlocked.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -5682,6 +5708,8 @@ extension on TranslationsEn {
 			'programme.validate' => 'CONFIRM MY PROGRAMME',
 			'programme.validateNext' => 'Confirm and choose dates',
 			'programme.empty.title' => 'Set up your itinerary first',
+			_ => null,
+		} ?? switch (path) {
 			'programme.empty.message' => 'Choose your route and duration to generate your programme.',
 			'programme.empty.action' => 'SET UP ITINERARY',
 			'programme.info.title' => 'Programme',
@@ -5695,8 +5723,6 @@ extension on TranslationsEn {
 			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Ungroup gives each joined stage its own day back. A stage stays whole: it ends where there is a roof. The verdict follows your hardest day — easing it goes through fitness or the season, a rest day changes nothing.',
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
-			_ => null,
-		} ?? switch (path) {
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
 			'programme.splitBlocked.single' => 'Cannot ungroup: this day carries a single stage, there is nothing to ungroup.',

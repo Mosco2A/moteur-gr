@@ -1118,6 +1118,28 @@ class MonetizationService {
     );
   }
 
+  /// Échéance de la récompense sans-pub de 24 h (null si aucune active).
+  ///
+  /// TACHE 639 (avenant, DEM-260930-1241) : Christophe a tranché « video 24h
+  /// retire la pub prepa pendant 24h point », avec un COMPTE A REBOURS VISIBLE.
+  /// Un booléen ne peut pas porter un compte à rebours ; il fallait l'échéance.
+  /// Même forme que [subscriptionExpiresAt], et la même source unique : la table
+  /// des états sans-pub, jamais un second calcul.
+  Future<DateTime?> rewardNoAdsExpiresAt() async {
+    final now = _now();
+    final actives = (await _noAdsDao.getAll())
+        .where(
+          (s) =>
+              s.source == 'reward' &&
+              s.expiresAt != null &&
+              s.expiresAt!.isAfter(now),
+        )
+        .map((s) => s.expiresAt!)
+        .toList();
+    if (actives.isEmpty) return null;
+    return actives.reduce((a, b) => a.isAfter(b) ? a : b);
+  }
+
   /// Octroie une récompense sans-pub de 24 h (après une pub rewarded).
   ///
   /// Pose une source 'reward' `expiresAt = now + 24 h` (horloge [nowFn]).
