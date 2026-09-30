@@ -25,9 +25,10 @@ import '../../../core/branding/stepways_icons.dart';
 /// ([availableTrailsProvider] = catalogue statique [TrailCatalog]) — toujours
 /// presents et resolvables, donc navigables hors ligne. Le manifeste distant
 /// Drift ([catalogStateProvider]) reste reserve a la Phase 4 (telechargement
-/// reel). Chaque sentier propose un bouton "Entrer" qui ecrit la selection
-/// ([selectedTrailIdProvider]) puis ouvre le shell sur /map : c'est l'entree
-/// du coeur de l'app (anciennement orpheline).
+/// reel). Chaque sentier propose UNE action, celle qui correspond a son etat
+/// (tache 639, bug 2) : ACHETER quand il n'est pas possede, PREPARER quand il
+/// l'est — « Preparer » ecrit la selection ([selectedTrailIdProvider]) puis
+/// ouvre le cockpit de preparation, c'est l'entree du coeur de l'app.
 class TrailCatalogScreen extends ConsumerWidget {
   const TrailCatalogScreen({super.key});
 
@@ -250,9 +251,14 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// La carte portait une seule action — « Entrer » — donc le randonneur qui
 /// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
 /// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
-/// enfin un refus qui lui proposait de payer. Le bouton d'achat est desormais
-/// sur la carte, a cote de « Entrer », et il emprunte le geste unique
-/// [acheterSentier] — le meme que la preparation et que le depart.
+/// enfin un refus qui lui proposait de payer. L'achat est desormais sur la
+/// carte, et il emprunte le geste unique [acheterSentier] — le meme que la
+/// preparation et que le depart.
+///
+/// UNE SEULE ACTION A LA FOIS (tache 639, bug 2). Le lot 614 avait pose l'achat
+/// A COTE de « Entrer », si bien qu'un sentier non possede portait DEUX boutons
+/// pour la MEME destination : « Entrer » y menait aussi, par la garde du lot 634.
+/// La carte ne montre plus que l'action de son etat.
 class _AvailableTrailCard extends ConsumerWidget {
   const _AvailableTrailCard({required this.trail, required this.onEnter});
 
@@ -377,44 +383,68 @@ class _AvailableTrailCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingMd),
-          // Action primaire : entrer dans le sentier (cablage nav #88246).
+          // ACHETER, OU PREPARER — UNE SEULE ACTION, JAMAIS LES DEUX
+          // (tache 639, bug 2, DEM-260930-1006).
+          //
+          // LE RETOUR DE CHRISTOPHE, MOT POUR MOT (30/09 10:06) : « pas
+          // debloquer la randonnee mais acheter / preparer (avec une petite pub
+          // ou sans si on est abonne == a la place d entrer) ».
+          //
+          // CE QUE LA CARTE MONTRAIT, MESURE. DEUX boutons, sur un sentier qu'on
+          // ne possede pas : « Entrer » en primaire, et « Debloquer cette
+          // randonnee — 4,99 € » juste dessous. Or « Entrer » n'entrait pas : le
+          // lot 634 y avait pose une garde qui l'envoyait, lui aussi, au
+          // parcours d'achat. Deux boutons, deux libelles, une seule
+          // destination — et un verbe (« entrer ») qui promettait autre chose
+          // que ce qu'il faisait.
+          //
+          // CE QUE LA CARTE MONTRE MAINTENANT : l'action qui correspond a l'etat
+          // du sentier, et elle seule.
+          //   * sentier NON POSSEDE -> ACHETER, avec son prix, vers le parcours
+          //     de deblocage qui existe deja (etapes acquises ou paiement) ;
+          //   * sentier POSSEDE, gratuit, ou couvert par un abonnement ->
+          //     PREPARER, qui ouvre le cockpit de preparation.
+          //
+          // LA PETITE PUB N'EST PAS REDEFINIE ICI, ET C'EST VOULU. « Preparer »
+          // ouvre le cockpit, qui porte deja son emplacement publicitaire
+          // ([BannerAdSlot] dans `hub_screen`), lequel consulte la SOURCE UNIQUE
+          // [MonetizationService.isNoAdsActive] — sentier achete, abonnement
+          // actif ou recompense video de 24 h coupent la banniere. Un abonne ne
+          // voit donc aucune pub en preparation, sans une ligne de plus : la
+          // regle d'or #99404 le disait deja. Recalculer la regle ici en aurait
+          // fait une seconde.
           SizedBox(
             width: double.infinity,
-            child: Semantics(
-              button: true,
-              label: t.catalog.a11y.enterButton(nom: nom),
-              // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
-              // #A5), pleine largeur (SizedBox width infinity conserve).
-              // key/Semantics(button+label) preserves.
-              child: AppButton(
-                key: ValueKey('catalog-enter-${trail.id}'),
-                icon: StepwaysIcons.flecheAvant,
-                label: t.catalog.enter,
-                onPressed: onEnter,
-              ),
-            ),
+            child: achetable
+                ? Semantics(
+                    button: true,
+                    label: t.catalog.a11y.buyButton(nom: nom),
+                    child: AppButton(
+                      key: ValueKey('catalog-buy-${trail.id}'),
+                      icon: StepwaysIcons.panier,
+                      label: t.monetization.buyCtaWithPrice(
+                        price: monetisation
+                            .eurPriceForTrail(trail.id)
+                            .toStringAsFixed(2),
+                      ),
+                      onPressed: () =>
+                          acheterSentier(context, ref, trailId: trail.id),
+                    ),
+                  )
+                : Semantics(
+                    button: true,
+                    label: t.catalog.a11y.prepareButton(nom: nom),
+                    // SW-SKIN-L3e : FilledButton.icon -> AppButton primary
+                    // (arbitrage #A5), pleine largeur (SizedBox width infinity
+                    // conserve). key/Semantics(button+label) preserves.
+                    child: AppButton(
+                      key: ValueKey('catalog-enter-${trail.id}'),
+                      icon: StepwaysIcons.programme,
+                      label: t.catalog.prepare,
+                      onPressed: onEnter,
+                    ),
+                  ),
           ),
-          // ACHETER DEPUIS LE CATALOGUE (tache 614) — premier des trois points
-          // d'entree. Absent des que le sentier n'est plus a vendre : possede,
-          // gratuit, ou couvert par un abonnement.
-          if (achetable) ...[
-            const SizedBox(height: AppTheme.spacingSm),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                key: ValueKey('catalog-buy-${trail.id}'),
-                variant: AppButtonVariant.outline,
-                icon: StepwaysIcons.cadenasOuvert,
-                label: t.monetization.buyCtaWithPrice(
-                  price: monetisation
-                      .eurPriceForTrail(trail.id)
-                      .toStringAsFixed(2),
-                ),
-                onPressed: () =>
-                    acheterSentier(context, ref, trailId: trail.id),
-              ),
-            ),
-          ],
         ],
       ),
     );

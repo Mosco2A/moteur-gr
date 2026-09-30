@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Versione di prova",
     "demoBridledBody": "Le prime categorie sono giocabili per finta. Lo zaino completo, adattato all'escursione e alla stagione, si apre con l'escursione.",
-    "demoLockedCategory": "Sblocca l'escursione per questa categoria",
-    "demoUnlockCta": "Sblocca l'escursione"
+    "demoLockedCategory": "Acquista l'escursione per questa categoria",
+    "demoUnlockCta": "Acquista l'escursione"
   },
   "journal": {
     "title": "Diario di trekking",
@@ -657,7 +657,7 @@
     "shareError": "Condivisione non riuscita",
     "lockedTitle": "Il diario fa parte del pacchetto",
     "lockedBody": "Annota le tue impressioni, aggiungi le foto e rileggi ogni giornata di cammino. Il diario si sblocca con il sentiero.",
-    "lockedUnlock": "Sblocca"
+    "lockedUnlock": "Acquista"
   },
   "weather": {
     "title": "Meteo",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Catalogo dei sentieri",
-    "enter": "Entra",
+    "prepare": "Prepara",
     "mustDownload": "Scarica questo sentiero per esplorarlo.",
     "emptyTitle": "Nessun sentiero disponibile",
     "emptySubtitle": "Nessun sentiero è ancora proposto nel catalogo.",
     "a11y": {
-      "enterButton": "Entra nel sentiero $nom",
+      "prepareButton": "Prepara il sentiero $nom",
+      "buyButton": "Acquista il sentiero $nom",
       "freeTrailBadge": "Sentiero gratuito"
     },
     "freeTrailName": "$nom — Demo gratuita",
@@ -1149,8 +1150,8 @@
     "featureDiploma": "Diploma di fine trek",
     "featureFollowers": "2 follower gratuiti",
     "featureNoAds": "Zero pubblicità",
-    "buyCta": "Sblocca questo trek",
-    "buyCtaWithPrice": "Sblocca questo trek — $price €",
+    "buyCta": "Acquista",
+    "buyCtaWithPrice": "Acquista — $price €",
     "rewardedCta": "Un giorno senza pubblicità — guarda un video",
     "rewardedEarned": "Grazie! Senza pubblicità per 24 h.",
     "rewardedUnavailable": "Nessun video disponibile al momento.",
@@ -1258,7 +1259,7 @@
     "paywallTitle": "Programma di allenamento personalizzato",
     "paywallIncludedIn": "Incluso nel pacchetto « $trail ».",
     "paywallSubtitle": "Piano adattato al tuo profilo e alla tua data di partenza.",
-    "unlock": "Sblocca",
+    "unlock": "Acquista",
     "effortIntro": "Un piano progressivo di $weeks settimane per affrontare i $km km e circa $elevation m di dislivello.",
     "countdown": "Partenza tra $days giorni",
     "planOverWeeks": "Piano su $n settimane",

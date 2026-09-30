@@ -472,8 +472,8 @@ class _Translations$checklist$en extends Translations$checklist$fr {
 	@override String seasonalWeight({required Object g}) => '${g} g';
 	@override String get demoBridledTitle => 'Trial version';
 	@override String get demoBridledBody => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.';
-	@override String get demoLockedCategory => 'Unlock the hike for this category';
-	@override String get demoUnlockCta => 'Unlock the hike';
+	@override String get demoLockedCategory => 'Buy the hike for this category';
+	@override String get demoUnlockCta => 'Buy the hike';
 }
 
 // Path: journal
@@ -522,7 +522,7 @@ class _Translations$journal$en extends Translations$journal$fr {
 	@override String get shareError => 'Sharing failed';
 	@override String get lockedTitle => 'The journal is part of the pack';
 	@override String get lockedBody => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.';
-	@override String get lockedUnlock => 'Unlock';
+	@override String get lockedUnlock => 'Buy';
 }
 
 // Path: weather
@@ -837,7 +837,7 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 
 	// Translations
 	@override String get title => 'Trail catalog';
-	@override String get enter => 'Enter';
+	@override String get prepare => 'Prepare';
 	@override String get mustDownload => 'Download this trail to explore it.';
 	@override String get emptyTitle => 'No trail available';
 	@override String get emptySubtitle => 'No trail is offered in the catalog yet.';
@@ -946,8 +946,8 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get featureDiploma => 'End-of-trek diploma';
 	@override String get featureFollowers => '2 free followers';
 	@override String get featureNoAds => 'Zero ads';
-	@override String get buyCta => 'Unlock this trek';
-	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
+	@override String get buyCta => 'Buy';
+	@override String buyCtaWithPrice({required Object price}) => 'Buy — €${price}';
 	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
@@ -1046,7 +1046,7 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get paywallTitle => 'Personalised training plan';
 	@override String paywallIncludedIn({required Object trail}) => 'Included in the « ${trail} » pack.';
 	@override String get paywallSubtitle => 'Plan tailored to your profile and departure date.';
-	@override String get unlock => 'Unlock';
+	@override String get unlock => 'Buy';
 	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.';
 	@override String countdown({required Object days}) => 'Departure in ${days} days';
 	@override String planOverWeeks({required Object n}) => '${n}-week plan';
@@ -2629,7 +2629,8 @@ class _Translations$catalog$a11y$en extends Translations$catalog$a11y$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String enterButton({required Object nom}) => 'Enter trail ${nom}';
+	@override String prepareButton({required Object nom}) => 'Prepare trail ${nom}';
+	@override String buyButton({required Object nom}) => 'Buy trail ${nom}';
 	@override String get freeTrailBadge => 'Free trail';
 }
 
@@ -4697,8 +4698,8 @@ extension on TranslationsEn {
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'checklist.demoBridledTitle' => 'Trial version',
 			'checklist.demoBridledBody' => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.',
-			'checklist.demoLockedCategory' => 'Unlock the hike for this category',
-			'checklist.demoUnlockCta' => 'Unlock the hike',
+			'checklist.demoLockedCategory' => 'Buy the hike for this category',
+			'checklist.demoUnlockCta' => 'Buy the hike',
 			'journal.title' => 'Trek journal',
 			'journal.empty' => 'Your journal is empty',
 			'journal.emptySubtitle' => 'Write down your trek impressions and memories',
@@ -4738,7 +4739,7 @@ extension on TranslationsEn {
 			'journal.shareError' => 'Sharing failed',
 			'journal.lockedTitle' => 'The journal is part of the pack',
 			'journal.lockedBody' => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.',
-			'journal.lockedUnlock' => 'Unlock',
+			'journal.lockedUnlock' => 'Buy',
 			'weather.title' => 'Weather',
 			'weather.loading' => 'Loading weather...',
 			'weather.offline' => 'No connection. Weather data unavailable.',
@@ -5094,11 +5095,12 @@ extension on TranslationsEn {
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
 			'catalog.title' => 'Trail catalog',
-			'catalog.enter' => 'Enter',
+			'catalog.prepare' => 'Prepare',
 			'catalog.mustDownload' => 'Download this trail to explore it.',
 			'catalog.emptyTitle' => 'No trail available',
 			'catalog.emptySubtitle' => 'No trail is offered in the catalog yet.',
-			'catalog.a11y.enterButton' => ({required Object nom}) => 'Enter trail ${nom}',
+			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Prepare trail ${nom}',
+			'catalog.a11y.buyButton' => ({required Object nom}) => 'Buy trail ${nom}',
 			'catalog.a11y.freeTrailBadge' => 'Free trail',
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Free demo',
 			'catalog.freeBadge' => 'Free',
@@ -5150,8 +5152,8 @@ extension on TranslationsEn {
 			'monetization.featureDiploma' => 'End-of-trek diploma',
 			'monetization.featureFollowers' => '2 free followers',
 			'monetization.featureNoAds' => 'Zero ads',
-			'monetization.buyCta' => 'Unlock this trek',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
+			'monetization.buyCta' => 'Buy',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Buy — €${price}',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
@@ -5179,9 +5181,9 @@ extension on TranslationsEn {
 			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Active until ${date}',
 			'monetization.subscriptionInactive' => 'No active subscription',
 			'monetization.subscriptionAllowancePending' => 'The allowance amount has not been set yet.',
-			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
 			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
 			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
@@ -5243,7 +5245,7 @@ extension on TranslationsEn {
 			'training.paywallTitle' => 'Personalised training plan',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Included in the « ${trail} » pack.',
 			'training.paywallSubtitle' => 'Plan tailored to your profile and departure date.',
-			'training.unlock' => 'Unlock',
+			'training.unlock' => 'Buy',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.',
 			'training.countdown' => ({required Object days}) => 'Departure in ${days} days',
 			'training.planOverWeeks' => ({required Object n}) => '${n}-week plan',
@@ -5693,9 +5695,9 @@ extension on TranslationsEn {
 			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.',
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
-			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
 			'programme.splitBlocked.single' => 'Cannot split: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',

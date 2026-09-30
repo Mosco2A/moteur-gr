@@ -876,11 +876,11 @@ class Translations$checklist$fr {
 	/// fr: 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s'ouvre avec la randonnée.'
 	String get demoBridledBody => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.';
 
-	/// fr: 'Débloquez la randonnée pour cette catégorie'
-	String get demoLockedCategory => 'Débloquez la randonnée pour cette catégorie';
+	/// fr: 'Achetez la randonnée pour cette catégorie'
+	String get demoLockedCategory => 'Achetez la randonnée pour cette catégorie';
 
-	/// fr: 'Débloquer la randonnée'
-	String get demoUnlockCta => 'Débloquer la randonnée';
+	/// fr: 'Acheter la randonnée'
+	String get demoUnlockCta => 'Acheter la randonnée';
 }
 
 // Path: journal
@@ -1008,8 +1008,8 @@ class Translations$journal$fr {
 	/// fr: 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.'
 	String get lockedBody => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.';
 
-	/// fr: 'Débloquer'
-	String get lockedUnlock => 'Débloquer';
+	/// fr: 'Acheter'
+	String get lockedUnlock => 'Acheter';
 }
 
 // Path: weather
@@ -1719,8 +1719,8 @@ class Translations$catalog$fr {
 	/// fr: 'Catalogue des sentiers'
 	String get title => 'Catalogue des sentiers';
 
-	/// fr: 'Entrer'
-	String get enter => 'Entrer';
+	/// fr: 'Préparer'
+	String get prepare => 'Préparer';
 
 	/// fr: 'Téléchargez ce sentier pour l'explorer.'
 	String get mustDownload => 'Téléchargez ce sentier pour l\'explorer.';
@@ -1937,11 +1937,11 @@ class Translations$monetization$fr {
 	/// fr: 'Zéro publicité'
 	String get featureNoAds => 'Zéro publicité';
 
-	/// fr: 'Débloquer cette randonnée'
-	String get buyCta => 'Débloquer cette randonnée';
+	/// fr: 'Acheter'
+	String get buyCta => 'Acheter';
 
-	/// fr: 'Débloquer cette randonnée — $price €'
-	String buyCtaWithPrice({required Object price}) => 'Débloquer cette randonnée — ${price} €';
+	/// fr: 'Acheter — $price €'
+	String buyCtaWithPrice({required Object price}) => 'Acheter — ${price} €';
 
 	/// fr: 'Un jour sans publicité — regarder une vidéo'
 	String get rewardedCta => 'Un jour sans publicité — regarder une vidéo';
@@ -2177,8 +2177,8 @@ class Translations$training$fr {
 	/// fr: 'Plan adapté à votre profil et à votre date de départ.'
 	String get paywallSubtitle => 'Plan adapté à votre profil et à votre date de départ.';
 
-	/// fr: 'Débloquer'
-	String get unlock => 'Débloquer';
+	/// fr: 'Acheter'
+	String get unlock => 'Acheter';
 
 	/// fr: 'Un plan progressif sur $weeks semaines pour aborder les $km km et environ $elevation m de dénivelé.'
 	String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.';
@@ -5635,8 +5635,11 @@ class Translations$catalog$a11y$fr {
 
 	// Translations
 
-	/// fr: 'Entrer dans le sentier $nom'
-	String enterButton({required Object nom}) => 'Entrer dans le sentier ${nom}';
+	/// fr: 'Préparer le sentier $nom'
+	String prepareButton({required Object nom}) => 'Préparer le sentier ${nom}';
+
+	/// fr: 'Acheter le sentier $nom'
+	String buyButton({required Object nom}) => 'Acheter le sentier ${nom}';
 
 	/// fr: 'Sentier gratuit'
 	String get freeTrailBadge => 'Sentier gratuit';
@@ -8642,8 +8645,8 @@ extension on Translations {
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'checklist.demoBridledTitle' => 'Version d\'essai',
 			'checklist.demoBridledBody' => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.',
-			'checklist.demoLockedCategory' => 'Débloquez la randonnée pour cette catégorie',
-			'checklist.demoUnlockCta' => 'Débloquer la randonnée',
+			'checklist.demoLockedCategory' => 'Achetez la randonnée pour cette catégorie',
+			'checklist.demoUnlockCta' => 'Acheter la randonnée',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
 			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
@@ -8683,7 +8686,7 @@ extension on Translations {
 			'journal.shareError' => 'Partage impossible',
 			'journal.lockedTitle' => 'Le journal fait partie du pack',
 			'journal.lockedBody' => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.',
-			'journal.lockedUnlock' => 'Débloquer',
+			'journal.lockedUnlock' => 'Acheter',
 			'weather.title' => 'Météo',
 			'weather.loading' => 'Chargement de la météo...',
 			'weather.offline' => 'Pas de connexion. Données météo indisponibles.',
@@ -9039,11 +9042,12 @@ extension on Translations {
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
 			'catalog.title' => 'Catalogue des sentiers',
-			'catalog.enter' => 'Entrer',
+			'catalog.prepare' => 'Préparer',
 			'catalog.mustDownload' => 'Téléchargez ce sentier pour l\'explorer.',
 			'catalog.emptyTitle' => 'Aucun sentier disponible',
 			'catalog.emptySubtitle' => 'Aucun sentier n\'est encore proposé au catalogue.',
-			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrer dans le sentier ${nom}',
+			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Préparer le sentier ${nom}',
+			'catalog.a11y.buyButton' => ({required Object nom}) => 'Acheter le sentier ${nom}',
 			'catalog.a11y.freeTrailBadge' => 'Sentier gratuit',
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Démo gratuite',
 			'catalog.freeBadge' => 'Gratuit',
@@ -9095,8 +9099,8 @@ extension on Translations {
 			'monetization.featureDiploma' => 'Diplôme de fin de randonnée',
 			'monetization.featureFollowers' => '2 suiveurs gratuits',
 			'monetization.featureNoAds' => 'Zéro publicité',
-			'monetization.buyCta' => 'Débloquer cette randonnée',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer cette randonnée — ${price} €',
+			'monetization.buyCta' => 'Acheter',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acheter — ${price} €',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
@@ -9124,9 +9128,9 @@ extension on Translations {
 			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Actif jusqu\'au ${date}',
 			'monetization.subscriptionInactive' => 'Aucun abonnement actif',
 			'monetization.subscriptionAllowancePending' => 'Le montant de la cagnotte n\'est pas encore fixé.',
-			'monetization.realizationLockedTitle' => 'Cette randonnée n\'est pas débloquée',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.realizationLockedTitle' => 'Cette randonnée n\'est pas débloquée',
 			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
 			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
@@ -9188,7 +9192,7 @@ extension on Translations {
 			'training.paywallTitle' => 'Programme d\'entraînement personnalisé',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Inclus dans le pack « ${trail} ».',
 			'training.paywallSubtitle' => 'Plan adapté à votre profil et à votre date de départ.',
-			'training.unlock' => 'Débloquer',
+			'training.unlock' => 'Acheter',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.',
 			'training.countdown' => ({required Object days}) => 'Départ dans ${days} jours',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan sur ${n} semaines',
@@ -9638,9 +9642,9 @@ extension on Translations {
 			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
-			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',

@@ -41,7 +41,10 @@ class TrailDetailScreen extends ConsumerWidget {
           // Titre de section
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
-            child: SectionHeader(title: 'Étapes', icon: StepwaysIcons.chaussure),
+            child: SectionHeader(
+              title: 'Étapes',
+              icon: StepwaysIcons.chaussure,
+            ),
           ),
           // Liste des étapes (AsyncValue)
           Expanded(
@@ -88,21 +91,23 @@ class TrailDetailScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Action primaire : ENTRER dans le sentier (cablage nav #88246).
-              // Active ce sentier (selectedTrailIdProvider) puis ouvre le shell
-              // sur /map -> entree du coeur de l'app depuis le lien profond.
+              // Action primaire : PREPARER le sentier (cablage nav #88246 ;
+              // libelle revu par la tache 639, bug 2). Active ce sentier
+              // (selectedTrailIdProvider) puis ouvre le cockpit de preparation.
+              // Le verbe est le MEME que sur la carte du catalogue : deux mots
+              // pour le meme geste, c'etait deux gestes pour le randonneur.
               SizedBox(
                 width: double.infinity,
                 child: Semantics(
                   button: true,
-                  label: t.catalog.a11y.enterButton(nom: config.displayName),
+                  label: t.catalog.a11y.prepareButton(nom: config.displayName),
                   // SW-SKIN-L3e : FilledButton.icon -> AppButton primary
                   // (arbitrage #A5), pleine largeur (SizedBox width infinity
                   // conserve). key/Semantics(button+label) preserves.
                   child: AppButton(
                     key: const ValueKey('trail-detail-enter'),
-                    icon: StepwaysIcons.flecheAvant,
-                    label: t.catalog.enter,
+                    icon: StepwaysIcons.programme,
+                    label: t.catalog.prepare,
                     onPressed: () => _enterTrail(context, ref),
                   ),
                 ),
@@ -196,7 +201,11 @@ class _TrailHeader extends StatelessWidget {
             spacing: AppTheme.spacingBase,
             runSpacing: AppTheme.spacingXs,
             children: [
-              _InfoChip(icon: StepwaysIcons.repere, label: config.region, theme: theme),
+              _InfoChip(
+                icon: StepwaysIcons.repere,
+                label: config.region,
+                theme: theme,
+              ),
               _InfoChip(
                 icon: StepwaysIcons.distance,
                 label: '${config.totalDistanceKm} km',

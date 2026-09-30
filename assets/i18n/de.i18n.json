@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Testversion",
     "demoBridledBody": "Die ersten Kategorien sind zum Ausprobieren spielbar. Der vollständige Rucksack, passend zu Wanderung und Jahreszeit, öffnet sich mit der Wanderung.",
-    "demoLockedCategory": "Wanderung freischalten für diese Kategorie",
-    "demoUnlockCta": "Wanderung freischalten"
+    "demoLockedCategory": "Wanderung kaufen für diese Kategorie",
+    "demoUnlockCta": "Wanderung kaufen"
   },
   "journal": {
     "title": "Wandertagebuch",
@@ -657,7 +657,7 @@
     "shareError": "Teilen nicht möglich",
     "lockedTitle": "Das Tagebuch gehört zum Paket",
     "lockedBody": "Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.",
-    "lockedUnlock": "Freischalten"
+    "lockedUnlock": "Kaufen"
   },
   "weather": {
     "title": "Wetter",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Wegekatalog",
-    "enter": "Öffnen",
+    "prepare": "Vorbereiten",
     "mustDownload": "Laden Sie diesen Weg herunter, um ihn zu erkunden.",
     "emptyTitle": "Kein Weg verfügbar",
     "emptySubtitle": "Im Katalog wird noch kein Weg angeboten.",
     "a11y": {
-      "enterButton": "Weg $nom öffnen",
+      "prepareButton": "Weg $nom vorbereiten",
+      "buyButton": "Weg $nom kaufen",
       "freeTrailBadge": "Kostenloser Weg"
     },
     "freeTrailName": "$nom — Kostenlose Demo",
@@ -1149,8 +1150,8 @@
     "featureDiploma": "Trek-Abschlussdiplom",
     "featureFollowers": "2 kostenlose Follower",
     "featureNoAds": "Keine Werbung",
-    "buyCta": "Diesen Trek freischalten",
-    "buyCtaWithPrice": "Diesen Trek freischalten — $price €",
+    "buyCta": "Kaufen",
+    "buyCtaWithPrice": "Kaufen — $price €",
     "rewardedCta": "Ein Tag ohne Werbung — Video ansehen",
     "rewardedEarned": "Danke! 24 h werbefrei.",
     "rewardedUnavailable": "Derzeit kein Video verfügbar.",
@@ -1258,7 +1259,7 @@
     "paywallTitle": "Personalisierter Trainingsplan",
     "paywallIncludedIn": "Im Paket « $trail » enthalten.",
     "paywallSubtitle": "Plan angepasst an Ihr Profil und Ihr Abreisedatum.",
-    "unlock": "Freischalten",
+    "unlock": "Kaufen",
     "effortIntro": "Ein progressiver $weeks-Wochen-Plan für die $km km und rund $elevation m Höhenmeter.",
     "countdown": "Abreise in $days Tagen",
     "planOverWeeks": "Plan über $n Wochen",

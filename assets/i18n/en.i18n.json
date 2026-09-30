@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Trial version",
     "demoBridledBody": "The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.",
-    "demoLockedCategory": "Unlock the hike for this category",
-    "demoUnlockCta": "Unlock the hike"
+    "demoLockedCategory": "Buy the hike for this category",
+    "demoUnlockCta": "Buy the hike"
   },
   "journal": {
     "title": "Trek journal",
@@ -657,7 +657,7 @@
     "shareError": "Sharing failed",
     "lockedTitle": "The journal is part of the pack",
     "lockedBody": "Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.",
-    "lockedUnlock": "Unlock"
+    "lockedUnlock": "Buy"
   },
   "weather": {
     "title": "Weather",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Trail catalog",
-    "enter": "Enter",
+    "prepare": "Prepare",
     "mustDownload": "Download this trail to explore it.",
     "emptyTitle": "No trail available",
     "emptySubtitle": "No trail is offered in the catalog yet.",
     "a11y": {
-      "enterButton": "Enter trail $nom",
+      "prepareButton": "Prepare trail $nom",
+      "buyButton": "Buy trail $nom",
       "freeTrailBadge": "Free trail"
     },
     "freeTrailName": "$nom — Free demo",
@@ -1149,8 +1150,8 @@
     "featureDiploma": "End-of-trek diploma",
     "featureFollowers": "2 free followers",
     "featureNoAds": "Zero ads",
-    "buyCta": "Unlock this trek",
-    "buyCtaWithPrice": "Unlock this trek — €$price",
+    "buyCta": "Buy",
+    "buyCtaWithPrice": "Buy — €$price",
     "rewardedCta": "A day without ads — watch a video",
     "rewardedEarned": "Thanks! Ad-free for 24 h.",
     "rewardedUnavailable": "No video available right now.",
@@ -1258,7 +1259,7 @@
     "paywallTitle": "Personalised training plan",
     "paywallIncludedIn": "Included in the « $trail » pack.",
     "paywallSubtitle": "Plan tailored to your profile and departure date.",
-    "unlock": "Unlock",
+    "unlock": "Buy",
     "effortIntro": "A progressive $weeks-week plan to tackle the $km km and about $elevation m of elevation gain.",
     "countdown": "Departure in $days days",
     "planOverWeeks": "$n-week plan",

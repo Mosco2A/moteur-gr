@@ -472,8 +472,8 @@ class _Translations$checklist$it extends Translations$checklist$fr {
 	@override String seasonalWeight({required Object g}) => '${g} g';
 	@override String get demoBridledTitle => 'Versione di prova';
 	@override String get demoBridledBody => 'Le prime categorie sono giocabili per finta. Lo zaino completo, adattato all\'escursione e alla stagione, si apre con l\'escursione.';
-	@override String get demoLockedCategory => 'Sblocca l\'escursione per questa categoria';
-	@override String get demoUnlockCta => 'Sblocca l\'escursione';
+	@override String get demoLockedCategory => 'Acquista l\'escursione per questa categoria';
+	@override String get demoUnlockCta => 'Acquista l\'escursione';
 }
 
 // Path: journal
@@ -522,7 +522,7 @@ class _Translations$journal$it extends Translations$journal$fr {
 	@override String get shareError => 'Condivisione non riuscita';
 	@override String get lockedTitle => 'Il diario fa parte del pacchetto';
 	@override String get lockedBody => 'Annota le tue impressioni, aggiungi le foto e rileggi ogni giornata di cammino. Il diario si sblocca con il sentiero.';
-	@override String get lockedUnlock => 'Sblocca';
+	@override String get lockedUnlock => 'Acquista';
 }
 
 // Path: weather
@@ -837,7 +837,7 @@ class _Translations$catalog$it extends Translations$catalog$fr {
 
 	// Translations
 	@override String get title => 'Catalogo dei sentieri';
-	@override String get enter => 'Entra';
+	@override String get prepare => 'Prepara';
 	@override String get mustDownload => 'Scarica questo sentiero per esplorarlo.';
 	@override String get emptyTitle => 'Nessun sentiero disponibile';
 	@override String get emptySubtitle => 'Nessun sentiero è ancora proposto nel catalogo.';
@@ -946,8 +946,8 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get featureDiploma => 'Diploma di fine trek';
 	@override String get featureFollowers => '2 follower gratuiti';
 	@override String get featureNoAds => 'Zero pubblicità';
-	@override String get buyCta => 'Sblocca questo trek';
-	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
+	@override String get buyCta => 'Acquista';
+	@override String buyCtaWithPrice({required Object price}) => 'Acquista — ${price} €';
 	@override String get rewardedCta => 'Un giorno senza pubblicità — guarda un video';
 	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
 	@override String get rewardedUnavailable => 'Nessun video disponibile al momento.';
@@ -1046,7 +1046,7 @@ class _Translations$training$it extends Translations$training$fr {
 	@override String get paywallTitle => 'Programma di allenamento personalizzato';
 	@override String paywallIncludedIn({required Object trail}) => 'Incluso nel pacchetto « ${trail} ».';
 	@override String get paywallSubtitle => 'Piano adattato al tuo profilo e alla tua data di partenza.';
-	@override String get unlock => 'Sblocca';
+	@override String get unlock => 'Acquista';
 	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Un piano progressivo di ${weeks} settimane per affrontare i ${km} km e circa ${elevation} m di dislivello.';
 	@override String countdown({required Object days}) => 'Partenza tra ${days} giorni';
 	@override String planOverWeeks({required Object n}) => 'Piano su ${n} settimane';
@@ -2629,7 +2629,8 @@ class _Translations$catalog$a11y$it extends Translations$catalog$a11y$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
-	@override String enterButton({required Object nom}) => 'Entra nel sentiero ${nom}';
+	@override String prepareButton({required Object nom}) => 'Prepara il sentiero ${nom}';
+	@override String buyButton({required Object nom}) => 'Acquista il sentiero ${nom}';
 	@override String get freeTrailBadge => 'Sentiero gratuito';
 }
 
@@ -4697,8 +4698,8 @@ extension on TranslationsIt {
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'checklist.demoBridledTitle' => 'Versione di prova',
 			'checklist.demoBridledBody' => 'Le prime categorie sono giocabili per finta. Lo zaino completo, adattato all\'escursione e alla stagione, si apre con l\'escursione.',
-			'checklist.demoLockedCategory' => 'Sblocca l\'escursione per questa categoria',
-			'checklist.demoUnlockCta' => 'Sblocca l\'escursione',
+			'checklist.demoLockedCategory' => 'Acquista l\'escursione per questa categoria',
+			'checklist.demoUnlockCta' => 'Acquista l\'escursione',
 			'journal.title' => 'Diario di trekking',
 			'journal.empty' => 'Il tuo diario è vuoto',
 			'journal.emptySubtitle' => 'Annota le tue impressioni e ricordi di trekking',
@@ -4738,7 +4739,7 @@ extension on TranslationsIt {
 			'journal.shareError' => 'Condivisione non riuscita',
 			'journal.lockedTitle' => 'Il diario fa parte del pacchetto',
 			'journal.lockedBody' => 'Annota le tue impressioni, aggiungi le foto e rileggi ogni giornata di cammino. Il diario si sblocca con il sentiero.',
-			'journal.lockedUnlock' => 'Sblocca',
+			'journal.lockedUnlock' => 'Acquista',
 			'weather.title' => 'Meteo',
 			'weather.loading' => 'Caricamento meteo...',
 			'weather.offline' => 'Nessuna connessione. Dati meteo non disponibili.',
@@ -5094,11 +5095,12 @@ extension on TranslationsIt {
 			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
 			'noData.browseCta' => 'Esplora i sentieri',
 			'catalog.title' => 'Catalogo dei sentieri',
-			'catalog.enter' => 'Entra',
+			'catalog.prepare' => 'Prepara',
 			'catalog.mustDownload' => 'Scarica questo sentiero per esplorarlo.',
 			'catalog.emptyTitle' => 'Nessun sentiero disponibile',
 			'catalog.emptySubtitle' => 'Nessun sentiero è ancora proposto nel catalogo.',
-			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entra nel sentiero ${nom}',
+			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Prepara il sentiero ${nom}',
+			'catalog.a11y.buyButton' => ({required Object nom}) => 'Acquista il sentiero ${nom}',
 			'catalog.a11y.freeTrailBadge' => 'Sentiero gratuito',
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Demo gratuita',
 			'catalog.freeBadge' => 'Gratuito',
@@ -5150,8 +5152,8 @@ extension on TranslationsIt {
 			'monetization.featureDiploma' => 'Diploma di fine trek',
 			'monetization.featureFollowers' => '2 follower gratuiti',
 			'monetization.featureNoAds' => 'Zero pubblicità',
-			'monetization.buyCta' => 'Sblocca questo trek',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
+			'monetization.buyCta' => 'Acquista',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acquista — ${price} €',
 			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
 			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
@@ -5179,9 +5181,9 @@ extension on TranslationsIt {
 			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Attivo fino al ${date}',
 			'monetization.subscriptionInactive' => 'Nessun abbonamento attivo',
 			'monetization.subscriptionAllowancePending' => 'L\'importo del bonus non è ancora stabilito.',
-			'monetization.realizationLockedTitle' => 'Questa escursione non è sbloccata',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.realizationLockedTitle' => 'Questa escursione non è sbloccata',
 			'monetization.realizationLockedBody' => 'Per realizzare un\'escursione bisogna averla sbloccata. La preparazione resta gratuita.',
 			'monetization.buyOutcomeOwned' => 'Escursione sbloccata. Buon cammino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
@@ -5243,7 +5245,7 @@ extension on TranslationsIt {
 			'training.paywallTitle' => 'Programma di allenamento personalizzato',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Incluso nel pacchetto « ${trail} ».',
 			'training.paywallSubtitle' => 'Piano adattato al tuo profilo e alla tua data di partenza.',
-			'training.unlock' => 'Sblocca',
+			'training.unlock' => 'Acquista',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un piano progressivo di ${weeks} settimane per affrontare i ${km} km e circa ${elevation} m di dislivello.',
 			'training.countdown' => ({required Object days}) => 'Partenza tra ${days} giorni',
 			'training.planOverWeeks' => ({required Object n}) => 'Piano su ${n} settimane',
@@ -5693,9 +5695,9 @@ extension on TranslationsIt {
 			'programme.info.mergeSplit.body' => 'Raggruppa unisce due giorni in uno; Dividi taglia un giorno in due — le sue tappe se erano unite, altrimenti la tappa stessa in due metà di pari sforzo. Il verdetto è fissato dalla giornata più dura: dividerla è il solo modo per alleggerirla, un giorno di riposo non cambia nulla. Una tappa divisa presuppone una sosta a metà percorso: verificate che ci sia dove dormire.',
 			'programme.info.colors.title' => 'Colori',
 			'programme.info.colors.body' => 'Verde = facile, Arancione = medio, Rosso = difficile (distanza + dislivello).',
-			'programme.info.note' => 'Il profilo altimetrico in basso mostra il dislivello di ogni giorno.',
 			_ => null,
 		} ?? switch (path) {
+			'programme.info.note' => 'Il profilo altimetrico in basso mostra il dislivello di ogni giorno.',
 			'programme.info.close' => 'Capito!',
 			'programme.splitBlocked.single' => 'Impossibile dividere: questa giornata porta una sola tappa, non c\'è nulla da separare.',
 			'programme.splitBlocked.locked' => 'Giorno già percorso: non è più modificabile',

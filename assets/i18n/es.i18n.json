@@ -614,8 +614,8 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Versión de prueba",
     "demoBridledBody": "Las primeras categorías se pueden jugar de mentira. La mochila completa, adaptada a la ruta y a la temporada, se abre con la ruta.",
-    "demoLockedCategory": "Desbloquea la ruta para esta categoría",
-    "demoUnlockCta": "Desbloquear la ruta"
+    "demoLockedCategory": "Compra la ruta para esta categoría",
+    "demoUnlockCta": "Comprar la ruta"
   },
   "journal": {
     "title": "Diario de trekking",
@@ -657,7 +657,7 @@
     "shareError": "No se ha podido compartir",
     "lockedTitle": "El diario forma parte del pack",
     "lockedBody": "Anota tus impresiones, añade tus fotos y relee cada jornada de marcha. El diario se desbloquea con la ruta.",
-    "lockedUnlock": "Desbloquear"
+    "lockedUnlock": "Comprar"
   },
   "weather": {
     "title": "Meteorología",
@@ -1079,12 +1079,13 @@
   },
   "catalog": {
     "title": "Catálogo de senderos",
-    "enter": "Entrar",
+    "prepare": "Preparar",
     "mustDownload": "Descarga este sendero para explorarlo.",
     "emptyTitle": "Ningún sendero disponible",
     "emptySubtitle": "Aún no hay ningún sendero en el catálogo.",
     "a11y": {
-      "enterButton": "Entrar en el sendero $nom",
+      "prepareButton": "Preparar el sendero $nom",
+      "buyButton": "Comprar el sendero $nom",
       "freeTrailBadge": "Sendero gratuito"
     },
     "freeTrailName": "$nom — Demo gratis",
@@ -1149,8 +1150,8 @@
     "featureDiploma": "Diploma de fin de trek",
     "featureFollowers": "2 seguidores gratuitos",
     "featureNoAds": "Cero publicidad",
-    "buyCta": "Desbloquear este trek",
-    "buyCtaWithPrice": "Desbloquear este trek — $price €",
+    "buyCta": "Comprar",
+    "buyCtaWithPrice": "Comprar — $price €",
     "rewardedCta": "Un día sin anuncios — ver un vídeo",
     "rewardedEarned": "¡Gracias! Sin publicidad durante 24 h.",
     "rewardedUnavailable": "No hay vídeo disponible ahora mismo.",
@@ -1258,7 +1259,7 @@
     "paywallTitle": "Programa de entrenamiento personalizado",
     "paywallIncludedIn": "Incluido en el pack « $trail ».",
     "paywallSubtitle": "Plan adaptado a tu perfil y a tu fecha de salida.",
-    "unlock": "Desbloquear",
+    "unlock": "Comprar",
     "effortIntro": "Un plan progresivo de $weeks semanas para afrontar los $km km y unos $elevation m de desnivel.",
     "countdown": "Salida en $days días",
     "planOverWeeks": "Plan de $n semanas",
