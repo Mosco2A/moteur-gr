@@ -1462,7 +1462,7 @@ class _Translations$calendar$en extends Translations$calendar$fr {
 	@override String get adjustStages => 'ADJUST STAGES';
 	@override String get stageSingular => 'Stage {n}';
 	@override String get stagesPlural => 'Stages {list}';
-	@override String get splitStages => 'Split the stages';
+	@override String get splitStages => 'Ungroup the day';
 	@override String get mergeWithNext => 'Merge with the next day';
 	@override late final _Translations$calendar$weekdays$en weekdays = _Translations$calendar$weekdays$en._(_root);
 	@override late final _Translations$calendar$legend$en legend = _Translations$calendar$legend$en._(_root);
@@ -2501,7 +2501,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get answerTitle => 'Can you do it?';
 	@override String answerGreen({required Object days}) => 'Yes. This trail is within your reach in ${days} days.';
 	@override String answerOrange({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.';
-	@override String get answerRed => 'Not as it stands: one day of this trail is beyond what your profile can hold.';
+	@override String get answerRed => 'Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.';
 	@override String answerDaysNote({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.';
 	@override String answerNoRest({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.';
 	@override String get explainToggle => 'How this result is worked out';
@@ -2523,8 +2523,8 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$en limitingFactors = _Translations$feasibility$formula$limitingFactors$en._(_root);
 	@override late final _Translations$feasibility$formula$advice$en advice = _Translations$feasibility$formula$advice$en._(_root);
-	@override String retainedPlan({required Object days}) => 'Retained split: ${days} days in total, walking and rest included.';
-	@override String retainedPlanNone({required Object days}) => 'No split retained: the trail stays on its default ${days} days in total, walking and rest included.';
+	@override String retainedPlan({required Object days}) => 'Retained plan: ${days} days in total, walking and rest included.';
+	@override String retainedPlanNone({required Object days}) => 'No plan retained: the trail stays on its default ${days} days in total, walking and rest included.';
 	@override String get energyUnitNotice => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.';
 	@override String get circuitTitle => 'Circuit verdict';
 	@override String circuitScore({required Object value, required Object green, required Object orange}) => 'Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.';
@@ -2561,7 +2561,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}. The 42 m of ascent worth 1 km of flat ground are the measured cost of walking uphill, not a house rule.';
 	@override String verdictHowCeiling({required Object capacity, required Object level}) => 'Your daily ceiling is ${capacity} energy-km (${level} level).';
 	@override String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.';
-	@override String get verdictHowNoBlackBox => 'Nothing here comes out of a black box: it is this division, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat.';
+	@override String get verdictHowNoBlackBox => 'Nothing here comes out of a black box: it is this simple ratio, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat.';
 }
 
 // Path: feasibility.flow
@@ -3259,7 +3259,7 @@ class _Translations$programme$actions$en extends Translations$programme$actions$
 
 	// Translations
 	@override String get merge => 'Merge';
-	@override String get split => 'Split';
+	@override String get split => 'Ungroup';
 	@override String get rest => 'Rest';
 	@override String get removeRest => 'Remove this rest day';
 }
@@ -3326,7 +3326,7 @@ class _Translations$programme$splitBlocked$en extends Translations$programme$spl
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Cannot split: this day carries a single stage, there is nothing to ungroup.';
+	@override String get single => 'Cannot ungroup: this day carries a single stage, there is nothing to ungroup.';
 	@override String get locked => 'Day already walked: it can no longer be changed';
 }
 
@@ -3871,9 +3871,9 @@ class _Translations$feasibility$formula$verdicts$en extends Translations$feasibi
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Feasible split';
-	@override String get orange => 'Demanding split';
-	@override String get red => 'Split too tight';
+	@override String get green => 'Comfortable pace';
+	@override String get orange => 'Demanding pace';
+	@override String get red => 'Pace to ease off';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3904,11 +3904,11 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	@override String rest({required Object stages}) => 'Plan a rest day after day ${stages} of your plan.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
-	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference split, ${current} days in total.';
+	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference plan, ${current} days in total.';
 	@override String hardStageAlert({required Object stage}) => 'Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.';
-	@override String noViableDuration({required Object stage}) => 'No number of days makes this trail manageable for you today: day ${stage} stays above your ceiling even on the most spread-out split. We therefore advise no duration — this is no longer a matter of scheduling. Train, or pick a less demanding trail.';
-	@override String restReference({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference split — you have not chosen your own yet.';
-	@override String restAdvisedReference({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages} of the trail\'s reference split — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
+	@override String noViableDuration({required Object stage}) => 'Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail\'s most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.';
+	@override String restReference({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference plan — you have not chosen your own yet.';
+	@override String restAdvisedReference({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages} of the trail\'s reference plan — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
 }
 
 // Path: signalement.water.states
@@ -4074,8 +4074,8 @@ class _Translations$programme$info$mergeSplit$en extends Translations$programme$
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Merge / Split';
-	@override String get body => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.';
+	@override String get title => 'Merge / Ungroup';
+	@override String get body => 'Merge joins two days into one; Ungroup gives each joined stage its own day back. A stage stays whole: it ends where there is a roof. The verdict follows your hardest day — easing it goes through fitness or the season, a rest day changes nothing.';
 }
 
 // Path: programme.info.colors
@@ -4133,7 +4133,7 @@ class _Translations$programme$inTrek$info$upcoming$en extends Translations$progr
 
 	// Translations
 	@override String get title => 'Upcoming days';
-	@override String get body => 'Merge, split or add a rest day on the rest of your route.';
+	@override String get body => 'Merge, ungroup or add a rest day on the rest of your route.';
 }
 
 // Path: programme.inTrek.info.order
@@ -4951,7 +4951,7 @@ extension on TranslationsEn {
 			'feasibility.formula.answerTitle' => 'Can you do it?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Yes. This trail is within your reach in ${days} days.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Yes, in ${days} days — but one day will be demanding for you.',
-			'feasibility.formula.answerRed' => 'Not as it stands: one day of this trail is beyond what your profile can hold.',
+			'feasibility.formula.answerRed' => 'Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.',
 			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'That is the trail\'s own plan: ${walking} walking days, ${rest} rest days.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'That is the trail\'s own plan: ${walking} walking days.',
 			'feasibility.formula.explainToggle' => 'How this result is worked out',
@@ -4973,9 +4973,9 @@ extension on TranslationsEn {
 			'feasibility.formula.levels.intermediate' => 'intermediate',
 			'feasibility.formula.levels.confirmed' => 'confirmed',
 			'feasibility.formula.levels.expert' => 'expert',
-			'feasibility.formula.verdicts.green' => 'Feasible split',
-			'feasibility.formula.verdicts.orange' => 'Demanding split',
-			'feasibility.formula.verdicts.red' => 'Split too tight',
+			'feasibility.formula.verdicts.green' => 'Comfortable pace',
+			'feasibility.formula.verdicts.orange' => 'Demanding pace',
+			'feasibility.formula.verdicts.red' => 'Pace to ease off',
 			'feasibility.formula.limitingFactors.distance' => 'the daily distance',
 			'feasibility.formula.limitingFactors.elevation' => 'the elevation gain',
 			'feasibility.formula.limitingFactors.chaining' => 'the day-to-day chaining',
@@ -4988,13 +4988,13 @@ extension on TranslationsEn {
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after day ${stages} of your plan.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference split, ${current} days in total.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference plan, ${current} days in total.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'No number of days makes this trail manageable for you today: day ${stage} stays above your ceiling even on the most spread-out split. We therefore advise no duration — this is no longer a matter of scheduling. Train, or pick a less demanding trail.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference split — you have not chosen your own yet.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages} of the trail\'s reference split — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} days in total, walking and rest included.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days in total, walking and rest included.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail\'s most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plan a rest day after day ${stages} of the trail\'s reference plan — you have not chosen your own yet.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages} of the trail\'s reference plan — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained plan: ${days} days in total, walking and rest included.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No plan retained: the trail stays on its default ${days} days in total, walking and rest included.',
 			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.',
 			'feasibility.formula.circuitTitle' => 'Circuit verdict',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.',
@@ -5031,7 +5031,7 @@ extension on TranslationsEn {
 			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}. The 42 m of ascent worth 1 km of flat ground are the measured cost of walking uphill, not a house rule.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Your daily ceiling is ${capacity} energy-km (${level} level).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Nothing here comes out of a black box: it is this division, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Nothing here comes out of a black box: it is this simple ratio, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat.',
 			'feasibility.flow.title' => 'Are you ready for this trek?',
 			'feasibility.flow.intro' => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} steps done',
@@ -5666,7 +5666,7 @@ extension on TranslationsEn {
 			'programme.restDay' => 'Rest day',
 			'programme.restDayLabel' => 'R',
 			'programme.actions.merge' => 'Merge',
-			'programme.actions.split' => 'Split',
+			'programme.actions.split' => 'Ungroup',
 			'programme.actions.rest' => 'Rest',
 			'programme.actions.removeRest' => 'Remove this rest day',
 			'programme.mergeBlocked.noNext' => 'No next day',
@@ -5691,15 +5691,15 @@ extension on TranslationsEn {
 			'programme.info.reorder.body' => 'Drag the handle on the right to change the day order.',
 			'programme.info.rest.title' => 'Rest day',
 			'programme.info.rest.body' => 'Insert a recovery day between two stages.',
-			'programme.info.mergeSplit.title' => 'Merge / Split',
-			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.',
+			'programme.info.mergeSplit.title' => 'Merge / Ungroup',
+			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Ungroup gives each joined stage its own day back. A stage stays whole: it ends where there is a roof. The verdict follows your hardest day — easing it goes through fitness or the season, a rest day changes nothing.',
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			_ => null,
 		} ?? switch (path) {
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
-			'programme.splitBlocked.single' => 'Cannot split: this day carries a single stage, there is nothing to ungroup.',
+			'programme.splitBlocked.single' => 'Cannot ungroup: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.reorderBlocked' => 'Trek started: the order of stages can no longer change',
 			'programme.inTrek.title' => 'Adjust the route',
@@ -5716,7 +5716,7 @@ extension on TranslationsEn {
 			'programme.inTrek.info.done.title' => 'Days already walked',
 			'programme.inTrek.info.done.body' => 'They are greyed out and locked: what is done is done.',
 			'programme.inTrek.info.upcoming.title' => 'Upcoming days',
-			'programme.inTrek.info.upcoming.body' => 'Merge, split or add a rest day on the rest of your route.',
+			'programme.inTrek.info.upcoming.body' => 'Merge, ungroup or add a rest day on the rest of your route.',
 			'programme.inTrek.info.order.title' => 'Stage order',
 			'programme.inTrek.info.order.body' => 'The order never changes once you are on the trail: stages already under way are not swapped.',
 			'programme.inTrek.info.close' => 'Got it!',
@@ -5735,7 +5735,7 @@ extension on TranslationsEn {
 			'calendar.adjustStages' => 'ADJUST STAGES',
 			'calendar.stageSingular' => 'Stage {n}',
 			'calendar.stagesPlural' => 'Stages {list}',
-			'calendar.splitStages' => 'Split the stages',
+			'calendar.splitStages' => 'Ungroup the day',
 			'calendar.mergeWithNext' => 'Merge with the next day',
 			'calendar.weekdays.mon' => 'Mon',
 			'calendar.weekdays.tue' => 'Tue',

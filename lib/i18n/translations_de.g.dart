@@ -1462,7 +1462,7 @@ class _Translations$calendar$de extends Translations$calendar$fr {
 	@override String get adjustStages => 'ETAPPEN ANPASSEN';
 	@override String get stageSingular => 'Etappe {n}';
 	@override String get stagesPlural => 'Etappen {list}';
-	@override String get splitStages => 'Etappen trennen';
+	@override String get splitStages => 'Tag auflösen';
 	@override String get mergeWithNext => 'Mit dem nächsten Tag zusammenlegen';
 	@override late final _Translations$calendar$weekdays$de weekdays = _Translations$calendar$weekdays$de._(_root);
 	@override late final _Translations$calendar$legend$de legend = _Translations$calendar$legend$de._(_root);
@@ -2501,9 +2501,9 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get answerTitle => 'Schaffen Sie das?';
 	@override String answerGreen({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.';
 	@override String answerOrange({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.';
-	@override String get answerRed => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.';
-	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
-	@override String answerNoRest({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.';
+	@override String get answerRed => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.';
+	@override String answerNoRest({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.';
 	@override String get explainToggle => 'Wie dieses Ergebnis berechnet wird';
 	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})';
@@ -2523,8 +2523,8 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$verdicts$de verdicts = _Translations$feasibility$formula$verdicts$de._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$de limitingFactors = _Translations$feasibility$formula$limitingFactors$de._(_root);
 	@override late final _Translations$feasibility$formula$advice$de advice = _Translations$feasibility$formula$advice$de._(_root);
-	@override String retainedPlan({required Object days}) => 'Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.';
-	@override String retainedPlanNone({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.';
+	@override String retainedPlan({required Object days}) => 'Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.';
+	@override String retainedPlanNone({required Object days}) => 'Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.';
 	@override String get energyUnitNotice => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.';
 	@override String get circuitTitle => 'Urteil zur Runde';
 	@override String circuitScore({required Object value, required Object green, required Object orange}) => 'Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.';
@@ -2561,7 +2561,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.';
 	@override String verdictHowCeiling({required Object capacity, required Object level}) => 'Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).';
 	@override String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.';
-	@override String get verdictHowNoBlackBox => 'Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.';
+	@override String get verdictHowNoBlackBox => 'Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.';
 }
 
 // Path: feasibility.flow
@@ -3259,7 +3259,7 @@ class _Translations$programme$actions$de extends Translations$programme$actions$
 
 	// Translations
 	@override String get merge => 'Zusammenlegen';
-	@override String get split => 'Aufteilen';
+	@override String get split => 'Auflösen';
 	@override String get rest => 'Ruhe';
 	@override String get removeRest => 'Diesen Ruhetag entfernen';
 }
@@ -3326,7 +3326,7 @@ class _Translations$programme$splitBlocked$de extends Translations$programme$spl
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.';
+	@override String get single => 'Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.';
 	@override String get locked => 'Tag bereits gelaufen: nicht mehr änderbar';
 }
 
@@ -3871,9 +3871,9 @@ class _Translations$feasibility$formula$verdicts$de extends Translations$feasibi
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Aufteilung machbar';
-	@override String get orange => 'Aufteilung fordernd';
-	@override String get red => 'Aufteilung zu knapp';
+	@override String get green => 'Angenehmes Tempo';
+	@override String get orange => 'Forderndes Tempo';
+	@override String get red => 'Tempo entlasten';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3904,11 +3904,11 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
-	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.';
+	@override String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrem Referenzplan, ${current} Tage insgesamt.';
 	@override String hardStageAlert({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.';
-	@override String noViableDuration({required Object stage}) => 'Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.';
-	@override String restReference({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.';
-	@override String restAdvisedReference({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
+	@override String noViableDuration({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.';
+	@override String restReference({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.';
+	@override String restAdvisedReference({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
 }
 
 // Path: signalement.water.states
@@ -4074,8 +4074,8 @@ class _Translations$programme$info$mergeSplit$de extends Translations$programme$
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Zusammenlegen / Aufteilen';
-	@override String get body => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.';
+	@override String get title => 'Zusammenlegen / Auflösen';
+	@override String get body => 'Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts.';
 }
 
 // Path: programme.info.colors
@@ -4133,7 +4133,7 @@ class _Translations$programme$inTrek$info$upcoming$de extends Translations$progr
 
 	// Translations
 	@override String get title => 'Kommende Tage';
-	@override String get body => 'Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein.';
+	@override String get body => 'Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein.';
 }
 
 // Path: programme.inTrek.info.order
@@ -4951,9 +4951,9 @@ extension on TranslationsDe {
 			'feasibility.formula.answerTitle' => 'Schaffen Sie das?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.',
-			'feasibility.formula.answerRed' => 'So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
-			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.',
+			'feasibility.formula.answerRed' => 'Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Das ist der Plan des Weges selbst: ${walking} Wandertage.',
 			'feasibility.formula.explainToggle' => 'Wie dieses Ergebnis berechnet wird',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})',
@@ -4973,9 +4973,9 @@ extension on TranslationsDe {
 			'feasibility.formula.levels.intermediate' => 'Fortgeschritten',
 			'feasibility.formula.levels.confirmed' => 'Erfahren',
 			'feasibility.formula.levels.expert' => 'Experte',
-			'feasibility.formula.verdicts.green' => 'Aufteilung machbar',
-			'feasibility.formula.verdicts.orange' => 'Aufteilung fordernd',
-			'feasibility.formula.verdicts.red' => 'Aufteilung zu knapp',
+			'feasibility.formula.verdicts.green' => 'Angenehmes Tempo',
+			'feasibility.formula.verdicts.orange' => 'Forderndes Tempo',
+			'feasibility.formula.verdicts.red' => 'Tempo entlasten',
 			'feasibility.formula.limitingFactors.distance' => 'die Tagesdistanz',
 			'feasibility.formula.limitingFactors.elevation' => 'der Höhenunterschied',
 			'feasibility.formula.limitingFactors.chaining' => 'die Abfolge der Tage',
@@ -4988,13 +4988,13 @@ extension on TranslationsDe {
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} deines Plans.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrem Referenzplan, ${current} Tage insgesamt.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.',
 			'feasibility.formula.energyUnitNotice' => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
 			'feasibility.formula.circuitTitle' => 'Urteil zur Runde',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.',
@@ -5031,7 +5031,7 @@ extension on TranslationsDe {
 			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze.',
 			'feasibility.flow.title' => 'Bist du bereit für diese Tour?',
 			'feasibility.flow.intro' => 'Beantworte 3 kurze Schritte: Wir ermitteln dein echtes Niveau und sagen dir, ob die Tour machbar ist.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} Schritte erledigt',
@@ -5666,7 +5666,7 @@ extension on TranslationsDe {
 			'programme.restDay' => 'Ruhetag',
 			'programme.restDayLabel' => 'R',
 			'programme.actions.merge' => 'Zusammenlegen',
-			'programme.actions.split' => 'Aufteilen',
+			'programme.actions.split' => 'Auflösen',
 			'programme.actions.rest' => 'Ruhe',
 			'programme.actions.removeRest' => 'Diesen Ruhetag entfernen',
 			'programme.mergeBlocked.noNext' => 'Kein Folgetag',
@@ -5691,15 +5691,15 @@ extension on TranslationsDe {
 			'programme.info.reorder.body' => 'Ziehen Sie den Griff rechts, um die Reihenfolge der Tage zu ändern.',
 			'programme.info.rest.title' => 'Ruhetag',
 			'programme.info.rest.body' => 'Fügen Sie einen Erholungstag zwischen zwei Etappen ein.',
-			'programme.info.mergeSplit.title' => 'Zusammenlegen / Aufteilen',
-			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.',
+			'programme.info.mergeSplit.title' => 'Zusammenlegen / Auflösen',
+			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts.',
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			_ => null,
 		} ?? switch (path) {
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
-			'programme.splitBlocked.single' => 'Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.',
+			'programme.splitBlocked.single' => 'Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.reorderBlocked' => 'Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr',
 			'programme.inTrek.title' => 'Route anpassen',
@@ -5716,7 +5716,7 @@ extension on TranslationsDe {
 			'programme.inTrek.info.done.title' => 'Bereits gelaufene Tage',
 			'programme.inTrek.info.done.body' => 'Sie sind ausgegraut und gesperrt: was gelaufen ist, bleibt.',
 			'programme.inTrek.info.upcoming.title' => 'Kommende Tage',
-			'programme.inTrek.info.upcoming.body' => 'Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein.',
+			'programme.inTrek.info.upcoming.body' => 'Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein.',
 			'programme.inTrek.info.order.title' => 'Reihenfolge der Etappen',
 			'programme.inTrek.info.order.body' => 'Unterwegs ändert sich die Reihenfolge nie: bereits begonnene Etappen werden nicht getauscht.',
 			'programme.inTrek.info.close' => 'Verstanden',
@@ -5735,7 +5735,7 @@ extension on TranslationsDe {
 			'calendar.adjustStages' => 'ETAPPEN ANPASSEN',
 			'calendar.stageSingular' => 'Etappe {n}',
 			'calendar.stagesPlural' => 'Etappen {list}',
-			'calendar.splitStages' => 'Etappen trennen',
+			'calendar.splitStages' => 'Tag auflösen',
 			'calendar.mergeWithNext' => 'Mit dem nächsten Tag zusammenlegen',
 			'calendar.weekdays.mon' => 'Mo',
 			'calendar.weekdays.tue' => 'Di',

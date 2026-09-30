@@ -590,7 +590,7 @@ class _LaReponse extends StatelessWidget {
         ),
         // D'OU VIENT LE NOMBRE DE JOURS. Le dire ici ferme la porte au reproche
         // de Christophe sur le plan a 4 jours : l'application annonce le
-        // decoupage du sentier, elle n'en propose pas un autre.
+        // programme du sentier, elle n'en propose pas un autre.
         if (conseille && !rouge) ...[
           const SizedBox(height: AppTheme.spacingXs),
           Text(
@@ -701,16 +701,21 @@ class _VoletDuCalcul extends StatelessWidget {
 /// capacites. »
 ///
 /// LE DEFAUT ETAIT UN ORDRE DE LECTURE, PAS UN CALCUL MANQUANT. Le nombre de
-/// jours conseille, les repos conseilles et l'etape a decouper etaient DEJA
+/// jours conseille et les repos conseilles etaient DEJA
 /// calcules et traduits dans les 5 langues ([FeasibilityAssessment.advice]) —
 /// mais affiches TOUT EN BAS, apres le feu, la synthese, le circuit, les
 /// conditions et les seize etapes. Le randonneur lisait donc un jugement avant
 /// d'avoir lu une seule proposition.
 ///
 /// CE BLOC OUVRE DESORMAIS L'ECRAN : combien de jours viser, combien de repos
-/// poser et ou, ou decouper, puis le bouton qui APPLIQUE ce decoupage et la
-/// ligne qui dit ce qui est retenu. Le feu vient apres, et il porte sur le
-/// decoupage — jamais sur la personne.
+/// poser et ou, puis le bouton qui APPLIQUE ce programme et la ligne qui dit ce
+/// qui est retenu. Le feu vient apres, et il porte sur le RYTHME du jour — jamais
+/// sur la personne.
+///
+/// TACHE 639 : ce commentaire annoncait encore « ou decouper » et un feu qui
+/// portait sur « le decoupage ». Le lot 634 avait retire la mecanique, la tache
+/// 639 retire le mot — verbatim de Christophe (30/09 10:12) : « je ne veux pas
+/// qu on decoupe les etapes ! ».
 class _AdviceFirst extends StatelessWidget {
   const _AdviceFirst({required this.assessment, required this.trailId});
 
@@ -749,7 +754,7 @@ class _AdviceFirst extends StatelessWidget {
           const SizedBox(height: AppTheme.spacingSm),
         ],
         // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans cette
-        // ligne, choisir un decoupage ne laissait aucune trace a l'ecran : le
+        // ligne, choisir un programme ne laissait aucune trace a l'ecran : le
         // bouton etait indistinguable d'un bouton mort.
         const _RetainedPlanLine(),
       ],
@@ -757,7 +762,7 @@ class _AdviceFirst extends StatelessWidget {
   }
 }
 
-/// Ligne « decoupage retenu » (D2, mandat #100293).
+/// Ligne « programme retenu » (D2, mandat #100293).
 ///
 /// Dit ce que le randonneur a RETENU : soit le nombre de jours qu'il a choisi
 /// (et qui est desormais le plan de toute sa preparation — Programme,
@@ -831,7 +836,7 @@ class _RetainedPlanLine extends ConsumerWidget {
 ///
 /// D2 (#100293) : le choix est RETENU DURABLEMENT ([retainedDurationProvider] ->
 /// SharedPreferences). Avant, il ne vivait qu'en memoire : la relance de
-/// l'application le perdait, et rien a l'ecran ne disait qu'un decoupage avait
+/// l'application le perdait, et rien a l'ecran ne disait qu'un programme avait
 /// ete choisi.
 class _GenerateProgramButton extends ConsumerWidget {
   const _GenerateProgramButton({
@@ -1092,8 +1097,8 @@ class _CircuitSection extends StatelessWidget {
         ),
       );
       // LE LIEN ENTRE LE PROGRAMME ET CE CHIFFRE, ECRIT. Sans cette ligne, le
-      // randonneur ne voit pas que c'est SON decoupage qui le produit, ni que
-      // changer le decoupage le fait bouger.
+      // randonneur ne voit pas que c'est SON programme qui le produit, ni que
+      // changer le programme le fait bouger.
       lines.add(const SizedBox(height: 2));
       lines.add(
         Text(
@@ -1748,7 +1753,7 @@ String _adviceText(ProgramAdvice advice) {
       return a.balanced;
     // TACHE 569 (R2) : le conseil de duree porte SES TROIS NOMBRES — jours de
     // marche, jours de repos, total — et ne dit « au lieu de » que si le
-    // randonneur a reellement choisi un decoupage.
+    // randonneur a reellement choisi un programme.
     case 'optimalDays':
       return a.optimalDays(
         days: advice.params['days'] ?? '',

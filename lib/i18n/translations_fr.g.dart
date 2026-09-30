@@ -3048,8 +3048,8 @@ class Translations$calendar$fr {
 	/// fr: 'Étapes {list}'
 	String get stagesPlural => 'Étapes {list}';
 
-	/// fr: 'Séparer les étapes'
-	String get splitStages => 'Séparer les étapes';
+	/// fr: 'Dégrouper la journée'
+	String get splitStages => 'Dégrouper la journée';
 
 	/// fr: 'Grouper avec le jour suivant'
 	String get mergeWithNext => 'Grouper avec le jour suivant';
@@ -5330,14 +5330,14 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.'
 	String answerOrange({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.';
 
-	/// fr: 'Pas en l'état : une journée de ce sentier dépasse ce que votre profil peut tenir.'
-	String get answerRed => 'Pas en l\'état : une journée de ce sentier dépasse ce que votre profil peut tenir.';
+	/// fr: 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme d'ici le départ, ou partez hors été — c'est une journée qui décide, pas tout le sentier.'
+	String get answerRed => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.';
 
-	/// fr: 'C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche, ${rest} de repos.'
-	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.';
+	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche, ${rest} de repos.'
+	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.';
 
-	/// fr: 'C'est le découpage du sentier tel qu'il existe : ${walking} jours de marche.'
-	String answerNoRest({required Object walking}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche.';
+	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche.'
+	String answerNoRest({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.';
 
 	/// fr: 'Comment ce résultat est calculé'
 	String get explainToggle => 'Comment ce résultat est calculé';
@@ -5389,11 +5389,11 @@ class Translations$feasibility$formula$fr {
 	late final Translations$feasibility$formula$limitingFactors$fr limitingFactors = Translations$feasibility$formula$limitingFactors$fr.internal(_root);
 	late final Translations$feasibility$formula$advice$fr advice = Translations$feasibility$formula$advice$fr.internal(_root);
 
-	/// fr: 'Découpage retenu : ${days} jours au total, marche et repos compris.'
-	String retainedPlan({required Object days}) => 'Découpage retenu : ${days} jours au total, marche et repos compris.';
+	/// fr: 'Programme retenu : ${days} jours au total, marche et repos compris.'
+	String retainedPlan({required Object days}) => 'Programme retenu : ${days} jours au total, marche et repos compris.';
 
-	/// fr: 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.'
-	String retainedPlanNone({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.';
+	/// fr: 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.'
+	String retainedPlanNone({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.';
 
 	/// fr: '1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente, pas une règle maison.'
 	String get energyUnitNotice => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.';
@@ -5503,8 +5503,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: '${energy} ÷ ${capacity} = ${score}. Jusqu'à ${green} c'est vert, jusqu'à ${orange} c'est orange, au-delà c'est rouge.'
 	String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.';
 
-	/// fr: 'Rien ici ne sort d'une boîte noire : c'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l'unité d'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur.'
-	String get verdictHowNoBlackBox => 'Rien ici ne sort d\'une boîte noire : c\'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.';
+	/// fr: 'Rien ici ne sort d'une boîte noire : c'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l'unité d'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur.'
+	String get verdictHowNoBlackBox => 'Rien ici ne sort d\'une boîte noire : c\'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.';
 }
 
 // Path: feasibility.flow
@@ -6712,8 +6712,8 @@ class Translations$programme$actions$fr {
 	/// fr: 'Regrouper'
 	String get merge => 'Regrouper';
 
-	/// fr: 'Séparer'
-	String get split => 'Séparer';
+	/// fr: 'Dégrouper'
+	String get split => 'Dégrouper';
 
 	/// fr: 'Repos'
 	String get rest => 'Repos';
@@ -6814,8 +6814,8 @@ class Translations$programme$splitBlocked$fr {
 
 	// Translations
 
-	/// fr: 'Séparer impossible : ce jour ne porte qu'une étape, il n'y a rien à dégrouper.'
-	String get single => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.';
+	/// fr: 'Dégrouper impossible : ce jour ne porte qu'une étape, il n'y a rien à dégrouper.'
+	String get single => 'Dégrouper impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.';
 
 	/// fr: 'Jour déjà marché : il ne peut plus être modifié'
 	String get locked => 'Jour déjà marché : il ne peut plus être modifié';
@@ -7690,14 +7690,14 @@ class Translations$feasibility$formula$verdicts$fr {
 
 	// Translations
 
-	/// fr: 'Découpage faisable'
-	String get green => 'Découpage faisable';
+	/// fr: 'Rythme confortable'
+	String get green => 'Rythme confortable';
 
-	/// fr: 'Découpage exigeant'
-	String get orange => 'Découpage exigeant';
+	/// fr: 'Rythme exigeant'
+	String get orange => 'Rythme exigeant';
 
-	/// fr: 'Découpage trop serré'
-	String get red => 'Découpage trop serré';
+	/// fr: 'Rythme à alléger'
+	String get red => 'Rythme à alléger';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -7753,20 +7753,20 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
 	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 
-	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.'
-	String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.';
+	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.'
+	String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.';
 
 	/// fr: 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s'arrête là où il y a un toit. La réponse, c'est l'entraînement : monter d'un cran relève ton plafond, et cette journée repasse dessous.'
 	String hardStageAlert({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.';
 
-	/// fr: 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.'
-	String noViableDuration({required Object stage}) => 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd\'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n\'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.';
+	/// fr: 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c'est l'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t'attend.'
+	String noViableDuration({required Object stage}) => 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c\'est l\'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t\'attend.';
 
-	/// fr: 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien.'
-	String restReference({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien.';
+	/// fr: 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n'as pas encore choisi le tien.'
+	String restReference({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien.';
 
-	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
-	String restAdvisedReference({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
+	String restAdvisedReference({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 }
 
 // Path: signalement.water.states
@@ -7993,11 +7993,11 @@ class Translations$programme$info$mergeSplit$fr {
 
 	// Translations
 
-	/// fr: 'Regrouper / Séparer'
-	String get title => 'Regrouper / Séparer';
+	/// fr: 'Regrouper / Dégrouper'
+	String get title => 'Regrouper / Dégrouper';
 
-	/// fr: 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l'alléger, un jour de repos n'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu'il y a de quoi dormir.'
-	String get body => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.';
+	/// fr: 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l'alléger passe par la forme ou la saison, un jour de repos n'y change rien.'
+	String get body => 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s\'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l\'alléger passe par la forme ou la saison, un jour de repos n\'y change rien.';
 }
 
 // Path: programme.info.colors
@@ -8075,8 +8075,8 @@ class Translations$programme$inTrek$info$upcoming$fr {
 	/// fr: 'Jours à venir'
 	String get title => 'Jours à venir';
 
-	/// fr: 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.'
-	String get body => 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.';
+	/// fr: 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.'
+	String get body => 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.';
 }
 
 // Path: programme.inTrek.info.order
@@ -8898,9 +8898,9 @@ extension on Translations {
 			'feasibility.formula.answerTitle' => 'Est-ce faisable pour vous ?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.',
-			'feasibility.formula.answerRed' => 'Pas en l\'état : une journée de ce sentier dépasse ce que votre profil peut tenir.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.',
-			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'C\'est le découpage du sentier tel qu\'il existe : ${walking} jours de marche.',
+			'feasibility.formula.answerRed' => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche, ${rest} de repos.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.',
 			'feasibility.formula.explainToggle' => 'Comment ce résultat est calculé',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})',
@@ -8920,9 +8920,9 @@ extension on Translations {
 			'feasibility.formula.levels.intermediate' => 'intermédiaire',
 			'feasibility.formula.levels.confirmed' => 'confirmé',
 			'feasibility.formula.levels.expert' => 'expert',
-			'feasibility.formula.verdicts.green' => 'Découpage faisable',
-			'feasibility.formula.verdicts.orange' => 'Découpage exigeant',
-			'feasibility.formula.verdicts.red' => 'Découpage trop serré',
+			'feasibility.formula.verdicts.green' => 'Rythme confortable',
+			'feasibility.formula.verdicts.orange' => 'Rythme exigeant',
+			'feasibility.formula.verdicts.red' => 'Rythme à alléger',
 			'feasibility.formula.limitingFactors.distance' => 'la distance par jour',
 			'feasibility.formula.limitingFactors.elevation' => 'le dénivelé',
 			'feasibility.formula.limitingFactors.chaining' => 'l\'enchaînement des journées',
@@ -8935,13 +8935,13 @@ extension on Translations {
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son programme de référence, ${current} jours au total.',
 			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd\'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n\'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours au total, marche et repos compris.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c\'est l\'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t\'attend.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Programme retenu : ${days} jours au total, marche et repos compris.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.',
 			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.',
 			'feasibility.formula.circuitTitle' => 'Verdict du circuit',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Score du circuit : ${value} — vert jusqu\'à ${green}, orange jusqu\'à ${orange}, rouge au-delà.',
@@ -8978,7 +8978,7 @@ extension on Translations {
 			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Rien ici ne sort d\'une boîte noire : c\'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Rien ici ne sort d\'une boîte noire : c\'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.',
 			'feasibility.flow.title' => 'Es-tu prêt pour ce trek ?',
 			'feasibility.flow.intro' => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} étapes remplies',
@@ -9613,7 +9613,7 @@ extension on Translations {
 			'programme.restDay' => 'Jour de repos',
 			'programme.restDayLabel' => 'R',
 			'programme.actions.merge' => 'Regrouper',
-			'programme.actions.split' => 'Séparer',
+			'programme.actions.split' => 'Dégrouper',
 			'programme.actions.rest' => 'Repos',
 			'programme.actions.removeRest' => 'Supprimer ce jour de repos',
 			'programme.mergeBlocked.noNext' => 'Pas de jour suivant',
@@ -9638,15 +9638,15 @@ extension on Translations {
 			'programme.info.reorder.body' => 'Glissez la poignée à droite pour changer l\'ordre des jours.',
 			'programme.info.rest.title' => 'Jour de repos',
 			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
-			'programme.info.mergeSplit.title' => 'Regrouper / Séparer',
-			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.',
+			'programme.info.mergeSplit.title' => 'Regrouper / Dégrouper',
+			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s\'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l\'alléger passe par la forme ou la saison, un jour de repos n\'y change rien.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			_ => null,
 		} ?? switch (path) {
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
-			'programme.splitBlocked.single' => 'Séparer impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
+			'programme.splitBlocked.single' => 'Dégrouper impossible : ce jour ne porte qu\'une étape, il n\'y a rien à dégrouper.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.reorderBlocked' => 'Rando démarrée : l\'ordre des étapes ne change plus',
 			'programme.inTrek.title' => 'Adapter l\'itinéraire',
@@ -9663,7 +9663,7 @@ extension on Translations {
 			'programme.inTrek.info.done.title' => 'Jours déjà marchés',
 			'programme.inTrek.info.done.body' => 'Ils sont grisés et verrouillés : ce qui est fait est fait.',
 			'programme.inTrek.info.upcoming.title' => 'Jours à venir',
-			'programme.inTrek.info.upcoming.body' => 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.',
+			'programme.inTrek.info.upcoming.body' => 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.',
 			'programme.inTrek.info.order.title' => 'Ordre des étapes',
 			'programme.inTrek.info.order.body' => 'L\'ordre ne change jamais une fois parti : on n\'inverse pas des étapes déjà engagées.',
 			'programme.inTrek.info.close' => 'Compris !',
@@ -9682,7 +9682,7 @@ extension on Translations {
 			'calendar.adjustStages' => 'AJUSTER LES ÉTAPES',
 			'calendar.stageSingular' => 'Étape {n}',
 			'calendar.stagesPlural' => 'Étapes {list}',
-			'calendar.splitStages' => 'Séparer les étapes',
+			'calendar.splitStages' => 'Dégrouper la journée',
 			'calendar.mergeWithNext' => 'Grouper avec le jour suivant',
 			'calendar.weekdays.mon' => 'Lun',
 			'calendar.weekdays.tue' => 'Mar',

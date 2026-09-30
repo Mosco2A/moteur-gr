@@ -8,7 +8,7 @@
 /// duree CONSEILLEE n'est jamais rouge, il faut construire le programme a chaque
 /// valeur du curseur ([ProgramPlanSearch]) et le passer au moteur de verdict. Si
 /// cette conversion existait en deux exemplaires — un pour l'ecran, un pour le
-/// conseil — le conseil finirait par porter sur un decoupage different de celui
+/// conseil — le conseil finirait par porter sur un programme different de celui
 /// affiche : c'est EXACTEMENT le defaut que le lot R corrige. Elle est donc
 /// ecrite ICI, une seule fois, et les deux chemins l'appellent.
 library;
@@ -19,7 +19,7 @@ import '../../planning/models/day_plan.dart';
 import '../../planning/models/planned_day.dart';
 import 'feasibility_formula.dart';
 
-/// Le decoupage REEL evalue : une charge par jour de marche + les repos.
+/// Le programme REEL evalue : une charge par jour de marche + les repos.
 class FeasibilityProgram {
   const FeasibilityProgram({
     required this.dayEfforts,
@@ -28,7 +28,7 @@ class FeasibilityProgram {
     required this.fromProgram,
   });
 
-  /// Aucun decoupage evaluable (ni programme, ni etape brute).
+  /// Aucun programme evaluable (ni plan choisi, ni etape brute).
   static const empty = FeasibilityProgram(
     dayEfforts: [],
     restAfterDayIndex: {},
@@ -47,7 +47,7 @@ class FeasibilityProgram {
   /// regroupe n'y compte que pour une charge.
   final Set<int> restAfterDayIndex;
 
-  /// Nombre d'etapes DISTINCTES portees par ce decoupage.
+  /// Nombre d'etapes DISTINCTES portees par ce programme.
   final int stageCount;
 
   /// PLAFOND du nombre de jours de marche REELLEMENT atteignable.
@@ -69,10 +69,10 @@ class FeasibilityProgram {
   /// numerote, et ne jamais ecrire « au lieu de N » quand rien n'a ete choisi.
   final bool fromProgram;
 
-  /// Nombre de jours de MARCHE du decoupage.
+  /// Nombre de jours de MARCHE du programme.
   int get walkingDays => dayEfforts.length;
 
-  /// Nombre de jours de REPOS du decoupage.
+  /// Nombre de jours de REPOS du programme.
   int get restDays => restAfterDayIndex.length;
 
   /// Nombre TOTAL de jours (marche + repos) — L'UNITE DU CURSEUR.
@@ -81,13 +81,13 @@ class FeasibilityProgram {
   /// Vrai quand il n'y a rien a evaluer (aucun jour de marche).
   bool get isEmpty => dayEfforts.isEmpty;
 
-  /// Construit le decoupage depuis le PROGRAMME editable du randonneur.
+  /// Construit le programme depuis le PLAN editable du randonneur.
   factory FeasibilityProgram.fromPlannedDays(List<PlannedDay> days) =>
       FeasibilityProgram._fromDays([
         for (final d in days) (stages: d.stages, isRestDay: d.isRestDay),
       ], fromProgram: true);
 
-  /// Construit le decoupage depuis une repartition CALCULEE
+  /// Construit le programme depuis une repartition CALCULEE
   /// ([PlanningCalculator.distribute]) — le chemin que suit la recherche du
   /// conseil, pour qu'elle juge exactement ce que l'ecran affichera.
   factory FeasibilityProgram.fromDayPlans(List<DayPlan> plans) =>
@@ -95,8 +95,8 @@ class FeasibilityProgram {
         for (final p in plans) (stages: p.stages, isRestDay: p.isRestDay),
       ], fromProgram: true);
 
-  /// Construit le decoupage depuis les etapes BRUTES du sentier (repli : une
-  /// etape par jour, c'est le decoupage de REFERENCE du topo).
+  /// Construit le programme depuis les etapes BRUTES du sentier (repli : une
+  /// etape par jour, c'est le programme de REFERENCE du topo).
   factory FeasibilityProgram.fromRawStages(
     List<StageEffort> stages, {
     Set<int> restAfterStageIndex = const {},

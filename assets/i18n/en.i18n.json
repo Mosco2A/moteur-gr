@@ -912,7 +912,7 @@
       "answerTitle": "Can you do it?",
       "answerGreen": "Yes. This trail is within your reach in ${days} days.",
       "answerOrange": "Yes, in ${days} days — but one day will be demanding for you.",
-      "answerRed": "Not as it stands: one day of this trail is beyond what your profile can hold.",
+      "answerRed": "Not yet: one day of this trail asks more than you can hold today. Get fitter before you leave, or go outside summer — one day decides this, not the whole trail.",
       "answerDaysNote": "That is the trail's own plan: ${walking} walking days, ${rest} rest days.",
       "answerNoRest": "That is the trail's own plan: ${walking} walking days.",
       "explainToggle": "How this result is worked out",
@@ -937,9 +937,9 @@
         "expert": "expert"
       },
       "verdicts": {
-        "green": "Feasible split",
-        "orange": "Demanding split",
-        "red": "Split too tight"
+        "green": "Comfortable pace",
+        "orange": "Demanding pace",
+        "red": "Pace to ease off"
       },
       "limitingFactors": {
         "distance": "the daily distance",
@@ -956,14 +956,14 @@
         "rest": "Plan a rest day after day ${stages} of your plan.",
         "training": "Train for ${weeks} weeks before departure (physical preparation).",
         "restAdvised": "Add ${days} rest day(s) to your plan, after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.",
-        "optimalDaysNoChoice": "Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference split, ${current} days in total.",
+        "optimalDaysNoChoice": "Aim for ${days} days in total: ${walk} walking days and ${rest} rest days. You have not chosen anything yet: the trail is still on its reference plan, ${current} days in total.",
         "hardStageAlert": "Day ${stage} will be very hard: it goes over your daily ceiling. We do not advise cutting it in two — a stage ends where there is a roof. The answer is training: moving up one level raises your ceiling, and this day drops back under it.",
-        "noViableDuration": "No number of days makes this trail manageable for you today: day ${stage} stays above your ceiling even on the most spread-out split. We therefore advise no duration — this is no longer a matter of scheduling. Train, or pick a less demanding trail.",
-        "restReference": "Plan a rest day after day ${stages} of the trail's reference split — you have not chosen your own yet.",
-        "restAdvisedReference": "Add ${days} rest day(s), after days ${stages} of the trail's reference split — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict."
+        "noViableDuration": "Adding days will not change this verdict: day ${stage} stays above your ceiling even on the trail's most spread-out plan. What will change it is training — it raises your ceiling — or leaving outside summer. Otherwise, a less demanding trail is waiting.",
+        "restReference": "Plan a rest day after day ${stages} of the trail's reference plan — you have not chosen your own yet.",
+        "restAdvisedReference": "Add ${days} rest day(s), after days ${stages} of the trail's reference plan — you have not chosen your own yet: they look too much alike for the body to recover. It is advice, it does not change your verdict."
       },
-      "retainedPlan": "Retained split: ${days} days in total, walking and rest included.",
-      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days in total, walking and rest included.",
+      "retainedPlan": "Retained plan: ${days} days in total, walking and rest included.",
+      "retainedPlanNone": "No plan retained: the trail stays on its default ${days} days in total, walking and rest included.",
       "energyUnitNotice": "1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.",
       "circuitTitle": "Circuit verdict",
       "circuitScore": "Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.",
@@ -1000,7 +1000,7 @@
       "verdictHowEnergy": "In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}. The 42 m of ascent worth 1 km of flat ground are the measured cost of walking uphill, not a house rule.",
       "verdictHowCeiling": "Your daily ceiling is ${capacity} energy-km (${level} level).",
       "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.",
-      "verdictHowNoBlackBox": "Nothing here comes out of a black box: it is this division, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat."
+      "verdictHowNoBlackBox": "Nothing here comes out of a black box: it is this simple ratio, and three published works feed it — Minetti 2002 for the energy unit, MOVE 2026 for altitude, Linsell 2020 for heat."
     },
     "flow": {
       "title": "Are you ready for this trek?",
@@ -1809,7 +1809,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Merge",
-      "split": "Split",
+      "split": "Ungroup",
       "rest": "Rest",
       "removeRest": "Remove this rest day"
     },
@@ -1849,8 +1849,8 @@
         "body": "Insert a recovery day between two stages."
       },
       "mergeSplit": {
-        "title": "Merge / Split",
-        "body": "Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep."
+        "title": "Merge / Ungroup",
+        "body": "Merge joins two days into one; Ungroup gives each joined stage its own day back. A stage stays whole: it ends where there is a roof. The verdict follows your hardest day — easing it goes through fitness or the season, a rest day changes nothing."
       },
       "colors": {
         "title": "Colours",
@@ -1860,7 +1860,7 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: this day carries a single stage, there is nothing to ungroup.",
+      "single": "Cannot ungroup: this day carries a single stage, there is nothing to ungroup.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",
@@ -1883,7 +1883,7 @@
         },
         "upcoming": {
           "title": "Upcoming days",
-          "body": "Merge, split or add a rest day on the rest of your route."
+          "body": "Merge, ungroup or add a rest day on the rest of your route."
         },
         "order": {
           "title": "Stage order",
@@ -1911,7 +1911,7 @@
     "adjustStages": "ADJUST STAGES",
     "stageSingular": "Stage {n}",
     "stagesPlural": "Stages {list}",
-    "splitStages": "Split the stages",
+    "splitStages": "Ungroup the day",
     "mergeWithNext": "Merge with the next day",
     "weekdays": {
       "mon": "Mon",

@@ -912,9 +912,9 @@
       "answerTitle": "Schaffen Sie das?",
       "answerGreen": "Ja. Dieser Weg liegt in ${days} Tagen in Ihrer Reichweite.",
       "answerOrange": "Ja, in ${days} Tagen — aber ein Tag wird für Sie fordernd.",
-      "answerRed": "So nicht: Ein Tag dieses Weges übersteigt, was Ihr Profil tragen kann.",
-      "answerDaysNote": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.",
-      "answerNoRest": "Das ist die Etappeneinteilung des Weges selbst: ${walking} Wandertage.",
+      "answerRed": "Noch nicht: Ein Tag dieses Weges fordert mehr, als Sie heute tragen. Werden Sie bis zum Start fitter, oder starten Sie außerhalb des Sommers — ein einziger Tag entscheidet das, nicht der ganze Weg.",
+      "answerDaysNote": "Das ist der Plan des Weges selbst: ${walking} Wandertage, ${rest} Ruhetage.",
+      "answerNoRest": "Das ist der Plan des Weges selbst: ${walking} Wandertage.",
       "explainToggle": "Wie dieses Ergebnis berechnet wird",
       "intro": "Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
@@ -937,9 +937,9 @@
         "expert": "Experte"
       },
       "verdicts": {
-        "green": "Aufteilung machbar",
-        "orange": "Aufteilung fordernd",
-        "red": "Aufteilung zu knapp"
+        "green": "Angenehmes Tempo",
+        "orange": "Forderndes Tempo",
+        "red": "Tempo entlasten"
       },
       "limitingFactors": {
         "distance": "die Tagesdistanz",
@@ -956,14 +956,14 @@
         "rest": "Plane einen Ruhetag nach Tag ${stages} deines Plans.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
         "restAdvised": "Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.",
-        "optimalDaysNoChoice": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.",
+        "optimalDaysNoChoice": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrem Referenzplan, ${current} Tage insgesamt.",
         "hardStageAlert": "Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.",
-        "noViableDuration": "Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.",
-        "restReference": "Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.",
-        "restAdvisedReference": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
+        "noViableDuration": "Mehr Tage ändern dieses Urteil nicht: Tag ${stage} bleibt über deiner Obergrenze, selbst im weitesten Plan der Tour. Was es ändert, ist das Training — es hebt deine Obergrenze — oder ein Start außerhalb des Sommers. Sonst wartet ein leichterer Weg auf dich.",
+        "restReference": "Plane einen Ruhetag nach Tag ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt.",
+        "restAdvisedReference": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} des Referenzplans der Tour — du hast noch keinen eigenen gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
       },
-      "retainedPlan": "Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.",
-      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.",
+      "retainedPlan": "Gewählter Plan: ${days} Tage insgesamt, Wandern und Ruhe inklusive.",
+      "retainedPlanNone": "Kein Plan gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.",
       "energyUnitNotice": "1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
       "circuitTitle": "Urteil zur Runde",
       "circuitScore": "Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.",
@@ -1000,7 +1000,7 @@
       "verdictHowEnergy": "In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
       "verdictHowCeiling": "Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).",
       "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.",
-      "verdictHowNoBlackBox": "Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze."
+      "verdictHowNoBlackBox": "Hier kommt nichts aus einer Blackbox: es ist dieses einfache Verhältnis, und drei veröffentlichte Arbeiten speisen es — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze."
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -1809,7 +1809,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Zusammenlegen",
-      "split": "Aufteilen",
+      "split": "Auflösen",
       "rest": "Ruhe",
       "removeRest": "Diesen Ruhetag entfernen"
     },
@@ -1849,8 +1849,8 @@
         "body": "Fügen Sie einen Erholungstag zwischen zwei Etappen ein."
       },
       "mergeSplit": {
-        "title": "Zusammenlegen / Aufteilen",
-        "body": "Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt."
+        "title": "Zusammenlegen / Auflösen",
+        "body": "Zusammenlegen verbindet zwei Tage zu einem; Auflösen gibt jeder zusammengelegten Etappe ihren eigenen Tag zurück. Eine Etappe bleibt ganz: sie endet dort, wo ein Dach ist. Das Urteil richtet sich nach Ihrem härtesten Tag — ihn zu entlasten geht über die Form oder die Jahreszeit, ein Ruhetag ändert daran nichts."
       },
       "colors": {
         "title": "Farben",
@@ -1860,7 +1860,7 @@
       "close": "Verstanden!"
     },
     "splitBlocked": {
-      "single": "Aufteilen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts zu trennen.",
+      "single": "Auflösen nicht möglich: Dieser Tag trägt nur eine Etappe, es gibt nichts aufzulösen.",
       "locked": "Tag bereits gelaufen: nicht mehr änderbar"
     },
     "reorderBlocked": "Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr",
@@ -1883,7 +1883,7 @@
         },
         "upcoming": {
           "title": "Kommende Tage",
-          "body": "Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein."
+          "body": "Fasse zusammen, löse auf oder füge einen Ruhetag im weiteren Verlauf ein."
         },
         "order": {
           "title": "Reihenfolge der Etappen",
@@ -1911,7 +1911,7 @@
     "adjustStages": "ETAPPEN ANPASSEN",
     "stageSingular": "Etappe {n}",
     "stagesPlural": "Etappen {list}",
-    "splitStages": "Etappen trennen",
+    "splitStages": "Tag auflösen",
     "mergeWithNext": "Mit dem nächsten Tag zusammenlegen",
     "weekdays": {
       "mon": "Mo",

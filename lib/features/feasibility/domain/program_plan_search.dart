@@ -28,9 +28,10 @@
 /// C1 : au-dessus du plan du sentier, TOUS les totaux donnent exactement le
 /// meme verdict. En dessous, on regroupe, donc on aggrave. Le plan du sentier
 /// est donc le meilleur plan atteignable, et il l'est par construction — il n'y
-/// a aucun balayage a faire pour le trouver. Le decoupage d'etape, seul levier
-/// qui pouvait encore alleger C1, a ete retire par cette meme tache
-/// (DEM-260929-1327, voir [PlanningCalculator]).
+/// a aucun balayage a faire pour le trouver. Couper une etape, seul levier qui
+/// pouvait encore alleger C1, a ete retire par cette meme tache
+/// (DEM-260929-1327, voir [PlanningCalculator]) : une etape reste une etape du
+/// sentier. Les leviers qui restent sont la FORME et la SAISON.
 ///
 /// L'INVARIANTE DE CHRIS DU 26/09 EST TENUE, ET PLUS SIMPLEMENT QU'AVANT.
 /// Verbatim : « le curseur est celui conseille et il n'est jamais en rouge
