@@ -65,9 +65,17 @@ grandes plateformes (VLOP), non applicable à StepWays.
 
 ## 7. Contact
 
-Questions relatives à la modération : **[CONTACT-MODERATION]**.
-Document accessible in-app via **Réglages -> Confidentialité / Mentions
-légales** (cf. `cgu-moderation.md` § 5).
+Questions relatives à la modération : **contact@only1cent.com**
+(Only1Cent — Christophe Mosconi). Un contact de modération distinct
+reste à arbitrer par le juriste.
+
+Ce document n'a pas d'URL propre : son contenu est intégré au § 5
+« Transparence sur la modération » de la page publiée
+<https://only1cent.com/stepways/conditions> (EN :
+`/stepways/conditions-en`), accessible in-app via **Réglages ->
+Confidentialité** (cf. `cgu-moderation.md` § 5). Le premier rapport
+chiffré y sera publié à l'issue de la première période de référence
+(tâche 642).
 
 ---
 

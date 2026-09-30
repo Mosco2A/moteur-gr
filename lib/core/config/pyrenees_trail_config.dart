@@ -1,3 +1,4 @@
+import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
 /// Premier sentier de catalogue HORS Corse (F8D-01, Phase 8 P8-D).
@@ -56,7 +57,9 @@ const pyreneesTrailConfig = TrailConfig(
   emergencyNumbers: [
     // Secours regional fourni par la config (jamais hardcode dans le moteur).
     TrailEmergencyNumber(
-        name: 'Secours montagne Pyrenees', phone: '+33561000000'),
+      name: 'Secours montagne Pyrenees',
+      phone: '+33561000000',
+    ),
   ],
-  privacyPolicyUrl: 'https://example.org/gr-pyrenees/privacy',
+  privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );
