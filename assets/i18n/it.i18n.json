@@ -213,7 +213,10 @@
       }
     },
     "supplyDismiss": "Nascondi l'avviso",
-    "pinMergedTitle": "Più segnaposti nello stesso punto"
+    "pinMergedTitle": "Più segnaposti nello stesso punto",
+    "attribution": {
+      "licence": "Dati cartografici con licenza ODbL — vedi la licenza"
+    }
   },
   "stage": {
     "distance": "Distanza",

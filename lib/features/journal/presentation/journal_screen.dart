@@ -13,6 +13,7 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/attribution_osm.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -84,9 +85,8 @@ class JournalScreen extends ConsumerWidget {
       loading: () => const _JournalShell(
         child: Center(child: CircularProgressIndicator()),
       ),
-      error: (_, __) => _JournalShell(
-        child: _LockedJournalView(trailId: trailId),
-      ),
+      error: (_, __) =>
+          _JournalShell(child: _LockedJournalView(trailId: trailId)),
       data: (isDemo) => isDemo
           ? _JournalShell(child: _LockedJournalView(trailId: trailId))
           : _UnlockedJournal(trailId: trailId),
@@ -189,7 +189,11 @@ class _LockedJournalCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.cadenas, color: theme.colorScheme.primary, size: 22),
+              StepIcon(
+                StepwaysIcons.cadenas,
+                color: theme.colorScheme.primary,
+                size: 22,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -246,10 +250,7 @@ class _JournalContentPreview extends StatelessWidget {
           icon: StepwaysIcons.crayon,
           label: journalT.entriesOfDay,
         ),
-        _JournalPreviewRow(
-          icon: StepwaysIcons.photo,
-          label: journalT.addPhoto,
-        ),
+        _JournalPreviewRow(icon: StepwaysIcons.photo, label: journalT.addPhoto),
       ],
     );
   }
@@ -271,9 +272,7 @@ class _JournalPreviewRow extends StatelessWidget {
         children: [
           StepIcon(icon, size: 18, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(label, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -408,7 +407,11 @@ class _EmptyJournalView extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
         const SizedBox(height: AppTheme.spacingLg),
-        StepIcon(StepwaysIcons.journal, size: 80, color: theme.colorScheme.primary),
+        StepIcon(
+          StepwaysIcons.journal,
+          size: 80,
+          color: theme.colorScheme.primary,
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           journalT.empty,
@@ -513,8 +516,9 @@ class _DayTraceCard extends ConsumerWidget {
       orElse: () => const SizedBox.shrink(),
       data: (points) {
         if (points.length < 2) return const SizedBox.shrink();
-        final latLngs =
-            points.map((p) => LatLng(p.lat, p.lng)).toList(growable: false);
+        final latLngs = points
+            .map((p) => LatLng(p.lat, p.lng))
+            .toList(growable: false);
         return AppCard(
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           child: Column(
@@ -522,8 +526,11 @@ class _DayTraceCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  StepIcon(StepwaysIcons.itineraire,
-                      size: 18, color: theme.colorScheme.primary),
+                  StepIcon(
+                    StepwaysIcons.itineraire,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingXs),
                   Text(
                     journalT.dayTrace,
@@ -576,6 +583,9 @@ class _DayTraceCard extends ConsumerWidget {
                           _traceDot(latLngs.last, theme.colorScheme.tertiary),
                         ],
                       ),
+                      // ODbL : les tuiles viennent d OpenStreetMap, la carte
+                      // le dit (integration 647).
+                      const AttributionOsm(),
                     ],
                   ),
                 ),
@@ -589,17 +599,17 @@ class _DayTraceCard extends ConsumerWidget {
 
   /// Pastille de depart / d'arrivee du trace.
   static Marker _traceDot(LatLng at, Color color) => Marker(
-        point: at,
-        width: 16,
-        height: 16,
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-        ),
-      );
+    point: at,
+    width: 16,
+    height: 16,
+    child: Container(
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+    ),
+  );
 }
 
 /// Resume chiffre de la journee affichee + cumul depuis le depart
@@ -634,8 +644,11 @@ class _DaySummaryCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    StepIcon(StepwaysIcons.statistiques,
-                        size: 18, color: theme.colorScheme.primary),
+                    StepIcon(
+                      StepwaysIcons.statistiques,
+                      size: 18,
+                      color: theme.colorScheme.primary,
+                    ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Text(
                       journalT.daySummary,
@@ -769,7 +782,9 @@ class _DayNavigator extends ConsumerWidget {
           IconButton(
             icon: const StepIcon(StepwaysIcons.chevronGauche),
             tooltip: journalT.dayNavPrevious,
-            onPressed: hasPrevious ? () => notifier.select(days[index - 1]) : null,
+            onPressed: hasPrevious
+                ? () => notifier.select(days[index - 1])
+                : null,
           ),
           Expanded(
             child: Column(
@@ -785,10 +800,7 @@ class _DayNavigator extends ConsumerWidget {
                 Text(
                   [
                     journalT.dayOfTrek(day: index + 1),
-                    journalT.dayCounter(
-                      index: index + 1,
-                      total: days.length,
-                    ),
+                    journalT.dayCounter(index: index + 1, total: days.length),
                   ].join(' · '),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -819,7 +831,10 @@ const double _entryPhotoHeight = 120;
 /// systeme : date lisible, etape, puis la note. Une entree photo sans
 /// texte donne un en-tete seul — jamais une chaine vide, qui ferait
 /// apparaitre un partage muet.
-String journalShareText(JournalEntryModel entry, Translations$journal$fr journalT) {
+String journalShareText(
+  JournalEntryModel entry,
+  Translations$journal$fr journalT,
+) {
   final dateFormat = DateFormat(
     'EEEE d MMMM yyyy',
     LocaleSettings.currentLocale.languageCode,
@@ -888,7 +903,11 @@ class _JournalEntryTile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              StepIcon(StepwaysIcons.sommet, size: 16, color: theme.colorScheme.primary),
+              StepIcon(
+                StepwaysIcons.sommet,
+                size: 16,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingXs),
               Text(
                 stageLabel,
@@ -922,11 +941,7 @@ class _JournalEntryTile extends ConsumerWidget {
                     // CORRECTIF L4-4 : le messenger est capture AVANT tout
                     // await — la feuille de partage ferme le menu, son
                     // `context` ne peut plus servir a afficher l'erreur.
-                    _shareEntry(
-                      entry,
-                      journalT,
-                      ScaffoldMessenger.of(context),
-                    );
+                    _shareEntry(entry, journalT, ScaffoldMessenger.of(context));
                   }
                 },
                 itemBuilder: (context) => [
@@ -1016,7 +1031,7 @@ class _AddNoteDialogSlang extends StatefulWidget {
 
   /// [photoPath] : fichier source choisi, `null` pour une note sans photo.
   final void Function(int stageNumber, String content, String? photoPath)
-      onSave;
+  onSave;
 
   @override
   State<_AddNoteDialogSlang> createState() => _AddNoteDialogSlangState();
@@ -1175,7 +1190,10 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
                         height: _photoPreviewSize,
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: const Center(
-                          child: StepIcon(StepwaysIcons.imageManquante, size: 32),
+                          child: StepIcon(
+                            StepwaysIcons.imageManquante,
+                            size: 32,
+                          ),
                         ),
                       ),
                     ),

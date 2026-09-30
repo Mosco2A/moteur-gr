@@ -83,7 +83,10 @@
             "phone": "+33495345480"
           }
         ]
-      }
+      },
+      "tilesPath": "mare_a_mare_centre/tuiles_z10-15_v20260930T154231Z.mbtiles",
+      "tilesSize": 26955776,
+      "tilesHash": "ed7f445095bb710cde6de51e51980b8ad5884f5d5825fbdefb4fa09a142b8676"
     }
   ]
 }

@@ -11,6 +11,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/attribution_osm.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
@@ -75,14 +76,19 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return AppCard(
       child: Column(
         children: [
-          StepIcon(StepwaysIcons.telecharger, size: 48, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.telecharger,
+            size: 48,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(height: AppTheme.spacingMd),
           Text(t.import.headerTitle, style: theme.textTheme.titleLarge),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             t.import.headerBody,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),
@@ -104,7 +110,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       decoration: BoxDecoration(
         color: AppTheme.rougeUrgence.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.rougeUrgence.withValues(alpha: 0.24)),
+        border: Border.all(
+          color: AppTheme.rougeUrgence.withValues(alpha: 0.24),
+        ),
       ),
       child: Row(
         children: [
@@ -113,8 +121,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           Expanded(
             child: Text(
               message,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.rougeUrgence),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.rougeUrgence,
+              ),
             ),
           ),
         ],
@@ -127,83 +136,96 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     final durationMinutes = data.totalDuration.inMinutes % 60;
     final durationStr =
         '${durationHours}h${durationMinutes.toString().padLeft(2, '0')}';
-    final directionLabel =
-        data.direction == 'NS' ? t.import.directionNS : t.import.directionSN;
+    final directionLabel = data.direction == 'NS'
+        ? t.import.directionNS
+        : t.import.directionSN;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: t.import.traceSection, icon: StepwaysIcons.itineraire),
+        SectionHeader(
+          title: t.import.traceSection,
+          icon: StepwaysIcons.itineraire,
+        ),
         const SizedBox(height: AppTheme.spacingSm),
         _buildTraceMap(theme, data),
         const SizedBox(height: AppTheme.spacingLg),
-        SectionHeader(title: t.import.statsSection, icon: StepwaysIcons.statistiques),
+        SectionHeader(
+          title: t.import.statsSection,
+          icon: StepwaysIcons.statistiques,
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.distance,
-              label: t.import.statDistance,
-              value: '${data.totalDistanceKm.toStringAsFixed(1)} km',
-              color: theme.colorScheme.primary,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.distance,
+                label: t.import.statDistance,
+                value: '${data.totalDistanceKm.toStringAsFixed(1)} km',
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.denivelePlus,
-              label: t.import.statElevationGain,
-              value: '${data.totalElevationGain} m',
-              color: theme.colorScheme.secondary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.denivelePlus,
+                label: t.import.statElevationGain,
+                value: '${data.totalElevationGain} m',
+                color: theme.colorScheme.secondary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.deniveleMoins,
-              label: t.import.statElevationLoss,
-              value: '${data.totalElevationLoss} m',
-              color: AppTheme.orangeDifficile,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.deniveleMoins,
+                label: t.import.statElevationLoss,
+                value: '${data.totalElevationLoss} m',
+                color: AppTheme.orangeDifficile,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.duree,
-              label: t.import.statDuration,
-              value: durationStr,
-              color: theme.colorScheme.primary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.duree,
+                label: t.import.statDuration,
+                value: durationStr,
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.catalogueSentiers,
-              label: t.import.statDirection,
-              value: directionLabel,
-              color: theme.colorScheme.secondary,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.catalogueSentiers,
+                label: t.import.statDirection,
+                value: directionLabel,
+                color: theme.colorScheme.secondary,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: StepwaysIcons.maPosition,
-              label: t.import.statPoints,
-              value: '${data.trackPoints.length}',
-              color: theme.colorScheme.primary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.maPosition,
+                label: t.import.statPoints,
+                value: '${data.trackPoints.length}',
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         if (data.stagesDetected.isNotEmpty) ...[
           SectionHeader(
@@ -256,8 +278,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   }
 
   Widget _buildTraceMap(ThemeData theme, ImportedTrekData data) {
-    final points =
-        data.trackPoints.map((tp) => LatLng(tp.lat, tp.lng)).toList();
+    final points = data.trackPoints
+        .map((tp) => LatLng(tp.lat, tp.lng))
+        .toList();
     if (points.isEmpty) return const SizedBox.shrink();
     final bounds = LatLngBounds.fromPoints(points);
     return ClipRRect(
@@ -270,8 +293,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               bounds: bounds,
               padding: const EdgeInsets.all(30),
             ),
-            interactionOptions:
-                const InteractionOptions(flags: InteractiveFlag.none),
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.none,
+            ),
           ),
           children: [
             TileLayer(
@@ -299,8 +323,11 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const StepIcon(StepwaysIcons.enregistrer,
-                        size: 14, color: Colors.white),
+                    child: const StepIcon(
+                      StepwaysIcons.enregistrer,
+                      size: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 Marker(
@@ -313,11 +340,18 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const StepIcon(StepwaysIcons.depart, size: 14, color: Colors.white),
+                    child: const StepIcon(
+                      StepwaysIcons.depart,
+                      size: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
             ),
+            // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
+            // (integration 647).
+            const AttributionOsm(),
           ],
         ),
       ),
@@ -338,8 +372,10 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             value,
-            style: theme.textTheme.titleLarge
-                ?.copyWith(fontWeight: FontWeight.w700, fontSize: 16),
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 2),
           Text(label, style: theme.textTheme.bodySmall),
@@ -359,36 +395,46 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           horizontal: AppTheme.spacingMd,
           vertical: AppTheme.spacingSm,
         ),
-        child: Row(children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            ),
-            child: Center(
-              child: Text(
-                t.import.stageBadge.replaceAll('{number}', '${stage.orderIndex}'),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSecondaryContainer,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+              ),
+              child: Center(
+                child: Text(
+                  t.import.stageBadge.replaceAll(
+                    '{number}',
+                    '${stage.orderIndex}',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSecondaryContainer,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              name,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
-              overflow: TextOverflow.ellipsis,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: Text(
+                name,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          const StepIcon(StepwaysIcons.cochePleine, size: 18, color: AppTheme.vertFacile),
-        ]),
+            const StepIcon(
+              StepwaysIcons.cochePleine,
+              size: 18,
+              color: AppTheme.vertFacile,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -401,14 +447,18 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const StepIcon(StepwaysIcons.danger,
-                size: 18, color: AppTheme.orangeDifficile),
+            const StepIcon(
+              StepwaysIcons.danger,
+              size: 18,
+              color: AppTheme.orangeDifficile,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
               child: Text(
                 warning,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.orangeDifficile),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppTheme.orangeDifficile,
+                ),
               ),
             ),
           ],
@@ -423,11 +473,15 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   String _warningText(ImportWarning warning) {
     switch (warning.type) {
       case ImportWarningType.outOfBounds:
-        return t.import.warningOutOfBounds
-            .replaceAll('{count}', '${warning.value}');
+        return t.import.warningOutOfBounds.replaceAll(
+          '{count}',
+          '${warning.value}',
+        );
       case ImportWarningType.offTrail:
-        return t.import.warningOffTrail
-            .replaceAll('{percent}', '${warning.value}');
+        return t.import.warningOffTrail.replaceAll(
+          '{percent}',
+          '${warning.value}',
+        );
     }
   }
 
@@ -493,8 +547,10 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   String _invalidText(ImportedTrekData data) {
     switch (data.invalidReason) {
       case ImportInvalidReason.tooFewPoints:
-        return t.import.invalidTooFewPoints
-            .replaceAll('{count}', '${data.invalidValue ?? 0}');
+        return t.import.invalidTooFewPoints.replaceAll(
+          '{count}',
+          '${data.invalidValue ?? 0}',
+        );
       case ImportInvalidReason.outOfBounds:
         return t.import.invalidOutOfBounds;
       case null:
@@ -504,16 +560,22 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   void _validateImport(BuildContext context, ImportedTrekData data) {
     if (!data.isValid) return;
-    final directionLabel =
-        data.direction == 'NS' ? t.import.directionNS : t.import.directionSN;
+    final directionLabel = data.direction == 'NS'
+        ? t.import.directionNS
+        : t.import.directionSN;
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Row(children: [
-          const StepIcon(StepwaysIcons.cochePleine, color: AppTheme.vertFacile),
-          const SizedBox(width: 8),
-          Text(t.import.confirmTitle),
-        ]),
+        title: Row(
+          children: [
+            const StepIcon(
+              StepwaysIcons.cochePleine,
+              color: AppTheme.vertFacile,
+            ),
+            const SizedBox(width: 8),
+            Text(t.import.confirmTitle),
+          ],
+        ),
         content: Text(
           t.import.confirmBody
               .replaceAll('{points}', '${data.trackPoints.length}')
@@ -534,9 +596,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               // pas la trace importee (stub) — StepWays conserve ce comportement
               // (pas d'ecriture de session ici).
               context.go('/trail/${widget.trailId}/recap');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.import.importedSnack)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(t.import.importedSnack)));
             },
             child: Text(t.import.validate),
           ),

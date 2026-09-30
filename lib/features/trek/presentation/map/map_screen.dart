@@ -16,6 +16,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/attribution_osm.dart';
 import '../../../../shared/widgets/bouton_simulation_demo.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
@@ -65,8 +66,8 @@ class MapControllerNotifier extends Notifier<MapController> {
 /// Provider Riverpod pour le MapController.
 final mapControllerProvider =
     NotifierProvider<MapControllerNotifier, MapController>(
-  MapControllerNotifier.new,
-);
+      MapControllerNotifier.new,
+    );
 
 /// Ecran carte orchestrateur -- FlutterMap v8 + tous layers assembles.
 ///
@@ -200,9 +201,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
             data: (points) {
               if (points.isEmpty) {
-                return ErrorView(
-                  message: t.map.noTrack,
-                );
+                return ErrorView(message: t.map.noTrack);
               }
               return _MapContent(trailId: trailId, rawPoints: points);
             },
@@ -255,10 +254,7 @@ class _MapContentState extends State<_MapContent> {
       if (pt.lng > maxLng) maxLng = pt.lng;
     }
 
-    return LatLngBounds(
-      LatLng(minLat, minLng),
-      LatLng(maxLat, maxLng),
-    );
+    return LatLngBounds(LatLng(minLat, minLng), LatLng(maxLat, maxLng));
   }
 
   /// Ouvre le panneau « Calques » (toggle des types de POI) — parite GR20
@@ -367,13 +363,10 @@ class _MapContentState extends State<_MapContent> {
               )),
             );
             final trailColor = Color(
-              ref.watch(
-                trailConfigProvider.select((c) => c.primaryColorValue),
-              ),
+              ref.watch(trailConfigProvider.select((c) => c.primaryColorValue)),
             );
 
-            final displayPoints =
-                simplifiedAsync.value ?? widget.rawPoints;
+            final displayPoints = simplifiedAsync.value ?? widget.rawPoints;
 
             // Convertir TrackPoint -> LatLng pour TraceLayer
             final latLngPoints = displayPoints
@@ -403,8 +396,9 @@ class _MapContentState extends State<_MapContent> {
             final segment = focusStage == null
                 ? const <TrackPoint>[]
                 : stageTrackSegment(widget.rawPoints, focusStage);
-            final focusBounds =
-                segment.isEmpty ? null : _boundsFromPoints(segment);
+            final focusBounds = segment.isEmpty
+                ? null
+                : _boundsFromPoints(segment);
 
             // Les etapes arrivent apres le trace : si le cadrage d'etape n'est
             // connu qu'au deuxieme build, `initialCameraFit` est deja passe. On
@@ -447,8 +441,7 @@ class _MapContentState extends State<_MapContent> {
                 // synchrone) qui supprime la tempete de SocketException/retries
                 // offline responsable des timeouts/teardowns (cycle 3).
                 TileLayer(
-                  urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.moteur-gr.app',
                   tileProvider: inertTileProviderOrNull(),
                 ),
@@ -456,10 +449,7 @@ class _MapContentState extends State<_MapContent> {
                 // 2. Trace GPX (statique -> RepaintBoundary pour isoler
                 //    le raster du trace des rebuilds de la position GPS)
                 RepaintBoundary(
-                  child: TraceLayer(
-                    points: latLngPoints,
-                    color: trailColor,
-                  ),
+                  child: TraceLayer(points: latLngPoints, color: trailColor),
                 ),
 
                 // 3. LES REPERES DU SENTIER — ETAPES ET POINTS D'INTERET DANS
@@ -489,15 +479,15 @@ class _MapContentState extends State<_MapContent> {
                 Consumer(
                   builder: (context, ref, _) {
                     final stagesAsync = ref.watch(
-                      stagesProvider(widget.trailId).select(
-                        (async) => async.value,
-                      ),
+                      stagesProvider(
+                        widget.trailId,
+                      ).select((async) => async.value),
                     );
                     final stages = stagesAsync ?? const [];
                     final poisAsync = ref.watch(
-                      mapPoisProvider(widget.trailId).select(
-                        (async) => async.value,
-                      ),
+                      mapPoisProvider(
+                        widget.trailId,
+                      ).select((async) => async.value),
                     );
                     final pois = poisAsync ?? const <PoiModel>[];
 
@@ -542,9 +532,7 @@ class _MapContentState extends State<_MapContent> {
                 Consumer(
                   builder: (context, ref, _) {
                     final positionAsync = ref.watch(
-                      locationProvider.select(
-                        (async) => async.value,
-                      ),
+                      locationProvider.select((async) => async.value),
                     );
 
                     if (positionAsync == null) {
@@ -560,6 +548,12 @@ class _MapContentState extends State<_MapContent> {
                     );
                   },
                 ),
+
+                // 5. L ATTRIBUTION OPENSTREETMAP — OBLIGATION ODbL, PAS UNE
+                //    POLITESSE (integration 647). Le fond vient d OSM, en ligne
+                //    comme hors ligne (les tuiles embarquees du lot 648 sont
+                //    rendues depuis des donnees OSM) : la carte doit le dire.
+                const AttributionOsm(),
               ],
             );
           },
@@ -792,7 +786,8 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
     final status = ref.watch(
       trekSessionManagerProvider.select((s) => s.status),
     );
-    final trekActive = status == TrackingSessionStatus.recording ||
+    final trekActive =
+        status == TrackingSessionStatus.recording ||
         status == TrackingSessionStatus.paused;
     final alert = ref.watch(supplyGapAlertProvider);
 
@@ -919,7 +914,8 @@ class _ActiveStageBar extends ConsumerWidget {
     final status = ref.watch(
       trekSessionManagerProvider.select((s) => s.status),
     );
-    final trekActive = status == TrackingSessionStatus.recording ||
+    final trekActive =
+        status == TrackingSessionStatus.recording ||
         status == TrackingSessionStatus.paused;
     if (!trekActive) return const _PlannedStageBar();
 
@@ -936,7 +932,8 @@ class _ActiveStageBar extends ConsumerWidget {
         final stage = (stages ?? const [])
             .where((s) => s.stageNumber == stageNumber)
             .firstOrNull;
-        final stageName = stage?.name ??
+        final stageName =
+            stage?.name ??
             (stageNumber > 0
                 ? t.a11y.stageMarker(number: stageNumber)
                 : t.map.title);
@@ -1212,7 +1209,8 @@ class _ArrivalPipelineMount extends ConsumerWidget {
     final status = ref.watch(
       trekSessionManagerProvider.select((s) => s.status),
     );
-    final trekActive = status == TrackingSessionStatus.recording ||
+    final trekActive =
+        status == TrackingSessionStatus.recording ||
         status == TrackingSessionStatus.paused;
 
     if (trekActive) {

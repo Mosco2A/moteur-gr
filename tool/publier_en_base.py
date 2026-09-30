@@ -362,6 +362,36 @@ class Firestore:
                 return documents
 
     def ecrire(self, chemin: str, champs: dict[str, Any]) -> None:
+        """Ecrit UNIQUEMENT les champs portes, et ne touche a rien d autre.
+
+        UN `PATCH` SANS `updateMask` N EST PAS UNE MISE A JOUR, C EST UN
+        REMPLACEMENT — et c est mesure, pas suppose. L API REST de Firestore le
+        dit : sans `updateMask`, tous les champs presents dans le document et
+        ABSENTS du corps de la requete sont SUPPRIMES. Cet outil envoyait donc
+        l entree du catalogue en entier a chaque passage, et tout ce qu un autre
+        outil avait pose a cote disparaissait en silence.
+
+        CE QUE CELA ALLAIT COUTER, CONCRETEMENT (integration 647). La carte hors
+        ligne du Mare a Mare Centre est publiee par `tool/cartes_hors_ligne`
+        (tache 648), qui pose trois champs a plat sur `trails/{id}` :
+        `tiles_path`, `tiles_size`, `tiles_hash`. Le prochain « pousser » lance
+        depuis cet outil-ci les aurait effaces — et l application aurait cesse de
+        trouver la carte, sans un message, sans une erreur, sans que personne ne
+        touche au code de la carte.
+
+        AVEC LE MASQUE, CHAQUE OUTIL N ECRIT QUE CE QU IL SAIT. Le masque est
+        construit depuis les champs reellement envoyes : ce que cet outil ne
+        porte pas, il ne le detruit plus. Les champs de la carte SONT portes
+        quand le manifeste les declare (voir `fiche_plate`), donc ce meme outil
+        les republie a l identique au lieu de les perdre.
+        """
+        masque = "&".join(
+            "updateMask.fieldPaths=" + urllib.parse.quote(nom, safe="")
+            for nom in champs
+        )
+        if masque:
+            separateur = "&" if "?" in chemin else "?"
+            chemin = f"{chemin}{separateur}{masque}"
         self._appeler("PATCH", chemin, {"fields": champs})
 
 

@@ -213,7 +213,10 @@
       }
     },
     "supplyDismiss": "Hinweis ausblenden",
-    "pinMergedTitle": "Mehrere Markierungen am selben Ort"
+    "pinMergedTitle": "Mehrere Markierungen am selben Ort",
+    "attribution": {
+      "licence": "Kartendaten unter ODbL-Lizenz — Lizenz ansehen"
+    }
   },
   "stage": {
     "distance": "Entfernung",

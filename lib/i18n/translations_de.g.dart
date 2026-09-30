@@ -262,6 +262,7 @@ class _Translations$map$de extends Translations$map$fr {
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
 	@override String get pinMergedTitle => 'Mehrere Markierungen am selben Ort';
+	@override late final _Translations$map$attribution$de attribution = _Translations$map$attribution$de._(_root);
 }
 
 // Path: stage
@@ -2110,6 +2111,16 @@ class _Translations$map$guide$de extends Translations$map$guide$fr {
 	@override String get currentStage => 'Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.';
 	@override String get offTrack => 'Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.';
 	@override late final _Translations$map$guide$poi$de poi = _Translations$map$guide$poi$de._(_root);
+}
+
+// Path: map.attribution
+class _Translations$map$attribution$de extends Translations$map$attribution$fr {
+	_Translations$map$attribution$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get licence => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen';
 }
 
 // Path: stage.difficulty
@@ -4350,6 +4361,7 @@ extension on TranslationsDe {
 			'map.guide.poi.info' => 'Informationstafel oder Infopunkt am Weg.',
 			'map.supplyDismiss' => 'Hinweis ausblenden',
 			'map.pinMergedTitle' => 'Mehrere Markierungen am selben Ort',
+			'map.attribution.licence' => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen',
 			'stage.distance' => 'Entfernung',
 			'stage.elevation' => 'Höhenunterschied',
 			'stage.elevationGain' => 'Höhenmeter aufwärts',
@@ -4673,9 +4685,9 @@ extension on TranslationsDe {
 			'checklist.ui.preDep6' => 'Sonnencreme und Anti-Scheuer-Creme auftragen',
 			'checklist.ui.preDep7' => 'Schnürsenkel und Schuhsitz prüfen',
 			'checklist.ui.preDep8' => 'Offline-Karten herunterladen',
-			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
 			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
 			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
 			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
@@ -5187,9 +5199,9 @@ extension on TranslationsDe {
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
 			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			'monetization.walletTitle' => 'Etappenkonto',
-			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
 			'monetization.storeUnavailable' => 'Die Zahlung ist derzeit nicht verfügbar.',
 			'monetization.restoreUnavailable' => 'Wiederherstellung nicht möglich: Die Zahlung ist derzeit nicht verfügbar.',
@@ -5701,9 +5713,9 @@ extension on TranslationsDe {
 			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
 			'programme.duration.daysTotal' => '{count} T insgesamt',
 			'programme.stats.distance' => 'Distanz',
-			'programme.stats.elevation' => 'Aufstieg',
 			_ => null,
 		} ?? switch (path) {
+			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',
 			'programme.stats.stages' => 'Etappen',
 			'programme.stats.restCount' => '{count} Ruhe',

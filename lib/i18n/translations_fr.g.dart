@@ -446,6 +446,8 @@ class Translations$map$fr {
 
 	/// fr: 'Plusieurs repères au même endroit'
 	String get pinMergedTitle => 'Plusieurs repères au même endroit';
+
+	late final Translations$map$attribution$fr attribution = Translations$map$attribution$fr.internal(_root);
 }
 
 // Path: stage
@@ -4515,6 +4517,18 @@ class Translations$map$guide$fr {
 	late final Translations$map$guide$poi$fr poi = Translations$map$guide$poi$fr.internal(_root);
 }
 
+// Path: map.attribution
+class Translations$map$attribution$fr {
+	Translations$map$attribution$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Donnees cartographiques sous licence ODbL — voir la licence'
+	String get licence => 'Donnees cartographiques sous licence ODbL — voir la licence';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -8412,6 +8426,7 @@ extension on Translations {
 			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
 			'map.pinMergedTitle' => 'Plusieurs repères au même endroit',
+			'map.attribution.licence' => 'Donnees cartographiques sous licence ODbL — voir la licence',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
 			'stage.elevationGain' => 'Dénivelé positif',
@@ -8735,9 +8750,9 @@ extension on Translations {
 			'checklist.ui.preDep6' => 'Appliquer crème solaire et anti-frottements',
 			'checklist.ui.preDep7' => 'Vérifier les lacets et le serrage des chaussures',
 			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
-			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
 			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
@@ -9249,9 +9264,9 @@ extension on Translations {
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'monetization.walletTitle' => 'Compte-étapes',
-			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
 			'monetization.storeUnavailable' => 'Le paiement n\'est pas disponible pour le moment.',
 			'monetization.restoreUnavailable' => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.',
@@ -9763,9 +9778,9 @@ extension on Translations {
 			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
 			'programme.duration.daysTotal' => '{count} j au total',
 			'programme.stats.distance' => 'Distance',
-			'programme.stats.elevation' => 'D+',
 			_ => null,
 		} ?? switch (path) {
+			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
 			'programme.stats.stages' => 'Étapes',
 			'programme.stats.restCount' => '{count} repos',

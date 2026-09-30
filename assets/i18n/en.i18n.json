@@ -213,7 +213,10 @@
       }
     },
     "supplyDismiss": "Dismiss alert",
-    "pinMergedTitle": "Several markers at the same place"
+    "pinMergedTitle": "Several markers at the same place",
+    "attribution": {
+      "licence": "Map data under ODbL licence — view the licence"
+    }
   },
   "stage": {
     "distance": "Distance",

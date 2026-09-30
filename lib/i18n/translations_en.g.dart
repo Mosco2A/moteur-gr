@@ -262,6 +262,7 @@ class _Translations$map$en extends Translations$map$fr {
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 	@override String get pinMergedTitle => 'Several markers at the same place';
+	@override late final _Translations$map$attribution$en attribution = _Translations$map$attribution$en._(_root);
 }
 
 // Path: stage
@@ -2110,6 +2111,16 @@ class _Translations$map$guide$en extends Translations$map$guide$fr {
 	@override String get currentStage => 'What is left to walk on the current stage. A dash means the hike has not started yet.';
 	@override String get offTrack => 'Lights up when you move away from the line. Come back to the trail to clear it.';
 	@override late final _Translations$map$guide$poi$en poi = _Translations$map$guide$poi$en._(_root);
+}
+
+// Path: map.attribution
+class _Translations$map$attribution$en extends Translations$map$attribution$fr {
+	_Translations$map$attribution$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get licence => 'Map data under ODbL licence — view the licence';
 }
 
 // Path: stage.difficulty
@@ -4350,6 +4361,7 @@ extension on TranslationsEn {
 			'map.guide.poi.info' => 'A trail information sign or point.',
 			'map.supplyDismiss' => 'Dismiss alert',
 			'map.pinMergedTitle' => 'Several markers at the same place',
+			'map.attribution.licence' => 'Map data under ODbL licence — view the licence',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -4673,9 +4685,9 @@ extension on TranslationsEn {
 			'checklist.ui.preDep6' => 'Apply sunscreen and anti-chafing cream',
 			'checklist.ui.preDep7' => 'Check laces and boot tightness',
 			'checklist.ui.preDep8' => 'Download the offline maps',
-			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
 			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
 			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
@@ -5187,9 +5199,9 @@ extension on TranslationsEn {
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'monetization.walletTitle' => 'Step account',
-			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
 			'monetization.storeUnavailable' => 'Payment is not available right now.',
 			'monetization.restoreUnavailable' => 'Cannot restore: payment is not available right now.',
@@ -5701,9 +5713,9 @@ extension on TranslationsEn {
 			'programme.duration.splitExhausted' => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.',
 			'programme.duration.daysTotal' => '{count} d in total',
 			'programme.stats.distance' => 'Distance',
-			'programme.stats.elevation' => 'Ascent',
 			_ => null,
 		} ?? switch (path) {
+			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',
 			'programme.stats.stages' => 'Stages',
 			'programme.stats.restCount' => '{count} rest',

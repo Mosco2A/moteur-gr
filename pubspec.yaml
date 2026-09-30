@@ -31,7 +31,7 @@ description: Moteur generique Flutter multi-sentiers
 # Christophe attendait ensemble — la descente des droits (631), la fiche
 # d urgence et d identite a 13 champs (630), et l identite visuelle : logo,
 # splash, icone de lancement et les 380 icones (632).
-version: 0.1.3+7
+version: 0.1.4+8
 
 environment:
   sdk: ">=3.8.0 <4.0.0"

@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/attribution_osm.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran web de suivi de position en temps reel (E4.12a).
@@ -113,12 +114,15 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           .orderBy('timestamp', descending: true)
           .limit(1)
           .snapshots()
-          .listen(_onPositionUpdate, onError: (_) {
-        // P1-4 audit #327 : erreur de flux (ex. session expiree refusee
-        // par les regles) -> badge "hors ligne" au lieu d un faux "en
-        // direct" fige sur la derniere position.
-        if (mounted) setState(() => _sessionFound = false);
-      });
+          .listen(
+            _onPositionUpdate,
+            onError: (_) {
+              // P1-4 audit #327 : erreur de flux (ex. session expiree refusee
+              // par les regles) -> badge "hors ligne" au lieu d un faux "en
+              // direct" fige sur la derniere position.
+              if (mounted) setState(() => _sessionFound = false);
+            },
+          );
     } catch (_) {
       setState(() {
         _hasError = true;
@@ -154,11 +158,13 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: Column(children: [
-        _buildHeader(theme),
-        Expanded(child: _buildMapOrStatus(theme)),
-        if (_trekkerPosition != null) _buildInfoBar(theme),
-      ]),
+      body: Column(
+        children: [
+          _buildHeader(theme),
+          Expanded(child: _buildMapOrStatus(theme)),
+          if (_trekkerPosition != null) _buildInfoBar(theme),
+        ],
+      ),
     );
   }
 
@@ -179,17 +185,20 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         // titre devient [Flexible] : c'est lui qui cede, il se replie sur
         // deux lignes, et le badge — la seule information qui dit si le suivi
         // est vivant — reste entier. Rien n'est tronque, rien n'est deplace.
-        child: Row(children: [
-          Flexible(
-            child: Text(
-              t.follow.title,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w600),
+        child: Row(
+          children: [
+            Flexible(
+              child: Text(
+                t.follow.title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          _buildStatusBadge(theme),
-        ]),
+            const SizedBox(width: AppTheme.spacingSm),
+            _buildStatusBadge(theme),
+          ],
+        ),
       ),
     );
   }
@@ -200,8 +209,8 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
     final text = _isLoading
         ? t.follow.connecting
         : isLive
-            ? t.follow.live
-            : t.follow.offline;
+        ? t.follow.live
+        : t.follow.offline;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingSm,
@@ -211,15 +220,18 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text(text, style: theme.textTheme.labelSmall),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(text, style: theme.textTheme.labelSmall),
+        ],
+      ),
     );
   }
 
@@ -229,22 +241,31 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingXl),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const StepIcon(StepwaysIcons.lienRompu, size: 48, color: AppTheme.rougeUrgence),
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              t.follow.invalidLink,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.rougeUrgence),
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              t.follow.invalidLinkHint,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
-              textAlign: TextAlign.center,
-            ),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const StepIcon(
+                StepwaysIcons.lienRompu,
+                size: 48,
+                color: AppTheme.rougeUrgence,
+              ),
+              const SizedBox(height: AppTheme.spacingBase),
+              Text(
+                t.follow.invalidLink,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: AppTheme.rougeUrgence,
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                t.follow.invalidLinkHint,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.grisTexteSecondaire,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -259,27 +280,32 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
         if (_trekkerPosition != null)
-          MarkerLayer(markers: [
-            Marker(
-              point: _trekkerPosition!,
-              width: 24,
-              height: 24,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.vertFacile,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: _trekkerPosition!,
+                width: 24,
+                height: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.vertFacile,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
+        // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
+        // (integration 647).
+        const AttributionOsm(),
       ],
     );
   }
@@ -308,8 +334,9 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           ),
           Text(
             timeStr,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: AppTheme.grisTexteSecondaire),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
           ),
         ],
       ),

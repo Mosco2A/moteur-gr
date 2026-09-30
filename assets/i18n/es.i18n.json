@@ -213,7 +213,10 @@
       }
     },
     "supplyDismiss": "Ocultar el aviso",
-    "pinMergedTitle": "Varios puntos en el mismo lugar"
+    "pinMergedTitle": "Varios puntos en el mismo lugar",
+    "attribution": {
+      "licence": "Datos cartograficos con licencia ODbL — ver la licencia"
+    }
   },
   "stage": {
     "distance": "Distancia",

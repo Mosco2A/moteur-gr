@@ -262,6 +262,7 @@ class _Translations$map$es extends Translations$map$fr {
 	@override late final _Translations$map$guide$es guide = _Translations$map$guide$es._(_root);
 	@override String get supplyDismiss => 'Ocultar el aviso';
 	@override String get pinMergedTitle => 'Varios puntos en el mismo lugar';
+	@override late final _Translations$map$attribution$es attribution = _Translations$map$attribution$es._(_root);
 }
 
 // Path: stage
@@ -2110,6 +2111,16 @@ class _Translations$map$guide$es extends Translations$map$guide$fr {
 	@override String get currentStage => 'Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.';
 	@override String get offTrack => 'Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.';
 	@override late final _Translations$map$guide$poi$es poi = _Translations$map$guide$poi$es._(_root);
+}
+
+// Path: map.attribution
+class _Translations$map$attribution$es extends Translations$map$attribution$fr {
+	_Translations$map$attribution$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get licence => 'Datos cartograficos con licencia ODbL — ver la licencia';
 }
 
 // Path: stage.difficulty
@@ -4350,6 +4361,7 @@ extension on TranslationsEs {
 			'map.guide.poi.info' => 'Panel o punto de información del sendero.',
 			'map.supplyDismiss' => 'Ocultar el aviso',
 			'map.pinMergedTitle' => 'Varios puntos en el mismo lugar',
+			'map.attribution.licence' => 'Datos cartograficos con licencia ODbL — ver la licencia',
 			'stage.distance' => 'Distancia',
 			'stage.elevation' => 'Desnivel',
 			'stage.elevationGain' => 'Desnivel positivo',
@@ -4673,9 +4685,9 @@ extension on TranslationsEs {
 			'checklist.ui.preDep6' => 'Aplicar crema solar y antirozaduras',
 			'checklist.ui.preDep7' => 'Comprobar los cordones y el ajuste de las botas',
 			'checklist.ui.preDep8' => 'Descargar los mapas offline',
-			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
 			'checklist.ui.validateBag' => 'VALIDAR MI MOCHILA',
 			'checklist.ui.cancelValidation' => 'ANULAR LA VALIDACIÓN',
 			'checklist.ui.shoppingListButton' => 'LISTA DE COMPRA',
@@ -5187,9 +5199,9 @@ extension on TranslationsEs {
 			'monetization.rewardedEarned' => '¡Gracias! Sin publicidad durante 24 h.',
 			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
 			'monetization.walletTitle' => 'Cuenta de etapas',
-			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
 			'monetization.walletUnit' => 'etapas',
 			'monetization.storeUnavailable' => 'El pago no está disponible por ahora.',
 			'monetization.restoreUnavailable' => 'No se puede restaurar: el pago no está disponible por ahora.',
@@ -5701,9 +5713,9 @@ extension on TranslationsEs {
 			'programme.duration.splitExhausted' => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.',
 			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
-			'programme.stats.elevation' => 'Desnivel+',
 			_ => null,
 		} ?? switch (path) {
+			'programme.stats.elevation' => 'Desnivel+',
 			'programme.stats.days' => 'Días',
 			'programme.stats.stages' => 'Etapas',
 			'programme.stats.restCount' => '{count} descanso',
