@@ -40,7 +40,15 @@ import 'mesure_des_sources_645.dart';
 
 /// Mesure du 02/10/2026, tete 147ca32d : 152 declarations publiques de `lib/`
 /// sans aucun appelant hors de leur propre fichier.
-const plafondCodeMort = 152;
+///
+/// ABAISSE A 144 LE 02/10/2026 (lot 645-02) : neuf declarations publiques
+/// confirmees mortes ont ete retirees, et la suppression d'une d'elles a
+/// decouvert `OfflineMapStatus`, dont `OfflineMapBadge` etait le seul citeur
+/// hors de son fichier — il reste vivant, cite dans son propre fichier et par
+/// ses tests. 152 - 9 + 1 = 144.
+///
+/// CE PLAFOND NE REMONTE JAMAIS.
+const plafondCodeMort = 144;
 
 /// Les declarations de TYPE de haut niveau.
 final _motifDeclaration = RegExp(
