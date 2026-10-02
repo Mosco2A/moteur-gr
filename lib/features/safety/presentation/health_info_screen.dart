@@ -1,3 +1,7 @@
+/// La fiche medicale a son PROPRE fichier, hors sauvegarde du telephone : c'est
+/// ce provider que les tests surchargent, plus la base.
+library;
+
 // E5.16 / E57 -- Ecran formulaire de la FICHE D'URGENCE, LOCAL ONLY.
 //
 // ===========================================================================

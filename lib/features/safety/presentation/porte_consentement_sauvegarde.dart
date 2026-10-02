@@ -1,3 +1,7 @@
+/// La question de la sauvegarde est posee a l'ouverture, a tout le monde, UNE
+/// SEULE FOIS.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// Deux canaux de secours cote a cote — appeler le 112, ouvrir la fiche
+/// medicale native — avec la position GPS sous les yeux avant de choisir.
+library;
+
 // E5.15 / L6 (H1) — Dialog confirmation SOS avec position GPS + 2 canaux secours.
 //
 // Canal 1 : appel direct 112 via url_launcher tel: (SOS declenche).
