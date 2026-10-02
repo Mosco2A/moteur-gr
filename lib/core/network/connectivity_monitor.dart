@@ -1,3 +1,7 @@
+/// L'etat du reseau ramene a quelques valeurs extensibles : une valeur inconnue
+/// se replie au lieu de faire tomber l'app.
+library;
+
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
