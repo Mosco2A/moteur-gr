@@ -1,3 +1,7 @@
+/// La facade au-dessus du carnet en base, qui convertit les lignes brutes en
+/// modeles exploitables par les ecrans.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../../../core/data/daos/journal_dao.dart';
