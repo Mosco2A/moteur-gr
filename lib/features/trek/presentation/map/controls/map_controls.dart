@@ -1,3 +1,7 @@
+/// Les trois gestes de la carte — zoomer, dezoomer, se recentrer — empiles a
+/// portee de pouce.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
