@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/tips/domain/models/tip_card.dart';
+import 'package:moteur_gr/domain/tip_card.dart';
 import 'package:moteur_gr/features/tips/data/tip_card_repository.dart';
 import 'package:moteur_gr/features/tips/data/tip_category_config.dart';
 

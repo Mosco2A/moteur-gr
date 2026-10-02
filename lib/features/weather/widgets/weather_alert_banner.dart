@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../tips/domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import '../../tips/presentation/tip_detail_sheet.dart';
 import '../models/weather_alert.dart';
 import '../presentation/weather_alert_l10n.dart';

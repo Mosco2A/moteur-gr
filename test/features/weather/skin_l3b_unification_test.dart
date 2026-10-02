@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
-import 'package:moteur_gr/features/tips/domain/models/tip_card.dart';
+import 'package:moteur_gr/domain/tip_card.dart';
 import 'package:moteur_gr/features/tips/presentation/tip_detail_sheet.dart';
 import 'package:moteur_gr/features/weather/models/weather_alert.dart';
 import 'package:moteur_gr/features/weather/models/weather_forecast.dart';

@@ -4,7 +4,7 @@ library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../i18n/translations.g.dart';
+import '../i18n/translations.g.dart';
 import 'tip_theme.dart';
 
 part 'tip_card.freezed.dart';

@@ -8,7 +8,7 @@ import '../../../core/config/trail_catalog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/tip_category_config.dart';
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import 'tip_carousel.dart';
 import 'tip_points_list.dart';
 import '../../../core/branding/stepways_icons.dart';

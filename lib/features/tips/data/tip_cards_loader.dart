@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 
 /// Charge les fiches conseil ([TipCard]) depuis les assets JSON (LOT 5, C).
 ///

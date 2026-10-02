@@ -1,4 +1,4 @@
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 
 /// Repository pour les fiches conseils contextualisees.
 ///

@@ -18,7 +18,7 @@ import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
 import '../../../core/data/seed/trail_seeder.dart';
 import '../../../domain/track_point.dart' as trek;
 import 'gpx_parser.dart';
-import '../../../features/tips/domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
