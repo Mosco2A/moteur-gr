@@ -29,6 +29,21 @@
 // `lib/features/trek/presentation/map/overlay/`, que deux fichiers de test
 // exercent, reste.
 //
+//
+// LE DOUBLON QUE LE COMPTE DE NOMS NE VOIT PAS — ECR-20 bis (tache 645-04,
+// concept C-5). `lib/core/ui/loading_view.dart` (`LoadingView`) et
+// `lib/shared/widgets/loading_overlay.dart` (`LoadingOverlay`) etaient le MEME
+// widget — une roue de progression centree, un message optionnel dessous — sous
+// deux noms differents. Deux noms differents : la mesure ci-dessus, qui compare
+// des noms de fichier, ne pouvait pas le voir. Seule la revue du 21/09 l'a vu,
+// et il a survecu onze jours a ce signalement.
+//
+// D'OU LA SECONDE MESURE, PAR LA FORME ET NON PAR LE NOM : les fichiers de
+// `lib/` dont tout le travail est d'afficher une attente. Le lot 645-02 a
+// retire `LoadingOverlay`, qui n'avait aucun appelant (commit 16aa97e6) ; il
+// n'en reste donc qu'UN, et c'est le plafond. La contre-epreuve a ete jouee :
+// en remettant `loading_overlay.dart` en place, cette mesure remonte a 2.
+//
 // RESORBER N'EST PAS RENOMMER. Fusionner deux types en deplacant du code est
 // interdit par SPEC-06 : c'est le travail du lot 645-04, et il attend un
 // arbitrage. Cette garde ne demande donc pas de reparer — seulement de ne pas
@@ -43,6 +58,39 @@ import 'mesure_des_sources_645.dart';
 /// fichier en double dans `lib/` (`gpx_parser.dart`, `stage.dart`,
 /// `track_point.dart`). `tracking_overlay.dart` a ete resorbe.
 const plafondNomsEnDouble = 3;
+
+/// Mesure du 02/10/2026, tete 0310fa9b : UN seul fichier de `lib/` n'a pour
+/// tout role que d'afficher une attente (`core/ui/loading_view.dart`).
+/// `shared/widgets/loading_overlay.dart`, son jumeau fonctionnel a nom
+/// different, est parti avec le lot 645-02.
+const plafondVoilesDeChargement = 1;
+
+/// UN FICHIER DONT TOUT LE TRAVAIL EST D'AFFICHER UNE ATTENTE.
+///
+/// La forme, pas le nom : le source cite `CircularProgressIndicator`, tient en
+/// 60 lignes de code ou moins hors commentaires, et ne porte ni `Scaffold`, ni
+/// `AppBar`, ni `ListView` — un ecran qui affiche une roue pendant son
+/// chargement en porte au moins un des trois, et n'est donc pas un voile.
+bool _estUnVoileDeChargement(String source) {
+  if (!source.contains('CircularProgressIndicator')) return false;
+  if (source.contains('Scaffold') ||
+      source.contains('AppBar') ||
+      source.contains('ListView')) {
+    return false;
+  }
+  final code = source
+      .split('\n')
+      .where((l) => l.trim().isNotEmpty && !estLigneDeCommentaire(l))
+      .length;
+  return code <= 60;
+}
+
+/// Les classes PUBLIQUES declarees par [source].
+final _motifClassePublique = RegExp(
+  r'^(?:abstract\s+|sealed\s+|final\s+|base\s+|interface\s+)*'
+  r'class\s+([A-Z][A-Za-z0-9_]*)',
+  multiLine: true,
+);
 
 void main() {
   late Map<String, List<String>> enDouble;
@@ -102,6 +150,38 @@ void main() {
             'c est une bonne nouvelle qui doit se graver, sinon la place '
             'liberee se remplira en silence. Si un NOUVEAU est apparu, c est '
             'le defaut que le test precedent nomme.',
+      );
+    });
+  });
+
+  group('645-04 / ECR-20 bis — un seul voile de chargement', () {
+    test('pas plus de widgets d attente qu au 02/10 — la mesure par la forme, '
+        'pas par le nom', () {
+      final voiles = <String>[];
+      for (final f in sourcesLib()) {
+        final source = lireSource(f);
+        if (!_estUnVoileDeChargement(source)) continue;
+        for (final m in _motifClassePublique.allMatches(source)) {
+          voiles.add('${m.group(1)}  ($f)');
+        }
+      }
+      voiles.sort();
+
+      expect(
+        voiles.length,
+        lessThanOrEqualTo(plafondVoilesDeChargement),
+        reason:
+            'UN DEUXIEME VOILE DE CHARGEMENT EST APPARU : ${voiles.length} '
+            'widgets de `lib/` n ont pour tout role que d afficher une '
+            'attente, contre $plafondVoilesDeChargement au 02/10/2026. '
+            'C EST LE DEFAUT C-5 QUI REVIENT : `LoadingView` et '
+            '`LoadingOverlay` ont coexiste onze jours parce que leurs NOMS '
+            'differaient et qu aucune commande ne regardait leur FORME. Deux '
+            'voiles, ce sont deux reponses a « a quoi ressemble une attente » '
+            ': celui qu on corrige n est jamais celui que l ecran affiche.\n'
+            'Si vous avez besoin d une attente, appelez `LoadingView` ; si '
+            'elle ne suffit pas, etendez-la plutot que de poser une '
+            'deuxieme.\n  ${voiles.join('\n  ')}',
       );
     });
   });
