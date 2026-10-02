@@ -1,3 +1,7 @@
+/// Dit LEQUEL des trois etats le marcheur vit : abonne sans pub, trek achete
+/// sans pub, ou preparation avec pub.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
