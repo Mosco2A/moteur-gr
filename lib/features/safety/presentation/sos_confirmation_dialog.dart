@@ -219,15 +219,13 @@ class SosConfirmationDialog extends StatelessWidget {
       ),
       actions: [
         // Bouton annuler
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          tone: theme.colorScheme.onSurface.withAlpha(178),
+          label: t.sos.cancel,
+          labelFontSize: 15,
+          isFullWidth: false,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            t.sos.cancel,
-            style: TextStyle(
-              color: theme.colorScheme.onSurface.withAlpha(178),
-              fontSize: 15,
-            ),
-          ),
         ),
         // Canal 1 : appel 112. SW-SKIN-L3e : AppButton filledTone rouge
         // (couleur SEMANTIQUE d'urgence). isFullWidth:false (action de dialogue).
