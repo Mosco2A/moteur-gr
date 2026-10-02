@@ -1,3 +1,7 @@
+/// Un titre puis une grille de deux colonnes de cartes, non scrollable elle-
+/// meme : c'est la page qui scrolle, pas la section.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/branding/stepways_icons.dart';

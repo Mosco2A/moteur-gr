@@ -1,3 +1,7 @@
+/// La brique des grilles du cockpit : icone, titre, sous-titre, une navigation
+/// — et le style vient d'AppCard, jamais d'un style ad hoc.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/branding/stepways_icons.dart';

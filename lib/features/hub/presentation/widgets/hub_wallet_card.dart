@@ -1,3 +1,7 @@
+/// L'affichage du solde d'etapes, qui manquait alors que tout le portefeuille
+/// existait : on depensait sans voir ce qui restait.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

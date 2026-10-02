@@ -1,3 +1,7 @@
+/// Le deuxieme des trois points d'entree de l'achat : le cockpit, seul ecran ou
+/// le marcheur passait des semaines sans pouvoir payer.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

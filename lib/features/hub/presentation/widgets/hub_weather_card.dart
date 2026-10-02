@@ -1,3 +1,7 @@
+/// La meteo du jour de l'etape de reference, avec sa pastille d'alerte orage,
+/// qui se degrade proprement quand la prevision manque.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
