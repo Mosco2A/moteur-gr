@@ -1,3 +1,7 @@
+/// Reprendre ou abandonner une rando laissee ouverte par un arret brutal —
+/// distinct du conflit de demarrage.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
