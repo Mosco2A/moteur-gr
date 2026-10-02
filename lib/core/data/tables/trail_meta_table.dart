@@ -1,3 +1,7 @@
+/// Code unique d'un sentier, version de ses donnees et horodatage de sa
+/// derniere synchronisation.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

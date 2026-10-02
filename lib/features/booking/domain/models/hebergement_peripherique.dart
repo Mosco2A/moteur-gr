@@ -1,3 +1,7 @@
+/// Un hebergement A COTE du sentier : StepWays est FACILITATEUR, il annonce le
+/// detour aller-retour et renvoie au site de l'hebergeur.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'hebergement_peripherique.freezed.dart';

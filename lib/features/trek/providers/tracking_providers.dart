@@ -1,3 +1,7 @@
+/// L'etat de l'enregistrement expose a l'ecran : distance, duree, denivele,
+/// vitesse, et ou en est la session.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

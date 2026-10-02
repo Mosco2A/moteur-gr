@@ -1,3 +1,7 @@
+/// Branchement Firestore du notice-and-action : la notification est ecrite, et
+/// l'etat de moderation du contenu cible est bascule.
+library;
+
 // D4C-01 — Implementation Firestore du ModerationStore (design D4 CORDO
 // #86166). Branche le mecanisme notice-and-action (art 16) sur Firestore :
 //   - ecrit les notifications dans la collection `reports_moderation` (regles

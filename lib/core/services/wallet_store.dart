@@ -1,3 +1,7 @@
+/// Solde du compte-etapes tel qu'il DURE : les prefs sont la source, la table
+/// Drift en est le miroir canonique hydrate au demarrage.
+library;
+
 import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;

@@ -1,3 +1,7 @@
+/// Montee et descente du miroir de compte non nominatif, sous liste fermee des
+/// documents que le coffre distant peut porter (tache 612).
+library;
+
 import "dart:async";
 
 import "package:cloud_firestore/cloud_firestore.dart";

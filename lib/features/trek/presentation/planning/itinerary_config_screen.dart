@@ -1,3 +1,7 @@
+/// Les reglages fins de l'itineraire : distance et duree maximum par jour, pour
+/// l'ecran avance.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

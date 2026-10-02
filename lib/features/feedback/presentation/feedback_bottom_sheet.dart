@@ -1,3 +1,7 @@
+/// Le formulaire de retour atteignable de PARTOUT dans l'app : categorie,
+/// message, note.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

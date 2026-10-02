@@ -1,3 +1,7 @@
+/// Segments publies par le serveur, en cache pour la lecture hors-ligne, et les
+/// efforts que le marcheur y realise, envoyes en differe.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

@@ -1,3 +1,7 @@
+/// Le choix propose quand une AUTRE rando est deja en cours : terminer,
+/// abandonner, annuler. La couche data reste sans Flutter.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';

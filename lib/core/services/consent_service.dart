@@ -1,3 +1,7 @@
+/// Consentement RGPD accorde FINALITE PAR FINALITE, jamais groupe : rien n'est
+/// accorde sans un acte positif, et tout se retire (reco CNIL 2025).
+library;
+
 // D4A-01 — Service de consentement granulaire RGPD (design D4 CORDO #86166).
 //
 // Le consentement est gere PAR FINALITE (CNIL, reco mars 2025) : la

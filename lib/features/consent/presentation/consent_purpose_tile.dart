@@ -1,3 +1,7 @@
+/// Une bascule par finalite, JAMAIS pre-cochee : son etat vient du consentement
+/// reel, pas d'une valeur par defaut commode.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/services/consent_service.dart';

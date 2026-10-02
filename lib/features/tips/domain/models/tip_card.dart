@@ -1,3 +1,7 @@
+/// Une fiche conseil en cinq langues, dont la portee, la saison et la categorie
+/// sont des String extensibles, jamais des enums.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../i18n/translations.g.dart';

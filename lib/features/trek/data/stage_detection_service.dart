@@ -1,3 +1,7 @@
+/// Dit SUR QUELLE etape le marcheur se trouve, avec une hysteresis pour que le
+/// basculement ne clignote pas a la frontiere.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,3 +1,7 @@
+/// Le classement d'un defi, rendu par TRANCHES larges : c'est le serveur qui
+/// applique le k-anonymat, pas l'affichage.
+library;
+
 // Modeles de classement de defi (F7C-02, Phase 7) — VUE LECTURE du document
 // calcule COTE SERVEUR (Cloud Function classementDefi, F7A-03/index.js) et mis
 // en cache local (offline-first, R2). Le client NE CALCULE JAMAIS le classement.

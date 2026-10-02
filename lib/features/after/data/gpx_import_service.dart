@@ -1,3 +1,7 @@
+/// L'import GPX pilote par la CONFIGURATION du sentier actif, et plus par des
+/// bornes et des refuges ecrits en dur.
+library;
+
 import 'package:gpx/gpx.dart';
 
 import '../../../core/geo/geo_utils.dart';

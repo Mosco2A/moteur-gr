@@ -1,3 +1,7 @@
+/// Repartit N etapes sur D jours en equilibrant la CHARGE, score de difficulte
+/// par etape a l'appui — pas la seule distance.
+library;
+
 import '../../../core/models/stage.dart';
 import '../../../core/models/stage_duration.dart';
 import '../models/day_plan.dart';

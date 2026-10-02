@@ -1,3 +1,7 @@
+/// L'ecran bloquant quand aucun sentier n'est encore sur le telephone, et qui
+/// se leve de lui-meme des qu'un sentier arrive.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';

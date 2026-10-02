@@ -1,3 +1,7 @@
+/// Bandeau de marque dont le FOND change avec la peau active : degrade, filet
+/// topographique ou photo, selon la peau et non selon l'ecran.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/a11y/wcag_contrast.dart';

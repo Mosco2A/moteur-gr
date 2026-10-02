@@ -1,3 +1,7 @@
+/// Le SOS n'existe que pendant une rando active : hors rando il ne prend meme
+/// pas de place dans la mise en page.
+library;
+
 // E5.15 — Bouton SOS appel direct V1.
 //
 // FloatingActionButton rouge SOS visible UNIQUEMENT pendant un trek actif.

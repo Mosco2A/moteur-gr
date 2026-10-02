@@ -1,3 +1,7 @@
+/// Ouvre, met en pause et ferme une session de marche, et detecte au lancement
+/// celle qu'un arret brutal a laissee ouverte.
+library;
+
 import '../../../core/error/error_handler.dart';
 import '../domain/models/trek_session.dart';
 

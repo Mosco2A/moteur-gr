@@ -1,3 +1,7 @@
+/// Deux mecanismes INDEPENDANTS : la condition qui active le bouton « Demarrer
+/// », et le demarrage reel lui-meme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';

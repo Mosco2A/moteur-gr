@@ -1,3 +1,7 @@
+/// Un point d'interet en ligne de liste : icone typee, nom, description et
+/// altitude quand elle est connue.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';

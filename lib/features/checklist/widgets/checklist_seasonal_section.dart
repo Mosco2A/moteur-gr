@@ -1,3 +1,7 @@
+/// Suggestions ADDITIVES selon le sentier et la saison : la liste de base ne
+/// change pas, chaque suggestion s'ajoute d'un tap et compte au poids.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// Hebergements rattaches a une etape, descendus avec le sentier et relus etape
+/// par etape.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

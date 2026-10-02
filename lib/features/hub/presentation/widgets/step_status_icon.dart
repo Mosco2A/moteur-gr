@@ -1,3 +1,7 @@
+/// La coche « sujet traite » de la preparation, DERIVEE a la volee des faits
+/// deja connus : rien n'est encore persiste pour elle.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';

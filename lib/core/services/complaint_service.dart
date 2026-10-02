@@ -1,3 +1,7 @@
+/// Contestation d'une decision de moderation (DSA art. 20), tenue pure et sans
+/// Firebase pour rester testable : la persistance passe par un puits.
+library;
+
 // D4C-03 — Service de plaintes / contestations DSA art 20 (design D4 CORDO
 // #86166). Systeme INTERNE de traitement des plaintes : un utilisateur peut
 // contester une decision de moderation le concernant. La plainte est

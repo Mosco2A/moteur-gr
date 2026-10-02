@@ -1,3 +1,7 @@
+/// Les quatre choix de nuit — refuge, gite, bivouac, autre. Seul le TYPE est
+/// traduit : aucune donnee de localite ici.
+library;
+
 import '../../../../i18n/translations.g.dart';
 import '../../../../core/branding/stepways_icons.dart';
 

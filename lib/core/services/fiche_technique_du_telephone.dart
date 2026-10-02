@@ -1,3 +1,7 @@
+/// Liste FERMEE des champs techniques que l'appareil accepte d'envoyer : tout
+/// ce qui n'y est pas nomme est refuse avant le reseau.
+library;
+
 import "dart:io" show Platform;
 
 import "package:cloud_firestore/cloud_firestore.dart";

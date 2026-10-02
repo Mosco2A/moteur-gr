@@ -1,3 +1,7 @@
+/// Le pont entre le modele, le gabarit JSON configurable et la base : c'est lui
+/// qui decide du premier remplissage.
+library;
+
 import 'package:drift/drift.dart' show Value;
 
 import '../../../core/config/trail_config.dart';

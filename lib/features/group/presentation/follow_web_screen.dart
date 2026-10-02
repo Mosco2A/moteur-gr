@@ -1,3 +1,7 @@
+/// La page que suivent les proches, atteignable par un code de partage : un
+/// marqueur qui avance, et rien d'autre.
+library;
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

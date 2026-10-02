@@ -1,3 +1,7 @@
+/// Lignes de materiel d'un sentier en base : coche, poids en grammes, quantite,
+/// liste de courses, et les lignes que le marcheur ajoute lui-meme.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

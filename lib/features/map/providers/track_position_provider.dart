@@ -1,3 +1,7 @@
+/// Ou le marcheur se trouve SUR la trace : projection, etape courante et
+/// distances, calculees en une fois pour l'affichage temps reel.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 

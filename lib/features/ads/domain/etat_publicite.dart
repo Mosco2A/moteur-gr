@@ -1,3 +1,7 @@
+/// Pourquoi ce sentier est sans publicite : l'une des trois raisons, jamais
+/// deux, et jamais « parce que ».
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/monetization_service.dart';

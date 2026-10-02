@@ -1,3 +1,7 @@
+/// La legende des pastilles de la carte : sans elle, le marcheur voyait des
+/// ronds de couleur sans savoir lequel est une source.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

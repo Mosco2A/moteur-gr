@@ -1,3 +1,7 @@
+/// Le decoupage RETENU, c'est-a-dire la DECISION du marcheur et non l'etat d'un
+/// ecran ; nul tant qu'il n'a rien choisi.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

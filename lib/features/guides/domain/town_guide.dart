@@ -1,3 +1,7 @@
+/// Les infos pratiques d'une localite d'etape, regroupees par theme :
+/// ravitaillement, hebergement, transport, services, eau, sante.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'town_guide.freezed.dart';

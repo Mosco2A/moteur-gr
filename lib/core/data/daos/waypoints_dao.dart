@@ -1,3 +1,7 @@
+/// Reperes poses par les marcheurs et leurs commentaires : cache lisible hors-
+/// ligne, ecriture differee, retires masques (DSA art. 16).
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

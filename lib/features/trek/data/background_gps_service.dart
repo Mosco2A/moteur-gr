@@ -1,3 +1,7 @@
+/// Capture GPS quand l'application est en fond : service de premier plan
+/// Android, et precision plafonnee sous 20 % de batterie.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';

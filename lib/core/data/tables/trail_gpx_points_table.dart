@@ -1,3 +1,7 @@
+/// Points d'une trace, ordonnes par index de sequence : c'est cet ordre qui
+/// reconstitue le trace.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

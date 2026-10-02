@@ -1,3 +1,7 @@
+/// PRIVE par defaut : la visibilite sociale s'active finalite par finalite,
+/// jamais d'un seul interrupteur global.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

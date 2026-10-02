@@ -1,3 +1,7 @@
+/// Le formulaire de signalement commun a toutes les features communautaires,
+/// avec une liste FERMEE de motifs guides.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

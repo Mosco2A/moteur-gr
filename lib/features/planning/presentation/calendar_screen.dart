@@ -1,3 +1,7 @@
+/// Le calendrier du programme. Le formatage de date retombe sur un format
+/// independant de la locale : jamais d'exception a l'affichage.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

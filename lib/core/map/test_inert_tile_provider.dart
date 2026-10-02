@@ -1,3 +1,7 @@
+/// Un fond de carte qui ne telecharge RIEN, reserve aux tests : sans lui,
+/// chaque test de carte appelait les serveurs d'OpenStreetMap.
+library;
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';

@@ -1,3 +1,7 @@
+/// La seule porte qui a besoin de rootBundle, devant le parseur en Dart pur :
+/// c'est cette couture qui laisse vivre l'outil de publication.
+library;
+
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../features/trek/data/gpx_parser.dart' as trek_gpx;
@@ -7,15 +11,16 @@ import 'track_point.dart';
 export '../../features/trek/data/gpx_parser.dart'
     show GpxParseResult, GpxMetadata;
 
-/// Parseur de fichiers GPX depuis les assets de l'application.
+/// Lecture d'un GPX range dans les assets Flutter : la seule porte qui a
+/// besoin de `rootBundle`, devant le parseur en Dart pur de
+/// `features/trek/data/gpx_parser.dart`, auquel elle delegue tout.
 ///
-/// Conserve l'API historique (parseFromAsset, parseFromString)
-/// tout en deleguant au nouveau GpxParser (features/trek/data/).
-///
-/// Les nouveaux usages doivent utiliser [trek_gpx.GpxParser.parse()]
-/// pour acceder aux metadata et multi-segments.
-class GpxParser {
-  GpxParser._();
+/// Elle porte ce nom-la parce que c'est la couture qui justifie son
+/// existence : `tool/publier_sentier.dart` depend du parseur pur, donc le
+/// parseur ne peut pas toucher a `dart:ui`, donc l'acces aux assets vit ici
+/// (ARB-645-04-c, decision de Christophe du 02/10/2026).
+class GpxDepuisLesAssets {
+  GpxDepuisLesAssets._();
 
   /// Parse un fichier GPX depuis les assets Flutter.
   ///

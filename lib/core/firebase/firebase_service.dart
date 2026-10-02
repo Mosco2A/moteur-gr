@@ -1,3 +1,7 @@
+/// L'initialisation CONDITIONNELLE : sans identifiant de projet, Firebase n'est
+/// pas demarre, et l'app fonctionne quand meme.
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';

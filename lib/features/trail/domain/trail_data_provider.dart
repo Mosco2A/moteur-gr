@@ -1,3 +1,7 @@
+/// L'interface qui decouple le domaine de la base : c'est elle qui permet de
+/// substituer une autre source en test.
+library;
+
 import '../../../core/models/stage.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/geo/track_point.dart';

@@ -1,3 +1,7 @@
+/// Le pipeline GPS, du flux brut de positions aux etapes comparables par
+/// CONTENU — sans quoi chaque emission reconstruisait tout.
+library;
+
 import 'package:flutter/foundation.dart' show immutable, listEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';

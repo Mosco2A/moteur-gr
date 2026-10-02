@@ -1,3 +1,7 @@
+/// Basculer de sentier : la selection ecrit la source de verite, et toute la
+/// configuration active en decoule.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

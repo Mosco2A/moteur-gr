@@ -1,3 +1,7 @@
+/// Le mode de partage, serialise vers le serveur donc extensible, et les
+/// positions mises en attente quand le reseau manque.
+library;
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

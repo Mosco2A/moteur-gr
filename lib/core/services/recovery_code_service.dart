@@ -1,3 +1,7 @@
+/// Le code de reconnexion ne quitte jamais le telephone : ni mail ni SMS, et
+/// c'est lui la cle du coffre — le perdre est irreversible.
+library;
+
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,3 +1,7 @@
+/// Le filtre de type de commerce (retaper la meme puce revient a « Tous ») et
+/// les donnees de ravitaillement, lues en base d'abord.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // StateProvider (filtre de type) : Riverpod 3.x le fournit via legacy.dart
 // (meme convention que les autres StateProvider du projet, ex. stage_providers).

@@ -1,3 +1,7 @@
+/// Le registre des sentiers connus : ajouter un sentier est une ENTREE de
+/// donnee, pas une modification du moteur.
+library;
+
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';

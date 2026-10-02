@@ -1,3 +1,7 @@
+/// Les chiffres de la rando EN COURS, calcules depuis la seule source
+/// reellement alimentee : TrekStats.addPoint n'a aucun appelant.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/track_segment_stats.dart';

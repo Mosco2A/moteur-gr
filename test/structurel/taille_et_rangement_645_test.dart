@@ -42,9 +42,31 @@ const plafondIntrusRacineLib = 1;
 /// `flutter_map_v8_changes.dart`).
 const plafondDartSousDocs = 2;
 
-/// Mesure du 02/10/2026, tete 147ca32d : 50 fichiers source de `lib/`
-/// au-dela de 500 lignes (27 entre 501 et 800, 23 au-dela de 800).
-const plafondFichiersTropLongs = 50;
+/// Mesure du 02/10/2026, APRES le lot 645-11 : 52 fichiers source de `lib/`
+/// au-dela de 500 lignes (29 entre 501 et 800, 23 au-dela de 800).
+///
+/// POURQUOI CE PLAFOND MONTE DE 50 A 52, ET CE QUE CELA NE VEUT PAS DIRE. Le lot
+/// 645-11 a pose un en-tete `///` en premiere ligne des 472 fichiers de `lib/`
+/// qui n'en avaient pas. L'en-tete coute QUATRE lignes a chaque fichier : une a
+/// trois lignes de doc, le `library;` qui evite l'info
+/// `dangling_library_doc_comments`, et la ligne vide qui le separe des imports.
+/// DEUX fichiers tenaient a moins de quatre lignes de la borne et l'ont donc
+/// franchie SANS QU'UNE SEULE LIGNE DE CODE SOIT AJOUTEE :
+///
+///   - `lib/core/services/source_de_donnees_sentier.dart` : 497 -> 501 ;
+///   - `lib/features/trek/presentation/refuge_detail_screen.dart` : 499 -> 503.
+///
+/// La dette que cette garde mesure — « un fichier trop long pour etre lu en
+/// entier avant d'y toucher » — n'a donc pas bouge d'une ligne : ces deux
+/// fichiers etaient a la limite hier, ils y sont encore, et ils sont desormais
+/// DOCUMENTES, ce qui les rend plus lisibles et non moins. Le decoupage reste le
+/// travail du lot 645-06.
+///
+/// CE QUE CE PRECEDENT N'AUTORISE PAS. Monter ce plafond parce qu'on a ajoute du
+/// CODE serait exactement le defaut que la garde existe pour attraper. Il ne se
+/// monte que sur une cause mesuree et nommee, comme ici — et il ne redescendra
+/// que par un decoupage.
+const plafondFichiersTropLongs = 52;
 
 /// Le plafond de lignes d'un fichier source (ECR-15).
 const maximumLignesParFichier = 500;

@@ -1,3 +1,7 @@
+/// Bouton unique de l'application, cinq formes parametrees par AppButtonVariant
+/// : aucun ecran ne redessine son propre bouton.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/branding/stepways_icons.dart';

@@ -1,3 +1,7 @@
+/// La journee destinee a l'EDITION par le marcheur : regrouper, separer,
+/// insErer un repos — ce que le plan fige ne permet pas.
+library;
+
 import '../../../core/models/stage.dart';
 import '../../../core/models/stage_duration.dart';
 

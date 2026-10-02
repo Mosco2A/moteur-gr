@@ -1,3 +1,7 @@
+/// Lecture d'un GPX en Dart PUR — aucune dependance a Flutter, c'est ce qui
+/// permet a l'outil de publication d'en dependre.
+library;
+
 import 'package:gpx/gpx.dart';
 
 import '../../../core/geo/geo_utils.dart';

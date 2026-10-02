@@ -1,3 +1,7 @@
+/// Les statistiques LOCALES qui alimentent les regles de badges et la
+/// progression des defis, surchargeables en test.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/defi_service.dart';

@@ -1,3 +1,7 @@
+/// Deux obligations qui se tiennent : purger ce qui a depasse sa duree de
+/// conservation (art. 5.1.e) et effacer sur demande (art. 17).
+library;
+
 // D4B-02 — Service de RETENTION et de DROIT A L'EFFACEMENT (design D4 CORDO
 // #86166, angle mort AM-2 + RGPD art 17).
 //

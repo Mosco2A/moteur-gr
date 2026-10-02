@@ -1,3 +1,7 @@
+/// Une etape peut offrir plusieurs traces : l'officielle et ses variantes,
+/// chacune avec sa difficulte propre.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'variante_etape.freezed.dart';

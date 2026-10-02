@@ -1,3 +1,7 @@
+/// Les journees du carnet, de la plus ancienne a la plus recente : une journee
+/// existe des qu'elle porte une entree.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';

@@ -1,3 +1,7 @@
+/// La trace brute d'un sentier, lue EN BASE d'abord ; l'asset du binaire n'est
+/// plus que le secours (tache 606).
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
@@ -8,8 +12,9 @@ import '../../../core/geo/track_point.dart';
 ///
 /// LA CARTE LIT LA BASE, L ASSET EST LE SECOURS (tache 606). Cette ligne disait
 /// jusqu ici « Charge le fichier GPX depuis les assets via
-/// GpxParser.parseFromAsset », et c etait la seconde moitie du mur n1 : un
-/// sentier connu du SEUL distant apparaissait au catalogue (lot 605), ses
+/// GpxDepuisLesAssets.parseFromAsset », et c etait la seconde moitie du mur
+/// n1 : un sentier connu du SEUL distant apparaissait au catalogue (lot 605),
+/// ses
 /// donnees descendaient bien dans `trail_gpx_points` — et sa trace ne
 /// s affichait PAS, parce que la carte allait la chercher dans le BINAIRE. Il
 /// etait consultable et pas marchable.

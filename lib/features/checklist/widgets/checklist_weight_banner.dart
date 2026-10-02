@@ -1,7 +1,12 @@
+/// Le poids du sac rapporte au poids du corps, en cinq paliers (12/15/20/25 %),
+/// avec son conseil et sa jauge.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/domain/body_weight_reference.dart';
@@ -37,7 +42,7 @@ String formatChecklistGrams(int grams) {
     );
   } else if (ratio < 0.15) {
     return (
-      color: const Color(0xFF9ACD32), // jaune-vert (parite GR20)
+      color: CouleursSemantiques.jauneVertSacLeger,
       advice: w.adviceOk,
       icon: StepwaysIcons.cochePleine,
     );
@@ -55,7 +60,7 @@ String formatChecklistGrams(int grams) {
     );
   } else {
     return (
-      color: const Color(0xFF8B0000), // rouge fonce (parite GR20)
+      color: CouleursSemantiques.rougeSombreSacDangereux,
       advice: w.adviceDanger,
       icon: StepwaysIcons.danger,
     );
@@ -447,7 +452,7 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeColor = AppTheme.vertFacile;
       gaugeLabel = w.gaugeUltraLight;
     } else if (pct < 15) {
-      gaugeColor = const Color(0xFF9ACD32);
+      gaugeColor = CouleursSemantiques.jauneVertSacLeger;
       gaugeLabel = w.gaugeOk;
     } else if (pct < 20) {
       gaugeColor = AppTheme.orangeDifficile;
@@ -456,7 +461,7 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeColor = AppTheme.rougeUrgence;
       gaugeLabel = w.gaugeWarn;
     } else {
-      gaugeColor = const Color(0xFF8B0000);
+      gaugeColor = CouleursSemantiques.rougeSombreSacDangereux;
       gaugeLabel = w.gaugeDanger;
     }
 

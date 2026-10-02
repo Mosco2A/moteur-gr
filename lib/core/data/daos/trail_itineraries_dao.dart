@@ -1,3 +1,7 @@
+/// Itineraires proposes pour un sentier : les variantes de parcours entre
+/// lesquelles le marcheur choisit.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

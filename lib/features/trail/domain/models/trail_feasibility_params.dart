@@ -1,3 +1,7 @@
+/// Les facteurs d'ajustement propres a un sentier — altitude, technicite,
+/// chaleur, neige — qui corrigent le verdict generique.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'trail_feasibility_params.freezed.dart';

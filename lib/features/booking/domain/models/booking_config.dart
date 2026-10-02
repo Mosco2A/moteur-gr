@@ -1,3 +1,7 @@
+/// Ce qu'un sentier autorise en matiere de reservation, serialisable pour le
+/// serveur comme pour le cache local.
+library;
+
 // Configuration de reservation pour un parcours.
 //
 // Definit si la reservation est activee pour un trail,

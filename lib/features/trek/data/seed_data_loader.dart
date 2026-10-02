@@ -1,3 +1,7 @@
+/// Premiere pose des donnees d'un sentier depuis les assets, idempotente : elle
+/// ne fait rien si la base porte deja ces etapes.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';

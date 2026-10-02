@@ -1,3 +1,7 @@
+/// Le seul widget qui dessine la marque. Avant la tache 632, l'application
+/// n'affichait ni picto, ni nom, ni image de StepWays.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

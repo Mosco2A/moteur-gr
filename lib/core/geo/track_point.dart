@@ -1,3 +1,7 @@
+/// Un point de trace de REFERENCE : altitude et distance cumulee, tous deux
+/// requis, sans horodatage (voir ARB-645-04-b).
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'track_point.freezed.dart';

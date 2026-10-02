@@ -1,3 +1,7 @@
+/// Attribution evaluee 100 % en local, en fonction PURE : aucune dependance
+/// serveur, et les regles debutant et expert restent distinctes.
+library;
+
 import 'badge.dart';
 import 'user_stats.dart';
 

@@ -1,3 +1,7 @@
+/// Frequence cardiaque lue sur une ceinture BLE standard, en Flutter pur : le
+/// profil GATT du Bluetooth SIG, donc toutes marques.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';

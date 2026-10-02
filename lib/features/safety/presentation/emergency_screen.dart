@@ -1,3 +1,7 @@
+/// Les numeros de secours viennent de la configuration du sentier actif : rien
+/// n'est ecrit en dur, parce qu'ils changent avec la region.
+library;
+
 // E5.14a — Ecran contacts d'urgence.
 //
 // Liste les contacts personnels ordonnes par priorite

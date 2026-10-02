@@ -1,3 +1,7 @@
+/// Les types d'hebergement, extensibles par sentier : une valeur inconnue est
+/// PRESERVEE telle quelle, seul son affichage se replie.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'stage_accommodation.freezed.dart';

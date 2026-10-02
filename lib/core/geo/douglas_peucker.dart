@@ -1,3 +1,7 @@
+/// Simplification de trace laissee en place mais DEPRECIEE : le code vivant est
+/// track_simplifier de features/trek/data.
+library;
+
 import 'geo_utils.dart';
 import 'track_point.dart';
 

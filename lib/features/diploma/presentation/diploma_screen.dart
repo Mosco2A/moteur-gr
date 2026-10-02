@@ -1,3 +1,7 @@
+/// Le diplome a l'ecran avant le PDF : photos du carnet, chiffres et trace de
+/// la session.
+library;
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';

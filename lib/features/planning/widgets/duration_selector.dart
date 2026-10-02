@@ -1,3 +1,7 @@
+/// Le curseur de duree, et le qualificatif d'effort qui n'a plus qu'UNE base de
+/// calcul : un second systeme a ete retire.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

@@ -1,3 +1,7 @@
+/// Les reglages de notification et leurs cles : aucune n'existait, le module ne
+/// persistait donc rien.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

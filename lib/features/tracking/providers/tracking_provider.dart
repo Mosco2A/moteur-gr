@@ -1,3 +1,7 @@
+/// L'etat de l'enregistrement expose a l'ecran, immuable, pour qu'aucun ecran
+/// n'en invente un intermediaire.
+library;
+
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';

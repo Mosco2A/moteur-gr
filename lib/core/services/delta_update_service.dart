@@ -1,3 +1,7 @@
+/// Copie d'un sentier par revision : fichier rapatrie en entier AVANT la
+/// moindre ecriture, puis pose en une seule transaction SQLite.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';

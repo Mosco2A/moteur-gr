@@ -1,3 +1,7 @@
+/// CONTESTER une decision de moderation en exposant ses arguments (DSA art. 20)
+/// : la plainte part a un moderateur, pas a un algorithme.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

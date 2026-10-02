@@ -1,3 +1,7 @@
+/// Avancement du telechargement d'un sentier, table par table, pour reprendre
+/// la copie la ou une coupure reseau l'a laissee.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

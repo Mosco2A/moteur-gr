@@ -1,3 +1,7 @@
+/// Le consentement publicitaire de Google avant toute initialisation du SDK :
+/// l'ordre des deux etapes est la regle, pas un detail.
+library;
+
 import 'dart:async';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';

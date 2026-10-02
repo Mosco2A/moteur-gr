@@ -1,3 +1,7 @@
+/// La banniere elle-meme, qui n'avait jamais ete construite : la decision
+/// d'afficher existait et etait testee, l'affichage non.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

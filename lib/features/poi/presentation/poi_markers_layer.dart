@@ -1,3 +1,7 @@
+/// Les points sur la carte, filtres par type visible, chacun style par le
+/// registre et non par l'ecran.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

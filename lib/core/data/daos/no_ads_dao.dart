@@ -1,3 +1,7 @@
+/// Sources de sans-pub actives, qui peuvent coexister (abonnement et
+/// recompense) : pas de cle metier unique, on insere puis on purge l'expire.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

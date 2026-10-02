@@ -1,3 +1,7 @@
+/// Le plan est externalise, PERSONNALISE par le profil et le verdict, et DATE
+/// par la date de depart du calendrier.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

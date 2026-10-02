@@ -1,3 +1,7 @@
+/// Le groupe actif, ses membres en flux, et le compte de suiveurs hors createur
+/// — c'est lui qui decide du plafond gratuit.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/group_member.dart';

@@ -1,3 +1,7 @@
+/// Le pendant VISIBLE de l'alerte d'ecart : la notification et la vibration
+/// partent ailleurs, ce bandeau n'est le bonus de l'ecran ouvert.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

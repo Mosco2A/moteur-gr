@@ -1,3 +1,7 @@
+/// L'amorce publicitaire dans l'ordre : resoudre le consentement, PUIS
+/// initialiser le SDK — et seulement s'il est autorise.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/ad_config.dart';

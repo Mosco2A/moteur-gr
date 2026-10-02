@@ -1,3 +1,7 @@
+/// Les quatre chiffres de la rando et ses trois commandes, poses par-dessus la
+/// carte pendant l'enregistrement.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

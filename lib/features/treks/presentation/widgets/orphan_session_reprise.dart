@@ -1,3 +1,7 @@
+/// La garde qui PROPOSE la reprise au lancement : la detection etait cablee,
+/// l'invitation visible manquait.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

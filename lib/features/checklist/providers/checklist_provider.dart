@@ -1,3 +1,7 @@
+/// L'etat du sac, et le poids de corps de REFERENCE qui sert de denominateur
+/// tant que le marcheur ne l'a pas renseigne.
+library;
+
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// Les filets qui attrapent ce qui echappe au code : erreurs de widget, erreurs
+/// de la plate-forme, erreurs non attrapees.
+library;
+
 import 'package:flutter/foundation.dart';
 
 import 'error_handler.dart';

@@ -1,3 +1,6 @@
+/// Le fil lu depuis le CACHE local, avec des pseudonymes et jamais un nom reel.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

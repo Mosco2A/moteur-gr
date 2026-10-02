@@ -1,3 +1,7 @@
+/// Le classement d'un segment, LU du cache local du document calcule par le
+/// serveur : l'ecran ne classe rien lui-meme.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

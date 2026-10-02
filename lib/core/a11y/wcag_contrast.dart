@@ -1,3 +1,7 @@
+/// Le calcul de contraste qui tranche si une couleur est lisible sur un fond :
+/// les seuils AA et AAA, et non un avis d'oeil.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';

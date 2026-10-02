@@ -1,3 +1,7 @@
+/// L'ecriture d'une photo du carnet sur le telephone, avec sa taille finale ou
+/// un code d'erreur nomme.
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;

@@ -1,3 +1,7 @@
+/// Le partage d'un resultat d'etape est OPT-IN : prive par defaut, il ne
+/// s'ouvre que si le marcheur l'a active.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

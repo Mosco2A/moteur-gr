@@ -1,3 +1,7 @@
+/// Une entree du carnet, calee sur la table qui la stocke, immutable et
+/// serialisable.
+library;
+
 import 'package:drift/drift.dart' show Value;
 import 'package:freezed_annotation/freezed_annotation.dart';
 

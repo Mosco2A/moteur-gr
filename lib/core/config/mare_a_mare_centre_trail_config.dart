@@ -1,3 +1,7 @@
+/// Le sentier de demonstration reel sur lequel l'app demarre. Le moteur reste
+/// generique : ce fichier n'est qu'une DONNEE parmi d'autres.
+library;
+
 import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 

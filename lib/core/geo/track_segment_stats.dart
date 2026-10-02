@@ -1,3 +1,7 @@
+/// Un SEUL calcul de chiffres sur une suite de points, partage par le carnet et
+/// le recapitulatif : deux implantations finiraient par divergeur.
+library;
+
 import '../data/database.dart';
 import '../../features/trek/domain/trek_stats.dart';
 import 'geo_utils.dart';

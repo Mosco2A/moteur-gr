@@ -1,3 +1,7 @@
+/// Les hebergements d'une etape, parametres par sentier ET par numero d'etape
+/// pour rester generiques.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/nuitee_selections_dao.dart';

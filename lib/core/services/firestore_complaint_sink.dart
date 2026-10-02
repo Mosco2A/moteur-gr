@@ -1,3 +1,7 @@
+/// Branchement Firestore des contestations, qui rattache l'UID hache du
+/// plaignant exige par les regles anti-usurpation.
+library;
+
 // D4C-03 — Implementation Firestore du ComplaintSink (plaintes art 20, design
 // D4 CORDO #86166). Ecrit dans la collection moderation_complaints en
 // rattachant l'UID HACHE du plaignant authentifie (complainantUidHash ==

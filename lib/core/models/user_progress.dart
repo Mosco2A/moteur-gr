@@ -1,3 +1,7 @@
+/// Ou en est le marcheur sur un sentier. Pas de lecture JSON : cette donnee ne
+/// vient que de la base locale, jamais du reseau.
+library;
+
 import 'package:drift/drift.dart' show Value;
 import 'package:freezed_annotation/freezed_annotation.dart';
 

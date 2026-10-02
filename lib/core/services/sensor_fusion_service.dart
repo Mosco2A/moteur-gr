@@ -1,3 +1,7 @@
+/// Altitude relative derivee du barometre puis RECALEE sur un point GPS fiable,
+/// pour corriger la derive, en Flutter pur.
+library;
+
 import 'dart:async';
 import 'dart:math' as math;
 

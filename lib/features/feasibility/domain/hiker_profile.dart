@@ -1,3 +1,7 @@
+/// La fiche d'information morphologique, donnee SENSIBLE au sens de l'article 9
+/// : locale, et miroir cloud sous consentement seulement.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'hiker_profile.freezed.dart';

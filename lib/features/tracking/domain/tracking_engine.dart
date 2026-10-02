@@ -1,3 +1,7 @@
+/// Le calcul d'une rando en cours, en Dart pur : distance cumulee, denivele,
+/// vitesse, a partir des points recus.
+library;
+
 import '../../../core/geo/geo_utils.dart';
 import '../../../core/geo/track_point.dart';
 

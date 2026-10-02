@@ -1,3 +1,7 @@
+/// « Qu'est-ce que je vais croiser aujourd'hui » : les points de l'etape en
+/// cours, cochables au passage — autre chose qu'un panneau de calques.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// La fiche d'un hebergement, lue en base : aucune donnee d'hebergement n'est
+/// ecrite dans le moteur.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';

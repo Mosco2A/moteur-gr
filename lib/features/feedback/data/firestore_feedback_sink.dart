@@ -1,3 +1,7 @@
+/// Le branchement Firestore des retours, isole du service pour que celui-ci
+/// reste testable hors reseau.
+library;
+
 // 596 C1 — DESTINATAIRE REEL DES RETOURS UTILISATEUR, adosse a Cloud Firestore.
 //
 // Meme patron que [FirestoreComplaintSink] (D4C-03) : l'acces Firestore est

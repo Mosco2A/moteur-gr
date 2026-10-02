@@ -1,3 +1,7 @@
+/// Les filtres de la carte des reperes : par type, et par fraicheur de la
+/// derniere condition signalee.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

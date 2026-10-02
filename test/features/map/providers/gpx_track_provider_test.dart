@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/gpx_parser.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 
 /// Tests du provider gpxTrackProvider.
 ///
@@ -16,7 +16,7 @@ void main() {
       // Charger directement depuis le filesystem (pas de rootBundle en test)
       final file = File('assets/gpx/test_trail.gpx');
       final content = file.readAsStringSync();
-      final points = GpxParser.parseFromString(content);
+      final points = GpxDepuisLesAssets.parseFromString(content);
 
       expect(points, isNotEmpty);
       expect(points.length, equals(27));
@@ -25,7 +25,7 @@ void main() {
     test('les points ont des coordonnées valides', () {
       final file = File('assets/gpx/test_trail.gpx');
       final content = file.readAsStringSync();
-      final points = GpxParser.parseFromString(content);
+      final points = GpxDepuisLesAssets.parseFromString(content);
 
       for (final point in points) {
         expect(point.lat, inInclusiveRange(-90.0, 90.0));
@@ -49,7 +49,7 @@ void main() {
     test('le premier et dernier point ont des altitudes cohérentes', () {
       final file = File('assets/gpx/test_trail.gpx');
       final content = file.readAsStringSync();
-      final points = GpxParser.parseFromString(content);
+      final points = GpxDepuisLesAssets.parseFromString(content);
 
       // Premier point : environ 820m
       expect(points.first.altitude, closeTo(820, 1));

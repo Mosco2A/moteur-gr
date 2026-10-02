@@ -1,3 +1,7 @@
+/// Le detail d'une localite, consultable 100 % hors ligne, avec des liens qui
+/// ouvrent le site du prestataire.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

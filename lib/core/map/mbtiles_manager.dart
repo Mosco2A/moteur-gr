@@ -1,3 +1,7 @@
+/// « Ce qui descend, son poids, et un moyen d'annuler » : les trois rendus
+/// comme des VALEURS, pas comme des lignes de journal.
+library;
+
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';

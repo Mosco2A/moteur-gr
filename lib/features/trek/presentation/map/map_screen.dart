@@ -1,3 +1,7 @@
+/// L'ecran de carte et le cycle de vie de son controleur, cree puis libere par
+/// son notifier plutot qu'a la main.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

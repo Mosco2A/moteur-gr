@@ -1,3 +1,7 @@
+/// La video recompensee, avec un resultat NOMME : obtenue, abandonnee ou
+/// indisponible — un booleen ne disait pas assez.
+library;
+
 import 'dart:async';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';

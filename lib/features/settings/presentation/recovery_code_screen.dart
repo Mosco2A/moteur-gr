@@ -1,3 +1,7 @@
+/// Le code de reconnexion s'AFFICHE a la demande, et c'est tout : au marcheur
+/// de le noter, puisque rien ne part par mail ni par SMS.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

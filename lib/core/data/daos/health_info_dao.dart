@@ -1,3 +1,7 @@
+/// Table de fiche medicale qu'aucun code de production n'alimente plus depuis
+/// la tache 613 : la fiche vit dans son propre fichier, hors sauvegarde.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

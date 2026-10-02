@@ -1,3 +1,7 @@
+/// Ce qu'on demande a la regie, et rien de plus : deux decisions prises
+/// ailleurs et jamais recalculees ici.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';

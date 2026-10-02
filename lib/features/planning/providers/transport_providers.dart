@@ -1,3 +1,7 @@
+/// Les points de depart et d'arrivee viennent des DONNEES des etapes et
+/// changent avec le sens de marche : rien n'est ecrit en dur.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';

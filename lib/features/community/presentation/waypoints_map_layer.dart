@@ -1,3 +1,7 @@
+/// Les reperes sur la carte, lus d'une liste deja en cache : cette couche ne va
+/// jamais chercher la donnee elle-meme.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

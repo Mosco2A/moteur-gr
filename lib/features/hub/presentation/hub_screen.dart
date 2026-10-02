@@ -1,3 +1,7 @@
+/// Le cockpit, point d'entree de l'app apres le catalogue, qui ne cree aucun
+/// etat metier et ne fait que deriver l'existant.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

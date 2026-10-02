@@ -1,3 +1,7 @@
+/// Previsions meteo en cache avec TTL : passe la borne, la ligne cesse d'etre
+/// FRAICHE, pas d'etre affichable (tache 572).
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

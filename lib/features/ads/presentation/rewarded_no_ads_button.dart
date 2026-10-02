@@ -1,3 +1,7 @@
+/// « Un jour sans publicite » contre une video : le moteur et l'echeance en
+/// base existaient, c'est le bouton qui manquait.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

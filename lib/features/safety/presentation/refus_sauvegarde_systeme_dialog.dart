@@ -1,3 +1,7 @@
+/// Une seule case, PRE-COCHEE sur le refus, pour tout ce que le marcheur confie
+/// : rien ne part s'il ne decoche pas volontairement.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

@@ -1,3 +1,7 @@
+/// Les alertes actives, teintees par severite ; une alerte incendie emmene en
+/// plus vers la fiche conseil qui explique quoi faire.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

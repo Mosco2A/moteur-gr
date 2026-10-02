@@ -1,3 +1,7 @@
+/// Signaler en un geste, ecrit en local d'abord. Le bandeau assume la latence :
+/// visible des autres apres synchronisation, aucun temps reel promis.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';

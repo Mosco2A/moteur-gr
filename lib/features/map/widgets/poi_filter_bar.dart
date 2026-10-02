@@ -1,3 +1,7 @@
+/// Un chip par type de point PRESENT dans les donnees du sentier : la barre ne
+/// propose jamais un filtre sans objet.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// Un classement rendu par TRANCHES larges : c'est le serveur qui applique le
+/// k-anonymat, et ce modele en porte la forme.
+library;
+
 // Modeles de classement de segment "Roi de l etape" (F7A-04, Phase 7).
 //
 // Ces modeles sont une VUE LECTURE du document de classement calcule COTE

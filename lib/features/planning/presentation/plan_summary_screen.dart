@@ -1,3 +1,7 @@
+/// La synthese du plan n'INVENTE aucune donnee : elle agrege le programme, les
+/// etapes, les nuitees et les dates deja calcules ailleurs.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

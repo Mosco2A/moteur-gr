@@ -1,3 +1,7 @@
+/// Le geste MANUEL de mise a jour, troisieme moment apres le demarrage et
+/// l'ouverture : voir arriver une correction sans attendre la cadence.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

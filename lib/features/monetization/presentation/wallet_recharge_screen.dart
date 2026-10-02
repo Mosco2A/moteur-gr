@@ -1,3 +1,7 @@
+/// La grille de recharge au centime, deja ecrite dans le service : c'est
+/// l'ecran qui manquait pour la vendre.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

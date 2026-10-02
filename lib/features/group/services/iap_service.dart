@@ -1,3 +1,7 @@
+/// Le pass de suivi web achete au store, derriere un kill-switch : coupe, aucun
+/// appel reel ne peut partir.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logger/logger.dart';

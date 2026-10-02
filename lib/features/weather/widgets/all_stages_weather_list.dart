@@ -1,3 +1,7 @@
+/// Vue d'ensemble avant de partir : une ligne depliable par etape, sa meteo
+/// chargee seulement a l'ouverture de la ligne.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

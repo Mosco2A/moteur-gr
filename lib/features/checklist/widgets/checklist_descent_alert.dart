@@ -1,3 +1,7 @@
+/// L'alerte de descente vit dans le SAC et non dans le moteur, parce que le
+/// moteur ne porte aucun terme de masse ni de denivele negatif.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';

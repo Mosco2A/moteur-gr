@@ -1,3 +1,7 @@
+/// Le troisieme etage que l'effacement n'ouvrait pas : le keystore de l'OS, ou
+/// dormaient les cles qui survivaient a un effacement « complet ».
+library;
+
 // TACHE 562 (LOT K) — LE TROISIEME ETAGE DE STOCKAGE, CELUI QUE L'EFFACEMENT
 // N'AVAIT JAMAIS OUVERT.
 //

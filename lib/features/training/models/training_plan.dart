@@ -1,3 +1,7 @@
+/// Un plan — duree, phases, seances, objectif — charge depuis un fichier de
+/// donnees, pas ecrit dans le code.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'training_plan.freezed.dart';

@@ -1,3 +1,7 @@
+/// Le disque numerote d'etape, defini UNE seule fois ici : la couche unifiee le
+/// reutilise tel quel plutot que de le redessiner.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

@@ -1,3 +1,7 @@
+/// Le risque d'incendie jour par jour, derive de la meteo. Le modele reste pur
+/// : c'est l'interface qui traduit « Aujourd'hui » ou « J+n ».
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';

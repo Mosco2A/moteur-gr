@@ -1,3 +1,7 @@
+/// Le porteur des valeurs d'une peau dans ThemeData : degrade, filet
+/// topographique ou photo — jamais un choix fait ecran par ecran.
+library;
+
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';

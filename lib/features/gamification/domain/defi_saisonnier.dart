@@ -1,3 +1,7 @@
+/// Un defi borne dans le temps : la progression est calculee en local, mais le
+/// classement vient du serveur.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'defi_saisonnier.freezed.dart';

@@ -1,3 +1,7 @@
+/// L'appel a Open-Meteo, gratuit et sans cle, et la lecture de sa reponse : le
+/// seul endroit qui parle au fournisseur.
+library;
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;

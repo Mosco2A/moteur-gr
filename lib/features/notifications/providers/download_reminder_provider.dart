@@ -1,3 +1,7 @@
+/// Le rappel « ton depart approche, telecharge ton sentier », adosse a la date
+/// de depart retenue par le marcheur.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';

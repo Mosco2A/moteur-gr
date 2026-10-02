@@ -1,3 +1,7 @@
+/// Quand deux reperes designent le MEME lieu, ils fusionnent : les numeros
+/// d'etape etaient caches par les icones de refuge.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';

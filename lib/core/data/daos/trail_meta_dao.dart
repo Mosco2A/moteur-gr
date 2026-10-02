@@ -1,3 +1,7 @@
+/// Metadonnees d'un sentier : ce que le catalogue sait en afficher avant tout
+/// telechargement.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

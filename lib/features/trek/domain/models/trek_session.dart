@@ -1,3 +1,7 @@
+/// Une tentative de parcours : debut, fin, et un statut extensible plutot qu'un
+/// enum ferme.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'trek_session.freezed.dart';

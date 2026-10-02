@@ -1,3 +1,7 @@
+/// Accumulation des chiffres d'une rando en cours, en Dart pur. Attention :
+/// addPoint n'a aucun appelant dans l'application.
+library;
+
 import 'dart:math';
 
 import '../../../core/geo/geo_utils.dart';

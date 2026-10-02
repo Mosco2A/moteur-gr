@@ -1,3 +1,7 @@
+/// Une etape vue du socle, adossee a Drift. A ne pas confondre avec le Stage de
+/// features/trek/domain, qui est un autre type (ARB-645-04-a).
+library;
+
 import 'package:drift/drift.dart' show Value;
 import 'package:freezed_annotation/freezed_annotation.dart';
 

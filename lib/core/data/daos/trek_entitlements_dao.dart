@@ -1,3 +1,7 @@
+/// Droit d'acces achete, sentier par sentier ; c'est de ce droit que derive la
+/// regle sans-pub de l'application.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

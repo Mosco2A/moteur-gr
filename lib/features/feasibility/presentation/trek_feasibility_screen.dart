@@ -1,3 +1,7 @@
+/// Le feu tricolore, enveloppe d'un parcours guide : tant que les criteres
+/// obligatoires manquent, aucun verdict n'est annonce.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

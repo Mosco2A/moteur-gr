@@ -1,3 +1,7 @@
+/// Tout l'« apres le trek » derive de la SESSION reellement persistee : les
+/// chiffres du recapitulatif et le droit au diplome.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Le modele de domaine `Stage` (features/trek/domain/models/stage.dart) est la

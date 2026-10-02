@@ -1,3 +1,7 @@
+/// Profil du randonneur, une ligne par utilisateur hashe, ecrite par upsert
+/// idempotent. Drift est canonique, la source durable reste les prefs.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

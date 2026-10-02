@@ -1,3 +1,7 @@
+/// Le classement d'un defi lu dans un CACHE local du document calcule par le
+/// serveur : aucun classement n'est calcule ici.
+library;
+
 import '../domain/defi_ranking.dart';
 import '../domain/defi_saisonnier.dart';
 import '../domain/user_stats.dart';

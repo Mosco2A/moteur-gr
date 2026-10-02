@@ -1,3 +1,7 @@
+/// Le detail d'une etape, dont le bloc hebergements regroupe les synonymes du
+/// registre de types — sans aucune localite en dur.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

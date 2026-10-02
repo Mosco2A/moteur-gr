@@ -1,3 +1,7 @@
+/// Une place de suiveur : les deux premieres sont gratuites, les suivantes sont
+/// payees ou financees par la publicite.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'follower_slot.freezed.dart';

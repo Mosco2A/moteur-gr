@@ -1,3 +1,7 @@
+/// Signalements de terrain et etat des points d'eau dans la MEME file hors-
+/// ligne : on active l'existant, on ne cree pas une seconde boite.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 

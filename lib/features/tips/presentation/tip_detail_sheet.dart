@@ -1,3 +1,7 @@
+/// Le detail d'une fiche, qui affiche enfin le NOM lisible du sentier couvert
+/// au lieu de la valeur brute du champ.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/config/trail_catalog.dart';

@@ -1,3 +1,7 @@
+/// Le catalogue, rendu VERROUILLE : il dit quels badges existent, jamais
+/// lesquels sont acquis — c'est le moteur qui en decide.
+library;
+
 import '../../../i18n/translations.g.dart';
 import 'badge.dart';
 

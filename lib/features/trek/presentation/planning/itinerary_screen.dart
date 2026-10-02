@@ -1,3 +1,7 @@
+/// Le DEROULE des etapes du sentier courant, jour par jour, avec les chiffres
+/// de chaque journee.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

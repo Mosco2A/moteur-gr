@@ -1,3 +1,7 @@
+/// Les trois chiffres d'une etape dans un meme encart : distance, duree
+/// estimee, denivele.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/models/stage.dart';

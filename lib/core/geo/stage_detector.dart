@@ -1,3 +1,7 @@
+/// Dit la relation entre la position et les bornes d'une etape (dedans, entree,
+/// sortie), avec un evenement extensible plutot qu'un enum ferme.
+library;
+
 import 'geo_utils.dart';
 import '../models/stage.dart';
 

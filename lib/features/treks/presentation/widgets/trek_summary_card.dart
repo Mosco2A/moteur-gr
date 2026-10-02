@@ -1,3 +1,7 @@
+/// Un trek POSSEDE sur l'accueil, calque sur la carte de catalogue et augmentee
+/// de son etat de cycle de vie.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';

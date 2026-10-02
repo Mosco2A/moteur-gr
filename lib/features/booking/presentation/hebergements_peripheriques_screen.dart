@@ -1,3 +1,7 @@
+/// Les hebergements hors trace avec leur detour estime : StepWays ouvre le site
+/// du prestataire, il ne reserve rien.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

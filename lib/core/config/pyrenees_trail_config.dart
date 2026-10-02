@@ -1,3 +1,7 @@
+/// Un second sentier, hors Corse, dont le seul role est de PROUVER la
+/// genericite : meme configuration, jeu de donnees neutre.
+library;
+
 import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 

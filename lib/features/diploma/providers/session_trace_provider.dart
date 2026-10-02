@@ -1,3 +1,7 @@
+/// La trace REELLE de la derniere session, relue des points persistes au fil de
+/// l'eau par l'enregistrement.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';

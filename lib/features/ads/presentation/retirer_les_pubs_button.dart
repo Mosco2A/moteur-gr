@@ -1,3 +1,7 @@
+/// Le geste qui ouvre les deux sorties — s'abonner, ou regarder une video pour
+/// vingt-quatre heures sans publicite.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

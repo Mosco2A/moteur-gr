@@ -1,3 +1,7 @@
+/// Les reglages de montee vers le cloud et l'etat de la derniere
+/// synchronisation, tels que l'ecran les montre.
+library;
+
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 

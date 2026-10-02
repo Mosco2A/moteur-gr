@@ -1,3 +1,7 @@
+/// Une cle UNIQUE, non prefixee par un sentier, parce que c'est une decision de
+/// PERSONNE — et une cle neuve, pas l'ancienne renommee.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

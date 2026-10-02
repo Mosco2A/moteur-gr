@@ -1,3 +1,7 @@
+/// Rendu de la barre d'ACTIONS du bas — pas des onglets — avec l'action
+/// saillante (le SOS) en pastille pleine pour qu'elle ne se noie jamais.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';

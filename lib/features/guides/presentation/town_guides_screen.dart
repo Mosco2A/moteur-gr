@@ -1,3 +1,7 @@
+/// Les localites d'etape qui ont un guide pratique. Le contenu vient du pack
+/// local : aucune logique reseau ici.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

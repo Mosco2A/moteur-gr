@@ -1,3 +1,7 @@
+/// La pose initiale des donnees d'un sentier depuis les assets vers la base :
+/// c'est le chemin hors-ligne du tout premier lancement.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';

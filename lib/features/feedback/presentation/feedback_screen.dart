@@ -1,3 +1,7 @@
+/// Le retour ecrit en local d'abord et envoye quand le reseau revient : on ne
+/// perd pas un avis faute de connexion.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

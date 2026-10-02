@@ -1,3 +1,7 @@
+/// Decide, cote telephone, si le marcheur a reellement parcouru un segment :
+/// c'est cette detection qui autorise un effort.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:latlong2/latlong.dart';
 

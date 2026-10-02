@@ -1,3 +1,7 @@
+/// L'effacement branche sur la base REELLE et les preferences REELLES de
+/// l'application, pas sur une instance de circonstance.
+library;
+
 // TACHE 562 (LOT K, K1) — LE CHAINON QUI MANQUAIT ENTRE LE DROIT ET LE
 // RANDONNEUR.
 //

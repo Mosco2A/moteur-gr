@@ -1,3 +1,7 @@
+/// Le detail d'un point : photo differee, nom et description traduits,
+/// coordonnees, altitude et horaires s'ils existent.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

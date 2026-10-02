@@ -1,3 +1,7 @@
+/// Transforme le verdict de faisabilite en PROGRAMME suivi, cale sur la date de
+/// depart.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

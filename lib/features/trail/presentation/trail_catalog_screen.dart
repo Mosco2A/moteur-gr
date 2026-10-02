@@ -1,3 +1,7 @@
+/// Le catalogue, qui montre les sentiers EMBARQUES pour rester navigable hors
+/// ligne ; le manifeste distant est l'etage suivant.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

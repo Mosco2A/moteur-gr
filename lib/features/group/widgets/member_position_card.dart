@@ -1,3 +1,7 @@
+/// La position d'un membre AVEC sa fraicheur teintee : une position d'il y a
+/// quatre heures ne se lit pas comme une position actuelle.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

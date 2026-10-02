@@ -1,3 +1,7 @@
+/// Le telechargement des tuiles et ses refus NOMMES : un bouton indisponible
+/// doit pouvoir dire pourquoi, un refus muet est un geste mort.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,3 +1,7 @@
+/// « Le temps la ou je serai, le jour ou j'y serai » : une carte par jour de
+/// programme, titree par son lieu d'arrivee et sa date.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

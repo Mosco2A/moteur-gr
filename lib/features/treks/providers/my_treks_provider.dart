@@ -1,3 +1,7 @@
+/// La liste de l'accueil : les treks achetes reunis a ceux de la vitrine,
+/// chacun avec son etat.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/trail_selection.dart';

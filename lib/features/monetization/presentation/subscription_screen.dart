@@ -1,3 +1,7 @@
+/// L'abonnement sans publicite et la RESTAURATION des achats : le service
+/// savait s'abonner, aucun ecran ne le proposait.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

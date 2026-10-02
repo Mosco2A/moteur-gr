@@ -1,3 +1,7 @@
+/// Le cochage au fur et a mesure du remplissage du sac, avec son compteur et sa
+/// roue : un etat de session, non persiste.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

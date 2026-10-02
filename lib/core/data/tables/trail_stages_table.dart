@@ -1,3 +1,7 @@
+/// Etapes d'un itineraire : coordonnees, distance, denivele, difficulte, et
+/// noms aplatis en cinq langues.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

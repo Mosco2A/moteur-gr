@@ -1,3 +1,7 @@
+/// Les types et intensites de seance avant le depart : le vocabulaire ferme sur
+/// lequel un plan se construit.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'programme_entrainement.freezed.dart';

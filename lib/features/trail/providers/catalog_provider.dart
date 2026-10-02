@@ -1,3 +1,7 @@
+/// Une entree de catalogue, c'est le distant ET l'etat local du telephone en
+/// face : telecharge, a mettre a jour, ou seulement consultable.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

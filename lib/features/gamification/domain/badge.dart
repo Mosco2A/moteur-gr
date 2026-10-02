@@ -1,3 +1,7 @@
+/// Un badge et ses paliers. Le palier n'est PAS un String extensible : c'est
+/// lui qui structure les regles d'obtention.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'badge.freezed.dart';

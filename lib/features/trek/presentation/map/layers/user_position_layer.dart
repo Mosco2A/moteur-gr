@@ -1,6 +1,11 @@
+/// Le point du marcheur et son cercle de precision, qui disparaissent
+/// entierement quand aucune position n'est connue.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../../../core/theme/couleurs_semantiques.dart';
 
 import '../../../../../i18n/translations.g.dart';
 import '../../../../map/widgets/user_position_marker.dart';
@@ -17,8 +22,8 @@ class UserPositionLayer extends StatelessWidget {
     required this.position,
     this.accuracy,
     this.markerSize = 20.0,
-    this.accuracyColor = const Color(0x301976D2),
-    this.accuracyBorderColor = const Color(0x601976D2),
+    this.accuracyColor = CouleursSemantiques.voileDePrecisionGps,
+    this.accuracyBorderColor = CouleursSemantiques.bordDuVoileDePrecisionGps,
   });
 
   /// Position GPS de l utilisateur. Si null, le widget est invisible.

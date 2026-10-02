@@ -1,3 +1,7 @@
+/// UN SEUL moteur de verdict : il n'y en avait plus qu'un apres la campagne
+/// personas, et ce fichier est la ou il est appele.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';

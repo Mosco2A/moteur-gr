@@ -1,3 +1,7 @@
+/// Retirer un consentement doit etre aussi simple que l'accorder ; la finalite
+/// sante est isolee dans sa propre section.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

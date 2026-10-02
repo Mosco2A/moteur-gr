@@ -1,3 +1,7 @@
+/// Le libelle TRADUIT d'un type, parce que le registre n'en porte qu'une
+/// version francaise servant de repli.
+library;
+
 import '../../../i18n/translations.g.dart';
 import 'poi_type_config.dart';
 

@@ -1,3 +1,7 @@
+/// Notice-and-action du DSA pour le contenu communautaire, pur et sans
+/// Firebase. StepWays y est HEBERGEUR : moderation a posteriori.
+library;
+
 // D4C-01 — Service de moderation hebergeur DSA (design D4 CORDO #86166).
 //
 // Implemente le mecanisme NOTICE-AND-ACTION du DSA (Reglement (UE) 2022/2065)

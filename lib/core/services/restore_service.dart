@@ -1,3 +1,7 @@
+/// Restauration du compte, et ses refus nommes : hors ligne, Firebase absent,
+/// consentement sante manquant, ou effacement deja exerce ici.
+library;
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

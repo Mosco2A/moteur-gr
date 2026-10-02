@@ -1,3 +1,7 @@
+/// Signalements de terrain ecrits en local d'abord puis pousses par une file
+/// pending -> synced/failed : l'insertion marche sans reseau.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

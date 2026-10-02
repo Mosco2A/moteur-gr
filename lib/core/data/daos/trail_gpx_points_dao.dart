@@ -1,3 +1,7 @@
+/// Points d'une trace GPX, relus dans l'ordre de leur index de sequence : c'est
+/// la trace que la carte dessine.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

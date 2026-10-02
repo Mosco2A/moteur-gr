@@ -1,3 +1,7 @@
+/// Terminer un trek A LA MAIN, sans dependre de la detection GPS d'arrivee : le
+/// symetrique du bouton de depart, en fin de cockpit.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

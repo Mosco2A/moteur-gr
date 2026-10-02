@@ -1,8 +1,13 @@
+/// Le risque incendie en sept sections, entierement pilote par les donnees du
+/// sentier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -850,7 +855,7 @@ Color fireRiskColor(int level) {
     case 4:
       return AppTheme.rougeUrgence;
     case >= 5:
-      return const Color(0xFF8B0000);
+      return CouleursSemantiques.rougeSombreRisqueFeuExtreme;
     default:
       return AppTheme.grisGranite;
   }

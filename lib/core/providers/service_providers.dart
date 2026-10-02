@@ -1,3 +1,7 @@
+/// Le cablage des services, dont le mode demo delegue a la SOURCE UNIQUE des
+/// droits plutot qu'a un calcul parallele.
+library;
+
 // Providers des services transverses du moteur.
 //
 // Branche sur Riverpod les services purs (SharedPreferences-based)

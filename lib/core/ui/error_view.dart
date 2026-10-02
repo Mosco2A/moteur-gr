@@ -1,3 +1,7 @@
+/// L'affichage d'erreur UNIQUE de l'app, avec son bouton de relance : un
+/// message lisible, jamais une trace technique.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../i18n/translations.g.dart';

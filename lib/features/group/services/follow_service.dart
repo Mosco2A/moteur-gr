@@ -1,3 +1,7 @@
+/// Ce qu'on remet au marcheur quand il partage : le lien ET le verdict dans le
+/// MEME objet, jamais l'un sans l'autre.
+library;
+
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

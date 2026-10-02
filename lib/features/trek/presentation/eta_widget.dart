@@ -1,3 +1,7 @@
+/// L'heure d'arrivee affichee, recalculee sur EVENEMENT seulement : jamais a
+/// chaque image ni a chaque position, pour la batterie.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,7 @@
+/// Le cockpit n'affiche qu'UNE phase a la fois, DERIVEE du cycle de vie du
+/// sentier : preparer, randonner, ou apres.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

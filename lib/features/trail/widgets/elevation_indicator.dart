@@ -1,3 +1,7 @@
+/// Le denivele monte et descend : fleche verte vers le haut, fleche rouge vers
+/// le bas, en metres.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

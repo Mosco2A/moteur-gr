@@ -1,3 +1,7 @@
+/// Le mot d'explication avant l'ecran systeme de localisation en fond : sans
+/// lui, la demande surgissait par-dessus la carte, muette.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

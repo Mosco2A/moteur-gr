@@ -1,3 +1,7 @@
+/// Solde du compte-etapes par utilisateur hashe. Drift est canonique ; la
+/// persistance durable reste les prefs, hydratees au demarrage.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

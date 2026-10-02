@@ -1,3 +1,7 @@
+/// Avancement d'un telechargement de sentier, emis au fil de l'eau ; le statut
+/// est un String extensible, pour survivre a une valeur inconnue.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'download_progress.freezed.dart';

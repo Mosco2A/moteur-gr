@@ -1,3 +1,7 @@
+/// Liste FERMEE des champs du registre de consentement. Ce qui n'y entrera
+/// jamais : la donnee de sante elle-meme, seulement l'etat du accord.
+library;
+
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart" as fb;
 import "package:flutter/foundation.dart";

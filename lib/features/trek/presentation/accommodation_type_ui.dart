@@ -1,3 +1,7 @@
+/// La traduction d'un type d'hebergement libre vers un libelle et une icone,
+/// avec repli generique — la valeur brute n'est jamais ecrasee.
+library;
+
 import '../../../i18n/translations.g.dart';
 import '../domain/models/stage_accommodation.dart';
 import '../../../core/branding/stepways_icons.dart';

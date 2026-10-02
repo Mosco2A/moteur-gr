@@ -1,3 +1,7 @@
+/// La carte qui reflete le CYCLE DE VIE du sentier actif, et plus seulement
+/// l'etat du suivi en memoire : a preparer, en cours, en pause, fini.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,3 +1,7 @@
+/// L'escalade des permissions de localisation jusqu'au suivi en fond, avec un
+/// resultat nomme a chaque palier.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

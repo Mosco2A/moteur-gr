@@ -1,3 +1,7 @@
+/// UNE seule couche pour tous les reperes du sentier, parce que des couches
+/// separees se superposaient et cachaient les numeros d'etape.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

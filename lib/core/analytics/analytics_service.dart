@@ -1,3 +1,7 @@
+/// Les etapes nommees d'un chemin surveille, en type FERME et instances
+/// CONSTANTES : c'est ce qui rend une mesure MANQUANTE detectable.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 

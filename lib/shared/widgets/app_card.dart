@@ -1,3 +1,7 @@
+/// Les DEUX langages visuels de l'app : ce qui se clique et ce qui s'informe
+/// doivent se distinguer a l'oeil (retour de Christophe du 30/09).
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';

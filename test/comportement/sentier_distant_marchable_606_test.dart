@@ -21,7 +21,7 @@ import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
 import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/gpx_parser.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/core/geo/trace_du_sentier.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
@@ -388,8 +388,9 @@ void main() {
           points,
           hasLength(5),
           reason:
-              'AVANT CE LOT : `GpxParser.parseFromAsset("")` — la carte '
-              'allait chercher la trace dans le BINAIRE, donc un sentier connu '
+              'AVANT CE LOT : `GpxDepuisLesAssets.parseFromAsset("")` — la '
+              'carte allait chercher la trace dans le BINAIRE, donc un sentier '
+              'connu '
               'du seul distant n avait AUCUNE source de trace. Il etait '
               'consultable et pas MARCHABLE.',
         );
@@ -446,7 +447,7 @@ void main() {
       // resultat de Douglas-Peucker : 48 points pour 53 lus sur
       // mare_a_mare_centre. Faire lire la base en premier aurait DEGRADE un
       // sentier embarque — exclu, non negociable.
-      final duFichier = await GpxParser.parseFromAsset(
+      final duFichier = await GpxDepuisLesAssets.parseFromAsset(
         'assets/data/mare_a_mare_centre/track.gpx',
       );
       expect(duFichier, hasLength(53), reason: 'temoin de la mesure');

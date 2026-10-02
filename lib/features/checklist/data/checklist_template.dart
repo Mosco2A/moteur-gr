@@ -1,3 +1,7 @@
+/// Le gabarit des 84 articles et leurs trois niveaux d'exigence, dont
+/// l'obligatoire avec son garde-fou au decochage.
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;

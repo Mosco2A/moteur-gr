@@ -1,3 +1,7 @@
+/// Poser un repere ou commenter l'etat d'un repere existant, hors ligne : la
+/// contribution part plus tard, elle n'attend pas le reseau.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';

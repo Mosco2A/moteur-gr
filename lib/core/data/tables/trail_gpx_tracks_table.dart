@@ -1,3 +1,6 @@
+/// Traces rattachees a un itineraire, qui peut en porter plusieurs.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

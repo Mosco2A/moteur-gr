@@ -1,3 +1,7 @@
+/// La liste FERMEE des motifs de signalement, dans un ordre stable puisqu'il
+/// sert de cle de selection.
+library;
+
 // D4C-03 — Providers de l'UI de moderation hebergeur DSA (design D4 CORDO
 // #86166). Pont entre le [ModerationService] (D4C-01) et les widgets de
 // signalement / expose des motifs / plaintes, SANS logique serveur dans l'UI

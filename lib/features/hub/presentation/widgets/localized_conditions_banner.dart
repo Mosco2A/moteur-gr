@@ -1,3 +1,7 @@
+/// « Ici et maintenant » : ce bandeau n'est monte QU'EN phase de marche, donc
+/// jamais visible pendant la preparation.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
