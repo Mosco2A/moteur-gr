@@ -1,3 +1,7 @@
+/// Le poids recommande par defaut, faute de profil de nuitees par etape : le
+/// maximum entre le poids de refuge de reference et 15 % du corps.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

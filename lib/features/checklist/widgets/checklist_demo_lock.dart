@@ -1,3 +1,7 @@
+/// Le bridage du sac en demo : jouable pour de faux, les autres categories
+/// grisees — visibles et verrouillees, jamais cachees.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

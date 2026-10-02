@@ -1,3 +1,7 @@
+/// Un article sur deux lignes : coche, exigence, nom barre une fois pris,
+/// cadenas si obligatoire, puis poids et quantite dessous.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

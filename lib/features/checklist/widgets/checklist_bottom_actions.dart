@@ -1,3 +1,7 @@
+/// Les cinq gestes du bas du sac : valider (obligatoires verifies), devalider,
+/// liste de courses, partage au groupe, export.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';

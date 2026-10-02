@@ -1,3 +1,7 @@
+/// Le poids du sac rapporte au poids du corps, en cinq paliers (12/15/20/25 %),
+/// avec son conseil et sa jauge.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

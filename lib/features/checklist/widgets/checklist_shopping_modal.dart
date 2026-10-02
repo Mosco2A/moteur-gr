@@ -1,3 +1,7 @@
+/// « A acheter » et « Deja achete » : cocher ici marque l'article achete ET le
+/// coche dans le sac, les deux etats restant lies.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';

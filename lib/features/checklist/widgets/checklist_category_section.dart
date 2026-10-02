@@ -1,3 +1,7 @@
+/// Une categorie de materiel depliable, avec son sous-total de poids et son
+/// compte de coches dans l'en-tete.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
