@@ -4,16 +4,15 @@ library;
 
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/attribution_osm.dart';
+import '../data/suivi_public_depot.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran web de suivi de position en temps reel (E4.12a).
@@ -43,7 +42,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   bool _hasError = false;
   bool _isLoading = true;
   bool _isFirstPosition = true;
-  StreamSubscription<QuerySnapshot>? _positionSubscription;
+  StreamSubscription<PositionSuivie>? _positionSubscription;
 
   /// Vue monde neutre tant qu aucune position n est recue
   /// (aucune region codee en dur — la carte se centre sur le
@@ -66,58 +65,32 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   }
 
   /// Recherche la session par shareCode et ecoute les positions.
+  ///
+  /// L ECRAN NE PARLE PLUS A FIRESTORE (cas K2 du lot 645-05). La resolution du
+  /// code de partage, le miroir public minimal, le TTL de 48 h et le garde
+  /// `isAvailable` sont descendus dans `SuiviPublicDepot` (couche data du
+  /// groupe) : c etait l unique endroit du depot ou la couche presentation
+  /// importait `package:cloud_firestore` (ECR-25). Les trois cas que l ecran
+  /// traitait de la meme facon — Firebase indisponible, aucune session active,
+  /// session expiree — arrivent ici comme un `sessionId` nul, et affichent le
+  /// meme ecran « lien invalide » qu avant.
   Future<void> _startListening() async {
-    final firebase = ref.read(firebaseServiceProvider);
-    if (!firebase.isAvailable) {
-      setState(() {
-        _hasError = true;
-        _isLoading = false;
-      });
-      return;
-    }
+    final depot = ref.read(suiviPublicDepotProvider);
     try {
-      final firestore = FirebaseFirestore.instance;
-      // Resolution shareCode -> sessionId via le miroir public MINIMAL
-      // (follow_sessions_public ne porte jamais trekkerUserId — P0-1 #327).
-      // Le document maitre follow_sessions reste owner-only.
-      final snapshot = await firestore
-          .collection('follow_sessions_public')
-          .where('shareCode', isEqualTo: widget.shareCode)
-          .where('isActive', isEqualTo: true)
-          .limit(1)
-          .get();
-      if (snapshot.docs.isEmpty) {
+      final sessionId = await depot.resoudreSession(widget.shareCode);
+      if (sessionId == null) {
         setState(() {
           _hasError = true;
           _isLoading = false;
         });
         return;
       }
-      final publicDoc = snapshot.docs.first;
-      // Session expiree (TTL 48h) : les regles refuseront de toute facon
-      // la lecture des positions — afficher l erreur lien invalide tout
-      // de suite plutot qu une carte vide.
-      final expiresAtTs = publicDoc.data()['expiresAtTs'];
-      if (expiresAtTs is Timestamp &&
-          !expiresAtTs.toDate().isAfter(DateTime.now())) {
-        setState(() {
-          _hasError = true;
-          _isLoading = false;
-        });
-        return;
-      }
-      final sessionId = publicDoc.id;
       setState(() {
         _sessionFound = true;
         _isLoading = false;
       });
-      _positionSubscription = firestore
-          .collection('follow_sessions')
-          .doc(sessionId)
-          .collection('positions')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .snapshots()
+      _positionSubscription = depot
+          .positions(sessionId)
           .listen(
             _onPositionUpdate,
             onError: (_) {
@@ -135,22 +108,12 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
     }
   }
 
-  /// Callback quand une nouvelle position arrive de Firestore.
-  void _onPositionUpdate(QuerySnapshot snapshot) {
-    if (snapshot.docs.isEmpty) return;
-    final data = snapshot.docs.first.data() as Map<String, dynamic>;
-    final lat = (data['lat'] as num?)?.toDouble();
-    final lng = (data['lng'] as num?)?.toDouble();
-    if (lat == null || lng == null) return;
-    final newPosition = LatLng(lat, lng);
-    DateTime? timestamp;
-    final ts = data['timestamp'];
-    if (ts is Timestamp) {
-      timestamp = ts.toDate();
-    }
+  /// Callback quand une nouvelle position arrive du depot de suivi.
+  void _onPositionUpdate(PositionSuivie position) {
+    final newPosition = LatLng(position.lat, position.lng);
     setState(() {
       _trekkerPosition = newPosition;
-      _lastTimestamp = timestamp;
+      _lastTimestamp = position.horodatage;
     });
     if (_isFirstPosition) {
       _mapController.move(newPosition, _positionZoom);
