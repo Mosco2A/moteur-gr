@@ -1,3 +1,7 @@
+/// Une reservation d'hebergement, immutable, avec le canal par lequel le
+/// marcheur a pris contact.
+library;
+
 // Modele de reservation d'hebergement.
 //
 // Represente une demande de reservation associee a un hebergement
