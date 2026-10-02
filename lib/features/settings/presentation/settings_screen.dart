@@ -7,6 +7,7 @@ import '../../../core/firebase/firebase_service.dart';
 import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -379,12 +380,11 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: OutlinedButton.icon(
-                      icon: const StepIcon(
-                        StepwaysIcons.notifications,
-                        size: 18,
-                      ),
-                      label: Text(tr.notifications.permissionAsk),
+                    child: AppButton(
+                      variant: AppButtonVariant.outline,
+                      icon: StepwaysIcons.notifications,
+                      iconSize: 18,
+                      label: tr.notifications.permissionAsk,
                       onPressed: () => ref
                           .read(notificationSettingsProvider.notifier)
                           .requestPermissions(),
