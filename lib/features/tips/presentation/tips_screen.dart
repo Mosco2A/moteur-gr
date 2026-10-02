@@ -1,3 +1,7 @@
+/// Les fiches rangees PAR THEMES et non a plat, avec les liens reseau tires de
+/// la donnee — jamais inventes.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';

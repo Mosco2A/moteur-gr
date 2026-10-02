@@ -1,3 +1,7 @@
+/// Cinq points autonomes et chiffres en PUCES, avec repli sur le paragraphe
+/// historique quand une fiche n'est pas encore convertie.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
