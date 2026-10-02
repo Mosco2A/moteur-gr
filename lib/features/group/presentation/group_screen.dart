@@ -1,3 +1,7 @@
+/// La gestion du groupe de position partagee, dont le champ de code force les
+/// majuscules pour qu'il se tape sans ambiguite.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
