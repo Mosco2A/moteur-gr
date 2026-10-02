@@ -1,3 +1,7 @@
+/// La pose d'un sentier dans la base, dans l'ordre des cles etrangeres —
+/// l'ordre n'est pas un detail, c'est la condition de la transaction.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';

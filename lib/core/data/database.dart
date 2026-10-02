@@ -1,3 +1,7 @@
+/// Le schema local complet et ses migrations. C'est le seul fichier qui sait
+/// quelle version de base tourne sur le telephone.
+library;
+
 import 'package:drift/drift.dart';
 
 // Le convertisseur d horodatage est utilise par le code GENERE (`database.g.dart`

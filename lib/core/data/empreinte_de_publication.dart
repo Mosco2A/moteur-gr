@@ -1,3 +1,7 @@
+/// UNE seule definition de l'empreinte d'un fichier publie : deux definitions,
+/// et la verification d'integrite ne verifie plus rien.
+library;
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
