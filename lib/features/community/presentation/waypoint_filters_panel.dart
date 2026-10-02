@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_ui_providers.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -40,19 +41,23 @@ class WaypointFiltersPanel extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.waypoints.filters.showAll,
-                child: TextButton(
+                child: AppButton(
                   key: const ValueKey('waypoint-filter-show-all'),
+                  variant: AppButtonVariant.text,
+                  label: t.waypoints.filters.showAll,
+                  isFullWidth: false,
                   onPressed: notifier.showAll,
-                  child: Text(t.waypoints.filters.showAll),
                 ),
               ),
               Semantics(
                 button: true,
                 label: t.waypoints.filters.hideAll,
-                child: TextButton(
+                child: AppButton(
                   key: const ValueKey('waypoint-filter-hide-all'),
+                  variant: AppButtonVariant.text,
+                  label: t.waypoints.filters.hideAll,
+                  isFullWidth: false,
                   onPressed: notifier.hideAll,
-                  child: Text(t.waypoints.filters.hideAll),
                 ),
               ),
             ],
