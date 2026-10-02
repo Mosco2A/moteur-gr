@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../models/planned_day.dart';
@@ -153,7 +154,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               padding: const EdgeInsets.all(AppTheme.spacingLg),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: AppButton(
+                  label: t.calendar.validate,
                   // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme.
                   // Le calendrier est la DERNIERE etape du sous-flux ordonne
                   // (Programme -> Dates -> cockpit). « Valider les dates » clot
@@ -165,7 +167,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   onPressed: startDate != null
                       ? () => context.go('/home')
                       : null,
-                  child: Text(t.calendar.validate),
                 ),
               ),
             ),
@@ -814,10 +815,11 @@ class _NoDateState extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          ElevatedButton.icon(
+          AppButton(
+            icon: StepwaysIcons.calendrier,
+            iconSize: 18,
+            label: t.calendar.chooseDateAction,
             onPressed: onPickStartDate,
-            icon: const StepIcon(StepwaysIcons.calendrier),
-            label: Text(t.calendar.chooseDateAction),
           ),
         ],
       ),
@@ -863,10 +865,11 @@ class _EmptyItineraryState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.calendar.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const StepIcon(StepwaysIcons.itineraire),
-              label: Text(t.calendar.empty.action),
             ),
           ],
         ),
