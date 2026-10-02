@@ -250,16 +250,20 @@ class _ButtonsRow extends StatelessWidget {
         title: Text(t.tracking.confirmStop),
         content: Text(t.tracking.stopSaveProgress),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.tracking.cancel),
           ),
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.stop,
+            isFullWidth: false,
             onPressed: () {
               Navigator.of(ctx).pop(true);
               notifier.stop();
             },
-            child: Text(t.tracking.stop),
           ),
         ],
       ),

@@ -38,9 +38,9 @@ import 'mesure_des_sources_645.dart';
 /// ecart visuel sur un ecran se defait alors seul, sans rendre les autres
 /// fichiers du lot irreprochables en silence. Il ne remonte jamais.
 ///
-/// Dernier abaissement : 02/10/2026 — 65, apres
-/// lib/features/tracking/presentation/tracking_overlay.dart.
-const plafondBoutonsBruts = 65;
+/// Dernier abaissement : 02/10/2026 — 63, apres
+/// lib/features/trek/presentation/map/overlay/tracking_overlay.dart.
+const plafondBoutonsBruts = 63;
 
 /// Les quatre boutons nommes par ECR-19.
 const boutonsStricts = <String>[
