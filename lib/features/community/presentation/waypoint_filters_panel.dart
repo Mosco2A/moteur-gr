@@ -1,3 +1,7 @@
+/// Filtrer la carte par type de repere et par fraicheur de condition. Pure
+/// interface : aucun appel reseau ne part d'ici.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

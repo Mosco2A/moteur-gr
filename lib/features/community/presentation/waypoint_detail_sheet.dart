@@ -1,3 +1,7 @@
+/// Ce qu'un repere raconte : sa FRAICHEUR, les conditions signalees, et le
+/// bouton pour le signaler — tout cela sans reseau.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
