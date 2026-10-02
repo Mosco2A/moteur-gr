@@ -1,3 +1,7 @@
+/// Un agregat DERIVE, rien de persiste en plus : la config du sentier, son etat
+/// et ses chiffres reunis pour l'accueil.
+library;
+
 import '../../../core/config/trail_config.dart';
 import '../../../core/data/database.dart' show UserProgressEntry;
 import '../../trek/domain/models/trek_session.dart';

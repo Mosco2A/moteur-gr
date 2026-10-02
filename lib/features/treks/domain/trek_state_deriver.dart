@@ -1,3 +1,7 @@
+/// Derive l'etat de cycle de vie d'un trek POSSEDE depuis les statuts de
+/// session, avec des constantes partagees avec le socle.
+library;
+
 import '../../trek/domain/models/trek_session.dart';
 import 'trek_lifecycle_state.dart';
 
