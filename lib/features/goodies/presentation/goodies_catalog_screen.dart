@@ -1,3 +1,7 @@
+/// La boutique n'est PAS implementee, et cet ecran ne promet plus rien : une
+/// promesse que le code ne tient pas est un defaut.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../i18n/translations.g.dart';
