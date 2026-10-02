@@ -1,3 +1,7 @@
+/// Une alerte, et son TYPE : il distingue la meteo classique de l'incendie, qui
+/// n'appellent pas le meme geste.
+library;
+
 import 'fire_risk_config.dart';
 import 'weather_forecast.dart';
 
