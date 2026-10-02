@@ -1,3 +1,7 @@
+/// Une commande de goodie. Le statut est un String extensible, JAMAIS un enum :
+/// un nouveau statut ne doit pas exiger de recompiler.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'goodie_order.freezed.dart';

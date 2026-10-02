@@ -1,3 +1,7 @@
+/// Un produit personnalisable. Le type est un String extensible : ajouter un
+/// mug ou un patch n'est pas un changement de code.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'goodie_product.freezed.dart';
