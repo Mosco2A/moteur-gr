@@ -164,16 +164,20 @@ class TrackingOverlay extends ConsumerWidget {
         title: Text(t.tracking.stopTitle),
         content: Text(t.tracking.stopBody),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.tracking.cancel),
           ),
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.stop,
+            isFullWidth: false,
             onPressed: () {
               Navigator.of(ctx).pop(true);
               notifier.stop();
             },
-            child: Text(t.tracking.stop),
           ),
         ],
       ),

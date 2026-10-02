@@ -39,6 +39,7 @@ import '../../core/theme/app_theme.dart';
 import '../../features/trek/providers/gps_providers.dart';
 import '../../features/trek/providers/tracking_providers.dart';
 import '../../i18n/translations.g.dart';
+import 'app_button.dart';
 
 /// Bouton « Simuler l'etape suivante » / « Simuler l'arrivee ».
 ///
@@ -104,19 +105,13 @@ class BoutonSimulationDemo extends ConsumerWidget {
       padding: const EdgeInsets.only(top: AppTheme.spacingSm),
       child: SizedBox(
         width: double.infinity,
-        child: FilledButton.icon(
+        child: AppButton(
           key: const ValueKey('demo-simuler'),
+          variant: AppButtonVariant.filledTone,
+          tone: AppTheme.orangeDifficile,
+          icon: StepwaysIcons.flecheAvant,
+          label: libelle,
           onPressed: geste,
-          icon: const StepIcon(
-            StepwaysIcons.flecheAvant,
-            size: 20,
-            color: Colors.white,
-          ),
-          label: Text(libelle),
-          style: FilledButton.styleFrom(
-            backgroundColor: AppTheme.orangeDifficile,
-            foregroundColor: Colors.white,
-          ),
         ),
       ),
     );

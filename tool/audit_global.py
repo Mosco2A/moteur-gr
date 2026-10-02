@@ -582,6 +582,15 @@ def mesurer_composants_et_valeurs() -> dict:
     """Boutons bruts, couleurs en dur, dialogues hors routeur."""
     stricts: dict[str, list[str]] = defaultdict(list)
     etendus: dict[str, list[str]] = defaultdict(list)
+    # UN APPEL, PAS UNE MENTION (correction du 02/10/2026, tache 645-03). Un nom
+    # de bouton ECRIT DANS UN COMMENTAIRE n appelle rien, il en parle : au
+    # 02/10, 31 des 153 lignes relevees etaient des phrases du genre
+    # « SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary », soit la trace
+    # d une conversion DEJA FAITE. Les compter revenait a reprocher au depot
+    # d avoir documente son assainissement. Le volet commentaire est donne a
+    # part, comme pour les valeurs a completer juste en dessous : il informe,
+    # il ne bloque pas.
+    stricts_commentaire: dict[str, list[str]] = defaultdict(list)
     couleurs = []
     dialogues = []
     for f in lister_dart(LIB):
@@ -589,8 +598,13 @@ def mesurer_composants_et_valeurs() -> dict:
                        for z in ZONES_BOUTON_LEGITIMES)
         for i, l in enumerate(lignes_de(f), 1):
             if not legitime:
+                en_commentaire = l.lstrip().startswith(("//", "///", "*"))
                 for b in BOUTONS_ETENDUS:
                     if re.search(rf"\b{b}\s*\(|\b{b}\.(icon|styleFrom)", l):
+                        if en_commentaire:
+                            if b in BOUTONS_STRICTS:
+                                stricts_commentaire[f].append(f"{i}:{b}")
+                            continue
                         etendus[f].append(f"{i}:{b}")
                         if b in BOUTONS_STRICTS:
                             stricts[f].append(f"{i}:{b}")
@@ -627,6 +641,11 @@ def mesurer_composants_et_valeurs() -> dict:
         "boutons_etendus_par_fichier": {k: v for k, v in
                                         sorted(etendus.items(),
                                                key=lambda kv: -len(kv[1]))},
+        "boutons_bruts_en_commentaire": {k: v for k, v in
+                                         sorted(stricts_commentaire.items(),
+                                                key=lambda kv: -len(kv[1]))},
+        "total_boutons_bruts_en_commentaire": sum(
+            len(v) for v in stricts_commentaire.values()),
         "reference_21_09": {"occurrences": 58, "fichiers": 24,
                             "source": "memoire #100235, regle ECR-19"},
         "couleurs_en_dur": couleurs,
@@ -638,7 +657,9 @@ def mesurer_composants_et_valeurs() -> dict:
         "valeurs_a_completer_en_commentaire": dans_commentaire,
         "nombre_en_commentaire": len(dans_commentaire),
         "methode": ("appel des boutons du framework hors "
-                    "lib/shared/widgets/app_button.dart ; Color(0x hors "
+                    "lib/shared/widgets/app_button.dart, comptes SEULEMENT "
+                    "hors commentaire (le volet commentaire est donne a part, "
+                    "il n est pas bloquant) ; Color(0x hors "
                     "core/theme et core/branding ; valeurs a completer : "
                     "10 motifs ancres par frontiere de mot, comptees "
                     "SEULEMENT hors commentaire (le volet commentaire est "

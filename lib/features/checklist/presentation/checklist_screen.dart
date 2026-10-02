@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../feasibility/domain/hiker_profile.dart';
@@ -291,17 +292,17 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(ui.requiredWarnTitle),
         content: Text(ui.requiredWarnBody),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: ui.keep,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(ui.keep),
           ),
-          ElevatedButton(
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.rougeUrgence,
+            label: ui.removeAnyway,
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.rougeUrgence,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(ui.removeAnyway),
           ),
         ],
       ),
@@ -405,11 +406,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ],
           ),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: t.checklist.weight.cancel,
+              isFullWidth: false,
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(t.checklist.weight.cancel),
             ),
-            ElevatedButton(
+            AppButton(
+              label: ui.add,
               onPressed: () {
                 final nextName = nameCtrl.text.trim().isEmpty
                     ? ui.errorNameRequired
@@ -426,7 +430,6 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                 }
                 Navigator.of(ctx).pop(true);
               },
-              child: Text(ui.add),
             ),
           ],
         ),
@@ -529,11 +532,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ],
           ),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: weightT.cancel,
+              isFullWidth: false,
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(weightT.cancel),
             ),
-            ElevatedButton(
+            AppButton(
+              label: weightT.save,
               onPressed: () {
                 final nextName = item.isCustom && nameCtrl.text.trim().isEmpty
                     ? ui.errorNameRequired
@@ -548,7 +554,6 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                 }
                 Navigator.of(ctx).pop(true);
               },
-              child: Text(weightT.save),
             ),
           ],
         ),
@@ -599,17 +604,17 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(ui.deleteItemTitle),
         content: Text(ui.deleteItemBody.replaceAll('{name}', name)),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.checklist.weight.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.checklist.weight.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.rougeUrgence,
+            label: ui.delete,
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.rougeUrgence,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(ui.delete),
           ),
         ],
       ),
@@ -751,12 +756,12 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ),
             const SizedBox(height: 16),
             Center(
-              child: TextButton(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                label: ui.infoUnderstood,
+                labelFontSize: 16,
+                isFullWidth: false,
                 onPressed: () => Navigator.of(sheetCtx).pop(),
-                child: Text(
-                  ui.infoUnderstood,
-                  style: const TextStyle(fontSize: 16),
-                ),
               ),
             ),
           ],
@@ -824,16 +829,18 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(checklistT.resetConfirm),
         content: Text(checklistT.resetDescription),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: checklistT.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(checklistT.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: checklistT.confirm,
             onPressed: () {
               ref.read(checklistProvider.notifier).resetAll();
               Navigator.of(ctx).pop();
             },
-            child: Text(checklistT.confirm),
           ),
         ],
       ),

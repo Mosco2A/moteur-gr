@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../share/providers/visibility_settings_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 
@@ -65,10 +66,13 @@ class VisibilitySettingsScreen extends ConsumerWidget {
             Semantics(
               button: true,
               label: t.shareVisibility.consentLink,
-              child: TextButton.icon(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                icon: StepwaysIcons.bouclier,
+                iconSize: 18,
+                label: t.shareVisibility.consentLink,
+                isFullWidth: false,
                 onPressed: onOpenConsent,
-                icon: const StepIcon(StepwaysIcons.bouclier),
-                label: Text(t.shareVisibility.consentLink),
               ),
             ),
           ],

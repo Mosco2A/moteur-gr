@@ -405,9 +405,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
         title: Text(t.consent.purposes.healthData),
         content: Text(t.health.consent.purpose),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.consent.revoke,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.consent.revoke),
           ),
           AppButton(
             variant: AppButtonVariant.filledTone,
@@ -451,9 +453,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
         title: Text(t.health.delete.confirmTitle),
         content: Text(t.health.delete.confirmBody),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.health.delete.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.health.delete.cancel),
           ),
           // Action DEFINITIVE : bouton rouge (couleur semantique d'urgence).
           AppButton(
@@ -755,12 +759,15 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                       if (_contacts.length < kMaxPersonalEmergencyContacts)
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
+                          child: AppButton(
                             key: const ValueKey('health-add-contact'),
+                            variant: AppButtonVariant.text,
+                            icon: StepwaysIcons.plus,
+                            iconSize: 18,
+                            label: t.health.contacts.add,
+                            isFullWidth: false,
                             onPressed: () =>
                                 setState(() => _contacts.add(_LigneContact())),
-                            icon: const StepIcon(StepwaysIcons.plus, size: 18),
-                            label: Text(t.health.contacts.add),
                           ),
                         ),
                       const SizedBox(height: AppTheme.spacingLg),
@@ -1382,17 +1389,21 @@ class _CarteTile extends StatelessWidget {
           Wrap(
             spacing: AppTheme.spacingSm,
             children: [
-              TextButton.icon(
+              AppButton(
+                variant: AppButtonVariant.text,
+                icon: StepwaysIcons.photo,
+                iconSize: 18,
+                label: aUnePhoto ? t.health.cards.retake : t.health.cards.take,
+                isFullWidth: false,
                 onPressed: () => onPrendre(ImageSource.camera),
-                icon: const StepIcon(StepwaysIcons.photo, size: 18),
-                label: Text(
-                  aUnePhoto ? t.health.cards.retake : t.health.cards.take,
-                ),
               ),
-              TextButton.icon(
+              AppButton(
+                variant: AppButtonVariant.text,
+                icon: StepwaysIcons.photo,
+                iconSize: 18,
+                label: t.health.cards.pick,
+                isFullWidth: false,
                 onPressed: () => onPrendre(ImageSource.gallery),
-                icon: const StepIcon(StepwaysIcons.photo, size: 18),
-                label: Text(t.health.cards.pick),
               ),
             ],
           ),
@@ -1750,11 +1761,14 @@ class _ConsentReminder extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: TextButton.icon(
+            child: AppButton(
               key: const ValueKey('health-consent-manage'),
+              variant: AppButtonVariant.text,
+              icon: StepwaysIcons.bouclier,
+              iconSize: 18,
+              label: t.health.consent.manage,
+              isFullWidth: false,
               onPressed: onManage,
-              icon: const StepIcon(StepwaysIcons.bouclier, size: 18),
-              label: Text(t.health.consent.manage),
             ),
           ),
         ],

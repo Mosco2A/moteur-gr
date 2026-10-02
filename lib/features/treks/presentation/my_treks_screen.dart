@@ -8,6 +8,7 @@ import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../../shared/widgets/empty_state.dart';
@@ -170,12 +171,14 @@ class _MyTreksBody extends ConsumerWidget {
               subtitle: ref.watch(boutonDemoCacheProvider)
                   ? t.myTreks.emptyCatalogueSeul
                   : t.myTreks.emptyCatalogueOuDemo,
-              action: FilledButton.icon(
+              action: AppButton(
                 key: const ValueKey('my-treks-empty-discover'),
+                icon: StepwaysIcons.catalogueSentiers,
+                iconSize: 18,
+                label: t.myTreks.discoverTitle,
+                isFullWidth: false,
                 // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
                 onPressed: () => context.push('/catalog'),
-                icon: const StepIcon(StepwaysIcons.catalogueSentiers),
-                label: Text(t.myTreks.discoverTitle),
               ),
             ),
           ),

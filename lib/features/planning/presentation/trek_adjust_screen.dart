@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/trek_edit_lock_provider.dart';
@@ -149,7 +150,8 @@ class TrekAdjustScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(AppTheme.spacingLg),
                     child: SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
+                      child: AppButton(
+                        label: t.programme.inTrek.validate,
                         // Les modifications sont DEJA ecrites dans le programme
                         // (source unique) a chaque action : ce bouton confirme
                         // et rend la main, il ne « sauvegarde » pas en douce.
@@ -162,7 +164,6 @@ class TrekAdjustScreen extends ConsumerWidget {
                           );
                           if (context.canPop()) context.pop();
                         },
-                        child: Text(t.programme.inTrek.validate),
                       ),
                     ),
                   ),
@@ -208,9 +209,9 @@ class TrekAdjustScreen extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AppButton(
+                label: t.programme.inTrek.info.close,
                 onPressed: () => Navigator.pop(ctx),
-                child: Text(t.programme.inTrek.info.close),
               ),
             ),
           ],

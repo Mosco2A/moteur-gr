@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
 import '../services/location_permission_service.dart';
 import '../../core/branding/stepways_icons.dart';
+import 'app_button.dart';
 
 /// PRE-VOL EXPLIQUE du suivi de fond (campagne personas 21/09, MAJEUR-1).
 ///
@@ -77,13 +78,16 @@ Future<bool?> _showRationaleDialog(BuildContext context) {
       ),
       actionsOverflowButtonSpacing: AppTheme.spacingSm,
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: tr.later,
+          isFullWidth: false,
           onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: Text(tr.later),
         ),
-        FilledButton(
+        AppButton(
+          label: tr.allow,
+          isFullWidth: false,
           onPressed: () => Navigator.of(dialogContext).pop(true),
-          child: Text(tr.allow),
         ),
       ],
     ),

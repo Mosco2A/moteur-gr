@@ -136,7 +136,17 @@ void main() {
       await tester.pumpAndSettle();
 
       // Le bouton de validation est desormais un AppButton (variante primary).
-      expect(find.byType(AppButton), findsOneWidget);
+      //
+      // ON VISE LE BOUTON PAR SON LIBELLE, PLUS PAR LE COMPTE (tache 645-03).
+      // `findsOneWidget` sur TOUT l'ecran disait « il n'y a qu'un AppButton
+      // ici » — vrai le jour de SW-SKIN-L3a, faux depuis que le lien
+      // « Politique de confidentialite » du bas de page passe lui aussi par le
+      // composant unique. Ce que ce test veut prouver n'a pas change : que LE
+      // BOUTON DE VALIDATION est un AppButton. On le demande donc de lui.
+      expect(
+        find.ancestor(of: label, matching: find.byType(AppButton)),
+        findsOneWidget,
+      );
 
       // Tap fonctionnel : le libelle est preserve et declenche onContinue.
       await tester.tap(label);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../trek/providers/tracking_providers.dart';
 
 /// UI de resolution du CONFLIT d'unicite de rando active (StepWays LOT 2, C4).
@@ -37,31 +38,34 @@ Future<ActiveTrekConflictChoice> showActiveTrekConflictDialog(
         actionsOverflowButtonSpacing: AppTheme.spacingSm,
         actions: [
           // Annuler : ne rien faire (garder la rando en cours).
-          TextButton(
+          AppButton(
             key: const ValueKey('conflict-cancel'),
+            variant: AppButtonVariant.text,
+            label: t.trekState.abandonDialog.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(
               dialogContext,
             ).pop(ActiveTrekConflictChoice.cancel),
-            child: Text(t.trekState.abandonDialog.cancel),
           ),
           // Abandonner la rando en cours (status=abandoned), puis demarrer.
-          TextButton(
+          AppButton(
             key: const ValueKey('conflict-abandon'),
+            variant: AppButtonVariant.text,
+            tone: AppTheme.rougeUrgence,
+            label: t.trekState.abandonDialog.abandon,
+            isFullWidth: false,
             onPressed: () => Navigator.of(
               dialogContext,
             ).pop(ActiveTrekConflictChoice.abandonCurrent),
-            child: Text(
-              t.trekState.abandonDialog.abandon,
-              style: const TextStyle(color: AppTheme.rougeUrgence),
-            ),
           ),
           // Terminer la rando en cours (status=completed), puis demarrer.
-          FilledButton(
+          AppButton(
             key: const ValueKey('conflict-finish'),
+            label: t.trekState.abandonDialog.finish,
+            isFullWidth: false,
             onPressed: () => Navigator.of(
               dialogContext,
             ).pop(ActiveTrekConflictChoice.finishCurrent),
-            child: Text(t.trekState.abandonDialog.finish),
           ),
         ],
       );

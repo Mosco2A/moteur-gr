@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../weather/models/weather_forecast.dart';
 import '../../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
@@ -128,10 +129,12 @@ class LocalizedConditionsBanner extends ConsumerWidget {
           // même si la météo localisée est indisponible : accès préservé).
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.meteo,
+              iconSize: 18,
+              label: t.navPilote.weatherBannerStages,
               onPressed: () => context.push('/trail/$trailId/weather'),
-              icon: const StepIcon(StepwaysIcons.meteo, size: 18),
-              label: Text(t.navPilote.weatherBannerStages),
             ),
           ),
         ],

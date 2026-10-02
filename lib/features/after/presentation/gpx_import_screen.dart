@@ -584,11 +584,14 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               .replaceAll('{direction}', directionLabel),
         ),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.import.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(t.import.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: t.import.validate,
             onPressed: () {
               Navigator.pop(ctx);
               // Parite GR20 : navigation vers le recap d'aventure du sentier
@@ -600,7 +603,6 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                 context,
               ).showSnackBar(SnackBar(content: Text(t.import.importedSnack)));
             },
-            child: Text(t.import.validate),
           ),
         ],
       ),

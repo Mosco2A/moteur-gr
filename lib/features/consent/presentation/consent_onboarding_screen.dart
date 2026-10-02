@@ -111,10 +111,13 @@ class ConsentOnboardingScreen extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: tr.consent.a11y.policyButton,
-                child: TextButton.icon(
+                child: AppButton(
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.cgu,
+                  iconSize: 18,
+                  label: tr.consent.privacyPolicyLink,
+                  isFullWidth: false,
                   onPressed: onOpenPrivacyPolicy,
-                  icon: const StepIcon(StepwaysIcons.cgu),
-                  label: Text(tr.consent.privacyPolicyLink),
                 ),
               ),
 

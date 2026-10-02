@@ -228,11 +228,13 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
+                  AppButton(
+                    variant: AppButtonVariant.text,
+                    label: tr.moderation.cancel,
+                    isFullWidth: false,
                     onPressed: _submitting
                         ? null
                         : () => Navigator.of(context).pop(),
-                    child: Text(tr.moderation.cancel),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Semantics(

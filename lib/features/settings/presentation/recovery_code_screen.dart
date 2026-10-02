@@ -6,6 +6,7 @@ import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/services/recovery_code_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -114,10 +115,12 @@ class RecoveryCodeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingMd),
-                  OutlinedButton.icon(
+                  AppButton(
+                    variant: AppButtonVariant.outline,
+                    icon: StepwaysIcons.copier,
+                    iconSize: 18,
+                    label: tr.recovery.copy,
                     onPressed: () => _copy(context, ref, code),
-                    icon: const StepIcon(StepwaysIcons.copier, size: 18),
-                    label: Text(tr.recovery.copy),
                   ),
                 ],
               ),

@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_shopping_modal.dart';
@@ -33,7 +34,15 @@ class ChecklistBottomActions extends ConsumerWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.filledTone,
+              tone: allRequiredChecked
+                  ? AppTheme.vertFacile
+                  : AppTheme.orangeDifficile,
+              icon: allRequiredChecked
+                  ? StepwaysIcons.cochePleine
+                  : StepwaysIcons.danger,
+              label: allRequiredChecked ? ui.bagOk : ui.validateBag,
               onPressed: () => _showBagOkDialog(
                 context,
                 ref,
@@ -41,27 +50,18 @@ class ChecklistBottomActions extends ConsumerWidget {
                 state.requiredCount,
                 state.requiredCheckedCount,
               ),
-              icon: StepIcon(
-                allRequiredChecked
-                    ? StepwaysIcons.cochePleine
-                    : StepwaysIcons.danger,
-                size: 20,
-              ),
-              label: Text(allRequiredChecked ? ui.bagOk : ui.validateBag),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: allRequiredChecked
-                    ? AppTheme.vertFacile
-                    : AppTheme.orangeDifficile,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
             ),
           ),
           if (isValidated) ...[
             const SizedBox(height: AppTheme.spacingSm),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: AppButton(
+                variant: AppButtonVariant.outline,
+                tone: AppTheme.orangeDifficile,
+                icon: StepwaysIcons.annuler,
+                iconSize: 18,
+                label: ui.cancelValidation,
                 onPressed: () {
                   ref.read(checklistProvider.notifier).cancelValidation();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -71,43 +71,40 @@ class ChecklistBottomActions extends ConsumerWidget {
                     ),
                   );
                 },
-                icon: const StepIcon(StepwaysIcons.annuler, size: 18),
-                label: Text(ui.cancelValidation),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.orangeDifficile,
-                  side: const BorderSide(
-                    color: AppTheme.orangeDifficile,
-                    width: 2,
-                  ),
-                ),
               ),
             ),
           ],
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.panier,
+              iconSize: 18,
+              label: ui.shoppingListButton,
               onPressed: () => _openShoppingList(context, ref),
-              icon: const StepIcon(StepwaysIcons.panier, size: 18),
-              label: Text(ui.shoppingListButton),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.suiveurs,
+              iconSize: 18,
+              label: ui.shareGroup,
               onPressed: () => _shareChecklist(context, ref),
-              icon: const StepIcon(StepwaysIcons.suiveurs, size: 18),
-              label: Text(ui.shareGroup),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.partager,
+              iconSize: 18,
+              label: ui.exportList,
               onPressed: () => _shareChecklist(context, ref),
-              icon: const StepIcon(StepwaysIcons.partager, size: 18),
-              label: Text(ui.exportList),
             ),
           ),
         ],
@@ -169,11 +166,16 @@ class ChecklistBottomActions extends ConsumerWidget {
           ),
           content: Text(body),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: ui.checkAgain,
+              isFullWidth: false,
               onPressed: () => Navigator.pop(ctx),
-              child: Text(ui.checkAgain),
             ),
-            ElevatedButton(
+            AppButton(
+              variant: AppButtonVariant.filledTone,
+              tone: AppTheme.vertFacile,
+              label: ui.yesBagOk,
               onPressed: () {
                 Navigator.pop(ctx);
                 ref.read(checklistProvider.notifier).validateBag();
@@ -184,11 +186,6 @@ class ChecklistBottomActions extends ConsumerWidget {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.vertFacile,
-                foregroundColor: Colors.white,
-              ),
-              child: Text(ui.yesBagOk),
             ),
           ],
         ),
@@ -286,12 +283,18 @@ class ChecklistBottomActions extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TextButton(
+                          AppButton(
+                            variant: AppButtonVariant.text,
+                            label: ui.understood,
+                            isFullWidth: false,
                             onPressed: () => Navigator.pop(ctx),
-                            child: Text(ui.understood),
                           ),
                           const SizedBox(width: 8),
-                          ElevatedButton(
+                          AppButton(
+                            variant: AppButtonVariant.filledTone,
+                            tone: AppTheme.orangeDifficile,
+                            label: ui.validateAnyway,
+                            isFullWidth: false,
                             onPressed: () {
                               Navigator.pop(ctx);
                               ref
@@ -304,11 +307,6 @@ class ChecklistBottomActions extends ConsumerWidget {
                                 ),
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.orangeDifficile,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: Text(ui.validateAnyway),
                           ),
                         ],
                       ),

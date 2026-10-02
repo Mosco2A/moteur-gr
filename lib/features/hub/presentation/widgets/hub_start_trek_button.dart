@@ -7,6 +7,7 @@ import '../../../../core/services/session_demo.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
@@ -81,17 +82,16 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
           SizedBox(
             width: double.infinity,
             height: 52,
-            child: FilledButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.filledTone,
+              tone: orange,
+              icon: StepwaysIcons.enregistrer,
+              iconSize: 22,
+              label: t.hub.startCta,
               // Grise (onPressed null) tant que le minimum manque ou pendant le
               // demarrage. SEUL le gate 3 cartes conditionne l'enable (la
               // proximite GPS ne bloque jamais — filet au clic).
               onPressed: enabled ? () => _onStartPressed(context) : null,
-              icon: const StepIcon(StepwaysIcons.enregistrer, size: 22),
-              label: Text(t.hub.startCta),
-              style: FilledButton.styleFrom(
-                backgroundColor: orange,
-                foregroundColor: Colors.white,
-              ),
             ),
           ),
           // EN DEMO, ON DIT CE QUE LE BOUTON VA FAIRE : il lance une SIMULATION,
@@ -235,13 +235,16 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
         title: Text(t.monetization.realizationLockedTitle),
         content: Text(t.monetization.realizationLockedBody),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.startCancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.navPilote.startCancel),
           ),
-          FilledButton(
+          AppButton(
+            label: t.monetization.buyCta,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.monetization.buyCta),
           ),
         ],
       ),
@@ -265,13 +268,16 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
         title: Text(t.navPilote.startAwayTitle),
         content: Text(body),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.startCancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.navPilote.startCancel),
           ),
-          FilledButton(
+          AppButton(
+            label: t.navPilote.startConfirm,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.navPilote.startConfirm),
           ),
         ],
       ),

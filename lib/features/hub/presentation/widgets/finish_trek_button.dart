@@ -6,6 +6,7 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/providers/my_treks_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
@@ -75,15 +76,14 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
       child: SizedBox(
         width: double.infinity,
         height: 52,
-        child: FilledButton.icon(
+        child: AppButton(
           key: const ValueKey(kFinishTrekButtonKey),
+          variant: AppButtonVariant.filledTone,
+          tone: orange,
+          icon: StepwaysIcons.depart,
+          iconSize: 22,
+          label: t.hub.finishTrek.action,
           onPressed: _finishing ? null : () => _onFinishPressed(context),
-          icon: const StepIcon(StepwaysIcons.depart, size: 22),
-          label: Text(t.hub.finishTrek.action),
-          style: FilledButton.styleFrom(
-            backgroundColor: orange,
-            foregroundColor: Colors.white,
-          ),
         ),
       ),
     );
@@ -107,15 +107,18 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
         title: Text(t.hub.finishTrek.confirmTitle),
         content: Text(t.hub.finishTrek.confirmBody),
         actions: [
-          TextButton(
+          AppButton(
             key: const ValueKey(kFinishTrekCancelKey),
+            variant: AppButtonVariant.text,
+            label: t.hub.finishTrek.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.hub.finishTrek.cancel),
           ),
-          FilledButton(
+          AppButton(
             key: const ValueKey(kFinishTrekConfirmKey),
+            label: t.hub.finishTrek.confirm,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.hub.finishTrek.confirm),
           ),
         ],
       ),

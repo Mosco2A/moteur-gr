@@ -165,14 +165,18 @@ class _CartesHorsLigneScreenState extends ConsumerState<CartesHorsLigneScreen> {
         title: Text(t.cartesHorsLigne.horsWifiTitre(mo: _mo(megaoctets))),
         content: Text(t.cartesHorsLigne.horsWifiCorps),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.cartesHorsLigne.horsWifiAttendre,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.cartesHorsLigne.horsWifiAttendre),
           ),
-          TextButton(
+          AppButton(
             key: const ValueKey('cartes-hors-wifi-continuer'),
+            variant: AppButtonVariant.text,
+            label: t.cartesHorsLigne.horsWifiContinuer,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.cartesHorsLigne.horsWifiContinuer),
           ),
         ],
       ),
@@ -188,14 +192,18 @@ class _CartesHorsLigneScreenState extends ConsumerState<CartesHorsLigneScreen> {
         title: Text(t.cartesHorsLigne.supprimerTitre),
         content: Text(t.cartesHorsLigne.supprimerCorps),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.cartesHorsLigne.supprimerAnnuler,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.cartesHorsLigne.supprimerAnnuler),
           ),
-          TextButton(
+          AppButton(
             key: const ValueKey('cartes-supprimer-confirmer'),
+            variant: AppButtonVariant.text,
+            label: t.cartesHorsLigne.supprimerConfirmer,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.cartesHorsLigne.supprimerConfirmer),
           ),
         ],
       ),
