@@ -1,3 +1,7 @@
+/// Le cockpit ne cree AUCUN etat metier : tout y est derive des providers
+/// existants, en lecture seule.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/providers/auth_provider.dart';
