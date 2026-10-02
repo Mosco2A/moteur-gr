@@ -1,3 +1,7 @@
+/// Les badges obtenus face aux verrouilles, avec leur condition : l'evaluation
+/// est locale, donc lisible sans reseau.
+library;
+
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

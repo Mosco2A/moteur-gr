@@ -1,3 +1,7 @@
+/// Progression personnelle calculee en local, classement par tranche venu du
+/// serveur, et des pseudonymes jamais des noms.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
