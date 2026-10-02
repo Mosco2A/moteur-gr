@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../domain/models/tip_card.dart';
@@ -176,16 +177,20 @@ class _SocialLinks extends StatelessWidget {
       runSpacing: AppTheme.spacingSm,
       children: [
         if (fb != null && fb.isNotEmpty)
-          OutlinedButton.icon(
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: StepwaysIcons.partager,
+            iconSize: 18,
+            label: t.tips.viewOnFacebook,
             onPressed: () => _open(context, fb),
-            icon: const StepIcon(StepwaysIcons.partager, size: 18),
-            label: Text(t.tips.viewOnFacebook),
           ),
         if (ig != null && ig.isNotEmpty)
-          OutlinedButton.icon(
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: StepwaysIcons.photo,
+            iconSize: 18,
+            label: t.tips.viewOnInstagram,
             onPressed: () => _open(context, ig),
-            icon: const StepIcon(StepwaysIcons.photo, size: 18),
-            label: Text(t.tips.viewOnInstagram),
           ),
       ],
     );
