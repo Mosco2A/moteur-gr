@@ -1,3 +1,7 @@
+/// Seul le 112 est universel ; les secours regionaux viennent de la
+/// configuration du sentier, parce qu'ils changent avec le massif.
+library;
+
 // E5.14a — Service de contacts d'urgence.
 //
 // Retourne les contacts personnels ordonnes par priorite

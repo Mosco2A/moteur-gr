@@ -1,3 +1,7 @@
+/// La fiche medicale a quitte la base commune pour un fichier a elle : la base
+/// doit remonter dans la sauvegarde, elle non.
+library;
+
 // E5.16 — Repository informations sante LOCAL ONLY.
 //
 // Persistance locale dans un FICHIER DEDIE, sous le dossier declare exclu de la

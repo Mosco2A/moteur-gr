@@ -1,3 +1,7 @@
+/// La copie sauvegardable de la fiche medicale n'existe QUE si le marcheur a
+/// decoche la case de refus — et elle ne sort jamais vers nos serveurs.
+library;
+
 import 'dart:convert';
 import 'dart:io';
 

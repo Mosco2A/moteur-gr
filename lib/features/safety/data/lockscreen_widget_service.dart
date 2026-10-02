@@ -1,3 +1,7 @@
+/// Ce que les secours doivent pouvoir lire SANS deverrouiller le telephone :
+/// contacts, sante, position et etape reunis.
+library;
+
 // E5.14b — Service widget lockscreen contacts urgence.
 // E5.20a — Enrichi avec donnees sante, GPS, etape en cours.
 // TACHE 630 — LA FICHE ENTIERE, ET LA MESURE DE CE QU'ON PEUT REELLEMENT
