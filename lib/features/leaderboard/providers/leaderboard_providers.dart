@@ -1,3 +1,6 @@
+/// Le cablage du classement, surchargeable en test avec un cache pre-rempli.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/segment_ranking_repository.dart';
