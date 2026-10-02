@@ -273,6 +273,7 @@ C'est la demande explicite de Christophe. Quatre commandes, dans cet ordre.
 cd <worktree du depot Moteur-GR>
 flutter pub get                      # SANS CECI, flutter analyze ment (piege 1)
 python tool/audit_global.py --json-out audit-apres-645.json
+flutter analyze --no-pub --no-fatal-infos   # gate d'analyse : 0 erreur, 0 avertissement
 flutter test                         # attendu : 4002 passes, 2 ignores
 ```
 
