@@ -1,3 +1,7 @@
+/// Accumule les points GPS en memoire et ne les ecrit en base que par lots :
+/// c'est ce tampon qui evite une ecriture par position.
+library;
+
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';

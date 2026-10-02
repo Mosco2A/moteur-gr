@@ -1,3 +1,7 @@
+/// Dit quand le marcheur a ATTEINT la fin d'une etape ou du sentier, par
+/// distance haversine au point d'arrivee.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

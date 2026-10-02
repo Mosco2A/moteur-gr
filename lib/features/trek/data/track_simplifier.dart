@@ -1,3 +1,7 @@
+/// Allege une trace par Douglas-Peucker, en distance haversine et en version
+/// iterative pour ne pas deborder la pile sur un long trace.
+library;
+
 import 'dart:math';
 
 import '../domain/models/track_point.dart';

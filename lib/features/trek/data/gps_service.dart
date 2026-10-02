@@ -1,3 +1,7 @@
+/// Permission de localisation et REGIME de precision, pilote par le mouvement :
+/// on ne demande pas la meme finesse a l'arret qu'en marche.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
