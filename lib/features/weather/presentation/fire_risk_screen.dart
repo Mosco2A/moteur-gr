@@ -1,3 +1,7 @@
+/// Le risque incendie en sept sections, entierement pilote par les donnees du
+/// sentier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';

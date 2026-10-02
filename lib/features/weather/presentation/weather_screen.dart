@@ -1,3 +1,7 @@
+/// La meteo d'une etape : le jour, les deux suivants, toutes les etapes, et
+/// l'origine du chiffre affiche.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
