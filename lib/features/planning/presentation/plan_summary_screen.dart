@@ -8,6 +8,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../booking/domain/models/nuitee_type.dart';
 import '../../booking/providers/nuitee_selections_provider.dart';
@@ -188,10 +189,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.summary.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const StepIcon(StepwaysIcons.itineraire),
-              label: Text(t.summary.empty.action),
             ),
           ],
         ),
@@ -833,7 +835,12 @@ class _ActionButtons extends ConsumerWidget {
         Semantics(
           button: true,
           label: t.summary.a11y.share,
-          child: OutlinedButton.icon(
+          child: AppButton(
+            variant: AppButtonVariant.outline,
+            tone: scheme.secondary,
+            icon: StepwaysIcons.partager,
+            iconSize: 18,
+            label: t.summary.actions.share,
             onPressed: () {
               final config = ref.read(trailConfigProvider);
               final forward = config.directions.isNotEmpty
@@ -850,12 +857,6 @@ class _ActionButtons extends ConsumerWidget {
               );
               Share.share(text);
             },
-            icon: const StepIcon(StepwaysIcons.partager),
-            label: Text(t.summary.actions.share),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: scheme.secondary,
-              side: BorderSide(color: scheme.secondary, width: 2),
-            ),
           ),
         ),
       ],
