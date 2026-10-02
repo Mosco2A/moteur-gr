@@ -15,6 +15,27 @@ analyzer:
     - data/**
     - build/**
     - .claude/**
+  # SEVERITE FORCEE A `info` POUR LES SEPT REGLES ALLUMEES CI-DESSOUS
+  # (tache 645-01).
+  #
+  # POURQUOI `info` ET PAS `warning`. Ces sept regles remontent des MILLIERS
+  # d infractions sur l etat du 02/10/2026. Les allumer en `warning` ou en
+  # `error` rendrait `flutter analyze` rouge immediatement, donc la gate
+  # rouge, donc la gate contournee : on aurait echange une mesure contre une
+  # garde desarmee. En `info`, elles MESURENT sans bloquer.
+  #
+  # CE QUI RESTE A FAIRE, ET C EST UN LOT A PART. Leur passage en bloquant
+  # suppose d avoir resorbe le stock ; c est un chantier par regle, pas une
+  # ligne de configuration. Ne durcissez pas une de ces severites sans avoir
+  # d abord ramene son compte a zero.
+  errors:
+    public_member_api_docs: info
+    directives_ordering: info
+    lines_longer_than_80_chars: info
+    avoid_print: info
+    prefer_single_quotes: info
+    unnecessary_lambdas: info
+    always_declare_return_types: info
 
 linter:
   # The lint rules applied to this project can be customized in the
@@ -28,8 +49,18 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # LES SEPT REGLES ALLUMEES POUR MESURER (tache 645-01).
+    #
+    # Elles etaient absentes : le depot ne savait donc pas combien il en
+    # enfreignait. Leur severite est forcee a `info` dans `analyzer: errors:`
+    # ci-dessus — lisez-y POURQUOI avant d en durcir une seule.
+    always_declare_return_types: true
+    avoid_print: true
+    directives_ordering: true
+    lines_longer_than_80_chars: true
+    prefer_single_quotes: true
+    public_member_api_docs: true
+    unnecessary_lambdas: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
