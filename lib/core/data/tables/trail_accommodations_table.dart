@@ -1,3 +1,7 @@
+/// Refuges, gites et hotels rattaches a une etape, avec leurs noms aplatis en
+/// cinq langues.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

@@ -1,3 +1,7 @@
+/// Points d'interet rattaches a une etape, noms ET descriptions aplatis en cinq
+/// langues.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

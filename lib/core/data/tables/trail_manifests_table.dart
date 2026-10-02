@@ -1,3 +1,7 @@
+/// Entrees du manifeste distant ET la version locale en face : c'est cette
+/// confrontation qui detecte une mise a jour.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';

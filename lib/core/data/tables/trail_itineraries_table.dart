@@ -1,3 +1,7 @@
+/// Variantes de parcours d'un sentier (Nord-Sud, Sud-Nord...), avec leurs noms
+/// aplatis en cinq langues.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../revision_de_donnee.dart';
