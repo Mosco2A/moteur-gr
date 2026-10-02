@@ -1,3 +1,7 @@
+/// Une SEULE pile de navigation sur laquelle on pousse les ecrans : il n'y a
+/// plus d'onglets depuis la refonte hub-and-push.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

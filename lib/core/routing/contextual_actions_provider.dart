@@ -1,3 +1,7 @@
+/// Chaque ecran DECLARE ses actions au montage et les vide en partant ; la
+/// barre du bas ne fait que lire cette declaration.
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
