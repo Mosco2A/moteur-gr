@@ -45,9 +45,19 @@
 // en remettant `loading_overlay.dart` en place, cette mesure remonte a 2.
 //
 // RESORBER N'EST PAS RENOMMER. Fusionner deux types en deplacant du code est
-// interdit par SPEC-06 : c'est le travail du lot 645-04, et il attend un
-// arbitrage. Cette garde ne demande donc pas de reparer — seulement de ne pas
-// AJOUTER un quatrieme doublon en attendant.
+// interdit par SPEC-06. Les TROIS qui restent ont ete instruits par le lot
+// 645-04 et en sont SORTIS, chacun pour une raison mesuree : ils attendent un
+// arbitrage de Christophe, inscrit en ARB-645-04-a (`stage`), ARB-645-04-b
+// (`track_point`) et ARB-645-04-c (`gpx_parser`) dans
+// `docs/assainissement/644-03-decoupage-et-plan.md`. Resume, parce qu'un
+// plafond doit se lire sans ouvrir un autre fichier : `stage` est DEUX TYPES
+// differents relies par un convertisseur explicite, pas un doublon ;
+// `track_point` a VRAIMENT diverge, et un seul type ne peut pas satisfaire les
+// deux series de tests sans renommer un parametre dans un test existant ;
+// `gpx_parser` est une facade `rootBundle` devant un parseur en Dart PUR dont
+// `dart run tool/publier_sentier.dart` depend — les reunir casse l'outil de
+// publication, c'est mesure. Cette garde ne demande donc pas de reparer —
+// seulement de ne pas AJOUTER un quatrieme doublon en attendant.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
