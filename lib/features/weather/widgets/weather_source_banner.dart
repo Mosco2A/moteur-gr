@@ -1,3 +1,7 @@
+/// D'ou vient le chiffre affiche — reseau, cache, hors-ligne ou demonstration —
+/// et depuis quand : un badge « cache » ne disait pas assez.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

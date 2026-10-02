@@ -1,3 +1,7 @@
+/// « Comprendre la meteo » : contenu editorial en cinq langues, sans aucune
+/// dependance au sentier affiche.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

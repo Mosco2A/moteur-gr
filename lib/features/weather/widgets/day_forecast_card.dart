@@ -1,3 +1,7 @@
+/// La prevision d'un jour avec son code couleur. Son en-tete est SURCHARGEABLE,
+/// pour qu'un jour de programme puisse etre titre par son lieu d'arrivee.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';

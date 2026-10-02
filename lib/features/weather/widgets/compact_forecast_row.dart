@@ -1,3 +1,7 @@
+/// Les deux jours suivants cote a cote, en cellules a largeur partagee : aucun
+/// debordement horizontal sur un ecran etroit.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
