@@ -1,3 +1,7 @@
+/// Le diplome en PDF A4 paysage : nom, sentier acheve, date et chiffres de la
+/// rando.
+library;
+
 import 'package:intl/intl.dart';
 
 import '../../../i18n/translations.g.dart';

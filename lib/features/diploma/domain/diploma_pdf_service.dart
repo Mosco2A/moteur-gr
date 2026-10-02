@@ -1,3 +1,7 @@
+/// Les donnees du diplome, decouplees du reste : ce fichier ne depend ni du
+/// trek, ni des points, ni du carnet.
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 
