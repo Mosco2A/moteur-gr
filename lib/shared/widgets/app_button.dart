@@ -32,6 +32,7 @@ class AppButton extends StatelessWidget {
     this.icon,
     this.isFullWidth = true,
     this.tone,
+    this.iconSize = 20,
     this.minHeight = 48,
   });
 
@@ -64,6 +65,20 @@ class AppButton extends StatelessWidget {
   /// (fonds pleins geres au theme).
   final Color? tone;
 
+  /// Taille du dessin de l'icone, en pixels (defaut 20px).
+  ///
+  /// POURQUOI CE PARAMETRE EXISTE (tache 645-03). Les `*Button.icon` du
+  /// framework peignent leur icone a 18px — c'est la taille que Material pose
+  /// dans l'`IconTheme` du bouton, mesuree sur les quatre boutons. Les appels
+  /// que la tache 645-03 a ramenes ici demandaient donc 18, parfois 22 (le CTA
+  /// « Demarrer » du cockpit), parfois 14. Sans ce parametre, les ramener
+  /// aurait grossi ou rapetisse leur icone de 2 a 6px : un ecart d'apparence,
+  /// exactement ce que le deplacement devait eviter.
+  ///
+  /// Le defaut reste 20 : les 94 appels d'AppButton existants au 02/10/2026 ne
+  /// bougent pas d'un pixel.
+  final double iconSize;
+
   /// Hauteur mini de la cible tactile (defaut 48px, plancher a11y Material).
   /// L'overlay de suivi (HUD carte) utilise 44px historiquement — expose ici
   /// pour un iso-rendu STRICT de cet ecran actif sans figer 48 pour tous les
@@ -90,7 +105,7 @@ class AppButton extends StatelessWidget {
               // que le style du bouton pose deja. L'icone suit donc le bouton,
               // y compris desactive.
               if (icon case final asset?) ...[
-                StepIcon(asset, size: 20),
+                StepIcon(asset, size: iconSize),
                 const SizedBox(width: AppTheme.spacingSm),
               ],
               // Le libelle est `Flexible` (comme `ElevatedButton.icon`/

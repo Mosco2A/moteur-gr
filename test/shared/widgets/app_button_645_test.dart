@@ -4,7 +4,7 @@
 // besoins du parc n'etaient pas exprimables par les 8 parametres d'alors ; la
 // regle R2 du lot dit quoi faire dans ce cas : porter le besoin DANS le
 // composant, en parametre nomme a valeur par defaut, jamais en cas particulier
-// chez l'appelant. D'ou la variante `text` de ce fichier.
+// chez l'appelant. D'ou la variante `text` et `iconSize`.
 //
 // CES TESTS TIENNENT DEUX PROMESSES :
 //
@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
@@ -207,6 +208,36 @@ void main() {
     });
   });
 
+  group('645-03 — `iconSize`', () {
+    testWidgets('dessine l icone a la taille demandee : 18px, la taille que '
+        'Material donne a l icone des `*Button.icon`', (tester) async {
+      await _poser(
+        tester,
+        AppButton(
+          label: 'Partager',
+          onPressed: () {},
+          icon: StepwaysIcons.partager,
+          iconSize: 18,
+        ),
+      );
+
+      expect(tester.getSize(find.byType(StepIcon)), const Size(18, 18));
+    });
+
+    testWidgets('sans rien demander, l icone reste a 20px — les appels '
+        'existants ne bougent pas d un pixel', (tester) async {
+      await _poser(
+        tester,
+        AppButton(
+          label: 'Partager',
+          onPressed: () {},
+          icon: StepwaysIcons.partager,
+        ),
+      );
+
+      expect(tester.getSize(find.byType(StepIcon)), const Size(20, 20));
+    });
+  });
   group('645-03 — ce que les 94 appels existants mesuraient deja', () {
     testWidgets('primary reste un ElevatedButton de 48px de haut, pleine '
         'largeur par defaut', (tester) async {
