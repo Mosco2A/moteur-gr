@@ -1,3 +1,7 @@
+/// Au premier lancement, chaque finalite est presentee SEPAREMENT avec son
+/// explication : rien n'est groupe, rien n'est pre-coche.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
