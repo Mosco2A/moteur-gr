@@ -1,3 +1,7 @@
+/// Le filtre de route : l'anonyme COMPTE comme authentifie, et une absence de
+/// session declenche une connexion anonyme automatique.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

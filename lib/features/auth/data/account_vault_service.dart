@@ -1,3 +1,7 @@
+/// Coffre de reconnexion a deux blocs chiffres, profil et solde : la cle est
+/// derivee du code, qui ne quitte jamais le telephone.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/cloud_sync_service.dart';

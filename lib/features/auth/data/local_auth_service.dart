@@ -1,3 +1,7 @@
+/// Le repli OFFICIEL quand Firebase manque : identite tenue dans les prefs,
+/// sans backend — ce service ne peut produire aucune donnee nominative.
+library;
+
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
