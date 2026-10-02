@@ -1,3 +1,7 @@
+/// Les retours du marcheur, classes en categories extensibles, ecrits en local
+/// avant tout envoi.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
 
