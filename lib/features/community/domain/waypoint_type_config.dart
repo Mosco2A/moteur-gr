@@ -1,3 +1,7 @@
+/// Le registre des types de repere communautaire : une icone, une couleur et
+/// une cle de libelle par type, plus un repli generique.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../data/waypoint_service.dart';
