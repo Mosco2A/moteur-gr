@@ -24,23 +24,58 @@
 // PERIMETRE STRICT, ET IL EST VOULU. `IconButton` et `CupertinoButton` sont
 // hors mesure : l'audit 644 en compte 50 de plus, suivis a part sous ECR-19e.
 // Les melanger ici rendrait ce plafond incomparable a la mesure de depart.
+//
+// UN APPEL, PAS UNE MENTION (correction du 02/10/2026, tache 645-03). Cette
+// garde comptait aussi les noms de boutons ECRITS DANS LES COMMENTAIRES. Au
+// 02/10, sur les 153 lignes qu'elle relevait, 31 etaient des phrases comme
+// « SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary » : la trace, dans
+// le code, d'une conversion DEJA FAITE. La garde reprochait au depot d'avoir
+// documente son propre assainissement, et exigeait, pour atteindre zero, qu'on
+// efface cette tracabilite.
+//
+// `estLigneDeCommentaire` existait pourtant depuis 645-01, dans
+// `mesure_des_sources_645.dart`, avec sa consigne ecrite : « les gardes qui
+// cherchent des motifs dans le code doivent l'appeler ». La garde des valeurs
+// a completer l'appelle. Celle-ci l'avait oubliee. Elle l'appelle desormais.
+//
+// CE QUE CELA CHANGE POUR LE PLAFOND. Le nombre descend de 31 d'un coup sans
+// qu'une ligne de code ait bouge : ce sont 31 faux positifs qui sortent, pas
+// 31 boutons. Le plafond ne mesure plus la meme chose qu'au 02/10 au matin —
+// il mesure ce que son titre annonce : des APPELS. Les deux mesures sont
+// consignees sur le plafond pour que la comparaison reste possible.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
 
-/// Mesure du 02/10/2026, tete 147ca32d : 153 appels de bouton brut hors des
-/// deux zones legitimes.
+/// LE PLAFOND, ET LES DEUX MESURES QUI L'ENCADRENT.
 ///
-/// LE PLAFOND DESCEND, FICHIER PAR FICHIER (tache 645-03). Chaque fichier
-/// ramene sur `AppButton` abaisse ce nombre dans le MEME commit que lui : un
-/// ecart visuel sur un ecran se defait alors seul, sans rendre les autres
-/// fichiers du lot irreprochables en silence. Il ne remonte jamais.
+///   - 02/10/2026, tete 147ca32d : 153 LIGNES relevees hors des deux zones
+///     legitimes — dont 31 simples mentions en commentaire. 122 appels reels.
+///   - 02/10/2026, fin du lot 645-03 : 10 appels reels. Les 112 autres passent
+///     par `AppButton`.
 ///
-/// Dernier abaissement : 02/10/2026 — 41, apres
-/// lib/features/treks/presentation/my_treks_screen.dart.
-const plafondBoutonsBruts = 41;
+/// LES 10 QUI RESTENT NE SONT PAS UN OUBLI, ils sont en arbitrage (regle R3 du
+/// lot : ce qui n'est pas exprimable en parametre ne se force pas). Six
+/// fichiers, tous des affordances en ligne volontairement PLUS PETITES que la
+/// cible tactile de 44px qu'`AppButton` garantit (`minimumSize: Size.zero`,
+/// `tapTargetSize: shrinkWrap`), ou dont le libelle redefinit toute sa
+/// typographie via `textTheme.X.copyWith(...)` :
+///
+///   - lib/shared/widgets/section_header.dart (le « Tout voir » d'en-tete)
+///   - lib/shared/widgets/lien_vers_les_cartes.dart
+///   - lib/features/weather/presentation/fire_risk_screen.dart
+///   - lib/features/checklist/widgets/checklist_category_section.dart
+///   - lib/features/onboarding/presentation/onboarding_screen.dart
+///   - lib/features/trek/presentation/stages/trek_stage_detail_screen.dart
+///
+/// Les ramener demanderait soit de grossir leur cible tactile (donc de changer
+/// l'apparence, ce que le lot n'a pas le droit de faire), soit d'ouvrir dans
+/// `AppButton` un passe-droit typographique. Christophe tranche.
+///
+/// Le plafond ne remonte JAMAIS.
+const plafondBoutonsBruts = 10;
 
 /// Les quatre boutons nommes par ECR-19.
 const boutonsStricts = <String>[
@@ -85,6 +120,10 @@ void main() {
       if (estZoneLegitime(f)) continue;
       final lignes = lignesDe(f);
       for (var i = 0; i < lignes.length; i++) {
+        // UN NOM DANS UN COMMENTAIRE N'APPELLE RIEN, IL EN PARLE. Voir
+        // l'en-tete : sans ce filtre, la garde compte la documentation de ses
+        // propres conversions et exige qu'on l'efface pour atteindre zero.
+        if (estLigneDeCommentaire(lignes[i])) continue;
         for (final b in boutonsStricts) {
           if (motifs[b]!.hasMatch(lignes[i])) {
             trouves.add('$f:${i + 1}: $b');
@@ -172,6 +211,35 @@ void main() {
         m.hasMatch('ElevatedButtonThemeData('),
         isFalse,
         reason: 'le type de theme n est pas un appel de bouton',
+      );
+    });
+
+    test('une mention en commentaire n est pas un appel', () {
+      // LE FAUX POSITIF QUI COUTAIT 31 LIGNES (correction du 02/10/2026). Le
+      // motif, lui, DOIT continuer d attraper ces lignes — c est le filtre de
+      // commentaire, et lui seul, qui les ecarte. Les deux attentes ensemble
+      // disent ou vit la decision.
+      final m = motifBouton('ElevatedButton');
+      const mention =
+          '// SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary';
+      expect(
+        m.hasMatch(mention),
+        isTrue,
+        reason: 'le motif ne regarde pas si la ligne est du code',
+      );
+      expect(
+        estLigneDeCommentaire(mention),
+        isTrue,
+        reason:
+            'c est ce filtre qui fait la difference entre un appel et une '
+            'phrase qui en parle',
+      );
+      expect(estLigneDeCommentaire('  /// un ElevatedButton('), isTrue);
+      expect(estLigneDeCommentaire(' * un ElevatedButton('), isTrue);
+      expect(
+        estLigneDeCommentaire('    child: ElevatedButton('),
+        isFalse,
+        reason: 'une ligne de code reste une ligne de code',
       );
     });
   });
