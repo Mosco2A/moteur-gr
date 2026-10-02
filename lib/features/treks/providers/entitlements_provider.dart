@@ -1,3 +1,7 @@
+/// Quels treks le marcheur POSSEDE, lu des droits en base — c'est de la que
+/// tout le reste decoule.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/trail_selection.dart';
