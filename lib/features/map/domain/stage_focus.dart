@@ -1,3 +1,7 @@
+/// Ou la carte doit s'OUVRIR : sur l'etape du marcheur, pas sur le sentier
+/// entier ou l'on ne distingue plus rien.
+library;
+
 import '../../../core/geo/track_point.dart';
 import '../../../core/models/stage.dart';
 
