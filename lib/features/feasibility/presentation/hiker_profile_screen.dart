@@ -1,3 +1,7 @@
+/// Saisie de la morphologie, donnee SENSIBLE et jamais pre-remplie : de vraies
+/// valeurs sont une question de securite, pas de confort.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

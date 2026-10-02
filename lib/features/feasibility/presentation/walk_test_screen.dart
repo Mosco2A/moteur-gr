@@ -1,3 +1,7 @@
+/// Le test de six minutes en chrono libre, avec arret automatique — et la
+/// liberation explicite du GPS a la sortie, sous peine de blocage.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
