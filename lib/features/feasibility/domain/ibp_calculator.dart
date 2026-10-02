@@ -1,3 +1,7 @@
+/// Indice d'effort depuis une trace, en fonction PURE sans Flutter. Le bareme
+/// IBP n'etant pas public, c'est une approximation assumee.
+library;
+
 import '../../../core/geo/geo_utils.dart';
 // Simplificateur Douglas-Peucker cote trek (opere sur le `TrackPoint` trek,
 // lat/lng/elevation). Alias pour lever l'homonymie avec core/geo/douglas_peucker.

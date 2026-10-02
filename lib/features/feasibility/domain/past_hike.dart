@@ -1,3 +1,7 @@
+/// Une rando notable deja faite. C'est d'elles que le niveau reel est DEDUIT,
+/// au lieu d'un auto-label que le marcheur se donnerait.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'past_hike.freezed.dart';
