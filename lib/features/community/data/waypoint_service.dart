@@ -1,3 +1,7 @@
+/// Les types de repere, leur source, et un push distant IDEMPOTENT : renvoyer
+/// deux fois la meme contribution ne la duplique pas.
+library;
+
 import 'dart:async';
 
 import 'package:drift/drift.dart';
