@@ -441,6 +441,13 @@ SORTIS du lot avec leur raison (regle R3), nouveau plafond, resultat des 4
 commandes de gate, et ou sont les captures.
 ```
 
+**ARB-645-03 (Christophe, 02/10/2026 18:01)** : la hauteur 48 dp et les coins
+arrondis 12 dp du composant unique AppButton sont LA norme des boutons, y
+compris le bouton Demarrer la randonnee (fin du stade) et les boutons convertis
+depuis le theme (fin des 52 dp). Le rendu strictement identique n etait pas
+exige pour ce lot. Les minHeight 52 explicites herites des lots SW-SKIN seront
+alignes dans un lot ulterieur. Lot 645-03 fusionne en 0310fa9b.
+
 ---
 
 ### 645-04 — Résorber les quatre doublons
@@ -536,6 +543,27 @@ AUCUNE FUSION. Commandes Bash sous 6 000 caracteres. « Christophe » partout.
 RAPPORT ATTENDU : par concept, I1 + I2 + I3, le verdict, et les concepts
 sortis du lot avec leur raison. Plus le resultat des 4 commandes de gate.
 ```
+
+**ARB-645-04 — TROIS CONCEPTS SORTIS DU LOT, ARBITRAGE DEMANDE A CHRISTOPHE
+(Hephaistos, 02/10/2026).** Le lot a instruit les cinq concepts comme la fiche
+l'exige (appelants de chaque cote, diff lu ligne a ligne, decision ecrite).
+**Deux ont ete resorbes** : `tracking_overlay` (commit `refactor(645-04): un
+seul tracking_overlay`) et `loading_view` / `loading_overlay`, deja resorbe par
+le lot 645-02 et desormais **mesure** par une garde de forme. **Trois sortent du
+lot** au titre de la regle « si c'est impossible, sors le concept », chacun pour
+une raison mesuree, et aucun des trois ne peut etre tranche sans Christophe.
+
+| Ref | Concept | Ce que la mesure a montre | Ce qui est demande |
+|---|---|---|---|
+| **ARB-645-04-a** | `stage` | Ce ne sont **pas** deux implementations d'un concept, mais **deux types differents** : `StageModel` (`core/models/`, 80 appelants, adosse a Drift par `fromDb`/`toCompanion`, `name`/`description` uniques, duree en minutes nullable) et `Stage` (`features/trek/domain/models/`, 26 appelants, i18n 5 langues `nameFr..nameEs`, `orderIndex`, duree en secondes). `gps_providers.dart` porte un **convertisseur explicite et documente** de l'un vers l'autre (`domainStagesProvider`). En retenir un, c'est **fusionner deux types en deplacant** — ce que SPEC-06 interdit. Correction de fait au passage : le doublon n'est pas apparu entre le 21/09 et le 02/10, **les deux fichiers naissent du meme commit `6df3736a` du 21/09** | Trancher **#X60 / #X61** (voie A `lib/domain/` pour les modeles partages, ou voie B `trek` assume comme socle) : SPEC-06 nomme `stage` dans la voie A, et la place du type decide du doublon. Tant que l'arbitrage manque, le deplacer serait a refaire |
+| **ARB-645-04-b** | `track_point` | **Vraie divergence, meme nom de classe.** `core/geo/` (28 appelants) porte `altitude` et `distanceFromStart`, tous deux requis, sans horodatage : c'est un point de **trace de reference**. `features/trek/domain/models/` (14 appelants) porte `elevation` et `timestamp`, sans distance cumulee : c'est un **echantillon d'enregistrement GPS**. Un seul type ne peut pas satisfaire les deux series de tests existantes : les tests de la seconde **construisent** `TrackPoint(..., elevation: ...)` et **relisent** `.elevation`. Les faire passer imposerait soit de renommer un parametre **dans un test existant** (interdit par le lot : « aucun nom »), soit de porter `altitude` ET `elevation` comme deux champs du meme type — deux champs pour une seule grandeur physique, modele incoherent | Dire **ce qu'est un `TrackPoint`** : un point de trace, un echantillon d'enregistrement, ou deux types qui doivent porter deux noms (p. ex. `PointDeTrace` et `PointEnregistre`). Le renommage touche des tests existants : il demande une levee explicite de la regle « aucun test reecrit ». Depend aussi de **#X60 / #X61**, qui nomme `track_point` |
+| **ARB-645-04-c** | `gpx_parser` | La delegation annoncee est confirmee : `core/geo/gpx_parser.dart` (5 appelants) **importe** `features/trek/data/gpx_parser.dart` (4 appelants) et lui delegue tout. Mais **la separation est portante, et c'est la mesure qui le dit** : `features/trek/data/gpx_parser.dart` est du **Dart pur**, et `dart run tool/publier_sentier.dart` en depend par `tool/publication/source_de_sentier.dart`. La facade, elle, a besoin de `rootBundle` (`package:flutter/services.dart`, donc `dart:ui`). **Essai fait** : en ajoutant cet import au parseur retenu, `dart run tool/publier_sentier.dart verifier` passe de **sortie 0 a sortie 254**. Les reunir en un fichier casse donc l'outil de publication ; ne pas les reunir mais renommer la facade change `GpxParser.parseFromAsset` **dans quatre tests existants** | Choisir : **(a)** renommer la facade pour qu'elle dise ce qu'elle est (`GpxDepuisLesAssets`), ce qui touche 4 tests existants et demande la meme levee ; **(b)** donner a `tool/` son propre chemin d'analyse pour liberer `lib/` de la contrainte Dart pur, puis fusionner ; **(c)** declarer la couture legitime et **retirer `gpx_parser` de la cible ECR-20** avec cette justification ecrite. Recommandation d'Hephaistos : **(a)**, la moins chere des trois, et la seule qui laisse une seule reponse a « qu'est-ce qui lit un GPX » |
+
+**Plafond ECR-20 au terme du lot : 3** (`gpx_parser.dart`, `stage.dart`,
+`track_point.dart`), contre 4 avant. Il ne remontera pas. La cible 0 reste
+atteignable, mais elle passe par les trois arbitrages ci-dessus, pas par du
+code.
+
 
 ---
 
