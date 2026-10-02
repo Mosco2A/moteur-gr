@@ -187,9 +187,11 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: tr.cancel,
+          isFullWidth: false,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(tr.cancel),
         ),
         // Action DEFINITIVE : rouge, et INERTE tant que la case n'est pas
         // cochee (meme grammaire que l'effacement de la fiche sante).
