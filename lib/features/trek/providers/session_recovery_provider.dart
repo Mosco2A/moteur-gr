@@ -1,3 +1,7 @@
+/// Le cablage qui manquait pour reprendre une session laissee ouverte par un
+/// arret brutal : le gestionnaire existait sans etre instancie.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/database_provider.dart';

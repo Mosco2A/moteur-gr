@@ -1,3 +1,7 @@
+/// Reglages fins d'itineraire, conserves pour l'ecran avance : le NOMBRE de
+/// jours ne vient plus d'ici mais de la source unique de duree.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

@@ -1,3 +1,7 @@
+/// Croise trois signaux — premier plan ou fond, niveau de batterie, reseau —
+/// pour decider de la finesse du GPS et du rythme de synchronisation.
+library;
+
 import 'dart:async';
 
 import 'package:battery_plus/battery_plus.dart';

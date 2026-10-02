@@ -1,3 +1,7 @@
+/// Le sentier actif, DERIVE de la selection du catalogue : sans cela il restait
+/// a chaine vide, donc la liste d'etapes restait vide.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

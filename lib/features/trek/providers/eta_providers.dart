@@ -1,3 +1,7 @@
+/// L'heure d'arrivee estimee, recalculee sur EVENEMENT et non en continu ; le
+/// flux d'entree est branche par l'ecran de navigation.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/eta_service.dart';
