@@ -1,3 +1,7 @@
+/// L'etat de TOUTES les finalites en lecture reactive : l'ecran suit le flux
+/// des decisions du service, il ne le recopie pas.
+library;
+
 // D4A-02 — Providers de l'UI de consentement (design D4 CORDO #86166).
 //
 // Pont entre le [ConsentService] (D4A-01) et l'UI : expose l'etat de
