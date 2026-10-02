@@ -1,3 +1,7 @@
+/// Le carnet, groupe par jour du plus recent au plus ancien : notes et photos
+/// ensemble.
+library;
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
