@@ -1,3 +1,7 @@
+/// L'ECRITURE d'un GPX, qui n'existait pas : l'app savait lire, pas ecrire, et
+/// l'export restait un TODO.
+library;
+
 import 'dart:io';
 
 import 'package:gpx/gpx.dart';
