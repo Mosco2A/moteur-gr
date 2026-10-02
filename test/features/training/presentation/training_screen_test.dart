@@ -62,6 +62,7 @@ void main() {
     TrainingPlan? planOverride,
     int daysUntilDeparture = 90,
   }) {
+    final now = DateTime.now();
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
@@ -70,7 +71,7 @@ void main() {
         ).overrideWith((ref) async => isDemo),
         trainingPlanProvider.overrideWith((ref) async => planOverride ?? plan),
         trainingDepartureDateProvider.overrideWithValue(
-          DateTime.now().add(Duration(days: daysUntilDeparture)),
+          DateTime(now.year, now.month, now.day + daysUntilDeparture),
         ),
       ],
       child: TranslationProvider(

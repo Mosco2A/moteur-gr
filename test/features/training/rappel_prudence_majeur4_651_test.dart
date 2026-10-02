@@ -72,6 +72,7 @@ void main() {
     bool hasProfile = true,
     bool enDemo = false,
   }) {
+    final now = DateTime.now();
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
@@ -82,7 +83,7 @@ void main() {
         trainingDepartureDateProvider.overrideWithValue(
           daysUntilDeparture == null
               ? null
-              : DateTime.now().add(Duration(days: daysUntilDeparture)),
+              : DateTime(now.year, now.month, now.day + daysUntilDeparture),
         ),
         // Le verdict vient du MOTEUR UNIQUE ; ici on injecte sa sortie pour
         // rendre l'ecran deterministe, sans toucher a la chaine de calcul (elle
