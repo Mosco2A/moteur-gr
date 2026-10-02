@@ -1,3 +1,7 @@
+/// Le cablage de la demande d'avis sur la base reelle, pour que le « deja
+/// demande » survive au redemarrage.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/database_provider.dart';

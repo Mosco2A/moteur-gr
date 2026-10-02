@@ -1,3 +1,7 @@
+/// Le service d'import est pur et generique : toute la specificite du sentier
+/// lui est passee a l'appel, pas a la construction.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../trek/providers/gps_providers.dart';
