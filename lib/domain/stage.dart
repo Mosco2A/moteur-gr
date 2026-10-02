@@ -1,5 +1,6 @@
-/// Une etape vue de trek, avec ses noms en cinq langues et sa duree en
-/// SECONDES. Autre type que le StageModel du socle (ARB-645-04-a).
+/// Une etape vue du domaine, avec ses noms en cinq langues et sa duree en
+/// SECONDES. Autre type que le StageModel de core/models/stage_row.dart
+/// (ARB-645-04-a, tranche en voie A le 02/10/2026).
 library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';

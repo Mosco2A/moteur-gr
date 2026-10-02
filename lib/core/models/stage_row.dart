@@ -1,5 +1,5 @@
 /// Une etape vue du socle, adossee a Drift. A ne pas confondre avec le Stage de
-/// features/trek/domain, qui est un autre type (ARB-645-04-a).
+/// lib/domain/stage.dart, qui est un autre type (ARB-645-04-a).
 library;
 
 import 'package:drift/drift.dart' show Value;
@@ -7,8 +7,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../data/database.dart';
 
-part 'stage.freezed.dart';
-part 'stage.g.dart';
+part 'stage_row.freezed.dart';
+part 'stage_row.g.dart';
 
 /// Modele immutable representant une etape de sentier.
 ///

@@ -43,7 +43,7 @@ import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
 import '../../../trail/providers/progress_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
-import '../../domain/models/stage.dart';
+import '../../../../domain/stage.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';

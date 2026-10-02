@@ -4,7 +4,7 @@ library;
 
 import 'dart:math';
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/models/stage_duration.dart';
 import 'models/feasibility_profile.dart';
 import 'models/itinerary_config.dart';

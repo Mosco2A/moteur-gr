@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/trek/domain/models/itinerary_day.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_screen.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';

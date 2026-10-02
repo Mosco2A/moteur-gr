@@ -13,7 +13,7 @@
 /// ecrite ICI, une seule fois, et les deux chemins l'appellent.
 library;
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../planning/domain/planning_calculator.dart';
 import '../../planning/models/day_plan.dart';
 import '../../planning/models/planned_day.dart';

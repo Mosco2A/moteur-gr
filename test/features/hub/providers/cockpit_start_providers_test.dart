@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
 import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 

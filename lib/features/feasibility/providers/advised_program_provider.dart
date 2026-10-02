@@ -34,7 +34,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../planning/providers/planning_provider.dart';
 import '../../trail/providers/stages_provider.dart';
 import '../../trek/providers/gps_providers.dart';

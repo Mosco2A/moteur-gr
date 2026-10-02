@@ -21,7 +21,7 @@ import '../../../safety/data/signalement_service.dart';
 import '../../../safety/providers/signalement_providers.dart';
 import '../../../trail/providers/pois_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
-import '../../domain/models/stage.dart';
+import '../../../../domain/stage.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Types de POI consideres comme un HEBERGEMENT d'etape (parite GR20 bloc

@@ -5,7 +5,7 @@ library;
 import 'package:gpx/gpx.dart';
 
 import '../../../core/geo/geo_utils.dart';
-import '../../trek/domain/models/stage.dart';
+import '../../../domain/stage.dart';
 import '../../trek/domain/models/track_point.dart';
 
 /// Parametres d'import GPX DERIVES du sentier actif (data-driven, zero hardcode).

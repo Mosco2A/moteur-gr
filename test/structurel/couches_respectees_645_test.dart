@@ -107,8 +107,13 @@ void main() {
         final cible = cibleDeLImport(f, imp, paquet);
         if (cible == null) continue;
 
-        // (a) le socle ne connait pas ses clients.
-        if ((zone == 'core' || zone == 'shared') &&
+        // (a) le socle ne connait pas ses clients. `domain` EST DU SOCLE
+        // depuis la voie A (lot 645-05) : c'est la maison des modeles que
+        // plusieurs features lisent, donc la couche la plus basse de
+        // toutes. L'y oublier aurait ouvert un angle mort exactement la ou
+        // ce lot deplace du code — un modele partage aurait pu importer une
+        // feature sans que rien ne rougisse.
+        if ((zone == 'core' || zone == 'shared' || zone == 'domain') &&
             cible.startsWith('lib/features/')) {
           socleVersFeature.add(Fleche(f, imp, cible));
         }

@@ -4,7 +4,7 @@ library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/models/stage.dart';
+import '../../../../core/models/stage_row.dart';
 
 part 'itinerary_day.freezed.dart';
 part 'itinerary_day.g.dart';

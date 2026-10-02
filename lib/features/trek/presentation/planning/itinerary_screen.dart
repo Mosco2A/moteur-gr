@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/engine/trail_engine.dart';
-import '../../../../core/models/stage.dart';
+import '../../../../core/models/stage_row.dart';
 import '../../../../core/models/stage_duration.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';

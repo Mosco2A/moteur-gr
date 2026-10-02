@@ -12,7 +12,7 @@ import '../../../../../i18n/translations.g.dart';
 import '../../../../map/widgets/poi_marker.dart';
 import '../../../../poi/domain/poi_type_config.dart';
 import '../../../../poi/domain/poi_type_label.dart';
-import '../../../domain/models/stage.dart';
+import '../../../../../domain/stage.dart';
 import '../marker_overlap.dart';
 import 'stage_markers_layer.dart';
 import '../../../../../core/branding/stepways_icons.dart';

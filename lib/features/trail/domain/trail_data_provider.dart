@@ -2,7 +2,7 @@
 /// substituer une autre source en test.
 library;
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/geo/track_point.dart';
 import '../../trek/domain/models/stage_accommodation.dart';

@@ -10,7 +10,7 @@ import '../../../core/data/daos/trail_stages_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/geo/trace_du_sentier.dart';
 import '../../../core/geo/track_point.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
 import '../domain/trail_data_provider.dart';
 

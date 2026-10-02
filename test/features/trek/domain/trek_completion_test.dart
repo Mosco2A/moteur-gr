@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
 
 /// Helper : cree une Stage minimale identifiee par [id] / [orderIndex].

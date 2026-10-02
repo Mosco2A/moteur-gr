@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/booking/domain/models/nuitee_type.dart';
 import 'package:moteur_gr/features/booking/providers/nuitee_selections_provider.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';

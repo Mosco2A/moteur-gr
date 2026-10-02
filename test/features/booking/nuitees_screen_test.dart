@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/daos/nuitee_selections_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/booking/domain/models/nuitee_type.dart';
 import 'package:moteur_gr/features/booking/presentation/nuitees_screen.dart';

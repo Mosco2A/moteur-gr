@@ -21,7 +21,7 @@
 /// - felicitations complet vs parcours partiel -> [TrekCongratulations].
 library;
 
-import 'models/stage.dart';
+import '../../../domain/stage.dart';
 
 /// Plan de marche resolu d'un trek : la sequence d'etapes **dans l'ordre de
 /// marche** + la direction choisie + le perimetre (parcours entier ou partiel).

@@ -42,7 +42,7 @@
 /// plafond du randonneur. L'ecran nomme cette etape (`hardStageAlert`).
 library;
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../planning/domain/planning_calculator.dart';
 import 'feasibility_formula.dart';
 import 'feasibility_program.dart';

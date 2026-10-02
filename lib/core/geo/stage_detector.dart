@@ -3,7 +3,7 @@
 library;
 
 import 'geo_utils.dart';
-import '../models/stage.dart';
+import '../models/stage_row.dart';
 
 /// Evenement de detection d'etape.
 ///
