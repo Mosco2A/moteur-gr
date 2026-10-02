@@ -1,3 +1,7 @@
+/// Langue, unites, theme : des valeurs extensibles plutot que des enums, pour
+/// qu'une preference inconnue se replie au lieu de casser.
+library;
+
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
