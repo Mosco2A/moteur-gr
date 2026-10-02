@@ -1,3 +1,7 @@
+/// Un membre et son groupe de position partagee, plafonne a deux suiveurs
+/// gratuits.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'group_member.freezed.dart';

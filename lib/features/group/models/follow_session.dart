@@ -1,3 +1,7 @@
+/// Une session que les proches rejoignent par un code de partage de six
+/// caracteres.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'follow_session.freezed.dart';
