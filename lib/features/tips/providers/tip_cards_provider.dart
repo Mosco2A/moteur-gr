@@ -1,3 +1,7 @@
+/// Les fiches du sentier ACTIF, disponibles en preparation comme en marche :
+/// socle commun et fiches propres reunies.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
