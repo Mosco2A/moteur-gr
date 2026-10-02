@@ -22,13 +22,6 @@ abstract class FeedbackCategory {
       values.contains(value) ? value : fallback;
 }
 
-/// Statuts possibles d'un feedback dans la file Drift.
-abstract class FeedbackStatus {
-  static const String pending = 'pending';
-  static const String sent = 'sent';
-  static const String failed = 'failed';
-}
-
 /// CE QUI EST REELLEMENT ARRIVE AU RETOUR DE L'UTILISATEUR (596 C1).
 ///
 /// L'appli ne savait dire que « oui » : `submitFeedback` rendait un booleen qui
