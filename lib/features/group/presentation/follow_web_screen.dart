@@ -75,7 +75,11 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   /// session expiree — arrivent ici comme un `sessionId` nul, et affichent le
   /// meme ecran « lien invalide » qu avant.
   Future<void> _startListening() async {
-    final depot = ref.read(suiviPublicDepotProvider);
+    // LE TYPE EST NOMME, ET CE N EST PAS DE LA DECORATION : c est la seule
+    // citation de `SuiviPublicDepot` hors de son propre fichier, et c est elle
+    // qui dit, a la lecture de l ecran, de quoi il depend desormais — un depot
+    // du groupe, pas Firestore.
+    final SuiviPublicDepot depot = ref.read(suiviPublicDepotProvider);
     try {
       final sessionId = await depot.resoudreSession(widget.shareCode);
       if (sessionId == null) {
