@@ -1,3 +1,7 @@
+/// La persistance des reservations, en cache local ET au serveur : le marcheur
+/// doit les relire sans reseau.
+library;
+
 // Service de persistence des reservations.
 //
 // Utilise Firestore (cloud) + SharedPreferences (cache local
