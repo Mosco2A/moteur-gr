@@ -1,3 +1,7 @@
+/// D'une entree de manifeste a un sentier affichable : le distant est la source
+/// de verite, le compile ne vient qu'apres, jamais a cote.
+library;
+
 import '../models/trail_manifest.dart';
 import 'trail_config.dart';
 

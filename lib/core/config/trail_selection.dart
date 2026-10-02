@@ -1,3 +1,7 @@
+/// Le sentier ACTIF, source de verite de la bascule : l'interface ecrit ici et
+/// toute la configuration en derive.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

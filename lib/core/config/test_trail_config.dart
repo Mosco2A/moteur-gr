@@ -1,3 +1,7 @@
+/// Un sentier entierement invente pour les tests : aucune correspondance avec
+/// un lieu reel.
+library;
+
 import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
