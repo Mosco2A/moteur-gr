@@ -1,3 +1,7 @@
+/// Le classement des erreurs en categories, pour qu'un ecran sache dire au
+/// marcheur ce qui s'est passe plutot qu'« une erreur ».
+library;
+
 import 'package:logger/logger.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 2));
