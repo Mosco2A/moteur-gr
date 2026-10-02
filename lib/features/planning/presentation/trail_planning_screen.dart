@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../../hub/providers/cockpit_start_providers.dart';
@@ -196,12 +197,12 @@ class TrailPlanningScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Center(
-              child: TextButton(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                label: t.programme.info.close,
+                labelFontSize: 16,
+                isFullWidth: false,
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(
-                  t.programme.info.close,
-                  style: const TextStyle(fontSize: 16),
-                ),
               ),
             ),
           ],
@@ -401,15 +402,18 @@ class _PlanningContent extends ConsumerWidget {
         if (notifier.hasManualRestDays)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.rafraichir,
+              iconSize: 18,
+              label: t.programme.replanButton,
               onPressed: () => _showReplanConfirmation(context, ref),
-              icon: const StepIcon(StepwaysIcons.rafraichir, size: 18),
-              label: Text(t.programme.replanButton),
             ),
           ),
         Padding(
           padding: const EdgeInsets.all(AppTheme.spacingLg),
-          child: ElevatedButton(
+          child: AppButton(
+            label: t.programme.validateNext,
             // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme. Le
             // flux de preparation est ORDONNE : Programme -> Dates -> cockpit.
             // « Valider » AVANCE donc vers le choix des dates (push /calendar) au
@@ -418,7 +422,6 @@ class _PlanningContent extends ConsumerWidget {
             // calendrier, « Valider les dates » clot le sous-flux en retournant
             // au cockpit (voir calendar_screen.dart) : aucun retour circulaire.
             onPressed: () => context.push('/trail/$trailId/calendar'),
-            child: Text(t.programme.validateNext),
           ),
         ),
       ],
@@ -432,18 +435,20 @@ class _PlanningContent extends ConsumerWidget {
         title: Text(t.programme.replanDialog.title),
         content: Text(t.programme.replanDialog.message),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.programme.replanDialog.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(t.programme.replanDialog.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: t.programme.replanDialog.confirm,
             onPressed: () {
               Navigator.pop(ctx);
               ref
                   .read(plannedDaysProvider(trailId).notifier)
                   .regeneratePreservingRestDays();
             },
-            child: Text(t.programme.replanDialog.confirm),
           ),
         ],
       ),
@@ -1109,10 +1114,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.programme.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const StepIcon(StepwaysIcons.itineraire),
-              label: Text(t.programme.empty.action),
             ),
           ],
         ),
