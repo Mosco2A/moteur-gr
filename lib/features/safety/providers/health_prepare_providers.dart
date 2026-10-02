@@ -1,3 +1,7 @@
+/// La fiche medicale devient un sujet de PREPARATION : on ne part pas sans
+/// l'avoir remplie, elle n'est plus un ecran de terrain cache.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

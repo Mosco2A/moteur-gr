@@ -1,3 +1,7 @@
+/// Le cablage des pieces de securite, dont le titre de notification tire du
+/// sentier actif plutot que d'une chaine ecrite en dur.
+library;
+
 // E5.20a — Providers du module securite.
 //
 // Branche les services securite sur Riverpod :
