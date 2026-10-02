@@ -1,3 +1,7 @@
+/// L'amorce de l'application : initialisations, portee Riverpod, et la porte
+/// qui attend que l'amorce soit resolue avant d'afficher une route.
+library;
+
 import 'dart:async';
 
 import 'package:country_picker/country_picker.dart';
