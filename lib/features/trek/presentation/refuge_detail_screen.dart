@@ -10,7 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../domain/models/stage_accommodation.dart';
+import '../../../domain/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
 import 'accommodation_type_ui.dart';
 import '../../trail/providers/trail_providers.dart';

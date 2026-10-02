@@ -15,7 +15,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../../shared/widgets/lien_vers_les_cartes.dart';
-import '../../trek/domain/models/stage_accommodation.dart';
+import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

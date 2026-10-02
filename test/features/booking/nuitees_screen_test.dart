@@ -17,7 +17,7 @@ import 'package:moteur_gr/features/trail/domain/trail_data_provider.dart';
 import 'package:moteur_gr/features/trail/providers/trail_providers.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/geo/trace_point.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
+import 'package:moteur_gr/domain/stage_accommodation.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 

@@ -10,7 +10,7 @@ import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trail/data/drift_trail_data_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
+import 'package:moteur_gr/domain/stage_accommodation.dart';
 import 'package:moteur_gr/features/trail/domain/trail_data_provider.dart';
 import 'package:moteur_gr/features/trail/providers/trail_providers.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
+import 'package:moteur_gr/domain/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/presentation/refuge_detail_screen.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
