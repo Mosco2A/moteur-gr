@@ -1,3 +1,7 @@
+/// L'apercu avant partage, le choix du gabarit, puis le partage par le menu du
+/// systeme.
+library;
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
