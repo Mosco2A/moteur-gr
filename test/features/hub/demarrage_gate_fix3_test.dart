@@ -7,6 +7,7 @@ import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
 import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// FIX-3 — NON-REGRESSION DU GATE DE DEMARRAGE (« Démarrer la randonnée »).
@@ -72,11 +73,18 @@ void main() {
     );
   }
 
-  /// Le [FilledButton] du CTA. `onPressed == null` = grise (gate fermee).
-  FilledButton cta(WidgetTester tester) => tester.widget<FilledButton>(
+  /// L'[AppButton] du CTA. `onPressed == null` = grise (gate fermee).
+  ///
+  /// CE QUE CE TEST CHERCHAIT AVANT (tache 645-03) : un `FilledButton`. Le CTA
+  /// passe depuis par le composant unique, qui peint sa variante `filledTone`
+  /// avec un `ElevatedButton` : le type a change, le COMPORTEMENT mesure ici
+  /// (grise ou actif) pas d'un cran. On interroge donc `AppButton`, c'est-a-dire
+  /// le composant que l'ecran appelle vraiment — plus stable que la forme
+  /// Material qu'il choisit en interne.
+  AppButton cta(WidgetTester tester) => tester.widget<AppButton>(
     find.ancestor(
       of: find.text(t.hub.startCta),
-      matching: find.byType(FilledButton),
+      matching: find.byType(AppButton),
     ),
   );
 

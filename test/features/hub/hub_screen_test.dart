@@ -18,6 +18,7 @@ import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
 import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 
@@ -735,10 +736,13 @@ void main() {
       // Etat de test : aucune etape coeur faite (prefs vides) + pas de date ->
       // gate `prepareCoreDoneProvider` fermee -> bouton DESACTIVE (onPressed null)
       // et message d'aide affiche.
-      final button = tester.widget<FilledButton>(
+      // Tache 645-03 : le CTA passe par le composant unique (`AppButton`,
+      // variante `filledTone`). On interroge donc `AppButton` et plus le
+      // `FilledButton` d'avant — le type a change, l'etat grise/actif non.
+      final button = tester.widget<AppButton>(
         find.ancestor(
           of: find.text(t.hub.startCta),
-          matching: find.byType(FilledButton),
+          matching: find.byType(AppButton),
         ),
       );
       expect(button.onPressed, isNull);
