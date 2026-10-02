@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
@@ -135,7 +136,12 @@ class _SuggestionRow extends ConsumerWidget {
               ],
             )
           else
-            TextButton.icon(
+            AppButton(
+              variant: AppButtonVariant.text,
+              icon: StepwaysIcons.plus,
+              iconSize: 18,
+              label: t.checklist.seasonalAdd,
+              isFullWidth: false,
               onPressed: () => ref
                   .read(checklistProvider.notifier)
                   .addSuggestedItem(
@@ -143,8 +149,6 @@ class _SuggestionRow extends ConsumerWidget {
                     name: name,
                     weightGrams: item.weightGrams,
                   ),
-              icon: const StepIcon(StepwaysIcons.plus, size: 18),
-              label: Text(t.checklist.seasonalAdd),
             ),
         ],
       ),
