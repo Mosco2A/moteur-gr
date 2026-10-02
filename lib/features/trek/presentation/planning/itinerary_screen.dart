@@ -9,6 +9,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../hub/providers/cockpit_start_providers.dart';
@@ -260,7 +261,11 @@ class _DirectionControl extends ConsumerWidget {
           // l'autre code declare par le sentier.
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.inverser,
+              iconSize: 18,
+              label: t.itinerary.direction.reverse,
               onPressed: forward == null
                   ? null
                   : () {
@@ -274,8 +279,6 @@ class _DirectionControl extends ConsumerWidget {
                       );
                       ref.read(selectedDirectionProvider.notifier).state = next;
                     },
-              icon: const StepIcon(StepwaysIcons.inverser, size: 18),
-              label: Text(t.itinerary.direction.reverse),
             ),
           ),
         ],
