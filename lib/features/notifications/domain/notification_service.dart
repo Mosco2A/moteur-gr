@@ -1,3 +1,7 @@
+/// L'envoi et la planification des notifications, avec des identifiants FIXES :
+/// une seule alerte a la fois par sujet.
+library;
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
 import 'package:timezone/timezone.dart' as tz;
