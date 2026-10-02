@@ -3,7 +3,7 @@
 library;
 
 import 'geo_utils.dart';
-import 'track_point.dart';
+import 'trace_point.dart';
 
 /// Algorithme de simplification de trace Douglas-Peucker.
 ///

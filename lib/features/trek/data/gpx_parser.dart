@@ -5,7 +5,7 @@ library;
 import 'package:gpx/gpx.dart';
 
 import '../../../core/geo/geo_utils.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 
 /// Metadata extraites de l'en-tete GPX.
 class GpxMetadata {

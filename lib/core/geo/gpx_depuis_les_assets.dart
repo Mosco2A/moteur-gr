@@ -5,7 +5,7 @@ library;
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../features/trek/data/gpx_parser.dart' as trek_gpx;
-import 'track_point.dart';
+import 'trace_point.dart';
 
 // Re-export les nouveaux types pour les usages existants
 export '../../features/trek/data/gpx_parser.dart'

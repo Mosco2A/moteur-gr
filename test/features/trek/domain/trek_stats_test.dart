@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 import 'package:moteur_gr/features/trek/domain/trek_stats.dart';
 
 /// Tests de TrekStats — calcul temps reel des statistiques de trek.

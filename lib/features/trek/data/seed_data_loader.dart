@@ -16,7 +16,7 @@ import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
 import '../../../core/data/seed/trail_seeder.dart';
-import '../domain/models/track_point.dart' as trek;
+import '../../../domain/track_point.dart' as trek;
 import 'gpx_parser.dart';
 import '../../../features/tips/domain/models/tip_card.dart';
 

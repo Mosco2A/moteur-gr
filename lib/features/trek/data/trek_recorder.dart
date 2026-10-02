@@ -5,7 +5,7 @@ library;
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
-import '../domain/models/track_point.dart';
+import '../../../domain/track_point.dart';
 import '../domain/models/trek_session.dart';
 
 /// Callback pour persister un batch de TrackPoints en Drift.

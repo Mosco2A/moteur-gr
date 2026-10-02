@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/douglas_peucker.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 
 void main() {
   group('DouglasPeucker', () {

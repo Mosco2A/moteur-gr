@@ -6,7 +6,7 @@ import '../../../core/geo/geo_utils.dart';
 // Simplificateur Douglas-Peucker cote trek (opere sur le `TrackPoint` trek,
 // lat/lng/elevation). Alias pour lever l'homonymie avec core/geo/douglas_peucker.
 import '../../trek/data/track_simplifier.dart' as trek_simplifier;
-import '../../trek/domain/models/track_point.dart';
+import '../../../domain/track_point.dart';
 
 /// Resultat du calcul d'effort IBP depuis un trace GPX.
 class IbpResult {

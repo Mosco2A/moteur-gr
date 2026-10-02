@@ -4,7 +4,7 @@ library;
 
 import '../../../core/models/stage_row.dart';
 import '../../../core/config/trail_config.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
 
 /// Interface abstraite pour l'acces aux donnees d'un sentier.

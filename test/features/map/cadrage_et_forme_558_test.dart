@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/map/domain/stage_focus.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';

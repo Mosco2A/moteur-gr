@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/feasibility/domain/ibp_calculator.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 
 /// Construit une trace lineaire (meme longitude) de [n] points espaces de
 /// [stepMeters] en latitude, avec un gain d'altitude [gainPerStep] par pas.

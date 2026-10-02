@@ -10,7 +10,7 @@ import '../data/database.dart';
 import '../providers/database_provider.dart';
 import 'geo_utils.dart';
 import 'gpx_depuis_les_assets.dart';
-import 'track_point.dart';
+import 'trace_point.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 

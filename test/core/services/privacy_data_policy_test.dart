@@ -13,7 +13,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/core/services/privacy_data_policy.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 
 void main() {
   group('PrivacyDataPolicy.aggregateTrace — D4B-01', () {

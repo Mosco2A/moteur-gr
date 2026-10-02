@@ -5,7 +5,7 @@ library;
 import 'dart:math';
 
 import 'geo_utils.dart';
-import 'track_point.dart';
+import 'trace_point.dart';
 
 /// Résultat de la projection d'un point GPS sur le tracé.
 ///

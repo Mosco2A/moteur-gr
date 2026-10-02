@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';

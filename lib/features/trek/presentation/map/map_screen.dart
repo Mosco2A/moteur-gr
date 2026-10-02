@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
-import '../../../../core/geo/track_point.dart';
+import '../../../../core/geo/trace_point.dart';
 import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../core/services/monetization_service.dart';

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/douglas_peucker.dart';
 import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 
 /// Tests du provider simplifiedTrackProvider.
 ///

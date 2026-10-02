@@ -6,7 +6,7 @@ import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trail/data/drift_trail_data_provider.dart';

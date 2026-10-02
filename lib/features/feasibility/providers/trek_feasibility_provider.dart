@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/models/stage_row.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
