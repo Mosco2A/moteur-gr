@@ -1,3 +1,7 @@
+/// Hors rando il n'existe pas d'« etape du jour » : on montre la premiere
+/// etape, et ce choix est surchargeable sans toucher aux ecrans.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

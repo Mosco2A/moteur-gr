@@ -1,3 +1,7 @@
+/// Croise le programme, la date de depart et la meteo par etape : le temps la
+/// ou le marcheur sera, le jour ou il y sera.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/stage.dart';

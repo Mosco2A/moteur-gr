@@ -1,3 +1,7 @@
+/// Le cablage de la meteo : les coordonnees viennent des etapes en base, et les
+/// previsions passent par le cache a TTL.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
