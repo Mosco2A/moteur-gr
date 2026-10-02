@@ -1,3 +1,7 @@
+/// Dire explicitement que le mode est local, a la place des formulaires cloud
+/// qui ne pourraient que echouer.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../i18n/translations.g.dart';
