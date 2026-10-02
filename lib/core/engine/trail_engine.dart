@@ -1,3 +1,7 @@
+/// Le point d'entree UNIQUE vers la configuration du sentier actif : theme,
+/// navigation et GPS la lisent ici, jamais ailleurs.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/trail_config.dart';
