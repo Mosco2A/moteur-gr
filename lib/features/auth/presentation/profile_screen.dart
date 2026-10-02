@@ -594,11 +594,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               spacing: AppTheme.spacingSm,
               runSpacing: AppTheme.spacingXs,
               children: [
-                TextButton(
+                AppButton(
+                  variant: AppButtonVariant.text,
+                  label: i18n.auth.cancel,
+                  isFullWidth: false,
                   onPressed: () {
                     setState(() => _isEditingPseudo = false);
                   },
-                  child: Text(i18n.auth.cancel),
                 ),
                 // SW-SKIN-L3e : ElevatedButton -> AppButton primary.
                 // isFullWidth:false pour rester dans la rangee d'actions
@@ -672,9 +674,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(i18n.auth.signOutConfirm),
         content: Text(i18n.auth.signOutMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: i18n.auth.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(context),
-            child: Text(i18n.auth.cancel),
           ),
           // SW-SKIN-L3e : ElevatedButton -> AppButton primary, isFullWidth:false
           // (action de dialogue, aux cotes du TextButton Annuler laisse tel quel).
@@ -698,9 +702,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(i18n.auth.deleteConfirm),
         content: Text(i18n.auth.deleteMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: i18n.auth.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(context),
-            child: Text(i18n.auth.cancel),
           ),
           // SW-SKIN-L3e : ElevatedButton a fond rouge -> AppButton filledTone
           // (fond plein = rougeUrgence, texte blanc). Conserve la couleur
