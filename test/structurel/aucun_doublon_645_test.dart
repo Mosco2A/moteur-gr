@@ -56,18 +56,36 @@
 // deux series de tests sans renommer un parametre dans un test existant ;
 // `gpx_parser` est une facade `rootBundle` devant un parseur en Dart PUR dont
 // `dart run tool/publier_sentier.dart` depend — les reunir casse l'outil de
-// publication, c'est mesure. Cette garde ne demande donc pas de reparer —
-// seulement de ne pas AJOUTER un quatrieme doublon en attendant.
+// publication, c'est mesure.
+//
+// SECOND DOUBLON RESORBE LE 02/10/2026, PAR LE LOT 645-11, ET C'EST POURQUOI LE
+// PLAFOND TOMBE A 2 : `gpx_parser.dart`. Christophe a tranche ARB-645-04-c le
+// 02/10/2026 a 21:28 — option (a) : on ne reunit PAS les deux fichiers, puisque
+// la mesure dit que les reunir casse l'outil de publication ; on RENOMME la
+// facade pour qu'elle dise ce qu'elle est. `lib/core/geo/gpx_parser.dart` est
+// devenu `lib/core/geo/gpx_depuis_les_assets.dart`, et sa classe `GpxParser`
+// est devenue `GpxDepuisLesAssets`. Le nom en double disparait sans qu'un seul
+// type soit fusionne, et « qu'est-ce qui lit un GPX » n'a plus qu'une reponse :
+// le parseur de `features/trek/data/`, que la facade appelle pour les assets.
+// Ce renommage a demande la levee explicite et limitee, par Christophe, de la
+// regle « aucun test reecrit » : quatre fichiers de test citent la classe, et
+// dans les quatre, seuls le nom de classe et le chemin d'import ont change —
+// aucune attente, aucune valeur, aucun nom de parametre.
+//
+// IL EN RESTE DEUX, `stage.dart` et `track_point.dart`, et ils attendent
+// toujours ARB-645-04-a et ARB-645-04-b. Cette garde ne demande donc pas de
+// reparer — seulement de ne pas AJOUTER un troisieme doublon en attendant.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
 
-/// Mesure du 02/10/2026, tete 0310fa9b, APRES le lot 645-04 : 3 noms de
-/// fichier en double dans `lib/` (`gpx_parser.dart`, `stage.dart`,
-/// `track_point.dart`). `tracking_overlay.dart` a ete resorbe.
-const plafondNomsEnDouble = 3;
+/// Mesure du 02/10/2026, APRES le lot 645-11 : 2 noms de fichier en double dans
+/// `lib/` (`stage.dart`, `track_point.dart`). `tracking_overlay.dart` a ete
+/// resorbe par le lot 645-04 ; `gpx_parser.dart` l'a ete par le lot 645-11, en
+/// execution de la decision de Christophe du 02/10/2026 21:28 sur ARB-645-04-c.
+const plafondNomsEnDouble = 2;
 
 /// Mesure du 02/10/2026, tete 0310fa9b : UN seul fichier de `lib/` n'a pour
 /// tout role que d'afficher une attente (`core/ui/loading_view.dart`).
@@ -153,7 +171,7 @@ void main() {
       // annonce. On verifie donc l IDENTITE, pas seulement le nombre.
       expect(
         enDouble.keys.toList(),
-        <String>['gpx_parser.dart', 'stage.dart', 'track_point.dart'],
+        <String>['stage.dart', 'track_point.dart'],
         reason:
             'LA LISTE DES DOUBLONS A CHANGE. Si vous en avez RESORBE un, '
             'baissez `plafondNomsEnDouble` et retirez-le de cette liste : '

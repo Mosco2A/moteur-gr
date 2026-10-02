@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/geo/gpx_parser.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 
 void main() {
-  group('GpxParser', () {
+  group('GpxDepuisLesAssets', () {
     late String gpxContent;
 
     setUp(() {
@@ -15,12 +15,12 @@ void main() {
     });
 
     test('parse le fichier test et retourne 27 points', () {
-      final points = GpxParser.parseFromString(gpxContent);
+      final points = GpxDepuisLesAssets.parseFromString(gpxContent);
       expect(points.length, equals(27));
     });
 
     test('premier point a les bonnes coordonnees', () {
-      final points = GpxParser.parseFromString(gpxContent);
+      final points = GpxDepuisLesAssets.parseFromString(gpxContent);
       final first = points.first;
 
       expect(first.lat, closeTo(45.5000, 0.001));
@@ -30,7 +30,7 @@ void main() {
     });
 
     test('dernier point a des coordonnees coherentes', () {
-      final points = GpxParser.parseFromString(gpxContent);
+      final points = GpxDepuisLesAssets.parseFromString(gpxContent);
       final last = points.last;
 
       expect(last.lat, closeTo(45.6900, 0.001));
@@ -41,7 +41,7 @@ void main() {
     });
 
     test('distances cumulees strictement croissantes', () {
-      final points = GpxParser.parseFromString(gpxContent);
+      final points = GpxDepuisLesAssets.parseFromString(gpxContent);
 
       for (var i = 1; i < points.length; i++) {
         expect(
@@ -60,7 +60,7 @@ void main() {
   <metadata><name>Vide</name></metadata>
 </gpx>
 ''';
-      final points = GpxParser.parseFromString(emptyGpx);
+      final points = GpxDepuisLesAssets.parseFromString(emptyGpx);
       expect(points, isEmpty);
     });
   });

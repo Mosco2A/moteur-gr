@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 import '../data/database.dart';
 import '../providers/database_provider.dart';
 import 'geo_utils.dart';
-import 'gpx_parser.dart';
+import 'gpx_depuis_les_assets.dart';
 import 'track_point.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -86,7 +86,7 @@ class LecteurDeTrace {
     required AppDatabase db,
     Future<List<TrackPoint>> Function(String chemin)? lireLAsset,
   }) : _db = db,
-       _lireLAsset = lireLAsset ?? GpxParser.parseFromAsset;
+       _lireLAsset = lireLAsset ?? GpxDepuisLesAssets.parseFromAsset;
 
   final AppDatabase _db;
 
