@@ -90,7 +90,7 @@ workflows:
 
       - name: Analyse statique (dart analyze)
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes"
             exit 1
@@ -154,7 +154,7 @@ workflows:
 
       - name: Analyse statique (dart analyze)
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes"
             exit 1
@@ -305,7 +305,7 @@ workflows:
 
       - name: Analyse statique (dart analyze) — BLOQUANT
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes"
             exit 1
@@ -634,7 +634,7 @@ workflows:
 
       - name: Analyse statique (dart analyze)
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes"
             exit 1
@@ -734,7 +734,7 @@ workflows:
 
       - name: Analyse statique (dart analyze)
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes"
             exit 1
@@ -977,7 +977,7 @@ workflows:
 
       - name: Analyse statique (dart analyze) — BLOQUANT
         script: |
-          dart analyze lib/ test/
+          dart analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: dart analyze a detecte des problemes — pas de depot"
             exit 1

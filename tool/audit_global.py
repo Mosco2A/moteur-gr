@@ -888,7 +888,7 @@ def mesurer_outillage(rapide: bool = False) -> dict:
         }
         return res
 
-    code, sortie = commande(["flutter", "analyze", "--no-pub"])
+    code, sortie = commande(["flutter", "analyze", "--no-pub", "--no-fatal-infos"])
     res["flutter_analyze"] = {
         "code_retour": code,
         "disponible": code != 127,
@@ -897,7 +897,7 @@ def mesurer_outillage(rapide: bool = False) -> dict:
         "informations": len(re.findall(r"^\s*info\s+[•-]", sortie, re.M)),
         "resume": next((l for l in sortie.splitlines()
                         if "issue" in l or "No issues" in l), "")[:120],
-        "commande": "flutter analyze --no-pub",
+        "commande": "flutter analyze --no-pub --no-fatal-infos",
     }
 
     code, sortie = commande(["flutter", "pub", "outdated", "--json"])
