@@ -1,3 +1,7 @@
+/// La seule porte qui a besoin de rootBundle, devant le parseur en Dart pur :
+/// c'est cette couture qui laisse vivre l'outil de publication.
+library;
+
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../features/trek/data/gpx_parser.dart' as trek_gpx;
