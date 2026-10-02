@@ -1,3 +1,7 @@
+/// Les pages d'accueil du premier lancement, avec leurs hauteurs reservees pour
+/// que le bouton ne saute pas d'une page a l'autre.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
