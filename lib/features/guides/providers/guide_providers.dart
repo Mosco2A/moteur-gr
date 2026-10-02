@@ -1,3 +1,7 @@
+/// L'ouverture d'un lien sortant, derriere une abstraction injectable :
+/// StepWays FACILITE, il ne vend rien.
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
