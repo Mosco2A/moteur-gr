@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/routing/home_location_provider.dart';
 import '../../i18n/translations.g.dart';
 import '../../core/branding/stepways_icons.dart';
+import 'app_button.dart';
 
 /// En-tete universel de navigation StepWays (LOT 3 — refonte nav hub-and-push).
 ///
@@ -107,13 +108,17 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
         title: Text(t.navPilote.exitTitle),
         content: Text(t.navPilote.exitMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.exitCancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.navPilote.exitCancel),
           ),
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.exitConfirm,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.navPilote.exitConfirm),
           ),
         ],
       ),
