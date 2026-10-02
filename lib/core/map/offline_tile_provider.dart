@@ -1,3 +1,7 @@
+/// Choisit la source des tuiles : le fichier local s'il existe, le reseau sinon
+/// — l'ecran de carte n'a pas a connaitre la difference.
+library;
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_mbtiles/flutter_map_mbtiles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
