@@ -1,3 +1,7 @@
+/// Le verdict de faisabilite : un score sur 100, un nombre de jours conseille,
+/// des avertissements, et en groupe l'index du pire profil.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feasibility_result.freezed.dart';

@@ -1,3 +1,7 @@
+/// Une etape vue de trek, avec ses noms en cinq langues et sa duree en
+/// SECONDES. Autre type que le StageModel du socle (ARB-645-04-a).
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'stage.freezed.dart';

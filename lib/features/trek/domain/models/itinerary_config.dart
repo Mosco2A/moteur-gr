@@ -1,3 +1,7 @@
+/// Ce que le marcheur impose a sa planification : kilometres et heures maximum
+/// par jour, date de depart, niveau visee.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'itinerary_config.freezed.dart';
