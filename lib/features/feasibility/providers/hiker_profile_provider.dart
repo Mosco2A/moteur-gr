@@ -1,3 +1,7 @@
+/// Le profil charge depuis sa source durable au premier acces, puis tenu en
+/// memoire : la faisabilite et la fiche le partagent.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/hiker_profile_repository.dart';

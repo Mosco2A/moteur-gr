@@ -1,3 +1,7 @@
+/// Les phases du test de six minutes et leur chrono : un etat immuable, pour
+/// que l'ecran ne puisse pas en inventer un intermediaire.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
