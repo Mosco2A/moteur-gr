@@ -32,6 +32,7 @@ class AppButton extends StatelessWidget {
     this.icon,
     this.isFullWidth = true,
     this.tone,
+    this.labelFontSize,
     this.iconSize = 20,
     this.minHeight = 48,
   });
@@ -64,6 +65,23 @@ class AppButton extends StatelessWidget {
   /// `null` => couleur du theme (primary). Ignore pour primary/secondary
   /// (fonds pleins geres au theme).
   final Color? tone;
+
+  /// Taille de police du libelle, quand l'appel doit s'ecarter de la
+  /// typographie que le bouton tient du theme. `null` (defaut) = le bouton
+  /// decide, comme avant.
+  ///
+  /// POURQUOI CE PARAMETRE EXISTE (tache 645-03). Cinq boutons du parc
+  /// ecrivaient leur libelle dans une taille choisie sur place : les « J'ai
+  /// compris » de feuille d'information en 16, le « Appeler » d'une nuitee en
+  /// 14, l'« Annuler » du dialogue SOS en 15. Les ramener ici sans ce
+  /// parametre aurait change la taille de leur texte — une correction
+  /// d'apparence, pas un deplacement.
+  ///
+  /// SEULE LA TAILLE PASSE PAR ICI, et c'est voulu : le reste de la
+  /// typographie (graisse, famille, couleur) reste la decision du bouton et du
+  /// theme. Un libelle qui demande plus que sa taille n'a pas sa place dans un
+  /// parametre : c'est le signe que l'ecran veut un autre composant.
+  final double? labelFontSize;
 
   /// Taille du dessin de l'icone, en pixels (defaut 20px).
   ///
@@ -114,7 +132,15 @@ class AppButton extends StatelessWidget {
               // interne quand le bouton est etroit et le texte long (ex.
               // textScale 2x sur ecran 360px, cartes catalogue) — SW-SKIN-L3e.
               // Sans effet quand le texte tient : la Row reste `min`.
-              Flexible(child: Text(label, textAlign: TextAlign.center)),
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: labelFontSize == null
+                      ? null
+                      : TextStyle(fontSize: labelFontSize),
+                ),
+              ),
             ],
           );
     final minSize = isFullWidth

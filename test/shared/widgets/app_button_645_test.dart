@@ -4,7 +4,7 @@
 // besoins du parc n'etaient pas exprimables par les 8 parametres d'alors ; la
 // regle R2 du lot dit quoi faire dans ce cas : porter le besoin DANS le
 // composant, en parametre nomme a valeur par defaut, jamais en cas particulier
-// chez l'appelant. D'ou la variante `text` et `iconSize`.
+// chez l'appelant. D'ou la variante `text`, `iconSize` et `labelFontSize`.
 //
 // CES TESTS TIENNENT DEUX PROMESSES :
 //
@@ -236,6 +236,31 @@ void main() {
       );
 
       expect(tester.getSize(find.byType(StepIcon)), const Size(20, 20));
+    });
+  });
+  group('645-03 — `labelFontSize`', () {
+    testWidgets('ecrit le libelle dans la taille demandee', (tester) async {
+      await _poser(
+        tester,
+        AppButton(
+          label: 'J ai compris',
+          onPressed: () {},
+          variant: AppButtonVariant.text,
+          labelFontSize: 16,
+        ),
+      );
+
+      expect(
+        tester.widget<Text>(find.text('J ai compris')).style?.fontSize,
+        16,
+      );
+    });
+
+    testWidgets('sans rien demander, le libelle ne porte AUCUN style a lui : '
+        'la typographie reste celle du bouton et du theme', (tester) async {
+      await _poser(tester, AppButton(label: 'Valider', onPressed: () {}));
+
+      expect(tester.widget<Text>(find.text('Valider')).style, isNull);
     });
   });
   group('645-03 — ce que les 94 appels existants mesuraient deja', () {
