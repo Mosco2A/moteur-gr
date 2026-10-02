@@ -32,7 +32,15 @@ import 'mesure_des_sources_645.dart';
 
 /// Mesure du 02/10/2026, tete 147ca32d : 153 appels de bouton brut hors des
 /// deux zones legitimes.
-const plafondBoutonsBruts = 153;
+///
+/// LE PLAFOND DESCEND, FICHIER PAR FICHIER (tache 645-03). Chaque fichier
+/// ramene sur `AppButton` abaisse ce nombre dans le MEME commit que lui : un
+/// ecart visuel sur un ecran se defait alors seul, sans rendre les autres
+/// fichiers du lot irreprochables en silence. Il ne remonte jamais.
+///
+/// Dernier abaissement : 02/10/2026 — 140, apres
+/// lib/features/checklist/presentation/checklist_screen.dart.
+const plafondBoutonsBruts = 140;
 
 /// Les quatre boutons nommes par ECR-19.
 const boutonsStricts = <String>[
