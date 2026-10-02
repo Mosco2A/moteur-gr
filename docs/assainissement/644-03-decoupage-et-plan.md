@@ -441,6 +441,13 @@ SORTIS du lot avec leur raison (regle R3), nouveau plafond, resultat des 4
 commandes de gate, et ou sont les captures.
 ```
 
+**ARB-645-03 (Christophe, 02/10/2026 18:01)** : la hauteur 48 dp et les coins
+arrondis 12 dp du composant unique AppButton sont LA norme des boutons, y
+compris le bouton Demarrer la randonnee (fin du stade) et les boutons convertis
+depuis le theme (fin des 52 dp). Le rendu strictement identique n etait pas
+exige pour ce lot. Les minHeight 52 explicites herites des lots SW-SKIN seront
+alignes dans un lot ulterieur. Lot 645-03 fusionne en 0310fa9b.
+
 ---
 
 ### 645-04 — Résorber les quatre doublons
