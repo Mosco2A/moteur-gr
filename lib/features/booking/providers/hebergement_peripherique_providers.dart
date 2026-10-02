@@ -1,3 +1,7 @@
+/// Le lancement d'un lien sortant passe par une abstraction, pour que les tests
+/// verifient l'URL demandee sans ouvrir de navigateur.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
