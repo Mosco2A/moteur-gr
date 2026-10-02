@@ -1,3 +1,7 @@
+/// Le partage de position en groupe, avec ses deux modes — a heure fixe, ou a
+/// l'arrivee au refuge.
+library;
+
 import 'dart:async';
 import 'dart:math';
 

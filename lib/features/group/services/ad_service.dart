@@ -1,3 +1,7 @@
+/// Deux suiveurs sont gratuits ; a partir du troisieme, c'est la publicite qui
+/// paie le partage.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
