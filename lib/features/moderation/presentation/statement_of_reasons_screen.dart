@@ -1,3 +1,7 @@
+/// L'expose des motifs rendu a l'auteur d'un contenu restreint (DSA art. 17),
+/// immuable et sans donnee nominative directe.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/services/moderation_service.dart';
