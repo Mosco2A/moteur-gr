@@ -1,3 +1,7 @@
+/// Les SEPT familles de donnees d'un sentier et leur ordre : ce sont les clefs
+/// du fichier monolithe, les changer ici casserait la copie.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../data/revision_de_donnee.dart';

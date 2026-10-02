@@ -1,3 +1,7 @@
+/// L'ECART et rien d'autre : « je suis a telle revision, le sentier est publie
+/// a telle autre ». Ce qui descend se lit ensuite a la source.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../data/revision_de_donnee.dart';

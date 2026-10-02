@@ -1,3 +1,7 @@
+/// Un point d'interet immutable, dont le TYPE est un String extensible : c'est
+/// PoiTypeConfig qui lui donne son icone et sa couleur.
+library;
+
 import 'package:drift/drift.dart' show Value;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
