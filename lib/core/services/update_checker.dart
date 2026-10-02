@@ -1,3 +1,7 @@
+/// Detection d'une mise a jour cote Firestore, en amont du calcul de delta : il
+/// dit QU'IL y a du neuf, pas ce qu'il faut descendre.
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';

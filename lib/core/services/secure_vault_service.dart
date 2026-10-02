@@ -1,3 +1,7 @@
+/// Chiffrement authentifie AES-GCM d'un blob JSON dans une enveloppe
+/// versionnee, avec la cle derivee du secret du marcheur par PBKDF2.
+library;
+
 import 'dart:convert';
 import 'dart:typed_data';
 

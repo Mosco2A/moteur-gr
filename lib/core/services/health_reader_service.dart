@@ -1,3 +1,7 @@
+/// Lecture seule de la montre deja portee par le marcheur (HealthKit / Health
+/// Connect) : ni app montre proprietaire, ni ecriture.
+library;
+
 import 'package:health/health.dart';
 
 import '../error/error_handler.dart';

@@ -1,3 +1,7 @@
+/// Ce qui REVEILLE la synchronisation — retour du reseau, puis toutes les
+/// quatre heures : avant, deux horloges existaient sans appelant.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

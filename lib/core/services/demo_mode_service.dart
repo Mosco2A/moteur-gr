@@ -1,3 +1,7 @@
+/// Limites appliquees a tout sentier non achete — carte visible, GPS coupe,
+/// carnet en lecture seule — quel que soit le statut du compte.
+library;
+
 // E5.18 — Service mode demo universel.
 //
 // Le mode demo s'applique a TOUT trek non achete, quel que soit

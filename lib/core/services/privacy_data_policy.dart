@@ -1,3 +1,7 @@
+/// Regle transverse de minimisation : la trace GPS fine ne monte jamais au
+/// serveur quand seul le resultat sert la finalite (art. 5.1.c).
+library;
+
 // D4B-01 — Politique transverse de MINIMISATION des donnees (design D4 CORDO
 // #86166, CNIL reco mars 2025 A4-2).
 //

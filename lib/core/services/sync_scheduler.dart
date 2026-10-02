@@ -1,3 +1,7 @@
+/// Montee en base des saisies du telephone, reveillee pour de vrai : avant,
+/// cette horloge-ci n'avait aucun appelant dans tout lib/.
+library;
+
 import "dart:async";
 
 import "package:drift/drift.dart" show TableUpdateQuery;

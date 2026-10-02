@@ -1,3 +1,7 @@
+/// La forme exacte du fichier de sentier, reduite aux enregistrements plus
+/// recents que le repere du telephone : la pose n'a pas a changer.
+library;
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;

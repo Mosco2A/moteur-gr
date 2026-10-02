@@ -1,3 +1,7 @@
+/// Le premier repere de revision, celui qu'aucun geste ne posait : sans lui, la
+/// cadence de quatre heures ne voyait jamais le sentier.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

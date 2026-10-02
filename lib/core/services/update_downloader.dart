@@ -1,3 +1,7 @@
+/// Telechargement en arriere-plan d'une mise a jour de sentier, et notification
+/// quand elle est prete a etre posee.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

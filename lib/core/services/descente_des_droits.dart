@@ -1,3 +1,7 @@
+/// Le sens manquant du miroir de compte : faire DESCENDRE solde et droits du
+/// serveur vers le telephone, pas seulement les faire monter.
+library;
+
 import "dart:async";
 
 import "package:cloud_firestore/cloud_firestore.dart";

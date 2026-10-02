@@ -1,3 +1,7 @@
+/// Achat reel d'etapes au store, derriere un kill-switch : coupe, la boucle de
+/// completion tourne quand meme pour accueillir les recus.
+library;
+
 import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;

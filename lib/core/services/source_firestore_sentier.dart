@@ -1,3 +1,7 @@
+/// Le dernier chainon : la question « donne-moi ce qui est plus recent que mon
+/// repere » part enfin a Firestore, et plus a un double de test.
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';

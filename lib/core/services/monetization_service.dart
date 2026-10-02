@@ -1,3 +1,7 @@
+/// Grille du compte-etapes : prix d'un palier, packs de recharge, et achat qui
+/// prend d'abord au solde avant de passer au store.
+library;
+
 import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;
