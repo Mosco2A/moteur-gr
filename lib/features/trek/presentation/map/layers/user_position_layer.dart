@@ -1,3 +1,7 @@
+/// Le point du marcheur et son cercle de precision, qui disparaissent
+/// entierement quand aucune position n'est connue.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
