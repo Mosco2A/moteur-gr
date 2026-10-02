@@ -1,3 +1,7 @@
+/// Un ecran d'attente assume : les disponibilites ne sont pas branchees, et il
+/// le DIT au lieu de rester vide.
+library;
+
 // E5.13 — Ecran de reservation stub.
 //
 // Scaffold avec message informatif indiquant que les disponibilites

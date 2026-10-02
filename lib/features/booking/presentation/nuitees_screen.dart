@@ -1,3 +1,7 @@
+/// Un assistant nuit par nuit sur le PROGRAMME du sentier : un type
+/// d'hebergement par nuit, pas une reservation.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
