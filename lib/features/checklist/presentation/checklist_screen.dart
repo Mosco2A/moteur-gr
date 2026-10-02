@@ -1,3 +1,7 @@
+/// L'ecran « Materiel & Sac » : rubriques, articles, libelles et disposition
+/// clones a l'identique de la reference.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
