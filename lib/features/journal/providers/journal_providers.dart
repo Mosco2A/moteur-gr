@@ -1,3 +1,7 @@
+/// Le cablage du carnet, de la base jusqu'a l'ecran, en passant par le service
+/// de photos hors ligne.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/journal_dao.dart';
