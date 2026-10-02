@@ -1,3 +1,7 @@
+/// Les deux rendez-vous quotidiens : le rappel a J-2 a 18 h, et le rappel du
+/// jour pendant le trek a 7 h.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
