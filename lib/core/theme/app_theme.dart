@@ -1,3 +1,7 @@
+/// Les tokens communs a toutes les apps sentier — espacements, rayons, typo,
+/// couleurs de denivele. Primaire et secondaire viennent du sentier.
+library;
+
 import 'package:flutter/material.dart';
 
 import 'app_skin.dart';

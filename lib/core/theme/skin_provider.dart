@@ -1,3 +1,7 @@
+/// La peau CHOISIE, son eligibilite et la peau REELLEMENT appliquee apres repli
+/// : changer de peau reconstruit le theme a chaud.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/settings/data/settings_service.dart';
