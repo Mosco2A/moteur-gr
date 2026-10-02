@@ -1,3 +1,7 @@
+/// L'envoi d'un kudo, IDEMPOTENT par son identifiant distant : un double envoi
+/// n'en cree pas deux.
+library;
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
