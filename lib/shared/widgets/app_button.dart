@@ -3,7 +3,24 @@ import 'package:flutter/material.dart';
 import '../../core/branding/stepways_icons.dart';
 import '../../core/theme/app_theme.dart';
 
-enum AppButtonVariant { primary, secondary, outline, filledTone }
+/// Les formes de bouton de la grammaire StepWays.
+enum AppButtonVariant {
+  /// Fond plein a la couleur principale du theme : l'action primaire d'un ecran.
+  primary,
+
+  /// Fond plein a la couleur secondaire : une action primaire de second plan.
+  secondary,
+
+  /// Contour seul, sans fond : l'action secondaire, et le support de `tone`.
+  outline,
+
+  /// Fond plein a une couleur SEMANTIQUE donnee par `tone` (danger, depart...).
+  filledTone,
+
+  /// Plat : ni fond ni contour. La forme des actions de dialogue
+  /// (« Annuler », « Plus tard ») et des liens d'action (tache 645-03).
+  text,
+}
 
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -40,6 +57,9 @@ class AppButton extends StatelessWidget {
   /// a couleur d'action forte de l'overlay de suivi (Demarrer=actionStart,
   /// Pause=actionPause, Stop=rougeUrgence, SW-SKIN-L3c) — le contraste blanc
   /// >= AA sur ces tokens est prouve par test/core/a11y/a11y_audit_test.dart.
+  /// Pour la variante `text` (bouton plat), `tone` est la couleur du LIBELLE
+  /// et de l'icone (le fond reste transparent) : sert aux « Annuler » de
+  /// dialogue que leur appel grisait deja (tache 645-03).
   /// `null` => couleur du theme (primary). Ignore pour primary/secondary
   /// (fonds pleins geres au theme).
   final Color? tone;
@@ -124,6 +144,35 @@ class AppButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusButton),
             ),
+          ),
+          child: child,
+        );
+      case AppButtonVariant.text:
+        // BOUTON PLAT : aucun fond, aucune bordure, aucune elevation — la forme
+        // des actions de dialogue (« Annuler », « Plus tard ») et des liens
+        // d'action en bas de feuille. C'est la seule forme de bouton que les
+        // lots SW-SKIN-L3a..e ont du laisser en Material brut, faute
+        // d'equivalent ici : deux commentaires du parc le disaient mot pour mot
+        // (« le TextButton Annuler laisse tel quel »). D'ou cette variante,
+        // tache 645-03.
+        //
+        // ISO-RENDU VOULU. On ne pose NI couleur NI forme quand l'appelant n'en
+        // demande pas : le `textButtonTheme` du theme peint donc ce bouton
+        // exactement comme il peignait le `TextButton` brut d'avant. `tone`
+        // teinte le libelle et l'icone quand l'appel le demandait (ex. un
+        // « Annuler » grise au contraste reduit).
+        //
+        // LARGEUR : `Size(64, ...)` quand le bouton n'est pas pleine largeur,
+        // c'est le plancher de largeur de Material pour un bouton plat — sans
+        // lui, un libelle de deux lettres donnerait un bouton plus etroit
+        // qu'avant.
+        return TextButton(
+          onPressed: effectiveOnPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: tone,
+            minimumSize: isFullWidth
+                ? Size(double.infinity, minHeight)
+                : Size(64, minHeight),
           ),
           child: child,
         );
