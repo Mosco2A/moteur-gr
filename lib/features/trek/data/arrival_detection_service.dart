@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../core/geo/geo_utils.dart';
 import '../../../domain/stage.dart';
-import '../domain/trek_completion.dart';
+import '../../../domain/trek_completion.dart';
 
 /// Evenement d'arrivee emis quand le randonneur atteint la fin d'une etape
 /// ou la fin du sentier complet.

@@ -13,7 +13,7 @@ import '../data/arrival_detection_service.dart';
 import '../data/gps_service.dart';
 import '../data/stage_detection_service.dart';
 import '../../../domain/stage.dart';
-import '../domain/trek_completion.dart';
+import '../../../domain/trek_completion.dart';
 import 'stage_providers.dart';
 import 'tracking_providers.dart';
 

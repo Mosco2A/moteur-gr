@@ -21,7 +21,7 @@ import '../../../shared/widgets/app_logo.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../../../domain/trek_session.dart';
-import '../../trek/domain/trek_completion.dart';
+import '../../../domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
 import '../domain/finisher_number.dart';

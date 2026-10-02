@@ -14,7 +14,7 @@ import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../domain/stage.dart';
 import '../../../domain/trek_session.dart';
-import '../../trek/domain/trek_completion.dart';
+import '../../../domain/trek_completion.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
 

@@ -13,7 +13,7 @@ import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/trek/data/arrival_detection_service.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
-import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
+import 'package:moteur_gr/domain/trek_completion.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
