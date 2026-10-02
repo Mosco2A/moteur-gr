@@ -184,15 +184,18 @@ class _ActivityCard extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.social.kudos,
-                child: TextButton.icon(
+                child: AppButton(
                   key: ValueKey('kudos-${activity.id}'),
-                  onPressed: () => _giveKudo(ref),
-                  icon: const StepIcon(StepwaysIcons.favori, size: 18),
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.favori,
+                  iconSize: 18,
                   label: kudosAsync.when(
-                    data: (n) => Text(t.social.kudosCount(n: n)),
-                    loading: () => Text(t.social.kudos),
-                    error: (_, __) => Text(t.social.kudos),
+                    data: (n) => t.social.kudosCount(n: n),
+                    loading: () => t.social.kudos,
+                    error: (_, __) => t.social.kudos,
                   ),
+                  isFullWidth: false,
+                  onPressed: () => _giveKudo(ref),
                 ),
               ),
               const Spacer(),
@@ -200,11 +203,14 @@ class _ActivityCard extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.social.report,
-                child: TextButton.icon(
+                child: AppButton(
                   key: ValueKey('report-${activity.id}'),
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.depart,
+                  iconSize: 18,
+                  label: t.social.report,
+                  isFullWidth: false,
                   onPressed: onReport,
-                  icon: const StepIcon(StepwaysIcons.depart, size: 18),
-                  label: Text(t.social.report),
                 ),
               ),
             ],
