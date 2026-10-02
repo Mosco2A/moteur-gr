@@ -1150,10 +1150,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             // entree ne pouvait porter que du texte, et la galerie du Diplome
             // (qui filtre les entrees avec photo) restait toujours vide.
             if (_photoPath == null)
-              OutlinedButton.icon(
+              AppButton(
+                variant: AppButtonVariant.outline,
+                icon: StepwaysIcons.photo,
+                iconSize: 18,
+                label: journalT.addPhoto,
                 onPressed: _choosePhotoSource,
-                icon: const StepIcon(StepwaysIcons.photo),
-                label: Text(journalT.addPhoto),
               )
             else
               // APERCU EN VIGNETTE DE TAILLE FIXE — ET SURTOUT PAS de largeur
@@ -1198,10 +1200,13 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
                       ),
                     ),
                   ),
-                  TextButton.icon(
+                  AppButton(
+                    variant: AppButtonVariant.text,
+                    icon: StepwaysIcons.croix,
+                    iconSize: 18,
+                    label: journalT.removePhoto,
+                    isFullWidth: false,
                     onPressed: () => setState(() => _photoPath = null),
-                    icon: const StepIcon(StepwaysIcons.croix),
-                    label: Text(journalT.removePhoto),
                   ),
                 ],
               ),
@@ -1209,9 +1214,11 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: journalT.cancel,
+          isFullWidth: false,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(journalT.cancel),
         ),
         AppButton(
           label: journalT.save,
