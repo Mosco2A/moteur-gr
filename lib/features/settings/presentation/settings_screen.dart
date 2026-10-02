@@ -1,3 +1,7 @@
+/// Langue, unites, theme, cache, notifications, version — avec select() pour ne
+/// reconstruire que la ligne qui change.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

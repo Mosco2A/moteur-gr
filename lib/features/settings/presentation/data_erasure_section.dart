@@ -1,3 +1,7 @@
+/// La commande d'effacement de l'article 17, derriere un dialogue qui DIT
+/// d'abord ce qui part, puis exige un acte positif.
+library;
+
 // TACHE 562 (LOT K, K1) — LA COMMANDE D'EFFACEMENT, LA OU LE RANDONNEUR LA
 // CHERCHE.
 //
