@@ -18,23 +18,31 @@
 //   - LA NAVIGATION DANS L'EDITEUR MENT. « Ouvrir `track_point.dart` » pose une
 //     question au lieu d'ouvrir un fichier.
 //
-// LES QUATRE CONNUS AU 02/10/2026, et c'est le plafond : `gpx_parser.dart`,
-// `stage.dart`, `track_point.dart`, `tracking_overlay.dart`.
+// LES QUATRE CONNUS AU 02/10/2026 : `gpx_parser.dart`, `stage.dart`,
+// `track_point.dart`, `tracking_overlay.dart`.
+//
+// RESORBE LE 02/10/2026 PAR LE LOT 645-04, et c'est pourquoi le plafond est
+// tombe a 3 : `tracking_overlay.dart`. Les deux widgets portaient le meme nom
+// de classe `TrackingOverlay` et le meme nom de fichier, mais celui de
+// `lib/features/tracking/presentation/` n'avait AUCUN appelant — ni dans
+// `lib/`, ni dans un test, ni nulle part dans le depot. Il est parti ; celui de
+// `lib/features/trek/presentation/map/overlay/`, que deux fichiers de test
+// exercent, reste.
 //
 // RESORBER N'EST PAS RENOMMER. Fusionner deux types en deplacant du code est
 // interdit par SPEC-06 : c'est le travail du lot 645-04, et il attend un
 // arbitrage. Cette garde ne demande donc pas de reparer — seulement de ne pas
-// AJOUTER un cinquieme doublon en attendant.
+// AJOUTER un quatrieme doublon en attendant.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
 
-/// Mesure du 02/10/2026, tete 147ca32d : 4 noms de fichier en double dans
-/// `lib/` (`gpx_parser.dart`, `stage.dart`, `track_point.dart`,
-/// `tracking_overlay.dart`).
-const plafondNomsEnDouble = 4;
+/// Mesure du 02/10/2026, tete 0310fa9b, APRES le lot 645-04 : 3 noms de
+/// fichier en double dans `lib/` (`gpx_parser.dart`, `stage.dart`,
+/// `track_point.dart`). `tracking_overlay.dart` a ete resorbe.
+const plafondNomsEnDouble = 3;
 
 void main() {
   late Map<String, List<String>> enDouble;
@@ -78,7 +86,7 @@ void main() {
       );
     });
 
-    test('les quatre doublons connus sont toujours ceux-la — sinon le plafond '
+    test('les doublons connus sont toujours ceux-la — sinon le plafond '
         'couvre autre chose que ce qu il annonce', () {
       // UN PLAFOND CHIFFRE NE DIT PAS *QUI* IL COUVRE. Sans ce test, resorber
       // `stage.dart` puis introduire `machin.dart` en double laisserait le
@@ -87,12 +95,7 @@ void main() {
       // annonce. On verifie donc l IDENTITE, pas seulement le nombre.
       expect(
         enDouble.keys.toList(),
-        <String>[
-          'gpx_parser.dart',
-          'stage.dart',
-          'track_point.dart',
-          'tracking_overlay.dart',
-        ],
+        <String>['gpx_parser.dart', 'stage.dart', 'track_point.dart'],
         reason:
             'LA LISTE DES DOUBLONS A CHANGE. Si vous en avez RESORBE un, '
             'baissez `plafondNomsEnDouble` et retirez-le de cette liste : '
