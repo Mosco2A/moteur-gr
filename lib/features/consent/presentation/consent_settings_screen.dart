@@ -155,13 +155,16 @@ class ConsentSettingsScreen extends ConsumerWidget {
                 Semantics(
                   button: true,
                   label: tr.consent.adsPrivacyOptions,
-                  child: TextButton.icon(
+                  child: AppButton(
                     key: const ValueKey('consent-ads-privacy-options'),
+                    variant: AppButtonVariant.text,
+                    icon: StepwaysIcons.reglages,
+                    iconSize: 18,
+                    label: tr.consent.adsPrivacyOptions,
+                    isFullWidth: false,
                     onPressed: () => ref
                         .read(adsConsentServiceProvider)
                         .showPrivacyOptionsForm(),
-                    icon: const StepIcon(StepwaysIcons.reglages),
-                    label: Text(tr.consent.adsPrivacyOptions),
                   ),
                 ),
               const SizedBox(height: AppTheme.spacingLg),
@@ -250,11 +253,14 @@ class ConsentSettingsScreen extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: tr.consent.a11y.policyButton,
-                child: TextButton.icon(
+                child: AppButton(
                   key: const ValueKey('consent-privacy-policy'),
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.cgu,
+                  iconSize: 18,
+                  label: tr.consent.privacyPolicyLink,
+                  isFullWidth: false,
                   onPressed: onOpenPrivacyPolicy ?? () => _ouvrirPolitique(ref),
-                  icon: const StepIcon(StepwaysIcons.cgu),
-                  label: Text(tr.consent.privacyPolicyLink),
                 ),
               ),
               const SizedBox(height: AppTheme.spacingXl),
@@ -303,14 +309,18 @@ Future<void> _confirmerRefusGlobal(
       title: Text(tr.consent.declineAll),
       content: Text(tr.consent.declineAllNote),
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: tr.consent.declineAllCancel,
+          isFullWidth: false,
           onPressed: () => Navigator.of(ctx).pop(false),
-          child: Text(tr.consent.declineAllCancel),
         ),
-        TextButton(
+        AppButton(
           key: const ValueKey('consent-decline-all-confirm'),
+          variant: AppButtonVariant.text,
+          label: tr.consent.declineAll,
+          isFullWidth: false,
           onPressed: () => Navigator.of(ctx).pop(true),
-          child: Text(tr.consent.declineAll),
         ),
       ],
     ),
