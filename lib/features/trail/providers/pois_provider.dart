@@ -1,3 +1,6 @@
+/// Les points d'interet d'un sentier, lus EN BASE et non dans un asset.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/pois_dao.dart';

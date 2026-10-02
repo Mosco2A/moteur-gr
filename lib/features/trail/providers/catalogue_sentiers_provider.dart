@@ -1,3 +1,7 @@
+/// Les trois sources du catalogue sont ORDONNEES et non concurrentes : distant,
+/// puis base locale, puis compile en secours.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

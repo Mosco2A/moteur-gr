@@ -1,3 +1,7 @@
+/// Les etapes d'un sentier, lues en base et triees par numero — l'ordre n'est
+/// jamais celui que la base rend.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/stages_dao.dart';

@@ -1,3 +1,7 @@
+/// La progression d'un sentier, nulle tant qu'elle n'existe pas, et le numero
+/// d'etape courant LU EN BASE plutot que deduit de la memoire.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/progress_dao.dart';
