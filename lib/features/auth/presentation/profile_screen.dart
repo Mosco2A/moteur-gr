@@ -1,3 +1,7 @@
+/// Pseudonyme et avatar choisi parmi huit icones locales : il n'y a rien
+/// d'autre a saisir, et c'est voulu.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
