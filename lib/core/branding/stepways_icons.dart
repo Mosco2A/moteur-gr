@@ -1,3 +1,7 @@
+/// Les 156 icones de la marque, a trait courant : elles prennent la couleur
+/// qu'on leur donne, comme une icone Material.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
