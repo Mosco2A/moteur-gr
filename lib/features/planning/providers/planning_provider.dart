@@ -10,7 +10,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../features/trail/providers/stages_provider.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/domain/program_plan_search.dart';
 import '../../feasibility/providers/advised_program_provider.dart';
 import '../data/retained_plan_store.dart';

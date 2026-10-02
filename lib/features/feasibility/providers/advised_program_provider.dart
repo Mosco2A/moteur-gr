@@ -38,7 +38,7 @@ import '../../../core/models/stage_row.dart';
 import '../../planning/providers/planning_provider.dart';
 import '../../trail/providers/stages_provider.dart';
 import '../../trek/providers/gps_providers.dart';
-import '../domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../domain/program_plan_search.dart';
 import 'trek_feasibility_provider.dart';
 

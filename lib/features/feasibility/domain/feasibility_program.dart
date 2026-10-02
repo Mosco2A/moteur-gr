@@ -17,7 +17,7 @@ import '../../../core/models/stage_row.dart';
 import '../../planning/domain/planning_calculator.dart';
 import '../../planning/models/day_plan.dart';
 import '../../planning/models/planned_day.dart';
-import 'feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 
 /// Le programme REEL evalue : une charge par jour de marche + les repos.
 class FeasibilityProgram {

@@ -29,7 +29,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 
 /// Tolerance de comparaison des reels (la matrice est arrondie a 1e-4).
 const double kEps = 5e-4;

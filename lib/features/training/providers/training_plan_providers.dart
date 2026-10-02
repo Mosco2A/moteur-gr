@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/trail_selection.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/providers/hiker_profile_provider.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';

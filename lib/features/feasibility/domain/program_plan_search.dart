@@ -44,7 +44,7 @@ library;
 
 import '../../../core/models/stage_row.dart';
 import '../../planning/domain/planning_calculator.dart';
-import 'feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import 'feasibility_program.dart';
 
 /// Un programme CONSEILLE : ses trois nombres de jours, et le verdict qu'il

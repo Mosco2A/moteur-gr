@@ -14,7 +14,7 @@ import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
-import '../domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../domain/feasibility_program.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/objective_profile.dart';

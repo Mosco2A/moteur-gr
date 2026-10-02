@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 
 /// LE QUALIFICATIF D'EFFORT N'A PLUS QU'UNE SEULE BASE DE CALCUL (tache 634,
 /// DEM-260929-1132).

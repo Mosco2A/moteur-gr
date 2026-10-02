@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/training/models/training_plan.dart';
 import 'package:moteur_gr/features/training/presentation/training_screen.dart';
 import 'package:moteur_gr/features/training/providers/training_plan_providers.dart';

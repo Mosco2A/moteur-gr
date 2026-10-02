@@ -39,7 +39,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_program.dart';
 import 'package:moteur_gr/features/feasibility/domain/program_plan_search.dart';
 import 'package:moteur_gr/features/planning/domain/planning_calculator.dart';
