@@ -1,3 +1,7 @@
+/// Un resultat NOMME plutot qu'un bulletin nullable : « reseau en echec » et «
+/// etape inconnue » ne doivent pas se confondre.
+library;
+
 import 'package:logger/logger.dart';
 
 import '../../../core/data/daos/stages_dao.dart';

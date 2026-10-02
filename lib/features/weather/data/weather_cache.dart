@@ -1,3 +1,7 @@
+/// Le cache decide QUAND rappeler le fournisseur, jamais CE QU'ON AFFICHE :
+/// c'est toute la distinction de la tache 572.
+library;
+
 import 'dart:convert';
 
 import 'package:logger/logger.dart';
