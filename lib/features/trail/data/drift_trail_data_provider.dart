@@ -1,3 +1,7 @@
+/// L'implantation en base de l'acces aux donnees d'un sentier, derriere
+/// l'interface abstraite du domaine.
+library;
+
 import '../../../core/config/trail_config.dart';
 import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_accommodations_dao.dart';
