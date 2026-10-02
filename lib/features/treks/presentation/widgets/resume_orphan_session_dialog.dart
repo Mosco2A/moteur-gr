@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 
 /// Choix de l'utilisateur face a une session ORPHELINE detectee au boot
 /// (StepWays LOT 2, C4 — reprise orpheline, complement §3).
@@ -48,21 +49,22 @@ Future<ResumeOrphanChoice?> showResumeOrphanSessionDialog(
         actions: [
           // Abandonner la rando orpheline (status=abandoned) : le trek redevient
           // rejouable, aucun drapeau finisher.
-          TextButton(
+          AppButton(
             key: const ValueKey('resume-orphan-abandon'),
+            variant: AppButtonVariant.text,
+            tone: AppTheme.rougeUrgence,
+            label: t.trekState.resumeOrphanDialog.abandon,
+            isFullWidth: false,
             onPressed: () =>
                 Navigator.of(dialogContext).pop(ResumeOrphanChoice.abandon),
-            child: Text(
-              t.trekState.resumeOrphanDialog.abandon,
-              style: const TextStyle(color: AppTheme.rougeUrgence),
-            ),
           ),
           // Reprendre : rejoindre le cockpit du trek en cours (action primaire).
-          FilledButton(
+          AppButton(
             key: const ValueKey('resume-orphan-resume'),
+            label: t.trekState.resumeOrphanDialog.resume,
+            isFullWidth: false,
             onPressed: () =>
                 Navigator.of(dialogContext).pop(ResumeOrphanChoice.resume),
-            child: Text(t.trekState.resumeOrphanDialog.resume),
           ),
         ],
       );
