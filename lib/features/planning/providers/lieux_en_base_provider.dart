@@ -1,3 +1,7 @@
+/// Transport et ravitaillement viennent desormais de la BASE : leur contenu
+/// vivait dans deux constantes Dart, donc les ecrans etaient vides en reel.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 

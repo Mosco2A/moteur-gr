@@ -1,3 +1,7 @@
+/// Le programme EDITABLE : une premiere repartition calculee, puis les gestes
+/// du marcheur — regrouper, separer, ajouter un jour de repos.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

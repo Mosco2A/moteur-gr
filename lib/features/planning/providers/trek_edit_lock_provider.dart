@@ -1,3 +1,7 @@
+/// Source unique de « on ne modifie que ce qui n'est pas encore fait »,
+/// agregeant les deux vues de la session sans en inventer une troisieme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../after/providers/adventure_recap_provider.dart'
