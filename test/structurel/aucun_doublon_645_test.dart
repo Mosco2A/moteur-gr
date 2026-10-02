@@ -72,20 +72,46 @@
 // dans les quatre, seuls le nom de classe et le chemin d'import ont change —
 // aucune attente, aucune valeur, aucun nom de parametre.
 //
-// IL EN RESTE DEUX, `stage.dart` et `track_point.dart`, et ils attendent
-// toujours ARB-645-04-a et ARB-645-04-b. Cette garde ne demande donc pas de
-// reparer — seulement de ne pas AJOUTER un troisieme doublon en attendant.
+// ET IL N'EN RESTE PLUS AUCUN, DEPUIS LE 02/10/2026 ET LE LOT 645-05 : LE
+// PLAFOND EST A ZERO. Christophe a tranche ARB-645-04-a et ARB-645-04-b le
+// 02/10/2026 a 21:55 — voie A, verbatim « Option. A » puis « A » : les modeles
+// que plusieurs features lisent descendent dans `lib/domain/`, et deux fichiers
+// de `lib/` ne portent plus le meme nom.
+//
+// `stage.dart` : le modele de DOMAINE (classe `Stage`, i18n 5 langues, duree en
+// secondes) est devenu `lib/domain/stage.dart` ; le modele adosse a Drift
+// (classe `StageModel`) reste dans le socle et s'appelle desormais
+// `lib/core/models/stage_row.dart`.
+//
+// `track_point.dart` : l'ECHANTILLON D'ENREGISTREMENT GPS (`elevation`,
+// `timestamp`) est devenu `lib/domain/track_point.dart` ; le POINT DE TRACE DE
+// REFERENCE (`altitude`, `distanceFromStart`) reste dans `core/geo/` et
+// s'appelle desormais `lib/core/geo/trace_point.dart`.
+//
+// AUCUN TYPE N'A ETE FUSIONNE, et c'est ce qui rend le zero honnete. Les quatre
+// classes existent toujours, avec leurs champs et leurs convertisseurs
+// explicites (`domainStagesProvider`) : SPEC-06 interdisait de fusionner en
+// deplacant, pas de RANGER. Les deux `TrackPoint` portent meme toujours le meme
+// nom de CLASSE — deux bibliotheques distinctes, aucun fichier n'importe les
+// deux. Ce que cette garde mesure, ce sont les noms de FICHIER, et c'est la
+// bonne mesure : « ouvrir track_point.dart » a de nouveau une seule reponse.
+//
+// LE PLAFOND NE REMONTE JAMAIS. A zero, cette garde ne protege plus une dette :
+// elle interdit d'en ouvrir une nouvelle. Un fichier neuf qui porterait un nom
+// deja pris la fait rougir immediatement, et la reponse est de lui donner un nom
+// qui dit ce qu'il est.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
 
-/// Mesure du 02/10/2026, APRES le lot 645-11 : 2 noms de fichier en double dans
-/// `lib/` (`stage.dart`, `track_point.dart`). `tracking_overlay.dart` a ete
-/// resorbe par le lot 645-04 ; `gpx_parser.dart` l'a ete par le lot 645-11, en
-/// execution de la decision de Christophe du 02/10/2026 21:28 sur ARB-645-04-c.
-const plafondNomsEnDouble = 2;
+/// Mesure du 02/10/2026, APRES le lot 645-05 : AUCUN nom de fichier en double
+/// dans `lib/`. `tracking_overlay.dart` a ete resorbe par le lot 645-04 ;
+/// `gpx_parser.dart` par le lot 645-11 (decision ARB-645-04-c du 02/10/2026
+/// 21:28) ; `stage.dart` et `track_point.dart` par le lot 645-05 (voie A,
+/// decision du 02/10/2026 21:55 sur ARB-645-04-a et ARB-645-04-b).
+const plafondNomsEnDouble = 0;
 
 /// Mesure du 02/10/2026, tete 0310fa9b : UN seul fichier de `lib/` n'a pour
 /// tout role que d'afficher une attente (`core/ui/loading_view.dart`).
@@ -171,7 +197,7 @@ void main() {
       // annonce. On verifie donc l IDENTITE, pas seulement le nombre.
       expect(
         enDouble.keys.toList(),
-        <String>['stage.dart', 'track_point.dart'],
+        <String>[],
         reason:
             'LA LISTE DES DOUBLONS A CHANGE. Si vous en avez RESORBE un, '
             'baissez `plafondNomsEnDouble` et retirez-le de cette liste : '
