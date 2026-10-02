@@ -1,3 +1,7 @@
+/// Choisit le service d'identite selon la disponibilite de Firebase, et rend
+/// dans les deux cas un identifiant hashe.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
