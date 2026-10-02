@@ -1,3 +1,7 @@
+/// Le vide dit avec une icone, un titre, une explication et parfois une action
+/// : un ecran sans donnee ne doit jamais etre un ecran blanc.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';

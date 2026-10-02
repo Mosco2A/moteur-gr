@@ -1,3 +1,7 @@
+/// Image distante chargee en differe et gardee en cache disque, avec un
+/// substitut sans animation et un repli explicite — jamais de plantage.
+library;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../core/branding/stepways_icons.dart';

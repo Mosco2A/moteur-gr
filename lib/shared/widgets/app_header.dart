@@ -1,3 +1,7 @@
+/// La barre du haut, commune a tous les ecrans : retour, titre, accueil. Elle
+/// REMPLACE l'AppBar maison de chaque page — jamais les deux.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

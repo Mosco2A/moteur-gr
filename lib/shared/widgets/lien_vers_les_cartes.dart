@@ -1,3 +1,7 @@
+/// Tout lieu physique ouvre les cartes du telephone : une adresse et un point
+/// GPS cliquables partout, et non un bouton reinvente par ecran.
+library;
+
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;

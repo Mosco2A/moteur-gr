@@ -1,3 +1,7 @@
+/// Verrou d'achat autour d'un ecran, qui n'est monte NULLE PART dans lib/ :
+/// conserve et documente comme tel par la mesure de la tache 614.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

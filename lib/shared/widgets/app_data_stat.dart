@@ -1,3 +1,7 @@
+/// Le « gros chiffre » de l'app : valeur a chasse fixe, unite plus petite,
+/// libelle discret — pour que les chiffres s'alignent d'un ecran a l'autre.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';

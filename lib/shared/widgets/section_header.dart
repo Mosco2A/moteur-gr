@@ -1,3 +1,7 @@
+/// Titre de section avec son icone et son « Voir tout » optionnel : la coupure
+/// qui structure une page longue.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';

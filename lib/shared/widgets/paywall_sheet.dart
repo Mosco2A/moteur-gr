@@ -1,3 +1,7 @@
+/// Le geste d'achat UNIQUE d'un sentier, atteignable du catalogue comme de la
+/// preparation, et plus seulement a l'instant de partir.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
