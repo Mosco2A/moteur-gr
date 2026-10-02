@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -47,12 +48,13 @@ class DepartureDatePicker extends ConsumerWidget {
                 : AppTheme.grisGranite,
           ),
         ),
-        trailing: TextButton.icon(
+        trailing: AppButton(
+          variant: AppButtonVariant.text,
+          icon: StepwaysIcons.calendrier,
+          iconSize: 18,
+          label: reminderState.departureDate != null ? 'Modifier' : 'Choisir',
+          isFullWidth: false,
           onPressed: () => _pickDate(context, ref, reminderState.departureDate),
-          icon: const StepIcon(StepwaysIcons.calendrier, size: 18),
-          label: Text(
-            reminderState.departureDate != null ? 'Modifier' : 'Choisir',
-          ),
         ),
       ),
     );
