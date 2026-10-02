@@ -1,3 +1,7 @@
+/// Comment rejoindre le depart et comment repartir de l'arrivee, en deux
+/// onglets, pilotes par les donnees du sentier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';

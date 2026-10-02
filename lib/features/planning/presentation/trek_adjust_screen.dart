@@ -1,3 +1,7 @@
+/// Adapter l'itineraire d'une rando EN COURS : ce geste n'est atteignable que
+/// depuis la section « Randonner » du cockpit.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

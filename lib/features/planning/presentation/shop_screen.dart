@@ -1,3 +1,7 @@
+/// Commerces et services par etape, entierement pilotes par les donnees du
+/// sentier : aucun commerce ecrit dans le code.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
