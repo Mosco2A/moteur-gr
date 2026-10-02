@@ -12,7 +12,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../planning/models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../domain/stage_accommodation.dart';

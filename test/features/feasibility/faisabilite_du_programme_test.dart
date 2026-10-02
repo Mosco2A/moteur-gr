@@ -10,7 +10,7 @@ import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/objective_profile.dart';
 import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_screen.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
-import 'package:moteur_gr/features/planning/models/planned_day.dart';
+import 'package:moteur_gr/domain/planned_day.dart';
 import 'package:moteur_gr/features/planning/presentation/trail_planning_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/features/planning/widgets/duration_selector.dart';

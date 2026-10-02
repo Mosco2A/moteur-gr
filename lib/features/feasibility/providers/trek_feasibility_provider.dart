@@ -10,7 +10,7 @@ import '../../../core/models/stage_row.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
-import '../../planning/models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';

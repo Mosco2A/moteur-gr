@@ -11,7 +11,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/booking/domain/models/nuitee_type.dart';
 import 'package:moteur_gr/features/booking/presentation/nuitees_screen.dart';
 import 'package:moteur_gr/features/booking/providers/nuitee_selections_provider.dart';
-import 'package:moteur_gr/features/planning/models/planned_day.dart';
+import 'package:moteur_gr/domain/planned_day.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/features/trail/domain/trail_data_provider.dart';
 import 'package:moteur_gr/features/trail/providers/trail_providers.dart';

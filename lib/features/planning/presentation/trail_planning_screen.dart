@@ -13,7 +13,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../../hub/providers/cockpit_start_providers.dart';
-import '../models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/planning_provider.dart';
 import '../widgets/day_action_chip.dart';

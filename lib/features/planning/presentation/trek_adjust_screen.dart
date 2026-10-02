@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/trek_edit_lock_provider.dart';
 import '../widgets/day_action_chip.dart';

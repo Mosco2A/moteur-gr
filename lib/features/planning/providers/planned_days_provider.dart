@@ -12,7 +12,7 @@ import '../../trek/providers/gps_providers.dart';
 import '../domain/planning_calculator.dart';
 import '../domain/trek_edit_lock.dart';
 import '../models/day_plan.dart';
-import '../models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import 'planning_provider.dart';
 import 'trek_edit_lock_provider.dart';
 

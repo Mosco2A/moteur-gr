@@ -2,8 +2,8 @@
 /// insErer un repos — ce que le plan fige ne permet pas.
 library;
 
-import '../../../core/models/stage_row.dart';
-import '../../../core/models/stage_duration.dart';
+import '../core/models/stage_row.dart';
+import '../core/models/stage_duration.dart';
 
 /// Une journee planifiee du PROGRAMME (parite GR20 `PlannedDay`).
 ///
