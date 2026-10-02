@@ -1,3 +1,7 @@
+/// La source durable du profil, avec un identifiant LOCAL stable tant qu'aucun
+/// compte n'est lie — meme convention que le portefeuille.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 
