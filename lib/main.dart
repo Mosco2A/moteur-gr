@@ -13,6 +13,7 @@ import 'core/analytics/firebase_analytics_sink.dart';
 import 'core/branding/app_branding.dart';
 import 'core/config/firebase_config.dart';
 import 'core/config/mare_a_mare_centre_trail_config.dart';
+import 'core/theme/couleurs_semantiques.dart';
 import 'core/config/trail_config.dart';
 import 'core/error/error_nets.dart';
 import 'core/firebase/firebase_service.dart';
@@ -570,8 +571,8 @@ class BootstrapGate extends ConsumerWidget {
 /// le vert sombre (variante Foret), le vert sombre sur le creme (variante
 /// Aube). Derive de la variante active, donc suit `tool/set_branding.py`.
 const Color _encreSurSplash = AppBranding.splashSurFondSombre
-    ? Color(0xFFF4F1E8)
-    : Color(0xFF1F3D2B);
+    ? CouleursSemantiques.cremeSurSplashSombre
+    : CouleursSemantiques.vertSombreSurSplashClair;
 
 /// Echafaudage commun (loader / erreur) de la porte d'amorce : centre le
 /// contenu pour une transition sans clignotement vers l'ecran route.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -347,7 +348,7 @@ class _TransportOptionCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFF2C2C2C),
+                color: CouleursSemantiques.fondSombreDesHorairesIndicatifs,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(

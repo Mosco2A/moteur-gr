@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../../core/theme/couleurs_semantiques.dart';
 
 import '../../../../i18n/translations.g.dart';
 
@@ -175,7 +176,7 @@ class ClusteredMarkerLayer<T> extends StatelessWidget {
     required this.zoom,
     required this.singleMarkerBuilder,
     this.threshold = kClusterThreshold,
-    this.clusterColor = const Color(0xFF1976D2),
+    this.clusterColor = CouleursSemantiques.bleuDeLAmasDeMarqueurs,
     this.clusterTextColor = Colors.white,
     this.clusterSize = 40.0,
     this.onClusterTap,
@@ -265,7 +266,7 @@ class _ClusterBubble extends StatelessWidget {
               border: Border.all(color: Colors.white, width: 2),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x40000000),
+                  color: CouleursSemantiques.ombrePorteeDuMarqueur,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),

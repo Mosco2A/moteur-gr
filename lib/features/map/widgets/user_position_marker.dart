@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/couleurs_semantiques.dart';
+
 /// Marqueur bleu pulsant pour la position de l'utilisateur sur la carte.
 ///
 /// Cercle bleu avec bordure blanche et ombre portée.
@@ -8,7 +10,7 @@ class UserPositionMarker extends StatefulWidget {
   const UserPositionMarker({
     super.key,
     this.size = 20.0,
-    this.color = const Color(0xFF1976D2),
+    this.color = CouleursSemantiques.bleuDeLaPositionDuMarcheur,
   });
 
   /// Taille du cercle en pixels

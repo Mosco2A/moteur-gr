@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../poi/domain/poi_type_config.dart';
 import '../../../core/branding/stepways_icons.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 
 /// Widget marqueur personnalise pour un point d'interet sur la carte.
 ///
@@ -39,7 +40,7 @@ class PoiMarker extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x40000000),
+            color: CouleursSemantiques.ombrePorteeDuMarqueur,
             blurRadius: 4,
             offset: Offset(0, 2),
           ),

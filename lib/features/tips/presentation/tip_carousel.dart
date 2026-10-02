@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/tip_card_repository.dart';
@@ -298,17 +299,17 @@ class _EmptyState extends StatelessWidget {
 Color categoryColor(String category, ThemeData theme) {
   switch (category) {
     case "preparation":
-      return const Color(0xFF42A5F5);
+      return CouleursSemantiques.conseilPreparation;
     case "equipment":
-      return const Color(0xFFFF7043);
+      return CouleursSemantiques.conseilEquipement;
     case "nutrition":
-      return const Color(0xFF66BB6A);
+      return CouleursSemantiques.conseilNutrition;
     case "safety":
-      return const Color(0xFFEF5350);
+      return CouleursSemantiques.conseilSecurite;
     case "nature":
-      return const Color(0xFF26A69A);
+      return CouleursSemantiques.conseilNature;
     case "recovery":
-      return const Color(0xFFAB47BC);
+      return CouleursSemantiques.conseilRecuperation;
     default:
       return theme.colorScheme.primary;
   }
