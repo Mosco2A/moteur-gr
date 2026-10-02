@@ -1,3 +1,7 @@
+/// La pastille d'un point sur la carte : couleur et icone viennent du registre
+/// des types, jamais du code de la carte.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../poi/domain/poi_type_config.dart';

@@ -1,3 +1,7 @@
+/// Ce qu'un point raconte quand on le touche : nom, description, altitude et
+/// horaires s'ils existent.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';

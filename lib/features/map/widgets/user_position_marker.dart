@@ -1,3 +1,7 @@
+/// Le point bleu pulsant du marcheur : la pulsation est la pour dire que la
+/// position est VIVANTE, pas seulement connue.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/couleurs_semantiques.dart';

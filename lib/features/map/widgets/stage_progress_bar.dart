@@ -1,3 +1,7 @@
+/// La ligne de chiffres MESURES en bas de la carte : etape, distance restante,
+/// pourcentage, et le signalement d'un ecart au trace.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
