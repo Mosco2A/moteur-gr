@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../poi/domain/poi_type_config.dart';
 import '../../poi/domain/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
@@ -205,9 +206,11 @@ class _MapGuideSheet extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppTheme.spacingBase),
                   Center(
-                    child: TextButton(
+                    child: AppButton(
+                      variant: AppButtonVariant.text,
+                      label: t.programme.info.close,
+                      isFullWidth: false,
                       onPressed: () => Navigator.of(ctx).pop(),
-                      child: Text(t.programme.info.close),
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingBase),
