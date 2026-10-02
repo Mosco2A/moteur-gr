@@ -1,3 +1,7 @@
+/// Une etape en ligne de liste, avec sa duree ESTIMEE (calculee, non stockee)
+/// et sa pastille de difficulte.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/models/stage.dart';

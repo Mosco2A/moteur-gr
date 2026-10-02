@@ -1,3 +1,7 @@
+/// Un sentier dans le catalogue, avec la taille de son telechargement et son
+/// statut local.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/data/revision_de_donnee.dart';

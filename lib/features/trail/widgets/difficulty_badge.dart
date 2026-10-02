@@ -1,3 +1,7 @@
+/// La pastille de difficulte, et la table unique qui associe un niveau a sa
+/// couleur : aucun ecran ne refait ce choix.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
