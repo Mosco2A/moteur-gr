@@ -1,3 +1,7 @@
+/// Une etape en carte, avec son nom dans la langue courante et sa duree
+/// estimee.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/app_card.dart';

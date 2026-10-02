@@ -1,3 +1,7 @@
+/// La liste des etapes, triee par numero, avec ses trois etats traites :
+/// chargement, erreur, donnee.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

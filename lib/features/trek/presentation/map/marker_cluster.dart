@@ -1,3 +1,7 @@
+/// Au-dela d'un seuil de marqueurs, les points proches sont agreges en bulles :
+/// sans quoi la carte construisait des centaines de widgets.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
