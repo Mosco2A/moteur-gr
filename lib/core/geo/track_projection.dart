@@ -1,3 +1,7 @@
+/// Rabat une position GPS sur le segment de trace le plus proche, en ne
+/// cherchant que dans une fenetre de 50 segments autour du dernier.
+library;
+
 import 'dart:math';
 
 import 'geo_utils.dart';

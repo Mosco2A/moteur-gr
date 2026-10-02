@@ -1,3 +1,7 @@
+/// Ce qui a ete RECU l'emporte sur ce qui a ete COMPILE : meme ordre de sources
+/// que le catalogue, l'asset n'etant qu'un secours.
+library;
+
 import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
