@@ -10,7 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../../shared/widgets/bouton_rafraichir_depuis_la_base.dart';
+import '../widgets/bouton_rafraichir_depuis_la_base.dart';
 import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
