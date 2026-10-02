@@ -1,3 +1,7 @@
+/// L'import d'une trace externe avec son apercu avant validation : carte,
+/// chiffres, etapes et avertissements.
+library;
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
