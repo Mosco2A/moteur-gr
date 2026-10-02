@@ -1,3 +1,7 @@
+/// Le puits Firebase, instancie SEULEMENT quand Firebase est la : il isole
+/// l'import, pour que le service tourne sans lui.
+library;
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
