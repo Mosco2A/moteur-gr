@@ -1,3 +1,7 @@
+/// Le fil VISIBLE, lu du cache et purge des activites retirees par la
+/// moderation avant d'atteindre l'ecran.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/kudos_feed_dao.dart';

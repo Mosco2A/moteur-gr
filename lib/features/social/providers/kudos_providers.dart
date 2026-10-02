@@ -1,3 +1,7 @@
+/// Un puits inerte tant que le serveur n'est pas branche : les kudos restent en
+/// file locale plutot que d'etre perdus.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/database_provider.dart';
