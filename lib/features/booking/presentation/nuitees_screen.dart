@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../planning/models/planned_day.dart';
@@ -265,12 +266,12 @@ class NuiteesScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppTheme.spacingLg),
             Center(
-              child: TextButton(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                label: t.nuitees.guide.close,
+                labelFontSize: 16,
+                isFullWidth: false,
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(
-                  t.nuitees.guide.close,
-                  style: const TextStyle(fontSize: 16),
-                ),
               ),
             ),
           ],
@@ -801,19 +802,15 @@ class _NuiteeCard extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   Row(
                     children: [
-                      TextButton.icon(
+                      AppButton(
+                        variant: AppButtonVariant.text,
+                        tone: AppTheme.orangeDifficile,
+                        icon: StepwaysIcons.telephone,
+                        iconSize: 18,
+                        label: t.nuitees.card.call.replaceAll('{phone}', phone),
+                        labelFontSize: 14,
+                        isFullWidth: false,
                         onPressed: () => _callPhone(phone),
-                        icon: const StepIcon(StepwaysIcons.telephone, size: 18),
-                        label: Text(
-                          t.nuitees.card.call.replaceAll('{phone}', phone),
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingSm,
-                          ),
-                          foregroundColor: AppTheme.orangeDifficile,
-                        ),
                       ),
                     ],
                   ),
@@ -894,10 +891,11 @@ class _CompactSummary extends StatelessWidget {
     if (bookedCount == totalNuitees && totalNuitees > 0) {
       return Padding(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
-        child: ElevatedButton.icon(
+        child: AppButton(
+          icon: StepwaysIcons.cochePleine,
+          iconSize: 18,
+          label: t.nuitees.summary.allBooked,
           onPressed: () => context.pop(),
-          icon: const StepIcon(StepwaysIcons.cochePleine),
-          label: Text(t.nuitees.summary.allBooked),
         ),
       );
     }
@@ -1042,10 +1040,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.nuitees.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const StepIcon(StepwaysIcons.itineraire),
-              label: Text(t.nuitees.empty.action),
             ),
           ],
         ),
