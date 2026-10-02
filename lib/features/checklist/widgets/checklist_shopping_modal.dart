@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../providers/checklist_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 
@@ -242,10 +243,11 @@ class _ChecklistShoppingModalState
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton.icon(
+                child: AppButton(
+                  icon: StepwaysIcons.partager,
+                  iconSize: 18,
+                  label: t.checklist.ui.share,
                   onPressed: _shareList,
-                  icon: const StepIcon(StepwaysIcons.partager, size: 18),
-                  label: Text(t.checklist.ui.share),
                 ),
               ),
             ),
