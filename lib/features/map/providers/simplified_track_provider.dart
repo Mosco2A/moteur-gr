@@ -1,3 +1,7 @@
+/// La trace allegee selon le zoom, avec un epsilon qui decroit en zoomant
+/// jusqu'au plein detail ; memoisee par niveau entier.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/douglas_peucker.dart';

@@ -1,3 +1,7 @@
+/// La carte est-elle utilisable sans reseau : croisement de la connectivite et
+/// de la presence reelle des tuiles sur le telephone.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/map/mbtiles_manager.dart';

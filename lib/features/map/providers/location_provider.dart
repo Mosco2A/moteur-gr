@@ -1,3 +1,7 @@
+/// L'etat de la permission de localisation ramene a quelques cas lisibles par
+/// l'ecran : accorde, refuse, service coupe.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

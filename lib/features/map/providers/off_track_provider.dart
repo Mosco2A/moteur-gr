@@ -1,3 +1,7 @@
+/// L'ecart au trace, avec hysteresis pour ne pas clignoter a la frontiere. Le
+/// metier ignore Slang : les libelles lui sont injectes.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/services.dart';

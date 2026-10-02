@@ -1,3 +1,7 @@
+/// La trace brute d'un sentier, lue EN BASE d'abord ; l'asset du binaire n'est
+/// plus que le secours (tache 606).
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';

@@ -1,3 +1,7 @@
+/// Quels types de points sont visibles sur la carte, et la liste filtree qui en
+/// decoule. L'ensemble vide veut dire TOUS visibles.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

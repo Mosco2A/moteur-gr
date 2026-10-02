@@ -1,3 +1,7 @@
+/// L'ecart, en nombre d'etapes, jusqu'au prochain commerce, et l'etape qui
+/// declenche l'alerte — celle dont le changement la rearme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
