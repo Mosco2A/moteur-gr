@@ -3,7 +3,7 @@
 library;
 
 import '../../../core/error/error_handler.dart';
-import '../domain/models/trek_session.dart';
+import '../../../domain/trek_session.dart';
 
 /// Session orpheline detectee au lancement.
 ///

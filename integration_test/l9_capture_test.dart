@@ -12,7 +12,7 @@ import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
 import 'package:moteur_gr/features/planning/presentation/trek_adjust_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';

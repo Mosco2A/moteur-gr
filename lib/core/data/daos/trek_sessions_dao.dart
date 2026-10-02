@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../../../features/trek/domain/models/trek_session.dart';
+import '../../../domain/trek_session.dart';
 import '../database.dart';
 import '../tables/trek_sessions_table.dart';
 
