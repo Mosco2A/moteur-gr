@@ -16,7 +16,7 @@ import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../../shared/widgets/lien_vers_les_cartes.dart';
-import '../../../poi/domain/poi_type_config.dart';
+import '../../../../shared/poi/poi_type_config.dart';
 import '../../../safety/data/signalement_service.dart';
 import '../../../safety/providers/signalement_providers.dart';
 import '../../../trail/providers/pois_provider.dart';

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../poi/domain/poi_type_config.dart';
+import '../../../shared/poi/poi_type_config.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Tuile d'affichage pour un point d'interet.

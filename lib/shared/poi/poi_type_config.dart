@@ -3,8 +3,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../../../core/branding/stepways_icons.dart';
-import '../../../core/theme/couleurs_semantiques.dart';
+import '../../core/branding/stepways_icons.dart';
+import '../../core/theme/couleurs_semantiques.dart';
 
 /// Style visuel associe a un type de POI.
 ///

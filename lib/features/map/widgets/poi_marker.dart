@@ -4,7 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../poi/domain/poi_type_config.dart';
+import '../../../shared/poi/poi_type_config.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/couleurs_semantiques.dart';
 

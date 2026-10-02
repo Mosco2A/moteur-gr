@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../poi/domain/poi_type_config.dart';
-import '../../poi/domain/poi_type_label.dart';
+import '../../../shared/poi/poi_type_config.dart';
+import '../../../shared/poi/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 
