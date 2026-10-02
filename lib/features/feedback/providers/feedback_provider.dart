@@ -1,3 +1,7 @@
+/// Le DESTINATAIRE des retours, nul tant que le cloud n'est pas configure :
+/// c'est la piece qui manquait pour que les avis partent.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/feedback_queue_dao.dart';
