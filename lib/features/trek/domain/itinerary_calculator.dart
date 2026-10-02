@@ -1,3 +1,7 @@
+/// Repartition gloutonne des etapes sur les jours, sous plafond de distance ET
+/// de duree ; en groupe, c'est le profil le plus prudent qui decide.
+library;
+
 import 'dart:math';
 
 import '../../../core/models/stage.dart';

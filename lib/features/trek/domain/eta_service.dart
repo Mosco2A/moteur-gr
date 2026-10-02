@@ -1,3 +1,7 @@
+/// L'heure d'arrivee estimee, rendue AVEC son niveau de confiance : une
+/// estimation sans confiance se lit comme une promesse.
+library;
+
 import 'dart:async';
 import 'dart:math' as math;
 
