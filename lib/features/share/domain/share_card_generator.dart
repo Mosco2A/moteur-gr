@@ -1,3 +1,7 @@
+/// La carte de partage carree, dessinee avec les chiffres du trek et la marque
+/// du sentier actif.
+library;
+
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
