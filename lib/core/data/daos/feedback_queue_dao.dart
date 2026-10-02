@@ -1,3 +1,7 @@
+/// File locale des avis saisis hors-ligne : ils attendent ici que le reseau
+/// revienne, chacun avec son compte d'echecs d'envoi.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

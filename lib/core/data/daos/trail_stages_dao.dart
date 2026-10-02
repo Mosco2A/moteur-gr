@@ -1,3 +1,7 @@
+/// Etapes d'un itineraire donne, relues dans son ordre — a ne pas confondre
+/// avec les etapes de sentier de stages_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

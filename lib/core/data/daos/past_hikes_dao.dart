@@ -1,3 +1,7 @@
+/// Randos deja faites par un marcheur, bornees en nombre et triees du plus
+/// recent, plus sa note d'experience globale en texte libre.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

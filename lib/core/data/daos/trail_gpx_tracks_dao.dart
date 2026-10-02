@@ -1,3 +1,7 @@
+/// En-tetes des traces GPX d'un itineraire ; leurs points, eux, vivent dans
+/// trail_gpx_points_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

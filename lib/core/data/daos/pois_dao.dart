@@ -1,3 +1,7 @@
+/// Points d'interet descendus avec le sentier, relus par sentier ou par etape ;
+/// l'ecriture se fait en lot, a la pose du sentier.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

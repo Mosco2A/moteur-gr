@@ -1,3 +1,7 @@
+/// Liste de ce qu'un sentier doit contenir, et repere de revision pose apres
+/// copie — sans ce repere, tout se retelechargerait a chaque ouverture.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../../models/niveau_de_telechargement.dart';

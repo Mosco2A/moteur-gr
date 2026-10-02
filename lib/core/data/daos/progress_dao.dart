@@ -1,3 +1,7 @@
+/// Une seule ligne par sentier : l'etape ou en est le marcheur et son
+/// achevement, tenues a jour par upsert.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

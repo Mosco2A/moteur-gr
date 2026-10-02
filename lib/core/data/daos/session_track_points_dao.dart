@@ -1,3 +1,7 @@
+/// Points du trace GPS, chacun portant sa session, son jour de marche et son
+/// etape : une nouvelle rando n'efface plus la precedente.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

@@ -1,3 +1,7 @@
+/// Points d'interet rattaches a une etape d'itineraire, filtrables par type —
+/// distincts des POI de sentier de pois_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

@@ -1,3 +1,7 @@
+/// Entrees du carnet de marche, relues par sentier ou par etape, sous la borne
+/// de trois photos par jour.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

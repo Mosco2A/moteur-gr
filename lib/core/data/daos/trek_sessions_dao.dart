@@ -1,3 +1,7 @@
+/// Sessions de trek persistees puis relues a l'identique, memoire du finisher
+/// comprise, pour que la progression survive a un redemarrage.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';

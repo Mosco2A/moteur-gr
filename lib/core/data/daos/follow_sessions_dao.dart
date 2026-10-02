@@ -1,3 +1,7 @@
+/// Sessions de suivi en temps reel, retrouvables par leur code de partage. Le
+/// type Drift FollowSessionRow est distinct du Freezed FollowSession.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

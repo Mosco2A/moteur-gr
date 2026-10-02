@@ -1,3 +1,7 @@
+/// Choix de nuitee par jour de marche — type d'hebergement et case reservee —
+/// gardes en local pour le planificateur.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

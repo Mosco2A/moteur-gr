@@ -1,3 +1,7 @@
+/// Etapes descendues avec le sentier, relues par sentier ou par numero ; le
+/// decoupage par itineraire vit dans trail_stages_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

@@ -1,3 +1,7 @@
+/// Kudos et fil d'activite tenus hors-ligne : ecriture locale immediate, envoi
+/// differe, et activites moderees masquees a la lecture.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

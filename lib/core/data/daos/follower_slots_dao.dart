@@ -1,3 +1,7 @@
+/// Places de suiveur ouvertes sur une session de suivi, comptees pour borner le
+/// partage. Type Drift FollowerSlotRow, distinct du Freezed.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
