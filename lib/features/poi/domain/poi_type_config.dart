@@ -1,3 +1,7 @@
+/// Le registre des types de point d'interet : une icone, une couleur et un
+/// libelle par type, avec repli generique sur l'inconnu.
+library;
+
 import 'package:flutter/material.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/couleurs_semantiques.dart';
