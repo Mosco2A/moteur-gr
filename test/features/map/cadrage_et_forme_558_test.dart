@@ -167,9 +167,18 @@ void main() {
     });
 
     test('le laius sur les tirets a quitte l ecran', () {
-      final source = File(
+      // LOT 645-06, VAGUE 2 : cette garde est NEGATIVE — elle affirme une
+      // ABSENCE. Elle lisait la racine `map_screen.dart` en direct, ce qui
+      // suffisait quand la racine portait les 1236 lignes de l'ecran. Depuis la
+      // scission en `part`, la racine ne porte plus que ses imports et ses six
+      // directives : la garde ne lisait plus que 62 lignes, et le voisinage
+      // qu'elle surveille a demenage dans `map_screen_barres.dart`. Elle ne
+      // pouvait donc PLUS JAMAIS rougir — verte en silence, le pire etat d'une
+      // garde. On lit desormais la bibliotheque ENTIERE, racine et morceaux.
+      // L'attente ne bouge pas d'un caractere : ce laius n'est nulle part.
+      final source = _sourceAvecSesParts(
         'lib/features/trek/presentation/map/map_screen.dart',
-      ).readAsStringSync();
+      );
       expect(source.contains('t.map.statsPendingNote'), isFalse);
     });
   });
