@@ -36,7 +36,9 @@ lib/
                                dans lib/domain/
     network/                -- Connectivité
     providers/              -- Providers globaux
-    routing/                -- GoRouter
+    routing/                -- GoRouter. Seule exception à la règle 9 :
+                               le routeur connaît les écrans de toutes
+                               les features (ARB-645-05-a).
     services/               -- Services métier (sync, download)
     theme/                  -- Thème Material
   features/                 -- Modules fonctionnels
@@ -74,6 +76,7 @@ lib/
 6. **flutter analyze** -- Zéro warning avant chaque commit.
 7. **Offline-first** -- Toute feature doit fonctionner sans réseau.
 8. **Pas de référence GR20** -- Le moteur est générique. Jamais de mention du GR20 dans le code.
+9. **Le socle ne remonte jamais vers une feature** -- Un fichier de `core/`, `shared/` ou `domain/` n'importe pas depuis `lib/features/`. **Une seule exception, décision ARB-645-05-a du 03/10/2026 : `lib/core/routing/app_router.dart` a le droit d'importer les écrans de toutes les features, parce qu'un routeur connaît tous les écrans par construction.** Il est à ce titre exclu du comptage de la garde `test/structurel/couches_respectees_645_test.dart` ; tout autre fichier du socle y reste compté.
 
 ## Commandes utiles
 

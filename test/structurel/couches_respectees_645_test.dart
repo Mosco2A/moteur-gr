@@ -86,7 +86,31 @@ import 'mesure_des_sources_645.dart';
 ///
 /// IL NE RESTE PRESQUE QUE LE ROUTEUR : 51 des 72 sortent de
 /// `lib/core/routing/app_router.dart`. Voir l'en-tete, et ARB-645-05-a.
-const plafondSocleVersFeature = 72;
+///
+/// ARB-645-05-a, DECISION A DE CHRISTOPHE (03/10/2026) : LE ROUTEUR EST EXCLU
+/// DE CE COMPTAGE. Un routeur connait tous les ecrans PAR CONSTRUCTION — c'est
+/// sa definition meme : une table qui associe une route a un ecran ne peut pas
+/// ignorer les ecrans. Lui compter ces fleches, c'est compter un fait de
+/// structure comme une faute, et c'est ce qui gardait le plafond a 72 sans que
+/// personne puisse jamais le baisser. Le plafond ci-dessous est donc la mesure
+/// APRES exclusion : il ne surveille plus que les fleches qu'on peut REELLEMENT
+/// payer, celles d'un fichier du socle qui n'a aucune raison de connaitre une
+/// feature. L'exception porte sur CE SEUL fichier, nomme en clair ; tout autre
+/// fichier de `core/`, `shared/` ou `domain/` reste compte.
+///
+/// MESURE DU 03/10/2026, APRES exclusion du routeur et APRES le lot 645-06 :
+/// 21 fleches, contre 72 avec le routeur. Les 51 retirees sortaient toutes du
+/// seul `app_router.dart`. Les 21 restantes ne sont pas du rangement : neuf
+/// sont l'amorcage et le pilote de demo (`app_bootstrap_provider`,
+/// `pilote_demo`) qui orchestrent des features par nature, et les autres sont
+/// des services du socle qui tirent un depot ou un provider de feature.
+const plafondSocleVersFeature = 21;
+
+/// Le routeur, seul fichier du socle autorise a connaitre les features.
+///
+/// Decision ARB-645-05-a (voir [plafondSocleVersFeature]) : un routeur connait
+/// tous les ecrans par construction. Ecrit aussi dans `docs/conventions.md`.
+const routeurExclu = 'lib/core/routing/app_router.dart';
 
 /// Mesure du 03/10/2026, APRES le lot 645-05 : 182 fleches entre deux features
 /// differentes, imports relatifs RESOLUS — contre 223 au 02/10. `tool/
@@ -159,7 +183,8 @@ void main() {
         // ce lot deplace du code — un modele partage aurait pu importer une
         // feature sans que rien ne rougisse.
         if ((zone == 'core' || zone == 'shared' || zone == 'domain') &&
-            cible.startsWith('lib/features/')) {
+            cible.startsWith('lib/features/') &&
+            f != routeurExclu) {
           socleVersFeature.add(Fleche(f, imp, cible));
         }
 
