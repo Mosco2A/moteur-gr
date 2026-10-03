@@ -17,13 +17,35 @@ import 'shop_info.dart';
 ///
 /// HONNETETE DES DONNEES (regle Chris #99460) : les commerces listes sont ceux
 /// des localites-etapes reellement traversees par le Mare a Mare Centre
-/// (Ghisonaccia -> Porticcio). Quand un HORAIRE precis n'est pas verifiable, on
-/// met « a completer » plutot qu'un horaire faux ; quand une COORDONNEE GPS
-/// precise du commerce n'est pas verifiee, on rattache l'entree au centre de la
-/// localite-etape (coordonnees d'etape verifiees du sentier) ET on le signale,
-/// plutot que d'inventer un point GPS a la rue pres. AUCUN commerce corse du
-/// GR20 (Calenzana, Vizzavona, Conca...) n'est recopie ici : ce sont d'autres
+/// (Ghisonaccia -> Porticcio). Quand une COORDONNEE GPS precise du commerce
+/// n'est pas verifiee, on rattache l'entree au centre de la localite-etape
+/// (coordonnees d'etape verifiees du sentier) ET on le signale, plutot que
+/// d'inventer un point GPS a la rue pres. AUCUN commerce corse du GR20
+/// (Calenzana, Vizzavona, Conca...) n'est recopie ici : ce sont d'autres
 /// localites.
+///
+/// UN HORAIRE QU'ON N'A PAS N'EST PLUS ECRIT DU TOUT (lot 645-08, voie V2
+/// arbitree par Christophe le 02/10/2026). La regle etait « on met un horaire
+/// marque a completer plutot qu'un horaire faux ». Elle evitait le mensonge et
+/// gardait le bruit : ONZE commerces affichaient au randonneur, sous une icone
+/// d'horloge, des phrases comme « Horaires d'officine (a completer) » ou « a
+/// completer » tout court. Le marqueur etait destine a l'EDITEUR, pas au
+/// marcheur. Desormais [Shop.openingHours] porte un horaire, ou il est absent :
+/// la ligne disparait de la carte comme de la fiche (`shop_screen.dart` la
+/// garde deja par `openingHours.isNotEmpty`). Rien ne la remplace — pas de
+/// tiret, pas de « non renseigne », pas d'espace reserve.
+///
+/// CE QUE CELA A COUTE, ET QUI RESTE A TRANCHER. Cinq de ces onze phrases
+/// portaient aussi un fait verifie que le champ `openingHours` ne sait pas
+/// exprimer seul (« ouvert en saison », « service du soir en saison »,
+/// « commerce de proximite », « ouvert a l'annee »). Il est tombe avec le
+/// marqueur, faute d'un champ « periode d'ouverture » distinct de l'horaire.
+/// A SIGNALER A CHRISTOPHE : quatre entrees portent encore un horaire creux
+/// d'une autre famille, que les marqueurs du lot ne nomment pas — « Horaires de
+/// supermarche (a verifier sur place) » (x3) et « Commerce de proximite, ouvert
+/// a l'annee (a confirmer) ». Elles n'ont PAS ete touchees : les retirer est la
+/// meme decision produit que celle du 02/10, et elle n'a ete prise que pour les
+/// marqueurs mesures.
 abstract final class ShopCatalog {
   /// Retourne les donnees ravitaillement du sentier [trailId], ou `null` si le
   /// sentier n'en fournit pas (l'ecran affiche alors un fallback informatif).
@@ -119,7 +141,6 @@ abstract final class ShopCatalog {
           'Anti-moustiques',
           'Sels de rehydratation',
         ],
-        openingHours: 'Horaires d\'officine (a completer)',
       ),
 
       // ====== ETAPE 2 — COZZANO (haute vallee du Taravo) =====================
@@ -137,7 +158,6 @@ abstract final class ShopCatalog {
           'Boissons',
           'Produits corses',
         ],
-        openingHours: 'Ouvert en saison (horaires a completer)',
       ),
       Shop(
         name: 'Restaurant / gite d\'etape (Cozzano)',
@@ -151,7 +171,6 @@ abstract final class ShopCatalog {
           'Petit-dejeuner (pour les hebergés)',
           'Boissons',
         ],
-        openingHours: 'Service du soir en saison (a completer)',
       ),
 
       // ====== ETAPE 3 — GUITERA-LES-BAINS (petit hameau thermal) =============
@@ -167,7 +186,6 @@ abstract final class ShopCatalog {
           'Commerce non confirme sur place',
           'Prevoir un ravitaillement a Cozzano ou Zicavo',
         ],
-        openingHours: 'a completer',
       ),
 
       // ====== ETAPE 4 — ZICAVO (coeur du Taravo, etape GR20) =================
@@ -201,7 +219,6 @@ abstract final class ShopCatalog {
           'Bar',
           'Boissons fraiches',
         ],
-        openingHours: 'Service en saison (a completer)',
       ),
 
       // ====== ETAPE 5 — CUTTOLI-CORTICCHIATO (village peri-ajaccien) =========
@@ -217,7 +234,6 @@ abstract final class ShopCatalog {
           'Commerce de village non confirme',
           'Peripherie d\'Ajaccio proche (supermarches en voiture)',
         ],
-        openingHours: 'a completer',
       ),
 
       // ====== ETAPE 6 — BASTELICA (vallee du Prunelli) =======================
@@ -235,7 +251,6 @@ abstract final class ShopCatalog {
           'Boissons',
           'Produits de base',
         ],
-        openingHours: 'Commerce de proximite (horaires a completer)',
       ),
       Shop(
         name: 'Snack-Bar Sampiero (Bastelica)',
@@ -244,7 +259,6 @@ abstract final class ShopCatalog {
         latitude: 42.0028,
         longitude: 9.0694,
         products: ['Petit-dejeuner', 'Restauration rapide', 'Bar', 'Boissons'],
-        openingHours: 'Ouvert a l\'annee (horaires a completer)',
       ),
       Shop(
         name: 'Auberge U Pontu (Bastelica)',
@@ -257,7 +271,6 @@ abstract final class ShopCatalog {
           'Cuisine corse traditionnelle',
           'Charcuterie de Bastelica',
         ],
-        openingHours: 'Service en saison (a completer)',
       ),
 
       // ====== ETAPE 7 — PORTICCIO (arrivee, golfe d'Ajaccio) =================
@@ -289,7 +302,6 @@ abstract final class ShopCatalog {
           'Creme solaire',
           'Materiel de premiers secours',
         ],
-        openingHours: 'Horaires d\'officine (a completer)',
       ),
       Shop(
         name: 'Bars & restaurants de la plage (Porticcio)',
@@ -303,7 +315,6 @@ abstract final class ShopCatalog {
           'Boissons fraiches',
           'Celebrer l\'arrivee face au golfe !',
         ],
-        openingHours: 'Ouvert en saison (a completer)',
       ),
     ],
   );

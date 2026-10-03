@@ -4,7 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Le modele de domaine `Stage` (features/trek/domain/models/stage.dart) est la
+// Le modele de domaine `Stage` (lib/domain/stage.dart depuis 645-05) est la
 // source des distances/D+ par etape. La base Drift expose aussi une classe
 // `Stage` (table) : on la masque ici pour lever l'ambiguite tout en gardant
 // `SessionTrackPoint` (trace GPS de session).

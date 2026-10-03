@@ -53,10 +53,16 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 ///
 /// Ce qui est INTERDIT dans tous les cas, y compris dans ces deux fichiers :
 /// une adresse d exemple pour une page LEGALE (politique, conditions).
-const _demonstrationToleree = <String>{
-  'lib/features/booking/providers/hebergement_peripherique_providers.dart',
-  'lib/features/guides/domain/town_guide_catalog.dart',
-};
+///
+/// ELLE EST VIDE DEPUIS LE LOT 645-08 (03/10/2026), et c'est le point. Elle
+/// tolerait les deux fichiers de donnees de demonstration qui portaient six
+/// liens vers `example.org` — trois hebergements peripheriques et trois items
+/// de town guide. Un randonneur ne voit pas la difference entre une donnee de
+/// demonstration et une promesse : les deux lui montraient un bouton « Voir le
+/// site » qui n'ouvrait rien. Les six liens ont ete RETIRES (voie V2), donc la
+/// tolerance n'a plus d'objet — et la laisser serait rouvrir la porte sans que
+/// personne le remarque.
+const _demonstrationToleree = <String>{};
 
 void main() {
   // =========================================================================

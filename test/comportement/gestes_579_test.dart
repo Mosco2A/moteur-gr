@@ -21,6 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../structurel/parcours_reel.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
+import 'package:moteur_gr/features/booking/domain/models/hebergement_peripherique.dart';
+import 'package:moteur_gr/features/booking/providers/hebergement_peripherique_providers.dart';
 
 /// Amene [f] sous le doigt puis appuie, comme un utilisateur.
 Future<void> appuyerSur(WidgetTester tester, Finder f) async {
@@ -237,11 +239,38 @@ void main() {
       },
     );
 
+    // LE LIEN VIENT MAINTENANT D UNE SURCHARGE, ET C EST LE LOT 645-08 QUI L Y
+    // A MIS. Ce test montait l application reelle et tapait sur le « Voir le
+    // site » des hebergements de demonstration — trois boutons qui pointaient
+    // sur `example.org`. La voie V2 (arbitrage de Christophe du 02/10/2026) a
+    // retire ces trois liens : la donnee livree n affiche plus un seul bouton,
+    // donc il n y a plus rien a taper. Le GESTE que ce fichier garde — un
+    // bouton qui ne produit rien est un mensonge — reste exactement le meme,
+    // et il se mesure sur un hebergement qui, lui, PORTE un lien. Le cas « pas
+    // de lien, pas de bouton » est verifie juste en dessous.
     testWidgets(
       '/accommodations-nearby — « Voir le site » dit quand le lien ne s ouvre '
       'pas',
       (tester) async {
-        await monterAppliReelle(tester, depart: '/accommodations-nearby');
+        await monterAppliReelle(
+          tester,
+          depart: '/accommodations-nearby',
+          surcharges: [
+            hebergementsPeripheriquesProvider.overrideWith(
+              (ref, trailId) => const [
+                HebergementPeripherique(
+                  id: 'hp-avec-lien',
+                  nom: 'Gite avec site',
+                  type: HebergementType.gite,
+                  latitude: 42.12,
+                  longitude: 9.05,
+                  distanceAllerRetourKm: 2.4,
+                  deeplinkUrl: 'https://exemple-prestataire.test/gite',
+                ),
+              ],
+            ),
+          ],
+        );
         await appuyerSur(
           tester,
           find.widgetWithText(OutlinedButton, 'Voir le site'),
@@ -253,6 +282,27 @@ void main() {
               'le lanceur promet de retourner false sans lever ; il leve, '
               'donc le message prevu n est JAMAIS affiche',
         );
+        await demonterAppli(tester);
+        erreursDeRendu(tester);
+      },
+    );
+
+    testWidgets(
+      '/accommodations-nearby — sans lien, AUCUN bouton « Voir le site » : '
+      'un bouton absent vaut mieux qu un bouton qui ment (voie V2, 645-08)',
+      (tester) async {
+        // AUCUNE SURCHARGE : c est la donnee LIVREE que l on regarde, sur
+        // l application reelle. Elle portait trois liens `example.org`, donc
+        // trois boutons qui n ouvraient rien ; elle n en porte plus aucun.
+        await monterAppliReelle(tester, depart: '/accommodations-nearby');
+        expect(
+          find.widgetWithText(OutlinedButton, 'Voir le site'),
+          findsNothing,
+          reason:
+              'la donnee livree ne porte aucun lien profond : l ecran ne doit '
+              'construire ni bouton, ni tiret, ni espace reserve',
+        );
+        expect(find.text('Voir le site'), findsNothing);
         await demonterAppli(tester);
         erreursDeRendu(tester);
       },

@@ -47,11 +47,21 @@ enum ShopKind {
 /// sont renseignes, sinon masques. Aucun texte d'INTERFACE ici : ce sont des
 /// DONNEES du sentier (langue de la donnee).
 ///
-/// HONNETETE DES DONNEES (regle Chris #99460) : quand une coordonnee, un horaire
-/// ou un commerce precis n'est pas verifiable, on met une entree explicite « a
-/// completer » (via [needsCompletion] / horaire « a completer ») PLUTOT qu'un
-/// GPS ou un horaire faux. [latitude]/[longitude] sont alors laisses a `null`
-/// (l'UI masque la ligne GPS au lieu d'afficher 0,0).
+/// HONNETETE DES DONNEES (regle Chris #99460) : quand une coordonnee ou un
+/// horaire precis n'est pas verifiable, ON NE L'ECRIT PAS — ni faux, ni marque.
+/// [latitude]/[longitude] restent a `null` et l'UI masque la ligne GPS au lieu
+/// d'afficher un 0,0 qui est un point reel au large de l'Afrique ;
+/// [openingHours] reste vide et la ligne d'horaire disparait.
+///
+/// CE PARAGRAPHE DISAIT L'INVERSE JUSQU'AU LOT 645-08, et il faut le dire ici
+/// pour que personne ne retablisse l'ancienne regle de bonne foi : il
+/// prescrivait « une entree explicite a completer plutot qu'un horaire faux »,
+/// et renvoyait a un `needsCompletion` qui n'a jamais existe sur ce modele. Le
+/// marqueur evitait le mensonge et gardait le bruit : onze commerces du Mare a
+/// Mare Centre montraient au randonneur, sous une icone d'horloge, un mot
+/// destine a l'editeur. Christophe a tranche le 02/10/2026 (voie V2) : le champ
+/// absent n'affiche RIEN — pas de tiret, pas de « non renseigne », pas
+/// d'espace reserve, la ligne disparait.
 class Shop {
   const Shop({
     required this.name,
@@ -78,8 +88,13 @@ class Shop {
   /// Produits / services disponibles (donnee du sentier). Peut etre vide.
   final List<String> products;
 
-  /// Horaires d'ouverture indicatifs (donnee du sentier). Peut etre vide (ou
-  /// « a completer » quand l'info n'est pas verifiee — honnetete #99460).
+  /// Horaires d'ouverture indicatifs (donnee du sentier).
+  ///
+  /// VIDE QUAND ON NE LES CONNAIT PAS, et jamais autre chose (lot 645-08, voie
+  /// V2) : ni « a completer », ni un tiret, ni un espace. C'est le vide, et lui
+  /// seul, que `shop_screen.dart` reconnait pour ne construire NI l'icone
+  /// d'horloge, NI le libelle « Horaires », NI la valeur a cote — aux deux
+  /// endroits ou il les montre, l'apercu de la carte et la fiche detail.
   final String openingHours;
 
   /// Latitude WGS84, ou `null` si non verifiee (honnetete #99460 : on ne met

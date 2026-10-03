@@ -13,10 +13,37 @@ import 'transport_info.dart';
 /// dans la langue de la donnee (ici FR pour le sentier corse) ; l'INTERFACE de
 /// l'ecran (onglets, conseils, boutons) est traduite cote UI via Slang.
 ///
-/// HONNETETE DES DONNEES (regle Chris #99460) : quand une info precise n'est pas
-/// disponible (horaire exact, tarif), on met une entree explicite « a completer »
-/// plutot qu'un horaire faux. Les liens web et telephones sont ceux des
-/// operateurs/offices connus quand ils existent ; sinon champ vide (l'UI masque).
+/// HONNETETE DES DONNEES (regle Chris #99460) : on n'invente jamais un horaire
+/// ni un tarif. Les liens web et telephones sont ceux des operateurs/offices
+/// connus quand ils existent ; sinon champ vide (l'UI masque).
+///
+/// UN TARIF OU UN HORAIRE QU'ON N'A PAS N'EST PLUS ECRIT DU TOUT (lot 645-08,
+/// voie V2 arbitree par Christophe le 02/10/2026). La regle etait « on met une
+/// entree explicite a completer plutot qu'un horaire faux ». Elle evitait le
+/// mensonge et gardait le bruit : VINGT-SEPT fois, le randonneur lisait un
+/// marqueur d'editeur a la place d'une information — dix badges de prix
+/// « a completer » en vert, huit blocs d'horaires qui se terminaient par
+/// « (a completer) », et neuf libelles de contact qui portaient l'aveu dans
+/// leur nom. Desormais [TransportOption.price] et [TransportOption.schedule]
+/// portent une valeur, ou sont absents : leur defaut est la chaine vide, et
+/// `transport_screen.dart` ne construit ni le badge ni le bloc sombre des
+/// horaires dans ce cas (`if (option.price.isNotEmpty)`,
+/// `if (option.schedule.isNotEmpty)`). Rien ne les remplace — pas de tiret,
+/// pas de « non renseigne », pas d'espace reserve.
+///
+/// LES LIBELLES DE CONTACT, EUX, RESTENT — SANS L'AVEU. `contactLabel` nomme
+/// l'operateur (« Taxi », « Autocars du golfe », « Port d'Ajaccio ») et n'est
+/// affiche que lorsqu'il y a un numero ou un site a cote de lui
+/// (`if (option.hasContact || option.hasUrl)`). Le « (a completer) » qu'ils
+/// portaient parlait du NUMERO manquant, deja masque : il ne restait qu'a le
+/// retirer du nom.
+///
+/// CE QUE CELA A COUTE. Quatre horaires portaient aussi un fait saisonnier que
+/// le champ ne sait pas exprimer seul (« frequence renforcee en saison »,
+/// « service saisonnier »). Il tombe avec le marqueur, faute d'une rubrique
+/// « saisonnalite » distincte de l'horaire. Les horaires REELS du catalogue
+/// (« Sur reservation », « Selon compagnies maritimes », « Variable ») sont
+/// intacts : ils disent quelque chose.
 abstract final class TransportCatalog {
   /// Retourne les donnees transport du sentier [trailId], ou `null` si le sentier
   /// n'en fournit pas (l'ecran affiche alors un fallback informatif propre).
@@ -63,10 +90,6 @@ abstract final class TransportCatalog {
                 description:
                     'Ligne de la plaine orientale (cote est), via Aleria. '
                     'Trajet indicatif ~1h30.',
-                price: 'a completer',
-                schedule:
-                    'Horaires saisonniers a verifier aupres du '
-                    'transporteur (a completer)',
                 contact: '',
                 contactLabel: 'Autocars de la plaine orientale',
               ),
@@ -74,10 +97,9 @@ abstract final class TransportCatalog {
                 mode: TransportModeKind.taxi,
                 title: 'Taxi depuis Bastia',
                 description: 'Trajet direct sur reservation. Duree ~1h15.',
-                price: 'a completer',
                 schedule: 'Sur reservation',
                 contact: '',
-                contactLabel: 'Taxi (a completer)',
+                contactLabel: 'Taxi',
               ),
             ],
           ),
@@ -91,10 +113,8 @@ abstract final class TransportCatalog {
                 description:
                     'Liaison transversale via le col de Vizzavona puis la '
                     'plaine orientale. Correspondance possible. Trajet ~2h30.',
-                price: 'a completer',
-                schedule: 'Horaires saisonniers a verifier (a completer)',
                 contact: '',
-                contactLabel: 'Autocars (a completer)',
+                contactLabel: 'Autocars',
               ),
             ],
           ),
@@ -147,10 +167,8 @@ abstract final class TransportCatalog {
                 description:
                     'Ligne du golfe (rive sud) vers la gare routiere '
                     'd\'Ajaccio. Trajet ~40 min selon trafic.',
-                price: 'a completer',
-                schedule: 'Frequence renforcee en saison (a completer)',
                 contact: '',
-                contactLabel: 'Autocars du golfe (a completer)',
+                contactLabel: 'Autocars du golfe',
               ),
               TransportOption(
                 mode: TransportModeKind.ferry,
@@ -158,10 +176,8 @@ abstract final class TransportCatalog {
                 description:
                     'Liaison saisonniere par bateau a travers le golfe. '
                     'Alternative panoramique a la route. Duree ~20 min.',
-                price: 'a completer',
-                schedule: 'Service saisonnier (a completer)',
                 contact: '',
-                contactLabel: 'Navette maritime du golfe (a completer)',
+                contactLabel: 'Navette maritime du golfe',
               ),
             ],
           ),
@@ -175,10 +191,9 @@ abstract final class TransportCatalog {
                 description:
                     'Aeroport Napoleon-Bonaparte (Campo dell\'Oro). Trajet '
                     'direct ~25 min.',
-                price: 'a completer',
                 schedule: 'Sur reservation',
                 contact: '',
-                contactLabel: 'Taxi (a completer)',
+                contactLabel: 'Taxi',
               ),
               TransportOption(
                 mode: TransportModeKind.plane,
@@ -207,7 +222,7 @@ abstract final class TransportCatalog {
                 price: 'Variable',
                 schedule: 'Selon compagnies maritimes',
                 contact: '',
-                contactLabel: 'Port d\'Ajaccio (a completer)',
+                contactLabel: 'Port d\'Ajaccio',
               ),
             ],
           ),
@@ -239,8 +254,6 @@ abstract final class TransportCatalog {
                 title: 'Autocar Ghisonaccia -> Bastia',
                 description:
                     'Ligne de la plaine orientale via Aleria. Trajet ~1h30.',
-                price: 'a completer',
-                schedule: 'Horaires saisonniers a verifier (a completer)',
                 contact: '',
                 contactLabel: 'Autocars de la plaine orientale',
               ),
@@ -256,10 +269,8 @@ abstract final class TransportCatalog {
                 description:
                     'Liaison transversale via Vizzavona. Correspondance '
                     'possible. Trajet ~2h30.',
-                price: 'a completer',
-                schedule: 'Horaires saisonniers a verifier (a completer)',
                 contact: '',
-                contactLabel: 'Autocars (a completer)',
+                contactLabel: 'Autocars',
               ),
             ],
           ),
@@ -291,10 +302,8 @@ abstract final class TransportCatalog {
                 description:
                     'Ligne du golfe (rive sud) depuis la gare routiere '
                     'd\'Ajaccio. Trajet ~40 min.',
-                price: 'a completer',
-                schedule: 'Frequence renforcee en saison (a completer)',
                 contact: '',
-                contactLabel: 'Autocars du golfe (a completer)',
+                contactLabel: 'Autocars du golfe',
               ),
               TransportOption(
                 mode: TransportModeKind.ferry,
@@ -302,10 +311,8 @@ abstract final class TransportCatalog {
                 description:
                     'Liaison saisonniere par bateau a travers le golfe '
                     '(~20 min).',
-                price: 'a completer',
-                schedule: 'Service saisonnier (a completer)',
                 contact: '',
-                contactLabel: 'Navette maritime du golfe (a completer)',
+                contactLabel: 'Navette maritime du golfe',
               ),
             ],
           ),

@@ -341,6 +341,67 @@ void main() {
       }
     });
 
+    // AJOUTE PAR LE LOT 645-08 (voie V2, arbitrage de Christophe du
+    // 02/10/2026). Vingt-sept fois, ce catalogue livrait au randonneur un
+    // marqueur destine a l'editeur : un badge de prix vert « a completer », un
+    // bloc d'horaires qui s'achevait sur « (a completer) », un operateur
+    // nomme « Taxi (a completer) ». Rien ne le gardait.
+    test('aucune option ne livre de marqueur d editeur au randonneur', () {
+      final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
+      final creux = <String>[];
+      for (final ep in data.endpoints) {
+        for (final sec in ep.sections) {
+          for (final o in sec.options) {
+            for (final champ in <String, String>{
+              'price': o.price,
+              'schedule': o.schedule,
+              'contactLabel': o.contactLabel,
+              'description': o.description,
+              'title': o.title,
+            }.entries) {
+              if (champ.value.toLowerCase().contains('completer')) {
+                creux.add(
+                  '${ep.endpointName}/${o.title} '
+                  '${champ.key} = "${champ.value}"',
+                );
+              }
+            }
+          }
+        }
+      }
+      expect(
+        creux,
+        isEmpty,
+        reason:
+            'VOIE V2 : un tarif ou un horaire inconnu est RETIRE, jamais '
+            'remplace par une chaine creuse. Un `price` ou un `schedule` non '
+            'vide rallume un badge ou un bloc d horaires qui ne dit rien.',
+      );
+    });
+
+    test('un horaire ou un tarif absent est VIDE, jamais un blanc', () {
+      // C'est la forme de l'absence qui compte : `transport_screen.dart`
+      // masque sur `isNotEmpty`, donc un espace seul rouvrirait le badge ou le
+      // bloc sombre sur du vide.
+      final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
+      for (final ep in data.endpoints) {
+        for (final sec in ep.sections) {
+          for (final o in sec.options) {
+            expect(
+              o.price,
+              anyOf(isEmpty, matches(RegExp(r'\S'))),
+              reason: '${o.title} : prix blanc',
+            );
+            expect(
+              o.schedule,
+              anyOf(isEmpty, matches(RegExp(r'\S'))),
+              reason: '${o.title} : horaire blanc',
+            );
+          }
+        }
+      }
+    });
+
     test('un sentier inconnu ne fournit pas de donnees (fallback UI)', () {
       expect(TransportCatalog.forTrail('sentier-inexistant'), isNull);
     });

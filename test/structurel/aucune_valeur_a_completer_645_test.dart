@@ -9,7 +9,8 @@
 // pas : elle s'affiche. Une adresse `example.org` dans un ecran de contact
 // envoie l'utilisateur nulle part sans jamais lever d'exception ; un
 // `localhost` dans une URL de service marche chez le developpeur et seulement
-// chez lui. Ces 45 marqueurs sont du texte que l'utilisateur peut LIRE.
+// chez lui. Ces marqueurs sont du texte que l'utilisateur peut LIRE — il y en
+// avait 45 le 02/10/2026, il n'y en a plus aucun depuis le lot 645-08.
 //
 // ---------------------------------------------------------------------------
 // LES LIGNES DE COMMENTAIRE NE COMPTENT PAS, ET C'EST INDISPENSABLE
@@ -43,9 +44,33 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
 
+/// PLAFOND A ZERO DEPUIS LE 03/10/2026 (lot 645-08, voie V2).
+///
 /// Mesure du 02/10/2026, tete 147ca32d : 45 marqueurs dans le code de `lib/`
-/// (39 « a completer » + 6 `example.org`), hors lignes de commentaire.
-const plafondValeursACompleter = 45;
+/// (39 « a completer » + 6 `example.org`), hors lignes de commentaire. Mesure
+/// du 03/10/2026 apres le lot 645-08 : ZERO. Les 45 se repartissaient en cinq
+/// fichiers, et non les trois que la fiche annoncait :
+///
+///   27  lib/features/planning/domain/transport_catalog.dart
+///   11  lib/features/planning/domain/shop_catalog.dart
+///    3  lib/features/booking/providers/hebergement_peripherique_providers.dart
+///    3  lib/features/guides/domain/town_guide_catalog.dart
+///    1  lib/shared/widgets/lien_vers_les_cartes.dart
+///
+/// Les 44 premiers etaient des valeurs LIVREES : un badge de prix vert qui
+/// disait « a completer », un bouton « Voir le site » vers `example.org`, une
+/// ligne d'horaire qui n'en portait pas. Christophe a tranche le 02/10/2026 a
+/// 21:58 : VOIE V2, masquer proprement — le champ absent n'affiche RIEN, pas
+/// de tiret, pas de « non renseigne », pas d'espace reserve, la ligne
+/// disparait. Le 45e etait le motif qui INTERCEPTE l'aveu venu du contenu
+/// publie ; cette garde, qui ne sait pas distinguer un defaut de sa defense,
+/// le comptait avec les autres. Il a ete reecrit avec `\s+` — ce qui l'elargit
+/// et le sort de la mesure du meme geste (la raison entiere est sur place).
+///
+/// ZERO EST UN PLAFOND, PAS UNE CIBLE ATTEINTE PAR HASARD : la prochaine
+/// valeur a completer ecrite dans `lib/` fera rougir cette garde, et c'est
+/// exactement ce qu'on lui demande.
+const plafondValeursACompleter = 0;
 
 /// Les marqueurs cherches, TOUS ancres par frontiere de mot.
 ///
@@ -98,20 +123,22 @@ void main() {
   });
 
   group('645-01 / VAC-01 — pas une valeur a completer de plus', () {
-    test('pas plus de valeurs a completer dans le code qu au 02/10', () {
+    test('aucune valeur a completer dans le code de lib/', () {
       expect(
         dansLeCode.length,
         lessThanOrEqualTo(plafondValeursACompleter),
         reason:
-            'UNE VALEUR A COMPLETER DE PLUS PART EN PRODUCTION : '
-            '${dansLeCode.length} marqueurs dans le code de lib/, contre '
-            '$plafondValeursACompleter au 02/10/2026. Ce defaut n echoue pas, '
-            'il S AFFICHE : une adresse `example.org` envoie l utilisateur '
-            'nulle part sans jamais lever d exception, et un `localhost` '
-            'marche chez vous et seulement chez vous.\n'
-            'RENSEIGNEZ LA VALEUR, ou retirez l ecran qui l affiche. La '
-            'troisieme voie — masquer — est une decision produit de '
-            'Christophe (lot 645-08), pas un choix de code.\n'
+            'UNE VALEUR A COMPLETER PART EN PRODUCTION : '
+            '${dansLeCode.length} marqueur(s) dans le code de lib/, contre '
+            '$plafondValeursACompleter depuis le lot 645-08 (03/10/2026). Ce '
+            'defaut n echoue pas, il S AFFICHE : une adresse `example.org` '
+            'envoie l utilisateur nulle part sans jamais lever d exception, '
+            'et un `localhost` marche chez vous et seulement chez vous.\n'
+            'RENSEIGNEZ LA VALEUR, ou MASQUEZ-LA : le champ absent n affiche '
+            'RIEN — pas de tiret, pas de « non renseigne », pas d espace '
+            'reserve, la ligne disparait (voie V2, arbitrage de Christophe du '
+            '02/10/2026 ; precedent dans le depot : les goodies de la tache '
+            '552, et les cinq fichiers du lot 645-08).\n'
             '  ${dansLeCode.join('\n  ')}',
       );
     });

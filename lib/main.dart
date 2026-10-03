@@ -134,6 +134,30 @@ Future<void> main() async {
   );
 }
 
+/// LES TRAVAUX D AMORCAGE DE L APPLICATION, DANS L ORDRE OU ILS SONT EXECUTES.
+///
+/// Sortie du `build` de [MoteurGrApp] pour qu un test puisse la monter telle
+/// quelle : tant qu elle etait une expression anonyme au milieu des overrides,
+/// AUCUN test ne pouvait affirmer qu elle porte bien ses deux travaux, ni dans
+/// quel ordre — une surcharge disparue ou intervertie n aurait rien fait
+/// rougir (regle maison #100350 : un garde qui echoue en silence est pire que
+/// pas de garde). Le corps est repris mot pour mot ; elle ne fait que
+/// construire la liste, elle n execute rien (c est `app_bootstrap_provider`
+/// qui appelle chaque travail, en sequence).
+List<TacheDAmorcage> tachesDAmorcageDeLApplication(Ref ref) => <TacheDAmorcage>[
+  // Tache 615 : l exclusion iCloud de la fiche medicale.
+  () => ref.read(ficheMedicaleFichierProvider).garantirExclusion(),
+  // Tache 623 : le profil du randonneur quitte les preferences, et
+  // l exclusion est reposee dans le meme geste (l ecriture atomique
+  // remplace le fichier, et un fichier remplace ne porte plus
+  // l attribut de celui qu il remplace).
+  () async {
+    final profil = ref.read(hikerProfileRepositoryProvider);
+    await profil.migrerDepuisPreferences();
+    await profil.fichier.garantirExclusion();
+  },
+];
+
 /// Application racine du Moteur GR.
 ///
 /// Wrappee dans ProviderScope pour Riverpod,
@@ -176,21 +200,7 @@ class MoteurGrApp extends StatelessWidget {
         // reecrira peut-etre jamais, et c est l amorce, et elle seule, qui
         // repasse derriere lui. Elle ne leve jamais et elle est bornee par
         // `ExclusionSauvegardeIcloud.delaiMax`.
-        tachesDAmorcageProvider.overrideWith(
-          (ref) => <TacheDAmorcage>[
-            // Tache 615 : l exclusion iCloud de la fiche medicale.
-            () => ref.read(ficheMedicaleFichierProvider).garantirExclusion(),
-            // Tache 623 : le profil du randonneur quitte les preferences, et
-            // l exclusion est reposee dans le meme geste (l ecriture atomique
-            // remplace le fichier, et un fichier remplace ne porte plus
-            // l attribut de celui qu il remplace).
-            () async {
-              final profil = ref.read(hikerProfileRepositoryProvider);
-              await profil.migrerDepuisPreferences();
-              await profil.fichier.garantirExclusion();
-            },
-          ],
-        ),
+        tachesDAmorcageProvider.overrideWith(tachesDAmorcageDeLApplication),
         // TACHE 613 — L'OVERRIDE DU DAO SANTE A ETE RETIRE, PAS OUBLIE. Il
         // cablait la fiche medicale (E57 LOT D/D1) sur la base Drift commune.
         // Cette base est desormais DURABLE et doit remonter dans la sauvegarde
