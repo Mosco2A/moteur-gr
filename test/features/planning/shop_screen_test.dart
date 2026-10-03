@@ -242,26 +242,56 @@ void main() {
       },
     );
 
-    test(
-      'honnetete : entrees a completer explicites, pas de GPS 0,0 invente',
-      () {
-        final data = ShopCatalog.forTrail('mare-a-mare-centre')!;
-        // Au moins une entree signale honnetement un manque (« a completer » /
-        // « a verifier »), plutot qu'inventer.
-        final hasHonestGap = data.shops.any(
-          (s) =>
-              s.openingHours.toLowerCase().contains('completer') ||
-              s.name.toLowerCase().contains('verifier'),
+    // ATTENTE VOLONTAIREMENT INVERSEE PAR LE LOT 645-08 (voie V2, arbitrage de
+    // Christophe du 02/10/2026). Elle exigeait qu'« au moins une entree »
+    // porte « a completer » dans ses horaires : elle GARDAIT donc le defaut
+    // que l'inventaire 593 avait releve — onze commerces montraient au
+    // randonneur, sous une icone d'horloge, un marqueur destine a l'editeur.
+    // L'honnetete ne change pas de camp, elle change de forme : un horaire
+    // qu'on n'a pas ne s'ecrit plus, il est absent, et la ligne disparait.
+    // Le refus d'inventer un GPS 0,0 — l'autre moitie de cette garde — reste
+    // mot pour mot.
+    test('honnetete : aucun horaire creux livre, pas de GPS 0,0 invente', () {
+      final data = ShopCatalog.forTrail('mare-a-mare-centre')!;
+      // AUCUNE entree ne livre le marqueur de l'editeur au randonneur.
+      final creux = data.shops
+          .where((s) => s.openingHours.toLowerCase().contains('completer'))
+          .map((s) => '${s.name} : ${s.openingHours}')
+          .toList();
+      expect(
+        creux,
+        isEmpty,
+        reason:
+            'VOIE V2 : un horaire inconnu est RETIRE, jamais remplace par '
+            'une chaine creuse. Un `openingHours` qui dit « a completer » '
+            'rallume une ligne d horaire qui ne dit rien.',
+      );
+      // ET L ABSENCE EST UNE VRAIE ABSENCE, pas un tiret ni un blanc. Onze
+      // entrees ont perdu leur horaire : leur `openingHours` est la chaine
+      // VIDE, seule forme que `shop_screen.dart` ne construit pas
+      // (`if (shop.openingHours.isNotEmpty)`, deux fois : apercu et fiche).
+      final sansHoraire = data.shops.where((s) => s.openingHours.isEmpty);
+      expect(
+        sansHoraire,
+        isNotEmpty,
+        reason: 'le lot 645-08 a retire onze horaires creux',
+      );
+      for (final s in data.shops) {
+        expect(
+          s.openingHours,
+          anyOf(isEmpty, matches(RegExp(r'\S'))),
+          reason:
+              '${s.name} : un horaire est renseigne ou absent, jamais un '
+              'blanc ni un tiret',
         );
-        expect(hasHonestGap, isTrue);
-        // Aucune coordonnee (0,0) bidon : soit GPS absent, soit coords plausibles.
-        for (final s in data.shops) {
-          if (s.hasCoordinates) {
-            expect(s.latitude != 0 || s.longitude != 0, isTrue);
-          }
+      }
+      // Aucune coordonnee (0,0) bidon : soit GPS absent, soit coords plausibles.
+      for (final s in data.shops) {
+        if (s.hasCoordinates) {
+          expect(s.latitude != 0 || s.longitude != 0, isTrue);
         }
-      },
-    );
+      }
+    });
 
     test('un sentier inconnu ne fournit pas de donnees (fallback UI)', () {
       expect(ShopCatalog.forTrail('sentier-inexistant'), isNull);
@@ -388,9 +418,8 @@ void main() {
       },
     );
 
-    testWidgets('detail sans GPS : ligne GPS masquee (honnetete #99460)', (
-      tester,
-    ) async {
+    testWidgets('detail sans GPS ni horaire : les deux lignes sont masquees '
+        '(honnetete #99460, voie V2 du lot 645-08)', (tester) async {
       // Bar Delta n'a pas de coords ni d'horaire (etape 4, plus bas dans la
       // liste) : on l'amene a l'ecran avant de taper (evite un tap manque).
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
@@ -408,6 +437,10 @@ void main() {
       expect(find.text(t.shop.fieldType), findsOneWidget);
       // Pas de ligne GPS (coords null -> masquee, pas de 0,0 faux).
       expect(find.text(t.shop.fieldGps), findsNothing);
+      // NI LIGNE D HORAIRE : c'est le rendu que la donnee livree produit
+      // desormais pour onze commerces du Mare a Mare Centre (lot 645-08).
+      // Pas de libelle « Horaires », donc pas de valeur vide a cote.
+      expect(find.text(t.shop.fieldHours), findsNothing);
     });
   });
 
