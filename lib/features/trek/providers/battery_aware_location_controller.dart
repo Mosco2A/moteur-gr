@@ -100,7 +100,7 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
   late final Connectivity _connectivityInstance =
       _connectivity ?? Connectivity();
 
-  StreamSubscription<ConnectivityResult>? _connectivitySub;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
   StreamSubscription<BatteryState>? _batterySub;
   bool _observerAttached = false;
 
@@ -208,8 +208,11 @@ class BatteryAwareLocationController extends Notifier<BatteryLocationState>
     }
   }
 
-  void _applyConnectivity(ConnectivityResult result) {
-    final offline = result == ConnectivityResult.none;
+  /// connectivity_plus 6+ rend une liste de liens actifs. Hors ligne se
+  /// presente en `[ConnectivityResult.none]` ou en liste vide : les deux
+  /// valent le `none` unique d avant la montee.
+  void _applyConnectivity(List<ConnectivityResult> results) {
+    final offline = !results.any((r) => r != ConnectivityResult.none);
     _updateState(state.copyWith(deferSync: offline));
   }
 

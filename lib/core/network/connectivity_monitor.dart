@@ -106,24 +106,39 @@ class ConnectivityMonitor {
     }
   }
 
-  ConnectivityStatus _mapResult(ConnectivityResult result) {
-    if (result == ConnectivityResult.none) {
-      return ConnectivityStatusValues.offline;
-    }
-    return ConnectivityStatusValues.online;
+  /// DEPUIS connectivity_plus 6, LE GREFFON REND UNE LISTE, PAS UNE VALEUR.
+  /// Un telephone peut porter plusieurs liens actifs a la fois (wifi et mobile
+  /// montes ensemble, VPN par-dessus un lien physique). Hors ligne se presente
+  /// ici comme `[ConnectivityResult.none]`, et une liste vide est possible :
+  /// les deux se replient sur hors ligne, comme la valeur unique `none` avant.
+  ConnectivityStatus _mapResult(List<ConnectivityResult> results) {
+    final enLigne = results.any((r) => r != ConnectivityResult.none);
+    return enLigne
+        ? ConnectivityStatusValues.online
+        : ConnectivityStatusValues.offline;
   }
 
-  TypeDeLien _mapLien(ConnectivityResult result) {
-    switch (result) {
-      case ConnectivityResult.none:
-        return TypesDeLien.aucun;
+  TypeDeLien _mapLien(List<ConnectivityResult> results) {
+    final liens = results
+        .where((r) => r != ConnectivityResult.none)
+        .toList(growable: false);
+    if (liens.isEmpty) return TypesDeLien.aucun;
+    // PLUSIEURS LIENS A LA FOIS : ON NE SAIT PAS LEQUEL PORTE LE TRAFIC, DONC
+    // ON DEMANDE. Ce cas n existait pas avant connectivity_plus 6, qui ne
+    // savait nommer qu un seul lien. Le replier sur [TypesDeLien.autre] est le
+    // seul choix qui ne peut pas facturer le randonneur : si le trafic part en
+    // reel sur la 4G montee a cote du wifi, une descente de 260 Mo lancee sans
+    // demander serait une facture qu il n a pas choisie.
+    if (liens.length > 1) return TypesDeLien.autre;
+    switch (liens.single) {
       case ConnectivityResult.wifi:
         return TypesDeLien.wifi;
       case ConnectivityResult.mobile:
         return TypesDeLien.mobile;
       default:
-        // Ethernet, VPN, bluetooth, lien inconnu d une version future du plugin :
-        // tout ce qui n est pas identifie comme du wifi demande confirmation.
+        // Ethernet, VPN, bluetooth, satellite (ajoute en 7.1.0), lien inconnu
+        // d une version future du plugin : tout ce qui n est pas identifie
+        // comme du wifi demande confirmation.
         return TypesDeLien.autre;
     }
   }

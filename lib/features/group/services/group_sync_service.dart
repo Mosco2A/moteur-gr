@@ -239,8 +239,14 @@ class GroupSyncService {
   /// Verifie si le reseau actuel est wifi et flush si c est le cas.
   Future<void> _checkWifiAndFlush() async {
     try {
-      final result = await _connectivity.checkConnectivity();
-      if (result == ConnectivityResult.wifi) {
+      // connectivity_plus 6+ rend une liste de liens actifs : « wifi detecte »
+      // se lit donc wifi PRESENT parmi eux. Contrairement a la descente de
+      // cartes (voir ConnectivityMonitor._mapLien), un push de positions
+      // tamponnees ne pese rien : le wifi present suffit, inutile d exiger
+      // qu il soit le seul lien monte — l exiger retiendrait le tampon plus
+      // longtemps qu avant la montee.
+      final results = await _connectivity.checkConnectivity();
+      if (results.contains(ConnectivityResult.wifi)) {
         _log.i('[GroupSync] Wifi refuge detecte, push positions');
         await _flushBuffer();
       }
