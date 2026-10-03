@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/data/track_simplifier.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 
 void main() {
   group('DouglasPeucker (track_simplifier)', () {

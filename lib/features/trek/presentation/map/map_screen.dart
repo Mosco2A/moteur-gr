@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
-import '../../../../core/geo/track_point.dart';
+import '../../../../core/geo/trace_point.dart';
 import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../core/services/monetization_service.dart';
@@ -43,7 +43,7 @@ import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
 import '../../../trail/providers/progress_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
-import '../../domain/models/stage.dart';
+import '../../../../domain/stage.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';

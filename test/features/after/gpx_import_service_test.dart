@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/after/data/gpx_import_service.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 
 /// PARITE GR20 (Import GPX) — le service d'import est GENERIQUE et data-driven :
 /// bornes geographiques, points de reference (detection d'etapes + hors-trace)

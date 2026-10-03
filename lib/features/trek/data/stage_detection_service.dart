@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/geo/geo_utils.dart';
-import '../domain/models/stage.dart';
+import '../../../domain/stage.dart';
 
 /// Service de detection d'etape courante basee sur le stream GPS.
 ///

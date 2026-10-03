@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_config_screen.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_card.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';

@@ -94,6 +94,7 @@ void main() {
   /// l'ecran : on pilote donc exactement ce que le randonneur aurait pose dans
   /// le Calendrier, sans toucher au stockage.
   Widget wrap({int? daysUntilDeparture}) {
+    final now = DateTime.now();
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
@@ -104,7 +105,7 @@ void main() {
         trainingDepartureDateProvider.overrideWithValue(
           daysUntilDeparture == null
               ? null
-              : DateTime.now().add(Duration(days: daysUntilDeparture)),
+              : DateTime(now.year, now.month, now.day + daysUntilDeparture),
         ),
       ],
       child: TranslationProvider(

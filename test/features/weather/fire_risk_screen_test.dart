@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/weather/domain/fire_risk.dart';
 import 'package:moteur_gr/features/weather/domain/fire_risk_catalog.dart';
 import 'package:moteur_gr/features/weather/models/weather_forecast.dart';

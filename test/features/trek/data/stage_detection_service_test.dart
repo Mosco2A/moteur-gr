@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/features/trek/data/stage_detection_service.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 
 /// Helper : cree une Position de test avec les champs requis.
 Position _fakePosition({required double lat, required double lng}) {

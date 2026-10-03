@@ -12,9 +12,9 @@ import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trek/domain/models/stage.dart';
-import '../../trek/domain/models/trek_session.dart';
-import '../../trek/domain/trek_completion.dart';
+import '../../../domain/stage.dart';
+import '../../../domain/trek_session.dart';
+import '../../../domain/trek_completion.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
 

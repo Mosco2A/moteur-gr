@@ -12,7 +12,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/tip_card_repository.dart';
 import '../data/tip_category_config.dart';
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import 'tip_detail_sheet.dart';
 import 'tip_points_list.dart';
 import '../../../core/branding/stepways_icons.dart';

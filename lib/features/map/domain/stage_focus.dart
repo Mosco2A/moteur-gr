@@ -2,8 +2,8 @@
 /// entier ou l'on ne distingue plus rien.
 library;
 
-import '../../../core/geo/track_point.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/geo/trace_point.dart';
+import '../../../core/models/stage_row.dart';
 
 /// OU LA CARTE DOIT S'OUVRIR (tache 558).
 ///

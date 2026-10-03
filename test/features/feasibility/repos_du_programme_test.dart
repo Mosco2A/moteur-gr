@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/objective_profile.dart';
 import 'package:moteur_gr/features/feasibility/providers/hiker_profile_provider.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
-import 'package:moteur_gr/features/planning/models/planned_day.dart';
+import 'package:moteur_gr/domain/planned_day.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 
 /// LES JOURS DE REPOS DU PROGRAMME ARRIVENT-ILS JUSQU'AU MOTEUR ? (#2-p)

@@ -32,7 +32,7 @@ library;
 
 import 'dart:math' as math;
 
-import '../../features/trek/domain/models/track_point.dart';
+import '../../domain/track_point.dart';
 
 /// Resultat AGREGE d'une trace GPS — la SEULE forme transmissible au serveur.
 ///

@@ -9,7 +9,7 @@ import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../trail/providers/trail_providers.dart';
-import '../../trek/domain/models/stage_accommodation.dart';
+import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 
 /// Hebergements d'une etape pour un sentier donne (reutilise le module booking :

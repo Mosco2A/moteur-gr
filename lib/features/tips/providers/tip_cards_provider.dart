@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../data/tip_cards_loader.dart';
-import '../domain/models/tip_card.dart';
-import '../domain/models/tip_theme.dart';
+import '../../../domain/tip_card.dart';
+import '../../../domain/tip_theme.dart';
 
 /// Fiches conseil du sentier ACTIF (socle commun + specifiques), LOT 5 (C).
 ///

@@ -9,7 +9,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 
 /// PARITE GR20, LOT 3 (#99433) — tests du socle « Apres le trek » :

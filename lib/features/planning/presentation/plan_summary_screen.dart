@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -18,7 +18,7 @@ import '../../booking/domain/models/nuitee_type.dart';
 import '../../booking/providers/nuitee_selections_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../../trek/providers/gps_providers.dart';
-import '../models/planned_day.dart';
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 

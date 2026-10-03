@@ -1,4 +1,4 @@
-import 'stage.dart';
+import 'stage_row.dart';
 
 /// Duree d'etape — source unique de verite (parite GR20, socle « donnees
 /// externes »).

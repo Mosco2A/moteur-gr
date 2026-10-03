@@ -19,7 +19,7 @@ import '../../../shared/widgets/attribution_osm.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../trek/domain/models/stage.dart';
+import '../../../domain/stage.dart';
 import '../data/gpx_import_service.dart';
 import '../providers/gpx_import_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

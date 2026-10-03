@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
-import 'package:moteur_gr/features/poi/domain/poi_type_label.dart';
+import 'package:moteur_gr/shared/poi/poi_type_label.dart';
 import 'package:moteur_gr/features/tips/presentation/tip_detail_sheet.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/trek_stage_detail_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 

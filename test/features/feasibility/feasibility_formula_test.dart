@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 
 /// Tests du MOTEUR DE FAISABILITE V2 (spec finale #SW-FINAL, 22/09/2026).
 ///

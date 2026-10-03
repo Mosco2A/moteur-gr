@@ -3,7 +3,7 @@
 library;
 
 import '../../../core/geo/geo_utils.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 
 /// Moteur de calcul pour le tracking de randonnee.
 ///

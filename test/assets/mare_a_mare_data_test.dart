@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 
 /// Tests de validation des donnees Mare a Mare Centre.
 /// Verifie que les JSON sont valides et parseables par les modeles Freezed.

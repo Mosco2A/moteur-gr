@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../engine/trail_engine.dart';
-import '../../features/feasibility/data/hiker_profile_repository.dart';
-import '../../features/safety/presentation/health_info_screen.dart'
-    show ficheMedicaleFichierProvider;
 import '../../features/trek/data/seed_data_loader.dart';
 import '../../features/trek/providers/session_recovery_provider.dart';
 import '../../features/trek/providers/stage_providers.dart';
 import '../services/garde_sauvegarde_ios.dart';
+import 'taches_d_amorcage.dart';
 import '../services/monetization_service.dart';
 import 'database_provider.dart';
 
@@ -77,7 +75,25 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   final config = ref.watch(trailConfigProvider);
 
-  await ref.read(ficheMedicaleFichierProvider).garantirExclusion();
+  // LES TRAVAUX QUE LES FEATURES ONT POSES DEVANT L AMORCAGE (cas K1 du lot
+  // 645-05). Ici se tenait `ref.read(ficheMedicaleFichierProvider)`, pris dans
+  // `features/safety/presentation/health_info_screen.dart` : LE SOCLE
+  // IMPORTAIT UN ECRAN. La fleche est inversee — l amorcage declare le besoin,
+  // la feature s annonce, et c est `main.dart`, au-dessus des deux couches, qui
+  // noue les deux (voir `taches_d_amorcage.dart`).
+  //
+  // DEUX TRAVAUX Y SONT POSES PAR `main.dart`, DANS CET ORDRE : l exclusion
+  // iCloud de la fiche medicale (tache 615, feature `safety`) puis la migration
+  // du profil du randonneur hors des preferences (tache 623, feature
+  // `feasibility`). Tous deux sont idempotents et ne levent jamais.
+  //
+  // L ORDRE EST CONSERVE AU PAS PRES : ces deux travaux passaient AVANT les
+  // preferences et le seed, et ils y passent toujours — la boucle est a la
+  // place exacte des appels qu elle remplace, et la liste garde leur ordre
+  // relatif. C est ce qui rend ce deplacement sans effet sur le demarrage.
+  for (final tache in ref.read(tachesDAmorcageProvider)) {
+    await tache();
+  }
 
   // TACHE 623 — LE PROFIL DU RANDONNEUR QUITTE LES PREFERENCES ICI, ET C'EST LE
   // SEUL ENDROIT QUI PUISSE LE FAIRE POUR UN TELEPHONE DEJA INSTALLE.
@@ -100,10 +116,6 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   // ET L'EXCLUSION EST REPOSEE DANS LE MEME GESTE, pour la meme raison que pour
   // la fiche : l'ecriture atomique remplace le fichier, et un fichier remplace ne
   // porte plus l'attribut de celui qu'il remplace.
-  final profil = ref.read(hikerProfileRepositoryProvider);
-  await profil.migrerDepuisPreferences();
-  await profil.fichier.garantirExclusion();
-
   final prefs = await SharedPreferences.getInstance();
 
   final loader = SeedDataLoader(db: db, prefs: prefs, trailConfig: config);

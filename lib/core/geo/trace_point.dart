@@ -1,11 +1,12 @@
 /// Un point de trace de REFERENCE : altitude et distance cumulee, tous deux
-/// requis, sans horodatage (voir ARB-645-04-b).
+/// requis, sans horodatage. Autre type que le TrackPoint de
+/// lib/domain/track_point.dart (voir ARB-645-04-b).
 library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'track_point.freezed.dart';
-part 'track_point.g.dart';
+part 'trace_point.freezed.dart';
+part 'trace_point.g.dart';
 
 /// Point GPS sur un trace de sentier.
 ///

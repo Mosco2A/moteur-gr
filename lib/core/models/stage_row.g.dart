@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stage.dart';
+part of 'stage_row.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

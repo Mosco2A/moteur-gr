@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 import 'package:moteur_gr/features/trek/domain/post_trek_stats.dart';
 
 /// Tests du calculateur de stats post-étape (F6B-03).

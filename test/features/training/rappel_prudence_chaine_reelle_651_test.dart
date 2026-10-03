@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/objective_profile.dart';
 import 'package:moteur_gr/features/feasibility/providers/hiker_profile_provider.dart';

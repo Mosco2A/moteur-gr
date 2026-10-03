@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/core/models/poi.dart';
-import 'package:moteur_gr/features/poi/domain/poi_type_config.dart';
+import 'package:moteur_gr/shared/poi/poi_type_config.dart';
 import 'package:moteur_gr/features/poi/presentation/poi_info_sheet.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 

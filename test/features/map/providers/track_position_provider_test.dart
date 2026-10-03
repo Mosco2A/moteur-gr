@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/geo_utils.dart';
 import 'package:moteur_gr/core/geo/stage_detector.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/geo/track_projection.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/tracking/domain/tracking_engine.dart';

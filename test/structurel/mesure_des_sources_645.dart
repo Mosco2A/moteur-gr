@@ -16,8 +16,16 @@ library;
 import 'dart:io';
 
 /// Les zones autorisees a la racine de `lib/` (ECR-13).
+///
+/// `domain` EST ENTRE LE 02/10/2026, PAR DECISION DE CHRISTOPHE (voie A du lot
+/// 645-05, verbatim « Option. A » puis « A »). C'est la maison des modeles que
+/// PLUSIEURS features lisent : tant qu'elle n'existait pas, un modele partage
+/// devait habiter chez l'une d'elles, et les autres l'atteignaient par un
+/// croisement interdit. La convention redevient vraie par le rangement, pas en
+/// baissant la regle.
 const zonesRacineAutorisees = <String>{
   'core',
+  'domain',
   'features',
   'shared',
   'i18n',

@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/trek/domain/models/itinerary_day.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';

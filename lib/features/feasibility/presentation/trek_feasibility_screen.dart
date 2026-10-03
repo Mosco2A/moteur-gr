@@ -15,7 +15,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../planning/providers/planning_provider.dart';
-import '../domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../domain/hiker_profile.dart';
 import '../providers/hiker_profile_provider.dart';
 import '../providers/trek_feasibility_provider.dart';

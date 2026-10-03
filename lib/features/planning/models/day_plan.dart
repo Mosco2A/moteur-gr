@@ -4,7 +4,7 @@ library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 
 part 'day_plan.freezed.dart';
 part 'day_plan.g.dart';

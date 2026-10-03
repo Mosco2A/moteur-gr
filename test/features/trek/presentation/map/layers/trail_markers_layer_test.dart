@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/map/widgets/poi_marker.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/map/layers/stage_markers_layer.dart';
 import 'package:moteur_gr/features/trek/presentation/map/layers/trail_markers_layer.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';

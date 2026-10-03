@@ -9,7 +9,7 @@ import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart
 import 'package:moteur_gr/features/planning/providers/trek_edit_lock_provider.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 import 'package:moteur_gr/features/trek/data/trek_recorder.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
 /// NON-REGRESSION — TACHE 651, DEFAUT A (MAJEUR) : L'APRES-TREK RESTAIT

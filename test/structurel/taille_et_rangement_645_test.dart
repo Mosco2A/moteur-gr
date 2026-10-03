@@ -102,7 +102,7 @@ void main() {
               'racine est la premiere chose qu on lit d un depot ; elle doit '
               'repondre « voila les couches », pas « voila ce qui s est '
               'accumule ».\n'
-              'LES CINQ ENTREES AUTORISEES : '
+              'LES ENTREES AUTORISEES : '
               '${zonesRacineAutorisees.toList().join(', ')}. Tout le reste '
               'descend dans l une d elles.\n  ${intrus.join('\n  ')}',
         );

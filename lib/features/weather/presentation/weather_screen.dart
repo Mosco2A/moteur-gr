@@ -9,7 +9,7 @@ import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../tips/domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import '../data/weather_seed.dart';
 import '../models/fire_risk_config.dart';
 import '../models/weather_alert.dart';

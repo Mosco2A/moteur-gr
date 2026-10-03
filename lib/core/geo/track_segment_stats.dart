@@ -3,7 +3,7 @@
 library;
 
 import '../data/database.dart';
-import '../../features/trek/domain/trek_stats.dart';
+import '../../domain/trek_stats.dart';
 import 'geo_utils.dart';
 
 /// Chiffres MESURES sur une suite de points GPS.

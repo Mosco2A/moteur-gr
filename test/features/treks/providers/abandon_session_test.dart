@@ -5,7 +5,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 import 'package:moteur_gr/features/trek/data/trek_recorder.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
 /// StepWays LOT 2, C4 — transition ABANDONNER de la machine d'unicite.

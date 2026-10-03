@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_program.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 

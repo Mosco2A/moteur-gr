@@ -3,7 +3,7 @@
 library;
 
 import '../../../i18n/translations.g.dart';
-import '../domain/models/stage_accommodation.dart';
+import '../../../domain/stage_accommodation.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Mapping UI des types d'hebergement (#81752).

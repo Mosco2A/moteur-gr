@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/douglas_peucker.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../trek/presentation/map/marker_cluster.dart';
 import 'gpx_track_provider.dart';
 

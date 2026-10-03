@@ -1,4 +1,4 @@
-import 'models/track_point.dart';
+import '../../../domain/track_point.dart';
 
 /// Échantillon d'altitude barométrique horodaté (F6B-03).
 ///

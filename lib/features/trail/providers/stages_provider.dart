@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/stages_dao.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/providers/database_provider.dart';
 
 /// Provider des etapes d'un sentier, parametre par trailId.

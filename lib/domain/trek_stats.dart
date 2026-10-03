@@ -4,8 +4,8 @@ library;
 
 import 'dart:math';
 
-import '../../../core/geo/geo_utils.dart';
-import 'models/track_point.dart';
+import '../core/geo/geo_utils.dart';
+import 'track_point.dart';
 
 /// Statistiques temps reel d'un trek en cours.
 ///

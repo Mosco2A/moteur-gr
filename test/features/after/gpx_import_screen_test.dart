@@ -7,7 +7,7 @@ import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/features/after/presentation/gpx_import_screen.dart';
 import 'package:moteur_gr/features/after/providers/gpx_import_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 

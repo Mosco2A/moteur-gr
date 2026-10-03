@@ -2,7 +2,7 @@
 /// version francaise servant de repli.
 library;
 
-import '../../../i18n/translations.g.dart';
+import '../../i18n/translations.g.dart';
 import 'poi_type_config.dart';
 
 /// Libellé TRADUIT d'un type de POI (LOT D, tâche 554).

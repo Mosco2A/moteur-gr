@@ -5,7 +5,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/app_card.dart';
-import '../../domain/models/stage.dart';
+import '../../../../domain/stage.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Carte Material 3 representant une etape de sentier.

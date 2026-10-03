@@ -12,7 +12,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/providers/entitlements_provider.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';

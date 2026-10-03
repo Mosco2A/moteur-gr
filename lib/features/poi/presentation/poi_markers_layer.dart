@@ -7,7 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/models/poi.dart';
-import '../domain/poi_type_config.dart';
+import '../../../shared/poi/poi_type_config.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Couche de marqueurs POI pour la carte — filtre par type visible.

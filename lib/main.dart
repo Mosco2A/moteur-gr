@@ -23,6 +23,7 @@ import 'core/error/error_nets.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
+import 'core/providers/taches_d_amorcage.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
 import 'core/services/descente_des_droits.dart';
@@ -36,6 +37,9 @@ import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
+import 'features/feasibility/data/hiker_profile_repository.dart';
+import 'features/safety/presentation/health_info_screen.dart'
+    show ficheMedicaleFichierProvider;
 import 'features/safety/presentation/porte_consentement_sauvegarde.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
@@ -157,6 +161,36 @@ class MoteurGrApp extends StatelessWidget {
         // Seul firebaseServiceProvider reste surcharge (service initialise
         // au demarrage, hors graphe Riverpod pur).
         firebaseServiceProvider.overrideWithValue(firebaseService),
+        // LE CABLAGE DES TRAVAUX D AMORCAGE, ET C EST ICI QUE CA SE NOUE.
+        //
+        // `app_bootstrap_provider.dart` (socle) importait l ECRAN de la fiche
+        // sante pour y prendre `ficheMedicaleFichierProvider` : le socle
+        // connaissait une couche presentation (cas K1 du lot 645-05). La
+        // fleche est inversee — l amorcage ne declare qu un besoin, et c est
+        // `main.dart`, au-dessus du socle comme des features, qui a le droit
+        // de connaitre les deux et de les relier.
+        //
+        // L EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE A CHAQUE
+        // DEMARRAGE, et la raison entiere est dans `FicheMedicaleFichier` :
+        // un randonneur qui avait rempli sa fiche avant la tache 615 ne la
+        // reecrira peut-etre jamais, et c est l amorce, et elle seule, qui
+        // repasse derriere lui. Elle ne leve jamais et elle est bornee par
+        // `ExclusionSauvegardeIcloud.delaiMax`.
+        tachesDAmorcageProvider.overrideWith(
+          (ref) => <TacheDAmorcage>[
+            // Tache 615 : l exclusion iCloud de la fiche medicale.
+            () => ref.read(ficheMedicaleFichierProvider).garantirExclusion(),
+            // Tache 623 : le profil du randonneur quitte les preferences, et
+            // l exclusion est reposee dans le meme geste (l ecriture atomique
+            // remplace le fichier, et un fichier remplace ne porte plus
+            // l attribut de celui qu il remplace).
+            () async {
+              final profil = ref.read(hikerProfileRepositoryProvider);
+              await profil.migrerDepuisPreferences();
+              await profil.fichier.garantirExclusion();
+            },
+          ],
+        ),
         // TACHE 613 — L'OVERRIDE DU DAO SANTE A ETE RETIRE, PAS OUBLIE. Il
         // cablait la fiche medicale (E57 LOT D/D1) sur la base Drift commune.
         // Cette base est desormais DURABLE et doit remonter dans la sauvegarde

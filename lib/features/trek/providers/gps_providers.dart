@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart' show StageModel;
+import '../../../core/models/stage_row.dart' show StageModel;
 import '../data/arrival_detection_service.dart';
 import '../data/gps_service.dart';
 import '../data/stage_detection_service.dart';
-import '../domain/models/stage.dart';
-import '../domain/trek_completion.dart';
+import '../../../domain/stage.dart';
+import '../../../domain/trek_completion.dart';
 import 'stage_providers.dart';
 import 'tracking_providers.dart';
 

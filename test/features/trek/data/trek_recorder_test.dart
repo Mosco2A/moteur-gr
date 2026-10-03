@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/data/trek_recorder.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/track_point.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 
 void main() {
   group('TrekRecorder', () {

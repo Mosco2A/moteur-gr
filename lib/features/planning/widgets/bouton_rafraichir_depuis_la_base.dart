@@ -5,10 +5,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/branding/stepways_icons.dart';
-import '../../core/services/mise_a_jour_a_la_source.dart';
-import '../../features/planning/providers/lieux_en_base_provider.dart';
-import '../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
+import '../../../core/services/mise_a_jour_a_la_source.dart';
+import '../providers/lieux_en_base_provider.dart';
+import '../../../i18n/translations.g.dart';
 
 /// « RAFRAICHIR » — LE TROISIEME MOMENT DEMANDE PAR CHRISTOPHE (tache 641).
 ///

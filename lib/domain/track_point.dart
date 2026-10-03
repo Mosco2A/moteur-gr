@@ -1,5 +1,6 @@
-/// Un echantillon d'enregistrement GPS : altitude et horodatage, sans distance
-/// cumulee. Autre type que le TrackPoint de core/geo (ARB-645-04-b).
+/// Un echantillon d'enregistrement GPS : elevation et horodatage, sans distance
+/// cumulee. Autre type que le TrackPoint de core/geo/trace_point.dart
+/// (ARB-645-04-b, tranche en voie A le 02/10/2026).
 library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';

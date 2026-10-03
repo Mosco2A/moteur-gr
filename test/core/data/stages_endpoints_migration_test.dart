@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 
 /// Tests de MIGRATION Drift v22 -> v23 (parite GR20 « socle donnees »).
 ///

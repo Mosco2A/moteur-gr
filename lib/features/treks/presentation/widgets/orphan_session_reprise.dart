@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/config/trail_selection.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/routing/navigateur_racine.dart';
-import '../../../trek/domain/models/trek_session.dart';
+import '../../../../domain/trek_session.dart';
 import '../../../trek/providers/session_recovery_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
 import '../../providers/my_treks_provider.dart';

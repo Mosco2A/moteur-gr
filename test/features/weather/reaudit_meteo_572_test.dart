@@ -15,7 +15,7 @@ import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/weather_cache_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';

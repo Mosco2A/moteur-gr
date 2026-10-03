@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'track_point.dart';
+part of 'trace_point.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

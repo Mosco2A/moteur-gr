@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/domain/body_weight_reference.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
+import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../providers/checklist_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/journal/data/journal_repository.dart';

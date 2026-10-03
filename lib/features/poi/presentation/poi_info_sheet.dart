@@ -9,8 +9,8 @@ import '../../../core/models/poi.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/lazy_network_image.dart';
-import '../domain/poi_type_config.dart';
-import '../domain/poi_type_label.dart';
+import '../../../shared/poi/poi_type_config.dart';
+import '../../../shared/poi/poi_type_label.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Bottom sheet affichant le detail d'un POI.

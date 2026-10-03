@@ -29,8 +29,8 @@ import '../../safety/providers/safety_providers.dart';
 import '../../treks/providers/my_treks_provider.dart';
 import '../data/background_gps_service.dart';
 import '../data/trek_recorder.dart';
-import '../domain/models/trek_session.dart';
-import '../domain/trek_stats.dart';
+import '../../../domain/trek_session.dart';
+import '../../../domain/trek_stats.dart';
 import '../../../core/services/session_demo.dart';
 
 /// Etat immutable du tracking expose a l'UI.

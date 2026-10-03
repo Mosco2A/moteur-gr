@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/features/trek/data/arrival_detection_service.dart';
 import 'package:moteur_gr/features/trek/data/gps_service.dart';
 import 'package:moteur_gr/features/trek/data/stage_detection_service.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 
 /// Helper : cree une Position de test avec les champs requis.

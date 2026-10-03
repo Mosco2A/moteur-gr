@@ -7,7 +7,7 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 import 'package:moteur_gr/features/trek/data/trek_recorder.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';

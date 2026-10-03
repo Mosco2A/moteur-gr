@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
+import 'package:moteur_gr/domain/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/presentation/accommodation_type_ui.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 

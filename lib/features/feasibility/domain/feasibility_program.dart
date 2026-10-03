@@ -13,11 +13,11 @@
 /// ecrite ICI, une seule fois, et les deux chemins l'appellent.
 library;
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../planning/domain/planning_calculator.dart';
 import '../../planning/models/day_plan.dart';
-import '../../planning/models/planned_day.dart';
-import 'feasibility_formula.dart';
+import '../../../domain/planned_day.dart';
+import '../../../domain/feasibility_formula.dart';
 
 /// Le programme REEL evalue : une charge par jour de marche + les repos.
 class FeasibilityProgram {

@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../domain/off_track_detector.dart';

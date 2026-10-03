@@ -8,7 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
 import '../../../core/geo/track_projection.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../trail/providers/stages_provider.dart';
 import 'gpx_track_provider.dart';
 import 'location_provider.dart';

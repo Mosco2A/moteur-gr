@@ -4,7 +4,7 @@ library;
 
 import 'dart:math';
 
-import '../domain/models/track_point.dart';
+import '../../../domain/track_point.dart';
 
 /// Algorithme de simplification de trace Douglas-Peucker.
 ///

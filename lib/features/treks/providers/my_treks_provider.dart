@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trek/domain/models/trek_session.dart';
+import '../../../domain/trek_session.dart';
 import '../domain/trek_lifecycle_state.dart';
 import '../domain/trek_state_deriver.dart';
 import '../domain/trek_summary.dart';

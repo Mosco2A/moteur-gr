@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/tips/domain/models/tip_card.dart';
+import 'package:moteur_gr/domain/tip_card.dart';
 import 'package:moteur_gr/features/tips/presentation/tip_points_list.dart';
 
 /// Tests du CALIBRE des fiches conseil (tache 555).

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
+import 'package:moteur_gr/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_screen.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
