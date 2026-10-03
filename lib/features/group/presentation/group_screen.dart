@@ -11,7 +11,7 @@ import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authStateProvider;
 import '../models/group_member.dart';
 import '../providers/group_provider.dart';
 import '../services/group_tracking_service.dart';
