@@ -156,7 +156,7 @@ class DayForecastCard extends StatelessWidget {
               ),
               _detailChip(
                 context,
-                StepwaysIcons.meteo,
+                StepwaysIcons.weather,
                 'UV ${day.uvIndex.round()}',
                 day.uvIndex >= 8,
               ),

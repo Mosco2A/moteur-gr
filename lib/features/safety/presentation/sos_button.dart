@@ -74,7 +74,7 @@ class SosButton extends ConsumerWidget {
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              StepIcon(StepwaysIcons.secours, color: Colors.white, size: 24),
+              StepIcon(StepwaysIcons.emergency, color: Colors.white, size: 24),
               Text(
                 'SOS',
                 style: TextStyle(

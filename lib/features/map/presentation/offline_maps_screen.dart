@@ -460,7 +460,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
             label: t.cartesHorsLigne.a11y.bouton,
             child: AppButton(
               key: const ValueKey('cartes-telecharger'),
-              icon: StepwaysIcons.telecharger,
+              icon: StepwaysIcons.download,
               label: cause != null
                   ? t.cartesHorsLigne.reessayer
                   : (dejaLa > 0

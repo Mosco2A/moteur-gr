@@ -80,7 +80,7 @@ class WaypointDetailSheet extends ConsumerWidget {
               child: Row(
                 children: [
                   const StepIcon(
-                    StepwaysIcons.duree,
+                    StepwaysIcons.clock,
                     size: 16,
                     color: AppTheme.grisTexteSecondaire,
                   ),

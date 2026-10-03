@@ -418,7 +418,7 @@ class _DownloadPage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: StepIcon(
-              StepwaysIcons.telecharger,
+              StepwaysIcons.download,
               size: 64,
               color: theme.colorScheme.primary.withAlpha(180),
             ),
@@ -443,7 +443,7 @@ class _DownloadPage extends StatelessWidget {
           // remplissait deja la Column) -> isFullWidth:true = iso-rendu.
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: StepwaysIcons.catalogueSentiers,
+            icon: StepwaysIcons.trailCatalog,
             label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
           ),

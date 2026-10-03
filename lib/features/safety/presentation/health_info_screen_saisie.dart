@@ -164,7 +164,7 @@ class _LigneDeContact extends StatelessWidget {
                   controller: ligne.nomCtrl,
                   label: t.health.contacts.name,
                   hint: t.health.contacts.nameHint,
-                  icon: StepwaysIcons.monCompte,
+                  icon: StepwaysIcons.myAccount,
                   maxLength: kEmergencyContactNameMaxLength,
                   showCounter: false,
                   textCapitalization: TextCapitalization.words,

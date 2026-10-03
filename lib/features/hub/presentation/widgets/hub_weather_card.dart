@@ -139,7 +139,7 @@ class HubWeatherCard extends ConsumerWidget {
       );
     }
     return StepIcon(
-      StepwaysIcons.meteo,
+      StepwaysIcons.weather,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );

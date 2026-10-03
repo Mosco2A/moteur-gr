@@ -512,7 +512,7 @@ class _DepartureArrivalLine extends StatelessWidget {
       child: Row(
         children: [
           StepIcon(
-            StepwaysIcons.enregistrer,
+            StepwaysIcons.save,
             size: 22,
             color: theme.colorScheme.primary,
           ),

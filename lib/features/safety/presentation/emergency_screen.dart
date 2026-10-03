@@ -258,7 +258,7 @@ class _EmergencyContactTile extends StatelessWidget {
               ? AppTheme.rougeUrgence
               : theme.colorScheme.primary,
           child: StepIcon(
-            isAuto ? StepwaysIcons.secours : StepwaysIcons.monCompte,
+            isAuto ? StepwaysIcons.emergency : StepwaysIcons.myAccount,
             color: Colors.white,
             size: 20,
           ),

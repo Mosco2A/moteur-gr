@@ -39,10 +39,10 @@ void main() {
     return container.decoration as BoxDecoration;
   }
 
-  Future<void> poser(WidgetTester tester, Widget carte) async {
+  Future<void> poser(WidgetTester tester, Widget card) async {
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: Center(child: carte)),
+        home: Scaffold(body: Center(child: card)),
       ),
     );
     await tester.pumpAndSettle();

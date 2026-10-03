@@ -101,7 +101,7 @@ class TodayStageWeatherCard extends StatelessWidget {
                 danger: day.windSpeedKmh >= 60,
               ),
               _Indicator(
-                icon: StepwaysIcons.meteo,
+                icon: StepwaysIcons.weather,
                 label: 'UV ${day.uvIndex.round()}',
                 danger: day.uvIndex >= 8,
               ),

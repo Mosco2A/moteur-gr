@@ -273,7 +273,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
           Row(
             children: [
               StepIcon(
-                StepwaysIcons.poids,
+                StepwaysIcons.weight,
                 size: 18,
                 color: theme.colorScheme.primary,
               ),

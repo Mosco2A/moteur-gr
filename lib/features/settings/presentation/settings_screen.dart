@@ -602,7 +602,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               ListTile(
                 key: const ValueKey('reglages-abonnement'),
-                leading: const StepIcon(StepwaysIcons.diplome),
+                leading: const StepIcon(StepwaysIcons.diploma),
                 title: Text(tr.monetization.subscriptionTitle),
                 subtitle: Text(tr.monetization.subscriptionSubtitle),
                 trailing: const StepIcon(StepwaysIcons.chevronDroite),

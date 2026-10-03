@@ -716,7 +716,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              StepwaysIcons.poids,
+              StepwaysIcons.weight,
               ui.infoGaugeTitle,
               ui.infoGaugeBody,
               AppTheme.vertFacile,

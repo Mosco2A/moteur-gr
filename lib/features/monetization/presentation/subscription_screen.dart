@@ -154,7 +154,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   child: Row(
                     children: [
                       StepIcon(
-                        actif ? StepwaysIcons.diplome : StepwaysIcons.moins,
+                        actif ? StepwaysIcons.diploma : StepwaysIcons.moins,
                         color: actif
                             ? AppTheme.vertFacile
                             : AppTheme.grisTexteSecondaire,
@@ -270,7 +270,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
             AppButton(
               key: const ValueKey('souscrire-abo'),
-              icon: StepwaysIcons.diplome,
+              icon: StepwaysIcons.diploma,
               label: t.monetization.subscriptionCta,
               isLoading: _occupe,
               onPressed: _occupe ? null : _souscrire,

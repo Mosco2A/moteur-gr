@@ -49,7 +49,7 @@ class SosConfirmationDialog extends StatelessWidget {
       title: Row(
         children: [
           const StepIcon(
-            StepwaysIcons.secours,
+            StepwaysIcons.emergency,
             color: AppTheme.rougeUrgence,
             size: 28,
           ),

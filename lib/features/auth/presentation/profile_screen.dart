@@ -37,7 +37,7 @@ const _avatarIcons = <String>[
   StepwaysIcons.foret,
   StepwaysIcons.soleil,
   StepwaysIcons.favori,
-  StepwaysIcons.catalogueSentiers,
+  StepwaysIcons.trailCatalog,
   StepwaysIcons.sommet,
 ];
 
@@ -124,7 +124,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // Section « Mon compte » (connexion / deconnexion).
           SectionHeader(
             title: i18n.auth.profile,
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           // GRISEE EN DEMO (tache 638, bug 14) : se connecter a Google, se
@@ -249,7 +249,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         padding: EdgeInsets.zero,
         child: ListTile(
           key: const ValueKey('profil-connexion-google'),
-          leading: const StepIcon(StepwaysIcons.connexion),
+          leading: const StepIcon(StepwaysIcons.signIn),
           title: Text(i18n.auth.signInGoogle),
           subtitle: Text(i18n.auth.signInGoogleDesc),
           trailing: const StepIcon(StepwaysIcons.chevronDroite),
@@ -279,7 +279,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       interactif: true,
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: const StepIcon(StepwaysIcons.deconnexion),
+        leading: const StepIcon(StepwaysIcons.signOut),
         title: Text(i18n.auth.signOut),
         subtitle: Text(i18n.auth.signOutDesc),
         onTap: () => _confirmSignOut(context, ref, i18n),
@@ -324,7 +324,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           padding: EdgeInsets.zero,
           child: SwitchListTile(
             key: const ValueKey('compte-reafficher-bouton-demo'),
-            secondary: const StepIcon(StepwaysIcons.catalogueSentiers),
+            secondary: const StepIcon(StepwaysIcons.trailCatalog),
             title: Text(i18n.demo.compteReafficher),
             subtitle: Text(i18n.demo.compteReafficherSous),
             // L'INTERRUPTEUR DIT « AFFICHER », LE REGLAGE STOCKE « CACHER » :

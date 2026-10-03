@@ -64,9 +64,9 @@ class _BadgeTile extends StatelessWidget {
       case 'terrain':
         return StepwaysIcons.sommet;
       case 'military_tech':
-        return StepwaysIcons.diplome;
+        return StepwaysIcons.diploma;
       case 'emoji_events':
-        return StepwaysIcons.diplome;
+        return StepwaysIcons.diploma;
       case 'flag':
       default:
         return StepwaysIcons.depart;

@@ -81,7 +81,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       child: Column(
         children: [
           StepIcon(
-            StepwaysIcons.telecharger,
+            StepwaysIcons.download,
             size: 48,
             color: theme.colorScheme.primary,
           ),
@@ -98,7 +98,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           const SizedBox(height: AppTheme.spacingLg),
           AppButton(
             label: t.import.pickButton,
-            icon: StepwaysIcons.telecharger,
+            icon: StepwaysIcons.download,
             isLoading: _isImporting,
             onPressed: _isImporting ? null : _pickAndImportGpx,
           ),
@@ -198,7 +198,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
             Expanded(
               child: _buildStatCard(
                 theme,
-                icon: StepwaysIcons.duree,
+                icon: StepwaysIcons.clock,
                 label: t.import.statDuration,
                 value: durationStr,
                 color: theme.colorScheme.primary,
@@ -212,7 +212,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
             Expanded(
               child: _buildStatCard(
                 theme,
-                icon: StepwaysIcons.catalogueSentiers,
+                icon: StepwaysIcons.trailCatalog,
                 label: t.import.statDirection,
                 value: directionLabel,
                 color: theme.colorScheme.secondary,
@@ -328,7 +328,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: const StepIcon(
-                      StepwaysIcons.enregistrer,
+                      StepwaysIcons.save,
                       size: 14,
                       color: Colors.white,
                     ),

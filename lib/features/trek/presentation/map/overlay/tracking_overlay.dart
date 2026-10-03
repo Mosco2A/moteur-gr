@@ -108,7 +108,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.elapsedDuration),
                   );
                   return AppDataStat(
-                    icon: StepwaysIcons.duree,
+                    icon: StepwaysIcons.clock,
                     value: _formatDuration(duration),
                     label: t.tracking.time,
                   );
@@ -183,7 +183,7 @@ class _ButtonsRow extends StatelessWidget {
           case TrackingSessionStatus.stopped:
             return _ActionButton(
               label: t.tracking.start,
-              icon: StepwaysIcons.enregistrer,
+              icon: StepwaysIcons.save,
               color: AppTheme.actionStart,
               semanticLabel: t.a11y.startTracking,
               // Meme pre-vol explique que le bouton du cockpit : une demande
@@ -224,7 +224,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.resume,
-                    icon: StepwaysIcons.enregistrer,
+                    icon: StepwaysIcons.save,
                     color: AppTheme.actionStart,
                     semanticLabel: t.a11y.resumeTracking,
                     onPressed: notifier.resume,

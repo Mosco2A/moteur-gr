@@ -419,7 +419,7 @@ class _ShopCard extends StatelessWidget {
                           if (shop.openingHours.isNotEmpty) ...[
                             const SizedBox(width: AppTheme.spacingSm),
                             StepIcon(
-                              StepwaysIcons.duree,
+                              StepwaysIcons.clock,
                               size: 14,
                               color: AppTheme.grisGranite.withAlpha(180),
                             ),
@@ -578,7 +578,7 @@ void _showShopDetail(
                   value: _shopTypeLabel(t, shop.type),
                 ),
                 _DetailRow(
-                  icon: StepwaysIcons.carte,
+                  icon: StepwaysIcons.map,
                   label: t.shop.fieldStage,
                   value: t.shop.stageBadge(n: shop.stageNumber),
                 ),
@@ -592,7 +592,7 @@ void _showShopDetail(
                   ),
                 if (shop.openingHours.isNotEmpty)
                   _DetailRow(
-                    icon: StepwaysIcons.duree,
+                    icon: StepwaysIcons.clock,
                     label: t.shop.fieldHours,
                     value: shop.openingHours,
                   ),
@@ -832,7 +832,7 @@ String _shopTypeIcon(ShopKind type) {
     case ShopKind.bar:
       return StepwaysIcons.restauration;
     case ShopKind.pharmacie:
-      return StepwaysIcons.secours;
+      return StepwaysIcons.emergency;
     case ShopKind.gaz:
       return StepwaysIcons.rechaud;
   }

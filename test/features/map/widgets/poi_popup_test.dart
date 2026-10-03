@@ -69,7 +69,7 @@ void main() {
       expect(find.text('Mai-Octobre'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.clock,
         ),
         findsOneWidget,
       );
@@ -89,7 +89,7 @@ void main() {
       await tester.pumpWidget(buildPopup(poiMinimal));
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.clock,
         ),
         findsNothing,
       );

@@ -279,7 +279,7 @@ class LigneDeLieu extends ConsumerWidget {
               key: const ValueKey('lieu-ouvrir-cartes'),
               onPressed: () => _ouvrir(context, ref),
               icon: StepIcon(
-                StepwaysIcons.carte,
+                StepwaysIcons.map,
                 size: compact ? 16 : 18,
                 color: AppTheme.actionStart,
               ),

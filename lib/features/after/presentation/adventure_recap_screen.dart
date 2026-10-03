@@ -119,7 +119,7 @@ class _RecapBody extends ConsumerWidget {
               // est stable pour que les parcours de test la suivent.
               key: const ValueKey('recap-diploma'),
               label: recapT.viewDiploma,
-              icon: StepwaysIcons.diplome,
+              icon: StepwaysIcons.diploma,
               onPressed: () => context.push('/trail/$trailId/diploma'),
             ),
             const SizedBox(height: AppTheme.spacingMd),
@@ -176,7 +176,7 @@ class _CongratsBanner extends StatelessWidget {
         child: Column(
           children: [
             StepIcon(
-              fullyWalked ? StepwaysIcons.diplome : StepwaysIcons.sommet,
+              fullyWalked ? StepwaysIcons.diploma : StepwaysIcons.sommet,
               size: 48,
               color: color,
             ),
@@ -430,7 +430,7 @@ class _ExportGpxButton extends ConsumerWidget {
 
     return AppButton(
       label: recapT.exportGpx,
-      icon: StepwaysIcons.telecharger,
+      icon: StepwaysIcons.download,
       onPressed: () async {
         final messenger = ScaffoldMessenger.of(context);
         // Sans point, on le DIT au lieu d'ecrire un fichier vide qui
@@ -505,7 +505,7 @@ List<RecapRow> adventureRecapRows(
       label: recapT.elevationLoss(meters: stats.elevationLossM),
     ),
     (
-      icon: StepwaysIcons.duree,
+      icon: StepwaysIcons.clock,
       label: recapT.duration.replaceAll('{days}', '${stats.durationDays}'),
     ),
     // CORRECTIF L5-6 : la vitesse moyenne n'apparait QUE si elle est
@@ -614,7 +614,7 @@ class _TraceCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     StepIcon(
-                      StepwaysIcons.carte,
+                      StepwaysIcons.map,
                       size: 48,
                       color: theme.colorScheme.primary.withAlpha(120),
                     ),

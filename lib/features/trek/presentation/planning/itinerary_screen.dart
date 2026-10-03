@@ -585,7 +585,7 @@ class _StageTile extends StatelessWidget {
                       // du sentier si fournie, sinon estimation Naismith. Un
                       // sentier sans la donnee reste affiche (repli propre).
                       _MiniStat(
-                        icon: StepwaysIcons.duree,
+                        icon: StepwaysIcons.clock,
                         label: formatDurationMinutes(
                           stageDurationMinutes(stage),
                         ),

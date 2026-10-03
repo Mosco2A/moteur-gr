@@ -51,7 +51,7 @@ class _HealthMedicalSection extends StatelessWidget {
         // ========================================== [3] VITAL
         _SectionTitle(
           key: const ValueKey('health-section-vital'),
-          icon: StepwaysIcons.secours,
+          icon: StepwaysIcons.emergency,
           title: t.health.section.vital,
           explanation: t.health.section.vitalWhy,
         ),
@@ -144,7 +144,7 @@ class _HealthCardsSection extends StatelessWidget {
           controller: doctorController,
           label: t.health.field.doctor,
           hint: t.health.hint.doctor,
-          icon: StepwaysIcons.secours,
+          icon: StepwaysIcons.emergency,
           maxLines: 2,
           maxLength: kHealthContactMaxLength,
         ),
@@ -225,7 +225,7 @@ class _HealthActions extends StatelessWidget {
           child: AppButton(
             isLoading: isSaving,
             minHeight: 52,
-            icon: StepwaysIcons.enregistrer,
+            icon: StepwaysIcons.save,
             label: t.health.save,
             onPressed: isSaving ? null : onSave,
           ),

@@ -82,7 +82,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           // Etape 1 : fiche morpho (age/taille/poids).
           _FlowStepCard(
             step: 1,
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             title: f.flow.stepProfile,
             subtitle: f.flow.stepProfileSub,
             done: criteria.profileComplete,

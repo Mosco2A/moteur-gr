@@ -178,7 +178,7 @@ void main() {
         find.descendant(
           of: find.byType(SosButton),
           matching: find.byWidgetPredicate(
-            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+            (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
           ),
         ),
         findsNothing,
@@ -190,7 +190,7 @@ void main() {
       // -> AUCUNE icone SOS a l'ecran (exactement comme GR20, sans barre SOS).
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
         ),
         findsNothing,
         reason:
@@ -209,7 +209,7 @@ void main() {
         find.descendant(
           of: find.byType(SosButton),
           matching: find.byWidgetPredicate(
-            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+            (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
           ),
         ),
         findsOneWidget,
@@ -224,7 +224,7 @@ void main() {
       // ceux de l'overlay — a l'identique de GR20 (SosFloatingButton unique).
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
         ),
         findsOneWidget,
       );

@@ -163,7 +163,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
                   child: AppButton(
                     key: const ValueKey('consent-ads-privacy-options'),
                     variant: AppButtonVariant.text,
-                    icon: StepwaysIcons.reglages,
+                    icon: StepwaysIcons.settings,
                     iconSize: 18,
                     label: tr.consent.adsPrivacyOptions,
                     isFullWidth: false,

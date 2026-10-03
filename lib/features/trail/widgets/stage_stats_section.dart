@@ -46,7 +46,7 @@ class StageStatsSection extends StatelessWidget {
               ),
               Expanded(
                 child: _StatItem(
-                  icon: StepwaysIcons.duree,
+                  icon: StepwaysIcons.clock,
                   label: 'Durée estimée',
                   value: formattedDuration,
                 ),

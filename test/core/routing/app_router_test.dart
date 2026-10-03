@@ -487,7 +487,7 @@ void main() {
                 ),
                 destinations: const [
                   NavigationDestination(
-                    icon: StepIcon(StepwaysIcons.carte),
+                    icon: StepIcon(StepwaysIcons.map),
                     label: 'Carte',
                   ),
                   NavigationDestination(

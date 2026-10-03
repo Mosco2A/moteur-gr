@@ -86,7 +86,7 @@ class PoiTypeConfig {
       labelKey: 'Restaurant',
     ),
     'emergency': PoiTypeStyle(
-      icon: StepwaysIcons.secours,
+      icon: StepwaysIcons.emergency,
       color: CouleursSemantiques.pointUrgence,
       labelKey: 'Urgence',
     ),

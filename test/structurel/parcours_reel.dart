@@ -670,7 +670,7 @@ const gestesEvites = <String>[
 /// verifie a l'oeil, la ou « 58530 » ne disait rien a personne.
 final Set<String> iconesEvitees = <String>{
   StepwaysIcons.telephone,
-  StepwaysIcons.secours,
+  StepwaysIcons.emergency,
   StepwaysIcons.corbeille,
 };
 

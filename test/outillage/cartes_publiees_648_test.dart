@@ -120,9 +120,9 @@ void main() {
 
       // 4. LE FICHIER EST LA, SOUS SON NOM DEFINITIF, ET C EST UNE BASE SQLITE.
       expect(await gestionnaire.hasMbtiles(trail), isTrue);
-      final carte = File(await gestionnaire.getMbtilesPath(trail));
-      expect(await carte.length(), entree.tilesSize);
-      final entete = await carte.openRead(0, 16).first;
+      final map = File(await gestionnaire.getMbtilesPath(trail));
+      expect(await map.length(), entree.tilesSize);
+      final entete = await map.openRead(0, 16).first;
       expect(
         String.fromCharCodes(entete.take(15)),
         'SQLite format 3',
@@ -138,7 +138,7 @@ void main() {
       //    parfaitement et n affiche que du vide — le defaut ne se verrait qu en
       //    montagne. On refait donc ici le calcul exact du paquet, sur le
       //    milieu de l emprise, et on exige une IMAGE PNG.
-      final base = MbTiles(mbtilesPath: carte.path);
+      final base = MbTiles(mbtilesPath: map.path);
       addTearDown(base.dispose);
       final metadonnees = base.getMetadata();
       expect(metadonnees.format, 'png');

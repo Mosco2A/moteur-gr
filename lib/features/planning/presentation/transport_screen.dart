@@ -359,7 +359,7 @@ class _TransportOptionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const StepIcon(
-                    StepwaysIcons.duree,
+                    StepwaysIcons.clock,
                     size: 18,
                     color: AppTheme.grisGranite,
                   ),

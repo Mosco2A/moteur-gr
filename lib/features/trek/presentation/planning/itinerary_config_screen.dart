@@ -62,7 +62,7 @@ class ItineraryConfigScreen extends ConsumerWidget {
 
           // --- Duree max par jour ---
           _SectionCard(
-            icon: StepwaysIcons.duree,
+            icon: StepwaysIcons.clock,
             title: 'Duree maximale par jour',
             subtitle: '${config.maxHoursPerDay.toStringAsFixed(1)} h',
             colorScheme: colorScheme,

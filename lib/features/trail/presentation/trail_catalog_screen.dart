@@ -84,7 +84,7 @@ class TrailCatalogScreen extends ConsumerWidget {
       bottomNavigationBar: const BannerAdSlot.horsTrek(),
       body: trails.isEmpty
           ? EmptyState(
-              icon: StepwaysIcons.catalogueSentiers,
+              icon: StepwaysIcons.trailCatalog,
               title: t.catalog.emptyTitle,
               subtitle: t.catalog.emptySubtitle,
             )

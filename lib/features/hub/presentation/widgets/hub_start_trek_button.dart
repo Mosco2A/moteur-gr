@@ -90,7 +90,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
             child: AppButton(
               variant: AppButtonVariant.filledTone,
               tone: orange,
-              icon: StepwaysIcons.enregistrer,
+              icon: StepwaysIcons.save,
               iconSize: 22,
               label: t.hub.startCta,
               // Grise (onPressed null) tant que le minimum manque ou pendant le

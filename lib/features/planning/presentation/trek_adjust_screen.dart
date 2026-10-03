@@ -518,7 +518,7 @@ class _AdjustDayCard extends StatelessWidget {
                             color: AppTheme.rougeExtreme,
                           ),
                           DayMiniStat(
-                            icon: StepwaysIcons.duree,
+                            icon: StepwaysIcons.clock,
                             value: _formatDuration(day.estimatedHours),
                           ),
                         ],

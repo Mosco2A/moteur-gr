@@ -108,7 +108,7 @@ void main() {
       expect(find.text('Démarrer'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.save,
         ),
         findsOneWidget,
       );
@@ -154,7 +154,7 @@ void main() {
       expect(find.text('Stop'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.save,
         ),
         findsOneWidget,
       );

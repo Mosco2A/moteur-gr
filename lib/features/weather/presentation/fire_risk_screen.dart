@@ -133,7 +133,7 @@ class FireRiskScreen extends ConsumerWidget {
           // 6. Risque par etape.
           SectionHeader(
             title: t.fireRisk.stagesTitle,
-            icon: StepwaysIcons.carte,
+            icon: StepwaysIcons.map,
             iconColor: AppTheme.orangeDifficile,
           ),
           const SizedBox(height: AppTheme.spacingSm),

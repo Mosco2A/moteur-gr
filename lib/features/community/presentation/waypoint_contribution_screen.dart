@@ -197,7 +197,7 @@ class _WaypointContributionScreenState
                         key: const ValueKey('waypoint-contribution-submit'),
                         isLoading: _submitting,
                         minHeight: 52,
-                        icon: StepwaysIcons.enregistrer,
+                        icon: StepwaysIcons.save,
                         label: t.waypoints.contribution.submit,
                         onPressed: _submitting ? null : _submit,
                       ),

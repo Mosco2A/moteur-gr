@@ -456,7 +456,7 @@ class _PlanContent extends ConsumerWidget {
         // --- Etat « sans fiche » : invite non bloquante a remplir la fiche ---
         if (perso != null && !perso.hasProfile) ...[
           _InviteBanner(
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             message: tr.inviteFillProfile,
           ),
           const SizedBox(height: AppTheme.spacingBase),

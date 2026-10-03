@@ -101,7 +101,7 @@ void main() {
     // l'ecran doit dire « sous les 1 500 m », pas « pas de donnee ». Les deux
     // phrases existent et ne veulent pas dire la meme chose : c'est
     // exactement la distinction #8-b.
-    await _poser(tester, c, age: 40, taille: 176, poids: 72, moisDepart: 5);
+    await _poser(tester, c, age: 40, taille: 176, weight: 72, moisDepart: 5);
     final base = await _evaluer(tester, c);
     exige(P, 'altitude', base != null, 'le moteur rend une evaluation');
     if (base == null) {
@@ -214,9 +214,9 @@ void main() {
     // Le meme randonneur, meme vecu, meme sentier, a 65 kg puis a 95 kg : les
     // verdicts doivent etre IDENTIQUES AU CHIFFRE PRES (#3-f). C'est une
     // propriete assumee du modele, pas un trou — et l'ecran doit le dire.
-    await _poser(tester, c, age: 40, taille: 176, poids: 65, moisDepart: 5);
+    await _poser(tester, c, age: 40, taille: 176, weight: 65, moisDepart: 5);
     final leger = await _evaluer(tester, c);
-    await _poser(tester, c, age: 40, taille: 176, poids: 95, moisDepart: 5);
+    await _poser(tester, c, age: 40, taille: 176, weight: 95, moisDepart: 5);
     final lourd = await _evaluer(tester, c);
     exige(
       P,
@@ -272,7 +272,7 @@ void main() {
     // Aucun des six personnages ne part en hiver : ce cas ne peut PAS sortir de
     // la matrice, il lui faut ce scenario dedie. La regle (#1-e) : on ne
     // DURCIT pas le verdict en hiver, ON DIT QU'IL NE TIENT PLUS.
-    await _poser(tester, c, age: 40, taille: 176, poids: 72, moisDepart: 1);
+    await _poser(tester, c, age: 40, taille: 176, weight: 72, moisDepart: 1);
     final hiver = await _evaluer(tester, c);
     exige(P, 'hiver', hiver != null, 'le moteur rend une evaluation en hiver');
     if (hiver != null) {
@@ -423,7 +423,7 @@ Future<void> _poser(
   ProviderContainer c, {
   required int age,
   required int taille,
-  required double poids,
+  required double weight,
   required int moisDepart,
 }) async {
   final trailId = c.read(trailIdProvider);
@@ -434,7 +434,7 @@ Future<void> _poser(
           HikerProfile(
             age: age,
             heightCm: taille,
-            weightKg: poids,
+            weightKg: weight,
             sex: HikerSex.male,
           ),
         );

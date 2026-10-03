@@ -147,7 +147,7 @@ class PoiInfoSheet extends StatelessWidget {
           // Horaires
           if (poi.openingHours != null && poi.openingHours!.isNotEmpty)
             _InfoRow(
-              icon: StepwaysIcons.duree,
+              icon: StepwaysIcons.clock,
               label: t.poi.hours,
               value: poi.openingHours!,
             ),
@@ -160,7 +160,7 @@ class PoiInfoSheet extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              icon: StepwaysIcons.carte,
+              icon: StepwaysIcons.map,
               label: t.map.viewMap,
               onPressed: () {
                 Navigator.of(context).pop();

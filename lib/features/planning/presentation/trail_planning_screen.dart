@@ -927,7 +927,7 @@ class _DayCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
                     // Duree.
-                    DayMiniStat(icon: StepwaysIcons.duree, value: durationStr),
+                    DayMiniStat(icon: StepwaysIcons.clock, value: durationStr),
                   ],
                 ),
               ),

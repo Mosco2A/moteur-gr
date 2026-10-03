@@ -394,7 +394,7 @@ void main() {
                 matching: find.byType(StepIcon),
               ),
             )
-            .where((i) => i.asset == StepwaysIcons.secours)
+            .where((i) => i.asset == StepwaysIcons.emergency)
             .length +
         tester
             .widgetList<StepIcon>(
@@ -403,7 +403,7 @@ void main() {
                 matching: find.byType(StepIcon),
               ),
             )
-            .where((i) => i.asset == StepwaysIcons.secours)
+            .where((i) => i.asset == StepwaysIcons.emergency)
             .length;
     logStep(
       P,

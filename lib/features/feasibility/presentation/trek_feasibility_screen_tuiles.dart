@@ -134,7 +134,7 @@ class _ProfileShortcuts extends StatelessWidget {
         // au-dessus du verdict (bug 5a, `_CollecteDeLaDemo`).
         GriseEnDemo(
           child: _ShortcutCard(
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),
@@ -202,7 +202,7 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
           Text(reason, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
           _ShortcutCard(
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),

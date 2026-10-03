@@ -119,15 +119,15 @@ void main() {
       await stabiliser(tester);
 
       // LE GESTE : le bouton « Mon compte » du menu du trek.
-      final monCompte = find.byWidgetPredicate(
-        (w) => w is StepIcon && w.asset == StepwaysIcons.monCompte,
+      final myAccount = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.myAccount,
       );
       expect(
-        monCompte,
+        myAccount,
         findsOneWidget,
         reason: 'le menu du trek doit porter « Mon compte »',
       );
-      await tester.tap(monCompte.first);
+      await tester.tap(myAccount.first);
       // ON POMPE LONGTEMPS : les armements de fond d'un trek reel (identite,
       // montee en base, cadence) se resolvent APRES la premiere frame du profil.
       await stabiliser(tester, coups: 40);

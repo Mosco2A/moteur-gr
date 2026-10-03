@@ -382,7 +382,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _weightController,
                       label: tp.fieldWeight,
                       hint: tp.hintWeight,
-                      icon: StepwaysIcons.poids,
+                      icon: StepwaysIcons.weight,
                       allowDecimal: true,
                       maxLength: 5,
                       limitMessage: tp.errorWeight,
@@ -467,7 +467,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     AppButton(
                       isLoading: _saving,
                       minHeight: 52,
-                      icon: StepwaysIcons.enregistrer,
+                      icon: StepwaysIcons.save,
                       label: tp.save,
                       onPressed: _saving ? null : _save,
                     ),

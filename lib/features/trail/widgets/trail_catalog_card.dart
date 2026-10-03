@@ -215,7 +215,7 @@ class TrailCatalogCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: AppButton(
-            icon: StepwaysIcons.telecharger,
+            icon: StepwaysIcons.download,
             label: _CatalogLabels.download,
             onPressed: onDownload,
           ),
@@ -272,7 +272,7 @@ class TrailCatalogCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                icon: StepwaysIcons.telecharger,
+                icon: StepwaysIcons.download,
                 label: _CatalogLabels.update,
                 onPressed: onUpdate,
               ),

@@ -85,7 +85,7 @@ void main() {
         // omission non plus).
         expect(
           find.byWidgetPredicate(
-            (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+            (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
           ),
           findsOneWidget,
         );
@@ -124,16 +124,16 @@ void main() {
           'lib/features/safety/presentation/sos_button.dart',
         );
         expect(
-          bouton.contains('StepwaysIcons.secours'),
+          bouton.contains('StepwaysIcons.emergency'),
           isTrue,
           reason: 'c est ce widget qui dessine l icone que le guide explique',
         );
         // Et il est REELLEMENT pose sur l ecran depuis lequel le guide s ouvre.
-        final carte = source(
+        final map = source(
           'lib/features/trek/presentation/map/map_screen.dart',
         );
-        expect(carte.contains('SosButton()'), isTrue);
-        expect(carte.contains('showMapGuideSheet'), isTrue);
+        expect(map.contains('SosButton()'), isTrue);
+        expect(map.contains('showMapGuideSheet'), isTrue);
       },
     );
   });

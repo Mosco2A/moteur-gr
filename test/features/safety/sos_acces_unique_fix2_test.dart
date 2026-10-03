@@ -70,25 +70,23 @@ void main() {
 
     test('la carte n a plus AUCUNE barre du bas — donc plus aucun endroit ou '
         'un second SOS pourrait reapparaitre (L6-3)', () {
-      final carte = source(
-        'lib/features/trek/presentation/map/map_screen.dart',
-      );
+      final map = source('lib/features/trek/presentation/map/map_screen.dart');
 
       // Le correctif L6-3 a retire la barre contextuelle de la carte : la
       // navigation de reference n en a aucune sur son ecran terrain. Ce test
       // ne verifie donc plus le CONTENU de la barre (il n y en a plus), il
       // verifie son ABSENCE — garantie plus forte pour le finding M1.
       expect(
-        carte.contains('bottomNavigationBar:'),
+        map.contains('bottomNavigationBar:'),
         isFalse,
         reason: 'la carte terrain n a pas de barre du bas (L6-3)',
       );
       expect(
-        carte.contains('buildContextualActions'),
+        map.contains('buildContextualActions'),
         isFalse,
         reason: 'plus d actions contextuelles declarees par la carte (L6-3)',
       );
-      expect(carte.contains('ContextualAction('), isFalse);
+      expect(map.contains('ContextualAction('), isFalse);
     });
 
     test('l accueil maison GARDE sa barre : ce n est PAS le meme cas que la '
@@ -181,7 +179,7 @@ void main() {
       expect(find.byType(FloatingActionButton), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
         ),
         findsOneWidget,
       );
@@ -201,7 +199,7 @@ void main() {
 
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
         ),
         findsOneWidget,
       );
@@ -214,7 +212,7 @@ void main() {
       expect(find.byType(FloatingActionButton), findsNothing);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.secours,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.emergency,
         ),
         findsNothing,
       );

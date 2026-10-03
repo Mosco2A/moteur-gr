@@ -171,7 +171,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   // « etape en cours » nomme deja la sienne (« un tiret signifie
                   // que la randonnee n'a pas encore demarre »).
                   _GuideRow(
-                    icon: StepwaysIcons.secours,
+                    icon: StepwaysIcons.emergency,
                     color: AppTheme.rougeUrgence,
                     label: t.a11y.sos,
                     description: '${t.map.guide.sos} ${t.map.guide.onlyInTrek}',

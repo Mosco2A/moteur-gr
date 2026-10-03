@@ -238,7 +238,7 @@ void main() {
   // LA CAUSE DU REFUS FIRESTORE N'EST PAS TRAITEE ICI, et c'est volontaire : ce
   // lot ferme le SILENCE, pas le refus.
   group('649 — Mon compte finit par dire que ca a rate', () {
-    Widget monCompte(ProviderContainer c) => UncontrolledProviderScope(
+    Widget myAccount(ProviderContainer c) => UncontrolledProviderScope(
       container: c,
       child: TranslationProvider(
         child: MaterialApp.router(
@@ -268,7 +268,7 @@ void main() {
       );
       addTearDown(c.dispose);
 
-      await tester.pumpWidget(monCompte(c));
+      await tester.pumpWidget(myAccount(c));
       await tester.pump();
 
       // AVANT LE DELAI, RIEN NE CHANGE : c'est le meme rond qu'avant, et une
@@ -300,7 +300,7 @@ void main() {
       );
       addTearDown(c.dispose);
 
-      await tester.pumpWidget(monCompte(c));
+      await tester.pumpWidget(myAccount(c));
       await tester.pump(kDelaiAvantEchecCompte);
       await tester.pump();
 

@@ -52,7 +52,7 @@ class EtaWidget extends ConsumerWidget {
             Row(
               children: [
                 StepIcon(
-                  StepwaysIcons.duree,
+                  StepwaysIcons.clock,
                   size: 18,
                   color: theme.colorScheme.primary,
                 ),

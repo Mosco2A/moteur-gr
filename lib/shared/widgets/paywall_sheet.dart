@@ -102,7 +102,7 @@ class PaywallSheet extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             StepIcon(
-              StepwaysIcons.diplome,
+              StepwaysIcons.diploma,
               size: 48,
               color: theme.colorScheme.primary,
             ),

@@ -587,7 +587,7 @@ void main() {
         final source = fichier.readAsStringSync();
         // `.descendre(` precede d un appel au gestionnaire de cartes : on cherche
         // l usage du transport, pas le mot.
-        if (source.contains('cartes.descendre(') ||
+        if (source.contains('maps.descendre(') ||
             source.contains('mbtilesManager.descendre(') ||
             source.contains('Manager.descendre(')) {
           coupables.add(chemin);
