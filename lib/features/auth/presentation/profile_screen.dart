@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -62,6 +63,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _pseudoController = TextEditingController();
   bool _isEditingPseudo = false;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.profile);
+  }
 
   @override
   void dispose() {

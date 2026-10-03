@@ -26,7 +26,9 @@ library;
 // l'application SAIT faire aujourd'hui.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -34,11 +36,15 @@ import '../../../core/branding/stepways_icons.dart';
 /// E5.13 : Ecran de reservation (stub).
 ///
 /// Oriente vers les fiches etapes, seule voie de reservation qui existe.
-class BookingScreen extends StatelessWidget {
+class BookingScreen extends ConsumerWidget {
   const BookingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.booking);
     final theme = Theme.of(context);
 
     return Scaffold(

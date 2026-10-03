@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -49,6 +50,12 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   /// Message d'erreur deja traduit (bandeau rouge). Null = pas d'erreur.
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.gpxImport, trail: widget.trailId);
+  }
 
   @override
   Widget build(BuildContext context) {
