@@ -22,8 +22,7 @@ import '../../booking/providers/nuitee_selections_provider.dart';
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/providers/consent_ui_providers.dart';
 import '../../feasibility/data/hiker_profile_repository.dart';
-import '../../hub/providers/cockpit_start_providers.dart'
-    show prepareCoreStepsProvider;
+import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
 import '../../journal/providers/journal_day_providers.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../../map/providers/stage_poi_check_provider.dart';
