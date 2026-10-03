@@ -317,8 +317,12 @@ void main() {
       // Un widget qui existe sans etre monte est un bouton que personne ne peut
       // atteindre — c est exactement le defaut que cette tache repare pour la
       // video. On ne le reproduit pas pour l achat.
+      // LOT 645-06 (vague 1) : la tete du scroll du cockpit — dont ce bouton
+      // d achat — a ete extraite de `hub_screen.dart` vers le sous-widget
+      // nomme [HubCockpitTop]. Seul le FICHIER LU change ; l attente, elle,
+      // est la meme : le bouton doit etre POSE dans le cockpit.
       final cockpit = File(
-        'lib/features/hub/presentation/hub_screen.dart',
+        'lib/features/hub/presentation/widgets/hub_cockpit_scroll.dart',
       ).readAsStringSync();
       expect(
         cockpit,
