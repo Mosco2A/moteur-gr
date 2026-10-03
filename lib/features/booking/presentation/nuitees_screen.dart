@@ -5,7 +5,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -14,10 +13,10 @@ import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../domain/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
-import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';
+import 'widgets/nuitee_card_parts.dart';
 import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran NUITEES — assistant « Reserver vos nuits » (PARITE GR20
@@ -439,14 +438,7 @@ class _NuiteeCard extends ConsumerWidget {
   final VoidCallback onToggle;
   final void Function(NuiteeType) onNuiteeTypeChanged;
 
-  Future<void> _callPhone(String phoneNumber) async {
-    try {
-      await launchUrl(Uri.parse('tel:${phoneNumber.replaceAll(' ', '')}'));
-    } catch (_) {
-      // Silencieux (parite GR20 : pas de blocage si l'appel echoue).
-    }
-  }
-
+  @override
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -461,26 +453,6 @@ class _NuiteeCard extends ConsumerWidget {
       data: (l) => l,
       orElse: () => const <StageAccommodation>[],
     );
-
-    // Hebergement correspondant au type choisi (sinon 1er dispo = fallback).
-    final selectedAccom = _findForType(accommodations, nuiteeType);
-    final accom =
-        selectedAccom ??
-        (accommodations.isNotEmpty ? accommodations.first : null);
-
-    // Nom du lieu (donnees sentier) sinon libelle generique (fallback).
-    final placeName = accom?.name ?? t.nuitees.card.noPlace;
-    final phone = accom?.phone ?? '';
-
-    // Types proposes : ceux presents dans les donnees + « Autre » toujours,
-    // + bivouac en repli s'il ne reste qu'un choix (parite GR20).
-    final availableTypes = _availableTypes(accommodations);
-
-    // L7-2 : la nuit N0 n'est pas le « jour 0 », c'est la veille. Elle porte
-    // son propre badge plutot qu'un « J0 » qui ne veut rien dire.
-    final dayLabel = isEveOfDeparture
-        ? t.nuitees.card.eveBadge
-        : t.nuitees.card.dayLabel.replaceAll('{n}', day.dayNumber.toString());
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -501,375 +473,18 @@ class _NuiteeCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Badge numero de jour.
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: isBooked
-                            ? scheme.primary.withAlpha(30)
-                            : scheme.primary.withAlpha(40),
-                        borderRadius: BorderRadius.circular(
-                          AppTheme.radiusCard,
-                        ),
-                        border: Border.all(
-                          color: isBooked
-                              ? scheme.primary
-                              : scheme.primary.withAlpha(80),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          dayLabel,
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: scheme.primary,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppTheme.spacingMd),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            placeName,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              decoration: isBooked
-                                  ? TextDecoration.lineThrough
-                                  : null,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          // R5 (LOT L10) : la nuit d'un jour de REPOS est bien
-                          // comptee, au MEME endroit que la veille. On le dit
-                          // explicitement, sinon deux lignes consecutives
-                          // affichent le meme hebergement sans explication.
-                          // Libelle Slang existant (`t.programme.restDay`,
-                          // 5 langues) — aucune cle nouvelle.
-                          if (day.isRestDay) ...[
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.grisGranite.withAlpha(30),
-                                borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusChip,
-                                ),
-                              ),
-                              child: Text(
-                                t.programme.restDay,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.grisGranite,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                          ],
-                          // L7-2 : on dit explicitement que cette nuit-la est
-                          // celle de l'ARRIVEE sur place, pas une etape. Sans ce
-                          // libelle, la premiere ligne ressemblerait a une nuit
-                          // de marche sans hebergement renseigne.
-                          if (isEveOfDeparture) ...[
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.grisGranite.withAlpha(30),
-                                borderRadius: BorderRadius.circular(
-                                  AppTheme.radiusChip,
-                                ),
-                              ),
-                              child: Text(
-                                t.nuitees.card.eveOfDeparture,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.grisGranite,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                          ],
-                          // Badge type courant.
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: scheme.secondary.withAlpha(30),
-                              borderRadius: BorderRadius.circular(
-                                AppTheme.radiusChip,
-                              ),
-                            ),
-                            child: Text(
-                              nuiteeType.label,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: scheme.secondary,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          // SELECTEUR DE TYPE — TOUJOURS MODIFIABLE (retour Chris
-                          // #7, tache 553). Mot pour mot : « reservation nuitee, on
-                          // ne peut pas revenir a gite », puis, sur la coche :
-                          // « NON OK = c'est bon ! ».
-                          //
-                          // CE QUI N'ALLAIT PAS. Les puces de type etaient
-                          // DESACTIVEES des que la nuit etait cochee : grisees a
-                          // 35 %, `onTap` a null, et la seule explication tenait
-                          // dans un `Tooltip` (« decochez pour changer le type »)
-                          // QUI NE S'AFFICHE PAS SUR MOBILE — un tooltip Material
-                          // demande un survol souris ou un appui long, deux gestes
-                          // que personne ne tente sur une puce grisee. Chris a donc
-                          // vu un ecran qui refusait un retour en arriere, sans un
-                          // mot pour dire pourquoi, ni comment en sortir.
-                          //
-                          // ET SURTOUT, LE VERROU REPOSAIT SUR UN CONTRESENS. La
-                          // coche ne veut pas dire « verrouille » : elle veut dire
-                          // « c'est bon, cette nuit est reglee ». Faire d'un signe
-                          // de CONFIRMATION un signe d'INTERDICTION, c'est punir
-                          // celui qui avance dans sa preparation : on coche ses
-                          // nuits au fur et a mesure, puis le refuge est complet et
-                          // il faut passer en gite. Le verrou tombait pile au
-                          // moment ou le changement devient utile.
-                          //
-                          // ON CHANGE DONC LE TYPE MEME QUAND LA NUIT EST COCHEE,
-                          // et la coche SURVIT au changement : `setNuiteeType` et
-                          // `toggleBooking` ecrivent deux champs distincts
-                          // (`nuiteeTypes` / `bookings`), changer l'un ne touche
-                          // pas l'autre. Plus de puce grisee, plus de tooltip
-                          // invisible : ce qu'on voit est ce qu'on peut faire.
-                          Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: availableTypes.map((type) {
-                              final isSelected = type == nuiteeType;
-                              return ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  minHeight: 48,
-                                  minWidth: 48,
-                                ),
-                                child: GriseEnDemo(
-                                  child: GestureDetector(
-                                    onTap: () => onNuiteeTypeChanged(type),
-                                    child: Tooltip(
-                                      message: type.label,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? scheme.primary.withAlpha(40)
-                                              : AppTheme.grisGranite.withAlpha(
-                                                  15,
-                                                ),
-                                          borderRadius: BorderRadius.circular(
-                                            AppTheme.radiusChip,
-                                          ),
-                                          border: Border.all(
-                                            color: isSelected
-                                                ? scheme.primary
-                                                : AppTheme.grisGranite
-                                                      .withAlpha(60),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            StepIcon(
-                                              type.icon,
-                                              size: 16,
-                                              color: isSelected
-                                                  ? scheme.primary
-                                                  : AppTheme.grisGranite,
-                                            ),
-                                            const SizedBox(width: 3),
-                                            Text(
-                                              type.label,
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    fontSize: 14,
-                                                    fontWeight: isSelected
-                                                        ? FontWeight.w700
-                                                        : FontWeight.w400,
-                                                    color: isSelected
-                                                        ? scheme.primary
-                                                        : AppTheme.grisGranite,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          if (accommodations.length > 1) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              t.nuitees.card.available.replaceAll(
-                                '{count}',
-                                accommodations.length.toString(),
-                              ),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontSize: 14,
-                                fontStyle: FontStyle.italic,
-                                color: AppTheme.grisGranite.withAlpha(150),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    // Case reserve.
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: isBooked
-                            ? scheme.primary.withAlpha(30)
-                            : AppTheme.orangeDifficile.withAlpha(20),
-                        borderRadius: BorderRadius.circular(
-                          AppTheme.radiusCard,
-                        ),
-                        border: Border.all(
-                          color: isBooked
-                              ? scheme.primary
-                              : AppTheme.orangeDifficile.withAlpha(80),
-                          width: 2,
-                        ),
-                      ),
-                      child: StepIcon(
-                        isBooked ? StepwaysIcons.coche : StepwaysIcons.radio,
-                        size: 20,
-                        color: isBooked
-                            ? scheme.primary
-                            : AppTheme.orangeDifficile.withAlpha(120),
-                      ),
-                    ),
-                  ],
-                ),
-                // ADRESSE ET POINT GPS CLIQUABLE DE L'HEBERGEMENT (tache 641,
-                // bug 15).
-                //
-                // Demande de Christophe du 30/09 10:23, verbatim : « hebergement il
-                // doit avoir une adresse et un point GPS qui link sur Maps ». La
-                // fiche montrait le nom, le type et le telephone ; ni adresse, ni
-                // moyen d'ouvrir les cartes — alors que trouver la porte d'un gite
-                // dans un village corse a la tombee du jour est precisement le
-                // moment ou l'on en a besoin.
-                //
-                // MASQUE POUR « AUTRE HEBERGEMENT », comme le bouton Appeler : ce
-                // choix ne designe aucun etablissement, donc aucun lieu.
-                if (accom != null && nuiteeType != NuiteeType.autreHebergement)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppTheme.spacingXs),
-                    child: LigneDeLieu(
-                      lieu: LieuCliquable(
-                        nom: accom.name,
-                        adresse: accom.address,
-                        lat: accom.lat,
-                        lng: accom.lng,
-                      ),
-                      compact: true,
-                    ),
-                  ),
-
-                // Action Appeler (masquee pour « autre hebergement », parite GR20).
-                if (phone.isNotEmpty &&
-                    nuiteeType != NuiteeType.autreHebergement) ...[
-                  const SizedBox(height: AppTheme.spacingSm),
-                  Row(
-                    children: [
-                      AppButton(
-                        variant: AppButtonVariant.text,
-                        tone: AppTheme.orangeDifficile,
-                        icon: StepwaysIcons.telephone,
-                        iconSize: 18,
-                        label: t.nuitees.card.call.replaceAll('{phone}', phone),
-                        labelFontSize: 14,
-                        isFullWidth: false,
-                        onPressed: () => _callPhone(phone),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
+            child: NuiteeCardContents(
+              day: day,
+              accommodations: accommodations,
+              nuiteeType: nuiteeType,
+              isBooked: isBooked,
+              isEveOfDeparture: isEveOfDeparture,
+              onNuiteeTypeChanged: onNuiteeTypeChanged,
             ),
           ),
         ),
       ),
     );
-  }
-
-  /// Cherche l'hebergement dont le type correspond au [NuiteeType] choisi.
-  /// Mappe les types de donnees (String libre du sentier) vers les 4 choix.
-  StageAccommodation? _findForType(
-    List<StageAccommodation> accommodations,
-    NuiteeType type,
-  ) {
-    if (accommodations.isEmpty) return null;
-    for (final a in accommodations) {
-      if (_mapType(a.type) == type) return a;
-    }
-    return null;
-  }
-
-  /// Types disponibles pour cette nuit (parite GR20 `availableTypes`) : ceux
-  /// presents dans les donnees + « Autre » toujours, + bivouac en repli si un
-  /// seul choix, garantissant au moins deux options.
-  Set<NuiteeType> _availableTypes(List<StageAccommodation> accommodations) {
-    final types = <NuiteeType>{};
-    for (final a in accommodations) {
-      types.add(_mapType(a.type));
-    }
-    types.add(NuiteeType.autreHebergement);
-    if (types.length == 1) types.add(NuiteeType.bivouac);
-    return types;
-  }
-
-  /// Mappe un type de donnees d'hebergement (String libre) vers l'un des 4
-  /// [NuiteeType] de l'assistant (parite GR20 : hotel/camping/bergerie -> autre).
-  NuiteeType _mapType(AccommodationType type) {
-    switch (type) {
-      case AccommodationTypeValues.refuge:
-        return NuiteeType.refuge;
-      case AccommodationTypeValues.gite:
-        return NuiteeType.gite;
-      case AccommodationTypeValues.bivouac:
-        return NuiteeType.bivouac;
-      case AccommodationTypeValues.hotel:
-      case AccommodationTypeValues.camping:
-      case AccommodationTypeValues.bergerie:
-        return NuiteeType.autreHebergement;
-      default:
-        return NuiteeType.autreHebergement;
-    }
   }
 }
 

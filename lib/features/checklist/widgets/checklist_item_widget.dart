@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../../shared/widgets/grise_en_demo.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_weight_banner.dart' show formatChecklistGrams;
 import '../../../core/branding/stepways_icons.dart';
+import 'checklist_item_actions.dart';
 
 /// Pastille coloree du niveau d'exigence (parite GR20 — _RequirementDot).
 class ChecklistRequirementDot extends StatelessWidget {
@@ -81,9 +81,8 @@ class ChecklistItemWidget extends StatelessWidget {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ui = t.checklist.ui;
     final unit = t.checklist.weight.grams;
     final isRequired =
         item.template.requirement == ChecklistRequirement.required;
@@ -105,220 +104,127 @@ class ChecklistItemWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Ligne 1 : checkbox + pastille + nom + badge Obligatoire.
-            Row(
-              children: [
-                Checkbox(
-                  value: item.isChecked,
-                  onChanged: (_) => onToggle(),
-                  activeColor: AppTheme.vertFacile,
-                ),
-                const SizedBox(width: 6),
-                ChecklistRequirementDot(requirement: item.template.requirement),
-                const SizedBox(width: 6),
-                // NOM DE L'OBJET — PLUS DE COUPE (retour Chris #10, tache 553).
-                // Mot pour mot : « dans sac il y a plein de textes qu'on ne voit
-                // pas en entier ». Le nom tenait sur UNE ligne avec ellipse, en
-                // partageant sa ligne avec une case a cocher, une pastille et,
-                // pour les obligatoires, un badge « Obligatoire » : « Veste
-                // impermeable coupe-vent » finissait en « Veste imperm... ».
-                // Un objet dont on ne lit pas le nom ne se coche pas : on ne
-                // sait pas ce qu'on coche. Deux lignes suffisent a tout dire ici,
-                // et l'ellipse ne reste qu'en dernier recours.
-                Expanded(
-                  child: Text(
-                    item.quantity > 1 ? '$name (x${item.quantity})' : name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      decoration: item.isChecked
-                          ? TextDecoration.lineThrough
-                          : null,
-                      color: item.isChecked ? AppTheme.grisGranite : null,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (isRequired)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5,
-                      vertical: 1,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.rougeUrgence.withAlpha(20),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const StepIcon(
-                          StepwaysIcons.cadenas,
-                          size: 14,
-                          color: AppTheme.rougeUrgence,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          ui.requirementRequired,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.rougeUrgence,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
+            _ChecklistItemLine1(
+              item: item,
+              name: name,
+              isRequired: isRequired,
+              onToggle: onToggle,
             ),
             // Ligne 2 : poids + actions (alignees a droite sous le nom).
-            Padding(
-              padding: const EdgeInsets.only(left: 56),
-              child: Row(
-                children: [
-                  if (weightText != null)
-                    Flexible(
-                      child: Text(
-                        weightText,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  const SizedBox(width: 8),
-                  // TOUT CE QUI SUIT EST GRISE EN DEMO (tache 638, bug 14 —
-                  // DEM-260930-1022, verbatim : « laisser 2 menus et griser les
-                  // autres »).
-                  //
-                  // Les deux actions VIVANTES du sac en demo sont la LECTURE de
-                  // la liste et la COCHE (qui change bien l'etat, en memoire).
-                  // Tout le reste — liste de courses, quantite, modifier,
-                  // supprimer — ecrirait en base : c'est donc grise et
-                  // visiblement indisponible, jamais un bouton qui repond au
-                  // doigt sans rien faire. Le POIDS de l'article, lui, reste
-                  // lisible : c'est une information, pas une commande.
-                  GriseEnDemo(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Panier — ajouter/retirer de la liste de courses (non coche).
-                        if (!item.isChecked)
-                          IconButton(
-                            icon: StepIcon(
-                              item.inShoppingList
-                                  ? StepwaysIcons.panier
-                                  : StepwaysIcons.panier,
-                              size: 18,
-                            ),
-                            color: item.inShoppingList
-                                ? AppTheme.vertFacile
-                                : AppTheme.grisGranite,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                              minWidth: 36,
-                              minHeight: 36,
-                            ),
-                            onPressed: onToggleShoppingList,
-                            tooltip: item.inShoppingList
-                                ? ui.removeFromShoppingList
-                                : ui.addToShoppingList,
-                          ),
-                        // Bouton - (toujours actif : deselectionne sous 1).
-                        IconButton(
-                          icon: const StepIcon(StepwaysIcons.moins, size: 18),
-                          color: AppTheme.rougeUrgence,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 36,
-                            minHeight: 36,
-                          ),
-                          onPressed: () => onQuantityChanged(item.quantity - 1),
-                          tooltip: ui.reduceQuantity,
-                        ),
-                        SizedBox(
-                          width: 24,
-                          child: Text(
-                            '${item.quantity}',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        // Bouton +
-                        IconButton(
-                          icon: const StepIcon(StepwaysIcons.plus, size: 18),
-                          color: AppTheme.vertFacile,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 36,
-                            minHeight: 36,
-                          ),
-                          onPressed: () => onQuantityChanged(item.quantity + 1),
-                          tooltip: ui.increaseQuantity,
-                        ),
-                        // Menu edit + delete (delete si custom).
-                        PopupMenuButton<String>(
-                          icon: const StepIcon(StepwaysIcons.menu, size: 18),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 36,
-                            minHeight: 36,
-                          ),
-                          itemBuilder: (ctx) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  const StepIcon(
-                                    StepwaysIcons.crayon,
-                                    size: 14,
-                                    color: AppTheme.grisGranite,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(ui.modify),
-                                ],
-                              ),
-                            ),
-                            if (item.isCustom)
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Row(
-                                  children: [
-                                    const StepIcon(
-                                      StepwaysIcons.corbeille,
-                                      size: 14,
-                                      color: AppTheme.rougeUrgence,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      ui.delete,
-                                      style: const TextStyle(
-                                        color: AppTheme.rougeUrgence,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              onEdit();
-                            } else if (value == 'delete') {
-                              onDelete?.call();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            ChecklistItemLine2(
+              item: item,
+              weightText: weightText,
+              onQuantityChanged: onQuantityChanged,
+              onToggleShoppingList: onToggleShoppingList,
+              onEdit: onEdit,
+              onDelete: onDelete,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Le nom de l'article, sur deux lignes au plus (retour Chris #10).
+class _ChecklistItemName extends StatelessWidget {
+  const _ChecklistItemName({required this.item, required this.name});
+
+  /// L'article du sac et son etat.
+  final ChecklistItemState item;
+
+  /// Le nom affichable de l'article.
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Expanded(
+      child: Text(
+        item.quantity > 1 ? '$name (x${item.quantity})' : name,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          decoration: item.isChecked ? TextDecoration.lineThrough : null,
+          color: item.isChecked ? AppTheme.grisGranite : null,
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+/// Le badge « Obligatoire » d'un article que le sentier impose.
+class _ChecklistRequiredBadge extends StatelessWidget {
+  const _ChecklistRequiredBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final ui = t.checklist.ui;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: AppTheme.rougeUrgence.withAlpha(20),
+        borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const StepIcon(
+            StepwaysIcons.cadenas,
+            size: 14,
+            color: AppTheme.rougeUrgence,
+          ),
+          const SizedBox(width: 2),
+          Text(
+            ui.requirementRequired,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.rougeUrgence,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// La premiere ligne d'un article : coche, pastille, nom et badge.
+class _ChecklistItemLine1 extends StatelessWidget {
+  const _ChecklistItemLine1({
+    required this.item,
+    required this.name,
+    required this.isRequired,
+    required this.onToggle,
+  });
+
+  /// L'article du sac et son etat.
+  final ChecklistItemState item;
+
+  /// Le nom affichable de l'article.
+  final String name;
+
+  /// Vrai quand le sentier impose l'article.
+  final bool isRequired;
+
+  /// Coche ou decoche l'article.
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+          value: item.isChecked,
+          onChanged: (_) => onToggle(),
+          activeColor: AppTheme.vertFacile,
+        ),
+        const SizedBox(width: 6),
+        ChecklistRequirementDot(requirement: item.template.requirement),
+        const SizedBox(width: 6),
+        _ChecklistItemName(item: item, name: name),
+        if (isRequired) const _ChecklistRequiredBadge(),
+      ],
     );
   }
 }
