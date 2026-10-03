@@ -22,7 +22,7 @@ import '../../after/providers/adventure_recap_provider.dart'
 // TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
 // et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
 // fichier, aucun cycle d'import.
-import '../../safety/providers/safety_providers.dart';
+import '../../safety/safety_facade.dart' show ficheEcranVerrouilleProvider;
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
 // n'importe pas ce fichier, aucun cycle d'import.

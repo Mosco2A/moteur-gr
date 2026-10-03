@@ -34,8 +34,7 @@ import '../../planning/providers/planning_provider.dart'
     show planningProvider, retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
-import '../../safety/providers/health_prepare_providers.dart'
-    show healthPrepareStepsProvider;
+import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/providers/progress_provider.dart';
 import '../../training/training_facade.dart' show trainingProgressProvider;

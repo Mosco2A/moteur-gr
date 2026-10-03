@@ -18,7 +18,12 @@ import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../../shared/poi/poi_type_config.dart';
 import '../../../safety/data/signalement_service.dart';
-import '../../../safety/providers/signalement_providers.dart';
+import '../../../safety/safety_facade.dart'
+    show
+        WaterSourceRef,
+        pendingSignalementCountProvider,
+        signalementServiceProvider,
+        waterSourceStatusProvider;
 import '../../../trail/providers/pois_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../../../domain/stage.dart';
