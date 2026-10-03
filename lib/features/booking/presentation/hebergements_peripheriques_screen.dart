@@ -32,10 +32,14 @@ class HebergementsPeripheriquesScreen extends ConsumerWidget {
     WidgetRef ref,
     HebergementPeripherique h,
   ) async {
+    // SANS LIEN, RIEN A OUVRIR (lot 645-08). Le bouton n'est pas construit
+    // dans ce cas-la ; cette garde est la ceinture, pas la bretelle.
+    final url = h.deeplinkUrl;
+    if (url == null || url.isEmpty) return;
     final launcher = ref.read(deeplinkLauncherProvider);
     final t = Translations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final opened = await launcher.open(h.deeplinkUrl);
+    final opened = await launcher.open(url);
     if (!opened) {
       messenger.showSnackBar(SnackBar(content: Text(t.hebergement.cannotOpen)));
     }
@@ -183,25 +187,33 @@ class _HebergementCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Semantics(
-              button: true,
-              label: t.hebergement.openSite,
-              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
-              // largeur. Le theme OutlinedButton impose minimumSize infinie :
-              // le bouton s'etirait deja sur toute la largeur (l'Align n'avait
-              // pas d'effet visible) -> isFullWidth:true = iso-rendu verifie
-              // par sonde de largeur. Semantics(button+label) conservee.
-              child: AppButton(
-                variant: AppButtonVariant.outline,
-                icon: StepwaysIcons.lien,
+          // PAS DE LIEN, PAS DE BOUTON — ET PAS D'ESPACE RESERVE NON PLUS
+          // (lot 645-08, voie V2). L'espacement qui precede le bouton entre
+          // dans la condition avec lui : sans ca, une carte sans lien se
+          // terminerait par un blanc que rien ne justifie. La carte s'arrete
+          // donc apres le detour A/R.
+          if (hebergement.hasDeeplink) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Semantics(
+                button: true,
                 label: t.hebergement.openSite,
-                onPressed: onOpen,
+                // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline,
+                // pleine largeur. Le theme OutlinedButton impose minimumSize
+                // infinie : le bouton s'etirait deja sur toute la largeur
+                // (l'Align n'avait pas d'effet visible) -> isFullWidth:true =
+                // iso-rendu verifie par sonde de largeur. Semantics
+                // (button+label) conservee.
+                child: AppButton(
+                  variant: AppButtonVariant.outline,
+                  icon: StepwaysIcons.lien,
+                  label: t.hebergement.openSite,
+                  onPressed: onOpen,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

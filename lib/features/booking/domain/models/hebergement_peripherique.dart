@@ -52,13 +52,29 @@ abstract class HebergementPeripherique with _$HebergementPeripherique {
     /// Distance aller-retour estimée (km) depuis le point d'étape de référence.
     required double distanceAllerRetourKm,
 
-    /// Lien profond (URL) vers le site/app du prestataire pour réserver.
-    /// Le facilitateur ouvre ce lien : pas de réservation in-app (#84100).
-    required String deeplinkUrl,
+    /// Lien profond (URL) vers le site/app du prestataire pour réserver, ou
+    /// `null` quand on ne le connait pas.
+    ///
+    /// NULLABLE DEPUIS LE LOT 645-08 (voie V2, arbitrage de Christophe du
+    /// 02/10/2026), ET LE CHANGEMENT DE TYPE EST LE POINT. Tant que le champ
+    /// etait `required String`, un hebergement sans lien connu ne pouvait
+    /// s'ecrire que d'une seule facon : une chaine inventee. Les trois
+    /// hebergements de demonstration portaient donc `https://example.org/...`,
+    /// et l'ecran construisait un bouton « Voir le site » qui n'envoyait le
+    /// randonneur nulle part. Le facilitateur ouvre ce lien quand il existe
+    /// ([hasDeeplink]) ; sinon il n'y a PAS de bouton, pas de tiret, pas
+    /// d'espace reserve. Aucune reservation in-app dans les deux cas (#84100).
+    String? deeplinkUrl,
   }) = _HebergementPeripherique;
 
   /// Détour aller simple estimé (km), soit la moitié de l'aller-retour.
   double get distanceAllerKm => distanceAllerRetourKm / 2;
+
+  /// Vrai si un lien profond exploitable est disponible (bouton affiche).
+  ///
+  /// Meme contrat que `GuideItem.hasDeeplink` et `Shop.hasWebsite` : une chaine
+  /// vide n'est pas un lien, et un lien qu'on n'a pas ne se montre pas.
+  bool get hasDeeplink => deeplinkUrl != null && deeplinkUrl!.isNotEmpty;
 
   /// Désérialisation depuis JSON (config sentier, données fictives P2-P3).
   factory HebergementPeripherique.fromJson(Map<String, dynamic> json) =>

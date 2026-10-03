@@ -56,6 +56,15 @@ final deeplinkLauncherProvider = Provider<DeeplinkLauncher>(
 /// Données FICTIVES en P2-P3 (fiche #84627) : pas de Firebase réel ici. Le
 /// catalogue réel viendra de la config sentier (TrailConfig / Drift) en P4+.
 /// Paramétré par `trailId` pour rester générique (zéro marque en dur).
+///
+/// AUCUN DES TROIS NE PORTE DE LIEN PROFOND, ET C'EST VOLONTAIRE (lot 645-08,
+/// voie V2 arbitree par Christophe le 02/10/2026). Ils pointaient sur
+/// `example.org` — le domaine reserve aux exemples (RFC 2606) — et l'ecran en
+/// faisait un bouton « Voir le site » qui n'ouvrait rien. Le lien invente est
+/// RETIRE, pas remplace par une chaine vide : `deeplinkUrl` est nul, donc
+/// `HebergementPeripherique.hasDeeplink` est faux, donc la carte s'arrete
+/// apres le detour A/R. Un vrai lien, le jour ou il existe, rallume le bouton
+/// sans toucher a l'ecran.
 final hebergementsPeripheriquesProvider =
     Provider.family<List<HebergementPeripherique>, String>((ref, trailId) {
       // Jeu de données générique de démonstration (pas de marque réelle).
@@ -67,7 +76,6 @@ final hebergementsPeripheriquesProvider =
           latitude: 42.12,
           longitude: 9.05,
           distanceAllerRetourKm: 2.4,
-          deeplinkUrl: 'https://example.org/gite-du-vallon',
         ),
         HebergementPeripherique(
           id: 'hp-2',
@@ -76,7 +84,6 @@ final hebergementsPeripheriquesProvider =
           latitude: 42.15,
           longitude: 9.08,
           distanceAllerRetourKm: 5.0,
-          deeplinkUrl: 'https://example.org/refuge-des-cretes',
         ),
         HebergementPeripherique(
           id: 'hp-3',
@@ -85,7 +92,6 @@ final hebergementsPeripheriquesProvider =
           latitude: 42.10,
           longitude: 9.02,
           distanceAllerRetourKm: 1.2,
-          deeplinkUrl: 'https://example.org/camping-riviere',
         ),
       ];
     });
