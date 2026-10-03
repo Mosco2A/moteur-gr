@@ -47,6 +47,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, _breadcrumb);
     _loadExistingData();
   }
 

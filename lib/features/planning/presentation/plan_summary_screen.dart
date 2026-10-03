@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
@@ -69,6 +70,10 @@ class PlanSummaryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.planSummary, trail: trailId);
     final theme = Theme.of(context);
     final days = ref.watch(plannedDaysProvider(trailId));
     final stats = ref.watch(planningStatsProvider(trailId));
