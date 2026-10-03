@@ -15,7 +15,7 @@ import '../../../core/map/mbtiles_manager.dart';
 import '../../../core/models/download_progress.dart';
 import '../../../core/models/niveau_de_telechargement.dart';
 import '../../../core/data/revision_de_donnee.dart';
-import '../../treks/providers/entitlements_provider.dart';
+import '../../treks/treks_facade.dart' show ownedTrailIdsProvider;
 import '../domain/etat_du_sentier.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';

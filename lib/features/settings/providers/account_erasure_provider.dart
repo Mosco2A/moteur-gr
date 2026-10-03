@@ -40,7 +40,7 @@ import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/providers/progress_provider.dart';
 import '../../training/training_facade.dart' show trainingProgressProvider;
-import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
+import '../../treks/treks_facade.dart' show myTreksProvider;
 
 /// Service de retention / droit a l'effacement, branche sur la base REELLE de
 /// l'application et sur les preferences REELLES.

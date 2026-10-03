@@ -15,7 +15,7 @@ import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../map/providers/track_position_provider.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/providers/my_treks_provider.dart';
+import '../../../treks/treks_facade.dart' show currentTrailSummaryProvider;
 import '../../../trek/providers/tracking_providers.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
