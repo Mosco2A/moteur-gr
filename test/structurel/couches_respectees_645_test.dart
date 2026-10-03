@@ -93,9 +93,13 @@ const plafondSocleVersFeature = 72;
 /// audit_global.py` annonce le meme 182 depuis que ce lot a corrige sa
 /// resolution des imports relatifs.
 ///
-/// Les 41 payees par ce lot sont toutes du MEME geste : onze modeles que
-/// plusieurs features lisaient depuis la maison d'une seule sont descendus
-/// dans `lib/domain/` (ou `lib/shared/` pour le vocabulaire visuel des POI).
+/// Les 41 payees par ce lot sont toutes du MEME geste : DOUZE types que
+/// plusieurs features lisaient depuis la maison d'une seule ont change de
+/// maison — dix dans `lib/domain/` (`stage`, `track_point`, `trek_session`,
+/// `trek_stats`, `trek_completion`, `stage_accommodation`,
+/// `feasibility_formula`, `planned_day`, `tip_card`, `tip_theme`) et deux dans
+/// `lib/shared/poi/` (`poi_type_config`, `poi_type_label`, qui portent des
+/// `Color` et n'avaient donc rien a faire dans la couche la plus basse).
 ///
 /// CE QUI RESTE N'EST PAS DU RANGEMENT : 130 des 182 visent un `providers/`,
 /// c'est-a-dire de l'etat Riverpod partage. Voir l'en-tete, et ARB-645-05-b.

@@ -617,8 +617,9 @@ mauvais moment.
 | **ARB-645-05-b** | Les **196 croisements** restants ne sont pas des modeles : **130 visent un `providers/`**, 33 un `domain/`, 15 une `presentation/`, 10 un `widgets/`. Et parmi les 33 `domain/`, **3 seulement** sont lus par deux features ou plus — le critere ecrit de la fiche. Les 130 sont de l'ETAT RIVERPOD partage (`gps_providers`, `tracking_providers`, `planned_days_provider`, `auth_provider`, `download_reminder_provider`...) : deplacer un provider n'est pas un deplacement de type, c'est un recablage du graphe, et SPEC-06 interdit de changer un comportement en deplacant | Trancher le principe pour l'ETAT partage : (a) une couche `lib/application/` pour les providers que plusieurs features lisent, (b) une facade par feature (chaque feature expose un contrat, les autres ne lisent plus ses providers), ou (c) assumer que l'etat partage se lit directement et **retirer les `providers/` de la cible ECR-23 (b)**. Recommandation d'Hephaistos : **(b)**, la seule qui laisse une frontiere lisible, mais c'est un chantier par feature, pas un lot |
 
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
-été exécutée : `lib/domain/` existe, **onze modèles** y sont descendus (ou dans
-`lib/shared/` pour le vocabulaire visuel des POI), les deux homonymes sont
+été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
+dans `lib/domain/` et deux dans `lib/shared/poi/` pour le vocabulaire visuel
+des POI — les deux homonymes sont
 résolus sans qu'un seul type soit fusionné, K1 et K2 sont corrigés. Compteurs :
 **socle → feature 78 → 72**, **croisements 223 → 182**, **ECR-20 2 → 0**,
 **ECR-25 1 → 0**. La cible « zéro » n'est pas atteinte, et les deux fiches
