@@ -18,7 +18,7 @@ import '../../../core/services/data_retention_service.dart';
 import '../../../core/services/recovery_code_service.dart';
 import '../../after/providers/adventure_recap_provider.dart'
     show latestTrekSessionProvider;
-import '../../booking/providers/nuitee_selections_provider.dart';
+import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/providers/consent_ui_providers.dart';
 import '../../feasibility/data/hiker_profile_repository.dart';
