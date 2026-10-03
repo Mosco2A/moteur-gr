@@ -39,6 +39,7 @@ import 'package:moteur_gr/features/guides/presentation/town_guide_detail_screen.
 import 'package:moteur_gr/features/guides/presentation/town_guides_screen.dart';
 import 'package:moteur_gr/features/guides/providers/guide_providers.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';

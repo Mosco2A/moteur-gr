@@ -32,6 +32,7 @@ import '../data/trek_recorder.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_stats.dart';
 import '../../../core/services/session_demo.dart';
+import '../../../domain/trek_session_mapping.dart';
 
 /// Etat immutable du tracking expose a l'UI.
 ///

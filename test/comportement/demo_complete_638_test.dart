@@ -20,6 +20,7 @@ import 'package:moteur_gr/core/services/pilote_demo.dart';
 import 'package:moteur_gr/core/services/session_demo.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';

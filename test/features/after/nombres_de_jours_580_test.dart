@@ -39,6 +39,7 @@ import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/presentation/adventure_recap_screen.dart';
 import 'package:moteur_gr/features/diploma/presentation/diploma_screen.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 

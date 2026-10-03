@@ -15,6 +15,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../domain/stage.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
+import '../../../domain/trek_session_mapping.dart';
 import '../../trek/trek_facade.dart'
     show currentTrekPlanProvider, domainStagesProvider, stagesProvider;
 
