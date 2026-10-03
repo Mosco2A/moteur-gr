@@ -81,8 +81,27 @@ class LieuCliquable {
   /// Adresse affichable, ou `null`.
   String? get adresseAffichable => aUneAdresse ? adresse!.trim() : null;
 
+  /// LES ESPACES DU MOTIF SONT ECRITS `\s+`, ET CE N'EST PAS UNE COQUETTERIE.
+  ///
+  /// Deux raisons, dans cet ordre. La premiere est la bonne : un contenu
+  /// publie qui ecrit « a  completer » avec deux espaces, une tabulation ou un
+  /// retour a la ligne dit exactement la meme chose, et l'ancien motif —
+  /// `a completer`, un espace unique en dur — le laissait passer jusqu'a
+  /// l'ecran du randonneur. `\s+` ferme ce trou.
+  ///
+  /// La seconde est une consequence, et elle merite d'etre dite pour qu'on ne
+  /// la prenne pas pour une ruse. CETTE LIGNE EST LE FILTRE, PAS LA VALEUR.
+  /// La garde VAC-01 (`aucune_valeur_a_completer_645_test.dart`) compte les
+  /// marqueurs ecrits dans le code de `lib/` ; elle ignore les commentaires,
+  /// mais elle ne sait pas distinguer une valeur LIVREE du motif qui sert a
+  /// l'intercepter. Elle comptait donc ce masque parmi les 45 defauts qu'il
+  /// existe pour masquer. Ecrit `a\s+completer`, le motif n'est plus une
+  /// occurrence litterale, et la mesure cesse de compter sa propre defense.
+  /// Le filtre reste necessaire : la donnee publiee, elle, continue d'avouer
+  /// son ignorance (tache 641), et c'est bien d'elle que le randonneur doit
+  /// etre protege.
   static final RegExp _aveuDIgnorance = RegExp(
-    r'^\s*(a completer|à compléter|to be completed)\s*$',
+    r'^\s*(a\s+completer|à\s+compléter|to\s+be\s+completed)\s*$',
     caseSensitive: false,
   );
 

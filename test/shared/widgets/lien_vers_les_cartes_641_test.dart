@@ -80,6 +80,44 @@ void main() {
       },
     );
 
+    // AJOUTE PAR LE LOT 645-08. Le motif portait un espace UNIQUE en dur :
+    // « a  completer » avec deux espaces, une tabulation ou un retour a la
+    // ligne — ce que produit n'importe quel passage par un tableur ou un
+    // export — traversait le filtre et s'affichait au randonneur comme une
+    // adresse. Le motif est passe a `\s+` aux trois endroits.
+    test('l aveu reste un aveu quel que soit son espacement', () {
+      for (final avoue in <String>[
+        'a completer',
+        'a  completer',
+        'a\tcompleter',
+        '  A COMPLETER  ',
+        'à compléter',
+        'à   compléter',
+        'to be completed',
+        'to  be\tcompleted',
+      ]) {
+        expect(
+          LieuCliquable(nom: 'Arret', adresse: avoue).aUneAdresse,
+          isFalse,
+          reason: '« $avoue » est un marqueur d editeur, pas une adresse',
+        );
+      }
+      // ET IL NE DEBORDE PAS : une vraie adresse qui contient le mot reste
+      // une adresse.
+      for (final vraie in <String>[
+        'Route a completer par le village',
+        '12 rue du Completer',
+      ]) {
+        expect(
+          LieuCliquable(nom: 'Arret', adresse: vraie).aUneAdresse,
+          isTrue,
+          reason:
+              '« $vraie » est une adresse, le motif est ancre aux deux '
+              'bouts',
+        );
+      }
+    });
+
     test('une latitude hors bornes est refusee — une donnee corrompue ne doit '
         'pas produire un lien de carte', () {
       expect(const LieuCliquable(nom: 'x', lat: 200, lng: 9).aUnPoint, isFalse);
