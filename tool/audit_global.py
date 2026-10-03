@@ -37,7 +37,8 @@ LIB = os.path.join(REPO, "lib")
 TEST = os.path.join(REPO, "test")
 
 # Zones autorisees a la racine de lib/ (ECR-13).
-LIB_RACINE_AUTORISEE = {"core", "features", "shared", "i18n", "main.dart"}
+LIB_RACINE_AUTORISEE = {"core", "domain", "features", "shared", "i18n",
+                        "main.dart"}
 
 # Suffixes des fichiers produits par la generation de code : exclus de
 # toutes les mesures de qualite (ECR-15, ECR-20, ECR-01...).
@@ -512,9 +513,64 @@ def mesurer_langue() -> dict:
 
 # --- Section 6 : couches et rangement (ECR-13, ECR-23, ECR-25) -----------
 
+def nom_du_paquet() -> str:
+    """Le nom du paquet, lu dans pubspec.yaml et jamais devine."""
+    for ligne in lire("pubspec.yaml").splitlines():
+        m = re.match(r"^name:\s*([A-Za-z_][A-Za-z0-9_]*)", ligne)
+        if m:
+            return m.group(1)
+    raise SystemExit("nom du paquet introuvable dans pubspec.yaml")
+
+
+def cible_de_l_import(fichier: str, imp: str, paquet: str) -> str | None:
+    """Le chemin du depot vise par `imp` depuis `fichier`, ou None.
+
+    None pour `dart:` et pour les paquets tiers : ils ne designent aucun
+    fichier du depot.
+
+    POURQUOI LA RESOLUTION EST FAITE POUR DE VRAI (corrige par le lot 645-05).
+    L ancienne mesure cherchait `\.\./\.\./(<nom>)/` DANS LE TEXTE de l import
+    et prenait `<nom>` pour une feature voisine des qu il n etait ni `core`, ni
+    `shared`, ni `i18n`. Or depuis
+    `lib/features/trek/presentation/map/map_screen.dart`, l import
+    `../../domain/models/stage.dart` designe
+    `lib/features/trek/domain/models/stage.dart` : LA MEME feature. L audit y
+    lisait une fleche `trek -> domain`, qui n existe pas — 20 fleches fantomes
+    au 02/10/2026, et c est tout l ecart entre les 243 annonces par cet outil
+    et les 223 mesures par `test/structurel/couches_respectees_645_test.dart`.
+    Les deux mesures disent desormais le MEME chiffre, ce qui est la seule
+    facon pour un plafond de valoir quelque chose.
+    """
+    if imp.startswith("dart:"):
+        return None
+    if imp.startswith("package:%s/" % paquet):
+        return "lib/" + imp[len("package:%s/" % paquet):]
+    if imp.startswith("package:"):
+        return None
+    segments: list[str] = []
+    for s in fichier.split("/")[:-1] + imp.split("/"):
+        if s in (".", ""):
+            continue
+        if s == "..":
+            if segments:
+                segments.pop()
+            continue
+        segments.append(s)
+    return "/".join(segments)
+
+
+def feature_de(fichier: str) -> str | None:
+    """La feature a laquelle appartient `fichier`, ou None hors features/."""
+    parts = fichier.split("/")
+    if len(parts) < 4 or parts[0] != "lib" or parts[1] != "features":
+        return None
+    return parts[2]
+
+
 def mesurer_couches() -> dict:
     """Sens des dependances, croisements entre features, couche presentation."""
     motif_import = re.compile(r"""import\s+['"]([^'"]+)['"]""")
+    paquet = nom_du_paquet()
 
     socle_vers_feature = []
     croisements = []
@@ -524,23 +580,19 @@ def mesurer_couches() -> dict:
         texte = lire(f)
         imports = motif_import.findall(texte)
         zone = f.split("/")[1] if f.count("/") >= 1 else ""
-        ma_feature = f.split("/")[2] if f.startswith("lib/features/") else None
+        ma_feature = feature_de(f)
 
         for imp in imports:
-            # ECR-23 : core/ et shared/ ne connaissent aucune feature.
-            if zone in ("core", "shared") and (
-                    "features/" in imp or imp.startswith("../features")):
+            cible = cible_de_l_import(f, imp, paquet)
+            # ECR-23 : le socle ne connait aucune feature. `domain/` EST du
+            # socle depuis la voie A (lot 645-05) : c est la maison des modeles
+            # que plusieurs features lisent, donc la couche la plus basse.
+            if (zone in ("core", "shared", "domain") and cible
+                    and cible.startswith("lib/features/")):
                 socle_vers_feature.append(f"{f} -> {imp}")
             # ECR-23 : pas de croisement entre deux features.
-            if ma_feature:
-                autre = None
-                m = re.search(r"features/([a-z_0-9]+)/", imp)
-                if m:
-                    autre = m.group(1)
-                elif imp.startswith("../../"):
-                    m2 = re.search(r"\.\./\.\./([a-z_0-9]+)/", imp)
-                    if m2 and m2.group(1) not in ("core", "shared", "i18n"):
-                        autre = m2.group(1)
+            if ma_feature and cible:
+                autre = feature_de(cible)
                 if autre and autre != ma_feature:
                     croisements.append(f"{f} -> {imp}")
             # ECR-25 : la presentation n accede pas aux donnees.
