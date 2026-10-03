@@ -14,8 +14,9 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../notifications/providers/notification_provider.dart';
+import '../../auth/auth_facade.dart' show identifiantDeCompteProvider;
+import '../../notifications/notifications_facade.dart'
+    show notificationSettingsProvider;
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
 import '../../../core/branding/stepways_icons.dart';

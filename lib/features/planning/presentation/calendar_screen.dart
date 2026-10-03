@@ -11,7 +11,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

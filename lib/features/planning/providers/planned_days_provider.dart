@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
-import '../../trail/providers/stages_provider.dart';
-import '../../trek/providers/gps_providers.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
+import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../domain/planning_calculator.dart';
 import '../domain/trek_edit_lock.dart';
 import '../models/day_plan.dart';

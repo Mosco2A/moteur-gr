@@ -1,13 +1,29 @@
-/// Un ecran d'attente assume : les disponibilites ne sont pas branchees, et il
-/// le DIT au lieu de rester vide.
+/// L'ecran de reservation n'annonce plus de disponibilites : il oriente vers
+/// les fiches etapes, qui portent de quoi reserver pour de vrai.
 library;
 
 // E5.13 — Ecran de reservation stub.
 //
-// Scaffold avec message informatif indiquant que les disponibilites
-// seront bientot disponibles. En attendant, l'utilisateur est redirige
-// vers les fiches etapes pour reserver.
+// Scaffold qui oriente l'utilisateur vers les fiches etapes pour reserver.
 // Route /booking gardee par FeatureFlags.isBookingEnabled.
+//
+// CE QUI N'EST PLUS AFFICHE, ET POURQUOI (decision V2 de Christophe, lot
+// 645-08, etendue a une promesse).
+//
+// Ce qui n'existe pas encore ne s'affiche pas : c'est la regle que le lot
+// 645-08 a appliquee aux valeurs a completer, et une fonction annoncee est une
+// valeur a completer qui se donne un air de feuille de route. Le titre
+// « Disponibilites bientot disponibles » ouvrait cette colonne : il affichait
+// un engagement que rien dans le depot ne porte — aucun service, aucun
+// provider, aucune donnee de disponibilite — et le randonneur n'a pas a faire
+// le tri entre ce qui marche et ce qui est promis.
+//
+// LE BLOC EST RETIRE, PAS VIDE. Son `SizedBox` de separation part avec lui :
+// un titre masque qui laisse son espacement derriere lui creuse un trou au
+// milieu de la colonne, et c'est exactement le « champ absent qui affiche une
+// ligne vide » que la decision V2 interdit. Le reste de l'ecran est intact —
+// l'icone, l'orientation vers les fiches etapes et son bouton disent ce que
+// l'application SAIT faire aujourd'hui.
 
 import 'package:flutter/material.dart';
 
@@ -17,8 +33,7 @@ import '../../../core/branding/stepways_icons.dart';
 
 /// E5.13 : Ecran de reservation (stub).
 ///
-/// Affiche un message informatif : les disponibilites arrivent bientot.
-/// En attendant, l'utilisateur peut reserver via les fiches etapes.
+/// Oriente vers les fiches etapes, seule voie de reservation qui existe.
 class BookingScreen extends StatelessWidget {
   const BookingScreen({super.key});
 
@@ -46,14 +61,8 @@ class BookingScreen extends StatelessWidget {
                 color: theme.colorScheme.primary.withAlpha(153),
               ),
               const SizedBox(height: AppTheme.spacingLg),
-              Text(
-                'Disponibilites bientot disponibles',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppTheme.spacingBase),
+              // Pas de titre ici : voir l'en-tete, « CE QUI N'EST PLUS
+              // AFFICHE » (decision V2 du lot 645-08).
               Text(
                 'En attendant, reservez via les fiches etapes.\n'
                 'Chaque fiche refuge contient les coordonnees '

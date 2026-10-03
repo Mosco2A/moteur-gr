@@ -16,31 +16,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/data_retention_service.dart';
 import '../../../core/services/recovery_code_service.dart';
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
-import '../../booking/providers/nuitee_selections_provider.dart';
-import '../../diploma/providers/session_trace_provider.dart';
-import '../../consent/providers/consent_ui_providers.dart';
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
+import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
+import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
+import '../../consent/consent_facade.dart'
+    show consentPromptNeededProvider, consentStatesProvider;
 import '../../feasibility/data/hiker_profile_repository.dart';
-import '../../hub/providers/cockpit_start_providers.dart'
-    show prepareCoreStepsProvider;
-import '../../journal/providers/journal_day_providers.dart';
-import '../../journal/providers/journal_providers.dart';
-import '../../map/providers/stage_poi_check_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
-import '../../planning/providers/planned_days_provider.dart'
-    show manualRestDayCacheProvider, plannedDaysProvider;
-import '../../planning/providers/planning_provider.dart'
-    show planningProvider, retainedDurationProvider;
+import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
+import '../../journal/journal_facade.dart'
+    show
+        journalCumulativeStatsProvider,
+        journalDayTraceProvider,
+        journalRepositoryProvider;
+import '../../map/map_facade.dart' show stagePoiChecksProvider;
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../planning/planning_facade.dart'
+    show
+        manualRestDayCacheProvider,
+        plannedDaysProvider,
+        planningProvider,
+        retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
-import '../../safety/providers/health_prepare_providers.dart'
-    show healthPrepareStepsProvider;
-import '../../share/providers/visibility_settings_provider.dart';
-import '../../trail/providers/progress_provider.dart';
-import '../../training/providers/training_plan_providers.dart'
-    show trainingProgressProvider;
-import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
+import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
+import '../../share/share_facade.dart' show visibilitySettingsProvider;
+import '../../trail/trail_facade.dart' show progressProvider;
+import '../../training/training_facade.dart' show trainingProgressProvider;
+import '../../treks/treks_facade.dart' show myTreksProvider;
 
 /// Service de retention / droit a l'effacement, branche sur la base REELLE de
 /// l'application et sur les preferences REELLES.

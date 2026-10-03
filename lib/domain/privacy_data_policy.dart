@@ -2,6 +2,30 @@
 /// serveur quand seul le resultat sert la finalite (art. 5.1.c).
 library;
 
+// POURQUOI CE FICHIER A QUITTE `lib/core/services/` POUR `lib/domain/`
+// (ARB-645-05-c, decision B de Christophe, 03/10/2026).
+//
+// LE SOCLE NE CONNAIT PAS LE METIER. Tant que cette politique vivait dans
+// `core/services/`, elle y tirait une fleche interdite : elle importait
+// `lib/domain/track_point.dart`, c est-a-dire un modele de la couche AU-DESSUS
+// d elle. Or [aggregateTrace] est typee sur [TrackPoint] de bout en bout —
+// c est son entree, et ce n est pas un detail dont on peut l abstraire sans
+// inventer un contrat la ou il n y a qu une seule forme de donnee.
+//
+// C ETAIT LA PLUS PETITE DES DEUX OPERATIONS. Deplacer le fichier coute un
+// chemin ; inverser la dependance aurait coute une interface dans le socle, son
+// implantation cote metier, et une signature publique changee pour tout
+// appelant futur. La regle, elle, est bien une REGLE METIER : « la trace fine
+// ne monte pas au serveur quand seul le resultat sert la finalite » est une
+// decision de conformite, pas de la plomberie technique. Sa maison est donc
+// `lib/domain/`, qui a le droit de lire le socle — ce fichier ne lit d ailleurs
+// que `dart:math`.
+//
+// CE QUI N A PAS CHANGE : le nom des classes, celui des methodes, les
+// signatures, le comportement, et le fait que ces helpers soient des fonctions
+// PURES. Seul le chemin a bouge, et avec lui son test miroir
+// (`test/domain/privacy_data_policy_test.dart`).
+
 // D4B-01 — Politique transverse de MINIMISATION des donnees (design D4 CORDO
 // #86166, CNIL reco mars 2025 A4-2).
 //
@@ -32,7 +56,7 @@ library;
 
 import 'dart:math' as math;
 
-import '../../domain/track_point.dart';
+import 'track_point.dart';
 
 /// Resultat AGREGE d'une trace GPS — la SEULE forme transmissible au serveur.
 ///

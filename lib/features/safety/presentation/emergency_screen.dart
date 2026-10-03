@@ -21,7 +21,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
-import '../../trek/providers/gps_providers.dart';
+import '../../trek/trek_facade.dart' show positionStreamProvider;
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
 import '../../../core/branding/stepways_icons.dart';

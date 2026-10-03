@@ -81,7 +81,6 @@ class ChecklistItemWidget extends StatelessWidget {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     final unit = t.checklist.weight.grams;
     final isRequired =

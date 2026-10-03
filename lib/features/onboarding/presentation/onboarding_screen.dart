@@ -13,7 +13,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../../i18n/translations.g.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
 import '../providers/onboarding_providers.dart';
 import '../../../core/branding/stepways_icons.dart';
 

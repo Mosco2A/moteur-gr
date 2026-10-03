@@ -11,7 +11,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
-import '../../map/providers/location_provider.dart';
+import '../../map/map_facade.dart' show locationProvider;
 import '../data/signalement_service.dart';
 import '../providers/signalement_providers.dart';
 import '../../../core/branding/stepways_icons.dart';

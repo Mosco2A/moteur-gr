@@ -11,27 +11,28 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
-import '../../map/providers/track_position_provider.dart';
+import '../../map/map_facade.dart' show stageDistanceCoveredProvider;
 // TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
 // diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
 // relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
 // (cf. `_finalize`). Sens unique : `adventure_recap_provider` n'importe pas ce
 // fichier, aucun cycle d'import.
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
 // TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
 // et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
 // fichier, aucun cycle d'import.
-import '../../safety/providers/safety_providers.dart';
+import '../../safety/safety_facade.dart' show ficheEcranVerrouilleProvider;
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
 // n'importe pas ce fichier, aucun cycle d'import.
-import '../../treks/providers/my_treks_provider.dart';
+import '../../treks/treks_facade.dart'
+    show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;
 import '../data/background_gps_service.dart';
 import '../data/trek_recorder.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_stats.dart';
 import '../../../core/services/session_demo.dart';
+import '../../../domain/trek_session_mapping.dart';
 
 /// Etat immutable du tracking expose a l'UI.
 ///

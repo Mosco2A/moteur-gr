@@ -25,15 +25,19 @@ import '../../../../shared/widgets/bouton_simulation_demo.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
-import '../../../journal/providers/journal_providers.dart';
+import '../../../journal/journal_facade.dart' show journalScreenProvider;
 import '../../../map/domain/stage_focus.dart';
-import '../../../map/providers/gpx_track_provider.dart';
-import '../../../map/providers/location_provider.dart';
-import '../../../map/providers/map_pois_provider.dart';
-import '../../../map/providers/off_track_provider.dart';
-import '../../../map/providers/simplified_track_provider.dart';
-import '../../../map/providers/supply_alert_provider.dart';
-import '../../../map/providers/track_position_provider.dart';
+import '../../../map/map_facade.dart'
+    show
+        OffTrackMessages,
+        gpxTrackProvider,
+        locationProvider,
+        mapPoisProvider,
+        offTrackMessagesProvider,
+        simplifiedTrackProvider,
+        stageDistanceCoveredProvider,
+        supplyGapAlertProvider,
+        trackPositionProvider;
 import '../../../map/widgets/map_guide_sheet.dart';
 import '../../../map/widgets/off_track_banner.dart';
 import '../../../map/widgets/poi_filter_bar.dart';
@@ -41,8 +45,8 @@ import '../../../map/widgets/poi_popup.dart';
 import '../../../map/widgets/stage_poi_checklist.dart';
 import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
-import '../../../trail/providers/progress_provider.dart';
-import '../../../trail/providers/stages_provider.dart';
+import '../../../trail/trail_facade.dart'
+    show currentStageNumberProvider, stagesProvider;
 import '../../../../domain/stage.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/live_trek_stats_provider.dart';

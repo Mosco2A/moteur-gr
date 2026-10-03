@@ -7,9 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/trail_selection.dart';
 import '../../../domain/feasibility_formula.dart';
-import '../../feasibility/providers/hiker_profile_provider.dart';
-import '../../feasibility/providers/trek_feasibility_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show feasibilityAssessmentProvider, hikerProfileProvider;
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../data/training_plan_loader.dart';
 import '../models/training_plan.dart';
 

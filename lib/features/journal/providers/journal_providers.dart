@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/journal_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/engine/trail_engine.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import '../data/journal_repository.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';

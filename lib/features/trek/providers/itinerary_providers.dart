@@ -10,7 +10,7 @@ import '../domain/models/feasibility_profile.dart';
 import '../domain/models/itinerary_config.dart';
 import '../domain/models/itinerary_day.dart';
 import '../../../domain/planned_day.dart';
-import '../../planning/providers/planned_days_provider.dart';
+import '../../planning/planning_facade.dart' show plannedDaysProvider;
 
 /// Configuration d'itineraire (LEGACY — conservee pour l'ecran de configuration
 /// avance `ItineraryConfigScreen`).

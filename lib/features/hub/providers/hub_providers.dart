@@ -4,7 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authStateProvider;
 
 /// Providers du HUB d'accueil (E07 / LOT-A).
 ///

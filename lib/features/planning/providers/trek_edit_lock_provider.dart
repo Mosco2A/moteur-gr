@@ -4,9 +4,9 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
-import '../../trek/providers/tracking_providers.dart';
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
+import '../../trek/trek_facade.dart'
+    show TrackingSessionStatus, trekSessionManagerProvider;
 import '../domain/trek_edit_lock.dart';
 
 /// Verrou d'edition du programme pendant la rando (R12, LOT L9).

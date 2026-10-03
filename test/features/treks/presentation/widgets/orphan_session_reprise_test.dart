@@ -8,6 +8,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trek/data/trek_session_manager.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/trek/providers/session_recovery_provider.dart';
 import 'package:moteur_gr/features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';

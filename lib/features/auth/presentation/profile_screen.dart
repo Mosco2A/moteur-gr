@@ -21,7 +21,8 @@ import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../safety/presentation/refus_sauvegarde_systeme_dialog.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../settings/settings_facade.dart'
+    show DominantHand, DominantHandValues, settingsProvider;
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

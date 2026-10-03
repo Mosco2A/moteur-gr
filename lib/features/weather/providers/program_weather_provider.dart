@@ -5,9 +5,10 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/stage_row.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
-import '../../planning/providers/planned_days_provider.dart';
+import '../../planning/planning_facade.dart' show plannedDaysProvider;
 import '../domain/forecast_reach.dart';
 import '../models/weather_forecast.dart';
 import 'weather_providers.dart';

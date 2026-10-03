@@ -23,7 +23,14 @@ class TrekStats {
 
   /// Seuil minimum de denivele entre 2 points consecutifs (metres).
   /// En dessous, le denivele est considere comme bruit GPS.
-  static const double elevationNoiseThresholdM = 3.0;
+  ///
+  /// LA VALEUR VIT DANS LE SOCLE depuis ARB-645-05-c (decision B, 03/10/2026) :
+  /// c'est une propriete de l'altimetre, pas une regle de randonnee, et
+  /// `lib/core/geo/track_segment_stats.dart` en a besoin sans avoir le droit de
+  /// connaitre le metier. Ce nom reste ici, inchange pour ses appelants, et il
+  /// relit la seule definition — le metier lit le socle, c'est le sens permis.
+  static const double elevationNoiseThresholdM =
+      GeoUtils.elevationNoiseThresholdM;
 
   /// Seuil de pause automatique (secondes).
   /// Si > 5 min entre 2 points, le temps n'est pas compte.

@@ -14,7 +14,7 @@ import '../../../core/providers/service_providers.dart';
 import '../../../core/services/complaint_service.dart';
 import '../../../core/services/firestore_complaint_sink.dart';
 import '../../../core/services/moderation_service.dart';
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authServiceProvider;
 
 /// Motifs de signalement proposes a l'utilisateur (art 16).
 ///

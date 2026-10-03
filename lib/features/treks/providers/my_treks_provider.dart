@@ -8,6 +8,7 @@ import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../domain/trek_session.dart';
+import '../../../domain/trek_session_mapping.dart';
 import '../domain/trek_lifecycle_state.dart';
 import '../domain/trek_state_deriver.dart';
 import '../domain/trek_summary.dart';

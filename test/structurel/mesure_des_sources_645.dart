@@ -170,3 +170,16 @@ String? cibleDeLImport(String fichier, String import, String paquet) {
 Iterable<String> importsDe(String source) => RegExp(
   '''import\\s+['"]([^'"]+)['"]''',
 ).allMatches(source).map((m) => m.group(1)!);
+
+/// Les cibles des directives `export` de [source].
+///
+/// POURQUOI LES `export` SE MESURENT AUSSI, DEPUIS LE LOT 645-05b. Une facade
+/// de feature ne contient que des `export`, et la garde des couches EXCLUT
+/// desormais les imports qui la visent (ARB-645-05-b). Si personne ne lisait
+/// ses `export`, il suffirait d'ecrire `export '../autre_feature/x.dart'` dans
+/// une facade pour faire passer un croisement sous le radar : l'exclusion
+/// deviendrait un trou. `uneFacadeNExporteQueSaFeature` s'en sert pour le
+/// fermer.
+Iterable<String> exportsDe(String source) => RegExp(
+  '''export\\s+['"]([^'"]+)['"]''',
+).allMatches(source).map((m) => m.group(1)!);

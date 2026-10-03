@@ -10,7 +10,7 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/services/monetization_service.dart';
-import '../../consent/providers/consent_ui_providers.dart';
+import '../../consent/consent_facade.dart' show consentStatesProvider;
 import '../data/ads_consent_service.dart';
 import '../data/banner_ad_presenter.dart';
 import '../data/rewarded_ad_service.dart';

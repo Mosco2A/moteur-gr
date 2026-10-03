@@ -16,7 +16,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../feasibility/domain/hiker_profile.dart';
-import '../../feasibility/providers/hiker_profile_provider.dart';
+import '../../feasibility/feasibility_facade.dart' show hikerProfileProvider;
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';

@@ -10,8 +10,8 @@ import '../../../../core/config/trail_selection.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/routing/navigateur_racine.dart';
 import '../../../../domain/trek_session.dart';
-import '../../../trek/providers/session_recovery_provider.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../trek/trek_facade.dart'
+    show pendingSessionProvider, trekSessionManagerProvider;
 import '../../providers/my_treks_provider.dart';
 import 'resume_orphan_session_dialog.dart';
 

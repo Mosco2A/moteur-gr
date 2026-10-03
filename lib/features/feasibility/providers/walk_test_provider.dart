@@ -7,7 +7,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../notifications/providers/notification_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider;
 import '../../trek/data/gps_service.dart';
 import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_profile.dart';

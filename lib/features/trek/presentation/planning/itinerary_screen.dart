@@ -16,7 +16,8 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
-import '../../../hub/providers/cockpit_start_providers.dart';
+import '../../../hub/hub_facade.dart'
+    show PrepCoreStep, prepareCoreStepsProvider;
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/itinerary_providers.dart';

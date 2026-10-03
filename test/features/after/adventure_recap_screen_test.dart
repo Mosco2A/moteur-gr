@@ -16,6 +16,7 @@ import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.A / critere (c) — l'ecran Recap
 /// « Mon aventure » affiche les stats de la SESSION REELLE et est accessible

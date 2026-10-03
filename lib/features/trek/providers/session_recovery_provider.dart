@@ -5,6 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/database_provider.dart';
+import '../../../domain/trek_session_mapping.dart';
 import '../data/trek_session_manager.dart';
 
 /// Gestionnaire de reprise apres crash ([TrekSessionManager]) branche sur Drift

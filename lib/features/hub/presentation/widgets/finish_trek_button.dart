@@ -12,8 +12,9 @@ import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/providers/my_treks_provider.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../treks/treks_facade.dart' show currentTrailSummaryProvider;
+import '../../../trek/trek_facade.dart'
+    show TrackingSessionStatus, trekSessionManagerProvider;
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Bouton « Terminer le trek » (Finitions V1, point 3 — décision Chris).

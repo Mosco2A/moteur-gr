@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../map/providers/location_provider.dart';
-import '../../map/providers/track_position_provider.dart';
+import '../../map/map_facade.dart' show locationProvider, trackPositionProvider;
 import 'tracking_providers.dart';
 
 /// Chiffres MESURES de la randonnee EN COURS (correctif L6-2).

@@ -9,7 +9,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../../core/models/stage_row.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import 'gpx_track_provider.dart';
 import 'location_provider.dart';
 

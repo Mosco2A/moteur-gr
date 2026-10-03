@@ -10,7 +10,7 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/services/wallet_iap_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../booking/providers/hebergement_peripherique_providers.dart';
+import '../../booking/booking_facade.dart' show deeplinkLauncherProvider;
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';

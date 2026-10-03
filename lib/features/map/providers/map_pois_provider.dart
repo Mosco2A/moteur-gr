@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/models/poi.dart';
-import '../../trail/providers/pois_provider.dart';
+import '../../trail/trail_facade.dart' show poisProvider;
 
 /// Provider des types de POI actuellement actifs (visibles sur la carte).
 ///

@@ -13,7 +13,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../../../domain/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
 import 'accommodation_type_ui.dart';
-import '../../trail/providers/trail_providers.dart';
+import '../../trail/trail_facade.dart' show trailDataProvider;
 import '../../../core/branding/stepways_icons.dart';
 
 /// Provider des hebergements d'une etape du sentier actif.

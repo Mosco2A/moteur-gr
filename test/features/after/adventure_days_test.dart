@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 
 /// CORRECTIF L5-5 — DETAIL JOUR PAR JOUR DE L'AVENTURE.

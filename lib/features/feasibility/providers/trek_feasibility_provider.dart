@@ -8,12 +8,13 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/models/stage_row.dart';
 import '../../checklist/domain/season.dart';
-import '../../map/providers/gpx_track_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../map/map_facade.dart' show gpxTrackProvider;
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
-import '../../planning/providers/planned_days_provider.dart';
-import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/stage_providers.dart';
+import '../../planning/planning_facade.dart' show plannedDaysProvider;
+import '../../trek/trek_facade.dart'
+    show selectedDirectionProvider, stagesProvider;
 import '../../../domain/feasibility_formula.dart';
 import '../domain/feasibility_program.dart';
 import '../domain/hiker_profile.dart';

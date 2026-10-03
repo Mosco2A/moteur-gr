@@ -12,8 +12,8 @@ import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../weather/models/weather_forecast.dart';
-import '../../../weather/providers/current_stage_provider.dart';
-import '../../../weather/providers/weather_providers.dart';
+import '../../../weather/weather_facade.dart'
+    show WeatherStageParams, referenceStageNumberProvider, stageWeatherProvider;
 import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 import '../../../../core/branding/stepways_icons.dart';
 
