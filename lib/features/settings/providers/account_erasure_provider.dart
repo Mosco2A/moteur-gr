@@ -19,7 +19,7 @@ import '../../../core/services/recovery_code_service.dart';
 import '../../after/providers/adventure_recap_provider.dart'
     show latestTrekSessionProvider;
 import '../../booking/providers/nuitee_selections_provider.dart';
-import '../../diploma/providers/session_trace_provider.dart';
+import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/providers/consent_ui_providers.dart';
 import '../../feasibility/data/hiker_profile_repository.dart';
 import '../../hub/providers/cockpit_start_providers.dart'
