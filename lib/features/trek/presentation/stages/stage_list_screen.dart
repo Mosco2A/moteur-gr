@@ -11,7 +11,7 @@ import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
-import '../../../trail/providers/stages_provider.dart';
+import '../../../trail/trail_facade.dart' show stagesProvider;
 
 /// Ecran liste des etapes d'un sentier.
 ///

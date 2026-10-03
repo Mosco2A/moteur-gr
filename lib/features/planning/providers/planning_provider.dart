@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/services/session_demo.dart';
-import '../../../features/trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/domain/program_plan_search.dart';
 import '../../feasibility/feasibility_facade.dart'

@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import '../domain/fire_risk.dart';
 import '../domain/fire_risk_catalog.dart';
 import 'weather_providers.dart';

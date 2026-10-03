@@ -41,7 +41,7 @@ import '../../safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
 import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
-import '../../trail/providers/progress_provider.dart';
+import '../../trail/trail_facade.dart' show progressProvider;
 import '../../training/training_facade.dart' show trainingProgressProvider;
 import '../../treks/treks_facade.dart' show myTreksProvider;
 

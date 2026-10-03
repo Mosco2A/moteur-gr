@@ -45,8 +45,8 @@ import '../../../map/widgets/poi_popup.dart';
 import '../../../map/widgets/stage_poi_checklist.dart';
 import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
-import '../../../trail/providers/progress_provider.dart';
-import '../../../trail/providers/stages_provider.dart';
+import '../../../trail/trail_facade.dart'
+    show currentStageNumberProvider, stagesProvider;
 import '../../../../domain/stage.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/live_trek_stats_provider.dart';

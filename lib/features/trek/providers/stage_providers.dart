@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
-import '../../trail/providers/trail_providers.dart';
+import '../../trail/trail_facade.dart' show trailDataProvider;
 
 /// Identifiant du sentier actif, utilise par [stagesProvider] pour charger les
 /// etapes du bon sentier.

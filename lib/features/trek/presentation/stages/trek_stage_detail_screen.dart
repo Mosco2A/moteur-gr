@@ -24,8 +24,7 @@ import '../../../safety/safety_facade.dart'
         pendingSignalementCountProvider,
         signalementServiceProvider,
         waterSourceStatusProvider;
-import '../../../trail/providers/pois_provider.dart';
-import '../../../trail/providers/stages_provider.dart';
+import '../../../trail/trail_facade.dart' show poisProvider, stagesProvider;
 import '../../../../domain/stage.dart';
 import '../../../../core/branding/stepways_icons.dart';
 

@@ -8,7 +8,7 @@ import '../../../core/data/daos/nuitee_selections_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trail/providers/trail_providers.dart';
+import '../../trail/trail_facade.dart' show trailDataProvider;
 import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 

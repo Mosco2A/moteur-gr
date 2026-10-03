@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../trek/providers/gps_providers.dart';
 import '../domain/transport_catalog.dart';
 import '../domain/transport_info.dart';

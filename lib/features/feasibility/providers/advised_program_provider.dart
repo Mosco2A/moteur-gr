@@ -37,7 +37,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
 import '../../planning/planning_facade.dart'
     show durationBoundsProvider, recommendedRestDaysProvider;
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../trek/providers/gps_providers.dart';
 import '../../../domain/feasibility_formula.dart';
 import '../domain/program_plan_search.dart';
