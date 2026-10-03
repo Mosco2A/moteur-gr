@@ -1,20 +1,31 @@
 // GARDE DE PLAFOND — ECR-23 : LE SENS DES DEPENDANCES (tache 645-01).
 //
-// CE QUE LA REGLE DIT. Deux interdits, et ils vont dans le meme sens :
+// CE QUE LA REGLE DIT. Trois interdits, et ils vont tous dans le meme sens :
 //
 //   (a) LE SOCLE NE CONNAIT PAS SES CLIENTS. `core/` et `shared/` sont ce sur
 //       quoi les features reposent ; une fleche qui repart du socle vers une
 //       feature ferme le cycle et rend le socle inextractible. On ne peut plus
 //       lire `core/` sans lire la feature, ni livrer l'un sans l'autre.
 //
-//   (b) DEUX FEATURES NE SE CONNAISSENT PAS. Ce qu'elles partagent monte dans
-//       `shared/` ou `core/`. Une fleche directe entre deux features fait de
-//       la paire un seul bloc : on n'en touche plus une sans ouvrir l'autre.
+//   (b) DEUX FEATURES NE SE CONNAISSENT PAS AUTREMENT QUE PAR UNE FACADE. Ce
+//       qu'elles partagent monte dans `shared/` ou `core/` ; ce que l'une
+//       EXPOSE a ses voisines passe par un fichier unique et nomme,
+//       `lib/features/<f>/<f>_facade.dart` (ARB-645-05-b, decision B du
+//       03/10/2026). Une fleche directe vers l'INTERIEUR d'une autre feature
+//       fait de la paire un seul bloc : on n'en touche plus une sans ouvrir
+//       l'autre, et le detail d'implementation de l'une devient l'interface de
+//       l'autre.
 //
-// POURQUOI UN PLAFOND ET PAS ZERO, APRES LE LOT 645-05. Il y avait 301 fleches
-// interdites au 02/10/2026 ; il en reste 254 au 03/10, et le lot 645-05 a fait
-// ce que le RANGEMENT pouvait faire. Ce qui reste n'est PAS du rangement, et
-// c'est la mesure qui le dit :
+//   (c) LE SOCLE NE CONNAIT PAS LE METIER. `lib/domain/` est AU-DESSUS de
+//       `core/` et de `shared/` (ARB-645-05-c, decision B du 03/10/2026) : le
+//       metier a le droit de lire le socle, jamais l'inverse. Ce plafond-ci
+//       est a ZERO, et il y est arrive — voir [plafondSocleVersMetier].
+//
+// POURQUOI UN PLAFOND ET PAS ZERO, APRES LES LOTS 645-05 ET 645-05b. Il y avait
+// 301 fleches interdites au 02/10/2026, 254 au 03/10 apres le rangement du
+// 645-05, et 233 apres les facades du 645-05b. Le 645-05 a fait ce que le
+// RANGEMENT pouvait faire ; le 645-05b a fait ce qu'une FRONTIERE pouvait
+// faire. Ce qui reste n'est ni l'un ni l'autre, et c'est la mesure qui le dit :
 //
 //   - 51 des 72 fleches socle -> feature sortent d'UN SEUL fichier,
 //     `lib/core/routing/app_router.dart`, qui importe un ecran par route. Ce
@@ -24,16 +35,28 @@
 //     (chaque feature declare ses routes, le socle ne connait qu'un registre),
 //     ce qui touche les 30 ecrans, les gardes de route et l'ordre de
 //     declaration dont depend la resolution des deeplinks.
-//   - 130 des 182 croisements visent un `providers/`, c'est-a-dire de l'ETAT
+//   - 130 des 182 croisements visaient un `providers/`, c'est-a-dire de l'ETAT
 //     RIVERPOD partage. Deplacer un provider n'est pas un deplacement de type :
 //     c'est un recablage du graphe, et SPEC-06 interdit de changer un
-//     comportement en deplacant.
+//     comportement en deplacant. LE LOT 645-05b LES A TOUS PAYES SANS RIEN
+//     DEPLACER : chacun passe desormais par la facade de la feature lue, donc
+//     par un contrat nomme au lieu d'un fichier interne. Il reste 52
+//     croisements, et aucun n'est un provider.
 //
-// Les deux sont inscrits en ARB-645-05-a et ARB-645-05-b dans
-// `docs/assainissement/644-03-decoupage-et-plan.md` : ils demandent une
-// decision de Christophe, pas du code. En attendant, cette garde fait la seule
-// chose utile : elle empeche le chiffre d'AUGMENTER. Une garde qui exigerait
-// zero aujourd'hui serait rouge en permanence, donc desarmee en une semaine.
+//   - CE QUE CES 52 SONT, mesure du 03/10/2026 : 19 visent un `domain/` de
+//     feature, 15 une `presentation/`, 10 un `widgets/`, 5 un `data/` et 3 un
+//     `models/`. Les 20 de `presentation/` et de `data/` sont l'arbitrage
+//     SUIVANT de Christophe (un ecran qui monte le widget d'une autre feature
+//     n'est pas le meme probleme qu'un provider lu de loin) ; les 32 autres
+//     sont des emprunts bilateraux de type, dont ARB-645-05-b a deja etabli
+//     qu'AUCUN n'est lu par deux features ou plus.
+//
+// Le routeur est inscrit en ARB-645-05-a, les croisements restants en
+// ARB-645-05-b, dans `docs/assainissement/644-03-decoupage-et-plan.md`. En
+// attendant la suite, cette garde fait la seule chose utile : elle empeche les
+// chiffres d'AUGMENTER. Un plafond qui exigerait zero aujourd'hui serait rouge
+// en permanence, donc desarme en une semaine — mais celui de (c) EST a zero,
+// parce que la mesure y est.
 //
 // ---------------------------------------------------------------------------
 // L'ECART AVEC L'AUDIT EST RESORBE DEPUIS LE 03/10/2026 (lot 645-05)
@@ -112,22 +135,53 @@ const plafondSocleVersFeature = 21;
 /// tous les ecrans par construction. Ecrit aussi dans `docs/conventions.md`.
 const routeurExclu = 'lib/core/routing/app_router.dart';
 
-/// Mesure du 03/10/2026, APRES le lot 645-05 : 182 fleches entre deux features
-/// differentes, imports relatifs RESOLUS — contre 223 au 02/10. `tool/
-/// audit_global.py` annonce le meme 182 depuis que ce lot a corrige sa
-/// resolution des imports relatifs.
+/// Mesure du 03/10/2026, APRES le lot 645-05b : 52 fleches vers l'INTERIEUR
+/// d'une autre feature, imports relatifs RESOLUS — contre 182 apres le 645-05
+/// et 223 au 02/10.
 ///
-/// Les 41 payees par ce lot sont toutes du MEME geste : DOUZE types que
-/// plusieurs features lisaient depuis la maison d'une seule ont change de
-/// maison — dix dans `lib/domain/` (`stage`, `track_point`, `trek_session`,
-/// `trek_stats`, `trek_completion`, `stage_accommodation`,
-/// `feasibility_formula`, `planned_day`, `tip_card`, `tip_theme`) et deux dans
-/// `lib/shared/poi/` (`poi_type_config`, `poi_type_label`, qui portent des
-/// `Color` et n'avaient donc rien a faire dans la couche la plus basse).
+/// LES 130 PAYEES PAR LE 645-05b SONT TOUTES DU MEME GESTE, ET AUCUN CODE N'A
+/// BOUGE. Les 130 croisements qui visaient un `providers/` passent par la
+/// FACADE de la feature lue (ARB-645-05-b, decision B de Christophe) : un
+/// fichier unique par feature, `lib/features/<f>/<f>_facade.dart`, qui
+/// re-exporte avec un `show` explicite les seuls symboles que les autres
+/// utilisent reellement. Vingt features en ont recu une. Un import qui vise
+/// cette porte NE COMPTE PLUS comme croisement : c'est tout le sens de la
+/// decision — ce n'est pas la fleche qu'on interdit, c'est qu'elle atterrisse
+/// n'importe ou dans la feature voisine.
 ///
-/// CE QUI RESTE N'EST PAS DU RANGEMENT : 130 des 182 visent un `providers/`,
-/// c'est-a-dire de l'etat Riverpod partage. Voir l'en-tete, et ARB-645-05-b.
-const plafondCroisementsEntreFeatures = 182;
+/// L'EXCLUSION EST ETROITE, ET ELLE EST GARDEE. Seul
+/// `lib/features/<f>/<f>_facade.dart` compte comme facade ([estUneFacade]) :
+/// un fichier qui s'appellerait `_facade.dart` ailleurs dans l'arborescence ne
+/// vaut pas exemption. Et parce qu'une facade ne contient que des `export`, que
+/// cette garde ne compterait pas, le test
+/// « une facade ne re-exporte que SA feature » ferme le dernier trou : sans
+/// lui, `export '../autre/x.dart'` dans une facade blanchirait un croisement.
+///
+/// CE QUI RESTE N'EST PLUS DE L'ETAT PARTAGE : aucun des 52 ne vise un
+/// `providers/`. Voir l'en-tete pour leur repartition, et ARB-645-05-b.
+const plafondCroisementsEntreFeatures = 52;
+
+/// LE SOCLE NE CONNAIT PAS LE METIER : ZERO, ET PAS UN PLAFOND DE COMPLAISANCE.
+///
+/// ARB-645-05-c, DECISION B DE CHRISTOPHE (03/10/2026) : `lib/domain/` est
+/// AU-DESSUS de `core/` et de `shared/`. Le metier a le droit de lire le socle
+/// — c'est meme ainsi que `TrekStats` relit le seuil de bruit de l'altimetre —
+/// mais le socle ne remonte jamais vers le metier. Tant que `mesurer_couches`
+/// rangeait `core`, `shared` et `domain` dans UN SEUL sac appele « le socle »,
+/// une fleche dans l'un ou l'autre sens ne comptait NULLE PART : il y en avait
+/// trois de chaque cote, et rien ne les voyait.
+///
+/// POURQUOI ZERO EST TENABLE ICI, ALORS QUE (a) ET (b) GARDENT UN PLAFOND. Les
+/// trois fleches existaient, et le lot 645-05b les a payees une par une — c'est
+/// la seule raison. Le seuil de bruit de l'altimetre est DESCENDU dans
+/// `GeoUtils` (c'est une propriete d'instrument, pas une regle de randonnee) ;
+/// `privacy_data_policy.dart` est MONTE dans `lib/domain/` (c'est une regle de
+/// conformite, typee sur [TrackPoint] de bout en bout) ; et le mapping
+/// `TrekSession` <-> Drift a quitte le DAO pour
+/// `lib/domain/trek_session_mapping.dart`, en extension, pour que les appelants
+/// gardent le meme appel. Un plafond au-dessus de zero, ici, serait une
+/// autorisation de recommencer.
+const plafondSocleVersMetier = 0;
 
 /// Une fleche interdite : le fichier qui importe, et ce qu'il atteint.
 class Fleche {
@@ -151,9 +205,25 @@ String? featureDe(String fichier) {
   return parts[2];
 }
 
+/// Le chemin de la facade publique de [feature] (ARB-645-05-b).
+///
+/// UN SEUL nom possible par feature, et il est calcule, jamais devine : c'est
+/// ce qui rend l'exclusion verifiable. `lib/features/trek/trek_facade.dart` est
+/// la porte de `trek` ; `lib/features/trek/providers/trek_facade.dart` n'en
+/// serait pas une.
+String facadeDe(String feature) =>
+    'lib/features/$feature/${feature}_facade.dart';
+
+/// Vrai si [cible] est la facade publique de SA PROPRE feature.
+bool estUneFacade(String cible) {
+  final f = featureDe(cible);
+  return f != null && cible == facadeDe(f);
+}
+
 void main() {
   late List<Fleche> socleVersFeature;
   late List<Fleche> croisements;
+  late List<Fleche> socleVersMetier;
 
   setUpAll(() {
     final paquet = nomDuPaquet();
@@ -168,6 +238,7 @@ void main() {
 
     socleVersFeature = <Fleche>[];
     croisements = <Fleche>[];
+    socleVersMetier = <Fleche>[];
 
     for (final f in fichiers) {
       final zone = f.split('/').length > 1 ? f.split('/')[1] : '';
@@ -188,12 +259,26 @@ void main() {
           socleVersFeature.add(Fleche(f, imp, cible));
         }
 
-        // (b) deux features ne se connaissent pas.
+        // (b) deux features ne se connaissent pas AUTREMENT QUE PAR UNE
+        // FACADE. Depuis ARB-645-05-b (decision B du 03/10/2026), un import
+        // qui vise `lib/features/<f>/<f>_facade.dart` n'est plus un
+        // croisement : c'est la lecture d'un contrat publie. Ce qui reste
+        // compte, c'est la fleche qui atterrit DANS la feature voisine, sur un
+        // `providers/`, un `domain/` ou une `presentation/` — l'interieur.
         if (maFeature != null) {
           final autre = featureDe(cible);
-          if (autre != null && autre != maFeature) {
+          if (autre != null && autre != maFeature && !estUneFacade(cible)) {
             croisements.add(Fleche(f, imp, cible));
           }
+        }
+
+        // (c) le socle ne connait pas le metier. `domain` est AU-DESSUS de
+        // `core` et de `shared` (ARB-645-05-c) : le metier lit le socle,
+        // jamais l'inverse. Le routeur n'est PAS exempte ici — son exception
+        // porte sur les ecrans, pas sur les modeles.
+        if ((zone == 'core' || zone == 'shared') &&
+            cible.startsWith('lib/domain/')) {
+          socleVersMetier.add(Fleche(f, imp, cible));
         }
       }
     }
@@ -201,14 +286,15 @@ void main() {
 
   group('645-01 / ECR-23 — le sens des dependances ne se degrade plus', () {
     test('ECR-23 (a) : pas plus de fleches du socle vers une feature '
-        'qu au 02/10', () {
+        'qu au 03/10', () {
       expect(
         socleVersFeature.length,
         lessThanOrEqualTo(plafondSocleVersFeature),
         reason:
             'LE SOCLE SE MET A CONNAITRE SES CLIENTS. `core/` et `shared/` '
             'tirent desormais ${socleVersFeature.length} fleches vers une '
-            'feature, contre $plafondSocleVersFeature au 02/10/2026. Une '
+            'feature, contre $plafondSocleVersFeature au 03/10/2026 (mesure '
+            'APRES exclusion du routeur, ARB-645-05-a). Une '
             'fleche qui repart du socle vers une feature ferme le cycle : on '
             'ne peut plus lire ni extraire `core/` sans embarquer la feature. '
             'Ce qu une feature doit au socle descend dans le socle ; le socle '
@@ -216,21 +302,101 @@ void main() {
       );
     });
 
-    test('ECR-23 (b) : pas plus de croisements entre features qu au 02/10', () {
+    test('ECR-23 (b) : pas plus de croisements vers l interieur d une autre '
+        'feature qu au 03/10', () {
       expect(
         croisements.length,
         lessThanOrEqualTo(plafondCroisementsEntreFeatures),
         reason:
-            'DEUX FEATURES SE SONT MISES A SE CONNAITRE. On compte '
-            '${croisements.length} imports croises, contre '
-            '$plafondCroisementsEntreFeatures au 02/10/2026. Une fleche '
-            'directe entre deux features soude la paire : on n en touche plus '
-            'une sans ouvrir l autre. Ce qu elles partagent monte dans '
-            '`shared/` ou `core/`.\n  ${croisements.join('\n  ')}',
+            'DEUX FEATURES SE SONT MISES A SE CONNAITRE SANS PASSER PAR LA '
+            'PORTE. On compte ${croisements.length} imports qui visent '
+            'l INTERIEUR d une autre feature, contre '
+            '$plafondCroisementsEntreFeatures au 03/10/2026, APRES les facades '
+            'du lot 645-05b. Une fleche directe vers un `providers/`, un '
+            '`domain/` ou une `presentation/` voisine soude la paire : on n en '
+            'touche plus une sans ouvrir l autre. Trois issues, dans cet '
+            'ordre : lire la feature voisine par SA facade '
+            '(`lib/features/<f>/<f>_facade.dart`, ARB-645-05-b) en y ajoutant '
+            'le symbole au `show` si besoin — c est une decision, elle elargit '
+            'son contrat ; ou faire monter dans `shared/`, `core/` ou '
+            '`lib/domain/` ce que PLUSIEURS features lisent ; ou constater que '
+            'les deux features n en font qu une. Relever ce plafond n est pas '
+            'une issue (#P07).\n  ${croisements.join('\n  ')}',
       );
     });
 
-    test('la resolution des imports relatifs fonctionne — sans quoi les deux '
+    test('ECR-23 (c) : le socle ne connait pas le metier — ZERO fleche de '
+        '`core/` ou `shared/` vers `lib/domain/`', () {
+      expect(
+        socleVersMetier.length,
+        lessThanOrEqualTo(plafondSocleVersMetier),
+        reason:
+            'LE SOCLE SE MET A CONNAITRE LE METIER. `core/` ou `shared/` tirent '
+            '${socleVersMetier.length} fleche(s) vers `lib/domain/`, contre '
+            '$plafondSocleVersMetier exige depuis ARB-645-05-c (decision B de '
+            'Christophe, 03/10/2026). `lib/domain/` est AU-DESSUS du socle : le '
+            'metier a le droit de lire `core/` et `shared/`, le socle ne '
+            'remonte JAMAIS vers le metier. Ce plafond est a zero parce que la '
+            'mesure y est — les trois fleches qui existaient ont ete payees une '
+            'par une par le lot 645-05b, pas tolerees. Deux issues, et une '
+            'seule est bonne : faire DESCENDRE dans le socle ce qui n est pas '
+            'du metier (le seuil de bruit de l altimetre est parti dans '
+            '`GeoUtils`), ou faire MONTER dans `lib/domain/` ce qui l est '
+            '(`privacy_data_policy.dart`, et le mapping Drift des sessions de '
+            'trek). Baisser la regle n en est pas une.'
+            '\n  ${socleVersMetier.join('\n  ')}',
+      );
+    });
+
+    test('une facade ne re-exporte que SA feature — sans quoi l exclusion de '
+        '(b) serait un trou', () {
+      // POURQUOI CE TEST EXISTE. (b) n'est mesure que sur les `import`, et une
+      // facade ne contient que des `export`. Si une facade re-exportait un
+      // fichier d'une AUTRE feature, tous ses lecteurs atteindraient cette
+      // feature sans qu'une seule fleche soit comptee : le croisement serait
+      // blanchi par la porte censee le rendre visible. Une garde negative qui
+      // se laisse contourner est pire qu'une garde absente, parce qu'elle
+      // rassure.
+      final paquet = nomDuPaquet();
+      final fautes = <String>[];
+      var facadesVues = 0;
+      for (final f in sourcesLib()) {
+        if (!estUneFacade(f)) continue;
+        facadesVues++;
+        final maFeature = featureDe(f)!;
+        for (final exp in exportsDe(lireSource(f))) {
+          final cible = cibleDeLImport(f, exp, paquet);
+          if (cible == null) continue;
+          if (!cible.startsWith('lib/features/$maFeature/')) {
+            fautes.add('$f re-exporte $cible');
+          }
+        }
+      }
+      expect(
+        fautes,
+        isEmpty,
+        reason:
+            'UNE FACADE BLANCHIT UN CROISEMENT. Une facade publie le contrat de '
+            'SA feature, et rien d autre. Re-exporter un fichier d une autre '
+            'feature donne a tous ses lecteurs un acces que la garde (b) ne '
+            'compte pas, puisqu elle ne lit que les `import` : le croisement '
+            'disparait de la mesure sans disparaitre du code. Ce qui est '
+            'partage par plusieurs features monte dans `shared/`, `core/` ou '
+            '`lib/domain/` ; ce qui appartient a une voisine se lit par SA '
+            'facade.\n  ${fautes.join('\n  ')}',
+      );
+      expect(
+        facadesVues,
+        greaterThan(0),
+        reason:
+            'AUCUNE FACADE TROUVEE, DONC CE TEST NE MESURE RIEN. Vingt features '
+            'en ont recu une au lot 645-05b ; si le compte tombe a zero, c est '
+            'que la convention de nom a change ou que les facades ont ete '
+            'retirees — et alors l exclusion de (b) ne protege plus rien.',
+      );
+    });
+
+    test('la resolution des imports relatifs fonctionne — sans quoi les trois '
         'plafonds ci-dessus ne mesurent rien', () {
       // UNE GARDE QUI NE SAIT PLUS RESOUDRE PASSE AU VERT EN SILENCE. Si
       // `cibleDeLImport` se mettait a rendre `null` ou un chemin tronque, les

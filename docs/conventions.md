@@ -18,11 +18,13 @@
 
 ```
 lib/
-  domain/                   -- Modèles lus par PLUSIEURS features
+  domain/                   -- Modèles et règles lus par PLUSIEURS features
                                (Stage, TrackPoint, TrekSession, PlannedDay...)
                                Voie A, décision de Christophe du 02/10/2026.
-                               Ne dépend d'aucune feature : c'est la couche
-                               la plus basse, sous core/ comme sous shared/.
+                               Ne dépend d'aucune feature. AU-DESSUS de core/
+                               et de shared/ : le métier lit le socle, jamais
+                               l'inverse (ARB-645-05-c, 03/10/2026 ; voir la
+                               règle 11).
   core/                     -- Socle technique partagé
     config/                 -- TrailConfig, TestTrailConfig
     constants/              -- Constantes globales
@@ -42,6 +44,12 @@ lib/
     services/               -- Services métier (sync, download)
     theme/                  -- Thème Material
   features/                 -- Modules fonctionnels
+    <feature>/
+      <feature>_facade.dart -- SEULE porte d'entrée de la feature pour ses
+                               voisines : re-exporte (export ... show) ce
+                               qu'elles ont le droit de lire. Tout le reste
+                               de la feature est privé (ARB-645-05-b ;
+                               voir la règle 10).
     auth/                   -- Authentification
     checklist/              -- Checklist matériel
     diploma/                -- Diplôme fin de trek
@@ -77,6 +85,8 @@ lib/
 7. **Offline-first** -- Toute feature doit fonctionner sans réseau.
 8. **Pas de référence GR20** -- Le moteur est générique. Jamais de mention du GR20 dans le code.
 9. **Le socle ne remonte jamais vers une feature** -- Un fichier de `core/`, `shared/` ou `domain/` n'importe pas depuis `lib/features/`. **Une seule exception, décision ARB-645-05-a du 03/10/2026 : `lib/core/routing/app_router.dart` a le droit d'importer les écrans de toutes les features, parce qu'un routeur connaît tous les écrans par construction.** Il est à ce titre exclu du comptage de la garde `test/structurel/couches_respectees_645_test.dart` ; tout autre fichier du socle y reste compté.
+10. **Une feature ne lit une autre feature que par sa façade** -- Toute feature lue par ses voisines expose UN fichier unique, `lib/features/<feature>/<feature>_facade.dart`, qui re-exporte explicitement (`export ... show`) les seuls symboles que les autres ont le droit de lire ; tout le reste — `providers/`, `data/`, `domain/`, `presentation/` — est privé. Un import qui vise l'intérieur d'une voisine soude la paire et promeut un détail d'implémentation au rang d'interface : on ne touche plus à l'une sans ouvrir l'autre. **Décision ARB-645-05-b du 03/10/2026** ; la garde `test/structurel/couches_respectees_645_test.dart` compte ces imports, et vérifie du même geste qu'une façade ne re-exporte QUE sa propre feature — sans quoi la porte blanchirait les croisements qu'elle existe pour rendre visibles.
+11. **Le socle ne connaît pas le métier** -- `lib/domain/` est AU-DESSUS de `core/` et de `shared/` : le métier a le droit de lire le socle, le socle ne remonte jamais vers le métier. Un fichier de `core/` ou de `shared/` qui importe `lib/domain/` ferme un cycle que rien ne mesurait jusqu'au 03/10/2026, parce que l'audit rangeait `core`, `shared` et `domain` dans un seul sac appelé « le socle ». **Décision ARB-645-05-c du 03/10/2026** ; ce plafond est à **zéro** et non à un nombre toléré : ce qui n'est pas du métier DESCEND dans le socle (le seuil de bruit de l'altimètre est parti dans `GeoUtils`), ce qui en est MONTE dans `lib/domain/` (la politique de minimisation RGPD, le mapping Drift des sessions de trek).
 
 ## Commandes utiles
 
