@@ -14,4 +14,38 @@
 # Format : <marqueur_a> <marqueur_b>  # pourquoi ces deux-la sont identiques
 # Exemple : S1_Lea_accueil S1_Lea_accueil_apres_retour  # retour sur un ecran inchange
 #
-# (aucune tolerance declaree a ce jour)
+# --- S1 Lea --- (verifiees a l oeil le 03/10/2026, retard mesure 0 ms sur les 65)
+S1_Lea_05_apres_onboarding S1_Lea_06_catalogue  # l onboarding rend la main SUR le catalogue : la capture d apres est le meme ecran, sans geste entre les deux.
+S1_Lea_21_carte S1_Lea_22_gps_tick_00  # les marqueurs gps_tick attendent une position ; sans injection reelle de position, la carte ne bouge pas. Meme ecran.
+S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_01
+S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_02
+S1_Lea_21_carte S1_Lea_22_gps_tick_01
+S1_Lea_21_carte S1_Lea_22_gps_tick_02
+S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_02
+S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_05
+S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_06
+S1_Lea_22_gps_tick_06 S1_Lea_22_gps_tick_07
+S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_06
+S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_07
+S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_07
+S1_Lea_22_gps_tick_04 S1_Lea_23_apres_gps
+S1_Lea_22_gps_tick_05 S1_Lea_23_apres_gps
+S1_Lea_22_gps_tick_06 S1_Lea_23_apres_gps
+S1_Lea_22_gps_tick_07 S1_Lea_23_apres_gps
+S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose deja le randonneur sur « Mon aventure » ; le marqueur 33 recapture le meme ecran. A LIRE QUAND MEME : il annonce 0/7 etapes, 0 km et « Aucune trace GPS disponible » apres le trek — coherent avec l absence d injection de position dans ce run, mais c est le meme ecran qui porte le defaut connu du diplome.
+
+# --- S2 Marc ---
+S2_Marc_02_apres_skip S2_Marc_03_mes_treks  # deux captures du MEME ecran : le scenario saute l onboarding (02), puis journalise l emplacement et capture de nouveau (03). Aucun geste entre les deux, donc aucune raison que l image change. Verifie a l oeil le 03/10/2026.
+#
+# NON TOLERE, ET C EST VOLONTAIRE :
+# S2_Marc_S2E_38_consent = S2_Marc_S2E_38b_consent_bascule. Ces deux-la sont
+# identiques parce que RIEN NE S EST PASSE, et c est un defaut, pas un hasard.
+# Le libelle « Confidentialite et consentement » apparait DEUX FOIS sur l ecran
+# Reglages (settings_screen.dart) : en EN-TETE DE SECTION, qui ne se tape pas,
+# et en TITRE DE LA TUILE, qui pousse vers /consent. Le scenario tape
+# `find.text(...)`, donc la PREMIERE occurrence — l en-tete — et rien ne se
+# passe. Sa verification d arrivee (`present(find.text(...))`) retrouve alors le
+# meme texte et conclut « Ecran /consent atteint = true ». Le journal du run
+# annonce donc #P38 et #D22 couverts alors que l ecran de consentement n a
+# jamais ete ouvert. Tant que le scenario tape l en-tete, ce doublon doit
+# ROUGIR : c est le seul endroit ou ce mensonge se voit.
