@@ -36,7 +36,7 @@ import '../../safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
 import '../../safety/providers/health_prepare_providers.dart'
     show healthPrepareStepsProvider;
-import '../../share/providers/visibility_settings_provider.dart';
+import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/providers/progress_provider.dart';
 import '../../training/training_facade.dart' show trainingProgressProvider;
 import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
