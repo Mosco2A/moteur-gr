@@ -596,7 +596,7 @@ déplaçant, pas de ranger. **ECR-20 tombe donc à 0**, et la liste d'identité 
 PEUT PAS ETRE ATTEINTE PAR DU RANGEMENT (Hephaistos, 02/10/2026).** La voie A a
 ete executee comme la fiche l'exige, et elle a tenu toutes ses promesses
 mesurables sur les MODELES. Elle ne peut pas tenir la cible 0, et la mesure dit
-pourquoi en une ligne : **51 des 75 fleches `socle -> feature` restantes sortent
+pourquoi en une ligne : **51 des 72 fleches `socle -> feature` restantes sortent
 d'un seul fichier**, `lib/core/routing/app_router.dart`, qui importe un ecran
 par route. Ce n'est pas un modele mal range, c'est la forme meme d'un routeur
 central : GoRouter demande la liste des routes en un point, et une route cite
@@ -613,8 +613,47 @@ mauvais moment.
 
 | Ref | Ce que la mesure a montre | Ce qui est demande |
 |---|---|---|
-| **ARB-645-05-a** | `app_router.dart` porte **51 des 75** fleches socle -> feature. Les 24 autres sont diffuses : `pilote_demo.dart` (6, un pilote de demo qui conduit six providers de features), `app_bootstrap_provider.dart` (3 apres K1), `data_retention_service.dart` (2), `sync_scheduler.dart` (2), et 11 fichiers a une fleche | Trancher si le routeur s'inverse (registre de routes alimente par les features) ou si **le routeur est declare exception ecrite** a ECR-23 (a), avec sa justification — un routeur central EST un point de rencontre, et la regle maison ne l'avait pas prevu |
-| **ARB-645-05-b** | Les **196 croisements** restants ne sont pas des modeles : **130 visent un `providers/`**, 33 un `domain/`, 15 une `presentation/`, 10 un `widgets/`. Et parmi les 33 `domain/`, **3 seulement** sont lus par deux features ou plus — le critere ecrit de la fiche. Les 130 sont de l'ETAT RIVERPOD partage (`gps_providers`, `tracking_providers`, `planned_days_provider`, `auth_provider`, `download_reminder_provider`...) : deplacer un provider n'est pas un deplacement de type, c'est un recablage du graphe, et SPEC-06 interdit de changer un comportement en deplacant | Trancher le principe pour l'ETAT partage : (a) une couche `lib/application/` pour les providers que plusieurs features lisent, (b) une facade par feature (chaque feature expose un contrat, les autres ne lisent plus ses providers), ou (c) assumer que l'etat partage se lit directement et **retirer les `providers/` de la cible ECR-23 (b)**. Recommandation d'Hephaistos : **(b)**, la seule qui laisse une frontiere lisible, mais c'est un chantier par feature, pas un lot |
+| **ARB-645-05-a** | `app_router.dart` porte **51 des 72** fleches socle -> feature (re-mesure du 03/10 sur la tete livree `a5f876b0` ; les 75 et 196 ecrits le 02/10 precedaient les derniers deplacements du lot). Les 21 autres sont diffuses : `pilote_demo.dart` (6, un pilote de demo qui conduit six providers de features), `app_bootstrap_provider.dart` (3 apres K1), `data_retention_service.dart` (2), `sync_scheduler.dart` (2), `bouton_simulation_demo.dart` (2), et 6 fichiers a une fleche | Trancher si le routeur s'inverse (registre de routes alimente par les features) ou si **le routeur est declare exception ecrite** a ECR-23 (a), avec sa justification — un routeur central EST un point de rencontre, et la regle maison ne l'avait pas prevu |
+| **ARB-645-05-b** | Les **182 croisements** restants ne sont pas des modeles : **130 visent un `providers/`**, 19 un `domain/`, 15 une `presentation/`, 10 un `widgets/`, 5 un `data/`, 3 un `models/` (re-mesure du 03/10 sur la tete livree `a5f876b0`). Et parmi les 19 fleches vers un `domain/`, qui touchent 12 fichiers distincts, **aucune** n'est lue par deux features ou plus — le critere ecrit de la fiche : ce qui etait partage est justement parti dans `lib/domain/` pendant le lot, et ce qui reste est un emprunt bilateral entre deux features. Les 130 sont de l'ETAT RIVERPOD partage (`gps_providers`, `tracking_providers`, `planned_days_provider`, `auth_provider`, `download_reminder_provider`...) : deplacer un provider n'est pas un deplacement de type, c'est un recablage du graphe, et SPEC-06 interdit de changer un comportement en deplacant | Trancher le principe pour l'ETAT partage : (a) une couche `lib/application/` pour les providers que plusieurs features lisent, (b) une facade par feature (chaque feature expose un contrat, les autres ne lisent plus ses providers), ou (c) assumer que l'etat partage se lit directement et **retirer les `providers/` de la cible ECR-23 (b)**. Recommandation d'Hephaistos : **(b)**, la seule qui laisse une frontiere lisible, mais c'est un chantier par feature, pas un lot |
+
+**ARB-645-05-c — `lib/domain/` N'EST PAS LA COUCHE LA PLUS BASSE, ET AUCUNE
+GARDE NE LE MESURE (Hephaistos, 03/10/2026).** La voie A a cree `lib/domain/`
+comme « la maison des modeles que plusieurs features lisent, donc la couche la
+plus basse » — c'est le commentaire qui est ecrit dans `tool/audit_global.py`,
+et c'est sur lui que la mesure ECR-23 repose : l'audit range `core`, `shared` et
+`domain` dans UN SEUL sac appele « le socle », donc une fleche de `domain` vers
+`core` ou de `core` vers `domain` ne compte NULLE PART. Les deux existent, et
+elles vont dans les deux sens.
+
+`lib/domain/` -> `lib/core/`, **3 fleches, 2 fichiers** :
+
+| Fichier de `lib/domain/` | Importe |
+|---|---|
+| `lib/domain/planned_day.dart` | `lib/core/models/stage_row.dart` (le modele Drift, qui importe lui-meme `core/data/database.dart`) |
+| `lib/domain/planned_day.dart` | `lib/core/models/stage_duration.dart` |
+| `lib/domain/trek_stats.dart` | `lib/core/geo/geo_utils.dart` |
+
+`lib/core/` -> `lib/domain/`, **3 fleches, 3 fichiers** :
+
+| Fichier de `lib/core/` | Importe |
+|---|---|
+| `lib/core/data/daos/trek_sessions_dao.dart` | `lib/domain/trek_session.dart` |
+| `lib/core/geo/track_segment_stats.dart` | `lib/domain/trek_stats.dart` |
+| `lib/core/services/privacy_data_policy.dart` | `lib/domain/track_point.dart` |
+
+CE QUE CA VEUT DIRE. `planned_day`, qui vit dans la couche censee etre la plus
+basse, depend du modele Drift du socle : la dependance vers Drift n'etait pas
+introduite par le lot (`planned_day` importait deja `stage_row` avant son
+demenagement), mais elle est maintenant VISIBLE comme une inversion de couche,
+et `trek_stats` est des deux cotes a la fois — il importe `core/geo/geo_utils`
+pendant que `core/geo/track_segment_stats` l'importe. Une couche qui se lit
+elle-meme a travers une autre n'est plus une couche : c'est un cycle que rien
+n'empeche de grossir.
+
+| Ref | Ce que la mesure a montre | Ce qui est demande |
+|---|---|---|
+| **ARB-645-05-c** | Dependance a DOUBLE SENS entre `lib/domain/` et `lib/core/` : 3 fleches dans chaque sens (listes ci-dessus), dont `planned_day.dart` -> le modele Drift `stage_row.dart`. Aucune garde ne la mesure : `mesurer_couches` range `core`, `shared` et `domain` dans le meme socle | **A trancher par Christophe** : (a) **`domain` SOUS `core`** — `core` ne lit pas `domain`, et les 3 fleches de `core` disparaissent (les types voyagent vers `domain`, ou `core` passe par une abstraction) ; ou (b) **`domain` AU-DESSUS de `core`** — `domain` a le droit de lire `core`, et ce sont les 3 fleches de `domain` qui sont legitimes, les 3 autres a retirer. Dans les deux cas : **une garde** ajoutee a `tool/audit_global.py` qui separe `domain` de `core` et compte le sens interdit, sinon le double sens reviendra sans bruit |
+
 
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix

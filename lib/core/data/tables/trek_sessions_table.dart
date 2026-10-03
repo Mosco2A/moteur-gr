@@ -15,7 +15,7 @@ import 'package:drift/drift.dart';
 ///
 /// `@DataClassName('TrekSessionRow')` : la classe de ligne generee est nommee
 /// explicitement pour NE PAS entrer en collision avec le modele de domaine
-/// `TrekSession` (features/trek/domain/models/trek_session.dart).
+/// `TrekSession` (lib/domain/trek_session.dart depuis le lot 645-05).
 @DataClassName('TrekSessionRow')
 class TrekSessions extends Table {
   /// Identifiant unique de la session (UUID) — cle primaire metier.
