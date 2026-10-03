@@ -1055,7 +1055,7 @@ sont les captures.
 |---|---|
 | **C1 Réf** | 645-07 |
 | **C2 Fichier:ligne** | 197 fichiers sur 599, 442 identifiants, 31 noms de fichier. **Étape 1** : les 31 noms de fichier (`sentier_distant.dart`, `trace_du_sentier.dart`, `descente_des_cartes.dart`, `fiche_technique_du_telephone.dart`, `source_de_donnees_sentier.dart`, `source_firestore_sentier.dart`, `etat_publicite.dart`, `badge_etat_publicite.dart`, `profil_randonneur_fichier.dart`, `cartes_hors_ligne_screen.dart`, `variante_etape.dart`, `copie_sauvegardable_fiche_service.dart`, `fiche_medicale_fichier.dart`, `prise_photo_carte.dart`, `porte_consentement_sauvegarde.dart`, `etat_du_sentier.dart`, + 15). **Étape 2** : `lib/core/services` (92). **Étape 3** : `lib/core/branding` (21). **Étape 4** : les features |
-| **C3 Description** | Renommer les identifiants en anglais. **Les commentaires et doc comments restent en français accentué** — ce lot ne touche pas une ligne de commentaire |
+| **C3 Description** | Renommer les identifiants en anglais. **Les commentaires et doc comments restent en français accentué.** Corrigé le 03/10 : « ce lot ne touche pas une ligne de commentaire » était **trop absolu et irréalisable** — un commentaire qui *cite* un identifiant renommé doit suivre, sinon il désigne un symbole qui n'existe plus. La règle juste est : **aucun commentaire réécrit, seules les citations de code mises à jour**. Mesuré sur le lot livré : 179 lignes de commentaire modifiées, toutes expliquées par une citation de code |
 | **C4 Agent** | Hephaistos |
 | **C5 Prompt complet** | *(ci-dessous, bloc 645-07)* |
 | **C6 Branche** | `claude/chore/645-07-code-en-anglais` |
@@ -1065,6 +1065,67 @@ sont les captures.
 | **C10 Smoke** | Test de migration Drift : ouvrir une base écrite avant le lot. Essai sur émulateur : les préférences enregistrées avant sont relues après |
 | **C11 Rollback** | `git revert <sha de l'étape>` — 4 commits. Tag `avant-645-07` avant l'étape 1 |
 | **C12 Dépendances** | **645-01**, **645-04**, **645-05** (renommer avant d'avoir résorbé les doublons et stabilisé les emplacements, c'est renommer deux fois) |
+
+#### 645-07 — ce qui a été fait, et ce que la mesure corrige (03/10/2026)
+
+Lot livré en session cloud sur `claude/chore/645-07-code-en-anglais` (4 commits,
+tête `2a819973`), fusionné sans conflit dans `claude/integration/645-assainissement`
+(merge `6471f400`). Les chiffres ci-dessous sont **remesurés après la fusion**,
+pas repris de la session qui a produit le lot.
+
+**Les compteurs de la fiche étaient ceux du 02/10 et ont bougé avant que le lot
+ne démarre.** Au départ réel : **464 identifiants** portant un mot français
+(ECR-05) et **23 noms de fichier** français, et non 442 et 31. À l'arrivée :
+**75 identifiants** et **0 nom de fichier**. **28 fichiers ont été renommés** :
+25 sous `lib/` (dont 2 fichiers générés, `stage_variant.g.dart` et
+`stage_variant.freezed.dart`, qui suivent leur source) et 3 sous `test/`
+(`sentier_distant_marchable_606_test.dart`, `variante_etape_test.dart`,
+`lien_vers_les_cartes_641_test.dart`).
+
+**Les 75 identifiants qui restent ne sont pas un reste de travail — ils se
+qualifient en trois familles, et deux d'entre elles n'ont rien à faire là.**
+Première famille, **le vocabulaire du sentier, gardé volontairement** : `refuge`
+(14), `fiche` (10), `gite` (8), `bivouac` (5) — soit 37 à eux seuls. Ce sont les
+mots du métier ; les traduire ferait dire au code autre chose que ce qu'il
+désigne. Deuxième famille, **les faux positifs de la mesure** : la liste de mots
+de `tool/audit_global.py` contient `lot`, et la recherche est une recherche de
+sous-chaîne — tout `slot` anglais est donc compté comme français
+(`FollowerSlots`, `followerSlots`, `freeFollowerSlots`, `BannerAdSlot`,
+`NuiteeSlot`, `buildNuiteeSlots`…), environ 17 occurrences. Troisième famille
+seulement, **les vrais restes à traiter**, une quinzaine : `Parcours`, `cartes`,
+`annuler`, `bouton`, `poids`, `pretesPoids`, `supprimer`, `supprimerAnnuler`,
+`telecharger`, `etapes`, `etape`, `calculer`, `compteReafficher`,
+`collecteProfil`, `collecteSentier`. Ils se répartissent sur 44 fichiers, dont
+20 occurrences dans `lib/features/booking`.
+
+**Un seul champ sérialisé a été gelé, et c'est le piège P1 qui a servi.** Dans
+`lib/features/planning/models/stage_variant.dart`, le champ `selectionParEtape`
+devient `selectionByStage` côté Dart, mais la clé écrite sur le téléphone reste
+`selectionParEtape`, gelée par `@JsonKey(name: 'selectionParEtape')`. Le code
+généré le prouve : `_$VariantSelectionToJson` émet
+`{'selectionParEtape': instance.selectionByStage}`. Sans ce gel, la mise à jour
+aurait fait perdre **silencieusement** le choix de variante du randonneur.
+Cette annotation a un coût qui n'était pas prévu : l'analyseur la refuse sur un
+paramètre de constructeur d'usine (`invalid_annotation_target`), ce qui rendait
+`flutter analyze` rouge d'un avertissement. La règle est descendue à `info` dans
+`analysis_options.yaml`, avec sa justification écrite sur place — elle mesure
+toujours, elle ne bloque plus.
+
+**La méthode annoncée n'est pas reproductible, et c'est à dire.** La session qui
+a produit le lot rapporte avoir écrit un **lexeur Dart** pour distinguer un
+identifiant d'une chaîne et d'un commentaire, et avoir joué les 4 étapes avec
+lui. Ce lexeur **n'a été versé nulle part** : aucun fichier n'est ajouté par les
+4 commits du lot. Le résultat est vérifiable, la méthode ne l'est pas — un
+prochain lot de renommage repartira de zéro ou devra redemander l'outil.
+
+**Une garde était devenue muette, et elle a été réparée.**
+`test/comportement/cartes_hors_ligne_622_test.dart` surveillait que
+l'ordonnanceur de synchronisation ne cite pas `descente_des_cartes`. Le lot a
+renommé ce fichier en `map_downloader.dart` sans mettre la chaîne surveillée à
+jour : la garde cherchait alors un nom qui n'existait plus nulle part et passait
+au vert quoi qu'il arrive. Prouvé par mutation : avec l'ancienne chaîne, un
+import de `map_downloader.dart` injecté dans l'ordonnanceur passe **vert** ;
+avec la chaîne corrigée, il passe **rouge**.
 
 ```
 PROMPT 645-07 (autonome)
