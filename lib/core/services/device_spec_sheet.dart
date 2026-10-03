@@ -166,8 +166,8 @@ class RenseignementsDuTelephone {
 /// ELLE NE LEVE JAMAIS. Sans Firebase, sans reseau, sans identite, elle rend
 /// `false` et n ecrit rien. Une fiche technique qui empecherait de marcher
 /// serait pire que pas de fiche du tout.
-class FicheTechniqueDuTelephone {
-  FicheTechniqueDuTelephone({
+class DeviceSpecSheet {
+  DeviceSpecSheet({
     required this.firebaseService,
     required this.identifiant,
     required this.renseignements,
@@ -279,10 +279,8 @@ class FicheTechniqueDuTelephone {
 /// LA LANGUE EST LUE AU MOMENT DE POSER LA FICHE, pas a la construction du
 /// service : le randonneur peut en changer sans redemarrer, et c est la langue
 /// qu il voit qui a une valeur de diagnostic.
-final ficheTechniqueDuTelephoneProvider = Provider<FicheTechniqueDuTelephone>((
-  ref,
-) {
-  return FicheTechniqueDuTelephone(
+final ficheTechniqueDuTelephoneProvider = Provider<DeviceSpecSheet>((ref) {
+  return DeviceSpecSheet(
     firebaseService: ref.watch(firebaseServiceProvider),
     identifiant: () async => fb.FirebaseAuth.instance.currentUser?.uid,
     renseignements: () => RenseignementsDuTelephone.duTelephone(

@@ -253,7 +253,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     // POURQUOI CE CONTROLE APPARAIT AVEC CE LOT, ET PAS AVANT. La fiche etait
     // ecrite dans `SharedPreferences`, une ecriture qui n'echoue pratiquement
     // jamais. Elle va maintenant dans un FICHIER du stockage protege
-    // (`ProfilRandonneurFichier`, le dossier de la fiche medicale), parce que les
+    // (`HikerProfileFile`, le dossier de la fiche medicale), parce que les
     // preferences ne peuvent PAS etre exclues de la sauvegarde iCloud sur iPhone.
     // Une ecriture de fichier, elle, peut echouer : disque plein, droits refuses,
     // dossier illisible.

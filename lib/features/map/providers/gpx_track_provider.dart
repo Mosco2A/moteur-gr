@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/geo/trace_du_sentier.dart';
+import '../../../core/geo/trail_track.dart';
 import '../../../core/geo/trace_point.dart';
 
 /// Provider du trace GPX brut, parametre par trailId.
@@ -53,7 +53,7 @@ final gpxTrackProvider = FutureProvider.family<List<TrackPoint>, String>((
 /// avoir a deviner : « la trace s affiche » et « la trace vient de la base » sont
 /// deux affirmations differentes, et c est la seconde qui prouve que le mur est
 /// tombe.
-final traceDuSentierProvider = FutureProvider.family<TraceDuSentier, String>((
+final traceDuSentierProvider = FutureProvider.family<TrailTrack, String>((
   ref,
   trailId,
 ) async {

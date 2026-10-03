@@ -10,12 +10,12 @@ library;
 // Fournit save/get/delete pour HealthInfoScreen.
 
 import '../domain/models/health_info.dart';
-import 'fiche_medicale_fichier.dart';
+import 'health_info_file.dart';
 
 /// Repository LOCAL pour les informations de sante.
 ///
 /// IL A CHANGE DE STOCKAGE A LA TACHE 613, ET LA RAISON EST ECRITE EN ENTIER
-/// DANS [FicheMedicaleFichier] : la fiche vivait dans la table `health_info` de
+/// DANS [HealthInfoFile] : la fiche vivait dans la table `health_info` de
 /// la base commune, or cette base est devenue DURABLE et doit remonter dans la
 /// sauvegarde du telephone pour que la progression et le journal survivent au
 /// changement d'appareil. Un fichier de base ne s'exclut pas table par table :
@@ -27,7 +27,7 @@ class HealthInfoRepository {
   HealthInfoRepository({required this.fichier});
 
   /// Le stockage durable de la fiche (un fichier sous `medical/`).
-  final FicheMedicaleFichier fichier;
+  final HealthInfoFile fichier;
 
   /// Sauvegarde les informations de sante en local.
   ///

@@ -52,9 +52,9 @@ import '../../consent/consent_facade.dart' show consentControllerProvider;
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
-import '../data/fiche_medicale_fichier.dart';
+import '../data/health_info_file.dart';
 import '../data/health_info_repository.dart';
-import '../data/prise_photo_carte.dart';
+import '../data/card_photo_capture.dart';
 import '../domain/health_bounds.dart';
 import '../domain/models/emergency_contact.dart';
 import '../domain/models/health_info.dart';
@@ -75,11 +75,11 @@ part 'health_info_screen_sections_bas.dart';
 /// TACHE 613 : il a remplace `healthInfoDaoProvider`, qui derivait de la base
 /// Drift commune. La fiche a desormais SON PROPRE FICHIER, sous le dossier
 /// declare exclu de la sauvegarde du telephone — la raison entiere est dans
-/// [FicheMedicaleFichier]. Les tests surchargent CE provider (repertoire
+/// [HealthInfoFile]. Les tests surchargent CE provider (repertoire
 /// temporaire) ; surcharger `databaseProvider` n'a plus d'effet sur la fiche,
 /// et c'est voulu : plus rien de medical ne passe par la base.
-final ficheMedicaleFichierProvider = Provider<FicheMedicaleFichier>(
-  (ref) => FicheMedicaleFichier(),
+final ficheMedicaleFichierProvider = Provider<HealthInfoFile>(
+  (ref) => HealthInfoFile(),
 );
 
 /// Provider du repository sante (LOCAL ONLY).
@@ -100,7 +100,7 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
 /// interlocuteur ne rend JAMAIS la main (mesure du 28/09, tache 612). Passer par
 /// un provider permet de le remplacer par une fonction qui rend des octets, ou
 /// un refus, sans toucher au reste de l'ecran.
-final priseDePhotoCarteProvider = Provider<PriseDePhotoCarte>(
+final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
   (ref) => prendrePhotoDeCarte,
 );
 
@@ -108,7 +108,7 @@ final priseDePhotoCarteProvider = Provider<PriseDePhotoCarte>(
 ///
 /// Les donnees sont stockees localement — dans un FICHIER DEDIE sous le dossier
 /// declare exclu de la sauvegarde du telephone (tache 613, voir
-/// [FicheMedicaleFichier]) — et ne quittent JAMAIS le telephone (pas de
+/// [HealthInfoFile]) — et ne quittent JAMAIS le telephone (pas de
 /// Firestore, pas de cloud, pas de sauvegarde Google ou Apple).
 class HealthInfoScreen extends ConsumerStatefulWidget {
   const HealthInfoScreen({super.key});

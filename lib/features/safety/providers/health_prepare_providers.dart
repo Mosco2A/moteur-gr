@@ -40,7 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// CETTE PHRASE A ETE CORRIGEE A LA TACHE 615. Elle disait « la DONNEE de sante
 /// reste evidemment en Drift », ce qui est FAUX depuis la tache 613 : la fiche a
 /// quitte la base pour son propre fichier, sous le dossier exclu de la sauvegarde
-/// (`FicheMedicaleFichier`). Le motif des commentaires qui survivent a la regle
+/// (`HealthInfoFile`). Le motif des commentaires qui survivent a la regle
 /// qu'ils decrivent, mesure le 27/09, valait aussi pour celui-la.
 enum HealthPrepStep {
   /// La fiche medicale porte au moins une information ([HealthInfo.hasData]).

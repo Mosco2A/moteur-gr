@@ -48,7 +48,7 @@
 /// Apple ni Google ne documentent noir sur blanc, sur les pages ci-dessus, les
 /// champs POIDS, TAILLE et LANGUE PRINCIPALE de la fiche medicale. Ils ne sont
 /// donc PAS ajoutes ici. Le poids et la taille vivent de toute facon deja dans le
-/// profil du randonneur (`ProfilRandonneurFichier`, tache 623), sous le meme
+/// profil du randonneur (`HikerProfileFile`, tache 623), sous le meme
 /// dossier protege.
 ///
 /// ===========================================================================
@@ -107,7 +107,7 @@ part 'health_info.g.dart';
 /// Fiche d'urgence du randonneur — LOCAL ONLY.
 ///
 /// Stockee exclusivement sur le telephone, dans un fichier sous le dossier
-/// declare exclu de la sauvegarde systeme (`FicheMedicaleFichier`, tache 613).
+/// declare exclu de la sauvegarde systeme (`HealthInfoFile`, tache 613).
 /// Pas de Firestore, pas de cloud, pas de sauvegarde Google ou Apple.
 ///
 /// L'ORDRE DE DECLARATION DES CHAMPS EST L'ORDRE DE LECTURE DU SECOURISTE (voir
@@ -254,7 +254,7 @@ abstract class HealthInfo with _$HealthInfo {
   ///
   /// IL PILOTE DEUX CHOSES, ET C'EST POUR CELA QU'IL DOIT ETRE COMPLET : la
   /// porte de demarrage du trek (`HealthPrepStep.filled`) et l'ECRITURE MEME du
-  /// fichier — `FicheMedicaleFichier.ecrire` EFFACE la fiche quand `hasData` est
+  /// fichier — `HealthInfoFile.ecrire` EFFACE la fiche quand `hasData` est
   /// faux, pour ne pas laisser de trace de passage. Un champ oublie ici serait
   /// donc un champ qui ne s'enregistre pas : la tache 630 en ajoute huit, ils y
   /// sont tous.

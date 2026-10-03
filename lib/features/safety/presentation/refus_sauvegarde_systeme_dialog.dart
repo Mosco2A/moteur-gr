@@ -51,7 +51,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// La tache 612 la posait APRES la connexion Google, et son auteur avait nomme le
 /// trou : « le randonneur anonyme ne la voit jamais, il est protege par le defaut
 /// mais il ne peut pas choisir la commodite ». Ce trou est ferme
-/// ([PorteConsentementSauvegarde], dans l'arbre de `main.dart`) : la question est
+/// ([BackupConsentGate], dans l'arbre de `main.dart`) : la question est
 /// posee UNE FOIS a l'ouverture, a tout le monde. L'appel de l'ecran de profil
 /// reste, et il ne fait pas doublon : une fois la decision prise, elle ne se
 /// repose pas.

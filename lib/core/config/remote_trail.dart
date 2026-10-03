@@ -32,7 +32,7 @@ import 'trail_config.dart';
 /// que du versionnement : ni nom, ni region, ni distance. [versSentier] rend
 /// alors `null`, et l appelant l ecarte en le JOURNALISANT — un sentier
 /// silencieusement absent est indiagnosticable, c est la lecon de la tache 604.
-extension EntreeManifesteEnSentier on TrailManifestEntry {
+extension ManifestEntryAsTrail on TrailManifestEntry {
   /// Vrai si l entree est DESTINEE au catalogue (`status == 'active'`).
   ///
   /// `draft` et `archived` sont des etats de publication cote serveur :

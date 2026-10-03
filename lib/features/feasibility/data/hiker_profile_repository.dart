@@ -17,7 +17,7 @@ import '../../../core/providers/database_provider.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/past_hike.dart';
 import '../domain/walk_test_result.dart';
-import 'profil_randonneur_fichier.dart';
+import 'hiker_profile_file.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -34,7 +34,7 @@ const String kHikerLocalUserId = 'local';
 /// PLUS RIEN NE L'ECRIT DEPUIS LA TACHE 623. Elle subsiste pour DEUX raisons, et
 /// aucune des deux n'est de la nostalgie : la migration doit savoir ou chercher
 /// ce que les telephones portent deja, et l'effacement de l'article 17 doit
-/// continuer de l'emporter. Voir [ProfilRandonneurFichier].
+/// continuer de l'emporter. Voir [HikerProfileFile].
 const String kHikerProfilePrefsKey = 'hiker.profile';
 
 /// Cle SharedPreferences HERITEE : liste des randos passees (JSON list).
@@ -68,7 +68,7 @@ const String kWalkTestResultPrefsKey = 'hiker.walkTestResult';
 /// Or la regle de Christophe du 27/09, en majuscules, inclut explicitement le
 /// poids et la taille : « Les donnees medicales RESTENT sur le tel ».
 ///
-/// LA SOURCE DURABLE EST DESORMAIS [ProfilRandonneurFichier] : un fichier, dans
+/// LA SOURCE DURABLE EST DESORMAIS [HikerProfileFile] : un fichier, dans
 /// le MEME dossier protege que la fiche medicale, avec la MEME exclusion iCloud du
 /// lot 615 — reutilisee, pas reinventee. La migration des telephones existants est
 /// faite par [migrerDepuisPreferences], une seule fois, sans rien perdre.
@@ -91,18 +91,18 @@ class HikerProfileRepository {
     required AppDatabase db,
     SharedPreferences? prefs,
     String userId = kHikerLocalUserId,
-    ProfilRandonneurFichier? fichier,
+    HikerProfileFile? fichier,
   }) : _db = db,
        _prefs = prefs,
        _userId = userId,
-       _fichier = fichier ?? ProfilRandonneurFichier();
+       _fichier = fichier ?? HikerProfileFile();
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
   final String _userId;
 
   /// LA SOURCE DURABLE (tache 623) : un fichier dans le dossier protege.
-  final ProfilRandonneurFichier _fichier;
+  final HikerProfileFile _fichier;
 
   /// Vrai des que la migration depuis les preferences a ete TENTEE pour cette
   /// instance. Elle est idempotente, mais la refaire a chaque lecture couterait
@@ -117,12 +117,12 @@ class HikerProfileRepository {
 
   /// Le stockage protege, exposee pour l'amorce de l'application (qui doit
   /// reposer l'exclusion iCloud a chaque demarrage) et pour les tests.
-  ProfilRandonneurFichier get fichier => _fichier;
+  HikerProfileFile get fichier => _fichier;
 
   // --- Source durable : lecture / ecriture uniques ---------------------------
 
   /// L'UNIQUE CHEMIN DE LECTURE. Il fait passer la migration devant, une fois.
-  Future<ContenuProfilRandonneur> _charger() async {
+  Future<HikerProfileContent> _charger() async {
     if (!_migrationTentee) {
       await migrerDepuisPreferences();
     }
@@ -132,10 +132,10 @@ class HikerProfileRepository {
   /// L'UNIQUE CHEMIN D'ECRITURE.
   ///
   /// Pourquoi il est unique : la pose de l'exclusion iCloud vit DANS
-  /// [ProfilRandonneurFichier.ecrire], et un second chemin d'ecriture serait un
+  /// [HikerProfileFile.ecrire], et un second chemin d'ecriture serait un
   /// second endroit ou l'oublier. C'est exactement le defaut que la tache 615 a
   /// trouve dans l'ecriture atomique de la 613.
-  Future<void> _enregistrer(ContenuProfilRandonneur contenu) =>
+  Future<void> _enregistrer(HikerProfileContent contenu) =>
       _fichier.ecrire(contenu);
 
   /// MIGRE LES QUATRE CLES HERITEES VERS LE FICHIER PROTEGE, PUIS LES RETIRE.

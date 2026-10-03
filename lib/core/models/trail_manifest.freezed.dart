@@ -359,7 +359,7 @@ mixin _$TrailManifestEntry {
 ///  * ABSENTE — l entree ne fait que VERSIONNER un sentier que le binaire
 ///    connait deja (catalogue compile). Si le binaire ne le connait pas non
 ///    plus, l entree n est pas affichable et elle est ecartee avec un
-///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
+///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
 ///    vide au catalogue.
  TrailManifestFiche? get fiche;/// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
 ///
@@ -688,7 +688,7 @@ class _TrailManifestEntry extends TrailManifestEntry {
 ///  * ABSENTE — l entree ne fait que VERSIONNER un sentier que le binaire
 ///    connait deja (catalogue compile). Si le binaire ne le connait pas non
 ///    plus, l entree n est pas affichable et elle est ecartee avec un
-///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
+///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
 ///    vide au catalogue.
 @override final  TrailManifestFiche? fiche;
 /// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
@@ -825,7 +825,7 @@ mixin _$TrailManifestFiche {
  double get totalDistanceKm;/// Denivele positif total en metres.
  int get totalElevationGain;/// Couleur primaire du theme (valeur int d un Color). Null = defaut moteur.
  int? get primaryColorValue;/// Couleur secondaire du theme. Null = defaut moteur.
- int? get secondaryColorValue;/// PRIX du sentier EN ETAPES. Null = non declare (cf. `sentier_distant.dart`).
+ int? get secondaryColorValue;/// PRIX du sentier EN ETAPES. Null = non declare (cf. `remote_trail.dart`).
 ///
 /// `0` declare un SENTIER GRATUIT, et c est une decision de modele
 /// economique prise a distance : Christophe peut ouvrir un sentier gratuit
@@ -1069,7 +1069,7 @@ class _TrailManifestFiche implements TrailManifestFiche {
 @override final  int? primaryColorValue;
 /// Couleur secondaire du theme. Null = defaut moteur.
 @override final  int? secondaryColorValue;
-/// PRIX du sentier EN ETAPES. Null = non declare (cf. `sentier_distant.dart`).
+/// PRIX du sentier EN ETAPES. Null = non declare (cf. `remote_trail.dart`).
 ///
 /// `0` declare un SENTIER GRATUIT, et c est une decision de modele
 /// economique prise a distance : Christophe peut ouvrir un sentier gratuit

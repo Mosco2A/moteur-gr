@@ -17,7 +17,7 @@
 /// cartes plante » (bug 9, DEM-260930-1016).
 ///
 /// CE QUE CET ECRAN EST. La porte du SEUL telechargeur de cartes du depot,
-/// [DescenteDesCartes] (lot 622), qui descend UN fichier pour TOUT le circuit :
+/// [MapDownloader] (lot 622), qui descend UN fichier pour TOUT le circuit :
 /// celui que la carte ouvre vraiment. Il n y a donc plus rien a choisir — un
 /// bouton, le poids annonce avant tout transfert, la progression, la reprise
 /// apres coupure, l annulation, et la suppression pour liberer l espace.
@@ -31,7 +31,7 @@
 /// ([NiveauDeTelechargement.porteLesCartes]), et les cartes ne descendent qu a
 /// « realiser ». Cet ecran EST la demande explicite des cartes : il demande donc
 /// ce niveau-la. Cela ne DONNE aucun droit — `MonetizationService.canRealizeTrail`
-/// reste le seul juge, consulte par [DescenteDesCartes.examiner] avant qu un octet
+/// reste le seul juge, consulte par [MapDownloader.examiner] avant qu un octet
 /// ne voyage, et son refus s affiche ici comme une phrase.
 library;
 
@@ -44,7 +44,7 @@ import '../../../core/error/error_handler.dart';
 import '../../../core/map/mbtiles_manager.dart';
 import '../../../core/models/niveau_de_telechargement.dart';
 import '../../../core/network/connectivity_monitor.dart';
-import '../../../core/services/descente_des_cartes.dart';
+import '../../../core/services/map_downloader.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -53,18 +53,17 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 
 /// L ecran « Cartes hors ligne » d un circuit — un bouton, tout le circuit.
-class CartesHorsLigneScreen extends ConsumerStatefulWidget {
-  const CartesHorsLigneScreen({super.key, required this.trailId});
+class OfflineMapsScreen extends ConsumerStatefulWidget {
+  const OfflineMapsScreen({super.key, required this.trailId});
 
   /// Le circuit dont on telecharge les cartes (moteur generique, #84627).
   final String trailId;
 
   @override
-  ConsumerState<CartesHorsLigneScreen> createState() =>
-      _CartesHorsLigneScreenState();
+  ConsumerState<OfflineMapsScreen> createState() => _OfflineMapsScreenState();
 }
 
-class _CartesHorsLigneScreenState extends ConsumerState<CartesHorsLigneScreen> {
+class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
   /// CE QU ON SAIT AVANT DE TELECHARGER : poids, reprise, refus eventuel.
   ///
   /// Relu a l ouverture ET apres chaque geste, parce que chacun le change : un
@@ -83,7 +82,7 @@ class _CartesHorsLigneScreenState extends ConsumerState<CartesHorsLigneScreen> {
 
   /// CET EXAMEN NE LEVE PAS NON PLUS, ET LE FILET EST ICI EXPRES.
   ///
-  /// `DescenteDesCartes.examiner` rattrape desormais ses propres pannes (tache
+  /// `MapDownloader.examiner` rattrape desormais ses propres pannes (tache
   /// 640) — mais cet ecran ne doit pas DEPENDRE de cette promesse. Il est lance
   /// depuis un rappel de fin de trame et depuis la fin d un geste : deux endroits
   /// ou personne n attend le futur, donc deux endroits ou une exception devient
@@ -101,7 +100,7 @@ class _CartesHorsLigneScreenState extends ConsumerState<CartesHorsLigneScreen> {
       ErrorHandler.log(
         e,
         stackTrace: st,
-        context: 'CartesHorsLigneScreen.examiner(${widget.trailId})',
+        context: 'OfflineMapsScreen.examiner(${widget.trailId})',
       );
       examen = DecisionDeDescente(
         trailId: widget.trailId,

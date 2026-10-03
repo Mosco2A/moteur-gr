@@ -17,7 +17,7 @@ import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
@@ -113,11 +113,11 @@ void main() {
 
   MBTilesManager cartes() => MBTilesManager(httpClient: serveurDeTuiles());
 
-  DescenteDesCartes descente({
+  MapDownloader descente({
     required bool droitDeRealiser,
     TypeDeLien lien = TypesDeLien.wifi,
     MBTilesManager? avecCartes,
-  }) => DescenteDesCartes(
+  }) => MapDownloader(
     cartes: avecCartes ?? cartes(),
     dao: manifestes,
     monetization: _Droits(droitDeRealiser),
@@ -572,12 +572,12 @@ void main() {
         .toList();
 
     test('AUCUN code de production n appelle le transport des tuiles en dehors de '
-        'DescenteDesCartes — c est la faute que la tache 606 a du corriger', () {
+        'MapDownloader — c est la faute que la tache 606 a du corriger', () {
       // Les seules apparitions legitimes : la definition du transport lui-meme, et
       // l unique orchestrateur qui le pilote.
       const tolerees = [
         'lib/core/map/mbtiles_manager.dart',
-        'lib/core/services/descente_des_cartes.dart',
+        'lib/core/services/map_downloader.dart',
       ];
 
       final coupables = <String>[];
@@ -601,7 +601,7 @@ void main() {
             'Un second chemin de descente des cartes est apparu : '
             '${coupables.join(", ")}. Le lot 606 a du defaire exactement cela '
             '(un geste « telecharger » qui empruntait un second chemin ignorant '
-            'tout le modele). Passe par DescenteDesCartes.',
+            'tout le modele). Passe par MapDownloader.',
       );
     });
 
@@ -614,12 +614,12 @@ void main() {
         'lib/core/services/ordonnanceur_de_synchronisation.dart',
       ).readAsStringSync();
       expect(ordonnanceur.contains('descente_des_cartes'), isFalse);
-      expect(ordonnanceur.contains('DescenteDesCartes'), isFalse);
+      expect(ordonnanceur.contains('MapDownloader'), isFalse);
 
       final telechargeur = File(
         'lib/core/services/update_downloader.dart',
       ).readAsStringSync();
-      expect(telechargeur.contains('DescenteDesCartes'), isFalse);
+      expect(telechargeur.contains('MapDownloader'), isFalse);
       expect(telechargeur.contains('mbtiles'), isFalse);
     });
   });

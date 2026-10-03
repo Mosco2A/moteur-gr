@@ -117,7 +117,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // bugs 11 et 16). C'est ici qu'on regarde quand on marche : le bouton
           // de simulation doit donc etre atteignable sans repasser par le
           // cockpit. Invisible hors demo et hors randonnee simulee.
-          const BoutonSimulationDemo(compact: true),
+          const DemoSimulationButton(compact: true),
           IconButton(
             icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.map.title,

@@ -9,8 +9,8 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
 import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
-import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
+import 'package:moteur_gr/features/map/presentation/offline_maps_screen.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
@@ -31,7 +31,7 @@ import '../../structurel/regie_pub_absente.dart';
 ///      fonction derriere une fonction fermee.
 ///  (c) LES CARTES HORS LIGNE n'avaient MEME PAS DE ROUTE declaree.
 ///      (A l'epoque c'etait `PackStoreScreen` ; la tache 640 l'a remplace par
-///      `CartesHorsLigneScreen` — un seul geste, tout le circuit, bug 10.)
+///      `OfflineMapsScreen` — un seul geste, tout le circuit, bug 10.)
 ///
 /// DECISION DE CHRIS DU 26/09 10:29, verbatim : « ca doit faire partie de la
 /// prepa, on ne demarre pas un trek sans avoir rempli sa fiche medicale et lu
@@ -98,7 +98,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(CartesHorsLigneScreen), findsOneWidget);
+      expect(find.byType(OfflineMapsScreen), findsOneWidget);
     });
   });
 
@@ -307,7 +307,7 @@ class _FakeTrek extends TrekSessionManagerNotifier {
 /// Ce test verifie une ROUTE, pas un telechargement : figer la decision evite
 /// d'ouvrir la base et d'interroger le reseau pour verifier qu'une URL construit
 /// bien son ecran.
-class _DescenteFigee extends Fake implements DescenteDesCartes {
+class _DescenteFigee extends Fake implements MapDownloader {
   @override
   Future<DecisionDeDescente> examiner(
     String trailId, {

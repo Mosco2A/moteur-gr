@@ -16,11 +16,11 @@ import '../../../core/models/download_progress.dart';
 import '../../../core/models/niveau_de_telechargement.dart';
 import '../../../core/data/revision_de_donnee.dart';
 import '../../treks/treks_facade.dart' show ownedTrailIdsProvider;
-import '../domain/etat_du_sentier.dart';
+import '../domain/trail_state.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/delta_update_service.dart';
-import '../../../core/services/descente_des_cartes.dart';
+import '../../../core/services/map_downloader.dart';
 import '../../../core/services/manifest_service.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -449,7 +449,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     // NON TELECHARGE un sentier dont les donnees sont POSEES et le repere ecrit en
     // base. L ecran mentirait, et le randonneur retelechargerait tout.
     //
-    // LE `if` N EST PAS LE GARDE-FOU — c est [DescenteDesCartes], qui reexamine TOUT
+    // LE `if` N EST PAS LE GARDE-FOU — c est [MapDownloader], qui reexamine TOUT
     // (niveau, carte publiee, droit de realiser, reseau, confirmation) et refuse par
     // une cause NOMMEE. Ce test evite seulement d ouvrir la base et d interroger les
     // droits pour un niveau qui, par definition, ne descend aucune tuile : au niveau
@@ -528,17 +528,17 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     return null;
   }
 
-  /// L etat d un sentier et les gestes offerts (cf. [DisponibiliteDuSentier]).
+  /// L etat d un sentier et les gestes offerts (cf. [TrailAvailability]).
   ///
   /// Les deux entrees sont lues a leur source respective et restent SEPAREES :
   /// la presence des donnees dans `trail_manifests.localVersion`, le droit dans
   /// les droits d achat. Telecharger n est pas acheter.
-  Future<DisponibiliteDuSentier> disponibiliteDe(String trailId) async {
+  Future<TrailAvailability> disponibiliteDe(String trailId) async {
     final ligne = await _manifestsDao.getByTrailId(trailId);
     final revisionLocale = ligne?.localVersion;
     final possedes = await ref.read(ownedTrailIdsProvider.future);
 
-    return DisponibiliteDuSentier(
+    return TrailAvailability(
       trailId: trailId,
       copieComplete:
           revisionLocale != null &&

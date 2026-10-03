@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/ads/domain/etat_publicite.dart';
-import 'package:moteur_gr/features/ads/presentation/badge_etat_publicite.dart';
+import 'package:moteur_gr/features/ads/domain/ad_state.dart';
+import 'package:moteur_gr/features/ads/presentation/ad_state_badge.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// TACHE 639 (AVENANT) — LES TROIS ETATS PUBLICITAIRES SE DISTINGUENT A L'OEIL.
@@ -24,7 +24,7 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///   3. la video, seule des trois a expirer, porte le temps qui reste ;
 ///   4. l'etat « avec publicite » est le SEUL a declarer qu'une pub s'affiche.
 void main() {
-  Future<void> poser(WidgetTester tester, EtatPublicite etat) async {
+  Future<void> poser(WidgetTester tester, AdState etat) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -32,7 +32,7 @@ void main() {
         ],
         child: TranslationProvider(
           child: const MaterialApp(
-            home: Scaffold(body: BadgeEtatPublicite(trailId: 'gr20')),
+            home: Scaffold(body: AdStateBadge(trailId: 'gr20')),
           ),
         ),
       ),
@@ -42,13 +42,13 @@ void main() {
 
   group('les trois etats donnent trois marques distinctes', () {
     testWidgets('AVEC PUBLICITE le dit, et le dit seul', (tester) async {
-      await poser(tester, EtatPublicite.avecPub);
+      await poser(tester, AdState.avecPub);
       expect(find.text(t.monetization.adsBadgePub), findsOneWidget);
-      expect(EtatPublicite.avecPub.pubAffichee, isTrue);
+      expect(AdState.avecPub.pubAffichee, isTrue);
     });
 
     testWidgets('ABONNE porte sa propre marque', (tester) async {
-      await poser(tester, const EtatPublicite(raison: RaisonSansPub.abonne));
+      await poser(tester, const AdState(raison: RaisonSansPub.abonne));
       expect(find.text(t.monetization.adsBadgeAbonne), findsOneWidget);
       expect(find.text(t.monetization.adsBadgePub), findsNothing);
     });
@@ -56,7 +56,7 @@ void main() {
     testWidgets('ACHETE porte la sienne, differente de celle de l abonne', (
       tester,
     ) async {
-      await poser(tester, const EtatPublicite(raison: RaisonSansPub.achete));
+      await poser(tester, const AdState(raison: RaisonSansPub.achete));
       expect(find.text(t.monetization.adsBadgeAchete), findsOneWidget);
       expect(find.text(t.monetization.adsBadgeAbonne), findsNothing);
     });
@@ -91,11 +91,11 @@ void main() {
     // DURABLE. Annoncer la video a un abonne lui ferait croire que son
     // abonnement finit dans 24 h.
     test('abonne passe devant achete, et achete devant la video', () {
-      const abonne = EtatPublicite(raison: RaisonSansPub.abonne);
-      const achete = EtatPublicite(raison: RaisonSansPub.achete);
+      const abonne = AdState(raison: RaisonSansPub.abonne);
+      const achete = AdState(raison: RaisonSansPub.achete);
       expect(abonne.sansPubDurable, isTrue);
       expect(achete.sansPubDurable, isTrue);
-      final video = EtatPublicite(
+      final video = AdState(
         raison: RaisonSansPub.video24h,
         finDeLaRecompense: DateTime(2026, 10, 1),
       );
@@ -110,8 +110,8 @@ void main() {
   group('la video porte le temps qui reste', () {
     final maintenant = DateTime(2026, 9, 30, 12, 0);
 
-    EtatPublicite videoJusqua(DateTime fin) =>
-        EtatPublicite(raison: RaisonSansPub.video24h, finDeLaRecompense: fin);
+    AdState videoJusqua(DateTime fin) =>
+        AdState(raison: RaisonSansPub.video24h, finDeLaRecompense: fin);
 
     test('des heures tant qu il en reste au moins une', () {
       final reste = resteLisible(
@@ -141,9 +141,9 @@ void main() {
 
     test('les trois autres etats n ont pas de compte a rebours', () {
       for (final etat in [
-        EtatPublicite.avecPub,
-        const EtatPublicite(raison: RaisonSansPub.abonne),
-        const EtatPublicite(raison: RaisonSansPub.achete),
+        AdState.avecPub,
+        const AdState(raison: RaisonSansPub.abonne),
+        const AdState(raison: RaisonSansPub.achete),
       ]) {
         expect(etat.finDeLaRecompense, isNull);
         expect(resteLisible(etat, maintenant: maintenant), isEmpty);

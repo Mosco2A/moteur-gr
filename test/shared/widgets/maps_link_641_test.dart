@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/shared/widgets/lien_vers_les_cartes.dart';
+import 'package:moteur_gr/shared/widgets/maps_link.dart';
 
 /// BUG 15 — « HEBERGEMENT IL DOIT AVOIR UNE ADRESSE ET UN POINT GPS QUI LINK SUR
 /// MAPS » (Christophe, 30/09 10:23).
@@ -13,7 +13,7 @@ import 'package:moteur_gr/shared/widgets/lien_vers_les_cartes.dart';
 /// 16). Ces tests verifient d abord l ABSENCE du lien quand il ne menerait nulle
 /// part.
 void main() {
-  Widget sujet(LieuCliquable lieu, {OuvreurDeCartes? ouvreur}) {
+  Widget sujet(LieuCliquable lieu, {MapsOpener? ouvreur}) {
     return ProviderScope(
       overrides: [
         if (ouvreur != null) ouvreurDeCartesProvider.overrideWithValue(ouvreur),
@@ -54,7 +54,7 @@ void main() {
 
         expect(find.byKey(const ValueKey('lieu-ouvrir-cartes')), findsNothing);
         expect(
-          OuvreurDeCartes.adressesPour(
+          MapsOpener.adressesPour(
             const LieuCliquable(nom: 'x', lat: 0, lng: 0),
           ),
           isEmpty,
@@ -205,7 +205,7 @@ void main() {
       'Plans desinstalle. Rendre « impossible d ouvrir » alors qu un navigateur '
       'aurait suffi serait un faux echec',
       () {
-        final adresses = OuvreurDeCartes.adressesPour(
+        final adresses = MapsOpener.adressesPour(
           const LieuCliquable(nom: 'Col de Laparo', lat: 41.9, lng: 9.15),
         );
         expect(adresses, isNotEmpty);
@@ -227,7 +227,7 @@ void main() {
       'moitie des gites du Mare a Mare, dont les coordonnees publiees sont '
       'celles du centre du village',
       () {
-        final adresses = OuvreurDeCartes.adressesPour(
+        final adresses = MapsOpener.adressesPour(
           const LieuCliquable(
             nom: 'Office de tourisme',
             adresse: 'Route de Ghisoni, 20240 Ghisonaccia',
@@ -245,7 +245,7 @@ void main() {
       'L ADRESSE PRIME SUR LE NOM COMME ETIQUETTE DE RECHERCHE : une adresse '
       'postale se geocode, un nom de gite corse pas toujours',
       () {
-        final adresses = OuvreurDeCartes.adressesPour(
+        final adresses = MapsOpener.adressesPour(
           const LieuCliquable(
             nom: 'Chez Paul-Antoine',
             adresse: '20153 Guitera-les-Bains',
@@ -272,7 +272,7 @@ void main() {
 /// canal de plateforme, absent d un test de widget. Sans double, ce test
 /// verifierait la presence du bouton et rien de son effet — c est-a-dire
 /// exactement le genre de geste mort que l invariante V3 du depot interdit.
-class _OuvreurEspion extends OuvreurDeCartes {
+class _OuvreurEspion extends MapsOpener {
   _OuvreurEspion({required this.reussit});
 
   final bool reussit;

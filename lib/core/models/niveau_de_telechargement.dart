@@ -28,7 +28,7 @@ import 'trail_manifest.dart';
 /// « preparer en ayant paye » : ce serait un quatrieme barreau qui ne transporterait
 /// rien de plus. La vraie frontiere de volume est entre [preparer] et [realiser].
 ///
-/// LES TROIS NIVEAUX DECOULENT DES TROIS ETATS DU 27/09 20:41 (`EtatDuSentier`),
+/// LES TROIS NIVEAUX DECOULENT DES TROIS ETATS DU 27/09 20:41 (`TrailState`),
 /// ils ne les doublent pas : l etat dit CE QUE LE RANDONNEUR A FAIT (vu au
 /// catalogue, telecharge, achete), le niveau dit CE QUI EST DESCENDU. Un sentier
 /// achete mais seulement prepare est un cas normal et attendu.
@@ -74,13 +74,13 @@ enum NiveauDeTelechargement {
   /// l adresse du fichier de tuiles ». Les deux moities du trou sont fermees — la
   /// liste distante declare desormais ses tuiles (`TrailManifestEntry.tilesPath`,
   /// `tilesSize`, `tilesHash`) et un seul chemin les fait descendre
-  /// ([DescenteDesCartes]), depuis le geste qui demande CE niveau.
+  /// ([MapDownloader]), depuis le geste qui demande CE niveau.
   ///
   /// CE NIVEAU NE SUFFIT PAS A LUI SEUL, et c est la seule nuance : il dit que les
   /// cartes SONT de ce niveau, il ne dit pas que le randonneur y a droit. Realiser
   /// est lie a avoir PAYE (modele economique §2), sauf le sentier gratuit dont le
   /// prix est nul (§2 bis) — ce droit se lit une seule fois, dans
-  /// `MonetizationService.canRealizeTrail`, et [DescenteDesCartes] le consulte
+  /// `MonetizationService.canRealizeTrail`, et [MapDownloader] le consulte
   /// AVANT d ouvrir la moindre connexion.
   realiser;
 

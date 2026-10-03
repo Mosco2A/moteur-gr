@@ -21,7 +21,7 @@ import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
 import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/trace_du_sentier.dart';
+import 'package:moteur_gr/core/geo/trail_track.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
@@ -29,7 +29,7 @@ import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
-import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
+import 'package:moteur_gr/features/trail/providers/trail_catalog_provider.dart';
 import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../../tool/publication/publicateur.dart';

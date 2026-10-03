@@ -38,11 +38,11 @@ enum SourceDeLaTrace {
 }
 
 /// La trace d un sentier, et d ou elle vient.
-class TraceDuSentier {
-  const TraceDuSentier({required this.points, required this.source});
+class TrailTrack {
+  const TrailTrack({required this.points, required this.source});
 
   /// Trace vide, source nommee.
-  const TraceDuSentier.aucune()
+  const TrailTrack.aucune()
     : points = const [],
       source = SourceDeLaTrace.aucune;
 
@@ -117,13 +117,13 @@ class LecteurDeTrace {
   /// desormais que tout chemin declare existe reellement dans le depot. Le
   /// comportement decrit ci-dessus ne change pas : un chemin declare qui ne se
   /// lit pas reste une erreur.
-  Future<TraceDuSentier> lire({
+  Future<TrailTrack> lire({
     required String trailId,
     required String cheminAsset,
   }) async {
     final deLaBase = await _depuisLaBase(trailId);
     if (deLaBase.isNotEmpty) {
-      return TraceDuSentier(points: deLaBase, source: SourceDeLaTrace.base);
+      return TrailTrack(points: deLaBase, source: SourceDeLaTrace.base);
     }
 
     if (cheminAsset.isEmpty) {
@@ -131,14 +131,11 @@ class LecteurDeTrace {
         '[Trace] $trailId : rien en base et aucun fichier embarque — le '
         'sentier est au catalogue mais ses donnees ne sont pas copiees.',
       );
-      return const TraceDuSentier.aucune();
+      return const TrailTrack.aucune();
     }
 
     final deLAsset = await _lireLAsset(cheminAsset);
-    return TraceDuSentier(
-      points: deLAsset,
-      source: SourceDeLaTrace.assetCompile,
-    );
+    return TrailTrack(points: deLAsset, source: SourceDeLaTrace.assetCompile);
   }
 
   /// Les points des traces de [trailId], dans l ordre, ou une liste vide.

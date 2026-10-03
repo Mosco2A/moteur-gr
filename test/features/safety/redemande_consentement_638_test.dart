@@ -11,7 +11,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/consent_service.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -39,13 +39,13 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 void main() {
   late AppDatabase db;
   late Directory bacFiche;
-  late FicheMedicaleFichier fiche;
+  late HealthInfoFile fiche;
   late ConsentService consentement;
 
   setUp(() async {
     db = AppDatabase(NativeDatabase.memory());
     bacFiche = Directory.systemTemp.createTempSync('fiche638_redemande');
-    fiche = FicheMedicaleFichier(dossierApplicatif: () async => bacFiche);
+    fiche = HealthInfoFile(dossierApplicatif: () async => bacFiche);
     SharedPreferences.setMockInitialValues(<String, Object>{});
     consentement = ConsentService();
     await consentement.initialize();

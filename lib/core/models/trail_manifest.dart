@@ -192,7 +192,7 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     ///  * ABSENTE — l entree ne fait que VERSIONNER un sentier que le binaire
     ///    connait deja (catalogue compile). Si le binaire ne le connait pas non
     ///    plus, l entree n est pas affichable et elle est ecartee avec un
-    ///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
+    ///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
     ///    vide au catalogue.
     TrailManifestFiche? fiche,
 
@@ -301,7 +301,7 @@ abstract class TrailManifestFiche with _$TrailManifestFiche {
     /// Couleur secondaire du theme. Null = defaut moteur.
     int? secondaryColorValue,
 
-    /// PRIX du sentier EN ETAPES. Null = non declare (cf. `sentier_distant.dart`).
+    /// PRIX du sentier EN ETAPES. Null = non declare (cf. `remote_trail.dart`).
     ///
     /// `0` declare un SENTIER GRATUIT, et c est une decision de modele
     /// economique prise a distance : Christophe peut ouvrir un sentier gratuit

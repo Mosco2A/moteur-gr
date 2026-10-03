@@ -53,7 +53,7 @@ import 'dart:math' as math;
 
 part 'feasibility_formula_types.dart';
 part 'feasibility_formula_bareme.dart';
-part 'feasibility_formula_etapes.dart';
+part 'feasibility_formula_stages.dart';
 part 'feasibility_formula_bilan.dart';
 part 'feasibility_formula_formule.dart';
 part 'feasibility_formula_aides.dart';

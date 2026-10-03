@@ -89,7 +89,7 @@ class BannerAdSlot extends ConsumerWidget {
     // « Avec publicite » y aurait annonce une publicite qui n'existe pas.
     //
     // LA MARQUE EST DONC POSEE PAR L'ECRAN, au-dessus de cet emplacement
-    // ([BandeauEtatPublicite] dans le cockpit) : elle parle de l'ETAT DES DROITS,
+    // ([AdStateBanner] dans le cockpit) : elle parle de l'ETAT DES DROITS,
     // qui ne depend pas de ce que la regie a bien voulu rendre.
     if (banniere == null) return const SizedBox.shrink();
 

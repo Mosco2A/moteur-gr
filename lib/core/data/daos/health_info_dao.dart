@@ -14,7 +14,7 @@ part 'health_info_dao.g.dart';
 /// AUCUN CODE DE PRODUCTION N'ECRIT PLUS ICI DEPUIS LA TACHE 613, ET CE N'EST
 /// PAS UN OUBLI DE MENAGE. La fiche medicale a quitte la base pour son PROPRE
 /// FICHIER, sous le dossier declare exclu de la sauvegarde du telephone (voir
-/// `FicheMedicaleFichier`) : la base est devenue durable et doit remonter dans
+/// `HealthInfoFile`) : la base est devenue durable et doit remonter dans
 /// cette sauvegarde pour que la progression et le carnet survivent au changement
 /// d'appareil, or un fichier de base ne s'exclut pas table par table.
 ///

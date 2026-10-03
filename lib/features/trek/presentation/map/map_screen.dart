@@ -21,7 +21,7 @@ import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/attribution_osm.dart';
-import '../../../../shared/widgets/bouton_simulation_demo.dart';
+import '../../../../shared/widgets/demo_simulation_button.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
@@ -59,7 +59,7 @@ import 'marker_overlap.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
 part 'map_screen_controleur.dart';
-part 'map_screen_ecran.dart';
+part 'map_screen_view.dart';
 part 'map_screen_contenu.dart';
 part 'map_screen_alertes.dart';
 part 'map_screen_barres.dart';

@@ -20,8 +20,8 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/mise_a_jour_a_la_source.dart';
-import 'package:moteur_gr/core/services/source_de_donnees_sentier.dart';
-import 'package:moteur_gr/core/services/source_firestore_sentier.dart';
+import 'package:moteur_gr/core/services/trail_record_source.dart';
+import 'package:moteur_gr/core/services/firestore_trail_source.dart';
 import 'package:moteur_gr/features/planning/domain/transport_info.dart';
 import 'package:moteur_gr/features/planning/providers/lieux_en_base_provider.dart';
 
@@ -306,7 +306,7 @@ void main() {
 
   group('641 — la liste des sentiers se lit dans Firestore', () {
     test('un document `trails/{id}` devient une entree de liste complete', () {
-      final entree = ListeSentiersFirestore.versEntree('mare-a-mare-centre', {
+      final entree = FirestoreTrailList.versEntree('mare-a-mare-centre', {
         'trail_id': 'mare-a-mare-centre',
         'data_version': 1759227264414,
         'last_updated': '2026-09-30T10:27:44.414Z',
@@ -344,7 +344,7 @@ void main() {
       'un document mal forme est ECARTE, jamais fatal — une entree cassee ne '
       'doit pas rendre TOUT le catalogue illisible',
       () {
-        final entree = ListeSentiersFirestore.versEntree('casse', {
+        final entree = FirestoreTrailList.versEntree('casse', {
           'fiche': <String, dynamic>{'name': 'incomplete'},
         });
         expect(entree, isNull);
@@ -353,7 +353,7 @@ void main() {
 
     test('un horodatage Firestore serialise est LU, et pas confondu avec du '
         'texte — sinon la comparaison de revision compare des chaines', () {
-      final entree = ListeSentiersFirestore.versEntree('x', {
+      final entree = FirestoreTrailList.versEntree('x', {
         'data_version': <String, dynamic>{
           'seconds': 1759227264,
           'nanoseconds': 414000000,
@@ -788,7 +788,7 @@ TrailManifestEntry _entree(
 /// pas provisionne dans un test unitaire, et le pilote `cloud_firestore` exige un
 /// canal de plateforme. Ce qui est EPROUVE ici, c est la decision — « est-ce plus
 /// recent que mon repere ? » — et elle ne depend pas du transport.
-class _ListeDouble extends ListeSentiersFirestore {
+class _ListeDouble extends FirestoreTrailList {
   _ListeDouble()
     : super(firebaseService: FirebaseService.testOnly(isAvailable: true));
 
@@ -812,7 +812,7 @@ class _ReseauDouble extends ConnectivityMonitor {
 }
 
 /// La source de donnees, remplacee par un double qui rend un lot fixe.
-class _SourceDouble implements SourceDeDonneesSentier {
+class _SourceDouble implements TrailRecordSource {
   Map<String, dynamic> lot = const <String, dynamic>{};
   int appels = 0;
 

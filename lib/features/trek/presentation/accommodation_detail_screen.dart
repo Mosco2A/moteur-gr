@@ -34,8 +34,8 @@ final accommodationsByStageProvider =
 /// (capacite, tarifs, contact), bouton appeler / email / site web,
 /// et liste des autres hebergements de l'etape.
 /// Donnees chargees depuis la base du sentier actif (par trailId).
-class RefugeDetailScreen extends ConsumerWidget {
-  const RefugeDetailScreen({super.key, this.stageNumber});
+class AccommodationDetailScreen extends ConsumerWidget {
+  const AccommodationDetailScreen({super.key, this.stageNumber});
 
   /// Numero d'etape de l'hebergement a afficher.
   /// Si null, utilise la premiere etape.

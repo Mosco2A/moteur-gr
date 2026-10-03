@@ -62,8 +62,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
-import 'package:moteur_gr/features/safety/data/copie_sauvegardable_fiche_service.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_backup_copy_service.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 
@@ -326,12 +326,12 @@ void main() {
       'l ecriture atomique est ferme', () {
     late Directory racine;
     late _NatifEspion natif;
-    late FicheMedicaleFichier fiche;
+    late HealthInfoFile fiche;
 
     setUp(() {
       racine = Directory.systemTemp.createTempSync('sw615_');
       natif = _NatifEspion()..brancher();
-      fiche = FicheMedicaleFichier(
+      fiche = HealthInfoFile(
         dossierApplicatif: () async => racine,
         // LA CIBLE EST FORCEE : la suite tourne sur une machine de
         // developpement, ou `Platform.isIOS` est faux. Sans ce forcage ces tests
@@ -347,10 +347,10 @@ void main() {
 
     String cheminFiche() => _n(
       '${racine.path}/${SauvegardeSysteme.dossierExclu}/'
-      '${FicheMedicaleFichier.nomFichier}',
+      '${HealthInfoFile.nomFichier}',
     );
     String cheminTemporaire() =>
-        '${cheminFiche()}${FicheMedicaleFichier.suffixeTemporaire}';
+        '${cheminFiche()}${HealthInfoFile.suffixeTemporaire}';
     String cheminDossier() =>
         _n('${racine.path}/${SauvegardeSysteme.dossierExclu}');
 
@@ -398,7 +398,7 @@ void main() {
         reason:
             'L EXCLUSION N A PAS ETE REPOSEE APRES LA SECONDE ECRITURE. '
             'L attribut appartient au FICHIER, pas au chemin : apres le '
-            'renommage, « ${FicheMedicaleFichier.nomFichier} » est l ancien '
+            'renommage, « ${HealthInfoFile.nomFichier} » est l ancien '
             'fichier temporaire, qui n a jamais porte l attribut. Ce defaut '
             'passe tous les tests de comportement du depot et ne se voit que '
             'dans une sauvegarde iCloud, des mois plus tard.',
@@ -516,18 +516,18 @@ void main() {
     late Directory racine;
     late _NatifEspion natif;
     late HealthInfoRepository depot;
-    late CopieSauvegardableFicheService copie;
+    late HealthInfoBackupCopyService copie;
 
     setUp(() {
       racine = Directory.systemTemp.createTempSync('sw615c_');
       natif = _NatifEspion()..brancher();
       depot = HealthInfoRepository(
-        fichier: FicheMedicaleFichier(
+        fichier: HealthInfoFile(
           dossierApplicatif: () async => racine,
           exclusionIcloud: ExclusionSauvegardeIcloud(cibleIos: true),
         ),
       );
-      copie = CopieSauvegardableFicheService(
+      copie = HealthInfoBackupCopyService(
         healthRepository: depot,
         baseDirProvider: () async => racine,
         exclusionIcloud: ExclusionSauvegardeIcloud(cibleIos: true),
@@ -575,7 +575,7 @@ void main() {
       final cheminFiche = _n(
         '${racine.path}/'
         '${SauvegardeSysteme.dossierExclu}/'
-        '${FicheMedicaleFichier.nomFichier}',
+        '${HealthInfoFile.nomFichier}',
       );
       expect(
         natif.inclusionsDe(cheminFiche),
@@ -629,12 +629,12 @@ void main() {
       'avec la version precedente', () {
     late Directory racine;
     late _NatifEspion natif;
-    late FicheMedicaleFichier fiche;
+    late HealthInfoFile fiche;
 
     setUp(() {
       racine = Directory.systemTemp.createTempSync('sw615g_');
       natif = _NatifEspion()..brancher();
-      fiche = FicheMedicaleFichier(
+      fiche = HealthInfoFile(
         dossierApplicatif: () async => racine,
         exclusionIcloud: ExclusionSauvegardeIcloud(cibleIos: true),
       );
@@ -648,12 +648,12 @@ void main() {
     Directory dossier() =>
         Directory('${racine.path}/${SauvegardeSysteme.dossierExclu}');
 
-    /// Pose une fiche SANS passer par [FicheMedicaleFichier.ecrire] : c'est
+    /// Pose une fiche SANS passer par [HealthInfoFile.ecrire] : c'est
     /// exactement l'etat du telephone d'un randonneur qui a rempli sa fiche avec
     /// le binaire de la tache 613, ou aucune exclusion n'existait.
     File poserUneFicheHeriteeDuLot613() {
       final d = dossier()..createSync(recursive: true);
-      final f = File('${d.path}/${FicheMedicaleFichier.nomFichier}');
+      final f = File('${d.path}/${HealthInfoFile.nomFichier}');
       f.writeAsStringSync(jsonEncode(laFiche.toJson()));
       return f;
     }
@@ -681,8 +681,8 @@ void main() {
         'interrompue laisse la donnee medicale dedans', () async {
       final d = dossier()..createSync(recursive: true);
       final orphelin = File(
-        '${d.path}/${FicheMedicaleFichier.nomFichier}'
-        '${FicheMedicaleFichier.suffixeTemporaire}',
+        '${d.path}/${HealthInfoFile.nomFichier}'
+        '${HealthInfoFile.suffixeTemporaire}',
       );
       orphelin.writeAsStringSync(jsonEncode(laFiche.toJson()));
       natif.oublier();
@@ -801,7 +801,7 @@ void main() {
       // trois tests d ecran ROUGES : dans le temps feint d un test de widgets, il
       // ne rend jamais la main. Ici aucune cible n est forcee : le service prend
       // `Platform.isIOS`, faux sur la machine de developpement.
-      final fiche = FicheMedicaleFichier(dossierApplicatif: () async => racine);
+      final fiche = HealthInfoFile(dossierApplicatif: () async => racine);
       await fiche.ecrire(laFiche);
       await fiche.garantirExclusion();
 
@@ -876,7 +876,7 @@ void main() {
           'ecrite quand meme', () async {
         // Aucun `_NatifEspion` : le canal n a pas d interlocuteur, exactement comme
         // sur un iPhone ou le Swift n aurait pas ete compile.
-        final fiche = FicheMedicaleFichier(
+        final fiche = HealthInfoFile(
           dossierApplicatif: () async => racine,
           exclusionIcloud: ExclusionSauvegardeIcloud(cibleIos: true),
         );
@@ -1013,7 +1013,7 @@ void main() {
             'durable autre que son fichier :\n  ${coupables.join("\n  ")}\n'
             'Les preferences (`UserDefaults` sur iPhone) sont emportees par la '
             'sauvegarde iCloud, et rien ne permet d en exclure une cle. Le seul '
-            'porteur durable autorise est FicheMedicaleFichier, plus la copie '
+            'porteur durable autorise est HealthInfoFile, plus la copie '
             'que le randonneur accepte explicitement en decochant la case.',
       );
     });

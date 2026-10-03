@@ -11,8 +11,8 @@ import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../widgets/bouton_rafraichir_depuis_la_base.dart';
-import '../../../shared/widgets/lien_vers_les_cartes.dart';
+import '../widgets/refresh_from_database_button.dart';
+import '../../../shared/widgets/maps_link.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/transport_info.dart';
 import '../providers/transport_providers.dart';
@@ -95,7 +95,7 @@ class TransportScreen extends ConsumerWidget {
           // a trouve vide. S'il publie le transport en base depuis son PC, ce
           // bouton le fait arriver tout de suite, sans attendre la cadence de
           // quatre heures ni redemarrer l'application (tache 641).
-          actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+          actions: [RefreshFromDatabaseButton(trailId: trailId)],
         ),
         body: Center(
           child: Padding(
@@ -118,7 +118,7 @@ class TransportScreen extends ConsumerWidget {
         // le parametre `bottom`. Le back custom est retire (comportement repris).
         appBar: AppHeader(
           title: t.transport.title,
-          actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+          actions: [RefreshFromDatabaseButton(trailId: trailId)],
           bottom: TabBar(
             tabs: [
               Tab(icon: const StepIcon(StepwaysIcons.avion), text: joinLabel),

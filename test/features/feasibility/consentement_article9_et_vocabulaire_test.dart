@@ -13,7 +13,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/features/consent/providers/consent_ui_providers.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
-import 'package:moteur_gr/features/feasibility/data/profil_randonneur_fichier.dart';
+import 'package:moteur_gr/features/feasibility/data/hiker_profile_file.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
 import 'package:moteur_gr/features/feasibility/presentation/hiker_profile_screen.dart';
@@ -72,10 +72,10 @@ void main() {
   /// serait desormais une mesure VIDE : la cle y est toujours absente, donc les
   /// tests passeraient sans rien prouver. Ils lisent le fichier, au meme titre.
   Future<String?> profilStockeBrut() async {
-    final f = await ProfilRandonneurFichier().fichier();
+    final f = await HikerProfileFile().fichier();
     if (!f.existsSync()) return null;
     final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
-    final profil = doc[ProfilRandonneurFichier.clefProfil];
+    final profil = doc[HikerProfileFile.clefProfil];
     return profil == null ? null : json.encode(profil);
   }
 
@@ -425,7 +425,7 @@ void main() {
   //
   // CES TESTS LISENT LE STOCKAGE, PAS LE REPOSITORY. Un `getProfile()` a zero ne
   // les aurait pas vus. LE STOCKAGE A CHANGE D'ENDROIT (tache 623) : ce n'est
-  // plus `prefs.getString` mais le document de `ProfilRandonneurFichier`, dans
+  // plus `prefs.getString` mais le document de `HikerProfileFile`, dans
   // le dossier protege de la fiche medicale — SharedPreferences ne peut pas etre
   // exclu de la sauvegarde iCloud sur iPhone. La mesure est la meme, au nouvel
   // endroit ; la lire encore dans les preferences ne prouverait plus rien.

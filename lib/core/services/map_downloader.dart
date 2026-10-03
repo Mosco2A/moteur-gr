@@ -73,7 +73,7 @@ enum RefusDeDescente {
   /// permise, et « je ne sais pas » ne vaut pas « oui ».
   ///
   /// CETTE CAUSE EXISTE PARCE QU AVANT ELLE, C ETAIT UN PLANTAGE. [examiner] et
-  /// [DescenteDesCartes.descendre] ne rattrapaient rien ; l exception traversait
+  /// [MapDownloader.descendre] ne rattrapaient rien ; l exception traversait
   /// [ControleurDesCartes.demarrer], dont le `try` n avait pas de `catch`, et
   /// ressortait dans le futur d un bouton — que personne n attend. Resultat :
   /// erreur asynchrone non traitee, remontee comme plantage FATAL. Retour de
@@ -87,7 +87,7 @@ enum RefusDeDescente {
 
 /// CE QU ON SAIT AVANT DE DESCENDRE : le poids, le lien, et le refus s il y en a.
 ///
-/// Rendu par [DescenteDesCartes.examiner] pour que l ecran puisse annoncer « 260 Mo
+/// Rendu par [MapDownloader.examiner] pour que l ecran puisse annoncer « 260 Mo
 /// sur votre forfait mobile, continuer ? » SANS avoir ouvert la moindre connexion.
 class DecisionDeDescente {
   const DecisionDeDescente({
@@ -166,7 +166,7 @@ class BilanDeDescente {
 /// cartes plante » (bug 9, DEM-260930-1016) — sur un ecran qui lui proposait en
 /// plus des demi-circuits (bug 10, DEM-260930-1017). La tache 640 a retire la
 /// facade ENTIERE et branche la carte du HUB sur ce service-ci, par
-/// `CartesHorsLigneScreen` : un bouton, tout le circuit.
+/// `OfflineMapsScreen` : un bouton, tout le circuit.
 ///
 /// POURQUOI LA DESCENTE N EST PAS DANS `DeltaUpdateService.synchroniser`, ALORS QUE
 /// C EST LE CHEMIN UNIQUE DES DONNEES. Parce que la cadence l emprunte. Depuis la
@@ -183,8 +183,8 @@ class BilanDeDescente {
 /// une seule source (`TrailDataSource`), et le transport a un seul appelant — celui-
 /// ci. C est la lecon de la tache 606, ou un geste « telecharger » avait pris un
 /// second chemin qui ignorait tout le modele.
-class DescenteDesCartes {
-  DescenteDesCartes({
+class MapDownloader {
+  MapDownloader({
     required this.cartes,
     required this.dao,
     required this.monetization,
@@ -230,7 +230,7 @@ class DescenteDesCartes {
         e,
         stackTrace: st,
         context:
-            'DescenteDesCartes.examiner($trailId) — une source de la '
+            'MapDownloader.examiner($trailId) — une source de la '
             'decision n a pas repondu (base, droits, stockage ou reseau)',
       );
       return DecisionDeDescente(
@@ -387,7 +387,7 @@ class DescenteDesCartes {
         e,
         stackTrace: st,
         context:
-            'DescenteDesCartes.descendre($trailId) — la liste locale n a '
+            'MapDownloader.descendre($trailId) — la liste locale n a '
             'pas repondu avant le transport',
       );
       return BilanDeDescente(
@@ -453,7 +453,7 @@ class DescenteDesCartes {
       ErrorHandler.log(
         e,
         stackTrace: st,
-        context: 'DescenteDesCartes.supprimer($trailId)',
+        context: 'MapDownloader.supprimer($trailId)',
       );
       return false;
     }
@@ -469,9 +469,9 @@ class DescenteDesCartes {
 }
 
 /// Provider du service de descente des cartes hors ligne.
-final descenteDesCartesProvider = Provider<DescenteDesCartes>((ref) {
+final descenteDesCartesProvider = Provider<MapDownloader>((ref) {
   final db = ref.watch(databaseProvider);
-  return DescenteDesCartes(
+  return MapDownloader(
     cartes: ref.watch(mbtilesManagerProvider),
     dao: TrailManifestsDao(db),
     monetization: ref.watch(monetizationServiceProvider),

@@ -837,7 +837,7 @@ void main() {
           // bouton « retirer les pubs » sur l'ecran de secours seraient de la
           // monetisation sur le chemin du secours, exactement comme les autres.
           'RetirerLesPubsButton',
-          'BadgeEtatPublicite',
+          'AdStateBadge',
           'ouvrirLeChoixSansPub',
         ]) {
           if (source.contains(interdit)) fautifs.add('$chemin : $interdit');

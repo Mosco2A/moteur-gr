@@ -313,7 +313,7 @@ Future<bool> waitFor(
 /// CE QUE LA MESURE A MONTRE, ET POURQUOI CE HELPER EXISTE. Au premier
 /// lancement du build 8, juste apres l'onboarding, l'application pose une
 /// question de protection des donnees : « Tes donnees restent sur ce telephone »
-/// ([PorteConsentementSauvegarde] -> [RefusSauvegardeSystemeDialog]). C'est un
+/// ([BackupConsentGate] -> [RefusSauvegardeSystemeDialog]). C'est un
 /// dialogue MODAL, et il recouvre tout. Le harnais ne le connaissait pas : il
 /// tapait « Passer » sur l'onboarding, le dialogue s'ouvrait par-dessus, et la
 /// route restait `/onboarding` pour le reste du scenario. TOUTE la campagne

@@ -39,11 +39,11 @@ enum RaisonSansPub {
 /// [MonetizationService.isNoAdsActive]. Ici on ne fait que DIRE LAQUELLE des
 /// trois exceptions a repondu, parce que l'ecran doit l'ecrire, et qu'un ecran
 /// qui le recalculerait finirait par le recalculer autrement.
-class EtatPublicite {
-  const EtatPublicite({required this.raison, this.finDeLaRecompense});
+class AdState {
+  const AdState({required this.raison, this.finDeLaRecompense});
 
   /// UNE PUBLICITE VA S'AFFICHER : aucune des trois exceptions ne joue.
-  static const avecPub = EtatPublicite(raison: null);
+  static const avecPub = AdState(raison: null);
 
   /// `null` quand une publicite va s'afficher.
   final RaisonSansPub? raison;
@@ -84,24 +84,21 @@ class EtatPublicite {
 /// [monetizationReadyProvider], et le provider est `autoDispose` — la question
 /// est reposee a chaque montage.
 final etatPubliciteProvider = FutureProvider.autoDispose
-    .family<EtatPublicite, String>((ref, trailId) async {
+    .family<AdState, String>((ref, trailId) async {
       final monetisation = await ref.watch(monetizationReadyProvider.future);
       // On relit le droit du trek pour que l'achat repeigne la carte : c'est le
       // meme signal que celui du mode demo, deja observe par le catalogue.
       ref.watch(isDemoModeProvider(trailId));
 
       if (await monetisation.isSubscriberActive()) {
-        return const EtatPublicite(raison: RaisonSansPub.abonne);
+        return const AdState(raison: RaisonSansPub.abonne);
       }
       if (await monetisation.accessFor(trailId) == TrailAccess.owned) {
-        return const EtatPublicite(raison: RaisonSansPub.achete);
+        return const AdState(raison: RaisonSansPub.achete);
       }
       final fin = await monetisation.rewardNoAdsExpiresAt();
       if (fin != null) {
-        return EtatPublicite(
-          raison: RaisonSansPub.video24h,
-          finDeLaRecompense: fin,
-        );
+        return AdState(raison: RaisonSansPub.video24h, finDeLaRecompense: fin);
       }
-      return EtatPublicite.avecPub;
+      return AdState.avecPub;
     });

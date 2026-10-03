@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/config/sentier_distant.dart';
+import 'package:moteur_gr/core/config/remote_trail.dart';
 import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';

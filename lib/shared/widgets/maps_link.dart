@@ -135,8 +135,8 @@ class LieuCliquable {
 /// d adresse chez Google ou Apple tombe sur la bonne porte ; un point tombe au
 /// milieu du village. Quand les deux existent on donne les deux au systeme —
 /// l etiquette de recherche ET le point — et il fait au mieux.
-class OuvreurDeCartes {
-  const OuvreurDeCartes();
+class MapsOpener {
+  const MapsOpener();
 
   /// Ouvre [lieu]. Rend `false` si rien n a pu etre ouvert — JAMAIS d exception.
   ///
@@ -206,8 +206,8 @@ class OuvreurDeCartes {
 }
 
 /// L ouvreur de cartes, surchargeable en test.
-final ouvreurDeCartesProvider = Provider<OuvreurDeCartes>(
-  (ref) => const OuvreurDeCartes(),
+final ouvreurDeCartesProvider = Provider<MapsOpener>(
+  (ref) => const MapsOpener(),
 );
 
 /// L ADRESSE ET LE POINT D UN LIEU, TELS QUE LE RANDONNEUR LES VOIT.

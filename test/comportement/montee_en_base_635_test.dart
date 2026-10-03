@@ -13,7 +13,7 @@ import "package:moteur_gr/core/data/database.dart";
 import "package:moteur_gr/core/firebase/firebase_service.dart";
 import "package:moteur_gr/core/network/connectivity_monitor.dart";
 import "package:moteur_gr/core/services/cloud_sync_service.dart";
-import "package:moteur_gr/core/services/fiche_technique_du_telephone.dart";
+import "package:moteur_gr/core/services/device_spec_sheet.dart";
 import "package:moteur_gr/core/services/sync_scheduler.dart";
 
 /// LA MONTEE EN BASE — LE TELEPHONE ECRIT ENFIN CE QUE CHRISTOPHE SAISIT
@@ -256,7 +256,7 @@ void main() {
     firestore: serveur,
   );
 
-  FicheTechniqueDuTelephone fiche() => FicheTechniqueDuTelephone(
+  DeviceSpecSheet fiche() => DeviceSpecSheet(
     firebaseService: FirebaseService.testOnly(isAvailable: true),
     identifiant: () async => _uid,
     renseignements: () async => const RenseignementsDuTelephone(
@@ -785,11 +785,11 @@ void main() {
         langue: "fr",
         fuseau: "CEST (UTC+02:00)",
       );
-      final premiere = FicheTechniqueDuTelephone.construireLaCharge(
+      final premiere = DeviceSpecSheet.construireLaCharge(
         r,
         premiereVenue: true,
       );
-      final suivante = FicheTechniqueDuTelephone.construireLaCharge(
+      final suivante = DeviceSpecSheet.construireLaCharge(
         r,
         premiereVenue: false,
       );
@@ -808,7 +808,7 @@ void main() {
     test(
       "sans Firebase ou sans identite, elle n ecrit rien et ne leve pas",
       () async {
-        final sansCloud = FicheTechniqueDuTelephone(
+        final sansCloud = DeviceSpecSheet(
           firebaseService: FirebaseService.unavailable(),
           identifiant: () async => _uid,
           renseignements: () async => const RenseignementsDuTelephone(
@@ -823,7 +823,7 @@ void main() {
         );
         expect(await sansCloud.poser(), isFalse);
 
-        final sansIdentite = FicheTechniqueDuTelephone(
+        final sansIdentite = DeviceSpecSheet(
           firebaseService: FirebaseService.testOnly(isAvailable: true),
           identifiant: () async => null,
           renseignements: () async => const RenseignementsDuTelephone(

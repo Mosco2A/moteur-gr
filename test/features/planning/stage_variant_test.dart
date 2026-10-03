@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/planning/models/variante_etape.dart';
+import 'package:moteur_gr/features/planning/models/stage_variant.dart';
 
 void main() {
-  VarianteEtape sample({
+  StageVariant sample({
     String id = 'var-1',
     String etapeBaseId = 'etape-3',
     bool officielle = true,
-    VarianteDifficulte difficulte = VarianteDifficulte.moyen,
+    VariantDifficulty difficulte = VariantDifficulty.moyen,
   }) {
-    return VarianteEtape(
+    return StageVariant(
       id: id,
       etapeBaseId: etapeBaseId,
       label: 'Officielle',
@@ -20,19 +20,19 @@ void main() {
     );
   }
 
-  group('VarianteEtape — serialisation Freezed', () {
+  group('StageVariant — serialisation Freezed', () {
     test('round-trip JSON conserve les champs', () {
-      final v = sample(difficulte: VarianteDifficulte.difficile);
+      final v = sample(difficulte: VariantDifficulty.difficile);
       final json = v.toJson();
-      final back = VarianteEtape.fromJson(json);
+      final back = StageVariant.fromJson(json);
       expect(back, v);
-      expect(back.difficulte, VarianteDifficulte.difficile);
+      expect(back.difficulte, VariantDifficulty.difficile);
       expect(back.distanceKm, 12.5);
       expect(back.isOfficielle, isTrue);
     });
 
     test('difficulte serialisee avec le bon JsonValue', () {
-      final json = sample(difficulte: VarianteDifficulte.facile).toJson();
+      final json = sample(difficulte: VariantDifficulty.facile).toJson();
       expect(json['difficulte'], 'facile');
     });
 
@@ -45,14 +45,14 @@ void main() {
     });
   });
 
-  group('VarianteSelection — choix de variante pour le planning', () {
+  group('VariantSelection — choix de variante pour le planning', () {
     test('selection par defaut est vide', () {
-      const sel = VarianteSelection();
+      const sel = VariantSelection();
       expect(sel.varianteChoisie('etape-3'), isNull);
     });
 
     test('selectionner met a jour le planning pour une etape', () {
-      const sel = VarianteSelection();
+      const sel = VariantSelection();
       final updated = sel.selectionner('etape-3', 'var-raccourci');
       expect(updated.varianteChoisie('etape-3'), 'var-raccourci');
       // L'etat initial reste immuable.
@@ -60,14 +60,14 @@ void main() {
     });
 
     test('changer de variante remplace le choix precedent', () {
-      final sel = const VarianteSelection()
+      final sel = const VariantSelection()
           .selectionner('etape-3', 'var-1')
           .selectionner('etape-3', 'var-2');
       expect(sel.varianteChoisie('etape-3'), 'var-2');
     });
 
     test('selections multiples sur des etapes differentes coexistent', () {
-      final sel = const VarianteSelection()
+      final sel = const VariantSelection()
           .selectionner('etape-1', 'var-a')
           .selectionner('etape-2', 'var-b');
       expect(sel.varianteChoisie('etape-1'), 'var-a');
@@ -75,8 +75,8 @@ void main() {
     });
 
     test('round-trip JSON de la selection', () {
-      final sel = const VarianteSelection().selectionner('etape-1', 'var-a');
-      final back = VarianteSelection.fromJson(sel.toJson());
+      final sel = const VariantSelection().selectionner('etape-1', 'var-a');
+      final back = VariantSelection.fromJson(sel.toJson());
       expect(back.varianteChoisie('etape-1'), 'var-a');
     });
   });

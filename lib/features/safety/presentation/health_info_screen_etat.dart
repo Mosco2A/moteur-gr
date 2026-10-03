@@ -441,19 +441,19 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     if (!mounted) return;
 
     switch (resultat.issue) {
-      case IssuePhotoCarte.annule:
+      case CardPhotoOutcome.annule:
         return;
-      case IssuePhotoCarte.refus:
+      case CardPhotoOutcome.refus:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(t.health.cards.permissionRefused)),
         );
         return;
-      case IssuePhotoCarte.echec:
+      case CardPhotoOutcome.echec:
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(t.health.cards.failed)));
         return;
-      case IssuePhotoCarte.reussite:
+      case CardPhotoOutcome.reussite:
         break;
     }
 
@@ -461,7 +461,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     await fichier.enregistrerCarte(nomFichier, resultat.octets!);
     if (!mounted) return;
     setState(() {
-      if (nomFichier == FicheMedicaleFichier.nomCarteVitale) {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
         _carteVitale = nomFichier;
       } else {
         _carteMutuelle = nomFichier;
@@ -476,7 +476,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     await fichier.effacerCarte(nomFichier);
     if (!mounted) return;
     setState(() {
-      if (nomFichier == FicheMedicaleFichier.nomCarteVitale) {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
         _carteVitale = '';
       } else {
         _carteMutuelle = '';

@@ -59,7 +59,7 @@ class TrailManifestsDao extends DatabaseAccessor<AppDatabase>
   /// CETTE METHODE S APPELAIT `getPossedes`, ET LE NOM ETAIT FAUX (tache 616).
   /// « Posseder » a un sens precis et DEJA PRIS dans ce depot : le DROIT de
   /// realiser, acquis par achat (`ownedTrailIdsProvider`, table
-  /// `trek_entitlements`, `DisponibiliteDuSentier.achete`). Or ce filtre ne lit
+  /// `trek_entitlements`, `TrailAvailability.achete`). Or ce filtre ne lit
   /// aucun droit — il lit la PRESENCE DES DONNEES. Les deux sont deliberement
   /// independants depuis la tache 606 : un sentier gratuit se telecharge sans etre
   /// achete, et un sentier achete peut n etre pas encore telecharge. Un nom qui

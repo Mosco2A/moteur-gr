@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/health_bounds.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
@@ -25,13 +25,13 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 void main() {
   late AppDatabase db;
   late Directory bacFiche;
-  late FicheMedicaleFichier fiche;
+  late HealthInfoFile fiche;
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     // TACHE 613 : la fiche a son propre fichier, hors de la base.
     bacFiche = Directory.systemTemp.createTempSync('fiche613_validation');
-    fiche = FicheMedicaleFichier(dossierApplicatif: () async => bacFiche);
+    fiche = HealthInfoFile(dossierApplicatif: () async => bacFiche);
     // TACHE 568 (LOT Q) : l'ecran pose desormais un SIGNAL DE PREPARATION en
     // preferences (fiche remplie / conseils lus, cf. `health_prepare_providers`)
     // — c'est lui qui entre dans la porte de demarrage du trek. Sans magasin de

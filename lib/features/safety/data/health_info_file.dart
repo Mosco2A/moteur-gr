@@ -86,8 +86,8 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Le stockage durable de la fiche medicale : UN fichier, dans le dossier
 /// declare exclu de la sauvegarde du telephone.
-class FicheMedicaleFichier {
-  FicheMedicaleFichier({
+class HealthInfoFile {
+  HealthInfoFile({
     Future<Directory> Function()? dossierApplicatif,
     ExclusionSauvegardeIcloud? exclusionIcloud,
   }) : _dossierApplicatif = dossierApplicatif ?? getApplicationSupportDirectory,

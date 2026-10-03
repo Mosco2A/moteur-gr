@@ -79,7 +79,7 @@ void main() {
         'lib/features/ads/providers/ads_providers.dart',
         'lib/features/ads/presentation/banner_ad_slot.dart',
         'lib/features/ads/presentation/retirer_les_pubs_button.dart',
-        'lib/features/ads/domain/etat_publicite.dart',
+        'lib/features/ads/domain/ad_state.dart',
         'lib/features/trail/presentation/trail_catalog_screen.dart',
       ]) {
         expect(

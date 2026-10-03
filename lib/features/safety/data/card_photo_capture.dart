@@ -9,7 +9,7 @@
 ///
 /// La condition est dans la phrase elle-meme : TOUT RESTE SUR LE TELEPHONE. Ce
 /// fichier ne fait donc QUE lire des octets depuis l'appareil photo ou la
-/// galerie. C'est [FicheMedicaleFichier.enregistrerCarte] qui les range, et il
+/// galerie. C'est [HealthInfoFile.enregistrerCarte] qui les range, et il
 /// les range dans le MEME dossier que la fiche medicale — meme exclusion de
 /// sauvegarde Android, meme attribut iCloud, meme effacement. Aucune seconde
 /// porte n'est ouverte.
@@ -42,8 +42,8 @@
 ///
 /// Un randonneur a parfaitement le droit de refuser l'acces a son appareil
 /// photo, et beaucoup le feront pour une carte d'assurance maladie. Ce cas n'est
-/// donc PAS traite comme une panne : [ResultatPhotoCarte.refus] le distingue de
-/// [ResultatPhotoCarte.annule] et de la reussite. L'ecran continue de
+/// donc PAS traite comme une panne : [CardPhotoResult.refus] le distingue de
+/// [CardPhotoResult.annule] et de la reussite. L'ecran continue de
 /// fonctionner, sans photo, et N'INSISTE PAS — pas de second dialogue, pas de
 /// renvoi vers les reglages du systeme.
 library;
@@ -67,7 +67,7 @@ const int kQualiteJpegCarte = 85;
 ///
 /// Les confondre ferait dire a l'ecran « impossible de prendre la photo » a un
 /// randonneur qui a simplement appuye sur Annuler.
-enum IssuePhotoCarte {
+enum CardPhotoOutcome {
   /// Des octets sont revenus.
   reussite,
 
@@ -82,23 +82,23 @@ enum IssuePhotoCarte {
 }
 
 /// Le resultat d'une prise de photo de carte.
-class ResultatPhotoCarte {
-  const ResultatPhotoCarte._(this.issue, this.octets);
+class CardPhotoResult {
+  const CardPhotoResult._(this.issue, this.octets);
 
   /// Des octets sont revenus.
-  const ResultatPhotoCarte.reussite(List<int> octets)
-    : this._(IssuePhotoCarte.reussite, octets);
+  const CardPhotoResult.reussite(List<int> octets)
+    : this._(CardPhotoOutcome.reussite, octets);
 
   /// Le randonneur a annule.
-  const ResultatPhotoCarte.annule() : this._(IssuePhotoCarte.annule, null);
+  const CardPhotoResult.annule() : this._(CardPhotoOutcome.annule, null);
 
   /// L'acces a ete refuse.
-  const ResultatPhotoCarte.refus() : this._(IssuePhotoCarte.refus, null);
+  const CardPhotoResult.refus() : this._(CardPhotoOutcome.refus, null);
 
   /// Echec technique.
-  const ResultatPhotoCarte.echec() : this._(IssuePhotoCarte.echec, null);
+  const CardPhotoResult.echec() : this._(CardPhotoOutcome.echec, null);
 
-  final IssuePhotoCarte issue;
+  final CardPhotoOutcome issue;
   final List<int>? octets;
 
   /// Vrai si une image exploitable est revenue.
@@ -106,8 +106,7 @@ class ResultatPhotoCarte {
 }
 
 /// Signature de la prise de photo — injectable, donc testable sans appareil.
-typedef PriseDePhotoCarte =
-    Future<ResultatPhotoCarte> Function(ImageSource source);
+typedef CardPhotoCapture = Future<CardPhotoResult> Function(ImageSource source);
 
 /// Prise de photo REELLE, par l'appareil photo ou la galerie.
 ///
@@ -118,7 +117,7 @@ typedef PriseDePhotoCarte =
 /// LE `catch` NE FAIT PAS QU'AVALER. Il distingue le refus d'autorisation du
 /// reste, parce que l'ecran n'en dit pas la meme chose : un refus est une
 /// decision du randonneur, un echec est un probleme a signaler.
-Future<ResultatPhotoCarte> prendrePhotoDeCarte(ImageSource source) async {
+Future<CardPhotoResult> prendrePhotoDeCarte(ImageSource source) async {
   try {
     final fichier = await ImagePicker().pickImage(
       source: source,
@@ -126,10 +125,10 @@ Future<ResultatPhotoCarte> prendrePhotoDeCarte(ImageSource source) async {
       maxHeight: kLargeurMaxCarte,
       imageQuality: kQualiteJpegCarte,
     );
-    if (fichier == null) return const ResultatPhotoCarte.annule();
+    if (fichier == null) return const CardPhotoResult.annule();
     final octets = await fichier.readAsBytes();
-    if (octets.isEmpty) return const ResultatPhotoCarte.echec();
-    return ResultatPhotoCarte.reussite(octets);
+    if (octets.isEmpty) return const CardPhotoResult.echec();
+    return CardPhotoResult.reussite(octets);
   } on PlatformException catch (e) {
     // Codes rendus par image_picker quand l'autorisation manque.
     const refus = {
@@ -138,9 +137,9 @@ Future<ResultatPhotoCarte> prendrePhotoDeCarte(ImageSource source) async {
       'access_denied',
     };
     return refus.contains(e.code)
-        ? const ResultatPhotoCarte.refus()
-        : const ResultatPhotoCarte.echec();
+        ? const CardPhotoResult.refus()
+        : const CardPhotoResult.echec();
   } on Object {
-    return const ResultatPhotoCarte.echec();
+    return const CardPhotoResult.echec();
   }
 }

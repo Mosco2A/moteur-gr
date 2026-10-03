@@ -10,8 +10,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../widgets/bouton_rafraichir_depuis_la_base.dart';
-import '../../../shared/widgets/lien_vers_les_cartes.dart';
+import '../widgets/refresh_from_database_button.dart';
+import '../../../shared/widgets/maps_link.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
@@ -63,7 +63,7 @@ class ShopScreen extends ConsumerWidget {
         // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des deux
         // ecrans que Christophe a trouves vides, donc l'un des deux ou il doit
         // pouvoir verifier tout de suite qu'une publication est bien arrivee.
-        actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+        actions: [RefreshFromDatabaseButton(trailId: trailId)],
       ),
       // UN ECRAN BLANC N'EST PAS UNE ABSENCE DE COMMENTAIRE, C'EST UNE PANNE
       // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et ravitaillement

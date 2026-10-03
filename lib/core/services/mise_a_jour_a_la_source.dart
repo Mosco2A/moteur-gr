@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
-import '../config/sentier_distant.dart';
+import '../config/remote_trail.dart';
 import '../config/trail_data_source.dart';
 import '../data/daos/trail_manifests_dao.dart';
 import '../engine/trail_engine.dart';
@@ -15,7 +15,7 @@ import '../models/niveau_de_telechargement.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 import 'delta_update_service.dart';
-import 'source_firestore_sentier.dart';
+import 'firestore_trail_source.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -68,7 +68,7 @@ class MiseAJourALaSource {
   });
 
   /// La liste des sentiers publies, lue dans `trails` (Firestore).
-  final ListeSentiersFirestore liste;
+  final FirestoreTrailList liste;
 
   /// La descente par revision, qui pose les donnees.
   final DeltaUpdateService delta;

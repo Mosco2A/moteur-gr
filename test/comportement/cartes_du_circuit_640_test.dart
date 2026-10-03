@@ -17,11 +17,11 @@ import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/session_demo.dart';
-import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
+import 'package:moteur_gr/features/map/presentation/offline_maps_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/grise_en_demo.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -50,7 +50,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 ///    aurait rempli un dossier que rien ne regarde. Le geste ne pouvait donc
 ///    QUE echouer, dans les deux modes.
 ///
-/// 2. LE VRAI TELECHARGEUR N AVAIT AUCUN ECRAN. `DescenteDesCartes` (lot 622)
+/// 2. LE VRAI TELECHARGEUR N AVAIT AUCUN ECRAN. `MapDownloader` (lot 622)
 ///    descend UNE carte pour TOUT le circuit, avec poids annonce, progression,
 ///    reprise et annulation — et `controleurDesCartesProvider` n avait ZERO
 ///    appelant d interface. Il n etait atteint que par la copie d un sentier
@@ -60,7 +60,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 ///    maillons ne rendaient pas un echec, ils le PROPAGEAIENT :
 ///    `MBTilesManager.descendre` (dossier de documents injoignable, suppression
 ///    d un partiel impossible, lecture d empreinte en echec),
-///    `DescenteDesCartes.examiner`/`descendre` (base, droits, reseau) et
+///    `MapDownloader.examiner`/`descendre` (base, droits, reseau) et
 ///    `ControleurDesCartes.demarrer`, dont le `try` n avait pas de `catch`.
 ///    Depuis un bouton — donc depuis un futur que personne n attend — cela
 ///    donne une erreur asynchrone non traitee, que `PlatformDispatcher.onError`
@@ -125,12 +125,12 @@ void main() {
     );
   }
 
-  DescenteDesCartes descente({
+  MapDownloader descente({
     bool droitDeRealiser = true,
     TypeDeLien lien = TypesDeLien.wifi,
     MBTilesManager? avecCartes,
     TrailManifestsDao? avecDao,
-  }) => DescenteDesCartes(
+  }) => MapDownloader(
     cartes: avecCartes ?? MBTilesManager(httpClient: serveurDeTuiles()),
     dao: avecDao ?? manifestes,
     monetization: _Droits(droitDeRealiser),
@@ -138,7 +138,7 @@ void main() {
   );
 
   ProviderContainer conteneur({
-    required DescenteDesCartes service,
+    required MapDownloader service,
     bool enDemo = false,
   }) {
     final c = ProviderContainer(
@@ -378,7 +378,7 @@ void main() {
 
     Future<void> monter(
       WidgetTester tester, {
-      required DescenteDesCartes service,
+      required MapDownloader service,
       bool enDemo = false,
       String trailId = 'mare-a-mare-centre',
     }) async {
@@ -390,7 +390,7 @@ void main() {
             if (enDemo) enDemoProvider.overrideWithValue(true),
           ],
           child: TranslationProvider(
-            child: MaterialApp(home: CartesHorsLigneScreen(trailId: trailId)),
+            child: MaterialApp(home: OfflineMapsScreen(trailId: trailId)),
           ),
         ),
       );
@@ -574,7 +574,7 @@ void main() {
 /// [transportQuiLeve] est la seule facon de rejouer le bug 9 depuis un ecran : le
 /// service ne rend alors pas un echec, il jette. C est ce que faisait le vrai
 /// service quand `path_provider` se taisait ou que la base se fermait.
-class _DescenteReglee extends Fake implements DescenteDesCartes {
+class _DescenteReglee extends Fake implements MapDownloader {
   _DescenteReglee({
     required this.decision,
     this.carte,
@@ -665,7 +665,7 @@ class _Droits extends Fake implements MonetizationService {
 /// Il ne rend ni refus ni echec : il jette, comme le faisait la vraie chaine
 /// quand `path_provider` se taisait ou que la base se fermait entre l examen et
 /// le transport. Le controleur du bouton doit l absorber.
-class _ServiceQuiLeve extends Fake implements DescenteDesCartes {
+class _ServiceQuiLeve extends Fake implements MapDownloader {
   @override
   Future<BilanDeDescente> descendre(
     String trailId, {

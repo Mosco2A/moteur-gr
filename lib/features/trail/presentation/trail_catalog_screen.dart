@@ -14,8 +14,8 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../ads/domain/etat_publicite.dart';
-import '../../ads/presentation/badge_etat_publicite.dart';
+import '../../ads/domain/ad_state.dart';
+import '../../ads/presentation/ad_state_badge.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
@@ -153,7 +153,7 @@ class TrailCatalogScreen extends ConsumerWidget {
     //
     // CE QUI FAIT QUE CE N'EST PLUS « SUBI » : la carte le DIT avant d'ouvrir —
     // l'icone pub sur le bouton et la marque « Avec publicite » juste au-dessus
-    // ([BadgeEtatPublicite]). Le randonneur sait ce qu'il va trouver, et il a
+    // ([AdStateBadge]). Le randonneur sait ce qu'il va trouver, et il a
     // « Acheter » a cote s'il n'en veut pas.
 
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
@@ -432,7 +432,7 @@ class _AvailableTrailCard extends ConsumerWidget {
           // pub, je suis en prepa avec pub ».
           Align(
             alignment: Alignment.centerLeft,
-            child: BadgeEtatPublicite(trailId: trail.id),
+            child: AdStateBadge(trailId: trail.id),
           ),
           const SizedBox(height: AppTheme.spacingMd),
           // PREPARER TOUJOURS, ACHETER EN PLUS QUAND IL Y A QUELQUE CHOSE A

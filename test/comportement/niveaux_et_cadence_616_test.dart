@@ -25,7 +25,7 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/ordonnanceur_de_synchronisation.dart';
-import 'package:moteur_gr/core/services/source_de_donnees_sentier.dart';
+import 'package:moteur_gr/core/services/trail_record_source.dart';
 import 'package:moteur_gr/core/services/update_checker.dart';
 import 'package:moteur_gr/core/services/update_downloader.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
@@ -162,7 +162,7 @@ void main() {
     });
   }
 
-  DeltaUpdateService service({SourceDeDonneesSentier? avecSource}) =>
+  DeltaUpdateService service({TrailRecordSource? avecSource}) =>
       DeltaUpdateService(
         db: db,
         manifestService: listeService(),
@@ -1011,7 +1011,7 @@ void main() {
         reason:
             'la trace ne sert qu a marcher — la suivre, se situer, mesurer '
             'l ecart. C est le seul usage qui la justifie, et c est REALISER. '
-            'Une trace vide est NOMMEE (TraceDuSentier.source), jamais un vide '
+            'Une trace vide est NOMMEE (TrailTrack.source), jamais un vide '
             'muet.',
       );
     });

@@ -52,7 +52,7 @@ import '../../features/training/presentation/training_screen.dart';
 import '../../features/monetization/presentation/subscription_screen.dart';
 import '../../features/monetization/presentation/wallet_recharge_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
-import '../../features/map/presentation/cartes_hors_ligne_screen.dart';
+import '../../features/map/presentation/offline_maps_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
 import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
@@ -387,7 +387,7 @@ final appRouter = GoRouter(
         // morceaux, d ou le bug 10 (DEM-260930-1017).
         //
         // La nouvelle route ouvre l unique telechargeur de cartes du depot
-        // ([DescenteDesCartes], lot 622) : un bouton, le poids du circuit
+        // ([MapDownloader], lot 622) : un bouton, le poids du circuit
         // ENTIER, la progression, la reprise, l annulation. Sous-route de
         // `/trail/:id` parce que les cartes sont PAR CIRCUIT — meme forme que
         // checklist / tips / feasibility, atteinte par `context.push` depuis la
@@ -397,7 +397,7 @@ final appRouter = GoRouter(
           name: 'trail-cartes',
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
-            return CartesHorsLigneScreen(trailId: trailId);
+            return OfflineMapsScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos nuits »

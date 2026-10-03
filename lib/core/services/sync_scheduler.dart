@@ -19,7 +19,7 @@ import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
 import "../providers/service_providers.dart";
 import "cloud_sync_service.dart";
-import "fiche_technique_du_telephone.dart";
+import "device_spec_sheet.dart";
 import "montee_des_consentements.dart";
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -105,7 +105,7 @@ class SyncScheduler with WidgetsBindingObserver {
 
   /// La fiche technique `users/{uid}`. Nullable : une instance de test qui ne
   /// s y interesse pas n a pas a la fabriquer.
-  final FicheTechniqueDuTelephone? ficheTechnique;
+  final DeviceSpecSheet? ficheTechnique;
 
   /// LE REGISTRE DE CONSENTEMENT (tache 638), SI IL EST BRANCHE.
   ///

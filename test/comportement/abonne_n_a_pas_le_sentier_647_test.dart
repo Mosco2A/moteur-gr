@@ -40,7 +40,7 @@ import 'package:moteur_gr/core/map/mbtiles_manager.dart';
 import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
@@ -157,7 +157,7 @@ void main() {
       await service.onSubscriptionValidated();
       await publierUneCarte();
 
-      final descente = DescenteDesCartes(
+      final descente = MapDownloader(
         cartes: MBTilesManager(),
         dao: manifestes,
         monetization: service,
@@ -196,7 +196,7 @@ void main() {
         expect(await service.canRealizeTrail('mare-a-mare-centre'), isTrue);
 
         final decision =
-            await DescenteDesCartes(
+            await MapDownloader(
               cartes: MBTilesManager(),
               dao: manifestes,
               monetization: service,
@@ -285,7 +285,7 @@ void main() {
       'lib/core/services/monetization_service_service.dart',
       'lib/core/services/monetization_service_fournisseurs.dart',
       'lib/core/data/daos/no_ads_dao.dart',
-      'lib/features/ads/domain/etat_publicite.dart',
+      'lib/features/ads/domain/ad_state.dart',
       'lib/features/group/services/ad_service.dart',
     };
 

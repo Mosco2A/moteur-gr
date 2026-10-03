@@ -57,18 +57,16 @@ import 'refus_sauvegarde_systeme_dialog.dart';
 /// [RefusSauvegardeSystemeDialog.poserSiNecessaire].
 ///
 /// TRANSPARENT QUAND IL N'Y A RIEN A DEMANDER : il rend simplement [child].
-class PorteConsentementSauvegarde extends ConsumerStatefulWidget {
-  const PorteConsentementSauvegarde({super.key, required this.child});
+class BackupConsentGate extends ConsumerStatefulWidget {
+  const BackupConsentGate({super.key, required this.child});
 
   final Widget child;
 
   @override
-  ConsumerState<PorteConsentementSauvegarde> createState() =>
-      _PorteConsentementSauvegardeState();
+  ConsumerState<BackupConsentGate> createState() => _BackupConsentGateState();
 }
 
-class _PorteConsentementSauvegardeState
-    extends ConsumerState<PorteConsentementSauvegarde> {
+class _BackupConsentGateState extends ConsumerState<BackupConsentGate> {
   /// La question a-t-elle deja ete declenchee dans CETTE session ? Sans ce
   /// drapeau, chaque reconstruction de l'arbre route en ouvrirait une nouvelle.
   bool _demandee = false;

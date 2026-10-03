@@ -8,7 +8,7 @@ import '../../../core/data/daos/trail_accommodations_dao.dart';
 import '../../../core/data/daos/trail_itineraries_dao.dart';
 import '../../../core/data/daos/trail_stages_dao.dart';
 import '../../../core/data/database.dart';
-import '../../../core/geo/trace_du_sentier.dart';
+import '../../../core/geo/trail_track.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../domain/stage_accommodation.dart';

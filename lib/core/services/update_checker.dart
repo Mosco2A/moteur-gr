@@ -130,7 +130,7 @@ class UpdateChecker {
   ///
   /// LE DEFAUT QUE CE FILTRE FERME, ET IL ETAIT MESURE, PAS SUPPOSE. La lecture du
   /// catalogue distant ecrit une ligne de `trail_manifests` pour CHAQUE sentier
-  /// publie (`CatalogueSentiersNotifier._conserver`, tache 605) — c est ce qui fait
+  /// publie (`TrailCatalogStateNotifier._conserver`, tache 605) — c est ce qui fait
   /// survivre le catalogue au hors-ligne, et c est voulu. Mais ces lignes ont
   /// `localVersion` a NULL, et `needsUpdate` rend vrai des que `localVersion` est
   /// NULL. Cette methode parcourait `dao.getAll()` : sur un serveur portant
@@ -140,7 +140,7 @@ class UpdateChecker {
   /// ce que Christophe a nomme.
   ///
   /// UN REPERE NON NUL EST LE CRITERE DE POSSESSION, et c est le meme fait que
-  /// `DisponibiliteDuSentier.copieComplete` lit pour l ecran : le sentier a ete
+  /// `TrailAvailability.copieComplete` lit pour l ecran : le sentier a ete
   /// COPIE au moins une fois sur cet appareil. La premiere copie, elle, ne passe
   /// pas par ici : c est le geste « telecharger » du randonneur
   /// (`CatalogNotifier.downloadTrail`), ou [UpdateDownloader.downloadSingleUpdate]

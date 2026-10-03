@@ -21,8 +21,8 @@ import '../models/niveau_de_telechargement.dart';
 import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
-import 'source_de_donnees_sentier.dart';
-import 'source_firestore_sentier.dart';
+import 'trail_record_source.dart';
+import 'firestore_trail_source.dart';
 import 'package:drift/drift.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -72,7 +72,7 @@ class DeltaUpdateService {
     required this.trailPoisDao,
     required this.trailGpxTracksDao,
     required this.trailGpxPointsDao,
-    SourceDeDonneesSentier? source,
+    TrailRecordSource? source,
     http.Client? httpClient,
   }) : source = source ?? SourceFichierEntier(httpClient: httpClient);
 
@@ -98,7 +98,7 @@ class DeltaUpdateService {
   /// stockage, lu en HTTP REST, trie a l arrivee. Injecter [SourceInterrogeable]
   /// fait partir la question au serveur — le transfert devient unitaire et la
   /// suite du code ne bouge pas.
-  final SourceDeDonneesSentier source;
+  final TrailRecordSource source;
 
   /// Y a-t-il quelque chose de plus recent que ma revision ?
   ///

@@ -4,11 +4,11 @@ library;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'variante_etape.freezed.dart';
-part 'variante_etape.g.dart';
+part 'stage_variant.freezed.dart';
+part 'stage_variant.g.dart';
 
 /// Difficulte d'une variante d'etape (F6D-01).
-enum VarianteDifficulte {
+enum VariantDifficulty {
   @JsonValue('facile')
   facile,
   @JsonValue('moyen')
@@ -25,10 +25,10 @@ enum VarianteDifficulte {
 /// trace GPX. Les donnees viennent de la config sentier (TrailConfig / Drift),
 /// fictives en P2-P3 (fiche #84627) — pas de Firebase reel ici.
 @freezed
-abstract class VarianteEtape with _$VarianteEtape {
-  const VarianteEtape._();
+abstract class StageVariant with _$StageVariant {
+  const StageVariant._();
 
-  const factory VarianteEtape({
+  const factory StageVariant({
     /// Identifiant unique de la variante.
     required String id,
 
@@ -45,34 +45,34 @@ abstract class VarianteEtape with _$VarianteEtape {
     required double deniveleM,
 
     /// Niveau de difficulte de la variante.
-    required VarianteDifficulte difficulte,
+    required VariantDifficulty difficulte,
 
     /// Reference de la trace GPX de la variante (asset / fichier).
     required String traceGpxRef,
 
     /// Vrai si c'est la variante officielle (par defaut) de l'etape.
     @Default(false) bool isOfficielle,
-  }) = _VarianteEtape;
+  }) = _StageVariant;
 
   /// Deserialisation depuis JSON (config sentier).
-  factory VarianteEtape.fromJson(Map<String, dynamic> json) =>
-      _$VarianteEtapeFromJson(json);
+  factory StageVariant.fromJson(Map<String, dynamic> json) =>
+      _$StageVariantFromJson(json);
 }
 
 /// Selection d'une variante par etape de base, pour le planning (F6D-01).
 ///
 /// Etat immuable : la map associe un `etapeBaseId` a l'`id` de variante choisi.
 @freezed
-abstract class VarianteSelection with _$VarianteSelection {
-  const VarianteSelection._();
+abstract class VariantSelection with _$VariantSelection {
+  const VariantSelection._();
 
-  const factory VarianteSelection({
+  const factory VariantSelection({
     /// Variante choisie par etape de base (etapeBaseId -> varianteId).
     @Default(<String, String>{}) Map<String, String> selectionParEtape,
-  }) = _VarianteSelection;
+  }) = _VariantSelection;
 
   /// Selectionne [varianteId] pour [etapeBaseId] (retourne un nouvel etat).
-  VarianteSelection selectionner(String etapeBaseId, String varianteId) {
+  VariantSelection selectionner(String etapeBaseId, String varianteId) {
     final updated = Map<String, String>.from(selectionParEtape)
       ..[etapeBaseId] = varianteId;
     return copyWith(selectionParEtape: updated);
@@ -81,6 +81,6 @@ abstract class VarianteSelection with _$VarianteSelection {
   /// Id de la variante choisie pour [etapeBaseId], ou null si aucun choix.
   String? varianteChoisie(String etapeBaseId) => selectionParEtape[etapeBaseId];
 
-  factory VarianteSelection.fromJson(Map<String, dynamic> json) =>
-      _$VarianteSelectionFromJson(json);
+  factory VariantSelection.fromJson(Map<String, dynamic> json) =>
+      _$VariantSelectionFromJson(json);
 }

@@ -40,7 +40,7 @@ import 'features/settings/providers/settings_provider.dart';
 import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider;
-import 'features/safety/presentation/porte_consentement_sauvegarde.dart';
+import 'features/safety/presentation/backup_consent_gate.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 import 'shared/widgets/app_logo.dart';
@@ -195,7 +195,7 @@ class MoteurGrApp extends StatelessWidget {
         // de connaitre les deux et de les relier.
         //
         // L EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE A CHAQUE
-        // DEMARRAGE, et la raison entiere est dans `FicheMedicaleFichier` :
+        // DEMARRAGE, et la raison entiere est dans `HealthInfoFile` :
         // un randonneur qui avait rempli sa fiche avant la tache 615 ne la
         // reecrira peut-etre jamais, et c est l amorce, et elle seule, qui
         // repasse derriere lui. Elle ne leve jamais et elle est bornee par
@@ -207,7 +207,7 @@ class MoteurGrApp extends StatelessWidget {
         // du telephone pour que la progression et le journal survivent au
         // changement d'appareil ; un fichier de base ne s'excluant pas table par
         // table, la fiche a recu son PROPRE fichier sous le dossier declare
-        // exclu (`FicheMedicaleFichier`, cable par
+        // exclu (`HealthInfoFile`, cable par
         // `ficheMedicaleFichierProvider`). Plus rien de medical ne passe par
         // `databaseProvider` : il n'y a donc plus rien a cabler ici.
       ],
@@ -596,7 +596,7 @@ class BootstrapGate extends ConsumerWidget {
       // orange », et la sortie doit rester visible en permanence. Hors demo, ce
       // widget rend son enfant tel quel, sans ajouter un seul noeud.
       data: (_) => CadreDemo(
-        child: PorteConsentementSauvegarde(
+        child: BackupConsentGate(
           child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
         ),
       ),

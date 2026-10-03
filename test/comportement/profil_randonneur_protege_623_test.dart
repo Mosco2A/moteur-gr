@@ -63,11 +63,11 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
-import 'package:moteur_gr/features/feasibility/data/profil_randonneur_fichier.dart';
+import 'package:moteur_gr/features/feasibility/data/hiker_profile_file.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 
 /// UN APPEL VU PAR LE NATIF, AVEC L'ETAT DU DISQUE A CET INSTANT.
 ///
@@ -170,7 +170,7 @@ void main() {
 
   tearDown(() async => db.close());
 
-  HikerProfileRepository depot({ProfilRandonneurFichier? fichier}) =>
+  HikerProfileRepository depot({HikerProfileFile? fichier}) =>
       HikerProfileRepository(db: db, prefs: prefs, fichier: fichier);
 
   const gerard = HikerProfile(
@@ -189,8 +189,8 @@ void main() {
     test(
       'le document est dans le dossier declare exclu, a cote de la fiche',
       () async {
-        final profil = await ProfilRandonneurFichier().fichier();
-        final fiche = await FicheMedicaleFichier().fichier();
+        final profil = await HikerProfileFile().fichier();
+        final fiche = await HealthInfoFile().fichier();
 
         expect(
           _n(profil.parent.path),
@@ -203,7 +203,7 @@ void main() {
           _n(profil.path),
           endsWith(
             '/${SauvegardeSysteme.dossierExclu}/'
-            '${ProfilRandonneurFichier.nomFichier}',
+            '${HikerProfileFile.nomFichier}',
           ),
         );
       },
@@ -237,9 +237,9 @@ void main() {
     test('le document porte vraiment l age, la taille et le poids', () async {
       await depot().saveProfile(gerard);
 
-      final f = await ProfilRandonneurFichier().fichier();
+      final f = await HikerProfileFile().fichier();
       final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
-      final p = doc[ProfilRandonneurFichier.clefProfil] as Map<String, dynamic>;
+      final p = doc[HikerProfileFile.clefProfil] as Map<String, dynamic>;
       expect(p['age'], 72);
       expect(p['heightCm'], 172);
       expect(p['weightKg'], 88);
@@ -318,10 +318,10 @@ void main() {
         expect(test6!.distanceMeters, 480);
         expect(test6.level, 'moyen');
 
-        final f = await ProfilRandonneurFichier().fichier();
+        final f = await HikerProfileFile().fichier();
         final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
         expect(
-          doc[ProfilRandonneurFichier.clefNoteExperience],
+          doc[HikerProfileFile.clefNoteExperience],
           'genoux douloureux en descente',
           reason:
               'la note heritee n est plus ecrite par personne, mais des '
@@ -343,7 +343,7 @@ void main() {
       final repo = depot();
 
       await repo.migrerDepuisPreferences();
-      final f = await ProfilRandonneurFichier().fichier();
+      final f = await HikerProfileFile().fichier();
       final apresUne = f.readAsStringSync();
 
       await depot().migrerDepuisPreferences();
@@ -458,7 +458,7 @@ void main() {
       () async {
         await depot().migrerDepuisPreferences();
 
-        final f = await ProfilRandonneurFichier().fichier();
+        final f = await HikerProfileFile().fichier();
         expect(f.existsSync(), isFalse);
         expect(
           f.parent.existsSync(),
@@ -477,11 +477,11 @@ void main() {
   group('623 — l exclusion iCloud du lot 615 est REUTILISEE, et elle survit a '
       'l ecriture atomique', () {
     late _NatifEspion natif;
-    late ProfilRandonneurFichier stockage;
+    late HikerProfileFile stockage;
 
     setUp(() {
       natif = _NatifEspion()..brancher();
-      stockage = ProfilRandonneurFichier(
+      stockage = HikerProfileFile(
         exclusionIcloud: ExclusionSauvegardeIcloud(cibleIos: true),
       );
       addTearDown(natif.debrancher);
@@ -545,7 +545,7 @@ void main() {
       await repo.saveProfile(gerard);
 
       final f = await stockage.fichier();
-      final tmp = '${f.path}${ProfilRandonneurFichier.suffixeTemporaire}';
+      final tmp = '${f.path}${HikerProfileFile.suffixeTemporaire}';
 
       expect(
         natif.exclusionsDe(f.parent.path),
@@ -645,19 +645,17 @@ void main() {
       () async {
         final repo = depot();
         await repo.saveProfile(gerard);
-        final f = await ProfilRandonneurFichier().fichier();
+        final f = await HikerProfileFile().fichier();
         // Une ecriture interrompue a laisse un temporaire derriere elle.
         File(
-          '${f.path}${ProfilRandonneurFichier.suffixeTemporaire}',
+          '${f.path}${HikerProfileFile.suffixeTemporaire}',
         ).writeAsStringSync('{"profil":{"weightKg":88}}');
 
         await repo.eraseAllPersonalData();
 
         expect(f.existsSync(), isFalse);
         expect(
-          File(
-            '${f.path}${ProfilRandonneurFichier.suffixeTemporaire}',
-          ).existsSync(),
+          File('${f.path}${HikerProfileFile.suffixeTemporaire}').existsSync(),
           isFalse,
           reason:
               'sinon la morphologie reste dans le .tmp, hors de portee du '
@@ -669,12 +667,12 @@ void main() {
     test(
       'un contenu entierement vide EFFACE le document au lieu de l ecrire',
       () async {
-        final stockage = ProfilRandonneurFichier();
-        await stockage.ecrire(const ContenuProfilRandonneur(profil: gerard));
+        final stockage = HikerProfileFile();
+        await stockage.ecrire(const HikerProfileContent(profil: gerard));
         final f = await stockage.fichier();
         expect(f.existsSync(), isTrue);
 
-        await stockage.ecrire(ContenuProfilRandonneur.vide);
+        await stockage.ecrire(HikerProfileContent.vide);
 
         expect(
           f.existsSync(),
@@ -687,7 +685,7 @@ void main() {
     );
 
     test('un document illisible ne fait pas planter la lecture', () async {
-      final stockage = ProfilRandonneurFichier();
+      final stockage = HikerProfileFile();
       final f = await stockage.fichier();
       f.parent.createSync(recursive: true);
       f.writeAsStringSync('{ceci n est pas du JSON');
@@ -705,13 +703,13 @@ void main() {
     });
 
     test('une SECTION illisible ne fait pas perdre les autres', () async {
-      final stockage = ProfilRandonneurFichier();
+      final stockage = HikerProfileFile();
       final f = await stockage.fichier();
       f.parent.createSync(recursive: true);
       f.writeAsStringSync(
         json.encode(<String, dynamic>{
-          ProfilRandonneurFichier.clefProfil: 'pas un objet',
-          ProfilRandonneurFichier.clefRandosPassees: [
+          HikerProfileFile.clefProfil: 'pas un objet',
+          HikerProfileFile.clefRandosPassees: [
             PastHike(date: DateTime.utc(2026, 5, 1), days: 3).toJson(),
           ],
         }),
@@ -738,14 +736,14 @@ void main() {
     /// fichier existant, ce qu aucun systeme n accepte comme repertoire parent.
     /// C est la facon la plus proche du reel de simuler un stockage sature ou des
     /// droits refuses, sans substituer aucune methode.
-    ProfilRandonneurFichier stockageImpossible() {
+    HikerProfileFile stockageImpossible() {
       final obstacle = File(
         '${Directory.systemTemp.createTempSync('623').path}/pas-un-dossier',
       )..writeAsStringSync('je suis un fichier, pas un dossier');
       addTearDown(() {
         if (obstacle.existsSync()) obstacle.deleteSync();
       });
-      return ProfilRandonneurFichier(
+      return HikerProfileFile(
         dossierApplicatif: () async => Directory('${obstacle.path}/dedans'),
       );
     }

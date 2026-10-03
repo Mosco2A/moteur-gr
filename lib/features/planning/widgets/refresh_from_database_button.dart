@@ -25,19 +25,19 @@ import '../../../i18n/translations.g.dart';
 /// appuie, rien ne change a l ecran parce qu il n y avait rien a prendre, et il ne
 /// sait pas si l application a travaille. Les trois reponses possibles sont donc
 /// dites : ce qui est arrive, « deja a jour », ou « pas de reseau ».
-class BoutonRafraichirDepuisLaBase extends ConsumerStatefulWidget {
-  const BoutonRafraichirDepuisLaBase({super.key, required this.trailId});
+class RefreshFromDatabaseButton extends ConsumerStatefulWidget {
+  const RefreshFromDatabaseButton({super.key, required this.trailId});
 
   /// Le sentier a rafraichir.
   final String trailId;
 
   @override
-  ConsumerState<BoutonRafraichirDepuisLaBase> createState() =>
-      _BoutonRafraichirDepuisLaBaseState();
+  ConsumerState<RefreshFromDatabaseButton> createState() =>
+      _RefreshFromDatabaseButtonState();
 }
 
-class _BoutonRafraichirDepuisLaBaseState
-    extends ConsumerState<BoutonRafraichirDepuisLaBase> {
+class _RefreshFromDatabaseButtonState
+    extends ConsumerState<RefreshFromDatabaseButton> {
   bool _enCours = false;
 
   @override

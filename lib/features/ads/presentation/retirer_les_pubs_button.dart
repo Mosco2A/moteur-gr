@@ -11,7 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../domain/etat_publicite.dart';
+import '../domain/ad_state.dart';
 import '../providers/ads_providers.dart';
 
 /// LE BOUTON « RETIRER LES PUBS », ET SES DEUX CHOIX.

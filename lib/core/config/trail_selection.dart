@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-import '../../features/trail/providers/catalogue_sentiers_provider.dart';
+import '../../features/trail/providers/trail_catalog_provider.dart';
 import 'trail_catalog.dart';
 import 'trail_config.dart';
 

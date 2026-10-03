@@ -9,7 +9,7 @@
 //     Navigator.of         (navigator.dart:2937)
 //     showDialog           (dialog.dart:1504)
 //     poserSiNecessaire    (refus_sauvegarde_systeme_dialog.dart:97)
-//     _demander            (porte_consentement_sauvegarde.dart:78)
+//     _demander            (backup_consent_gate.dart:78)
 //
 // LA CAUSE, MESUREE ET NON SUPPOSEE. La ligne 97 est l'appel a `showDialog`
 // lui-meme. Le titre de l'incident annoncait la ligne 96 : c'est la MEME ligne
@@ -54,7 +54,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/analytics/analytics_service.dart';
 import 'package:moteur_gr/core/routing/navigateur_racine.dart';
-import 'package:moteur_gr/features/safety/presentation/porte_consentement_sauvegarde.dart';
+import 'package:moteur_gr/features/safety/presentation/backup_consent_gate.dart';
 import 'package:moteur_gr/features/safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import 'package:moteur_gr/features/safety/providers/refus_sauvegarde_systeme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -115,9 +115,8 @@ void main() {
       ],
       child: MaterialApp.router(
         routerConfig: router,
-        builder: (context, child) => PorteConsentementSauvegarde(
-          child: child ?? const SizedBox.shrink(),
-        ),
+        builder: (context, child) =>
+            BackupConsentGate(child: child ?? const SizedBox.shrink()),
       ),
     );
   }
@@ -131,7 +130,7 @@ void main() {
       //   Navigator.of  (navigator.dart:2936)
       //   showDialog    (dialog.dart:1504)
       //   poserSiNecessaire (refus_sauvegarde_systeme_dialog.dart:97)
-      //   _demander     (porte_consentement_sauvegarde.dart:78)
+      //   _demander     (backup_consent_gate.dart:78)
       // c'est-a-dire la pile Crashlytics du build 6, au cadre pres. En debug
       // c'est l'assertion de la ligne 2927 qui parle ; en release elle est
       // retiree et c'est le `!` de la ligne 2937 qui leve « Null check operator
@@ -262,7 +261,7 @@ void main() {
             color: const Color(0xFF000000),
             builder: (context, child) => const Directionality(
               textDirection: TextDirection.ltr,
-              child: PorteConsentementSauvegarde(child: SizedBox.shrink()),
+              child: BackupConsentGate(child: SizedBox.shrink()),
             ),
           ),
         ),
@@ -364,9 +363,8 @@ void main() {
         ProviderScope(
           child: MaterialApp.router(
             routerConfig: router,
-            builder: (context, child) => PorteConsentementSauvegarde(
-              child: child ?? const SizedBox.shrink(),
-            ),
+            builder: (context, child) =>
+                BackupConsentGate(child: child ?? const SizedBox.shrink()),
           ),
         ),
       );

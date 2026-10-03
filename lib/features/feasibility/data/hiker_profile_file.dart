@@ -63,7 +63,7 @@
 /// PORTE L'ATTRIBUT. Une exclusion posee une seule fois, a la creation, serait
 /// donc perdue des la premiere correction du poids. L'exclusion est REPOSEE EN
 /// TROIS POINTS a chaque ecriture — le dossier apres sa creation, le `.tmp` AVANT
-/// le renommage, le fichier final APRES — exactement comme `FicheMedicaleFichier`,
+/// le renommage, le fichier final APRES — exactement comme `HealthInfoFile`,
 /// et pour les memes deux raisons qui se couvrent l'une l'autre.
 ///
 /// ENTREES-SORTIES SYNCHRONES, et c'est la mesure de la tache 612 : ecrites en
@@ -100,8 +100,8 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 ///
 /// Les quatre familles voyagent ensemble parce qu'elles sont ecrites ensemble
 /// (voir l'en-tete du fichier). [estVide] decide si le fichier doit exister.
-class ContenuProfilRandonneur {
-  const ContenuProfilRandonneur({
+class HikerProfileContent {
+  const HikerProfileContent({
     this.profil,
     this.randosPassees = const [],
     this.testDeMarche,
@@ -109,7 +109,7 @@ class ContenuProfilRandonneur {
   });
 
   /// Aucune donnee confiee.
-  static const ContenuProfilRandonneur vide = ContenuProfilRandonneur();
+  static const HikerProfileContent vide = HikerProfileContent();
 
   /// La fiche d'info (age, taille, poids, sexe declare, pays), ou `null` si
   /// aucune fiche n'a jamais ete saisie.
@@ -144,7 +144,7 @@ class ContenuProfilRandonneur {
   static bool _aDuNonMorphologique(HikerProfile p) =>
       (p.sex?.isNotEmpty ?? false) || p.countryIso.isNotEmpty;
 
-  ContenuProfilRandonneur copyWith({
+  HikerProfileContent copyWith({
     HikerProfile? profil,
     bool effacerProfil = false,
     List<PastHike>? randosPassees,
@@ -153,7 +153,7 @@ class ContenuProfilRandonneur {
     String? noteExperienceHeritee,
     bool effacerNote = false,
   }) {
-    return ContenuProfilRandonneur(
+    return HikerProfileContent(
       profil: effacerProfil ? null : (profil ?? this.profil),
       randosPassees: randosPassees ?? this.randosPassees,
       testDeMarche: effacerTestDeMarche
@@ -166,15 +166,15 @@ class ContenuProfilRandonneur {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    if (profil != null) ProfilRandonneurFichier.clefProfil: profil!.toJson(),
+    if (profil != null) HikerProfileFile.clefProfil: profil!.toJson(),
     if (randosPassees.isNotEmpty)
-      ProfilRandonneurFichier.clefRandosPassees: randosPassees
+      HikerProfileFile.clefRandosPassees: randosPassees
           .map((h) => h.toJson())
           .toList(),
     if (testDeMarche != null)
-      ProfilRandonneurFichier.clefTestDeMarche: testDeMarche!.toJson(),
+      HikerProfileFile.clefTestDeMarche: testDeMarche!.toJson(),
     if (noteExperienceHeritee != null && noteExperienceHeritee!.isNotEmpty)
-      ProfilRandonneurFichier.clefNoteExperience: noteExperienceHeritee,
+      HikerProfileFile.clefNoteExperience: noteExperienceHeritee,
   };
 
   /// Relecture TOLERANTE : une section illisible ne fait pas perdre les autres.
@@ -182,11 +182,11 @@ class ContenuProfilRandonneur {
   /// Ce n'est pas de la complaisance. Un document corrompu par une coupure de
   /// courant ne doit pas effacer les randonnees passees du randonneur parce que
   /// son poids etait devenu illisible, et il ne doit surtout pas empecher l'ecran
-  /// de s'ouvrir — meme discipline que `FicheMedicaleFichier.lire`.
-  factory ContenuProfilRandonneur.fromJson(Map<String, dynamic> json) {
+  /// de s'ouvrir — meme discipline que `HealthInfoFile.lire`.
+  factory HikerProfileContent.fromJson(Map<String, dynamic> json) {
     HikerProfile? profil;
     try {
-      final brut = json[ProfilRandonneurFichier.clefProfil];
+      final brut = json[HikerProfileFile.clefProfil];
       if (brut is Map<String, dynamic>) profil = HikerProfile.fromJson(brut);
     } catch (e) {
       _log.e('[ProfilRandonneur] Section profil illisible ($e)');
@@ -194,7 +194,7 @@ class ContenuProfilRandonneur {
 
     final randos = <PastHike>[];
     try {
-      final brut = json[ProfilRandonneurFichier.clefRandosPassees];
+      final brut = json[HikerProfileFile.clefRandosPassees];
       if (brut is List) {
         for (final e in brut) {
           if (e is Map<String, dynamic>) randos.add(PastHike.fromJson(e));
@@ -206,15 +206,15 @@ class ContenuProfilRandonneur {
 
     WalkTestResult? test;
     try {
-      final brut = json[ProfilRandonneurFichier.clefTestDeMarche];
+      final brut = json[HikerProfileFile.clefTestDeMarche];
       if (brut is Map<String, dynamic>) test = WalkTestResult.fromJson(brut);
     } catch (e) {
       _log.e('[ProfilRandonneur] Section test de marche illisible ($e)');
     }
 
-    final note = json[ProfilRandonneurFichier.clefNoteExperience];
+    final note = json[HikerProfileFile.clefNoteExperience];
 
-    return ContenuProfilRandonneur(
+    return HikerProfileContent(
       profil: profil,
       randosPassees: randos,
       testDeMarche: test,
@@ -227,8 +227,8 @@ class ContenuProfilRandonneur {
 /// LA SAUVEGARDE DU TELEPHONE — LE MEME QUE LA FICHE MEDICALE.
 ///
 /// Voir l'en-tete du fichier pour le raisonnement entier.
-class ProfilRandonneurFichier {
-  ProfilRandonneurFichier({
+class HikerProfileFile {
+  HikerProfileFile({
     Future<Directory> Function()? dossierApplicatif,
     ExclusionSauvegardeIcloud? exclusionIcloud,
   }) : _dossierApplicatif = dossierApplicatif ?? getApplicationSupportDirectory,
@@ -276,18 +276,18 @@ class ProfilRandonneurFichier {
   /// Lit le document. Rend un contenu VIDE si rien n'a jamais ete ecrit, et
   /// aussi si le document est illisible — un profil corrompu ne doit pas
   /// empecher l'ecran de faisabilite de s'ouvrir.
-  Future<ContenuProfilRandonneur> lire() async {
+  Future<HikerProfileContent> lire() async {
     try {
       final f = await fichier();
-      if (!f.existsSync()) return ContenuProfilRandonneur.vide;
+      if (!f.existsSync()) return HikerProfileContent.vide;
       final brut = f.readAsStringSync();
-      if (brut.trim().isEmpty) return ContenuProfilRandonneur.vide;
-      return ContenuProfilRandonneur.fromJson(
+      if (brut.trim().isEmpty) return HikerProfileContent.vide;
+      return HikerProfileContent.fromJson(
         jsonDecode(brut) as Map<String, dynamic>,
       );
     } catch (e) {
       _log.e('[ProfilRandonneur] Lecture impossible ($e) -> repute vide');
-      return ContenuProfilRandonneur.vide;
+      return HikerProfileContent.vide;
     }
   }
 
@@ -306,7 +306,7 @@ class ProfilRandonneurFichier {
   ///  4. le document final est exclu APRES le renommage — c'est CE geste qui
   ///     ferme le piege de l'ecriture atomique, et il ne suppose pas que
   ///     l'attribut ait suivi le fichier a travers le `rename`.
-  Future<void> ecrire(ContenuProfilRandonneur contenu) async {
+  Future<void> ecrire(HikerProfileContent contenu) async {
     if (contenu.estVide) {
       await effacer();
       return;

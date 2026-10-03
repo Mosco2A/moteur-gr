@@ -14,7 +14,7 @@ import '../../../../domain/stage_accommodation.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
-import '../../../../shared/widgets/lien_vers_les_cartes.dart';
+import '../../../../shared/widgets/maps_link.dart';
 import '../../domain/models/nuitee_type.dart';
 
 /// R5 (LOT L10) : la nuit d'un jour de REPOS est bien

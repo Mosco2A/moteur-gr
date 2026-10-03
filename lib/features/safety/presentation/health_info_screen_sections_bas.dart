@@ -163,8 +163,8 @@ class _HealthCardsSection extends StatelessWidget {
           titre: t.health.cards.vitale,
           nomFichier: carteVitale,
           onPrendre: (src) =>
-              onPrendreCarte(FicheMedicaleFichier.nomCarteVitale, src),
-          onRetirer: () => onRetirerCarte(FicheMedicaleFichier.nomCarteVitale),
+              onPrendreCarte(HealthInfoFile.nomCarteVitale, src),
+          onRetirer: () => onRetirerCarte(HealthInfoFile.nomCarteVitale),
         ),
         const SizedBox(height: AppTheme.spacingBase),
         _CarteTile(
@@ -172,9 +172,8 @@ class _HealthCardsSection extends StatelessWidget {
           titre: t.health.cards.mutuelle,
           nomFichier: carteMutuelle,
           onPrendre: (src) =>
-              onPrendreCarte(FicheMedicaleFichier.nomCarteMutuelle, src),
-          onRetirer: () =>
-              onRetirerCarte(FicheMedicaleFichier.nomCarteMutuelle),
+              onPrendreCarte(HealthInfoFile.nomCarteMutuelle, src),
+          onRetirer: () => onRetirerCarte(HealthInfoFile.nomCarteMutuelle),
         ),
       ],
     );

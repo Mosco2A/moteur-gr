@@ -79,7 +79,7 @@ void main() {
         isTrue,
         reason:
             'la liste doit porter tilesPath, tilesSize ET tilesHash — sans les '
-            'trois, `DescenteDesCartes` refuse avec « aucune carte publiee ».',
+            'trois, `MapDownloader` refuse avec « aucune carte publiee ».',
       );
       expect(
         EmpreinteDePublication.normaliser(entree.tilesHash),

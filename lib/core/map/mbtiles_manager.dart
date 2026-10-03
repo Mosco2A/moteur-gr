@@ -107,7 +107,7 @@ enum EchecDeCarte {
   /// POURQUOI CETTE CAUSE EXISTE MAINTENANT. Avant la tache 640 ce cas ne
   /// produisait pas un echec : il LEVAIT. `getMbtilesPath` etait la premiere
   /// ligne de [MBTilesManager.descendre], hors de tout filet ; l exception
-  /// traversait [DescenteDesCartes] puis le controleur (dont le `try` n avait pas
+  /// traversait [MapDownloader] puis le controleur (dont le `try` n avait pas
   /// de `catch`) et ressortait dans un futur que personne n attend — donc en
   /// erreur asynchrone non traitee, remontee comme un plantage FATAL. C est la
   /// forme exacte du retour de Christophe du 30/09 : « en demo comme en vrai
@@ -301,7 +301,7 @@ class MBTilesManager {
   ///
   /// CE QUE CETTE METHODE NE DECIDE PAS. Elle ne regarde ni le niveau de
   /// telechargement, ni le droit de realiser, ni le type de reseau : c est le
-  /// travail de [DescenteDesCartes] (`descente_des_cartes.dart`), seul appelant de
+  /// travail de [MapDownloader] (`map_downloader.dart`), seul appelant de
   /// cette methode en production. Un transport qui decide des droits est un
   /// transport qu on ne peut plus tester, et deux endroits qui decident du meme
   /// droit finissent par ne plus etre d accord.

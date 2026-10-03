@@ -95,7 +95,7 @@ class MorceauxAPrendre {
 /// les donnees structurees avec leurs revisions, Storage pour les fichiers lourds
 /// (decision du 27/09 20:11). Aucun des deux n est provisionne — les deux
 /// implementations sont donc eprouvees contre un DOUBLE, comme le lot 605.
-abstract interface class SourceDeDonneesSentier {
+abstract interface class TrailRecordSource {
   /// Les enregistrements de [trailId] dont la revision depasse [revisionLocale].
   ///
   /// [revisionCible] est la revision courante du sentier : elle sert de revision
@@ -194,7 +194,7 @@ class _Tri {
 /// modele de revision, simplement parce qu il avait ete ajoute sans que rien ne
 /// l oblige a le respecter. Une verification qu on peut omettre en ne passant pas
 /// un argument serait la meme faute, au meme endroit.
-class SourceFichierEntier implements SourceDeDonneesSentier {
+class SourceFichierEntier implements TrailRecordSource {
   SourceFichierEntier({
     http.Client? httpClient,
     this.tentatives = 3,
@@ -397,7 +397,7 @@ typedef RequeteParRevision =
 /// du code. La pose reste `appliquerRevisions`, transactionnelle, enregistrement
 /// par enregistrement, marqueurs de suppression compris. Premiere copie et mise a
 /// jour restent LE MEME chemin : a la revision zero, `rev > 0` selectionne tout.
-class SourceInterrogeable implements SourceDeDonneesSentier {
+class SourceInterrogeable implements TrailRecordSource {
   const SourceInterrogeable(
     this.interroger, {
     this.familles = MorceauxDeSentier.tous,

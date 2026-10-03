@@ -9,7 +9,7 @@ import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../core/engine/trail_engine.dart';
-import '../domain/etat_publicite.dart';
+import '../domain/ad_state.dart';
 import 'retirer_les_pubs_button.dart';
 
 /// LA MARQUE QUI DIT LEQUEL DES TROIS ETATS ON EST EN TRAIN DE VIVRE.
@@ -36,8 +36,8 @@ import 'retirer_les_pubs_button.dart';
 /// IL NE SE DESSINE PAS TANT QUE L'ETAT N'EST PAS CONNU : pendant la lecture des
 /// droits, rien. Annoncer « avec publicite » a un abonne le temps d'un battement
 /// serait pire que d'attendre.
-class BadgeEtatPublicite extends ConsumerWidget {
-  const BadgeEtatPublicite({required this.trailId, super.key});
+class AdStateBadge extends ConsumerWidget {
+  const AdStateBadge({required this.trailId, super.key});
 
   final String trailId;
 
@@ -112,12 +112,12 @@ class BadgeEtatPublicite extends ConsumerWidget {
 /// moment ou on lit « Avec publicite », que la proposition de la retirer a du
 /// sens.
 ///
-/// RIEN QUAND L'ETAT N'EST PAS CONNU : [BadgeEtatPublicite] ne se dessine pas
+/// RIEN QUAND L'ETAT N'EST PAS CONNU : [AdStateBadge] ne se dessine pas
 /// pendant la lecture des droits, et [RetirerLesPubsButton] s'efface des qu'il
 /// n'y a rien a retirer. La ligne peut donc etre entierement vide, et elle ne
 /// coute alors que la hauteur de son espacement.
-class BandeauEtatPublicite extends ConsumerWidget {
-  const BandeauEtatPublicite({super.key});
+class AdStateBanner extends ConsumerWidget {
+  const AdStateBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -126,7 +126,7 @@ class BandeauEtatPublicite extends ConsumerWidget {
     if (etat == null) return const SizedBox.shrink();
     return Row(
       children: [
-        BadgeEtatPublicite(trailId: trailId),
+        AdStateBadge(trailId: trailId),
         if (etat.pubAffichee) ...[
           const SizedBox(width: AppTheme.spacingSm),
           Flexible(
@@ -148,7 +148,7 @@ class BandeauEtatPublicite extends ConsumerWidget {
 /// A l'echeance exacte, ou apres, on rend « 0 min » plutot qu'un negatif : c'est
 /// le battement entre l'expiration et la relecture des droits, et il ne doit rien
 /// afficher d'absurde.
-String resteLisible(EtatPublicite etat, {DateTime? maintenant}) {
+String resteLisible(AdState etat, {DateTime? maintenant}) {
   final fin = etat.finDeLaRecompense;
   if (fin == null) return '';
   final reste = fin.difference(maintenant ?? DateTime.now());
