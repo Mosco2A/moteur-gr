@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
-import '../config/sentier_distant.dart';
+import '../config/remote_trail.dart';
 import '../config/trail_data_source.dart';
 import '../data/daos/trail_manifests_dao.dart';
 import '../engine/trail_engine.dart';
@@ -15,7 +15,7 @@ import '../models/niveau_de_telechargement.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 import 'delta_update_service.dart';
-import 'source_firestore_sentier.dart';
+import 'firestore_trail_source.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -37,10 +37,10 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 ///  * AU DEMARRAGE — [auDemarrage] : la liste est relue en base, puis le sentier
 ///    actif est mis a jour. C est ce qui fait qu un randonneur qui ouvre
 ///    l application recoit une correction publiee la veille sans rien demander.
-///  * A L OUVERTURE D UN SENTIER — [alOuvertureDuSentier] : le sentier qu on
+///  * A L OUVERTURE D UN SENTIER — [onTrailOpen] : le sentier qu on
 ///    regarde est celui qu on met a jour, tout de suite, et pas dans quatre
 ///    heures.
-///  * SUR UN RAFRAICHISSEMENT MANUEL — [surDemandeDuRandonneur] : le meme travail,
+///  * SUR UN RAFRAICHISSEMENT MANUEL — [onHikerRequest] : le meme travail,
 ///    declenche par un geste, et il rend son BILAN pour que l ecran puisse dire ce
 ///    qui est arrive.
 ///
@@ -61,14 +61,14 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// reste honnetement « a prendre ».
 class MiseAJourALaSource {
   MiseAJourALaSource({
-    required this.liste,
+    required this.list,
     required this.delta,
     required this.dao,
     required this.connectivityMonitor,
   });
 
   /// La liste des sentiers publies, lue dans `trails` (Firestore).
-  final ListeSentiersFirestore liste;
+  final FirestoreTrailList list;
 
   /// La descente par revision, qui pose les donnees.
   final DeltaUpdateService delta;
@@ -91,25 +91,21 @@ class MiseAJourALaSource {
       _passer('demarrage', trailIdActif);
 
   /// MISE A JOUR A L OUVERTURE D UN SENTIER.
-  Future<BilanMiseAJour> alOuvertureDuSentier(String trailId) =>
-      _passer('ouverture', trailId, seulementCeSentier: true);
+  Future<BilanMiseAJour> onTrailOpen(String trailId) =>
+      _passer('ouverture', trailId, onlyThisTrail: true);
 
   /// MISE A JOUR DEMANDEE PAR LE RANDONNEUR.
   ///
   /// Le seul chemin qui ne verifie PAS l etat du reseau avant de demander : quand
   /// quelqu un appuie sur « rafraichir », il attend qu on essaie. L echec sera dit,
   /// il ne sera pas devine a l avance.
-  Future<BilanMiseAJour> surDemandeDuRandonneur(String trailId) => _passer(
-    'geste',
-    trailId,
-    seulementCeSentier: true,
-    verifierLeReseau: false,
-  );
+  Future<BilanMiseAJour> onHikerRequest(String trailId) =>
+      _passer('geste', trailId, onlyThisTrail: true, verifierLeReseau: false);
 
   Future<BilanMiseAJour> _passer(
     String cause,
     String trailId, {
-    bool seulementCeSentier = false,
+    bool onlyThisTrail = false,
     bool verifierLeReseau = true,
   }) async {
     if (verifierLeReseau) {
@@ -126,7 +122,7 @@ class MiseAJourALaSource {
     }
 
     final aTraiter = <String>[trailId];
-    if (!seulementCeSentier) {
+    if (!onlyThisTrail) {
       try {
         for (final locale in await dao.getTelecharges()) {
           if (!aTraiter.contains(locale.trailId)) aTraiter.add(locale.trailId);
@@ -143,7 +139,7 @@ class MiseAJourALaSource {
 
     for (final identifiant in aTraiter) {
       try {
-        final resultat = await _unSentier(identifiant, cause: cause);
+        final resultat = await _aTrail(identifiant, cause: cause);
         if (resultat == null) continue;
         sentiersAJour++;
         ecrits += resultat.ecrits;
@@ -165,11 +161,11 @@ class MiseAJourALaSource {
     );
   }
 
-  Future<({int ecrits, int supprimes})?> _unSentier(
+  Future<({int ecrits, int supprimes})?> _aTrail(
     String trailId, {
     required String cause,
   }) async {
-    final entree = await liste.lireUn(trailId);
+    final entree = await list.lireUn(trailId);
     if (entree == null) {
       _log.d(
         '[Source] $cause : $trailId n est pas publie en base — la copie '
@@ -206,7 +202,7 @@ class MiseAJourALaSource {
       // elle est ignoree (documente sur `SourceInterrogeable`) ; on la calcule
       // quand meme pour que les deux transports restent interchangeables sans
       // condition dans l appelant.
-      TrailDataSource.urlDonneesSentier(entree.filePath),
+      TrailDataSource.trailDataUrl(entree.filePath),
       revisionCible: entree.dataVersion,
       empreinteAttendue: entree.hash.isEmpty ? null : entree.hash,
       niveau: niveauAutomatique,
@@ -268,7 +264,7 @@ class BilanMiseAJour {
 final miseAJourALaSourceProvider = Provider<MiseAJourALaSource>((ref) {
   final db = ref.watch(databaseProvider);
   return MiseAJourALaSource(
-    liste: ref.watch(listeSentiersFirestoreProvider),
+    list: ref.watch(firestoreTrailListProvider),
     delta: ref.watch(deltaUpdateServiceProvider),
     dao: TrailManifestsDao(db),
     connectivityMonitor: ref.watch(connectivityMonitorProvider),
@@ -313,7 +309,7 @@ final miseAJourAlOuvertureProvider = Provider.family<void, String>((
   if (trailId.isEmpty) return;
   final service = ref.watch(miseAJourALaSourceProvider);
   unawaited(
-    service.alOuvertureDuSentier(trailId).catchError((Object e) {
+    service.onTrailOpen(trailId).catchError((Object e) {
       _log.w('[Source] Mise a jour a l ouverture de $trailId abandonnee : $e');
       return const BilanMiseAJour.horsLigne();
     }),

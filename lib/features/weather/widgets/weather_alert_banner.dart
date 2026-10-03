@@ -33,7 +33,7 @@ class WeatherAlertBanner extends StatelessWidget {
     final t = Translations.of(context);
     final hasDanger = alerts.any((a) => a.severity == 'danger');
     final hasFireAlert = alerts.any((a) => a.type == AlertType.fire);
-    final accent = hasDanger ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
+    final accent = hasDanger ? AppTheme.emergencyRed : AppTheme.orangeDifficile;
 
     return Container(
       decoration: BoxDecoration(
@@ -72,7 +72,7 @@ class WeatherAlertBanner extends StatelessWidget {
                     _iconForAlert(alert),
                     size: 16,
                     color: alert.severity == 'danger'
-                        ? AppTheme.rougeUrgence
+                        ? AppTheme.emergencyRed
                         : AppTheme.orangeDifficile,
                   ),
                   const SizedBox(width: AppTheme.spacingXs),
@@ -90,12 +90,12 @@ class WeatherAlertBanner extends StatelessWidget {
           if (hasFireAlert && fireTipCard != null) ...[
             const SizedBox(height: AppTheme.spacingSm),
             // SW-SKIN-L3b : OutlinedButton -> AppButton (variante outline,
-            // pleine largeur). tone: rougeUrgence conserve la couleur SEMANTIQUE
+            // pleine largeur). tone: emergencyRed conserve la couleur SEMANTIQUE
             // rouge du CTA securite incendie (bandeau danger) ; onPressed et
             // libelle inchanges (iso-fonction).
             AppButton(
               variant: AppButtonVariant.outline,
-              tone: AppTheme.rougeUrgence,
+              tone: AppTheme.emergencyRed,
               icon: StepwaysIcons.incendie,
               label: t.weather.fireSafetyTips,
               onPressed: () => TipDetailSheet.show(context, fireTipCard!),

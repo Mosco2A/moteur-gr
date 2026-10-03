@@ -74,7 +74,7 @@ bool _pubPossible(Ref ref) => ref.watch(adsReadyProvider).value ?? false;
 /// DIT LE CONTRAIRE : le défaut persiste avec la publicité intégralement coupée,
 /// donc il ne venait pas d'ici. Sa vraie cause était la BASCULE DE SENTIER, qui
 /// écrivait la sélection puis naviguait dans le même geste synchrone — corrigée
-/// par `choisirSentier` (voir sa documentation dans `trail_engine.dart`, qui
+/// par `chooseTrail` (voir sa documentation dans `trail_engine.dart`, qui
 /// porte la mécanique complète). On garde la garde parce qu'elle évite un
 /// abonnement inutile ; on ne lui laisse pas un mérite qu'elle n'a pas.
 final _trekDroitChangeProvider = StreamProvider.autoDispose

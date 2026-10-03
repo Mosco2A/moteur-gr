@@ -52,8 +52,8 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// aurait herite de l'attribut par un changement futur du montage serait un FAUX
 /// SUCCES : la case se decocherait, la copie apparaitrait, et le randonneur
 /// retrouverait un telephone vide en croyant avoir choisi la commodite.
-class CopieSauvegardableFicheService {
-  CopieSauvegardableFicheService({
+class HealthInfoBackupCopyService {
+  HealthInfoBackupCopyService({
     required HealthInfoRepository healthRepository,
     Future<Directory> Function()? baseDirProvider,
     ExclusionSauvegardeIcloud? exclusionIcloud,
@@ -72,7 +72,7 @@ class CopieSauvegardableFicheService {
     final base = await _baseDirProvider();
     return File(
       '${base.path}/${SauvegardeSysteme.dossierSauvegardable}'
-      '/${SauvegardeSysteme.fichierCopieFiche}',
+      '/${SauvegardeSysteme.healthSheetCopyFile}',
     );
   }
 
@@ -162,8 +162,8 @@ class CopieSauvegardableFicheService {
 
 /// Provider Riverpod du service de copie sauvegardable de la fiche medicale.
 final copieSauvegardableFicheServiceProvider =
-    Provider<CopieSauvegardableFicheService>((ref) {
-      return CopieSauvegardableFicheService(
+    Provider<HealthInfoBackupCopyService>((ref) {
+      return HealthInfoBackupCopyService(
         healthRepository: ref.watch(healthInfoRepositoryProvider),
       );
     });

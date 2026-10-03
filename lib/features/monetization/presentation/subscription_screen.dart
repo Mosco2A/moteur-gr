@@ -107,7 +107,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   /// un lien qu'aucune application ne sait ouvrir : le lanceur rend `false`, et
   /// le randonneur doit entendre quoi faire. Un bouton qui echouerait en silence
   /// sur une resiliation serait exactement le defaut que la loi vise.
-  Future<void> _arreterAbonnement() async {
+  Future<void> _stopSubscription() async {
     final messenger = ScaffoldMessenger.of(context);
     final ouvert = await ref
         .read(deeplinkLauncherProvider)
@@ -154,7 +154,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   child: Row(
                     children: [
                       StepIcon(
-                        actif ? StepwaysIcons.diplome : StepwaysIcons.moins,
+                        actif ? StepwaysIcons.diploma : StepwaysIcons.moins,
                         color: actif
                             ? AppTheme.vertFacile
                             : AppTheme.grisTexteSecondaire,
@@ -270,7 +270,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
             AppButton(
               key: const ValueKey('souscrire-abo'),
-              icon: StepwaysIcons.diplome,
+              icon: StepwaysIcons.diploma,
               label: t.monetization.subscriptionCta,
               isLoading: _occupe,
               onPressed: _occupe ? null : _souscrire,
@@ -299,7 +299,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               variant: AppButtonVariant.outline,
               icon: StepwaysIcons.croix,
               label: t.monetization.cancelCta,
-              onPressed: _occupe ? null : _arreterAbonnement,
+              onPressed: _occupe ? null : _stopSubscription,
             ),
             const SizedBox(height: AppTheme.spacingXs),
             // CE QUE LE BOUTON FAIT, DIT AVANT L'APPUI : ou se passe l'arret,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/domain/stage_accommodation.dart';
-import 'package:moteur_gr/features/trek/presentation/refuge_detail_screen.dart';
+import 'package:moteur_gr/features/trek/presentation/accommodation_detail_screen.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E5.12b — Deeplinks reservation V1 (design #83560).
@@ -38,11 +38,13 @@ void main() {
               accommodations.where((a) => a.stageNumber == stage).toList(),
         ),
       ],
-      child: MaterialApp(home: RefugeDetailScreen(stageNumber: stageNumber)),
+      child: MaterialApp(
+        home: AccommodationDetailScreen(stageNumber: stageNumber),
+      ),
     );
   }
 
-  group('RefugeDetailScreen -- Section Reserver', () {
+  group('AccommodationDetailScreen -- Section Reserver', () {
     testWidgets(
       'boutons visibles si donnees presentes (etape 1 : phone + website)',
       (WidgetTester tester) async {

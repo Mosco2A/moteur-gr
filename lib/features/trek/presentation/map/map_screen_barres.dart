@@ -176,7 +176,7 @@ class _PlannedStageBar extends ConsumerWidget {
 /// DEUX REGLES MAISON RESPECTEES, ET ELLES COMPTENT :
 ///  1. LE VERROU DU JOURNAL TIENT (decision Chris du 02/09, memoire #99410) :
 ///     le journal fait partie du pack. Sans achat, ce bouton n'ecrit RIEN — il
-///     ouvre la vitrine ([acheterSentier]). On ne remplit pas un carnet
+///     ouvre la vitrine ([buyTrail]). On ne remplit pas un carnet
 ///     verrouille, et on ne masque pas la fonction pour autant : le marcheur
 ///     voit ce qu'il gagne en achetant.
 ///  2. L'ERREUR EST DITE, jamais avalee : quota du jour atteint, photo trop
@@ -224,7 +224,7 @@ class _MapPhotoButtonState extends ConsumerState<_MapPhotoButton> {
     final verrouille = acces.value ?? true;
     if (verrouille) {
       if (!mounted) return;
-      await acheterSentier(context, ref, trailId: trailId);
+      await buyTrail(context, ref, trailId: trailId);
       return;
     }
 

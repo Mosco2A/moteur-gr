@@ -10,8 +10,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../widgets/bouton_rafraichir_depuis_la_base.dart';
-import '../../../shared/widgets/lien_vers_les_cartes.dart';
+import '../widgets/refresh_from_database_button.dart';
+import '../../../shared/widgets/maps_link.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
@@ -63,7 +63,7 @@ class ShopScreen extends ConsumerWidget {
         // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des deux
         // ecrans que Christophe a trouves vides, donc l'un des deux ou il doit
         // pouvoir verifier tout de suite qu'une publication est bien arrivee.
-        actions: [BoutonRafraichirDepuisLaBase(trailId: trailId)],
+        actions: [RefreshFromDatabaseButton(trailId: trailId)],
       ),
       // UN ECRAN BLANC N'EST PAS UNE ABSENCE DE COMMENTAIRE, C'EST UNE PANNE
       // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et ravitaillement
@@ -419,7 +419,7 @@ class _ShopCard extends StatelessWidget {
                           if (shop.openingHours.isNotEmpty) ...[
                             const SizedBox(width: AppTheme.spacingSm),
                             StepIcon(
-                              StepwaysIcons.duree,
+                              StepwaysIcons.clock,
                               size: 14,
                               color: AppTheme.grisGranite.withAlpha(180),
                             ),
@@ -479,7 +479,7 @@ class _ShopCard extends StatelessWidget {
                   vertical: AppTheme.spacingXs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.rougeUrgence.withAlpha(15),
+                  color: AppTheme.emergencyRed.withAlpha(15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                 ),
                 child: Row(
@@ -488,14 +488,14 @@ class _ShopCard extends StatelessWidget {
                     const StepIcon(
                       StepwaysIcons.danger,
                       size: 14,
-                      color: AppTheme.rougeUrgence,
+                      color: AppTheme.emergencyRed,
                     ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
                         t.shop.gapShort(n: gap),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -578,7 +578,7 @@ void _showShopDetail(
                   value: _shopTypeLabel(t, shop.type),
                 ),
                 _DetailRow(
-                  icon: StepwaysIcons.carte,
+                  icon: StepwaysIcons.map,
                   label: t.shop.fieldStage,
                   value: t.shop.stageBadge(n: shop.stageNumber),
                 ),
@@ -592,7 +592,7 @@ void _showShopDetail(
                   ),
                 if (shop.openingHours.isNotEmpty)
                   _DetailRow(
-                    icon: StepwaysIcons.duree,
+                    icon: StepwaysIcons.clock,
                     label: t.shop.fieldHours,
                     value: shop.openingHours,
                   ),
@@ -676,9 +676,9 @@ void _showShopDetail(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
-                      color: AppTheme.rougeUrgence.withAlpha(20),
+                      color: AppTheme.emergencyRed.withAlpha(20),
                       border: Border.all(
-                        color: AppTheme.rougeUrgence.withAlpha(100),
+                        color: AppTheme.emergencyRed.withAlpha(100),
                       ),
                       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                     ),
@@ -686,7 +686,7 @@ void _showShopDetail(
                       children: [
                         const StepIcon(
                           StepwaysIcons.danger,
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           size: 20,
                         ),
                         const SizedBox(width: AppTheme.spacingSm),
@@ -694,7 +694,7 @@ void _showShopDetail(
                           child: Text(
                             t.shop.gapLong(n: gap),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppTheme.rougeUrgence,
+                              color: AppTheme.emergencyRed,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -832,7 +832,7 @@ String _shopTypeIcon(ShopKind type) {
     case ShopKind.bar:
       return StepwaysIcons.restauration;
     case ShopKind.pharmacie:
-      return StepwaysIcons.secours;
+      return StepwaysIcons.emergency;
     case ShopKind.gaz:
       return StepwaysIcons.rechaud;
   }
@@ -863,7 +863,7 @@ Color _shopTypeColor(ShopKind type, ColorScheme scheme) {
     case ShopKind.bar:
       return AppTheme.orangeDifficile;
     case ShopKind.pharmacie:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case ShopKind.gaz:
       return scheme.secondary;
   }

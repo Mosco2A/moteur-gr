@@ -78,7 +78,7 @@ class BookingScreen extends StatelessWidget {
               // (Column mainAxisAlignment.center), iso-rendu du CTA d'attente.
               AppButton(
                 isFullWidth: false,
-                icon: StepwaysIcons.carte,
+                icon: StepwaysIcons.map,
                 label: 'Voir les etapes',
                 onPressed: () => Navigator.of(context).pop(),
               ),

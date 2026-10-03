@@ -24,7 +24,7 @@ import "consent_service.dart";
 /// c'est les donnees qui n'y sont pas ». Ce document dit QU'ON A DEMANDE, QUAND,
 /// SOUS QUEL TEXTE et POURQUOI — jamais un groupe sanguin, une allergie, un
 /// traitement, un age, un poids.
-abstract final class ChampsDuRegistreDeConsentement {
+abstract final class ConsentRegistryFields {
   /// La decision : accorde ou refuse.
   static const String accorde = "granted";
 
@@ -37,7 +37,7 @@ abstract final class ChampsDuRegistreDeConsentement {
   /// Version du texte de politique en vigueur au moment du choix.
   static const String versionDuTexte = "version_du_texte";
 
-  /// Ce qui a provoque la demande ([DeclencheurDeConsentement.code]).
+  /// Ce qui a provoque la demande ([ConsentTrigger.code]).
   static const String declencheur = "declencheur";
 
   /// L'INSTANT QUE LE TELEPHONE A RETENU, ET POURQUOI IL EST LA.
@@ -78,7 +78,7 @@ abstract final class ChampsDuRegistreDeConsentement {
 /// cochee sur un appareil.
 ///
 /// CE QUI MONTE : `users/{uid}/consents/{finalite}`, un document par finalite
-/// ayant recu une decision, avec [ChampsDuRegistreDeConsentement.autorises] et
+/// ayant recu une decision, avec [ConsentRegistryFields.autorises] et
 /// rien d'autre. Une finalite jamais tranchee n'a pas de document — l'absence de
 /// decision est une information, et l'inventer serait un faux.
 ///
@@ -144,25 +144,25 @@ class MonteeDesConsentements {
 
   /// LA CHARGE UTILE, FONCTION PURE — c'est elle que les tests interrogent.
   ///
-  /// Le filtre final sur [ChampsDuRegistreDeConsentement.autorises] est une
+  /// Le filtre final sur [ConsentRegistryFields.autorises] est une
   /// ceinture en plus des bretelles : il rend structurellement impossible qu'un
   /// champ ajoute ici un jour parte sans avoir ete nomme dans la liste fermee.
   @visibleForTesting
-  static Map<String, Object?> construireLaCharge(ConsentState etat) {
-    final charge = <String, Object?>{
-      ChampsDuRegistreDeConsentement.accorde: etat.granted,
-      ChampsDuRegistreDeConsentement.decideLe: FieldValue.serverTimestamp(),
-      ChampsDuRegistreDeConsentement.misAJourLe: FieldValue.serverTimestamp(),
-      ChampsDuRegistreDeConsentement.versionDuTexte: etat.policyVersion,
-      ChampsDuRegistreDeConsentement.declencheur: etat.declencheur.code,
-      ChampsDuRegistreDeConsentement.decideSurLeTelephoneLe: etat.decidedAt
+  static Map<String, Object?> buildPayload(ConsentState etat) {
+    final payload = <String, Object?>{
+      ConsentRegistryFields.accorde: etat.granted,
+      ConsentRegistryFields.decideLe: FieldValue.serverTimestamp(),
+      ConsentRegistryFields.misAJourLe: FieldValue.serverTimestamp(),
+      ConsentRegistryFields.versionDuTexte: etat.policyVersion,
+      ConsentRegistryFields.declencheur: etat.declencheur.code,
+      ConsentRegistryFields.decideSurLeTelephoneLe: etat.decidedAt
           ?.toUtc()
           .toIso8601String(),
     };
-    charge.removeWhere(
-      (cle, _) => !ChampsDuRegistreDeConsentement.autorises.contains(cle),
+    payload.removeWhere(
+      (cle, _) => !ConsentRegistryFields.autorises.contains(cle),
     );
-    return charge;
+    return payload;
   }
 
   /// MONTE LES DECISIONS QUI ONT BOUGE. Rend le nombre de documents ecrits.
@@ -205,7 +205,7 @@ class MonteeDesConsentements {
       }
 
       try {
-        await racine.doc(entree.key.name).set(construireLaCharge(etat));
+        await racine.doc(entree.key.name).set(buildPayload(etat));
         // L'EMPREINTE NE SE POSE QU'APRES UNE ECRITURE REUSSIE. Posee avant, un
         // refus de regle ou une coupure ferait croire la decision enregistree et
         // elle ne repartirait jamais.

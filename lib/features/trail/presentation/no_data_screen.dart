@@ -57,7 +57,7 @@ class NoDataScreen extends ConsumerWidget {
                     shape: BoxShape.circle,
                   ),
                   child: StepIcon(
-                    StepwaysIcons.telecharger,
+                    StepwaysIcons.download,
                     size: 64,
                     color: theme.colorScheme.primary.withAlpha(180),
                   ),
@@ -95,7 +95,7 @@ class NoDataScreen extends ConsumerWidget {
                 // largeur (theme = minimumSize infinie, le bouton remplissait
                 // deja la Column) -> isFullWidth:true = iso-rendu.
                 AppButton(
-                  icon: StepwaysIcons.catalogueSentiers,
+                  icon: StepwaysIcons.trailCatalog,
                   label: t.noData.browseCta,
                   onPressed: () => context.go('/catalog'),
                 ),

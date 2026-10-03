@@ -13,7 +13,7 @@ import "package:moteur_gr/core/data/database.dart";
 import "package:moteur_gr/core/firebase/firebase_service.dart";
 import "package:moteur_gr/core/network/connectivity_monitor.dart";
 import "package:moteur_gr/core/services/cloud_sync_service.dart";
-import "package:moteur_gr/core/services/fiche_technique_du_telephone.dart";
+import "package:moteur_gr/core/services/device_spec_sheet.dart";
 import "package:moteur_gr/core/services/sync_scheduler.dart";
 
 /// LA MONTEE EN BASE — LE TELEPHONE ECRIT ENFIN CE QUE CHRISTOPHE SAISIT
@@ -256,7 +256,7 @@ void main() {
     firestore: serveur,
   );
 
-  FicheTechniqueDuTelephone fiche() => FicheTechniqueDuTelephone(
+  DeviceSpecSheet fiche() => DeviceSpecSheet(
     firebaseService: FirebaseService.testOnly(isAvailable: true),
     identifiant: () async => _uid,
     renseignements: () async => const RenseignementsDuTelephone(
@@ -371,9 +371,9 @@ void main() {
     test("une montee complete n emporte AUCUNE cle personnelle", () async {
       await semerLaBaseLocale();
       final m = montee(attente: const Duration(milliseconds: 20));
-      await m.demarrer(userId: _uid);
+      await m.start(userId: _uid);
       await passeTerminee(m);
-      await m.arreter();
+      await m.stop();
 
       expect(serveur.documents, isNotEmpty, reason: "sinon on ne prouve rien");
 
@@ -393,9 +393,9 @@ void main() {
     test("le texte libre du journal ne quitte pas le telephone", () async {
       await semerLaBaseLocale();
       final m = montee(attente: const Duration(milliseconds: 20));
-      await m.demarrer(userId: _uid);
+      await m.start(userId: _uid);
       await passeTerminee(m);
-      await m.arreter();
+      await m.stop();
 
       expect(
         serveur.toutLeContenu,
@@ -410,9 +410,9 @@ void main() {
     test("la morphologie ne quitte pas le telephone", () async {
       await semerLaBaseLocale();
       final m = montee(attente: const Duration(milliseconds: 20));
-      await m.demarrer(userId: _uid);
+      await m.start(userId: _uid);
       await passeTerminee(m);
-      await m.arreter();
+      await m.stop();
 
       for (final document in serveur.documents.values) {
         expect(document.containsKey("weight_kg"), isFalse);
@@ -426,9 +426,9 @@ void main() {
       () async {
         await semerLaBaseLocale();
         final m = montee(attente: const Duration(milliseconds: 20));
-        await m.demarrer(userId: _uid);
+        await m.start(userId: _uid);
         await passeTerminee(m);
-        await m.arreter();
+        await m.stop();
 
         expect(
           serveur.documents.keys.toSet(),
@@ -449,9 +449,9 @@ void main() {
     test("le compte (solde, droits, abonnement) ne monte JAMAIS", () async {
       await semerLaBaseLocale();
       final m = montee(attente: const Duration(milliseconds: 20));
-      await m.demarrer(userId: _uid);
+      await m.start(userId: _uid);
       await passeTerminee(m);
-      await m.arreter();
+      await m.stop();
 
       for (final chemin in serveur.documents.keys) {
         expect(chemin, isNot(contains("/wallet/")));
@@ -480,7 +480,7 @@ void main() {
       // On demarre sur une base VIDE : le demarrage n ecrit donc que la fiche
       // technique, et tout ce qui apparaitra ensuite viendra du geste.
       final m = montee();
-      await m.demarrer(userId: _uid, ecrituresLocales: ecrituresLocales());
+      await m.start(userId: _uid, ecrituresLocales: ecrituresLocales());
       await attendreQue(() => serveur.documents.containsKey("users/$_uid"));
 
       const chemin = "users/$_uid/trails/$_sentier/user_progress/current";
@@ -493,7 +493,7 @@ void main() {
         () => serveur.documents.containsKey(chemin),
         limite: const Duration(seconds: 5),
       );
-      await m.arreter();
+      await m.stop();
 
       expect(arrive, isTrue, reason: "c est LE critere d acceptation du lot");
       expect(serveur.documents[chemin]!["current_stage"], 5);
@@ -504,7 +504,7 @@ void main() {
       () async {
         final m = montee(attente: const Duration(milliseconds: 40));
         await ProgressDao(db).updateCurrentStage(_sentier, 1);
-        await m.demarrer(userId: _uid, ecrituresLocales: ecrituresLocales());
+        await m.start(userId: _uid, ecrituresLocales: ecrituresLocales());
 
         await ChecklistDao(db).upsertItem(
           ChecklistItemsCompanion.insert(
@@ -521,7 +521,7 @@ void main() {
         final arrive = await attendreQue(
           () => serveur.documents.containsKey(chemin),
         );
-        await m.arreter();
+        await m.stop();
 
         expect(arrive, isTrue);
         expect(serveur.documents[chemin]!["is_checked"], isTrue);
@@ -534,7 +534,7 @@ void main() {
       () async {
         await ProgressDao(db).updateCurrentStage(_sentier, 1);
         final m = montee(attente: const Duration(milliseconds: 300));
-        await m.demarrer(userId: _uid, ecrituresLocales: ecrituresLocales());
+        await m.start(userId: _uid, ecrituresLocales: ecrituresLocales());
         await attendreQue(() => m.monteesExecutees >= 1);
         final depart = m.monteesExecutees;
 
@@ -554,7 +554,7 @@ void main() {
         await attendreQue(() => m.monteesExecutees > depart);
         await Future<void>.delayed(const Duration(milliseconds: 400));
         final passes = m.monteesExecutees - depart;
-        await m.arreter();
+        await m.stop();
 
         expect(
           passes,
@@ -576,9 +576,9 @@ void main() {
       await semerLaBaseLocale();
       reseau.enLigne = false;
       final m = montee(attente: const Duration(milliseconds: 20));
-      await m.demarrer(userId: _uid);
+      await m.start(userId: _uid);
       await passeTerminee(m);
-      await m.arreter();
+      await m.stop();
 
       expect(
         serveur.documents.keys.where((c) => c.contains("/trails/")),
@@ -602,12 +602,12 @@ void main() {
         await semerLaBaseLocale();
         reseau.enLigne = false;
         final m = montee(attente: const Duration(milliseconds: 20));
-        await m.demarrer(userId: _uid);
+        await m.start(userId: _uid);
         await passeTerminee(m);
         for (var i = 0; i < 5; i++) {
           await m.monterMaintenant("geste $i");
         }
-        await m.arreter();
+        await m.stop();
 
         final enAttente = await SyncQueueDao(db).getPending();
         final pourLeSentier = enAttente.where(
@@ -630,7 +630,7 @@ void main() {
         await semerLaBaseLocale();
         reseau.enLigne = false;
         final m = montee(attente: const Duration(milliseconds: 20));
-        await m.demarrer(userId: _uid);
+        await m.start(userId: _uid);
         await passeTerminee(m);
         expect(await SyncQueueDao(db).getPending(), isNotEmpty);
 
@@ -642,7 +642,7 @@ void main() {
           () => serveur.documents.containsKey(chemin),
         );
         final videe = await attendreQue(() => true);
-        await m.arreter();
+        await m.stop();
 
         expect(
           arrive,
@@ -684,9 +684,9 @@ void main() {
           attenteAvantMontee: const Duration(milliseconds: 20),
           observerLeCycleDeVie: false,
         );
-        await m.demarrer(userId: _uid);
+        await m.start(userId: _uid);
         await passeTerminee(m);
-        await m.arreter();
+        await m.stop();
 
         expect(serveur.documents, isEmpty);
         expect(
@@ -757,12 +757,12 @@ void main() {
       () async {
         final m = montee(attente: const Duration(milliseconds: 20));
         serveur.instant = DateTime.utc(2026, 9, 29, 16);
-        await m.demarrer(userId: _uid);
+        await m.start(userId: _uid);
         await attendreQue(() => serveur.documents.containsKey("users/$_uid"));
 
         serveur.instant = DateTime.utc(2026, 9, 29, 18, 30);
         await m.auRetourAuPremierPlan();
-        await m.arreter();
+        await m.stop();
 
         expect(
           serveur.documents["users/$_uid"]!["last_seen_at"],
@@ -785,14 +785,8 @@ void main() {
         langue: "fr",
         fuseau: "CEST (UTC+02:00)",
       );
-      final premiere = FicheTechniqueDuTelephone.construireLaCharge(
-        r,
-        premiereVenue: true,
-      );
-      final suivante = FicheTechniqueDuTelephone.construireLaCharge(
-        r,
-        premiereVenue: false,
-      );
+      final premiere = DeviceSpecSheet.buildPayload(r, premiereVenue: true);
+      final suivante = DeviceSpecSheet.buildPayload(r, premiereVenue: false);
 
       expect(premiere.containsKey("created_at"), isTrue);
       expect(
@@ -808,7 +802,7 @@ void main() {
     test(
       "sans Firebase ou sans identite, elle n ecrit rien et ne leve pas",
       () async {
-        final sansCloud = FicheTechniqueDuTelephone(
+        final sansCloud = DeviceSpecSheet(
           firebaseService: FirebaseService.unavailable(),
           identifiant: () async => _uid,
           renseignements: () async => const RenseignementsDuTelephone(
@@ -823,7 +817,7 @@ void main() {
         );
         expect(await sansCloud.poser(), isFalse);
 
-        final sansIdentite = FicheTechniqueDuTelephone(
+        final sansIdentite = DeviceSpecSheet(
           firebaseService: FirebaseService.testOnly(isAvailable: true),
           identifiant: () async => null,
           renseignements: () async => const RenseignementsDuTelephone(

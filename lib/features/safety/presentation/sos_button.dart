@@ -67,14 +67,14 @@ class SosButton extends ConsumerWidget {
         height: 72,
         child: FloatingActionButton(
           heroTag: 'sos_e515',
-          backgroundColor: AppTheme.rougeUrgence,
+          backgroundColor: AppTheme.emergencyRed,
           elevation: 8,
           shape: const CircleBorder(),
           onPressed: () => _showSosConfirmation(context, ref),
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              StepIcon(StepwaysIcons.secours, color: Colors.white, size: 24),
+              StepIcon(StepwaysIcons.emergency, color: Colors.white, size: 24),
               Text(
                 'SOS',
                 style: TextStyle(

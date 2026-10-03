@@ -54,7 +54,7 @@ String formatChecklistGrams(int grams) {
     );
   } else if (ratio < 0.25) {
     return (
-      color: AppTheme.rougeUrgence,
+      color: AppTheme.emergencyRed,
       advice: w.adviceTooHeavy,
       icon: StepwaysIcons.danger,
     );
@@ -273,7 +273,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
           Row(
             children: [
               StepIcon(
-                StepwaysIcons.poids,
+                StepwaysIcons.weight,
                 size: 18,
                 color: theme.colorScheme.primary,
               ),
@@ -458,7 +458,7 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeColor = AppTheme.orangeDifficile;
       gaugeLabel = w.gaugeHeavy;
     } else if (pct < 25) {
-      gaugeColor = AppTheme.rougeUrgence;
+      gaugeColor = AppTheme.emergencyRed;
       gaugeLabel = w.gaugeWarn;
     } else {
       gaugeColor = CouleursSemantiques.rougeSombreSacDangereux;

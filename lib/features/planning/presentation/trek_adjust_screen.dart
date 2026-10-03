@@ -518,7 +518,7 @@ class _AdjustDayCard extends StatelessWidget {
                             color: AppTheme.rougeExtreme,
                           ),
                           DayMiniStat(
-                            icon: StepwaysIcons.duree,
+                            icon: StepwaysIcons.clock,
                             value: _formatDuration(day.estimatedHours),
                           ),
                         ],
@@ -584,7 +584,7 @@ class _AdjustDayCard extends StatelessWidget {
                     if (onRemoveRestDay != null)
                       IconButton(
                         icon: const StepIcon(StepwaysIcons.moins, size: 20),
-                        color: AppTheme.rougeUrgence,
+                        color: AppTheme.emergencyRed,
                         tooltip: t.programme.actions.removeRest,
                         onPressed: onRemoveRestDay,
                         padding: EdgeInsets.zero,

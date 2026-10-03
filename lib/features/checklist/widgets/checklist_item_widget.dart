@@ -23,7 +23,7 @@ class ChecklistRequirementDot extends StatelessWidget {
     Color dotColor;
     switch (requirement) {
       case ChecklistRequirement.required:
-        dotColor = AppTheme.rougeUrgence;
+        dotColor = AppTheme.emergencyRed;
       case ChecklistRequirement.recommended:
         dotColor = AppTheme.orangeDifficile;
       case ChecklistRequirement.optional:
@@ -162,7 +162,7 @@ class _ChecklistRequiredBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       decoration: BoxDecoration(
-        color: AppTheme.rougeUrgence.withAlpha(20),
+        color: AppTheme.emergencyRed.withAlpha(20),
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
       child: Row(
@@ -171,7 +171,7 @@ class _ChecklistRequiredBadge extends StatelessWidget {
           const StepIcon(
             StepwaysIcons.cadenas,
             size: 14,
-            color: AppTheme.rougeUrgence,
+            color: AppTheme.emergencyRed,
           ),
           const SizedBox(width: 2),
           Text(
@@ -179,7 +179,7 @@ class _ChecklistRequiredBadge extends StatelessWidget {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppTheme.rougeUrgence,
+              color: AppTheme.emergencyRed,
             ),
           ),
         ],

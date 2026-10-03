@@ -61,13 +61,13 @@ class CouleursSemantiques {
   static const pointRavitaillement = Color(0xFF2E7D32);
 
   /// Refuge ou abri (`refuge` et `shelter`, qui partagent deja leur style).
-  static const pointRefuge = Color(0xFF5D4037);
+  static const hutPoint = Color(0xFF5D4037);
 
   /// Hebergement marchand (`accommodation`).
   static const pointHebergement = Color(0xFF6A1B9A);
 
   /// Bivouac (`campsite` cote POI, `camp` cote waypoint).
-  static const pointBivouac = Color(0xFF558B2F);
+  static const bivouacPoint = Color(0xFF558B2F);
 
   /// Danger signale (`danger` des deux cotes).
   static const pointDanger = Color(0xFFC62828);
@@ -76,7 +76,7 @@ class CouleursSemantiques {
   ///
   /// Meme valeur que [pointDanger], usage distinct : un danger se contourne,
   /// une urgence s'appelle. NON fusionnee — a trancher par Christophe.
-  static const pointUrgence = Color(0xFFC62828);
+  static const emergencyPoint = Color(0xFFC62828);
 
   /// Point de vue (`viewpoint`).
   static const pointPointDeVue = Color(0xFFE65100);
@@ -158,7 +158,7 @@ class CouleursSemantiques {
   static const jauneVertSacLeger = Color(0xFF9ACD32);
 
   /// Rouge sombre du sac DANGEREUX : au-dela de 25 % du poids de corps, le cran
-  /// au-dela de `AppTheme.rougeUrgence`.
+  /// au-dela de `AppTheme.emergencyRed`.
   ///
   /// Une seule constante pour les DEUX endroits du bandeau de poids.
   static const rougeSombreSacDangereux = Color(0xFF8B0000);

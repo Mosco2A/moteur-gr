@@ -10067,7 +10067,7 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
 
   /// LE DERNIER CATALOGUE DISTANT RECU, POUR QU IL SURVIVE AU HORS-LIGNE.
   ///
-  /// Fiche d affichage du sentier (`TrailManifestFiche`) serialisee en JSON,
+  /// Fiche d affichage du sentier (`TrailManifestSheet`) serialisee en JSON,
   /// telle que le manifeste distant l a declaree. Null = le manifeste n a
   /// jamais decrit ce sentier (entree de simple versionnement, ou base
   /// anterieure a la migration v27).

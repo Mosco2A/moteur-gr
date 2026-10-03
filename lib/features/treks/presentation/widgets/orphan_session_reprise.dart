@@ -118,8 +118,8 @@ class _OrphanSessionRepriseState extends ConsumerState<OrphanSessionReprise> {
       case ResumeOrphanChoice.resume:
         // Rejoindre le cockpit du trek en cours : ecrire la selection puis
         // naviguer (la session reste en cours, la carte s'affichera « active »).
-        // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
-        choisirSentier(ref, session.trailId);
+        // Bascule resolue AVANT la navigation (cf. [chooseTrail]).
+        chooseTrail(ref, session.trailId);
         // `maybeOf` sur l'HOTE, pas `context.go` : voir l'en-tete de cette
         // methode — `context` n'a jamais eu de `GoRouter` au-dessus de lui.
         if (hote.mounted) GoRouter.maybeOf(hote)?.go('/home');

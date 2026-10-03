@@ -114,7 +114,7 @@ class GoogleBannerAdPresenter implements BannerAdPresenter {
   @override
   Future<LoadedBanner?> load(BannerAdRequest request) async {
     try {
-      return await _charger(request).timeout(_budget);
+      return await _load(request).timeout(_budget);
     } on TimeoutException {
       // CAS NORMAL ET PREVU, PAS UNE PANNE : hors ligne ou en reseau lent, une
       // banniere qui n'arrive pas est le comportement attendu. On le dit en
@@ -134,7 +134,7 @@ class GoogleBannerAdPresenter implements BannerAdPresenter {
     }
   }
 
-  Future<LoadedBanner?> _charger(BannerAdRequest request) async {
+  Future<LoadedBanner?> _load(BannerAdRequest request) async {
     final taille = await _tailleAdaptative();
     final resultat = Completer<LoadedBanner?>();
     late final BannerAd banniere;

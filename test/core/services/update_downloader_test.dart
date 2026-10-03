@@ -254,7 +254,7 @@ void main() {
       // le sentier COMPLET, donc il le dit.
       final results = await downloader.downloadAllUpdates(
         manifestUrl: 'https://example.com/manifest.json',
-        niveauParSentier: const {'volcans': NiveauDeTelechargement.realiser},
+        levelByTrail: const {'volcans': NiveauDeTelechargement.realiser},
       );
 
       // Verification: 1 resultat, succes

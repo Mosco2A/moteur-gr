@@ -29,10 +29,10 @@ import 'trail_config.dart';
 ///
 /// UNE ENTREE PEUT N ETRE PAS AFFICHABLE, ET ON LE DIT PLUTOT QUE DE MONTRER
 /// UNE CARTE VIDE. Une entree sans fiche ET sans equivalent compile ne porte
-/// que du versionnement : ni nom, ni region, ni distance. [versSentier] rend
+/// que du versionnement : ni nom, ni region, ni distance. [toTrail] rend
 /// alors `null`, et l appelant l ecarte en le JOURNALISANT — un sentier
 /// silencieusement absent est indiagnosticable, c est la lecon de la tache 604.
-extension EntreeManifesteEnSentier on TrailManifestEntry {
+extension ManifestEntryAsTrail on TrailManifestEntry {
   /// Vrai si l entree est DESTINEE au catalogue (`status == 'active'`).
   ///
   /// `draft` et `archived` sont des etats de publication cote serveur :
@@ -43,7 +43,7 @@ extension EntreeManifesteEnSentier on TrailManifestEntry {
   /// Construit le sentier affichable, ou `null` si l entree ne decrit rien.
   ///
   /// [compile] est l equivalent du catalogue embarque quand il existe.
-  TrailConfig? versSentier({TrailConfig? compile}) {
+  TrailConfig? toTrail({TrailConfig? compile}) {
     final f = fiche;
 
     // Pas de fiche : l entree ne fait que VERSIONNER un sentier deja connu du

@@ -49,13 +49,13 @@ void main() {
       // `test_trail.gpx`). Ce sentier etait donc au catalogue AVEC AUCUNE
       // TRACE, et la carte affichait « impossible de charger la trace ». Un
       // test vert sur un produit casse est pire qu un test absent.
-      for (final sentier in TrailCatalog.all) {
-        if (sentier.gpxAssetPath.isEmpty) continue;
+      for (final trail in TrailCatalog.all) {
+        if (trail.gpxAssetPath.isEmpty) continue;
         expect(
-          File(sentier.gpxAssetPath).existsSync(),
+          File(trail.gpxAssetPath).existsSync(),
           isTrue,
           reason:
-              '${sentier.id} declare « ${sentier.gpxAssetPath} », absent du '
+              '${trail.id} declare « ${trail.gpxAssetPath} », absent du '
               'depot. Un asset DECLARE qui ne se lit pas est une ERREUR a '
               'l affichage de la carte, volontairement : mieux vaut un chemin '
               'VIDE — une absence NOMMEE, que la carte sait traiter — qu un '

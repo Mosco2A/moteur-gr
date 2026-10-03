@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
@@ -24,20 +24,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// TÂCHE 613 — LE STOCKAGE A CHANGÉ, ET CES TESTS AVEC LUI. La fiche ne vit plus
 /// dans la table `health_info` de la base commune : elle a SON PROPRE FICHIER,
 /// sous le dossier déclaré exclu de la sauvegarde du téléphone. La raison est
-/// écrite dans `FicheMedicaleFichier` — la base est devenue durable et doit
+/// écrite dans `HealthInfoFile` — la base est devenue durable et doit
 /// remonter dans la sauvegarde pour que la progression et le carnet survivent au
 /// changement d'appareil, or un fichier de base ne s'exclut pas table par table.
-/// Ces tests surchargent donc `ficheMedicaleFichierProvider` (bac temporaire).
+/// Ces tests surchargent donc `healthInfoFileProvider` (bac temporaire).
 /// Données LOCAL ONLY : rien ne quitte l'appareil.
 void main() {
   late AppDatabase db;
   late Directory bacFiche;
-  late FicheMedicaleFichier fiche;
+  late HealthInfoFile fiche;
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     bacFiche = Directory.systemTemp.createTempSync('fiche613_ecran');
-    fiche = FicheMedicaleFichier(dossierApplicatif: () async => bacFiche);
+    fiche = HealthInfoFile(dossierApplicatif: () async => bacFiche);
     // TÂCHE 568 (LOT Q) : l'écran re-synchronise à l'ouverture un SIGNAL DE
     // PRÉPARATION persisté en préférences (fiche remplie / conseils lus, cf.
     // `health_prepare_providers.dart`) — il entre dans la porte de démarrage du
@@ -55,7 +55,7 @@ void main() {
       overrides: [
         databaseProvider.overrideWithValue(database ?? db),
         // Tâche 613 : la fiche vit dans son propre fichier, pas dans la base.
-        ficheMedicaleFichierProvider.overrideWithValue(fiche),
+        healthInfoFileProvider.overrideWithValue(fiche),
       ],
       // AppHeader (Ph5/L6d) utilise GoRouter (canPop/go). L'écran est atteint,
       // comme en prod, PAR UN PUSH depuis l'écran Urgence -> on l'héberge en
@@ -154,9 +154,9 @@ void main() {
         find.byKey(const ValueKey('health-full-name-field')),
         'Christophe Mosconi',
       );
-      final liste = find.byKey(const ValueKey('health-blood-type-field'));
-      await tester.ensureVisible(liste);
-      await tester.tap(liste);
+      final list = find.byKey(const ValueKey('health-blood-type-field'));
+      await tester.ensureVisible(list);
+      await tester.tap(list);
       await tester.pumpAndSettle();
       // Le menu déroulant est ouvert : « O- » y figure (le `.last` évite
       // l'éventuel libellé du champ resté sous le menu).

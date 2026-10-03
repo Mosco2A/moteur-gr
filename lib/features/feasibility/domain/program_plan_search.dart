@@ -151,7 +151,7 @@ class ProgramPlanSearch {
   /// HIVER : la recherche ne cherche pas a rattraper un verdict declare NON
   /// VALIDE (#2-j). Les couleurs restent calculees ; c'est le bandeau hiver,
   /// place avant le feu, qui dit que le verdict ne tient plus.
-  static SuggestedProgram? planDuSentier({
+  static SuggestedProgram? trailPlan({
     required List<StageModel> stages,
     required HikerLevel level,
     required DurationSearchBounds bounds,

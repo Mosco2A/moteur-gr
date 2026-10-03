@@ -67,7 +67,7 @@ import "wallet_store.dart";
 /// arbitre par l horodatage de serveur du lot 610.
 class DescenteDesDroits {
   DescenteDesDroits({
-    required this.compteEtapes,
+    required this.stageCount,
     required this.entitlementsDao,
     required this.noAdsDao,
     required this.firebaseService,
@@ -79,7 +79,7 @@ class DescenteDesDroits {
   }) : _firestore = firestore;
 
   /// Le compte-etapes local (source durable : preferences + miroir Drift).
-  final WalletStore compteEtapes;
+  final WalletStore stageCount;
 
   /// Les droits de sentier locaux.
   final TrekEntitlementsDao entitlementsDao;
@@ -126,7 +126,7 @@ class DescenteDesDroits {
   bool get ecouteArmee => _ecoutes.isNotEmpty;
 
   /// Cle de l instant d abonnement deja applique (millisecondes epoch).
-  static const String clePrefsHorodatageAbonnement =
+  static const String subscriptionTimestampPrefsKey =
       "droits.abonnement.horodatage";
 
   /// L ECOUTE EN DIRECT — CE QUE CHRISTOPHE VERRA ARRIVER SANS RIEN FAIRE.
@@ -186,7 +186,7 @@ class DescenteDesDroits {
       );
       _ecoutes.add(
         racine
-            .collection(kCheminSentiers)
+            .collection(kEntitlementsPath)
             .snapshots()
             .listen(
               (_) => surChangement("sentiers"),
@@ -292,21 +292,21 @@ class DescenteDesDroits {
       (await racine.collection("wallet").doc("current").get()).data(),
     );
 
-    final sentiers = <DroitDeSentierDistant>[];
-    final lot = await racine.collection(kCheminSentiers).get();
+    final trails = <DroitDeSentierDistant>[];
+    final lot = await racine.collection(kEntitlementsPath).get();
     for (final doc in lot.docs) {
       final lu = DroitDeSentierDistant.lire(doc.id, doc.data());
-      if (lu != null) sentiers.add(lu);
+      if (lu != null) trails.add(lu);
     }
 
-    final abonnement = AbonnementDistant.lire(
+    final subscription = AbonnementDistant.lire(
       (await racine.collection("subscription").doc("current").get()).data(),
     );
 
     return DroitsDistants(
       solde: solde,
-      sentiers: sentiers,
-      abonnement: abonnement,
+      trails: trails,
+      subscription: subscription,
     );
   }
 
@@ -319,7 +319,7 @@ class DescenteDesDroits {
     // --- LE COMPTE-ETAPES : maximum des deux compteurs monotones ------------
     final distantSolde = annonces.solde;
     if (distantSolde != null) {
-      final local = compteEtapes.snapshot;
+      final local = stageCount.snapshot;
       final fusion = fusionnerSolde(
         gagneLocal: local.lifetimeEarnedSteps,
         depenseLocal: local.lifetimeSpentSteps,
@@ -328,7 +328,7 @@ class DescenteDesDroits {
       if (fusion.cumulGagne != local.lifetimeEarnedSteps ||
           fusion.cumulDepense != local.lifetimeSpentSteps ||
           fusion.solde != local.balanceSteps) {
-        await compteEtapes.restoreSnapshot(
+        await stageCount.restoreSnapshot(
           WalletSnapshot(
             balanceSteps: fusion.solde,
             lifetimeEarnedSteps: fusion.cumulGagne,
@@ -340,9 +340,9 @@ class DescenteDesDroits {
     }
 
     // --- LES DROITS DE SENTIER : loquets ------------------------------------
-    for (final distant in annonces.sentiers) {
+    for (final distant in annonces.trails) {
       final local = await entitlementsDao.getByTrailId(distant.trailId);
-      final fusion = fusionnerDroitDeSentier(
+      final fusion = mergeTrailEntitlement(
         possedeLocal: local?.owned ?? false,
         etapesAcquisesLocal: local?.acquiredStages ?? 0,
         complementConsommeLocal: local?.consumedComplementSteps ?? 0,
@@ -377,11 +377,11 @@ class DescenteDesDroits {
 
     // --- L ABONNEMENT : le serveur tranche, l horodatage arbitre ------------
     var abonnementApplique = false;
-    final distantAbo = annonces.abonnement;
+    final distantAbo = annonces.subscription;
     if (distantAbo != null) {
       final dejaApplique =
           HorodatageServeur.annonceParLeServeur(
-            preferences.getInt(clePrefsHorodatageAbonnement),
+            preferences.getInt(subscriptionTimestampPrefsKey),
           ) ??
           HorodatageServeur.origine;
 
@@ -405,7 +405,7 @@ class DescenteDesDroits {
           );
         }
         await preferences.setInt(
-          clePrefsHorodatageAbonnement,
+          subscriptionTimestampPrefsKey,
           distantAbo.horodatage.millisecondesEpoch,
         );
         abonnementApplique = true;
@@ -421,7 +421,7 @@ class DescenteDesDroits {
 
     return ResultatDescente(
       appliquee: true,
-      soldeApres: compteEtapes.balanceSteps,
+      soldeApres: stageCount.balanceSteps,
       sentiersMisAJour: List.unmodifiable(sentiersTouches),
       abonnementApplique: abonnementApplique,
     );
@@ -492,7 +492,7 @@ final descenteDesDroitsProvider = FutureProvider<DescenteDesDroits>((
   final db = ref.watch(databaseProvider);
   final prefs = await SharedPreferences.getInstance();
   return DescenteDesDroits(
-    compteEtapes: ref.watch(walletStoreProvider),
+    stageCount: ref.watch(walletStoreProvider),
     entitlementsDao: db.trekEntitlementsDao,
     noAdsDao: db.noAdsDao,
     firebaseService: ref.watch(firebaseServiceProvider),

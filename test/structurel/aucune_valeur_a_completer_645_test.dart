@@ -55,7 +55,7 @@ import 'mesure_des_sources_645.dart';
 ///   11  lib/features/planning/domain/shop_catalog.dart
 ///    3  lib/features/booking/providers/hebergement_peripherique_providers.dart
 ///    3  lib/features/guides/domain/town_guide_catalog.dart
-///    1  lib/shared/widgets/lien_vers_les_cartes.dart
+///    1  lib/shared/widgets/maps_link.dart
 ///
 /// Les 44 premiers etaient des valeurs LIVREES : un badge de prix vert qui
 /// disait « a completer », un bouton « Voir le site » vers `example.org`, une

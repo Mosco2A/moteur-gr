@@ -94,7 +94,7 @@ class StageListTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppTheme.spacingMd),
                     StepIcon(
-                      StepwaysIcons.duree,
+                      StepwaysIcons.clock,
                       size: 14,
                       color: theme.colorScheme.onSurface.withAlpha(180),
                     ),

@@ -129,7 +129,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: Center(child: IconeStepways(RubriqueStepways.meteo)),
+            body: Center(child: IconeStepways(RubriqueStepways.weather)),
           ),
         ),
       );

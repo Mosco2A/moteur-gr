@@ -124,7 +124,7 @@ class FireRiskScreen extends ConsumerWidget {
           SectionHeader(
             title: t.fireRisk.levelsTitle,
             icon: StepwaysIcons.incendie,
-            iconColor: AppTheme.rougeUrgence,
+            iconColor: AppTheme.emergencyRed,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           _Legend(theme: theme, t: t),
@@ -133,7 +133,7 @@ class FireRiskScreen extends ConsumerWidget {
           // 6. Risque par etape.
           SectionHeader(
             title: t.fireRisk.stagesTitle,
-            icon: StepwaysIcons.carte,
+            icon: StepwaysIcons.map,
             iconColor: AppTheme.orangeDifficile,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -293,7 +293,7 @@ class _UpdateBanner extends ConsumerWidget {
       FreshnessLevel.fresh => AppTheme.vertFacile,
       FreshnessLevel.recent => AppTheme.jauneModere,
       FreshnessLevel.stale => AppTheme.orangeDifficile,
-      FreshnessLevel.unknown => AppTheme.rougeUrgence,
+      FreshnessLevel.unknown => AppTheme.emergencyRed,
     };
 
     return AppCard(
@@ -742,7 +742,7 @@ class _EmergencyNumbers extends ConsumerWidget {
     // Couleur : rouge urgence pour les universels, orange pour les regionaux
     // (parite esprit GR20 : hierarchie visuelle 18/112 vs local).
     final color = n.isUniversal
-        ? AppTheme.rougeUrgence
+        ? AppTheme.emergencyRed
         : AppTheme.orangeDifficile;
 
     return Semantics(
@@ -853,7 +853,7 @@ Color fireRiskColor(int level) {
     case 3:
       return AppTheme.orangeDifficile;
     case 4:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case >= 5:
       return CouleursSemantiques.rougeSombreRisqueFeuExtreme;
     default:

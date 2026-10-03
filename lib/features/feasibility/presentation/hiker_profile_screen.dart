@@ -219,7 +219,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
       // 1. Le refus est trace et horodate (retractable a tout moment, D4A-01).
       await consent.revoke(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
       // 2. Le refus EFFACE : une revocation fait disparaitre ce qui a deja ete
       //    enregistre, elle ne se contente pas de cesser d'ecrire. Sans ce
@@ -241,7 +241,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     // apres — l'ordre importe si l'ecriture echoue.
     await consent.grant(
       ConsentPurpose.healthData,
-      declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      declencheur: ConsentTrigger.modificationDesDonnees,
     );
     await ref.read(hikerProfileProvider.notifier).save(profile);
 
@@ -253,7 +253,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     // POURQUOI CE CONTROLE APPARAIT AVEC CE LOT, ET PAS AVANT. La fiche etait
     // ecrite dans `SharedPreferences`, une ecriture qui n'echoue pratiquement
     // jamais. Elle va maintenant dans un FICHIER du stockage protege
-    // (`ProfilRandonneurFichier`, le dossier de la fiche medicale), parce que les
+    // (`HikerProfileFile`, le dossier de la fiche medicale), parce que les
     // preferences ne peuvent PAS etre exclues de la sauvegarde iCloud sur iPhone.
     // Une ecriture de fichier, elle, peut echouer : disque plein, droits refuses,
     // dossier illisible.
@@ -382,7 +382,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _weightController,
                       label: tp.fieldWeight,
                       hint: tp.hintWeight,
-                      icon: StepwaysIcons.poids,
+                      icon: StepwaysIcons.weight,
                       allowDecimal: true,
                       maxLength: 5,
                       limitMessage: tp.errorWeight,
@@ -467,7 +467,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     AppButton(
                       isLoading: _saving,
                       minHeight: 52,
-                      icon: StepwaysIcons.enregistrer,
+                      icon: StepwaysIcons.save,
                       label: tp.save,
                       onPressed: _saving ? null : _save,
                     ),

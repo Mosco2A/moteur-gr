@@ -242,7 +242,7 @@ class _HikeCard extends StatelessWidget {
                 text: '${hike.totalElevationGain} m D+',
               ),
               _Chip(
-                icon: StepwaysIcons.duree,
+                icon: StepwaysIcons.clock,
                 text:
                     '${hike.avgWalkHoursPerDay.toStringAsFixed(1)} h/${ph.perDay}',
               ),
@@ -409,7 +409,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             _num(
               _hoursCtrl,
               ph.fieldAvgHours,
-              StepwaysIcons.duree,
+              StepwaysIcons.clock,
               min: 0,
               max: 24,
               maxLength: 4,

@@ -59,15 +59,15 @@ abstract final class AppBranding {
 
   /// Aplat de fond de l'icone d'application de la famille active.
   static const Color couleurFondIcone = family == 'marches'
-      ? orangeSentier
-      : vertSentier;
+      ? trailOrange
+      : trailGreen;
 
   /// Aplat de fond de l'ecran de demarrage de la variante active. Sert a
   /// prolonger le splash natif dans le premier ecran Flutter sans couture
   /// visible.
   static const Color couleurFondSplash = splashVariant == 'aube'
-      ? cremeSentier
-      : vertSentier;
+      ? trailCream
+      : trailGreen;
 
   /// Vrai si le fond de l'ecran de demarrage est sombre — donc si le logo a y
   /// poser est la variante « clair ».
@@ -80,13 +80,13 @@ abstract final class AppBranding {
 
   /// Le vert de la charte. C'est la couleur du trait des icones de rubrique en
   /// duo et le fond de l'ecran de demarrage Foret.
-  static const Color vertSentier = Color(0xFF1F3D2B);
+  static const Color trailGreen = Color(0xFF1F3D2B);
 
   /// L'orange de la charte : le soleil du logo, l'accent des icones en duo.
-  static const Color orangeSentier = Color(0xFFD9772B);
+  static const Color trailOrange = Color(0xFFD9772B);
 
   /// Le creme de la charte : l'encre posee sur le vert.
-  static const Color cremeSentier = Color(0xFFF4F1E8);
+  static const Color trailCream = Color(0xFFF4F1E8);
 
   /// LE SEUL INTERRUPTEUR DUO / MONOCHROME (tache 632). Christophe a livre deux
   /// familles en trois traces — les 20 RUBRIQUES de l'application et les 43

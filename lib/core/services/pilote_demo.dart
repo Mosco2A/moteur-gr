@@ -64,13 +64,13 @@ void entrerEnDemo(WidgetRef ref) {
   ref.read(sessionDemoProvider.notifier).entrer(sentierAvant: sentierAvant);
   // On entre en demo AVANT de basculer de sentier : la barriere d'ecriture est
   // donc deja posee quand le moteur resout le nouveau sentier.
-  choisirSentier(ref, kSentierDeDemo);
+  chooseTrail(ref, kSentierDeDemo);
 }
 
 /// QUITTE LA DEMO : sortie COMPLETE et ATOMIQUE (bug 19), puis retour a
 /// « Mes treks ».
 ///
-/// [cacherBouton] porte le reglage « Cacher le mode demo » (precision de
+/// [hideButton] porte le reglage « Cacher le mode demo » (precision de
 /// Christophe du 30/09 10:30 sur le bug 18) : `true`, le bouton orange disparait
 /// du catalogue et se retrouve dans Mon compte ; `false`, il revient en tete du
 /// catalogue. Le reglage est persistant et reversible depuis Mon compte — il ne
@@ -86,7 +86,7 @@ void entrerEnDemo(WidgetRef ref) {
 Future<void> quitterLaDemo(
   WidgetRef ref, {
   BuildContext? context,
-  bool? cacherBouton,
+  bool? hideButton,
 }) async {
   final session = ref.read(sessionDemoProvider);
   if (!session.active) return;
@@ -121,7 +121,7 @@ Future<void> quitterLaDemo(
   // s'ouvrait sur le sentier de la demo : le randonneur restait dans la demo
   // sans le savoir.
   final avant = session.sentierAvant;
-  if (avant != null) choisirSentier(ref, avant);
+  if (avant != null) chooseTrail(ref, avant);
 
   // 4. LES PROVIDERS QUI ONT VECU EN MEMOIRE PENDANT LA DEMO SONT JETES.
   //
@@ -146,8 +146,8 @@ Future<void> quitterLaDemo(
   // `null` ici ne veut dire qu'une chose — l'appel ne venait pas de l'arbre
   // route (un test) — et jamais « l'appelant a ete demonte en route ».
   routeur?.go(HomeLocations.maison);
-  if (cacherBouton != null) {
-    await ref.read(boutonDemoCacheProvider.notifier).definir(cacherBouton);
+  if (hideButton != null) {
+    await ref.read(boutonDemoCacheProvider.notifier).definir(hideButton);
   }
 }
 
@@ -156,7 +156,7 @@ Future<void> quitterLaDemo(
 /// « on pourra la retrouver dans Mon compte » : ce geste est l'autre porte
 /// d'entree de la demo, celle qui reste quand le bouton du catalogue a ete
 /// cache. Il n'y en a pas une troisieme, et les deux passent par [entrerEnDemo].
-void relancerLaDemoDepuisMonCompte(WidgetRef ref, BuildContext context) {
+void restartDemoFromAccount(WidgetRef ref, BuildContext context) {
   entrerEnDemo(ref);
   GoRouter.maybeOf(context)?.go('/home');
 }

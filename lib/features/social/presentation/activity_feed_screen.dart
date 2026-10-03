@@ -157,7 +157,7 @@ class _ActivityCard extends ConsumerWidget {
                   radius: 16,
                   backgroundColor: theme.colorScheme.primaryContainer,
                   child: StepIcon(
-                    StepwaysIcons.monCompte,
+                    StepwaysIcons.myAccount,
                     size: 18,
                     color: theme.colorScheme.onPrimaryContainer,
                   ),

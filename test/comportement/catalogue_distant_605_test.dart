@@ -24,10 +24,10 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
-import 'package:moteur_gr/features/trail/domain/etat_du_sentier.dart';
+import 'package:moteur_gr/features/trail/domain/trail_state.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
 import 'package:moteur_gr/features/treks/providers/entitlements_provider.dart';
-import 'package:moteur_gr/features/trail/providers/catalogue_sentiers_provider.dart';
+import 'package:moteur_gr/features/trail/providers/trail_catalog_provider.dart';
 import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 
 import '../fixtures/horodatage_de_serveur.dart';
@@ -86,7 +86,7 @@ class FauxReseau extends ConnectivityMonitor {
 }
 
 /// Fiche complete d un sentier que le binaire ne connait PAS.
-const _ficheSentierInconnu = TrailManifestFiche(
+const _ficheSentierInconnu = TrailManifestSheet(
   name: 'GR Aubrac',
   displayName: 'Traversee de l Aubrac',
   tagline: 'Le plateau, le vent, les burons',
@@ -100,7 +100,7 @@ const _ficheSentierInconnu = TrailManifestFiche(
   priceStages: 6,
   privacyPolicyUrl: 'https://exemple.org/aubrac/privacy',
   emergencyNumbers: [
-    FicheNumeroSecours(name: 'Secours Aubrac', phone: '+33565000000'),
+    EmergencyNumberSheet(name: 'Secours Aubrac', phone: '+33565000000'),
   ],
 );
 
@@ -308,7 +308,7 @@ void main() {
 
       final etat = horsLigne.read(catalogueSentiersProvider);
       expect(
-        etat.sentiers.map((s) => s.id),
+        etat.trails.map((s) => s.id),
         contains('gr-aubrac'),
         reason:
             'le randonneur sans reseau GARDE le catalogue qu il avait — '
@@ -324,7 +324,7 @@ void main() {
       );
       // Les sentiers compiles restent la eux aussi.
       for (final compile in TrailCatalog.all) {
-        expect(etat.sentiers.map((s) => s.id), contains(compile.id));
+        expect(etat.trails.map((s) => s.id), contains(compile.id));
       }
     });
 
@@ -338,7 +338,7 @@ void main() {
         // AVANT toute attente : l etat initial est deja utilisable. C est la
         // raison d etre de l etat synchrone — aucun ecran n attend.
         final immediat = c.read(catalogueSentiersProvider);
-        expect(immediat.sentiers, isNotEmpty);
+        expect(immediat.trails, isNotEmpty);
         expect(immediat.source, SourceDuCatalogue.compile);
         expect(immediat.echec, isNull);
 
@@ -346,7 +346,7 @@ void main() {
 
         final apres = c.read(catalogueSentiersProvider);
         expect(
-          apres.sentiers.map((s) => s.id),
+          apres.trails.map((s) => s.id),
           TrailCatalog.ids,
           reason:
               'les quatre sentiers embarques sont tous la : le lot '
@@ -355,7 +355,7 @@ void main() {
         );
         expect(apres.source, SourceDuCatalogue.compile);
         expect(
-          apres.sentiers,
+          apres.trails,
           isNotEmpty,
           reason: 'JAMAIS d ecran vide quand un secours existe',
         );
@@ -375,7 +375,7 @@ void main() {
 
       final etat = c.read(catalogueSentiersProvider);
       expect(
-        etat.sentiers,
+        etat.trails,
         isNotEmpty,
         reason:
             'l espace de stockage n existe pas encore : c est exactement '
@@ -396,7 +396,7 @@ void main() {
         fileSize: 1024,
         status: 'active',
         lastUpdated: '2026-09-27T20:00:00Z',
-        fiche: TrailManifestFiche(
+        fiche: TrailManifestSheet(
           name: compile.name,
           displayName: compile.displayName,
           tagline: compile.tagline,
@@ -499,7 +499,7 @@ void main() {
 
         final etat = c.read(catalogueSentiersProvider);
         expect(
-          etat.sentiers.map((s) => s.id),
+          etat.trails.map((s) => s.id),
           isNot(contains('sentier-sans-nom')),
         );
         expect(
@@ -877,14 +877,14 @@ void main() {
   group('605 — trois etats, deux gestes, et une interdiction', () {
     test('ETAT 1 — au catalogue, pas sur le telephone : on peut telecharger, '
         'il n y a rien a supprimer', () {
-      const d = DisponibiliteDuSentier(
+      const d = TrailAvailability(
         trailId: 'gr-aubrac',
         copieComplete: false,
         achete: false,
       );
-      expect(d.etat, EtatDuSentier.auCatalogue);
-      expect(d.peutTelecharger, isTrue);
-      expect(d.peutSupprimer, isFalse);
+      expect(d.etat, TrailState.auCatalogue);
+      expect(d.canDownload, isTrue);
+      expect(d.canDelete, isFalse);
       expect(
         d.refusDeSuppression,
         RefusDeSuppression.pasSurLeTelephone,
@@ -895,28 +895,28 @@ void main() {
     });
 
     test('ETAT 2 — telecharge, non achete : la suppression est PERMISE', () {
-      const d = DisponibiliteDuSentier(
+      const d = TrailAvailability(
         trailId: 'gr-aubrac',
         copieComplete: true,
         achete: false,
       );
-      expect(d.etat, EtatDuSentier.telecharge);
-      expect(d.peutTelecharger, isFalse);
-      expect(d.peutSupprimer, isTrue);
+      expect(d.etat, TrailState.downloaded);
+      expect(d.canDownload, isFalse);
+      expect(d.canDelete, isTrue);
       expect(d.refusDeSuppression, isNull);
     });
 
     test(
       'ETAT 3 — ACHETE : LA SUPPRESSION EST INTERDITE, et la cause est dite',
       () {
-        const d = DisponibiliteDuSentier(
+        const d = TrailAvailability(
           trailId: 'gr-aubrac',
           copieComplete: true,
           achete: true,
         );
-        expect(d.etat, EtatDuSentier.achete);
+        expect(d.etat, TrailState.achete);
         expect(
-          d.peutSupprimer,
+          d.canDelete,
           isFalse,
           reason:
               'REGLE DE CHRISTOPHE, 27/09 20:41 : « on peut aussi le '
@@ -930,13 +930,13 @@ void main() {
 
     test('TELECHARGER N EST PAS ACHETER : un sentier achete mais pas encore '
         'copie se telecharge, et reste deja insupprimable', () {
-      const d = DisponibiliteDuSentier(
+      const d = TrailAvailability(
         trailId: 'gr-aubrac',
         copieComplete: false,
         achete: true,
       );
       expect(
-        d.peutTelecharger,
+        d.canDownload,
         isTrue,
         reason:
             'le niveau gratuit du modele eco (§2) consulte et PREPARE, et '

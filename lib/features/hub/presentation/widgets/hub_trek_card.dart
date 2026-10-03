@@ -239,7 +239,7 @@ class _StartTrekCard extends StatelessWidget {
               // le trace duo porte deja le vert #1F3D2B de l'identite. On retire
               // donc la couleur imposee, et la regle de [iconeBicolorePour] fait
               // sortir « carte » en bicolore.
-              const StepIcon.tuile(StepwaysIcons.carte),
+              const StepIcon.tuile(StepwaysIcons.map),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -290,7 +290,7 @@ class _CompletedTrekCard extends ConsumerWidget {
             children: [
               // TACHE 639 (bug 3) : tuile d'etat de fin de trek = un sujet. Le
               // diplome est l'une des 20 rubriques, il a un trace bicolore.
-              const StepIcon.tuile(StepwaysIcons.diplome),
+              const StepIcon.tuile(StepwaysIcons.diploma),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

@@ -5,8 +5,8 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../shared/widgets/bouton_simulation_demo.dart';
-import '../../../ads/presentation/badge_etat_publicite.dart';
+import '../../../../shared/widgets/demo_simulation_button.dart';
+import '../../../ads/presentation/ad_state_badge.dart';
 import 'finish_trek_button.dart';
 import 'hub_buy_trek_button.dart';
 import 'hub_start_trek_button.dart';
@@ -83,7 +83,7 @@ class _HubAdStateMark extends StatelessWidget {
         // n'y a pas de publicite — un abonne ne paie rien, pas meme en
         // pixels. La marque parle de l'etat des DROITS, l'emplacement parle
         // de ce que la regie a rendu : deux choses, deux endroits.
-        const BandeauEtatPublicite(),
+        const AdStateBanner(),
         const SizedBox(height: AppTheme.spacingSm),
       ],
     );
@@ -214,7 +214,7 @@ class HubCockpitFooter extends StatelessWidget {
         // partie de l appli »). Elle est desormais un bouton, dans le
         // cockpit, invisible hors demo et invisible tant que la randonnee
         // simulee n'est pas partie.
-        const BoutonSimulationDemo(),
+        const DemoSimulationButton(),
 
         // --- « Terminer le trek » (Finitions V1, point 3) ---
         // Bouton ORANGE en FIN DE SCROLL (décision Chris), symétrique du

@@ -30,8 +30,8 @@ void main() {
         expect(PoiMarker.iconFor('restaurant'), StepwaysIcons.restauration);
       });
 
-      test('emergency retourne StepwaysIcons.secours', () {
-        expect(PoiMarker.iconFor('emergency'), StepwaysIcons.secours);
+      test('emergency retourne StepwaysIcons.emergency', () {
+        expect(PoiMarker.iconFor('emergency'), StepwaysIcons.emergency);
       });
 
       test('danger retourne StepwaysIcons.danger', () {

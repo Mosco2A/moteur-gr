@@ -94,7 +94,7 @@ class FicheEcranVerrouille {
       final fiche = await _ref.read(healthInfoRepositoryProvider).get();
       if (!fiche.hasData) return;
       final contacts = _ref.read(emergencyContactsServiceProvider);
-      contacts.chargerDepuisLaFiche(fiche.emergencyContacts);
+      contacts.loadFromSheet(fiche.emergencyContacts);
       final service = _ref.read(lockscreenWidgetServiceProvider);
       await service.updateSecurityData(
         healthInfo: fiche,

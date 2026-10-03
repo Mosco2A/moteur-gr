@@ -89,15 +89,15 @@ void main() {
       // ecran de telephone. LE COMPTE DE GESTES NE CHANGE PAS : faire defiler
       // n'est pas un geste de plus (meme convention que le balayage du LOT X,
       // cf. [amenerALEcran]) ; c'est le doigt qu'on amene sur le bouton.
-      final reglages = find.byWidgetPredicate(
-        (w) => w is StepIcon && w.asset == StepwaysIcons.reglages,
+      final settings = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.settings,
       );
       expect(
-        reglages,
+        settings,
         findsWidgets,
         reason: 'l accueil doit offrir une entree vers les reglages',
       );
-      final reglagesAtteignable = await amenerALEcran(tester, reglages.first);
+      final reglagesAtteignable = await amenerALEcran(tester, settings.first);
       expect(
         reglagesAtteignable,
         isTrue,
@@ -105,13 +105,13 @@ void main() {
             'l entree « reglages » doit rester atteignable depuis '
             'l accueil, y compris quand il affiche son etat vide',
       );
-      await tester.tap(reglages.first);
+      await tester.tap(settings.first);
       await stabiliser(tester);
       gestes++;
 
       // Geste 2 — l'abonnement, depuis les reglages.
-      final abonnement = find.byKey(const ValueKey('reglages-abonnement'));
-      final atteignable = await amenerALEcran(tester, abonnement);
+      final subscription = find.byKey(const ValueKey('reglages-abonnement'));
+      final atteignable = await amenerALEcran(tester, subscription);
       expect(
         atteignable,
         isTrue,
@@ -119,13 +119,13 @@ void main() {
             'l entree « abonnement » doit etre atteignable dans les '
             'reglages, pas enterree dans un sous-sous-menu',
       );
-      await tester.tap(abonnement);
+      await tester.tap(subscription);
       await stabiliser(tester);
       gestes++;
 
       // Geste 3 — arreter. LE BOUTON DOIT ETRE LA, SUR CET ECRAN.
-      final arreter = find.byKey(const ValueKey('abo-arreter'));
-      final visible = await amenerALEcran(tester, arreter);
+      final stop = find.byKey(const ValueKey('abo-arreter'));
+      final visible = await amenerALEcran(tester, stop);
       expect(
         visible,
         isTrue,
@@ -135,7 +135,7 @@ void main() {
             'celui qui dit deja ce que l abo donne et ce qu il ne donne pas. '
             'Un niveau de plus, et le compte passe a quatre',
       );
-      await tester.tap(arreter);
+      await tester.tap(stop);
       await stabiliser(tester);
       gestes++;
 

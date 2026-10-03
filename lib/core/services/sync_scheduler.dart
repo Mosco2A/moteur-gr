@@ -19,7 +19,7 @@ import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
 import "../providers/service_providers.dart";
 import "cloud_sync_service.dart";
-import "fiche_technique_du_telephone.dart";
+import "device_spec_sheet.dart";
 import "montee_des_consentements.dart";
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -105,7 +105,7 @@ class SyncScheduler with WidgetsBindingObserver {
 
   /// La fiche technique `users/{uid}`. Nullable : une instance de test qui ne
   /// s y interesse pas n a pas a la fabriquer.
-  final FicheTechniqueDuTelephone? ficheTechnique;
+  final DeviceSpecSheet? ficheTechnique;
 
   /// LE REGISTRE DE CONSENTEMENT (tache 638), SI IL EST BRANCHE.
   ///
@@ -164,12 +164,12 @@ class SyncScheduler with WidgetsBindingObserver {
   ///
   /// NE BLOQUE PAS LE DEMARRAGE : la fiche technique et le rattrapage partent
   /// sans etre attendus. Le premier ecran ne doit pas attendre le reseau.
-  Future<void> demarrer({
+  Future<void> start({
     required String userId,
     Stream<void>? ecrituresLocales,
-    Stream<void>? decisionsDeConsentement,
+    Stream<void>? consentDecisions,
   }) async {
-    if (_userId != null) await arreter();
+    if (_userId != null) await stop();
     if (userId.isEmpty) {
       _log.d("[Montee] Aucun identifiant de compte — montee inactive.");
       return;
@@ -202,7 +202,7 @@ class SyncScheduler with WidgetsBindingObserver {
     // ecoute, un consentement accorde ne monterait qu au prochain demarrage ou
     // au prochain geste sur la progression : Christophe coche, regarde la
     // console, et ne voit rien bouger.
-    _ecouteConsentements = decisionsDeConsentement?.listen(
+    _ecouteConsentements = consentDecisions?.listen(
       (_) => signalerUneEcritureLocale(),
       onError: (Object e) => _log.w("[Montee] Flux des consentements : $e"),
     );
@@ -227,7 +227,7 @@ class SyncScheduler with WidgetsBindingObserver {
   /// la base locale et le serveur, et l abandonner laisserait un sentier monte
   /// et le suivant non. Elle finira, puis plus rien ne la relancera. Meme
   /// raisonnement que l ordonnanceur de la tache 616.
-  Future<void> arreter() async {
+  Future<void> stop() async {
     _attente?.cancel();
     _attente = null;
     await _ecouteReseau?.cancel();
@@ -446,7 +446,7 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
       return registre.monter();
     },
   );
-  ref.onDispose(montee.arreter);
+  ref.onDispose(montee.stop);
   return montee;
 });
 
@@ -530,18 +530,18 @@ final monteeEnBaseDemarreeProvider = Provider<void>((ref) {
   unawaited(() async {
     try {
       await auth.garantirUneIdentite();
-      final uid = auth.identifiantDeCompte;
+      final uid = auth.accountId;
       if (uid == null || uid.isEmpty) {
         _log.d("[Montee] Identite absente au demarrage — montee non armee.");
         return;
       }
-      await montee.demarrer(
+      await montee.start(
         userId: uid,
         ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
         // CHAQUE DECISION DE CONSENTEMENT FAIT MONTER LE REGISTRE (tache 638).
         // Le flux `changes` du service porte la finalite tranchee ; on ne s en
         // sert que comme d un reveil, la montee relit l etat complet.
-        decisionsDeConsentement: _decisionsDeConsentement(ref),
+        consentDecisions: _consentDecisions(ref),
       );
     } catch (erreur) {
       // MEME REGLE DANS LA SUITE ASYNCHRONE. Une erreur laissee libre ici part
@@ -557,7 +557,7 @@ final monteeEnBaseDemarreeProvider = Provider<void>((ref) {
 ///
 /// MEME REGLE QUE CI-DESSUS : construire le service de consentement ne doit pas
 /// pouvoir faire echouer l armement de la montee, et encore moins l ecran.
-Stream<void> _decisionsDeConsentement(Ref ref) {
+Stream<void> _consentDecisions(Ref ref) {
   try {
     return ref.read(consentServiceProvider).changes;
   } catch (erreur) {

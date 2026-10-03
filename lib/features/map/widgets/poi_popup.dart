@@ -94,7 +94,7 @@ class PoiPopup extends StatelessWidget {
               Row(
                 children: [
                   const StepIcon(
-                    StepwaysIcons.duree,
+                    StepwaysIcons.clock,
                     size: 14,
                     color: AppTheme.grisTexteSecondaire,
                   ),

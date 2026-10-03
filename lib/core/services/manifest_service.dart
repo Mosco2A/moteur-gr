@@ -143,10 +143,10 @@ class ManifestService {
   /// Rend `null` sur une colonne vide comme sur un JSON illisible : une fiche
   /// corrompue ne doit PAS faire disparaitre le catalogue, elle doit seulement
   /// faire retomber ce sentier sur sa version compilee (ordre des sources).
-  static TrailManifestFiche? ficheDepuisJson(String? brut) {
+  static TrailManifestSheet? ficheDepuisJson(String? brut) {
     if (brut == null || brut.isEmpty) return null;
     try {
-      return TrailManifestFiche.fromJson(
+      return TrailManifestSheet.fromJson(
         jsonDecode(brut) as Map<String, dynamic>,
       );
     } catch (e) {

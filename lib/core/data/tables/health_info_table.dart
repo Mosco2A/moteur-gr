@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 ///
 /// TABLE HERITEE, VIDE PAR CONSTRUCTION DEPUIS LA TACHE 613. La fiche medicale
 /// n'est plus rangee ici : elle a son PROPRE FICHIER sous le dossier declare
-/// exclu de la sauvegarde du telephone (`FicheMedicaleFichier`). La raison est
+/// exclu de la sauvegarde du telephone (`HealthInfoFile`). La raison est
 /// que la base est devenue durable et doit, elle, remonter dans cette sauvegarde
 /// pour que la progression et le carnet suivent le randonneur qui change
 /// d'appareil — et qu'un fichier de base ne s'exclut pas table par table. La

@@ -195,8 +195,8 @@ void main() {
     // par une surcharge de provider.
     await _debloquerEntrainement(tester, trailId!);
 
-    for (final profil in kProfils) {
-      await _mesurerProfil(tester, trailId, profil);
+    for (final profile in kProfils) {
+      await _mesurerProfil(tester, trailId, profile);
     }
 
     logStep(
@@ -223,22 +223,22 @@ void main() {
 Future<void> _mesurerProfil(
   WidgetTester tester,
   String trailId,
-  Profil profil,
+  Profil profile,
 ) async {
-  final applique = await _appliquerProfil(tester, profil);
+  final applique = await _appliquerProfil(tester, profile);
   if (!applique) {
-    _contradiction('${profil.cle} : profil non applique, mesure impossible');
+    _contradiction('${profile.cle} : profil non applique, mesure impossible');
     return;
   }
 
   // --- ECRAN 1 : FAISABILITE ---
   await _ouvrirFaisabilite(tester, trailId);
-  await settleAndShoot(tester, P, '1_${profil.cle}_faisabilite');
+  await settleAndShoot(tester, P, '1_${profile.cle}_faisabilite');
   final libelle = _lireBadgeAffiche(tester);
 
   // --- ECRAN 2 : ENTRAINEMENT ---
   await _ouvrirEntrainement(tester);
-  await settleAndShoot(tester, P, '2_${profil.cle}_entrainement');
+  await settleAndShoot(tester, P, '2_${profile.cle}_entrainement');
   final bandeau = _bandeauPrudenceAffiche(tester);
 
   // --- Ce que disent les providers REELS de l'application, pour le journal ---
@@ -250,13 +250,13 @@ Future<void> _mesurerProfil(
   final verdictEntrainement = perso?.verdict?.name ?? '(aucun)';
 
   print(
-    'PREUVE_C1|${profil.cle}|${libelle ?? "AUCUN"}|'
+    'PREUVE_C1|${profile.cle}|${libelle ?? "AUCUN"}|'
     '${bandeau ? "BANDEAU_PRUDENCE" : "aucun_bandeau"}|$verdictMoteur',
   );
   logStep(
     P,
     'mesure',
-    '${profil.cle} (${profil.libelle}) : ecran Faisabilite="'
+    '${profile.cle} (${profile.libelle}) : ecran Faisabilite="'
         '${libelle ?? "AUCUN LIBELLE LU"}" | ecran Entrainement='
         '${bandeau ? "bandeau de prudence AFFICHE" : "aucun bandeau"} | '
         'verdict moteur=$verdictMoteur | verdict lu par l Entrainement='
@@ -280,13 +280,13 @@ Future<void> _mesurerProfil(
     logStep(
       P,
       'mesure',
-      '${profil.cle} : aucun verdict affiche — attendu sur un profil '
+      '${profile.cle} : aucun verdict affiche — attendu sur un profil '
           'incomplet depuis la correction D1. On verifie que l Entrainement '
           'se tait aussi.',
     );
     if (bandeau) {
       _contradiction(
-        '${profil.cle} : la Faisabilite ne rend AUCUN verdict '
+        '${profile.cle} : la Faisabilite ne rend AUCUN verdict '
         '(criteres incomplets) mais l Entrainement affiche quand meme le '
         'bandeau de prudence — deux sources subsistent',
       );
@@ -298,14 +298,14 @@ Future<void> _mesurerProfil(
       libelle == _libelleAttendu(FeasibilityVerdict.green);
   if (faisableSansReserve && bandeau) {
     _contradiction(
-      '${profil.cle} : la Faisabilite affiche "$libelle" mais '
+      '${profile.cle} : la Faisabilite affiche "$libelle" mais '
       'l Entrainement affiche le bandeau de prudence — c est EXACTEMENT le '
       'defaut MAJEUR-4',
     );
   }
   if (!faisableSansReserve && !bandeau) {
     _contradiction(
-      '${profil.cle} : la Faisabilite affiche "$libelle" (donc '
+      '${profile.cle} : la Faisabilite affiche "$libelle" (donc '
       'une reserve) mais l Entrainement n affiche AUCUN bandeau de prudence',
     );
   }
@@ -314,7 +314,7 @@ Future<void> _mesurerProfil(
   if (assessment != null && perso != null) {
     if (perso.verdict != assessment.globalVerdict) {
       _contradiction(
-        '${profil.cle} : verdict Faisabilite='
+        '${profile.cle} : verdict Faisabilite='
         '${assessment.globalVerdict.name} mais verdict lu par l Entrainement='
         '$verdictEntrainement — deux sources subsistent',
       );
@@ -399,12 +399,12 @@ Future<void> _debloquerEntrainement(WidgetTester tester, String trailId) async {
 
 /// Ecrit le profil par les VRAIS notifiers, puis invalide la chaine de calcul
 /// exactement comme le fait l'ecran (bouton « Recommencer »).
-Future<bool> _appliquerProfil(WidgetTester tester, Profil profil) async {
+Future<bool> _appliquerProfil(WidgetTester tester, Profil profile) async {
   final c = _container(tester);
   if (c == null) return false;
   try {
-    await c.read(hikerProfileProvider.notifier).save(profil.toProfile());
-    await c.read(pastHikesProvider.notifier).saveAll(profil.toPastHikes());
+    await c.read(hikerProfileProvider.notifier).save(profile.toProfile());
+    await c.read(pastHikesProvider.notifier).saveAll(profile.toPastHikes());
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
     c.invalidate(hikerProfileProvider);
     c.invalidate(pastHikesProvider);
@@ -416,11 +416,11 @@ Future<bool> _appliquerProfil(WidgetTester tester, Profil profil) async {
     logStep(
       P,
       'ecriture',
-      '${profil.cle} ecrit : ${profil.hikes.length} rando(s), age=${profil.age}',
+      '${profile.cle} ecrit : ${profile.hikes.length} rando(s), age=${profile.age}',
     );
     return true;
   } catch (e) {
-    logStep(P, 'ecriture', 'COINCE : ecriture ${profil.cle} impossible : $e');
+    logStep(P, 'ecriture', 'COINCE : ecriture ${profile.cle} impossible : $e');
     return false;
   }
 }

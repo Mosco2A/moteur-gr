@@ -436,7 +436,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: StepwaysIcons.duree,
+                  icon: StepwaysIcons.clock,
                   value: stats.totalHours.toStringAsFixed(0),
                   unit: 'h',
                   label: t.summary.stats.duration,

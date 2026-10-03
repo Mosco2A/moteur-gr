@@ -17,7 +17,7 @@ import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/trail/providers/catalog_provider.dart';
@@ -111,14 +111,14 @@ void main() {
     );
   }
 
-  MBTilesManager cartes() => MBTilesManager(httpClient: serveurDeTuiles());
+  MBTilesManager maps() => MBTilesManager(httpClient: serveurDeTuiles());
 
-  DescenteDesCartes descente({
+  MapDownloader descente({
     required bool droitDeRealiser,
     TypeDeLien lien = TypesDeLien.wifi,
     MBTilesManager? avecCartes,
-  }) => DescenteDesCartes(
-    cartes: avecCartes ?? cartes(),
+  }) => MapDownloader(
+    maps: avecCartes ?? maps(),
     dao: manifestes,
     monetization: _Droits(droitDeRealiser),
     connectivityMonitor: _Reseau(lien),
@@ -139,7 +139,7 @@ void main() {
 
         expect(bilan.refus, RefusDeDescente.niveauInsuffisant);
         expect(requetes, isEmpty);
-        expect(bilan.carte, isNull);
+        expect(bilan.map, isNull);
       },
     );
 
@@ -169,7 +169,7 @@ void main() {
     test('REALISER descend la carte, la verifie, et la pose sous son nom '
         'definitif', () async {
       await publier();
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
 
       final bilan = await descente(
         droitDeRealiser: true,
@@ -179,13 +179,13 @@ void main() {
       expect(bilan.posee, isTrue);
       expect(requetes, hasLength(1));
       expect(await gestionnaire.hasMbtiles('mare-a-mare'), isTrue);
-      expect(bilan.carte!.octetsSurLeTelephone, 4096);
+      expect(bilan.map!.octetsSurLeTelephone, 4096);
     });
 
-    test('porteLesCartes est le SEUL juge, et il ne dit oui qu a realiser', () {
-      expect(NiveauDeTelechargement.regarder.porteLesCartes, isFalse);
-      expect(NiveauDeTelechargement.preparer.porteLesCartes, isFalse);
-      expect(NiveauDeTelechargement.realiser.porteLesCartes, isTrue);
+    test('carriesMaps est le SEUL juge, et il ne dit oui qu a realiser', () {
+      expect(NiveauDeTelechargement.regarder.carriesMaps, isFalse);
+      expect(NiveauDeTelechargement.preparer.carriesMaps, isFalse);
+      expect(NiveauDeTelechargement.realiser.carriesMaps, isTrue);
     });
   });
 
@@ -400,7 +400,7 @@ void main() {
 
     test('une carte deja posee ne se retelecharge pas', () async {
       await publier();
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
       final service = descente(droitDeRealiser: true, avecCartes: gestionnaire);
 
       expect(
@@ -422,7 +422,7 @@ void main() {
 
     test('une empreinte qui ne correspond pas ne pose AUCUNE carte', () async {
       await publier(tilesHash: 'f' * 64);
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
 
       final bilan = await descente(
         droitDeRealiser: true,
@@ -430,7 +430,7 @@ void main() {
       ).descendre('mare-a-mare', niveau: NiveauDeTelechargement.realiser);
 
       expect(bilan.posee, isFalse);
-      expect(bilan.echec, EchecDeCarte.empreinteInvalide);
+      expect(bilan.echec, MapFailure.empreinteInvalide);
       expect(await gestionnaire.hasMbtiles('mare-a-mare'), isFalse);
     });
   });
@@ -471,7 +471,7 @@ void main() {
       'downloadTrail(realiser) pose les donnees ET la carte hors ligne',
       () async {
         await publier();
-        final gestionnaire = cartes();
+        final gestionnaire = maps();
         final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
         addTearDown(c.dispose);
         await c.read(catalogStateProvider.future);
@@ -493,7 +493,7 @@ void main() {
 
     test('downloadTrail(preparer) ne demande AUCUNE tuile', () async {
       await publier();
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
       final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
       addTearDown(c.dispose);
       await c.read(catalogStateProvider.future);
@@ -512,7 +512,7 @@ void main() {
     test('hors wifi, le geste ne fait PAS payer le randonneur par defaut : le '
         'sentier est telecharge, la carte attend son oui', () async {
       await publier();
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
       final c = conteneur(
         droitDeRealiser: true,
         gestionnaire: gestionnaire,
@@ -545,16 +545,16 @@ void main() {
     test('le controleur fabrique un jeton NEUF a chaque depart : une descente '
         'annulee ne condamne pas la suivante', () async {
       await publier();
-      final gestionnaire = cartes();
+      final gestionnaire = maps();
       final c = conteneur(droitDeRealiser: true, gestionnaire: gestionnaire);
       addTearDown(c.dispose);
 
       final controleur = c.read(
         controleurDesCartesProvider('mare-a-mare').notifier,
       );
-      controleur.annuler(); // aucun effet : rien ne tourne
+      controleur.cancel(); // aucun effet : rien ne tourne
 
-      final bilan = await controleur.demarrer(
+      final bilan = await controleur.start(
         niveau: NiveauDeTelechargement.realiser,
       );
       expect(bilan.posee, isTrue);
@@ -572,12 +572,12 @@ void main() {
         .toList();
 
     test('AUCUN code de production n appelle le transport des tuiles en dehors de '
-        'DescenteDesCartes — c est la faute que la tache 606 a du corriger', () {
+        'MapDownloader — c est la faute que la tache 606 a du corriger', () {
       // Les seules apparitions legitimes : la definition du transport lui-meme, et
       // l unique orchestrateur qui le pilote.
       const tolerees = [
         'lib/core/map/mbtiles_manager.dart',
-        'lib/core/services/descente_des_cartes.dart',
+        'lib/core/services/map_downloader.dart',
       ];
 
       final coupables = <String>[];
@@ -587,7 +587,7 @@ void main() {
         final source = fichier.readAsStringSync();
         // `.descendre(` precede d un appel au gestionnaire de cartes : on cherche
         // l usage du transport, pas le mot.
-        if (source.contains('cartes.descendre(') ||
+        if (source.contains('maps.descendre(') ||
             source.contains('mbtilesManager.descendre(') ||
             source.contains('Manager.descendre(')) {
           coupables.add(chemin);
@@ -601,7 +601,7 @@ void main() {
             'Un second chemin de descente des cartes est apparu : '
             '${coupables.join(", ")}. Le lot 606 a du defaire exactement cela '
             '(un geste « telecharger » qui empruntait un second chemin ignorant '
-            'tout le modele). Passe par DescenteDesCartes.',
+            'tout le modele). Passe par MapDownloader.',
       );
     });
 
@@ -614,12 +614,12 @@ void main() {
         'lib/core/services/ordonnanceur_de_synchronisation.dart',
       ).readAsStringSync();
       expect(ordonnanceur.contains('descente_des_cartes'), isFalse);
-      expect(ordonnanceur.contains('DescenteDesCartes'), isFalse);
+      expect(ordonnanceur.contains('MapDownloader'), isFalse);
 
       final telechargeur = File(
         'lib/core/services/update_downloader.dart',
       ).readAsStringSync();
-      expect(telechargeur.contains('DescenteDesCartes'), isFalse);
+      expect(telechargeur.contains('MapDownloader'), isFalse);
       expect(telechargeur.contains('mbtiles'), isFalse);
     });
   });

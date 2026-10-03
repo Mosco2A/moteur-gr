@@ -39,8 +39,8 @@ import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
 import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
-    show ficheMedicaleFichierProvider;
-import 'features/safety/presentation/porte_consentement_sauvegarde.dart';
+    show healthInfoFileProvider;
+import 'features/safety/presentation/backup_consent_gate.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 import 'shared/widgets/app_logo.dart';
@@ -111,7 +111,7 @@ Future<void> main() async {
   // et l'application demarre normalement.
   final firebaseService = await FirebaseService.initialize(
     firebaseProjectId: FirebaseConfig.resoudre(
-      depuisLeSentier: mareAMareCentreTrailConfig.firebaseProjectId,
+      fromTrail: mareAMareCentreTrailConfig.firebaseProjectId,
     ),
   );
 
@@ -146,15 +146,15 @@ Future<void> main() async {
 /// qui appelle chaque travail, en sequence).
 List<TacheDAmorcage> tachesDAmorcageDeLApplication(Ref ref) => <TacheDAmorcage>[
   // Tache 615 : l exclusion iCloud de la fiche medicale.
-  () => ref.read(ficheMedicaleFichierProvider).garantirExclusion(),
+  () => ref.read(healthInfoFileProvider).garantirExclusion(),
   // Tache 623 : le profil du randonneur quitte les preferences, et
   // l exclusion est reposee dans le meme geste (l ecriture atomique
   // remplace le fichier, et un fichier remplace ne porte plus
   // l attribut de celui qu il remplace).
   () async {
-    final profil = ref.read(hikerProfileRepositoryProvider);
-    await profil.migrerDepuisPreferences();
-    await profil.fichier.garantirExclusion();
+    final profile = ref.read(hikerProfileRepositoryProvider);
+    await profile.migrerDepuisPreferences();
+    await profile.fichier.garantirExclusion();
   },
 ];
 
@@ -188,14 +188,14 @@ class MoteurGrApp extends StatelessWidget {
         // LE CABLAGE DES TRAVAUX D AMORCAGE, ET C EST ICI QUE CA SE NOUE.
         //
         // `app_bootstrap_provider.dart` (socle) importait l ECRAN de la fiche
-        // sante pour y prendre `ficheMedicaleFichierProvider` : le socle
+        // sante pour y prendre `healthInfoFileProvider` : le socle
         // connaissait une couche presentation (cas K1 du lot 645-05). La
         // fleche est inversee — l amorcage ne declare qu un besoin, et c est
         // `main.dart`, au-dessus du socle comme des features, qui a le droit
         // de connaitre les deux et de les relier.
         //
         // L EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE A CHAQUE
-        // DEMARRAGE, et la raison entiere est dans `FicheMedicaleFichier` :
+        // DEMARRAGE, et la raison entiere est dans `HealthInfoFile` :
         // un randonneur qui avait rempli sa fiche avant la tache 615 ne la
         // reecrira peut-etre jamais, et c est l amorce, et elle seule, qui
         // repasse derriere lui. Elle ne leve jamais et elle est bornee par
@@ -207,8 +207,8 @@ class MoteurGrApp extends StatelessWidget {
         // du telephone pour que la progression et le journal survivent au
         // changement d'appareil ; un fichier de base ne s'excluant pas table par
         // table, la fiche a recu son PROPRE fichier sous le dossier declare
-        // exclu (`FicheMedicaleFichier`, cable par
-        // `ficheMedicaleFichierProvider`). Plus rien de medical ne passe par
+        // exclu (`HealthInfoFile`, cable par
+        // `healthInfoFileProvider`). Plus rien de medical ne passe par
         // `databaseProvider` : il n'y a donc plus rien a cabler ici.
       ],
       // Migration Riverpod 3 (INC-1) : NEUTRALISATION du retry automatique.
@@ -596,7 +596,7 @@ class BootstrapGate extends ConsumerWidget {
       // orange », et la sortie doit rester visible en permanence. Hors demo, ce
       // widget rend son enfant tel quel, sans ajouter un seul noeud.
       data: (_) => CadreDemo(
-        child: PorteConsentementSauvegarde(
+        child: BackupConsentGate(
           child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
         ),
       ),

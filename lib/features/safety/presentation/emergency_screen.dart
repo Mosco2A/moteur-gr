@@ -67,7 +67,7 @@ class EmergencyScreen extends ConsumerWidget {
     // echoue, on ne veut PAS d'exception sur l'ecran d'urgence — on veut la
     // liste des secours automatiques, qui est toujours la.
     final fiche = ref.watch(healthInfoProvider).asData?.value;
-    if (fiche != null) service.chargerDepuisLaFiche(fiche.emergencyContacts);
+    if (fiche != null) service.loadFromSheet(fiche.emergencyContacts);
     final contacts = service.getContacts();
     final positionAsync = ref.watch(positionStreamProvider);
 
@@ -124,7 +124,7 @@ class _GpsPositionBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingBase),
-      color: AppTheme.rougeUrgence.withAlpha(30),
+      color: AppTheme.emergencyRed.withAlpha(30),
       child: positionAsync.when(
         loading: () => Row(
           children: [
@@ -142,7 +142,7 @@ class _GpsPositionBanner extends StatelessWidget {
             const StepIcon(
               StepwaysIcons.gpsPerdu,
               size: 18,
-              color: AppTheme.rougeUrgence,
+              color: AppTheme.emergencyRed,
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(t.sos.positionUnavailable),
@@ -249,16 +249,16 @@ class _EmergencyContactTile extends StatelessWidget {
     // fond rouge et son titre en gras — un sens, pas un relief.
     return AppCard(
       backgroundColor: isAuto
-          ? AppTheme.rougeUrgence.withAlpha(20)
+          ? AppTheme.emergencyRed.withAlpha(20)
           : theme.colorScheme.surface,
       padding: EdgeInsets.zero,
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: isAuto
-              ? AppTheme.rougeUrgence
+              ? AppTheme.emergencyRed
               : theme.colorScheme.primary,
           child: StepIcon(
-            isAuto ? StepwaysIcons.secours : StepwaysIcons.monCompte,
+            isAuto ? StepwaysIcons.emergency : StepwaysIcons.myAccount,
             color: Colors.white,
             size: 20,
           ),
@@ -276,7 +276,7 @@ class _EmergencyContactTile extends StatelessWidget {
         trailing: IconButton(
           icon: StepIcon(
             StepwaysIcons.telephone,
-            color: isAuto ? AppTheme.rougeUrgence : theme.colorScheme.primary,
+            color: isAuto ? AppTheme.emergencyRed : theme.colorScheme.primary,
             size: 28,
           ),
           tooltip: t.sos.callContact(name: contact.name),

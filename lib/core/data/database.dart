@@ -566,7 +566,7 @@ class AppDatabase extends _$AppDatabase {
   /// Migration v27 -> v28 : LA FICHE MEDICALE QUITTE LA BASE (tache 613).
   ///
   /// Elle a desormais son propre fichier, sous le dossier declare exclu de
-  /// la sauvegarde du telephone (`FicheMedicaleFichier`). LA RAISON N'EST
+  /// la sauvegarde du telephone (`HealthInfoFile`). LA RAISON N'EST
   /// PAS COSMETIQUE : depuis la tache 613 la base est DURABLE, et pour que
   /// la progression et le journal survivent au changement de telephone —
   /// ce que le modele economique promet A VIE — ce fichier doit remonter

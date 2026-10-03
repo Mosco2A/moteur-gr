@@ -46,7 +46,7 @@ class SourceDeSentier {
   final String statut;
 
   /// La fiche d affichage, sans laquelle un sentier neuf est invisible (#M9).
-  final TrailManifestFiche fiche;
+  final TrailManifestSheet fiche;
 
   /// Les familles de donnees, SANS `rev` : la forme du fichier publie.
   final Map<String, dynamic> donnees;
@@ -84,7 +84,7 @@ class SourceDeSentier {
       throw SourceInvalide('« ${fichier.path} » n est pas un objet JSON : $e');
     }
 
-    final meta = _objet(brut, MorceauxDeSentier.fiche);
+    final meta = _objet(brut, TrailChunks.fiche);
     final trailId = _texteObligatoire(meta, 'id', 'trail_meta');
     final statut = (brut['status'] as String?) ?? 'active';
     if (!const ['active', 'draft', 'archived'].contains(statut)) {
@@ -125,7 +125,7 @@ class SourceDeSentier {
   // LA FICHE
   // -------------------------------------------------------------------------
 
-  static TrailManifestFiche _lireFiche(
+  static TrailManifestSheet _lireFiche(
     Map<String, dynamic> brut, {
     required String trailId,
   }) {
@@ -156,7 +156,7 @@ class SourceDeSentier {
       }
     }
     try {
-      return TrailManifestFiche.fromJson(fiche);
+      return TrailManifestSheet.fromJson(fiche);
     } catch (e) {
       throw SourceInvalide('fiche de $trailId illisible : $e');
     }
@@ -173,7 +173,7 @@ class SourceDeSentier {
   }) {
     final donnees = <String, dynamic>{};
 
-    for (final famille in MorceauxDeSentier.tous) {
+    for (final famille in TrailChunks.tous) {
       final valeur = brut[famille];
       if (valeur == null) continue;
       donnees[famille] = valeur is Map
@@ -213,7 +213,7 @@ class SourceDeSentier {
     required String dossier,
     required String trailId,
   }) {
-    if (donnees.containsKey(MorceauxDeSentier.pointsDeTrace)) {
+    if (donnees.containsKey(TrailChunks.pointsDeTrace)) {
       throw SourceInvalide(
         '$trailId declare a la fois « trace_depuis_gpx » et « gpx_points ». '
         'Deux sources pour la meme trace divergeront : choisissez.',
@@ -248,7 +248,7 @@ class SourceDeSentier {
       );
     }
 
-    donnees[MorceauxDeSentier.traces] = <Map<String, dynamic>>[
+    donnees[TrailChunks.traces] = <Map<String, dynamic>>[
       <String, dynamic>{
         'id': traceId,
         'itinerary_id': itineraireId,
@@ -257,7 +257,7 @@ class SourceDeSentier {
           'source_url': declaration['source_url'],
       },
     ];
-    donnees[MorceauxDeSentier.pointsDeTrace] = <Map<String, dynamic>>[
+    donnees[TrailChunks.pointsDeTrace] = <Map<String, dynamic>>[
       for (var i = 0; i < points.length; i++)
         <String, dynamic>{
           'track_id': traceId,
@@ -295,8 +295,8 @@ class SourceDeSentier {
   }) {
     const langues = ['name_fr', 'name_en', 'name_de', 'name_it', 'name_es'];
     const obligatoires = <String, List<String>>{
-      MorceauxDeSentier.fiche: ['id', 'code'],
-      MorceauxDeSentier.itineraires: [
+      TrailChunks.fiche: ['id', 'code'],
+      TrailChunks.itineraires: [
         'id',
         'trail_id',
         'code',
@@ -305,7 +305,7 @@ class SourceDeSentier {
         'elevation_gain',
         'stage_count',
       ],
-      MorceauxDeSentier.etapes: [
+      TrailChunks.stages: [
         'id',
         'itinerary_id',
         'stage_number',
@@ -320,7 +320,7 @@ class SourceDeSentier {
         'duration_minutes',
         'difficulty',
       ],
-      MorceauxDeSentier.hebergements: [
+      TrailChunks.hebergements: [
         'id',
         'stage_id',
         ...langues,
@@ -328,7 +328,7 @@ class SourceDeSentier {
         'lat',
         'lng',
       ],
-      MorceauxDeSentier.pointsDInteret: [
+      TrailChunks.pointsDInteret: [
         'id',
         'stage_id',
         ...langues,
@@ -336,8 +336,8 @@ class SourceDeSentier {
         'lat',
         'lng',
       ],
-      MorceauxDeSentier.traces: ['id', 'itinerary_id', 'name'],
-      MorceauxDeSentier.pointsDeTrace: [
+      TrailChunks.traces: ['id', 'itinerary_id', 'name'],
+      TrailChunks.pointsDeTrace: [
         'track_id',
         'sequence_index',
         'lat',
@@ -368,17 +368,17 @@ class SourceDeSentier {
     required String trailId,
   }) {
     const paires = <String, List<List<String>>>{
-      MorceauxDeSentier.etapes: [
+      TrailChunks.stages: [
         ['start_lat', 'start_lng'],
         ['end_lat', 'end_lng'],
       ],
-      MorceauxDeSentier.hebergements: [
+      TrailChunks.hebergements: [
         ['lat', 'lng'],
       ],
-      MorceauxDeSentier.pointsDInteret: [
+      TrailChunks.pointsDInteret: [
         ['lat', 'lng'],
       ],
-      MorceauxDeSentier.pointsDeTrace: [
+      TrailChunks.pointsDeTrace: [
         ['lat', 'lng'],
       ],
     };
@@ -407,7 +407,7 @@ class SourceDeSentier {
     Map<String, dynamic> donnees, {
     required String trailId,
   }) {
-    final meta = _liste(donnees[MorceauxDeSentier.fiche]).firstOrNull;
+    final meta = _liste(donnees[TrailChunks.fiche]).firstOrNull;
     if (meta == null) {
       throw SourceInvalide('$trailId : « trail_meta » manquant.');
     }
@@ -418,9 +418,9 @@ class SourceDeSentier {
       );
     }
 
-    final itineraires = _identites(donnees, MorceauxDeSentier.itineraires);
-    final etapes = _identites(donnees, MorceauxDeSentier.etapes);
-    final traces = _identites(donnees, MorceauxDeSentier.traces);
+    final itineraires = _identites(donnees, TrailChunks.itineraires);
+    final stages = _identites(donnees, TrailChunks.stages);
+    final traces = _identites(donnees, TrailChunks.traces);
 
     if (itineraires.isEmpty) {
       throw SourceInvalide(
@@ -431,7 +431,7 @@ class SourceDeSentier {
 
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.itineraires,
+      TrailChunks.itineraires,
       'trail_id',
       {trailId},
       'le sentier lui-meme',
@@ -439,7 +439,7 @@ class SourceDeSentier {
     );
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.etapes,
+      TrailChunks.stages,
       'itinerary_id',
       itineraires,
       'un itineraire publie',
@@ -447,23 +447,23 @@ class SourceDeSentier {
     );
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.hebergements,
+      TrailChunks.hebergements,
       'stage_id',
-      etapes,
+      stages,
       'une etape publiee',
       trailId,
     );
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.pointsDInteret,
+      TrailChunks.pointsDInteret,
       'stage_id',
-      etapes,
+      stages,
       'une etape publiee',
       trailId,
     );
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.traces,
+      TrailChunks.traces,
       'itinerary_id',
       itineraires,
       'un itineraire publie',
@@ -471,7 +471,7 @@ class SourceDeSentier {
     );
     _exigerLeParent(
       donnees,
-      MorceauxDeSentier.pointsDeTrace,
+      TrailChunks.pointsDeTrace,
       'track_id',
       traces,
       'une entete de trace publiee',
@@ -481,9 +481,7 @@ class SourceDeSentier {
     // #F15 : publier l entete sans les points, ou l inverse, donne une carte
     // vide alors que tout le reste du sentier fonctionne.
     final aDesTraces = traces.isNotEmpty;
-    final aDesPoints = _liste(
-      donnees[MorceauxDeSentier.pointsDeTrace],
-    ).isNotEmpty;
+    final aDesPoints = _liste(donnees[TrailChunks.pointsDeTrace]).isNotEmpty;
     if (aDesTraces != aDesPoints) {
       throw SourceInvalide(
         '$trailId : « gpx_tracks » et « gpx_points » vont ensemble. Publier '
@@ -527,21 +525,21 @@ class SourceDeSentier {
   /// se contredisent — reconstitue a l interieur d une seule publication.
   static void _verifierCoherence(
     Map<String, dynamic> donnees, {
-    required TrailManifestFiche fiche,
+    required TrailManifestSheet fiche,
     required String trailId,
   }) {
-    final etapes = _liste(donnees[MorceauxDeSentier.etapes]);
-    if (fiche.totalStages != etapes.length) {
+    final stages = _liste(donnees[TrailChunks.stages]);
+    if (fiche.totalStages != stages.length) {
       throw SourceInvalide(
         '$trailId : la fiche annonce ${fiche.totalStages} etape(s) et le '
-        'fichier en publie ${etapes.length}. La carte du catalogue est ce sur '
+        'fichier en publie ${stages.length}. La carte du catalogue est ce sur '
         'quoi le randonneur decide : elle ne peut pas annoncer autre chose que '
         'ce qu il recevra.',
       );
     }
-    for (final itineraire in _liste(donnees[MorceauxDeSentier.itineraires])) {
+    for (final itineraire in _liste(donnees[TrailChunks.itineraires])) {
       final annonce = itineraire['stage_count'] as int?;
-      final reelles = etapes
+      final reelles = stages
           .where((e) => e['itinerary_id'] == itineraire['id'])
           .length;
       if (annonce != null && annonce != reelles) {
@@ -590,7 +588,7 @@ class SourceDeSentier {
       };
 
   static String _designer(String famille, Map<String, dynamic> donnee) {
-    if (famille == MorceauxDeSentier.pointsDeTrace) {
+    if (famille == TrailChunks.pointsDeTrace) {
       return 'le point ${donnee['sequence_index']} de « ${donnee['track_id']} »';
     }
     return '« ${donnee['id']} »';

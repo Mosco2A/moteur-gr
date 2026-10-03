@@ -253,7 +253,7 @@ class _EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             StepIcon(
-              StepwaysIcons.diplome,
+              StepwaysIcons.diploma,
               size: 64,
               color: theme.colorScheme.outline,
             ),

@@ -166,8 +166,8 @@ class RenseignementsDuTelephone {
 /// ELLE NE LEVE JAMAIS. Sans Firebase, sans reseau, sans identite, elle rend
 /// `false` et n ecrit rien. Une fiche technique qui empecherait de marcher
 /// serait pire que pas de fiche du tout.
-class FicheTechniqueDuTelephone {
-  FicheTechniqueDuTelephone({
+class DeviceSpecSheet {
+  DeviceSpecSheet({
     required this.firebaseService,
     required this.identifiant,
     required this.renseignements,
@@ -200,11 +200,11 @@ class FicheTechniqueDuTelephone {
   /// en plus des bretelles : il rend structurellement impossible qu un champ
   /// ajoute ici un jour parte sans avoir ete nomme dans la liste fermee.
   @visibleForTesting
-  static Map<String, Object?> construireLaCharge(
+  static Map<String, Object?> buildPayload(
     RenseignementsDuTelephone r, {
     required bool premiereVenue,
   }) {
-    final charge = <String, Object?>{
+    final payload = <String, Object?>{
       ChampsDeLaFicheTechnique.vuLe: FieldValue.serverTimestamp(),
       ChampsDeLaFicheTechnique.versionApplication: r.versionApplication,
       ChampsDeLaFicheTechnique.fabrication: r.fabrication,
@@ -215,10 +215,10 @@ class FicheTechniqueDuTelephone {
       if (premiereVenue)
         ChampsDeLaFicheTechnique.creeLe: FieldValue.serverTimestamp(),
     };
-    charge.removeWhere(
+    payload.removeWhere(
       (cle, _) => !ChampsDeLaFicheTechnique.autorises.contains(cle),
     );
-    return charge;
+    return payload;
   }
 
   /// POSE OU RAFRAICHIT LA FICHE. Rend vrai si quelque chose a ete ecrit.
@@ -257,7 +257,7 @@ class FicheTechniqueDuTelephone {
 
       final r = await renseignements();
       await document.set(
-        construireLaCharge(r, premiereVenue: premiereVenue),
+        buildPayload(r, premiereVenue: premiereVenue),
         SetOptions(merge: true),
       );
       return true;
@@ -279,10 +279,8 @@ class FicheTechniqueDuTelephone {
 /// LA LANGUE EST LUE AU MOMENT DE POSER LA FICHE, pas a la construction du
 /// service : le randonneur peut en changer sans redemarrer, et c est la langue
 /// qu il voit qui a une valeur de diagnostic.
-final ficheTechniqueDuTelephoneProvider = Provider<FicheTechniqueDuTelephone>((
-  ref,
-) {
-  return FicheTechniqueDuTelephone(
+final ficheTechniqueDuTelephoneProvider = Provider<DeviceSpecSheet>((ref) {
+  return DeviceSpecSheet(
     firebaseService: ref.watch(firebaseServiceProvider),
     identifiant: () async => fb.FirebaseAuth.instance.currentUser?.uid,
     renseignements: () => RenseignementsDuTelephone.duTelephone(

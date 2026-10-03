@@ -38,7 +38,7 @@ import '../../planning/planning_facade.dart'
         planningProvider,
         retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
-    show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
+    show healthInfoFileProvider, healthInfoRepositoryProvider;
 import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/trail_facade.dart' show progressProvider;
@@ -64,7 +64,7 @@ final dataRetentionServiceProvider = FutureProvider<DataRetentionService>((
     // fichier. L'effacement doit donc passer par LE MEME stockage que l'ecran,
     // sinon il effacerait un fichier que personne ne lit pendant que celui que
     // le randonneur voit resterait en place.
-    ficheMedicaleEraser: ref.watch(ficheMedicaleFichierProvider).effacer,
+    ficheMedicaleEraser: ref.watch(healthInfoFileProvider).effacer,
   );
 });
 

@@ -101,7 +101,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// LES CONTACTS VIDES SONT JETES ICI, PAS AILLEURS : une ligne ouverte puis
   /// laissee blanche ne doit pas devenir un contact sans nom ni numero sur
   /// l'ecran verrouille d'un blesse.
-  HealthInfo _composerFiche() {
+  HealthInfo _composeSheet() {
     final contacts = <EmergencyContact>[];
     for (var i = 0; i < _contacts.length; i++) {
       final ligne = _contacts[i];
@@ -152,7 +152,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
     setState(() => _isSaving = true);
 
-    final info = _composerFiche();
+    final info = _composeSheet();
     final repo = ref.read(healthInfoRepositoryProvider);
     await repo.save(info);
 
@@ -303,12 +303,12 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     if (accorde) {
       await controleur.grant(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
     } else {
       await controleur.revoke(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
     }
   }
@@ -339,7 +339,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           // Action DEFINITIVE : bouton rouge (couleur semantique d'urgence).
           AppButton(
             variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             isFullWidth: false,
             label: t.health.delete.confirm,
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -432,36 +432,33 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// COMME TELLE : on le dit une fois, sans dialogue, sans renvoi vers les
   /// reglages, et l'ecran continue de fonctionner exactement pareil. C'est la
   /// condition posee avec la demande.
-  Future<void> _photographierCarte(
-    String nomFichier,
-    ImageSource source,
-  ) async {
+  Future<void> _photographCard(String nomFichier, ImageSource source) async {
     final prise = ref.read(priseDePhotoCarteProvider);
     final resultat = await prise(source);
     if (!mounted) return;
 
     switch (resultat.issue) {
-      case IssuePhotoCarte.annule:
+      case CardPhotoOutcome.annule:
         return;
-      case IssuePhotoCarte.refus:
+      case CardPhotoOutcome.refus:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(t.health.cards.permissionRefused)),
         );
         return;
-      case IssuePhotoCarte.echec:
+      case CardPhotoOutcome.echec:
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(t.health.cards.failed)));
         return;
-      case IssuePhotoCarte.reussite:
+      case CardPhotoOutcome.reussite:
         break;
     }
 
-    final fichier = ref.read(ficheMedicaleFichierProvider);
-    await fichier.enregistrerCarte(nomFichier, resultat.octets!);
+    final fichier = ref.read(healthInfoFileProvider);
+    await fichier.saveCard(nomFichier, resultat.octets!);
     if (!mounted) return;
     setState(() {
-      if (nomFichier == FicheMedicaleFichier.nomCarteVitale) {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
         _carteVitale = nomFichier;
       } else {
         _carteMutuelle = nomFichier;
@@ -471,12 +468,12 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   }
 
   /// Retire la photo d'une carte — du disque ET de la fiche.
-  Future<void> _retirerCarte(String nomFichier) async {
-    final fichier = ref.read(ficheMedicaleFichierProvider);
-    await fichier.effacerCarte(nomFichier);
+  Future<void> _removeCard(String nomFichier) async {
+    final fichier = ref.read(healthInfoFileProvider);
+    await fichier.eraseCard(nomFichier);
     if (!mounted) return;
     setState(() {
-      if (nomFichier == FicheMedicaleFichier.nomCarteVitale) {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
         _carteVitale = '';
       } else {
         _carteMutuelle = '';
@@ -561,8 +558,8 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         insuranceController: _insuranceController,
                         carteVitale: _carteVitale,
                         carteMutuelle: _carteMutuelle,
-                        onPrendreCarte: _photographierCarte,
-                        onRetirerCarte: _retirerCarte,
+                        onTakeCard: _photographCard,
+                        onRemoveCard: _removeCard,
                         isSaving: _isSaving,
                         isDeleting: _isDeleting,
                         hasContent: _hasContent,

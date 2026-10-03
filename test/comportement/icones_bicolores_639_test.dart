@@ -83,13 +83,10 @@ void main() {
       // C'est LE cas du bug : les ecrans passent `StepwaysIcons.carte`, c'est-a-
       // dire `assets/icons/carte.svg`, et non `rubriques-duo-mono/carte.svg`.
       // Sans cette resolution, la regle ne les aurait jamais vus.
+      expect(iconeBicolorePour(StepwaysIcons.map), same(RubriqueStepways.map));
       expect(
-        iconeBicolorePour(StepwaysIcons.carte),
-        same(RubriqueStepways.carte),
-      );
-      expect(
-        iconeBicolorePour(StepwaysIcons.catalogueSentiers),
-        same(RubriqueStepways.catalogueSentiers),
+        iconeBicolorePour(StepwaysIcons.trailCatalog),
+        same(RubriqueStepways.trailCatalog),
       );
       expect(
         iconeBicolorePour(StepwaysIcons.portefeuille),
@@ -125,21 +122,21 @@ void main() {
     // LA LISTE EST ECRITE ICI, NOMMEMENT. Une tuile qui repasserait en
     // monochrome fait tomber ce test, et on sait laquelle.
     const tuiles = <String, String>{
-      'Pret a partir (cockpit)': StepwaysIcons.carte,
+      'Pret a partir (cockpit)': StepwaysIcons.map,
       'Compte-etapes (portefeuille)': StepwaysIcons.portefeuille,
-      'Mes treks — Decouvrir': StepwaysIcons.catalogueSentiers,
-      'Mes treks — Mon compte': StepwaysIcons.monCompte,
-      'Mes treks — Reglages': StepwaysIcons.reglages,
-      'Trek termine — Diplome': StepwaysIcons.diplome,
+      'Mes treks — Decouvrir': StepwaysIcons.trailCatalog,
+      'Mes treks — Mon compte': StepwaysIcons.myAccount,
+      'Mes treks — Reglages': StepwaysIcons.settings,
+      'Trek termine — Diplome': StepwaysIcons.diploma,
       'Faisabilite': StepwaysIcons.faisabilite,
       'Programme': StepwaysIcons.programme,
       'Materiel & sac': StepwaysIcons.sacADos,
       'Journal': StepwaysIcons.journal,
-      'Meteo': StepwaysIcons.meteo,
+      'Meteo': StepwaysIcons.weather,
       'Transport': StepwaysIcons.transport,
       'Ravitaillement': StepwaysIcons.ravitaillement,
       'Hebergement': StepwaysIcons.hebergement,
-      'Cartes hors ligne': StepwaysIcons.carte,
+      'Cartes hors ligne': StepwaysIcons.map,
     };
 
     for (final tuile in tuiles.entries) {
@@ -162,7 +159,7 @@ void main() {
       await poser(
         tester,
         QuickAccessCard(
-          icon: StepwaysIcons.catalogueSentiers,
+          icon: StepwaysIcons.trailCatalog,
           title: 'Decouvrir',
           subtitle: 'Parcourez le catalogue',
           onTap: () {},
@@ -181,7 +178,7 @@ void main() {
           width: 360,
           child: HubSection(
             title: 'Mes treks',
-            icon: StepwaysIcons.catalogueSentiers,
+            icon: StepwaysIcons.trailCatalog,
             cards: [],
           ),
         ),
@@ -199,7 +196,7 @@ void main() {
       // l etat. Un trace bicolore fige l aurait ignoree.
       await poser(
         tester,
-        const StepIcon.tuile(StepwaysIcons.carte, color: Color(0xFFAA0000)),
+        const StepIcon.tuile(StepwaysIcons.map, color: Color(0xFFAA0000)),
       );
       expect(
         estBicolore(cheminCharge(tester, find.byType(SvgPicture))),
@@ -211,7 +208,7 @@ void main() {
       await poser(
         tester,
         QuickAccessCard(
-          icon: StepwaysIcons.diplome,
+          icon: StepwaysIcons.diploma,
           title: 'Diplome',
           subtitle: 'Verrouille',
           enabled: false,
@@ -250,7 +247,7 @@ void main() {
 
     testWidgets('un StepIcon ordinaire n est JAMAIS bicolore', (tester) async {
       // L autre moitie de la regle : les icones de service ne changent pas.
-      await poser(tester, const StepIcon(StepwaysIcons.carte));
+      await poser(tester, const StepIcon(StepwaysIcons.map));
       expect(
         estBicolore(cheminCharge(tester, find.byType(SvgPicture))),
         isFalse,

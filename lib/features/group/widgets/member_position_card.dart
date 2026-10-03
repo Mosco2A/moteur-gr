@@ -62,7 +62,7 @@ class MemberPositionCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              StepIcon(StepwaysIcons.duree, size: 16, color: freshness.color),
+              StepIcon(StepwaysIcons.clock, size: 16, color: freshness.color),
               const SizedBox(height: AppTheme.spacingXs),
               Text(
                 freshness.label,

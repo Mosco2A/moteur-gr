@@ -927,7 +927,7 @@ class _DayCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
                     // Duree.
-                    DayMiniStat(icon: StepwaysIcons.duree, value: durationStr),
+                    DayMiniStat(icon: StepwaysIcons.clock, value: durationStr),
                   ],
                 ),
               ),
@@ -1053,7 +1053,7 @@ class _DayCard extends ConsumerWidget {
                   const SizedBox(height: 4),
                   IconButton(
                     icon: const StepIcon(StepwaysIcons.moins, size: 20),
-                    color: AppTheme.rougeUrgence,
+                    color: AppTheme.emergencyRed,
                     tooltip: t.programme.actions.removeRest,
                     onPressed: onRemoveRestDay,
                     padding: EdgeInsets.zero,

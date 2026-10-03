@@ -287,7 +287,7 @@ void main() {
       expect(cs.primary, primary);
       expect(cs.onPrimary, Colors.white);
       expect(cs.secondary, secondary);
-      expect(cs.error, AppTheme.rougeUrgence);
+      expect(cs.error, AppTheme.emergencyRed);
       expect(cs.surface, AppTheme.blancNeige);
       expect(cs.onSurface, AppTheme.noir);
       expect(cs.surfaceContainerHighest, AppTheme.grisFond);
@@ -301,7 +301,7 @@ void main() {
       final cs = dark(AppSkin.sentierVivant).colorScheme;
       expect(cs.brightness, Brightness.dark);
       expect(cs.primaryContainer, primary);
-      expect(cs.error, AppTheme.rougeUrgence);
+      expect(cs.error, AppTheme.emergencyRed);
       expect(cs.surface, const Color(0xFF1E1E1E));
       expect(cs.onSurface, const Color(0xFFE0E0E0));
       expect(cs.surfaceContainerHighest, const Color(0xFF2C2C2C));

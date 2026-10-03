@@ -37,7 +37,7 @@ const _avatarIcons = <String>[
   StepwaysIcons.foret,
   StepwaysIcons.soleil,
   StepwaysIcons.favori,
-  StepwaysIcons.catalogueSentiers,
+  StepwaysIcons.trailCatalog,
   StepwaysIcons.sommet,
 ];
 
@@ -124,7 +124,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // Section « Mon compte » (connexion / deconnexion).
           SectionHeader(
             title: i18n.auth.profile,
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           // GRISEE EN DEMO (tache 638, bug 14) : se connecter a Google, se
@@ -168,7 +168,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           SectionHeader(
             title: i18n.auth.deleteAccount,
             icon: StepwaysIcons.danger,
-            iconColor: AppTheme.rougeUrgence,
+            iconColor: AppTheme.emergencyRed,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           // GRISEE EN DEMO : on ne supprime pas un compte depuis une demo.
@@ -249,7 +249,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         padding: EdgeInsets.zero,
         child: ListTile(
           key: const ValueKey('profil-connexion-google'),
-          leading: const StepIcon(StepwaysIcons.connexion),
+          leading: const StepIcon(StepwaysIcons.signIn),
           title: Text(i18n.auth.signInGoogle),
           subtitle: Text(i18n.auth.signInGoogleDesc),
           trailing: const StepIcon(StepwaysIcons.chevronDroite),
@@ -279,7 +279,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       interactif: true,
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: const StepIcon(StepwaysIcons.deconnexion),
+        leading: const StepIcon(StepwaysIcons.signOut),
         title: Text(i18n.auth.signOut),
         subtitle: Text(i18n.auth.signOutDesc),
         onTap: () => _confirmSignOut(context, ref, i18n),
@@ -316,7 +316,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             title: Text(i18n.demo.compteRelancer),
             subtitle: Text(i18n.demo.compteRelancerSous),
             trailing: const StepIcon(StepwaysIcons.chevronDroite),
-            onTap: () => relancerLaDemoDepuisMonCompte(ref, context),
+            onTap: () => restartDemoFromAccount(ref, context),
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
@@ -324,15 +324,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           padding: EdgeInsets.zero,
           child: SwitchListTile(
             key: const ValueKey('compte-reafficher-bouton-demo'),
-            secondary: const StepIcon(StepwaysIcons.catalogueSentiers),
+            secondary: const StepIcon(StepwaysIcons.trailCatalog),
             title: Text(i18n.demo.compteReafficher),
             subtitle: Text(i18n.demo.compteReafficherSous),
             // L'INTERRUPTEUR DIT « AFFICHER », LE REGLAGE STOCKE « CACHER » :
             // il est donc l'inverse de la valeur en base, et il faut le lire
             // comme ca pour que l'etiquette ne mente pas.
             value: !cache,
-            onChanged: (afficher) =>
-                ref.read(boutonDemoCacheProvider.notifier).definir(!afficher),
+            onChanged: (show) =>
+                ref.read(boutonDemoCacheProvider.notifier).definir(!show),
           ),
         ),
       ],
@@ -443,15 +443,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
       interactif: true,
       padding: EdgeInsets.zero,
-      borderColor: AppTheme.rougeUrgence.withValues(alpha: 0.4),
+      borderColor: AppTheme.emergencyRed.withValues(alpha: 0.4),
       child: ListTile(
         leading: const StepIcon(
           StepwaysIcons.corbeille,
-          color: AppTheme.rougeUrgence,
+          color: AppTheme.emergencyRed,
         ),
         title: Text(
           i18n.auth.deleteAccount,
-          style: const TextStyle(color: AppTheme.rougeUrgence),
+          style: const TextStyle(color: AppTheme.emergencyRed),
         ),
         subtitle: Text(i18n.auth.deleteAccountDesc),
         onTap: () => _confirmDelete(context, ref, i18n),
@@ -714,12 +714,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           // SW-SKIN-L3e : ElevatedButton a fond rouge -> AppButton filledTone
-          // (fond plein = rougeUrgence, texte blanc). Conserve la couleur
+          // (fond plein = emergencyRed, texte blanc). Conserve la couleur
           // SEMANTIQUE de danger de la suppression de compte, isFullWidth:false
           // pour rester une action de dialogue.
           AppButton(
             variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             isFullWidth: false,
             label: i18n.auth.deleteAccount,
             onPressed: () {
@@ -741,7 +741,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 /// rond qui tourne. Un rond qui tourne ne dit RIEN : ni « patiente », ni « c'est
 /// casse ». Le randonneur ne pouvait que tuer l'application.
 ///
-/// CE WIDGET NE CHANGE RIEN QUAND CA MARCHE : pendant [kDelaiAvantEchecCompte]
+/// CE WIDGET NE CHANGE RIEN QUAND CA MARCHE : pendant [kAccountFailureDelay]
 /// il montre exactement le meme rond qu'avant, et une reponse qui arrive dans ce
 /// delai le fait disparaitre sans que rien d'autre ne s'affiche. Passe ce delai,
 /// il remplace le rond par un message et un bouton « Reessayer ».
@@ -768,7 +768,7 @@ class _AttenteBornee extends StatefulWidget {
 ///
 /// Huit secondes : assez pour un reseau lent et un demarrage a froid de
 /// Firebase, trop peu pour laisser croire que l'ecran est mort.
-const Duration kDelaiAvantEchecCompte = Duration(seconds: 8);
+const Duration kAccountFailureDelay = Duration(seconds: 8);
 
 class _AttenteBorneeState extends State<_AttenteBornee> {
   Timer? _minuteur;
@@ -782,7 +782,7 @@ class _AttenteBorneeState extends State<_AttenteBornee> {
 
   void _armer() {
     _minuteur?.cancel();
-    _minuteur = Timer(kDelaiAvantEchecCompte, () {
+    _minuteur = Timer(kAccountFailureDelay, () {
       if (mounted) setState(() => _tropLong = true);
     });
   }

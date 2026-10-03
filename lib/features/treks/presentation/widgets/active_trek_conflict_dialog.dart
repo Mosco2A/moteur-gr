@@ -55,7 +55,7 @@ Future<ActiveTrekConflictChoice> showActiveTrekConflictDialog(
           AppButton(
             key: const ValueKey('conflict-abandon'),
             variant: AppButtonVariant.text,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             label: t.trekState.abandonDialog.abandon,
             isFullWidth: false,
             onPressed: () => Navigator.of(

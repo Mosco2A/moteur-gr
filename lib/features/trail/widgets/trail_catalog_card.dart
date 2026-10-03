@@ -215,7 +215,7 @@ class TrailCatalogCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: AppButton(
-            icon: StepwaysIcons.telecharger,
+            icon: StepwaysIcons.download,
             label: _CatalogLabels.download,
             onPressed: onDownload,
           ),
@@ -243,13 +243,13 @@ class TrailCatalogCard extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingSm),
             ],
             // SW-SKIN-L3e : OutlinedButton.icon rouge -> AppButton outline avec
-            // tone:rougeUrgence (teinte texte/icone/bordure = couleur SEMANTIQUE
+            // tone:emergencyRed (teinte texte/icone/bordure = couleur SEMANTIQUE
             // de suppression). Pleine largeur (SizedBox width infinity conserve).
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 variant: AppButtonVariant.outline,
-                tone: AppTheme.rougeUrgence,
+                tone: AppTheme.emergencyRed,
                 icon: StepwaysIcons.corbeille,
                 label: _CatalogLabels.delete,
                 onPressed: onDelete,
@@ -272,7 +272,7 @@ class TrailCatalogCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                icon: StepwaysIcons.telecharger,
+                icon: StepwaysIcons.download,
                 label: _CatalogLabels.update,
                 onPressed: onUpdate,
               ),

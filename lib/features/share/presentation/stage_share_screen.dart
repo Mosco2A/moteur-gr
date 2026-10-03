@@ -123,7 +123,7 @@ class _CardPreview extends StatelessWidget {
                 Row(
                   children: [
                     StepIcon(
-                      StepwaysIcons.diplome,
+                      StepwaysIcons.diploma,
                       size: 18,
                       color: theme.colorScheme.primary,
                     ),

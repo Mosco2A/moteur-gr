@@ -49,7 +49,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         actions: [
           if (groupCode != null)
             IconButton(
-              icon: const StepIcon(StepwaysIcons.deconnexion),
+              icon: const StepIcon(StepwaysIcons.signOut),
               tooltip: 'Quitter le groupe',
               onPressed: _leaveGroup,
             ),
@@ -126,7 +126,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           // largeur (Column stretch). Desactive pendant le chargement (iso).
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: StepwaysIcons.connexion,
+            icon: StepwaysIcons.signIn,
             label: 'Rejoindre',
             onPressed: _isLoading ? null : _joinGroup,
           ),
@@ -136,7 +136,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               child: Text(
                 _error!,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -246,7 +246,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               child: Text(
                 'Erreur chargement membres',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
               ),
             ),

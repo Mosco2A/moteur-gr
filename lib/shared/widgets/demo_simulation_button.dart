@@ -45,8 +45,8 @@ import 'app_button.dart';
 ///
 /// INVISIBLE hors demo, et invisible en demo tant qu'aucune randonnee simulee
 /// n'est en cours : il n'y a rien a faire avancer avant d'etre parti.
-class BoutonSimulationDemo extends ConsumerWidget {
-  const BoutonSimulationDemo({super.key, this.compact = false});
+class DemoSimulationButton extends ConsumerWidget {
+  const DemoSimulationButton({super.key, this.compact = false});
 
   /// Version compacte (barre de titre de la carte) : icone + libelle court.
   final bool compact;

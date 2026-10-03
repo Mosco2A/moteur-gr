@@ -30,8 +30,8 @@ part 'trail_manifest.g.dart';
 /// qu une info de version sur chaque donnee ». La version vit DANS
 /// l enregistrement (`RevisionDeDonnee`), et cette liste ne sert plus qu a savoir
 /// dans quel ORDRE poser les donnees et dans quelle TABLE.
-abstract final class MorceauxDeSentier {
-  MorceauxDeSentier._();
+abstract final class TrailChunks {
+  TrailChunks._();
 
   /// Fiche du sentier : sa ligne d identite en base (`trail_meta`).
   static const String fiche = 'trail_meta';
@@ -40,7 +40,7 @@ abstract final class MorceauxDeSentier {
   static const String itineraires = 'itineraries';
 
   /// Etapes.
-  static const String etapes = 'stages';
+  static const String stages = 'stages';
 
   /// Hebergements.
   static const String hebergements = 'accommodations';
@@ -59,7 +59,7 @@ abstract final class MorceauxDeSentier {
   static const List<String> tous = <String>[
     fiche,
     itineraires,
-    etapes,
+    stages,
     hebergements,
     pointsDInteret,
     traces,
@@ -192,9 +192,9 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     ///  * ABSENTE — l entree ne fait que VERSIONNER un sentier que le binaire
     ///    connait deja (catalogue compile). Si le binaire ne le connait pas non
     ///    plus, l entree n est pas affichable et elle est ecartee avec un
-    ///    journal qui le DIT (cf. `sentier_distant.dart`) — jamais une carte
+    ///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
     ///    vide au catalogue.
-    TrailManifestFiche? fiche,
+    TrailManifestSheet? fiche,
 
     /// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
     ///
@@ -208,7 +208,7 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
     ///
     /// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
     /// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
-    /// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+    /// resolue par `TrailDataSource.trailDataUrl`. Un sentier peut ainsi servir
     /// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
     ///
     /// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
@@ -269,8 +269,8 @@ abstract class TrailManifestEntry with _$TrailManifestEntry {
 /// sans nom, sans region ou sans distance produirait une carte a trous ; le
 /// reste (couleurs, prix, durees, secours) a un defaut honnete et documente.
 @freezed
-abstract class TrailManifestFiche with _$TrailManifestFiche {
-  const factory TrailManifestFiche({
+abstract class TrailManifestSheet with _$TrailManifestSheet {
+  const factory TrailManifestSheet({
     /// Nom technique court (ex: 'GR10').
     required String name,
 
@@ -301,7 +301,7 @@ abstract class TrailManifestFiche with _$TrailManifestFiche {
     /// Couleur secondaire du theme. Null = defaut moteur.
     int? secondaryColorValue,
 
-    /// PRIX du sentier EN ETAPES. Null = non declare (cf. `sentier_distant.dart`).
+    /// PRIX du sentier EN ETAPES. Null = non declare (cf. `remote_trail.dart`).
     ///
     /// `0` declare un SENTIER GRATUIT, et c est une decision de modele
     /// economique prise a distance : Christophe peut ouvrir un sentier gratuit
@@ -320,15 +320,15 @@ abstract class TrailManifestFiche with _$TrailManifestFiche {
 
     /// Numeros de secours REGIONAUX du sentier. Le 112 est universel et gere
     /// par le moteur : ne pas le mettre ici.
-    List<FicheNumeroSecours>? emergencyNumbers,
+    List<EmergencyNumberSheet>? emergencyNumbers,
 
     /// URL de la politique de confidentialite du sentier.
     String? privacyPolicyUrl,
-  }) = _TrailManifestFiche;
+  }) = _TrailManifestSheet;
 
   /// Deserialisation depuis JSON
-  factory TrailManifestFiche.fromJson(Map<String, dynamic> json) =>
-      _$TrailManifestFicheFromJson(json);
+  factory TrailManifestSheet.fromJson(Map<String, dynamic> json) =>
+      _$TrailManifestSheetFromJson(json);
 }
 
 /// Numero de secours regional declare a distance.
@@ -336,16 +336,16 @@ abstract class TrailManifestFiche with _$TrailManifestFiche {
 /// Miroir serialisable de `TrailEmergencyNumber` : le moteur ne hardcode aucun
 /// numero, et un sentier neuf apporte les siens avec lui.
 @freezed
-abstract class FicheNumeroSecours with _$FicheNumeroSecours {
-  const factory FicheNumeroSecours({
+abstract class EmergencyNumberSheet with _$EmergencyNumberSheet {
+  const factory EmergencyNumberSheet({
     /// Nom affiche du service de secours.
     required String name,
 
     /// Numero de telephone.
     required String phone,
-  }) = _FicheNumeroSecours;
+  }) = _EmergencyNumberSheet;
 
   /// Deserialisation depuis JSON
-  factory FicheNumeroSecours.fromJson(Map<String, dynamic> json) =>
-      _$FicheNumeroSecoursFromJson(json);
+  factory EmergencyNumberSheet.fromJson(Map<String, dynamic> json) =>
+      _$EmergencyNumberSheetFromJson(json);
 }

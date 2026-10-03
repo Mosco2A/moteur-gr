@@ -261,8 +261,8 @@ void main() {
 
       final ajouts = <String>{};
       void collecter(Map<String, dynamic> parSaison) {
-        for (final liste in parSaison.values) {
-          for (final item in liste as List) {
+        for (final list in parSaison.values) {
+          for (final item in list as List) {
             ajouts.add((item as Map<String, dynamic>)['id'] as String);
           }
         }

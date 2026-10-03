@@ -142,7 +142,7 @@ class _LockedJournalView extends ConsumerWidget {
     final entryCount = ref.watch(
       journalScreenProvider.select((s) => s.entries.length),
     );
-    final carte = _LockedJournalCard(
+    final card = _LockedJournalCard(
       trailId: trailId,
       // L'aperçu de ce que contient le journal n'a de sens que tant qu'il n'y a
       // rien a lire : des qu'il y a des pages, elles parlent mieux que lui.
@@ -152,7 +152,7 @@ class _LockedJournalView extends ConsumerWidget {
     if (entryCount == 0) {
       return ListView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
-        children: [carte],
+        children: [card],
       );
     }
 
@@ -161,7 +161,7 @@ class _LockedJournalView extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: carte,
+          child: card,
         ),
         const Divider(height: 1),
         // CONSULTATION SEULE : navigateur de jour, trace, resume et notes, sans
@@ -185,7 +185,7 @@ class _LockedJournalCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     // Le sentier actif n'est plus lu ici : le prix du deblocage est resolu par
-    // le geste unique [acheterSentier] (tache 614), pas par l'appelant.
+    // le geste unique [buyTrail] (tache 614), pas par l'appelant.
     return AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
@@ -219,7 +219,7 @@ class _LockedJournalCard extends ConsumerWidget {
           AppButton(
             icon: StepwaysIcons.cadenasOuvert,
             label: t.journal.lockedUnlock,
-            onPressed: () => acheterSentier(context, ref, trailId: trailId),
+            onPressed: () => buyTrail(context, ref, trailId: trailId),
           ),
         ],
       ),

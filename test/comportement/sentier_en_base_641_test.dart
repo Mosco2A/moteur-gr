@@ -20,8 +20,8 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/delta_update_service.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/mise_a_jour_a_la_source.dart';
-import 'package:moteur_gr/core/services/source_de_donnees_sentier.dart';
-import 'package:moteur_gr/core/services/source_firestore_sentier.dart';
+import 'package:moteur_gr/core/services/trail_record_source.dart';
+import 'package:moteur_gr/core/services/firestore_trail_source.dart';
 import 'package:moteur_gr/features/planning/domain/transport_info.dart';
 import 'package:moteur_gr/features/planning/providers/lieux_en_base_provider.dart';
 
@@ -47,7 +47,7 @@ import 'package:moteur_gr/features/planning/providers/lieux_en_base_provider.dar
 ///     constantes Dart derriere un `switch (trailId)`.
 void main() {
   group('641 — le Mare a Mare Centre est PUBLIE, et le depot le prouve', () {
-    late Map<String, dynamic> liste;
+    late Map<String, dynamic> list;
     late Map<String, dynamic> donnees;
 
     setUpAll(() {
@@ -61,10 +61,10 @@ void main() {
             'constate le 30/09 : « je ne vois toujours pas les donnees Mare a '
             'Mare dans Firebase, ni demo, ni normal, rien »',
       );
-      liste =
+      list =
           jsonDecode(fichierListe.readAsStringSync()) as Map<String, dynamic>;
 
-      final entrees = (liste['trails'] as List)
+      final entrees = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .where((e) => e['trailId'] == 'mare-a-mare-centre')
           .toList();
@@ -84,7 +84,7 @@ void main() {
 
     test('l entree de liste porte une fiche complete et le statut « active » — '
         'sans fiche, un sentier publie est INAFFICHABLE (#M9)', () {
-      final entree = (liste['trails'] as List)
+      final entree = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .firstWhere((e) => e['trailId'] == 'mare-a-mare-centre');
 
@@ -104,7 +104,7 @@ void main() {
     test('les numeros de secours publies CONSERVENT celui de production et '
         'AJOUTENT ceux qui sont sources — on ne retire jamais un numero de '
         'secours sur la foi d une recherche', () {
-      final entree = (liste['trails'] as List)
+      final entree = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .firstWhere((e) => e['trailId'] == 'mare-a-mare-centre');
       final numeros =
@@ -306,7 +306,7 @@ void main() {
 
   group('641 — la liste des sentiers se lit dans Firestore', () {
     test('un document `trails/{id}` devient une entree de liste complete', () {
-      final entree = ListeSentiersFirestore.versEntree('mare-a-mare-centre', {
+      final entree = FirestoreTrailList.versEntree('mare-a-mare-centre', {
         'trail_id': 'mare-a-mare-centre',
         'data_version': 1759227264414,
         'last_updated': '2026-09-30T10:27:44.414Z',
@@ -344,7 +344,7 @@ void main() {
       'un document mal forme est ECARTE, jamais fatal — une entree cassee ne '
       'doit pas rendre TOUT le catalogue illisible',
       () {
-        final entree = ListeSentiersFirestore.versEntree('casse', {
+        final entree = FirestoreTrailList.versEntree('casse', {
           'fiche': <String, dynamic>{'name': 'incomplete'},
         });
         expect(entree, isNull);
@@ -353,7 +353,7 @@ void main() {
 
     test('un horodatage Firestore serialise est LU, et pas confondu avec du '
         'texte — sinon la comparaison de revision compare des chaines', () {
-      final entree = ListeSentiersFirestore.versEntree('x', {
+      final entree = FirestoreTrailList.versEntree('x', {
         'data_version': <String, dynamic>{
           'seconds': 1759227264,
           'nanoseconds': 414000000,
@@ -503,7 +503,7 @@ void main() {
       );
       listeDouble = _ListeDouble();
       service = MiseAJourALaSource(
-        liste: listeDouble,
+        list: listeDouble,
         delta: delta,
         dao: manifests,
         connectivityMonitor: reseau,
@@ -620,7 +620,7 @@ void main() {
       listeDouble.entree = _entree(trailId, instantUn);
       sourceDouble.lot = lotDeDonnees(instantUn, 'Gite de Catastaghju');
 
-      final bilan = await service.surDemandeDuRandonneur(trailId);
+      final bilan = await service.onHikerRequest(trailId);
       expect(
         bilan.horsLigne,
         isFalse,
@@ -663,11 +663,11 @@ void main() {
       final lignes = await pois.getByStageId('etape-1');
       final lieux = lignes
           .map(
-            (p) => LieuDeSentier(
+            (p) => TrailPlace(
               poi: p,
               stageNumber: 1,
-              estPremiereEtape: true,
-              estDerniereEtape: true,
+              isFirstStage: true,
+              isLastStage: true,
             ),
           )
           .toList();
@@ -714,14 +714,14 @@ void main() {
         expect(
           transportDepuisLesLieux(
             trailId,
-            const <LieuDeSentier>[],
+            const <TrailPlace>[],
             nomDepart: 'A',
             nomArrivee: 'B',
           ),
           isNull,
         );
         expect(
-          ravitaillementDepuisLesLieux(trailId, const <LieuDeSentier>[]),
+          ravitaillementDepuisLesLieux(trailId, const <TrailPlace>[]),
           isNull,
         );
       },
@@ -788,7 +788,7 @@ TrailManifestEntry _entree(
 /// pas provisionne dans un test unitaire, et le pilote `cloud_firestore` exige un
 /// canal de plateforme. Ce qui est EPROUVE ici, c est la decision — « est-ce plus
 /// recent que mon repere ? » — et elle ne depend pas du transport.
-class _ListeDouble extends ListeSentiersFirestore {
+class _ListeDouble extends FirestoreTrailList {
   _ListeDouble()
     : super(firebaseService: FirebaseService.testOnly(isAvailable: true));
 
@@ -812,7 +812,7 @@ class _ReseauDouble extends ConnectivityMonitor {
 }
 
 /// La source de donnees, remplacee par un double qui rend un lot fixe.
-class _SourceDouble implements SourceDeDonneesSentier {
+class _SourceDouble implements TrailRecordSource {
   Map<String, dynamic> lot = const <String, dynamic>{};
   int appels = 0;
 

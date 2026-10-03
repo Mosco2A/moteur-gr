@@ -21,8 +21,8 @@ import '../models/niveau_de_telechargement.dart';
 import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
-import 'source_de_donnees_sentier.dart';
-import 'source_firestore_sentier.dart';
+import 'trail_record_source.dart';
+import 'firestore_trail_source.dart';
 import 'package:drift/drift.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -72,7 +72,7 @@ class DeltaUpdateService {
     required this.trailPoisDao,
     required this.trailGpxTracksDao,
     required this.trailGpxPointsDao,
-    SourceDeDonneesSentier? source,
+    TrailRecordSource? source,
     http.Client? httpClient,
   }) : source = source ?? SourceFichierEntier(httpClient: httpClient);
 
@@ -98,7 +98,7 @@ class DeltaUpdateService {
   /// stockage, lu en HTTP REST, trie a l arrivee. Injecter [SourceInterrogeable]
   /// fait partir la question au serveur — le transfert devient unitaire et la
   /// suite du code ne bouge pas.
-  final SourceDeDonneesSentier source;
+  final TrailRecordSource source;
 
   /// Y a-t-il quelque chose de plus recent que ma revision ?
   ///
@@ -138,7 +138,7 @@ class DeltaUpdateService {
   /// Applique des donnees deja telechargees, EN UNE SEULE TRANSACTION.
   ///
   /// [donnees] est le fichier de donnees du sentier : un objet dont les clefs
-  /// sont les sept familles ([MorceauxDeSentier]) et les valeurs les
+  /// sont les sept familles ([TrailChunks]) et les valeurs les
   /// enregistrements, chacun portant sa revision.
   ///
   /// SEULS LES ENREGISTREMENTS PLUS RECENTS QUE [revisionLocale] SONT POSES, et
@@ -152,7 +152,7 @@ class DeltaUpdateService {
   /// fois tout pose.
   ///
   /// L ORDRE EST IMPOSE, PAS SUBI : les familles sont appliquees dans l ordre des
-  /// cles etrangeres ([MorceauxDeSentier.tous]) et non dans l ordre des clefs du
+  /// cles etrangeres ([TrailChunks.tous]) et non dans l ordre des clefs du
   /// JSON. L ancien code iterait sur `deltaJson.keys` et dependait donc de
   /// l ordre d ecriture du fichier — un hebergement avant son etape echouait.
   ///
@@ -187,7 +187,7 @@ class DeltaUpdateService {
     MorceauxAPrendre? mesure,
   }) async {
     final inconnues = donnees.keys
-        .where((k) => !MorceauxDeSentier.estConnu(k))
+        .where((k) => !TrailChunks.estConnu(k))
         .toList();
     if (inconnues.isNotEmpty) {
       _log.w(
@@ -197,12 +197,12 @@ class DeltaUpdateService {
       );
     }
 
-    final familles = MorceauxDeSentier.tous
-        .where((f) => donnees[f] != null && niveau.porte(f))
+    final familles = TrailChunks.tous
+        .where((f) => donnees[f] != null && niveau.carries(f))
         .toList();
 
-    final horsNiveau = MorceauxDeSentier.tous
-        .where((f) => donnees[f] != null && !niveau.porte(f))
+    final horsNiveau = TrailChunks.tous
+        .where((f) => donnees[f] != null && !niveau.carries(f))
         .toList();
     if (horsNiveau.isNotEmpty) {
       _log.d(
@@ -225,7 +225,7 @@ class DeltaUpdateService {
       // effacement qui survivrait a l echec de la copie laisserait le randonneur
       // SANS sentier, la ou il en avait un vieux : c est le pire des deux mondes,
       // et c est exactement ce que la garantie #C1 interdit.
-      if (repartirDeZero) await _effacerLeSentier(trailId);
+      if (repartirDeZero) await _eraseTrail(trailId);
 
       for (final famille in familles) {
         final bilan = await _appliquerFamille(
@@ -441,14 +441,14 @@ class DeltaUpdateService {
   /// LA PORTEE EST LE SENTIER, PAS LA BASE. Les identifiants sont resolus par
   /// requete a chaque niveau : un `DELETE` non borne effacerait les autres
   /// sentiers deja copies sur le telephone.
-  Future<void> _effacerLeSentier(String trailId) async {
+  Future<void> _eraseTrail(String trailId) async {
     final itineraires = (await trailItinerariesDao.getByTrailId(
       trailId,
     )).map((i) => i.id).toList();
 
-    final etapes = <String>[];
+    final stages = <String>[];
     for (final itineraire in itineraires) {
-      etapes.addAll(
+      stages.addAll(
         (await trailStagesDao.getByItineraryId(itineraire)).map((e) => e.id),
       );
     }
@@ -469,14 +469,14 @@ class DeltaUpdateService {
         db.trailGpxTracks,
       )..where((t) => t.id.isIn(traces))).go();
     }
-    if (etapes.isNotEmpty) {
+    if (stages.isNotEmpty) {
       await (db.delete(
         db.trailPois,
-      )..where((t) => t.stageId.isIn(etapes))).go();
+      )..where((t) => t.stageId.isIn(stages))).go();
       await (db.delete(
         db.trailAccommodations,
-      )..where((t) => t.stageId.isIn(etapes))).go();
-      await (db.delete(db.trailStages)..where((t) => t.id.isIn(etapes))).go();
+      )..where((t) => t.stageId.isIn(stages))).go();
+      await (db.delete(db.trailStages)..where((t) => t.id.isIn(stages))).go();
     }
     if (itineraires.isNotEmpty) {
       await (db.delete(
@@ -506,7 +506,7 @@ class DeltaUpdateService {
       if (!RevisionDeDonnee.aPrendre(
         donnee,
         revisionLocale: revisionLocale,
-        revisionDuSentier: revisionCible,
+        trailRevision: revisionCible,
       )) {
         continue; // Deja a jour sur le telephone : on n y touche pas.
       }
@@ -519,7 +519,7 @@ class DeltaUpdateService {
         // une ABSENCE : un point d eau tari, un refuge ferme, un point d interet
         // retire resteraient a vie sur le telephone du randonneur. La donnee
         // redescend donc avec sa revision ET la marque « retire-la ».
-        supprimes += await _supprimer(famille, donnee);
+        supprimes += await _delete(famille, donnee);
         continue;
       }
 
@@ -536,7 +536,7 @@ class DeltaUpdateService {
     HorodatageServeur rev,
   ) async {
     switch (famille) {
-      case MorceauxDeSentier.fiche:
+      case TrailChunks.fiche:
         await trailMetaDao.insertOrReplace(
           TrailMetaCompanion(
             id: Value(d['id'] as String),
@@ -549,7 +549,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.itineraires:
+      case TrailChunks.itineraires:
         await trailItinerariesDao.insertOrReplace(
           TrailItinerariesCompanion(
             id: Value(d['id'] as String),
@@ -566,7 +566,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.etapes:
+      case TrailChunks.stages:
         await trailStagesDao.insertOrReplace(
           TrailStagesCompanion(
             id: Value(d['id'] as String),
@@ -589,7 +589,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.hebergements:
+      case TrailChunks.hebergements:
         await trailAccommodationsDao.insertOrReplace(
           TrailAccommodationsCompanion(
             id: Value(d['id'] as String),
@@ -615,7 +615,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.pointsDInteret:
+      case TrailChunks.pointsDInteret:
         await trailPoisDao.insertOrReplace(
           TrailPoisCompanion(
             id: Value(d['id'] as String),
@@ -644,7 +644,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.traces:
+      case TrailChunks.traces:
         await trailGpxTracksDao.insertOrReplace(
           TrailGpxTracksCompanion(
             id: Value(d['id'] as String),
@@ -654,7 +654,7 @@ class DeltaUpdateService {
             rev: Value(rev),
           ),
         );
-      case MorceauxDeSentier.pointsDeTrace:
+      case TrailChunks.pointsDeTrace:
         await trailGpxPointsDao.insertOrReplace(
           TrailGpxPointsCompanion(
             trackId: Value(d['track_id'] as String),
@@ -678,35 +678,35 @@ class DeltaUpdateService {
   /// auto-incrementee), son identite reelle est le couple trace + rang. Un
   /// marqueur de suppression de point de trace doit donc porter `track_id` et
   /// `sequence_index`.
-  Future<int> _supprimer(String famille, Map<String, dynamic> d) async {
+  Future<int> _delete(String famille, Map<String, dynamic> d) async {
     final id = d['id'] as String?;
 
     switch (famille) {
-      case MorceauxDeSentier.fiche:
+      case TrailChunks.fiche:
         if (id == null) break;
         return (db.delete(db.trailMeta)..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.itineraires:
+      case TrailChunks.itineraires:
         if (id == null) break;
         return (db.delete(
           db.trailItineraries,
         )..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.etapes:
+      case TrailChunks.stages:
         if (id == null) break;
         return (db.delete(db.trailStages)..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.hebergements:
+      case TrailChunks.hebergements:
         if (id == null) break;
         return (db.delete(
           db.trailAccommodations,
         )..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.pointsDInteret:
+      case TrailChunks.pointsDInteret:
         if (id == null) break;
         return (db.delete(db.trailPois)..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.traces:
+      case TrailChunks.traces:
         if (id == null) break;
         return (db.delete(
           db.trailGpxTracks,
         )..where((t) => t.id.equals(id))).go();
-      case MorceauxDeSentier.pointsDeTrace:
+      case TrailChunks.pointsDeTrace:
         final trackId = d['track_id'] as String?;
         final rang = d['sequence_index'] as int?;
         if (trackId == null) break;
@@ -745,7 +745,7 @@ final deltaUpdateServiceProvider = Provider<DeltaUpdateService>((ref) {
   final db = ref.watch(databaseProvider);
   return DeltaUpdateService(
     db: db,
-    source: ref.watch(sourceDeDonneesSentierProvider),
+    source: ref.watch(trailRecordSourceProvider),
     manifestService: ref.watch(manifestServiceProvider),
     trailManifestsDao: TrailManifestsDao(db),
     trailMetaDao: TrailMetaDao(db),

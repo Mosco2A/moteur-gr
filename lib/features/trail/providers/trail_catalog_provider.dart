@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
-import '../../../core/config/sentier_distant.dart';
+import '../../../core/config/remote_trail.dart';
 import '../../../core/config/trail_catalog.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_data_source.dart';
@@ -16,7 +16,7 @@ import '../../../core/models/trail_manifest.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/manifest_service.dart';
-import '../../../core/services/source_firestore_sentier.dart';
+import '../../../core/services/firestore_trail_source.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -49,9 +49,9 @@ enum EchecDuCatalogue {
 }
 
 /// Le catalogue tel qu il est affichable A CET INSTANT, et d ou il vient.
-class CatalogueSentiers {
-  const CatalogueSentiers({
-    required this.sentiers,
+class TrailCatalogState {
+  const TrailCatalogState({
+    required this.trails,
     required this.source,
     this.echec,
     this.ignores = const [],
@@ -59,7 +59,7 @@ class CatalogueSentiers {
 
   /// Les sentiers affichables. JAMAIS VIDE en pratique : le catalogue compile
   /// est le plancher.
-  final List<TrailConfig> sentiers;
+  final List<TrailConfig> trails;
 
   /// Laquelle des trois couches a produit cette liste.
   final SourceDuCatalogue source;
@@ -105,21 +105,21 @@ class CatalogueSentiers {
 /// TOUT EST ENVELOPPE. Base indisponible, JSON illisible, reseau qui tombe : la
 /// liste ne descend jamais en dessous du catalogue compile, et la cause est
 /// journalisee. C est la regle « JAMAIS de crash » du patron GR20.
-class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
+class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
   /// Adresse de la liste des sentiers disponibles.
   ///
   /// Lue depuis [TrailDataSource], seul endroit du moteur qui sait ou vivent les
   /// donnees (tache 604 : deux copies en dur d une adresse morte).
-  static String get urlDeLaListe => TrailDataSource.urlManifeste;
+  static String get listUrl => TrailDataSource.urlManifeste;
 
   @override
-  CatalogueSentiers build() {
+  TrailCatalogState build() {
     // COUCHE 3 D ABORD, PARCE QU ELLE EST LA SEULE DISPONIBLE SANS ATTENDRE.
     // Ce n est pas un choix par defaut : c est le secours, et il est rendu en
     // premier pour qu aucun ecran ne soit vide le temps d une lecture.
     _rafraichir();
-    return const CatalogueSentiers(
-      sentiers: TrailCatalog.all,
+    return const TrailCatalogState(
+      trails: TrailCatalog.all,
       source: SourceDuCatalogue.compile,
     );
   }
@@ -133,7 +133,7 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
     // doit rester entier.
     final recu = await _lireLeDernierRecu();
     if (!ref.mounted) return;
-    if (recu != null && recu.sentiers.isNotEmpty) {
+    if (recu != null && recu.trails.isNotEmpty) {
       state = recu;
     }
 
@@ -151,8 +151,8 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
       // HORS LIGNE : on ne demande RIEN et on ne perd RIEN. La cause est nommee
       // pour que l ecran puisse dire « liste non rafraichie » sans se presenter
       // comme une panne.
-      state = CatalogueSentiers(
-        sentiers: state.sentiers,
+      state = TrailCatalogState(
+        trails: state.trails,
         source: state.source,
         echec: EchecDuCatalogue.horsLigne,
         ignores: state.ignores,
@@ -172,42 +172,40 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
     // celle que Christophe voit dans sa console et que `tool/publier_en_base.py`
     // alimente. Le fichier reste le repli : mode local sans Firebase, ou projet
     // sans identifiant injecte au build.
-    TrailManifest? liste;
+    TrailManifest? list;
     try {
-      liste = await ref.read(listeSentiersFirestoreProvider).lire();
+      list = await ref.read(firestoreTrailListProvider).lire();
     } catch (e) {
       _log.w('[Catalogue] Lecture de la liste en base impossible: $e');
-      liste = null;
+      list = null;
     }
     if (!ref.mounted) return;
 
-    if (liste == null || liste.trails.isEmpty) {
+    if (list == null || list.trails.isEmpty) {
       try {
-        liste = await ref
-            .read(manifestServiceProvider)
-            .fetchManifest(urlDeLaListe);
-        if (liste != null) {
+        list = await ref.read(manifestServiceProvider).fetchManifest(listUrl);
+        if (list != null) {
           _log.w(
-            '[Catalogue] Liste lue depuis le FICHIER ($urlDeLaListe) et non '
+            '[Catalogue] Liste lue depuis le FICHIER ($listUrl) et non '
             'depuis la base. C est le repli : la base fait foi des que la '
             'collection « trails » est publiee.',
           );
         }
       } catch (e) {
         _log.w('[Catalogue] Lecture de la liste distante impossible: $e');
-        liste = null;
+        list = null;
       }
     }
     if (!ref.mounted) return;
 
-    if (liste == null) {
+    if (list == null) {
       _log.w(
-        '[Catalogue] Liste des sentiers injoignable ($urlDeLaListe) — on garde '
-        '${state.sentiers.length} sentier(s) de la source ${state.source.name}. '
+        '[Catalogue] Liste des sentiers injoignable ($listUrl) — on garde '
+        '${state.trails.length} sentier(s) de la source ${state.source.name}. '
         'La liste n est PAS a jour.',
       );
-      state = CatalogueSentiers(
-        sentiers: state.sentiers,
+      state = TrailCatalogState(
+        trails: state.trails,
         source: state.source,
         echec: EchecDuCatalogue.listeInjoignable,
         ignores: state.ignores,
@@ -215,10 +213,10 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
       return;
     }
 
-    final fusion = _fusionner(liste.trails);
+    final fusion = _fusionner(list.trails);
     if (!ref.mounted) return;
-    state = CatalogueSentiers(
-      sentiers: fusion.sentiers,
+    state = TrailCatalogState(
+      trails: fusion.trails,
       source: SourceDuCatalogue.distant,
       ignores: fusion.ignores,
     );
@@ -227,11 +225,11 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
     // Sans cette ecriture la couche 2 serait toujours vide et le randonneur
     // perdrait, au premier redemarrage hors ligne, tout sentier que le binaire ne
     // connait pas.
-    await _conserver(liste.trails);
+    await _conserver(list.trails);
   }
 
   /// Relit le dernier catalogue distant recu depuis la base locale.
-  Future<CatalogueSentiers?> _lireLeDernierRecu() async {
+  Future<TrailCatalogState?> _lireLeDernierRecu() async {
     try {
       final dao = TrailManifestsDao(ref.read(databaseProvider));
       final lignes = await dao.getAll();
@@ -254,8 +252,8 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
       }
 
       final fusion = _fusionner(entrees);
-      return CatalogueSentiers(
-        sentiers: fusion.sentiers,
+      return TrailCatalogState(
+        trails: fusion.trails,
         source: SourceDuCatalogue.dernierDistantRecu,
         ignores: fusion.ignores,
       );
@@ -291,7 +289,7 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
   /// LA FUSION — ET LA REGLE DE MEMBRES DU CATALOGUE.
   ///
   /// L identifiant est la cle. Pour chaque entree distante on cherche son
-  /// equivalent compile et on fusionne ([EntreeManifesteEnSentier.versSentier]) :
+  /// equivalent compile et on fusionne ([ManifestEntryAsTrail.toTrail]) :
   /// le distant gagne sur les donnees, le compile apporte ses assets.
   ///
   /// UN SENTIER COMPILE ABSENT DE LA LISTE DISTANTE EST CONSERVE, et c est une
@@ -311,7 +309,7 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
       for (final c in TrailCatalog.all) c.id: c,
     };
 
-    final sentiers = <TrailConfig>[];
+    final trails = <TrailConfig>[];
     final ignores = <String>[];
     final vus = <String>{};
 
@@ -326,7 +324,7 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
         continue;
       }
 
-      final fusionne = entree.versSentier(compile: compiles[entree.trailId]);
+      final fusionne = entree.toTrail(compile: compiles[entree.trailId]);
       if (fusionne == null) {
         ignores.add(entree.trailId);
         _log.w(
@@ -337,27 +335,27 @@ class CatalogueSentiersNotifier extends Notifier<CatalogueSentiers> {
         );
         continue;
       }
-      sentiers.add(fusionne);
+      trails.add(fusionne);
     }
 
     // Les sentiers compiles dont la liste distante ne parle pas, dans l ordre du
     // catalogue embarque.
     for (final compile in TrailCatalog.all) {
-      if (!vus.contains(compile.id)) sentiers.add(compile);
+      if (!vus.contains(compile.id)) trails.add(compile);
     }
 
-    return _Fusion(sentiers: sentiers, ignores: ignores);
+    return _Fusion(trails: trails, ignores: ignores);
   }
 }
 
 class _Fusion {
-  const _Fusion({required this.sentiers, required this.ignores});
-  final List<TrailConfig> sentiers;
+  const _Fusion({required this.trails, required this.ignores});
+  final List<TrailConfig> trails;
   final List<String> ignores;
 }
 
 /// Provider du catalogue effectif (distant > dernier recu > compile).
 final catalogueSentiersProvider =
-    NotifierProvider<CatalogueSentiersNotifier, CatalogueSentiers>(
-      CatalogueSentiersNotifier.new,
+    NotifierProvider<TrailCatalogStateNotifier, TrailCatalogState>(
+      TrailCatalogStateNotifier.new,
     );

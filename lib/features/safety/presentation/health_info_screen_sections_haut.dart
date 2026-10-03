@@ -122,7 +122,7 @@ class _HealthIdentitySection extends StatelessWidget {
         // ============================================ [1] QUI
         _SectionTitle(
           key: const ValueKey('health-section-identity'),
-          icon: StepwaysIcons.monCompte,
+          icon: StepwaysIcons.myAccount,
           title: t.health.section.identity,
           explanation: t.health.section.identityWhy,
         ),
@@ -131,7 +131,7 @@ class _HealthIdentitySection extends StatelessWidget {
           controller: fullNameController,
           label: t.health.field.fullName,
           hint: t.health.hint.fullName,
-          icon: StepwaysIcons.monCompte,
+          icon: StepwaysIcons.myAccount,
           maxLines: 1,
           maxLength: kHealthNameMaxLength,
           showCounter: false,

@@ -60,8 +60,8 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/cloud_sync_service.dart';
 import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
-import 'package:moteur_gr/features/safety/data/copie_sauvegardable_fiche_service.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_backup_copy_service.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/safety/presentation/refus_sauvegarde_systeme_dialog.dart';
@@ -257,7 +257,7 @@ void main() {
         // verification, une liste fermee vide passerait pour une liste correcte.
         await transport().pushEncryptedBackup(
           'hash-anon',
-          DocumentsDuCoffreDistant.compte,
+          DocumentsDuCoffreDistant.account,
           'blob-chiffre',
         );
         expect(
@@ -295,7 +295,7 @@ void main() {
         expect(DocumentsDuCoffreDistant.autorise(''), isFalse);
         expect(DocumentsDuCoffreDistant.autorise('n importe quoi'), isFalse);
         expect(
-          DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.compte),
+          DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.account),
           isTrue,
         );
       },
@@ -344,9 +344,9 @@ void main() {
       // TACHE 613 : la fiche a change de stockage (son propre fichier, sous le
       // dossier exclu). L invariante suit le DEPLACEMENT, sinon elle aurait
       // continue a surveiller une porte qui ne mene plus nulle part.
-      'fiche_medicale_fichier.dart',
-      'FicheMedicaleFichier',
-      'ficheMedicaleFichierProvider',
+      'health_info_file.dart',
+      'HealthInfoFile',
+      'healthInfoFileProvider',
     ];
     const sortieReseau = [
       'cloud_firestore',
@@ -378,14 +378,14 @@ void main() {
             'Decision de Christophe du 28/09 10:42 : la fiche medicale ne '
             'part JAMAIS vers nos serveurs. Si le besoin est la sauvegarde du '
             'telephone par Google ou Apple, c est un AUTRE sujet, et il passe '
-            'par CopieSauvegardableFicheService, qui n ouvre aucune connexion.',
+            'par HealthInfoBackupCopyService, qui n ouvre aucune connexion.',
       );
     });
 
     test('le service de copie sauvegardable n ouvre AUCUNE connexion', () {
       final source = _codeSeul(
         File(
-          'lib/features/safety/data/copie_sauvegardable_fiche_service.dart',
+          'lib/features/safety/data/health_info_backup_copy_service.dart',
         ).readAsStringSync(),
       );
       for (final sortie in sortieReseau) {
@@ -556,7 +556,7 @@ void main() {
       // declarative. Il n existe aucun equivalent de dataExtractionRules dans
       // Info.plist : elle se pose a l execution, fichier par fichier, avec
       // NSURLIsExcludedFromBackupKey. Le lot 612 ne pouvait donc que NOMMER
-      // l exigence, comme CoffreDeReconnexion nomme ce qui manque.
+      // l exigence, comme ReconnectionVault nomme ce qui manque.
       //
       // TACHE 615 : ELLE N EST PLUS SEULEMENT NOMMEE. Le canal natif existe
       // (`ExclusionSauvegardeIcloud`) et l exclusion est reposee a CHAQUE
@@ -585,7 +585,7 @@ void main() {
       'DEFAUT', () {
     late HealthInfoRepository fiche;
     late Directory racine;
-    late CopieSauvegardableFicheService copie;
+    late HealthInfoBackupCopyService copie;
 
     const laFiche = HealthInfo(
       bloodType: 'O-',
@@ -600,9 +600,9 @@ void main() {
       // meme bac temporaire que la copie sauvegardable — ce qui met les DEUX
       // emplacements cote a cote dans ces tests, l exclu et le sauvegardable.
       fiche = HealthInfoRepository(
-        fichier: FicheMedicaleFichier(dossierApplicatif: () async => racine),
+        fichier: HealthInfoFile(dossierApplicatif: () async => racine),
       );
-      copie = CopieSauvegardableFicheService(
+      copie = HealthInfoBackupCopyService(
         healthRepository: fiche,
         baseDirProvider: () async => racine,
       );
@@ -614,7 +614,7 @@ void main() {
 
     File fichierCopie() => File(
       '${racine.path}/${SauvegardeSysteme.dossierSauvegardable}'
-      '/${SauvegardeSysteme.fichierCopieFiche}',
+      '/${SauvegardeSysteme.healthSheetCopyFile}',
     );
 
     test('LE DEFAUT EST LE REFUS, avant meme que la case ait ete vue', () {
@@ -772,7 +772,7 @@ void main() {
       // bien en base. Un enregistrement reussi qui ne se dit pas est le pire
       // des deux defauts, pire qu une copie manquante.
       await fiche.save(laFiche);
-      final cassee = CopieSauvegardableFicheService(
+      final cassee = HealthInfoBackupCopyService(
         healthRepository: fiche,
         baseDirProvider: () async =>
             throw const FileSystemException('stockage indisponible'),
@@ -921,7 +921,7 @@ void main() {
       //
       // POURQUOI C ETAIT UNE MINE ET PAS SEULEMENT UNE ERREUR. Ce texte n est
       // PAS affiche aujourd hui : l ecran du code ne le montre que si
-      // `CoffreDeReconnexion.alimente` est vrai, et il est faux. Il attendait
+      // `ReconnectionVault.alimente` est vrai, et il est faux. Il attendait
       // donc son heure. Le jour ou quelqu un branchera un ecrivain du coffre
       // — ce que l invariante du LOT 596 l invite explicitement a faire —, ce
       // texte serait revenu a l ecran et aurait promis la fiche medicale dans le
@@ -1089,7 +1089,7 @@ void main() {
       await tester.pumpWidget(dialogue(TargetPlatform.android));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();
@@ -1124,7 +1124,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();

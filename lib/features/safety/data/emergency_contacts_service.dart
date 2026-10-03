@@ -53,7 +53,7 @@ class EmergencyContactsService {
   /// Contacts personnels de l'utilisateur.
   ///
   /// ILS NE SONT PLUS LA SOURCE DE VERITE (tache 630). Cette liste est un CACHE
-  /// de ce que porte la fiche d'urgence, alimente par [chargerDepuisLaFiche].
+  /// de ce que porte la fiche d'urgence, alimente par [loadFromSheet].
   ///
   /// CE QU'ELLE ETAIT AVANT, ET C'EST LA MESURE QUI A DECLENCHE LE CHANGEMENT :
   /// la SEULE copie. Elle vivait en memoire, personne ne la persistait, et
@@ -81,7 +81,7 @@ class EmergencyContactsService {
   /// ferait survivre ici un contact que le randonneur vient de retirer de sa
   /// fiche — et un numero d'urgence perime est exactement ce qu'on ne veut pas
   /// laisser sur un ecran verrouille.
-  void chargerDepuisLaFiche(List<EmergencyContact> contacts) {
+  void loadFromSheet(List<EmergencyContact> contacts) {
     _personalContacts
       ..clear()
       ..addAll(contacts);
@@ -90,7 +90,7 @@ class EmergencyContactsService {
   /// Ajoute un contact personnel au cache.
   ///
   /// CONSERVE POUR LES TESTS ET LES APPELS EXISTANTS. En production, la saisie
-  /// passe par l'ecran de la fiche puis par [chargerDepuisLaFiche] : ce qui
+  /// passe par l'ecran de la fiche puis par [loadFromSheet] : ce qui
   /// s'ajoute ici seulement ne serait pas persiste.
   void addContact(EmergencyContact contact) {
     _personalContacts.add(contact);

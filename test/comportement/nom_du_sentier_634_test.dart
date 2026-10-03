@@ -9,8 +9,8 @@ import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
-import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
+import 'package:moteur_gr/features/map/presentation/offline_maps_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// TACHE 634 — RETOUR 7 DE CHRISTOPHE (DEM-260929-1326).
@@ -67,15 +67,13 @@ void main() {
       overrides: [
         // L'ecran n'est pas le sujet ici : on fige sa decision pour ne
         // mesurer QUE le nom affiche, sans base ni reseau.
-        descenteDesCartesProvider.overrideWithValue(_DescenteFigee()),
+        mapDownloaderProvider.overrideWithValue(_DescenteFigee()),
       ],
       child: MaterialApp(
         locale: langue.flutterLocale,
         supportedLocales: AppLocaleUtils.supportedLocales,
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        home: TranslationProvider(
-          child: CartesHorsLigneScreen(trailId: trailId),
-        ),
+        home: TranslationProvider(child: OfflineMapsScreen(trailId: trailId)),
       ),
     );
 
@@ -148,7 +146,7 @@ void main() {
 ///
 /// C'est le cas normal d'un sentier dont les tuiles ne sont pas encore
 /// fabriquees, et il suffit a dessiner l'ecran en entier sans base ni reseau.
-class _DescenteFigee extends Fake implements DescenteDesCartes {
+class _DescenteFigee extends Fake implements MapDownloader {
   @override
   Future<DecisionDeDescente> examiner(
     String trailId, {

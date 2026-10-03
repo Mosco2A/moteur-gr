@@ -121,7 +121,7 @@ void main() {
 
       // Liseré semantique conserve a l'identique (rouge urgence, 1.5px).
       final card = tester.widget<AppCard>(find.byType(AppCard));
-      expect(card.borderColor, AppTheme.rougeUrgence);
+      expect(card.borderColor, AppTheme.emergencyRed);
       expect(card.borderWidth, 1.5);
     });
   });
@@ -160,7 +160,7 @@ void main() {
       // variante outline (pas la couleur primary du theme).
       final button = tester.widget<AppButton>(find.byType(AppButton));
       expect(button.variant, AppButtonVariant.outline);
-      expect(button.tone, AppTheme.rougeUrgence);
+      expect(button.tone, AppTheme.emergencyRed);
       expect(button.label, tr.weather.fireSafetyTips);
     });
 

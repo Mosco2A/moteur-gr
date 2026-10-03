@@ -159,12 +159,12 @@ void main() {
             'precisement pour que les lignes d avant restent lisibles',
       );
 
-      final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
-      expect(etapes, hasLength(1));
-      expect(etapes.single.nameFr, 'Etape 1');
-      expect(etapes.single.elevationGain, 800);
+      final stages = await db.trailStagesDao.getByItineraryId('mam-i1');
+      expect(stages, hasLength(1));
+      expect(stages.single.nameFr, 'Etape 1');
+      expect(stages.single.elevationGain, 800);
       expect(
-        etapes.single.rev,
+        stages.single.rev,
         isNull,
         reason:
             'une donnee d avant le modele n a pas de revision propre : '

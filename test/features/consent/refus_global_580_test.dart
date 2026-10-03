@@ -189,9 +189,9 @@ void main() {
 
         // (2) ET LA DONNEE PROTEGEE S EN VA. Relue par un depot NEUF, donc
         // depuis le stockage et jamais depuis un cache d ecran.
-        final profil = await depot().load();
+        final profile = await depot().load();
         expect(
-          [profil.age, profil.heightCm, profil.weightKg],
+          [profile.age, profile.heightCm, profile.weightKg],
           [0, 0, 0],
           reason:
               'LA MORPHOLOGIE A SURVECU AU REFUS GLOBAL. Un refus qui laisse '

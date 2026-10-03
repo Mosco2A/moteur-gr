@@ -326,7 +326,7 @@ Future<bool> waitFor(
 /// CE QUE LA MESURE A MONTRE, ET POURQUOI CE HELPER EXISTE. Au premier
 /// lancement du build 8, juste apres l'onboarding, l'application pose une
 /// question de protection des donnees : « Tes donnees restent sur ce telephone »
-/// ([PorteConsentementSauvegarde] -> [RefusSauvegardeSystemeDialog]). C'est un
+/// ([BackupConsentGate] -> [RefusSauvegardeSystemeDialog]). C'est un
 /// dialogue MODAL, et il recouvre tout. Le harnais ne le connaissait pas : il
 /// tapait « Passer » sur l'onboarding, le dialogue s'ouvrait par-dessus, et la
 /// route restait `/onboarding` pour le reste du scenario. TOUTE la campagne
@@ -1048,7 +1048,7 @@ Future<bool> acheterLeSentierPourDeVrai(
   try {
     final element = tester.element(find.byType(Navigator).first);
     final c = ProviderScope.containerOf(element, listen: false);
-    final etapes = TrailCatalog.byId(trailId)?.totalStages ?? 0;
+    final stages = TrailCatalog.byId(trailId)?.totalStages ?? 0;
     await c
         .read(databaseProvider)
         .trekEntitlementsDao
@@ -1056,8 +1056,8 @@ Future<bool> acheterLeSentierPourDeVrai(
           TrekEntitlementsCompanion.insert(
             trailId: trailId,
             owned: const Value(true),
-            acquiredStages: Value(etapes),
-            totalStages: Value(etapes),
+            acquiredStages: Value(stages),
+            totalStages: Value(stages),
             updatedAt: DateTime.now(),
           ),
         );
@@ -1069,7 +1069,7 @@ Future<bool> acheterLeSentierPourDeVrai(
     logStep(
       persona,
       'achat',
-      'Droit d acquisition ecrit pour $trailId ($etapes etapes) ; '
+      'Droit d acquisition ecrit pour $trailId ($stages etapes) ; '
           'le service de production repond possede = $possede',
     );
     return possede;

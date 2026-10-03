@@ -178,7 +178,7 @@ abstract final class SauvegardeSysteme {
   static const String dossierSauvegardable = 'sauvegarde_systeme';
 
   /// Nom du fichier de la copie sauvegardable de la fiche medicale.
-  static const String fichierCopieFiche = 'fiche_medicale.json';
+  static const String healthSheetCopyFile = 'fiche_medicale.json';
 
   /// Nom du fichier de la copie sauvegardable de LA BASE (progression, journal,
   /// trace, treks realises, solde, sentiers telecharges).
@@ -311,7 +311,7 @@ abstract final class SauvegardeSysteme {
   /// `hiker.profile` (age, taille, poids), `hiker.pastHikes`,
   /// `hiker.walkTestResult` et la note de difficultes heritee vivent desormais
   /// dans UN document, dans [dossierExclu], avec la meme exclusion iCloud que la
-  /// fiche medicale (`ProfilRandonneurFichier`). La migration des telephones deja
+  /// fiche medicale (`HikerProfileFile`). La migration des telephones deja
   /// installes est faite par l'amorce, une fois, et les cles sont retirees.
   ///
   /// CE QUI RESTE DANS iCLOUD SUR IPHONE, APRES LA TACHE 623 : le solde d'etapes

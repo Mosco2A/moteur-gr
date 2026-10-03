@@ -161,8 +161,8 @@ class TrailDetailScreen extends ConsumerWidget {
   /// et la planification restent accessibles ici via les actions SECONDAIRES
   /// « Voir la carte » / « Planifier ».
   void _enterTrail(BuildContext context, WidgetRef ref) {
-    // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
-    choisirSentier(ref, trailId);
+    // Bascule resolue AVANT la navigation (cf. [chooseTrail]).
+    chooseTrail(ref, trailId);
     context.go('/home');
   }
 }

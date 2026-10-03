@@ -79,7 +79,7 @@ void main() {
 
     test("un identifiant vide ne l arme pas", () async {
       final m = fabriquer(firebase: true);
-      await m.demarrer(userId: "");
+      await m.start(userId: "");
       expect(
         m.isRunning,
         isFalse,
@@ -91,18 +91,18 @@ void main() {
 
     test("arreter apres demarrer remet tout a zero", () async {
       final m = fabriquer(firebase: true);
-      await m.demarrer(userId: "uid-test");
+      await m.start(userId: "uid-test");
       expect(m.isRunning, isTrue);
-      await m.arreter();
+      await m.stop();
       expect(m.isRunning, isFalse);
       expect(m.monteeEnAttente, isFalse);
     });
 
     test("sans Firebase, une passe ne fait rien et ne leve pas", () async {
       final m = fabriquer();
-      await m.demarrer(userId: "uid-test");
+      await m.start(userId: "uid-test");
       expect(await m.monterMaintenant("test"), 0);
-      await m.arreter();
+      await m.stop();
     });
 
     test("une ecriture signalee avant le demarrage n arme aucun minuteur", () {
@@ -115,10 +115,10 @@ void main() {
       "une ecriture signalee apres le demarrage arme le regroupement",
       () async {
         final m = fabriquer(firebase: true);
-        await m.demarrer(userId: "uid-test");
+        await m.start(userId: "uid-test");
         m.signalerUneEcritureLocale();
         expect(m.monteeEnAttente, isTrue);
-        await m.arreter();
+        await m.stop();
       },
     );
   });

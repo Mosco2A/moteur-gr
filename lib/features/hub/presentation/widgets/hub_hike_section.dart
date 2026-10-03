@@ -29,7 +29,7 @@ class HubHikeSection extends StatelessWidget {
       cards: [
         ..._cartesDeLaNavigation(context),
         ..._cartesDuCarnet(context),
-        ..._cartesDeLaMeteo(context),
+        ..._weatherCards(context),
         ..._cartesDuRisque(context),
       ],
     );
@@ -38,7 +38,7 @@ class HubHikeSection extends StatelessWidget {
   /// La navigation et l'urgence : les deux gestes du terrain.
   List<QuickAccessCard> _cartesDeLaNavigation(BuildContext context) => [
     QuickAccessCard(
-      rubrique: RubriqueStepways.carte,
+      rubrique: RubriqueStepways.map,
       title: t.hub.cards.navigation,
       subtitle: t.hub.cards.navigationSub,
       // Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la
@@ -71,7 +71,7 @@ class HubHikeSection extends StatelessWidget {
     // recreerait le soupcon de « double acces SOS » qui a coute
     // une campagne QA (faux positif M1, #100175).
     QuickAccessCard(
-      icon: StepwaysIcons.secours,
+      icon: StepwaysIcons.emergency,
       title: t.hub.cards.emergency,
       subtitle: t.hub.cards.emergencySub,
       onTap: () => context.push('/emergency'),
@@ -121,7 +121,7 @@ class HubHikeSection extends StatelessWidget {
   ];
 
   /// L'adaptation de l'itineraire et la meteo par etape.
-  List<QuickAccessCard> _cartesDeLaMeteo(BuildContext context) => [
+  List<QuickAccessCard> _weatherCards(BuildContext context) => [
     // R11 (retour Chris, LOT L8) — MÉTÉO : carte « Prévisions par
     // étape » -> écran météo E31 (`/trail/:id/weather`). PARITÉ
     // GR20 : le HUB GR20 expose « Météo » et « Incendie » COTE A
@@ -150,7 +150,7 @@ class HubHikeSection extends StatelessWidget {
       onTap: () => context.push('/trail/$trailId/adjust'),
     ),
     QuickAccessCard(
-      rubrique: RubriqueStepways.meteo,
+      rubrique: RubriqueStepways.weather,
       title: t.hub.cards.weather,
       subtitle: t.hub.cards.weatherSub,
       onTap: () => context.push('/trail/$trailId/weather'),

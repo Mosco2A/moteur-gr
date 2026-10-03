@@ -55,7 +55,7 @@ class WaypointTypeConfig {
     ),
     WaypointType.camp: WaypointTypeStyle(
       icon: StepwaysIcons.hebergement,
-      color: CouleursSemantiques.pointBivouac,
+      color: CouleursSemantiques.bivouacPoint,
       labelKey: 'camp',
     ),
     WaypointType.connectivite: WaypointTypeStyle(

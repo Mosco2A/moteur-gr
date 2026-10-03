@@ -84,7 +84,7 @@ abstract final class TrailDataSource {
   /// soit une URL absolue deja resolue. On respecte l absolu tel quel : c est
   /// ce qui permet de servir un sentier depuis un autre hebergeur sans
   /// reconstruire le moteur.
-  static String urlDonneesSentier(String cheminDuManifeste) {
+  static String trailDataUrl(String cheminDuManifeste) {
     final deja = Uri.tryParse(cheminDuManifeste);
     if (deja != null && deja.hasScheme) return cheminDuManifeste;
     return urlDe('$dossier/$cheminDuManifeste');

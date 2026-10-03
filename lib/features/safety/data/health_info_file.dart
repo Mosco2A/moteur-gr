@@ -86,8 +86,8 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Le stockage durable de la fiche medicale : UN fichier, dans le dossier
 /// declare exclu de la sauvegarde du telephone.
-class FicheMedicaleFichier {
-  FicheMedicaleFichier({
+class HealthInfoFile {
+  HealthInfoFile({
     Future<Directory> Function()? dossierApplicatif,
     ExclusionSauvegardeIcloud? exclusionIcloud,
   }) : _dossierApplicatif = dossierApplicatif ?? getApplicationSupportDirectory,
@@ -122,7 +122,7 @@ class FicheMedicaleFichier {
   static const String nomCarteMutuelle = 'carte_mutuelle.jpg';
 
   /// Les deux seuls noms d'image que ce dossier accepte.
-  static const List<String> nomsCartes = [nomCarteVitale, nomCarteMutuelle];
+  static const List<String> mapNames = [nomCarteVitale, nomCarteMutuelle];
 
   /// Suffixe du fichier temporaire de l'ecriture atomique.
   ///
@@ -150,12 +150,12 @@ class FicheMedicaleFichier {
   ///    l'exclusion explicite de `file/medical/` du lot 612. Deux verrous, aucun
   ///    a poser de nouveau pour ces images ;
   ///  * IPHONE — `NSURLIsExcludedFromBackupKey` est pose sur le DOSSIER et sur
-  ///    chaque fichier ecrit, donc sur elles aussi (voir [enregistrerCarte]).
+  ///    chaque fichier ecrit, donc sur elles aussi (voir [saveCard]).
   ///
-  /// [nom] doit etre l'un de [nomsCartes] : une image dont le nom vient
+  /// [nom] doit etre l'un de [mapNames] : une image dont le nom vient
   /// d'ailleurs est refusee, pas rangee ailleurs.
-  Future<File> fichierCarte(String nom) async {
-    if (!nomsCartes.contains(nom)) {
+  Future<File> cardFile(String nom) async {
+    if (!mapNames.contains(nom)) {
       throw ArgumentError.value(nom, 'nom', 'nom de carte inconnu');
     }
     final base = await _dossierApplicatif();
@@ -234,8 +234,8 @@ class FicheMedicaleFichier {
   /// ecriture asynchrone ne se termine jamais dans un test de widgets (mesure du
   /// 28/09, tache 612). Une photo bornee a quelques centaines de kilo-octets
   /// s'ecrit en quelques millisecondes.
-  Future<void> enregistrerCarte(String nom, List<int> octets) async {
-    final f = await fichierCarte(nom);
+  Future<void> saveCard(String nom, List<int> octets) async {
+    final f = await cardFile(nom);
     f.parent.createSync(recursive: true);
     await _exclusion.exclure(f.parent.path);
 
@@ -248,8 +248,8 @@ class FicheMedicaleFichier {
   }
 
   /// Supprime une photo de carte, et son `.tmp` eventuel. Idempotent.
-  Future<void> effacerCarte(String nom) async {
-    final f = await fichierCarte(nom);
+  Future<void> eraseCard(String nom) async {
+    final f = await cardFile(nom);
     if (f.existsSync()) f.deleteSync();
     final temporaire = File('${f.path}$suffixeTemporaire');
     if (temporaire.existsSync()) temporaire.deleteSync();
@@ -288,8 +288,8 @@ class FicheMedicaleFichier {
       // precedente a l'image sur son iPhone SANS attribut, et il ne la
       // rephotographiera jamais. Sans cette reprise au demarrage, elle resterait
       // dans iCloud pour toujours.
-      for (final nomCarte in nomsCartes) {
-        final image = File('${dossier.path}/$nomCarte');
+      for (final cardName in mapNames) {
+        final image = File('${dossier.path}/$cardName');
         if (image.existsSync()) await _exclusion.exclure(image.path);
         final imageTmp = File('${image.path}$suffixeTemporaire');
         if (imageTmp.existsSync()) await _exclusion.exclure(imageTmp.path);
@@ -315,8 +315,8 @@ class FicheMedicaleFichier {
   /// fiche ne designe, donc que plus personne ne viendrait effacer.
   Future<void> effacer() async {
     try {
-      for (final nomCarte in nomsCartes) {
-        await effacerCarte(nomCarte);
+      for (final cardName in mapNames) {
+        await eraseCard(cardName);
       }
       final f = await fichier();
       if (f.existsSync()) f.deleteSync();

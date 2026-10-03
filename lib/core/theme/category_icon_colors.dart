@@ -49,7 +49,7 @@ class CategoryIconColors extends ThemeExtension<CategoryIconColors> {
   /// Teal (parite GR20 `Color(0xFF00796B)`) — materiel / sac, checklist.
   final Color teal;
 
-  /// Rouge (parite GR20 `rougeUrgence`) — risque incendie.
+  /// Rouge (parite GR20 `emergencyRed`) — risque incendie.
   final Color red;
 
   /// Jaune (parite GR20 `Color(0xFFFDD835)`) — diplome, section Apres.
@@ -81,7 +81,7 @@ class CategoryIconColors extends ThemeExtension<CategoryIconColors> {
     greenLight: Color(0xFF4CAF50), // GR20 vertMaquisLight
     orange: Color(0xFFE65100), // GR20 orangeTerre
     teal: Color(0xFF26A69A), // teal eclairci — lisible sur fond sombre (R20)
-    red: Color(0xFFD32F2F), // GR20 rougeUrgence
+    red: Color(0xFFD32F2F), // GR20 emergencyRed
     yellow: Color(0xFFFDD835), // GR20 diplome
   );
 

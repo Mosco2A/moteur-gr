@@ -97,5 +97,5 @@ final identifiantDeCompteProvider = Provider<String?>((ref) {
   ref.watch(currentUserProvider);
   final service = ref.watch(authServiceProvider);
   if (service is! FirebaseAuthService) return null;
-  return service.identifiantDeCompte;
+  return service.accountId;
 });

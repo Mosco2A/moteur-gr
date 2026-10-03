@@ -55,23 +55,23 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 enum EtatAppli {
   /// Premier lancement : rien n'est fait, rien n'est telecharge. La garde
   /// renvoie tout sur `/onboarding`.
-  premierLancement(onboarding: false, sentiers: false),
+  premierLancement(onboarding: false, trails: false),
 
   /// Accueil passe, aucun sentier telecharge. La garde renvoie le coeur de
   /// l'appli sur `/catalog` et le reste sur `/no-data`.
-  sansSentier(onboarding: true, sentiers: false),
+  sansSentier(onboarding: true, trails: false),
 
   /// Regime normal : accueil passe, un sentier telecharge. Rien n'est redirige.
-  enRoute(onboarding: true, sentiers: true);
+  enRoute(onboarding: true, trails: true);
 
-  const EtatAppli({required this.onboarding, required this.sentiers});
+  const EtatAppli({required this.onboarding, required this.trails});
 
   final bool onboarding;
-  final bool sentiers;
+  final bool trails;
 
   void appliquer() {
     hasCompletedOnboarding = onboarding;
-    hasDownloadedTrails = sentiers;
+    hasDownloadedTrails = trails;
   }
 }
 
@@ -670,7 +670,7 @@ const gestesEvites = <String>[
 /// verifie a l'oeil, la ou « 58530 » ne disait rien a personne.
 final Set<String> iconesEvitees = <String>{
   StepwaysIcons.telephone,
-  StepwaysIcons.secours,
+  StepwaysIcons.emergency,
   StepwaysIcons.corbeille,
 };
 

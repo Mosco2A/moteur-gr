@@ -44,14 +44,14 @@ void main() {
     endLng: 0,
   );
 
-  final etapes = [stage(1, 10, 200), stage(2, 12, 300), stage(3, 11, 250)];
+  final stages = [stage(1, 10, 200), stage(2, 12, 300), stage(3, 11, 250)];
 
   /// Programme : chaque entree est soit une etape (1-based), soit un repos.
   List<PlannedDay> programme(List<int?> jours) => [
     for (var i = 0; i < jours.length; i++)
       PlannedDay(
         dayNumber: i + 1,
-        stages: jours[i] == null ? const [] : [etapes[jours[i]! - 1]],
+        stages: jours[i] == null ? const [] : [stages[jours[i]! - 1]],
         isRestDay: jours[i] == null,
       ),
   ];
@@ -92,9 +92,9 @@ void main() {
 
     test('un jour qui REGROUPE deux etapes fait avancer l index de deux', () {
       final days = [
-        PlannedDay(dayNumber: 1, stages: [etapes[0], etapes[1]]),
+        PlannedDay(dayNumber: 1, stages: [stages[0], stages[1]]),
         const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
-        PlannedDay(dayNumber: 3, stages: [etapes[2]]),
+        PlannedDay(dayNumber: 3, stages: [stages[2]]),
       ];
       final c = conteneur(days);
       // Le repos suit la DEUXIEME etape marchee, pas la premiere.

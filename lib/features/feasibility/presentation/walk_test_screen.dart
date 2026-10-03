@@ -155,7 +155,7 @@ class _IdleView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingXl),
           AppButton(
             minHeight: 52,
-            icon: StepwaysIcons.enregistrer,
+            icon: StepwaysIcons.save,
             label: wt.start,
             onPressed: () => ref
                 .read(walkTestControllerProvider.notifier)
@@ -286,7 +286,7 @@ class _ResultView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          StepIcon(StepwaysIcons.diplome, size: 56, color: colors.primary),
+          StepIcon(StepwaysIcons.diploma, size: 56, color: colors.primary),
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             wt.resultTitle,

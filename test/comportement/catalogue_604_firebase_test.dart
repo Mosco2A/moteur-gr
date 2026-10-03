@@ -165,7 +165,7 @@ void main() {
     test('une URL absolue dans le manifeste est respectee telle quelle', () {
       const ailleurs = 'https://miroir.example.org/sentier/v9.json';
       expect(
-        TrailDataSource.urlDonneesSentier(ailleurs),
+        TrailDataSource.trailDataUrl(ailleurs),
         ailleurs,
         reason:
             'servir un sentier depuis un autre hebergeur ne doit pas '

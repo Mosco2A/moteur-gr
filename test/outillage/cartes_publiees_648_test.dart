@@ -50,7 +50,7 @@ void main() {
       HttpOverrides.global = null;
       addTearDown(() => HttpOverrides.global = surcharge);
 
-      const sentier = 'mare-a-mare-centre';
+      const trail = 'mare-a-mare-centre';
       final client = http.Client();
       addTearDown(client.close);
 
@@ -65,12 +65,12 @@ void main() {
             'signifie que les regles de Firebase Storage ont ete refermees.',
       );
 
-      final liste = TrailManifest.fromJson(
+      final list = TrailManifest.fromJson(
         jsonDecode(reponse.body) as Map<String, dynamic>,
       );
-      final entree = liste.trails.firstWhere(
-        (e) => e.trailId == sentier,
-        orElse: () => throw StateError('$sentier absent de la liste publiee'),
+      final entree = list.trails.firstWhere(
+        (e) => e.trailId == trail,
+        orElse: () => throw StateError('$trail absent de la liste publiee'),
       );
 
       // 2. LE DESCRIPTEUR DE TUILES : les trois champs vont ensemble ou pas du tout.
@@ -79,7 +79,7 @@ void main() {
         isTrue,
         reason:
             'la liste doit porter tilesPath, tilesSize ET tilesHash — sans les '
-            'trois, `DescenteDesCartes` refuse avec « aucune carte publiee ».',
+            'trois, `MapDownloader` refuse avec « aucune carte publiee ».',
       );
       expect(
         EmpreinteDePublication.normaliser(entree.tilesHash),
@@ -96,8 +96,8 @@ void main() {
       );
       var dernierPoint = 0;
       final resultat = await gestionnaire.descendre(
-        trailId: sentier,
-        url: TrailDataSource.urlDonneesSentier(entree.tilesPath!),
+        trailId: trail,
+        url: TrailDataSource.trailDataUrl(entree.tilesPath!),
         octetsAttendus: entree.tilesSize!,
         empreinteAttendue: entree.tilesHash!,
         progression: (p) => dernierPoint = p.octetsRecus,
@@ -119,10 +119,10 @@ void main() {
       );
 
       // 4. LE FICHIER EST LA, SOUS SON NOM DEFINITIF, ET C EST UNE BASE SQLITE.
-      expect(await gestionnaire.hasMbtiles(sentier), isTrue);
-      final carte = File(await gestionnaire.getMbtilesPath(sentier));
-      expect(await carte.length(), entree.tilesSize);
-      final entete = await carte.openRead(0, 16).first;
+      expect(await gestionnaire.hasMbtiles(trail), isTrue);
+      final map = File(await gestionnaire.getMbtilesPath(trail));
+      expect(await map.length(), entree.tilesSize);
+      final entete = await map.openRead(0, 16).first;
       expect(
         String.fromCharCodes(entete.take(15)),
         'SQLite format 3',
@@ -138,7 +138,7 @@ void main() {
       //    parfaitement et n affiche que du vide — le defaut ne se verrait qu en
       //    montagne. On refait donc ici le calcul exact du paquet, sur le
       //    milieu de l emprise, et on exige une IMAGE PNG.
-      final base = MbTiles(mbtilesPath: carte.path);
+      final base = MbTiles(mbtilesPath: map.path);
       addTearDown(base.dispose);
       final metadonnees = base.getMetadata();
       expect(metadonnees.format, 'png');

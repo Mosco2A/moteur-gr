@@ -287,7 +287,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         child: Column(
           children: [
             StepIcon(
-              StepwaysIcons.diplome,
+              StepwaysIcons.diploma,
               size: 48,
               color: theme.colorScheme.primary,
             ),
@@ -713,7 +713,7 @@ class _ParcoursLabel extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               StepIcon(
-                isIntegral ? StepwaysIcons.diplome : StepwaysIcons.sommet,
+                isIntegral ? StepwaysIcons.diploma : StepwaysIcons.sommet,
                 size: 18,
                 color: theme.colorScheme.primary,
               ),
@@ -864,7 +864,7 @@ class _NoTracePlaceholder extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           StepIcon(
-            StepwaysIcons.carte,
+            StepwaysIcons.map,
             size: 48,
             color: theme.colorScheme.primary.withAlpha(120),
           ),

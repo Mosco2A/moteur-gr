@@ -7,7 +7,7 @@
 /// La tache 612 a ecrit dans [SauvegardeSysteme] une exigence iPhone SANS
 /// CONSEQUENCE : la base etait alors volatile, donc rien de medical ne
 /// persistait, donc rien ne montait nulle part. La tache 613 a donne a la fiche
-/// medicale SON PROPRE FICHIER DURABLE (`FicheMedicaleFichier`, sous
+/// medicale SON PROPRE FICHIER DURABLE (`HealthInfoFile`, sous
 /// `medical/`), et son auteur a nomme lui-meme ce que cela ouvrait comme le plus
 /// grave de ce qu'il laissait.
 ///
@@ -40,7 +40,7 @@
 /// LE PIEGE PRINCIPAL : L'ECRITURE ATOMIQUE EFFACE L'EXCLUSION
 /// ---------------------------------------------------------------------------
 ///
-/// L'attribut appartient AU FICHIER, pas au chemin. `FicheMedicaleFichier.ecrire`
+/// L'attribut appartient AU FICHIER, pas au chemin. `HealthInfoFile.ecrire`
 /// est ATOMIQUE (tache 613) : elle ecrit un `.tmp` puis le RENOMME par-dessus la
 /// fiche. Apres ce renommage, le fichier situe a `medical/fiche.json` n'est plus
 /// celui qui portait l'attribut — c'est l'ancien `.tmp`, qui ne l'a jamais porte.
@@ -65,7 +65,7 @@
 /// ---------------------------------------------------------------------------
 ///
 /// Si le randonneur DECOCHE la case — il accepte la sauvegarde —,
-/// `CopieSauvegardableFicheService` ecrit une copie dans un emplacement INCLUS.
+/// `HealthInfoBackupCopyService` ecrit une copie dans un emplacement INCLUS.
 /// Cette copie doit au contraire NE PAS porter l'exclusion : [inclure] la lui
 /// retire explicitement. Sans cela, une copie excluse serait un FAUX SUCCES —
 /// decocher la case n'aurait aucun effet et le randonneur retrouverait un

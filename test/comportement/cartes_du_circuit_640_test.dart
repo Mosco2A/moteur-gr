@@ -17,11 +17,11 @@ import 'package:moteur_gr/core/models/niveau_de_telechargement.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/core/services/descente_des_cartes.dart';
+import 'package:moteur_gr/core/services/map_downloader.dart';
 import 'package:moteur_gr/core/services/manifest_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/session_demo.dart';
-import 'package:moteur_gr/features/map/presentation/cartes_hors_ligne_screen.dart';
+import 'package:moteur_gr/features/map/presentation/offline_maps_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/grise_en_demo.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -50,7 +50,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 ///    aurait rempli un dossier que rien ne regarde. Le geste ne pouvait donc
 ///    QUE echouer, dans les deux modes.
 ///
-/// 2. LE VRAI TELECHARGEUR N AVAIT AUCUN ECRAN. `DescenteDesCartes` (lot 622)
+/// 2. LE VRAI TELECHARGEUR N AVAIT AUCUN ECRAN. `MapDownloader` (lot 622)
 ///    descend UNE carte pour TOUT le circuit, avec poids annonce, progression,
 ///    reprise et annulation — et `controleurDesCartesProvider` n avait ZERO
 ///    appelant d interface. Il n etait atteint que par la copie d un sentier
@@ -60,8 +60,8 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 ///    maillons ne rendaient pas un echec, ils le PROPAGEAIENT :
 ///    `MBTilesManager.descendre` (dossier de documents injoignable, suppression
 ///    d un partiel impossible, lecture d empreinte en echec),
-///    `DescenteDesCartes.examiner`/`descendre` (base, droits, reseau) et
-///    `ControleurDesCartes.demarrer`, dont le `try` n avait pas de `catch`.
+///    `MapDownloader.examiner`/`descendre` (base, droits, reseau) et
+///    `MapsController.start`, dont le `try` n avait pas de `catch`.
 ///    Depuis un bouton — donc depuis un futur que personne n attend — cela
 ///    donne une erreur asynchrone non traitee, que `PlatformDispatcher.onError`
 ///    remonte a Crashlytique comme un plantage FATAL. C est la forme exacte du
@@ -125,26 +125,26 @@ void main() {
     );
   }
 
-  DescenteDesCartes descente({
+  MapDownloader descente({
     bool droitDeRealiser = true,
     TypeDeLien lien = TypesDeLien.wifi,
     MBTilesManager? avecCartes,
     TrailManifestsDao? avecDao,
-  }) => DescenteDesCartes(
-    cartes: avecCartes ?? MBTilesManager(httpClient: serveurDeTuiles()),
+  }) => MapDownloader(
+    maps: avecCartes ?? MBTilesManager(httpClient: serveurDeTuiles()),
     dao: avecDao ?? manifestes,
     monetization: _Droits(droitDeRealiser),
     connectivityMonitor: _Reseau(lien),
   );
 
   ProviderContainer conteneur({
-    required DescenteDesCartes service,
+    required MapDownloader service,
     bool enDemo = false,
   }) {
     final c = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        descenteDesCartesProvider.overrideWithValue(service),
+        mapDownloaderProvider.overrideWithValue(service),
         if (enDemo) enDemoProvider.overrideWithValue(true),
       ],
     );
@@ -162,13 +162,13 @@ void main() {
       // `path_provider` ne repond pas (processus recycle, profil restreint, vue
       // native detruite pendant le telechargement). `getMbtilesPath` etait la
       // PREMIERE ligne de `descendre`, hors de tout filet.
-      final cartes = MBTilesManager(
+      final maps = MBTilesManager(
         httpClient: serveurDeTuiles(),
         dossierDocuments: () async =>
             throw const FileSystemException('dossier de documents injoignable'),
       );
 
-      final resultat = await cartes.descendre(
+      final resultat = await maps.descendre(
         trailId: 'mare-a-mare-centre',
         url: 'https://exemple.test/tuiles.mbtiles',
         octetsAttendus: 4096,
@@ -176,7 +176,7 @@ void main() {
       );
 
       expect(resultat.reussie, isFalse);
-      expect(resultat.echec, EchecDeCarte.stockageIndisponible);
+      expect(resultat.echec, MapFailure.stockageIndisponible);
       expect(
         requetes,
         isEmpty,
@@ -212,7 +212,7 @@ void main() {
       // AVANT CE LOT : `demarrer` relancait l exception (son `try` n avait pas
       // de `catch`). Depuis un bouton, personne ne l attend : elle finissait en
       // erreur asynchrone non traitee, donc en plantage FATAL cote Crashlytique.
-      final bilan = await controleur.demarrer(
+      final bilan = await controleur.start(
         niveau: NiveauDeTelechargement.realiser,
       );
 
@@ -228,7 +228,7 @@ void main() {
 
     test('ET MEME SI LE SERVICE LUI-MEME LEVE : `demarrer` rend un bilan, il ne '
         'relance PAS — c est le `catch` qui manquait a son `try`', () async {
-      // LA MESURE EXACTE DU BUG 9. `ControleurDesCartes.demarrer` avait un
+      // LA MESURE EXACTE DU BUG 9. `MapsController.start` avait un
       // `try { ... } finally { ... }` SANS `catch`. Tout ce qui levait sous lui
       // remontait donc a l appelant ; le seul appelant de production etait la
       // copie d un sentier, qui rattrape — mais un BOUTON n attend pas son
@@ -239,7 +239,7 @@ void main() {
         controleurDesCartesProvider('mare-a-mare-centre').notifier,
       );
 
-      final bilan = await controleur.demarrer(
+      final bilan = await controleur.start(
         niveau: NiveauDeTelechargement.realiser,
       );
 
@@ -258,13 +258,13 @@ void main() {
     test('UN telechargement couvre TOUTES les etapes : il pose le seul fichier '
         'que la carte lit, pour le sentier entier', () async {
       await publier();
-      final cartes = MBTilesManager(httpClient: serveurDeTuiles());
-      final service = descente(avecCartes: cartes);
+      final maps = MBTilesManager(httpClient: serveurDeTuiles());
+      final service = descente(avecCartes: maps);
       final c = conteneur(service: service);
 
       final bilan = await c
           .read(controleurDesCartesProvider('mare-a-mare-centre').notifier)
-          .demarrer(niveau: NiveauDeTelechargement.realiser);
+          .start(niveau: NiveauDeTelechargement.realiser);
 
       expect(bilan.posee, isTrue);
       // UN SEUL TRANSPORT, UN SEUL FICHIER, ET C EST CELUI QUE LA CARTE OUVRE.
@@ -273,8 +273,8 @@ void main() {
         hasLength(1),
         reason: 'pas quatre packs, pas de demi-carte : un geste, un fichier',
       );
-      expect(await cartes.hasMbtiles('mare-a-mare-centre'), isTrue);
-      final pose = File(await cartes.getMbtilesPath('mare-a-mare-centre'));
+      expect(await maps.hasMbtiles('mare-a-mare-centre'), isTrue);
+      final pose = File(await maps.getMbtilesPath('mare-a-mare-centre'));
       expect(await pose.length(), 4096);
       // Et il n y a QUE lui : aucun fichier par morceau du circuit.
       final dossier = Directory('${tempDir.path}/mbtiles');
@@ -378,7 +378,7 @@ void main() {
 
     Future<void> monter(
       WidgetTester tester, {
-      required DescenteDesCartes service,
+      required MapDownloader service,
       bool enDemo = false,
       String trailId = 'mare-a-mare-centre',
     }) async {
@@ -386,11 +386,11 @@ void main() {
         ProviderScope(
           overrides: [
             databaseProvider.overrideWithValue(db),
-            descenteDesCartesProvider.overrideWithValue(service),
+            mapDownloaderProvider.overrideWithValue(service),
             if (enDemo) enDemoProvider.overrideWithValue(true),
           ],
           child: TranslationProvider(
-            child: MaterialApp(home: CartesHorsLigneScreen(trailId: trailId)),
+            child: MaterialApp(home: OfflineMapsScreen(trailId: trailId)),
           ),
         ),
       );
@@ -456,7 +456,7 @@ void main() {
     testWidgets('le telechargement aboutit et l ecran le DIT', (tester) async {
       final service = _DescenteReglee(
         decision: aPrendre(),
-        carte: const ResultatDeCarte(
+        map: const MapResult(
           trailId: 'mare-a-mare-centre',
           octetsSurLeTelephone: 260000000,
           octetsTransferes: 260000000,
@@ -574,15 +574,15 @@ void main() {
 /// [transportQuiLeve] est la seule facon de rejouer le bug 9 depuis un ecran : le
 /// service ne rend alors pas un echec, il jette. C est ce que faisait le vrai
 /// service quand `path_provider` se taisait ou que la base se fermait.
-class _DescenteReglee extends Fake implements DescenteDesCartes {
+class _DescenteReglee extends Fake implements MapDownloader {
   _DescenteReglee({
     required this.decision,
-    this.carte,
+    this.map,
     this.transportQuiLeve = false,
   });
 
   final DecisionDeDescente decision;
-  final ResultatDeCarte? carte;
+  final MapResult? map;
   final bool transportQuiLeve;
 
   @override
@@ -594,7 +594,7 @@ class _DescenteReglee extends Fake implements DescenteDesCartes {
     if (transportQuiLeve && _dejaDemande) {
       throw StateError('base fermee');
     }
-    if (_dejaDemande && carte != null) {
+    if (_dejaDemande && map != null) {
       return DecisionDeDescente(
         trailId: trailId,
         octetsTotal: decision.octetsTotal,
@@ -613,16 +613,16 @@ class _DescenteReglee extends Fake implements DescenteDesCartes {
     String trailId, {
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
-    void Function(ProgressionDeCarte)? progression,
+    void Function(MapProgress)? progression,
     AnnulationDeDescente? annulation,
   }) async {
     _dejaDemande = true;
     if (transportQuiLeve) throw StateError('base fermee');
-    return BilanDeDescente(decision: decision, carte: carte);
+    return BilanDeDescente(decision: decision, map: map);
   }
 
   @override
-  Future<bool> supprimer(String trailId) async => true;
+  Future<bool> delete(String trailId) async => true;
 }
 
 /// Dossier de documents pilote : les cartes vivent dans un temporaire.
@@ -665,13 +665,13 @@ class _Droits extends Fake implements MonetizationService {
 /// Il ne rend ni refus ni echec : il jette, comme le faisait la vraie chaine
 /// quand `path_provider` se taisait ou que la base se fermait entre l examen et
 /// le transport. Le controleur du bouton doit l absorber.
-class _ServiceQuiLeve extends Fake implements DescenteDesCartes {
+class _ServiceQuiLeve extends Fake implements MapDownloader {
   @override
   Future<BilanDeDescente> descendre(
     String trailId, {
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
-    void Function(ProgressionDeCarte)? progression,
+    void Function(MapProgress)? progression,
     AnnulationDeDescente? annulation,
   }) async => throw const FileSystemException('espace de stockage injoignable');
 }

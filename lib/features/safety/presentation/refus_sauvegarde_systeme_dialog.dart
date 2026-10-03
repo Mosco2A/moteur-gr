@@ -51,7 +51,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// La tache 612 la posait APRES la connexion Google, et son auteur avait nomme le
 /// trou : « le randonneur anonyme ne la voit jamais, il est protege par le defaut
 /// mais il ne peut pas choisir la commodite ». Ce trou est ferme
-/// ([PorteConsentementSauvegarde], dans l'arbre de `main.dart`) : la question est
+/// ([BackupConsentGate], dans l'arbre de `main.dart`) : la question est
 /// posee UNE FOIS a l'ouverture, a tout le monde. L'appel de l'ecran de profil
 /// reste, et il ne fait pas doublon : une fois la decision prise, elle ne se
 /// repose pas.
@@ -86,7 +86,7 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
   static const Key cleCase = ValueKey('refus-sauvegarde-systeme-case');
 
   /// Cle du bouton de validation.
-  static const Key cleValider = ValueKey('refus-sauvegarde-systeme-valider');
+  static const Key validateKey = ValueKey('refus-sauvegarde-systeme-valider');
 
   /// POSE LA QUESTION SI ELLE N'A PAS DEJA ETE TRANCHEE.
   ///
@@ -146,7 +146,7 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
 
   /// Relache le verrou entre deux tests — il est statique, donc partage.
   @visibleForTesting
-  static void reinitialiserLeVerrou() => _enVol = null;
+  static void resetLock() => _enVol = null;
 
   /// Le journal des miettes — et il ne peut PAS faire echouer ce qu'il instrumente.
   ///
@@ -175,7 +175,7 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
     // tout de meme re-verifie apres les attentes, plus bas : un contexte valide a
     // l'aller n'est pas un contexte valide au retour.
     final hote = contexteDeDialogue(context);
-    await journal.marquerEtape(Etape.sauvegardeDemandee);
+    await journal.markStep(AnalyticsStep.sauvegardeDemandee);
 
     final bool dejaTranche;
     try {
@@ -195,22 +195,22 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
       // Renoncer est sans consequence : le refus s'applique deja
       // ([kRefusSauvegardeSystemeParDefaut]) et la question sera reposee au
       // lancement suivant si elle n'a pas ete tranchee.
-      await journal.marquerEtape(Etape.sauvegardeLecturePerdue);
+      await journal.markStep(AnalyticsStep.sauvegardeLecturePerdue);
       await journal.recordError(erreur, pile);
       return;
     }
-    await journal.marquerEtape(Etape.sauvegardeDecisionLue);
+    await journal.markStep(AnalyticsStep.sauvegardeDecisionLue);
     if (dejaTranche) return;
 
     // AUCUN NAVIGATEUR, OU PLUS DE NAVIGATEUR : ON RENONCE, ON NE LEVE PAS.
     // C'est le cas qui plantait 28 fois. La question revient au lancement
     // suivant, et la protection n'a jamais dependu de cette question.
     if (hote == null) {
-      await journal.marquerEtape(Etape.sauvegardeSansNavigateur);
+      await journal.markStep(AnalyticsStep.sauvegardeSansNavigateur);
       return;
     }
     if (!hote.mounted || !porteUnNavigateur(hote)) {
-      await journal.marquerEtape(Etape.sauvegardeSansNavigateur);
+      await journal.markStep(AnalyticsStep.sauvegardeSansNavigateur);
       return;
     }
     // LA MIETTE N'EST PAS ATTENDUE, ET CE N'EST PAS UN OUBLI. Toute attente
@@ -218,13 +218,13 @@ class RefusSauvegardeSystemeDialog extends ConsumerStatefulWidget {
     // ROUVRIRAIT la fenetre que la garde vient de fermer — c'est-a-dire le
     // defaut meme de ce lot. L'analyseur le signale (`use_build_context_
     // synchronously`), et il a raison : rien ne doit s'intercaler ici.
-    unawaited(journal.marquerEtape(Etape.sauvegardeDialogueOuvert));
+    unawaited(journal.markStep(AnalyticsStep.sauvegardeDialogueOuvert));
     await showDialog<void>(
       context: hote,
       barrierDismissible: false,
       builder: (_) => const RefusSauvegardeSystemeDialog(),
     );
-    await journal.marquerEtape(Etape.sauvegardeDialogueFerme);
+    await journal.markStep(AnalyticsStep.sauvegardeDialogueFerme);
   }
 
   @override
@@ -333,7 +333,7 @@ class _RefusSauvegardeSystemeDialogState
       ),
       actions: [
         AppButton(
-          key: RefusSauvegardeSystemeDialog.cleValider,
+          key: RefusSauvegardeSystemeDialog.validateKey,
           isFullWidth: false,
           label: textes.confirm,
           onPressed: () async {

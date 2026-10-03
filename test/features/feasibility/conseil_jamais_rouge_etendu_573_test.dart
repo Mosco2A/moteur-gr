@@ -26,7 +26,7 @@
 // D'APPEL, pas seulement le moteur.
 //
 // MANQUE 3 — AUCUN TEMOIN ROUGE. Une invariante dont le conseil est construit
-// pour la satisfaire (`ProgramPlanSearch.planDuSentier` ne rend rien
+// pour la satisfaire (`ProgramPlanSearch.trailPlan` ne rend rien
 // quand le plan du sentier est rouge) est vraie par construction : elle ne peut plus echouer, donc elle ne
 // prouve plus rien. Un test qui ne peut pas echouer ne protege de rien. On garde
 // donc ici l'ANCIENNE regle, rejouee a cote, comme TEMOIN : elle DOIT produire
@@ -207,12 +207,12 @@ void main() {
   // basculer la couleur.
   const planchers = <double>[0, 25, 55];
 
-  late List<SentierLivre> sentiers;
+  late List<SentierLivre> trails;
 
   setUpAll(() {
-    sentiers = sentiersLivres();
+    trails = sentiersLivres();
     expect(
-      sentiers,
+      trails,
       isNotEmpty,
       reason:
           'aucun sentier livre trouve dans assets/data : la lecture est '
@@ -224,9 +224,9 @@ void main() {
     test('a la valeur conseillee, le verdict n est jamais rouge', () {
       final fautes = <String>[];
       var cellules = 0;
-      for (final sentier in sentiersLivres()) {
-        final bornes = bornesDe(sentier.stages);
-        final aMax = sentier.stages
+      for (final trail in sentiersLivres()) {
+        final bornes = bornesDe(trail.stages);
+        final aMax = trail.stages
             .map((s) => s.elevationGainM.toDouble())
             .fold<double>(0, (a, b) => a > b ? a : b);
         for (final niveau in niveaux) {
@@ -237,8 +237,8 @@ void main() {
                 maxAltitudeM: aMax,
                 season: saison,
               );
-              final conseil = ProgramPlanSearch.planDuSentier(
-                stages: sentier.stages,
+              final conseil = ProgramPlanSearch.trailPlan(
+                stages: trail.stages,
                 level: niveau,
                 demonstratedFloorEnergyKm: plancher,
                 conditions: conditions,
@@ -248,7 +248,7 @@ void main() {
               if (conseil == null) continue; // couvert par le test suivant
               final reel = evaluationA(
                 conseil.totalDays,
-                stages: sentier.stages,
+                stages: trail.stages,
                 bornes: bornes,
                 niveau: niveau,
                 plancher: plancher,
@@ -256,7 +256,7 @@ void main() {
                 conseil: conseil.toAdvice(),
               );
               final cle =
-                  '$sentier / ${niveau.name} / ${saison ?? "sans date"}'
+                  '$trail / ${niveau.name} / ${saison ?? "sans date"}'
                   ' / plancher $plancher';
               if (reel.globalVerdict == FeasibilityVerdict.red) {
                 fautes.add('$cle : conseil ${conseil.totalDays} j -> ROUGE');
@@ -290,12 +290,12 @@ void main() {
     test('quand rien n est conseillable, l appli le DIT au lieu de pointer '
         'une valeur', () {
       final fautes = <String>[];
-      for (final sentier in sentiersLivres()) {
-        final bornes = bornesDe(sentier.stages);
+      for (final trail in sentiersLivres()) {
+        final bornes = bornesDe(trail.stages);
         for (final niveau in niveaux) {
           const conditions = TrekConditions.unknown;
-          final conseil = ProgramPlanSearch.planDuSentier(
-            stages: sentier.stages,
+          final conseil = ProgramPlanSearch.trailPlan(
+            stages: trail.stages,
             level: niveau,
             demonstratedFloorEnergyKm: 0,
             conditions: conditions,
@@ -308,7 +308,7 @@ void main() {
           for (var j = bornes.min; j <= bornes.max; j++) {
             final v = evaluationA(
               j,
-              stages: sentier.stages,
+              stages: trail.stages,
               bornes: bornes,
               niveau: niveau,
               plancher: 0,
@@ -316,7 +316,7 @@ void main() {
             ).globalVerdict;
             if (v != FeasibilityVerdict.red) {
               fautes.add(
-                '$sentier / ${niveau.name} : aucun conseil rendu, '
+                '$trail / ${niveau.name} : aucun conseil rendu, '
                 'alors que $j jours donne ${v.name}',
               );
             }
@@ -333,9 +333,9 @@ void main() {
       // cela voudrait dire que le balayage ne contient plus aucun cas ou les deux
       // regles divergent — donc que l'invariante ne demontre plus rien.
       final rouges = <String>[];
-      for (final sentier in sentiersLivres()) {
-        final bornes = bornesDe(sentier.stages);
-        final aMax = sentier.stages
+      for (final trail in sentiersLivres()) {
+        final bornes = bornesDe(trail.stages);
+        final aMax = trail.stages
             .map((s) => s.elevationGainM.toDouble())
             .fold<double>(0, (a, b) => a > b ? a : b);
         for (final niveau in niveaux) {
@@ -346,7 +346,7 @@ void main() {
                 season: saison,
               );
               final ancien = conseilAncienneRegle(
-                stages: sentier.stages,
+                stages: trail.stages,
                 niveau: niveau,
                 plancher: plancher,
                 conditions: conditions,
@@ -354,7 +354,7 @@ void main() {
               );
               final verdict = evaluationA(
                 ancien,
-                stages: sentier.stages,
+                stages: trail.stages,
                 bornes: bornes,
                 niveau: niveau,
                 plancher: plancher,
@@ -362,7 +362,7 @@ void main() {
               ).globalVerdict;
               if (verdict == FeasibilityVerdict.red) {
                 rouges.add(
-                  '$sentier / ${niveau.name} / '
+                  '$trail / ${niveau.name} / '
                   '${saison ?? "sans date"} / plancher $plancher : '
                   'ancien conseil $ancien j -> ROUGE',
                 );

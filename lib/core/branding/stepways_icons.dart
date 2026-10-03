@@ -51,8 +51,7 @@ abstract final class StepwaysIcons {
   static const plus = 'assets/icons/plus.svg'; // MAT-007 Plus
   static const moins = 'assets/icons/moins.svg'; // MAT-007 Moins
   static const rafraichir = 'assets/icons/rafraichir.svg'; // MAT-006 Rafraîchir
-  static const annuler =
-      'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
+  static const cancel = 'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
   static const corbeille = 'assets/icons/corbeille.svg'; // MAT-008 Corbeille
   static const crayon = 'assets/icons/crayon.svg'; // MAT-010 Crayon
   static const copier = 'assets/icons/copier.svg'; // MAT-014 Copier
@@ -75,10 +74,10 @@ abstract final class StepwaysIcons {
   static const palette = 'assets/icons/palette.svg'; // MAT-021 Thème / palette
   static const ville = 'assets/icons/ville.svg'; // MAT-022 Ville
   static const echelle = 'assets/icons/echelle.svg'; // MAT-023 Échelle
-  static const catalogueSentiers =
+  static const trailCatalog =
       'assets/icons/catalogue-sentiers.svg'; // Catalogue sentiers
-  static const monCompte = 'assets/icons/mon-compte.svg'; // Mon compte
-  static const reglages = 'assets/icons/reglages.svg'; // Paramètres
+  static const myAccount = 'assets/icons/mon-compte.svg'; // Mon compte
+  static const settings = 'assets/icons/reglages.svg'; // Paramètres
   static const faisabilite = 'assets/icons/faisabilite.svg'; // Faisabilité
   static const itineraire = 'assets/icons/itineraire.svg'; // Itinéraires
   static const programme = 'assets/icons/programme.svg'; // Programme
@@ -87,18 +86,18 @@ abstract final class StepwaysIcons {
       'assets/icons/preparation-physique.svg'; // Préparation physique
   static const ficheMedicale =
       'assets/icons/fiche-medicale.svg'; // Fiche médicale
-  static const meteo = 'assets/icons/meteo.svg'; // Météo
+  static const weather = 'assets/icons/meteo.svg'; // Météo
   static const incendie = 'assets/icons/incendie.svg'; // Incendie
   static const ravitaillement =
       'assets/icons/ravitaillement.svg'; // Ravitaillement
   static const nuitees = 'assets/icons/nuitees.svg'; // Nuitées
   static const transport = 'assets/icons/transport.svg'; // Transport
-  static const carte = 'assets/icons/carte.svg'; // Cartes
+  static const map = 'assets/icons/carte.svg'; // Cartes
   static const sacADos = 'assets/icons/sac-a-dos.svg'; // Matériel & sac
   static const hebergement = 'assets/icons/hebergement.svg'; // Hébergement
   static const ficheConseil = 'assets/icons/fiche-conseil.svg'; // Fiche conseil
   static const journal = 'assets/icons/journal.svg'; // Journal
-  static const diplome = 'assets/icons/diplome.svg'; // Diplôme
+  static const diploma = 'assets/icons/diplome.svg'; // Diplôme
   static const boussole = 'assets/icons/boussole.svg'; // Boussole
   static const repere = 'assets/icons/repere.svg'; // Repère
   static const maPosition = 'assets/icons/ma-position.svg'; // Ma position
@@ -111,7 +110,7 @@ abstract final class StepwaysIcons {
   static const denivelePlus = 'assets/icons/denivele-plus.svg'; // Dénivelé +
   static const deniveleMoins = 'assets/icons/denivele-moins.svg'; // Dénivelé −
   static const altitude = 'assets/icons/altitude.svg'; // Altitude
-  static const duree = 'assets/icons/duree.svg'; // Durée
+  static const clock = 'assets/icons/duree.svg'; // Durée
   static const pas = 'assets/icons/pas.svg'; // Pas
   static const vitesse = 'assets/icons/vitesse.svg'; // Vitesse
   static const difficulte = 'assets/icons/difficulte.svg'; // Difficulté
@@ -128,7 +127,7 @@ abstract final class StepwaysIcons {
   static const danger = 'assets/icons/danger.svg'; // Danger
   static const photo = 'assets/icons/photo.svg'; // Photo
   static const restauration = 'assets/icons/restauration.svg'; // Restauration
-  static const secours = 'assets/icons/secours.svg'; // Secours
+  static const emergency = 'assets/icons/secours.svg'; // Secours
   static const soleil = 'assets/icons/soleil.svg'; // Soleil
   static const nuageux = 'assets/icons/nuageux.svg'; // Nuageux
   static const pluie = 'assets/icons/pluie.svg'; // Pluie
@@ -142,7 +141,7 @@ abstract final class StepwaysIcons {
   static const batons = 'assets/icons/batons.svg'; // Bâtons
   static const gourde = 'assets/icons/gourde.svg'; // Gourde
   static const frontale = 'assets/icons/frontale.svg'; // Frontale
-  static const enregistrer = 'assets/icons/enregistrer.svg'; // Enregistrer
+  static const save = 'assets/icons/enregistrer.svg'; // Enregistrer
   static const pause = 'assets/icons/pause.svg'; // Pause
   static const stop = 'assets/icons/stop.svg'; // Stop
   static const favori = 'assets/icons/favori.svg'; // Favori
@@ -150,7 +149,7 @@ abstract final class StepwaysIcons {
   static const partager = 'assets/icons/partager.svg'; // Partager
   static const recherche = 'assets/icons/recherche.svg'; // Recherche
   static const filtres = 'assets/icons/filtres.svg'; // Filtres
-  static const profil = 'assets/icons/profil.svg'; // Profil
+  static const profile = 'assets/icons/profil.svg'; // Profil
   static const batterie = 'assets/icons/batterie.svg'; // Batterie
   static const sansReseau = 'assets/icons/sans-reseau.svg'; // Sans réseau
   static const signaler = 'assets/icons/signaler.svg'; // Signaler
@@ -160,9 +159,8 @@ abstract final class StepwaysIcons {
   static const bouclier =
       'assets/icons/bouclier.svg'; // ICO-005 Confidentialité
   static const cle = 'assets/icons/cle.svg'; // ICO-015 Clé / code
-  static const connexion = 'assets/icons/connexion.svg'; // ICO-027 Connexion
-  static const deconnexion =
-      'assets/icons/deconnexion.svg'; // ICO-027 Déconnexion
+  static const signIn = 'assets/icons/connexion.svg'; // ICO-027 Connexion
+  static const signOut = 'assets/icons/deconnexion.svg'; // ICO-027 Déconnexion
   static const effacerTelephone =
       'assets/icons/effacer-telephone.svg'; // ICO-026 Tout effacer
   static const langue = 'assets/icons/langue.svg'; // ICO-008 Langue
@@ -175,7 +173,7 @@ abstract final class StepwaysIcons {
   static const prix = 'assets/icons/prix.svg'; // ICO-007 Prix
   static const boutique = 'assets/icons/boutique.svg'; // ICO-007 Boutique
   static const video = 'assets/icons/video.svg'; // ICO-016 Vidéo
-  static const telecharger =
+  static const download =
       'assets/icons/telecharger.svg'; // ICO-004 Téléchargement
   static const miseAJour =
       'assets/icons/mise-a-jour.svg'; // ICO-004 Mise à jour
@@ -201,7 +199,7 @@ abstract final class StepwaysIcons {
   static const taxi = 'assets/icons/taxi.svg'; // ICO-010 Voiture / taxi
   static const bateau = 'assets/icons/bateau.svg'; // ICO-010 Bateau
   static const avion = 'assets/icons/avion.svg'; // ICO-010 Avion
-  static const poids = 'assets/icons/poids.svg'; // ICO-012 Poids
+  static const weight = 'assets/icons/poids.svg'; // ICO-012 Poids
   static const taille = 'assets/icons/taille.svg'; // ICO-012 Taille
   static const age = 'assets/icons/age.svg'; // ICO-012 Âge
   static const sexe = 'assets/icons/sexe.svg'; // ICO-012 Sexe
@@ -267,7 +265,7 @@ class StepIcon extends StatelessWidget {
         return IconeStepways(dessin, taille: t, semanticLabel: semanticLabel);
       }
     }
-    final c = color ?? theme.color ?? AppBranding.vertSentier;
+    final c = color ?? theme.color ?? AppBranding.trailGreen;
     return SvgPicture.asset(
       asset,
       width: t,
@@ -286,7 +284,7 @@ class StepIcon extends StatelessWidget {
 /// (`rubrique: RubriqueStepways.carte`). Un seul ecran le faisait — le cockpit,
 /// 17 fois. Les 14 autres tuiles de l'application, « Mes treks » et
 /// « Compte-etapes » compris, passaient le chemin A PLAT (`icon:
-/// StepwaysIcons.catalogueSentiers`), et retombaient donc sur le monochrome
+/// StepwaysIcons.trailCatalog`), et retombaient donc sur le monochrome
 /// teinte. Rien n'etait casse : la regle dependait de la FORME de l'appel, donc
 /// de la memoire de celui qui ecrivait l'ecran. Verbatim de Christophe (30/09
 /// 10:09) : « les icones de Mes treks ne sont pas bicolores / Compte etapes et
@@ -362,26 +360,26 @@ abstract interface class IconeBicolore {
 
 /// LES 20 RUBRIQUES DE L'APPLICATION.
 enum RubriqueStepways implements IconeBicolore {
-  catalogueSentiers('catalogue-sentiers'),
-  monCompte('mon-compte'),
-  reglages('reglages'),
+  trailCatalog('catalogue-sentiers'),
+  myAccount('mon-compte'),
+  settings('reglages'),
   faisabilite('faisabilite'),
   itineraire('itineraire'),
   programme('programme'),
   calendrier('calendrier'),
   preparationPhysique('preparation-physique'),
   ficheMedicale('fiche-medicale'),
-  meteo('meteo'),
+  weather('meteo'),
   incendie('incendie'),
   ravitaillement('ravitaillement'),
   nuitees('nuitees'),
   transport('transport'),
-  carte('carte'),
+  map('carte'),
   sacADos('sac-a-dos'),
   hebergement('hebergement'),
   ficheConseil('fiche-conseil'),
   journal('journal'),
-  diplome('diplome');
+  diploma('diplome');
 
   const RubriqueStepways(this.fichier);
 
@@ -441,13 +439,13 @@ enum IcoStepways implements IconeBicolore {
   cle('cle'),
 
   /// ICO-027 Connexion
-  connexion('connexion'),
+  signIn('connexion'),
 
   /// ICO-018 Courrier
   courrier('courrier'),
 
   /// ICO-027 Déconnexion
-  deconnexion('deconnexion'),
+  signOut('deconnexion'),
 
   /// ICO-026 Tout effacer
   effacerTelephone('effacer-telephone'),
@@ -489,7 +487,7 @@ enum IcoStepways implements IconeBicolore {
   pdf('pdf'),
 
   /// ICO-012 Poids
-  poids('poids'),
+  weight('poids'),
 
   /// ICO-007 Portefeuille
   portefeuille('portefeuille'),
@@ -525,7 +523,7 @@ enum IcoStepways implements IconeBicolore {
   taxi('taxi'),
 
   /// ICO-004 Téléchargement
-  telecharger('telecharger'),
+  download('telecharger'),
 
   /// ICO-003 Appel
   telephone('telephone'),
@@ -562,7 +560,7 @@ enum IcoStepways implements IconeBicolore {
 /// chaque ligne crierait partout.
 enum MatStepways implements IconeBicolore {
   /// MAT-006 Annuler (défaire)
-  annuler('annuler'),
+  cancel('annuler'),
 
   /// MAT-003 Chevron droite
   chevronDroite('chevron-droite'),

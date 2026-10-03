@@ -103,7 +103,7 @@ enum ConsentPurpose {
 /// accord d'une re-confirmation apres modification des donnees, ni savoir si la
 /// re-demande a bien eu lieu. Le declencheur monte donc en base avec la
 /// decision.
-enum DeclencheurDeConsentement {
+enum ConsentTrigger {
   /// Aucune decision anterieure : c'est la premiere fois qu'on demande.
   premiereDemande("premiere_demande"),
 
@@ -116,14 +116,14 @@ enum DeclencheurDeConsentement {
   evolutionDePolitique("evolution_de_politique"),
 
   /// Le randonneur a lui-meme ouvert l'ecran Confidentialite et tranche.
-  reglages("reglages"),
+  settings("reglages"),
 
   /// Origine non renseignee. Vaut pour les decisions ANTERIEURES a ce lot, qui
   /// existent deja sur le telephone de Christophe : on ne va pas leur inventer
   /// un declencheur qu'on ne connait pas.
   inconnu("inconnu");
 
-  const DeclencheurDeConsentement(this.code);
+  const ConsentTrigger(this.code);
 
   /// La forme stockee et publiee. Stable : c'est elle qui vit en base, jamais
   /// l'index de l'enum.
@@ -131,11 +131,11 @@ enum DeclencheurDeConsentement {
 
   /// Relit un code stocke. Un code inconnu devient [inconnu] plutot que de
   /// faire echouer la lecture de tout l'etat de consentement.
-  static DeclencheurDeConsentement depuisLeCode(String? code) {
-    for (final d in DeclencheurDeConsentement.values) {
+  static ConsentTrigger depuisLeCode(String? code) {
+    for (final d in ConsentTrigger.values) {
       if (d.code == code) return d;
     }
-    return DeclencheurDeConsentement.inconnu;
+    return ConsentTrigger.inconnu;
   }
 }
 
@@ -152,7 +152,7 @@ class ConsentState {
     required this.granted,
     required this.decidedAt,
     required this.policyVersion,
-    this.declencheur = DeclencheurDeConsentement.inconnu,
+    this.declencheur = ConsentTrigger.inconnu,
     this.revisionDesDonnees = 0,
   });
 
@@ -186,9 +186,7 @@ class ConsentState {
           ? null
           : DateTime.fromMillisecondsSinceEpoch(decidedMs),
       policyVersion: map['policyVersion'] as int?,
-      declencheur: DeclencheurDeConsentement.depuisLeCode(
-        map['declencheur'] as String?,
-      ),
+      declencheur: ConsentTrigger.depuisLeCode(map['declencheur'] as String?),
       revisionDesDonnees: map['revisionDesDonnees'] as int? ?? 0,
     );
   }
@@ -206,7 +204,7 @@ class ConsentState {
   final int? policyVersion;
 
   /// Ce qui avait provoque la demande (tache 638).
-  final DeclencheurDeConsentement declencheur;
+  final ConsentTrigger declencheur;
 
   /// LA REVISION DES DONNEES COUVERTES, AU MOMENT DU CHOIX (tache 638).
   ///
@@ -380,7 +378,7 @@ class ConsentService {
   /// l'evenement sur [changes].
   Future<void> grant(
     ConsentPurpose purpose, {
-    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+    ConsentTrigger declencheur = ConsentTrigger.inconnu,
   }) => _record(purpose, granted: true, declencheur: declencheur);
 
   /// Retire le consentement pour [purpose] (retractable a tout moment).
@@ -388,7 +386,7 @@ class ConsentService {
   /// Horodate la decision. Emet l'evenement sur [changes].
   Future<void> revoke(
     ConsentPurpose purpose, {
-    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+    ConsentTrigger declencheur = ConsentTrigger.inconnu,
   }) => _record(purpose, granted: false, declencheur: declencheur);
 
   /// Enregistre une decision de consentement et notifie les ecouteurs.
@@ -401,7 +399,7 @@ class ConsentService {
   Future<void> _record(
     ConsentPurpose purpose, {
     required bool granted,
-    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.inconnu,
+    ConsentTrigger declencheur = ConsentTrigger.inconnu,
   }) async {
     await initialize();
     final state = ConsentState(

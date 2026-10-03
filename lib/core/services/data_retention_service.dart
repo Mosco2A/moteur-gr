@@ -55,7 +55,7 @@ import 'package:drift/drift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/feasibility/data/hiker_profile_repository.dart';
-import '../../features/safety/data/fiche_medicale_fichier.dart';
+import '../../features/safety/data/health_info_file.dart';
 import '../data/database.dart';
 import 'consent_service.dart';
 import 'secure_keystore_eraser.dart';
@@ -239,7 +239,7 @@ typedef HikerFileEraser = Future<void> Function();
 /// ELLE N'EST PLUS DANS LA BASE, DONC LA PURGE DES TABLES NE L'EMPORTE PLUS.
 /// Jusqu'a la tache 613 la fiche vivait dans la table `health_info_entries` et
 /// [_wipeAllUserTables] l'effacait sans qu'on ait a la nommer. Depuis qu'elle a
-/// son propre fichier (voir [FicheMedicaleFichier], et la raison : rendre la base
+/// son propre fichier (voir [HealthInfoFile], et la raison : rendre la base
 /// sauvegardable sans emporter la donnee de sante), l'effacement DOIT la nommer —
 /// sans quoi la tache 613 aurait discretement defait le droit a l'effacement
 /// conquis aux lots J a O. Injectable pour les tests ; par defaut branchee sur le
@@ -276,8 +276,7 @@ class DataRetentionService {
              db: database,
              prefs: prefs,
            ).eraseAllPersonalData,
-       _ficheMedicaleEraser =
-           ficheMedicaleEraser ?? FicheMedicaleFichier().effacer,
+       _ficheMedicaleEraser = ficheMedicaleEraser ?? HealthInfoFile().effacer,
        _secureKeystoreErasure =
            secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
        _now = now ?? DateTime.now;

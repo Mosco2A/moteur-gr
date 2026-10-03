@@ -179,7 +179,7 @@ const registreDesDormants = <String, EcranDormant>{
   ),
 
   // --- Fiche hebergement d etape -------------------------------------------
-  'RefugeDetailScreen': EcranDormant(
+  'AccommodationDetailScreen': EcranDormant(
     raison:
         'Fiche hebergement d etape (TREK-06) : capacite, tarifs, contact, '
         'boutons appeler / ecrire / site. Jamais cablee, et ses titres sont '

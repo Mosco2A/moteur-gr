@@ -129,10 +129,10 @@ void main() {
 
         final racine =
             jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
-        final profil = racine['hikerProfile'] as Map<String, dynamic>;
+        final profile = racine['hikerProfile'] as Map<String, dynamic>;
 
         attendu.forEach((cle, bornes) {
-          final message = profil[cle] as String;
+          final message = profile[cle] as String;
           for (final borne in bornes) {
             expect(
               message.contains('$borne'),

@@ -63,7 +63,7 @@ class AccountVaultService {
   /// [DocumentsDuCoffreDistant], le seul endroit qui décide ce que le coffre
   /// distant peut porter. Deux listes finiraient par diverger, et c'est la
   /// divergence qui rouvre une porte.
-  static const String cloudDocKey = DocumentsDuCoffreDistant.compte;
+  static const String cloudDocKey = DocumentsDuCoffreDistant.account;
 
   /// Chiffre le profil (+ solde wallet si [includeWallet]) avec une clé dérivée
   /// du [code]. Retourne le blob chiffré à déposer (miroir cloud anonyme / cloud

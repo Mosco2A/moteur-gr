@@ -31,7 +31,7 @@ import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/trek/data/seed_data_loader.dart';
@@ -250,11 +250,11 @@ void main() {
             'disparaissait, c etait NOTRE comptabilite — le solde d etapes.',
       );
 
-      final profil = await db2.hikerProfileDao.getByUserId(kHikerLocalUserId);
-      expect(profil, isNotNull);
-      expect(profil!.age, 41);
-      expect(profil.heightCm, 178);
-      expect(profil.weightKg, 74.5);
+      final profile = await db2.hikerProfileDao.getByUserId(kHikerLocalUserId);
+      expect(profile, isNotNull);
+      expect(profile!.age, 41);
+      expect(profile.heightCm, 178);
+      expect(profile.weightKg, 74.5);
     });
 
     test(
@@ -287,7 +287,7 @@ void main() {
   group('613 — la fiche medicale survit AUSSI, mais dans son propre fichier', () {
     test('remplie, fermee, rouverte : elle est retrouvee', () async {
       final session1 = ouvrirLApplication();
-      await HealthInfoRepository(fichier: FicheMedicaleFichier()).save(
+      await HealthInfoRepository(fichier: HealthInfoFile()).save(
         const HealthInfo(
           bloodType: 'O-',
           allergies: 'Penicilline',
@@ -300,9 +300,7 @@ void main() {
 
       final session2 = ouvrirLApplication();
       addTearDown(session2.dispose);
-      final relue = await HealthInfoRepository(
-        fichier: FicheMedicaleFichier(),
-      ).get();
+      final relue = await HealthInfoRepository(fichier: HealthInfoFile()).get();
       expect(relue.bloodType, 'O-');
       expect(relue.allergies, 'Penicilline');
       expect(relue.insuranceNumber, 'CEAM-12345');
@@ -314,12 +312,12 @@ void main() {
       addTearDown(session.dispose);
 
       await HealthInfoRepository(
-        fichier: FicheMedicaleFichier(),
+        fichier: HealthInfoFile(),
       ).save(const HealthInfo(bloodType: 'AB+'));
 
       final attendu = File(
         '${stockageApplicatif.path}/'
-        '${SauvegardeSysteme.dossierExclu}/${FicheMedicaleFichier.nomFichier}',
+        '${SauvegardeSysteme.dossierExclu}/${HealthInfoFile.nomFichier}',
       );
       expect(
         attendu.existsSync(),
@@ -362,11 +360,11 @@ void main() {
       addTearDown(session.dispose);
 
       await HealthInfoRepository(
-        fichier: FicheMedicaleFichier(),
+        fichier: HealthInfoFile(),
       ).save(const HealthInfo(bloodType: 'O+', allergies: 'Arachides'));
       final surLeDisque = File(
         '${stockageApplicatif.path}/'
-        '${SauvegardeSysteme.dossierExclu}/${FicheMedicaleFichier.nomFichier}',
+        '${SauvegardeSysteme.dossierExclu}/${HealthInfoFile.nomFichier}',
       );
       expect(surLeDisque.existsSync(), isTrue);
 
@@ -392,7 +390,7 @@ void main() {
       );
       expect(
         await HealthInfoRepository(
-          fichier: FicheMedicaleFichier(),
+          fichier: HealthInfoFile(),
         ).get().then((f) => f.hasData),
         isFalse,
       );
@@ -400,16 +398,14 @@ void main() {
 
     test('effacee, elle ne revient pas apres une reouverture', () async {
       final session1 = ouvrirLApplication();
-      final depot1 = HealthInfoRepository(fichier: FicheMedicaleFichier());
+      final depot1 = HealthInfoRepository(fichier: HealthInfoFile());
       await depot1.save(const HealthInfo(bloodType: 'A+'));
       await depot1.delete();
       await fermerLApplication(session1);
 
       final session2 = ouvrirLApplication();
       addTearDown(session2.dispose);
-      final relue = await HealthInfoRepository(
-        fichier: FicheMedicaleFichier(),
-      ).get();
+      final relue = await HealthInfoRepository(fichier: HealthInfoFile()).get();
       expect(relue.hasData, isFalse);
       expect(
         Directory(
@@ -596,13 +592,13 @@ void main() {
         horloge: DateTime.utc(2026, 9, 28),
       ).publier(source.path.replaceAll(r'\', '/'));
 
-      final liste =
+      final list =
           jsonDecode(
                 File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
               )
               as Map<String, dynamic>;
       final entree = TrailManifest.fromJson(
-        liste,
+        list,
       ).trails.firstWhere((e) => e.trailId == 'gr-monts-dore');
 
       MockClient stockage() => MockClient((requete) async {
@@ -759,9 +755,9 @@ void main() {
         await semeur(await SharedPreferences.getInstance()).seedIfNeeded(),
         isTrue,
       );
-      final etapes = await db.stagesDao.getByTrailId('mare-a-mare-centre');
+      final stages = await db.stagesDao.getByTrailId('mare-a-mare-centre');
       final points = await db.trailGpxPointsDao.getAll();
-      expect(etapes, isNotEmpty);
+      expect(stages, isNotEmpty);
       expect(points, isNotEmpty);
 
       // Preferences ENTIEREMENT vides, comme apres un effacement de compte.
@@ -774,7 +770,7 @@ void main() {
 
       expect(
         await db.stagesDao.getByTrailId('mare-a-mare-centre'),
-        hasLength(etapes.length),
+        hasLength(stages.length),
       );
       expect(
         await db.trailGpxPointsDao.getAll(),

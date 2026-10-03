@@ -178,7 +178,7 @@ class StageProgressBar extends StatelessWidget {
                     vertical: AppTheme.spacingXs,
                   ),
                   decoration: BoxDecoration(
-                    color: AppTheme.rougeUrgence.withAlpha(30),
+                    color: AppTheme.emergencyRed.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                   ),
                   child: Row(
@@ -187,13 +187,13 @@ class StageProgressBar extends StatelessWidget {
                       const StepIcon(
                         StepwaysIcons.danger,
                         size: 14,
-                        color: AppTheme.rougeUrgence,
+                        color: AppTheme.emergencyRed,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         t.map.offTrackChip,
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -213,7 +213,7 @@ class StageProgressBar extends StatelessWidget {
               minHeight: 6,
               backgroundColor: AppTheme.grisClair,
               valueColor: AlwaysStoppedAnimation<Color>(
-                isOffTrack ? AppTheme.rougeUrgence : primaryColor,
+                isOffTrack ? AppTheme.emergencyRed : primaryColor,
               ),
             ),
           ),

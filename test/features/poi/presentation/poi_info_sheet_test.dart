@@ -159,7 +159,7 @@ void main() {
       // Pas d horaires affiches
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.duree,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.clock,
         ),
         findsNothing,
       );

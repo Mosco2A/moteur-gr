@@ -62,7 +62,7 @@ import 'package:moteur_gr/core/services/copie_sauvegardable_base_service.dart';
 import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/garde_sauvegarde_ios.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
-import 'package:moteur_gr/features/safety/presentation/porte_consentement_sauvegarde.dart';
+import 'package:moteur_gr/features/safety/presentation/backup_consent_gate.dart';
 import 'package:moteur_gr/features/safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import 'package:moteur_gr/features/safety/providers/refus_sauvegarde_systeme_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -368,7 +368,7 @@ void main() {
         'lib/core/services/sauvegarde_systeme.dart',
         'lib/core/services/copie_sauvegardable_base_service.dart',
         'lib/core/services/garde_sauvegarde_ios.dart',
-        'lib/features/safety/data/copie_sauvegardable_fiche_service.dart',
+        'lib/features/safety/data/health_info_backup_copy_service.dart',
       };
       final trouves = <String>{};
       for (final f
@@ -818,7 +818,7 @@ void main() {
       poser(
         support,
         '${SauvegardeSysteme.dossierSauvegardable}/'
-        '${SauvegardeSysteme.fichierCopieFiche}',
+        '${SauvegardeSysteme.healthSheetCopyFile}',
       );
       poser(support, '${SauvegardeSysteme.dossierExclu}/fiche.json');
 
@@ -982,10 +982,10 @@ void main() {
     // verrait aucune question posee. En production c'est le comportement voulu
     // (la question EST en train d'etre posee) ; dans une suite de tests, c'est une
     // fuite d'etat, et elle se soigne ici.
-    setUp(RefusSauvegardeSystemeDialog.reinitialiserLeVerrou);
+    setUp(RefusSauvegardeSystemeDialog.resetLock);
 
     Widget appli(Widget corps) => ProviderScope(
-      child: MaterialApp(home: PorteConsentementSauvegarde(child: corps)),
+      child: MaterialApp(home: BackupConsentGate(child: corps)),
     );
 
     testWidgets('aucune decision enregistree : la question est posee', (

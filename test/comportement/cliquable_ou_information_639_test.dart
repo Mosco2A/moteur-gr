@@ -39,10 +39,10 @@ void main() {
     return container.decoration as BoxDecoration;
   }
 
-  Future<void> poser(WidgetTester tester, Widget carte) async {
+  Future<void> poser(WidgetTester tester, Widget card) async {
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: Center(child: carte)),
+        home: Scaffold(body: Center(child: card)),
       ),
     );
     await tester.pumpAndSettle();
@@ -160,14 +160,14 @@ void main() {
       await poser(
         tester,
         const AppCard(
-          borderColor: AppTheme.rougeUrgence,
+          borderColor: AppTheme.emergencyRed,
           borderWidth: 1.5,
           child: Text('orage'),
         ),
       );
       final deco = decorationDe(tester);
       expect(deco.border, isNotNull);
-      expect((deco.border! as Border).top.color, AppTheme.rougeUrgence);
+      expect((deco.border! as Border).top.color, AppTheme.emergencyRed);
       expect((deco.border! as Border).top.width, 1.5);
       expect(deco.boxShadow, isNull);
     });

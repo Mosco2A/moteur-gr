@@ -26,7 +26,7 @@ final cleNavigateurRacine = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///     Navigator.of         (navigator.dart:2937)  -> return navigator!
 ///     showDialog           (dialog.dart:1504)
 ///     poserSiNecessaire    (refus_sauvegarde_systeme_dialog.dart:96)
-///     _demander            (porte_consentement_sauvegarde.dart:78)
+///     _demander            (backup_consent_gate.dart:78)
 ///
 /// Le `!` n'etait PAS dans le code de StepWays : il est dans le framework, a
 /// `navigator.dart:2937`, et la documentation du SDK le dit mot pour mot —
@@ -40,7 +40,7 @@ final cleNavigateurRacine = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// POURQUOI IL N'Y AVAIT PAS DE NAVIGATEUR, ET POURQUOI LES TESTS DISAIENT OUI
 /// ---------------------------------------------------------------------------
 ///
-/// Les deux gardes d'ouverture (`PorteConsentementSauvegarde`,
+/// Les deux gardes d'ouverture (`BackupConsentGate`,
 /// `OrphanSessionReprise`) sont posees dans le `builder` de
 /// `MaterialApp.router` (`main.dart`). Or `WidgetsApp` passe le widget `Router`
 /// EN ARGUMENT de ce `builder` : tout ce que le `builder` enveloppe se retrouve

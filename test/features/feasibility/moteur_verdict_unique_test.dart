@@ -62,7 +62,7 @@ void main() {
     HikerProfile fiche,
     FeasibilityVerdict attendu,
   })
-  profil(
+  profile(
     String cle, {
     required double dPlusParJour,
     required double kmParJour,
@@ -104,14 +104,14 @@ void main() {
 
   /// Les 6 profils de la campagne personas (rapport #100277, famille 3).
   final profils = [
-    profil(
+    profile(
       'vierge',
       dPlusParJour: 0,
       kmParJour: 0,
       joursConsecutifs: 0,
       attendu: FeasibilityVerdict.red,
     ),
-    profil(
+    profile(
       'debutante',
       dPlusParJour: 200,
       kmParJour: 10,
@@ -122,7 +122,7 @@ void main() {
     // Les 3 profils qui se contredisaient : ecran « Faisable », entrainement
     // « prudence ». C'est LE coeur de la non-regression.
     // Bascule V2 assumee : 0,68 (vert) en V1 -> 0,98 (orange) en V2.
-    profil(
+    profile(
       'occasionnel',
       dPlusParJour: 500,
       kmParJour: 16,
@@ -130,7 +130,7 @@ void main() {
       age: 38,
       attendu: FeasibilityVerdict.orange,
     ),
-    profil(
+    profile(
       'confirme',
       dPlusParJour: 900,
       kmParJour: 23,
@@ -140,7 +140,7 @@ void main() {
     ),
     // Bascule V2 assumee : l age lui coute un cran, et son plancher demontre
     // (44,4) devient sa base -> 0,85 franchi d un cheveu.
-    profil(
+    profile(
       'senior',
       dPlusParJour: 900,
       kmParJour: 23,
@@ -148,7 +148,7 @@ void main() {
       age: 68,
       attendu: FeasibilityVerdict.orange,
     ),
-    profil(
+    profile(
       'expert',
       dPlusParJour: 1300,
       kmParJour: 28,

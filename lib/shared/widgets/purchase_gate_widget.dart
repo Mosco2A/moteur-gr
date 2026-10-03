@@ -98,13 +98,13 @@ class PurchaseGateWidget extends ConsumerWidget {
 
   /// Ouvre l ecran paywall (deblocage premium du trek).
   ///
-  /// TACHE 614 — PASSE PAR LE GESTE UNIQUE [acheterSentier]. Le prix n'est plus
+  /// TACHE 614 — PASSE PAR LE GESTE UNIQUE [buyTrail]. Le prix n'est plus
   /// transmis par personne : le service le lit au catalogue
   /// ([MonetizationService.stagesOfTrail]). Le parametre `totalStages` de ce
   /// widget a donc ete RETIRE plutot que laisse en decor — un parametre qui
   /// n'influence plus rien est un mensonge d'interface.
   void _openPaywall(BuildContext context, WidgetRef ref) {
-    acheterSentier(context, ref, trailId: trailId);
+    buyTrail(context, ref, trailId: trailId);
   }
 
   /// Verifie si un trek est en mode demo (statique, sans widget).

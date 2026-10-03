@@ -3,7 +3,7 @@
 /// DECISION DE CHRIS DU 26/09, TOUJOURS EN VIGUEUR : « le curseur est celui
 /// conseille et il n'est jamais en rouge quand il est conseille en orange max ».
 ///
-/// CE QUE CE FICHIER BRANCHE. [ProgramPlanSearch.planDuSentier] construit le
+/// CE QUE CE FICHIER BRANCHE. [ProgramPlanSearch.trailPlan] construit le
 /// plan d'etapes du sentier TEL QU'IL EST DANS LES DONNEES — une etape, une
 /// journee de marche — plus le repos conseille par le moteur, et le colore avec
 /// le moteur de verdict de l'ecran. Il ne cherche plus la plus petite duree non
@@ -91,7 +91,7 @@ final advisedSuggestedProgramProvider = FutureProvider<SuggestedProgram?>((
   final objective = await ref.watch(objectiveProfileProvider.future);
   final conditions = await ref.watch(trekConditionsProvider.future);
 
-  return ProgramPlanSearch.planDuSentier(
+  return ProgramPlanSearch.trailPlan(
     stages: stages,
     level: level,
     bounds: bounds,

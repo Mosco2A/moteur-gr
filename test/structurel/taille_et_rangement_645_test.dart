@@ -53,8 +53,8 @@ const plafondDartSousDocs = 2;
 /// DEUX fichiers tenaient a moins de quatre lignes de la borne et l'ont donc
 /// franchie SANS QU'UNE SEULE LIGNE DE CODE SOIT AJOUTEE :
 ///
-///   - `lib/core/services/source_de_donnees_sentier.dart` : 497 -> 501 ;
-///   - `lib/features/trek/presentation/refuge_detail_screen.dart` : 499 -> 503.
+///   - `lib/core/services/trail_record_source.dart` : 497 -> 501 ;
+///   - `lib/features/trek/presentation/accommodation_detail_screen.dart` : 499 -> 503.
 ///
 /// La dette que cette garde mesure — « un fichier trop long pour etre lu en
 /// entier avant d'y toucher » — n'a donc pas bouge d'une ligne : ces deux

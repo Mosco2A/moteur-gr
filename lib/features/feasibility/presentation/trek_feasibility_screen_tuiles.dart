@@ -134,7 +134,7 @@ class _ProfileShortcuts extends StatelessWidget {
         // au-dessus du verdict (bug 5a, `_CollecteDeLaDemo`).
         GriseEnDemo(
           child: _ShortcutCard(
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),
@@ -202,7 +202,7 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
           Text(reason, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
           _ShortcutCard(
-            icon: StepwaysIcons.monCompte,
+            icon: StepwaysIcons.myAccount,
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),
@@ -345,7 +345,7 @@ String _adviceText(ProgramAdvice advice) {
 Color _verdictColor(FeasibilityVerdict verdict) {
   switch (verdict) {
     case FeasibilityVerdict.red:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case FeasibilityVerdict.orange:
       return AppTheme.orangeDifficile;
     case FeasibilityVerdict.green:

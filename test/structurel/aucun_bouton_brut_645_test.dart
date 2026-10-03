@@ -64,7 +64,7 @@ import 'mesure_des_sources_645.dart';
 /// typographie via `textTheme.X.copyWith(...)` :
 ///
 ///   - lib/shared/widgets/section_header.dart (le « Tout voir » d'en-tete)
-///   - lib/shared/widgets/lien_vers_les_cartes.dart
+///   - lib/shared/widgets/maps_link.dart
 ///   - lib/features/weather/presentation/fire_risk_screen.dart
 ///   - lib/features/checklist/widgets/checklist_category_section.dart
 ///   - lib/features/onboarding/presentation/onboarding_screen.dart

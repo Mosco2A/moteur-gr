@@ -141,7 +141,7 @@ void main() {
 
     test("un droit de sentier est un LOQUET : une lecture en retard ne le "
         "retire pas", () {
-      final fusion = fusionnerDroitDeSentier(
+      final fusion = mergeTrailEntitlement(
         possedeLocal: true,
         etapesAcquisesLocal: 12,
         complementConsommeLocal: 0,
@@ -163,7 +163,7 @@ void main() {
     test(
       "un achat fait AILLEURS arrive sur un telephone qui ne le connait pas",
       () {
-        final fusion = fusionnerDroitDeSentier(
+        final fusion = mergeTrailEntitlement(
           possedeLocal: false,
           etapesAcquisesLocal: 0,
           complementConsommeLocal: 0,
@@ -248,7 +248,7 @@ void main() {
       String? uid = "uid-de-christophe",
     }) {
       return DescenteDesDroits(
-        compteEtapes: compte,
+        stageCount: compte,
         entitlementsDao: TrekEntitlementsDao(db),
         noAdsDao: NoAdsDao(db),
         firebaseService: firebase,
@@ -306,7 +306,7 @@ void main() {
       compte = WalletStore(db: db, prefs: prefs);
       await compte.load();
       descente = DescenteDesDroits(
-        compteEtapes: compte,
+        stageCount: compte,
         entitlementsDao: TrekEntitlementsDao(db),
         noAdsDao: NoAdsDao(db),
         firebaseService: _FirebasePresent(),
@@ -324,7 +324,7 @@ void main() {
     /// Ce que Skynet ecrira dans Firestore pour debloquer Christophe.
     DroitsDistants lExemple() => DroitsDistants(
       solde: const SoldeDistant(cumulGagne: 62, cumulDepense: 12),
-      sentiers: const [
+      trails: const [
         DroitDeSentierDistant(
           trailId: "mare-a-mare-centre",
           possede: true,
@@ -332,7 +332,7 @@ void main() {
           complementConsomme: 0,
         ),
       ],
-      abonnement: AbonnementDistant(
+      subscription: AbonnementDistant(
         actif: true,
         echeance: DateTime.utc(2026, 10, 30),
         horodatage: HorodatageServeur.annonceParLeServeur(
@@ -402,7 +402,7 @@ void main() {
         expect(await NoAdsDao(db).getAll(), isNotEmpty);
 
         final resiliation = DroitsDistants(
-          abonnement: AbonnementDistant(
+          subscription: AbonnementDistant(
             actif: false,
             echeance: null,
             horodatage: HorodatageServeur.annonceParLeServeur(
@@ -428,7 +428,7 @@ void main() {
       await descente.appliquer(lExemple());
       await descente.appliquer(
         DroitsDistants(
-          abonnement: AbonnementDistant(
+          subscription: AbonnementDistant(
             actif: false,
             echeance: null,
             horodatage: HorodatageServeur.annonceParLeServeur(

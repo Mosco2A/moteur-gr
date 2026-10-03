@@ -17,7 +17,7 @@ import '../../../core/providers/database_provider.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/past_hike.dart';
 import '../domain/walk_test_result.dart';
-import 'profil_randonneur_fichier.dart';
+import 'hiker_profile_file.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -34,7 +34,7 @@ const String kHikerLocalUserId = 'local';
 /// PLUS RIEN NE L'ECRIT DEPUIS LA TACHE 623. Elle subsiste pour DEUX raisons, et
 /// aucune des deux n'est de la nostalgie : la migration doit savoir ou chercher
 /// ce que les telephones portent deja, et l'effacement de l'article 17 doit
-/// continuer de l'emporter. Voir [ProfilRandonneurFichier].
+/// continuer de l'emporter. Voir [HikerProfileFile].
 const String kHikerProfilePrefsKey = 'hiker.profile';
 
 /// Cle SharedPreferences HERITEE : liste des randos passees (JSON list).
@@ -68,7 +68,7 @@ const String kWalkTestResultPrefsKey = 'hiker.walkTestResult';
 /// Or la regle de Christophe du 27/09, en majuscules, inclut explicitement le
 /// poids et la taille : « Les donnees medicales RESTENT sur le tel ».
 ///
-/// LA SOURCE DURABLE EST DESORMAIS [ProfilRandonneurFichier] : un fichier, dans
+/// LA SOURCE DURABLE EST DESORMAIS [HikerProfileFile] : un fichier, dans
 /// le MEME dossier protege que la fiche medicale, avec la MEME exclusion iCloud du
 /// lot 615 — reutilisee, pas reinventee. La migration des telephones existants est
 /// faite par [migrerDepuisPreferences], une seule fois, sans rien perdre.
@@ -91,18 +91,18 @@ class HikerProfileRepository {
     required AppDatabase db,
     SharedPreferences? prefs,
     String userId = kHikerLocalUserId,
-    ProfilRandonneurFichier? fichier,
+    HikerProfileFile? fichier,
   }) : _db = db,
        _prefs = prefs,
        _userId = userId,
-       _fichier = fichier ?? ProfilRandonneurFichier();
+       _fichier = fichier ?? HikerProfileFile();
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
   final String _userId;
 
   /// LA SOURCE DURABLE (tache 623) : un fichier dans le dossier protege.
-  final ProfilRandonneurFichier _fichier;
+  final HikerProfileFile _fichier;
 
   /// Vrai des que la migration depuis les preferences a ete TENTEE pour cette
   /// instance. Elle est idempotente, mais la refaire a chaque lecture couterait
@@ -117,12 +117,12 @@ class HikerProfileRepository {
 
   /// Le stockage protege, exposee pour l'amorce de l'application (qui doit
   /// reposer l'exclusion iCloud a chaque demarrage) et pour les tests.
-  ProfilRandonneurFichier get fichier => _fichier;
+  HikerProfileFile get fichier => _fichier;
 
   // --- Source durable : lecture / ecriture uniques ---------------------------
 
   /// L'UNIQUE CHEMIN DE LECTURE. Il fait passer la migration devant, une fois.
-  Future<ContenuProfilRandonneur> _charger() async {
+  Future<HikerProfileContent> _load() async {
     if (!_migrationTentee) {
       await migrerDepuisPreferences();
     }
@@ -132,11 +132,10 @@ class HikerProfileRepository {
   /// L'UNIQUE CHEMIN D'ECRITURE.
   ///
   /// Pourquoi il est unique : la pose de l'exclusion iCloud vit DANS
-  /// [ProfilRandonneurFichier.ecrire], et un second chemin d'ecriture serait un
+  /// [HikerProfileFile.ecrire], et un second chemin d'ecriture serait un
   /// second endroit ou l'oublier. C'est exactement le defaut que la tache 615 a
   /// trouve dans l'ecriture atomique de la 613.
-  Future<void> _enregistrer(ContenuProfilRandonneur contenu) =>
-      _fichier.ecrire(contenu);
+  Future<void> _save(HikerProfileContent contenu) => _fichier.ecrire(contenu);
 
   /// MIGRE LES QUATRE CLES HERITEES VERS LE FICHIER PROTEGE, PUIS LES RETIRE.
   ///
@@ -164,12 +163,12 @@ class HikerProfileRepository {
     _migrationTentee = true;
     try {
       final prefs = await _preferences;
-      final brutProfil = prefs.getString(kHikerProfilePrefsKey);
+      final rawProfile = prefs.getString(kHikerProfilePrefsKey);
       final brutRandos = prefs.getString(kHikerPastHikesPrefsKey);
       final brutTest = prefs.getString(kWalkTestResultPrefsKey);
       final brutNote = prefs.getString(kHikerExperienceNotePrefsKey);
 
-      if (brutProfil == null &&
+      if (rawProfile == null &&
           brutRandos == null &&
           brutTest == null &&
           brutNote == null) {
@@ -178,11 +177,11 @@ class HikerProfileRepository {
 
       var contenu = await _fichier.lire();
 
-      if (contenu.profil == null && brutProfil != null) {
+      if (contenu.profile == null && rawProfile != null) {
         try {
           contenu = contenu.copyWith(
-            profil: HikerProfile.fromJson(
-              json.decode(brutProfil) as Map<String, dynamic>,
+            profile: HikerProfile.fromJson(
+              json.decode(rawProfile) as Map<String, dynamic>,
             ),
           );
         } catch (e) {
@@ -195,14 +194,14 @@ class HikerProfileRepository {
 
       if (contenu.randosPassees.isEmpty && brutRandos != null) {
         try {
-          final liste =
+          final list =
               (json.decode(brutRandos) as List<dynamic>)
                   .whereType<Map<String, dynamic>>()
                   .map(PastHike.fromJson)
                   .toList()
                 ..sort((a, b) => b.date.compareTo(a.date));
           contenu = contenu.copyWith(
-            randosPassees: liste.take(kMaxPastHikes).toList(),
+            randosPassees: list.take(kMaxPastHikes).toList(),
           );
         } catch (e) {
           _log.e(
@@ -233,7 +232,7 @@ class HikerProfileRepository {
         contenu = contenu.copyWith(noteExperienceHeritee: brutNote);
       }
 
-      await _enregistrer(contenu);
+      await _save(contenu);
 
       // LES CLES PARTENT APRES L'ECRITURE, JAMAIS AVANT : une coupure de courant
       // entre les deux doit laisser la donnee dans les preferences, pas nulle
@@ -260,8 +259,8 @@ class HikerProfileRepository {
   /// Hydrate le profil depuis la SOURCE DURABLE (le fichier protege) et met a
   /// jour le MIROIR Drift. Retourne le profil (vide si aucune fiche saisie).
   Future<HikerProfile> load() async {
-    final contenu = await _charger();
-    final profile = contenu.profil;
+    final contenu = await _load();
+    final profile = contenu.profile;
     if (profile == null) return HikerProfile.empty;
     await _mirrorProfileToDrift(profile);
     return profile;
@@ -269,8 +268,8 @@ class HikerProfileRepository {
 
   /// Relit le profil sans re-mirroring (raccourci lecture).
   Future<HikerProfile> getProfile() async {
-    final contenu = await _charger();
-    return contenu.profil ?? HikerProfile.empty;
+    final contenu = await _load();
+    return contenu.profile ?? HikerProfile.empty;
   }
 
   /// Sauvegarde le profil : le fichier protege (source durable) ET Drift
@@ -278,8 +277,8 @@ class HikerProfileRepository {
   /// calcule).
   Future<HikerProfile> saveProfile(HikerProfile profile) async {
     final stamped = profile.copyWith(updatedAt: DateTime.now());
-    final contenu = await _charger();
-    await _enregistrer(contenu.copyWith(profil: stamped));
+    final contenu = await _load();
+    await _save(contenu.copyWith(profile: stamped));
     await _mirrorProfileToDrift(stamped);
     _log.d('[HikerProfileRepository] Profil sauvegarde (IMC calcule local)');
     return stamped;
@@ -291,8 +290,8 @@ class HikerProfileRepository {
   /// l'article 17 (randos, note d'experience et test de marche compris), c'est
   /// [eraseAllPersonalData] qu'il faut appeler.
   Future<void> deleteProfile() async {
-    final contenu = await _charger();
-    await _enregistrer(contenu.copyWith(effacerProfil: true));
+    final contenu = await _load();
+    await _save(contenu.copyWith(eraseProfile: true));
     await _profileDao.deleteByUserId(_userId);
   }
 
@@ -386,8 +385,8 @@ class HikerProfileRepository {
   /// A ne pas confondre avec [deleteProfile] (effacement TOTAL, droit a
   /// l'effacement) : ici on retire une CATEGORIE de donnees, pas la fiche.
   Future<HikerProfile> eraseMorphology() async {
-    final contenu = await _charger();
-    final current = contenu.profil ?? HikerProfile.empty;
+    final contenu = await _load();
+    final current = contenu.profile ?? HikerProfile.empty;
     final erased = current.copyWith(
       age: 0,
       heightCm: 0,
@@ -407,10 +406,10 @@ class HikerProfileRepository {
     // physique, donc de l'article 9 au meme titre que le poids (tache 562, K2a).
     // Un seul enregistrement atomique au lieu de deux ecritures : il n'existe
     // aucun instant ou la morphologie est partie et pas le test.
-    await _enregistrer(
+    await _save(
       contenu.copyWith(
-        profil: resteDuNonArticle9 ? erased : null,
-        effacerProfil: !resteDuNonArticle9,
+        profile: resteDuNonArticle9 ? erased : null,
+        eraseProfile: !resteDuNonArticle9,
         effacerTestDeMarche: true,
       ),
     );
@@ -449,7 +448,7 @@ class HikerProfileRepository {
   /// Charge les randos depuis la source durable (le fichier protege) et met a
   /// jour Drift. Triees par date decroissante, plafonnees a [kMaxPastHikes].
   Future<List<PastHike>> loadPastHikes() async {
-    final contenu = await _charger();
+    final contenu = await _load();
     if (contenu.randosPassees.isEmpty) return const [];
     final list = [...contenu.randosPassees]
       ..sort((a, b) => b.date.compareTo(a.date));
@@ -466,8 +465,8 @@ class HikerProfileRepository {
   Future<List<PastHike>> savePastHikes(List<PastHike> hikes) async {
     final sorted = [...hikes]..sort((a, b) => b.date.compareTo(a.date));
     final capped = sorted.take(kMaxPastHikes).toList();
-    final contenu = await _charger();
-    await _enregistrer(contenu.copyWith(randosPassees: capped));
+    final contenu = await _load();
+    await _save(contenu.copyWith(randosPassees: capped));
     await _mirrorPastHikesToDrift(capped);
     _log.d('[HikerProfileRepository] ${capped.length} rando(s) sauvegardee(s)');
     return capped;
@@ -513,7 +512,7 @@ class HikerProfileRepository {
   /// Relit le dernier resultat du test 6 min, ou null si jamais fait
   /// (=> fallback auto-eval cote faisabilite).
   Future<WalkTestResult?> getWalkTestResult() async {
-    final contenu = await _charger();
+    final contenu = await _load();
     return contenu.testDeMarche;
   }
 
@@ -524,8 +523,8 @@ class HikerProfileRepository {
   /// parcourue en six minutes est une MESURE DE CAPACITE PHYSIQUE, donc de
   /// l'article 9 — elle en dit meme davantage que le poids (tache 562, K2a).
   Future<void> saveWalkTestResult(WalkTestResult result) async {
-    final contenu = await _charger();
-    await _enregistrer(contenu.copyWith(testDeMarche: result));
+    final contenu = await _load();
+    await _save(contenu.copyWith(testDeMarche: result));
     _log.d(
       '[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
       '-> ${result.level}',

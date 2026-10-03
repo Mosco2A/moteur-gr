@@ -167,7 +167,7 @@ void main() {
         expect(pause, findsOneWidget);
         expect(stop, findsOneWidget);
         expect(backgroundOf(tester, pause), AppTheme.actionPause);
-        expect(backgroundOf(tester, stop), AppTheme.rougeUrgence);
+        expect(backgroundOf(tester, stop), AppTheme.emergencyRed);
         expect(foregroundOf(tester, pause), Colors.white);
 
         // Icones conservees.
@@ -210,9 +210,9 @@ void main() {
       );
 
       // AppButton filledTone conserve minHeight 44 (cible tactile a11y AA).
-      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
+      final start = find.widgetWithText(ElevatedButton, 'Démarrer');
       final minSize = tester
-          .widget<ElevatedButton>(demarrer)
+          .widget<ElevatedButton>(start)
           .style
           ?.minimumSize
           ?.resolve(<WidgetState>{});

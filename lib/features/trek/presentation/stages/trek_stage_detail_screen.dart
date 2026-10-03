@@ -15,7 +15,7 @@ import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
-import '../../../../shared/widgets/lien_vers_les_cartes.dart';
+import '../../../../shared/widgets/maps_link.dart';
 import '../../../../shared/poi/poi_type_config.dart';
 import '../../../safety/data/signalement_service.dart';
 import '../../../safety/safety_facade.dart'
@@ -512,7 +512,7 @@ class _DepartureArrivalLine extends StatelessWidget {
       child: Row(
         children: [
           StepIcon(
-            StepwaysIcons.enregistrer,
+            StepwaysIcons.save,
             size: 22,
             color: theme.colorScheme.primary,
           ),
@@ -587,23 +587,23 @@ class _WaterSourcesSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppTheme.spacingMd),
             decoration: BoxDecoration(
-              color: AppTheme.rougeUrgence.withAlpha(20),
+              color: AppTheme.emergencyRed.withAlpha(20),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-              border: Border.all(color: AppTheme.rougeUrgence.withAlpha(60)),
+              border: Border.all(color: AppTheme.emergencyRed.withAlpha(60)),
             ),
             child: Row(
               children: [
                 const StepIcon(
                   StepwaysIcons.danger,
                   size: 20,
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
                     t.stage.waterSources.none,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.rougeUrgence,
+                      color: AppTheme.emergencyRed,
                     ),
                   ),
                 ),
@@ -825,7 +825,7 @@ class _WaterStatusChip extends StatelessWidget {
     case 'water_dry':
       return (
         t.signalement.water.states.dry,
-        AppTheme.rougeUrgence,
+        AppTheme.emergencyRed,
         StepwaysIcons.pluie,
       );
     default:

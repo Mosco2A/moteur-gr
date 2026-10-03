@@ -44,6 +44,5 @@ abstract final class FirebaseConfig {
   /// elle qui distingue un build de production d'un build local, alors que la
   /// configuration de sentier est une donnee versionnee (et donc vide, par
   /// construction, puisqu'aucune cle n'entre dans le depot).
-  static String? resoudre({String? depuisLeSentier}) =>
-      projectId ?? depuisLeSentier;
+  static String? resoudre({String? fromTrail}) => projectId ?? fromTrail;
 }

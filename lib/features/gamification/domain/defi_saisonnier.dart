@@ -11,9 +11,9 @@ part 'defi_saisonnier.g.dart';
 /// l'objectif structure le calcul de progression.
 abstract final class DefiObjectif {
   static const String distance = 'distance'; // metres cumules
-  static const String denivele = 'denivele'; // metres D+ cumules
+  static const String elevationGain = 'denivele'; // metres D+ cumules
   static const String segments = 'segments'; // nombre de segments completes
-  static const List<String> values = [distance, denivele, segments];
+  static const List<String> values = [distance, elevationGain, segments];
 }
 
 /// Modele immutable d'un defi saisonnier (F7C-02, Phase 7 gamification).

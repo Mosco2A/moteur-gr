@@ -34,12 +34,12 @@ class _PhoneCardStep extends ConsumerWidget {
       decoration: BoxDecoration(
         color: fait
             ? colors.primary.withAlpha(16)
-            : AppTheme.rougeUrgence.withAlpha(20),
+            : AppTheme.emergencyRed.withAlpha(20),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(
           color: fait
               ? colors.primary.withAlpha(60)
-              : AppTheme.rougeUrgence.withAlpha(110),
+              : AppTheme.emergencyRed.withAlpha(110),
         ),
       ),
       child: Column(
@@ -50,7 +50,7 @@ class _PhoneCardStep extends ConsumerWidget {
               StepIcon(
                 fait ? StepwaysIcons.cochePleine : StepwaysIcons.cadenas,
                 size: 20,
-                color: fait ? colors.primary : AppTheme.rougeUrgence,
+                color: fait ? colors.primary : AppTheme.emergencyRed,
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -58,7 +58,7 @@ class _PhoneCardStep extends ConsumerWidget {
                   t.health.phoneCard.title,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: fait ? colors.primary : AppTheme.rougeUrgence,
+                    color: fait ? colors.primary : AppTheme.emergencyRed,
                   ),
                 ),
               ),

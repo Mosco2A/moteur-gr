@@ -76,7 +76,7 @@ void main() {
   group('637/2 — le geste de Christophe, trek REEL en cours', () {
     testWidgets('« Mon compte » depuis le menu du trek se dessine, sans une '
         'seule erreur', (tester) async {
-      RefusSauvegardeSystemeDialog.reinitialiserLeVerrou();
+      RefusSauvegardeSystemeDialog.resetLock();
       await monterAppliReelle(
         tester,
         etat: EtatAppli.enRoute,
@@ -86,10 +86,10 @@ void main() {
       // La question de sauvegarde est posee au premier rendu : on y repond comme
       // le randonneur, avant de continuer.
       if (find
-          .byKey(RefusSauvegardeSystemeDialog.cleValider)
+          .byKey(RefusSauvegardeSystemeDialog.validateKey)
           .evaluate()
           .isNotEmpty) {
-        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
         await stabiliser(tester);
       }
 
@@ -119,15 +119,15 @@ void main() {
       await stabiliser(tester);
 
       // LE GESTE : le bouton « Mon compte » du menu du trek.
-      final monCompte = find.byWidgetPredicate(
-        (w) => w is StepIcon && w.asset == StepwaysIcons.monCompte,
+      final myAccount = find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.myAccount,
       );
       expect(
-        monCompte,
+        myAccount,
         findsOneWidget,
         reason: 'le menu du trek doit porter « Mon compte »',
       );
-      await tester.tap(monCompte.first);
+      await tester.tap(myAccount.first);
       // ON POMPE LONGTEMPS : les armements de fond d'un trek reel (identite,
       // montee en base, cadence) se resolvent APRES la premiere frame du profil.
       await stabiliser(tester, coups: 40);

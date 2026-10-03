@@ -8,7 +8,7 @@
 /// geste SEPARE, supprimer aussi. C est pourquoi ces etats sont NOMMES ici et non
 /// deduits a la volee dans un widget : trois etats redecouverts chacun de leur
 /// cote finissent par diverger.
-enum EtatDuSentier {
+enum TrailState {
   /// ETAT 1 — AU CATALOGUE, PAS SUR LE TELEPHONE.
   ///
   /// La liste distante a fait apparaitre le sentier : on voit sa fiche, son nom,
@@ -20,7 +20,7 @@ enum EtatDuSentier {
   ///
   /// Le geste « telecharger » a copie l integralite des donnees en local, de
   /// facon atomique. Le sentier est utilisable sans reseau.
-  telecharge,
+  downloaded,
 
   /// ETAT 3 — ACHETE.
   ///
@@ -56,11 +56,11 @@ enum RefusDeSuppression {
 /// une echelle a trois barreaux.
 ///
 /// CONSEQUENCE ASSUMEE : un sentier ACHETE mais PAS ENCORE TELECHARGE existe. Son
-/// etat est [EtatDuSentier.achete] — c est le fait le plus important a montrer —
-/// et [peutTelecharger] reste vrai. La suppression, elle, est deja interdite :
+/// etat est [TrailState.achete] — c est le fait le plus important a montrer —
+/// et [canDownload] reste vrai. La suppression, elle, est deja interdite :
 /// l interdiction porte sur le DROIT, pas sur la presence des fichiers.
-class DisponibiliteDuSentier {
-  const DisponibiliteDuSentier({
+class TrailAvailability {
+  const TrailAvailability({
     required this.trailId,
     required this.copieComplete,
     required this.achete,
@@ -81,16 +81,16 @@ class DisponibiliteDuSentier {
   final bool achete;
 
   /// L etat a montrer, quand il faut n en montrer qu un.
-  EtatDuSentier get etat {
-    if (achete) return EtatDuSentier.achete;
-    if (copieComplete) return EtatDuSentier.telecharge;
-    return EtatDuSentier.auCatalogue;
+  TrailState get etat {
+    if (achete) return TrailState.achete;
+    if (copieComplete) return TrailState.downloaded;
+    return TrailState.auCatalogue;
   }
 
   /// Le geste « telecharger » est-il offert ?
   ///
   /// Oui tant que les donnees ne sont pas la — achete ou pas.
-  bool get peutTelecharger => !copieComplete;
+  bool get canDownload => !copieComplete;
 
   /// Pourquoi « supprimer » est refuse, ou `null` s il est permis.
   RefusDeSuppression? get refusDeSuppression {
@@ -100,5 +100,5 @@ class DisponibiliteDuSentier {
   }
 
   /// Le geste « supprimer » est-il offert ?
-  bool get peutSupprimer => refusDeSuppression == null;
+  bool get canDelete => refusDeSuppression == null;
 }

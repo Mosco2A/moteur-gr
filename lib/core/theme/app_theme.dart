@@ -116,7 +116,7 @@ class AppTheme {
   static const grisClair = Color(0xFFE0E0E0);
   static const grisFond = Color(0xFFF5F5F5);
   static const blancNeige = Color(0xFFFAFAFA);
-  static const rougeUrgence = Color(0xFFD32F2F);
+  static const emergencyRed = Color(0xFFD32F2F);
   static const noir = Color(0xFF212121);
 
   // --- Couleurs de denivele (universelles pour le trek) ---
@@ -204,7 +204,7 @@ class AppTheme {
       onSecondary: Colors.white,
       secondaryContainer: _darken(secondaryColor, 0.2),
       onSecondaryContainer: secondaryLight,
-      error: rougeUrgence,
+      error: emergencyRed,
       onError: Colors.white,
       surface: const Color(0xFF1E1E1E),
       onSurface: const Color(0xFFE0E0E0),
@@ -349,7 +349,7 @@ class AppTheme {
       onSecondary: Colors.white,
       secondaryContainer: _lighten(secondaryColor, 0.4),
       onSecondaryContainer: secondaryDark,
-      error: rougeUrgence,
+      error: emergencyRed,
       onError: Colors.white,
       surface: blancNeige,
       onSurface: noir,

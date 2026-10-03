@@ -50,7 +50,7 @@ class HubAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: onInfoTap,
         ),
         IconButton(
-          icon: const StepIcon(StepwaysIcons.monCompte),
+          icon: const StepIcon(StepwaysIcons.myAccount),
           tooltip: t.hub.profileTooltip,
           onPressed: () => context.push('/profile'),
         ),
@@ -61,7 +61,7 @@ class HubAppBar extends StatelessWidget implements PreferredSizeWidget {
         // atteignable via le header standard du cockpit (SPEC §4 : « Mon compte
         // / reglages / ecrans info : header standard »). push -> retour propre.
         IconButton(
-          icon: const StepIcon(StepwaysIcons.reglages),
+          icon: const StepIcon(StepwaysIcons.settings),
           tooltip: t.nav.settings,
           onPressed: () => context.push('/settings'),
         ),

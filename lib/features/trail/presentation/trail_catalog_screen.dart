@@ -14,8 +14,8 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../ads/domain/etat_publicite.dart';
-import '../../ads/presentation/badge_etat_publicite.dart';
+import '../../ads/domain/ad_state.dart';
+import '../../ads/presentation/ad_state_badge.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
@@ -84,7 +84,7 @@ class TrailCatalogScreen extends ConsumerWidget {
       bottomNavigationBar: const BannerAdSlot.horsTrek(),
       body: trails.isEmpty
           ? EmptyState(
-              icon: StepwaysIcons.catalogueSentiers,
+              icon: StepwaysIcons.trailCatalog,
               title: t.catalog.emptyTitle,
               subtitle: t.catalog.emptySubtitle,
             )
@@ -153,13 +153,13 @@ class TrailCatalogScreen extends ConsumerWidget {
     //
     // CE QUI FAIT QUE CE N'EST PLUS « SUBI » : la carte le DIT avant d'ouvrir —
     // l'icone pub sur le bouton et la marque « Avec publicite » juste au-dessus
-    // ([BadgeEtatPublicite]). Le randonneur sait ce qu'il va trouver, et il a
+    // ([AdStateBadge]). Le randonneur sait ce qu'il va trouver, et il a
     // « Acheter » a cote s'il n'en veut pas.
 
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
-    // bascule est resolue avant la navigation ([choisirSentier] dit pourquoi :
+    // bascule est resolue avant la navigation ([chooseTrail] dit pourquoi :
     // sans cela, quatre « setState during build » par bascule).
-    choisirSentier(ref, trailId);
+    chooseTrail(ref, trailId);
     context.go('/home');
   }
 }
@@ -284,7 +284,7 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
 /// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
 /// enfin un refus qui lui proposait de payer. L'achat est desormais sur la
-/// carte, et il emprunte le geste unique [acheterSentier] — le meme que la
+/// carte, et il emprunte le geste unique [buyTrail] — le meme que la
 /// preparation et que le depart.
 ///
 /// UNE SEULE ACTION A LA FOIS (tache 639, bug 2). Le lot 614 avait pose l'achat
@@ -432,7 +432,7 @@ class _AvailableTrailCard extends ConsumerWidget {
           // pub, je suis en prepa avec pub ».
           Align(
             alignment: Alignment.centerLeft,
-            child: BadgeEtatPublicite(trailId: trail.id),
+            child: AdStateBadge(trailId: trail.id),
           ),
           const SizedBox(height: AppTheme.spacingMd),
           // PREPARER TOUJOURS, ACHETER EN PLUS QUAND IL Y A QUELQUE CHOSE A
@@ -511,8 +511,7 @@ class _AvailableTrailCard extends ConsumerWidget {
                           .eurPriceForTrail(trail.id)
                           .toStringAsFixed(2),
                     ),
-                    onPressed: () =>
-                        acheterSentier(context, ref, trailId: trail.id),
+                    onPressed: () => buyTrail(context, ref, trailId: trail.id),
                   ),
                 ),
               ),

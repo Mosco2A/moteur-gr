@@ -81,7 +81,7 @@ void main() {
       'verifiee sur le code', () {
     test('aujourd hui le coffre n est pas alimente', () {
       expect(
-        CoffreDeReconnexion.alimente,
+        ReconnectionVault.alimente,
         isFalse,
         reason:
             'si quelqu un a branche un ecrivain, il doit basculer cette '
@@ -97,7 +97,7 @@ void main() {
           _appelantsHorsChaine('exportWithCode') +
           _appelantsHorsChaine('pushEncryptedBackup');
 
-      if (CoffreDeReconnexion.alimente) {
+      if (ReconnectionVault.alimente) {
         expect(
           ecrivains,
           greaterThan(0),
@@ -111,7 +111,7 @@ void main() {
           0,
           reason:
               'du code alimente desormais le coffre : basculez '
-              'CoffreDeReconnexion.alimente a vrai et retablissez la '
+              'ReconnectionVault.alimente a vrai et retablissez la '
               'promesse a l ecran',
         );
       }
@@ -120,9 +120,9 @@ void main() {
     test(
       'la declaration NOMME ce qui manque, pour que ce soit actionnable',
       () {
-        expect(CoffreDeReconnexion.ecrivainAttendu, isNotEmpty);
-        expect(CoffreDeReconnexion.transportAttendu, isNotEmpty);
-        expect(CoffreDeReconnexion.ecranDeSaisieAttendu, isNotEmpty);
+        expect(ReconnectionVault.ecrivainAttendu, isNotEmpty);
+        expect(ReconnectionVault.transportAttendu, isNotEmpty);
+        expect(ReconnectionVault.ecranDeSaisieAttendu, isNotEmpty);
       },
     );
   });

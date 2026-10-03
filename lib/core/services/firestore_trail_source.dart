@@ -9,7 +9,7 @@ import 'package:logger/logger.dart';
 import '../data/revision_de_donnee.dart';
 import '../firebase/firebase_service.dart';
 import '../models/trail_manifest.dart';
-import 'source_de_donnees_sentier.dart';
+import 'trail_record_source.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -145,8 +145,8 @@ class RequeteFirestoreParRevision {
 /// (tuiles) y vivent. L arbitrage du lot 605 est donc respecte a la lettre :
 /// Firestore pour la liste et les donnees structurees, Storage pour les fichiers
 /// lourds.
-class ListeSentiersFirestore {
-  ListeSentiersFirestore({
+class FirestoreTrailList {
+  FirestoreTrailList({
     required this.firebaseService,
     FirebaseFirestore? firestore,
   }) : _firestore = firestore;
@@ -217,7 +217,7 @@ class ListeSentiersFirestore {
   /// `tool/publier_en_base.py` : c est la meme ecriture que le fichier de donnees
   /// publie, et c est deliberé — un troisieme format serait une troisieme
   /// divergence (piege #Z01). La `fiche`, elle, garde ses noms de champs
-  /// `camelCase` parce qu elle est la copie litterale de `TrailManifestFiche`, que
+  /// `camelCase` parce qu elle est la copie litterale de `TrailManifestSheet`, que
   /// `freezed` deserialise.
   ///
   /// RETOURNE `null` PLUTOT QUE DE LEVER. Un document mal forme ne doit pas rendre
@@ -248,7 +248,7 @@ class ListeSentiersFirestore {
                     HorodatageServeur.origine)
                 .iso8601,
         fiche: fiche is Map<String, dynamic>
-            ? TrailManifestFiche.fromJson(fiche)
+            ? TrailManifestSheet.fromJson(fiche)
             : null,
         tilesPath: donnees['tiles_path'] as String?,
         tilesSize: (donnees['tiles_size'] as num?)?.toInt(),
@@ -282,7 +282,7 @@ final requeteFirestoreParRevisionProvider =
 /// Le repli est explicite et journalise : il ne doit pas etre confondu avec un
 /// fonctionnement normal, parce qu il suppose un depot dans Storage que personne
 /// n alimente aujourd hui.
-final sourceDeDonneesSentierProvider = Provider<SourceDeDonneesSentier>((ref) {
+final trailRecordSourceProvider = Provider<TrailRecordSource>((ref) {
   final firebase = ref.watch(firebaseServiceProvider);
   if (!firebase.isAvailable) {
     _log.w(
@@ -298,8 +298,7 @@ final sourceDeDonneesSentierProvider = Provider<SourceDeDonneesSentier>((ref) {
 });
 
 /// La liste des sentiers publies, lue en base.
-final listeSentiersFirestoreProvider = Provider<ListeSentiersFirestore>(
-  (ref) => ListeSentiersFirestore(
-    firebaseService: ref.watch(firebaseServiceProvider),
-  ),
+final firestoreTrailListProvider = Provider<FirestoreTrailList>(
+  (ref) =>
+      FirestoreTrailList(firebaseService: ref.watch(firebaseServiceProvider)),
 );

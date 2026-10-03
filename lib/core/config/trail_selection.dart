@@ -5,7 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-import '../../features/trail/providers/catalogue_sentiers_provider.dart';
+import '../../features/trail/providers/trail_catalog_provider.dart';
 import 'trail_catalog.dart';
 import 'trail_config.dart';
 
@@ -40,7 +40,7 @@ final selectedTrailIdProvider = StateProvider<String>(
 /// ([catalogueSentiersProvider]). L'acces reste SYNCHRONE et la liste n'est
 /// jamais vide : le catalogue compile est le plancher, rendu immediatement.
 final availableTrailsProvider = Provider<List<TrailConfig>>(
-  (ref) => ref.watch(catalogueSentiersProvider).sentiers,
+  (ref) => ref.watch(catalogueSentiersProvider).trails,
 );
 
 /// Sentier ACTIF resolu depuis la selection + le catalogue.
@@ -60,8 +60,8 @@ final availableTrailsProvider = Provider<List<TrailConfig>>(
 final resolvedTrailConfigProvider = Provider<TrailConfig>((ref) {
   final id = ref.watch(selectedTrailIdProvider);
   final catalogue = ref.watch(availableTrailsProvider);
-  for (final sentier in catalogue) {
-    if (sentier.id == id) return sentier;
+  for (final trail in catalogue) {
+    if (trail.id == id) return trail;
   }
   return catalogue.isNotEmpty ? catalogue.first : TrailCatalog.defaultTrail;
 });

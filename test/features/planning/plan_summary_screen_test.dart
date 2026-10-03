@@ -449,7 +449,7 @@ void main() {
       );
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.telecharger,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.download,
         ),
         findsNothing,
       );

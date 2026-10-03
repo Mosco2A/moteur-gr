@@ -45,7 +45,7 @@ class HubPrepareSection extends StatelessWidget {
         ..._cartesDuCorps(context),
         ..._cartesDuCouchage(context),
         ..._cartesDeLaLogistique(context),
-        ..._cartesDuSac(context),
+        ..._packCards(context),
       ],
     );
   }
@@ -215,7 +215,7 @@ class HubPrepareSection extends StatelessWidget {
   ];
 
   /// Le sac a dos — et, en commentaire, les cartes qui n'y sont plus.
-  List<QuickAccessCard> _cartesDuSac(BuildContext context) => [
+  List<QuickAccessCard> _packCards(BuildContext context) => [
     QuickAccessCard(
       rubrique: RubriqueStepways.sacADos,
       title: t.hub.cards.checklist,

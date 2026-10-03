@@ -224,7 +224,7 @@ void main() {
             'qu est sortie la proposition refusee',
       );
 
-      final conseil = ProgramPlanSearch.planDuSentier(
+      final conseil = ProgramPlanSearch.trailPlan(
         stages: sept,
         level: HikerLevel.confirmed,
         bounds: bornes,
@@ -245,7 +245,7 @@ void main() {
       // rien : le moteur se tait au lieu de pointer une valeur.
       final mur = [stage(1, 40.0, 3000)];
       final bornes = DurationBounds.fromStageCount(mur.length);
-      final conseil = ProgramPlanSearch.planDuSentier(
+      final conseil = ProgramPlanSearch.trailPlan(
         stages: mur,
         level: HikerLevel.beginner,
         bounds: bornes,

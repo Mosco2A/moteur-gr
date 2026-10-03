@@ -90,7 +90,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
             child: AppButton(
               variant: AppButtonVariant.filledTone,
               tone: orange,
-              icon: StepwaysIcons.enregistrer,
+              icon: StepwaysIcons.save,
               iconSize: 22,
               label: t.hub.startCta,
               // Grise (onPressed null) tant que le minimum manque ou pendant le
@@ -258,7 +258,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
     // LE TROISIEME POINT D'ENTREE DE L'ACHAT (tache 614) : le depart. Les deux
     // autres sont le catalogue et la preparation, et tous trois empruntent
     // CETTE fonction — un seul geste, un seul prix, une seule vitrine.
-    await acheterSentier(context, ref, trailId: widget.trailId);
+    await buyTrail(context, ref, trailId: widget.trailId);
   }
 
   /// Dialog de secours « Démarrer quand même ? » (filet Q1). Message adapte :

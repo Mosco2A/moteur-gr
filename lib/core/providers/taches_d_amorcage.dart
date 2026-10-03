@@ -11,7 +11,7 @@ typedef TacheDAmorcage = Future<void> Function();
 ///
 /// CE QUE C'ETAIT. `app_bootstrap_provider.dart`, dans `core/`, importait
 /// `features/safety/presentation/health_info_screen.dart` pour y prendre
-/// `ficheMedicaleFichierProvider` et appeler `garantirExclusion()`. Le socle
+/// `healthInfoFileProvider` et appeler `garantirExclusion()`. Le socle
 /// connaissait donc un ECRAN : la fleche la plus couteuse du depot, puisqu'elle
 /// rend `core/` illisible et inextractible sans la couche presentation d'une
 /// feature (cas K1 du lot 645-05, ECR-23 (a)).

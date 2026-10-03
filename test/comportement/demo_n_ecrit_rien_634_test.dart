@@ -53,7 +53,7 @@ void main() {
     await db.close();
   });
 
-  Future<MonetizationService> service({int etapes = 0}) async {
+  Future<MonetizationService> service({int stages = 0}) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
       walletStore: wallet,
@@ -75,13 +75,13 @@ void main() {
       enDemo: () => enDemo,
     );
     await svc.load();
-    if (etapes > 0) await wallet.credit(etapes);
+    if (stages > 0) await wallet.credit(stages);
     return svc;
   }
 
   group('hors demo, rien ne change — le comportement d origine est intact', () {
     test('un achat finance par le compte passe normalement', () async {
-      final svc = await service(etapes: 20);
+      final svc = await service(stages: 20);
       final resultat = await svc.buyTrail('sentier-payant');
       expect(resultat.status, PurchaseStatusResult.owned);
       expect(await svc.ownsTrail('sentier-payant'), isTrue);
@@ -91,7 +91,7 @@ void main() {
 
   group('en demo, AUCUNE ecriture d argent ni de droit', () {
     test('acheter un sentier est REFUSE, et le refus se DIT', () async {
-      final svc = await service(etapes: 20);
+      final svc = await service(stages: 20);
       enDemo = true;
 
       final resultat = await svc.buyTrail('sentier-payant');
@@ -109,7 +109,7 @@ void main() {
 
     test('et l achat redevient possible en sortant de la demo', () async {
       // La barriere ne casse rien : elle suspend, elle n'ampute pas.
-      final svc = await service(etapes: 20);
+      final svc = await service(stages: 20);
       enDemo = true;
       expect(
         (await svc.buyTrail('sentier-payant')).status,
@@ -165,7 +165,7 @@ void main() {
     test('une demo n EFFACE pas les droits reels du randonneur', () async {
       // Effacer est encore une ecriture. Un randonneur qui possede un sentier
       // doit le retrouver intact en sortant de la demonstration.
-      final svc = await service(etapes: 20);
+      final svc = await service(stages: 20);
       await svc.buyTrail('sentier-payant');
       expect(await svc.ownsTrail('sentier-payant'), isTrue);
 

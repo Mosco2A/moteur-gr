@@ -108,7 +108,7 @@ void main() {
       expect(find.text('Démarrer'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.save,
         ),
         findsOneWidget,
       );
@@ -154,7 +154,7 @@ void main() {
       expect(find.text('Stop'), findsOneWidget);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.enregistrer,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.save,
         ),
         findsOneWidget,
       );
@@ -199,15 +199,15 @@ void main() {
         ),
       );
 
-      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
-      expect(demarrer, findsOneWidget);
-      expect(_backgroundColorOf(tester, demarrer), AppTheme.actionStart);
-      expect(_backgroundColorOf(tester, demarrer), isNot(Colors.green));
+      final start = find.widgetWithText(ElevatedButton, 'Démarrer');
+      expect(start, findsOneWidget);
+      expect(_backgroundColorOf(tester, start), AppTheme.actionStart);
+      expect(_backgroundColorOf(tester, start), isNot(Colors.green));
 
       container.dispose();
     });
 
-    testWidgets('Pause porte actionPause et Stop rougeUrgence en recording', (
+    testWidgets('Pause porte actionPause et Stop emergencyRed en recording', (
       tester,
     ) async {
       final container = ProviderContainer(
@@ -236,7 +236,7 @@ void main() {
       final stop = find.widgetWithText(ElevatedButton, 'Stop');
       expect(_backgroundColorOf(tester, pause), AppTheme.actionPause);
       expect(_backgroundColorOf(tester, pause), isNot(Colors.orange));
-      expect(_backgroundColorOf(tester, stop), AppTheme.rougeUrgence);
+      expect(_backgroundColorOf(tester, stop), AppTheme.emergencyRed);
 
       container.dispose();
     });

@@ -56,7 +56,7 @@ Future<ResumeOrphanChoice?> showResumeOrphanSessionDialog(
           AppButton(
             key: const ValueKey('resume-orphan-abandon'),
             variant: AppButtonVariant.text,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             label: t.trekState.resumeOrphanDialog.abandon,
             isFullWidth: false,
             onPressed: () =>

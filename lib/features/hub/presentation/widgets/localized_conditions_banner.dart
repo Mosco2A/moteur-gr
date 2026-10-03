@@ -138,7 +138,7 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             width: double.infinity,
             child: AppButton(
               variant: AppButtonVariant.outline,
-              icon: StepwaysIcons.meteo,
+              icon: StepwaysIcons.weather,
               iconSize: 18,
               label: t.navPilote.weatherBannerStages,
               onPressed: () => context.push('/trail/$trailId/weather'),
@@ -172,7 +172,7 @@ class LocalizedConditionsBanner extends ConsumerWidget {
       );
     }
     return StepIcon(
-      StepwaysIcons.meteo,
+      StepwaysIcons.weather,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );

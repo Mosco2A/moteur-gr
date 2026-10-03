@@ -76,7 +76,7 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   final config = ref.watch(trailConfigProvider);
 
   // LES TRAVAUX QUE LES FEATURES ONT POSES DEVANT L AMORCAGE (cas K1 du lot
-  // 645-05). Ici se tenait `ref.read(ficheMedicaleFichierProvider)`, pris dans
+  // 645-05). Ici se tenait `ref.read(healthInfoFileProvider)`, pris dans
   // `features/safety/presentation/health_info_screen.dart` : LE SOCLE
   // IMPORTAIT UN ECRAN. La fleche est inversee — l amorcage declare le besoin,
   // la feature s annonce, et c est `main.dart`, au-dessus des deux couches, qui

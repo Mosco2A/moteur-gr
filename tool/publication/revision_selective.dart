@@ -50,12 +50,12 @@ abstract final class RevisionSelective {
 
   /// Familles dont l identite est un simple `id`.
   static const List<String> famillesAIdentifiant = <String>[
-    MorceauxDeSentier.fiche,
-    MorceauxDeSentier.itineraires,
-    MorceauxDeSentier.etapes,
-    MorceauxDeSentier.hebergements,
-    MorceauxDeSentier.pointsDInteret,
-    MorceauxDeSentier.traces,
+    TrailChunks.fiche,
+    TrailChunks.itineraires,
+    TrailChunks.stages,
+    TrailChunks.hebergements,
+    TrailChunks.pointsDInteret,
+    TrailChunks.traces,
   ];
 
   /// Identite d un enregistrement dans sa [famille].
@@ -64,7 +64,7 @@ abstract final class RevisionSelective {
   /// n est alors pas publiable, et l appelant doit le DIRE plutot que de publier
   /// une donnee que personne ne pourra jamais corriger ni retirer.
   static String? identite(String famille, Map<String, dynamic> donnee) {
-    if (famille == MorceauxDeSentier.pointsDeTrace) {
+    if (famille == TrailChunks.pointsDeTrace) {
       final trace = donnee['track_id'];
       final rang = donnee['sequence_index'];
       if (trace is! String || trace.isEmpty || rang is! int) return null;
@@ -152,7 +152,7 @@ abstract final class RevisionSelective {
     final marqueursConserves = <String>[];
     final marqueursPurges = <String>[];
 
-    for (final famille in MorceauxDeSentier.tous) {
+    for (final famille in TrailChunks.tous) {
       final source = _enregistrements(donneesSource[famille]);
       final precedents =
           avant[famille] ?? const <String, Map<String, dynamic>>{};
@@ -224,9 +224,7 @@ abstract final class RevisionSelective {
       }
 
       if (sortie.isEmpty) continue;
-      resultat[famille] = famille == MorceauxDeSentier.fiche
-          ? sortie.first
-          : sortie;
+      resultat[famille] = famille == TrailChunks.fiche ? sortie.first : sortie;
     }
 
     return Recalcul(
@@ -264,7 +262,7 @@ abstract final class RevisionSelective {
     Map<String, dynamic> ancien,
     HorodatageServeur rev,
   ) {
-    if (famille == MorceauxDeSentier.pointsDeTrace) {
+    if (famille == TrailChunks.pointsDeTrace) {
       return <String, dynamic>{
         'track_id': ancien['track_id'],
         'sequence_index': ancien['sequence_index'],
@@ -284,7 +282,7 @@ abstract final class RevisionSelective {
   ) {
     final index = <String, Map<String, Map<String, dynamic>>>{};
     if (publication == null) return index;
-    for (final famille in MorceauxDeSentier.tous) {
+    for (final famille in TrailChunks.tous) {
       final parIdentite = <String, Map<String, dynamic>>{};
       for (final donnee in _enregistrements(publication[famille])) {
         final cle = identite(famille, donnee);
@@ -356,7 +354,7 @@ class EnregistrementSansIdentite implements Exception {
 
   @override
   String toString() {
-    final attendu = famille == MorceauxDeSentier.pointsDeTrace
+    final attendu = famille == TrailChunks.pointsDeTrace
         ? '`track_id` et `sequence_index` (un point de trace n a pas '
               'd identifiant propre, #R8)'
         : 'un `id` non vide';

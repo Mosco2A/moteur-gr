@@ -238,7 +238,7 @@ void main() {
   // LA CAUSE DU REFUS FIRESTORE N'EST PAS TRAITEE ICI, et c'est volontaire : ce
   // lot ferme le SILENCE, pas le refus.
   group('649 — Mon compte finit par dire que ca a rate', () {
-    Widget monCompte(ProviderContainer c) => UncontrolledProviderScope(
+    Widget myAccount(ProviderContainer c) => UncontrolledProviderScope(
       container: c,
       child: TranslationProvider(
         child: MaterialApp.router(
@@ -268,7 +268,7 @@ void main() {
       );
       addTearDown(c.dispose);
 
-      await tester.pumpWidget(monCompte(c));
+      await tester.pumpWidget(myAccount(c));
       await tester.pump();
 
       // AVANT LE DELAI, RIEN NE CHANGE : c'est le meme rond qu'avant, et une
@@ -276,7 +276,7 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsWidgets);
       expect(find.byKey(const ValueKey('compte-echec-attente')), findsNothing);
 
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
 
       expect(
@@ -300,8 +300,8 @@ void main() {
       );
       addTearDown(c.dispose);
 
-      await tester.pumpWidget(monCompte(c));
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pumpWidget(myAccount(c));
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
 
       await tester.tap(find.byKey(const ValueKey('compte-reessayer')));
@@ -315,7 +315,7 @@ void main() {
 
       // ET LE MINUTEUR EST REARME : un second echec se dit aussi, sinon
       // « Reessayer » rendrait le silence d'origine.
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
       expect(
         find.byKey(const ValueKey('compte-echec-attente')),

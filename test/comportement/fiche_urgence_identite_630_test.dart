@@ -57,10 +57,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/services/exclusion_sauvegarde_icloud.dart';
 import 'package:moteur_gr/core/services/sauvegarde_systeme.dart';
 import 'package:moteur_gr/features/safety/data/emergency_contacts_service.dart';
-import 'package:moteur_gr/features/safety/data/fiche_medicale_fichier.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/data/lockscreen_widget_service.dart';
-import 'package:moteur_gr/features/safety/data/prise_photo_carte.dart';
+import 'package:moteur_gr/features/safety/data/card_photo_capture.dart';
 import 'package:moteur_gr/features/safety/domain/health_bounds.dart';
 import 'package:moteur_gr/features/safety/domain/models/emergency_contact.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
@@ -135,14 +135,14 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late Directory bac;
-  late FicheMedicaleFichier fichier;
+  late HealthInfoFile fichier;
   late HealthInfoRepository repo;
   late _NatifEspion natif;
 
   setUp(() {
     bac = Directory.systemTemp.createTempSync('fiche630');
     natif = _NatifEspion()..brancher();
-    fichier = FicheMedicaleFichier(
+    fichier = HealthInfoFile(
       dossierApplicatif: () async => bac,
       // LA CIBLE IPHONE EST FORCEE : la suite tourne sur une machine de
       // developpement, ou `Platform.isIOS` est faux. Sans ce forcage, les
@@ -252,7 +252,7 @@ void main() {
       // Au depart : le 112 seul. C est EXACTEMENT ce que voyait Christophe.
       expect(service.getContacts().where((c) => !c.isAutomatic), isEmpty);
 
-      service.chargerDepuisLaFiche(laFicheComplete.emergencyContacts);
+      service.loadFromSheet(laFicheComplete.emergencyContacts);
       final perso = service.getContacts().where((c) => !c.isAutomatic).toList();
       expect(perso, hasLength(1));
       expect(perso.single.name, 'Marie Mosconi');
@@ -260,7 +260,7 @@ void main() {
       // ET IL REMPLACE, IL NE FUSIONNE PAS : un contact retire de la fiche ne
       // doit pas survivre dans le service, sinon un numero perime reste sur
       // l ecran verrouille d un blesse.
-      service.chargerDepuisLaFiche(const []);
+      service.loadFromSheet(const []);
       expect(service.getContacts().where((c) => !c.isAutomatic), isEmpty);
     });
   });
@@ -314,7 +314,7 @@ void main() {
         // telephone de Christophe.
         final f = File(
           '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-          '${FicheMedicaleFichier.nomFichier}',
+          '${HealthInfoFile.nomFichier}',
         );
         f.parent.createSync(recursive: true);
         f.writeAsStringSync(
@@ -352,7 +352,7 @@ void main() {
       () async {
         final f = File(
           '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-          '${FicheMedicaleFichier.nomFichier}',
+          '${HealthInfoFile.nomFichier}',
         );
         f.parent.createSync(recursive: true);
         f.writeAsStringSync(
@@ -390,7 +390,7 @@ void main() {
   group('630 — ce qu un secouriste lit SANS DEVERROUILLER', () {
     LockscreenWidgetService serviceAvec(HealthInfo fiche) {
       final contacts = EmergencyContactsService()
-        ..chargerDepuisLaFiche(fiche.emergencyContacts);
+        ..loadFromSheet(fiche.emergencyContacts);
       return LockscreenWidgetService(
         contactsService: contacts,
         trailName: 'Mare a Mare Centre',
@@ -505,14 +505,11 @@ void main() {
     test(
       'elles atterrissent dans le dossier de la fiche, pas ailleurs',
       () async {
-        await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale,
-          _photo,
-        );
+        await fichier.saveCard(HealthInfoFile.nomCarteVitale, _photo);
 
         final image = File(
           '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-          '${FicheMedicaleFichier.nomCarteVitale}',
+          '${HealthInfoFile.nomCarteVitale}',
         );
         expect(image.existsSync(), isTrue);
         expect(image.lengthSync(), _photo.length);
@@ -552,15 +549,12 @@ void main() {
     test('l exclusion iCloud est posee sur le temporaire AVANT le renommage et '
         'sur le fichier final APRES', () async {
       natif.oublier();
-      await fichier.enregistrerCarte(
-        FicheMedicaleFichier.nomCarteVitale,
-        _photo,
-      );
+      await fichier.saveCard(HealthInfoFile.nomCarteVitale, _photo);
 
       final chemin =
           '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-          '${FicheMedicaleFichier.nomCarteVitale}';
-      final temporaire = '$chemin${FicheMedicaleFichier.suffixeTemporaire}';
+          '${HealthInfoFile.nomCarteVitale}';
+      final temporaire = '$chemin${HealthInfoFile.suffixeTemporaire}';
 
       // LE TEMPORAIRE : l image est deja sur le disque quand on l exclut, sinon
       // il existe une fenetre ou une carte Vitale est en clair sans attribut.
@@ -597,18 +591,12 @@ void main() {
     test('effacer la fiche emporte les DEUX photos', () async {
       await repo.save(
         laFicheComplete.copyWith(
-          carteVitaleFichier: FicheMedicaleFichier.nomCarteVitale,
-          carteMutuelleFichier: FicheMedicaleFichier.nomCarteMutuelle,
+          carteVitaleFichier: HealthInfoFile.nomCarteVitale,
+          carteMutuelleFichier: HealthInfoFile.nomCarteMutuelle,
         ),
       );
-      await fichier.enregistrerCarte(
-        FicheMedicaleFichier.nomCarteVitale,
-        _photo,
-      );
-      await fichier.enregistrerCarte(
-        FicheMedicaleFichier.nomCarteMutuelle,
-        _photo,
-      );
+      await fichier.saveCard(HealthInfoFile.nomCarteVitale, _photo);
+      await fichier.saveCard(HealthInfoFile.nomCarteMutuelle, _photo);
 
       final dossier = Directory(
         '${bac.path}/${SauvegardeSysteme.dossierExclu}',
@@ -627,13 +615,10 @@ void main() {
       'garantirExclusion repose l attribut sur des photos deja presentes',
       () async {
         // Le cas du randonneur qui a photographie sa carte avec la version
-        // precedente puis met a jour : `enregistrerCarte` ne repassera jamais, et
+        // precedente puis met a jour : `saveCard` ne repassera jamais, et
         // sans cette reprise l image resterait dans iCloud pour toujours. Meme
         // raisonnement que la tache 615 pour la fiche elle-meme.
-        await fichier.enregistrerCarte(
-          FicheMedicaleFichier.nomCarteVitale,
-          _photo,
-        );
+        await fichier.saveCard(HealthInfoFile.nomCarteVitale, _photo);
         natif.oublier();
 
         await fichier.garantirExclusion();
@@ -641,7 +626,7 @@ void main() {
         expect(
           natif.exclusionsDe(
             '${bac.path}/${SauvegardeSysteme.dossierExclu}/'
-            '${FicheMedicaleFichier.nomCarteVitale}',
+            '${HealthInfoFile.nomCarteVitale}',
           ),
           isNotEmpty,
         );
@@ -653,16 +638,16 @@ void main() {
       // dossier protege une chaine choisie par le systeme. Deux noms fixes,
       // jamais plus.
       expect(
-        () => fichier.fichierCarte('../../ailleurs.jpg'),
+        () => fichier.cardFile('../../ailleurs.jpg'),
         throwsA(isA<ArgumentError>()),
       );
-      expect(FicheMedicaleFichier.nomsCartes, hasLength(2));
+      expect(HealthInfoFile.mapNames, hasLength(2));
     });
 
     test('la fiche sait qu elle porte une carte', () {
-      expect(const HealthInfo().aUneCarte, isFalse);
+      expect(const HealthInfo().hasCard, isFalse);
       expect(
-        const HealthInfo(carteVitaleFichier: 'carte_vitale.jpg').aUneCarte,
+        const HealthInfo(carteVitaleFichier: 'carte_vitale.jpg').hasCard,
         isTrue,
       );
     });
@@ -674,13 +659,13 @@ void main() {
       // Les confondre ferait dire « impossible de prendre la photo » a quelqu un
       // qui a simplement appuye sur Annuler — et traiterait un droit (refuser
       // l acces a son appareil photo) comme un incident.
-      expect(const ResultatPhotoCarte.refus().issue, IssuePhotoCarte.refus);
-      expect(const ResultatPhotoCarte.annule().issue, IssuePhotoCarte.annule);
-      expect(const ResultatPhotoCarte.echec().issue, IssuePhotoCarte.echec);
+      expect(const CardPhotoResult.refus().issue, CardPhotoOutcome.refus);
+      expect(const CardPhotoResult.annule().issue, CardPhotoOutcome.annule);
+      expect(const CardPhotoResult.echec().issue, CardPhotoOutcome.echec);
 
-      expect(const ResultatPhotoCarte.refus().aUneImage, isFalse);
-      expect(const ResultatPhotoCarte.annule().aUneImage, isFalse);
-      expect(ResultatPhotoCarte.reussite(_photo).aUneImage, isTrue);
+      expect(const CardPhotoResult.refus().aUneImage, isFalse);
+      expect(const CardPhotoResult.annule().aUneImage, isFalse);
+      expect(CardPhotoResult.reussite(_photo).aUneImage, isTrue);
     });
 
     test('la resolution retenue reste lisible par un humain et bornee', () {
@@ -689,9 +674,9 @@ void main() {
       // La borne retenue laisse une marge sur le texte le plus petit d une carte
       // sans jamais approcher les 12 millions de pixels d un capteur moderne.
       const pixelsA300ppp = 85.6 / 25.4 * 300;
-      expect(kLargeurMaxCarte, greaterThan(pixelsA300ppp));
-      expect(kLargeurMaxCarte, lessThanOrEqualTo(2000));
-      expect(kQualiteJpegCarte, inInclusiveRange(70, 90));
+      expect(kCardMaxWidth, greaterThan(pixelsA300ppp));
+      expect(kCardMaxWidth, lessThanOrEqualTo(2000));
+      expect(kCardJpegQuality, inInclusiveRange(70, 90));
     });
   });
 
@@ -704,7 +689,7 @@ void main() {
       // invariante relit la source du modele et du stockage.
       for (final chemin in [
         'lib/features/safety/domain/models/health_info.dart',
-        'lib/features/safety/data/fiche_medicale_fichier.dart',
+        'lib/features/safety/data/health_info_file.dart',
         'lib/features/safety/data/health_info_repository.dart',
       ]) {
         final source = File(chemin).readAsStringSync();

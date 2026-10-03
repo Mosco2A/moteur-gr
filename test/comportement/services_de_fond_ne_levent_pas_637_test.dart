@@ -98,7 +98,7 @@ void main() {
       // donc un `ErrorWidget` a la place de TOUTE l'application — le rectangle
       // noir de Christophe. Ce test protege aussi le prochain service qu'on
       // ajoutera a cette garde.
-      RefusSauvegardeSystemeDialog.reinitialiserLeVerrou();
+      RefusSauvegardeSystemeDialog.resetLock();
       await monterAppliReelle(
         tester,
         etat: EtatAppli.enRoute,

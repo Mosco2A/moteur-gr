@@ -68,10 +68,10 @@ const String kSyncErrorDocumentNonAutorise = 'document_coffre_non_autorise';
 /// pas concerne par celle du 28/09 — les deux sujets sont distincts.
 abstract final class DocumentsDuCoffreDistant {
   /// Profil (pseudonyme + avatar) et solde d'etapes. AUCUNE donnee de sante.
-  static const String compte = 'account';
+  static const String account = 'account';
 
   /// La liste fermee elle-meme. Tout ce qui n'y est pas est refuse.
-  static const Set<String> autorises = {compte};
+  static const Set<String> autorises = {account};
 
   /// Vrai si [docKey] peut etre transporte vers le coffre distant.
   static bool autorise(String docKey) => autorises.contains(docKey);
