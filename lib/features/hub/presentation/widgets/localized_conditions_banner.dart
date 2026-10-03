@@ -13,10 +13,13 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../weather/models/weather_forecast.dart';
 import '../../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
-import '../../../weather/providers/current_stage_provider.dart';
-import '../../../weather/providers/fire_risk_providers.dart'
-    show FireRiskDay, trailFireRiskProvider;
-import '../../../weather/providers/weather_providers.dart';
+import '../../../weather/weather_facade.dart'
+    show
+        FireRiskDay,
+        WeatherStageParams,
+        localizedStageNumberProvider,
+        stageWeatherProvider,
+        trailFireRiskProvider;
 import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 import '../../../../core/branding/stepways_icons.dart';
 
