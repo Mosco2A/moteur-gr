@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/contextual_actions_provider.dart';
@@ -56,6 +57,12 @@ class MyTreksScreen extends ConsumerStatefulWidget {
 class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
     with ContextualActionsMixin {
   /// Barre contextuelle de l'accueil maison (SPEC §4) : Découvrir / Mon compte.
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.myTreks);
+  }
+
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
     // Q2 (tache 568) — `push` ET NON `go`. Le `go` REMPLACAIT la pile : une
