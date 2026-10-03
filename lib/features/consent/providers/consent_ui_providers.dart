@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
-import '../../feasibility/providers/hiker_profile_provider.dart';
+import '../../feasibility/feasibility_facade.dart' show hikerProfileProvider;
 
 /// Etat de consentement de TOUTES les finalites (lecture reactive).
 ///

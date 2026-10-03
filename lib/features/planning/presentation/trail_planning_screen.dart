@@ -11,7 +11,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../feasibility/providers/trek_feasibility_provider.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show feasibilityAssessmentProvider;
 import '../../hub/hub_facade.dart' show PrepCoreStep, prepareCoreStepsProvider;
 import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
