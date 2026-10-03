@@ -28,7 +28,7 @@ import '../../journal/journal_facade.dart'
         journalCumulativeStatsProvider,
         journalDayTraceProvider,
         journalRepositoryProvider;
-import '../../map/providers/stage_poi_check_provider.dart';
+import '../../map/map_facade.dart' show stagePoiChecksProvider;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
 import '../../planning/planning_facade.dart'

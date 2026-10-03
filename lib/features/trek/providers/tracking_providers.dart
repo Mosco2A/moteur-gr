@@ -11,7 +11,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
-import '../../map/providers/track_position_provider.dart';
+import '../../map/map_facade.dart' show stageDistanceCoveredProvider;
 // TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
 // diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
 // relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie

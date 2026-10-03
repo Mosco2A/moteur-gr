@@ -10,7 +10,7 @@ import '../../../../../i18n/translations.g.dart';
 import '../../../../../shared/widgets/app_button.dart';
 import '../../../../../shared/widgets/app_data_stat.dart';
 import '../../../../../shared/widgets/background_tracking_rationale_dialog.dart';
-import '../../../../map/providers/track_position_provider.dart';
+import '../../../../map/map_facade.dart' show stageDistanceCoveredProvider;
 import '../../../providers/tracking_providers.dart';
 import '../../../../../core/branding/stepways_icons.dart';
 

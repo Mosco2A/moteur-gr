@@ -10,7 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
-import '../../map/providers/location_provider.dart';
+import '../../map/map_facade.dart' show locationProvider;
 import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_providers.dart';

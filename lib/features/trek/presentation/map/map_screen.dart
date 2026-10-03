@@ -27,13 +27,17 @@ import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
 import '../../../journal/journal_facade.dart' show journalScreenProvider;
 import '../../../map/domain/stage_focus.dart';
-import '../../../map/providers/gpx_track_provider.dart';
-import '../../../map/providers/location_provider.dart';
-import '../../../map/providers/map_pois_provider.dart';
-import '../../../map/providers/off_track_provider.dart';
-import '../../../map/providers/simplified_track_provider.dart';
-import '../../../map/providers/supply_alert_provider.dart';
-import '../../../map/providers/track_position_provider.dart';
+import '../../../map/map_facade.dart'
+    show
+        OffTrackMessages,
+        gpxTrackProvider,
+        locationProvider,
+        mapPoisProvider,
+        offTrackMessagesProvider,
+        simplifiedTrackProvider,
+        stageDistanceCoveredProvider,
+        supplyGapAlertProvider,
+        trackPositionProvider;
 import '../../../map/widgets/map_guide_sheet.dart';
 import '../../../map/widgets/off_track_banner.dart';
 import '../../../map/widgets/poi_filter_bar.dart';
