@@ -16,8 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/data_retention_service.dart';
 import '../../../core/services/recovery_code_service.dart';
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
 import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/consent_facade.dart'

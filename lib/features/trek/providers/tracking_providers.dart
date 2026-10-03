@@ -17,8 +17,7 @@ import '../../map/providers/track_position_provider.dart';
 // relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
 // (cf. `_finalize`). Sens unique : `adventure_recap_provider` n'importe pas ce
 // fichier, aucun cycle d'import.
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
 // TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
 // et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
 // fichier, aucun cycle d'import.

@@ -27,8 +27,14 @@ import '../domain/diploma_pdf_service.dart';
 import '../domain/finisher_number.dart';
 import '../providers/session_trace_provider.dart';
 import 'widgets/session_trace_painter.dart';
-import '../../after/providers/adventure_recap_provider.dart';
-import '../../after/providers/in_app_review_provider.dart';
+import '../../after/after_facade.dart'
+    show
+        AdventureStats,
+        adventureCongratulationsProvider,
+        adventureStatsProvider,
+        inAppReviewServiceProvider,
+        isDiplomaUnlockedProvider,
+        latestTrekSessionProvider;
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/services/session_demo.dart';
 

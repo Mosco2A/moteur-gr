@@ -4,8 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
 import '../../trek/providers/tracking_providers.dart';
 import '../domain/trek_edit_lock.dart';
 
