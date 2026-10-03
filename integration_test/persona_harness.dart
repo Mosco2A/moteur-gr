@@ -49,7 +49,20 @@ late IntegrationTestWidgetsFlutterBinding kBinding;
 const Duration kObserve = Duration(milliseconds: 900);
 
 /// Delai laisse au DEMON host-side pour faire `adb screencap` apres le marqueur.
-const Duration kShotWait = Duration(milliseconds: 700);
+///
+/// PORTE DE 700 A 3000 ms A LA TACHE 665, ET VOICI LE CHIFFRE QUI LE JUSTIFIE.
+/// Un `adb exec-out screencap` mesure sur l'emulateur coute 327 ms en median et
+/// jusqu'a 764 ms en pointe (run S5 du 03/10) — et bien plus quand la carte GL
+/// occupe le GPU. A 700 ms, l'intervalle entre deux marqueurs (kObserve 900 +
+/// kShotWait 700 = 1,6 s) laissait moins du double du cout d'une capture : le
+/// moindre ralentissement faisait partir la capture APRES que le harnais avait
+/// rendu la main, et l'image montrait L'ECRAN SUIVANT. C'est le defaut trouve au
+/// lot 645-05b (memoire #101082), ou plusieurs captures d'ecrans differents
+/// portaient le meme contenu. A 3000 ms, l'intervalle est de 3,9 s, soit cinq
+/// fois le cout de pointe mesure. Le prix est du temps de run (3 s par capture,
+/// soit ~2 min de plus sur les 52 captures de S1) ; il est paye volontiers pour
+/// des images qui disent la verite.
+const Duration kShotWait = Duration(milliseconds: 3000);
 
 /// Plafond du drain des futures de polices (voir [_drainFontFutures]).
 ///

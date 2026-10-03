@@ -1,0 +1,17 @@
+# PAIRES DE CAPTURES PERSONA LEGITIMEMENT IDENTIQUES (tache 665).
+#
+# Le controle de fin de run (`tool/persona_shot_check.py`) refuse un run ou deux
+# marqueurs DIFFERENTS rendent une image au contenu identique : c'est la
+# signature du retard de capture (l'image d'un ecran servie pour un autre), le
+# defaut trouve au 645-05b (memoire #101082).
+#
+# Mais deux captures d'un MEME ecran peuvent etre identiques pour de bonnes
+# raisons : une action sans effet visible, un ecran deja dans l'etat attendu.
+# Ces paires-la se declarent ICI, UNE PAR UNE, avec leur raison. Rien n'est
+# tolere par defaut, et une tolerance sans raison ecrite n'a pas lieu d'etre :
+# la lever oblige a regarder l'image, ce qui est exactement le but.
+#
+# Format : <marqueur_a> <marqueur_b>  # pourquoi ces deux-la sont identiques
+# Exemple : S1_Lea_accueil S1_Lea_accueil_apres_retour  # retour sur un ecran inchange
+#
+# (aucune tolerance declaree a ce jour)
