@@ -109,7 +109,6 @@ class _NuiteeCardRow extends StatelessWidget {
     required this.availableTypes,
     required this.onNuiteeTypeChanged,
     required this.accommodationCount,
-    super.key,
   });
 
   /// « J3 » ou le libelle de la veille du depart.
@@ -174,11 +173,7 @@ class _NuiteeCardRow extends StatelessWidget {
 
 /// Le badge du numero de jour, a gauche de la carte.
 class _NuiteeDayBadge extends StatelessWidget {
-  const _NuiteeDayBadge({
-    required this.dayLabel,
-    required this.isBooked,
-    super.key,
-  });
+  const _NuiteeDayBadge({required this.dayLabel, required this.isBooked});
 
   /// « J3 » ou le libelle de la veille du depart.
   final String dayLabel;
@@ -224,7 +219,6 @@ class _NuiteeHeadline extends StatelessWidget {
     required this.isRestDay,
     required this.isEveOfDeparture,
     required this.nuiteeType,
-    super.key,
   });
 
   /// Le nom du lieu de couchage, ou le libelle « aucun lieu ».

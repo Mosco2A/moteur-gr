@@ -26,6 +26,47 @@ class HubCockpitTop extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const _HubAdStateMark(),
+        _HubTrekBlock(trailId: trailId),
+
+        // --- LE JOURNAL N'EXISTE PAS EN PHASE PREPARATION (tache 558) ---
+        //
+        // Decision de Chris, mot pour mot : « MAIS JOURNAL CE N'est JUSTE
+        // PAS DU TOUT EN PHASE PREPARER. En rando pour le rempli, en
+        // postrando pour le remplir et le lire ». La carte etait ICI, en
+        // tete du cockpit, AU-DESSUS de « Preparer ».
+        //
+        // DEUX ERREURS EMPILEES, corrigees ensemble. La premiere : montrer
+        // le journal en PREPARATION, ou un carnet de randonnee n'a rien a
+        // dire — il est vide, et il le restera jusqu'au depart. La seconde,
+        // qui aggravait la premiere : le poser tout en haut, donc avant la
+        // preparation, qui est le seul travail du moment. « Atteignable
+        // dans les trois phases » n'etait pas une vertu en soi.
+        //
+        // CE QUE DEVIENT L'ACCES REPARE EN R10 / LOT L10 : son intention
+        // reste tenue — le journal n'est jamais inatteignable alors que la
+        // fonction est entiere — mais le vrai trou de R10 etait
+        // l'APRES-TREK, pas la preparation. Le journal vit donc la ou on
+        // l'ECRIT et la ou on le RELIT : dans la section « Randonner »
+        // pendant la rando (place de la reference), et en carte autonome
+        // apres le trek, la ou cette section n'existe plus. UNE SEULE carte
+        // a l'ecran a tout instant : les deux emplacements s'excluent par
+        // construction (`showHike` et `showAfter` ne sont jamais vrais
+        // ensemble).
+      ],
+    );
+  }
+}
+
+/// La marque de l'etat publicitaire de la preparation, en une ligne.
+class _HubAdStateMark extends StatelessWidget {
+  const _HubAdStateMark();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         // L'ETAT PUBLICITAIRE DE LA PREPARATION, EN UNE LIGNE
         // (tache 639 avenant, DEM-260930-1241).
         //
@@ -44,6 +85,23 @@ class HubCockpitTop extends StatelessWidget {
         // de ce que la regie a rendu : deux choses, deux endroits.
         const BandeauEtatPublicite(),
         const SizedBox(height: AppTheme.spacingSm),
+      ],
+    );
+  }
+}
+
+/// Le compte-etapes, la carte du trek et la porte d'achat du cockpit.
+class _HubTrekBlock extends StatelessWidget {
+  const _HubTrekBlock({required this.trailId});
+
+  /// L'identifiant du sentier courant, pose dans la porte d'achat.
+  final String trailId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour,
         // randonneur » + nom du sentier (HubHeader) a ete RETIRE : il faisait
         // DOUBLON avec le titre du sentier deja affiche dans l'AppBar juste
@@ -93,31 +151,6 @@ class HubCockpitTop extends StatelessWidget {
         // du trek, et il s'efface de lui-meme des que le sentier est acquis.
         HubBuyTrekButton(trailId: trailId),
         const SizedBox(height: AppTheme.spacingSm),
-
-        // --- LE JOURNAL N'EXISTE PAS EN PHASE PREPARATION (tache 558) ---
-        //
-        // Decision de Chris, mot pour mot : « MAIS JOURNAL CE N'est JUSTE
-        // PAS DU TOUT EN PHASE PREPARER. En rando pour le rempli, en
-        // postrando pour le remplir et le lire ». La carte etait ICI, en
-        // tete du cockpit, AU-DESSUS de « Preparer ».
-        //
-        // DEUX ERREURS EMPILEES, corrigees ensemble. La premiere : montrer
-        // le journal en PREPARATION, ou un carnet de randonnee n'a rien a
-        // dire — il est vide, et il le restera jusqu'au depart. La seconde,
-        // qui aggravait la premiere : le poser tout en haut, donc avant la
-        // preparation, qui est le seul travail du moment. « Atteignable
-        // dans les trois phases » n'etait pas une vertu en soi.
-        //
-        // CE QUE DEVIENT L'ACCES REPARE EN R10 / LOT L10 : son intention
-        // reste tenue — le journal n'est jamais inatteignable alors que la
-        // fonction est entiere — mais le vrai trou de R10 etait
-        // l'APRES-TREK, pas la preparation. Le journal vit donc la ou on
-        // l'ECRIT et la ou on le RELIT : dans la section « Randonner »
-        // pendant la rando (place de la reference), et en carte autonome
-        // apres le trek, la ou cette section n'existe plus. UNE SEULE carte
-        // a l'ecran a tout instant : les deux emplacements s'excluent par
-        // construction (`showHike` et `showAfter` ne sont jamais vrais
-        // ensemble).
       ],
     );
   }

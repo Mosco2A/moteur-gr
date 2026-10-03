@@ -200,7 +200,6 @@ class _NuiteeTypeChip extends StatelessWidget {
     required this.type,
     required this.isSelected,
     required this.onTap,
-    super.key,
   });
 
   /// Le type que cette puce propose.
@@ -246,11 +245,7 @@ class _NuiteeTypeChip extends StatelessWidget {
 
 /// L'icone et le libelle d'une puce de type.
 class _NuiteeTypeChipLabel extends StatelessWidget {
-  const _NuiteeTypeChipLabel({
-    required this.type,
-    required this.isSelected,
-    super.key,
-  });
+  const _NuiteeTypeChipLabel({required this.type, required this.isSelected});
 
   /// Le type que la puce propose.
   final NuiteeType type;

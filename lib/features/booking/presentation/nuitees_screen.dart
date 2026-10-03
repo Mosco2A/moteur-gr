@@ -5,7 +5,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -14,7 +13,6 @@ import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../domain/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
-import '../../../shared/widgets/lien_vers_les_cartes.dart';
 import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';

@@ -137,6 +137,14 @@ class HubScreen extends ConsumerStatefulWidget {
 // la raison de geometrie ci-dessus — mais ailleurs, un randonneur qui
 // marche un sentier GRATUIT verra de la publicite, et c'est assume : voir
 // `shouldShowBannerProvider`, qui porte la raison en entier.
+// OUVRIR UN SENTIER, C EST DEMANDER CE QUI A CHANGE DESSUS (tache 641).
+//
+// « Je veux que l'application vienne mettre a jour ses donnees a cette
+// source » (Christophe, 30/09 11:54). Cet ecran est la porte d'entree du
+// sentier : les rubriques qu'il ouvre — transport, ravitaillement, nuitees,
+// etapes — sont precisement celles que Christophe a trouvees vides. La mise
+// a jour part ICI, en arriere-plan, sans rien faire attendre : la copie
+// locale est deja affichee, la base la complete quand elle repond.
 class _HubScreenState extends ConsumerState<HubScreen> {
   // Retour Chris #13 (LOT 2) : le menu du cockpit est CONTEXTUEL a l'etat du
   // trek (DECISIONS.md §5.2, accueil « maison »/« terrain »). La PHASE est
@@ -176,14 +184,6 @@ class _HubScreenState extends ConsumerState<HubScreen> {
     );
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
 
-    // OUVRIR UN SENTIER, C EST DEMANDER CE QUI A CHANGE DESSUS (tache 641).
-    //
-    // « Je veux que l'application vienne mettre a jour ses donnees a cette
-    // source » (Christophe, 30/09 11:54). Cet ecran est la porte d'entree du
-    // sentier : les rubriques qu'il ouvre — transport, ravitaillement, nuitees,
-    // etapes — sont precisement celles que Christophe a trouvees vides. La mise
-    // a jour part ICI, en arriere-plan, sans rien faire attendre : la copie
-    // locale est deja affichee, la base la complete quand elle repond.
     ref.watch(miseAJourAlOuvertureProvider(trailId));
 
     final phase = _phaseCourante();
