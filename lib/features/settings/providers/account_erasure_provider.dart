@@ -38,8 +38,7 @@ import '../../safety/providers/health_prepare_providers.dart'
     show healthPrepareStepsProvider;
 import '../../share/providers/visibility_settings_provider.dart';
 import '../../trail/providers/progress_provider.dart';
-import '../../training/providers/training_plan_providers.dart'
-    show trainingProgressProvider;
+import '../../training/training_facade.dart' show trainingProgressProvider;
 import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
 
 /// Service de retention / droit a l'effacement, branche sur la base REELLE de
