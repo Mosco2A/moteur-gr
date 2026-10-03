@@ -103,9 +103,9 @@ void main() {
       // de faisabilite (bouton « Generer mon programme ») et le provider sur
       // lequel le curseur du Programme s'ouvre. Les deux doivent lire la duree du
       // PLAN.
-      final ecran = File(
+      final ecran = _sourceAvecSesParts(
         'lib/features/feasibility/presentation/trek_feasibility_screen.dart',
-      ).readAsStringSync();
+      );
       expect(ecran, contains('assessment.suggestedPlanDays'));
       expect(
         ecran,
@@ -256,4 +256,26 @@ void main() {
       }
     });
   });
+}
+
+/// Lit une bibliotheque de `lib/` ET ses fichiers `part`, dans l ordre des
+/// directives.
+///
+/// LOT 645-06, VAGUE 2 : les plus gros fichiers de `lib/` ont ete scindes en
+/// `part` du MEME dossier. Le code mesure ici est le meme, au caractere pres —
+/// il vit juste dans plusieurs fichiers d une seule bibliotheque. On les
+/// recolle donc dans l ordre declare, ce qui preserve aussi l ordre des lignes
+/// dont dependent les mesures de position. Seule la LECTURE change ; aucune
+/// attente de ces tests n a ete touchee.
+String _sourceAvecSesParts(String chemin) {
+  final racine = File(chemin).readAsStringSync();
+  final dossier = chemin.substring(0, chemin.lastIndexOf('/'));
+  final parts = RegExp(r"^part '([^']+)';", multiLine: true)
+      .allMatches(racine)
+      .map((m) => m.group(1)!)
+      .where((n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'));
+  return [
+    racine,
+    for (final n in parts) File('$dossier/$n').readAsStringSync(),
+  ].join('\n');
 }
