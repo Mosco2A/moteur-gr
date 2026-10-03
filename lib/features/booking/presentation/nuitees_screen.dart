@@ -439,7 +439,6 @@ class _NuiteeCard extends ConsumerWidget {
   final void Function(NuiteeType) onNuiteeTypeChanged;
 
   @override
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
