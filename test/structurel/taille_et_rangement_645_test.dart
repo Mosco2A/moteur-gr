@@ -66,7 +66,14 @@ const plafondDartSousDocs = 2;
 /// CODE serait exactement le defaut que la garde existe pour attraper. Il ne se
 /// monte que sur une cause mesuree et nommee, comme ici — et il ne redescendra
 /// que par un decoupage.
-const plafondFichiersTropLongs = 52;
+///
+/// ABAISSE A 51 LE 03/10/2026 (lot 645-06, vague 1) : « il ne redescendra que
+/// par un decoupage », et c'est un decoupage. `hub_screen.dart` est passe de
+/// 795 a 253 lignes, ses six sous-widgets nommes tenant chacun dans un fichier
+/// sous le plafond. Les quatre autres ecrans de la vague ont vu leur `build()`
+/// decoupee sans que leur fichier repasse sous 500 : c'est la vague 2 qui s'en
+/// charge. UN fichier de moins au-dela du plafond, donc 52 -> 51.
+const plafondFichiersTropLongs = 51;
 
 /// Le plafond de lignes d'un fichier source (ECR-15).
 const maximumLignesParFichier = 500;
