@@ -108,7 +108,7 @@ dependencies:
 
   # --- Background & Batterie ---
   flutter_local_notifications: ^18.0.0
-  battery_plus: ^6.0.0
+  battery_plus: ^7.1.2
   timezone: ^0.10.0
   # Capture GPS de fond fiabilisee (re-portage socle) : heberge un isolate
   # dedie @pragma('vm:entry-point') qui capture la position ecran eteint via un
