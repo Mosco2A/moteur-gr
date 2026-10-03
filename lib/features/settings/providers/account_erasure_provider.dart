@@ -20,7 +20,8 @@ import '../../after/providers/adventure_recap_provider.dart'
     show latestTrekSessionProvider;
 import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
-import '../../consent/providers/consent_ui_providers.dart';
+import '../../consent/consent_facade.dart'
+    show consentPromptNeededProvider, consentStatesProvider;
 import '../../feasibility/data/hiker_profile_repository.dart';
 import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
 import '../../journal/providers/journal_day_providers.dart';

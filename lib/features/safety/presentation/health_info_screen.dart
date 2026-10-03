@@ -48,7 +48,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../consent/providers/consent_ui_providers.dart';
+import '../../consent/consent_facade.dart' show consentControllerProvider;
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
