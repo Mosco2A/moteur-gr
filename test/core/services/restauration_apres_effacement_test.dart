@@ -233,7 +233,7 @@ void main() {
         final restore = makeRestore();
 
         final cloud = await restore.restoreFromCloud('hash-anon');
-        final profil = await makeRestore(
+        final profile = await makeRestore(
           consent: (_) async => true,
         ).restoreHikerProfile('hash-anon');
         final check = await restore.checkAndRestore('hash-anon');
@@ -241,7 +241,7 @@ void main() {
         // Firestore n'est pas joignable en test : on n'exige pas un succes, on
         // exige que l'effacement ne soit PAS la raison de l'echec.
         expect(cloud.error, isNot(kRestoreErrorErasedLocally));
-        expect(profil.error, isNot(kRestoreErrorErasedLocally));
+        expect(profile.error, isNot(kRestoreErrorErasedLocally));
         expect(check.erasedLocally, isFalse);
       });
 

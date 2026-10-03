@@ -982,7 +982,7 @@ void main() {
     // verrait aucune question posee. En production c'est le comportement voulu
     // (la question EST en train d'etre posee) ; dans une suite de tests, c'est une
     // fuite d'etat, et elle se soigne ici.
-    setUp(RefusSauvegardeSystemeDialog.reinitialiserLeVerrou);
+    setUp(RefusSauvegardeSystemeDialog.resetLock);
 
     Widget appli(Widget corps) => ProviderScope(
       child: MaterialApp(home: BackupConsentGate(child: corps)),

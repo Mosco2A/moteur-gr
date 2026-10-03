@@ -258,7 +258,7 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
     // LE TROISIEME POINT D'ENTREE DE L'ACHAT (tache 614) : le depart. Les deux
     // autres sont le catalogue et la preparation, et tous trois empruntent
     // CETTE fonction — un seul geste, un seul prix, une seule vitrine.
-    await acheterSentier(context, ref, trailId: widget.trailId);
+    await buyTrail(context, ref, trailId: widget.trailId);
   }
 
   /// Dialog de secours « Démarrer quand même ? » (filet Q1). Message adapte :

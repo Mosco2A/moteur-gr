@@ -320,7 +320,7 @@ abstract class TrailManifestSheet with _$TrailManifestSheet {
 
     /// Numeros de secours REGIONAUX du sentier. Le 112 est universel et gere
     /// par le moteur : ne pas le mettre ici.
-    List<FicheNumeroSecours>? emergencyNumbers,
+    List<EmergencyNumberSheet>? emergencyNumbers,
 
     /// URL de la politique de confidentialite du sentier.
     String? privacyPolicyUrl,
@@ -336,16 +336,16 @@ abstract class TrailManifestSheet with _$TrailManifestSheet {
 /// Miroir serialisable de `TrailEmergencyNumber` : le moteur ne hardcode aucun
 /// numero, et un sentier neuf apporte les siens avec lui.
 @freezed
-abstract class FicheNumeroSecours with _$FicheNumeroSecours {
-  const factory FicheNumeroSecours({
+abstract class EmergencyNumberSheet with _$EmergencyNumberSheet {
+  const factory EmergencyNumberSheet({
     /// Nom affiche du service de secours.
     required String name,
 
     /// Numero de telephone.
     required String phone,
-  }) = _FicheNumeroSecours;
+  }) = _EmergencyNumberSheet;
 
   /// Deserialisation depuis JSON
-  factory FicheNumeroSecours.fromJson(Map<String, dynamic> json) =>
-      _$FicheNumeroSecoursFromJson(json);
+  factory EmergencyNumberSheet.fromJson(Map<String, dynamic> json) =>
+      _$EmergencyNumberSheetFromJson(json);
 }

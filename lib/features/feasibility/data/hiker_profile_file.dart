@@ -102,7 +102,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// (voir l'en-tete du fichier). [estVide] decide si le fichier doit exister.
 class HikerProfileContent {
   const HikerProfileContent({
-    this.profil,
+    this.profile,
     this.randosPassees = const [],
     this.testDeMarche,
     this.noteExperienceHeritee,
@@ -113,7 +113,7 @@ class HikerProfileContent {
 
   /// La fiche d'info (age, taille, poids, sexe declare, pays), ou `null` si
   /// aucune fiche n'a jamais ete saisie.
-  final HikerProfile? profil;
+  final HikerProfile? profile;
 
   /// Les randonnees passees declarees (plafonnees par l'appelant).
   final List<PastHike> randosPassees;
@@ -133,7 +133,8 @@ class HikerProfileContent {
 
   /// Vrai quand il n'y a rien a ecrire : le fichier ne doit alors pas exister.
   bool get estVide =>
-      (profil == null || profil!.isEmpty && !_aDuNonMorphologique(profil!)) &&
+      (profile == null ||
+          profile!.isEmpty && !_aDuNonMorphologique(profile!)) &&
       randosPassees.isEmpty &&
       testDeMarche == null &&
       (noteExperienceHeritee == null || noteExperienceHeritee!.isEmpty);
@@ -145,8 +146,8 @@ class HikerProfileContent {
       (p.sex?.isNotEmpty ?? false) || p.countryIso.isNotEmpty;
 
   HikerProfileContent copyWith({
-    HikerProfile? profil,
-    bool effacerProfil = false,
+    HikerProfile? profile,
+    bool eraseProfile = false,
     List<PastHike>? randosPassees,
     WalkTestResult? testDeMarche,
     bool effacerTestDeMarche = false,
@@ -154,7 +155,7 @@ class HikerProfileContent {
     bool effacerNote = false,
   }) {
     return HikerProfileContent(
-      profil: effacerProfil ? null : (profil ?? this.profil),
+      profile: eraseProfile ? null : (profile ?? this.profile),
       randosPassees: randosPassees ?? this.randosPassees,
       testDeMarche: effacerTestDeMarche
           ? null
@@ -166,7 +167,7 @@ class HikerProfileContent {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    if (profil != null) HikerProfileFile.clefProfil: profil!.toJson(),
+    if (profile != null) HikerProfileFile.profileKey: profile!.toJson(),
     if (randosPassees.isNotEmpty)
       HikerProfileFile.clefRandosPassees: randosPassees
           .map((h) => h.toJson())
@@ -184,10 +185,10 @@ class HikerProfileContent {
   /// son poids etait devenu illisible, et il ne doit surtout pas empecher l'ecran
   /// de s'ouvrir — meme discipline que `HealthInfoFile.lire`.
   factory HikerProfileContent.fromJson(Map<String, dynamic> json) {
-    HikerProfile? profil;
+    HikerProfile? profile;
     try {
-      final brut = json[HikerProfileFile.clefProfil];
-      if (brut is Map<String, dynamic>) profil = HikerProfile.fromJson(brut);
+      final brut = json[HikerProfileFile.profileKey];
+      if (brut is Map<String, dynamic>) profile = HikerProfile.fromJson(brut);
     } catch (e) {
       _log.e('[ProfilRandonneur] Section profil illisible ($e)');
     }
@@ -215,7 +216,7 @@ class HikerProfileContent {
     final note = json[HikerProfileFile.clefNoteExperience];
 
     return HikerProfileContent(
-      profil: profil,
+      profile: profile,
       randosPassees: randos,
       testDeMarche: test,
       noteExperienceHeritee: note is String && note.isNotEmpty ? note : null,
@@ -256,7 +257,7 @@ class HikerProfileFile {
   static const String suffixeTemporaire = '.tmp';
 
   /// Clef de la fiche d'info dans le document.
-  static const String clefProfil = 'profil';
+  static const String profileKey = 'profil';
 
   /// Clef des randonnees passees dans le document.
   static const String clefRandosPassees = 'randosPassees';

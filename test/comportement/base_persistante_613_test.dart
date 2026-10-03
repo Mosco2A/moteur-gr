@@ -250,11 +250,11 @@ void main() {
             'disparaissait, c etait NOTRE comptabilite — le solde d etapes.',
       );
 
-      final profil = await db2.hikerProfileDao.getByUserId(kHikerLocalUserId);
-      expect(profil, isNotNull);
-      expect(profil!.age, 41);
-      expect(profil.heightCm, 178);
-      expect(profil.weightKg, 74.5);
+      final profile = await db2.hikerProfileDao.getByUserId(kHikerLocalUserId);
+      expect(profile, isNotNull);
+      expect(profile!.age, 41);
+      expect(profile.heightCm, 178);
+      expect(profile.weightKg, 74.5);
     });
 
     test(

@@ -66,7 +66,7 @@ void main() {
     );
   }
 
-  Future<void> ouvrir(WidgetTester tester) async {
+  Future<void> open(WidgetTester tester) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -80,7 +80,7 @@ void main() {
   testWidgets('tous champs vides : refus avec message, rien enregistre', (
     tester,
   ) async {
-    await ouvrir(tester);
+    await open(tester);
 
     await tester.tap(find.text(tp.save));
     await tester.pumpAndSettle();
@@ -105,7 +105,7 @@ void main() {
   });
 
   testWidgets('saisir une donnee efface le refus', (tester) async {
-    await ouvrir(tester);
+    await open(tester);
 
     await tester.tap(find.text(tp.save));
     await tester.pumpAndSettle();
@@ -123,7 +123,7 @@ void main() {
   testWidgets('une fiche renseignee passe toujours (le chemin normal tient)', (
     tester,
   ) async {
-    await ouvrir(tester);
+    await open(tester);
 
     await tester.enterText(
       find.widgetWithText(TextFormField, tp.fieldAge),

@@ -799,7 +799,7 @@ void main() {
         reason: 'un paquet construit sans variable doit rester en mode local',
       );
       expect(
-        FirebaseConfig.resoudre(depuisLeSentier: 'stepways-app'),
+        FirebaseConfig.resoudre(fromTrail: 'stepways-app'),
         'stepways-app',
         reason:
             'le chemin de resolution doit rester fonctionnel : c est lui '

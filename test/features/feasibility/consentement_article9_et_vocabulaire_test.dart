@@ -75,8 +75,8 @@ void main() {
     final f = await HikerProfileFile().fichier();
     if (!f.existsSync()) return null;
     final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
-    final profil = doc[HikerProfileFile.clefProfil];
-    return profil == null ? null : json.encode(profil);
+    final profile = doc[HikerProfileFile.profileKey];
+    return profile == null ? null : json.encode(profile);
   }
 
   /// Service de consentement lisant le MEME stockage que l'application sous
@@ -118,7 +118,7 @@ void main() {
     );
   }
 
-  Future<void> ouvrir(WidgetTester tester) async {
+  Future<void> open(WidgetTester tester) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -156,7 +156,7 @@ void main() {
       'consentement refuse : rien n est enregistre, l ecran reste ouvert, '
       'le refus est dit',
       (tester) async {
-        await ouvrir(tester);
+        await open(tester);
         await saisirGerard(tester);
         // La bascule de consentement n'est PAS touchee : elle reste a « refuse »,
         // exactement comme dans la campagne.
@@ -202,7 +202,7 @@ void main() {
 
     testWidgets('la saisie n est pas perdue : un tap sur la bascule, un second '
         'sur Enregistrer, et la fiche part', (tester) async {
-      await ouvrir(tester);
+      await open(tester);
       await saisirGerard(tester);
       await tester.tap(find.text(tp.save));
       await tester.pumpAndSettle();
@@ -245,7 +245,7 @@ void main() {
       final consent = await consentement();
       await consent.grant(ConsentPurpose.healthData);
 
-      await ouvrir(tester);
+      await open(tester);
       // L'ecran relit l'accord : la bascule est sur « autorise ».
       expect(
         tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
@@ -432,7 +432,7 @@ void main() {
   group('LOT O — un refus ne laisse AUCUNE trace dans le stockage', () {
     testWidgets('saisie refusee sans fiche prealable : la cle du profil n est '
         'meme pas CREEE', (tester) async {
-      await ouvrir(tester);
+      await open(tester);
       await saisirGerard(tester);
       // La bascule reste sur « refuse », comme dans la campagne.
 
@@ -642,7 +642,7 @@ void main() {
         'saisis, dans les cinq langues', (tester) async {
       for (final locale in AppLocale.values) {
         LocaleSettings.setLocaleRaw(locale.languageCode);
-        await ouvrir(tester);
+        await open(tester);
         // IMC 29.7 : exactement la saisie de la capture S9 de la campagne.
         await tester.enterText(
           find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight),

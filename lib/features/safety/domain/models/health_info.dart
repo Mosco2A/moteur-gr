@@ -274,7 +274,7 @@ abstract class HealthInfo with _$HealthInfo {
       carteMutuelleFichier.isNotEmpty;
 
   /// Vrai si la fiche porte au moins une des deux photos de carte.
-  bool get aUneCarte =>
+  bool get hasCard =>
       carteVitaleFichier.isNotEmpty || carteMutuelleFichier.isNotEmpty;
 
   /// Conversion depuis JSON (fichier local `medical/fiche.json`).

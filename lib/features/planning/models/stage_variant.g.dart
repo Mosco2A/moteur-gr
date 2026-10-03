@@ -38,7 +38,7 @@ const _$VariantDifficultyEnumMap = {
 
 _VariantSelection _$VariantSelectionFromJson(Map<String, dynamic> json) =>
     _VariantSelection(
-      selectionParEtape:
+      selectionByStage:
           (json['selectionParEtape'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
@@ -46,4 +46,4 @@ _VariantSelection _$VariantSelectionFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$VariantSelectionToJson(_VariantSelection instance) =>
-    <String, dynamic>{'selectionParEtape': instance.selectionParEtape};
+    <String, dynamic>{'selectionParEtape': instance.selectionByStage};

@@ -61,7 +61,7 @@ void main() {
       description: 'Cumule du denivele',
       debut: DateTime.utc(2026, 3, 1),
       fin: DateTime.utc(2026, 5, 31),
-      typeObjectif: DefiObjectif.denivele,
+      typeObjectif: DefiObjectif.elevationGain,
       cible: 3000,
     );
 

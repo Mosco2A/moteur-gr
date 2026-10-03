@@ -284,7 +284,7 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
 /// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
 /// enfin un refus qui lui proposait de payer. L'achat est desormais sur la
-/// carte, et il emprunte le geste unique [acheterSentier] — le meme que la
+/// carte, et il emprunte le geste unique [buyTrail] — le meme que la
 /// preparation et que le depart.
 ///
 /// UNE SEULE ACTION A LA FOIS (tache 639, bug 2). Le lot 614 avait pose l'achat
@@ -511,8 +511,7 @@ class _AvailableTrailCard extends ConsumerWidget {
                           .eurPriceForTrail(trail.id)
                           .toStringAsFixed(2),
                     ),
-                    onPressed: () =>
-                        acheterSentier(context, ref, trailId: trail.id),
+                    onPressed: () => buyTrail(context, ref, trailId: trail.id),
                   ),
                 ),
               ),

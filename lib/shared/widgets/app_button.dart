@@ -61,7 +61,7 @@ class AppButton extends StatelessWidget {
   /// gardant la grammaire unifiee du bouton. Pour la variante `filledTone`,
   /// `tone` est la couleur de FOND pleine (texte/icone blancs) : sert aux CTA
   /// a couleur d'action forte de l'overlay de suivi (Demarrer=actionStart,
-  /// Pause=actionPause, Stop=rougeUrgence, SW-SKIN-L3c) — le contraste blanc
+  /// Pause=actionPause, Stop=emergencyRed, SW-SKIN-L3c) — le contraste blanc
   /// >= AA sur ces tokens est prouve par test/core/a11y/a11y_audit_test.dart.
   /// Pour la variante `text` (bouton plat), `tone` est la couleur du LIBELLE
   /// et de l'icone (le fond reste transparent) : sert aux « Annuler » de

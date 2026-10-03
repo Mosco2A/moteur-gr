@@ -77,7 +77,7 @@ void main() {
 
     // OUVRIR LE SENTIER AVANT TOUT (lecon de la tache 543) : depuis le
     // catalogue la trace GPX n'est pas chargee, et tout le moteur reste bloque.
-    await _ouvrir(tester, '/trail/$kTrailId/feasibility');
+    await _open(tester, '/trail/$kTrailId/feasibility');
     await settleAndShoot(tester, P, '02_faisabilite');
 
     final c = _container(tester);
@@ -402,7 +402,7 @@ void _exigeCinqLangues(
   }
 }
 
-Future<void> _ouvrir(WidgetTester tester, String route) async {
+Future<void> _open(WidgetTester tester, String route) async {
   final ctx = tester.element(find.byType(Navigator).first);
   GoRouter.of(ctx).go(route);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));

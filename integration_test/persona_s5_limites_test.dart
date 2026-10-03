@@ -218,7 +218,7 @@ void main() {
     // en SILENCE. Non-regression.
     await _assurerFicheInfo(tester);
     await _viderTousLesChamps(tester);
-    await _enregistrer(tester);
+    await _save(tester);
     await exigeVisible(
       tester,
       find.text(tp.errorEmpty),
@@ -245,7 +245,7 @@ void main() {
     await _viderTousLesChamps(tester);
     await _saisir(tester, kChampAge, '40');
     await _refuserLaMorphologie(tester);
-    await _enregistrer(tester);
+    await _save(tester);
     await exigeVisible(
       tester,
       find.text(tp.errorConsentRequired),
@@ -332,7 +332,7 @@ void main() {
       'le pays « FR » dans la liste',
     );
     await _accorderLaMorphologie(tester);
-    await _enregistrer(tester);
+    await _save(tester);
     exige(
       P,
       'pays_liste',
@@ -353,7 +353,7 @@ void main() {
     await _saisir(tester, kChampAge, '40');
     await _saisir(tester, kChampTaille, '$kHeightMinCm');
     await _saisir(tester, kChampPoids, '$kWeightMaxKg');
-    await _enregistrer(tester);
+    await _save(tester);
     exige(
       P,
       'croise_60_200',
@@ -448,7 +448,7 @@ Future<void> _saisir(WidgetTester tester, int index, String valeur) async {
   await pumpAndSettleTolerant(tester);
 }
 
-Future<void> _enregistrer(WidgetTester tester) async {
+Future<void> _save(WidgetTester tester) async {
   await tapIfPresent(
     tester,
     find.text(t.hikerProfile.save),
@@ -478,7 +478,7 @@ Future<void> _refuse(
   await _assurerFicheInfo(tester);
   await _viderTousLesChamps(tester);
   await _saisir(tester, champ, valeur);
-  await _enregistrer(tester);
+  await _save(tester);
   await exigeVisible(
     tester,
     find.text(messageAttendu),
@@ -518,7 +518,7 @@ Future<void> _accepte(
   // a desormais raison de refuser. On donne l'accord, comme un randonneur le
   // ferait, et la contre-partie redevient mesurable.
   await _accorderLaMorphologie(tester);
-  await _enregistrer(tester);
+  await _save(tester);
   exige(
     P,
     etape,
@@ -588,7 +588,7 @@ Future<void> _aucuneValeurAberrante(
   await _assurerFicheInfo(tester);
   await _viderTousLesChamps(tester);
   await _saisir(tester, champ, valeur);
-  await _enregistrer(tester);
+  await _save(tester);
   final etape = 'absurde_${valeur.replaceAll(RegExp('[^A-Za-z0-9]'), '')}';
   exige(
     P,

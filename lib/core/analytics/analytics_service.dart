@@ -29,7 +29,7 @@ abstract final class AnalyticsEvents {
 /// UNE ETAPE NOMMEE SUR UN CHEMIN SURVEILLE (tache 637).
 ///
 /// Type ferme, instances CONSTANTES : c'est ce qui rend l'absence de donnee
-/// personnelle structurelle et non declarative. [AnalyticsService.marquerEtape]
+/// personnelle structurelle et non declarative. [AnalyticsService.markStep]
 /// n'accepte que ce type, donc rien qui vienne du randonneur ne peut partir par
 /// ce tuyau.
 ///
@@ -37,8 +37,8 @@ abstract final class AnalyticsEvents {
 /// parce qu'il a plante a TOUS les lancements des builds 6 et 7 sans qu'aucun
 /// rapport ne dise a quelle etape. Les quatre etapes decoupent exactement les
 /// quatre endroits ou il pouvait s'arreter.
-final class Etape {
-  const Etape._(this.chemin, this.nom);
+final class AnalyticsStep {
+  const AnalyticsStep._(this.chemin, this.nom);
 
   /// Nom de la cle Crashlytics (le chemin surveille).
   final String chemin;
@@ -49,10 +49,13 @@ final class Etape {
   static const String _sauvegarde = 'consentement_sauvegarde';
 
   /// La garde a decide de poser la question (avant toute attente).
-  static const Etape sauvegardeDemandee = Etape._(_sauvegarde, 'demandee');
+  static const AnalyticsStep sauvegardeDemandee = AnalyticsStep._(
+    _sauvegarde,
+    'demandee',
+  );
 
   /// La lecture « la decision est-elle deja prise ? » a rendu sa reponse.
-  static const Etape sauvegardeDecisionLue = Etape._(
+  static const AnalyticsStep sauvegardeDecisionLue = AnalyticsStep._(
     _sauvegarde,
     'decision_lue',
   );
@@ -60,26 +63,26 @@ final class Etape {
   /// AUCUN contexte portant un `Navigator` : la question est abandonnee pour
   /// cette ouverture (elle sera reposee a la suivante). C'est l'etape qui
   /// manquait aux builds 6 et 7 — elle y plantait au lieu de se nommer.
-  static const Etape sauvegardeSansNavigateur = Etape._(
+  static const AnalyticsStep sauvegardeSansNavigateur = AnalyticsStep._(
     _sauvegarde,
     'sans_navigateur',
   );
 
   /// Le dialogue a ete ouvert.
-  static const Etape sauvegardeDialogueOuvert = Etape._(
+  static const AnalyticsStep sauvegardeDialogueOuvert = AnalyticsStep._(
     _sauvegarde,
     'dialogue_ouvert',
   );
 
   /// Le dialogue s'est referme normalement.
-  static const Etape sauvegardeDialogueFerme = Etape._(
+  static const AnalyticsStep sauvegardeDialogueFerme = AnalyticsStep._(
     _sauvegarde,
     'dialogue_ferme',
   );
 
   /// La lecture de la decision a echoue (provider invalide pendant l'attente) :
   /// la question est abandonnee pour cette ouverture.
-  static const Etape sauvegardeLecturePerdue = Etape._(
+  static const AnalyticsStep sauvegardeLecturePerdue = AnalyticsStep._(
     _sauvegarde,
     'lecture_perdue',
   );
@@ -314,10 +317,10 @@ class AnalyticsService {
   ///
   /// SUIT [setCrashCollection], PAS [setConsent] : une miette de plantage n'est
   /// pas une mesure d'usage (meme separation qu'a la tache 596).
-  Future<void> marquerEtape(Etape etape) async {
+  Future<void> markStep(AnalyticsStep step) async {
     if (!_operational) return;
-    await _crash.setCustomKey(etape.chemin, etape.nom);
-    await _crash.log('${etape.chemin}: ${etape.nom}');
+    await _crash.setCustomKey(step.chemin, step.nom);
+    await _crash.log('${step.chemin}: ${step.nom}');
   }
 
   Future<void> _log(String name, Map<String, Object?> params) async {

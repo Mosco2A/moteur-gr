@@ -89,7 +89,7 @@ class _ChecklistQuantityStepper extends StatelessWidget {
       children: [
         IconButton(
           icon: const StepIcon(StepwaysIcons.moins, size: 18),
-          color: AppTheme.rougeUrgence,
+          color: AppTheme.emergencyRed,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
           onPressed: () => onQuantityChanged(item.quantity - 1),
@@ -167,12 +167,12 @@ class _ChecklistItemMenu extends StatelessWidget {
                 const StepIcon(
                   StepwaysIcons.corbeille,
                   size: 14,
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   ui.delete,
-                  style: const TextStyle(color: AppTheme.rougeUrgence),
+                  style: const TextStyle(color: AppTheme.emergencyRed),
                 ),
               ],
             ),

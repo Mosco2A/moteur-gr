@@ -16,7 +16,7 @@ void main() {
   Widget sujet(LieuCliquable lieu, {MapsOpener? ouvreur}) {
     return ProviderScope(
       overrides: [
-        if (ouvreur != null) ouvreurDeCartesProvider.overrideWithValue(ouvreur),
+        if (ouvreur != null) mapsOpenerProvider.overrideWithValue(ouvreur),
       ],
       child: MaterialApp(
         home: Scaffold(body: LigneDeLieu(lieu: lieu)),
@@ -279,7 +279,7 @@ class _OuvreurEspion extends MapsOpener {
   final List<LieuCliquable> demandes = <LieuCliquable>[];
 
   @override
-  Future<bool> ouvrir(LieuCliquable lieu) async {
+  Future<bool> open(LieuCliquable lieu) async {
     demandes.add(lieu);
     return reussit;
   }

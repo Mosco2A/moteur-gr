@@ -188,7 +188,7 @@ void main() {
         final fautes = <String>[];
         for (final cellule in cellules) {
           final c = cas(cellule);
-          final conseil = ProgramPlanSearch.planDuSentier(
+          final conseil = ProgramPlanSearch.trailPlan(
             stages: c.stages,
             level: c.level,
             demonstratedFloorEnergyKm: c.floor,
@@ -277,7 +277,7 @@ void main() {
       var sansSolution = 0;
       for (final entree in jeux.entries) {
         final c = entree.value;
-        final conseil = ProgramPlanSearch.planDuSentier(
+        final conseil = ProgramPlanSearch.trailPlan(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
@@ -317,7 +317,7 @@ void main() {
     test('le conseil est LE PLAN DU SENTIER : une etape par journee', () {
       for (final cellule in cellules) {
         final c = cas(cellule);
-        final conseil = ProgramPlanSearch.planDuSentier(
+        final conseil = ProgramPlanSearch.trailPlan(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
@@ -369,7 +369,7 @@ void main() {
     test('le conseil tient dans les bornes du curseur : il est APPLICABLE', () {
       for (final cellule in cellules) {
         final c = cas(cellule);
-        final conseil = ProgramPlanSearch.planDuSentier(
+        final conseil = ProgramPlanSearch.trailPlan(
           stages: c.stages,
           level: c.level,
           demonstratedFloorEnergyKm: c.floor,
@@ -426,7 +426,7 @@ void main() {
       // bloquant. Ici on exerce le cas ou un conseil EXISTE.
       final stages = _stageModelsOf(jeux['J1'] as Map<String, dynamic>, 'J1');
       final bounds = _boundsOf(stages);
-      final conseil = ProgramPlanSearch.planDuSentier(
+      final conseil = ProgramPlanSearch.trailPlan(
         stages: stages,
         level: HikerLevel.intermediate,
         conditions: const TrekConditions(maxAltitudeM: 1050, season: 'summer'),
@@ -457,7 +457,7 @@ void main() {
         'bloque est NOMMEE', () {
       final stages = sentierBloquant();
       final bounds = _boundsOf(stages);
-      final conseil = ProgramPlanSearch.planDuSentier(
+      final conseil = ProgramPlanSearch.trailPlan(
         stages: stages,
         level: HikerLevel.beginner,
         bounds: bounds,

@@ -189,18 +189,18 @@ void main() {
     test(
       'le document est dans le dossier declare exclu, a cote de la fiche',
       () async {
-        final profil = await HikerProfileFile().fichier();
+        final profile = await HikerProfileFile().fichier();
         final fiche = await HealthInfoFile().fichier();
 
         expect(
-          _n(profil.parent.path),
+          _n(profile.parent.path),
           _n(fiche.parent.path),
           reason:
               'le MEME dossier, donc les MEMES deux verrous Android sans '
               'aucune declaration de plus a tenir a jour',
         );
         expect(
-          _n(profil.path),
+          _n(profile.path),
           endsWith(
             '/${SauvegardeSysteme.dossierExclu}/'
             '${HikerProfileFile.nomFichier}',
@@ -239,7 +239,7 @@ void main() {
 
       final f = await HikerProfileFile().fichier();
       final doc = json.decode(f.readAsStringSync()) as Map<String, dynamic>;
-      final p = doc[HikerProfileFile.clefProfil] as Map<String, dynamic>;
+      final p = doc[HikerProfileFile.profileKey] as Map<String, dynamic>;
       expect(p['age'], 72);
       expect(p['heightCm'], 172);
       expect(p['weightKg'], 88);
@@ -298,12 +298,12 @@ void main() {
         await repo.migrerDepuisPreferences();
 
         // Rien n a ete perdu.
-        final profil = await repo.getProfile();
-        expect(profil.age, 72);
-        expect(profil.heightCm, 172);
-        expect(profil.weightKg, 88);
-        expect(profil.sex, HikerSex.male);
-        expect(profil.countryIso, 'FR');
+        final profile = await repo.getProfile();
+        expect(profile.age, 72);
+        expect(profile.heightCm, 172);
+        expect(profile.weightKg, 88);
+        expect(profile.sex, HikerSex.male);
+        expect(profile.countryIso, 'FR');
 
         final randos = await repo.loadPastHikes();
         expect(randos, hasLength(2));
@@ -359,9 +359,9 @@ void main() {
       await semerUnTelephoneExistant();
 
       // Aucun appel explicite a la migration : on LIT, simplement.
-      final profil = await depot().getProfile();
+      final profile = await depot().getProfile();
 
-      expect(profil.weightKg, 88);
+      expect(profile.weightKg, 88);
       expect(
         prefs.getString(kHikerProfilePrefsKey),
         isNull,
@@ -398,9 +398,9 @@ void main() {
       final repo = depot();
       await repo.migrerDepuisPreferences();
 
-      final profil = await repo.getProfile();
+      final profile = await repo.getProfile();
       expect(
-        profil.age,
+        profile.age,
         40,
         reason:
             'le fichier est la source depuis ce lot : la cle heritee n est '
@@ -668,7 +668,7 @@ void main() {
       'un contenu entierement vide EFFACE le document au lieu de l ecrire',
       () async {
         final stockage = HikerProfileFile();
-        await stockage.ecrire(const HikerProfileContent(profil: gerard));
+        await stockage.ecrire(const HikerProfileContent(profile: gerard));
         final f = await stockage.fichier();
         expect(f.existsSync(), isTrue);
 
@@ -692,7 +692,7 @@ void main() {
 
       final contenu = await stockage.lire();
 
-      expect(contenu.profil, isNull);
+      expect(contenu.profile, isNull);
       expect(
         contenu.randosPassees,
         isEmpty,
@@ -708,7 +708,7 @@ void main() {
       f.parent.createSync(recursive: true);
       f.writeAsStringSync(
         json.encode(<String, dynamic>{
-          HikerProfileFile.clefProfil: 'pas un objet',
+          HikerProfileFile.profileKey: 'pas un objet',
           HikerProfileFile.clefRandosPassees: [
             PastHike(date: DateTime.utc(2026, 5, 1), days: 3).toJson(),
           ],
@@ -717,7 +717,7 @@ void main() {
 
       final contenu = await stockage.lire();
 
-      expect(contenu.profil, isNull);
+      expect(contenu.profile, isNull);
       expect(
         contenu.randosPassees,
         hasLength(1),

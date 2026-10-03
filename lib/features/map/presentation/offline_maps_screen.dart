@@ -262,7 +262,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
                 else if (dejaLa)
                   ..._pretes(t, theme, examen, bilan, enDemo)
                 else
-                  ..._aTelecharger(t, theme, examen, bilan, enDemo),
+                  ..._toDownload(t, theme, examen, bilan, enDemo),
               ],
             ),
           ),
@@ -398,7 +398,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     ];
   }
 
-  List<Widget> _aTelecharger(
+  List<Widget> _toDownload(
     Translations t,
     ThemeData theme,
     DecisionDeDescente? examen,
@@ -444,7 +444,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
           cause,
           key: const ValueKey('cartes-cause'),
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppTheme.rougeUrgence,
+            color: AppTheme.emergencyRed,
           ),
         ),
       ],

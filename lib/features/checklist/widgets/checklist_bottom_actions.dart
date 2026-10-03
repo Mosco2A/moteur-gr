@@ -266,7 +266,7 @@ class ChecklistBottomActions extends ConsumerWidget {
                                       const StepIcon(
                                         StepwaysIcons.croix,
                                         size: 14,
-                                        color: AppTheme.rougeUrgence,
+                                        color: AppTheme.emergencyRed,
                                       ),
                                       const SizedBox(width: 4),
                                       Flexible(

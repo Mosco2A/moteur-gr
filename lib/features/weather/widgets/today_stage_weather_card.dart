@@ -37,7 +37,7 @@ class TodayStageWeatherCard extends StatelessWidget {
         t.weather.recommendation.watch,
       ),
       WeatherRecommendationLevel.danger => (
-        AppTheme.rougeUrgence,
+        AppTheme.emergencyRed,
         t.weather.recommendation.danger,
       ),
     };
@@ -172,7 +172,7 @@ class _Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = danger ? AppTheme.rougeUrgence : null;
+    final color = danger ? AppTheme.emergencyRed : null;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingSm,
@@ -180,7 +180,7 @@ class _Indicator extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: danger
-            ? AppTheme.rougeUrgence.withAlpha(28)
+            ? AppTheme.emergencyRed.withAlpha(28)
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),

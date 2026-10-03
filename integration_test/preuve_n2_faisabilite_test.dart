@@ -586,20 +586,20 @@ Future<void> _effacerProfil(WidgetTester tester) async {
 /// Ecrit fiche + randos par le VRAI chemin (notifier -> repository -> prefs).
 Future<void> _ecrireProfil(
   WidgetTester tester,
-  HikerProfile profil,
+  HikerProfile profile,
   List<PastHike> randos,
 ) async {
   final c = _container(tester);
   if (c == null) return;
   try {
-    await c.read(hikerProfileProvider.notifier).save(profil);
+    await c.read(hikerProfileProvider.notifier).save(profile);
     await c.read(pastHikesProvider.notifier).saveAll(randos);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
     _invalider(c);
     logStep(
       P,
       'ecriture',
-      'fiche age=${profil.age} ${profil.heightCm}cm ${profil.weightKg}kg, '
+      'fiche age=${profile.age} ${profile.heightCm}cm ${profile.weightKg}kg, '
           '${randos.length} rando(s)',
     );
   } catch (e) {

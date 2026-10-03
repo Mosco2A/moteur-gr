@@ -42,12 +42,12 @@ class PoiTypeConfig {
     ),
     'refuge': PoiTypeStyle(
       icon: StepwaysIcons.hebergement,
-      color: CouleursSemantiques.pointRefuge,
+      color: CouleursSemantiques.hutPoint,
       labelKey: 'Refuge',
     ),
     'shelter': PoiTypeStyle(
       icon: StepwaysIcons.hebergement,
-      color: CouleursSemantiques.pointRefuge,
+      color: CouleursSemantiques.hutPoint,
       labelKey: 'Refuge',
     ),
     'shop': PoiTypeStyle(
@@ -77,7 +77,7 @@ class PoiTypeConfig {
     ),
     'campsite': PoiTypeStyle(
       icon: StepwaysIcons.hebergement,
-      color: CouleursSemantiques.pointBivouac,
+      color: CouleursSemantiques.bivouacPoint,
       labelKey: 'Bivouac',
     ),
     'restaurant': PoiTypeStyle(
@@ -87,7 +87,7 @@ class PoiTypeConfig {
     ),
     'emergency': PoiTypeStyle(
       icon: StepwaysIcons.emergency,
-      color: CouleursSemantiques.pointUrgence,
+      color: CouleursSemantiques.emergencyPoint,
       labelKey: 'Urgence',
     ),
   };

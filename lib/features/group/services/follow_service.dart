@@ -251,7 +251,7 @@ class FollowService {
   /// rien. Voir `FollowLinksConfig` pour la mesure du 28/09.
   ///
   /// ELLE NE MESURE PAS LA CIBLE : elle ne fait pas d'appel reseau et ne peut
-  /// donc pas savoir si l'adresse REPOND. C'est [preparerPartage] qu'il faut
+  /// donc pas savoir si l'adresse REPOND. C'est [prepareShare] qu'il faut
   /// appeler pour remettre un lien au randonneur.
   ShareLink? generateShareLink({
     required String sessionId,
@@ -326,7 +326,7 @@ class FollowService {
   /// `nonVerifiable` rend le lien AVEC son verdict : un lien profond n'est pas
   /// interrogeable en HTTP, et l'appelant doit savoir que rien n'a ete verifie
   /// plutot que de lire un succes qu'on n'a pas mesure.
-  Future<PartageSuivi> preparerPartage({
+  Future<PartageSuivi> prepareShare({
     required String sessionId,
     required String shareCode,
     ShareLinkType type = ShareLinkTypeValues.web,

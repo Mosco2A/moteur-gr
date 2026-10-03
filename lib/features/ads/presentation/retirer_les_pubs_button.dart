@@ -83,7 +83,7 @@ class RetirerLesPubsButton extends ConsumerWidget {
 
 /// Ouvre le choix a deux entrees : s'abonner, ou regarder une video.
 ///
-/// UN SEUL CHEMIN, comme pour l'achat ([acheterSentier]). Tant qu'une feuille de
+/// UN SEUL CHEMIN, comme pour l'achat ([buyTrail]). Tant qu'une feuille de
 /// choix s'ouvre depuis plusieurs endroits, chaque endroit finit par proposer sa
 /// propre version — c'est la faute que la tache 614 a payee sur la vitrine
 /// d'achat, ouverte par six ecrans avec six prix possibles.

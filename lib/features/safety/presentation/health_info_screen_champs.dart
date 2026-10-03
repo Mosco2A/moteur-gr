@@ -136,7 +136,7 @@ class _ChampGroupeSanguin extends StatelessWidget {
             key: const ValueKey('health-blood-type-legacy'),
             t.health.bloodTypeLegacy(valeur: valeurHeritee),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppTheme.rougeUrgence,
+              color: AppTheme.emergencyRed,
             ),
           ),
         ],

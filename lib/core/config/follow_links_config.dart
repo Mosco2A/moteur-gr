@@ -65,7 +65,7 @@
 ///      vivre. Un appelant qui veut un lien doit maintenant traiter le `null`.
 ///
 ///  [2] LA CIBLE EST MESUREE AU MOMENT DU PARTAGE, pas supposee. Voir
-///      `VerificateurCibleSuivi` et `FollowService.preparerPartage` : le lien
+///      `VerificateurCibleSuivi` et `FollowService.prepareShare` : le lien
 ///      n'est remis qu'avec un VERDICT, et un 404 ne ressort pas en lien.
 ///
 /// ---------------------------------------------------------------------------

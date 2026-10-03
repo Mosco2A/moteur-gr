@@ -9,7 +9,7 @@
 ///
 /// La condition est dans la phrase elle-meme : TOUT RESTE SUR LE TELEPHONE. Ce
 /// fichier ne fait donc QUE lire des octets depuis l'appareil photo ou la
-/// galerie. C'est [HealthInfoFile.enregistrerCarte] qui les range, et il
+/// galerie. C'est [HealthInfoFile.saveCard] qui les range, et il
 /// les range dans le MEME dossier que la fiche medicale — meme exclusion de
 /// sauvegarde Android, meme attribut iCloud, meme effacement. Aucune seconde
 /// porte n'est ouverte.
@@ -23,14 +23,14 @@
 ///
 /// LE CALCUL, PLUTOT QU'UN CHIFFRE ROND CHOISI AU HASARD. La numerisation de
 /// document de reference est a 300 points par pouce ; a cette densite, le grand
-/// cote d'une carte fait 85,6 mm / 25,4 x 300 = 1011 pixels. [kLargeurMaxCarte]
+/// cote d'une carte fait 85,6 mm / 25,4 x 300 = 1011 pixels. [kCardMaxWidth]
 /// vaut 1280 : environ 380 points par pouce, donc une marge confortable sur le
 /// texte le plus petit d'une carte (le numero de securite sociale), sans jamais
 /// atteindre les 12 millions de pixels d'un capteur de telephone moderne.
 ///
 /// CE QUE CA PESE, ET POURQUOI CE N'EST PAS ANECDOTIQUE. Une photo brute de
 /// telephone pese 3 a 6 Mo. Bornee a 1280 pixels et compressee a
-/// [kQualiteJpegCarte], une carte tient dans quelques centaines de kilo-octets.
+/// [kCardJpegQuality], une carte tient dans quelques centaines de kilo-octets.
 /// Les deux cartes ensemble restent donc sous le megaoctet, dans un dossier qui
 /// ne sera JAMAIS sauvegarde nulle part : ce que le randonneur perdrait en
 /// changeant de telephone doit rester raisonnable a reprendre, et ce que
@@ -55,13 +55,13 @@ import 'package:image_picker/image_picker.dart';
 ///
 /// Voir l'en-tete du fichier pour le calcul : ~380 points par pouce sur le grand
 /// cote d'une carte au format ID-1.
-const double kLargeurMaxCarte = 1280;
+const double kCardMaxWidth = 1280;
 
 /// Qualite JPEG des photos de carte (0-100).
 ///
 /// 85 est le palier au-dela duquel l'oeil ne gagne plus rien sur un aplat imprime
 /// alors que le poids, lui, continue de monter.
-const int kQualiteJpegCarte = 85;
+const int kCardJpegQuality = 85;
 
 /// CE QUI EST REVENU DE L'APPAREIL PHOTO — TROIS ISSUES, PAS DEUX.
 ///
@@ -117,13 +117,13 @@ typedef CardPhotoCapture = Future<CardPhotoResult> Function(ImageSource source);
 /// LE `catch` NE FAIT PAS QU'AVALER. Il distingue le refus d'autorisation du
 /// reste, parce que l'ecran n'en dit pas la meme chose : un refus est une
 /// decision du randonneur, un echec est un probleme a signaler.
-Future<CardPhotoResult> prendrePhotoDeCarte(ImageSource source) async {
+Future<CardPhotoResult> takeCardPhoto(ImageSource source) async {
   try {
     final fichier = await ImagePicker().pickImage(
       source: source,
-      maxWidth: kLargeurMaxCarte,
-      maxHeight: kLargeurMaxCarte,
-      imageQuality: kQualiteJpegCarte,
+      maxWidth: kCardMaxWidth,
+      maxHeight: kCardMaxWidth,
+      imageQuality: kCardJpegQuality,
     );
     if (fichier == null) return const CardPhotoResult.annule();
     final octets = await fichier.readAsBytes();

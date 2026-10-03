@@ -458,13 +458,13 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     if (!donneesPosees || !niveau.carriesMaps) return;
 
     try {
-      final bilanDesCartes = await ref
+      final mapsReport = await ref
           .read(controleurDesCartesProvider(trailId).notifier)
           .start(niveau: niveau, confirmeHorsWifi: confirmeHorsWifi);
-      if (bilanDesCartes.posee) {
+      if (mapsReport.posee) {
         _log.d(
           '[CatalogNotifier] $trailId : carte hors ligne posee, '
-          '${MapProgress.enMegaoctets(bilanDesCartes.map!.octetsSurLeTelephone).toStringAsFixed(1)} Mo.',
+          '${MapProgress.enMegaoctets(mapsReport.map!.octetsSurLeTelephone).toStringAsFixed(1)} Mo.',
         );
         return;
       }
@@ -475,8 +475,8 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       // de carte n a jamais existe.
       _log.w(
         '[CatalogNotifier] $trailId : donnees posees, carte hors ligne NON posee — '
-        'refus « ${bilanDesCartes.refus?.name ?? "aucun"} », echec '
-        '« ${bilanDesCartes.echec?.name ?? "aucun"} ». Le sentier reste marchable '
+        'refus « ${mapsReport.refus?.name ?? "aucun"} », echec '
+        '« ${mapsReport.echec?.name ?? "aucun"} ». Le sentier reste marchable '
         'avec sa trace ; le fond de carte se reprend.',
       );
     } catch (e) {

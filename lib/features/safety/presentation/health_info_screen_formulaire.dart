@@ -94,8 +94,8 @@ class _HealthFormBottom extends StatelessWidget {
     required this.insuranceController,
     required this.carteVitale,
     required this.carteMutuelle,
-    required this.onPrendreCarte,
-    required this.onRetirerCarte,
+    required this.onTakeCard,
+    required this.onRemoveCard,
     required this.isSaving,
     required this.isDeleting,
     required this.hasContent,
@@ -140,10 +140,10 @@ class _HealthFormBottom extends StatelessWidget {
   final String carteMutuelle;
 
   /// Photographie la carte nommee.
-  final void Function(String nom, ImageSource src) onPrendreCarte;
+  final void Function(String nom, ImageSource src) onTakeCard;
 
   /// Retire la carte nommee.
-  final void Function(String nom) onRetirerCarte;
+  final void Function(String nom) onRemoveCard;
 
   /// Vrai pendant un enregistrement.
   final bool isSaving;
@@ -182,8 +182,8 @@ class _HealthFormBottom extends StatelessWidget {
           insuranceController: insuranceController,
           carteVitale: carteVitale,
           carteMutuelle: carteMutuelle,
-          onPrendreCarte: onPrendreCarte,
-          onRetirerCarte: onRetirerCarte,
+          onTakeCard: onTakeCard,
+          onRemoveCard: onRemoveCard,
         ),
         _HealthActions(
           isSaving: isSaving,

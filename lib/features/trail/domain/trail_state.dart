@@ -20,7 +20,7 @@ enum TrailState {
   ///
   /// Le geste « telecharger » a copie l integralite des donnees en local, de
   /// facon atomique. Le sentier est utilisable sans reseau.
-  telecharge,
+  downloaded,
 
   /// ETAT 3 — ACHETE.
   ///
@@ -57,7 +57,7 @@ enum RefusDeSuppression {
 ///
 /// CONSEQUENCE ASSUMEE : un sentier ACHETE mais PAS ENCORE TELECHARGE existe. Son
 /// etat est [TrailState.achete] — c est le fait le plus important a montrer —
-/// et [peutTelecharger] reste vrai. La suppression, elle, est deja interdite :
+/// et [canDownload] reste vrai. La suppression, elle, est deja interdite :
 /// l interdiction porte sur le DROIT, pas sur la presence des fichiers.
 class TrailAvailability {
   const TrailAvailability({
@@ -83,14 +83,14 @@ class TrailAvailability {
   /// L etat a montrer, quand il faut n en montrer qu un.
   TrailState get etat {
     if (achete) return TrailState.achete;
-    if (copieComplete) return TrailState.telecharge;
+    if (copieComplete) return TrailState.downloaded;
     return TrailState.auCatalogue;
   }
 
   /// Le geste « telecharger » est-il offert ?
   ///
   /// Oui tant que les donnees ne sont pas la — achete ou pas.
-  bool get peutTelecharger => !copieComplete;
+  bool get canDownload => !copieComplete;
 
   /// Pourquoi « supprimer » est refuse, ou `null` s il est permis.
   RefusDeSuppression? get refusDeSuppression {
@@ -100,5 +100,5 @@ class TrailAvailability {
   }
 
   /// Le geste « supprimer » est-il offert ?
-  bool get peutSupprimer => refusDeSuppression == null;
+  bool get canDelete => refusDeSuppression == null;
 }

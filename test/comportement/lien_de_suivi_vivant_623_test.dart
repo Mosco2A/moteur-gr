@@ -274,7 +274,7 @@ void main() {
         cible: cible,
       );
 
-      final partage = await svc.preparerPartage(
+      final partage = await svc.prepareShare(
         sessionId: 's1',
         shareCode: 'AB3C7D',
       );
@@ -308,7 +308,7 @@ void main() {
           cible: cible,
         );
 
-        final partage = await svc.preparerPartage(
+        final partage = await svc.prepareShare(
           sessionId: 's1',
           shareCode: 'AB3C7D',
         );
@@ -332,7 +332,7 @@ void main() {
           ),
           cible: _CibleEspionne(500),
         );
-        final partage = await svc.preparerPartage(
+        final partage = await svc.prepareShare(
           sessionId: 's1',
           shareCode: 'AB3C7D',
         );
@@ -347,7 +347,7 @@ void main() {
       final reseau = _ReseauPilotable();
       final svc = service(cible: cible, reseau: reseau);
 
-      final partage = await svc.preparerPartage(
+      final partage = await svc.prepareShare(
         sessionId: 's1',
         shareCode: 'AB3C7D',
       );
@@ -375,7 +375,7 @@ void main() {
         reseau: _ReseauPilotable(enLigne: false),
       );
 
-      final partage = await svc.preparerPartage(
+      final partage = await svc.prepareShare(
         sessionId: 's1',
         shareCode: 'AB3C7D',
       );
@@ -408,7 +408,7 @@ void main() {
         cible: cible,
       );
 
-      final partage = await svc.preparerPartage(
+      final partage = await svc.prepareShare(
         sessionId: 's1',
         shareCode: 'AB3C7D',
         type: ShareLinkTypeValues.app,
@@ -445,7 +445,7 @@ void main() {
       final svc = service(cible: cible, reseau: reseau);
 
       for (final type in ShareLinkTypeValues.values) {
-        await svc.preparerPartage(
+        await svc.prepareShare(
           sessionId: 's1',
           shareCode: 'AB3C7D',
           type: type,

@@ -115,7 +115,7 @@ class ChecklistLockedCategory extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: EdgeInsets.zero,
       child: InkWell(
-        onTap: () => acheterSentier(context, ref, trailId: trailId),
+        onTap: () => buyTrail(context, ref, trailId: trailId),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           child: Row(

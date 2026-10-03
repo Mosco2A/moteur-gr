@@ -7,7 +7,7 @@ import 'package:moteur_gr/features/gamification/domain/user_stats.dart';
 /// Tests du DefiService (F7C-02) — progression LOCALE + classement cache.
 void main() {
   DefiSaisonnier defi({
-    String type = DefiObjectif.denivele,
+    String type = DefiObjectif.elevationGain,
     double cible = 3000,
   }) {
     return DefiSaisonnier(
@@ -27,7 +27,7 @@ void main() {
         rankingRepository: InMemoryDefiRankingRepository(),
       );
       final p = service.localProgress(
-        defi(type: DefiObjectif.denivele, cible: 3000),
+        defi(type: DefiObjectif.elevationGain, cible: 3000),
         const UserStats(totalElevationGainM: 1500),
       );
       expect(p.current, 1500);
@@ -54,7 +54,7 @@ void main() {
         rankingRepository: InMemoryDefiRankingRepository(),
       );
       final p = service.localProgress(
-        defi(type: DefiObjectif.denivele, cible: 1000),
+        defi(type: DefiObjectif.elevationGain, cible: 1000),
         const UserStats(totalElevationGainM: 5000),
       );
       expect(p.ratio, 1.0);

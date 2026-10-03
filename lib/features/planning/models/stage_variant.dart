@@ -68,18 +68,20 @@ abstract class VariantSelection with _$VariantSelection {
 
   const factory VariantSelection({
     /// Variante choisie par etape de base (etapeBaseId -> varianteId).
-    @Default(<String, String>{}) Map<String, String> selectionParEtape,
+    @JsonKey(name: 'selectionParEtape')
+    @Default(<String, String>{})
+    Map<String, String> selectionByStage,
   }) = _VariantSelection;
 
   /// Selectionne [varianteId] pour [etapeBaseId] (retourne un nouvel etat).
   VariantSelection selectionner(String etapeBaseId, String varianteId) {
-    final updated = Map<String, String>.from(selectionParEtape)
+    final updated = Map<String, String>.from(selectionByStage)
       ..[etapeBaseId] = varianteId;
-    return copyWith(selectionParEtape: updated);
+    return copyWith(selectionByStage: updated);
   }
 
   /// Id de la variante choisie pour [etapeBaseId], ou null si aucun choix.
-  String? varianteChoisie(String etapeBaseId) => selectionParEtape[etapeBaseId];
+  String? varianteChoisie(String etapeBaseId) => selectionByStage[etapeBaseId];
 
   factory VariantSelection.fromJson(Map<String, dynamic> json) =>
       _$VariantSelectionFromJson(json);

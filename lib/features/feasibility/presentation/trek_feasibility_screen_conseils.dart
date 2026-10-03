@@ -217,7 +217,7 @@ class _WinterInvalidNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const color = AppTheme.rougeUrgence;
+    const color = AppTheme.emergencyRed;
     return AppCard(
       key: const ValueKey('feasibility-winter-invalid'),
       backgroundColor: color.withAlpha(20),

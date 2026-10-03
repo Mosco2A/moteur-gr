@@ -139,7 +139,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
-                        color: AppTheme.rougeUrgence,
+                        color: AppTheme.emergencyRed,
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
@@ -304,7 +304,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
           ),
           AppButton(
             variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             label: ui.removeAnyway,
             onPressed: () => Navigator.of(ctx).pop(true),
           ),
@@ -616,7 +616,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
           ),
           AppButton(
             variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             label: ui.delete,
             onPressed: () => Navigator.of(ctx).pop(true),
           ),
@@ -711,7 +711,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               StepwaysIcons.cadenas,
               ui.infoRequiredTitle,
               ui.infoRequiredBody,
-              AppTheme.rougeUrgence,
+              AppTheme.emergencyRed,
             ),
             const SizedBox(height: 12),
             _richInfoItem(

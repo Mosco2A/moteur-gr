@@ -176,7 +176,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
 
   Widget _buildStatusBadge(ThemeData theme) {
     final isLive = _sessionFound && _trekkerPosition != null;
-    final dotColor = isLive ? AppTheme.vertFacile : AppTheme.rougeUrgence;
+    final dotColor = isLive ? AppTheme.vertFacile : AppTheme.emergencyRed;
     final text = _isLoading
         ? t.follow.connecting
         : isLive
@@ -218,13 +218,13 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
               const StepIcon(
                 StepwaysIcons.lienRompu,
                 size: 48,
-                color: AppTheme.rougeUrgence,
+                color: AppTheme.emergencyRed,
               ),
               const SizedBox(height: AppTheme.spacingBase),
               Text(
                 t.follow.invalidLink,
                 style: theme.textTheme.titleLarge?.copyWith(
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
               ),
               const SizedBox(height: AppTheme.spacingSm),

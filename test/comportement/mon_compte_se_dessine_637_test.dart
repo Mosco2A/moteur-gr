@@ -142,7 +142,7 @@ void main() {
       // plantage lui-meme est dans
       // `plantage_null_check_refus_sauvegarde_637_test.dart` ; ici on verifie
       // qu'avec ces trois enveloppes en place, « Mon compte » se dessine.
-      RefusSauvegardeSystemeDialog.reinitialiserLeVerrou();
+      RefusSauvegardeSystemeDialog.resetLock();
       await monterAppliReelle(
         tester,
         etat: EtatAppli.enRoute,
@@ -152,10 +152,10 @@ void main() {
       // La question de sauvegarde est posee au premier rendu (aucune decision
       // enregistree) : on y repond, comme le randonneur, avant de continuer.
       if (find
-          .byKey(RefusSauvegardeSystemeDialog.cleValider)
+          .byKey(RefusSauvegardeSystemeDialog.validateKey)
           .evaluate()
           .isNotEmpty) {
-        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
         await stabiliser(tester);
       }
 

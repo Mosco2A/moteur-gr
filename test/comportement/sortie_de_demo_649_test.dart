@@ -276,7 +276,7 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsWidgets);
       expect(find.byKey(const ValueKey('compte-echec-attente')), findsNothing);
 
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
 
       expect(
@@ -301,7 +301,7 @@ void main() {
       addTearDown(c.dispose);
 
       await tester.pumpWidget(myAccount(c));
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
 
       await tester.tap(find.byKey(const ValueKey('compte-reessayer')));
@@ -315,7 +315,7 @@ void main() {
 
       // ET LE MINUTEUR EST REARME : un second echec se dit aussi, sinon
       // « Reessayer » rendrait le silence d'origine.
-      await tester.pump(kDelaiAvantEchecCompte);
+      await tester.pump(kAccountFailureDelay);
       await tester.pump();
       expect(
         find.byKey(const ValueKey('compte-echec-attente')),

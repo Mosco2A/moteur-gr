@@ -100,7 +100,7 @@ const _ficheSentierInconnu = TrailManifestSheet(
   priceStages: 6,
   privacyPolicyUrl: 'https://exemple.org/aubrac/privacy',
   emergencyNumbers: [
-    FicheNumeroSecours(name: 'Secours Aubrac', phone: '+33565000000'),
+    EmergencyNumberSheet(name: 'Secours Aubrac', phone: '+33565000000'),
   ],
 );
 
@@ -883,8 +883,8 @@ void main() {
         achete: false,
       );
       expect(d.etat, TrailState.auCatalogue);
-      expect(d.peutTelecharger, isTrue);
-      expect(d.peutSupprimer, isFalse);
+      expect(d.canDownload, isTrue);
+      expect(d.canDelete, isFalse);
       expect(
         d.refusDeSuppression,
         RefusDeSuppression.pasSurLeTelephone,
@@ -900,9 +900,9 @@ void main() {
         copieComplete: true,
         achete: false,
       );
-      expect(d.etat, TrailState.telecharge);
-      expect(d.peutTelecharger, isFalse);
-      expect(d.peutSupprimer, isTrue);
+      expect(d.etat, TrailState.downloaded);
+      expect(d.canDownload, isFalse);
+      expect(d.canDelete, isTrue);
       expect(d.refusDeSuppression, isNull);
     });
 
@@ -916,7 +916,7 @@ void main() {
         );
         expect(d.etat, TrailState.achete);
         expect(
-          d.peutSupprimer,
+          d.canDelete,
           isFalse,
           reason:
               'REGLE DE CHRISTOPHE, 27/09 20:41 : « on peut aussi le '
@@ -936,7 +936,7 @@ void main() {
         achete: true,
       );
       expect(
-        d.peutTelecharger,
+        d.canDownload,
         isTrue,
         reason:
             'le niveau gratuit du modele eco (§2) consulte et PREPARE, et '

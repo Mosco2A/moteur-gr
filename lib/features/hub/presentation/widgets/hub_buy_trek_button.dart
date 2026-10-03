@@ -23,7 +23,7 @@ import '../../../../core/branding/stepways_icons.dart';
 /// faites : autrement dit, celui qui se decide un soir avant d'avoir fini sa
 /// preparation n'avait AUCUN moyen d'acheter. C'est de la vente perdue.
 ///
-/// LE MEME GESTE QUE LES DEUX AUTRES. Ce bouton appelle [acheterSentier], qui
+/// LE MEME GESTE QUE LES DEUX AUTRES. Ce bouton appelle [buyTrail], qui
 /// est la seule fonction de `lib/` a ouvrir la vitrine et qui resout le prix
 /// elle-meme. Aucun second chemin de paiement n'est cree ici.
 ///
@@ -59,7 +59,7 @@ class HubBuyTrekButton extends ConsumerWidget {
       label: stages > 0
           ? t.monetization.buyCtaWithPrice(price: prix.toStringAsFixed(2))
           : t.monetization.buyCta,
-      onPressed: () => acheterSentier(context, ref, trailId: trailId),
+      onPressed: () => buyTrail(context, ref, trailId: trailId),
     );
   }
 }

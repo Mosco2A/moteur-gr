@@ -112,21 +112,21 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       decoration: BoxDecoration(
-        color: AppTheme.rougeUrgence.withValues(alpha: 0.08),
+        color: AppTheme.emergencyRed.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         border: Border.all(
-          color: AppTheme.rougeUrgence.withValues(alpha: 0.24),
+          color: AppTheme.emergencyRed.withValues(alpha: 0.24),
         ),
       ),
       child: Row(
         children: [
-          const StepIcon(StepwaysIcons.danger, color: AppTheme.rougeUrgence),
+          const StepIcon(StepwaysIcons.danger, color: AppTheme.emergencyRed),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Text(
               message,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.rougeUrgence,
+                color: AppTheme.emergencyRed,
               ),
             ),
           ),

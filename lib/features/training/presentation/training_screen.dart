@@ -318,7 +318,7 @@ class _PaywallCard extends ConsumerWidget {
           AppButton(
             icon: StepwaysIcons.cadenasOuvert,
             label: tr.unlock,
-            onPressed: () => acheterSentier(context, ref, trailId: trail.id),
+            onPressed: () => buyTrail(context, ref, trailId: trail.id),
           ),
         ],
       ),

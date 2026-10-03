@@ -506,7 +506,7 @@ void _parcourir(
   });
 }
 
-Map<String, dynamic> _charger(String langue) {
+Map<String, dynamic> _load(String langue) {
   final File fichier = File('assets/i18n/$langue.i18n.json');
   expect(
     fichier.existsSync(),
@@ -521,7 +521,7 @@ void main() {
     test('aucun encodage casse dans les 5 fichiers de traduction', () {
       final List<String> trouvailles = <String>[];
       for (final String langue in toutesLesLangues) {
-        _parcourir(_charger(langue), '', (String cle, String valeur) {
+        _parcourir(_load(langue), '', (String cle, String valeur) {
           for (final String sequence in sequencesMojibake) {
             if (valeur.contains(sequence)) {
               trouvailles.add(
@@ -545,7 +545,7 @@ void main() {
       for (final String langue in languesAvecAccents) {
         final Map<String, String> dictionnaire = formesFautives[langue]!;
         final List<String> exclus = nonFautes[langue] ?? const <String>[];
-        _parcourir(_charger(langue), '', (String cle, String valeur) {
+        _parcourir(_load(langue), '', (String cle, String valeur) {
           final List<String> exceptions =
               exceptionsParCle['$langue|$cle'] ?? const <String>[];
           final String sansPlaceholder = valeur.replaceAll(_placeholders, ' ');

@@ -1089,7 +1089,7 @@ void main() {
       await tester.pumpWidget(dialogue(TargetPlatform.android));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();
@@ -1124,7 +1124,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleCase));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
 
       final prefs = await SharedPreferences.getInstance();

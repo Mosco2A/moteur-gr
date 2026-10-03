@@ -110,7 +110,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
   ///
   /// Lue depuis [TrailDataSource], seul endroit du moteur qui sait ou vivent les
   /// donnees (tache 604 : deux copies en dur d une adresse morte).
-  static String get urlDeLaListe => TrailDataSource.urlManifeste;
+  static String get listUrl => TrailDataSource.urlManifeste;
 
   @override
   TrailCatalogState build() {
@@ -183,12 +183,10 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
 
     if (list == null || list.trails.isEmpty) {
       try {
-        list = await ref
-            .read(manifestServiceProvider)
-            .fetchManifest(urlDeLaListe);
+        list = await ref.read(manifestServiceProvider).fetchManifest(listUrl);
         if (list != null) {
           _log.w(
-            '[Catalogue] Liste lue depuis le FICHIER ($urlDeLaListe) et non '
+            '[Catalogue] Liste lue depuis le FICHIER ($listUrl) et non '
             'depuis la base. C est le repli : la base fait foi des que la '
             'collection « trails » est publiee.',
           );
@@ -202,7 +200,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
 
     if (list == null) {
       _log.w(
-        '[Catalogue] Liste des sentiers injoignable ($urlDeLaListe) — on garde '
+        '[Catalogue] Liste des sentiers injoignable ($listUrl) — on garde '
         '${state.trails.length} sentier(s) de la source ${state.source.name}. '
         'La liste n est PAS a jour.',
       );
@@ -291,7 +289,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
   /// LA FUSION — ET LA REGLE DE MEMBRES DU CATALOGUE.
   ///
   /// L identifiant est la cle. Pour chaque entree distante on cherche son
-  /// equivalent compile et on fusionne ([ManifestEntryAsTrail.versSentier]) :
+  /// equivalent compile et on fusionne ([ManifestEntryAsTrail.toTrail]) :
   /// le distant gagne sur les donnees, le compile apporte ses assets.
   ///
   /// UN SENTIER COMPILE ABSENT DE LA LISTE DISTANTE EST CONSERVE, et c est une
@@ -326,7 +324,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
         continue;
       }
 
-      final fusionne = entree.versSentier(compile: compiles[entree.trailId]);
+      final fusionne = entree.toTrail(compile: compiles[entree.trailId]);
       if (fusionne == null) {
         ignores.add(entree.trailId);
         _log.w(

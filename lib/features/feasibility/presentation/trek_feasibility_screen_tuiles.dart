@@ -345,7 +345,7 @@ String _adviceText(ProgramAdvice advice) {
 Color _verdictColor(FeasibilityVerdict verdict) {
   switch (verdict) {
     case FeasibilityVerdict.red:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case FeasibilityVerdict.orange:
       return AppTheme.orangeDifficile;
     case FeasibilityVerdict.green:

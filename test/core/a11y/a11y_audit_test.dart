@@ -104,7 +104,7 @@ void main() {
       'rouge urgence conforme au seuil non-textuel/UI (>= 3:1) sur sombre',
       () {
         expect(
-          WcagContrast.meetsNonText(AppTheme.rougeUrgence, surface),
+          WcagContrast.meetsNonText(AppTheme.emergencyRed, surface),
           isTrue,
         );
       },
@@ -141,11 +141,11 @@ void main() {
   group('Audit contraste — boutons d\'action suivi (R2 resolue, E5.5b)', () {
     test('texte blanc conforme AA sur les couleurs d\'action', () {
       // Avant E5.5b : Colors.green/Colors.orange -> blanc a ~2.2-2.8:1 (echec).
-      // Apres : actionStart / actionPause / rougeUrgence -> blanc >= 4.5:1.
+      // Apres : actionStart / actionPause / emergencyRed -> blanc >= 4.5:1.
       for (final c in [
         AppTheme.actionStart,
         AppTheme.actionPause,
-        AppTheme.rougeUrgence,
+        AppTheme.emergencyRed,
       ]) {
         expect(
           WcagContrast.meetsAA(Colors.white, c),

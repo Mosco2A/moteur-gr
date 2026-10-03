@@ -57,7 +57,7 @@ class ElevationIndicator extends StatelessWidget {
         StepIcon(
           StepwaysIcons.flecheBas,
           size: iconSize,
-          color: AppTheme.rougeUrgence,
+          color: AppTheme.emergencyRed,
         ),
         const SizedBox(width: 2),
         Text(
@@ -65,7 +65,7 @@ class ElevationIndicator extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
-            color: AppTheme.rougeUrgence,
+            color: AppTheme.emergencyRed,
           ),
         ),
       ],

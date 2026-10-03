@@ -127,14 +127,14 @@ void main() {
           label: 'Abandonner',
           onPressed: () {},
           variant: AppButtonVariant.text,
-          tone: AppTheme.rougeUrgence,
+          tone: AppTheme.emergencyRed,
         ),
       );
 
       final style = tester.widget<TextButton>(find.byType(TextButton)).style!;
       expect(
         style.foregroundColor?.resolve(<WidgetState>{}),
-        AppTheme.rougeUrgence,
+        AppTheme.emergencyRed,
       );
       expect(style.backgroundColor, isNull);
     });

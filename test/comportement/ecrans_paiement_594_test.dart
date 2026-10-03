@@ -186,7 +186,7 @@ void main() {
       // TACHE 614 — ON OUVRE LA VITRINE PAR LE GESTE UNIQUE. `showPaywallSheet`
       // etait publique et chaque ecran ouvrait sa propre vitrine avec son
       // propre prix ; elle est devenue privee et son seul appelant est
-      // [acheterSentier]. Ce test emprunte donc le meme chemin que les trois
+      // [buyTrail]. Ce test emprunte donc le meme chemin que les trois
       // points d'entree de l'application, au lieu d'un chemin de test a lui.
       await tester.pumpWidget(
         monter(
@@ -194,8 +194,7 @@ void main() {
             builder: (context, ref, _) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () =>
-                      acheterSentier(context, ref, trailId: 'gr20'),
+                  onPressed: () => buyTrail(context, ref, trailId: 'gr20'),
                   child: const Text('ouvrir'),
                 ),
               ),

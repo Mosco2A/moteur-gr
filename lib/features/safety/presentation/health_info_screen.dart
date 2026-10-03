@@ -100,7 +100,7 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
 /// un provider permet de le remplacer par une fonction qui rend des octets, ou
 /// un refus, sans toucher au reste de l'ecran.
 final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
-  (ref) => prendrePhotoDeCarte,
+  (ref) => takeCardPhoto,
 );
 
 /// E5.16 / E57 / 630 : ecran de la fiche d'urgence.

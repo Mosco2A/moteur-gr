@@ -836,7 +836,7 @@ mixin _$TrailManifestSheet {
  List<int>? get availableDurations;/// Duree par defaut suggeree, en jours. Null = defaut.
  int? get defaultDuration;/// Numeros de secours REGIONAUX du sentier. Le 112 est universel et gere
 /// par le moteur : ne pas le mettre ici.
- List<FicheNumeroSecours>? get emergencyNumbers;/// URL de la politique de confidentialite du sentier.
+ List<EmergencyNumberSheet>? get emergencyNumbers;/// URL de la politique de confidentialite du sentier.
  String? get privacyPolicyUrl;
 /// Create a copy of TrailManifestSheet
 /// with the given fields replaced by the non-null parameter values.
@@ -870,7 +870,7 @@ abstract mixin class $TrailManifestSheetCopyWith<$Res>  {
   factory $TrailManifestSheetCopyWith(TrailManifestSheet value, $Res Function(TrailManifestSheet) _then) = _$TrailManifestSheetCopyWithImpl;
 @useResult
 $Res call({
- String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<FicheNumeroSecours>? emergencyNumbers, String? privacyPolicyUrl
+ String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<EmergencyNumberSheet>? emergencyNumbers, String? privacyPolicyUrl
 });
 
 
@@ -904,7 +904,7 @@ as int?,directions: freezed == directions ? _self.directions : directions // ign
 as List<String>?,availableDurations: freezed == availableDurations ? _self.availableDurations : availableDurations // ignore: cast_nullable_to_non_nullable
 as List<int>?,defaultDuration: freezed == defaultDuration ? _self.defaultDuration : defaultDuration // ignore: cast_nullable_to_non_nullable
 as int?,emergencyNumbers: freezed == emergencyNumbers ? _self.emergencyNumbers : emergencyNumbers // ignore: cast_nullable_to_non_nullable
-as List<FicheNumeroSecours>?,privacyPolicyUrl: freezed == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
+as List<EmergencyNumberSheet>?,privacyPolicyUrl: freezed == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -990,7 +990,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<EmergencyNumberSheet>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrailManifestSheet() when $default != null:
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
@@ -1011,7 +1011,7 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<EmergencyNumberSheet>? emergencyNumbers,  String? privacyPolicyUrl)  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestSheet():
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
@@ -1031,7 +1031,7 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<EmergencyNumberSheet>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestSheet() when $default != null:
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
@@ -1046,7 +1046,7 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 @JsonSerializable()
 
 class _TrailManifestSheet implements TrailManifestSheet {
-  const _TrailManifestSheet({required this.name, required this.displayName, required this.tagline, required this.region, required this.country, required this.totalStages, required this.totalDistanceKm, required this.totalElevationGain, this.primaryColorValue, this.secondaryColorValue, this.priceStages, final  List<String>? directions, final  List<int>? availableDurations, this.defaultDuration, final  List<FicheNumeroSecours>? emergencyNumbers, this.privacyPolicyUrl}): _directions = directions,_availableDurations = availableDurations,_emergencyNumbers = emergencyNumbers;
+  const _TrailManifestSheet({required this.name, required this.displayName, required this.tagline, required this.region, required this.country, required this.totalStages, required this.totalDistanceKm, required this.totalElevationGain, this.primaryColorValue, this.secondaryColorValue, this.priceStages, final  List<String>? directions, final  List<int>? availableDurations, this.defaultDuration, final  List<EmergencyNumberSheet>? emergencyNumbers, this.privacyPolicyUrl}): _directions = directions,_availableDurations = availableDurations,_emergencyNumbers = emergencyNumbers;
   factory _TrailManifestSheet.fromJson(Map<String, dynamic> json) => _$TrailManifestSheetFromJson(json);
 
 /// Nom technique court (ex: 'GR10').
@@ -1102,10 +1102,10 @@ class _TrailManifestSheet implements TrailManifestSheet {
 @override final  int? defaultDuration;
 /// Numeros de secours REGIONAUX du sentier. Le 112 est universel et gere
 /// par le moteur : ne pas le mettre ici.
- final  List<FicheNumeroSecours>? _emergencyNumbers;
+ final  List<EmergencyNumberSheet>? _emergencyNumbers;
 /// Numeros de secours REGIONAUX du sentier. Le 112 est universel et gere
 /// par le moteur : ne pas le mettre ici.
-@override List<FicheNumeroSecours>? get emergencyNumbers {
+@override List<EmergencyNumberSheet>? get emergencyNumbers {
   final value = _emergencyNumbers;
   if (value == null) return null;
   if (_emergencyNumbers is EqualUnmodifiableListView) return _emergencyNumbers;
@@ -1149,7 +1149,7 @@ abstract mixin class _$TrailManifestSheetCopyWith<$Res> implements $TrailManifes
   factory _$TrailManifestSheetCopyWith(_TrailManifestSheet value, $Res Function(_TrailManifestSheet) _then) = __$TrailManifestSheetCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<FicheNumeroSecours>? emergencyNumbers, String? privacyPolicyUrl
+ String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<EmergencyNumberSheet>? emergencyNumbers, String? privacyPolicyUrl
 });
 
 
@@ -1183,7 +1183,7 @@ as int?,directions: freezed == directions ? _self._directions : directions // ig
 as List<String>?,availableDurations: freezed == availableDurations ? _self._availableDurations : availableDurations // ignore: cast_nullable_to_non_nullable
 as List<int>?,defaultDuration: freezed == defaultDuration ? _self.defaultDuration : defaultDuration // ignore: cast_nullable_to_non_nullable
 as int?,emergencyNumbers: freezed == emergencyNumbers ? _self._emergencyNumbers : emergencyNumbers // ignore: cast_nullable_to_non_nullable
-as List<FicheNumeroSecours>?,privacyPolicyUrl: freezed == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
+as List<EmergencyNumberSheet>?,privacyPolicyUrl: freezed == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -1193,24 +1193,24 @@ as String?,
 
 
 /// @nodoc
-mixin _$FicheNumeroSecours {
+mixin _$EmergencyNumberSheet {
 
 /// Nom affiche du service de secours.
  String get name;/// Numero de telephone.
  String get phone;
-/// Create a copy of FicheNumeroSecours
+/// Create a copy of EmergencyNumberSheet
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$FicheNumeroSecoursCopyWith<FicheNumeroSecours> get copyWith => _$FicheNumeroSecoursCopyWithImpl<FicheNumeroSecours>(this as FicheNumeroSecours, _$identity);
+$EmergencyNumberSheetCopyWith<EmergencyNumberSheet> get copyWith => _$EmergencyNumberSheetCopyWithImpl<EmergencyNumberSheet>(this as EmergencyNumberSheet, _$identity);
 
-  /// Serializes this FicheNumeroSecours to a JSON map.
+  /// Serializes this EmergencyNumberSheet to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FicheNumeroSecours&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmergencyNumberSheet&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1219,15 +1219,15 @@ int get hashCode => Object.hash(runtimeType,name,phone);
 
 @override
 String toString() {
-  return 'FicheNumeroSecours(name: $name, phone: $phone)';
+  return 'EmergencyNumberSheet(name: $name, phone: $phone)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $FicheNumeroSecoursCopyWith<$Res>  {
-  factory $FicheNumeroSecoursCopyWith(FicheNumeroSecours value, $Res Function(FicheNumeroSecours) _then) = _$FicheNumeroSecoursCopyWithImpl;
+abstract mixin class $EmergencyNumberSheetCopyWith<$Res>  {
+  factory $EmergencyNumberSheetCopyWith(EmergencyNumberSheet value, $Res Function(EmergencyNumberSheet) _then) = _$EmergencyNumberSheetCopyWithImpl;
 @useResult
 $Res call({
  String name, String phone
@@ -1238,14 +1238,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$FicheNumeroSecoursCopyWithImpl<$Res>
-    implements $FicheNumeroSecoursCopyWith<$Res> {
-  _$FicheNumeroSecoursCopyWithImpl(this._self, this._then);
+class _$EmergencyNumberSheetCopyWithImpl<$Res>
+    implements $EmergencyNumberSheetCopyWith<$Res> {
+  _$EmergencyNumberSheetCopyWithImpl(this._self, this._then);
 
-  final FicheNumeroSecours _self;
-  final $Res Function(FicheNumeroSecours) _then;
+  final EmergencyNumberSheet _self;
+  final $Res Function(EmergencyNumberSheet) _then;
 
-/// Create a copy of FicheNumeroSecours
+/// Create a copy of EmergencyNumberSheet
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? phone = null,}) {
   return _then(_self.copyWith(
@@ -1258,8 +1258,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [FicheNumeroSecours].
-extension FicheNumeroSecoursPatterns on FicheNumeroSecours {
+/// Adds pattern-matching-related methods to [EmergencyNumberSheet].
+extension EmergencyNumberSheetPatterns on EmergencyNumberSheet {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -1272,10 +1272,10 @@ extension FicheNumeroSecoursPatterns on FicheNumeroSecours {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _FicheNumeroSecours value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EmergencyNumberSheet value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _FicheNumeroSecours() when $default != null:
+case _EmergencyNumberSheet() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -1294,10 +1294,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _FicheNumeroSecours value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EmergencyNumberSheet value)  $default,){
 final _that = this;
 switch (_that) {
-case _FicheNumeroSecours():
+case _EmergencyNumberSheet():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -1315,10 +1315,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _FicheNumeroSecours value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EmergencyNumberSheet value)?  $default,){
 final _that = this;
 switch (_that) {
-case _FicheNumeroSecours() when $default != null:
+case _EmergencyNumberSheet() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -1338,7 +1338,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String phone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _FicheNumeroSecours() when $default != null:
+case _EmergencyNumberSheet() when $default != null:
 return $default(_that.name,_that.phone);case _:
   return orElse();
 
@@ -1359,7 +1359,7 @@ return $default(_that.name,_that.phone);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String phone)  $default,) {final _that = this;
 switch (_that) {
-case _FicheNumeroSecours():
+case _EmergencyNumberSheet():
 return $default(_that.name,_that.phone);case _:
   throw StateError('Unexpected subclass');
 
@@ -1379,7 +1379,7 @@ return $default(_that.name,_that.phone);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String phone)?  $default,) {final _that = this;
 switch (_that) {
-case _FicheNumeroSecours() when $default != null:
+case _EmergencyNumberSheet() when $default != null:
 return $default(_that.name,_that.phone);case _:
   return null;
 
@@ -1391,29 +1391,29 @@ return $default(_that.name,_that.phone);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _FicheNumeroSecours implements FicheNumeroSecours {
-  const _FicheNumeroSecours({required this.name, required this.phone});
-  factory _FicheNumeroSecours.fromJson(Map<String, dynamic> json) => _$FicheNumeroSecoursFromJson(json);
+class _EmergencyNumberSheet implements EmergencyNumberSheet {
+  const _EmergencyNumberSheet({required this.name, required this.phone});
+  factory _EmergencyNumberSheet.fromJson(Map<String, dynamic> json) => _$EmergencyNumberSheetFromJson(json);
 
 /// Nom affiche du service de secours.
 @override final  String name;
 /// Numero de telephone.
 @override final  String phone;
 
-/// Create a copy of FicheNumeroSecours
+/// Create a copy of EmergencyNumberSheet
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$FicheNumeroSecoursCopyWith<_FicheNumeroSecours> get copyWith => __$FicheNumeroSecoursCopyWithImpl<_FicheNumeroSecours>(this, _$identity);
+_$EmergencyNumberSheetCopyWith<_EmergencyNumberSheet> get copyWith => __$EmergencyNumberSheetCopyWithImpl<_EmergencyNumberSheet>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$FicheNumeroSecoursToJson(this, );
+  return _$EmergencyNumberSheetToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FicheNumeroSecours&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmergencyNumberSheet&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1422,15 +1422,15 @@ int get hashCode => Object.hash(runtimeType,name,phone);
 
 @override
 String toString() {
-  return 'FicheNumeroSecours(name: $name, phone: $phone)';
+  return 'EmergencyNumberSheet(name: $name, phone: $phone)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$FicheNumeroSecoursCopyWith<$Res> implements $FicheNumeroSecoursCopyWith<$Res> {
-  factory _$FicheNumeroSecoursCopyWith(_FicheNumeroSecours value, $Res Function(_FicheNumeroSecours) _then) = __$FicheNumeroSecoursCopyWithImpl;
+abstract mixin class _$EmergencyNumberSheetCopyWith<$Res> implements $EmergencyNumberSheetCopyWith<$Res> {
+  factory _$EmergencyNumberSheetCopyWith(_EmergencyNumberSheet value, $Res Function(_EmergencyNumberSheet) _then) = __$EmergencyNumberSheetCopyWithImpl;
 @override @useResult
 $Res call({
  String name, String phone
@@ -1441,17 +1441,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$FicheNumeroSecoursCopyWithImpl<$Res>
-    implements _$FicheNumeroSecoursCopyWith<$Res> {
-  __$FicheNumeroSecoursCopyWithImpl(this._self, this._then);
+class __$EmergencyNumberSheetCopyWithImpl<$Res>
+    implements _$EmergencyNumberSheetCopyWith<$Res> {
+  __$EmergencyNumberSheetCopyWithImpl(this._self, this._then);
 
-  final _FicheNumeroSecours _self;
-  final $Res Function(_FicheNumeroSecours) _then;
+  final _EmergencyNumberSheet _self;
+  final $Res Function(_EmergencyNumberSheet) _then;
 
-/// Create a copy of FicheNumeroSecours
+/// Create a copy of EmergencyNumberSheet
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? phone = null,}) {
-  return _then(_FicheNumeroSecours(
+  return _then(_EmergencyNumberSheet(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,

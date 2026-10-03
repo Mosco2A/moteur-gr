@@ -29,7 +29,7 @@ class HubHikeSection extends StatelessWidget {
       cards: [
         ..._cartesDeLaNavigation(context),
         ..._cartesDuCarnet(context),
-        ..._cartesDeLaMeteo(context),
+        ..._weatherCards(context),
         ..._cartesDuRisque(context),
       ],
     );
@@ -121,7 +121,7 @@ class HubHikeSection extends StatelessWidget {
   ];
 
   /// L'adaptation de l'itineraire et la meteo par etape.
-  List<QuickAccessCard> _cartesDeLaMeteo(BuildContext context) => [
+  List<QuickAccessCard> _weatherCards(BuildContext context) => [
     // R11 (retour Chris, LOT L8) — MÉTÉO : carte « Prévisions par
     // étape » -> écran météo E31 (`/trail/:id/weather`). PARITÉ
     // GR20 : le HUB GR20 expose « Météo » et « Incendie » COTE A

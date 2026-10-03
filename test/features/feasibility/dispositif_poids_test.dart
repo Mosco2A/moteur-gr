@@ -213,7 +213,7 @@ void main() {
   });
 
   group('DOMAINE DE VALIDITE DU TEST DE MARCHE (#3-n) — le test est INTACT', () {
-    HikerProfile profil({
+    HikerProfile profile({
       required int age,
       required int heightCm,
       required double weightKg,
@@ -242,7 +242,7 @@ void main() {
     );
 
     test('un profil du domaine est normalise, comme avant', () {
-      final p = profil(
+      final p = profile(
         age: 50,
         heightCm: 178,
         weightKg: 75,
@@ -254,7 +254,7 @@ void main() {
     });
 
     test('L ABSURDITE QUE LE GARDE-FOU SUPPRIME : 130 cm, 200 kg (#3-m)', () {
-      final p = profil(
+      final p = profile(
         age: 50,
         heightCm: 130,
         weightKg: 200,
@@ -280,13 +280,13 @@ void main() {
       'IMC > 35 hors domaine, IMC <= 35 dedans — critere PUBLIE d Enright',
       () {
         // 1,78 m : IMC 35 = 110,9 kg.
-        final dedans = profil(
+        final dedans = profile(
           age: 50,
           heightCm: 178,
           weightKg: 110,
           sex: HikerSex.male,
         );
-        final dehors = profil(
+        final dehors = profile(
           age: 50,
           heightCm: 178,
           weightKg: 115,
@@ -298,7 +298,7 @@ void main() {
     );
 
     test('taille adulte < 147 cm hors domaine, meme a IMC normal', () {
-      final p = profil(
+      final p = profile(
         age: 50,
         heightCm: 140,
         weightKg: 45,

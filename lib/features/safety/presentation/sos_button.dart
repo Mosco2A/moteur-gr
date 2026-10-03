@@ -67,7 +67,7 @@ class SosButton extends ConsumerWidget {
         height: 72,
         child: FloatingActionButton(
           heroTag: 'sos_e515',
-          backgroundColor: AppTheme.rougeUrgence,
+          backgroundColor: AppTheme.emergencyRed,
           elevation: 8,
           shape: const CircleBorder(),
           onPressed: () => _showSosConfirmation(context, ref),

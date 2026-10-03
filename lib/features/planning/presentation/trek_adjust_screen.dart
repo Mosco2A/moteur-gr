@@ -584,7 +584,7 @@ class _AdjustDayCard extends StatelessWidget {
                     if (onRemoveRestDay != null)
                       IconButton(
                         icon: const StepIcon(StepwaysIcons.moins, size: 20),
-                        color: AppTheme.rougeUrgence,
+                        color: AppTheme.emergencyRed,
                         tooltip: t.programme.actions.removeRest,
                         onPressed: onRemoveRestDay,
                         padding: EdgeInsets.zero,

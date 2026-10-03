@@ -207,7 +207,7 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('Pause porte actionPause et Stop rougeUrgence en recording', (
+    testWidgets('Pause porte actionPause et Stop emergencyRed en recording', (
       tester,
     ) async {
       final container = ProviderContainer(
@@ -236,7 +236,7 @@ void main() {
       final stop = find.widgetWithText(ElevatedButton, 'Stop');
       expect(_backgroundColorOf(tester, pause), AppTheme.actionPause);
       expect(_backgroundColorOf(tester, pause), isNot(Colors.orange));
-      expect(_backgroundColorOf(tester, stop), AppTheme.rougeUrgence);
+      expect(_backgroundColorOf(tester, stop), AppTheme.emergencyRed);
 
       container.dispose();
     });

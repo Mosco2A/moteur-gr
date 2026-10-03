@@ -316,7 +316,7 @@ as bool,
 mixin _$VariantSelection {
 
 /// Variante choisie par etape de base (etapeBaseId -> varianteId).
- Map<String, String> get selectionParEtape;
+@JsonKey(name: 'selectionParEtape') Map<String, String> get selectionByStage;
 /// Create a copy of VariantSelection
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -329,16 +329,16 @@ $VariantSelectionCopyWith<VariantSelection> get copyWith => _$VariantSelectionCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VariantSelection&&const DeepCollectionEquality().equals(other.selectionParEtape, selectionParEtape));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VariantSelection&&const DeepCollectionEquality().equals(other.selectionByStage, selectionByStage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(selectionParEtape));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(selectionByStage));
 
 @override
 String toString() {
-  return 'VariantSelection(selectionParEtape: $selectionParEtape)';
+  return 'VariantSelection(selectionByStage: $selectionByStage)';
 }
 
 
@@ -349,7 +349,7 @@ abstract mixin class $VariantSelectionCopyWith<$Res>  {
   factory $VariantSelectionCopyWith(VariantSelection value, $Res Function(VariantSelection) _then) = _$VariantSelectionCopyWithImpl;
 @useResult
 $Res call({
- Map<String, String> selectionParEtape
+@JsonKey(name: 'selectionParEtape') Map<String, String> selectionByStage
 });
 
 
@@ -366,9 +366,9 @@ class _$VariantSelectionCopyWithImpl<$Res>
 
 /// Create a copy of VariantSelection
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectionParEtape = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectionByStage = null,}) {
   return _then(_self.copyWith(
-selectionParEtape: null == selectionParEtape ? _self.selectionParEtape : selectionParEtape // ignore: cast_nullable_to_non_nullable
+selectionByStage: null == selectionByStage ? _self.selectionByStage : selectionByStage // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,
   ));
 }
@@ -454,10 +454,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, String> selectionParEtape)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'selectionParEtape')  Map<String, String> selectionByStage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VariantSelection() when $default != null:
-return $default(_that.selectionParEtape);case _:
+return $default(_that.selectionByStage);case _:
   return orElse();
 
 }
@@ -475,10 +475,10 @@ return $default(_that.selectionParEtape);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, String> selectionParEtape)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'selectionParEtape')  Map<String, String> selectionByStage)  $default,) {final _that = this;
 switch (_that) {
 case _VariantSelection():
-return $default(_that.selectionParEtape);case _:
+return $default(_that.selectionByStage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -495,10 +495,10 @@ return $default(_that.selectionParEtape);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, String> selectionParEtape)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'selectionParEtape')  Map<String, String> selectionByStage)?  $default,) {final _that = this;
 switch (_that) {
 case _VariantSelection() when $default != null:
-return $default(_that.selectionParEtape);case _:
+return $default(_that.selectionByStage);case _:
   return null;
 
 }
@@ -510,16 +510,16 @@ return $default(_that.selectionParEtape);case _:
 @JsonSerializable()
 
 class _VariantSelection extends VariantSelection {
-  const _VariantSelection({final  Map<String, String> selectionParEtape = const <String, String>{}}): _selectionParEtape = selectionParEtape,super._();
+  const _VariantSelection({@JsonKey(name: 'selectionParEtape') final  Map<String, String> selectionByStage = const <String, String>{}}): _selectionByStage = selectionByStage,super._();
   factory _VariantSelection.fromJson(Map<String, dynamic> json) => _$VariantSelectionFromJson(json);
 
 /// Variante choisie par etape de base (etapeBaseId -> varianteId).
- final  Map<String, String> _selectionParEtape;
+ final  Map<String, String> _selectionByStage;
 /// Variante choisie par etape de base (etapeBaseId -> varianteId).
-@override@JsonKey() Map<String, String> get selectionParEtape {
-  if (_selectionParEtape is EqualUnmodifiableMapView) return _selectionParEtape;
+@override@JsonKey(name: 'selectionParEtape') Map<String, String> get selectionByStage {
+  if (_selectionByStage is EqualUnmodifiableMapView) return _selectionByStage;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_selectionParEtape);
+  return EqualUnmodifiableMapView(_selectionByStage);
 }
 
 
@@ -536,16 +536,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VariantSelection&&const DeepCollectionEquality().equals(other._selectionParEtape, _selectionParEtape));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VariantSelection&&const DeepCollectionEquality().equals(other._selectionByStage, _selectionByStage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_selectionParEtape));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_selectionByStage));
 
 @override
 String toString() {
-  return 'VariantSelection(selectionParEtape: $selectionParEtape)';
+  return 'VariantSelection(selectionByStage: $selectionByStage)';
 }
 
 
@@ -556,7 +556,7 @@ abstract mixin class _$VariantSelectionCopyWith<$Res> implements $VariantSelecti
   factory _$VariantSelectionCopyWith(_VariantSelection value, $Res Function(_VariantSelection) _then) = __$VariantSelectionCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, String> selectionParEtape
+@JsonKey(name: 'selectionParEtape') Map<String, String> selectionByStage
 });
 
 
@@ -573,9 +573,9 @@ class __$VariantSelectionCopyWithImpl<$Res>
 
 /// Create a copy of VariantSelection
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectionParEtape = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectionByStage = null,}) {
   return _then(_VariantSelection(
-selectionParEtape: null == selectionParEtape ? _self._selectionParEtape : selectionParEtape // ignore: cast_nullable_to_non_nullable
+selectionByStage: null == selectionByStage ? _self._selectionByStage : selectionByStage // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,
   ));
 }

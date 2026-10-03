@@ -14,7 +14,7 @@
 //
 // CE QUE CE GROUPE EXIGE, ET C EST LA FORME QUI COMPTE AUTANT QUE LE NOMBRE :
 // TROIS PORTES, UN SEUL CHEMIN. Pas trois implementations du meme achat — un
-// seul geste ([acheterSentier]) appele depuis trois endroits, exactement comme
+// seul geste ([buyTrail]) appele depuis trois endroits, exactement comme
 // `chooseTrail` a unifie la bascule de sentier au lot 606. Trois
 // implementations auraient derive en trois prix, d autant que le catalogue est
 // desormais DISTANT (tache 605) : un sentier recu par le reseau n a pas le
@@ -262,7 +262,7 @@ void main() {
       // LA MESURE QUI COMPTE. Avant la tache 614, `showPaywallSheet` etait
       // publique et SIX fichiers l appelaient, chacun avec son propre
       // `totalStages` — donc six occasions d afficher le mauvais prix. Elle est
-      // devenue privee ; son unique appelant est [acheterSentier], dans le
+      // devenue privee ; son unique appelant est [buyTrail], dans le
       // fichier qui la porte. Ce test refuse un septieme chemin d achat.
       final fautifs = <String>[];
       for (final f in sourcesDeLib()) {
@@ -277,7 +277,7 @@ void main() {
         fautifs,
         isEmpty,
         reason:
-            'la vitrine ne s ouvre QUE par acheterSentier. Un ecran qui '
+            'la vitrine ne s ouvre QUE par buyTrail. Un ecran qui '
             'l ouvre lui-meme refait le chemin de paiement, et refait donc '
             'le prix.\n  ${fautifs.join('\n  ')}',
       );
@@ -305,7 +305,7 @@ void main() {
         );
         expect(
           f.readAsStringSync(),
-          contains('acheterSentier('),
+          contains('buyTrail('),
           reason:
               'l achat depuis « ${entree.key} » doit emprunter le geste '
               'unique, pas un chemin de paiement a lui',

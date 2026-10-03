@@ -178,7 +178,7 @@ class _StormBadge extends StatelessWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: AppTheme.rougeUrgence.withAlpha(28),
+        color: AppTheme.emergencyRed.withAlpha(28),
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
       child: Row(
@@ -187,13 +187,13 @@ class _StormBadge extends StatelessWidget {
           const StepIcon(
             StepwaysIcons.orage,
             size: 13,
-            color: AppTheme.rougeUrgence,
+            color: AppTheme.emergencyRed,
           ),
           const SizedBox(width: 3),
           Text(
             label,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: AppTheme.rougeUrgence,
+              color: AppTheme.emergencyRed,
               fontWeight: FontWeight.w600,
             ),
           ),

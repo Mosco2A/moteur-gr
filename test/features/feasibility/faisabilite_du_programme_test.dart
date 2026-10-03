@@ -531,7 +531,7 @@ void main() {
         ),
       );
       expect(selector.verdict, FeasibilityVerdict.red);
-      expect(durationVerdictColor(selector.verdict!), AppTheme.rougeUrgence);
+      expect(durationVerdictColor(selector.verdict!), AppTheme.emergencyRed);
       expect(find.text(t.feasibility.formula.verdicts.red), findsOneWidget);
     });
 

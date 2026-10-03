@@ -663,11 +663,11 @@ void main() {
       final lignes = await pois.getByStageId('etape-1');
       final lieux = lignes
           .map(
-            (p) => LieuDeSentier(
+            (p) => TrailPlace(
               poi: p,
               stageNumber: 1,
-              estPremiereEtape: true,
-              estDerniereEtape: true,
+              isFirstStage: true,
+              isLastStage: true,
             ),
           )
           .toList();
@@ -714,14 +714,14 @@ void main() {
         expect(
           transportDepuisLesLieux(
             trailId,
-            const <LieuDeSentier>[],
+            const <TrailPlace>[],
             nomDepart: 'A',
             nomArrivee: 'B',
           ),
           isNull,
         );
         expect(
-          ravitaillementDepuisLesLieux(trailId, const <LieuDeSentier>[]),
+          ravitaillementDepuisLesLieux(trailId, const <TrailPlace>[]),
           isNull,
         );
       },

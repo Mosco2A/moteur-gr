@@ -10,7 +10,7 @@ import '../../core/branding/stepways_icons.dart';
 /// Une action de la [ContextualActionBar] (barre d'ACTIONS, pas d'onglets).
 ///
 /// [salient] = action mise en avant (ex. SOS) : rendue en pastille pleine
-/// accentuee ([color], defaut `AppTheme.rougeUrgence` cote SOS) pour ne JAMAIS
+/// accentuee ([color], defaut `AppTheme.emergencyRed` cote SOS) pour ne JAMAIS
 /// se noyer parmi les autres (AUDIT §M-2, enjeu securite).
 @immutable
 class ContextualAction {
@@ -30,7 +30,7 @@ class ContextualAction {
   /// Action saillante (accentuee, pleine) — ex. SOS. Defaut false.
   final bool salient;
 
-  /// Couleur de l'accent quand [salient] (defaut `AppTheme.rougeUrgence`).
+  /// Couleur de l'accent quand [salient] (defaut `AppTheme.emergencyRed`).
   final Color? color;
 
   /// Label semantique explicite (a11y) si le [label] visuel ne suffit pas.
@@ -54,7 +54,7 @@ class ContextualAction {
 /// unique, G4).
 ///
 /// SOS (AUDIT §M-2) : passe une [ContextualAction] `salient` avec l'icone
-/// urgence et `AppTheme.rougeUrgence` — la barre le rend en pastille pleine
+/// urgence et `AppTheme.emergencyRed` — la barre le rend en pastille pleine
 /// accentuee, jamais un item de nav parmi d'autres.
 class ContextualActionBar extends StatelessWidget {
   const ContextualActionBar({super.key, required this.actions});
@@ -97,7 +97,7 @@ class _ActionButton extends StatelessWidget {
     if (action.salient) {
       // Action saillante (SOS) : pastille pleine accentuee — impossible a
       // confondre avec un item de nav (AUDIT §M-2).
-      final accent = action.color ?? AppTheme.rougeUrgence;
+      final accent = action.color ?? AppTheme.emergencyRed;
       return Semantics(
         button: true,
         label: action.semanticLabel ?? action.label,

@@ -111,7 +111,7 @@ Future<void> main() async {
   // et l'application demarre normalement.
   final firebaseService = await FirebaseService.initialize(
     firebaseProjectId: FirebaseConfig.resoudre(
-      depuisLeSentier: mareAMareCentreTrailConfig.firebaseProjectId,
+      fromTrail: mareAMareCentreTrailConfig.firebaseProjectId,
     ),
   );
 
@@ -152,9 +152,9 @@ List<TacheDAmorcage> tachesDAmorcageDeLApplication(Ref ref) => <TacheDAmorcage>[
   // remplace le fichier, et un fichier remplace ne porte plus
   // l attribut de celui qu il remplace).
   () async {
-    final profil = ref.read(hikerProfileRepositoryProvider);
-    await profil.migrerDepuisPreferences();
-    await profil.fichier.garantirExclusion();
+    final profile = ref.read(hikerProfileRepositoryProvider);
+    await profile.migrerDepuisPreferences();
+    await profile.fichier.garantirExclusion();
   },
 ];
 

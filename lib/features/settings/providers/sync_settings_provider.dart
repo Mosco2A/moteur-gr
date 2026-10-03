@@ -12,7 +12,7 @@ import "../../../core/services/cloud_sync_service.dart";
 class SyncSettingsKeys {
   static const String syncEnabled = "sync_cloud_enabled";
   static const String batchInterval = "sync_batch_interval_minutes";
-  static const String syncOnRefuge = "sync_on_refuge_arrival";
+  static const String syncOnHut = "sync_on_refuge_arrival";
   static const String syncOnReconnect = "sync_on_reconnect";
   static const String lastSyncTimestamp = "sync_last_timestamp";
   static const String lastSyncStatus = "sync_last_status";
@@ -64,14 +64,14 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
     _prefs = prefs;
 
     final interval = _prefs?.getInt(SyncSettingsKeys.batchInterval) ?? 60;
-    final onRefuge = _prefs?.getBool(SyncSettingsKeys.syncOnRefuge) ?? true;
+    final onHut = _prefs?.getBool(SyncSettingsKeys.syncOnHut) ?? true;
     final onReconnect =
         _prefs?.getBool(SyncSettingsKeys.syncOnReconnect) ?? true;
     final lastSync = _prefs?.getString(SyncSettingsKeys.lastSyncTimestamp);
 
     state = SyncConfig(
       batchIntervalMinutes: interval,
-      syncOnRefugeArrival: onRefuge,
+      syncOnRefugeArrival: onHut,
       syncOnReconnect: onReconnect,
       lastSyncTimestamp: lastSync,
     );
@@ -84,9 +84,9 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
   }
 
   /// Active/desactive la sync a l arrivee refuge.
-  void setSyncOnRefuge(bool enabled) {
+  void setSyncOnHut(bool enabled) {
     state = state.copyWith(syncOnRefugeArrival: enabled);
-    _prefs?.setBool(SyncSettingsKeys.syncOnRefuge, enabled);
+    _prefs?.setBool(SyncSettingsKeys.syncOnHut, enabled);
   }
 
   /// Active/desactive la sync au retour reseau.

@@ -105,8 +105,8 @@ class _HealthCardsSection extends StatelessWidget {
     required this.insuranceController,
     required this.carteVitale,
     required this.carteMutuelle,
-    required this.onPrendreCarte,
-    required this.onRetirerCarte,
+    required this.onTakeCard,
+    required this.onRemoveCard,
   });
 
   /// Le medecin traitant, possede par l'ecran.
@@ -122,10 +122,10 @@ class _HealthCardsSection extends StatelessWidget {
   final String carteMutuelle;
 
   /// Photographie la carte nommee.
-  final void Function(String nom, ImageSource src) onPrendreCarte;
+  final void Function(String nom, ImageSource src) onTakeCard;
 
   /// Retire la carte nommee.
-  final void Function(String nom) onRetirerCarte;
+  final void Function(String nom) onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
@@ -162,18 +162,16 @@ class _HealthCardsSection extends StatelessWidget {
           key: const ValueKey('health-carte-vitale'),
           titre: t.health.cards.vitale,
           nomFichier: carteVitale,
-          onPrendre: (src) =>
-              onPrendreCarte(HealthInfoFile.nomCarteVitale, src),
-          onRetirer: () => onRetirerCarte(HealthInfoFile.nomCarteVitale),
+          onPrendre: (src) => onTakeCard(HealthInfoFile.nomCarteVitale, src),
+          onRetirer: () => onRemoveCard(HealthInfoFile.nomCarteVitale),
         ),
         const SizedBox(height: AppTheme.spacingBase),
         _CarteTile(
           key: const ValueKey('health-carte-mutuelle'),
           titre: t.health.cards.mutuelle,
           nomFichier: carteMutuelle,
-          onPrendre: (src) =>
-              onPrendreCarte(HealthInfoFile.nomCarteMutuelle, src),
-          onRetirer: () => onRetirerCarte(HealthInfoFile.nomCarteMutuelle),
+          onPrendre: (src) => onTakeCard(HealthInfoFile.nomCarteMutuelle, src),
+          onRetirer: () => onRemoveCard(HealthInfoFile.nomCarteMutuelle),
         ),
       ],
     );
@@ -242,7 +240,7 @@ class _HealthActions extends StatelessWidget {
             label: t.health.delete.a11yButton,
             child: AppButton(
               variant: AppButtonVariant.outline,
-              tone: AppTheme.rougeUrgence,
+              tone: AppTheme.emergencyRed,
               isLoading: isDeleting,
               minHeight: 52,
               icon: StepwaysIcons.corbeille,

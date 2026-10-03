@@ -50,7 +50,7 @@ class SosConfirmationDialog extends StatelessWidget {
         children: [
           const StepIcon(
             StepwaysIcons.emergency,
-            color: AppTheme.rougeUrgence,
+            color: AppTheme.emergencyRed,
             size: 28,
           ),
           const SizedBox(width: 8),
@@ -235,7 +235,7 @@ class SosConfirmationDialog extends StatelessWidget {
         // (couleur SEMANTIQUE d'urgence). isFullWidth:false (action de dialogue).
         AppButton(
           variant: AppButtonVariant.filledTone,
-          tone: AppTheme.rougeUrgence,
+          tone: AppTheme.emergencyRed,
           isFullWidth: false,
           icon: StepwaysIcons.telephone,
           label: t.sos.call,

@@ -144,7 +144,7 @@ class TipDetailSheet extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.rougeUrgence.withAlpha(20),
+                          color: AppTheme.emergencyRed.withAlpha(20),
                           borderRadius: BorderRadius.circular(
                             AppTheme.radiusChip,
                           ),
@@ -154,14 +154,14 @@ class TipDetailSheet extends StatelessWidget {
                           children: [
                             const StepIcon(
                               StepwaysIcons.danger,
-                              color: AppTheme.rougeUrgence,
+                              color: AppTheme.emergencyRed,
                               size: 14,
                             ),
                             const SizedBox(width: 2),
                             Text(
                               "Priorite haute",
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppTheme.rougeUrgence,
+                                color: AppTheme.emergencyRed,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
                               ),

@@ -31,16 +31,16 @@ class _CollecteDeLaDemo extends ConsumerWidget {
     final theme = Theme.of(context);
     final absent = t.demo.collecteAbsent;
 
-    final profil = ref.watch(hikerProfileProvider).value ?? HikerProfile.empty;
+    final profile = ref.watch(hikerProfileProvider).value ?? HikerProfile.empty;
     final test = ref.watch(walkTestResultProvider).value;
     final randos = ref.watch(pastHikesProvider).value ?? const [];
     final trail = ref.watch(trailConfigProvider);
 
-    String valeurProfil() {
+    String profileValue() {
       final morceaux = <String>[
-        if (profil.age > 0) '${profil.age}',
-        if (profil.heightCm > 0) '${profil.heightCm} cm',
-        if (profil.weightKg > 0) '${profil.weightKg.toStringAsFixed(0)} kg',
+        if (profile.age > 0) '${profile.age}',
+        if (profile.heightCm > 0) '${profile.heightCm} cm',
+        if (profile.weightKg > 0) '${profile.weightKg.toStringAsFixed(0)} kg',
       ];
       return morceaux.isEmpty ? absent : morceaux.join(' · ');
     }
@@ -90,7 +90,7 @@ class _CollecteDeLaDemo extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingSm),
           _LigneDeCollecte(
             libelle: t.demo.collecteProfil,
-            valeur: valeurProfil(),
+            valeur: profileValue(),
           ),
           _LigneDeCollecte(
             libelle: t.demo.collecteForme,

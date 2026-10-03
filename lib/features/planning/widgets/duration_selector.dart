@@ -40,7 +40,7 @@ Color durationVerdictColor(FeasibilityVerdict verdict) {
     case FeasibilityVerdict.orange:
       return AppTheme.orangeDifficile;
     case FeasibilityVerdict.red:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
   }
 }
 

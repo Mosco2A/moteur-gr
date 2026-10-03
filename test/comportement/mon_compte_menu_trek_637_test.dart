@@ -76,7 +76,7 @@ void main() {
   group('637/2 — le geste de Christophe, trek REEL en cours', () {
     testWidgets('« Mon compte » depuis le menu du trek se dessine, sans une '
         'seule erreur', (tester) async {
-      RefusSauvegardeSystemeDialog.reinitialiserLeVerrou();
+      RefusSauvegardeSystemeDialog.resetLock();
       await monterAppliReelle(
         tester,
         etat: EtatAppli.enRoute,
@@ -86,10 +86,10 @@ void main() {
       // La question de sauvegarde est posee au premier rendu : on y repond comme
       // le randonneur, avant de continuer.
       if (find
-          .byKey(RefusSauvegardeSystemeDialog.cleValider)
+          .byKey(RefusSauvegardeSystemeDialog.validateKey)
           .evaluate()
           .isNotEmpty) {
-        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+        await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
         await stabiliser(tester);
       }
 

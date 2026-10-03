@@ -217,7 +217,7 @@ class _CarouselView extends StatelessWidget {
                         if (card.priority >= 8)
                           const StepIcon(
                             StepwaysIcons.danger,
-                            color: AppTheme.rougeUrgence,
+                            color: AppTheme.emergencyRed,
                             size: 18,
                           ),
                       ],

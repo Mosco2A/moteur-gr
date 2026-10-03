@@ -211,7 +211,7 @@ class _ButtonsRow extends StatelessWidget {
                   child: _ActionButton(
                     label: t.tracking.stopButton,
                     icon: StepwaysIcons.stop,
-                    color: AppTheme.rougeUrgence,
+                    color: AppTheme.emergencyRed,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),
@@ -235,7 +235,7 @@ class _ButtonsRow extends StatelessWidget {
                   child: _ActionButton(
                     label: t.tracking.stopButton,
                     icon: StepwaysIcons.stop,
-                    color: AppTheme.rougeUrgence,
+                    color: AppTheme.emergencyRed,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),

@@ -84,7 +84,7 @@ class _CrashEspion implements CrashSink {
 }
 
 void main() {
-  setUp(RefusSauvegardeSystemeDialog.reinitialiserLeVerrou);
+  setUp(RefusSauvegardeSystemeDialog.resetLock);
 
   /// L'ARBRE DE `main.dart`, PAS UN ARBRE DE TEST.
   ///
@@ -197,7 +197,7 @@ void main() {
       await tester.pumpWidget(appliReelle());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
@@ -387,7 +387,7 @@ void main() {
             'decision',
       );
 
-      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.cleValider));
+      await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
       await tester.pumpAndSettle();
       await second;
       expect(tester.takeException(), isNull);

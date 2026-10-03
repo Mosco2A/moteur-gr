@@ -721,7 +721,7 @@ Future<void> _ecrireProfil(
   ProviderContainer c,
   _Cellule cellule,
 ) async {
-  final profil = HikerProfile(
+  final profile = HikerProfile(
     age: cellule.age,
     heightCm: cellule.tailleCm,
     weightKg: cellule.poidsKg,
@@ -734,7 +734,7 @@ Future<void> _ecrireProfil(
     totalElevationGain: cellule.randoDplus,
   );
   await tester.runAsync(() async {
-    await c.read(hikerProfileProvider.notifier).save(profil);
+    await c.read(hikerProfileProvider.notifier).save(profile);
     await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[rando]);
   });
   // Le RANG DE FORME vient du test de marche : on ecrit un resultat DATE par le

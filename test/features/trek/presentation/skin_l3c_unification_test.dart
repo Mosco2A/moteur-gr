@@ -167,7 +167,7 @@ void main() {
         expect(pause, findsOneWidget);
         expect(stop, findsOneWidget);
         expect(backgroundOf(tester, pause), AppTheme.actionPause);
-        expect(backgroundOf(tester, stop), AppTheme.rougeUrgence);
+        expect(backgroundOf(tester, stop), AppTheme.emergencyRed);
         expect(foregroundOf(tester, pause), Colors.white);
 
         // Icones conservees.

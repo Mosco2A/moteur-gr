@@ -45,7 +45,7 @@ class SuiviPublicDepot {
 
   FirebaseFirestore get _firestore => _base ?? FirebaseFirestore.instance;
 
-  /// L'identifiant de session derriere [codeDePartage], ou `null`.
+  /// L'identifiant de session derriere [shareCode], ou `null`.
   ///
   /// `null` couvre les quatre cas que l'ecran traite de la meme facon — lien
   /// invalide : Firebase indisponible, aucune session active pour ce code,
@@ -54,11 +54,11 @@ class SuiviPublicDepot {
   /// La resolution passe par le MIROIR PUBLIC MINIMAL
   /// (`follow_sessions_public` ne porte jamais `trekkerUserId` — P0-1 #327) ;
   /// le document maitre `follow_sessions` reste owner-only.
-  Future<String?> resoudreSession(String codeDePartage) async {
+  Future<String?> resoudreSession(String shareCode) async {
     if (!_firebase.isAvailable) return null;
     final snapshot = await _firestore
         .collection('follow_sessions_public')
-        .where('shareCode', isEqualTo: codeDePartage)
+        .where('shareCode', isEqualTo: shareCode)
         .where('isActive', isEqualTo: true)
         .limit(1)
         .get();

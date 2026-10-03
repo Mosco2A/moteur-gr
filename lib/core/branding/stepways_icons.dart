@@ -149,7 +149,7 @@ abstract final class StepwaysIcons {
   static const partager = 'assets/icons/partager.svg'; // Partager
   static const recherche = 'assets/icons/recherche.svg'; // Recherche
   static const filtres = 'assets/icons/filtres.svg'; // Filtres
-  static const profil = 'assets/icons/profil.svg'; // Profil
+  static const profile = 'assets/icons/profil.svg'; // Profil
   static const batterie = 'assets/icons/batterie.svg'; // Batterie
   static const sansReseau = 'assets/icons/sans-reseau.svg'; // Sans réseau
   static const signaler = 'assets/icons/signaler.svg'; // Signaler

@@ -80,7 +80,7 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
             child: ListTile(
               leading: const StepIcon(
                 StepwaysIcons.corbeille,
-                color: AppTheme.rougeUrgence,
+                color: AppTheme.emergencyRed,
               ),
               title: Text(tr.entry),
               subtitle: Text(tr.entryDesc),
@@ -172,7 +172,7 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
             Text(
               tr.finalWarning,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.rougeUrgence,
+                color: AppTheme.emergencyRed,
               ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
@@ -201,7 +201,7 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
         // cochee (meme grammaire que l'effacement de la fiche sante).
         AppButton(
           variant: AppButtonVariant.filledTone,
-          tone: AppTheme.rougeUrgence,
+          tone: AppTheme.emergencyRed,
           isFullWidth: false,
           label: tr.confirm,
           onPressed: _understood ? () => Navigator.of(context).pop(true) : null,

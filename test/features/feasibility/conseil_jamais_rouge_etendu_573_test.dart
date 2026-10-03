@@ -26,7 +26,7 @@
 // D'APPEL, pas seulement le moteur.
 //
 // MANQUE 3 — AUCUN TEMOIN ROUGE. Une invariante dont le conseil est construit
-// pour la satisfaire (`ProgramPlanSearch.planDuSentier` ne rend rien
+// pour la satisfaire (`ProgramPlanSearch.trailPlan` ne rend rien
 // quand le plan du sentier est rouge) est vraie par construction : elle ne peut plus echouer, donc elle ne
 // prouve plus rien. Un test qui ne peut pas echouer ne protege de rien. On garde
 // donc ici l'ANCIENNE regle, rejouee a cote, comme TEMOIN : elle DOIT produire
@@ -237,7 +237,7 @@ void main() {
                 maxAltitudeM: aMax,
                 season: saison,
               );
-              final conseil = ProgramPlanSearch.planDuSentier(
+              final conseil = ProgramPlanSearch.trailPlan(
                 stages: trail.stages,
                 level: niveau,
                 demonstratedFloorEnergyKm: plancher,
@@ -294,7 +294,7 @@ void main() {
         final bornes = bornesDe(trail.stages);
         for (final niveau in niveaux) {
           const conditions = TrekConditions.unknown;
-          final conseil = ProgramPlanSearch.planDuSentier(
+          final conseil = ProgramPlanSearch.trailPlan(
             stages: trail.stages,
             level: niveau,
             demonstratedFloorEnergyKm: 0,

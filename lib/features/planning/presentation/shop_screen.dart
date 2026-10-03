@@ -479,7 +479,7 @@ class _ShopCard extends StatelessWidget {
                   vertical: AppTheme.spacingXs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.rougeUrgence.withAlpha(15),
+                  color: AppTheme.emergencyRed.withAlpha(15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                 ),
                 child: Row(
@@ -488,14 +488,14 @@ class _ShopCard extends StatelessWidget {
                     const StepIcon(
                       StepwaysIcons.danger,
                       size: 14,
-                      color: AppTheme.rougeUrgence,
+                      color: AppTheme.emergencyRed,
                     ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
                         t.shop.gapShort(n: gap),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -676,9 +676,9 @@ void _showShopDetail(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
-                      color: AppTheme.rougeUrgence.withAlpha(20),
+                      color: AppTheme.emergencyRed.withAlpha(20),
                       border: Border.all(
-                        color: AppTheme.rougeUrgence.withAlpha(100),
+                        color: AppTheme.emergencyRed.withAlpha(100),
                       ),
                       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                     ),
@@ -686,7 +686,7 @@ void _showShopDetail(
                       children: [
                         const StepIcon(
                           StepwaysIcons.danger,
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           size: 20,
                         ),
                         const SizedBox(width: AppTheme.spacingSm),
@@ -694,7 +694,7 @@ void _showShopDetail(
                           child: Text(
                             t.shop.gapLong(n: gap),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppTheme.rougeUrgence,
+                              color: AppTheme.emergencyRed,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -863,7 +863,7 @@ Color _shopTypeColor(ShopKind type, ColorScheme scheme) {
     case ShopKind.bar:
       return AppTheme.orangeDifficile;
     case ShopKind.pharmacie:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case ShopKind.gaz:
       return scheme.secondary;
   }

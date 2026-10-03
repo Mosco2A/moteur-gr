@@ -25,7 +25,7 @@ import 'package:moteur_gr/core/branding/stepways_icons.dart';
 /// LE SENTIER DE CE TEST EST UN VRAI SENTIER DU CATALOGUE (tache 614). Il
 /// s appelait « volcans » — un identifiant qui n existe nulle part — et le
 /// nombre d etapes qui fixait le prix etait ECRIT A LA MAIN dans le test, a
-/// cote. Depuis que l achat passe par le geste unique [acheterSentier], le prix
+/// cote. Depuis que l achat passe par le geste unique [buyTrail], le prix
 /// est resolu depuis le CATALOGUE : le nombre d etapes n est plus quelque chose
 /// qu un appelant declare, c est une propriete du sentier. On prend donc
 /// `gr-pyrenees`, qui porte exactement les 12 etapes que ce test attendait —

@@ -62,7 +62,7 @@ class DayForecastCard extends StatelessWidget {
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       padding: const EdgeInsets.all(AppTheme.spacingMd),
-      borderColor: isAlert ? AppTheme.rougeUrgence : null,
+      borderColor: isAlert ? AppTheme.emergencyRed : null,
       borderWidth: isAlert ? 1.5 : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class DayForecastCard extends StatelessWidget {
                 iconName: day.weatherIconName,
                 size: 28,
                 color: isAlert
-                    ? AppTheme.rougeUrgence
+                    ? AppTheme.emergencyRed
                     : theme.colorScheme.primary,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -186,7 +186,7 @@ class DayForecastCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isDanger
-            ? AppTheme.rougeUrgence.withAlpha(30)
+            ? AppTheme.emergencyRed.withAlpha(30)
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
@@ -196,13 +196,13 @@ class DayForecastCard extends StatelessWidget {
           StepIcon(
             icon,
             size: 14,
-            color: isDanger ? AppTheme.rougeUrgence : null,
+            color: isDanger ? AppTheme.emergencyRed : null,
           ),
           const SizedBox(width: 4),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: isDanger ? AppTheme.rougeUrgence : null,
+              color: isDanger ? AppTheme.emergencyRed : null,
             ),
           ),
         ],
@@ -214,7 +214,7 @@ class DayForecastCard extends StatelessWidget {
     if (temp <= 0) return AppTheme.rougeExtreme;
     if (temp <= 10) return AppTheme.orangeDifficile;
     if (temp <= 25) return AppTheme.vertFacile;
-    return AppTheme.rougeUrgence;
+    return AppTheme.emergencyRed;
   }
 }
 

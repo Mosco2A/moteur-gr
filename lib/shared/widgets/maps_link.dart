@@ -144,7 +144,7 @@ class MapsOpener {
   /// que le canal de plateforme n est pas la. Une exception qui traverse l ecran
   /// saute le message d echec, et le bouton ne produit RIEN — ni carte, ni
   /// explication.
-  Future<bool> ouvrir(LieuCliquable lieu) async {
+  Future<bool> open(LieuCliquable lieu) async {
     for (final uri in adressesPour(lieu)) {
       try {
         if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -206,9 +206,7 @@ class MapsOpener {
 }
 
 /// L ouvreur de cartes, surchargeable en test.
-final ouvreurDeCartesProvider = Provider<MapsOpener>(
-  (ref) => const MapsOpener(),
-);
+final mapsOpenerProvider = Provider<MapsOpener>((ref) => const MapsOpener());
 
 /// L ADRESSE ET LE POINT D UN LIEU, TELS QUE LE RANDONNEUR LES VOIT.
 ///
@@ -277,7 +275,7 @@ class LigneDeLieu extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
               key: const ValueKey('lieu-ouvrir-cartes'),
-              onPressed: () => _ouvrir(context, ref),
+              onPressed: () => _open(context, ref),
               icon: StepIcon(
                 StepwaysIcons.map,
                 size: compact ? 16 : 18,
@@ -305,9 +303,9 @@ class LigneDeLieu extends ConsumerWidget {
     );
   }
 
-  Future<void> _ouvrir(BuildContext context, WidgetRef ref) async {
+  Future<void> _open(BuildContext context, WidgetRef ref) async {
     final messager = ScaffoldMessenger.maybeOf(context);
-    final ouvert = await ref.read(ouvreurDeCartesProvider).ouvrir(lieu);
+    final ouvert = await ref.read(mapsOpenerProvider).open(lieu);
     if (ouvert || messager == null) return;
     // L ECHEC SE DIT. Un geste qui ne produit rien et ne dit rien est pire qu un
     // bouton absent : le randonneur ne sait pas s il a mal appuye.

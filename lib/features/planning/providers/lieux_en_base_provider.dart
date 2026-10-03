@@ -111,12 +111,12 @@ abstract final class LieuxEnBase {
 }
 
 /// Un lieu du sentier, tel que la base le porte.
-class LieuDeSentier {
-  const LieuDeSentier({
+class TrailPlace {
+  const TrailPlace({
     required this.poi,
     required this.stageNumber,
-    required this.estPremiereEtape,
-    required this.estDerniereEtape,
+    required this.isFirstStage,
+    required this.isLastStage,
   });
 
   /// La ligne de `trail_pois`.
@@ -126,10 +126,10 @@ class LieuDeSentier {
   final int stageNumber;
 
   /// Vrai si ce lieu est sur la premiere etape du sentier.
-  final bool estPremiereEtape;
+  final bool isFirstStage;
 
   /// Vrai si ce lieu est sur la derniere etape du sentier.
-  final bool estDerniereEtape;
+  final bool isLastStage;
 }
 
 /// TOUS LES LIEUX DU SENTIER, LUS EN BASE, AVEC LEUR NUMERO D ETAPE.
@@ -137,31 +137,31 @@ class LieuDeSentier {
 /// Une seule lecture pour les deux rubriques : la jointure etape -> itineraire ->
 /// sentier se fait UNE fois, pas deux.
 final lieuxDuSentierEnBaseProvider =
-    FutureProvider.family<List<LieuDeSentier>, String>((ref, trailId) async {
+    FutureProvider.family<List<TrailPlace>, String>((ref, trailId) async {
       final db = ref.watch(databaseProvider);
       final itineraires = await TrailItinerariesDao(db).getByTrailId(trailId);
-      if (itineraires.isEmpty) return const <LieuDeSentier>[];
+      if (itineraires.isEmpty) return const <TrailPlace>[];
 
       final stages = <TrailStage>[];
       for (final itineraire in itineraires) {
         stages.addAll(await TrailStagesDao(db).getByItineraryId(itineraire.id));
       }
-      if (stages.isEmpty) return const <LieuDeSentier>[];
+      if (stages.isEmpty) return const <TrailPlace>[];
 
       final numeros = stages.map((e) => e.stageNumber).toList()..sort();
       final premiere = numeros.first;
       final derniere = numeros.last;
 
       final poisDao = TrailPoisDao(db);
-      final lieux = <LieuDeSentier>[];
-      for (final etape in stages) {
-        for (final poi in await poisDao.getByStageId(etape.id)) {
+      final lieux = <TrailPlace>[];
+      for (final stage in stages) {
+        for (final poi in await poisDao.getByStageId(stage.id)) {
           lieux.add(
-            LieuDeSentier(
+            TrailPlace(
               poi: poi,
-              stageNumber: etape.stageNumber,
-              estPremiereEtape: etape.stageNumber == premiere,
-              estDerniereEtape: etape.stageNumber == derniere,
+              stageNumber: stage.stageNumber,
+              isFirstStage: stage.stageNumber == premiere,
+              isLastStage: stage.stageNumber == derniere,
             ),
           );
         }
@@ -189,7 +189,7 @@ final lieuxDuSentierEnBaseProvider =
 /// ecran vide.
 TrailTransport? transportDepuisLesLieux(
   String trailId,
-  List<LieuDeSentier> lieux, {
+  List<TrailPlace> lieux, {
   required String nomDepart,
   required String nomArrivee,
 }) {
@@ -200,11 +200,11 @@ TrailTransport? transportDepuisLesLieux(
 
   List<TransportSection> sectionsPour({required bool cotedepart}) {
     final retenus = transports.where((l) {
-      if (l.estPremiereEtape && l.estDerniereEtape) return true;
-      return cotedepart ? l.estPremiereEtape : l.estDerniereEtape;
+      if (l.isFirstStage && l.isLastStage) return true;
+      return cotedepart ? l.isFirstStage : l.isLastStage;
     }).toList();
     final intermediaires = transports
-        .where((l) => !l.estPremiereEtape && !l.estDerniereEtape)
+        .where((l) => !l.isFirstStage && !l.isLastStage)
         .toList();
 
     final sections = <TransportSection>[];
@@ -222,18 +222,18 @@ TrailTransport? transportDepuisLesLieux(
       // DONNEE dans ce modele (il varie par lieu), donc il ne peut pas etre une
       // clef i18n fixe ; on prend le nom du lieu tel que la base l ecrit, qui est
       // deja dans la langue de la donnee.
-      final parEtape = <int, List<LieuDeSentier>>{};
+      final byStage = <int, List<TrailPlace>>{};
       for (final l in intermediaires) {
-        parEtape.putIfAbsent(l.stageNumber, () => <LieuDeSentier>[]).add(l);
+        byStage.putIfAbsent(l.stageNumber, () => <TrailPlace>[]).add(l);
       }
-      final numeros = parEtape.keys.toList()..sort();
+      final numeros = byStage.keys.toList()..sort();
       for (final numero in numeros) {
-        final groupe = parEtape[numero]!;
+        final group = byStage[numero]!;
         sections.add(
           TransportSection(
-            title: groupe.first.poi.nameFr,
-            mode: LieuxEnBase.modeDe(groupe.first.poi.type),
-            options: groupe.map(_option).toList(),
+            title: group.first.poi.nameFr,
+            mode: LieuxEnBase.modeDe(group.first.poi.type),
+            options: group.map(_option).toList(),
           ),
         );
       }
@@ -280,7 +280,7 @@ TrailTransport? transportDepuisLesLieux(
   );
 }
 
-TransportOption _option(LieuDeSentier lieu) {
+TransportOption _option(TrailPlace lieu) {
   final poi = lieu.poi;
   return TransportOption(
     mode: LieuxEnBase.modeDe(poi.type),
@@ -305,7 +305,7 @@ TransportOption _option(LieuDeSentier lieu) {
 /// compile plutot que de montrer l ecran blanc du bug 17.
 TrailShops? ravitaillementDepuisLesLieux(
   String trailId,
-  List<LieuDeSentier> lieux,
+  List<TrailPlace> lieux,
 ) {
   final commerces = lieux
       .where((l) => LieuxEnBase.estRavitaillement(l.poi.type))

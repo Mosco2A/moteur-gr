@@ -49,7 +49,7 @@ class DefiService {
   DefiProgress localProgress(DefiSaisonnier defi, UserStats stats) {
     final current = switch (defi.typeObjectif) {
       DefiObjectif.distance => 0.0, // distance cumulee : alimentee en amont
-      DefiObjectif.denivele => stats.totalElevationGainM,
+      DefiObjectif.elevationGain => stats.totalElevationGainM,
       DefiObjectif.segments => stats.segmentsCompleted.toDouble(),
       _ => 0.0,
     };

@@ -172,7 +172,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   // que la randonnee n'a pas encore demarre »).
                   _GuideRow(
                     icon: StepwaysIcons.emergency,
-                    color: AppTheme.rougeUrgence,
+                    color: AppTheme.emergencyRed,
                     label: t.a11y.sos,
                     description: '${t.map.guide.sos} ${t.map.guide.onlyInTrek}',
                   ),
@@ -204,7 +204,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   ),
                   _GuideRow(
                     icon: StepwaysIcons.danger,
-                    color: AppTheme.rougeUrgence,
+                    color: AppTheme.emergencyRed,
                     label: t.map.offTrackChip,
                     description: t.map.guide.offTrack,
                   ),

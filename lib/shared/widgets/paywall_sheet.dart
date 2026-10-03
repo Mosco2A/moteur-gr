@@ -38,7 +38,7 @@ import '../../core/branding/stepways_icons.dart';
 /// SERVICE ([MonetizationService.stagesOfTrail]), qui est aussi celui qui
 /// debite. Le montant affiche et le montant preleve ne peuvent plus diverger,
 /// et ce geste n'a plus rien a transmettre qu'un identifiant.
-Future<void> acheterSentier(
+Future<void> buyTrail(
   BuildContext context,
   WidgetRef ref, {
   required String trailId,
@@ -51,7 +51,7 @@ Future<void> acheterSentier(
 /// PRIVEE DEPUIS LA TACHE 614, et c'est la garantie du « meme chemin ». Tant
 /// qu'elle etait publique, chaque ecran pouvait ouvrir sa propre vitrine avec
 /// son propre prix ; six le faisaient. Le seul appelant est desormais
-/// [acheterSentier], et un test structurel refuse qu'un septieme apparaisse.
+/// [buyTrail], et un test structurel refuse qu'un septieme apparaisse.
 ///
 /// Propose le deblocage du trek [trailId] : liste des avantages (#81774) + prix
 /// EUR indicatif (etapes x [kStepTierEur]) + CTA. L'achat passe par le
