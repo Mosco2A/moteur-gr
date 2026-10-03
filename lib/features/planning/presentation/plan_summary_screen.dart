@@ -16,7 +16,8 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../booking/domain/models/nuitee_type.dart';
 import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../trek/providers/gps_providers.dart';
 import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';

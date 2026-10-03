@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../notifications/providers/notification_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider;
 import '../domain/programme_generator.dart';
 import '../models/programme_entrainement.dart';
 

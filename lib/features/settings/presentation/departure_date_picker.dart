@@ -10,7 +10,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../../core/branding/stepways_icons.dart';
 
 /// Widget de selection de la date de depart pour un sentier.

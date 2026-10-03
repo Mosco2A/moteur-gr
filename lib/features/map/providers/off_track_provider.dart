@@ -12,7 +12,8 @@ import 'package:geolocator/geolocator.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
-import '../../notifications/providers/notification_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider, notificationSettingsProvider;
 import '../domain/off_track_detector.dart';
 import 'gpx_track_provider.dart';
 

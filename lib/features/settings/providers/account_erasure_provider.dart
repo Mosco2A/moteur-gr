@@ -29,7 +29,8 @@ import '../../journal/journal_facade.dart'
         journalDayTraceProvider,
         journalRepositoryProvider;
 import '../../map/providers/stage_poi_check_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../planning/planning_facade.dart'
     show
         manualRestDayCacheProvider,

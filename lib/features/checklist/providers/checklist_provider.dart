@@ -11,7 +11,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../feasibility/domain/body_weight_reference.dart';
 import '../../feasibility/domain/hiker_input_bounds.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../data/checklist_seasonal_adapter.dart';
 import '../data/checklist_template.dart';
 import '../domain/season.dart';

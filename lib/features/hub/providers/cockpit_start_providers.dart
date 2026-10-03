@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../safety/safety_facade.dart' show healthPrepareDoneProvider;
 import '../../trek/providers/gps_providers.dart';
 import '../../../core/services/session_demo.dart';

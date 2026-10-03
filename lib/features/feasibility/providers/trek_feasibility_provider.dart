@@ -9,7 +9,8 @@ import '../../../core/geo/trace_point.dart';
 import '../../../core/models/stage_row.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
 import '../../planning/planning_facade.dart' show plannedDaysProvider;
 import '../../trek/providers/gps_providers.dart';
