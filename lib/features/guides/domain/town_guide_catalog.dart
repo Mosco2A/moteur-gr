@@ -30,6 +30,16 @@ typedef GuideSectionLabelResolver =
 /// et leurs items (noms de prestataires fictifs) sont des DONNEES, jamais du
 /// code en dur. Le backend (Phase 4) remplacera ce catalogue par le contenu reel
 /// rapatrie dans le pack.
+///
+/// AUCUN ITEM NE PORTE DE LIEN PROFOND, ET C'EST VOLONTAIRE (lot 645-08, voie V2
+/// arbitree par Christophe le 02/10/2026). Trois items en portaient un vers
+/// `example.org` : le domaine reserve aux exemples (RFC 2606). Un randonneur qui
+/// appuyait sur « Voir le site » partait donc nulle part, sans qu'aucune
+/// exception soit levee. La valeur inventee est RETIREE plutot que remplacee par
+/// une chaine creuse : `deeplinkUrl` est nul, [GuideItem.hasDeeplink] est faux,
+/// et `TownGuideDetailScreen` ne construit PAS le bouton — pas de tiret, pas de
+/// « non renseigne », pas d'espace reserve. Quand le backend fournira de vrais
+/// liens, ils reviendront par la donnee, et le bouton avec eux.
 abstract final class TownGuideCatalog {
   /// Construit la liste des town guides fictifs d'un sentier (P2-P3, #84627).
   ///
@@ -63,7 +73,6 @@ abstract final class TownGuideCatalog {
             GuideItem(
               nom: 'Epicerie du village',
               description: 'Produits de base, ouverte le matin.',
-              deeplinkUrl: 'https://example.org/epicerie',
             ),
             GuideItem(
               nom: 'Boulangerie',
@@ -74,7 +83,6 @@ abstract final class TownGuideCatalog {
             GuideItem(
               nom: 'Gite d\'etape',
               description: 'Dortoirs et chambres, reservation conseillee.',
-              deeplinkUrl: 'https://example.org/gite',
             ),
           ]),
           section(GuideCategory.transport, const [
@@ -115,7 +123,6 @@ abstract final class TownGuideCatalog {
             GuideItem(
               nom: 'Supermarche',
               description: 'Ravitaillement complet avant le depart.',
-              deeplinkUrl: 'https://example.org/supermarche',
             ),
           ]),
           section(GuideCategory.transport, const [

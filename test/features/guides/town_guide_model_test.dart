@@ -176,15 +176,34 @@ void main() {
       }
     });
 
-    test('au moins un item expose un deeplink facilitateur (#84100)', () {
+    // ATTENTE INVERSEE PAR LE LOT 645-08 (voie V2, arbitrage de Christophe du
+    // 02/10/2026). Elle disait « au moins un item expose un deeplink
+    // facilitateur (#84100) » et elle etait verte grace a TROIS liens vers
+    // `example.org` — le domaine reserve aux exemples (RFC 2606). Elle gardait
+    // donc exactement le defaut : un bouton « Voir le site » qui n'envoie le
+    // randonneur nulle part. Le catalogue de demonstration ne porte plus aucun
+    // lien ; le jour ou le backend en fournira de vrais, c'est la donnee qui les
+    // ramenera, et le bouton avec eux (le rendu conditionnel est garde par
+    // `town_guides_ui_test.dart`, qui injecte ses propres items).
+    test('aucun item du catalogue de demonstration n expose de lien', () {
       final guides = TownGuideCatalog.guidesFor(
         'mare_a_mare_centre',
         sectionLabelResolver: resolver,
       );
-      final hasAnyDeeplink = guides.any(
-        (g) => g.sections.any((s) => s.items.any((i) => i.hasDeeplink)),
+      final avecLien = <String>[
+        for (final g in guides)
+          for (final s in g.sections)
+            for (final i in s.items)
+              if (i.hasDeeplink) '${g.id}/${i.nom} -> ${i.deeplinkUrl}',
+      ];
+      expect(
+        avecLien,
+        isEmpty,
+        reason:
+            'VOIE V2 : un lien invente est RETIRE, pas remplace par une chaine '
+            'creuse. Un `deeplinkUrl` ici rallumerait le bouton « Voir le '
+            'site » sur une donnee de demonstration.',
       );
-      expect(hasAnyDeeplink, isTrue);
     });
 
     test('guideById retrouve un guide existant et null sinon', () {
