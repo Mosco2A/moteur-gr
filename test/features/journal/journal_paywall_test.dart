@@ -207,8 +207,19 @@ void main() {
 
     test('TrailFeatures et featuresForTrail restent un CUL-DE-SAC : aucun '
         'ecran ne les consulte', () {
+      // LOT 645-06, VAGUE 2 : `monetization_service.dart` a ete scinde en
+      // `part` du meme dossier. On ecarte donc toute la BIBLIOTHEQUE de
+      // monetisation — racine et morceaux — et non plus le seul fichier qui
+      // la portait en entier. L attente, elle, ne bouge pas : c est toujours
+      // « aucun AUTRE fichier de lib/ ne consulte ces drapeaux ».
       final consommateurs = fichiersDeLib()
-          .where((p) => !p.endsWith('monetization_service.dart'))
+          .where(
+            (p) => !p
+                .replaceAll(r'\', '/')
+                .split('/')
+                .last
+                .startsWith('monetization_service'),
+          )
           .where((p) {
             final c = lireCodeSeul(p);
             return c.contains('featuresForTrail(') ||

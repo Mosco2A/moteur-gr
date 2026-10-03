@@ -165,6 +165,29 @@ String resoudreRelatif(String fichierSource, String relatif) {
   return base.join('/');
 }
 
+/// Le fichier de BIBLIOTHEQUE auquel appartient [chemin].
+///
+/// LOT 645-06, VAGUE 2 : les plus gros ecrans du depot ont ete scindes en
+/// fichiers `part` du meme dossier. Un `part` n a PAS d imports — c est la
+/// RACINE de la bibliotheque qui les porte, et c est elle que le routeur cite.
+/// Tout ce que ce graphe lit dans un morceau (un geste de navigation, une
+/// classe de widget) est donc attribue a sa racine : sans cela, le graphe ne
+/// pourrait pas remonter d un geste ecrit dans un morceau jusqu a l ecran qui
+/// le rend, et declarerait inatteignables des routes qui le sont.
+///
+/// C est la SEULE chose que le decoupage change dans ce graphe : ni les
+/// invariantes, ni les attentes des tests qui s en servent.
+String bibliothequeDe(String chemin) {
+  final p = _normal(chemin);
+  final f = File(p);
+  if (!f.existsSync()) return p;
+  final m = RegExp(
+    r"^part of '([^']+)';",
+    multiLine: true,
+  ).firstMatch(f.readAsStringSync());
+  return m == null ? p : resoudreRelatif(p, m.group(1)!);
+}
+
 /// Les classes de widget definies par fichier : `MaClasse` -> `lib/.../x.dart`.
 Map<String, String> classesDeWidgetParFichier(List<File> fichiers) {
   final re = RegExp(
@@ -176,7 +199,7 @@ Map<String, String> classesDeWidgetParFichier(List<File> fichiers) {
   for (final f in fichiers) {
     final src = f.readAsStringSync();
     for (final m in re.allMatches(src)) {
-      out[m.group(1)!] = f.path;
+      out[m.group(1)!] = bibliothequeDe(f.path);
     }
   }
   return out;
@@ -369,7 +392,7 @@ bool memeRoute(String a, String b) {
       for (final m in reChemin.allMatches(l)) {
         aretes.add(
           AreteNavigation(
-            fichier: f.path,
+            fichier: bibliothequeDe(f.path),
             ligne: i + 1,
             geste: m.group(1)!,
             cible: gabaritDe(m.group(3)!),
@@ -380,7 +403,7 @@ bool memeRoute(String a, String b) {
       for (final m in reIndirect.allMatches(l)) {
         aretes.add(
           AreteNavigation(
-            fichier: f.path,
+            fichier: bibliothequeDe(f.path),
             ligne: i + 1,
             geste: 'indirect',
             cible: gabaritDe(m.group(2)!),
@@ -391,7 +414,7 @@ bool memeRoute(String a, String b) {
       for (final m in reNom.allMatches(l)) {
         aretes.add(
           AreteNavigation(
-            fichier: f.path,
+            fichier: bibliothequeDe(f.path),
             ligne: i + 1,
             geste: m.group(1)!,
             cible: m.group(3)!,

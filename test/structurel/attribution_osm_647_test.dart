@@ -28,6 +28,27 @@ void main() {
     ///
     /// `lib/docs/` est exclu : ce dossier ne contient que de la documentation,
     /// et ses `FlutterMap(` sont dans des commentaires — du texte, pas un ecran.
+    ///
+    /// LOT 645-06, VAGUE 2 : un ecran scinde en `part` vit dans plusieurs
+    /// fichiers d UNE SEULE bibliotheque. L unite a verifier est donc la
+    /// BIBLIOTHEQUE et non le fichier : on saute les `part of`, et on lit
+    /// chaque racine AVEC ses morceaux. Sans cela, le morceau qui porte la
+    /// FlutterMap et celui qui porte l attribution se denonceraient l un
+    /// l autre. L attente ne bouge pas : une carte pose son attribution.
+    String sourceDeLaBibliotheque(File f) {
+      final racine = f.readAsStringSync();
+      final chemin = f.path.replaceAll(r'\', '/');
+      final dossier = chemin.substring(0, chemin.lastIndexOf('/'));
+      final morceaux = RegExp(r"^part '([^']+)';", multiLine: true)
+          .allMatches(racine)
+          .map((m) => m.group(1)!)
+          .where((n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'));
+      return [
+        racine,
+        for (final n in morceaux) File('$dossier/$n').readAsStringSync(),
+      ].join('\n');
+    }
+
     List<File> fichiersAvecUneCarte() {
       final trouves = <File>[];
       for (final entite in Directory('lib').listSync(recursive: true)) {
@@ -37,7 +58,13 @@ void main() {
         if (chemin.endsWith('.g.dart') || chemin.endsWith('.freezed.dart')) {
           continue;
         }
-        if (entite.readAsStringSync().contains('FlutterMap(')) {
+        if (RegExp(
+          r"^part of ",
+          multiLine: true,
+        ).hasMatch(entite.readAsStringSync())) {
+          continue;
+        }
+        if (sourceDeLaBibliotheque(entite).contains('FlutterMap(')) {
           trouves.add(entite);
         }
       }
@@ -57,7 +84,7 @@ void main() {
     test('chaque carte pose une AttributionOsm', () {
       final sansAttribution = <String>[];
       for (final fichier in fichiersAvecUneCarte()) {
-        if (!fichier.readAsStringSync().contains('AttributionOsm()')) {
+        if (!sourceDeLaBibliotheque(fichier).contains('AttributionOsm()')) {
           sansAttribution.add(fichier.path.replaceAll(r'\', '/'));
         }
       }

@@ -73,7 +73,23 @@ const plafondDartSousDocs = 2;
 /// sous le plafond. Les quatre autres ecrans de la vague ont vu leur `build()`
 /// decoupee sans que leur fichier repasse sous 500 : c'est la vague 2 qui s'en
 /// charge. UN fichier de moins au-dela du plafond, donc 52 -> 51.
-const plafondFichiersTropLongs = 51;
+///
+/// ABAISSE A 48 LE 03/10/2026 (lot 645-06, vague 2) : les cinq plus gros
+/// fichiers du depot ont ete scindes en fichiers voisins du meme dossier.
+/// TROIS d'entre eux passent entierement sous le plafond, morceaux compris :
+///
+///   - `trek_feasibility_screen.dart` : 2032 -> 156, sept morceaux de 162 a
+///     408 lignes ;
+///   - `feasibility_formula.dart` : 1644 -> 59, six morceaux de 90 a 489 ;
+///   - `map_screen.dart` : 1288 -> 62, six morceaux de 25 a 386.
+///
+/// Les DEUX autres laissent un morceau au-dela, et c'est une classe unique
+/// qu'on ne peut pas scinder sans deplacer son etat :
+/// `health_info_screen_etat.dart` (579) porte _HealthInfoScreenState, et
+/// `monetization_service_service.dart` (965) porte MonetizationService. Ils
+/// restent donc comptes. Trois fichiers de moins au-dela du plafond, donc
+/// 51 -> 48.
+const plafondFichiersTropLongs = 48;
 
 /// Le plafond de lignes d'un fichier source (ECR-15).
 const maximumLignesParFichier = 500;

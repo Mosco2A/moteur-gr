@@ -35,7 +35,7 @@ import 'package:moteur_gr/core/error/error_nets.dart';
 ///   4. un echec du consentement UMP remonte dans Crashlytics, et plus seulement
 ///      dans le journal local du telephone.
 void main() {
-  String source(String chemin) => File(chemin).readAsStringSync();
+  String source(String chemin) => _sourceAvecSesParts(chemin);
 
   group('le mode pubs de test ne peut pas atteindre la production', () {
     test('il est faux par defaut (aucun dart-define dans cette suite)', () {
@@ -285,4 +285,26 @@ void main() {
       );
     });
   });
+}
+
+/// Lit une bibliotheque de `lib/` ET ses fichiers `part`, dans l ordre des
+/// directives.
+///
+/// LOT 645-06, VAGUE 2 : les plus gros fichiers de `lib/` ont ete scindes en
+/// `part` du MEME dossier. Le code mesure ici est le meme, au caractere pres —
+/// il vit juste dans plusieurs fichiers d une seule bibliotheque. On les
+/// recolle donc dans l ordre declare, ce qui preserve aussi l ordre des lignes
+/// dont dependent les mesures de position. Seule la LECTURE change ; aucune
+/// attente de ces tests n a ete touchee.
+String _sourceAvecSesParts(String chemin) {
+  final racine = File(chemin).readAsStringSync();
+  final dossier = chemin.substring(0, chemin.lastIndexOf('/'));
+  final parts = RegExp(r"^part '([^']+)';", multiLine: true)
+      .allMatches(racine)
+      .map((m) => m.group(1)!)
+      .where((n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'));
+  return [
+    racine,
+    for (final n in parts) File('$dossier/$n').readAsStringSync(),
+  ].join('\n');
 }
