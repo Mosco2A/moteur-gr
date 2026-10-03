@@ -331,14 +331,15 @@ void main() {
         socleVersMetier.length,
         lessThanOrEqualTo(plafondSocleVersMetier),
         reason:
-            'LE SOCLE SE MET A CONNAITRE LE METIER. `core/` ou `shared/` tirent '
-            '${socleVersMetier.length} fleche(s) vers `lib/domain/`, contre '
+            'LE SOCLE SE MET A CONNAITRE LE METIER. `core/` ou `shared/` '
+            'tirent ${socleVersMetier.length} fleche(s) vers `lib/domain/`, '
+            'contre '
             '$plafondSocleVersMetier exige depuis ARB-645-05-c (decision B de '
-            'Christophe, 03/10/2026). `lib/domain/` est AU-DESSUS du socle : le '
-            'metier a le droit de lire `core/` et `shared/`, le socle ne '
+            'Christophe, 03/10/2026). `lib/domain/` est AU-DESSUS du socle : '
+            'le metier a le droit de lire `core/` et `shared/`, le socle ne '
             'remonte JAMAIS vers le metier. Ce plafond est a zero parce que la '
-            'mesure y est — les trois fleches qui existaient ont ete payees une '
-            'par une par le lot 645-05b, pas tolerees. Deux issues, et une '
+            'mesure y est — les trois fleches qui existaient ont ete payees '
+            'une par une par le lot 645-05b, pas tolerees. Deux issues, et une '
             'seule est bonne : faire DESCENDRE dans le socle ce qui n est pas '
             'du metier (le seuil de bruit de l altimetre est parti dans '
             '`GeoUtils`), ou faire MONTER dans `lib/domain/` ce qui l est '
@@ -376,9 +377,10 @@ void main() {
         fautes,
         isEmpty,
         reason:
-            'UNE FACADE BLANCHIT UN CROISEMENT. Une facade publie le contrat de '
-            'SA feature, et rien d autre. Re-exporter un fichier d une autre '
-            'feature donne a tous ses lecteurs un acces que la garde (b) ne '
+            'UNE FACADE BLANCHIT UN CROISEMENT. Une facade publie le contrat '
+            'de SA feature, et rien d autre. Re-exporter un fichier d une '
+            'autre feature donne a tous ses lecteurs un acces que la garde (b) '
+            'ne '
             'compte pas, puisqu elle ne lit que les `import` : le croisement '
             'disparait de la mesure sans disparaitre du code. Ce qui est '
             'partage par plusieurs features monte dans `shared/`, `core/` ou '
@@ -389,8 +391,9 @@ void main() {
         facadesVues,
         greaterThan(0),
         reason:
-            'AUCUNE FACADE TROUVEE, DONC CE TEST NE MESURE RIEN. Vingt features '
-            'en ont recu une au lot 645-05b ; si le compte tombe a zero, c est '
+            'AUCUNE FACADE TROUVEE, DONC CE TEST NE MESURE RIEN. Vingt '
+            'features en ont recu une au lot 645-05b ; si le compte tombe a '
+            'zero, c est '
             'que la convention de nom a change ou que les facades ont ete '
             'retirees — et alors l exclusion de (b) ne protege plus rien.',
       );

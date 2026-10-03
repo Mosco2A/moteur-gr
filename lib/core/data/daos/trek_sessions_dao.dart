@@ -69,8 +69,8 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
   /// Relit la DERNIERE ligne persistee du sentier [trailId], ou null si aucune
   /// (PARITE GR20, LOT 3, #99433).
   ///
-  /// « Derniere » = la plus recemment demarree (`startedAt` le plus grand), avec
-  /// la date de fin comme second critere (une session terminee prime a
+  /// « Derniere » = la plus recemment demarree (`startedAt` le plus grand),
+  /// avec la date de fin comme second critere (une session terminee prime a
   /// horodatage egal). C'est la source de verite « apres le trek » : le gate du
   /// diplome (finisher reel) et l'ecran Recap « Mon aventure » lisent cette
   /// session pour refleter le parcours REELLEMENT effectue (etapes marchees +
@@ -90,16 +90,17 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
   /// l'unique creneau de rando active (invariant C4, StepWays LOT 2).
   static const List<String> kOngoingStatuses = <String>['active', 'paused'];
 
-  /// Lignes des sessions EN COURS (statut `active` OU `paused`) — StepWays
-  /// LOT 2, gap C4a.
+  /// Lignes des sessions EN COURS (statut `active` OU `paused`) — StepWays LOT
+  /// 2, gap C4a.
   ///
   /// Alimente (1) le detecteur de session orpheline au boot
-  /// ([TrekSessionManager.checkPendingSession] / [cleanOrphans]) et (2) la garde
-  /// d'unicite cross-trail [ensureSingleActiveThenStart] : une session `active`
-  /// OU `paused` en base signale un trek deja en cours (fermeture brutale ou
-  /// simple mise en pause). AVANT LOT 2 seul `active` etait remonte -> une rando
-  /// mise en pause echappait a l'invariant « au plus 1 rando en cours » et a la
-  /// reprise orpheline. On inclut donc `paused` ([kOngoingStatuses]).
+  /// ([TrekSessionManager.checkPendingSession] / [cleanOrphans]) et (2) la
+  /// garde d'unicite cross-trail [ensureSingleActiveThenStart] : une session
+  /// `active` OU `paused` en base signale un trek deja en cours (fermeture
+  /// brutale ou simple mise en pause). AVANT LOT 2 seul `active` etait remonte
+  /// -> une rando mise en pause echappait a l'invariant « au plus 1 rando en
+  /// cours » et a la reprise orpheline. On inclut donc `paused`
+  /// ([kOngoingStatuses]).
   Future<List<TrekSessionRow>> ongoingRows() async {
     return (select(
       trekSessions,

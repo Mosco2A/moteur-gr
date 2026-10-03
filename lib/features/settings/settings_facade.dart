@@ -1,10 +1,10 @@
 /// FACADE PUBLIQUE DE LA FEATURE `settings` — LA SEULE PORTE D ENTREE.
 ///
 /// ARB-645-05-b, DECISION B DE CHRISTOPHE (03/10/2026). Une feature ne lit une
-/// autre feature QUE par sa facade. Ce fichier est cette porte pour `settings` :
-/// tout ce qu il re-exporte est public, et tout le reste de `settings` —
-/// `providers/`, `data/`, `domain/`, `presentation/` — est prive, meme si rien
-/// dans le langage ne l empeche techniquement. La garde
+/// autre feature QUE par sa facade. Ce fichier est cette porte pour
+/// `settings` : tout ce qu il re-exporte est public, et tout le reste de
+/// `settings` — `providers/`, `data/`, `domain/`, `presentation/` — est prive,
+/// meme si rien dans le langage ne l empeche techniquement. La garde
 /// `test/structurel/couches_respectees_645_test.dart` est ce qui l empeche.
 ///
 /// CE FICHIER NE CONTIENT QUE DES `export`, ET C EST LA TOUT SON INTERET. Une

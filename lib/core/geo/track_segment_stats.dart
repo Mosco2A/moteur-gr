@@ -73,10 +73,10 @@ class TrackSegmentStats {
 
 /// Calcule les chiffres d'une suite de points GPS.
 ///
-/// Reutilise [GeoUtils.haversineDistance] et [GeoUtils.elevationNoiseThresholdM]
-/// (3 m) : sans ce seuil, le tremblement de l'altimetre fabrique plusieurs
-/// centaines de metres de denivele sur une journee plate. Aucun moteur de stats
-/// n'est reconstruit ici.
+/// Reutilise [GeoUtils.haversineDistance] et
+/// [GeoUtils.elevationNoiseThresholdM] (3 m) : sans ce seuil, le tremblement de
+/// l'altimetre fabrique plusieurs centaines de metres de denivele sur une
+/// journee plate. Aucun moteur de stats n'est reconstruit ici.
 ///
 /// LE SEUIL EST LU DANS LE SOCLE, PLUS DANS `TrekStats` (ARB-645-05-c). Ce
 /// fichier est du socle : il ne peut pas connaitre le metier, et il n'avait

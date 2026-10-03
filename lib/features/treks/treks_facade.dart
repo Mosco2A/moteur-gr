@@ -17,8 +17,8 @@
 /// CE QUE CETTE PORTE COUTE SI ON LA CONTOURNE. Un import direct vers
 /// `features/treks/providers/...` soude les deux features : on ne touche plus a
 /// l une sans ouvrir l autre, et le detail d implementation de `treks` devient
-/// l interface sur laquelle les autres reposent. La facade rend ce cout visible —
-/// elle ne l interdit pas, elle le NOMME.
+/// l interface sur laquelle les autres reposent. La facade rend ce cout
+/// visible — elle ne l interdit pas, elle le NOMME.
 ///
 /// LUE PAR 6 FICHIERS DE 4 FEATURES AU 03/10/2026 : `hub`, `settings`, `trail`,
 /// `trek`.
