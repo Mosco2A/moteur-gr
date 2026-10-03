@@ -32,16 +32,19 @@ class _FakeBattery implements Battery {
 class _FakeConnectivity implements Connectivity {
   _FakeConnectivity({this.current = ConnectivityResult.wifi});
   ConnectivityResult current;
-  final StreamController<ConnectivityResult> _ctrl =
-      StreamController<ConnectivityResult>.broadcast();
+  // connectivity_plus 6+ rend une LISTE de liens actifs : le fake parle donc
+  // la liste au bord `implements Connectivity`, et garde le lien unique en
+  // entree pour que les cas de test restent lisibles tels quels.
+  final StreamController<List<ConnectivityResult>> _ctrl =
+      StreamController<List<ConnectivityResult>>.broadcast();
 
   @override
-  Future<ConnectivityResult> checkConnectivity() async => current;
+  Future<List<ConnectivityResult>> checkConnectivity() async => [current];
 
   @override
-  Stream<ConnectivityResult> get onConnectivityChanged => _ctrl.stream;
+  Stream<List<ConnectivityResult>> get onConnectivityChanged => _ctrl.stream;
 
-  void emit(ConnectivityResult r) => _ctrl.add(r);
+  void emit(ConnectivityResult r) => _ctrl.add([r]);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
