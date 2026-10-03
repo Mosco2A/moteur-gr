@@ -3,7 +3,6 @@
 library;
 
 import '../data/database.dart';
-import '../../domain/trek_stats.dart';
 import 'geo_utils.dart';
 
 /// Chiffres MESURES sur une suite de points GPS.
@@ -74,10 +73,14 @@ class TrackSegmentStats {
 
 /// Calcule les chiffres d'une suite de points GPS.
 ///
-/// Reutilise [GeoUtils.haversineDistance] et le SEUIL DE BRUIT de
-/// [TrekStats] (3 m) : sans ce seuil, le tremblement de l'altimetre fabrique
-/// plusieurs centaines de metres de denivele sur une journee plate. Aucun
-/// moteur de stats n'est reconstruit ici.
+/// Reutilise [GeoUtils.haversineDistance] et [GeoUtils.elevationNoiseThresholdM]
+/// (3 m) : sans ce seuil, le tremblement de l'altimetre fabrique plusieurs
+/// centaines de metres de denivele sur une journee plate. Aucun moteur de stats
+/// n'est reconstruit ici.
+///
+/// LE SEUIL EST LU DANS LE SOCLE, PLUS DANS `TrekStats` (ARB-645-05-c). Ce
+/// fichier est du socle : il ne peut pas connaitre le metier, et il n'avait
+/// besoin que d'un nombre — la valeur est la meme, a un seul endroit.
 TrackSegmentStats computeTrackStats(List<SessionTrackPoint> points) {
   if (points.length < 2) {
     return TrackSegmentStats(
@@ -94,7 +97,7 @@ TrackSegmentStats computeTrackStats(List<SessionTrackPoint> points) {
     final cur = points[i];
     meters += GeoUtils.haversineDistance(prev.lat, prev.lng, cur.lat, cur.lng);
     final d = cur.altitude - prev.altitude;
-    if (d.abs() >= TrekStats.elevationNoiseThresholdM) {
+    if (d.abs() >= GeoUtils.elevationNoiseThresholdM) {
       if (d > 0) {
         gain += d;
       } else {

@@ -8,6 +8,19 @@ class GeoUtils {
 
   static const double _earthRadiusMeters = 6371000.0;
 
+  /// SEUIL DE BRUIT DE L ALTIMETRE : en dessous, un ecart d altitude entre deux
+  /// points consecutifs n'est pas du denivele, c'est du tremblement de capteur.
+  ///
+  /// IL VIT DANS LE SOCLE, ET PAS DANS LE METIER (ARB-645-05-c, decision B du
+  /// 03/10/2026). Ce n'est pas une regle de randonnee : c'est une propriete de
+  /// l'instrument, du meme ordre que le rayon de la Terre juste au-dessus. Sans
+  /// ce filtre, l'altimetre fabrique plusieurs centaines de metres de denivele
+  /// sur une journee plate — le chiffre serait faux et aurait l'air vrai.
+  ///
+  /// `TrekStats.elevationNoiseThresholdM` le relit ici pour que la valeur
+  /// n'existe qu'une fois ; c'est le sens autorise (le metier lit le socle).
+  static const double elevationNoiseThresholdM = 3.0;
+
   /// Convertit des degres en radians.
   static double _toRadians(double degrees) => degrees * pi / 180.0;
 
