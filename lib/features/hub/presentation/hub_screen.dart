@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/mise_a_jour_a_la_source.dart';
@@ -176,6 +177,12 @@ class _HubScreenState extends ConsumerState<HubScreen> {
     return liveActive
         ? CockpitPhase.hike
         : CockpitPhase.fromLifecycle(lifecycle);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.hub);
   }
 
   @override

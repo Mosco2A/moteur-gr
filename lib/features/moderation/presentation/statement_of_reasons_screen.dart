@@ -3,7 +3,9 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/services/moderation_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -50,7 +52,7 @@ class StatementOfReasonsView {
 /// 20, [ComplaintScreen]). Si aucune restriction n'existe, un message neutre
 /// l'indique. Textes Slang 5 langues, a11y via [Semantics]. Aucune logique
 /// serveur : la [statement] est fournie (lue en amont selon les regles D4C-02).
-class StatementOfReasonsScreen extends StatelessWidget {
+class StatementOfReasonsScreen extends ConsumerWidget {
   const StatementOfReasonsScreen({this.statement, super.key});
 
   /// Expose des motifs a afficher, ou null si aucun (rien n'a ete restreint).
@@ -65,7 +67,11 @@ class StatementOfReasonsScreen extends StatelessWidget {
       };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.statementOfReasons);
     final tr = Translations.of(context);
     final theme = Theme.of(context);
     final st = statement;

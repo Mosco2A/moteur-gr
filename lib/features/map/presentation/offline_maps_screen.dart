@@ -38,6 +38,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/config/trail_catalog.dart';
 import '../../../core/error/error_handler.dart';
@@ -75,6 +76,11 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.offlineMaps,
+      trail: widget.trailId,
+    );
     // Le premier examen part apres la construction : il lit la base et le type de
     // lien, et un `initState` n attend rien.
     WidgetsBinding.instance.addPostFrameCallback((_) => _examiner());
