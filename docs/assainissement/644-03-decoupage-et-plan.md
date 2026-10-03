@@ -655,6 +655,106 @@ n'empeche de grossir.
 | **ARB-645-05-c** | Dependance a DOUBLE SENS entre `lib/domain/` et `lib/core/` : 3 fleches dans chaque sens (listes ci-dessus), dont `planned_day.dart` -> le modele Drift `stage_row.dart`. Aucune garde ne la mesure : `mesurer_couches` range `core`, `shared` et `domain` dans le meme socle | **A trancher par Christophe** : (a) **`domain` SOUS `core`** — `core` ne lit pas `domain`, et les 3 fleches de `core` disparaissent (les types voyagent vers `domain`, ou `core` passe par une abstraction) ; ou (b) **`domain` AU-DESSUS de `core`** — `domain` a le droit de lire `core`, et ce sont les 3 fleches de `domain` qui sont legitimes, les 3 autres a retirer. Dans les deux cas : **une garde** ajoutee a `tool/audit_global.py` qui separe `domain` de `core` et compte le sens interdit, sinon le double sens reviendra sans bruit |
 
 
+#### LES TROIS ARBITRAGES SONT TRANCHÉS — DÉCISIONS DE CHRISTOPHE DU 03/10/2026
+
+Les trois lignes ci-dessus ne sont plus des questions ouvertes. Elles ont été
+tranchées le **03/10/2026** et exécutées : **ARB-645-05-a par le lot 645-06**
+(tête `eb948e24`), **ARB-645-05-b et ARB-645-05-c par le lot 645-05b** (branche
+`claude/chore/645-05b-facades`, tête `88ffbe5c`, fusionnée en `7019908e`).
+
+- **ARB-645-05-a — voie (A).** Le routeur est déclaré **exception écrite** à
+  ECR-23 (a), avec sa justification : un routeur central EST un point de
+  rencontre, et GoRouter demande la liste des routes en un point. Exécuté par le
+  lot 645-06 : `lib/core/routing/app_router.dart` est exclu du comptage de la
+  garde des couches et la règle est écrite dans `docs/conventions.md`
+  (**règle 9**). Tout autre fichier du socle y reste compté.
+
+- **ARB-645-05-b — voie (B).** Une **façade par feature** : une feature ne lit
+  une autre feature que par sa porte publique
+  `lib/features/<f>/<f>_facade.dart`. Exécuté par le lot 645-05b : **20
+  façades** créées (48 directives `export … show` explicites, **87 symboles**
+  exposés, aucun `export *`, aucune logique), et **130 imports croisés
+  redirigés**. Chacun des 130 porte un `show` explicite **du côté import aussi**
+  (109 lignes d'import, 169 symboles nommés) : c'est le double verrou qui rend
+  la redirection vérifiable. Aucun symbole n'a changé de source — pour chacun
+  des 130, le fichier qui le déclare était déjà importé par le même appelant.
+  `docs/conventions.md` **règle 10**.
+
+- **ARB-645-05-c — voie (B).** `lib/domain/` est **AU-DESSUS** de `core/` et de
+  `shared/` : le métier lit le socle, le socle ne remonte jamais vers le métier.
+  Exécuté par le lot 645-05b, les 3 flèches `core → domain` payées une par une :
+  le **seuil de bruit de l'altimètre** descend dans `GeoUtils` — c'est une
+  propriété d'instrument, pas une règle de randonnée — et
+  `TrekStats.elevationNoiseThresholdM` le relit, valeur inchangée à 3.0 m ;
+  **`privacy_data_policy.dart`** monte dans `lib/domain/`, c'est une règle de
+  conformité typée sur `TrackPoint` de bout en bout ; le **mapping
+  `TrekSession` ↔ Drift** quitte le DAO pour `lib/domain/trek_session_mapping.dart`,
+  **en extension**, pour que les appelants gardent le même appel, le même nom et
+  la même signature. `docs/conventions.md` **règle 11**.
+
+**LES PLAFONDS, AVANT ET APRÈS, MESURÉS (QA locale, tâche 664, 03/10/2026).**
+Relevés sur la tête fusionnée `7019908e`. Les trois plafonds de
+`test/structurel/couches_respectees_645_test.dart` sont posés **à la mesure,
+sans marge** : un plafond au-dessus de la mesure est une autorisation de
+régresser.
+
+- *socle → feature* : 78 au 02/10, 72 après 645-05, **21** après 645-06
+  (routeur exclu, ARB-a), **21** après 645-05b.
+- *croisements entre features* : 223 au 02/10, 182 après 645-05, 182 après
+  645-06, **52** après 645-05b.
+- *socle → métier* (`core`/`shared` → `lib/domain/`) : 3 au 02/10, 3 après
+  645-05, 3 après 645-06 — et **non mesurés** jusque-là, puisque l'audit rangeait
+  `core`, `shared` et `domain` dans un seul sac — **0** après 645-05b.
+- *ECR-23 (audit global)* : 301 au 02/10, 254 après 645-05, 254 après 645-06,
+  **233** après 645-05b.
+
+Les trois gardes ont été **prouvées vivantes par mutation** (tâche 664) : une
+flèche `core → domain` injectée fait rougir (c) ; une façade qui re-exporte une
+autre feature fait rougir la garde négative dédiée ; et un fichier nommé
+`<f>_facade.dart` placé **ailleurs** qu'à la racine de sa feature **ne gagne pas
+l'exemption** — le croisement reste compté (52 → 53, rouge). L'exclusion est
+donc étroite, et elle est gardée.
+
+**CE QUI RESTE, ET QUI EST L'ARBITRAGE SUIVANT.** Des 52 croisements restants,
+**aucun ne vise un `providers/`** : l'état Riverpod partagé est entièrement payé.
+**32 sont des emprunts bilatéraux de type** — 19 vers un `domain/` de feature, 10
+vers un `widgets/`, 3 vers un `models/` — dont ARB-645-05-b a déjà établi
+qu'aucun n'est lu par deux features ou plus. Les **20 autres** sont d'une autre
+nature : un écran qui monte le widget d'une autre feature, ou un service de
+données lu de loin, n'est pas le même problème qu'un provider. Ce sont eux qui
+demandent la décision suivante de Christophe.
+
+*Les 15 vers une `presentation/`* : `after/adventure_recap_screen` →
+`diploma/…/session_trace_painter` ; `auth/profile_screen` →
+`safety/…/refus_sauvegarde_systeme_dialog` ; `hub/hub_screen` →
+`ads/…/banner_ad_slot` et → `safety/…/sos_button` ; `hub/…/hub_cockpit_scroll` →
+`ads/…/badge_etat_publicite` ; `hub/…/hub_start_trek_button` →
+`treks/…/active_trek_conflict_dialog` ; `hub/…/localized_conditions_banner` →
+`weather/…/fire_risk_screen` ; `map/…/simplified_track_provider` →
+`trek/…/map/marker_cluster` ; `settings/…/account_erasure_provider` →
+`safety/…/health_info_screen` ; `trail/trail_catalog_screen` →
+`ads/…/badge_etat_publicite` et → `ads/…/banner_ad_slot` ; `trek/…/map_screen` →
+`safety/…/sos_button` ; `treks/my_treks_screen` → `hub/…/hub_section` et →
+`hub/…/quick_access_card` ; `weather/…/weather_alert_banner` →
+`tips/…/tip_detail_sheet`.
+
+*Les 5 vers un `data/`* : `feasibility/…/ibp_calculator` →
+`trek/data/track_simplifier` ; `feasibility/…/walk_test_provider` →
+`trek/data/gps_service` ; `settings/…/account_erasure_provider` →
+`feasibility/data/hiker_profile_repository` ; `trek/…/map_screen` →
+`journal/data/photo_service` ; `trek/…/trek_stage_detail_screen` →
+`safety/data/signalement_service`.
+
+Trois familles s'y dessinent, et elles n'appellent pas le même geste. Les
+**bandeaux publicitaires** (`ads/`) et le **bouton SOS** (`safety/`) sont montés
+par trois écrans différents chacun : ce qui est lu par plusieurs features monte
+dans `shared/`. Les **widgets de cockpit** (`hub/`) relus par `my_treks_screen`
+posent plutôt la question de savoir si `hub` et `treks` ne sont pas une seule
+feature. Les **services de données** (`gps_service`, `photo_service`,
+`signalement_service`) sont le seul groupe qui se lirait naturellement par une
+façade élargie.
+
+
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
 dans `lib/domain/` et deux dans `lib/shared/poi/` pour le vocabulaire visuel
@@ -685,6 +785,18 @@ demandent une décision, pas du code.
 | **C10 Smoke** | `flutter build appbundle --release`. Essai de démarrage à froid sur émulateur (le lot touche `app_bootstrap_provider.dart`) |
 | **C11 Rollback** | `git revert <sha de la zone>`. Tag `avant-645-05`. **Jamais en un seul commit** |
 | **C12 Dépendances** | **645-01**, **645-04**, et **un arbitrage de Christophe** (bloquant) |
+
+**CORRECTION DU 03/10/2026 — LE C9 DE CETTE FICHE N'EST PLUS LE CRITÈRE.** Cette
+fiche a été écrite avant l'arbitrage, et son C9 demande « zéro import socle →
+feature, zéro croisement hors `lib/domain/` ». Ce zéro-là n'était pas atteignable
+par du rangement, et c'est la mesure qui l'a dit, pas une renonciation : 51 des
+72 flèches socle → feature sortaient du seul routeur, et 130 des 182 croisements
+visaient de l'état Riverpod partagé. Christophe a tranché les trois arbitrages le
+**03/10/2026** (voir le bloc « LES TROIS ARBITRAGES SONT TRANCHÉS » ci-dessus), et
+les critères réels sont désormais **les trois plafonds mesurés** de
+`test/structurel/couches_respectees_645_test.dart` : socle → feature **21**
+(routeur exclu), croisements **52** (façades exclues), socle → métier **0**. Les
+deux cas isolés #X62 et #X63 restent, eux, corrigés comme la fiche l'exigeait.
 
 ```
 PROMPT 645-05 (autonome)
