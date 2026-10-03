@@ -573,6 +573,59 @@ de `test/structurel/aucun_doublon_645_test.dart` de 3 a 2.
 atteignable, mais elle passe par les trois arbitrages ci-dessus, pas par du
 code.
 
+**DECISION Christophe 02/10/2026 21:55 : voie A.** `stage` et `track_point`
+résolus par le lot 645-05 : rangement dans `lib/domain/` et noms de fichiers
+distincts, types inchangés.
+
+Exécution, le 02/10/2026, par le lot 645-05 (branche
+`claude/chore/645-05-couches`) : le modèle de domaine
+`features/trek/domain/models/stage.dart` est devenu `lib/domain/stage.dart`
+(classe `Stage`) et le modèle Drift `core/models/stage.dart` est devenu
+`core/models/stage_row.dart` (classe `StageModel`, inchangée, toujours dans le
+socle) ; l'échantillon GPS `features/trek/domain/models/track_point.dart` est
+devenu `lib/domain/track_point.dart` et le point de trace de référence
+`core/geo/track_point.dart` est devenu `core/geo/trace_point.dart`. **Les
+quatre types existent toujours**, avec leurs champs et le convertisseur
+explicite `domainStagesProvider` : SPEC-06 interdisait de fusionner en
+déplaçant, pas de ranger. **ECR-20 tombe donc à 0**, et la liste d'identité de
+`test/structurel/aucun_doublon_645_test.dart` est vidée.
+
+---
+
+**ARB-645-05-a — LE ROUTEUR, ET POURQUOI LA CIBLE « 0 SOCLE -> FEATURE » NE
+PEUT PAS ETRE ATTEINTE PAR DU RANGEMENT (Hephaistos, 02/10/2026).** La voie A a
+ete executee comme la fiche l'exige, et elle a tenu toutes ses promesses
+mesurables sur les MODELES. Elle ne peut pas tenir la cible 0, et la mesure dit
+pourquoi en une ligne : **51 des 75 fleches `socle -> feature` restantes sortent
+d'un seul fichier**, `lib/core/routing/app_router.dart`, qui importe un ecran
+par route. Ce n'est pas un modele mal range, c'est la forme meme d'un routeur
+central : GoRouter demande la liste des routes en un point, et une route cite
+l'ecran qu'elle monte.
+
+Les ramener a zero demande d'INVERSER le routeur — chaque feature declare ses
+routes, le socle ne connait qu'un registre — ce qui touche les 30 ecrans, les
+gardes de route (`redirect`, droits premium, `FeatureFlags`), l'ordre de
+declaration (dont depend la resolution des deeplinks) et
+`tout_ecran_a_une_route_573_test.dart`. C'est un lot a part entiere, et il
+change le DEMARRAGE de l'application : exactement ce que le smoke C10 du lot
+645-05 surveille. Le faire en fin de lot, sans arbitrage, aurait ete le plus
+mauvais moment.
+
+| Ref | Ce que la mesure a montre | Ce qui est demande |
+|---|---|---|
+| **ARB-645-05-a** | `app_router.dart` porte **51 des 75** fleches socle -> feature. Les 24 autres sont diffuses : `pilote_demo.dart` (6, un pilote de demo qui conduit six providers de features), `app_bootstrap_provider.dart` (3 apres K1), `data_retention_service.dart` (2), `sync_scheduler.dart` (2), et 11 fichiers a une fleche | Trancher si le routeur s'inverse (registre de routes alimente par les features) ou si **le routeur est declare exception ecrite** a ECR-23 (a), avec sa justification — un routeur central EST un point de rencontre, et la regle maison ne l'avait pas prevu |
+| **ARB-645-05-b** | Les **196 croisements** restants ne sont pas des modeles : **130 visent un `providers/`**, 33 un `domain/`, 15 une `presentation/`, 10 un `widgets/`. Et parmi les 33 `domain/`, **3 seulement** sont lus par deux features ou plus — le critere ecrit de la fiche. Les 130 sont de l'ETAT RIVERPOD partage (`gps_providers`, `tracking_providers`, `planned_days_provider`, `auth_provider`, `download_reminder_provider`...) : deplacer un provider n'est pas un deplacement de type, c'est un recablage du graphe, et SPEC-06 interdit de changer un comportement en deplacant | Trancher le principe pour l'ETAT partage : (a) une couche `lib/application/` pour les providers que plusieurs features lisent, (b) une facade par feature (chaque feature expose un contrat, les autres ne lisent plus ses providers), ou (c) assumer que l'etat partage se lit directement et **retirer les `providers/` de la cible ECR-23 (b)**. Recommandation d'Hephaistos : **(b)**, la seule qui laisse une frontiere lisible, mais c'est un chantier par feature, pas un lot |
+
+**CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
+été exécutée : `lib/domain/` existe, **onze modèles** y sont descendus (ou dans
+`lib/shared/` pour le vocabulaire visuel des POI), les deux homonymes sont
+résolus sans qu'un seul type soit fusionné, K1 et K2 sont corrigés. Compteurs :
+**socle → feature 78 → 72**, **croisements 223 → 182**, **ECR-20 2 → 0**,
+**ECR-25 1 → 0**. La cible « zéro » n'est pas atteinte, et les deux fiches
+ci-dessus disent pourquoi en chiffres : ce qui reste n'est pas du rangement de
+modèles, c'est un routeur central et de l'état Riverpod partagé. Les deux
+demandent une décision, pas du code.
+
 
 ---
 

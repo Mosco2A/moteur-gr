@@ -18,6 +18,11 @@
 
 ```
 lib/
+  domain/                   -- Modèles lus par PLUSIEURS features
+                               (Stage, TrackPoint, TrekSession, PlannedDay...)
+                               Voie A, décision de Christophe du 02/10/2026.
+                               Ne dépend d'aucune feature : c'est la couche
+                               la plus basse, sous core/ comme sous shared/.
   core/                     -- Socle technique partagé
     config/                 -- TrailConfig, TestTrailConfig
     constants/              -- Constantes globales
@@ -26,7 +31,9 @@ lib/
     firebase/               -- Firebase service
     geo/                    -- GPX, géo, projection
     map/                    -- MBTiles, tuiles offline
-    models/                 -- Modèles Freezed partagés
+    models/                 -- Modèles Freezed du socle (adossés à Drift) ;
+                               ceux que plusieurs features lisent vivent
+                               dans lib/domain/
     network/                -- Connectivité
     providers/              -- Providers globaux
     routing/                -- GoRouter
@@ -49,7 +56,11 @@ lib/
     tracking/               -- Enregistrement rando
     trail/                  -- Catalogue, démo, sentiers
     weather/                -- Météo
-  shared/                   -- Widgets partagés
+  shared/                   -- Partagé par plusieurs features
+    poi/                    -- Vocabulaire visuel des points d'intérêt
+                               (PoiTypeConfig, PoiTypeLabel) : une icône,
+                               une couleur et un libellé par type
+    services/               -- Services partagés
     widgets/                -- AppButton, AppCard, EmptyState...
 ```
 
