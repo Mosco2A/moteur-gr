@@ -1190,8 +1190,8 @@ froid.
 | Champ | Contenu |
 |---|---|
 | **C1 Réf** | 645-10 |
-| **C2 Fichier:ligne** | `pubspec.yaml`, `pubspec.lock`, + code d'adaptation. Paquets visés : `cloud_firestore` 5.6.12 → 6.10.0 ; `connectivity_plus` 5.0.2 → 7.3.1 ; `battery_plus` 6.2.3 → 7.1.2 ; `carp_serializable` 2.0.1 → 3.0.0 |
-| **C3 Description** | Monter **seulement** les paquets dont la version résoluble est déjà la dernière. Les paquets bloqués par une contrainte (`cached_network_image`, `analyzer`) sont **hors de ce lot** |
+| **C2 Fichier:ligne** | `pubspec.yaml`, `pubspec.lock`, + code d'adaptation. Paquets visés à l'écriture de la fiche : `cloud_firestore` 5.6.12 → 6.10.0 ; `connectivity_plus` 5.0.2 → 7.3.1 ; `battery_plus` 6.2.3 → 7.1.2 ; `carp_serializable` 2.0.1 → 3.0.0. **Réellement montés : `battery_plus` 6.2.3 → 7.1.2 (+ `android/settings.gradle.kts`, greffon Android 8.11.1 → 8.12.1) et `connectivity_plus` 5.0.2 → 7.3.1 (+ 3 sites d'appel et 1 faux de test)** — voir la correction du 03/10 ci-dessous |
+| **C3 Description** | Monter **seulement** les paquets qu'on peut monter **seuls**. ~~Monter seulement les paquets dont la version résoluble est déjà la dernière.~~ **Ce critère est faux** : la colonne « résoluble » de `flutter pub outdated` relâche **toutes** les contraintes directes à la fois, elle ne dit donc rien de la montée d'un paquet isolé. Le critère valable est : **`pub get` passe en ne touchant que ce paquet**. Les paquets bloqués par une contrainte (`cached_network_image`, `analyzer`) sont **hors de ce lot** |
 | **C4 Agent** | Hephaistos |
 | **C5 Prompt complet** | *(ci-dessous, bloc 645-10)* |
 | **C6 Branche** | `claude/chore/645-10-dependances` |
@@ -1201,6 +1201,16 @@ froid.
 | **C10 Smoke** | Hors ligne pour `connectivity_plus` ; lecture/écriture distante pour `cloud_firestore` ; économie de batterie pour `battery_plus` |
 | **C11 Rollback** | `git revert <sha du paquet>` — **obligatoirement un paquet par commit**, pour isoler une régression. Tag `avant-645-10` |
 | **C12 Dépendances** | **645-01**. Indépendant du reste : peut passer à tout moment après 645-01 |
+
+#### Correction du 03/10/2026 — faits établis par la fabrication (session cloud) et la QA locale (tâche 662, Artemis)
+
+1. **Le critère de sélection de la fiche était faux.** « Colonne *résoluble* = *dernière* » dans `flutter pub outdated` est calculé en relâchant **toutes** les contraintes directes **en même temps** : il ne prouve donc pas qu'un paquet est montable **seul**. Le critère valable, et le seul vérifiable, est : **`pub get` passe en ne touchant que ce paquet**. Vérifié sur un `pubspec.yaml` jetable, le 03/10 : `health` est donné « résoluble 13.3.2 » et **échoue seul** (`share_plus` 10.1.4 exige `win32 ^5.5.3`, `device_info_plus` 13 exige `win32 ^6.0.1`) ; `cloud_firestore` est donné « résoluble 6.10.0 » et **échoue seul** (`firebase_analytics` 11 exige `firebase_core_platform_interface ^6`, `cloud_firestore` 6.9+ exige `^8.1.1`).
+2. **`cloud_firestore` est SORTI du lot.** Monter 6.10.0 entraîne une cascade Firebase : `firebase_core` 3 → 4, `firebase_auth`, `firebase_storage`, `firebase_analytics`, `firebase_crashlytics` 4 → 5, soit **6 majeures directes et 21 dépendances changées** — impossible à isoler paquet par paquet, donc contraire au C7 (un commit par paquet) et au C11 (revert d'un seul paquet). Reste à **5.6.12**. À instruire comme un lot à part.
+3. **`carp_serializable` est SORTI du lot.** Il est **transitif** (porté par `health` seul, **zéro site d'appel** dans `lib/`), et `health` 13.3.2 est bloqué par `share_plus` 10.1.4 (voir point 1). Reste à **2.0.1**.
+4. **`battery_plus` 7 n'est pas une montée Dart, c'est une montée de build Android.** Entre 6.2.3 et 7.1.2, la source Android du greffon est **identique octet pour octet** et la seule différence Dart touche l'implémentation **Linux** : le changement cassant est le plancher de build (greffon Android ≥ **8.12.1**, Gradle ≥ 8.13, Kotlin 2.2.0), d'où `android/settings.gradle.kts` 8.11.1 → 8.12.1. Planchers de plateforme relevés au passage : iOS 12.0 → **13.0**, macOS 10.14 → **10.15** (le dépôt est à 13.0 et 10.15, donc juste au plancher).
+5. **`connectivity_plus` 7 rend une LISTE de liens** (`List<ConnectivityResult>`) là où la 5 rendait une valeur, et connaît le lien **satellite**. Sur Android ≥ 6, le greffon ne liste que les **transports du réseau actif** (`getActiveNetwork()`), pas tous les réseaux montés : mesuré le 03/10 sur émulateur, wifi **et** cellulaire validés en même temps rendent `[wifi]`, pas `[wifi, mobile]`. La liste à plusieurs entrées est donc le cas VPN-au-dessus-d'un-lien, que l'ancienne API rendait déjà en `vpn` — même verdict `TypesDeLien.autre` avant et après.
+6. **C9/C10 — l'essai émulateur par paquet reste la règle, mais la fiche surestimait ce qu'il peut atteindre.** Le garde de lien (`DescenteDesCartes.examiner`) est **inatteignable par l'interface** tant que le circuit n'est pas acheté (le refus « fait partie du circuit acheté » et le refus « pas pendant la démonstration » passent avant le test du lien). Un essai de bout en bout de ce garde suppose donc un achat réel ; à défaut, il se vérifie par sonde du greffon réel + tests unitaires du garde.
+7. **`battery_plus` n'a aucun consommateur de production.** `batteryAwareLocationControllerProvider` n'est lu par **aucun** fichier de `lib/` (seulement par son test) : aucun écran ne réagit au niveau de batterie aujourd'hui. Constat **antérieur** au lot, qui ne le crée pas — mais il rend l'essai « économie de batterie » du C10 sans objet tant que le contrôleur n'est pas branché.
 
 ```
 PROMPT 645-10 (autonome)
@@ -1221,6 +1231,14 @@ LES 4 PAQUETS DE CE LOT — colonne « resoluble » deja egale a « dernier » :
   connectivity_plus   5.0.2  -> 7.3.1
   battery_plus        6.2.3  -> 7.1.2
   carp_serializable   2.0.1  -> 3.0.0
+
+[CORRECTION DU 03/10/2026 — ce bloc de prompt est conserve tel qu il a ete
+ donne, mais DEUX de ces quatre paquets ne sont pas montables seuls et sont
+ sortis du lot (cloud_firestore : cascade Firebase de 6 majeures directes ;
+ carp_serializable : transitif, bloque par share_plus). Le critere « colonne
+ resoluble = derniere » est faux : il relache toutes les contraintes a la
+ fois. Lire la section « Correction du 03/10/2026 » juste au-dessus du bloc
+ avant de rejouer ce prompt.]
 
 HORS DE CE LOT — le resoluble reste l actuel, une contrainte amont les
 bloque. NE LES TOUCHE PAS :
