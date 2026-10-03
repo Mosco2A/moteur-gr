@@ -11,7 +11,8 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../ads/providers/ads_providers.dart';
+import '../../ads/ads_facade.dart'
+    show adsConsentServiceProvider, adsPrivacyOptionsRequiredProvider;
 import '../providers/consent_ui_providers.dart';
 import '../providers/legal_pages_provider.dart';
 import 'consent_purpose_tile.dart';
