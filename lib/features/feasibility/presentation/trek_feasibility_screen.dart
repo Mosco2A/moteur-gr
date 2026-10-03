@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
@@ -114,6 +115,12 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
   /// abonnements sont des lors permanents pour toute la vie de l'ecran et les
   /// invalidations de `_refreshAssessment` sont traitees par l'ordonnanceur
   /// AVANT la phase de build, jamais pendant. Aucun changement d'affichage.
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.trekFeasibility);
+  }
+
   @override
   Widget build(BuildContext context) {
     final criteriaAsync = ref.watch(feasibilityCriteriaProvider);

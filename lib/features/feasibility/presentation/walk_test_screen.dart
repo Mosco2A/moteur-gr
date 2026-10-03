@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -50,6 +51,12 @@ class _WalkTestScreenState extends ConsumerState<WalkTestScreen> {
   /// valide) et on l'utilise tel quel dans `dispose`. Cf. doc Riverpod :
   /// « save the provider state in a field of your State class ».
   WalkTestController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.walkTest);
+  }
 
   @override
   void didChangeDependencies() {

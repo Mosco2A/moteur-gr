@@ -19,7 +19,7 @@ import 'screen_breadcrumb.dart';
 export 'screen_breadcrumb.dart';
 
 /// Le journal local de secours de ce raccord.
-final _log = Logger(printer: PrettyPrinter(methodCount: 0));
+final _log = Logger(printer: SimplePrinter(colors: false));
 
 /// POSE LA MIETTE D'ENTREE D'ECRAN, ET NE COUTE JAMAIS L'ECRAN.
 ///

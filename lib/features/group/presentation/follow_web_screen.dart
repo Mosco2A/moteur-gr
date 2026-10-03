@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/attribution_osm.dart';
@@ -54,6 +55,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.followWeb);
     _startListening();
   }
 

@@ -15,23 +15,24 @@ import 'screen_breadcrumb.dart';
 
 /// LE JOURNAL LOCAL DU SERVICE D'OBSERVABILITE (lot 645-09).
 ///
-/// Il sert DEUX fois. Quand Firebase est joignable, il double la miette
-/// partie au nuage. Quand il ne l'est pas — 100 pct du temps aujourd'hui —
-/// il est la SEULE trace qui reste, et c'est par lui que la QA sur
-/// emulateur verifie que les miettes passent bien (`adb logcat`).
-final _localLog = Logger(printer: PrettyPrinter(methodCount: 0));
+/// Quand Firebase est joignable, il double la miette partie au nuage. Quand
+/// il ne l'est pas — 100 pct du temps aujourd'hui — il est la SEULE trace qui
+/// reste, et c'est par lui que la QA sur emulateur verifie que les miettes
+/// passent (`adb logcat | grep screen:`). D'ou UNE LIGNE par miette et non un
+/// cadre `PrettyPrinter` : un cadre est illisible en logcat pour vingt
+/// caracteres utiles, et noie la sortie de `flutter test`.
+final _localLog = Logger(printer: SimplePrinter(colors: false));
 
 /// LES TROIS CLES DE CONTEXTE, ET IL N'Y EN AURA PAS UNE QUATRIEME
 /// (lot 645-09).
 ///
 /// CRASHLYTICS PLAFONNE A 64 PAIRES CLE-VALEUR, et au-dela il n'enregistre
-/// plus rien — EN SILENCE. Avec 63 ecrans, « une cle par ecran » tenait
-/// donc du pari : le 64e ecran aurait fait disparaitre les autres sans un
-/// mot. La convention retenue par Christophe inverse le probleme : TROIS
-/// cles dont la VALEUR change, et une miette courte par entree d'ecran.
-///
-/// Source des limites : firebase.google.com/docs/crashlytics/flutter/
-/// customize-crash-reports, consultee le 02/10/2026.
+/// plus rien — EN SILENCE. Avec 63 ecrans, « une cle par ecran » tenait du
+/// pari : le 64e aurait fait disparaitre les autres sans un mot. La convention
+/// retenue par Christophe inverse le probleme : TROIS cles dont la VALEUR
+/// change, et une miette courte par entree d'ecran. (Source :
+/// firebase.google.com/docs/crashlytics/flutter/customize-crash-reports,
+/// consultee le 02/10/2026.)
 abstract final class AnalyticsKeys {
   /// L'ecran courant — la valeur change a chaque entree d'ecran.
   static const String screen = 'screen';
@@ -381,8 +382,8 @@ class AnalyticsService {
   /// des 63 ecrans ne portait de miette : l'audit en annoncait 9, et les 9
   /// etaient un FAUX POSITIF de sa mesure (son marqueur `log(` est contenu
   /// dans `AlertDialog(`). Un rapport de plantage ne pouvait donc pas dire sur
-  /// quel ecran le randonneur se trouvait. Point 18 de l'inventaire 593 :
-  /// « vendre une appli sans savoir qu'elle plante est un pari ».
+  /// quel ecran etait le randonneur. Point 18 de l'inventaire 593 : « vendre
+  /// une appli sans savoir qu'elle plante est un pari ».
   ///
   /// CE QUE CETTE METHODE POSE : la cle [AnalyticsKeys.screen] (et, quand
   /// l'ecran les connait, [AnalyticsKeys.trail] et [AnalyticsKeys.stage]),
@@ -393,28 +394,26 @@ class AnalyticsService {
   /// miette a chaque passage aurait noye les 64 ko d'une session en secondes.
   /// L'empreinte du dernier contexte pose est donc memorisee.
   ///
-  /// [trail] EST ANONYMISE, comme partout ailleurs dans ce service : c'est un
-  /// identifiant, il part en SHA-256 et jamais en clair.
+  /// [trail] EST ANONYMISE comme partout ailleurs ici : c'est un identifiant,
+  /// il part en SHA-256 et jamais en clair.
   ///
-  /// CETTE METHODE N'ECHOUE PAS. Les puits natifs peuvent lever (Firebase
-  /// absent, services Google Play trop vieux) : l'exception est avalee et
-  /// journalisee localement. Un ecran ne doit JAMAIS casser parce qu'une
-  /// miette n'a pas pu partir — c'est la garde d'inertie du lot.
+  /// CETTE METHODE N'ECHOUE PAS : un puits natif peut lever (Firebase absent,
+  /// Google Play trop vieux), l'exception est avalee et journalisee en local.
+  /// Un ecran ne doit JAMAIS casser parce qu'une miette n'a pas pu partir.
   Future<void> enterScreen(
     ScreenBreadcrumb screen, {
     String? trail,
     String? stage,
   }) async {
-    final empreinte = '${screen.name}|$trail|$stage';
-    if (empreinte == _lastEntry) return;
-    final nouvelEcran = screen.name != _lastScreenName;
-    _lastEntry = empreinte;
+    final fingerprint = '${screen.name}|$trail|$stage';
+    if (fingerprint == _lastEntry) return;
+    final isNewScreen = screen.name != _lastScreenName;
+    _lastEntry = fingerprint;
     _lastScreenName = screen.name;
 
-    // LE JOURNAL LOCAL PART MEME INERTE : c'est la seule trace quand Firebase
-    // est indisponible, et c'est par elle que la QA sur emulateur verifie que
-    // les miettes passent.
-    if (nouvelEcran) _localLog.t('screen:${screen.name}');
+    // LE JOURNAL LOCAL PART MEME INERTE : seule trace quand Firebase est
+    // indisponible, et ce que la QA sur emulateur vient lire.
+    if (isNewScreen) _localLog.t('screen:${screen.name}');
     if (!_operational) return;
 
     try {
@@ -423,27 +422,22 @@ class AnalyticsService {
         await _crash.setCustomKey(AnalyticsKeys.trail, anonymize(trail));
       }
       if (stage != null) {
-        await _crash.setCustomKey(AnalyticsKeys.stage, _borner(stage));
+        await _crash.setCustomKey(AnalyticsKeys.stage, _clamp(stage));
       }
-      // LE PLAFOND DE MIETTES EST STRUCTUREL, pas decoratif : une navigation
-      // pathologique (deux ecrans qui se relaient) ne doit pas pouvoir manger
-      // les 64 ko de journal et effacer le debut de la session.
-      if (nouvelEcran && _screenCrumbs < maxScreenCrumbsPerSession) {
+      // PLAFOND STRUCTUREL : une navigation pathologique (deux ecrans qui
+      // se relaient) ne doit pas manger les 64 ko et effacer l'amorce.
+      if (isNewScreen && _screenCrumbs < maxScreenCrumbsPerSession) {
         _screenCrumbs++;
         await _crash.log('screen:${screen.name}');
       }
     } on Object catch (e) {
-      // AVALEE ET JOURNALISEE : voir la garde d'inertie ci-dessus.
-      _localLog.w(
-        '[observabilite] miette d ecran perdue '
-        '(${screen.name}) : $e',
-      );
+      _localLog.w('[observabilite] miette perdue (${screen.name}) : $e');
     }
   }
 
   /// Borne une valeur de cle : Crashlytics plafonne chaque paire a 1 ko.
-  static String _borner(String valeur) =>
-      valeur.length <= 64 ? valeur : valeur.substring(0, 64);
+  static String _clamp(String value) =>
+      value.length <= 64 ? value : value.substring(0, 64);
 
   Future<void> _log(String name, Map<String, Object?> params) async {
     if (!_consentGranted) return;
