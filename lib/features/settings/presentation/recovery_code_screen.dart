@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/services/recovery_code_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -32,6 +33,10 @@ class RecoveryCodeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.recoveryCode);
     final theme = Theme.of(context);
     final tr = Translations.of(context);
 
