@@ -36,6 +36,34 @@ analyzer:
     prefer_single_quotes: info
     unnecessary_lambdas: info
     always_declare_return_types: info
+    # invalid_annotation_target : FAUX POSITIF DE FREEZED, DESCENDU A `info`
+    # (tache 665, apporte par le lot 645-07).
+    #
+    # CE QUI LE DECLENCHE, UNE SEULE FOIS DANS TOUT LE DEPOT.
+    # `lib/features/planning/models/stage_variant.dart` porte
+    # `@JsonKey(name: 'selectionParEtape')` sur un PARAMETRE de constructeur
+    # d usine freezed. L analyseur objecte que `JsonKey` ne vaut que sur un
+    # champ ou un accesseur. Il a tort ici : freezed REPORTE l annotation sur
+    # le champ et l accesseur generes, et le code genere le prouve —
+    # `_$VariantSelectionToJson` emet bien
+    # `{'selectionParEtape': instance.selectionByStage}`.
+    #
+    # POURQUOI CETTE ANNOTATION EXISTE, ET POURQUOI ON NE LA RETIRE PAS.
+    # Le lot 645-07 a renomme le champ `selectionParEtape` en
+    # `selectionByStage`. La CLE STOCKEE, elle, ne se renomme pas : elle est
+    # ecrite telle quelle dans les donnees des telephones deja installes, et
+    # la changer ferait perdre SILENCIEUSEMENT le choix de variante du
+    # randonneur a la mise a jour. Le `@JsonKey` gele la cle. C est la regle
+    # P3 du lot (« une cle stockee sur le telephone ne se renomme pas »).
+    #
+    # POURQUOI `info` ET PAS `ignore`, ET POURQUOI PAS UN `// ignore:` SUR LA
+    # LIGNE. `ignore` eteindrait la regle : un VRAI mauvais placement
+    # d annotation passerait alors inapercu. Et un `// ignore:` dans le
+    # fichier source ne tient pas : freezed RECOPIE les commentaires dans le
+    # fichier genere, ou la meme ligne devient un `duplicate_ignore` — on
+    # echangerait un avertissement contre trois. En `info`, la regle mesure
+    # toujours et la gate reste a zero avertissement.
+    invalid_annotation_target: info
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -610,10 +610,20 @@ void main() {
       // 260 Mo arrivant tout seuls toutes les quatre heures est precisement ce que
       // l ordonnanceur se documente d interdire (tache 616). La garde est
       // structurelle : il n a aucun lien vers ce service.
+      //
+      // LE NOM DE FICHIER SURVEILLE EST CELUI D AUJOURD HUI (tache 665). Il
+      // s appelait `descente_des_cartes.dart` jusqu au lot 645-07, qui l a
+      // renomme `map_downloader.dart`. La chaine surveillee, elle, n avait pas
+      // suivi : elle cherchait un nom qui n existait plus NULLE PART, donc elle
+      // ne trouvait plus jamais rien et passait au vert quoi qu il arrive. Une
+      // garde qui ne peut plus rougir ne garde rien — c est exactement le defaut
+      // trouve au lot 645-06. Les deux lignes surveillent desormais les deux
+      // portes d entree reelles : l IMPORT (le nom de fichier) et L USAGE (le
+      // nom de classe).
       final ordonnanceur = File(
         'lib/core/services/ordonnanceur_de_synchronisation.dart',
       ).readAsStringSync();
-      expect(ordonnanceur.contains('descente_des_cartes'), isFalse);
+      expect(ordonnanceur.contains('map_downloader'), isFalse);
       expect(ordonnanceur.contains('MapDownloader'), isFalse);
 
       final telechargeur = File(
