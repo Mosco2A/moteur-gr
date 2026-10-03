@@ -77,6 +77,12 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, _breadcrumb, trail: widget.trailId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final trailId = widget.trailId;
     return Scaffold(
