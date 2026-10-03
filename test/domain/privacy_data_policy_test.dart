@@ -12,7 +12,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:moteur_gr/core/services/privacy_data_policy.dart';
+import 'package:moteur_gr/domain/privacy_data_policy.dart';
 import 'package:moteur_gr/domain/track_point.dart';
 
 void main() {
