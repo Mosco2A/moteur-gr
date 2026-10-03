@@ -14,7 +14,8 @@ import '../../../i18n/translations.g.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../treks/treks_facade.dart' show currentTrailSummaryProvider;
-import '../../trek/providers/tracking_providers.dart';
+import '../../trek/trek_facade.dart'
+    show TrackingSessionStatus, trekSessionManagerProvider;
 import 'cockpit_phase.dart';
 import 'widgets/hub_app_bar.dart';
 import 'widgets/hub_cockpit_scroll.dart';

@@ -4,7 +4,8 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../trek/providers/gps_providers.dart';
+import '../../trek/trek_facade.dart'
+    show currentTrekPlanProvider, domainStagesProvider;
 import '../data/gpx_import_service.dart';
 
 /// Service d'import GPX (singleton, sans etat).

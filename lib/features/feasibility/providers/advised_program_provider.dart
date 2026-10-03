@@ -38,7 +38,7 @@ import '../../../core/models/stage_row.dart';
 import '../../planning/planning_facade.dart'
     show durationBoundsProvider, recommendedRestDaysProvider;
 import '../../trail/trail_facade.dart' show stagesProvider;
-import '../../trek/providers/gps_providers.dart';
+import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../../../domain/feasibility_formula.dart';
 import '../domain/program_plan_search.dart';
 import 'trek_feasibility_provider.dart';

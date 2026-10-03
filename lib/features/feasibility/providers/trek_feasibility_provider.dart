@@ -13,8 +13,8 @@ import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
 import '../../planning/planning_facade.dart' show plannedDaysProvider;
-import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/stage_providers.dart';
+import '../../trek/trek_facade.dart'
+    show selectedDirectionProvider, stagesProvider;
 import '../../../domain/feasibility_formula.dart';
 import '../domain/feasibility_program.dart';
 import '../domain/hiker_profile.dart';

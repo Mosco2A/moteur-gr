@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/data/database.dart';
-import '../../trek/providers/gps_providers.dart' show currentStageIdProvider;
+import '../../trek/trek_facade.dart' show currentStageIdProvider;
 import 'weather_providers.dart' show stagesDaoProvider;
 
 /// Étape de référence hors trek (préparation / HUB au repos) — D-3.

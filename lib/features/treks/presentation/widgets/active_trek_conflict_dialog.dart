@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../trek/trek_facade.dart' show ActiveTrekConflictChoice;
 
 /// UI de resolution du CONFLIT d'unicite de rando active (StepWays LOT 2, C4).
 ///

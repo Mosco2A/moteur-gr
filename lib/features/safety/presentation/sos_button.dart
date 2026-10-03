@@ -16,8 +16,11 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/tracking_providers.dart';
+import '../../trek/trek_facade.dart'
+    show
+        TrackingSessionStatus,
+        positionStreamProvider,
+        trekSessionManagerProvider;
 import 'sos_confirmation_dialog.dart';
 import '../../../core/branding/stepways_icons.dart';
 

@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
 import '../../safety/safety_facade.dart' show healthPrepareDoneProvider;
-import '../../trek/providers/gps_providers.dart';
+import '../../trek/trek_facade.dart'
+    show currentTrekPlanProvider, domainStagesProvider, positionStreamProvider;
 import '../../../core/services/session_demo.dart';
 
 /// Providers du DÉMARRAGE RÉEL du trek depuis le cockpit (StepWays LOT 3, Q1).

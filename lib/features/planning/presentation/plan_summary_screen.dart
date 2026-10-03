@@ -18,7 +18,7 @@ import '../../booking/domain/models/nuitee_type.dart';
 import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
-import '../../trek/providers/gps_providers.dart';
+import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

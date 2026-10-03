@@ -16,7 +16,11 @@ import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/treks_facade.dart' show currentTrailSummaryProvider;
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../trek/trek_facade.dart'
+    show
+        TrackingSessionState,
+        TrackingSessionStatus,
+        trekSessionManagerProvider;
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Carte principale du trek (RF-4 / #ET-1 / #ET-2), enrichie du cycle de vie

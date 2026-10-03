@@ -15,7 +15,8 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../trek/trek_facade.dart'
+    show StartOutcome, trekSessionManagerProvider;
 import '../../providers/cockpit_start_providers.dart';
 import '../../../../core/branding/stepways_icons.dart';
 

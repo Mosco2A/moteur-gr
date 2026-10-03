@@ -15,8 +15,8 @@ import '../../../core/providers/database_provider.dart';
 import '../../../domain/stage.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
-import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/stage_providers.dart';
+import '../../trek/trek_facade.dart'
+    show currentTrekPlanProvider, domainStagesProvider, stagesProvider;
 
 /// PARITE GR20, LOT 3 (#99433) — socle « Apres le trek » : session reelle,
 /// stats reelles, et gate du diplome (finisher).
