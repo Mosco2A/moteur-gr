@@ -12,7 +12,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../domain/planned_day.dart';
-import '../../planning/providers/planned_days_provider.dart';
+import '../../planning/planning_facade.dart' show plannedDaysProvider;
 import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 import '../providers/nuitee_selections_provider.dart';

@@ -30,10 +30,12 @@ import '../../journal/journal_facade.dart'
         journalRepositoryProvider;
 import '../../map/providers/stage_poi_check_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
-import '../../planning/providers/planned_days_provider.dart'
-    show manualRestDayCacheProvider, plannedDaysProvider;
-import '../../planning/providers/planning_provider.dart'
-    show planningProvider, retainedDurationProvider;
+import '../../planning/planning_facade.dart'
+    show
+        manualRestDayCacheProvider,
+        plannedDaysProvider,
+        planningProvider,
+        retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
     show ficheMedicaleFichierProvider, healthInfoRepositoryProvider;
 import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
