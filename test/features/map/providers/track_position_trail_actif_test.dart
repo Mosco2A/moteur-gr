@@ -48,7 +48,7 @@ void main() {
     ),
   ];
 
-  final etapes = <StageModel>[
+  final stages = <StageModel>[
     const StageModel(
       trailId: 'test-trail',
       stageNumber: 1,
@@ -86,18 +86,18 @@ void main() {
         ).overrideWith((ref) => Future.value(trace)),
         stagesProvider(
           testTrailConfig.id,
-        ).overrideWith((ref) => Future.value(etapes)),
+        ).overrideWith((ref) => Future.value(stages)),
         locationProvider.overrideWith((ref) => Stream.value(position())),
       ],
     );
     addTearDown(container.dispose);
 
     // Garde la projection vivante pendant que ses sources se resolvent.
-    final abonnement = container.listen<AsyncValue<TrackPositionState>>(
+    final subscription = container.listen<AsyncValue<TrackPositionState>>(
       trackPositionProvider,
       (_, __) {},
     );
-    addTearDown(abonnement.close);
+    addTearDown(subscription.close);
 
     await container.read(gpxTrackProvider(testTrailConfig.id).future);
     await container.read(stagesProvider(testTrailConfig.id).future);

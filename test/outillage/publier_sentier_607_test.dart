@@ -232,10 +232,10 @@ void main() {
       outil(jour: 1).publier(source);
 
       final contenu = lireSource();
-      final etapes = (contenu['stages'] as List).cast<Map<String, dynamic>>();
+      final stages = (contenu['stages'] as List).cast<Map<String, dynamic>>();
       // Meme donnee, clefs dans l autre sens, et un entier ecrit en decimal.
       contenu['stages'] = [
-        for (final etape in etapes)
+        for (final etape in stages)
           <String, dynamic>{
             for (final clef in etape.keys.toList().reversed)
               clef: clef == 'elevation_gain'
@@ -574,13 +574,13 @@ void main() {
 
       // On remet une empreinte coherente : c est l incoherence de REVISION qu on
       // veut voir, pas celle de l empreinte.
-      final liste = File('$publie/${Publicateur.nomDeLaListe}');
-      final brut = jsonDecode(liste.readAsStringSync()) as Map<String, dynamic>;
+      final list = File('$publie/${Publicateur.nomDeLaListe}');
+      final brut = jsonDecode(list.readAsStringSync()) as Map<String, dynamic>;
       (brut['trails'] as List)[0]['hash'] = EmpreinteDePublication.duTexte(
         corps,
       );
       (brut['trails'] as List)[0]['fileSize'] = utf8.encode(corps).length;
-      liste.writeAsStringSync(jsonEncode(brut));
+      list.writeAsStringSync(jsonEncode(brut));
 
       final anomalies = outil(jour: 1).verifier().join('\n');
       expect(anomalies, contains('date ${instantAuJour(9).iso8601}'));
@@ -597,10 +597,10 @@ void main() {
       // divergence serait du mauvais cote : un humain lit `lastUpdated`,
       // l application decide sur `dataVersion`.
       outil(jour: 1).publier(source);
-      final liste = File('$publie/${Publicateur.nomDeLaListe}');
-      final brut = jsonDecode(liste.readAsStringSync()) as Map<String, dynamic>;
+      final list = File('$publie/${Publicateur.nomDeLaListe}');
+      final brut = jsonDecode(list.readAsStringSync()) as Map<String, dynamic>;
       (brut['trails'] as List)[0]['lastUpdated'] = instantAuJour(30).iso8601;
-      liste.writeAsStringSync(jsonEncode(brut));
+      list.writeAsStringSync(jsonEncode(brut));
 
       final anomalies = outil(jour: 1).verifier().join('\n');
       expect(anomalies, contains('designent le MEME instant'));
@@ -753,14 +753,14 @@ void main() {
   group('607 — identite et empreinte de contenu', () {
     test('l identite d un point de trace est le couple trace + rang', () {
       expect(
-        RevisionSelective.identite(MorceauxDeSentier.pointsDeTrace, const {
+        RevisionSelective.identite(TrailChunks.pointsDeTrace, const {
           'track_id': 't1',
           'sequence_index': 3,
         }),
         't1#3',
       );
       expect(
-        RevisionSelective.identite(MorceauxDeSentier.pointsDeTrace, const {
+        RevisionSelective.identite(TrailChunks.pointsDeTrace, const {
           'track_id': 't1',
         }),
         isNull,

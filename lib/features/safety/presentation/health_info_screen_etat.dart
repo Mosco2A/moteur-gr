@@ -303,12 +303,12 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     if (accorde) {
       await controleur.grant(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
     } else {
       await controleur.revoke(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
     }
   }
@@ -457,7 +457,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
         break;
     }
 
-    final fichier = ref.read(ficheMedicaleFichierProvider);
+    final fichier = ref.read(healthInfoFileProvider);
     await fichier.enregistrerCarte(nomFichier, resultat.octets!);
     if (!mounted) return;
     setState(() {
@@ -472,7 +472,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
   /// Retire la photo d'une carte — du disque ET de la fiche.
   Future<void> _retirerCarte(String nomFichier) async {
-    final fichier = ref.read(ficheMedicaleFichierProvider);
+    final fichier = ref.read(healthInfoFileProvider);
     await fichier.effacerCarte(nomFichier);
     if (!mounted) return;
     setState(() {

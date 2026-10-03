@@ -134,13 +134,13 @@ void main() {
 
     test('sa PREMIERE etape est l arret propre, et elle nomme les cinq '
         'valeurs manquantes', () {
-      final etapes = bloc.split(RegExp(r'^      - name:', multiLine: true));
+      final stages = bloc.split(RegExp(r'^      - name:', multiLine: true));
       expect(
-        etapes.length,
+        stages.length,
         greaterThan(2),
         reason: 'la chaine n a plus d etapes',
       );
-      final premiere = etapes[1];
+      final premiere = stages[1];
 
       expect(
         premiere,

@@ -20,8 +20,8 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// Consigne de Christophe pour la tache 622 : « ce qui descend, son poids, et un
 /// moyen d annuler ». Les trois sont des VALEURS, pas des journaux : un ecran ne
 /// peut afficher que ce qu on lui rend.
-class ProgressionDeCarte {
-  const ProgressionDeCarte({
+class MapProgress {
+  const MapProgress({
     required this.trailId,
     required this.octetsRecus,
     required this.octetsTotal,
@@ -62,7 +62,7 @@ class ProgressionDeCarte {
 /// Chaque cause commande une SUITE DIFFERENTE, et c est la raison d etre de cette
 /// enumeration : ce qui reste sur le telephone n est pas le meme selon la cause, et
 /// ce que l ecran doit proposer au randonneur non plus.
-enum EchecDeCarte {
+enum MapFailure {
   /// Le transport a echoue (coupure, serveur, code HTTP inattendu).
   ///
   /// LE FICHIER PARTIEL EST CONSERVE : c est exactement le cas ou la reprise
@@ -122,8 +122,8 @@ enum EchecDeCarte {
 }
 
 /// CE QU UNE DESCENTE DE CARTE A REELLEMENT FAIT. Mesure, pas suppose.
-class ResultatDeCarte {
-  const ResultatDeCarte({
+class MapResult {
+  const MapResult({
     required this.trailId,
     required this.octetsSurLeTelephone,
     required this.octetsTransferes,
@@ -146,7 +146,7 @@ class ResultatDeCarte {
   final int octetsReprisDuDisque;
 
   /// Pourquoi ca s est arrete, ou `null` si la carte est posee.
-  final EchecDeCarte? echec;
+  final MapFailure? echec;
 
   bool get reussie => echec == null;
 
@@ -167,7 +167,7 @@ class AnnulationDeDescente {
   bool get demandee => _demandee;
 
   /// Demande l arret. Idempotent, et sans effet apres la fin de la descente.
-  void annuler() => _demandee = true;
+  void cancel() => _demandee = true;
 }
 
 /// Gestionnaire des fichiers de cartes hors ligne (`.mbtiles`) d un sentier.
@@ -306,19 +306,19 @@ class MBTilesManager {
   /// transport qu on ne peut plus tester, et deux endroits qui decident du meme
   /// droit finissent par ne plus etre d accord.
   /// CETTE METHODE NE LEVE JAMAIS (tache 640, bug 9). Elle rend toujours un
-  /// [ResultatDeCarte] : une carte posee, ou un [EchecDeCarte] NOMME.
+  /// [MapResult] : une carte posee, ou un [MapFailure] NOMME.
   ///
   /// Le filet ci-dessous est le DERNIER, pas le premier : chaque maillon du
   /// transport classe deja sa propre panne. Il est la pour ce qu on n a pas
   /// prevu — un canal de plateforme qui disparait, un support retire en cours de
   /// route — parce qu une exception qui sort d ici sort dans un futur que
   /// personne n attend, et devient un plantage au lieu d un message.
-  Future<ResultatDeCarte> descendre({
+  Future<MapResult> descendre({
     required String trailId,
     required String url,
     required int octetsAttendus,
     required String empreinteAttendue,
-    void Function(ProgressionDeCarte)? progression,
+    void Function(MapProgress)? progression,
     AnnulationDeDescente? annulation,
   }) async {
     try {
@@ -338,22 +338,22 @@ class MBTilesManager {
             'MBTilesManager.descendre($trailId) — panne imprevue du '
             'transport des tuiles',
       );
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: 0,
         octetsTransferes: 0,
         octetsReprisDuDisque: 0,
-        echec: EchecDeCarte.stockageIndisponible,
+        echec: MapFailure.stockageIndisponible,
       );
     }
   }
 
-  Future<ResultatDeCarte> _descendre({
+  Future<MapResult> _descendre({
     required String trailId,
     required String url,
     required int octetsAttendus,
     required String empreinteAttendue,
-    void Function(ProgressionDeCarte)? progression,
+    void Function(MapProgress)? progression,
     AnnulationDeDescente? annulation,
   }) async {
     // OU ECRIRE EST LA PREMIERE QUESTION, ET ELLE PEUT ECHOUER (tache 640).
@@ -372,12 +372,12 @@ class MBTilesManager {
             'MBTilesManager.descendre($trailId) — le telephone ne rend pas '
             'son espace de stockage',
       );
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: 0,
         octetsTransferes: 0,
         octetsReprisDuDisque: 0,
-        echec: EchecDeCarte.stockageIndisponible,
+        echec: MapFailure.stockageIndisponible,
       );
     }
     final partiel = File('$cheminFinal$suffixePartiel');
@@ -409,7 +409,7 @@ class MBTilesManager {
         'verification et pose, aucun transport.',
       );
       progression?.call(
-        ProgressionDeCarte(
+        MapProgress(
           trailId: trailId,
           octetsRecus: deja,
           octetsTotal: octetsAttendus,
@@ -427,12 +427,12 @@ class MBTilesManager {
     }
 
     if (annulation?.demandee ?? false) {
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: deja,
         octetsTransferes: 0,
         octetsReprisDuDisque: deja,
-        echec: EchecDeCarte.annulee,
+        echec: MapFailure.annulee,
       );
     }
 
@@ -451,12 +451,12 @@ class MBTilesManager {
       reponse = await _httpClient.send(requete);
     } on Object catch (e) {
       _log.w('[MBTilesManager] $trailId : transport injoignable — $e');
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: deja,
         octetsTransferes: 0,
         octetsReprisDuDisque: deja,
-        echec: EchecDeCarte.reseau,
+        echec: MapFailure.reseau,
       );
     }
 
@@ -472,21 +472,21 @@ class MBTilesManager {
       _log.w(
         '[MBTilesManager] $trailId : HTTP ${reponse.statusCode} sur la reprise.',
       );
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: deja,
         octetsTransferes: 0,
         octetsReprisDuDisque: deja,
-        echec: EchecDeCarte.reseau,
+        echec: MapFailure.reseau,
       );
     } else if (deja == 0 && reponse.statusCode != HttpStatus.ok) {
       _log.w('[MBTilesManager] $trailId : HTTP ${reponse.statusCode}.');
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: 0,
         octetsTransferes: 0,
         octetsReprisDuDisque: 0,
-        echec: EchecDeCarte.reseau,
+        echec: MapFailure.reseau,
       );
     }
 
@@ -496,12 +496,12 @@ class MBTilesManager {
     var dernierPointAnnonce = deja;
 
     final puits = _ouvrirEnEcriture(partiel, enAjout: enAjout);
-    EchecDeCarte? echec;
+    MapFailure? echec;
 
     try {
       await for (final morceau in reponse.stream) {
         if (annulation?.demandee ?? false) {
-          echec = EchecDeCarte.annulee;
+          echec = MapFailure.annulee;
           break;
         }
         puits.add(morceau);
@@ -514,7 +514,7 @@ class MBTilesManager {
         if (surLeTelephone - dernierPointAnnonce >= pasDeProgression) {
           dernierPointAnnonce = surLeTelephone;
           progression?.call(
-            ProgressionDeCarte(
+            MapProgress(
               trailId: trailId,
               octetsRecus: surLeTelephone,
               octetsTotal: octetsAttendus,
@@ -529,7 +529,7 @@ class MBTilesManager {
         'octets (${echec.name}) — $e',
       );
     } on Object catch (e) {
-      echec = EchecDeCarte.reseau;
+      echec = MapFailure.reseau;
       _log.w(
         '[MBTilesManager] $trailId : transport interrompu apres $surLeTelephone '
         'octets — $e',
@@ -552,7 +552,7 @@ class MBTilesManager {
       // definitif, lui, n a jamais existe : la carte continue de repondre
       // « pas de carte » et repasse en ligne, au lieu d ouvrir une base tronquee.
       final taille = await _tailleSure(partiel);
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: taille,
         octetsTransferes: transferes,
@@ -562,7 +562,7 @@ class MBTilesManager {
     }
 
     progression?.call(
-      ProgressionDeCarte(
+      MapProgress(
         trailId: trailId,
         octetsRecus: surLeTelephone,
         octetsTotal: octetsAttendus,
@@ -585,7 +585,7 @@ class MBTilesManager {
   /// L ordre compte : comparer deux entiers coute un appel systeme, relire 260 Mo
   /// pour les hacher coute des secondes. Un fichier de la mauvaise taille est
   /// forcement faux — inutile de le hacher pour l apprendre.
-  Future<ResultatDeCarte> _verifierEtPoser({
+  Future<MapResult> _verifierEtPoser({
     required String trailId,
     required File partiel,
     required String cheminFinal,
@@ -603,12 +603,12 @@ class MBTilesManager {
         'en cours est detruit : sa longueur ne deviendra jamais la bonne.',
       );
       await _supprimerSiPresent(partiel);
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: 0,
         octetsTransferes: octetsTransferes,
         octetsReprisDuDisque: octetsReprisDuDisque,
-        echec: EchecDeCarte.tailleInattendue,
+        echec: MapFailure.tailleInattendue,
       );
     }
 
@@ -631,12 +631,12 @@ class MBTilesManager {
         stackTrace: st,
         context: 'MBTilesManager.verifier($trailId) — empreinte illisible',
       );
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: taille,
         octetsTransferes: octetsTransferes,
         octetsReprisDuDisque: octetsReprisDuDisque,
-        echec: EchecDeCarte.ecritureImpossible,
+        echec: MapFailure.ecritureImpossible,
       );
     }
     if (EmpreinteDePublication.normaliser(empreinteAttendue) != empreinte) {
@@ -648,12 +648,12 @@ class MBTilesManager {
         'echoue au premier carreau manquant, en montagne.',
       );
       await _supprimerSiPresent(partiel);
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: 0,
         octetsTransferes: octetsTransferes,
         octetsReprisDuDisque: octetsReprisDuDisque,
-        echec: EchecDeCarte.empreinteInvalide,
+        echec: MapFailure.empreinteInvalide,
       );
     }
 
@@ -670,9 +670,9 @@ class MBTilesManager {
     } on Object catch (e) {
       final echec = e is FileSystemException
           ? _classerEchecDEcriture(e)
-          : EchecDeCarte.ecritureImpossible;
+          : MapFailure.ecritureImpossible;
       _log.e('[MBTilesManager] $trailId : pose de la carte impossible — $e');
-      return ResultatDeCarte(
+      return MapResult(
         trailId: trailId,
         octetsSurLeTelephone: taille,
         octetsTransferes: octetsTransferes,
@@ -683,14 +683,14 @@ class MBTilesManager {
 
     _log.d(
       '[MBTilesManager] $trailId : carte posee, '
-      '${ProgressionDeCarte.enMegaoctets(taille).toStringAsFixed(1)} Mo '
-      '(${ProgressionDeCarte.enMegaoctets(octetsTransferes).toStringAsFixed(1)} Mo '
+      '${MapProgress.enMegaoctets(taille).toStringAsFixed(1)} Mo '
+      '(${MapProgress.enMegaoctets(octetsTransferes).toStringAsFixed(1)} Mo '
       'transferes, '
-      '${ProgressionDeCarte.enMegaoctets(octetsReprisDuDisque).toStringAsFixed(1)} '
+      '${MapProgress.enMegaoctets(octetsReprisDuDisque).toStringAsFixed(1)} '
       'Mo repris du disque).',
     );
 
-    return ResultatDeCarte(
+    return MapResult(
       trailId: trailId,
       octetsSurLeTelephone: taille,
       octetsTransferes: octetsTransferes,
@@ -718,16 +718,16 @@ class MBTilesManager {
   /// Le code d erreur est celui du systeme : 28 (`ENOSPC`) sur Android, iOS et
   /// Linux, 112 (`ERROR_DISK_FULL`) sur Windows. Le message est examine en dernier
   /// recours, parce que certains supports remontent 0 sans code utile.
-  static EchecDeCarte _classerEchecDEcriture(FileSystemException e) {
+  static MapFailure _classerEchecDEcriture(FileSystemException e) {
     final code = e.osError?.errorCode;
-    if (code == 28 || code == 112) return EchecDeCarte.plusDePlace;
+    if (code == 28 || code == 112) return MapFailure.plusDePlace;
     final message = (e.osError?.message ?? e.message).toLowerCase();
     if (message.contains('no space') ||
         message.contains('disk full') ||
         message.contains('espace')) {
-      return EchecDeCarte.plusDePlace;
+      return MapFailure.plusDePlace;
     }
-    return EchecDeCarte.ecritureImpossible;
+    return MapFailure.ecritureImpossible;
   }
 
   /// TAILLE D UN FICHIER, SANS JAMAIS LEVER (tache 640). Zero si absent OU

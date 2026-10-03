@@ -75,7 +75,7 @@ void main() {
 
   /// Les identifiants listes dans un champ `files = ( ... );` ou
   /// `buildPhases = ( ... );` d un objet.
-  List<String> liste(String corpsObjet, String champ) {
+  List<String> list(String corpsObjet, String champ) {
     final bloc = RegExp('$champ = \\(([^)]*)\\)').firstMatch(corpsObjet);
     if (bloc == null) return const [];
     return RegExp(
@@ -98,7 +98,7 @@ void main() {
     final corpsCible = objet(cibles, ancreCible.group(1)!);
     if (corpsCible == null) return const [];
 
-    final phasesDeLaCible = liste(corpsCible, 'buildPhases');
+    final phasesDeLaCible = list(corpsCible, 'buildPhases');
     final sectionResources = section(source, 'PBXResourcesBuildPhase');
     final sectionBuildFile = section(source, 'PBXBuildFile');
     final sectionFileRef = section(source, 'PBXFileReference');
@@ -108,7 +108,7 @@ void main() {
       final corpsPhase = objet(sectionResources, phase);
       // La phase n est pas une phase Resources : ce n est pas une anomalie.
       if (corpsPhase == null) continue;
-      for (final buildFile in liste(corpsPhase, 'files')) {
+      for (final buildFile in list(corpsPhase, 'files')) {
         final ligne = RegExp(
           '^\\t\\t$buildFile [^\\n]*\$',
           multiLine: true,
@@ -174,7 +174,7 @@ void main() {
       );
 
       final sectionFileRef = section(source, 'PBXFileReference');
-      final enfants = liste(corps, 'children');
+      final enfants = list(corps, 'children');
       final cheminsDuGroupe = <String>[];
       for (final enfant in enfants) {
         final ligne = RegExp(
@@ -284,7 +284,7 @@ void main() {
         r'^\t\t([0-9A-F]{24}) /\* Runner \*/ = \{',
         multiLine: true,
       ).firstMatch(cibles)!;
-      final phases = liste(objet(cibles, ancre.group(1)!)!, 'buildPhases');
+      final phases = list(objet(cibles, ancre.group(1)!)!, 'buildPhases');
 
       final sectionScript = section(source, 'PBXShellScriptBuildPhase');
       final sectionResources = section(source, 'PBXResourcesBuildPhase');
@@ -480,7 +480,7 @@ void main() {
       ).allMatches(cibles)) {
         final corps = objet(cibles, ancre.group(1)!);
         if (corps == null) continue;
-        for (final phase in liste(corps, 'buildPhases')) {
+        for (final phase in list(corps, 'buildPhases')) {
           if (!sections.any((s) => objet(s, phase) != null)) {
             introuvables.add('${ancre.group(2)} -> $phase');
           }

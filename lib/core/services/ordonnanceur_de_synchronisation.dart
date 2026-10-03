@@ -131,7 +131,7 @@ class OrdonnanceurDeSynchronisation {
   /// tous les sentiers copies ralentirait le premier ecran pour un gain nul — la
   /// premiere echeance arrive de toute facon, et le retour du reseau est un
   /// evenement plus pertinent qu un demarrage.
-  void demarrer() {
+  void start() {
     if (demarre) {
       _log.d('[Ordonnanceur] Deja demarre — second appel ignore.');
       return;
@@ -173,7 +173,7 @@ class OrdonnanceurDeSynchronisation {
   /// Une passe deja en cours n est PAS interrompue : elle tient une transaction, et
   /// l abandonner en cours de route est precisement ce que la copie atomique
   /// interdit. Elle finira, puis rien ne la relancera.
-  Future<void> arreter() async {
+  Future<void> stop() async {
     _horloge?.cancel();
     _horloge = null;
     await _ecouteReseau?.cancel();
@@ -298,7 +298,7 @@ class OrdonnanceurDeSynchronisation {
       //     pas l ordonnanceur » promet d empecher.
       return await downloader.scheduleBackgroundDownload(
         manifestUrl: urlManifeste,
-        niveauParSentier: niveaux,
+        levelByTrail: niveaux,
       );
     } catch (e) {
       // UNE PASSE QUI ECHOUE NE TUE PAS L ORDONNANCEUR. Le prochain retour de
@@ -336,7 +336,7 @@ final ordonnanceurDeSynchronisationProvider =
           return descente.executer();
         },
       );
-      ref.onDispose(ordonnanceur.arreter);
+      ref.onDispose(ordonnanceur.stop);
       return ordonnanceur;
     });
 
@@ -359,7 +359,7 @@ final ordonnanceurDeSynchronisationProvider =
 /// s arme pas coûte une cadence ; elle ne doit pas coûter l application.
 final ordonnanceurDemarreProvider = Provider<void>((ref) {
   try {
-    ref.watch(ordonnanceurDeSynchronisationProvider).demarrer();
+    ref.watch(ordonnanceurDeSynchronisationProvider).start();
   } catch (erreur) {
     _log.d('[Ordonnanceur] Armement abandonne ($erreur).');
   }

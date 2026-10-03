@@ -34,7 +34,7 @@ class _CollecteDeLaDemo extends ConsumerWidget {
     final profil = ref.watch(hikerProfileProvider).value ?? HikerProfile.empty;
     final test = ref.watch(walkTestResultProvider).value;
     final randos = ref.watch(pastHikesProvider).value ?? const [];
-    final sentier = ref.watch(trailConfigProvider);
+    final trail = ref.watch(trailConfigProvider);
 
     String valeurProfil() {
       final morceaux = <String>[
@@ -107,9 +107,9 @@ class _CollecteDeLaDemo extends ConsumerWidget {
           _LigneDeCollecte(
             libelle: t.demo.collecteSentier,
             valeur:
-                '${sentier.displayName} · ${sentier.totalStages}'
-                ' · ${sentier.totalDistanceKm.toStringAsFixed(0)} km'
-                ' · ${sentier.totalElevationGain} m D+',
+                '${trail.displayName} · ${trail.totalStages}'
+                ' · ${trail.totalDistanceKm.toStringAsFixed(0)} km'
+                ' · ${trail.totalElevationGain} m D+',
           ),
           _LigneDeCollecte(
             libelle: t.demo.collecteJours,

@@ -51,8 +51,7 @@ abstract final class StepwaysIcons {
   static const plus = 'assets/icons/plus.svg'; // MAT-007 Plus
   static const moins = 'assets/icons/moins.svg'; // MAT-007 Moins
   static const rafraichir = 'assets/icons/rafraichir.svg'; // MAT-006 Rafraîchir
-  static const annuler =
-      'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
+  static const cancel = 'assets/icons/annuler.svg'; // MAT-006 Annuler (défaire)
   static const corbeille = 'assets/icons/corbeille.svg'; // MAT-008 Corbeille
   static const crayon = 'assets/icons/crayon.svg'; // MAT-010 Crayon
   static const copier = 'assets/icons/copier.svg'; // MAT-014 Copier
@@ -562,7 +561,7 @@ enum IcoStepways implements IconeBicolore {
 /// chaque ligne crierait partout.
 enum MatStepways implements IconeBicolore {
   /// MAT-006 Annuler (défaire)
-  annuler('annuler'),
+  cancel('annuler'),
 
   /// MAT-003 Chevron droite
   chevronDroite('chevron-droite'),

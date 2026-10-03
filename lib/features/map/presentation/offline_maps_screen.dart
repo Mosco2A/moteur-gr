@@ -28,7 +28,7 @@
 /// pire endroit, au milieu du circuit, sans reseau.
 ///
 /// POURQUOI CE GESTE DEMANDE LE NIVEAU « REALISER ». Le niveau dit ce qui descend
-/// ([NiveauDeTelechargement.porteLesCartes]), et les cartes ne descendent qu a
+/// ([NiveauDeTelechargement.carriesMaps]), et les cartes ne descendent qu a
 /// « realiser ». Cet ecran EST la demande explicite des cartes : il demande donc
 /// ce niveau-la. Cela ne DONNE aucun droit — `MonetizationService.canRealizeTrail`
 /// reste le seul juge, consulte par [MapDownloader.examiner] avant qu un octet
@@ -94,7 +94,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     DecisionDeDescente examen;
     try {
       examen = await ref
-          .read(descenteDesCartesProvider)
+          .read(mapDownloaderProvider)
           .examiner(widget.trailId, niveau: NiveauDeTelechargement.realiser);
     } on Object catch (e, st) {
       ErrorHandler.log(
@@ -123,13 +123,13 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
   /// le `try` ci-dessous est la ceinture par-dessus la bretelle, parce que ce
   /// bouton est justement l endroit ou une exception non rattrapee devenait une
   /// erreur asynchrone sans destinataire — donc un plantage.
-  Future<void> _telecharger({bool confirmeHorsWifi = false}) async {
+  Future<void> _download({bool confirmeHorsWifi = false}) async {
     final controleur = ref.read(
       controleurDesCartesProvider(widget.trailId).notifier,
     );
     BilanDeDescente? bilan;
     try {
-      bilan = await controleur.demarrer(
+      bilan = await controleur.start(
         niveau: NiveauDeTelechargement.realiser,
         confirmeHorsWifi: confirmeHorsWifi,
       );
@@ -148,7 +148,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
       );
       if (!mounted) return;
       if (accepte) {
-        await _telecharger(confirmeHorsWifi: true);
+        await _download(confirmeHorsWifi: true);
         return;
       }
     }
@@ -183,7 +183,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     return reponse ?? false;
   }
 
-  Future<void> _supprimer() async {
+  Future<void> _delete() async {
     final t = Translations.of(context);
     final confirme = await showDialog<bool>(
       context: context,
@@ -211,7 +211,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     final messenger = ScaffoldMessenger.maybeOf(context);
     await ref
         .read(controleurDesCartesProvider(widget.trailId).notifier)
-        .supprimer();
+        .delete();
     if (!mounted) return;
     messenger?.showSnackBar(SnackBar(content: Text(t.cartesHorsLigne.libere)));
     await _examiner();
@@ -302,11 +302,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
 
   // --- LES TROIS ETATS DE L ECRAN -----------------------------------------
 
-  List<Widget> _progression(
-    Translations t,
-    ThemeData theme,
-    EtatDesCartes etat,
-  ) {
+  List<Widget> _progression(Translations t, ThemeData theme, MapsState etat) {
     final p = etat.progression;
     final verification = p != null && p.fraction >= 1;
     final pourcent = ((p?.fraction ?? 0) * 100).round();
@@ -328,12 +324,8 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
         verification
             ? t.cartesHorsLigne.verification
             : t.cartesHorsLigne.enCours(
-                recus: _mo(
-                  ProgressionDeCarte.enMegaoctets(p?.octetsRecus ?? 0),
-                ),
-                total: _mo(
-                  ProgressionDeCarte.enMegaoctets(p?.octetsTotal ?? 0),
-                ),
+                recus: _mo(MapProgress.enMegaoctets(p?.octetsRecus ?? 0)),
+                total: _mo(MapProgress.enMegaoctets(p?.octetsTotal ?? 0)),
               ),
         style: theme.textTheme.bodySmall,
       ),
@@ -345,7 +337,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
         label: t.cartesHorsLigne.annuler,
         onPressed: () => ref
             .read(controleurDesCartesProvider(widget.trailId).notifier)
-            .annuler(),
+            .cancel(),
       ),
     ];
   }
@@ -357,8 +349,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     BilanDeDescente? bilan,
     bool enDemo,
   ) {
-    final octets =
-        examen?.octetsTotal ?? bilan?.carte?.octetsSurLeTelephone ?? 0;
+    final octets = examen?.octetsTotal ?? bilan?.map?.octetsSurLeTelephone ?? 0;
     return [
       Row(
         children: [
@@ -380,7 +371,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
       const SizedBox(height: AppTheme.spacingXs),
       Text(
         t.cartesHorsLigne.pretesPoids(
-          mo: _mo(ProgressionDeCarte.enMegaoctets(octets)),
+          mo: _mo(MapProgress.enMegaoctets(octets)),
         ),
         style: theme.textTheme.bodySmall,
       ),
@@ -401,7 +392,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
           variant: AppButtonVariant.outline,
           icon: StepwaysIcons.corbeille,
           label: t.cartesHorsLigne.supprimer,
-          onPressed: _supprimer,
+          onPressed: _delete,
         ),
       ),
     ];
@@ -423,16 +414,14 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     return [
       if (octetsTotal > 0) ...[
         Text(
-          t.cartesHorsLigne.poids(
-            mo: _mo(ProgressionDeCarte.enMegaoctets(aPrendre)),
-          ),
+          t.cartesHorsLigne.poids(mo: _mo(MapProgress.enMegaoctets(aPrendre))),
           key: const ValueKey('cartes-poids'),
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingXs),
         Text(
           t.cartesHorsLigne.poidsTotal(
-            mo: _mo(ProgressionDeCarte.enMegaoctets(octetsTotal)),
+            mo: _mo(MapProgress.enMegaoctets(octetsTotal)),
           ),
           style: theme.textTheme.bodySmall,
         ),
@@ -442,9 +431,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
       if (dejaLa > 0) ...[
         const SizedBox(height: AppTheme.spacingXs),
         Text(
-          t.cartesHorsLigne.reprise(
-            mo: _mo(ProgressionDeCarte.enMegaoctets(dejaLa)),
-          ),
+          t.cartesHorsLigne.reprise(mo: _mo(MapProgress.enMegaoctets(dejaLa))),
           key: const ValueKey('cartes-reprise'),
           style: theme.textTheme.bodySmall?.copyWith(
             color: AppTheme.vertFacile,
@@ -479,7 +466,7 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
                   : (dejaLa > 0
                         ? t.cartesHorsLigne.reprendre
                         : t.cartesHorsLigne.telecharger),
-              onPressed: _telecharger,
+              onPressed: _download,
             ),
           ),
         ),
@@ -497,13 +484,13 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
     if (echec != null) {
       final e = t.cartesHorsLigne.echec;
       return switch (echec) {
-        EchecDeCarte.reseau => e.reseau,
-        EchecDeCarte.empreinteInvalide => e.empreinteInvalide,
-        EchecDeCarte.tailleInattendue => e.tailleInattendue,
-        EchecDeCarte.plusDePlace => e.plusDePlace,
-        EchecDeCarte.ecritureImpossible => e.ecritureImpossible,
-        EchecDeCarte.stockageIndisponible => e.stockageIndisponible,
-        EchecDeCarte.annulee => e.annulee,
+        MapFailure.reseau => e.reseau,
+        MapFailure.empreinteInvalide => e.empreinteInvalide,
+        MapFailure.tailleInattendue => e.tailleInattendue,
+        MapFailure.plusDePlace => e.plusDePlace,
+        MapFailure.ecritureImpossible => e.ecritureImpossible,
+        MapFailure.stockageIndisponible => e.stockageIndisponible,
+        MapFailure.annulee => e.annulee,
       };
     }
     // LE REFUS DU BILAN PASSE AVANT CELUI DE L EXAMEN : c est la reponse au

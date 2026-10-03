@@ -90,8 +90,8 @@ class Publicateur {
   /// surtout, laisserait croire qu il y a quelque chose a prendre.
   ResultatDePublication publier(String dossierSource) {
     final source = SourceDeSentier.lire(dossierSource);
-    final liste = _lireLaListe();
-    final precedente = liste[source.trailId];
+    final list = _lireLaListe();
+    final precedente = list[source.trailId];
 
     final revisionPrecedente =
         precedente?.dataVersion ?? RevisionDeDonnee.revisionInitiale;
@@ -99,7 +99,7 @@ class Publicateur {
     if (source.listeSeulement) {
       return _publierLEntreeSeule(
         source,
-        liste: liste,
+        list: list,
         precedente: precedente,
         revision: revisionPrecedente == RevisionDeDonnee.revisionInitiale
             ? _instantApres(RevisionDeDonnee.revisionInitiale)
@@ -135,8 +135,8 @@ class Publicateur {
         // les DONNEES n ont pas change. Le faire avancer seul recreerait la
         // divergence que ce lot ferme — deux noms pour un fait, et le plus
         // silencieux qui gagne.
-        liste[source.trailId] = entree;
-        _ecrireLaListe(liste);
+        list[source.trailId] = entree;
+        _ecrireLaListe(list);
       }
       return ResultatDePublication(
         trailId: source.trailId,
@@ -169,14 +169,14 @@ class Publicateur {
 
     // 2. LA LISTE ENSUITE, avec l empreinte des octets REELLEMENT ecrits.
     final empreinte = EmpreinteDePublication.de(octets);
-    liste[source.trailId] = _entree(
+    list[source.trailId] = _entree(
       source,
       revision: nouvelleRevision,
       chemin: chemin,
       empreinte: empreinte,
       octets: octets.length,
     );
-    _ecrireLaListe(liste);
+    _ecrireLaListe(list);
 
     return ResultatDePublication(
       trailId: source.trailId,
@@ -200,7 +200,7 @@ class Publicateur {
   /// savait la fabriquer.
   ResultatDePublication _publierLEntreeSeule(
     SourceDeSentier source, {
-    required Map<String, TrailManifestEntry> liste,
+    required Map<String, TrailManifestEntry> list,
     required TrailManifestEntry? precedente,
     required HorodatageServeur revision,
   }) {
@@ -211,8 +211,8 @@ class Publicateur {
       empreinte: precedente?.hash ?? '',
       octets: precedente?.fileSize ?? 0,
     );
-    liste[source.trailId] = entree;
-    _ecrireLaListe(liste);
+    list[source.trailId] = entree;
+    _ecrireLaListe(list);
 
     return ResultatDePublication(
       trailId: source.trailId,
@@ -245,14 +245,14 @@ class Publicateur {
   /// portent ses propres enregistrements.
   List<String> verifier() {
     final anomalies = <String>[];
-    final liste = _lireLaListe();
+    final list = _lireLaListe();
 
-    if (liste.isEmpty) {
+    if (list.isEmpty) {
       anomalies.add('$sortie/$nomDeLaListe : aucune entree.');
       return anomalies;
     }
 
-    for (final entree in liste.values) {
+    for (final entree in list.values) {
       if (entree.fiche == null) {
         anomalies.add(
           '${entree.trailId} : entree sans fiche — elle ne peut que versionner '
@@ -337,7 +337,7 @@ class Publicateur {
 
     var maximum = RevisionDeDonnee.revisionInitiale;
     var sansRevision = 0;
-    for (final famille in MorceauxDeSentier.tous) {
+    for (final famille in TrailChunks.tous) {
       final brut = donnees[famille];
       final tous = <Map<String, dynamic>>[
         if (brut is Map) Map<String, dynamic>.from(brut),
@@ -427,11 +427,11 @@ class Publicateur {
     };
   }
 
-  void _ecrireLaListe(Map<String, TrailManifestEntry> liste) {
-    final ordonnees = liste.keys.toList()..sort();
+  void _ecrireLaListe(Map<String, TrailManifestEntry> list) {
+    final ordonnees = list.keys.toList()..sort();
     final contenu = <String, dynamic>{
       'schemaVersion': versionDeSchema,
-      'trails': [for (final id in ordonnees) _sansNul(liste[id]!.toJson())],
+      'trails': [for (final id in ordonnees) _sansNul(list[id]!.toJson())],
     };
     final fichier = File('$sortie/$nomDeLaListe');
     fichier.parent.createSync(recursive: true);
@@ -459,16 +459,16 @@ class Publicateur {
   Map<String, dynamic> _avecLeStatut(SourceDeSentier source) {
     final donnees = <String, dynamic>{...source.donnees};
     final meta = <String, dynamic>{
-      ...?(donnees[MorceauxDeSentier.fiche] as Map<String, dynamic>?),
+      ...?(donnees[TrailChunks.fiche] as Map<String, dynamic>?),
     };
     meta['status'] = source.statut;
-    donnees[MorceauxDeSentier.fiche] = meta;
+    donnees[TrailChunks.fiche] = meta;
     return donnees;
   }
 
   /// Le fichier publie, familles DANS L ORDRE DES CLEFS ETRANGERES.
   ///
-  /// L application n en depend plus depuis la tache 606 (`MorceauxDeSentier.tous`
+  /// L application n en depend plus depuis la tache 606 (`TrailChunks.tous`
   /// impose l ordre a la pose), mais un humain relit ces fichiers : les familles
   /// dans l ordre ou elles s appliquent se lisent, celles dans l ordre
   /// alphabetique se dechiffrent.
@@ -477,7 +477,7 @@ class Publicateur {
     required HorodatageServeur revision,
   }) {
     final meta = <String, dynamic>{
-      ...?(donnees[MorceauxDeSentier.fiche] as Map<String, dynamic>?),
+      ...?(donnees[TrailChunks.fiche] as Map<String, dynamic>?),
     };
     // La revision courante du sentier, recopiee dans le fichier de donnees :
     // `TrailSeeder` et la pose la lisent. `rev`, lui, vient du calcul selectif et
@@ -485,9 +485,9 @@ class Publicateur {
     meta['data_version'] = revision.iso8601;
 
     return <String, dynamic>{
-      MorceauxDeSentier.fiche: meta,
-      for (final famille in MorceauxDeSentier.tous)
-        if (famille != MorceauxDeSentier.fiche && donnees[famille] != null)
+      TrailChunks.fiche: meta,
+      for (final famille in TrailChunks.tous)
+        if (famille != TrailChunks.fiche && donnees[famille] != null)
           famille: donnees[famille],
     };
   }

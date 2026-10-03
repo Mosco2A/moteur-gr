@@ -157,9 +157,9 @@ class TrailCatalogScreen extends ConsumerWidget {
     // « Acheter » a cote s'il n'en veut pas.
 
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
-    // bascule est resolue avant la navigation ([choisirSentier] dit pourquoi :
+    // bascule est resolue avant la navigation ([chooseTrail] dit pourquoi :
     // sans cela, quatre « setState during build » par bascule).
-    choisirSentier(ref, trailId);
+    chooseTrail(ref, trailId);
     context.go('/home');
   }
 }

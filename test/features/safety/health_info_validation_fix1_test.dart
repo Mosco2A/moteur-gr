@@ -49,7 +49,7 @@ void main() {
     return ProviderScope(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        ficheMedicaleFichierProvider.overrideWithValue(fiche),
+        healthInfoFileProvider.overrideWithValue(fiche),
       ],
       child: TranslationProvider(
         child: MaterialApp.router(

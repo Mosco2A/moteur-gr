@@ -61,7 +61,7 @@ void main() {
     return ProviderScope(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        ficheMedicaleFichierProvider.overrideWithValue(fiche),
+        healthInfoFileProvider.overrideWithValue(fiche),
         // MEME INSTANCE QUE CELLE QUE LE TEST INTERROGE : sans cette surcharge,
         // l ecran ecrirait dans un service et le test lirait dans un autre. Les
         // deux liraient le meme magasin de preferences, mais l etat en memoire
@@ -186,7 +186,7 @@ void main() {
       expect(etat.decidedAt, isNotNull, reason: 'la decision est horodatee');
       expect(
         etat.declencheur,
-        DeclencheurDeConsentement.modificationDesDonnees,
+        ConsentTrigger.modificationDesDonnees,
         reason:
             'le registre en base doit pouvoir distinguer une '
             're-confirmation apres modification d un premier accord',
@@ -211,10 +211,7 @@ void main() {
       final etat = consentement.stateOf(ConsentPurpose.healthData);
       expect(etat.granted, isFalse);
       expect(etat.decidedAt, isNotNull);
-      expect(
-        etat.declencheur,
-        DeclencheurDeConsentement.modificationDesDonnees,
-      );
+      expect(etat.declencheur, ConsentTrigger.modificationDesDonnees);
       expect(consentement.needsPrompt(ConsentPurpose.healthData), isFalse);
     });
 

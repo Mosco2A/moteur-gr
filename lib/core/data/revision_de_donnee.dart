@@ -394,8 +394,8 @@ abstract final class RevisionDeDonnee {
   static bool aPrendre(
     Map<String, dynamic> donnee, {
     required HorodatageServeur revisionLocale,
-    required HorodatageServeur revisionDuSentier,
+    required HorodatageServeur trailRevision,
   }) {
-    return revisionDe(donnee, defaut: revisionDuSentier) > revisionLocale;
+    return revisionDe(donnee, defaut: trailRevision) > revisionLocale;
   }
 }

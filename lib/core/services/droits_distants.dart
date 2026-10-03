@@ -82,14 +82,14 @@ import "../data/revision_de_donnee.dart";
 const String kCheminSolde = "wallet/current";
 
 /// Chemin de la collection des droits de sentier, sous `users/{uid}`.
-const String kCheminSentiers = "entitlements";
+const String kEntitlementsPath = "entitlements";
 
 /// Chemin du document d abonnement, sous `users/{uid}`.
 ///
 /// NOUVEAU (631). Le miroir A5 portait deja le solde et les droits de sentier,
 /// jamais l abonnement : il n existait donc AUCUN endroit ou un abonnement
 /// pouvait vivre ailleurs que dans la memoire d un seul telephone.
-const String kCheminAbonnement = "subscription/current";
+const String kSubscriptionPath = "subscription/current";
 
 /// LE SOLDE ANNONCE PAR LE SERVEUR.
 ///
@@ -233,24 +233,24 @@ class AbonnementDistant {
 
 /// TOUT CE QUE LE SERVEUR ANNONCE EN UNE PASSE.
 class DroitsDistants {
-  const DroitsDistants({this.solde, this.sentiers = const [], this.abonnement});
+  const DroitsDistants({this.solde, this.trails = const [], this.subscription});
 
   /// Le solde, ou `null` si le serveur n en annonce pas.
   final SoldeDistant? solde;
 
   /// Les droits de sentier annonces (un par document).
-  final List<DroitDeSentierDistant> sentiers;
+  final List<DroitDeSentierDistant> trails;
 
   /// L abonnement, ou `null` si le serveur n en annonce pas.
-  final AbonnementDistant? abonnement;
+  final AbonnementDistant? subscription;
 
   /// Vrai si le serveur n a rien annonce du tout.
-  bool get estVide => solde == null && sentiers.isEmpty && abonnement == null;
+  bool get estVide => solde == null && trails.isEmpty && subscription == null;
 
   @override
   String toString() =>
       "DroitsDistants(solde: $solde, "
-      "sentiers: ${sentiers.length}, abonnement: $abonnement)";
+      "sentiers: ${trails.length}, abonnement: $subscription)";
 }
 
 /// LE SOLDE APRES FUSION — deux cumuls et le solde qui en decoule.
@@ -323,7 +323,7 @@ class DroitDeSentierFusionne {
 /// [possedeLocal] et les deux compteurs valent zero/faux quand le telephone ne
 /// connait pas encore ce sentier : la fusion se reduit alors a « prendre ce que
 /// le serveur annonce », ce qui est exactement le cas de la premiere descente.
-DroitDeSentierFusionne fusionnerDroitDeSentier({
+DroitDeSentierFusionne mergeTrailEntitlement({
   required bool possedeLocal,
   required int etapesAcquisesLocal,
   required int complementConsommeLocal,

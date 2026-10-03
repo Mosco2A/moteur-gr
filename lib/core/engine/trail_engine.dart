@@ -66,7 +66,7 @@ final trailConfigProvider = Provider<TrailConfig>((ref) {
 /// [ref] est un [WidgetRef] : ce geste part TOUJOURS d'une interaction, jamais
 /// du corps d'un provider — ecrire un etat depuis un provider est justement
 /// l'anti-motif qui produirait le meme defaut ailleurs.
-void choisirSentier(WidgetRef ref, String trailId) {
+void chooseTrail(WidgetRef ref, String trailId) {
   ref.read(selectedTrailIdProvider.notifier).state = trailId;
   // Resolution IMMEDIATE, hors build : c'est tout l'objet de cette fonction.
   ref.read(trailConfigProvider);

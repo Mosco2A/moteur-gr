@@ -74,7 +74,7 @@ enum RefusDeDescente {
   ///
   /// CETTE CAUSE EXISTE PARCE QU AVANT ELLE, C ETAIT UN PLANTAGE. [examiner] et
   /// [MapDownloader.descendre] ne rattrapaient rien ; l exception traversait
-  /// [ControleurDesCartes.demarrer], dont le `try` n avait pas de `catch`, et
+  /// [MapsController.start], dont le `try` n avait pas de `catch`, et
   /// ressortait dans le futur d un bouton — que personne n attend. Resultat :
   /// erreur asynchrone non traitee, remontee comme plantage FATAL. Retour de
   /// Christophe du 30/09 : « en demo comme en vrai telecharger les cartes
@@ -122,24 +122,23 @@ class DecisionDeDescente {
   }
 
   /// Le meme chiffre en megaoctets, tel qu on l affiche.
-  double get megaoctetsAPrendre =>
-      ProgressionDeCarte.enMegaoctets(octetsAPrendre);
+  double get megaoctetsAPrendre => MapProgress.enMegaoctets(octetsAPrendre);
 }
 
 /// CE QU UNE DEMANDE DE DESCENTE A DONNE : un refus, ou un transport et son sort.
 class BilanDeDescente {
-  const BilanDeDescente({required this.decision, this.carte});
+  const BilanDeDescente({required this.decision, this.map});
 
   /// Ce qui a ete decide avant de transporter (poids, lien, refus eventuel).
   final DecisionDeDescente decision;
 
   /// Le transport, ou `null` s il n a pas eu lieu (refus).
-  final ResultatDeCarte? carte;
+  final MapResult? map;
 
-  bool get posee => carte?.reussie ?? false;
+  bool get posee => map?.reussie ?? false;
   bool get refusee => decision.refus != null;
   RefusDeDescente? get refus => decision.refus;
-  EchecDeCarte? get echec => carte?.echec;
+  MapFailure? get echec => map?.echec;
 }
 
 /// LA DESCENTE DES CARTES HORS LIGNE — SEUL CHEMIN, ET IL N EN EXISTAIT AUCUN.
@@ -178,20 +177,20 @@ class BilanDeDescente {
 /// heures ». Les cartes descendent donc sur un GESTE, jamais sur une horloge.
 ///
 /// CE QUI RESTE UNIQUE, ET C EST L ESSENTIEL : la DECISION. Le niveau est le seul
-/// juge de ce qui descend ([NiveauDeTelechargement.porteLesCartes]), le droit de
+/// juge de ce qui descend ([NiveauDeTelechargement.carriesMaps]), le droit de
 /// realiser a une seule source (`MonetizationService.canRealizeTrail`), l adresse a
 /// une seule source (`TrailDataSource`), et le transport a un seul appelant — celui-
 /// ci. C est la lecon de la tache 606, ou un geste « telecharger » avait pris un
 /// second chemin qui ignorait tout le modele.
 class MapDownloader {
   MapDownloader({
-    required this.cartes,
+    required this.maps,
     required this.dao,
     required this.monetization,
     required this.connectivityMonitor,
   });
 
-  final MBTilesManager cartes;
+  final MBTilesManager maps;
   final TrailManifestsDao dao;
   final MonetizationService monetization;
   final ConnectivityMonitor connectivityMonitor;
@@ -248,7 +247,7 @@ class MapDownloader {
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
   }) async {
-    if (!niveau.porteLesCartes) {
+    if (!niveau.carriesMaps) {
       // ZERO OCTET, ET ZERO QUESTION AU SYSTEME. On ne lit meme pas le type de lien
       // : « regarder » et « preparer » ne descendent pas de carte, point.
       return DecisionDeDescente(
@@ -303,7 +302,7 @@ class MapDownloader {
       );
     }
 
-    if (await cartes.hasMbtiles(trailId)) {
+    if (await maps.hasMbtiles(trailId)) {
       return DecisionDeDescente(
         trailId: trailId,
         octetsTotal: total,
@@ -313,7 +312,7 @@ class MapDownloader {
       );
     }
 
-    final dejaLa = await cartes.octetsDejaDescendus(trailId);
+    final dejaLa = await maps.octetsDejaDescendus(trailId);
     final lien = await connectivityMonitor.typeDeLien();
 
     if (lien == TypesDeLien.aucun) {
@@ -328,7 +327,7 @@ class MapDownloader {
 
     if (!TypesDeLien.sansSupplement(lien) && !confirmeHorsWifi) {
       _log.d(
-        '[Cartes] $trailId : ${ProgressionDeCarte.enMegaoctets(total - dejaLa).toStringAsFixed(1)} Mo a prendre sur un lien « $lien » — '
+        '[Cartes] $trailId : ${MapProgress.enMegaoctets(total - dejaLa).toStringAsFixed(1)} Mo a prendre sur un lien « $lien » — '
         'confirmation demandee avant tout transfert.',
       );
       return DecisionDeDescente(
@@ -364,7 +363,7 @@ class MapDownloader {
     String trailId, {
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
-    void Function(ProgressionDeCarte)? progression,
+    void Function(MapProgress)? progression,
     AnnulationDeDescente? annulation,
   }) async {
     final decision = await examiner(
@@ -417,20 +416,20 @@ class MapDownloader {
     _log.d(
       '[Cartes] $trailId : descente de '
       '${decision.megaoctetsAPrendre.toStringAsFixed(1)} Mo '
-      '(total ${ProgressionDeCarte.enMegaoctets(decision.octetsTotal).toStringAsFixed(1)} Mo, '
-      '${ProgressionDeCarte.enMegaoctets(decision.octetsDejaLa).toStringAsFixed(1)} Mo deja la) sur lien « ${decision.lien} ».',
+      '(total ${MapProgress.enMegaoctets(decision.octetsTotal).toStringAsFixed(1)} Mo, '
+      '${MapProgress.enMegaoctets(decision.octetsDejaLa).toStringAsFixed(1)} Mo deja la) sur lien « ${decision.lien} ».',
     );
 
-    final resultat = await cartes.descendre(
+    final resultat = await maps.descendre(
       trailId: trailId,
-      url: TrailDataSource.urlDonneesSentier(ligne.tilesPath!),
+      url: TrailDataSource.trailDataUrl(ligne.tilesPath!),
       octetsAttendus: ligne.tilesSize!,
       empreinteAttendue: ligne.tilesHash!,
       progression: progression,
       annulation: annulation,
     );
 
-    return BilanDeDescente(decision: decision, carte: resultat);
+    return BilanDeDescente(decision: decision, map: resultat);
   }
 
   /// RETIRE LA CARTE HORS LIGNE DE [trailId] POUR LIBERER L ESPACE (tache 640).
@@ -445,15 +444,15 @@ class MapDownloader {
   /// LA SUPPRESSION PASSE PAR ICI, PAS PAR L ECRAN. Meme raison que la descente :
   /// un seul endroit touche aux fichiers de tuiles, et il ne leve jamais.
   /// Rend vrai si la carte n est plus la apres l appel.
-  Future<bool> supprimer(String trailId) async {
+  Future<bool> delete(String trailId) async {
     try {
-      await cartes.deleteMbtiles(trailId);
+      await maps.deleteMbtiles(trailId);
       return true;
     } on Object catch (e, st) {
       ErrorHandler.log(
         e,
         stackTrace: st,
-        context: 'MapDownloader.supprimer($trailId)',
+        context: 'MapDownloader.delete($trailId)',
       );
       return false;
     }
@@ -469,10 +468,10 @@ class MapDownloader {
 }
 
 /// Provider du service de descente des cartes hors ligne.
-final descenteDesCartesProvider = Provider<MapDownloader>((ref) {
+final mapDownloaderProvider = Provider<MapDownloader>((ref) {
   final db = ref.watch(databaseProvider);
   return MapDownloader(
-    cartes: ref.watch(mbtilesManagerProvider),
+    maps: ref.watch(mbtilesManagerProvider),
     dao: TrailManifestsDao(db),
     monetization: ref.watch(monetizationServiceProvider),
     connectivityMonitor: ref.watch(connectivityMonitorProvider),
@@ -484,11 +483,11 @@ final descenteDesCartesProvider = Provider<MapDownloader>((ref) {
 /// Les trois choses demandees par Christophe, et rien de plus : ce qui descend
 /// ([progression]), pourquoi ca s est arrete ([bilan]), et si c est en cours — le
 /// moyen d annuler est la methode du controleur.
-class EtatDesCartes {
-  const EtatDesCartes({this.progression, this.bilan, this.enCours = false});
+class MapsState {
+  const MapsState({this.progression, this.bilan, this.enCours = false});
 
   /// Ou en est le transport, ou `null` si rien n a encore ete recu.
-  final ProgressionDeCarte? progression;
+  final MapProgress? progression;
 
   /// Le dernier bilan connu (refus, echec ou carte posee). Null = jamais demande.
   final BilanDeDescente? bilan;
@@ -507,8 +506,8 @@ class EtatDesCartes {
 /// annulerait INSTANTANEMENT toutes les descentes suivantes du meme sentier, et ce
 /// defaut ne se verrait qu au deuxieme essai du randonneur. Le controleur en fabrique
 /// donc un NEUF a chaque depart, et c est lui qui detient le seul moyen de le lever.
-class ControleurDesCartes extends Notifier<EtatDesCartes> {
-  ControleurDesCartes(this.trailId);
+class MapsController extends Notifier<MapsState> {
+  MapsController(this.trailId);
 
   /// Le sentier dont ce controleur descend la carte.
   final String trailId;
@@ -516,7 +515,7 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
   AnnulationDeDescente? _jeton;
 
   @override
-  EtatDesCartes build() => const EtatDesCartes();
+  MapsState build() => const MapsState();
 
   /// Vrai si une descente est en cours et peut etre annulee.
   bool get annulable => state.enCours && _jeton != null;
@@ -528,7 +527,7 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
   /// s ecriraient l un par-dessus l autre, et l empreinte finale serait fausse sans
   /// qu on sache pourquoi. C est le meme verrou que celui de l ordonnanceur (tache
   /// 620), pose AVANT le premier `await`.
-  Future<BilanDeDescente> demarrer({
+  Future<BilanDeDescente> start({
     required NiveauDeTelechargement niveau,
     bool confirmeHorsWifi = false,
   }) async {
@@ -548,11 +547,11 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
 
     final jeton = AnnulationDeDescente();
     _jeton = jeton;
-    state = EtatDesCartes(bilan: state.bilan, enCours: true);
+    state = MapsState(bilan: state.bilan, enCours: true);
 
     try {
       final bilan = await ref
-          .read(descenteDesCartesProvider)
+          .read(mapDownloaderProvider)
           .descendre(
             trailId,
             niveau: niveau,
@@ -560,13 +559,13 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
             annulation: jeton,
             progression: (p) {
               if (!ref.mounted) return;
-              state = EtatDesCartes(progression: p, enCours: true);
+              state = MapsState(progression: p, enCours: true);
             },
           );
       if (ref.mounted) {
-        state = EtatDesCartes(progression: state.progression, bilan: bilan);
+        state = MapsState(progression: state.progression, bilan: bilan);
       }
-      _poserLaMiette(bilan);
+      _dropBreadcrumb(bilan);
       return bilan;
     } on Object catch (e, st) {
       // LE `catch` QUI MANQUAIT, ET C EST LE BUG 9 (tache 640).
@@ -587,7 +586,7 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
         e,
         stackTrace: st,
         context:
-            'ControleurDesCartes.demarrer($trailId) — le geste '
+            'MapsController.start($trailId) — le geste '
             '« telecharger les cartes » a rencontre une panne imprevue',
       );
       unawaited(ref.read(analyticsServiceProvider).recordError(e, st));
@@ -601,7 +600,7 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
         ),
       );
       if (ref.mounted) {
-        state = EtatDesCartes(progression: state.progression, bilan: bilan);
+        state = MapsState(progression: state.progression, bilan: bilan);
       }
       return bilan;
     } finally {
@@ -610,20 +609,17 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
       // sur une barre qui n avance plus est pire qu un message d erreur : le
       // randonneur attend un transport qui n existe plus.
       if (ref.mounted && state.enCours) {
-        state = EtatDesCartes(
-          progression: state.progression,
-          bilan: state.bilan,
-        );
+        state = MapsState(progression: state.progression, bilan: state.bilan);
       }
     }
   }
 
   /// ANNULE LA DESCENTE EN COURS. Sans effet s il n y en a pas.
   ///
-  /// Le fichier deja descendu est CONSERVE (cf. [EchecDeCarte.annulee]) : annuler ne
+  /// Le fichier deja descendu est CONSERVE (cf. [MapFailure.annulee]) : annuler ne
   /// punit pas, la reprise repartira d ou on s est arrete.
-  void annuler() {
-    _jeton?.annuler();
+  void cancel() {
+    _jeton?.cancel();
     _log.d('[Cartes] $trailId : annulation demandee par le randonneur.');
   }
 
@@ -643,21 +639,21 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
   ///
   /// Le rapporteur est inerte tant que Firebase est absent
   /// ([AnalyticsService.disabled]) : aucun appel reseau en test ni en local.
-  void _poserLaMiette(BilanDeDescente bilan) {
+  void _dropBreadcrumb(BilanDeDescente bilan) {
     final echec = bilan.echec;
     final refus = bilan.refus;
     final anormal =
-        echec == EchecDeCarte.stockageIndisponible ||
-        echec == EchecDeCarte.ecritureImpossible ||
-        echec == EchecDeCarte.empreinteInvalide ||
-        echec == EchecDeCarte.tailleInattendue ||
+        echec == MapFailure.stockageIndisponible ||
+        echec == MapFailure.ecritureImpossible ||
+        echec == MapFailure.empreinteInvalide ||
+        echec == MapFailure.tailleInattendue ||
         refus == RefusDeDescente.stockageIndisponible;
     if (!anormal) return;
     final panne = StateError(
       'descente des cartes de $trailId : refus « ${refus?.name ?? "aucun"} », '
       'echec « ${echec?.name ?? "aucun"} »',
     );
-    ErrorHandler.log(panne, context: 'ControleurDesCartes.demarrer($trailId)');
+    ErrorHandler.log(panne, context: 'MapsController.start($trailId)');
     unawaited(
       ref.read(analyticsServiceProvider).recordError(panne, StackTrace.current),
     );
@@ -669,15 +665,15 @@ class ControleurDesCartes extends Notifier<EtatDesCartes> {
   /// continuerait d afficher « cartes pretes hors ligne » sur un bilan devenu
   /// faux, exactement le genre d ecran qui ment que le lot 638 a eu a corriger
   /// ailleurs.
-  Future<bool> supprimer() async {
-    final ok = await ref.read(descenteDesCartesProvider).supprimer(trailId);
-    if (ref.mounted) state = const EtatDesCartes();
+  Future<bool> delete() async {
+    final ok = await ref.read(mapDownloaderProvider).delete(trailId);
+    if (ref.mounted) state = const MapsState();
     return ok;
   }
 }
 
 /// Controleur de descente par sentier.
 final controleurDesCartesProvider =
-    NotifierProvider.family<ControleurDesCartes, EtatDesCartes, String>(
-      ControleurDesCartes.new,
+    NotifierProvider.family<MapsController, MapsState, String>(
+      MapsController.new,
     );

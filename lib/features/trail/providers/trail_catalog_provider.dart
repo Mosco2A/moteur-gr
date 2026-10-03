@@ -51,7 +51,7 @@ enum EchecDuCatalogue {
 /// Le catalogue tel qu il est affichable A CET INSTANT, et d ou il vient.
 class TrailCatalogState {
   const TrailCatalogState({
-    required this.sentiers,
+    required this.trails,
     required this.source,
     this.echec,
     this.ignores = const [],
@@ -59,7 +59,7 @@ class TrailCatalogState {
 
   /// Les sentiers affichables. JAMAIS VIDE en pratique : le catalogue compile
   /// est le plancher.
-  final List<TrailConfig> sentiers;
+  final List<TrailConfig> trails;
 
   /// Laquelle des trois couches a produit cette liste.
   final SourceDuCatalogue source;
@@ -119,7 +119,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
     // premier pour qu aucun ecran ne soit vide le temps d une lecture.
     _rafraichir();
     return const TrailCatalogState(
-      sentiers: TrailCatalog.all,
+      trails: TrailCatalog.all,
       source: SourceDuCatalogue.compile,
     );
   }
@@ -133,7 +133,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
     // doit rester entier.
     final recu = await _lireLeDernierRecu();
     if (!ref.mounted) return;
-    if (recu != null && recu.sentiers.isNotEmpty) {
+    if (recu != null && recu.trails.isNotEmpty) {
       state = recu;
     }
 
@@ -152,7 +152,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
       // pour que l ecran puisse dire « liste non rafraichie » sans se presenter
       // comme une panne.
       state = TrailCatalogState(
-        sentiers: state.sentiers,
+        trails: state.trails,
         source: state.source,
         echec: EchecDuCatalogue.horsLigne,
         ignores: state.ignores,
@@ -172,21 +172,21 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
     // celle que Christophe voit dans sa console et que `tool/publier_en_base.py`
     // alimente. Le fichier reste le repli : mode local sans Firebase, ou projet
     // sans identifiant injecte au build.
-    TrailManifest? liste;
+    TrailManifest? list;
     try {
-      liste = await ref.read(listeSentiersFirestoreProvider).lire();
+      list = await ref.read(firestoreTrailListProvider).lire();
     } catch (e) {
       _log.w('[Catalogue] Lecture de la liste en base impossible: $e');
-      liste = null;
+      list = null;
     }
     if (!ref.mounted) return;
 
-    if (liste == null || liste.trails.isEmpty) {
+    if (list == null || list.trails.isEmpty) {
       try {
-        liste = await ref
+        list = await ref
             .read(manifestServiceProvider)
             .fetchManifest(urlDeLaListe);
-        if (liste != null) {
+        if (list != null) {
           _log.w(
             '[Catalogue] Liste lue depuis le FICHIER ($urlDeLaListe) et non '
             'depuis la base. C est le repli : la base fait foi des que la '
@@ -195,19 +195,19 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
         }
       } catch (e) {
         _log.w('[Catalogue] Lecture de la liste distante impossible: $e');
-        liste = null;
+        list = null;
       }
     }
     if (!ref.mounted) return;
 
-    if (liste == null) {
+    if (list == null) {
       _log.w(
         '[Catalogue] Liste des sentiers injoignable ($urlDeLaListe) — on garde '
-        '${state.sentiers.length} sentier(s) de la source ${state.source.name}. '
+        '${state.trails.length} sentier(s) de la source ${state.source.name}. '
         'La liste n est PAS a jour.',
       );
       state = TrailCatalogState(
-        sentiers: state.sentiers,
+        trails: state.trails,
         source: state.source,
         echec: EchecDuCatalogue.listeInjoignable,
         ignores: state.ignores,
@@ -215,10 +215,10 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
       return;
     }
 
-    final fusion = _fusionner(liste.trails);
+    final fusion = _fusionner(list.trails);
     if (!ref.mounted) return;
     state = TrailCatalogState(
-      sentiers: fusion.sentiers,
+      trails: fusion.trails,
       source: SourceDuCatalogue.distant,
       ignores: fusion.ignores,
     );
@@ -227,7 +227,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
     // Sans cette ecriture la couche 2 serait toujours vide et le randonneur
     // perdrait, au premier redemarrage hors ligne, tout sentier que le binaire ne
     // connait pas.
-    await _conserver(liste.trails);
+    await _conserver(list.trails);
   }
 
   /// Relit le dernier catalogue distant recu depuis la base locale.
@@ -255,7 +255,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
 
       final fusion = _fusionner(entrees);
       return TrailCatalogState(
-        sentiers: fusion.sentiers,
+        trails: fusion.trails,
         source: SourceDuCatalogue.dernierDistantRecu,
         ignores: fusion.ignores,
       );
@@ -311,7 +311,7 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
       for (final c in TrailCatalog.all) c.id: c,
     };
 
-    final sentiers = <TrailConfig>[];
+    final trails = <TrailConfig>[];
     final ignores = <String>[];
     final vus = <String>{};
 
@@ -337,22 +337,22 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
         );
         continue;
       }
-      sentiers.add(fusionne);
+      trails.add(fusionne);
     }
 
     // Les sentiers compiles dont la liste distante ne parle pas, dans l ordre du
     // catalogue embarque.
     for (final compile in TrailCatalog.all) {
-      if (!vus.contains(compile.id)) sentiers.add(compile);
+      if (!vus.contains(compile.id)) trails.add(compile);
     }
 
-    return _Fusion(sentiers: sentiers, ignores: ignores);
+    return _Fusion(trails: trails, ignores: ignores);
   }
 }
 
 class _Fusion {
-  const _Fusion({required this.sentiers, required this.ignores});
-  final List<TrailConfig> sentiers;
+  const _Fusion({required this.trails, required this.ignores});
+  final List<TrailConfig> trails;
   final List<String> ignores;
 }
 

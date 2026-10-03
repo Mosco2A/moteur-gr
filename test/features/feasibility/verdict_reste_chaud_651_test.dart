@@ -81,7 +81,7 @@ void main() {
     final (c: container, lectures: lectures) = conteneur();
 
     // 1. L'ecran Faisabilite s'abonne au verdict et l'affiche.
-    final abonnement = container.listen(
+    final subscription = container.listen(
       feasibilityAssessmentProvider,
       (_, __) {},
     );
@@ -94,7 +94,7 @@ void main() {
     //    on laisse donc la boucle tourner, sinon le test mesurerait un cache
     //    qui n'a simplement pas encore eu le temps d'etre vide — et passerait
     //    au vert sans rien prouver.
-    abonnement.close();
+    subscription.close();
     await Future<void>.delayed(Duration.zero);
     await Future<void>.delayed(Duration.zero);
 

@@ -246,8 +246,8 @@ class _MyTreksBody extends ConsumerWidget {
   /// Selectionne le trek [id] : ecrit la selection puis bascule vers le cockpit
   /// (`/home`). Geste eprouve du catalogue — toute l'app suit le sentier choisi.
   void _selectTrek(WidgetRef ref, BuildContext context, String id) {
-    // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
-    choisirSentier(ref, id);
+    // Bascule resolue AVANT la navigation (cf. [chooseTrail]).
+    chooseTrail(ref, id);
     context.go('/home');
   }
 }

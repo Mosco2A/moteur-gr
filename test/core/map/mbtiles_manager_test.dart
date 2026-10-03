@@ -71,7 +71,7 @@ void main() {
   });
 
   /// Une carte factice de [octets] octets, et son empreinte reelle.
-  ({Uint8List contenu, String empreinte}) carte(int octets) {
+  ({Uint8List contenu, String empreinte}) map(int octets) {
     final contenu = Uint8List.fromList(
       List<int>.generate(octets, (i) => (i * 7 + 13) % 256),
     );
@@ -108,7 +108,7 @@ void main() {
   group('MBTilesManager — le transport des cartes hors ligne (tache 622)', () {
     group('la carte descend, verifiee, sous son nom definitif', () {
       test('une carte complete et conforme est posee', () async {
-        final c = carte(4096);
+        final c = map(4096);
         final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
         final bilan = await manager.descendre(
@@ -136,7 +136,7 @@ void main() {
       test(
         'l empreinte est acceptee avec ou sans le prefixe sha256:',
         () async {
-          final c = carte(1024);
+          final c = map(1024);
           final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
           final bilan = await manager.descendre(
@@ -153,9 +153,9 @@ void main() {
       test(
         'la progression annonce le poids total, pas seulement le recu',
         () async {
-          final c = carte(2 * 1024 * 1024);
+          final c = map(2 * 1024 * 1024);
           final manager = MBTilesManager(httpClient: serveur(c.contenu));
-          final points = <ProgressionDeCarte>[];
+          final points = <MapProgress>[];
 
           await manager.descendre(
             trailId: 'poids',
@@ -171,7 +171,7 @@ void main() {
           expect(points.last.fraction, 1.0);
           // 2 097 152 octets = 2,1 Mo tels qu on les annonce a un randonneur.
           expect(
-            ProgressionDeCarte.enMegaoctets(c.contenu.length),
+            MapProgress.enMegaoctets(c.contenu.length),
             closeTo(2.097, 0.001),
           );
         },
@@ -180,7 +180,7 @@ void main() {
 
     group('UNE CARTE A MOITIE ECRITE NE DOIT JAMAIS PORTER LE NOM DEFINITIF', () {
       test('une coupure en route laisse un .partiel, pas une carte', () async {
-        final c = carte(8192);
+        final c = map(8192);
         // Le serveur ne rend que 3000 octets sur les 8192 annonces.
         final manager = MBTilesManager(
           httpClient: serveur(c.contenu, couperApres: 3000),
@@ -194,14 +194,14 @@ void main() {
         );
 
         expect(bilan.reussie, isFalse);
-        expect(bilan.echec, EchecDeCarte.tailleInattendue);
+        expect(bilan.echec, MapFailure.tailleInattendue);
         expect(await manager.hasMbtiles('coupe'), isFalse);
       });
 
       test(
         'une empreinte fausse DETRUIT le fichier en cours et ne pose rien',
         () async {
-          final c = carte(4096);
+          final c = map(4096);
           final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
           final bilan = await manager.descendre(
@@ -211,7 +211,7 @@ void main() {
             empreinteAttendue: 'a' * 64,
           );
 
-          expect(bilan.echec, EchecDeCarte.empreinteInvalide);
+          expect(bilan.echec, MapFailure.empreinteInvalide);
           expect(await manager.hasMbtiles('menteur'), isFalse);
           // DETRUIT, et pas conserve : reprendre sur un contenu faux ne pourrait
           // jamais produire la bonne empreinte.
@@ -234,7 +234,7 @@ void main() {
           empreinteAttendue: 'b' * 64,
         );
 
-        expect(bilan.echec, EchecDeCarte.reseau);
+        expect(bilan.echec, MapFailure.reseau);
         expect(await manager.hasMbtiles('absent'), isFalse);
       });
     });
@@ -243,7 +243,7 @@ void main() {
       test(
         'le second appel demande la suite et ne retelecharge pas le debut',
         () async {
-          final c = carte(10000);
+          final c = map(10000);
           final demandes = <String?>[];
 
           // Premier essai : le serveur coupe a 4000 octets.
@@ -295,7 +295,7 @@ void main() {
       test(
         'un fichier deja complet est verifie et pose SANS aucun transport',
         () async {
-          final c = carte(5000);
+          final c = map(5000);
           final manager = MBTilesManager(
             httpClient: MockClient((_) async {
               fail('aucune requete ne doit partir : tout est deja la');
@@ -322,7 +322,7 @@ void main() {
       test(
         'un fichier en cours plus GROS que la carte annoncee repart de zero',
         () async {
-          final c = carte(3000);
+          final c = map(3000);
           final demandes = <String?>[];
           final manager = MBTilesManager(
             httpClient: serveur(c.contenu, demandes: demandes),
@@ -355,7 +355,7 @@ void main() {
       test(
         'annuler arrete le transport, conserve le deja-la, et ne pose rien',
         () async {
-          final c = carte(3 * 1024 * 1024);
+          final c = map(3 * 1024 * 1024);
           final jeton = AnnulationDeDescente();
           final manager = MBTilesManager(
             httpClient: MockClient.streaming((_, __) async {
@@ -379,10 +379,10 @@ void main() {
             empreinteAttendue: c.empreinte,
             annulation: jeton,
             // Le randonneur appuie sur « annuler » des qu il voit la progression.
-            progression: (_) => jeton.annuler(),
+            progression: (_) => jeton.cancel(),
           );
 
-          expect(bilan.echec, EchecDeCarte.annulee);
+          expect(bilan.echec, MapFailure.annulee);
           expect(await manager.hasMbtiles('annule'), isFalse);
           // ANNULER NE PUNIT PAS : ce qui est descendu reste, pour la reprise.
           expect(bilan.octetsSurLeTelephone, greaterThan(0));
@@ -394,7 +394,7 @@ void main() {
       );
 
       test('un jeton deja annule empeche toute requete', () async {
-        final jeton = AnnulationDeDescente()..annuler();
+        final jeton = AnnulationDeDescente()..cancel();
         final manager = MBTilesManager(
           httpClient: MockClient((_) async => fail('aucune requete attendue')),
         );
@@ -407,14 +407,14 @@ void main() {
           annulation: jeton,
         );
 
-        expect(bilan.echec, EchecDeCarte.annulee);
+        expect(bilan.echec, MapFailure.annulee);
       });
     });
 
     group('QUAND LA PLACE MANQUE SUR LE TELEPHONE', () {
       test('le disque plein est NOMME, la carte n est pas posee, et le deja-la '
           'reste pour reprendre apres liberation', () async {
-        final c = carte(20000);
+        final c = map(20000);
         late File partiel;
         final manager = MBTilesManager(
           // Un flux en morceaux de 4 000 octets, comme une vraie liaison : c est ce
@@ -443,7 +443,7 @@ void main() {
           empreinteAttendue: c.empreinte,
         );
 
-        expect(bilan.echec, EchecDeCarte.plusDePlace);
+        expect(bilan.echec, MapFailure.plusDePlace);
         expect(await manager.hasMbtiles('plein'), isFalse);
         expect(partiel.path, endsWith(MBTilesManager.suffixePartiel));
         // Ce qui avait pu s ecrire est conserve : liberer de la place puis
@@ -455,7 +455,7 @@ void main() {
 
     group('deleteMbtiles', () {
       test('supprime la carte ET le fichier en cours', () async {
-        final c = carte(4096);
+        final c = map(4096);
         final manager = MBTilesManager(httpClient: serveur(c.contenu));
         await manager.descendre(
           trailId: 'trail_del',
@@ -502,7 +502,7 @@ void main() {
       });
 
       test('retourne true apres telechargement', () async {
-        final c = carte(8);
+        final c = map(8);
         final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
         await manager.descendre(
@@ -534,7 +534,7 @@ void main() {
       });
 
       test('retourne les trailIds des fichiers telecharges', () async {
-        final c = carte(4096);
+        final c = map(4096);
         final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
         for (final id in ['sentier_a', 'sentier_b']) {
@@ -552,7 +552,7 @@ void main() {
       });
 
       test('ne liste plus un sentier supprime', () async {
-        final c = carte(4096);
+        final c = map(4096);
         final manager = MBTilesManager(httpClient: serveur(c.contenu));
 
         for (final id in ['sentier_c', 'sentier_d']) {

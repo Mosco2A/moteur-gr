@@ -67,7 +67,7 @@ void main() {
       overrides: [
         // L'ecran n'est pas le sujet ici : on fige sa decision pour ne
         // mesurer QUE le nom affiche, sans base ni reseau.
-        descenteDesCartesProvider.overrideWithValue(_DescenteFigee()),
+        mapDownloaderProvider.overrideWithValue(_DescenteFigee()),
       ],
       child: MaterialApp(
         locale: langue.flutterLocale,

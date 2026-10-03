@@ -195,14 +195,14 @@ class HikerProfileRepository {
 
       if (contenu.randosPassees.isEmpty && brutRandos != null) {
         try {
-          final liste =
+          final list =
               (json.decode(brutRandos) as List<dynamic>)
                   .whereType<Map<String, dynamic>>()
                   .map(PastHike.fromJson)
                   .toList()
                 ..sort((a, b) => b.date.compareTo(a.date));
           contenu = contenu.copyWith(
-            randosPassees: liste.take(kMaxPastHikes).toList(),
+            randosPassees: list.take(kMaxPastHikes).toList(),
           );
         } catch (e) {
           _log.e(

@@ -219,7 +219,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
       // 1. Le refus est trace et horodate (retractable a tout moment, D4A-01).
       await consent.revoke(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
       // 2. Le refus EFFACE : une revocation fait disparaitre ce qui a deja ete
       //    enregistre, elle ne se contente pas de cesser d'ecrire. Sans ce
@@ -241,7 +241,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     // apres — l'ordre importe si l'ecriture echoue.
     await consent.grant(
       ConsentPurpose.healthData,
-      declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+      declencheur: ConsentTrigger.modificationDesDonnees,
     );
     await ref.read(hikerProfileProvider.notifier).save(profile);
 

@@ -200,11 +200,11 @@ class DeviceSpecSheet {
   /// en plus des bretelles : il rend structurellement impossible qu un champ
   /// ajoute ici un jour parte sans avoir ete nomme dans la liste fermee.
   @visibleForTesting
-  static Map<String, Object?> construireLaCharge(
+  static Map<String, Object?> buildPayload(
     RenseignementsDuTelephone r, {
     required bool premiereVenue,
   }) {
-    final charge = <String, Object?>{
+    final payload = <String, Object?>{
       ChampsDeLaFicheTechnique.vuLe: FieldValue.serverTimestamp(),
       ChampsDeLaFicheTechnique.versionApplication: r.versionApplication,
       ChampsDeLaFicheTechnique.fabrication: r.fabrication,
@@ -215,10 +215,10 @@ class DeviceSpecSheet {
       if (premiereVenue)
         ChampsDeLaFicheTechnique.creeLe: FieldValue.serverTimestamp(),
     };
-    charge.removeWhere(
+    payload.removeWhere(
       (cle, _) => !ChampsDeLaFicheTechnique.autorises.contains(cle),
     );
-    return charge;
+    return payload;
   }
 
   /// POSE OU RAFRAICHIT LA FICHE. Rend vrai si quelque chose a ete ecrit.
@@ -257,7 +257,7 @@ class DeviceSpecSheet {
 
       final r = await renseignements();
       await document.set(
-        construireLaCharge(r, premiereVenue: premiereVenue),
+        buildPayload(r, premiereVenue: premiereVenue),
         SetOptions(merge: true),
       );
       return true;

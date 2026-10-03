@@ -24,7 +24,7 @@ import '../../core/branding/stepways_icons.dart';
 /// aucun des deux n'avait de bouton. C'est de la vente perdue tous les jours.
 ///
 /// UN SEUL GESTE, APPELE DEPUIS TROIS ENDROITS — exactement ce que
-/// [choisirSentier] a fait pour la bascule de sentier au lot 606. Le catalogue
+/// [chooseTrail] a fait pour la bascule de sentier au lot 606. Le catalogue
 /// ([TrailCatalogScreen]), la preparation ([HubBuyTrekButton]) et le depart
 /// ([HubStartTrekButton]) appellent CETTE fonction ; elle est la SEULE de tout
 /// `lib/` a ouvrir la vitrine, et un test structurel le tient. Trois

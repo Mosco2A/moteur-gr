@@ -44,11 +44,11 @@ void main() {
   final septEtapes = [for (var i = 1; i <= 7; i++) etape(i, 14.0, 700)];
 
   FeasibilityAssessment evaluer(
-    List<StageEffort> etapes, {
+    List<StageEffort> stages, {
     Set<int> repos = const <int>{},
   }) {
     final programme = FeasibilityProgram.fromRawStages(
-      etapes,
+      stages,
       restAfterStageIndex: repos,
     );
     return FeasibilityFormula.evaluate(

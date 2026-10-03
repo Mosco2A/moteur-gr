@@ -31,7 +31,7 @@ _TrailManifestEntry _$TrailManifestEntryFromJson(Map<String, dynamic> json) =>
       lastUpdated: json['lastUpdated'] as String,
       fiche: json['fiche'] == null
           ? null
-          : TrailManifestFiche.fromJson(json['fiche'] as Map<String, dynamic>),
+          : TrailManifestSheet.fromJson(json['fiche'] as Map<String, dynamic>),
       tilesPath: json['tilesPath'] as String?,
       tilesSize: (json['tilesSize'] as num?)?.toInt(),
       tilesHash: json['tilesHash'] as String?,
@@ -52,8 +52,8 @@ Map<String, dynamic> _$TrailManifestEntryToJson(_TrailManifestEntry instance) =>
       'tilesHash': instance.tilesHash,
     };
 
-_TrailManifestFiche _$TrailManifestFicheFromJson(Map<String, dynamic> json) =>
-    _TrailManifestFiche(
+_TrailManifestSheet _$TrailManifestSheetFromJson(Map<String, dynamic> json) =>
+    _TrailManifestSheet(
       name: json['name'] as String,
       displayName: json['displayName'] as String,
       tagline: json['tagline'] as String,
@@ -78,7 +78,7 @@ _TrailManifestFiche _$TrailManifestFicheFromJson(Map<String, dynamic> json) =>
       privacyPolicyUrl: json['privacyPolicyUrl'] as String?,
     );
 
-Map<String, dynamic> _$TrailManifestFicheToJson(_TrailManifestFiche instance) =>
+Map<String, dynamic> _$TrailManifestSheetToJson(_TrailManifestSheet instance) =>
     <String, dynamic>{
       'name': instance.name,
       'displayName': instance.displayName,

@@ -39,7 +39,7 @@ import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
 import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
-    show ficheMedicaleFichierProvider;
+    show healthInfoFileProvider;
 import 'features/safety/presentation/backup_consent_gate.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
@@ -146,7 +146,7 @@ Future<void> main() async {
 /// qui appelle chaque travail, en sequence).
 List<TacheDAmorcage> tachesDAmorcageDeLApplication(Ref ref) => <TacheDAmorcage>[
   // Tache 615 : l exclusion iCloud de la fiche medicale.
-  () => ref.read(ficheMedicaleFichierProvider).garantirExclusion(),
+  () => ref.read(healthInfoFileProvider).garantirExclusion(),
   // Tache 623 : le profil du randonneur quitte les preferences, et
   // l exclusion est reposee dans le meme geste (l ecriture atomique
   // remplace le fichier, et un fichier remplace ne porte plus
@@ -188,7 +188,7 @@ class MoteurGrApp extends StatelessWidget {
         // LE CABLAGE DES TRAVAUX D AMORCAGE, ET C EST ICI QUE CA SE NOUE.
         //
         // `app_bootstrap_provider.dart` (socle) importait l ECRAN de la fiche
-        // sante pour y prendre `ficheMedicaleFichierProvider` : le socle
+        // sante pour y prendre `healthInfoFileProvider` : le socle
         // connaissait une couche presentation (cas K1 du lot 645-05). La
         // fleche est inversee — l amorcage ne declare qu un besoin, et c est
         // `main.dart`, au-dessus du socle comme des features, qui a le droit
@@ -208,7 +208,7 @@ class MoteurGrApp extends StatelessWidget {
         // changement d'appareil ; un fichier de base ne s'excluant pas table par
         // table, la fiche a recu son PROPRE fichier sous le dossier declare
         // exclu (`HealthInfoFile`, cable par
-        // `ficheMedicaleFichierProvider`). Plus rien de medical ne passe par
+        // `healthInfoFileProvider`). Plus rien de medical ne passe par
         // `databaseProvider` : il n'y a donc plus rien a cabler ici.
       ],
       // Migration Riverpod 3 (INC-1) : NEUTRALISATION du retry automatique.

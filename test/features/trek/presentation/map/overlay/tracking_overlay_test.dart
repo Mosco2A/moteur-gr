@@ -199,10 +199,10 @@ void main() {
         ),
       );
 
-      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
-      expect(demarrer, findsOneWidget);
-      expect(_backgroundColorOf(tester, demarrer), AppTheme.actionStart);
-      expect(_backgroundColorOf(tester, demarrer), isNot(Colors.green));
+      final start = find.widgetWithText(ElevatedButton, 'Démarrer');
+      expect(start, findsOneWidget);
+      expect(_backgroundColorOf(tester, start), AppTheme.actionStart);
+      expect(_backgroundColorOf(tester, start), isNot(Colors.green));
 
       container.dispose();
     });

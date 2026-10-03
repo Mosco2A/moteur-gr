@@ -35,8 +35,8 @@ final monetizationServiceProvider = Provider<MonetizationService>((ref) {
     // L'INSTANT DE L'ACHAT. Un manifeste distant reçu entre-temps est donc pris
     // en compte, sans reconstruire le service ni invalider quoi que ce soit.
     stagesOf: (trailId) {
-      for (final sentier in ref.read(availableTrailsProvider)) {
-        if (sentier.id == trailId) return sentier.totalStages;
+      for (final trail in ref.read(availableTrailsProvider)) {
+        if (trail.id == trailId) return trail.totalStages;
       }
       return TrailCatalog.byId(trailId)?.totalStages ?? 0;
     },

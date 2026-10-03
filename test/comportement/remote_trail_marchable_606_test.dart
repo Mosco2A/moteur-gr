@@ -128,7 +128,7 @@ MockClient _fauxStockage(Map<String, Object> parChemin, {List<int>? appels}) {
   });
 }
 
-const _ficheAubrac = TrailManifestFiche(
+const _ficheAubrac = TrailManifestSheet(
   name: 'GR Aubrac',
   displayName: 'Traversee de l Aubrac',
   tagline: 'Le plateau, le vent, les burons',
@@ -573,7 +573,7 @@ void main() {
       final interrogees = <String>[];
       final source = SourceInterrogeable((trailId, famille, revMin) async {
         interrogees.add('$trailId/$famille>${revMin.iso8601}');
-        if (famille != MorceauxDeSentier.etapes) return const [];
+        if (famille != TrailChunks.stages) return const [];
         return [Map<String, dynamic>.from(_etape(elevationGain: 915, rev: 4))];
       });
 
@@ -581,7 +581,7 @@ void main() {
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous,
+        famillesDemandees: TrailChunks.tous,
         revisionCible: v(4),
       );
 
@@ -597,7 +597,7 @@ void main() {
       expect(aPrendre.transferesEnTrop, 0);
       expect(
         interrogees,
-        hasLength(MorceauxDeSentier.tous.length),
+        hasLength(TrailChunks.tous.length),
         reason: 'une question par famille, toutes familles comprises',
       );
       // LA QUESTION PORTE L INSTANT DU TELEPHONE, ET SON PERIMETRE EST LE
@@ -617,7 +617,7 @@ void main() {
         // le dire vaut mieux que de l ignorer en silence.
         empreinteAttendue: null,
       );
-      expect(bilan.famillesTouchees, [MorceauxDeSentier.etapes]);
+      expect(bilan.famillesTouchees, [TrailChunks.stages]);
       expect(bilan.ecrits, 1);
       expect(
         (await TrailStagesDao(
@@ -644,7 +644,7 @@ void main() {
         'gr-aubrac',
         adresse: 'https://double/v4',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous,
+        famillesDemandees: TrailChunks.tous,
         revisionCible: v(4),
         empreinteAttendue: _empreinteServie('v4'),
       );
@@ -677,7 +677,7 @@ void main() {
         'gr-aubrac',
         adresse: 'ignoree',
         revisionLocale: v(3),
-        famillesDemandees: MorceauxDeSentier.tous,
+        famillesDemandees: TrailChunks.tous,
         revisionCible: v(4),
       );
 
@@ -845,7 +845,7 @@ void main() {
           'gr-aubrac',
           adresse: 'https://double/v3',
           revisionLocale: RevisionDeDonnee.revisionInitiale,
-          famillesDemandees: MorceauxDeSentier.tous,
+          famillesDemandees: TrailChunks.tous,
           revisionCible: v(3),
           empreinteAttendue: _empreinteServie('v3'),
         );
@@ -867,9 +867,7 @@ void main() {
         );
         expect(
           aPrendre.parFamille.keys,
-          MorceauxDeSentier.tous.where(
-            (f) => f != MorceauxDeSentier.hebergements,
-          ),
+          TrailChunks.tous.where((f) => f != TrailChunks.hebergements),
           reason:
               'les six familles publiees, DANS L ORDRE DES CLES '
               'ETRANGERES ; ce sentier ne declare pas d hebergement, et une '

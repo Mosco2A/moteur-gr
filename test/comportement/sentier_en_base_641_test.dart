@@ -47,7 +47,7 @@ import 'package:moteur_gr/features/planning/providers/lieux_en_base_provider.dar
 ///     constantes Dart derriere un `switch (trailId)`.
 void main() {
   group('641 — le Mare a Mare Centre est PUBLIE, et le depot le prouve', () {
-    late Map<String, dynamic> liste;
+    late Map<String, dynamic> list;
     late Map<String, dynamic> donnees;
 
     setUpAll(() {
@@ -61,10 +61,10 @@ void main() {
             'constate le 30/09 : « je ne vois toujours pas les donnees Mare a '
             'Mare dans Firebase, ni demo, ni normal, rien »',
       );
-      liste =
+      list =
           jsonDecode(fichierListe.readAsStringSync()) as Map<String, dynamic>;
 
-      final entrees = (liste['trails'] as List)
+      final entrees = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .where((e) => e['trailId'] == 'mare-a-mare-centre')
           .toList();
@@ -84,7 +84,7 @@ void main() {
 
     test('l entree de liste porte une fiche complete et le statut « active » — '
         'sans fiche, un sentier publie est INAFFICHABLE (#M9)', () {
-      final entree = (liste['trails'] as List)
+      final entree = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .firstWhere((e) => e['trailId'] == 'mare-a-mare-centre');
 
@@ -104,7 +104,7 @@ void main() {
     test('les numeros de secours publies CONSERVENT celui de production et '
         'AJOUTENT ceux qui sont sources — on ne retire jamais un numero de '
         'secours sur la foi d une recherche', () {
-      final entree = (liste['trails'] as List)
+      final entree = (list['trails'] as List)
           .cast<Map<String, dynamic>>()
           .firstWhere((e) => e['trailId'] == 'mare-a-mare-centre');
       final numeros =
@@ -503,7 +503,7 @@ void main() {
       );
       listeDouble = _ListeDouble();
       service = MiseAJourALaSource(
-        liste: listeDouble,
+        list: listeDouble,
         delta: delta,
         dao: manifests,
         connectivityMonitor: reseau,
@@ -620,7 +620,7 @@ void main() {
       listeDouble.entree = _entree(trailId, instantUn);
       sourceDouble.lot = lotDeDonnees(instantUn, 'Gite de Catastaghju');
 
-      final bilan = await service.surDemandeDuRandonneur(trailId);
+      final bilan = await service.onHikerRequest(trailId);
       expect(
         bilan.horsLigne,
         isFalse,

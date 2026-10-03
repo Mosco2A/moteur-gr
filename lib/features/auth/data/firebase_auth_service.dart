@@ -65,7 +65,7 @@ class FirebaseAuthService implements AuthService {
   /// Christophe exige du modele (« On ne connait pas leur nom, leur adresse,
   /// leur mail, meme pas leur telephone »). Le hash reste ce qui voyage dans
   /// les donnees METIER ; celui-ci ne sert qu a designer la boite.
-  String? get identifiantDeCompte => _firebaseAuth.currentUser?.uid;
+  String? get accountId => _firebaseAuth.currentUser?.uid;
 
   /// GARANTIT QU UNE IDENTITE EXISTE — et rien ne le faisait (tache 631).
   ///

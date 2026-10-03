@@ -27,7 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// écrite dans `HealthInfoFile` — la base est devenue durable et doit
 /// remonter dans la sauvegarde pour que la progression et le carnet survivent au
 /// changement d'appareil, or un fichier de base ne s'exclut pas table par table.
-/// Ces tests surchargent donc `ficheMedicaleFichierProvider` (bac temporaire).
+/// Ces tests surchargent donc `healthInfoFileProvider` (bac temporaire).
 /// Données LOCAL ONLY : rien ne quitte l'appareil.
 void main() {
   late AppDatabase db;
@@ -55,7 +55,7 @@ void main() {
       overrides: [
         databaseProvider.overrideWithValue(database ?? db),
         // Tâche 613 : la fiche vit dans son propre fichier, pas dans la base.
-        ficheMedicaleFichierProvider.overrideWithValue(fiche),
+        healthInfoFileProvider.overrideWithValue(fiche),
       ],
       // AppHeader (Ph5/L6d) utilise GoRouter (canPop/go). L'écran est atteint,
       // comme en prod, PAR UN PUSH depuis l'écran Urgence -> on l'héberge en
@@ -154,9 +154,9 @@ void main() {
         find.byKey(const ValueKey('health-full-name-field')),
         'Christophe Mosconi',
       );
-      final liste = find.byKey(const ValueKey('health-blood-type-field'));
-      await tester.ensureVisible(liste);
-      await tester.tap(liste);
+      final list = find.byKey(const ValueKey('health-blood-type-field'));
+      await tester.ensureVisible(list);
+      await tester.tap(list);
       await tester.pumpAndSettle();
       // Le menu déroulant est ouvert : « O- » y figure (le `.last` évite
       // l'éventuel libellé du champ resté sous le menu).

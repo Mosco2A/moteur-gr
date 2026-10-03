@@ -1035,7 +1035,7 @@ Future<bool> acheterLeSentierPourDeVrai(
   try {
     final element = tester.element(find.byType(Navigator).first);
     final c = ProviderScope.containerOf(element, listen: false);
-    final etapes = TrailCatalog.byId(trailId)?.totalStages ?? 0;
+    final stages = TrailCatalog.byId(trailId)?.totalStages ?? 0;
     await c
         .read(databaseProvider)
         .trekEntitlementsDao
@@ -1043,8 +1043,8 @@ Future<bool> acheterLeSentierPourDeVrai(
           TrekEntitlementsCompanion.insert(
             trailId: trailId,
             owned: const Value(true),
-            acquiredStages: Value(etapes),
-            totalStages: Value(etapes),
+            acquiredStages: Value(stages),
+            totalStages: Value(stages),
             updatedAt: DateTime.now(),
           ),
         );
@@ -1056,7 +1056,7 @@ Future<bool> acheterLeSentierPourDeVrai(
     logStep(
       persona,
       'achat',
-      'Droit d acquisition ecrit pour $trailId ($etapes etapes) ; '
+      'Droit d acquisition ecrit pour $trailId ($stages etapes) ; '
           'le service de production repond possede = $possede',
     );
     return possede;

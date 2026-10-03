@@ -150,7 +150,7 @@ class UpdateDownloader {
 
   /// URL des donnees de [cheminManifeste], remplacement honore s il existe.
   String urlDonnees(String cheminManifeste) => dataBaseUrl == null
-      ? TrailDataSource.urlDonneesSentier(cheminManifeste)
+      ? TrailDataSource.trailDataUrl(cheminManifeste)
       : '$dataBaseUrl/$cheminManifeste';
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin;
@@ -168,7 +168,7 @@ class UpdateDownloader {
   ///
   /// Retourne la liste des resultats (un par sentier traite).
   ///
-  /// [niveauParSentier] DIT A QUEL NIVEAU RESYNCHRONISER CHAQUE SENTIER (tache
+  /// [levelByTrail] DIT A QUEL NIVEAU RESYNCHRONISER CHAQUE SENTIER (tache
   /// 616), et c est la garde qui empeche la cadence de trahir la demande du 28/09
   /// 11:27. Un sentier absent de cette table descend au niveau
   /// [NiveauDeTelechargement.regarder], c est-a-dire RIEN.
@@ -182,7 +182,7 @@ class UpdateDownloader {
   /// ne peut pas DEGRADER un sentier deja complet — il peut seulement s abstenir.
   Future<List<UpdateDownloadResult>> downloadAllUpdates({
     required String manifestUrl,
-    Map<String, NiveauDeTelechargement> niveauParSentier = const {},
+    Map<String, NiveauDeTelechargement> levelByTrail = const {},
   }) async {
     final results = <UpdateDownloadResult>[];
 
@@ -208,8 +208,7 @@ class UpdateDownloader {
       final result = await _downloadDelta(
         trailId: update.trailId,
         remoteManifest: remoteManifest,
-        niveau:
-            niveauParSentier[update.trailId] ?? NiveauDeTelechargement.regarder,
+        niveau: levelByTrail[update.trailId] ?? NiveauDeTelechargement.regarder,
       );
       results.add(result);
     }
@@ -279,13 +278,13 @@ class UpdateDownloader {
   /// Le dire ici vaut mieux que de laisser un appelant futur conclure a un echec.
   Future<List<UpdateDownloadResult>> scheduleBackgroundDownload({
     required String manifestUrl,
-    Map<String, NiveauDeTelechargement> niveauParSentier = const {},
+    Map<String, NiveauDeTelechargement> levelByTrail = const {},
   }) async {
     var resultats = const <UpdateDownloadResult>[];
     await _backgroundRunner('update_download', () async {
       resultats = await downloadAllUpdates(
         manifestUrl: manifestUrl,
-        niveauParSentier: niveauParSentier,
+        levelByTrail: levelByTrail,
       );
     });
     return resultats;
@@ -451,8 +450,8 @@ class UpdateDownloader {
   /// `TrailDownloadService`, supprime en 606, et le retour en dur de
   /// `_inferChangedTables`). Trois copies d un ordre qui compte
   /// — c est l ordre des cles etrangeres — dont deux pouvaient deriver en
-  /// silence. Elle delegue desormais a [MorceauxDeSentier.tous].
-  static const allTables = MorceauxDeSentier.tous;
+  /// silence. Elle delegue desormais a [TrailChunks.tous].
+  static const allTables = TrailChunks.tous;
 }
 
 /// Provider Riverpod pour le service de telechargement delta background.

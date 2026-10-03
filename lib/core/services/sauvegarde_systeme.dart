@@ -178,7 +178,7 @@ abstract final class SauvegardeSysteme {
   static const String dossierSauvegardable = 'sauvegarde_systeme';
 
   /// Nom du fichier de la copie sauvegardable de la fiche medicale.
-  static const String fichierCopieFiche = 'fiche_medicale.json';
+  static const String healthSheetCopyFile = 'fiche_medicale.json';
 
   /// Nom du fichier de la copie sauvegardable de LA BASE (progression, journal,
   /// trace, treks realises, solde, sentiers telecharges).

@@ -16,7 +16,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// CE QU IL Y A A PRENDRE, ET CE QUE CELA A COUTE.
 ///
 /// [parFamille] a EXACTEMENT la forme du fichier de donnees d un sentier (sept
-/// familles, cf. [MorceauxDeSentier]) : ce n est pas un nouveau format, c est le
+/// familles, cf. [TrailChunks]) : ce n est pas un nouveau format, c est le
 /// meme, reduit aux enregistrements plus recents que la revision du telephone.
 /// C est ce qui permet a la POSE de rester le code de la tache 605 sans y
 /// toucher.
@@ -145,7 +145,7 @@ class _Tri {
           (e) => RevisionDeDonnee.aPrendre(
             e,
             revisionLocale: revisionLocale,
-            revisionDuSentier: revisionCible,
+            trailRevision: revisionCible,
           ),
         )
         .toList();
@@ -221,7 +221,7 @@ class SourceFichierEntier implements TrailRecordSource {
     // NIVEAU « REGARDER » : AUCUNE REQUETE RESEAU N EST EMISE (tache 616). C est
     // la reponse la plus directe a Christophe : la fiche du catalogue est deja
     // arrivee avec la liste distante, il n y a rien de plus a chercher pour
-    // decider. Le retour a zero est rendu AVANT `_telecharger`, donc avant la
+    // decider. Le retour a zero est rendu AVANT `_download`, donc avant la
     // moindre connexion.
     if (famillesDemandees.isEmpty) {
       _log.d(
@@ -231,7 +231,7 @@ class SourceFichierEntier implements TrailRecordSource {
       return const MorceauxAPrendre.rien();
     }
 
-    final (donnees, octets) = await _telecharger(
+    final (donnees, octets) = await _download(
       adresse,
       trailId: trailId,
       empreinteAttendue: empreinteAttendue,
@@ -240,7 +240,7 @@ class SourceFichierEntier implements TrailRecordSource {
     final parFamille = <String, dynamic>{};
     var transferes = 0;
     var retenus = 0;
-    var ecartes = 0;
+    var skipped = 0;
 
     for (final famille in donnees.keys) {
       final tous = _Tri.enregistrements(donnees[famille]);
@@ -253,12 +253,12 @@ class SourceFichierEntier implements TrailRecordSource {
       // ([MorceauxAPrendre.transferesEnTrop]) au lieu d etre suppose, et il
       // disparaitra de lui-meme sur [SourceInterrogeable], qui ne les demande pas.
       if (!famillesDemandees.contains(famille) &&
-          MorceauxDeSentier.estConnu(famille)) {
-        ecartes += tous.length;
+          TrailChunks.estConnu(famille)) {
+        skipped += tous.length;
         continue;
       }
 
-      if (!MorceauxDeSentier.estConnu(famille)) {
+      if (!TrailChunks.estConnu(famille)) {
         // Famille inconnue : journalisee par la pose, pas fatale (#S10). On ne
         // la compte pas comme retenue, mais on la transmet telle quelle pour que
         // la pose la nomme a un seul endroit.
@@ -274,7 +274,7 @@ class SourceFichierEntier implements TrailRecordSource {
       if (aPrendre.isEmpty) continue;
 
       retenus += aPrendre.length;
-      parFamille[famille] = famille == MorceauxDeSentier.fiche
+      parFamille[famille] = famille == TrailChunks.fiche
           ? aPrendre.first
           : aPrendre;
     }
@@ -283,7 +283,7 @@ class SourceFichierEntier implements TrailRecordSource {
       '[Source fichier] $trailId $revisionLocale -> $revisionCible : '
       '$octets octets, $transferes enregistrement(s) descendus, $retenus '
       'retenu(s) — ${transferes - retenus} transfere(s) pour rien, dont '
-      '$ecartes hors du niveau demande '
+      '$skipped hors du niveau demande '
       '(${famillesDemandees.join(", ")}).',
     );
 
@@ -292,11 +292,11 @@ class SourceFichierEntier implements TrailRecordSource {
       transferes: transferes,
       retenus: retenus,
       octetsRecus: octets,
-      ecartesHorsNiveau: ecartes,
+      ecartesHorsNiveau: skipped,
     );
   }
 
-  Future<(Map<String, dynamic>, int)> _telecharger(
+  Future<(Map<String, dynamic>, int)> _download(
     String url, {
     required String trailId,
     required String? empreinteAttendue,
@@ -400,7 +400,7 @@ typedef RequeteParRevision =
 class SourceInterrogeable implements TrailRecordSource {
   const SourceInterrogeable(
     this.interroger, {
-    this.familles = MorceauxDeSentier.tous,
+    this.familles = TrailChunks.tous,
   });
 
   /// La requete par revision, une par famille.
@@ -481,7 +481,7 @@ class SourceInterrogeable implements TrailRecordSource {
       if (aPrendre.isEmpty) continue;
 
       retenus += aPrendre.length;
-      parFamille[famille] = famille == MorceauxDeSentier.fiche
+      parFamille[famille] = famille == TrailChunks.fiche
           ? aPrendre.first
           : aPrendre;
     }

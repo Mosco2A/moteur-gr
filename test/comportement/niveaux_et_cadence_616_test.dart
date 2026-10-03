@@ -185,11 +185,11 @@ void main() {
   /// fixture casse des qu on enrichit la fixture, et pour une raison qui n a rien
   /// a voir avec ce qu il verifie.
   Future<Map<String, int>> enBase() async {
-    final etapes = <String>[];
+    final stages = <String>[];
     for (final itineraire in await TrailItinerariesDao(
       db,
     ).getByTrailId('gr-monts-dore')) {
-      etapes.addAll(
+      stages.addAll(
         (await TrailStagesDao(
           db,
         ).getByItineraryId(itineraire.id)).map((e) => e.id),
@@ -197,25 +197,24 @@ void main() {
     }
     var hebergements = 0;
     var pointsDInteret = 0;
-    for (final etape in etapes) {
+    for (final etape in stages) {
       hebergements += (await TrailAccommodationsDao(
         db,
       ).getByStageId(etape)).length;
       pointsDInteret += (await TrailPoisDao(db).getByStageId(etape)).length;
     }
     return {
-      MorceauxDeSentier.fiche:
-          await TrailMetaDao(db).getById('gr-monts-dore') == null ? 0 : 1,
-      MorceauxDeSentier.itineraires: (await TrailItinerariesDao(
+      TrailChunks.fiche: await TrailMetaDao(db).getById('gr-monts-dore') == null
+          ? 0
+          : 1,
+      TrailChunks.itineraires: (await TrailItinerariesDao(
         db,
       ).getByTrailId('gr-monts-dore')).length,
-      MorceauxDeSentier.etapes: etapes.length,
-      MorceauxDeSentier.hebergements: hebergements,
-      MorceauxDeSentier.pointsDInteret: pointsDInteret,
-      MorceauxDeSentier.traces: (await TrailGpxTracksDao(db).getAll()).length,
-      MorceauxDeSentier.pointsDeTrace: (await TrailGpxPointsDao(
-        db,
-      ).getAll()).length,
+      TrailChunks.stages: stages.length,
+      TrailChunks.hebergements: hebergements,
+      TrailChunks.pointsDInteret: pointsDInteret,
+      TrailChunks.traces: (await TrailGpxTracksDao(db).getAll()).length,
+      TrailChunks.pointsDeTrace: (await TrailGpxPointsDao(db).getAll()).length,
     };
   }
 
@@ -285,7 +284,7 @@ void main() {
             'connexion vers son fichier de donnees',
       );
 
-      expect(await enBase(), {for (final f in MorceauxDeSentier.tous) f: 0});
+      expect(await enBase(), {for (final f in TrailChunks.tous) f: 0});
 
       // LE REPERE N EST PAS POSE : le sentier n est pas « telecharge ».
       expect(
@@ -378,7 +377,7 @@ void main() {
           0,
           reason: 'a ce niveau rien n est hors perimetre',
         );
-        expect(bilan.famillesTouchees, MorceauxDeSentier.tous);
+        expect(bilan.famillesTouchees, TrailChunks.tous);
         expect(bilan.niveauAtteint, NiveauDeTelechargement.realiser);
 
         expect(await enBase(), {
@@ -399,10 +398,7 @@ void main() {
       () {
         expect(NiveauDeTelechargement.regarder.familles, isEmpty);
         expect(NiveauDeTelechargement.preparer.familles, hasLength(5));
-        expect(
-          NiveauDeTelechargement.realiser.familles,
-          MorceauxDeSentier.tous,
-        );
+        expect(NiveauDeTelechargement.realiser.familles, TrailChunks.tous);
 
         // EMBOITEMENT : c est ce qui rend « faut-il completer ? » decidable.
         for (final bas in NiveauDeTelechargement.values) {
@@ -419,7 +415,7 @@ void main() {
         // LA FRONTIERE DE VOLUME EST EXACTEMENT LA TRACE ET SES POINTS.
         expect(
           NiveauDeTelechargement.realiser.familles.where(
-            (f) => !NiveauDeTelechargement.preparer.porte(f),
+            (f) => !NiveauDeTelechargement.preparer.carries(f),
           ),
           NiveauDeTelechargement.volumineux,
         );
@@ -433,7 +429,7 @@ void main() {
         for (final niveau in NiveauDeTelechargement.values) {
           expect(
             niveau.familles,
-            MorceauxDeSentier.tous.where(niveau.porte).toList(),
+            TrailChunks.tous.where(niveau.carries).toList(),
             reason:
                 '${niveau.code} doit suivre l ordre d insertion, pas un autre',
           );
@@ -656,7 +652,7 @@ void main() {
       () async {
         await publier();
         final m = monter();
-        addTearDown(m.ordonnanceur.arreter);
+        addTearDown(m.ordonnanceur.stop);
 
         expect(
           m.ordonnanceur.passesExecutees,
@@ -666,7 +662,7 @@ void main() {
               'ecran ne doit pas attendre le reseau',
         );
 
-        m.ordonnanceur.demarrer();
+        m.ordonnanceur.start();
         expect(m.ordonnanceur.demarre, isTrue);
         expect(m.ordonnanceur.passesExecutees, 0);
 
@@ -689,8 +685,8 @@ void main() {
         await publier();
         // Cadence volontairement lointaine : seul l evenement peut declencher.
         final m = monter(cadence: const Duration(hours: 4));
-        addTearDown(m.ordonnanceur.arreter);
-        m.ordonnanceur.demarrer();
+        addTearDown(m.ordonnanceur.stop);
+        m.ordonnanceur.start();
 
         m.reseau.emettre(ConnectivityStatusValues.offline);
         await Future<void>.delayed(const Duration(milliseconds: 20));
@@ -719,9 +715,9 @@ void main() {
       () async {
         await publier();
         final m = monter();
-        addTearDown(m.ordonnanceur.arreter);
+        addTearDown(m.ordonnanceur.stop);
         m.reseau.statut = ConnectivityStatusValues.offline;
-        m.ordonnanceur.demarrer();
+        m.ordonnanceur.start();
 
         await Future<void>.delayed(const Duration(milliseconds: 120));
         expect(m.ordonnanceur.passesExecutees, 0);
@@ -731,12 +727,12 @@ void main() {
     test('ARRETER ARRETE VRAIMENT : plus une seule passe apres', () async {
       await publier();
       final m = monter();
-      m.ordonnanceur.demarrer();
+      m.ordonnanceur.start();
       await Future<void>.delayed(const Duration(milliseconds: 80));
       final avant = m.ordonnanceur.passesExecutees;
       expect(avant, greaterThanOrEqualTo(1));
 
-      await m.ordonnanceur.arreter();
+      await m.ordonnanceur.stop();
       expect(m.ordonnanceur.demarre, isFalse);
       await Future<void>.delayed(const Duration(milliseconds: 120));
 
@@ -760,7 +756,7 @@ void main() {
         expect(await manifestes.getTelecharges(), isEmpty);
 
         final m = monter(cadence: const Duration(hours: 4));
-        addTearDown(m.ordonnanceur.arreter);
+        addTearDown(m.ordonnanceur.stop);
 
         final bilans = await m.ordonnanceur.passer('test');
 
@@ -772,7 +768,7 @@ void main() {
               'un seul ne doit pas en synchroniser quarante',
         );
         expect(requetesDonnees, isEmpty);
-        expect(await enBase(), {for (final f in MorceauxDeSentier.tous) f: 0});
+        expect(await enBase(), {for (final f in TrailChunks.tous) f: 0});
       },
     );
 
@@ -796,7 +792,7 @@ void main() {
       expect(entree2.dataVersion, instantAuJour(2));
 
       final m = monter(cadence: const Duration(hours: 4));
-      addTearDown(m.ordonnanceur.arreter);
+      addTearDown(m.ordonnanceur.stop);
       final bilans = await m.ordonnanceur.passer('cadence de test');
 
       expect(bilans, hasLength(1));
@@ -821,7 +817,7 @@ void main() {
       );
       expect(
         bilans.single.tablesUpdated,
-        isNot(contains(MorceauxDeSentier.pointsDeTrace)),
+        isNot(contains(TrailChunks.pointsDeTrace)),
       );
     });
 
@@ -842,7 +838,7 @@ void main() {
         await publier(jour: 2);
 
         final m = monter(cadence: const Duration(hours: 4));
-        addTearDown(m.ordonnanceur.arreter);
+        addTearDown(m.ordonnanceur.stop);
         final bilans = await m.ordonnanceur.passer('cadence de test');
 
         expect(bilans.single.niveau, NiveauDeTelechargement.realiser);
@@ -896,7 +892,7 @@ void main() {
         urlManifeste: 'https://double/${Publicateur.nomDeLaListe}',
         cadence: const Duration(hours: 4),
       );
-      addTearDown(ordonnanceur.arreter);
+      addTearDown(ordonnanceur.stop);
 
       final bilans = await ordonnanceur.passer('test');
 
@@ -925,7 +921,7 @@ void main() {
       await publier(jour: 2);
 
       final m = monter(cadence: const Duration(hours: 4));
-      addTearDown(m.ordonnanceur.arreter);
+      addTearDown(m.ordonnanceur.stop);
 
       // Deux passes lancees au meme instant : la seconde doit se retirer.
       final deux = await Future.wait([
@@ -1081,7 +1077,7 @@ void main() {
               'les familles hors niveau ne sont pas filtrees a l arrivee : '
               'elles ne sont PAS DEMANDEES',
         );
-        expect(interrogees, isNot(contains(MorceauxDeSentier.pointsDeTrace)));
+        expect(interrogees, isNot(contains(TrailChunks.pointsDeTrace)));
         expect(
           aPrendre.ecartesHorsNiveau,
           0,

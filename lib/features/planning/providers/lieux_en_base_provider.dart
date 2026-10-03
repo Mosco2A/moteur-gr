@@ -47,7 +47,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// LE TYPE PORTE LA FAMILLE, ET C EST UN CHOIX CONTRE UNE HUITIEME FAMILLE. On
 /// pouvait ajouter `transports` et `shops` aux sept familles de sentier. Ce serait
 /// deux tables Drift de plus, deux migrations, deux branches dans la pose, et
-/// surtout une modification de `MorceauxDeSentier` — dont l ordre gouverne les
+/// surtout une modification de `TrailChunks` — dont l ordre gouverne les
 /// clefs etrangeres de toute la copie. On prefere des TYPES de point d interet
 /// prefixes (`transport_bus`, `transport_ferry`, `shop_epicerie`...) : un lieu
 /// physique rattache a une etape EST un point d interet, le schema n a pas besoin
@@ -142,19 +142,19 @@ final lieuxDuSentierEnBaseProvider =
       final itineraires = await TrailItinerariesDao(db).getByTrailId(trailId);
       if (itineraires.isEmpty) return const <LieuDeSentier>[];
 
-      final etapes = <TrailStage>[];
+      final stages = <TrailStage>[];
       for (final itineraire in itineraires) {
-        etapes.addAll(await TrailStagesDao(db).getByItineraryId(itineraire.id));
+        stages.addAll(await TrailStagesDao(db).getByItineraryId(itineraire.id));
       }
-      if (etapes.isEmpty) return const <LieuDeSentier>[];
+      if (stages.isEmpty) return const <LieuDeSentier>[];
 
-      final numeros = etapes.map((e) => e.stageNumber).toList()..sort();
+      final numeros = stages.map((e) => e.stageNumber).toList()..sort();
       final premiere = numeros.first;
       final derniere = numeros.last;
 
       final poisDao = TrailPoisDao(db);
       final lieux = <LieuDeSentier>[];
-      for (final etape in etapes) {
+      for (final etape in stages) {
         for (final poi in await poisDao.getByStageId(etape.id)) {
           lieux.add(
             LieuDeSentier(

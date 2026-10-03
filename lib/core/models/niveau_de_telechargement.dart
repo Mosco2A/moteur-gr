@@ -8,7 +8,7 @@ import 'trail_manifest.dart';
 ///
 /// AVANT CE LOT C ETAIT TOUT OU RIEN : le geste « telecharger » appelait
 /// `DeltaUpdateService.synchroniser`, qui posait les SEPT familles de
-/// [MorceauxDeSentier], trace et points de trace compris, pour n importe quel
+/// [TrailChunks], trace et points de trace compris, pour n importe quel
 /// usage. Un randonneur qui regardait simplement si un sentier lui plaisait payait
 /// le meme transport, le meme espace disque et la meme latence d affichage qu un
 /// randonneur qui part le lendemain.
@@ -106,18 +106,18 @@ enum NiveauDeTelechargement {
   /// paye ou non, un randonneur qui PREPARE ne recoit aucune tuile. L achat ne
   /// change pas le volume, il change le DROIT de realiser — la nuance est deja
   /// ecrite en tete de cette enumeration, et ce getter ne l ouvre pas.
-  bool get porteLesCartes => this == NiveauDeTelechargement.realiser;
+  bool get carriesMaps => this == NiveauDeTelechargement.realiser;
 
   /// LES FAMILLES DE DONNEES QUE CE NIVEAU FAIT DESCENDRE, DANS L ORDRE DES CLES
   /// ETRANGERES.
   ///
-  /// L ordre est celui de [MorceauxDeSentier.tous] et il n est pas decoratif : un
+  /// L ordre est celui de [TrailChunks.tous] et il n est pas decoratif : un
   /// hebergement rattache a une etape qui n existe pas encore echoue. Les listes
   /// ci-dessous sont donc DERIVEES de cet ordre, jamais reecrites a la main.
   List<String> get familles => switch (this) {
     NiveauDeTelechargement.regarder => const <String>[],
     NiveauDeTelechargement.preparer => _famillesPreparer,
-    NiveauDeTelechargement.realiser => MorceauxDeSentier.tous,
+    NiveauDeTelechargement.realiser => TrailChunks.tous,
   };
 
   /// LE VOLUMINEUX, NOMME UNE SEULE FOIS.
@@ -127,16 +127,16 @@ enum NiveauDeTelechargement {
   /// diverger — c est la lecon des trois copies de l ordre d insertion que la tache
   /// 605 a du reduire a une.
   static const List<String> volumineux = <String>[
-    MorceauxDeSentier.traces,
-    MorceauxDeSentier.pointsDeTrace,
+    TrailChunks.traces,
+    TrailChunks.pointsDeTrace,
   ];
 
-  static final List<String> _famillesPreparer = MorceauxDeSentier.tous
+  static final List<String> _famillesPreparer = TrailChunks.tous
       .where((f) => !volumineux.contains(f))
       .toList(growable: false);
 
   /// Vrai si ce niveau fait descendre [famille].
-  bool porte(String famille) => familles.contains(famille);
+  bool carries(String famille) => familles.contains(famille);
 
   /// Vrai si ce niveau descend AU MOINS tout ce que descend [autre].
   ///

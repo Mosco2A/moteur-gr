@@ -104,10 +104,10 @@ Future<List<String>> _textesDeToutLEcran(WidgetTester tester) async {
   final vus = <String>{};
   await stabiliser(tester, coups: 6);
   vus.addAll(textesVisibles(tester));
-  final liste = find.byType(Scrollable);
-  if (!tester.any(liste)) return vus.toList();
+  final list = find.byType(Scrollable);
+  if (!tester.any(list)) return vus.toList();
   for (var i = 0; i < 12; i++) {
-    await tester.drag(liste.first, const Offset(0, -320));
+    await tester.drag(list.first, const Offset(0, -320));
     await stabiliser(tester, coups: 3);
     final avant = vus.length;
     vus.addAll(textesVisibles(tester));

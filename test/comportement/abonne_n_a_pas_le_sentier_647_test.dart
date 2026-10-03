@@ -158,7 +158,7 @@ void main() {
       await publierUneCarte();
 
       final descente = MapDownloader(
-        cartes: MBTilesManager(),
+        maps: MBTilesManager(),
         dao: manifestes,
         monetization: service,
         connectivityMonitor: _Reseau(TypesDeLien.wifi),
@@ -197,7 +197,7 @@ void main() {
 
         final decision =
             await MapDownloader(
-              cartes: MBTilesManager(),
+              maps: MBTilesManager(),
               dao: manifestes,
               monetization: service,
               connectivityMonitor: _Reseau(TypesDeLien.wifi),

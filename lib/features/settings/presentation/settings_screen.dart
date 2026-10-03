@@ -557,7 +557,7 @@ class SettingsScreen extends ConsumerWidget {
               // affiche. Tant que le coffre n'est pas alimente, il annonce
               // l'etat reel, que l'ecran detaille ensuite.
               subtitle: Text(
-                CoffreDeReconnexion.alimente
+                ReconnectionVault.alimente
                     ? tr.recovery.sectionDesc
                     : tr.recovery.noVaultTitle,
               ),
@@ -637,7 +637,7 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     Translations tr,
   ) {
-    final identifiantDeCompte = ref.watch(identifiantDeCompteProvider);
+    final accountId = ref.watch(identifiantDeCompteProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -689,7 +689,7 @@ class SettingsScreen extends ConsumerWidget {
                       const Text('Identifiant de compte'),
                       const SizedBox(height: 2),
                       SelectableText(
-                        identifiantDeCompte ??
+                        accountId ??
                             'indisponible (aucun compte serveur sur cet '
                                 'appareil)',
                         style: theme.textTheme.bodySmall,

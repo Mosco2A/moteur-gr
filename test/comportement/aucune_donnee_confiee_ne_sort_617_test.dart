@@ -818,7 +818,7 @@ void main() {
       poser(
         support,
         '${SauvegardeSysteme.dossierSauvegardable}/'
-        '${SauvegardeSysteme.fichierCopieFiche}',
+        '${SauvegardeSysteme.healthSheetCopyFile}',
       );
       poser(support, '${SauvegardeSysteme.dossierExclu}/fiche.json');
 

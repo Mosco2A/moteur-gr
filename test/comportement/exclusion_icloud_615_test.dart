@@ -542,7 +542,7 @@ void main() {
     String cheminCopie() => _n(
       '${racine.path}/'
       '${SauvegardeSysteme.dossierSauvegardable}/'
-      '${SauvegardeSysteme.fichierCopieFiche}',
+      '${SauvegardeSysteme.healthSheetCopyFile}',
     );
 
     test('la copie recoit « inclure », et JAMAIS « exclure »', () async {

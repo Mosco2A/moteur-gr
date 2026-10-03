@@ -85,7 +85,7 @@ class ConsentController {
   /// distinguer, sinon il ne prouve pas que la re-demande a eu lieu.
   Future<void> grant(
     ConsentPurpose purpose, {
-    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.reglages,
+    ConsentTrigger declencheur = ConsentTrigger.settings,
   }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     await service.grant(purpose, declencheur: declencheur);
@@ -112,7 +112,7 @@ class ConsentController {
   /// quelque chose, c'est ici que son effacement se branche.
   Future<void> revoke(
     ConsentPurpose purpose, {
-    DeclencheurDeConsentement declencheur = DeclencheurDeConsentement.reglages,
+    ConsentTrigger declencheur = ConsentTrigger.settings,
   }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     await service.revoke(purpose, declencheur: declencheur);
@@ -144,10 +144,7 @@ class ConsentController {
   Future<void> declineAll() async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     for (final purpose in ConsentPurpose.values) {
-      await service.revoke(
-        purpose,
-        declencheur: DeclencheurDeConsentement.reglages,
-      );
+      await service.revoke(purpose, declencheur: ConsentTrigger.settings);
       await _effacerCeQueProtege(purpose);
     }
     _ref.invalidate(consentStatesProvider);

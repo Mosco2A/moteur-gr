@@ -201,7 +201,7 @@ void main() {
       () async {
         await consentement.grant(
           ConsentPurpose.healthData,
-          declencheur: DeclencheurDeConsentement.reglages,
+          declencheur: ConsentTrigger.settings,
         );
 
         expect(await registre().monter(), 1);
@@ -224,7 +224,7 @@ void main() {
       () async {
         await consentement.revoke(
           ConsentPurpose.socialSharing,
-          declencheur: DeclencheurDeConsentement.reglages,
+          declencheur: ConsentTrigger.settings,
         );
 
         expect(await registre().monter(), 1);
@@ -241,9 +241,7 @@ void main() {
 
       final document = serveur.documents[cheminDe(ConsentPurpose.healthData)]!;
       expect(
-        document.keys.toSet().difference(
-          ChampsDuRegistreDeConsentement.autorises,
-        ),
+        document.keys.toSet().difference(ConsentRegistryFields.autorises),
         isEmpty,
       );
     });
@@ -257,11 +255,11 @@ void main() {
         granted: true,
         decidedAt: DateTime.utc(2026, 9, 25, 8, 30),
         policyVersion: 1,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
-      final charge = MonteeDesConsentements.construireLaCharge(etat);
-      expect(charge["decide_sur_le_telephone_le"], "2026-09-25T08:30:00.000Z");
-      expect(charge["declencheur"], "modification_des_donnees");
+      final payload = MonteeDesConsentements.buildPayload(etat);
+      expect(payload["decide_sur_le_telephone_le"], "2026-09-25T08:30:00.000Z");
+      expect(payload["declencheur"], "modification_des_donnees");
     });
 
     test(
@@ -450,7 +448,7 @@ void main() {
       () async {
         await consentement.grant(
           ConsentPurpose.healthData,
-          declencheur: DeclencheurDeConsentement.reglages,
+          declencheur: ConsentTrigger.settings,
         );
         expect(consentement.needsPrompt(ConsentPurpose.healthData), isFalse);
       },
@@ -507,7 +505,7 @@ void main() {
         // La question est posee, le randonneur repond.
         await consentement.grant(
           ConsentPurpose.healthData,
-          declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+          declencheur: ConsentTrigger.modificationDesDonnees,
         );
 
         expect(
@@ -570,7 +568,7 @@ void main() {
     test("la re-demande monte en base avec son declencheur", () async {
       await consentement.grant(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.reglages,
+        declencheur: ConsentTrigger.settings,
       );
       final r = registre();
       await r.monter();
@@ -586,7 +584,7 @@ void main() {
       serveur.instant = DateTime.utc(2026, 10, 2, 14);
       await consentement.grant(
         ConsentPurpose.healthData,
-        declencheur: DeclencheurDeConsentement.modificationDesDonnees,
+        declencheur: ConsentTrigger.modificationDesDonnees,
       );
 
       expect(await r.monter(), 1, reason: "la decision a change, elle repart");
@@ -611,7 +609,7 @@ void main() {
 
         final etat = service.stateOf(ConsentPurpose.healthData);
         expect(etat.granted, isTrue);
-        expect(etat.declencheur, DeclencheurDeConsentement.inconnu);
+        expect(etat.declencheur, ConsentTrigger.inconnu);
         expect(etat.revisionDesDonnees, 0);
         expect(
           service.needsPrompt(ConsentPurpose.healthData),

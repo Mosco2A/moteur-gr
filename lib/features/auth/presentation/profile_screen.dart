@@ -316,7 +316,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             title: Text(i18n.demo.compteRelancer),
             subtitle: Text(i18n.demo.compteRelancerSous),
             trailing: const StepIcon(StepwaysIcons.chevronDroite),
-            onTap: () => relancerLaDemoDepuisMonCompte(ref, context),
+            onTap: () => restartDemoFromAccount(ref, context),
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),

@@ -392,7 +392,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
           .read(deltaUpdateServiceProvider)
           .synchroniser(
             trailId,
-            TrailDataSource.urlDonneesSentier(manifestEntry.filePath),
+            TrailDataSource.trailDataUrl(manifestEntry.filePath),
             revisionCible: manifestEntry.dataVersion,
             // L EMPREINTE ANNONCEE VOYAGE AVEC L ADRESSE. Sans elle, la source
             // REFUSE la copie (tache 607) : le controle est a fermeture par
@@ -455,16 +455,16 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     // droits pour un niveau qui, par definition, ne descend aucune tuile : au niveau
     // « preparer », ce chemin ne fait RIEN, et c est la demande de Christophe du
     // 27/09.
-    if (!donneesPosees || !niveau.porteLesCartes) return;
+    if (!donneesPosees || !niveau.carriesMaps) return;
 
     try {
       final bilanDesCartes = await ref
           .read(controleurDesCartesProvider(trailId).notifier)
-          .demarrer(niveau: niveau, confirmeHorsWifi: confirmeHorsWifi);
+          .start(niveau: niveau, confirmeHorsWifi: confirmeHorsWifi);
       if (bilanDesCartes.posee) {
         _log.d(
           '[CatalogNotifier] $trailId : carte hors ligne posee, '
-          '${ProgressionDeCarte.enMegaoctets(bilanDesCartes.carte!.octetsSurLeTelephone).toStringAsFixed(1)} Mo.',
+          '${MapProgress.enMegaoctets(bilanDesCartes.map!.octetsSurLeTelephone).toStringAsFixed(1)} Mo.',
         );
         return;
       }

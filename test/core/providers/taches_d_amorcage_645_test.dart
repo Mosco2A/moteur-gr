@@ -7,7 +7,7 @@
 //
 // Le lot 645-05 (cas K1) a inverse l'amorcage : `app_bootstrap_provider.dart`,
 // dans le socle, importait l'ECRAN de la fiche sante pour y prendre
-// `ficheMedicaleFichierProvider`. Depuis, le socle ne declare plus qu'un
+// `healthInfoFileProvider`. Depuis, le socle ne declare plus qu'un
 // BESOIN — `tachesDAmorcageProvider`, dont le defaut est une liste VIDE — et
 // c'est `main.dart`, au-dessus des deux couches, qui noue les deux en
 // surchargeant ce provider avec deux travaux, dans cet ordre :
@@ -55,7 +55,7 @@ import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dar
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_file.dart';
 import 'package:moteur_gr/features/safety/data/health_info_file.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart'
-    show ficheMedicaleFichierProvider;
+    show healthInfoFileProvider;
 import 'package:moteur_gr/main.dart' show tachesDAmorcageDeLApplication;
 
 /// Le journal commun aux trois espions : un travail passe, une ligne.
@@ -121,9 +121,7 @@ void main() {
     () async {
       final container = ProviderContainer(
         overrides: [
-          ficheMedicaleFichierProvider.overrideWithValue(
-            _FicheMedicaleEspionne(),
-          ),
+          healthInfoFileProvider.overrideWithValue(_FicheMedicaleEspionne()),
           hikerProfileRepositoryProvider.overrideWithValue(
             _ProfilEspion(db: db, fichier: _ProfilFichierEspion()),
           ),

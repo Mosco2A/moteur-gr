@@ -86,7 +86,7 @@ class FauxReseau extends ConnectivityMonitor {
 }
 
 /// Fiche complete d un sentier que le binaire ne connait PAS.
-const _ficheSentierInconnu = TrailManifestFiche(
+const _ficheSentierInconnu = TrailManifestSheet(
   name: 'GR Aubrac',
   displayName: 'Traversee de l Aubrac',
   tagline: 'Le plateau, le vent, les burons',
@@ -308,7 +308,7 @@ void main() {
 
       final etat = horsLigne.read(catalogueSentiersProvider);
       expect(
-        etat.sentiers.map((s) => s.id),
+        etat.trails.map((s) => s.id),
         contains('gr-aubrac'),
         reason:
             'le randonneur sans reseau GARDE le catalogue qu il avait — '
@@ -324,7 +324,7 @@ void main() {
       );
       // Les sentiers compiles restent la eux aussi.
       for (final compile in TrailCatalog.all) {
-        expect(etat.sentiers.map((s) => s.id), contains(compile.id));
+        expect(etat.trails.map((s) => s.id), contains(compile.id));
       }
     });
 
@@ -338,7 +338,7 @@ void main() {
         // AVANT toute attente : l etat initial est deja utilisable. C est la
         // raison d etre de l etat synchrone — aucun ecran n attend.
         final immediat = c.read(catalogueSentiersProvider);
-        expect(immediat.sentiers, isNotEmpty);
+        expect(immediat.trails, isNotEmpty);
         expect(immediat.source, SourceDuCatalogue.compile);
         expect(immediat.echec, isNull);
 
@@ -346,7 +346,7 @@ void main() {
 
         final apres = c.read(catalogueSentiersProvider);
         expect(
-          apres.sentiers.map((s) => s.id),
+          apres.trails.map((s) => s.id),
           TrailCatalog.ids,
           reason:
               'les quatre sentiers embarques sont tous la : le lot '
@@ -355,7 +355,7 @@ void main() {
         );
         expect(apres.source, SourceDuCatalogue.compile);
         expect(
-          apres.sentiers,
+          apres.trails,
           isNotEmpty,
           reason: 'JAMAIS d ecran vide quand un secours existe',
         );
@@ -375,7 +375,7 @@ void main() {
 
       final etat = c.read(catalogueSentiersProvider);
       expect(
-        etat.sentiers,
+        etat.trails,
         isNotEmpty,
         reason:
             'l espace de stockage n existe pas encore : c est exactement '
@@ -396,7 +396,7 @@ void main() {
         fileSize: 1024,
         status: 'active',
         lastUpdated: '2026-09-27T20:00:00Z',
-        fiche: TrailManifestFiche(
+        fiche: TrailManifestSheet(
           name: compile.name,
           displayName: compile.displayName,
           tagline: compile.tagline,
@@ -499,7 +499,7 @@ void main() {
 
         final etat = c.read(catalogueSentiersProvider);
         expect(
-          etat.sentiers.map((s) => s.id),
+          etat.trails.map((s) => s.id),
           isNot(contains('sentier-sans-nom')),
         );
         expect(

@@ -33,10 +33,10 @@ void main() {
   const reposConseilles = <int>[0, 1, 2, 5, 20];
 
   test('N2-D2 — l ecretage tombe TOUJOURS dans les options du selecteur', () {
-    for (final etapes in nombresDEtapes) {
+    for (final stages in nombresDEtapes) {
       for (final repos in reposConseilles) {
         final bornes = DurationBounds.fromStageCount(
-          etapes,
+          stages,
           recommendedRestDays: repos,
         );
         final options = bornes.options;
@@ -62,7 +62,7 @@ void main() {
             options,
             contains(ecrete),
             reason:
-                'etapes=$etapes repos=$repos demande=$demande : '
+                'etapes=$stages repos=$repos demande=$demande : '
                 'l ecretage ($ecrete) doit etre une option du selecteur '
                 '[${bornes.min}..${bornes.max}] — sinon le bouton '
                 '« Generer mon programme » affiche une duree que le '

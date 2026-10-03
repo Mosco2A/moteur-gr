@@ -143,9 +143,9 @@ void main() {
         // Les revisions d enregistrement aussi : aucun compteur ne doit pouvoir se
         // faire passer pour une date, meme dans une colonne que personne ne lit
         // aujourd hui pour decider.
-        final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
-        expect(etapes, hasLength(1));
-        expect(etapes.single.rev, isNull);
+        final stages = await db.trailStagesDao.getByItineraryId('mam-i1');
+        expect(stages, hasLength(1));
+        expect(stages.single.rev, isNull);
         final fiche = await db.trailMetaDao.getById('mare-a-mare-centre');
         expect(fiche, isNotNull);
         expect(fiche!.rev, isNull);
@@ -161,12 +161,12 @@ void main() {
         final db = AppDatabase(NativeDatabase(file));
         addTearDown(db.close);
 
-        final etapes = await db.trailStagesDao.getByItineraryId('mam-i1');
-        expect(etapes, hasLength(1));
-        expect(etapes.single.nameFr, 'Etape 1');
-        expect(etapes.single.nameEs, 'Etapa 1');
-        expect(etapes.single.elevationGain, 800);
-        expect(etapes.single.distanceKm, 12.5);
+        final stages = await db.trailStagesDao.getByItineraryId('mam-i1');
+        expect(stages, hasLength(1));
+        expect(stages.single.nameFr, 'Etape 1');
+        expect(stages.single.nameEs, 'Etapa 1');
+        expect(stages.single.elevationGain, 800);
+        expect(stages.single.distanceKm, 12.5);
 
         final manifeste = await db.trailManifestsDao.getByTrailId(
           'mare-a-mare-centre',

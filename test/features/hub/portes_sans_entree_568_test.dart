@@ -90,7 +90,7 @@ void main() {
         ProviderScope(
           overrides: [
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            descenteDesCartesProvider.overrideWithValue(_DescenteFigee()),
+            mapDownloaderProvider.overrideWithValue(_DescenteFigee()),
           ],
           child: TranslationProvider(
             child: MaterialApp.router(routerConfig: router),

@@ -63,7 +63,7 @@ class ChecklistBottomActions extends ConsumerWidget {
               child: AppButton(
                 variant: AppButtonVariant.outline,
                 tone: AppTheme.orangeDifficile,
-                icon: StepwaysIcons.annuler,
+                icon: StepwaysIcons.cancel,
                 iconSize: 18,
                 label: ui.cancelValidation,
                 onPressed: () {

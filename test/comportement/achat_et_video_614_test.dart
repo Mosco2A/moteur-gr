@@ -15,7 +15,7 @@
 // CE QUE CE GROUPE EXIGE, ET C EST LA FORME QUI COMPTE AUTANT QUE LE NOMBRE :
 // TROIS PORTES, UN SEUL CHEMIN. Pas trois implementations du meme achat — un
 // seul geste ([acheterSentier]) appele depuis trois endroits, exactement comme
-// `choisirSentier` a unifie la bascule de sentier au lot 606. Trois
+// `chooseTrail` a unifie la bascule de sentier au lot 606. Trois
 // implementations auraient derive en trois prix, d autant que le catalogue est
 // desormais DISTANT (tache 605) : un sentier recu par le reseau n a pas le
 // nombre d etapes du sentier compile du meme nom.

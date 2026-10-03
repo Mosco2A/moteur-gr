@@ -38,7 +38,7 @@ class RecoveryCodeScreen extends ConsumerWidget {
     // TACHE 596 (C2) — ON NE PROMET PLUS UN COFFRE VIDE.
     //
     // Tant que rien n'alimente le coffre (mesure declaree et verifiee par
-    // invariante, cf. [CoffreDeReconnexion]), cet ecran disait au randonneur
+    // invariante, cf. [ReconnectionVault]), cet ecran disait au randonneur
     // que son code « ouvre son coffre sur un autre telephone » — c'etait faux :
     // aucun code de production n'y ecrit, aucun ecran ne permet de saisir un
     // code, et il n'existe meme pas de transport. Pire, afficher cet ecran
@@ -47,7 +47,7 @@ class RecoveryCodeScreen extends ConsumerWidget {
     //
     // Ici, on dit l'etat reel — et on ne lit meme pas `recoveryCodeProvider`,
     // donc aucun code n'est cree.
-    if (!CoffreDeReconnexion.alimente) {
+    if (!ReconnectionVault.alimente) {
       return Scaffold(
         appBar: AppHeader(title: tr.recovery.title),
         body: ListView(

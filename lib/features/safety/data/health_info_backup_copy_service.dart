@@ -72,7 +72,7 @@ class HealthInfoBackupCopyService {
     final base = await _baseDirProvider();
     return File(
       '${base.path}/${SauvegardeSysteme.dossierSauvegardable}'
-      '/${SauvegardeSysteme.fichierCopieFiche}',
+      '/${SauvegardeSysteme.healthSheetCopyFile}',
     );
   }
 

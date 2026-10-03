@@ -468,7 +468,7 @@ void main() {
             'tout, ce chiffre vaudrait 19 et chaque telephone retelechargerait '
             'le sentier entier pour une altitude corrigee.',
       );
-      expect(bilan.famillesTouchees, [MorceauxDeSentier.etapes]);
+      expect(bilan.famillesTouchees, [TrailChunks.stages]);
       expect(
         (await TrailStagesDao(db).getByItineraryId(
           'montsdore-i1',

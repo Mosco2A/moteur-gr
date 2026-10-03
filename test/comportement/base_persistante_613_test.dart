@@ -592,13 +592,13 @@ void main() {
         horloge: DateTime.utc(2026, 9, 28),
       ).publier(source.path.replaceAll(r'\', '/'));
 
-      final liste =
+      final list =
           jsonDecode(
                 File('$publie/${Publicateur.nomDeLaListe}').readAsStringSync(),
               )
               as Map<String, dynamic>;
       final entree = TrailManifest.fromJson(
-        liste,
+        list,
       ).trails.firstWhere((e) => e.trailId == 'gr-monts-dore');
 
       MockClient stockage() => MockClient((requete) async {
@@ -755,9 +755,9 @@ void main() {
         await semeur(await SharedPreferences.getInstance()).seedIfNeeded(),
         isTrue,
       );
-      final etapes = await db.stagesDao.getByTrailId('mare-a-mare-centre');
+      final stages = await db.stagesDao.getByTrailId('mare-a-mare-centre');
       final points = await db.trailGpxPointsDao.getAll();
-      expect(etapes, isNotEmpty);
+      expect(stages, isNotEmpty);
       expect(points, isNotEmpty);
 
       // Preferences ENTIEREMENT vides, comme apres un effacement de compte.
@@ -770,7 +770,7 @@ void main() {
 
       expect(
         await db.stagesDao.getByTrailId('mare-a-mare-centre'),
-        hasLength(etapes.length),
+        hasLength(stages.length),
       );
       expect(
         await db.trailGpxPointsDao.getAll(),

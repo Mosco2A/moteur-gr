@@ -1926,12 +1926,12 @@ bool? _logGateDemarrage(WidgetTester tester, String persona, String etape) {
     return null;
   }
   bool? ouvert;
-  String etapes = '?';
+  String stages = '?';
   try {
     final element = tester.element(find.byType(Navigator).first);
     final container = ProviderScope.containerOf(element, listen: false);
     ouvert = container.read(prepareCoreDoneProvider(id));
-    etapes = container.read(prepareCoreStepsProvider(id)).toString();
+    stages = container.read(prepareCoreStepsProvider(id)).toString();
   } catch (e) {
     logStep(persona, etape, 'Gate de demarrage illisible : $e');
     return null;
@@ -1939,7 +1939,7 @@ bool? _logGateDemarrage(WidgetTester tester, String persona, String etape) {
   logStep(
     persona,
     etape,
-    'GATE DEMARRAGE = $ouvert | etapes coeur persistees = $etapes '
+    'GATE DEMARRAGE = $ouvert | etapes coeur persistees = $stages '
     '(sentier $id)',
   );
   return ouvert;

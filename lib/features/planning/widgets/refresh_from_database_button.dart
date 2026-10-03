@@ -67,7 +67,7 @@ class _RefreshFromDatabaseButtonState
     setState(() => _enCours = true);
     final bilan = await ref
         .read(miseAJourALaSourceProvider)
-        .surDemandeDuRandonneur(widget.trailId);
+        .onHikerRequest(widget.trailId);
     if (!mounted) return;
     setState(() => _enCours = false);
 

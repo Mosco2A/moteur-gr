@@ -90,8 +90,8 @@ void main() {
     test('3. le manifeste publie declare la carte du Mare a Mare Centre', () {
       final donnees =
           jsonDecode(manifeste.readAsStringSync()) as Map<String, dynamic>;
-      final sentiers = (donnees['trails'] as List).cast<Map<String, dynamic>>();
-      final mareAMare = sentiers.firstWhere(
+      final trails = (donnees['trails'] as List).cast<Map<String, dynamic>>();
+      final mareAMare = trails.firstWhere(
         (t) => t['trailId'] == 'mare-a-mare-centre',
         orElse: () =>
             throw StateError('mare-a-mare-centre absent du manifeste'),

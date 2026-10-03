@@ -78,14 +78,13 @@ part 'health_info_screen_sections_bas.dart';
 /// [HealthInfoFile]. Les tests surchargent CE provider (repertoire
 /// temporaire) ; surcharger `databaseProvider` n'a plus d'effet sur la fiche,
 /// et c'est voulu : plus rien de medical ne passe par la base.
-final ficheMedicaleFichierProvider = Provider<HealthInfoFile>(
+final healthInfoFileProvider = Provider<HealthInfoFile>(
   (ref) => HealthInfoFile(),
 );
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(
-  (ref) =>
-      HealthInfoRepository(fichier: ref.watch(ficheMedicaleFichierProvider)),
+  (ref) => HealthInfoRepository(fichier: ref.watch(healthInfoFileProvider)),
 );
 
 /// Provider des donnees sante actuelles.

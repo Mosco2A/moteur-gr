@@ -257,7 +257,7 @@ void main() {
         // verification, une liste fermee vide passerait pour une liste correcte.
         await transport().pushEncryptedBackup(
           'hash-anon',
-          DocumentsDuCoffreDistant.compte,
+          DocumentsDuCoffreDistant.account,
           'blob-chiffre',
         );
         expect(
@@ -295,7 +295,7 @@ void main() {
         expect(DocumentsDuCoffreDistant.autorise(''), isFalse);
         expect(DocumentsDuCoffreDistant.autorise('n importe quoi'), isFalse);
         expect(
-          DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.compte),
+          DocumentsDuCoffreDistant.autorise(DocumentsDuCoffreDistant.account),
           isTrue,
         );
       },
@@ -346,7 +346,7 @@ void main() {
       // continue a surveiller une porte qui ne mene plus nulle part.
       'health_info_file.dart',
       'HealthInfoFile',
-      'ficheMedicaleFichierProvider',
+      'healthInfoFileProvider',
     ];
     const sortieReseau = [
       'cloud_firestore',
@@ -556,7 +556,7 @@ void main() {
       // declarative. Il n existe aucun equivalent de dataExtractionRules dans
       // Info.plist : elle se pose a l execution, fichier par fichier, avec
       // NSURLIsExcludedFromBackupKey. Le lot 612 ne pouvait donc que NOMMER
-      // l exigence, comme CoffreDeReconnexion nomme ce qui manque.
+      // l exigence, comme ReconnectionVault nomme ce qui manque.
       //
       // TACHE 615 : ELLE N EST PLUS SEULEMENT NOMMEE. Le canal natif existe
       // (`ExclusionSauvegardeIcloud`) et l exclusion est reposee a CHAQUE
@@ -614,7 +614,7 @@ void main() {
 
     File fichierCopie() => File(
       '${racine.path}/${SauvegardeSysteme.dossierSauvegardable}'
-      '/${SauvegardeSysteme.fichierCopieFiche}',
+      '/${SauvegardeSysteme.healthSheetCopyFile}',
     );
 
     test('LE DEFAUT EST LE REFUS, avant meme que la case ait ete vue', () {
@@ -921,7 +921,7 @@ void main() {
       //
       // POURQUOI C ETAIT UNE MINE ET PAS SEULEMENT UNE ERREUR. Ce texte n est
       // PAS affiche aujourd hui : l ecran du code ne le montre que si
-      // `CoffreDeReconnexion.alimente` est vrai, et il est faux. Il attendait
+      // `ReconnectionVault.alimente` est vrai, et il est faux. Il attendait
       // donc son heure. Le jour ou quelqu un branchera un ecrivain du coffre
       // — ce que l invariante du LOT 596 l invite explicitement a faire —, ce
       // texte serait revenu a l ecran et aurait promis la fiche medicale dans le

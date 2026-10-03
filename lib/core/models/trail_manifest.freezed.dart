@@ -361,7 +361,7 @@ mixin _$TrailManifestEntry {
 ///    plus, l entree n est pas affichable et elle est ecartee avec un
 ///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
 ///    vide au catalogue.
- TrailManifestFiche? get fiche;/// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
+ TrailManifestSheet? get fiche;/// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
 ///
 /// CE QUI MANQUAIT, ET C EST LA MOITIE DU TROU DES CARTES HORS LIGNE. Le code
 /// qui descend un `.mbtiles` existait depuis des mois
@@ -373,7 +373,7 @@ mixin _$TrailManifestEntry {
 ///
 /// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
 /// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
-/// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+/// resolue par `TrailDataSource.trailDataUrl`. Un sentier peut ainsi servir
 /// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
 ///
 /// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
@@ -428,11 +428,11 @@ abstract mixin class $TrailManifestEntryCopyWith<$Res>  {
   factory $TrailManifestEntryCopyWith(TrailManifestEntry value, $Res Function(TrailManifestEntry) _then) = _$TrailManifestEntryCopyWithImpl;
 @useResult
 $Res call({
- String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche, String? tilesPath, int? tilesSize, String? tilesHash
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestSheet? fiche, String? tilesPath, int? tilesSize, String? tilesHash
 });
 
 
-$TrailManifestFicheCopyWith<$Res>? get fiche;
+$TrailManifestSheetCopyWith<$Res>? get fiche;
 
 }
 /// @nodoc
@@ -455,7 +455,7 @@ as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,lastUpdated: null == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as String,fiche: freezed == fiche ? _self.fiche : fiche // ignore: cast_nullable_to_non_nullable
-as TrailManifestFiche?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
+as TrailManifestSheet?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
 as String?,tilesSize: freezed == tilesSize ? _self.tilesSize : tilesSize // ignore: cast_nullable_to_non_nullable
 as int?,tilesHash: freezed == tilesHash ? _self.tilesHash : tilesHash // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -465,12 +465,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TrailManifestFicheCopyWith<$Res>? get fiche {
+$TrailManifestSheetCopyWith<$Res>? get fiche {
     if (_self.fiche == null) {
     return null;
   }
 
-  return $TrailManifestFicheCopyWith<$Res>(_self.fiche!, (value) {
+  return $TrailManifestSheetCopyWith<$Res>(_self.fiche!, (value) {
     return _then(_self.copyWith(fiche: value));
   });
 }
@@ -555,7 +555,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestSheet? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
@@ -576,7 +576,7 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestSheet? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry():
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
@@ -596,7 +596,7 @@ return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestFiche? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String trailId, @HorodatageServeurJson()  HorodatageServeur dataVersion,  String hash,  String filePath,  int fileSize,  String status,  String lastUpdated,  TrailManifestSheet? fiche,  String? tilesPath,  int? tilesSize,  String? tilesHash)?  $default,) {final _that = this;
 switch (_that) {
 case _TrailManifestEntry() when $default != null:
 return $default(_that.trailId,_that.dataVersion,_that.hash,_that.filePath,_that.fileSize,_that.status,_that.lastUpdated,_that.fiche,_that.tilesPath,_that.tilesSize,_that.tilesHash);case _:
@@ -690,7 +690,7 @@ class _TrailManifestEntry extends TrailManifestEntry {
 ///    plus, l entree n est pas affichable et elle est ecartee avec un
 ///    journal qui le DIT (cf. `remote_trail.dart`) — jamais une carte
 ///    vide au catalogue.
-@override final  TrailManifestFiche? fiche;
+@override final  TrailManifestSheet? fiche;
 /// CHEMIN DU FICHIER DE TUILES HORS LIGNE DU SENTIER (tache 622).
 ///
 /// CE QUI MANQUAIT, ET C EST LA MOITIE DU TROU DES CARTES HORS LIGNE. Le code
@@ -703,7 +703,7 @@ class _TrailManifestEntry extends TrailManifestEntry {
 ///
 /// MEME FORME QUE [filePath], ET POUR LA MEME RAISON : chemin relatif dans
 /// l espace de stockage (« mare_a_mare/tuiles_v3.mbtiles ») ou URL absolue,
-/// resolue par `TrailDataSource.urlDonneesSentier`. Un sentier peut ainsi servir
+/// resolue par `TrailDataSource.trailDataUrl`. Un sentier peut ainsi servir
 /// ses tuiles depuis un autre hebergeur sans reconstruire le moteur.
 ///
 /// NULL EST UN CAS NORMAL ET IL SE DIT : le sentier n a pas (encore) de carte
@@ -762,11 +762,11 @@ abstract mixin class _$TrailManifestEntryCopyWith<$Res> implements $TrailManifes
   factory _$TrailManifestEntryCopyWith(_TrailManifestEntry value, $Res Function(_TrailManifestEntry) _then) = __$TrailManifestEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestFiche? fiche, String? tilesPath, int? tilesSize, String? tilesHash
+ String trailId,@HorodatageServeurJson() HorodatageServeur dataVersion, String hash, String filePath, int fileSize, String status, String lastUpdated, TrailManifestSheet? fiche, String? tilesPath, int? tilesSize, String? tilesHash
 });
 
 
-@override $TrailManifestFicheCopyWith<$Res>? get fiche;
+@override $TrailManifestSheetCopyWith<$Res>? get fiche;
 
 }
 /// @nodoc
@@ -789,7 +789,7 @@ as String,fileSize: null == fileSize ? _self.fileSize : fileSize // ignore: cast
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,lastUpdated: null == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as String,fiche: freezed == fiche ? _self.fiche : fiche // ignore: cast_nullable_to_non_nullable
-as TrailManifestFiche?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
+as TrailManifestSheet?,tilesPath: freezed == tilesPath ? _self.tilesPath : tilesPath // ignore: cast_nullable_to_non_nullable
 as String?,tilesSize: freezed == tilesSize ? _self.tilesSize : tilesSize // ignore: cast_nullable_to_non_nullable
 as int?,tilesHash: freezed == tilesHash ? _self.tilesHash : tilesHash // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -800,12 +800,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$TrailManifestFicheCopyWith<$Res>? get fiche {
+$TrailManifestSheetCopyWith<$Res>? get fiche {
     if (_self.fiche == null) {
     return null;
   }
 
-  return $TrailManifestFicheCopyWith<$Res>(_self.fiche!, (value) {
+  return $TrailManifestSheetCopyWith<$Res>(_self.fiche!, (value) {
     return _then(_self.copyWith(fiche: value));
   });
 }
@@ -813,7 +813,7 @@ $TrailManifestFicheCopyWith<$Res>? get fiche {
 
 
 /// @nodoc
-mixin _$TrailManifestFiche {
+mixin _$TrailManifestSheet {
 
 /// Nom technique court (ex: 'GR10').
  String get name;/// Nom d affichage, celui que le randonneur lit (ex: 'Mare a Mare Centre').
@@ -838,19 +838,19 @@ mixin _$TrailManifestFiche {
 /// par le moteur : ne pas le mettre ici.
  List<FicheNumeroSecours>? get emergencyNumbers;/// URL de la politique de confidentialite du sentier.
  String? get privacyPolicyUrl;
-/// Create a copy of TrailManifestFiche
+/// Create a copy of TrailManifestSheet
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TrailManifestFicheCopyWith<TrailManifestFiche> get copyWith => _$TrailManifestFicheCopyWithImpl<TrailManifestFiche>(this as TrailManifestFiche, _$identity);
+$TrailManifestSheetCopyWith<TrailManifestSheet> get copyWith => _$TrailManifestSheetCopyWithImpl<TrailManifestSheet>(this as TrailManifestSheet, _$identity);
 
-  /// Serializes this TrailManifestFiche to a JSON map.
+  /// Serializes this TrailManifestSheet to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailManifestFiche&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.tagline, tagline) || other.tagline == tagline)&&(identical(other.region, region) || other.region == region)&&(identical(other.country, country) || other.country == country)&&(identical(other.totalStages, totalStages) || other.totalStages == totalStages)&&(identical(other.totalDistanceKm, totalDistanceKm) || other.totalDistanceKm == totalDistanceKm)&&(identical(other.totalElevationGain, totalElevationGain) || other.totalElevationGain == totalElevationGain)&&(identical(other.primaryColorValue, primaryColorValue) || other.primaryColorValue == primaryColorValue)&&(identical(other.secondaryColorValue, secondaryColorValue) || other.secondaryColorValue == secondaryColorValue)&&(identical(other.priceStages, priceStages) || other.priceStages == priceStages)&&const DeepCollectionEquality().equals(other.directions, directions)&&const DeepCollectionEquality().equals(other.availableDurations, availableDurations)&&(identical(other.defaultDuration, defaultDuration) || other.defaultDuration == defaultDuration)&&const DeepCollectionEquality().equals(other.emergencyNumbers, emergencyNumbers)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailManifestSheet&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.tagline, tagline) || other.tagline == tagline)&&(identical(other.region, region) || other.region == region)&&(identical(other.country, country) || other.country == country)&&(identical(other.totalStages, totalStages) || other.totalStages == totalStages)&&(identical(other.totalDistanceKm, totalDistanceKm) || other.totalDistanceKm == totalDistanceKm)&&(identical(other.totalElevationGain, totalElevationGain) || other.totalElevationGain == totalElevationGain)&&(identical(other.primaryColorValue, primaryColorValue) || other.primaryColorValue == primaryColorValue)&&(identical(other.secondaryColorValue, secondaryColorValue) || other.secondaryColorValue == secondaryColorValue)&&(identical(other.priceStages, priceStages) || other.priceStages == priceStages)&&const DeepCollectionEquality().equals(other.directions, directions)&&const DeepCollectionEquality().equals(other.availableDurations, availableDurations)&&(identical(other.defaultDuration, defaultDuration) || other.defaultDuration == defaultDuration)&&const DeepCollectionEquality().equals(other.emergencyNumbers, emergencyNumbers)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -859,15 +859,15 @@ int get hashCode => Object.hash(runtimeType,name,displayName,tagline,region,coun
 
 @override
 String toString() {
-  return 'TrailManifestFiche(name: $name, displayName: $displayName, tagline: $tagline, region: $region, country: $country, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, primaryColorValue: $primaryColorValue, secondaryColorValue: $secondaryColorValue, priceStages: $priceStages, directions: $directions, availableDurations: $availableDurations, defaultDuration: $defaultDuration, emergencyNumbers: $emergencyNumbers, privacyPolicyUrl: $privacyPolicyUrl)';
+  return 'TrailManifestSheet(name: $name, displayName: $displayName, tagline: $tagline, region: $region, country: $country, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, primaryColorValue: $primaryColorValue, secondaryColorValue: $secondaryColorValue, priceStages: $priceStages, directions: $directions, availableDurations: $availableDurations, defaultDuration: $defaultDuration, emergencyNumbers: $emergencyNumbers, privacyPolicyUrl: $privacyPolicyUrl)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TrailManifestFicheCopyWith<$Res>  {
-  factory $TrailManifestFicheCopyWith(TrailManifestFiche value, $Res Function(TrailManifestFiche) _then) = _$TrailManifestFicheCopyWithImpl;
+abstract mixin class $TrailManifestSheetCopyWith<$Res>  {
+  factory $TrailManifestSheetCopyWith(TrailManifestSheet value, $Res Function(TrailManifestSheet) _then) = _$TrailManifestSheetCopyWithImpl;
 @useResult
 $Res call({
  String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<FicheNumeroSecours>? emergencyNumbers, String? privacyPolicyUrl
@@ -878,14 +878,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$TrailManifestFicheCopyWithImpl<$Res>
-    implements $TrailManifestFicheCopyWith<$Res> {
-  _$TrailManifestFicheCopyWithImpl(this._self, this._then);
+class _$TrailManifestSheetCopyWithImpl<$Res>
+    implements $TrailManifestSheetCopyWith<$Res> {
+  _$TrailManifestSheetCopyWithImpl(this._self, this._then);
 
-  final TrailManifestFiche _self;
-  final $Res Function(TrailManifestFiche) _then;
+  final TrailManifestSheet _self;
+  final $Res Function(TrailManifestSheet) _then;
 
-/// Create a copy of TrailManifestFiche
+/// Create a copy of TrailManifestSheet
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? displayName = null,Object? tagline = null,Object? region = null,Object? country = null,Object? totalStages = null,Object? totalDistanceKm = null,Object? totalElevationGain = null,Object? primaryColorValue = freezed,Object? secondaryColorValue = freezed,Object? priceStages = freezed,Object? directions = freezed,Object? availableDurations = freezed,Object? defaultDuration = freezed,Object? emergencyNumbers = freezed,Object? privacyPolicyUrl = freezed,}) {
   return _then(_self.copyWith(
@@ -912,8 +912,8 @@ as String?,
 }
 
 
-/// Adds pattern-matching-related methods to [TrailManifestFiche].
-extension TrailManifestFichePatterns on TrailManifestFiche {
+/// Adds pattern-matching-related methods to [TrailManifestSheet].
+extension TrailManifestSheetPatterns on TrailManifestSheet {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -926,10 +926,10 @@ extension TrailManifestFichePatterns on TrailManifestFiche {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TrailManifestFiche value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TrailManifestSheet value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _TrailManifestFiche() when $default != null:
+case _TrailManifestSheet() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -948,10 +948,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TrailManifestFiche value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TrailManifestSheet value)  $default,){
 final _that = this;
 switch (_that) {
-case _TrailManifestFiche():
+case _TrailManifestSheet():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -969,10 +969,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TrailManifestFiche value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TrailManifestSheet value)?  $default,){
 final _that = this;
 switch (_that) {
-case _TrailManifestFiche() when $default != null:
+case _TrailManifestSheet() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -992,7 +992,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _TrailManifestFiche() when $default != null:
+case _TrailManifestSheet() when $default != null:
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
   return orElse();
 
@@ -1013,7 +1013,7 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)  $default,) {final _that = this;
 switch (_that) {
-case _TrailManifestFiche():
+case _TrailManifestSheet():
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
   throw StateError('Unexpected subclass');
 
@@ -1033,7 +1033,7 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String displayName,  String tagline,  String region,  String country,  int totalStages,  double totalDistanceKm,  int totalElevationGain,  int? primaryColorValue,  int? secondaryColorValue,  int? priceStages,  List<String>? directions,  List<int>? availableDurations,  int? defaultDuration,  List<FicheNumeroSecours>? emergencyNumbers,  String? privacyPolicyUrl)?  $default,) {final _that = this;
 switch (_that) {
-case _TrailManifestFiche() when $default != null:
+case _TrailManifestSheet() when $default != null:
 return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.country,_that.totalStages,_that.totalDistanceKm,_that.totalElevationGain,_that.primaryColorValue,_that.secondaryColorValue,_that.priceStages,_that.directions,_that.availableDurations,_that.defaultDuration,_that.emergencyNumbers,_that.privacyPolicyUrl);case _:
   return null;
 
@@ -1045,9 +1045,9 @@ return $default(_that.name,_that.displayName,_that.tagline,_that.region,_that.co
 /// @nodoc
 @JsonSerializable()
 
-class _TrailManifestFiche implements TrailManifestFiche {
-  const _TrailManifestFiche({required this.name, required this.displayName, required this.tagline, required this.region, required this.country, required this.totalStages, required this.totalDistanceKm, required this.totalElevationGain, this.primaryColorValue, this.secondaryColorValue, this.priceStages, final  List<String>? directions, final  List<int>? availableDurations, this.defaultDuration, final  List<FicheNumeroSecours>? emergencyNumbers, this.privacyPolicyUrl}): _directions = directions,_availableDurations = availableDurations,_emergencyNumbers = emergencyNumbers;
-  factory _TrailManifestFiche.fromJson(Map<String, dynamic> json) => _$TrailManifestFicheFromJson(json);
+class _TrailManifestSheet implements TrailManifestSheet {
+  const _TrailManifestSheet({required this.name, required this.displayName, required this.tagline, required this.region, required this.country, required this.totalStages, required this.totalDistanceKm, required this.totalElevationGain, this.primaryColorValue, this.secondaryColorValue, this.priceStages, final  List<String>? directions, final  List<int>? availableDurations, this.defaultDuration, final  List<FicheNumeroSecours>? emergencyNumbers, this.privacyPolicyUrl}): _directions = directions,_availableDurations = availableDurations,_emergencyNumbers = emergencyNumbers;
+  factory _TrailManifestSheet.fromJson(Map<String, dynamic> json) => _$TrailManifestSheetFromJson(json);
 
 /// Nom technique court (ex: 'GR10').
 @override final  String name;
@@ -1116,20 +1116,20 @@ class _TrailManifestFiche implements TrailManifestFiche {
 /// URL de la politique de confidentialite du sentier.
 @override final  String? privacyPolicyUrl;
 
-/// Create a copy of TrailManifestFiche
+/// Create a copy of TrailManifestSheet
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$TrailManifestFicheCopyWith<_TrailManifestFiche> get copyWith => __$TrailManifestFicheCopyWithImpl<_TrailManifestFiche>(this, _$identity);
+_$TrailManifestSheetCopyWith<_TrailManifestSheet> get copyWith => __$TrailManifestSheetCopyWithImpl<_TrailManifestSheet>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$TrailManifestFicheToJson(this, );
+  return _$TrailManifestSheetToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailManifestFiche&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.tagline, tagline) || other.tagline == tagline)&&(identical(other.region, region) || other.region == region)&&(identical(other.country, country) || other.country == country)&&(identical(other.totalStages, totalStages) || other.totalStages == totalStages)&&(identical(other.totalDistanceKm, totalDistanceKm) || other.totalDistanceKm == totalDistanceKm)&&(identical(other.totalElevationGain, totalElevationGain) || other.totalElevationGain == totalElevationGain)&&(identical(other.primaryColorValue, primaryColorValue) || other.primaryColorValue == primaryColorValue)&&(identical(other.secondaryColorValue, secondaryColorValue) || other.secondaryColorValue == secondaryColorValue)&&(identical(other.priceStages, priceStages) || other.priceStages == priceStages)&&const DeepCollectionEquality().equals(other._directions, _directions)&&const DeepCollectionEquality().equals(other._availableDurations, _availableDurations)&&(identical(other.defaultDuration, defaultDuration) || other.defaultDuration == defaultDuration)&&const DeepCollectionEquality().equals(other._emergencyNumbers, _emergencyNumbers)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailManifestSheet&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.tagline, tagline) || other.tagline == tagline)&&(identical(other.region, region) || other.region == region)&&(identical(other.country, country) || other.country == country)&&(identical(other.totalStages, totalStages) || other.totalStages == totalStages)&&(identical(other.totalDistanceKm, totalDistanceKm) || other.totalDistanceKm == totalDistanceKm)&&(identical(other.totalElevationGain, totalElevationGain) || other.totalElevationGain == totalElevationGain)&&(identical(other.primaryColorValue, primaryColorValue) || other.primaryColorValue == primaryColorValue)&&(identical(other.secondaryColorValue, secondaryColorValue) || other.secondaryColorValue == secondaryColorValue)&&(identical(other.priceStages, priceStages) || other.priceStages == priceStages)&&const DeepCollectionEquality().equals(other._directions, _directions)&&const DeepCollectionEquality().equals(other._availableDurations, _availableDurations)&&(identical(other.defaultDuration, defaultDuration) || other.defaultDuration == defaultDuration)&&const DeepCollectionEquality().equals(other._emergencyNumbers, _emergencyNumbers)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1138,15 +1138,15 @@ int get hashCode => Object.hash(runtimeType,name,displayName,tagline,region,coun
 
 @override
 String toString() {
-  return 'TrailManifestFiche(name: $name, displayName: $displayName, tagline: $tagline, region: $region, country: $country, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, primaryColorValue: $primaryColorValue, secondaryColorValue: $secondaryColorValue, priceStages: $priceStages, directions: $directions, availableDurations: $availableDurations, defaultDuration: $defaultDuration, emergencyNumbers: $emergencyNumbers, privacyPolicyUrl: $privacyPolicyUrl)';
+  return 'TrailManifestSheet(name: $name, displayName: $displayName, tagline: $tagline, region: $region, country: $country, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, primaryColorValue: $primaryColorValue, secondaryColorValue: $secondaryColorValue, priceStages: $priceStages, directions: $directions, availableDurations: $availableDurations, defaultDuration: $defaultDuration, emergencyNumbers: $emergencyNumbers, privacyPolicyUrl: $privacyPolicyUrl)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$TrailManifestFicheCopyWith<$Res> implements $TrailManifestFicheCopyWith<$Res> {
-  factory _$TrailManifestFicheCopyWith(_TrailManifestFiche value, $Res Function(_TrailManifestFiche) _then) = __$TrailManifestFicheCopyWithImpl;
+abstract mixin class _$TrailManifestSheetCopyWith<$Res> implements $TrailManifestSheetCopyWith<$Res> {
+  factory _$TrailManifestSheetCopyWith(_TrailManifestSheet value, $Res Function(_TrailManifestSheet) _then) = __$TrailManifestSheetCopyWithImpl;
 @override @useResult
 $Res call({
  String name, String displayName, String tagline, String region, String country, int totalStages, double totalDistanceKm, int totalElevationGain, int? primaryColorValue, int? secondaryColorValue, int? priceStages, List<String>? directions, List<int>? availableDurations, int? defaultDuration, List<FicheNumeroSecours>? emergencyNumbers, String? privacyPolicyUrl
@@ -1157,17 +1157,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$TrailManifestFicheCopyWithImpl<$Res>
-    implements _$TrailManifestFicheCopyWith<$Res> {
-  __$TrailManifestFicheCopyWithImpl(this._self, this._then);
+class __$TrailManifestSheetCopyWithImpl<$Res>
+    implements _$TrailManifestSheetCopyWith<$Res> {
+  __$TrailManifestSheetCopyWithImpl(this._self, this._then);
 
-  final _TrailManifestFiche _self;
-  final $Res Function(_TrailManifestFiche) _then;
+  final _TrailManifestSheet _self;
+  final $Res Function(_TrailManifestSheet) _then;
 
-/// Create a copy of TrailManifestFiche
+/// Create a copy of TrailManifestSheet
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? displayName = null,Object? tagline = null,Object? region = null,Object? country = null,Object? totalStages = null,Object? totalDistanceKm = null,Object? totalElevationGain = null,Object? primaryColorValue = freezed,Object? secondaryColorValue = freezed,Object? priceStages = freezed,Object? directions = freezed,Object? availableDurations = freezed,Object? defaultDuration = freezed,Object? emergencyNumbers = freezed,Object? privacyPolicyUrl = freezed,}) {
-  return _then(_TrailManifestFiche(
+  return _then(_TrailManifestSheet(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,tagline: null == tagline ? _self.tagline : tagline // ignore: cast_nullable_to_non_nullable

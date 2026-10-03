@@ -54,7 +54,7 @@
 /// contourne rien ici : on ne remplit pas le coffre, on cesse de promettre.
 /// Le jour ou il sera rempli, la garde d'effacement restera en tete de chaque
 /// chemin descendant — c'est deja le cas, et c'est teste.
-abstract final class CoffreDeReconnexion {
+abstract final class ReconnectionVault {
   /// Vrai quand le coffre est REELLEMENT alimente par du code de production.
   ///
   /// Tant que c'est faux, l'application ne promet pas de rouvrir quoi que ce

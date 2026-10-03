@@ -60,12 +60,12 @@ void main() {
     endLng: 0,
   );
 
-  final etapes = [for (var n = 1; n <= 6; n++) stage(n)];
+  final stages = [for (var n = 1; n <= 6; n++) stage(n)];
 
   /// Journee de marche portant les etapes [numeros] (1-based).
   PlannedDay marche(int dayNumber, List<int> numeros) => PlannedDay(
     dayNumber: dayNumber,
-    stages: [for (final n in numeros) etapes[n - 1]],
+    stages: [for (final n in numeros) stages[n - 1]],
   );
 
   /// Journee de repos.
@@ -76,9 +76,9 @@ void main() {
   List<PlannedDay> programmeGroupe(int etapesParJour) {
     final days = <PlannedDay>[];
     var i = 0;
-    while (i < etapes.length) {
+    while (i < stages.length) {
       final lot = <int>[];
-      for (var k = 0; k < etapesParJour && i < etapes.length; k++, i++) {
+      for (var k = 0; k < etapesParJour && i < stages.length; k++, i++) {
         lot.add(i + 1);
       }
       days.add(marche(days.length + 1, lot));
@@ -485,7 +485,7 @@ void main() {
             trailConfigProvider.overrideWithValue(testTrailConfig),
             trail_stages
                 .stagesProvider(trailId)
-                .overrideWith((ref) => Future.value(etapes)),
+                .overrideWith((ref) => Future.value(stages)),
             feasibilityAssessmentProvider.overrideWith(
               (ref) async => assessment,
             ),

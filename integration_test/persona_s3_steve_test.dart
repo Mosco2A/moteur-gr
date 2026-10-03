@@ -934,16 +934,16 @@ Future<void> _satisfaireGateDemarrage(
     if (_gateDemarrageOuvert(tester, id) == true) break;
   }
   final apres = _gateDemarrageOuvert(tester, id);
-  String etapes = '?';
+  String stages = '?';
   try {
     final element = tester.element(find.byType(Navigator).first);
     final container = ProviderScope.containerOf(element, listen: false);
-    etapes = container.read(prepareCoreStepsProvider(id)).toString();
+    stages = container.read(prepareCoreStepsProvider(id)).toString();
   } catch (_) {}
   logStep(
     persona,
     'gate',
-    'Gate APRES = $apres | etapes coeur persistees = $etapes '
+    'Gate APRES = $apres | etapes coeur persistees = $stages '
         '${apres == true ? "-> CTA Démarrer ACTIVABLE" : "-> CTA TOUJOURS INERTE (signal QA)"}',
   );
   // EXIGENCE — Steve a fait les TROIS etapes coeur (Itineraire, Programme,
@@ -956,7 +956,7 @@ Future<void> _satisfaireGateDemarrage(
     apres == true,
     'le gate de demarrage s ouvre apres Itineraire + Programme + date '
         '+ fiche medicale '
-        '(lu = ${apres?.toString() ?? "illisible"}, etapes = $etapes)',
+        '(lu = ${apres?.toString() ?? "illisible"}, etapes = $stages)',
   );
 }
 
@@ -997,10 +997,10 @@ Future<void> _verifierSecondCheminDemarrage(
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   }
   // 1) Arreter le suivi depuis l'overlay (« Arrêter »).
-  final arreter = find.text(t.tracking.stop);
+  final stop = find.text(t.tracking.stop);
   final arrete = await tapIfPresent(
     tester,
-    arreter,
+    stop,
     persona,
     'chemin2',
     'bouton « Arrêter » de l overlay de carte',

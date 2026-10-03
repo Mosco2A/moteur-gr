@@ -64,7 +64,7 @@ class TrailSelectionScreen extends ConsumerWidget {
     // Cet ecran-ci ne navigue pas, il reste sur place : le defaut de build ne
     // l'atteint donc pas. On passe quand meme par le geste commun pour qu'il
     // n'existe qu'UNE facon de basculer de sentier dans le depot.
-    choisirSentier(ref, trailId);
+    chooseTrail(ref, trailId);
   }
 }
 

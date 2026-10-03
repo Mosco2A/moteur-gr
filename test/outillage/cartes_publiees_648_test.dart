@@ -50,7 +50,7 @@ void main() {
       HttpOverrides.global = null;
       addTearDown(() => HttpOverrides.global = surcharge);
 
-      const sentier = 'mare-a-mare-centre';
+      const trail = 'mare-a-mare-centre';
       final client = http.Client();
       addTearDown(client.close);
 
@@ -65,12 +65,12 @@ void main() {
             'signifie que les regles de Firebase Storage ont ete refermees.',
       );
 
-      final liste = TrailManifest.fromJson(
+      final list = TrailManifest.fromJson(
         jsonDecode(reponse.body) as Map<String, dynamic>,
       );
-      final entree = liste.trails.firstWhere(
-        (e) => e.trailId == sentier,
-        orElse: () => throw StateError('$sentier absent de la liste publiee'),
+      final entree = list.trails.firstWhere(
+        (e) => e.trailId == trail,
+        orElse: () => throw StateError('$trail absent de la liste publiee'),
       );
 
       // 2. LE DESCRIPTEUR DE TUILES : les trois champs vont ensemble ou pas du tout.
@@ -96,8 +96,8 @@ void main() {
       );
       var dernierPoint = 0;
       final resultat = await gestionnaire.descendre(
-        trailId: sentier,
-        url: TrailDataSource.urlDonneesSentier(entree.tilesPath!),
+        trailId: trail,
+        url: TrailDataSource.trailDataUrl(entree.tilesPath!),
         octetsAttendus: entree.tilesSize!,
         empreinteAttendue: entree.tilesHash!,
         progression: (p) => dernierPoint = p.octetsRecus,
@@ -119,8 +119,8 @@ void main() {
       );
 
       // 4. LE FICHIER EST LA, SOUS SON NOM DEFINITIF, ET C EST UNE BASE SQLITE.
-      expect(await gestionnaire.hasMbtiles(sentier), isTrue);
-      final carte = File(await gestionnaire.getMbtilesPath(sentier));
+      expect(await gestionnaire.hasMbtiles(trail), isTrue);
+      final carte = File(await gestionnaire.getMbtilesPath(trail));
       expect(await carte.length(), entree.tilesSize);
       final entete = await carte.openRead(0, 16).first;
       expect(

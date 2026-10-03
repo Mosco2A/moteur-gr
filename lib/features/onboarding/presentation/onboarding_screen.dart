@@ -457,7 +457,7 @@ class _DownloadPage extends StatelessWidget {
           // ne permet de saisir un code. Pousser le randonneur a noter la cle
           // d'un coffre vide des sa premiere minute dans l'appli, c'est le faux
           // succes le plus difficile a rattraper ensuite.
-          if (CoffreDeReconnexion.alimente) ...[
+          if (ReconnectionVault.alimente) ...[
             const SizedBox(height: AppTheme.spacingLg),
             _RecoveryNudge(tr: tr, theme: theme),
           ],
