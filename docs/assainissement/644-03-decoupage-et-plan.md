@@ -790,6 +790,42 @@ froid.
 | **C11 Rollback** | `git revert <sha du fichier>`. Tag `avant-645-06-vague<N>` par vague. **Lot explicitement sécable** : il peut s'arrêter après n'importe quelle vague |
 | **C12 Dépendances** | **645-01**, **645-03** (découper une `build()` qui contient 16 boutons bruts, c'est le faire deux fois) |
 
+#### Ce que les vagues 1 et 2 ont réellement produit (03/10/2026)
+
+**Chiffres mesurés.** Départ à `4966a85a` : ECR-15 = **52**, ECR-28 = **203**
+(la fiche annonçait 50 et 206, les deux étaient faux). Arrivée après les deux
+vagues : ECR-15 = **48**, ECR-28 = **198**. `ECR-23` (254), `ECR-19` (10),
+`ECR-31` (19) et `VAC-01` (0) sont inchangés : un découpage ne déplace aucun
+import et ne touche aucune valeur.
+
+**La vague 2 a été faite en fichiers `part`, et c'est une convention
+nouvelle.** Les cinq plus gros fichiers n'ont pas été éclatés en bibliothèques
+séparées mais scindés en **fichiers `part` d'UNE SEULE bibliothèque Dart** :
+une racine qui porte la documentation, `library;`, tous les imports et les
+directives `part`, puis des morceaux qui n'ont pas d'imports à eux. 29 morceaux
+créés. Raison : l'état et les widgets privés d'un écran se voient entre eux
+sans rien exposer publiquement, donc le découpage ne change ni l'API ni le
+comportement. **Conséquence qui n'est pas un détail : l'unité à lire n'est plus
+le fichier mais la bibliothèque.** Toute garde qui mesure du texte source doit
+lire la racine ET ses morceaux, sinon elle ne lit plus que des imports.
+**Cette convention est soumise à l'arbitrage de Christophe** — elle n'était pas
+prévue par la fiche, qui ne parlait que de sous-widgets nommés.
+
+**Deux résidus restent au-delà de 500 lignes**, et c'est assumé :
+`monetization_service_service.dart` (965) et `health_info_screen_etat.dart`
+(579). Les deux sont des classes à état irréductibles : les découper plus
+demanderait de déplacer l'état, ce que la méthode imposée interdit
+explicitement (« L'ÉTAT RESTE CHEZ LE PARENT »).
+
+**Une garde négative a été réparée en local, hors du lot cloud.** La scission
+avait vidé la racine `map_screen.dart` (1236 lignes → 62, imports seuls) alors
+que `test/features/map/cadrage_et_forme_558_test.dart` y lisait encore une
+ABSENCE en direct : la garde ne pouvait plus jamais rougir, et le voisinage
+qu'elle surveille avait déménagé dans `map_screen_barres.dart`. Elle lit
+désormais la bibliothèque entière. Aucune attente modifiée. Vérifié par
+mutation en bac à sable : le laïus injecté dans un morceau est invisible à
+l'ancienne lecture et vu par la nouvelle.
+
 ```
 PROMPT 645-06 (autonome)
 
@@ -799,7 +835,12 @@ la tete de origin/claude/integration/645-assainissement. git fetch d abord,
 cd explicite dans chaque commande git. Ne remets JAMAIS le depot Skynet
 racine sur main. Pose le tag avant-645-06-vague<N> AVANT la vague.
 
-OBJET : ramener 50 fichiers sous 500 lignes et 206 fonctions sous 60 lignes.
+OBJET : ramener 52 fichiers sous 500 lignes et 203 fonctions sous 60 lignes.
+(CHIFFRES CORRIGES le 03/10 apres les vagues 1 et 2 : la fiche annoncait 50 et
+206 ; la mesure a 4966a85a, tete de depart reelle du lot, donne ECR-15 = 52 et
+ECR-28 = 203. Arrivee mesuree apres les deux vagues : ECR-15 = 48,
+ECR-28 = 198. ECR-23 254, ECR-19 10, ECR-31 19 et VAC-01 0 sont INCHANGES par
+le lot, qui ne deplace pas d import et ne touche a aucune valeur.)
 
 LE CONSTAT : neuf des dix fonctions les plus longues du depot sont des
 build(), dont une de 679 LIGNES (lib/features/hub/presentation/
@@ -838,7 +879,11 @@ VAGUE 1 — les 5 pires build() :
 VAGUE 2 — les 5 pires fichiers :
   2028 l. lib/features/feasibility/presentation/trek_feasibility_screen.dart
   1764 l. lib/features/safety/presentation/health_info_screen.dart
-  1644 l. lib/features/feasibility/domain/feasibility_formula.dart
+  1644 l. lib/domain/feasibility_formula.dart
+          (CHEMIN CORRIGE le 03/10 : la fiche ecrivait
+          lib/features/feasibility/domain/. Ce type a change de maison au lot
+          645-05, voie A : il est lu par plusieurs features, il vit donc dans
+          lib/domain/.)
   1490 l. lib/core/services/monetization_service.dart
   1232 l. lib/features/trek/presentation/map/map_screen.dart
 
