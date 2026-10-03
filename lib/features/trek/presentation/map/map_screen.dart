@@ -25,7 +25,7 @@ import '../../../../shared/widgets/bouton_simulation_demo.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
-import '../../../journal/providers/journal_providers.dart';
+import '../../../journal/journal_facade.dart' show journalScreenProvider;
 import '../../../map/domain/stage_focus.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';

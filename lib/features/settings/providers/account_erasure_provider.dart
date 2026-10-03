@@ -24,8 +24,11 @@ import '../../consent/consent_facade.dart'
     show consentPromptNeededProvider, consentStatesProvider;
 import '../../feasibility/data/hiker_profile_repository.dart';
 import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
-import '../../journal/providers/journal_day_providers.dart';
-import '../../journal/providers/journal_providers.dart';
+import '../../journal/journal_facade.dart'
+    show
+        journalCumulativeStatsProvider,
+        journalDayTraceProvider,
+        journalRepositoryProvider;
 import '../../map/providers/stage_poi_check_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../../planning/providers/planned_days_provider.dart'

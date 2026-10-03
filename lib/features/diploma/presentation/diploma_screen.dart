@@ -19,7 +19,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/app_logo.dart';
 import '../../journal/domain/models/journal_entry.dart';
-import '../../journal/providers/journal_providers.dart';
+import '../../journal/journal_facade.dart' show journalScreenProvider;
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
