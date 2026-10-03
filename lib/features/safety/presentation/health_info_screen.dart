@@ -626,11 +626,30 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     super.dispose();
   }
 
+  /// Le randomneur a choisi son groupe sanguin.
+  ///
+  /// Le randonneur a tranche : l'avertissement n'a plus lieu d'etre, la valeur
+  /// heritee est remplacee.
+  void _setBloodType(String? v) => setState(() {
+    _bloodType = v;
+    _bloodTypeHerite = '';
+  });
+
+  /// Le randonneur a dit s'il est donneur d'organes.
+  void _setOrganDonor(String? v) => setState(() => _organDonor = v);
+
+  /// Le randonneur a retire sa date de naissance.
+  void _effacerDateNaissance() => setState(() => _birthDate = '');
+
+  /// Une ligne de contact vide de plus, a remplir.
+  void _ajouterContact() => setState(() => _contacts.add(_LigneContact()));
+
+  /// Retire la ligne de contact [index] et libere ses controleurs.
+  void _retirerContact(int index) =>
+      setState(() => _contacts.removeAt(index).dispose());
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Scaffold(
       // Ph5 (L6d) : AppHeader universel (back centralise). Leading custom retire.
       appBar: AppHeader(title: t.health.title),
@@ -646,419 +665,57 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Bandeau securite (message de confiance, RF-2).
-                      Container(
-                        padding: const EdgeInsets.all(AppTheme.spacingMd),
-                        decoration: BoxDecoration(
-                          color: colors.primary.withAlpha(30),
-                          borderRadius: BorderRadius.circular(
-                            AppTheme.radiusCard,
-                          ),
-                          border: Border.all(
-                            color: colors.primary.withAlpha(80),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            StepIcon(
-                              StepwaysIcons.cadenas,
-                              color: colors.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: AppTheme.spacingSm),
-                            Expanded(
-                              child: Text(
-                                t.health.privacyBanner,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colors.primary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const _HealthSafetyBanner(),
                       const SizedBox(height: AppTheme.spacingMd),
-                      // LE PRIX DE LA PROMESSE, DIT ICI ET MAINTENANT (tache
-                      // 612). Le bandeau du dessus promet que la fiche ne quitte
-                      // pas le telephone ; celui-ci dit ce que cette promesse
-                      // coute. Christophe l'a assume en majuscules : changer de
-                      // telephone, c'est ressaisir son groupe sanguin, ses
-                      // allergies, ses traitements. Ce prix doit etre lu AU
-                      // MOMENT OU LA FICHE SE REMPLIT, pas decouvert le jour du
-                      // changement d'appareil — et il est place AVANT les champs
-                      // pour la meme raison que les conseils du LOT Q.
-                      const _LocalOnlyPrice(),
-                      const SizedBox(height: AppTheme.spacingMd),
-                      // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
-                      // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
-                      // H1-a) : aucun envoi n'a lieu (local-only), on rappelle
-                      // l'usage « te secourir » et on offre l'acces a l'ecran
-                      // Confidentialite (finalite healthData) — pas de mur avant
-                      // saisie. Textes Slang.
-                      _ConsentReminder(
-                        onManage: () => context.push('/consent'),
-                      ),
-                      const SizedBox(height: AppTheme.spacingMd),
-                      // LA RECOPIE DANS LA FICHE DU TELEPHONE — ETAPE, PLUS
-                      // CONSEIL (tache 630). C'est le SEUL chemin qui montre
-                      // quelque chose a un secouriste sur iPhone. Elle est donc
-                      // au-dessus des champs, pas noyee dans une liste.
-                      const _PhoneCardStep(),
-                      const SizedBox(height: AppTheme.spacingMd),
-                      // CONSEILS D'USAGE TERRAIN + ACCUSE DE LECTURE (tache 568,
-                      // LOT Q). Decision de Chris du 26/09, verbatim : « on ne
-                      // demarre pas un trek sans avoir rempli sa fiche medicale
-                      // ET LU LES CONSEILS pour qu'elle soit applicable sur le
-                      // sentier ». Les conseils sont donc AVANT les champs : on
-                      // apprend a s'en servir, puis on la remplit — et non
-                      // l'inverse, d'autant que l'enregistrement depile l'ecran.
-                      const _UsageAdvice(),
-                      const SizedBox(height: AppTheme.spacingLg),
-
-                      // ============================================ [1] QUI
-                      _SectionTitle(
-                        key: const ValueKey('health-section-identity'),
-                        icon: StepwaysIcons.monCompte,
-                        title: t.health.section.identity,
-                        explanation: t.health.section.identityWhy,
-                      ),
-                      _buildField(
-                        key: const ValueKey('health-full-name-field'),
-                        controller: _fullNameController,
-                        label: t.health.field.fullName,
-                        hint: t.health.hint.fullName,
-                        icon: StepwaysIcons.monCompte,
-                        maxLines: 1,
-                        maxLength: kHealthNameMaxLength,
-                        showCounter: false,
-                        textCapitalization: TextCapitalization.words,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _ChampDateNaissance(
-                        key: const ValueKey('health-birth-date-field'),
-                        valeurIso: _birthDate,
-                        onChoisir: _choisirDateNaissance,
-                        onEffacer: () => setState(() => _birthDate = ''),
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        key: const ValueKey('health-address-field'),
-                        controller: _addressController,
-                        label: t.health.field.address,
-                        hint: t.health.hint.address,
-                        icon: StepwaysIcons.ville,
-                        maxLines: 2,
-                        maxLength: kHealthAddressMaxLength,
+                      _HealthIntro(
+                        onManageConsent: () => context.push('/consent'),
                       ),
                       const SizedBox(height: AppTheme.spacingLg),
-
-                      // =================================== [2] QUI PREVENIR
-                      _SectionTitle(
-                        key: const ValueKey('health-section-contacts'),
-                        icon: StepwaysIcons.telephone,
-                        title: t.health.section.contacts,
-                        explanation: t.health.section.contactsWhy,
-                      ),
-                      ..._buildContactRows(),
-                      if (_contacts.length < kMaxPersonalEmergencyContacts)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: AppButton(
-                            key: const ValueKey('health-add-contact'),
-                            variant: AppButtonVariant.text,
-                            icon: StepwaysIcons.plus,
-                            iconSize: 18,
-                            label: t.health.contacts.add,
-                            isFullWidth: false,
-                            onPressed: () =>
-                                setState(() => _contacts.add(_LigneContact())),
-                          ),
-                        ),
-                      const SizedBox(height: AppTheme.spacingLg),
-
-                      // ========================================== [3] VITAL
-                      _SectionTitle(
-                        key: const ValueKey('health-section-vital'),
-                        icon: StepwaysIcons.secours,
-                        title: t.health.section.vital,
-                        explanation: t.health.section.vitalWhy,
-                      ),
-                      // Texte libre medical : longueur BORNEE et VISIBLE
-                      // (compteur), plus de champ sans fond (2000 caracteres
-                      // illisibles en urgence).
-                      _buildField(
-                        controller: _allergiesController,
-                        label: t.health.field.allergies,
-                        hint: t.health.hint.allergies,
-                        icon: StepwaysIcons.danger,
-                        maxLines: 3,
-                        maxLength: kHealthFreeTextMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        controller: _treatmentsController,
-                        label: t.health.field.treatments,
-                        hint: t.health.hint.treatments,
-                        icon: StepwaysIcons.ficheMedicale,
-                        maxLines: 3,
-                        maxLength: kHealthFreeTextMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        key: const ValueKey('health-conditions-field'),
-                        controller: _conditionsController,
-                        label: t.health.field.conditions,
-                        hint: t.health.hint.conditions,
-                        icon: StepwaysIcons.historique,
-                        maxLines: 3,
-                        maxLength: kHealthFreeTextMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      // GROUPE SANGUIN : LISTE FERMEE (tache 630). La saisie
-                      // libre a disparu — une valeur inventee n'est plus
-                      // seulement refusee, elle est IMPOSSIBLE.
-                      _ChampGroupeSanguin(
-                        key: const ValueKey('health-blood-type-field'),
-                        valeur: _bloodType,
-                        valeurHeritee: _bloodTypeHerite,
-                        onChanged: (v) => setState(() {
-                          _bloodType = v;
-                          // Le randonneur a tranche : l'avertissement n'a plus
-                          // lieu d'etre, la valeur heritee est remplacee.
-                          _bloodTypeHerite = '';
-                        }),
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _ChampDonOrganes(
-                        key: const ValueKey('health-organ-donor-field'),
-                        valeur: _organDonor,
-                        onChanged: (v) => setState(() => _organDonor = v),
+                      _HealthIdentitySection(
+                        fullNameController: _fullNameController,
+                        addressController: _addressController,
+                        birthDate: _birthDate,
+                        onChoisirDate: _choisirDateNaissance,
+                        onEffacerDate: _effacerDateNaissance,
                       ),
                       const SizedBox(height: AppTheme.spacingLg),
-
-                      // ================================== [4] ADMINISTRATIF
-                      _SectionTitle(
-                        key: const ValueKey('health-section-admin'),
-                        icon: StepwaysIcons.questionnaire,
-                        title: t.health.section.admin,
-                        explanation: t.health.section.adminWhy,
+                      _HealthContactsSection(
+                        contacts: _contacts,
+                        onRemoveContact: _retirerContact,
+                        onAddContact: _ajouterContact,
                       ),
-                      _buildField(
-                        controller: _doctorController,
-                        label: t.health.field.doctor,
-                        hint: t.health.hint.doctor,
-                        icon: StepwaysIcons.secours,
-                        maxLines: 2,
-                        maxLength: kHealthContactMaxLength,
+                      const SizedBox(height: AppTheme.spacingLg),
+                      _HealthMedicalSection(
+                        allergiesController: _allergiesController,
+                        treatmentsController: _treatmentsController,
+                        conditionsController: _conditionsController,
+                        bloodType: _bloodType,
+                        bloodTypeHerite: _bloodTypeHerite,
+                        onBloodTypeChanged: _setBloodType,
+                        organDonor: _organDonor,
+                        onOrganDonorChanged: _setOrganDonor,
                       ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        controller: _insuranceController,
-                        label: t.health.field.insurance,
-                        hint: t.health.hint.insurance,
-                        icon: StepwaysIcons.bouclier,
-                        maxLines: 2,
-                        maxLength: kHealthContactMaxLength,
+                      const SizedBox(height: AppTheme.spacingLg),
+                      _HealthCardsSection(
+                        doctorController: _doctorController,
+                        insuranceController: _insuranceController,
+                        carteVitale: _carteVitale,
+                        carteMutuelle: _carteMutuelle,
+                        onPrendreCarte: _photographierCarte,
+                        onRetirerCarte: _retirerCarte,
                       ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _CarteTile(
-                        key: const ValueKey('health-carte-vitale'),
-                        titre: t.health.cards.vitale,
-                        nomFichier: _carteVitale,
-                        onPrendre: (src) => _photographierCarte(
-                          FicheMedicaleFichier.nomCarteVitale,
-                          src,
-                        ),
-                        onRetirer: () =>
-                            _retirerCarte(FicheMedicaleFichier.nomCarteVitale),
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _CarteTile(
-                        key: const ValueKey('health-carte-mutuelle'),
-                        titre: t.health.cards.mutuelle,
-                        nomFichier: _carteMutuelle,
-                        onPrendre: (src) => _photographierCarte(
-                          FicheMedicaleFichier.nomCarteMutuelle,
-                          src,
-                        ),
-                        onRetirer: () => _retirerCarte(
-                          FicheMedicaleFichier.nomCarteMutuelle,
-                        ),
-                      ),
-
-                      const SizedBox(height: AppTheme.spacingXl),
-                      // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
-                      // isLoading porte l'etat _isSaving (AppButton affiche son
-                      // spinner et desactive l'action, cf. grammaire unifiee) ;
-                      // minHeight 52 conserve la cible du CTA pleine largeur.
-                      // key/Semantics(button+label) preserves au-dessus.
-                      Semantics(
-                        button: true,
-                        label: t.health.a11y.saveButton,
-                        child: AppButton(
-                          isLoading: _isSaving,
-                          minHeight: 52,
-                          icon: StepwaysIcons.enregistrer,
-                          label: t.health.save,
-                          onPressed: _isSaving ? null : _save,
-                        ),
-                      ),
-                      // E57 (L6) : bouton « Effacer ma fiche » — branche sur le
-                      // delete() DEJA present. Visible uniquement si la fiche
-                      // contient quelque chose (rien a effacer sinon). Action
-                      // DEFINITIVE annoncee aux lecteurs d'ecran, confirmation
-                      // obligatoire (rouge).
-                      if (_hasContent) ...[
-                        const SizedBox(height: AppTheme.spacingBase),
-                        Semantics(
-                          button: true,
-                          label: t.health.delete.a11yButton,
-                          child: AppButton(
-                            variant: AppButtonVariant.outline,
-                            tone: AppTheme.rougeUrgence,
-                            isLoading: _isDeleting,
-                            minHeight: 52,
-                            icon: StepwaysIcons.corbeille,
-                            label: t.health.delete.button,
-                            onPressed: _isDeleting ? null : _confirmAndDelete,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: AppTheme.spacingBase),
-                      Text(
-                        t.health.emergencyHint,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colors.onSurface.withAlpha(140),
-                          fontStyle: FontStyle.italic,
-                        ),
+                      _HealthActions(
+                        isSaving: _isSaving,
+                        isDeleting: _isDeleting,
+                        hasContent: _hasContent,
+                        onSave: _save,
+                        onDelete: _confirmAndDelete,
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-    );
-  }
-
-  /// Les lignes de contact a prevenir, avec leur bouton de retrait.
-  List<Widget> _buildContactRows() {
-    final lignes = <Widget>[];
-    for (var i = 0; i < _contacts.length; i++) {
-      final ligne = _contacts[i];
-      lignes.add(
-        Padding(
-          key: ValueKey('health-contact-$i'),
-          padding: const EdgeInsets.only(bottom: AppTheme.spacingBase),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildField(
-                      key: ValueKey('health-contact-name-$i'),
-                      controller: ligne.nomCtrl,
-                      label: t.health.contacts.name,
-                      hint: t.health.contacts.nameHint,
-                      icon: StepwaysIcons.monCompte,
-                      maxLines: 1,
-                      maxLength: kEmergencyContactNameMaxLength,
-                      showCounter: false,
-                      textCapitalization: TextCapitalization.words,
-                      // UN NOM SANS NUMERO NE SERT A RIEN : le secouriste lit un
-                      // prenom et n'a personne a appeler. On refuse
-                      // l'enregistrement plutot que d'enregistrer une promesse
-                      // vide.
-                      validator: (_) =>
-                          ligne.estVide || ligne.nomCtrl.text.trim().isNotEmpty
-                          ? null
-                          : t.health.contacts.errorName,
-                    ),
-                  ),
-                  IconButton(
-                    key: ValueKey('health-contact-remove-$i'),
-                    tooltip: t.health.contacts.remove,
-                    icon: const StepIcon(StepwaysIcons.croix),
-                    onPressed: () => setState(() {
-                      _contacts.removeAt(i).dispose();
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              _buildField(
-                key: ValueKey('health-contact-phone-$i'),
-                controller: ligne.telCtrl,
-                label: t.health.contacts.phone,
-                hint: t.health.contacts.phoneHint,
-                icon: StepwaysIcons.telephone,
-                maxLines: 1,
-                maxLength: kEmergencyContactPhoneMaxLength,
-                showCounter: false,
-                keyboardType: TextInputType.phone,
-                validator: (_) =>
-                    ligne.estVide || ligne.telCtrl.text.trim().isNotEmpty
-                    ? null
-                    : t.health.contacts.errorPhone,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return lignes;
-  }
-
-  Widget _buildField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required String icon,
-    int maxLines = 1,
-    Key? key,
-    int? maxLength,
-    bool showCounter = true,
-    List<TextInputFormatter>? inputFormatters,
-    TextCapitalization textCapitalization = TextCapitalization.none,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    return TextFormField(
-      key: key,
-      controller: controller,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      inputFormatters: inputFormatters,
-      textCapitalization: textCapitalization,
-      keyboardType: keyboardType,
-      validator: validator,
-      style: TextStyle(color: colors.onSurface),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        // Compteur VISIBLE par defaut sur les champs bornes : la limite doit se
-        // voir, une coupe muette serait le meme mensonge qu'un clamp muet.
-        counterText: showCounter ? null : '',
-        errorMaxLines: 3,
-        hintStyle: TextStyle(
-          color: colors.onSurface.withAlpha(90),
-          fontSize: 13,
-        ),
-        prefixIcon: StepIcon(icon, color: colors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          borderSide: BorderSide(color: colors.onSurface.withAlpha(60)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          borderSide: BorderSide(color: colors.primary, width: 2),
-        ),
-      ),
     );
   }
 }
@@ -1777,6 +1434,685 @@ class _ConsentReminder extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Un champ de texte de la fiche, dans la grammaire visuelle de l'ecran.
+///
+/// REMPLACE L ANCIENNE METHODE `_buildField` (ECR-28) : un sous-widget nomme se
+/// reconstruit independamment, une methode privee de l'ecran non. Le controleur
+/// est CREE ET LIBERE par l'ecran ; ce widget ne fait que s'y brancher, donc
+/// aucun etat ne change de main.
+class _ChampTexte extends StatelessWidget {
+  const _ChampTexte({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+    this.champKey,
+    this.maxLines = 1,
+    this.maxLength,
+    this.showCounter = true,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.none,
+    this.keyboardType,
+    this.validator,
+  });
+
+  /// Le controleur du champ, possede par l'ecran.
+  final TextEditingController controller;
+
+  /// Le libelle flottant du champ.
+  final String label;
+
+  /// L'exemple affiche quand le champ est vide.
+  final String hint;
+
+  /// L'icone posee en tete du champ.
+  final String icon;
+
+  /// La cle posee sur le TextFormField lui-meme, comme avant l'extraction :
+  /// c'est elle que les tests cherchent pour saisir du texte.
+  final Key? champKey;
+
+  /// Le nombre de lignes du champ.
+  final int maxLines;
+
+  /// La limite de saisie, quand il y en a une.
+  final int? maxLength;
+
+  /// Le compteur est VISIBLE par defaut sur les champs bornes.
+  final bool showCounter;
+
+  /// Les filtres de saisie du champ.
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// La capitalisation automatique du clavier.
+  final TextCapitalization textCapitalization;
+
+  /// Le type de clavier a presenter.
+  final TextInputType? keyboardType;
+
+  /// La validation du champ, jouee par le Form de l'ecran.
+  final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return TextFormField(
+      key: champKey,
+      controller: controller,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
+      textCapitalization: textCapitalization,
+      keyboardType: keyboardType,
+      validator: validator,
+      style: TextStyle(color: colors.onSurface),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        // Compteur VISIBLE par defaut sur les champs bornes : la limite doit se
+        // voir, une coupe muette serait le meme mensonge qu'un clamp muet.
+        counterText: showCounter ? null : '',
+        errorMaxLines: 3,
+        hintStyle: TextStyle(
+          color: colors.onSurface.withAlpha(90),
+          fontSize: 13,
+        ),
+        prefixIcon: StepIcon(icon, color: colors.primary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+          borderSide: BorderSide(color: colors.onSurface.withAlpha(60)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+          borderSide: BorderSide(color: colors.primary, width: 2),
+        ),
+      ),
+    );
+  }
+}
+
+/// Les lignes de contact a prevenir, avec leur bouton de retrait.
+///
+/// L'ETAT RESTE CHEZ L'ECRAN : la liste [contacts] et ses controleurs sont
+/// crees, remplis et liberes par l'ecran ; le retrait passe par [onRemove].
+class _LignesDeContact extends StatelessWidget {
+  const _LignesDeContact({required this.contacts, required this.onRemove});
+
+  /// Les lignes de contact saisies, possedees par l'ecran.
+  final List<_LigneContact> contacts;
+
+  /// Retire la ligne d'indice donne.
+  final void Function(int index) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < contacts.length; i++)
+          _LigneDeContact(
+            key: ValueKey('health-contact-$i'),
+            ligne: contacts[i],
+            index: i,
+            onRemove: onRemove,
+          ),
+      ],
+    );
+  }
+}
+
+/// Une ligne de contact : son nom, son numero, et le bouton qui la retire.
+class _LigneDeContact extends StatelessWidget {
+  const _LigneDeContact({
+    required this.ligne,
+    required this.index,
+    required this.onRemove,
+    super.key,
+  });
+
+  /// Les deux controleurs de la ligne, possedes par l'ecran.
+  final _LigneContact ligne;
+
+  /// L'indice de la ligne, qui nomme ses cles de test.
+  final int index;
+
+  /// Retire cette ligne.
+  final void Function(int index) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _ChampTexte(
+                  champKey: ValueKey('health-contact-name-$index'),
+                  controller: ligne.nomCtrl,
+                  label: t.health.contacts.name,
+                  hint: t.health.contacts.nameHint,
+                  icon: StepwaysIcons.monCompte,
+                  maxLength: kEmergencyContactNameMaxLength,
+                  showCounter: false,
+                  textCapitalization: TextCapitalization.words,
+                  // UN NOM SANS NUMERO NE SERT A RIEN : le secouriste lit un
+                  // prenom et n'a personne a appeler. On refuse
+                  // l'enregistrement plutot que d'enregistrer une promesse
+                  // vide.
+                  validator: (_) =>
+                      ligne.estVide || ligne.nomCtrl.text.trim().isNotEmpty
+                      ? null
+                      : t.health.contacts.errorName,
+                ),
+              ),
+              IconButton(
+                key: ValueKey('health-contact-remove-$index'),
+                tooltip: t.health.contacts.remove,
+                icon: const StepIcon(StepwaysIcons.croix),
+                onPressed: () => onRemove(index),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _ChampTexte(
+            champKey: ValueKey('health-contact-phone-$index'),
+            controller: ligne.telCtrl,
+            label: t.health.contacts.phone,
+            hint: t.health.contacts.phoneHint,
+            icon: StepwaysIcons.telephone,
+            maxLength: kEmergencyContactPhoneMaxLength,
+            showCounter: false,
+            keyboardType: TextInputType.phone,
+            validator: (_) =>
+                ligne.estVide || ligne.telCtrl.text.trim().isNotEmpty
+                ? null
+                : t.health.contacts.errorPhone,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Le bandeau de confiance en tete de la fiche (message de confiance, RF-2).
+class _HealthSafetyBanner extends StatelessWidget {
+  const _HealthSafetyBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: colors.primary.withAlpha(30),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: colors.primary.withAlpha(80)),
+      ),
+      child: Row(
+        children: [
+          StepIcon(StepwaysIcons.cadenas, color: colors.primary, size: 20),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              t.health.privacyBanner,
+              style: theme.textTheme.bodySmall?.copyWith(color: colors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Ce qui se dit AVANT la saisie : le prix de la promesse, le rappel de
+/// consentement, la carte du telephone et le mode d emploi.
+class _HealthIntro extends StatelessWidget {
+  const _HealthIntro({required this.onManageConsent});
+
+  /// Ouvre la gestion du consentement.
+  final VoidCallback onManageConsent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // LE PRIX DE LA PROMESSE, DIT ICI ET MAINTENANT (tache
+        // 612). Le bandeau du dessus promet que la fiche ne quitte
+        // pas le telephone ; celui-ci dit ce que cette promesse
+        // coute. Christophe l'a assume en majuscules : changer de
+        // telephone, c'est ressaisir son groupe sanguin, ses
+        // allergies, ses traitements. Ce prix doit etre lu AU
+        // MOMENT OU LA FICHE SE REMPLIT, pas decouvert le jour du
+        // changement d'appareil — et il est place AVANT les champs
+        // pour la meme raison que les conseils du LOT Q.
+        const _LocalOnlyPrice(),
+        const SizedBox(height: AppTheme.spacingMd),
+        // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
+        // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
+        // H1-a) : aucun envoi n'a lieu (local-only), on rappelle
+        // l'usage « te secourir » et on offre l'acces a l'ecran
+        // Confidentialite (finalite healthData) — pas de mur avant
+        // saisie. Textes Slang.
+        _ConsentReminder(onManage: onManageConsent),
+        const SizedBox(height: AppTheme.spacingMd),
+        // LA RECOPIE DANS LA FICHE DU TELEPHONE — ETAPE, PLUS
+        // CONSEIL (tache 630). C'est le SEUL chemin qui montre
+        // quelque chose a un secouriste sur iPhone. Elle est donc
+        // au-dessus des champs, pas noyee dans une liste.
+        const _PhoneCardStep(),
+        const SizedBox(height: AppTheme.spacingMd),
+        // CONSEILS D'USAGE TERRAIN + ACCUSE DE LECTURE (tache 568,
+        // LOT Q). Decision de Chris du 26/09, verbatim : « on ne
+        // demarre pas un trek sans avoir rempli sa fiche medicale
+        // ET LU LES CONSEILS pour qu'elle soit applicable sur le
+        // sentier ». Les conseils sont donc AVANT les champs : on
+        // apprend a s'en servir, puis on la remplit — et non
+        // l'inverse, d'autant que l'enregistrement depile l'ecran.
+        const _UsageAdvice(),
+      ],
+    );
+  }
+}
+
+/// Section [1] : qui vous etes.
+class _HealthIdentitySection extends StatelessWidget {
+  const _HealthIdentitySection({
+    required this.fullNameController,
+    required this.addressController,
+    required this.birthDate,
+    required this.onChoisirDate,
+    required this.onEffacerDate,
+  });
+
+  /// Le nom complet, possede par l'ecran.
+  final TextEditingController fullNameController;
+
+  /// L'adresse, possedee par l'ecran.
+  final TextEditingController addressController;
+
+  /// La date de naissance, au format ISO.
+  final String birthDate;
+
+  /// Ouvre le choix de la date.
+  final VoidCallback onChoisirDate;
+
+  /// Retire la date saisie.
+  final VoidCallback onEffacerDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ============================================ [1] QUI
+        _SectionTitle(
+          key: const ValueKey('health-section-identity'),
+          icon: StepwaysIcons.monCompte,
+          title: t.health.section.identity,
+          explanation: t.health.section.identityWhy,
+        ),
+        _ChampTexte(
+          champKey: const ValueKey('health-full-name-field'),
+          controller: fullNameController,
+          label: t.health.field.fullName,
+          hint: t.health.hint.fullName,
+          icon: StepwaysIcons.monCompte,
+          maxLines: 1,
+          maxLength: kHealthNameMaxLength,
+          showCounter: false,
+          textCapitalization: TextCapitalization.words,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampDateNaissance(
+          key: const ValueKey('health-birth-date-field'),
+          valeurIso: birthDate,
+          onChoisir: onChoisirDate,
+          onEffacer: onEffacerDate,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampTexte(
+          champKey: const ValueKey('health-address-field'),
+          controller: addressController,
+          label: t.health.field.address,
+          hint: t.health.hint.address,
+          icon: StepwaysIcons.ville,
+          maxLines: 2,
+          maxLength: kHealthAddressMaxLength,
+        ),
+      ],
+    );
+  }
+}
+
+/// Section [2] : qui prevenir.
+class _HealthContactsSection extends StatelessWidget {
+  const _HealthContactsSection({
+    required this.contacts,
+    required this.onRemoveContact,
+    required this.onAddContact,
+  });
+
+  /// Les lignes de contact, possedees par l'ecran.
+  final List<_LigneContact> contacts;
+
+  /// Retire la ligne d'indice donne.
+  final void Function(int index) onRemoveContact;
+
+  /// Ajoute une ligne vide.
+  final VoidCallback onAddContact;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // =================================== [2] QUI PREVENIR
+        _SectionTitle(
+          key: const ValueKey('health-section-contacts'),
+          icon: StepwaysIcons.telephone,
+          title: t.health.section.contacts,
+          explanation: t.health.section.contactsWhy,
+        ),
+        _LignesDeContact(contacts: contacts, onRemove: onRemoveContact),
+        if (contacts.length < kMaxPersonalEmergencyContacts)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: AppButton(
+              key: const ValueKey('health-add-contact'),
+              variant: AppButtonVariant.text,
+              icon: StepwaysIcons.plus,
+              iconSize: 18,
+              label: t.health.contacts.add,
+              isFullWidth: false,
+              onPressed: () => onAddContact(),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Section [3] : ce qui est vital.
+class _HealthMedicalSection extends StatelessWidget {
+  const _HealthMedicalSection({
+    required this.allergiesController,
+    required this.treatmentsController,
+    required this.conditionsController,
+    required this.bloodType,
+    required this.bloodTypeHerite,
+    required this.onBloodTypeChanged,
+    required this.organDonor,
+    required this.onOrganDonorChanged,
+  });
+
+  /// Les allergies, possedees par l'ecran.
+  final TextEditingController allergiesController;
+
+  /// Les traitements, possedes par l'ecran.
+  final TextEditingController treatmentsController;
+
+  /// Les antecedents, possedes par l'ecran.
+  final TextEditingController conditionsController;
+
+  /// Le groupe sanguin retenu.
+  final String? bloodType;
+
+  /// Le groupe sanguin herite d'une saisie libre.
+  final String bloodTypeHerite;
+
+  /// Le randonneur a choisi son groupe sanguin.
+  final ValueChanged<String?> onBloodTypeChanged;
+
+  /// La reponse au don d organes.
+  final String? organDonor;
+
+  /// Le randonneur a repondu au don d organes.
+  final ValueChanged<String?> onOrganDonorChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ========================================== [3] VITAL
+        _SectionTitle(
+          key: const ValueKey('health-section-vital'),
+          icon: StepwaysIcons.secours,
+          title: t.health.section.vital,
+          explanation: t.health.section.vitalWhy,
+        ),
+        // Texte libre medical : longueur BORNEE et VISIBLE
+        // (compteur), plus de champ sans fond (2000 caracteres
+        // illisibles en urgence).
+        _ChampTexte(
+          controller: allergiesController,
+          label: t.health.field.allergies,
+          hint: t.health.hint.allergies,
+          icon: StepwaysIcons.danger,
+          maxLines: 3,
+          maxLength: kHealthFreeTextMaxLength,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampTexte(
+          controller: treatmentsController,
+          label: t.health.field.treatments,
+          hint: t.health.hint.treatments,
+          icon: StepwaysIcons.ficheMedicale,
+          maxLines: 3,
+          maxLength: kHealthFreeTextMaxLength,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampTexte(
+          champKey: const ValueKey('health-conditions-field'),
+          controller: conditionsController,
+          label: t.health.field.conditions,
+          hint: t.health.hint.conditions,
+          icon: StepwaysIcons.historique,
+          maxLines: 3,
+          maxLength: kHealthFreeTextMaxLength,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        // GROUPE SANGUIN : LISTE FERMEE (tache 630). La saisie
+        // libre a disparu — une valeur inventee n'est plus
+        // seulement refusee, elle est IMPOSSIBLE.
+        _ChampGroupeSanguin(
+          key: const ValueKey('health-blood-type-field'),
+          valeur: bloodType,
+          valeurHeritee: bloodTypeHerite,
+          onChanged: onBloodTypeChanged,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampDonOrganes(
+          key: const ValueKey('health-organ-donor-field'),
+          valeur: organDonor,
+          onChanged: onOrganDonorChanged,
+        ),
+      ],
+    );
+  }
+}
+
+/// Section [4] : l administratif.
+class _HealthCardsSection extends StatelessWidget {
+  const _HealthCardsSection({
+    required this.doctorController,
+    required this.insuranceController,
+    required this.carteVitale,
+    required this.carteMutuelle,
+    required this.onPrendreCarte,
+    required this.onRetirerCarte,
+  });
+
+  /// Le medecin traitant, possede par l'ecran.
+  final TextEditingController doctorController;
+
+  /// L'assurance, possedee par l'ecran.
+  final TextEditingController insuranceController;
+
+  /// Le nom du fichier de la carte vitale.
+  final String carteVitale;
+
+  /// Le nom du fichier de la mutuelle.
+  final String carteMutuelle;
+
+  /// Photographie la carte nommee.
+  final void Function(String nom, ImageSource src) onPrendreCarte;
+
+  /// Retire la carte nommee.
+  final void Function(String nom) onRetirerCarte;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ================================== [4] ADMINISTRATIF
+        _SectionTitle(
+          key: const ValueKey('health-section-admin'),
+          icon: StepwaysIcons.questionnaire,
+          title: t.health.section.admin,
+          explanation: t.health.section.adminWhy,
+        ),
+        _ChampTexte(
+          controller: doctorController,
+          label: t.health.field.doctor,
+          hint: t.health.hint.doctor,
+          icon: StepwaysIcons.secours,
+          maxLines: 2,
+          maxLength: kHealthContactMaxLength,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _ChampTexte(
+          controller: insuranceController,
+          label: t.health.field.insurance,
+          hint: t.health.hint.insurance,
+          icon: StepwaysIcons.bouclier,
+          maxLines: 2,
+          maxLength: kHealthContactMaxLength,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _CarteTile(
+          key: const ValueKey('health-carte-vitale'),
+          titre: t.health.cards.vitale,
+          nomFichier: carteVitale,
+          onPrendre: (src) =>
+              onPrendreCarte(FicheMedicaleFichier.nomCarteVitale, src),
+          onRetirer: () => onRetirerCarte(FicheMedicaleFichier.nomCarteVitale),
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        _CarteTile(
+          key: const ValueKey('health-carte-mutuelle'),
+          titre: t.health.cards.mutuelle,
+          nomFichier: carteMutuelle,
+          onPrendre: (src) =>
+              onPrendreCarte(FicheMedicaleFichier.nomCarteMutuelle, src),
+          onRetirer: () =>
+              onRetirerCarte(FicheMedicaleFichier.nomCarteMutuelle),
+        ),
+      ],
+    );
+  }
+}
+
+/// Les deux gestes de fin de fiche : enregistrer, et effacer.
+class _HealthActions extends StatelessWidget {
+  const _HealthActions({
+    required this.isSaving,
+    required this.isDeleting,
+    required this.hasContent,
+    required this.onSave,
+    required this.onDelete,
+  });
+
+  /// Vrai pendant un enregistrement.
+  final bool isSaving;
+
+  /// Vrai pendant un effacement.
+  final bool isDeleting;
+
+  /// Vrai quand la fiche contient quelque chose.
+  final bool hasContent;
+
+  /// Enregistre la fiche.
+  final VoidCallback onSave;
+
+  /// Efface la fiche, apres confirmation.
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: AppTheme.spacingXl),
+        // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
+        // isLoading porte l'etat _isSaving (AppButton affiche son
+        // spinner et desactive l'action, cf. grammaire unifiee) ;
+        // minHeight 52 conserve la cible du CTA pleine largeur.
+        // key/Semantics(button+label) preserves au-dessus.
+        Semantics(
+          button: true,
+          label: t.health.a11y.saveButton,
+          child: AppButton(
+            isLoading: isSaving,
+            minHeight: 52,
+            icon: StepwaysIcons.enregistrer,
+            label: t.health.save,
+            onPressed: isSaving ? null : onSave,
+          ),
+        ),
+        // E57 (L6) : bouton « Effacer ma fiche » — branche sur le
+        // delete() DEJA present. Visible uniquement si la fiche
+        // contient quelque chose (rien a effacer sinon). Action
+        // DEFINITIVE annoncee aux lecteurs d'ecran, confirmation
+        // obligatoire (rouge).
+        if (hasContent) ...[
+          const SizedBox(height: AppTheme.spacingBase),
+          Semantics(
+            button: true,
+            label: t.health.delete.a11yButton,
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              tone: AppTheme.rougeUrgence,
+              isLoading: isDeleting,
+              minHeight: 52,
+              icon: StepwaysIcons.corbeille,
+              label: t.health.delete.button,
+              onPressed: isDeleting ? null : onDelete,
+            ),
+          ),
+        ],
+        const SizedBox(height: AppTheme.spacingBase),
+        Text(
+          t.health.emergencyHint,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colors.onSurface.withAlpha(140),
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
     );
   }
 }
