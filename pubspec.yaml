@@ -31,7 +31,15 @@ description: Moteur generique Flutter multi-sentiers
 # Christophe attendait ensemble — la descente des droits (631), la fiche
 # d urgence et d identite a 13 champs (630), et l identite visuelle : logo,
 # splash, icone de lancement et les 380 icones (632).
-version: 0.1.4+8
+#
+# TACHE 677 — 0.1.5+9. Le 8 est pris : c est le bundle livre le 30/09 a 21:39
+# (STEPWAYS-V0.1.4-8-202609302139-93796ac.aab), celui que Christophe a installe
+# et teste. Le numero monte donc a 9. Le NOM passe a 0.1.5 parce que le
+# perimetre change : ce bundle-ci porte l assainissement 645 complet — les
+# douze lots reunis sur claude/integration/645-assainissement, dont le 645-09b
+# qui supprime les douze defauts de pile de navigation sur douze et repare le
+# parcours Marc. QA Artemis verte (tache 676).
+version: 0.1.5+9
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
