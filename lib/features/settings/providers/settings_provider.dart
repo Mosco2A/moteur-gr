@@ -218,7 +218,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = AppSettings(
       language: AppLanguageValues.fromString(_service!.getLanguage()),
       distanceUnit: DistanceUnitValues.fromString(_service!.getDistanceUnit()),
-      temperatureUnit: state.temperatureUnit,
+      temperatureUnit: TemperatureUnitValues.fromString(
+        _service!.getTemperatureUnit(),
+      ),
       themeMode: AppThemeModeValues.fromString(_service!.getThemeMode()),
       cacheEnabled: _service!.getCacheEnabled(),
       cacheSizeMb: _service!.getCacheSizeMb(),
@@ -272,6 +274,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
   /// Met a jour l unite de temperature et persiste.
   void setTemperatureUnit(TemperatureUnit unit) {
     state = state.copyWith(temperatureUnit: unit);
+    _service?.setTemperatureUnit(unit);
   }
 
   /// Met a jour le mode de theme et persiste.

@@ -4,6 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsKeys {
   static const String language = 'settings_language';
   static const String distanceUnit = 'settings_distance_unit';
+
+  /// Unite de temperature ('celsius'|'fahrenheit'), defaut 'celsius'.
+  /// LOT 645-F1 : cle nouvelle, jamais ecrite avant ce lot (aucune migration).
+  static const String temperatureUnit = 'settings_temperature_unit';
+
   static const String themeMode = 'settings_theme_mode';
   static const String cacheEnabled = 'settings_cache_enabled';
   static const String cacheSizeMb = 'settings_cache_size_mb';
@@ -50,6 +55,16 @@ class SettingsService {
   /// Persiste l unite de distance.
   Future<bool> setDistanceUnit(String unit) =>
       _prefs.setString(SettingsKeys.distanceUnit, unit);
+
+  // --- Unites de temperature ---
+
+  /// Lit l unite de temperature sauvegardee (fallback: 'celsius').
+  String getTemperatureUnit() =>
+      _prefs.getString(SettingsKeys.temperatureUnit) ?? 'celsius';
+
+  /// Persiste l unite de temperature.
+  Future<bool> setTemperatureUnit(String unit) =>
+      _prefs.setString(SettingsKeys.temperatureUnit, unit);
 
   // --- Theme ---
 

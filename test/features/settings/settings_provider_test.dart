@@ -132,6 +132,58 @@ void main() {
     );
   });
 
+  // LOT 645-F1 (mesure Artemis 03/10) : l'unite de temperature etait gardee en
+  // memoire seulement -> le randonneur qui choisissait Fahrenheit le perdait a
+  // chaque redemarrage. Un NOUVEAU conteneur, avec le cache SharedPreferences
+  // remis a zero (le store reste), joue le relancement de l'application.
+  group('SettingsNotifier — unite de temperature apres redemarrage', () {
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    test('Fahrenheit choisi est relu par un nouveau conteneur', () async {
+      final avant = ProviderContainer();
+      avant.read(settingsProvider);
+      // Laisse _load() finir : le service doit etre pret avant l'ecriture.
+      await Future<void>.delayed(Duration.zero);
+
+      avant
+          .read(settingsProvider.notifier)
+          .setTemperatureUnit(TemperatureUnitValues.fahrenheit);
+      expect(
+        avant.read(settingsProvider).temperatureUnit,
+        TemperatureUnitValues.fahrenheit,
+      );
+      await Future<void>.delayed(Duration.zero);
+      avant.dispose();
+
+      // Redemarrage : plus aucun etat en memoire, seul le store persiste.
+      SharedPreferences.resetStatic();
+      final apres = ProviderContainer();
+      addTearDown(apres.dispose);
+
+      expect(
+        apres.read(settingsProvider).temperatureUnit,
+        TemperatureUnitValues.celsius,
+      );
+      await Future<void>.delayed(Duration.zero);
+      expect(
+        apres.read(settingsProvider).temperatureUnit,
+        TemperatureUnitValues.fahrenheit,
+      );
+    });
+
+    test('installation vierge : Celsius par defaut apres le load', () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      container.read(settingsProvider);
+      await Future<void>.delayed(Duration.zero);
+      expect(
+        container.read(settingsProvider).temperatureUnit,
+        TemperatureUnitValues.celsius,
+      );
+    });
+  });
+
   // Meme durcissement anti-dispose (garde `ref.mounted` apres l'await, comme
   // SkinNotifier / SW-SKIN-L7) pour tous les Notifier au MEME schema : build()
   // synchrone puis lecture async (SharedPreferences / service) qui ecrit `state`
