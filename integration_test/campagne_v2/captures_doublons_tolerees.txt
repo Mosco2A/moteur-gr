@@ -36,6 +36,31 @@ S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose dej
 
 # --- S2 Marc ---
 S2_Marc_02_apres_skip S2_Marc_03_mes_treks  # deux captures du MEME ecran : le scenario saute l onboarding (02), puis journalise l emplacement et capture de nouveau (03). Aucun geste entre les deux, donc aucune raison que l image change. Verifie a l oeil le 03/10/2026.
+S2_Marc_04_cockpit S2_Marc_06_retour_cockpit  # cockpit, visite de Faisabilite, retour au cockpit : le meme ecran dans le meme etat. MESURE (tache 676) : dans le jeu de reference du 03/10 ces deux captures different de 349 pixels, tous dans la barre d etat (boite x[124-140] y[52-79] = l horloge) et ZERO ailleurs. Elles n ont donc jamais montre autre chose que le meme ecran.
+
+# --- S1 Lea, suite (tache 676) — MESURE, ET CE QU ELLE APPREND SUR LE CONTROLE ---
+# Les trois paires ci-dessous ont ete mesurees dans TROIS runs, dont le jeu de
+# reference du 03/10 : elles y portent 75 a 363 pixels de difference, et ZERO
+# hors de la barre d etat. Autrement dit elles ont TOUJOURS montre le meme
+# contenu ; le 03/10 elles ne rougissaient pas uniquement parce que l HORLOGE de
+# l emulateur avait avance d une minute entre les deux captures.
+# CE QUE CA DIT DU CONTROLE : sa regle de doublon compare l image ENTIERE, donc
+# un pixel d horloge suffit a declarer « differentes » deux captures d un ecran
+# ou rien ne s est passe. Le controle est donc faillible DANS LES DEUX SENS, et
+# il le sera tant qu il comparera la barre d etat avec le reste. A reprendre en
+# lot outillage ; en attendant, ces paires sont declarees sur mesure, pas sur
+# impression.
+S1_Lea_07_apres_entrer S1_Lea_07c_cockpit  # entrer dans le sentier DEPOSE sur le cockpit ; la capture suivante est le meme ecran, sans geste entre les deux.
+S1_Lea_19b_cta_demarrer S1_Lea_19b2_apres_achat  # l achat ne change RIEN de visible sur cet ecran — vrai dans les trois runs, reference du 03/10 comprise. C est la face visible du defaut connu « CTA Demarrer absent de l arbre », pas un effet des lots 645-09b / 645-F1.
+S1_Lea_20_demarrage S1_Lea_21_carte  # le demarrage ouvre la carte : meme ecran.
+S1_Lea_20_demarrage S1_Lea_22_gps_tick_00  # suite de la meme famille : sans injection reelle de position, la carte ne bouge pas.
+S1_Lea_20_demarrage S1_Lea_22_gps_tick_01
+S1_Lea_20_demarrage S1_Lea_22_gps_tick_02
+S1_Lea_20_demarrage S1_Lea_22_gps_tick_03
+S1_Lea_21_carte S1_Lea_22_gps_tick_03
+S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_03
+S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_03
+S1_Lea_22_gps_tick_02 S1_Lea_22_gps_tick_03
 
 # --- Traversee 645-09 (tache 676) ---
 T645_09_15_reglages_rouvert T645_09_16_reglages_rouvert_bis  # la traversee ROUVRE deux fois le MEME ecran, sans un geste entre les deux, expres : la preuve qu elle porte est dans le JOURNAL (aucune deuxieme miette d entree), pas dans les pixels. Deux images identiques sont donc l attendu. Le 04/10 ce doublon n avait jamais rougi parce que les deux captures MANQUAIENT : le demon de captures mourait avant elles (corrige a la tache 676). Verifie a l oeil, meme ecran Reglages, 179 964 octets chacune.

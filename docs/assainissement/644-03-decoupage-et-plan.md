@@ -1524,6 +1524,105 @@ gate, et ou sont les captures.
 > **Reste à faire par Skynet en local** : la preuve sur émulateur (parcours
 > « Réglages puis retour » et traversée `traversee_645_09_test.dart`).
 
+> **QA DU 645-09b (04/10) — Artemis, tâche 676, sur l'émulateur.** Jonction
+> `a992e780` (sans avance rapide, **zéro conflit**, base commune `168cb8a2`),
+> tête d'intégration après le lot F1 : `4026665b`.
+>
+> **LE DÉFAUT DE LA PILE EST MORT — 0 sur 12.** Le matin du 04/10, la clé
+> `screen` nommait un écran caché **12 fois sur 12**. Rejoué à l'identique
+> (`integration_test/pile_676_douze_tours_test.dart`) : trois écrans
+> instrumentés dans `build` empilés et laissés vivants (détail d'étape, météo,
+> journal), puis **douze** fois « ouvrir les Réglages, redescendre ». Après
+> chaque empilement le journal local ne porte **que** `settings` ; après chaque
+> dépilement, **que** `journal`. Aucun écran caché ne parle : **0 défaut
+> sur 12**, et les Réglages sont montés aux 12 tours (sinon la mesure ne
+> vaudrait rien).
+>
+> **LA CORRECTION COUVRE BIEN LES DEUX FAMILLES, et c'est mesuré, pas supposé.**
+> Les 63 écrans se répartissent en **23 instrumentés dans `initState`** (21 dans
+> leur propre fichier, 2 dans un fichier `part` — carte et fiche médicale) et
+> **40 dans `build`**. Les **40** portent tous un `ConsumerWidget` : le filtre
+> `ModalRoute.isCurrentOf` s'applique donc à tous les quarante, sans exception.
+> Les 23 autres ne posent qu'une fois par montage, et leur **retour** au premier
+> plan est l'affaire de `ScreenEntryObserver` — qui voit tout, puisque
+> l'application n'a **qu'un seul `Navigator`** (plus aucun `ShellRoute` depuis le
+> big-bang).
+>
+> **MUTATIONS REJOUÉES EN LOCAL, sur une copie jetable** : filtre de visibilité
+> neutralisé → **2 tests rouges** (dont la pile sur l'application réelle,
+> « attendu journal, trouvé weather ») ; observateur neutralisé → **2 tests
+> rouges** (« retour au cockpit : la clé screen nomme encore un écran dépilé ») ;
+> retour anticipé du drapeau inerte retiré → le test d'inertie rougit en
+> nommant les 4 appels partis. Les trois réserves de la QA du matin sont donc
+> **fermées par des tests qui mordent**, et la quatrième (l'outil d'audit) est
+> vérifiée des deux côtés : avec le marqueur corrigé, la tête `6f747bf0` mesure
+> **0 écran instrumenté sur 63** (les 8 faux positifs ont disparu) et la tête du
+> lot **63 sur 63**.
+>
+> **GATE COMPLÈTE SUR LA TÊTE JOINTE** : formatage **1 175 fichiers** tous
+> conformes ; analyse **0 erreur, 0 avertissement** (7 513 infos, base du dépôt) ;
+> **4 086 tests passés, 2 ignorés, 0 échec** (4 075 + 11 des deux lots, compte
+> exact) ; audit **identique au matin** — 556 bloquants, 874 avertissements,
+> ECR-15 48, ECR-23 233, ECR-28 198, ECR-19 10, ECR-31 19, ECR-05 77, ECR-18 125,
+> VAC-01 0, OBS-01 0, en-têtes 100 %, observabilité 63/63. **Un seul écart au
+> critère « aucun fichier généré ne change »** : `dart run slang` réécrit la
+> ligne d'horodatage `Built on …` de `translations.g.dart`, **sans une
+> différence de contenu** (5 langues, 10 020 chaînes inchangées) ;
+> `build_runner` (707 sorties) ne touche rien.
+>
+> **PERSONAS ET TRAVERSÉE, sur installation vierge à chaque fois.**
+> **S1 Léa : 61 exigences tenues / 2 non tenues sur 63**, 553 s — l'attendu
+> exact, et les 2 sont **exactement** les deux défauts connus (CTA « Démarrer »
+> absent avant achat, qui est le comportement **voulu** par la règle produit, et
+> le diplôme après trek terminé, défaut A déjà tracé). **S2 Marc : 20 / 20, 0 non
+> tenue** (15 / 15 avant le lot F1). **Traversée `traversee_645_09_test.dart` :
+> verte**, 254 s, 16 marqueurs / 16 captures, retard médian 0 ms, contrôle des
+> captures **OK**. Les trois runs rendent 65, 20 et 16 captures pour autant de
+> marqueurs.
+>
+> **UNE ERREUR DE RECETTE, TROUVÉE ET CORRIGÉE EN COURS DE QA.** Le premier run
+> S1 a été joué avec `-Perm complet` alors que la recette documentée
+> (CAMPAGNE_V2 §12) impose `-Perm avant-plan` pour S1 et S2. Les permissions de
+> suivi de fond étant accordées d'avance, l'application saute son **pré-vol
+> expliqué** et l'exigence C2 — verte le 03/10 — rougissait : 57 / 3 sur 60. Ce
+> n'était pas une régression, c'était le paramètre. Rejoué avec `avant-plan` :
+> C2 redevient verte et le compte retombe sur 61 / 2.
+>
+> **CE QUE LA COMPARAISON DE CAPTURES APPREND VRAIMENT.** Le jeu du 03/10 n'est
+> **pas** comparable au pixel, et ce n'est pas le produit : il a été pris en
+> thème **clair** sur un profil **sale** (distance en miles), le mien en thème
+> **sombre** sur profil vierge — même mise en page, mêmes textes, mêmes
+> positions, seule la palette change (**96,9 %** de l'écran en médiane sur les
+> 20 captures S2). C'est exactement ce que la remise à zéro de E0 corrige.
+> Comparaison **valable**, entre deux runs à profil vierge et mode identique :
+> **12 captures sur 14 à ZÉRO pixel** hors barre d'état ; les 2 écarts sont la
+> météo (272 px, contenu distant) et l'écran de secours (132 px).
+> **ET UN DÉFAUT DU CONTRÔLE LUI-MÊME** : sa règle de doublon compare l'image
+> **entière**, donc un pixel d'horloge suffit à faire passer pour « différentes »
+> deux captures d'un écran où rien ne s'est passé. Quatre familles de doublons
+> ont été déclarées **sur mesure** (elles montrent le même contenu dans les trois
+> runs, référence du 03/10 comprise, où elles ne diffèrent que de 75 à 363 pixels
+> **tous dans la barre d'état**). À reprendre en lot outillage.
+>
+> **LOGCAT SUR TOUTE LA RECETTE** : 0 plantage, 0 ANR, 0 exception Dart non
+> rattrapée. **À NOTER** : contrairement aux mesures du matin (faites dans un
+> worktree temporaire, donc sans clés), ce worktree porte déjà un
+> `android/app/google-services.json` du 29/09 — non suivi, ignoré par git, **non
+> copié par la QA**. Firebase s'initialise donc pour de vrai pendant ces runs, et
+> l'observabilité est exercée **opérationnelle**, pas inerte : c'est l'état du
+> build livré, et c'est une preuve plus forte, pas plus faible.
+>
+> **CE QUI N'A PAS PU ÊTRE FAIT : LE BUNDLE DE PREUVE.** `ops_enforcer` refuse
+> la compilation d'un bundle en release et renvoie vers `gerer_qa('gate')` — qui
+> ne sait pas compiler (gate, analyser, tester, scanner, rapport). La seule
+> action du registre qui compile est `gerer_mep('deployer')`, **interdite à
+> Artemis** et qui livrerait en plus. Aucun chemin légitime n'existe donc pour un
+> agent QA qui doit seulement **prouver** que le bundle compile : le garde n'a
+> **pas** été contourné, une plainte est déposée (`data/hook_plaintes.json`) avec
+> la proposition d'une action `gerer_qa('compiler')` qui compile sans copier.
+> Repère : le bundle du matin, sur le même code **moins** les deux lots,
+> compilait en 274 s pour 70 917 769 octets.
+
 | Champ | Contenu |
 |---|---|
 | **C1 Réf** | 645-09 |
@@ -1621,6 +1720,72 @@ RAPPORT ATTENDU : ecrans instrumentes, nombre de cles distinctes posees,
 resultat de T1 et T2, resultat des 4 commandes de gate et du demarrage a
 froid.
 ```
+
+---
+
+### Lot 645-F1 — Deux défauts visibles, hors plan
+
+> **Hors découpage : ce lot ne vient pas de l'audit 644, il vient de ce que
+> Christophe voit.** Décision du 04/10/2026, 10 h 28, verbatim « A » (mémoire
+> `#101128`) : *build 9 ce soir*. Branche
+> `claude/fix/645-f1-defauts-visibles` (`3c2aec0e`, 2 commits), jointe à
+> l'intégration le 04/10 (`4026665b`). Cinq fichiers, tous dans les zones
+> attendues : `lib/features/settings/` (2), `test/` (2),
+> `integration_test/` (1).
+
+> **CE QUI A CHANGÉ.**
+> 1. **L'unité de température survit au redémarrage.** Elle vivait en mémoire
+>    seule : `_load()` recopiait `state.temperatureUnit` au lieu de lire le
+>    magasin, et `setTemperatureUnit` n'écrivait nulle part. Le randonneur qui
+>    choisissait Fahrenheit le reperdait à chaque démarrage. Clé nouvelle
+>    `settings_temperature_unit`, repli `celsius`, lue dans `_load` et écrite
+>    par `setTemperatureUnit` — comme la distance, à l'identique.
+> 2. **Le parcours persona S2 Marc ouvre vraiment la gestion du consentement.**
+>    L'exigence `#P38` se déclarait couverte sans rien ouvrir : le libellé
+>    « Confidentialité et consentement » est porté **trois fois** (en-tête de
+>    section, titre de la tuile, titre de l'écran `/consent`), et
+>    `find.text(...)` tombait sur l'en-tête, qui ne se tape pas. Le parcours
+>    tape désormais la **tuile** (`find.widgetWithText(ListTile, …)`) et prouve
+>    l'arrivée par ce qui n'existe que là : `ConsentSettingsScreen` monté **et**
+>    `/consent` route courante. La bascule d'une finalité (partage social) est
+>    jouée dans les deux sens, et Marc ressort avec le consentement qu'il avait
+>    en entrant.
+
+> **LES DEUX PREUVES, MESURÉES LE 04/10 (tâche 676).**
+> * **Température.** Test de redémarrage rouge avant / vert après
+>   (`settings_provider_test.dart`, conteneur neuf après
+>   `SharedPreferences.resetStatic()`), plus 3 tests de service (persistance,
+>   installation vierge, valeur inconnue → celsius). **Sur l'émulateur** : un
+>   vrai geste sur le bouton °F écrit `fahrenheit` dans le magasin du
+>   téléphone, relu par une poignée `SharedPreferences` neuve (3 exigences
+>   tenues sur 3).
+> * **Parcours Marc.** **20 exigences tenues sur 20, 0 non tenue**, sur
+>   installation vierge — contre 15 sur 15 avant le lot : les 5 exigences
+>   ajoutées tiennent toutes. **La preuve par l'image** : le 03/10 les deux
+>   captures `S2E_38_consent` et `S2E_38b_consent_bascule` portaient le **même**
+>   md5 (`088e5cf2…`), signature du mensonge — c'est pour cela que
+>   `captures_doublons_tolerees.txt` déclare ce doublon **non toléré, expres**.
+>   Le 04/10, les deux md5 diffèrent.
+
+> **DEUX RÉSERVES, À TRANCHER PAR CHRISTOPHE.**
+> * **La clé n'est pas tout à fait neuve, et une valeur héritée coûterait TOUS
+>   les réglages.** Le build du 26/05/2026 (`db71ad1e`) écrivait déjà
+>   `settings_temperature_unit`, mais **en entier**
+>   (`setInt(…, unit.index)`) ; le code a disparu le 01/06 (`7dbfe5dd`).
+>   Mesuré : une valeur entière sous cette clé fait **lever** `getString`
+>   (`type 'int' is not a subtype of type 'String?'`), l'exception traverse
+>   `_load()` — qui n'a pas de filet — et l'application repart avec **langue,
+>   thème, unités et cache à leur valeur par défaut**, en silence.
+>   **Pourquoi ce n'est pas bloquant aujourd'hui** : StepWays n'est arrivée sur
+>   un vrai appareil que le **29/09/2026** (mémoire `#100794`), bien après le
+>   01/06 — aucune installation de la flotte ne peut porter cette valeur.
+>   À corriger par une lecture gardée, au prochain lot d'assainissement.
+> * **Le choix ne change rien à ce que le randonneur voit.** Aucun écran
+>   n'affiche de température avec son unité : la carte météo du cockpit et le
+>   bandeau de conditions rendent `$min° / $max°` (sans lettre), l'alerte
+>   incendie code `°C` en dur, et personne ne lit `settings.temperatureUnit`
+>   hors de l'écran Réglages lui-même. Le réglage persiste donc — et ne fait
+>   rien.
 
 ---
 
