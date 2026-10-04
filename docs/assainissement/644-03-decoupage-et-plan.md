@@ -1301,18 +1301,114 @@ gate, et ou sont les captures.
 
 ---
 
-### 645-09 — Poser l'observabilité sur les 54 écrans nus
+### 645-09 — Poser l'observabilité sur les 63 écrans nus
+
+> **FAITS CORRIGÉS APRÈS LE LOT — mesuré par Artemis le 04/10/2026 (tâche 669).**
+> Les lignes C2, C3 et C8 ci-dessous, et le bloc PROMPT 645-09, gardent leurs
+> chiffres d'origine : ils sont l'archive de ce qui a été commandé. Les faits
+> justes sont ici.
+>
+> **LE POINT DE DÉPART DE CETTE FICHE ÉTAIT FAUX**, et il faut le dire parce que
+> tout le dimensionnement du lot en dépendait. Point de départ réel :
+> **ZÉRO écran instrumenté sur 63**, pas 9 sur 63 (14,3 %). Les « écrans déjà
+> équipés » étaient un **faux positif de la mesure** : la liste de marqueurs de
+> `tool/audit_global.py` contient `log(`, qui est une **sous-chaîne de
+> `AlertDialog(`**. Mesure refaite sur la tête 6f747bf0 : l'audit comptait **8**
+> écrans équipés (12,7 %, et non 9 — le 9e avait quitté la mesure avec le
+> renommage du 645-07), et les 8 sont expliqués un par un : 4 fois
+> `AlertDialog(`, 2 fois `_showAddNoteDialog(` / `_showResetDialog(`, 1 fois
+> `_goToCatalog();` — et 1 fois `ErrorHandler.log(`, un vrai appel de journal,
+> mais pas une miette d'entrée d'écran. **Aucun des 63 écrans ne disait son nom
+> à un rapport de plantage.**
+>
+> **CE QUI A ÉTÉ FAIT : 63 écrans sur 63**, et non 54. **23 miettes dans
+> `initState`** (écrans à état), **40 en première instruction de `build`**
+> (écrans sans état, où le service déduplique, si bien que les deux
+> emplacements rendent la même chose : une miette par entrée, pas par
+> reconstruction). La clé `trail` est alimentée par **23 écrans**, la clé
+> `stage` par **4** : `trail_stage_detail`, `trek_stage_detail`,
+> `accommodation_detail`, `weather` — les seuls qui portent déjà un numéro
+> d'étape en champ, donc **sans une seule lecture de provider nouvelle**. La
+> carte, elle, n'alimente volontairement pas `stage` : le numéro d'étape vit
+> dans un provider, et le lire à l'entrée le ferait naître une frame plus tôt
+> qu'aujourd'hui.
+>
+> **DEUX MIETTES SONT POSÉES À LA MAIN**, la carte et la fiche médicale, parce
+> que le 645-06 a scindé ces deux écrans : la classe et l'état vivent dans un
+> fichier `part` (`map_screen_view.dart`, `health_info_screen_etat.dart`) alors
+> que l'audit compte comme « écran » le fichier racine. La constante est donc
+> **déclarée dans la racine**, où la mesure la voit, et **l'appel posé dans le
+> morceau qui porte l'état**, où l'écran entre vraiment.
+>
+> **ANONYMISATION DE `trail`, EN UNE PHRASE** : la valeur part en **SHA-256
+> hexadécimal de ses octets UTF-8** (`AnalyticsService.anonymize`), et la
+> transformation est appliquée **à l'intérieur de `enterScreen`**, pas chez
+> l'appelant — aucun des 23 écrans ne peut donc poser un identifiant en clair,
+> même par erreur, et les 23 passent tous un champ `trailId`, jamais un titre.
+> La clé `stage` ne porte qu'un entier, jamais un nom de lieu, et elle est
+> bornée à 64 caractères. La fiche médicale ne transmet **que son nom d'écran** :
+> ni donnée de santé, ni texte saisi, ni identifiant de profil.
+>
+> **25 TESTS AJOUTÉS** dans 4 fichiers — 4050 cas à la tête 6f747bf0,
+> **4075 passés, 2 ignorés, 0 échec** après le lot :
+> `screen_entry_test.dart` (12), `screen_breadcrumb_test.dart` (6),
+> `observabilite_des_ecrans_645_test.dart` (6, la **garde OBS-01**),
+> `observabilite_inerte_645_test.dart` (1, balayage des routes du vrai routeur
+> avec un puits qui lève à chaque geste).
+>
+> **LA GARDE OBS-01 EST VIVANTE — 3 MUTATIONS REJOUÉES EN LOCAL, ROUGES LES
+> TROIS FOIS** : miette retirée de `weather_screen`, 2 tests rouges ;
+> `checklist_screen` qui nomme son voisin, rouge avec « attendu checklist,
+> trouve tips » ; miette du hub déplacée de `initState` vers `build`, rouge avec
+> « hors de initState alors que l écran a un etat ». Plafond à **0 écran nu**,
+> marge zéro.
+>
+> **ECR-18 (119 → 125), EXPLICATION EXHAUSTIVE** — et ce n'est pas du « bruit de
+> numéros de lignes » : 8 blocs répétés apparaissent, 2 disparaissent, et **les
+> 8 sont des blocs de lignes d'`import`**, parce que le nouvel
+> `import screen_entry.dart` crée des en-têtes identiques dans 63 fichiers.
+> **Aucun** des 8 ne contient la miette : la mesure ECR-18 ignore les
+> commentaires, et la ligne d'appel diffère par le nom d'écran.
+>
+> **UNE LIGNE À CORRIGER DANS L'AUDIT, ET PAS DANS CE LOT** :
+> `tool/audit_global.py`, constante `APPELS_CRASHLYTICS`, contient `log(`. Le
+> lot ne l'a pas touchée — la mesure passe bien à 63/63, mais grâce au marqueur
+> `Breadcrumb`, pendant que `log(` continue de compter tout `AlertDialog(`.
+> À reprendre dans un lot outillage avec un marqueur précis
+> (`observeScreenEntry(`). Même famille, trouvée au passage : ECR-05 monte de 75
+> à 77, et les deux sont le **même jeton `walletRecharge`**, faux positif du mot
+> `charge` cherché en sous-chaîne.
+>
+> **DEUX RÉSERVES DE DOCUMENTATION, À REPRENDRE** (zéro effet à l'exécution) :
+> dans `health_info_screen.dart`, la constante `_breadcrumb` a été insérée
+> **entre le commentaire de doc et la classe**, si bien que la phrase « les
+> données ne quittent JAMAIS le téléphone » documente désormais une constante
+> privée et que `HealthInfoScreen` n'a plus de documentation ; dans
+> `trek_feasibility_screen.dart`, le pavé qui expliquait la remontée des deux
+> observations **en tête de `build`** documente maintenant `initState`.
+>
+> **UN DÉFAUT DE VALEUR** : `accommodation_detail_screen.dart` passe
+> `stage: '$stageNumber'` alors que le champ est `int?`. Quand il est absent, la
+> clé vaudra la chaîne `"null"` pendant que l'écran affiche l'étape 1
+> (`stageNumber ?? 1`).
+>
+> **LE « JOURNAL LOCAL » N'EST PAS UN FICHIER** : c'est la console (`logger`
+> 2.7.0, `ConsoleOutput` vers `print`, donc logcat), d'où **ni taille maximale
+> ni rotation à prévoir sur le téléphone** — et, filtre `DevelopmentFilter`
+> oblige, **rien n'est écrit en build release**. La trace `screen:<nom>` est donc
+> une preuve de recette, en build de debug, pas un journal embarqué. Elle est
+> vérifiée : **1 656 lignes `screen:` émises pendant `flutter test`**.
 
 | Champ | Contenu |
 |---|---|
 | **C1 Réf** | 645-09 |
-| **C2 Fichier:ligne** | `lib/core/analytics/analytics_service.dart` (point central) + les 54 écrans sans miette. Les 9 déjà équipés sont la référence de forme : `gpx_import_screen.dart`, `profile_screen.dart`, `checklist_screen.dart`, `consent_settings_screen.dart`, `journal_screen.dart`, `cartes_hors_ligne_screen.dart`, `onboarding_screen.dart`, `trail_planning_screen.dart`, `health_info_screen.dart` |
-| **C3 Description** | Poser l'instrumentation par **un seul** service, pas par 54 appels dispersés. Convention : **3 clés** (`screen`, `trail`, `stage`) dont la valeur change, pas 63 clés. Une miette courte `screen:<nom>` à l'entrée de chaque écran |
+| **C2 Fichier:ligne** | *(commandé)* `lib/core/analytics/analytics_service.dart` (point central) + les 54 écrans sans miette. ~~Les 9 déjà équipés sont la référence de forme~~ — *(mesuré : il n'y en avait **aucun**. La liste citée — `gpx_import_screen.dart`, `profile_screen.dart`, `checklist_screen.dart`, `consent_settings_screen.dart`, `journal_screen.dart`, `cartes_hors_ligne_screen.dart`, `onboarding_screen.dart`, `trail_planning_screen.dart`, `health_info_screen.dart` — est le relevé du faux positif `log(` ; `cartes_hors_ligne_screen.dart` n'existe même plus, renommé `offline_maps_screen.dart` par le 645-07. Livré : le service + `screen_breadcrumb.dart` (catalogue fermé de 63 noms) + `screen_entry.dart` (le raccord) + **les 63 écrans**)* |
+| **C3 Description** | Poser l'instrumentation par **un seul** service, pas par 54 *(mesuré : **63**)* appels dispersés. Convention : **3 clés** (`screen`, `trail`, `stage`) dont la valeur change, pas 63 clés — *tenue : 4 clés distinctes dans tout le dépôt, les 3 du lot plus `consentement_sauvegarde` de la tâche 637, sur 64 permises*. Une miette courte `screen:<nom>` à l'entrée de chaque écran |
 | **C4 Agent** | Hephaistos |
 | **C5 Prompt complet** | *(ci-dessous, bloc 645-09)* |
 | **C6 Branche** | `claude/chore/645-09-observabilite` |
 | **C7 Commit** | un commit pour le service, puis un commit **par groupe de 10 écrans** : `feat(645-09): miettes d observabilite, groupe <N>` |
-| **C8 Test** | `flutter test` → 4002 passés. **Deux tests nouveaux** : (a) avec un service d'observabilité en échec, chaque écran s'affiche quand même ; (b) le nombre de **clés distinctes** posées par l'application est **≤ 64** |
+| **C8 Test** | *(commandé)* `flutter test` → 4002 passés. **Deux tests nouveaux** : (a) avec un service d'observabilité en échec, chaque écran s'affiche quand même ; (b) le nombre de **clés distinctes** posées par l'application est **≤ 64**. — *(mesuré le 04/10 : **4075 passés, 2 ignorés, 0 échec**, et **25 tests** dans 4 fichiers, pas 2 ; les deux tests commandés existent bien, plus la garde OBS-01 et le balayage des routes réelles)* |
 | **C9 QA** | Un seul point d'entrée. Instrumentation **inerte** quand Firebase est indisponible — ce qui est le cas 100 % du temps aujourd'hui (`analytics_service.dart:209-213` rend `disabled()`). Aucun écran ne ralentit |
 | **C10 Smoke** | Démarrage à froid sur émulateur, Firebase indisponible : aucun écran ne ralentit ni n'échoue |
 | **C11 Rollback** | `git revert <sha>`. Tag `avant-645-09` |
