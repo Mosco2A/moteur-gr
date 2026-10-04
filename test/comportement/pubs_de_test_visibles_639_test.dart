@@ -35,7 +35,7 @@ import 'package:moteur_gr/core/error/error_nets.dart';
 ///   4. un echec du consentement UMP remonte dans Crashlytics, et plus seulement
 ///      dans le journal local du telephone.
 void main() {
-  String source(String chemin) => _sourceAvecSesParts(chemin);
+  String source(String chemin) => File(chemin).readAsStringSync();
 
   group('le mode pubs de test ne peut pas atteindre la production', () {
     test('il est faux par defaut (aucun dart-define dans cette suite)', () {
@@ -67,7 +67,9 @@ void main() {
     test('elle vit dans la SOURCE UNIQUE, pas dans un ecran', () {
       // Une derogation recopiee dans les ecrans finirait par differer de la
       // banniere : c'est la faute que la regle d'or a deja payee deux fois.
-      final service = source('lib/core/services/monetization_service.dart');
+      final service = _sourceAvecSesVoisines(
+        'lib/core/services/monetization_service.dart',
+      );
       expect(
         service,
         contains('if (AdConfig.testAdsForced) return isSubscriberActive();'),
@@ -94,7 +96,9 @@ void main() {
       // C'est le seul des trois etats qui se PAIE en argent tous les mois. Le
       // priver de ce qu'il paie serait la mauvaise derogation — et c'est aussi ce
       // qui permet de VERIFIER que l'abonnement eteint bien la publicite.
-      final service = source('lib/core/services/monetization_service.dart');
+      final service = _sourceAvecSesVoisines(
+        'lib/core/services/monetization_service.dart',
+      );
       final derogation = service.substring(
         service.indexOf('if (AdConfig.testAdsForced)'),
       );
@@ -287,24 +291,35 @@ void main() {
   });
 }
 
-/// Lit une bibliotheque de `lib/` ET ses fichiers `part`, dans l ordre des
-/// directives.
+/// Lit un fichier de `lib/` ET les bibliotheques du MEME dossier qu'il importe
+/// ou re-exporte, de proche en proche, dans l ordre des directives.
 ///
-/// LOT 645-06, VAGUE 2 : les plus gros fichiers de `lib/` ont ete scindes en
-/// `part` du MEME dossier. Le code mesure ici est le meme, au caractere pres —
-/// il vit juste dans plusieurs fichiers d une seule bibliotheque. On les
-/// recolle donc dans l ordre declare, ce qui preserve aussi l ordre des lignes
-/// dont dependent les mesures de position. Seule la LECTURE change ; aucune
-/// attente de ces tests n a ete touchee.
-String _sourceAvecSesParts(String chemin) {
-  final racine = File(chemin).readAsStringSync();
+/// LOT 645-06b : les plus gros fichiers de `lib/` ne sont plus des `part`
+/// (regle 12) mais de vraies bibliotheques voisines, chacune avec ses imports.
+/// Le code mesure ici est le meme, au caractere pres — il vit juste dans
+/// plusieurs fichiers du meme dossier. On les recolle donc, l ecran d abord,
+/// ce qui preserve l ordre des lignes a l interieur de chaque fichier, dont
+/// dependent les mesures de position. Seule la LECTURE change ; aucune attente
+/// de ces tests n a ete touchee.
+String _sourceAvecSesVoisines(String chemin) {
   final dossier = chemin.substring(0, chemin.lastIndexOf('/'));
-  final parts = RegExp(r"^part '([^']+)';", multiLine: true)
-      .allMatches(racine)
-      .map((m) => m.group(1)!)
-      .where((n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'));
-  return [
-    racine,
-    for (final n in parts) File('$dossier/$n').readAsStringSync(),
-  ].join('\n');
+  final lus = <String>[];
+  void lire(String fichier) {
+    if (lus.contains(fichier)) return;
+    lus.add(fichier);
+    final source = File(fichier).readAsStringSync();
+    final voisines =
+        RegExp(r"^(?:import|export) '([a-z0-9_]+\.dart)'", multiLine: true)
+            .allMatches(source)
+            .map((m) => '$dossier/${m.group(1)}')
+            .where(
+              (n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'),
+            );
+    for (final n in voisines) {
+      lire(n);
+    }
+  }
+
+  lire(chemin);
+  return [for (final f in lus) File(f).readAsStringSync()].join('\n');
 }

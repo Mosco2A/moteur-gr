@@ -212,13 +212,15 @@ void main() {
       // monetisation — racine et morceaux — et non plus le seul fichier qui
       // la portait en entier. L attente, elle, ne bouge pas : c est toujours
       // « aucun AUTRE fichier de lib/ ne consulte ces drapeaux ».
+      // LOT 645-06b : plus de `part` (regle 12) ; le service est une facade
+      // composee de bibliotheques voisines `lib/core/services/monetization_*`
+      // (les drapeaux vivent dans `monetization_access.dart`). On ecarte donc
+      // ces fichiers-la, et eux seuls.
       final consommateurs = fichiersDeLib()
           .where(
             (p) => !p
                 .replaceAll(r'\', '/')
-                .split('/')
-                .last
-                .startsWith('monetization_service'),
+                .contains('lib/core/services/monetization_'),
           )
           .where((p) {
             final c = lireCodeSeul(p);
