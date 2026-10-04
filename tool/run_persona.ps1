@@ -15,6 +15,36 @@
 #      run si un marqueur n'a pas sa capture, si deux captures d'ecrans
 #      differents sont identiques, ou si une capture a ete lancee trop tard.
 #
+# CE QUI A ETE AJOUTE A LA TACHE 676, ET POURQUOI (memoire #101121).
+# Le 04/10, deux defauts de LA RECETTE — pas du produit — ont fait conclure de
+# travers sur un persona sain :
+#   * PROFIL SALE. La recette ne remettait JAMAIS l'application a zero. Rejoue
+#     apres S1 Lea, le scenario S2 Marc partait d'un profil deja rempli par Lea
+#     et tombait a 2 exigences tenues sur 11, premier echec « carte Faisabilite
+#     inatteignable ». Les 15/15 du 645-07 n'etaient donc reproductibles qu'avec
+#     un nettoyage fait a la main, c'est-a-dire oubliable.
+#     CE QU'ON FAIT : DESINSTALLATION du paquet avant le run (puis reinstallation
+#     par `flutter test`, qui installe l'application de toute facon), et CONTROLE
+#     que le paquet est bien absent de l'appareil. On desinstalle plutot que
+#     `pm clear` parce que la desinstallation emporte AUSSI les dossiers
+#     applicatifs du stockage externe (cartes hors ligne, fichiers partages) et
+#     que son resultat se verifie d'une seule question, « le paquet est-il encore
+#     la ? », qui ne peut pas mentir. `pm clear` reste en REPLI si la
+#     desinstallation est impossible ; si aucun des deux n'aboutit, le run est
+#     REFUSE — un persona joue sur un profil sale ne prouve rien.
+#   * DEMON DE CAPTURES MORT EN SILENCE. Le demon imprimait « en ecoute » puis
+#     mourait sans un octet d'erreur : le run allait au bout et rendait 18
+#     marqueurs sur 65 sans image. Le controle de fin de run l'attrapait bien,
+#     mais APRES dix minutes de persona.
+#     CE QU'ON FAIT : une POIGNEE DE MAIN avant le premier marqueur du test. On
+#     ecrit un marqueur de test dans le journal et on exige SON image (non vide)
+#     dans le budget `-PoigneeTimeoutS`. Pas d'image, ou processus sorti = le run
+#     echoue IMMEDIATEMENT, avec la queue du journal du demon. L'image de la
+#     poignee de main et sa ligne de manifeste sont effacees ensuite : le
+#     controle de fin de run ne voit que le run.
+#     `-DemonMortPourTest` tue le demon juste apres son lancement pour reproduire
+#     le mode d'echec a volonte (comme `-Legacy` pour la derive des captures).
+#
 # LE DEFAUT DE LA RECETTE, ET CE QU'ON EN A FAIT (tache 665, memoire #101082).
 # Au 645-05b, des captures persona montraient L'ECRAN SUIVANT celui demande, et
 # un run a rendu 0 capture pour 65 marqueurs — sans qu'aucun garde-fou ne
@@ -78,7 +108,16 @@ param(
   # Paires de captures legitimement identiques, declarees une par une.
   [string]$Tolerances = 'integration_test/campagne_v2/captures_doublons_tolerees.txt',
   # Reproduit l'ancienne recette (pipeline PowerShell + demon sequentiel).
-  [switch]$Legacy
+  [switch]$Legacy,
+  # 6. REMISE A ZERO DE L'APPLICATION (tache 676). Par defaut le run part d'un
+  # profil vierge. L'option ne sert qu'a enquetter sur un etat deja installe.
+  [switch]$SansRemiseAZero,
+  # 7. POIGNEE DE MAIN AVEC LE DEMON DE CAPTURES (tache 676). Budget d'attente
+  # de la premiere image avant de refuser le run.
+  [int]$PoigneeTimeoutS = 30,
+  # Tue le demon de captures juste apres son lancement : reproduit le mode
+  # d'echec du 04/10 pour prouver que la poignee de main l'attrape.
+  [switch]$DemonMortPourTest
 )
 
 $ErrorActionPreference = 'Continue'
@@ -112,6 +151,69 @@ New-Item -ItemType File $log | Out-Null
 $pkg = 'com.only1cent.stepways'
 $procs = @()
 
+# 6. L'APPLICATION REPART D'UN PROFIL VIERGE (tache 676, memoire #101121).
+function Test-PaquetInstalle([string]$serial, [string]$paquet) {
+  $lignes = @(& adb -s $serial shell pm list packages $paquet)
+  foreach ($l in $lignes) { if ("$l".Trim() -eq "package:$paquet") { return $true } }
+  return $false
+}
+
+if ($SansRemiseAZero) {
+  Write-Output "[$Tag] ATTENTION : remise a zero DESACTIVEE (-SansRemiseAZero). Le profil peut etre celui laisse par un autre persona - un echec ne prouvera rien."
+}
+else {
+  $installeAvant = Test-PaquetInstalle $Serial $pkg
+  Write-Output "[$Tag] remise a zero : paquet $pkg installe avant le run = $installeAvant"
+  if ($installeAvant) {
+    & adb -s $Serial shell am force-stop $pkg | Out-Null
+    $sortieDesinstall = @(& adb -s $Serial uninstall $pkg)
+    Write-Output "[$Tag] desinstallation : $($sortieDesinstall -join ' ')"
+  }
+  if (Test-PaquetInstalle $Serial $pkg) {
+    Write-Output "[$Tag] desinstallation sans effet - repli sur pm clear"
+    $sortieClear = @(& adb -s $Serial shell pm clear $pkg)
+    Write-Output "[$Tag] pm clear : $($sortieClear -join ' ')"
+    $clearOk = $false
+    foreach ($l in $sortieClear) { if ("$l".Trim() -eq 'Success') { $clearOk = $true } }
+    if (-not $clearOk) {
+      Write-Output "[$Tag] PROFIL NON VIERGE - ni la desinstallation ni pm clear n ont abouti. RUN REFUSE : un persona joue sur un profil sale ne prouve rien."
+      exit 66
+    }
+    Write-Output "[$Tag] profil remis a zero par pm clear (le paquet reste installe, ses donnees sont effacees)"
+  }
+  else {
+    Write-Output "[$Tag] profil vierge GARANTI : le paquet est absent de l appareil, flutter test va le reinstaller"
+  }
+}
+
+# ECRITURE PARTAGEE DANS LE JOURNAL (tache 676). Le demon de captures tient le
+# journal OUVERT EN LECTURE pendant tout le run : `Add-Content` et
+# `[IO.File]::WriteAllText` echouent alors avec « fichier en cours d'utilisation
+# par un autre processus » (mesure du 04/10). On passe donc par un FileStream qui
+# declare explicitement FileShare::ReadWrite, seul mode qui cohabite avec le
+# lecteur Python.
+function Add-Marqueur([string]$chemin, [string]$ligne) {
+  try {
+    $fs = [System.IO.File]::Open($chemin, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+    $octets = [System.Text.Encoding]::UTF8.GetBytes($ligne + "`r`n")
+    $fs.Write($octets, 0, $octets.Length)
+    $fs.Flush()
+    $fs.Close()
+    return $true
+  }
+  catch { return $false }
+}
+
+function Set-TailleZero([string]$chemin) {
+  try {
+    $fs = [System.IO.File]::Open($chemin, [System.IO.FileMode]::OpenOrCreate, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+    $fs.SetLength(0)
+    $fs.Close()
+    return $true
+  }
+  catch { return $false }
+}
+
 function Start-Demon([string]$name, [string[]]$argv) {
   $out = Join-Path $logDir "$Tag.$name.log"
   $err = Join-Path $logDir "$Tag.$name.err.log"
@@ -122,13 +224,72 @@ function Start-Demon([string]$name, [string[]]$argv) {
 $manifeste = Join-Path $shotDir '_shots.jsonl'
 $nbOuvriers = if ($Legacy) { 1 } else { $Workers }
 Write-Output "[$Tag] demons hote (perm=$Perm, duree=$Duree s, captures=$shotDir, ouvriers=$nbOuvriers, legacy=$($Legacy.IsPresent))"
-$procs += Start-Demon 'shot' @('tool/persona_shot_daemon.py', $Serial, $shotDir, '--logfile', $log, '--workers', "$nbOuvriers", '--manifest', $manifeste)
+$procShot = Start-Demon 'shot' @('tool/persona_shot_daemon.py', $Serial, $shotDir, '--logfile', $log, '--workers', "$nbOuvriers", '--manifest', $manifeste)
+$procs += $procShot
 $procs += Start-Demon 'dismiss' @('tool/persona_dialog_dismisser.py', $Serial, "$Duree")
 $permArgs = @('tool/persona_perm_granter.py', $Serial, $pkg, "$Duree")
 if ($Perm -eq 'avant-plan') { $permArgs += '--avant-plan' }
 $procs += Start-Demon 'perm' $permArgs
 
-Start-Sleep -Seconds 3
+# 7. LE DEMON DE CAPTURES EST CONTROLE VIVANT AVANT LE PREMIER MARQUEUR DU TEST.
+if ($DemonMortPourTest) {
+  Write-Output "[$Tag] -DemonMortPourTest : le demon de captures est tue tout de suite (reproduction du mode d echec du 04/10)"
+  if ($procShot -and -not $procShot.HasExited) { Stop-Process -Id $procShot.Id -Force -ErrorAction SilentlyContinue }
+}
+
+$shotLog = Join-Path $logDir "$Tag.shot.log"
+$shotErr = Join-Path $logDir "$Tag.shot.err.log"
+$poigneeNom = '_poignee_de_main'
+$poigneePng = Join-Path $shotDir "$poigneeNom.png"
+if (Test-Path $poigneePng) { Remove-Item $poigneePng -Force -ErrorAction SilentlyContinue }
+Write-Output "[$Tag] poignee de main avec le demon de captures (budget $PoigneeTimeoutS s)"
+$tPoignee = Get-Date
+$poigneeOk = $false
+$poigneeMort = $false
+$tour = 0
+$marqueurEcrit = $false
+while (((Get-Date) - $tPoignee).TotalSeconds -lt $PoigneeTimeoutS) {
+  if ($procShot -and $procShot.HasExited) { $poigneeMort = $true; break }
+  if ((Test-Path $poigneePng) -and ((Get-Item $poigneePng).Length -gt 0)) { $poigneeOk = $true; break }
+  # Le marqueur est REPOSE toutes les deux secondes : le demon ouvre le journal
+  # et se place a la fin APRES avoir imprime « en ecoute », donc un marqueur
+  # unique ecrit trop tot serait perdu sans que le demon soit en faute.
+  if ($tour % 4 -eq 0) { if (Add-Marqueur $log "PERSONA_SHOT|$poigneeNom") { $marqueurEcrit = $true } }
+  $tour++
+  Start-Sleep -Milliseconds 500
+}
+
+if (-not $poigneeOk) {
+  if ($poigneeMort) {
+    Write-Output "[$Tag] DEMON DE CAPTURES HORS SERVICE - le processus est SORTI (mort avant le premier marqueur)"
+  }
+  elseif (-not $marqueurEcrit) {
+    Write-Output "[$Tag] POIGNEE DE MAIN IMPOSSIBLE - le marqueur de test n a jamais pu etre ecrit dans $log (journal verrouille). Ce n est pas le demon : c est la recette."
+  }
+  else {
+    Write-Output "[$Tag] DEMON DE CAPTURES HORS SERVICE - aucune image apres $PoigneeTimeoutS s (processus vivant mais muet, ou screencap casse sur $Serial)"
+  }
+  Write-Output "[$Tag] journal du demon ($shotLog) :"
+  foreach ($l in @(Get-Content $shotLog -Tail 12 -ErrorAction SilentlyContinue)) { Write-Output "[$Tag]   | $l" }
+  foreach ($l in @(Get-Content $shotErr -Tail 12 -ErrorAction SilentlyContinue)) { Write-Output "[$Tag]   ! $l" }
+  Write-Output "[$Tag] RUN REFUSE AVANT LE PREMIER MARQUEUR : on ne joue pas dix minutes de persona pour finir avec des marqueurs sans image."
+  foreach ($p in $procs) { if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue } }
+  exit 67
+}
+
+$octetsPoignee = (Get-Item $poigneePng).Length
+$secPoignee = [int]((Get-Date) - $tPoignee).TotalSeconds
+Write-Output "[$Tag] demon de captures VIVANT : image de poignee de main de $octetsPoignee octets obtenue en $secPoignee s"
+# Les captures en vol se posent, PUIS on efface toute trace de la poignee de
+# main : le manifeste et le journal ne doivent decrire que le run.
+Start-Sleep -Milliseconds 1500
+Remove-Item $poigneePng -Force -ErrorAction SilentlyContinue
+$razManifeste = Set-TailleZero $manifeste
+$razLog = Set-TailleZero $log
+if (-not ($razManifeste -and $razLog)) {
+  Write-Output "[$Tag] ATTENTION : trace de la poignee de main non effacee (manifeste=$razManifeste journal=$razLog) - le controle de fin de run va voir un marqueur $poigneeNom en plus"
+}
+
 $debut = Get-Date
 $defArgs = @()
 foreach ($d in $Defines) { if ($d) { $defArgs += "--dart-define=$d" } }
@@ -151,7 +312,44 @@ else {
 }
 $duree = [int]((Get-Date) - $debut).TotalSeconds
 
-Start-Sleep -Seconds 4
+# 8. ON ATTEND QUE LES CAPTURES SOIENT POSEES, ET ON CONTROLE LE DEMON UNE
+# SECONDE FOIS (tache 676).
+#
+# CE QUI SE PASSAIT. La recette dormait 4 secondes puis tuait les demons. Deux
+# consequences mesurees le 04/10 : (1) la sortie du test est TAMPONNEE (les
+# derniers marqueurs n'arrivent dans le fichier qu'a la sortie du processus), si
+# bien qu'un `Stop-Process` a l'aveugle peut tuer le demon avant qu'il les ait
+# lus ; (2) un demon MORT EN COURS DE RUN ne se voyait qu'a la fin, dans le
+# controle des captures, sous la forme « N marqueurs sans capture » — un
+# symptome, pas une cause.
+# CE QU'ON FAIT. On attend que CHAQUE marqueur du journal ait sa ligne de
+# manifeste, dans un budget, et on dit explicitement si le demon est mort avant
+# la fin. Le controle des captures reste le juge : on lui donne juste de quoi
+# juger sur un run complet.
+$drainBudgetS = 30
+$tDrain = Get-Date
+$marqueursVus = 0
+$captureesVues = 0
+while (((Get-Date) - $tDrain).TotalSeconds -lt $drainBudgetS) {
+  $marqueursVus = @(Select-String -Path $log -Pattern 'PERSONA_SHOT\|([A-Za-z0-9_\-]+)' -AllMatches |
+    ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique).Count
+  $captureesVues = @(Get-Content $manifeste -ErrorAction SilentlyContinue |
+    ForEach-Object { try { ($_ | ConvertFrom-Json).nom } catch { } } | Sort-Object -Unique).Count
+  if ($marqueursVus -gt 0 -and $captureesVues -ge $marqueursVus) { break }
+  if ($procShot -and $procShot.HasExited) { break }
+  Start-Sleep -Milliseconds 500
+}
+$demonMortEnCours = ($procShot -and $procShot.HasExited)
+if ($demonMortEnCours) {
+  Write-Output "[$Tag] DEMON DE CAPTURES MORT AVANT LA FIN DU RUN (processus sorti) : $captureesVues capture(s) pour $marqueursVus marqueur(s). La poignee de main l avait trouve vivant au depart - il est tombe en route."
+  foreach ($l in @(Get-Content $shotErr -Tail 12 -ErrorAction SilentlyContinue)) { Write-Output "[$Tag]   ! $l" }
+}
+elseif ($captureesVues -lt $marqueursVus) {
+  Write-Output "[$Tag] ATTENTION : $captureesVues capture(s) pour $marqueursVus marqueur(s) apres $drainBudgetS s d attente - le demon est vivant mais en retard"
+}
+else {
+  Write-Output "[$Tag] captures drainees : $captureesVues/$marqueursVus marqueur(s) en $([int]((Get-Date) - $tDrain).TotalSeconds) s"
+}
 foreach ($p in $procs) { if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue } }
 
 $shots = (Get-ChildItem $shotDir -Filter *.png -ErrorAction SilentlyContinue | Measure-Object).Count
@@ -166,6 +364,13 @@ $checkArgs = @('tool/persona_shot_check.py', '--log', $log, '--captures', $shotD
   '--manifeste', $manifeste, '--max-retard-ms', "$MaxRetardMs", '--json', $checkJson)
 if ($Tolerances -and (Test-Path (Join-Path $repo $Tolerances))) {
   $checkArgs += @('--tolerances', (Join-Path $repo $Tolerances))
+}
+# L'IMAGE DE LA POIGNEE DE MAIN EST REPRISE ICI AUSSI. Une capture encore en vol
+# au moment du premier effacement la recreait apres coup, et le controle de fin
+# de run la comptait alors comme une image sans marqueur (mesure du 04/10).
+if (Test-Path $poigneePng) {
+  Remove-Item $poigneePng -Force -ErrorAction SilentlyContinue
+  Write-Output "[$Tag] image de poignee de main effacee apres le run (capture en vol au premier effacement)"
 }
 Write-Output "[$Tag] controle des captures :"
 & python @checkArgs

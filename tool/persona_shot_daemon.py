@@ -202,6 +202,18 @@ def main() -> int:
                 _capture(serial, out_dir, name, t_seen, manifest_lock, manifest_path)
                 with compte_lock:
                     compte["n"] += 1
+            except Exception as exc:  # noqa: BLE001
+                # UN OUVRIER NE MEURT PLUS D'UNE CAPTURE (tache 676). Tout ce
+                # qui n'etait pas dans le `try` de `_capture` (taille du
+                # fichier, ecriture du manifeste, impression) tuait le FIL :
+                # les deux ouvriers morts, la file n'etait plus servie, le
+                # demon ne capturait plus rien et ne disait rien -- c'est le
+                # mode d'echec « 14 captures pour 16 marqueurs, puis silence »
+                # mesure le 04/10. On le dit, et on continue.
+                print(
+                    f"[shot-daemon] OUVRIER : {item!r} perdu ({type(exc).__name__}: {exc})",
+                    flush=True,
+                )
             finally:
                 travail.task_done()
 

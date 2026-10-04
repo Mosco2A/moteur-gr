@@ -36,6 +36,9 @@ S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose dej
 
 # --- S2 Marc ---
 S2_Marc_02_apres_skip S2_Marc_03_mes_treks  # deux captures du MEME ecran : le scenario saute l onboarding (02), puis journalise l emplacement et capture de nouveau (03). Aucun geste entre les deux, donc aucune raison que l image change. Verifie a l oeil le 03/10/2026.
+
+# --- Traversee 645-09 (tache 676) ---
+T645_09_15_reglages_rouvert T645_09_16_reglages_rouvert_bis  # la traversee ROUVRE deux fois le MEME ecran, sans un geste entre les deux, expres : la preuve qu elle porte est dans le JOURNAL (aucune deuxieme miette d entree), pas dans les pixels. Deux images identiques sont donc l attendu. Le 04/10 ce doublon n avait jamais rougi parce que les deux captures MANQUAIENT : le demon de captures mourait avant elles (corrige a la tache 676). Verifie a l oeil, meme ecran Reglages, 179 964 octets chacune.
 #
 # NON TOLERE, ET C EST VOLONTAIRE :
 # S2_Marc_S2E_38_consent = S2_Marc_S2E_38b_consent_bascule. Ces deux-la sont
