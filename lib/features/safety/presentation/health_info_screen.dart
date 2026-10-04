@@ -44,22 +44,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/analytics/screen_entry.dart';
-import '../../../core/providers/service_providers.dart';
-import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../consent/consent_facade.dart' show consentControllerProvider;
-import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/health_info_file.dart';
 import '../data/health_info_repository.dart';
 import '../data/card_photo_capture.dart';
-import '../domain/health_bounds.dart';
-import '../domain/models/emergency_contact.dart';
 import '../domain/models/health_info.dart';
 import '../providers/health_prepare_providers.dart';
 import '../providers/refus_sauvegarde_systeme_provider.dart';
+import 'health_info_dialogs.dart';
 import 'health_info_form.dart';
+import 'health_info_form_data.dart';
 import 'health_info_inputs.dart';
 
 /// Provider du stockage durable de la fiche medicale.
@@ -111,32 +107,9 @@ class HealthInfoScreen extends ConsumerStatefulWidget {
 class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // [1] QUI
-  final _fullNameController = TextEditingController();
-  final _addressController = TextEditingController();
-  String _birthDate = '';
-
-  // [2] QUI PREVENIR
-  final List<ContactLineDraft> _contacts = [];
-
-  // [3] VITAL
-  final _allergiesController = TextEditingController();
-  final _treatmentsController = TextEditingController();
-  final _conditionsController = TextEditingController();
-  String? _bloodType;
-  String? _organDonor;
-
-  /// LA VALEUR DE GROUPE SANGUIN LUE SUR LE DISQUE ET NON RECONNUE.
-  ///
-  /// Elle n'est PAS effacee : elle est montree au randonneur pour qu'il
-  /// choisisse (consigne 630 : « les fiches deja saisies ne perdent RIEN »).
-  String _bloodTypeHerite = '';
-
-  // [4] ADMINISTRATIF
-  final _doctorController = TextEditingController();
-  final _insuranceController = TextEditingController();
-  String _carteVitale = '';
-  String _carteMutuelle = '';
+  /// Les valeurs de la fiche en cours d'edition ([HealthInfoFormData]) :
+  /// l'etat les possede, les modifie sous `setState` et les libere.
+  final _form = HealthInfoFormData();
 
   bool _isLoading = true;
   bool _isSaving = false;
@@ -164,29 +137,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
     if (!mounted) return;
     setState(() {
-      _fullNameController.text = info.fullName;
-      _addressController.text = info.address;
-      _birthDate = info.birthDate;
-      _contacts
-        ..forEach((l) => l.dispose())
-        ..clear()
-        ..addAll(
-          info.emergencyContacts.map(
-            (c) => ContactLineDraft(nom: c.name, telephone: c.phone),
-          ),
-        );
-      _allergiesController.text = info.allergies;
-      _treatmentsController.text = info.treatments;
-      _conditionsController.text = info.conditions;
-      _bloodType = valeurListeGroupeSanguin(info.bloodType);
-      _bloodTypeHerite = estGroupeSanguinHerite(info.bloodType)
-          ? info.bloodType
-          : '';
-      _organDonor = valeurListeDonOrganes(info.organDonor);
-      _doctorController.text = info.doctorContact;
-      _insuranceController.text = info.insuranceNumber;
-      _carteVitale = info.carteVitaleFichier;
-      _carteMutuelle = info.carteMutuelleFichier;
+      _form.fill(info);
       _hasContent = info.hasData;
       _isLoading = false;
     });
@@ -203,50 +154,6 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     await ref.read(healthPrepareStepsProvider.notifier).setFilled(info.hasData);
   }
 
-  /// Assemble la fiche a partir des champs de l'ecran.
-  ///
-  /// LES CONTACTS VIDES SONT JETES ICI, PAS AILLEURS : une ligne ouverte puis
-  /// laissee blanche ne doit pas devenir un contact sans nom ni numero sur
-  /// l'ecran verrouille d'un blesse.
-  HealthInfo _composeSheet() {
-    final contacts = <EmergencyContact>[];
-    for (var i = 0; i < _contacts.length; i++) {
-      final ligne = _contacts[i];
-      final nom = ligne.nomCtrl.text.trim();
-      final tel = ligne.telCtrl.text.trim();
-      if (nom.isEmpty && tel.isEmpty) continue;
-      contacts.add(
-        EmergencyContact(
-          // L'IDENTIFIANT EST LE RANG, ET C'EST SUFFISANT : ces contacts ne sont
-          // references par rien d'autre que la fiche qui les porte.
-          id: 'perso-$i',
-          name: nom,
-          phone: tel,
-          // La priorite suit l'ordre de saisie : le premier nomme est le premier
-          // appele. C'est ce que le randonneur croit en les rangeant.
-          priority: i + 1,
-        ),
-      );
-    }
-    return HealthInfo(
-      fullName: _fullNameController.text.trim(),
-      birthDate: _birthDate,
-      address: _addressController.text.trim(),
-      emergencyContacts: contacts,
-      allergies: _allergiesController.text.trim(),
-      treatments: _treatmentsController.text.trim(),
-      conditions: _conditionsController.text.trim(),
-      // PLUS DE NORMALISATION A FAIRE : la valeur vient d'une liste fermee, elle
-      // est deja canonique. C'est tout l'interet de fermer la liste.
-      bloodType: _bloodType ?? '',
-      organDonor: _organDonor ?? '',
-      doctorContact: _doctorController.text.trim(),
-      insuranceNumber: _insuranceController.text.trim(),
-      carteVitaleFichier: _carteVitale,
-      carteMutuelleFichier: _carteMutuelle,
-    );
-  }
-
   /// Sauvegarde les donnees du formulaire en local.
   ///
   /// FIX-1 (finding M6) : `validate()` est ENFIN appele. Le `Form` n'est plus
@@ -259,7 +166,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
     setState(() => _isSaving = true);
 
-    final info = _composeSheet();
+    final info = _form.compose();
     final repo = ref.read(healthInfoRepositoryProvider);
     await repo.save(info);
 
@@ -291,133 +198,58 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       ref.read(refusSauvegardeSystemeProvider.notifier).realignerLesCopies(),
     );
 
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-        _hasContent = info.hasData;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.health.saved),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
-      // LA FICHE VIENT DE CHANGER : ON REDEMANDE LE CONSENTEMENT (DEM 30/09
-      // 12:33). Decision de Christophe, verbatim : « en cas de modification des
-      // donnees, on redemande le consentement ».
-      //
-      // APRES LA CONFIRMATION D'ENREGISTREMENT, ET AVANT LE DEPILEMENT, et les
-      // deux bornes sont mesurees.
-      //
-      // APRES, parce que placee AVANT, la question laissait le bouton
-      // « Enregistrer » tourner pendant qu'elle attendait une reponse :
-      // `_isSaving` n'etait rabaisse qu'apres, donc le spinner tournait sous le
-      // dialogue. Ce n'est pas qu'inelegant — c'est le defaut deja paye par la
-      // tache 612 sur cet ecran meme, et deux tests l'ont attrape ici encore
-      // (`pumpAndSettle timed out` : un indicateur qui tourne pour toujours ne
-      // laisse jamais l'arbre se stabiliser). LA CONFIRMATION D'UN
-      // ENREGISTREMENT REUSSI NE DOIT DEPENDRE DE RIEN D'AUTRE QUE DE
-      // L'ENREGISTREMENT : la fiche est ecrite, on le dit, PUIS on pose la
-      // question.
-      //
-      // AVANT LE DEPILEMENT, parce qu'une question posee apres le `pop()`
-      // s'ouvrirait sur l'ecran precedent, detachee de ce qui l'a provoquee.
-      await _redemanderLeConsentementApresModification();
-      if (!mounted) return;
-
-      // ON NE DEPILE QUE S'IL Y A QUELQUE CHOSE SOUS LA PAGE (tache 579, LOT X).
-      // Ce `pop()` etait inconditionnel. Quand la fiche est ouverte DIRECTEMENT
-      // — lien profond, notification, retour du systeme sur cette route — elle
-      // est la seule page de la pile : le `pop()` la retirait et laissait
-      // l'application sans aucune page ('You have popped the last page off of
-      // the stack'). En release, ou l'assertion ne se declenche pas, l'ecran
-      // restait fige : enregistrer ne produisait rien de visible au-dela du
-      // message. On reste sur la fiche quand il n'y a nulle part ou revenir —
-      // le message, lui, confirme l'enregistrement dans les deux cas.
-      final navigateur = Navigator.of(context);
-      if (navigateur.canPop()) navigateur.pop();
-    }
+    if (mounted) await _confirmSaved(info);
   }
 
-  /// LA FICHE A CHANGE, DONC ON REPOSE LA QUESTION (DEM du 30/09 12:33).
-  ///
-  /// DECISION DE CHRISTOPHE, verbatim : « en cas de modification des donnees, on
-  /// redemande le consentement ». Un consentement donne il y a six mois porte sur
-  /// ce qu'il y avait dans la fiche il y a six mois ; le randonneur qui ajoute
-  /// aujourd'hui un traitement ou une allergie n'a jamais consenti POUR CELA.
-  ///
-  /// UNE FOIS PAR MODIFICATION, JAMAIS AU SIMPLE AFFICHAGE, et c'est structurel
-  /// et non une precaution : la question ne se pose que depuis cette methode,
-  /// appelee par [_save], donc uniquement quand une ECRITURE a eu lieu. Ouvrir la
-  /// fiche, la relire, en sortir : rien n'est ecrit, rien n'est demande. Et la
-  /// decision prise ici CAPTURE la nouvelle revision des donnees, donc
-  /// `needsPrompt` retombe a faux tout de suite — sans quoi l'application
-  /// reposerait la question a chaque enregistrement suivant.
-  ///
-  /// ON PASSE PAR LE CONTROLEUR, PAS PAR LE SERVICE, et c'est deliberé : c'est
-  /// lui qui sait CE QUE LE RETRAIT DE CETTE FINALITE EMPORTE de l'appareil
-  /// (tache 560). Appeler `ConsentService.revoke` en direct d'ici donnerait une
-  /// seconde definition de « ce que ce consentement protege », et c'est
-  /// exactement l'ecart que la tache 564 a paye.
-  ///
-  /// ELLE NE LEVE JAMAIS. Un stockage de consentement illisible ne doit pas faire
-  /// echouer l'enregistrement d'une fiche medicale — la fiche est deja ecrite a ce
-  /// stade, et c'est elle qui compte pour un secouriste.
-  Future<void> _redemanderLeConsentementApresModification() async {
-    final service = ref.read(consentServiceProvider);
-    try {
-      await service.initialize();
-      await service.noterUneModificationDesDonnees(ConsentPurpose.healthData);
-      if (!service.needsPrompt(ConsentPurpose.healthData)) return;
-    } on Object catch (e) {
-      debugPrint(
-        '[FicheSante] consentement illisible ($e) — pas de re-demande',
-      );
-      return;
-    }
-
-    if (!mounted) return;
-    // PAS DE FERMETURE PAR L'EXTERIEUR : une question de consentement se repond,
-    // et les deux reponses sont aussi accessibles l'une que l'autre (RGPD art.
-    // 7-3 : le retrait doit etre aussi simple que l'octroi).
-    final accorde = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: Text(t.consent.purposes.healthData),
-        content: Text(t.health.consent.purpose),
-        actions: [
-          AppButton(
-            variant: AppButtonVariant.text,
-            label: t.consent.revoke,
-            isFullWidth: false,
-            onPressed: () => Navigator.of(ctx).pop(false),
-          ),
-          AppButton(
-            variant: AppButtonVariant.filledTone,
-            isFullWidth: false,
-            label: t.consent.grant,
-            onPressed: () => Navigator.of(ctx).pop(true),
-          ),
-        ],
+  /// Ce qui suit un enregistrement reussi, ecran encore monte : confirmer,
+  /// redemander le consentement, puis depiler s'il y a ou revenir.
+  Future<void> _confirmSaved(HealthInfo info) async {
+    setState(() {
+      _isSaving = false;
+      _hasContent = info.hasData;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(t.health.saved),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        duration: const Duration(seconds: 2),
       ),
     );
-    if (accorde == null) return;
 
-    final controleur = ref.read(consentControllerProvider);
-    if (accorde) {
-      await controleur.grant(
-        ConsentPurpose.healthData,
-        declencheur: ConsentTrigger.modificationDesDonnees,
-      );
-    } else {
-      await controleur.revoke(
-        ConsentPurpose.healthData,
-        declencheur: ConsentTrigger.modificationDesDonnees,
-      );
-    }
+    // LA FICHE VIENT DE CHANGER : ON REDEMANDE LE CONSENTEMENT (DEM 30/09
+    // 12:33). Decision de Christophe, verbatim : « en cas de modification des
+    // donnees, on redemande le consentement ».
+    //
+    // APRES LA CONFIRMATION D'ENREGISTREMENT, ET AVANT LE DEPILEMENT, et les
+    // deux bornes sont mesurees.
+    //
+    // APRES, parce que placee AVANT, la question laissait le bouton
+    // « Enregistrer » tourner pendant qu'elle attendait une reponse :
+    // `_isSaving` n'etait rabaisse qu'apres, donc le spinner tournait sous le
+    // dialogue. Ce n'est pas qu'inelegant — c'est le defaut deja paye par la
+    // tache 612 sur cet ecran meme, et deux tests l'ont attrape ici encore
+    // (`pumpAndSettle timed out` : un indicateur qui tourne pour toujours ne
+    // laisse jamais l'arbre se stabiliser). LA CONFIRMATION D'UN
+    // ENREGISTREMENT REUSSI NE DOIT DEPENDRE DE RIEN D'AUTRE QUE DE
+    // L'ENREGISTREMENT : la fiche est ecrite, on le dit, PUIS on pose la
+    // question.
+    //
+    // AVANT LE DEPILEMENT, parce qu'une question posee apres le `pop()`
+    // s'ouvrirait sur l'ecran precedent, detachee de ce qui l'a provoquee.
+    await askHealthConsentAgainAfterChange(context, ref);
+    if (!mounted) return;
+
+    // ON NE DEPILE QUE S'IL Y A QUELQUE CHOSE SOUS LA PAGE (tache 579, LOT X).
+    // Ce `pop()` etait inconditionnel. Quand la fiche est ouverte DIRECTEMENT
+    // — lien profond, notification, retour du systeme sur cette route — elle
+    // est la seule page de la pile : le `pop()` la retirait et laissait
+    // l'application sans aucune page ('You have popped the last page off of
+    // the stack'). En release, ou l'assertion ne se declenche pas, l'ecran
+    // restait fige : enregistrer ne produisait rien de visible au-dela du
+    // message. On reste sur la fiche quand il n'y a nulle part ou revenir —
+    // le message, lui, confirme l'enregistrement dans les deux cas.
+    final navigateur = Navigator.of(context);
+    if (navigateur.canPop()) navigateur.pop();
   }
 
   /// Efface la fiche sante (E57) apres confirmation — branche le `delete()`
@@ -431,29 +263,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// effacement qui ment.
   Future<void> _confirmAndDelete() async {
     if (_isDeleting) return;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(t.health.delete.confirmTitle),
-        content: Text(t.health.delete.confirmBody),
-        actions: [
-          AppButton(
-            variant: AppButtonVariant.text,
-            label: t.health.delete.cancel,
-            isFullWidth: false,
-            onPressed: () => Navigator.of(ctx).pop(false),
-          ),
-          // Action DEFINITIVE : bouton rouge (couleur semantique d'urgence).
-          AppButton(
-            variant: AppButtonVariant.filledTone,
-            tone: AppTheme.emergencyRed,
-            isFullWidth: false,
-            label: t.health.delete.confirm,
-            onPressed: () => Navigator.of(ctx).pop(true),
-          ),
-        ],
-      ),
-    );
+    final confirmed = await confirmHealthInfoDeletion(context);
     if (confirmed != true || !mounted) return;
 
     setState(() => _isDeleting = true);
@@ -481,23 +291,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
     if (!mounted) return;
     setState(() {
-      _fullNameController.clear();
-      _addressController.clear();
-      _birthDate = '';
-      for (final ligne in _contacts) {
-        ligne.dispose();
-      }
-      _contacts.clear();
-      _allergiesController.clear();
-      _treatmentsController.clear();
-      _conditionsController.clear();
-      _bloodType = null;
-      _bloodTypeHerite = '';
-      _organDonor = null;
-      _doctorController.clear();
-      _insuranceController.clear();
-      _carteVitale = '';
-      _carteMutuelle = '';
+      _form.clear();
       _hasContent = false;
       _isDeleting = false;
     });
@@ -514,7 +308,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// coup.
   Future<void> _choisirDateNaissance() async {
     final maintenant = DateTime.now();
-    final actuelle = DateTime.tryParse(_birthDate);
+    final actuelle = DateTime.tryParse(_form.birthDate);
     final choisie = await showDatePicker(
       context: context,
       initialDate: actuelle ?? DateTime(maintenant.year - 30),
@@ -526,7 +320,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     setState(() {
       // FORME ISO `AAAA-MM-JJ` : stockage neutre, affichage localise. Voir
       // `health_info.dart`.
-      _birthDate =
+      _form.birthDate =
           '${choisie.year.toString().padLeft(4, '0')}-'
           '${choisie.month.toString().padLeft(2, '0')}-'
           '${choisie.day.toString().padLeft(2, '0')}';
@@ -566,9 +360,9 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     if (!mounted) return;
     setState(() {
       if (nomFichier == HealthInfoFile.nomCarteVitale) {
-        _carteVitale = nomFichier;
+        _form.carteVitale = nomFichier;
       } else {
-        _carteMutuelle = nomFichier;
+        _form.carteMutuelle = nomFichier;
       }
       _hasContent = true;
     });
@@ -581,25 +375,16 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     if (!mounted) return;
     setState(() {
       if (nomFichier == HealthInfoFile.nomCarteVitale) {
-        _carteVitale = '';
+        _form.carteVitale = '';
       } else {
-        _carteMutuelle = '';
+        _form.carteMutuelle = '';
       }
     });
   }
 
   @override
   void dispose() {
-    _fullNameController.dispose();
-    _addressController.dispose();
-    for (final ligne in _contacts) {
-      ligne.dispose();
-    }
-    _allergiesController.dispose();
-    _treatmentsController.dispose();
-    _conditionsController.dispose();
-    _doctorController.dispose();
-    _insuranceController.dispose();
+    _form.dispose();
     super.dispose();
   }
 
@@ -608,22 +393,23 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// Le randonneur a tranche : l'avertissement n'a plus lieu d'etre, la valeur
   /// heritee est remplacee.
   void _setBloodType(String? v) => setState(() {
-    _bloodType = v;
-    _bloodTypeHerite = '';
+    _form.bloodType = v;
+    _form.bloodTypeHerite = '';
   });
 
   /// Le randonneur a dit s'il est donneur d'organes.
-  void _setOrganDonor(String? v) => setState(() => _organDonor = v);
+  void _setOrganDonor(String? v) => setState(() => _form.organDonor = v);
 
   /// Le randonneur a retire sa date de naissance.
-  void _effacerDateNaissance() => setState(() => _birthDate = '');
+  void _effacerDateNaissance() => setState(() => _form.birthDate = '');
 
   /// Une ligne de contact vide de plus, a remplir.
-  void _ajouterContact() => setState(() => _contacts.add(ContactLineDraft()));
+  void _ajouterContact() =>
+      setState(() => _form.contacts.add(ContactLineDraft()));
 
   /// Retire la ligne de contact [index] et libere ses controleurs.
   void _retirerContact(int index) =>
-      setState(() => _contacts.removeAt(index).dispose());
+      setState(() => _form.contacts.removeAt(index).dispose());
 
   @override
   Widget build(BuildContext context) {
@@ -643,28 +429,28 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       HealthFormTop(
-                        fullNameController: _fullNameController,
-                        addressController: _addressController,
-                        birthDate: _birthDate,
+                        fullNameController: _form.fullNameController,
+                        addressController: _form.addressController,
+                        birthDate: _form.birthDate,
                         onChoisirDate: _choisirDateNaissance,
                         onEffacerDate: _effacerDateNaissance,
-                        contacts: _contacts,
+                        contacts: _form.contacts,
                         onRemoveContact: _retirerContact,
                         onAddContact: _ajouterContact,
                       ),
                       HealthFormBottom(
-                        allergiesController: _allergiesController,
-                        treatmentsController: _treatmentsController,
-                        conditionsController: _conditionsController,
-                        bloodType: _bloodType,
-                        bloodTypeHerite: _bloodTypeHerite,
+                        allergiesController: _form.allergiesController,
+                        treatmentsController: _form.treatmentsController,
+                        conditionsController: _form.conditionsController,
+                        bloodType: _form.bloodType,
+                        bloodTypeHerite: _form.bloodTypeHerite,
                         onBloodTypeChanged: _setBloodType,
-                        organDonor: _organDonor,
+                        organDonor: _form.organDonor,
                         onOrganDonorChanged: _setOrganDonor,
-                        doctorController: _doctorController,
-                        insuranceController: _insuranceController,
-                        carteVitale: _carteVitale,
-                        carteMutuelle: _carteMutuelle,
+                        doctorController: _form.doctorController,
+                        insuranceController: _form.insuranceController,
+                        carteVitale: _form.carteVitale,
+                        carteMutuelle: _form.carteMutuelle,
                         onTakeCard: _photographCard,
                         onRemoveCard: _removeCard,
                         isSaving: _isSaving,
