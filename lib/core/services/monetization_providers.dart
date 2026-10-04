@@ -1,9 +1,20 @@
 /// Les fournisseurs Riverpod de la monetisation.
 ///
-/// Morceau de `monetization_service.dart` (lot 645-06, vague 2) :
-/// meme bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'monetization_service.dart';
+/// Bibliotheque de la monetisation (lot 645-06b), re-exportee par
+/// `monetization_service.dart` : les appelants n'importent que cette racine.
+library;
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../config/trail_catalog.dart';
+import '../config/trail_selection.dart';
+import '../data/database.dart';
+import '../network/connectivity_monitor.dart';
+import '../providers/database_provider.dart';
+import 'monetization_service.dart';
+import 'session_demo.dart';
+import 'wallet_iap_service.dart';
+import 'wallet_store.dart';
 
 /// Provider Riverpod du [MonetizationService] (StepWays LOT 1, ST4).
 ///

@@ -1,10 +1,9 @@
-/// Les modeles et les constantes de la monetisation : paliers,
-/// packs, droits d acces, devis et fonctionnalites d un sentier.
+/// Les types de la monetisation : packs, niveaux d'acces, devis, issues
+/// d'achat et de restauration, et les constantes du modele eco.
 ///
-/// Morceau de `monetization_service.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'monetization_service.dart';
+/// Bibliotheque de la monetisation (lot 645-06b), re-exportee par
+/// `monetization_service.dart` : les appelants n'importent que cette racine.
+library;
 
 /// Un pack de recharge du compte-étapes : nombre d'étapes + prix EUR + SKU store.
 class StepPack {
