@@ -89,7 +89,23 @@ const plafondDartSousDocs = 2;
 /// `monetization_service_service.dart` (965) porte MonetizationService. Ils
 /// restent donc comptes. Trois fichiers de moins au-dela du plafond, donc
 /// 51 -> 48.
-const plafondFichiersTropLongs = 48;
+///
+/// ABAISSE A 46 LE 04/10/2026 (lot 645-06b, decision de Christophe du
+/// 03/10/2026 : « Moi je veux que se soit propre et aux normes »). Les `part`
+/// sont refuses (regle 12) : les cinq bibliotheques sont devenues de vraies
+/// bibliotheques, chacune avec ses imports, et les deux residus ont ete
+/// decoupes PAR RESPONSABILITE en classes collaboratrices :
+///
+///   - `monetization_service.dart` : 1023 -> 330 lignes, facade de six
+///     collaborateurs (prix, droits, abonnement, recompense, acces, achats),
+///     chacun sous 320 lignes ;
+///   - `health_info_screen.dart` : 683 -> 469 lignes, ses valeurs en edition
+///     dans `health_info_form_data.dart`, ses deux dialogues dans
+///     `health_info_dialogs.dart`.
+///
+/// Plus AUCUN fichier des cinq bibliotheques ne depasse 500 lignes. Deux
+/// fichiers de moins au-dela du plafond, donc 48 -> 46.
+const plafondFichiersTropLongs = 46;
 
 /// Le plafond de lignes d'un fichier source (ECR-15).
 const maximumLignesParFichier = 500;
