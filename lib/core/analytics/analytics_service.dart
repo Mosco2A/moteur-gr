@@ -394,6 +394,13 @@ class AnalyticsService {
   /// miette a chaque passage aurait noye les 64 ko d'une session en secondes.
   /// L'empreinte du dernier contexte pose est donc memorisee.
   ///
+  /// CETTE DEDUPLICATION NE CONNAIT PAS LA PILE, ET N'A PAS A LA CONNAITRE :
+  /// elle ne retient que la DERNIERE empreinte, si bien que deux ecrans qui
+  /// parlent a tour de role passent tous les deux. C'est le raccord
+  /// (`observeScreenEntry`) qui fait taire les ecrans caches sous la pile et
+  /// `ScreenEntryObserver` qui fait reparler celui qui redevient visible
+  /// (lot 645-09b).
+  ///
   /// [trail] EST ANONYMISE comme partout ailleurs ici : c'est un identifiant,
   /// il part en SHA-256 et jamais en clair.
   ///
