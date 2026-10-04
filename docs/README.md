@@ -24,7 +24,7 @@ Nom du package Dart : `moteur_gr`. ApplicationId / namespace :
 Versions reelles (source : `pubspec.yaml` / `pubspec.lock`).
 
 - **Framework** — Flutter / Dart, SDK `>= 3.8.0 < 4.0.0`
-- **State management** — **Riverpod 2.6** (`flutter_riverpod` ^2.6.0),
+- **State management** — **Riverpod 3.3.2** (`flutter_riverpod` ^3.3.2),
   providers **manuels** (pas de generator)
 - **Navigation** — GoRouter ^13.0.0
 - **Cartes offline** — flutter_map ^8.2.0 + flutter_map_mbtiles ^1.0.4
@@ -33,13 +33,14 @@ Versions reelles (source : `pubspec.yaml` / `pubspec.lock`).
 - **Modeles immuables** — **Freezed** ^3.2.5 + json_serializable ^6.7.0
 - **i18n** — **Slang** ^4.15.0 (type-safe, 5 langues)
 - **Backend** — Firebase (Auth, Firestore, Storage, Analytics, Crashlytics),
-  Core ^3.8.0
+  `firebase_core` ^3.8.0
 - **Monorepo** — Melos ^6.3.2 + Pub Workspaces
 - **Tests** — flutter_test (SDK)
 
-> **Riverpod 2.6, pas v3.** Un upgrade Riverpod v3 est un lot futur dedie
-> (decision option A). La stack reelle de `main` est en 2.6 — voir
-> `docs/ADR/003-riverpod-over-bloc.md`.
+> **Riverpod 3.3.2.** La migration vers Riverpod 3 (INC-1) est faite : bump
+> de version, API legacy conservees (`StateProvider`/`StateNotifierProvider`
+> via `legacy.dart`), retry automatique neutralise au `ProviderScope` racine —
+> voir le commentaire de `pubspec.yaml` et `docs/ADR/003-riverpod-over-bloc.md`.
 
 > **Providers manuels.** Les providers sont declares a la main
 > (`final xProvider = Provider(...)` / `NotifierProvider` / `FutureProvider`).
