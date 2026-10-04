@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
@@ -59,6 +60,16 @@ class _WaypointContributionScreenState
   bool _submitted = false;
 
   bool get _isCommentMode => widget.targetWaypointId != null;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.waypointContribution,
+      trail: widget.trailId,
+    );
+  }
 
   @override
   void dispose() {

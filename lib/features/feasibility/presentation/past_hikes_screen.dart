@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -115,6 +116,12 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     FocusScope.of(context).unfocus();
     // `pop` du routeur : la pile est preservee, aucun ecran n'est recree.
     if (context.canPop()) context.pop();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.pastHikes);
   }
 
   @override

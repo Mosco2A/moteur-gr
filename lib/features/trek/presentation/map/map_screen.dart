@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/analytics/screen_entry.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/trace_point.dart';
 import '../../../../core/map/test_inert_tile_provider.dart';
@@ -64,3 +65,23 @@ part 'map_screen_contenu.dart';
 part 'map_screen_alertes.dart';
 part 'map_screen_barres.dart';
 part 'map_screen_surcouches.dart';
+
+/// LA MIETTE D'OBSERVABILITE DE LA CARTE (lot 645-09).
+///
+/// ELLE EST DECLAREE ICI ET POSEE DANS `map_screen_view.dart`, pour la meme
+/// raison que la fiche medicale : le lot 645-06 a scinde cet ecran en sept
+/// fichiers, et c'est le morceau `view` qui porte la classe `MapScreen` et son
+/// etat. Cette racine, elle, ne porte que des imports et des `part` — et c'est
+/// pourtant elle que l'audit 644 compte comme « ecran ». La miette declaree
+/// ici est donc visible a la mesure, et posee la ou l'ecran entre vraiment.
+///
+/// LA CARTE EST L'ECRAN DE TERRAIN : celui ou le randonneur passe ses
+/// journees, celui qui tient le GPS allume, et donc celui dont un rapport de
+/// plantage a le plus besoin de contexte. Elle alimente `screen` et `trail`.
+/// PAS `stage`, ET C'EST DELIBERE : le numero d'etape courante vit dans un
+/// provider, et le lire a l'entree de l'ecran le ferait NAITRE une frame plus
+/// tot qu'aujourd'hui. Le lot exige « comportement avant = apres » ; la cle
+/// `stage` est donc alimentee par les quatre ecrans qui portent deja un numero
+/// d'etape en champ (trail_stage_detail, trek_stage_detail,
+/// accommodation_detail, weather), sans une seule lecture nouvelle.
+const _breadcrumb = ScreenBreadcrumb.map;

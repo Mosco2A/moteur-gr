@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/store_subscription_links.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/services/wallet_iap_service.dart';
@@ -116,6 +117,12 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     messenger.showSnackBar(
       SnackBar(content: Text(t.monetization.cancelStoreUnavailable)),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.subscription);
   }
 
   @override

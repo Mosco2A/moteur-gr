@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -38,6 +39,12 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
   final _repaintKey = GlobalKey();
   bool _isGenerating = false;
   ShareCardTemplate _selectedTemplate = ShareCardTemplate.stats;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.shareCard);
+  }
 
   @override
   Widget build(BuildContext context) {

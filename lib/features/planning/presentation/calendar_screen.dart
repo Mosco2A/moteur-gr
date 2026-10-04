@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -70,6 +71,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   /// Vrai tant que le picker d'ouverture automatique (M-05b) n'a pas encore ete
   /// declenche, pour ne l'ouvrir qu'une seule fois.
   bool _autoPickTried = false;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.calendar, trail: widget.trailId);
+  }
 
   @override
   Widget build(BuildContext context) {

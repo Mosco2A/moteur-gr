@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/services/moderation_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -40,6 +41,12 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
   final TextEditingController _expose = TextEditingController();
   bool _submitting = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.complaint);
+  }
 
   @override
   void dispose() {

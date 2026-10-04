@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/app_branding.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
@@ -59,6 +60,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.diploma);
     // E5.17: Demander un avis store apres affichage du diplome (trek termine).
     // PostFrameCallback pour laisser le build se terminer avant la dialog native.
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -7,9 +7,45 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 
 import '../firebase/firebase_service.dart';
 import 'firebase_analytics_sink.dart';
+import 'screen_breadcrumb.dart';
+
+/// LE JOURNAL LOCAL DU SERVICE D'OBSERVABILITE (lot 645-09).
+///
+/// Quand Firebase est joignable, il double la miette partie au nuage. Quand
+/// il ne l'est pas — 100 pct du temps aujourd'hui — il est la SEULE trace qui
+/// reste, et c'est par lui que la QA sur emulateur verifie que les miettes
+/// passent (`adb logcat | grep screen:`). D'ou UNE LIGNE par miette et non un
+/// cadre `PrettyPrinter` : un cadre est illisible en logcat pour vingt
+/// caracteres utiles, et noie la sortie de `flutter test`.
+final _localLog = Logger(printer: SimplePrinter(colors: false));
+
+/// LES TROIS CLES DE CONTEXTE, ET IL N'Y EN AURA PAS UNE QUATRIEME
+/// (lot 645-09).
+///
+/// CRASHLYTICS PLAFONNE A 64 PAIRES CLE-VALEUR, et au-dela il n'enregistre
+/// plus rien — EN SILENCE. Avec 63 ecrans, « une cle par ecran » tenait du
+/// pari : le 64e aurait fait disparaitre les autres sans un mot. La convention
+/// retenue par Christophe inverse le probleme : TROIS cles dont la VALEUR
+/// change, et une miette courte par entree d'ecran. (Source :
+/// firebase.google.com/docs/crashlytics/flutter/customize-crash-reports,
+/// consultee le 02/10/2026.)
+abstract final class AnalyticsKeys {
+  /// L'ecran courant — la valeur change a chaque entree d'ecran.
+  static const String screen = 'screen';
+
+  /// Le sentier actif, TOUJOURS anonymise avant d'etre pose.
+  static const String trail = 'trail';
+
+  /// L'etape en cours.
+  static const String stage = 'stage';
+
+  /// Les trois cles, pour la garde de plafond qui les compte.
+  static const all = <String>[screen, trail, stage];
+}
 
 /// Noms d'evenements analytics (zero-PII).
 abstract final class AnalyticsEvents {
@@ -180,6 +216,22 @@ class AnalyticsService {
   /// Consentement (opt-in). Faux par defaut : aucune collecte avant accord.
   bool _consentGranted = false;
 
+  /// L'empreinte du dernier contexte pose (`nom|sentier|etape`), qui rend
+  /// [enterScreen] IDEMPOTENT : repasser par la ne coute pas un appel natif.
+  String? _lastEntry;
+
+  /// Le dernier ecran pose, pour ne compter qu'UNE miette par ecran meme
+  /// quand le sentier ou l'etape changent sous lui.
+  String? _lastScreenName;
+
+  /// Les miettes d'ecran deja posees dans cette session.
+  int _screenCrumbs = 0;
+
+  /// LE PLAFOND DE MIETTES PAR SESSION : 256 miettes de ~20 octets tiennent
+  /// dans 5 ko, loin des 64 ko ou Crashlytics efface le DEBUT de la session
+  /// — l'amorce, l'endroit ou l'application plante le plus.
+  static const int maxScreenCrumbsPerSession = 256;
+
   /// Vrai si un backend reel est cable (Firebase disponible).
   bool get isOperational => _operational;
 
@@ -322,6 +374,70 @@ class AnalyticsService {
     await _crash.setCustomKey(step.chemin, step.nom);
     await _crash.log('${step.chemin}: ${step.nom}');
   }
+
+  /// ENTREE D'ECRAN — LE POINT D'ENTREE UNIQUE DE L'OBSERVABILITE DES ECRANS
+  /// (lot 645-09).
+  ///
+  /// POURQUOI UN SEUL POINT D'ENTREE ET PAS 63 APPELS. Au 03/10/2026, AUCUN
+  /// des 63 ecrans ne portait de miette : l'audit en annoncait 9, et les 9
+  /// etaient un FAUX POSITIF de sa mesure (son marqueur `log(` est contenu
+  /// dans `AlertDialog(`). Un rapport de plantage ne pouvait donc pas dire sur
+  /// quel ecran etait le randonneur. Point 18 de l'inventaire 593 : « vendre
+  /// une appli sans savoir qu'elle plante est un pari ».
+  ///
+  /// CE QUE CETTE METHODE POSE : la cle [AnalyticsKeys.screen] (et, quand
+  /// l'ecran les connait, [AnalyticsKeys.trail] et [AnalyticsKeys.stage]),
+  /// puis UNE miette courte `screen:<nom>`.
+  ///
+  /// UNE MIETTE PAR ENTREE, PAS PAR RECONSTRUCTION, et c'est ce qui tient le
+  /// budget : un `build()` tourne des dizaines de fois par ecran, et une
+  /// miette a chaque passage aurait noye les 64 ko d'une session en secondes.
+  /// L'empreinte du dernier contexte pose est donc memorisee.
+  ///
+  /// [trail] EST ANONYMISE comme partout ailleurs ici : c'est un identifiant,
+  /// il part en SHA-256 et jamais en clair.
+  ///
+  /// CETTE METHODE N'ECHOUE PAS : un puits natif peut lever (Firebase absent,
+  /// Google Play trop vieux), l'exception est avalee et journalisee en local.
+  /// Un ecran ne doit JAMAIS casser parce qu'une miette n'a pas pu partir.
+  Future<void> enterScreen(
+    ScreenBreadcrumb screen, {
+    String? trail,
+    String? stage,
+  }) async {
+    final fingerprint = '${screen.name}|$trail|$stage';
+    if (fingerprint == _lastEntry) return;
+    final isNewScreen = screen.name != _lastScreenName;
+    _lastEntry = fingerprint;
+    _lastScreenName = screen.name;
+
+    // LE JOURNAL LOCAL PART MEME INERTE : seule trace quand Firebase est
+    // indisponible, et ce que la QA sur emulateur vient lire.
+    if (isNewScreen) _localLog.t('screen:${screen.name}');
+    if (!_operational) return;
+
+    try {
+      await _crash.setCustomKey(AnalyticsKeys.screen, screen.name);
+      if (trail != null) {
+        await _crash.setCustomKey(AnalyticsKeys.trail, anonymize(trail));
+      }
+      if (stage != null) {
+        await _crash.setCustomKey(AnalyticsKeys.stage, _clamp(stage));
+      }
+      // PLAFOND STRUCTUREL : une navigation pathologique (deux ecrans qui
+      // se relaient) ne doit pas manger les 64 ko et effacer l'amorce.
+      if (isNewScreen && _screenCrumbs < maxScreenCrumbsPerSession) {
+        _screenCrumbs++;
+        await _crash.log('screen:${screen.name}');
+      }
+    } on Object catch (e) {
+      _localLog.w('[observabilite] miette perdue (${screen.name}) : $e');
+    }
+  }
+
+  /// Borne une valeur de cle : Crashlytics plafonne chaque paire a 1 ko.
+  static String _clamp(String value) =>
+      value.length <= 64 ? value : value.substring(0, 64);
 
   Future<void> _log(String name, Map<String, Object?> params) async {
     if (!_consentGranted) return;

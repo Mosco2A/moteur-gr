@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
@@ -58,6 +59,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   /// Passe a la page suivante (utilise par le bouton « Suivant »).
   void _nextPage() => _goToPage(ref.read(_onboardingPageProvider) + 1);
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.onboarding);
+  }
 
   @override
   Widget build(BuildContext context) {

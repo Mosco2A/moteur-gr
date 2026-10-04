@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -30,6 +31,12 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   final _codeController = TextEditingController();
   bool _isLoading = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.group, trail: widget.trailId);
+  }
 
   @override
   void dispose() {
