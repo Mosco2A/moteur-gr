@@ -1,9 +1,10 @@
 /// Le controleur de la carte, expose en provider.
 ///
-/// Morceau de `map_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'map_screen.dart';
+/// Bibliotheque de l'ecran `map_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider du MapController, gere dans un Notifier pour le cycle de vie.
 ///
