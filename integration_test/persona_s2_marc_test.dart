@@ -26,6 +26,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
@@ -620,6 +621,109 @@ Future<bool> _openHubCard(
   return reached;
 }
 
+/// Chemin de la route qui porte l'ecran [ecran], s'il est AU DESSUS de la pile
+/// (LOT 645-F1) ; null sinon.
+///
+/// POURQUOI PAS [_currentLocation]. Sous go_router 13, `push` empile la route
+/// sans changer `routerDelegate.currentConfiguration.uri` : apres
+/// `context.push('/consent')` depuis les Reglages, cette adresse reste celle
+/// des Reglages. Le [GoRouterState] de la page, lui, est celui de la route
+/// poussee — et `ModalRoute.isCurrent` dit qu'elle est bien au premier plan.
+String? _routeCouranteDe(WidgetTester tester, Finder ecran) {
+  try {
+    final element = tester.element(ecran.first);
+    if (ModalRoute.of(element)?.isCurrent != true) return null;
+    return GoRouterState.of(element).uri.path;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// #D22 — RETRAIT AUSSI SIMPLE QUE L'OCTROI, joue sur une finalite (LOT 645-F1).
+///
+/// On prend le PARTAGE SOCIAL : sa revocation n'efface rien sur l'appareil
+/// (seule la finalite sante emporte la morphologie, cf.
+/// `ConsentController._effacerCeQueProtege`) et elle ne declenche ni
+/// permission systeme ni formulaire publicitaire natif. Un geste inverse
+/// l'etat, un second geste identique le restaure : les deux sens (octroi et
+/// retrait) coutent le MEME geste, et le consentement de Marc ressort tel qu'il
+/// est entre — un harnais qui changerait un consentement au passage fausserait
+/// la suite. La bascule est cherchee par sa cle SOUS l'ecran de consentement.
+Future<void> _basculerPuisRetirerUneFinalite(
+  WidgetTester tester,
+  String persona,
+) async {
+  const cle = ValueKey('consent-toggle-socialSharing');
+  final bascule = find.descendant(
+    of: find.byType(ConsentSettingsScreen),
+    matching: find.byKey(cle),
+  );
+  Finder basculeA(bool valeur) => find.descendant(
+    of: find.byType(ConsentSettingsScreen),
+    matching: find.byWidgetPredicate(
+      (w) => w is SwitchListTile && w.key == cle && w.value == valeur,
+    ),
+  );
+
+  if (!exige(
+    persona,
+    'consent',
+    await waitFor(tester, bascule, timeout: const Duration(seconds: 6)),
+    'la bascule de la finalite « partage social » est affichee',
+  )) {
+    return;
+  }
+  final initial = tester.widget<SwitchListTile>(bascule.first).value;
+
+  var tape = await tapIfPresent(
+    tester,
+    bascule,
+    persona,
+    'consent',
+    'basculer le partage social (etat initial = $initial)',
+    warnIfMissing: false,
+  );
+  final inverse =
+      tape &&
+      await waitFor(
+        tester,
+        basculeA(!initial),
+        timeout: const Duration(seconds: 6),
+      );
+  exige(
+    persona,
+    'consent',
+    inverse,
+    'un geste ${initial ? 'retire' : 'accorde'} le consentement « partage '
+        'social » (bascule $initial -> ${!initial})',
+  );
+  if (!inverse) return;
+
+  tape = await tapIfPresent(
+    tester,
+    bascule,
+    persona,
+    'consent',
+    'rebasculer le partage social (retour a $initial)',
+    warnIfMissing: false,
+  );
+  final restaure =
+      tape &&
+      await waitFor(
+        tester,
+        basculeA(initial),
+        timeout: const Duration(seconds: 6),
+      );
+  exige(
+    persona,
+    'consent',
+    restaure,
+    'le MEME geste ${initial ? 'accorde' : 'retire'} a nouveau le '
+        'consentement (bascule ${!initial} -> $initial) : retrait aussi '
+        'simple que l octroi (#D22)',
+  );
+}
+
 /// Ouvre les REGLAGES depuis le cockpit (icone parametres du header), best effort.
 Future<void> _openSettings(WidgetTester tester, String persona) async {
   await _goHome(tester, persona);
@@ -744,50 +848,64 @@ Future<void> _logisticsAndAccountTour(
   }
 
   // --- #P38 /consent (#D22) : gestion RGPD granulaire depuis les Reglages ---
-  // Decision : consentement par finalite, retrait aussi simple que l'octroi. On
-  // BASCULE une finalite (1er Switch de la liste) pour jouer le geste metier.
+  // Decision : consentement par finalite, retrait aussi simple que l'octroi.
+  //
+  // LOT 645-F1 — CE BLOC SE DECLARAIT COUVERT SANS RIEN OUVRIR. Le libelle
+  // « Confidentialité et consentement » est porte TROIS fois : l'en-tete de
+  // section des Reglages (texte nu, non tapable), le titre de la tuile qui
+  // ouvre /consent, et le titre de l'ecran /consent lui-meme. L'ancien parcours
+  // tapait `find.text(...)`, qui tombait sur l'en-tete : rien ne s'ouvrait. Il
+  // concluait ensuite « ecran /consent atteint » en cherchant le MEME libelle,
+  // present sur l'ecran de depart, puis basculait le premier Switch trouve —
+  // celui des Reglages. #P38 et #D22 etaient comptes couverts a tort.
+  //
+  // CE QU'ON FAIT. On tape la TUILE (le ListTile qui porte le libelle, seul
+  // widget tapable des trois), et l'arrivee se prouve par ce qui N'EXISTE QUE
+  // sur l'ecran de consentement : l'ecran [ConsentSettingsScreen] monte, porte
+  // par la route `/consent`, et c'est la route du DESSUS de la pile (cf.
+  // [_routeCouranteDe]). Chaque etape est une EXIGENCE : si la tuile ne s'ouvre
+  // pas, le scenario echoue.
   await _openSettings(tester, persona);
+  final tuileConsentement = find.widgetWithText(
+    ListTile,
+    t.consent.settingsEntry,
+  );
   await scrollUntil(
     tester,
-    find.text('Confidentialité et consentement'),
+    tuileConsentement,
     persona,
     'consent',
     'tuile Confidentialite et consentement (Reglages)',
   );
-  if (await tapIfPresent(
+  if (await exigeTap(
     tester,
-    find.text('Confidentialité et consentement'),
+    tuileConsentement,
     persona,
     'consent',
-    'ouvrir la gestion du consentement',
-    warnIfMissing: false,
+    'tuile « Confidentialité et consentement » des Reglages',
   )) {
+    final ecranConsentement = find.byType(ConsentSettingsScreen);
+    final vu = await waitFor(
+      tester,
+      ecranConsentement,
+      timeout: const Duration(seconds: 6),
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    final route = vu ? _routeCouranteDe(tester, ecranConsentement) : null;
     await settleAndShoot(tester, persona, 'S2E_38_consent');
-    final onConsent = present(find.text('Confidentialité et consentement'));
-    // Bascule une finalite (Switch dans un ConsentPurposeTile).
-    final sw = find.byType(Switch);
-    var toggled = false;
-    if (present(sw)) {
-      await tester.tap(sw.first, warnIfMissed: false);
-      await pumpAndSettleTolerant(tester);
-      toggled = true;
+    final surConsentement = exige(
+      persona,
+      'consent',
+      route == '/consent',
+      'la tuile ouvre REELLEMENT la gestion du consentement '
+          '(ConsentSettingsScreen monte, route courante /consent ; '
+          'route lue = $route)',
+    );
+    if (surConsentement) {
+      await _basculerPuisRetirerUneFinalite(tester, persona);
+      await settleAndShoot(tester, persona, 'S2E_38b_consent_bascule');
+      await _back(tester, persona, 'consent');
     }
-    logStep(
-      persona,
-      'consent',
-      'Ecran /consent atteint = $onConsent ; finalite basculee = $toggled. '
-          '#P38 + #D22 couverts.',
-    );
-    await settleAndShoot(tester, persona, 'S2E_38b_consent_bascule');
-    await _back(tester, persona, 'consent');
-  } else {
-    logStep(
-      persona,
-      'consent',
-      'COINCE : tuile « Confidentialite et consentement » introuvable dans '
-          'les Reglages. #P38/#D22 non joues. Signal QA.',
-    );
   }
 
   // --- #P39 /recovery-code (#D20) : code de reconnexion depuis les Reglages ---
