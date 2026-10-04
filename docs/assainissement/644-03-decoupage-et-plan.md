@@ -938,6 +938,305 @@ désormais la bibliothèque entière. Aucune attente modifiée. Vérifié par
 mutation en bac à sable : le laïus injecté dans un morceau est invisible à
 l'ancienne lecture et vu par la nouvelle.
 
+#### Ce que le 645-06b a fait (04/10/2026)
+
+**L'arbitrage est tranché.** Décision de Christophe du 03/10/2026, 22:12,
+verbatim : « Moi je veux que se soit propre et aux normes ». La convention des
+fichiers `part` est REFUSÉE, pour les cinq bibliothèques comme pour les deux
+résidus : pas d'exception. Elle est inscrite en **règle 12** de
+`docs/conventions.md` (« Pas de `part` hors code généré ») et gardée à ZÉRO par
+`test/structurel/pas_de_part_645_test.dart`.
+
+**Chiffres mesurés.** Départ à `aed4a3d8` (645-09b, jonction 645-09 comprise) :
+29 morceaux `part of` hors code généré, ECR-15 = **48**, ECR-28 = **198**,
+ECR-23 = **233**, ECR-19 = 10, ECR-31 = 19, ECR-05 = 77, VAC-01 = 0, en-têtes
+100 %, observabilité 63/63, `flutter test` 4081 passés et 2 ignorés. Arrivée :
+**0** `part of` hors code généré, ECR-15 = **46**, ECR-28 = **195**, ECR-23 =
+**236**, ECR-19 = 10, ECR-31 = 19, ECR-05 = 77, VAC-01 = 0, en-têtes 100 %,
+observabilité 63/63 ; plafond `plafondFichiersTropLongs` abaissé de 48 à 46.
+
+**ECR-23 monte de trois, et c'est dit.** Les trois sont des imports de FAÇADE
+(`map_facade.dart`, lu par quatre fichiers de la carte au lieu d'un) : la
+règle 10 les autorise et la garde des couches, qui ne compte pas les façades,
+reste à 52. L'audit, lui, les compte. Les ramener à un seul fichier aurait
+demandé soit un fichier de plus de 500 lignes, soit de remonter les lectures de
+providers des sous-widgets vers l'écran — donc de changer leur périmètre de
+reconstruction, ce que le lot interdit. Aucun import hors façade n'a été
+dupliqué.
+
+**Les fichiers créés.** Noms anglais (IDE-001), chacun avec ses imports :
+- formule (`lib/domain/`) : `feasibility_types`, `feasibility_scale`,
+  `feasibility_stages`, `feasibility_assessment`, `feasibility_engine`,
+  `feasibility_program_rules` ; `feasibility_formula.dart` les re-exporte ;
+- monétisation (`lib/core/services/`) : `monetization_models`,
+  `monetization_providers`, puis, pour le résidu, `monetization_dependencies`,
+  `monetization_pricing`, `monetization_entitlements`,
+  `monetization_subscription`, `monetization_rewards`, `monetization_access`,
+  `monetization_purchases` ;
+- faisabilité : `feasibility_guided_flow`, `feasibility_demo_inputs`,
+  `feasibility_verdict_view`, `feasibility_advice`,
+  `feasibility_verdict_sections`, `feasibility_summary`, `feasibility_tiles`,
+  `feasibility_labels` ;
+- carte : `map_content`, `map_sheets`, `map_overlays`, `map_photo_button`,
+  `map_arrival_pipeline`, `map_controller` ;
+- fiche médicale : `health_info_form`, `health_info_fields`,
+  `health_info_advice`, `health_info_inputs`, `health_info_top_sections`,
+  `health_info_bottom_sections`, puis, pour le résidu, `health_info_form_data`
+  et `health_info_dialogs`.
+Les widgets privés lus par un autre fichier sont devenus des classes publiques
+nommées, à paramètres nommés et avec `super.key` ; aucune façade de feature ne
+re-exporte quoi que ce soit de nouveau.
+
+**Les deux résidus.** `MonetizationService` (965 lignes) est devenu une façade
+de 330 lignes, derrière la même API publique, composée de six collaborateurs
+(prix, droits, abonnement, récompense, accès, achats) ; `buyTrail` (122 lignes)
+est lu en trois temps, pas à pas identiques. L'état de la fiche médicale (577
+lignes) garde le chargement, l'enregistrement, l'effacement et le `build` ; ses
+valeurs en édition vivent dans `HealthInfoFormData`, ses deux dialogues dans
+`health_info_dialogs.dart`. AUCUN état n'est descendu dans une section : chaque
+contrôleur est lu à l'enregistrement, écrit au chargement et vidé à
+l'effacement par l'écran, aucun n'est local à la section qui l'affiche. Plus
+aucun fichier des cinq anciennes bibliothèques ne dépasse 500 lignes, et plus
+aucune fonction des deux résidus ne dépasse 60.
+
+**La miette de la carte et de la fiche médicale** vit désormais dans le fichier
+qui porte la classe de l'écran, posée à l'entrée (`initState`).
+`observabilite_des_ecrans_645_test.dart` ne lit plus que ce fichier ;
+`cadrage_et_forme_558_test.dart` lit la carte avec ses bibliothèques voisines.
+Aucune attente n'a bougé ; les deux gardes rougissent encore par mutation
+(miette retirée, laïus injecté dans deux voisines différentes).
+
+**Les deux `@override` en double** de la vague 1 avaient déjà été retirés par
+`6b91325` (fix(645-06)), présent dans la base : rien à faire.
+
+##### QA du 645-06b, partie code (04/10/2026, 17:26 UTC — Artemis, session cloud)
+
+**Périmètre.** Branche vérifiée `claude/chore/645-06b-bibliotheques-4xyqxt`
+à `2aca5db9` (9 commits sur `aed4a3d8`). Jonction faite sur la branche de QA
+`claude/qa/645-06b-jonction`, partie de l'intégration à `d48d2fd8` (build 9,
+version 0.1.5+9) : fusion `80698cf8`, sans avance rapide, **aucun conflit**
+(la fiche s'est fusionnée seule, les deux paragraphes sont gardés).
+L'intégration elle-même n'est pas touchée, aucun tag.
+
+**Verdicts de lecture (E1) — six OK, aucun AFFAIBLI.**
+- (a) OK : les 63 fichiers du diff sont tous sous `lib/domain`,
+  `lib/core/services`, `lib/features/feasibility`,
+  `lib/features/trek/presentation/map`, `lib/features/safety/presentation`,
+  `test/` ou `docs/`. Rien sous `tool/`.
+- (b) OK : `part of` écrits à la main 29 → **0** ; directives `part` hors
+  `.g.dart` / `.freezed.dart` → 0 (les 114 restantes visent du code généré).
+  Garde `pas_de_part_645_test.dart` prouvée par mutation : `part` ajouté dans
+  `feasibility_formula.dart` → rouge ; `part of` ajouté dans
+  `health_info_dialogs.dart` → rouge ; restauré, zéro diff. Limite notée, sans
+  effet : un `part "x.dart";` entre guillemets doubles échappe au motif de la
+  racine, mais le morceau qu'il viserait porte forcément un `part of`, que la
+  garde voit quelles que soient les guillemets (mutation faite : rouge).
+- (c) OK : API publique de `MonetizationService` comparée PAR PROGRAMME
+  (analyseur Dart résolu, avant `aed4a3d8` / après `2aca5db9`) : 45 lignes
+  identiques — constructeur et ses 10 paramètres nommés (5 requis), 4
+  accesseurs, 39 méthodes, signatures et types compris. Les 23 noms exportés
+  par la bibliothèque `monetization_service.dart` sont identiques aussi : aucun
+  collaborateur n'est exporté. `buyTrail` relu côte à côte : même suite
+  d'appels et d'`await` (démo, `await ownsTrail`, gratuit, prix au catalogue,
+  `await _quote`, `await debit`, complément : `await _isOnline` puis rollback,
+  ou `await rechargeWallet` puis rollback ; sinon `await markOwned`) ; seul
+  ajout, un cadre `async` de plus (`_refusal`), sans effet sur l'ordre.
+  `HealthInfoFormData` : `fill`, `compose`, `clear`, `dispose` reprennent
+  ligne à ligne l'ordre de l'ancien état ; aucune section n'a d'état (toutes
+  `StatelessWidget` / `ConsumerWidget`, zéro `setState` hors de l'écran).
+- (d) OK : 71 symboles devenus publics (ou nouveaux) ; aucun n'apparaît dans
+  les 20 `*_facade.dart`, qui n'exportent que des `providers/`. Les +3 d'ECR-23
+  sont exactement trois imports de `map/map_facade.dart` (par `map_content`,
+  `map_overlays`, `map_photo_button`) ; tous les autres croisements ont
+  seulement changé de fichier, un pour un.
+- (e) OK : les 12 tests adaptés ne changent que des imports, des chemins, un
+  nom (`_CollecteDeLaDemo` → `FeasibilityDemoInputs`) et l'aide de lecture
+  (`_sourceAvecSesParts` → `_sourceAvecSesVoisines`, qui suit les imports du
+  même dossier) ; aucune attente modifiée. Vérifié que les lectures couvrent
+  toujours tout l'ancien code : chaque ancienne bibliothèque est entièrement
+  lue par la nouvelle aide (carte 8 fichiers, faisabilité 9, fiche médicale 9,
+  monétisation 13), et les trois marqueurs de position du test 638 sont dans
+  le même fichier. Les listes de fichiers autorisés (647, journal) suivent le
+  découpage sans s'élargir à un fichier hors du service. Le plafond 48 → 46 est
+  un resserrement. Les 2 tests nouveaux (`pas_de_part_645_test.dart`) lus en
+  entier.
+- (f) OK avec correction de l'annonce : +101 infos nettes (7 513 → 7 614 sur
+  la tête jointe), mais elles ne sont PAS toutes `public_member_api_docs` :
+  +70 `public_member_api_docs`, +32 `directives_ordering`, +5
+  `unnecessary_import`, +1 `prefer_const_constructors`, −7
+  `lines_longer_than_80_chars`. Tolérées (décision « ok infos »).
+  `public_member_api_docs` par fichier (nouveaux) : `health_info_fields` 19,
+  `feasibility_tiles` 9, `feasibility_verdict_sections` 6,
+  `health_info_advice` 5, `feasibility_advice` 4, `feasibility_summary` 4,
+  `health_info_top_sections` 4, `map_content` 4,
+  `health_info_bottom_sections` 3, `feasibility_demo_inputs` 2,
+  `feasibility_verdict_view` 2, `health_info_form` 2, `health_info_inputs` 2,
+  `map_overlays` 2, `feasibility_guided_flow` 1, `map_arrival_pipeline` 1,
+  `map_photo_button` 1 (71), moins 1 disparu avec
+  `monetization_service_service`. Les `unnecessary_import` (+5 nets : un
+  dans chacun de six fichiers de la fiche médicale, `advice`, `fields`,
+  `form`, `inputs`, `top_sections`, `bottom_sections`, celui de l'ancien
+  écran ayant disparu) sont un nettoyage à faire dans un lot de code : la QA
+  ne touche pas `lib/`.
+
+**Gate sur la tête jointe `80698cf8`.** `dart format` : 1 306 fichiers, 0
+changé. `flutter analyze --no-pub --no-fatal-infos` : 0 erreur, 0 warning,
+7 614 infos. `flutter test` : **4 088 passés, 2 ignorés, 0 échec** (base
+`d48d2fd8` : 4 086). `build_runner build --delete-conflicting-outputs` puis
+`git status` : aucun fichier changé. `audit_global.py --rapide`, base →
+jointe : ECR-15 48 → **46**, ECR-28 198 → **195**, ECR-23 233 → **236**,
+ECR-19 10, ECR-31 19, ECR-05 77, VAC-01 0, OBS-01 0, observabilité 63/63,
+en-têtes 100 %, MORT-01 141 (inchangé). Un compteur monte en plus d'ECR-23,
+et c'est dit : **ECR-16 409 → 416** (avertissement, fichier de `lib/` sans
+test miroir du même nom), purement mécanique — ce sont les nouveaux fichiers
+des bibliothèques découpées, couverts par les mêmes tests qu'avant.
+
+**L'écart ECR-23 à 236 est accepté par Skynet.** Les trois sont des imports
+de FAÇADE, permis par la règle 10 ; la garde des couches reste à 52. Les
+ramener à un seul fichier demandait un fichier de plus de 500 lignes ou de
+remonter les lectures de providers vers l'écran, donc de changer le
+périmètre de reconstruction.
+
+**Mutations rejouées sur la tête jointe**, rouges chaque fois, puis
+restaurées, zéro diff : miette de la carte retirée de `map_screen.dart` →
+`observabilite_des_ecrans_645_test` rouge ; laïus `t.map.statsPendingNote`
+injecté dans `map_content.dart` (puis dans `map_overlays.dart`) →
+`cadrage_et_forme_558_test` rouge ; `part` ajouté à `map_screen.dart` →
+`pas_de_part_645_test` rouge.
+
+##### QA du 645-06b, partie écrans (04/10/2026, 21:45 — Artemis, émulateur local)
+
+**Périmètre et méthode.** Deux arbres de travail jetables sur le même
+émulateur (`emulator-5554`, 1080×2400, Android 14), même mode local, même
+thème, **installation vierge à chaque run** (recette réparée de la tâche 676,
+désinstallation du paquet contrôlée avant chaque scénario) : AVANT sur
+l'intégration `d48d2fd8` (build 9), APRÈS sur la branche de QA
+`claude/qa/645-06b-jonction` à `aa00623b`. Cinq scénarios joués **des deux
+côtés, dans le même ordre** : S1 Léa, S2 Marc, S3 Steve, traversée 645-09, et
+un scénario écrit pour cette QA (`qa_679_portefeuille_test.dart`, non commité)
+qui ouvre par la route les deux écrans qu'aucun persona ne traverse —
+`/wallet` et `/subscription` — et qui **joue une recharge**. Dix runs, zéro
+marqueur sans image, **retard de capture 0 ms partout**.
+
+**Comparaison au pixel : 148 captures comparées, 136 identiques AU PIXEL,
+12 écarts tous nommés — et aucun imputable au code.** La barre d'état est
+exclue (bande du haut, 85 px : l'horloge y bouge sur *toutes* les captures,
+écart mesuré 500 à 1 100 px par image, boîte `y 47..79`).
+
+| scénario | comparées | identiques au pixel | écarts |
+|---|---|---|---|
+| S1 Léa | 65 | 61 | 4 |
+| S2 Marc | 20 | 19 | 1 |
+| S3 Steve | 44 | 39 | 5 |
+| traversée 645-09 | 16 | 14 | 2 |
+| portefeuille / abonnement | 3 | **3** | **0** |
+
+Les douze écarts, un par un, avec les deux captures (scratchpad `645-06b/`) :
+- **Horloge dans le contenu** (5 captures) : `S1_32` et
+  `S3_16_journal_note_enregistree` (heure de la note, 18:58 → 19:25),
+  `S1E_25_meteo` et `T645_07_meteo` (« mis à jour à », 18:54 → 19:21),
+  `S3E_26_incendie` (idem, 19:06). Boîtes de 122 à 1 473 px.
+- **Bandeau fugace** (2 captures) : `S1_09c` et `S3E_37d_health_saved`, 153 000 px dans
+  la **seule** bande `y 2195..2336` — le bandeau vert « Fiche enregistrée »,
+  vivant 4 s, encore là d'un côté, déjà parti de l'autre. **Au-dessus de la
+  bande, les deux images sont identiques au pixel.**
+- **Image d'animation** (4 captures) : `S1_31` et `S3_15_journal_note_saisie`
+  (le bouton flottant du journal en cours d'effacement derrière la boîte
+  modale, plus 3 108 px de bord de clavier en bas),
+  `T645_12_secours` (le rouage « Acquisition GPS » à un autre angle),
+  `S2_01_boot` (97 % : l'écran « Test starting… » du harnais d'un côté,
+  l'écran de démarrage de l'app de l'autre — deux instants du même boot).
+- **Décalage d'un pixel du déroulant** (1 capture) : `S3E_37c_health_saisie`, 22 755 px.
+  **Prouvé, pas supposé** : l'en-tête fixe donne **0 px**, le clavier donne
+  **0 px**, et la bande `y 295..355` du déroulant tombe à **exactement 0 px**
+  quand on décale l'image APRÈS d'**un** pixel vers le bas. Mêmes glyphes,
+  posés un pixel plus bas : la position d'arrêt du défilement, pas le code.
+- **`S1_09c`** compte double ci-dessus (bandeau) ; le douzième écart est la
+  bande basse du clavier de `S1_31` (3 108 px, `y 2363..2373`).
+
+**Preuve statique en complément, jeton par jeton.** Un lot qui *déplace* du
+code ne se juge pas sur un diff ligne à ligne (fichiers supprimés puis
+recréés). Le multi-ensemble de tout ce qui peut se voir a donc été compté des
+deux côtés sur **tout `lib/`** : **1 443** occurrences de clés de traduction,
+**199** `ValueKey`, **886** icônes `StepwaysIcons`, **2 376** constantes de
+gabarit `AppTheme` — **zéro jeton dont le compte diffère**. Par zone touchée :
+faisabilité 41/23/69/156, carte 57/0/21/45, fiche médicale 115/30/59/127,
+monétisation 28 clés — zéro écart partout.
+
+**Personas sur la tête APRÈS — identiques à la tête AVANT, exigence par
+exigence.** S1 Léa **61 tenues / 2 échouées**, et ce sont **les deux connues**
+(CTA « Démarrer la randonnée » absent de l'arbre ; diplôme qui ne s'ouvre pas
+après un trek terminé) ; S2 Marc **20/20** ; S3 Steve **17/1** (le même
+diplôme) ; traversée `traversee_645_09_test.dart` **verte**, 12 écrans peints,
+pas de seconde miette au retour immédiat. Les mêmes chiffres, aux mêmes
+endroits, sur `d48d2fd8`.
+
+**Achat et recharge joués pour de vrai.** L'achat complet de S1 (mur payant
+`19b1`, achat, `19b2_apres_achat`) et celui de S3 (`03b_apres_achat`) sont
+passés des deux côtés, captures identiques au pixel. La **recharge** du
+compte-étapes est jouée par le scénario de QA : les trois paquets (11, 25, 50)
+sont présents, le solde est affiché, l'appui sur « 11 étapes » traverse
+`rechargeWallet` dans le collaborateur *achats* et rend **la même branche des
+deux côtés** — « Le paiement n'est pas disponible pour le moment. » (pas de
+magasin réel sur l'émulateur). Les trois captures de `/wallet`,
+du bandeau et de `/subscription` sont **identiques au pixel**.
+
+**Journal local : les miettes partent, et elles partent à l'identique.** Les
+deux écrans qui ont changé de fichier sont les plus surveillés : la carte
+(`screen:map`, l'appel est passé de `map_screen_view.dart` à
+`map_screen.dart`) et la fiche médicale (`screen:health_info`, passé de
+`health_info_screen_etat.dart` à `health_info_screen.dart`). Sur les cinq runs
+cumulés : `map` **3 / 3**, `health_info` **2 / 2**. Et le relevé complet est
+plus fort que ça : **40 écrans distincts, et le dictionnaire des comptes de
+miettes est identique caractère pour caractère entre AVANT et APRÈS**
+(`hub` 41, `trek_feasibility` 8, `settings` 7, `trail_catalog` 7,
+`adventure_recap` 6, `onboarding` 5, … `wallet_recharge` 1, `subscription` 1).
+
+**Logcat : 0 plantage, 0 ANR, 0 exception** — sur les **dix** runs, 96 000
+lignes lues (`main`, `crash`, `system`), recherche de `F/libc`,
+`FATAL EXCEPTION`, `signal N (SIG…)`, `ANR in`, `am_anr`, `Input dispatching
+timed out`, mort du processus `com.only1cent.stepways`, tombstone, et
+exceptions Dart (`E/flutter`, `Unhandled Exception`).
+
+**Ce qui n'est pas vert, et qui ne vient pas du lot.**
+- Le **contrôle de fin de run refuse S1 et S3 des deux côtés** : des captures
+  légitimement identiques (ticks GPS successifs sur une carte immobile,
+  `23_apres_gps` = `25_apres_sos`) ne sont pas toutes déclarées dans
+  `captures_doublons_tolerees.txt`, et le groupement change d'un run à
+  l'autre. Les jeux de captures, eux, sont sains : 65/65 et 44/44, aucun
+  manquant, aucun vide, aucune orpheline, retard 0 ms. **Dette de la recette
+  de capture, pas du 645-06b** — et le refus tombe identiquement sur
+  `d48d2fd8`.
+- Le scénario de QA du portefeuille est tombé **rouge au teardown côté AVANT**
+  (« A SemanticsHandle was active at the end of the test ») et **vert côté
+  APRÈS**, après les trois captures et après les deux attentes. Rejoué une
+  troisième fois sur `d48d2fd8` : plus d'erreur de sémantique du tout — c'est
+  donc **intermittent, et dans mon harnais jetable** (non commité), pas dans le
+  produit. Ce troisième run a en revanche montré une autre faiblesse du même
+  harnais : sur un démarrage lent, la poussée directe vers `/wallet` part
+  **pendant que l'accueil est encore à l'écran** et n'atteint jamais le
+  compte-étapes (`packs=[]`). Les deux runs comparés, eux, ont bien atteint
+  l'écran complet des deux côtés.
+- **La QA a failli être impossible, et ça n'est pas un détail d'outillage.**
+  `skynet_watchdog.py` (PRC-003, `_find_disk_hog`) **a tué le démon de
+  captures** à 20:18:55 et le démon de dialogues à 20:13:32, run perdu, 0
+  capture pour 52 marqueurs. Cause : le premier build Gradle d'un arbre neuf
+  fait croître l'occupation du volume de 17 Go/h, au-dessus du seuil critique
+  de 5 Go/h — et le tueur ne regarde **que** `python|node`, donc il abat le
+  démon de captures (python) et jamais Gradle (java). Pire, `Get-Process` ne
+  porte aucune propriété `IO` : le tri `$_.IO.WriteBytes` trie sur `$null` et
+  `Select -First 1` rend **un processus au hasard**. PRC-003 n'abat donc pas
+  le glouton, il abat un passant. Parade appliquée ici, dans mon périmètre :
+  **pré-construire les APK avant d'allumer les démons**, puis attendre que la
+  vitesse soit retombée avant chaque run. Le correctif du watchdog est
+  hors périmètre QA (`scripts/` interdit à Artemis) : signalé en base.
+
+**Verdict écrans : RIEN NE CHANGE À L'ÉCRAN.** Les quatre zones découpées
+(faisabilité, carte, fiche médicale, monétisation) rendent le même pixel, le
+même texte, les mêmes clés, les mêmes icônes, les mêmes miettes et les mêmes
+verdicts persona qu'avant le lot. Rien n'est livré, rien ne touche `main` ni
+l'intégration.
+
 ```
 PROMPT 645-06 (autonome)
 

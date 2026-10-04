@@ -36,8 +36,6 @@
 // miette fera rougir cette garde, et c'est exactement ce qu'on lui demande.
 library;
 
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mesure_des_sources_645.dart';
@@ -52,7 +50,6 @@ final _classeDEcran = RegExp(
   r'class\s+(\w+Screen)\s+extends\s+'
   r'(ConsumerStatefulWidget|StatefulWidget|ConsumerWidget|StatelessWidget)\b',
 );
-final _parts = RegExp(r"^part\s+'([^']+)';", multiLine: true);
 final _appel = RegExp(r'observeScreenEntry\(');
 final _miette = RegExp(r'ScreenBreadcrumb\.(\w+)');
 
@@ -78,16 +75,13 @@ void main() {
     enDouble = <String>[];
 
     for (final f in ecrans) {
-      final racine = lireSource(f);
-      // LES ECRANS SCINDES PAR LE 645-06 SE LISENT AVEC LEURS MORCEAUX : la
-      // carte porte sa classe dans un fichier `part`, et une garde qui ne
-      // lirait que la racine la declarerait nue a tort.
-      final dossier = f.substring(0, f.lastIndexOf('/'));
-      var complet = racine;
-      for (final m in _parts.allMatches(racine)) {
-        final chemin = '$dossier/${m.group(1)}';
-        if (File(chemin).existsSync()) complet += lireSource(chemin);
-      }
+      // LOT 645-06b : PLUS AUCUN ECRAN N'EST SCINDE EN `part` (regle 12). La
+      // carte et la fiche medicale portaient leur classe dans un morceau, et
+      // cette garde lisait la racine AVEC ses morceaux. Desormais la classe de
+      // chaque ecran ET sa miette vivent dans le fichier `*_screen.dart`
+      // lui-meme : c'est lui, et lui seul, qu'on lit. Lire aussi ses voisines
+      // laisserait un ecran nu se cacher derriere la miette d'un autre fichier.
+      final complet = lireSource(f);
 
       final appels = _appel.allMatches(complet).length;
       if (appels == 0) {
