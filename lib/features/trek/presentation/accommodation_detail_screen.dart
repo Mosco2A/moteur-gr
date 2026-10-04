@@ -50,7 +50,9 @@ class AccommodationDetailScreen extends ConsumerWidget {
     observeScreenEntry(
       ref,
       ScreenBreadcrumb.accommodationDetail,
-      stage: '$stageNumber',
+      // ABSENT, LE NUMERO N'EST PAS POSE (lot 645-09b) : `'$stageNumber'`
+      // aurait pose la chaine "null" pendant que l'ecran affiche l'etape 1.
+      stage: stageNumber?.toString(),
     );
     final theme = Theme.of(context);
     final stage = stageNumber ?? 1;
