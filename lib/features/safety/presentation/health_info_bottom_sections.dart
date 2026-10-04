@@ -1,13 +1,25 @@
 /// Les blocs du BAS de la fiche, et ses deux gestes de fin.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../i18n/translations.g.dart';
+import '../data/health_info_file.dart';
+import '../domain/health_bounds.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'health_info_fields.dart';
+import 'health_info_inputs.dart';
 
 /// Section [3] : ce qui est vital.
-class _HealthMedicalSection extends StatelessWidget {
-  const _HealthMedicalSection({
+class HealthMedicalSection extends StatelessWidget {
+  const HealthMedicalSection({
+    super.key,
     required this.allergiesController,
     required this.treatmentsController,
     required this.conditionsController,
@@ -49,7 +61,7 @@ class _HealthMedicalSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // ========================================== [3] VITAL
-        _SectionTitle(
+        HealthSectionTitle(
           key: const ValueKey('health-section-vital'),
           icon: StepwaysIcons.emergency,
           title: t.health.section.vital,
@@ -58,7 +70,7 @@ class _HealthMedicalSection extends StatelessWidget {
         // Texte libre medical : longueur BORNEE et VISIBLE
         // (compteur), plus de champ sans fond (2000 caracteres
         // illisibles en urgence).
-        _ChampTexte(
+        HealthTextField(
           controller: allergiesController,
           label: t.health.field.allergies,
           hint: t.health.hint.allergies,
@@ -67,7 +79,7 @@ class _HealthMedicalSection extends StatelessWidget {
           maxLength: kHealthFreeTextMaxLength,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampTexte(
+        HealthTextField(
           controller: treatmentsController,
           label: t.health.field.treatments,
           hint: t.health.hint.treatments,
@@ -76,7 +88,7 @@ class _HealthMedicalSection extends StatelessWidget {
           maxLength: kHealthFreeTextMaxLength,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampTexte(
+        HealthTextField(
           champKey: const ValueKey('health-conditions-field'),
           controller: conditionsController,
           label: t.health.field.conditions,
@@ -99,8 +111,9 @@ class _HealthMedicalSection extends StatelessWidget {
 }
 
 /// Section [4] : l administratif.
-class _HealthCardsSection extends StatelessWidget {
-  const _HealthCardsSection({
+class HealthCardsSection extends StatelessWidget {
+  const HealthCardsSection({
+    super.key,
     required this.doctorController,
     required this.insuranceController,
     required this.carteVitale,
@@ -134,13 +147,13 @@ class _HealthCardsSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // ================================== [4] ADMINISTRATIF
-        _SectionTitle(
+        HealthSectionTitle(
           key: const ValueKey('health-section-admin'),
           icon: StepwaysIcons.questionnaire,
           title: t.health.section.admin,
           explanation: t.health.section.adminWhy,
         ),
-        _ChampTexte(
+        HealthTextField(
           controller: doctorController,
           label: t.health.field.doctor,
           hint: t.health.hint.doctor,
@@ -149,7 +162,7 @@ class _HealthCardsSection extends StatelessWidget {
           maxLength: kHealthContactMaxLength,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampTexte(
+        HealthTextField(
           controller: insuranceController,
           label: t.health.field.insurance,
           hint: t.health.hint.insurance,
@@ -158,7 +171,7 @@ class _HealthCardsSection extends StatelessWidget {
           maxLength: kHealthContactMaxLength,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _CarteTile(
+        HealthCardPhotoTile(
           key: const ValueKey('health-carte-vitale'),
           titre: t.health.cards.vitale,
           nomFichier: carteVitale,
@@ -166,7 +179,7 @@ class _HealthCardsSection extends StatelessWidget {
           onRetirer: () => onRemoveCard(HealthInfoFile.nomCarteVitale),
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _CarteTile(
+        HealthCardPhotoTile(
           key: const ValueKey('health-carte-mutuelle'),
           titre: t.health.cards.mutuelle,
           nomFichier: carteMutuelle,
@@ -179,8 +192,9 @@ class _HealthCardsSection extends StatelessWidget {
 }
 
 /// Les deux gestes de fin de fiche : enregistrer, et effacer.
-class _HealthActions extends StatelessWidget {
-  const _HealthActions({
+class HealthActions extends StatelessWidget {
+  const HealthActions({
+    super.key,
     required this.isSaving,
     required this.isDeleting,
     required this.hasContent,
@@ -302,14 +316,14 @@ class _HealthBloodAndDonor extends StatelessWidget {
         // GROUPE SANGUIN : LISTE FERMEE (tache 630). La saisie
         // libre a disparu — une valeur inventee n'est plus
         // seulement refusee, elle est IMPOSSIBLE.
-        _ChampGroupeSanguin(
+        BloodGroupField(
           key: const ValueKey('health-blood-type-field'),
           valeur: bloodType,
           valeurHeritee: bloodTypeHerite,
           onChanged: onBloodTypeChanged,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampDonOrganes(
+        OrganDonorField(
           key: const ValueKey('health-organ-donor-field'),
           valeur: organDonor,
           onChanged: onOrganDonorChanged,

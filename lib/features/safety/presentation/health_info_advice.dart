@@ -1,10 +1,18 @@
 /// Ce qui se dit autour de la fiche : le prix de la promesse,
 /// la carte du telephone, le mode d emploi et le consentement.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../i18n/translations.g.dart';
+import '../providers/health_prepare_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LA RECOPIE DANS LA FICHE D'URGENCE DU TELEPHONE — UNE ETAPE (tache 630).
 ///
@@ -18,8 +26,8 @@ part of 'health_info_screen.dart';
 /// LA RECOPIE EST DONC LE SEUL CHEMIN QUI MARCHE PARTOUT. Elle etait une ligne
 /// de conseil parmi quatre depuis la tache 568 ; elle devient un geste avec un
 /// etat, rappele tant qu'il n'est pas fait.
-class _PhoneCardStep extends ConsumerWidget {
-  const _PhoneCardStep();
+class PhoneCardStep extends ConsumerWidget {
+  const PhoneCardStep({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,8 +111,8 @@ class _PhoneCardStep extends ConsumerWidget {
 /// que nous ne faisons pas ; celui-ci dit ce que cela coute au randonneur. Les
 /// deux ensemble font une promesse tenable — l'un sans l'autre fait une promesse
 /// qui se retourne.
-class _LocalOnlyPrice extends StatelessWidget {
-  const _LocalOnlyPrice();
+class LocalOnlyPrice extends StatelessWidget {
+  const LocalOnlyPrice({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +192,8 @@ class _LocalOnlyPrice extends StatelessWidget {
 /// conseil), il est persiste par [healthPrepareStepsProvider] et il entre dans la
 /// porte de demarrage du trek. Une fois fait, l'invitation devient une
 /// confirmation — pas une case qu'on peut decocher par megarde.
-class _UsageAdvice extends ConsumerWidget {
-  const _UsageAdvice();
+class HealthUsageAdvice extends ConsumerWidget {
+  const HealthUsageAdvice({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -315,8 +323,8 @@ class _AdviceLine extends StatelessWidget {
 /// restent sur le telephone, et offre un acces a l'ecran Confidentialite
 /// (finalite healthData). Ne bloque PAS la saisie (local-only, pas de
 /// « traitement » au sens strict). Textes Slang (5 langues).
-class _ConsentReminder extends StatelessWidget {
-  const _ConsentReminder({required this.onManage});
+class HealthConsentReminder extends StatelessWidget {
+  const HealthConsentReminder({super.key, required this.onManage});
 
   final VoidCallback onManage;
 

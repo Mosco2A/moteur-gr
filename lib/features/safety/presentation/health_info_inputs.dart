@@ -1,9 +1,16 @@
-/// Le champ de texte de la fiche et les lignes de contact.
+/// Le champ de texte de la fiche, les lignes de contact, et la ligne de
+/// contact en cours d edition avec ses controleurs.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
+import '../domain/health_bounds.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Un champ de texte de la fiche, dans la grammaire visuelle de l'ecran.
 ///
@@ -11,8 +18,9 @@ part of 'health_info_screen.dart';
 /// reconstruit independamment, une methode privee de l'ecran non. Le controleur
 /// est CREE ET LIBERE par l'ecran ; ce widget ne fait que s'y brancher, donc
 /// aucun etat ne change de main.
-class _ChampTexte extends StatelessWidget {
-  const _ChampTexte({
+class HealthTextField extends StatelessWidget {
+  const HealthTextField({
+    super.key,
     required this.controller,
     required this.label,
     required this.hint,
@@ -104,11 +112,15 @@ class _ChampTexte extends StatelessWidget {
 ///
 /// L'ETAT RESTE CHEZ L'ECRAN : la liste [contacts] et ses controleurs sont
 /// crees, remplis et liberes par l'ecran ; le retrait passe par [onRemove].
-class _LignesDeContact extends StatelessWidget {
-  const _LignesDeContact({required this.contacts, required this.onRemove});
+class ContactLinesEditor extends StatelessWidget {
+  const ContactLinesEditor({
+    super.key,
+    required this.contacts,
+    required this.onRemove,
+  });
 
   /// Les lignes de contact saisies, possedees par l'ecran.
-  final List<_LigneContact> contacts;
+  final List<ContactLineDraft> contacts;
 
   /// Retire la ligne d'indice donne.
   final void Function(int index) onRemove;
@@ -141,7 +153,7 @@ class _LigneDeContact extends StatelessWidget {
   });
 
   /// Les deux controleurs de la ligne, possedes par l'ecran.
-  final _LigneContact ligne;
+  final ContactLineDraft ligne;
 
   /// L'indice de la ligne, qui nomme ses cles de test.
   final int index;
@@ -159,7 +171,7 @@ class _LigneDeContact extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _ChampTexte(
+                child: HealthTextField(
                   champKey: ValueKey('health-contact-name-$index'),
                   controller: ligne.nomCtrl,
                   label: t.health.contacts.name,
@@ -187,7 +199,7 @@ class _LigneDeContact extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          _ChampTexte(
+          HealthTextField(
             champKey: ValueKey('health-contact-phone-$index'),
             controller: ligne.telCtrl,
             label: t.health.contacts.phone,
@@ -204,5 +216,35 @@ class _LigneDeContact extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// UNE LIGNE DE CONTACT EN COURS D'EDITION.
+///
+/// Les controleurs vivent ici et pas dans une liste parallele : une liste de
+/// controleurs indexee a cote d'une liste de contacts se desynchronise des le
+/// premier retrait au milieu, et le randonneur voit le telephone d'un proche
+/// passer sous le nom d'un autre. Sur une fiche d'urgence, ce n'est pas un
+/// defaut cosmetique.
+class ContactLineDraft {
+  /// Une ligne pre-remplie par [nom] et [telephone] (vides par defaut).
+  ContactLineDraft({String nom = '', String telephone = ''})
+    : nomCtrl = TextEditingController(text: nom),
+      telCtrl = TextEditingController(text: telephone);
+
+  /// Controleur du nom du contact.
+  final TextEditingController nomCtrl;
+
+  /// Controleur du telephone du contact.
+  final TextEditingController telCtrl;
+
+  /// Vrai quand ni le nom ni le telephone ne sont remplis.
+  bool get estVide =>
+      nomCtrl.text.trim().isEmpty && telCtrl.text.trim().isEmpty;
+
+  /// Libere les deux controleurs.
+  void dispose() {
+    nomCtrl.dispose();
+    telCtrl.dispose();
   }
 }

@@ -1,13 +1,23 @@
 /// Les blocs du HAUT de la fiche.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../i18n/translations.g.dart';
+import '../domain/health_bounds.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'health_info_advice.dart';
+import 'health_info_fields.dart';
+import 'health_info_inputs.dart';
 
 /// Le bandeau de confiance en tete de la fiche (message de confiance, RF-2).
-class _HealthSafetyBanner extends StatelessWidget {
-  const _HealthSafetyBanner();
+class HealthSafetyBanner extends StatelessWidget {
+  const HealthSafetyBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +48,8 @@ class _HealthSafetyBanner extends StatelessWidget {
 
 /// Ce qui se dit AVANT la saisie : le prix de la promesse, le rappel de
 /// consentement, la carte du telephone et le mode d emploi.
-class _HealthIntro extends StatelessWidget {
-  const _HealthIntro({required this.onManageConsent});
+class HealthIntro extends StatelessWidget {
+  const HealthIntro({super.key, required this.onManageConsent});
 
   /// Ouvre la gestion du consentement.
   final VoidCallback onManageConsent;
@@ -59,7 +69,7 @@ class _HealthIntro extends StatelessWidget {
         // MOMENT OU LA FICHE SE REMPLIT, pas decouvert le jour du
         // changement d'appareil — et il est place AVANT les champs
         // pour la meme raison que les conseils du LOT Q.
-        const _LocalOnlyPrice(),
+        const LocalOnlyPrice(),
         const SizedBox(height: AppTheme.spacingMd),
         // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
         // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
@@ -67,13 +77,13 @@ class _HealthIntro extends StatelessWidget {
         // l'usage « te secourir » et on offre l'acces a l'ecran
         // Confidentialite (finalite healthData) — pas de mur avant
         // saisie. Textes Slang.
-        _ConsentReminder(onManage: onManageConsent),
+        HealthConsentReminder(onManage: onManageConsent),
         const SizedBox(height: AppTheme.spacingMd),
         // LA RECOPIE DANS LA FICHE DU TELEPHONE — ETAPE, PLUS
         // CONSEIL (tache 630). C'est le SEUL chemin qui montre
         // quelque chose a un secouriste sur iPhone. Elle est donc
         // au-dessus des champs, pas noyee dans une liste.
-        const _PhoneCardStep(),
+        const PhoneCardStep(),
         const SizedBox(height: AppTheme.spacingMd),
         // CONSEILS D'USAGE TERRAIN + ACCUSE DE LECTURE (tache 568,
         // LOT Q). Decision de Chris du 26/09, verbatim : « on ne
@@ -82,15 +92,16 @@ class _HealthIntro extends StatelessWidget {
         // sentier ». Les conseils sont donc AVANT les champs : on
         // apprend a s'en servir, puis on la remplit — et non
         // l'inverse, d'autant que l'enregistrement depile l'ecran.
-        const _UsageAdvice(),
+        const HealthUsageAdvice(),
       ],
     );
   }
 }
 
 /// Section [1] : qui vous etes.
-class _HealthIdentitySection extends StatelessWidget {
-  const _HealthIdentitySection({
+class HealthIdentitySection extends StatelessWidget {
+  const HealthIdentitySection({
+    super.key,
     required this.fullNameController,
     required this.addressController,
     required this.birthDate,
@@ -120,13 +131,13 @@ class _HealthIdentitySection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // ============================================ [1] QUI
-        _SectionTitle(
+        HealthSectionTitle(
           key: const ValueKey('health-section-identity'),
           icon: StepwaysIcons.myAccount,
           title: t.health.section.identity,
           explanation: t.health.section.identityWhy,
         ),
-        _ChampTexte(
+        HealthTextField(
           champKey: const ValueKey('health-full-name-field'),
           controller: fullNameController,
           label: t.health.field.fullName,
@@ -138,14 +149,14 @@ class _HealthIdentitySection extends StatelessWidget {
           textCapitalization: TextCapitalization.words,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampDateNaissance(
+        BirthDateField(
           key: const ValueKey('health-birth-date-field'),
           valeurIso: birthDate,
           onChoisir: onChoisirDate,
           onEffacer: onEffacerDate,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-        _ChampTexte(
+        HealthTextField(
           champKey: const ValueKey('health-address-field'),
           controller: addressController,
           label: t.health.field.address,
@@ -160,15 +171,16 @@ class _HealthIdentitySection extends StatelessWidget {
 }
 
 /// Section [2] : qui prevenir.
-class _HealthContactsSection extends StatelessWidget {
-  const _HealthContactsSection({
+class HealthContactsSection extends StatelessWidget {
+  const HealthContactsSection({
+    super.key,
     required this.contacts,
     required this.onRemoveContact,
     required this.onAddContact,
   });
 
   /// Les lignes de contact, possedees par l'ecran.
-  final List<_LigneContact> contacts;
+  final List<ContactLineDraft> contacts;
 
   /// Retire la ligne d'indice donne.
   final void Function(int index) onRemoveContact;
@@ -183,13 +195,13 @@ class _HealthContactsSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // =================================== [2] QUI PREVENIR
-        _SectionTitle(
+        HealthSectionTitle(
           key: const ValueKey('health-section-contacts'),
           icon: StepwaysIcons.telephone,
           title: t.health.section.contacts,
           explanation: t.health.section.contactsWhy,
         ),
-        _LignesDeContact(contacts: contacts, onRemove: onRemoveContact),
+        ContactLinesEditor(contacts: contacts, onRemove: onRemoveContact),
         if (contacts.length < kMaxPersonalEmergencyContacts)
           Align(
             alignment: Alignment.centerLeft,

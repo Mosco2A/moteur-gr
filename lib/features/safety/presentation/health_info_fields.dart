@@ -1,10 +1,18 @@
 /// Les champs de la fiche : titres de section, listes fermees,
 /// date de naissance et cartes photographiees.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../i18n/translations.g.dart';
+import '../domain/health_bounds.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Un titre de section de la fiche, avec la RAISON de sa place.
 ///
@@ -12,8 +20,8 @@ part of 'health_info_screen.dart';
 /// est la ou il est, donc pourquoi il vaut la peine d'etre rempli. « Un
 /// secouriste lit d'abord qui vous etes » fait remplir le nom ; un champ « Nom »
 /// tout seul se saute.
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({
+class HealthSectionTitle extends StatelessWidget {
+  const HealthSectionTitle({
     super.key,
     required this.icon,
     required this.title,
@@ -78,8 +86,8 @@ class _SectionTitle extends StatelessWidget {
 /// avant que la validation existe peut porter n'importe quoi. Le randonneur voit
 /// ce qu'il avait ecrit et choisit — la consigne 630 est explicite : « les fiches
 /// deja saisies ne perdent RIEN ».
-class _ChampGroupeSanguin extends StatelessWidget {
-  const _ChampGroupeSanguin({
+class BloodGroupField extends StatelessWidget {
+  const BloodGroupField({
     super.key,
     required this.valeur,
     required this.valeurHeritee,
@@ -146,8 +154,8 @@ class _ChampGroupeSanguin extends StatelessWidget {
 }
 
 /// Le don d'organes — liste fermee de trois valeurs (tache 630).
-class _ChampDonOrganes extends StatelessWidget {
-  const _ChampDonOrganes({
+class OrganDonorField extends StatelessWidget {
+  const OrganDonorField({
     super.key,
     required this.valeur,
     required this.onChanged,
@@ -197,8 +205,8 @@ class _ChampDonOrganes extends StatelessWidget {
 /// UN CLAVIER LAISSERAIT ECRIRE « 32/13/1850 » et il faudrait le refuser apres
 /// coup, en cinq langues, avec cinq formats de date differents. Le selecteur du
 /// systeme est deja localise et ne peut rendre qu'une date valide.
-class _ChampDateNaissance extends StatelessWidget {
-  const _ChampDateNaissance({
+class BirthDateField extends StatelessWidget {
+  const BirthDateField({
     super.key,
     required this.valeurIso,
     required this.onChoisir,
@@ -265,8 +273,8 @@ class _ChampDateNaissance extends StatelessWidget {
 /// L'APERCU EST PETIT, ET C'EST DELIBERE : une carte d'assurance maladie affichee
 /// en grand sur un ecran qu'on tend a un inconnu n'a pas besoin d'etre lisible de
 /// loin. On appuie pour l'agrandir quand on en a besoin.
-class _CarteTile extends StatelessWidget {
-  const _CarteTile({
+class HealthCardPhotoTile extends StatelessWidget {
+  const HealthCardPhotoTile({
     super.key,
     required this.titre,
     required this.nomFichier,

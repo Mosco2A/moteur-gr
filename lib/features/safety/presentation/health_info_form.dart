@@ -1,17 +1,26 @@
 /// Le haut et le bas du formulaire de la fiche.
 ///
-/// Morceau de `health_info_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'health_info_screen.dart';
+/// Bibliotheque de l'ecran `health_info_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../core/theme/app_theme.dart';
+import 'health_info_bottom_sections.dart';
+import 'health_info_inputs.dart';
+import 'health_info_top_sections.dart';
 
 /// Le HAUT du formulaire : le bandeau de confiance, ce qui se dit avant
 /// la saisie, qui vous etes et qui prevenir.
 ///
 /// L'ETAT RESTE CHEZ L'ECRAN : controleurs, liste de contacts et
 /// mutations arrivent en parametres nommes.
-class _HealthFormTop extends StatelessWidget {
-  const _HealthFormTop({
+class HealthFormTop extends StatelessWidget {
+  const HealthFormTop({
+    super.key,
     required this.fullNameController,
     required this.addressController,
     required this.birthDate,
@@ -38,7 +47,7 @@ class _HealthFormTop extends StatelessWidget {
   final VoidCallback onEffacerDate;
 
   /// Les lignes de contact, possedees par l'ecran.
-  final List<_LigneContact> contacts;
+  final List<ContactLineDraft> contacts;
 
   /// Retire la ligne d'indice donne.
   final void Function(int index) onRemoveContact;
@@ -52,11 +61,11 @@ class _HealthFormTop extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const _HealthSafetyBanner(),
+        const HealthSafetyBanner(),
         const SizedBox(height: AppTheme.spacingMd),
-        _HealthIntro(onManageConsent: () => context.push('/consent')),
+        HealthIntro(onManageConsent: () => context.push('/consent')),
         const SizedBox(height: AppTheme.spacingLg),
-        _HealthIdentitySection(
+        HealthIdentitySection(
           fullNameController: fullNameController,
           addressController: addressController,
           birthDate: birthDate,
@@ -64,7 +73,7 @@ class _HealthFormTop extends StatelessWidget {
           onEffacerDate: onEffacerDate,
         ),
         const SizedBox(height: AppTheme.spacingLg),
-        _HealthContactsSection(
+        HealthContactsSection(
           contacts: contacts,
           onRemoveContact: onRemoveContact,
           onAddContact: onAddContact,
@@ -80,8 +89,9 @@ class _HealthFormTop extends StatelessWidget {
 ///
 /// L'ETAT RESTE CHEZ L'ECRAN : controleurs, valeurs et mutations
 /// arrivent en parametres nommes.
-class _HealthFormBottom extends StatelessWidget {
-  const _HealthFormBottom({
+class HealthFormBottom extends StatelessWidget {
+  const HealthFormBottom({
+    super.key,
     required this.allergiesController,
     required this.treatmentsController,
     required this.conditionsController,
@@ -166,7 +176,7 @@ class _HealthFormBottom extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _HealthMedicalSection(
+        HealthMedicalSection(
           allergiesController: allergiesController,
           treatmentsController: treatmentsController,
           conditionsController: conditionsController,
@@ -177,7 +187,7 @@ class _HealthFormBottom extends StatelessWidget {
           onOrganDonorChanged: onOrganDonorChanged,
         ),
         const SizedBox(height: AppTheme.spacingLg),
-        _HealthCardsSection(
+        HealthCardsSection(
           doctorController: doctorController,
           insuranceController: insuranceController,
           carteVitale: carteVitale,
@@ -185,7 +195,7 @@ class _HealthFormBottom extends StatelessWidget {
           onTakeCard: onTakeCard,
           onRemoveCard: onRemoveCard,
         ),
-        _HealthActions(
+        HealthActions(
           isSaving: isSaving,
           isDeleting: isDeleting,
           hasContent: hasContent,
