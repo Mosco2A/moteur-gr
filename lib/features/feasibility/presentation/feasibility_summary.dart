@@ -1,11 +1,22 @@
 /// La synthese globale du verdict et son badge.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
 
-class _PartialProfileNotice extends StatelessWidget {
+import 'package:flutter/material.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_labels.dart';
+
+/// Avertit que le verdict repose sur un profil partiel.
+class PartialProfileNotice extends StatelessWidget {
+  /// Avertissement sans donnees : son texte est lu dans les traductions.
+  const PartialProfileNotice({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -31,15 +42,15 @@ class _PartialProfileNotice extends StatelessWidget {
 }
 
 /// Synthese textuelle du verdict global (hors tout vert).
-class _GlobalSummary extends StatelessWidget {
-  const _GlobalSummary({required this.assessment});
+class FeasibilityGlobalSummary extends StatelessWidget {
+  const FeasibilityGlobalSummary({super.key, required this.assessment});
   final FeasibilityAssessment assessment;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final f = t.feasibility.formula;
-    final color = _verdictColor(assessment.globalVerdict);
+    final color = verdictColor(assessment.globalVerdict);
 
     final lines = <Widget>[];
 
@@ -64,7 +75,7 @@ class _GlobalSummary extends StatelessWidget {
     // limitant quand plusieurs journees dures s'enchainent) : elle a sa place
     // dans le calcul, aucune a l'ecran. Ce que le randonneur doit lire a la
     // place, c'est le nombre de jours a viser — il est desormais EN TETE
-    // d'ecran ([_AdviceFirst]).
+    // d'ecran ([FeasibilityAdviceFirst]).
 
     // Facteur limitant nomme (si present).
     if (assessment.limitingFactor != LimitingFactor.none) {
@@ -72,7 +83,9 @@ class _GlobalSummary extends StatelessWidget {
         _summaryLine(
           theme,
           StepwaysIcons.danger,
-          f.limitingLabel(factor: _limitingLabel(assessment.limitingFactor)),
+          f.limitingLabel(
+            factor: limitingFactorLabel(assessment.limitingFactor),
+          ),
           color,
         ),
       );
@@ -122,14 +135,14 @@ class _GlobalSummary extends StatelessWidget {
 }
 
 /// Badge du verdict global (feu tricolore).
-class _VerdictBadge extends StatelessWidget {
-  const _VerdictBadge({required this.verdict});
+class FeasibilityVerdictBadge extends StatelessWidget {
+  const FeasibilityVerdictBadge({super.key, required this.verdict});
   final FeasibilityVerdict verdict;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = _verdictColor(verdict);
-    final icon = _verdictIcon(verdict);
+    final color = verdictColor(verdict);
+    final icon = verdictIcon(verdict);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingLg,
@@ -147,7 +160,7 @@ class _VerdictBadge extends StatelessWidget {
           const SizedBox(width: AppTheme.spacingSm),
           Flexible(
             child: Text(
-              _verdictLabel(verdict),
+              verdictLabel(verdict),
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: color,

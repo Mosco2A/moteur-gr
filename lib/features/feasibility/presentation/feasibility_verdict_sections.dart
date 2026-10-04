@@ -1,10 +1,17 @@
 /// Les trois sections depliables du verdict : comment il est
 /// calcule, le circuit, les conditions.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_labels.dart';
 
 /// LE CALCUL, MONTRE LA OU LE VERDICT TOMBE (tache 569, R3).
 ///
@@ -24,8 +31,8 @@ part of 'trek_feasibility_screen.dart';
 /// et l'echelle qui dit ou tombent le vert et l'orange. Il ne dit JAMAIS « ce
 /// n'est pas une IA » — on ne se defend pas d'une accusation, on montre le
 /// calcul et on nomme les travaux qui le nourrissent.
-class _VerdictHowSection extends StatelessWidget {
-  const _VerdictHowSection({required this.assessment});
+class FeasibilityVerdictHowSection extends StatelessWidget {
+  const FeasibilityVerdictHowSection({super.key, required this.assessment});
   final FeasibilityAssessment assessment;
 
   @override
@@ -39,9 +46,9 @@ class _VerdictHowSection extends StatelessWidget {
     // Les memes chiffres que ceux qui ont produit la couleur, formates une
     // seule fois : deux arrondis differents dans une division affichee se
     // liraient comme une erreur de calcul.
-    final distance = _fmt(hardest.stage.distanceKm);
-    final energy = _fmt(hardest.energyKm);
-    final capacity = _fmt(hardest.capacityKm);
+    final distance = formatEnergyKm(hardest.stage.distanceKm);
+    final energy = formatEnergyKm(hardest.energyKm);
+    final capacity = formatEnergyKm(hardest.capacityKm);
 
     final lines = <String>[
       f.verdictHowStage(
@@ -56,14 +63,14 @@ class _VerdictHowSection extends StatelessWidget {
       ),
       f.verdictHowCeiling(
         capacity: capacity,
-        level: _levelLabel(assessment.level),
+        level: hikerLevelLabel(assessment.level),
       ),
       f.verdictHowRatio(
         energy: energy,
         capacity: capacity,
-        score: _fmt2(hardest.score),
-        green: _fmt2(thresholds.green),
-        orange: _fmt2(thresholds.orange),
+        score: formatTwoDecimals(hardest.score),
+        green: formatTwoDecimals(thresholds.green),
+        orange: formatTwoDecimals(thresholds.orange),
       ),
     ];
 
@@ -104,8 +111,8 @@ class _VerdictHowSection extends StatelessWidget {
 /// AUCUNE etape prise isolement. Sans cette section, un randonneur verrait sept
 /// etapes vertes surmontees d'un circuit rouge et conclurait a un bug — c'est
 /// exactement pour cela que la spec rend l'explication obligatoire.
-class _CircuitSection extends StatelessWidget {
-  const _CircuitSection({required this.assessment});
+class FeasibilityCircuitSection extends StatelessWidget {
+  const FeasibilityCircuitSection({super.key, required this.assessment});
   final FeasibilityAssessment assessment;
 
   @override
@@ -114,7 +121,7 @@ class _CircuitSection extends StatelessWidget {
     if (circuit == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final f = t.feasibility.formula;
-    final color = _verdictColor(circuit.verdict);
+    final color = verdictColor(circuit.verdict);
 
     final lines = <Widget>[];
 
@@ -124,9 +131,9 @@ class _CircuitSection extends StatelessWidget {
     lines.add(
       Text(
         f.circuitScore(
-          value: _fmt2(circuit.score),
-          green: _fmt2(FeasibilityThresholds.median.green),
-          orange: _fmt2(FeasibilityThresholds.median.orange),
+          value: formatTwoDecimals(circuit.score),
+          green: formatTwoDecimals(FeasibilityThresholds.median.green),
+          orange: formatTwoDecimals(FeasibilityThresholds.median.orange),
         ),
         style: theme.textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w700,
@@ -225,8 +232,8 @@ class _CircuitSection extends StatelessWidget {
       lines.add(
         Text(
           f.averageLoad(
-            value: _fmt2(circuit.averageLoad),
-            worst: _fmt2(circuit.worstStage),
+            value: formatTwoDecimals(circuit.averageLoad),
+            worst: formatTwoDecimals(circuit.worstStage),
           ),
           key: const ValueKey('feasibility-average-load'),
           style: theme.textTheme.bodySmall,
@@ -241,7 +248,10 @@ class _CircuitSection extends StatelessWidget {
     if (habit != null && habit.isFinite) {
       lines.add(const SizedBox(height: AppTheme.spacingSm));
       lines.add(
-        Text(f.habitGap(value: _fmt2(habit)), style: theme.textTheme.bodySmall),
+        Text(
+          f.habitGap(value: formatTwoDecimals(habit)),
+          style: theme.textTheme.bodySmall,
+        ),
       );
       lines.add(const SizedBox(height: 2));
       lines.add(Text(f.habitGapNotDecisive, style: infoStyle));
@@ -292,8 +302,8 @@ class _CircuitSection extends StatelessWidget {
 /// seuil ou QUE LA TRACE N'EN PORTE PAS. Dans le premier cas le verdict est
 /// complet, dans le second il est aveugle sur une dimension. Une application de
 /// securite en montagne doit dire laquelle des deux.
-class _ConditionsSection extends StatelessWidget {
-  const _ConditionsSection({required this.assessment});
+class FeasibilityConditionsSection extends StatelessWidget {
+  const FeasibilityConditionsSection({super.key, required this.assessment});
   final FeasibilityAssessment assessment;
 
   @override
@@ -310,7 +320,9 @@ class _ConditionsSection extends StatelessWidget {
     // 2. Le plancher demontre, quand il a REELLEMENT releve la capacite.
     if (assessment.isDemonstratedFloorActive) {
       lines.add(
-        f.floorActive(value: _fmt(assessment.demonstratedFloorEnergyKm)),
+        f.floorActive(
+          value: formatEnergyKm(assessment.demonstratedFloorEnergyKm),
+        ),
       );
     }
 
@@ -327,7 +339,7 @@ class _ConditionsSection extends StatelessWidget {
         lines.add(
           f.altitudeApplied(
             value: (altitude ?? 0).round(),
-            pct: _fmt((1 - conditions.altitudeFactor) * 100),
+            pct: formatEnergyKm((1 - conditions.altitudeFactor) * 100),
           ),
         );
     }

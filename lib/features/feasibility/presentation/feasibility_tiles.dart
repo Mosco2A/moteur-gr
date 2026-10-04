@@ -1,21 +1,32 @@
 /// Les tuiles d etape et de conseil, et les raccourcis vers le
 /// profil du randonneur.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_labels.dart';
 
 /// Tuile d'une etape avec sa pastille tricolore + son km-effort.
-class _StageTile extends StatelessWidget {
-  const _StageTile({required this.verdict});
+class FeasibilityStageTile extends StatelessWidget {
+  const FeasibilityStageTile({super.key, required this.verdict});
   final StageVerdict verdict;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final f = t.feasibility.formula;
-    final color = _verdictColor(verdict.verdict);
+    final color = verdictColor(verdict.verdict);
     final s = verdict.stage;
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -45,9 +56,9 @@ class _StageTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   f.stageEffort(
-                    distance: _fmt(s.distanceKm),
+                    distance: formatEnergyKm(s.distanceKm),
                     elevation: s.elevationGainM,
-                    effort: _fmt(verdict.energyKm),
+                    effort: formatEnergyKm(verdict.energyKm),
                   ),
                   style: theme.textTheme.bodySmall,
                 ),
@@ -62,7 +73,7 @@ class _StageTile extends StatelessWidget {
                     // phrases identiques a deux niveaux de lecture differents
                     // laisseraient croire a la meme affirmation.
                     f.stageDominantFactor(
-                      factor: _limitingLabel(verdict.dominantFactor),
+                      factor: limitingFactorLabel(verdict.dominantFactor),
                     ),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: color,
@@ -75,7 +86,7 @@ class _StageTile extends StatelessWidget {
           ),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
-            _verdictLabel(verdict.verdict),
+            verdictLabel(verdict.verdict),
             style: theme.textTheme.labelMedium?.copyWith(
               color: color,
               fontWeight: FontWeight.bold,
@@ -88,8 +99,8 @@ class _StageTile extends StatelessWidget {
 }
 
 /// Tuile d'un conseil de programme (cle -> texte i18n resolu avec params).
-class _AdviceTile extends StatelessWidget {
-  const _AdviceTile({required this.advice});
+class FeasibilityAdviceTile extends StatelessWidget {
+  const FeasibilityAdviceTile({super.key, required this.advice});
   final ProgramAdvice advice;
 
   @override
@@ -116,8 +127,12 @@ class _AdviceTile extends StatelessWidget {
 }
 
 /// Acces rapides vers la fiche info, le test 6 min et les 5 randos.
-class _ProfileShortcuts extends StatelessWidget {
-  const _ProfileShortcuts({required this.trailId, required this.complete});
+class FeasibilityProfileShortcuts extends StatelessWidget {
+  const FeasibilityProfileShortcuts({
+    super.key,
+    required this.trailId,
+    required this.complete,
+  });
   final String trailId;
   final bool complete;
   @override
@@ -131,7 +146,7 @@ class _ProfileShortcuts extends StatelessWidget {
         // passees) et les ecrivent dans le profil protege et en base. On ne
         // remplit pas la fiche de quelqu'un pendant une demonstration. Ce que la
         // demo montre a la place, c'est la COLLECTE deja faite, recapitulee
-        // au-dessus du verdict (bug 5a, `_CollecteDeLaDemo`).
+        // au-dessus du verdict (bug 5a, `FeasibilityDemoInputs`).
         GriseEnDemo(
           child: _ShortcutCard(
             icon: StepwaysIcons.myAccount,
@@ -186,8 +201,8 @@ class _ShortcutCard extends StatelessWidget {
 }
 
 /// Vue de dépannage : pas d'etapes -> questionnaire.
-class _FallbackToQuestionnaire extends ConsumerWidget {
-  const _FallbackToQuestionnaire({required this.reason});
+class FeasibilityQuestionnaireFallback extends ConsumerWidget {
+  const FeasibilityQuestionnaireFallback({super.key, required this.reason});
   final String reason;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -219,67 +234,6 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-// --- Helpers de resolution enum -> i18n / couleur / icone -------------------
-
-/// Formatte un km-energie : entier si rond, sinon une decimale.
-String _fmt(double value) {
-  if (!value.isFinite) return '—';
-  if (value == value.roundToDouble()) return value.round().toString();
-  return value.toStringAsFixed(1);
-}
-
-/// Formatte un SCORE (sans unite) a deux decimales : a une seule, 1,04 et 1,10
-/// s'afficheraient tous deux « 1,1 » alors qu'ils tombent de part et d'autre du
-/// seuil rouge.
-String _fmt2(double value) {
-  if (!value.isFinite) return '—';
-  return value.toStringAsFixed(2);
-}
-
-String _verdictLabel(FeasibilityVerdict verdict) {
-  final v = t.feasibility.formula.verdicts;
-  switch (verdict) {
-    case FeasibilityVerdict.green:
-      return v.green;
-    case FeasibilityVerdict.orange:
-      return v.orange;
-    case FeasibilityVerdict.red:
-      return v.red;
-  }
-}
-
-String _levelLabel(HikerLevel level) {
-  final l = t.feasibility.formula.levels;
-  switch (level) {
-    case HikerLevel.beginner:
-      return l.beginner;
-    case HikerLevel.intermediate:
-      return l.intermediate;
-    case HikerLevel.confirmed:
-      return l.confirmed;
-    case HikerLevel.expert:
-      return l.expert;
-  }
-}
-
-String _limitingLabel(LimitingFactor factor) {
-  final lf = t.feasibility.formula.limitingFactors;
-  switch (factor) {
-    case LimitingFactor.distance:
-      return lf.distance;
-    case LimitingFactor.elevation:
-      return lf.elevation;
-    case LimitingFactor.altitude:
-      return lf.altitude;
-    case LimitingFactor.heat:
-      return lf.heat;
-    case LimitingFactor.chaining:
-      return lf.chaining;
-    case LimitingFactor.none:
-      return lf.none;
   }
 }
 
@@ -339,27 +293,5 @@ String _adviceText(ProgramAdvice advice) {
       return a.training(weeks: advice.params['weeks'] ?? '');
     default:
       return '';
-  }
-}
-
-Color _verdictColor(FeasibilityVerdict verdict) {
-  switch (verdict) {
-    case FeasibilityVerdict.red:
-      return AppTheme.emergencyRed;
-    case FeasibilityVerdict.orange:
-      return AppTheme.orangeDifficile;
-    case FeasibilityVerdict.green:
-      return AppTheme.vertFacile;
-  }
-}
-
-String _verdictIcon(FeasibilityVerdict verdict) {
-  switch (verdict) {
-    case FeasibilityVerdict.red:
-      return StepwaysIcons.refuser;
-    case FeasibilityVerdict.orange:
-      return StepwaysIcons.danger;
-    case FeasibilityVerdict.green:
-      return StepwaysIcons.cochePleine;
   }
 }

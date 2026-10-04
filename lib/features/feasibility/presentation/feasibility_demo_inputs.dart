@@ -1,19 +1,33 @@
 /// Ce que la demo collecte, ligne par ligne.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../domain/hiker_profile.dart';
+import '../providers/hiker_profile_provider.dart';
+import '../providers/walk_test_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_guided_flow.dart';
+import 'feasibility_labels.dart';
+import 'feasibility_verdict_sections.dart';
 
 /// CE SUR QUOI REPOSE LA REPONSE — VISIBLE UNIQUEMENT EN DEMO (tache 638,
 /// bug 5a, DEM-260930-1012).
 ///
 /// CE QUI EXISTAIT, MESURE. L'ecran portait bien une section « Ce qui est entre
-/// dans ce verdict » ([_ConditionsSection]), mais elle enonce les REGLES
+/// dans ce verdict » ([FeasibilityConditionsSection]), mais elle enonce les REGLES
 /// (altitude, saison, masse, age) et son propre commentaire le disait : « La
 /// ligne est STATIQUE… elle enonce la regle, pas la valeur de ce randonneur ».
 /// AUCUN ecran n'affichait les VALEURS. Et le parcours guide
-/// ([_FeasibilityGuidedFlow]), qui montre trois cases a cocher, disparait des que
+/// ([FeasibilityGuidedFlow]), qui montre trois cases a cocher, disparait des que
 /// les criteres sont complets — donc precisement quand il y a une valeur a
 /// montrer.
 ///
@@ -21,8 +35,8 @@ part of 'trek_feasibility_screen.dart';
 /// « non renseigne » quand il n'y en a pas. Rien n'est recalcule ici : chaque
 /// ligne lit le provider qui alimente DEJA le moteur, pour qu'une valeur affichee
 /// ne puisse pas diverger de la valeur utilisee.
-class _CollecteDeLaDemo extends ConsumerWidget {
-  const _CollecteDeLaDemo({required this.assessment});
+class FeasibilityDemoInputs extends ConsumerWidget {
+  const FeasibilityDemoInputs({super.key, required this.assessment});
 
   final FeasibilityAssessment assessment;
 
@@ -48,7 +62,7 @@ class _CollecteDeLaDemo extends ConsumerWidget {
     String valeurForme() {
       if (test == null) return absent;
       return '${test.distanceMeters.toStringAsFixed(0)} m'
-          ' · ${_levelLabel(assessment.level)}';
+          ' · ${hikerLevelLabel(assessment.level)}';
     }
 
     String valeurSaison() {

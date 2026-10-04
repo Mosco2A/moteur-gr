@@ -1,13 +1,35 @@
 /// Le verdict lui-meme : la reponse, et le volet qui montre le
 /// calcul derriere elle.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
 
-class _VerdictView extends ConsumerWidget {
-  const _VerdictView({required this.assessment, required this.onRestart});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../i18n/translations.g.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../providers/trek_feasibility_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_advice.dart';
+import 'feasibility_demo_inputs.dart';
+import 'feasibility_labels.dart';
+import 'feasibility_summary.dart';
+import 'feasibility_tiles.dart';
+import 'feasibility_verdict_sections.dart';
+
+/// Le verdict tricolore complet, avec le geste « Recommencer ».
+class FeasibilityVerdictView extends ConsumerWidget {
+  const FeasibilityVerdictView({
+    super.key,
+    required this.assessment,
+    required this.onRestart,
+  });
   final FeasibilityAssessment assessment;
 
   /// « Recommencer » : repasse au flux guide pour re-repondre.
@@ -45,7 +67,7 @@ class _VerdictView extends ConsumerWidget {
           // La FORMULATION du verdict (bug 5b, « pas possible » trop clivant)
           // n'est PAS traitee ici : c'est le lot #639.
           if (ref.watch(enDemoProvider)) ...[
-            _CollecteDeLaDemo(assessment: assessment),
+            FeasibilityDemoInputs(assessment: assessment),
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
@@ -62,7 +84,7 @@ class _VerdictView extends ConsumerWidget {
           // VISIBLE : ce n'est pas une explication, c'est une reserve sur la
           // reponse elle-meme.
           if (!hasProfile) ...[
-            _PartialProfileNotice(),
+            PartialProfileNotice(),
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
@@ -71,20 +93,22 @@ class _VerdictView extends ConsumerWidget {
           // se replierait sous un volet annulerait un verdict que personne
           // n'aurait lu.
           if (!assessment.isVerdictValid) ...[
-            const _WinterInvalidNotice(),
+            const WinterInvalidNotice(),
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
           // LE CONSEIL (retour Chris 4, #100417) : combien de jours viser,
           // combien de repos poser et ou, et le bouton qui applique.
-          _AdviceFirst(assessment: assessment, trailId: trailId),
+          FeasibilityAdviceFirst(assessment: assessment, trailId: trailId),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Feu tricolore etape par etape : concret, et c'est ce qui dit QUELLE
           // journee coince. Reste a l'ecran.
           Text(f.formula.stagesTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingSm),
-          ...assessment.stageVerdicts.map((v) => _StageTile(verdict: v)),
+          ...assessment.stageVerdicts.map(
+            (v) => FeasibilityStageTile(verdict: v),
+          ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // TOUT LE CALCUL SOUS UN SEUL VOLET, REPLIE (tache 634, DEM-1134).
@@ -125,7 +149,7 @@ class _VerdictView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Acces rapides pour completer / affiner le profil objectif.
-          _ProfileShortcuts(trailId: trailId, complete: hasProfile),
+          FeasibilityProfileShortcuts(trailId: trailId, complete: hasProfile),
         ],
       ),
     );
@@ -182,7 +206,7 @@ class _LaReponse extends StatelessWidget {
       children: [
         Text(f.answerTitle, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppTheme.spacingSm),
-        _VerdictBadge(verdict: assessment.globalVerdict),
+        FeasibilityVerdictBadge(verdict: assessment.globalVerdict),
         const SizedBox(height: AppTheme.spacingSm),
         Text(
           phrase,
@@ -254,8 +278,8 @@ class _VoletDuCalcul extends StatelessWidget {
           // Le plafond : c'est une explication du verdict, pas le verdict.
           Text(
             f.ceilingLabel(
-              value: _fmt(assessment.dailyCapacityEnergyKm),
-              level: _levelLabel(assessment.level),
+              value: formatEnergyKm(assessment.dailyCapacityEnergyKm),
+              level: hikerLevelLabel(assessment.level),
             ),
             style: theme.textTheme.bodySmall?.copyWith(
               fontStyle: FontStyle.italic,
@@ -265,17 +289,17 @@ class _VoletDuCalcul extends StatelessWidget {
           const SizedBox(height: AppTheme.spacingBase),
 
           // LE CALCUL, LA OU LE VERDICT TOMBE (tache 569, R3).
-          _VerdictHowSection(assessment: assessment),
+          FeasibilityVerdictHowSection(assessment: assessment),
           const SizedBox(height: AppTheme.spacingBase),
 
           // Synthese du verdict global : journee la plus dure, facteur
           // limitant, reco entrainement.
-          _GlobalSummary(assessment: assessment),
+          FeasibilityGlobalSummary(assessment: assessment),
           const SizedBox(height: AppTheme.spacingBase),
 
           // SCORE DE CIRCUIT (#2-m a #2-t) + explication OBLIGATOIRE quand le
           // circuit est plus severe que toutes ses etapes (#2-s).
-          _CircuitSection(assessment: assessment),
+          FeasibilityCircuitSection(assessment: assessment),
           const SizedBox(height: AppTheme.spacingBase),
 
           // CE QUI EST ENTRE DANS CE VERDICT, ET CE QUI N'Y EST PAS ENTRE —
@@ -286,7 +310,7 @@ class _VoletDuCalcul extends StatelessWidget {
           // mention « le poids de ton sac n'entre pas dans ce feu » est RETIREE
           // depuis cette tache-la, et elle le reste : on se tait sur ce qu'on
           // n'a pas, on parle de ce que ca change.
-          _ConditionsSection(assessment: assessment),
+          FeasibilityConditionsSection(assessment: assessment),
         ],
       ),
     );

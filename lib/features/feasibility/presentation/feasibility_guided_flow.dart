@@ -1,10 +1,19 @@
 /// Le parcours guide de la faisabilite : ses etapes, ce qui manque
 /// encore, et la carte d une etape.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../providers/trek_feasibility_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// PARCOURS GUIDE d'entree (parite GR20) : fiche -> test 6 min -> randos,
 /// barre de progression, puis bouton « Valider / Voir mon resultat ».
@@ -14,8 +23,9 @@ part of 'trek_feasibility_screen.dart';
 /// ce qui manque — l'ecran ne rend aucun verdict et ne laisse pas croire
 /// qu'il pourrait en rendre un. Chaque etape ouvre l'ecran de saisie existant
 /// et se coche au retour. Le test 6 min alimente le calcul (R2b).
-class _FeasibilityGuidedFlow extends ConsumerWidget {
-  const _FeasibilityGuidedFlow({
+class FeasibilityGuidedFlow extends ConsumerWidget {
+  const FeasibilityGuidedFlow({
+    super.key,
     required this.criteria,
     required this.onOpenStep,
     required this.onValidate,

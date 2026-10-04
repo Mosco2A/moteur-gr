@@ -1,10 +1,27 @@
 /// Les conseils qui viennent AVANT le detail, et le geste qui
 /// genere le programme.
 ///
-/// Morceau de `trek_feasibility_screen.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'trek_feasibility_screen.dart';
+/// Bibliotheque de l'ecran `trek_feasibility_screen.dart` (lot 645-06b).
+library;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../../i18n/translations.g.dart';
+import '../../planning/planning_facade.dart'
+    show
+        defaultDurationWithRestProvider,
+        durationBoundsProvider,
+        retainedDurationProvider,
+        selectedDurationProvider;
+import '../../../domain/feasibility_formula.dart';
+import '../../../core/branding/stepways_icons.dart';
+import 'feasibility_tiles.dart';
 
 /// LE CONSEIL AVANT LE VERDICT (retour Chris 4 du 25/09, spec #100417).
 ///
@@ -31,8 +48,12 @@ part of 'trek_feasibility_screen.dart';
 /// portait sur « le decoupage ». Le lot 634 avait retire la mecanique, la tache
 /// 639 retire le mot — verbatim de Christophe (30/09 10:12) : « je ne veux pas
 /// qu on decoupe les etapes ! ».
-class _AdviceFirst extends StatelessWidget {
-  const _AdviceFirst({required this.assessment, required this.trailId});
+class FeasibilityAdviceFirst extends StatelessWidget {
+  const FeasibilityAdviceFirst({
+    super.key,
+    required this.assessment,
+    required this.trailId,
+  });
 
   final FeasibilityAssessment assessment;
   final String trailId;
@@ -48,7 +69,7 @@ class _AdviceFirst extends StatelessWidget {
         if (assessment.advice.isNotEmpty) ...[
           Text(f.adviceTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingSm),
-          ...assessment.advice.map((a) => _AdviceTile(advice: a)),
+          ...assessment.advice.map((a) => FeasibilityAdviceTile(advice: a)),
         ],
         // R2f (#100122 / parite GR20 `feasibility_result_screen` bouton
         // CONTINUER) : l'appli PROPOSE le planning, elle ne le demande pas. Ce
@@ -211,8 +232,8 @@ class _GenerateProgramButton extends ConsumerWidget {
 /// d'hiver, ce serait produire un chiffre qui a l'air d'une mesure et n'en est
 /// pas. On dit donc que le verdict ne tient plus — ce qui est vrai, verifiable,
 /// et bien plus utile qu'un faux chiffre.
-class _WinterInvalidNotice extends StatelessWidget {
-  const _WinterInvalidNotice();
+class WinterInvalidNotice extends StatelessWidget {
+  const WinterInvalidNotice({super.key});
 
   @override
   Widget build(BuildContext context) {
