@@ -1379,18 +1379,47 @@ gate, et ou sont les captures.
 > à 77, et les deux sont le **même jeton `walletRecharge`**, faux positif du mot
 > `charge` cherché en sous-chaîne.
 >
-> **DEUX RÉSERVES DE DOCUMENTATION, À REPRENDRE** (zéro effet à l'exécution) :
-> dans `health_info_screen.dart`, la constante `_breadcrumb` a été insérée
-> **entre le commentaire de doc et la classe**, si bien que la phrase « les
-> données ne quittent JAMAIS le téléphone » documente désormais une constante
-> privée et que `HealthInfoScreen` n'a plus de documentation ; dans
+> **TROIS RÉSERVES DE DOCUMENTATION, À REPRENDRE** (zéro effet à l'exécution,
+> relevé exhaustif : les 65 points d'insertion du lot ont été passés au peigne,
+> il y en a trois et pas une de plus). Dans `health_info_screen.dart`, la
+> constante `_breadcrumb` a été insérée **entre le commentaire de doc et la
+> classe**, si bien que la phrase « les données ne quittent JAMAIS le
+> téléphone » documente désormais une constante privée et que
+> `HealthInfoScreen` n'a plus de documentation. Dans
 > `trek_feasibility_screen.dart`, le pavé qui expliquait la remontée des deux
-> observations **en tête de `build`** documente maintenant `initState`.
+> observations **en tête de `build`** documente maintenant `initState`. Dans
+> `my_treks_screen.dart`, la ligne « Barre contextuelle de l'accueil maison
+> (SPEC §4) » documentait `buildContextualActions` et documente maintenant
+> `initState`. C'est la même famille que la garde morte du 645-06 : un
+> commentaire qui a changé de propriétaire sans que rien ne proteste.
 >
 > **UN DÉFAUT DE VALEUR** : `accommodation_detail_screen.dart` passe
 > `stage: '$stageNumber'` alors que le champ est `int?`. Quand il est absent, la
 > clé vaudra la chaîne `"null"` pendant que l'écran affiche l'étape 1
 > (`stageNumber ?? 1`).
+>
+> **LE DÉFAUT QUI COMPTE, TROUVÉ SUR L'ÉMULATEUR ET REPRODUCTIBLE À COUP SÛR :
+> QUAND LA PILE DE NAVIGATION EMPILE, LA CLÉ `screen` NOMME LE MAUVAIS ÉCRAN.**
+> La déduplication ne retient que **la dernière** empreinte posée
+> (`_lastEntry`). Or `Navigator` **reconstruit les écrans restés vivants sous
+> celui du dessus** : les 40 écrans instrumentés **dans `build`** reposent donc
+> leur miette à chaque empilement, à tour de rôle. Mesure, traversée du
+> 04/10 (`integration_test/traversee_645_09_test.dart`, 14 routes empilées sans
+> retour) — après l'ouverture de `/settings`, le journal porte dans l'ordre :
+> `screen:settings`, puis `screen:trail_stage_detail`, puis `screen:weather`,
+> puis `screen:journal`. **La dernière miette, et donc la valeur de la clé
+> `screen` au moment d'un plantage, désigne un écran que le randonneur ne
+> regarde pas.** Le motif se répète à l'identique aux 12 ouvertures de la
+> traversée. Les 23 écrans instrumentés dans `initState` n'y participent pas
+> (`initState` ne tourne qu'une fois par montage), et le parcours persona S1 le
+> masque presque entièrement parce qu'il **revient au cockpit** entre deux
+> écrans, ce qui dépile. Conséquences : aucun plantage, aucune donnée
+> personnelle, budget toujours borné par le plafond de 256 miettes par session
+> — mais **la promesse du lot (« savoir sur quel écran est le randonneur »)
+> n'est pas tenue dès que deux écrans `build` restent vivants sous la pile.**
+> Direction de correctif, à décider hors QA : ne poser la miette que si l'écran
+> est la route **courante** (`ModalRoute.of(context)?.isCurrent == true`), ou
+> dédupliquer par écran vivant au lieu de la seule dernière empreinte.
 >
 > **LE « JOURNAL LOCAL » N'EST PAS UN FICHIER** : c'est la console (`logger`
 > 2.7.0, `ConsoleOutput` vers `print`, donc logcat), d'où **ni taille maximale
