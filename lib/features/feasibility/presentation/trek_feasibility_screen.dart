@@ -96,6 +96,12 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
     _refreshAssessment();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.trekFeasibility);
+  }
+
   /// ABONNEMENTS INCONDITIONNELS, DEPENDANCES D'ABORD (tache 548).
   ///
   /// [feasibilityCriteriaProvider] etait observe A L'INTERIEUR du `data:` de
@@ -115,12 +121,6 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
   /// abonnements sont des lors permanents pour toute la vie de l'ecran et les
   /// invalidations de `_refreshAssessment` sont traitees par l'ordonnanceur
   /// AVANT la phase de build, jamais pendant. Aucun changement d'affichage.
-  @override
-  void initState() {
-    super.initState();
-    observeScreenEntry(ref, ScreenBreadcrumb.trekFeasibility);
-  }
-
   @override
   Widget build(BuildContext context) {
     final criteriaAsync = ref.watch(feasibilityCriteriaProvider);

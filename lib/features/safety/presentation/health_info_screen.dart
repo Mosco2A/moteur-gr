@@ -104,12 +104,6 @@ final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
   (ref) => takeCardPhoto,
 );
 
-/// E5.16 / E57 / 630 : ecran de la fiche d'urgence.
-///
-/// Les donnees sont stockees localement — dans un FICHIER DEDIE sous le dossier
-/// declare exclu de la sauvegarde du telephone (tache 613, voir
-/// [HealthInfoFile]) — et ne quittent JAMAIS le telephone (pas de
-/// Firestore, pas de cloud, pas de sauvegarde Google ou Apple).
 /// LA MIETTE D'OBSERVABILITE DE CET ECRAN (lot 645-09).
 ///
 /// ELLE EST DECLAREE ICI ET POSEE AILLEURS, et ce n'est pas un detour : le lot
@@ -120,6 +114,12 @@ final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
 /// mesure ; la poser dans le morceau qui porte l'etat la pose au bon endroit.
 const _breadcrumb = ScreenBreadcrumb.healthInfo;
 
+/// E5.16 / E57 / 630 : ecran de la fiche d'urgence.
+///
+/// Les donnees sont stockees localement — dans un FICHIER DEDIE sous le dossier
+/// declare exclu de la sauvegarde du telephone (tache 613, voir
+/// [HealthInfoFile]) — et ne quittent JAMAIS le telephone (pas de
+/// Firestore, pas de cloud, pas de sauvegarde Google ou Apple).
 class HealthInfoScreen extends ConsumerStatefulWidget {
   const HealthInfoScreen({super.key});
 
