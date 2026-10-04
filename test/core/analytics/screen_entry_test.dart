@@ -47,6 +47,26 @@ class _PuitsNoteur implements CrashSink {
   Future<void> setCollectionEnabled(bool enabled) async {}
 }
 
+/// Un faux Crashlytics qui COMPTE chaque appel, dans l'ordre (645-09b).
+class _PuitsCompteur implements CrashSink {
+  final appels = <String>[];
+
+  @override
+  Future<void> log(String message) async => appels.add('log($message)');
+  @override
+  Future<void> setCustomKey(String key, String value) async =>
+      appels.add('setCustomKey($key)');
+  @override
+  Future<void> recordError(
+    Object error,
+    StackTrace? stack, {
+    required bool fatal,
+  }) async => appels.add('recordError');
+  @override
+  Future<void> setCollectionEnabled(bool enabled) async =>
+      appels.add('setCollectionEnabled($enabled)');
+}
+
 /// Un puits crash EN PANNE : il leve a chaque geste (panne 1).
 class _PuitsQuiLeve implements CrashSink {
   @override
@@ -164,10 +184,45 @@ void main() {
 
     test('le service INERTE ne pose rien et ne leve pas', () async {
       // C'est l'etat de l'application 100 pct du temps aujourd'hui.
+      //
+      // RENFORCE PAR LE 645-09b (reserve (c) d'Artemis). Ce test passait
+      // `AnalyticsService.disabled()`, dont le puits est un no-op : il ne
+      // pouvait RIEN observer, et retirer le retour anticipe de
+      // `enterScreen` le laissait vert. Il compte maintenant les appels d'un
+      // faux Crashlytics, inerte puis vivant : zero d'un cote, la convention
+      // complete de l'autre — la preuve que c'est bien le drapeau qui coupe.
+      expect(AnalyticsService.disabled().isOperational, isFalse);
       await expectLater(
         AnalyticsService.disabled().enterScreen(ScreenBreadcrumb.hub),
         completes,
       );
+
+      final inerte = _PuitsCompteur();
+      await expectLater(
+        AnalyticsService(
+          analytics: const NoOpAnalyticsSink(),
+          crash: inerte,
+          operational: false,
+        ).enterScreen(ScreenBreadcrumb.map, trail: 'gr20', stage: '7'),
+        completes,
+      );
+      expect(
+        inerte.appels,
+        isEmpty,
+        reason: 'le service inerte a touche Crashlytics : ${inerte.appels}',
+      );
+
+      final vivant = _PuitsCompteur();
+      await AnalyticsService(
+        analytics: const NoOpAnalyticsSink(),
+        crash: vivant,
+      ).enterScreen(ScreenBreadcrumb.map, trail: 'gr20', stage: '7');
+      expect(vivant.appels, [
+        'setCustomKey(${AnalyticsKeys.screen})',
+        'setCustomKey(${AnalyticsKeys.trail})',
+        'setCustomKey(${AnalyticsKeys.stage})',
+        'log(screen:map)',
+      ]);
     });
   });
 
