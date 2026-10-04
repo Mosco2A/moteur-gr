@@ -108,9 +108,18 @@ EXCEPTIONS_FRANCAIS = ("carteSize", "listen", "listener", "listeners",
 
 # Prefixes des ecrans, pour la mesure d observabilite.
 SUFFIXE_ECRAN = "_screen.dart"
-APPELS_CRASHLYTICS = ("recordError", "setCustomKey", "log(", "miette",
-                      "Miette", "breadcrumb", "Breadcrumb",
-                      "FirebaseCrashlytics", "crashlytics")
+# LES MARQUES SONT DES MOTIFS, ET LA MIETTE D ENTREE EST BORNEE (lot 645-09b).
+# La liste portait la sous-chaine `log(`, CONTENUE dans `AlertDialog(`,
+# `_showAddNoteDialog(`, `_showResetDialog(`, `_goToCatalog();` et
+# `ErrorHandler.log(` : a la tete 6f747bf0 elle declarait 8 ecrans equipes alors
+# qu AUCUN ne l etait. Le geste reel d un ecran est `observeScreenEntry(`, cherche
+# avec une limite de mot pour qu aucun nom plus long ne le contienne.
+APPELS_CRASHLYTICS = (
+    re.compile(r"\bobserveScreenEntry\("),
+    *(re.compile(re.escape(m)) for m in (
+        "recordError", "setCustomKey", "miette", "Miette", "breadcrumb",
+        "Breadcrumb", "FirebaseCrashlytics", "crashlytics")),
+)
 
 
 # --- Utilitaires ----------------------------------------------------------
@@ -879,7 +888,7 @@ def mesurer_observabilite() -> dict:
     avec, sans = [], []
     for f in ecrans:
         texte = lire(f)
-        if any(a in texte for a in APPELS_CRASHLYTICS):
+        if any(a.search(texte) for a in APPELS_CRASHLYTICS):
             avec.append(f)
         else:
             sans.append(f)
@@ -897,7 +906,8 @@ def mesurer_observabilite() -> dict:
         "part_couverte_pct": round(100 * len(avec) / max(len(ecrans), 1), 1),
         "services_candidats": services,
         "methode": ("un ecran = un fichier *_screen.dart de lib/ ; miette = "
-                    f"une des marques {list(APPELS_CRASHLYTICS)} presente "
+                    "un des motifs "
+                    f"{[a.pattern for a in APPELS_CRASHLYTICS]} present "
                     "dans le fichier"),
     }
 
