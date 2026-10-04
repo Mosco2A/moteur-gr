@@ -275,15 +275,17 @@ void main() {
     /// le magasin de sans-pub, parce qu il en est le stockage. La cagnotte vit
     /// DANS le service de monetisation, elle n a donc pas de fichier a elle.
     ///
-    /// LOT 645-06, VAGUE 2 : `monetization_service.dart` a ete scinde en
-    /// `part` du meme dossier. La liste nomme donc les trois morceaux de LA
-    /// MEME bibliotheque, qui est toujours le seul service autorise. Aucune
-    /// attente n a bouge : c est la liste des FICHIERS qui suit le decoupage.
+    /// LOT 645-06b (regle 12, pas de `part`) : `monetization_service.dart`
+    /// re-exporte des bibliotheques soeurs du meme dossier, et delegue a des
+    /// classes collaboratrices (acces, abonnement) qui forment avec lui le
+    /// seul service autorise. Aucune attente n a bouge : c est la liste des
+    /// FICHIERS qui suit le decoupage.
     const autorises = {
       'lib/core/services/monetization_service.dart',
-      'lib/core/services/monetization_service_modeles.dart',
-      'lib/core/services/monetization_service_service.dart',
-      'lib/core/services/monetization_service_fournisseurs.dart',
+      'lib/core/services/monetization_models.dart',
+      'lib/core/services/monetization_providers.dart',
+      'lib/core/services/monetization_access.dart',
+      'lib/core/services/monetization_subscription.dart',
       'lib/core/data/daos/no_ads_dao.dart',
       'lib/features/ads/domain/ad_state.dart',
       'lib/features/group/services/ad_service.dart',

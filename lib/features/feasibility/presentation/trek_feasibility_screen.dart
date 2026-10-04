@@ -7,34 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/analytics/screen_entry.dart';
-import '../../../core/engine/trail_engine.dart';
-import '../../../core/services/session_demo.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
-import '../../../shared/widgets/grise_en_demo.dart';
-import '../../planning/planning_facade.dart'
-    show
-        defaultDurationWithRestProvider,
-        durationBoundsProvider,
-        retainedDurationProvider,
-        selectedDurationProvider;
-import '../../../domain/feasibility_formula.dart';
-import '../domain/hiker_profile.dart';
 import '../providers/hiker_profile_provider.dart';
 import '../providers/trek_feasibility_provider.dart';
 import '../providers/walk_test_provider.dart';
-import '../../../core/branding/stepways_icons.dart';
-
-part 'trek_feasibility_screen_flux.dart';
-part 'trek_feasibility_screen_demo.dart';
-part 'trek_feasibility_screen_verdict.dart';
-part 'trek_feasibility_screen_conseils.dart';
-part 'trek_feasibility_screen_sections.dart';
-part 'trek_feasibility_screen_synthese.dart';
-part 'trek_feasibility_screen_tuiles.dart';
+import 'feasibility_guided_flow.dart';
+import 'feasibility_tiles.dart';
+import 'feasibility_verdict_view.dart';
 
 /// Ecran de faisabilite profil x trek — FORMULE V1 FEU TRICOLORE (LOT 3a,
 /// decision Chris #100068) ENVELOPPEE d'un PARCOURS GUIDE (LOT 4, retours
@@ -139,15 +119,16 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
       appBar: AppHeader(title: f.formula.title),
       body: assessmentAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => _FallbackToQuestionnaire(reason: f.formula.intro),
+        error: (_, __) =>
+            FeasibilityQuestionnaireFallback(reason: f.formula.intro),
         data: (assessment) {
           if (assessment == null) {
             // Pas d'etapes -> questionnaire de dépannage.
-            return _FallbackToQuestionnaire(reason: f.sourceFallback);
+            return FeasibilityQuestionnaireFallback(reason: f.sourceFallback);
           }
           // D1 — AUCUN VERDICT tant que les criteres obligatoires manquent.
           if (!criteria.isComplete || _replayFlow) {
-            return _FeasibilityGuidedFlow(
+            return FeasibilityGuidedFlow(
               criteria: criteria,
               onOpenStep: _openStep,
               // Le bouton n'est actif QUE si les criteres sont complets.
@@ -157,7 +138,7 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
             );
           }
           // Sinon : le verdict tricolore #100068 (avec « Recommencer »).
-          return _VerdictView(
+          return FeasibilityVerdictView(
             assessment: assessment,
             onRestart: () => setState(() => _replayFlow = true),
           );
