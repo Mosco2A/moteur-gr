@@ -1009,6 +1009,103 @@ Aucune attente n'a bougé ; les deux gardes rougissent encore par mutation
 **Les deux `@override` en double** de la vague 1 avaient déjà été retirés par
 `6b91325` (fix(645-06)), présent dans la base : rien à faire.
 
+##### QA du 645-06b, partie code (04/10/2026, 17:26 UTC — Artemis, session cloud)
+
+**Périmètre.** Branche vérifiée `claude/chore/645-06b-bibliotheques-4xyqxt`
+à `2aca5db9` (9 commits sur `aed4a3d8`). Jonction faite sur la branche de QA
+`claude/qa/645-06b-jonction`, partie de l'intégration à `d48d2fd8` (build 9,
+version 0.1.5+9) : fusion `80698cf8`, sans avance rapide, **aucun conflit**
+(la fiche s'est fusionnée seule, les deux paragraphes sont gardés).
+L'intégration elle-même n'est pas touchée, aucun tag.
+
+**Verdicts de lecture (E1) — six OK, aucun AFFAIBLI.**
+- (a) OK : les 63 fichiers du diff sont tous sous `lib/domain`,
+  `lib/core/services`, `lib/features/feasibility`,
+  `lib/features/trek/presentation/map`, `lib/features/safety/presentation`,
+  `test/` ou `docs/`. Rien sous `tool/`.
+- (b) OK : `part of` écrits à la main 29 → **0** ; directives `part` hors
+  `.g.dart` / `.freezed.dart` → 0 (les 114 restantes visent du code généré).
+  Garde `pas_de_part_645_test.dart` prouvée par mutation : `part` ajouté dans
+  `feasibility_formula.dart` → rouge ; `part of` ajouté dans
+  `health_info_dialogs.dart` → rouge ; restauré, zéro diff. Limite notée, sans
+  effet : un `part "x.dart";` entre guillemets doubles échappe au motif de la
+  racine, mais le morceau qu'il viserait porte forcément un `part of`, que la
+  garde voit quelles que soient les guillemets (mutation faite : rouge).
+- (c) OK : API publique de `MonetizationService` comparée PAR PROGRAMME
+  (analyseur Dart résolu, avant `aed4a3d8` / après `2aca5db9`) : 45 lignes
+  identiques — constructeur et ses 10 paramètres nommés (5 requis), 4
+  accesseurs, 39 méthodes, signatures et types compris. Les 23 noms exportés
+  par la bibliothèque `monetization_service.dart` sont identiques aussi : aucun
+  collaborateur n'est exporté. `buyTrail` relu côte à côte : même suite
+  d'appels et d'`await` (démo, `await ownsTrail`, gratuit, prix au catalogue,
+  `await _quote`, `await debit`, complément : `await _isOnline` puis rollback,
+  ou `await rechargeWallet` puis rollback ; sinon `await markOwned`) ; seul
+  ajout, un cadre `async` de plus (`_refusal`), sans effet sur l'ordre.
+  `HealthInfoFormData` : `fill`, `compose`, `clear`, `dispose` reprennent
+  ligne à ligne l'ordre de l'ancien état ; aucune section n'a d'état (toutes
+  `StatelessWidget` / `ConsumerWidget`, zéro `setState` hors de l'écran).
+- (d) OK : 71 symboles devenus publics (ou nouveaux) ; aucun n'apparaît dans
+  les 20 `*_facade.dart`, qui n'exportent que des `providers/`. Les +3 d'ECR-23
+  sont exactement trois imports de `map/map_facade.dart` (par `map_content`,
+  `map_overlays`, `map_photo_button`) ; tous les autres croisements ont
+  seulement changé de fichier, un pour un.
+- (e) OK : les 12 tests adaptés ne changent que des imports, des chemins, un
+  nom (`_CollecteDeLaDemo` → `FeasibilityDemoInputs`) et l'aide de lecture
+  (`_sourceAvecSesParts` → `_sourceAvecSesVoisines`, qui suit les imports du
+  même dossier) ; aucune attente modifiée. Vérifié que les lectures couvrent
+  toujours tout l'ancien code : chaque ancienne bibliothèque est entièrement
+  lue par la nouvelle aide (carte 8 fichiers, faisabilité 9, fiche médicale 9,
+  monétisation 13), et les trois marqueurs de position du test 638 sont dans
+  le même fichier. Les listes de fichiers autorisés (647, journal) suivent le
+  découpage sans s'élargir à un fichier hors du service. Le plafond 48 → 46 est
+  un resserrement. Les 2 tests nouveaux (`pas_de_part_645_test.dart`) lus en
+  entier.
+- (f) OK avec correction de l'annonce : +101 infos nettes (7 513 → 7 614 sur
+  la tête jointe), mais elles ne sont PAS toutes `public_member_api_docs` :
+  +70 `public_member_api_docs`, +32 `directives_ordering`, +5
+  `unnecessary_import`, +1 `prefer_const_constructors`, −7
+  `lines_longer_than_80_chars`. Tolérées (décision « ok infos »).
+  `public_member_api_docs` par fichier (nouveaux) : `health_info_fields` 19,
+  `feasibility_tiles` 9, `feasibility_verdict_sections` 6,
+  `health_info_advice` 5, `feasibility_advice` 4, `feasibility_summary` 4,
+  `health_info_top_sections` 4, `map_content` 4,
+  `health_info_bottom_sections` 3, `feasibility_demo_inputs` 2,
+  `feasibility_verdict_view` 2, `health_info_form` 2, `health_info_inputs` 2,
+  `map_overlays` 2, `feasibility_guided_flow` 1, `map_arrival_pipeline` 1,
+  `map_photo_button` 1 (71), moins 1 disparu avec
+  `monetization_service_service`. Les `unnecessary_import` (+5 nets : un
+  dans chacun de six fichiers de la fiche médicale, `advice`, `fields`,
+  `form`, `inputs`, `top_sections`, `bottom_sections`, celui de l'ancien
+  écran ayant disparu) sont un nettoyage à faire dans un lot de code : la QA
+  ne touche pas `lib/`.
+
+**Gate sur la tête jointe `80698cf8`.** `dart format` : 1 306 fichiers, 0
+changé. `flutter analyze --no-pub --no-fatal-infos` : 0 erreur, 0 warning,
+7 614 infos. `flutter test` : **4 088 passés, 2 ignorés, 0 échec** (base
+`d48d2fd8` : 4 086). `build_runner build --delete-conflicting-outputs` puis
+`git status` : aucun fichier changé. `audit_global.py --rapide`, base →
+jointe : ECR-15 48 → **46**, ECR-28 198 → **195**, ECR-23 233 → **236**,
+ECR-19 10, ECR-31 19, ECR-05 77, VAC-01 0, OBS-01 0, observabilité 63/63,
+en-têtes 100 %, MORT-01 141 (inchangé). Un compteur monte en plus d'ECR-23,
+et c'est dit : **ECR-16 409 → 416** (avertissement, fichier de `lib/` sans
+test miroir du même nom), purement mécanique — ce sont les nouveaux fichiers
+des bibliothèques découpées, couverts par les mêmes tests qu'avant.
+
+**L'écart ECR-23 à 236 est accepté par Skynet.** Les trois sont des imports
+de FAÇADE, permis par la règle 10 ; la garde des couches reste à 52. Les
+ramener à un seul fichier demandait un fichier de plus de 500 lignes ou de
+remonter les lectures de providers vers l'écran, donc de changer le
+périmètre de reconstruction.
+
+**Mutations rejouées sur la tête jointe**, rouges chaque fois, puis
+restaurées, zéro diff : miette de la carte retirée de `map_screen.dart` →
+`observabilite_des_ecrans_645_test` rouge ; laïus `t.map.statsPendingNote`
+injecté dans `map_content.dart` (puis dans `map_overlays.dart`) →
+`cadrage_et_forme_558_test` rouge ; `part` ajouté à `map_screen.dart` →
+`pas_de_part_645_test` rouge.
+
+**Partie écrans : à compléter par Skynet.**
+
 ```
 PROMPT 645-06 (autonome)
 
