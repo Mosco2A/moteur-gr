@@ -1,10 +1,9 @@
 /// Les vocabulaires de la faisabilite : niveau, verdict, facteur
 /// limitant, contrainte de circuit et raison de neutralite.
 ///
-/// Morceau de `feasibility_formula.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'feasibility_formula.dart';
+/// Bibliotheque de la formule de faisabilite (lot 645-06b), re-exportee par
+/// `feasibility_formula.dart` : les appelants n'importent que cette racine.
+library;
 
 /// Niveau de randonneur deduit du profil (ordre croissant de capacite).
 ///

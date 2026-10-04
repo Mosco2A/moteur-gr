@@ -1,9 +1,18 @@
 /// La formule elle-meme : la source unique du verdict.
 ///
-/// Morceau de `feasibility_formula.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'feasibility_formula.dart';
+/// Bibliotheque de la formule de faisabilite (lot 645-06b), re-exportee par
+/// `feasibility_formula.dart` : les appelants n'importent que cette racine.
+/// Les regles de programme qu'elle appelle vivent a cote, dans
+/// `feasibility_program_rules.dart`.
+library;
+
+import 'dart:math' as math;
+
+import 'feasibility_assessment.dart';
+import 'feasibility_program_rules.dart';
+import 'feasibility_scale.dart';
+import 'feasibility_stages.dart';
+import 'feasibility_types.dart';
 
 /// Moteur de la formule de faisabilite V2 (fonctions PURES).
 class FeasibilityFormula {
@@ -171,7 +180,7 @@ class FeasibilityFormula {
   ///   0 = inconnu, aucun plafond.
   /// [durationAdvice] — LE CONSEIL DE DUREE (tache 569, R1). `null` = aucune
   ///   recherche n'a eu lieu : le moteur retombe alors sur son estimation de
-  ///   lissage historique ([_suggestedWalkingDays]), qui ne garantit RIEN sur la
+  ///   lissage historique ([suggestWalkingDays]), qui ne garantit RIEN sur la
   ///   couleur — c'est pourquoi le chemin de production en fournit toujours un
   ///   ([advisedProgramProvider]). [ProgramDurationAdvice.impossible] = la
   ///   recherche a eu lieu et AUCUNE valeur du curseur n'est meilleure que
@@ -249,7 +258,7 @@ class FeasibilityFormula {
     // 3. Score de circuit (C1 a C4).
     final circuit = verdicts.isEmpty
         ? null
-        : _circuitScore(
+        : computeCircuitScore(
             verdicts: verdicts,
             capacity: capacity,
             restAfterStageIndex: restAfterStageIndex,
@@ -264,7 +273,7 @@ class FeasibilityFormula {
     final daysOver = verdicts.where((v) => v.isOverCapacity).length;
 
     // 6. Facteur limitant nomme du verdict global.
-    final limiting = _computeLimitingFactor(
+    final limiting = computeLimitingFactor(
       verdicts: verdicts,
       daysOver: daysOver,
       hardestIndex: hardestIndex,
@@ -295,7 +304,7 @@ class FeasibilityFormula {
     } else {
       // Aucune recherche : estimation de lissage historique. Elle ne garantit
       // pas la couleur — voir [durationAdvice].
-      suggestedDays = _suggestedWalkingDays(
+      suggestedDays = suggestWalkingDays(
         verdicts,
         capacity,
         maxWalkingDays: maxWalkingDays,
@@ -303,7 +312,7 @@ class FeasibilityFormula {
       suggestedRestDays = recommendedRest.length;
     }
 
-    final advice = _buildAdvice(
+    final advice = programAdviceFor(
       verdicts: verdicts,
       circuit: circuit,
       globalVerdict: globalVerdict,

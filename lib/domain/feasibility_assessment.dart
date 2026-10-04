@@ -1,9 +1,12 @@
 /// Le bilan de faisabilite rendu au randonneur.
 ///
-/// Morceau de `feasibility_formula.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'feasibility_formula.dart';
+/// Bibliotheque de la formule de faisabilite (lot 645-06b), re-exportee par
+/// `feasibility_formula.dart` : les appelants n'importent que cette racine.
+library;
+
+import 'feasibility_scale.dart';
+import 'feasibility_stages.dart';
+import 'feasibility_types.dart';
 
 /// Resultat complet du moteur de faisabilite V2.
 class FeasibilityAssessment {

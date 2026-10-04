@@ -47,13 +47,22 @@
 /// l'alerte est portee par le dispositif poids) ; pas de terme de terrain
 /// (#M02/#M03 : la conversion cotation -> facteur n'est pas publiee) ; pas de
 /// coefficient de fatigue cumulative par jour (#M06).
+///
+/// RANGEMENT (lot 645-06b, regle 12 : pas de `part` hors code genere). Ce
+/// fichier est la PORTE de la formule : il re-exporte les cinq bibliotheques
+/// qui la composent, et les appelants n'importent que lui.
+///   - `feasibility_types.dart` : les vocabulaires (niveau, verdict...) ;
+///   - `feasibility_scale.dart` : le bareme, les seuils et les conditions ;
+///   - `feasibility_stages.dart` : l'etape, son verdict, le circuit, les
+///     conseils ;
+///   - `feasibility_assessment.dart` : le bilan rendu au randonneur ;
+///   - `feasibility_engine.dart` : la formule elle-meme.
+/// Les regles de programme (`feasibility_program_rules.dart`) n'y sont PAS :
+/// elles ne servent qu'a la formule.
 library;
 
-import 'dart:math' as math;
-
-part 'feasibility_formula_types.dart';
-part 'feasibility_formula_bareme.dart';
-part 'feasibility_formula_stages.dart';
-part 'feasibility_formula_bilan.dart';
-part 'feasibility_formula_formule.dart';
-part 'feasibility_formula_aides.dart';
+export 'feasibility_assessment.dart';
+export 'feasibility_engine.dart';
+export 'feasibility_scale.dart';
+export 'feasibility_stages.dart';
+export 'feasibility_types.dart';

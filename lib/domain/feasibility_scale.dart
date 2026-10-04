@@ -1,10 +1,14 @@
 /// Le bareme de la faisabilite : saison, seuils, echelle et
 /// conditions du trek.
 ///
-/// Morceau de `feasibility_formula.dart` (lot 645-06, vague 2) : meme
-/// bibliotheque, donc aucune visibilite, aucun identifiant et
-/// aucun site d appel ne changent.
-part of 'feasibility_formula.dart';
+/// Bibliotheque de la formule de faisabilite (lot 645-06b), re-exportee par
+/// `feasibility_formula.dart` : les appelants n'importent que cette racine.
+library;
+
+import 'dart:math' as math;
+
+import 'feasibility_stages.dart';
+import 'feasibility_types.dart';
 
 /// Saisons de depart reconnues par le moteur — memes cles stables que
 /// `Season` cote Sac (`winter`/`spring`/`summer`/`autumn`).

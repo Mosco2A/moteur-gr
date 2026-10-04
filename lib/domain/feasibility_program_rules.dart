@@ -1,15 +1,25 @@
-/// Les six aides privees de la formule de faisabilite.
+/// Les regles de programme de la formule de faisabilite : score de circuit,
+/// facteur limitant, jours de marche suggeres et conseils.
 ///
-/// Morceau de `feasibility_formula.dart` (lot 645-06, vague 2). Elles
-/// etaient `static` DANS la classe FeasibilityFormula, qui fait a elle
-/// seule 801 lignes et qu une classe Dart ne permet pas de scinder.
-/// Devenues fonctions privees de haut niveau de la MEME bibliotheque,
-/// elles restent appelees sans prefixe depuis la classe, exactement
-/// comme avant.
-part of 'feasibility_formula.dart';
+/// HISTOIRE (lot 645-06b). Ces quatre regles etaient `static` et privees DANS
+/// la classe [FeasibilityFormula], qui faisait a elle seule 801 lignes. Le lot
+/// 645-06 (vague 2) en avait fait des fonctions privees d'un fichier `part` ;
+/// la regle 12 (« pas de `part` hors code genere ») en fait une bibliotheque
+/// a part entiere. Elles sont donc PUBLIQUES, parce que la formule les appelle
+/// depuis un autre fichier — mais elles ne sont PAS re-exportees par
+/// `feasibility_formula.dart` : l'API de la formule ne change pas. Les deux
+/// aides qu'elles sont seules a utiliser restent privees ici.
+library;
+
+import 'dart:math' as math;
+
+import 'feasibility_engine.dart';
+import 'feasibility_scale.dart';
+import 'feasibility_stages.dart';
+import 'feasibility_types.dart';
 
 /// Calcule C1 a C4 et le score de circuit.
-CircuitScore _circuitScore({
+CircuitScore computeCircuitScore({
   required List<StageVerdict> verdicts,
   required double capacity,
   required Set<int> restAfterStageIndex,
@@ -71,7 +81,7 @@ CircuitScore _circuitScore({
 /// Determine le facteur limitant du verdict global : d'abord l'ENCHAINEMENT
 /// (>=2 jours consecutifs au-dessus du plafond), sinon le facteur dominant de
 /// l'etape la plus dure (distance, denivele, altitude ou chaleur).
-LimitingFactor _computeLimitingFactor({
+LimitingFactor computeLimitingFactor({
   required List<StageVerdict> verdicts,
   required int daysOver,
   required int hardestIndex,
@@ -119,7 +129,7 @@ bool _hasConsecutiveOver(List<StageVerdict> verdicts) {
 /// un toit). Le plafond ne descend jamais sous le programme courant :
 /// conseiller MOINS de jours que ce qui est deja pose n'a aucun sens ici, la
 /// fonction cherchant toujours a etaler l'effort.
-int _suggestedWalkingDays(
+int suggestWalkingDays(
   List<StageVerdict> verdicts,
   double capacity, {
   int maxWalkingDays = 0,
@@ -164,7 +174,7 @@ int _suggestedWalkingDays(
 /// Ce qui reste : l'ALERTE sur la journee qui fait mal, et l'entrainement, qui
 /// est la vraie reponse — monter d'un cran releve le plafond, donc fait passer
 /// la journee.
-List<ProgramAdvice> _buildAdvice({
+List<ProgramAdvice> programAdviceFor({
   required List<StageVerdict> verdicts,
   required CircuitScore? circuit,
   required FeasibilityVerdict globalVerdict,
