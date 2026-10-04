@@ -938,6 +938,77 @@ désormais la bibliothèque entière. Aucune attente modifiée. Vérifié par
 mutation en bac à sable : le laïus injecté dans un morceau est invisible à
 l'ancienne lecture et vu par la nouvelle.
 
+#### Ce que le 645-06b a fait (04/10/2026)
+
+**L'arbitrage est tranché.** Décision de Christophe du 03/10/2026, 22:12,
+verbatim : « Moi je veux que se soit propre et aux normes ». La convention des
+fichiers `part` est REFUSÉE, pour les cinq bibliothèques comme pour les deux
+résidus : pas d'exception. Elle est inscrite en **règle 12** de
+`docs/conventions.md` (« Pas de `part` hors code généré ») et gardée à ZÉRO par
+`test/structurel/pas_de_part_645_test.dart`.
+
+**Chiffres mesurés.** Départ à `aed4a3d8` (645-09b, jonction 645-09 comprise) :
+29 morceaux `part of` hors code généré, ECR-15 = **48**, ECR-28 = **198**,
+ECR-23 = **233**, ECR-19 = 10, ECR-31 = 19, ECR-05 = 77, VAC-01 = 0, en-têtes
+100 %, observabilité 63/63, `flutter test` 4081 passés et 2 ignorés. Arrivée :
+**0** `part of` hors code généré, ECR-15 = **46**, ECR-28 = **195**, ECR-23 =
+**236**, ECR-19 = 10, ECR-31 = 19, ECR-05 = 77, VAC-01 = 0, en-têtes 100 %,
+observabilité 63/63 ; plafond `plafondFichiersTropLongs` abaissé de 48 à 46.
+
+**ECR-23 monte de trois, et c'est dit.** Les trois sont des imports de FAÇADE
+(`map_facade.dart`, lu par quatre fichiers de la carte au lieu d'un) : la
+règle 10 les autorise et la garde des couches, qui ne compte pas les façades,
+reste à 52. L'audit, lui, les compte. Les ramener à un seul fichier aurait
+demandé soit un fichier de plus de 500 lignes, soit de remonter les lectures de
+providers des sous-widgets vers l'écran — donc de changer leur périmètre de
+reconstruction, ce que le lot interdit. Aucun import hors façade n'a été
+dupliqué.
+
+**Les fichiers créés.** Noms anglais (IDE-001), chacun avec ses imports :
+- formule (`lib/domain/`) : `feasibility_types`, `feasibility_scale`,
+  `feasibility_stages`, `feasibility_assessment`, `feasibility_engine`,
+  `feasibility_program_rules` ; `feasibility_formula.dart` les re-exporte ;
+- monétisation (`lib/core/services/`) : `monetization_models`,
+  `monetization_providers`, puis, pour le résidu, `monetization_dependencies`,
+  `monetization_pricing`, `monetization_entitlements`,
+  `monetization_subscription`, `monetization_rewards`, `monetization_access`,
+  `monetization_purchases` ;
+- faisabilité : `feasibility_guided_flow`, `feasibility_demo_inputs`,
+  `feasibility_verdict_view`, `feasibility_advice`,
+  `feasibility_verdict_sections`, `feasibility_summary`, `feasibility_tiles`,
+  `feasibility_labels` ;
+- carte : `map_content`, `map_sheets`, `map_overlays`, `map_photo_button`,
+  `map_arrival_pipeline`, `map_controller` ;
+- fiche médicale : `health_info_form`, `health_info_fields`,
+  `health_info_advice`, `health_info_inputs`, `health_info_top_sections`,
+  `health_info_bottom_sections`, puis, pour le résidu, `health_info_form_data`
+  et `health_info_dialogs`.
+Les widgets privés lus par un autre fichier sont devenus des classes publiques
+nommées, à paramètres nommés et avec `super.key` ; aucune façade de feature ne
+re-exporte quoi que ce soit de nouveau.
+
+**Les deux résidus.** `MonetizationService` (965 lignes) est devenu une façade
+de 330 lignes, derrière la même API publique, composée de six collaborateurs
+(prix, droits, abonnement, récompense, accès, achats) ; `buyTrail` (122 lignes)
+est lu en trois temps, pas à pas identiques. L'état de la fiche médicale (577
+lignes) garde le chargement, l'enregistrement, l'effacement et le `build` ; ses
+valeurs en édition vivent dans `HealthInfoFormData`, ses deux dialogues dans
+`health_info_dialogs.dart`. AUCUN état n'est descendu dans une section : chaque
+contrôleur est lu à l'enregistrement, écrit au chargement et vidé à
+l'effacement par l'écran, aucun n'est local à la section qui l'affiche. Plus
+aucun fichier des cinq anciennes bibliothèques ne dépasse 500 lignes, et plus
+aucune fonction des deux résidus ne dépasse 60.
+
+**La miette de la carte et de la fiche médicale** vit désormais dans le fichier
+qui porte la classe de l'écran, posée à l'entrée (`initState`).
+`observabilite_des_ecrans_645_test.dart` ne lit plus que ce fichier ;
+`cadrage_et_forme_558_test.dart` lit la carte avec ses bibliothèques voisines.
+Aucune attente n'a bougé ; les deux gardes rougissent encore par mutation
+(miette retirée, laïus injecté dans deux voisines différentes).
+
+**Les deux `@override` en double** de la vague 1 avaient déjà été retirés par
+`6b91325` (fix(645-06)), présent dans la base : rien à faire.
+
 ```
 PROMPT 645-06 (autonome)
 
