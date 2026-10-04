@@ -45,6 +45,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -102,6 +103,16 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
 final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
   (ref) => takeCardPhoto,
 );
+
+/// LA MIETTE D'OBSERVABILITE DE CET ECRAN (lot 645-09).
+///
+/// ELLE EST DECLAREE ICI ET POSEE AILLEURS, et ce n'est pas un detour : le lot
+/// 645-06 a scinde cet ecran en huit fichiers, et son ETAT — donc son
+/// `initState`, donc le seul point d'entree honnete — vit dans
+/// `health_info_screen_etat.dart`. La racine, elle, est le fichier que l'audit
+/// 644 compte comme « ecran ». Declarer la miette ici la rend visible a la
+/// mesure ; la poser dans le morceau qui porte l'etat la pose au bon endroit.
+const _breadcrumb = ScreenBreadcrumb.healthInfo;
 
 /// E5.16 / E57 / 630 : ecran de la fiche d'urgence.
 ///

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
@@ -93,6 +94,12 @@ class _TrekFeasibilityScreenState extends ConsumerState<TrekFeasibilityScreen> {
     await context.push(route);
     if (!mounted) return;
     _refreshAssessment();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.trekFeasibility);
   }
 
   /// ABONNEMENTS INCONDITIONNELS, DEPENDANCES D'ABORD (tache 548).

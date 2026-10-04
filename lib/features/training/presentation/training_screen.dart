@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/monetization_service.dart';
@@ -46,6 +47,10 @@ class TrainingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.training);
     final trail = ref.watch(trailConfigProvider);
     // Acces REACTIF, derive des droits Drift LOCAUX (offline-safe) : demo =
     // verrouille (teaser), sinon debloque. Tant qu'indetermine -> chargement.

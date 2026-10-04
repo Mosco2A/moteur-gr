@@ -1428,6 +1428,102 @@ gate, et ou sont les captures.
 > une preuve de recette, en build de debug, pas un journal embarqué. Elle est
 > vérifiée : **1 656 lignes `screen:` émises pendant `flutter test`**.
 
+> **CE QUE LE 645-09b A CORRIGÉ — session cloud du 04/10/2026, branche
+> `claude/fix/645-09b-pile-de-navigation`.** Jonction du 645-09 (`6ec401d9`)
+> sur l'intégration (`168cb8a2`) par fusion sans avance rapide, sans conflit
+> (`6a4863d6`), puis gate complète **avant** toute correction : 4075 passés,
+> 2 ignorés, 0 échec ; observabilité 63/63.
+>
+> **LA PILE DE NAVIGATION — VOIE (1), COMPLÉTÉE PAR UN OBSERVATEUR QUI NE SAIT
+> AUCUN NOM D'ÉCRAN.** Toute la correction vit dans le socle
+> (`lib/core/analytics/screen_entry.dart`) ; aucun des 63 écrans n'est touché,
+> le routeur reçoit une ligne (`observers: [ScreenEntryObserver()]`).
+> 1. **Le filtre (voie 1).** `observeScreenEntry` ne transmet l'entrée que si
+>    la route de l'écran est la route **courante**. Pour un écran sans état
+>    (`ConsumerWidget`, appel forcément depuis `build`) :
+>    `ModalRoute.isCurrentOf(context)`, qui abonne l'écran au **seul** aspect
+>    « courant » de sa route — quand on dépile ce qui le couvrait, il est
+>    reconstruit et repose sa miette. Les clés `trail` et `stage` suivent le
+>    même filtre : un écran caché ne pose plus rien. Un écran à état pose dans
+>    `initState`, où Flutter interdit de lire une route, et son montage **est**
+>    son entrée : il est transmis tel quel, comme avant.
+> 2. **L'observateur.** La voie (1) seule laissait un trou, mesuré : un écran
+>    **à état** qui redevient visible ne repasse pas par `initState`. Le
+>    cockpit (`/home`) et l'accueil (`/my-treks`) en sont — « Réglages » puis
+>    retour au cockpit laissait `screen` sur `settings`, un écran qui n'existe
+>    plus. `ScreenEntryObserver`, branché une fois sur `appRouter`, repose
+>    **après la frame** (l'arbre ne se parcourt pas pendant que `Navigator`
+>    reconstruit) l'entrée de l'écran redevenu courant, sur `didPop` et
+>    `didRemove`. Il ne connaît **aucun nom d'écran** : chaque écran range sa
+>    dernière entrée sur son propre élément (`Expando`, clé faible, rien ne
+>    s'accumule) et l'observateur ne fait que la reposer.
+>
+> **POURQUOI PAS LA VOIE (2) SEULE** : un observateur qui pose la miette du
+> sommet doit savoir quel écran porte chaque route — une seconde table des 63
+> noms à tenir à jour — et il laisse les écrans cachés poser leurs clés
+> `trail` et `stage`. Le filtre ferme les deux d'un coup, à la source.
+> **Aucune donnée de plus ne part** (moins, en fait : les miettes des écrans
+> cachés ne partent plus), les **63 miettes restent**, la **garde OBS-01 est
+> inchangée** et reste verte.
+>
+> **LA PREUVE DE PILE, ROUGE PUIS VERTE.**
+> `test/core/analytics/pile_de_navigation_645_09b_test.dart` monte le vrai
+> GoRouter, empile `settings` sur `weather` (deux écrans instrumentés dans
+> `build`), reconstruit l'écran du dessous par un changement d'état (le thème
+> bascule — un `ref.watch` ne suffit pas : Riverpod 3 **met en pause** les
+> abonnements d'un widget hors de l'écran), puis dépile. **Avant** la
+> correction : journal `[weather, settings, weather, settings, weather,
+> settings]`, le motif « à tour de rôle » d'Artemis. **Après** :
+> `[weather, settings]`, puis `weather` reposé au dépilement. Deux tests de
+> plus dans ce fichier (écran à état sous la pile : l'observateur repose sa
+> miette ; dialogue ouvert puis fermé : pas une miette de plus), et
+> `test/comportement/pile_de_navigation_reelle_645_09b_test.dart` rejoue la
+> pile sur **l'application réelle** : `/home` → météo → journal → réglages,
+> puis trois retours, la clé `screen` nommant l'écran visible à chaque étage.
+> Mutations rejouées : filtre retiré → rouge (« après l'ouverture de
+> /journal, la clé screen nomme un écran caché », journal `[hub, weather,
+> journal, weather]`) ; observateur débranché du routeur → rouge (« retour sur
+> hub : la clé screen nomme encore un écran dépilé », clé restée `weather`).
+>
+> **LES QUATRE RÉSERVES.**
+> (a) **Trois commentaires de doc rendus à leur cible** : la constante de
+> `health_info_screen.dart` passe au-dessus du doc de `HealthInfoScreen` (qui
+> retrouve « ne quittent JAMAIS le téléphone » — l'analyseur compte une info
+> `public_member_api_docs` de moins), `initState` passe au-dessus du pavé
+> « ABONNEMENTS INCONDITIONNELS » de `trek_feasibility_screen.dart` et de la
+> « Barre contextuelle » de `my_treks_screen.dart`. Balayage du diff
+> `168cb8a2..6ec401d9` sous `lib/features` : **68 blocs** (les 65 points
+> d'insertion — 63 appels et 2 constantes — plus les 3 signatures de classe
+> `StatelessWidget` → `ConsumerWidget`), en regardant la dernière ligne non
+> vide au-dessus de chaque bloc : **3 commentaires déplacés avant, 0 après**.
+> (b) **`accommodation_detail` passe `stageNumber?.toString()`** : absent, la
+> clé `stage` n'est plus posée (elle valait la chaîne `"null"`). Les 3 autres
+> porteurs de `stage` sont sûrs par leur type (`int stageNumber` pour
+> `trail_stage_detail` et `weather`, `int stageId` pour `trek_stage_detail`).
+> Test ajouté, rouge avant (« la clé stage vaut "null" »), vert après.
+> (c) **Le test « le service INERTE ne pose rien » observe enfin quelque
+> chose** : un faux Crashlytics qui compte ses appels, **zéro** avec
+> `operational: false`, la convention complète (`setCustomKey` ×3, `log`)
+> avec `true`. Retour anticipé de `enterScreen` retiré : il rougit.
+> (d) **`tool/audit_global.py`** : `APPELS_CRASHLYTICS` devient une liste de
+> motifs, et `log(` y est remplacé par `\bobserveScreenEntry\(` (limite de
+> mot sur le vrai geste d'un écran). Mesure **63/63** sur la tête ; rejouée
+> sur la tête `6f747bf0` : **8/63 → 0/63**, les 8 faux positifs d'Artemis
+> disparus un par un (4 `AlertDialog(` seuls, `_showResetDialog(` et
+> `_showAddNoteDialog(`, `_goToCatalog(`, `ErrorHandler.log(`).
+>
+> **COMPTEURS, AVANT → APRÈS** : tests 4075 → **4081** passés (+6 ajoutés :
+> 3 de pile, 1 de pile sur l'application réelle, 2 de la fiche hébergement ;
+> 1 renforcé), 2 ignorés, 0 échec ; observabilité 63/63 → 63/63 ; OBS-01 0 → 0 ; ECR-23
+> 233 → 233 ; ECR-15 48 → 48 ; ECR-28 198 → 198 ; ECR-19 10 → 10 ; ECR-31
+> 19 → 19 ; VAC-01 0 → 0 ; ECR-05 77 → 77 ; ECR-18 125 → 125 ; en-têtes
+> 100 % ; infos de l'analyseur 7513 → 7512 ; aucun fichier généré modifié.
+> **COMMITS** : jonction `6a4863d6`, pile `9a3d4f02`, (a) `c2112a7d`,
+> (b) `1dfaaf4b`, (c) `768fa6c6`, (d) `ddc7f0bd`, puis cette fiche ; gate
+> complète verte après la jonction et après chaque commit.
+> **Reste à faire par Skynet en local** : la preuve sur émulateur (parcours
+> « Réglages puis retour » et traversée `traversee_645_09_test.dart`).
+
 | Champ | Contenu |
 |---|---|
 | **C1 Réf** | 645-09 |

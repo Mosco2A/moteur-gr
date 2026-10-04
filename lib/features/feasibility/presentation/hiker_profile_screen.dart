@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -125,6 +126,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.hikerProfile);
     _load();
   }
 

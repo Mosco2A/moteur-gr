@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/analytics/screen_entry.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/models/stage_row.dart';
 import '../../../../core/models/stage_duration.dart';
@@ -45,6 +46,10 @@ class ItineraryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.itinerary, trail: trailId);
     final itineraryAsync = ref.watch(itineraryProvider.select((a) => a));
 
     // Q1 (§12.5) : ouvrir l'écran Itinéraire marque l'étape cœur « Itinéraire »

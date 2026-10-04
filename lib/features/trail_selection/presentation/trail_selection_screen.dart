@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
@@ -29,6 +30,10 @@ class TrailSelectionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.trailSelection);
     final t = Translations.of(context);
     final trails = ref.watch(availableTrailsProvider);
     final selectedId = ref.watch(selectedTrailIdProvider);

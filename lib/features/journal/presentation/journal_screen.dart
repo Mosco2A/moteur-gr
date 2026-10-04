@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -69,6 +70,10 @@ class JournalScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.journal, trail: trailId);
     // EN DEMO, LE JOURNAL S'OUVRE — EN LECTURE (tache 638, bugs 14 et 16).
     //
     // Sans cette branche, la demo tombait sur la vue VERROUILLEE : le sentier

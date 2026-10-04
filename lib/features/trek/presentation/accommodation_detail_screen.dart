@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -43,6 +44,16 @@ class AccommodationDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.accommodationDetail,
+      // ABSENT, LE NUMERO N'EST PAS POSE (lot 645-09b) : `'$stageNumber'`
+      // aurait pose la chaine "null" pendant que l'ecran affiche l'etape 1.
+      stage: stageNumber?.toString(),
+    );
     final theme = Theme.of(context);
     final stage = stageNumber ?? 1;
     final accommodationsAsync = ref.watch(accommodationsByStageProvider(stage));

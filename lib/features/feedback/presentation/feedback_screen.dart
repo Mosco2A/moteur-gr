@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -28,6 +29,12 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   final _contentController = TextEditingController();
   FeedbackType _selectedType = FeedbackTypeValues.suggestion;
   int? _rating;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.feedback);
+  }
 
   @override
   void dispose() {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/contextual_actions_provider.dart';
@@ -55,6 +56,12 @@ class MyTreksScreen extends ConsumerStatefulWidget {
 
 class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
     with ContextualActionsMixin {
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.myTreks);
+  }
+
   /// Barre contextuelle de l'accueil maison (SPEC §4) : Découvrir / Mon compte.
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [

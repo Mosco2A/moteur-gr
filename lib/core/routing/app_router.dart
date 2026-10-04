@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../i18n/translations.g.dart';
+import '../analytics/screen_entry.dart';
 import 'navigateur_racine.dart';
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
@@ -129,6 +130,11 @@ final _rootNavigatorKey = cleNavigateurRacine;
 ///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
+  // LOT 645-09b : la cle `screen` d'un rapport de plantage doit nommer l'ecran
+  // VU. Quand on depile, cet observateur repose la miette de l'ecran qui
+  // redevient visible — y compris d'un ecran a etat, dont la miette vit dans
+  // `initState` et ne repart pas d'elle-meme. Voir `screen_entry.dart`.
+  observers: [ScreenEntryObserver()],
   // Cablage nav (#88246 + HUB E07/AM-1) : le guard renvoie vers /onboarding au
   // premier lancement, puis vers /catalog tant qu aucun sentier n est
   // telecharge (currentTrailGuard). Une fois un sentier actif, l entree du
