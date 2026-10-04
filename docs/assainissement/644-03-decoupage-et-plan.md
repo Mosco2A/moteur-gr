@@ -1104,7 +1104,138 @@ injecté dans `map_content.dart` (puis dans `map_overlays.dart`) →
 `cadrage_et_forme_558_test` rouge ; `part` ajouté à `map_screen.dart` →
 `pas_de_part_645_test` rouge.
 
-**Partie écrans : à compléter par Skynet.**
+##### QA du 645-06b, partie écrans (04/10/2026, 21:45 — Artemis, émulateur local)
+
+**Périmètre et méthode.** Deux arbres de travail jetables sur le même
+émulateur (`emulator-5554`, 1080×2400, Android 14), même mode local, même
+thème, **installation vierge à chaque run** (recette réparée de la tâche 676,
+désinstallation du paquet contrôlée avant chaque scénario) : AVANT sur
+l'intégration `d48d2fd8` (build 9), APRÈS sur la branche de QA
+`claude/qa/645-06b-jonction` à `aa00623b`. Cinq scénarios joués **des deux
+côtés, dans le même ordre** : S1 Léa, S2 Marc, S3 Steve, traversée 645-09, et
+un scénario écrit pour cette QA (`qa_679_portefeuille_test.dart`, non commité)
+qui ouvre par la route les deux écrans qu'aucun persona ne traverse —
+`/wallet` et `/subscription` — et qui **joue une recharge**. Dix runs, zéro
+marqueur sans image, **retard de capture 0 ms partout**.
+
+**Comparaison au pixel : 148 captures comparées, 136 identiques AU PIXEL,
+12 écarts tous nommés — et aucun imputable au code.** La barre d'état est
+exclue (bande du haut, 85 px : l'horloge y bouge sur *toutes* les captures,
+écart mesuré 500 à 1 100 px par image, boîte `y 47..79`).
+
+| scénario | comparées | identiques au pixel | écarts |
+|---|---|---|---|
+| S1 Léa | 65 | 61 | 4 |
+| S2 Marc | 20 | 19 | 1 |
+| S3 Steve | 44 | 39 | 5 |
+| traversée 645-09 | 16 | 14 | 2 |
+| portefeuille / abonnement | 3 | **3** | **0** |
+
+Les douze écarts, un par un, avec les deux captures (scratchpad `645-06b/`) :
+- **Horloge dans le contenu** (5 captures) : `S1_32` et
+  `S3_16_journal_note_enregistree` (heure de la note, 18:58 → 19:25),
+  `S1E_25_meteo` et `T645_07_meteo` (« mis à jour à », 18:54 → 19:21),
+  `S3E_26_incendie` (idem, 19:06). Boîtes de 122 à 1 473 px.
+- **Bandeau fugace** (2 captures) : `S1_09c` et `S3E_37d_health_saved`, 153 000 px dans
+  la **seule** bande `y 2195..2336` — le bandeau vert « Fiche enregistrée »,
+  vivant 4 s, encore là d'un côté, déjà parti de l'autre. **Au-dessus de la
+  bande, les deux images sont identiques au pixel.**
+- **Image d'animation** (4 captures) : `S1_31` et `S3_15_journal_note_saisie`
+  (le bouton flottant du journal en cours d'effacement derrière la boîte
+  modale, plus 3 108 px de bord de clavier en bas),
+  `T645_12_secours` (le rouage « Acquisition GPS » à un autre angle),
+  `S2_01_boot` (97 % : l'écran « Test starting… » du harnais d'un côté,
+  l'écran de démarrage de l'app de l'autre — deux instants du même boot).
+- **Décalage d'un pixel du déroulant** (1 capture) : `S3E_37c_health_saisie`, 22 755 px.
+  **Prouvé, pas supposé** : l'en-tête fixe donne **0 px**, le clavier donne
+  **0 px**, et la bande `y 295..355` du déroulant tombe à **exactement 0 px**
+  quand on décale l'image APRÈS d'**un** pixel vers le bas. Mêmes glyphes,
+  posés un pixel plus bas : la position d'arrêt du défilement, pas le code.
+- **`S1_09c`** compte double ci-dessus (bandeau) ; le douzième écart est la
+  bande basse du clavier de `S1_31` (3 108 px, `y 2363..2373`).
+
+**Preuve statique en complément, jeton par jeton.** Un lot qui *déplace* du
+code ne se juge pas sur un diff ligne à ligne (fichiers supprimés puis
+recréés). Le multi-ensemble de tout ce qui peut se voir a donc été compté des
+deux côtés sur **tout `lib/`** : **1 443** occurrences de clés de traduction,
+**199** `ValueKey`, **886** icônes `StepwaysIcons`, **2 376** constantes de
+gabarit `AppTheme` — **zéro jeton dont le compte diffère**. Par zone touchée :
+faisabilité 41/23/69/156, carte 57/0/21/45, fiche médicale 115/30/59/127,
+monétisation 28 clés — zéro écart partout.
+
+**Personas sur la tête APRÈS — identiques à la tête AVANT, exigence par
+exigence.** S1 Léa **61 tenues / 2 échouées**, et ce sont **les deux connues**
+(CTA « Démarrer la randonnée » absent de l'arbre ; diplôme qui ne s'ouvre pas
+après un trek terminé) ; S2 Marc **20/20** ; S3 Steve **17/1** (le même
+diplôme) ; traversée `traversee_645_09_test.dart` **verte**, 12 écrans peints,
+pas de seconde miette au retour immédiat. Les mêmes chiffres, aux mêmes
+endroits, sur `d48d2fd8`.
+
+**Achat et recharge joués pour de vrai.** L'achat complet de S1 (mur payant
+`19b1`, achat, `19b2_apres_achat`) et celui de S3 (`03b_apres_achat`) sont
+passés des deux côtés, captures identiques au pixel. La **recharge** du
+compte-étapes est jouée par le scénario de QA : les trois paquets (11, 25, 50)
+sont présents, le solde est affiché, l'appui sur « 11 étapes » traverse
+`rechargeWallet` dans le collaborateur *achats* et rend **la même branche des
+deux côtés** — « Le paiement n'est pas disponible pour le moment. » (pas de
+magasin réel sur l'émulateur). Les trois captures de `/wallet`,
+du bandeau et de `/subscription` sont **identiques au pixel**.
+
+**Journal local : les miettes partent, et elles partent à l'identique.** Les
+deux écrans qui ont changé de fichier sont les plus surveillés : la carte
+(`screen:map`, l'appel est passé de `map_screen_view.dart` à
+`map_screen.dart`) et la fiche médicale (`screen:health_info`, passé de
+`health_info_screen_etat.dart` à `health_info_screen.dart`). Sur les cinq runs
+cumulés : `map` **3 / 3**, `health_info` **2 / 2**. Et le relevé complet est
+plus fort que ça : **40 écrans distincts, et le dictionnaire des comptes de
+miettes est identique caractère pour caractère entre AVANT et APRÈS**
+(`hub` 41, `trek_feasibility` 8, `settings` 7, `trail_catalog` 7,
+`adventure_recap` 6, `onboarding` 5, … `wallet_recharge` 1, `subscription` 1).
+
+**Logcat : 0 plantage, 0 ANR, 0 exception** — sur les **dix** runs, 96 000
+lignes lues (`main`, `crash`, `system`), recherche de `F/libc`,
+`FATAL EXCEPTION`, `signal N (SIG…)`, `ANR in`, `am_anr`, `Input dispatching
+timed out`, mort du processus `com.only1cent.stepways`, tombstone, et
+exceptions Dart (`E/flutter`, `Unhandled Exception`).
+
+**Ce qui n'est pas vert, et qui ne vient pas du lot.**
+- Le **contrôle de fin de run refuse S1 et S3 des deux côtés** : des captures
+  légitimement identiques (ticks GPS successifs sur une carte immobile,
+  `23_apres_gps` = `25_apres_sos`) ne sont pas toutes déclarées dans
+  `captures_doublons_tolerees.txt`, et le groupement change d'un run à
+  l'autre. Les jeux de captures, eux, sont sains : 65/65 et 44/44, aucun
+  manquant, aucun vide, aucune orpheline, retard 0 ms. **Dette de la recette
+  de capture, pas du 645-06b** — et le refus tombe identiquement sur
+  `d48d2fd8`.
+- Le scénario de QA du portefeuille est tombé **rouge au teardown côté AVANT**
+  (« A SemanticsHandle was active at the end of the test ») et **vert côté
+  APRÈS**, après les trois captures et après les deux attentes. Rejoué une
+  troisième fois sur `d48d2fd8` : plus d'erreur de sémantique du tout — c'est
+  donc **intermittent, et dans mon harnais jetable** (non commité), pas dans le
+  produit. Ce troisième run a en revanche montré une autre faiblesse du même
+  harnais : sur un démarrage lent, la poussée directe vers `/wallet` part
+  **pendant que l'accueil est encore à l'écran** et n'atteint jamais le
+  compte-étapes (`packs=[]`). Les deux runs comparés, eux, ont bien atteint
+  l'écran complet des deux côtés.
+- **La QA a failli être impossible, et ça n'est pas un détail d'outillage.**
+  `skynet_watchdog.py` (PRC-003, `_find_disk_hog`) **a tué le démon de
+  captures** à 20:18:55 et le démon de dialogues à 20:13:32, run perdu, 0
+  capture pour 52 marqueurs. Cause : le premier build Gradle d'un arbre neuf
+  fait croître l'occupation du volume de 17 Go/h, au-dessus du seuil critique
+  de 5 Go/h — et le tueur ne regarde **que** `python|node`, donc il abat le
+  démon de captures (python) et jamais Gradle (java). Pire, `Get-Process` ne
+  porte aucune propriété `IO` : le tri `$_.IO.WriteBytes` trie sur `$null` et
+  `Select -First 1` rend **un processus au hasard**. PRC-003 n'abat donc pas
+  le glouton, il abat un passant. Parade appliquée ici, dans mon périmètre :
+  **pré-construire les APK avant d'allumer les démons**, puis attendre que la
+  vitesse soit retombée avant chaque run. Le correctif du watchdog est
+  hors périmètre QA (`scripts/` interdit à Artemis) : signalé en base.
+
+**Verdict écrans : RIEN NE CHANGE À L'ÉCRAN.** Les quatre zones découpées
+(faisabilité, carte, fiche médicale, monétisation) rendent le même pixel, le
+même texte, les mêmes clés, les mêmes icônes, les mêmes miettes et les mêmes
+verdicts persona qu'avant le lot. Rien n'est livré, rien ne touche `main` ni
+l'intégration.
 
 ```
 PROMPT 645-06 (autonome)
