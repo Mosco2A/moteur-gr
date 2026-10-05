@@ -184,6 +184,47 @@ void main() {
     });
   });
 
+  // P1 (#101255 point 1, defaut #101197 point 1) — `_LOAD` NE LEVE PLUS, ET UNE
+  // CLE HERITEE N'EN REMET PAS CINQ AUTRES PAR DEFAUT.
+  //
+  // Le test du service prouve que chaque LECTURE se replie ; celui-ci prouve ce
+  // qui compte pour le randonneur : apres le chargement, l'ETAT de l'application
+  // porte ses choix. Avant le correctif, `getString` sur l'index d'enum du
+  // 26/05 levait un `TypeError` au milieu de la construction d'`AppSettings` :
+  // l'affectation `state = ...` n'avait jamais lieu et l'ecran des reglages
+  // affichait francais / sombre / km / cache a 500 Mo, sans un mot.
+  group('SettingsNotifier — une preference heritee ne perd pas les autres', () {
+    test('_load relit les autres reglages malgre l unite de temperature '
+        'ecrite a l ancienne forme (build du 26/05)', () async {
+      SharedPreferences.setMockInitialValues({
+        'settings_language': AppLanguageValues.en,
+        'settings_distance_unit': DistanceUnitValues.miles,
+        // Forme du build du 26/05 (commit db71ad1e) : un INDEX d'enum.
+        'settings_temperature_unit': 1,
+        'settings_theme_mode': AppThemeModeValues.light,
+        'settings_cache_enabled': false,
+        'settings_cache_size_mb': 250,
+        'settings_dominant_hand': DominantHandValues.left,
+      });
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      container.read(settingsProvider);
+      await Future<void>.delayed(Duration.zero);
+
+      final apres = container.read(settingsProvider);
+      // La cle heritee, et elle seule, retombe sur son defaut.
+      expect(apres.temperatureUnit, TemperatureUnitValues.celsius);
+      // Les six autres choix du randonneur sont intacts.
+      expect(apres.language, AppLanguageValues.en);
+      expect(apres.distanceUnit, DistanceUnitValues.miles);
+      expect(apres.themeMode, AppThemeModeValues.light);
+      expect(apres.cacheEnabled, isFalse);
+      expect(apres.cacheSizeMb, 250);
+      expect(apres.dominantHand, DominantHandValues.left);
+    });
+  });
+
   // Meme durcissement anti-dispose (garde `ref.mounted` apres l'await, comme
   // SkinNotifier / SW-SKIN-L7) pour tous les Notifier au MEME schema : build()
   // synchrone puis lecture async (SharedPreferences / service) qui ecrit `state`

@@ -36,6 +36,7 @@
 | 04/10/2026 | 645-06b | Les fichiers `part` redécoupés en bibliothèques, et deux résidus sous 500 lignes. | #101208, #101214, #101217, #101219 |
 | 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
 | 05/10/2026 | 645-05c | Les cinquante-deux croisements entre features à zéro : trois tuiles montent dans `shared/`, le reste passe par les façades. | #101226 |
+| 05/10/2026 | produit P1 | Lecture tolérante des réglages : une clé héritée du build du 26/05 ne remet plus les autres réglages par défaut. | #101255 |
 
 ## Ce qui reste ouvert au 04/10/2026
 

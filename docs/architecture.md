@@ -60,14 +60,14 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte 664 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-127 570 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+127 643 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 184 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 30 327 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 164 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 237 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 831 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -139,7 +139,7 @@ miette d'observabilité, **0** n'en porte pas : 63 sur 63, posées par le lot
 
 ## Tests
 
-L'audit compte **494** fichiers de test et **3844** cas déclarés par
+L'audit compte **494** fichiers de test et **3848** cas déclarés par
 `test(` ou `testWidgets(` (comptage statique ; l'exécution en déclare davantage,
 des cas étant engendrés en boucle). **418** fichiers de `lib/` n'ont pas de
 test miroir du même nom (ECR-16, avertissement), soit **37.0** % de `lib/`
