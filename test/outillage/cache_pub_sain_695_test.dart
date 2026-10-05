@@ -515,4 +515,315 @@ void main() {
       );
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // FLUTTER EST RESOLU EN CHEMIN, JAMAIS LANCE PAR SON NOM NU — tache 699.
+  //
+  // CE QUE CES CAS EMPECHENT DE REVENIR, ET C'EST MESURE (#101332). La premiere
+  // version de cet outil lancait `['flutter', 'pub', 'get']` — un NOM NU — en
+  // `subprocess.run(shell=False)`. Sous Windows, `C:\flutter\bin` ne contient
+  // que `flutter` (script sh) et `flutter.bat`, AUCUN `.exe`, et
+  // `CreateProcess` ne resout NI `.bat` NI `.cmd` : `--pub-get` levait
+  // `FileNotFoundError [WinError 2]` avec une trace nue, donc l'outil ecrit
+  // pour serialiser les `pub get` ne pouvait PAS faire de `pub get`. La QA
+  // #101314 ne l'avait pas vu : elle avait mesure `--mesurer`, `--simuler` et
+  // `--purger`, jamais le bout de la chaine.
+  //
+  // COMMENT ON LE MESURE SANS LE VRAI SDK. On fabrique un FAUX dossier bin qui
+  // porte l'etat exact du vrai sous Windows — un `.bat`, pas de `.exe`, pas de
+  // fichier sans suffixe — et on REDUIT LE PATH a ce seul dossier : le vrai
+  // flutter n'y est pas. Le faux trace ses appels. Et le TEMOIN DU DEFAUT vient
+  // d'abord : dans ce meme PATH, un nom nu leve bien WinError 2 alors que le
+  // chemin complet tourne. Sans lui, ces cas pourraient passer au vert sur un
+  // PATH complaisant.
+  group('FLUTTER EST RESOLU EN CHEMIN, JAMAIS LANCE PAR SON NOM NU', () {
+    final pythonExe = python == null ? null : _pythonComplet(python);
+
+    test('LE TEMOIN DU DEFAUT : dans ce PATH, le nom nu ne se lance PAS, le '
+        'chemin complet SI', () {
+      if (pythonExe == null) {
+        markTestSkipped('aucun interpreteur Python sur cette machine');
+        return;
+      }
+      if (!Platform.isWindows) {
+        markTestSkipped(
+          'le defaut est propre a CreateProcess : hors Windows, le lanceur du '
+          'SDK est un script SANS suffixe que le nom nu trouve',
+        );
+        return;
+      }
+      final sdk = _fauxSdk();
+      try {
+        final nu = Process.runSync(
+          pythonExe,
+          <String>[
+            '-c',
+            'import subprocess\n'
+                'try:\n'
+                '    subprocess.run(["flutter", "--version"], '
+                'capture_output=True)\n'
+                '    print("LANCE")\n'
+                'except FileNotFoundError as err:\n'
+                '    print("REFUSE", err.errno)\n',
+          ],
+          environment: _env(sdk.dossier.path),
+          includeParentEnvironment: false,
+        );
+        expect(
+          '${nu.stdout}',
+          contains('REFUSE 2'),
+          reason:
+              'le nom nu se lance dans ce PATH : le faux SDK ou le PATH reduit '
+              'ne tiennent pas, et les cas suivants ne mesureraient rien. '
+              'Sortie : ${nu.stdout}${nu.stderr}',
+        );
+
+        final complet = Process.runSync(
+          pythonExe,
+          <String>[
+            '-c',
+            'import subprocess, sys\n'
+                'fini = subprocess.run([sys.argv[1], "--version"])\n'
+                'print(fini.returncode)\n',
+            '${sdk.dossier.path}\\flutter.bat',
+          ],
+          environment: _env(sdk.dossier.path),
+          includeParentEnvironment: false,
+        );
+        expect(
+          complet.exitCode,
+          0,
+          reason:
+              'le MEME appel par le chemin complet doit tourner, sinon ce '
+              'n est pas la resolution qui est en cause : '
+              '${complet.stdout}${complet.stderr}',
+        );
+      } finally {
+        sdk.dossier.deleteSync(recursive: true);
+      }
+    });
+
+    test('--pub-get LANCE LE FLUTTER DU PATH alors qu il n y a qu un .bat', () {
+      if (pythonExe == null) {
+        markTestSkipped('aucun interpreteur Python sur cette machine');
+        return;
+      }
+      final sdk = _fauxSdk();
+      final bac = _fauxCache();
+      try {
+        final r = _lancerAvec(pythonExe, bac.path, const [
+          '--pub-get',
+        ], _env(sdk.dossier.path));
+        expect(r.code, 0, reason: 'sortie :\n${r.sortie}');
+        expect(
+          sdk.trace.existsSync(),
+          isTrue,
+          reason:
+              'le faux flutter n a pas ete appele : la resolution n a pas eu '
+              'lieu.\n${r.sortie}',
+        );
+        expect(
+          sdk.trace.readAsStringSync(),
+          contains('pub get'),
+          reason: 'flutter a ete lance, mais pas avec « pub get »',
+        );
+        expect(
+          r.sortie.toLowerCase(),
+          contains('(sous verrou)'),
+          reason: 'la commande doit etre lancee SOUS LE VERROU',
+        );
+        expect(
+          r.sortie,
+          isNot(contains('Traceback')),
+          reason: 'aucune trace d exception ne doit remonter a l appelant',
+        );
+        expect(
+          _restants(bac),
+          isNot(contains('/hosted/pub.dev/vide-2.0.0')),
+          reason: 'la purge sous verrou doit avoir eu lieu avant le pub get',
+        );
+        expect(
+          File('${bac.path}/.stepways_pub_get.lock').existsSync(),
+          isFalse,
+          reason: 'le verrou doit etre RENDU',
+        );
+      } finally {
+        sdk.dossier.deleteSync(recursive: true);
+        bac.deleteSync(recursive: true);
+      }
+    });
+
+    test('PATHEXT DETOURNE : which ne trouve rien, et c est LE REPLI qui '
+        'trouve', () {
+      if (pythonExe == null) {
+        markTestSkipped('aucun interpreteur Python sur cette machine');
+        return;
+      }
+      if (!Platform.isWindows) {
+        markTestSkipped('PATHEXT n existe que sous Windows');
+        return;
+      }
+      final sdk = _fauxSdk();
+      final bac = _fauxCache();
+      try {
+        // `shutil.which` honore PATHEXT : prive de `.BAT`, il rend None. Le
+        // repli explicite de resolution_executable.py essaie `.bat` DOSSIER PAR
+        // DOSSIER du PATH, et c est tout l interet de ne pas s en remettre a
+        // `which` seul.
+        final env = _env(sdk.dossier.path)..['PATHEXT'] = '.BANC699';
+        final r = _lancerAvec(pythonExe, bac.path, const ['--pub-get'], env);
+        expect(r.code, 0, reason: 'sortie :\n${r.sortie}');
+        expect(
+          sdk.trace.existsSync() &&
+              sdk.trace.readAsStringSync().contains('pub get'),
+          isTrue,
+          reason:
+              'PATHEXT detourne, le repli doit prendre le relais.\n${r.sortie}',
+        );
+      } finally {
+        sdk.dossier.deleteSync(recursive: true);
+        bac.deleteSync(recursive: true);
+      }
+    });
+
+    test('PATH VIDE : l outil REFUSE proprement, sans prendre le verrou et '
+        'sans trace d exception', () {
+      if (pythonExe == null) {
+        markTestSkipped('aucun interpreteur Python sur cette machine');
+        return;
+      }
+      final bac = _fauxCache();
+      try {
+        final r = _lancerAvec(pythonExe, bac.path, const [
+          '--pub-get',
+        ], _env(''));
+        expect(
+          r.code,
+          76,
+          reason:
+              '76 = executable introuvable, distinct de 75 (verrou non obtenu) '
+              'et du code de la commande.\n${r.sortie}',
+        );
+        expect(r.sortie, contains('FLUTTER INTROUVABLE'));
+        expect(
+          r.sortie,
+          contains('PATHEXT'),
+          reason:
+              'le message doit dire CE QUI A ETE TENTE : sans PATHEXT ni la '
+              'liste des candidats, le lecteur ne sait pas si le defaut est '
+              'dans sa machine ou dans le code',
+        );
+        expect(r.sortie, contains('flutter.bat'));
+        expect(
+          r.sortie,
+          isNot(contains('Traceback')),
+          reason:
+              'l appelant est un script de recette : il merite une ligne '
+              'lisible, pas une trace d exception',
+        );
+        expect(
+          File('${bac.path}/.stepways_pub_get.lock').existsSync(),
+          isFalse,
+          reason: 'aucun verrou ne doit rester',
+        );
+        expect(
+          _restants(bac),
+          contains('/hosted/pub.dev/vide-2.0.0'),
+          reason:
+              'LA RESOLUTION PASSE AVANT LE VERROU ET LA PURGE : un outil '
+              'introuvable ne doit faire attendre personne, et ne doit RIEN '
+              'avoir efface',
+        );
+      } finally {
+        bac.deleteSync(recursive: true);
+      }
+    });
+  });
+}
+
+/// Le chemin COMPLET de l'interpreteur Python.
+///
+/// Indispensable pour le lancer avec un PATH reduit : avec le nom nu, c'est lui
+/// qu'on ne trouverait plus, et le cas mesurerait l'inverse de ce qu'il croit.
+String? _pythonComplet(String python) {
+  try {
+    final r = Process.runSync(python, const [
+      '-c',
+      'import sys; print(sys.executable)',
+    ]);
+    final chemin = '${r.stdout}'.trim();
+    if (r.exitCode != 0 || chemin.isEmpty) return null;
+    return chemin;
+  } on ProcessException {
+    return null;
+  }
+}
+
+/// Un environnement MINIMAL dont le PATH est exactement [dossierSdk].
+///
+/// `includeParentEnvironment: false` est volontaire : herite du PATH de la
+/// machine, le vrai flutter serait trouve et le cas ne prouverait rien.
+/// `SystemRoot` et `COMSPEC` restent : le premier parce que Python en a besoin
+/// pour demarrer sous Windows, le second parce que `CreateProcess` passe par
+/// `cmd.exe` pour executer un `.bat`.
+Map<String, String> _env(String dossierSdk) {
+  final env = <String, String>{
+    'PATH': dossierSdk,
+    'PATHEXT': '.COM;.EXE;.BAT;.CMD',
+    'PYTHONIOENCODING': 'utf-8',
+  };
+  for (final nom in const ['SystemRoot', 'windir', 'COMSPEC', 'TEMP', 'TMP']) {
+    final v = Platform.environment[nom];
+    if (v != null) env[nom] = v;
+  }
+  return env;
+}
+
+/// « Tous les arguments » en shell POSIX, hors de l'interpolation Dart.
+const _tousLesArgumentsSh = r'$@';
+
+/// Un faux dossier `bin` de SDK, dans l'etat EXACT du vrai.
+///
+/// Sous Windows : `flutter.bat` et RIEN D'AUTRE — ni `.exe`, ni fichier sans
+/// suffixe. Ailleurs : le script `flutter` sans suffixe, comme le vrai SDK. Le
+/// faux flutter TRACE ses arguments, donc on sait ce qu'il a recu.
+({Directory dossier, File trace}) _fauxSdk() {
+  final dossier = Directory.systemTemp.createTempSync('faux_sdk_699_');
+  final trace = File('${dossier.path}/appels.txt');
+  if (Platform.isWindows) {
+    File('${dossier.path}/flutter.bat').writeAsStringSync(
+      '@echo off\r\n'
+      'echo APPEL: %* >> "${trace.path}"\r\n'
+      'echo Got dependencies!\r\n'
+      'exit /b 0\r\n',
+    );
+  } else {
+    final lanceur = File('${dossier.path}/flutter')
+      ..writeAsStringSync(
+        <String>[
+          '#!/bin/sh',
+          'echo "APPEL: $_tousLesArgumentsSh" >> "${trace.path}"',
+          'echo "Got dependencies!"',
+          '',
+        ].join('\n'),
+      );
+    Process.runSync('chmod', <String>['+x', lanceur.path]);
+  }
+  return (dossier: dossier, trace: trace);
+}
+
+/// Lance l'outil sur [cache] avec [args] DANS [environnement].
+({int code, String sortie}) _lancerAvec(
+  String pythonExe,
+  String cache,
+  List<String> args,
+  Map<String, String> environnement,
+) {
+  final r = Process.runSync(
+    pythonExe,
+    <String>[_outil, '--cache', cache, ...args],
+    environment: environnement,
+    includeParentEnvironment: false,
+  );
+  return (code: r.exitCode, sortie: '${r.stdout}${r.stderr}');
 }

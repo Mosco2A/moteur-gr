@@ -33,6 +33,9 @@ from datetime import datetime
 TOOL_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(TOOL_DIR)
 
+sys.path.insert(0, TOOL_DIR)
+from resolution_executable import resoudre_executable  # noqa: E402
+
 LIB = os.path.join(REPO, "lib")
 TEST = os.path.join(REPO, "test")
 
@@ -166,17 +169,18 @@ RACINES_SDK = (r"C:\flutter\bin", r"C:\src\flutter\bin",
 
 
 def resoudre(binaire: str) -> str | None:
-    """Chemin complet d un executable du SDK, ou None s il est introuvable."""
-    import shutil
-    trouve = shutil.which(binaire)
-    if trouve:
-        return trouve
-    for racine in RACINES_SDK:
-        for suffixe in (".bat", ".exe", ""):
-            candidat = os.path.join(racine, binaire + suffixe)
-            if os.path.isfile(candidat):
-                return candidat
-    return None
+    """Chemin complet d un executable du SDK, ou None s il est introuvable.
+
+    DELEGUE a `tool/resolution_executable.py` (tache 699) : il n existe plus
+    qu UNE resolution d executable dans `tool/`, et c est elle que la garde
+    `aucun_nom_nu_pour_flutter_699_test.dart` exige. Celle d ici ne connaissait
+    que `.bat`, `.exe` et le nom nu dans les racines du SDK ; la commune ajoute
+    `.cmd`, `.com`, le repli dossier par dossier du PATH quand `PATHEXT` est
+    detourne, et une raison d echec qui dit ce qui a ete tente. Les racines du
+    SDK restent le dernier recours, inchangees.
+    """
+    chemin, _raison = resoudre_executable(binaire, racines_extra=RACINES_SDK)
+    return chemin
 
 
 def commande(args: list[str], cwd: str | None = None) -> tuple[int, str]:
@@ -200,6 +204,25 @@ def commande(args: list[str], cwd: str | None = None) -> tuple[int, str]:
         return 127, f"commande inexecutable : {err}"
     except subprocess.TimeoutExpired:
         return 124, "depassement de delai"
+
+
+def commande_sdk(outil: str, args: list[str],
+                 cwd: str | None = None) -> tuple[int, str]:
+    """Lance un outil du SDK (`flutter`, `dart`) PAR SON CHEMIN RESOLU.
+
+    POURQUOI UNE FONCTION DE PLUS, ET PAS `commande(["flutter", ...])` (tache
+    699). `commande` resout bien son premier element, mais la ligne d appel
+    PORTAIT le nom nu — la forme exacte qui a casse `gerer_qa('compiler')`
+    (#101301) puis `--pub-get` (#101332). Un nom nu lisible dans une liste de
+    commande est devenu une faute du depot, refusee par
+    `aucun_nom_nu_pour_flutter_699_test.dart` : ici le nom est un ARGUMENT A
+    RESOUDRE, jamais un argv[0]. Le code 127 garde son sens — commande absente,
+    mesure INDISPONIBLE, jamais zero — et la raison dit ce qui a ete tente.
+    """
+    chemin, raison = resoudre_executable(outil, racines_extra=RACINES_SDK)
+    if chemin is None:
+        return 127, f"commande absente de la machine : {outil} ({raison})"
+    return commande([chemin] + args, cwd=cwd)
 
 
 def decoupler_identifiants(texte: str) -> list[str]:
@@ -917,8 +940,9 @@ def mesurer_observabilite() -> dict:
 def mesurer_outillage(rapide: bool = False) -> dict:
     """dart format, flutter analyze, flutter pub outdated."""
     res: dict = {}
-    code, sortie = commande(["dart", "format", "--output=none",
-                             "--set-exit-if-changed", "lib", "test", "tool"])
+    code, sortie = commande_sdk("dart", ["format", "--output=none",
+                                         "--set-exit-if-changed",
+                                         "lib", "test", "tool"])
     changes = [l for l in sortie.splitlines() if l.startswith("Changed")]
     res["dart_format"] = {
         "code_retour": code,
@@ -971,7 +995,8 @@ def mesurer_outillage(rapide: bool = False) -> dict:
         }
         return res
 
-    code, sortie = commande(["flutter", "analyze", "--no-pub", "--no-fatal-infos"])
+    code, sortie = commande_sdk("flutter", ["analyze", "--no-pub",
+                                            "--no-fatal-infos"])
     res["flutter_analyze"] = {
         "code_retour": code,
         "disponible": code != 127,
@@ -983,7 +1008,7 @@ def mesurer_outillage(rapide: bool = False) -> dict:
         "commande": "flutter analyze --no-pub --no-fatal-infos",
     }
 
-    code, sortie = commande(["flutter", "pub", "outdated", "--json"])
+    code, sortie = commande_sdk("flutter", ["pub", "outdated", "--json"])
     obsoletes = []
     try:
         donnees = json.loads(sortie[sortie.index("{"):sortie.rindex("}") + 1])

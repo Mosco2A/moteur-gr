@@ -48,15 +48,28 @@ change RIEN a la facon d'appeler flutter, et laisse le cache partage faire son
 travail. La purge, elle, repare le cache deja abime par un appelant qui n'est
 pas passe par ici — c'est le filet, le verrou est la regle.
 
+ET FLUTTER N'EST PAS LANCE PAR SON NOM NU (`--pub-get`). Il est RESOLU en
+chemin complet avant d'etre lance. Sous Windows, `C:\\flutter\\bin` ne contient
+que `flutter` (script sh) et `flutter.bat`, et `CreateProcess` — l'appel
+systeme derriere `subprocess.run(shell=False)` — ne resout ni `.bat` ni `.cmd`.
+La premiere version de cet outil passait le nom nu tel quel : elle levait
+`FileNotFoundError [WinError 2]` et ne pouvait donc PAS faire son `pub get`,
+c'est-a-dire exactement ce pour quoi elle avait ete ecrite (mesure du build 11,
+#101332 ; meme defaut que le lot infra L8a, #101318). La resolution vit dans
+`tool/resolution_executable.py`, partagee par les outils du depot, et elle NE
+PASSE JAMAIS par `shell=True`. La resolution est faite AVANT de prendre le
+verrou : un outil introuvable ne fait attendre personne.
+
 Usage :
   python tool/pub_cache_sain.py --purger [--simuler] [--cache <dir>]
   python tool/pub_cache_sain.py --pub-get [--attente-max-s 900] [--cache <dir>]
   python tool/pub_cache_sain.py --sous-verrou <commande...>
   python tool/pub_cache_sain.py --mesurer          # ne touche a rien
 
-Codes de sortie : 0 si tout va bien, le code de la commande sous verrou, et 75
-si le verrou n'a pas pu etre pris dans le budget (pas de trace d'exception :
-l'appelant est un script, il merite une ligne lisible).
+Codes de sortie : 0 si tout va bien, le code de la commande sous verrou, 75 si
+le verrou n'a pas pu etre pris dans le budget, et 76 si l'executable demande
+est introuvable sur la machine (pas de trace d'exception : l'appelant est un
+script, il merite une ligne lisible).
 """
 import argparse
 import json
@@ -67,6 +80,13 @@ import shutil
 import subprocess
 import sys
 import time
+
+# Cet outil est lance en script (`python tool/pub_cache_sain.py`), donc `tool/`
+# est deja le premier element de `sys.path`. L'insertion explicite couvre le cas
+# ou il est importe depuis ailleurs : une resolution d'executable manquante
+# redonnerait le defaut WinError 2 que ce module existe pour fermer.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from resolution_executable import resoudre_executable  # noqa: E402
 
 # Nom du fichier de verrou, pose A LA RACINE DU CACHE. Il commence par un point
 # et ne vit pas sous `hosted/`, donc la purge ne peut pas le voir.
@@ -380,8 +400,18 @@ def main() -> int:
         return sous_verrou(cache, a.attente_max_s, a.sous_verrou,
                            avec_purge=True)
     if a.pub_get:
+        # LE NOM NU EST RESOLU ICI, ET AVANT LE VERROU. Un `flutter` introuvable
+        # doit se dire en une ligne, sans trace d'exception et sans avoir fait
+        # attendre les autres arbres de travail de la machine.
+        flutter, raison = resoudre_executable('flutter')
+        if flutter is None:
+            print('[cache-pub] FLUTTER INTROUVABLE : %s' % raison)
+            print('[cache-pub] rien n a tourne : ni purge, ni verrou, ni '
+                  'pub get. Donnez le chemin complet avec --sous-verrou si '
+                  'votre SDK n est pas dans le PATH.')
+            return 76
         return sous_verrou(cache, a.attente_max_s,
-                           ['flutter', 'pub', 'get'] + list(extra or []),
+                           [flutter, 'pub', 'get'] + list(extra or []),
                            avec_purge=True)
     if a.purger:
         purger(cache, simuler=a.simuler)
