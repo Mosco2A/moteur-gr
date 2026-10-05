@@ -45,8 +45,8 @@
 groupe: S1_Lea_20_demarrage S1_Lea_21_carte S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_02 S1_Lea_22_gps_tick_03 S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_06 S1_Lea_22_gps_tick_07 S1_Lea_23_apres_gps S1_Lea_25_apres_sos  # carte de rando immobile : le demarrage ouvre la carte, les 8 ticks attendent une position qui n est pas injectee, et le dialogue SOS est ANNULE (la carte revient a l identique). Verifie a l oeil le 03/10, remesure les 05/10 06:42 et 08:03.
 S1_Lea_05_apres_onboarding S1_Lea_06_catalogue  # l onboarding rend la main SUR le catalogue : la capture d apres est le meme ecran, sans geste entre les deux.
 S1_Lea_07_apres_entrer S1_Lea_07c_cockpit  # entrer dans le sentier DEPOSE sur le cockpit ; la capture suivante est le meme ecran, sans geste entre les deux.
-S1_Lea_19b_cta_demarrer S1_Lea_19b2_apres_achat  # l achat ne change RIEN de visible sur cet ecran — vrai dans les trois runs, reference du 03/10 comprise. C est la face visible du defaut connu « CTA Demarrer absent de l arbre », pas un effet des lots 645-09b / 645-F1.
-S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose deja le randonneur sur « Mon aventure » ; le marqueur 33 recapture le meme ecran. A LIRE QUAND MEME : il annonce 0/7 etapes, 0 km et « Aucune trace GPS disponible » apres le trek — coherent avec l absence d injection de position dans ce run, mais c est le meme ecran qui porte le defaut connu du diplome.
+S1_Lea_19b_cta_demarrer S1_Lea_19b2_apres_achat  # l achat ne change RIEN de visible sur cet ecran. REMESURE A LA TACHE 695, run S1 du 05/10 a 19:58 sur machine CALME (loadavg 1 min = 2.03, retard marqueur->screencap = 0 ms, screencap median 435 ms) : les deux images sont identiques AU BIT (meme empreinte a819105546ed3691, 161 894 octets) et ZERO pixel de difference sur 1080x2400, barre d etat comprise. Ce n est donc PAS une image perimee : c est la face visible du defaut connu « CTA Demarrer absent de l arbre ».
+S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose deja le randonneur sur « Mon aventure » ; le marqueur 33 recapture le meme ecran. REMESURE A LA TACHE 695 (meme run) : 603 pixels de difference sur 1080x2400, TOUS dans la boite (123,47)-(967,80), c est-a-dire LA BARRE D ETAT — le contenu applicatif est identique au pixel. Autrement dit ces deux captures ne different que par l horloge : la minute qui tourne les rend « differentes », la minute qui ne tourne pas les rend « identiques ». A LIRE QUAND MEME : l ecran annonce 0/7 etapes, 0 km et « Aucune trace GPS disponible » apres le trek, le defaut connu du diplome.
 
 # ==========================================================================
 # S2 MARC
@@ -74,7 +74,7 @@ groupe: S3_Steve_04_apres_demarrage S3_Steve_05_carte S3_Steve_06_gps_tick_00 S3
 # signalement) ne change ce que le cockpit affiche. Identiques dans les deux
 # runs du 05/10.
 groupe: S3_Steve_09_apres_sos S3_Steve_10_cockpit_fin S3_Steve_S3E_zz_retour_cockpit  # cockpit avant / apres un dialogue SOS ANNULE, et retour au meme cockpit en fin d extension : le meme ecran dans le meme etat.
-S3_Steve_S3E_31_signalement S3_Steve_S3E_31b_signalement_eau  # MESURE : le journal du run dit « type eau a sec selectionne = false » — la cle signalement-type-eauASec n est pas sur l ecran, donc AUCUN GESTE n a eu lieu entre les deux captures. Le jour ou la cle revient, la selection aura un effet visible et ce doublon tombera tout seul. Le COINCEMENT est deja journalise comme signal QA.
+S3_Steve_S3E_31_signalement S3_Steve_S3E_31b_signalement_eau  # MESURE : le journal du run dit « type eau a sec selectionne = false » — la cle signalement-type-eauASec n est pas sur l ecran, donc AUCUN GESTE n a eu lieu entre les deux captures. Le jour ou la cle revient, la selection aura un effet visible et ce doublon tombera tout seul. Le COINCEMENT est deja journalise comme signal QA. TACHE 695 : le controle l avait annoncee inutile le 05/10 ; ce signal s est revele FAUX sur les deux paires de S1 qu on a pu remesurer, donc elle RESTE jusqu a une mesure pixel sur un run S3.
 
 # ==========================================================================
 # S4 INES — LE PARCOURS HORS-LIGNE
@@ -86,8 +86,8 @@ S3_Steve_S3E_31_signalement S3_Steve_S3E_31b_signalement_eau  # MESURE : le jour
 # reste debloque, c est tout l objet du parcours), donc les trois captures
 # montrent le meme ecran. Identiques dans le run du 05/10 07:48.
 groupe: S4_Ines_07_bascule_offline S4_Ines_10_cockpit_offline S4_Ines_S4E_zz_retour_cockpit  # cockpit hors-ligne, meme etat aux trois passages : rien de ce que le cockpit affiche ne depend du reseau.
-S4_Ines_09_carte_offline S4_Ines_S4E_36_trace_offline  # la MEME carte hors-ligne, ouverte deux fois : le fond OSM (reseau) manque des deux cotes et le calque de trace local est le meme. Aucun geste entre les deux qui change l ecran.
-S4_Ines_S4E_45_trail_selection S4_Ines_S4E_45b_pyrenees_actif  # MESURE : le journal du run dit « bascule vers gr-pyrenees (non possede) = false » puis « COINCE : bascule impossible (bouton introuvable) -> #D02/#D03 non joues ». AUCUN GESTE n a eu lieu : les deux captures sont le meme ecran de choix de sentier. Le COINCEMENT est deja journalise comme signal QA.
+S4_Ines_09_carte_offline S4_Ines_S4E_36_trace_offline  # la MEME carte hors-ligne, ouverte deux fois : le fond OSM (reseau) manque des deux cotes et le calque de trace local est le meme. Aucun geste entre les deux qui change l ecran. TACHE 695 : annoncee inutile le 05/10, mais ce signal s est revele FAUX sur les deux paires de S1 remesurees — elle RESTE jusqu a une mesure pixel sur un run S4.
+S4_Ines_S4E_45_trail_selection S4_Ines_S4E_45b_pyrenees_actif  # MESURE : le journal du run dit « bascule vers gr-pyrenees (non possede) = false » puis « COINCE : bascule impossible (bouton introuvable) -> #D02/#D03 non joues ». AUCUN GESTE n a eu lieu : les deux captures sont le meme ecran de choix de sentier. Le COINCEMENT est deja journalise comme signal QA. TACHE 695 : gr-pyrenees est sorti du catalogue (« statut draft declare par la liste distante », memoire #101298), donc le pas n est peut-etre plus joue du tout ; une declaration qui ne couvre rien ne fait rien rougir, et on ne la retire pas sur une deduction.
 
 # ==========================================================================
 # S8 DEMO
@@ -138,3 +138,54 @@ T645_09_15_reglages_rouvert T645_09_16_reglages_rouvert_bis  # la traversee ROUV
 # familles ci-dessus, les runs S3, S4 et S8 des deux arbres du 05/10 passent au
 # VERT, et les deux runs S1 restent ROUGES — chacun sur le groupe que la charge
 # de la machine avait fabrique, et sur rien d'autre.
+#
+# ==========================================================================
+# TACHE 695 — LES CINQ TOLERANCES « INUTILES » ONT ETE RETIREES, PUIS REMISES :
+# LE SIGNAL QUI LES DESIGNAIT EST FAUX
+# ==========================================================================
+# CE QU'ON A FAIT, ET CE QUE LA MESURE A REPONDU. Depuis la tache 685, le
+# controle nomme les tolerances DECLAREES MAIS INUTILES sur un run : toutes
+# leurs captures sont presentes et aucune paire interne n'est identique. Les
+# runs du 05/10 (memoire #101275) en ont designe CINQ. La tache 695 les a
+# retirees toutes les cinq, puis a rejoue un run S1 complet pour le prouver.
+# LE RUN A DIT NON — et il a dit mieux que non, il a dit POURQUOI.
+#
+# RUN S1 DU 05/10 A 19:58, MACHINE CALME (loadavg 1 min = 2.03, retard
+# marqueur->screencap = 0 ms, screencap median 435 ms, 65 captures pour 65
+# marqueurs, 61 exigences tenues / 2 echouees — la reference au chiffre pres).
+# Aucune des conditions du retard de capture n'est reunie : ce que les images
+# montrent, l'appareil le montrait vraiment.
+#
+#  1. S1_Lea_19b_cta_demarrer / S1_Lea_19b2_apres_achat : LE RUN EST ROUGE SANS
+#     LA DECLARATION. Les deux images sont identiques AU BIT (empreinte
+#     a819105546ed3691, 161 894 octets) et ZERO pixel de difference sur
+#     1080x2400, barre d'etat comprise. L'achat ne change toujours RIEN de
+#     visible sur cet ecran. La declaration est REMISE.
+#
+#  2. S1_Lea_27_apres_terminer / S1_Lea_33_recap_apres_trek : 603 pixels de
+#     difference, TOUS dans la boite (123,47)-(967,80) — LA BARRE D'ETAT. Le
+#     contenu applicatif est identique au pixel. Ces deux captures ne sont donc
+#     « differentes » que parce que l'horloge a tourne entre les deux : au
+#     prochain run ou la minute ne tourne pas, elles seront identiques et le run
+#     rougira. La declaration est REMISE.
+#
+# ET VOILA LE DEFAUT REEL, QUI N'EST PAS DANS CE FICHIER (kaizen d'Artemis,
+# memoire #101298) : LE CONTROLE COMPARE L'IMAGE ENTIERE, BARRE D'ETAT
+# COMPRISE. C'est pour cela que la famille existe (le groupement change d'un run
+# a l'autre), et c'est aussi pour cela que « declaree mais inutile » ne vaut
+# RIEN comme preuve : la minute qui tourne suffit a faire declarer utile ou
+# inutile la meme paire, sur le meme produit. Le cas 2 en est la demonstration
+# chiffree. TANT QUE LE CONTROLE N'EXCLUT PAS LA BARRE D'ETAT, on ne retire
+# AUCUNE tolerance sur ce seul signal.
+#
+#  3. S3_Steve_S3E_31_signalement / 31b_signalement_eau,
+#  4. S4_Ines_09_carte_offline / S4E_36_trace_offline,
+#  5. S4_Ines_S4E_45_trail_selection / S4E_45b_pyrenees_actif : REMISES AUSSI,
+#     et sans mesure propre — l'emulateur n'etait autorise que pour UN run S1.
+#     Les deux seules paires qu'on a pu remesurer ont contredit le signal ; le
+#     retirer sur les trois autres serait une deduction, pas une mesure. Elles
+#     attendent un run S3 et un run S4 mesures pixel par pixel.
+#
+# CE QUI LES FERAIT PARTIR POUR DE BON : un run ou la paire differe EN PLEIN
+# CONTENU (hors barre d'etat), mesure a l'appui. Jamais un rapport qui dit
+# seulement « inutile sur ce run ».

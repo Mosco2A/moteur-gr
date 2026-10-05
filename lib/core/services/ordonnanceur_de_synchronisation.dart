@@ -65,6 +65,7 @@ class OrdonnanceurDeSynchronisation {
     required this.urlManifeste,
     this.cadence = cadenceParDefaut,
     this.descendreLesDroits,
+    this.poserLHorloge = Timer.periodic,
   });
 
   /// LA CADENCE DE CHRISTOPHE : QUATRE HEURES.
@@ -97,6 +98,30 @@ class OrdonnanceurDeSynchronisation {
   /// donnerait deux horloges a tenir d accord, pour exactement les memes deux
   /// evenements.
   final Future<Object?> Function()? descendreLesDroits;
+
+  /// COMMENT L'HORLOGE PERIODIQUE EST POSEE. `Timer.periodic` en production.
+  ///
+  /// POURQUOI CE POINT D'INJECTION EXISTE, ET C'EST UNE AFFAIRE DE MESURE, PAS
+  /// DE CONFORT (tache 695, kaizen #101267). Le test de la cadence ne pouvait
+  /// pas observer l'horloge : il la laissait battre pour de vrai, dormait un
+  /// budget en TEMPS REEL, puis affirmait qu'une passe avait eu lieu. Mesure du
+  /// 05/10 pendant le build 10 : `expect(avant, greaterThanOrEqualTo(1))` a rendu
+  /// `Actual: <0>` — le minuteur de 25 ms n'avait pas encore fini UNE passe au
+  /// bout de 80 ms de sommeil, parce que la machine etait occupee. Le test
+  /// mesurait donc la vitesse de la machine de fabrication, pas le reveil de la
+  /// synchronisation : rouge environ une fois sur trois, et pour une raison qui
+  /// n'apprend rien.
+  ///
+  /// ET IL PERMET DE PROUVER UN NEGATIF, CE QU'AUCUNE ATTENTE NE PERMET. « Apres
+  /// `stop()`, l'horloge ne bat plus » se demontrait en dormant et en esperant :
+  /// avec ce point d'injection, le test REJOUE le battement apres l'arret et
+  /// exige qu'il ne se passe rien. C'est plus dur que l'ancienne version, pas
+  /// moins.
+  ///
+  /// LA PRODUCTION N'EST PAS TOUCHEE : la valeur par defaut EST
+  /// `Timer.periodic`, et une garde verifie qu'elle le reste (sinon le reveil
+  /// de la cadence ne serait plus branche sur une vraie horloge).
+  final Timer Function(Duration, void Function(Timer)) poserLHorloge;
 
   Timer? _horloge;
   StreamSubscription<ConnectivityStatus>? _ecouteReseau;
@@ -137,7 +162,7 @@ class OrdonnanceurDeSynchronisation {
       return;
     }
 
-    _horloge = Timer.periodic(cadence, (_) => _passer('cadence'));
+    _horloge = poserLHorloge(cadence, (_) => _passer('cadence'));
 
     _ecouteReseau = connectivityMonitor.onStatusChange.listen(
       (statut) {
