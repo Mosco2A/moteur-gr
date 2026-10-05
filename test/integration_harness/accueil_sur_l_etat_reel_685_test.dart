@@ -247,13 +247,25 @@ void main() {
     );
 
     test('« absent (deja complete) » ne se dit plus sans preuve', () {
+      // LA PHRASE A LE DROIT DE RESTER EN COMMENTAIRE — elle explique le
+      // defaut d'origine, et c'est elle qu'on retrouve dans les vieux journaux
+      // de run. Ce qui est interdit, c'est qu'elle reparte AU JOURNAL.
+      final vivantes = _source
+          .split('\n')
+          .where((l) => l.contains('Onboarding absent (deja complete)'))
+          .where((l) {
+            final t = l.trimLeft();
+            return !t.startsWith('//');
+          })
+          .toList();
       expect(
-        _source,
-        isNot(contains('Onboarding absent (deja complete)')),
+        vivantes,
+        isEmpty,
         reason:
             'cette phrase etait le mensonge du harnais : elle s ecrivait '
             'alors que l accueil etait a l ecran. Un « deja complete » doit '
-            'nommer la miette qui le prouve.',
+            'nommer la miette qui le prouve. Lignes fautives : '
+            '${vivantes.join(" | ")}',
       );
     });
 
