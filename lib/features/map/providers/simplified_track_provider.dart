@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/douglas_peucker.dart';
 import '../../../core/geo/trace_point.dart';
-import '../../trek/presentation/map/marker_cluster.dart';
+import '../../trek/trek_facade.dart' show dynamicEpsilonForZoom;
 import 'gpx_track_provider.dart';
 
 /// Provider du tracé simplifié, paramétré par (trailId, zoomLevel).

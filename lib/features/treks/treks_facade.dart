@@ -20,10 +20,12 @@
 /// l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 6 FICHIERS DE 4 FEATURES AU 03/10/2026 : `hub`, `settings`, `trail`,
+/// LUE PAR 7 FICHIERS DE 4 FEATURES AU 05/10/2026 : `hub`, `settings`, `trail`,
 /// `trek`.
 library;
 
+export 'presentation/widgets/active_trek_conflict_dialog.dart'
+    show showActiveTrekConflictDialog;
 export 'providers/entitlements_provider.dart' show ownedTrailIdsProvider;
 export 'providers/my_treks_provider.dart'
     show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;

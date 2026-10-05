@@ -20,9 +20,10 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 2 FICHIERS DE 1 FEATURE AU 03/10/2026 : `hub`.
+/// LUE PAR 2 FICHIERS DE 1 FEATURE AU 05/10/2026 : `hub`.
 library;
 
+export 'presentation/fire_risk_screen.dart' show fireRiskColor;
 export 'providers/current_stage_provider.dart'
     show localizedStageNumberProvider, referenceStageNumberProvider;
 export 'providers/fire_risk_providers.dart'

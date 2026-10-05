@@ -20,13 +20,14 @@
 /// interface sur laquelle les autres reposent. La facade rend ce cout visible —
 /// elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 20 FICHIERS DE 7 FEATURES AU 05/10/2026 : `after`, `feasibility`,
-/// `hub`, `planning`, `safety`, `treks`, `weather`.
+/// LUE PAR 21 FICHIERS DE 8 FEATURES AU 05/10/2026 : `after`, `feasibility`,
+/// `hub`, `map`, `planning`, `safety`, `treks`, `weather`.
 library;
 
 export 'data/gps_service.dart'
     show GpsPermissionResultValues, GpsService, gpsServiceProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
+export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;
 export 'providers/gps_providers.dart'
     show
         currentStageIdProvider,

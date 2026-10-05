@@ -12,11 +12,11 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../weather/models/weather_forecast.dart';
-import '../../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
 import '../../../weather/weather_facade.dart'
     show
         FireRiskDay,
         WeatherStageParams,
+        fireRiskColor,
         localizedStageNumberProvider,
         stageWeatherProvider,
         trailFireRiskProvider;

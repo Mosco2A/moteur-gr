@@ -38,9 +38,11 @@ import '../../planning/planning_facade.dart'
         plannedDaysProvider,
         planningProvider,
         retainedDurationProvider;
-import '../../safety/presentation/health_info_screen.dart'
-    show healthInfoFileProvider, healthInfoRepositoryProvider;
-import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
+import '../../safety/safety_facade.dart'
+    show
+        healthInfoFileProvider,
+        healthInfoRepositoryProvider,
+        healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/trail_facade.dart' show progressProvider;
 import '../../training/training_facade.dart' show trainingProgressProvider;
