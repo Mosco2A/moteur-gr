@@ -208,18 +208,28 @@ New-Item -ItemType File $log | Out-Null
 # manquants. Le reveil du pilote est le dernier endroit ou le reparer coute
 # trois secondes.
 #
-# CE QUE LA PURGE TOUCHE, ET RIEN D'AUTRE : les dossiers de
-# `<cache>/hosted/<hote>/` QUI N'ONT PAS DE `pubspec.yaml` a leur racine. Tout
-# paquet complet en a un. Un paquet complet, un fichier, le cache `git/` ne
-# peuvent pas etre atteints — et chaque suppression est ecrite avec ce qu'elle
-# contenait. La REGLE, elle, est dans `tool/pub_cache_sain.py --pub-get` : un
-# seul `pub get` a la fois par machine (verrou pose dans le cache lui-meme).
+# CE QUE LA PURGE TOUCHE, ET RIEN D'AUTRE — EN DEUX CONDITIONS, PAS UNE. Un
+# dossier de `<cache>/hosted/<hote>/` n'est efface que s'il PORTE LA FORME
+# `<paquet>-<version>` ET n'a PAS de `pubspec.yaml` a sa racine. La condition de
+# forme n'est pas decorative : sans elle, la premiere version de l'outil a
+# efface `hosted/pub.dev/.cache` (697 fichiers, 22 315 916 octets), qui est le
+# cache de metadonnees de `pub` LUI-MEME et non un paquet a moitie descendu. Un
+# paquet complet, un fichier, un dossier de pub, le cache `git/` ne peuvent donc
+# pas etre atteints — et chaque suppression est ecrite avec ce qu'elle contenait.
+#
+# ET LA PURGE PASSE PAR LE VERROU (`--sous-verrou` sans commande), JAMAIS NUE
+# (QA #101314, AFFAIBLI 1). Purger hors verrou, c'est effacer sous les pieds d'un
+# `pub get` concurrent le paquet qu'il est justement en train de remplir : le
+# defaut qu'on repare, refait a l'envers. Sans commande derriere, le verrou ne
+# sert qu'a assainir — aucun `pub get` de plus au reveil, et Gradle trouve un
+# cache sain. La REGLE complete est dans `tool/pub_cache_sain.py` : un seul
+# `pub get` a la fois par machine (`--pub-get`, verrou pose dans le cache).
 if ($SansControleCachePub) {
   Write-Output "[$Tag] CACHE PUB : controle DESACTIVE (-SansControleCachePub) - si un pub get concurrent a laisse des dossiers de paquets vides, le build de ce run peut echouer ou pire, passer avec des paquets manquants"
 }
 else {
-  Write-Output "[$Tag] CACHE PUB : controle au reveil (purge des dossiers de paquets sans pubspec.yaml)"
-  foreach ($l in @(& python tool/pub_cache_sain.py --purger 2>&1)) { Write-Output "[$Tag]   $l" }
+  Write-Output "[$Tag] CACHE PUB : controle au reveil, SOUS VERROU (purge des dossiers de forme paquet-version sans pubspec.yaml)"
+  foreach ($l in @(& python tool/pub_cache_sain.py --sous-verrou 2>&1)) { Write-Output "[$Tag]   $l" }
 }
 
 $pkg = 'com.only1cent.stepways'

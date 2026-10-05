@@ -146,19 +146,36 @@ python tool/pub_cache_sain.py --mesurer
 python tool/pub_cache_sain.py --purger [--simuler]
 ```
 
-**La purge est le filet, le verrou est la regle.** `--purger` efface les dossiers
-de `hosted/<hote>/` **qui n'ont pas de `pubspec.yaml` a leur racine**, et rien
-d'autre : ni un paquet complet, ni un fichier, ni le cache `git/`. Chaque
-suppression est journalisee avec ce que le dossier contenait. Elle repare donc un
-cache abime par un appelant qui n'est **pas** passe par le verrou — a commencer
-par `flutter test` et `flutter build`, qui lancent un `pub get` implicite dont
-personne ne controle le moment.
+**La purge est le filet, le verrou est la regle.** Un dossier de `hosted/<hote>/`
+n'est efface que si **deux conditions** sont reunies : il **porte la forme
+`<paquet>-<version>`** *et* il **n'a pas de `pubspec.yaml` a sa racine**. Rien
+d'autre n'est touche : ni un paquet complet, ni un fichier, ni le cache `git/`,
+**ni les dossiers de `pub` lui-meme**. Cette condition de forme n'est pas
+decorative : `hosted/pub.dev/.cache`, le cache de metadonnees de `pub`, n'a pas de
+`pubspec.yaml` non plus, et la premiere version de l'outil l'a efface pour de bon
+(697 fichiers, 22 315 916 octets) faute de l'exiger. Chaque suppression est
+journalisee avec ce que le dossier contenait.
 
-Le pilote de la recette persona (`tool/run_persona.ps1`) lance cette purge **a
-son reveil**, avant le pre-build qui appelle Gradle (donc `pub get`) ;
-`-SansControleCachePub` la coupe, en le disant. La garde
-`test/outillage/cache_pub_sain_695_test.dart` eprouve la purge sur un faux cache
-et verifie que le verrou n'est pas decoratif.
+La purge repare donc un cache abime par un appelant qui n'est **pas** passe par le
+verrou — a commencer par `flutter test` et `flutter build`, qui lancent un
+`pub get` implicite dont personne ne controle le moment.
+
+**Et la purge se fait elle-meme sous le verrou.** Purger pendant qu'un `pub get`
+concurrent telecharge, c'est effacer sous ses pieds le paquet qu'il est en train
+de remplir : le defaut qu'on repare, refait a l'envers. `--sous-verrou` **sans
+commande** assainit sous le verrou et ne lance rien — c'est la forme a utiliser
+quand on veut un cache sain sans payer un `pub get` de plus :
+
+```bash
+python tool/pub_cache_sain.py --sous-verrou
+```
+
+Le pilote de la recette persona (`tool/run_persona.ps1`) appelle exactement cela
+**a son reveil**, avant le pre-build qui lance Gradle (donc `pub get`) ;
+`-SansControleCachePub` le coupe, en le disant. La garde
+`test/outillage/cache_pub_sain_695_test.dart` eprouve la purge sur un faux cache,
+verifie que le verrou n'est pas decoratif, et **refuse une purge nue depuis le
+pilote**.
 
 ## Structure des dossiers
 

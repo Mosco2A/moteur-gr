@@ -413,21 +413,59 @@ void main() {
         bac.deleteSync(recursive: true);
       }
     });
+
+    test('SANS COMMANDE, --sous-verrou assainit sous le verrou et ne lance '
+        'rien - c est la forme que le pilote appelle', () {
+      if (python == null) {
+        markTestSkipped('aucun interpreteur Python sur cette machine');
+        return;
+      }
+      final bac = _fauxCache();
+      try {
+        final r = _lancer(python, bac.path, const ['--sous-verrou']);
+        expect(r.code, 0, reason: 'sortie :\n${r.sortie}');
+        expect(
+          r.sortie,
+          contains('assaini SOUS VERROU'),
+          reason:
+              'une liste de commande VIDE est FAUSSE en booleen : testee ainsi, '
+              'l appel retomberait sur --purger, donc sur la purge HORS verrou '
+              '- le defaut qu on vient de fermer (QA #101314)',
+        );
+        expect(
+          _restants(bac),
+          isNot(contains('/hosted/pub.dev/vide-2.0.0')),
+          reason: 'la purge doit bien avoir eu lieu',
+        );
+        expect(
+          _restants(bac),
+          contains('/hosted/pub.dev/complet-1.0.0/pubspec.yaml'),
+        );
+        expect(
+          File('${bac.path}/.stepways_pub_get.lock').existsSync(),
+          isFalse,
+          reason: 'le verrou doit etre RENDU',
+        );
+      } finally {
+        bac.deleteSync(recursive: true);
+      }
+    });
   });
 
   group('LE PILOTE DE LA RECETTE CONTROLE LE CACHE A SON REVEIL', () {
     final pilote = File('tool/run_persona.ps1').readAsStringSync();
 
-    test('il lance la purge, et AVANT le pre-build qui appelle Gradle', () {
+    test('il assainit le cache, et AVANT le pre-build qui appelle Gradle', () {
       expect(
         pilote,
-        contains('pub_cache_sain.py --purger'),
+        contains('pub_cache_sain.py --sous-verrou'),
         reason:
-            'CONTROLE PERDU : sans purge au reveil, un cache abime par un '
-            'pub get concurrent fait echouer le build du run - ou pire, le '
-            'laisse passer avec des paquets manquants (kaizen #101276).',
+            'CONTROLE PERDU : sans assainissement au reveil, un cache abime '
+            'par un pub get concurrent fait echouer le build du run - ou '
+            'pire, le laisse passer avec des paquets manquants (kaizen '
+            '#101276).',
       );
-      final purge = pilote.indexOf('pub_cache_sain.py --purger');
+      final purge = pilote.indexOf('pub_cache_sain.py --sous-verrou');
       final preBuild = pilote.indexOf(r'Invoke-PreBuild $repo $Tag');
       expect(
         preBuild,
@@ -440,6 +478,27 @@ void main() {
         reason:
             'ORDRE INVERSE = CONTROLE INUTILE. Le pre-build lance Gradle, donc '
             'pub get : assainir le cache APRES, c est assainir apres l echec.',
+      );
+    });
+
+    test('ET IL NE PURGE JAMAIS NU, c est-a-dire hors verrou', () {
+      // CE QUE CETTE GARDE EMPECHE DE REVENIR (QA #101314, AFFAIBLI 1). Le
+      // pilote appelait « --purger » NU. Or ce chemin NE PREND PAS le verrou,
+      // et l outil documente lui-meme la purge hors verrou comme dangereuse :
+      // effacer pendant qu un pub get concurrent telecharge, c est retirer sous
+      // ses pieds le paquet qu il est en train de remplir — le defaut du 05/10,
+      // refait a l envers. Le banc gravait donc un appel nu dans le pilote
+      // pendant que la garde juste au-dessus en faisait un principe.
+      final nus = RegExp(
+        r'pub_cache_sain\.py\s+--purger',
+      ).allMatches(pilote).length;
+      expect(
+        nus,
+        0,
+        reason:
+            'PURGE NUE DANS LE PILOTE : $nus appel(s) a « --purger », qui ne '
+            'prend pas le verrou. Utilisez « --sous-verrou » SANS commande : '
+            'il assainit sous le verrou et ne lance rien de plus.',
       );
     });
 

@@ -320,11 +320,25 @@ def sous_verrou(cache: str, attente_max_s: int, cmd, avec_purge: bool) -> int:
     LA PURGE EST FAITE SOUS LE VERROU, ET CE N'EST PAS UN DETAIL : purger
     pendant qu'un autre `pub get` telecharge, c'est effacer sous ses pieds un
     paquet qu'il est en train de remplir — exactement le defaut qu'on repare.
+
+    [cmd] PEUT ETRE VIDE, ET C'EST LA FACON D'ASSAINIR SANS RIEN LANCER
+    DERRIERE (QA #101314, AFFAIBLI 1). Le pilote de la recette veut exactement
+    cela a son reveil : un cache sain avant que Gradle ne fasse son `pub get`
+    implicite, et surtout pas un `pub get` de plus. Il appelait donc `--purger`
+    NU, c'est-a-dire la purge HORS verrou — la seule chose que cette fonction
+    documente comme dangereuse, et qu'une garde du banc erige en principe. Le
+    banc gravait donc un appel nu dans le pilote pendant qu'une autre garde le
+    declarait dangereux. `--sous-verrou` sans commande ferme ce trou sans rien
+    ajouter au reveil.
     """
     verrou = prendre_le_verrou(cache, attente_max_s)
     try:
         if avec_purge:
             purger(cache)
+        if not cmd:
+            print('[cache-pub] aucune commande a lancer : le cache a ete '
+                  'assaini SOUS VERROU, et le verrou est rendu')
+            return 0
         print('[cache-pub] %s (sous verrou)' % ' '.join(cmd))
         return subprocess.run(list(cmd), shell=False).returncode
     finally:
@@ -349,14 +363,20 @@ def main() -> int:
     ap.add_argument('--sous-verrou', nargs=argparse.REMAINDER, default=None,
                     help='purge puis lance LA COMMANDE QUI SUIT sous le verrou '
                          '(pour tout ce qui touche au cache : dart pub get, '
-                         'flutter pub upgrade...)')
+                         'flutter pub upgrade...). SANS COMMANDE : assainit le '
+                         'cache sous le verrou et ne lance rien — c est ce que '
+                         'le pilote de la recette appelle a son reveil')
     ap.add_argument('--attente-max-s', type=int, default=900,
                     help='budget d attente du verrou')
     a, extra = ap.parse_known_args()
 
     cache = a.cache or cache_par_defaut()
 
-    if a.sous_verrou:
+    # `is not None` ET PAS LA SEULE VERITE DE LA LISTE : `--sous-verrou` sans
+    # commande rend une liste VIDE, qui est fausse. La tester en booleen
+    # renverrait l appel sur `--purger`, donc sur la purge HORS VERROU — le
+    # defaut meme qu'on vient de fermer (QA #101314).
+    if a.sous_verrou is not None:
         return sous_verrou(cache, a.attente_max_s, a.sous_verrou,
                            avec_purge=True)
     if a.pub_get:
