@@ -4,8 +4,8 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/branding/stepways_icons.dart';
+import '../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Statut de completion d'un sujet de preparation (coche « sujet traite »),
 /// clone du `PlanningStepStatus` de GR20 (home_screen.dart B-19c).

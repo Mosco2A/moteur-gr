@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/branding/stepways_icons.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/quick_access_card.dart';
 import 'collapsible_prepare_section.dart';
-import 'quick_access_card.dart';
 
 /// La section « Preparer » du cockpit.
 ///

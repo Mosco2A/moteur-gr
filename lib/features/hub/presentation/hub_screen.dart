@@ -12,6 +12,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/mise_a_jour_a_la_source.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/quick_access_card.dart';
 import '../../ads/ads_facade.dart' show BannerAdSlot;
 import '../../safety/safety_facade.dart' show SosButton;
 import '../../treks/treks_facade.dart' show currentTrailSummaryProvider;
@@ -24,7 +25,6 @@ import 'widgets/hub_hike_section.dart';
 import 'widgets/hub_info_section.dart';
 import 'widgets/hub_prepare_section.dart';
 import 'widgets/localized_conditions_banner.dart';
-import 'widgets/quick_access_card.dart';
 
 /// Ecran d'accueil — HUB E07 (LOT-A, socle structurel).
 ///

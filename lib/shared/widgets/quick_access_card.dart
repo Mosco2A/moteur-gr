@@ -4,11 +4,11 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/branding/stepways_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../shared/widgets/app_card.dart';
-import '../../../../shared/widgets/texte_ajuste.dart';
+import '../../core/branding/stepways_icons.dart';
+import '../../core/theme/app_theme.dart';
+import 'app_card.dart';
 import 'step_status_icon.dart';
+import 'texte_ajuste.dart';
 
 /// Carte d'acces rapide du HUB (RF-14).
 ///

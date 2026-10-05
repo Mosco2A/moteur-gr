@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
-import 'hub_section.dart';
-import 'quick_access_card.dart';
+import '../../../../shared/widgets/hub_section.dart';
+import '../../../../shared/widgets/quick_access_card.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Section « Préparer » repliable en ACCORDÉON (StepWays refonte nav — D3, R8+R13).
