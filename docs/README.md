@@ -103,6 +103,63 @@ bash scripts/scan_secrets.sh
 > `build.yaml` (incompatibilite + risque de doublon). Voir l'en-tete de
 > `slang.yaml`.
 
+## Outillage
+
+### UN SEUL `pub get` A LA FOIS PAR MACHINE
+
+**La regle, et elle n'est pas negociable : sur une machine qui porte plusieurs
+arbres de travail du depot, un seul `pub get` tourne a la fois.** Le cache pub
+est **partage** par tous les arbres (`%LOCALAPPDATA%\Pub\Cache` sous Windows,
+`~/.pub-cache` ailleurs) : deux resolutions concurrentes ecrivent dans les memes
+dossiers.
+
+**Ce que ca coute quand on l'oublie — mesure du 05/10/2026 (memoires #101275,
+#101276).** Deux `flutter pub get` ont tourne en parallele dans deux arbres a
+13:24:55. Resultat : **29 dossiers de paquets existaient mais etaient vides** —
+`cloud_firestore`, `share_plus`, `firebase_core`, `connectivity_plus`,
+`battery_plus`, `device_info_plus`, `package_info_plus`, `printing`,
+`sqlite3_flutter_libs` et vingt autres, tous horodates a la meme seconde.
+
+**Et voici le piege, celui qui coute une demi-journee** : `pub get` decide qu'un
+paquet est deja installe **en regardant si son dossier existe**. Un dossier vide
+passe donc pour un paquet installe, et ne se retelecharge **jamais**. La
+resolution reste cassee **en silence, pour tous les arbres de la machine**.
+Facture constatee : **219 fausses erreurs** de `flutter analyze` (« Target of URI
+doesn't exist: package:cloud_firestore/cloud_firestore.dart », « Undefined name
+Share / Timestamp / ConnectivityResult ») sur un depot parfaitement sain, et deux
+agents partis chercher une regression qui n'existait pas.
+
+**Comment tenir la regle.** `tool/pub_cache_sain.py` pose un verrou de fichier
+**dans le cache qu'il protege** : deux arbres qui partagent le cache partagent le
+verrou par construction, et un arbre qui a son propre `PUB_CACHE` n'attend
+personne. Les appels concurrents **attendent leur tour**, ils n'echouent pas.
+
+```bash
+# A la place de `flutter pub get` quand la machine peut etre occupee
+python tool/pub_cache_sain.py --pub-get
+
+# Toute autre commande qui touche au cache, serialisee de la meme facon
+python tool/pub_cache_sain.py --sous-verrou dart pub get
+
+# Mesurer sans rien toucher / reparer un cache deja abime
+python tool/pub_cache_sain.py --mesurer
+python tool/pub_cache_sain.py --purger [--simuler]
+```
+
+**La purge est le filet, le verrou est la regle.** `--purger` efface les dossiers
+de `hosted/<hote>/` **qui n'ont pas de `pubspec.yaml` a leur racine**, et rien
+d'autre : ni un paquet complet, ni un fichier, ni le cache `git/`. Chaque
+suppression est journalisee avec ce que le dossier contenait. Elle repare donc un
+cache abime par un appelant qui n'est **pas** passe par le verrou — a commencer
+par `flutter test` et `flutter build`, qui lancent un `pub get` implicite dont
+personne ne controle le moment.
+
+Le pilote de la recette persona (`tool/run_persona.ps1`) lance cette purge **a
+son reveil**, avant le pre-build qui appelle Gradle (donc `pub get`) ;
+`-SansControleCachePub` la coupe, en le disant. La garde
+`test/outillage/cache_pub_sain_695_test.dart` eprouve la purge sur un faux cache
+et verifie que le verrou n'est pas decoratif.
+
 ## Structure des dossiers
 
 ```
