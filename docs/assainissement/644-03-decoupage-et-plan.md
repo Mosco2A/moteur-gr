@@ -2362,6 +2362,104 @@ RAPPORT ATTENDU : les 3 livrables, le resultat de l essai de regression, le
 resultat des commandes de gate.
 ```
 
+#### QA du 645-12 (04/10/2026, 21:20 UTC — Artemis, session cloud)
+
+**Périmètre.** Branche vérifiée `claude/docs/645-12-livre-de-bord` à
+`a51a5c8e` (trois commits sur `0f679929` : `2e01a0c7`, `bb47656c`,
+`a51a5c8e`). Branche de QA `claude/qa/645-12-jonction`, partie de
+l'intégration à `0f679929`. **Deux AFFAIBLI : pas de jonction.** La branche
+de QA ne porte que ce paragraphe. L'intégration n'est pas touchée, aucun tag.
+
+**Verdicts de lecture (E1) — trois OK, deux AFFAIBLI.**
+- (a) **AFFAIBLI** : le diff touche six fichiers ; trois sont hors de la
+  liste autorisée : `docs/ADR/003-riverpod-over-bloc.md`,
+  `docs/CONTRIBUTING.md`, `docs/README.md` (Riverpod 2.6 → 3.3.2). Leur
+  contenu est vrai (`pubspec.yaml` dit `flutter_riverpod: ^3.3.2`, le lock
+  3.3.2) et le test (a) les exige, mais ils sortent du périmètre fixé. Rien
+  sous `lib/`, `pubspec`, `android/`, `macos/`, `lib/i18n`.
+- (b) **AFFAIBLI**, trois écarts :
+  1. ordre faux : le journal place 676 avant 645-F1. Or la fusion 645-F1
+     `4026665b` (04/10 12:13) est le parent direct de `e22b7af8` (676,
+     04/10 13:07) ;
+  2. `#101220` (ligne « Démon de captures ») n'est pas dans la liste des
+     numéros fournie par Skynet, et ce point n'était pas demandé ;
+  3. `#100239` (lignes #P50 et #P52) n'est pas dans la liste fournie : il
+     vient de la section 6 de cette fiche, mais le journal n'a qu'une source
+     autorisée.
+  Le reste est conforme : dates justes pour les 20 lignes ; aucun lot
+  manquant ; 645-09 et 645-09b dans le bon ordre ; les sept points demandés
+  pour « Ce qui reste ouvert » sont présents. La ligne « Captures » donne en
+  plus une explication de la cause, à la limite de « ne raconte rien ».
+- (c) OK : les 32 chiffres marqués `audit:` sont égaux au JSON de
+  `audit_global.py --rapide` sur `a51a5c8e` (32/32). Les chiffres non marqués
+  sont justes : 22 fichiers hors core/features/shared (18 `domain` + `main` +
+  `i18n_setup` + 2 `lib/docs`), 63/63/0, 493 fichiers et 3840 cas sur
+  `0f679929`, ECR-16 416, 37,2 %, les huit règles bloquantes, 236 = 72 + 164,
+  plafonds 21, 52 et 0, versions du tableau = pubspec/lock, `schemaVersion`.
+  ARB-645-05-a, b, c et les règles 9 à 12 sont citées, et la
+  non-conformité est dite (21, 52, 20, ECR-15, ECR-13/07).
+- (d) OK : trois verdicts, conformes à la demande, dans la forme du test
+  619. Mutations (`flutter test --no-pub`) : `flutter_riverpod: ^3.3.3`
+  dans `pubspec.yaml` → **rouge** (4 citations vues : ADR-003:5,
+  CONTRIBUTING:36, README:27, architecture:176) ; `#101011` retiré de la ligne
+  645-02 → **rouge** (« lot 645-02 sans numero en base ») ; `662` → `663` dans
+  architecture.md → **rouge** (« la doc dit 663, l audit mesure 662 ») ;
+  contre-essai `127 443` → `127 444` → rouge. `git checkout --` après
+  chaque mutation : zéro diff résiduel. Sans `--no-pub`, la mutation 1 est
+  rouge pour une autre raison (résolution `pub get`), d'où l'option.
+  Limite : (b) vérifie la forme `#NNNNNN`, pas l'appartenance à la liste
+  fournie ; c'est pour ça que les écarts 2 et 3 passent au vert.
+- (e) OK : aucun chemin absolu, seulement `Directory.systemTemp` pour le JSON.
+  Vert avec trois graines d'ordre aléatoire (1, 42, 9999) et pour chacun des
+  quatre tests lancé seul. Durée : 22,3 s à froid, 9,4 s à chaud.
+
+**Gate (E2), sans jonction.** Elle a tourné sur l'arbre `a51a5c8e`. Comme
+`0f679929` en est l'ancêtre direct, une jonction `--no-ff` aurait le même
+arbre. `dart format` : 0 changement ; `flutter analyze --no-pub
+--no-fatal-infos` : 0 erreur, 0 warning (7614 infos) ; `flutter test` :
+**+4092 ~2, 0 échec** (4088 + les 4 du lot), 10 min 58 s ; `build_runner` :
+`git status` vide ; audit `--rapide` comparé à `0f679929` : aucun compteur ne
+bouge (ECR-07 2, ECR-15 46, ECR-28 195, ECR-23 236, ECR-19 10, ECR-31 19,
+ECR-05 77, VAC-01 0, OBS-01 0, observabilité 63/63, en-têtes 100 %). Seuls
+les tests changent : fichiers 493 → 494, cas 3840 → 3844.
+
+**Trous « a completer par Skynet » que le journal porte encore.** Lots : 676
+et 645-12. Points ouverts : tests ignorés, vingt croisements (645-05c),
+#P51, #P53, #P54.
+
+**QA rejouée (05/10/2026, 00:24 UTC — Artemis, session cloud).** Skynet a
+levé les deux AFFAIBLI par arbitrage (`#101233`, rapport `#101232`). Pour
+(a), les trois fichiers de `docs/` étaient autorisés par le brief du lot
+(tout `docs/` et `test/structurel/`) : la liste de la QA était trop
+étroite. Pour (b), Athena a corrigé le journal en `d53ebcee`, et la liste
+des numéros est amendée : `#101220`, `#100239`, `#101196` pour la ligne 676,
+`#101229` et `#101232` pour la ligne 645-12.
+- (b) **OK** sur `d53ebcee`. Le seul changement depuis `a51a5c8e` est
+  `docs/JOURNAL.md`, sur deux lignes. 645-F1 passe avant 676, ce qui suit
+  l'ordre réel (`4026665b` puis `e22b7af8`). 676 porte `#101196` et 645-12
+  porte `#101229, #101232`. Les 38 numéros distincts du journal sont tous
+  dans la liste amendée, aucun n'est hors liste. Les 20 lignes de lots sont
+  dans l'ordre réel et les dates n'ont pas changé.
+- (a) **OK** : `0f679929..d53ebcee` touche 6 fichiers, tous sous `docs/` ou
+  `test/structurel/` ; rien ailleurs.
+- **Jonction** `78a49737`, sans avance rapide (parents `c078185e` et
+  `d53ebcee`), **aucun conflit**. La tête jointe ne diffère de `d53ebcee` que
+  par ce paragraphe de fiche.
+- **Gate sur `78a49737`** : `dart format` à 0 changement ; `flutter analyze
+  --no-pub --no-fatal-infos` à 0 erreur et 0 warning (7614 infos).
+  `flutter test` : **+4092 ~2, 0 échec**, soit 4088 + les 4 du lot, en 10 min
+  31 s. Après `build_runner`, `git status` est vide. Audit `--rapide` comparé
+  à `0f679929` : aucun compteur ne bouge (ECR-07 2, ECR-15 46, ECR-28 195,
+  ECR-23 236, ECR-19 10, ECR-31 19, ECR-05 77, VAC-01 0, OBS-01 0,
+  observabilité 63/63, en-têtes 100 %). Seuls les tests changent : fichiers
+  493 → 494, cas 3840 → 3844.
+- **Trous « a completer par Skynet » restants** : les deux tests ignorés,
+  les vingt croisements (645-05c), #P51, #P53 et #P54. Ce sont les cinq
+  attendus. Plus aucune ligne de lot n'en porte.
+
+**Verdict final : 645-12 VERT, joint sur `claude/qa/645-12-jonction`
+(`78a49737`).** Il reste à Skynet de le réunir dans l'intégration. Aucun tag.
+
 ---
 
 ## 5. Checklist de complétude CORDO

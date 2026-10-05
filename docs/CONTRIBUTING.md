@@ -33,7 +33,8 @@ dart format lib/ test/
 
 ### Providers Riverpod — **manuels**
 
-Le projet utilise **Riverpod 2.6** avec des providers **declares a la main**.
+Le projet utilise **Riverpod 3.3.2** (`flutter_riverpod` ^3.3.2) avec des
+providers **declares a la main**.
 Il n'y a **pas** de `riverpod_generator` / `@riverpod` : aucune generation de
 code pour les providers.
 
@@ -118,7 +119,7 @@ Exemples :
 feat(trek): suivi GPS temps reel avec service en arriere-plan
 fix(auth): zero PII pour les sessions anonymes
 feat(E5.5): polish UX — Hero etape + haptics + theme clair/sombre
-docs(readme): aligner la stack reelle (Riverpod 2.6, Slang CLI)
+docs(readme): aligner la stack reelle sur pubspec.yaml
 ```
 
 ## Workflow de branche
