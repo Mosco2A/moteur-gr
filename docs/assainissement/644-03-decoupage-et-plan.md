@@ -2920,6 +2920,118 @@ des numéros est amendée : `#101220`, `#100239`, `#101196` pour la ligne 676,
 
 ---
 
+#### QA finitions 699 (05/10) — Artemis, tâche 700, sans émulateur
+
+Lot sans produit : le correctif vit dans `tool/`, la garde et les témoins dans
+`test/`. Jonction **sans avance rapide** `7b8c7829` (parents `e9780724` et
+`7e715861`), **aucun conflit**, sur la branche jetable
+`claude/qa/finitions-jonction`. L'intégration n'est pas touchée, `main` non
+plus (`708b82ce`), aucun tag. 7 fichiers, 946 insertions, 26 suppressions.
+
+- **(a) Périmètre — OK.** `e9780724..7e715861` ne touche que `tool/` (4
+  fichiers), `test/` (2) et `docs/` (1). **Rien** sous `lib/`, `android/`,
+  `ios/`, ni dans `pubspec`.
+- **(b) `tool/resolution_executable.py` — OK.** Aucun `subprocess` et donc
+  aucun `shell=True` : le module ne lance rien, il rend un chemin. Un nom
+  portant un séparateur sort aux lignes 71-74 **avant** toute lecture du PATH,
+  et un chemin inexistant rend sa raison. La raison d'échec cite `PATHEXT`,
+  les cinq candidats et le compte de dossiers consultés. Les trois codes sont
+  bien distincts : **76** (introuvable, `resolution_executable.py` ligne 30 et
+  `pub_cache_sain.py:412`), **75** (verrou non obtenu, `pub_cache_sain.py:441`)
+  et **127** (commande absente, `audit_global.py:196`, `:204` et `:224`).
+  Cas limites mesurés : nom vide, dossier homonyme dans le PATH, `PATHEXT`
+  absent, `PATH` sale (entrées vides, guillemets, doublons → une seule entrée),
+  racines supplémentaires en dernier recours. Un seul écart, bénin : un nom
+  `None` lève `TypeError` au lieu de rendre une raison — aucun appelant ne le
+  fait.
+- **(c) Les trois outils — OK.** Plus aucune commande `flutter`, `dart` ou
+  `pub` par nom nu, chemins d'erreur compris : le dépôt entier ne porte plus
+  qu'**un seul `shutil.which`**, celui de la résolution commune, et les trois
+  fichiers l'importent. `--pub-get` résout flutter **avant** d'appeler
+  `sous_verrou()`, donc avant le verrou et avant la purge, et rend **76** sans
+  verrou ni purge quand il ne trouve rien — mesuré. Les deux `shell=os.name ==
+  "nt"` qui restent dans `tool/` (`publier_en_base.py:301`,
+  `cartes_hors_ligne/publier.py:70`) lancent `gcloud`, pas un outil du SDK :
+  hors périmètre du lot, mais `gcloud` est un `.cmd` et portera le même défaut
+  le jour où le shell tombera.
+- **(d) La garde `aucun_nom_nu_pour_flutter_699_test.dart` — AFFAIBLI.** Les
+  six cas sont verts et la mutation la fait rougir en nommant le fichier et la
+  ligne. Mais une sonde de QA a soumis onze formes de lancement à ses propres
+  fonctions : **les onze passent**, parce que la règle (A) exige un littéral
+  entre crochets, la règle (B) une liste fermée de lanceurs, et les règles
+  (B) et (D) un littéral collé au site d'appel. Les trous mesurés : les deux
+  lanceurs historiques du module `os` (`system` et `popen`),
+  `subprocess.getoutput` et `getstatusoutput`, les lanceurs `asyncio`, un
+  tuple littéral rangé dans une variable (`cmd = ('flutter', 'pub', 'get')`
+  puis `subprocess.run(cmd)`), le nom nu mis en constante
+  (`OUTIL = 'flutter'` puis `[OUTIL, ...]`), la concaténation implicite
+  (`['flut' 'ter', ...]`), `shell` posé par un dictionnaire `**options`, et
+  côté Dart la chaîne brute `r'flutter'`, la constante et l'interpolation.
+  Aucun n'existe dans le dépôt aujourd'hui : c'est une couverture à élargir,
+  pas un défaut livré. Les quatre lanceurs `.ps1`/`.sh` épinglés sont bien les
+  quatre connus et ne comptent pas comme trou.
+- **(e) Les 4 cas de `cache_pub_sain_695_test.dart` — OK, avec une nuance
+  nommée.** L'ancien `pub_cache_sain.py` de `e9780724` remis en place fait
+  rougir **3 des 4** : « `--pub-get` lance le flutter du PATH », « `PATHEXT`
+  détourné » et « `PATH` vide ». Le quatrième, « le témoin du défaut », reste
+  vert **des deux côtés** : il ne touche pas au code du lot, il prouve que le
+  faux dossier `bin` et le `PATH` réduit reproduisent bien `WinError 2`. C'est
+  un témoin d'appareil de mesure, pas un témoin de régression — et le lot le
+  dit déjà.
+- **(f) `docs/JOURNAL.md` — OK.** Les sept numéros cités existent en base et
+  portent bien le sujet de leur ligne : #101267 et #101276 (les deux kaizen),
+  #101306 et #101320 (lot outillage 695), #101332 et #101333 (build 11 livré
+  puis vérifié), #101335 (ce lot). La ligne « outillage 699 » dit vrai sur
+  les quatre points vérifiables : une seule résolution, six commandes dans
+  trois fichiers, `--pub-get` prouvée de bout en bout, garde de six cas.
+
+**Suite et mutations, sur `7b8c7829`.** Un seul `pub get`, et **par l'outil du
+lot** : `python tool/pub_cache_sain.py --pub-get` résout
+`C:\flutter\bin\flutter.BAT`, prend le verrou, purge (732 dossiers, 0
+incomplet), rend « Got dependencies! » et **sort en 0** — le défaut du build 11
+est fermé en conditions réelles. `flutter test --no-pub` : **+4195 ~2, 0
+échec** en 4 min 05 s, au chiffre annoncé. `flutter analyze --no-pub
+--no-fatal-infos` : **0 erreur, 0 avertissement, 7623 infos**, exit 0, le
+chiffre exact du build 11. `gate_format.sh` : OK, **1200** fichiers Dart écrits
+à la main, 0 à reformater. Gardes structurelles : **217 vertes**, 0 échec.
+`build_runner` : 2597 sorties en 94 s, puis `git status` **vide** — zéro dérive
+de généré. Audit `--rapide` comparé à `e9780724`, clef par clef : **4
+compteurs bougent, et les 4 sont l'arithmétique du lot** (fichiers de test
+503 → 504, cas 3935 → 3945, lignes de test 122 949 → 123 693, fichiers source
+de `test/` 513 → 514). Aucun compteur d'architecture ne bouge, et le verdict
+est identique au mot près : 8 bloquants, 532 infractions bloquantes, 881
+avertissements.
+
+Les trois mutations ont été faites **sur copie sauvegardée puis tout a été
+remis** (`git status` vide après coup) : (1) un appel `flutter` par nom nu
+remis dans `tool/audit_global.py` → la garde **rougit** et nomme
+`tool/audit_global.py:924` ; (2) le repli dossier par dossier du PATH retiré de
+`resolution_executable.py` → **seul** le témoin « `PATHEXT` détourné » rougit,
+ce qui situe exactement ce que le repli porte ; (3) `PATH` vide →
+`--pub-get` rend **76 en 0,09 s**, sans `Traceback`, **sans verrou** dans le
+cache et **sans purge** (le paquet incomplet est toujours là). Toutes les
+mutations touchant au verrou ou à la purge ont tourné sur un **faux cache**
+dans un dossier temporaire : le cache partagé de la machine n'a été touché que
+par l'unique `pub get` ci-dessus. Enfin, lancé **comme une tâche planifiée**
+(processus détaché, sans console, `DETACHED_PROCESS | CREATE_NO_WINDOW`), il
+résout `flutter` **et** `dart` en `C:\flutter\bin\*.BAT`, et `--pub-get`
+complet y tient de bout en bout sur un faux SDK.
+
+**Ce que je n'ai pas pu faire, et une réserve de chiffre.** Pas d'émulateur ni
+de bundle : le lot ne touche aucun fichier de `lib/`, il n'y a pas d'écran à
+regarder. `flutter analyze` complet et `pub outdated` ne sont pas rejoués dans
+la comparaison d'audit (`--rapide` les saute par construction), mais l'analyse
+a été lancée séparément. Réserve : `#101335` annonce **1199** fichiers Dart
+écrits à la main sur sa tête livrée, alors que la mesure en donne **1200**
+(1199 sur l'intégration, plus la garde neuve) ; `#101337` dit bien 1200. C'est
+un chiffre de rapport, pas un défaut de code.
+
+**Verdict final : finitions 699 OK, un AFFAIBLI — la couverture de la garde
+(d). Joint sur `claude/qa/finitions-jonction` (`7b8c7829`).** Il reste à Skynet
+de le réunir dans l'intégration. Aucun tag.
+
+---
+
 ## 5. Checklist de complétude CORDO
 
 Grille de `#85087`, appliquée à ce plan.
