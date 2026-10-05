@@ -19,8 +19,7 @@ import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/demo_simulation_button.dart';
-import '../../../map/map_facade.dart' show gpxTrackProvider;
-import '../../../map/widgets/map_guide_sheet.dart';
+import '../../../map/map_facade.dart' show gpxTrackProvider, showMapGuideSheet;
 import '../../../../core/branding/stepways_icons.dart';
 import 'map_content.dart';
 

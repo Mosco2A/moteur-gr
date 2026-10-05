@@ -20,10 +20,12 @@
 /// `planning` devient l interface sur laquelle les autres reposent. La facade
 /// rend ce cout visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 8 FICHIERS DE 6 FEATURES AU 03/10/2026 : `booking`, `feasibility`,
+/// LUE PAR 10 FICHIERS DE 6 FEATURES AU 05/10/2026 : `booking`, `feasibility`,
 /// `map`, `settings`, `trek`, `weather`.
 library;
 
+export 'domain/planning_calculator.dart' show PlanningCalculator;
+export 'models/day_plan.dart' show DayPlan;
 export 'providers/planned_days_provider.dart'
     show manualRestDayCacheProvider, plannedDaysProvider;
 export 'providers/planning_provider.dart'

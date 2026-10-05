@@ -15,13 +15,15 @@ import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/attribution_osm.dart';
-import '../../../map/domain/stage_focus.dart';
 import '../../../map/map_facade.dart'
     show
+        StageProgressBar,
         locationProvider,
+        mapFocusStage,
         mapPoisProvider,
         simplifiedTrackProvider,
         stageDistanceCoveredProvider,
+        stageTrackSegment,
         trackPositionProvider;
 import '../../../trail/trail_facade.dart'
     show currentStageNumberProvider, stagesProvider;
@@ -34,7 +36,6 @@ import 'map_controller.dart';
 import 'map_overlays.dart';
 import 'map_arrival_pipeline.dart';
 import 'map_sheets.dart';
-import '../../../map/widgets/stage_progress_bar.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';
 

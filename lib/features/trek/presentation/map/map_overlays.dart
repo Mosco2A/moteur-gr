@@ -15,11 +15,11 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../map/map_facade.dart'
     show
+        OffTrackBanner,
         OffTrackMessages,
         locationProvider,
         offTrackMessagesProvider,
         supplyGapAlertProvider;
-import '../../../map/widgets/off_track_banner.dart';
 import '../../../safety/safety_facade.dart' show SosButton;
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';

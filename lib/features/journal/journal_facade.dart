@@ -25,6 +25,7 @@
 library;
 
 export 'data/photo_service.dart' show PhotoError;
+export 'domain/models/journal_entry.dart' show JournalEntryModel;
 export 'providers/journal_day_providers.dart'
     show journalCumulativeStatsProvider, journalDayTraceProvider;
 export 'providers/journal_providers.dart'

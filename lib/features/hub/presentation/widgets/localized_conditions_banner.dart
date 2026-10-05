@@ -11,16 +11,16 @@ import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
-import '../../../weather/models/weather_forecast.dart';
 import '../../../weather/weather_facade.dart'
     show
+        DayForecast,
         FireRiskDay,
+        WeatherIcon,
         WeatherStageParams,
         fireRiskColor,
         localizedStageNumberProvider,
         stageWeatherProvider,
         trailFireRiskProvider;
-import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 import '../../../../core/branding/stepways_icons.dart';
 
 /// BANDEAU « ICI ET MAINTENANT » — MÉTÉO PENDANT LA RANDO, AU JOUR J (R11).

@@ -8,7 +8,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../../core/theme/couleurs_semantiques.dart';
 
 import '../../../../../i18n/translations.g.dart';
-import '../../../../map/widgets/user_position_marker.dart';
+import '../../../../map/map_facade.dart' show UserPositionMarker;
 
 /// Couche carte position utilisateur -- point bleu pulsant + cercle precision.
 ///

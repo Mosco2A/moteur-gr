@@ -15,8 +15,8 @@ import '../../../core/services/monetization_service.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../ads/ads_facade.dart' show AdStateBadge, BannerAdSlot;
-import '../../ads/domain/ad_state.dart';
+import '../../ads/ads_facade.dart'
+    show AdStateBadge, BannerAdSlot, etatPubliciteProvider;
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_card.dart';

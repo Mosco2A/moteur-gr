@@ -58,15 +58,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte 663 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-127 498 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte 664 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+127 570 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 184 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 30 327 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 428 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 092 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 164 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 831 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -81,11 +81,11 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` | 49 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 11 592 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `trek` | 49 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 11 591 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> | 6 803 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
-| `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 431 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
-| `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 4 975 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
-| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 930 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
+| `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 442 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
+| `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 4 977 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
+| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 931 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
 
@@ -96,11 +96,11 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 72 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
 | … dont depuis `lib/core/routing/app_router.dart` | 51 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
 | … dont depuis tout autre fichier du socle | 21 <!-- audit:couches.socle_vers_feature[!~^lib/core/routing/app_router\.dart ] --> | **non** (règle 9) |
-| Imports d'une feature vers une autre feature | 157 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
-| … dont par la façade de la voisine | 125 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
-| … dont vers l'intérieur de la voisine | 32 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$] --> | **non** (règle 10) |
+| Imports d'une feature vers une autre feature | 136 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
+| … dont par la façade de la voisine | 136 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
+| … dont vers l'intérieur de la voisine | 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$] --> | **non** (règle 10) |
 | Fichiers de présentation qui importent un paquet de données | 0 <!-- audit:couches.nombre_presentation_donnees --> | **oui** (ECR-25) |
-| Fichiers de feature hors d'une couche reconnue | 21 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
+| Fichiers de feature hors d'une couche reconnue | 22 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
 
 Parmi les croisements vers l'intérieur d'une voisine,
 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$][~ -> .*/(presentation|data)/] --> visent une `presentation/` ou un `data/` voisin : c'est le

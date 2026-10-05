@@ -14,8 +14,8 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
-import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/treks_facade.dart' show currentTrailSummaryProvider;
+import '../../../treks/treks_facade.dart'
+    show TrekLifecycleState, currentTrailSummaryProvider;
 import '../../../trek/trek_facade.dart'
     show
         TrackingSessionState,

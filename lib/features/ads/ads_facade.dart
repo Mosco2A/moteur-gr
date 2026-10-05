@@ -23,6 +23,7 @@
 /// LUE PAR 4 FICHIERS DE 3 FEATURES AU 05/10/2026 : `consent`, `hub`, `trail`.
 library;
 
+export 'domain/ad_state.dart' show etatPubliciteProvider;
 export 'presentation/ad_state_badge.dart' show AdStateBadge, AdStateBanner;
 export 'presentation/banner_ad_slot.dart' show BannerAdSlot;
 export 'providers/ads_providers.dart'

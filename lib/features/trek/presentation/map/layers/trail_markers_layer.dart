@@ -9,7 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../../core/models/poi.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
-import '../../../../map/widgets/poi_marker.dart';
+import '../../../../map/map_facade.dart' show PoiMarker;
 import '../../../../../shared/poi/poi_type_config.dart';
 import '../../../../../shared/poi/poi_type_label.dart';
 import '../../../../../domain/stage.dart';

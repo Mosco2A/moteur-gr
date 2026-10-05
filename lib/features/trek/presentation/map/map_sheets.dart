@@ -13,9 +13,8 @@ import '../../../../core/models/poi.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/grise_en_demo.dart';
-import '../../../map/widgets/poi_filter_bar.dart';
-import '../../../map/widgets/poi_popup.dart';
-import '../../../map/widgets/stage_poi_checklist.dart';
+import '../../../map/map_facade.dart'
+    show PoiFilterBar, PoiPopup, StagePoiChecklist;
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Ouvre le panneau « Calques » (toggle des types de POI) — parite GR20

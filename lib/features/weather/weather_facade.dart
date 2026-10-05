@@ -23,6 +23,7 @@
 /// LUE PAR 2 FICHIERS DE 1 FEATURE AU 05/10/2026 : `hub`.
 library;
 
+export 'models/weather_forecast.dart' show DayForecast;
 export 'presentation/fire_risk_screen.dart' show fireRiskColor;
 export 'providers/current_stage_provider.dart'
     show localizedStageNumberProvider, referenceStageNumberProvider;
@@ -30,3 +31,4 @@ export 'providers/fire_risk_providers.dart'
     show FireRiskDay, trailFireRiskProvider;
 export 'providers/weather_providers.dart'
     show WeatherStageParams, stageWeatherProvider;
+export 'widgets/day_forecast_card.dart' show WeatherIcon;
