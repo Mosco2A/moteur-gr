@@ -24,13 +24,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:logger/logger.dart';
 
 import 'package:drift/drift.dart' show Value;
 
+import 'package:moteur_gr/core/analytics/screen_breadcrumb.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
+import 'package:moteur_gr/features/onboarding/presentation/onboarding_screen.dart';
 
 /// Journal partage des scenarios (une ligne par pas).
 ///
@@ -71,8 +74,102 @@ const Duration kShotWait = Duration(milliseconds: 3000);
 /// figer le scenario ; au-dela, on rend la main au test.
 const Duration kFontDrainTimeout = Duration(seconds: 3);
 
+/// Budget de BASE d'attente du premier ecran (voir [attendreAccueilOuCockpit]).
+///
+/// Il n'y a plus de delai fixe au boot : ce budget est le PLANCHER, et il
+/// s'etend jusqu'a [kBudgetPremierEcranMax] tant que le demarrage PROGRESSE.
+const Duration kBudgetPremierEcranBase = Duration(seconds: 20);
+
+/// Plafond d'attente du premier ecran sur INSTALLATION VIERGE (tache 685).
+///
+/// CE CHIFFRE EST UNE MESURE, PAS UNE MARGE DE CONFORT (kaizen #101252).
+/// Le 05/10, sur un run joue apres desinstallation du paquet, `app.main()` est
+/// parti a 07:56:59.158 et le harnais a declare « Onboarding absent (deja
+/// complete) » a 07:57:12.972 — 13,8 s plus tard, c'est-a-dire a l'expiration
+/// de son ancien delai FIXE de 10 s. La miette `screen:onboarding` de
+/// l'observabilite (lot 645-09) est partie APRES, et la porte de consentement
+/// de la sauvegarde a ete rencontree a 07:57:25.677 : l'accueil etait donc bel
+/// et bien la, entre 13,8 s et 26,5 s apres le lancement. Le harnais a joue
+/// toute la route DERRIERE le carrousel, et deux runs ont ete perdus sur
+/// chaque arbre de la QA du 645-05c. 60 s, c'est plus du double du pire
+/// premier affichage mesure.
+const Duration kBudgetPremierEcranMax = Duration(seconds: 60);
+
+/// CE QUE LE HARNAIS A TROUVE AU BOOT (tache 685).
+enum EtatAuPremierEcran {
+  /// L'accueil (carrousel d'onboarding) est a l'ecran.
+  accueil,
+
+  /// L'application est DEJA passee a la suite (cockpit, catalogue, mes treks) :
+  /// l'onboarding a ete franchi lors d'une installation precedente.
+  cockpit,
+
+  /// NI l'un NI l'autre dans le budget. Jamais un « absent » par defaut.
+  rien,
+}
+
+/// LES MIETTES D'ECRAN POSEES PAR L'APPLICATION, VUES DEPUIS LE HARNAIS
+/// (observabilite du lot 645-09, lecture ajoutee a la tache 685).
+///
+/// `AnalyticsService.enterScreen` journalise `screen:<nom>` a CHAQUE entree
+/// d'ecran, et le fait AVANT de regarder si Firebase est joignable : la miette
+/// part donc meme sur un emulateur sans services Google. C'est l'etat REEL de
+/// l'application, dit par l'application elle-meme — pas une interpretation de
+/// l'arbre de widgets.
+final List<String> kMiettesEcran = <String>[];
+
+/// Vrai si l'ecoute des miettes est deja posee (le `Logger` est global).
+bool _ecouteDesMiettesPosee = false;
+
+/// POSE L'ECOUTE DES MIETTES D'ECRAN. Appelee par [initHarness], donc AVANT
+/// `app.main()` : aucune miette du boot ne peut etre manquee.
+///
+/// `Logger.addLogListener` est appele pour CHAQUE evenement, et AVANT le filtre
+/// de niveau : la miette de niveau `trace` arrive donc ici quel que soit le
+/// reglage de journalisation. Le harnais NE MODIFIE RIEN de l'application : il
+/// ecoute.
+void poserLEcouteDesMiettesDEcran() {
+  if (_ecouteDesMiettesPosee) return;
+  _ecouteDesMiettesPosee = true;
+  Logger.addLogListener((evenement) {
+    final message = evenement.message;
+    if (message is! String) return;
+    if (!message.startsWith('screen:')) return;
+    kMiettesEcran.add(message.substring('screen:'.length).trim());
+  });
+}
+
+/// Remet le releve des miettes a zero (a appeler en tete de scenario).
+void reinitialiserLesMiettesDEcran() => kMiettesEcran.clear();
+
+/// Vrai si l'application a pose la miette de [ecran] depuis le debut du run.
+bool mietteDEcranVue(ScreenBreadcrumb ecran) =>
+    kMiettesEcran.contains(ecran.name);
+
+/// Le chemin d'ecrans parcouru, tel qu'il part au journal du run.
+String miettesLisibles() =>
+    kMiettesEcran.isEmpty ? 'AUCUNE' : kMiettesEcran.join(' > ');
+
+/// LES ECRANS QUI PROUVENT QUE L'ACCUEIL EST DEJA PASSE.
+///
+/// Ce sont les quatre portes d'entree possibles apres l'onboarding : le hub
+/// (cockpit) quand un trek est en cours, le catalogue quand il faut encore
+/// telecharger un sentier, « mes treks », et le mur affiche quand l'appareil
+/// n'a aucune donnee. Une miette de l'une d'elles signifie que le carrousel
+/// n'a RIEN a montrer — c'est une PREUVE, pas une absence de preuve.
+const List<ScreenBreadcrumb> kEcransApresLAccueil = <ScreenBreadcrumb>[
+  ScreenBreadcrumb.hub,
+  ScreenBreadcrumb.trailCatalog,
+  ScreenBreadcrumb.myTreks,
+  ScreenBreadcrumb.noData,
+];
+
 /// Initialise le binding + la surface de capture. A appeler AVANT tout scenario.
 IntegrationTestWidgetsFlutterBinding initHarness() {
+  // L'ECOUTE DES MIETTES EST POSEE EN PREMIER : avant `app.main()`, donc avant
+  // la premiere entree d'ecran. Une ecoute posee plus tard raterait le boot,
+  // c'est-a-dire exactement le moment qu'on cherche a mesurer.
+  poserLEcouteDesMiettesDEcran();
   kBinding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   // Rendu reel a l'ecran pendant les captures (sinon le binding « saute » des
   // frames et l'emulateur n'affiche pas l'action). Cf. doc integration_test.
@@ -417,12 +514,124 @@ Future<bool> dismissAdsConsentIfPresent(
   return false;
 }
 
-/// Termine l'onboarding s'il est present (bilingue). Attend d'abord qu'il
-/// apparaisse (le boot est lent) ; s'il n'apparait pas, considere qu'il est deja
-/// passe. Ferme d'abord un eventuel consentement pub. Tape « Passer/Skip »
-/// (raccourci) puis, en repli, enchaine les « Suivant/Next » et « Commencer ».
+/// L'ACCUEIL EST-IL A L'ECRAN ? Trois signaux, lus dans cet ordre.
 ///
-/// Retourne true si un onboarding a ete traite, false s'il etait absent.
+/// 1. LE CARROUSEL LUI-MEME ([OnboardingScreen]) : le signal le plus direct,
+///    et il ne depend d'aucun libelle. C'est le widget de l'accueil, pas une
+///    chaine de caracteres qu'un renommage pourrait emporter.
+/// 2. LA MIETTE `screen:onboarding` : l'application dit elle-meme qu'elle est
+///    entree sur l'accueil. Elle reste vraie meme si le carrousel est, a cet
+///    instant precis, recouvert par la porte de consentement.
+/// 3. LES LIBELLES bilingues « Passer/Skip » et « Suivant/Next », conserves en
+///    dernier recours pour les montages ou le widget n'est pas celui du
+///    produit (harnais jetables de QA).
+bool accueilPresent() =>
+    present(find.byType(OnboardingScreen)) ||
+    mietteDEcranVue(ScreenBreadcrumb.onboarding) ||
+    present(textFrEn('Passer', 'Skip')) ||
+    present(textFrEn('Suivant', 'Next'));
+
+/// L'APPLICATION EST-ELLE DEJA PASSEE A LA SUITE ? Prouve par une miette de
+/// [kEcransApresLAccueil] — jamais par l'absence de l'accueil.
+bool cockpitAtteint() => kEcransApresLAccueil.any(mietteDEcranVue);
+
+/// ATTEND L'ETAT REEL DU PREMIER ECRAN, AU LIEU DE DORMIR UN DELAI FIXE
+/// (tache 685, kaizen #101252).
+///
+/// CE QUI EXISTAIT AVANT, ET CE QU'IL A COUTE. [completeOnboardingIfPresent]
+/// donnait 10 SECONDES FIXES au libelle « Passer » pour apparaitre ; passe ce
+/// delai, il journalisait « Onboarding absent (deja complete) » et rendait
+/// `false`. Sur une INSTALLATION VIERGE — c'est-a-dire le cas normal de la
+/// recette depuis la tache 676, qui desinstalle le paquet avant chaque run —
+/// le premier affichage peut demander plus de 20 s. Le harnais concluait alors
+/// a un onboarding absent AU MOMENT MEME ou l'application posait sa miette
+/// `screen:onboarding`, et jouait tout le scenario DERRIERE le carrousel : deux
+/// runs perdus sur chaque arbre de la QA du 645-05c (mesure du 05/10).
+///
+/// CE QU'ON FAIT A LA PLACE. On interroge l'ETAT, pas l'horloge :
+///   * SORTIE ANTICIPEE des que l'accueil OU la suite est detectee — un
+///     appareil rapide ne paie plus l'attente du plus lent ;
+///   * BUDGET ADAPTATIF : [kBudgetPremierEcranBase] au plancher, etendu
+///     jusqu'a [kBudgetPremierEcranMax] TANT QUE LE DEMARRAGE PROGRESSE (une
+///     nouvelle miette d'ecran, un arbre de widgets qui change, ou une frame
+///     encore programmee). Un boot qui avance obtient du temps ; un boot mort
+///     ne fait pas attendre une minute pour rien ;
+///   * ECHEC FRANC si rien n'apparait : [EtatAuPremierEcran.rien], que
+///     l'appelant transforme en run ROUGE avec capture. Jamais un « absent
+///     (deja complete) » par defaut.
+Future<EtatAuPremierEcran> attendreAccueilOuCockpit(
+  WidgetTester tester,
+  String persona, {
+  Duration budgetBase = kBudgetPremierEcranBase,
+  Duration budgetMax = kBudgetPremierEcranMax,
+  Duration pas = const Duration(milliseconds: 250),
+}) async {
+  final debut = DateTime.now();
+  var echeance = debut.add(budgetBase);
+  final plafond = debut.add(budgetMax);
+  var miettesVues = kMiettesEcran.length;
+  var tailleArbre = -1;
+
+  while (DateTime.now().isBefore(echeance)) {
+    await tester.pump(pas);
+
+    if (accueilPresent()) {
+      final ms = DateTime.now().difference(debut).inMilliseconds;
+      logStep(
+        persona,
+        'onboarding',
+        'Accueil DETECTE apres $ms ms (carrousel ou miette '
+            'screen:onboarding). Miettes vues : ${miettesLisibles()}',
+      );
+      return EtatAuPremierEcran.accueil;
+    }
+    if (cockpitAtteint()) {
+      final ms = DateTime.now().difference(debut).inMilliseconds;
+      logStep(
+        persona,
+        'onboarding',
+        'Accueil DEJA PASSE, et c est PROUVE : la miette '
+            '${kMiettesEcran.last} est posee apres $ms ms. '
+            'Miettes vues : ${miettesLisibles()}',
+      );
+      return EtatAuPremierEcran.cockpit;
+    }
+
+    // LE BOOT PROGRESSE-T-IL ? Trois signes, n'importe lequel suffit.
+    final nbMiettes = kMiettesEcran.length;
+    final nbWidgets = tester.allWidgets.length;
+    final progresse =
+        nbMiettes != miettesVues ||
+        nbWidgets != tailleArbre ||
+        tester.binding.hasScheduledFrame;
+    miettesVues = nbMiettes;
+    tailleArbre = nbWidgets;
+    if (progresse) {
+      final etendue = DateTime.now().add(budgetBase);
+      echeance = etendue.isAfter(plafond) ? plafond : etendue;
+    }
+  }
+
+  final ms = DateTime.now().difference(debut).inMilliseconds;
+  logStep(
+    persona,
+    'onboarding',
+    'NI accueil NI suite apres $ms ms (budget ${budgetMax.inSeconds} s). '
+        'Miettes vues : ${miettesLisibles()}',
+  );
+  return EtatAuPremierEcran.rien;
+}
+
+/// Termine l'onboarding s'il est present (bilingue). Attend d'abord l'ETAT REEL
+/// du premier ecran ([attendreAccueilOuCockpit]) : jamais un delai fixe. Ferme
+/// d'abord un eventuel consentement pub. Tape « Passer/Skip » (raccourci) puis,
+/// en repli, enchaine les « Suivant/Next » et « Commencer ».
+///
+/// Retourne true si un onboarding a ete traite, false s'il etait DEJA PASSE —
+/// et ce `false` est desormais PROUVE par une miette d'ecran de la suite. Si ni
+/// l'accueil ni la suite n'apparait dans le budget, le run ECHOUE FRANCHEMENT,
+/// capture a l'appui : un scenario joue derriere un carrousel invisible ne
+/// prouve rien, et c'est ce silence-la qui a coute quatre runs le 05/10.
 Future<bool> completeOnboardingIfPresent(
   WidgetTester tester,
   String persona,
@@ -432,15 +641,29 @@ Future<bool> completeOnboardingIfPresent(
   final skip = textFrEn('Passer', 'Skip');
   final next = textFrEn('Suivant', 'Next');
   final start = textFrEn('Commencer', 'Get started');
-  // Laisse le boot poser l'onboarding (ou le catalogue/mes-treks) a l'ecran.
-  final appeared = await waitFor(
-    tester,
-    skip,
-    timeout: const Duration(seconds: 10),
-  );
-  if (!appeared && !present(next)) {
-    logStep(persona, 'onboarding', 'Onboarding absent (deja complete)');
+  // L'ETAT REEL, PAS L'HORLOGE (tache 685).
+  final etat = await attendreAccueilOuCockpit(tester, persona);
+  if (etat == EtatAuPremierEcran.cockpit) {
+    logStep(
+      persona,
+      'onboarding',
+      'Onboarding deja complete (miette de la suite posee) — rien a franchir.',
+    );
     return false;
+  }
+  if (etat == EtatAuPremierEcran.rien) {
+    // LA CAPTURE D'ABORD : c'est elle qui dira ce que l'ecran montrait.
+    await settleAndShoot(tester, persona, '00_accueil_introuvable');
+    fail(
+      'PREMIER ECRAN INTROUVABLE : ni l accueil (carrousel ou miette '
+      'screen:onboarding) ni la suite '
+      '(${kEcransApresLAccueil.map((e) => e.name).join(", ")}) apres '
+      '${kBudgetPremierEcranMax.inSeconds} s. '
+      'Miettes vues : ${miettesLisibles()}. '
+      'Le run est REFUSE ici : jouer la suite derriere un carrousel invisible '
+      'rendrait un rapport de defauts qui n en est pas un (kaizen #101252). '
+      'Voir la capture ${persona}_00_accueil_introuvable.png.',
+    );
   }
   logStep(persona, 'onboarding', 'Onboarding present — completion (bilingue)');
   // ===================================================================
@@ -746,9 +969,15 @@ int kExigencesTenues = 0;
 /// precedent suffit a lui seul a franchir le minimum — c'est-a-dire que le
 /// garde cense empecher le retour du defaut d'origine se desarme tout seul.
 /// A appeler en tete de CHAQUE scenario, avant le premier [exige].
+///
+/// LES MIETTES D'ECRAN SONT REMISES A ZERO ICI AUSSI (tache 685), et pour la
+/// meme raison exactement : [kMiettesEcran] est globale, si bien qu'un second
+/// scenario joue dans le meme processus heriterait des miettes du premier et
+/// conclurait « accueil deja passe » sur la preuve d'un run precedent.
 void reinitialiserExigences() {
   kExigencesTenues = 0;
   kExigencesEchouees.clear();
+  reinitialiserLesMiettesDEcran();
 }
 
 /// Enregistre une EXIGENCE et son resultat. Retourne [ok] pour chainer.
