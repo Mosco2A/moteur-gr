@@ -21,10 +21,30 @@ CE QUE LE CONTROLE REFUSE. Le run echoue (code 1) si :
 Le point 3 n'est verifie que si le manifeste du demon est present.
 
 TOLERANCE EXPLICITE. Deux captures d'un MEME ecran peuvent legitimement etre
-identiques (une action sans effet visible). Ces paires-la se declarent une par
-une dans un fichier de tolerance (`--tolerances`), une paire par ligne au
-format `nom_a nom_b  # raison`. Rien n'est tolere par defaut : un doublon non
-declare rougit.
+identiques (une action sans effet visible). Ces paires-la se declarent dans un
+fichier de tolerance (`--tolerances`). Rien n'est tolere par defaut : un
+doublon non declare rougit.
+
+DEUX FORMES DE DECLARATION, ET LA SECONDE EST ARRIVEE A LA TACHE 685 :
+  * UNE PAIRE      : `nom_a nom_b            # pourquoi`
+  * UNE FAMILLE    : `groupe: nom_a nom_b nom_c ...   # pourquoi`
+    Toutes les paires INTERNES a la famille sont tolerees.
+
+POURQUOI LA FAMILLE N'EST PAS UN CONFORT (mesure du 05/10, memoire #101219).
+La regle de doublon compare l'image ENTIERE, barre d'etat comprise : UN pixel
+d'horloge suffit a declarer « differentes » deux captures d'un ecran ou rien ne
+s'est passe. Le GROUPEMENT CHANGE DONC D'UN RUN A L'AUTRE. Sur les treize
+captures de la carte immobile de S1, le run de 06:42 a rendu le groupe
+{tick_05, tick_06, tick_07, apres_gps, apres_sos} et celui de 08:03 les groupes
+{tick_03..tick_06} et {apres_gps, apres_sos} : les MEMES images, un decoupage
+different. Declarer paire par paire obligeait donc a ecrire les 78 paires d'une
+famille de treize pour que le verdict soit stable — ou a laisser le run rouge
+un jour sur deux. La famille se declare une fois, avec sa raison.
+
+UNE DECLARATION SANS RAISON EST REFUSEE (tache 685). Le fichier le demandait
+depuis la tache 665 ; rien ne le verifiait. Desormais une ligne de tolerance
+sans texte apres le `#` fait ROUGIR le run : la lever oblige a regarder
+l'image, ce qui est exactement le but.
 
 Usage:
   python tool/persona_shot_check.py --log <run.log> --captures <dir>
@@ -80,19 +100,65 @@ def _manifeste(path):
 
 
 def _tolerances(path):
-    """Les paires de doublons declarees legitimes."""
+    """Les doublons declares legitimes.
+
+    Rend `(paires, declarations, fautes)` :
+      * `paires`       : l'ensemble des paires tolerees (frozenset de deux noms),
+                         familles developpees en toutes leurs paires internes ;
+      * `declarations` : une entree par ligne lue (`forme`, `noms`, `raison`,
+                         `ligne`), pour le rapport ;
+      * `fautes`       : les lignes refusees (declaration sans raison, famille
+                         d'un seul nom), qui feront ROUGIR le run.
+    """
     paires = set()
+    declarations = []
+    fautes = []
     if not path or not os.path.exists(path):
-        return paires
+        return paires, declarations, fautes
     with open(path, "r", encoding="utf-8", errors="replace") as fh:
-        for line in fh:
-            line = line.split("#", 1)[0].strip()
-            if not line:
+        for num, brut in enumerate(fh, 1):
+            avant, _, apres = brut.partition("#")
+            corps = avant.strip()
+            raison = apres.strip()
+            if not corps:
+                continue  # ligne vide ou commentaire pur
+            groupe = corps.startswith("groupe:")
+            if groupe:
+                corps = corps[len("groupe:"):].strip()
+            noms = corps.split()
+            mini = 2
+            if len(noms) < mini:
+                fautes.append(
+                    "tolerance ligne %d : %s ne nomme que %d capture(s), il en "
+                    "faut au moins %d -> %s"
+                    % (num, "la famille" if groupe else "la paire",
+                       len(noms), mini, brut.strip())
+                )
                 continue
-            bouts = line.split()
-            if len(bouts) >= 2:
-                paires.add(frozenset((bouts[0], bouts[1])))
-    return paires
+            if not raison:
+                fautes.append(
+                    "tolerance ligne %d SANS RAISON ECRITE : %s. Une tolerance "
+                    "sans raison ne se relit pas, donc ne se leve jamais."
+                    % (num, " ".join(noms))
+                )
+                continue
+            if not groupe and len(noms) > mini:
+                fautes.append(
+                    "tolerance ligne %d : %d noms sur une ligne de PAIRE. "
+                    "Pour une famille, ecrivez 'groupe: %s'."
+                    % (num, len(noms), " ".join(noms))
+                )
+                continue
+            for i in range(len(noms)):
+                for j in range(i + 1, len(noms)):
+                    paires.add(frozenset((noms[i], noms[j])))
+            declarations.append({
+                "ligne": num,
+                "forme": "groupe" if groupe else "paire",
+                "noms": noms,
+                "raison": raison,
+            })
+    return paires, declarations, fautes
 
 
 def _empreinte(path):
@@ -116,7 +182,7 @@ def main() -> int:
     manifeste_path = a.manifeste or os.path.join(a.captures, "_shots.jsonl")
     marqueurs = _marqueurs(a.log)
     manif = _manifeste(manifeste_path)
-    tol = _tolerances(a.tolerances)
+    tol, declarations, fautes_tolerance = _tolerances(a.tolerances)
 
     fautes = []
     manquants = []
@@ -164,6 +230,45 @@ def main() -> int:
     trop_tard = [(n, r) for (n, r, _d) in retards if r > a.max_retard_ms]
     sans_manifeste = [n for n in marqueurs if n not in manif] if manif else []
 
+    # TOLERANCES MORTES, ET LA MESURE EST PAR DECLARATION, PAS PAR PAIRE.
+    #
+    # POURQUOI PAS PAR PAIRE : une FAMILLE est declaree en clique complete
+    # expres (le groupement reel change d'un run a l'autre au gre de l'horloge
+    # de la barre d'etat), donc la plupart de ses paires ne servent a rien DANS
+    # UN RUN DONNE — c'est l'attendu, pas un symptome. Compter paire par paire
+    # noierait le signal sous cent lignes de bruit.
+    #
+    # CE QU'ON DIT DONC : une declaration dont TOUS les noms sont des marqueurs
+    # de ce run et dont AUCUNE paire interne n'est identique. La famille entiere
+    # a cesse d'etre un doublon : l'action a retrouve un effet visible, ou le
+    # scenario a change. Ce n'est pas une faute, c'est la seule facon de voir
+    # une tolerance pourrir sur place.
+    appariees = set()
+    for noms in par_empreinte.values():
+        for i in range(len(noms)):
+            for j in range(i + 1, len(noms)):
+                appariees.add(frozenset((noms[i], noms[j])))
+    vus = set(marqueurs)
+    inutilisees = []
+    for d in declarations:
+        noms = d["noms"]
+        if not all(n in vus for n in noms):
+            continue
+        servie = any(
+            frozenset((noms[i], noms[j])) in appariees
+            for i in range(len(noms))
+            for j in range(i + 1, len(noms))
+        )
+        if not servie:
+            inutilisees.append(
+                "ligne %d (%s) : %s" % (d["ligne"], d["forme"], " ".join(noms))
+            )
+
+    if fautes_tolerance:
+        # LE FICHIER DE TOLERANCES EST LUI-MEME CONTROLE (tache 685). Une
+        # tolerance sans raison, ou une famille ecrite comme une paire, rend le
+        # controle illisible : on refuse le run plutot que de tolerer au hasard.
+        fautes.extend(fautes_tolerance)
     if not marqueurs:
         # LE CAS LE PLUS TRAITRE : aucun marqueur du tout. Le dossier de
         # captures peut meme etre plein (images d'un run precedent) et le test
@@ -205,12 +310,30 @@ def main() -> int:
         "screencap_ms_max": max(ds) if ds else None,
         "screencap_ms_median": sorted(ds)[len(ds) // 2] if ds else None,
         "budget_retard_ms": a.max_retard_ms,
+        "tolerances_fichier": a.tolerances,
+        "tolerances_declarations": len(declarations),
+        "tolerances_paires": len(tol),
+        "tolerances_familles": sum(
+            1 for d in declarations if d["forme"] == "groupe"
+        ),
+        "tolerances_inutilisees": inutilisees,
         "fautes": fautes,
         "verdict": "OK" if not fautes else "ECHEC",
     }
 
     print("[shot-check] marqueurs=%d captures=%d empreintes_distinctes=%d"
           % (resume["marqueurs"], resume["captures_presentes"], len(par_empreinte)))
+    print("[shot-check] tolerances : %d declaration(s) dont %d famille(s), "
+          "%d paire(s) couverte(s)"
+          % (len(declarations), resume["tolerances_familles"], len(tol)))
+    if resume["tolerances_inutilisees"]:
+        print("[shot-check] %d tolerance(s) DECLAREE(S) mais inutile(s) sur ce "
+              "run : toutes leurs captures sont presentes et AUCUNE n'est "
+              "identique a une autre. A relire : l'action a peut-etre retrouve "
+              "un effet visible."
+              % len(resume["tolerances_inutilisees"]))
+        for ligne in resume["tolerances_inutilisees"]:
+            print("[shot-check]   - %s" % ligne)
     if rs:
         print("[shot-check] retard marqueur->screencap : median=%d ms max=%d ms "
               "(budget %d ms)" % (resume["retard_ms_median"], resume["retard_ms_max"],

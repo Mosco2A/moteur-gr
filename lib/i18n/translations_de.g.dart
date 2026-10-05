@@ -1992,7 +1992,6 @@ class _Translations$hub$weather$de extends Translations$hub$weather$fr {
 	@override String get title => 'Wetter heute';
 	@override String get unavailable => 'Wetter derzeit nicht verfügbar.';
 	@override String get alertStorm => 'Gewitterwarnung';
-	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -3912,7 +3911,7 @@ class _Translations$weather$alert$fire$de extends Translations$weather$alert$fir
 
 	// Translations
 	@override String get title => 'Brandgefahr';
-	@override String desc({required Object value}) => '${value}°C erwartet. Hohe Brandgefahr.';
+	@override String desc({required Object temperature}) => '${temperature} erwartet. Hohe Brandgefahr.';
 }
 
 // Path: feasibility.formula.levels
@@ -4263,7 +4262,6 @@ extension on TranslationsDe {
 			'hub.weather.title' => 'Wetter heute',
 			'hub.weather.unavailable' => 'Wetter derzeit nicht verfügbar.',
 			'hub.weather.alertStorm' => 'Gewitterwarnung',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Trek starten',
 			'hub.startGateHint' => 'Schließe zuerst Route, Datum, Programm und Medizinische Daten (Hinweise gelesen) ab, um zu starten.',
 			'hub.prepareExpand' => 'Vorbereitung anzeigen',
@@ -4687,9 +4685,9 @@ extension on TranslationsDe {
 			'checklist.ui.preDep6' => 'Sonnencreme und Anti-Scheuer-Creme auftragen',
 			'checklist.ui.preDep7' => 'Schnürsenkel und Schuhsitz prüfen',
 			'checklist.ui.preDep8' => 'Offline-Karten herunterladen',
+			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
 			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
 			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
 			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
@@ -4807,7 +4805,7 @@ extension on TranslationsDe {
 			'weather.alert.uv.title' => 'Sehr hohe UV-Strahlung',
 			'weather.alert.uv.desc' => ({required Object value}) => 'UV-Index ${value}. Maximaler Sonnenschutz empfohlen.',
 			'weather.alert.fire.title' => 'Brandgefahr',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C erwartet. Hohe Brandgefahr.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} erwartet. Hohe Brandgefahr.',
 			'weather.program.title' => 'Wetter Etappe für Etappe',
 			'weather.program.subtitle' => 'Das Wetter dort, wo Sie sein werden, an dem Tag, an dem Sie dort sind.',
 			'weather.program.dayLabel' => ({required Object day}) => 'Tag ${day}',
@@ -5201,9 +5199,9 @@ extension on TranslationsDe {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Kaufen — ${price} €',
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
+			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			_ => null,
 		} ?? switch (path) {
-			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
@@ -5715,9 +5713,9 @@ extension on TranslationsDe {
 			'programme.duration.daysWithRest' => '{total} T insgesamt (davon {rest} Ruhe)',
 			'programme.duration.splitNote' => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.',
 			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
+			'programme.duration.daysTotal' => '{count} T insgesamt',
 			_ => null,
 		} ?? switch (path) {
-			'programme.duration.daysTotal' => '{count} T insgesamt',
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',

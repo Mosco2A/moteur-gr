@@ -1,4 +1,5 @@
-# PAIRES DE CAPTURES PERSONA LEGITIMEMENT IDENTIQUES (tache 665).
+# PAIRES ET FAMILLES DE CAPTURES PERSONA LEGITIMEMENT IDENTIQUES (tache 665,
+# familles ajoutees a la tache 685).
 #
 # Le controle de fin de run (`tool/persona_shot_check.py`) refuse un run ou deux
 # marqueurs DIFFERENTS rendent une image au contenu identique : c'est la
@@ -7,73 +8,133 @@
 #
 # Mais deux captures d'un MEME ecran peuvent etre identiques pour de bonnes
 # raisons : une action sans effet visible, un ecran deja dans l'etat attendu.
-# Ces paires-la se declarent ICI, UNE PAR UNE, avec leur raison. Rien n'est
-# tolere par defaut, et une tolerance sans raison ecrite n'a pas lieu d'etre :
+# Ces cas-la se declarent ICI, AVEC LEUR RAISON. Rien n'est tolere par defaut,
+# et depuis la tache 685 une declaration SANS RAISON ECRITE fait rougir le run :
 # la lever oblige a regarder l'image, ce qui est exactement le but.
 #
-# Format : <marqueur_a> <marqueur_b>  # pourquoi ces deux-la sont identiques
-# Exemple : S1_Lea_accueil S1_Lea_accueil_apres_retour  # retour sur un ecran inchange
+# DEUX FORMES :
+#   <marqueur_a> <marqueur_b>                  # pourquoi ces deux-la
+#   groupe: <marqueur_a> <marqueur_b> <...>    # pourquoi toute la famille
+# La famille tolere toutes ses paires INTERNES, et rien d'autre.
 #
-# --- S1 Lea --- (verifiees a l oeil le 03/10/2026, retard mesure 0 ms sur les 65)
+# POURQUOI LA FAMILLE EXISTE, ET CE QU'ELLE REPARE (mesure du 05/10,
+# memoire #101219). La regle de doublon compare l'image ENTIERE, barre d'etat
+# comprise : UN pixel d'horloge suffit a declarer « differentes » deux captures
+# d'un ecran ou rien ne s'est passe. LE GROUPEMENT CHANGE DONC D'UN RUN A
+# L'AUTRE. Sur la carte immobile de S1, le run de 06:42 a rendu le groupe
+# {tick_05, tick_06, tick_07, apres_gps, apres_sos} et celui de 08:03 les
+# groupes {tick_03..tick_06} puis {apres_gps, apres_sos} : les MEMES images, un
+# decoupage different. Declarer paire par paire obligeait a ecrire les 78 paires
+# d'une famille de treize pour que le verdict soit stable — ou a laisser le run
+# rouge un jour sur deux, ce qui rend le controle inutilisable et donc
+# contourne. Le controle, lui, n'est pas affaibli : il compare toujours les
+# images entieres, et tout doublon hors famille declaree reste ROUGE.
+#
+# ==========================================================================
+# S1 LEA
+# ==========================================================================
+# LA CARTE IMMOBILE SOUS LES TICKS GPS. Le scenario ouvre la carte de rando puis
+# capture huit « ticks » d'une fenetre d'injection GPS de 40 s. SANS INJECTION
+# REELLE DE POSITION, la carte ne bouge pas : les treize captures montrent le
+# meme ecran. Les deux dernieres entrent dans la meme famille pour la meme
+# raison : `24_sos_dialog` ouvre le dialogue SOS et il est ANNULE, donc
+# `25_apres_sos` rend la carte exactement dans l'etat de `23_apres_gps` —
+# mesure du 05/10, identiques dans les deux runs (06:42 et 08:03).
+# A LIRE QUAND MEME : cette famille est la face visible de l'absence
+# d'injection de position dans ces runs, pas une preuve que le suivi marche.
+groupe: S1_Lea_20_demarrage S1_Lea_21_carte S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_02 S1_Lea_22_gps_tick_03 S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_06 S1_Lea_22_gps_tick_07 S1_Lea_23_apres_gps S1_Lea_25_apres_sos  # carte de rando immobile : le demarrage ouvre la carte, les 8 ticks attendent une position qui n est pas injectee, et le dialogue SOS est ANNULE (la carte revient a l identique). Verifie a l oeil le 03/10, remesure les 05/10 06:42 et 08:03.
 S1_Lea_05_apres_onboarding S1_Lea_06_catalogue  # l onboarding rend la main SUR le catalogue : la capture d apres est le meme ecran, sans geste entre les deux.
-S1_Lea_21_carte S1_Lea_22_gps_tick_00  # les marqueurs gps_tick attendent une position ; sans injection reelle de position, la carte ne bouge pas. Meme ecran.
-S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_01
-S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_02
-S1_Lea_21_carte S1_Lea_22_gps_tick_01
-S1_Lea_21_carte S1_Lea_22_gps_tick_02
-S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_02
-S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_05
-S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_06
-S1_Lea_22_gps_tick_06 S1_Lea_22_gps_tick_07
-S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_06
-S1_Lea_22_gps_tick_04 S1_Lea_22_gps_tick_07
-S1_Lea_22_gps_tick_05 S1_Lea_22_gps_tick_07
-S1_Lea_22_gps_tick_04 S1_Lea_23_apres_gps
-S1_Lea_22_gps_tick_05 S1_Lea_23_apres_gps
-S1_Lea_22_gps_tick_06 S1_Lea_23_apres_gps
-S1_Lea_22_gps_tick_07 S1_Lea_23_apres_gps
+S1_Lea_07_apres_entrer S1_Lea_07c_cockpit  # entrer dans le sentier DEPOSE sur le cockpit ; la capture suivante est le meme ecran, sans geste entre les deux.
+S1_Lea_19b_cta_demarrer S1_Lea_19b2_apres_achat  # l achat ne change RIEN de visible sur cet ecran — vrai dans les trois runs, reference du 03/10 comprise. C est la face visible du defaut connu « CTA Demarrer absent de l arbre », pas un effet des lots 645-09b / 645-F1.
 S1_Lea_27_apres_terminer S1_Lea_33_recap_apres_trek  # « Terminer » depose deja le randonneur sur « Mon aventure » ; le marqueur 33 recapture le meme ecran. A LIRE QUAND MEME : il annonce 0/7 etapes, 0 km et « Aucune trace GPS disponible » apres le trek — coherent avec l absence d injection de position dans ce run, mais c est le meme ecran qui porte le defaut connu du diplome.
 
-# --- S2 Marc ---
+# ==========================================================================
+# S2 MARC
+# ==========================================================================
 S2_Marc_02_apres_skip S2_Marc_03_mes_treks  # deux captures du MEME ecran : le scenario saute l onboarding (02), puis journalise l emplacement et capture de nouveau (03). Aucun geste entre les deux, donc aucune raison que l image change. Verifie a l oeil le 03/10/2026.
 S2_Marc_04_cockpit S2_Marc_06_retour_cockpit  # cockpit, visite de Faisabilite, retour au cockpit : le meme ecran dans le meme etat. MESURE (tache 676) : dans le jeu de reference du 03/10 ces deux captures different de 349 pixels, tous dans la barre d etat (boite x[124-140] y[52-79] = l horloge) et ZERO ailleurs. Elles n ont donc jamais montre autre chose que le meme ecran.
 
-# --- S1 Lea, suite (tache 676) — MESURE, ET CE QU ELLE APPREND SUR LE CONTROLE ---
-# Les trois paires ci-dessous ont ete mesurees dans TROIS runs, dont le jeu de
-# reference du 03/10 : elles y portent 75 a 363 pixels de difference, et ZERO
-# hors de la barre d etat. Autrement dit elles ont TOUJOURS montre le meme
-# contenu ; le 03/10 elles ne rougissaient pas uniquement parce que l HORLOGE de
-# l emulateur avait avance d une minute entre les deux captures.
-# CE QUE CA DIT DU CONTROLE : sa regle de doublon compare l image ENTIERE, donc
-# un pixel d horloge suffit a declarer « differentes » deux captures d un ecran
-# ou rien ne s est passe. Le controle est donc faillible DANS LES DEUX SENS, et
-# il le sera tant qu il comparera la barre d etat avec le reste. A reprendre en
-# lot outillage ; en attendant, ces paires sont declarees sur mesure, pas sur
-# impression.
-S1_Lea_07_apres_entrer S1_Lea_07c_cockpit  # entrer dans le sentier DEPOSE sur le cockpit ; la capture suivante est le meme ecran, sans geste entre les deux.
-S1_Lea_19b_cta_demarrer S1_Lea_19b2_apres_achat  # l achat ne change RIEN de visible sur cet ecran — vrai dans les trois runs, reference du 03/10 comprise. C est la face visible du defaut connu « CTA Demarrer absent de l arbre », pas un effet des lots 645-09b / 645-F1.
-S1_Lea_20_demarrage S1_Lea_21_carte  # le demarrage ouvre la carte : meme ecran.
-S1_Lea_20_demarrage S1_Lea_22_gps_tick_00  # suite de la meme famille : sans injection reelle de position, la carte ne bouge pas.
-S1_Lea_20_demarrage S1_Lea_22_gps_tick_01
-S1_Lea_20_demarrage S1_Lea_22_gps_tick_02
-S1_Lea_20_demarrage S1_Lea_22_gps_tick_03
-S1_Lea_21_carte S1_Lea_22_gps_tick_03
-S1_Lea_22_gps_tick_00 S1_Lea_22_gps_tick_03
-S1_Lea_22_gps_tick_01 S1_Lea_22_gps_tick_03
-S1_Lea_22_gps_tick_02 S1_Lea_22_gps_tick_03
+# ==========================================================================
+# S3 STEVE
+# ==========================================================================
+# LA CARTE IMMOBILE SOUS LES TICKS GPS, meme famille que S1 avec douze ticks.
+# `07b_overlay_arrete` en fait partie, ET C EST MESURE : le journal du run dit
+# « Suivi arrete depuis l overlay = false ; bouton Demarrer de l overlay
+# present = false », puis « SECOND CHEMIN NON JOUE ... Limite de sequencement du
+# test, pas un defaut constate ». Le bouton « Arreter » n'a pas ete trouve :
+# AUCUN GESTE n'a eu lieu entre `07_apres_gps` et `07b_overlay_arrete`. Le jour
+# ou ce bouton revient, l'arret aura un effet visible et ce doublon
+# disparaitra de lui-meme — la tolerance ne masque donc rien.
+groupe: S3_Steve_04_apres_demarrage S3_Steve_05_carte S3_Steve_06_gps_tick_00 S3_Steve_06_gps_tick_01 S3_Steve_06_gps_tick_02 S3_Steve_06_gps_tick_03 S3_Steve_06_gps_tick_04 S3_Steve_06_gps_tick_05 S3_Steve_06_gps_tick_06 S3_Steve_06_gps_tick_07 S3_Steve_06_gps_tick_08 S3_Steve_06_gps_tick_09 S3_Steve_06_gps_tick_10 S3_Steve_06_gps_tick_11 S3_Steve_07_apres_gps S3_Steve_07b_overlay_arrete  # carte de rando immobile : 12 ticks sans injection reelle de position, puis un arret d overlay qui N A PAS EU LIEU (bouton introuvable, journalise dans le run). Remesure les 05/10 07:43 et 08:21.
+# LE COCKPIT APRES UN DIALOGUE ANNULE. `08_sos_dialog` ouvre le SOS, il est
+# ANNULE : `09_apres_sos` rend donc le cockpit dans l'etat d'avant.
+# `10_cockpit_fin` le recapture sans un geste entre les deux, et
+# `S3E_zz_retour_cockpit` est le retour au meme cockpit en fin d'extension —
+# rien de ce que l'extension traverse (liste d'etapes, fiche medicale,
+# signalement) ne change ce que le cockpit affiche. Identiques dans les deux
+# runs du 05/10.
+groupe: S3_Steve_09_apres_sos S3_Steve_10_cockpit_fin S3_Steve_S3E_zz_retour_cockpit  # cockpit avant / apres un dialogue SOS ANNULE, et retour au meme cockpit en fin d extension : le meme ecran dans le meme etat.
+S3_Steve_S3E_31_signalement S3_Steve_S3E_31b_signalement_eau  # MESURE : le journal du run dit « type eau a sec selectionne = false » — la cle signalement-type-eauASec n est pas sur l ecran, donc AUCUN GESTE n a eu lieu entre les deux captures. Le jour ou la cle revient, la selection aura un effet visible et ce doublon tombera tout seul. Le COINCEMENT est deja journalise comme signal QA.
 
-# --- Traversee 645-09 (tache 676) ---
+# ==========================================================================
+# S4 INES — LE PARCOURS HORS-LIGNE
+# ==========================================================================
+# LE COCKPIT HORS-LIGNE. `07_bascule_offline` capture le cockpit juste apres la
+# coupure reseau ; `10_cockpit_offline` le recapture apres l aller-retour vers
+# l entrainement et la carte hors-ligne ; `S4E_zz_retour_cockpit` est le retour
+# final. Le cockpit n affiche rien qui depende du reseau (le contenu premium
+# reste debloque, c est tout l objet du parcours), donc les trois captures
+# montrent le meme ecran. Identiques dans le run du 05/10 07:48.
+groupe: S4_Ines_07_bascule_offline S4_Ines_10_cockpit_offline S4_Ines_S4E_zz_retour_cockpit  # cockpit hors-ligne, meme etat aux trois passages : rien de ce que le cockpit affiche ne depend du reseau.
+S4_Ines_09_carte_offline S4_Ines_S4E_36_trace_offline  # la MEME carte hors-ligne, ouverte deux fois : le fond OSM (reseau) manque des deux cotes et le calque de trace local est le meme. Aucun geste entre les deux qui change l ecran.
+S4_Ines_S4E_45_trail_selection S4_Ines_S4E_45b_pyrenees_actif  # MESURE : le journal du run dit « bascule vers gr-pyrenees (non possede) = false » puis « COINCE : bascule impossible (bouton introuvable) -> #D02/#D03 non joues ». AUCUN GESTE n a eu lieu : les deux captures sont le meme ecran de choix de sentier. Le COINCEMENT est deja journalise comme signal QA.
+
+# ==========================================================================
+# S8 DEMO
+# ==========================================================================
+S8_Demo_02_apres_onboarding S8_Demo_03_catalogue  # l onboarding rend la main SUR le catalogue, et `_allerAuCatalogue` ne fait rien quand on y est deja : aucun geste entre les deux captures. Meme famille que S1_Lea_05_apres_onboarding / 06_catalogue. Identiques dans les deux runs du 05/10.
+
+# ==========================================================================
+# TRAVERSEE 645-09
+# ==========================================================================
 T645_09_15_reglages_rouvert T645_09_16_reglages_rouvert_bis  # la traversee ROUVRE deux fois le MEME ecran, sans un geste entre les deux, expres : la preuve qu elle porte est dans le JOURNAL (aucune deuxieme miette d entree), pas dans les pixels. Deux images identiques sont donc l attendu. Le 04/10 ce doublon n avait jamais rougi parce que les deux captures MANQUAIENT : le demon de captures mourait avant elles (corrige a la tache 676). Verifie a l oeil, meme ecran Reglages, 179 964 octets chacune.
+
+# ==========================================================================
+# NON TOLERE, ET C EST VOLONTAIRE
+# ==========================================================================
+# 1. S2_Marc_S2E_38_consent = S2_Marc_S2E_38b_consent_bascule. Ces deux-la sont
+#    identiques parce que RIEN NE S EST PASSE, et c est un defaut, pas un
+#    hasard. Le libelle « Confidentialite et consentement » apparait DEUX FOIS
+#    sur l ecran Reglages (settings_screen.dart) : en EN-TETE DE SECTION, qui
+#    ne se tape pas, et en TITRE DE LA TUILE, qui pousse vers /consent. Le
+#    scenario tape `find.text(...)`, donc la PREMIERE occurrence — l en-tete —
+#    et rien ne se passe. Sa verification d arrivee retrouve alors le meme
+#    texte et conclut « Ecran /consent atteint = true ». Le journal du run
+#    annonce donc #P38 et #D22 couverts alors que l ecran de consentement n a
+#    jamais ete ouvert. Tant que le scenario tape l en-tete, ce doublon doit
+#    ROUGIR : c est le seul endroit ou ce mensonge se voit.
 #
-# NON TOLERE, ET C EST VOLONTAIRE :
-# S2_Marc_S2E_38_consent = S2_Marc_S2E_38b_consent_bascule. Ces deux-la sont
-# identiques parce que RIEN NE S EST PASSE, et c est un defaut, pas un hasard.
-# Le libelle « Confidentialite et consentement » apparait DEUX FOIS sur l ecran
-# Reglages (settings_screen.dart) : en EN-TETE DE SECTION, qui ne se tape pas,
-# et en TITRE DE LA TUILE, qui pousse vers /consent. Le scenario tape
-# `find.text(...)`, donc la PREMIERE occurrence — l en-tete — et rien ne se
-# passe. Sa verification d arrivee (`present(find.text(...))`) retrouve alors le
-# meme texte et conclut « Ecran /consent atteint = true ». Le journal du run
-# annonce donc #P38 et #D22 couverts alors que l ecran de consentement n a
-# jamais ete ouvert. Tant que le scenario tape l en-tete, ce doublon doit
-# ROUGIR : c est le seul endroit ou ce mensonge se voit.
+# 2. S1_Lea_10_test_6min = S1_Lea_10b_test_6min_demarre (identiques dans le run
+#    du 05/10 06:42, PAS dans celui de 08:03). ET LA MESURE TRANCHE : dans le
+#    run de 08:03, ces deux captures different de 408 869 PIXELS, dans la boite
+#    (60,359)-(1020,1465), c'est-a-dire EN PLEIN CONTENU et pas dans la barre
+#    d'etat. L'appui « demarrer le test 6 min » a donc un effet visible ENORME
+#    quand la machine va bien. Leur identite du 06:42 n'est pas une action sans
+#    effet : c'est une image perimee servie pour la suivante. Ce doublon doit
+#    ROUGIR.
+#
+# 3. S1_Lea_12c_faisabilite_verdict_reel = S1_Lea_13_retour_cockpit =
+#    S1_Lea_14_entrainement (identiques dans le run du 05/10 08:03, PAS dans
+#    celui de 06:42). MEME MESURE, EN PLUS GROS : a 06:42 ces trois captures
+#    different de 1 918 053 et 1 986 942 pixels, boite (37,173)-(1046,2337) —
+#    trois ECRANS DIFFERENTS, quinze secondes et deux appuis entre le premier
+#    et le dernier. A 08:03, l'emulateur a servi TROIS FOIS LA MEME IMAGE.
+#    Ce n'est pas une famille, c'est la charge : exactement ce que la gate de
+#    charge de `tool/run_persona.ps1` (tache 685) attend desormais avant de
+#    lancer le run. Si ce groupe revient SUR UNE MACHINE CALME, il faudra le
+#    traiter comme un vrai retard de capture, pas comme un doublon legitime.
+#
+# CES DEUX-LA SONT LA PREUVE QUE LE CONTROLE N'EST PAS AFFAIBLI : avec les
+# familles ci-dessus, les runs S3, S4 et S8 des deux arbres du 05/10 passent au
+# VERT, et les deux runs S1 restent ROUGES — chacun sur le groupe que la charge
+# de la machine avait fabrique, et sur rien d'autre.

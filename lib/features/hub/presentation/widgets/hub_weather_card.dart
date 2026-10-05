@@ -9,8 +9,11 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
+import '../../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperatureRange;
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../settings/settings_facade.dart' show settingsProvider;
 import '../../../weather/weather_facade.dart'
     show
         DayForecast,
@@ -36,6 +39,7 @@ class HubWeatherCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final t = Translations.of(context);
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
 
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final stageNumber = ref.watch(referenceStageNumberProvider);
@@ -95,7 +99,7 @@ class HubWeatherCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppTheme.spacingXs),
                 Text(
-                  _subtitle(context, today, state.isLoading, t),
+                  _subtitle(context, today, state.isLoading, t, unit),
                   style: theme.textTheme.bodySmall?.copyWith(
                     // R1 (retour Chris) : le sous-titre meteo etait illisible
                     // (gris sur fond sombre, ~0.7 d'opacite -> contraste < AA).
@@ -153,11 +157,17 @@ class HubWeatherCard extends ConsumerWidget {
     DayForecast? today,
     bool loading,
     Translations t,
+    TemperatureUnit unit,
   ) {
     if (today != null) {
-      final temp = t.hub.weather.tempRange(
-        min: today.temperatureMin.round(),
-        max: today.temperatureMax.round(),
+      // P2 (#101255 point 2) : l'ancienne cle i18n `hub.weather.tempRange`
+      // portait « ° » EN DUR dans les cinq langues, sans jamais dire laquelle.
+      // Le format vit maintenant dans `lib/domain/`, avec le symbole qui suit
+      // le reglage — et l'ordre min / max du cockpit est conserve.
+      final temp = formatTemperatureRange(
+        today.temperatureMin,
+        today.temperatureMax,
+        unit,
       );
       return '$temp · ${today.weatherDescription}';
     }

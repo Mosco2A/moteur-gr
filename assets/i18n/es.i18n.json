@@ -98,8 +98,7 @@
     "weather": {
       "title": "El tiempo de hoy",
       "unavailable": "El tiempo no está disponible ahora.",
-      "alertStorm": "Alerta de tormenta",
-      "tempRange": "$min° / $max°"
+      "alertStorm": "Alerta de tormenta"
     },
     "startCta": "Iniciar el trek",
     "startGateHint": "Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.",
@@ -725,7 +724,7 @@
       },
       "fire": {
         "title": "Riesgo de incendio",
-        "desc": "$value°C previstos. Alto riesgo de incendio."
+        "desc": "$temperature previstos. Alto riesgo de incendio."
       }
     },
     "program": {

@@ -20,7 +20,12 @@
 /// `settings` devient l interface sur laquelle les autres reposent. La facade
 /// rend ce cout visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 2 FICHIERS DE 2 FEATURES AU 03/10/2026 : `auth`, `onboarding`.
+/// LUE PAR 9 FICHIERS DE 4 FEATURES AU 05/10/2026 : `auth`, `onboarding`,
+/// `weather` (5 fichiers) et `hub` (2). LES SEPT DERNIERS SONT ARRIVES AVEC LE
+/// LOT PRODUIT P1 (#101255) : le reglage Celsius / Fahrenheit existait et aucun
+/// ecran ne le lisait. Ces sept-la lisent `settingsProvider` — rien d'autre — et
+/// mettent en forme la temperature par `lib/domain/temperature_unit.dart`, qui
+/// n'appartient a aucune feature.
 library;
 
 export 'providers/settings_provider.dart'

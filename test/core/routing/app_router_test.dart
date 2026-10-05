@@ -50,7 +50,12 @@ void main() {
         // V1 ARGENT (tache 594, A3) : ajout de '/wallet' (recharge du
         // compte-etapes) et '/subscription' (abonnement sans pub) — les deux
         // ecrans de paiement qui manquaient (24 -> 26).
-        expect(routes.whereType<GoRoute>().length, 26);
+        // LOT PRODUIT P1 (#101255) : la route '/booking' est RETIREE avec son
+        // ecran (26 -> 25). Elle n avait ni porte dans l application, ni
+        // donnee, ni test, et son drapeau n a jamais ete ouvert : un chemin que
+        // personne ne pouvait prendre et qui, pris de force, renvoyait au
+        // catalogue.
+        expect(routes.whereType<GoRoute>().length, 25);
       },
     );
 
@@ -77,7 +82,6 @@ void main() {
         '/catalog',
         '/trail-selection',
         '/goodies',
-        '/booking',
         '/accommodations-nearby',
         '/emergency',
         // E57 (LOT D/D1) : fiche infos sante LOCAL ONLY (via Urgence E29).
@@ -117,7 +121,6 @@ void main() {
         'catalog',
         'trail-selection',
         'goodies',
-        'booking',
         'accommodations-nearby',
         'emergency',
         'health',

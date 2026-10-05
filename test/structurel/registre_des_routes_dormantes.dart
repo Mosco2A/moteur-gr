@@ -196,12 +196,18 @@ const registreDesRoutesDormantes = <String, RouteDormante>{
 
   // --- Derriere un drapeau de fonctionnalite -----------------------------
   //
-  // CES DEUX-LA SONT DIFFERENTES DE TOUTES LES AUTRES, et c est pourquoi elles
-  // ne sont pas dans les `exceptionsDocumentees` de l invariante : leur porte
-  // ne manque pas par decision ni par oubli, elle manque PAR ETAT. Le drapeau
-  // est ferme, donc la route se redirige vers le catalogue avant meme de
-  // construire son ecran. Poser une carte qui renvoie ailleurs serait le
-  // defaut que le LOT Q a corrige.
+  // CELLE-LA EST DIFFERENTE DE TOUTES LES AUTRES, et c est pourquoi elle n est
+  // pas dans les `exceptionsDocumentees` de l invariante : sa porte ne manque
+  // pas par decision ni par oubli, elle manque PAR ETAT. Le drapeau est ferme,
+  // donc la route se redirige vers le catalogue avant meme de construire son
+  // ecran. Poser une carte qui renvoie ailleurs serait le defaut que le LOT Q a
+  // corrige.
+  //
+  // ELLES ETAIENT DEUX JUSQU AU 05/10/2026. La seconde, '/booking', n est plus
+  // dormante : elle est RETIREE avec son ecran (lot produit P1, #101255). Une
+  // route dormante est une promesse en attente ; celle-ci n attendait rien —
+  // aucune donnee, aucun service, aucun test, et un drapeau que personne
+  // n avait jamais ouvert.
   '/goodies': RouteDormante(
     raison:
         'Boutique de goodies, gardee par `FeatureFlags.isGoodiesEnabled` : '
@@ -210,12 +216,5 @@ const registreDesRoutesDormantes = <String, RouteDormante>{
     reveil:
         'Ouverture du drapeau goodies pour un sentier — la porte se pose '
         'alors AVEC le drapeau, et conditionnee par lui.',
-  ),
-  '/booking': RouteDormante(
-    raison:
-        'Reservation (E5.13), gardee par `FeatureFlags.isBookingEnabled` et '
-        'encore a l etat d ebauche : drapeau ferme, la route redirige vers le '
-        'catalogue. Rien a montrer, donc rien a ouvrir.',
-    reveil: 'Livraison de la reservation reelle et ouverture de son drapeau.',
   ),
 };

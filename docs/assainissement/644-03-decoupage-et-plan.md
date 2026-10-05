@@ -1078,6 +1078,141 @@ Rien n'est livré : `main` reste `708b82ce`, l'intégration n'est pas touchée,
 aucun tag, aucune jonction.
 
 
+**QA GROUPÉE P1 + RECETTE PERSONA (05/10/2026 — Artemis, tâche 690, émulateur
+local).** Deux lots joints sur une branche de QA jetable,
+`claude/qa/p1-recette-jonction`, prise sur l'intégration `a06f5000` (build 10) :
+d'abord la **recette persona robuste**
+(`claude/chore/recette-persona-robuste` à `1e5a3a0b`, dix commits, `#101261` et
+`#101275`), puis le **lot produit P1**
+(`claude/fix/produit-p1-reglages-temperature-booking` à `a4eafbe6`, trois
+commits, `#101271`). Un seul conflit, attendu et trivial : `docs/JOURNAL.md`,
+où les deux côtés ajoutent des lignes au même endroit — **les deux sont
+gardées** ; `docs/architecture.md` s'est joint sans conflit. **Verdict : les
+deux lots sont OK, aucun AFFAIBLI.**
+
+**LA LECTURE, POINT PAR POINT.** *P1* — (a) le diff est borné aux réglages, à
+`lib/domain/temperature_unit.dart`, aux sept affichages de température, à la
+route `/booking` et à ses miettes, à `lib/i18n` (5 langues), à `test/` et à
+`docs/` ; (b) la lecture tolérante **rejouée à l'envers** :
+`settings_service.dart` ramené à son état d'avant le lot rend **4 rouges** aux
+motifs exacts — `type 'int' is not a subtype of type 'String?'` puis
+`Expected: 'en' / Actual: 'fr'`, la preuve qu'une clé abîmée en emportait une
+intacte — et **81 verts** une fois le correctif remis ; (c) **une seule**
+fonction de formatage, dans `lib/domain/`, et **exactement sept** fichiers
+importent `settings_facade.dart show settingsProvider` — la façade, jamais
+l'intérieur : ce sont les +7 d'ECR-23. Aucun « °C » en dur ne subsiste dans
+`lib/` ni dans `assets/i18n/`, et le modèle reste en Celsius (`weather/data/`
+et `weather/models/` ne sont pas touchés) ; (d) `/booking` n'a plus ni route,
+ni nom, ni écran, ni miette, ni drapeau, le **domaine** `booking` est intact
+(façade, `NuiteeType`, nuitées, hébergements périphériques), et la garde
+d'observabilité passe à **62/62** ; (e) les 31 cas ajoutés sont lus et
+substantiels — les cinq langues de l'alerte incendie vérifient 35 °C ↔ 95 °F —
+et **aucune attente existante n'est affaiblie**.
+*Recette* — (f) les 11 fichiers du diff vivent dans `integration_test/`,
+`tool/` et `test/`, **zéro sous `lib/`** ; (g) les cinq points sont relus et les
+deux mutations rejouées : délai fixe de 10 s remis → **2 rouges sur 12** aux
+motifs prévus ; tolérance **sans raison écrite** ajoutée au fichier réel, puis
+contrôle rejoué sur un run réel du 05/10 → `FAUTE : tolerance ligne 141 SANS
+RAISON ECRITE` et **code de sortie 1**, là où le fichier du dépôt sort en 0.
+
+**LA GATE, SUR LA TÊTE DE LA JONCTION.** `dart format` : **1 198** fichiers
+Dart écrits à la main, tous conformes. `flutter analyze lib test
+integration_test` : **7 534 remarques, 0 erreur, 0 avertissement**, toutes de
+sévérité *info*. `flutter test` : **4 169 verts, 2 ignorés, 0 échec**, et le
+compte **tombe juste à l'unité** — 4 092 (build 10, remesurés par moi sur
+`a06f5000`) + 27 (les trois fichiers de test de P1) + 52 (les cinq gardes de la
+recette) − 2 (un cas *généré par écran* en moins dans `tout_ecran_a_une_route`
+et `aucun_geste_mort`, l'écran `/booking` ayant disparu) = **4 169**.
+`build_runner` : 2 593 sorties, puis `git status` **vide**. Audit rapide : **un
+seul compteur monte**, ECR-23 de **208 à 214**, exactement ce que P1 annonçait ;
+ECR-28 tient à **195** ; tous les autres tiennent ou baissent (ECR-16 418→417,
+MORT-01 141→140, ECR-19e 48→47, VAC-02 36→34). `test/structurel/` : **211
+verts, 0 échec**, dont les onze gardes — `la_doc_ne_mente_pas` comprise, et
+**sans remesure**.
+
+**LES ÉCRANS : 58 CAPTURES SUR 65 IDENTIQUES AU PIXEL HORS BARRE D'ÉTAT, ET LES
+7 ÉCARTS SONT TOUS NOMMÉS.** Deux arbres jetables sur le même émulateur, la
+**recette identique au fichier près des deux côtés** (le diff
+`integration_test/` + `tool/` entre les deux arbres est vide), de sorte que
+seuls les 24 fichiers `lib/` de P1 distinguent le produit. **Deux écarts sont
+l'écart ANNONCÉ, et ce n'est pas une régression** : météo d'étape
+(`S1E_25_meteo`, 11 020 px) « 21° / 14° » devient « 21 / 14 °C », et tuile
+météo du cockpit (`26_cockpit_fin`, 2 624 px) « 14° / 21° » devient
+« 14 / 21 °C » — l'unité écrite une seule fois, règle du SI. **Les cinq autres
+ne touchent pas le produit** : barre d'outils du clavier Gboard présente d'un
+seul côté, qui remonte tout le dialogue (`31_journal_note_saisie`, 1 200 014 px,
+contenu applicatif identique) ; bandeau fugace « Fiche enregistrée », 4 s de vie
+(`09c`, 153 071 px) ; course de démarrage, « Test starting… » du harnais
+(`01_boot`, 15 298 px) ; barre de navigation système sur 10 px de haut (`12b`,
+3 104 px) ; heure de la note dans le contenu, 15:12 contre 14:30 (`32`,
+1 406 px). **Deux précisions utiles** : la « fiche conseil » (`tips_screen`) et
+l'écran « risque incendie » (`fire_risk_screen`) **n'affichent aucune
+température** — les cinq écrans du mandat se ramènent en réalité à deux,
+l'écran météo (cinq des sept affichages) et le cockpit (les deux autres) ; et la
+capture `07c_cockpit` s'arrête **au-dessus de la ligne de flottaison**, la tuile
+météo n'y est pas, c'est `26_cockpit_fin` qui la porte.
+
+**CE QUE SEUL L'APPAREIL POUVAIT DIRE** (scénario `qa_690_produit_p1_test.dart`,
+**non commité**, joué des deux côtés) : **12 exigences tenues, 0 échouée** côté
+APRÈS. `/booking` poussé pour de vrai dans le routeur est **refusé et nommé**
+(page introuvable) et **aucune miette `screen:booking` n'est émise** ; côté
+AVANT la même exigence **échoue**, la route existant encore. Une clé héritée
+**en ENTIER** écrite dans le **magasin natif** d'Android : côté APRÈS elle se
+replie sur `celsius` et **les sept autres réglages tiennent** (langue `en`,
+thème `light`, distance `mi`, peau, main dominante, cache, taille) ; côté AVANT
+le test **meurt** sur `type 'int' is not a subtype of type 'String?'`. Enfin,
+l'unité **persistée** arrive jusqu'à l'écran météo **convertie** : « 70 / 57 °F,
+69 / 59 °F, 68 / 57 °F », et **plus aucun °C**. *Réserve honnête* : le cycle
+« choisir, tuer l'application, relancer » n'est pas joué de bout en bout —
+`flutter test` efface les données entre deux fichiers (mesure du 04/10 citée en
+tête de `temperature_676_a_choix_test.dart`), et l'APK de debug lancé seul par
+`am start` n'a pas dépassé son écran d'attente en deux minutes. La persistance
+est donc prouvée **par le magasin natif relu à poignée neuve**, pas par une mort
+de processus.
+
+**LES PERSONAS, AU CHIFFRE DE RÉFÉRENCE, ET ZÉRO RUN PERDU.** S1 Léa **61/2**
+(les deux connues : CTA « Démarrer la randonnée » absent de l'arbre, diplôme qui
+ne s'ouvre pas), 65/65 captures ; S2 Marc **20/0**, 20/20 ; S3 Steve **17/1** (le
+même diplôme), 44/44 ; S4 Inès **8/0 sur 8 évaluées** — et non 8/1 sur 9, parce
+que `gr-pyrenees` est passé en statut **« draft » dans la liste distante** : le
+pas qui portait l'exigence échouée n'est plus joué, c'est une donnée distante et
+pas une correction ; S8 démo **29/1**, 11/11 ; traversée 645-09 **« All tests
+passed »**, 16/16 ; douze tours de pile **« All tests passed »**, dictionnaire
+de miettes identique à la référence (journal 13, settings 12, les quatre autres
+à 1) — **la clé `screen` suit bien l'écran visible**. **Logcat : 131 885 lignes
+lues, 0 plantage, 0 ANR, 0 mort non demandée, 0 exception Dart de
+l'application**, et **aucune miette `booking` sur aucun run**.
+
+**UN SEUL CONTRÔLE DE FIN DE RUN EST ROUGE, ET IL DIT VRAI.** S3 :
+`11_apres_terminer` = `17_recap_apres_trek`, doublon non toléré. Ce n'est pas
+une image périmée (retard marqueur→capture **0 ms**, machine calme à 2,88) :
+c'est la **face visible du défaut connu** que S3 signale par ailleurs, « le
+diplôme ne s'ouvre pas après un trek terminé » — l'écran ne change pas, donc
+l'image non plus. Mesure qui le prouve : sur le run de référence **sans P1**,
+ces deux captures diffèrent de **612 px au total et de 0 px hors barre d'état**,
+c'est-à-dire par la seule horloge. Le fichier de tolérances **n'a pas été
+élargi** : on ne négocie pas avec un rouge pour le faire taire.
+
+**ET LA RECETTE A FAIT SES PREUVES, MESURE À L'APPUI.** Sur les huit runs,
+**sept** ont vu l'accueil **après 10 000 ms** (jusqu'à 16 127 ms ; seul S1 à
+8 101 ms passait sous l'ancien seuil) : l'ancienne recette, avec son délai fixe
+de dix secondes, aurait déclaré « onboarding absent » et **perdu sept runs sur
+huit**. La gate de charge a retenu des runs jusqu'à **373 s** le temps que
+l'émulateur redescende sous 3, et la coupure Bluetooth plus le pré-build
+PRC-003 ont été vus à l'œuvre dans chaque journal.
+
+**CE QUI A COÛTÉ UN RUN, ET CE N'EST NI L'UN NI L'AUTRE LOT.** Le premier run
+AVANT a perdu 18 captures sur 65 : le démon de captures a été **abattu par le
+chien de garde de la machine** à 15:58:30 (règle PRC-003). Cause racine
+mesurée : l'instance **en cours d'exécution** de la tâche planifiée
+`Skynet-Watchdog` portait le code **d'avant** le correctif de la tâche 688
+(commit `8d6353b6`) — le libellé qu'elle écrivait dans son journal n'existe plus
+dans `scripts/skynet_watchdog.py`, dont la liste `MARQUEURS_EXCLUSION` exclut
+déjà `persona` et `capture`. Le chien de garde périmé a été arrêté à 16:57 et
+remplacé par celui du lot L6 ; **tous les runs postérieurs sont complets**, et
+le run perdu a été **rejoué**, pas deviné.
+
+
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
 dans `lib/domain/` et deux dans `lib/shared/poi/` pour le vocabulaire visuel

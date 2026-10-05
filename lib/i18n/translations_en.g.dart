@@ -1992,7 +1992,6 @@ class _Translations$hub$weather$en extends Translations$hub$weather$fr {
 	@override String get title => 'Today\'s weather';
 	@override String get unavailable => 'Weather unavailable right now.';
 	@override String get alertStorm => 'Storm alert';
-	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -3912,7 +3911,7 @@ class _Translations$weather$alert$fire$en extends Translations$weather$alert$fir
 
 	// Translations
 	@override String get title => 'Fire risk';
-	@override String desc({required Object value}) => '${value}°C expected. High fire risk.';
+	@override String desc({required Object temperature}) => '${temperature} expected. High fire risk.';
 }
 
 // Path: feasibility.formula.levels
@@ -4263,7 +4262,6 @@ extension on TranslationsEn {
 			'hub.weather.title' => 'Today\'s weather',
 			'hub.weather.unavailable' => 'Weather unavailable right now.',
 			'hub.weather.alertStorm' => 'Storm alert',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Start the trek',
 			'hub.startGateHint' => 'Complete Itinerary, Date, Programme and Medical card (advice read) first to start.',
 			'hub.prepareExpand' => 'Show preparation',
@@ -4687,9 +4685,9 @@ extension on TranslationsEn {
 			'checklist.ui.preDep6' => 'Apply sunscreen and anti-chafing cream',
 			'checklist.ui.preDep7' => 'Check laces and boot tightness',
 			'checklist.ui.preDep8' => 'Download the offline maps',
+			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
 			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
 			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
@@ -4807,7 +4805,7 @@ extension on TranslationsEn {
 			'weather.alert.uv.title' => 'Very high UV',
 			'weather.alert.uv.desc' => ({required Object value}) => 'UV index ${value}. Maximum sun protection recommended.',
 			'weather.alert.fire.title' => 'Fire risk',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} expected. High fire risk.',
 			'weather.program.title' => 'Weather stage by stage',
 			'weather.program.subtitle' => 'The weather where you will be, on the day you will be there.',
 			'weather.program.dayLabel' => ({required Object day}) => 'Day ${day}',
@@ -5201,9 +5199,9 @@ extension on TranslationsEn {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Buy — €${price}',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
+			'monetization.rewardedUnavailable' => 'No video available right now.',
 			_ => null,
 		} ?? switch (path) {
-			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
@@ -5715,9 +5713,9 @@ extension on TranslationsEn {
 			'programme.duration.daysWithRest' => '{total} d in total (incl. {rest} rest)',
 			'programme.duration.splitNote' => 'More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.',
 			'programme.duration.splitExhausted' => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.',
+			'programme.duration.daysTotal' => '{count} d in total',
 			_ => null,
 		} ?? switch (path) {
-			'programme.duration.daysTotal' => '{count} d in total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',

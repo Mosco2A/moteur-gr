@@ -14,9 +14,9 @@
 // aucun lint et aucune revue ne le voie — et il le perdrait au pire moment,
 // celui ou on lit un rapport pour comprendre une panne.
 //
-// D'OU CETTE GARDE, ET D'OU LA CONVENTION QU'ELLE PROTEGE. Avec 63 ecrans,
+// D'OU CETTE GARDE, ET D'OU LA CONVENTION QU'ELLE PROTEGE. Avec 62 ecrans,
 // « une cle par ecran » tenait du pari : le 64e ecran aurait fait taire les
-// 63 autres. Christophe a tranche pour TROIS cles dont la VALEUR change
+// 61 autres. Christophe a tranche pour TROIS cles dont la VALEUR change
 // (`screen`, `trail`, `stage`) et une miette courte par entree d'ecran.
 //
 // COMMENT ELLE ROUGIRAIT. Elle lit les appels a `setCustomKey` dans tout
@@ -155,7 +155,7 @@ void main() {
         lessThanOrEqualTo(plafondDesClesDeLApplication),
         reason:
             'une cle de plus a ete ecrite. Ce n est pas interdit, mais ca se '
-            'decide : avec 63 ecrans et 64 places, la marge est de 60 cles '
+            'decide : avec 62 ecrans et 64 places, la marge est de 60 cles '
             'pour TOUT le reste de l application. Cles trouvees : '
             '${clesPosees.toList()..sort()}',
       );
@@ -172,7 +172,7 @@ void main() {
   });
 
   group('645-09 — le catalogue des ecrans observes', () {
-    test('63 ecrans, autant de miettes, aucun doublon', () {
+    test('62 ecrans, autant de miettes, aucun doublon', () {
       final noms = ScreenBreadcrumb.all.map((e) => e.name).toList();
       expect(noms.toSet(), hasLength(noms.length), reason: 'nom en double');
       expect(

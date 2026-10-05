@@ -1992,7 +1992,6 @@ class _Translations$hub$weather$it extends Translations$hub$weather$fr {
 	@override String get title => 'Meteo di oggi';
 	@override String get unavailable => 'Meteo non disponibile al momento.';
 	@override String get alertStorm => 'Allerta temporale';
-	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -3912,7 +3911,7 @@ class _Translations$weather$alert$fire$it extends Translations$weather$alert$fir
 
 	// Translations
 	@override String get title => 'Rischio incendio';
-	@override String desc({required Object value}) => '${value}°C previsti. Rischio incendio elevato.';
+	@override String desc({required Object temperature}) => '${temperature} previsti. Rischio incendio elevato.';
 }
 
 // Path: feasibility.formula.levels
@@ -4263,7 +4262,6 @@ extension on TranslationsIt {
 			'hub.weather.title' => 'Meteo di oggi',
 			'hub.weather.unavailable' => 'Meteo non disponibile al momento.',
 			'hub.weather.alertStorm' => 'Allerta temporale',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Avvia il trek',
 			'hub.startGateHint' => 'Completa prima Itinerario, Data, Programma e Scheda medica (consigli letti) per iniziare.',
 			'hub.prepareExpand' => 'Mostra la preparazione',
@@ -4687,9 +4685,9 @@ extension on TranslationsIt {
 			'checklist.ui.preDep6' => 'Applicare crema solare e anti-sfregamento',
 			'checklist.ui.preDep7' => 'Controllare lacci e serraggio degli scarponi',
 			'checklist.ui.preDep8' => 'Scaricare le mappe offline',
+			'checklist.ui.bagOk' => 'ZAINO OK — PRONTO A PARTIRE',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.bagOk' => 'ZAINO OK — PRONTO A PARTIRE',
 			'checklist.ui.validateBag' => 'CONFERMA IL MIO ZAINO',
 			'checklist.ui.cancelValidation' => 'ANNULLA LA CONFERMA',
 			'checklist.ui.shoppingListButton' => 'LISTA DELLA SPESA',
@@ -4807,7 +4805,7 @@ extension on TranslationsIt {
 			'weather.alert.uv.title' => 'UV molto alto',
 			'weather.alert.uv.desc' => ({required Object value}) => 'Indice UV ${value}. Massima protezione solare consigliata.',
 			'weather.alert.fire.title' => 'Rischio incendio',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C previsti. Rischio incendio elevato.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} previsti. Rischio incendio elevato.',
 			'weather.program.title' => 'Meteo tappa per tappa',
 			'weather.program.subtitle' => 'Il tempo dove sarai, il giorno in cui vi sarai.',
 			'weather.program.dayLabel' => ({required Object day}) => 'Giorno ${day}',
@@ -5201,9 +5199,9 @@ extension on TranslationsIt {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acquista — ${price} €',
 			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
+			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
 			_ => null,
 		} ?? switch (path) {
-			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
 			'monetization.walletTitle' => 'Conto tappe',
 			'monetization.walletSubtitle' => 'Le tue tappe servono a sbloccare le escursioni',
 			'monetization.walletUnit' => 'tappe',
@@ -5715,9 +5713,9 @@ extension on TranslationsIt {
 			'programme.duration.daysWithRest' => '{total} g in totale (di cui {rest} riposo)',
 			'programme.duration.splitNote' => 'Più giorni = giorni di RIPOSO. Il riposo non cambia la durezza di una giornata di cammino, e il verdetto segue la giornata più dura.',
 			'programme.duration.splitExhausted' => 'Ogni tappa ha già la sua giornata: un giorno in più aggiungerà solo riposo, e il riposo non cambierà il verdetto.',
+			'programme.duration.daysTotal' => '{count} g in totale',
 			_ => null,
 		} ?? switch (path) {
-			'programme.duration.daysTotal' => '{count} g in totale',
 			'programme.stats.distance' => 'Distanza',
 			'programme.stats.elevation' => 'Dislivello+',
 			'programme.stats.days' => 'Giorni',
