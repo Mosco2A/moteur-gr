@@ -30,11 +30,11 @@
 | 03/10/2026 | 645-07 | Identifiants passés en anglais, commentaires en français intacts. | #101092 |
 | 04/10/2026 | 645-09 | Observabilité posée sur les 63 écrans, inerte sans Firebase. | #101121 |
 | 04/10/2026 | 645-09b | Correctif joint au 645-09 : la clé `screen` est fidèle à l'écran visible. | #101196 |
-| 04/10/2026 | 676 | Preuves émulateur de la pile rejouée et de l'unité de température, commit direct dans l'intégration. | a completer par Skynet |
 | 04/10/2026 | 645-F1 | Hors plan : unité de température persistée et parcours persona Marc réel. | #101128, #101196 |
+| 04/10/2026 | 676 | Preuves émulateur de la pile rejouée et de l'unité de température, commit direct dans l'intégration. | #101196 |
 | 04/10/2026 | build 9 | Version 0.1.5+9 livrée (`STEPWAYS-V0.1.5-9-202610041521-d48d2fd.aab`). | #101205, #101206 |
 | 04/10/2026 | 645-06b | Les fichiers `part` redécoupés en bibliothèques, et deux résidus sous 500 lignes. | #101208, #101214, #101217, #101219 |
-| 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | a completer par Skynet |
+| 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
 
 ## Ce qui reste ouvert au 04/10/2026
 
