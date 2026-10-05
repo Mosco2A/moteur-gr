@@ -888,6 +888,69 @@ commit de documentation, sans quoi la gate aurait été rouge entre deux
 gestes. La preuve à l'écran (captures avant/après, personas) reste à faire
 en local par Skynet : ni SDK Android ni émulateur dans la session cloud.
 
+**QA DU 645-05c, PARTIE CODE (05/10/2026, 03:25 UTC).** Artemis, session cloud
+lancée par Skynet pour Christophe. Branche `claude/qa/645-05c-jonction`, partie
+de l'intégration `7d2a2dbc` ; branche vérifiée `d5cb91f0` (G1 à G7, un commit
+par geste) ; jonction sans avance rapide `9a854e70`, aucun conflit, arbre
+identique à `d5cb91f0`. L'intégration n'est pas touchée, aucun tag.
+
+Verdicts de lecture, tous **OK** :
+
+- (a) `git diff -M` : 64 fichiers, tous sous `lib/features/`, `lib/shared/`,
+  `test/` ou `docs/` ; trois renommages (R096 à R098) pour les trois briques
+  montées ; ni `pubspec`, ni `android/`, ni `macos/`, ni `lib/i18n`, ni le
+  routeur.
+- (b) Compte par programme indépendant de la garde (imports, exports et `part`,
+  relatifs résolus) : croisements vers l'intérieur d'une voisine **52 → 0**
+  (avant : 19 `domain/`, 15 `presentation/`, 10 `widgets/`, 5 `data/`,
+  3 `models/`) ; socle → feature hors routeur **21 = 21** en imports (22 si
+  l'on compte aussi l'`export` de `gpx_depuis_les_assets.dart`, inchangé et
+  antérieur au lot) ; `core/`, `shared/` → `lib/domain/` **0**.
+- (c) Les trois fichiers montés n'importent que `core/` et `shared/` ; leur
+  corps est identique ligne à ligne, seules les directives `import` changent.
+  Les 22 façades relues : uniquement des `export … show`, chacune vers SA
+  feature. Les 52 lignes du tableau ci-dessus vérifiées dans le code : chaque
+  appelant lit la façade (avec `show`) et ne lit plus l'intérieur, chaque
+  façade exporte bien la cible. **38 directives, 51 symboles : exact.**
+  **Correction : 14 façades touchées (12 élargies, 2 créées), et non 16.**
+- (d) Dans les 47 fichiers de `lib/` et `test/` modifiés hors façades, une fois les
+  directives `import`/`export` retirées, le texte est identique, commentaires
+  compris ; seule exception, la garde `couches_respectees_645_test.dart`
+  (constante 52 → 0 et deux commentaires). Les deux tests adaptés ne changent
+  que des chemins d'import ; aucun test nouveau.
+- (e) Garde : plafonds 21 / 0 / 0, test « une façade ne re-exporte que SA
+  feature » intact. Les quatre mutations rejouées, toutes **rouges** puis
+  restaurées, zéro diff : (1) import de `hub_facade.dart` dans
+  `shared/widgets/hub_section.dart` → (a) 22 contre 21 ; (2) import de
+  `ads/presentation/banner_ad_slot.dart` dans `hub_screen.dart` → (b) 1 contre
+  0 ; (3) `tips_facade.dart` qui re-exporte `weather/…/fire_risk_screen.dart`
+  → « une façade ne re-exporte que SA feature » ; (4) le 0 de « dont vers
+  l'intérieur de la voisine » passé à 1 → `la_doc_ne_mente_pas` (« la doc dit
+  1, l audit mesure 0 »).
+- (f) `JOURNAL.md` : ligne 645-05c (#101226), lignes 676 (#101196) et 645-12
+  (#101229, #101232) présentes, ligne « Vingt croisements » retirée de « Ce qui
+  reste ouvert ». `architecture.md` : 24 chiffres balisés, égaux à l'audit de
+  la tête jointe. Écart vérifié commit par commit : G1 à G5 ne changent dans
+  `architecture.md` QUE des nombres balisés, G6 aucun document, seul G7 change
+  du texte.
+
+**Gate sur la tête jointe `9a854e70`.** `dart format` : 1 309 fichiers, 0
+modifié. `flutter analyze` : 0 erreur, 0 warning, infos **7 614 → 7 613**
+(la `directives_ordering` de `plan_summary_screen.dart`). `flutter test` :
+**4 092 réussis, 2 ignorés, 0 échec**. `build_runner` : aucun fichier
+généré ne change. Gardes `couches_respectees`, `pas_de_part` et
+`la_doc_ne_mente_pas` vertes.
+
+**Audit `--rapide`, avant (`7d2a2dbc`) → après (tête jointe).** ECR-23
+**236 → 208** ; ECR-16 416 → 418 et RNG-01 20 → 22 (les deux façades créées,
+`checklist_facade.dart` et `tips_facade.dart`, à la racine de leur feature
+et sans test miroir) ; ECR-05 77 → 78 (`lib/features/ads` 1 → 2 :
+`BannerAdSlot` cité par `ads_facade.dart`) ; ECR-15 46, ECR-28 195, ECR-19 10,
+ECR-31 19, MORT-01 141 inchangés ; observabilité 63/63, OBS-01 0, VAC-01 0,
+en-têtes 100 %.
+
+Partie écrans : à compléter par Skynet.
+
 
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
