@@ -21,7 +21,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
-import '../../safety/presentation/refus_sauvegarde_systeme_dialog.dart';
+import '../../safety/safety_facade.dart' show RefusSauvegardeSystemeDialog;
 import '../../settings/settings_facade.dart'
     show DominantHand, DominantHandValues, settingsProvider;
 import '../domain/auth_service.dart';

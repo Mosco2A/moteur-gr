@@ -20,10 +20,11 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 3 FICHIERS DE 3 FEATURES AU 03/10/2026 : `monetization`, `planning`,
+/// LUE PAR 3 FICHIERS DE 3 FEATURES AU 05/10/2026 : `monetization`, `planning`,
 /// `settings`.
 library;
 
+export 'domain/models/nuitee_type.dart' show NuiteeType, NuiteeTypeUi;
 export 'providers/hebergement_peripherique_providers.dart'
     show deeplinkLauncherProvider;
 export 'providers/nuitee_selections_provider.dart'

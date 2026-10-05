@@ -58,6 +58,15 @@
 // en permanence, donc desarme en une semaine — mais celui de (c) EST a zero,
 // parce que la mesure y est.
 //
+// LE LOT 645-05c (05/10/2026) A MIS (b) A ZERO, ET SON PLAFOND Y EST DESCENDU.
+// Arbitrage A de Skynet sous delegation de Christophe (GO-90, #101226) : les
+// 52 croisements restants ont ete payes un par un, sans fusionner aucune
+// feature. Trois briques d interface sans aucune dependance de feature
+// (`hub_section`, `quick_access_card`, `step_status_icon`) sont MONTEES dans
+// `lib/shared/widgets/` ; les 50 autres passent par la facade de la feature
+// lue, dont deux facades creees pour l occasion (`checklist`, `tips`). Comme
+// pour (c), ce plafond est a zero parce que la mesure y est.
+//
 // ---------------------------------------------------------------------------
 // L'ECART AVEC L'AUDIT EST RESORBE DEPUIS LE 03/10/2026 (lot 645-05)
 // ---------------------------------------------------------------------------
@@ -159,7 +168,16 @@ const routeurExclu = 'lib/core/routing/app_router.dart';
 ///
 /// CE QUI RESTE N'EST PLUS DE L'ETAT PARTAGE : aucun des 52 ne vise un
 /// `providers/`. Voir l'en-tete pour leur repartition, et ARB-645-05-b.
-const plafondCroisementsEntreFeatures = 52;
+///
+/// MESURE DU 05/10/2026, APRES LE LOT 645-05c : ZERO. Les 52 sont payes —
+/// 19 vers un `domain/`, 15 vers une `presentation/`, 10 vers un `widgets/`,
+/// 5 vers un `data/`, 3 vers un `models/`. Deux montent dans `lib/shared/`
+/// avec les tuiles de cockpit que `my_treks_screen` relisait ; les 50 autres
+/// lisent la facade de leur feature, `export ... show` du seul symbole
+/// utilise. Un plafond au-dessus de zero, ici, serait une autorisation de
+/// recommencer : le premier import vers l'interieur d'une voisine fait rougir
+/// cette garde.
+const plafondCroisementsEntreFeatures = 0;
 
 /// LE SOCLE NE CONNAIT PAS LE METIER : ZERO, ET PAS UN PLAFOND DE COMPLAISANCE.
 ///

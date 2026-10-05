@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
-import 'package:moteur_gr/features/hub/presentation/widgets/quick_access_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/quick_access_card.dart';
 import 'package:moteur_gr/shared/widgets/texte_ajuste.dart';
 
 /// TACHE 634 — RETOUR 6 DE CHRISTOPHE (DEM-260929-1325).

@@ -8,7 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../domain/tip_card.dart';
-import '../../tips/presentation/tip_detail_sheet.dart';
+import '../../tips/tips_facade.dart' show TipDetailSheet;
 import '../models/weather_alert.dart';
 import '../presentation/weather_alert_l10n.dart';
 import '../../../core/branding/stepways_icons.dart';

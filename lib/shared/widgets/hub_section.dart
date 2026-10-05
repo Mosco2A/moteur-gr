@@ -4,8 +4,8 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/branding/stepways_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
+import '../../core/theme/app_theme.dart';
 import 'quick_access_card.dart';
 
 /// Section thematique du HUB (RF-6/8/9/10).

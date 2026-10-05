@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/models/stage_row.dart';
-import '../../checklist/domain/season.dart';
+import '../../checklist/checklist_facade.dart' show Season;
 import '../../map/map_facade.dart' show gpxTrackProvider;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;

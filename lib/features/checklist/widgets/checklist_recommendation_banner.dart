@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
+import '../../feasibility/feasibility_facade.dart' show BodyWeightReference;
 import '../../../core/branding/stepways_icons.dart';
 
 /// Bandeau « Poids recommande » — CLONE GR20 (BackpackRecommendationBanner).

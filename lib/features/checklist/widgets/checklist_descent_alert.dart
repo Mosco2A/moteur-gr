@@ -10,10 +10,9 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
 import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/feasibility_facade.dart'
-    show feasibilityAssessmentProvider;
+    show BodyWeightReference, feasibilityAssessmentProvider;
 import '../providers/checklist_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 

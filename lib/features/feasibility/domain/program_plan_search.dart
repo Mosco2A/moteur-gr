@@ -43,7 +43,7 @@
 library;
 
 import '../../../core/models/stage_row.dart';
-import '../../planning/domain/planning_calculator.dart';
+import '../../planning/planning_facade.dart' show PlanningCalculator;
 import '../../../domain/feasibility_formula.dart';
 import 'feasibility_program.dart';
 

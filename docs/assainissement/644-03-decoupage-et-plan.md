@@ -755,6 +755,329 @@ feature. Les **services de données** (`gps_service`, `photo_service`,
 façade élargie.
 
 
+**CE QUE LE 645-05c A FAIT (05/10/2026).** L'arbitrage suivant est tranché :
+**option A, zéro croisement par des gestes conformes**, décision de Skynet sous
+délégation de Christophe (04/10/2026, GO-90, **#101226**), avec la règle de
+Christophe du 03/10 : propre et aux normes, la solution conforme l'emporte sur
+le coût. Branche `claude/chore/645-05c-zero-croisement`, partie de
+l'intégration `7d2a2dbc`, un commit par geste, gate complète verte après
+chacun. **Les 52 croisements sont à zéro**, aucune feature n'est fusionnée
+(option B écartée), aucun écran ne change de dossier, aucun symbole n'est
+renommé.
+
+Deux gestes seulement, choisis fichier par fichier :
+
+- **Monter dans `lib/shared/widgets/`** — uniquement ce qui n'importe AUCUNE
+  feature (règle 9) : `hub_section`, `quick_access_card` et `step_status_icon`
+  (dont dépend `quick_access_card`), trois briques d'interface qui ne lisent
+  que `core/` et `shared/`. Déplacées telles quelles (`git diff -M` : trois
+  renommages, seuls les chemins d'import changent). Deux croisements payés.
+- **Lire la façade de la feature** (règle 10) — tout le reste, 50 croisements.
+  Aucun widget de la famille « pub / SOS » ne pouvait monter : `banner_ad_slot`
+  lit `ads_providers`, `ad_state_badge` lit `ads/domain/ad_state`,
+  `sos_button` lit la façade `trek`. Les emprunts isolés sont un peintre, des
+  dialogues, un écran ou un algorithme propres à leur feature, et plusieurs
+  lisent ses providers. Les 32 emprunts de type restent dans leur feature :
+  aucun n'est lu par deux features ou plus (ARB-645-05-b), ils n'ont rien à
+  faire dans `lib/domain/`. **38 directives `export … show` ajoutées, 51
+  symboles**, dans 16 façades dont **2 créées** (`checklist`, `tips`) ; côté
+  appelant, chaque import de façade porte aussi son `show`, et se fusionne dans
+  la ligne de façade existante quand il y en avait une. Une façade ne contient
+  toujours que des `export`.
+
+| # | Geste | Vers | Appelant (`lib/features/…`) | Cible (`lib/features/…`) | Geste retenu |
+|---|---|---|---|---|---|
+| 1 | G1 | presentation | `hub/presentation/hub_screen.dart` | `ads/presentation/banner_ad_slot.dart` | facade de `ads` |
+| 2 | G1 | presentation | `hub/presentation/hub_screen.dart` | `safety/presentation/sos_button.dart` | facade de `safety` |
+| 3 | G1 | presentation | `hub/presentation/widgets/hub_cockpit_scroll.dart` | `ads/presentation/ad_state_badge.dart` | facade de `ads` |
+| 4 | G1 | presentation | `trail/presentation/trail_catalog_screen.dart` | `ads/presentation/ad_state_badge.dart` | facade de `ads` |
+| 5 | G1 | presentation | `trail/presentation/trail_catalog_screen.dart` | `ads/presentation/banner_ad_slot.dart` | facade de `ads` |
+| 6 | G1 | presentation | `trek/presentation/map/map_overlays.dart` | `safety/presentation/sos_button.dart` | facade de `safety` |
+| 7 | G2 | presentation | `treks/presentation/my_treks_screen.dart` | `hub/presentation/widgets/hub_section.dart` | monte dans lib/shared/widgets/ |
+| 8 | G2 | presentation | `treks/presentation/my_treks_screen.dart` | `hub/presentation/widgets/quick_access_card.dart` | monte dans lib/shared/widgets/ |
+| 9 | G3 | data | `feasibility/domain/ibp_calculator.dart` | `trek/data/track_simplifier.dart` | facade de `trek` |
+| 10 | G3 | data | `feasibility/providers/walk_test_provider.dart` | `trek/data/gps_service.dart` | facade de `trek` |
+| 11 | G3 | data | `settings/providers/account_erasure_provider.dart` | `feasibility/data/hiker_profile_repository.dart` | facade de `feasibility` |
+| 12 | G3 | data | `trek/presentation/map/map_photo_button.dart` | `journal/data/photo_service.dart` | facade de `journal` |
+| 13 | G3 | data | `trek/presentation/stages/trek_stage_detail_screen.dart` | `safety/data/signalement_service.dart` | facade de `safety` |
+| 14 | G4 | presentation | `after/presentation/adventure_recap_screen.dart` | `diploma/presentation/widgets/session_trace_painter.dart` | facade de `diploma` |
+| 15 | G4 | presentation | `auth/presentation/profile_screen.dart` | `safety/presentation/refus_sauvegarde_systeme_dialog.dart` | facade de `safety` |
+| 16 | G4 | presentation | `hub/presentation/widgets/hub_start_trek_button.dart` | `treks/presentation/widgets/active_trek_conflict_dialog.dart` | facade de `treks` |
+| 17 | G4 | presentation | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/presentation/fire_risk_screen.dart` | facade de `weather` |
+| 18 | G4 | presentation | `map/providers/simplified_track_provider.dart` | `trek/presentation/map/marker_cluster.dart` | facade de `trek` |
+| 19 | G4 | presentation | `settings/providers/account_erasure_provider.dart` | `safety/presentation/health_info_screen.dart` | facade de `safety` |
+| 20 | G4 | presentation | `weather/widgets/weather_alert_banner.dart` | `tips/presentation/tip_detail_sheet.dart` | facade de `tips` |
+| 21 | G5 | domain | `checklist/presentation/checklist_screen.dart` | `feasibility/domain/hiker_profile.dart` | facade de `feasibility` |
+| 22 | G5 | domain | `checklist/providers/checklist_provider.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 23 | G5 | domain | `checklist/providers/checklist_provider.dart` | `feasibility/domain/hiker_input_bounds.dart` | facade de `feasibility` |
+| 24 | G5 | domain | `checklist/widgets/checklist_descent_alert.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 25 | G5 | domain | `checklist/widgets/checklist_recommendation_banner.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 26 | G5 | domain | `checklist/widgets/checklist_weight_banner.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 27 | G5 | domain | `checklist/widgets/checklist_weight_banner.dart` | `feasibility/domain/hiker_input_bounds.dart` | facade de `feasibility` |
+| 28 | G5 | domain | `diploma/presentation/diploma_screen.dart` | `journal/domain/models/journal_entry.dart` | facade de `journal` |
+| 29 | G5 | domain | `feasibility/domain/feasibility_program.dart` | `planning/domain/planning_calculator.dart` | facade de `planning` |
+| 30 | G5 | domain | `feasibility/domain/program_plan_search.dart` | `planning/domain/planning_calculator.dart` | facade de `planning` |
+| 31 | G5 | domain | `feasibility/providers/trek_feasibility_provider.dart` | `checklist/domain/season.dart` | facade de `checklist` |
+| 32 | G5 | domain | `hub/presentation/cockpit_phase.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 33 | G5 | domain | `hub/presentation/widgets/finish_trek_button.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 34 | G5 | domain | `hub/presentation/widgets/hub_trek_card.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 35 | G5 | domain | `planning/presentation/plan_summary_screen.dart` | `booking/domain/models/nuitee_type.dart` | facade de `booking` |
+| 36 | G5 | domain | `planning/providers/planning_provider.dart` | `feasibility/domain/program_plan_search.dart` | facade de `feasibility` |
+| 37 | G5 | domain | `trail/presentation/trail_catalog_screen.dart` | `ads/domain/ad_state.dart` | facade de `ads` |
+| 38 | G5 | domain | `trek/domain/itinerary_calculator.dart` | `trail/domain/models/trail_feasibility_params.dart` | facade de `trail` |
+| 39 | G5 | domain | `trek/presentation/map/map_content.dart` | `map/domain/stage_focus.dart` | facade de `map` |
+| 40 | G5 | models | `feasibility/domain/feasibility_program.dart` | `planning/models/day_plan.dart` | facade de `planning` |
+| 41 | G5 | models | `hub/presentation/widgets/hub_weather_card.dart` | `weather/models/weather_forecast.dart` | facade de `weather` |
+| 42 | G5 | models | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/models/weather_forecast.dart` | facade de `weather` |
+| 43 | G5 | widgets | `hub/presentation/widgets/hub_weather_card.dart` | `weather/widgets/day_forecast_card.dart` | facade de `weather` |
+| 44 | G5 | widgets | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/widgets/day_forecast_card.dart` | facade de `weather` |
+| 45 | G5 | widgets | `trek/presentation/map/layers/trail_markers_layer.dart` | `map/widgets/poi_marker.dart` | facade de `map` |
+| 46 | G5 | widgets | `trek/presentation/map/layers/user_position_layer.dart` | `map/widgets/user_position_marker.dart` | facade de `map` |
+| 47 | G5 | widgets | `trek/presentation/map/map_content.dart` | `map/widgets/stage_progress_bar.dart` | facade de `map` |
+| 48 | G5 | widgets | `trek/presentation/map/map_overlays.dart` | `map/widgets/off_track_banner.dart` | facade de `map` |
+| 49 | G5 | widgets | `trek/presentation/map/map_screen.dart` | `map/widgets/map_guide_sheet.dart` | facade de `map` |
+| 50 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/poi_filter_bar.dart` | facade de `map` |
+| 51 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/poi_popup.dart` | facade de `map` |
+| 52 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/stage_poi_checklist.dart` | facade de `map` |
+
+Fichiers déplacés (contenu identique hors chemins d'import) :
+`lib/features/hub/presentation/widgets/hub_section.dart` →
+`lib/shared/widgets/hub_section.dart`, `…/quick_access_card.dart` →
+`lib/shared/widgets/quick_access_card.dart`, `…/step_status_icon.dart` →
+`lib/shared/widgets/step_status_icon.dart`. Deux tests adaptés en chemin
+d'import seulement : `test/comportement/icones_bicolores_639_test.dart` et
+`test/comportement/libelles_longs_634_test.dart`.
+
+**Compteurs, avant (`7d2a2dbc`) → après (`27fb89bf`), mesurés.**
+
+- Garde `couches_respectees_645_test.dart` : *socle → feature* 21 → **21**
+  (routeur exclu, ARB-a) ; *croisements entre features* **52 → 0**, et son
+  plafond descendu de 52 à **0** ; *socle → métier* 0 → **0**. Façades qui
+  re-exportent une voisine : 0.
+- Audit (`tool/audit_global.py --rapide`) : **ECR-23 236 → 208** (les
+  croisements de l'audit comptent aussi les façades : 164 → 136, dont
+  façades 112 → 136 et intérieur 52 → 0) ; ECR-15 46 = 46 ; ECR-28 195 =
+  195 ; ECR-19 10 = 10 ; ECR-31 19 = 19 ; MORT-01 141 = 141. Trois compteurs
+  montent, chacun par construction et sans code nouveau : **ECR-16 416 →
+  418** et **RNG-01 20 → 22**, les deux façades créées étant à la racine de
+  leur feature et sans test miroir, comme les vingt autres ; **ECR-05 77 →
+  78**, la liste fermée de l'audit trouvant le mot « lot » dans
+  `BannerAdSlot` (Slot), désormais cité par `ads_facade.dart` — aucun
+  identifiant n'est nouveau ni renommé. Observabilité 63/63, OBS-01 0,
+  VAC-01 0, en-têtes 100 %.
+- `flutter analyze` : 0 erreur, 0 warning, infos **7 614 → 7 613** (une
+  `directives_ordering` disparaît avec l'import interne retiré de
+  `plan_summary_screen.dart`). `flutter test` : 4 092 réussis, 2 ignorés,
+  0 échec, avant comme après chaque geste.
+
+**Mutations, chacune annulée par `git checkout --`, zéro diff résiduel.**
+(1) un import de `lib/features/hub/hub_facade.dart` injecté dans
+`lib/shared/widgets/hub_section.dart` : garde rouge, *socle → feature* 22
+contre 21. (2) un import de `ads/presentation/banner_ad_slot.dart` injecté
+dans `hub_screen.dart` : garde rouge, *croisements* 1 contre 0. (3)
+`tips_facade.dart` qui re-exporte `weather/presentation/fire_risk_screen.dart` :
+garde rouge, « une façade ne re-exporte que SA feature ». (4) le 0 de la
+ligne « dont vers l'intérieur de la voisine » de `docs/architecture.md`
+changé en 1 : `la_doc_ne_mente_pas_645_test.dart` rouge (« la doc dit 1,
+l audit mesure 0 »).
+
+**Ce qui n'est pas fait, et pourquoi.** Les chiffres balisés de
+`docs/architecture.md` sont revérifiés à chaque `flutter test` : ils ont donc
+été remis au réel dans CHAQUE commit de code du lot, pas seulement dans le
+commit de documentation, sans quoi la gate aurait été rouge entre deux
+gestes. La preuve à l'écran (captures avant/après, personas) reste à faire
+en local par Skynet : ni SDK Android ni émulateur dans la session cloud.
+
+**QA DU 645-05c, PARTIE CODE (05/10/2026, 03:25 UTC).** Artemis, session cloud
+lancée par Skynet pour Christophe. Branche `claude/qa/645-05c-jonction`, partie
+de l'intégration `7d2a2dbc` ; branche vérifiée `d5cb91f0` (G1 à G7, un commit
+par geste) ; jonction sans avance rapide `9a854e70`, aucun conflit, arbre
+identique à `d5cb91f0`. L'intégration n'est pas touchée, aucun tag.
+
+Verdicts de lecture, tous **OK** :
+
+- (a) `git diff -M` : 64 fichiers, tous sous `lib/features/`, `lib/shared/`,
+  `test/` ou `docs/` ; trois renommages (R096 à R098) pour les trois briques
+  montées ; ni `pubspec`, ni `android/`, ni `macos/`, ni `lib/i18n`, ni le
+  routeur.
+- (b) Compte par programme indépendant de la garde (imports, exports et `part`,
+  relatifs résolus) : croisements vers l'intérieur d'une voisine **52 → 0**
+  (avant : 19 `domain/`, 15 `presentation/`, 10 `widgets/`, 5 `data/`,
+  3 `models/`) ; socle → feature hors routeur **21 = 21** en imports (22 si
+  l'on compte aussi l'`export` de `gpx_depuis_les_assets.dart`, inchangé et
+  antérieur au lot) ; `core/`, `shared/` → `lib/domain/` **0**.
+- (c) Les trois fichiers montés n'importent que `core/` et `shared/` ; leur
+  corps est identique ligne à ligne, seules les directives `import` changent.
+  Les 22 façades relues : uniquement des `export … show`, chacune vers SA
+  feature. Les 52 lignes du tableau ci-dessus vérifiées dans le code : chaque
+  appelant lit la façade (avec `show`) et ne lit plus l'intérieur, chaque
+  façade exporte bien la cible. **38 directives, 51 symboles : exact.**
+  **Correction : 14 façades touchées (12 élargies, 2 créées), et non 16.**
+- (d) Dans les 47 fichiers de `lib/` et `test/` modifiés hors façades, une fois les
+  directives `import`/`export` retirées, le texte est identique, commentaires
+  compris ; seule exception, la garde `couches_respectees_645_test.dart`
+  (constante 52 → 0 et deux commentaires). Les deux tests adaptés ne changent
+  que des chemins d'import ; aucun test nouveau.
+- (e) Garde : plafonds 21 / 0 / 0, test « une façade ne re-exporte que SA
+  feature » intact. Les quatre mutations rejouées, toutes **rouges** puis
+  restaurées, zéro diff : (1) import de `hub_facade.dart` dans
+  `shared/widgets/hub_section.dart` → (a) 22 contre 21 ; (2) import de
+  `ads/presentation/banner_ad_slot.dart` dans `hub_screen.dart` → (b) 1 contre
+  0 ; (3) `tips_facade.dart` qui re-exporte `weather/…/fire_risk_screen.dart`
+  → « une façade ne re-exporte que SA feature » ; (4) le 0 de « dont vers
+  l'intérieur de la voisine » passé à 1 → `la_doc_ne_mente_pas` (« la doc dit
+  1, l audit mesure 0 »).
+- (f) `JOURNAL.md` : ligne 645-05c (#101226), lignes 676 (#101196) et 645-12
+  (#101229, #101232) présentes, ligne « Vingt croisements » retirée de « Ce qui
+  reste ouvert ». `architecture.md` : 24 chiffres balisés, égaux à l'audit de
+  la tête jointe. Écart vérifié commit par commit : G1 à G5 ne changent dans
+  `architecture.md` QUE des nombres balisés, G6 aucun document, seul G7 change
+  du texte.
+
+**Gate sur la tête jointe `9a854e70`.** `dart format` : 1 309 fichiers, 0
+modifié. `flutter analyze` : 0 erreur, 0 warning, infos **7 614 → 7 613**
+(la `directives_ordering` de `plan_summary_screen.dart`). `flutter test` :
+**4 092 réussis, 2 ignorés, 0 échec**. `build_runner` : aucun fichier
+généré ne change. Gardes `couches_respectees`, `pas_de_part` et
+`la_doc_ne_mente_pas` vertes.
+
+**Audit `--rapide`, avant (`7d2a2dbc`) → après (tête jointe).** ECR-23
+**236 → 208** ; ECR-16 416 → 418 et RNG-01 20 → 22 (les deux façades créées,
+`checklist_facade.dart` et `tips_facade.dart`, à la racine de leur feature
+et sans test miroir) ; ECR-05 77 → 78 (`lib/features/ads` 1 → 2 :
+`BannerAdSlot` cité par `ads_facade.dart`) ; ECR-15 46, ECR-28 195, ECR-19 10,
+ECR-31 19, MORT-01 141 inchangés ; observabilité 63/63, OBS-01 0, VAC-01 0,
+en-têtes 100 %.
+
+**QA DU 645-05c, PARTIE ÉCRANS (05/10/2026 — Artemis, émulateur local).**
+Deux arbres jetables sur le même émulateur (`emulator-5554`, 1080×2400,
+Android 14), même mode local, même profil, même thème, **installation vierge à
+chaque run** : AVANT sur l'intégration `7d2a2dbc`, APRÈS sur la branche de QA
+`claude/qa/645-05c-jonction` à `53f9d51b`. Huit scénarios joués **des deux
+côtés** : S1 Léa, S2 Marc, S3 Steve, S4 Inès, S8 démo, traversée 645-09, les
+douze tours de pile du 676, et un scénario écrit pour cette QA
+(`qa_684_conflit_test.dart`, **non commité**) qui ouvre le **dialogue de conflit
+de trek actif** — le seul écran du lot qu'aucun persona ne traverse.
+
+**Comparaison au pixel : 177 captures comparées, 156 IDENTIQUES AU PIXEL hors
+barre d'état, et aucun des 21 écarts n'est imputable au code.** La barre d'état
+est exclue (85 px du haut : l'horloge y bouge sur *toutes* les captures).
+
+| scénario | comparées | identiques | écarts |
+|---|---|---|---|
+| S1 Léa | 65 | 55 | 10 |
+| S2 Marc | 20 | 19 | 1 |
+| S3 Steve | 44 | **39** | 5 |
+| S4 Inès | 15 | **15** | **0** |
+| S8 démo | 11 | 10 | 1 |
+| traversée 645-09 | 16 | 13 | 3 |
+| douze tours de pile | 3 | 2 | 1 |
+| dialogue de conflit | 3 | **3** | **0** |
+
+**Les deux écrans prioritaires sont à zéro.** Cockpit `/home` (où montent
+`HubSection`, `QuickAccessCard` et `StepStatusIcon`, désormais dans
+`lib/shared/widgets/`, et où `BannerAdSlot` et `SosButton` passent par leur
+façade) : `S1 07c_cockpit`, `S1 26_cockpit_fin`, `S2 04_cockpit`,
+`S3 03_cockpit`, `S3 10_cockpit_fin`, `S4 03_cockpit`,
+`S4 10_cockpit_offline`, `T645 03_hub` — **identiques au pixel**. Mes treks
+`/my-treks` : `S2 03_mes_treks`, `S8 11_mes_treks_apres_demo` — **identiques au
+pixel**. (`S1 07b_mes_treks` n'existe pas dans un run sain : il vit dans le
+filet de régression `if (onMapAfterEnter)`, et « Entrer » ouvre bien le
+cockpit.) Écrans secondaires, tous identiques au pixel : catalogue, carte et
+dialogue SOS, récapitulatif, diplôme, checklist, profil, détail d'étape,
+synthèse du plan, faisabilité.
+
+**Les 21 écarts, nommés un par un** (captures des deux côtés dans le
+scratchpad `645-05c/`) :
+- **Course de démarrage** (4) : `01_boot` de S1, S2, S8 et des douze tours —
+  l'écran d'attente de l'app d'un côté, « Test starting… » du harnais de
+  l'autre : deux instants du même boot. Celui de la traversée est
+  **sous-perceptible** (amplitude max **9 sur 255**).
+- **Clavier SYSTÈME re-thémé** (6) : `S1 09b`, `S1 12a`, `S1 31`, `S3 15`,
+  `S3E 37c`, `S3E 37d`. L'écart est **entièrement dans la bande du clavier** ;
+  les touches de modification passent du bleu au lilas — c'est Material You
+  de l'émulateur, re-tiré par le **redémarrage** que la QA a dû faire. Le
+  contenu de l'application au-dessus est identique au pixel.
+- **Horloge dans le contenu** (5) : heure de la note du journal (`S1 32`,
+  `S3 16`), « mis à jour à » de la météo (`S1E 25`, `T645 07` : `oct. 07:14`
+  → `oct. 09:06`), du risque d'incendie (`S3E 26` : `10:18` → `10:36`).
+- **Bandeau fugace** (1) : `S1 09c`, le bandeau vert « Fiche enregistrée »
+  (4 s de vie), dans la seule bande `y 2195..2373`.
+- **Image d'animation** (1) : `T645 12_secours`, le rouage « Acquisition GPS »
+  à un autre angle (133 px).
+- **Dérive de parcours, prouvée** (3) : `S1 12c`, `S1 13_retour_cockpit` et
+  `S1 10b` — l'image d'un côté est, **au pixel**, celle d'un AUTRE marqueur de
+  l'autre côté (`13_retour_cockpit` APRÈS = `14_entrainement` AVANT). Le run
+  était un écran en retard : la comparaison est nulle, pas l'écran.
+
+**Ce que la méthode a appris, et qui vaut pour les prochaines QA.** Compter des
+pixels ne suffit pas : on mesure aussi l'**amplitude** (écart maximal sur un
+canal). Jouer les sept scénarios d'un côté **puis** de l'autre laisse une heure
+et demie de dérive machine entre deux captures du même écran. Rejoué **dos à
+dos**, S3 est passé de 15 à **39 identiques sur 44** et S4 de « écarts partout »
+à **15 sur 15**, sans qu'une ligne de code bouge : les 16 écarts « carte » à
+amplitude 14/255 et les 4 décalages de défilement de 42 px ont disparu d'eux-mêmes.
+
+**Preuve statique, en complément, jeton par jeton.** Sur **tout `lib/`**, le
+multi-ensemble de ce qui peut se voir est identique des deux côtés : **1 443**
+occurrences de clés de traduction, **199** `ValueKey`, **886** icônes
+`StepwaysIcons`, **2 376** constantes `AppTheme` — **zéro jeton dont le compte
+diffère**. Et le déplacement est un miroir exact : `lib/features/hub` perd
+précisément les **douze** jetons que `lib/shared` gagne (`StepwaysIcons.sablier`
+1→0 contre 0→1, `AppTheme.spacingMd` 7→4 contre 0→3, …). Rien de visible n'a été
+créé, détruit ni modifié : seulement déplacé.
+
+**Personas sur la tête APRÈS — identiques à la tête AVANT, exigence par
+exigence.** S1 Léa **61/2** (et ce sont les deux connues : CTA « Démarrer la
+randonnée » absent de l'arbre, diplôme qui ne s'ouvre pas) ; S2 Marc **20/20** ;
+S3 Steve **17/1** (le même diplôme) ; S4 Inès **8/1** (le même verrou d'achat) ;
+S8 démo **29/1** (« Démarrer » actif en démo, des deux côtés) ; traversée
+`traversee_645_09_test.dart` **verte des deux côtés**, 16/16 captures. Le
+dialogue de conflit s'ouvre, porte ses **trois** boutons (annuler / abandonner /
+terminer) et « Annuler » rend bien `ActiveTrekConflictChoice.cancel`, des deux
+côtés, avec les 3 captures identiques au pixel.
+
+**Journal local et observabilité.** **38 écrans distincts émettent leur miette
+`screen:<nom>` des deux côtés**, mêmes clés : aucun n'a cessé d'émettre, aucun
+n'est apparu, aucun n'a changé de nom. Les **douze tours de pile** du 676 sont
+**verts des deux côtés** et leur dictionnaire de miettes est identique
+caractère pour caractère — `settings 12` (les douze poussées), `journal 13` (le
+journal plus les douze redescentes), et **aucune miette d'un écran resté vivant
+sous la pile**.
+
+**Logcat : 0 plantage, 0 ANR, 0 mort non demandée, 0 exception Dart de
+l'application**, sur les 8 runs de chaque côté, **141 166 lignes** lues
+(buffers `main`, `crash`, `system`). Deux précisions d'honnêteté : la ligne
+`Killing … com.only1cent.stepways` présente à chaque run est **notre propre**
+`force-stop` avant la désinstallation ; et les deux seules `FATAL EXCEPTION`
+rencontrées appartiennent à `com.android.commands.uiautomator`, c'est-à-dire au
+démon de dialogues **de la QA**, pas au produit.
+
+**Ce qui n'est pas vert, et ne vient pas du lot.** (1) Le contrôle de fin de run
+refuse plusieurs runs sur des captures **légitimement identiques** non déclarées
+dans `captures_doublons_tolerees.txt` — y compris, pour le dialogue de conflit,
+`01_cockpit_avant_dialogue = 03_cockpit_apres_annuler`, c'est-à-dire **la preuve
+elle-même** que « Annuler » ne laisse pas de trace. Le fichier de tolérances
+n'a pas été élargi : on ne négocie pas avec un rouge pour le faire taire.
+(2) **`completeOnboardingIfPresent` donne 10 s au texte « Passer/Skip »** ; sur
+une installation à froid l'onboarding peint plus tard, le harnais conclut
+« Onboarding absent (déjà complété) » et le scénario entier se joue **derrière
+le carrousel** — la miette `screen:onboarding` le prouve au même instant.
+Trois runs perdus. (3) La **pile Bluetooth de l'émulateur** part en boucle de
+plantage (`F/libc SIGABRT` dans `bt_stack_manage`) autour des bascules de mode
+avion de S4 et affame le système jusqu'à l'ANR de l'application : trois runs
+perdus, réparés en éteignant le Bluetooth. (4) L'aide hôte de S4 **dort 55 s en
+aveugle** avant de couper le réseau, pendant que le run avance à son rythme :
+une fois la coupure tombée pendant l'étape *en ligne*, S4 rend 4 échecs qui ne
+disent rien du produit. (5) Le scénario de QA du dialogue reste rouge au
+teardown sur `A SemanticsHandle was active at the end of the test`, **des deux
+côtés**, y compris en rendant la poignée dans l'ordre vert de S1 et de la
+traversée : la poignée est prise par l'application, pas par le scénario.
+
+Rien n'est livré : `main` reste `708b82ce`, l'intégration n'est pas touchée,
+aucun tag, aucune jonction.
+
+
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
 dans `lib/domain/` et deux dans `lib/shared/poi/` pour le vocabulaire visuel

@@ -20,10 +20,12 @@
 /// l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 16 FICHIERS DE 8 FEATURES AU 03/10/2026 : `booking`, `feasibility`,
+/// LUE PAR 17 FICHIERS DE 8 FEATURES AU 05/10/2026 : `booking`, `feasibility`,
 /// `journal`, `map`, `planning`, `settings`, `trek`, `weather`.
 library;
 
+export 'domain/models/trail_feasibility_params.dart'
+    show TrailFeasibilityParams;
 export 'providers/pois_provider.dart' show poisProvider;
 export 'providers/progress_provider.dart'
     show currentStageNumberProvider, progressProvider;

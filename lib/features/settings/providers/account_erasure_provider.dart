@@ -21,7 +21,8 @@ import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/consent_facade.dart'
     show consentPromptNeededProvider, consentStatesProvider;
-import '../../feasibility/data/hiker_profile_repository.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show hikerProfileRepositoryProvider;
 import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
 import '../../journal/journal_facade.dart'
     show
@@ -37,9 +38,11 @@ import '../../planning/planning_facade.dart'
         plannedDaysProvider,
         planningProvider,
         retainedDurationProvider;
-import '../../safety/presentation/health_info_screen.dart'
-    show healthInfoFileProvider, healthInfoRepositoryProvider;
-import '../../safety/safety_facade.dart' show healthPrepareStepsProvider;
+import '../../safety/safety_facade.dart'
+    show
+        healthInfoFileProvider,
+        healthInfoRepositoryProvider,
+        healthPrepareStepsProvider;
 import '../../share/share_facade.dart' show visibilitySettingsProvider;
 import '../../trail/trail_facade.dart' show progressProvider;
 import '../../training/training_facade.dart' show trainingProgressProvider;

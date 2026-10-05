@@ -11,10 +11,13 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
-import '../../../weather/models/weather_forecast.dart';
 import '../../../weather/weather_facade.dart'
-    show WeatherStageParams, referenceStageNumberProvider, stageWeatherProvider;
-import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
+    show
+        DayForecast,
+        WeatherIcon,
+        WeatherStageParams,
+        referenceStageNumberProvider,
+        stageWeatherProvider;
 import '../../../../core/branding/stepways_icons.dart';
 
 /// Tuile météo du jour du HUB (AM-3, LOT-B — tuile réelle).
