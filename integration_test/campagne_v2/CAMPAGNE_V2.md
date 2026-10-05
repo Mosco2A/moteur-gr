@@ -702,6 +702,114 @@ depuis PowerShell, jeu de permissions passe en parametre. Un run se lance par
 -Perm avant-plan` (S3 prend `-Perm complet`), et il rend en fin de course le compte des exigences
 tenues, des exigences echouees et des captures.
 
+**7. LES DEUX CAUSES MESUREES LE 05/10, ET CE QU'ELLES ONT COUTE** (QA du 645-05c par Artemis,
+kaizen **#101252**). Ce jour-la, **quatre runs ont ete perdus sur les deux arbres de la QA** — et
+aucune des deux causes n'etait un defaut du produit. Les deux sont desormais dans la recette ; ce
+paragraphe existe pour qu'on sache ce qu'on regarde quand elles reviennent.
+
+**CAUSE 1 — LE HARNAIS DECLARAIT L'ACCUEIL ABSENT ALORS QU'IL ETAIT A L'ECRAN.**
+`completeOnboardingIfPresent` donnait **10 secondes FIXES** au libelle « Passer » pour apparaitre,
+puis journalisait « Onboarding absent (deja complete) » et rendait `false`. Sur une **installation
+vierge** — c'est-a-dire le cas NORMAL depuis que la recette desinstalle le paquet avant chaque run
+(point 6 de la section 12, tache 676) — le premier affichage demande plus longtemps. Chronologie
+relevee dans le journal d'un run :
+
+| instant | ce qui s'est passe |
+| --- | --- |
+| 07:56:59.158 | `app.main()` part |
+| 07:57:12.972 | le harnais declare « Onboarding absent (deja complete) » — **13,8 s** apres le lancement, c'est-a-dire a l'expiration du delai fixe |
+| apres 07:57:12 | l'application pose sa miette d'observabilite `screen:onboarding` — **elle contredit le harnais** |
+| 07:57:25.677 | le harnais rencontre la porte de consentement de la sauvegarde, qui ne s'ouvre QU'APRES l'onboarding |
+
+L'accueil etait donc la, entre **13,8 s et 26,5 s** apres le lancement, et tout le scenario s'est
+joue **derriere le carrousel**. **CE QUI A CHANGE (tache 685)** : le harnais n'attend plus une
+horloge mais **l'etat reel**. Il sort des que l'accueil est vu (le widget du carrousel, la miette
+`screen:onboarding`, ou les libelles bilingues) OU que la suite est vue (une miette `hub`,
+`trail_catalog`, `my_treks` ou `no_data` — un « deja complete » doit etre **prouve**, pas deduit
+d'une absence). Son budget part de **20 s** et s'etend jusqu'a **60 s** tant que le demarrage
+progresse. **Si ni l'un ni l'autre n'apparait, le run ECHOUE FRANCHEMENT**, avec la capture
+`<persona>_00_accueil_introuvable.png` prise avant l'echec.
+
+**CAUSE 2 — LA RECETTE ATTENDAIT LE DISQUE DE L'HOTE, PAS LA CHARGE DE L'APPAREIL.** La parade
+PRC-003 regardait la vitesse d'ecriture du volume ; rien ne regardait si l'emulateur avait digere.
+Sur un appareil encore occupe, un `screencap` part en retard et **rend l'image d'un autre ecran**.
+Mesure : dans un run S1 du 05/10, `12c_faisabilite_verdict_reel`, `13_retour_cockpit` et
+`14_entrainement` sont sortis **identiques au bit** — alors que dans le run sain du meme jour ils
+different de **1 918 053 et 1 986 942 pixels**, en plein contenu. Trois ecrans differents, quinze
+secondes et deux appuis entre le premier et le dernier : l'appareil servait une image perimee.
+**CE QUI A CHANGE** : avant chaque run, le pilote lit `/proc/loadavg` de l'emulateur et **attend
+que la moyenne 1 min passe sous 3** (`-ChargeMax`), dans un budget de **10 minutes**
+(`-ChargeTimeoutS 600`). Pourquoi 3 : le noyau de l'emulateur voit 4 processeurs, et au-dela la
+file d'attente est de l'ordre du nombre de coeurs. A l'abandon, la ligne est **explicite** et le
+run part quand meme — la charge mesuree est ecrite dans la ligne `FIN`
+(`charge_1min=`, `gate_charge=`), pour que le verdict de captures se lise avec elle.
+
+**8. LA PARADE PRC-003 EST DANS LA RECETTE, PLUS DANS UN SCRIPT JETABLE** (incident du 04/10,
+memoire **#101219**). Le watchdog de la machine abat un processus `python|node` quand le volume
+grossit de plus de **5 Go/h**, et le **premier build Gradle d'un arbre neuf en fait 17** : il a tue
+le demon de captures a **20:18:55**, run S1 perdu, **0 capture pour 52 marqueurs**, dix minutes
+jetees. Il ne regarde que `python|node`, donc il abat le demon et **jamais Gradle**. Le pilote
+construit desormais l'APK de debug **AVANT d'allumer le moindre demon**, et seulement s'il manque.
+**L'ordre est la parade** : `pre-build` -> `gate de charge` -> `demons`. L'inverser coute un run.
+
+**9. LE BLUETOOTH DE L'IMAGE EST ETEINT AVANT LE RUN, ET VOICI POURQUOI.** La bascule en mode avion
+du parcours **S4 hors-ligne** fait repartir en boucle la pile Bluetooth de **l'image
+d'emulateur** — pas celle de l'application :
+
+```
+07:48:32  bt_stack_manager_thread demarre
+07:48:36  F/libc : Fatal signal 6 (SIGABRT) in tid bt_stack_manage, pid droid.bluetooth
+07:48:59  E/ActivityManager : ANR in com.google.android.bluetooth
+07:50:10  ANR in com.google.android.bluetooth  (le second)
+```
+
+**34 lignes `bt_stack_manage` et 8 reinitialisations de pile (`event_init_stack`) dans le seul run
+S4.** L'ANR du service systeme etouffe l'application : ce run a rendu **0 marqueur et 0 capture**.
+
+- **IMAGE EN CAUSE, NOMMEE** : `google/sdk_gphone64_x86_64/emu64xa:14/UE1A.230829.050/12077443:userdebug`,
+  c'est-a-dire **`system-images/android-34/google_apis/x86_64`**. C'est l'image de **tous** les AVD
+  de la machine (`GR20_B12`, `GR20_Demo`, `GR20_Pixel6`, `GR20_V3_Recette`, `StepWays`,
+  `DiagAlt_Pixel7`), et **aucun** ne porte `hw.bluetooth=no` dans son `config.ini` : la pile tourne
+  donc par defaut.
+- **IMAGE RECOMMANDEE** : un AVD de recette **avec `hw.bluetooth=no`** dans `config.ini`, sur une
+  revision d'`android-34 google_apis` **plus recente que `UE1A.230829.050`**, ou sur `android-35`.
+  Tant que l'AVD de recette porte cette revision, la parade ci-dessous reste necessaire.
+- **PARADE, APPLIQUEE PAR DEFAUT** : le pilote eteint la pile avant le run
+  (`svc bluetooth disable` **et** `settings put global bluetooth_on 0`), **verifie** le reglage et
+  le dit s'il n'a pas pris. `tool/persona_s4_offline.py` l'eteint aussi **avant sa premiere
+  bascule**, et ne la rallume pas a la fin. Pour une enquete sur cette pile :
+  `-SansCoupureBluetooth`.
+- **CELA NE REND VERT AUCUN CHEMIN DU PRODUIT** : la seule fonction qui utilise le Bluetooth est la
+  ceinture de frequence cardiaque (`HeartRateBleService`, phase 6), traversee par **aucun** des
+  huit parcours et par **aucune** route. Une garde de test le verifie
+  (`test/outillage/s4_hors_ligne_sans_bluetooth_685_test.dart`) : le jour ou un parcours exercera
+  le Bluetooth, elle rougira et la coupure devra redevenir un choix par scenario.
+
+**10. LE CONTROLE DE FIN DE RUN ET SES TOLERANCES.** `tool/persona_shot_check.py` refuse un run ou
+deux marqueurs **differents** rendent la meme image : c'est la signature du retard de capture. Mais
+deux captures d'un **meme** ecran peuvent etre identiques pour de bonnes raisons, et ces cas-la se
+declarent dans `integration_test/campagne_v2/captures_doublons_tolerees.txt`, **avec leur raison**.
+
+- **DEUX FORMES** : une paire (`a b  # pourquoi`) et, depuis la tache 685, une **famille**
+  (`groupe: a b c  # pourquoi`), qui tolere toutes ses paires internes **et rien d'autre**.
+- **POURQUOI LA FAMILLE** : la regle compare l'image **entiere**, barre d'etat comprise, donc un
+  pixel d'horloge suffit a separer deux captures d'un ecran ou rien ne s'est passe — **le
+  groupement change d'un run a l'autre**. Sur la carte immobile de S1, un run a rendu
+  `{tick_05..07, apres_gps, apres_sos}` et un autre `{tick_03..06}` puis `{apres_gps, apres_sos}` :
+  memes images, decoupage different. Declarer paire par paire demandait 78 paires pour une famille
+  de treize, ou laissait le run rouge un jour sur deux.
+- **LE CONTROLE EST PLUS DUR, PAS MOINS** : une tolerance **sans raison ecrite** fait rougir le
+  run, trois noms sur une ligne de paire sont refuses, et les tolerances inutiles sur un run sont
+  dites. **Tout doublon hors famille declaree reste ROUGE.**
+- **QUATRE FAMILLES DECLAREES, TOUTES MESUREES** : carte immobile sous les ticks GPS (S1 et S3),
+  cockpit avant/apres un dialogue SOS annule (S3), cockpit et carte hors-ligne (S4), catalogue ou
+  l'onboarding rend la main (S8).
+- **CE QUI RESTE ROUGE EXPRES** : le faux « ecran /consent atteint » de S2, et les deux groupes
+  fabriques par la charge de la machine (`10_test_6min` / `10b_test_6min_demarre`, et
+  `12c`/`13`/`14`). Pour ces deux derniers, la mesure tranche : sur une machine saine les memes
+  captures different de **408 869** a **1 986 942 pixels**, en plein contenu. Ce sont des images
+  perimees, pas des actions sans effet — la parade est la gate de charge, pas une tolerance.
+
 ---
 
 ## 13. VERDICT DE LA PORTE — CAMPAGNE COMPLETE SUR LE MOTEUR FINAL (tache 547, 23/09)
