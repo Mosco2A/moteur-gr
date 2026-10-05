@@ -514,22 +514,37 @@ Future<bool> dismissAdsConsentIfPresent(
   return false;
 }
 
-/// L'ACCUEIL EST-IL A L'ECRAN ? Trois signaux, lus dans cet ordre.
+/// L'ACCUEIL EST-IL A L'ECRAN ? Trois signaux, n'importe lequel suffit.
 ///
-/// 1. LE CARROUSEL LUI-MEME ([OnboardingScreen]) : le signal le plus direct,
-///    et il ne depend d'aucun libelle. C'est le widget de l'accueil, pas une
-///    chaine de caracteres qu'un renommage pourrait emporter.
-/// 2. LA MIETTE `screen:onboarding` : l'application dit elle-meme qu'elle est
-///    entree sur l'accueil. Elle reste vraie meme si le carrousel est, a cet
-///    instant precis, recouvert par la porte de consentement.
-/// 3. LES LIBELLES bilingues « Passer/Skip » et « Suivant/Next », conserves en
-///    dernier recours pour les montages ou le widget n'est pas celui du
-///    produit (harnais jetables de QA).
-bool accueilPresent() =>
-    present(find.byType(OnboardingScreen)) ||
-    mietteDEcranVue(ScreenBreadcrumb.onboarding) ||
-    present(textFrEn('Passer', 'Skip')) ||
-    present(textFrEn('Suivant', 'Next'));
+/// 1. LA MIETTE `screen:onboarding` : l'application dit ELLE-MEME qu'elle est
+///    entree sur l'accueil. C'est le signal le plus sur, et il reste vrai
+///    meme si le carrousel est, a cet instant precis, recouvert par la porte
+///    de consentement de la sauvegarde.
+/// 2. LE CARROUSEL LUI-MEME ([OnboardingScreen]) : le widget de l'accueil, pas
+///    une chaine de caracteres qu'un renommage pourrait emporter.
+/// 3. LES LIBELLES bilingues « Passer/Skip » et « Suivant/Next », conserves
+///    pour les montages ou le widget n'est pas celui du produit (harnais
+///    jetables de QA).
+///
+/// LES SIGNAUX 2 ET 3 SE LISENT SOUS FILET : avant le premier `runApp`, il n'y
+/// a pas de racine d'arbre et les chercher leve. Pas de racine = rien a voir,
+/// ce n'est pas une erreur.
+///
+/// A LIRE AVANT DE S'EN SERVIR AILLEURS : le signal 1 est une MEMOIRE du run,
+/// pas un etat instantane. Une fois l'accueil traverse, la miette reste vue et
+/// cette fonction reste vraie. Elle repond donc a « l'accueil a-t-il ete la ? »
+/// au boot, et non a « l'accueil est-il la maintenant ? » plus tard dans le
+/// parcours — pour ca, c'est [present] sur le carrousel qu'il faut appeler.
+bool accueilPresent() {
+  if (mietteDEcranVue(ScreenBreadcrumb.onboarding)) return true;
+  try {
+    return present(find.byType(OnboardingScreen)) ||
+        present(textFrEn('Passer', 'Skip')) ||
+        present(textFrEn('Suivant', 'Next'));
+  } on Object {
+    return false;
+  }
+}
 
 /// L'APPLICATION EST-ELLE DEJA PASSEE A LA SUITE ? Prouve par une miette de
 /// [kEcransApresLAccueil] — jamais par l'absence de l'accueil.
@@ -598,8 +613,19 @@ Future<EtatAuPremierEcran> attendreAccueilOuCockpit(
     }
 
     // LE BOOT PROGRESSE-T-IL ? Trois signes, n'importe lequel suffit.
+    //
+    // LA TAILLE DE L'ARBRE SE LIT SOUS FILET, et ce n'est pas de la prudence
+    // decorative : avant le premier `runApp`, il n'y a PAS de racine, et
+    // `allWidgets` fait une assertion de non-nullite dessus. Un boot qui
+    // n'arrive jamais au premier frame doit finir en echec franc apres son
+    // budget, pas en exception au milieu de la mesure.
     final nbMiettes = kMiettesEcran.length;
-    final nbWidgets = tester.allWidgets.length;
+    int nbWidgets;
+    try {
+      nbWidgets = tester.allWidgets.length;
+    } on Object {
+      nbWidgets = -1;
+    }
     final progresse =
         nbMiettes != miettesVues ||
         nbWidgets != tailleArbre ||
