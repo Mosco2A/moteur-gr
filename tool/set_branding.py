@@ -46,6 +46,11 @@ from pathlib import Path
 
 from PIL import Image
 
+# `tool/` est deja le premier element de `sys.path` quand ce fichier est lance
+# en script ; l'insertion explicite couvre l'import depuis ailleurs.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from resolution_executable import resoudre_executable  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[1]
 
 FAMILIES = ("sentier", "marches", "courbes")
@@ -220,12 +225,22 @@ def main() -> int:
         print(f"{nom:14} : {compte} icones claires derivees pour fond sombre")
 
     if args.generate:
-        for command in (
-            ["dart", "run", "flutter_launcher_icons"],
-            ["dart", "run", "flutter_native_splash:create"],
+        # LE NOM NU ET LE SHELL SONT PARTIS ENSEMBLE (tache 699). Sous Windows
+        # `dart` est un `.bat` que `CreateProcess` ne resout pas : la version
+        # precedente contournait le defaut avec `shell=(sys.platform ==
+        # "win32")`, c'est-a-dire en faisant interpreter la ligne par `cmd.exe`
+        # — une injection de plus pour reparer une resolution de chemin. On
+        # resout le chemin, et `shell` reste faux sur toutes les plateformes.
+        dart, raison = resoudre_executable("dart")
+        if dart is None:
+            print(f"dart introuvable, rien n a ete genere : {raison}")
+            return 76
+        for arguments in (
+            ["run", "flutter_launcher_icons"],
+            ["run", "flutter_native_splash:create"],
         ):
-            print("> " + " ".join(command))
-            result = subprocess.run(command, cwd=REPO, shell=(sys.platform == "win32"))
+            print("> " + " ".join([dart, *arguments]))
+            result = subprocess.run([dart, *arguments], cwd=REPO, shell=False)
             if result.returncode != 0:
                 return result.returncode
     else:
