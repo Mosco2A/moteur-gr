@@ -36,10 +36,11 @@
 | 04/10/2026 | 645-06b | Les fichiers `part` redécoupés en bibliothèques, et deux résidus sous 500 lignes. | #101208, #101214, #101217, #101219 |
 | 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
 | 05/10/2026 | 645-05c | Les cinquante-deux croisements entre features à zéro : trois tuiles montent dans `shared/`, le reste passe par les façades. | #101226 |
-| 05/10/2026 | build 10 | Version 0.1.6+10 livrée, le build propre de fin du plan d'assainissement : il porte le 645-06b, le 645-12 et le 645-05c que le build 9 n'avait pas. | tâche #686, rapport de livraison a completer par Skynet |
+| 05/10/2026 | build 10 | Version 0.1.6+10 livrée le 05/10 à 13:56 (`STEPWAYS-V0.1.6-10-202610051356-a06f500.aab`), le build propre de fin du plan d'assainissement : il porte le 645-06b, le 645-12 et le 645-05c que le build 9 n'avait pas. | #101265, #101266 |
 | 05/10/2026 | produit P1 | Lecture tolérante des réglages : une clé héritée du build du 26/05 ne remet plus les autres réglages par défaut. | #101255 |
 | 05/10/2026 | produit P2 | La température s'affiche dans l'unité choisie, par une seule fonction de `lib/domain/` ; sept lectures de plus par la façade des réglages. | #101255 |
 | 05/10/2026 | produit P3 | La route `/booking` dormante retirée avec son écran inatteignable et son drapeau sans lecteur ; le domaine `booking` reste entier. | #101255 |
+| 05/10/2026 | build 11 | Version 0.1.7+11 livrée, le premier build de produit et non plus d'assainissement : il porte le lot P1 (réglages conservés, température dans l'unité choisie, `/booking` retirée) et la recette persona robuste. | tâche #694, rapport de livraison a completer par Skynet |
 
 ## Ce qui reste ouvert au 04/10/2026
 
