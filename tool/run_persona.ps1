@@ -258,16 +258,22 @@ else {
 # LA VRAIE CORRECTION EST DANS L'IMAGE, pas ici : voir la recette
 # (integration_test/campagne_v2/CAMPAGNE_V2.md, section 12) pour l'image
 # recommandee et le reglage `hw.bluetooth=no`.
+# AUCUNE DE CES TROIS FONCTIONS NE REND DE VALEUR, ET C'EST VOLONTAIRE. Dans
+# PowerShell, tout `Write-Output` d'une fonction PART DANS SA VALEUR DE RETOUR :
+# une fonction qui ecrit six lignes et finit par `return $true` rend un TABLEAU
+# de sept elements, et l'appelant qui ferait `| Out-Null` pour jeter le booleen
+# jetterait les six lignes avec. Les fonctions de preparation ECRIVENT donc, et
+# celle qui a un resultat a transmettre le depose dans des variables de script.
 function Disable-BluetoothEmulateur([string]$serial, [string]$tag) {
   & adb -s $serial shell svc bluetooth disable 2>&1 | Out-Null
   & adb -s $serial shell settings put global bluetooth_on 0 2>&1 | Out-Null
   $etat = (@(& adb -s $serial shell settings get global bluetooth_on) -join '').Trim()
   if ($etat -eq '0') {
     Write-Output "[$tag] BLUETOOTH : pile ETEINTE avant le run (bluetooth_on=0) - la boucle SIGABRT bt_stack_manage de l image ne peut plus etouffer l application sur les bascules de mode avion"
-    return $true
   }
-  Write-Output "[$tag] BLUETOOTH : extinction SANS EFFET (bluetooth_on='$etat') - si ce run bascule en mode avion, attendez-vous a des ANR de com.google.android.bluetooth et lisez le logcat avant d accuser le produit"
-  return $false
+  else {
+    Write-Output "[$tag] BLUETOOTH : extinction SANS EFFET (bluetooth_on='$etat') - si ce run bascule en mode avion, attendez-vous a des ANR de com.google.android.bluetooth et lisez le logcat avant d accuser le produit"
+  }
 }
 
 # 10. LA PARADE PRC-003 EST DANS LA RECETTE, PLUS DANS LA MEMOIRE DE QUI LANCE
@@ -292,7 +298,7 @@ function Invoke-PreBuild([string]$repoPath, [string]$tag) {
   $apk = Join-Path $repoPath 'build/app/outputs/flutter-apk/app-debug.apk'
   if (Test-Path $apk) {
     Write-Output "[$tag] PRC-003 : APK de debug deja construit, pre-build saute (arbre chaud)"
-    return $true
+    return
   }
   Write-Output "[$tag] PRC-003 : premier build de cet arbre - APK CONSTRUIT AVANT TOUT DEMON (le watchdog abat un python, jamais Gradle)"
   $t0 = Get-Date
@@ -301,10 +307,9 @@ function Invoke-PreBuild([string]$repoPath, [string]$tag) {
   $sec = [int]((Get-Date) - $t0).TotalSeconds
   if ($code -ne 0) {
     Write-Output "[$tag] PRC-003 : pre-build en ECHEC (code $code, ${sec}s) - on continue, flutter test reconstruira, mais la rafale d E/S tombera pendant les demons"
-    return $false
+    return
   }
   Write-Output "[$tag] PRC-003 : pre-build termine en ${sec}s, demons encore eteints"
-  return $true
 }
 
 # 9. LE RUN ATTEND QUE LA MACHINE SOIT CALME (tache 685, kaizen #101252).
@@ -329,6 +334,10 @@ function Invoke-PreBuild([string]$repoPath, [string]$tag) {
 # illisible. La ligne d'abandon est donc explicite, et la charge mesuree est
 # ecrite dans le journal du run : le verdict de fin de run se lit avec elle.
 function Wait-ChargeCalme([string]$serial, [double]$seuil, [int]$budgetS, [string]$tag) {
+  $script:ChargeMesuree = -1.0
+  $script:ChargeCalme = $false
+  $script:ChargeAbandon = $false
+  $script:ChargeLisible = $false
   $t0 = Get-Date
   $derniere = -1.0
   $tours = 0
@@ -337,13 +346,16 @@ function Wait-ChargeCalme([string]$serial, [double]$seuil, [int]$budgetS, [strin
     $bouts = $brut -split '\s+'
     if ($bouts.Count -lt 3) {
       Write-Output "[$tag] CHARGE : /proc/loadavg illisible sur $serial (lu : '$brut') - gate de charge SAUTEE, le run part sans cette garantie"
-      return @{ ok = $false; charge = -1.0; brut = $brut; abandon = $false; lisible = $false }
+      return
     }
     $derniere = [double]::Parse($bouts[0], [Globalization.CultureInfo]::InvariantCulture)
     if ($derniere -lt $seuil) {
       $sec = [int]((Get-Date) - $t0).TotalSeconds
       Write-Output "[$tag] CHARGE : emulateur CALME (1 min = $derniere < $seuil) apres ${sec}s d attente - loadavg complet : $brut"
-      return @{ ok = $true; charge = $derniere; brut = $brut; abandon = $false; lisible = $true }
+      $script:ChargeMesuree = $derniere
+      $script:ChargeCalme = $true
+      $script:ChargeLisible = $true
+      return
     }
     if ($tours % 6 -eq 0) {
       $sec = [int]((Get-Date) - $t0).TotalSeconds
@@ -353,7 +365,9 @@ function Wait-ChargeCalme([string]$serial, [double]$seuil, [int]$budgetS, [strin
     Start-Sleep -Seconds 5
   }
   Write-Output "[$tag] CHARGE : ABANDON DE L ATTENTE - la moyenne 1 min est restee a $derniere (seuil $seuil) pendant $budgetS s. LE RUN PART QUAND MEME, et ce qu il rendra doit se lire avec ce chiffre : sur emulateur charge, un screencap part en retard et deux ecrans differents peuvent rendre la meme image."
-  return @{ ok = $false; charge = $derniere; brut = ''; abandon = $true; lisible = $true }
+  $script:ChargeMesuree = $derniere
+  $script:ChargeAbandon = $true
+  $script:ChargeLisible = $true
 }
 
 # ECRITURE PARTAGEE DANS LE JOURNAL (tache 676). Le demon de captures tient le
@@ -406,22 +420,25 @@ if ($SansCoupureBluetooth) {
   Write-Output "[$Tag] BLUETOOTH : coupure DESACTIVEE (-SansCoupureBluetooth) - sur un parcours qui bascule en mode avion, l image part en boucle de plantage et le run peut rendre 0 capture"
 }
 else {
-  Disable-BluetoothEmulateur $Serial $Tag | Out-Null
+  Disable-BluetoothEmulateur $Serial $Tag
 }
 
 if ($SansPreBuild) {
   Write-Output "[$Tag] PRC-003 : pre-build DESACTIVE (-SansPreBuild) - si cet arbre est neuf, le watchdog peut abattre le demon de captures pendant le build"
 }
 else {
-  Invoke-PreBuild $repo $Tag | Out-Null
+  Invoke-PreBuild $repo $Tag
 }
 
-$charge = @{ ok = $false; charge = -1.0; abandon = $false; lisible = $false }
+$ChargeMesuree = -1.0
+$ChargeCalme = $false
+$ChargeAbandon = $false
+$ChargeLisible = $false
 if ($SansGateDeCharge) {
   Write-Output "[$Tag] CHARGE : gate DESACTIVEE (-SansGateDeCharge) - les doublons de captures de ce run ne prouveront rien sur le produit"
 }
 else {
-  $charge = Wait-ChargeCalme $Serial $ChargeMax $ChargeTimeoutS $Tag
+  Wait-ChargeCalme $Serial $ChargeMax $ChargeTimeoutS $Tag
 }
 
 $manifeste = Join-Path $shotDir '_shots.jsonl'
@@ -558,8 +575,8 @@ foreach ($p in $procs) { if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id
 $shots = (Get-ChildItem $shotDir -Filter *.png -ErrorAction SilentlyContinue | Measure-Object).Count
 $ok = (Select-String -Path $log -Pattern 'PERSONA_EXIGENCE\|.*\|OK\|' -AllMatches | Measure-Object).Count
 $ko = (Select-String -Path $log -Pattern 'PERSONA_EXIGENCE\|.*\|ECHEC\|' -AllMatches | Measure-Object).Count
-$chargeDite = if ($charge.lisible) { "$($charge.charge)" } else { 'non_mesuree' }
-$chargeVerdict = if ($charge.abandon) { 'ABANDON' } elseif ($charge.ok) { 'calme' } else { 'non_attendue' }
+$chargeDite = if ($ChargeLisible) { "$ChargeMesuree" } else { 'non_mesuree' }
+$chargeVerdict = if ($ChargeAbandon) { 'ABANDON' } elseif ($ChargeCalme) { 'calme' } else { 'non_attendue' }
 Write-Output "[$Tag] FIN exit=$code duree=${duree}s exigences_ok=$ok exigences_echec=$ko captures=$shots charge_1min=$chargeDite gate_charge=$chargeVerdict"
 
 # 5. LE CONTROLE DE FIN DE RUN. Un jeu de captures qui ne tient pas debout fait
