@@ -149,7 +149,12 @@ param(
   [switch]$SansGateDeCharge,
   # 10. PARADE PRC-003 (tache 685). Ne pre-construit pas l'APK (a n'utiliser
   # que si le build est deja chaud et qu'on veut gagner la verification).
-  [switch]$SansPreBuild
+  [switch]$SansPreBuild,
+  # 11. BLUETOOTH DE L'IMAGE D'EMULATEUR (tache 685). Coupe par defaut : la
+  # pile Bluetooth de l'image android-34 google_apis part en boucle de
+  # plantage autour des bascules de mode avion. A ne garder allume que pour
+  # une enquete sur cette pile.
+  [switch]$SansCoupureBluetooth
 )
 
 $ErrorActionPreference = 'Continue'
@@ -216,6 +221,53 @@ else {
   else {
     Write-Output "[$Tag] profil vierge GARANTI : le paquet est absent de l appareil, flutter test va le reinstaller"
   }
+}
+
+# 11. LE BLUETOOTH DE L'IMAGE EST COUPE AVANT LE RUN (tache 685, kaizen
+# #101252).
+#
+# CE QUI A ETE MESURE, LE 05/10, DANS LE LOGCAT DU RUN S4 (parcours hors-ligne
+# d'Ines). La bascule en mode avion du scenario declenche une BOUCLE DE
+# PLANTAGE de la pile Bluetooth de l'IMAGE D'EMULATEUR - pas de
+# l'application :
+#   07:48:32  bt_stack_manager_thread demarre
+#   07:48:36  F/libc : Fatal signal 6 (SIGABRT) in tid bt_stack_manage,
+#             pid droid.bluetooth (com.google.android.bluetooth)
+#   07:48:59  E/ActivityManager : ANR in com.google.android.bluetooth
+#   07:50:10  ANR in com.google.android.bluetooth (le second)
+# 34 lignes bt_stack_manage et 8 reinitialisations de pile (event_init_stack)
+# dans le seul run S4. L'ANR du service systeme etouffe l'application : le run
+# S4 du 05/10 a rendu 0 marqueur et 0 capture.
+#
+# L'IMAGE EN CAUSE, NOMMEE : google/sdk_gphone64_x86_64/emu64xa:14/
+# UE1A.230829.050/12077443:userdebug, c'est-a-dire
+# system-images/android-34/google_apis/x86_64 - celle que portent TOUS les AVD
+# de la machine (GR20_B12, GR20_Demo, GR20_Pixel6, GR20_V3_Recette, StepWays,
+# DiagAlt_Pixel7). Aucun n'a `hw.bluetooth=no` dans son config.ini : la pile
+# tourne donc par defaut.
+#
+# CE QU'ON FAIT, ET POURQUOI C'EST SANS RISQUE POUR LA MESURE. On eteint la
+# pile avant le run (`svc bluetooth disable` + `settings put global
+# bluetooth_on 0`), et on VERIFIE que le reglage est bien a 0. AUCUN scenario
+# persona n'exerce le Bluetooth : la seule fonction qui s'en sert est la
+# ceinture de frequence cardiaque (`HeartRateBleService`, phase 6), et elle
+# n'est traversee par aucun des huit parcours ni par aucune route. Couper la
+# pile ne peut donc rendre vert aucun chemin du produit - c'est du bruit
+# d'image en moins, pas une garde desarmee. La garde de test le verifie.
+#
+# LA VRAIE CORRECTION EST DANS L'IMAGE, pas ici : voir la recette
+# (integration_test/campagne_v2/CAMPAGNE_V2.md, section 12) pour l'image
+# recommandee et le reglage `hw.bluetooth=no`.
+function Disable-BluetoothEmulateur([string]$serial, [string]$tag) {
+  & adb -s $serial shell svc bluetooth disable 2>&1 | Out-Null
+  & adb -s $serial shell settings put global bluetooth_on 0 2>&1 | Out-Null
+  $etat = (@(& adb -s $serial shell settings get global bluetooth_on) -join '').Trim()
+  if ($etat -eq '0') {
+    Write-Output "[$tag] BLUETOOTH : pile ETEINTE avant le run (bluetooth_on=0) - la boucle SIGABRT bt_stack_manage de l image ne peut plus etouffer l application sur les bascules de mode avion"
+    return $true
+  }
+  Write-Output "[$tag] BLUETOOTH : extinction SANS EFFET (bluetooth_on='$etat') - si ce run bascule en mode avion, attendez-vous a des ANR de com.google.android.bluetooth et lisez le logcat avant d accuser le produit"
+  return $false
 }
 
 # 10. LA PARADE PRC-003 EST DANS LA RECETTE, PLUS DANS LA MEMOIRE DE QUI LANCE
@@ -340,7 +392,9 @@ function Start-Demon([string]$name, [string[]]$argv) {
 }
 
 # ---------------------------------------------------------------------------
-# L'ORDRE DES TROIS ETAPES SUIVANTES N'EST PAS UN GOUT, C'EST LA PARADE.
+# L'ORDRE DES QUATRE ETAPES SUIVANTES N'EST PAS UN GOUT, C'EST LA PARADE.
+#   0. BLUETOOTH  : la pile de l image est eteinte avant que l application
+#                   demarre, donc avant toute bascule de mode avion ;
 #   1. PRE-BUILD  : la rafale d E/S de Gradle passe AVANT qu un demon existe
 #                   (PRC-003 abat un python au hasard, jamais Gradle) ;
 #   2. GATE DE CHARGE : on attend que l emulateur ait digere, sinon un
@@ -348,6 +402,13 @@ function Start-Demon([string]$name, [string[]]$argv) {
 #   3. DEMONS     : allumes en dernier, sur une machine calme.
 # Inverser 1 et 3 coute un run entier (mesure du 04/10, memoire #101219).
 # ---------------------------------------------------------------------------
+if ($SansCoupureBluetooth) {
+  Write-Output "[$Tag] BLUETOOTH : coupure DESACTIVEE (-SansCoupureBluetooth) - sur un parcours qui bascule en mode avion, l image part en boucle de plantage et le run peut rendre 0 capture"
+}
+else {
+  Disable-BluetoothEmulateur $Serial $Tag | Out-Null
+}
+
 if ($SansPreBuild) {
   Write-Output "[$Tag] PRC-003 : pre-build DESACTIVE (-SansPreBuild) - si cet arbre est neuf, le watchdog peut abattre le demon de captures pendant le build"
 }
