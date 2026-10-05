@@ -21,7 +21,8 @@ import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
 import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
 import '../../consent/consent_facade.dart'
     show consentPromptNeededProvider, consentStatesProvider;
-import '../../feasibility/data/hiker_profile_repository.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show hikerProfileRepositoryProvider;
 import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
 import '../../journal/journal_facade.dart'
     show

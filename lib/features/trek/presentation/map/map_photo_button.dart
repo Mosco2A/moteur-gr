@@ -15,8 +15,8 @@ import '../../../../core/services/monetization_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
-import '../../../journal/data/photo_service.dart';
-import '../../../journal/journal_facade.dart' show journalScreenProvider;
+import '../../../journal/journal_facade.dart'
+    show PhotoError, journalScreenProvider;
 import '../../../map/map_facade.dart' show trackPositionProvider;
 import '../../../../core/branding/stepways_icons.dart';
 

@@ -23,6 +23,8 @@
 /// LUE PAR 6 FICHIERS DE 3 FEATURES AU 05/10/2026 : `hub`, `settings`, `trek`.
 library;
 
+export 'data/signalement_service.dart'
+    show SignalementService, WaterSourceStatus;
 export 'presentation/sos_button.dart' show SosButton;
 export 'providers/health_prepare_providers.dart'
     show healthPrepareDoneProvider, healthPrepareStepsProvider;

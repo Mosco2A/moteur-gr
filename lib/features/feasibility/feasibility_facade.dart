@@ -20,10 +20,11 @@
 /// `feasibility` devient l interface sur laquelle les autres reposent. La
 /// facade rend ce cout visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 6 FICHIERS DE 4 FEATURES AU 03/10/2026 : `checklist`, `consent`,
-/// `planning`, `training`.
+/// LUE PAR 7 FICHIERS DE 5 FEATURES AU 05/10/2026 : `checklist`, `consent`,
+/// `planning`, `settings`, `training`.
 library;
 
+export 'data/hiker_profile_repository.dart' show hikerProfileRepositoryProvider;
 export 'providers/advised_program_provider.dart' show advisedTotalDaysProvider;
 export 'providers/hiker_profile_provider.dart' show hikerProfileProvider;
 export 'providers/trek_feasibility_provider.dart'
