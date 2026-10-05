@@ -242,9 +242,26 @@ void brancherLesPlugins() {
   // Le stockage local existe (dossier temporaire reel) : c'est le cas sur tout
   // appareil, et le simuler absent ferait echouer des parcours pour une raison
   // qui n'arrive jamais en vrai.
-  final dossier = Directory.systemTemp
-      .createTempSync('stepways_parcours_reel_')
-      .path;
+  //
+  // ET IL EST RENDU A LA FIN. LA MESURE DU 05/10 (tache 695) : 114 549 dossiers
+  // `stepways_parcours_reel_*` s'etaient accumules dans le dossier temporaire
+  // de la machine, sur 133 385 entrees au total — ce socle est monte 56 fois
+  // dans la suite, repartie sur 24 fichiers de test, et il ne rendait JAMAIS son
+  // dossier. Un bac de test qui ne se vide pas n'est pas un detail de proprete :
+  // c'est le volume que le chien de garde de la machine (regle PRC-003) mesure
+  // pour decider d'abattre un `python`, et c'est ce qui a coute un run persona
+  // entier le 04/10 (memoire #101219). La suppression est tolerante a l'echec :
+  // sous Windows un fichier encore ouvert par le moteur de base refuse de
+  // partir, et un bac qui survit ne doit pas faire echouer un test.
+  final bac = Directory.systemTemp.createTempSync('stepways_parcours_reel_');
+  final dossier = bac.path;
+  addTearDown(() {
+    try {
+      if (bac.existsSync()) bac.deleteSync(recursive: true);
+    } on FileSystemException {
+      // Fichier encore tenu : le bac partira avec le nettoyage de la machine.
+    }
+  });
   repondre('plugins.flutter.io/path_provider', (appel) async => dossier);
   repondre(
     'plugins.flutter.io/path_provider_android',
@@ -286,6 +303,35 @@ Future<void> stabiliser(WidgetTester tester, {int coups = 6}) async {
     await tester.pump(const Duration(milliseconds: 120));
     _ramasser(tester);
   }
+}
+
+/// Pompe JUSQU'A ce que [f] soit a l'ecran. Rend vrai s'il y est arrive.
+///
+/// POURQUOI CE N'EST PAS LA MEME CHOSE QUE `stabiliser(coups: N)`, ET LA
+/// DIFFERENCE EST TOUT CE LOT (tache 695, kaizen #101267). `stabiliser` pompe un
+/// nombre FIXE de fois, puis le test affirme. C'est un PARI sur la machine :
+/// entre deux `pump`, le test rend la main a la boucle d'evenements, donc les
+/// vraies entrees-sorties (base locale, stockage, identite) avancent a la vitesse
+/// REELLE de la machine. Un budget qui suffit sur une machine calme ne suffit
+/// plus quand un build tourne a cote — et le test rougit pour une raison qui
+/// n'apprend rien sur l'application. C'est exactement ce qui est arrive le 05/10
+/// pendant le build 10.
+///
+/// ICI, ON ATTEND L'EVENEMENT. Une machine lente coute des tours de pompe, jamais
+/// un rouge. Et le plafond reste BORNE : l'atteindre veut dire que l'ecran
+/// n'arrive pas, ce qui est un vrai echec a rapporter.
+Future<bool> attendreLEcran(
+  WidgetTester tester,
+  Finder f, {
+  int coups = 240,
+}) async {
+  for (var i = 0; i < coups; i++) {
+    _ramasser(tester);
+    if (f.evaluate().isNotEmpty) return true;
+    await tester.pump(const Duration(milliseconds: 120));
+  }
+  _ramasser(tester);
+  return f.evaluate().isNotEmpty;
 }
 
 /// Va sur [chemin] dans l'application deja montee, et laisse l'ecran se poser.
