@@ -2427,6 +2427,39 @@ les tests changent : fichiers 493 → 494, cas 3840 → 3844.
 et 645-12. Points ouverts : tests ignorés, vingt croisements (645-05c),
 #P51, #P53, #P54.
 
+**QA rejouée (05/10/2026, 00:24 UTC — Artemis, session cloud).** Skynet a
+levé les deux AFFAIBLI par arbitrage (`#101233`, rapport `#101232`). Pour
+(a), les trois fichiers de `docs/` étaient autorisés par le brief du lot
+(tout `docs/` et `test/structurel/`) : la liste de la QA était trop
+étroite. Pour (b), Athena a corrigé le journal en `d53ebcee`, et la liste
+des numéros est amendée : `#101220`, `#100239`, `#101196` pour la ligne 676,
+`#101229` et `#101232` pour la ligne 645-12.
+- (b) **OK** sur `d53ebcee`. Le seul changement depuis `a51a5c8e` est
+  `docs/JOURNAL.md`, sur deux lignes. 645-F1 passe avant 676, ce qui suit
+  l'ordre réel (`4026665b` puis `e22b7af8`). 676 porte `#101196` et 645-12
+  porte `#101229, #101232`. Les 38 numéros distincts du journal sont tous
+  dans la liste amendée, aucun n'est hors liste. Les 20 lignes de lots sont
+  dans l'ordre réel et les dates n'ont pas changé.
+- (a) **OK** : `0f679929..d53ebcee` touche 6 fichiers, tous sous `docs/` ou
+  `test/structurel/` ; rien ailleurs.
+- **Jonction** `78a49737`, sans avance rapide (parents `c078185e` et
+  `d53ebcee`), **aucun conflit**. La tête jointe ne diffère de `d53ebcee` que
+  par ce paragraphe de fiche.
+- **Gate sur `78a49737`** : `dart format` à 0 changement ; `flutter analyze
+  --no-pub --no-fatal-infos` à 0 erreur et 0 warning (7614 infos).
+  `flutter test` : **+4092 ~2, 0 échec**, soit 4088 + les 4 du lot, en 10 min
+  31 s. Après `build_runner`, `git status` est vide. Audit `--rapide` comparé
+  à `0f679929` : aucun compteur ne bouge (ECR-07 2, ECR-15 46, ECR-28 195,
+  ECR-23 236, ECR-19 10, ECR-31 19, ECR-05 77, VAC-01 0, OBS-01 0,
+  observabilité 63/63, en-têtes 100 %). Seuls les tests changent : fichiers
+  493 → 494, cas 3840 → 3844.
+- **Trous « a completer par Skynet » restants** : les deux tests ignorés,
+  les vingt croisements (645-05c), #P51, #P53 et #P54. Ce sont les cinq
+  attendus. Plus aucune ligne de lot n'en porte.
+
+**Verdict final : 645-12 VERT, joint sur `claude/qa/645-12-jonction`
+(`78a49737`).** Il reste à Skynet de le réunir dans l'intégration. Aucun tag.
+
 ---
 
 ## 5. Checklist de complétude CORDO
