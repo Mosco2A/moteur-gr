@@ -39,7 +39,18 @@ description: Moteur generique Flutter multi-sentiers
 # douze lots reunis sur claude/integration/645-assainissement, dont le 645-09b
 # qui supprime les douze defauts de pile de navigation sur douze et repare le
 # parcours Marc. QA Artemis verte (tache 676).
-version: 0.1.5+9
+#
+# TACHE 686 — 0.1.6+10, LE BUILD PROPRE DE FIN DU PLAN D ASSAINISSEMENT. Le 9
+# est pris : c est le bundle livre le 04/10 a 15:21
+# (STEPWAYS-V0.1.5-9-202610041521-d48d2fd.aab). Le numero monte donc a 10. Le
+# NOM passe a 0.1.6 parce que le perimetre change une derniere fois : ce
+# bundle-ci porte les trois lots que le build 9 n avait pas — le 645-06b (les
+# fichiers part redecoupes en bibliotheques), le 645-12 (le journal du depot,
+# l architecture remise au reel mesure et la garde qui les verifie) et le
+# 645-05c (les cinquante-deux croisements entre features ramenes a zero). QA
+# verte sur les trois, code et ecrans (#101217, #101219, #101237, #101245,
+# #101263).
+version: 0.1.6+10
 
 environment:
   sdk: ">=3.8.0 <4.0.0"

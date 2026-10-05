@@ -36,6 +36,7 @@
 | 04/10/2026 | 645-06b | Les fichiers `part` redécoupés en bibliothèques, et deux résidus sous 500 lignes. | #101208, #101214, #101217, #101219 |
 | 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
 | 05/10/2026 | 645-05c | Les cinquante-deux croisements entre features à zéro : trois tuiles montent dans `shared/`, le reste passe par les façades. | #101226 |
+| 05/10/2026 | build 10 | Version 0.1.6+10 livrée, le build propre de fin du plan d'assainissement : il porte le 645-06b, le 645-12 et le 645-05c que le build 9 n'avait pas. | tâche #686, rapport de livraison a completer par Skynet |
 
 ## Ce qui reste ouvert au 04/10/2026
 
