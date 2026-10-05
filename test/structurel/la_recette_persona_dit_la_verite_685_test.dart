@@ -169,4 +169,61 @@ void main() {
       );
     });
   });
+
+  group('L ETAT DE REFERENCE DU 05/10 EST GRAVE, CHIFFRES COMPRIS', () {
+    test('les quatre temps d apparition de l accueil sont ecrits', () {
+      // CE QUE CETTE GARDE TIENT. Les quatre runs joues avec le nouveau pilote
+      // ont mesure le temps mis par l'accueil a se montrer. TROIS DEPASSENT
+      // l'ancien delai fixe de 10 000 ms : c'est la preuve, faite sur la
+      // machine, que la cause 1 n'etait pas une opinion. Si ces chiffres
+      // disparaissent de la fiche, la demonstration disparait avec eux.
+      for (final chiffre in const [
+        '9 843 ms',
+        '10 543 ms',
+        '13 100 ms',
+        '13 438 ms',
+      ]) {
+        expect(
+          _fiche,
+          contains(chiffre),
+          reason:
+              'TEMPS D APPARITION PERDU ($chiffre) : sans ces quatre mesures, '
+              'personne ne pourra verifier que le delai fixe de 10 s etait '
+              'trop court sur cette machine',
+        );
+      }
+    });
+
+    test('les quatre verdicts et le zero run perdu sont dits', () {
+      expect(
+        _fiche,
+        contains('61 / 2'),
+        reason: 'l etat de reference de S1 doit rester lisible',
+      );
+      expect(
+        _fiche,
+        contains('Zero run perdu'),
+        reason:
+            'c est la promesse du lot : si elle n est plus ecrite, plus rien '
+            'ne dit ce qu on attend d une campagne',
+      );
+    });
+
+    test('le travail de la gate de charge est chiffre', () {
+      expect(
+        _fiche,
+        contains('229 s'),
+        reason:
+            'la gate a retenu S3 229 s : un seuil dont on ne mesure jamais '
+            'l effet redevient decoratif',
+      );
+      expect(
+        _fiche,
+        contains('57/1 au lieu de'),
+        reason:
+            'le run lance trop tot a rendu 57/1 : c est la contre-preuve, et '
+            'elle vaut autant que la preuve',
+      );
+    });
+  });
 }

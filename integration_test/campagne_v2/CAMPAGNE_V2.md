@@ -810,6 +810,36 @@ declarent dans `integration_test/campagne_v2/captures_doublons_tolerees.txt`, **
   captures different de **408 869** a **1 986 942 pixels**, en plein contenu. Ce sont des images
   perimees, pas des actions sans effet — la parade est la gate de charge, pas une tolerance.
 
+**11. ETAT DE REFERENCE AU 05/10/2026, MESURE AVEC LE PILOTE DE LA TACHE 685** (installation vierge
+avant chaque run, `emulator-5554`, image `android-34 google_apis`). A comparer apres chaque
+campagne, et a cote de l'etat du 22/09 du point 5 — ce sont deux jeux de scenarios differents.
+
+| scenario | exigences tenues / echouees | captures | verdict de fin de run |
+| --- | --- | --- | --- |
+| S1 Lea | **61 / 2** | 65 / 65 | **OK** |
+| S3 Steve | **17 / 1** | 44 / 44 | **OK** |
+| S4 Ines | **8 / 1** | 15 / 15 | **OK** |
+| S8 Demo | **29 / 1** | 11 / 11 | **OK** |
+
+**Zero run perdu, retard marqueur -> `screencap` de 0 ms partout.** Les cinq exigences echouees sont
+les defauts CONNUS, pas des nouveautes : le CTA « Demarrer la randonnee » absent de l'arbre (S1), le
+diplome qui ne s'ouvre pas apres un trek termine (S1, S3), et le verrou d'achat d'un trek non
+possede que le scenario n'atteint pas (S4, coincement « bascule vers gr-pyrenees impossible » deja
+journalise).
+
+**ET VOICI LE CHIFFRE QUI JUSTIFIE A LUI SEUL LE POINT 7.** Le temps mis par l'accueil a se montrer,
+mesure par le harnais sur ces quatre runs : **S3 9 843 ms · S8 10 543 ms · S4 13 100 ms ·
+S1 13 438 ms**. **TROIS SUR QUATRE DEPASSENT L'ANCIEN DELAI FIXE DE 10 000 ms**, et le quatrieme en
+est a 157 ms. Sur cette machine, ce jour-la, l'ancienne recette aurait donc declare « Onboarding
+absent (deja complete) » et perdu **trois runs sur quatre** — sans que rien ne rougisse.
+
+**LA GATE DE CHARGE A TRAVAILLE, ET CA SE LIT.** Elle a retenu les quatre runs le temps que
+l'emulateur digere un build qui tournait en parallele : **6 s** pour le premier S1, **229 s** pour
+S3 (4,12 -> 2,94), **489 s** pour S4, **384 s** pour S8, **239 s** pour le S1 de reference. Le
+premier S1, lance a 2,97 alors que la moyenne 5 min etait encore a 3,10, a rendu **57/1 au lieu de
+61/2** et un **doublon de captures** (`10_test_6min`) : la preuve, dans les deux sens, que le seuil
+sert a quelque chose.
+
 ---
 
 ## 13. VERDICT DE LA PORTE — CAMPAGNE COMPLETE SUR LE MOTEUR FINAL (tache 547, 23/09)
