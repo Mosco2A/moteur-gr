@@ -949,7 +949,133 @@ et sans test miroir) ; ECR-05 77 → 78 (`lib/features/ads` 1 → 2 :
 ECR-31 19, MORT-01 141 inchangés ; observabilité 63/63, OBS-01 0, VAC-01 0,
 en-têtes 100 %.
 
-Partie écrans : à compléter par Skynet.
+**QA DU 645-05c, PARTIE ÉCRANS (05/10/2026 — Artemis, émulateur local).**
+Deux arbres jetables sur le même émulateur (`emulator-5554`, 1080×2400,
+Android 14), même mode local, même profil, même thème, **installation vierge à
+chaque run** : AVANT sur l'intégration `7d2a2dbc`, APRÈS sur la branche de QA
+`claude/qa/645-05c-jonction` à `53f9d51b`. Huit scénarios joués **des deux
+côtés** : S1 Léa, S2 Marc, S3 Steve, S4 Inès, S8 démo, traversée 645-09, les
+douze tours de pile du 676, et un scénario écrit pour cette QA
+(`qa_684_conflit_test.dart`, **non commité**) qui ouvre le **dialogue de conflit
+de trek actif** — le seul écran du lot qu'aucun persona ne traverse.
+
+**Comparaison au pixel : 177 captures comparées, 156 IDENTIQUES AU PIXEL hors
+barre d'état, et aucun des 21 écarts n'est imputable au code.** La barre d'état
+est exclue (85 px du haut : l'horloge y bouge sur *toutes* les captures).
+
+| scénario | comparées | identiques | écarts |
+|---|---|---|---|
+| S1 Léa | 65 | 55 | 10 |
+| S2 Marc | 20 | 19 | 1 |
+| S3 Steve | 44 | **39** | 5 |
+| S4 Inès | 15 | **15** | **0** |
+| S8 démo | 11 | 10 | 1 |
+| traversée 645-09 | 16 | 13 | 3 |
+| douze tours de pile | 3 | 2 | 1 |
+| dialogue de conflit | 3 | **3** | **0** |
+
+**Les deux écrans prioritaires sont à zéro.** Cockpit `/home` (où montent
+`HubSection`, `QuickAccessCard` et `StepStatusIcon`, désormais dans
+`lib/shared/widgets/`, et où `BannerAdSlot` et `SosButton` passent par leur
+façade) : `S1 07c_cockpit`, `S1 26_cockpit_fin`, `S2 04_cockpit`,
+`S3 03_cockpit`, `S3 10_cockpit_fin`, `S4 03_cockpit`,
+`S4 10_cockpit_offline`, `T645 03_hub` — **identiques au pixel**. Mes treks
+`/my-treks` : `S2 03_mes_treks`, `S8 11_mes_treks_apres_demo` — **identiques au
+pixel**. (`S1 07b_mes_treks` n'existe pas dans un run sain : il vit dans le
+filet de régression `if (onMapAfterEnter)`, et « Entrer » ouvre bien le
+cockpit.) Écrans secondaires, tous identiques au pixel : catalogue, carte et
+dialogue SOS, récapitulatif, diplôme, checklist, profil, détail d'étape,
+synthèse du plan, faisabilité.
+
+**Les 21 écarts, nommés un par un** (captures des deux côtés dans le
+scratchpad `645-05c/`) :
+- **Course de démarrage** (4) : `01_boot` de S1, S2, S8 et des douze tours —
+  l'écran d'attente de l'app d'un côté, « Test starting… » du harnais de
+  l'autre : deux instants du même boot. Celui de la traversée est
+  **sous-perceptible** (amplitude max **9 sur 255**).
+- **Clavier SYSTÈME re-thémé** (6) : `S1 09b`, `S1 12a`, `S1 31`, `S3 15`,
+  `S3E 37c`, `S3E 37d`. L'écart est **entièrement dans la bande du clavier** ;
+  les touches de modification passent du bleu au lilas — c'est Material You
+  de l'émulateur, re-tiré par le **redémarrage** que la QA a dû faire. Le
+  contenu de l'application au-dessus est identique au pixel.
+- **Horloge dans le contenu** (5) : heure de la note du journal (`S1 32`,
+  `S3 16`), « mis à jour à » de la météo (`S1E 25`, `T645 07` : `oct. 07:14`
+  → `oct. 09:06`), du risque d'incendie (`S3E 26` : `10:18` → `10:36`).
+- **Bandeau fugace** (1) : `S1 09c`, le bandeau vert « Fiche enregistrée »
+  (4 s de vie), dans la seule bande `y 2195..2373`.
+- **Image d'animation** (1) : `T645 12_secours`, le rouage « Acquisition GPS »
+  à un autre angle (133 px).
+- **Dérive de parcours, prouvée** (3) : `S1 12c`, `S1 13_retour_cockpit` et
+  `S1 10b` — l'image d'un côté est, **au pixel**, celle d'un AUTRE marqueur de
+  l'autre côté (`13_retour_cockpit` APRÈS = `14_entrainement` AVANT). Le run
+  était un écran en retard : la comparaison est nulle, pas l'écran.
+
+**Ce que la méthode a appris, et qui vaut pour les prochaines QA.** Compter des
+pixels ne suffit pas : on mesure aussi l'**amplitude** (écart maximal sur un
+canal). Jouer les sept scénarios d'un côté **puis** de l'autre laisse une heure
+et demie de dérive machine entre deux captures du même écran. Rejoué **dos à
+dos**, S3 est passé de 15 à **39 identiques sur 44** et S4 de « écarts partout »
+à **15 sur 15**, sans qu'une ligne de code bouge : les 16 écarts « carte » à
+amplitude 14/255 et les 4 décalages de défilement de 42 px ont disparu d'eux-mêmes.
+
+**Preuve statique, en complément, jeton par jeton.** Sur **tout `lib/`**, le
+multi-ensemble de ce qui peut se voir est identique des deux côtés : **1 443**
+occurrences de clés de traduction, **199** `ValueKey`, **886** icônes
+`StepwaysIcons`, **2 376** constantes `AppTheme` — **zéro jeton dont le compte
+diffère**. Et le déplacement est un miroir exact : `lib/features/hub` perd
+précisément les **douze** jetons que `lib/shared` gagne (`StepwaysIcons.sablier`
+1→0 contre 0→1, `AppTheme.spacingMd` 7→4 contre 0→3, …). Rien de visible n'a été
+créé, détruit ni modifié : seulement déplacé.
+
+**Personas sur la tête APRÈS — identiques à la tête AVANT, exigence par
+exigence.** S1 Léa **61/2** (et ce sont les deux connues : CTA « Démarrer la
+randonnée » absent de l'arbre, diplôme qui ne s'ouvre pas) ; S2 Marc **20/20** ;
+S3 Steve **17/1** (le même diplôme) ; S4 Inès **8/1** (le même verrou d'achat) ;
+S8 démo **29/1** (« Démarrer » actif en démo, des deux côtés) ; traversée
+`traversee_645_09_test.dart` **verte des deux côtés**, 16/16 captures. Le
+dialogue de conflit s'ouvre, porte ses **trois** boutons (annuler / abandonner /
+terminer) et « Annuler » rend bien `ActiveTrekConflictChoice.cancel`, des deux
+côtés, avec les 3 captures identiques au pixel.
+
+**Journal local et observabilité.** **38 écrans distincts émettent leur miette
+`screen:<nom>` des deux côtés**, mêmes clés : aucun n'a cessé d'émettre, aucun
+n'est apparu, aucun n'a changé de nom. Les **douze tours de pile** du 676 sont
+**verts des deux côtés** et leur dictionnaire de miettes est identique
+caractère pour caractère — `settings 12` (les douze poussées), `journal 13` (le
+journal plus les douze redescentes), et **aucune miette d'un écran resté vivant
+sous la pile**.
+
+**Logcat : 0 plantage, 0 ANR, 0 mort non demandée, 0 exception Dart de
+l'application**, sur les 8 runs de chaque côté, **141 166 lignes** lues
+(buffers `main`, `crash`, `system`). Deux précisions d'honnêteté : la ligne
+`Killing … com.only1cent.stepways` présente à chaque run est **notre propre**
+`force-stop` avant la désinstallation ; et les deux seules `FATAL EXCEPTION`
+rencontrées appartiennent à `com.android.commands.uiautomator`, c'est-à-dire au
+démon de dialogues **de la QA**, pas au produit.
+
+**Ce qui n'est pas vert, et ne vient pas du lot.** (1) Le contrôle de fin de run
+refuse plusieurs runs sur des captures **légitimement identiques** non déclarées
+dans `captures_doublons_tolerees.txt` — y compris, pour le dialogue de conflit,
+`01_cockpit_avant_dialogue = 03_cockpit_apres_annuler`, c'est-à-dire **la preuve
+elle-même** que « Annuler » ne laisse pas de trace. Le fichier de tolérances
+n'a pas été élargi : on ne négocie pas avec un rouge pour le faire taire.
+(2) **`completeOnboardingIfPresent` donne 10 s au texte « Passer/Skip »** ; sur
+une installation à froid l'onboarding peint plus tard, le harnais conclut
+« Onboarding absent (déjà complété) » et le scénario entier se joue **derrière
+le carrousel** — la miette `screen:onboarding` le prouve au même instant.
+Trois runs perdus. (3) La **pile Bluetooth de l'émulateur** part en boucle de
+plantage (`F/libc SIGABRT` dans `bt_stack_manage`) autour des bascules de mode
+avion de S4 et affame le système jusqu'à l'ANR de l'application : trois runs
+perdus, réparés en éteignant le Bluetooth. (4) L'aide hôte de S4 **dort 55 s en
+aveugle** avant de couper le réseau, pendant que le run avance à son rythme :
+une fois la coupure tombée pendant l'étape *en ligne*, S4 rend 4 échecs qui ne
+disent rien du produit. (5) Le scénario de QA du dialogue reste rouge au
+teardown sur `A SemanticsHandle was active at the end of the test`, **des deux
+côtés**, y compris en rendant la poignée dans l'ordre vert de S1 et de la
+traversée : la poignée est prise par l'application, pas par le scénario.
+
+Rien n'est livré : `main` reste `708b82ce`, l'intégration n'est pas touchée,
+aucun tag, aucune jonction.
 
 
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
