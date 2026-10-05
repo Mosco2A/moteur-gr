@@ -16,8 +16,8 @@
 //   3. la METHODE D'ENTREE du service leve, synchronement ;
 //   4. LA LECTURE DU PROVIDER leve (conteneur detruit, surcharge en test).
 //
-// Le balayage des 63 ecrans du catalogue est en bas de fichier : aucune des
-// 63 miettes de l'application ne peut lever, et c'est verifie une par une.
+// Le balayage des 62 ecrans du catalogue est en bas de fichier : aucune des
+// 62 miettes de l'application ne peut lever, et c'est verifie une par une.
 library;
 
 import 'package:flutter/material.dart';

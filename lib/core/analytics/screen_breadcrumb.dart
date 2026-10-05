@@ -28,7 +28,7 @@ final class ScreenBreadcrumb {
   /// la miette `screen:<nom>`.
   ///
   /// Court par obligation, pas par style : Crashlytics plafonne ses journaux a
-  /// 64 ko par session, et une session traverse jusqu'a 63 ecrans.
+  /// 64 ko par session, et une session traverse jusqu'a 62 ecrans.
   final String name;
 
   /// La fiche d'un hebergement d'etape.
@@ -42,9 +42,6 @@ final class ScreenBreadcrumb {
 
   /// La galerie des badges obtenus.
   static const badgeGallery = ScreenBreadcrumb._('badge_gallery');
-
-  /// La reservation d'un hebergement.
-  static const booking = ScreenBreadcrumb._('booking');
 
   /// Le calendrier de preparation du depart.
   static const calendar = ScreenBreadcrumb._('calendar');
@@ -227,14 +224,13 @@ final class ScreenBreadcrumb {
   /// TOUS LES ECRANS OBSERVES, pour les gardes de test.
   ///
   /// C'est cette liste que la garde de plafond parcourt pour verifier qu'elle
-  /// mesure bien les 63 ecrans du depot et pas un sous-ensemble oublie. Une
+  /// mesure bien les 62 ecrans du depot et pas un sous-ensemble oublie. Une
   /// constante ajoutee ci-dessus et absente d'ici fait rougir la garde.
   static const all = <ScreenBreadcrumb>[
     accommodationDetail,
     activityFeed,
     adventureRecap,
     badgeGallery,
-    booking,
     calendar,
     checklist,
     complaint,

@@ -1,11 +1,12 @@
 # Architecture globale — Moteur GR
 
-> Dernière mise à jour : 05/10/2026 — Hephaistos, lot 645-05c.
+> Dernière mise à jour : 05/10/2026 — Hephaistos, lot produit P1 (#101255).
 >
 > **Ce document décrit le réel mesuré, pas le réel supposé.** Les chiffres
-> viennent de `python3 tool/audit_global.py --rapide`, lancé le 05/10/2026 sur
-> la tête `27fb89bf` de `claude/chore/645-05c-zero-croisement` (le commit de
-> documentation qui la suit ne change aucun chiffre). Ils
+> viennent de `python3 tool/audit_global.py --rapide`, relancé le 05/10/2026 sur
+> la branche `claude/fix/produit-p1-reglages-temperature-booking`, après les
+> trois points du lot produit P1 (lecture tolérante des réglages, température
+> affichée dans l'unité choisie, route `/booking` retirée). Ils
 > remplacent ceux de `docs/assainissement/644-01-inventaire.md`, qui datent du
 > 30/09 et sont périmés.
 >
@@ -59,15 +60,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte 665 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-127 854 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte 664 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+127 743 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` | 184 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 30 327 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 343 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/core/` | 184 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 30 313 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` | 428 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 246 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 831 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -94,8 +95,8 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Mesure | Nombre | Conforme ? |
 |---|---|---|
-| Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 72 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
-| … dont depuis `lib/core/routing/app_router.dart` | 51 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
+| Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 71 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
+| … dont depuis `lib/core/routing/app_router.dart` | 50 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
 | … dont depuis tout autre fichier du socle | 21 <!-- audit:couches.socle_vers_feature[!~^lib/core/routing/app_router\.dart ] --> | **non** (règle 9) |
 | Imports d'une feature vers une autre feature | 143 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
 | … dont par la façade de la voisine | 143 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
@@ -119,7 +120,7 @@ encore `core`, `shared` et `domain` dans le même sac « socle ». La mesure est
 celle de la garde `test/structurel/couches_respectees_645_test.dart`, dont le
 plafond `plafondSocleVersMetier` est à zéro et passe.
 
-Le verdict de l'audit compte **215** dépendances interdites (ECR-23), soit la
+Le verdict de l'audit compte **214** dépendances interdites (ECR-23), soit la
 somme des deux totaux ci-dessus : il compte encore le routeur et les façades,
 que les décisions ARB-645-05-a et ARB-645-05-b autorisent. Les gardes de
 `test/structurel/couches_respectees_645_test.dart` ne comptent que les écarts
@@ -138,17 +139,24 @@ autorisé (ECR-13) : `lib/docs/`, de la documentation déposée en `.dart`
 
 ## Observabilité
 
-L'audit compte **63** écrans (`*_screen.dart` de `lib/`), **63** portent une
-miette d'observabilité, **0** n'en porte pas : 63 sur 63, posées par le lot
+L'audit compte **62** écrans (`*_screen.dart` de `lib/`), **62** portent une
+miette d'observabilité, **0** n'en porte pas : 62 sur 62, posées par le lot
 645-09, inertes sans Firebase.
+
+**ILS ÉTAIENT 63 JUSQU'AU 05/10/2026.** Le lot produit P1 (#101255) a retiré
+`booking_screen.dart` avec la route `/booking` : un écran qu'aucune porte ne
+menait, qu'aucune donnée n'alimentait, et dont le drapeau n'a jamais été
+ouvert — sa miette ne pouvait donc jamais être émise. La garde
+`test/structurel/observabilite_des_ecrans_645_test.dart` attend désormais 62,
+et la couverture reste à 100 %.
 
 ## Tests
 
-L'audit compte **496** fichiers de test et **3865** cas déclarés par
+L'audit compte **497** fichiers de test et **3867** cas déclarés par
 `test(` ou `testWidgets(` (comptage statique ; l'exécution en déclare davantage,
-des cas étant engendrés en boucle). **418** fichiers de `lib/` n'ont pas de
-test miroir du même nom (ECR-16, avertissement), soit **37.0** % de `lib/`
-couvert par un miroir. Ces chiffres sont ceux de la tête `27fb89bf`.
+des cas étant engendrés en boucle). **417** fichiers de `lib/` n'ont pas de
+test miroir du même nom (ECR-16, avertissement), soit **37.2** % de `lib/`
+couvert par un miroir. Ces chiffres sont ceux du lot produit P1.
 
 ## Ce qui n'est pas conforme, au 05/10/2026
 
@@ -156,7 +164,7 @@ Les huit règles bloquantes du verdict de l'audit, chiffre à l'appui :
 
 | Règle | Nombre | Constat |
 |---|---|---|
-| ECR-23 | 215 | dépendance interdite entre couches ou features (dont routeur et façades, autorisés — voir plus haut) |
+| ECR-23 | 214 | dépendance interdite entre couches ou features (dont routeur et façades, autorisés — voir plus haut) |
 | ECR-28 | 195 | fonction au-delà de 60 lignes |
 | ECR-15 | 46 | fichier source au-delà de 500 lignes |
 | ECR-04 | 45 | code commenté livré ou TODO sans numéro de tâche |
