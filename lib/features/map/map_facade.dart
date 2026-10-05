@@ -20,10 +20,11 @@
 /// interface sur laquelle les autres reposent. La facade rend ce cout visible —
 /// elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 9 FICHIERS DE 6 FEATURES AU 03/10/2026 : `community`, `feasibility`,
-/// `hub`, `safety`, `settings`, `trek`.
+/// LUE PAR 15 FICHIERS DE 6 FEATURES AU 05/10/2026 : `community`,
+/// `feasibility`, `hub`, `safety`, `settings`, `trek`.
 library;
 
+export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
 export 'providers/gpx_track_provider.dart' show gpxTrackProvider;
 export 'providers/location_provider.dart' show locationProvider;
 export 'providers/map_pois_provider.dart' show mapPoisProvider;
@@ -34,3 +35,11 @@ export 'providers/stage_poi_check_provider.dart' show stagePoiChecksProvider;
 export 'providers/supply_alert_provider.dart' show supplyGapAlertProvider;
 export 'providers/track_position_provider.dart'
     show stageDistanceCoveredProvider, trackPositionProvider;
+export 'widgets/map_guide_sheet.dart' show showMapGuideSheet;
+export 'widgets/off_track_banner.dart' show OffTrackBanner;
+export 'widgets/poi_filter_bar.dart' show PoiFilterBar;
+export 'widgets/poi_marker.dart' show PoiMarker;
+export 'widgets/poi_popup.dart' show PoiPopup;
+export 'widgets/stage_poi_checklist.dart' show StagePoiChecklist;
+export 'widgets/stage_progress_bar.dart' show StageProgressBar;
+export 'widgets/user_position_marker.dart' show UserPositionMarker;

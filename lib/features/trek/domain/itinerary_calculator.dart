@@ -9,7 +9,7 @@ import '../../../core/models/stage_duration.dart';
 import 'models/feasibility_profile.dart';
 import 'models/itinerary_config.dart';
 import 'models/itinerary_day.dart';
-import '../../trail/domain/models/trail_feasibility_params.dart';
+import '../../trail/trail_facade.dart' show TrailFeasibilityParams;
 
 /// Calculateur d'itineraire multi-jours.
 ///

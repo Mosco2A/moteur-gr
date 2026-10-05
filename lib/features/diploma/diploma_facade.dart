@@ -20,7 +20,9 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 1 FICHIER DE 1 FEATURE AU 03/10/2026 : `settings`.
+/// LUE PAR 2 FICHIERS DE 2 FEATURES AU 05/10/2026 : `after`, `settings`.
 library;
 
+export 'presentation/widgets/session_trace_painter.dart'
+    show SessionTracePainter;
 export 'providers/session_trace_provider.dart' show sessionTraceProvider;

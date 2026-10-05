@@ -18,10 +18,11 @@ import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../../shared/widgets/maps_link.dart';
 import '../../../../shared/poi/poi_type_config.dart';
-import '../../../safety/data/signalement_service.dart';
 import '../../../safety/safety_facade.dart'
     show
+        SignalementService,
         WaterSourceRef,
+        WaterSourceStatus,
         pendingSignalementCountProvider,
         signalementServiceProvider,
         waterSourceStatusProvider;

@@ -755,6 +755,140 @@ feature. Les **services de données** (`gps_service`, `photo_service`,
 façade élargie.
 
 
+**CE QUE LE 645-05c A FAIT (05/10/2026).** L'arbitrage suivant est tranché :
+**option A, zéro croisement par des gestes conformes**, décision de Skynet sous
+délégation de Christophe (04/10/2026, GO-90, **#101226**), avec la règle de
+Christophe du 03/10 : propre et aux normes, la solution conforme l'emporte sur
+le coût. Branche `claude/chore/645-05c-zero-croisement`, partie de
+l'intégration `7d2a2dbc`, un commit par geste, gate complète verte après
+chacun. **Les 52 croisements sont à zéro**, aucune feature n'est fusionnée
+(option B écartée), aucun écran ne change de dossier, aucun symbole n'est
+renommé.
+
+Deux gestes seulement, choisis fichier par fichier :
+
+- **Monter dans `lib/shared/widgets/`** — uniquement ce qui n'importe AUCUNE
+  feature (règle 9) : `hub_section`, `quick_access_card` et `step_status_icon`
+  (dont dépend `quick_access_card`), trois briques d'interface qui ne lisent
+  que `core/` et `shared/`. Déplacées telles quelles (`git diff -M` : trois
+  renommages, seuls les chemins d'import changent). Deux croisements payés.
+- **Lire la façade de la feature** (règle 10) — tout le reste, 50 croisements.
+  Aucun widget de la famille « pub / SOS » ne pouvait monter : `banner_ad_slot`
+  lit `ads_providers`, `ad_state_badge` lit `ads/domain/ad_state`,
+  `sos_button` lit la façade `trek`. Les emprunts isolés sont un peintre, des
+  dialogues, un écran ou un algorithme propres à leur feature, et plusieurs
+  lisent ses providers. Les 32 emprunts de type restent dans leur feature :
+  aucun n'est lu par deux features ou plus (ARB-645-05-b), ils n'ont rien à
+  faire dans `lib/domain/`. **38 directives `export … show` ajoutées, 51
+  symboles**, dans 16 façades dont **2 créées** (`checklist`, `tips`) ; côté
+  appelant, chaque import de façade porte aussi son `show`, et se fusionne dans
+  la ligne de façade existante quand il y en avait une. Une façade ne contient
+  toujours que des `export`.
+
+| # | Geste | Vers | Appelant (`lib/features/…`) | Cible (`lib/features/…`) | Geste retenu |
+|---|---|---|---|---|---|
+| 1 | G1 | presentation | `hub/presentation/hub_screen.dart` | `ads/presentation/banner_ad_slot.dart` | facade de `ads` |
+| 2 | G1 | presentation | `hub/presentation/hub_screen.dart` | `safety/presentation/sos_button.dart` | facade de `safety` |
+| 3 | G1 | presentation | `hub/presentation/widgets/hub_cockpit_scroll.dart` | `ads/presentation/ad_state_badge.dart` | facade de `ads` |
+| 4 | G1 | presentation | `trail/presentation/trail_catalog_screen.dart` | `ads/presentation/ad_state_badge.dart` | facade de `ads` |
+| 5 | G1 | presentation | `trail/presentation/trail_catalog_screen.dart` | `ads/presentation/banner_ad_slot.dart` | facade de `ads` |
+| 6 | G1 | presentation | `trek/presentation/map/map_overlays.dart` | `safety/presentation/sos_button.dart` | facade de `safety` |
+| 7 | G2 | presentation | `treks/presentation/my_treks_screen.dart` | `hub/presentation/widgets/hub_section.dart` | monte dans lib/shared/widgets/ |
+| 8 | G2 | presentation | `treks/presentation/my_treks_screen.dart` | `hub/presentation/widgets/quick_access_card.dart` | monte dans lib/shared/widgets/ |
+| 9 | G3 | data | `feasibility/domain/ibp_calculator.dart` | `trek/data/track_simplifier.dart` | facade de `trek` |
+| 10 | G3 | data | `feasibility/providers/walk_test_provider.dart` | `trek/data/gps_service.dart` | facade de `trek` |
+| 11 | G3 | data | `settings/providers/account_erasure_provider.dart` | `feasibility/data/hiker_profile_repository.dart` | facade de `feasibility` |
+| 12 | G3 | data | `trek/presentation/map/map_photo_button.dart` | `journal/data/photo_service.dart` | facade de `journal` |
+| 13 | G3 | data | `trek/presentation/stages/trek_stage_detail_screen.dart` | `safety/data/signalement_service.dart` | facade de `safety` |
+| 14 | G4 | presentation | `after/presentation/adventure_recap_screen.dart` | `diploma/presentation/widgets/session_trace_painter.dart` | facade de `diploma` |
+| 15 | G4 | presentation | `auth/presentation/profile_screen.dart` | `safety/presentation/refus_sauvegarde_systeme_dialog.dart` | facade de `safety` |
+| 16 | G4 | presentation | `hub/presentation/widgets/hub_start_trek_button.dart` | `treks/presentation/widgets/active_trek_conflict_dialog.dart` | facade de `treks` |
+| 17 | G4 | presentation | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/presentation/fire_risk_screen.dart` | facade de `weather` |
+| 18 | G4 | presentation | `map/providers/simplified_track_provider.dart` | `trek/presentation/map/marker_cluster.dart` | facade de `trek` |
+| 19 | G4 | presentation | `settings/providers/account_erasure_provider.dart` | `safety/presentation/health_info_screen.dart` | facade de `safety` |
+| 20 | G4 | presentation | `weather/widgets/weather_alert_banner.dart` | `tips/presentation/tip_detail_sheet.dart` | facade de `tips` |
+| 21 | G5 | domain | `checklist/presentation/checklist_screen.dart` | `feasibility/domain/hiker_profile.dart` | facade de `feasibility` |
+| 22 | G5 | domain | `checklist/providers/checklist_provider.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 23 | G5 | domain | `checklist/providers/checklist_provider.dart` | `feasibility/domain/hiker_input_bounds.dart` | facade de `feasibility` |
+| 24 | G5 | domain | `checklist/widgets/checklist_descent_alert.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 25 | G5 | domain | `checklist/widgets/checklist_recommendation_banner.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 26 | G5 | domain | `checklist/widgets/checklist_weight_banner.dart` | `feasibility/domain/body_weight_reference.dart` | facade de `feasibility` |
+| 27 | G5 | domain | `checklist/widgets/checklist_weight_banner.dart` | `feasibility/domain/hiker_input_bounds.dart` | facade de `feasibility` |
+| 28 | G5 | domain | `diploma/presentation/diploma_screen.dart` | `journal/domain/models/journal_entry.dart` | facade de `journal` |
+| 29 | G5 | domain | `feasibility/domain/feasibility_program.dart` | `planning/domain/planning_calculator.dart` | facade de `planning` |
+| 30 | G5 | domain | `feasibility/domain/program_plan_search.dart` | `planning/domain/planning_calculator.dart` | facade de `planning` |
+| 31 | G5 | domain | `feasibility/providers/trek_feasibility_provider.dart` | `checklist/domain/season.dart` | facade de `checklist` |
+| 32 | G5 | domain | `hub/presentation/cockpit_phase.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 33 | G5 | domain | `hub/presentation/widgets/finish_trek_button.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 34 | G5 | domain | `hub/presentation/widgets/hub_trek_card.dart` | `treks/domain/trek_lifecycle_state.dart` | facade de `treks` |
+| 35 | G5 | domain | `planning/presentation/plan_summary_screen.dart` | `booking/domain/models/nuitee_type.dart` | facade de `booking` |
+| 36 | G5 | domain | `planning/providers/planning_provider.dart` | `feasibility/domain/program_plan_search.dart` | facade de `feasibility` |
+| 37 | G5 | domain | `trail/presentation/trail_catalog_screen.dart` | `ads/domain/ad_state.dart` | facade de `ads` |
+| 38 | G5 | domain | `trek/domain/itinerary_calculator.dart` | `trail/domain/models/trail_feasibility_params.dart` | facade de `trail` |
+| 39 | G5 | domain | `trek/presentation/map/map_content.dart` | `map/domain/stage_focus.dart` | facade de `map` |
+| 40 | G5 | models | `feasibility/domain/feasibility_program.dart` | `planning/models/day_plan.dart` | facade de `planning` |
+| 41 | G5 | models | `hub/presentation/widgets/hub_weather_card.dart` | `weather/models/weather_forecast.dart` | facade de `weather` |
+| 42 | G5 | models | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/models/weather_forecast.dart` | facade de `weather` |
+| 43 | G5 | widgets | `hub/presentation/widgets/hub_weather_card.dart` | `weather/widgets/day_forecast_card.dart` | facade de `weather` |
+| 44 | G5 | widgets | `hub/presentation/widgets/localized_conditions_banner.dart` | `weather/widgets/day_forecast_card.dart` | facade de `weather` |
+| 45 | G5 | widgets | `trek/presentation/map/layers/trail_markers_layer.dart` | `map/widgets/poi_marker.dart` | facade de `map` |
+| 46 | G5 | widgets | `trek/presentation/map/layers/user_position_layer.dart` | `map/widgets/user_position_marker.dart` | facade de `map` |
+| 47 | G5 | widgets | `trek/presentation/map/map_content.dart` | `map/widgets/stage_progress_bar.dart` | facade de `map` |
+| 48 | G5 | widgets | `trek/presentation/map/map_overlays.dart` | `map/widgets/off_track_banner.dart` | facade de `map` |
+| 49 | G5 | widgets | `trek/presentation/map/map_screen.dart` | `map/widgets/map_guide_sheet.dart` | facade de `map` |
+| 50 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/poi_filter_bar.dart` | facade de `map` |
+| 51 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/poi_popup.dart` | facade de `map` |
+| 52 | G5 | widgets | `trek/presentation/map/map_sheets.dart` | `map/widgets/stage_poi_checklist.dart` | facade de `map` |
+
+Fichiers déplacés (contenu identique hors chemins d'import) :
+`lib/features/hub/presentation/widgets/hub_section.dart` →
+`lib/shared/widgets/hub_section.dart`, `…/quick_access_card.dart` →
+`lib/shared/widgets/quick_access_card.dart`, `…/step_status_icon.dart` →
+`lib/shared/widgets/step_status_icon.dart`. Deux tests adaptés en chemin
+d'import seulement : `test/comportement/icones_bicolores_639_test.dart` et
+`test/comportement/libelles_longs_634_test.dart`.
+
+**Compteurs, avant (`7d2a2dbc`) → après (`27fb89bf`), mesurés.**
+
+- Garde `couches_respectees_645_test.dart` : *socle → feature* 21 → **21**
+  (routeur exclu, ARB-a) ; *croisements entre features* **52 → 0**, et son
+  plafond descendu de 52 à **0** ; *socle → métier* 0 → **0**. Façades qui
+  re-exportent une voisine : 0.
+- Audit (`tool/audit_global.py --rapide`) : **ECR-23 236 → 208** (les
+  croisements de l'audit comptent aussi les façades : 164 → 136, dont
+  façades 112 → 136 et intérieur 52 → 0) ; ECR-15 46 = 46 ; ECR-28 195 =
+  195 ; ECR-19 10 = 10 ; ECR-31 19 = 19 ; MORT-01 141 = 141. Trois compteurs
+  montent, chacun par construction et sans code nouveau : **ECR-16 416 →
+  418** et **RNG-01 20 → 22**, les deux façades créées étant à la racine de
+  leur feature et sans test miroir, comme les vingt autres ; **ECR-05 77 →
+  78**, la liste fermée de l'audit trouvant le mot « lot » dans
+  `BannerAdSlot` (Slot), désormais cité par `ads_facade.dart` — aucun
+  identifiant n'est nouveau ni renommé. Observabilité 63/63, OBS-01 0,
+  VAC-01 0, en-têtes 100 %.
+- `flutter analyze` : 0 erreur, 0 warning, infos **7 614 → 7 613** (une
+  `directives_ordering` disparaît avec l'import interne retiré de
+  `plan_summary_screen.dart`). `flutter test` : 4 092 réussis, 2 ignorés,
+  0 échec, avant comme après chaque geste.
+
+**Mutations, chacune annulée par `git checkout --`, zéro diff résiduel.**
+(1) un import de `lib/features/hub/hub_facade.dart` injecté dans
+`lib/shared/widgets/hub_section.dart` : garde rouge, *socle → feature* 22
+contre 21. (2) un import de `ads/presentation/banner_ad_slot.dart` injecté
+dans `hub_screen.dart` : garde rouge, *croisements* 1 contre 0. (3)
+`tips_facade.dart` qui re-exporte `weather/presentation/fire_risk_screen.dart` :
+garde rouge, « une façade ne re-exporte que SA feature ». (4) le 0 de la
+ligne « dont vers l'intérieur de la voisine » de `docs/architecture.md`
+changé en 1 : `la_doc_ne_mente_pas_645_test.dart` rouge (« la doc dit 1,
+l audit mesure 0 »).
+
+**Ce qui n'est pas fait, et pourquoi.** Les chiffres balisés de
+`docs/architecture.md` sont revérifiés à chaque `flutter test` : ils ont donc
+été remis au réel dans CHAQUE commit de code du lot, pas seulement dans le
+commit de documentation, sans quoi la gate aurait été rouge entre deux
+gestes. La preuve à l'écran (captures avant/après, personas) reste à faire
+en local par Skynet : ni SDK Android ni émulateur dans la session cloud.
+
+
 **CE QUE LE LOT 645-05 A LIVRÉ, ET CE QU'IL N'A PAS PU LIVRER.** La voie A a
 été exécutée : `lib/domain/` existe, **douze types** ont changé de maison — dix
 dans `lib/domain/` et deux dans `lib/shared/poi/` pour le vocabulaire visuel

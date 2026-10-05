@@ -19,8 +19,8 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/app_logo.dart';
-import '../../journal/domain/models/journal_entry.dart';
-import '../../journal/journal_facade.dart' show journalScreenProvider;
+import '../../journal/journal_facade.dart'
+    show JournalEntryModel, journalScreenProvider;
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';

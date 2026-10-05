@@ -11,8 +11,8 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
-import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/treks_facade.dart' show currentTrailSummaryProvider;
+import '../../../treks/treks_facade.dart'
+    show TrekLifecycleState, currentTrailSummaryProvider;
 import '../../../trek/trek_facade.dart'
     show TrackingSessionStatus, trekSessionManagerProvider;
 import '../../../../core/branding/stepways_icons.dart';

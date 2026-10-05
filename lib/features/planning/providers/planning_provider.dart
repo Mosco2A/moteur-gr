@@ -11,9 +11,8 @@ import '../../../core/models/stage_row.dart';
 import '../../../core/services/session_demo.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../../domain/feasibility_formula.dart';
-import '../../feasibility/domain/program_plan_search.dart';
 import '../../feasibility/feasibility_facade.dart'
-    show advisedTotalDaysProvider;
+    show DurationSearchBounds, ProgramPlanSearch, advisedTotalDaysProvider;
 import '../data/retained_plan_store.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';

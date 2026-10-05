@@ -9,8 +9,12 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
-import '../../feasibility/domain/hiker_input_bounds.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show
+        WeightReferenceFallback,
+        isValidBodyWeightKg,
+        kWeightMaxKg,
+        kWeightMinKg;
 import '../../../core/branding/stepways_icons.dart';
 
 /// Formate un poids en grammes avec separateur de milliers (parite GR20).

@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/branding/app_branding.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
-import 'package:moteur_gr/features/hub/presentation/widgets/hub_section.dart';
-import 'package:moteur_gr/features/hub/presentation/widgets/quick_access_card.dart';
+import 'package:moteur_gr/shared/widgets/hub_section.dart';
+import 'package:moteur_gr/shared/widgets/quick_access_card.dart';
 
 /// TACHE 639 — BUG 3 : LES TUILES PRINCIPALES SONT BICOLORES, ET C'EST UNE
 /// REGLE, PAS UN REGLAGE PAR ECRAN.

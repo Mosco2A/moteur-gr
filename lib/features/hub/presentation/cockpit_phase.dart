@@ -5,7 +5,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../treks/domain/trek_lifecycle_state.dart';
+import '../../treks/treks_facade.dart' show TrekLifecycleState;
 
 /// Les trois PHASES visibles du cockpit par phases (nav V2, retour Chris R7).
 ///

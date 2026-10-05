@@ -9,8 +9,15 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/checklist_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
-import '../../feasibility/domain/hiker_input_bounds.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show
+        BodyWeightReference,
+        WeightReferenceFallback,
+        isValidBodyWeightKg,
+        kHeightMaxCm,
+        kHeightMinCm,
+        kWeightMaxKg,
+        kWeightMinKg;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
 import '../data/checklist_seasonal_adapter.dart';

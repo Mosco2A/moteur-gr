@@ -9,7 +9,8 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../notifications/notifications_facade.dart'
     show notificationServiceProvider;
-import '../../trek/data/gps_service.dart';
+import '../../trek/trek_facade.dart'
+    show GpsPermissionResultValues, GpsService, gpsServiceProvider;
 import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/walk_test_norms.dart';

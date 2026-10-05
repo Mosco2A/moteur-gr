@@ -16,7 +16,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../diploma/presentation/widgets/session_trace_painter.dart';
+import '../../diploma/diploma_facade.dart' show SessionTracePainter;
 import '../data/gpx_export_service.dart';
 import '../providers/adventure_recap_provider.dart';
 import '../../../core/branding/stepways_icons.dart';

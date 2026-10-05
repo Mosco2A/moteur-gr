@@ -14,8 +14,7 @@
 library;
 
 import '../../../core/models/stage_row.dart';
-import '../../planning/domain/planning_calculator.dart';
-import '../../planning/models/day_plan.dart';
+import '../../planning/planning_facade.dart' show DayPlan, PlanningCalculator;
 import '../../../domain/planned_day.dart';
 import '../../../domain/feasibility_formula.dart';
 

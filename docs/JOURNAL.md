@@ -35,6 +35,7 @@
 | 04/10/2026 | build 9 | Version 0.1.5+9 livrée (`STEPWAYS-V0.1.5-9-202610041521-d48d2fd.aab`). | #101205, #101206 |
 | 04/10/2026 | 645-06b | Les fichiers `part` redécoupés en bibliothèques, et deux résidus sous 500 lignes. | #101208, #101214, #101217, #101219 |
 | 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
+| 05/10/2026 | 645-05c | Les cinquante-deux croisements entre features à zéro : trois tuiles montent dans `shared/`, le reste passe par les façades. | #101226 |
 
 ## Ce qui reste ouvert au 04/10/2026
 
@@ -44,7 +45,6 @@
 | Défaut produit | Un défaut produit ouvert, détaillé en base. | #101197 |
 | Captures | Les captures de comparaison faites avant le 645-07 sont douteuses : worktree neuf sans fichier de config ignoré par git, recette de capture qui écrivait en retard. | #101077, #101092 |
 | Tests ignorés | Deux tests ignorés : `persona_le_mefiant_573_test.dart` (profil randonneur non semé) et `cartes_publiees_648_test.dart` (preuve réseau). | a completer par Skynet |
-| Couches | Vingt croisements entre features vers une `presentation/` ou un `data/` voisin, pour le lot 645-05c à venir. | a completer par Skynet |
 | Recette de capture | Doublons de ticks GPS non déclarés, contrôle de captures rouge pour S1 et S3 des deux côtés. | #101219 |
 | Fiche médicale | Cinq imports inutiles dans six fichiers, et ECR-16 monté mécaniquement de 409 à 416. | #101217 |
 | Démon de captures | `skynet_watchdog.py` abat le démon de captures (hors dépôt). | #101220 |
