@@ -230,11 +230,19 @@ def main() -> int:
     trop_tard = [(n, r) for (n, r, _d) in retards if r > a.max_retard_ms]
     sans_manifeste = [n for n in marqueurs if n not in manif] if manif else []
 
-    # TOLERANCES MORTES. Une tolerance dont LES DEUX noms sont des marqueurs DE
-    # CE RUN et qui n'a pourtant servi a rien decrit deux captures qui ne sont
-    # plus identiques : l'action a retrouve un effet visible. Ce n'est pas une
-    # faute (l'horloge de la barre d'etat suffit a les separer un run sur deux),
-    # mais c'est la seule facon de voir une tolerance pourrir sur place.
+    # TOLERANCES MORTES, ET LA MESURE EST PAR DECLARATION, PAS PAR PAIRE.
+    #
+    # POURQUOI PAS PAR PAIRE : une FAMILLE est declaree en clique complete
+    # expres (le groupement reel change d'un run a l'autre au gre de l'horloge
+    # de la barre d'etat), donc la plupart de ses paires ne servent a rien DANS
+    # UN RUN DONNE — c'est l'attendu, pas un symptome. Compter paire par paire
+    # noierait le signal sous cent lignes de bruit.
+    #
+    # CE QU'ON DIT DONC : une declaration dont TOUS les noms sont des marqueurs
+    # de ce run et dont AUCUNE paire interne n'est identique. La famille entiere
+    # a cesse d'etre un doublon : l'action a retrouve un effet visible, ou le
+    # scenario a change. Ce n'est pas une faute, c'est la seule facon de voir
+    # une tolerance pourrir sur place.
     appariees = set()
     for noms in par_empreinte.values():
         for i in range(len(noms)):
@@ -244,11 +252,17 @@ def main() -> int:
     inutilisees = []
     for d in declarations:
         noms = d["noms"]
-        for i in range(len(noms)):
-            for j in range(i + 1, len(noms)):
-                paire = frozenset((noms[i], noms[j]))
-                if noms[i] in vus and noms[j] in vus and paire not in appariees:
-                    inutilisees.append(f"{noms[i]} != {noms[j]}")
+        if not all(n in vus for n in noms):
+            continue
+        servie = any(
+            frozenset((noms[i], noms[j])) in appariees
+            for i in range(len(noms))
+            for j in range(i + 1, len(noms))
+        )
+        if not servie:
+            inutilisees.append(
+                "ligne %d (%s) : %s" % (d["ligne"], d["forme"], " ".join(noms))
+            )
 
     if fautes_tolerance:
         # LE FICHIER DE TOLERANCES EST LUI-MEME CONTROLE (tache 685). Une
@@ -302,7 +316,7 @@ def main() -> int:
         "tolerances_familles": sum(
             1 for d in declarations if d["forme"] == "groupe"
         ),
-        "tolerances_inutilisees": sorted(set(inutilisees)),
+        "tolerances_inutilisees": inutilisees,
         "fautes": fautes,
         "verdict": "OK" if not fautes else "ECHEC",
     }
@@ -313,9 +327,13 @@ def main() -> int:
           "%d paire(s) couverte(s)"
           % (len(declarations), resume["tolerances_familles"], len(tol)))
     if resume["tolerances_inutilisees"]:
-        print("[shot-check] tolerances DECLAREES mais inutiles sur ce run "
-              "(les deux captures sont presentes et DIFFERENTES) : %s"
-              % ", ".join(resume["tolerances_inutilisees"]))
+        print("[shot-check] %d tolerance(s) DECLAREE(S) mais inutile(s) sur ce "
+              "run : toutes leurs captures sont presentes et AUCUNE n'est "
+              "identique a une autre. A relire : l'action a peut-etre retrouve "
+              "un effet visible."
+              % len(resume["tolerances_inutilisees"]))
+        for ligne in resume["tolerances_inutilisees"]:
+            print("[shot-check]   - %s" % ligne)
     if rs:
         print("[shot-check] retard marqueur->screencap : median=%d ms max=%d ms "
               "(budget %d ms)" % (resume["retard_ms_median"], resume["retard_ms_max"],
