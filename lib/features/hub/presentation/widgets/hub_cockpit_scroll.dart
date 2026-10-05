@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/demo_simulation_button.dart';
-import '../../../ads/presentation/ad_state_badge.dart';
+import '../../../ads/ads_facade.dart' show AdStateBanner;
 import 'finish_trek_button.dart';
 import 'hub_buy_trek_button.dart';
 import 'hub_start_trek_button.dart';

@@ -12,8 +12,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/mise_a_jour_a_la_source.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../ads/presentation/banner_ad_slot.dart';
-import '../../safety/presentation/sos_button.dart';
+import '../../ads/ads_facade.dart' show BannerAdSlot;
+import '../../safety/safety_facade.dart' show SosButton;
 import '../../treks/treks_facade.dart' show currentTrailSummaryProvider;
 import '../../trek/trek_facade.dart'
     show TrackingSessionStatus, trekSessionManagerProvider;

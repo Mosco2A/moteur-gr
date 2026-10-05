@@ -20,8 +20,10 @@
 /// interface sur laquelle les autres reposent. La facade rend ce cout visible —
 /// elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 1 FICHIER DE 1 FEATURE AU 03/10/2026 : `consent`.
+/// LUE PAR 4 FICHIERS DE 3 FEATURES AU 05/10/2026 : `consent`, `hub`, `trail`.
 library;
 
+export 'presentation/ad_state_badge.dart' show AdStateBadge, AdStateBanner;
+export 'presentation/banner_ad_slot.dart' show BannerAdSlot;
 export 'providers/ads_providers.dart'
     show adsConsentServiceProvider, adsPrivacyOptionsRequiredProvider;

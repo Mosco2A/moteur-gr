@@ -20,9 +20,10 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 4 FICHIERS DE 3 FEATURES AU 03/10/2026 : `hub`, `settings`, `trek`.
+/// LUE PAR 6 FICHIERS DE 3 FEATURES AU 05/10/2026 : `hub`, `settings`, `trek`.
 library;
 
+export 'presentation/sos_button.dart' show SosButton;
 export 'providers/health_prepare_providers.dart'
     show healthPrepareDoneProvider, healthPrepareStepsProvider;
 export 'providers/safety_providers.dart' show ficheEcranVerrouilleProvider;

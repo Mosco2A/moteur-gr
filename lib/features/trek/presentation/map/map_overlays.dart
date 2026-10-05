@@ -20,7 +20,7 @@ import '../../../map/map_facade.dart'
         offTrackMessagesProvider,
         supplyGapAlertProvider;
 import '../../../map/widgets/off_track_banner.dart';
-import '../../../safety/presentation/sos_button.dart';
+import '../../../safety/safety_facade.dart' show SosButton;
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
 import '../../../../core/branding/stepways_icons.dart';
