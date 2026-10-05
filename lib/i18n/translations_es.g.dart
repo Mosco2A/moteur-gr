@@ -1992,7 +1992,6 @@ class _Translations$hub$weather$es extends Translations$hub$weather$fr {
 	@override String get title => 'El tiempo de hoy';
 	@override String get unavailable => 'El tiempo no está disponible ahora.';
 	@override String get alertStorm => 'Alerta de tormenta';
-	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -3912,7 +3911,7 @@ class _Translations$weather$alert$fire$es extends Translations$weather$alert$fir
 
 	// Translations
 	@override String get title => 'Riesgo de incendio';
-	@override String desc({required Object value}) => '${value}°C previstos. Alto riesgo de incendio.';
+	@override String desc({required Object temperature}) => '${temperature} previstos. Alto riesgo de incendio.';
 }
 
 // Path: feasibility.formula.levels
@@ -4263,7 +4262,6 @@ extension on TranslationsEs {
 			'hub.weather.title' => 'El tiempo de hoy',
 			'hub.weather.unavailable' => 'El tiempo no está disponible ahora.',
 			'hub.weather.alertStorm' => 'Alerta de tormenta',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Iniciar el trek',
 			'hub.startGateHint' => 'Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.',
 			'hub.prepareExpand' => 'Ver la preparación',
@@ -4687,9 +4685,9 @@ extension on TranslationsEs {
 			'checklist.ui.preDep6' => 'Aplicar crema solar y antirozaduras',
 			'checklist.ui.preDep7' => 'Comprobar los cordones y el ajuste de las botas',
 			'checklist.ui.preDep8' => 'Descargar los mapas offline',
+			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
 			'checklist.ui.validateBag' => 'VALIDAR MI MOCHILA',
 			'checklist.ui.cancelValidation' => 'ANULAR LA VALIDACIÓN',
 			'checklist.ui.shoppingListButton' => 'LISTA DE COMPRA',
@@ -4807,7 +4805,7 @@ extension on TranslationsEs {
 			'weather.alert.uv.title' => 'UV muy alto',
 			'weather.alert.uv.desc' => ({required Object value}) => 'Índice UV ${value}. Se recomienda máxima protección solar.',
 			'weather.alert.fire.title' => 'Riesgo de incendio',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C previstos. Alto riesgo de incendio.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} previstos. Alto riesgo de incendio.',
 			'weather.program.title' => 'Meteorología etapa por etapa',
 			'weather.program.subtitle' => 'El tiempo donde estarás, el día en que estarás allí.',
 			'weather.program.dayLabel' => ({required Object day}) => 'Día ${day}',
@@ -5201,9 +5199,9 @@ extension on TranslationsEs {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Comprar — ${price} €',
 			'monetization.rewardedCta' => 'Un día sin anuncios — ver un vídeo',
 			'monetization.rewardedEarned' => '¡Gracias! Sin publicidad durante 24 h.',
+			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
 			_ => null,
 		} ?? switch (path) {
-			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
 			'monetization.walletTitle' => 'Cuenta de etapas',
 			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
 			'monetization.walletUnit' => 'etapas',
@@ -5715,9 +5713,9 @@ extension on TranslationsEs {
 			'programme.duration.daysWithRest' => '{total} d en total (incl. {rest} de descanso)',
 			'programme.duration.splitNote' => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.',
 			'programme.duration.splitExhausted' => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.',
+			'programme.duration.daysTotal' => '{count} d en total',
 			_ => null,
 		} ?? switch (path) {
-			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
 			'programme.stats.days' => 'Días',

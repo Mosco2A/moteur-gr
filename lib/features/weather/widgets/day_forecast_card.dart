@@ -3,9 +3,12 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/temperature_unit.dart' show formatTemperature;
 import '../../../shared/widgets/app_card.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
 import '../models/weather_forecast.dart';
 import '../presentation/weather_date_format.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -21,7 +24,12 @@ import '../../../core/branding/stepways_icons.dart';
 /// carte (icone, temperatures, pastilles) dans un second widget — deux copies a
 /// maintenir, deux rendus qui divergent au premier correctif — on rend son
 /// en-tete surchargeable. Sans [title], le comportement est inchange.
-class DayForecastCard extends StatelessWidget {
+///
+/// P2 (#101255 point 2) — CETTE CARTE LIT L'UNITE DE TEMPERATURE. Elle est
+/// devenue un [ConsumerWidget] pour cela : son constructeur ne change pas, donc
+/// aucun de ses appelants ne bouge, et chacun de ses rendus suit le reglage du
+/// randonneur sans qu'un parent ait a le lui passer de main en main.
+class DayForecastCard extends ConsumerWidget {
   const DayForecastCard({
     super.key,
     required this.day,
@@ -50,11 +58,13 @@ class DayForecastCard extends StatelessWidget {
   final Widget? footnote;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     // LOT-B (RF-15) : locale courante au lieu de 'fr_FR' figé (cloisonnement).
     final languageCode = Localizations.localeOf(context).languageCode;
     final isAlert = day.isAlertCondition;
+    // Le reglage Celsius / Fahrenheit, lu par la facade de `settings`.
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
 
     // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). Liseré d'alerte
     // semantique (rouge 1.5px) conserve via borderColor/borderWidth ; padding
@@ -119,13 +129,15 @@ class DayForecastCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${day.temperatureMax.round()}°',
+                    formatTemperature(day.temperatureMax, unit),
                     style: theme.textTheme.titleLarge?.copyWith(
+                      // Les paliers de couleur restent en CELSIUS : c'est
+                      // l'unite du modele, et seule l'ECRITURE est convertie.
                       color: _tempColor(day.temperatureMax),
                     ),
                   ),
                   Text(
-                    '${day.temperatureMin.round()}°',
+                    formatTemperature(day.temperatureMin, unit),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(150),
                     ),

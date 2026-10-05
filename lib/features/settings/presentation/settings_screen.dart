@@ -11,6 +11,7 @@ import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/temperature_unit.dart' show TemperatureUnitValues;
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';

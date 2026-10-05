@@ -59,21 +59,21 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte 664 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-127 643 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte 665 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+127 854 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 184 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 30 327 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 237 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 429 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 88 343 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 831 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
 **`lib/domain/` n'a pas de ligne dans l'audit** : `mesurer_arborescence` ne
 détaille que les sous-dossiers de `core/`, `features/`, `shared/` et `i18n/`.
-Les 22 fichiers source de `lib/` hors de `core/`, `features/` et
+Les 23 fichiers source de `lib/` hors de `core/`, `features/` et
 `shared/` sont `lib/domain/`, `lib/i18n/i18n_setup.dart`, `lib/main.dart` et
 les deux fichiers de `lib/docs/`. Ajouter `domain` à la boucle de l'outil est à
 faire par un lot qui a le droit d'écrire dans `tool/`.
@@ -85,7 +85,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | `trek` | 49 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 11 591 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> | 6 803 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 442 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
-| `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 4 977 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
+| `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 061 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
 | `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 931 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
@@ -97,11 +97,16 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 72 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
 | … dont depuis `lib/core/routing/app_router.dart` | 51 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
 | … dont depuis tout autre fichier du socle | 21 <!-- audit:couches.socle_vers_feature[!~^lib/core/routing/app_router\.dart ] --> | **non** (règle 9) |
-| Imports d'une feature vers une autre feature | 136 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
-| … dont par la façade de la voisine | 136 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
+| Imports d'une feature vers une autre feature | 143 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
+| … dont par la façade de la voisine | 143 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
 | … dont vers l'intérieur de la voisine | 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$] --> | **oui** : zéro depuis le lot 645-05c (règle 10) |
 | Fichiers de présentation qui importent un paquet de données | 0 <!-- audit:couches.nombre_presentation_donnees --> | **oui** (ECR-25) |
 | Fichiers de feature hors d'une couche reconnue | 22 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
+
+Les 143 croisements passent TOUS par une façade, et ils sont 7 de plus que le
+05/10 au matin : le lot produit P1 (#101255) a branché `weather` et `hub` sur
+le réglage d'unité de température, par `settings_facade.dart`. Le chiffre qui
+compte — les croisements vers l'INTÉRIEUR d'une voisine — reste à zéro.
 
 Parmi les croisements vers l'intérieur d'une voisine,
 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$][~ -> .*/(presentation|data)/] --> visent une `presentation/` ou un `data/` voisin : le
@@ -114,7 +119,7 @@ encore `core`, `shared` et `domain` dans le même sac « socle ». La mesure est
 celle de la garde `test/structurel/couches_respectees_645_test.dart`, dont le
 plafond `plafondSocleVersMetier` est à zéro et passe.
 
-Le verdict de l'audit compte **208** dépendances interdites (ECR-23), soit la
+Le verdict de l'audit compte **215** dépendances interdites (ECR-23), soit la
 somme des deux totaux ci-dessus : il compte encore le routeur et les façades,
 que les décisions ARB-645-05-a et ARB-645-05-b autorisent. Les gardes de
 `test/structurel/couches_respectees_645_test.dart` ne comptent que les écarts
@@ -139,7 +144,7 @@ miette d'observabilité, **0** n'en porte pas : 63 sur 63, posées par le lot
 
 ## Tests
 
-L'audit compte **494** fichiers de test et **3848** cas déclarés par
+L'audit compte **496** fichiers de test et **3865** cas déclarés par
 `test(` ou `testWidgets(` (comptage statique ; l'exécution en déclare davantage,
 des cas étant engendrés en boucle). **418** fichiers de `lib/` n'ont pas de
 test miroir du même nom (ECR-16, avertissement), soit **37.0** % de `lib/`
@@ -151,7 +156,7 @@ Les huit règles bloquantes du verdict de l'audit, chiffre à l'appui :
 
 | Règle | Nombre | Constat |
 |---|---|---|
-| ECR-23 | 208 | dépendance interdite entre couches ou features (dont routeur et façades, autorisés — voir plus haut) |
+| ECR-23 | 215 | dépendance interdite entre couches ou features (dont routeur et façades, autorisés — voir plus haut) |
 | ECR-28 | 195 | fonction au-delà de 60 lignes |
 | ECR-15 | 46 | fichier source au-delà de 500 lignes |
 | ECR-04 | 45 | code commenté livré ou TODO sans numéro de tâche |

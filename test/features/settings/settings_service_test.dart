@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:moteur_gr/domain/temperature_unit.dart';
 import 'package:moteur_gr/features/settings/data/settings_service.dart';
-import 'package:moteur_gr/features/settings/providers/settings_provider.dart';
 
 /// Tests du SettingsService — persistance SharedPreferences.
 void main() {

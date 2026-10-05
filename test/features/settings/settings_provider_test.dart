@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
+import 'package:moteur_gr/domain/temperature_unit.dart';
 import 'package:moteur_gr/features/settings/providers/settings_provider.dart';
 import 'package:moteur_gr/features/settings/providers/sync_settings_provider.dart';
 import 'package:moteur_gr/features/share/providers/visibility_settings_provider.dart';

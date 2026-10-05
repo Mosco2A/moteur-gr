@@ -3,11 +3,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../domain/tip_card.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
 import '../../tips/tips_facade.dart' show TipDetailSheet;
 import '../models/weather_alert.dart';
 import '../presentation/weather_alert_l10n.dart';
@@ -18,7 +20,10 @@ import '../../../core/branding/stepways_icons.dart';
 /// Affiche les alertes actives avec un code couleur selon la severite
 /// (warning = orange, danger = rouge). Libelles i18n (LOT-B, D-5). Pour les
 /// alertes incendie (type == fire), affiche un CTA vers la fiche conseil.
-class WeatherAlertBanner extends StatelessWidget {
+/// P2 (#101255 point 2) : le bandeau lit l'unite de temperature, parce que
+/// l'alerte incendie annonce une temperature — il est devenu un
+/// [ConsumerWidget] pour cela, a constructeur inchange.
+class WeatherAlertBanner extends ConsumerWidget {
   const WeatherAlertBanner({super.key, required this.alerts, this.fireTipCard});
 
   final List<WeatherAlert> alerts;
@@ -28,9 +33,10 @@ class WeatherAlertBanner extends StatelessWidget {
   final TipCard? fireTipCard;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
     final hasDanger = alerts.any((a) => a.severity == 'danger');
     final hasFireAlert = alerts.any((a) => a.type == AlertType.fire);
     final accent = hasDanger ? AppTheme.emergencyRed : AppTheme.orangeDifficile;
@@ -78,7 +84,8 @@ class WeatherAlertBanner extends StatelessWidget {
                   const SizedBox(width: AppTheme.spacingXs),
                   Expanded(
                     child: Text(
-                      '${alert.localizedTitle(t)} — ${alert.localizedDescription(t)}',
+                      '${alert.localizedTitle(t)} — '
+                      '${alert.localizedDescription(t, unit: unit)}',
                       style: theme.textTheme.bodySmall,
                     ),
                   ),

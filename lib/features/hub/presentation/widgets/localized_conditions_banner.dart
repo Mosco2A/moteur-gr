@@ -8,9 +8,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
+import '../../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperatureRange;
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../settings/settings_facade.dart' show settingsProvider;
 import '../../../weather/weather_facade.dart'
     show
         DayForecast,
@@ -124,7 +127,14 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             children: [
               _leadingWeather(context, today, weather.isLoading, scheme),
               const SizedBox(width: AppTheme.spacingBase),
-              Expanded(child: _weatherText(context, today, weather.isLoading)),
+              Expanded(
+                child: _weatherText(
+                  context,
+                  today,
+                  weather.isLoading,
+                  ref.watch(settingsProvider.select((s) => s.temperatureUnit)),
+                ),
+              ),
               if (fireLevel >= 1) ...[
                 const SizedBox(width: AppTheme.spacingSm),
                 _FireChip(level: fireLevel),
@@ -179,13 +189,21 @@ class LocalizedConditionsBanner extends ConsumerWidget {
   }
 
   /// Texte météo localisée : T° min/max + condition, ou repli lisible.
-  Widget _weatherText(BuildContext context, DayForecast? today, bool loading) {
+  Widget _weatherText(
+    BuildContext context,
+    DayForecast? today,
+    bool loading,
+    TemperatureUnit unit,
+  ) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     if (today != null) {
-      final temp = t.hub.weather.tempRange(
-        min: today.temperatureMin.round(),
-        max: today.temperatureMax.round(),
+      // P2 (#101255 point 2) : meme format que la tuile du cockpit, meme ordre
+      // min / max, et le symbole suit desormais le reglage du randonneur.
+      final temp = formatTemperatureRange(
+        today.temperatureMin,
+        today.temperatureMax,
+        unit,
       );
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -98,8 +98,7 @@
     "weather": {
       "title": "Today's weather",
       "unavailable": "Weather unavailable right now.",
-      "alertStorm": "Storm alert",
-      "tempRange": "$min° / $max°"
+      "alertStorm": "Storm alert"
     },
     "startCta": "Start the trek",
     "startGateHint": "Complete Itinerary, Date, Programme and Medical card (advice read) first to start.",
@@ -725,7 +724,7 @@
       },
       "fire": {
         "title": "Fire risk",
-        "desc": "$value°C expected. High fire risk."
+        "desc": "$temperature expected. High fire risk."
       }
     },
     "program": {
