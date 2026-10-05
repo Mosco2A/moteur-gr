@@ -74,12 +74,34 @@
 #     redirection systeme est gardee parce qu'elle est plus courte et rend le
 #     code de retour, pas parce qu'elle corrige le retard des captures.
 #
+# CE QUI A ETE AJOUTE A LA TACHE 685, ET POURQUOI (kaizen #101252).
+# Deux defauts de LA RECETTE ont encore fait perdre des runs les 04 et 05/10 :
+#   * LA RECETTE ATTENDAIT LE DISQUE DE L'HOTE, PAS LA CHARGE DE L'APPAREIL.
+#     Sur un emulateur encore occupe, un run S1 a rendu TROIS captures d'ecrans
+#     DIFFERENTS au contenu IDENTIQUE (12c_faisabilite_verdict_reel =
+#     13_retour_cockpit = 14_entrainement) : l'appareil servait une image
+#     perimee, et le jeu de captures accusait le produit.
+#     CE QU'ON FAIT : avant chaque run, on lit `/proc/loadavg` de l'emulateur
+#     et on attend que la moyenne 1 min passe sous `-ChargeMax` (3 par defaut),
+#     dans un budget de `-ChargeTimeoutS` (10 min). A l'abandon, la ligne le dit
+#     FORT et le run part quand meme : la charge mesuree est ecrite dans la
+#     ligne FIN, et le verdict de fin de run se lit avec elle.
+#   * LA PARADE PRC-003 VIVAIT DANS UN PILOTE JETABLE. Le watchdog de la
+#     machine (PRC-003) abat un processus `python|node` au hasard quand le
+#     volume grossit de plus de 5 Go/h ; le premier build Gradle d'un arbre
+#     neuf en fait 17. Il abat donc le demon de captures et jamais Gradle : un
+#     run S1 perdu le 04/10, 0 capture pour 52 marqueurs (memoire #101219).
+#     CE QU'ON FAIT : l'APK de debug est CONSTRUIT AVANT d'allumer le moindre
+#     demon, et seulement s'il manque (les runs suivants ne paient rien).
+#     L'ordre pre-build -> gate de charge -> demons est la parade elle-meme.
+#
 # -Legacy REPRODUIT L'ANCIENNE RECETTE (pipeline + demon sequentiel) pour pouvoir
 # remesurer le defaut a volonte. A n'utiliser que pour ca.
 #
 # Usage :
 #   powershell -File tool/run_persona.ps1 -Scenario integration_test/persona_s1_lea_test.dart `
-#              -Tag S1 -Perm avant-plan [-Duree 1800] [-Serial emulator-5554]
+#              -Tag S1 -Perm avant-plan [-Duree 1800] [-Serial emulator-5554] `
+#              [-ChargeMax 3] [-ChargeTimeoutS 600] [-SansGateDeCharge] [-SansPreBuild]
 param(
   [Parameter(Mandatory = $true)][string]$Scenario,
   [Parameter(Mandatory = $true)][string]$Tag,
@@ -117,7 +139,22 @@ param(
   [int]$PoigneeTimeoutS = 30,
   # Tue le demon de captures juste apres son lancement : reproduit le mode
   # d'echec du 04/10 pour prouver que la poignee de main l'attrape.
-  [switch]$DemonMortPourTest
+  [switch]$DemonMortPourTest,
+  # 9. GATE DE CHARGE DE L'EMULATEUR (tache 685). Moyenne 1 min de
+  # /proc/loadavg a ne pas depasser avant de lancer le run, et budget d'attente.
+  [double]$ChargeMax = 3.0,
+  [int]$ChargeTimeoutS = 600,
+  # N'attend pas la machine (enquete seulement : un run joue sur un emulateur
+  # charge rend des captures qui ne prouvent rien).
+  [switch]$SansGateDeCharge,
+  # 10. PARADE PRC-003 (tache 685). Ne pre-construit pas l'APK (a n'utiliser
+  # que si le build est deja chaud et qu'on veut gagner la verification).
+  [switch]$SansPreBuild,
+  # 11. BLUETOOTH DE L'IMAGE D'EMULATEUR (tache 685). Coupe par defaut : la
+  # pile Bluetooth de l'image android-34 google_apis part en boucle de
+  # plantage autour des bascules de mode avion. A ne garder allume que pour
+  # une enquete sur cette pile.
+  [switch]$SansCoupureBluetooth
 )
 
 $ErrorActionPreference = 'Continue'
@@ -186,6 +223,153 @@ else {
   }
 }
 
+# 11. LE BLUETOOTH DE L'IMAGE EST COUPE AVANT LE RUN (tache 685, kaizen
+# #101252).
+#
+# CE QUI A ETE MESURE, LE 05/10, DANS LE LOGCAT DU RUN S4 (parcours hors-ligne
+# d'Ines). La bascule en mode avion du scenario declenche une BOUCLE DE
+# PLANTAGE de la pile Bluetooth de l'IMAGE D'EMULATEUR - pas de
+# l'application :
+#   07:48:32  bt_stack_manager_thread demarre
+#   07:48:36  F/libc : Fatal signal 6 (SIGABRT) in tid bt_stack_manage,
+#             pid droid.bluetooth (com.google.android.bluetooth)
+#   07:48:59  E/ActivityManager : ANR in com.google.android.bluetooth
+#   07:50:10  ANR in com.google.android.bluetooth (le second)
+# 34 lignes bt_stack_manage et 8 reinitialisations de pile (event_init_stack)
+# dans le seul run S4. L'ANR du service systeme etouffe l'application : le run
+# S4 du 05/10 a rendu 0 marqueur et 0 capture.
+#
+# L'IMAGE EN CAUSE, NOMMEE : google/sdk_gphone64_x86_64/emu64xa:14/
+# UE1A.230829.050/12077443:userdebug, c'est-a-dire
+# system-images/android-34/google_apis/x86_64 - celle que portent TOUS les AVD
+# de la machine (GR20_B12, GR20_Demo, GR20_Pixel6, GR20_V3_Recette, StepWays,
+# DiagAlt_Pixel7). Aucun n'a `hw.bluetooth=no` dans son config.ini : la pile
+# tourne donc par defaut.
+#
+# CE QU'ON FAIT, ET POURQUOI C'EST SANS RISQUE POUR LA MESURE. On eteint la
+# pile avant le run (`svc bluetooth disable` + `settings put global
+# bluetooth_on 0`), et on VERIFIE que le reglage est bien a 0. AUCUN scenario
+# persona n'exerce le Bluetooth : la seule fonction qui s'en sert est la
+# ceinture de frequence cardiaque (`HeartRateBleService`, phase 6), et elle
+# n'est traversee par aucun des huit parcours ni par aucune route. Couper la
+# pile ne peut donc rendre vert aucun chemin du produit - c'est du bruit
+# d'image en moins, pas une garde desarmee. La garde de test le verifie.
+#
+# LA VRAIE CORRECTION EST DANS L'IMAGE, pas ici : voir la recette
+# (integration_test/campagne_v2/CAMPAGNE_V2.md, section 12) pour l'image
+# recommandee et le reglage `hw.bluetooth=no`.
+# AUCUNE DE CES TROIS FONCTIONS NE REND DE VALEUR, ET C'EST VOLONTAIRE. Dans
+# PowerShell, tout `Write-Output` d'une fonction PART DANS SA VALEUR DE RETOUR :
+# une fonction qui ecrit six lignes et finit par `return $true` rend un TABLEAU
+# de sept elements, et l'appelant qui ferait `| Out-Null` pour jeter le booleen
+# jetterait les six lignes avec. Les fonctions de preparation ECRIVENT donc, et
+# celle qui a un resultat a transmettre le depose dans des variables de script.
+function Disable-BluetoothEmulateur([string]$serial, [string]$tag) {
+  & adb -s $serial shell svc bluetooth disable 2>&1 | Out-Null
+  & adb -s $serial shell settings put global bluetooth_on 0 2>&1 | Out-Null
+  $etat = (@(& adb -s $serial shell settings get global bluetooth_on) -join '').Trim()
+  if ($etat -eq '0') {
+    Write-Output "[$tag] BLUETOOTH : pile ETEINTE avant le run (bluetooth_on=0) - la boucle SIGABRT bt_stack_manage de l image ne peut plus etouffer l application sur les bascules de mode avion"
+  }
+  else {
+    Write-Output "[$tag] BLUETOOTH : extinction SANS EFFET (bluetooth_on='$etat') - si ce run bascule en mode avion, attendez-vous a des ANR de com.google.android.bluetooth et lisez le logcat avant d accuser le produit"
+  }
+}
+
+# 10. LA PARADE PRC-003 EST DANS LA RECETTE, PLUS DANS LA MEMOIRE DE QUI LANCE
+# (tache 685, incident remonte par Artemis au 645-06b, memoire #101219).
+#
+# CE QUI S'EST PASSE. skynet_watchdog.py (regle PRC-003, _find_disk_hog) a TUE
+# le demon de captures a 20:18:55 le 04/10 : run S1 perdu, 0 capture pour 52
+# marqueurs, dix minutes jetees. CAUSE MESUREE : le PREMIER build Gradle d'un
+# arbre neuf fait croitre l'occupation du volume de 17 Go/h, tres au-dessus du
+# seuil critique de 5 Go/h - et le tueur ne regarde QUE python|node, donc il
+# abat le demon de captures (python) et jamais Gradle (java).
+#
+# CE QU'ON FAIT, ET POURQUOI C'EST ICI ET PAS AILLEURS. On fait la grosse
+# ecriture AVANT d'allumer le moindre demon : plus de processus python a abattre
+# pendant la rafale d'E/S. Artemis l'a applique a la main (pilote jetable
+# driver_679.ps1) ; une parade qui vit dans un script jetable est une parade
+# oubliee au prochain run, donc elle est gravee ici.
+#
+# LE PRE-BUILD NE COUTE QUE LA PREMIERE FOIS : il est saute si l'APK de debug
+# est deja la (arbre deja chauffe), ce qui est le cas de tous les runs suivants.
+function Invoke-PreBuild([string]$repoPath, [string]$tag) {
+  $apk = Join-Path $repoPath 'build/app/outputs/flutter-apk/app-debug.apk'
+  if (Test-Path $apk) {
+    Write-Output "[$tag] PRC-003 : APK de debug deja construit, pre-build saute (arbre chaud)"
+    return
+  }
+  Write-Output "[$tag] PRC-003 : premier build de cet arbre - APK CONSTRUIT AVANT TOUT DEMON (le watchdog abat un python, jamais Gradle)"
+  $t0 = Get-Date
+  & flutter build apk --debug | Out-Null
+  $code = $LASTEXITCODE
+  $sec = [int]((Get-Date) - $t0).TotalSeconds
+  if ($code -ne 0) {
+    Write-Output "[$tag] PRC-003 : pre-build en ECHEC (code $code, ${sec}s) - on continue, flutter test reconstruira, mais la rafale d E/S tombera pendant les demons"
+    return
+  }
+  Write-Output "[$tag] PRC-003 : pre-build termine en ${sec}s, demons encore eteints"
+}
+
+# 9. LE RUN ATTEND QUE LA MACHINE SOIT CALME (tache 685, kaizen #101252).
+#
+# CE QUE LA MESURE A MONTRE, ET CE QU'ELLE A COUTE. La recette attendait la
+# VITESSE DU DISQUE de l'hote (parade PRC-003) mais jamais la CHARGE DE
+# L'APPAREIL. Le 05/10, sur un emulateur encore occupe, un run S1 a rendu trois
+# captures d'ecrans DIFFERENTS au contenu IDENTIQUE (12c_faisabilite_verdict_reel
+# = 13_retour_cockpit = 14_entrainement, dix secondes et un appui entre les
+# deux) : l'appareil servait une image perimee. Lu sans cette cause, ce jeu de
+# captures accuse le produit. Artemis a fait lire /proc/loadavg a la main et a
+# refuse de demarrer au-dessus de 3 ; c'est grave ici.
+#
+# POURQUOI 3. /proc/loadavg rend le nombre moyen de taches pretes a tourner. Le
+# noyau de l'emulateur voit 4 processeurs : au-dela de 3, la file d'attente est
+# du meme ordre que le nombre de coeurs, et un `screencap` (327 ms en median,
+# 764 ms en pointe) part en retard. En dessous, les mesures du 05/10 tiennent
+# (S1 61/2 et S3 17/1 des deux cotes DES QUE la machine est calme).
+#
+# A L'ABANDON, ON LE DIT FORT ET ON JOUE QUAND MEME. Refuser le run bloquerait
+# la campagne sur une machine durablement chargee ; le taire rendrait un rapport
+# illisible. La ligne d'abandon est donc explicite, et la charge mesuree est
+# ecrite dans le journal du run : le verdict de fin de run se lit avec elle.
+function Wait-ChargeCalme([string]$serial, [double]$seuil, [int]$budgetS, [string]$tag) {
+  $script:ChargeMesuree = -1.0
+  $script:ChargeCalme = $false
+  $script:ChargeAbandon = $false
+  $script:ChargeLisible = $false
+  $t0 = Get-Date
+  $derniere = -1.0
+  $tours = 0
+  while (((Get-Date) - $t0).TotalSeconds -lt $budgetS) {
+    $brut = (@(& adb -s $serial shell cat /proc/loadavg) -join ' ').Trim()
+    $bouts = $brut -split '\s+'
+    if ($bouts.Count -lt 3) {
+      Write-Output "[$tag] CHARGE : /proc/loadavg illisible sur $serial (lu : '$brut') - gate de charge SAUTEE, le run part sans cette garantie"
+      return
+    }
+    $derniere = [double]::Parse($bouts[0], [Globalization.CultureInfo]::InvariantCulture)
+    if ($derniere -lt $seuil) {
+      $sec = [int]((Get-Date) - $t0).TotalSeconds
+      Write-Output "[$tag] CHARGE : emulateur CALME (1 min = $derniere < $seuil) apres ${sec}s d attente - loadavg complet : $brut"
+      $script:ChargeMesuree = $derniere
+      $script:ChargeCalme = $true
+      $script:ChargeLisible = $true
+      return
+    }
+    if ($tours % 6 -eq 0) {
+      $sec = [int]((Get-Date) - $t0).TotalSeconds
+      Write-Output "[$tag] CHARGE : emulateur OCCUPE (1 min = $derniere, seuil $seuil) - attente ${sec}s / ${budgetS}s"
+    }
+    $tours++
+    Start-Sleep -Seconds 5
+  }
+  Write-Output "[$tag] CHARGE : ABANDON DE L ATTENTE - la moyenne 1 min est restee a $derniere (seuil $seuil) pendant $budgetS s. LE RUN PART QUAND MEME, et ce qu il rendra doit se lire avec ce chiffre : sur emulateur charge, un screencap part en retard et deux ecrans differents peuvent rendre la meme image."
+  $script:ChargeMesuree = $derniere
+  $script:ChargeAbandon = $true
+  $script:ChargeLisible = $true
+}
+
 # ECRITURE PARTAGEE DANS LE JOURNAL (tache 676). Le demon de captures tient le
 # journal OUVERT EN LECTURE pendant tout le run : `Add-Content` et
 # `[IO.File]::WriteAllText` echouent alors avec « fichier en cours d'utilisation
@@ -219,6 +403,42 @@ function Start-Demon([string]$name, [string[]]$argv) {
   $err = Join-Path $logDir "$Tag.$name.err.log"
   return Start-Process -FilePath 'python' -ArgumentList $argv -WorkingDirectory $repo `
     -RedirectStandardOutput $out -RedirectStandardError $err -PassThru -WindowStyle Hidden
+}
+
+# ---------------------------------------------------------------------------
+# L'ORDRE DES QUATRE ETAPES SUIVANTES N'EST PAS UN GOUT, C'EST LA PARADE.
+#   0. BLUETOOTH  : la pile de l image est eteinte avant que l application
+#                   demarre, donc avant toute bascule de mode avion ;
+#   1. PRE-BUILD  : la rafale d E/S de Gradle passe AVANT qu un demon existe
+#                   (PRC-003 abat un python au hasard, jamais Gradle) ;
+#   2. GATE DE CHARGE : on attend que l emulateur ait digere, sinon un
+#                   screencap part en retard et rend l image d un autre ecran ;
+#   3. DEMONS     : allumes en dernier, sur une machine calme.
+# Inverser 1 et 3 coute un run entier (mesure du 04/10, memoire #101219).
+# ---------------------------------------------------------------------------
+if ($SansCoupureBluetooth) {
+  Write-Output "[$Tag] BLUETOOTH : coupure DESACTIVEE (-SansCoupureBluetooth) - sur un parcours qui bascule en mode avion, l image part en boucle de plantage et le run peut rendre 0 capture"
+}
+else {
+  Disable-BluetoothEmulateur $Serial $Tag
+}
+
+if ($SansPreBuild) {
+  Write-Output "[$Tag] PRC-003 : pre-build DESACTIVE (-SansPreBuild) - si cet arbre est neuf, le watchdog peut abattre le demon de captures pendant le build"
+}
+else {
+  Invoke-PreBuild $repo $Tag
+}
+
+$ChargeMesuree = -1.0
+$ChargeCalme = $false
+$ChargeAbandon = $false
+$ChargeLisible = $false
+if ($SansGateDeCharge) {
+  Write-Output "[$Tag] CHARGE : gate DESACTIVEE (-SansGateDeCharge) - les doublons de captures de ce run ne prouveront rien sur le produit"
+}
+else {
+  Wait-ChargeCalme $Serial $ChargeMax $ChargeTimeoutS $Tag
 }
 
 $manifeste = Join-Path $shotDir '_shots.jsonl'
@@ -355,7 +575,9 @@ foreach ($p in $procs) { if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id
 $shots = (Get-ChildItem $shotDir -Filter *.png -ErrorAction SilentlyContinue | Measure-Object).Count
 $ok = (Select-String -Path $log -Pattern 'PERSONA_EXIGENCE\|.*\|OK\|' -AllMatches | Measure-Object).Count
 $ko = (Select-String -Path $log -Pattern 'PERSONA_EXIGENCE\|.*\|ECHEC\|' -AllMatches | Measure-Object).Count
-Write-Output "[$Tag] FIN exit=$code duree=${duree}s exigences_ok=$ok exigences_echec=$ko captures=$shots"
+$chargeDite = if ($ChargeLisible) { "$ChargeMesuree" } else { 'non_mesuree' }
+$chargeVerdict = if ($ChargeAbandon) { 'ABANDON' } elseif ($ChargeCalme) { 'calme' } else { 'non_attendue' }
+Write-Output "[$Tag] FIN exit=$code duree=${duree}s exigences_ok=$ok exigences_echec=$ko captures=$shots charge_1min=$chargeDite gate_charge=$chargeVerdict"
 
 # 5. LE CONTROLE DE FIN DE RUN. Un jeu de captures qui ne tient pas debout fait
 # ROUGIR LE RUN : c'est tout l'objet de la tache 665.
