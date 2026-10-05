@@ -2954,4 +2954,114 @@ Grille de `#85087`, appliquée à ce plan.
 
 ---
 
+---
+
+## QA outillage (05/10)
+
+> **QA DU LOT OUTILLAGE — Artemis, tâche 696, sans émulateur.** Jonction
+> `e36d0cd5` (sans avance rapide, **zéro conflit**) de
+> `claude/chore/outillage-cache-pub-tests-tolerances` (`2d82af54`, 3 commits) sur
+> l'intégration `3fa557c7`. Lot de code et de tests : **aucun produit livré**.
+> **VERDICT : OK sur les cinq points, avec deux AFFAIBLI mineurs, tous deux de
+> documentation ou de périmètre — rien qui touche le produit.**
+>
+> **LA GATE, AU CHIFFRE PRÈS, REMESURÉE SUR LA JONCTION.** `flutter test` :
+> **4 183 verts, 2 ignorés, 0 échec**, code 0 — la référence annoncée, à
+> l'unité. `flutter analyze --no-fatal-infos lib test integration_test` :
+> **7 552 remarques, toutes de sévérité `info`, 0 erreur, 0 avertissement**.
+> `gate_format` : OK. `build_runner` : **2 595 sorties**, code 0, puis
+> `git status` **vide**. Gardes structurelles : **211 vertes**. Audit rapide
+> comparé avant/après sur **336 clés** : **aucun compteur d'infraction ne
+> bouge** ; seules bougent des mesures de volume, et chacune de la valeur
+> exacte attendue (+25 lignes dans `lib/core/services`, +1 fichier et +837
+> lignes de test, +14 cas de test = 11 gardes du cache + 1 horloge réelle + 2
+> gardes des tolérances). **Un chiffre du rapport est à corriger** :
+> `gate_format` compte **1 199** fichiers Dart écrits à la main sur la
+> jonction, pas 1 198 — 1 198 est la mesure d'**avant** le lot (vérifiée sur
+> `3fa557c7`), le lot en ajoute exactement un.
+>
+> **A — LE CACHE PUB : LE VERROU TIENT, LA PURGE EST BORNÉE, ET LA LEÇON DE LA
+> V1 EST VERROUILLÉE.** Le verrou est bien posé **dans** le cache qu'il protège
+> (donc partagé par construction entre arbres) et rendu dans un `finally`, donc
+> même en échec. La purge n'atteint que les dossiers de forme
+> `paquet-version` **sans** `pubspec.yaml`, et la règle est vérifiée **deux
+> fois** (au listage, puis juste avant la suppression). Mesuré sur le **vrai**
+> cache de la machine, en lecture seule : **732 paquets, 0 incomplet**, et la
+> **seule** entrée de `hosted/pub.dev` que la règle de forme épargne est
+> `.cache` — exactement le dossier que la V1 avait détruit. **MUTATION 1** :
+> règle de forme retirée aux deux endroits → le banc passe **rouge** sur trois
+> cas, et le premier nomme le témoin perdu (`/hosted/pub.dev/.cache`) ; la même
+> mutation, **simulée** sur le vrai cache, annonce la purge de
+> `pub.dev/.cache` (322 fichiers, 17 082 620 octets). La règle porte donc bien
+> le défaut. **AFFAIBLI (mineur) :** la purge que le pilote lance à son réveil
+> est le `--purger` **nu**, hors verrou, alors que l'outil écrit lui-même qu'une
+> purge hors verrou « efface sous les pieds d'un autre `pub get` le paquet
+> qu'il est en train de remplir ». La fenêtre est étroite et l'état d'avant le
+> lot était l'absence totale de parade, mais `--sous-verrou` existe déjà :
+> l'appeler coûterait une ligne.
+>
+> **AFFAIBLI (mineur, documentation) :** `docs/README.md` et le commentaire de
+> `tool/run_persona.ps1` décrivent tous deux la purge comme effaçant les
+> dossiers « qui n'ont pas de `pubspec.yaml` à leur racine », **sans** la
+> condition de forme — c'est mot pour mot le contrat que l'en-tête de
+> `pub_cache_sain.py` déclare **faux** depuis l'incident de la V1. Le code est
+> juste ; les deux endroits qu'un humain lit d'abord ne le sont pas.
+>
+> **B — LES DEUX TESTS INSTABLES : LA PREUVE EST FAITE, ET ELLE EST PLUS FORTE
+> QUE CELLE DU RAPPORT.** L'horloge est injectée ; la production est
+> **inchangée** — défaut `Timer.periodic`, aucun appelant de `lib/` ne passe
+> `poserLHorloge`, et une garde dédiée garde la **vraie** horloge (vérifiée :
+> cadence rendue inéchéable, elle passe **rouge** avec le bon message, ce n'est
+> donc pas un faux vert). Les comptes sont exacts et le négatif est démontré en
+> rejouant le battement sur une horloge annulée. **MUTATION 2** : ancienne
+> recette remise (vraie horloge de 25 ms + sommeil de 80 ms). Calme : 0 rouge
+> sur 20 ; sous une suite complète en parallèle : 0 rouge sur 20 ; **sous
+> saturation CPU réelle (32 boucles sur 16 cœurs) : 7 rouges sur 32**. Et la
+> **version corrigée, sous la saturation identique : 0 rouge sur 20 pour 616 et
+> 0 sur 20 pour 637.** Le correctif supprime donc la fragilité, en mesure
+> contrôlée avant/après.
+>
+> **TROUVAILLE QUI CORRIGE LE RAPPORT DU LOT.** Le matcher
+> `Expected: <2> / Actual: <3>`, que le mandat attribuait à
+> `mon_compte_menu_trek_637` et que le lot a renvoyé à
+> `fiche_medicale_locale_612` dans un autre arbre, **est reproductible ici** :
+> il sort de l'ancienne recette de **`niveaux_et_cadence_616`, test « ARRETER
+> ARRETE VRAIMENT », ligne 866** — le repère pris pendant qu'une passe est en
+> vol, puis l'incrément légitime qui suit l'arrêt. Reproduit **7 fois sur 32**
+> sous saturation. Le mandat avait donc apparié le **nom** du 637 au
+> **matcher** du 616 ; il n'y a pas d'énigme venue d'un autre arbre, et le
+> correctif du 616 vise exactement l'échec dont le matcher était gardé.
+>
+> **LA FUITE DES BACS TEMPORAIRES EST FERMÉE, MESURÉE.** 20 passages du 637 :
+> **173 dossiers `stepways_parcours_reel_*` avant, 173 après, delta 0**, 0
+> échec. Et 173 est exactement le nombre de bacs que le lot déclarait avoir dû
+> épargner : le compte tombe juste.
+>
+> **C — LES TOLÉRANCES.** Les cinq déclarations sont bien remises, chacune avec
+> sa raison et sa mesure (**0 pixel** de différence pour `19b`/`19b2`,
+> identiques au bit ; **603 pixels** pour `27`/`33`, tous dans la boîte
+> `(123,47)-(967,80)`, la barre d'état). Les deux gardes neuves tiennent la
+> leçon : les cinq doivent rester déclarées **avec** leur raison, et les
+> chiffres doivent rester dans le fichier. `docs/JOURNAL.md` porte **une ligne
+> vraie** — elle dit bien les cinq tolérances retirées **puis remises**.
+>
+> **A — PÉRIMÈTRE : LE MANDAT DE QA ÉTAIT INEXACT, PAS LE LOT.** Le mandat
+> annonçait « rien sous `lib/` » : il y a **un** fichier,
+> `lib/core/services/ordonnanceur_de_synchronisation.dart` (+25 lignes de
+> commentaire, 1 paramètre optionnel, 1 appel). Le rapport du lot le déclarait
+> honnêtement ; c'est la fiche de QA qui disait faux. Le comportement de
+> production, lui, est bien inchangé — et c'est vérifié, pas déduit.
+>
+> **CE QUE JE N'AI PAS PU FAIRE.** (1) Rejouer les tolérances de S3 et S4 :
+> aucun émulateur sur cette tâche, les trois déclarations restent en l'état.
+> (2) Reproduire l'instabilité du 637 : 0 échec sur 20 passages calmes et 0 sur
+> 20 sous saturation — comme le lot, je corrige une fragilité mesurée, pas un
+> symptôme observé. (3) `jusqua()` est présenté comme « pas un budget de
+> temps » ; pour l'unique test qui attend une **vraie** `Timer.periodic`, ses
+> 20 000 tours **valent** un budget, mesuré entre **200 et 400 ms** sur cette
+> machine pour un besoin de 25 ms. La marge est de 8 à 16 fois : ce n'est pas
+> un risque aujourd'hui, c'est une dépendance machine qu'il faut savoir.
+
+---
+
 *Fin du 644-03. Suite : `644-04-audit-global.md`.*
