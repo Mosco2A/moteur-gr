@@ -154,7 +154,12 @@ param(
   # pile Bluetooth de l'image android-34 google_apis part en boucle de
   # plantage autour des bascules de mode avion. A ne garder allume que pour
   # une enquete sur cette pile.
-  [switch]$SansCoupureBluetooth
+  [switch]$SansCoupureBluetooth,
+  # 12. CONTROLE DU CACHE PUB AU REVEIL (tache 695). Actif par defaut : deux
+  # `pub get` concurrents sur le cache PARTAGE de la machine laissent des
+  # dossiers de paquets VIDES que flutter prend pour installes (29 le 05/10,
+  # 219 fausses erreurs d'analyse). A ne couper que pour enqueter sur le cache.
+  [switch]$SansControleCachePub
 )
 
 $ErrorActionPreference = 'Continue'
@@ -184,6 +189,38 @@ if ($anciennes.Count -gt 0) {
 }
 # 1. LE LOG EXISTE AVANT LE DEMON.
 New-Item -ItemType File $log | Out-Null
+
+# 12. CONTROLE AU REVEIL : LE CACHE PUB DE LA MACHINE EST-IL SAIN ? (tache 695,
+# kaizen #101276, mesure #101275.)
+#
+# CE QUI S'EST PASSE, ET LE CHIFFRE EST MESURE. Le 05/10 a 13:24:55, deux
+# `flutter pub get` ont tourne EN PARALLELE dans deux arbres differents. Le
+# cache pub est PARTAGE par toute la machine : 29 dossiers de paquets sont
+# restes VIDES (cloud_firestore, share_plus, firebase_core, connectivity_plus
+# et vingt-cinq autres), tous horodates a la meme seconde. Or `pub get` conclut
+# qu'un paquet est installe EN VOYANT SON DOSSIER : un dossier vide ne se
+# retelecharge JAMAIS. Facture : 219 fausses erreurs de `flutter analyze` sur un
+# depot sain, et deux agents qui cherchent une regression qui n'existe pas.
+#
+# POURQUOI LE CONTROLE EST ICI, AU REVEIL DU PILOTE. Le pre-build (PRC-003,
+# juste en dessous) lance Gradle, donc `pub get`. Un cache abime a ce moment-la
+# fait echouer le build ou, bien pire, le laisse passer avec des paquets
+# manquants. Le reveil du pilote est le dernier endroit ou le reparer coute
+# trois secondes.
+#
+# CE QUE LA PURGE TOUCHE, ET RIEN D'AUTRE : les dossiers de
+# `<cache>/hosted/<hote>/` QUI N'ONT PAS DE `pubspec.yaml` a leur racine. Tout
+# paquet complet en a un. Un paquet complet, un fichier, le cache `git/` ne
+# peuvent pas etre atteints — et chaque suppression est ecrite avec ce qu'elle
+# contenait. La REGLE, elle, est dans `tool/pub_cache_sain.py --pub-get` : un
+# seul `pub get` a la fois par machine (verrou pose dans le cache lui-meme).
+if ($SansControleCachePub) {
+  Write-Output "[$Tag] CACHE PUB : controle DESACTIVE (-SansControleCachePub) - si un pub get concurrent a laisse des dossiers de paquets vides, le build de ce run peut echouer ou pire, passer avec des paquets manquants"
+}
+else {
+  Write-Output "[$Tag] CACHE PUB : controle au reveil (purge des dossiers de paquets sans pubspec.yaml)"
+  foreach ($l in @(& python tool/pub_cache_sain.py --purger 2>&1)) { Write-Output "[$Tag]   $l" }
+}
 
 $pkg = 'com.only1cent.stepways'
 $procs = @()

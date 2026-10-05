@@ -258,6 +258,89 @@ void main() {
     });
   });
 
+  group('TACHE 695 — « DECLAREE MAIS INUTILE » NE SUFFIT PAS A RETIRER', () {
+    /// Les cinq declarations que le controle avait nommees « inutiles ».
+    ///
+    /// CE QUI S'EST PASSE, ET C'EST MESURE. Depuis la tache 685, le controle
+    /// nomme les tolerances DECLAREES MAIS INUTILES sur un run : toutes leurs
+    /// captures sont presentes et aucune paire interne n'est identique. Les runs
+    /// du 05/10 (memoire #101275) en ont designe CINQ. La tache 695 les a
+    /// retirees toutes les cinq, puis a rejoue un run S1 complet sur machine
+    /// CALME (loadavg 1 min = 2.03, retard marqueur->screencap = 0 ms, 65
+    /// captures pour 65 marqueurs, 61 exigences tenues / 2 echouees). LE RUN A
+    /// DIT NON, DEUX FOIS SUR DEUX :
+    ///   * 19b_cta_demarrer / 19b2_apres_achat : ZERO pixel de difference sur
+    ///     1080x2400, images identiques AU BIT. Le run est ROUGE sans la
+    ///     declaration.
+    ///   * 27_apres_terminer / 33_recap_apres_trek : 603 pixels, TOUS dans la
+    ///     boite (123,47)-(967,80) — la BARRE D'ETAT. Le contenu applicatif est
+    ///     identique au pixel : ces deux images ne sont « differentes » que
+    ///     parce que la minute a tourne.
+    ///
+    /// LA LECON, ET C'EST ELLE QUE CETTE GARDE TIENT : le controle compare
+    /// l'image ENTIERE, barre d'etat comprise (kaizen d'Artemis, memoire
+    /// #101298). « Inutile sur ce run » ne prouve donc RIEN — la meme paire, sur
+    /// le meme produit, est declaree utile ou inutile selon l'horloge. Les cinq
+    /// declarations sont remises, et on ne les retire pas tant que le controle
+    /// n'exclut pas la barre d'etat.
+    const designees = <String>[
+      'S1_Lea_19b_cta_demarrer',
+      'S1_Lea_19b2_apres_achat',
+      'S1_Lea_27_apres_terminer',
+      'S1_Lea_33_recap_apres_trek',
+      'S3_Steve_S3E_31_signalement',
+      'S3_Steve_S3E_31b_signalement_eau',
+      'S4_Ines_09_carte_offline',
+      'S4_Ines_S4E_36_trace_offline',
+      'S4_Ines_S4E_45_trail_selection',
+      'S4_Ines_S4E_45b_pyrenees_actif',
+    ];
+
+    test('les cinq designees sont TOUJOURS declarees, et avec leur raison', () {
+      final nommees = {
+        for (final d in _declarations)
+          for (final n in d.noms) n: d,
+      };
+      for (final nom in designees) {
+        final d = nommees[nom];
+        expect(
+          d,
+          isNotNull,
+          reason:
+              'TOLERANCE RETIREE SUR UN SIGNAL FAUX : $nom a ete designe '
+              '« inutile » par un run, et la tache 695 a MESURE que ce signal '
+              'ne vaut rien (0 pixel de difference sur une paire, 603 pixels '
+              'tous dans la barre d etat sur l autre). Ne la retirez pas sans '
+              'une mesure pixel HORS barre d etat sur un run de son scenario.',
+        );
+        expect(
+          d!.raison,
+          isNotEmpty,
+          reason: '$nom est declare ligne ${d.ligne} SANS RAISON',
+        );
+      }
+    });
+
+    test('LA MESURE QUI LE PROUVE EST ECRITE DANS LE FICHIER', () {
+      // Sans ces chiffres, le prochain lot refait le tour entier — ou retire de
+      // nouveau les cinq sur le meme rapport.
+      for (final preuve in const [
+        'ZERO pixel de difference', // 19b / 19b2, identiques au bit
+        '(123,47)-(967,80)', // 27 / 33, la boite de la barre d etat
+        'BARRE D\'ETAT', // la cause nommee
+      ]) {
+        expect(
+          _tolerances,
+          contains(preuve),
+          reason:
+              'MESURE PERDUE : le fichier doit garder « $preuve », qui est la '
+              'preuve que « declaree mais inutile » ne suffit pas a retirer '
+              'une tolerance (tache 695).',
+        );
+      }
+    });
+  });
+
   group('LE CONTROLE REFUSE TOUJOURS CE QU IL DOIT REFUSER', () {
     test('un doublon NON declare fait rougir le run', () {
       final r = _lancerLeControle(null);

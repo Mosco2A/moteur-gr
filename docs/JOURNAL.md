@@ -40,6 +40,7 @@
 | 05/10/2026 | produit P1 | Lecture tolérante des réglages : une clé héritée du build du 26/05 ne remet plus les autres réglages par défaut. | #101255 |
 | 05/10/2026 | produit P2 | La température s'affiche dans l'unité choisie, par une seule fonction de `lib/domain/` ; sept lectures de plus par la façade des réglages. | #101255 |
 | 05/10/2026 | produit P3 | La route `/booking` dormante retirée avec son écran inatteignable et son drapeau sans lecteur ; le domaine `booking` reste entier. | #101255 |
+| 05/10/2026 | outillage 695 | Un seul `pub get` à la fois par machine (verrou dans le cache partagé, purge des paquets sans `pubspec.yaml`) ; les deux tests instables rendus déterministes (horloge injectée côté cadence, attente de l'écran au lieu d'un budget de pompes) ; les 114 549 dossiers temporaires que le socle de test ne rendait pas ; et les cinq tolérances de captures « devenues inutiles » retirées puis REMISES, parce qu'un run S1 mesuré a montré que ce signal est faux tant que le contrôle compare la barre d'état. | #101267, #101276, rapport a completer par Skynet |
 
 ## Ce qui reste ouvert au 04/10/2026
 

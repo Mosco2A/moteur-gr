@@ -85,10 +85,22 @@ void main() {
 
       // La question de sauvegarde est posee au premier rendu : on y repond comme
       // le randonneur, avant de continuer.
-      if (find
-          .byKey(RefusSauvegardeSystemeDialog.validateKey)
-          .evaluate()
-          .isNotEmpty) {
+      //
+      // ON L'ATTEND, ON NE LA REGARDE PLUS UNE SEULE FOIS (tache 695, kaizen
+      // #101267). La porte de consentement s'ouvre APRES un aller-retour
+      // asynchrone (lecture des preferences, etat de la sauvegarde systeme) :
+      // regarder une seule fois juste apres le montage, c'est parier que cet
+      // aller-retour est fini. Sur une machine chargee il ne l'est pas, le
+      // dialogue s'ouvre JUSTE APRES — et il reste modal par-dessus tout le
+      // reste du geste, sans que rien ne dise pourquoi l'ecran suivant n'arrive
+      // pas. Attendre coute des tours de pompe sur machine lente ; ne pas
+      // attendre coute un rouge inexplicable.
+      final porteOuverte = await attendreLEcran(
+        tester,
+        find.byKey(RefusSauvegardeSystemeDialog.validateKey),
+        coups: 60,
+      );
+      if (porteOuverte) {
         await tester.tap(find.byKey(RefusSauvegardeSystemeDialog.validateKey));
         await stabiliser(tester);
       }
@@ -128,11 +140,18 @@ void main() {
         reason: 'le menu du trek doit porter « Mon compte »',
       );
       await tester.tap(myAccount.first);
-      // ON POMPE LONGTEMPS : les armements de fond d'un trek reel (identite,
-      // montee en base, cadence) se resolvent APRES la premiere frame du profil.
+      // ON ATTEND L'ECRAN, ON NE COMPTE PLUS LES COUPS DE POMPE (tache 695).
+      // Les armements de fond d'un trek reel (identite, montee en base, cadence)
+      // se resolvent APRES la premiere frame du profil, et a la vitesse REELLE
+      // de la machine : un budget de 40 coups suffisait sur une machine calme et
+      // pariait sur elle le reste du temps. Le plafond reste borne — l'atteindre
+      // veut dire que l'ecran de profil n'arrive pas, et c'est l'ECRAN NOIR que
+      // ce fichier existe pour attraper.
+      final dessine = await attendreLEcran(tester, find.byType(ProfileScreen));
+      // Les armements qui se resolvent apres la premiere frame du profil ont
+      // encore le droit de lever : on continue de pomper pour les voir.
       await stabiliser(tester, coups: 40);
 
-      final dessine = find.byType(ProfileScreen).evaluate().isNotEmpty;
       final erreurs = erreursQuiComptent(tester);
       await demonterAppli(tester);
 

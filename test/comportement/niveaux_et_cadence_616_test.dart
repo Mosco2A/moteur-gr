@@ -606,19 +606,31 @@ void main() {
   // 3. LA CADENCE — ELLE N EXISTAIT PAS
   // =========================================================================
   group('616 — LA CADENCE : au retour du reseau, puis toutes les quatre heures', () {
-    /// Un ordonnanceur cable sur la vraie chaine, avec une cadence courte.
+    /// Un ordonnanceur cable sur la vraie chaine, avec une horloge PILOTEE.
     ///
     /// LA CADENCE REELLE EST DE QUATRE HEURES et elle vit dans
-    /// `OrdonnanceurDeSynchronisation.cadenceParDefaut` ; ici on l abrege pour
-    /// que le test ne dure pas quatre heures. Ce qui est eprouve, c est la
-    /// MECANIQUE : le declenchement periodique, le declenchement sur retour de
-    /// reseau, le perimetre et le niveau.
+    /// `OrdonnanceurDeSynchronisation.cadenceParDefaut`. Ce qui est eprouve ici,
+    /// c est la MECANIQUE : le declenchement periodique, le declenchement sur
+    /// retour de reseau, le perimetre et le niveau.
+    ///
+    /// L HORLOGE EST INJECTEE, ET VOICI CE QUE CA REPARE (tache 695, kaizen
+    /// #101267). Ces tests laissaient battre une VRAIE horloge de 25 ms, puis
+    /// dormaient un budget en temps reel avant d affirmer qu une passe avait eu
+    /// lieu. MESURE DU 05/10, pendant le build 10 :
+    /// `expect(avant, greaterThanOrEqualTo(1))` a rendu `Actual: <0>` — au bout
+    /// de 80 ms de sommeil, le minuteur de 25 ms n avait pas encore FINI une
+    /// seule passe, parce que la machine etait occupee. Le test mesurait la
+    /// vitesse de la machine de fabrication, pas le reveil de la
+    /// synchronisation : rouge environ une fois sur trois. Avec une horloge que
+    /// le test fait battre, chaque compte est EXACT et aucun verdict ne depend
+    /// plus de la charge.
     ({
       OrdonnanceurDeSynchronisation ordonnanceur,
       _ReseauPilotable reseau,
       _CheckerTropLarge checker,
+      _HorlogePilotable horloge,
     })
-    monter({Duration cadence = const Duration(milliseconds: 25)}) {
+    monter({Duration cadence = const Duration(hours: 4)}) {
       final reseau = _ReseauPilotable(ConnectivityStatusValues.online);
       final checker = _CheckerTropLarge(
         dao: manifestes,
@@ -627,6 +639,41 @@ void main() {
       );
       final downloader = UpdateDownloader(
         updateChecker: checker,
+        deltaUpdateService: service(),
+        manifestService: listeService(client: stockage()),
+        dao: manifestes,
+        connectivityMonitor: reseau,
+        dataBaseUrl: 'https://double',
+      );
+      final horloge = _HorlogePilotable();
+      return (
+        ordonnanceur: OrdonnanceurDeSynchronisation(
+          downloader: downloader,
+          dao: manifestes,
+          connectivityMonitor: reseau,
+          urlManifeste: 'https://double/${Publicateur.nomDeLaListe}',
+          cadence: cadence,
+          poserLHorloge: horloge.poser,
+        ),
+        reseau: reseau,
+        checker: checker,
+        horloge: horloge,
+      );
+    }
+
+    /// Le meme montage, mais avec la VRAIE horloge de production.
+    ///
+    /// Sert a une seule chose, et elle est indispensable : prouver que le point
+    /// d injection n a pas debranche la cadence reelle.
+    ({OrdonnanceurDeSynchronisation ordonnanceur, _ReseauPilotable reseau})
+    monterSurLHorlogeReelle({required Duration cadence}) {
+      final reseau = _ReseauPilotable(ConnectivityStatusValues.online);
+      final downloader = UpdateDownloader(
+        updateChecker: _CheckerTropLarge(
+          dao: manifestes,
+          connectivityMonitor: reseau,
+          firebaseService: FirebaseService.testOnly(isAvailable: true),
+        ),
         deltaUpdateService: service(),
         manifestService: listeService(client: stockage()),
         dao: manifestes,
@@ -642,16 +689,15 @@ void main() {
           cadence: cadence,
         ),
         reseau: reseau,
-        checker: checker,
       );
     }
 
     test(
-      'LA CADENCE BAT : sans rien faire d autre, une passe part toute seule — '
-      'et AVANT CE LOT rien ne reveillait la synchronisation',
+      'LA CADENCE BAT : chaque battement de l horloge part en passe — et AVANT '
+      'CE LOT rien ne reveillait la synchronisation',
       () async {
         await publier();
-        final m = monter();
+        final m = monter(cadence: const Duration(hours: 4));
         addTearDown(m.ordonnanceur.stop);
 
         expect(
@@ -661,20 +707,80 @@ void main() {
               'l ordonnanceur ne synchronise PAS au demarrage : le premier '
               'ecran ne doit pas attendre le reseau',
         );
+        expect(
+          m.horloge.posee,
+          isFalse,
+          reason: 'aucune horloge ne doit etre armee avant start()',
+        );
 
         m.ordonnanceur.start();
         expect(m.ordonnanceur.demarre, isTrue);
-        expect(m.ordonnanceur.passesExecutees, 0);
-
-        await Future<void>.delayed(const Duration(milliseconds: 120));
-
+        expect(
+          m.horloge.cadence,
+          const Duration(hours: 4),
+          reason:
+              'L HORLOGE EST ARMEE SUR LA CADENCE DEMANDEE, et c est un compte '
+              'exact que l ancienne version ne pouvait pas faire : elle '
+              'dormait et deduisait',
+        );
         expect(
           m.ordonnanceur.passesExecutees,
-          greaterThanOrEqualTo(1),
+          0,
+          reason: 'armer l horloge ne declenche aucune passe',
+        );
+
+        // ON ATTEND LA PASSE **FINIE**, PAS SEULEMENT COMPTEE, et ce detail est
+        // le defaut de cette famille de tests. `_passesExecutees++` se fait
+        // AVANT le transport : le compteur passe a 1 alors que la passe tourne
+        // encore. Enchainer un second battement a cet instant-la, c est tomber
+        // sur le verrou « une seule passe a la fois » — le battement est alors
+        // legitimement IGNORE, et le test attendrait un 2 qui ne viendra jamais.
+        await m.horloge.battre();
+        await jusqua(
+          () => m.ordonnanceur.passesExecutees == 1 && !m.ordonnanceur.enCours,
+          quoi: 'la premiere passe de la cadence, FINIE',
+        );
+        expect(
+          m.ordonnanceur.passesExecutees,
+          1,
           reason:
               'la mecanique existait depuis E4.11c et AUCUN code de '
               'production ne l appelait — c est ce lot qui la reveille',
         );
+
+        // ET ELLE EST PERIODIQUE, PAS A UN COUP : le second battement repart.
+        await m.horloge.battre();
+        await jusqua(
+          () => m.ordonnanceur.passesExecutees == 2 && !m.ordonnanceur.enCours,
+          quoi: 'la seconde passe de la cadence, FINIE',
+        );
+        expect(m.ordonnanceur.passesExecutees, 2);
+      },
+    );
+
+    test(
+      'L HORLOGE PAR DEFAUT EST UNE VRAIE HORLOGE : la cadence de production '
+      'bat pour de bon',
+      () async {
+        await publier();
+        // CE TEST EST LE SEUL QUI LAISSE BATTRE LE TEMPS REEL, et il ne PARIE
+        // sur aucun budget : il attend L EVENEMENT. Sans lui, le point
+        // d injection pourrait debrancher la cadence de production sans qu un
+        // seul test rougisse.
+        final m = monterSurLHorlogeReelle(
+          cadence: const Duration(milliseconds: 25),
+        );
+        addTearDown(m.ordonnanceur.stop);
+
+        m.ordonnanceur.start();
+        await jusqua(
+          () => m.ordonnanceur.passesExecutees >= 1,
+          quoi:
+              'une passe declenchee par la VRAIE Timer.periodic (defaut de '
+              'poserLHorloge). Jamais atteinte = la cadence de production '
+              'n est plus branchee sur une horloge.',
+        );
+        expect(m.ordonnanceur.passesExecutees, greaterThanOrEqualTo(1));
       },
     );
 
@@ -683,13 +789,13 @@ void main() {
       'declenche aucune',
       () async {
         await publier();
-        // Cadence volontairement lointaine : seul l evenement peut declencher.
+        // Cadence lointaine ET horloge pilotee : seul l evenement declenche.
         final m = monter(cadence: const Duration(hours: 4));
         addTearDown(m.ordonnanceur.stop);
         m.ordonnanceur.start();
 
         m.reseau.emettre(ConnectivityStatusValues.offline);
-        await Future<void>.delayed(const Duration(milliseconds: 20));
+        await vider();
         expect(
           m.ordonnanceur.passesExecutees,
           0,
@@ -697,9 +803,19 @@ void main() {
               'perdre le reseau est l evenement INVERSE : declencher la ne '
               'produirait qu un echec de transport et un journal trompeur',
         );
+        expect(
+          m.ordonnanceur.enCours,
+          isFalse,
+          reason:
+              'une passe EN VOL compterait plus tard : le compte de zero ne '
+              'vaut que si rien ne tourne',
+        );
 
         m.reseau.emettre(ConnectivityStatusValues.online);
-        await Future<void>.delayed(const Duration(milliseconds: 40));
+        await jusqua(
+          () => m.ordonnanceur.passesExecutees == 1 && !m.ordonnanceur.enCours,
+          quoi: 'la passe du retour de reseau, FINIE',
+        );
         expect(
           m.ordonnanceur.passesExecutees,
           1,
@@ -719,31 +835,67 @@ void main() {
         m.reseau.statut = ConnectivityStatusValues.offline;
         m.ordonnanceur.start();
 
-        await Future<void>.delayed(const Duration(milliseconds: 120));
+        // TROIS BATTEMENTS PROUVES, la ou l ancienne version dormait 120 ms en
+        // esperant que l horloge de 25 ms ait echu quatre fois.
+        for (var i = 0; i < 3; i++) {
+          await m.horloge.battre();
+        }
+        await vider();
+        expect(m.horloge.battements, 3);
         expect(m.ordonnanceur.passesExecutees, 0);
+        expect(m.ordonnanceur.enCours, isFalse);
       },
     );
 
     test('ARRETER ARRETE VRAIMENT : plus une seule passe apres', () async {
       await publier();
       final m = monter();
+      addTearDown(m.ordonnanceur.stop);
       m.ordonnanceur.start();
-      await Future<void>.delayed(const Duration(milliseconds: 80));
+
+      // LE REPERE SE PREND AU REPOS, ET C'ETAIT L'AUTRE MOITIE DU DEFAUT.
+      // `stop()` n'interrompt PAS une passe en cours — c'est ecrit dans sa doc,
+      // elle tient une transaction. Prendre le repere pendant qu'une passe est
+      // EN VOL, c'est donc le prendre avant un increment legitime, et conclure
+      // « l arret n a pas arrete » sur une passe qui avait demarre AVANT
+      // l arret.
+      await m.horloge.battre();
+      await jusqua(
+        () => m.ordonnanceur.passesExecutees == 1 && !m.ordonnanceur.enCours,
+        quoi: 'la passe de la cadence, FINIE',
+      );
       final avant = m.ordonnanceur.passesExecutees;
-      expect(avant, greaterThanOrEqualTo(1));
+      expect(avant, 1);
+      expect(m.ordonnanceur.enCours, isFalse);
 
       await m.ordonnanceur.stop();
       expect(m.ordonnanceur.demarre, isFalse);
-      await Future<void>.delayed(const Duration(milliseconds: 120));
+      expect(
+        m.horloge.annulations,
+        1,
+        reason:
+            'L HORLOGE DOIT ETRE ANNULEE, et c est desormais verifie au lieu '
+            'd etre deduit d un sommeil',
+      );
+      expect(m.horloge.isActive, isFalse);
 
+      // LE BATTEMENT EST REJOUE APRES L ARRET. Une horloge annulee ne rappelle
+      // plus son battement : la fausse horloge se comporte comme la vraie et
+      // REFUSE de battre. C est la preuve du negatif, et aucune attente ne
+      // pouvait la donner.
+      await m.horloge.battre();
+      await vider();
+      expect(m.horloge.battements, 1, reason: 'le battement a ete refuse');
       expect(m.ordonnanceur.passesExecutees, avant);
+
       m.reseau.emettre(ConnectivityStatusValues.online);
-      await Future<void>.delayed(const Duration(milliseconds: 40));
+      await vider();
       expect(
         m.ordonnanceur.passesExecutees,
         avant,
         reason: 'l ecoute du reseau est annulee, pas seulement l horloge',
       );
+      expect(m.ordonnanceur.enCours, isFalse);
     });
 
     test(
@@ -1098,6 +1250,84 @@ void main() {
       },
     );
   });
+}
+
+/// UNE HORLOGE QUE LE TEST FAIT BATTRE, et qui se comporte comme la vraie.
+///
+/// POURQUOI ELLE EXISTE (tache 695, kaizen #101267). Les tests de cadence
+/// laissaient battre un VRAI `Timer.periodic` de 25 ms, puis dormaient un budget
+/// en TEMPS REEL avant d affirmer qu une passe avait eu lieu. Le 05/10, pendant
+/// le build 10, `expect(avant, greaterThanOrEqualTo(1))` a rendu `Actual: <0>` :
+/// au bout de 80 ms de sommeil, l horloge n avait pas encore FINI une passe
+/// parce que la machine etait occupee. Le verdict dependait de la charge de la
+/// machine de fabrication — rouge environ une fois sur trois, et pour une raison
+/// qui n apprend rien sur l application.
+///
+/// ELLE EST FIDELE SUR LE SEUL POINT QUI COMPTE : ANNULEE, ELLE NE BAT PLUS. Un
+/// `Timer.periodic` annule ne rappelle plus son battement ; `battre()` refuse
+/// donc apres `cancel()`. C est ce qui permet de prouver « apres stop(), plus
+/// une seule passe » PAR LA MESURE et non par un sommeil.
+class _HorlogePilotable implements Timer {
+  Duration? cadence;
+  void Function(Timer)? _battement;
+  int battements = 0;
+  int annulations = 0;
+
+  /// Vrai des que l ordonnanceur a arme son horloge.
+  bool get posee => _battement != null;
+
+  /// Ce que l ordonnanceur appelle a la place de `Timer.periodic`.
+  Timer poser(Duration cadence, void Function(Timer) battement) {
+    this.cadence = cadence;
+    _battement = battement;
+    return this;
+  }
+
+  /// Fait echoir l horloge UNE fois, puis rend la main a la boucle.
+  Future<void> battre() async {
+    final battement = _battement;
+    if (battement == null || !isActive) return;
+    battements++;
+    battement(this);
+    await vider();
+  }
+
+  @override
+  bool get isActive => annulations == 0;
+
+  @override
+  int get tick => battements;
+
+  @override
+  void cancel() => annulations++;
+}
+
+/// Rend la main a la boucle d evenements, quelques tours.
+///
+/// Sert aux affirmations NEGATIVES (« rien ne s est declenche ») : il faut
+/// laisser au declenchement eventuel la chance de se produire avant d affirmer
+/// qu il n a pas eu lieu. Ce n est pas un budget de temps : chaque tour est un
+/// tour de boucle, pas une duree.
+Future<void> vider({int tours = 8}) async {
+  for (var i = 0; i < tours; i++) {
+    await Future<void>.delayed(Duration.zero);
+  }
+}
+
+/// Fait tourner la boucle d evenements JUSQU A ce que [condition] tienne.
+///
+/// CE N EST PAS UN SOMMEIL, ET C EST TOUT L INTERET. L ancienne recette dormait
+/// un budget fixe puis affirmait ; celle-ci rend la main autant de fois qu il
+/// faut et n affirme qu une fois la condition atteinte. Le verdict ne depend
+/// donc plus de la vitesse de la machine : il ne reste rouge que si le
+/// mecanisme est VRAIMENT casse. La borne est absurde expres — l atteindre
+/// signifie que rien ne se declenchera jamais.
+Future<void> jusqua(bool Function() condition, {String quoi = ''}) async {
+  for (var i = 0; i < 20000; i++) {
+    if (condition()) return;
+    await Future<void>.delayed(Duration.zero);
+  }
+  fail('JAMAIS ATTEINT apres 20000 tours de boucle : $quoi');
 }
 
 /// Un reseau dont le test decide, et qui peut EMETTRE des changements.
