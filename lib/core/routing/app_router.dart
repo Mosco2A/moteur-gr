@@ -43,7 +43,6 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/guides/presentation/town_guide_detail_screen.dart';
 import '../../features/guides/presentation/town_guides_screen.dart';
-import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/booking/presentation/hebergements_peripheriques_screen.dart';
 import '../../features/booking/presentation/nuitees_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
@@ -119,7 +118,6 @@ final _rootNavigatorKey = cleNavigateurRacine;
 ///   /follow/:code                - Suivi web temps reel (sans auth, E4.12a)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
-///   /booking                     - Reservation (stub, gardee par FeatureFlags)
 ///   /accommodations-nearby       - Hebergements peripheriques A/R (facilitateur)
 ///   /emergency                   - Contacts d'urgence
 ///   /health                      - Fiche infos sante LOCAL ONLY (E57, via Urgence)
@@ -413,8 +411,11 @@ final appRouter = GoRouter(
         // Firebase avant Phase 4). Alimente par les donnees du sentier (module
         // booking) ; generique multi-sentiers, fallback si aucun hebergement.
         // La carte HUB « Nuitees » (section Preparer) ouvre cet ecran via
-        // `context.push` (retour propre). Le stub /booking reste derriere son
-        // FeatureFlag, non reference depuis le HUB (aligne sur GR20).
+        // `context.push` (retour propre). LE STUB /booking N'EXISTE PLUS : sa
+        // route et son ecran sont retires par le lot produit P1 (#101255) —
+        // aucune porte ne menait a lui, aucune donnee ne l'alimentait, et son
+        // drapeau n'a jamais ete ouvert. Reserver, aujourd'hui, se fait par les
+        // fiches etapes et par cet assistant.
         GoRoute(
           path: 'nuitees',
           name: 'trail-nuitees',
@@ -625,18 +626,6 @@ final appRouter = GoRouter(
         return null;
       },
       builder: (context, state) => const GoodiesCatalogScreen(),
-    ),
-    // E5.13 : Reservation (stub) -- garde par FeatureFlags
-    GoRoute(
-      path: '/booking',
-      name: 'booking',
-      redirect: (context, state) {
-        // Garde par feature flag -- redirige vers /trails si desactive
-        final trailId = state.uri.queryParameters['trailId'] ?? '';
-        if (!FeatureFlags.isBookingEnabled(trailId)) return '/trails';
-        return null;
-      },
-      builder: (context, state) => const BookingScreen(),
     ),
     // F6D-02 : Hebergements peripheriques A/R (facilitateur deeplink, #84100)
     GoRoute(

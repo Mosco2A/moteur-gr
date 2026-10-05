@@ -7,8 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperatureRange;
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
+import '../models/weather_forecast.dart' show DayForecast;
 import '../providers/current_stage_provider.dart';
 import '../providers/weather_providers.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
@@ -92,6 +96,7 @@ class _StageWeatherRow extends ConsumerWidget {
       trailId: trailId,
       stageNumber: stage.stageNumber,
     );
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
     // Météo du 1er jour de l'étape via le provider dérivé (select forecast).
     final forecast = ref.watch(weatherForecastProvider(params));
     final today = (forecast != null && forecast.days.isNotEmpty)
@@ -122,27 +127,47 @@ class _StageWeatherRow extends ConsumerWidget {
           color: theme.colorScheme.onSurface.withAlpha(150),
         ),
       ),
-      trailing: today == null
-          ? const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                WeatherIcon(
-                  iconName: today.weatherIconName,
-                  size: 20,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Text(
-                  '${today.temperatureMax.round()}° / ${today.temperatureMin.round()}°',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
+      trailing: _meteoDuJour(context, today, unit),
+    );
+  }
+
+  /// Icône + températures du jour, ou un voile de chargement.
+  ///
+  /// EXTRAIT DU `build` PAR LE LOT PRODUIT P1 (#101255). La lecture du réglage
+  /// d'unité ajoutait quatre lignes à un `build` qui en comptait déjà 60 : il
+  /// aurait franchi le plafond ECR-28 sans rien apporter de neuf. Le bloc sort
+  /// donc dans sa propre méthode, et le compteur ne monte pas.
+  Widget _meteoDuJour(
+    BuildContext context,
+    DayForecast? today,
+    TemperatureUnit unit,
+  ) {
+    if (today == null) {
+      return const SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        WeatherIcon(
+          iconName: today.weatherIconName,
+          size: 20,
+          color: theme.colorScheme.primary,
+        ),
+        const SizedBox(width: AppTheme.spacingSm),
+        Text(
+          formatTemperatureRange(
+            today.temperatureMax,
+            today.temperatureMin,
+            unit,
+          ),
+          style: theme.textTheme.bodySmall,
+        ),
+      ],
     );
   }
 }

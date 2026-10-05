@@ -1,41 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/config/feature_flags.dart';
 import 'package:moteur_gr/features/booking/domain/models/accommodation_booking.dart';
 import 'package:moteur_gr/features/booking/domain/models/booking_config.dart';
 
 void main() {
-  group('FeatureFlags -- booking', () {
-    setUp(() {
-      FeatureFlags.clearOverrides();
-    });
-
-    test('isBookingEnabled retourne FALSE par defaut', () {
-      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
-      expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
-      expect(FeatureFlags.isBookingEnabled(''), isFalse);
-    });
-
-    test('isBookingEnabled retourne TRUE apres activation', () {
-      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
-      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isTrue);
-      expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
-    });
-
-    test('setOverride peut desactiver un trail active', () {
-      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
-      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isTrue);
-      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: false);
-      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
-    });
-
-    test('clearOverrides remet tous les flags a zero', () {
-      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
-      FeatureFlags.setOverride('booking', 'mare-a-mare', enabled: true);
-      FeatureFlags.clearOverrides();
-      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
-      expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
-    });
-  });
+  // LE GROUPE « FeatureFlags -- booking » EST PARTI AVEC SON DRAPEAU
+  // (lot produit P1, #101255). Il verifiait `isBookingEnabled`, qui ne gardait
+  // qu'une chose : la route /booking, retiree faute de porte, de donnee et de
+  // test. Garder quatre tests sur un drapeau que plus aucun code de production
+  // ne lit, c'est tenir au vert une mesure qui ne mesure plus rien. Le
+  // mecanisme generique (`setOverride`, `clearOverrides`) reste couvert par
+  // `test/features/goodies/goodies_models_test.dart`, dont le drapeau, lui, a
+  // encore sa route.
+  //
+  // CE QUI RESTE ICI, ET POURQUOI. Les modeles `AccommodationBooking` et
+  // `BookingConfig` sont du DOMAINE de `booking` : l'arbitrage #101255 le garde
+  // entier, parce que c'est lui que le planning lit.
 
   group('AccommodationBooking -- serialization roundtrip', () {
     test('fromJson/toJson roundtrip conserve toutes les donnees', () {

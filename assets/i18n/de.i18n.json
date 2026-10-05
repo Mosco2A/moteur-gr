@@ -98,8 +98,7 @@
     "weather": {
       "title": "Wetter heute",
       "unavailable": "Wetter derzeit nicht verfügbar.",
-      "alertStorm": "Gewitterwarnung",
-      "tempRange": "$min° / $max°"
+      "alertStorm": "Gewitterwarnung"
     },
     "startCta": "Trek starten",
     "startGateHint": "Schließe zuerst Route, Datum, Programm und Medizinische Daten (Hinweise gelesen) ab, um zu starten.",
@@ -725,7 +724,7 @@
       },
       "fire": {
         "title": "Brandgefahr",
-        "desc": "$value°C erwartet. Hohe Brandgefahr."
+        "desc": "$temperature erwartet. Hohe Brandgefahr."
       }
     },
     "program": {

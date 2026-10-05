@@ -98,8 +98,7 @@
     "weather": {
       "title": "Météo du jour",
       "unavailable": "Météo indisponible pour le moment.",
-      "alertStorm": "Alerte orage",
-      "tempRange": "$min° / $max°"
+      "alertStorm": "Alerte orage"
     },
     "startCta": "Démarrer la randonnée",
     "startGateHint": "Complète d'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.",
@@ -725,7 +724,7 @@
       },
       "fire": {
         "title": "Risque incendie",
-        "desc": "$value°C prévus. Risque incendie élevé."
+        "desc": "$temperature prévus. Risque incendie élevé."
       }
     },
     "program": {

@@ -37,13 +37,16 @@
 | 04/10/2026 | 645-12 | Ce journal, l'architecture remise au réel mesuré, et le test qui les vérifie. | #101229, #101232 |
 | 05/10/2026 | 645-05c | Les cinquante-deux croisements entre features à zéro : trois tuiles montent dans `shared/`, le reste passe par les façades. | #101226 |
 | 05/10/2026 | build 10 | Version 0.1.6+10 livrée, le build propre de fin du plan d'assainissement : il porte le 645-06b, le 645-12 et le 645-05c que le build 9 n'avait pas. | tâche #686, rapport de livraison a completer par Skynet |
+| 05/10/2026 | produit P1 | Lecture tolérante des réglages : une clé héritée du build du 26/05 ne remet plus les autres réglages par défaut. | #101255 |
+| 05/10/2026 | produit P2 | La température s'affiche dans l'unité choisie, par une seule fonction de `lib/domain/` ; sept lectures de plus par la façade des réglages. | #101255 |
+| 05/10/2026 | produit P3 | La route `/booking` dormante retirée avec son écran inatteignable et son drapeau sans lecteur ; le domaine `booking` reste entier. | #101255 |
 
 ## Ce qui reste ouvert au 04/10/2026
 
 | Point | Ce qui reste ouvert | Numéro(s) |
 |---|---|---|
-| Défauts produit | Quatre défauts produit ouverts, détaillés en base. | #101094 |
-| Défaut produit | Un défaut produit ouvert, détaillé en base. | #101197 |
+| Défauts produit | Des quatre défauts du 03/10, trois sont tranchés : la persistance de l'unité (lot 645-F1), la route `/booking` (retirée, lot produit P1) et le GPS économiseur (devient le profil batterie basse du design #101100). Reste le scénario persona S2, dont le libellé « Confidentialité et consentement » existe deux fois. | #101094, #101255 |
+| Défaut produit | Des trois défauts du 04/10, deux sont tranchés par le lot produit P1 : la lecture tolérante des réglages et la température affichée dans l'unité choisie. Reste le contrôle de captures qui compare l'image entière, traité par le lot recette persona. | #101197, #101255 |
 | Captures | Les captures de comparaison faites avant le 645-07 sont douteuses : worktree neuf sans fichier de config ignoré par git, recette de capture qui écrivait en retard. | #101077, #101092 |
 | Tests ignorés | Deux tests ignorés : `persona_le_mefiant_573_test.dart` (profil randonneur non semé) et `cartes_publiees_648_test.dart` (preuve réseau). | a completer par Skynet |
 | Recette de capture | Doublons de ticks GPS non déclarés, contrôle de captures rouge pour S1 et S3 des deux côtés. | #101219 |

@@ -3,10 +3,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/temperature_unit.dart' show formatTemperatureRange;
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
 import '../domain/weather_recommendation.dart';
 import '../models/weather_forecast.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
@@ -17,15 +20,18 @@ import '../../../core/branding/stepways_icons.dart';
 /// Affiche la condition dominante, les températures min/max, les 4 indicateurs
 /// clés (précipitations, vent, UV, probabilité d'orage) et une recommandation
 /// de randonnée dérivée (3 niveaux). Tous les libellés passent par Slang.
-class TodayStageWeatherCard extends StatelessWidget {
+/// P2 (#101255 point 2) : la carte lit l'unite de temperature choisie — elle est
+/// devenue un [ConsumerWidget] pour cela, a constructeur inchange.
+class TodayStageWeatherCard extends ConsumerWidget {
   const TodayStageWeatherCard({super.key, required this.day});
 
   final DayForecast day;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = Translations.of(context);
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
     final level = WeatherRecommendation.forDay(day);
     final (Color recoColor, String recoLabel) = switch (level) {
       WeatherRecommendationLevel.ok => (
@@ -79,7 +85,11 @@ class TodayStageWeatherCard extends StatelessWidget {
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
-                '${day.temperatureMax.round()}° / ${day.temperatureMin.round()}°',
+                formatTemperatureRange(
+                  day.temperatureMax,
+                  day.temperatureMin,
+                  unit,
+                ),
                 style: theme.textTheme.titleLarge,
               ),
             ],

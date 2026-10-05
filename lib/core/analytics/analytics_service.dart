@@ -27,7 +27,7 @@ final _localLog = Logger(printer: SimplePrinter(colors: false));
 /// (lot 645-09).
 ///
 /// CRASHLYTICS PLAFONNE A 64 PAIRES CLE-VALEUR, et au-dela il n'enregistre
-/// plus rien — EN SILENCE. Avec 63 ecrans, « une cle par ecran » tenait du
+/// plus rien — EN SILENCE. Avec 62 ecrans, « une cle par ecran » tenait du
 /// pari : le 64e aurait fait disparaitre les autres sans un mot. La convention
 /// retenue par Christophe inverse le probleme : TROIS cles dont la VALEUR
 /// change, et une miette courte par entree d'ecran. (Source :

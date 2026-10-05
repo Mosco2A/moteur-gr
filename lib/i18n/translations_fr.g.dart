@@ -4249,9 +4249,6 @@ class Translations$hub$weather$fr {
 
 	/// fr: 'Alerte orage'
 	String get alertStorm => 'Alerte orage';
-
-	/// fr: '$min° / $max°'
-	String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -7859,8 +7856,8 @@ class Translations$weather$alert$fire$fr {
 	/// fr: 'Risque incendie'
 	String get title => 'Risque incendie';
 
-	/// fr: '$value°C prévus. Risque incendie élevé.'
-	String desc({required Object value}) => '${value}°C prévus. Risque incendie élevé.';
+	/// fr: '$temperature prévus. Risque incendie élevé.'
+	String desc({required Object temperature}) => '${temperature} prévus. Risque incendie élevé.';
 }
 
 // Path: feasibility.formula.levels
@@ -8332,7 +8329,6 @@ extension on Translations {
 			'hub.weather.title' => 'Météo du jour',
 			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
 			'hub.weather.alertStorm' => 'Alerte orage',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Démarrer la randonnée',
 			'hub.startGateHint' => 'Complète d\'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.',
 			'hub.prepareExpand' => 'Voir la préparation',
@@ -8756,9 +8752,9 @@ extension on Translations {
 			'checklist.ui.preDep6' => 'Appliquer crème solaire et anti-frottements',
 			'checklist.ui.preDep7' => 'Vérifier les lacets et le serrage des chaussures',
 			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
+			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
 			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
@@ -8876,7 +8872,7 @@ extension on Translations {
 			'weather.alert.uv.title' => 'UV très élevé',
 			'weather.alert.uv.desc' => ({required Object value}) => 'Indice UV ${value}. Protection solaire maximale recommandée.',
 			'weather.alert.fire.title' => 'Risque incendie',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} prévus. Risque incendie élevé.',
 			'weather.program.title' => 'Météo étape par étape',
 			'weather.program.subtitle' => 'Le temps là où tu seras, le jour où tu y seras.',
 			'weather.program.dayLabel' => ({required Object day}) => 'Jour ${day}',
@@ -9270,9 +9266,9 @@ extension on Translations {
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acheter — ${price} €',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
+			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			_ => null,
 		} ?? switch (path) {
-			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'monetization.walletTitle' => 'Compte-étapes',
 			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
@@ -9784,9 +9780,9 @@ extension on Translations {
 			'programme.duration.daysWithRest' => '{total} j au total (dont {rest} de repos)',
 			'programme.duration.splitNote' => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.',
 			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
+			'programme.duration.daysTotal' => '{count} j au total',
 			_ => null,
 		} ?? switch (path) {
-			'programme.duration.daysTotal' => '{count} j au total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
