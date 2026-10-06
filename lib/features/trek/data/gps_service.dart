@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
+import 'background_gps_service.dart' show bgWritePositionProfile;
 import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.
@@ -265,7 +266,8 @@ final gpsServiceProvider = Provider<GpsService>((ref) {
 /// LE robinet unique GPS de l'isolate d'interface (lot 671-00).
 ///
 /// Carte, hors-trace, suivi, detection d'etape et arrivees en derivent : un
-/// seul controleur pour toute l'application, donc une seule souscription.
+/// seul controleur pour toute l'application, donc une seule souscription. Il
+/// publie son profil pour l'isolate de fond par [bgWritePositionProfile].
 final positionControllerProvider = Provider<PositionController>((ref) {
-  return PositionController();
+  return PositionController(writeProfile: bgWritePositionProfile);
 });
