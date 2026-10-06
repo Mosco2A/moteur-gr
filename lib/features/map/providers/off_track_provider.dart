@@ -14,6 +14,7 @@ import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../notifications/notifications_facade.dart'
     show notificationServiceProvider, notificationSettingsProvider;
+import '../../trek/trek_facade.dart' show positionControllerProvider;
 import '../domain/off_track_detector.dart';
 import 'gpx_track_provider.dart';
 
@@ -223,17 +224,14 @@ class OffTrackNotifier extends StateNotifier<OffTrackState> {
   }
 }
 
-/// Flux de positions GPS brut (geolocator), expose comme [Stream].
+/// Flux de positions GPS brut, expose comme [Stream] : celui du robinet unique
+/// GPS ([positionControllerProvider], lot 671-00), profil carte.
 ///
 /// Isole ici (Provider et non StreamProvider) pour passer le Stream tel quel au
 /// notifier hors-trace, independamment de l'ecran carte (le detecteur doit
 /// tourner telephone en poche). Surchargeable dans les tests.
 final offTrackGpsStreamProvider = Provider<Stream<Position>>((ref) {
-  const settings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 10,
-  );
-  return Geolocator.getPositionStream(locationSettings: settings);
+  return ref.watch(positionControllerProvider).positions;
 });
 
 /// Alerte de securite "hors-trace" : surveille l'ecart de la position reelle au

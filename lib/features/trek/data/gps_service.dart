@@ -2,13 +2,13 @@
 /// on ne demande pas la meme finesse a l'arret qu'en marche.
 library;
 
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
+import 'background_gps_service.dart' show bgWritePositionProfile;
+import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.
 ///
@@ -41,39 +41,42 @@ abstract class GpsPermissionResultValues {
 /// [moving]  : utilisateur en mouvement franc -> precision haute (suivi fidele).
 enum GpsAccuracyMode { resting, walking, moving }
 
-/// Service GPS : permissions et stream de positions a precision adaptative.
+/// Service GPS : permissions et flux de positions de l'interface.
 ///
 /// Responsabilites :
 /// - Demander les permissions foreground (puis background si besoin)
-/// - Fournir un Stream<Position> dont la `desiredAccuracy` s'ADAPTE au
-///   mouvement sur 3 paliers (haute en deplacement franc, moyenne/balanced en
-///   marche lente, basse au repos) tout en conservant un `distanceFilter` de
-///   10 m. Le palier `walking` (F6A-03) espace aussi l'intervalle d'updates
-///   (proxy de batching natif — `setMaxUpdateDelayMillis` n'est pas surface
-///   par geolocator 11, on allonge `intervalDuration` comme substitut).
+/// - Fournir LE flux de positions de l'interface, celui du
+///   [PositionController] (lot 671-00) : un seul flux diffuse, quel que soit
+///   le nombre d'appels a [getPositionStream].
+/// - Garder les regles du regime de precision pilote par le mouvement
+///   ([classifyMovement], [settingsForMode], 3 paliers F6A-03). DEPUIS LE LOT
+///   671-00 ELLES NE PILOTENT PLUS LE FLUX : le robinet unique ne sert que le
+///   profil carte. Elles restent la reference des profils a venir.
 /// - ZERO catch silencieux — toute erreur est loggee via ErrorHandler
 class GpsService {
   /// Wrapper Geolocator injecte pour testabilite.
   ///
   /// Par defaut utilise les methodes statiques de Geolocator.
-  /// En test, on injecte un mock via le constructeur.
+  /// En test, on injecte un mock via le constructeur : [positions] pour
+  /// partager un controleur, ou [getPositionStream] pour en batir un prive
+  /// sur une source simulee.
   GpsService({
     Future<bool> Function()? isLocationServiceEnabled,
     Future<LocationPermission> Function()? checkPermission,
     Future<LocationPermission> Function()? requestPermission,
-    Stream<Position> Function({required LocationSettings locationSettings})?
-    getPositionStream,
+    PositionStreamFactory? getPositionStream,
+    PositionController? positions,
   }) : _isLocationServiceEnabled =
            isLocationServiceEnabled ?? Geolocator.isLocationServiceEnabled,
        _checkPermission = checkPermission ?? Geolocator.checkPermission,
        _requestPermission = requestPermission ?? Geolocator.requestPermission,
-       _getPositionStream = getPositionStream ?? _defaultGetPositionStream;
+       _positions =
+           positions ?? PositionController(positionStream: getPositionStream);
 
   final Future<bool> Function() _isLocationServiceEnabled;
   final Future<LocationPermission> Function() _checkPermission;
   final Future<LocationPermission> Function() _requestPermission;
-  final Stream<Position> Function({required LocationSettings locationSettings})
-  _getPositionStream;
+  final PositionController _positions;
 
   /// Filtre de distance conserve dans tous les regimes de precision.
   static const int distanceFilterMeters = 10;
@@ -101,12 +104,6 @@ class GpsService {
   static const Duration movingInterval = Duration(seconds: 2);
   static const Duration walkingInterval = Duration(seconds: 5);
   static const Duration restingInterval = Duration(seconds: 15);
-
-  static Stream<Position> _defaultGetPositionStream({
-    required LocationSettings locationSettings,
-  }) {
-    return Geolocator.getPositionStream(locationSettings: locationSettings);
-  }
 
   /// Demande les permissions GPS : foreground d'abord, background ensuite si besoin.
   ///
@@ -249,58 +246,13 @@ class GpsService {
     );
   }
 
-  /// Stream de positions GPS a precision ADAPTATIVE et filtre 10 m.
+  /// LE flux de positions de l'interface (lot 671-00).
   ///
-  /// Demarre au repos (precision basse, economie batterie) puis bascule en
-  /// haute precision des qu'un mouvement est detecte ([classifyMovement]),
-  /// et inversement. Chaque changement de regime re-souscrit la source avec
-  /// la nouvelle `desiredAccuracy` (Geolocator fixe la precision a la
-  /// creation du stream). Le `distanceFilter` de 10 m est conserve partout.
-  ///
-  /// ZERO catch silencieux — les erreurs sont loggees ET propagees.
-  Stream<Position> getPositionStream() {
-    final controller = StreamController<Position>();
-    var mode = GpsAccuracyMode.resting;
-    StreamSubscription<Position>? sub;
-
-    void subscribe() {
-      sub = _getPositionStream(locationSettings: settingsForMode(mode)).listen(
-        (position) {
-          if (controller.isClosed) return;
-          controller.add(position);
-
-          final next = classifyMovement(position.speed, mode);
-          if (next != mode) {
-            mode = next;
-            // Re-souscrire avec la nouvelle precision.
-            sub?.cancel();
-            subscribe();
-          }
-        },
-        onError: (Object error, StackTrace stackTrace) {
-          ErrorHandler.log(
-            error,
-            stackTrace: stackTrace,
-            context: 'GpsService.getPositionStream',
-          );
-          // Propager l'erreur au lieu de l'avaler.
-          if (!controller.isClosed) controller.addError(error, stackTrace);
-        },
-        onDone: () {
-          if (!controller.isClosed) controller.close();
-        },
-        cancelOnError: false,
-      );
-    }
-
-    controller
-      ..onListen = subscribe
-      ..onCancel = () async {
-        await sub?.cancel();
-      };
-
-    return controller.stream;
-  }
+  /// Chaque appel rend le MEME flux diffuse, celui du [PositionController] :
+  /// la detection d'etape, les arrivees et l'ecran d'urgence ne s'abonnent
+  /// plus chacun a la source. Les erreurs de la source sont loggees par le
+  /// controleur ET propagees aux abonnes.
+  Stream<Position> getPositionStream() => _positions.positions;
 }
 
 /// Provider Riverpod pour GpsService.
@@ -308,5 +260,14 @@ class GpsService {
 /// Fournit une instance par defaut utilisant Geolocator.
 /// Overridable dans les tests avec un mock.
 final gpsServiceProvider = Provider<GpsService>((ref) {
-  return GpsService();
+  return GpsService(positions: ref.watch(positionControllerProvider));
+});
+
+/// LE robinet unique GPS de l'isolate d'interface (lot 671-00).
+///
+/// Carte, hors-trace, suivi, detection d'etape et arrivees en derivent : un
+/// seul controleur pour toute l'application, donc une seule souscription. Il
+/// publie son profil pour l'isolate de fond par [bgWritePositionProfile].
+final positionControllerProvider = Provider<PositionController>((ref) {
+  return PositionController(writeProfile: bgWritePositionProfile);
 });

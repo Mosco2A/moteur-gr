@@ -29,7 +29,9 @@ export '../data/stage_detection_service.dart'
 
 /// Stream de positions GPS depuis GpsService.
 ///
-/// Fournit le stream brut de Position — point d'entree du pipeline.
+/// Fournit le stream brut de Position — point d'entree du pipeline. Depuis le
+/// lot 671-00, c'est le flux UNIQUE du robinet GPS
+/// (`positionControllerProvider`).
 /// Depend de gpsServiceProvider (select sur la reference, pas sur le stream).
 final positionStreamProvider = StreamProvider<Position>((ref) {
   final gpsService = ref.watch(gpsServiceProvider);
@@ -152,6 +154,8 @@ final currentTrekPlanProvider = Provider<TrekPlan?>((ref) {
 /// Stream du stageId courant via StageDetectionService.
 ///
 /// Pipeline : positionStream + domainStages -> stageDetection -> stageId.
+/// Le flux de positions est le flux UNIQUE du robinet GPS (lot 671-00) :
+/// `getPositionStream()` n'ouvre plus de souscription a chaque appel.
 /// select() sur domainStagesProvider pour eviter rebuilds inutiles.
 /// Emet des valeurs distinctes uniquement (hysteresis integree au service).
 final currentStageIdProvider = StreamProvider<String>((ref) {
@@ -168,7 +172,8 @@ final currentStageIdProvider = StreamProvider<String>((ref) {
 /// Stream d'evenements d'arrivee via ArrivalDetectionService.
 ///
 /// Pipeline : positionStream + domainStages + plan -> arrivalDetection ->
-/// ArrivalEvent. Emet quand le randonneur atteint la fin d'une etape (stageEnd)
+/// ArrivalEvent, sur le flux UNIQUE du robinet GPS (lot 671-00). Emet quand
+/// le randonneur atteint la fin d'une etape (stageEnd)
 /// ou la **vraie derniere etape du parcours dans le sens de marche** (trailEnd,
 /// direction-aware via [currentTrekPlanProvider]). Aucune arrivee a l'etape de
 /// depart (garde anti-felicitations prematurees). Guard anti-doublon integre.

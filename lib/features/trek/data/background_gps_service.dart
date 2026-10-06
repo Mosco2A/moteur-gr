@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
+import 'position_controller.dart' show PositionProfile;
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -52,6 +53,25 @@ const String kPrefsBgSessionId = 'bg_gps_session_id';
 const String kPrefsBgTrailId = 'bg_gps_trail_id';
 const String kPrefsBgStageInfo = 'bg_gps_stage_info';
 const String kPrefsBgDistanceFilter = 'bg_gps_distance_filter';
+
+/// Profil GPS courant de l'interface ([PositionProfile.name]), ecrit par le
+/// robinet unique GPS a chaque changement et relu par l'isolate de fond a son
+/// demarrage (lot 671-00). Absent ou inconnu = [PositionProfile.map].
+///
+/// AU LOT 671-00 L'ISOLATE LE LIT ET N'EN FAIT RIEN : sa cadence reste celle
+/// de [kPrefsBgDistanceFilter], quelle que soit la valeur. Le canal est pose ;
+/// c'est un lot suivant qui le branchera sur la captation.
+const String kPrefsBgProfile = 'bg_gps_profile';
+
+/// Lit le profil GPS publie par l'interface dans [kPrefsBgProfile].
+PositionProfile bgReadPositionProfile(SharedPreferences prefs) =>
+    PositionProfile.fromStored(prefs.getString(kPrefsBgProfile));
+
+/// Ecrit [profile] dans [kPrefsBgProfile] pour l'isolate de fond.
+Future<void> bgWritePositionProfile(PositionProfile profile) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(kPrefsBgProfile, profile.name);
+}
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
 ///
@@ -727,6 +747,7 @@ Future<void> _onServiceStart(ServiceInstance service) async {
   String sessionId = '';
   String trailId = '';
   double distanceFilter = kBgMinKeepDistanceMeters;
+  var profile = PositionProfile.map;
 
   StreamSubscription<Position>? positionSub;
   int positionsReceived = 0;
@@ -872,7 +893,7 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     resubscribeTimer?.cancel();
     _logBg(
       '[bg] abonnement Geolocator distanceFilter=${distanceFilter.round()}m '
-      'session=$sessionId',
+      'profil=${profile.name} session=$sessionId',
     );
     positionSub =
         Geolocator.getPositionStream(locationSettings: buildSettings()).listen(
@@ -954,6 +975,7 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       sessionId = p.getString(kPrefsBgSessionId) ?? sessionId;
       trailId = p.getString(kPrefsBgTrailId) ?? trailId;
       distanceFilter = p.getDouble(kPrefsBgDistanceFilter) ?? distanceFilter;
+      profile = bgReadPositionProfile(p);
       final storedStageInfo = p.getString(kPrefsBgStageInfo) ?? '';
       final s = service;
       if (s is AndroidServiceInstance && storedStageInfo.isNotEmpty) {
