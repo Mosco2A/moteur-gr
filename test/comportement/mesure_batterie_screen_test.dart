@@ -171,18 +171,15 @@ void main() {
         'choix', (tester) async {
       final faux = _FauxBanc();
       await ouvrir(tester, faux);
-      for (final profil in [
-        PositionProfile.batteryFirst,
-        PositionProfile.lowBattery,
-        PositionProfile.map,
+      for (final (profil, titre) in [
+        (PositionProfile.batteryFirst, 'Batterie d’abord'),
+        (PositionProfile.lowBattery, 'Batterie basse'),
+        (PositionProfile.map, 'GPS continu actuel'),
       ]) {
         await tester.tap(find.byKey(ValueKey('mesure-profil-${profil.name}')));
         await tester.pumpAndSettle();
         expect(faux.ecrits.last, profil);
-        expect(
-          find.text('Profil en vigueur : ${measureProfileTitle(profil)}'),
-          findsOneWidget,
-        );
+        expect(find.text('Profil en vigueur : $titre'), findsOneWidget);
         expect(find.byType(SnackBar), findsOneWidget);
         ScaffoldMessenger.of(
           tester.element(find.byType(MesureBatterieScreen)),

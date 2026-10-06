@@ -38,10 +38,10 @@ const List<PositionProfile> kMeasureProfiles = [
   PositionProfile.lowBattery,
 ];
 
-/// Le nom d'un profil pour un randonneur.
-String measureProfileTitle(PositionProfile profile) => switch (profile) {
+// Le nom d'un profil pour un randonneur.
+String _profileTitle(PositionProfile profile) => switch (profile) {
   PositionProfile.map => 'GPS continu actuel',
-  PositionProfile.batteryFirst => "Batterie d'abord",
+  PositionProfile.batteryFirst => 'Batterie d’abord',
   PositionProfile.lowBattery => 'Batterie basse',
   PositionProfile.stationary => 'Arrêt',
 };
@@ -105,7 +105,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            'Profil choisi : ${measureProfileTitle(profile)}. '
+            'Profil choisi : ${_profileTitle(profile)}. '
             'Il s’applique tout de suite, sans arrêter la randonnée.',
           ),
         ),
@@ -235,7 +235,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
           ListTile(
             key: ValueKey('mesure-profil-${profile.name}'),
             leading: Radio<PositionProfile>(value: profile),
-            title: Text(measureProfileTitle(profile)),
+            title: Text(_profileTitle(profile)),
             subtitle: Text(_profileDetail(profile)),
             onTap: () => unawaited(_choose(profile)),
           ),
@@ -249,7 +249,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
     final low = battery != null && battery < kLowBatteryThreshold;
     final lines = <String>[
       'Profil en vigueur : '
-          '${_profile == null ? '…' : measureProfileTitle(_profile!)}',
+          '${_profile == null ? '…' : _profileTitle(_profile!)}',
       'Batterie : ${battery == null ? '…' : '$battery %'}'
           '${low ? ' (batterie basse)' : ''}',
       'Fichier : $kMeasureJournalFileName',
