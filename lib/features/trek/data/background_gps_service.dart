@@ -18,7 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
-import 'position_controller.dart' show PositionProfile;
+import '../../../core/services/gps_cadence.dart';
+import 'gps_settings_mapping.dart';
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -766,35 +767,10 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     prefs = null;
   }
 
-  LocationSettings buildSettings() {
-    // PAS de foregroundNotificationConfig ici : flutter_background_service est
-    // DEJA l'hote du foreground service `location`. En ajouter un via geolocator
-    // demarrerait un SECOND FGS dans le meme process (double FGS fragile,
-    // startForeground interdit depuis un contexte background sur Android 12+ ->
-    // SecurityException avalee = capture morte). Geolocator se contente ici
-    // d'ECOUTER ; l'hote maintient le process vivant.
-    if (Platform.isAndroid) {
-      return AndroidSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: distanceFilter.round(),
-        forceLocationManager: false,
-      );
-    }
-    if (Platform.isIOS) {
-      return AppleSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: distanceFilter.round(),
-        activityType: ActivityType.fitness,
-        pauseLocationUpdatesAutomatically: false,
-        showBackgroundLocationIndicator: true,
-        allowBackgroundLocationUpdates: true,
-      );
-    }
-    return LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: distanceFilter.round(),
-    );
-  }
+  LocationSettings buildSettings() => backgroundStreamSettings(
+    GpsCadence.map,
+    distanceFilter: distanceFilter.round(),
+  );
 
   void refreshCaptureNotification() {
     final s = service;
@@ -998,9 +974,10 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     if (!bgIsKeepAliveDue(lastFixAt, now)) return;
     _logBg('[bg] SONDE DE VIE -> getCurrentPosition keep-alive');
     try {
+      final shot = singleShotSettings(GpsCadence.map);
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 15),
+        desiredAccuracy: shot.accuracy,
+        timeLimit: shot.timeLimit,
       );
       await handlePosition(pos, via: 'filet', force: true);
     } catch (e) {

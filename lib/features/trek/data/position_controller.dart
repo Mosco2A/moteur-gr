@@ -7,42 +7,12 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
+import '../../../core/services/gps_cadence.dart';
+import 'gps_settings_mapping.dart';
 
-/// Profil de captation GPS porte par le [PositionController].
-///
-/// Vocabulaire de la conception « batterie d'abord » (lot 671) :
-/// - [map] : profil « carte », suivi fin, celui d'aujourd'hui ;
-/// - [batteryFirst] : profil « batterie d'abord » ;
-/// - [stationary] : profil « arret » ;
-/// - [lowBattery] : profil « batterie basse ».
-///
-/// AU LOT 671-00 SEUL [map] EST ACTIF ([PositionController.activeProfiles]) :
-/// les trois autres sont nommes pour poser le canal, ils ne captent rien.
-enum PositionProfile {
-  /// « carte ».
-  map,
-
-  /// « batterie d'abord ».
-  batteryFirst,
-
-  /// « arret ».
-  stationary,
-
-  /// « batterie basse ».
-  lowBattery;
-
-  /// Le profil range sous [value] ; absent ou inconnu = [map].
-  ///
-  /// C'est la lecture TOLERANTE du canal partage avec l'isolate de fond : une
-  /// valeur ecrite par une version future ou abimee ne doit jamais couper la
-  /// captation, elle retombe sur le profil d'aujourd'hui.
-  static PositionProfile fromStored(String? value) {
-    for (final profile in values) {
-      if (profile.name == value) return profile;
-    }
-    return map;
-  }
-}
+// Le profil vit dans le socle depuis le lot 671-01 (classe pure des cadences) ;
+// il reste lisible ici pour tous ceux qui le prenaient au robinet.
+export '../../../core/services/gps_cadence.dart' show PositionProfile;
 
 /// Fabrique du flux de positions : la signature de
 /// `Geolocator.getPositionStream`, injectable pour les tests.
@@ -84,11 +54,11 @@ class PositionController {
   static const Set<PositionProfile> activeProfiles = {PositionProfile.map};
 
   /// Les reglages du profil [PositionProfile.map] : ceux de la souscription la
-  /// plus utilisee avant le lot 671-00 (carte, hors-trace, suivi), RECOPIES
-  /// tels quels — precision haute, filtre de 10 m, intervalle par defaut.
-  static const LocationSettings mapSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 10,
+  /// plus utilisee avant le lot 671-00 (carte, hors-trace, suivi) — precision
+  /// haute, filtre de 10 m, intervalle par defaut — traduits de
+  /// [GpsCadence.map] par la seule fonction de correspondance (lot 671-01).
+  static final LocationSettings mapSettings = interfaceStreamSettings(
+    GpsCadence.map,
   );
 
   PositionProfile _profile = PositionProfile.map;
