@@ -20,12 +20,18 @@
 /// interface sur laquelle les autres reposent. La facade rend ce cout visible —
 /// elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 21 FICHIERS DE 8 FEATURES AU 05/10/2026 : `after`, `feasibility`,
-/// `hub`, `map`, `planning`, `safety`, `treks`, `weather`.
+/// LUE PAR 24 FICHIERS DE 9 FEATURES AU 06/10/2026 : `after`, `feasibility`,
+/// `hub`, `map`, `planning`, `safety`, `tracking`, `treks`, `weather`. Les
+/// trois derniers venus (lot 671-00) lisent `positionControllerProvider`, le
+/// robinet unique GPS.
 library;
 
 export 'data/gps_service.dart'
-    show GpsPermissionResultValues, GpsService, gpsServiceProvider;
+    show
+        GpsPermissionResultValues,
+        GpsService,
+        gpsServiceProvider,
+        positionControllerProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
 export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;
 export 'providers/gps_providers.dart'

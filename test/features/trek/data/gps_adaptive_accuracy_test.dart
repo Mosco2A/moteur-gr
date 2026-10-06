@@ -98,9 +98,15 @@ void main() {
     });
   });
 
-  group('getPositionStream — switch precision mouvement/repos detecte', () {
+  // LOT 671-00 — ROBINET UNIQUE GPS. Jusqu'au lot 671-00, ce groupe
+  // verrouillait la RE-SOUSCRIPTION adaptative de getPositionStream (low au
+  // repos, high en mouvement). Ce regime ne pilote plus le flux : chaque appel
+  // rend le flux unique du PositionController, profil carte (high, 10 m). Les
+  // deux cas verrouillent desormais ce contrat ; les regles du regime restent
+  // testees plus haut (classifyMovement, accuracyForMode, settingsForMode).
+  group('getPositionStream — robinet unique, profil carte (lot 671-00)', () {
     test(
-      'demarre basse precision, haute en mouvement, basse au repos',
+      'precision haute constante : la vitesse ne re-souscrit plus la source',
       () async {
         final accuracies = <LocationAccuracy>[];
         final controllers = <StreamController<Position>>[];
@@ -117,23 +123,15 @@ void main() {
         final received = <Position>[];
         final sub = service.getPositionStream().listen(received.add);
 
-        // onListen -> 1ere souscription, regime repos par defaut -> low.
+        // onListen -> une souscription, profil carte -> high.
         await Future<void>.delayed(Duration.zero);
-        expect(accuracies, [LocationAccuracy.low]);
+        expect(accuracies, [LocationAccuracy.high]);
 
-        // Mouvement detecte -> re-souscription en haute precision.
+        // Mouvement puis repos : plus aucune re-souscription.
         controllers.last.add(_pos(speed: 5.0));
-        await Future<void>.delayed(Duration.zero);
-        expect(accuracies, [LocationAccuracy.low, LocationAccuracy.high]);
-
-        // Retour au repos -> re-souscription en basse precision.
         controllers.last.add(_pos(speed: 0.0));
         await Future<void>.delayed(Duration.zero);
-        expect(accuracies, [
-          LocationAccuracy.low,
-          LocationAccuracy.high,
-          LocationAccuracy.low,
-        ]);
+        expect(accuracies, [LocationAccuracy.high]);
 
         // Les positions ont bien ete transmises au consommateur.
         expect(received.length, 2);
@@ -145,36 +143,40 @@ void main() {
       },
     );
 
-    test('aucune re-souscription tant que le regime ne change pas', () async {
-      final accuracies = <LocationAccuracy>[];
-      final controllers = <StreamController<Position>>[];
+    test(
+      'deux appels a getPositionStream partagent une seule source',
+      () async {
+        final accuracies = <LocationAccuracy>[];
+        final controllers = <StreamController<Position>>[];
 
-      final service = GpsService(
-        getPositionStream: ({required LocationSettings locationSettings}) {
-          accuracies.add(locationSettings.accuracy);
-          final c = StreamController<Position>();
-          controllers.add(c);
-          return c.stream;
-        },
-      );
+        final service = GpsService(
+          getPositionStream: ({required LocationSettings locationSettings}) {
+            accuracies.add(locationSettings.accuracy);
+            final c = StreamController<Position>();
+            controllers.add(c);
+            return c.stream;
+          },
+        );
 
-      final sub = service.getPositionStream().listen((_) {});
-      await Future<void>.delayed(Duration.zero);
+        final sub1 = service.getPositionStream().listen((_) {});
+        final sub2 = service.getPositionStream().listen((_) {});
+        await Future<void>.delayed(Duration.zero);
 
-      // Trois positions sous le seuil haut -> reste au repos, pas de switch.
-      controllers.last
-        ..add(_pos(speed: 0.0))
-        ..add(_pos(speed: 0.1))
-        ..add(_pos(speed: 0.3));
-      await Future<void>.delayed(Duration.zero);
+        controllers.last
+          ..add(_pos(speed: 0.0))
+          ..add(_pos(speed: 0.1))
+          ..add(_pos(speed: 3.0));
+        await Future<void>.delayed(Duration.zero);
 
-      expect(accuracies, [LocationAccuracy.low]);
-      expect(controllers.length, 1);
+        expect(accuracies, [LocationAccuracy.high]);
+        expect(controllers.length, 1);
 
-      await sub.cancel();
-      for (final c in controllers) {
-        await c.close();
-      }
-    });
+        await sub1.cancel();
+        await sub2.cancel();
+        for (final c in controllers) {
+          await c.close();
+        }
+      },
+    );
   });
 }

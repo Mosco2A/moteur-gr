@@ -7,6 +7,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../trek/trek_facade.dart' show positionControllerProvider;
+
 /// Etat des permissions GPS.
 ///
 /// Simplifie la gestion des differents cas (accorde, refuse,
@@ -64,12 +66,14 @@ final gpsPermissionProvider = FutureProvider<GpsPermissionState>((ref) async {
 
 /// Provider qui streame la position GPS de l'utilisateur.
 ///
-/// Configuration : précision haute, filtre de distance 10m.
+/// Derive du robinet unique GPS ([positionControllerProvider], lot 671-00),
+/// profil carte : précision haute, filtre de distance 10m.
 /// keepAlive pour ne pas re-demander la permission à chaque rebuild.
 /// Ne s'active que si les permissions sont accordées.
 final locationProvider = StreamProvider<Position>((ref) {
   // Vérifier d'abord les permissions
   final permissionAsync = ref.watch(gpsPermissionProvider);
+  final positions = ref.watch(positionControllerProvider).positions;
 
   final controller = StreamController<Position>();
 
@@ -80,15 +84,10 @@ final locationProvider = StreamProvider<Position>((ref) {
         return;
       }
 
-      // Paramètres du stream GPS
-      const settings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
+      final subscription = positions.listen(
+        controller.add,
+        onError: controller.addError,
       );
-
-      final subscription = Geolocator.getPositionStream(
-        locationSettings: settings,
-      ).listen(controller.add, onError: controller.addError);
 
       ref.onDispose(() {
         subscription.cancel();
