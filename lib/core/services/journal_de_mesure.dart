@@ -242,6 +242,9 @@ class MeasureJournal {
   /// disque plein). Une erreur n'arrete JAMAIS le suivi : elle est comptee.
   int get failedWrites => _failedWrites;
 
+  /// Se complete quand les ajouts deja demandes sont tous passes.
+  Future<void> get idle => _queue;
+
   /// Le fichier du journal.
   Future<File> file() async =>
       File('${(await _directory()).path}/$kMeasureJournalFileName');
