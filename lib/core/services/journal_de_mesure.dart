@@ -19,13 +19,21 @@
 /// verrou de processus, aveugle entre deux isolates. Chaque ligne est donc
 /// ajoutee d'un seul appel, vidage immediat, SOUS un verrou portable : un
 /// fichier voisin cree en exclusif, que le systeme ne laisse creer qu'a un
-/// seul a la fois.
+/// seul a la fois. Le verrou porte la marque de son ecrivain (proprietaire et
+/// heure de pose) : seul son proprietaire le leve, et un autre ne le casse
+/// que s'il est perime.
+///
+/// MESURE DU 06/10/2026 SOUS WINDOWS (lot 671-01-FIX) : sur 2000 poses, 293
+/// levent `PathAccessException` (errno 5) et non `PathExistsException` —
+/// creer en exclusif un fichier EN COURS DE SUPPRESSION y est refuse ainsi.
+/// Toute `FileSystemException` a la pose est donc un refus a retenter.
 ///
 /// AUCUNE DEPENDANCE RESEAU NI FIREBASE : ce fichier ne parle qu'au disque.
 library;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -52,8 +60,8 @@ const Duration kMeasureCountersPeriod = Duration(minutes: 10);
 /// Baisse de batterie, en points, qui fait ecrire un palier.
 const int kMeasureBatteryStepPoints = 5;
 
-/// Attente maximale du verrou d'ecriture avant de le declarer abandonne
-/// (son ecrivain a ete tue entre la pose et le retrait).
+/// Attente du verrou d'ecriture avant de l'examiner, et age au-dela duquel
+/// un verrou est perime (son ecrivain a ete tue entre la pose et le retrait).
 const Duration kMeasureLockPatience = Duration(seconds: 2);
 
 /// Le vocabulaire FERME des evenements du journal.
@@ -238,6 +246,10 @@ class MeasureJournal {
   Future<void> _queue = Future<void>.value();
   int _failedWrites = 0;
 
+  /// Le proprietaire des verrous de ce journal : le processus, et un tirage
+  /// qui distingue deux journaux du meme processus (deux isolates).
+  final String _owner = '$pid-${Random().nextInt(1 << 32)}';
+
   /// Lignes perdues sur une erreur d'ecriture (dossier en lecture seule,
   /// disque plein). Une erreur n'arrete JAMAIS le suivi : elle est comptee.
   int get failedWrites => _failedWrites;
@@ -263,7 +275,8 @@ class MeasureJournal {
     try {
       final target = await file();
       final lock = File('${target.path}.verrou');
-      if (!await _acquire(lock)) {
+      final stamp = await _acquire(lock);
+      if (stamp == null) {
         _failedWrites++;
         return;
       }
@@ -271,27 +284,36 @@ class MeasureJournal {
         // UN SEUL appel d'ajout, vidage immediat : la ligne entiere ou rien.
         target.writeAsStringSync('$line\n', mode: FileMode.append, flush: true);
       } finally {
-        _release(lock);
+        _release(lock, stamp);
       }
     } on Object {
       _failedWrites++;
     }
   }
 
-  /// Pose le verrou. Un verrou plus vieux que [kMeasureLockPatience] est
-  /// celui d'un ecrivain tue : il est leve une fois, puis on renonce.
-  Future<bool> _acquire(File lock) async {
-    var staleCleared = false;
+  /// Pose le verrou et rend sa marque, `proprietaire;heure de pose en ms`,
+  /// ou null si l'on renonce.
+  ///
+  /// TOUTE `FileSystemException` a la pose est un refus a retenter, pas une
+  /// erreur : sous Windows, un verrou en cours de suppression refuse la pose
+  /// par `PathAccessException`. Apres [kMeasureLockPatience] d'attente, le
+  /// verrou en place est examine une fois et leve s'il est perime ; apres
+  /// une seconde patience, on renonce.
+  Future<String?> _acquire(File lock) async {
+    var examined = false;
     final waited = Stopwatch()..start();
     while (true) {
+      final stamp =
+          '$_owner$kMeasureSeparator${DateTime.now().millisecondsSinceEpoch}';
       try {
         lock.createSync(exclusive: true);
-        return true;
-      } on PathExistsException {
+        _mark(lock, stamp);
+        return stamp;
+      } on FileSystemException {
         if (waited.elapsed > kMeasureLockPatience) {
-          if (staleCleared) return false;
-          staleCleared = true;
-          _release(lock);
+          if (examined) return null;
+          examined = true;
+          _breakIfStale(lock);
           waited.reset();
         }
         await Future<void>.delayed(Duration.zero);
@@ -299,7 +321,47 @@ class MeasureJournal {
     }
   }
 
-  void _release(File lock) {
+  /// Ecrit [stamp] dans le verrou qu'on vient de creer. S'il ne s'ecrit pas,
+  /// le verrou, vide et a nous, est leve et la pose est a retenter.
+  void _mark(File lock, String stamp) {
+    try {
+      lock.writeAsStringSync(stamp, flush: true);
+    } on FileSystemException {
+      _delete(lock);
+      rethrow;
+    }
+  }
+
+  /// Casse le verrou en place s'il est PERIME : pose depuis plus de
+  /// [kMeasureLockPatience] selon sa marque — a defaut de marque (verrou d'un
+  /// ancien build, ou ecrivain tue entre la creation et la marque), selon
+  /// l'heure du fichier. Il n'est casse que s'il porte encore la marque
+  /// jugee perimee ; un verrou vivant est laisse a son proprietaire.
+  void _breakIfStale(File lock) {
+    try {
+      final seen = lock.readAsStringSync();
+      final posedAt = int.tryParse(seen.split(kMeasureSeparator).last);
+      final posed = posedAt == null
+          ? lock.lastModifiedSync()
+          : DateTime.fromMillisecondsSinceEpoch(posedAt);
+      if (DateTime.now().difference(posed) <= kMeasureLockPatience) return;
+      if (lock.readAsStringSync() == seen) _delete(lock);
+    } on FileSystemException {
+      // Leve entre-temps, ou illisible : rien a casser.
+    }
+  }
+
+  /// Leve le verrou s'il porte encore [stamp]. Casse comme perime puis repose
+  /// par un autre, il appartient a cet autre et n'est pas touche.
+  void _release(File lock, String stamp) {
+    try {
+      if (lock.readAsStringSync() == stamp) _delete(lock);
+    } on FileSystemException {
+      // Deja leve : rien a faire.
+    }
+  }
+
+  void _delete(File lock) {
     try {
       lock.deleteSync();
     } on FileSystemException {
