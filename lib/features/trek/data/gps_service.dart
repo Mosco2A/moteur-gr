@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
-import 'background_gps_service.dart' show bgWritePositionProfile;
+import 'background_gps_service.dart'
+    show bgReadStoredPositionProfile, bgWritePositionProfile;
 import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.
@@ -267,7 +268,12 @@ final gpsServiceProvider = Provider<GpsService>((ref) {
 ///
 /// Carte, hors-trace, suivi, detection d'etape et arrivees en derivent : un
 /// seul controleur pour toute l'application, donc une seule souscription. Il
-/// publie son profil pour l'isolate de fond par [bgWritePositionProfile].
+/// publie son profil pour l'isolate de fond par [bgWritePositionProfile], et
+/// le reprend a sa premiere ecoute par [bgReadStoredPositionProfile] (lot
+/// 671-01) : une interface relancee garde le profil choisi.
 final positionControllerProvider = Provider<PositionController>((ref) {
-  return PositionController(writeProfile: bgWritePositionProfile);
+  return PositionController(
+    writeProfile: bgWritePositionProfile,
+    readProfile: bgReadStoredPositionProfile,
+  );
 });
