@@ -656,9 +656,14 @@ class SettingsScreen extends ConsumerWidget {
               final version = snapshot.hasData
                   ? '${snapshot.data!.version}+${snapshot.data!.buildNumber}'
                   : '...';
+              // LOT 671-01 : l'APPUI LONG sur le numero de version ouvre
+              // l'ecran cache de mesure batterie. Aucun appui court, aucune
+              // entree de menu : c'est sa seule porte.
               return ListTile(
+                key: const ValueKey('reglages-numero-de-version'),
                 title: Text(tr.settings.versionLabel),
                 trailing: Text(version, style: theme.textTheme.bodySmall),
+                onLongPress: () => context.push('/mesure-batterie'),
               );
             },
           ),

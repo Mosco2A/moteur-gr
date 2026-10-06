@@ -28,7 +28,7 @@ final class ScreenBreadcrumb {
   /// la miette `screen:<nom>`.
   ///
   /// Court par obligation, pas par style : Crashlytics plafonne ses journaux a
-  /// 64 ko par session, et une session traverse jusqu'a 62 ecrans.
+  /// 64 ko par session, et une session traverse jusqu'a 63 ecrans.
   final String name;
 
   /// La fiche d'un hebergement d'etape.
@@ -113,6 +113,9 @@ final class ScreenBreadcrumb {
 
   /// La carte de marche, ecran de terrain.
   static const map = ScreenBreadcrumb._('map');
+
+  /// L'ecran cache du build de mesure batterie (lot 671-01).
+  static const mesureBatterie = ScreenBreadcrumb._('mesure_batterie');
 
   /// Les parcours du randonneur.
   static const myTreks = ScreenBreadcrumb._('my_treks');
@@ -224,7 +227,7 @@ final class ScreenBreadcrumb {
   /// TOUS LES ECRANS OBSERVES, pour les gardes de test.
   ///
   /// C'est cette liste que la garde de plafond parcourt pour verifier qu'elle
-  /// mesure bien les 62 ecrans du depot et pas un sous-ensemble oublie. Une
+  /// mesure bien les 63 ecrans du depot et pas un sous-ensemble oublie. Une
   /// constante ajoutee ci-dessus et absente d'ici fait rougir la garde.
   static const all = <ScreenBreadcrumb>[
     accommodationDetail,
@@ -254,6 +257,7 @@ final class ScreenBreadcrumb {
     journal,
     leaderboard,
     map,
+    mesureBatterie,
     myTreks,
     noData,
     nuitees,

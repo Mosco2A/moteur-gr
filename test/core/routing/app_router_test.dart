@@ -55,7 +55,10 @@ void main() {
         // donnee, ni test, et son drapeau n a jamais ete ouvert : un chemin que
         // personne ne pouvait prendre et qui, pris de force, renvoyait au
         // catalogue.
-        expect(routes.whereType<GoRoute>().length, 25);
+        // LOT 671-01 : ajout de '/mesure-batterie', l'ecran cache de mesure
+        // batterie, atteint par un appui long sur le numero de version des
+        // reglages (25 -> 26).
+        expect(routes.whereType<GoRoute>().length, 26);
       },
     );
 
@@ -91,6 +94,8 @@ void main() {
         '/onboarding',
         '/no-data',
         '/settings',
+        // Lot 671-01 : l'ecran cache de mesure batterie.
+        '/mesure-batterie',
         // Finitions V1 (point 4) : ecran « afficher mon code de reconnexion ».
         '/recovery-code',
         '/consent',
@@ -129,6 +134,8 @@ void main() {
         'onboarding',
         'no-data',
         'settings',
+        // Lot 671-01 : l'ecran cache de mesure batterie.
+        'mesure-batterie',
         // Finitions V1 (point 4) : ecran code de reconnexion.
         'recovery-code',
         'consent',

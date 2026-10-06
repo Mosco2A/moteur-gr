@@ -20,12 +20,15 @@
 /// interface sur laquelle les autres reposent. La facade rend ce cout visible —
 /// elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 24 FICHIERS DE 9 FEATURES AU 06/10/2026 : `after`, `feasibility`,
-/// `hub`, `map`, `planning`, `safety`, `tracking`, `treks`, `weather`. Les
-/// trois derniers venus (lot 671-00) lisent `positionControllerProvider`, le
-/// robinet unique GPS.
+/// LUE PAR 25 FICHIERS DE 10 FEATURES AU 06/10/2026 : `after`,
+/// `feasibility`, `hub`, `map`, `planning`, `safety`, `settings`, `tracking`,
+/// `treks`, `weather`. Les trois venus du lot 671-00 lisent
+/// `positionControllerProvider`, le robinet unique GPS ; le dernier venu (lot
+/// 671-01), l'ecran cache de mesure batterie de `settings`, lit
+/// `measureBenchProvider` et `kLowBatteryThreshold`.
 library;
 
+export 'data/background_gps_service.dart' show kLowBatteryThreshold;
 export 'data/gps_service.dart'
     show
         GpsPermissionResultValues,
@@ -41,6 +44,8 @@ export 'providers/gps_providers.dart'
         domainStagesProvider,
         positionStreamProvider,
         selectedDirectionProvider;
+export 'providers/measure_bench_provider.dart'
+    show MeasureBench, measureBenchProvider;
 export 'providers/session_recovery_provider.dart' show pendingSessionProvider;
 export 'providers/stage_providers.dart' show stagesProvider;
 export 'providers/tracking_providers.dart'

@@ -94,11 +94,20 @@ Future<int?> bgReadBatteryPercent() => Battery().batteryLevel;
 /// L'autorisation qui ouvre le podometre : la reconnaissance d'activite sur
 /// Android (10 et au-dela), les capteurs de mouvement sur iOS. LUE, jamais
 /// demandee ici : la demande part de l'ecran de mesure, une seule fois.
-Future<bool> _bgStepsAllowed() async {
+Future<bool> bgStepsAllowed() async {
   final permission = Platform.isIOS
       ? Permission.sensors
       : Permission.activityRecognition;
   return (await permission.status).isGranted;
+}
+
+/// Demande l'autorisation du podometre ([bgStepsAllowed]) au systeme, une
+/// fois, depuis l'interface ; vrai si elle est accordee.
+Future<bool> bgRequestStepsPermission() async {
+  final permission = Platform.isIOS
+      ? Permission.sensors
+      : Permission.activityRecognition;
+  return (await permission.request()).isGranted;
 }
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
@@ -973,7 +982,7 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       // dependance a l'interface, et ses greffons sont enregistres dans le
       // moteur de cet isolate.
       stepCounts: () => SensorFusionService().stepCountStream(),
-      stepsAllowed: _bgStepsAllowed,
+      stepsAllowed: bgStepsAllowed,
     ),
     log: _logBg,
   );

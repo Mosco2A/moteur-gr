@@ -155,7 +155,7 @@ void main() {
         lessThanOrEqualTo(plafondDesClesDeLApplication),
         reason:
             'une cle de plus a ete ecrite. Ce n est pas interdit, mais ca se '
-            'decide : avec 62 ecrans et 64 places, la marge est de 60 cles '
+            'decide : avec 63 ecrans et 64 places, la marge est de 60 cles '
             'pour TOUT le reste de l application. Cles trouvees : '
             '${clesPosees.toList()..sort()}',
       );
@@ -172,7 +172,7 @@ void main() {
   });
 
   group('645-09 — le catalogue des ecrans observes', () {
-    test('62 ecrans, autant de miettes, aucun doublon', () {
+    test('63 ecrans, autant de miettes, aucun doublon', () {
       final noms = ScreenBreadcrumb.all.map((e) => e.name).toList();
       expect(noms.toSet(), hasLength(noms.length), reason: 'nom en double');
       expect(
