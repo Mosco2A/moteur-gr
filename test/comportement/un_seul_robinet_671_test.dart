@@ -10,8 +10,8 @@
 //
 //  2. QUE LE CANAL DU PROFIL EST POSE ET TOLERANT. `kPrefsBgProfile` absent ou
 //     inconnu donne la carte, une valeur valide se relit telle quelle ;
-//     l'isolate de fond le relit a son demarrage avec les cles voisines, et au
-//     lot 00 il n'en fait rien d'autre que le journaliser.
+//     l'isolate de fond le relit a son demarrage avec les cles voisines, et
+//     depuis le lot 671-01 il en tire sa cadence.
 //
 //  3. QUE LE CONTROLEUR ECRIT SON PROFIL, une fois, et par le canal reel en
 //     production.
@@ -208,18 +208,30 @@ void main() {
       );
     });
 
-    test('au lot 00 l isolate ne fait RIEN du profil : ses reglages ne le '
-        'lisent pas', () {
+    // LOT 671-01 : CE CAS VERROUILLAIT « AU LOT 00 L'ISOLATE NE FAIT RIEN DU
+    // PROFIL ». Le lot 671-01 est celui qui branche le canal sur la
+    // captation, comme le lot 00 l'annoncait : le contrat devient l'inverse,
+    // et c'est lui que ce cas verrouille desormais.
+    test('au lot 01 l isolate pilote sa cadence par le profil relu, et suit '
+        'un changement sans redemarrer', () {
       final corps = _corpsDeLIsolate();
-      final usages = RegExp(r'\bprofile\b').allMatches(corps).length;
-      // Declaration, lecture, journal : rien d'autre.
-      expect(usages, 3, reason: 'le profil est utilise au-dela du journal');
-      final debut = corps.indexOf('LocationSettings buildSettings()');
-      final reglages = corps.substring(
-        debut,
-        corps.indexOf('void refreshCaptureNotification()'),
+      expect(
+        corps.contains('unawaited(cadence.start(profile));'),
+        isTrue,
+        reason: 'la captation de fond ne demarre plus sur le profil relu',
       );
-      expect(reglages.contains('profile'), isFalse);
+      expect(
+        corps.contains("service.on('profile')"),
+        isTrue,
+        reason: 'l isolate n ecoute plus les changements de profil',
+      );
+      expect(
+        corps.contains('LocationSettings buildSettings()'),
+        isFalse,
+        reason:
+            'des reglages GPS sont de nouveau batis hors de la '
+            'correspondance unique',
+      );
     });
   });
 

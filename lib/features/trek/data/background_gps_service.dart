@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -18,7 +19,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
-import 'position_controller.dart' show PositionProfile;
+import '../../../core/services/gps_cadence.dart';
+import '../../../core/services/journal_de_mesure.dart';
+import '../../../core/services/sensor_fusion_service.dart';
+import 'background_cadence.dart';
+import 'measure_recorder.dart';
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -58,19 +63,51 @@ const String kPrefsBgDistanceFilter = 'bg_gps_distance_filter';
 /// robinet unique GPS a chaque changement et relu par l'isolate de fond a son
 /// demarrage (lot 671-00). Absent ou inconnu = [PositionProfile.map].
 ///
-/// AU LOT 671-00 L'ISOLATE LE LIT ET N'EN FAIT RIEN : sa cadence reste celle
-/// de [kPrefsBgDistanceFilter], quelle que soit la valeur. Le canal est pose ;
-/// c'est un lot suivant qui le branchera sur la captation.
+/// DEPUIS LE LOT 671-01 IL PILOTE LA CADENCE DE L'ISOLATE : flux continu pour
+/// la carte, tir unique pour les profils batterie ([GpsCadence]). L'isolate le
+/// relit a son demarrage et a chaque sonde de vie ; un changement lui parvient
+/// aussi par le message `profile` ([BackgroundGpsService.applyProfile]).
 const String kPrefsBgProfile = 'bg_gps_profile';
 
 /// Lit le profil GPS publie par l'interface dans [kPrefsBgProfile].
 PositionProfile bgReadPositionProfile(SharedPreferences prefs) =>
     PositionProfile.fromStored(prefs.getString(kPrefsBgProfile));
 
+/// Relit [kPrefsBgProfile] depuis le disque : le profil en vigueur, tel que
+/// l'isolate de fond le lira.
+Future<PositionProfile> bgReadStoredPositionProfile() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
+  return bgReadPositionProfile(prefs);
+}
+
 /// Ecrit [profile] dans [kPrefsBgProfile] pour l'isolate de fond.
 Future<void> bgWritePositionProfile(PositionProfile profile) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString(kPrefsBgProfile, profile.name);
+}
+
+/// Le pourcentage de batterie, lu comme le fait le pilotage batterie
+/// (`battery_aware_location_controller`) : `Battery().batteryLevel`.
+Future<int?> bgReadBatteryPercent() => Battery().batteryLevel;
+
+/// L'autorisation qui ouvre le podometre : la reconnaissance d'activite sur
+/// Android (10 et au-dela), les capteurs de mouvement sur iOS. LUE, jamais
+/// demandee ici : la demande part de l'ecran de mesure, une seule fois.
+Future<bool> bgStepsAllowed() async {
+  final permission = Platform.isIOS
+      ? Permission.sensors
+      : Permission.activityRecognition;
+  return (await permission.status).isGranted;
+}
+
+/// Demande l'autorisation du podometre ([bgStepsAllowed]) au systeme, une
+/// fois, depuis l'interface ; vrai si elle est accordee.
+Future<bool> bgRequestStepsPermission() async {
+  final permission = Platform.isIOS
+      ? Permission.sensors
+      : Permission.activityRecognition;
+  return (await permission.request()).isGranted;
 }
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
@@ -96,11 +133,8 @@ const double kBgMinKeepDistanceMeters = 12.0;
 /// de « appli morte » (plus aucun point) sans encrasser la trace.
 const Duration kBgKeepAliveThreshold = Duration(minutes: 5);
 
-/// Periode de la sonde de vie (watchdog) dans l'isolate de fond.
-const Duration kBgWatchdogPeriod = Duration(seconds: 20);
-
-/// Periode du heartbeat (compteur autoritaire pousse vers l'UI).
-const Duration kBgHeartbeatPeriod = Duration(seconds: 30);
+// La sonde de vie et le battement suivent la cadence du profil depuis le lot
+// 671-01 : leurs periodes vivent dans `GpsCadence` (gps_cadence.dart).
 
 /// Log VISIBLE au `adb logcat` (prefixe `BGGPS`), meme en release.
 ///
@@ -330,6 +364,10 @@ class BackgroundGpsService {
   StreamSubscription<Map<String, dynamic>?>? _eventSubscription;
   StreamSubscription<Map<String, dynamic>?>? _heartbeatSubscription;
 
+  /// Les lignes ecran-on / ecran-off du journal de mesure, que seule
+  /// l'interface connait (lot 671-01). Vivantes le temps du suivi.
+  ScreenStateRecorder? _screenRecorder;
+
   /// Initialise le service (idempotent) : cree le canal + enregistre
   /// l'entrypoint. A appeler tot (boot) ; defensivement rappele par [start].
   Future<void> initialize() async {
@@ -469,6 +507,12 @@ class BackgroundGpsService {
       rethrow;
     }
 
+    _screenRecorder ??= ScreenStateRecorder(
+      journal: MeasureJournal.documents(),
+      readProfile: bgReadStoredPositionProfile,
+      readBattery: bgReadBatteryPercent,
+    )..start();
+
     // AUTO-DIAGNOSTIC (fire-and-forget, ne bloque pas l'UI ~4 s).
     unawaited(verifyServiceStarted());
   }
@@ -606,6 +650,8 @@ class BackgroundGpsService {
     if (!_running) return;
     _running = false;
     startStatus.value = GpsServiceStartStatus.idle;
+    _screenRecorder?.stop();
+    _screenRecorder = null;
     try {
       _service.invoke('stop');
     } catch (e) {
@@ -615,6 +661,18 @@ class BackgroundGpsService {
     _eventSubscription = null;
     await _heartbeatSubscription?.cancel();
     _heartbeatSubscription = null;
+  }
+
+  /// Transmet [profile] a l'isolate de fond en marche : sa cadence change sans
+  /// redemarrer (lot 671-01). Sans service en marche, rien a faire : l'isolate
+  /// lira le canal [kPrefsBgProfile] a son demarrage.
+  void applyProfile(PositionProfile profile) {
+    if (!_running) return;
+    try {
+      _service.invoke('profile', {'profile': profile.name});
+    } catch (e) {
+      _logBg('[ui] profil non transmis au service de fond ($e)');
+    }
   }
 
   /// Met a jour le texte de la notification (etape courante), generique.
@@ -749,51 +807,18 @@ Future<void> _onServiceStart(ServiceInstance service) async {
   double distanceFilter = kBgMinKeepDistanceMeters;
   var profile = PositionProfile.map;
 
-  StreamSubscription<Position>? positionSub;
   int positionsReceived = 0;
   DateTime? lastFixAt;
   double? lastKeptLat;
   double? lastKeptLon;
   DateTime? lastNotifUpdateAt;
-  Timer? heartbeatTimer;
-  Timer? watchdogTimer;
-  Timer? resubscribeTimer;
+  late final BackgroundCadence cadence;
 
   SharedPreferences? prefs;
   try {
     prefs = await SharedPreferences.getInstance();
   } catch (_) {
     prefs = null;
-  }
-
-  LocationSettings buildSettings() {
-    // PAS de foregroundNotificationConfig ici : flutter_background_service est
-    // DEJA l'hote du foreground service `location`. En ajouter un via geolocator
-    // demarrerait un SECOND FGS dans le meme process (double FGS fragile,
-    // startForeground interdit depuis un contexte background sur Android 12+ ->
-    // SecurityException avalee = capture morte). Geolocator se contente ici
-    // d'ECOUTER ; l'hote maintient le process vivant.
-    if (Platform.isAndroid) {
-      return AndroidSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: distanceFilter.round(),
-        forceLocationManager: false,
-      );
-    }
-    if (Platform.isIOS) {
-      return AppleSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: distanceFilter.round(),
-        activityType: ActivityType.fitness,
-        pauseLocationUpdatesAutomatically: false,
-        showBackgroundLocationIndicator: true,
-        allowBackgroundLocationUpdates: true,
-      );
-    }
-    return LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: distanceFilter.round(),
-    );
   }
 
   void refreshCaptureNotification() {
@@ -885,33 +910,15 @@ Future<void> _onServiceStart(ServiceInstance service) async {
   }
 
   void startGpsListening() {
-    if (!bgShouldSubscribe(hasSubscription: positionSub != null)) {
+    if (!bgShouldSubscribe(hasSubscription: cadence.isRunning)) {
       _logBg('[bg] deja abonne -> pas de re-abonnement');
       return;
     }
-    positionSub?.cancel();
-    resubscribeTimer?.cancel();
     _logBg(
-      '[bg] abonnement Geolocator distanceFilter=${distanceFilter.round()}m '
+      '[bg] captation distanceFilter=${distanceFilter.round()}m '
       'profil=${profile.name} session=$sessionId',
     );
-    positionSub =
-        Geolocator.getPositionStream(locationSettings: buildSettings()).listen(
-          (position) => handlePosition(position, via: 'stream'),
-          onError: (Object error, StackTrace _) {
-            // NE PAS avaler : un onError vide tue la capture en silence. On logue
-            // et on re-tente (le stream errore est mort, il faut le recreer).
-            _logBg('[bg] ERREUR stream Geolocator: $error -> re-abo dans 5s');
-            positionSub?.cancel();
-            positionSub = null;
-            resubscribeTimer?.cancel();
-            resubscribeTimer = Timer(
-              const Duration(seconds: 5),
-              startGpsListening,
-            );
-          },
-          cancelOnError: true,
-        );
+    unawaited(cadence.start(profile));
   }
 
   void sendHeartbeat() {
@@ -922,12 +929,13 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     _logBg(
       '[bg] HEARTBEAT positionsReceived=$positionsReceived '
       'dernierFix=${ageSec == null ? "aucun" : "${ageSec}s"} '
-      'abonne=${positionSub != null}',
+      'abonne=${cadence.engine.hasLiveSubscription} '
+      'profil=${cadence.profile.name}',
     );
     service.invoke('heartbeat', {
       'positionsReceived': positionsReceived,
       'lastFixTs': lastFixAt?.toIso8601String(),
-      'subscribed': positionSub != null,
+      'subscribed': cadence.engine.hasLiveSubscription,
     });
     refreshCaptureNotification();
   }
@@ -946,6 +954,39 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     startGpsListening();
   }
 
+  // LA CADENCE DU PROFIL (lot 671-01) : flux continu ou tir unique, sonde de
+  // vie et battement a son rythme. Seul ce fichier ouvre le flux de l'isolate.
+  cadence = BackgroundCadence(
+    openStream: _bgPositionStream,
+    takeShot: (settings) => Geolocator.getCurrentPosition(
+      desiredAccuracy: settings.accuracy,
+      timeLimit: settings.timeLimit,
+    ),
+    distanceFilter: () => distanceFilter.round(),
+    onPosition: handlePosition,
+    keepAliveDue: () => bgIsKeepAliveDue(lastFixAt, DateTime.now()),
+    onHeartbeat: sendHeartbeat,
+    readStoredProfile: () async {
+      final p = prefs;
+      if (p == null) return cadence.profile;
+      await p.reload();
+      return bgReadPositionProfile(p);
+    },
+    // LE JOURNAL DE MESURE s'ecrit ICI, dans l'isolate qui reste eveille
+    // ecran eteint : demarrage, releves, reprises, arret, compteurs.
+    observer: MeasureRecorder(
+      journal: MeasureJournal.documents(),
+      readBattery: bgReadBatteryPercent,
+      // LES PAS BRUTS, ouverts ICI, a un seul endroit, par le service
+      // existant : SensorFusionService est une classe simple, sans
+      // dependance a l'interface, et ses greffons sont enregistres dans le
+      // moteur de cet isolate.
+      stepCounts: () => SensorFusionService().stepCountStream(),
+      stepsAllowed: bgStepsAllowed,
+    ),
+    log: _logBg,
+  );
+
   service.on('configure').listen(applyConfig);
 
   service.on('updateNotification').listen((event) {
@@ -957,12 +998,17 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     }
   });
 
-  service.on('stop').listen((_) {
+  // CHANGEMENT DE PROFIL EN COURS DE ROUTE (lot 671-01) : la cadence change
+  // sans redemarrer ni le trek ni cet isolate. La sonde de vie relit aussi le
+  // canal, au cas ou ce message se perdrait.
+  service.on('profile').listen((event) {
+    final next = PositionProfile.fromStored(event?['profile'] as String?);
+    unawaited(cadence.switchProfile(next));
+  });
+
+  service.on('stop').listen((_) async {
     _logBg('[bg] stop recu -> arret capture + timers');
-    positionSub?.cancel();
-    resubscribeTimer?.cancel();
-    watchdogTimer?.cancel();
-    heartbeatTimer?.cancel();
+    await cadence.stop();
     service.stopSelf();
   });
 
@@ -990,27 +1036,14 @@ Future<void> _onServiceStart(ServiceInstance service) async {
   }
 
   startGpsListening();
-
-  // SONDE DE VIE : ne force un getCurrentPosition « keep-alive » que si aucun
-  // point n'a ete retenu depuis >= kBgKeepAliveThreshold (persiste de force).
-  watchdogTimer = Timer.periodic(kBgWatchdogPeriod, (_) async {
-    final now = DateTime.now();
-    if (!bgIsKeepAliveDue(lastFixAt, now)) return;
-    _logBg('[bg] SONDE DE VIE -> getCurrentPosition keep-alive');
-    try {
-      final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 15),
-      );
-      await handlePosition(pos, via: 'filet', force: true);
-    } catch (e) {
-      _logBg('[bg] SONDE DE VIE getCurrentPosition ECHEC: $e');
-    }
-  });
-
-  heartbeatTimer = Timer.periodic(kBgHeartbeatPeriod, (_) => sendHeartbeat());
   sendHeartbeat();
 }
+
+/// LE robinet GPS de l'isolate de fond : la seule souscription au flux de
+/// positions qu'il ouvre, et seulement en profil carte (lot 671-01).
+Stream<Position> _bgPositionStream({
+  required LocationSettings locationSettings,
+}) => Geolocator.getPositionStream(locationSettings: locationSettings);
 
 /// Handler iOS background (maintien du service en arriere-plan).
 @pragma('vm:entry-point')

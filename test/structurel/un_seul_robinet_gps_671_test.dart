@@ -18,11 +18,14 @@
 // la conception « batterie d'abord » pilote depuis le controleur.
 //
 // LE SECOND PLAFOND, `LocationAccuracy.high`. Chaque litteral est une
-// precision choisie hors du controleur. Il en restait 8 avant le lot, il en
-// reste 6 apres : 4 dans l'isolate de fond (inchange au lot 00), 1 pour le
-// profil carte du controleur, 1 pour le palier `moving` de
-// `GpsService.accuracyForMode`. Le plafond est serre contre la mesure : il ne
-// remonte JAMAIS ; il ne peut que descendre quand un lot en paie un.
+// precision choisie hors du controleur. Il en restait 8 avant le lot 671-00, 6
+// apres : 4 dans l'isolate de fond, 1 pour le profil carte du controleur, 1
+// pour le palier `moving` de `GpsService.accuracyForMode`. Le lot 671-01 en
+// paie 5 : la precision ne se nomme plus que dans la SEULE fonction de
+// correspondance (`gps_settings_mapping.dart`), que le controleur et l'isolate
+// de fond partagent, et le regime adaptatif mort part avec ses tests. Le
+// plafond est serre contre la mesure : il ne remonte JAMAIS ; il ne peut que
+// descendre quand un lot en paie un.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -32,8 +35,10 @@ import 'mesure_des_sources_645.dart';
 /// Un pour l'interface, un pour l'isolate de fond.
 const plafondRobinets = 2;
 
-/// Mesure du 06/10/2026, apres le lot 671-00 (8 avant).
-const plafondPrecisionHaute = 6;
+/// Mesure du 06/10/2026 apres le lot 671-01 : la seule fonction de
+/// correspondance, `locationAccuracyOf` (8 avant le lot 671-00, 6 apres, 2
+/// apres la correspondance unique, 1 apres le retrait du regime adaptatif).
+const plafondPrecisionHaute = 1;
 
 /// Les deux fichiers qui ont le droit d'ouvrir un flux Geolocator.
 const robinetsAttendus = <String>[

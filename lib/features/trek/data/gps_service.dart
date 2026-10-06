@@ -1,13 +1,13 @@
-/// Permission de localisation et REGIME de precision, pilote par le mouvement :
-/// on ne demande pas la meme finesse a l'arret qu'en marche.
+/// Permission de localisation et flux de positions de l'interface : celui du
+/// robinet unique GPS.
 library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
-import 'background_gps_service.dart' show bgWritePositionProfile;
+import 'background_gps_service.dart'
+    show bgReadStoredPositionProfile, bgWritePositionProfile;
 import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.
@@ -39,6 +39,10 @@ abstract class GpsPermissionResultValues {
 /// [walking] : marche lente prolongee -> precision moyenne/balanced (palier
 ///             intermediaire ajoute en F6A-03, correction CP1 #1 batterie).
 /// [moving]  : utilisateur en mouvement franc -> precision haute (suivi fidele).
+///
+/// LOT 671-01 : les regles qui en tiraient des reglages GPS sont retirees (plus
+/// aucun appelant depuis le robinet unique du lot 671-00). Il ne reste que le
+/// type, lu par `battery_aware_location_controller.dart`, que rien ne branche.
 enum GpsAccuracyMode { resting, walking, moving }
 
 /// Service GPS : permissions et flux de positions de l'interface.
@@ -48,10 +52,9 @@ enum GpsAccuracyMode { resting, walking, moving }
 /// - Fournir LE flux de positions de l'interface, celui du
 ///   [PositionController] (lot 671-00) : un seul flux diffuse, quel que soit
 ///   le nombre d'appels a [getPositionStream].
-/// - Garder les regles du regime de precision pilote par le mouvement
-///   ([classifyMovement], [settingsForMode], 3 paliers F6A-03). DEPUIS LE LOT
-///   671-00 ELLES NE PILOTENT PLUS LE FLUX : le robinet unique ne sert que le
-///   profil carte. Elles restent la reference des profils a venir.
+/// - Les cadences des profils ne vivent plus ici mais dans `GpsCadence`
+///   (lot 671-01) : le regime adaptatif, sans appelant depuis le lot 671-00,
+///   a ete retire.
 /// - ZERO catch silencieux — toute erreur est loggee via ErrorHandler
 class GpsService {
   /// Wrapper Geolocator injecte pour testabilite.
@@ -77,33 +80,6 @@ class GpsService {
   final Future<LocationPermission> Function() _checkPermission;
   final Future<LocationPermission> Function() _requestPermission;
   final PositionController _positions;
-
-  /// Filtre de distance conserve dans tous les regimes de precision.
-  static const int distanceFilterMeters = 10;
-
-  /// Seuil (m/s) au-dela duquel on passe en mouvement franc (~3.6 km/h).
-  static const double movingSpeedThresholdMps = 1.0;
-
-  /// Seuil (m/s) d'entree en marche lente (~1.4 km/h). En deca on est au repos.
-  static const double walkingSpeedThresholdMps = 0.4;
-
-  /// Seuil (m/s) en deca duquel on repasse au repos (~1.4 km/h).
-  ///
-  /// Egal a [walkingSpeedThresholdMps] : on quitte le repos a la meme vitesse
-  /// qu'on y revient, l'hysteresis anti-flapping etant portee par la marge
-  /// descendante depuis `moving` ([movingExitSpeedThresholdMps]).
-  static const double restingSpeedThresholdMps = walkingSpeedThresholdMps;
-
-  /// Seuil (m/s) sous lequel on redescend de `moving` vers `walking`
-  /// (~2.5 km/h). L'ecart avec [movingSpeedThresholdMps] cree l'hysteresis qui
-  /// evite le battement (flapping) autour de la charniere haute.
-  static const double movingExitSpeedThresholdMps = 0.7;
-
-  /// Intervalle d'updates GPS (Android) par regime — proxy de batching.
-  /// Croissant : plus on est immobile, plus on espace (economie batterie).
-  static const Duration movingInterval = Duration(seconds: 2);
-  static const Duration walkingInterval = Duration(seconds: 5);
-  static const Duration restingInterval = Duration(seconds: 15);
 
   /// Demande les permissions GPS : foreground d'abord, background ensuite si besoin.
   ///
@@ -157,95 +133,6 @@ class GpsService {
     }
   }
 
-  /// Classe une vitesse en regime de precision, machine a 3 etats avec
-  /// hysteresis (F6A-03).
-  ///
-  /// Fonction PURE (sans effet de bord) — testable directement. Transitions
-  /// depuis [current] :
-  /// - depuis [GpsAccuracyMode.resting] : -> moving si speed >=
-  ///   [movingSpeedThresholdMps] ; -> walking si speed >=
-  ///   [walkingSpeedThresholdMps] ; sinon reste resting.
-  /// - depuis [GpsAccuracyMode.walking] : -> moving si speed >=
-  ///   [movingSpeedThresholdMps] ; -> resting si speed <
-  ///   [restingSpeedThresholdMps] ; sinon reste walking.
-  /// - depuis [GpsAccuracyMode.moving] : -> resting si speed <=
-  ///   [restingSpeedThresholdMps] ; -> walking si speed <=
-  ///   [movingExitSpeedThresholdMps] ; sinon reste moving.
-  ///
-  /// L'asymetrie montee (1.0) / descente (0.7) depuis `moving` cree
-  /// l'hysteresis anti-flapping. Une vitesse non finie est traitee comme nulle
-  /// (repos).
-  static GpsAccuracyMode classifyMovement(
-    double speedMps,
-    GpsAccuracyMode current,
-  ) {
-    final speed = speedMps.isFinite ? speedMps.abs() : 0.0;
-    switch (current) {
-      case GpsAccuracyMode.resting:
-        if (speed >= movingSpeedThresholdMps) return GpsAccuracyMode.moving;
-        if (speed >= walkingSpeedThresholdMps) return GpsAccuracyMode.walking;
-        return GpsAccuracyMode.resting;
-      case GpsAccuracyMode.walking:
-        if (speed >= movingSpeedThresholdMps) return GpsAccuracyMode.moving;
-        if (speed < restingSpeedThresholdMps) return GpsAccuracyMode.resting;
-        return GpsAccuracyMode.walking;
-      case GpsAccuracyMode.moving:
-        if (speed <= restingSpeedThresholdMps) return GpsAccuracyMode.resting;
-        if (speed <= movingExitSpeedThresholdMps) {
-          return GpsAccuracyMode.walking;
-        }
-        return GpsAccuracyMode.moving;
-    }
-  }
-
-  /// Precision Geolocator correspondant a un [GpsAccuracyMode] (3 paliers).
-  static LocationAccuracy accuracyForMode(GpsAccuracyMode mode) {
-    switch (mode) {
-      case GpsAccuracyMode.moving:
-        return LocationAccuracy.high;
-      case GpsAccuracyMode.walking:
-        return LocationAccuracy.medium;
-      case GpsAccuracyMode.resting:
-        return LocationAccuracy.low;
-    }
-  }
-
-  /// Intervalle d'updates GPS pour un [GpsAccuracyMode] (espacement = proxy
-  /// de batching, F6A-03).
-  static Duration intervalForMode(GpsAccuracyMode mode) {
-    switch (mode) {
-      case GpsAccuracyMode.moving:
-        return movingInterval;
-      case GpsAccuracyMode.walking:
-        return walkingInterval;
-      case GpsAccuracyMode.resting:
-        return restingInterval;
-    }
-  }
-
-  /// [LocationSettings] pour un regime donne (precision adaptative + filtre
-  /// 10 m). Sur Android, utilise [AndroidSettings] avec un `intervalDuration`
-  /// croissant en marche lente / repos pour espacer (batcher) les updates ;
-  /// sur les autres plateformes, conserve un [LocationSettings] simple (l'API
-  /// d'intervalle est specifique Android).
-  ///
-  /// NOTE : `setMaxUpdateDelayMillis` (batching natif Android) n'est PAS
-  /// surface par geolocator 11 — on allonge `intervalDuration` comme substitut
-  /// fonctionnel (moins d'updates = moins de reveils GPS = economie batterie).
-  static LocationSettings settingsForMode(GpsAccuracyMode mode) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return AndroidSettings(
-        accuracy: accuracyForMode(mode),
-        distanceFilter: distanceFilterMeters,
-        intervalDuration: intervalForMode(mode),
-      );
-    }
-    return LocationSettings(
-      accuracy: accuracyForMode(mode),
-      distanceFilter: distanceFilterMeters,
-    );
-  }
-
   /// LE flux de positions de l'interface (lot 671-00).
   ///
   /// Chaque appel rend le MEME flux diffuse, celui du [PositionController] :
@@ -267,7 +154,12 @@ final gpsServiceProvider = Provider<GpsService>((ref) {
 ///
 /// Carte, hors-trace, suivi, detection d'etape et arrivees en derivent : un
 /// seul controleur pour toute l'application, donc une seule souscription. Il
-/// publie son profil pour l'isolate de fond par [bgWritePositionProfile].
+/// publie son profil pour l'isolate de fond par [bgWritePositionProfile], et
+/// le reprend a sa premiere ecoute par [bgReadStoredPositionProfile] (lot
+/// 671-01) : une interface relancee garde le profil choisi.
 final positionControllerProvider = Provider<PositionController>((ref) {
-  return PositionController(writeProfile: bgWritePositionProfile);
+  return PositionController(
+    writeProfile: bgWritePositionProfile,
+    readProfile: bgReadStoredPositionProfile,
+  );
 });

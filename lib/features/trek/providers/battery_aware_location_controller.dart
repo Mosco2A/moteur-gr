@@ -70,7 +70,7 @@ class BatteryLocationState {
 ///
 /// Strategie :
 /// - foreground + ecran on -> regime GPS adaptatif normal (high/walking/
-///   balanced gere par [GpsService.classifyMovement] / F6A-03).
+///   balanced du regime F6A-03, retire au lot 671-01).
 /// - background ou ecran off -> on FORCE le regime walking/balanced (jamais
 ///   high) pour economiser la batterie.
 /// - connectivite absente (zone blanche) -> [BatteryLocationState.deferSync] =

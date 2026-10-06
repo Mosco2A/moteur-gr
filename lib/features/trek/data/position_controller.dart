@@ -1,5 +1,7 @@
 /// LE ROBINET UNIQUE GPS de l'isolate d'interface (lot 671-00) : une seule
-/// souscription a la source de positions, diffusee a tous ceux qui ecoutent.
+/// source de positions, diffusee a tous ceux qui ecoutent, au rythme du profil
+/// (lot 671-01 : flux continu pour la carte, tir unique pour les profils
+/// batterie).
 library;
 
 import 'dart:async';
@@ -7,47 +9,15 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
+import '../../../core/services/gps_cadence.dart';
+import 'gps_cadence_engine.dart';
+import 'gps_settings_mapping.dart';
 
-/// Profil de captation GPS porte par le [PositionController].
-///
-/// Vocabulaire de la conception « batterie d'abord » (lot 671) :
-/// - [map] : profil « carte », suivi fin, celui d'aujourd'hui ;
-/// - [batteryFirst] : profil « batterie d'abord » ;
-/// - [stationary] : profil « arret » ;
-/// - [lowBattery] : profil « batterie basse ».
-///
-/// AU LOT 671-00 SEUL [map] EST ACTIF ([PositionController.activeProfiles]) :
-/// les trois autres sont nommes pour poser le canal, ils ne captent rien.
-enum PositionProfile {
-  /// « carte ».
-  map,
-
-  /// « batterie d'abord ».
-  batteryFirst,
-
-  /// « arret ».
-  stationary,
-
-  /// « batterie basse ».
-  lowBattery;
-
-  /// Le profil range sous [value] ; absent ou inconnu = [map].
-  ///
-  /// C'est la lecture TOLERANTE du canal partage avec l'isolate de fond : une
-  /// valeur ecrite par une version future ou abimee ne doit jamais couper la
-  /// captation, elle retombe sur le profil d'aujourd'hui.
-  static PositionProfile fromStored(String? value) {
-    for (final profile in values) {
-      if (profile.name == value) return profile;
-    }
-    return map;
-  }
-}
-
-/// Fabrique du flux de positions : la signature de
-/// `Geolocator.getPositionStream`, injectable pour les tests.
-typedef PositionStreamFactory =
-    Stream<Position> Function({required LocationSettings locationSettings});
+// Le profil vit dans le socle depuis le lot 671-01 (classe pure des cadences),
+// la fabrique de flux dans le moteur des cadences ; ils restent lisibles ici
+// pour tous ceux qui les prenaient au robinet.
+export '../../../core/services/gps_cadence.dart' show PositionProfile;
+export 'gps_cadence_engine.dart' show PositionStreamFactory;
 
 /// Possede LA souscription GPS de l'isolate d'interface.
 ///
@@ -60,88 +30,35 @@ typedef PositionStreamFactory =
 ///
 /// CYCLE DE VIE. La source est ouverte a la PREMIERE ecoute de [positions] et
 /// fermee quand le DERNIER abonne part ; une nouvelle ecoute la rouvre.
+///
+/// CADENCE (lot 671-01). La source suit le [GpsCadence] du profil : un flux
+/// continu pour la carte, un tir unique toutes les 3 ou 15 minutes pour les
+/// profils batterie, recepteur relache entre deux tirs. Changer de profil
+/// prend effet sans couper les abonnes.
 class PositionController {
   /// Sans argument, branche sur Geolocator et n'ecrit le profil nulle part.
   ///
   /// [currentPosition] a la signature de `Geolocator.getCurrentPosition` ;
-  /// [writeProfile] ecrit le profil dans le canal lu par l'isolate de fond.
+  /// [writeProfile] ecrit le profil dans le canal lu par l'isolate de fond ;
+  /// [readProfile] relit ce canal a la premiere ecoute, pour qu'une interface
+  /// relancee reprenne le profil choisi au lieu de l'ecraser par la carte.
   PositionController({
     PositionStreamFactory? positionStream,
     Future<Position> Function({required LocationSettings locationSettings})?
     currentPosition,
     Future<void> Function(PositionProfile profile)? writeProfile,
-  }) : _positionStream = positionStream ?? _geolocatorStream,
-       _currentPosition = currentPosition ?? _geolocatorCurrent,
-       _writeProfile = writeProfile;
-
-  final PositionStreamFactory _positionStream;
-  final Future<Position> Function({required LocationSettings locationSettings})
-  _currentPosition;
-  final Future<void> Function(PositionProfile profile)? _writeProfile;
-
-  /// Les profils que ce lot sait servir. Les autres sont refuses par
-  /// [setProfile] tant qu'un lot ne leur a pas donne de reglages.
-  static const Set<PositionProfile> activeProfiles = {PositionProfile.map};
-
-  /// Les reglages du profil [PositionProfile.map] : ceux de la souscription la
-  /// plus utilisee avant le lot 671-00 (carte, hors-trace, suivi), RECOPIES
-  /// tels quels — precision haute, filtre de 10 m, intervalle par defaut.
-  static const LocationSettings mapSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 10,
-  );
-
-  PositionProfile _profile = PositionProfile.map;
-  PositionProfile? _publishedProfile;
-  StreamSubscription<Position>? _source;
-  StreamController<Position>? _output;
-
-  /// Le profil courant.
-  PositionProfile get profile => _profile;
-
-  /// Les reglages Geolocator de [profile].
-  ///
-  /// Au lot 671-00, seul [PositionProfile.map] a des reglages propres ; les
-  /// profils nommes mais pas encore regles retombent sur ceux de la carte.
-  static LocationSettings settingsFor(PositionProfile profile) =>
-      switch (profile) {
-        PositionProfile.map => mapSettings,
-        PositionProfile.batteryFirst ||
-        PositionProfile.stationary ||
-        PositionProfile.lowBattery => mapSettings,
-      };
-
-  /// LE flux de positions de l'interface, diffuse a abonnes multiples.
-  ///
-  /// Tous les abonnes recoivent chaque position, d'une seule souscription a
-  /// la source. Si la source se termine, les abonnes du moment recoivent la
-  /// fin et une ecoute ulterieure repart sur une source neuve.
-  Stream<Position> get positions => (_output ??= _newOutput()).stream;
-
-  /// Une position unique, prise avec les reglages du profil courant.
-  Future<Position> currentPosition() =>
-      _currentPosition(locationSettings: settingsFor(_profile));
-
-  /// Change le profil courant et le publie pour l'isolate de fond.
-  ///
-  /// Refuse un profil hors de [activeProfiles] : au lot 671-00, un profil sans
-  /// reglages changerait la cadence sans que personne l'ait decide.
-  Future<void> setProfile(PositionProfile profile) async {
-    if (!activeProfiles.contains(profile)) {
-      throw UnsupportedError('Profil GPS non actif a ce lot : ${profile.name}');
-    }
-    _profile = profile;
-    await _publishProfile();
-  }
-
-  StreamController<Position> _newOutput() =>
-      StreamController<Position>.broadcast(onListen: _open, onCancel: _close);
-
-  void _open() {
-    unawaited(_publishProfile());
-    _source = _positionStream(locationSettings: settingsFor(_profile)).listen(
-      (position) => _output?.add(position),
-      onError: (Object error, StackTrace stackTrace) {
+    Future<PositionProfile> Function()? readProfile,
+    TimerScheduler? schedule,
+    DateTime Function()? now,
+  }) : _currentPosition = currentPosition ?? _geolocatorCurrent,
+       _writeProfile = writeProfile,
+       _readProfile = readProfile {
+    _engine = GpsCadenceEngine(
+      openStream: positionStream ?? _geolocatorStream,
+      takeShot: (settings) => _currentPosition(locationSettings: settings),
+      streamSettings: interfaceStreamSettings,
+      onFix: (position, _) => _output?.add(position),
+      onStreamError: (Object error, StackTrace stackTrace) {
         ErrorHandler.log(
           error,
           stackTrace: stackTrace,
@@ -149,20 +66,118 @@ class PositionController {
         );
         _output?.addError(error, stackTrace);
       },
-      onDone: () {
-        _source = null;
+      onStreamDone: () {
+        _engine.stop();
         final output = _output;
         _output = null;
         unawaited(output?.close());
       },
-      cancelOnError: false,
+      schedule: schedule,
+      now: now,
     );
   }
 
-  Future<void> _close() async {
-    final source = _source;
-    _source = null;
-    await source?.cancel();
+  final Future<Position> Function({required LocationSettings locationSettings})
+  _currentPosition;
+  final Future<void> Function(PositionProfile profile)? _writeProfile;
+  final Future<PositionProfile> Function()? _readProfile;
+  late final GpsCadenceEngine _engine;
+
+  /// Les profils que ce lot sait servir. Les autres sont refuses par
+  /// [setProfile] tant qu'un lot ne leur a pas donne de reglages.
+  static const Set<PositionProfile> activeProfiles = {
+    PositionProfile.map,
+    PositionProfile.batteryFirst,
+    PositionProfile.lowBattery,
+  };
+
+  /// Les reglages du profil [PositionProfile.map] : ceux de la souscription la
+  /// plus utilisee avant le lot 671-00 (carte, hors-trace, suivi) — precision
+  /// haute, filtre de 10 m, intervalle par defaut — traduits de
+  /// [GpsCadence.map] par la seule fonction de correspondance (lot 671-01).
+  static final LocationSettings mapSettings = interfaceStreamSettings(
+    GpsCadence.map,
+  );
+
+  PositionProfile _profile = PositionProfile.map;
+  PositionProfile? _publishedProfile;
+  bool _restored = false;
+  bool _chosen = false;
+  StreamController<Position>? _output;
+
+  /// Le profil courant.
+  PositionProfile get profile => _profile;
+
+  /// Vrai si une souscription au flux de la source est vivante.
+  bool get hasLiveSubscription => _engine.hasLiveSubscription;
+
+  /// Les reglages Geolocator d'une position prise pour [profile] : ceux du
+  /// flux de la carte, ou ceux d'un tir unique pour les profils batterie.
+  static LocationSettings settingsFor(PositionProfile profile) {
+    final cadence = GpsCadence.of(profile);
+    return cadence.isSingleShot ? singleShotSettings(cadence) : mapSettings;
+  }
+
+  /// LE flux de positions de l'interface, diffuse a abonnes multiples.
+  ///
+  /// Tous les abonnes recoivent chaque position, d'une seule source. Si la
+  /// source se termine, les abonnes du moment recoivent la fin et une ecoute
+  /// ulterieure repart sur une source neuve.
+  Stream<Position> get positions => (_output ??= _newOutput()).stream;
+
+  /// Une position unique, prise avec les reglages du profil courant.
+  Future<Position> currentPosition() =>
+      _currentPosition(locationSettings: settingsFor(_profile));
+
+  /// Change le profil courant, le publie pour l'isolate de fond, et change la
+  /// cadence de la source sans couper ses abonnes.
+  ///
+  /// Refuse un profil hors de [activeProfiles] : un profil sans reglages
+  /// changerait la cadence sans que personne l'ait decide.
+  Future<void> setProfile(PositionProfile profile) async {
+    if (!activeProfiles.contains(profile)) {
+      throw UnsupportedError('Profil GPS non actif a ce lot : ${profile.name}');
+    }
+    _chosen = true;
+    _profile = profile;
+    if (_engine.cadence != null) _engine.switchTo(GpsCadence.of(profile));
+    await _publishProfile();
+  }
+
+  StreamController<Position> _newOutput() =>
+      StreamController<Position>.broadcast(onListen: _open, onCancel: _close);
+
+  void _open() {
+    _engine.start(GpsCadence.of(_profile));
+    unawaited(_restoreThenPublish());
+  }
+
+  void _close() => _engine.stop();
+
+  /// A la premiere ecoute, reprend le profil range dans le canal (s'il est
+  /// servi et que personne n'en a choisi un entre-temps), sinon publie le
+  /// profil courant.
+  Future<void> _restoreThenPublish() async {
+    final read = _readProfile;
+    if (read != null && !_restored) {
+      _restored = true;
+      try {
+        final stored = await read();
+        if (!_chosen && activeProfiles.contains(stored)) {
+          _profile = stored;
+          _publishedProfile = stored;
+          if (_engine.cadence != null) _engine.switchTo(GpsCadence.of(stored));
+          return;
+        }
+      } on Object catch (e, st) {
+        ErrorHandler.log(
+          e,
+          stackTrace: st,
+          context: 'PositionController.restoreProfile',
+        );
+      }
+    }
+    await _publishProfile();
   }
 
   /// Ecrit le profil courant dans le canal de l'isolate de fond, s'il a

@@ -1,7 +1,7 @@
 // GARDE DE PLAFOND — OBS-01 : AUCUN ECRAN SANS MIETTE D'OBSERVABILITE
 // (lot 645-09).
 //
-// CE QUE CETTE GARDE MESURE. Les 62 ecrans de `lib/` (`*_screen.dart`), et
+// CE QUE CETTE GARDE MESURE. Les 63 ecrans de `lib/` (`*_screen.dart`), et
 // pour chacun : une miette d'entree, UNE SEULE, posee au point d'ENTREE de
 // l'ecran, et qui nomme le BON ecran.
 //
@@ -43,14 +43,19 @@ import 'mesure_des_sources_645.dart';
 /// PLAFOND A ZERO DEPUIS LE 03/10/2026 (lot 645-09).
 const plafondEcransSansMiette = 0;
 
-/// Le nombre d'ecrans attendu : 62 au 05/10/2026.
+/// Le nombre d'ecrans attendu : 63 au 06/10/2026.
+///
+/// IL ETAIT DE 62 JUSQU AU 06/10/2026. Le lot 671-01 ajoute l'ecran cache de
+/// mesure batterie (`mesure_batterie_screen.dart`), avec sa miette
+/// `ScreenBreadcrumb.mesureBatterie` posee une fois dans `initState`. 62 + 1 =
+/// 63, et la couverture reste a 100 %.
 ///
 /// IL ETAIT DE 63 JUSQU AU 05/10/2026. Le lot produit P1 (#101255) a retire
 /// `booking_screen.dart` et sa miette : la route /booking n avait ni porte, ni
 /// donnee, ni test, et son drapeau n a jamais ete ouvert — un ecran que
 /// personne ne pouvait atteindre portait donc une miette que personne ne
 /// pouvait emettre. 63 - 1 = 62, et la couverture reste a 100 %.
-const ecransAttendus = 62;
+const ecransAttendus = 63;
 
 final _classeDEcran = RegExp(
   r'class\s+(\w+Screen)\s+extends\s+'
@@ -129,13 +134,14 @@ void main() {
   });
 
   group('645-09 / OBS-01 — pas un ecran nu de plus', () {
-    test('la garde mesure bien les 62 ecrans du depot', () {
+    test('la garde mesure bien les $ecransAttendus ecrans du depot', () {
       expect(
         ecrans,
         hasLength(ecransAttendus),
         reason:
-            'le depot ne compte plus 62 ecrans : si un ecran a ete ajoute, il '
-            'lui faut sa miette ET une mise a jour de ce compte',
+            'le depot ne compte plus $ecransAttendus ecrans : si un ecran '
+            'a ete ajoute, il lui faut sa miette ET une mise a jour de ce '
+            'compte',
       );
     });
 

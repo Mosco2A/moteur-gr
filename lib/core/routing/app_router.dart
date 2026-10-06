@@ -28,6 +28,7 @@ import '../../features/planning/presentation/shop_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/trek_adjust_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
+import '../../features/settings/presentation/mesure_batterie_screen.dart';
 import '../../features/settings/presentation/recovery_code_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
@@ -125,6 +126,8 @@ final _rootNavigatorKey = cleNavigateurRacine;
 ///   /training                    - Programme d'entrainement pre-trek
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 ///   /settings                    - Parametres
+///   /mesure-batterie             - Mesure batterie, cachee (appui long sur
+///                                  le numero de version des reglages)
 ///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
@@ -691,6 +694,14 @@ final appRouter = GoRouter(
     // du coffre chiffre : profil + fiche sante + solde wallet) pour que
     // l'utilisateur le NOTE. Atteint depuis les reglages (push -> retour propre).
     // Sans sentier requis (donnee de compte) -> ajoute aux excludedPaths du guard.
+    // LOT 671-01 : l'ecran CACHE du build de mesure batterie. Sa seule porte
+    // est un appui long sur le numero de version des reglages. Sans sentier
+    // requis (reglage de l'appareil) -> ajoute aux chemins exclus du garde.
+    GoRoute(
+      path: '/mesure-batterie',
+      name: 'mesure-batterie',
+      builder: (context, state) => const MesureBatterieScreen(),
+    ),
     GoRoute(
       path: '/recovery-code',
       name: 'recovery-code',
@@ -875,6 +886,8 @@ String? redirectForPath(String path) {
     // Finitions V1 (point 4) : code de reconnexion = donnee de compte, sans
     // sentier requis (atteignable depuis les reglages, meme sans trek actif).
     '/recovery-code',
+    // Lot 671-01 : la mesure batterie se regle sans sentier actif.
+    '/mesure-batterie',
     // V1 ARGENT (tache 594) : compte-etapes et abonnement sont des donnees de
     // COMPTE. On recharge et on s'abonne sans sentier actif.
     '/wallet',
