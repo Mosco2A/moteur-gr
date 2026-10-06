@@ -38,7 +38,7 @@ const plafondRobinets = 2;
 /// Mesure du 06/10/2026 apres le lot 671-01 : la seule fonction de
 /// correspondance, `locationAccuracyOf` (8 avant le lot 671-00, 6 apres, 2
 /// apres la correspondance unique, 1 apres le retrait du regime adaptatif).
-const plafondPrecisionHaute = 2;
+const plafondPrecisionHaute = 1;
 
 /// Les deux fichiers qui ont le droit d'ouvrir un flux Geolocator.
 const robinetsAttendus = <String>[
