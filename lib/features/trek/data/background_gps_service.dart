@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/error/error_handler.dart';
 import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
+import '../../../core/services/sensor_fusion_service.dart';
 import 'background_cadence.dart';
 import 'measure_recorder.dart';
 
@@ -89,6 +90,16 @@ Future<void> bgWritePositionProfile(PositionProfile profile) async {
 /// Le pourcentage de batterie, lu comme le fait le pilotage batterie
 /// (`battery_aware_location_controller`) : `Battery().batteryLevel`.
 Future<int?> bgReadBatteryPercent() => Battery().batteryLevel;
+
+/// L'autorisation qui ouvre le podometre : la reconnaissance d'activite sur
+/// Android (10 et au-dela), les capteurs de mouvement sur iOS. LUE, jamais
+/// demandee ici : la demande part de l'ecran de mesure, une seule fois.
+Future<bool> _bgStepsAllowed() async {
+  final permission = Platform.isIOS
+      ? Permission.sensors
+      : Permission.activityRecognition;
+  return (await permission.status).isGranted;
+}
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
 ///
@@ -957,6 +968,12 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     observer: MeasureRecorder(
       journal: MeasureJournal.documents(),
       readBattery: bgReadBatteryPercent,
+      // LES PAS BRUTS, ouverts ICI, a un seul endroit, par le service
+      // existant : SensorFusionService est une classe simple, sans
+      // dependance a l'interface, et ses greffons sont enregistres dans le
+      // moteur de cet isolate.
+      stepCounts: () => SensorFusionService().stepCountStream(),
+      stepsAllowed: _bgStepsAllowed,
     ),
     log: _logBg,
   );

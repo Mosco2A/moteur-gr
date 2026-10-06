@@ -21,6 +21,7 @@
     <!-- Maintien du CPU eveille pendant la capture de fond (flutter_background_service). -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!-- Frequence cardiaque via ceinture BLE (Phase 6 F6F-02). Android 12+ :
          BLUETOOTH_SCAN (neverForLocation = pas de derivation de position via
          BLE) + BLUETOOTH_CONNECT. flutter_blue_plus. -->

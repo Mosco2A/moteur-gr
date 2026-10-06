@@ -25,22 +25,27 @@ import 'gps_cadence_engine.dart';
 class MeasureRecorder implements BackgroundCadenceObserver {
   /// [readBattery] rend le pourcentage de batterie (nul si illisible) ;
   /// [stepCounts] ouvre le flux du podometre (pas depuis le demarrage du
-  /// telephone), nul quand l'autorisation n'est pas accordee.
+  /// telephone) ; [stepsAllowed] dit si l'activite physique est autorisee.
+  /// Sans autorisation, le flux n'est pas ouvert et le champ pas vaut un
+  /// tiret : ni erreur, ni blocage, ni nouvelle demande.
   MeasureRecorder({
     required MeasureJournal journal,
     required Future<int?> Function() readBattery,
     Stream<int> Function()? stepCounts,
+    Future<bool> Function()? stepsAllowed,
     TimerScheduler? schedule,
     DateTime Function()? now,
   }) : _journal = journal,
        _readBattery = readBattery,
        _stepCounts = stepCounts,
+       _stepsAllowed = stepsAllowed,
        _schedule = schedule ?? Timer.new,
        _now = now ?? DateTime.now;
 
   final MeasureJournal _journal;
   final Future<int?> Function() _readBattery;
   final Stream<int> Function()? _stepCounts;
+  final Future<bool> Function()? _stepsAllowed;
   final TimerScheduler _schedule;
   final DateTime Function() _now;
   final BatteryStepTracker _battery = BatteryStepTracker();
@@ -76,7 +81,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     acquisitionWait = Duration.zero;
     _stepsAtStart = null;
     _stepsNow = null;
-    _listenSteps();
+    await _listenSteps();
     final battery = await _readBatterySafely();
     _battery.reset(battery);
     await _event(MeasureEvent.demarrage, battery: battery);
@@ -141,11 +146,13 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     });
   }
 
-  void _listenSteps() {
+  /// LES PAS BRUTS : le compte du podometre, ecrit au journal et a rien
+  /// d'autre. Il ne fait avancer aucun point et n'entre dans aucun calcul.
+  Future<void> _listenSteps() async {
     unawaited(_stepsSubscription?.cancel());
     _stepsSubscription = null;
     final open = _stepCounts;
-    if (open == null) return;
+    if (open == null || !await _isAllowed()) return;
     _stepsSubscription = open().listen(
       (count) {
         _stepsAtStart ??= count;
@@ -156,6 +163,16 @@ class MeasureRecorder implements BackgroundCadenceObserver {
       onError: (Object _) {},
       cancelOnError: true,
     );
+  }
+
+  Future<bool> _isAllowed() async {
+    final allowed = _stepsAllowed;
+    if (allowed == null) return true;
+    try {
+      return await allowed();
+    } on Object {
+      return false;
+    }
   }
 
   Future<void> _batteryStep(int? battery) async {
