@@ -2,8 +2,8 @@
 /// definition, en Dart pur, lue par l'isolate d'interface ET l'isolate de fond.
 ///
 /// POURQUOI EN DART PUR, ET POURQUOI DANS LE SOCLE. Ce fichier n'importe ni
-/// Flutter ni aucun greffon : il ne nomme donc pas `LocationAccuracy`, qui vient
-/// du greffon geolocator. Il porte SON PROPRE type de precision
+/// Flutter ni aucun greffon : il ne nomme donc pas `LocationAccuracy`, qui
+/// vient du greffon geolocator. Il porte SON PROPRE type de precision
 /// ([GpsPrecision]), et UNE SEULE fonction de `lib/features/trek/data/`
 /// (`gps_settings_mapping.dart`) le traduit en reglages du greffon. Il vit dans
 /// le socle parce que le journal de mesure (`journal_de_mesure.dart`, socle

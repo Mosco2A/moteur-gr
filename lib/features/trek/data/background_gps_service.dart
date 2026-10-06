@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -19,7 +20,9 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
 import '../../../core/services/gps_cadence.dart';
+import '../../../core/services/journal_de_mesure.dart';
 import 'background_cadence.dart';
+import 'measure_recorder.dart';
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -82,6 +85,10 @@ Future<void> bgWritePositionProfile(PositionProfile profile) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString(kPrefsBgProfile, profile.name);
 }
+
+/// Le pourcentage de batterie, lu comme le fait le pilotage batterie
+/// (`battery_aware_location_controller`) : `Battery().batteryLevel`.
+Future<int?> bgReadBatteryPercent() => Battery().batteryLevel;
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
 ///
@@ -337,6 +344,10 @@ class BackgroundGpsService {
   StreamSubscription<Map<String, dynamic>?>? _eventSubscription;
   StreamSubscription<Map<String, dynamic>?>? _heartbeatSubscription;
 
+  /// Les lignes ecran-on / ecran-off du journal de mesure, que seule
+  /// l'interface connait (lot 671-01). Vivantes le temps du suivi.
+  ScreenStateRecorder? _screenRecorder;
+
   /// Initialise le service (idempotent) : cree le canal + enregistre
   /// l'entrypoint. A appeler tot (boot) ; defensivement rappele par [start].
   Future<void> initialize() async {
@@ -476,6 +487,12 @@ class BackgroundGpsService {
       rethrow;
     }
 
+    _screenRecorder ??= ScreenStateRecorder(
+      journal: MeasureJournal.documents(),
+      readProfile: bgReadStoredPositionProfile,
+      readBattery: bgReadBatteryPercent,
+    )..start();
+
     // AUTO-DIAGNOSTIC (fire-and-forget, ne bloque pas l'UI ~4 s).
     unawaited(verifyServiceStarted());
   }
@@ -613,6 +630,8 @@ class BackgroundGpsService {
     if (!_running) return;
     _running = false;
     startStatus.value = GpsServiceStartStatus.idle;
+    _screenRecorder?.stop();
+    _screenRecorder = null;
     try {
       _service.invoke('stop');
     } catch (e) {
@@ -933,6 +952,12 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       await p.reload();
       return bgReadPositionProfile(p);
     },
+    // LE JOURNAL DE MESURE s'ecrit ICI, dans l'isolate qui reste eveille
+    // ecran eteint : demarrage, releves, reprises, arret, compteurs.
+    observer: MeasureRecorder(
+      journal: MeasureJournal.documents(),
+      readBattery: bgReadBatteryPercent,
+    ),
     log: _logBg,
   );
 
