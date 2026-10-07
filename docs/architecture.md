@@ -66,14 +66,14 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte 688 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-132 833 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+132 841 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 188 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 31 441 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 448 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 205 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 448 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 213 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 834 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -103,13 +103,13 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 72 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
 | … dont depuis `lib/core/routing/app_router.dart` | 51 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
 | … dont depuis tout autre fichier du socle | 21 <!-- audit:couches.socle_vers_feature[!~^lib/core/routing/app_router\.dart ] --> | **non** (règle 9) |
-| Imports d'une feature vers une autre feature | 159 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
-| … dont par la façade de la voisine | 159 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
+| Imports d'une feature vers une autre feature | 160 <!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
+| … dont par la façade de la voisine | 160 <!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
 | … dont vers l'intérieur de la voisine | 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$] --> | **oui** : zéro depuis le lot 645-05c (règle 10) |
 | Fichiers de présentation qui importent un paquet de données | 0 <!-- audit:couches.nombre_presentation_donnees --> | **oui** (ECR-25) |
 | Fichiers de feature hors d'une couche reconnue | 22 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
 
-Les 159 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
+Les 160 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
 fusionné de l'intégration 671). Le 05/10, le lot produit P1 (#101255) en a
 ajouté 7 en branchant `weather` et `hub` sur le réglage d'unité
 de température, par `settings_facade.dart` ; le 06/10, le lot 671-00 en a
@@ -121,9 +121,9 @@ la coche de chaque carte de « Préparer » se lit dans la feature qui détient 
 fait (`booking`, `checklist`, `feasibility`, `notifications`, `planning`,
 `safety`, `training`), par sa façade.
 
-Le 07/10 encore, le lot 671-06 en a ajouté 1 : le journal lit la trace du
-sentier actif (`statsTraceProvider`) par `map_facade.dart`, pour mesurer ses
-chiffres sur le tracé.
+Le 07/10 encore, le lot 671-06 en a ajouté 2 : le journal et le
+récapitulatif lisent la trace du sentier actif (`statsTraceProvider`) par
+`map_facade.dart`, pour mesurer leurs chiffres sur le tracé.
 Le chiffre qui compte — les croisements
 vers l'INTÉRIEUR d'une voisine — reste à zéro.
 

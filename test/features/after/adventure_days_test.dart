@@ -6,12 +6,14 @@ import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/domain/trek_session_mapping.dart';
+import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 
 /// CORRECTIF L5-5 — DETAIL JOUR PAR JOUR DE L'AVENTURE.
@@ -244,6 +246,69 @@ void main() {
       final c = makeContainer();
       addTearDown(c.dispose);
       expect(await c.read(adventureDaysProvider.future), isEmpty);
+    });
+  });
+
+  group('671-06 — chaque journee se mesure SUR LE TRACE', () {
+    test('le perimetre reste LA JOURNEE DE MARCHE ; la distance et le D+ '
+        'sont ceux de la tranche, la duree celle des releves', () async {
+      await seed();
+      // Un trace sur le meridien 9° E : une bosse de 60 m entre deux releves
+      // que la corde du jour 1 ne voit pas, puis le jour 2 plus au nord.
+      TrackPoint p(double lat, double alt) => TrackPoint(
+        lat: lat,
+        lng: 9.0,
+        altitude: alt,
+        distanceFromStart: (lat - 42.0) * 111194.93,
+      );
+      final trace = [
+        p(42.000, 900),
+        p(42.005, 960),
+        p(42.010, 900),
+        p(42.020, 900),
+        p(42.030, 1000),
+      ];
+      final base = DateTime.utc(2026, 6, 10, 8);
+      await traceAt(at: base, lat: 42.000, dayIndex: 1);
+      await traceAt(
+        at: base.add(const Duration(hours: 1)),
+        lat: 42.010,
+        dayIndex: 1,
+      );
+      await traceAt(
+        at: base.add(const Duration(days: 1)),
+        lat: 42.020,
+        dayIndex: 2,
+      );
+      await traceAt(
+        at: base.add(const Duration(days: 1, hours: 1)),
+        lat: 42.030,
+        dayIndex: 2,
+        altitude: 1000,
+      );
+
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(config),
+          currentTrailIdProvider.overrideWith((ref) => trailId),
+          demoModeServiceProvider.overrideWithValue(DemoModeService()),
+          gpxTrackProvider(trailId).overrideWith((ref) async => trace),
+        ],
+      );
+      addTearDown(c.dispose);
+      final days = await c.read(adventureDaysProvider.future);
+
+      expect(days, hasLength(2));
+      // La bosse de 60 m du jour 1, invisible des deux releves a 900 m.
+      expect(days.first.stats.elevationGainM, 60);
+      expect(days.first.stats.elevationLossM, 60);
+      expect(days.first.stats.duration, const Duration(hours: 1));
+      expect(days.first.stats.pointCount, 2);
+      // Le jour 2 ne compte que sa journee, pas la nuit qui le precede.
+      expect(days.last.stats.distanceKm, closeTo(1.112, 0.001));
+      expect(days.last.stats.elevationGainM, 100);
+      expect(days.last.stats.duration, const Duration(hours: 1));
     });
   });
 }
