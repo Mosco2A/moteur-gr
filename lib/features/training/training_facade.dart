@@ -20,7 +20,8 @@
 /// `training` devient l interface sur laquelle les autres reposent. La facade
 /// rend ce cout visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 1 FICHIER DE 1 FEATURE AU 03/10/2026 : `settings`.
+/// LUE PAR 2 FICHIERS DE 2 FEATURES AU 07/10/2026 : `hub`, `settings`.
 library;
 
-export 'providers/training_plan_providers.dart' show trainingProgressProvider;
+export 'providers/training_plan_providers.dart'
+    show trainingPlanProvider, trainingProgressProvider;

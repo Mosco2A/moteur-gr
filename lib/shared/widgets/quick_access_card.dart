@@ -17,9 +17,11 @@ import 'texte_ajuste.dart';
 /// action de navigation. Reutilise [AppCard] pour le style commun (radius,
 /// surface, ombre) — aucun style ad hoc.
 ///
-/// LOT-A (D2, arbitrage #94902) : cartes SIMPLES, sans indicateur de statut de
-/// preparation ni appui long (le `planningProgressProvider` + Drift sont
-/// DIFFERES). L'API reste volontairement minimale.
+/// LOT-A (D2, arbitrage #94902) : cartes SIMPLES, sans appui long. L'indicateur
+/// de statut de preparation ([stepStatus]) existait sans que personne le passe
+/// — la coche etait ecrite et jamais affichee. Depuis le lot coche de
+/// preparation (07/10), la section « Preparer » du cockpit le calcule depuis ce
+/// qui est deja persiste (`statutDePreparationProvider`, cote `hub`).
 ///
 /// Un etat [enabled] false rend la carte grisee et non cliquable (ex. Diplome
 /// verrouille tant que le trek n'est pas termine, RF-10/RM-5) et expose alors

@@ -25,7 +25,8 @@
 /// DELEGATION DE CHRISTOPHE : zero croisement vers l interieur d une
 /// feature.
 ///
-/// LUE PAR 1 FICHIER DE 1 FEATURE AU 05/10/2026 : `feasibility`.
+/// LUE PAR 2 FICHIERS DE 2 FEATURES AU 07/10/2026 : `feasibility`, `hub`.
 library;
 
+export 'data/checklist_template.dart' show defaultChecklistTemplate;
 export 'domain/season.dart' show Season;
