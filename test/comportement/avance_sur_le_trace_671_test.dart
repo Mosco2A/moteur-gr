@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,8 +7,10 @@ import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 import 'package:moteur_gr/features/trek/providers/live_trek_stats_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// LOT 671-03 — LE RECALAGE SUR LE TRACE, PROUVE SANS AUCUN CAPTEUR REEL.
 ///
@@ -76,6 +80,66 @@ void main() {
       expect(after.elevationLossM, before.elevationLossM);
       expect(after.pointCount, before.pointCount);
       expect(after.duration, before.duration);
+    });
+  });
+
+  group('(8) le tampon et le drain', () {
+    test('un point estime traverse le tampon avec son origine et arrive en '
+        'base avec elle ; un tampon de la version precedente se draine en '
+        'releves reels', () async {
+      final estimated = bgEncodePoint(
+        id: 'e1',
+        sessionId: 's',
+        trailId: 't',
+        latitude: 42.01,
+        longitude: 9.0,
+        altitude: 200,
+        accuracy: 0,
+        speed: 0,
+        timestamp: DateTime.utc(2026, 10, 7, 9, 1),
+        source: TrackPointSource.estimated,
+        trackDistanceM: 1111.1,
+      );
+      // La forme d'un tampon ecrit par la version 671-02 : sans origine.
+      final previous = Map<String, dynamic>.of(estimated)
+        ..remove('source')
+        ..remove('trackDistanceM')
+        ..['id'] = 'ancien';
+      SharedPreferences.setMockInitialValues({
+        kPrefsBgPointsBuffer: [jsonEncode(estimated), jsonEncode(previous)],
+      });
+      final drained = await BackgroundGpsService().drainBackgroundPoints();
+      expect(drained, hasLength(2));
+      expect(drained[0].source, TrackPointSource.estimated);
+      expect(drained[0].trackDistanceM, 1111.1);
+      expect(drained[1].source, TrackPointSource.gps);
+      expect(drained[1].trackDistanceM, isNull);
+
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      for (final p in drained) {
+        await db.sessionTrackPointsDao.insertPoint(
+          trailId: p.trailId,
+          lat: p.latitude,
+          lng: p.longitude,
+          altitude: p.altitude,
+          source: p.source,
+          recordedAt: p.timestamp,
+          sessionId: p.sessionId,
+        );
+      }
+      final all = await db.sessionTrackPointsDao.getBySessionId(
+        's',
+        read: TrackPointsRead.withEstimated,
+      );
+      expect(all.map((p) => p.source), ['estime', 'gps']);
+      expect(
+        await db.sessionTrackPointsDao.getBySessionId(
+          's',
+          read: TrackPointsRead.gpsOnly,
+        ),
+        hasLength(1),
+      );
     });
   });
 }

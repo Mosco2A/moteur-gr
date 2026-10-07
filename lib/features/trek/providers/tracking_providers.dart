@@ -247,7 +247,9 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       lat: p.latitude,
       lng: p.longitude,
       altitude: p.altitude,
-      source: TrackPointSource.gps,
+      // L'origine a traverse le tampon (lot 671-03) : un point estime arrive
+      // en base marque comme tel, un tampon d'avant vaut des releves reels.
+      source: p.source,
       recordedAt: p.timestamp,
       sessionId: session?.id,
       dayIndex: session == null

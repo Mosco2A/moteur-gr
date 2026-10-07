@@ -18,6 +18,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/error/error_handler.dart';
 import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
@@ -200,6 +201,11 @@ String bgNotificationContent(int positionsReceived, DateTime? lastFixAt) {
 }
 
 /// Encode un point de fond en Map JSON-serialisable pour le tampon de drain.
+///
+/// LOT 671-03 : l'ORIGINE du point ([source]) traverse le tampon, parce que
+/// c'est le seul chemin d'un point capte ecran eteint vers la table ; un point
+/// estime porte aussi sa distance sur le trace ([trackDistanceM]), que
+/// l'interface relit pour le placer sur son propre trace sans le reprojeter.
 Map<String, dynamic> bgEncodePoint({
   required String id,
   required String sessionId,
@@ -210,6 +216,8 @@ Map<String, dynamic> bgEncodePoint({
   required double accuracy,
   required double speed,
   required DateTime timestamp,
+  required TrackPointSource source,
+  double? trackDistanceM,
 }) => <String, dynamic>{
   'id': id,
   'sessionId': sessionId,
@@ -220,6 +228,8 @@ Map<String, dynamic> bgEncodePoint({
   'accuracy': accuracy,
   'speed': speed,
   'timestamp': timestamp.toIso8601String(),
+  'source': source.stored,
+  'trackDistanceM': ?trackDistanceM,
 };
 
 /// Etat de demarrage du foreground service, tel que verifie par
@@ -563,8 +573,13 @@ class BackgroundGpsService {
         timestamp:
             DateTime.tryParse(event['timestamp'] as String? ?? '') ??
             DateTime.now(),
+        source: TrackPointSource.fromStored(event['source'] as String?),
+        trackDistanceM: (event['trackDistanceM'] as num?)?.toDouble(),
       );
       if (!_trackPointController.isClosed) _trackPointController.add(point);
+      // Un point ESTIME n'est pas un releve : il ne touche ni au compteur de
+      // positions ni a l'heure du dernier fix du diagnostic.
+      if (point.source == TrackPointSource.estimated) return;
 
       final authoritative = event['positionsReceived'];
       final current = captureStats.value;
@@ -738,8 +753,13 @@ class BgTrackPoint {
     required this.accuracy,
     required this.speed,
     required this.timestamp,
+    this.source = TrackPointSource.gps,
+    this.trackDistanceM,
   });
 
+  /// LECTURE TOLERANTE (lot 671-03) : un tampon ecrit par la version
+  /// precedente ne porte pas l'origine, et il se draine quand meme — ses
+  /// points valent alors des releves reels.
   factory BgTrackPoint.fromJson(Map<String, dynamic> json) => BgTrackPoint(
     id: json['id'] as String? ?? '',
     sessionId: json['sessionId'] as String? ?? '',
@@ -752,6 +772,8 @@ class BgTrackPoint {
     timestamp:
         DateTime.tryParse(json['timestamp'] as String? ?? '') ??
         DateTime.fromMillisecondsSinceEpoch(0),
+    source: TrackPointSource.fromStored(json['source'] as String?),
+    trackDistanceM: (json['trackDistanceM'] as num?)?.toDouble(),
   );
 
   final String id;
@@ -764,6 +786,12 @@ class BgTrackPoint {
   final double speed;
   final DateTime timestamp;
 
+  /// L'origine : releve reel ou point estime le long du trace (lot 671-03).
+  final TrackPointSource source;
+
+  /// La distance sur le trace d'un point estime ; nulle pour un releve.
+  final double? trackDistanceM;
+
   Map<String, dynamic> toJson() => bgEncodePoint(
     id: id,
     sessionId: sessionId,
@@ -774,6 +802,8 @@ class BgTrackPoint {
     accuracy: accuracy,
     speed: speed,
     timestamp: timestamp,
+    source: source,
+    trackDistanceM: trackDistanceM,
   );
 }
 
@@ -892,6 +922,7 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       accuracy: position.accuracy,
       speed: position.speed,
       timestamp: now,
+      source: TrackPointSource.gps,
     );
 
     // 1) Persister dans le tampon (SEULE ecriture qui survit ecran eteint).
