@@ -54,10 +54,11 @@ import 'mesure_des_sources_645.dart';
 /// bruit.
 ///
 /// CE QUE CE LOT N'A PAS FAIT BAISSER, ET C'EST MESURE : la coche
-/// (`StepStatusIcon`, `PlanningStepStatus`) n'a JAMAIS figure dans cette liste.
-/// Depuis le lot 645-05c, `quick_access_card.dart` la cite hors de son
-/// fichier : la garde la comptait vivante alors qu'aucun ecran ne la montrait. Une
-/// citation n'est pas un affichage — ce que cette garde ne sait pas voir.
+/// (`StepStatusIcon`, `PlanningStepStatus`) n'a JAMAIS figure dans cette
+/// liste. Depuis le lot 645-05c, `quick_access_card.dart` la cite hors de son
+/// fichier : la garde la comptait vivante alors qu'aucun ecran ne la
+/// montrait. Une citation n'est pas un affichage — ce que cette garde ne sait
+/// pas voir.
 ///
 /// CE PLAFOND NE REMONTE JAMAIS.
 const plafondCodeMort = 139;
