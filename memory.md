@@ -28,3 +28,9 @@ _Notes locales de vulcain. La source de verite reste memory.db._
   pr_gate, merge, android_test, android_release : a corriger, hors lot.
 - Doc : docs/ci/signature_ios_modele_gr20.md. Tests : 621 reecrit, nouveau
   codemagic_signature_ios_modele_gr20_test.dart.
+- SUITE sous Flutter 3.47.6 (stable du jour, celui de `flutter: stable`) :
+  base 52fb8ac2 = +4265 ~4 -41 ; branche = +4282 ~4 -41 ; les 41 echecs ont
+  les MEMES noms (11 fichiers feasibility/safety/personas/structurel). Cause vue :
+  assertion Flutter neuve « ListTile ... wrapped in a DecoratedBox that has a
+  background color ». Consequence : l etape de tests BLOQUANTE des chaines
+  tomberait chez Codemagic tant que flutter n est pas epingle ou le code corrige.
