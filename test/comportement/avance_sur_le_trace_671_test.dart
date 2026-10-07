@@ -25,7 +25,9 @@ import 'package:moteur_gr/features/trail/trail_facade.dart' show stagesProvider;
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 import 'package:moteur_gr/features/trek/data/gps_service.dart';
 import 'package:moteur_gr/features/trek/data/position_controller.dart';
+import 'package:moteur_gr/features/trek/data/repli_gps_continu.dart';
 import 'package:moteur_gr/features/trek/providers/live_trek_stats_provider.dart';
+import 'package:moteur_gr/features/trek/providers/measure_bench_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -239,8 +241,8 @@ void main() {
     });
 
     test('UNE SORTIE DE SENTIER DE 300 M sur un releve reel declenche '
-        'l alerte, et ne la quitte pas sur un estime ; le retour sous le '
-        'seuil leve l alerte', () async {
+        'l alerte et fait passer le profil en carte ; le retour sous le '
+        'seuil leve l alerte et rend le profil choisi', () async {
       final c = await bench(PositionProfile.batteryFirst);
       nextShot = fixAt(1000);
       final sub = c.listen(trackPositionProvider, (_, _) {});
@@ -266,10 +268,28 @@ void main() {
       expect(spy.shows, 1, reason: 'une alerte, une seule');
       expect(position(c)!.isOffTrack, isTrue);
 
-      await nextPeriodicShot(fixAt(1180, eastM: 10));
+      final fallback = ContinuousGpsFallback(
+        apply: c.read(positionProfileChannelProvider),
+        chosen: PositionProfile.batteryFirst,
+      );
+      expect(
+        await fallback.observe(
+          offTrack: position(c)!.isOffTrack,
+          trackLoaded: true,
+          estimatePossible: true,
+        ),
+        ContinuousGpsReason.offTrack,
+      );
+      expect(controller.profile, PositionProfile.map);
+      await settle();
+      // Le GPS continu : le flux de la carte, celui du robinet unique.
+      stream.add(fixAt(1100, eastM: 10));
+      await settle();
       expect(c.read(offTrackProvider).isOffTrack, isFalse);
       expect(spy.cancels, 1);
       expect(position(c)!.isOffTrack, isFalse);
+      await fallback.observe(offTrack: position(c)!.isOffTrack);
+      expect(controller.profile, PositionProfile.batteryFirst);
     });
 
     test('une position ESTIMEE, a zero metre du trace par construction, ne '
@@ -308,6 +328,41 @@ void main() {
         found.join('\n'),
         contains('kOffTrackReturnThresholdMeters = 50.0'),
       );
+    });
+  });
+
+  group('(6) les sorties de secours passent par le canal, sans flux', () {
+    test('le canal change le profil du robinet unique et n ouvre aucun flux '
+        'de positions', () async {
+      final c = await bench(PositionProfile.batteryFirst);
+      expect(controller.hasLiveSubscription, isFalse);
+      await c.read(positionProfileChannelProvider)(PositionProfile.map);
+      expect(controller.profile, PositionProfile.map);
+      // Aucun abonne : aucun flux n'est ouvert par le changement de profil.
+      expect(controller.hasLiveSubscription, isFalse);
+    });
+
+    test('les fichiers neufs du lot n ouvrent aucun flux et ne nomment aucune '
+        'precision du greffon', () {
+      const newFiles = [
+        'lib/core/geo/track_projection.dart',
+        'lib/features/map/providers/current_position_provider.dart',
+        'lib/features/trek/data/estime_de_fond.dart',
+        'lib/features/trek/data/repli_gps_continu.dart',
+        'lib/features/trek/data/trace_de_fond.dart',
+        'lib/features/trek/presentation/map/recalage_mount.dart',
+      ];
+      final forbidden = RegExp(
+        r'getPositionStream|getCurrentPosition|LocationAccuracy|'
+        r'gyroscope|Gyroscope|listenManual\(\s*positionStreamProvider',
+      );
+      for (final f in newFiles) {
+        expect(
+          forbidden.hasMatch(File(f).readAsStringSync()),
+          isFalse,
+          reason: f,
+        );
+      }
     });
   });
 
