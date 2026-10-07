@@ -1,4 +1,4 @@
-/// La section « Preparer » du cockpit et ses quatorze cartes d'acces.
+/// La section « Preparer » du cockpit et ses douze cartes d'acces.
 library;
 
 import 'package:flutter/material.dart';
