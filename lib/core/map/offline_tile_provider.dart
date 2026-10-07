@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_mbtiles/flutter_map_mbtiles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:mbtiles/mbtiles.dart';
 
 import 'mbtiles_manager.dart';
 import 'test_inert_tile_provider.dart';
@@ -134,12 +135,32 @@ class OfflineTileProvider {
   /// L'ouverture lit les metadonnees, la sonde interroge la table des tuiles ;
   /// l'une ou l'autre qui leve, et c'est le reseau. La connexion d'examen est
   /// toujours refermee : la couche ouvre la sienne, dont elle a la charge.
+  ///
+  /// POURQUOI `MbTiles` EN DIRECT, ET `gzip` DONNE EXPRES (tache 731). Cette
+  /// methode passait par `MbTilesTileProvider.fromPath`, qui construit un
+  /// `MbTiles` SANS lui dire `gzip`. Le constructeur devine alors l'encodage
+  /// des tuiles en appelant lui-meme `getMetadata()`, APRES avoir ouvert la
+  /// base : sur un fichier abime cette requete LEVE, le constructeur ne rend
+  /// jamais son objet, et la connexion deja ouverte n'appartient a personne —
+  /// plus aucun `dispose()` ne peut la fermer. Un fichier de carte abime
+  /// faisait donc fuir UNE CONNEXION ET UN DESCRIPTEUR A CHAQUE OUVERTURE
+  /// D'ECRAN DE CARTE. Sous Linux le defaut reste invisible (on y efface un
+  /// fichier ouvert) ; sous Windows l'effacement est refuse, et c'est ce qui
+  /// l'a revele.
+  ///
+  /// `gzip` donne, il ne reste du constructeur que l'ouverture de la base,
+  /// qui REUSSIT meme sur une base abimee — SQLite ne lit les pages qu'a la
+  /// premiere requete. L'objet existe donc, nous le POSSEDONS, et le
+  /// `finally` le ferme toujours, quelle que soit l'etape qui leve. `false`
+  /// est de toute facon la valeur juste pour une carte raster `png`, et
+  /// l'examen ne lit aucune tuile pour l'afficher : l'affichage, lui, garde
+  /// `fromPath` et sa detection d'encodage.
   static ChoixDuFond examinerLeFichier(String chemin) {
-    MbTilesTileProvider? examen;
+    MbTiles? examen;
     try {
-      examen = MbTilesTileProvider.fromPath(path: chemin);
-      final meta = examen.mbtiles.getMetadata();
-      examen.mbtiles.getTile(z: 0, x: 0, y: 0);
+      examen = MbTiles(mbtilesPath: chemin, gzip: false);
+      final meta = examen.getMetadata();
+      examen.getTile(z: 0, x: 0, y: 0);
       _log.d('[OfflineTileProvider] Fond hors ligne: $chemin');
       return FondDuFichier(
         chemin: chemin,

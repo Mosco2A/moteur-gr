@@ -82,6 +82,17 @@ dependencies:
   # --- Cartes & GPS ---
   flutter_map: ^8.2.0
   flutter_map_mbtiles: ^1.0.4
+  # `mbtiles` EN DEPENDANCE NORMALE (tache 731) : le decideur du fond de carte
+  # (lib/core/map/offline_tile_provider.dart) ouvre LUI-MEME la base pour
+  # l'examiner, et doit pouvoir la REFERMER quand le fichier est abime.
+  # `flutter_map_mbtiles` ne reexporte que `MbTilesTileProvider`, dont le
+  # constructeur `fromPath` fuyait une connexion SQLite sur chaque carte
+  # illisible. L'ARBRE DES PAQUETS NE GAGNE RIEN : `mbtiles` y arrivait deja
+  # en transitif par `flutter_map_mbtiles`, et en dependance de TEST depuis la
+  # tache 648 (d'ou il est retire, un paquet ne pouvant etre dans les deux
+  # listes). Seule sa VISIBILITE change, ce qu'exige
+  # `depend_on_referenced_packages` pour un import depuis `lib/`.
+  mbtiles: ^0.4.0
   latlong2: ^0.9.0
   geolocator: ^11.0.0
   gpx: ^2.2.0
@@ -208,12 +219,12 @@ dev_dependencies:
   flutter_local_notifications_platform_interface: ^8.0.0
   path_provider_platform_interface: ^2.1.2
   # INTEGRATION 647 — LECTURE DIRECTE D UN .mbtiles DANS UN TEST (tache 648).
-  # `mbtiles` arrivait jusqu ici en transitif, par `flutter_map_mbtiles`. Le test
-  # test/outillage/cartes_publiees_648_test.dart l importe DIRECTEMENT pour ouvrir
-  # la carte publiee et relire une tuile : s appuyer sur un transitif, c est
-  # dependre d un choix que fait un autre paquet, et l analyse le dit
-  # (depend_on_referenced_packages). Dependance de TEST uniquement.
-  mbtiles: ^0.4.0
+  # `mbtiles` etait declare ICI, en dependance de TEST, pour que
+  # test/outillage/cartes_publiees_648_test.dart puisse ouvrir la carte
+  # publiee et relire une tuile. IL EST MONTE EN DEPENDANCE NORMALE (tache
+  # 731, voir le commentaire dans `dependencies`) : `lib/` l importe
+  # desormais, et un paquet ne peut pas figurer dans les deux listes. Les
+  # tests y gagnent, une dependance normale etant visible depuis `test/`.
   build_runner: ^2.4.0
   drift_dev: ^2.22.1
   freezed: ^3.2.5
