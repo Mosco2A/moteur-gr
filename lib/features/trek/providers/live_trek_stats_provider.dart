@@ -5,6 +5,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/session_track_points_dao.dart';
+import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../map/map_facade.dart'

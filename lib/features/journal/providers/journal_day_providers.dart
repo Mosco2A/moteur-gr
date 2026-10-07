@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../domain/models/journal_entry.dart';
