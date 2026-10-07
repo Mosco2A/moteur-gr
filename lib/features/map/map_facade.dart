@@ -22,8 +22,14 @@
 ///
 /// LUE PAR 15 FICHIERS DE 6 FEATURES AU 05/10/2026 : `community`,
 /// `feasibility`, `hub`, `safety`, `settings`, `trek`.
+///
+/// LOT 671-03, LE RECALAGE SUR LE TRACE : `trek` lit `OffTrackDetector`,
+/// pour que l'estime de l'isolate de fond se suspende hors du trace avec les
+/// MEMES seuils et la MEME hysteresis que l'alerte de la carte — une seule
+/// verite pour une seule question.
 library;
 
+export 'domain/off_track_detector.dart' show OffTrackDetector;
 export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
 export 'providers/gpx_track_provider.dart' show gpxTrackProvider;
 export 'providers/location_provider.dart' show locationProvider;

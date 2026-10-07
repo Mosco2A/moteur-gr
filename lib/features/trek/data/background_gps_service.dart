@@ -20,12 +20,15 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/error/error_handler.dart';
+import '../../../core/geo/track_projection.dart';
 import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
 import '../../../core/services/sensor_fusion_service.dart';
 import 'background_cadence.dart';
+import 'estime_de_fond.dart';
 import 'measure_recorder.dart';
 import 'podometre_preferences.dart';
+import 'trace_de_fond.dart';
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -939,6 +942,31 @@ Future<void> _onServiceStart(ServiceInstance service) async {
     return true;
   }
 
+  /// Un point ESTIME retenu (lot 671-03) : il suit EXACTEMENT le chemin d'un
+  /// releve — le tampon, puis l'interface — avec son origine. Il ne compte
+  /// pas comme une position recue et ne touche pas a l'heure du dernier fix.
+  Future<void> handleEstimate(TrackAbscissa estimate) async {
+    final pointMap = bgEncodePoint(
+      id: uuid.v4(),
+      sessionId: sessionId,
+      trailId: trailId,
+      latitude: estimate.lat,
+      longitude: estimate.lng,
+      altitude: estimate.altitude,
+      accuracy: 0,
+      speed: 0,
+      timestamp: DateTime.now(),
+      source: TrackPointSource.estimated,
+      trackDistanceM: estimate.distanceFromStartM,
+    );
+    await bufferPoint(pointMap);
+    service.invoke('trackPoint', {
+      ...pointMap,
+      'positionsReceived': positionsReceived,
+      'via': 'estime',
+    });
+  }
+
   void startGpsListening() {
     if (!bgShouldSubscribe(hasSubscription: cadence.isRunning)) {
       _logBg('[bg] deja abonne -> pas de re-abonnement');
@@ -1018,6 +1046,22 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       // ligne de compteurs.
       podometer: PodometerStore(),
       sessionId: () => sessionId,
+      // L'ESTIME SUR LE TRACE (lot 671-03), mene ICI, dans l'isolate qui
+      // recoit les pas ecran eteint. Le trace est relu au canal
+      // ([kPrefsBgTrace]) ; le plafond de distance relance un tir par le
+      // moteur des cadences, sans en changer la periode.
+      estimate: BackgroundEstimate(
+        readTrace: () async {
+          final p = prefs;
+          if (p == null) return null;
+          await p.reload();
+          return p.getString(kPrefsBgTrace);
+        },
+        trailId: () => trailId,
+        keepDistanceMeters: () => distanceFilter,
+        requestFix: () => cadence.engine.rearm(),
+      ),
+      onEstimateKept: handleEstimate,
     ),
     log: _logBg,
   );
