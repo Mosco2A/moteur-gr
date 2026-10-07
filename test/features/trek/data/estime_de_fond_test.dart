@@ -102,6 +102,42 @@ void main() {
       );
     });
 
+    test('UN ALLER-RETOUR SUR LA MEME PORTION : ce que la regle des deux '
+        'releves en fait, chiffre', () {
+      final r = TrackDeadReckoning(traceOf());
+      double fixAt(double m, int steps) {
+        final p = at(m);
+        return r.recalibrate(latitude: p.lat, longitude: p.lng, steps: steps) ??
+            0;
+      }
+
+      // 0,75 m par pas, exactement : l erreur ne vient que du sens.
+      fixAt(1000, 0);
+      r.advance(steps: 266, strideMeters: 0.75); // montee de 200 m
+      expect(fixAt(1200, 267), closeTo(0.5, 0.5));
+      expect(r.direction, WalkDirection.increasing);
+      // 100 m de montee puis 100 m de descente : le releve retombe a 1 200 m.
+      r.advance(steps: 534, strideMeters: 0.75);
+      final turn = fixAt(1200, 534);
+      // L estime a continue a monter : 200 m d ecart, et le sens ne change
+      // pas (les deux releves sont a la meme distance, sous la zone morte).
+      expect(turn, closeTo(200, 1));
+      expect(r.direction, WalkDirection.increasing);
+      // Le randonneur redescend 200 m : l estime monte encore, 400 m d ecart.
+      r.advance(steps: 801, strideMeters: 0.75);
+      final wrong = fixAt(1000, 801);
+      expect(wrong, closeTo(400, 1));
+      // Ce releve-la retourne enfin le sens : l intervalle suivant est juste.
+      expect(r.direction, WalkDirection.decreasing);
+      r.advance(steps: 1068, strideMeters: 0.75);
+      expect(fixAt(800, 1068), closeTo(0, 1));
+      // ignore: avoid_print
+      print(
+        'ALLER-RETOUR : ecart ${turn.toStringAsFixed(1)} m au releve du '
+        'demi-tour, ${wrong.toStringAsFixed(1)} m au suivant, puis 0',
+      );
+    });
+
     test('avant le deuxieme releve, le sens est celui que le trek connait', () {
       final r = TrackDeadReckoning(traceOf(d: WalkDirection.decreasing));
       final a = at(3000);
