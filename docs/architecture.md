@@ -66,14 +66,14 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte 691 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-133 505 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+133 506 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 187 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 31 487 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 451 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 796 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 451 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 797 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 834 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 

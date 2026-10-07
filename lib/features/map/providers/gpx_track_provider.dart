@@ -47,8 +47,9 @@ final gpxTrackProvider = FutureProvider.family<List<TrackPoint>, String>((
 
 /// La trace du sentier ACTIF avec sa PROVENANCE (base ou asset embarque).
 ///
-/// [gpxTrackProvider] ne rend que les points, parce que ses cinq consommateurs
-/// n ont besoin que de cela. La provenance est exposee separement pour qu un
+/// [gpxTrackProvider] ne rend que les points, parce que ses consommateurs —
+/// sept fichiers au lot 671-04, les charnieres comprises — n ont besoin que de
+/// cela. La provenance est exposee separement pour qu un
 /// ecran de diagnostic — ou un test — puisse verifier d ou vient la trace sans
 /// avoir a deviner : « la trace s affiche » et « la trace vient de la base » sont
 /// deux affirmations differentes, et c est la seconde qui prouve que le mur est
