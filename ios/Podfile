@@ -1,0 +1,54 @@
+# PLATEFORME DECLAREE — 13.0, LUE ET NON CHOISIE. Sans cette ligne, CocoaPods
+# en choisit une seul (premiere compilation iPhone du 07/10 : « Automatically
+# assigning platform iOS with version 15.0 on target Runner because no platform
+# was specified »). La valeur est celle que le projet Xcode demande :
+# `IPHONEOS_DEPLOYMENT_TARGET = 13.0` sur les trois configurations du projet
+# Runner (Debug, Release, Profile), dont la cible Runner herite.
+# Le 15.0 du journal ne vient pas du depot : depuis Flutter 3.47.0, `flutter
+# build ios` passe la migration `IOSDeploymentTargetMigration`, qui reecrit
+# 13.0 en 15.0 dans le projet Xcode ET dans cette ligne, ensemble. Sous un
+# Flutter 3.41 ou 3.44 les deux restent a 13.0 ; sous 3.47 les deux passent a
+# 15.0. Jamais l un sans l autre : des pods compiles pour un iOS plus recent que
+# l application, c est un module Swift refuse a la compilation.
+platform :ios, '13.0'
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+  end
+end
