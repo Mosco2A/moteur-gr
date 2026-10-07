@@ -1,1 +1,1 @@
-escursione,trekking,sentiero,GPS,offline,mappa,GPX,traccia,tappa,dislivello,rifugio,bivacco,montagna
+escursione,escursionismo,sentiero,mappa,GPX,traccia,dislivello,rifugio,bivacco,montagna,meteo,SOS

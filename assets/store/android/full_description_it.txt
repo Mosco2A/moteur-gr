@@ -1,45 +1,43 @@
-StepWays trasforma la tua escursione in un'esperienza guidata, dalla prima ricognizione all'ultimo passo — completamente offline.
+StepWays ti accompagna sul tuo sentiero di lunga percorrenza, dalla preparazione fino all'ultima tappa. Nessun account da creare: l'app si apre e si scopre subito, con una demo gratuita.
 
-Scarica un sentiero e parti senza rete: mappa, traccia GPS, pianificazione e diario restano disponibili ovunque tu sia.
+Tappe, traccia, punti di interesse e numeri di soccorso del sentiero sono salvati sul tuo telefono. Senza rete, la tua posizione, la traccia e gli avvisi di uscita dal sentiero continuano a funzionare.
 
-PIANIFICA IL TUO TREK
-• Pianificazione adatta al tuo livello, alle tue date e al tuo ritmo
-• Tappe dettagliate: distanze, dislivelli e tempi di percorrenza stimati
-• Profili altimetrici interattivi per ogni tappa
-• Opzioni di alloggio elencate lungo l'itinerario
+PREPARA IL TUO TREK
+• Il sentiero suddiviso in giorni, con un programma consigliato in base al tuo test di fattibilità
+• Tappe dettagliate: distanza, dislivello positivo e negativo, tempo di cammino stimato
+• Alloggi elencati lungo l'itinerario
+• Lista dell'attrezzatura da spuntare, adatta alla stagione
+• Schede di consigli e piano di allenamento
 
-GUIDA GPS PRECISA
-• Traccia GPX ad alta definizione per seguire il percorso giusto
-• Monitoraggio in tempo reale dei tuoi progressi sulla mappa
-• Avvisi di deviazione per restare sul sentiero
-• Funziona al 100% offline, nessuna rete necessaria
+GUIDA GPS
+• La tua posizione e i tuoi progressi in tempo reale sulla mappa
+• Un avviso quando ti allontani dal sentiero, rimosso appena lo ritrovi
+• Distanza percorsa, dislivello accumulato, tempo di cammino e velocità, in diretta
 
-MAPPE OFFLINE
-• Mappe scaricabili per settore, consultabili senza connessione
-• Punti di interesse: fonti d'acqua, ripari, punti panoramici
-• Dati compatti per preservare la memoria del telefono
+MAPPA E PUNTI DI INTERESSE
+• Mappa del sentiero con la traccia e le tappe
+• Punti di interesse: sorgenti d'acqua, ripari, punti panoramici, negozi
+• Lo sfondo della mappa si carica con la rete
 
-PUNTI DI INTERESSE
-• Fonti d'acqua e punti di rifornimento
-• Alloggi, rifugi e aree per il bivacco
-• Punti panoramici geolocalizzati
+METEO E SICUREZZA
+• Meteo di ogni tappa: oggi e i due giorni successivi
+• Livello di rischio incendi per ogni tappa, calcolato dal meteo
+• Pulsante SOS che chiama il 112
+• Numeri di soccorso regionali, specifici per ogni sentiero
+• Scheda di emergenza (salute, persone da avvisare) conservata sul tuo telefono
 
-MONITORAGGIO DEI PROGRESSI
-• Statistiche del tuo trek in corso
-• Distanza percorsa, dislivello cumulato, tempo di cammino
-• Cronologia delle tue escursioni passate
-• Diploma di completamento personalizzato
+DIARIO DI VIAGGIO E RICORDI
+• Diario di viaggio con le tue note e le tue foto, ordinate per tappa
+• I tuoi trek conclusi restano in «I miei trek»
+• Diploma di fine percorso personalizzato, da condividere
+• Esporta la tua traccia in formato GPX
+• Condividi il tuo piano, il diario o il diploma con un tocco
 
-CONDIVISIONE E DIARIO DI VIAGGIO
-• Condividi i tuoi progressi con i tuoi cari in tempo reale
-• Diario di viaggio illustrato con foto geolocalizzate
-• Esporta le tue tracce in formato GPX
+PRIVACY
+• Nessun account da creare, né nome né indirizzo e-mail richiesti
+• Le tue foto e il tuo diario restano sul tuo telefono
+• Nessun dato di posizione usato a fini pubblicitari
 
-PROGETTATO PER IL TERRENO
-• Modalità di risparmio energetico
-• Interfaccia leggibile in piena luce solare
-• Pensato per le zone senza copertura di rete
+Ogni sentiero arriva con le proprie tappe, i propri punti di interesse e i numeri di soccorso regionali. L'app è disponibile in francese, inglese, tedesco, italiano e spagnolo, con tema scuro o chiaro.
 
-StepWays si adatta a ogni sentiero: colori, tappe, punti di interesse e numeri di soccorso regionali sono forniti dalla configurazione del percorso. Che tu stia preparando la tua prima lunga escursione o sia un camminatore esperto, l'app ti accompagna prima, durante e dopo l'avventura.
-
-Scarica il tuo primo sentiero e pianifica subito il tuo prossimo trek.
+Prova la demo gratuita, poi scegli il tuo sentiero.
