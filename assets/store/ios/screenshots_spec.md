@@ -1,4 +1,4 @@
-# Captures d'écran — App Store (The Ways)
+# Captures d'écran — App Store (StepWays)
 
 Référence des visuels à fournir dans App Store Connect. Aucune capture binaire
 n'est versionnée ici : ce fichier décrit les tailles, le nombre et le contenu

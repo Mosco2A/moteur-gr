@@ -1,11 +1,11 @@
-# App Store — Notes pour la revue (App Review Notes — The Ways)
+# App Store — Notes pour la revue (App Review Notes — StepWays)
 
 À coller dans App Store Connect > Informations pour la révision > Notes.
 Contenu générique (moteur de randonnée paramétrique) : aucune marque de sentier.
 
 ## Présentation de l'app
 
-The Ways est une application de randonnée hors ligne. L'utilisateur télécharge
+StepWays est une application de randonnée hors ligne. L'utilisateur télécharge
 un sentier (carte, trace GPX, étapes), puis navigue, planifie et enregistre sa
 randonnée sans connexion réseau. L'app s'adapte à chaque sentier via une
 configuration (couleurs, étapes, points d'intérêt, numéros de secours).

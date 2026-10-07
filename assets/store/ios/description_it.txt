@@ -1,4 +1,4 @@
-The Ways trasforma la tua escursione in un'esperienza guidata, dalla prima ricognizione all'ultimo passo — completamente offline.
+StepWays trasforma la tua escursione in un'esperienza guidata, dalla prima ricognizione all'ultimo passo — completamente offline.
 
 Scarica un sentiero e parti senza rete: mappa, traccia GPS, pianificazione e diario restano disponibili ovunque tu sia.
 
@@ -40,6 +40,6 @@ PRIVACY
 • La tua posizione è condivisa solo quando la attivi, tramite un link privato
 • Nessun dato di posizione usato per la pubblicità
 
-The Ways si adatta a ogni sentiero: colori, tappe, punti di interesse e numeri di soccorso regionali sono forniti dalla configurazione del percorso. Che tu stia preparando la tua prima lunga escursione o sia un camminatore esperto, l'app ti accompagna prima, durante e dopo l'avventura.
+StepWays si adatta a ogni sentiero: colori, tappe, punti di interesse e numeri di soccorso regionali sono forniti dalla configurazione del percorso. Che tu stia preparando la tua prima lunga escursione o sia un camminatore esperto, l'app ti accompagna prima, durante e dopo l'avventura.
 
 Scarica il tuo primo sentiero e pianifica subito il tuo prossimo trek.

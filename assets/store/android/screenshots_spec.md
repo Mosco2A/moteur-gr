@@ -1,4 +1,4 @@
-# Captures d'écran — Google Play Store (The Ways)
+# Captures d'écran — Google Play Store (StepWays)
 
 Référence des visuels à fournir lors de la soumission. Aucune capture binaire
 n'est versionnée ici : ce fichier décrit les tailles, le nombre et le contenu

@@ -1,4 +1,4 @@
-The Ways macht aus deiner Wanderung ein geführtes Erlebnis, von der ersten Erkundung bis zum letzten Schritt — komplett offline.
+StepWays macht aus deiner Wanderung ein geführtes Erlebnis, von der ersten Erkundung bis zum letzten Schritt — komplett offline.
 
 Lade einen Weg herunter und brich ohne Empfang auf: Karte, GPS-Track, Planung und Tagebuch bleiben überall verfügbar.
 
@@ -40,6 +40,6 @@ FÜR DAS GELÄNDE GEMACHT
 • Bei hellem Sonnenlicht lesbare Anzeige
 • Für Gebiete ohne Netzabdeckung konzipiert
 
-The Ways passt sich an jeden Weg an: Farben, Etappen, interessante Orte und regionale Notrufnummern liefert die Konfiguration der Route. Ob du deine erste lange Wanderung vorbereitest oder ein erfahrener Wanderer bist, die App begleitet dich vor, während und nach dem Abenteuer.
+StepWays passt sich an jeden Weg an: Farben, Etappen, interessante Orte und regionale Notrufnummern liefert die Konfiguration der Route. Ob du deine erste lange Wanderung vorbereitest oder ein erfahrener Wanderer bist, die App begleitet dich vor, während und nach dem Abenteuer.
 
 Lade deinen ersten Weg herunter und plane jetzt deine nächste Tour.

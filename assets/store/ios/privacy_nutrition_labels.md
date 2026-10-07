@@ -1,4 +1,4 @@
-# App Store — Étiquettes de confidentialité (Privacy Nutrition Labels — The Ways)
+# App Store — Étiquettes de confidentialité (Privacy Nutrition Labels — StepWays)
 
 Référence pour la section « Confidentialité de l'app » d'App Store Connect.
 Contenu générique (moteur de randonnée paramétrique). Source des chaînes

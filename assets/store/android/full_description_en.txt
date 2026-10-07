@@ -1,4 +1,4 @@
-The Ways turns your hike into a guided experience, from the first scouting to the final step — fully offline.
+StepWays turns your hike into a guided experience, from the first scouting to the final step — fully offline.
 
 Download a trail and set off without a signal: the map, GPS track, planner and journal stay available wherever you are.
 
@@ -40,6 +40,6 @@ BUILT FOR THE FIELD
 • Display readable in bright sunlight
 • Designed for areas with no network coverage
 
-The Ways adapts to every trail: colours, stages, points of interest and regional emergency numbers are supplied by the route's configuration. Whether you are preparing your first long hike or you are a seasoned walker, the app supports you before, during and after the adventure.
+StepWays adapts to every trail: colours, stages, points of interest and regional emergency numbers are supplied by the route's configuration. Whether you are preparing your first long hike or you are a seasoned walker, the app supports you before, during and after the adventure.
 
 Download your first trail and start planning your next trek now.

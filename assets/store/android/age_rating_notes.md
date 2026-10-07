@@ -1,4 +1,4 @@
-# Google Play — Classification du contenu & déclarations (The Ways)
+# Google Play — Classification du contenu & déclarations (StepWays)
 
 Référence pour le questionnaire de classification du contenu (IARC) et les
 déclarations sensibles de la Play Console. Aucune marque de sentier : le contenu
