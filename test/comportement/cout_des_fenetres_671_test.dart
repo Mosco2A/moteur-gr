@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/database.dart' show SessionTrackPoint;
 import 'package:moteur_gr/core/geo/charnieres_du_trace.dart';
 import 'package:moteur_gr/core/geo/trace_point.dart';
+import 'package:moteur_gr/core/geo/track_segment_stats.dart';
 import 'package:moteur_gr/core/services/gps_cadence.dart';
 import 'package:moteur_gr/features/trek/data/gpx_parser.dart';
 
@@ -130,6 +132,45 @@ void main() {
     // 72,9 km a 4 km/h : 18 h 13, 365 tirs a 3 minutes.
     expect(l['tirs_sans_fenetres'], 365);
   }, timeout: const Timeout(Duration(minutes: 10)));
+
+  test('LE TEMOIN DES CHIFFRES DU JOUR (fiche E6) : les tirs de fenetre sont '
+      'des releves REELS, ils changent la distance du jour — le chiffre est '
+      'donne pour le lot 671-06, rien n est corrige ici', () async {
+    final trace = traceFabrique();
+    final charnieres = charnieresDuTrace(trace);
+    double distanceDuJour(Traversee t) {
+      final points = [
+        for (var i = 0; i < t.tirs; i++)
+          () {
+            final p = pointAtteint(trace, t.abscissesDesTirs[i]);
+            return SessionTrackPoint(
+              id: i,
+              trailId: 'banc',
+              lat: p.lat,
+              lng: p.lng,
+              altitude: 0,
+              recordedAt: DateTime.utc(2026, 10, 7, 8).add(t.heuresDesTirs[i]),
+            );
+          }(),
+      ];
+      // Le moteur unique des chiffres du jour, tel que liveTrekStatsProvider
+      // l'appelle sur les releves reels de la session.
+      return computeTrackStats(points).distanceKm * 1000;
+    }
+
+    final sans = distanceDuJour(await traverser(trace, charnieres: const []));
+    final avec = distanceDuJour(await traverser(trace, charnieres: charnieres));
+    final reel = trace.last.distanceFromStart;
+    // ignore: avoid_print
+    print(
+      'TEMOIN E6 distance du jour : sans fenetre ${sans.toStringAsFixed(1)} m, '
+      'avec fenetres ${avec.toStringAsFixed(1)} m, trace ${reel.round()} m',
+    );
+    // Des points reels de plus, sur le trace : la distance mesuree se
+    // rapproche du trace, elle ne le depasse pas.
+    expect(avec, greaterThan(sans));
+    expect(avec, lessThanOrEqualTo(reel + 1));
+  });
 
   test('l arithmetique de la fiche : 300 m a 4 km/h se traversent en '
       '4 min 30, neuf tirs a 30 s contre un et demi a 3 minutes', () {
