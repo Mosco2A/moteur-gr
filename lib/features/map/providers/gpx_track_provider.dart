@@ -65,3 +65,20 @@ final traceDuSentierProvider = FutureProvider.family<TrailTrack, String>((
         cheminAsset: config.id == trailId ? config.gpxAssetPath : '',
       );
 });
+
+/// La trace du sentier ACTIF telle que la lisent les chiffres du jour (lot
+/// 671-06), ou `null` quand elle est indisponible.
+///
+/// Les chiffres de la carte, du journal et du recapitulatif se calculent sur
+/// la tranche de cette trace que le randonneur a parcourue. Une trace qui ne
+/// se charge pas (sentier sans trace en base ni dans le binaire) n'est pas une
+/// erreur pour eux : ils reviennent aux releves, comme avant le lot. Le choix
+/// est fait ICI, une fois, plutot que dans chacun des trois.
+final statsTraceProvider = FutureProvider<List<TrackPoint>?>((ref) async {
+  final trailId = ref.watch(trailIdProvider);
+  try {
+    return await ref.watch(gpxTrackProvider(trailId).future);
+  } on Object {
+    return null;
+  }
+});

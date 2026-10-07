@@ -29,12 +29,17 @@
 /// verite pour une seule question. Et `trek` lit `currentPositionProvider`,
 /// la position courante (releve, ou point estime entre deux releves), pour le
 /// marqueur de la carte, son bouton « centrer sur moi » et l'altitude.
+///
+/// LOT 671-06, LES STATISTIQUES SUR LE TRACE : `trek`, `journal` et `after`
+/// lisent `statsTraceProvider`, la trace du sentier actif ou `null`, pour
+/// calculer les chiffres du jour sur la tranche du sentier parcourue.
 library;
 
 export 'domain/off_track_detector.dart' show OffTrackDetector;
 export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
 export 'providers/current_position_provider.dart' show currentPositionProvider;
-export 'providers/gpx_track_provider.dart' show gpxTrackProvider;
+export 'providers/gpx_track_provider.dart'
+    show gpxTrackProvider, statsTraceProvider;
 export 'providers/location_provider.dart' show locationProvider;
 export 'providers/map_pois_provider.dart' show mapPoisProvider;
 export 'providers/off_track_provider.dart'

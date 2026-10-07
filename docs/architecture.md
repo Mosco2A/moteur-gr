@@ -66,14 +66,14 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte 688 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-132 781 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+132 818 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` | 188 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 31 441 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 448 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 153 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` | 448 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 190 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 834 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -88,7 +88,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` | 66 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 14 558 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `trek` | 66 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 14 573 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> | 6 803 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 442 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 061 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |

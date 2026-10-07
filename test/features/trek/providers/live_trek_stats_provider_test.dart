@@ -1,10 +1,14 @@
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trek/providers/live_trek_stats_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
@@ -15,8 +19,34 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 /// alimente par personne, la seule source vivante est la trace persistee de
 /// la session. Ces tests verifient que c'est bien elle qui est lue, et que
 /// rien n'est invente quand elle est vide.
+///
+/// LOT 671-06 — LE SUJET A CHANGE PAR DECISION DE CHRISTOPHE : la distance et
+/// le denivele se mesurent desormais SUR LE TRACE, entre le premier releve
+/// reel de la session et le dernier ; les releves ne font plus que borner et
+/// dater la tranche. Ces tests recoivent donc un trace, et ce trace passe par
+/// leurs releves avec les memes altitudes : les chiffres attendus n'ont pas
+/// bouge d'une unite. Sans lui, le conteneur chargeait le trace du sentier
+/// par defaut, a des centaines de kilometres des releves.
 void main() {
   late AppDatabase db;
+
+  /// Le trace du test, le long du meridien 3° E, par les releves des tests.
+  final trace = <TrackPoint>[];
+  for (final (lat, alt) in [
+    (45.000, 1000.0),
+    (45.005, 1050.0),
+    (45.010, 1200.0),
+    (45.020, 1100.0),
+  ]) {
+    trace.add(
+      TrackPoint(
+        lat: lat,
+        lng: 3.0,
+        altitude: alt,
+        distanceFromStart: (lat - 45.0) * 111194.93,
+      ),
+    );
+  }
 
   setUp(() => db = AppDatabase(NativeDatabase.memory()));
   tearDown(() async => db.close());
@@ -35,6 +65,8 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+        gpxTrackProvider(testTrailConfig.id).overrideWith((ref) async => trace),
         trekSessionManagerProvider.overrideWith(
           () => _FixedSessionNotifier(
             TrackingSessionState(status: status, session: active),
