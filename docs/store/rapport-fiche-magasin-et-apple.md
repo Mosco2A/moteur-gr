@@ -89,11 +89,15 @@ corrigées aussi :
 - cinq langues, thème sombre ou clair.
 
 La description est désormais **la même pour les deux magasins**, langue par
-langue. Longueurs, sur une limite de 4 000 caractères :
+langue. Elle se termine par la mention des achats intégrés et les liens
+vers les conditions et la politique de confidentialité. Apple les exige dès
+qu'un abonnement se renouvelle automatiquement (règle 3.1.2), et
+`stepways_sub_noads_monthly` en est un. Longueurs, sur une limite de
+4 000 caractères :
 
 | Langue | fr | en | de | it | es |
 |---|---|---|---|---|---|
-| Description | 2 279 | 1 990 | 2 135 | 2 222 | 2 167 |
+| Description | 2 659 | 2 291 | 2 498 | 2 583 | 2 539 |
 
 **Le titre garde « hors ligne », et c'est un risque que je signale.** Le
 titre « StepWays - Rando hors ligne » a été validé par Christophe, donc je ne
@@ -168,3 +172,63 @@ Le texte promotionnel n'existait pas. Il est créé dans
   doublon, promesses retirées dans cinq langues, chiffrement, cinq langues
   des autorisations, copie dans le paquet, et aucun identifiant dans les
   notes.
+
+## Étape 5 — Le document pour remplir la page
+
+`docs/store/fiche-app-store-connect.md` suit l'ordre du formulaire App Store
+Connect. Chaque champ y porte « À COLLER » (le texte exact ou son fichier),
+« À PRODUIRE » (ce qu'il faut) ou « DÉCISION DE CHRISTOPHE » (les options et
+leurs conséquences).
+
+Les réponses aux questions posées par le lot :
+
+- **Adresse d'assistance (obligatoire).** `https://only1cent.com/stepways/conditions`
+  pour le français, `…/conditions-en` pour les quatre autres langues. Cette
+  page répond 200 et donne `contact@only1cent.com`.
+  - Ce qui manquerait pour mieux faire : une page `/stepways/support` dédiée.
+  - Le réseau de ce poste refuse `only1cent.com`, donc je n'ai pas pu
+    revérifier les pages moi-même : Christophe les ouvre une fois avant de
+    coller.
+- **Adresse marketing.** Ce champ est **facultatif** chez Apple, contrairement
+  à ce que disait la consigne. Il vaut mieux le laisser vide plutôt que d'y
+  mettre une page qui ne présente pas l'application.
+- **Droits d'auteur.** `2026 Only1Cent`, à condition que ce soit le nom du
+  vendeur du compte développeur.
+- **Numéro de version.** Le `1.0` du formulaire n'est pas dans le dépôt : c'est
+  le nom par défaut qu'App Store Connect donne à la première version. Le
+  dépôt enverra `0.1.7`. Le build ne s'attachera à la page que si les deux
+  numéros sont identiques. Trois options, laissées à Christophe ; rien n'a
+  été changé.
+- **Xcode et SDK.** C'est tenable : Codemagic prend `xcode: latest`, qui est
+  un Xcode 26 ou plus en octobre 2026. Ce n'est pas vérifié sur Codemagic, et
+  le dépôt ne fige pas la version.
+- **CFBundleName.** Je propose `StepWays`. Rien n'a été changé, conformément à
+  la consigne.
+
+## Étape 6 — Ce que j'ai trouvé en route et que je n'ai pas corrigé
+
+Le détail est au § 8 du document récapitulatif. Classé du plus grave au moins
+grave :
+
+1. **Les publicités iPhone partiraient avec les identifiants de test de
+   Google.** Aucune chaîne iPhone ne passe `ADMOB_BANNER_IOS` ni
+   `ADMOB_REWARDED_IOS`, et `Release.xcconfig` retombe sur l'App ID de test.
+   C'est de l'infra, donc hors de mes droits.
+2. **`dart analyze --no-fatal-infos`, l'étape d'analyse de toutes les chaînes
+   Codemagic, est refusé par le Flutter stable du jour (3.47.6, Dart 3.13).**
+   Message : « Cannot negate option », code de sortie 64. Si Codemagic est
+   sur cette version, `ios_testflight` s'arrête avant de construire. C'est de
+   l'infra.
+3. **Une déclaration de suivi publicitaire sans fenêtre ATT.** C'est un
+   motif de refus en revue (règle 5.1.2). La décision revient à Christophe.
+4. **Les paquets Santé et Bluetooth sont liés sans fonction visible.** Ce
+   sont deux paquets morts à retirer.
+5. **Le catalogue montre « Volcans Trail » (sentier de test) et
+   « Traversée des Pyrénées » (sans trace).**
+6. **L'accueil de l'application promet encore une carte hors ligne**
+   (`onboarding.welcomeSubtitle`, `onboarding.downloadSubtitle`).
+7. **Le correctif de carte hors ligne** (la ligne 190 de `map_content.dart`)
+   appartient à l'autre session.
+8. **`docs/store/app-privacy-att.md` et `docs/store/data-safety.md` datent
+   d'avant l'extinction du partage.** Ils déclarent la position comme
+   collectée.
