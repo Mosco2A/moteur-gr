@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../map/map_facade.dart' show locationProvider, trackPositionProvider;
+import '../../map/map_facade.dart'
+    show currentPositionProvider, trackPositionProvider;
 import 'tracking_providers.dart';
 
 /// Chiffres MESURES de la randonnee EN COURS (correctif L6-2).
@@ -63,8 +64,12 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
 /// Les deux chiffres sont differents et le second ne repond pas a la question
 /// « je suis a quelle altitude ». Un fix sans altitude renvoie exactement 0 :
 /// ne rien montrer vaut mieux qu'un « 0 m » faux en pleine montagne.
+///
+/// LOT 671-03 : la POSITION COURANTE, releve ou point estime ; entre deux
+/// releves des profils batterie, l'altitude est celle du trace sous le point
+/// estime, plus fraiche que celle d'un releve vieux de trois minutes.
 final currentAltitudeProvider = Provider<double?>((ref) {
-  final position = ref.watch(locationProvider).value;
+  final position = ref.watch(currentPositionProvider).value;
   if (position == null) return null;
   final alt = position.altitude;
   if (alt == 0) return null;

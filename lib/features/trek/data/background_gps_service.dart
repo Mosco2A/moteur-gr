@@ -817,6 +817,17 @@ final backgroundGpsServiceProvider = Provider<BackgroundGpsService>((ref) {
   return service;
 });
 
+/// LES POINTS ESTIMES RETENUS PAR L'ISOLATE DE FOND (lot 671-03), tels que
+/// l'interface les recoit : c'est d'eux que la carte tient sa position
+/// courante entre deux releves, en profil batterie. Isole en `Provider` de
+/// flux pour etre surchargeable dans les tests, comme le flux du hors-trace.
+final estimatedTrackPointsProvider = Provider<Stream<BgTrackPoint>>((ref) {
+  return ref
+      .watch(backgroundGpsServiceProvider)
+      .trackPointStream
+      .where((p) => p.source == TrackPointSource.estimated);
+});
+
 // =========================================================
 // CODE EXECUTE DANS L'ISOLATE DU SERVICE DE FOND
 // =========================================================

@@ -1,13 +1,28 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/features/map/providers/current_position_provider.dart';
+import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
+import 'package:moteur_gr/features/map/providers/location_provider.dart';
+import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
+import 'package:moteur_gr/features/notifications/domain/notification_service.dart';
+import 'package:moteur_gr/features/notifications/providers/notification_provider.dart';
+import 'package:moteur_gr/features/trail/trail_facade.dart' show stagesProvider;
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
+import 'package:moteur_gr/features/trek/data/gps_service.dart';
+import 'package:moteur_gr/features/trek/data/position_controller.dart';
 import 'package:moteur_gr/features/trek/providers/live_trek_stats_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +35,200 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// marchera avec un telephone : ce que ce lot affirme, il le prouve ici.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  const metersPerDegree = 111195.0;
+  final track = [
+    for (var i = 0; i <= 300; i++)
+      TrackPoint(
+        lat: 42.0 + i * 10 / metersPerDegree,
+        lng: 9.0,
+        altitude: 100.0 + i,
+        distanceFromStart: i * 10.0,
+      ),
+  ];
+
+  var clock = DateTime(2026, 10, 7, 9);
+  Position fixAt(double meters, {double eastM = 0}) {
+    clock = clock.add(const Duration(minutes: 3));
+    return Position(
+      latitude: 42.0 + meters / metersPerDegree,
+      longitude: 9.0 + eastM / (metersPerDegree * 0.7431),
+      timestamp: clock,
+      accuracy: 5,
+      altitude: 100,
+      altitudeAccuracy: 3,
+      heading: 0,
+      headingAccuracy: 0,
+      speed: 1.1,
+      speedAccuracy: 0.5,
+    );
+  }
+
+  BgTrackPoint estimateAt(double meters) {
+    clock = clock.add(const Duration(seconds: 20));
+    return BgTrackPoint(
+      id: 'e$meters',
+      sessionId: 's',
+      trailId: testTrailConfig.id,
+      latitude: 42.0 + meters / metersPerDegree,
+      longitude: 9.0,
+      altitude: 100 + meters / 10,
+      accuracy: 0,
+      speed: 0,
+      timestamp: clock,
+      source: TrackPointSource.estimated,
+      trackDistanceM: meters,
+    );
+  }
+
+  /// Le banc d'un test : le vrai controleur GPS sur de faux tirs et un faux
+  /// flux, la carte et le hors-trace branches dessus.
+  late StreamController<Position> stream;
+  late StreamController<BgTrackPoint> estimates;
+  late List<(Duration, void Function())> timers;
+  late Position nextShot;
+  late PositionController controller;
+  late _SpyNotifications spy;
+
+  Future<void> settle() async {
+    for (var i = 0; i < 20; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+  }
+
+  Future<ProviderContainer> bench(PositionProfile profile) async {
+    stream = StreamController<Position>.broadcast();
+    estimates = StreamController<BgTrackPoint>.broadcast();
+    timers = [];
+    spy = _SpyNotifications();
+    controller = PositionController(
+      positionStream: ({required locationSettings}) => stream.stream,
+      currentPosition: ({required locationSettings}) async => nextShot,
+      schedule: (d, run) {
+        timers.add((d, run));
+        return _NoTimer();
+      },
+    );
+    await controller.setProfile(profile);
+    final container = ProviderContainer(
+      overrides: [
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+        gpxTrackProvider(testTrailConfig.id).overrideWith((ref) async => track),
+        stagesProvider(testTrailConfig.id).overrideWith((ref) async => []),
+        positionControllerProvider.overrideWithValue(controller),
+        gpsPermissionProvider.overrideWith(
+          (ref) async => GpsPermissionStateValues.granted,
+        ),
+        estimatedTrackPointsProvider.overrideWithValue(estimates.stream),
+        notificationServiceProvider.overrideWithValue(spy),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await stream.close();
+      await estimates.close();
+    });
+    await container.read(gpxTrackProvider(testTrailConfig.id).future);
+    return container;
+  }
+
+  /// Le tir suivant du profil de tir : celui que la periode a arme.
+  Future<void> nextPeriodicShot(Position fix) async {
+    nextShot = fix;
+    final armed = timers.lastWhere((t) => t.$1 > const Duration(minutes: 1));
+    timers.remove(armed);
+    armed.$2();
+    await settle();
+  }
+
+  TrackPositionState? position(ProviderContainer c) =>
+      c.read(trackPositionProvider).value;
+
+  group('(3) le branchement en un seul point', () {
+    test('EN PROFIL CARTE, la position courante est la position REELLE, au '
+        'metre pres : un point estime qui passe est ignore', () async {
+      final c = await bench(PositionProfile.map);
+      final sub = c.listen(trackPositionProvider, (_, _) {});
+      addTearDown(sub.close);
+      await settle();
+      final real = fixAt(1000);
+      stream.add(real);
+      await settle();
+      estimates.add(estimateAt(1500));
+      await settle();
+      final current = c.read(currentPositionProvider).value!;
+      expect(current.isEstimated, isFalse);
+      expect(current.latitude, real.latitude);
+      expect(current.longitude, real.longitude);
+      expect(current.accuracy, real.accuracy);
+      expect(position(c)!.distanceFromStartM, closeTo(1000, 0.5));
+      expect(position(c)!.isEstimated, isFalse);
+    });
+
+    test('EN PROFIL BATTERIE D ABORD, entre deux releves la position est '
+        'l ESTIME et elle AVANCE ; au releve suivant elle est REMISE a la '
+        'position reelle projetee', () async {
+      final c = await bench(PositionProfile.batteryFirst);
+      nextShot = fixAt(1000);
+      final sub = c.listen(trackPositionProvider, (_, _) {});
+      addTearDown(sub.close);
+      await settle();
+      expect(position(c)!.distanceFromStartM, closeTo(1000, 0.5));
+
+      for (final m in [1050.0, 1100.0, 1150.0]) {
+        estimates.add(estimateAt(m));
+        await settle();
+        final p = position(c)!;
+        expect(p.isEstimated, isTrue);
+        expect(p.distanceFromStartM, closeTo(m, 1e-6));
+        expect(p.distanceToTrackM, 0);
+      }
+      expect(c.read(stageDistanceCoveredProvider), closeTo(1150, 1e-6));
+
+      await nextPeriodicShot(fixAt(1180));
+      final p = position(c)!;
+      expect(p.isEstimated, isFalse);
+      expect(p.distanceFromStartM, closeTo(1180, 0.5));
+      // Un estime calcule AVANT ce releve, arrive en retard, est perime.
+      estimates.add(
+        BgTrackPoint(
+          id: 'perime',
+          sessionId: 's',
+          trailId: testTrailConfig.id,
+          latitude: 42.01,
+          longitude: 9.0,
+          altitude: 100,
+          accuracy: 0,
+          speed: 0,
+          timestamp: clock.subtract(const Duration(minutes: 1)),
+          source: TrackPointSource.estimated,
+          trackDistanceM: 1170,
+        ),
+      );
+      await settle();
+      expect(position(c)!.distanceFromStartM, closeTo(1180, 0.5));
+    });
+
+    test('les huit lecteurs de la projection ne lisent plus le flux GPS brut '
+        'en direct', () {
+      const readers = [
+        'lib/features/map/map_facade.dart',
+        'lib/features/map/providers/supply_alert_provider.dart',
+        'lib/features/map/widgets/stage_poi_checklist.dart',
+        'lib/features/trek/presentation/map/map_content.dart',
+        'lib/features/trek/presentation/map/map_overlays.dart',
+        'lib/features/trek/presentation/map/map_photo_button.dart',
+        'lib/features/trek/providers/live_trek_stats_provider.dart',
+        'lib/features/map/providers/track_position_provider.dart',
+      ];
+      final direct = RegExp(r'ref\.(watch|read|listen)\(\s*locationProvider');
+      for (final f in readers) {
+        final text = File(f).readAsStringSync();
+        expect(text, contains('trackPositionProvider'), reason: f);
+        expect(direct.hasMatch(text), isFalse, reason: '$f lit le GPS brut');
+      }
+    });
+  });
 
   group('(4) LES CHIFFRES DU JOUR NE BOUGENT PAS', () {
     test('la distance et le denivele du jour sont IDENTIQUES au metre pres '
@@ -142,6 +351,31 @@ void main() {
       );
     });
   });
+}
+
+class _NoTimer implements Timer {
+  @override
+  void cancel() {}
+
+  @override
+  bool get isActive => false;
+
+  @override
+  int get tick => 0;
+}
+
+class _SpyNotifications extends NotificationService {
+  int shows = 0;
+  int cancels = 0;
+
+  @override
+  Future<void> showOffTrackAlert({
+    required String title,
+    required String body,
+  }) async => shows++;
+
+  @override
+  Future<void> cancelOffTrackAlert() async => cancels++;
 }
 
 class _FixedSession extends TrekSessionManagerNotifier {

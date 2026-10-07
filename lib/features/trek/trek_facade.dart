@@ -31,9 +31,14 @@
 /// (l'explication du podometre au demarrage d'un trek), `settings` lit
 /// `PodometerSettingsTile` (la ligne des reglages) et `StrideCalibration`
 /// (la longueur de pas que montre l'ecran cache de mesure).
+///
+/// LOT 671-03, LE RECALAGE SUR LE TRACE : `map` lit `BgTrackPoint` et
+/// `estimatedTrackPointsProvider`, les points estimes que l'isolate de fond
+/// fait avancer le long du trace, pour en tenir la position courante.
 library;
 
-export 'data/background_gps_service.dart' show kLowBatteryThreshold;
+export 'data/background_gps_service.dart'
+    show BgTrackPoint, estimatedTrackPointsProvider, kLowBatteryThreshold;
 export 'data/gps_service.dart'
     show
         GpsPermissionResultValues,

@@ -18,7 +18,7 @@ import '../../../../shared/widgets/attribution_osm.dart';
 import '../../../map/map_facade.dart'
     show
         StageProgressBar,
-        locationProvider,
+        currentPositionProvider,
         mapFocusStage,
         mapPoisProvider,
         simplifiedTrackProvider,
@@ -272,11 +272,11 @@ class _MapContentState extends State<MapContent> {
                   },
                 ),
 
-                // 4. Position utilisateur
+                // 4. Position courante (lot 671-03) : releve, ou estime
                 Consumer(
                   builder: (context, ref, _) {
                     final positionAsync = ref.watch(
-                      locationProvider.select((async) => async.value),
+                      currentPositionProvider.select((async) => async.value),
                     );
 
                     if (positionAsync == null) {

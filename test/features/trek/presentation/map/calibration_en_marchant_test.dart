@@ -40,7 +40,7 @@ class _Projection extends Notifier<AsyncValue<TrackPositionState>> {
   @override
   AsyncValue<TrackPositionState> build() => const AsyncLoading();
 
-  void aller(double metres) => state = AsyncData(
+  void aller(double metres, {bool estime = false}) => state = AsyncData(
     TrackPositionState(
       userLat: 42,
       userLng: 9,
@@ -52,6 +52,7 @@ class _Projection extends Notifier<AsyncValue<TrackPositionState>> {
       trackIndex: 1,
       stageDetection: (stageNumber: 1, event: 'between'),
       isOffTrack: false,
+      isEstimated: estime,
     ),
   );
 }
@@ -96,6 +97,23 @@ void main() {
     await tester.pump();
     expect(espion.distances, [120, 400]);
     expect(find.byType(Text), findsNothing);
+  });
+
+  testWidgets('lot 671-03 : un point ESTIME n est jamais offert a la '
+      'calibration, qui mesurerait sa propre hypothese', (tester) async {
+    final (espion, conteneur) = await monter(
+      tester,
+      TrackingSessionStatus.recording,
+    );
+    conteneur.read(_projection.notifier).aller(120);
+    await tester.pump();
+    conteneur.read(_projection.notifier).aller(200, estime: true);
+    await tester.pump();
+    conteneur.read(_projection.notifier).aller(300, estime: true);
+    await tester.pump();
+    conteneur.read(_projection.notifier).aller(400);
+    await tester.pump();
+    expect(espion.distances, [120, 400]);
   });
 
   testWidgets('en pause, rien n est offert et l intervalle est oublie', (

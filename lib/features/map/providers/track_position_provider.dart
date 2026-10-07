@@ -1,17 +1,23 @@
 /// Ou le marcheur se trouve SUR la trace : projection, etape courante et
 /// distances, calculees en une fois pour l'affichage temps reel.
+///
+/// LOT 671-03 : la projection lit la POSITION COURANTE
+/// ([currentPositionProvider]) — le releve reel en profil carte, le point
+/// estime le long du trace entre deux releves en profils batterie. La carte,
+/// la barre d'etape, la distance restante, la detection d'etape et l'alerte
+/// ravitaillement suivent sans etre touchees.
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../../core/models/stage_row.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
+import 'current_position_provider.dart';
 import 'gpx_track_provider.dart';
-import 'location_provider.dart';
 
 /// Position de l'utilisateur sur le trace avec toutes les infos calculees.
 ///
@@ -29,9 +35,10 @@ class TrackPositionState {
     required this.trackIndex,
     required this.stageDetection,
     required this.isOffTrack,
+    this.isEstimated = false,
   });
 
-  /// Position GPS brute de l'utilisateur
+  /// Position GPS brute de l'utilisateur (ou le point estime, sur le trace)
   final double userLat;
   final double userLng;
 
@@ -56,6 +63,10 @@ class TrackPositionState {
 
   /// Vrai si l'utilisateur est a plus de 100m du trace
   final bool isOffTrack;
+
+  /// Vrai quand la position est un point ESTIME le long du trace entre deux
+  /// releves (lot 671-03) ; faux pour un releve reel.
+  final bool isEstimated;
 
   /// Distance restante en kilometres, arrondie a 1 decimale
   double get distanceRemainingKm => (distanceRemainingM / 100).round() / 10;
@@ -88,7 +99,7 @@ final _lastTrackIndexProvider = NotifierProvider<_LastTrackIndexNotifier, int?>(
 /// Calcule la projection en temps reel et expose un [TrackPositionState]
 /// complet pour l'UI (carte + barre de progression).
 final trackPositionProvider = Provider<AsyncValue<TrackPositionState>>((ref) {
-  final positionAsync = ref.watch(locationProvider);
+  final positionAsync = ref.watch(currentPositionProvider);
 
   return positionAsync.when(
     data: (position) => _computeProjection(ref, position),
@@ -97,8 +108,11 @@ final trackPositionProvider = Provider<AsyncValue<TrackPositionState>>((ref) {
   );
 });
 
-/// Calcule la projection a partir d'une position GPS recue.
-AsyncValue<TrackPositionState> _computeProjection(Ref ref, Position position) {
+/// Calcule la projection a partir de la position courante.
+AsyncValue<TrackPositionState> _computeProjection(
+  Ref ref,
+  CurrentPosition position,
+) {
   // Sentier ACTIF (correctif L6-2 suite, 21/09/2026).
   //
   // Cette ligne lisait un identifiant 'default' ECRIT EN DUR. Or
@@ -124,15 +138,7 @@ AsyncValue<TrackPositionState> _computeProjection(Ref ref, Position position) {
         );
       }
 
-      final lastIndex = ref.read(_lastTrackIndexProvider);
-
-      // Projeter la position sur le trace
-      final projection = TrackProjector.project(
-        userLat: position.latitude,
-        userLng: position.longitude,
-        trackPoints: trackPoints,
-        lastKnownIndex: lastIndex,
-      );
+      final projection = _project(ref, position, trackPoints);
 
       // Memoriser l'index pour l'optimisation fenetree.
       // DIFFERE (microtask) : ecrire un autre provider PENDANT le build de
@@ -165,12 +171,49 @@ AsyncValue<TrackPositionState> _computeProjection(Ref ref, Position position) {
         trackIndex: projection.trackIndexPosition,
         stageDetection: detection,
         isOffTrack: projection.distanceToTrackM > _offTrackThresholdM,
+        isEstimated: position.isEstimated,
       );
 
       return AsyncData(state);
     },
     loading: () => const AsyncLoading(),
     error: (error, stack) => AsyncError(error, stack),
+  );
+}
+
+/// La position courante SUR le trace.
+///
+/// Un releve est PROJETE (fenetre de 50 segments autour du dernier index). Un
+/// point estime porte deja sa distance sur le trace : il est PLACE a cette
+/// abscisse par la fonction pure d'avance ([TrackProjector.locate]), sans
+/// reprojection — une reprojection pourrait le faire sauter sur le brin
+/// voisin d'un lacet.
+TrackProjection _project(
+  Ref ref,
+  CurrentPosition position,
+  List<TrackPoint> trackPoints,
+) {
+  final trackDistance = position.trackDistanceM;
+  if (trackDistance != null) {
+    final located = TrackProjector.locate(
+      trackPoints: trackPoints,
+      distanceFromStartM: trackDistance,
+    );
+    return (
+      projectedLat: located.lat,
+      projectedLng: located.lng,
+      distanceToTrackM: 0,
+      trackIndexPosition: located.segmentIndex,
+      distanceFromStartM: located.distanceFromStartM,
+      distanceRemainingM:
+          trackPoints.last.distanceFromStart - located.distanceFromStartM,
+    );
+  }
+  return TrackProjector.project(
+    userLat: position.latitude,
+    userLng: position.longitude,
+    trackPoints: trackPoints,
+    lastKnownIndex: ref.read(_lastTrackIndexProvider),
   );
 }
 
