@@ -1,16 +1,40 @@
-# PLATEFORME DECLAREE — 13.0, LUE ET NON CHOISIE. Sans cette ligne, CocoaPods
-# en choisit une seul (premiere compilation iPhone du 07/10 : « Automatically
-# assigning platform iOS with version 15.0 on target Runner because no platform
-# was specified »). La valeur est celle que le projet Xcode demande :
-# `IPHONEOS_DEPLOYMENT_TARGET = 13.0` sur les trois configurations du projet
-# Runner (Debug, Release, Profile), dont la cible Runner herite.
-# Le 15.0 du journal ne vient pas du depot : depuis Flutter 3.47.0, `flutter
-# build ios` passe la migration `IOSDeploymentTargetMigration`, qui reecrit
-# 13.0 en 15.0 dans le projet Xcode ET dans cette ligne, ensemble. Sous un
-# Flutter 3.41 ou 3.44 les deux restent a 13.0 ; sous 3.47 les deux passent a
-# 15.0. Jamais l un sans l autre : des pods compiles pour un iOS plus recent que
-# l application, c est un module Swift refuse a la compilation.
-platform :ios, '13.0'
+# PLATEFORME DECLAREE — 15.0, LUE ET NON CHOISIE. Cette valeur n est pas un
+# choix pris ici : elle est LUE dans `IPHONEOS_DEPLOYMENT_TARGET` des trois
+# configurations du projet Runner (Debug, Release, Profile), dont la cible
+# Runner herite, et recopiee. Le projet Xcode decide, ce fichier obeit.
+#
+# POURQUOI LA LIGNE EXISTE. Sans elle, CocoaPods ne se tait pas : il choisit
+# une plateforme lui-meme. Le journal de la premiere compilation iPhone, le
+# 07/10, le disait mot pour mot — « Automatically assigning platform iOS with
+# version 15.0 on target Runner because no platform was specified ». Une valeur
+# devinee par l outil n est pas une valeur tenue par le depot : on l ecrit.
+#
+# LES DEUX VALEURS SE CHANGENT ENSEMBLE, JAMAIS L UNE SANS L AUTRE. Des pods
+# compiles pour un iOS plus recent que l application, c est un module Swift
+# refuse a la compilation ; des pods compiles pour un iOS plus ancien, c est le
+# plancher du projet qui ne veut plus rien dire. C est aussi ce que fait
+# Flutter : depuis la version 3.47.0, `flutter build ios` passe la migration
+# `IOSDeploymentTargetMigration`, qui reecrit la cible dans le projet Xcode ET
+# dans cette ligne, du meme geste. Sous un Flutter 3.41 ou 3.44 les deux
+# restaient a 13.0 ; sous 3.47 les deux passent a 15.0.
+#
+# POURQUOI 15.0, ET DEPUIS QUAND. Cette ligne a dit 13.0 jusqu au 07/10/2026.
+# Elle mentait depuis le jour ou elle est nee : le lot qui a ecrit ce fichier et
+# le lot « fiche magasin et preparation Apple », qui a monte le projet Xcode de
+# 13.0 a 15.0 (commit `4e28192b`), sont nes de la MEME tete `52fb8ac2` et ne se
+# sont jamais vus. Les deux etaient justes, la fusion n a rien signale, et
+# l etat reuni etait faux. Le 07/10/2026, la valeur passe donc a 15.0, qui est
+# celle du projet. Et 13.0 etait de toute facon sous le plancher d une
+# dependance : `health` exige deja `s.ios.deployment_target = '14.0'` dans son
+# podspec. Un plancher iOS 15 en 2026 couvre toutes les dependances du depot —
+# la plus exigeante apres `health` demande 13.0 — et c est la valeur que la
+# migration de Flutter 3.47 imposerait de toute maniere.
+#
+# CE QUI SURVEILLE CETTE LIGNE DESORMAIS. La garde
+# `test/structurel/podfile_dit_la_cible_du_projet_733_test.dart` compare ce
+# nombre a celui du projet Xcode et rougit s ils divergent. Changer l un sans
+# l autre ne passe plus en silence.
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
