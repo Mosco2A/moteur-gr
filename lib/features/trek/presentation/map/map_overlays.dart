@@ -1,5 +1,6 @@
-/// Les surcouches de la carte : boutons flottants, bandeaux du haut
-/// et l alerte de ravitaillement.
+/// Les surcouches de la carte : boutons flottants, bandeaux du haut,
+/// l alerte de ravitaillement, et la calibration invisible de la longueur de
+/// pas (lot 671-02).
 ///
 /// Bibliotheque de l'ecran `map_screen.dart` (lot 645-06b).
 library;
@@ -19,8 +20,10 @@ import '../../../map/map_facade.dart'
         OffTrackMessages,
         locationProvider,
         offTrackMessagesProvider,
-        supplyGapAlertProvider;
+        supplyGapAlertProvider,
+        trackPositionProvider;
 import '../../../safety/safety_facade.dart' show SosButton;
+import '../../data/calibration_du_pas.dart';
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
 import '../../../../core/branding/stepways_icons.dart';
@@ -371,5 +374,35 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
         ),
       ),
     );
+  }
+}
+
+/// LA LONGUEUR DE PAS SE CALIBRE EN MARCHANT (lot 671-02), tant qu'un trek
+/// ENREGISTRE, sur le modele de `ArrivalPipelineMount` : la carte est l'ecran
+/// terrain actif, et elle recoit deja la position projetee sur le trace.
+///
+/// N'OUVRE RIEN : la position projetee est celle que la barre d'etape de la
+/// carte observe deja pendant un trek, et le podometre se lit par le canal des
+/// preferences. Ne montre rien, ne fait avancer aucun point.
+class StrideCalibrationMount extends ConsumerWidget {
+  /// Un montage sans parametre.
+  const StrideCalibrationMount({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final status = ref.watch(
+      trekSessionManagerProvider.select((s) => s.status),
+    );
+    final feed = ref.watch(strideCalibrationFeedProvider);
+    if (status != TrackingSessionStatus.recording) {
+      // Arret ou pause : l'intervalle en cours n'a plus de sens.
+      feed.reset();
+      return const SizedBox.shrink();
+    }
+    ref.listen(trackPositionProvider, (_, next) {
+      final distance = next.value?.distanceFromStartM;
+      if (distance != null) unawaited(feed.observe(distance));
+    });
+    return const SizedBox.shrink();
   }
 }

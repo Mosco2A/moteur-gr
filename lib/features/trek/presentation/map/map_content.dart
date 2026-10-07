@@ -330,6 +330,8 @@ class _MapContentState extends State<MapContent> {
         // on y monte le pont d'arrivee pour qu'il soit VIVANT pendant un trek.
         // GR20 fait pareil dans active_stage_screen. Rendu invisible.
         const ArrivalPipelineMount(),
+        // Lot 671-02 : la longueur de pas se calibre en marchant. Invisible.
+        const StrideCalibrationMount(),
       ],
     );
   }
