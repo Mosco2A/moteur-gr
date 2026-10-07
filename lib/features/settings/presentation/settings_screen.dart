@@ -19,6 +19,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../auth/auth_facade.dart' show identifiantDeCompteProvider;
 import '../../notifications/notifications_facade.dart'
     show notificationSettingsProvider;
+import '../../trek/trek_facade.dart' show PodometerSettingsTile;
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -117,6 +118,17 @@ class SettingsScreen extends ConsumerWidget {
 
           // --- La section ACHATS a remonte EN TETE de cet ecran (tache 601).
           // Elle etait ici, en avant-derniere position. Voir la raison en haut.
+
+          // --- Compte des pas (lot 671-02) : l'etat en clair, et le SEUL
+          // chemin pour accepter plus tard. Pose sous tout geste existant,
+          // pour ne decaler aucun des gestes que la garde 573 parcourt.
+          _sectionHeader(
+            theme,
+            StepwaysIcons.pas,
+            tr.tracking.stepCounting.settingsTitle,
+          ),
+          const PodometerSettingsTile(),
+          const SizedBox(height: AppTheme.spacingLg),
 
           // --- Version ---
           _buildVersionSection(context, ref, theme, tr),

@@ -444,6 +444,7 @@ class _Translations$tracking$de extends Translations$tracking$fr {
 	@override String get total => 'Gesamt';
 	@override String get covered => 'Zurückgelegt';
 	@override late final _Translations$tracking$backgroundRationale$de backgroundRationale = _Translations$tracking$backgroundRationale$de._(_root);
+	@override late final _Translations$tracking$stepCounting$de stepCounting = _Translations$tracking$stepCounting$de._(_root);
 }
 
 // Path: checklist
@@ -2216,6 +2217,27 @@ class _Translations$tracking$backgroundRationale$de extends Translations$trackin
 	@override String get ifRefused => 'Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.';
 	@override String get allow => 'Anfrage anzeigen';
 	@override String get later => 'Später';
+}
+
+// Path: tracking.stepCounting
+class _Translations$tracking$stepCounting$de extends Translations$tracking$stepCounting$fr {
+	_Translations$tracking$stepCounting$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Deine Schritte während der Wanderung zählen';
+	@override String get body => 'StepWays zählt deine Schritte, um deinen Fortschritt zu verfolgen, ohne das GPS ständig eingeschaltet zu lassen: dein Akku hält den ganzen Tag. Die Zählung bleibt auf deinem Telefon, nichts verlässt es. Dein Telefon fragt dich, ob du körperliche Aktivität zulassen willst.';
+	@override String get ifRefused => 'Wenn du ablehnst, startet die Wanderung trotzdem.';
+	@override String get allow => 'Anfrage anzeigen';
+	@override String get later => 'Später';
+	@override String get whyGps => 'Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.';
+	@override String get settingsTitle => 'Schrittzählung';
+	@override String get stateGranted => 'Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.';
+	@override String get stateDenied => 'Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.';
+	@override String get statePermanentlyDenied => 'In den Telefoneinstellungen abgelehnt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um die Einstellungen zu öffnen.';
+	@override String get stateUnavailable => 'Dein Telefon zählt keine Schritte: StepWays verfolgt deinen Fortschritt nur per GPS.';
+	@override String get stateStreamError => 'Die Schrittzählung wurde unterbrochen: StepWays verfolgt deinen Fortschritt nur per GPS.';
 }
 
 // Path: checklist.categories
@@ -4483,6 +4505,18 @@ extension on TranslationsDe {
 			'tracking.backgroundRationale.ifRefused' => 'Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.',
 			'tracking.backgroundRationale.allow' => 'Anfrage anzeigen',
 			'tracking.backgroundRationale.later' => 'Später',
+			'tracking.stepCounting.title' => 'Deine Schritte während der Wanderung zählen',
+			'tracking.stepCounting.body' => 'StepWays zählt deine Schritte, um deinen Fortschritt zu verfolgen, ohne das GPS ständig eingeschaltet zu lassen: dein Akku hält den ganzen Tag. Die Zählung bleibt auf deinem Telefon, nichts verlässt es. Dein Telefon fragt dich, ob du körperliche Aktivität zulassen willst.',
+			'tracking.stepCounting.ifRefused' => 'Wenn du ablehnst, startet die Wanderung trotzdem.',
+			'tracking.stepCounting.allow' => 'Anfrage anzeigen',
+			'tracking.stepCounting.later' => 'Später',
+			'tracking.stepCounting.whyGps' => 'Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.',
+			'tracking.stepCounting.settingsTitle' => 'Schrittzählung',
+			'tracking.stepCounting.stateGranted' => 'Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.',
+			'tracking.stepCounting.stateDenied' => 'Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.',
+			'tracking.stepCounting.statePermanentlyDenied' => 'In den Telefoneinstellungen abgelehnt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um die Einstellungen zu öffnen.',
+			'tracking.stepCounting.stateUnavailable' => 'Dein Telefon zählt keine Schritte: StepWays verfolgt deinen Fortschritt nur per GPS.',
+			'tracking.stepCounting.stateStreamError' => 'Die Schrittzählung wurde unterbrochen: StepWays verfolgt deinen Fortschritt nur per GPS.',
 			'checklist.title' => 'Ausrüstung & Rucksack',
 			'checklist.subtitle' => 'Packen Sie Ihren Rucksack',
 			'checklist.progress' => '{checked}/{total} gepackt',
@@ -4674,6 +4708,8 @@ extension on TranslationsDe {
 			'checklist.ui.infoUnderstood' => 'Verstanden!',
 			'checklist.ui.prepTitle' => 'Rucksack packen',
 			'checklist.ui.prepCounter' => '{prepared} / {total} Artikel gepackt',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.prepAllReady' => 'Alles bereit! Gute Tour',
 			'checklist.ui.preDepartureTitle' => 'Checkliste vor dem Start',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} geprüft',
@@ -4686,8 +4722,6 @@ extension on TranslationsDe {
 			'checklist.ui.preDep7' => 'Schnürsenkel und Schuhsitz prüfen',
 			'checklist.ui.preDep8' => 'Offline-Karten herunterladen',
 			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
 			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
 			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
@@ -5188,6 +5222,8 @@ extension on TranslationsDe {
 			'onboarding.browseCatalog' => 'Katalog durchsuchen',
 			'onboarding.recoveryNudge' => 'Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon.',
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
 			'monetization.featureMap' => 'Offline-Karte + GPS + Live-Tracking',
@@ -5200,8 +5236,6 @@ extension on TranslationsDe {
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
 			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.walletTitle' => 'Etappenkonto',
 			'monetization.walletSubtitle' => 'Mit Ihren Etappen schalten Sie Wanderungen frei',
 			'monetization.walletUnit' => 'Etappen',
@@ -5702,6 +5736,8 @@ extension on TranslationsDe {
 			'recap.gpxEmpty' => 'Kein GPS-Punkt zum Exportieren',
 			'recap.gpxError' => 'Export nicht möglich',
 			'recap.daysSection' => 'Tag für Tag',
+			_ => null,
+		} ?? switch (path) {
 			'recap.dayLabel' => ({required Object day}) => 'Tag ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} Etappe(n)',
 			'recap.dayRest' => 'An diesem Tag keine Etappe beendet',
@@ -5714,8 +5750,6 @@ extension on TranslationsDe {
 			'programme.duration.splitNote' => 'Mehr Tage = RUHETAGE. Ruhe ändert nichts an der Härte eines Wandertags, und das Urteil richtet sich nach dem härtesten Tag.',
 			'programme.duration.splitExhausted' => 'Jede Etappe hat bereits ihren eigenen Tag: ein Tag mehr bringt nur Ruhe, und Ruhe ändert das Urteil nicht.',
 			'programme.duration.daysTotal' => '{count} T insgesamt',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',

@@ -8,6 +8,8 @@
 //    cinq dernieres lignes ; un journal absent est dit, pas un plantage ;
 //  - un refus d'autorisation laisse l'ecran utilisable, le dit, et ne
 //    redemande rien ; une autorisation deja accordee ne redemande rien.
+//  - LOT 671-02 : la longueur de pas courante est lisible sans outil dans le
+//    bloc d'etat, valeur de depart ou calibree, avec sa dispersion.
 //
 // Le banc de mesure est un faux : aucun capteur, aucun canal de plateforme.
 library;
@@ -46,8 +48,10 @@ class _FauxBanc {
   _FauxBanc({
     this.autorise = false,
     this.accordeALaDemande = false,
+    StrideCalibration? foulee,
     MeasureJournalSnapshot? journal,
-  }) : journal =
+  }) : foulee = foulee ?? StrideCalibration(),
+       journal =
            journal ??
            const MeasureJournalSnapshot(
              path: '/faux/journal_de_mesure.txt',
@@ -62,6 +66,7 @@ class _FauxBanc {
   final bool accordeALaDemande;
   int demandes = 0;
   final MeasureJournalSnapshot journal;
+  final StrideCalibration foulee;
 
   MeasureBench get banc => MeasureBench(
     readProfile: () async => profil,
@@ -77,6 +82,7 @@ class _FauxBanc {
       autorise = accordeALaDemande;
       return accordeALaDemande;
     },
+    readStride: () async => foulee,
   );
 }
 
@@ -297,6 +303,35 @@ void main() {
       await tester.pumpAndSettle();
       expect(faux.demandes, 0);
       expect(find.byType(AlertDialog), findsNothing);
+    });
+  });
+
+  group('671-02 — la longueur de pas, lisible sans outil', () {
+    testWidgets('sans intervalle accepte, le bloc d etat dit la valeur de '
+        'depart et qu elle n est pas encore calibree', (tester) async {
+      await ouvrir(tester, _FauxBanc());
+      expect(
+        find.text(
+          'Longueur de pas : 0,75 m (valeur de départ, pas encore calibrée '
+          'en marchant)',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('calibree, le bloc d etat dit la longueur retenue, le nombre '
+        'd intervalles et la dispersion', (tester) async {
+      await ouvrir(
+        tester,
+        _FauxBanc(foulee: StrideCalibration([0.60, 0.66, 0.63])),
+      );
+      expect(
+        find.text(
+          'Longueur de pas : 0,63 m (calibrée sur 3 intervalle(s), '
+          'dispersion 10 %)',
+        ),
+        findsOneWidget,
+      );
     });
   });
 }

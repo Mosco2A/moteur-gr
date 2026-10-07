@@ -26,6 +26,11 @@
 /// `positionControllerProvider`, le robinet unique GPS ; le dernier venu (lot
 /// 671-01), l'ecran cache de mesure batterie de `settings`, lit
 /// `measureBenchProvider` et `kLowBatteryThreshold`.
+///
+/// LOT 671-02, LE SOCLE PODOMETRE : `hub` lit `ensureStepCountingExplained`
+/// (l'explication du podometre au demarrage d'un trek), `settings` lit
+/// `PodometerSettingsTile` (la ligne des reglages) et `StrideCalibration`
+/// (la longueur de pas que montre l'ecran cache de mesure).
 library;
 
 export 'data/background_gps_service.dart' show kLowBatteryThreshold;
@@ -36,7 +41,10 @@ export 'data/gps_service.dart'
         gpsServiceProvider,
         positionControllerProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
+export 'domain/longueur_de_pas.dart' show StrideCalibration;
 export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;
+export 'presentation/podometre_autorisation.dart'
+    show PodometerSettingsTile, ensureStepCountingExplained;
 export 'providers/gps_providers.dart'
     show
         currentStageIdProvider,

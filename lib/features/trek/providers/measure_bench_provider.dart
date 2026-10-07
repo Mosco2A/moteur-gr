@@ -11,6 +11,8 @@ import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
 import '../data/background_gps_service.dart';
 import '../data/gps_service.dart';
+import '../data/podometre_preferences.dart';
+import '../domain/longueur_de_pas.dart';
 
 /// Les gestes et lectures du banc, injectables pour les tests.
 class MeasureBench {
@@ -22,6 +24,7 @@ class MeasureBench {
     required this.journal,
     required this.stepsAllowed,
     required this.requestSteps,
+    required this.readStride,
   });
 
   /// Le profil en vigueur, tel que l'isolate de fond le lit.
@@ -41,6 +44,10 @@ class MeasureBench {
 
   /// Demande l'autorisation au systeme ; vrai si elle est accordee.
   final Future<bool> Function() requestSteps;
+
+  /// La calibration de la longueur de pas, lue au point de calibration
+  /// (lot 671-02), en lecture seule.
+  final Future<StrideCalibration> Function() readStride;
 }
 
 /// Le banc branche sur le robinet unique GPS et le service de fond.
@@ -57,5 +64,6 @@ final measureBenchProvider = Provider<MeasureBench>((ref) {
     journal: MeasureJournal.documents(),
     stepsAllowed: bgStepsAllowed,
     requestSteps: bgRequestStepsPermission,
+    readStride: ref.read(podometerStoreProvider).readStride,
   );
 });

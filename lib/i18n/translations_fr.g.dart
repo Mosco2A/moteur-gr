@@ -813,6 +813,7 @@ class Translations$tracking$fr {
 	String get covered => 'Parcouru';
 
 	late final Translations$tracking$backgroundRationale$fr backgroundRationale = Translations$tracking$backgroundRationale$fr.internal(_root);
+	late final Translations$tracking$stepCounting$fr stepCounting = Translations$tracking$stepCounting$fr.internal(_root);
 }
 
 // Path: checklist
@@ -4688,6 +4689,51 @@ class Translations$tracking$backgroundRationale$fr {
 	String get later => 'Plus tard';
 }
 
+// Path: tracking.stepCounting
+class Translations$tracking$stepCounting$fr {
+	Translations$tracking$stepCounting$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Compter tes pas pendant la randonnée'
+	String get title => 'Compter tes pas pendant la randonnée';
+
+	/// fr: 'StepWays compte tes pas pour suivre ta progression sans garder le GPS allumé en permanence : ta batterie tient la journée. Le compte reste sur ton téléphone, rien n'en sort. Ton téléphone va te demander d'autoriser l'activité physique.'
+	String get body => 'StepWays compte tes pas pour suivre ta progression sans garder le GPS allumé en permanence : ta batterie tient la journée. Le compte reste sur ton téléphone, rien n\'en sort. Ton téléphone va te demander d\'autoriser l\'activité physique.';
+
+	/// fr: 'Si tu refuses, la randonnée démarre quand même.'
+	String get ifRefused => 'Si tu refuses, la randonnée démarre quand même.';
+
+	/// fr: 'Voir la demande'
+	String get allow => 'Voir la demande';
+
+	/// fr: 'Plus tard'
+	String get later => 'Plus tard';
+
+	/// fr: 'Sans le compte de tes pas, StepWays suit ta progression au GPS seul : la batterie descend plus vite. Tu peux l'autoriser à tout moment dans les réglages.'
+	String get whyGps => 'Sans le compte de tes pas, StepWays suit ta progression au GPS seul : la batterie descend plus vite. Tu peux l\'autoriser à tout moment dans les réglages.';
+
+	/// fr: 'Compte des pas'
+	String get settingsTitle => 'Compte des pas';
+
+	/// fr: 'Autorisé : tes pas aident à suivre ta progression sans user la batterie.'
+	String get stateGranted => 'Autorisé : tes pas aident à suivre ta progression sans user la batterie.';
+
+	/// fr: 'Pas autorisé : StepWays suit ta progression au GPS seul. Touche pour l'autoriser.'
+	String get stateDenied => 'Pas autorisé : StepWays suit ta progression au GPS seul. Touche pour l\'autoriser.';
+
+	/// fr: 'Refusé dans les réglages du téléphone : StepWays suit ta progression au GPS seul. Touche pour ouvrir les réglages.'
+	String get statePermanentlyDenied => 'Refusé dans les réglages du téléphone : StepWays suit ta progression au GPS seul. Touche pour ouvrir les réglages.';
+
+	/// fr: 'Ton téléphone ne compte pas les pas : StepWays suit ta progression au GPS seul.'
+	String get stateUnavailable => 'Ton téléphone ne compte pas les pas : StepWays suit ta progression au GPS seul.';
+
+	/// fr: 'Le compte des pas s'est interrompu : StepWays suit ta progression au GPS seul.'
+	String get stateStreamError => 'Le compte des pas s\'est interrompu : StepWays suit ta progression au GPS seul.';
+}
+
 // Path: checklist.categories
 class Translations$checklist$categories$fr {
 	Translations$checklist$categories$fr.internal(this._root);
@@ -8550,6 +8596,18 @@ extension on Translations {
 			'tracking.backgroundRationale.ifRefused' => 'Si tu refuses, la randonnée démarre quand même : la trace est enregistrée tant que l\'application reste à l\'écran.',
 			'tracking.backgroundRationale.allow' => 'Voir la demande',
 			'tracking.backgroundRationale.later' => 'Plus tard',
+			'tracking.stepCounting.title' => 'Compter tes pas pendant la randonnée',
+			'tracking.stepCounting.body' => 'StepWays compte tes pas pour suivre ta progression sans garder le GPS allumé en permanence : ta batterie tient la journée. Le compte reste sur ton téléphone, rien n\'en sort. Ton téléphone va te demander d\'autoriser l\'activité physique.',
+			'tracking.stepCounting.ifRefused' => 'Si tu refuses, la randonnée démarre quand même.',
+			'tracking.stepCounting.allow' => 'Voir la demande',
+			'tracking.stepCounting.later' => 'Plus tard',
+			'tracking.stepCounting.whyGps' => 'Sans le compte de tes pas, StepWays suit ta progression au GPS seul : la batterie descend plus vite. Tu peux l\'autoriser à tout moment dans les réglages.',
+			'tracking.stepCounting.settingsTitle' => 'Compte des pas',
+			'tracking.stepCounting.stateGranted' => 'Autorisé : tes pas aident à suivre ta progression sans user la batterie.',
+			'tracking.stepCounting.stateDenied' => 'Pas autorisé : StepWays suit ta progression au GPS seul. Touche pour l\'autoriser.',
+			'tracking.stepCounting.statePermanentlyDenied' => 'Refusé dans les réglages du téléphone : StepWays suit ta progression au GPS seul. Touche pour ouvrir les réglages.',
+			'tracking.stepCounting.stateUnavailable' => 'Ton téléphone ne compte pas les pas : StepWays suit ta progression au GPS seul.',
+			'tracking.stepCounting.stateStreamError' => 'Le compte des pas s\'est interrompu : StepWays suit ta progression au GPS seul.',
 			'checklist.title' => 'Matériel & Sac',
 			'checklist.subtitle' => 'Préparez votre sac à dos',
 			'checklist.progress' => '{checked}/{total} préparés',
@@ -8741,6 +8799,8 @@ extension on Translations {
 			'checklist.ui.infoUnderstood' => 'Compris !',
 			'checklist.ui.prepTitle' => 'Préparation du sac',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items préparés',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.prepAllReady' => 'Tout est prêt ! Bon trek',
 			'checklist.ui.preDepartureTitle' => 'Checklist avant départ',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} vérifiés',
@@ -8753,8 +8813,6 @@ extension on Translations {
 			'checklist.ui.preDep7' => 'Vérifier les lacets et le serrage des chaussures',
 			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
 			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
 			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
@@ -9255,6 +9313,8 @@ extension on Translations {
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
 			'onboarding.recoveryNudge' => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.paywallTitle' => 'Débloquez cette randonnée',
 			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.',
 			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
@@ -9267,8 +9327,6 @@ extension on Translations {
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.walletTitle' => 'Compte-étapes',
 			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
@@ -9769,6 +9827,8 @@ extension on Translations {
 			'recap.gpxEmpty' => 'Aucun point GPS à exporter',
 			'recap.gpxError' => 'Export impossible',
 			'recap.daysSection' => 'Jour par jour',
+			_ => null,
+		} ?? switch (path) {
 			'recap.dayLabel' => ({required Object day}) => 'Jour ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} étape(s)',
 			'recap.dayRest' => 'Journée sans étape terminée',
@@ -9781,8 +9841,6 @@ extension on Translations {
 			'programme.duration.splitNote' => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.',
 			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
 			'programme.duration.daysTotal' => '{count} j au total',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',

@@ -371,6 +371,20 @@
       "ifRefused": "Se rifiuti, l'escursione parte comunque: la traccia viene registrata finché l'app resta sullo schermo.",
       "allow": "Mostra la richiesta",
       "later": "Più tardi"
+    },
+    "stepCounting": {
+      "title": "Contare i tuoi passi durante l'escursione",
+      "body": "StepWays conta i tuoi passi per seguire i tuoi progressi senza tenere il GPS sempre acceso: la batteria dura tutta la giornata. Il conteggio resta sul tuo telefono: nulla viene inviato. Il telefono ti chiederà di consentire l'attività fisica.",
+      "ifRefused": "Se rifiuti, l'escursione parte comunque.",
+      "allow": "Mostra la richiesta",
+      "later": "Più tardi",
+      "whyGps": "Senza il conteggio dei passi, StepWays segue i tuoi progressi solo con il GPS: la batteria si scarica più in fretta. Puoi consentirlo in qualsiasi momento nelle impostazioni.",
+      "settingsTitle": "Conteggio dei passi",
+      "stateGranted": "Consentito: i tuoi passi aiutano a seguire i progressi senza consumare la batteria.",
+      "stateDenied": "Non consentito: StepWays segue i tuoi progressi solo con il GPS. Tocca per consentirlo.",
+      "statePermanentlyDenied": "Rifiutato nelle impostazioni del telefono: StepWays segue i tuoi progressi solo con il GPS. Tocca per aprire le impostazioni.",
+      "stateUnavailable": "Il tuo telefono non conta i passi: StepWays segue i tuoi progressi solo con il GPS.",
+      "stateStreamError": "Il conteggio dei passi si è interrotto: StepWays segue i tuoi progressi solo con il GPS."
     }
   },
   "checklist": {

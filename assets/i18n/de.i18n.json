@@ -371,6 +371,20 @@
       "ifRefused": "Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.",
       "allow": "Anfrage anzeigen",
       "later": "Später"
+    },
+    "stepCounting": {
+      "title": "Deine Schritte während der Wanderung zählen",
+      "body": "StepWays zählt deine Schritte, um deinen Fortschritt zu verfolgen, ohne das GPS ständig eingeschaltet zu lassen: dein Akku hält den ganzen Tag. Die Zählung bleibt auf deinem Telefon, nichts verlässt es. Dein Telefon fragt dich, ob du körperliche Aktivität zulassen willst.",
+      "ifRefused": "Wenn du ablehnst, startet die Wanderung trotzdem.",
+      "allow": "Anfrage anzeigen",
+      "later": "Später",
+      "whyGps": "Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.",
+      "settingsTitle": "Schrittzählung",
+      "stateGranted": "Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.",
+      "stateDenied": "Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.",
+      "statePermanentlyDenied": "In den Telefoneinstellungen abgelehnt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um die Einstellungen zu öffnen.",
+      "stateUnavailable": "Dein Telefon zählt keine Schritte: StepWays verfolgt deinen Fortschritt nur per GPS.",
+      "stateStreamError": "Die Schrittzählung wurde unterbrochen: StepWays verfolgt deinen Fortschritt nur per GPS."
     }
   },
   "checklist": {

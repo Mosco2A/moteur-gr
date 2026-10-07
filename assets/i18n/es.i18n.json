@@ -371,6 +371,20 @@
       "ifRefused": "Si lo rechazas, la ruta empieza igualmente: tu recorrido se registra mientras la aplicación siga en pantalla.",
       "allow": "Ver la solicitud",
       "later": "Más tarde"
+    },
+    "stepCounting": {
+      "title": "Contar tus pasos durante la ruta",
+      "body": "StepWays cuenta tus pasos para seguir tu progreso sin mantener el GPS encendido todo el tiempo: tu batería aguanta el día. El recuento se queda en tu móvil, nada sale de él. Tu móvil te pedirá permitir la actividad física.",
+      "ifRefused": "Si lo rechazas, la ruta empieza igualmente.",
+      "allow": "Ver la solicitud",
+      "later": "Más tarde",
+      "whyGps": "Sin el recuento de tus pasos, StepWays sigue tu progreso solo con el GPS: la batería se gasta más rápido. Puedes permitirlo cuando quieras en los ajustes.",
+      "settingsTitle": "Recuento de pasos",
+      "stateGranted": "Permitido: tus pasos ayudan a seguir tu progreso sin gastar la batería.",
+      "stateDenied": "No permitido: StepWays sigue tu progreso solo con el GPS. Toca para permitirlo.",
+      "statePermanentlyDenied": "Rechazado en los ajustes del móvil: StepWays sigue tu progreso solo con el GPS. Toca para abrir los ajustes.",
+      "stateUnavailable": "Tu móvil no cuenta los pasos: StepWays sigue tu progreso solo con el GPS.",
+      "stateStreamError": "El recuento de pasos se ha interrumpido: StepWays sigue tu progreso solo con el GPS."
     }
   },
   "checklist": {

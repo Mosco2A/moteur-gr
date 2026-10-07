@@ -12,6 +12,7 @@ import '../../../../../shared/widgets/app_data_stat.dart';
 import '../../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../map/map_facade.dart' show stageDistanceCoveredProvider;
 import '../../../providers/tracking_providers.dart';
+import '../../podometre_autorisation.dart';
 import '../../../../../core/branding/stepways_icons.dart';
 
 /// Overlay de tracking temps reel affiche sur la carte.
@@ -191,6 +192,11 @@ class _ButtonsRow extends StatelessWidget {
               // annoncee (campagne personas 21/09, MAJEUR-1).
               onPressed: () async {
                 await ensureBackgroundTrackingExplained(context, ref);
+                // L'activite physique (lot 671-02), expliquee puis demandee
+                // une seule fois ; un refus ne bloque jamais le depart.
+                if (context.mounted) {
+                  await ensureStepCountingExplained(context, ref);
+                }
                 await notifier.start(trailId);
               },
             );

@@ -16,7 +16,7 @@ import '../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../treks/treks_facade.dart' show showActiveTrekConflictDialog;
 import '../../../trek/trek_facade.dart'
-    show StartOutcome, trekSessionManagerProvider;
+    show StartOutcome, ensureStepCountingExplained, trekSessionManagerProvider;
 import '../../providers/cockpit_start_providers.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
@@ -192,10 +192,10 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
         return;
       }
       if (!context.mounted || !mounted) return;
-      // La permission de fond, expliquee puis demandee une seule fois. Ne jette
-      // jamais, ne bloque jamais le demarrage : le suivi premier plan n'en a
-      // pas besoin.
-      await ensureBackgroundTrackingExplained(context, ref);
+      // La permission de fond puis l'activite physique, expliquees puis
+      // demandees une seule fois. Ne jettent jamais, ne bloquent jamais le
+      // demarrage : le suivi premier plan n'a besoin ni de l'une ni de l'autre.
+      await _explainPermissions(context);
     }
     if (!context.mounted || !mounted) return;
     setState(() => _starting = true);
@@ -223,6 +223,15 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
     } finally {
       if (mounted) setState(() => _starting = false);
     }
+  }
+
+  /// Les pre-vols du depart, dans l'ordre : la localisation de fond, puis
+  /// l'activite physique (lot 671-02), chacune expliquee puis demandee une
+  /// seule fois. Aucun refus ne bloque le depart : le trek demarre.
+  Future<void> _explainPermissions(BuildContext context) async {
+    await ensureBackgroundTrackingExplained(context, ref);
+    if (!context.mounted || !mounted) return;
+    await ensureStepCountingExplained(context, ref);
   }
 
   /// Explique le refus d'achat, puis ouvre le paywall du sentier.

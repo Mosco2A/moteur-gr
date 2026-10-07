@@ -444,6 +444,7 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get total => 'Total';
 	@override String get covered => 'Covered';
 	@override late final _Translations$tracking$backgroundRationale$en backgroundRationale = _Translations$tracking$backgroundRationale$en._(_root);
+	@override late final _Translations$tracking$stepCounting$en stepCounting = _Translations$tracking$stepCounting$en._(_root);
 }
 
 // Path: checklist
@@ -2216,6 +2217,27 @@ class _Translations$tracking$backgroundRationale$en extends Translations$trackin
 	@override String get ifRefused => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.';
 	@override String get allow => 'Show the request';
 	@override String get later => 'Later';
+}
+
+// Path: tracking.stepCounting
+class _Translations$tracking$stepCounting$en extends Translations$tracking$stepCounting$fr {
+	_Translations$tracking$stepCounting$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Counting your steps during the hike';
+	@override String get body => 'StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.';
+	@override String get ifRefused => 'If you decline, the hike still starts.';
+	@override String get allow => 'Show the request';
+	@override String get later => 'Later';
+	@override String get whyGps => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.';
+	@override String get settingsTitle => 'Step count';
+	@override String get stateGranted => 'Allowed: your steps help follow your progress without draining the battery.';
+	@override String get stateDenied => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.';
+	@override String get statePermanentlyDenied => 'Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.';
+	@override String get stateUnavailable => 'Your phone does not count steps: StepWays follows your progress with GPS alone.';
+	@override String get stateStreamError => 'Step counting stopped: StepWays follows your progress with GPS alone.';
 }
 
 // Path: checklist.categories
@@ -4483,6 +4505,18 @@ extension on TranslationsEn {
 			'tracking.backgroundRationale.ifRefused' => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.',
 			'tracking.backgroundRationale.allow' => 'Show the request',
 			'tracking.backgroundRationale.later' => 'Later',
+			'tracking.stepCounting.title' => 'Counting your steps during the hike',
+			'tracking.stepCounting.body' => 'StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.',
+			'tracking.stepCounting.ifRefused' => 'If you decline, the hike still starts.',
+			'tracking.stepCounting.allow' => 'Show the request',
+			'tracking.stepCounting.later' => 'Later',
+			'tracking.stepCounting.whyGps' => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.',
+			'tracking.stepCounting.settingsTitle' => 'Step count',
+			'tracking.stepCounting.stateGranted' => 'Allowed: your steps help follow your progress without draining the battery.',
+			'tracking.stepCounting.stateDenied' => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.',
+			'tracking.stepCounting.statePermanentlyDenied' => 'Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.',
+			'tracking.stepCounting.stateUnavailable' => 'Your phone does not count steps: StepWays follows your progress with GPS alone.',
+			'tracking.stepCounting.stateStreamError' => 'Step counting stopped: StepWays follows your progress with GPS alone.',
 			'checklist.title' => 'Gear & Pack',
 			'checklist.subtitle' => 'Pack your backpack',
 			'checklist.progress' => '{checked}/{total} packed',
@@ -4674,6 +4708,8 @@ extension on TranslationsEn {
 			'checklist.ui.infoUnderstood' => 'Got it!',
 			'checklist.ui.prepTitle' => 'Pack preparation',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items packed',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.prepAllReady' => 'All set! Enjoy your trek',
 			'checklist.ui.preDepartureTitle' => 'Pre-departure checklist',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} checked',
@@ -4686,8 +4722,6 @@ extension on TranslationsEn {
 			'checklist.ui.preDep7' => 'Check laces and boot tightness',
 			'checklist.ui.preDep8' => 'Download the offline maps',
 			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
 			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
@@ -5188,6 +5222,8 @@ extension on TranslationsEn {
 			'onboarding.browseCatalog' => 'Browse the catalogue',
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
 			'monetization.featureMap' => 'Offline map + GPS + live tracking',
@@ -5200,8 +5236,6 @@ extension on TranslationsEn {
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
@@ -5702,6 +5736,8 @@ extension on TranslationsEn {
 			'recap.gpxEmpty' => 'No GPS point to export',
 			'recap.gpxError' => 'Export failed',
 			'recap.daysSection' => 'Day by day',
+			_ => null,
+		} ?? switch (path) {
 			'recap.dayLabel' => ({required Object day}) => 'Day ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} stage(s)',
 			'recap.dayRest' => 'No stage completed that day',
@@ -5714,8 +5750,6 @@ extension on TranslationsEn {
 			'programme.duration.splitNote' => 'More days = REST days. Rest does not change how hard a walking day is, and the verdict follows the hardest day.',
 			'programme.duration.splitExhausted' => 'Every stage already has its own day: one more day will only add rest, and rest will not change the verdict.',
 			'programme.duration.daysTotal' => '{count} d in total',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',

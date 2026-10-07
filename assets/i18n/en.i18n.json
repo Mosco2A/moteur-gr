@@ -371,6 +371,20 @@
       "ifRefused": "If you decline, the hike still starts: your track is recorded as long as the app stays on screen.",
       "allow": "Show the request",
       "later": "Later"
+    },
+    "stepCounting": {
+      "title": "Counting your steps during the hike",
+      "body": "StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.",
+      "ifRefused": "If you decline, the hike still starts.",
+      "allow": "Show the request",
+      "later": "Later",
+      "whyGps": "Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.",
+      "settingsTitle": "Step count",
+      "stateGranted": "Allowed: your steps help follow your progress without draining the battery.",
+      "stateDenied": "Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.",
+      "statePermanentlyDenied": "Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.",
+      "stateUnavailable": "Your phone does not count steps: StepWays follows your progress with GPS alone.",
+      "stateStreamError": "Step counting stopped: StepWays follows your progress with GPS alone."
     }
   },
   "checklist": {

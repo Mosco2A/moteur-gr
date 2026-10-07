@@ -29,7 +29,25 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../trek/trek_facade.dart'
-    show MeasureBench, kLowBatteryThreshold, measureBenchProvider;
+    show
+        MeasureBench,
+        StrideCalibration,
+        kLowBatteryThreshold,
+        measureBenchProvider;
+
+/// La longueur de pas en clair (lot 671-02) : la valeur retenue, et si elle
+/// vient de la marche ou de la valeur de depart. Lecture seule.
+String _strideLine(StrideCalibration stride) {
+  final meters = stride.meters.toStringAsFixed(2).replaceAll('.', ',');
+  if (!stride.isCalibrated) {
+    return 'Longueur de pas : $meters m (valeur de départ, pas encore '
+        'calibrée en marchant)';
+  }
+  final spread = stride.spreadPercent;
+  return 'Longueur de pas : $meters m (calibrée sur '
+      '${stride.accepted.length} intervalle(s)'
+      '${spread == null ? '' : ', dispersion ${spread.round()} %'})';
+}
 
 /// Les trois profils que l'ecran propose, dans l'ordre affiche.
 const List<PositionProfile> kMeasureProfiles = [
@@ -67,6 +85,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
   PositionProfile? _profile;
   int? _battery;
   MeasureJournalSnapshot? _journal;
+  StrideCalibration? _stride;
   bool? _stepsAllowed;
   bool _stepsRefused = false;
 
@@ -86,6 +105,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
     _settle(_bench.readProfile(), (profile) => _profile = profile);
     _settle(_bench.readBattery(), (battery) => _battery = battery);
     _settle(_bench.journal.snapshot(), (journal) => _journal = journal);
+    _settle(_bench.readStride(), (stride) => _stride = stride);
   }
 
   void _settle<T>(Future<T> read, void Function(T value) apply) {
@@ -252,6 +272,7 @@ class _MesureBatterieScreenState extends ConsumerState<MesureBatterieScreen> {
           '${_profile == null ? '…' : _profileTitle(_profile!)}',
       'Batterie : ${battery == null ? '…' : '$battery %'}'
           '${low ? ' (batterie basse)' : ''}',
+      if (_stride case final stride?) _strideLine(stride),
       'Fichier : $kMeasureJournalFileName',
       if (journal == null)
         'Lecture du journal…'
