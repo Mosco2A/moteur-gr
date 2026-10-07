@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 /// GARDE STRUCTURELLE — LA CHAINE QUI DEPOSE SUR TESTFLIGHT RESTE CE QU ELLE
-/// EST : LANCEE A LA MAIN, INERTE SANS LA CLE, ET SANS UNE SEULE VALEUR DE
-/// CONFIGURATION EN CLAIR (StepWays tache 621).
+/// EST : LANCEE A LA MAIN, INERTE SANS L IDENTITE APPLE, ET SANS UNE SEULE
+/// VALEUR SECRETE EN CLAIR (StepWays tache 621, reecrite le 07/10 sur le
+/// modele de GR20 : voir aussi codemagic_signature_ios_modele_gr20_test.dart).
 ///
 /// POURQUOI CETTE GARDE EXISTE. Cette chaine est le SEUL chemin par lequel
 /// l application peut atteindre un iPhone : Apple n autorise aucune
@@ -14,9 +15,9 @@ import 'package:flutter_test/flutter_test.dart';
 /// style, ce sont les raisons pour lesquelles elle est acceptable :
 ///   1. elle ne se declenche JAMAIS toute seule (un depot consomme chez Apple
 ///      un numero de build qui ne se reprend pas) ;
-///   2. elle s ARRETE proprement tant que les valeurs de signature ne sont pas
-///      la, au lieu d echouer plus loin sur un message d Xcode illisible ;
-///   3. elle ne porte AUCUNE valeur, seulement des NOMS de variables.
+///   2. elle s ARRETE proprement tant que l identite Apple n est pas la, au
+///      lieu d echouer plus loin sur un message d Xcode illisible ;
+///   3. elle ne porte AUCUNE valeur secrete, seulement des NOMS.
 /// Un declencheur ajoute par commodite, un controle de presence retire « parce
 /// que ca marche maintenant », ou une valeur collee en dur pour depanner :
 /// chacun des trois casse une garantie differente, et aucun ne se verrait a la
@@ -25,16 +26,20 @@ void main() {
   final fichier = File('codemagic.yaml');
   const nomChaine = '  ios_testflight:';
 
-  /// Les cinq valeurs que la chaine exige, et que Christophe depose dans le
-  /// groupe Codemagic `stepways_ios_signing` — les MEMES que `ios_release`,
-  /// pour qu un seul groupe rempli allume les deux chaines.
-  const attendues = <String>[
+  /// Les trois valeurs d identite Apple que la chaine exige. Personne ne les
+  /// saisit : l integration App Store Connect `Only1Cent`, appelee par son nom,
+  /// les pose dans l environnement. Ce sont les trois noms que
+  /// `app-store-connect` lit par defaut.
+  const identite = <String>[
     'APP_STORE_CONNECT_ISSUER_ID',
     'APP_STORE_CONNECT_KEY_IDENTIFIER',
     'APP_STORE_CONNECT_PRIVATE_KEY',
-    'CERTIFICATE_PRIVATE_KEY',
-    'BUNDLE_ID',
   ];
+
+  /// Les valeurs qui ne doivent JAMAIS recevoir de valeur dans le depot :
+  /// l identite Apple, plus l ancienne clef de certificat, devenue sans objet
+  /// (le certificat de l equipe vit dans le magasin d identites de Codemagic).
+  const secretes = <String>[...identite, 'CERTIFICATE_PRIVATE_KEY'];
 
   late List<String> lignes;
   late String bloc;
@@ -86,54 +91,106 @@ void main() {
     });
 
     test('elle est la SEULE chaine du fichier qui publie quelque part', () {
-      final publiantes = <String>[];
+      // Deux facons de publier chez Codemagic : le bloc declaratif
+      // `publishing:` et la commande `app-store-connect publish`. Le depot
+      // passe desormais par la seconde (contournement du bug d altool sous
+      // Xcode 26) ; on surveille les deux.
+      final blocs = <String>[];
+      final commandes = <String>[];
       String? courante;
       for (final ligne in lignes) {
         final cle = RegExp(r'^  ([a-z0-9_]+):\s*$').firstMatch(ligne);
         if (cle != null) courante = cle.group(1);
-        if (RegExp(r'^    publishing:\s*$').hasMatch(ligne) &&
-            courante != null) {
-          publiantes.add(courante);
+        if (courante == null || RegExp(r'^\s*#').hasMatch(ligne)) continue;
+        if (RegExp(r'^    publishing:\s*$').hasMatch(ligne)) {
+          blocs.add(courante);
+        }
+        if (ligne.contains('app-store-connect publish')) {
+          commandes.add(courante);
         }
       }
       expect(
-        publiantes,
+        blocs,
+        isEmpty,
+        reason:
+            'un bloc publishing: est reapparu. Il ne laisse pas choisir '
+            'l ancien altool, et le nouveau rend « Cannot determine the '
+            'Apple ID from Bundle ID » sur les comptes com.only1cent.* : '
+            'le depot doit rester une etape de ios_testflight',
+      );
+      expect(
+        commandes,
         equals(['ios_testflight']),
         reason:
-            'une autre chaine a gagne un bloc de publication. Le depot chez '
-            'Apple se fait a la main, depuis une seule chaine, jamais sur un '
-            'push ni sur une etiquette posee au passage',
+            'le depot chez Apple se fait a la main, depuis une seule chaine, '
+            'jamais sur un push ni sur une etiquette posee au passage',
       );
     });
 
-    test('elle depose sur TestFlight et ne soumet RIEN a la revue', () {
-      expect(bloc, contains('app_store_connect'));
+    test('elle depose sur TestFlight par l ancien altool, et ne soumet RIEN a '
+        'la revue de l App Store', () {
+      final depot = blocUtile.indexOf('app-store-connect publish');
+      expect(depot, isNot(-1));
+      final commande = blocUtile.substring(depot);
       expect(
-        bloc,
-        contains('submit_to_testflight: true'),
+        commande,
+        contains('--testflight'),
         reason:
-            'sans cela le paquet monte chez Apple sans jamais devenir '
-            'installable pour un testeur',
+            'sans cela le paquet monte chez Apple sans jamais etre soumis a '
+            'TestFlight',
       );
       expect(
-        blocUtile.contains('submit_to_app_store'),
+        commande,
+        contains("--altool-additional-arguments='--use-old-altool'"),
+        reason:
+            'LE CONTOURNEMENT DE GR20. Sous Xcode 26, le nouvel altool rend '
+            '« Cannot determine the Apple ID from Bundle ID » sur les comptes '
+            'multi-apps a prefixe proche, com.only1cent.* nommement : sans '
+            'cet argument StepWays ne se deposera pas',
+      );
+      expect(
+        RegExp(r'--app-store(?![-\w])').hasMatch(blocUtile) ||
+            blocUtile.contains('submit_to_app_store'),
         isFalse,
         reason:
             'on ne soumet pas a la revue de l App Store depuis une branche '
             'd integration',
       );
       expect(
-        blocUtile.contains('beta_groups'),
+        blocUtile.contains('beta_groups') || blocUtile.contains('--beta-group'),
         isFalse,
         reason:
             'un groupe de testeurs cite mais inexistant fait echouer la '
             'publication, et un groupe EXTERNE passe par la revue TestFlight. '
             'Christophe est testeur interne de sa propre equipe',
       );
+      expect(
+        blocUtile.indexOf('flutter build ipa'),
+        lessThan(depot),
+        reason: 'le depot est la DERNIERE etape, apres la construction',
+      );
     });
 
-    test('sa PREMIERE etape est l arret propre, et elle nomme les cinq '
-        'valeurs manquantes', () {
+    test('l identite Apple vient de l integration nommee, pas de variables '
+        'saisies', () {
+      expect(
+        blocUtile,
+        contains('integrations:\n      app_store_connect: Only1Cent'),
+        reason:
+            'sans l integration, aucune identite Apple n arrive dans '
+            'l environnement et le depot ne peut pas s authentifier',
+      );
+      expect(
+        blocUtile.contains('stepways_ios_signing'),
+        isFalse,
+        reason:
+            'ce groupe n a jamais existe et ne doit plus etre reclame : '
+            'l integration le remplace',
+      );
+    });
+
+    test('sa PREMIERE etape est l arret propre, et elle nomme l integration '
+        'et les trois valeurs manquantes', () {
       final stages = bloc.split(RegExp(r'^      - name:', multiLine: true));
       expect(
         stages.length,
@@ -152,10 +209,10 @@ void main() {
       );
       expect(
         premiere,
-        contains('stepways_ios_signing'),
-        reason: 'le message doit nommer le groupe a remplir',
+        contains("'Only1Cent'"),
+        reason: 'le message doit nommer l integration qui fournit l identite',
       );
-      for (final nom in attendues) {
+      for (final nom in identite) {
         expect(
           premiere,
           contains(nom),
@@ -165,18 +222,39 @@ void main() {
         );
       }
       // Le message doit dire OU aller, pas seulement que ca manque.
-      expect(premiere, contains('Users and Access'));
-      expect(premiere, contains('Team Keys'));
+      expect(premiere, contains('Team integrations'));
+      expect(premiere, contains('Developer Portal'));
       expect(
         premiere,
-        contains('MODOP_621_testflight_pas_a_pas.md'),
+        contains('docs/ci/signature_ios_modele_gr20.md'),
         reason: 'le message renvoie au pas a pas ecran par ecran',
       );
+      expect(
+        File('docs/ci/signature_ios_modele_gr20.md').existsSync(),
+        isTrue,
+        reason: 'le message renvoie a un document qui n existe pas',
+      );
+      // Les anciens gestes sont tombes : les redemander ferait creer une
+      // seconde clef d API, ou un second certificat de distribution.
+      for (final perime in const [
+        'Team Keys',
+        'Generate API Key',
+        'ssh-keygen',
+        'CERTIFICATE_PRIVATE_KEY',
+      ]) {
+        expect(
+          premiere.contains(perime),
+          isFalse,
+          reason:
+              'la premiere etape redemande un geste devenu inutile : '
+              '« $perime ». La clef d API et le certificat existent deja',
+        );
+      }
     });
 
     test('AUCUNE ligne du fichier n affecte de valeur a ces variables', () {
       final fautives = <String>[];
-      for (final nom in attendues) {
+      for (final nom in secretes) {
         final affectation = RegExp('^\\s*$nom\\s*[:=]\\s*(\\S.*)\$');
         for (final ligne in lignes) {
           final m = affectation.firstMatch(ligne);
@@ -189,32 +267,9 @@ void main() {
         fautives,
         isEmpty,
         reason:
-            'une valeur de signature a ete ecrite dans le depot. Ces cinq '
-            'variables se remplissent dans Codemagic et nulle part ailleurs : '
+            'une valeur secrete a ete ecrite dans le depot. L identite Apple '
+            'vient de l integration Codemagic et de nulle part ailleurs : '
             '${fautives.join(' | ')}',
-      );
-    });
-
-    test('le bloc de publication ne contient que des renvois de variables', () {
-      final debut = bloc.indexOf('app_store_connect:');
-      expect(debut, isNot(-1));
-      final suite = bloc.substring(debut).split('\n').skip(1);
-      final fautives = <String>[];
-      for (final ligne in suite) {
-        if (!ligne.startsWith('        ')) break;
-        final m = RegExp(r'^\s*([a-z_]+):\s*(\S.*)$').firstMatch(ligne);
-        if (m == null) continue;
-        final valeur = m.group(2)!.trim();
-        final autorise =
-            valeur.startsWith(r'$') || valeur == 'true' || valeur == 'false';
-        if (!autorise) fautives.add(ligne.trim());
-      }
-      expect(
-        fautives,
-        isEmpty,
-        reason:
-            'le bloc de publication porte une valeur en dur au lieu d un '
-            'renvoi de variable : ${fautives.join(' | ')}',
       );
     });
 

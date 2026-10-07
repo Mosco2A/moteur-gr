@@ -16,3 +16,15 @@ _Notes locales de vulcain. La source de verite reste memory.db._
   propre profil ; ios_signing.provisioning_profiles accepte environment_variable.
 - Xcode 26.4 present chez Codemagic (specs-macos/xcode-26-4), mais 27.0 et 27.1
   aussi : `latest` n est pas un compilateur fixe.
+- TRANCHE : ios_signing par noms (modele GR20), PAS fetch-signing-files.
+  Profils attendus : stepways_appstore_profile, stepways_trekwidget_appstore_profile ;
+  certificat : GR20 Distribution ; integration : Only1Cent (ios_testflight seule).
+- Depot TestFlight = etape `app-store-connect publish --testflight
+  --altool-additional-arguments='--use-old-altool'` ; plus de bloc publishing.
+- Xcode 26.4 epingle sur ios_compile, ios_release, ios_testflight.
+- DECOUVERTE : `dart analyze --no-fatal-infos` sort en 64 (« Cannot negate
+  option ») sur TOUT Dart >= 2.19 (source dartdev, negatable: false). Corrige
+  dans les deux chaines Apple (flutter analyze --no-fatal-infos). RESTE dans
+  pr_gate, merge, android_test, android_release : a corriger, hors lot.
+- Doc : docs/ci/signature_ios_modele_gr20.md. Tests : 621 reecrit, nouveau
+  codemagic_signature_ios_modele_gr20_test.dart.
