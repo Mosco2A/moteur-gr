@@ -128,3 +128,43 @@ ou « stage », et le mot du titre comme « hiking », « Wandern » ou
 
 Le texte promotionnel n'existait pas. Il est créé dans
 `assets/store/ios/promotional_text_{fr,en,de,it,es}.txt`.
+
+## Étape 4 — Le paquet iPhone : ce qui est corrigé dans le dépôt
+
+- **Déclaration de chiffrement.** La clef `ITSAppUsesNonExemptEncryption`
+  manquait. Elle est posée à **NO** dans `ios/Runner/Info.plist`. Le
+  raisonnement légal est écrit dans le document récapitulatif, § Chiffrement.
+- **Textes d'autorisation en cinq langues.** Ils n'existaient qu'en
+  français. Il y a maintenant cinq `InfoPlist.strings` (fr, en, de, it, es),
+  de 8 textes chacun. Ils sont **déclarés dans le projet Xcode** : groupe de
+  variantes, phase de ressources de Runner et `knownRegions`. Sans cette
+  déclaration, les fichiers resteraient sur le disque sans entrer dans le
+  paquet. J'ai vérifié le `pbxproj` avec un analyseur OpenStep.
+  `CFBundleLocalizations` liste les cinq langues : sans elle, la page App
+  Store n'aurait annoncé que l'anglais.
+- **Le texte de localisation en arrière-plan mentait.** Il promettait de
+  « partager votre position en temps réel avec vos proches ». Il dit
+  maintenant : enregistrement écran éteint, téléphone dans le sac, et la
+  position reste sur le téléphone, comme le dit la politique publiée (§ 4.1).
+- **Le texte des capteurs de mouvement** parlait de « mesure de batterie ».
+  Il dit maintenant à quoi servent les pas : longueur de pas et
+  consommation de batterie. La garde du lot 671 qui exige ce texte reste
+  verte.
+- **Cible de déploiement iOS : 13.0 passe à 15.0** dans le projet. Cela ne
+  change pas le paquet produit. L'outil Flutter stable du jour (3.47.6)
+  réécrit de lui-même 13.0 en 15.0 à chaque compilation
+  (`ios_deployment_target_migration.dart`). Le paquet `health` exige de
+  toute façon iOS 14. Le dépôt dit maintenant ce que le binaire dira.
+- **Notes au reviewer réécrites.** Connexion requise : NON. Aucun
+  identifiant n'est écrit nulle part. Le parcours sans marcher en Corse passe
+  par « Try the demo » du catalogue, puis « Start the trek », puis
+  « Simulate the next stage ». La démo n'utilise ni GPS ni permission.
+- **Spécification des captures réécrite** avec les tailles Apple du
+  07/10/2026 : 1320 × 2868, 1206 × 2622, iPad 2064 × 2752, Duo 1398 × 2034
+  et 2007 × 2853, en-tête 5244 × 2950 ou 3840 × 1646. Elle liste dix écrans
+  à montrer.
+- **Une garde de test** (`test/structurel/fiche_magasin_et_apple_test.dart`,
+  23 tests) verrouille tout ce qui précède : nom, limites, mots-clés sans
+  doublon, promesses retirées dans cinq langues, chiffrement, cinq langues
+  des autorisations, copie dans le paquet, et aucun identifiant dans les
+  notes.

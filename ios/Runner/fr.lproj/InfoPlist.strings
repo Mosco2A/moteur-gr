@@ -1,0 +1,12 @@
+/* StepWays — textes d'autorisation, langue fr.
+   Lot fiche magasin et preparation Apple. Reference : Runner/Info.plist.
+   Toute phrase changee ici se change dans les cinq langues. */
+
+"NSLocationWhenInUseUsageDescription" = "StepWays utilise votre position pour vous situer sur le sentier, suivre votre progression d’étape en étape et enregistrer votre randonnée.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "L’accès à la position en arrière-plan permet de poursuivre l’enregistrement de votre randonnée écran éteint, téléphone dans le sac. Votre position reste sur votre téléphone.";
+"NSCameraUsageDescription" = "L’appareil photo permet d’ajouter des photos à votre carnet de randonnée. Les photos restent sur votre téléphone.";
+"NSPhotoLibraryUsageDescription" = "L’accès à vos photos permet d’illustrer votre carnet de randonnée. Les photos restent sur votre téléphone.";
+"NSMotionUsageDescription" = "StepWays compte vos pas pendant la randonnée, pour mesurer votre longueur de pas et la consommation de la batterie. Le compte reste sur votre téléphone.";
+"NSBluetoothAlwaysUsageDescription" = "StepWays utilise le Bluetooth pour se connecter à votre ceinture cardiaque et afficher votre fréquence cardiaque pendant la randonnée. Cette donnée reste sur votre téléphone.";
+"NSHealthShareUsageDescription" = "StepWays lit (lecture seule) vos pas, votre fréquence cardiaque, votre distance et vos calories depuis l’app Santé pour afficher vos statistiques de randonnée. Ces données restent sur votre téléphone.";
+"NSUserTrackingUsageDescription" = "StepWays vous demande cette autorisation pour vous proposer des publicités adaptées à vos centres d’intérêt. Si vous refusez, l’application gratuite continue d’afficher des publicités, mais elles ne sont pas ciblées.";
