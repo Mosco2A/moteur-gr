@@ -985,7 +985,8 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       stepCounts: () => SensorFusionService().stepCountStream(),
       stepsAllowed: bgStepsAllowed,
       // LES PAS CONSOLIDES (lot 671-02) : persistes pour la session en
-      // cours, relus a la reprise.
+      // cours, relus a la reprise ; la longueur de pas est relue ici pour la
+      // ligne de compteurs.
       podometer: PodometerStore(),
       sessionId: () => sessionId,
     ),

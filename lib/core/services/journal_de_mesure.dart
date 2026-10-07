@@ -157,6 +157,12 @@ abstract final class MeasureLine {
   }
 
   /// La ligne de compteurs, valeurs nommees dans l'ordre fixe.
+  ///
+  /// LOT 671-02 : trois valeurs de plus, A LA FIN, l'ordre des precedentes
+  /// ne bouge pas. `longueur_de_pas_m` (deux decimales, un tiret tant
+  /// qu'aucun intervalle n'a ete accepte), `dispersion_pas_pct` (un tiret
+  /// sous deux longueurs acceptees) et `podometre`, l'etat du podometre pour
+  /// l'estime (un tiret tant qu'il n'est pas connu).
   static String counters({
     required DateTime at,
     required PositionProfile profile,
@@ -166,6 +172,9 @@ abstract final class MeasureLine {
     required int? distanceMeters,
     required int restarts,
     required Duration acquisitionWait,
+    double? strideMeters,
+    double? strideSpreadPercent,
+    String? podometer,
   }) => [
     timestamp(at),
     profile.journalLabel,
@@ -176,6 +185,9 @@ abstract final class MeasureLine {
     'distance_m=${_or(distanceMeters?.toString())}',
     'redemarrages=$restarts',
     'attente_acquisition_s=${seconds(acquisitionWait)}',
+    'longueur_de_pas_m=${_or(strideMeters?.toStringAsFixed(2))}',
+    'dispersion_pas_pct=${_or(strideSpreadPercent?.round().toString())}',
+    'podometre=${_or(podometer)}',
   ].join(kMeasureSeparator);
 
   /// Des secondes a une decimale.

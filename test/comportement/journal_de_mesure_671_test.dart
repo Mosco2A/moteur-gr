@@ -3,8 +3,9 @@
 // CE QUE CE FICHIER PROUVE, dans l'ordre de la fiche (E7) :
 //
 //  1. LE FORMAT. Chaque ligne ecrite a ce lot a neuf champs dans l'ordre,
-//     avec un tiret aux champs sans objet ; la ligne de compteurs a ses neuf
-//     valeurs nommees, les deux ajouts du lot a la fin.
+//     avec un tiret aux champs sans objet ; la ligne de compteurs a ses
+//     valeurs nommees, les deux ajouts du lot a la fin (et, depuis le lot
+//     671-02, la longueur de pas, sa dispersion et le podometre apres eux).
 //  2. LE VOCABULAIRE. Une liste fermee : tout autre mot est refuse.
 //  3. LES CADENCES. Carte en flux, batterie d'abord et batterie basse en tir.
 //  4. LE TIR UNIQUE. Aucune souscription vivante entre deux tirs ; un tir
@@ -308,8 +309,9 @@ void main() {
       expect(champs.sublist(5), ['-', '-', '-', '15.0']);
     });
 
-    test('la ligne de compteurs a ses neuf valeurs nommees dans l ordre fixe, '
-        'redemarrages et attente d acquisition a la fin', () {
+    test('la ligne de compteurs a ses douze valeurs nommees dans l ordre '
+        'fixe, redemarrages et attente d acquisition (671-01) puis longueur '
+        'de pas, dispersion et podometre (671-02) a la fin', () {
       final ligne = MeasureLine.counters(
         at: heure,
         profile: PositionProfile.lowBattery,
@@ -324,7 +326,29 @@ void main() {
         ligne,
         '2026-10-06T14:05:09;batterieBasse;compteurs;batterie=64;'
         'acquisitions=3;pas=-;distance_m=-;redemarrages=4;'
-        'attente_acquisition_s=26.5',
+        'attente_acquisition_s=26.5;longueur_de_pas_m=-;'
+        'dispersion_pas_pct=-;podometre=-',
+      );
+      // LOT 671-02 : les trois valeurs ajoutees, renseignees.
+      expect(
+        MeasureLine.counters(
+          at: heure,
+          profile: PositionProfile.batteryFirst,
+          batteryPercent: 64,
+          acquisitions: 3,
+          steps: 1840,
+          distanceMeters: null,
+          restarts: 4,
+          acquisitionWait: const Duration(milliseconds: 26500),
+          strideMeters: 0.6849,
+          strideSpreadPercent: 6.52,
+          podometer: 'possible',
+        ).split(';').skip(9).toList(),
+        [
+          'longueur_de_pas_m=0.68',
+          'dispersion_pas_pct=7',
+          'podometre=possible',
+        ],
       );
     });
   });

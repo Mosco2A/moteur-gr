@@ -13,7 +13,8 @@
 /// DEPUIS LE LOT 671-02, LES PAS SONT CONSOLIDES : un [StepAccumulator]
 /// remplace la soustraction naive, le total ne recule plus apres un
 /// redemarrage du telephone, il est persiste ([PodometerStore]) pour qu'un
-/// trek qui reprend ne reparte pas de zero.
+/// trek qui reprend ne reparte pas de zero, et la ligne de compteurs porte la
+/// longueur de pas, sa dispersion et l'etat du podometre.
 library;
 
 import 'dart:async';
@@ -35,7 +36,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   /// telephone) ; [stepsAllowed] dit si l'activite physique est autorisee.
   /// Sans autorisation, le flux n'est pas ouvert et le champ pas vaut un
   /// tiret : ni erreur, ni blocage, ni nouvelle demande. [podometer] persiste
-  /// le total de la session [sessionId] ; sans lui, rien n'est persiste.
+  /// le total de la session [sessionId] et lit la longueur de pas ; sans lui,
+  /// rien n'est persiste et la longueur vaut un tiret.
   MeasureRecorder({
     required MeasureJournal journal,
     required Future<int?> Function() readBattery,
@@ -141,6 +143,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   Future<void> writeCounters() async {
     final battery = await _readBatterySafely();
     await _saveSteps();
+    final stride = await _podometer?.readStride();
     await _journal.append(
       MeasureLine.counters(
         at: _now(),
@@ -151,6 +154,11 @@ class MeasureRecorder implements BackgroundCadenceObserver {
         distanceMeters: null,
         restarts: restarts,
         acquisitionWait: acquisitionWait,
+        strideMeters: stride != null && stride.isCalibrated
+            ? stride.meters
+            : null,
+        strideSpreadPercent: stride?.spreadPercent,
+        podometer: _readiness?.word,
       ),
     );
     await _batteryStep(battery);
