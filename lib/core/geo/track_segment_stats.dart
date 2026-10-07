@@ -109,8 +109,8 @@ class TrackSegmentStats {
 /// GEOMETRIE ([StatsPoint]) d'un cote et la DUREE ([duration]) de l'autre ;
 /// la boucle ci-dessous est celle d'avant, au caractere pres. Ce fichier
 /// n'importe plus la base : l'adaptation des points enregistres
-/// (`computeTrackStats`) vit dans `recorded_track_stats.dart`, et passe par
-/// ici.
+/// (`computeTrackStats`) et la tranche de trace (`computeTrackStatsOnTrace`)
+/// vivent dans `recorded_track_stats.dart`, et passent toutes deux par ici.
 TrackSegmentStats computeTrackStatsOn(
   List<StatsPoint> points, {
   required Duration duration,
