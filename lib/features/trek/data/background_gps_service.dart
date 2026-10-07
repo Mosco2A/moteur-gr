@@ -24,6 +24,7 @@ import '../../../core/services/journal_de_mesure.dart';
 import '../../../core/services/sensor_fusion_service.dart';
 import 'background_cadence.dart';
 import 'measure_recorder.dart';
+import 'podometre_preferences.dart';
 
 /// Seuil de batterie basse (20 %) — palier commun au pilotage batterie
 /// (battery_aware_location_controller) et a la capture de fond. Conserve tel
@@ -983,6 +984,10 @@ Future<void> _onServiceStart(ServiceInstance service) async {
       // moteur de cet isolate.
       stepCounts: () => SensorFusionService().stepCountStream(),
       stepsAllowed: bgStepsAllowed,
+      // LES PAS CONSOLIDES (lot 671-02) : persistes pour la session en
+      // cours, relus a la reprise.
+      podometer: PodometerStore(),
+      sessionId: () => sessionId,
     ),
     log: _logBg,
   );

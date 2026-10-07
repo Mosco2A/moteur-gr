@@ -9,6 +9,11 @@
 /// statistique, et ne recalcule aucune distance. La distance du trek vit dans
 /// l'isolate de l'interface (session en memoire) : illisible d'ici sans
 /// toucher au trek, elle vaut un tiret.
+///
+/// DEPUIS LE LOT 671-02, LES PAS SONT CONSOLIDES : un [StepAccumulator]
+/// remplace la soustraction naive, le total ne recule plus apres un
+/// redemarrage du telephone, il est persiste ([PodometerStore]) pour qu'un
+/// trek qui reprend ne reparte pas de zero.
 library;
 
 import 'dart:async';
@@ -18,8 +23,10 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
+import '../domain/accumulateur_de_pas.dart';
 import 'background_cadence.dart';
 import 'gps_cadence_engine.dart';
+import 'podometre_preferences.dart';
 
 /// Ecrit le journal de mesure au fil de la cadence de fond.
 class MeasureRecorder implements BackgroundCadenceObserver {
@@ -27,18 +34,23 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   /// [stepCounts] ouvre le flux du podometre (pas depuis le demarrage du
   /// telephone) ; [stepsAllowed] dit si l'activite physique est autorisee.
   /// Sans autorisation, le flux n'est pas ouvert et le champ pas vaut un
-  /// tiret : ni erreur, ni blocage, ni nouvelle demande.
+  /// tiret : ni erreur, ni blocage, ni nouvelle demande. [podometer] persiste
+  /// le total de la session [sessionId] ; sans lui, rien n'est persiste.
   MeasureRecorder({
     required MeasureJournal journal,
     required Future<int?> Function() readBattery,
     Stream<int> Function()? stepCounts,
     Future<bool> Function()? stepsAllowed,
+    PodometerStore? podometer,
+    String Function()? sessionId,
     TimerScheduler? schedule,
     DateTime Function()? now,
   }) : _journal = journal,
        _readBattery = readBattery,
        _stepCounts = stepCounts,
        _stepsAllowed = stepsAllowed,
+       _podometer = podometer,
+       _sessionId = sessionId ?? (() => ''),
        _schedule = schedule ?? Timer.new,
        _now = now ?? DateTime.now;
 
@@ -46,14 +58,17 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   final Future<int?> Function() _readBattery;
   final Stream<int> Function()? _stepCounts;
   final Future<bool> Function()? _stepsAllowed;
+  final PodometerStore? _podometer;
+  final String Function() _sessionId;
   final TimerScheduler _schedule;
   final DateTime Function() _now;
   final BatteryStepTracker _battery = BatteryStepTracker();
 
   PositionProfile _profile = PositionProfile.map;
   StreamSubscription<int>? _stepsSubscription;
-  int? _stepsAtStart;
-  int? _stepsNow;
+  StepAccumulator _steps = StepAccumulator();
+  EstimateReadiness? _readiness;
+  DateTime? _stepsSavedAt;
   Timer? _countersTimer;
 
   /// Positions recues depuis le dernier demarrage.
@@ -65,13 +80,12 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   /// Somme des temps du premier point depuis le dernier demarrage.
   Duration acquisitionWait = Duration.zero;
 
-  /// Pas comptes depuis le demarrage du suivi ; nul sans podometre.
-  int? get steps {
-    final start = _stepsAtStart;
-    final current = _stepsNow;
-    if (start == null || current == null) return null;
-    return current >= start ? current - start : current;
-  }
+  /// Pas comptes depuis le debut de la session, consolides : ils ne reculent
+  /// jamais. Nul sans podometre, sans autorisation ou apres une erreur.
+  int? get steps => _steps.total;
+
+  /// Ce que le podometre permet a l'estime ; nul tant que rien n'est su.
+  EstimateReadiness? get readiness => _readiness;
 
   @override
   Future<void> started(PositionProfile profile) async {
@@ -79,8 +93,9 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     acquisitions = 0;
     restarts = 0;
     acquisitionWait = Duration.zero;
-    _stepsAtStart = null;
-    _stepsNow = null;
+    _steps = await _podometer?.restoreSteps(_sessionId()) ?? StepAccumulator();
+    _readiness = null;
+    _stepsSavedAt = null;
     await _listenSteps();
     final battery = await _readBatterySafely();
     _battery.reset(battery);
@@ -101,6 +116,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   Future<void> received(Position? position, Duration? timeToFix) async {
     if (position != null) acquisitions++;
     if (timeToFix != null) acquisitionWait += timeToFix;
+    await _saveSteps();
     final battery = await _readBatterySafely();
     await _event(
       MeasureEvent.releve,
@@ -118,11 +134,13 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     await _event(MeasureEvent.arret, battery: await _readBatterySafely());
     await _stepsSubscription?.cancel();
     _stepsSubscription = null;
+    await _saveSteps();
   }
 
   /// Ecrit la ligne de compteurs (et un palier de batterie s'il tombe).
   Future<void> writeCounters() async {
     final battery = await _readBatterySafely();
+    await _saveSteps();
     await _journal.append(
       MeasureLine.counters(
         at: _now(),
@@ -146,23 +164,49 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     });
   }
 
-  /// LES PAS BRUTS : le compte du podometre, ecrit au journal et a rien
-  /// d'autre. Il ne fait avancer aucun point et n'entre dans aucun calcul.
+  /// LES PAS, ouverts a un seul endroit, l'isolate de fond. Ils sont ecrits
+  /// au journal et persistes ; ils ne font avancer aucun point.
   Future<void> _listenSteps() async {
     unawaited(_stepsSubscription?.cancel());
     _stepsSubscription = null;
     final open = _stepCounts;
-    if (open == null || !await _isAllowed()) return;
+    if (open == null) return;
+    if (!await _isAllowed()) {
+      _steps.fail();
+      await _setReadiness(EstimateReadiness.permissionRefused);
+      return;
+    }
+    await _setReadiness(EstimateReadiness.possible);
     _stepsSubscription = open().listen(
-      (count) {
-        _stepsAtStart ??= count;
-        _stepsNow = count;
+      _onRawSteps,
+      // Le service du podometre a deja journalise l'erreur (ErrorHandler) :
+      // ici, le total devient nul, l'etat est retenu, et le suivi continue.
+      onError: (Object error) {
+        _steps.fail();
+        unawaited(_setReadiness(EstimateReadiness.forError(error)));
       },
-      // Un podometre absent ou refuse laisse le champ a un tiret : ni erreur,
-      // ni blocage, ni nouvelle demande.
-      onError: (Object _) {},
       cancelOnError: true,
     );
+  }
+
+  void _onRawSteps(int raw) {
+    _steps.add(raw);
+    final saved = _stepsSavedAt;
+    if (saved == null || _now().difference(saved) >= kStepsSavePeriod) {
+      unawaited(_saveSteps());
+    }
+  }
+
+  Future<void> _saveSteps() async {
+    final store = _podometer;
+    if (store == null || _steps.lastRaw == null) return;
+    _stepsSavedAt = _now();
+    await store.saveSteps(_sessionId(), _steps);
+  }
+
+  Future<void> _setReadiness(EstimateReadiness readiness) async {
+    _readiness = readiness;
+    await _podometer?.saveReadiness(readiness);
   }
 
   Future<bool> _isAllowed() async {
