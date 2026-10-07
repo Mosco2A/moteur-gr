@@ -154,11 +154,14 @@ Le texte promotionnel n'existait pas. Il est créé dans
   Il dit maintenant à quoi servent les pas : longueur de pas et
   consommation de batterie. La garde du lot 671 qui exige ce texte reste
   verte.
-- **Cible de déploiement iOS : 13.0 passe à 15.0** dans le projet. Cela ne
-  change pas le paquet produit. L'outil Flutter stable du jour (3.47.6)
-  réécrit de lui-même 13.0 en 15.0 à chaque compilation
-  (`ios_deployment_target_migration.dart`). Le paquet `health` exige de
-  toute façon iOS 14. Le dépôt dit maintenant ce que le binaire dira.
+- **Cible de déploiement iOS : 13.0 passe à 15.0** dans le projet.
+  - Le Flutter stable du jour (3.47.6), celui que Codemagic prend, réécrit de
+    lui-même 13.0 en 15.0 à chaque compilation
+    (`ios_deployment_target_migration.dart`).
+  - Flutter 3.41, la version du `pubspec.lock`, laisserait 13.0, alors que
+    le paquet `health` exige iOS 14.
+  - 15.0 compile avec les deux. Seuls les iPhone restés sous iOS 13 ou 14
+    sont exclus.
 - **Notes au reviewer réécrites.** Connexion requise : NON. Aucun
   identifiant n'est écrit nulle part. Le parcours sans marcher en Corse passe
   par « Try the demo » du catalogue, puis « Start the trek », puis
@@ -214,11 +217,11 @@ grave :
    Google.** Aucune chaîne iPhone ne passe `ADMOB_BANNER_IOS` ni
    `ADMOB_REWARDED_IOS`, et `Release.xcconfig` retombe sur l'App ID de test.
    C'est de l'infra, donc hors de mes droits.
-2. **`dart analyze --no-fatal-infos`, l'étape d'analyse de toutes les chaînes
-   Codemagic, est refusé par le Flutter stable du jour (3.47.6, Dart 3.13).**
-   Message : « Cannot negate option », code de sortie 64. Si Codemagic est
-   sur cette version, `ios_testflight` s'arrête avant de construire. C'est de
-   l'infra.
+2. **L'étape d'analyse de toutes les chaînes Codemagic s'arrête.**
+   `dart analyze --no-fatal-infos` est refusé (« Cannot negate option »,
+   code de sortie 64). Je l'ai mesuré avec Flutter 3.41.9, la version du
+   `pubspec.lock`, et avec 3.47.6, la version stable du jour. Le correctif
+   est `dart analyze lib/ test/`. C'est de l'infra, donc hors de mes droits.
 3. **Une déclaration de suivi publicitaire sans fenêtre ATT.** C'est un
    motif de refus en revue (règle 5.1.2). La décision revient à Christophe.
 4. **Les paquets Santé et Bluetooth sont liés sans fonction visible.** Ce

@@ -432,9 +432,17 @@ le **SDK iOS 26 et Xcode 26 ou plus**. La cible minimale reste libre.
 **Ce que demande le projet :**
 
 - application : **iOS 15.0** au minimum. Le dépôt disait 13.0, et je l'ai
-  aligné sur 15.0 : l'outil Flutter stable (3.47.6, du 30/09/2026) réécrit
-  de lui-même 13.0 en 15.0 à chaque compilation, et le paquet `health` exige
-  déjà iOS 14 ;
+  aligné sur 15.0, pour trois raisons :
+  - le Flutter stable du jour (3.47.6, du 30/09/2026), que Codemagic prend
+    avec `flutter: stable`, réécrit de lui-même 13.0 en 15.0 à chaque
+    compilation ;
+  - Flutter 3.41, la version du `pubspec.lock`, laisse 13.0, mais le paquet
+    `health` exige déjà iOS 14 ;
+  - 15.0 compile avec les deux versions.
+
+  Conséquence : les iPhone restés sous iOS 13 ou 14 ne peuvent pas installer
+  l'application. Ce sont des appareils de 2019 et avant, sans mise à jour
+  depuis 2021 ;
 - widget `TrekWidget` : **iOS 17.0** ;
 - l'outil Flutter exige au moins Xcode 15.
 
@@ -481,16 +489,18 @@ code produit. Chacun est nommé ici avec son correctif.
      au public.
    - Correctif (infra) : ajouter ces deux `--dart-define` et
      `ADMOB_APP_ID_IOS` au groupe de variables de `ios_testflight`.
-2. **L'étape d'analyse des chaînes Codemagic casse avec le Flutter stable du
-   jour.**
-   - `dart analyze --no-fatal-infos` est refusé par Dart 3.13 (Flutter
-     3.47.6) : « Cannot negate option », code de sortie 64.
-   - Mesuré ici ; la version de Flutter qu'utilise Codemagic n'a pas été
-     vérifiée. Si c'est la même, `ios_testflight` s'arrête avant de
-     construire.
-   - Correctif (infra) : `dart analyze --no-fatal-warnings lib/ test/`, ou
-     simplement `dart analyze lib/ test/` (les infos ne font pas échouer par
-     défaut).
+2. **L'étape d'analyse des chaînes Codemagic s'arrête sur une option
+   refusée.**
+   - `dart analyze --no-fatal-infos lib/ test/` répond « Cannot negate option
+     "--no-fatal-infos" », avec le code de sortie 64.
+   - Mesuré ici avec Dart 3.11.5 (Flutter 3.41.9, la version qui correspond
+     au `pubspec.lock`) et avec Dart 3.13.5 (Flutter stable 3.47.6).
+   - Si Codemagic se comporte de même, `ios_testflight` s'arrête avant de
+     construire. Le journal du dernier build le dira.
+   - Correctif (infra) : `dart analyze lib/ test/`. Les infos ne font pas
+     échouer par défaut et les avertissements si : c'est exactement
+     l'intention de la ligne actuelle. Mesuré sur cette branche : code de
+     sortie 0, aucune erreur, aucun avertissement.
 3. **Déclaration de suivi sans fenêtre ATT** (§ 3, point 2). C'est un motif
    de refus en revue.
 4. **Santé et Bluetooth liés au binaire sans fonction visible.**
