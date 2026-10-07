@@ -379,6 +379,7 @@
       "allow": "Mostra la richiesta",
       "later": "Più tardi",
       "whyGps": "Senza il conteggio dei passi, StepWays segue i tuoi progressi solo con il GPS: la batteria si scarica più in fretta. Puoi consentirlo in qualsiasi momento nelle impostazioni.",
+      "continuousGps": "Non sei sul tracciato noto: StepWays tiene acceso il GPS per seguirti, e la batteria si scarica più in fretta.",
       "settingsTitle": "Conteggio dei passi",
       "stateGranted": "Consentito: i tuoi passi aiutano a seguire i progressi senza consumare la batteria.",
       "stateDenied": "Non consentito: StepWays segue i tuoi progressi solo con il GPS. Tocca per consentirlo.",

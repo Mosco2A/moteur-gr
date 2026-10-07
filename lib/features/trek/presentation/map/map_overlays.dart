@@ -18,7 +18,7 @@ import '../../../map/map_facade.dart'
     show
         OffTrackBanner,
         OffTrackMessages,
-        locationProvider,
+        currentPositionProvider,
         offTrackMessagesProvider,
         supplyGapAlertProvider,
         trackPositionProvider;
@@ -122,7 +122,7 @@ class _MapRightControls extends StatelessWidget {
         return MapControls(
           mapController: mapController,
           onCenterOnMe: () {
-            final posAsync = ref.read(locationProvider);
+            final posAsync = ref.read(currentPositionProvider);
             final pos = posAsync.value;
             if (pos != null) {
               mapController.move(
@@ -400,8 +400,12 @@ class StrideCalibrationMount extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     ref.listen(trackPositionProvider, (_, next) {
-      final distance = next.value?.distanceFromStartM;
-      if (distance != null) unawaited(feed.observe(distance));
+      final position = next.value;
+      // LES SEULS RELEVES REELS (lot 671-03). Un point estime est la longueur
+      // de pas multipliee par les pas : le donner a la calibration lui ferait
+      // mesurer sa propre hypothese, et elle ne convergerait plus.
+      if (position == null || position.isEstimated) return;
+      unawaited(feed.observe(position.distanceFromStartM));
     });
     return const SizedBox.shrink();
   }

@@ -18,7 +18,7 @@ import '../../../../shared/widgets/attribution_osm.dart';
 import '../../../map/map_facade.dart'
     show
         StageProgressBar,
-        locationProvider,
+        currentPositionProvider,
         mapFocusStage,
         mapPoisProvider,
         simplifiedTrackProvider,
@@ -36,6 +36,7 @@ import 'map_controller.dart';
 import 'map_overlays.dart';
 import 'map_arrival_pipeline.dart';
 import 'map_sheets.dart';
+import 'recalage_mount.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';
 
@@ -272,11 +273,11 @@ class _MapContentState extends State<MapContent> {
                   },
                 ),
 
-                // 4. Position utilisateur
+                // 4. Position courante (lot 671-03) : releve, ou estime
                 Consumer(
                   builder: (context, ref, _) {
                     final positionAsync = ref.watch(
-                      locationProvider.select((async) => async.value),
+                      currentPositionProvider.select((async) => async.value),
                     );
 
                     if (positionAsync == null) {
@@ -330,8 +331,9 @@ class _MapContentState extends State<MapContent> {
         // on y monte le pont d'arrivee pour qu'il soit VIVANT pendant un trek.
         // GR20 fait pareil dans active_stage_screen. Rendu invisible.
         const ArrivalPipelineMount(),
-        // Lot 671-02 : la longueur de pas se calibre en marchant. Invisible.
+        // Lots 671-02 et 671-03 : pas calibre, recalage sur le trace.
         const StrideCalibrationMount(),
+        const TrackRecalibrationMount(),
       ],
     );
   }

@@ -40,7 +40,7 @@ void main() {
 
   group('619 — la sequence complete sur une base NEUVE', () {
     test(
-      'un fichier vide s ouvre du premier coup et se range directement en v31 '
+      'un fichier vide s ouvre du premier coup et se range directement en v32 '
       '— c est le chemin de la PREMIERE INSTALLATION sur le telephone',
       () async {
         final fichier = await fichierNeuf('gr_619_neuve_');
@@ -65,8 +65,9 @@ void main() {
         // `db.schemaVersion` a lui-meme ne verifierait rien. Ce nombre monte a
         // chaque lot qui ajoute une marche — la v31 vient de la tache 641
         // (adresse, telephone et site sur les lieux, pour que le transport et le
-        // ravitaillement vivent en base).
-        expect(db.schemaVersion, 31);
+        // ravitaillement vivent en base), la v32 du lot 671-03 (l origine d un
+        // point de trace, releve reel ou point estime).
+        expect(db.schemaVersion, 32);
 
         await db.close();
         expect(
@@ -171,8 +172,9 @@ void main() {
 
       expect(
         await versionUtilisateur(db),
-        31,
-        reason: 'le compteur doit avoir traverse v27, v28, v29, v30 et v31',
+        32,
+        reason:
+            'le compteur doit avoir traverse v27, v28, v29, v30, v31 et v32',
       );
     });
 
@@ -202,10 +204,10 @@ void main() {
         'c est le cas de l application tuee au milieu d une marche', () async {
       final fichier = await baseEnV26AvecDonnees();
 
-      // Premier passage : la base monte de 26 a 31.
+      // Premier passage : la base monte de 26 a 32.
       final premier = AppDatabase(NativeDatabase(fichier));
       await premier.customStatement('SELECT 1');
-      expect(await versionUtilisateur(premier), 31);
+      expect(await versionUtilisateur(premier), 32);
       await premier.close();
 
       // On remet le compteur en arriere SANS defaire le schema : c est l etat
@@ -221,7 +223,7 @@ void main() {
       await second.customStatement('SELECT 1');
       expect(
         await versionUtilisateur(second),
-        31,
+        32,
         reason: 'les marches doivent etre rejouables sans echouer',
       );
     });

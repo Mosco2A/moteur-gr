@@ -37,6 +37,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/services/recovery_code_service.dart';
@@ -410,6 +411,7 @@ void main() {
         lng: 9.2,
         altitude: 1420,
         recordedAt: aujourdhui,
+        source: TrackPointSource.gps,
       );
       final subJournal = container.listen(journalScreenProvider, (_, __) {});
       addTearDown(subJournal.close);
@@ -430,7 +432,13 @@ void main() {
         isEmpty,
         reason: 'le dialogue promet « vos traces GPS »',
       );
-      expect((await db.sessionTrackPointsDao.getByTrailId(trailId)), isEmpty);
+      expect(
+        (await db.sessionTrackPointsDao.getByTrailId(
+          trailId,
+          read: TrackPointsRead.withEstimated,
+        )),
+        isEmpty,
+      );
     });
 
     test(

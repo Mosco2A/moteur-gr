@@ -379,6 +379,7 @@
       "allow": "Voir la demande",
       "later": "Plus tard",
       "whyGps": "Sans le compte de tes pas, StepWays suit ta progression au GPS seul : la batterie descend plus vite. Tu peux l'autoriser à tout moment dans les réglages.",
+      "continuousGps": "Tu n'es pas sur le tracé connu : StepWays garde le GPS allumé pour te suivre, la batterie descend plus vite.",
       "settingsTitle": "Compte des pas",
       "stateGranted": "Autorisé : tes pas aident à suivre ta progression sans user la batterie.",
       "stateDenied": "Pas autorisé : StepWays suit ta progression au GPS seul. Touche pour l'autoriser.",

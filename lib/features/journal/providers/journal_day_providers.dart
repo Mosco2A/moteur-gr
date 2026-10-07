@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_segment_stats.dart';
@@ -103,7 +104,14 @@ final journalDayTraceProvider = FutureProvider<List<SessionTrackPoint>>((
   if (day == null) return const <SessionTrackPoint>[];
   final trailId = ref.watch(trailIdProvider);
   final db = ref.watch(databaseProvider);
-  return db.sessionTrackPointsDao.getByCalendarDay(trailId, day);
+  // La trace DENSE, points estimes compris (lot 671-03) : elle se dessine.
+  // Les chiffres de la journee, eux, se lisent a part, sur les seuls releves
+  // reels ([journalDayStatsProvider]).
+  return db.sessionTrackPointsDao.getByCalendarDay(
+    trailId,
+    day,
+    read: TrackPointsRead.withEstimated,
+  );
 });
 
 /// Chiffres d'une journee de marche, mesures sur la trace GPS.
@@ -119,8 +127,23 @@ JournalDayStats computeDayStats(List<SessionTrackPoint> points) =>
     computeTrackStats(points);
 
 /// Chiffres de la journee affichee (correctif L4-3).
+///
+/// LOT 671-03 : sur les SEULS RELEVES REELS, et non sur la trace dessinee. Les
+/// points estimes ne font pas bouger d'un metre la distance ni le denivele du
+/// jour ; le changement d'entree des statistiques est le lot 671-06.
 final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
-  final points = await ref.watch(journalDayTraceProvider.future);
+  // La trace dessinee reste la source de rafraichissement (meme journee,
+  // memes invalidations) ; les chiffres se relisent sur les releves seuls.
+  await ref.watch(journalDayTraceProvider.future);
+  final day = ref.watch(journalSelectedDayProvider);
+  if (day == null) return const JournalDayStats();
+  final trailId = ref.watch(trailIdProvider);
+  final db = ref.watch(databaseProvider);
+  final points = await db.sessionTrackPointsDao.getByCalendarDay(
+    trailId,
+    day,
+    read: TrackPointsRead.gpsOnly,
+  );
   return computeDayStats(points);
 });
 
@@ -137,7 +160,11 @@ final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
   final db = ref.watch(databaseProvider);
-  final all = await db.sessionTrackPointsDao.getByTrailId(trailId);
+  // Les seuls releves reels : un cumul de chiffres (lot 671-03).
+  final all = await db.sessionTrackPointsDao.getByTrailId(
+    trailId,
+    read: TrackPointsRead.gpsOnly,
+  );
 
   final byDay = <DateTime, List<SessionTrackPoint>>{};
   for (final p in all) {

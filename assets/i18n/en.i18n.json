@@ -379,6 +379,7 @@
       "allow": "Show the request",
       "later": "Later",
       "whyGps": "Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.",
+      "continuousGps": "You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.",
       "settingsTitle": "Step count",
       "stateGranted": "Allowed: your steps help follow your progress without draining the battery.",
       "stateDenied": "Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.",

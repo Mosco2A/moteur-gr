@@ -117,6 +117,8 @@ class TrackingNotifier extends Notifier<TrackingState> {
           lat: position.latitude,
           lng: position.longitude,
           altitude: position.altitude,
+          // Un releve du robinet GPS : origine reelle (lot 671-03).
+          source: TrackPointSource.gps,
           recordedAt: now,
           sessionId: _sessionId,
           dayIndex: _startedAt == null

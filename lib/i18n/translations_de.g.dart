@@ -2232,6 +2232,7 @@ class _Translations$tracking$stepCounting$de extends Translations$tracking$stepC
 	@override String get allow => 'Anfrage anzeigen';
 	@override String get later => 'Später';
 	@override String get whyGps => 'Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.';
+	@override String get continuousGps => 'Du bist nicht auf der bekannten Route: StepWays lässt das GPS eingeschaltet, um dir zu folgen, der Akku leert sich schneller.';
 	@override String get settingsTitle => 'Schrittzählung';
 	@override String get stateGranted => 'Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.';
 	@override String get stateDenied => 'Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.';
@@ -4511,6 +4512,7 @@ extension on TranslationsDe {
 			'tracking.stepCounting.allow' => 'Anfrage anzeigen',
 			'tracking.stepCounting.later' => 'Später',
 			'tracking.stepCounting.whyGps' => 'Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.',
+			'tracking.stepCounting.continuousGps' => 'Du bist nicht auf der bekannten Route: StepWays lässt das GPS eingeschaltet, um dir zu folgen, der Akku leert sich schneller.',
 			'tracking.stepCounting.settingsTitle' => 'Schrittzählung',
 			'tracking.stepCounting.stateGranted' => 'Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.',
 			'tracking.stepCounting.stateDenied' => 'Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.',
@@ -4707,9 +4709,9 @@ extension on TranslationsDe {
 			'checklist.ui.infoValidateBody' => 'Bestätige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.',
 			'checklist.ui.infoUnderstood' => 'Verstanden!',
 			'checklist.ui.prepTitle' => 'Rucksack packen',
-			'checklist.ui.prepCounter' => '{prepared} / {total} Artikel gepackt',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.prepCounter' => '{prepared} / {total} Artikel gepackt',
 			'checklist.ui.prepAllReady' => 'Alles bereit! Gute Tour',
 			'checklist.ui.preDepartureTitle' => 'Checkliste vor dem Start',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} geprüft',
@@ -5221,9 +5223,9 @@ extension on TranslationsDe {
 			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',
 			'onboarding.browseCatalog' => 'Katalog durchsuchen',
 			'onboarding.recoveryNudge' => 'Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon.',
-			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
 			'monetization.featureMap' => 'Offline-Karte + GPS + Live-Tracking',
@@ -5735,9 +5737,9 @@ extension on TranslationsDe {
 			'recap.gpxExported' => ({required Object file}) => 'Strecke exportiert: ${file}',
 			'recap.gpxEmpty' => 'Kein GPS-Punkt zum Exportieren',
 			'recap.gpxError' => 'Export nicht möglich',
-			'recap.daysSection' => 'Tag für Tag',
 			_ => null,
 		} ?? switch (path) {
+			'recap.daysSection' => 'Tag für Tag',
 			'recap.dayLabel' => ({required Object day}) => 'Tag ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} Etappe(n)',
 			'recap.dayRest' => 'An diesem Tag keine Etappe beendet',

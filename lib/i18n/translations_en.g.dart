@@ -2232,6 +2232,7 @@ class _Translations$tracking$stepCounting$en extends Translations$tracking$stepC
 	@override String get allow => 'Show the request';
 	@override String get later => 'Later';
 	@override String get whyGps => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.';
+	@override String get continuousGps => 'You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.';
 	@override String get settingsTitle => 'Step count';
 	@override String get stateGranted => 'Allowed: your steps help follow your progress without draining the battery.';
 	@override String get stateDenied => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.';
@@ -4511,6 +4512,7 @@ extension on TranslationsEn {
 			'tracking.stepCounting.allow' => 'Show the request',
 			'tracking.stepCounting.later' => 'Later',
 			'tracking.stepCounting.whyGps' => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.',
+			'tracking.stepCounting.continuousGps' => 'You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.',
 			'tracking.stepCounting.settingsTitle' => 'Step count',
 			'tracking.stepCounting.stateGranted' => 'Allowed: your steps help follow your progress without draining the battery.',
 			'tracking.stepCounting.stateDenied' => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.',
@@ -4707,9 +4709,9 @@ extension on TranslationsEn {
 			'checklist.ui.infoValidateBody' => 'Validate when your pack is ready — a check appears on the home screen.',
 			'checklist.ui.infoUnderstood' => 'Got it!',
 			'checklist.ui.prepTitle' => 'Pack preparation',
-			'checklist.ui.prepCounter' => '{prepared} / {total} items packed',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.prepCounter' => '{prepared} / {total} items packed',
 			'checklist.ui.prepAllReady' => 'All set! Enjoy your trek',
 			'checklist.ui.preDepartureTitle' => 'Pre-departure checklist',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} checked',
@@ -5221,9 +5223,9 @@ extension on TranslationsEn {
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
-			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
 			'monetization.featureMap' => 'Offline map + GPS + live tracking',
@@ -5735,9 +5737,9 @@ extension on TranslationsEn {
 			'recap.gpxExported' => ({required Object file}) => 'Track exported: ${file}',
 			'recap.gpxEmpty' => 'No GPS point to export',
 			'recap.gpxError' => 'Export failed',
-			'recap.daysSection' => 'Day by day',
 			_ => null,
 		} ?? switch (path) {
+			'recap.daysSection' => 'Day by day',
 			'recap.dayLabel' => ({required Object day}) => 'Day ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} stage(s)',
 			'recap.dayRest' => 'No stage completed that day',

@@ -20,6 +20,13 @@ import 'package:drift/drift.dart';
 /// migration v26 (et ceux d'un appel qui ne connaît pas le contexte)
 /// restent lisibles et exploitables par [getByTrailId].
 /// Créée en migration v13, enrichie en migration v26.
+///
+/// LOT 671-03 — la colonne `source` dit l'ORIGINE du point : `gps` pour un
+/// relevé réel, `estime` pour un point calculé le long du tracé entre deux
+/// relevés (le recalage sur le tracé). NULLABLE, sur le motif exact des trois
+/// colonnes de la v26 : les points enregistrés avant la migration v32 restent
+/// lisibles et valent des relevés réels, et un retour à la v31 ne perd aucun
+/// point, seulement leur origine. Enrichie en migration v32.
 class SessionTrackPoints extends Table {
   /// Clé primaire auto-incrémentée (ordre d'enregistrement)
   IntColumn get id => integer().autoIncrement()();
@@ -54,4 +61,11 @@ class SessionTrackPoints extends Table {
 
   /// Horodatage d'enregistrement du point
   DateTimeColumn get recordedAt => dateTime()();
+
+  /// Origine du point : `gps` (relevé réel) ou `estime` (calculé sur le
+  /// tracé), cf. `TrackPointSource`.
+  ///
+  /// Null pour les points antérieurs à la migration v32 : ce sont des
+  /// relevés réels, et toute lecture les traite comme tels.
+  TextColumn get source => text().nullable()();
 }

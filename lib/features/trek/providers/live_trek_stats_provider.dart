@@ -4,9 +4,11 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../map/map_facade.dart' show locationProvider, trackPositionProvider;
+import '../../map/map_facade.dart'
+    show currentPositionProvider, trackPositionProvider;
 import 'tracking_providers.dart';
 
 /// Chiffres MESURES de la randonnee EN COURS (correctif L6-2).
@@ -45,7 +47,13 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
   ref.watch(trackPositionProvider);
 
   final db = ref.watch(databaseProvider);
-  final points = await db.sessionTrackPointsDao.getBySessionId(session.id);
+  // LES SEULS RELEVES REELS (lot 671-03) : les points estimes le long du
+  // trace ne font pas bouger d'un metre la distance ni le denivele du jour.
+  // Le changement d'entree des statistiques est le lot 671-06, pas celui-ci.
+  final points = await db.sessionTrackPointsDao.getBySessionId(
+    session.id,
+    read: TrackPointsRead.gpsOnly,
+  );
   return computeTrackStats(points);
 });
 
@@ -56,8 +64,12 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
 /// Les deux chiffres sont differents et le second ne repond pas a la question
 /// « je suis a quelle altitude ». Un fix sans altitude renvoie exactement 0 :
 /// ne rien montrer vaut mieux qu'un « 0 m » faux en pleine montagne.
+///
+/// LOT 671-03 : la POSITION COURANTE, releve ou point estime ; entre deux
+/// releves des profils batterie, l'altitude est celle du trace sous le point
+/// estime, plus fraiche que celle d'un releve vieux de trois minutes.
 final currentAltitudeProvider = Provider<double?>((ref) {
-  final position = ref.watch(locationProvider).value;
+  final position = ref.watch(currentPositionProvider).value;
   if (position == null) return null;
   final alt = position.altitude;
   if (alt == 0) return null;

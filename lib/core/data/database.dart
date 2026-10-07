@@ -173,7 +173,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 31;
+  int get schemaVersion => 32;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -559,6 +559,22 @@ class AppDatabase extends _$AppDatabase {
         await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.address);
         await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.phone);
         await _ajouterColonneSiAbsente(migrator, trailPois, trailPois.website);
+      }
+
+      // Migration v31 -> v32 (lot 671-03, le recalage sur le trace) :
+      // L'ORIGINE D'UN POINT DE TRACE, releve reel (`gps`) ou point estime le
+      // long du trace (`estime`). STRICTEMENT ADDITIVE : UNE colonne texte
+      // NULLABLE sur session_track_points, sur le motif exact des trois
+      // colonnes de la v26. Les points d'avant naissent a null et valent des
+      // releves reels ; aucune colonne existante n'est touchee ni
+      // reinterpretee, et un retour a la v31 ne perd aucun point, seulement
+      // leur origine. Par [_ajouterColonneSiAbsente], comme toute marche.
+      if (from < 32) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          sessionTrackPoints,
+          sessionTrackPoints.source,
+        );
       }
     },
   );

@@ -5,16 +5,24 @@
 /// eteint ; l'interface n'ecrit que ce qu'elle seule connait (ecran-on,
 /// ecran-off, voir [ScreenStateRecorder]).
 ///
-/// CE QU'IL NE FAIT PAS : il ne fait avancer aucun point, ne touche a aucune
-/// statistique, et ne recalcule aucune distance. La distance du trek vit dans
-/// l'isolate de l'interface (session en memoire) : illisible d'ici sans
-/// toucher au trek, elle vaut un tiret.
+/// CE QU'IL NE FAIT PAS : il ne touche a aucune statistique et ne recalcule
+/// aucune distance du trek. La distance du trek vit dans l'isolate de
+/// l'interface (session en memoire) : illisible d'ici sans toucher au trek,
+/// elle vaut un tiret.
 ///
 /// DEPUIS LE LOT 671-02, LES PAS SONT CONSOLIDES : un [StepAccumulator]
 /// remplace la soustraction naive, le total ne recule plus apres un
 /// redemarrage du telephone, il est persiste ([PodometerStore]) pour qu'un
 /// trek qui reprend ne reparte pas de zero, et la ligne de compteurs porte la
 /// longueur de pas, sa dispersion et l'etat du podometre.
+///
+/// DEPUIS LE LOT 671-03, IL MENE L'ESTIME ([BackgroundEstimate]) : a chaque
+/// paquet de pas, le point avance sur le trace et chaque point RETENU ecrit
+/// une ligne `estime` (sa position, un tiret a la precision : un point calcule
+/// n'a pas de precision de recepteur) ; a chaque releve, le CHAMP 8 porte
+/// l'ecart au dernier estime, en metres le long du trace — LA MESURE GRATUITE
+/// DE LA DERIVE, posee par le lot 671-01 et restee un tiret jusqu'ici. Aucun
+/// mot d'evenement nouveau, aucun champ nouveau.
 library;
 
 import 'dart:async';
@@ -22,10 +30,13 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/geo/track_projection.dart';
 import '../../../core/services/gps_cadence.dart';
 import '../../../core/services/journal_de_mesure.dart';
 import '../domain/accumulateur_de_pas.dart';
+import '../domain/longueur_de_pas.dart';
 import 'background_cadence.dart';
+import 'estime_de_fond.dart';
 import 'gps_cadence_engine.dart';
 import 'podometre_preferences.dart';
 
@@ -37,7 +48,9 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   /// Sans autorisation, le flux n'est pas ouvert et le champ pas vaut un
   /// tiret : ni erreur, ni blocage, ni nouvelle demande. [podometer] persiste
   /// le total de la session [sessionId] et lit la longueur de pas ; sans lui,
-  /// rien n'est persiste et la longueur vaut un tiret.
+  /// rien n'est persiste et la longueur vaut un tiret. [estimate] mene
+  /// l'estime sur le trace et [onEstimateKept] recoit chaque point estime
+  /// retenu (le tampon et l'interface) ; sans eux, aucun point n'avance.
   MeasureRecorder({
     required MeasureJournal journal,
     required Future<int?> Function() readBattery,
@@ -45,6 +58,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     Future<bool> Function()? stepsAllowed,
     PodometerStore? podometer,
     String Function()? sessionId,
+    BackgroundEstimate? estimate,
+    Future<void> Function(TrackAbscissa estimate)? onEstimateKept,
     TimerScheduler? schedule,
     DateTime Function()? now,
   }) : _journal = journal,
@@ -53,6 +68,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
        _stepsAllowed = stepsAllowed,
        _podometer = podometer,
        _sessionId = sessionId ?? (() => ''),
+       _estimate = estimate,
+       _onEstimateKept = onEstimateKept,
        _schedule = schedule ?? Timer.new,
        _now = now ?? DateTime.now;
 
@@ -62,6 +79,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   final Future<bool> Function()? _stepsAllowed;
   final PodometerStore? _podometer;
   final String Function() _sessionId;
+  final BackgroundEstimate? _estimate;
+  final Future<void> Function(TrackAbscissa estimate)? _onEstimateKept;
   final TimerScheduler _schedule;
   final DateTime Function() _now;
   final BatteryStepTracker _battery = BatteryStepTracker();
@@ -72,6 +91,10 @@ class MeasureRecorder implements BackgroundCadenceObserver {
   EstimateReadiness? _readiness;
   DateTime? _stepsSavedAt;
   Timer? _countersTimer;
+
+  /// La longueur de pas de l'estime, relue au point de calibration au
+  /// demarrage et a chaque releve (la calibration avance aux releves).
+  double _strideMeters = kStrideDefaultMeters;
 
   /// Positions recues depuis le dernier demarrage.
   int acquisitions = 0;
@@ -98,6 +121,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     _steps = await _podometer?.restoreSteps(_sessionId()) ?? StepAccumulator();
     _readiness = null;
     _stepsSavedAt = null;
+    await _refreshStride();
     await _listenSteps();
     final battery = await _readBatterySafely();
     _battery.reset(battery);
@@ -119,11 +143,16 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     if (position != null) acquisitions++;
     if (timeToFix != null) acquisitionWait += timeToFix;
     await _saveSteps();
+    // L'ecart se mesure AVANT de relire la longueur de pas : c'est l'erreur
+    // de l'estime tel qu'il a ete fait.
+    final drift = await _estimate?.onFix(position, steps, _profile);
+    await _refreshStride();
     final battery = await _readBatterySafely();
     await _event(
       MeasureEvent.releve,
       battery: battery,
       position: position,
+      driftMeters: drift,
       timeToFix: timeToFix,
     );
     await _batteryStep(battery);
@@ -199,6 +228,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
 
   void _onRawSteps(int raw) {
     _steps.add(raw);
+    final kept = _estimate?.onSteps(steps, _strideMeters, _profile);
+    if (kept != null) unawaited(_recordEstimate(kept));
     final saved = _stepsSavedAt;
     if (saved == null || _now().difference(saved) >= kStepsSavePeriod) {
       unawaited(_saveSteps());
@@ -210,6 +241,21 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     if (store == null || _steps.lastRaw == null) return;
     _stepsSavedAt = _now();
     await store.saveSteps(_sessionId(), _steps);
+  }
+
+  /// Un point estime RETENU : sa ligne `estime`, puis le tampon.
+  Future<void> _recordEstimate(TrackAbscissa estimate) async {
+    await _event(
+      MeasureEvent.estime,
+      battery: await _readBatterySafely(),
+      estimate: estimate,
+    );
+    await _onEstimateKept?.call(estimate);
+  }
+
+  Future<void> _refreshStride() async {
+    final stride = await _podometer?.readStride();
+    if (stride != null) _strideMeters = stride.meters;
   }
 
   Future<void> _setReadiness(EstimateReadiness readiness) async {
@@ -236,6 +282,8 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     MeasureEvent event, {
     required int? battery,
     Position? position,
+    TrackAbscissa? estimate,
+    double? driftMeters,
     Duration? timeToFix,
   }) => _journal.append(
     MeasureLine.event(
@@ -244,9 +292,10 @@ class MeasureRecorder implements BackgroundCadenceObserver {
       event: event,
       batteryPercent: battery,
       steps: steps,
-      latitude: position?.latitude,
-      longitude: position?.longitude,
+      latitude: position?.latitude ?? estimate?.lat,
+      longitude: position?.longitude ?? estimate?.lng,
       accuracyMeters: position?.accuracy,
+      driftMeters: driftMeters,
       timeToFix: timeToFix,
     ),
   );

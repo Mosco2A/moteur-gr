@@ -379,6 +379,7 @@
       "allow": "Anfrage anzeigen",
       "later": "Später",
       "whyGps": "Ohne deine Schrittzählung verfolgt StepWays deinen Fortschritt nur per GPS: der Akku leert sich schneller. Du kannst sie jederzeit in den Einstellungen zulassen.",
+      "continuousGps": "Du bist nicht auf der bekannten Route: StepWays lässt das GPS eingeschaltet, um dir zu folgen, der Akku leert sich schneller.",
       "settingsTitle": "Schrittzählung",
       "stateGranted": "Erlaubt: deine Schritte helfen, deinen Fortschritt zu verfolgen, ohne den Akku zu leeren.",
       "stateDenied": "Nicht erlaubt: StepWays verfolgt deinen Fortschritt nur per GPS. Tippe, um sie zu erlauben.",

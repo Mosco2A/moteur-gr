@@ -173,6 +173,7 @@ void main() {
         recordedAt: DateTime.utc(2026, 9, 23, 14),
         sessionId: 'sess-1',
         dayIndex: 3,
+        source: TrackPointSource.gps,
       );
 
       // Le solde d'etapes : sa SOURCE durable reste les preferences, mais son
@@ -228,7 +229,7 @@ void main() {
 
       final trace = await SessionTrackPointsDao(
         db2,
-      ).getByTrailId('mare-a-mare-centre');
+      ).getByTrailId('mare-a-mare-centre', read: TrackPointsRead.withEstimated);
       expect(
         trace,
         hasLength(1),

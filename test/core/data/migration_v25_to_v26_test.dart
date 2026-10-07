@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 
 /// Tests de MIGRATION Drift v25 -> v26 (StepWays LOT L3-1, socle de la trace).
@@ -74,6 +75,7 @@ void main() {
         // nouvelles colonnes a null — c'est pourquoi elles sont nullables.
         final points = await db.sessionTrackPointsDao.getByTrailId(
           'mare-a-mare',
+          read: TrackPointsRead.withEstimated,
         );
         expect(points.length, 1);
         expect(points.single.altitude, 1550);
@@ -90,11 +92,13 @@ void main() {
           lat: 42.2,
           lng: 9.1,
           altitude: 1600,
+          source: TrackPointSource.gps,
         );
         expect(
           (await db.sessionTrackPointsDao.getByDayIndex(
             'mare-a-mare',
             3,
+            read: TrackPointsRead.withEstimated,
           )).length,
           1,
         );

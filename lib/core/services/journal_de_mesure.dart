@@ -72,7 +72,7 @@ enum MeasureEvent {
   /// Une position recue, ou un tir sans position.
   releve('releve'),
 
-  /// Un point estime (jamais ecrit a ce lot).
+  /// Un point estime le long du trace, retenu (ecrit depuis le lot 671-03).
   estime('estime'),
 
   /// Fin du suivi.
@@ -126,8 +126,10 @@ abstract final class MeasureLine {
 
   /// Une ligne d'evenement, neuf champs, un tiret pour chaque champ nul.
   ///
-  /// Le champ 8 (ecart au dernier estime) existe toujours ; il vaut un tiret
-  /// tant qu'aucun point estime n'existe.
+  /// Le champ 8 (ecart au dernier estime) existe toujours. Depuis le lot
+  /// 671-03, une ligne `releve` y porte la distance en metres, LE LONG DU
+  /// TRACE, entre le dernier point estime et le releve projete ; il vaut un
+  /// tiret quand aucun estime ne precede le releve, et sur toute autre ligne.
   static String event({
     required DateTime at,
     required PositionProfile profile,

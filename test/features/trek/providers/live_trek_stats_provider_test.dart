@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
@@ -57,6 +58,7 @@ void main() {
         altitude: p.$3,
         recordedAt: DateTime.utc(2026, 6, 15, 8, p.$4),
         sessionId: sessionId,
+        source: TrackPointSource.gps,
       );
     }
   }

@@ -2232,6 +2232,7 @@ class _Translations$tracking$stepCounting$it extends Translations$tracking$stepC
 	@override String get allow => 'Mostra la richiesta';
 	@override String get later => 'Più tardi';
 	@override String get whyGps => 'Senza il conteggio dei passi, StepWays segue i tuoi progressi solo con il GPS: la batteria si scarica più in fretta. Puoi consentirlo in qualsiasi momento nelle impostazioni.';
+	@override String get continuousGps => 'Non sei sul tracciato noto: StepWays tiene acceso il GPS per seguirti, e la batteria si scarica più in fretta.';
 	@override String get settingsTitle => 'Conteggio dei passi';
 	@override String get stateGranted => 'Consentito: i tuoi passi aiutano a seguire i progressi senza consumare la batteria.';
 	@override String get stateDenied => 'Non consentito: StepWays segue i tuoi progressi solo con il GPS. Tocca per consentirlo.';
@@ -4511,6 +4512,7 @@ extension on TranslationsIt {
 			'tracking.stepCounting.allow' => 'Mostra la richiesta',
 			'tracking.stepCounting.later' => 'Più tardi',
 			'tracking.stepCounting.whyGps' => 'Senza il conteggio dei passi, StepWays segue i tuoi progressi solo con il GPS: la batteria si scarica più in fretta. Puoi consentirlo in qualsiasi momento nelle impostazioni.',
+			'tracking.stepCounting.continuousGps' => 'Non sei sul tracciato noto: StepWays tiene acceso il GPS per seguirti, e la batteria si scarica più in fretta.',
 			'tracking.stepCounting.settingsTitle' => 'Conteggio dei passi',
 			'tracking.stepCounting.stateGranted' => 'Consentito: i tuoi passi aiutano a seguire i progressi senza consumare la batteria.',
 			'tracking.stepCounting.stateDenied' => 'Non consentito: StepWays segue i tuoi progressi solo con il GPS. Tocca per consentirlo.',
@@ -4707,9 +4709,9 @@ extension on TranslationsIt {
 			'checklist.ui.infoValidateBody' => 'Conferma quando lo zaino è pronto — un segno di spunta appare sulla home.',
 			'checklist.ui.infoUnderstood' => 'Capito!',
 			'checklist.ui.prepTitle' => 'Preparazione dello zaino',
-			'checklist.ui.prepCounter' => '{prepared} / {total} articoli preparati',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.prepCounter' => '{prepared} / {total} articoli preparati',
 			'checklist.ui.prepAllReady' => 'Tutto pronto! Buon trekking',
 			'checklist.ui.preDepartureTitle' => 'Checklist prima della partenza',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} verificati',
@@ -5221,9 +5223,9 @@ extension on TranslationsIt {
 			'onboarding.downloadSubtitle' => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.',
 			'onboarding.browseCatalog' => 'Sfoglia il catalogo',
 			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
-			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			_ => null,
 		} ?? switch (path) {
+			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
 			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',
 			'monetization.featureMap' => 'Mappa offline + GPS + localizzazione in diretta',
@@ -5735,9 +5737,9 @@ extension on TranslationsIt {
 			'recap.gpxExported' => ({required Object file}) => 'Traccia esportata: ${file}',
 			'recap.gpxEmpty' => 'Nessun punto GPS da esportare',
 			'recap.gpxError' => 'Esportazione non riuscita',
-			'recap.daysSection' => 'Giorno per giorno',
 			_ => null,
 		} ?? switch (path) {
+			'recap.daysSection' => 'Giorno per giorno',
 			'recap.dayLabel' => ({required Object day}) => 'Giorno ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} tappa/e',
 			'recap.dayRest' => 'Nessuna tappa conclusa quel giorno',
