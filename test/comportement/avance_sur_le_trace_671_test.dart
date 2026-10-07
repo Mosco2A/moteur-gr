@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/native.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,6 +17,7 @@ import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/map/providers/current_position_provider.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
+import 'package:moteur_gr/features/map/providers/off_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/notifications/domain/notification_service.dart';
 import 'package:moteur_gr/features/notifications/providers/notification_provider.dart';
@@ -227,6 +229,85 @@ void main() {
         expect(text, contains('trackPositionProvider'), reason: f);
         expect(direct.hasMatch(text), isFalse, reason: '$f lit le GPS brut');
       }
+    });
+  });
+
+  group('(5) le hors-trace ne lit que les releves reels', () {
+    setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (_) async => null);
+    });
+
+    test('UNE SORTIE DE SENTIER DE 300 M sur un releve reel declenche '
+        'l alerte, et ne la quitte pas sur un estime ; le retour sous le '
+        'seuil leve l alerte', () async {
+      final c = await bench(PositionProfile.batteryFirst);
+      nextShot = fixAt(1000);
+      final sub = c.listen(trackPositionProvider, (_, _) {});
+      addTearDown(sub.close);
+      await settle();
+      c.read(offTrackProvider);
+      await settle();
+      estimates.add(estimateAt(1040));
+      await settle();
+      // Le releve suivant est a 300 m du sentier.
+      await nextPeriodicShot(fixAt(1100, eastM: 300));
+      // L'estime, lui, continuerait sur le trace, a zero metre.
+      estimates.add(estimateAt(1140));
+      await settle();
+
+      expect(
+        c.read(offTrackProvider).isOffTrack,
+        isTrue,
+        reason:
+            'une sortie de sentier de 300 m n a RIEN declenche : le '
+            'detecteur hors-trace ne lit pas les releves reels',
+      );
+      expect(spy.shows, 1, reason: 'une alerte, une seule');
+      expect(position(c)!.isOffTrack, isTrue);
+
+      await nextPeriodicShot(fixAt(1180, eastM: 10));
+      expect(c.read(offTrackProvider).isOffTrack, isFalse);
+      expect(spy.cancels, 1);
+      expect(position(c)!.isOffTrack, isFalse);
+    });
+
+    test('une position ESTIMEE, a zero metre du trace par construction, ne '
+        'declenche JAMAIS rien', () async {
+      final c = await bench(PositionProfile.batteryFirst);
+      nextShot = fixAt(1000);
+      c.read(offTrackProvider);
+      final sub = c.listen(trackPositionProvider, (_, _) {});
+      addTearDown(sub.close);
+      await settle();
+      for (var m = 1010.0; m < 1500; m += 20) {
+        estimates.add(estimateAt(m));
+        await settle();
+      }
+      expect(c.read(offTrackProvider).isOffTrack, isFalse);
+      expect(spy.shows, 0);
+      expect(position(c)!.isOffTrack, isFalse);
+    });
+
+    test('il n existe plus que DEUX seuils hors-trace dans lib/ : le '
+        'troisieme (100 m) a disparu', () {
+      final threshold = RegExp(
+        r'(const|final)\s+(double|int)?\s*_?[A-Za-z]*'
+        r'([Oo]ffTrack|[Hh]orsTrace)[A-Za-z]*(Threshold|Seuil)[A-Za-z]*\s*=',
+      );
+      final found = <String>[];
+      for (final f in Directory('lib').listSync(recursive: true)) {
+        if (f is! File || !f.path.endsWith('.dart')) continue;
+        for (final line in f.readAsLinesSync()) {
+          if (threshold.hasMatch(line)) found.add('${f.path}: ${line.trim()}');
+        }
+      }
+      expect(found, hasLength(2), reason: found.join('\n'));
+      expect(found.join('\n'), contains('kOffTrackExitThresholdMeters = 80.0'));
+      expect(
+        found.join('\n'),
+        contains('kOffTrackReturnThresholdMeters = 50.0'),
+      );
     });
   });
 

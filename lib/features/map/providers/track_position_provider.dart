@@ -16,6 +16,7 @@ import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../../core/models/stage_row.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
+import '../domain/off_track_detector.dart';
 import 'current_position_provider.dart';
 import 'gpx_track_provider.dart';
 
@@ -61,7 +62,9 @@ class TrackPositionState {
   /// Detection de l'etape courante
   final StageDetection stageDetection;
 
-  /// Vrai si l'utilisateur est a plus de 100m du trace
+  /// Vrai si l'utilisateur est hors du trace : le DETECTEUR hors-trace
+  /// ([OffTrackDetector], 80 m pour sortir, 50 m pour revenir), nourri des
+  /// seuls releves reels.
   final bool isOffTrack;
 
   /// Vrai quand la position est un point ESTIME le long du trace entre deux
@@ -79,8 +82,21 @@ class TrackPositionState {
   }
 }
 
-/// Seuil en metres au-dela duquel l'utilisateur est considere hors trace.
-const double _offTrackThresholdM = 100.0;
+/// L'ETAT « HORS TRACE » DE L'AFFICHAGE, tenu par le detecteur de la carte.
+///
+/// LES TROIS SEUILS SONT DEVENUS DEUX (lot 671-03). Cette barre portait son
+/// propre seuil de 100 m, sans hysteresis, a cote des 80 m et 50 m de
+/// l'alerte : trois chiffres pour une seule question. Elle lit desormais les
+/// MEMES seuils, avec la MEME hysteresis, par la meme classe.
+///
+/// IL NE LIT QUE LES RELEVES REELS, ET C'EST UN RAISONNEMENT, PAS UN DETAIL :
+/// un point estime est PAR CONSTRUCTION sur le trace, sa distance au trace
+/// vaut zero ; un detecteur nourri par l'estime ne se declencherait donc
+/// jamais. Entre deux releves, l'etat reste celui du dernier releve.
+final _offTrackDetectorProvider = Provider<OffTrackDetector>((ref) {
+  ref.watch(trailIdProvider);
+  return OffTrackDetector();
+});
 
 /// Notifier pour le dernier index de projection connu (optimisation fenetree).
 class _LastTrackIndexNotifier extends Notifier<int?> {
@@ -170,7 +186,7 @@ AsyncValue<TrackPositionState> _computeProjection(
         distanceRemainingM: projection.distanceRemainingM,
         trackIndex: projection.trackIndexPosition,
         stageDetection: detection,
-        isOffTrack: projection.distanceToTrackM > _offTrackThresholdM,
+        isOffTrack: ref.watch(_offTrackDetectorProvider).isOffTrack,
         isEstimated: position.isEstimated,
       );
 
@@ -183,11 +199,12 @@ AsyncValue<TrackPositionState> _computeProjection(
 
 /// La position courante SUR le trace.
 ///
-/// Un releve est PROJETE (fenetre de 50 segments autour du dernier index). Un
-/// point estime porte deja sa distance sur le trace : il est PLACE a cette
-/// abscisse par la fonction pure d'avance ([TrackProjector.locate]), sans
-/// reprojection — une reprojection pourrait le faire sauter sur le brin
-/// voisin d'un lacet.
+/// Un releve est PROJETE (fenetre de 50 segments autour du dernier index) et
+/// nourrit le detecteur hors-trace. Un point estime porte deja sa distance sur
+/// le trace : il est PLACE a cette abscisse par la fonction pure d'avance
+/// ([TrackProjector.locate]), sans reprojection — une reprojection pourrait le
+/// faire sauter sur le brin voisin d'un lacet — et il ne touche pas au
+/// detecteur.
 TrackProjection _project(
   Ref ref,
   CurrentPosition position,
@@ -209,12 +226,14 @@ TrackProjection _project(
           trackPoints.last.distanceFromStart - located.distanceFromStartM,
     );
   }
-  return TrackProjector.project(
+  final projection = TrackProjector.project(
     userLat: position.latitude,
     userLng: position.longitude,
     trackPoints: trackPoints,
     lastKnownIndex: ref.read(_lastTrackIndexProvider),
   );
+  ref.watch(_offTrackDetectorProvider).update(projection.distanceToTrackM);
+  return projection;
 }
 
 /// Distance parcourue PROJETEE sur le trace, en metres (source unique).
