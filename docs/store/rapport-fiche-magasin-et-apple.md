@@ -235,3 +235,30 @@ grave :
 8. **`docs/store/app-privacy-att.md` et `docs/store/data-safety.md` datent
    d'avant l'extinction du partage.** Ils déclarent la position comme
    collectée.
+
+## Étape 7 — Contrôles avant de rendre la branche
+
+Les contrôles ont tourné avec **Flutter 3.41.9 (Dart 3.11.5)**, la version dont
+le `pubspec.lock` porte exactement les paquets.
+
+- **Suite de tests : verte.** 4 329 tests passent, aucun n'échoue. Les 4
+  tests sautés étaient déjà ignorés avant ce lot. Les 23 tests de la
+  nouvelle garde sont dans le compte.
+- **Analyse statique : propre.** `dart analyze lib/ test/` sort avec le code
+  0, sans aucune erreur ni aucun avertissement. Les infos de style restent
+  celles d'avant : le fichier ajouté n'en produit aucune.
+- **Sous Flutter 3.47.6, le stable du jour, la même suite échoue sur 41
+  tests,** dans les écrans santé et faisabilité et dans le test
+  structurel 573. La cause est une nouvelle assertion de Flutter : un
+  `ListTile` posé dans un `DecoratedBox` coloré. Ce lot ne l'a pas causée,
+  puisqu'il ne touche aucun code Dart. Mais c'est l'état dans lequel
+  Codemagic se trouvera s'il prend `flutter: stable`. À traiter dans un lot à
+  part, ou en figeant la version de Flutter de la chaîne.
+- **Rien n'a été compilé, publié ni fusionné.** Je ne me suis connecté à aucun
+  service Apple, Codemagic ni App Store Connect. Je n'ai lu ni écrit aucun
+  secret.
+- **Les mémoires #101492 à #101503 n'ont pas pu être lues** dans ce conteneur.
+  Tout a été remesuré, et elles restent à recouper.
+- **Aucune ligne n'est ajoutée à `docs/JOURNAL.md`.** Ce journal suit les
+  fusions, et cette branche n'est pas fusionnée. La ligne viendra à la
+  fusion, avec son numéro en base.
