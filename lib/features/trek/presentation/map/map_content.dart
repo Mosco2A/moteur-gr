@@ -353,8 +353,8 @@ class _MapContentState extends State<MapContent> {
 /// CORRECTIF L6-2 : la barre portait QUATRE informations la ou la navigation
 /// de reference en affiche SIX sur deux lignes. Les manquantes — denivele,
 /// vitesse moyenne, altitude, plus le couple total/parcouru — sont ajoutees
-/// ici, MESUREES sur la trace de la session ([liveTrekStatsProvider]) et non
-/// deduites d'une somme nominale d'etapes. Chaque valeur indisponible est
+/// ici, MESUREES sur le trace parcouru en session ([liveTrekStatsProvider],
+/// lot 671-06), jamais d'une somme nominale d'etapes. Chaque valeur absente est
 /// MASQUEE plutot qu'affichee a zero (meme regle que le correctif L5-6 : une
 /// vitesse mesuree, ou rien).
 ///
@@ -396,8 +396,8 @@ class ActiveStageBar extends ConsumerWidget {
                 ? t.a11y.stageMarker(number: stageNumber)
                 : t.map.title);
 
-        // Chiffres mesures sur la trace de la session en cours (L6-2).
-        // Tant que la trace n'a pas deux points, il n'y a rien de mesurable :
+        // Chiffres mesures sur le trace parcouru en session (L6-2, 671-06).
+        // Sans deux releves reels, il n'y a pas de duree mesurable :
         // `hasData` est faux et toutes les valeurs restent masquees.
         final mesures = ref.watch(liveTrekStatsProvider).value;
         final mesurable = mesures != null && mesures.hasData;
