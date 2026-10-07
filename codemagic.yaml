@@ -75,7 +75,7 @@
 workflows:
   # --- Workflow PR Gate ---
   # Declenche sur chaque Pull Request
-  # Steps: dart analyze + flutter test + format + tests regles Firestore
+  # Steps: flutter analyze + flutter test + format + tests regles Firestore
   pr_gate:
     name: PR Gate
     max_build_duration: 30
@@ -86,17 +86,36 @@ workflows:
         - pattern: '*'
           include: true
     environment:
-      flutter: stable
+      # VERSION DE FLUTTER EPINGLEE — 07/10/2026.
+      #
+      # La version est epinglee sur celle de la machine de Christophe :
+      # Flutter 3.41.5, avec Dart 3.11.3. C est sous celle-la, et sous aucune
+      # autre a ce jour, que la suite de tests de StepWays est verte.
+      #
+      # `flutter: stable` avait amene 3.47.6. Sous 3.47.6, la suite rend 41
+      # ECHECS sur la base elle-meme, avant toute modification du depot : une
+      # assertion neuve du SDK (« ListTile ... wrapped in a DecoratedBox that
+      # has a background color ») frappe onze fichiers de feasibility, safety,
+      # personas et structurel. L etape de tests etant bloquante dans les sept
+      # chaines, elles tomberaient toutes.
+      #
+      # La montee de version est un lot a elle seule : il devra traiter ces 41
+      # tests AVANT de desepingler cette ligne. Les six autres chaines
+      # renvoient a cet en-tete.
+      flutter: 3.41.5
       xcode: latest
     scripts:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze --no-fatal-infos lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -142,7 +161,8 @@ workflows:
         - pattern: main
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       xcode: latest
       android_signing:
         - moteur_gr_debug
@@ -156,11 +176,14 @@ workflows:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze --no-fatal-infos lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -252,7 +275,8 @@ workflows:
         - pattern: '*'
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       # TACHE 626 — DEUX LIGNES A AJOUTER ICI, ET PAS AVANT UN GESTE DE
       # CHRISTOPHE. Pour que Firebase parle dans CET APK — celui que Christophe
       # installe — cette chaine doit recevoir le groupe de variables :
@@ -307,11 +331,14 @@ workflows:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze) — BLOQUANT
+      - name: Analyse statique (flutter analyze) — BLOQUANT
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze --no-fatal-infos lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -444,7 +471,8 @@ workflows:
         - pattern: '*'
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       # EPINGLE A 26.4, LE MEME QUE LES DEUX CHAINES QUI SIGNENT. `latest` ne
       # designe pas un compilateur fixe (Codemagic propose aussi 27.0 et
       # 27.1) : un vert obtenu ici sur un autre Xcode ne predirait plus rien
@@ -591,7 +619,8 @@ workflows:
         - pattern: 'v*'
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       java: 17
       groups:
         - stepways_android_signing
@@ -640,11 +669,14 @@ workflows:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze --no-fatal-infos lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -737,7 +769,8 @@ workflows:
         - pattern: 'v*'
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       # Epingle : voir l en-tete de cette chaine.
       xcode: 26.4
       ios_signing:
@@ -1035,7 +1068,8 @@ workflows:
     integrations:
       app_store_connect: Only1Cent
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       # Epingle : voir l en-tete de `ios_release`.
       xcode: 26.4
       cocoapods: default
