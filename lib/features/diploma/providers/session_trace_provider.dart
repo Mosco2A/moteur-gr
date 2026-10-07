@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
@@ -18,5 +19,10 @@ final sessionTraceProvider = FutureProvider<List<SessionTrackPoint>>((
 ) async {
   final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
   final db = ref.watch(databaseProvider);
-  return db.sessionTrackPointsDao.getByTrailId(trailId);
+  // La trace DENSE, points estimes compris (lot 671-03) : ce provider ne
+  // fait que la dessiner, il ne calcule aucun chiffre.
+  return db.sessionTrackPointsDao.getByTrailId(
+    trailId,
+    read: TrackPointsRead.withEstimated,
+  );
 });

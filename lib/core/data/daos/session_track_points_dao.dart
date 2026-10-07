@@ -9,6 +9,50 @@ import '../tables/session_track_points_table.dart';
 
 part 'session_track_points_dao.g.dart';
 
+/// L'ORIGINE d'un point de trace (lot 671-03), telle qu'elle est rangee dans
+/// la colonne `source`.
+enum TrackPointSource {
+  /// Un releve reel du recepteur GPS.
+  gps('gps'),
+
+  /// Un point CALCULE le long du trace entre deux releves, a partir des pas.
+  estimated('estime');
+
+  const TrackPointSource(this.stored);
+
+  /// La valeur rangee en base et dans le tampon de l'isolate de fond.
+  final String stored;
+
+  /// L'origine rangee sous [value]. LECTURE TOLERANTE : absente (point
+  /// d'avant la v32, tampon d'une version precedente) ou inconnue, elle vaut
+  /// un releve reel — c'est ce qu'etait tout point avant le lot 671-03.
+  static TrackPointSource fromStored(String? value) =>
+      value == estimated.stored ? estimated : gps;
+}
+
+/// CE QU'UNE LECTURE DE LA TRACE VEUT, DIT PAR CHAQUE APPELANT (lot 671-03).
+///
+/// LES POINTS ESTIMES SONT ENREGISTRES EN PLUS DES RELEVES, JAMAIS A LEUR
+/// PLACE : le journal et le diplome gardent une trace dense sans depenser un
+/// releve GPS, la derive se mesure gratuitement en comparant l'estime au
+/// releve qui le suit, et une mesure peut toujours separer le vrai du calcule.
+/// Mais ils CHANGERAIENT les chiffres du jour (distance, denivele) de toute
+/// lecture qui les passe a `computeTrackStats`, et le changement d'entree des
+/// statistiques est le lot 671-06, pas celui-ci.
+///
+/// D'OU CE PARAMETRE, OBLIGATOIRE ET SANS VALEUR PAR DEFAUT, sur chaque
+/// lecture de points : la decision vit ici, en un seul endroit, et aucun
+/// appelant ne peut lire des points estimes par accident. Un filtre implicite
+/// serait un piege pour le prochain lot.
+enum TrackPointsRead {
+  /// Les seuls releves reels (origine `gps` ou nulle) : pour tout calcul de
+  /// distance ou de denivele.
+  gpsOnly,
+
+  /// La trace dense, releves ET points estimes : pour dessiner la trace.
+  withEstimated,
+}
+
 /// DAO des tracés GPS enregistrés sur un sentier.
 ///
 /// SOCLE L3-1 (conformité cycle 4) — le tracé n'est PLUS effacé au
@@ -60,12 +104,15 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
   ///
   /// [sessionId], [dayIndex] et [stageId] sont optionnels : un appelant
   /// qui ne connaît pas le contexte enregistre quand même le point (il
-  /// reste lisible par [getByTrailId]).
+  /// reste lisible par [getByTrailId]). [source] est OBLIGATOIRE (lot
+  /// 671-03) : un écrivain qui oublierait de marquer un point estimé le
+  /// ferait compter dans les chiffres du jour.
   Future<void> insertPoint({
     required String trailId,
     required double lat,
     required double lng,
     required double altitude,
+    required TrackPointSource source,
     DateTime? recordedAt,
     String? sessionId,
     int? dayIndex,
@@ -81,23 +128,40 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
         sessionId: Value(sessionId),
         dayIndex: Value(dayIndex),
         stageId: Value(stageId),
+        source: Value(source.stored),
       ),
     );
   }
 
+  /// Le filtre d'origine de [read] : vrai pour tout point a garder.
+  Expression<bool> _origin($SessionTrackPointsTable t, TrackPointsRead read) =>
+      switch (read) {
+        TrackPointsRead.withEstimated => const Constant(true),
+        TrackPointsRead.gpsOnly =>
+          t.source.isNull() |
+              t.source.isNotValue(TrackPointSource.estimated.stored),
+      };
+
   /// Tracé complet du sentier, toutes sessions confondues, dans l'ordre
-  /// d'enregistrement.
-  Future<List<SessionTrackPoint>> getByTrailId(String trailId) async {
+  /// d'enregistrement ; [read] dit si les points estimés en font partie.
+  Future<List<SessionTrackPoint>> getByTrailId(
+    String trailId, {
+    required TrackPointsRead read,
+  }) async {
     final query = select(sessionTrackPoints)
-      ..where((t) => t.trailId.equals(trailId))
+      ..where((t) => t.trailId.equals(trailId) & _origin(t, read))
       ..orderBy([(t) => OrderingTerm.asc(t.id)]);
     return query.get();
   }
 
-  /// Tracé d'UNE session de randonnée, dans l'ordre d'enregistrement.
-  Future<List<SessionTrackPoint>> getBySessionId(String sessionId) async {
+  /// Tracé d'UNE session de randonnée, dans l'ordre d'enregistrement ;
+  /// [read] dit si les points estimés en font partie.
+  Future<List<SessionTrackPoint>> getBySessionId(
+    String sessionId, {
+    required TrackPointsRead read,
+  }) async {
     final query = select(sessionTrackPoints)
-      ..where((t) => t.sessionId.equals(sessionId))
+      ..where((t) => t.sessionId.equals(sessionId) & _origin(t, read))
       ..orderBy([(t) => OrderingTerm.asc(t.id)]);
     return query.get();
   }
@@ -109,10 +173,16 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
   Future<List<SessionTrackPoint>> getByDayIndex(
     String trailId,
     int dayIndex, {
+    required TrackPointsRead read,
     String? sessionId,
   }) async {
     final query = select(sessionTrackPoints)
-      ..where((t) => t.trailId.equals(trailId) & t.dayIndex.equals(dayIndex))
+      ..where(
+        (t) =>
+            t.trailId.equals(trailId) &
+            t.dayIndex.equals(dayIndex) &
+            _origin(t, read),
+      )
       ..orderBy([(t) => OrderingTerm.asc(t.id)]);
     if (sessionId != null) {
       query.where((t) => t.sessionId.equals(sessionId));
@@ -124,10 +194,16 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
   Future<List<SessionTrackPoint>> getByStageId(
     String trailId,
     String stageId, {
+    required TrackPointsRead read,
     String? sessionId,
   }) async {
     final query = select(sessionTrackPoints)
-      ..where((t) => t.trailId.equals(trailId) & t.stageId.equals(stageId))
+      ..where(
+        (t) =>
+            t.trailId.equals(trailId) &
+            t.stageId.equals(stageId) &
+            _origin(t, read),
+      )
       ..orderBy([(t) => OrderingTerm.asc(t.id)]);
     if (sessionId != null) {
       query.where((t) => t.sessionId.equals(sessionId));
@@ -142,8 +218,9 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
   /// non par numéro de jour de marche.
   Future<List<SessionTrackPoint>> getByCalendarDay(
     String trailId,
-    DateTime day,
-  ) async {
+    DateTime day, {
+    required TrackPointsRead read,
+  }) async {
     final from = DateTime(day.year, day.month, day.day);
     final to = from.add(const Duration(days: 1));
     final query = select(sessionTrackPoints)
@@ -151,7 +228,8 @@ class SessionTrackPointsDao extends DatabaseAccessor<AppDatabase>
         (t) =>
             t.trailId.equals(trailId) &
             t.recordedAt.isBiggerOrEqualValue(from) &
-            t.recordedAt.isSmallerThanValue(to),
+            t.recordedAt.isSmallerThanValue(to) &
+            _origin(t, read),
       )
       ..orderBy([(t) => OrderingTerm.asc(t.id)]);
     return query.get();

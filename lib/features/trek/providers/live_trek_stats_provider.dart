@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../map/map_facade.dart' show locationProvider, trackPositionProvider;
@@ -45,7 +46,13 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
   ref.watch(trackPositionProvider);
 
   final db = ref.watch(databaseProvider);
-  final points = await db.sessionTrackPointsDao.getBySessionId(session.id);
+  // LES SEULS RELEVES REELS (lot 671-03) : les points estimes le long du
+  // trace ne font pas bouger d'un metre la distance ni le denivele du jour.
+  // Le changement d'entree des statistiques est le lot 671-06, pas celui-ci.
+  final points = await db.sessionTrackPointsDao.getBySessionId(
+    session.id,
+    read: TrackPointsRead.gpsOnly,
+  );
   return computeTrackStats(points);
 });
 

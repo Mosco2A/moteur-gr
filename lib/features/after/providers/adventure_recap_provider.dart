@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // source des distances/D+ par etape. La base Drift expose aussi une classe
 // `Stage` (table) : on la masque ici pour lever l'ambiguite tout en gardant
 // `SessionTrackPoint` (trace GPS de session).
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_segment_stats.dart';
@@ -148,7 +149,13 @@ final adventureStatsProvider = FutureProvider<AdventureStats>((ref) async {
   await ref.watch(stagesProvider.future);
   final stages = ref.watch(domainStagesProvider);
   final plan = ref.watch(currentTrekPlanProvider);
-  final trace = await db.sessionTrackPointsDao.getByTrailId(trailId);
+  // La trace DENSE, points estimes compris (lot 671-03) : c'est celle que la
+  // carte du recapitulatif dessine et que l'export GPX ecrit. Aucun chiffre
+  // de ce provider ne vient d'elle (distance et D+ sont ceux des etapes).
+  final trace = await db.sessionTrackPointsDao.getByTrailId(
+    trailId,
+    read: TrackPointsRead.withEstimated,
+  );
 
   // Nombre d'etapes du parcours choisi (jamais un total statique en dur) :
   // le plan si dispo, sinon la liste d'etapes du sentier.
@@ -252,9 +259,20 @@ class AdventureDay {
 /// les journees sortent donc du terrain, et non d'un decoupage theorique du
 /// sentier. Une trace sans jour connu (anterieure a la migration v26) est
 /// regroupee par journee CALENDAIRE, ce qui reste juste.
+///
+/// LOT 671-03 : les chiffres de chaque journee se calculent sur les SEULS
+/// RELEVES REELS, relus a part, et non sur [AdventureStats.tracePoints] qui
+/// porte aussi les points estimes. Le changement d'entree des statistiques
+/// est le lot 671-06.
 final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
-  final stats = await ref.watch(adventureStatsProvider.future);
-  final points = stats.tracePoints;
+  // Le recapitulatif reste la source de rafraichissement (memes
+  // invalidations a la fin d'une session).
+  await ref.watch(adventureStatsProvider.future);
+  final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+  final points = await ref
+      .watch(databaseProvider)
+      .sessionTrackPointsDao
+      .getByTrailId(trailId, read: TrackPointsRead.gpsOnly);
   if (points.isEmpty) return const <AdventureDay>[];
 
   DateTime dayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);

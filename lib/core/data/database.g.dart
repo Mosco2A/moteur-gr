@@ -12683,6 +12683,15 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -12694,6 +12703,7 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     lng,
     altitude,
     recordedAt,
+    source,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -12768,6 +12778,12 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     } else if (isInserting) {
       context.missing(_recordedAtMeta);
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
     return context;
   }
 
@@ -12813,6 +12829,10 @@ class $SessionTrackPointsTable extends SessionTrackPoints
         DriftSqlType.dateTime,
         data['${effectivePrefix}recorded_at'],
       )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      ),
     );
   }
 
@@ -12857,6 +12877,13 @@ class SessionTrackPoint extends DataClass
 
   /// Horodatage d'enregistrement du point
   final DateTime recordedAt;
+
+  /// Origine du point : `gps` (relevé réel) ou `estime` (calculé sur le
+  /// tracé), cf. `TrackPointSource`.
+  ///
+  /// Null pour les points antérieurs à la migration v32 : ce sont des
+  /// relevés réels, et toute lecture les traite comme tels.
+  final String? source;
   const SessionTrackPoint({
     required this.id,
     required this.trailId,
@@ -12867,6 +12894,7 @@ class SessionTrackPoint extends DataClass
     required this.lng,
     required this.altitude,
     required this.recordedAt,
+    this.source,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -12886,6 +12914,9 @@ class SessionTrackPoint extends DataClass
     map['lng'] = Variable<double>(lng);
     map['altitude'] = Variable<double>(altitude);
     map['recorded_at'] = Variable<DateTime>(recordedAt);
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
+    }
     return map;
   }
 
@@ -12906,6 +12937,9 @@ class SessionTrackPoint extends DataClass
       lng: Value(lng),
       altitude: Value(altitude),
       recordedAt: Value(recordedAt),
+      source: source == null && nullToAbsent
+          ? const Value.absent()
+          : Value(source),
     );
   }
 
@@ -12924,6 +12958,7 @@ class SessionTrackPoint extends DataClass
       lng: serializer.fromJson<double>(json['lng']),
       altitude: serializer.fromJson<double>(json['altitude']),
       recordedAt: serializer.fromJson<DateTime>(json['recordedAt']),
+      source: serializer.fromJson<String?>(json['source']),
     );
   }
   @override
@@ -12939,6 +12974,7 @@ class SessionTrackPoint extends DataClass
       'lng': serializer.toJson<double>(lng),
       'altitude': serializer.toJson<double>(altitude),
       'recordedAt': serializer.toJson<DateTime>(recordedAt),
+      'source': serializer.toJson<String?>(source),
     };
   }
 
@@ -12952,6 +12988,7 @@ class SessionTrackPoint extends DataClass
     double? lng,
     double? altitude,
     DateTime? recordedAt,
+    Value<String?> source = const Value.absent(),
   }) => SessionTrackPoint(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -12962,6 +12999,7 @@ class SessionTrackPoint extends DataClass
     lng: lng ?? this.lng,
     altitude: altitude ?? this.altitude,
     recordedAt: recordedAt ?? this.recordedAt,
+    source: source.present ? source.value : this.source,
   );
   SessionTrackPoint copyWithCompanion(SessionTrackPointsCompanion data) {
     return SessionTrackPoint(
@@ -12976,6 +13014,7 @@ class SessionTrackPoint extends DataClass
       recordedAt: data.recordedAt.present
           ? data.recordedAt.value
           : this.recordedAt,
+      source: data.source.present ? data.source.value : this.source,
     );
   }
 
@@ -12990,7 +13029,8 @@ class SessionTrackPoint extends DataClass
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
-          ..write('recordedAt: $recordedAt')
+          ..write('recordedAt: $recordedAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -13006,6 +13046,7 @@ class SessionTrackPoint extends DataClass
     lng,
     altitude,
     recordedAt,
+    source,
   );
   @override
   bool operator ==(Object other) =>
@@ -13019,7 +13060,8 @@ class SessionTrackPoint extends DataClass
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.altitude == this.altitude &&
-          other.recordedAt == this.recordedAt);
+          other.recordedAt == this.recordedAt &&
+          other.source == this.source);
 }
 
 class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
@@ -13032,6 +13074,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   final Value<double> lng;
   final Value<double> altitude;
   final Value<DateTime> recordedAt;
+  final Value<String?> source;
   const SessionTrackPointsCompanion({
     this.id = const Value.absent(),
     this.trailId = const Value.absent(),
@@ -13042,6 +13085,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     this.lng = const Value.absent(),
     this.altitude = const Value.absent(),
     this.recordedAt = const Value.absent(),
+    this.source = const Value.absent(),
   });
   SessionTrackPointsCompanion.insert({
     this.id = const Value.absent(),
@@ -13053,6 +13097,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     required double lng,
     required double altitude,
     required DateTime recordedAt,
+    this.source = const Value.absent(),
   }) : trailId = Value(trailId),
        lat = Value(lat),
        lng = Value(lng),
@@ -13068,6 +13113,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     Expression<double>? lng,
     Expression<double>? altitude,
     Expression<DateTime>? recordedAt,
+    Expression<String>? source,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -13079,6 +13125,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
       if (lng != null) 'lng': lng,
       if (altitude != null) 'altitude': altitude,
       if (recordedAt != null) 'recorded_at': recordedAt,
+      if (source != null) 'source': source,
     });
   }
 
@@ -13092,6 +13139,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     Value<double>? lng,
     Value<double>? altitude,
     Value<DateTime>? recordedAt,
+    Value<String?>? source,
   }) {
     return SessionTrackPointsCompanion(
       id: id ?? this.id,
@@ -13103,6 +13151,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
       lng: lng ?? this.lng,
       altitude: altitude ?? this.altitude,
       recordedAt: recordedAt ?? this.recordedAt,
+      source: source ?? this.source,
     );
   }
 
@@ -13136,6 +13185,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     if (recordedAt.present) {
       map['recorded_at'] = Variable<DateTime>(recordedAt.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
     return map;
   }
 
@@ -13150,7 +13202,8 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
-          ..write('recordedAt: $recordedAt')
+          ..write('recordedAt: $recordedAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -26367,6 +26420,7 @@ typedef $$SessionTrackPointsTableCreateCompanionBuilder =
       required double lng,
       required double altitude,
       required DateTime recordedAt,
+      Value<String?> source,
     });
 typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
     SessionTrackPointsCompanion Function({
@@ -26379,6 +26433,7 @@ typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<double> altitude,
       Value<DateTime> recordedAt,
+      Value<String?> source,
     });
 
 class $$SessionTrackPointsTableFilterComposer
@@ -26432,6 +26487,11 @@ class $$SessionTrackPointsTableFilterComposer
 
   ColumnFilters<DateTime> get recordedAt => $composableBuilder(
     column: $table.recordedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -26489,6 +26549,11 @@ class $$SessionTrackPointsTableOrderingComposer
     column: $table.recordedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SessionTrackPointsTableAnnotationComposer
@@ -26528,6 +26593,9 @@ class $$SessionTrackPointsTableAnnotationComposer
     column: $table.recordedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 }
 
 class $$SessionTrackPointsTableTableManager
@@ -26579,6 +26647,7 @@ class $$SessionTrackPointsTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<double> altitude = const Value.absent(),
                 Value<DateTime> recordedAt = const Value.absent(),
+                Value<String?> source = const Value.absent(),
               }) => SessionTrackPointsCompanion(
                 id: id,
                 trailId: trailId,
@@ -26589,6 +26658,7 @@ class $$SessionTrackPointsTableTableManager
                 lng: lng,
                 altitude: altitude,
                 recordedAt: recordedAt,
+                source: source,
               ),
           createCompanionCallback:
               ({
@@ -26601,6 +26671,7 @@ class $$SessionTrackPointsTableTableManager
                 required double lng,
                 required double altitude,
                 required DateTime recordedAt,
+                Value<String?> source = const Value.absent(),
               }) => SessionTrackPointsCompanion.insert(
                 id: id,
                 trailId: trailId,
@@ -26611,6 +26682,7 @@ class $$SessionTrackPointsTableTableManager
                 lng: lng,
                 altitude: altitude,
                 recordedAt: recordedAt,
+                source: source,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

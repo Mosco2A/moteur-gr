@@ -23,15 +23,20 @@ void main() {
         lat: 45.10,
         lng: 3.10,
         altitude: 900,
+        source: TrackPointSource.gps,
       );
       await dao.insertPoint(
         trailId: 'sentier-bleu',
         lat: 45.11,
         lng: 3.12,
         altitude: 950,
+        source: TrackPointSource.gps,
       );
 
-      final points = await dao.getByTrailId('sentier-bleu');
+      final points = await dao.getByTrailId(
+        'sentier-bleu',
+        read: TrackPointsRead.withEstimated,
+      );
       expect(points.length, 2);
       expect(points.first.lat, 45.10);
       expect(points.last.lng, 3.12);
@@ -45,16 +50,30 @@ void main() {
         lat: 45.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
       await dao.insertPoint(
         trailId: 'sentier-vert',
         lat: 44.0,
         lng: 2.0,
         altitude: 200,
+        source: TrackPointSource.gps,
       );
 
-      expect((await dao.getByTrailId('sentier-bleu')).length, 1);
-      expect((await dao.getByTrailId('sentier-vert')).length, 1);
+      expect(
+        (await dao.getByTrailId(
+          'sentier-bleu',
+          read: TrackPointsRead.withEstimated,
+        )).length,
+        1,
+      );
+      expect(
+        (await dao.getByTrailId(
+          'sentier-vert',
+          read: TrackPointsRead.withEstimated,
+        )).length,
+        1,
+      );
     });
 
     test('clearTrail : effacement VOULU du sentier', () async {
@@ -64,10 +83,17 @@ void main() {
         lat: 45.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
       await dao.clearTrail('sentier-bleu');
 
-      expect(await dao.getByTrailId('sentier-bleu'), isEmpty);
+      expect(
+        await dao.getByTrailId(
+          'sentier-bleu',
+          read: TrackPointsRead.withEstimated,
+        ),
+        isEmpty,
+      );
     });
   });
 
@@ -104,6 +130,7 @@ void main() {
         lat: 45.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
       await dao.insertPoint(
         trailId: 'sentier-bleu',
@@ -112,11 +139,30 @@ void main() {
         lat: 45.5,
         lng: 3.5,
         altitude: 200,
+        source: TrackPointSource.gps,
       );
 
-      expect((await dao.getByTrailId('sentier-bleu')).length, 2);
-      expect((await dao.getBySessionId('session-2025')).length, 1);
-      expect((await dao.getBySessionId('session-2026')).single.lat, 45.5);
+      expect(
+        (await dao.getByTrailId(
+          'sentier-bleu',
+          read: TrackPointsRead.withEstimated,
+        )).length,
+        2,
+      );
+      expect(
+        (await dao.getBySessionId(
+          'session-2025',
+          read: TrackPointsRead.withEstimated,
+        )).length,
+        1,
+      );
+      expect(
+        (await dao.getBySessionId(
+          'session-2026',
+          read: TrackPointsRead.withEstimated,
+        )).single.lat,
+        45.5,
+      );
     });
 
     test('le jour 3 reste lisible apres avoir marche le jour 5', () async {
@@ -129,10 +175,15 @@ void main() {
           lat: 45.0 + day,
           lng: 3.0,
           altitude: 100,
+          source: TrackPointSource.gps,
         );
       }
 
-      final day3 = await dao.getByDayIndex('sentier-bleu', 3);
+      final day3 = await dao.getByDayIndex(
+        'sentier-bleu',
+        3,
+        read: TrackPointsRead.withEstimated,
+      );
       expect(day3.length, 2);
       expect(day3.first.lat, 48.0);
       expect(await dao.getRecordedDayIndexes('sentier-bleu'), [3, 4, 5]);
@@ -146,6 +197,7 @@ void main() {
         lat: 45.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
       await dao.insertPoint(
         trailId: 'sentier-bleu',
@@ -153,10 +205,15 @@ void main() {
         lat: 46.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
 
       expect(
-        (await dao.getByStageId('sentier-bleu', 'etape-2')).single.lat,
+        (await dao.getByStageId(
+          'sentier-bleu',
+          'etape-2',
+          read: TrackPointsRead.withEstimated,
+        )).single.lat,
         45.0,
       );
     });
@@ -169,6 +226,7 @@ void main() {
         lng: 3.0,
         altitude: 100,
         recordedAt: DateTime(2026, 6, 10, 23, 59),
+        source: TrackPointSource.gps,
       );
       await dao.insertPoint(
         trailId: 'sentier-bleu',
@@ -176,16 +234,19 @@ void main() {
         lng: 3.0,
         altitude: 100,
         recordedAt: DateTime(2026, 6, 11, 0, 1),
+        source: TrackPointSource.gps,
       );
 
       final d10 = await dao.getByCalendarDay(
         'sentier-bleu',
         DateTime(2026, 6, 10),
+        read: TrackPointsRead.withEstimated,
       );
       expect(d10.single.lat, 45.0);
       final d11 = await dao.getByCalendarDay(
         'sentier-bleu',
         DateTime(2026, 6, 11),
+        read: TrackPointsRead.withEstimated,
       );
       expect(d11.single.lat, 46.0);
     });
@@ -197,9 +258,16 @@ void main() {
         lat: 45.0,
         lng: 3.0,
         altitude: 100,
+        source: TrackPointSource.gps,
       );
 
-      expect((await dao.getByTrailId('sentier-bleu')).single.sessionId, isNull);
+      expect(
+        (await dao.getByTrailId(
+          'sentier-bleu',
+          read: TrackPointsRead.withEstimated,
+        )).single.sessionId,
+        isNull,
+      );
       expect(await dao.getRecordedDayIndexes('sentier-bleu'), isEmpty);
     });
   });

@@ -247,6 +247,7 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       lat: p.latitude,
       lng: p.longitude,
       altitude: p.altitude,
+      source: TrackPointSource.gps,
       recordedAt: p.timestamp,
       sessionId: session?.id,
       dayIndex: session == null
