@@ -23,12 +23,20 @@
 /// UN SEUL ECRIVAIN : l'interface, seule a connaitre le trace et le sens de la
 /// marche. L'isolate de fond le relit et l'ignore s'il ne porte pas le sentier
 /// qu'il suit.
+///
+/// LOT 671-04 : LES CHARNIERES VOYAGENT AVEC LE TRACE. Elles sont calculees
+/// cote interface, une fois, au chargement du sentier — c'est la seule a lire
+/// la base, donc les jonctions declarees qui les enrichissent. Elles sont
+/// rangees dans la MEME valeur, sous une cle de plus, absente quand il n'y en
+/// a pas : un trace sans charniere s'ecrit au caractere pres comme avant, et
+/// une valeur ecrite avant ce lot se relit sans charniere.
 library;
 
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/geo/charnieres_du_trace.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
 
@@ -46,8 +54,13 @@ typedef BackgroundTrace = ({
 
 /// La forme rangee : un objet JSON, un tableau `[lat, lng, alt, distance]`
 /// par point, six decimales de degre (11 cm), un decimetre d'altitude et de
-/// distance.
-String encodeBackgroundTrace(BackgroundTrace trace) => jsonEncode({
+/// distance ; et, s'il y en a (lot 671-04), un tableau
+/// `[abscisse, lat, lng, virage]` par charniere, le virage nul pour une
+/// charniere venue d'une donnee.
+String encodeBackgroundTrace(
+  BackgroundTrace trace, {
+  List<Charniere> charnieres = const [],
+}) => jsonEncode({
   'trailId': trace.trailId,
   'direction': trace.direction.name,
   'points': [
@@ -59,7 +72,31 @@ String encodeBackgroundTrace(BackgroundTrace trace) => jsonEncode({
         _round(p.distanceFromStart, 1),
       ],
   ],
+  if (charnieres.isNotEmpty)
+    'charnieres': [
+      for (final c in charnieres)
+        [
+          _round(c.abscisseM, 1),
+          _round(c.lat, 6),
+          _round(c.lng, 6),
+          if (c.virageDegres case final virage?) _round(virage, 1) else null,
+        ],
+    ],
 });
+
+/// Les charnieres rangees avec le trace (lot 671-04). LECTURE TOLERANTE :
+/// absentes, illisibles ou d'une valeur abimee, elles valent une liste vide —
+/// pas de fenetre, la cadence du profil, rien d'autre. Ne leve jamais.
+List<Charniere> decodeBackgroundHinges(String? raw) {
+  if (raw == null || raw.isEmpty) return const [];
+  try {
+    final json = jsonDecode(raw) as Map<String, dynamic>;
+    final rows = json['charnieres'] as List<dynamic>? ?? const [];
+    return [for (final row in rows) _hingeOf(row as List<dynamic>)];
+  } on Object {
+    return const [];
+  }
+}
 
 /// LECTURE TOLERANTE, sur le motif de `PositionProfile.fromStored` : une
 /// valeur absente, illisible, ou un trace de moins de deux points rend nul, et
@@ -90,12 +127,31 @@ BackgroundTrace? decodeBackgroundTrace(String? raw) {
   }
 }
 
-/// Ecrit [trace] pour l'isolate de fond, s'il a change. Ne leve jamais : sans
-/// trace, l'estime n'a pas de rail et le GPS continu reste la regle.
-Future<void> publishBackgroundTrace(BackgroundTrace trace) async {
+Charniere _hingeOf(List<dynamic> row) {
+  final abscisse = (row[0] as num).toDouble();
+  final lat = (row[1] as num).toDouble();
+  final lng = (row[2] as num).toDouble();
+  final virage = row[3] as num?;
+  return virage == null
+      ? Charniere.enrichie(abscisseM: abscisse, lat: lat, lng: lng)
+      : Charniere(
+          abscisseM: abscisse,
+          lat: lat,
+          lng: lng,
+          virageDegres: virage.toDouble(),
+        );
+}
+
+/// Ecrit [trace] et ses [charnieres] pour l'isolate de fond, s'ils ont
+/// change. Ne leve jamais : sans trace, l'estime n'a pas de rail et le GPS
+/// continu reste la regle.
+Future<void> publishBackgroundTrace(
+  BackgroundTrace trace, {
+  List<Charniere> charnieres = const [],
+}) async {
   try {
     final prefs = await SharedPreferences.getInstance();
-    final encoded = encodeBackgroundTrace(trace);
+    final encoded = encodeBackgroundTrace(trace, charnieres: charnieres);
     if (prefs.getString(kPrefsBgTrace) == encoded) return;
     await prefs.setString(kPrefsBgTrace, encoded);
   } on Object {

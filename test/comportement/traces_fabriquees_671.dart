@@ -29,6 +29,13 @@ const double _metresParDegre = 111320.0;
 List<TrackPoint> traceDesSommets(
   List<(double, double)> sommets, {
   double pas = 10,
+}) => traceDesPoints(decouper(sommets, pas: pas));
+
+/// Les points du plan qui passent par [sommets], un tous les [pas] metres au
+/// plus : on peut y inserer des doublons avant d'en faire un trace.
+List<(double, double)> decouper(
+  List<(double, double)> sommets, {
+  double pas = 10,
 }) {
   final plan = <(double, double)>[sommets.first];
   for (var i = 1; i < sommets.length; i++) {
@@ -40,7 +47,7 @@ List<TrackPoint> traceDesSommets(
       plan.add((x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n));
     }
   }
-  return traceDesPoints(plan);
+  return plan;
 }
 
 /// Un trace qui passe EXACTEMENT par [plan], sans decoupage : un point du

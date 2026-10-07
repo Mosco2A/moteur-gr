@@ -1071,6 +1071,12 @@ Future<void> _onServiceStart(ServiceInstance service) async {
         trailId: () => trailId,
         keepDistanceMeters: () => distanceFilter,
         requestFix: () => cadence.engine.rearm(),
+        // LA FENETRE DE CHARNIERE (lot 671-04) : une surcharge temporaire de
+        // la periode des tirs, par le meme moteur, sans flux ni minuteur a
+        // elle.
+        onWindow: (period) => period == null
+            ? cadence.engine.relax()
+            : cadence.engine.accelerate(period),
       ),
       onEstimateKept: handleEstimate,
     ),

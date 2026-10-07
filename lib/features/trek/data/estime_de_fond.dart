@@ -22,6 +22,7 @@ library;
 
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/geo/charnieres_du_trace.dart';
 import '../../../core/geo/geo_utils.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../../core/services/gps_cadence.dart';
@@ -71,6 +72,11 @@ class TrackDeadReckoning {
 
   /// Vrai quand le dernier releve a quitte le trace : l'estime est suspendu.
   bool get isOffTrack => _detector.isOffTrack;
+
+  /// OU L'ON EST SUR LE TRACE, au mieux de ce qu'on sait (lot 671-04) : le
+  /// dernier estime, sinon le dernier releve projete ; nul sans rail (aucun
+  /// releve, ou hors du trace).
+  TrackAbscissa? get position => _lastEstimate ?? _anchor;
 
   /// La distance avancee par l'estime depuis le dernier releve, le long du
   /// trace ; nulle sans estime.
@@ -178,27 +184,81 @@ class TrackDeadReckoning {
 class BackgroundEstimate {
   /// [readTrace] relit le canal [kPrefsBgTrace] ; [trailId] est le sentier
   /// suivi ; [keepDistanceMeters] la regle de retenue de l'isolate ;
-  /// [requestFix] demande un releve immediat (plafond de distance).
+  /// [requestFix] demande un releve immediat (plafond de distance) ;
+  /// [onWindow] recoit la periode d'une fenetre de charniere ou l'on se
+  /// trouve, nulle hors fenetre (lot 671-04) — le moteur des cadences s'y
+  /// branche.
   BackgroundEstimate({
     required Future<String?> Function() readTrace,
     required String Function() trailId,
     required double Function() keepDistanceMeters,
     void Function()? requestFix,
+    void Function(Duration? period)? onWindow,
   }) : _readTrace = readTrace,
        _trailId = trailId,
        _keepDistanceMeters = keepDistanceMeters,
-       _requestFix = requestFix;
+       _requestFix = requestFix,
+       _onWindow = onWindow;
 
   final Future<String?> Function() _readTrace;
   final String Function() _trailId;
   final double Function() _keepDistanceMeters;
   final void Function()? _requestFix;
+  final void Function(Duration? period)? _onWindow;
   TrackDeadReckoning? _reckoning;
   String? _raw;
   bool _fixRequested = false;
+  List<FenetreDeCharniere> _windows = const [];
+  FenetreDeCharniere? _window;
 
   /// L'estime en cours, nul sans trace utilisable ou hors profil batterie.
   TrackDeadReckoning? get reckoning => _reckoning;
+
+  /// Les fenetres de charniere du trace relu, fusionnees (lot 671-04).
+  List<FenetreDeCharniere> get windows => _windows;
+
+  /// LA FENETRE DE CHARNIERE, SUIVIE A CHAQUE RELEVE ET A CHAQUE PAQUET DE
+  /// PAS (lot 671-04) : rend le point d'ENTREE quand on vient d'entrer dans
+  /// une fenetre (la ligne `charniere` du journal), nul sinon.
+  ///
+  /// SANS RIEN INVENTER : ou l'on est sur le trace
+  /// ([TrackDeadReckoning.position]) est deja su, et une fenetre est un
+  /// intervalle d'abscisses ([fenetreOu]) — une comparaison de deux
+  /// nombres, a un evenement que l'isolate a DEJA sous la main. Ni minuteur,
+  /// ni alarme, ni flux. Hors des profils de tir, hors du trace ou sans rail,
+  /// on n'est dans aucune fenetre. [onWindow] est rappele a chaque fois (le
+  /// moteur l'ignore s'il ne change rien) : un moteur redemarre retrouve
+  /// ainsi sa fenetre.
+  ///
+  /// UNE ZONE MORTE A LA SORTIE, ET ELLE EST MESUREE. Le releve qui suit
+  /// l'entree retombe souvent quelques metres avant la borne (le bruit du
+  /// recepteur, ou un paquet de pas en retard) : sans zone morte, la fenetre
+  /// se fermait et se rouvrait, deux lignes `charniere` pour une. On ne sort
+  /// donc d'une fenetre qu'en franchissant une borne de plus de
+  /// [kWalkDirectionDeadBandMeters] (20 m, deux fois l'erreur courante d'un
+  /// releve) : la meme zone morte que le sens de la marche, une seule
+  /// verite.
+  TrackAbscissa? followWindow(PositionProfile profile) {
+    final here = GpsCadence.of(profile).isSingleShot
+        ? _reckoning?.position
+        : null;
+    final current = _window;
+    final x = here?.distanceFromStartM;
+    final FenetreDeCharniere? window;
+    if (here == null || x == null) {
+      window = null;
+    } else if (current != null &&
+        x >= current.debutM - kWalkDirectionDeadBandMeters &&
+        x <= current.finM + kWalkDirectionDeadBandMeters) {
+      window = current;
+    } else {
+      window = fenetreOu(_windows, here);
+    }
+    _onWindow?.call(window == null ? null : kPeriodeDansLaFenetre);
+    if (identical(window, _window)) return null;
+    _window = window;
+    return window == null ? null : here;
+  }
 
   /// Un releve (ou un tir sans position) sous [profile] : rend l'ecart au
   /// dernier estime, en metres le long du trace, nul sans estime. Hors des
@@ -256,5 +316,14 @@ class BackgroundEstimate {
     final usable =
         trace != null && (trailId.isEmpty || trace.trailId == trailId);
     _reckoning = usable ? TrackDeadReckoning(trace) : null;
+    // Les fenetres sont calculees ICI, une fois par trace relu, jamais a
+    // chaque position (lot 671-04).
+    _windows = usable
+        ? fenetresDesCharnieres(
+            decodeBackgroundHinges(raw),
+            longueurM: trace.points.last.distanceFromStart,
+          )
+        : const [];
+    _window = null;
   }
 }
