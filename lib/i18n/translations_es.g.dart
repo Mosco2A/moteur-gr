@@ -1869,6 +1869,12 @@ class _Translations$sos$es extends Translations$sos$fr {
 	@override String get positionTitle => 'Su posición actual';
 	@override String get positionUnavailable => 'Posición GPS no disponible';
 	@override String get gpsAcquiring => 'Adquiriendo GPS…';
+	@override String get ageNow => 'Posición ahora mismo';
+	@override String ageMinutes({required Object minutes}) => 'Posición hace ${minutes} min';
+	@override String ageHours({required Object hours, required Object minutes}) => 'Posición hace ${hours} h ${minutes}';
+	@override String get estimated => 'Estimada en el sendero a partir de sus pasos';
+	@override String freshFailed({required Object seconds}) => 'Ninguna posición más reciente en ${seconds} s: se sigue mostrando la última conocida.';
+	@override String get unavailableHelp => 'Llame igualmente al 112: indique el último lugar por el que pasó (refugio, collado, baliza) y quédese donde está si puede.';
 	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m';
 	@override String get noContacts => 'Ningún contacto configurado';
 	@override String callContact({required Object name}) => 'Llamar a ${name}';
@@ -6157,6 +6163,12 @@ extension on TranslationsEs {
 			'sos.positionTitle' => 'Su posición actual',
 			'sos.positionUnavailable' => 'Posición GPS no disponible',
 			'sos.gpsAcquiring' => 'Adquiriendo GPS…',
+			'sos.ageNow' => 'Posición ahora mismo',
+			'sos.ageMinutes' => ({required Object minutes}) => 'Posición hace ${minutes} min',
+			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Posición hace ${hours} h ${minutes}',
+			'sos.estimated' => 'Estimada en el sendero a partir de sus pasos',
+			'sos.freshFailed' => ({required Object seconds}) => 'Ninguna posición más reciente en ${seconds} s: se sigue mostrando la última conocida.',
+			'sos.unavailableHelp' => 'Llame igualmente al 112: indique el último lugar por el que pasó (refugio, collado, baliza) y quédese donde está si puede.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'Ningún contacto configurado',
 			'sos.callContact' => ({required Object name}) => 'Llamar a ${name}',

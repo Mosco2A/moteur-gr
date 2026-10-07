@@ -10,39 +10,131 @@ library;
 // Si annule : ferme le dialog sans action.
 //
 // Textes via Slang (namespace `sos`, 5 langues) — ZERO texte en dur (L6).
+//
+// LOT 671-04 — UN DIALOGUE A ETAT, ET CE N'EST PAS UN AJOUT DE LIGNE. Il
+// etait sans etat, ses coordonnees figees a la construction : il ne pouvait
+// donc pas montrer TOUT DE SUITE la derniere position connue PUIS la
+// remplacer par la fraiche. Il observe desormais le TIR UNIQUE lance a
+// l'appui ([tirFrais]) : la position connue s'affiche a la premiere image,
+// avec son AGE en clair ; pendant le tir, « Acquisition GPS… » ; la fraiche
+// la remplace, l'age repasse « a l'instant » ; si quinze secondes passent
+// sans elle, le dialogue le DIT et GARDE la connue avec son age. Les deux
+// canaux de secours et l'annulation ne changent pas.
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/services/gps_cadence.dart' show kSingleShotMaxDelay;
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/age_de_position.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../core/branding/stepways_icons.dart';
+import '../../trek/trek_facade.dart' show PositionConnue;
+
+/// Tant que le dialogue est ouvert, l'age affiche est recalcule a ce rythme :
+/// un age fige mentirait en vieillissant.
+const Duration _rafraichissementDeLAge = Duration(seconds: 15);
 
 /// E5.15 / L6 : Dialog de confirmation SOS (2 canaux secours, H1).
 ///
-/// Affiche la position GPS actuelle (lat, lng, alt) et propose :
+/// Affiche la position connue (lat, lng, alt) et son age, et propose :
 /// - **Canal 1** : appeler le 112 (appel direct) ;
 /// - **Canal 2** : ouvrir la fiche medicale native du telephone (invite) ;
 /// - Annuler : fermer sans action.
 ///
-/// La position GPS est passee en parametre par l'appelant (barre SOS / cockpit).
-class SosConfirmationDialog extends StatelessWidget {
+/// La position connue et le tir unique sont passes par l'appelant (le bouton
+/// SOS) ; l'age se calcule sur [maintenant], une horloge INJECTEE.
+class SosConfirmationDialog extends StatefulWidget {
   const SosConfirmationDialog({
     super.key,
-    this.latitude,
-    this.longitude,
-    this.altitude,
+    this.connue,
+    this.tirFrais,
+    this.maintenant = DateTime.now,
   });
 
-  /// Coordonnees GPS actuelles (optionnelles).
-  final double? latitude;
-  final double? longitude;
-  final double? altitude;
+  /// La derniere position connue a l'appui, releve ou estime ; nulle si le
+  /// trek n'a encore rien recu.
+  final PositionConnue? connue;
+
+  /// Le tir unique lance a l'appui ; nul si aucun n'a pu l'etre.
+  final Future<PositionConnue>? tirFrais;
+
+  /// L'horloge de l'age (`DateTime.now` en production).
+  final DateTime Function() maintenant;
+
+  @override
+  State<SosConfirmationDialog> createState() => _SosConfirmationDialogState();
+}
+
+/// Ou en est le tir unique.
+enum _Tir { enCours, obtenu, echoue }
+
+class _SosConfirmationDialogState extends State<SosConfirmationDialog> {
+  PositionConnue? _position;
+  _Tir _tir = _Tir.echoue;
+  Timer? _delai;
+  Timer? _age;
+
+  @override
+  void initState() {
+    super.initState();
+    _position = widget.connue;
+    final tir = widget.tirFrais;
+    if (tir != null) {
+      _tir = _Tir.enCours;
+      // Le recepteur a deja son delai (kSingleShotMaxDelay) ; celui-ci est
+      // le filet du dialogue, si la reponse ne revient jamais.
+      _delai = Timer(kSingleShotMaxDelay, () => _fin(_Tir.echoue));
+      tir.then(
+        (frais) => _fin(_Tir.obtenu, frais),
+        onError: (Object _) {
+          _fin(_Tir.echoue);
+        },
+      );
+    }
+    _age = Timer.periodic(_rafraichissementDeLAge, (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _fin(_Tir tir, [PositionConnue? frais]) {
+    if (!mounted || _tir != _Tir.enCours) return;
+    _delai?.cancel();
+    setState(() {
+      _tir = tir;
+      if (frais != null) _position = frais;
+    });
+  }
+
+  @override
+  void dispose() {
+    _delai?.cancel();
+    _age?.cancel();
+    super.dispose();
+  }
+
+  /// L'age de la position, en langage de randonneur (regle d'arrondi vers le
+  /// bas de [ageEnClair]).
+  String _ageDe(PositionConnue p) {
+    final age = ageEnClair(
+      mesureeA: p.mesureeA,
+      maintenant: widget.maintenant(),
+    );
+    if (age == null) return t.sos.ageNow;
+    if (age.heures == 0) return t.sos.ageMinutes(minutes: age.minutes);
+    return t.sos.ageHours(
+      hours: age.heures,
+      minutes: age.minutes.toString().padLeft(2, '0'),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final position = _position;
 
     return AlertDialog(
       backgroundColor: theme.colorScheme.surface,
@@ -109,9 +201,9 @@ class SosConfirmationDialog extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                if (latitude != null && longitude != null) ...[
+                if (position != null) ...[
                   Text(
-                    'Lat: ${latitude!.toStringAsFixed(5)}',
+                    'Lat: ${position.latitude.toStringAsFixed(5)}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontFamily: 'monospace',
@@ -120,7 +212,7 @@ class SosConfirmationDialog extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Lng: ${longitude!.toStringAsFixed(5)}',
+                    'Lng: ${position.longitude.toStringAsFixed(5)}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontFamily: 'monospace',
@@ -128,6 +220,10 @@ class SosConfirmationDialog extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  // L'AGE, EN CLAIR : une information, pas un avertissement
+                  // — ni en gros, ni en rouge.
+                  _Ligne(_ageDe(position), key: const ValueKey('sos-age')),
+                  if (position.estimee) _Ligne(t.sos.estimated),
                 ] else ...[
                   Text(
                     t.sos.positionUnavailable,
@@ -138,10 +234,19 @@ class SosConfirmationDialog extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
+                  // Jamais seule : ce que le randonneur peut faire.
+                  _Ligne(t.sos.unavailableHelp),
                 ],
+                if (_tir == _Tir.enCours)
+                  _Ligne(t.sos.gpsAcquiring, key: const ValueKey('sos-tir'))
+                else if (_tir == _Tir.echoue && position != null)
+                  _Ligne(
+                    t.sos.freshFailed(seconds: kSingleShotMaxDelay.inSeconds),
+                    key: const ValueKey('sos-tir'),
+                  ),
                 Text(
-                  altitude != null
-                      ? 'Alt: ${altitude!.round()} m'
+                  position?.altitude != null
+                      ? 'Alt: ${position!.altitude!.round()} m'
                       : t.sos.altitudeUnavailable,
                   style: const TextStyle(
                     fontSize: 20,
@@ -272,4 +377,20 @@ class SosConfirmationDialog extends StatelessWidget {
       context,
     ).showSnackBar(SnackBar(content: Text(t.sos.medicalId.unavailable)));
   }
+}
+
+/// Une ligne d'information du bandeau de position.
+class _Ligne extends StatelessWidget {
+  const _Ligne(this.texte, {super.key});
+
+  final String texte;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 2),
+    child: Text(
+      texte,
+      style: const TextStyle(fontSize: 13, color: Colors.white70),
+    ),
+  );
 }

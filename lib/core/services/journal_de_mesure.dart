@@ -81,10 +81,12 @@ enum MeasureEvent {
   /// Changement de profil ou reprise du suivi.
   reprise('reprise'),
 
-  /// Charniere de trace (jamais ecrite a ce lot).
+  /// Entree dans une fenetre de charniere du trace (ecrite depuis le lot
+  /// 671-04, par l'isolate de fond, a la position d'entree).
   charniere('charniere'),
 
-  /// Appel de secours (non observable a ce lot, jamais ecrit).
+  /// Appui sur le bouton SOS (ecrit depuis le lot 671-04, par l'interface,
+  /// avec la position montree aux secours et son age).
   sos('sos'),
 
   /// Sortie du trace (non observable a ce lot, jamais ecrite).
@@ -130,6 +132,10 @@ abstract final class MeasureLine {
   /// 671-03, une ligne `releve` y porte la distance en metres, LE LONG DU
   /// TRACE, entre le dernier point estime et le releve projete ; il vaut un
   /// tiret quand aucun estime ne precede le releve, et sur toute autre ligne.
+  ///
+  /// Le champ 9 est le seul qui porte une duree en secondes. Depuis le lot
+  /// 671-04, une ligne `sos` y porte l'AGE de la position montree aux secours
+  /// (le temps ecoule depuis sa mesure) : un tiret si aucune n'etait connue.
   static String event({
     required DateTime at,
     required PositionProfile profile,

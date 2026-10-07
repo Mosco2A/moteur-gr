@@ -1869,6 +1869,12 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override String get positionTitle => 'Your current position';
 	@override String get positionUnavailable => 'GPS position unavailable';
 	@override String get gpsAcquiring => 'Acquiring GPS…';
+	@override String get ageNow => 'Position just now';
+	@override String ageMinutes({required Object minutes}) => 'Position ${minutes} min ago';
+	@override String ageHours({required Object hours, required Object minutes}) => 'Position ${hours} h ${minutes} ago';
+	@override String get estimated => 'Estimated on the trail from your steps';
+	@override String freshFailed({required Object seconds}) => 'No newer position within ${seconds} s: the last known one is still shown.';
+	@override String get unavailableHelp => 'Call 112 anyway: give the last place you passed (hut, pass, trail marker) and stay where you are if you can.';
 	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m';
 	@override String get noContacts => 'No contact configured';
 	@override String callContact({required Object name}) => 'Call ${name}';
@@ -6157,6 +6163,12 @@ extension on TranslationsEn {
 			'sos.positionTitle' => 'Your current position',
 			'sos.positionUnavailable' => 'GPS position unavailable',
 			'sos.gpsAcquiring' => 'Acquiring GPS…',
+			'sos.ageNow' => 'Position just now',
+			'sos.ageMinutes' => ({required Object minutes}) => 'Position ${minutes} min ago',
+			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Position ${hours} h ${minutes} ago',
+			'sos.estimated' => 'Estimated on the trail from your steps',
+			'sos.freshFailed' => ({required Object seconds}) => 'No newer position within ${seconds} s: the last known one is still shown.',
+			'sos.unavailableHelp' => 'Call 112 anyway: give the last place you passed (hut, pass, trail marker) and stay where you are if you can.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'No contact configured',
 			'sos.callContact' => ({required Object name}) => 'Call ${name}',

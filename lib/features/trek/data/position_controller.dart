@@ -57,7 +57,10 @@ class PositionController {
       openStream: positionStream ?? _geolocatorStream,
       takeShot: (settings) => _currentPosition(locationSettings: settings),
       streamSettings: interfaceStreamSettings,
-      onFix: (position, _) => _output?.add(position),
+      onFix: (position, _) {
+        _lastFix = position;
+        _output?.add(position);
+      },
       onStreamError: (Object error, StackTrace stackTrace) {
         ErrorHandler.log(
           error,
@@ -100,6 +103,7 @@ class PositionController {
   );
 
   PositionProfile _profile = PositionProfile.map;
+  Position? _lastFix;
   PositionProfile? _publishedProfile;
   bool _restored = false;
   bool _chosen = false;
@@ -128,6 +132,24 @@ class PositionController {
   /// Une position unique, prise avec les reglages du profil courant.
   Future<Position> currentPosition() =>
       _currentPosition(locationSettings: settingsFor(_profile));
+
+  /// LA DERNIERE POSITION RECUE PAR CE ROBINET (lot 671-04), flux ou tir,
+  /// nulle avant la premiere. UNE MEMOIRE, PAS UNE ECOUTE : la lire n'ouvre
+  /// rien, ne tire rien, et ne garde aucune souscription en vie.
+  Position? get lastFix => _lastFix;
+
+  /// UN TIR UNIQUE A LA DEMANDE (lot 671-04, le SOS) : la precision du
+  /// profil — haute, c'est la seule du depot ([GpsPrecision.high]) — et
+  /// [kSingleShotMaxDelay] au plus, quel que soit le profil (en profil carte
+  /// aussi, ou le flux n'a pas de delai). Aucun flux n'est ouvert ; la
+  /// position obtenue devient [lastFix].
+  Future<Position> singleShot() async {
+    final position = await _currentPosition(
+      locationSettings: singleShotSettings(GpsCadence.of(_profile)),
+    );
+    _lastFix = position;
+    return position;
+  }
 
   /// Change le profil courant, le publie pour l'isolate de fond, et change la
   /// cadence de la source sans couper ses abonnes.

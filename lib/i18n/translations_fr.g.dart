@@ -3989,6 +3989,24 @@ class Translations$sos$fr {
 	/// fr: 'Acquisition GPS…'
 	String get gpsAcquiring => 'Acquisition GPS…';
 
+	/// fr: 'Position à l'instant'
+	String get ageNow => 'Position à l\'instant';
+
+	/// fr: 'Position il y a $minutes min'
+	String ageMinutes({required Object minutes}) => 'Position il y a ${minutes} min';
+
+	/// fr: 'Position il y a $hours h $minutes'
+	String ageHours({required Object hours, required Object minutes}) => 'Position il y a ${hours} h ${minutes}';
+
+	/// fr: 'Estimée sur le tracé d'après vos pas'
+	String get estimated => 'Estimée sur le tracé d\'après vos pas';
+
+	/// fr: 'Pas de position plus récente en $seconds s : la dernière connue reste affichée.'
+	String freshFailed({required Object seconds}) => 'Pas de position plus récente en ${seconds} s : la dernière connue reste affichée.';
+
+	/// fr: 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.'
+	String get unavailableHelp => 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.';
+
 	/// fr: 'Position : $lat, $lng - Alt. $alt m'
 	String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m';
 
@@ -10250,6 +10268,12 @@ extension on Translations {
 			'sos.positionTitle' => 'Votre position actuelle',
 			'sos.positionUnavailable' => 'Position GPS indisponible',
 			'sos.gpsAcquiring' => 'Acquisition GPS…',
+			'sos.ageNow' => 'Position à l\'instant',
+			'sos.ageMinutes' => ({required Object minutes}) => 'Position il y a ${minutes} min',
+			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Position il y a ${hours} h ${minutes}',
+			'sos.estimated' => 'Estimée sur le tracé d\'après vos pas',
+			'sos.freshFailed' => ({required Object seconds}) => 'Pas de position plus récente en ${seconds} s : la dernière connue reste affichée.',
+			'sos.unavailableHelp' => 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'Aucun contact configuré',
 			'sos.callContact' => ({required Object name}) => 'Appeler ${name}',
