@@ -156,6 +156,58 @@ void main() {
       );
     });
 
+    test('une carte REFUSEE peut etre EFFACEE aussitot : l examen ne garde '
+        'aucune connexion ouverte', () async {
+      // CE QU IL GARANTIT, ET QUE « aucune exception » NE GARANTIT PAS.
+      // Un `.mbtiles` abime se refuse APRES que sa base a ete ouverte : si
+      // l examen ne referme pas ce qu il a ouvert, la connexion et son
+      // descripteur de fichier fuient. Sur un telephone, c est une fuite A
+      // CHAQUE OUVERTURE D ECRAN DE CARTE, invisible jusqu a l epuisement.
+      // Sous Windows, effacer un fichier encore tenu est REFUSE (errno 32) :
+      // l effacement est donc la preuve de la fermeture, et les trois formes
+      // d abimement sont couvertes parce que chacune leve a un endroit
+      // different de l ouverture.
+      final abimes = <String, String Function()>{
+        'octets qui ne sont pas une base': () {
+          final chemin = cheminDeLaCarte();
+          File(
+            chemin,
+          ).writeAsBytesSync(List<int>.generate(8192, (i) => (i * 37) % 251));
+          return chemin;
+        },
+        'base SQLite vide, sans aucune table': () {
+          final chemin = cheminDeLaCarte();
+          File(chemin).writeAsBytesSync(const <int>[]);
+          return chemin;
+        },
+        'vraie carte TRONQUEE, en-tete SQLite intact': () {
+          final chemin = fabriquerUneCarte();
+          final octets = File(chemin).readAsBytesSync();
+          File(chemin).writeAsBytesSync(octets.sublist(0, 1024));
+          return chemin;
+        },
+      };
+
+      for (final forme in abimes.keys) {
+        final chemin = abimes[forme]!();
+
+        expect(
+          await decideur.choisir(trailId),
+          const FondDuReseau(RaisonDuReseau.fichierIllisible),
+          reason: '$forme : la decision attendue reste le reseau',
+        );
+
+        File(chemin).deleteSync();
+        expect(
+          File(chemin).existsSync(),
+          isFalse,
+          reason:
+              '$forme : une carte refusee doit pouvoir etre effacee tout de '
+              'suite, donc plus personne ne doit la tenir ouverte',
+        );
+      }
+    });
+
     test(
       'dossier des documents injoignable : le reseau, sans exception',
       () async {
