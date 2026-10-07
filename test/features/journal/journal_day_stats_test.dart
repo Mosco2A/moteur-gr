@@ -2,11 +2,16 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/geo/track_projection.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/journal/providers/journal_day_providers.dart';
+import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
+
+import '../../comportement/banc_du_trace_671.dart';
 
 /// CORRECTIF L4-3 — RESUME CHIFFRE DU JOUR ET CUMUL DEPUIS LE DEPART.
 ///
@@ -137,5 +142,81 @@ void main() {
         expect(cumul.pointCount, 4);
       },
     );
+  });
+
+  group('671-06 — le journal se mesure SUR LE TRACE, sa journee civile', () {
+    late AppDatabase db;
+    final trace = fabricatedTrace();
+
+    setUp(() => db = AppDatabase(NativeDatabase.memory()));
+    tearDown(() async => db.close());
+
+    ProviderContainer container() {
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+          gpxTrackProvider(
+            testTrailConfig.id,
+          ).overrideWith((ref) async => trace),
+        ],
+      );
+      addTearDown(c.dispose);
+      return c;
+    }
+
+    test('LE JOURNAL : LA JOURNEE CIVILE, de minuit a minuit', () async {
+      final local = DateTime(2026, 7, 14, 7);
+      Future<void> day(DateTime start, double fromM, double toM) async {
+        for (var s = fromM; s <= toM; s += 200) {
+          final p = TrackProjector.locate(
+            trackPoints: trace,
+            distanceFromStartM: s,
+          );
+          await db.sessionTrackPointsDao.insertPoint(
+            trailId: testTrailConfig.id,
+            sessionId: 'banc',
+            lat: p.lat,
+            lng: p.lng,
+            altitude: p.altitude,
+            recordedAt: start.add(
+              Duration(seconds: (s - fromM) ~/ walkSpeedMps),
+            ),
+            source: TrackPointSource.gps,
+          );
+        }
+        await db.journalDao.insertEntry(
+          JournalEntriesCompanion.insert(
+            trailId: testTrailConfig.id,
+            stageNumber: 1,
+            content: const Value('note'),
+            createdAt: start,
+          ),
+        );
+      }
+
+      await day(local, 0, 2000);
+      await day(local.add(const Duration(days: 1)), 2000, 3600);
+      final c = container();
+      c.read(journalDaysProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      c.read(journalSelectedDayRawProvider.notifier).select(local);
+      final first = await c.read(journalDayStatsProvider.future);
+      c
+          .read(journalSelectedDayRawProvider.notifier)
+          .select(local.add(const Duration(days: 1)));
+      final second = await c.read(journalDayStatsProvider.future);
+      final cumulative = await c.read(journalCumulativeStatsProvider.future);
+
+      expect(first.distanceKm, closeTo(2.0, 0.001));
+      expect(first.elevationGainM, 300);
+      expect(first.duration, const Duration(minutes: 30));
+      expect(second.elevationLossM, greaterThan(150));
+      expect(second.elevationGainM, 0);
+      expect(
+        cumulative.distanceKm,
+        closeTo(first.distanceKm + second.distanceKm, 1e-9),
+      );
+    });
   });
 }

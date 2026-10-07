@@ -8,8 +8,10 @@ import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/recorded_track_stats.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../map/map_facade.dart' show statsTraceProvider;
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -123,15 +125,22 @@ final journalDayTraceProvider = FutureProvider<List<SessionTrackPoint>>((
 /// garde ses noms d'origine, le socle vit dans [TrackSegmentStats].
 typedef JournalDayStats = TrackSegmentStats;
 
-/// Calcule les chiffres d'une suite de points GPS (cf. [computeTrackStats]).
-JournalDayStats computeDayStats(List<SessionTrackPoint> points) =>
-    computeTrackStats(points);
+/// Calcule les chiffres d'une journee : sur la tranche de [trace] que ses
+/// releves reels [points] bornent et datent (lot 671-06), sur les releves
+/// eux-memes sans trace (cf. [computeTrackStatsOnTrace]).
+JournalDayStats computeDayStats(
+  List<SessionTrackPoint> points, {
+  List<TrackPoint>? trace,
+}) => computeTrackStatsOnTrace(readings: points, trace: trace);
 
 /// Chiffres de la journee affichee (correctif L4-3).
 ///
-/// LOT 671-03 : sur les SEULS RELEVES REELS, et non sur la trace dessinee. Les
-/// points estimes ne font pas bouger d'un metre la distance ni le denivele du
-/// jour ; le changement d'entree des statistiques est le lot 671-06.
+/// LOT 671-03 : bornes et duree sur les SEULS RELEVES REELS, et non sur la
+/// trace dessinee : un point estime ne date ni ne borne rien.
+///
+/// LOT 671-06 : distance et denivele SUR LE TRACE, entre le premier et le
+/// dernier releve reel de la journee, projetes. LE PERIMETRE NE CHANGE PAS :
+/// la journee CIVILE, de minuit a minuit, celle de [getByCalendarDay].
 final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
   // La trace dessinee reste la source de rafraichissement (meme journee,
   // memes invalidations) ; les chiffres se relisent sur les releves seuls.
@@ -140,12 +149,13 @@ final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
   final db = ref.watch(databaseProvider);
+  final trace = ref.watch(statsTraceProvider.future);
   final points = await db.sessionTrackPointsDao.getByCalendarDay(
     trailId,
     day,
     read: TrackPointsRead.gpsOnly,
   );
-  return computeDayStats(points);
+  return computeDayStats(points, trace: await trace);
 });
 
 /// Cumul depuis le depart, jusqu'a la journee affichee INCLUSE (L4-3).
@@ -154,6 +164,9 @@ final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
 /// des journees distinctes evite de compter le trajet qui relie le dernier
 /// point d'un soir au premier point du lendemain matin (souvent un transfert
 /// en voiture, parfois des dizaines de kilometres).
+///
+/// LOT 671-06 : chaque journee du cumul se calcule comme la journee affichee,
+/// sur sa tranche de trace — le cumul du premier jour est le chiffre du jour.
 final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
   ref,
 ) async {
@@ -161,11 +174,13 @@ final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
   final db = ref.watch(databaseProvider);
+  final traceFuture = ref.watch(statsTraceProvider.future);
   // Les seuls releves reels : un cumul de chiffres (lot 671-03).
   final all = await db.sessionTrackPointsDao.getByTrailId(
     trailId,
     read: TrackPointsRead.gpsOnly,
   );
+  final trace = await traceFuture;
 
   final byDay = <DateTime, List<SessionTrackPoint>>{};
   for (final p in all) {
@@ -175,7 +190,7 @@ final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
   }
   var total = const JournalDayStats();
   for (final points in byDay.values) {
-    total = total.plus(computeDayStats(points));
+    total = total.plus(computeDayStats(points, trace: trace));
   }
   return total;
 });
