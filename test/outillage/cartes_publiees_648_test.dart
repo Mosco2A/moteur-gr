@@ -11,6 +11,7 @@ import 'package:mbtiles/mbtiles.dart';
 import 'package:moteur_gr/core/config/trail_data_source.dart';
 import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/map/mbtiles_manager.dart';
+import 'package:moteur_gr/core/map/offline_tile_provider.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 
 /// LA PREUVE QUE LA CARTE PUBLIEE DESCEND VRAIMENT — PAR LA CHAINE DU LOT 640,
@@ -175,6 +176,22 @@ void main() {
         tuile!.take(8).toList(),
         <int>[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
         reason: 'la carte doit rendre un PNG : c est ce que la couche affiche',
+      );
+
+      // 6. L ECRAN CARTE PREND BIEN CE FICHIER (lot carte-hors-ligne-branchee).
+      //    Jusqu au 07/10, aucune couche ne lisait la carte descendue : le
+      //    randonneur en mode avion avait un fond blanc. La decision du fond,
+      //    jouee sur le fichier REEL, doit le choisir avec ses zooms.
+      final choix = await OfflineTileProvider(
+        mbtilesManager: gestionnaire,
+      ).choisir(trail);
+      expect(
+        choix,
+        isA<FondDuFichier>()
+            .having((f) => f.chemin, 'chemin', map.path)
+            .having((f) => f.zoomMin, 'zoomMin', metadonnees.minZoom?.ceil())
+            .having((f) => f.zoomMax, 'zoomMax', metadonnees.maxZoom?.floor()),
+        reason: 'la carte publiee doit etre celle que l ecran affiche',
       );
     },
     timeout: const Timeout(Duration(minutes: 10)),

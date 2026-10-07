@@ -11,7 +11,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/trace_point.dart';
-import '../../../../core/map/test_inert_tile_provider.dart';
+import '../../../../core/map/fond_de_carte.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/attribution_osm.dart';
@@ -176,20 +176,9 @@ class _MapContentState extends State<MapContent> {
                 },
               ),
               children: [
-                // 1. Fond de carte OSM
-                //
-                // tileProvider : en PROD, `inertTileProviderOrNull()` renvoie
-                // null -> TileLayer utilise son NetworkTileProvider par defaut
-                // (fond OSM en ligne, comportement inchange). En TEST
-                // d'integration (flag --dart-define=STEPWAYS_INERT_TILES=true),
-                // il renvoie un fournisseur INERTE (tuile transparente,
-                // synchrone) qui supprime la tempete de SocketException/retries
-                // offline responsable des timeouts/teardowns (cycle 3).
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.moteur-gr.app',
-                  tileProvider: inertTileProviderOrNull(),
-                ),
+                // 1. Fond de carte : le fichier telecharge du sentier s'il
+                //    est lisible, le reseau sinon (lot carte hors ligne).
+                FondDeCarte(trailId: widget.trailId),
 
                 // 2. Trace GPX (statique -> RepaintBoundary pour isoler
                 //    le raster du trace des rebuilds de la position GPS)

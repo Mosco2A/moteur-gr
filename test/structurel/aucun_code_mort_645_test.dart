@@ -60,8 +60,14 @@ import 'mesure_des_sources_645.dart';
 /// montrait. Une citation n'est pas un affichage — ce que cette garde ne sait
 /// pas voir.
 ///
+/// ABAISSE A 137 LE 07/10/2026 (lot carte hors ligne branchee, tete
+/// fabb1ec2) : `OfflineTileProvider` avait zero appelant — c'etait le defaut
+/// lui-meme, la carte telechargee n'etait jamais lue — et il est desormais
+/// appele par le fond de carte ; `InertTileProvider` est nomme par le test
+/// qui prouve que le relais reseau reste inerte sous test. 139 - 2 = 137.
+///
 /// CE PLAFOND NE REMONTE JAMAIS.
-const plafondCodeMort = 139;
+const plafondCodeMort = 137;
 
 /// Les declarations de TYPE de haut niveau.
 final _motifDeclaration = RegExp(

@@ -13,6 +13,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/map/fond_de_carte.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -309,10 +310,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
             ),
           ),
           children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.moteur-gr.app',
-            ),
+            FondDeCarte(trailId: widget.trailId),
             PolylineLayer(
               polylines: [
                 Polyline(

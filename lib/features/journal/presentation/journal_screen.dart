@@ -13,7 +13,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/analytics/screen_entry.dart';
-import '../../../core/map/test_inert_tile_provider.dart';
+import '../../../core/map/fond_de_carte.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -568,15 +568,7 @@ class _DayTraceCard extends ConsumerWidget {
                       ),
                     ),
                     children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.moteur-gr.app',
-                        // En test, fournisseur inerte : aucune requete
-                        // reseau. En production, `null` -> fournisseur par
-                        // defaut, comportement inchange.
-                        tileProvider: inertTileProviderOrNull(),
-                      ),
+                      const FondDeCarte.duSentierActif(),
                       PolylineLayer(
                         polylines: [
                           Polyline(
