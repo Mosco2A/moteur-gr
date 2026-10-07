@@ -93,23 +93,21 @@ Future<void> bgWritePositionProfile(PositionProfile profile) async {
 Future<int?> bgReadBatteryPercent() => Battery().batteryLevel;
 
 /// L'autorisation qui ouvre le podometre : la reconnaissance d'activite sur
-/// Android (10 et au-dela), les capteurs de mouvement sur iOS. LUE, jamais
-/// demandee ici : la demande part de l'ecran de mesure, une seule fois.
-Future<bool> bgStepsAllowed() async {
-  final permission = Platform.isIOS
-      ? Permission.sensors
-      : Permission.activityRecognition;
-  return (await permission.status).isGranted;
-}
+/// Android (10 et au-dela), les capteurs de mouvement sur iOS. Le SEUL
+/// endroit qui choisit l'une ou l'autre (lot 671-02 : le service
+/// d'autorisation du podometre en lit le statut nomme).
+Permission bgStepsPermission() =>
+    Platform.isIOS ? Permission.sensors : Permission.activityRecognition;
+
+/// Vrai si l'autorisation du podometre ([bgStepsPermission]) est accordee.
+/// LUE, jamais demandee ici.
+Future<bool> bgStepsAllowed() async =>
+    (await bgStepsPermission().status).isGranted;
 
 /// Demande l'autorisation du podometre ([bgStepsAllowed]) au systeme, une
 /// fois, depuis l'interface ; vrai si elle est accordee.
-Future<bool> bgRequestStepsPermission() async {
-  final permission = Platform.isIOS
-      ? Permission.sensors
-      : Permission.activityRecognition;
-  return (await permission.request()).isGranted;
-}
+Future<bool> bgRequestStepsPermission() async =>
+    (await bgStepsPermission().request()).isGranted;
 
 /// Cle du TAMPON de points captes par l'isolate de fond, en attente de drain.
 ///
