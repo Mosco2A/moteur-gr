@@ -1,45 +1,48 @@
-The Ways macht aus deiner Wanderung ein geführtes Erlebnis, von der ersten Erkundung bis zum letzten Schritt — komplett offline.
+StepWays begleitet dich auf deinem Fernwanderweg, von der Vorbereitung bis zur letzten Etappe. Kein Konto nötig: Die App öffnet sich sofort und lässt sich mit einer kostenlosen Demo entdecken.
 
-Lade einen Weg herunter und brich ohne Empfang auf: Karte, GPS-Track, Planung und Tagebuch bleiben überall verfügbar.
+Etappen, Track, Points of Interest und Notrufnummern des Weges sind auf deinem Handy gespeichert. Ohne Empfang funktionieren deine Position, der Track und die Warnungen beim Verlassen des Weges weiter.
 
 PLANE DEINE TOUR
-• Planung passend zu deinem Niveau, deinen Daten und deinem Tempo
-• Detaillierte Etappen: Distanzen, Höhenmeter und geschätzte Gehzeit
-• Interaktive Höhenprofile für jede Etappe
-• Unterkunftsoptionen entlang der Route aufgelistet
+• Aufteilung des Weges in Tage, mit einem empfohlenen Programm nach deinem Machbarkeitstest
+• Detaillierte Etappen: Distanz, Auf- und Abstieg, geschätzte Gehzeit
+• Unterkünfte entlang der Route
+• Ausrüstungsliste zum Abhaken, passend zur Jahreszeit
+• Tipp-Karten und Trainingsplan
 
-PRÄZISE GPS-FÜHRUNG
-• Hochauflösender GPX-Track, um dem richtigen Pfad zu folgen
-• Echtzeit-Verfolgung deines Fortschritts auf der Karte
-• Abweichungswarnungen, um auf dem Weg zu bleiben
-• Funktioniert zu 100% offline, kein Netz erforderlich
+GPS-FÜHRUNG
+• Deine Position und dein Fortschritt in Echtzeit auf der Karte
+• Warnung, wenn du vom Weg abkommst, aufgehoben, sobald du zurück bist
+• Zurückgelegte Distanz, Höhenmeter, Gehzeit und Geschwindigkeit, live
 
-OFFLINE-KARTEN
-• Karten nach Sektor herunterladbar, ohne Verbindung nutzbar
-• Interessante Orte: Wasserquellen, Schutzhütten, Aussichtspunkte
-• Kompakte Daten, um den Speicher deines Geräts zu schonen
+KARTE UND POINTS OF INTEREST
+• Karte des Weges mit Track und Etappen
+• Points of Interest: Wasserquellen, Unterstände, Aussichtspunkte, Läden
+• Der Kartenhintergrund wird über das Netz geladen
 
-FORTSCHRITTSVERFOLGUNG
-• Statistiken zu deiner laufenden Tour
-• Zurückgelegte Distanz, kumulierte Höhenmeter, Gehzeit
-• Verlauf deiner vergangenen Wanderungen
-• Personalisiertes Abschlusszertifikat
+WETTER UND SICHERHEIT
+• Wetter für jede Etappe: heute und an den zwei folgenden Tagen
+• Waldbrandrisiko für jede Etappe, aus dem Wetter berechnet
+• SOS-Taste, die die 112 anruft
+• Regionale Notrufnummern, passend zu jedem Weg
+• Notfallblatt (Gesundheit, zu benachrichtigende Personen) auf deinem Handy
 
-TEILEN UND TOURENTAGEBUCH
-• Teile deinen Fortschritt in Echtzeit mit deinen Liebsten
-• Tourentagebuch mit geolokalisierten Fotos
-• Exportiere deine Tracks im GPX-Format
-
-FÜR DAS GELÄNDE GEMACHT
-• Energiesparmodus
-• Bei hellem Sonnenlicht lesbare Anzeige
-• Für Gebiete ohne Netzabdeckung konzipiert
+TOURENBUCH UND ERINNERUNGEN
+• Tourenbuch mit deinen Notizen und Fotos, nach Etappen sortiert
+• Deine abgeschlossenen Touren bleiben unter „Meine Touren“
+• Persönliches Abschlussdiplom zum Teilen
+• Exportiere deinen Track als GPX-Datei
+• Teile deinen Plan, dein Tourenbuch oder dein Diplom mit einem Tipp
 
 DATENSCHUTZ
-• Deine Fotos und dein Tagebuch bleiben auf deinem Gerät
-• Dein Standort wird nur geteilt, wenn du es aktivierst, über einen privaten Link
-• Keine Standortdaten für Werbung
+• Kein Konto, weder Name noch E-Mail-Adresse nötig
+• Deine Fotos und dein Tourenbuch bleiben auf deinem Handy
+• Keine Standortdaten für Werbezwecke
 
-The Ways passt sich an jeden Weg an: Farben, Etappen, interessante Orte und regionale Notrufnummern liefert die Konfiguration der Route. Ob du deine erste lange Wanderung vorbereitest oder ein erfahrener Wanderer bist, die App begleitet dich vor, während und nach dem Abenteuer.
+Jeder Weg bringt seine eigenen Etappen, Points of Interest und regionalen Notrufnummern mit. Die App gibt es auf Französisch, Englisch, Deutsch, Italienisch und Spanisch, im dunklen oder hellen Design.
 
-Lade deinen ersten Weg herunter und plane jetzt deine nächste Tour.
+Probiere die kostenlose Demo und wähle dann deinen Weg.
+
+Kostenlose App mit Werbung. In-App-Käufe: Aufladungen des Etappen-Guthabens, um eine Wanderung freizuschalten, und ein monatliches werbefreies Abo, das sich automatisch verlängert, bis du es in deinen Kontoeinstellungen kündigst.
+
+Nutzungsbedingungen: https://only1cent.com/stepways/conditions-en
+Datenschutzerklärung: https://only1cent.com/stepways/privacy-en

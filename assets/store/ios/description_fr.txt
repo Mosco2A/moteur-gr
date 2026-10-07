@@ -1,45 +1,48 @@
-The Ways transforme votre randonnée en une expérience guidée, du premier repérage jusqu'au dernier pas — entièrement hors ligne.
+StepWays vous accompagne sur votre sentier de grande randonnée, de la préparation jusqu'à la dernière étape. Aucun compte à créer : l'application s'ouvre et se découvre tout de suite, avec une démo gratuite.
 
-Téléchargez un sentier, partez sans réseau : la carte, la trace GPS, le planning et le journal restent disponibles où que vous soyez.
+Les étapes, la trace, les points d'intérêt et les numéros de secours du sentier sont enregistrés sur votre téléphone. Sans réseau, votre position, la trace et les alertes de sortie de sentier continuent de fonctionner.
 
-PLANIFIEZ VOTRE TREK
-• Planning adapté à votre niveau, vos dates et votre rythme
-• Étapes détaillées : distances, dénivelés et temps de marche estimés
-• Profils altimétiques interactifs pour chaque étape
-• Options d'hébergement répertoriées le long de l'itinéraire
+PRÉPAREZ VOTRE TREK
+• Découpage du sentier en jours, avec un programme conseillé selon votre test de faisabilité
+• Étapes détaillées : distance, dénivelé positif et négatif, temps de marche estimé
+• Hébergements répertoriés le long de l'itinéraire
+• Liste d'équipement à cocher, adaptée à la saison
+• Fiches conseils et plan d'entraînement
 
-GUIDAGE GPS PRÉCIS
-• Trace GPX haute définition pour suivre le bon chemin
-• Suivi en temps réel de votre progression sur la carte
-• Alertes de déviation pour rester sur l'itinéraire
-• Fonctionne 100 % hors ligne, aucun réseau nécessaire
+GUIDAGE GPS
+• Votre position et votre progression en temps réel sur la carte
+• Alerte quand vous vous écartez du sentier, levée dès que vous le retrouvez
+• Distance parcourue, dénivelé cumulé, temps de marche et vitesse, en direct
 
-CARTES HORS LIGNE
-• Cartes téléchargeables par secteur, consultables sans connexion
-• Points d'intérêt : sources d'eau, abris, points de vue
-• Données compactes pour préserver le stockage de votre appareil
+CARTE ET POINTS D'INTÉRÊT
+• Carte du sentier avec la trace et les étapes
+• Points d'intérêt : sources d'eau, abris, points de vue, commerces
+• Le fond de carte se charge avec le réseau
 
-SUIVI DE PROGRESSION
-• Statistiques de votre trek en cours
-• Distance parcourue, dénivelé cumulé, temps de marche
-• Historique de vos randonnées passées
-• Diplôme de fin de parcours personnalisé
+MÉTÉO ET SÉCURITÉ
+• Météo de chaque étape : le jour même et les deux jours suivants
+• Niveau de risque incendie de chaque étape, calculé d'après la météo
+• Bouton SOS qui appelle le 112
+• Numéros de secours de la région, propres à chaque sentier
+• Fiche d'urgence (santé, personnes à prévenir) gardée sur votre téléphone
 
-PARTAGE ET CARNET DE ROUTE
-• Partagez votre progression avec vos proches en temps réel
-• Carnet de route illustré de photos géolocalisées
-• Exportez vos traces au format GPX
-
-OPTIMISÉ POUR LE TERRAIN
-• Mode économie de batterie
-• Interface lisible en plein soleil
-• Pensé pour les zones sans couverture réseau
+CARNET DE ROUTE ET SOUVENIRS
+• Carnet de route avec vos notes et vos photos, classées par étape
+• Vos treks terminés restent dans « Mes treks »
+• Diplôme de fin de parcours personnalisé, à partager
+• Exportez votre trace au format GPX
+• Partagez votre plan, votre carnet ou votre diplôme en un geste
 
 CONFIDENTIALITÉ
-• Vos photos et votre journal restent sur votre appareil
-• La position n'est partagée que lorsque vous l'activez, via un lien privé
+• Aucun compte à créer, ni nom ni adresse e-mail demandés
+• Vos photos et votre carnet restent sur votre téléphone
 • Aucune donnée de localisation utilisée à des fins publicitaires
 
-The Ways s'adapte à chaque sentier : couleurs, étapes, points d'intérêt et secours régionaux sont fournis par la configuration du parcours. Que vous prépariez votre première grande randonnée ou que vous soyez un marcheur aguerri, l'application vous accompagne avant, pendant et après l'aventure.
+Chaque sentier arrive avec ses propres étapes, ses points d'intérêt et ses numéros de secours régionaux. L'application est disponible en français, anglais, allemand, italien et espagnol, en thème sombre ou clair.
 
-Téléchargez votre premier sentier et préparez votre prochain trek dès maintenant.
+Essayez la démo gratuite, puis choisissez votre sentier.
+
+Application gratuite avec publicité. Achats intégrés : recharges du compte-étapes pour débloquer une randonnée, et abonnement mensuel sans publicité, renouvelé automatiquement tant qu'il n'est pas arrêté dans les réglages de votre compte.
+
+Conditions d'utilisation : https://only1cent.com/stepways/conditions
+Politique de confidentialité : https://only1cent.com/stepways/privacy

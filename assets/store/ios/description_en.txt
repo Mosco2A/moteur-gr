@@ -1,45 +1,48 @@
-The Ways turns your hike into a guided experience, from the first scouting to the final step — fully offline.
+StepWays guides you along your long-distance trail, from preparation to the final stage. No account to create: the app opens and can be explored straight away, with a free demo.
 
-Download a trail and set off without a signal: the map, GPS track, planner and journal stay available wherever you are.
+The trail's stages, track, points of interest and emergency numbers are stored on your phone. Without a signal, your position, the track and the off-trail alerts keep working.
 
-PLAN YOUR TREK
-• Planning tailored to your level, your dates and your pace
-• Detailed stages: distances, elevation gain and estimated walking time
-• Interactive elevation profiles for every stage
-• Accommodation options listed along the route
+PREPARE YOUR TREK
+• The trail split into days, with a suggested programme based on your feasibility test
+• Detailed stages: distance, elevation gain and loss, estimated walking time
+• Accommodation listed along the route
+• Gear checklist to tick off, adapted to the season
+• Tip sheets and a training plan
 
-ACCURATE GPS GUIDANCE
-• High-definition GPX track to follow the right path
-• Real-time tracking of your progress on the map
-• Off-route alerts to stay on the trail
-• Works 100% offline, no network required
+GPS GUIDANCE
+• Your position and progress in real time on the map
+• An alert when you stray from the trail, cleared as soon as you are back on it
+• Distance walked, cumulative elevation gain, walking time and speed, live
 
-OFFLINE MAPS
-• Maps downloadable by sector, usable without a connection
-• Points of interest: water sources, shelters, viewpoints
-• Compact data to spare your device's storage
+MAP AND POINTS OF INTEREST
+• Trail map with the track and the stages
+• Points of interest: water sources, shelters, viewpoints, shops
+• The map background loads over the network
 
-PROGRESS TRACKING
-• Statistics for your ongoing trek
-• Distance covered, cumulative elevation, walking time
-• History of your past hikes
-• Personalised completion certificate
+WEATHER AND SAFETY
+• Weather for each stage: today and the next two days
+• Wildfire risk level for each stage, calculated from the weather
+• SOS button that calls 112
+• Regional emergency numbers, specific to each trail
+• Emergency sheet (health, people to contact) kept on your phone
 
-SHARING AND TRAIL JOURNAL
-• Share your progress with your loved ones in real time
-• Trail journal illustrated with geolocated photos
-• Export your tracks in GPX format
-
-BUILT FOR THE FIELD
-• Battery-saving mode
-• Display readable in bright sunlight
-• Designed for areas with no network coverage
+TRAIL JOURNAL AND MEMORIES
+• Trail journal with your notes and photos, sorted by stage
+• Your completed treks stay in "My treks"
+• Personalised finisher diploma, ready to share
+• Export your track as a GPX file
+• Share your plan, journal or diploma in one tap
 
 PRIVACY
-• Your photos and journal stay on your device
-• Your location is shared only when you enable it, via a private link
+• No account to create, no name or email address requested
+• Your photos and journal stay on your phone
 • No location data used for advertising
 
-The Ways adapts to every trail: colours, stages, points of interest and regional emergency numbers are supplied by the route's configuration. Whether you are preparing your first long hike or you are a seasoned walker, the app supports you before, during and after the adventure.
+Each trail comes with its own stages, points of interest and regional emergency numbers. The app is available in French, English, German, Italian and Spanish, in dark or light theme.
 
-Download your first trail and start planning your next trek now.
+Try the free demo, then choose your trail.
+
+Free app with ads. In-app purchases: step-credit top-ups to unlock a hike, and a monthly ad-free subscription that renews automatically until you cancel it in your account settings.
+
+Terms of use: https://only1cent.com/stepways/conditions-en
+Privacy policy: https://only1cent.com/stepways/privacy-en

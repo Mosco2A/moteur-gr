@@ -1,1 +1,1 @@
-senderismo,trekking,sendero,GPS,offline,mapa,GPX,traza,etapa,desnivel,refugio,vivac,montaña
+trekking,sendero,travesía,mapa,GPX,traza,desnivel,refugio,vivac,montaña,meteo,SOS,excursión

@@ -6,6 +6,16 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<!-- Les cinq langues de l application (slang) et de la fiche. Sans cette
+	     liste, iOS et la page App Store ne connaissent que l anglais. -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+		<string>en</string>
+		<string>de</string>
+		<string>it</string>
+		<string>es</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>StepWays</string>
 	<key>CFBundleExecutable</key>
@@ -24,14 +34,32 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- DECLARATION DE CHIFFREMENT (lot fiche magasin et preparation Apple).
+	     Sans cette cle, App Store Connect pose la question du chiffrement a
+	     CHAQUE envoi et retient le build tant qu on n y a pas repondu.
+	     NO = l application n emploie qu un chiffrement EXEMPTE :
+	       - HTTPS/TLS (systeme, Firebase, gRPC) pour ses echanges reseau ;
+	       - SHA-256 (paquet crypto) : une empreinte, pas un chiffrement ;
+	       - AES-GCM-256 et PBKDF2 (paquet cryptography, coffre de
+	         sauvegarde) : chemin d appel mort aujourd hui ; et meme vivant, la
+	         fonction premiere de StepWays est la randonnee, pas la securite de
+	         l information (EAR, categorie 5 partie 2, Note 4).
+	     Raisonnement complet : docs/store/fiche-app-store-connect.md.
+	     A REVOIR le jour ou la sauvegarde chiffree s allume, ou si
+	     l application gagne une fonction dont le chiffrement est le but. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<!-- P1-2 audit #327 : textes d usage des permissions (FR).
-	     Sans ces cles, iOS tue l app au premier acces GPS/photos. -->
+	     Sans ces cles, iOS tue l app au premier acces GPS/photos.
+	     CINQ LANGUES (lot fiche magasin) : ces textes-ci sont le francais de
+	     reference ; les traductions sont dans Runner/<langue>.lproj/
+	     InfoPlist.strings. Toute phrase changee ici se change dans les cinq. -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>StepWays utilise votre position pour vous situer sur le sentier, suivre votre progression d&#8217;étape en étape et enregistrer votre randonnée.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>L&#8217;accès à la position en arrière-plan permet de poursuivre l&#8217;enregistrement de votre randonnée écran éteint et de partager votre position en temps réel avec vos proches lorsque vous l&#8217;activez.</string>
+	<string>L&#8217;accès à la position en arrière-plan permet de poursuivre l&#8217;enregistrement de votre randonnée écran éteint, téléphone dans le sac. Votre position reste sur votre téléphone.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>L&#8217;appareil photo permet d&#8217;ajouter des photos à votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -39,7 +67,7 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>StepWays utilise le Bluetooth pour se connecter a votre ceinture cardiaque et afficher votre frequence cardiaque pendant la randonnee. Cette donnee reste sur votre telephone.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>StepWays compte vos pas pendant la mesure de batterie de votre randonnée. Le compte reste sur votre téléphone.</string>
+	<string>StepWays compte vos pas pendant la randonnée, pour mesurer votre longueur de pas et la consommation de la batterie. Le compte reste sur votre téléphone.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>StepWays lit (lecture seule) vos pas, frequence cardiaque, distance et calories depuis l app Sante pour afficher vos statistiques de randonnee. Ces donnees restent sur votre telephone.</string>
 	<!-- ================= ADMOB / iOS (tache 595, B3) =================

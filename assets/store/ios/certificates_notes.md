@@ -1,4 +1,4 @@
-# App Store — Certificats & profils de provisionnement (référence — The Ways)
+# App Store — Certificats & profils de provisionnement (référence — StepWays)
 
 Référence pour la signature iOS et la soumission. Aucun secret ni certificat
 binaire n'est versionné ici (les .p12/.mobileprovision NE doivent JAMAIS être

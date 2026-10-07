@@ -1,0 +1,12 @@
+/* StepWays — textes d'autorisation, langue en.
+   Lot fiche magasin et preparation Apple. Reference : Runner/Info.plist.
+   Toute phrase changee ici se change dans les cinq langues. */
+
+"NSLocationWhenInUseUsageDescription" = "StepWays uses your location to place you on the trail, follow your progress from stage to stage and record your hike.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Background location access lets StepWays keep recording your hike with the screen off and the phone in your bag. Your location stays on your phone.";
+"NSCameraUsageDescription" = "The camera lets you add photos to your trail journal. Your photos stay on your phone.";
+"NSPhotoLibraryUsageDescription" = "Access to your photos lets you illustrate your trail journal. Your photos stay on your phone.";
+"NSMotionUsageDescription" = "StepWays counts your steps during the hike to measure your stride length and battery use. The count stays on your phone.";
+"NSBluetoothAlwaysUsageDescription" = "StepWays uses Bluetooth to connect to your heart rate strap and show your heart rate during the hike. This data stays on your phone.";
+"NSHealthShareUsageDescription" = "StepWays reads (read only) your steps, heart rate, distance and calories from the Health app to show your hiking statistics. This data stays on your phone.";
+"NSUserTrackingUsageDescription" = "StepWays asks for this permission to show you ads that match your interests. If you decline, the free app still shows ads, but they are not personalised.";
