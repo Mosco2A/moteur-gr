@@ -20,7 +20,7 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 7 FICHIERS DE 4 FEATURES AU 05/10/2026 : `auth`, `hub`, `settings`,
+/// LUE PAR 8 FICHIERS DE 4 FEATURES AU 07/10/2026 : `auth`, `hub`, `settings`,
 /// `trek`.
 library;
 

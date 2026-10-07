@@ -47,8 +47,19 @@ import 'mesure_des_sources_645.dart';
 /// hors de son fichier — il reste vivant, cite dans son propre fichier et par
 /// ses tests. 152 - 9 + 1 = 144.
 ///
+/// ABAISSE A 139 LE 07/10/2026 (lot coche de preparation, tete 52fb8ac2) :
+/// c'est la MESURE, prise avant et apres le lot. Les lots du 03 au 06/10 avaient
+/// deja retire cinq candidats sans redescendre le plafond — cinq places libres
+/// sous lesquelles un symbole neuf sans appelant serait passe sans bruit.
+///
+/// CE QUE CE LOT N'A PAS FAIT BAISSER, ET C'EST MESURE : la coche
+/// (`StepStatusIcon`, `PlanningStepStatus`) n'a JAMAIS figure dans cette liste.
+/// Depuis le lot 645-05c, `quick_access_card.dart` la cite hors de son fichier :
+/// la garde la comptait vivante alors qu'aucun ecran ne la montrait. Une
+/// citation n'est pas un affichage — ce que cette garde ne sait pas voir.
+///
 /// CE PLAFOND NE REMONTE JAMAIS.
-const plafondCodeMort = 144;
+const plafondCodeMort = 139;
 
 /// Les declarations de TYPE de haut niveau.
 final _motifDeclaration = RegExp(

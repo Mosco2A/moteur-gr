@@ -2,12 +2,15 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/branding/stepways_icons.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/quick_access_card.dart';
+import '../../../../shared/widgets/step_status_icon.dart';
+import '../../providers/prepare_progress_providers.dart';
 import 'collapsible_prepare_section.dart';
 
 /// La section « Preparer » du cockpit.
@@ -17,7 +20,14 @@ import 'collapsible_prepare_section.dart';
 /// envelopper une carte dans un widget a elle la changerait en `Widget` et
 /// casserait cette signature, ce que le lot interdit. Les cartes restent donc
 /// litterales, groupees par moment de la preparation.
-class HubPrepareSection extends StatelessWidget {
+///
+/// LA COCHE DE CHAQUE CARTE (lot coche de preparation, 07/10). Chaque carte
+/// recoit son statut de [statutDePreparationProvider], calcule depuis ce qui
+/// est DEJA persiste. Neuf cartes portent une coche ; Transport,
+/// Ravitaillement et Resume n'en portent pas, parce que rien de ce que le
+/// randonneur y fait n'est enregistre — et qu'une coche qui ment est pire
+/// qu'aucune coche.
+class HubPrepareSection extends ConsumerWidget {
   const HubPrepareSection({
     required this.trailId,
     required this.initiallyExpanded,
@@ -31,7 +41,7 @@ class HubPrepareSection extends StatelessWidget {
   final bool initiallyExpanded;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return // --- Section Preparer (RF-6) — ACCORDÉON (D3, R8+R13) ---
     // Parité GR20 modèle A : Préparer reste TOUJOURS présente dans le
     // scroll, mais REPLIÉE une fois parti (phase hike) ou rentré (after)
@@ -41,57 +51,66 @@ class HubPrepareSection extends StatelessWidget {
     CollapsiblePrepareSection(
       initiallyExpanded: initiallyExpanded,
       cards: [
-        ..._cartesDuProjet(context),
-        ..._cartesDuCorps(context),
-        ..._cartesDuCouchage(context),
-        ..._cartesDeLaLogistique(context),
-        ..._packCards(context),
+        ..._cartesDuProjet(context, ref),
+        ..._cartesDuCorps(context, ref),
+        ..._cartesDuCouchage(context, ref),
+        ..._cartesDeLaLogistique(context, ref),
+        ..._packCards(context, ref),
       ],
     );
   }
 
+  /// La coche d'un sujet pour le sentier courant ; `null` = pas de coche.
+  PlanningStepStatus? _coche(WidgetRef ref, SujetDePreparation sujet) =>
+      ref.watch(statutDePreparationProvider((trailId: trailId, sujet: sujet)));
+
   /// Le projet de trek : ce qu'on decide d'abord — faisabilite, itineraire,
   /// programme, dates.
-  List<QuickAccessCard> _cartesDuProjet(BuildContext context) => [
-    QuickAccessCard(
-      rubrique: RubriqueStepways.faisabilite,
-      title: t.hub.cards.feasibility,
-      subtitle: t.hub.cards.feasibilitySub,
-      onTap: () => context.push('/trail/$trailId/feasibility'),
-    ),
-    QuickAccessCard(
-      rubrique: RubriqueStepways.itineraire,
-      title: t.hub.cards.itinerary,
-      subtitle: t.hub.cards.itinerarySub,
-      // PARITE GR20 (#99433) + fix crash retour : « Itineraire »
-      // ouvre desormais l'ecran deroule des etapes (route hors-shell
-      // via push) au lieu de context.go('/map') qui remplacait la
-      // pile (bascule d'onglet) et plantait au retour
-      // (currentConfiguration.isNotEmpty).
-      onTap: () => context.push('/trail/$trailId/itinerary'),
-    ),
-    QuickAccessCard(
-      rubrique: RubriqueStepways.programme,
-      title: t.hub.cards.programme,
-      subtitle: t.hub.cards.programmeSub,
-      onTap: () => context.push('/trail/$trailId/planning'),
-    ),
-    // PARITE GR20 (#99460) — CALENDRIER : outil de DATES (depart +
-    // arrivee calculee, calendrier visuel des jours de marche/repos
-    // du programme). Icone `calendar_month`, sous-titre « Choisir
-    // les dates » (parite GR20). Route hors-shell atteinte via
-    // `context.push` -> retour propre (jamais context.go qui viderait
-    // la pile).
-    QuickAccessCard(
-      rubrique: RubriqueStepways.calendrier,
-      title: t.hub.cards.calendar,
-      subtitle: t.hub.cards.calendarSub,
-      onTap: () => context.push('/trail/$trailId/calendar'),
-    ),
-  ];
+  List<QuickAccessCard> _cartesDuProjet(BuildContext context, WidgetRef ref) =>
+      [
+        QuickAccessCard(
+          rubrique: RubriqueStepways.faisabilite,
+          title: t.hub.cards.feasibility,
+          subtitle: t.hub.cards.feasibilitySub,
+          stepStatus: _coche(ref, SujetDePreparation.faisabilite),
+          onTap: () => context.push('/trail/$trailId/feasibility'),
+        ),
+        QuickAccessCard(
+          rubrique: RubriqueStepways.itineraire,
+          title: t.hub.cards.itinerary,
+          subtitle: t.hub.cards.itinerarySub,
+          stepStatus: _coche(ref, SujetDePreparation.itineraire),
+          // PARITE GR20 (#99433) + fix crash retour : « Itineraire »
+          // ouvre desormais l'ecran deroule des etapes (route hors-shell
+          // via push) au lieu de context.go('/map') qui remplacait la
+          // pile (bascule d'onglet) et plantait au retour
+          // (currentConfiguration.isNotEmpty).
+          onTap: () => context.push('/trail/$trailId/itinerary'),
+        ),
+        QuickAccessCard(
+          rubrique: RubriqueStepways.programme,
+          title: t.hub.cards.programme,
+          subtitle: t.hub.cards.programmeSub,
+          stepStatus: _coche(ref, SujetDePreparation.programme),
+          onTap: () => context.push('/trail/$trailId/planning'),
+        ),
+        // PARITE GR20 (#99460) — CALENDRIER : outil de DATES (depart +
+        // arrivee calculee, calendrier visuel des jours de marche/repos
+        // du programme). Icone `calendar_month`, sous-titre « Choisir
+        // les dates » (parite GR20). Route hors-shell atteinte via
+        // `context.push` -> retour propre (jamais context.go qui viderait
+        // la pile).
+        QuickAccessCard(
+          rubrique: RubriqueStepways.calendrier,
+          title: t.hub.cards.calendar,
+          subtitle: t.hub.cards.calendarSub,
+          stepStatus: _coche(ref, SujetDePreparation.calendrier),
+          onTap: () => context.push('/trail/$trailId/calendar'),
+        ),
+      ];
 
   /// Ce qui concerne le corps du randonneur : entrainement et fiche medicale.
-  List<QuickAccessCard> _cartesDuCorps(BuildContext context) => [
+  List<QuickAccessCard> _cartesDuCorps(BuildContext context, WidgetRef ref) => [
     // RETOUR CHRIS #6 (tache 553) — « preparation physique doit
     // aller en dessous de calendrier ». La carte « Preparation
     // physique » fermait la section : c'etait la DERNIERE des dix
@@ -103,6 +122,7 @@ class HubPrepareSection extends StatelessWidget {
       rubrique: RubriqueStepways.preparationPhysique,
       title: t.hub.cards.training,
       subtitle: t.hub.cards.trainingSub,
+      stepStatus: _coche(ref, SujetDePreparation.preparationPhysique),
       onTap: () => context.push('/training'),
     ),
     // FICHE MEDICALE — PORTE D'ENTREE CREEE (tache 568, LOT Q, Q4b).
@@ -130,12 +150,16 @@ class HubPrepareSection extends StatelessWidget {
       rubrique: RubriqueStepways.ficheMedicale,
       title: t.hub.cards.health,
       subtitle: t.hub.cards.healthSub,
+      stepStatus: _coche(ref, SujetDePreparation.ficheMedicale),
       onTap: () => context.push('/health'),
     ),
   ];
 
   /// Les cartes hors ligne et le couchage : ce qu'on emporte et ou on dort.
-  List<QuickAccessCard> _cartesDuCouchage(BuildContext context) => [
+  List<QuickAccessCard> _cartesDuCouchage(
+    BuildContext context,
+    WidgetRef ref,
+  ) => [
     // CARTES HORS LIGNE — UN SEUL GESTE, TOUT LE CIRCUIT (tache 640).
     //
     // CETTE CARTE MENAIT A UNE FACADE. Elle ouvrait le magasin de
@@ -155,7 +179,14 @@ class HubPrepareSection extends StatelessWidget {
       icon: StepwaysIcons.horsLigne,
       title: t.hub.cards.cartes,
       subtitle: t.hub.cards.cartesSub,
-      onTap: () => context.push('/trail/$trailId/cartes'),
+      stepStatus: _coche(ref, SujetDePreparation.cartesHorsLigne),
+      // La coche est relue au RETOUR : le disque ne previent personne.
+      onTap: () async {
+        await context.push('/trail/$trailId/cartes');
+        if (context.mounted) {
+          ref.invalidate(cartesSurLeTelephoneProvider(trailId));
+        }
+      },
     ),
     // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
     // nuits » (type de nuitee + reserve par nuit du programme).
@@ -165,12 +196,20 @@ class HubPrepareSection extends StatelessWidget {
       rubrique: RubriqueStepways.nuitees,
       title: t.hub.cards.nuitees,
       subtitle: t.hub.cards.nuiteesSub,
-      onTap: () => context.push('/trail/$trailId/nuitees'),
+      stepStatus: _coche(ref, SujetDePreparation.nuitees),
+      // La coche est relue au RETOUR : la table ne previent personne.
+      onTap: () async {
+        await context.push('/trail/$trailId/nuitees');
+        if (context.mounted) ref.invalidate(nuitsReserveesProvider(trailId));
+      },
     ),
   ];
 
   /// La logistique du sentier : transport, ravitaillement, synthese du plan.
-  List<QuickAccessCard> _cartesDeLaLogistique(BuildContext context) => [
+  List<QuickAccessCard> _cartesDeLaLogistique(
+    BuildContext context,
+    WidgetRef ref,
+  ) => [
     // PARITE GR20 (#99460) — TRANSPORT : carte « Aller & retour »
     // (clone GR20 `TransportScreen`, data-driven). Deux onglets
     // aller/retour, endpoints resolus depuis les donnees du sentier
@@ -182,6 +221,7 @@ class HubPrepareSection extends StatelessWidget {
       rubrique: RubriqueStepways.transport,
       title: t.hub.cards.transport,
       subtitle: t.hub.cards.transportSub,
+      stepStatus: _coche(ref, SujetDePreparation.transport),
       onTap: () => context.push('/trail/$trailId/transport'),
     ),
     // PARITE GR20 (#99460) — RAVITAILLEMENT : carte « Epiceries,
@@ -197,6 +237,7 @@ class HubPrepareSection extends StatelessWidget {
       rubrique: RubriqueStepways.ravitaillement,
       title: t.hub.cards.shop,
       subtitle: t.hub.cards.shopSub,
+      stepStatus: _coche(ref, SujetDePreparation.ravitaillement),
       onTap: () => context.push('/trail/$trailId/shop'),
     ),
     // PARITE GR20 (#99460) — RESUME : carte « Synthese du plan »
@@ -210,17 +251,23 @@ class HubPrepareSection extends StatelessWidget {
       icon: StepwaysIcons.programme,
       title: t.hub.cards.resume,
       subtitle: t.hub.cards.resumeSub,
+      stepStatus: _coche(ref, SujetDePreparation.resume),
       onTap: () => context.push('/trail/$trailId/summary'),
     ),
   ];
 
   /// Le sac a dos — et, en commentaire, les cartes qui n'y sont plus.
-  List<QuickAccessCard> _packCards(BuildContext context) => [
+  List<QuickAccessCard> _packCards(BuildContext context, WidgetRef ref) => [
     QuickAccessCard(
       rubrique: RubriqueStepways.sacADos,
       title: t.hub.cards.checklist,
       subtitle: t.hub.cards.checklistSub,
-      onTap: () => context.push('/trail/$trailId/checklist'),
+      stepStatus: _coche(ref, SujetDePreparation.materiel),
+      // La coche est relue au RETOUR : la table ne previent personne.
+      onTap: () async {
+        await context.push('/trail/$trailId/checklist');
+        if (context.mounted) ref.invalidate(lignesDuSacProvider(trailId));
+      },
     ),
     // « Preparation physique » n'est PLUS ICI (retour Chris #6,
     // tache 553) : elle etait la DERNIERE carte de la prepa, donc

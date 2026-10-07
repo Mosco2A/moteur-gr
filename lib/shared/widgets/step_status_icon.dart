@@ -1,5 +1,5 @@
 /// La coche « sujet traite » de la preparation, DERIVEE a la volee des faits
-/// deja connus : rien n'est encore persiste pour elle.
+/// deja persistes : elle n'a aucun stockage a elle.
 library;
 
 import 'package:flutter/material.dart';
@@ -10,10 +10,11 @@ import '../../core/branding/stepways_icons.dart';
 /// Statut de completion d'un sujet de preparation (coche « sujet traite »),
 /// clone du `PlanningStepStatus` de GR20 (home_screen.dart B-19c).
 ///
-/// StepWays n'a PAS (encore) de `planningProgressProvider` persiste (LOT-A
-/// differe) : le statut est DERIVE a la volee cote cockpit depuis les faits
-/// deja connus (progression / planification du sentier). L'enum reste identique
-/// a GR20 (3 etats) pour cloner le rendu a l'identique.
+/// StepWays n'a pas de `planningProgressProvider` persiste, et n'en a pas
+/// besoin : le statut est DERIVE a la volee cote cockpit
+/// (`statutDePreparationProvider`, feature `hub`) depuis ce que chaque ecran de
+/// preparation enregistre deja. L'enum reste identique a GR20 (3 etats) pour
+/// cloner le rendu a l'identique.
 enum PlanningStepStatus {
   /// Rien fait sur ce sujet.
   notStarted,

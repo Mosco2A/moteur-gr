@@ -20,7 +20,7 @@
 /// `notifications` devient l interface sur laquelle les autres reposent. La
 /// facade rend ce cout visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 13 FICHIERS DE 8 FEATURES AU 03/10/2026 : `checklist`,
+/// LUE PAR 14 FICHIERS DE 8 FEATURES AU 07/10/2026 : `checklist`,
 /// `feasibility`, `hub`, `map`, `planning`, `settings`, `training`, `weather`.
 library;
 
