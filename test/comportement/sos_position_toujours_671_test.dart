@@ -8,7 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/services/gps_cadence.dart';
 import 'package:moteur_gr/core/services/journal_de_mesure.dart';
-import 'package:moteur_gr/domain/age_de_position.dart';
 import 'package:moteur_gr/features/safety/presentation/sos_button.dart';
 import 'package:moteur_gr/features/safety/presentation/sos_confirmation_dialog.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
@@ -28,7 +27,8 @@ import 'package:moteur_gr/shared/widgets/app_button.dart';
 /// robinet ([PositionController], `currentPosition` et `positionStream`), qui
 /// rend, tarde ou refuse a la demande et compte ce qu'on lui demande ; une
 /// fausse horloge pour l'age ; un journal dans un dossier temporaire ; un
-/// faux trek en cours. Aucun capteur, aucun temps reel.
+/// faux trek en cours. Aucun capteur, aucun temps reel. L'age aux bornes,
+/// fonction pure, est teste a cote d'elle (`test/domain/age_de_position_test.dart`).
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -46,39 +46,6 @@ void main() {
     speed: 1,
     speedAccuracy: 0,
   );
-
-  group('(4) L AGE, AUX BORNES, SUR UNE HORLOGE INJECTEE — une fonction pure, '
-      'appelee sans monter de widget', () {
-    AgeEnClair? age(int secondes) => ageEnClair(
-      mesureeA: t0,
-      maintenant: t0.add(Duration(seconds: secondes)),
-    );
-
-    test('0 s et 59 s : a l instant', () {
-      expect(age(0), isNull);
-      expect(age(59), isNull);
-    });
-
-    test('60 s, 61 s et 119 s : une minute', () {
-      for (final s in [60, 61, 119]) {
-        expect(age(s), (heures: 0, minutes: 1), reason: '$s s');
-      }
-    });
-
-    test('179 s : DEUX minutes, JAMAIS trois — l arrondi est vers le bas', () {
-      expect(age(179), (heures: 0, minutes: 2));
-    });
-
-    test('3 600 s : une heure ; 3 725 s : une heure et deux minutes', () {
-      expect(age(3600), (heures: 1, minutes: 0));
-      expect(age(3725), (heures: 1, minutes: 2));
-    });
-
-    test('une heure de mesure dans le futur (horloge d un autre appareil) : '
-        'a l instant, jamais un age negatif', () {
-      expect(age(-30), isNull);
-    });
-  });
 
   /// Le banc du bouton : un trek en cours, un robinet sur un faux
   /// fournisseur, une fausse horloge, un journal temporaire.

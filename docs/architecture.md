@@ -109,8 +109,8 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Fichiers de présentation qui importent un paquet de données | 0 <!-- audit:couches.nombre_presentation_donnees --> | **oui** (ECR-25) |
 | Fichiers de feature hors d'une couche reconnue | 23 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
 
-Les 158 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
-fusionné de l'intégration 671). Le 05/10, le lot produit P1 (#101255) en a
+Les 160 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
+fusionné de l'intégration 671, puis par le lot 671-04). Le 05/10, le lot produit P1 (#101255) en a
 ajouté 7 en branchant `weather` et `hub` sur le réglage d'unité
 de température, par `settings_facade.dart` ; le 06/10, le lot 671-00 en a
 ajouté 3 en branchant la carte (`location_provider`, `off_track_provider`) et
@@ -119,7 +119,13 @@ le suivi (`tracking_provider`) sur le robinet unique GPS de `trek`, par
 ajouté 7, tous depuis le seul `hub/providers/prepare_progress_providers.dart` :
 la coche de chaque carte de « Préparer » se lit dans la feature qui détient le
 fait (`booking`, `checklist`, `feasibility`, `notifications`, `planning`,
-`safety`, `training`), par sa façade. Le chiffre qui compte — les croisements
+`safety`, `training`), par sa façade. Le 07/10 encore, le lot 671-04 (les
+réveils fins) en a ajouté 2 : `map/providers/charnieres_provider.dart` lit
+`WaypointType` (les repères de type `jonction`) par la façade
+`community_facade.dart`, ouverte pour ce seul nom — la vingt-troisième, d'où un
+fichier de plus « hors d'une couche reconnue », comme les vingt-deux autres
+façades — et `safety/presentation/sos_confirmation_dialog.dart` lit
+`PositionConnue` par `trek_facade.dart`. Le chiffre qui compte — les croisements
 vers l'INTÉRIEUR d'une voisine — reste à zéro.
 
 Parmi les croisements vers l'intérieur d'une voisine,
@@ -133,7 +139,7 @@ encore `core`, `shared` et `domain` dans le même sac « socle ». La mesure est
 celle de la garde `test/structurel/couches_respectees_645_test.dart`, dont le
 plafond `plafondSocleVersMetier` est à zéro et passe.
 
-Le verdict de l'audit compte **230** dépendances interdites (ECR-23) au 07/10,
+Le verdict de l'audit compte **232** dépendances interdites (ECR-23) au 07/10,
 soit la somme des deux totaux ci-dessus : il compte encore le routeur et les
 façades, que les décisions ARB-645-05-a et ARB-645-05-b autorisent. Les gardes
 de `test/structurel/couches_respectees_645_test.dart` ne comptent que les

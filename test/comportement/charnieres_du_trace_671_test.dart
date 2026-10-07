@@ -1,22 +1,13 @@
 import 'dart:async';
 
-import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:moteur_gr/core/config/test_trail_config.dart';
-import 'package:moteur_gr/core/data/database.dart';
-import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/charnieres_du_trace.dart';
 import 'package:moteur_gr/core/geo/geo_utils.dart';
 import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/geo/track_projection.dart';
-import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/gps_cadence.dart';
 import 'package:moteur_gr/core/services/journal_de_mesure.dart';
-import 'package:moteur_gr/features/community/community_facade.dart';
-import 'package:moteur_gr/features/map/map_facade.dart' show gpxTrackProvider;
-import 'package:moteur_gr/features/map/providers/charnieres_provider.dart';
 import 'package:moteur_gr/features/trek/data/gps_cadence_engine.dart';
 import 'package:moteur_gr/features/trek/data/trace_de_fond.dart';
 
@@ -28,8 +19,9 @@ import 'traces_fabriquees_671.dart';
 /// Fiche E7 (2) et (6) : la fenetre se mesure EN ABSCISSE, les fenetres d'un
 /// lacet fusionnent, le tir periodique ne double pas le tir de fenetre, la
 /// fenetre passe a l'isolate de fond par le canal du trace, et l'entree ecrit
-/// UNE ligne `charniere` au journal. Fiche E2 (5) : les jonctions declarees
-/// enrichissent, projetees chacune sur tout le trace.
+/// UNE ligne `charniere` au journal. L'enrichissement par les jonctions
+/// (fiche E2 (5)) est teste a cote de son fournisseur
+/// (`test/features/map/providers/charnieres_provider_test.dart`).
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -169,103 +161,6 @@ void main() {
       expect(relues.last.abscisseM, 120);
       expect(relues.map((x) => x.enrichie), [false, true]);
       expect(relues.first.virageDegres, closeTo(-90, 0.5));
-    });
-  });
-
-  group('l enrichissement par les reperes de type jonction', () {
-    // 300 segments de 10 m vers l'est, puis 300 vers le nord.
-    final trace = traceDesSommets([(0, 0), (3000, 0), (3000, 3000)]);
-
-    test('un repere LOIN du dernier projete est trouve : chaque jonction est '
-        'projetee seule, sur tout le trace', () {
-      final pres = versDegres(200, 5);
-      final loin = versDegres(3005, 2500);
-      final c = projeterLesJonctions(trace, [pres, loin]);
-      // Les metres du plan local et ceux de Haversine different de 0,1 %.
-      expect(c.first.abscisseM, closeTo(200, 1));
-      expect(c.last.abscisseM, closeTo(5500, 10));
-      // Le piege mesure : en passant l'index du precedent, la fenetre de 50
-      // segments de project ne va pas jusqu'au second repere.
-      final premier = TrackProjector.project(
-        userLat: pres.lat,
-        userLng: pres.lng,
-        trackPoints: trace,
-      );
-      final glisse = TrackProjector.project(
-        userLat: loin.lat,
-        userLng: loin.lng,
-        trackPoints: trace,
-        lastKnownIndex: premier.trackIndexPosition,
-      );
-      expect(glisse.distanceFromStartM, lessThan(1000));
-    });
-
-    test('une jonction a plus de 80 m du trace est IGNOREE', () {
-      final c = projeterLesJonctions(trace, [
-        versDegres(1000, 79),
-        versDegres(1000, 81),
-      ]);
-      expect(c, hasLength(1));
-      expect(c.single.enrichie, isTrue);
-    });
-
-    test(
-      'le fournisseur lit la base : une jonction du sentier s ajoute aux '
-      'charnieres calculees ; un autre type de repere ne compte pas',
-      () async {
-        final db = AppDatabase(NativeDatabase.memory());
-        addTearDown(db.close);
-        final id = testTrailConfig.id;
-        final j = versDegres(1500, 3);
-        final eau = versDegres(2000, 3);
-        for (final (cle, type, p) in [
-          ('j1', WaypointType.jonction, j),
-          ('e1', WaypointType.eau, eau),
-        ]) {
-          await db.waypointsDao.upsertWaypoints([
-            WaypointCompanion.insert(
-              id: cle,
-              trailId: id,
-              type: type,
-              latitude: p.lat,
-              longitude: p.lng,
-              titre: cle,
-              lastUpdatedAt: DateTime.utc(2026, 10, 7),
-            ),
-          ]);
-        }
-        final container = ProviderContainer(
-          overrides: [
-            trailConfigProvider.overrideWithValue(testTrailConfig),
-            databaseProvider.overrideWithValue(db),
-            gpxTrackProvider(id).overrideWith((ref) async => trace),
-          ],
-        );
-        addTearDown(container.dispose);
-        final c = await container.read(charnieresDuSentierProvider(id).future);
-        // Les metres du plan local et ceux de Haversine different de 0,1 %.
-        expect(c.map((x) => x.enrichie), [true, false]);
-        expect(c.first.abscisseM, closeTo(1500, 3));
-        expect(c.last.abscisseM, closeTo(3000, 5));
-      },
-    );
-
-    test('ZERO jonction declaree, le cas d aujourd hui : les charnieres '
-        'calculees, rien d autre', () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      final id = testTrailConfig.id;
-      final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(testTrailConfig),
-          databaseProvider.overrideWithValue(db),
-          gpxTrackProvider(id).overrideWith((ref) async => trace),
-        ],
-      );
-      addTearDown(container.dispose);
-      final c = await container.read(charnieresDuSentierProvider(id).future);
-      expect(c.where((x) => x.enrichie), isEmpty);
-      expect(c, hasLength(1));
     });
   });
 
