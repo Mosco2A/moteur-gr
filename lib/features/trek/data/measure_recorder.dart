@@ -23,6 +23,13 @@
 /// l'ecart au dernier estime, en metres le long du trace — LA MESURE GRATUITE
 /// DE LA DERIVE, posee par le lot 671-01 et restee un tiret jusqu'ici. Aucun
 /// mot d'evenement nouveau, aucun champ nouveau.
+///
+/// DEPUIS LE LOT 671-04, IL SUIT LES FENETRES DE CHARNIERE : apres chaque
+/// releve et chaque paquet de pas, l'estime dit si l'on vient d'entrer dans
+/// une fenetre ; l'entree ecrit UNE ligne `charniere` (le mot reserve par le
+/// lot 671-01, jamais ecrit jusqu'ici). Les tirs de la fenetre sont des
+/// releves comme les autres : ils font monter `acquisitions` et remettent
+/// l'estime a zero.
 library;
 
 import 'dart:async';
@@ -146,6 +153,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     // L'ecart se mesure AVANT de relire la longueur de pas : c'est l'erreur
     // de l'estime tel qu'il a ete fait.
     final drift = await _estimate?.onFix(position, steps, _profile);
+    final entered = _estimate?.followWindow(_profile);
     await _refreshStride();
     final battery = await _readBatterySafely();
     await _event(
@@ -155,6 +163,7 @@ class MeasureRecorder implements BackgroundCadenceObserver {
       driftMeters: drift,
       timeToFix: timeToFix,
     );
+    if (entered != null) await _recordHinge(entered, battery);
     await _batteryStep(battery);
   }
 
@@ -230,6 +239,12 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     _steps.add(raw);
     final kept = _estimate?.onSteps(steps, _strideMeters, _profile);
     if (kept != null) unawaited(_recordEstimate(kept));
+    final entered = _estimate?.followWindow(_profile);
+    if (entered != null) {
+      unawaited(
+        _readBatterySafely().then((battery) => _recordHinge(entered, battery)),
+      );
+    }
     final saved = _stepsSavedAt;
     if (saved == null || _now().difference(saved) >= kStepsSavePeriod) {
       unawaited(_saveSteps());
@@ -252,6 +267,14 @@ class MeasureRecorder implements BackgroundCadenceObserver {
     );
     await _onEstimateKept?.call(estimate);
   }
+
+  /// L'ENTREE DANS UNE FENETRE DE CHARNIERE (lot 671-04) : UNE ligne
+  /// `charniere`, a la position d'entree sur le trace ; chaque tir de la
+  /// fenetre reste ensuite une ligne `releve` ordinaire. Ni mot, ni champ
+  /// nouveau : la position va au champ 6, les autres champs propres a un
+  /// releve (precision, ecart, temps du premier point) valent un tiret.
+  Future<void> _recordHinge(TrackAbscissa entry, int? battery) =>
+      _event(MeasureEvent.charniere, battery: battery, estimate: entry);
 
   Future<void> _refreshStride() async {
     final stride = await _podometer?.readStride();

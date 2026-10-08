@@ -35,6 +35,12 @@
 /// LOT 671-03, LE RECALAGE SUR LE TRACE : `map` lit `BgTrackPoint` et
 /// `estimatedTrackPointsProvider`, les points estimes que l'isolate de fond
 /// fait avancer le long du trace, pour en tenir la position courante.
+///
+/// LOT 671-04, LES REVEILS FINS : `safety` lit `positionsConnuesProvider` et
+/// `PositionConnue` — la derniere position connue (releve ou estime) sans
+/// aucun flux chaud, et le tir unique qui la remplace — pour le bouton SOS,
+/// qui ne garde plus `positionStreamProvider` en ecoute (l'ecran d'urgence,
+/// ouvert volontairement, garde le sien).
 library;
 
 export 'data/background_gps_service.dart'
@@ -45,6 +51,8 @@ export 'data/gps_service.dart'
         GpsService,
         gpsServiceProvider,
         positionControllerProvider;
+export 'data/position_connue.dart'
+    show PositionConnue, positionsConnuesProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
 export 'domain/longueur_de_pas.dart' show StrideCalibration;
 export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;

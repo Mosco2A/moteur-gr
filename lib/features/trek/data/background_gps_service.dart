@@ -350,6 +350,13 @@ class BackgroundGpsService {
   /// Stream public des points captes par l'isolate de fond.
   Stream<BgTrackPoint> get trackPointStream => _trackPointController.stream;
 
+  BgTrackPoint? _lastPoint;
+
+  /// LE DERNIER POINT RECU DE L'ISOLATE DE FOND (lot 671-04), releve ou
+  /// estime, nul avant le premier du suivi en cours. Une memoire tenue par
+  /// l'ecoute qui existe deja pendant le suivi : la lire n'ouvre rien.
+  BgTrackPoint? get lastPoint => _lastPoint;
+
   String? _sessionId;
   String? get sessionId => _sessionId;
 
@@ -471,6 +478,8 @@ class BackgroundGpsService {
     String stageInfo = '',
   }) async {
     if (_running) return;
+    // Un nouveau suivi ne montre pas le dernier point du precedent.
+    _lastPoint = null;
 
     // GARDE TEST (cycle 3) : sous `flutter_test`, NE PAS lancer l'isolate de
     // fond (ses Timer.periodic gardent le moteur vivant -> timeout du run,
@@ -579,6 +588,7 @@ class BackgroundGpsService {
         source: TrackPointSource.fromStored(event['source'] as String?),
         trackDistanceM: (event['trackDistanceM'] as num?)?.toDouble(),
       );
+      _lastPoint = point;
       if (!_trackPointController.isClosed) _trackPointController.add(point);
       // Un point ESTIME n'est pas un releve : il ne touche ni au compteur de
       // positions ni a l'heure du dernier fix du diagnostic.
@@ -1071,6 +1081,12 @@ Future<void> _onServiceStart(ServiceInstance service) async {
         trailId: () => trailId,
         keepDistanceMeters: () => distanceFilter,
         requestFix: () => cadence.engine.rearm(),
+        // LA FENETRE DE CHARNIERE (lot 671-04) : une surcharge temporaire de
+        // la periode des tirs, par le meme moteur, sans flux ni minuteur a
+        // elle.
+        onWindow: (period) => period == null
+            ? cadence.engine.relax()
+            : cadence.engine.accelerate(period),
       ),
       onEstimateKept: handleEstimate,
     ),

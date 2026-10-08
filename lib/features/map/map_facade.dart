@@ -29,10 +29,15 @@
 /// verite pour une seule question. Et `trek` lit `currentPositionProvider`,
 /// la position courante (releve, ou point estime entre deux releves), pour le
 /// marqueur de la carte, son bouton « centrer sur moi » et l'altitude.
+///
+/// LOT 671-04, LES REVEILS FINS : `trek` lit `charnieresDuSentierProvider`,
+/// les charnieres du sentier calculees une fois avec le trace, pour les
+/// passer a l'isolate de fond avec le trace reduit.
 library;
 
 export 'domain/off_track_detector.dart' show OffTrackDetector;
 export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
+export 'providers/charnieres_provider.dart' show charnieresDuSentierProvider;
 export 'providers/current_position_provider.dart' show currentPositionProvider;
 export 'providers/gpx_track_provider.dart' show gpxTrackProvider;
 export 'providers/location_provider.dart' show locationProvider;

@@ -12,6 +12,11 @@
 ///
 /// NI VERROU DE REVEIL, NI ALARME EXACTE : un simple minuteur Dart. Si le
 /// systeme retarde un tir, l'heure reelle du tir le dira ; c'est une mesure.
+///
+/// LA FENETRE DE CHARNIERE (lot 671-04) EST UNE SURCHARGE TEMPORAIRE DE LA
+/// PERIODE, PAS UNE CADENCE : [accelerate] remplace la periode du profil par
+/// celle de la fenetre, [relax] la rend. Le profil, sa precision et son delai
+/// ne changent pas ; aucune valeur de [GpsCadence] n'est touchee.
 library;
 
 import 'dart:async';
@@ -85,6 +90,9 @@ class GpsCadenceEngine {
   int _shotToken = 0;
   bool _shotInFlight = false;
 
+  /// La periode d'une fenetre de charniere en cours, nulle hors fenetre.
+  Duration? _windowPeriod;
+
   /// La cadence servie, nulle a l'arret.
   GpsCadence? get cadence => _cadence;
 
@@ -97,10 +105,15 @@ class GpsCadenceEngine {
   /// Heure du dernier tir lance.
   DateTime? get lastShotAt => _lastShotAt;
 
+  /// La periode qui remplace celle du profil le temps d'une fenetre de
+  /// charniere (lot 671-04), nulle hors fenetre.
+  Duration? get windowPeriod => _windowPeriod;
+
   /// Demarre la captation au rythme de [cadence].
   void start(GpsCadence cadence) {
     _halt();
     _cadence = cadence;
+    if (!cadence.isSingleShot) _windowPeriod = null;
     if (cadence.isSingleShot) {
       _shoot();
     } else {
@@ -119,6 +132,53 @@ class GpsCadenceEngine {
   void stop() {
     _halt();
     _cadence = null;
+    _windowPeriod = null;
+  }
+
+  /// ENTREE DANS UNE FENETRE DE CHARNIERE (lot 671-04) : les tirs suivent
+  /// [period] au lieu de la periode du profil, jusqu'a [relax].
+  ///
+  /// UN TIR IMMEDIAT, SAUF S'IL VIENT D'AVOIR LIEU. Si le dernier tir date de
+  /// moins de [period] (c'est le releve qui a fait voir l'entree, ou un tir
+  /// encore en vol), il tient lieu de tir d'entree : le suivant part [period]
+  /// apres lui. Sinon, on tire tout de suite. LE MINUTEUR PERIODIQUE NE TIRE
+  /// PAS EN PLUS : il est REMPLACE, c'est le meme minuteur, on ne compte pas
+  /// deux fois. Sans effet en flux continu (le flux suit deja tout), et
+  /// idempotent : une seconde entree a la meme periode ne retire pas.
+  void accelerate(Duration period) {
+    final cadence = _cadence;
+    if (cadence == null || !cadence.isSingleShot) return;
+    if (_windowPeriod == period) return;
+    _windowPeriod = period;
+    _rescheduleFrom(period);
+  }
+
+  /// SORTIE DE LA FENETRE : la periode du profil revient, comptee depuis le
+  /// dernier tir, et non depuis la sortie.
+  void relax() {
+    if (_windowPeriod == null) return;
+    _windowPeriod = null;
+    final cadence = _cadence;
+    if (cadence == null || !cadence.isSingleShot) return;
+    _rescheduleFrom(cadence.period!);
+  }
+
+  /// Rearme le prochain tir [period] apres le dernier ; tout de suite si ce
+  /// moment est passe et qu'aucun tir n'est en vol.
+  void _rescheduleFrom(Duration period) {
+    _nextShot?.cancel();
+    final last = _lastShotAt;
+    final remaining = last == null
+        ? Duration.zero
+        : period - _now().difference(last);
+    if (remaining > Duration.zero || _shotInFlight) {
+      _nextShot = _schedule(
+        remaining > Duration.zero ? remaining : period,
+        _shoot,
+      );
+    } else {
+      _shoot();
+    }
   }
 
   /// Rouvre le flux apres [delay] (une erreur de source l'a rendu muet).
@@ -178,8 +238,9 @@ class GpsCadenceEngine {
     _lastShotAt = startedAt;
     _shotInFlight = true;
     _onSourceStarted?.call();
-    // Le tir suivant part une periode apres CE tir, qu'il reussisse ou non.
-    _nextShot = _schedule(cadence.period!, _shoot);
+    // Le tir suivant part une periode apres CE tir, qu'il reussisse ou non :
+    // celle de la fenetre de charniere s'il y en a une, celle du profil sinon.
+    _nextShot = _schedule(_windowPeriod ?? cadence.period!, _shoot);
     _shotDeadline = _schedule(cadence.maxDelay!, () {
       if (!_settle(token)) return;
       _onShotMissed?.call(cadence.maxDelay!);

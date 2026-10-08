@@ -14,12 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/engine/trail_engine.dart';
+import '../../../../core/error/error_handler.dart';
+import '../../../../core/geo/charnieres_du_trace.dart';
 import '../../../../core/geo/trace_point.dart';
 import '../../../../core/geo/track_projection.dart';
 import '../../../../core/services/gps_cadence.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../map/map_facade.dart'
-    show gpxTrackProvider, trackPositionProvider;
+    show charnieresDuSentierProvider, gpxTrackProvider, trackPositionProvider;
 import '../../data/gps_service.dart';
 import '../../data/repli_gps_continu.dart';
 import '../../data/trace_de_fond.dart';
@@ -144,7 +146,18 @@ class _ActiveRecalibrationState extends ConsumerState<_ActiveRecalibration> {
       trailId: config.id,
       points: points,
       direction: direction,
-    ));
+    ), charnieres: await _hinges(config.id));
+  }
+
+  /// Les charnieres du sentier (lot 671-04), calculees une fois avec le
+  /// trace ; sans elles, pas de fenetre, et la cadence du profil reste seule.
+  Future<List<Charniere>> _hinges(String trailId) async {
+    try {
+      return await ref.read(charnieresDuSentierProvider(trailId).future);
+    } on Object catch (e, st) {
+      ErrorHandler.log(e, stackTrace: st, context: 'recalage.charnieres');
+      return const [];
+    }
   }
 
   /// UNE phrase de randonneur, la ou le lot 671-02 dit deja la sienne (la

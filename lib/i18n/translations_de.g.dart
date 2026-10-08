@@ -1869,6 +1869,12 @@ class _Translations$sos$de extends Translations$sos$fr {
 	@override String get positionTitle => 'Ihre aktuelle Position';
 	@override String get positionUnavailable => 'GPS-Position nicht verfügbar';
 	@override String get gpsAcquiring => 'GPS wird ermittelt…';
+	@override String get ageNow => 'Position gerade eben';
+	@override String ageMinutes({required Object minutes}) => 'Position vor ${minutes} Min.';
+	@override String ageHours({required Object hours, required Object minutes}) => 'Position vor ${hours} Std. ${minutes}';
+	@override String get estimated => 'Auf dem Weg anhand Ihrer Schritte geschätzt';
+	@override String freshFailed({required Object seconds}) => 'Keine neuere Position innerhalb von ${seconds} s: die letzte bekannte wird weiter angezeigt.';
+	@override String get unavailableHelp => 'Rufen Sie trotzdem die 112 an: Nennen Sie den zuletzt passierten Ort (Hütte, Pass, Markierung) und bleiben Sie, wenn möglich, wo Sie sind.';
 	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Höhe ${alt} m';
 	@override String get noContacts => 'Kein Kontakt konfiguriert';
 	@override String callContact({required Object name}) => '${name} anrufen';
@@ -6157,6 +6163,12 @@ extension on TranslationsDe {
 			'sos.positionTitle' => 'Ihre aktuelle Position',
 			'sos.positionUnavailable' => 'GPS-Position nicht verfügbar',
 			'sos.gpsAcquiring' => 'GPS wird ermittelt…',
+			'sos.ageNow' => 'Position gerade eben',
+			'sos.ageMinutes' => ({required Object minutes}) => 'Position vor ${minutes} Min.',
+			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Position vor ${hours} Std. ${minutes}',
+			'sos.estimated' => 'Auf dem Weg anhand Ihrer Schritte geschätzt',
+			'sos.freshFailed' => ({required Object seconds}) => 'Keine neuere Position innerhalb von ${seconds} s: die letzte bekannte wird weiter angezeigt.',
+			'sos.unavailableHelp' => 'Rufen Sie trotzdem die 112 an: Nennen Sie den zuletzt passierten Ort (Hütte, Pass, Markierung) und bleiben Sie, wenn möglich, wo Sie sind.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Höhe ${alt} m',
 			'sos.noContacts' => 'Kein Kontakt konfiguriert',
 			'sos.callContact' => ({required Object name}) => '${name} anrufen',
