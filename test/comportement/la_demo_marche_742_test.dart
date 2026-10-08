@@ -8,13 +8,13 @@
 /// « -- », rien ne bougeait apres dix minutes de randonnee lancee, aucun point
 /// n'apparaissait sur la carte, le journal du jour restait vide. Le GPS de fond
 /// n'est pas arme en demo et la session ne s'ecrit nulle part — c'etait VOULU
-/// (tache 638, bug 16) et ca l'est toujours. Ce qui manquait, c'etait la SOURCE.
+/// (tache 638, bug 16) et ca l'est toujours. Ce qui manquait : la SOURCE.
 ///
 /// CE QUE CES GARDES TIENNENT, ET DANS L'ORDRE DE LA FICHE :
 ///   1. UN SEUL MOTEUR — les chiffres de la simulation sont mesures par
 ///      [computeTrackStatsOnTrace], celui du lot 671-06, et par personne
 ///      d'autre. Le marcheur ne cumule rien.
-///   2. AUCUN GPS, AUCUNE AUTORISATION — prouve sur la source et sur le robinet.
+///   2. AUCUN GPS, AUCUNE AUTORISATION — prouve sur la source et le robinet.
 ///   3. AUCUNE ECRITURE — la base reste vide apres une simulation entiere.
 ///   4. LA BARRE ET LE JOURNAL MESURENT LA SIMULATION, sans un releve en base.
 ///   5. LA TRACE EST CELLE DU SENTIER — le marcheur ne quitte jamais le trace.
@@ -86,9 +86,9 @@ final DateTime _depart = DateTime.utc(2026, 10, 9, 8);
 
 /// UNE MINUTERIE QUE LE TEST FAIT AVANCER LUI-MEME.
 ///
-/// Aucun test de ce fichier n'attend une vraie demi-seconde : le marcheur recoit
-/// cette fabrique et le test appelle [avancer]. Un test qui dort est un test qui
-/// devient intermittent.
+/// Aucun test de ce fichier n'attend une vraie demi-seconde : le marcheur
+/// recoit cette fabrique et le test appelle [avancer]. Un test qui dort est
+/// un test qui devient intermittent.
 class _MinuterieFausse implements Timer {
   _MinuterieFausse(this._action);
 
@@ -370,8 +370,9 @@ void main() {
           source.contains(interdit),
           isFalse,
           reason:
-              'LE MARCHEUR FABRIQUE DES RELEVES, IL NE MESURE RIEN. « $interdit » '
-              'dans ce fichier, c est un SECOND moteur de calcul qui commence — '
+              'LE MARCHEUR FABRIQUE DES RELEVES, IL NE MESURE RIEN. '
+              '« $interdit » dans ce fichier, c est un SECOND moteur qui '
+              'commence — '
               'et deux moteurs donnent deux deniveles pour la meme journee '
               '(c est tout le sujet du lot 671-06).',
         );
@@ -400,7 +401,8 @@ void main() {
           isFalse,
           reason:
               'C EST LA RAISON D ETRE DU MODE DEMO : on ne demande pas sa '
-              'position a quelqu un qui ne bouge pas. « $interdit » ici, et une '
+              'position a quelqu un qui ne bouge pas. « $interdit » ici, et '
+              'une '
               'demonstration ferait surgir un ecran systeme.',
         );
       }
@@ -460,7 +462,8 @@ void main() {
           isFalse,
           reason:
               '« rien en base » est une decision de Christophe (tache 634). '
-              '« $interdit » dans le marcheur, et la demo laisserait une trace.',
+              '« $interdit » dans le marcheur, et la demo laisserait une '
+              'trace.',
         );
       }
     });
@@ -514,12 +517,13 @@ void main() {
             .parSession('sim-1', read: TrackPointsRead.gpsOnly),
         isEmpty,
         reason:
-            'Hors demo la lecture passe au DAO, mot pour mot — et la base de ce '
+            'Hors demo la lecture passe au DAO, mot pour mot — et la base '
+            'de ce '
             'test est vide.',
       );
     });
 
-    test('liveTrekStatsProvider rend des chiffres MESURABLES en demo', () async {
+    test('liveTrekStats rend des chiffres MESURABLES en demo', () async {
       final m = _marcheDe(60);
       final container = conteneur(
         marcheur: m.marcheur,
