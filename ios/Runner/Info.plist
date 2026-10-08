@@ -70,6 +70,58 @@
 	<string>StepWays compte vos pas pendant la randonnée, pour mesurer votre longueur de pas et la consommation de la batterie. Le compte reste sur votre téléphone.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>StepWays lit (lecture seule) vos pas, frequence cardiaque, distance et calories depuis l app Sante pour afficher vos statistiques de randonnee. Ces donnees restent sur votre telephone.</string>
+	<!-- TACHE 740 — LA CLE D ECRITURE SANTE, EXIGEE SANS QUE RIEN NE S ECRIVE.
+	     LE REJET, MESURE : Apple a refuse la livraison 0.1.7 build 9 (App Apple
+	     ID 6817011266) avec ITMS-90683 « Missing purpose string in Info.plist » —
+	     le Info.plist de Runner.app doit porter NSHealthUpdateUsageDescription.
+	     LA CAUSE, MESUREE AUSSI : `health` 13.3.1 appelle
+	     `healthStore.requestAuthorization(toShare: typesToWrite, read: typesToRead)`
+	     dans ios/Classes/HealthDataOperations.swift ligne 180, SANS condition de
+	     compilation. La reference a l API d ECRITURE de HealthKit est donc dans
+	     le binaire, et le controle d Apple la lit — que l application s en serve
+	     ou non.
+	     L APPLICATION, ELLE, N ECRIT RIEN. lib/core/services/
+	     health_reader_service.dart est le SEUL appelant de `health` et ne
+	     declare que `readTypes` : pas, frequence cardiaque, distance, calories.
+	     Aucun appel d ecriture nulle part dans lib/.
+	     AUCUN ENTITLEMENT HEALTHKIT N EST AJOUTE, et il n en faut pas : lire et
+	     ecrire passent tous deux par la meme autorisation d usage, pas par un
+	     droit signe. ios/Runner/Runner.entitlements reste donc sans HealthKit.
+	     LA PHRASE DIT CELA ET RIEN DE PLUS : elle ne promet aucune fonction qui
+	     n existe pas. Le jour ou l application ecrira vraiment dans Sante, c est
+	     cette phrase qu il faudra reecrire AVANT le code. -->
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>StepWays ne modifie rien dans l&#8217;app Santé. Cette mention est exigée parce que la bibliothèque qui lit vos pas déclare aussi les fonctions d&#8217;écriture de Santé.</string>
+	<!-- TACHE 740 — LES DEUX CLES QUE LE BINAIRE RECLAME ALORS QUE
+	     L APPLICATION N APPELLE JAMAIS L API. Apple ne les a PAS reprochees au
+	     build 9 : elles sont posees apres l audit greffon par greffon du meme
+	     lot, parce que la reference a l API EST dans le binaire et que c est
+	     cela, et non l usage, que le controle ITMS-90683 regarde. Les poser
+	     coute une chaine de caracteres ; ne pas les poser coute une livraison.
+
+	     NSAppleMusicUsageDescription — `file_picker` 8.3.7 importe
+	     MediaPlayer/MediaPlayer.h dans son EN-TETE PUBLIC
+	     (ios/file_picker/Sources/file_picker/include/file_picker/
+	     FilePickerPlugin.h ligne 3) et instancie un MPMediaPickerController
+	     (FilePickerPlugin.m ligne 369), sans condition de compilation. Le seul
+	     appel du depot est `FileType.custom` pour une trace .gpx
+	     (lib/features/after/presentation/gpx_import_screen.dart ligne 517) :
+	     le selecteur de morceaux n est JAMAIS ouvert.
+
+	     NSFaceIDUsageDescription — `flutter_secure_storage_darwin` 0.3.2 importe
+	     LocalAuthentication et construit un LAContext
+	     (FlutterSecureStorageDarwinPlugin.swift ligne 197). Ce chemin ne
+	     s execute que si l appelant demande `useSecureEnclave` ou un
+	     `accessControlFlags` biometrique : le depot ne passe NI l un NI l autre
+	     (aucune occurrence dans lib/). Face ID n est donc jamais demande.
+
+	     LES DEUX PHRASES DISENT EXACTEMENT CELA. Elles ne seront affichees que
+	     si l application se met un jour a appeler l API — et ce jour-la, c est
+	     la phrase qu il faut reecrire d abord. -->
+	<key>NSAppleMusicUsageDescription</key>
+	<string>StepWays n&#8217;accède pas à votre musique. Cette mention est exigée parce que le sélecteur de fichiers, utilisé pour importer une trace GPX, déclare aussi le choix de morceaux.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>StepWays ne demande ni Face ID ni Touch ID. Cette mention est exigée parce que le coffre qui garde vos secrets sait protéger une clé par la biométrie.</string>
 	<!-- ================= ADMOB / iOS (tache 595, B3) =================
 	     LE DEFAUT REPARE : ce fichier ne portait AUCUN identifiant publicitaire,
 	     alors que le SDK Google Mobile Ads EXIGE GADApplicationIdentifier et

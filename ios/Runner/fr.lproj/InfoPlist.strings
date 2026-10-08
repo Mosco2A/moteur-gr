@@ -9,4 +9,10 @@
 "NSMotionUsageDescription" = "StepWays compte vos pas pendant la randonnée, pour mesurer votre longueur de pas et la consommation de la batterie. Le compte reste sur votre téléphone.";
 "NSBluetoothAlwaysUsageDescription" = "StepWays utilise le Bluetooth pour se connecter à votre ceinture cardiaque et afficher votre fréquence cardiaque pendant la randonnée. Cette donnée reste sur votre téléphone.";
 "NSHealthShareUsageDescription" = "StepWays lit (lecture seule) vos pas, votre fréquence cardiaque, votre distance et vos calories depuis l’app Santé pour afficher vos statistiques de randonnée. Ces données restent sur votre téléphone.";
+"NSHealthUpdateUsageDescription" = "StepWays ne modifie rien dans l’app Santé. Cette mention est exigée parce que la bibliothèque qui lit vos pas déclare aussi les fonctions d’écriture de Santé.";
 "NSUserTrackingUsageDescription" = "StepWays vous demande cette autorisation pour vous proposer des publicités adaptées à vos centres d’intérêt. Si vous refusez, l’application gratuite continue d’afficher des publicités, mais elles ne sont pas ciblées.";
+
+/* TACHE 740 — exigees par une API REFERENCEE dans le binaire, jamais appelee
+   par l application : voir le raisonnement complet dans Runner/Info.plist. */
+"NSAppleMusicUsageDescription" = "StepWays n’accède pas à votre musique. Cette mention est exigée parce que le sélecteur de fichiers, utilisé pour importer une trace GPX, déclare aussi le choix de morceaux.";
+"NSFaceIDUsageDescription" = "StepWays ne demande ni Face ID ni Touch ID. Cette mention est exigée parce que le coffre qui garde vos secrets sait protéger une clé par la biométrie.";
