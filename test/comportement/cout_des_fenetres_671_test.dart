@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/data/database.dart' show SessionTrackPoint;
 import 'package:moteur_gr/core/geo/charnieres_du_trace.dart';
+import 'package:moteur_gr/core/geo/recorded_track_stats.dart';
 import 'package:moteur_gr/core/geo/trace_point.dart';
-import 'package:moteur_gr/core/geo/track_segment_stats.dart';
 import 'package:moteur_gr/core/services/gps_cadence.dart';
 import 'package:moteur_gr/features/trek/data/gpx_parser.dart';
 

@@ -13,3 +13,14 @@
 // `test/comportement/pub_v1_595_test.dart` (B3) refuse toute cle AdMob
 // etrangere au compte de test dans le depot.
 ADMOB_APP_ID_IOS=ca-app-pub-3940256099942544~1458002511
+
+// ============================================================================
+// ADMOB — L'EN-TETE PRIVE DU SDK GOOGLE (tache 736)
+// ============================================================================
+// Voir Debug.xcconfig pour le raisonnement complet et pour ce que ce drapeau
+// desarme. Meme mecanique, et c'est CE fichier qui sert les configurations
+// Release ET Profile de la cible `Runner` : c'est donc celui que le build
+// `flutter build ios --release` traverse.
+//
+// SURVEILLE PAR test/structurel/la_regie_autorise_l_entete_prive_736_test.dart
+CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES=YES

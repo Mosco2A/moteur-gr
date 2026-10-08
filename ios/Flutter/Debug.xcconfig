@@ -19,3 +19,38 @@
 // Android est le `manifestPlaceholder` `admobAppId`
 // (android/app/build.gradle.kts, propriete ou variable ADMOB_APP_ID_ANDROID).
 ADMOB_APP_ID_IOS=ca-app-pub-3940256099942544~1458002511
+
+// ============================================================================
+// ADMOB — L'EN-TETE PRIVE DU SDK GOOGLE (tache 736)
+// ============================================================================
+// CE DRAPEAU DESARME UNE VERIFICATION DE CLANG. Il cesse d'exiger que tout
+// en-tete inclus depuis les en-tetes d'un module de framework appartienne
+// lui-meme a un module ; Clang l'inclut alors TEXTUELLEMENT dans le module. Ce
+// qu'on perd : la garantie que le module est autonome, ses declarations
+// dependant d'un en-tete que Google declare prive. C'est une verification
+// d'HYGIENE SUR DES EN-TETES TIERS, a la compilation seulement — aucun effet a
+// l'execution, aucune surface magasin. Le depot n'a aucun module de framework
+// a lui, ce drapeau ne relache donc jamais sa propre rigueur.
+//
+// POURQUOI IL EST LA. google_mobile_ads 9.1.0 importe
+// `<GoogleMobileAds/GoogleMobileAds_Beta.h>` (ligne 23 de son
+// FLTAd_Internal.h, ligne 18 de son FLTAdPreloader.h), et cet en-tete vit dans
+// `PrivateHeaders/` du xcframework livre DEJA COMPILE par Google, donc HORS de
+// sa carte de modules. Le build 4 du 08/10/2026 est tombe exactement la, apres
+// 545 s de Xcode. La version 5.3.1 du greffon n'avait pas cet import.
+//
+// POURQUOI DANS CE FICHIER ET PAS SEULEMENT DANS LE PODFILE. Le module
+// `google_mobile_ads` est construit par DEUX cibles : le pod lui-meme (le
+// Podfile le sert, cible nommee) et la cible `Runner`, parce que
+// `ios/Runner/GeneratedPluginRegistrant.m` fait
+// `#import <google_mobile_ads/FLTGoogleMobileAdsPlugin.h>` a sa ligne 106 et
+// que les trois configurations de `Runner` portent `CLANG_ENABLE_MODULES =
+// YES` dans le projet Xcode. Un import de style framework sous `-fmodules`
+// construit le module, et construire le module enumere TOUS ses en-tetes
+// publics. Ce fichier est le reglage de base de la configuration Debug de
+// `Runner` : c'est par lui que la cible de l'application recoit le drapeau.
+// Ni `TrekWidgetExtension`, qui a son propre reglage et n'importe aucun pod
+// (garde 735), ni les 36 autres greffons iOS ne sont touches.
+//
+// SURVEILLE PAR test/structurel/la_regie_autorise_l_entete_prive_736_test.dart
+CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES=YES

@@ -71,8 +71,80 @@ target 'Runner' do
   end
 end
 
+# L EN-TETE PRIVE DE LA REGIE PUBLICITAIRE — CE QUI SUIT DESARME UNE
+# VERIFICATION DE CLANG, SUR UNE SEULE CIBLE, ET IL FAUT SAVOIR LAQUELLE.
+#
+# LE DEFAUT. Build 4 du 08/10/2026, apres 545 s de Xcode, deux erreurs et
+# deux seulement :
+#   Include of non-modular header inside framework module
+#   'google_mobile_ads.FLTAd_Internal'  (puis '...FLTAdPreloader')
+#   .../XCFrameworkIntermediates/Google-Mobile-Ads-SDK/
+#   GoogleMobileAds.framework/PrivateHeaders/GoogleMobileAds_Beta.h
+# Mesure dans le cache de paquets : google_mobile_ads 9.1.0 importe
+# `<GoogleMobileAds/GoogleMobileAds_Beta.h>` a la ligne 23 de son
+# FLTAd_Internal.h et a la ligne 18 de son FLTAdPreloader.h (chemin
+# `ios/google_mobile_ads/Sources/google_mobile_ads/include/google_mobile_ads/`).
+# La version 5.3.1, elle, s arretait a `<GoogleMobileAds/GoogleMobileAds.h>`
+# — cet import est apparu avec la montee du greffon.
+#
+# POURQUOI CLANG REFUSE. Le fichier vise vit dans `PrivateHeaders/` d un
+# xcframework DEJA COMPILE, livre par Google (le chemin
+# `XCFrameworkIntermediates` du journal le prouve : c est la ou Xcode deplie
+# les frameworks binaires). `PrivateHeaders/`, par construction, n est pas
+# dans la carte de modules du framework. L inclure depuis les en-tetes d un
+# AUTRE module de framework (`google_mobile_ads`) est exactement ce que cette
+# verification interdit.
+#
+# CE QUE `YES` DESARME, EN TOUTES LETTRES. Clang cesse d exiger que tout
+# en-tete inclus depuis les en-tetes d un module de framework appartienne
+# lui-meme a un module. Il l inclut alors TEXTUELLEMENT dans le module. On
+# perd donc la garantie que le module `google_mobile_ads` est autonome : ses
+# declarations dependent d un en-tete que Google declare prive et peut
+# changer sans prevenir, et si un second module incluait le meme en-tete, les
+# memes declarations existeraient dans deux modules. C est une verification
+# d HYGIENE SUR DES EN-TETES TIERS, a la compilation seulement : aucun effet
+# a l execution, aucune surface magasin. Le depot n a aucun module de
+# framework a lui — ce drapeau ne peut donc jamais relacher sa propre rigueur.
+#
+# POURQUOI SUR CETTE SEULE CIBLE. Le module `google_mobile_ads` n est
+# construit que par deux cibles, et elles sont mesurees, pas devinees :
+#   1. le pod `google_mobile_ads` lui-meme, qui porte `DEFINES_MODULE = YES`
+#      (son podspec, ligne 21) ;
+#   2. la cible `Runner`, parce que `ios/Runner/GeneratedPluginRegistrant.m`
+#      fait `#import <google_mobile_ads/FLTGoogleMobileAdsPlugin.h>` a sa
+#      ligne 106 et que les TROIS configurations de `Runner` portent
+#      `CLANG_ENABLE_MODULES = YES` dans le projet Xcode. Un import de style
+#      framework sous `-fmodules` construit le module, et construire le module
+#      enumere TOUS ses en-tetes publics — dont FLTAd_Internal.h.
+# Aucun autre greffon du depot ne nomme `google_mobile_ads` cote natif (seule
+# occurrence : ce registre). Le pod recoit donc le drapeau ici ; la cible
+# `Runner` le recoit par `ios/Flutter/Debug.xcconfig` et
+# `ios/Flutter/Release.xcconfig`, qui sont ses reglages de base. Les 36 autres
+# greffons iOS gardent la verification : si l un d eux se met demain a
+# inclure un en-tete non modulaire, on nous le dira encore.
+#
+# POURQUOI PAS `use_modular_headers!`, QUE GR20 PORTE. Ce reglage fait
+# generer par CocoaPods une carte de modules aux pods de SOURCE qui n en ont
+# pas. `Google-Mobile-Ads-SDK` n est pas un pod de source : c est un
+# xcframework livre compile, avec SA carte de modules, et
+# `GoogleMobileAds_Beta.h` est volontairement HORS de cette carte. CocoaPods
+# ne peut donc rien y rendre modulaire : le reglage changerait l exposition
+# des en-tetes des 37 greffons iOS du depot pour ZERO effet sur CETTE erreur.
+# GR20 le porte, mais GR20 n a aucune regie publicitaire : ce n est pas une
+# preuve, c est un voisinage.
+#
+# CE QUI SURVEILLE CES LIGNES. La garde
+# `test/structurel/la_regie_autorise_l_entete_prive_736_test.dart` exige le
+# drapeau ici ET dans les deux reglages de l application, et refuse que le
+# projet Xcode le contredise.
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    if target.name == 'google_mobile_ads'
+      target.build_configurations.each do |build_configuration|
+        build_configuration.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+    end
   end
 end
