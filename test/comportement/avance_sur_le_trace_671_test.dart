@@ -367,6 +367,20 @@ void main() {
   });
 
   group('(4) LES CHIFFRES DU JOUR NE BOUGENT PAS', () {
+    // LOT 671-06 — CE TEMOIN EST DEVENU TRIVIAL POUR LA GEOMETRIE, ET IL FAUT
+    // LE DIRE. Depuis le lot 671-06, la distance et le denivele du jour se
+    // mesurent sur la TRANCHE DU TRACE bornee par les releves reels : les
+    // points estimes ne peuvent plus les influencer, par construction, et ce
+    // test passerait meme si l'estime ecrivait n'importe quoi. Il reste ici
+    // comme documentation, et il rougira si quelqu'un rebranche les points
+    // enregistres en entree des chiffres. Il garde en revanche toute sa
+    // valeur pour la DUREE et la VITESSE, qui viennent toujours des releves :
+    // un point estime qui y entrerait les ferait bouger.
+    //
+    // LA CHARGE DE LA PREUVE est desormais portee par
+    // `test/comportement/stats_sur_le_trace_671_test.dart` : le banc de
+    // reference a deux pour cent (dix metres contre trois minutes, fiche E6)
+    // et le temoin des quatre chiffres avec et sans points estimes (E5).
     test('la distance et le denivele du jour sont IDENTIQUES au metre pres '
         'avec et sans points estimes en base', () async {
       final db = AppDatabase(NativeDatabase.memory());
@@ -384,6 +398,15 @@ void main() {
       for (var i = 0; i <= 6; i++) {
         await add(TrackPointSource.gps, 45 + i * 0.002, 1000.0 + i * 40, i * 3);
       }
+      final readingsTrace = [
+        for (var i = 0; i <= 6; i++)
+          TrackPoint(
+            lat: 45 + i * 0.002,
+            lng: 3.0,
+            altitude: 1000.0 + i * 40,
+            distanceFromStart: i * 0.002 * metersPerDegree,
+          ),
+      ];
       final session = TrekSession(
         id: 'sess',
         trailId: 'sentier-bleu',
@@ -394,6 +417,12 @@ void main() {
         final c = ProviderContainer(
           overrides: [
             databaseProvider.overrideWithValue(db),
+            // Le trace par les sept releves (lot 671-06) : sans lui, le
+            // conteneur lirait le trace du sentier par defaut, loin d'eux.
+            trailConfigProvider.overrideWithValue(testTrailConfig),
+            gpxTrackProvider(
+              testTrailConfig.id,
+            ).overrideWith((ref) async => readingsTrace),
             trekSessionManagerProvider.overrideWith(
               () => _FixedSession(
                 TrackingSessionState(
@@ -425,6 +454,10 @@ void main() {
       expect(after.elevationLossM, before.elevationLossM);
       expect(after.pointCount, before.pointCount);
       expect(after.duration, before.duration);
+      expect(after.averageSpeedKmh, before.averageSpeedKmh);
+      // Et le temoin ne compare pas deux zeros : il y a bien des chiffres.
+      expect(before.elevationGainM, 240);
+      expect(before.duration, const Duration(minutes: 18));
     });
   });
 

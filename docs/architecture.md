@@ -65,15 +65,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte 691 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-133 506 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte 688 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+132 841 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` | 187 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 31 487 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` | 451 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 797 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/core/` | 188 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> | 31 441 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` | 448 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> | 92 213 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 834 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -88,8 +88,8 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` | 67 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 14 968 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
-| `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> | 6 923 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
+| `trek` | 66 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> | 14 573 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> | 6 803 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 442 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 061 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
 | `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 936 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
@@ -110,7 +110,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Fichiers de feature hors d'une couche reconnue | 23 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
 
 Les 160 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
-fusionné de l'intégration 671, puis par le lot 671-04). Le 05/10, le lot produit P1 (#101255) en a
+fusionné de l'intégration 671). Le 05/10, le lot produit P1 (#101255) en a
 ajouté 7 en branchant `weather` et `hub` sur le réglage d'unité
 de température, par `settings_facade.dart` ; le 06/10, le lot 671-00 en a
 ajouté 3 en branchant la carte (`location_provider`, `off_track_provider`) et
@@ -119,13 +119,12 @@ le suivi (`tracking_provider`) sur le robinet unique GPS de `trek`, par
 ajouté 7, tous depuis le seul `hub/providers/prepare_progress_providers.dart` :
 la coche de chaque carte de « Préparer » se lit dans la feature qui détient le
 fait (`booking`, `checklist`, `feasibility`, `notifications`, `planning`,
-`safety`, `training`), par sa façade. Le 07/10 encore, le lot 671-04 (les
-réveils fins) en a ajouté 2 : `map/providers/charnieres_provider.dart` lit
-`WaypointType` (les repères de type `jonction`) par la façade
-`community_facade.dart`, ouverte pour ce seul nom — la vingt-troisième, d'où un
-fichier de plus « hors d'une couche reconnue », comme les vingt-deux autres
-façades — et `safety/presentation/sos_confirmation_dialog.dart` lit
-`PositionConnue` par `trek_facade.dart`. Le chiffre qui compte — les croisements
+`safety`, `training`), par sa façade.
+
+Le 07/10 encore, le lot 671-06 en a ajouté 2 : le journal et le
+récapitulatif lisent la trace du sentier actif (`statsTraceProvider`) par
+`map_facade.dart`, pour mesurer leurs chiffres sur le tracé.
+Le chiffre qui compte — les croisements
 vers l'INTÉRIEUR d'une voisine — reste à zéro.
 
 Parmi les croisements vers l'intérieur d'une voisine,

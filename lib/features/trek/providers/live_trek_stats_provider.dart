@@ -1,14 +1,16 @@
-/// Les chiffres de la rando EN COURS, calcules depuis la seule source
-/// reellement alimentee : TrekStats.addPoint n'a aucun appelant.
+/// Les chiffres de la rando EN COURS, calcules SUR LE TRACE parcouru depuis
+/// le lot 671-06, dates par la seule source reellement alimentee : les
+/// releves persistes (TrekStats.addPoint n'a aucun appelant).
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/session_track_points_dao.dart';
+import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../map/map_facade.dart'
-    show currentPositionProvider, trackPositionProvider;
+    show currentPositionProvider, statsTraceProvider, trackPositionProvider;
 import 'tracking_providers.dart';
 
 /// Chiffres MESURES de la randonnee EN COURS (correctif L6-2).
@@ -23,14 +25,22 @@ import 'tracking_providers.dart';
 /// le socle L3-1.
 ///
 /// AUCUN MOTEUR DE STATS N'EST RECRIT ICI : le calcul est celui de
-/// [computeTrackStats], deja utilise par le journal (L4-3) et par le
+/// [computeTrackStatsOn], deja utilise par le journal (L4-3) et par le
 /// recapitulatif d'aventure (L5-5, L5-6). Un deuxieme calcul finirait par
 /// donner deux deniveles differents pour la meme journee.
 ///
+/// LOT 671-06 — LA GEOMETRIE VIENT DU TRACE, LE TEMPS DES RELEVES. La
+/// distance et le denivele se mesurent sur la tranche du sentier entre le
+/// premier releve reel de la session, projete, et la POSITION COURANTE sur le
+/// trace ; la duree reste l'ecart entre le premier et le dernier releve reel,
+/// a la seconde pres la valeur d'avant (cf. [computeTrackStatsOnTrace]). LE
+/// PERIMETRE NE CHANGE PAS : c'est toujours TOUTE la session, pas la journee.
+///
 /// RAFRAICHISSEMENT : le provider se recalcule quand la position projetee
 /// change, c'est-a-dire au rythme des points GPS. DETTE ASSUMEE : chaque
-/// rafraichissement relit les points de la session (quelques milliers de
-/// lignes SQLite en fin de journee). Mesure avant optimisation : tant que la
+/// rafraichissement relit les releves de la session (quelques centaines de
+/// lignes SQLite en fin de journee, des milliers en profil carte) et projette
+/// le premier sur tout le trace. Mesure avant optimisation : tant que la
 /// barre reste fluide, un cumul incremental en memoire serait un SECOND
 /// moteur de calcul, donc un risque de divergence pour un gain non mesure.
 final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
@@ -43,18 +53,24 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
       status == TrackingSessionStatus.paused;
   if (!enCours || session == null) return const TrackSegmentStats();
 
-  // Rythme le recalcul sur les points GPS (meme source que la barre d'etape).
-  ref.watch(trackPositionProvider);
+  // Rythme le recalcul sur les points GPS (meme source que la barre d'etape),
+  // et porte la borne de fin : l'abscisse courante sur le trace.
+  final position = ref.watch(trackPositionProvider).value;
+  final trace = ref.watch(statsTraceProvider.future);
 
   final db = ref.watch(databaseProvider);
-  // LES SEULS RELEVES REELS (lot 671-03) : les points estimes le long du
-  // trace ne font pas bouger d'un metre la distance ni le denivele du jour.
-  // Le changement d'entree des statistiques est le lot 671-06, pas celui-ci.
-  final points = await db.sessionTrackPointsDao.getBySessionId(
+  // LES SEULS RELEVES REELS (lot 671-03) : ils bornent et datent la tranche.
+  // Un point estime ne date rien et ne borne rien ; la geometrie, elle, vient
+  // du trace (lot 671-06).
+  final readings = await db.sessionTrackPointsDao.getBySessionId(
     session.id,
     read: TrackPointsRead.gpsOnly,
   );
-  return computeTrackStats(points);
+  return computeTrackStatsOnTrace(
+    readings: readings,
+    trace: await trace,
+    currentDistanceM: position?.distanceFromStartM,
+  );
 });
 
 /// Altitude courante en metres, `null` sans fix GPS exploitable (L6-2).

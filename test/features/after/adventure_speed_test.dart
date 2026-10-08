@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/data/database.dart';
-import 'package:moteur_gr/core/geo/track_segment_stats.dart';
+import 'package:moteur_gr/core/geo/recorded_track_stats.dart';
 import 'package:moteur_gr/features/after/presentation/adventure_recap_screen.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';

@@ -2,8 +2,20 @@
 /// le recapitulatif : deux implantations finiraient par divergeur.
 library;
 
-import '../data/database.dart';
 import 'geo_utils.dart';
+
+/// LE MINIMUM GEOMETRIQUE dont le calcul a besoin (lot 671-06) : un point,
+/// son altitude, et rien d'autre — ni horodatage, ni origine, ni base.
+///
+/// TROIS GRANDEURS, PAS QUATRE, ET LA QUATRIEME EST PASSEE A PART. Le calcul
+/// lisait aussi `recordedAt`, pour la duree. Or la tranche de trace que le lot
+/// 671-06 lui donne n'a PAS d'horodatage (`trace_point.dart` le dit en
+/// en-tete) : une duree tiree de la geometrie vaudrait zero, et la vitesse
+/// disparaitrait. La duree est donc un parametre OBLIGATOIRE de
+/// [computeTrackStatsOn] — on ne peut pas l'oublier, on doit dire d'ou elle
+/// vient. Un enregistrement et non une classe : aucune generation de code,
+/// sur le modele de `TrackAbscissa` (`track_projection.dart`).
+typedef StatsPoint = ({double lat, double lng, double altitude});
 
 /// Chiffres MESURES sur une suite de points GPS.
 ///
@@ -21,18 +33,26 @@ class TrackSegmentStats {
     this.pointCount = 0,
   });
 
-  /// Distance MESUREE au GPS (et non une somme d'etapes nominale).
+  /// Distance MESUREE (et non une somme d'etapes nominale) : sur la tranche
+  /// de trace parcourue depuis le lot 671-06, sur les releves sans trace.
   final double distanceKm;
   final int elevationGainM;
   final int elevationLossM;
 
-  /// Ecart entre le premier et le dernier point du segment.
+  /// Ecart entre le premier et le dernier RELEVE REEL du segment.
+  ///
+  /// Fournie par l'appelant depuis le lot 671-06 (voir [computeTrackStatsOn]) :
+  /// une tranche de trace n'a pas d'horodatage, le temps vient des releves.
   final Duration duration;
 
   /// Point le plus haut, `null` sans trace.
   final double? maxAltitudeM;
 
   /// Nombre de points GPS derriere ces chiffres (0 = rien a afficher).
+  ///
+  /// Sur une tranche de trace (lot 671-06), c'est le nombre de RELEVES REELS
+  /// qui la bornent et la datent : [hasData] dit donc, comme avant, s'il y a
+  /// eu au moins deux releves.
   final int pointCount;
 
   bool get hasData => pointCount > 1;
@@ -71,7 +91,10 @@ class TrackSegmentStats {
   );
 }
 
-/// Calcule les chiffres d'une suite de points GPS.
+/// Calcule les chiffres d'une suite de points, en [duration].
+///
+/// Sous deux points, le resultat est degrade comme avant le lot 671-06 :
+/// aucune distance, aucun denivele, une duree nulle.
 ///
 /// Reutilise [GeoUtils.haversineDistance] et
 /// [GeoUtils.elevationNoiseThresholdM] (3 m) : sans ce seuil, le tremblement de
@@ -81,7 +104,17 @@ class TrackSegmentStats {
 /// LE SEUIL EST LU DANS LE SOCLE, PLUS DANS `TrekStats` (ARB-645-05-c). Ce
 /// fichier est du socle : il ne peut pas connaitre le metier, et il n'avait
 /// besoin que d'un nombre — la valeur est la meme, a un seul endroit.
-TrackSegmentStats computeTrackStats(List<SessionTrackPoint> points) {
+///
+/// LOT 671-06 : LA SIGNATURE A CHANGE, PAS LE CALCUL. La fonction prend la
+/// GEOMETRIE ([StatsPoint]) d'un cote et la DUREE ([duration]) de l'autre ;
+/// la boucle ci-dessous est celle d'avant, au caractere pres. Ce fichier
+/// n'importe plus la base : l'adaptation des points enregistres
+/// (`computeTrackStats`) et la tranche de trace (`computeTrackStatsOnTrace`)
+/// vivent dans `recorded_track_stats.dart`, et passent toutes deux par ici.
+TrackSegmentStats computeTrackStatsOn(
+  List<StatsPoint> points, {
+  required Duration duration,
+}) {
   if (points.length < 2) {
     return TrackSegmentStats(
       pointCount: points.length,
@@ -110,7 +143,7 @@ TrackSegmentStats computeTrackStats(List<SessionTrackPoint> points) {
     distanceKm: meters / 1000.0,
     elevationGainM: gain.round(),
     elevationLossM: loss.round(),
-    duration: points.last.recordedAt.difference(points.first.recordedAt),
+    duration: duration,
     maxAltitudeM: maxAlt,
     pointCount: points.length,
   );

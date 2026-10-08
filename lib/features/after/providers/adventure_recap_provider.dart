@@ -11,12 +11,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../domain/stage.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
 import '../../../domain/trek_session_mapping.dart';
+import '../../map/map_facade.dart' show statsTraceProvider;
 import '../../trek/trek_facade.dart'
     show currentTrekPlanProvider, domainStagesProvider, stagesProvider;
 
@@ -237,7 +239,8 @@ class AdventureDay {
   /// Journee calendaire du premier point de la journee.
   final DateTime date;
 
-  /// Chiffres MESURES sur les points GPS de cette journee-la.
+  /// Chiffres MESURES de cette journee-la : sur la tranche de trace que ses
+  /// releves reels bornent et datent (lot 671-06).
   final TrackSegmentStats stats;
 
   /// Etapes traversees dans la journee, dans l'ordre de passage.
@@ -260,20 +263,26 @@ class AdventureDay {
 /// sentier. Une trace sans jour connu (anterieure a la migration v26) est
 /// regroupee par journee CALENDAIRE, ce qui reste juste.
 ///
-/// LOT 671-03 : les chiffres de chaque journee se calculent sur les SEULS
-/// RELEVES REELS, relus a part, et non sur [AdventureStats.tracePoints] qui
-/// porte aussi les points estimes. Le changement d'entree des statistiques
-/// est le lot 671-06.
+/// LOT 671-03 : les journees se forment et se datent sur les SEULS RELEVES
+/// REELS, relus a part, et non sur [AdventureStats.tracePoints] qui porte
+/// aussi les points estimes.
+///
+/// LOT 671-06 : distance et denivele de chaque journee SUR LE TRACE, entre son
+/// premier et son dernier releve reel, projetes ; la duree reste l'ecart entre
+/// ces deux releves. LE PERIMETRE NE CHANGE PAS : la journee de marche, ou la
+/// journee civile pour une trace d'avant la v26.
 final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
   // Le recapitulatif reste la source de rafraichissement (memes
   // invalidations a la fin d'une session).
   await ref.watch(adventureStatsProvider.future);
   final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+  final traceFuture = ref.watch(statsTraceProvider.future);
   final points = await ref
       .watch(databaseProvider)
       .sessionTrackPointsDao
       .getByTrailId(trailId, read: TrackPointsRead.gpsOnly);
   if (points.isEmpty) return const <AdventureDay>[];
+  final trace = await traceFuture;
 
   DateTime dayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
@@ -299,7 +308,7 @@ final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
       AdventureDay(
         dayIndex: entry.key is int ? entry.key as int : null,
         date: dayOf(dayPoints.first.recordedAt),
-        stats: computeTrackStats(dayPoints),
+        stats: computeTrackStatsOnTrace(readings: dayPoints, trace: trace),
         stageIds: stageIds,
       ),
     );
