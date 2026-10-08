@@ -315,7 +315,7 @@ version du build, et on l'attache ensuite à la page de version.
 |---|---|
 | `ITSAppUsesNonExemptEncryption` | Posée à **NO** (§ 7.1). |
 | `CFBundleLocalizations` | fr, en, de, it, es. |
-| Textes d'autorisation | 8 textes, dans 5 langues (`ios/Runner/*.lproj/InfoPlist.strings`). Le texte de localisation en arrière-plan ne promet plus le partage avec les proches. |
+| Textes d'autorisation | 11 textes, dans 5 langues (`ios/Runner/*.lproj/InfoPlist.strings`). Trois ont ete ajoutes par la tache 740, dont celle qui a fait refuser le build 9 : voir § 7.5. Le texte de localisation en arrière-plan ne promet plus le partage avec les proches. |
 | `CFBundleDisplayName` | `StepWays`, inchangé. |
 | `CFBundleName` | `moteur_gr`. **Non modifié** : voir § 7.4. |
 
@@ -474,6 +474,53 @@ les droits ne changent.
 
 ---
 
+### 7.5 Les clés d'usage — ce qu'Apple contrôle, et pourquoi trois d'entre elles parlent d'API jamais appelées (tâche 740)
+
+**Le rejet, mesuré.** Le 08/10/2026, Apple a **refusé** la livraison 0.1.7
+build 9 (App Apple ID 6817011266) avec `ITMS-90683 — Missing purpose string in
+Info.plist` : le `Info.plist` de `Runner.app` devait porter
+`NSHealthUpdateUsageDescription`. Le paquet n'a pas atteint TestFlight.
+
+**Ce que ce contrôle regarde.** Pas ce que l'application fait : les API que le
+binaire **référence**. Un greffon qui nomme une API gardée oblige à poser sa
+clé, même si aucune ligne de `lib/` ne l'appelle jamais. Trois clés de ce
+dépôt sont dans ce cas, et elles ne décrivent donc aucune fonction du produit.
+
+| Clé | Le greffon qui référence l'API | Ce que l'application en fait |
+|---|---|---|
+| `NSHealthUpdateUsageDescription` | `health` 13.3.1 — `requestAuthorization(toShare: typesToWrite, read:)`, `HealthDataOperations.swift` ligne 180, sans condition de compilation | **Rien.** `health_reader_service.dart` ne déclare que `readTypes` : pas, fréquence cardiaque, distance, calories |
+| `NSAppleMusicUsageDescription` | `file_picker` 8.3.7 — `MediaPlayer/MediaPlayer.h` dans son en-tête **public**, et un `MPMediaPickerController` instancié ligne 369 | **Rien.** Le seul appel du dépôt est `FileType.custom` pour une trace `.gpx` |
+| `NSFaceIDUsageDescription` | `flutter_secure_storage_darwin` 0.3.2 — `import LocalAuthentication` et `LAContext()` ligne 197 | **Rien.** Le dépôt ne passe ni `useSecureEnclave` ni `accessControlFlags` |
+
+Les trois phrases disent exactement cela, dans les cinq langues. Aucune ne
+promet une fonction qui n'existe pas : le jour où l'application écrira vraiment
+dans Santé, c'est la phrase qu'il faudra réécrire **avant** le code.
+
+**Aucun entitlement HealthKit**, et il n'en faut pas : lire et écrire passent
+tous deux par la clé d'usage, pas par un droit signé.
+`ios/Runner/Runner.entitlements` ne porte que le groupe d'applications du
+widget, et une garde refuse qu'on y ajoute HealthKit.
+
+**`permission_handler` ne doit aucune clé aujourd'hui, et c'est une mesure.**
+Ses stratégies vivent derrière `#if PERMISSION_X` ; en C, une macro **non
+définie** vaut 0 dans un `#if`, et `ios/Podfile` n'en définit aucune. Chaque
+stratégie tombe donc dans sa branche `#else` et se réduit à
+`UnknownPermissionStrategy` : aucun framework sensible n'est importé, aucune
+clé n'est exigée. C'est la raison pour laquelle Apple n'a rien reproché
+d'autre que Santé au build 9. **Conséquence à connaître, qui dépasse cette
+fiche :** sur iPhone, `permission_handler` répond « refusé » sans jamais ouvrir
+de fenêtre système (voir § 8, point 9).
+
+**Ce qui surveille tout cela.**
+`test/structurel/les_cles_d_usage_ios_sont_completes_740_test.dart` (14 cas)
+porte le tableau dépendance vers clés et rougit si une dépendance sensible
+perd sa clé, si une clé est posée sans raison inscrite au tableau, si un
+entitlement HealthKit apparaît, ou si une permission est allumée dans le
+Podfile sans sa clé. Les cinq langues restent tenues par
+`test/structurel/fiche_magasin_et_apple_test.dart`.
+
+---
+
 ## 8. Ce qui peut faire refuser l'envoi ou la revue, hors formulaire
 
 Classé du plus grave au moins grave. Aucun de ces points n'est corrigé dans
@@ -509,6 +556,15 @@ code produit. Chacun est nommé ici avec son correctif.
    - `NSHealthShareUsageDescription` est déclaré, alors que le droit HealthKit
      est absent de `Runner.entitlements`. Apple peut demander à quoi sert
      HealthKit (règle 2.5.1).
+   - **Rattrapé par les faits le 08/10/2026 (tâche 740).** Ce n'est pas la
+     revue qui a parlé, c'est le contrôle d'envoi : `ITMS-90683` a refusé le
+     build 9 parce qu'il **manquait** une clé,
+     `NSHealthUpdateUsageDescription`, et non parce qu'il y en avait une de
+     trop. L'absence de droit HealthKit n'est pas le problème : lire et
+     écrire passent tous deux par la clé d'usage, pas par un entitlement. Les
+     deux textes sont donc **posés** et expliqués (§ 7.5), et le correctif
+     ci-dessous — retirer les paquets — reste une option produit, pas une
+     obligation d'Apple.
    - Correctif (code) : retirer ces deux paquets morts. On retire alors aussi
      leurs deux textes d'autorisation.
 5. **Le catalogue montre deux sentiers qui ne sont pas des produits.**
@@ -532,3 +588,35 @@ code produit. Chacun est nommé ici avec son correctif.
      (voir `assets/store/PROMESSES_RETIREES.md`).
 8. **`docs/store/data-safety.md` (Google Play) décrit encore le partage de
    position.** Hors de la fiche Apple, à corriger avant la Play Console.
+
+9. **`permission_handler` ne demande rien sur iPhone : il répond « refusé ».**
+   Mesure, non supposition. Ses stratégies vivent derrière `#if PERMISSION_X`
+   (§ 7.5) ; `ios/Podfile` ne définit aucune de ces macros, donc chacune se
+   réduit à `UnknownPermissionStrategy` : `checkPermissionStatus` rend
+   `denied`, `requestPermission` rend `permanentlyDenied`, et **aucune fenêtre
+   système ne s'ouvre jamais**. Or le dépôt passe par ce greffon **sans garde
+   de plateforme** pour la position
+   (`lib/shared/services/location_permission_service.dart`,
+   `locationWhenInUse` et `locationAlways`), pour les notifications, et
+   explicitement pour iOS pour les capteurs
+   (`lib/features/trek/data/background_gps_service.dart` ligne 104 :
+   `Platform.isIOS ? Permission.sensors : Permission.activityRecognition`).
+   - Conséquence attendue sur iPhone : l'autorisation de position n'est jamais
+     demandée par ce chemin, et le code la croit refusée pour toujours. C'est
+     le cœur du produit.
+   - Ce n'est **pas** ce qu'Apple a reproché au build 9 : `ITMS-90683` est un
+     contrôle d'envoi, celui-ci est un défaut d'exécution. Les deux ne se
+     réparent pas du même geste.
+   - Correctif (infra iOS) : déclarer `GCC_PREPROCESSOR_DEFINITIONS` dans le
+     `post_install` de `ios/Podfile`, avec les seules permissions réellement
+     utilisées — `PERMISSION_LOCATION`, `PERMISSION_LOCATION_WHENINUSE`,
+     `PERMISSION_LOCATION_ALWAYS`, `PERMISSION_NOTIFICATIONS`,
+     `PERMISSION_SENSORS` — et toutes les autres à `0`. Les clés d'usage que
+     cela rend obligatoires sont **déjà posées** (position, mouvement), et la
+     garde de la tâche 740 le vérifie à chaque passage.
+   - **Non fait dans la tâche 740, volontairement :** c'est une modification
+     du build natif qu'aucune gate de ce dépôt ne peut vérifier depuis
+     Windows, et dont la seule preuve est une vraie compilation Xcode. La
+     mêler à la livraison qui doit débloquer l'envoi aurait rendu un échec de
+     build impossible à attribuer. À traiter dans sa propre tâche, avec son
+     propre build.
