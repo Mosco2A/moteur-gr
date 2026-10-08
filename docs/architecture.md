@@ -65,15 +65,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte697 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-134 975 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte698 <!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+135 133 <!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` |190 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |31 985 <!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |454 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |93 745 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` |455 <!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |93 903 <!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 29 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 4 851 <!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -88,9 +88,9 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` |70 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |15 866 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `trek` |71 <!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |15 951 <!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 30 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |6 923 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
-| `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 442 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
+| `feasibility` | 30 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 466 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 061 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
 | `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 936 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
