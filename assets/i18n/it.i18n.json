@@ -1123,6 +1123,7 @@
     "simulerEtape": "Simula la tappa successiva",
     "simulerFin": "Simula l'arrivo",
     "simulerRelancer": "Ricomincia la demo",
+    "marcheSimulee": "Camminata simulata — tempo accelerato ×$facteur",
     "sortieTitre": "Fine della demo",
     "sortieEnTeteCatalogue": "Ritroverai la demo in cima all'elenco dei sentieri.",
     "sortieDansMonCompte": "Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.",

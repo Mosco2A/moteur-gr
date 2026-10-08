@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/error/error_handler.dart';
+import '../../../core/services/session_demo.dart';
 import 'background_gps_service.dart'
     show bgReadStoredPositionProfile, bgWritePositionProfile;
+import 'marcheur_simule.dart';
 import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.
@@ -157,7 +159,47 @@ final gpsServiceProvider = Provider<GpsService>((ref) {
 /// publie son profil pour l'isolate de fond par [bgWritePositionProfile], et
 /// le reprend a sa premiere ecoute par [bgReadStoredPositionProfile] (lot
 /// 671-01) : une interface relancee garde le profil choisi.
+///
+/// EN DEMO, LA SOURCE EST LE MARCHEUR SIMULE — ET C'EST TOUT CE QUI CHANGE
+/// (tache 742). C'EST LA PORTE D'ENTREE DE LA SIMULATION, et elle a ete choisie
+/// ici plutot qu'ailleurs pour une raison qui tient en une phrase : TOUT ce qui
+/// sait ou se trouve le randonneur descend de ce robinet. La projection sur le
+/// trace, le « Parcouru » de la barre, l'altitude courante, la detection
+/// d'etape, la detection d'arrivee, le marqueur de la carte, le hors-trace :
+/// aucun de ces calculs n'est recrit pour la demo, ils recoivent simplement des
+/// positions qui viennent d'ailleurs. Brancher la simulation plus bas (sur
+/// chaque ecran) ou plus haut (sur Geolocator) aurait demande soit de dupliquer
+/// la chaine, soit une permission de localisation.
+///
+/// DEUX CHOSES NE SONT PAS FOURNIES EN DEMO, ET LEUR ABSENCE EST LA GARANTIE :
+///   * aucune fonction Geolocator — ni flux, ni tir unique : regardez les
+///     arguments, la source est le flux du marcheur et rien d'autre. La garde
+///     `un_seul_robinet_gps_671_test.dart` compte les appels a
+///     `Geolocator.getPositionStream(` dans `lib/` et son plafond NE MONTE PAS
+///     avec ce lot : la simulation n'en ajoute aucun. Donc aucune demande
+///     d'autorisation de position ne peut partir pendant une demo.
+///   * ni [bgWritePositionProfile] ni [bgReadStoredPositionProfile] : le profil
+///     GPS n'est NI lu NI ecrit pendant une demo. Armer ce canal ecrirait une
+///     preference pour l'isolate de fond — c'est-a-dire une trace durable, ce
+///     que la demo s'interdit (tache 634, « rien en base »).
 final positionControllerProvider = Provider<PositionController>((ref) {
+  if (ref.watch(enDemoProvider)) {
+    final marcheur = ref.watch(marcheurSimuleProvider);
+    return PositionController(
+      positionStream: ({required LocationSettings locationSettings}) =>
+          marcheur.positions,
+      // UN TIR UNIQUE EN DEMO, C'EST LA DERNIERE POSITION SIMULEE. Tant que la
+      // simulation n'a pas demarre il n'y en a aucune : on refuse, exactement
+      // comme un recepteur sans fix, plutot que d'aller la chercher au GPS.
+      currentPosition: ({required LocationSettings locationSettings}) async {
+        final position = marcheur.dernierePosition;
+        if (position == null) {
+          throw StateError('Aucune position simulee en demo');
+        }
+        return position;
+      },
+    );
+  }
   return PositionController(
     writeProfile: bgWritePositionProfile,
     readProfile: bgReadStoredPositionProfile,

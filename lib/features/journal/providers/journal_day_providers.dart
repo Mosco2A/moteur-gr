@@ -10,8 +10,9 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_segment_stats.dart';
-import '../../../core/providers/database_provider.dart';
 import '../../map/map_facade.dart' show statsTraceProvider;
+import '../../trek/trek_facade.dart'
+    show cadenceDesRelevesSimulesProvider, sourceDesRelevesProvider;
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -32,12 +33,26 @@ DateTime journalDayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 /// Une journee existe des qu'elle porte au moins une entree. L'ordre
 /// croissant est celui de la marche : le navigateur avance dans le temps
 /// quand on appuie sur la fleche droite.
+/// TACHE 742 — ET EN DEMO, UNE JOURNEE MARCHEE EST UNE JOURNEE DU CARNET.
+///
+/// CE QUI MANQUAIT, MESURE. Les journees du journal viennent des ENTREES du
+/// carnet. Or une demo n'ecrit aucune entree (tache 634, « rien en base ») :
+/// la liste restait donc VIDE, [journalSelectedDayProvider] rendait `null`, et
+/// la trace du jour comme les chiffres du jour rendaient le vide AVANT MEME de
+/// chercher un releve. Brancher la source des releves sans corriger cela
+/// n'aurait rien change a l'ecran : c'etait le deuxieme verrou, et le premier
+/// dans l'ordre.
+///
+/// Une journee ou l'on a marche existe, meme sans note — c'est vrai en vrai, et
+/// en demo c'est la seule qu'il y ait. Hors demo, `journeesEnMemoire()` rend
+/// une liste vide et ce provider se comporte EXACTEMENT comme avant.
 final journalDaysProvider = Provider<List<DateTime>>((ref) {
   final entries = ref.watch(journalScreenProvider.select((s) => s.entries));
   final days = <DateTime>{};
   for (final e in entries) {
     days.add(journalDayOf(e.createdAt));
   }
+  days.addAll(ref.watch(sourceDesRelevesProvider).journeesEnMemoire());
   final list = days.toList()..sort();
   return list;
 });
@@ -106,15 +121,16 @@ final journalDayTraceProvider = FutureProvider<List<SessionTrackPoint>>((
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const <SessionTrackPoint>[];
   final trailId = ref.watch(trailIdProvider);
-  final db = ref.watch(databaseProvider);
+  // TACHE 742 : la base en vrai, la memoire du marcheur simule en demo. Le
+  // signal de cadence fait relire la trace a chaque pas simule — sans lui elle
+  // resterait figee a l'instant ou l'ecran s'est ouvert.
+  ref.watch(cadenceDesRelevesSimulesProvider);
   // La trace DENSE, points estimes compris (lot 671-03) : elle se dessine.
   // Les chiffres de la journee, eux, se lisent a part, sur les seuls releves
   // reels ([journalDayStatsProvider]).
-  return db.sessionTrackPointsDao.getByCalendarDay(
-    trailId,
-    day,
-    read: TrackPointsRead.withEstimated,
-  );
+  return ref
+      .watch(sourceDesRelevesProvider)
+      .parJourCalendaire(trailId, day, read: TrackPointsRead.withEstimated);
 });
 
 /// Chiffres d'une journee de marche, mesures sur la trace GPS.
@@ -148,13 +164,11 @@ final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
-  final db = ref.watch(databaseProvider);
   final trace = ref.watch(statsTraceProvider.future);
-  final points = await db.sessionTrackPointsDao.getByCalendarDay(
-    trailId,
-    day,
-    read: TrackPointsRead.gpsOnly,
-  );
+  // TACHE 742 : meme [computeDayStats] qu'avant, entree differente en demo.
+  final points = await ref
+      .watch(sourceDesRelevesProvider)
+      .parJourCalendaire(trailId, day, read: TrackPointsRead.gpsOnly);
   return computeDayStats(points, trace: await trace);
 });
 
@@ -173,13 +187,13 @@ final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
-  final db = ref.watch(databaseProvider);
   final traceFuture = ref.watch(statsTraceProvider.future);
   // Les seuls releves reels : un cumul de chiffres (lot 671-03).
-  final all = await db.sessionTrackPointsDao.getByTrailId(
-    trailId,
-    read: TrackPointsRead.gpsOnly,
-  );
+  // TACHE 742 : la base en vrai, la memoire en demo — le cumul se calcule
+  // ensuite exactement de la meme facon, journee par journee.
+  final all = await ref
+      .watch(sourceDesRelevesProvider)
+      .parSentier(trailId, read: TrackPointsRead.gpsOnly);
   final trace = await traceFuture;
 
   final byDay = <DateTime, List<SessionTrackPoint>>{};

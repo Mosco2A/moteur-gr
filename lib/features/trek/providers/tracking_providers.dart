@@ -11,7 +11,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
-import '../../map/map_facade.dart' show stageDistanceCoveredProvider;
+import '../../map/map_facade.dart'
+    show stageDistanceCoveredProvider, statsTraceProvider;
 // TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
 // diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
 // relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
@@ -28,6 +29,7 @@ import '../../safety/safety_facade.dart' show ficheEcranVerrouilleProvider;
 import '../../treks/treks_facade.dart'
     show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;
 import '../data/background_gps_service.dart';
+import '../data/marcheur_simule.dart';
 import '../data/trek_recorder.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_stats.dart';
@@ -453,6 +455,16 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// Le GPS de fond n'est pas arme (`_startBackgroundCapture` sort en demo), et
   /// la session creee ne s'ecrit nulle part (`_persistSession` sort en demo) :
   /// elle vit en memoire et meurt avec [arreterSimulationDemo].
+  ///
+  /// TACHE 742 — ET MAINTENANT ELLE MARCHE POUR DE BON. Christophe, 08/10
+  /// 20:19 : « Le mode demo doit fonctionner et en mode simulation pour le
+  /// sentier en mode demo !!! ». Jusqu'ici cette methode creait une session et
+  /// s'arretait la : sans GPS et sans base, PERSONNE ne disait ou se trouvait
+  /// le randonneur, donc la barre de la carte gardait ses tirets, la carte
+  /// restait nue et le journal vide (recette du build 12). Le [MarcheurSimule]
+  /// fournit desormais cette source : il avance sur la trace du sentier, et
+  /// ses positions entrent par le robinet unique — la MEME porte que les
+  /// releves reels.
   Future<StartOutcome> demarrerSimulationDemo(String trailId) async {
     if (!ref.read(enDemoProvider)) return StartOutcome.purchaseRequired;
     if (state.status == TrackingSessionStatus.recording ||
@@ -464,7 +476,40 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
           : StartOutcome.cancelled;
     }
     await start(trailId);
+    await _lancerLeMarcheurSimule(trailId);
     return StartOutcome.started;
+  }
+
+  /// FAIT PARTIR LE MARCHEUR SIMULE sur la trace du sentier [trailId].
+  ///
+  /// LA TRACE N'EST PAS INVENTEE : c'est [statsTraceProvider], celle que les
+  /// chiffres projettent deja, donc la base d'abord et l'asset embarque en
+  /// secours (tache 606). Le marcheur en suit les points dans l'ordre.
+  ///
+  /// L'HORLOGE DE LA MARCHE PART AVEC LA SESSION (`session.startedAt`) : les
+  /// releves simules portent donc des jours de marche coherents avec elle, par
+  /// le meme `dayIndexFor` qu'en vrai.
+  ///
+  /// NE LEVE JAMAIS. Un sentier sans trace ne doit pas faire echouer un depart
+  /// de demonstration : la session existe, les ecrans s'ouvrent, et il ne
+  /// manquera que le mouvement.
+  Future<void> _lancerLeMarcheurSimule(String trailId) async {
+    try {
+      final trace = await ref.read(statsTraceProvider.future);
+      if (!ref.mounted || trace == null) return;
+      final session = state.session;
+      ref
+          .read(marcheurSimuleProvider)
+          .demarrer(
+            trace: trace,
+            trailId: trailId,
+            sessionId: session?.id,
+            depart: session?.startedAt,
+          );
+    } catch (_) {
+      // Best-effort : la simulation ne doit jamais casser l'ouverture des
+      // ecrans de la demonstration.
+    }
   }
 
   /// ARRETE LA SIMULATION DE DEMO SANS RIEN FINALISER NI RIEN ECRIRE
@@ -479,6 +524,13 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// Appelee par `quitterLaDemo` PENDANT que la barriere d'ecriture est encore
   /// posee — c'est ce qui garantit que l'arret lui-meme n'ecrit rien.
   Future<void> arreterSimulationDemo() async {
+    // LE MARCHEUR S'ARRETE LE PREMIER, ET IL JETTE SES RELEVES (tache 742).
+    // C'est ici — et nulle part ailleurs — que la memoire de la marche simulee
+    // disparait : aucune minuterie ne survit a la sortie de la demo, et il ne
+    // reste pas un releve a relire. [MarcheurSimule.arreter] est idempotent, un
+    // appel sans simulation en cours est le cas le plus courant (quitter la
+    // demo sans etre parti).
+    ref.read(marcheurSimuleProvider).arreter();
     await _bgPointsSub?.cancel();
     _bgPointsSub = null;
     _activeTrailId = null;
@@ -590,6 +642,11 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   }
 
   /// Met en pause le tracking.
+  ///
+  /// TACHE 742 : la marche simulee se met en pause AVEC le tracking. Sans cela
+  /// une pause laissait la minuterie avancer et les chiffres monter pendant que
+  /// l'ecran annoncait une pause — deux verites au meme instant. Le temps de la
+  /// pause ne compte pas dans la vitesse moyenne (cf. `MarcheurSimule`).
   void pause() {
     if (state.status != TrackingSessionStatus.recording) {
       return;
@@ -597,10 +654,13 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
     final recorder = ref.read(trekRecorderProvider);
     recorder.pause();
+    ref.read(marcheurSimuleProvider).pause();
     state = state.copyWith(status: TrackingSessionStatus.paused);
   }
 
   /// Reprend le tracking apres une pause.
+  ///
+  /// TACHE 742 : la marche simulee repart avec lui, la ou elle s'etait arretee.
   void resume() {
     if (state.status != TrackingSessionStatus.paused) {
       return;
@@ -608,6 +668,7 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
     final recorder = ref.read(trekRecorderProvider);
     recorder.resume();
+    ref.read(marcheurSimuleProvider).reprendre();
     state = state.copyWith(status: TrackingSessionStatus.recording);
   }
 
@@ -681,6 +742,15 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
         state.status != TrackingSessionStatus.paused) {
       return;
     }
+
+    // LA MARCHE SIMULEE CESSE D'AVANCER, MAIS GARDE SES RELEVES (tache 742).
+    // La randonnee se termine — arrivee detectee, « Simuler l'arrivee » ou fin
+    // manuelle — et le randonneur va REGARDER sa journee. Le journal du jour
+    // lit les releves en memoire : les jeter ici viderait l'ecran qu'il vient
+    // d'ouvrir. C'est `arreterSimulationDemo` qui les jette, a la sortie de la
+    // demo, parce que c'est elle qui promet qu'il ne reste rien. Sans effet
+    // hors demo (aucun marcheur n'a demarre).
+    ref.read(marcheurSimuleProvider).terminer();
 
     // Arreter la capture de fond, draîner le reliquat et couper l'abonnement.
     try {

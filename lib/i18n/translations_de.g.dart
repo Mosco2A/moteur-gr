@@ -870,6 +870,7 @@ class _Translations$demo$de extends Translations$demo$fr {
 	@override String get simulerEtape => 'Nächste Etappe simulieren';
 	@override String get simulerFin => 'Ankunft simulieren';
 	@override String get simulerRelancer => 'Demo neu starten';
+	@override String marcheSimulee({required Object facteur}) => 'Simulierter Marsch — Zeit ×${facteur} beschleunigt';
 	@override String get sortieTitre => 'Ende der Demo';
 	@override String get sortieEnTeteCatalogue => 'Sie finden die Demo oben in der Liste der Wege.';
 	@override String get sortieDansMonCompte => 'Die Schaltfläche erscheint nicht mehr im Katalog. Sie finden die Demo unter „Mein Konto“.';
@@ -5179,6 +5180,7 @@ extension on TranslationsDe {
 			'demo.simulerEtape' => 'Nächste Etappe simulieren',
 			'demo.simulerFin' => 'Ankunft simulieren',
 			'demo.simulerRelancer' => 'Demo neu starten',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Simulierter Marsch — Zeit ×${facteur} beschleunigt',
 			'demo.sortieTitre' => 'Ende der Demo',
 			'demo.sortieEnTeteCatalogue' => 'Sie finden die Demo oben in der Liste der Wege.',
 			'demo.sortieDansMonCompte' => 'Die Schaltfläche erscheint nicht mehr im Katalog. Sie finden die Demo unter „Mein Konto“.',
@@ -5228,9 +5230,9 @@ extension on TranslationsDe {
 			'onboarding.downloadTitle' => 'Lade deinen ersten Weg herunter',
 			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',
 			'onboarding.browseCatalog' => 'Katalog durchsuchen',
-			'onboarding.recoveryNudge' => 'Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon.',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.recoveryNudge' => 'Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon.',
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
@@ -5742,9 +5744,9 @@ extension on TranslationsDe {
 			'recap.exportGpx' => 'Strecke als GPX exportieren',
 			'recap.gpxExported' => ({required Object file}) => 'Strecke exportiert: ${file}',
 			'recap.gpxEmpty' => 'Kein GPS-Punkt zum Exportieren',
-			'recap.gpxError' => 'Export nicht möglich',
 			_ => null,
 		} ?? switch (path) {
+			'recap.gpxError' => 'Export nicht möglich',
 			'recap.daysSection' => 'Tag für Tag',
 			'recap.dayLabel' => ({required Object day}) => 'Tag ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} Etappe(n)',

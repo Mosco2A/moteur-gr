@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
-import '../../../core/providers/database_provider.dart';
 import '../../map/map_facade.dart'
     show currentPositionProvider, statsTraceProvider, trackPositionProvider;
+import '../data/source_des_releves.dart';
 import 'tracking_providers.dart';
 
 /// Chiffres MESURES de la randonnee EN COURS (correctif L6-2).
@@ -58,14 +58,21 @@ final liveTrekStatsProvider = FutureProvider<TrackSegmentStats>((ref) async {
   final position = ref.watch(trackPositionProvider).value;
   final trace = ref.watch(statsTraceProvider.future);
 
-  final db = ref.watch(databaseProvider);
   // LES SEULS RELEVES REELS (lot 671-03) : ils bornent et datent la tranche.
   // Un point estime ne date rien et ne borne rien ; la geometrie, elle, vient
   // du trace (lot 671-06).
-  final readings = await db.sessionTrackPointsDao.getBySessionId(
-    session.id,
-    read: TrackPointsRead.gpsOnly,
-  );
+  //
+  // TACHE 742 — LA BASE EN VRAI, LA MEMOIRE EN DEMO, ET RIEN D'AUTRE NE CHANGE.
+  // Cette lecture allait droit au DAO ; en demo la table reste vide (tache 634,
+  // « rien en base »), donc `hasData` etait faux et la barre de la carte
+  // affichait Parcouru « -- », Vit. moy. « -- », D+ « -- » quelle que soit la
+  // distance marchee. [SourceDesReleves] choisit D'OU viennent les releves — la
+  // base, ou la memoire du marcheur simule. LA SUITE EST IDENTIQUE : le meme
+  // [computeTrackStatsOnTrace], le meme trace, la meme borne de fin. Meme
+  // fonction de statistiques, entree differente.
+  final readings = await ref
+      .watch(sourceDesRelevesProvider)
+      .parSession(session.id, read: TrackPointsRead.gpsOnly);
   return computeTrackStatsOnTrace(
     readings: readings,
     trace: await trace,

@@ -1794,6 +1794,9 @@ class Translations$demo$fr {
 	/// fr: 'Recommencer la démo'
 	String get simulerRelancer => 'Recommencer la démo';
 
+	/// fr: 'Marche simulée — temps accéléré ×$facteur'
+	String marcheSimulee({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}';
+
 	/// fr: 'Fin de la démo'
 	String get sortieTitre => 'Fin de la démo';
 
@@ -9284,6 +9287,7 @@ extension on Translations {
 			'demo.simulerEtape' => 'Simuler l\'étape suivante',
 			'demo.simulerFin' => 'Simuler l\'arrivée',
 			'demo.simulerRelancer' => 'Recommencer la démo',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}',
 			'demo.sortieTitre' => 'Fin de la démo',
 			'demo.sortieEnTeteCatalogue' => 'Vous retrouverez la démo en haut de la liste des sentiers.',
 			'demo.sortieDansMonCompte' => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».',
@@ -9333,9 +9337,9 @@ extension on Translations {
 			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
 			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
-			'onboarding.recoveryNudge' => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.recoveryNudge' => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
 			'monetization.paywallTitle' => 'Débloquez cette randonnée',
 			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.',
@@ -9847,9 +9851,9 @@ extension on Translations {
 			'recap.exportGpx' => 'Exporter la trace en GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Trace exportée : ${file}',
 			'recap.gpxEmpty' => 'Aucun point GPS à exporter',
-			'recap.gpxError' => 'Export impossible',
 			_ => null,
 		} ?? switch (path) {
+			'recap.gpxError' => 'Export impossible',
 			'recap.daysSection' => 'Jour par jour',
 			'recap.dayLabel' => ({required Object day}) => 'Jour ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} étape(s)',

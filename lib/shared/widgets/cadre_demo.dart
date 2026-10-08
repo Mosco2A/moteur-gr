@@ -99,9 +99,25 @@ const double kLargeurMaxPastilleDemo = 180;
 
 /// Enveloppe l'arbre route : pendant la demo, un bandeau orange en tete.
 class CadreDemo extends ConsumerWidget {
-  const CadreDemo({super.key, required this.child});
+  const CadreDemo({super.key, required this.child, this.sousLeBandeau});
 
   final Widget child;
+
+  /// CE QUE LA DEMO AJOUTE SOUS LE BANDEAU, quand elle a quelque chose a dire
+  /// (tache 742 : la mention « marche simulee » pendant la simulation).
+  ///
+  /// POURQUOI UN PARAMETRE ET PAS UN IMPORT. Ce fichier vit dans `shared/`, et
+  /// le socle ne connait pas ses clients (ARB-645-05-a) : importer un widget de
+  /// `features/trek` depuis ici aurait ajoute une fleche du socle vers une
+  /// feature, celle que la garde `couches_respectees_645_test.dart` plafonne —
+  /// elle est a son plafond, et on n'assouplit pas une garde pour poser un
+  /// libelle. Le bandeau ne sait donc pas CE QU'il montre ; `main.dart`, qui
+  /// compose l'application et n'est ni `core`, ni `shared`, ni une feature, le
+  /// lui donne.
+  ///
+  /// Nul par defaut : le cadre reste alors exactement celui du lot 649, et la
+  /// hauteur poussee a l'application ne change pas d'un pixel.
+  final Widget? sousLeBandeau;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,6 +126,7 @@ class CadreDemo extends ConsumerWidget {
     return Column(
       children: [
         const _BandeauDemo(),
+        if (sousLeBandeau != null) sousLeBandeau!,
         Expanded(
           // LE HAUT DE LA ZONE SURE EST DEJA MANGE PAR LE BANDEAU. Sans ce
           // retrait, chaque `Scaffold` du dessous ajouterait une seconde fois

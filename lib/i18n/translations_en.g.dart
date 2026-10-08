@@ -870,6 +870,7 @@ class _Translations$demo$en extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simulate the next stage';
 	@override String get simulerFin => 'Simulate the finish';
 	@override String get simulerRelancer => 'Restart the demo';
+	@override String marcheSimulee({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}';
 	@override String get sortieTitre => 'End of demo';
 	@override String get sortieEnTeteCatalogue => 'You will find the demo at the top of the trail list.';
 	@override String get sortieDansMonCompte => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.';
@@ -5179,6 +5180,7 @@ extension on TranslationsEn {
 			'demo.simulerEtape' => 'Simulate the next stage',
 			'demo.simulerFin' => 'Simulate the finish',
 			'demo.simulerRelancer' => 'Restart the demo',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}',
 			'demo.sortieTitre' => 'End of demo',
 			'demo.sortieEnTeteCatalogue' => 'You will find the demo at the top of the trail list.',
 			'demo.sortieDansMonCompte' => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.',
@@ -5228,9 +5230,9 @@ extension on TranslationsEn {
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
-			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
@@ -5742,9 +5744,9 @@ extension on TranslationsEn {
 			'recap.exportGpx' => 'Export the track as GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Track exported: ${file}',
 			'recap.gpxEmpty' => 'No GPS point to export',
-			'recap.gpxError' => 'Export failed',
 			_ => null,
 		} ?? switch (path) {
+			'recap.gpxError' => 'Export failed',
 			'recap.daysSection' => 'Day by day',
 			'recap.dayLabel' => ({required Object day}) => 'Day ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} stage(s)',

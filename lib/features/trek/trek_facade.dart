@@ -53,6 +53,20 @@ export 'data/gps_service.dart'
         positionControllerProvider;
 export 'data/position_connue.dart'
     show PositionConnue, positionsConnuesProvider;
+// TACHE 742, LA DEMO QUI MARCHE : `journal` lit `sourceDesRelevesProvider` —
+// d'ou viennent les releves de marche : la base en vrai, et la memoire du
+// marcheur simule en demo. ON ELARGIT DONC LE CONTRAT DE `trek`, et c'est une
+// decision : le journal du jour mesurait ses chiffres sur
+// `session_track_points`, une table que la demo laisse vide par construction
+// (tache 634). Sans cette porte il
+// aurait fallu soit un `if (enDemo)` recopie dans le journal, soit un second
+// calcul de journee — exactement les deux choses que le lot 671-06 avait
+// supprimees. La facade rend le cout visible : une ligne, et un seul symbole.
+export 'data/source_des_releves.dart'
+    show
+        SourceDesReleves,
+        cadenceDesRelevesSimulesProvider,
+        sourceDesRelevesProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
 export 'domain/longueur_de_pas.dart' show StrideCalibration;
 export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;

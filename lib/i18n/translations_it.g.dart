@@ -870,6 +870,7 @@ class _Translations$demo$it extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simula la tappa successiva';
 	@override String get simulerFin => 'Simula l\'arrivo';
 	@override String get simulerRelancer => 'Ricomincia la demo';
+	@override String marcheSimulee({required Object facteur}) => 'Camminata simulata — tempo accelerato ×${facteur}';
 	@override String get sortieTitre => 'Fine della demo';
 	@override String get sortieEnTeteCatalogue => 'Ritroverai la demo in cima all\'elenco dei sentieri.';
 	@override String get sortieDansMonCompte => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.';
@@ -5179,6 +5180,7 @@ extension on TranslationsIt {
 			'demo.simulerEtape' => 'Simula la tappa successiva',
 			'demo.simulerFin' => 'Simula l\'arrivo',
 			'demo.simulerRelancer' => 'Ricomincia la demo',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Camminata simulata — tempo accelerato ×${facteur}',
 			'demo.sortieTitre' => 'Fine della demo',
 			'demo.sortieEnTeteCatalogue' => 'Ritroverai la demo in cima all\'elenco dei sentieri.',
 			'demo.sortieDansMonCompte' => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.',
@@ -5228,9 +5230,9 @@ extension on TranslationsIt {
 			'onboarding.downloadTitle' => 'Scarica il tuo primo sentiero',
 			'onboarding.downloadSubtitle' => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.',
 			'onboarding.browseCatalog' => 'Sfoglia il catalogo',
-			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
 			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',
@@ -5742,9 +5744,9 @@ extension on TranslationsIt {
 			'recap.exportGpx' => 'Esporta la traccia in GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Traccia esportata: ${file}',
 			'recap.gpxEmpty' => 'Nessun punto GPS da esportare',
-			'recap.gpxError' => 'Esportazione non riuscita',
 			_ => null,
 		} ?? switch (path) {
+			'recap.gpxError' => 'Esportazione non riuscita',
 			'recap.daysSection' => 'Giorno per giorno',
 			'recap.dayLabel' => ({required Object day}) => 'Giorno ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} tappa/e',

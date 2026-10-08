@@ -41,6 +41,7 @@ import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
     show healthInfoFileProvider;
 import 'features/safety/presentation/backup_consent_gate.dart';
+import 'features/trek/presentation/mention_marche_simulee.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 import 'shared/widgets/app_logo.dart';
@@ -596,6 +597,11 @@ class BootstrapGate extends ConsumerWidget {
       // orange », et la sortie doit rester visible en permanence. Hors demo, ce
       // widget rend son enfant tel quel, sans ajouter un seul noeud.
       data: (_) => CadreDemo(
+        // TACHE 742 : la mention « marche simulee » prend place sous le
+        // bandeau, pendant toute la simulation. C'est ICI qu'elle est donnee au
+        // cadre, et pas dans le cadre : `shared/` ne doit pas connaitre
+        // `features/` (ARB-645-05-a), et `main.dart` compose l'application.
+        sousLeBandeau: const MentionMarcheSimulee(),
         child: BackupConsentGate(
           child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
         ),

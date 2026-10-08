@@ -870,6 +870,7 @@ class _Translations$demo$es extends Translations$demo$fr {
 	@override String get simulerEtape => 'Simular la siguiente etapa';
 	@override String get simulerFin => 'Simular la llegada';
 	@override String get simulerRelancer => 'Reiniciar la demo';
+	@override String marcheSimulee({required Object facteur}) => 'Marcha simulada — tiempo acelerado ×${facteur}';
 	@override String get sortieTitre => 'Fin de la demo';
 	@override String get sortieEnTeteCatalogue => 'Encontrarás la demo en la parte superior de la lista de senderos.';
 	@override String get sortieDansMonCompte => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.';
@@ -5179,6 +5180,7 @@ extension on TranslationsEs {
 			'demo.simulerEtape' => 'Simular la siguiente etapa',
 			'demo.simulerFin' => 'Simular la llegada',
 			'demo.simulerRelancer' => 'Reiniciar la demo',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Marcha simulada — tiempo acelerado ×${facteur}',
 			'demo.sortieTitre' => 'Fin de la demo',
 			'demo.sortieEnTeteCatalogue' => 'Encontrarás la demo en la parte superior de la lista de senderos.',
 			'demo.sortieDansMonCompte' => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.',
@@ -5228,9 +5230,9 @@ extension on TranslationsEs {
 			'onboarding.downloadTitle' => 'Descarga tu primer sendero',
 			'onboarding.downloadSubtitle' => 'Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.',
 			'onboarding.browseCatalog' => 'Explorar el catálogo',
-			'onboarding.recoveryNudge' => 'Recuerda anotar tu código de recuperación (en ajustes): abre tus datos en otro teléfono.',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.recoveryNudge' => 'Recuerda anotar tu código de recuperación (en ajustes): abre tus datos en otro teléfono.',
 			'monetization.demoBanner' => 'Modo demo — toca para desbloquear',
 			'monetization.paywallTitle' => 'Desbloquea este trek',
 			'monetization.paywallBody' => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.',
@@ -5742,9 +5744,9 @@ extension on TranslationsEs {
 			'recap.exportGpx' => 'Exportar la traza en GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Traza exportada: ${file}',
 			'recap.gpxEmpty' => 'Ningún punto GPS que exportar',
-			'recap.gpxError' => 'No se ha podido exportar',
 			_ => null,
 		} ?? switch (path) {
+			'recap.gpxError' => 'No se ha podido exportar',
 			'recap.daysSection' => 'Día a día',
 			'recap.dayLabel' => ({required Object day}) => 'Día ${day}',
 			'recap.dayStages' => ({required Object count}) => '${count} etapa(s)',

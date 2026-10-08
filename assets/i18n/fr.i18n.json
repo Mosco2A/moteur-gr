@@ -1123,6 +1123,7 @@
     "simulerEtape": "Simuler l'étape suivante",
     "simulerFin": "Simuler l'arrivée",
     "simulerRelancer": "Recommencer la démo",
+    "marcheSimulee": "Marche simulée — temps accéléré ×$facteur",
     "sortieTitre": "Fin de la démo",
     "sortieEnTeteCatalogue": "Vous retrouverez la démo en haut de la liste des sentiers.",
     "sortieDansMonCompte": "Le bouton ne s'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».",
