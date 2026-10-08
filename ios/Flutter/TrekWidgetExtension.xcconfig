@@ -1,0 +1,175 @@
+// ============================================================================
+// LE REGLAGE DE BASE DE L EXTENSION DE WIDGET — ET POURQUOI IL EXISTE
+// (tache 735)
+// ============================================================================
+//
+// CE FICHIER EST LE REGLAGE DE BASE DES TROIS CONFIGURATIONS DE LA CIBLE
+// `TrekWidgetExtension` (Debug, Release, Profile). Il ne contient qu une
+// ligne, et c est le but : l extension a besoin des variables de version de
+// Flutter, et de RIEN D AUTRE.
+//
+// ---------------------------------------------------------------------------
+// LE DEFAUT QU IL REPARE — L EDITION DE LIENS DU 08/10/2026
+// ---------------------------------------------------------------------------
+//
+// Jusqu a cette tache, les trois configurations de `TrekWidgetExtension`
+// prenaient pour base `Flutter/Debug.xcconfig` et `Flutter/Release.xcconfig` —
+// LES MEMES FICHIERS QUE L APPLICATION. C est arrive le 06/06/2026 avec le
+// commit `82e7c48b`, qui a cree la cible du widget en recopiant les reglages
+// de la cible `Runner`.
+//
+// Or ces deux fichiers ne sont pas de simples reglages : l outil Flutter y
+// AJOUTE une ligne a chaque `flutter pub get` et a chaque `flutter build ios`.
+// La fonction `_addPodsDependencyToFlutterXcconfig`
+// (`packages/flutter_tools/lib/src/macos/cocoapods.dart`, lignes 298 a 308)
+// ecrit en TETE du fichier :
+//
+//     #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+//
+// et le nom de ce fichier est EN DUR dans l outil — `includePodsXcconfig`,
+// meme source, lignes 286 a 288, rend toujours `Pods-Runner`. C est le reglage
+// que CocoaPods genere POUR LA CIBLE `Runner` : il porte le `OTHER_LDFLAGS` de
+// l application, c est-a-dire un `-framework "..."` par pod lie, les chemins
+// de recherche de frameworks, et `-ObjC`.
+//
+// Resultat : l extension de widget heritait de la LIGNE D EDITION DE LIENS DE
+// L APPLICATION. Elle devait donc lier les greffons de l application — dont
+// HUIT sont des frameworks STATIQUES (`s.static_framework = true` dans leur
+// podspec : `cloud_firestore`, `firebase_analytics`, `firebase_auth`,
+// `firebase_core`, `firebase_crashlytics`, `firebase_storage`,
+// `google_mobile_ads`, `permission_handler_apple`). Un framework statique n est
+// pas resolu chez lui : ses fichiers objets entrent dans la cible qui le lie,
+// et c est a CETTE cible de fournir les symboles qu ils reclament. Ils
+// reclament ceux du moteur Flutter.
+//
+// Et le moteur, l extension ne l a pas. Il n arrive JAMAIS par CocoaPods :
+// `flutter_install_ios_engine_pod` (`packages/flutter_tools/bin/podhelper.rb`,
+// lignes 210 a 246) ecrit un podspec FACTICE dont le seul contenu est
+// `s.vendored_frameworks = 'path/to/nothing'`, avec le commentaire explicite
+// « Framework linking is handled by Flutter tooling, not CocoaPods » (lignes
+// 237 a 239). Le vrai `Flutter.framework` arrive par deux chemins, et les deux
+// sont reserves a d autres cibles que la notre :
+//
+//   - pour les cibles de POD : `flutter_additional_ios_build_settings`
+//     (podhelper.rb, lignes 93 a 103) pose `FRAMEWORK_SEARCH_PATHS` sur la
+//     tranche du `Flutter.xcframework` du cache et `OTHER_LDFLAGS =
+//     $(inherited) -framework Flutter`. Cette fonction ne tourne que sur
+//     `installer.pods_project.targets` — les pods, pas les cibles du projet
+//     Runner ;
+//
+//   - pour la cible `Runner` : sa phase « Run Script » lance
+//     `xcode_backend.sh build`, qui appelle `flutter assemble
+//     release_ios_bundle_flutter_assets --output=${BUILT_PRODUCTS_DIR}/`
+//     (`packages/flutter_tools/bin/xcode_backend.dart`, lignes 562 a 595) et
+//     depose `Flutter.framework` dans `BUILT_PRODUCTS_DIR`. Cette phase
+//     appartient a `Runner`, et `Runner` DEPEND de l extension : quand
+//     l extension s edite, elle n a pas encore tourne.
+//
+// L extension se retrouvait donc a resoudre les symboles du moteur sans le
+// moteur. Le journal du 08/10/2026 le disait symbole par symbole :
+// `FlutterStandardReader`, `FlutterStandardWriter`, `FlutterStandardReaderWriter`
+// et `FlutterStandardMessageCodec` avec leurs META-CLASSES (donc du code qui en
+// HERITE : les codecs generes par Pigeon des greffons Firebase),
+// `FlutterViewController` (`FLTGoogleMobileAdsPlugin.m`, ligne 336),
+// `FlutterBasicMessageChannel`, `FlutterEventChannel`, `FlutterMethodChannel`,
+// `FlutterError`, `FlutterMethodNotImplemented`, `FlutterEndOfEventStream`,
+// `FlutterStandardTypedData`, `FlutterStandardMethodCodec`. Et RIEN d autre :
+// ni `FlutterAppDelegate` ni `FlutterSceneDelegate`, que l application, elle,
+// reclame par `AppDelegate.swift` et `SceneDelegate.swift`. La liste ne
+// nommait donc pas la cible en echec, mais elle la decrivait : une cible qui
+// lie les greffons statiques de l application et ne compile aucune source de
+// l application. C est celle-ci.
+//
+// ---------------------------------------------------------------------------
+// POURQUOI LE DEFAUT NE S ETAIT PAS VU AVANT
+// ---------------------------------------------------------------------------
+//
+// Parce qu il lui fallait DEUX conditions, et qu elles ne se sont reunies que
+// le 08/10/2026 :
+//
+//   1. que la compilation aille jusqu a l edition de liens. Au build du 07/10
+//      a 18:42, Xcode s arretait sur `Cycle inside Runner` — un cycle de
+//      phases, que la tache 734 a ouvert ;
+//
+//   2. que les greffons statiques soient dans CocoaPods. Au build du 07/10, la
+//      chaine etait un Flutter recent et l integration Swift Package Manager
+//      etait active : le journal annoncait « Adding Swift Package Manager
+//      integration... 148.2s » puis nommait les SEPT greffons qui ne la
+//      supportent pas. Ces sept sont exactement les sept du depot qui n ont pas
+//      de `Package.swift` — `flutter_background_service_ios`,
+//      `flutter_local_notifications`, `health`, `home_widget`,
+//      `permission_handler_apple`, `printing`, `sign_in_with_apple`. Les SEPT
+//      AUTRES frameworks statiques, tous Firebase et Google Ads, etaient donc
+//      passes en paquets Swift, attaches a la cible `Runner` SEULE, hors de ce
+//      reglage. Il ne restait dans CocoaPods qu un seul framework statique,
+//      `permission_handler_apple`, et `pod install` durait 835 ms.
+//      Le 08/10, Flutter est epingle a 3.41.5, ou la fonction Swift Package
+//      Manager existe mais n est pas active par defaut
+//      (`packages/flutter_tools/lib/src/features.dart`, lignes 207 a 214 :
+//      `available: true` sur stable, sans `enabledByDefault`). Les quarante
+//      greffons sont redevenus des pods — `pod install` est passe a 195,8 s — et
+//      les huit frameworks statiques sont revenus dans ce reglage d un coup.
+//
+// L EPINGLAGE DE FLUTTER N EST DONC PAS LA CAUSE : il a REVELE un defaut qui
+// dormait dans le depot depuis le 06/06/2026. Desepingler le cacherait a
+// nouveau aux sept huitiemes — `permission_handler_apple` resterait, et avec
+// lui `FlutterError`, `FlutterMethodChannel` et `FlutterMethodNotImplemented`.
+//
+// ---------------------------------------------------------------------------
+// POURQUOI UN FICHIER A LUI, ET PAS « AUCUN REGLAGE DE BASE »
+// ---------------------------------------------------------------------------
+//
+// Parce que l extension a besoin de DEUX variables, et qu elles vivent dans
+// `Generated.xcconfig` : `TrekWidget/Info.plist` ecrit
+// `CFBundleShortVersionString = $(MARKETING_VERSION)` et `CFBundleVersion =
+// $(CURRENT_PROJECT_VERSION)`, que ses configurations resolvent en
+// `$(FLUTTER_BUILD_NAME)` et `$(FLUTTER_BUILD_NUMBER)`. Sans reglage de base du
+// tout, ces deux cles seraient VIDES dans le paquet de l extension, et Apple
+// refuse un `.appex` sans version — un echec qui n arriverait qu au depot sur
+// App Store Connect, encore plus tard et encore plus cher que celui-ci.
+//
+// `Generated.xcconfig` ne contient que des variables `FLUTTER_*`,
+// `COCOAPODS_PARALLEL_CODE_SIGN`, `ARCHS` et `EXCLUDED_ARCHS`
+// (`packages/flutter_tools/lib/src/ios/xcode_build_settings.dart`) : aucun
+// drapeau d edition de liens. C est exactement ce qu il faut, et rien de plus.
+//
+// ET CE FICHIER-CI EST HORS DE PORTEE DE L OUTIL. `xcodeConfigFor`
+// (`packages/flutter_tools/lib/src/xcode_project.dart`, ligne 458) rend
+// `ios/Flutter/<mode>.xcconfig`, et `addPodsDependencyToFlutterXcconfig`
+// (cocoapods.dart, lignes 281 a 284) ne l appelle que pour `Debug` et
+// `Release`. Aucune ligne `#include?` de CocoaPods ne sera donc jamais ecrite
+// ici : la reparation ne peut pas se defaire toute seule au prochain
+// `flutter pub get`.
+//
+// ---------------------------------------------------------------------------
+// LA COMPARAISON AVEC GR20, QUI COMPILE ET SE DEPOSE VRAIMENT SUR iPHONE
+// ---------------------------------------------------------------------------
+//
+// Dans `GR20/app/ios/Runner.xcodeproj/project.pbxproj`, il y a TROIS
+// `baseConfigurationReference` pour deux cibles et un projet : les trois
+// configurations de la cible `Runner`, et elles seules. Les trois
+// configurations de `RunnerTests` n en ont aucune, et les trois du projet non
+// plus. Chez nous il y en avait SIX : les trois de `Runner` et les trois de
+// `TrekWidgetExtension`. La seule cible qui porte le reglage Flutter de
+// l application est desormais, comme chez GR20, la cible `Runner`.
+//
+// ---------------------------------------------------------------------------
+// CE QUI SURVEILLE CE FICHIER DESORMAIS
+// ---------------------------------------------------------------------------
+//
+// `test/structurel/le_widget_ne_porte_pas_le_xcconfig_de_l_app_735_test.dart`
+// resout la chaine comme Xcode — liste de configurations, configurations,
+// reglage de base, fichier pointe — et rougit si une configuration de
+// `TrekWidgetExtension` reprend `Debug.xcconfig` ou `Release.xcconfig`, ou si
+// ce fichier-ci se met a inclure un reglage de CocoaPods.
+//
+// SI UN JOUR L EXTENSION A VRAIMENT BESOIN D UN GREFFON (par exemple
+// `home_widget` pour `HomeWidgetBackgroundWorker`), LA REPONSE N EST PAS DE
+// REMETTRE LE REGLAGE DE L APPLICATION : c est de declarer la cible
+// `TrekWidgetExtension` dans `ios/Podfile`, avec son propre bloc `target`.
+// CocoaPods genere alors un `Pods-TrekWidgetExtension.xcconfig` POUR ELLE, et
+// `flutter_additional_ios_build_settings` donne au greffon le moteur dont il a
+// besoin. Aujourd hui `TrekWidget/TrekWidget.swift` n importe que `WidgetKit`
+// et `SwiftUI` : il n a besoin de rien.
+// ============================================================================
+#include "Generated.xcconfig"
