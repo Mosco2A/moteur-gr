@@ -221,10 +221,16 @@ class FeasibilityQuestionnaireFallback extends ConsumerWidget {
             label: f.openProfile,
             onTap: () => context.push('/trail/$trailId/hiker-profile'),
           ),
-          _ShortcutCard(
-            icon: StepwaysIcons.pas,
-            label: f.openWalkTest,
-            onTap: () => context.push('/trail/$trailId/walk-test'),
+          // GRISE EN DEMO (tache 744) : le MEME ecran que le raccourci grise
+          // plus haut, atteint ici par la vue de depannage. Le test de marche
+          // DEMANDE la permission de position avant de mesurer, et cette
+          // fenetre systeme mettrait la marche simulee en pause.
+          GriseEnDemo(
+            child: _ShortcutCard(
+              icon: StepwaysIcons.pas,
+              label: f.openWalkTest,
+              onTap: () => context.push('/trail/$trailId/walk-test'),
+            ),
           ),
           _ShortcutCard(
             icon: StepwaysIcons.historique,

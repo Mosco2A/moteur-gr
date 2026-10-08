@@ -11,6 +11,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/trek_feasibility_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
@@ -99,14 +100,31 @@ class FeasibilityGuidedFlow extends ConsumerWidget {
             onTap: () => onOpenStep('/trail/$trailId/hiker-profile'),
           ),
           // Etape 2 : test 6 minutes (optionnel mais alimente le calcul).
-          _FlowStepCard(
-            step: 2,
-            icon: StepwaysIcons.pas,
-            title: f.flow.stepWalkTest,
-            subtitle: f.flow.stepWalkTestSub,
-            done: criteria.hasWalkTest,
-            optional: true,
-            onTap: () => onOpenStep('/trail/$trailId/walk-test'),
+          //
+          // GRISEE EN DEMO (tache 744), pour DEUX raisons qui vont dans le
+          // meme sens. D'abord la regle de la tache 638 (bug 14) : le test de
+          // marche SAISIT une donnee de personne et l'ecrit dans le profil,
+          // et les trois raccourcis de `feasibility_tiles.dart` — fiche, test
+          // de marche, randonnees passees — sont grises pour exactement cette
+          // raison. Ce deuxieme chemin vers le MEME ecran avait ete oublie.
+          // Ensuite la demo : le test de marche DEMANDE la permission de
+          // position (`walk_test_provider`, `gps.requestPermission()`) avant
+          // de mesurer. En demo, cette fenetre systeme surgirait sur la
+          // demonstration et, en passant l'application en arriere-plan,
+          // mettrait la marche simulee en pause. Grisee, elle DIT pourquoi.
+          //
+          // Elle ne bloque rien : le test est `optional`, et les criteres
+          // obligatoires sont `profileComplete && hasPastHike`.
+          GriseEnDemo(
+            child: _FlowStepCard(
+              step: 2,
+              icon: StepwaysIcons.pas,
+              title: f.flow.stepWalkTest,
+              subtitle: f.flow.stepWalkTestSub,
+              done: criteria.hasWalkTest,
+              optional: true,
+              onTap: () => onOpenStep('/trail/$trailId/walk-test'),
+            ),
           ),
           // Etape 3 : 5 dernieres randos.
           _FlowStepCard(

@@ -32,7 +32,9 @@
 /// distance cumulee donnee. Cette distance, elle ne la calcule pas non plus :
 /// chaque [TrackPoint] porte son `distanceFromStart`. Entre deux points elle
 /// interpole pour que le deplacement soit FLUIDE a l'oeil et que les chiffres
-/// montent regulierement.
+/// montent regulierement — ce placement vit a cote, dans
+/// [pointSurLaTrace] (`placement_sur_la_trace.dart`), sorti d'ici par la
+/// garde de taille ECR-15 a la tache 744.
 ///
 /// LE TEMPS EST ACCELERE, ET LES RELEVES PORTENT LE TEMPS DE LA MARCHE, PAS
 /// CELUI DE LA DEMONSTRATION. C'est le point le plus important de ce fichier.
@@ -62,6 +64,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart' show SessionTrackPoint;
 import '../../../core/geo/trace_point.dart';
+import 'placement_sur_la_trace.dart';
 
 /// Fabrique de minuteries, injectable pour que les tests ne dorment pas.
 typedef FabriqueDeMinuterie =
@@ -84,10 +87,12 @@ enum EtatDuMarcheur {
 
 /// UN MARCHEUR SIMULE SUR LA TRACE DU SENTIER DE DEMONSTRATION.
 ///
-/// Cycle de vie : [demarrer] -> [pause] / [reprendre] -> [arreter]. Il s'arrete
-/// TOUJOURS quand l'application passe en arriere-plan (cf. [demarrer]) et quand
-/// on quitte la demo (`arreterSimulationDemo` appelle [arreter]). Aucune
-/// minuterie ne survit a la sortie.
+/// Cycle de vie : [demarrer] -> [pause] / [reprendre] -> [arreter]. Il se met
+/// TOUJOURS en pause quand l'application passe en arriere-plan, et il REPREND
+/// quand elle revient au premier plan si c'est l'arriere-plan qui l'avait
+/// interrompu (cf. [_suivreLeCycleDeVie]) ; il s'arrete quand on quitte la
+/// demo (`arreterSimulationDemo` appelle [arreter]). Aucune minuterie ne
+/// survit a la sortie.
 class MarcheurSimule {
   /// [minuterie] et [maintenant] sont injectes par les tests ; en production ce
   /// sont `Timer.periodic` et `DateTime.now`.
@@ -163,6 +168,17 @@ class MarcheurSimule {
 
   Timer? _minute;
   AppLifecycleListener? _cycleDeVie;
+
+  /// VRAI quand c'est L'ARRIERE-PLAN qui a interrompu une marche EN COURS, et
+  /// donc que le retour au premier plan doit la relancer.
+  ///
+  /// POURQUOI UN DRAPEAU ET PAS SEULEMENT L'ETAT « EN PAUSE ». La reprise doit
+  /// avoir lieu si et seulement si la marche ETAIT EN COURS : jamais apres
+  /// l'arrivee, jamais apres un arret, jamais apres la sortie de demo. Ce
+  /// drapeau nomme exactement cette cause. Il garde aussi sa justesse le jour
+  /// ou un bouton « Pause » existera dans l'interface : une pause VOULUE par
+  /// le randonneur ne doit pas etre defaite par un simple passage d'ecran.
+  bool _interrompuParLArrierePlan = false;
   final List<SessionTrackPoint> _releves = <SessionTrackPoint>[];
 
   List<TrackPoint> _trace = const <TrackPoint>[];
@@ -245,18 +261,47 @@ class MarcheurSimule {
     _emettre();
     _armerLaMinuterie();
 
-    // ELLE S'ARRETE QUAND L'APPLICATION PASSE EN ARRIERE-PLAN. Une simulation
-    // qui continuerait d'avancer ecran eteint ferait tourner une minuterie pour
-    // une demonstration que personne ne regarde — et surtout, la demo ne doit
-    // RIEN faire vivre en fond, c'est sa promesse.
+    // ELLE S'ARRETE QUAND L'APPLICATION PASSE EN ARRIERE-PLAN, ET ELLE REPREND
+    // QUAND ELLE REVIENT. Une simulation qui continuerait d'avancer ecran
+    // eteint ferait tourner une minuterie pour une demonstration que personne
+    // ne regarde — et surtout, la demo ne doit RIEN faire vivre en fond, c'est
+    // sa promesse. Voir [_suivreLeCycleDeVie] pour la reprise.
     if (_surveillerLeCycleDeVie) {
-      _cycleDeVie ??= AppLifecycleListener(
-        onStateChange: (etatDeLApp) {
-          if (etatDeLApp != AppLifecycleState.resumed) pause();
-        },
-      );
+      _cycleDeVie ??= AppLifecycleListener(onStateChange: _suivreLeCycleDeVie);
     }
     return true;
+  }
+
+  /// L'ARRIERE-PLAN MET EN PAUSE, LE PREMIER PLAN REPREND (tache 744).
+  ///
+  /// CE QUI NE MARCHAIT PAS, MESURE A L'EXECUTION (recette du lot 742, tache
+  /// 743) : la pause existait, la reprise N'EXISTAIT PAS. Tout passage en
+  /// arriere-plan, meme d'une seconde — une notification, une fenetre systeme,
+  /// un coup d'oeil a une autre application — arretait la demonstration
+  /// DEFINITIVEMENT. Et comme aucun bouton « Reprendre » n'existe dans
+  /// l'interface, il fallait quitter la demo et tout recommencer.
+  ///
+  /// LA PAUSE EN ARRIERE-PLAN RESTE : c'est une promesse du lot 742, rien ne
+  /// vit en fond. C'est la REPRISE qui manquait.
+  ///
+  /// ELLE N'A LIEU QUE SI LA MARCHE ETAIT EN COURS, et le drapeau
+  /// [_interrompuParLArrierePlan] est exactement cette condition : apres
+  /// l'arrivee, apres un arret et apres la sortie de demo, rien ne redemarre.
+  /// Dans ces trois cas l'observateur est d'ailleurs deja relache ([terminer],
+  /// [arreter]) — le drapeau est la seconde serrure, pas la seule.
+  void _suivreLeCycleDeVie(AppLifecycleState etatDeLApp) {
+    if (etatDeLApp == AppLifecycleState.resumed) {
+      if (!_interrompuParLArrierePlan) return;
+      _interrompuParLArrierePlan = false;
+      reprendre();
+      return;
+    }
+    // Les etats intermediaires (`inactive`, `hidden`) passent ici aussi : la
+    // premiere pause gagne, les suivantes sont sans effet, et le drapeau ne
+    // se pose que sur une marche VRAIMENT en cours.
+    if (_etat != EtatDuMarcheur.enMarche) return;
+    _interrompuParLArrierePlan = true;
+    pause();
   }
 
   /// MET LA MARCHE EN PAUSE : la minuterie est coupee, les releves restent.
@@ -300,6 +345,9 @@ class MarcheurSimule {
     _minute = null;
     _cycleDeVie?.dispose();
     _cycleDeVie = null;
+    // L'arrivee efface la cause de reprise : revenir au premier plan apres
+    // une arrivee ne doit RIEN relancer.
+    _interrompuParLArrierePlan = false;
     if (_etat == EtatDuMarcheur.enMarche || _etat == EtatDuMarcheur.enPause) {
       _changerEtat(EtatDuMarcheur.arrive);
     }
@@ -315,6 +363,8 @@ class MarcheurSimule {
     _minute = null;
     _cycleDeVie?.dispose();
     _cycleDeVie = null;
+    // Un arret — et donc la sortie de demo — efface la cause de reprise.
+    _interrompuParLArrierePlan = false;
     _releves.clear();
     _trace = const <TrackPoint>[];
     _dernierePosition = null;
@@ -360,7 +410,7 @@ class MarcheurSimule {
   /// Fabrique le releve de la position courante et le fait entrer dans la
   /// chaine : d'abord la memoire des releves, puis le robinet.
   void _emettre() {
-    final point = _surLaTrace(_distanceM);
+    final point = pointSurLaTrace(_trace, _distanceM);
     final horodatage = _departDeLaMarche.add(_tempsDeMarche);
 
     _releves.add(
@@ -403,54 +453,6 @@ class MarcheurSimule {
     );
     _dernierePosition = position;
     if (!_sortie.isClosed) _sortie.add(position);
-  }
-
-  /// LE POINT DE LA TRACE A [metres] DU DEPART, interpole entre ses deux points
-  /// encadrants.
-  ///
-  /// La distance cumulee est LUE sur la trace (`distanceFromStart`), jamais
-  /// recalculee. L'interpolation est lineaire en latitude, longitude et
-  /// altitude : sur un segment de trace (quelques dizaines de metres) l'ecart
-  /// avec un trace de grand cercle est inferieur au millimetre, tres loin
-  /// devant la precision d'un GPS. Elle sert a FLUIDIFIER un deplacement, pas
-  /// a mesurer une distance.
-  TrackPoint _surLaTrace(double metres) {
-    final trace = _trace;
-    if (trace.isEmpty) {
-      return const TrackPoint(
-        lat: 0,
-        lng: 0,
-        altitude: 0,
-        distanceFromStart: 0,
-      );
-    }
-    if (metres <= trace.first.distanceFromStart) return trace.first;
-    if (metres >= trace.last.distanceFromStart) return trace.last;
-
-    // Recherche dichotomique : la trace du Mare a Mare porte des milliers de
-    // points et ce placement a lieu deux fois par seconde.
-    var bas = 0;
-    var haut = trace.length - 1;
-    while (haut - bas > 1) {
-      final milieu = (bas + haut) ~/ 2;
-      if (trace[milieu].distanceFromStart <= metres) {
-        bas = milieu;
-      } else {
-        haut = milieu;
-      }
-    }
-    final a = trace[bas];
-    final b = trace[haut];
-    final longueur = b.distanceFromStart - a.distanceFromStart;
-    final f = longueur <= 0
-        ? 0.0
-        : ((metres - a.distanceFromStart) / longueur).clamp(0.0, 1.0);
-    return TrackPoint(
-      lat: a.lat + (b.lat - a.lat) * f,
-      lng: a.lng + (b.lng - a.lng) * f,
-      altitude: a.altitude + (b.altitude - a.altitude) * f,
-      distanceFromStart: metres,
-    );
   }
 }
 

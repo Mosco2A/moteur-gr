@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/services/session_demo.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
 import '../../../../../shared/widgets/app_button.dart';
@@ -191,11 +192,25 @@ class _ButtonsRow extends StatelessWidget {
               // systeme ne doit JAMAIS surgir sur la carte sans avoir ete
               // annoncee (campagne personas 21/09, MAJEUR-1).
               onPressed: () async {
-                await ensureBackgroundTrackingExplained(context, ref);
-                // L'activite physique (lot 671-02), expliquee puis demandee
-                // une seule fois ; un refus ne bloque jamais le depart.
-                if (context.mounted) {
-                  await ensureStepCountingExplained(context, ref);
+                // EN DEMO, AUCUN PRE-VOL D'AUTORISATION (tache 744).
+                //
+                // Le bouton du cockpit le fait DEJA depuis la tache 638 : son
+                // `_explainPermissions` est enferme dans
+                // `if (!ref.read(enDemoProvider))`. Celui de la carte, non —
+                // et c'est le MEME geste, atteignable en pleine demo des que
+                // la session n'est pas en cours. En demo les positions
+                // viennent du marcheur simule : aucun recepteur a allumer,
+                // donc rien a autoriser. Et une fenetre systeme met
+                // l'application en arriere-plan, donc elle MET LA MARCHE EN
+                // PAUSE au milieu de la demonstration.
+                if (!ref.read(enDemoProvider)) {
+                  await ensureBackgroundTrackingExplained(context, ref);
+                  // L'activite physique (lot 671-02), expliquee puis
+                  // demandee une seule fois ; un refus ne bloque jamais le
+                  // depart.
+                  if (context.mounted) {
+                    await ensureStepCountingExplained(context, ref);
+                  }
                 }
                 await notifier.start(trailId);
               },
