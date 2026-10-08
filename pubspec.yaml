@@ -59,7 +59,7 @@ description: Moteur generique Flutter multi-sentiers
 # dans l unite choisie par une seule fonction du domaine, la route /booking
 # dormante retiree avec son ecran inatteignable) et la recette persona rendue
 # robuste a l attente de l accueil. QA groupee verte, code et ecrans (#101298).
-version: 0.1.7+11
+version: 0.1.7+12
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
