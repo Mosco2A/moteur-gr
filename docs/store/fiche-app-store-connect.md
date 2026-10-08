@@ -501,15 +501,24 @@ tous deux par la clé d'usage, pas par un droit signé.
 `ios/Runner/Runner.entitlements` ne porte que le groupe d'applications du
 widget, et une garde refuse qu'on y ajoute HealthKit.
 
-**`permission_handler` ne doit aucune clé aujourd'hui, et c'est une mesure.**
-Ses stratégies vivent derrière `#if PERMISSION_X` ; en C, une macro **non
-définie** vaut 0 dans un `#if`, et `ios/Podfile` n'en définit aucune. Chaque
-stratégie tombe donc dans sa branche `#else` et se réduit à
-`UnknownPermissionStrategy` : aucun framework sensible n'est importé, aucune
-clé n'est exigée. C'est la raison pour laquelle Apple n'a rien reproché
-d'autre que Santé au build 9. **Conséquence à connaître, qui dépasse cette
-fiche :** sur iPhone, `permission_handler` répond « refusé » sans jamais ouvrir
-de fenêtre système (voir § 8, point 9).
+**`permission_handler` doit maintenant trois clés, et c'est nouveau depuis la
+tâche 741 (08/10/2026).** Jusqu'à cette date il n'en devait aucune : ses
+stratégies vivent derrière `#if PERMISSION_X`, en C une macro **non définie**
+vaut 0 dans un `#if`, et `ios/Podfile` n'en définissait aucune — chaque
+stratégie tombait dans sa branche `#else` et se réduisait à
+`UnknownPermissionStrategy`, donc aucun framework sensible n'était importé.
+C'est la raison pour laquelle Apple n'a rien reproché d'autre que Santé au
+build 9. **Le `post_install` de `ios/Podfile` allume désormais six macros**
+(`PERMISSION_LOCATION`, `PERMISSION_LOCATION_WHENINUSE`,
+`PERMISSION_LOCATION_ALWAYS`, `PERMISSION_NOTIFICATIONS`, `PERMISSION_SENSORS`
+et `PERMISSION_ACTIVITY_RECOGNITION`, cette dernière inerte côté Apple), ce qui
+rend obligatoires `NSLocationWhenInUseUsageDescription`,
+`NSLocationAlwaysAndWhenInUseUsageDescription` et `NSMotionUsageDescription` —
+les trois **étaient déjà posées**, exigées par `geolocator`, `pedometer` et
+`sensors_plus`. Les notifications n'exigent aucun texte d'usage.
+**Les treize autres macros restent éteintes**, et il faut qu'elles le restent :
+allumer une permission fait importer son framework, donc exige sa clé, donc
+expose au rejet. Voir § 8, point 9.
 
 **Ce qui surveille tout cela.**
 `test/structurel/les_cles_d_usage_ios_sont_completes_740_test.dart` (14 cas)
@@ -589,34 +598,96 @@ code produit. Chacun est nommé ici avec son correctif.
 8. **`docs/store/data-safety.md` (Google Play) décrit encore le partage de
    position.** Hors de la fiche Apple, à corriger avant la Play Console.
 
-9. **`permission_handler` ne demande rien sur iPhone : il répond « refusé ».**
-   Mesure, non supposition. Ses stratégies vivent derrière `#if PERMISSION_X`
-   (§ 7.5) ; `ios/Podfile` ne définit aucune de ces macros, donc chacune se
-   réduit à `UnknownPermissionStrategy` : `checkPermissionStatus` rend
-   `denied`, `requestPermission` rend `permanentlyDenied`, et **aucune fenêtre
-   système ne s'ouvre jamais**. Or le dépôt passe par ce greffon **sans garde
-   de plateforme** pour la position
-   (`lib/shared/services/location_permission_service.dart`,
+9. **`permission_handler` ne demandait rien sur iPhone : il répondait
+   « refusé ». CORRIGÉ PAR LA TÂCHE 741 le 08/10/2026 — reste à prouver par
+   une compilation Mac.**
+   Le défaut, mesuré dans `permission_handler_apple` **9.4.7** (la version que
+   `pubspec.lock` résout ligne 1566, sources dans `ios/Classes/`, et **non**
+   9.4.10) : ses stratégies vivent derrière `#if PERMISSION_X` (§ 7.5) ;
+   `ios/Podfile` n'en définissait aucune, donc chacune se réduisait à
+   `UnknownPermissionStrategy` — `checkPermissionStatus` rend `denied`
+   (`UnknownPermissionStrategy.m` ligne 12), `requestPermission` rend
+   `permanentlyDenied` (ligne 20), et **aucune fenêtre système ne s'ouvrait
+   jamais**. Or le dépôt passe par ce greffon **sans garde de plateforme**
+   pour la position (`lib/shared/services/location_permission_service.dart`,
    `locationWhenInUse` et `locationAlways`), pour les notifications, et
    explicitement pour iOS pour les capteurs
    (`lib/features/trek/data/background_gps_service.dart` ligne 104 :
    `Platform.isIOS ? Permission.sensors : Permission.activityRecognition`).
-   - Conséquence attendue sur iPhone : l'autorisation de position n'est jamais
-     demandée par ce chemin, et le code la croit refusée pour toujours. C'est
-     le cœur du produit.
-   - Ce n'est **pas** ce qu'Apple a reproché au build 9 : `ITMS-90683` est un
-     contrôle d'envoi, celui-ci est un défaut d'exécution. Les deux ne se
+   - Conséquence sur iPhone, jusqu'au 08/10 : l'autorisation de position
+     n'était jamais demandée par ce chemin, et le code la croyait refusée pour
+     toujours. C'était le cœur du produit.
+   - Ce n'était **pas** ce qu'Apple a reproché au build 9 : `ITMS-90683` est un
+     contrôle d'envoi, celui-ci était un défaut d'exécution. Les deux ne se
      réparent pas du même geste.
-   - Correctif (infra iOS) : déclarer `GCC_PREPROCESSOR_DEFINITIONS` dans le
-     `post_install` de `ios/Podfile`, avec les seules permissions réellement
-     utilisées — `PERMISSION_LOCATION`, `PERMISSION_LOCATION_WHENINUSE`,
-     `PERMISSION_LOCATION_ALWAYS`, `PERMISSION_NOTIFICATIONS`,
-     `PERMISSION_SENSORS` — et toutes les autres à `0`. Les clés d'usage que
-     cela rend obligatoires sont **déjà posées** (position, mouvement), et la
-     garde de la tâche 740 le vérifie à chaque passage.
-   - **Non fait dans la tâche 740, volontairement :** c'est une modification
-     du build natif qu'aucune gate de ce dépôt ne peut vérifier depuis
-     Windows, et dont la seule preuve est une vraie compilation Xcode. La
-     mêler à la livraison qui doit débloquer l'envoi aurait rendu un échec de
-     build impossible à attribuer. À traiter dans sa propre tâche, avec son
-     propre build.
+   - **Ce que ce défaut n'était pas** : un risque d'arrêt de l'application. La
+     branche `#else` de `LocationPermissionStrategy.h` (ligne 17) déclare un
+     **héritage** de `UnknownPermissionStrategy`, pas une classe sans méthode,
+     donc `[permissionStrategy checkPermissionStatus:]`
+     (`PermissionManager.m` ligne 23, appelé sans `respondsToSelector`)
+     résolvait bien son sélecteur. Le défaut était silencieux — et c'est pire,
+     car il se lisait comme un refus de l'utilisateur.
+   - **Correctif appliqué (tâche 741)** : le `post_install` de `ios/Podfile`
+     **ajoute** six définitions à `GCC_PREPROCESSOR_DEFINITIONS` en gardant
+     `$(inherited)`. Pas de `||=`, que la documentation du greffon conseille :
+     en Ruby il n'affecte que si la clef est absente, et la clef peut avoir
+     été posée avant nous — les définitions disparaîtraient en silence. Les
+     clés d'usage que cela rend obligatoires étaient **déjà posées** (position,
+     mouvement). Garde neuve de 15 cas,
+     `test/structurel/les_permissions_ios_sont_allumees_741_test.dart`,
+     prouvée rouge en éteignant une macro puis en remettant le `||=`.
+   - **CE QUI RESTE À PROUVER, ET QUI NE PEUT PAS L'ÊTRE DEPUIS WINDOWS :**
+     que ces définitions arrivent vraiment dans les réglages du pod. Ni
+     `pod install` ni Xcode ne tournent ici, et aucune gate du dépôt ne peut
+     ouvrir un projet Pods — la garde vérifie le **texte** du Podfile, pas le
+     résultat. Seule la chaîne `ios_testflight` le dira, et seule une
+     installation sur un iPhone montrera la fenêtre s'ouvrir.
+
+10. **« Se connecter avec Google » ne peut pas revenir dans l'application sur
+    iPhone — MESURE de la tâche 741, NON corrigée, décision de Christophe.**
+    Balayage de tout `ios/` : **zéro** occurrence de `CFBundleURLTypes`,
+    `CFBundleURLSchemes`, `REVERSED_CLIENT_ID` ou `com.googleusercontent.apps`,
+    et `ios/Runner/AppDelegate.swift` ne surcharge pas
+    `application(_:open:options:)`. Rien ne route donc le retour de l'écran de
+    consentement Google.
+    - **Le bouton existe et est atteignable**, sans aucune garde de plateforme :
+      écran « Mon compte » (route `/profile`,
+      `lib/core/routing/app_router.dart` lignes 716-720), tuile
+      `ValueKey('profil-connexion-google')`
+      (`lib/features/auth/presentation/profile_screen.dart` lignes 253-280),
+      libellé « Se connecter avec Google » (`assets/i18n/fr.i18n.json` ligne
+      889). Trois entrées : l'icône de compte du hub, et deux chemins depuis
+      « Mes sentiers ».
+    - **Deux verrous se superposent.** La tuile ne s'affiche que si Firebase a
+      démarré (`profile_screen.dart` ligne 250) ; sans le vrai
+      `GoogleService-Info.plist` dans le paquet, l'écran montre
+      `CloudUnavailableNotice` et personne ne peut rien déclencher. Avec le vrai
+      plist, la tuile apparaît — et c'est là que le schéma d'URL manquant se
+      voit.
+    - **L'échec serait muet** : `firebase_auth_service.dart` lignes 135-137
+      font `on Exception { return null; }`. L'utilisateur tape, et rien ne se
+      passe : aucun message, aucune trace. Noter aussi que
+      `signInWithGoogleSilent` (ligne 111) appelle `GoogleSignIn.signIn()`
+      (ligne 113), qui est le flux **interactif** : le nom ment.
+    - **Le plist de la CI est hors de portée du dépôt.** Il n'y est pas versionné
+      (`.gitignore` ligne 70) ; `codemagic.yaml` ligne 1274 le dépose par
+      `scripts/ci/config_firebase.sh deposer ios exiger`, qui décode la variable
+      **`STEPWAYS_GOOGLE_SERVICE_INFO_PLIST`** du groupe `stepways_firebase`
+      (`codemagic.yaml` ligne 1091) vers `ios/Runner/GoogleService-Info.plist`
+      (script lignes 294-296). **Savoir s'il porte `REVERSED_CLIENT_ID` est
+      impossible depuis le dépôt** : le contenu vit dans ce secret Codemagic.
+      Le plist de secours, lui, est vide de toute clé par construction (script
+      lignes 329-352).
+    - **Ce qu'il y aurait à écrire, et qui doit le fournir.** Un
+      `CFBundleURLTypes` dans `ios/Runner/Info.plist`, portant un
+      `CFBundleURLSchemes` égal au `REVERSED_CLIENT_ID` du
+      `GoogleService-Info.plist` du projet Firebase iOS (forme
+      `com.googleusercontent.apps.NNNNNN-xxxxx`). **Christophe doit le fournir**,
+      depuis la console Firebase : ce `REVERSED_CLIENT_ID` n'existe que si un
+      client OAuth iOS est déclaré pour le projet. `docs/firebase-setup.md`
+      lignes 78-81 affirment d'ailleurs qu'aucun `oauth_client` n'est déclaré et
+      que « la connexion Google restera donc inopérante » — c'est de la prose,
+      pas une mesure du secret, et elle peut être périmée.
+    - **Rien n'a été corrigé ici**, volontairement : la valeur à écrire est un
+      identifiant du projet Firebase que le dépôt ne connaît pas, et l'inventer
+      casserait la connexion au lieu de la réparer.
