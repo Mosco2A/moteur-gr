@@ -201,10 +201,20 @@ void main() {
 }
 
 /// Programme fige (evite tout le pipeline etapes / repartition).
+///
+/// TACHE 750 — IL DECLARE LE CHOIX, IL NE LE LAISSE PLUS DEVINER. Poser `state`
+/// a la main court-circuite les gestes d'edition, donc `hasManualEdits` restait
+/// faux : depuis que le verdict lit le choix REEL du randonneur au lieu de le
+/// deduire d'une liste non vide, ce double passait pour « rien de choisi » et
+/// l'ecran basculait sur les formulations de reference. Or un programme pose
+/// journee par journee par le test EST un programme voulu — ce double le dit.
 class _ProgrammeFige extends PlannedDaysNotifier {
   _ProgrammeFige(Ref ref, List<PlannedDay> days) : super(const [], 1, ref) {
     state = days;
   }
+
+  @override
+  bool get hasManualEdits => true;
 }
 
 /// Fiche d'info figee (evite la couche de persistance dans un test pur).
