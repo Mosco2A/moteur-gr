@@ -249,8 +249,6 @@ class _NuiteeHeadline extends StatelessWidget {
             fontWeight: FontWeight.w700,
             decoration: isBooked ? TextDecoration.lineThrough : null,
           ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 2),
         if (isRestDay) ...[

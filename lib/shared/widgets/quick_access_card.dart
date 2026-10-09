@@ -44,8 +44,8 @@ class QuickAccessCard extends StatelessWidget {
          'Stepways (monochrome)',
        );
 
-  /// Chemin d'une icone Stepways ([StepwaysIcons]) — pour les cartes qui ne sont
-  /// pas l'une des 20 rubriques (secours, signaler, cartes hors ligne...).
+  /// Chemin d'une icone Stepways ([StepwaysIcons]) — pour les cartes qui ne
+  /// sont pas l'une des 20 rubriques (secours, signaler, cartes hors ligne...).
   /// Exclusif avec [rubrique].
   ///
   /// TACHE 639 : ce chemin N'IMPOSE PLUS le monochrome. Si le dessin a un trace
@@ -91,19 +91,29 @@ class QuickAccessCard extends StatelessWidget {
   /// `null` -> aucune coche (cartes sans notion de progression).
   final PlanningStepStatus? stepStatus;
 
+  /// LE SOUS-TITRE REELLEMENT AFFICHE (tache 749).
+  ///
+  /// Une carte verrouillee montre son [lockedLabel] a la place du [subtitle].
+  /// [HubSection] doit MESURER ce texte-la pour calculer la hauteur de tuile :
+  /// mesurer le sous-titre d'une carte verrouillee donnerait une hauteur
+  /// fausse, et une hauteur fausse est precisement ce qui coupait les textes.
+  /// La regle vit donc ici, a un seul endroit, et la tuile comme la grille la
+  /// lisent.
+  String get texteDuSousTitre => enabled ? subtitle : (lockedLabel ?? subtitle);
+
   /// Le dessin de la carte (tache 632).
   ///
-  /// La rubrique s'affiche en BICOLORE tant que la carte est active et qu'aucune
-  /// couleur categorielle n'est imposee. Des que l'une des deux conditions tombe
-  /// — carte verrouillee, ou couleur demandee par l'appelant — on passe au trace
-  /// monochrome : le bicolore fige ignorerait la couleur et la carte grisee
-  /// garderait une icone vive, ce qui brouillerait le verrou.
+  /// La rubrique s'affiche en BICOLORE tant que la carte est active et
+  /// qu'aucune couleur categorielle n'est imposee. Des que l'une des deux
+  /// conditions tombe — carte verrouillee, ou couleur demandee par l'appelant —
+  /// on passe au trace monochrome : le bicolore fige ignorerait la couleur et
+  /// la carte grisee garderait une icone vive, ce qui brouillerait le verrou.
   /// TACHE 639 (bug 3) : la carte d'acces est une TUILE PRINCIPALE, donc un
   /// sujet. Son dessin sort en bicolore qu'il ait ete nomme par [rubrique] ou
   /// passe a plat dans [icon] — c'est la regle de [iconeBicolorePour] qui
-  /// repond, plus la forme de l'appel. Sans cela, les trois cartes du bandeau de
-  /// « Mes treks » restaient monochromes alors que les seize du cockpit etaient
-  /// bicolores : deux langages pour la meme carte.
+  /// repond, plus la forme de l'appel. Sans cela, les trois cartes du bandeau
+  /// de « Mes treks » restaient monochromes alors que les seize du cockpit
+  /// etaient bicolores : deux langages pour la meme carte.
   Widget _icone(Color couleurEffective) {
     final dessin = rubrique ?? (icon != null ? iconeBicolorePour(icon!) : null);
     if (dessin != null) {
@@ -132,16 +142,16 @@ class QuickAccessCard extends StatelessWidget {
     final titleColor = enabled
         ? scheme.onSurface
         : scheme.onSurface.withValues(alpha: 0.38);
-    final subtitleText = enabled ? subtitle : (lockedLabel ?? subtitle);
+    final subtitleText = texteDuSousTitre;
 
     return AppCard(
       onTap: enabled ? onTap : null,
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       // Parite GR20 (_QuickAccessCard L1128-1150, retour Chris 09/09) : contenu
-      // CENTRE — icone (pastille teintee) au-dessus, titre centre dessous. Avant,
-      // `crossAxisAlignment: start` collait l'icone a gauche (defaut du pilote) ;
-      // GR20 centre l'ensemble (`MainAxisAlignment.center` + `CrossAxisAlignment
-      // .center`, titre `textAlign: center`).
+      // CENTRE — icone (pastille teintee) au-dessus, titre centre dessous.
+      // Avant, `crossAxisAlignment: start` collait l'icone a gauche (defaut du
+      // pilote) ; GR20 centre l'ensemble (`MainAxisAlignment.center` +
+      // `CrossAxisAlignment .center`, titre `textAlign: center`).
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -175,7 +185,8 @@ class QuickAccessCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          // LE TITRE S'AJUSTE AU LIEU DE SE COUPER (tache 634, DEM-260929-1325).
+          // LE TITRE S'AJUSTE AU LIEU DE SE COUPER (tache 634,
+          // DEM-260929-1325).
           //
           // Finitions V1 (point 6) : titre sur 2 lignes. Les titres longs
           // (« Découvrir des sentiers ») etaient TRONQUES a 1 ligne sur les
@@ -196,18 +207,35 @@ class QuickAccessCard extends StatelessWidget {
             maxLines: 2,
           ),
           const SizedBox(height: AppTheme.spacingXs),
+          // LE SOUS-TITRE S'ECRIT EN ENTIER (tache 749, REGLE DU LOT).
+          //
+          // LE DEFAUT QU'ON CORRIGE ICI, MESURE. Ces deux lignes disaient
+          // `maxLines: stepStatus != null ? 1 : 2` + ellipsis. Or TOUTES les
+          // cartes de la section « Preparer » portent une coche de
+          // preparation : leur sous-titre etait donc coupe a UNE ligne. C'est
+          // mot pour mot ce que Christophe a releve a l'ecran le 07/10 puis le
+          // 09/10 — « Évaluez votre niv… », « Le déroulé de vo… »,
+          // « Répartissez vos … », « Télécharger les c… », « Réserver vos
+          // nui… », « Préparez votre s… ». Six captures, une seule cause : le
+          // budget de hauteur de la cellule etait FIXE (mainAxisExtent 180) et
+          // ne laissait pas la place a la fois aux deux lignes du sous-titre et
+          // a la coche. On coupait le texte pour tenir dans la boite.
+          //
+          // CE N'EST PAS UN PROBLEME DE REDACTION. Christophe l'a cadre lui-
+          // meme le 09/10 09:56, verbatim : « Aucun rapport entre les tronqué
+          // et les trop bavard ». Raccourcir les libelles est un AUTRE lot
+          // (748) ; ici on rend la boite capable d'accueillir le texte.
+          //
+          // LA REGLE APPLIQUEE : le texte passe a la ligne, autant de lignes
+          // qu'il en faut, et c'est la CELLULE qui grandit (voir [HubSection],
+          // dont la hauteur suit desormais le contenu). Plus de `maxLines`,
+          // plus d'ellipsis : il n'y a plus rien a couper.
           Text(
             subtitleText,
             style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurface.withValues(alpha: enabled ? 0.7 : 0.38),
             ),
             textAlign: TextAlign.center,
-            // Quand une coche de statut est presente, le sous-titre passe a 1
-            // ligne : le budget de hauteur de la cellule (mainAxisExtent 150)
-            // est calibre « titre 1 + sous-titre 2 » ; la coche prend la place
-            // de la 2e ligne (clone GR20 : coche petite sous le libelle).
-            maxLines: stepStatus != null ? 1 : 2,
-            overflow: TextOverflow.ellipsis,
           ),
           // Coche « sujet traite » (R5) sous le libelle, comme GR20.
           if (stepStatus != null) ...[

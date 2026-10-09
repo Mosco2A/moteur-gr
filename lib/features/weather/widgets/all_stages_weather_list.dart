@@ -115,12 +115,7 @@ class _StageWeatherRow extends ConsumerWidget {
           ),
         ),
       ),
-      title: Text(
-        stage.name,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.bodyMedium,
-      ),
+      title: Text(stage.name, style: theme.textTheme.bodyMedium),
       subtitle: Text(
         t.weather.stageLabel(number: stage.stageNumber),
         style: theme.textTheme.bodySmall?.copyWith(

@@ -23,7 +23,8 @@ import 'day_forecast_card.dart' show WeatherIcon;
 class CompactForecastRow extends ConsumerWidget {
   const CompactForecastRow({super.key, required this.days});
 
-  /// Prévisions à venir (on n'affiche que les 2 premières : demain, après-demain).
+  /// Prévisions à venir (on n'affiche que les 2 premières : demain,
+  /// après-demain).
   final List<DayForecast> days;
 
   @override
@@ -76,8 +77,6 @@ class _CompactTile extends StatelessWidget {
             style: theme.textTheme.labelMedium?.copyWith(
               color: theme.colorScheme.onSurface.withAlpha(160),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppTheme.spacingXs),
           Row(

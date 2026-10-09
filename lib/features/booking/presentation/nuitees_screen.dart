@@ -40,10 +40,9 @@ import '../../../core/branding/stepways_icons.dart';
 /// d'ecarts, est RATTRAPEE par le correctif L7-2 (cf. [buildNuiteeSlots]).
 ///
 /// Generique multi-sentiers : ZERO hardcode de localite ; hors systeme de peaux
-/// (couleurs semantiques d'AppTheme + colorScheme). Tout libelle passe par Slang
-/// (`t.nuitees.*`).
-/// Une NUIT du programme : le jour concerne + le numero d'etape dont depend le
-/// LIEU de couchage.
+/// (couleurs semantiques d'AppTheme + colorScheme). Tout libelle passe par
+/// Slang (`t.nuitees.*`). Une NUIT du programme : le jour concerne + le numero
+/// d'etape dont depend le LIEU de couchage.
 ///
 /// Pour un jour de MARCHE, c'est son etape d'arrivee. Pour un jour de REPOS,
 /// c'est l'etape d'arrivee du dernier jour marche : on dort au meme endroit que
@@ -369,8 +368,6 @@ class _CompactInfoBar extends StatelessWidget {
                 child: Text(
                   t.nuitees.infoBar,
                   style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),

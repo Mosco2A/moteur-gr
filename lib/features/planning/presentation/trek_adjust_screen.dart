@@ -33,13 +33,14 @@ import '../../../core/branding/stepways_icons.dart';
 ///
 /// CE QUI CHANGE PAR RAPPORT A LA PREPARATION (regle metier Christophe) :
 ///   1. **Les jours deja marches sont FIGES.** Ils sont rendus a part, en tete,
-///      grises, cadenas + badge « Fait », SANS aucune action. Le refus n'est pas
-///      qu'un affichage : il est porte par [PlannedDaysNotifier] (`isDayLocked`,
-///      `splitBlockedReason`, `mergeBlockedReason`, `canAddRestDayAfter`), donc
-///      infranchissable meme par une autre porte d'entree.
-///   2. **Aucune inversion possible.** Il n'y a PAS de `ReorderableListView` ni
-///      de poignee de glissement sur cet ecran : l'ordre des etapes ne se touche
-///      plus une fois parti. (Cote domaine, `reorder` refuse egalement.)
+///      grises, cadenas + badge « Fait », SANS aucune action. Le refus n'est
+/// pas      qu'un affichage : il est porte par [PlannedDaysNotifier]
+/// (`isDayLocked`,      `splitBlockedReason`, `mergeBlockedReason`,
+/// `canAddRestDayAfter`), donc      infranchissable meme par une autre porte
+/// d'entree.   2. **Aucune inversion possible.** Il n'y a PAS de
+/// `ReorderableListView` ni      de poignee de glissement sur cet ecran :
+/// l'ordre des etapes ne se touche      plus une fois parti. (Cote domaine,
+/// `reorder` refuse egalement.)
 ///
 /// DIFFERENCE ASSUMEE AVEC GR20 : l'ecran GR20 cense couvrir ce cas
 /// (`ItineraryAdaptationScreen`, premium) est une MAQUETTE non cablee — son
@@ -489,8 +490,6 @@ class _AdjustDayCard extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color: accent,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -503,8 +502,6 @@ class _AdjustDayCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(height: AppTheme.spacingXs),

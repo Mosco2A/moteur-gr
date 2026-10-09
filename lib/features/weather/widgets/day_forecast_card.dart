@@ -103,8 +103,6 @@ class DayForecastCard extends ConsumerWidget {
                                   languageCode,
                                 ),
                             style: theme.textTheme.titleMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         if (trailing != null) ...[
@@ -118,8 +116,6 @@ class DayForecastCard extends ConsumerWidget {
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withAlpha(180),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -230,7 +226,8 @@ class DayForecastCard extends ConsumerWidget {
   }
 }
 
-/// Icône Material dérivée du nom de condition météo (`DayForecast.weatherIconName`).
+/// Icône Material dérivée du nom de condition météo
+/// (`DayForecast.weatherIconName`).
 ///
 /// Widget partagé par les cartes météo (jour, aujourd'hui, tuile HUB) pour
 /// éviter la duplication du mapping nom → [IconData].

@@ -26,23 +26,23 @@ import '../../../core/branding/stepways_icons.dart';
 ///   * AppBar « Ravitaillement » + back ;
 ///   * rangee de filtres horizontaux (« Tous » + 4 types) — puce selectionnee =
 ///     bordure coloree ([shopTypeFilterProvider]) ;
-///   * bandeau d'alerte « ravitaillement limite » — DATA-DRIVEN : le texte vient
-///     de la donnee du sentier ([TrailShops.limitedSupplyNote]) ; masque si
-///     absent (aucun « 8 points sur 180 km » en dur) ;
+///   * bandeau d'alerte « ravitaillement limite » — DATA-DRIVEN : le texte
+/// vient     de la donnee du sentier ([TrailShops.limitedSupplyNote]) ; masque
+/// si     absent (aucun « 8 points sur 180 km » en dur) ;
 ///   * liste des commerces groupee/ordonnee par ETAPE, chaque carte = en-tete
 ///     (icone type + nom + badge etape + horaires) + apercu produits (4 max) +
 ///     alerte « gap » optionnelle ;
 ///   * bottom sheet detail (Informations : type, etape, GPS, horaires ; Alerte
 ///     si gap ; Produits disponibles complets).
 ///
-/// Le CONTENU vient du catalogue ravitaillement du sentier ([trailShopsProvider])
-/// — PAS de `const gr20Shops` hardcode par localite. Le moteur reste GENERIQUE
-/// multi-sentiers (#84627), zero hardcode de localite ni de « GR20 ». Fallback
-/// gracieux : sentier sans donnees -> ecran informatif propre (pas de crash).
-/// Hors peau : couleurs semantiques d'AppTheme (+ `scheme.secondary` pour le
-/// type « gaz », StepWays n'ayant pas de token bleu fige). Tout libelle
-/// d'INTERFACE passe par Slang (`t.shop.*`, 5 langues) ; les donnees propres au
-/// sentier restent dans la langue de la donnee.
+/// Le CONTENU vient du catalogue ravitaillement du sentier
+/// ([trailShopsProvider]) — PAS de `const gr20Shops` hardcode par localite. Le
+/// moteur reste GENERIQUE multi-sentiers (#84627), zero hardcode de localite ni
+/// de « GR20 ». Fallback gracieux : sentier sans donnees -> ecran informatif
+/// propre (pas de crash). Hors peau : couleurs semantiques d'AppTheme (+
+/// `scheme.secondary` pour le type « gaz », StepWays n'ayant pas de token bleu
+/// fige). Tout libelle d'INTERFACE passe par Slang (`t.shop.*`, 5 langues) ;
+/// les donnees propres au sentier restent dans la langue de la donnee.
 class ShopScreen extends ConsumerWidget {
   const ShopScreen({super.key, required this.trailId});
 
@@ -61,30 +61,33 @@ class ShopScreen extends ConsumerWidget {
     final typeFilter = ref.watch(shopTypeFilterProvider);
 
     return Scaffold(
-      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android).
-      // Le back custom est retire (comportement repris a l'identique).
+      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil +
+      // Android). Le back custom est retire (comportement repris a
+      // l'identique).
       appBar: AppHeader(
         title: t.shop.title,
-        // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des deux
-        // ecrans que Christophe a trouves vides, donc l'un des deux ou il doit
-        // pouvoir verifier tout de suite qu'une publication est bien arrivee.
+        // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des
+        // deux ecrans que Christophe a trouves vides, donc l'un des deux ou il
+        // doit pouvoir verifier tout de suite qu'une publication est bien
+        // arrivee.
         actions: [RefreshFromDatabaseButton(trailId: trailId)],
       ),
       // UN ECRAN BLANC N'EST PAS UNE ABSENCE DE COMMENTAIRE, C'EST UNE PANNE
-      // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et ravitaillement
-      // ecran vide »).
+      // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et
+      // ravitaillement ecran vide »).
       //
       // La tache 552 avait raison de supprimer « Ravitaillement bientot
-      // disponible » : une date que rien ne tient ne se promet pas. Mais elle l'a
-      // remplacee par un `SizedBox.shrink()`, c'est-a-dire un titre
-      // « Ravitaillement » au-dessus de RIEN. Christophe a ouvert cet ecran et n'a
-      // eu aucun moyen de savoir s'il n'y avait pas de commerce, si l'application
-      // etait cassee, ou s'il avait mal appuye. L'ecran Transport, lui, enonce un
-      // fait depuis toujours — et c'est le bon comportement.
+      // disponible » : une date que rien ne tient ne se promet pas. Mais elle
+      // l'a remplacee par un `SizedBox.shrink()`, c'est-a-dire un titre «
+      // Ravitaillement » au-dessus de RIEN. Christophe a ouvert cet ecran et
+      // n'a eu aucun moyen de savoir s'il n'y avait pas de commerce, si
+      // l'application etait cassee, ou s'il avait mal appuye. L'ecran
+      // Transport, lui, enonce un fait depuis toujours — et c'est le bon
+      // comportement.
       //
-      // ON ENONCE DONC UN FAIT, sans date et sans promesse : aucun commerce n'est
-      // reference pour ce sentier. C'est exactement ce que dit la base, et c'est
-      // verifiable.
+      // ON ENONCE DONC UN FAIT, sans date et sans promesse : aucun commerce
+      // n'est reference pour ce sentier. C'est exactement ce que dit la base,
+      // et c'est verifiable.
       body: (data == null || !data.hasShops)
           ? Center(
               child: Padding(
@@ -102,8 +105,8 @@ class ShopScreen extends ConsumerWidget {
   }
 }
 
-/// Corps de l'ecran quand des donnees existent (parite GR20 : filtres + alerte +
-/// liste groupee par etape).
+/// Corps de l'ecran quand des donnees existent (parite GR20 : filtres + alerte
+/// + liste groupee par etape).
 class _ShopBody extends ConsumerWidget {
   const _ShopBody({
     required this.data,
@@ -123,7 +126,8 @@ class _ShopBody extends ConsumerWidget {
         : data.shops.where((s) => s.type == typeFilter).toList();
 
     // Regroupement/ordre par ETAPE (amelioration data-driven vs GR20 qui laisse
-    // l'ordre du const) : etapes croissantes, commerces de chaque etape ensemble.
+    // l'ordre du const) : etapes croissantes, commerces de chaque etape
+    // ensemble.
     final stagesOrdered = filtered.map((s) => s.stageNumber).toSet().toList()
       ..sort();
 
@@ -132,7 +136,8 @@ class _ShopBody extends ConsumerWidget {
         // Filtres horizontaux (parite GR20 `_buildFilters`).
         _ShopFilters(theme: theme, typeFilter: typeFilter),
 
-        // Alerte « ravitaillement limite » DATA-DRIVEN (masquee si pas de note).
+        // Alerte « ravitaillement limite » DATA-DRIVEN (masquee si pas de
+        // note).
         if (data.hasLimitedSupplyNote)
           _SupplyAlertBanner(note: data.limitedSupplyNote, theme: theme),
 
@@ -284,8 +289,9 @@ class _ShopFilterChip extends StatelessWidget {
   }
 }
 
-/// Bandeau d'alerte « ravitaillement limite » (parite GR20 `_buildSupplyAlert`),
-/// mais DATA-DRIVEN : le texte vient de la donnee du sentier ([note]).
+/// Bandeau d'alerte « ravitaillement limite » (parite GR20
+/// `_buildSupplyAlert`), mais DATA-DRIVEN : le texte vient de la donnee du
+/// sentier ([note]).
 class _SupplyAlertBanner extends StatelessWidget {
   const _SupplyAlertBanner({required this.note, required this.theme});
 
@@ -344,9 +350,9 @@ class _SupplyAlertBanner extends StatelessWidget {
   }
 }
 
-/// Carte d'un commerce (parite GR20 `_buildShopCard`). En-tete (icone type + nom
-/// + badge etape + horaires), apercu produits (4 max), alerte « gap » optionnelle.
-/// Tap -> bottom sheet detail.
+/// Carte d'un commerce (parite GR20 `_buildShopCard`). En-tete (icone type +
+/// nom + badge etape + horaires), apercu produits (4 max), alerte « gap »
+/// optionnelle. Tap -> bottom sheet detail.
 class _ShopCard extends StatelessWidget {
   const _ShopCard({required this.shop, required this.data});
 
@@ -435,7 +441,6 @@ class _ShopCard extends StatelessWidget {
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   fontSize: 14,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -503,8 +508,6 @@ class _ShopCard extends StatelessWidget {
                           color: AppTheme.emergencyRed,
                           fontWeight: FontWeight.w600,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
                       ),
                     ),
                   ],
@@ -587,7 +590,8 @@ void _showShopDetail(
                   label: t.shop.fieldStage,
                   value: t.shop.stageBadge(n: shop.stageNumber),
                 ),
-                // GPS masque si non verifie (honnetete #99460 : pas de 0,0 faux).
+                // GPS masque si non verifie (honnetete #99460 : pas de 0,0
+                // faux).
                 if (shop.hasCoordinates)
                   _DetailRow(
                     icon: StepwaysIcons.maPosition,
@@ -604,13 +608,14 @@ void _showShopDetail(
 
                 // ADRESSE ET LIEN VERS LES CARTES (tache 641, bug 15).
                 //
-                // « appliquer la meme regle a tout lieu physique (ravitaillement,
-                // point d'eau, depart/arrivee, transport) : une adresse + un point
-                // GPS cliquable partout ou il y a un lieu » (Christophe, 30/09
-                // 10:23). Un commerce est un lieu : on y va a pied, avec un sac.
+                // « appliquer la meme regle a tout lieu physique
+                // (ravitaillement, point d'eau, depart/arrivee, transport) :
+                // une adresse + un point GPS cliquable partout ou il y a un
+                // lieu » (Christophe, 30/09 10:23). Un commerce est un lieu :
+                // on y va a pied, avec un sac.
                 //
-                // PAS DE LIEN MORT : sans adresse ni point exploitable, ce widget
-                // ne rend RIEN — ni libelle vide, ni bouton inerte.
+                // PAS DE LIEN MORT : sans adresse ni point exploitable, ce
+                // widget ne rend RIEN — ni libelle vide, ni bouton inerte.
                 Padding(
                   padding: const EdgeInsets.only(top: AppTheme.spacingXs),
                   child: LigneDeLieu(
@@ -808,8 +813,8 @@ class _ShopFilterEmpty extends StatelessWidget {
   }
 }
 
-// L'ancien `_ShopEmptyState` a ete SUPPRIME (tache 552) : il n'existait que pour
-// porter « Ravitaillement bientot disponible » et « ... seront ajoutes
+// L'ancien `_ShopEmptyState` a ete SUPPRIME (tache 552) : il n'existait que
+// pour porter « Ravitaillement bientot disponible » et « ... seront ajoutes
 // prochainement ». Sans promesse a afficher, il n'a plus d'objet — le corps de
 // l'ecran rend `SizedBox.shrink()`.
 
@@ -843,7 +848,8 @@ String _shopTypeIcon(ShopKind type) {
   }
 }
 
-/// Libelle traduit pour un type de commerce (parite GR20 `_typeLabel`, mais i18n).
+/// Libelle traduit pour un type de commerce (parite GR20 `_typeLabel`, mais
+/// i18n).
 String _shopTypeLabel(Translations t, ShopKind type) {
   switch (type) {
     case ShopKind.epicerie:

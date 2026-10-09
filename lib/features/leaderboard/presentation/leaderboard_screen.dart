@@ -164,11 +164,7 @@ class _EntryRow extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
-              child: Text(
-                entry.pseudonym,
-                style: theme.textTheme.bodyLarge,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(entry.pseudonym, style: theme.textTheme.bodyLarge),
             ),
             Text(time, style: theme.textTheme.bodyMedium),
           ],

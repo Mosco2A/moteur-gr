@@ -10,22 +10,23 @@ import '../../../../shared/widgets/hub_section.dart';
 import '../../../../shared/widgets/quick_access_card.dart';
 import '../../../../core/branding/stepways_icons.dart';
 
-/// Section « Préparer » repliable en ACCORDÉON (StepWays refonte nav — D3, R8+R13).
+/// Section « Préparer » repliable en ACCORDÉON (StepWays refonte nav — D3,
+/// R8+R13).
 ///
-/// Parité GR20 « modèle A » (toutes les sections dans UN scroll) : la préparation
-/// reste TOUJOURS présente et accessible, mais son encombrement s'adapte à la
-/// PHASE. Une fois parti (Randonner) ou de retour (Après le trek), la longue
-/// grille de cartes de prépa n'a plus à occuper le haut du cockpit : elle est
-/// REPLIÉE par défaut (en-tête tappable « Préparer ▸ »), le randonneur la déplie
-/// s'il veut revoir un point (R13 : jamais masquée, juste repliée). En phase de
-/// préparation (owned/prepared) et à la maison, elle est DÉPLIÉE d'emblée : c'est
-/// le cœur de l'activité à ce moment (R8).
+/// Parité GR20 « modèle A » (toutes les sections dans UN scroll) : la
+/// préparation reste TOUJOURS présente et accessible, mais son encombrement
+/// s'adapte à la PHASE. Une fois parti (Randonner) ou de retour (Après le
+/// trek), la longue grille de cartes de prépa n'a plus à occuper le haut du
+/// cockpit : elle est REPLIÉE par défaut (en-tête tappable « Préparer ▸ »), le
+/// randonneur la déplie s'il veut revoir un point (R13 : jamais masquée, juste
+/// repliée). En phase de préparation (owned/prepared) et à la maison, elle est
+/// DÉPLIÉE d'emblée : c'est le cœur de l'activité à ce moment (R8).
 ///
-/// L'état déplié/replié est LOCAL à l'écran (pas de persistance) : il s'initialise
-/// sur [initiallyExpanded] à chaque montage, dérivé de la phase par l'appelant
-/// (déplié en Préparer, replié en Randonner/Après). Réutilise [HubSection] (grille
-/// 2 colonnes, look inchangé) pour le corps déplié — aucun style réinventé, tokens
-/// [AppTheme]. Zéro texte en dur (Slang `t.hub.*`).
+/// L'état déplié/replié est LOCAL à l'écran (pas de persistance) : il
+/// s'initialise sur [initiallyExpanded] à chaque montage, dérivé de la phase
+/// par l'appelant (déplié en Préparer, replié en Randonner/Après). Réutilise
+/// [HubSection] (grille 2 colonnes, look inchangé) pour le corps déplié — aucun
+/// style réinventé, tokens [AppTheme]. Zéro texte en dur (Slang `t.hub.*`).
 class CollapsiblePrepareSection extends StatefulWidget {
   const CollapsiblePrepareSection({
     super.key,
@@ -81,13 +82,11 @@ class _CollapsiblePrepareSectionState extends State<CollapsiblePrepareSection> {
                     child: Text(
                       t.hub.sections.prepare,
                       style: theme.textTheme.titleLarge,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // Chevron d'état (haut = déplié, bas = replié) + libellé court
-                  // d'action (Réduire / Voir la préparation) pour lever toute
-                  // ambiguïté (parité affordance accordéon).
+                  // Chevron d'état (haut = déplié, bas = replié) + libellé
+                  // court d'action (Réduire / Voir la préparation) pour lever
+                  // toute ambiguïté (parité affordance accordéon).
                   Text(
                     _expanded ? t.hub.prepareCollapse : t.hub.prepareExpand,
                     style: theme.textTheme.labelMedium?.copyWith(
@@ -104,8 +103,9 @@ class _CollapsiblePrepareSectionState extends State<CollapsiblePrepareSection> {
             ),
           ),
         ),
-        // Corps déplié : la grille de cartes (HubSection sans son propre en-tête,
-        // l'accordéon porte déjà le titre « Préparer »). Replié -> rien.
+        // Corps déplié : la grille de cartes (HubSection sans son propre
+        // en-tête, l'accordéon porte déjà le titre « Préparer »). Replié ->
+        // rien.
         if (_expanded) ...[
           const SizedBox(height: AppTheme.spacingMd),
           HubSection(

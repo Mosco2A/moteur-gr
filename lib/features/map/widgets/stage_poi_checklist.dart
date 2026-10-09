@@ -30,8 +30,8 @@ import '../../../core/branding/stepways_icons.dart';
 /// c'est fait »). Les coches vivent le temps de la session d'application, et
 /// aucun chiffre du trek n'en depend — cf. [stagePoiChecksProvider].
 ///
-/// GENERIQUE, ZERO SENTIER EN DUR : les points viennent de [poisProvider] et les
-/// familles de types de [PoiTypeConfig]. Un sentier sans refuge affiche le
+/// GENERIQUE, ZERO SENTIER EN DUR : les points viennent de [poisProvider] et
+/// les familles de types de [PoiTypeConfig]. Un sentier sans refuge affiche le
 /// message « aucun hebergement reference », deja traduit dans les cinq langues.
 class StagePoiChecklist extends ConsumerWidget {
   const StagePoiChecklist({super.key, required this.trailId});
@@ -202,8 +202,6 @@ class _ChecklistGroup extends ConsumerWidget {
               dense: true,
               title: Text(
                 poi.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: checked.contains(poi.id)
                     ? theme.textTheme.bodyMedium?.copyWith(
                         decoration: TextDecoration.lineThrough,
