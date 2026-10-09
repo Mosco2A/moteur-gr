@@ -164,15 +164,27 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
     required String content,
     required String sourcePath,
   }) async {
+    // DEMO : LA GARDE PASSE DEVANT L'ECRITURE DU FICHIER (tache 760).
+    //
+    // ELLE ETAIT UNE LIGNE TROP BAS, ET C'ETAIT MESURABLE. La barriere du lot
+    // 634 ne protegeait que la BASE : `savePhotoFromFile` tournait AVANT elle,
+    // donc chaque photo prise en demo etait compressee et recopiee dans
+    // `journal_photos/` — un JPEG bien reel, sans aucune ligne de journal pour
+    // le designer. Jamais affiche (le carnet lit la base), jamais compte au
+    // quota du jour, jamais efface : un orphelin sur le telephone, a l'endroit
+    // meme ou l'application promet que « rien n'est enregistre ».
+    //
+    // Rien n'est perdu pour le randonneur : en demo le carnet est en lecture
+    // seule et son bouton d'ajout est grise, donc ce chemin n'est atteint que
+    // par un ecran qui aurait oublie de griser — exactement le cas que la
+    // barriere d'ecriture existe pour couvrir.
+    if (ref.read(enDemoProvider)) return null;
+
     final saved = await _photoService.savePhotoFromFile(
       trailId: _trailId,
       sourcePath: sourcePath,
     );
     if (!saved.isSuccess) return saved.error ?? PhotoError.ioError;
-
-    // DEMO : la photo est prise et montree, mais AUCUNE ligne de journal
-    // n'atteint la base (tache 634, DEM-260929-1123).
-    if (ref.read(enDemoProvider)) return null;
 
     await _repo.addPhotoNote(
       trailId: _trailId,

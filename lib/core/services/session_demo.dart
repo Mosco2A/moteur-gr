@@ -118,12 +118,42 @@ class SessionDemoNotifier extends Notifier<SessionDemo> {
   void entrer({String? trailId, String? sentierAvant}) {
     final cible = trailId ?? kSentierDeDemo;
     if (cible != kSentierDeDemo) return;
+    // LA DEMO QUI S'OUVRE N'EST PAS CELLE QUI S'EST FERMEE (tache 760) : le
+    // numero monte AVANT la bascule d'etat, pour que tout magasin volatil lu
+    // apres cet instant se sache perime.
+    ref.read(generationDeDemoProvider.notifier).suivante();
     state = SessionDemo.sur(cible, sentierAvant: sentierAvant);
   }
 
   /// Quitte la demo. Rien a effacer en base : rien n'y a ete ecrit.
   void sortir() => state = const SessionDemo.inactive();
 }
+
+/// LE NUMERO DE LA DEMO EN COURS — IL NE REDESCEND JAMAIS (tache 760).
+///
+/// POURQUOI UN COMPTEUR, ET PAS SIMPLEMENT [enDemoProvider]. Les magasins
+/// volatils de la demo (profil, fiche medicale, ardoise du consentement)
+/// doivent etre NEUFS a chaque entree. Les brancher sur [enDemoProvider] ne
+/// suffit pas, et une garde de ce lot l'a montre : Riverpod ne RECALCULE pas un
+/// provider dont la dependance a retrouve sa valeur precedente. Entrer, sortir,
+/// puis rentrer rend `true` apres `true` — le magasin de la demo precedente
+/// etait donc resservi, avec le profil qu'on venait d'y saisir.
+///
+/// Un entier qui monte d'un cran a chaque entree n'a pas ce defaut : sa valeur
+/// est TOUJOURS nouvelle, donc la reconstruction est TOUJOURS reelle.
+class GenerationDeDemoNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  /// Ouvre une nouvelle generation de demo.
+  void suivante() => state = state + 1;
+}
+
+/// Le numero de la demo en cours (0 = aucune demo n'a encore ete ouverte).
+final generationDeDemoProvider =
+    NotifierProvider<GenerationDeDemoNotifier, int>(
+      GenerationDeDemoNotifier.new,
+    );
 
 /// L'etat de la demo volontaire, en memoire pour la duree de la session.
 final sessionDemoProvider = NotifierProvider<SessionDemoNotifier, SessionDemo>(
