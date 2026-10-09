@@ -40,7 +40,7 @@ import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/journal/providers/journal_day_providers.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
-import 'package:moteur_gr/features/trek/data/marcheur_simule.dart';
+import 'package:moteur_gr/features/trek/data/marcheur_simule_providers.dart';
 import 'package:moteur_gr/features/trek/data/source_des_releves.dart';
 import 'package:moteur_gr/features/trek/providers/live_trek_stats_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
@@ -357,7 +357,9 @@ void main() {
 
     test('le marcheur ne cumule RIEN : aucun calcul de distance, de denivele '
         'ni de vitesse dans son code', () {
-      final source = _codeDe('lib/features/trek/data/marcheur_simule.dart');
+      final source = _codeDe(
+        'lib/features/trek/data/marcheur_simule_providers.dart',
+      );
       for (final interdit in [
         'haversine',
         'Haversine',
@@ -387,7 +389,9 @@ void main() {
       'autorisation', () {
     test('le marcheur ne connait ni Geolocator, ni permission, ni position '
         'reelle', () {
-      final source = _codeDe('lib/features/trek/data/marcheur_simule.dart');
+      final source = _codeDe(
+        'lib/features/trek/data/marcheur_simule_providers.dart',
+      );
       for (final interdit in [
         'Geolocator.',
         'getPositionStream',
@@ -448,7 +452,9 @@ void main() {
   // =========================================================================
   group('742 — la simulation n ecrit rien, nulle part', () {
     test('le marcheur ne sait pas ecrire : ni DAO, ni base, ni preference', () {
-      final source = _codeDe('lib/features/trek/data/marcheur_simule.dart');
+      final source = _codeDe(
+        'lib/features/trek/data/marcheur_simule_providers.dart',
+      );
       for (final interdit in [
         'insertPoint',
         'upsertSession',

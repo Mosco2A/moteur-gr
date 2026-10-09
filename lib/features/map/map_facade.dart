@@ -36,8 +36,19 @@
 /// LOT 671-06, LES STATISTIQUES SUR LE TRACE : `trek`, `journal` et `after`
 /// lisent `statsTraceProvider`, la trace du sentier actif ou `null`, pour
 /// calculer les chiffres du jour sur la tranche du sentier parcourue.
+///
+/// LOT 747, L'UNIQUE SOURCE DE VERITE DE L'ETAPE COURANTE : `trek` lit les
+/// JALONS DES ETAPES — les bornes de chaque etape exprimees en abscisse sur la
+/// trace — et `ChiffresDuPerimetre`, qui tient l'invariant « parcouru plus
+/// restant font le total » par construction. La barre de la carte en tire ses
+/// cinq chiffres, dans l'un ou l'autre perimetre, et le cadrage en tire
+/// l'etape sous les pieds du marcheur. Elle lit aussi
+/// `perimetreDeLaBarreProvider`, l'etat de la bascule etape/sentier et son
+/// retour automatique au bout de vingt secondes.
 library;
 
+export 'domain/jalons_des_etapes.dart'
+    show ChiffresDuPerimetre, JalonDEtape, jalonALAbscisse, prochaineFinDEtape;
 export 'domain/off_track_detector.dart' show OffTrackDetector;
 export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
 export 'providers/charnieres_provider.dart' show charnieresDuSentierProvider;
@@ -48,11 +59,19 @@ export 'providers/location_provider.dart' show locationProvider;
 export 'providers/map_pois_provider.dart' show mapPoisProvider;
 export 'providers/off_track_provider.dart'
     show OffTrackMessages, offTrackMessagesProvider;
+export 'providers/perimetre_de_la_barre_provider.dart'
+    show
+        PerimetreDeLaBarre,
+        PerimetreDeLaBarreNotifier,
+        perimetreDeLaBarreProvider;
 export 'providers/simplified_track_provider.dart' show simplifiedTrackProvider;
 export 'providers/stage_poi_check_provider.dart' show stagePoiChecksProvider;
 export 'providers/supply_alert_provider.dart' show supplyGapAlertProvider;
 export 'providers/track_position_provider.dart'
-    show stageDistanceCoveredProvider, trackPositionProvider;
+    show
+        jalonsDesEtapesProvider,
+        stageDistanceCoveredProvider,
+        trackPositionProvider;
 export 'widgets/map_guide_sheet.dart' show showMapGuideSheet;
 export 'widgets/off_track_banner.dart' show OffTrackBanner;
 export 'widgets/poi_filter_bar.dart' show PoiFilterBar;

@@ -66,3 +66,24 @@ TrackPoint pointSurLaTrace(List<TrackPoint> trace, double metres) {
     distanceFromStart: metres,
   );
 }
+
+/// LE TEMPS DE MARCHE QU'IL FAUT POUR COUVRIR [metres] a [vitesseKmh]
+/// (tache 747).
+///
+/// SORTI DU MARCHEUR PAR SA GARDE DE TAILLE, comme [pointSurLaTrace] l'avait
+/// ete a la tache 744 — et il est a sa place ici : c'est du PLACEMENT, pas une
+/// mesure. Aucun chiffre affiche n'en sort.
+///
+/// A QUOI IL SERT. Le saut d'etape de la demonstration (`MarcheurSimule.allerA`)
+/// deplace le marcheur de plusieurs kilometres d'un coup. Si l'horloge de la
+/// marche ne suivait pas, le moteur de statistiques — qui divise la distance
+/// par l'ecart des horodatages — annoncerait une vitesse moyenne absurde. On
+/// avance donc l'horloge du temps qu'il aurait fallu pour marcher la distance.
+///
+/// Une distance nulle ou negative ne coute aucun temps, et une vitesse nulle ou
+/// negative non plus : on ne fabrique pas une duree infinie.
+Duration tempsDeMarchePour(double metres, double vitesseKmh) {
+  if (metres <= 0 || vitesseKmh <= 0) return Duration.zero;
+  final secondes = metres / (vitesseKmh / 3.6);
+  return Duration(milliseconds: (secondes * 1000).round());
+}

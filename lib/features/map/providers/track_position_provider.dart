@@ -14,8 +14,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
 import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
-import '../../../core/models/stage_row.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
+import '../domain/jalons_des_etapes.dart';
 import '../domain/off_track_detector.dart';
 import 'current_position_provider.dart';
 import 'gpx_track_provider.dart';
@@ -98,6 +98,67 @@ final _offTrackDetectorProvider = Provider<OffTrackDetector>((ref) {
   return OffTrackDetector();
 });
 
+/// LES BORNES DES ETAPES SUR LA TRACE, calculees UNE FOIS par sentier.
+///
+/// POURQUOI UN PROVIDER ET PAS UN CALCUL DANS LA PROJECTION. Le decoupage ne
+/// depend QUE de la trace et des etapes : il ne change pas quand le marcheur
+/// avance. Le calculer dans [_computeProjection] le refarait a chaque releve —
+/// deux fois par seconde en demonstration — pour un resultat identique, et sur
+/// un vrai sentier c'est une recherche de point le plus proche parmi des
+/// dizaines de milliers de points, repetee autant de fois qu'il y a d'etapes.
+/// Ici il est calcule au chargement de la trace, et plus jamais.
+final jalonsDesEtapesProvider = Provider.family<List<JalonDEtape>, String>((
+  ref,
+  trailId,
+) {
+  final trace = ref.watch(gpxTrackProvider(trailId)).value;
+  final etapes = ref.watch(stagesProvider(trailId)).value;
+  if (trace == null || etapes == null) return const [];
+  return jalonsDesEtapes(trace, etapes);
+});
+
+/// L'ETAPE SOUS LES PIEDS, DEDUITE DE L'ABSCISSE (tache 747).
+///
+/// REMPLACE `StageDetector.detect`, ET VOICI LA MESURE QUI L'A DECIDE. Retour
+/// de Christophe du 09/10 08:55 : « Le changement d'etapes ne fonctionne pas,
+/// c'est alleatoire le changement ». L'ancien detecteur classait les etapes par
+/// `distance(depart) + distance(arrivee)`, un score d'ellipse sans ordre ni
+/// appartenance. Rejoue sur la trace reelle du sentier de demonstration, a
+/// l'abscisse 63,0 km — celle de la capture de l'ecran de Christophe — il
+/// repondait l'etape 5 « Zicavo - Cuttoli-Corticchiato » alors que le marcheur
+/// etait sur l'etape 7 « Bastelica - Porticcio » : le nom AFFICHE sur son
+/// telephone. Sa suite de reponses le long du sentier RECULAIT (6 puis 5 puis
+/// 7).
+///
+/// L'ABSCISSE, ELLE, NE RECULE PAS, et c'est tout l'argument : comparee a des
+/// bornes ordonnees et disjointes, elle designe une etape de numero croissant
+/// quand le marcheur avance. Aucune hysteresis n'est necessaire — il n'y a plus
+/// de clignotement a amortir.
+///
+/// L'EVENEMENT GARDE SON SENS, mesure sur l'abscisse plutot qu'a vol d'oiseau :
+/// « entre » dans les [_seuilDeBorneM] premiers metres de l'etape, « sorti »
+/// dans les derniers, « entre les deux » ailleurs.
+StageDetection _etapeSousLesPieds(List<JalonDEtape> jalons, double abscisseM) {
+  final jalon = jalonALAbscisse(jalons, abscisseM);
+  if (jalon == null) {
+    return (stageNumber: 0, event: StageDetectionEventValues.unknown);
+  }
+  final StageDetectionEvent evenement;
+  if (abscisseM - jalon.debutM <= _seuilDeBorneM) {
+    evenement = StageDetectionEventValues.entered;
+  } else if (jalon.finM - abscisseM <= _seuilDeBorneM) {
+    evenement = StageDetectionEventValues.exited;
+  } else {
+    evenement = StageDetectionEventValues.between;
+  }
+  return (stageNumber: jalon.numero, event: evenement);
+}
+
+/// La distance a une borne d'etape en deca de laquelle on se dit « a la
+/// borne » : les 200 m de l'ancien detecteur, conserves tels quels pour que
+/// l'evenement garde exactement le meme sens qu'avant.
+const double _seuilDeBorneM = 200;
+
 /// Notifier pour le dernier index de projection connu (optimisation fenetree).
 class _LastTrackIndexNotifier extends Notifier<int?> {
   @override
@@ -143,7 +204,6 @@ AsyncValue<TrackPositionState> _computeProjection(
 
   // Recuperer le trace GPX
   final trackAsync = ref.watch(gpxTrackProvider(trailId));
-  final stagesAsync = ref.watch(stagesProvider(trailId));
 
   return trackAsync.when(
     data: (trackPoints) {
@@ -168,12 +228,17 @@ AsyncValue<TrackPositionState> _computeProjection(
         ref.read(_lastTrackIndexProvider.notifier).set(memoIndex);
       });
 
-      // Detecter l'etape courante
-      final stages = stagesAsync.value ?? <StageModel>[];
-      final detection = StageDetector.detect(
-        projectedLat: projection.projectedLat,
-        projectedLng: projection.projectedLng,
-        stages: stages,
+      // L'ETAPE COURANTE, DEDUITE DE L'ABSCISSE ET DE RIEN D'AUTRE (747).
+      //
+      // LES ETAPES NE SONT PLUS OBSERVEES ICI : c'est
+      // [jalonsDesEtapesProvider] qui les lit, et observer ce provider suffit
+      // a etre reveille quand elles arrivent. Tant qu'elles manquent, les
+      // jalons sont vides et l'etape vaut 0 — exactement ce que rendait
+      // l'ancien detecteur sans etapes.
+      final jalons = ref.watch(jalonsDesEtapesProvider(trailId));
+      final detection = _etapeSousLesPieds(
+        jalons,
+        projection.distanceFromStartM,
       );
 
       final state = TrackPositionState(

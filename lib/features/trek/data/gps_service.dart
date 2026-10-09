@@ -9,7 +9,7 @@ import '../../../core/error/error_handler.dart';
 import '../../../core/services/session_demo.dart';
 import 'background_gps_service.dart'
     show bgReadStoredPositionProfile, bgWritePositionProfile;
-import 'marcheur_simule.dart';
+import 'marcheur_simule_providers.dart';
 import 'position_controller.dart';
 
 /// Resultat de la demande de permission GPS.

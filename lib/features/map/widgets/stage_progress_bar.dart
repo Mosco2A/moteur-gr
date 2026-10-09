@@ -64,6 +64,9 @@ class StageProgressBar extends StatelessWidget {
     this.altitudeM,
     this.showPendingValues = false,
     this.footer,
+    this.perimetreLabel,
+    this.vueSentier = false,
+    this.onBasculer,
   });
 
   /// Marque d'une valeur qui n'est pas encore mesurable (parite GR20 : `'--'`).
@@ -114,6 +117,26 @@ class StageProgressBar extends StatelessWidget {
   /// deviner pourquoi trois cases portent un tiret.
   final Widget? footer;
 
+  /// LE MOT QUI DIT LE PÉRIMÈTRE DES CHIFFRES (tâche 747). `null` = pas de
+  /// mention, et la barre garde l'aspect qu'elle avait avant ce lot.
+  ///
+  /// POURQUOI UN MOT ET PAS SEULEMENT UNE COULEUR. Christophe l'a demandé
+  /// explicitement le 09/10 : la vue sentier est d'une autre couleur, « et tu
+  /// ajoutes AUSSI un mot, parce que la couleur seule ne suffit pas à qui
+  /// distingue mal les couleurs ». Une personne daltonienne — environ un homme
+  /// sur douze — ne verrait aucune différence entre les deux vues, et lirait
+  /// des kilomètres de sentier en croyant lire son étape. Le mot est donc
+  /// l'information ; la couleur n'est qu'un rappel.
+  final String? perimetreLabel;
+
+  /// Vrai quand les chiffres sont ceux du SENTIER ENTIER : ils prennent alors
+  /// la teinte [AppTheme.bleuRepos] au lieu de la couleur du sentier.
+  final bool vueSentier;
+
+  /// Bascule l'étape vers le sentier entier, et revient. `null` = barre non
+  /// tactile (état avant départ : il n'y a qu'un périmètre à montrer).
+  final VoidCallback? onBasculer;
+
   /// Vrai dès qu'au moins une valeur de la seconde ligne est disponible.
   bool get _hasMeasuredLine =>
       showPendingValues ||
@@ -134,8 +157,37 @@ class StageProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final progressPercent = (progressRatio * 100).round();
-    final primaryColor = theme.colorScheme.primary;
+    // LA TEINTE DU PERIMETRE (747) : celle du sentier pour l'etape, un bleu
+    // franc pour le sentier entier. Le mot [perimetreLabel] porte le sens ;
+    // cette couleur ne fait que le rappeler.
+    final primaryColor = vueSentier
+        ? AppTheme.bleuRepos
+        : theme.colorScheme.primary;
 
+    return GestureDetector(
+      // OPAQUE QUAND ELLE EST TACTILE, et seulement alors : la barre entiere
+      // devient la cible, y compris au-dessus des six cases, qui sont dans un
+      // [IgnorePointer] et ne prendraient donc pas le geste. Les enfants
+      // tactiles — le bouton eventuel du [footer] — restent prioritaires :
+      // Flutter interroge les enfants avant le parent.
+      //
+      // SANS BASCULE, ON REVIENT A `deferToChild` : une barre opaque SANS
+      // action absorberait les touchers d'une zone ou elle ne fait rien, et
+      // c'est exactement ce qui fabrique un geste mort.
+      behavior: onBasculer == null
+          ? HitTestBehavior.deferToChild
+          : HitTestBehavior.opaque,
+      onTap: onBasculer,
+      child: _corps(context, theme, primaryColor, progressPercent),
+    );
+  }
+
+  Widget _corps(
+    BuildContext context,
+    ThemeData theme,
+    Color primaryColor,
+    int progressPercent,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingBase,
@@ -171,6 +223,28 @@ class StageProgressBar extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              // LE MOT DU PERIMETRE, avant la pastille hors-trace : il dit DE
+              // QUOI parlent les cinq chiffres qui suivent.
+              if (perimetreLabel != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacingSm,
+                    vertical: AppTheme.spacingXs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withAlpha(30),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                  ),
+                  child: Text(
+                    perimetreLabel!,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppTheme.spacingXs),
+              ],
               if (isOffTrack)
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -256,6 +330,7 @@ class StageProgressBar extends StatelessWidget {
                     children: [
                       if (_shows(totalDistanceKm))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.distance,
                           label: t.tracking.total,
                           value: _valueOrPending(
@@ -266,6 +341,7 @@ class StageProgressBar extends StatelessWidget {
                         ),
                       if (_shows(distanceCoveredKm))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.pas,
                           label: t.tracking.covered,
                           value: _valueOrPending(
@@ -276,6 +352,7 @@ class StageProgressBar extends StatelessWidget {
                         ),
                       if (_shows(avgSpeedKmh))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.vitesse,
                           label: t.tracking.avgSpeed,
                           value: _valueOrPending(
@@ -291,6 +368,7 @@ class StageProgressBar extends StatelessWidget {
                     children: [
                       if (_shows(elevationGainM))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.denivelePlus,
                           label: t.tracking.dPlus,
                           value: _valueOrPending(
@@ -299,6 +377,7 @@ class StageProgressBar extends StatelessWidget {
                         ),
                       if (_shows(elevationLossM))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.deniveleMoins,
                           label: t.tracking.dMinus,
                           value: _valueOrPending(
@@ -307,6 +386,7 @@ class StageProgressBar extends StatelessWidget {
                         ),
                       if (_shows(altitudeM))
                         _MeasuredStat(
+                          accent: primaryColor,
                           icon: StepwaysIcons.sommet,
                           label: t.tracking.altitude,
                           value: _valueOrPending(
@@ -373,11 +453,17 @@ class _MeasuredStat extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
+    required this.accent,
   });
 
   final String icon;
   final String label;
   final String value;
+
+  /// La teinte du PERIMETRE affiche (tache 747) : couleur du sentier pour
+  /// l'etape, bleu pour le sentier entier. Posee par la barre, qui est seule a
+  /// savoir quel perimetre elle montre.
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -391,7 +477,7 @@ class _MeasuredStat extends StatelessWidget {
           // Grosse icône (parité GR20 : 28 px), dans la couleur d'accent du
           // sentier plutôt qu'en gris : c'est le repère qu'on attrape en
           // premier sur un écran de terrain.
-          StepIcon(icon, size: 28, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 28, color: accent),
           const SizedBox(height: 2),
           Text(
             value,

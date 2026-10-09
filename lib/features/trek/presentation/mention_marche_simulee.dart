@@ -38,7 +38,8 @@ import '../../../core/branding/stepways_icons.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../data/marcheur_simule.dart';
+import '../../../shared/widgets/demo_simulation_button.dart';
+import '../data/marcheur_simule_providers.dart';
 
 /// La ligne d'honnetete de la marche simulee, au-dessus de tous les ecrans.
 class MentionMarcheSimulee extends ConsumerWidget {
@@ -86,6 +87,18 @@ class MentionMarcheSimulee extends ConsumerWidget {
                 ),
               ),
             ),
+            // LA COMMANDE DE SIMULATION EST ICI, ET NULLE PART AILLEURS SUR LA
+            // CARTE (tache 747).
+            //
+            // Retour de Christophe du 09/10 08:48 : « bouton simuler l'etape
+            // suivant mal place ». Elle etait dans l'en-tete de la carte, au
+            // milieu des commandes de TERRAIN (SOS, photo, calques, zoom,
+            // guide) — comme si faire avancer une demonstration etait un outil
+            // de navigation. Ce bandeau, lui, ne parle QUE de la
+            // demonstration : il dit deja « marche simulee, temps accelere ».
+            // La commande qui fait avancer cette marche est a sa place a cote
+            // de cette phrase, et elle disparait avec elle.
+            const DemoSimulationButton(compact: true),
           ],
         ),
       ),

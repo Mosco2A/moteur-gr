@@ -29,9 +29,23 @@ import 'controls/map_controls.dart';
 import '../../../../core/branding/stepways_icons.dart';
 import 'map_controller.dart';
 import 'map_photo_button.dart';
-import 'map_content.dart';
+import 'barre_d_etape.dart';
 
 /// Le bas de la carte : les boutons flottants et la barre d'etape.
+///
+/// LE SEUL BOUTON QUI EN EST PARTI EST LE SOS (tache 747) : il est remonte
+/// sous les bandeaux du haut, parce que c'est LUI que Christophe a vu masquer
+/// le circuit. Voir [CommandeDUrgenceEnHaut].
+///
+/// LA PHOTO ET LES CALQUES RESTENT ICI, ET C'EST MESURE, PAS SUPPOSE. Les
+/// trois boutons ont d'abord ete remontes ensemble ; la garde des gestes morts
+/// (`aucun_geste_mort_573_test.dart`) a alors declare un geste mort de plus sur
+/// `/map`. La cause est connue et ecrite plus bas dans ce fichier : le bouton
+/// photo reste suspendu POUR TOUJOURS sur le canal de l'appareil photo en test.
+/// En bas de l'ecran il n'etait pas atteint par le balayage ; remonte, il l'est
+/// — et il ne repond pas. Le remonter demanderait de traiter d'abord ce canal,
+/// ce qui n'est pas ce lot. Christophe a nomme le SOS, et c'est le SOS qui
+/// bouge.
 ///
 /// L'ETAT RESTE CHEZ L'ECRAN : la feuille des calques est ouverte par
 /// [onShowLayers], que l'ecran fournit avec son propre `context`.
@@ -75,7 +89,46 @@ class MapBottomBar extends StatelessWidget {
   }
 }
 
-/// Colonne gauche : SOS (visible en trek) + Photo + Calques.
+/// LE BOUTON D'URGENCE, REMONTE EN HAUT DE LA CARTE (tache 747).
+///
+/// RETOUR DE CHRISTOPHE DU 09/10 08:50, mot pour mot : « 10 le bouton SOS le
+/// mettre en hau ou en bas de la carte car la il masque le circuit ». Je l'ai
+/// vu sur sa capture : le gros bouton rouge flottait en BAS A GAUCHE,
+/// par-dessus le trace, a l'endroit meme ou le sentier passe.
+///
+/// POURQUOI EN HAUT, ET PAS SUR LA BARRE DE CHIFFRES. La barre semblait le
+/// meilleur endroit : surface opaque, bas d'ecran, donc rien de masque et le
+/// pouce dessus. ELLE A ETE ESSAYEE, ET LA GARDE DE PARITE L'A REFUSEE A
+/// RAISON (`map_screen_parite_navigation_test.dart`) : la barre ne se rend avec
+/// ses chiffres QUE lorsqu'une projection sur le trace est disponible. Le
+/// bouton d'urgence aurait donc dependu de l'arrivee d'un fix GPS — il aurait
+/// disparu exactement dans la situation ou l'on en a besoin, perdu et sans
+/// signal. UNE COMMANDE D'URGENCE NE DEPEND DE RIEN.
+///
+/// IL EST POSE SOUS LES BANDEAUX DU HAUT, dans la meme [Column] qu'eux : il ne
+/// peut pas recouvrir une alerte hors-trace, et une alerte ne peut pas le
+/// recouvrir, quelle que soit la hauteur du texte traduit.
+///
+/// CE QUE CE PLACEMENT COUTE, ET IL EST DIT : en haut d'un telephone de six
+/// pouces, le SOS ne s'atteint plus d'une seule main. Christophe a propose
+/// « en haut ou en bas » : c'est le HAUT qui est livre, parce que le bas ne
+/// peut pas a la fois degager le trace et garder le bouton independant de la
+/// barre. L'arbitrage lui revient.
+class CommandeDUrgenceEnHaut extends StatelessWidget {
+  /// Cree le SOS flottant du haut de la carte.
+  const CommandeDUrgenceEnHaut({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.only(left: 16, top: 8),
+      child: Row(children: [SosButton()]),
+    );
+  }
+}
+
+/// Colonne gauche du bas : Photo + Calques (le SOS est remonte, cf.
+/// [CommandeDUrgenceEnHaut] et [MapBottomBar]).
 class _MapLeftButtons extends StatelessWidget {
   const _MapLeftButtons({required this.onShowLayers});
 
@@ -88,12 +141,10 @@ class _MapLeftButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SosButton(),
-        const SizedBox(height: 8),
         // PHOTO VERS LE JOURNAL DU JOUR (LOT D, manque reel
         // n°1) : present sur la carte de reference, absent de
-        // StepWays. Cote gauche avec le SOS, pour ne pas
-        // allonger la colonne des controles de carte.
+        // StepWays. Cote gauche, pour ne pas allonger la
+        // colonne des controles de carte.
         const MapPhotoButton(),
         const SizedBox(height: 8),
         FloatingActionButton.small(
@@ -172,6 +223,11 @@ class _MapRightControls extends StatelessWidget {
 /// ravitaillement (correctif L6-1). Deux alertes de nature differente
 /// qui peuvent coexister ; la Column garantit qu'aucune ne recouvre
 /// l'autre, quelle que soit la hauteur du texte traduit.
+///
+/// LE SOS VIENT SOUS EUX (tache 747), remonte du bas de la carte ou il
+/// masquait le trace. Il est dans la MEME [Column] que les bandeaux, et donc
+/// toujours EN DESSOUS d'eux : une alerte hors-trace ne peut pas lui passer
+/// par-dessus, et il ne peut pas la recouvrir.
 class MapTopBanners extends StatelessWidget {
   const MapTopBanners({super.key});
 
@@ -179,6 +235,7 @@ class MapTopBanners extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Alerte hors-trace : banniere in-screen en tete.
         // La notification + la vibration partent du provider (meme
@@ -201,6 +258,8 @@ class MapTopBanners extends StatelessWidget {
         ),
         // Alerte ravitaillement (correctif L6-1).
         const _SupplyAlertBanner(),
+        // LE SOS (747), degage du trace.
+        const CommandeDUrgenceEnHaut(),
       ],
     );
   }

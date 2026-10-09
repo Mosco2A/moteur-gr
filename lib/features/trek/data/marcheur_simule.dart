@@ -58,7 +58,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart'
     show AppLifecycleListener, AppLifecycleState;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/data/daos/session_track_points_dao.dart';
@@ -142,6 +141,12 @@ class MarcheurSimule {
   /// [pasDeTempsSimule]. Une multiplication de placement, pas une mesure.
   static double get pasEnMetres =>
       kVitesseSimuleeKmh / 3.6 * (pasDeTempsSimule.inMilliseconds / 1000.0);
+
+  /// Le temps de marche d'une distance, a l'allure simulee — l'inverse exact
+  /// de [pasEnMetres]. Le calcul vit dans [tempsDeMarchePour], avec le reste du
+  /// placement sur la trace.
+  static Duration tempsDeMarcheDe(double metres) =>
+      tempsDeMarchePour(metres, kVitesseSimuleeKmh);
 
   final FabriqueDeMinuterie _minuterie;
   final DateTime Function() _maintenant;
@@ -327,6 +332,39 @@ class MarcheurSimule {
     _armerLaMinuterie();
   }
 
+  /// AVANCE D'UN COUP JUSQU'A L'ABSCISSE [distanceM] (tache 747).
+  ///
+  /// POURQUOI. Retours de Christophe du 09/10 : « la fleche orange ... ne
+  /// fonctionne pas », « simuler ne fonctionne pas du tout ». Le bouton
+  /// n'avancait RIEN — il remplissait `completedStages`, un ensemble que la
+  /// barre de la carte ne lit pas. Il faisait avancer un COMPTEUR a cote de la
+  /// source de verite. Celle-ci deplace LA SOURCE : nom d'etape, chiffres,
+  /// point sur la carte et cadrage se deduisent tous de l'abscisse.
+  ///
+  /// L'HORLOGE DE LA MARCHE SUIT LA DISTANCE ([tempsDeMarcheDe]) : sans cela le
+  /// moteur de statistiques, qui divise la distance par l'ecart des
+  /// horodatages, annoncerait une vitesse absurde.
+  ///
+  /// ELLE NE RECULE JAMAIS, s'arrete au bout de la trace et y declare l'arrivee
+  /// comme le dernier pas l'aurait fait. Rend `false` si rien n'a bouge.
+  bool allerA(double distanceM) {
+    final enMarcheOuEnPause =
+        _etat == EtatDuMarcheur.enMarche || _etat == EtatDuMarcheur.enPause;
+    if (!enMarcheOuEnPause || _longueurDeLaTrace <= 0) return false;
+    final cible = distanceM.clamp(_distanceM, _longueurDeLaTrace);
+    if (cible <= _distanceM) return false;
+
+    _tempsDeMarche += tempsDeMarcheDe(cible - _distanceM);
+    _distanceM = cible;
+    _emettre();
+    if (_distanceM >= _longueurDeLaTrace) {
+      _minute?.cancel();
+      _minute = null;
+      _changerEtat(EtatDuMarcheur.arrive);
+    }
+    return true;
+  }
+
   /// TERMINE LA MARCHE EN GARDANT LES RELEVES : plus de minuterie, mais les
   /// chiffres restent lisibles.
   ///
@@ -455,37 +493,3 @@ class MarcheurSimule {
     if (!_sortie.isClosed) _sortie.add(position);
   }
 }
-
-/// LE MARCHEUR SIMULE DE L'APPLICATION — un seul, comme le robinet GPS.
-///
-/// UN SEUL, ET C'EST LA MEME RAISON QUE POUR LE ROBINET (lot 671-00) : la
-/// source de positions de l'interface est unique. Le marcheur est la source
-/// pendant une demo ; deux marcheurs, ce seraient deux verites sur l'endroit
-/// ou se trouve le randonneur.
-///
-/// IL N'EST PAS CREE PAR LA DEMO : il existe toujours, et il ne fait rien tant
-/// que personne ne l'a fait [MarcheurSimule.demarrer]. C'est ce qui permet au
-/// robinet de s'abonner a son flux une fois pour toutes, sans attendre qu'une
-/// simulation commence.
-final marcheurSimuleProvider = Provider<MarcheurSimule>((ref) {
-  final marcheur = MarcheurSimule();
-  ref.onDispose(marcheur.fermer);
-  return marcheur;
-});
-
-/// Le flux des etats du marcheur, abonne pour reveiller les ecrans.
-final _fluxDesEtatsProvider = StreamProvider<EtatDuMarcheur>(
-  (ref) => ref.watch(marcheurSimuleProvider).etats,
-);
-
-/// OU EN EST LA MARCHE SIMULEE, lisible par les ecrans.
-///
-/// La VALEUR AUTORITAIRE reste celle du marcheur ([MarcheurSimule.etat]) ; le
-/// flux ne sert qu'a faire recalculer ce provider au bon moment. Lire les deux
-/// evite le piege du flux seul : un ecran qui s'abonne APRES un changement
-/// aurait rate l'emission et affiche l'etat d'avant, alors que le champ, lui,
-/// est toujours a jour.
-final etatDuMarcheurSimuleProvider = Provider<EtatDuMarcheur>((ref) {
-  ref.watch(_fluxDesEtatsProvider);
-  return ref.watch(marcheurSimuleProvider).etat;
-});

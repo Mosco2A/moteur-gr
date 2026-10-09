@@ -12,7 +12,11 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../map/map_facade.dart'
-    show stageDistanceCoveredProvider, statsTraceProvider;
+    show
+        jalonsDesEtapesProvider,
+        prochaineFinDEtape,
+        stageDistanceCoveredProvider,
+        statsTraceProvider;
 // TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
 // diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
 // relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
@@ -29,7 +33,7 @@ import '../../safety/safety_facade.dart' show ficheEcranVerrouilleProvider;
 import '../../treks/treks_facade.dart'
     show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;
 import '../data/background_gps_service.dart';
-import '../data/marcheur_simule.dart';
+import '../data/marcheur_simule_providers.dart';
 import '../data/trek_recorder.dart';
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_stats.dart';
@@ -510,6 +514,56 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       // Best-effort : la simulation ne doit jamais casser l'ouverture des
       // ecrans de la demonstration.
     }
+  }
+
+  /// FAIT SAUTER LE MARCHEUR SIMULE A LA FIN DE SON ETAPE (tache 747).
+  ///
+  /// CE QUI NE MARCHAIT PAS, MESURE. Retours de Christophe du 09/10 : « la
+  /// fleche orange ... ne fonctionne pas » (08:46) et « simuler ne fonctionne
+  /// pas du tout » (08:48). Le bouton appelait [recordStageCompleted], qui
+  /// ajoute un identifiant a `completedStages` — un ensemble que la barre de la
+  /// carte ne lit PAS, et qui ne deplace pas le marcheur d'un metre. L'etape
+  /// affichee, elle, se deduisait des positions : une demi-seconde plus tard,
+  /// le releve suivant effacait de toute facon l'effet du bouton. Deux sources
+  /// de verite, et c'est la mauvaise qui gagnait.
+  ///
+  /// CE QUE CELUI-CI FAIT : il deplace LA SOURCE — l'abscisse du marcheur — a
+  /// la borne de fin de l'etape en cours. Tout en decoule d'un coup : le nom
+  /// de l'etape, les cinq chiffres de la barre, le point bleu, le cadrage de la
+  /// carte. Aucune formule d'affichage n'est touchee, et il n'y a plus de
+  /// compteur parallele a desynchroniser.
+  ///
+  /// L'ETAPE FRANCHIE EST AUSSI NOTEE MARCHEE, par le MEME chemin de production
+  /// qu'une arrivee detectee au GPS ([recordStageCompleted]) : c'est ce que la
+  /// porte du finisher verifie, et c'est ce qui permet a « Simuler l'arrivee »
+  /// d'ouvrir les felicitations a la fin.
+  ///
+  /// Sans demo, sans session, ou deja au bout de la trace : ne fait rien et
+  /// rend `false` — l'ecran retire alors le bouton de lui-meme.
+  bool simulerLEtapeSuivante() {
+    if (!ref.read(enDemoProvider)) return false;
+    final trailId = _activeTrailId;
+    if (trailId == null) return false;
+
+    final jalons = ref.read(jalonsDesEtapesProvider(trailId));
+    if (jalons.isEmpty) return false;
+    final abscisseM = ref.read(stageDistanceCoveredProvider);
+    final cible = prochaineFinDEtape(jalons, abscisseM);
+    if (cible == null) return false;
+
+    if (!ref.read(marcheurSimuleProvider).allerA(cible)) return false;
+
+    // TOUTES LES ETAPES DESORMAIS DERRIERE SONT NOTEES MARCHEES, par le MEME
+    // chemin de production qu'une arrivee detectee au GPS. Au pluriel, parce
+    // qu'un saut peut enjamber une tranche vide : la porte du finisher exige
+    // que CHAQUE etape du parcours ait ete marchee, et une etape sautee
+    // silencieusement bloquerait les felicitations a la fin.
+    // L'identifiant du plan vaut le numero d'etape (cf. `domainStagesProvider`,
+    // `id: '${sm.stageNumber}'`), et [recordStageCompleted] est idempotent.
+    for (final jalon in jalons) {
+      if (jalon.finM <= cible) recordStageCompleted('${jalon.numero}');
+    }
+    return true;
   }
 
   /// ARRETE LA SIMULATION DE DEMO SANS RIEN FINALISER NI RIEN ECRIRE

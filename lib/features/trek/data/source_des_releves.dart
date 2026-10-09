@@ -35,7 +35,7 @@ import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart' show SessionTrackPoint;
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/session_demo.dart';
-import 'marcheur_simule.dart';
+import 'marcheur_simule_providers.dart';
 
 /// D'OU VIENNENT LES RELEVES QUE LES CHIFFRES MESURENT.
 class SourceDesReleves {

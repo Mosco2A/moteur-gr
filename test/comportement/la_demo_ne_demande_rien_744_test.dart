@@ -45,7 +45,7 @@ import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/session_demo.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
-import 'package:moteur_gr/features/trek/data/marcheur_simule.dart';
+import 'package:moteur_gr/features/trek/data/marcheur_simule_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
 import '../structurel/mesure_des_sources_645.dart'

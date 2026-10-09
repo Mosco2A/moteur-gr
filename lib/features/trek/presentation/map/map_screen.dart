@@ -18,7 +18,6 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
-import '../../../../shared/widgets/demo_simulation_button.dart';
 import '../../../map/map_facade.dart' show gpxTrackProvider, showMapGuideSheet;
 import '../../../../core/branding/stepways_icons.dart';
 import 'map_content.dart';
@@ -151,11 +150,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         // du Programme), et cela n'ajoute pas un huitieme bouton flottant sur
         // une carte de terrain.
         actions: [
-          // FAIRE AVANCER LA RANDONNEE SIMULEE, DEPUIS LA CARTE (tache 638,
-          // bugs 11 et 16). C'est ici qu'on regarde quand on marche : le bouton
-          // de simulation doit donc etre atteignable sans repasser par le
-          // cockpit. Invisible hors demo et hors randonnee simulee.
-          const DemoSimulationButton(compact: true),
+          // LA COMMANDE DE SIMULATION N'EST PLUS ICI (tache 747).
+          //
+          // Retour de Christophe du 09/10 08:48 : « 7/ bouton simuler l'etape
+          // suivant mal place et non fonctionnel ». Elle etait posee dans
+          // l'en-tete de la carte, entre les commandes de TERRAIN — le guide
+          // des icones ici, le SOS, la photo, les calques et le zoom juste en
+          // dessous. Or ce n'est pas une commande de terrain : c'est une
+          // commande de DEMONSTRATION, qui n'existe pas pour un randonneur.
+          // La melanger aux autres laissait croire a un septieme outil de
+          // navigation.
+          //
+          // ELLE A REJOINT LE BANDEAU DE LA DEMO ([MentionMarcheSimulee]), le
+          // seul endroit de l'ecran qui parle DEJA de la demonstration et qui
+          // dit « marche simulee - temps accelere ». Elle y est visible
+          // pendant toute la marche simulee, et elle disparait avec elle.
           IconButton(
             icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.map.title,

@@ -13,16 +13,16 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/trace_point.dart';
 import '../../../../core/map/fond_de_carte.dart';
 import '../../../../core/models/poi.dart';
-import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/attribution_osm.dart';
 import '../../../map/map_facade.dart'
     show
-        StageProgressBar,
         currentPositionProvider,
+        jalonALAbscisse,
+        jalonsDesEtapesProvider,
         mapFocusStage,
         mapPoisProvider,
+        perimetreDeLaBarreProvider,
         simplifiedTrackProvider,
-        stageDistanceCoveredProvider,
         stageTrackSegment,
         trackPositionProvider;
 import '../../../trail/trail_facade.dart'
@@ -37,8 +37,7 @@ import 'map_overlays.dart';
 import 'map_arrival_pipeline.dart';
 import 'map_sheets.dart';
 import 'recalage_mount.dart';
-import '../../providers/live_trek_stats_provider.dart';
-import '../../providers/tracking_providers.dart';
+import 'felicitations_de_la_demo.dart';
 
 /// Contenu carte interne -- separe pour isoler les rebuilds.
 ///
@@ -66,13 +65,28 @@ class MapContent extends StatefulWidget {
 class _MapContentState extends State<MapContent> {
   int _currentZoom = 10;
 
-  /// Vrai une fois la carte cadree sur l'etape (tache 558).
+  /// LE NUMERO DE L'ETAPE DEJA CADREE, `null` avant le premier cadrage.
   ///
-  /// UNE SEULE FOIS, et c'est le point important : les etapes arrivent en
-  /// asynchrone, donc le cadrage peut devoir attendre un tour. Passe ce
-  /// premier cadrage, la carte appartient au randonneur — un recadrage
-  /// automatique lui arracherait la carte des mains pendant qu'il la deplace.
-  bool _stageFramed = false;
+  /// C'ETAIT UN SIMPLE DRAPEAU « deja cadre », ET C'EST CE QUI RAMENAIT LA
+  /// CARTE AU DEPART (tache 747). Retour de Christophe du 09/10 09:00, mot pour
+  /// mot : « il faut rester sur la fin pas revenir au debut dans l'affichage de
+  /// la carte ».
+  ///
+  /// CE QUI SE PASSAIT, MESURE. Le cadrage lisait
+  /// [currentStageNumberProvider], c'est-a-dire la colonne `currentStage` de la
+  /// base — et le balayage du 09/10 a montre que `ProgressDao.updateCurrentStage`
+  /// n'a AUCUN appelant dans l'application : cette colonne vaut donc toujours 1,
+  /// et en demo il n'y a meme pas de ligne de progression. Le cadrage tombait
+  /// donc TOUJOURS sur l'etape 1, une seule fois, et plus jamais : la carte
+  /// restait sur le DEPART du sentier pendant toute la marche, et l'arrivee
+  /// n'etait nulle part a l'ecran.
+  ///
+  /// CE QUI REMPLACE : on cadre sur l'etape SOUS LES PIEDS du marcheur, et on
+  /// recadre QUAND ELLE CHANGE — pas a chaque releve. Deux fois par seconde, un
+  /// recadrage arracherait la carte des mains du randonneur ; une fois par
+  /// etape, c'est le geste qu'il attend. A l'arrivee, l'etape sous ses pieds est
+  /// la DERNIERE : la carte reste donc sur la fin, sans traitement special.
+  int? _etapeCadree;
 
   /// Calcule la bounding box englobant tous les points du trace.
   LatLngBounds _boundsFromPoints(List<TrackPoint> points) {
@@ -95,6 +109,36 @@ class _MapContentState extends State<MapContent> {
   Widget build(BuildContext context) {
     final bounds = _boundsFromPoints(widget.rawPoints);
 
+    // TOUCHER L'ECRAN REMET LE COMPTE DES VINGT SECONDES A ZERO (tache 747).
+    //
+    // Decision de Christophe du 09/10 08:57 : la vue « sentier entier » revient
+    // seule a l'etape au bout de vingt secondes, « et le temporisateur se remet
+    // a zero si on touche l'ecran pendant les vingt secondes ». Vingt secondes
+    // c'est long quand on lit, et court quand on deplace la carte pour situer
+    // la suite du sentier : la vue ne doit pas se derober sous les doigts de
+    // quelqu'un qui est en train de s'en servir.
+    //
+    // UN [Listener] ET NON UN [GestureDetector] : il OBSERVE les evenements de
+    // pointeur sans en consommer aucun. La carte garde donc tous ses gestes —
+    // deplacement, pincement, double-appui — exactement comme avant. Et
+    // `translucent` le laisse voir les touchers qui atterrissent sur la carte
+    // en dessous, ce qu'un comportement opaque intercepterait.
+    //
+    // LE [Consumer] NE SE RECONSTRUIT JAMAIS DE LUI-MEME : `ref.read` ne
+    // s'abonne a rien. Il n'est la que pour tenir un `ref` — cet ecran est un
+    // [StatefulWidget] et non un [ConsumerStatefulWidget], et le convertir
+    // toucherait tous ses `Consumer` internes pour aucun gain.
+    return Consumer(
+      builder: (context, ref, _) => Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) =>
+            ref.read(perimetreDeLaBarreProvider.notifier).toucheEcran(),
+        child: _pile(bounds),
+      ),
+    );
+  }
+
+  Widget _pile(LatLngBounds bounds) {
     return Stack(
       children: [
         // --- FlutterMap avec tous les layers ---
@@ -134,9 +178,21 @@ class _MapContentState extends State<MapContent> {
             final stages = ref.watch(
               stagesProvider(widget.trailId).select((async) => async.value),
             );
+            // L'ETAPE A CADRER SUIT LE MARCHEUR (747). L'abscisse sur la trace
+            // dit sur quelle etape il se trouve ; sans position — avant le
+            // depart — on retombe sur l'etape de la base, puis sur la premiere.
+            final abscisseM = ref
+                .watch(trackPositionProvider)
+                .value
+                ?.distanceFromStartM;
+            final jalons = ref.watch(jalonsDesEtapesProvider(widget.trailId));
+            final sousLesPieds = abscisseM == null
+                ? null
+                : jalonALAbscisse(jalons, abscisseM)?.numero;
             final focusStage = mapFocusStage(
               stages,
-              ref.watch(currentStageNumberProvider(widget.trailId)),
+              sousLesPieds ??
+                  ref.watch(currentStageNumberProvider(widget.trailId)),
             );
             final segment = focusStage == null
                 ? const <TrackPoint>[]
@@ -147,9 +203,11 @@ class _MapContentState extends State<MapContent> {
 
             // Les etapes arrivent apres le trace : si le cadrage d'etape n'est
             // connu qu'au deuxieme build, `initialCameraFit` est deja passe. On
-            // le rejoue UNE fois, hors phase de build.
-            if (focusBounds != null && !_stageFramed) {
-              _stageFramed = true;
+            // le rejoue hors phase de build — et on le rejoue A CHAQUE
+            // CHANGEMENT D'ETAPE, jamais entre deux.
+            if (focusBounds != null &&
+                _etapeCadree != focusStage!.stageNumber) {
+              _etapeCadree = focusStage.stageNumber;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted) return;
                 mapController.fitCamera(
@@ -313,7 +371,7 @@ class _MapContentState extends State<MapContent> {
         // ravitaillement (correctif L6-1). Deux alertes de nature differente
         // qui peuvent coexister ; la Column garantit qu'aucune ne recouvre
         // l'autre, quelle que soit la hauteur du texte traduit.
-        Positioned(top: 0, left: 0, right: 0, child: MapTopBanners()),
+        const Positioned(top: 0, left: 0, right: 0, child: MapTopBanners()),
 
         // --- Pipeline detection d'etape -> arrivee -> finisher (PARITE GR20,
         // LOT 2, #99433). L'ecran carte est l'ECRAN TERRAIN ACTIF de StepWays :
@@ -323,167 +381,14 @@ class _MapContentState extends State<MapContent> {
         // Lots 671-02 et 671-03 : pas calibre, recalage sur le trace.
         const StrideCalibrationMount(),
         const TrackRecalibrationMount(),
+
+        // --- L'ARRIVEE DE LA DEMONSTRATION EST UN MOMENT (tache 747, retour
+        // de Christophe du 09/10 08:59 : « A la fin il manque les
+        // felicitations »). EN DERNIER dans la pile, donc au-dessus de tout :
+        // c'est l'ecran de fin, il ne doit pas passer sous la barre de
+        // chiffres. Invisible hors demo et avant l'arrivee.
+        const FelicitationsDeLaDemo(),
       ],
-    );
-  }
-}
-
-/// Barre d'etape active affichee en bas de la carte pendant un trek (PARITE
-/// GR20 : bandeau de progression d'etape de la Navigation).
-///
-/// N'est rendue que lorsqu'une session est `recording`/`paused` ET qu'une
-/// projection sur le trace est disponible (etape detectee). Alimente
-/// [StageProgressBar] avec : nom de l'etape courante (donnees du sentier),
-/// distance restante, progression et etat hors-trace — le tout depuis
-/// [trackPositionProvider] et [stagesProvider] (source unique projetee, aucune
-/// donnee en dur, generique multi-sentiers). Hors trek ou sans fix GPS : rendu
-/// nul (SizedBox.shrink), la carte reste degagee.
-///
-/// CORRECTIF L6-2 : la barre portait QUATRE informations la ou la navigation
-/// de reference en affiche SIX sur deux lignes. Les manquantes — denivele,
-/// vitesse moyenne, altitude, plus le couple total/parcouru — sont ajoutees
-/// ici, MESUREES sur le trace parcouru en session ([liveTrekStatsProvider],
-/// lot 671-06), jamais d'une somme nominale d'etapes. Chaque valeur absente est
-/// MASQUEE plutot qu'affichee a zero (meme regle que le correctif L5-6 : une
-/// vitesse mesuree, ou rien).
-///
-/// LOT D (tache 554) — CETTE BARRE NE DISPARAIT PLUS JAMAIS. Elle se rendait en
-/// `SizedBox.shrink()` hors trek et sans fix GPS : c'est EXACTEMENT l'ecran nu
-/// que Chris a vu (« 14 navigation ne ressemble en rien a GR20 !!!!! »). La
-/// navigation de reference, elle, affiche sa barre de chiffres EN PERMANENCE et
-/// met un tiret dans les cases qu'elle ne sait pas encore remplir. Hors trek, la
-/// barre passe donc la main a [_PlannedStageBar] au lieu de s'effacer.
-class ActiveStageBar extends ConsumerWidget {
-  const ActiveStageBar({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final status = ref.watch(
-      trekSessionManagerProvider.select((s) => s.status),
-    );
-    final trekActive =
-        status == TrackingSessionStatus.recording ||
-        status == TrackingSessionStatus.paused;
-    if (!trekActive) return const _PlannedStageBar();
-
-    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
-    final trackPos = ref.watch(trackPositionProvider);
-
-    return trackPos.maybeWhen(
-      data: (state) {
-        final stages = ref.watch(
-          stagesProvider(trailId).select((async) => async.value),
-        );
-        // Nom de l'etape courante detectee (fallback : libelle generique).
-        final stageNumber = state.stageDetection.stageNumber;
-        final stage = (stages ?? const [])
-            .where((s) => s.stageNumber == stageNumber)
-            .firstOrNull;
-        final stageName =
-            stage?.name ??
-            (stageNumber > 0
-                ? t.a11y.stageMarker(number: stageNumber)
-                : t.map.title);
-
-        // Chiffres mesures sur le trace parcouru en session (L6-2, 671-06).
-        // Sans deux releves reels, il n'y a pas de duree mesurable :
-        // `hasData` est faux et toutes les valeurs restent masquees.
-        final mesures = ref.watch(liveTrekStatsProvider).value;
-        final mesurable = mesures != null && mesures.hasData;
-        final totalKm = ref.watch(
-          trailConfigProvider.select((c) => c.totalDistanceKm),
-        );
-        // Parcouru = distance PROJETEE sur le trace, la meme source unique que
-        // le HUB, l'accueil et le widget — jamais le cumul GPS brut, qui
-        // gonfle sur un aller-retour.
-        final parcouruKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
-
-        return StageProgressBar(
-          stageName: stageName,
-          distanceRemainingKm: state.distanceRemainingKm,
-          progressRatio: state.progressRatio,
-          isOffTrack: state.isOffTrack,
-          totalDistanceKm: totalKm > 0 ? totalKm : null,
-          distanceCoveredKm: parcouruKm,
-          elevationGainM: mesurable ? mesures.elevationGainM : null,
-          elevationLossM: mesurable ? mesures.elevationLossM : null,
-          // `averageSpeedKmh` vaut deja null quand le chiffre n'aurait aucun
-          // sens (duree nulle, vitesse non marchable) : on le laisse decider.
-          avgSpeedKmh: mesurable ? mesures.averageSpeedKmh : null,
-          altitudeM: ref.watch(currentAltitudeProvider),
-        );
-      },
-      // En trek mais sans projection encore disponible (le fix GPS met une
-      // seconde a arriver) : barre du PROGRAMME plutot qu'ecran nu.
-      orElse: () => const _PlannedStageBar(),
-    );
-  }
-}
-
-/// Barre d'etape AVANT le depart (LOT D, tache 554) — l'etat garni qui manquait.
-///
-/// CE QU'ELLE MONTRE, ET POURQUOI CHAQUE CHIFFRE EST LEGITIME :
-///  * le nom et les chiffres de la PREMIERE etape du programme — distance, D+,
-///    D- : ce sont des donnees du sentier, connues sans le moindre GPS ;
-///  * la distance totale du sentier, qui vient de la configuration ;
-///  * un TIRET sur les trois chiffres qui exigent la marche (parcouru, vitesse
-///    moyenne) — jamais un zero, qui se lirait comme une mesure ;
-///  * l'altitude REELLE des qu'un fix existe (le marcheur est peut-etre deja au
-///    depart), un tiret sinon.
-///
-/// CE QU'ELLE NE PRETEND PAS : elle ne dit pas ou se trouve le marcheur. Elle
-/// nomme l'etape COURANTE quand la base en connait une (tache 558 : la colonne
-/// `currentStage`, ecrite depuis toujours par le suivi de trek, est enfin LUE —
-/// cf. [currentStageNumberProvider]), et la PREMIERE sinon, parce que c'est le
-/// point de depart connu du programme. Des que la projection GPS repond,
-/// l'etape DETECTEE prend le relais ([ActiveStageBar]).
-class _PlannedStageBar extends ConsumerWidget {
-  const _PlannedStageBar();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
-    final stages = ref.watch(
-      stagesProvider(trailId).select((async) => async.value),
-    );
-    // ETAPE COURANTE SI LA BASE EN CONNAIT UNE, PREMIERE ETAPE SINON.
-    final currentNumber = ref.watch(currentStageNumberProvider(trailId));
-    final stage = mapFocusStage(stages, currentNumber);
-    final totalKm = ref.watch(
-      trailConfigProvider.select((c) => c.totalDistanceKm),
-    );
-
-    // Repli de titre : le nom du sentier. Toujours vrai, meme quand la base
-    // n'a pas encore rendu les etapes.
-    final String trailName = ref.watch(
-      trailConfigProvider.select((c) => c.displayName),
-    );
-    final String stageName = stage?.name ?? trailName;
-
-    // « Restant » avant le depart = toute l'etape (rien n'est marche). Sans
-    // etape connue, on retombe sur le sentier entier.
-    final remainingKm = stage?.distanceKm ?? (totalKm > 0 ? totalKm : 0.0);
-
-    return StageProgressBar(
-      stageName: stageName,
-      distanceRemainingKm: remainingKm,
-      progressRatio: 0,
-      isOffTrack: false,
-      totalDistanceKm: totalKm > 0 ? totalKm : null,
-      // Rien de marche : tiret, jamais « 0.0 km ».
-      distanceCoveredKm: null,
-      elevationGainM: stage?.elevationGainM,
-      elevationLossM: stage?.elevationLossM,
-      avgSpeedKmh: null,
-      altitudeM: ref.watch(currentAltitudeProvider),
-      showPendingValues: true,
-      // LE LAIUS SUR LES TIRETS EST SUPPRIME (tache 558). Retour de Chris, mot
-      // pour mot : « enleve dans randonnee le laius sur les tiret ». La phrase
-      // `map.statsPendingNote` expliquait pourquoi certaines cases portent un
-      // tiret — elle part AVEC SA CLE dans les cinq langues. Un tiret se
-      // comprend seul, et la navigation de reference n'explique pas les siens.
-      // L'acquis du lot 554 reste entier : les six cases sont toujours la, avec
-      // un tiret et jamais un zero sur ce qui exige la marche.
     );
   }
 }

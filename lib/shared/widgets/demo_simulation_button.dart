@@ -34,9 +34,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/branding/stepways_icons.dart';
+import '../../core/engine/trail_engine.dart';
 import '../../core/services/session_demo.dart';
 import '../../core/theme/app_theme.dart';
-import '../../features/trek/providers/gps_providers.dart';
+import '../../features/map/map_facade.dart'
+    show
+        jalonsDesEtapesProvider,
+        prochaineFinDEtape,
+        stageDistanceCoveredProvider;
 import '../../features/trek/providers/tracking_providers.dart';
 import '../../i18n/translations.g.dart';
 import 'app_button.dart';
@@ -61,31 +66,36 @@ class DemoSimulationButton extends ConsumerWidget {
         etat.status == TrackingSessionStatus.paused;
     if (!enMarche) return const SizedBox.shrink();
 
-    final plan = ref.watch(currentTrekPlanProvider);
-    if (plan == null) return const SizedBox.shrink();
     if (etat.session?.parcoursFullyWalked ?? false) {
       return const SizedBox.shrink();
     }
 
-    final faites = etat.session?.completedStages.toSet() ?? const <String>{};
-    final restantes = <String>[
-      for (final id in plan.orderedStageIds)
-        if (!faites.contains(id)) id,
-    ];
+    // CE QUI RESTE A FRANCHIR SE LIT SUR LA TRACE, PLUS SUR UN COMPTEUR
+    // (tache 747).
+    //
+    // Ce bouton se reglait sur `completedStages` — l'ensemble qu'il remplissait
+    // lui-meme. Il etait donc le seul a savoir ou on en etait, et la carte n'en
+    // voyait rien : retours de Christophe du 09/10, « la fleche orange ... ne
+    // fonctionne pas » et « simuler ne fonctionne pas du tout ». Il lit
+    // desormais la MEME chose que la barre et la carte : l'abscisse du marcheur
+    // sur la trace, et les bornes des etapes.
+    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+    final jalons = ref.watch(jalonsDesEtapesProvider(trailId));
+    final abscisseM = ref.watch(stageDistanceCoveredProvider);
+    final ilResteUneEtape = prochaineFinDEtape(jalons, abscisseM) != null;
 
     final String libelle;
     final VoidCallback geste;
-    if (restantes.isNotEmpty) {
-      final prochaine = restantes.first;
+    final notifier = ref.read(trekSessionManagerProvider.notifier);
+    if (ilResteUneEtape) {
       libelle = t.demo.simulerEtape;
-      geste = () => ref
-          .read(trekSessionManagerProvider.notifier)
-          .recordStageCompleted(prochaine);
+      // IL DEPLACE LE MARCHEUR, et c'est pour cela qu'on le voit : nom
+      // d'etape, cinq chiffres, point bleu et cadrage se deduisent tous de
+      // l'abscisse qu'il vient de changer.
+      geste = notifier.simulerLEtapeSuivante;
     } else {
       libelle = t.demo.simulerFin;
-      geste = () => ref
-          .read(trekSessionManagerProvider.notifier)
-          .completeOnArrival(fullyWalked: true);
+      geste = () => notifier.completeOnArrival(fullyWalked: true);
     }
 
     if (compact) {
