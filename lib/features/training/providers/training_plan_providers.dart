@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/trail_selection.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../domain/feasibility_formula.dart';
 import '../../feasibility/feasibility_facade.dart'
     show feasibilityAssessmentProvider, hikerProfileProvider;
@@ -198,6 +199,9 @@ class TrainingProgressNotifier extends Notifier<TrainingProgressState> {
     final updated = Set<String>.from(state.doneSessionIds);
     if (!updated.add(sessionId)) updated.remove(sessionId);
     state = state.copyWith(doneSessionIds: updated);
+    // EN DEMO, LA COCHE VIT EN MEMOIRE (tache 760) — meme raison que
+    // `TrainingProgressNotifier.toggleDone` dans `training_providers.dart`.
+    if (ref.read(enDemoProvider)) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(trainingDoneKey(_trailId), updated.toList());
   }

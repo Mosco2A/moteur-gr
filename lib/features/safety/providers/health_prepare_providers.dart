@@ -5,6 +5,8 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/session_demo.dart';
+
 /// Signaux de PREPARATION de la fiche medicale (tache 568, LOT Q).
 ///
 /// DECISION DE CHRIS DU 26/09 10:29, verbatim : « ca doit faire partie de la
@@ -131,6 +133,13 @@ class HealthPrepareStepsNotifier extends Notifier<Set<HealthPrepStep>> {
     _ecritureLocale = true;
     // Reactivite immediate : l'UI n'attend pas l'ecriture disque.
     state = <HealthPrepStep>{...state, ...ajouts}..removeAll(retraits);
+    // EN DEMO, LE SIGNAL VIT EN MEMOIRE ET NE DESCEND PAS SUR LE TELEPHONE
+    // (tache 760). L'etat vient d'etre pose juste au-dessus : l'ecran se
+    // comporte donc EXACTEMENT comme en reel — la coche prend, le rappel
+    // disparait — et tout repart a zero a la sortie de la demo. C'est la meme
+    // discipline que `PrepareCoreStepsNotifier.markSeen`, qui laisse lui aussi
+    // l'etat basculer en memoire sans ecrire la cle.
+    if (ref.read(enDemoProvider)) return;
     final prefs = await SharedPreferences.getInstance();
     final fusion = <HealthPrepStep>{
       ..._decode(prefs.getStringList(kHealthPrepareStepsKey) ?? const []),

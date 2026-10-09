@@ -14,10 +14,12 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/hiker_profile_dao.dart';
 import '../../../core/data/daos/past_hikes_dao.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/services/session_demo.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/past_hike.dart';
 import '../domain/walk_test_result.dart';
 import 'hiker_profile_file.dart';
+import 'profil_volatil_demo.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -95,14 +97,56 @@ class HikerProfileRepository {
   }) : _db = db,
        _prefs = prefs,
        _userId = userId,
-       _fichier = fichier ?? HikerProfileFile();
+       _fichier = fichier ?? HikerProfileFile(),
+       _enDemo = false;
+
+  /// LE MEME DEPOT, MAIS EN DEMO : IL N'ECRIT NULLE PART (tache 760).
+  ///
+  /// Trois differences, et elles vont ensemble — en laisser une de cote
+  /// suffirait a faire survivre la saisie d'une demo :
+  ///   1. la source durable est un [ProfilVolatilDeDemo] : la saisie vit en
+  ///      memoire et meurt avec la demo ;
+  ///   2. le MIROIR DRIFT n'est plus alimente — c'est un second etage de
+  ///      persistance, et `stepways.sqlite` est copie dans le dossier
+  ///      sauvegardable quand le randonneur decoche la case ;
+  ///   3. la MIGRATION des cles heritees ne tourne pas : elle ECRIT le fichier
+  ///      protege puis RETIRE quatre cles de preferences. Une demo n'a pas a
+  ///      deplacer les donnees du randonneur, meme pour les mettre a l'abri.
+  ///
+  /// LA LECTURE PART VIDE ELLE AUSSI : une demo repart vierge, elle ne montre
+  /// pas la fiche reelle du randonneur. Le raisonnement est dans
+  /// `profil_volatil_demo.dart`.
+  HikerProfileRepository.enDemo({
+    required AppDatabase db,
+    String userId = kHikerLocalUserId,
+    HikerProfileFile? fichier,
+  }) : _db = db,
+       _prefs = null,
+       _userId = userId,
+       _fichier = fichier ?? ProfilVolatilDeDemo(),
+       _enDemo = true,
+       // La migration est REPUTEE FAITE pour que [_load] ne la declenche
+       // jamais : c'est une ecriture, et elle n'a rien a faire dans une demo.
+       // L'amorce de l'application l'a de toute facon jouee au demarrage.
+       _migrationTentee = true;
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
   final String _userId;
 
   /// LA SOURCE DURABLE (tache 623) : un fichier dans le dossier protege.
+  /// En demo (tache 760), un [ProfilVolatilDeDemo] qui ignore le disque.
   final HikerProfileFile _fichier;
+
+  /// LA BARRIERE D'ECRITURE DE LA DEMO (tache 760).
+  ///
+  /// Elle est portee par l'INSTANCE et non interrogee a chaque ecriture, au
+  /// contraire de celle de `MonetizationService`, et c'est voulu. Ce depot-ci
+  /// n'a aucun etat a conserver entre une demo et le reel : le provider le
+  /// reconstruit a l'entree comme a la sortie, et c'est precisement cette
+  /// reconstruction qui fait repartir chaque demo VIERGE et qui fait relire la
+  /// vraie fiche a la sortie, sans que personne ait a y penser.
+  final bool _enDemo;
 
   /// Vrai des que la migration depuis les preferences a ete TENTEE pour cette
   /// instance. Elle est idempotente, mais la refaire a chaque lecture couterait
@@ -161,6 +205,10 @@ class HikerProfileRepository {
   /// l'amorce. Un defaut de migration ne doit pas empecher l'ecran de s'ouvrir.
   Future<void> migrerDepuisPreferences() async {
     _migrationTentee = true;
+    // EN DEMO, ELLE NE TOURNE PAS (tache 760). Elle ECRIT le fichier protege
+    // puis RETIRE quatre cles de preferences : c'est une transformation du
+    // telephone du randonneur, pas une lecture. Elle est deja jouee a l'amorce.
+    if (_enDemo) return;
     try {
       final prefs = await _preferences;
       final rawProfile = prefs.getString(kHikerProfilePrefsKey);
@@ -292,6 +340,10 @@ class HikerProfileRepository {
   Future<void> deleteProfile() async {
     final contenu = await _load();
     await _save(contenu.copyWith(eraseProfile: true));
+    // EN DEMO, L'EFFACEMENT RESTE DANS LA DEMO (tache 760). Effacer est encore
+    // une ecriture : une demo qui emporterait le miroir reel priverait le
+    // randonneur de sa fiche. Seul le magasin volatil est vide.
+    if (_enDemo) return;
     await _profileDao.deleteByUserId(_userId);
   }
 
@@ -328,6 +380,10 @@ class HikerProfileRepository {
   Future<void> eraseAllPersonalData() async {
     // Etage 1 — la source durable : le fichier protege part en entier.
     await _fichier.effacer();
+    // EN DEMO, ON S'ARRETE LA (tache 760). Ce qui suit emporte les cles de
+    // preferences et TROIS tables du randonneur : c'est le droit a
+    // l'effacement, et il s'exerce sur du reel, jamais depuis une demo.
+    if (_enDemo) return;
     // Etage 1 bis — les cles heritees, pour les telephones pas encore migres.
     final prefs = await _preferences;
     await prefs.remove(kHikerProfilePrefsKey);
@@ -416,6 +472,10 @@ class HikerProfileRepository {
 
     if (resteDuNonArticle9) {
       await _mirrorProfileToDrift(erased);
+    } else if (_enDemo) {
+      // EN DEMO, LE MIROIR REEL NE BOUGE PAS (tache 760) : un refus de
+      // consentement joue dans une demonstration ne doit pas effacer la
+      // morphologie que le randonneur a reellement saisie.
     } else {
       // Le miroir Drift part avec la source : une ligne a zero y serait la meme
       // trace de passage, a un autre etage — et [load] la re-ecrirait au boot.
@@ -430,6 +490,10 @@ class HikerProfileRepository {
   }
 
   Future<void> _mirrorProfileToDrift(HikerProfile profile) async {
+    // LE SECOND ETAGE EST BARRE EN DEMO (tache 760) : le miroir vit dans
+    // `stepways.sqlite`, que la copie sauvegardable emporte quand le randonneur
+    // decoche la case. Une fiche de demo y resterait apres la demo.
+    if (_enDemo) return;
     await _profileDao.upsert(
       HikerProfileCompanion.insert(
         userId: _userId,
@@ -473,6 +537,10 @@ class HikerProfileRepository {
   }
 
   Future<void> _mirrorPastHikesToDrift(List<PastHike> hikes) async {
+    // BARRE EN DEMO (tache 760), et pour une raison de plus que le profil : ce
+    // miroir EFFACE d'abord toutes les randonnees de l'utilisateur. Le laisser
+    // tourner ferait perdre au randonneur ses vraies randonnees passees.
+    if (_enDemo) return;
     await _pastHikesDao.deleteAllForUser(_userId);
     final now = DateTime.now();
     for (final h in hikes) {
@@ -536,7 +604,23 @@ class HikerProfileRepository {
 ///
 /// Branche sur la meme instance Drift que le reste de l'app
 /// ([databaseProvider]). Convention identique au `walletStoreProvider`.
+/// IL SE RECONSTRUIT A CHAQUE BASCULE DE DEMO, ET C'EST LE MECANISME (tache
+/// 760).
+///
+/// En lisant [enDemoProvider] avec `watch`, ce provider se reconstruit a
+/// l'ENTREE en demo (un magasin volatil NEUF, donc une demo qui repart vierge
+/// de la precedente) et a la SORTIE (le depot reel revient, et les notifiers
+/// qui le `watch` — `hikerProfileProvider` et `pastHikesProvider` — relisent
+/// d'eux-memes la vraie fiche). Aucune ligne de purge n'est necessaire dans
+/// `quitterLaDemo` : il n'y a jamais rien eu a purger.
 final hikerProfileRepositoryProvider = Provider<HikerProfileRepository>((ref) {
   final db = ref.watch(databaseProvider);
+  if (ref.watch(enDemoProvider)) {
+    // LE NUMERO DE LA DEMO EST LA DEPENDANCE QUI COMPTE : sans lui, entrer,
+    // sortir et rentrer resservirait le magasin de la demo precedente, parce
+    // que `enDemoProvider` a retrouve la valeur qu'il avait au dernier calcul.
+    ref.watch(generationDeDemoProvider);
+    return HikerProfileRepository.enDemo(db: db);
+  }
   return HikerProfileRepository(db: db);
 });

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/session_demo.dart';
 import '../../notifications/notifications_facade.dart'
     show notificationServiceProvider;
 import '../domain/programme_generator.dart';
@@ -93,6 +94,11 @@ class TrainingNotifier extends Notifier<TrainingState> {
       updated.remove(jourOffset);
     }
     state = state.copyWith(doneOffsets: updated);
+    // EN DEMO, LA COCHE VIT EN MEMOIRE (tache 760). `/training` est atteignable
+    // en demonstration et n'etait pas garde : les seances cochees restaient
+    // cochees apres la sortie. L'etat est pose juste au-dessus, donc l'ecran se
+    // comporte comme en reel et tout repart a zero a la sortie.
+    if (ref.read(enDemoProvider)) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
       _prefsDoneKey,

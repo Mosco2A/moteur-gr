@@ -44,9 +44,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/analytics/screen_entry.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/fiche_volatile_de_demo.dart';
 import '../data/health_info_file.dart';
 import '../data/health_info_repository.dart';
 import '../data/card_photo_capture.dart';
@@ -66,9 +68,21 @@ import 'health_info_inputs.dart';
 /// [HealthInfoFile]. Les tests surchargent CE provider (repertoire
 /// temporaire) ; surcharger `databaseProvider` n'a plus d'effet sur la fiche,
 /// et c'est voulu : plus rien de medical ne passe par la base.
-final healthInfoFileProvider = Provider<HealthInfoFile>(
-  (ref) => HealthInfoFile(),
-);
+/// EN DEMO, IL REND UN MAGASIN VOLATIL (tache 760). `/health` est atteignable
+/// pendant une demonstration depuis la section « Preparer », et sans cette
+/// bascule la fiche medicale saisie en demo — groupe sanguin, allergies,
+/// traitements, personne a prevenir, PHOTO DE LA CARTE VITALE — restait sur le
+/// telephone apres la sortie, au moment ou l'application promettait que « rien
+/// n'est enregistre ». Tout le chemin en aval (`healthInfoRepositoryProvider`,
+/// `healthInfoProvider`) le `watch`, donc il se reconstruit avec lui : chaque
+/// demo part vierge, et le reel revient intact a la sortie.
+final healthInfoFileProvider = Provider<HealthInfoFile>((ref) {
+  if (!ref.watch(enDemoProvider)) return HealthInfoFile();
+  // Le NUMERO de la demo, pour qu'une fiche volatile NEUVE soit construite a
+  // chaque entree (voir [generationDeDemoProvider]).
+  ref.watch(generationDeDemoProvider);
+  return FicheVolatileDeDemo();
+});
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(

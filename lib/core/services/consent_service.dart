@@ -39,6 +39,8 @@ import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ardoise_de_demo.dart';
+
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Finalites de traitement soumises a consentement granulaire (CNIL).
@@ -249,8 +251,23 @@ class ConsentService {
   ConsentService({
     SharedPreferences? prefs,
     int policyVersion = currentPolicyVersion,
+    bool Function()? enDemo,
+    int Function()? generationDeDemo,
   }) : _prefs = prefs,
-       _policyVersion = policyVersion;
+       _policyVersion = policyVersion,
+       _enDemo = enDemo,
+       _ardoise = ArdoiseDeDemo(generation: generationDeDemo);
+
+  /// LA BARRIERE DE LA DEMO (tache 760) : une FONCTION, pour que l'instance et
+  /// son flux diffuse survivent a la bascule — raisonnement entier dans
+  /// `ardoise_de_demo.dart`. `null` = jamais en demo, d'origine inchange.
+  final bool Function()? _enDemo;
+
+  /// Vrai pendant une demo volontaire.
+  bool get enDemo => _enDemo?.call() ?? false;
+
+  /// Ce qu'une demo decide reste ICI, en memoire, et part avec elle.
+  final ArdoiseDeDemo _ardoise;
 
   /// Version courante de la politique de consentement.
   ///
@@ -295,7 +312,11 @@ class ConsentService {
         'ConsentService non initialise : appeler initialize() d\'abord.',
       );
     }
-    final raw = prefs.getString(purpose.storageKey);
+    // EN DEMO, L'ARDOISE PASSE DEVANT (tache 760).
+    final raw = enDemo
+        ? _ardoise.texte(purpose.storageKey) ??
+              prefs.getString(purpose.storageKey)
+        : prefs.getString(purpose.storageKey);
     if (raw == null) return ConsentState.initial(purpose);
     return ConsentState.fromJson(purpose, raw);
   }
@@ -323,6 +344,9 @@ class ConsentService {
         'ConsentService non initialise : appeler initialize() d\'abord.',
       );
     }
+    // EN DEMO, L'ARDOISE PASSE DEVANT (tache 760).
+    final surArdoise = enDemo ? _ardoise.entier(cleDeRevision(purpose)) : null;
+    if (surArdoise != null) return surArdoise;
     return prefs.getInt(cleDeRevision(purpose)) ?? 0;
   }
 
@@ -343,6 +367,11 @@ class ConsentService {
   Future<int> noterUneModificationDesDonnees(ConsentPurpose purpose) async {
     await initialize();
     final suivante = revisionDesDonnees(purpose) + 1;
+    // EN DEMO IL MONTE SUR L'ARDOISE (760) : MONOTONE, il montait pour de bon.
+    if (enDemo) {
+      _ardoise.poser(cleDeRevision(purpose), suivante);
+      return suivante;
+    }
     await _prefs!.setInt(cleDeRevision(purpose), suivante);
     return suivante;
   }
@@ -410,7 +439,12 @@ class ConsentService {
       declencheur: declencheur,
       revisionDesDonnees: revisionDesDonnees(purpose),
     );
-    await _prefs!.setString(purpose.storageKey, state.toJson());
+    // EN DEMO, LA DECISION VA SUR L'ARDOISE (760), mais elle est DIFFUSEE.
+    if (enDemo) {
+      _ardoise.poser(purpose.storageKey, state.toJson());
+    } else {
+      await _prefs!.setString(purpose.storageKey, state.toJson());
+    }
     _controller.add(purpose);
   }
 

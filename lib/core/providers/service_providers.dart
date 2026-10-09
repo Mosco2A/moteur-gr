@@ -21,6 +21,7 @@ import '../services/firestore_moderation_store.dart';
 import '../services/heart_rate_ble_service.dart';
 import '../services/moderation_service.dart';
 import '../services/sensor_fusion_service.dart';
+import '../services/session_demo.dart';
 
 /// Provider du service mode demo universel (E5.18).
 ///
@@ -65,8 +66,19 @@ final healthReaderServiceProvider = Provider<HealthReaderService>(
 /// SharedPreferences) via [consentServiceProvider] ; ce provider synchrone
 /// expose l'instance pour les appels imperatifs (grant/revoke). Il libere
 /// le StreamController au dispose du scope.
+/// LA BARRIERE DE DEMO Y EST CABLEE (tache 760) : pendant une demo, les
+/// decisions de consentement et le compteur de revision des donnees vont sur
+/// une ardoise en memoire au lieu des preferences du telephone.
+///
+/// L'instance N'EST PAS reconstruite a la bascule — elle porte un flux que
+/// l'ordonnanceur de synchronisation ecoute. L'ardoise se perime donc toute
+/// seule sur le NUMERO de la demo : une demo ne repart jamais avec les
+/// decisions de la precedente, et rien ne survit a la sortie.
 final consentServiceProvider = Provider<ConsentService>((ref) {
-  final service = ConsentService();
+  final service = ConsentService(
+    enDemo: () => ref.read(enDemoProvider),
+    generationDeDemo: () => ref.read(generationDeDemoProvider),
+  );
   ref.onDispose(service.dispose);
   return service;
 });
