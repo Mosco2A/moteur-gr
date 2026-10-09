@@ -12,7 +12,8 @@ import '../../map/map_facade.dart' show gpxTrackProvider;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
 import '../../../domain/planned_day.dart';
-import '../../planning/planning_facade.dart' show plannedDaysProvider;
+import '../../planning/planning_facade.dart'
+    show plannedDaysProvider, retainedDurationProvider;
 import '../../trek/trek_facade.dart'
     show selectedDirectionProvider, stagesProvider;
 import '../../../domain/feasibility_formula.dart';
@@ -332,17 +333,51 @@ final feasibilityProgramProvider = FutureProvider<FeasibilityProgram>((
   // Le sentier courant peut etre indisponible (container de test minimal) : une
   // lecture de config ne doit pas emporter l'evaluation avec elle.
   List<PlannedDay> days;
+  // TACHE 750 — « RIEN DE CHOISI » N'EST PLUS DEDUIT D'UNE LISTE VIDE.
+  //
+  // CE QUI N'ALLAIT PAS. Ce provider tenait « la liste des jours n'est pas
+  // vide » pour « le randonneur a choisi son programme ». C'est faux :
+  // `PlannedDaysNotifier` AMORCE son etat avec une repartition calculee des que
+  // les etapes du sentier arrivent (`planned_days_provider.dart`, constructeur
+  // -> `_generate`). La liste est donc pleine avant le moindre geste, le
+  // drapeau `fromProgram` partait a vrai, et l'ecran choisissait la
+  // formulation de COMPARAISON. Comme la duree courante est elle-meme
+  // initialisee sur le programme de reference (`SelectedDurationNotifier.build`
+  // : `advised ?? fallback` quand rien n'est retenu), la comparaison opposait
+  // le sentier a lui-meme : « vise 7 jours de marche au lieu des 7 jours
+  // d'aujourd'hui ».
+  //
+  // CE QUI CHANGE. Le choix est LU, et a sa source. Deux gestes seulement le
+  // constituent, et l'un ou l'autre suffit :
+  //   * une duree RETENUE — `retainedDurationProvider` vaut `null` tant que
+  //     rien n'est retenu, c'est deja le « aucun choix » de l'application ;
+  //   * une edition A LA MAIN du programme — regrouper, separer, deplacer,
+  //     poser un repos : `PlannedDaysNotifier.hasManualEdits`.
+  // Sans l'un de ces deux gestes, le programme affiche reste le programme de
+  // REFERENCE du sentier, et l'ecran n'a rien a comparer.
+  bool chosenByUser;
   try {
     final trailId = ref.watch(trailIdProvider);
     days = ref.watch(plannedDaysProvider(trailId));
+    // Le `watch` de l'etat ci-dessus suffit a nous recomposer : toute mutation
+    // qui leve `hasManualEdits` ecrit aussi `state`. On lit donc le notifier
+    // apres, sur un etat a jour.
+    final edited = ref
+        .watch(plannedDaysProvider(trailId).notifier)
+        .hasManualEdits;
+    chosenByUser = ref.watch(retainedDurationProvider) != null || edited;
   } catch (_) {
     days = const [];
+    chosenByUser = false;
   }
 
   // LA CONVERSION EST ECRITE UNE SEULE FOIS (tache 569) : la meme que celle
   // qu'emprunte la recherche du conseil, pour que le conseil porte exactement
   // sur le programme que l'ecran affichera.
-  final fromDays = FeasibilityProgram.fromPlannedDays(days);
+  final fromDays = FeasibilityProgram.fromPlannedDays(
+    days,
+    chosenByUser: chosenByUser,
+  );
   if (!fromDays.isEmpty) return fromDays;
 
   // REPLI : le programme de reference du sentier, une etape par jour.

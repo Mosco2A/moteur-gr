@@ -321,6 +321,7 @@ class FeasibilityFormula {
       suggestedWalkingDays: suggestedDays,
       suggestedRestDays: suggestedRestDays,
       currentTotalDays: stages.length + restAfterStageIndex.length,
+      currentWalkingDays: stages.length, // tache 750 : repos NON compris.
       trainingWeeks: trainingWeeks,
       recommendedRest: recommendedRest,
       durationAdvised: advised,
