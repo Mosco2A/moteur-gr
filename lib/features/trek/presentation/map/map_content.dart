@@ -29,6 +29,7 @@ import '../../../trail/trail_facade.dart'
     show currentStageNumberProvider, stagesProvider;
 import '../../../../domain/stage.dart';
 import 'cadrage_d_ouverture.dart';
+import 'cadrage_de_l_arrivee.dart';
 import 'layers/trace_layer.dart';
 import 'layers/trail_markers_layer.dart';
 import 'layers/user_position_layer.dart';
@@ -421,13 +422,19 @@ class _MapContentState extends State<MapContent> {
         // contenu — a l'inverse de Positioned a offset fixe. Rangee de boutons :
         //   * gauche  : SOS (au-dessus) + Calques — parite GR20 ;
         //   * droite  : controles carte (peau + zoom + centrer).
+        //
+        // SA HAUTEUR EST MESUREE (tache 762) : c'est elle que le cadrage de
+        // l'arrivee reserve en bas, pour que le marcheur ne finisse plus a
+        // moitie cache sous ces chiffres (releve de la recette 753).
         Positioned(
           left: 0,
           right: 0,
           bottom: 0,
-          child: MapBottomBar(
-            bounds: bounds,
-            onShowLayers: () => showMapLayersSheet(context, widget.trailId),
+          child: MesureDeLaBarre(
+            enfant: MapBottomBar(
+              bounds: bounds,
+              onShowLayers: () => showMapLayersSheet(context, widget.trailId),
+            ),
           ),
         ),
 
@@ -445,6 +452,13 @@ class _MapContentState extends State<MapContent> {
         // Lots 671-02 et 671-03 : pas calibre, recalage sur le trace.
         const StrideCalibrationMount(),
         const TrackRecalibrationMount(),
+        // --- LA CARTE RESTE SUR L'ARRIVEE (tache 762). Le recadrage par etape
+        // ci-dessus vise la TRANCHE de l'etape sous les pieds du marcheur :
+        // a l'arrivee c'est la derniere, longue de 25,4 km sur le sentier de
+        // demonstration, et le point d'arrivee s'y perd au bord du cadre. Ce
+        // montage cadre l'arrivee elle-meme, une seule fois, quand la marche
+        // est finie. Rendu invisible.
+        CadrageSurLArrivee(trace: widget.rawPoints),
 
         // --- L'ARRIVEE DE LA DEMONSTRATION EST UN MOMENT (tache 747, retour
         // de Christophe du 09/10 08:59 : « A la fin il manque les

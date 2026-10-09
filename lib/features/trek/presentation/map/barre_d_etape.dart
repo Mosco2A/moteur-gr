@@ -60,13 +60,16 @@ import '../../../map/map_facade.dart'
         ChiffresDuPerimetre,
         PerimetreDeLaBarre,
         StageProgressBar,
+        etapesFaites,
         jalonALAbscisse,
         jalonsDesEtapesProvider,
         mapFocusStage,
         perimetreDeLaBarreProvider,
+        reliefDeLEtapeProvider,
         trackPositionProvider;
 import '../../../trail/trail_facade.dart'
     show currentStageNumberProvider, stagesProvider;
+import '../../providers/derniers_chiffres_mesures.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';
 
@@ -82,17 +85,34 @@ import '../../providers/tracking_providers.dart';
 ///   4. `Total` : `totalM` ;
 ///   5. `Parcouru` : `parcouruM`.
 ///
-/// LE DENIVELE, LA VITESSE MOYENNE ET L'ALTITUDE NE SUIVENT PAS LE PERIMETRE,
-/// ET C'EST DIT PLUTOT QUE CACHE. Ils sont MESURES sur la session par
-/// [liveTrekStatsProvider] (lot 671-06), qui mesure depuis le premier releve de
-/// la journee et n'a pas de borne de depart reglable. Les borner a l'etape
-/// demanderait un SECOND calcul de denivele a cote du seul qui existe — ce que
-/// la chaine refuse depuis le lot 671-06, parce que deux moteurs finissent par
-/// donner deux deniveles differents pour la meme journee. Le mot du perimetre
-/// porte donc sur les cinq cases de DISTANCE, celles que Christophe a relevees.
+/// DEPUIS LA TACHE 762, LES SIX CASES SUIVENT LE PERIMETRE — pas seulement les
+/// cinq de distance. La tache 747 avait laisse le denivele, la vitesse moyenne
+/// et l'altitude au perimetre de la SESSION, dette assumee et ecrite ici meme ;
+/// Christophe l'a tranchee le 09/10 a 16:29 et 16:32 :
 ///
-/// Hors trek ou sans projection : la barre passe la main a [_PlannedStageBar]
-/// (LOT D, tache 554 : cette barre ne disparait plus jamais).
+///   * EN VUE ETAPE : Total, Parcouru et le POURCENTAGE de l'etape, la vitesse
+///     moyenne de la session, le D+ et le D- DEJA MARCHES DANS L'ETAPE
+///     ([reliefDeLEtapeProvider]), et l'altitude du moment ;
+///   * EN VUE SENTIER ENTIER : Total du sentier, Parcouru depuis le depart, la
+///     meme vitesse moyenne, le D+ et le D- CUMULES depuis le depart, et — a la
+///     place de l'altitude, qui ne dit rien a cette echelle — LE NOMBRE
+///     D'ETAPES FAITES SUR LE TOTAL, forme « 3 / 7 ».
+///
+/// AUCUN SECOND MOTEUR DE DENIVELE N'A ETE ECRIT, et c'est ce qui rendait la
+/// dette tenable jusqu'ici. Le relief d'etape passe par [reliefDeLaTranche] :
+/// le decoupage de `TrackSlice.between` suivi de la boucle de
+/// `computeTrackStatsOn`, les deux deja en service depuis le lot 671-06. Meme
+/// moteur, autres bornes — deux abscisses au lieu de deux releves projetes.
+///
+/// LA VITESSE MOYENNE, ELLE, NE SUIT PAS LE PERIMETRE, et c'est la demande
+/// telle quelle : Christophe a qualifie le denivele d'« etape », pas la
+/// vitesse. Une tranche de sentier n'a d'ailleurs pas d'horodatage, donc pas de
+/// duree a diviser.
+///
+/// AVANT TOUTE MARCHE, ou sans projection : la barre passe la main a
+/// [_PlannedStageBar] (LOT D, tache 554 : cette barre ne disparait plus
+/// jamais). APRES UNE MARCHE elle garde ses chiffres, et la tache 762 dit
+/// pourquoi — une session finalisee n'est pas une session jamais partie.
 class ActiveStageBar extends ConsumerWidget {
   /// Cree la barre de chiffres du bas de la carte.
   const ActiveStageBar({super.key});
@@ -105,7 +125,31 @@ class ActiveStageBar extends ConsumerWidget {
     final trekActive =
         status == TrackingSessionStatus.recording ||
         status == TrackingSessionStatus.paused;
-    if (!trekActive) return const _PlannedStageBar();
+
+    // LA MARCHE ACHEVEE GARDE SA BARRE, ET C'EST LE CORRECTIF DU RECUL
+    // D'ETAPE (tache 762).
+    //
+    // MESURE DE LA RECETTE 753 : « a la fermeture [des felicitations] le
+    // bandeau RETOMBE SUR L'ETAPE 1 avec 11,8 km restants et 0 pour cent ».
+    // Le chemin exact : l'arrivee ouvre la porte du finisher, `stop()`
+    // finalise, et `_finalize` pose un etat `stopped` SANS session. Cette
+    // barre n'y voyait plus de trek actif et passait la main a la barre du
+    // PROGRAMME, qui lit `currentStageNumberProvider` — la colonne
+    // `currentStage` que PERSONNE n'ecrit (constat de la tache 747), donc
+    // toujours 1. D'ou l'etape 1, les 11,8 km de la premiere etape, et 0 %.
+    //
+    // `stopped` N'EST PAS `idle`, ET TOUT EST LA. `idle` est l'etat d'avant
+    // toute marche : la barre du programme y est la bonne reponse, et le lot D
+    // l'exige. `stopped` est l'etat d'APRES une marche : il n'arrive qu'une
+    // fois qu'une session a ete finalisee dans cette execution. Les deux
+    // tombaient dans la meme branche ; ils sont desormais distingues.
+    //
+    // ET ELLE NE MONTRE RIEN QU'ELLE N'AIT : la projection sur la trace
+    // survit a la fin de la session (elle ne depend que de la position
+    // courante, pas du statut), donc l'abscisse de l'arrivee est encore la.
+    // Sans projection, on retombe sur la barre du programme comme avant.
+    final acheve = status == TrackingSessionStatus.stopped;
+    if (!trekActive && !acheve) return const _PlannedStageBar();
 
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final trackPos = ref.watch(trackPositionProvider);
@@ -158,9 +202,28 @@ class ActiveStageBar extends ConsumerWidget {
           titre = modele?.name ?? t.a11y.stageMarker(number: jalon.numero);
         }
 
-        // Chiffres mesures sur le trace parcouru en session (L6-2, 671-06).
-        final mesures = ref.watch(liveTrekStatsProvider).value;
-        final mesurable = mesures != null && mesures.hasData;
+        // LES CHIFFRES MESURES DE LA MARCHE, et ils survivent a son dernier pas
+        // (tache 762). Lus par [chiffresDeLaMarcheProvider], qui rend ceux de
+        // la marche en cours ou, une fois la session finalisee, les derniers
+        // qu'elle a reellement mesures. C'est ce qui empeche les trois chiffres
+        // de relief de disparaitre a l'arrivee — releve de la recette 753.
+        final mesures = ref.watch(chiffresDeLaMarcheProvider);
+        final mesurable = mesures != null;
+
+        // LE RELIEF SUIT LE PERIMETRE (tache 762), decision de Christophe du
+        // 09/10 16:29. En vue SENTIER c'est le cumul depuis le depart — le
+        // perimetre de [chiffresDeLaMarcheProvider], qui porte toute la
+        // session. En vue ETAPE c'est la tranche deja marchee DANS l'etape,
+        // par [reliefDeLEtapeProvider] : meme moteur de denivele, autres
+        // bornes. Aucun second calcul n'est introduit (cf. lot 671-06).
+        final relief = vueSentier ? mesures : ref.watch(reliefDeLEtapeProvider);
+
+        // LES ETAPES FAITES REMPLACENT L'ALTITUDE EN VUE SENTIER (16:32, forme
+        // « 3 / 7 »). Comptees sur l'ABSCISSE et non sur `completedStages` :
+        // voir [etapesFaites], qui dit pourquoi.
+        final faites = vueSentier && jalons.isNotEmpty
+            ? etapesFaites(jalons, abscisseM)
+            : null;
 
         return StageProgressBar(
           stageName: titre,
@@ -169,13 +232,27 @@ class ActiveStageBar extends ConsumerWidget {
           isOffTrack: state.isOffTrack,
           totalDistanceKm: chiffres.totalKm,
           distanceCoveredKm: chiffres.parcouruKm,
-          elevationGainM: mesurable ? mesures.elevationGainM : null,
-          elevationLossM: mesurable ? mesures.elevationLossM : null,
+          elevationGainM: relief?.elevationGainM,
+          elevationLossM: relief?.elevationLossM,
+          // LA VITESSE MOYENNE RESTE CELLE DE LA SESSION DANS LES DEUX
+          // PERIMETRES, et c'est ce que Christophe a demande : il a qualifie le
+          // denivele d'« etape », pas la vitesse. Une tranche de sentier n'a
+          // d'ailleurs pas d'horodatage, donc pas de duree a diviser.
           avgSpeedKmh: mesurable ? mesures.averageSpeedKmh : null,
-          altitudeM: ref.watch(currentAltitudeProvider),
+          // L'ALTITUDE DU MOMENT NE SE MONTRE QU'EN VUE ETAPE : a l'echelle du
+          // sentier entier elle ne dit rien du sentier, et le compte des etapes
+          // prend sa place.
+          altitudeM: vueSentier ? null : ref.watch(currentAltitudeProvider),
+          etapesFaites: faites,
+          etapesTotal: faites == null ? null : jalons.length,
           perimetreLabel: vueSentier
               ? t.map.perimetreSentier
               : t.map.perimetreEtape,
+          // LE BOUTON PORTE LA DESTINATION, LA PASTILLE GARDE LE PERIMETRE
+          // (tache 762, retour de Christophe du 09/10 16:27).
+          basculeLabel: vueSentier
+              ? t.map.basculerVersEtape
+              : t.map.basculerVersSentier,
           vueSentier: vueSentier,
           // SANS ETAPE CONNUE, PAS DE BASCULE : il n'y aurait rien a basculer
           // vers, et un appui sans effet est un geste mort.

@@ -30,10 +30,16 @@
 /// rien n'a ete enregistre, ce qui est la verite et ce que la demo promet.
 ///
 /// AUCUN CHIFFRE N'EST RECALCULE ICI. La distance est l'abscisse du marcheur
-/// sur la trace ([stageDistanceCoveredProvider]), et la duree, le denivele et
-/// la vitesse moyenne viennent de [liveTrekStatsProvider] — les MEMES
-/// providers que la barre de la carte. Un second calcul donnerait deux
-/// deniveles differents pour la meme demonstration.
+/// sur la trace ([stageDistanceCoveredProvider]), et le denivele et la vitesse
+/// moyenne viennent de [chiffresDeLaMarcheProvider] — les MEMES providers que
+/// la barre de la carte. Un second calcul donnerait deux deniveles differents
+/// pour la meme demonstration.
+///
+/// TACHE 762 — CE POINT DE LECTURE A CHANGE, ET PAS POUR UN DETAIL DE STYLE.
+/// Ces chiffres venaient de `liveTrekStatsProvider`, qui s'eteint a la seconde
+/// ou la session est finalisee : l'arrivee les effacait donc juste avant de les
+/// montrer. [chiffresDeLaMarcheProvider] rend les derniers chiffres REELLEMENT
+/// mesures, et il les rend aussi apres la fin.
 ///
 /// CE N'EST PAS UN DIALOGUE, ET C'EST VOLONTAIRE. La garde
 /// `aucun_dialogue_hors_routeur_645` plafonne les `showDialog` hors routeur :
@@ -52,7 +58,7 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
 import '../../data/marcheur_simule_providers.dart';
-import '../../providers/live_trek_stats_provider.dart';
+import '../../providers/derniers_chiffres_mesures.dart';
 
 /// La fin celebree de la randonnee simulee, posee sur la carte.
 ///
@@ -83,8 +89,22 @@ class _FelicitationsDeLaDemoState extends ConsumerState<FelicitationsDeLaDemo> {
     }
 
     final theme = Theme.of(context);
-    final mesures = ref.watch(liveTrekStatsProvider).value;
-    final mesurable = mesures != null && mesures.hasData;
+    // LES CHIFFRES DE LA MARCHE SURVIVENT A SON DERNIER PAS (tache 762).
+    //
+    // CE QUI MANQUAIT, MESURE A LA RECETTE 753 : « apres usage de la fleche
+    // d'etape, les felicitations perdent trois de leurs quatre chiffres ».
+    // Seul Parcouru restait. La cause n'etait pas ici — elle etait dans
+    // l'enchainement arrivee -> porte du finisher -> `stop()` -> etat
+    // `stopped` SANS session, qui fait sortir [liveTrekStatsProvider]
+    // immediatement sur un [TrackSegmentStats] vide. Cet ecran lisait donc le
+    // vide a l'instant precis ou il devait celebrer.
+    //
+    // ET IL LE LIT DESORMAIS PAR LE MEME POINT QUE LA BARRE. Les deux
+    // montraient les memes chiffres et ont cesse de les montrer ENSEMBLE a la
+    // meme seconde : un seul point de lecture ne peut plus desynchroniser les
+    // deux. Aucun chiffre n'est recalcule ici, pas plus qu'avant.
+    final mesures = ref.watch(chiffresDeLaMarcheProvider);
+    final mesurable = mesures != null;
     final parcouruKm = ref.watch(stageDistanceCoveredProvider) / 1000;
 
     return Positioned.fill(
