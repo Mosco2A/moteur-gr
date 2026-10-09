@@ -36,8 +36,8 @@ class TrekSummaryCard extends StatelessWidget {
   /// Vue synthetique du trek (config + etat derive + progression).
   final TrekSummary summary;
 
-  /// Geste de selection du trek (ecrit `selectedTrailIdProvider` + `go('/home')`
-  /// cote ecran — la carte ne connait pas la navigation).
+  /// Geste de selection du trek (ecrit `selectedTrailIdProvider` +
+  /// `go('/home')` cote ecran — la carte ne connait pas la navigation).
   final VoidCallback onTap;
 
   @override
@@ -75,8 +75,6 @@ class TrekSummaryCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingSm),

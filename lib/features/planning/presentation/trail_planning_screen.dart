@@ -25,12 +25,13 @@ import '../../../core/branding/stepways_icons.dart';
 /// Ecran PROGRAMME (parite GR20 `PlanningScreen`).
 ///
 /// Programme detaille jour par jour du sentier courant : chaque jour porte ses
-/// etapes (nom, distance, D+, D-, duree), une pastille teintee par difficulte et
-/// un acces au DETAIL de l'etape (tap -> `/stages/:num`). Le programme est
-/// EDITABLE a l'identique de GR20 : reorganisation (drag & drop), regroupement /
-/// separation d'etapes, ajout / suppression de jours de repos, replanification,
-/// validation. En-tete de statistiques (distance, D+, jours, etapes), profil
-/// altimetrique par jour et legende des difficultes completent l'ecran.
+/// etapes (nom, distance, D+, D-, duree), une pastille teintee par difficulte
+/// et un acces au DETAIL de l'etape (tap -> `/stages/:num`). Le programme est
+/// EDITABLE a l'identique de GR20 : reorganisation (drag & drop), regroupement
+/// / separation d'etapes, ajout / suppression de jours de repos,
+/// replanification, validation. En-tete de statistiques (distance, D+, jours,
+/// etapes), profil altimetrique par jour et legende des difficultes completent
+/// l'ecran.
 ///
 /// Generique : alimente par [plannedDaysProvider] (etapes du sentier actif),
 /// ZERO hardcode de localite. Hors systeme de peaux (AppCard implicite via
@@ -38,10 +39,10 @@ import '../../../core/branding/stepways_icons.dart';
 /// Tout libelle passe par Slang (t.programme.* / t.stage.*).
 ///
 /// SENS de marche (retour QA polish) : le programme honore desormais le sens
-/// choisi ([selectedDirectionProvider]) a l'identique de l'itineraire — quand le
-/// sens est inverse, l'ordre des jours suit (Jour 1 = etape de depart du sens
-/// choisi). La logique est portee par [plannedDaysProvider] (aucun flag invente,
-/// meme donnee de sens que l'itineraire).
+/// choisi ([selectedDirectionProvider]) a l'identique de l'itineraire — quand
+/// le sens est inverse, l'ordre des jours suit (Jour 1 = etape de depart du
+/// sens choisi). La logique est portee par [plannedDaysProvider] (aucun flag
+/// invente, meme donnee de sens que l'itineraire).
 ///
 /// NOTE (ecart de modele assume, cf. rapport) : le modele de donnees StepWays
 /// ([StageModel]) ne porte ni date de depart, ni mode de confort / hebergement.
@@ -287,7 +288,8 @@ class _PlanningContent extends ConsumerWidget {
 
     // Choix du nombre de jours (parite GR20) : bornes DERIVEES du nombre
     // d'etapes du sentier, duree courante pilotee par selectedDurationProvider.
-    // Le programme (plannedDaysProvider) watch cette duree et se recalcule seul.
+    // Le programme (plannedDaysProvider) watch cette duree et se recalcule
+    // seul.
     final bounds = ref.watch(durationBoundsProvider(trailId));
     final selectedDuration = ref.watch(selectedDurationProvider);
 
@@ -315,8 +317,9 @@ class _PlanningContent extends ConsumerWidget {
             stageCount: stats.stageCount,
             walkingDays: stats.trekDays,
             // Retour Chris #9 : le compteur de jours affiche suit le programme
-            // REEL (marche + repos) -> il se met a jour quand on ajoute un repos
-            // ou qu'on separe une etape. Source unique = les stats du programme.
+            // REEL (marche + repos) -> il se met a jour quand on ajoute un
+            // repos ou qu'on separe une etape. Source unique = les stats du
+            // programme.
             totalDays: stats.totalDays,
             restDays: stats.restDays,
             // Le verdict du decoupage courant colore le curseur (retour 6c).
@@ -337,9 +340,9 @@ class _PlanningContent extends ConsumerWidget {
             // s'etonner, et le silence de l'ecran etait le vrai defaut : depuis
             // GO-61 le verdict vaut la PIRE JOURNEE et elle seule, donc ajouter
             // du repos ne pouvait MATHEMATIQUEMENT rien y changer. Ces phrases
-            // disent quel levier agit (couper une journee) et quel levier n'agit
-            // pas (le repos), pour qu'on ne pousse plus un curseur en esperant
-            // l'effet d'un autre.
+            // disent quel levier agit (couper une journee) et quel levier
+            // n'agit pas (le repos), pour qu'on ne pousse plus un curseur en
+            // esperant l'effet d'un autre.
             //
             // DANS LE `header` DE LA LISTE, ET C'EST VOULU : pose au-dessus, en
             // hauteur fixe, ce paragraphe faisait deborder la colonne sur un
@@ -426,8 +429,8 @@ class _PlanningContent extends ConsumerWidget {
             label: t.programme.validateNext,
             // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme. Le
             // flux de preparation est ORDONNE : Programme -> Dates -> cockpit.
-            // « Valider » AVANCE donc vers le choix des dates (push /calendar) au
-            // lieu de faire un simple pop (qui, quand on arrivait depuis le
+            // « Valider » AVANCE donc vers le choix des dates (push /calendar)
+            // au lieu de faire un simple pop (qui, quand on arrivait depuis le
             // calendrier, renvoyait AU calendrier -> boucle). Depuis le
             // calendrier, « Valider les dates » clot le sous-flux en retournant
             // au cockpit (voir calendar_screen.dart) : aucun retour circulaire.
@@ -593,12 +596,7 @@ class _StatItem extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        Text(label, style: theme.textTheme.bodySmall),
       ],
     );
   }
@@ -670,7 +668,8 @@ class _LegendItem extends StatelessWidget {
 }
 
 /// Profil altimetrique simplifie par jour (parite GR20 `_ElevationProfile`).
-/// Barre par jour, hauteur ~ D+, couleur ~ difficulte ; repos = barre basse "R".
+/// Barre par jour, hauteur ~ D+, couleur ~ difficulte ; repos = barre basse
+/// "R".
 class _ElevationProfile extends StatelessWidget {
   const _ElevationProfile({required this.days});
 
@@ -766,9 +765,9 @@ class _ElevationProfile extends StatelessWidget {
 /// Carte d'un jour du programme (parite GR20 `_DayCard`).
 ///
 /// Jour de marche : pastille numero teintee par difficulte, nom(s) d'etape(s),
-/// mini-stats (distance, D+, D-), duree ; tap -> detail de la 1re etape du jour ;
-/// actions Regrouper / Separer / Repos + poignee de drag. Jour de repos : carte
-/// dediee avec suppression.
+/// mini-stats (distance, D+, D-), duree ; tap -> detail de la 1re etape du jour
+/// ; actions Regrouper / Separer / Repos + poignee de drag. Jour de repos :
+/// carte dediee avec suppression.
 class _DayCard extends ConsumerWidget {
   const _DayCard({
     super.key,
@@ -904,8 +903,6 @@ class _DayCard extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
@@ -938,8 +935,8 @@ class _DayCard extends ConsumerWidget {
               ),
               // Actions du jour + poignee de drag.
               //
-              // Regrouper ET Separer sont TOUJOURS visibles (parite GR20 pour le
-              // merge, etendu au split) : quand l'action est impossible, le
+              // Regrouper ET Separer sont TOUJOURS visibles (parite GR20 pour
+              // le merge, etendu au split) : quand l'action est impossible, le
               // bouton est grise et un tap explique pourquoi (snackbar). Ainsi
               // chaque jour montre clairement ce qu'il peut faire — la liste ne
               // reste jamais « inerte ».
@@ -1040,8 +1037,6 @@ class _DayCard extends ConsumerWidget {
                         fontWeight: FontWeight.w600,
                         color: restColor,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

@@ -145,8 +145,6 @@ class _ChecklistItemName extends StatelessWidget {
           decoration: item.isChecked ? TextDecoration.lineThrough : null,
           color: item.isChecked ? AppTheme.grisGranite : null,
         ),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }

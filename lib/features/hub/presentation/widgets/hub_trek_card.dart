@@ -92,13 +92,14 @@ class _ActiveTrekCard extends ConsumerWidget {
     final totalKm = ref.watch(
       trailConfigProvider.select((c) => c.totalDistanceKm),
     );
-    // Finitions V1 (point 7) : « distance parcourue » = distance PROJETÉE sur le
-    // tracé ([stageDistanceCoveredProvider], mètres), la MÊME source unique que
-    // la carte, l'overlay et le widget (correctif build 117 / E10 RF-10). L'ancien
-    // affichage lisait `tracking.distanceKm` (cumul GPS brut de [TrekStats]), qui
-    // reste bloqué à 0 : le pipeline `TrekStats.addPoint`/`updateStats` N'EST PAS
-    // câblé (aucun appelant) -> d'où le « 0.0 km » constaté en QA. La source
-    // projetée, elle, est alimentée et ne gonfle pas sur un aller-retour.
+    // Finitions V1 (point 7) : « distance parcourue » = distance PROJETÉE sur
+    // le tracé ([stageDistanceCoveredProvider], mètres), la MÊME source unique
+    // que la carte, l'overlay et le widget (correctif build 117 / E10 RF-10).
+    // L'ancien affichage lisait `tracking.distanceKm` (cumul GPS brut de
+    // [TrekStats]), qui reste bloqué à 0 : le pipeline
+    // `TrekStats.addPoint`/`updateStats` N'EST PAS câblé (aucun appelant) ->
+    // d'où le « 0.0 km » constaté en QA. La source projetée, elle, est
+    // alimentée et ne gonfle pas sur un aller-retour.
     final coveredKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
     final progress = totalKm > 0 ? (coveredKm / totalKm).clamp(0.0, 1.0) : 0.0;
     final percent = (progress * 100).round();
@@ -129,17 +130,15 @@ class _ActiveTrekCard extends ConsumerWidget {
                 child: Text(
                   t.hub.trekCard.activeTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
           // Stats du jour (distance / denivele / temps) : gros chiffres data
-          // via AppDataStat (SW-SKIN-L5), role data tabular L1. Chaque tuile est
-          // `Expanded` (repartition en largeur egale, ex-`_Stat`), alignee a
-          // gauche. Valeur formatee avec unite incluse -> iso-texte pour les
+          // via AppDataStat (SW-SKIN-L5), role data tabular L1. Chaque tuile
+          // est `Expanded` (repartition en largeur egale, ex-`_Stat`), alignee
+          // a gauche. Valeur formatee avec unite incluse -> iso-texte pour les
           // tests existants (find.text('12.5 km') / '640 m').
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,19 +233,17 @@ class _StartTrekCard extends StatelessWidget {
               //
               // Il portait la couleur categorielle verte, donc le trace
               // monochrome teinte : c'est exactement ce que Christophe a vu
-              // (« pret a partir non plus »). Sur la tuile d'etat du cockpit, le
-              // vert categoriel n'apporte rien que le bicolore ne dise mieux —
-              // le trace duo porte deja le vert #1F3D2B de l'identite. On retire
-              // donc la couleur imposee, et la regle de [iconeBicolorePour] fait
-              // sortir « carte » en bicolore.
+              // (« pret a partir non plus »). Sur la tuile d'etat du cockpit,
+              // le vert categoriel n'apporte rien que le bicolore ne dise mieux
+              // — le trace duo porte deja le vert #1F3D2B de l'identite. On
+              // retire donc la couleur imposee, et la regle de
+              // [iconeBicolorePour] fait sortir « carte » en bicolore.
               const StepIcon.tuile(StepwaysIcons.map),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   t.hub.trekCard.noTrekTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -296,8 +293,6 @@ class _CompletedTrekCard extends ConsumerWidget {
                 child: Text(
                   t.hub.trekCard.completedTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

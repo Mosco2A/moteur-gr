@@ -28,13 +28,14 @@ import '../../../core/branding/stepways_icons.dart';
 
 /// Import GPX — permet d'importer une trace GPS externe (parite GR20).
 ///
-/// PARITE GR20 (`features/after/presentation/gpx_import_screen.dart`) : clone du
-/// flux (accueil -> picker -> preview carte+stats+etapes+warnings -> valider),
-/// mais GENERALISE (data-driven par sentier via [importTrailConfigProvider] :
-/// bornes/points d'etapes/nb etapes venant des DONNEES du sentier, aucune borne
-/// « Corse » ni refuge GR20 en dur) et i18n 5 langues (tous les libelles via
-/// Slang `t.import.*`). Post-validation : navigation vers le recap « Mon
-/// aventure » du sentier (route existante `/trail/:id/recap`).
+/// PARITE GR20 (`features/after/presentation/gpx_import_screen.dart`) : clone
+/// du flux (accueil -> picker -> preview carte+stats+etapes+warnings ->
+/// valider), mais GENERALISE (data-driven par sentier via
+/// [importTrailConfigProvider] : bornes/points d'etapes/nb etapes venant des
+/// DONNEES du sentier, aucune borne « Corse » ni refuge GR20 en dur) et i18n 5
+/// langues (tous les libelles via Slang `t.import.*`). Post-validation :
+/// navigation vers le recap « Mon aventure » du sentier (route existante
+/// `/trail/:id/recap`).
 class GpxImportScreen extends ConsumerStatefulWidget {
   const GpxImportScreen({super.key, required this.trailId});
 
@@ -434,7 +435,6 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
             const StepIcon(
@@ -605,8 +605,8 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               Navigator.pop(ctx);
               // Parite GR20 : navigation vers le recap d'aventure du sentier
               // (route existante) + SnackBar de confirmation. GR20 ne PERSISTE
-              // pas la trace importee (stub) — StepWays conserve ce comportement
-              // (pas d'ecriture de session ici).
+              // pas la trace importee (stub) — StepWays conserve ce
+              // comportement (pas d'ecriture de session ici).
               context.go('/trail/${widget.trailId}/recap');
               ScaffoldMessenger.of(
                 context,

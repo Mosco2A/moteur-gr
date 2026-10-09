@@ -151,15 +151,16 @@ class ChecklistWeightBanner extends StatelessWidget {
 /// FIX-1 (finding B1, BLOQUANT) : ce champ n'avait NI filtre de saisie, NI
 /// longueur max, NI borne haute — il etait hors `Form`, donc sans validator.
 /// L'app affichait « Poids du sac : Infinity kg » et « 150000000.0 kg » sans le
-/// moindre message, et une fois `Infinity` pose, plus rien ne le reinitialisait.
-/// Le champ applique desormais EXACTEMENT le modele de la fiche morpho :
-///  - a la saisie : chiffres et separateur decimal uniquement (le signe moins et
-///    les lettres — donc « Infinity » et « abc » — n'entrent plus), 5 caracteres
-///    max, depassement SIGNALE (pas de troncature muette) ;
+/// moindre message, et une fois `Infinity` pose, plus rien ne le
+/// reinitialisait. Le champ applique desormais EXACTEMENT le modele de la fiche
+/// morpho :
+///  - a la saisie : chiffres et separateur decimal uniquement (le signe moins
+/// et    les lettres — donc « Infinity » et « abc » — n'entrent plus), 5
+/// caracteres    max, depassement SIGNALE (pas de troncature muette) ;
 ///  - a la validation : bornes [kWeightMinKg]..[kWeightMaxKg] avec le MEME
 ///    message borne que la morpho, affiche sous la ligne ;
-///  - une valeur refusee n'est JAMAIS propagee : la jauge garde le dernier poids
-///    valide au lieu d'afficher un verdict absurde.
+///  - une valeur refusee n'est JAMAIS propagee : la jauge garde le dernier
+/// poids    valide au lieu d'afficher un verdict absurde.
 class ChecklistBodyWeightRow extends StatefulWidget {
   const ChecklistBodyWeightRow({
     super.key,
@@ -200,8 +201,9 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
     _controller = TextEditingController(
       text: widget.bodyWeightKg.toStringAsFixed(0),
     );
-    // Sortie du champ : on reaffiche TOUJOURS le poids reellement utilise par la
-    // jauge. Le texte a l'ecran ne peut donc pas rester sur une valeur refusee.
+    // Sortie du champ : on reaffiche TOUJOURS le poids reellement utilise par
+    // la jauge. Le texte a l'ecran ne peut donc pas rester sur une valeur
+    // refusee.
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -284,16 +286,14 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
               const SizedBox(width: AppTheme.spacingSm),
               // LIBELLE « Poids du corps » — PLUS DE COUPE (retour Chris #10,
               // tache 553). Il partage sa ligne avec un champ de saisie de
-              // 120 px et la pastille de ratio : sur un telephone etroit ou avec
-              // une police grossie, il ne restait pas de quoi l'ecrire en
+              // 120 px et la pastille de ratio : sur un telephone etroit ou
+              // avec une police grossie, il ne restait pas de quoi l'ecrire en
               // entier, et l'ellipse mangeait le mot qui dit DE QUOI on parle.
               // Deux lignes, et il se lit.
               Flexible(
                 child: Text(
                   weightT.bodyWeight,
                   style: theme.textTheme.bodyMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -309,9 +309,9 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
                   textAlign: TextAlign.center,
                   maxLength: kBodyWeightFieldMaxLength,
                   // BARRIERE DE SAISIE (modele morpho) : chiffres + separateur
-                  // decimal uniquement. Le signe moins et les lettres ne sont plus
-                  // saisissables, donc « -50 », « abc » et « Infinity » n'arrivent
-                  // jamais jusqu'au parse.
+                  // decimal uniquement. Le signe moins et les lettres ne sont
+                  // plus saisissables, donc « -50 », « abc » et « Infinity »
+                  // n'arrivent jamais jusqu'au parse.
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                     NotifyingLengthLimitingTextInputFormatter(
@@ -334,8 +334,9 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
                       vertical: 6,
                     ),
                     isDense: true,
-                    // Compteur masque : la borne est portee par maxLength (barriere
-                    // physique) et par le message borne sous la ligne.
+                    // Compteur masque : la borne est portee par maxLength
+                    // (barriere physique) et par le message borne sous la
+                    // ligne.
                     counterText: '',
                     suffixText: weightT.kilograms,
                     errorText: _error != null ? '' : null,
@@ -499,14 +500,14 @@ class ChecklistWeightGauge extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          // HAUTEUR RESERVEE A LA JAUGE *ET* A SES REPERES (tache 553). La barre
-          // ne fait que 12 px, mais les reperes 15/20/25 % sont poses en
-          // `Positioned(top: 14)`, donc SOUS elle : un `Stack` se dimensionne sur
-          // ses enfants NON positionnes (la barre, 12 px) et rogne par defaut ce
-          // qui depasse (`Clip.hardEdge`) — les trois reperes etaient donc
-          // decoupes. On reserve 34 px (14 px de decalage + la hauteur d'une
-          // ligne de 14 px) : les reperes s'affichent, et le conseil qui vient
-          // juste apres ne leur passe pas dessus.
+          // HAUTEUR RESERVEE A LA JAUGE *ET* A SES REPERES (tache 553). La
+          // barre ne fait que 12 px, mais les reperes 15/20/25 % sont poses en
+          // `Positioned(top: 14)`, donc SOUS elle : un `Stack` se dimensionne
+          // sur ses enfants NON positionnes (la barre, 12 px) et rogne par
+          // defaut ce qui depasse (`Clip.hardEdge`) — les trois reperes etaient
+          // donc decoupes. On reserve 34 px (14 px de decalage + la hauteur
+          // d'une ligne de 14 px) : les reperes s'affichent, et le conseil qui
+          // vient juste apres ne leur passe pas dessus.
           SizedBox(
             height: 34,
             child: Stack(
@@ -570,12 +571,12 @@ class ChecklistWeightGauge extends StatelessWidget {
           const SizedBox(height: 4),
           // LE CONSEIL, SOUS LA JAUGE, EN PLEINE LARGEUR (retour Chris #10,
           // tache 553). C'est la phrase qui DIT QUOI FAIRE — « Attention
-          // genoux ! Allegez le sac » — et c'est celle qui etait systematiquement
-          // coupee : coincee a droite du pourcentage sur trois cinquiemes de
-          // ligne, avec `maxLines: 1` et une ellipse. Elle a desormais toute la
-          // largeur et autant de lignes qu'il lui en faut : aucune ellipse, rien
-          // a deviner. Elle est juste sous la jauge, a l'endroit ou l'oeil arrive
-          // apres avoir lu la couleur de la barre.
+          // genoux ! Allegez le sac » — et c'est celle qui etait
+          // systematiquement coupee : coincee a droite du pourcentage sur trois
+          // cinquiemes de ligne, avec `maxLines: 1` et une ellipse. Elle a
+          // desormais toute la largeur et autant de lignes qu'il lui en faut :
+          // aucune ellipse, rien a deviner. Elle est juste sous la jauge, a
+          // l'endroit ou l'oeil arrive apres avoir lu la couleur de la barre.
           Text(
             gaugeLabel,
             key: const ValueKey('checklist-gauge-advice'),

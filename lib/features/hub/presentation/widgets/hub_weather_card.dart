@@ -87,8 +87,6 @@ class HubWeatherCard extends ConsumerWidget {
                       child: Text(
                         t.hub.weather.title,
                         style: theme.textTheme.titleMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (stormSoon) ...[
@@ -109,8 +107,6 @@ class HubWeatherCard extends ConsumerWidget {
                     // la typo/le layout. Vise WCAG AA (>= 4.5:1).
                     color: scheme.onSurface.withValues(alpha: 0.87),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

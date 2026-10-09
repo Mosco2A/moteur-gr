@@ -287,9 +287,8 @@ void main() {
       }
     });
 
-    testWidgets('le libelle « poids du corps » peut passer sur deux lignes', (
-      tester,
-    ) async {
+    testWidgets('le libelle « poids du corps » s ecrit en entier, sans '
+        'plafond de lignes', (tester) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(() async => db.close());
 
@@ -327,14 +326,35 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Il partage sa ligne avec un champ de 120 px et la pastille de ratio :
-      // sur 360 px il n'a pas toujours de quoi s'ecrire sur une ligne. Deux
-      // lignes lui sont desormais accordees, l'ellipse ne reste qu'en dernier
-      // recours.
+      // TACHE 749 — CE CAS ATTENDAIT UN PLAFOND, IL ATTEND MAINTENANT QU'IL
+      // N'Y EN AIT PLUS.
+      //
+      // Il exigeait `maxLines == 2`, avec en commentaire « l'ellipse ne reste
+      // qu'en dernier recours ». C'etait le bon progres a l'epoque — le
+      // libelle etait alors coupe a UNE ligne — mais deux lignes restent un
+      // plafond, donc un dernier recours qui COUPE. Or le libelle partage sa
+      // ligne avec un champ de 120 px et la pastille de ratio : sur 360 px, et
+      // plus encore chez un randonneur qui a grossi les textes de son
+      // telephone, deux lignes peuvent ne pas suffire.
+      //
+      // La regle du lot 749 est qu'aucun texte n'est coupe. Ce libelle vit
+      // dans une `Row` a hauteur libre : il peut prendre autant de lignes
+      // qu'il en demande. L'intitule de ce groupe — « les textes du Sac se
+      // lisent en entier » — est mieux tenu sans plafond qu'avec un plafond de
+      // deux.
       final libelle = tester.widget<Text>(
         find.text(t.checklist.weight.bodyWeight),
       );
-      expect(libelle.maxLines, 2);
+      expect(
+        libelle.maxLines,
+        isNull,
+        reason: 'aucun plafond de lignes : le libelle s ecrit en entier',
+      );
+      expect(
+        libelle.overflow,
+        isNot(TextOverflow.ellipsis),
+        reason: 'plus de points de suspension sur ce libelle',
+      );
     });
   });
 }

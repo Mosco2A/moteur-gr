@@ -19,15 +19,16 @@ import '../../../core/branding/stepways_icons.dart';
 /// METEO ETAPE PAR ETAPE (tache 572, U1).
 ///
 /// Une carte par JOUR DE PROGRAMME : le numero du jour, sa DATE, le NOM du lieu
-/// ou le randonneur arrivera ce jour-la, et le temps prevu a ce lieu ce jour-la.
+/// ou le randonneur arrivera ce jour-la, et le temps prevu a ce lieu ce
+/// jour-la.
 ///
 /// C'est la demande de Chris mot pour mot : « la meteo a l'endroit ou on est
 /// cense se trouver le lendemain, puis le surlendemain etc ». Et c'est aussi la
-/// raison pour laquelle chaque ligne porte un NOM : un bulletin sans nom de lieu
-/// ne sert a rien.
+/// raison pour laquelle chaque ligne porte un NOM : un bulletin sans nom de
+/// lieu ne sert a rien.
 ///
-/// Les trois cas ou il n'y a PAS de chiffre a montrer sont ecrits, jamais laisses
-/// en blanc :
+/// Les trois cas ou il n'y a PAS de chiffre a montrer sont ecrits, jamais
+/// laisses en blanc :
 ///   * pas de date de depart -> on la demande (le trek n'est pas forcement pour
 ///     aujourd'hui) ;
 ///   * journee au-dela de la portee du fournisseur -> on dit jusqu'ou on sait ;
@@ -64,8 +65,8 @@ class ProgramWeatherList extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingSm),
 
-        // Sans date de depart, aucune journee ne peut etre datee : on le dit une
-        // fois, en tete, au lieu de le repeter sur chaque ligne.
+        // Sans date de depart, aucune journee ne peut etre datee : on le dit
+        // une fois, en tete, au lieu de le repeter sur chaque ligne.
         if (state.departureUnknown) ...[
           Container(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -100,7 +101,8 @@ class ProgramWeatherList extends ConsumerWidget {
 
         // Fraicheur GLOBALE de la section : l'instant du releve le plus recent.
         // Elle change des qu'un rafraichissement aboutit — c'est precisement ce
-        // qui manquait pour que le bouton « produise » quelque chose de visible.
+        // qui manquait pour que le bouton « produise » quelque chose de
+        // visible.
         if (!state.departureUnknown)
           _FreshnessLine(fetchedAt: state.latestFetchedAt),
 
@@ -201,8 +203,6 @@ class _ProgramDayCard extends StatelessWidget {
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             _Absence(reach: day.reach),
           ],

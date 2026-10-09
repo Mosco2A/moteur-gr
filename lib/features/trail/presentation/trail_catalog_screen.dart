@@ -65,12 +65,12 @@ class TrailCatalogScreen extends ConsumerWidget {
       // sentier qu'il n'avait ni choisi ni telecharge.
       //
       // CORRECTIF : le catalogue FORCE son accueil de repli sur « Mes treks ».
-      // C'est le seul ecran ou la derivation maison/terrain n'a pas de sens : on
-      // vient ICI pour CHOISIR un sentier, le retour doit donc ramener a la liste
-      // des treks, jamais dans un trek. Les portes d'entree de l'accueil maison
-      // EMPILENT par ailleurs le catalogue (`push`), si bien qu'en usage nominal
-      // le retour DEPILE — ce repli ne sert qu'a l'arrivee depuis l'onboarding,
-      // pile vide.
+      // C'est le seul ecran ou la derivation maison/terrain n'a pas de sens :
+      // on vient ICI pour CHOISIR un sentier, le retour doit donc ramener a la
+      // liste des treks, jamais dans un trek. Les portes d'entree de l'accueil
+      // maison EMPILENT par ailleurs le catalogue (`push`), si bien qu'en usage
+      // nominal le retour DEPILE — ce repli ne sert qu'a l'arrivee depuis
+      // l'onboarding, pile vide.
       appBar: AppHeader(
         title: t.catalog.title,
         homeLocation: HomeLocations.maison,
@@ -128,32 +128,35 @@ class TrailCatalogScreen extends ConsumerWidget {
   /// suit via trailConfigProvider) puis ouvre le COCKPIT DE PREPARATION.
   ///
   /// FIX CYCLE 2 (issue 1) : « Entrer » ouvrait la CARTE DE NAVIGATION LIVE
-  /// (`/map`) — une debutante atterrissait directement sur la carte au lieu de la
-  /// fiche/prepa. NOMINAL GR20 : selectionner un sentier ouvre son COCKPIT (hub
-  /// Preparer/Randonner/Apres : faisabilite -> itineraire -> prepa), la carte
-  /// live restant reservee au DEMARRAGE EFFECTIF du trek. On aligne donc sur le
-  /// geste eprouve de l'accueil « Mes treks » ([MyTreksScreen] : selection +
-  /// `go('/home')`) : `go` bascule vers l'accueil « terrain » (cockpit), pas un
-  /// `push` d'ecran de detail — c'est un changement d'accueil contextuel, tout le
-  /// contexte du sentier suit la selection (trailConfigProvider en derive).
+  /// (`/map`) — une debutante atterrissait directement sur la carte au lieu de
+  /// la fiche/prepa. NOMINAL GR20 : selectionner un sentier ouvre son COCKPIT
+  /// (hub Preparer/Randonner/Apres : faisabilite -> itineraire -> prepa), la
+  /// carte live restant reservee au DEMARRAGE EFFECTIF du trek. On aligne donc
+  /// sur le geste eprouve de l'accueil « Mes treks » ([MyTreksScreen] :
+  /// selection + `go('/home')`) : `go` bascule vers l'accueil « terrain »
+  /// (cockpit), pas un `push` d'ecran de detail — c'est un changement d'accueil
+  /// contextuel, tout le contexte du sentier suit la selection
+  /// (trailConfigProvider en derive).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
-    // « PREPARER » PREPARE, MEME SANS ACHAT (tache 639 avenant, DEM-260930-1241).
+    // « PREPARER » PREPARE, MEME SANS ACHAT (tache 639 avenant,
+    // DEM-260930-1241).
     //
-    // HISTOIRE DE CETTE GARDE, EN TROIS TEMPS, PARCE QU'ELLE A CHANGE DEUX FOIS.
+    // HISTOIRE DE CETTE GARDE, EN TROIS TEMPS, PARCE QU'ELLE A CHANGE DEUX
+    // FOIS.
     //
-    //  1. AVANT LE LOT 634 : aucune garde. Taper « Entrer » sur un sentier payant
-    //     qu'on ne possede pas ouvrait son cockpit avec la banniere, sans un mot
-    //     d'explication — le mode gratuit etait SUBI, pas choisi. Verbatim de
-    //     Christophe : « MAIS NON !!! il s ouvre en mode prepa AVEC PUB !!! ».
-    //  2. LOT 634 : un sentier non achete ne s'ouvrait PLUS DU TOUT, il menait au
-    //     parcours de deblocage. Ca reglait le « subi », mais ca FERMAIT la
-    //     preparation gratuite, qui est un niveau du modele eco.
-    //  3. DECISION DU 30/09 12:41 : la preparation sans achat est ROUVERTE, AVEC
-    //     publicite, et elle est ANNONCEE. « je suis en prepa avec pub » est un
-    //     etat legitime — le troisieme des trois que Christophe veut voir
-    //     distingues. Ce qui reste ferme, c'est la REALISATION : partir en rando
-    //     exige l'achat, et c'est `canRealizeTrail` (lot 594) qui le tient, en
-    //     bas du cockpit, la ou on appuie sur « Demarrer ».
+    //  1. AVANT LE LOT 634 : aucune garde. Taper « Entrer » sur un sentier
+    // payant     qu'on ne possede pas ouvrait son cockpit avec la banniere,
+    // sans un mot     d'explication — le mode gratuit etait SUBI, pas choisi.
+    // Verbatim de     Christophe : « MAIS NON !!! il s ouvre en mode prepa AVEC
+    // PUB !!! ».  2. LOT 634 : un sentier non achete ne s'ouvrait PLUS DU TOUT,
+    // il menait au     parcours de deblocage. Ca reglait le « subi », mais ca
+    // FERMAIT la     preparation gratuite, qui est un niveau du modele eco.  3.
+    // DECISION DU 30/09 12:41 : la preparation sans achat est ROUVERTE, AVEC
+    // publicite, et elle est ANNONCEE. « je suis en prepa avec pub » est un
+    // etat legitime — le troisieme des trois que Christophe veut voir
+    // distingues. Ce qui reste ferme, c'est la REALISATION : partir en rando
+    // exige l'achat, et c'est `canRealizeTrail` (lot 594) qui le tient, en
+    // bas du cockpit, la ou on appuie sur « Demarrer ».
     //
     // CE QUI FAIT QUE CE N'EST PLUS « SUBI » : la carte le DIT avant d'ouvrir —
     // l'icone pub sur le bouton et la marque « Avec publicite » juste au-dessus
@@ -175,18 +178,18 @@ class TrailCatalogScreen extends ConsumerWidget {
 /// Mare » ; « un bouton demo qui montre comment marche l appli de A a Z ».
 ///
 /// IL N'OUVRE QU'UN SENTIER, ET TOUJOURS LE MEME : le MARE A MARE CENTRE
-/// COMPLET, sept etapes (tache 638, bug 8 — DEM-260930-1014, verbatim : « la demo
-/// de Mare a Mare ce doit etre la demo de Mare a Mare, pas un truc avec 2
+/// COMPLET, sept etapes (tache 638, bug 8 — DEM-260930-1014, verbatim : « la
+/// demo de Mare a Mare ce doit etre la demo de Mare a Mare, pas un truc avec 2
 /// etapes !! »). Il n'accorde aucun droit a personne : `ownsTrail`,
 /// `canRealizeTrail` et `isDemoMode` repondent la meme chose pendant la demo
-/// qu'en dehors. La demo MONTRE, elle ne DEBLOQUE jamais — c'est le garde-fou que
-/// le lot 601 avait paye cher (suppression du drapeau `isShowcaseTrail`, une
-/// exemption etant un trou dans le modele d'acces).
+/// qu'en dehors. La demo MONTRE, elle ne DEBLOQUE jamais — c'est le garde-fou
+/// que le lot 601 avait paye cher (suppression du drapeau `isShowcaseTrail`,
+/// une exemption etant un trou dans le modele d'acces).
 ///
 /// IL DISPARAIT SI, ET SEULEMENT SI, LE RANDONNEUR L'A DEMANDE
 /// ([boutonDemoCacheProvider], case « Cacher le mode demo » du dialogue de
-/// sortie). Il reste alors relancable depuis Mon compte, et rien d'autre ne peut
-/// le faire disparaitre : ni une demo deja faite, ni un sentier achete.
+/// sortie). Il reste alors relancable depuis Mon compte, et rien d'autre ne
+/// peut le faire disparaitre : ni une demo deja faite, ni un sentier achete.
 class _BoutonDemo extends ConsumerWidget {
   const _BoutonDemo();
 
@@ -212,8 +215,8 @@ class _BoutonDemo extends ConsumerWidget {
             // UNE SEULE PORTE D'ENTREE, ET ELLE SE SOUVIENT D'OU L'ON VENAIT
             // ([entrerEnDemo]) : le sentier selectionne avant la demo est note
             // pour etre restaure a la sortie (bug 19, DEM-260930-1028). Sans
-            // cela, quitter la demo laissait le sentier de demo actif — « on est
-            // toujours en mode demo sans le savoir ».
+            // cela, quitter la demo laissait le sentier de demo actif — « on
+            // est toujours en mode demo sans le savoir ».
             entrerEnDemo(ref);
             context.go('/home');
           },
@@ -278,23 +281,24 @@ String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
 /// primaire "Entrer". Pas de notion de telechargement en P2-P3 (donnees
 /// embarquees) : le sentier est directement utilisable.
 ///
-/// UN SENTIER GRATUIT LE DIT (tache 601) : pastille « Gratuit » sous son nom, et
-/// une ligne qui annonce ce qu'il contient. Le randonneur doit pouvoir choisir
-/// entre les DEUX entrees du Mare a Mare sans ouvrir ni l'une ni l'autre — c'est
-/// tout le sens de « il y a mare a mare ET mare a mare demo des le catalogue ».
+/// UN SENTIER GRATUIT LE DIT (tache 601) : pastille « Gratuit » sous son nom,
+/// et une ligne qui annonce ce qu'il contient. Le randonneur doit pouvoir
+/// choisir entre les DEUX entrees du Mare a Mare sans ouvrir ni l'une ni
+/// l'autre — c'est tout le sens de « il y a mare a mare ET mare a mare demo des
+/// le catalogue ».
 ///
-/// ET ON PEUT L'ACHETER D'ICI (tache 614, demande de Christophe du 28/09 11:41).
-/// La carte portait une seule action — « Entrer » — donc le randonneur qui
-/// DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord entrer
-/// dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour rencontrer
-/// enfin un refus qui lui proposait de payer. L'achat est desormais sur la
-/// carte, et il emprunte le geste unique [buyTrail] — le meme que la
+/// ET ON PEUT L'ACHETER D'ICI (tache 614, demande de Christophe du 28/09
+/// 11:41). La carte portait une seule action — « Entrer » — donc le randonneur
+/// qui DECOUVRE un sentier et veut l'acheter tout de suite devait d'abord
+/// entrer dedans, preparer trois cartes, puis appuyer sur « Démarrer » pour
+/// rencontrer enfin un refus qui lui proposait de payer. L'achat est desormais
+/// sur la carte, et il emprunte le geste unique [buyTrail] — le meme que la
 /// preparation et que le depart.
 ///
 /// UNE SEULE ACTION A LA FOIS (tache 639, bug 2). Le lot 614 avait pose l'achat
 /// A COTE de « Entrer », si bien qu'un sentier non possede portait DEUX boutons
-/// pour la MEME destination : « Entrer » y menait aussi, par la garde du lot 634.
-/// La carte ne montre plus que l'action de son etat.
+/// pour la MEME destination : « Entrer » y menait aussi, par la garde du lot
+/// 634. La carte ne montre plus que l'action de son etat.
 class _AvailableTrailCard extends ConsumerWidget {
   const _AvailableTrailCard({required this.trail, required this.onEnter});
 
@@ -315,9 +319,10 @@ class _AvailableTrailCard extends ConsumerWidget {
     // L'ICONE PUB SUR « PREPARER » (tache 639 avenant, DEM-260930-1223). Elle
     // n'apparait que quand une publicite va EFFECTIVEMENT s'afficher : ni
     // abonne, ni sentier achete, ni recompense video en cours. L'etat est LU
-    // ([etatPubliciteProvider], qui consulte la source unique), jamais recalcule
-    // ici — un second calcul finirait par dire autre chose que la banniere.
-    // Pendant la lecture des droits, on ne promet pas de publicite : `false`.
+    // ([etatPubliciteProvider], qui consulte la source unique), jamais
+    // recalcule ici — un second calcul finirait par dire autre chose que la
+    // banniere. Pendant la lecture des droits, on ne promet pas de publicite :
+    // `false`.
     final avecPub =
         ref.watch(etatPubliciteProvider(trail.id)).value?.pubAffichee ?? false;
     // LE PRIX SE DEMANDE AU SERVICE, il ne se recalcule pas ici — et depuis
@@ -327,8 +332,8 @@ class _AvailableTrailCard extends ConsumerWidget {
     // montant ; un second NOMBRE l'etait tout autant.
     final monetisation = ref.watch(monetizationServiceProvider);
 
-    // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base porte
-    // par AppCard (iso-rendu de la carte sentier du catalogue).
+    // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base
+    // porte par AppCard (iso-rendu de la carte sentier du catalogue).
     return AppCard(
       key: ValueKey('catalog-trail-${trail.id}'),
       margin: const EdgeInsets.symmetric(
@@ -355,8 +360,6 @@ class _AvailableTrailCard extends ConsumerWidget {
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -427,13 +430,14 @@ class _AvailableTrailCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          // LA MARQUE DE L'ETAT PUBLICITAIRE (tache 639 avenant, DEM-260930-1241).
+          // LA MARQUE DE L'ETAT PUBLICITAIRE (tache 639 avenant,
+          // DEM-260930-1241).
           //
           // Elle dit LEQUEL des trois etats on vit — abonne, achete, ou
           // preparation avec publicite — parce que Christophe veut les
           // distinguer a l'oeil : « Il faut que l on fasse la diff entre = je
-          // suis abonne et je n ai pas de pub en prepa, j ai achete un trek sans
-          // pub, je suis en prepa avec pub ».
+          // suis abonne et je n ai pas de pub en prepa, j ai achete un trek
+          // sans pub, je suis en prepa avec pub ».
           Align(
             alignment: Alignment.centerLeft,
             child: AdStateBadge(trailId: trail.id),
@@ -442,45 +446,48 @@ class _AvailableTrailCard extends ConsumerWidget {
           // PREPARER TOUJOURS, ACHETER EN PLUS QUAND IL Y A QUELQUE CHOSE A
           // ACHETER (tache 639 avenant, DEM-260930-1241).
           //
-          // CE QUE J'AVAIS FAIT, ET POURQUOI C'ETAIT TROP. Le premier passage de
-          // la tache 639 (commit 11e3b8eb) avait mis UNE SEULE action par etat :
-          // « Acheter » SEUL sur un sentier non possede. C'etait la bonne
-          // correction du defaut d'origine (deux boutons pour une seule
-          // destination, « Entrer » qui n'entrait pas) mais c'etait une de trop :
-          // ca FERMAIT la preparation gratuite. Christophe l'a rouverte le meme
-          // jour a 12:41 : la preparation sans achat reste possible, AVEC
+          // CE QUE J'AVAIS FAIT, ET POURQUOI C'ETAIT TROP. Le premier passage
+          // de la tache 639 (commit 11e3b8eb) avait mis UNE SEULE action par
+          // etat : « Acheter » SEUL sur un sentier non possede. C'etait la
+          // bonne correction du defaut d'origine (deux boutons pour une seule
+          // destination, « Entrer » qui n'entrait pas) mais c'etait une de trop
+          // : ca FERMAIT la preparation gratuite. Christophe l'a rouverte le
+          // meme jour a 12:41 : la preparation sans achat reste possible, AVEC
           // publicite — c'est le niveau gratuit du modele eco, et l'achat
           // debloque la REALISATION, pas la preparation.
           //
           // LA CARTE PORTE DONC :
-          //   * TOUJOURS « Preparer », qui ouvre le cockpit. Quand une publicite
-          //     va s'afficher, le bouton porte l'icone pub qui le PREVIENT
-          //     (DEM-260930-1223, « je parlais de l icone pub sur le bouton
-          //     Preparer si on n est pas abonne ») ;
+          //   * TOUJOURS « Preparer », qui ouvre le cockpit. Quand une
+          // publicite     va s'afficher, le bouton porte l'icone pub qui le
+          // PREVIENT     (DEM-260930-1223, « je parlais de l icone pub sur le
+          // bouton     Preparer si on n est pas abonne ») ;
           //   * EN PLUS « Acheter », avec son prix, quand le sentier est encore
-          //     a vendre — ni possede, ni gratuit, ni couvert par un abonnement.
+          //     a vendre — ni possede, ni gratuit, ni couvert par un
+          // abonnement.
           //
-          // LA REGLE DES PUBS N'EST PAS REDEFINIE ICI, ET C'EST VOULU. Le cockpit
-          // porte deja son emplacement ([BannerAdSlot] dans `hub_screen`), branche
-          // sur la SOURCE UNIQUE [MonetizationService.isNoAdsActive]. L'icone et
-          // la marque LISENT cette meme decision ([etatPubliciteProvider]) : elles
-          // annoncent, elles ne decident pas.
+          // LA REGLE DES PUBS N'EST PAS REDEFINIE ICI, ET C'EST VOULU. Le
+          // cockpit porte deja son emplacement ([BannerAdSlot] dans
+          // `hub_screen`), branche sur la SOURCE UNIQUE
+          // [MonetizationService.isNoAdsActive]. L'icone et la marque LISENT
+          // cette meme decision ([etatPubliciteProvider]) : elles annoncent,
+          // elles ne decident pas.
           //
-          // INTEGRATION 647 — ET GRISEE PENDANT LA DEMO (tache 638, bug 14). Les
-          // deux lots ecrivaient ce bouton : 638 l enveloppe dans [GriseEnDemo]
-          // parce qu une demo porte sur UN sentier et que basculer de sentier en
-          // pleine demo est l etat hybride que le bug 19 denonce ; 639 lui donne
-          // son nouveau nom, sa nouvelle icone et son libelle d accessibilite.
-          // Les deux tiennent ensemble : le grisage dit QUAND le geste est
-          // indisponible, 639 dit LEQUEL c est.
+          // INTEGRATION 647 — ET GRISEE PENDANT LA DEMO (tache 638, bug 14).
+          // Les deux lots ecrivaient ce bouton : 638 l enveloppe dans
+          // [GriseEnDemo] parce qu une demo porte sur UN sentier et que
+          // basculer de sentier en pleine demo est l etat hybride que le bug 19
+          // denonce ; 639 lui donne son nouveau nom, sa nouvelle icone et son
+          // libelle d accessibilite. Les deux tiennent ensemble : le grisage
+          // dit QUAND le geste est indisponible, 639 dit LEQUEL c est.
           GriseEnDemo(
             child: SizedBox(
               width: double.infinity,
               child: Semantics(
                 button: true,
                 label: t.catalog.a11y.prepareButton(nom: nom),
-                // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
-                // #A5), pleine largeur (SizedBox width infinity conserve).
+                // SW-SKIN-L3e : FilledButton.icon -> AppButton primary
+                // (arbitrage #A5), pleine largeur (SizedBox width infinity
+                // conserve).
                 child: AppButton(
                   key: ValueKey('catalog-enter-${trail.id}'),
                   icon: avecPub
@@ -498,8 +505,8 @@ class _AvailableTrailCard extends ConsumerWidget {
             // existait deja cote service (`refuseEnDemo`), mais le bouton avait
             // l'air actif. Il est desormais visiblement indisponible.
             //
-            // INTEGRATION 647 — l enveloppe vient de 638, le panier et le libelle
-            // d accessibilite viennent de 639. Rien n est abandonne.
+            // INTEGRATION 647 — l enveloppe vient de 638, le panier et le
+            // libelle d accessibilite viennent de 639. Rien n est abandonne.
             GriseEnDemo(
               child: SizedBox(
                 width: double.infinity,

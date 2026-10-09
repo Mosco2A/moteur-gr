@@ -70,8 +70,6 @@ class StageListTile extends StatelessWidget {
                       child: Text(
                         stage.name,
                         style: theme.textTheme.titleMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),

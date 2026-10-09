@@ -218,8 +218,6 @@ class _ChecklistPreparationSectionState
                                   : null,
                               color: isPrepared ? AppTheme.grisGranite : null,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

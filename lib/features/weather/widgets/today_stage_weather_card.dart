@@ -20,8 +20,8 @@ import '../../../core/branding/stepways_icons.dart';
 /// Affiche la condition dominante, les températures min/max, les 4 indicateurs
 /// clés (précipitations, vent, UV, probabilité d'orage) et une recommandation
 /// de randonnée dérivée (3 niveaux). Tous les libellés passent par Slang.
-/// P2 (#101255 point 2) : la carte lit l'unite de temperature choisie — elle est
-/// devenue un [ConsumerWidget] pour cela, a constructeur inchange.
+/// P2 (#101255 point 2) : la carte lit l'unite de temperature choisie — elle
+/// est devenue un [ConsumerWidget] pour cela, a constructeur inchange.
 class TodayStageWeatherCard extends ConsumerWidget {
   const TodayStageWeatherCard({super.key, required this.day});
 
@@ -77,8 +77,6 @@ class TodayStageWeatherCard extends ConsumerWidget {
                     Text(
                       day.weatherDescription,
                       style: theme.textTheme.titleMedium,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

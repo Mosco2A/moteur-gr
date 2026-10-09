@@ -62,9 +62,9 @@ class ItineraryScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      // Ph5 (L6b) : AppHeader universel ([Retour]+[Accueil] contextuel). Ecran de
-      // preparation (fiche pushee depuis le cockpit) -> pas de barre contextuelle
-      // dediee (§4 ne prevoit pas d'actions specifiques ici).
+      // Ph5 (L6b) : AppHeader universel ([Retour]+[Accueil] contextuel). Ecran
+      // de preparation (fiche pushee depuis le cockpit) -> pas de barre
+      // contextuelle dediee (§4 ne prevoit pas d'actions specifiques ici).
       appBar: AppHeader(title: t.itinerary.title),
       body: itineraryAsync.when(
         loading: () => LoadingView(message: t.itinerary.loading),
@@ -167,22 +167,24 @@ class _ItineraryContent extends ConsumerWidget {
 }
 
 /// Controle du SENS de la rando (retour Chris #12b) : affiche Depart -> Arrivee
-/// (noms des extremites dans le sens courant) et un bouton « Inverser le sens ».
+/// (noms des extremites dans le sens courant) et un bouton « Inverser le sens
+/// ».
 ///
 /// N'INVENTE aucune donnee : le sens est porte par [selectedDirectionProvider]
 /// (deja utilise par tout le pipeline direction-aware — plan de marche, GPS,
-/// arrivee) et les sens possibles par `TrailConfig.directions`. Inverser bascule
-/// la valeur entre le sens de reference (1er code) et l'autre ; l'itineraire se
-/// recalcule tout seul ([itineraryProvider] watch ce provider) et l'ordre des
-/// etapes s'inverse. Les noms d'extremites sont lus sur l'itineraire courant
-/// (1re etape du 1er jour = depart ; derniere etape du dernier jour = arrivee).
+/// arrivee) et les sens possibles par `TrailConfig.directions`. Inverser
+/// bascule la valeur entre le sens de reference (1er code) et l'autre ;
+/// l'itineraire se recalcule tout seul ([itineraryProvider] watch ce provider)
+/// et l'ordre des etapes s'inverse. Les noms d'extremites sont lus sur
+/// l'itineraire courant (1re etape du 1er jour = depart ; derniere etape du
+/// dernier jour = arrivee).
 class _DirectionControl extends ConsumerWidget {
   const _DirectionControl({required this.days});
 
   final List<ItineraryDay> days;
 
-  /// Nom de l'etape de DEPART dans le sens courant (1re etape du 1er jour porteur
-  /// d'etape), ou null si indisponible.
+  /// Nom de l'etape de DEPART dans le sens courant (1re etape du 1er jour
+  /// porteur d'etape), ou null si indisponible.
   String? get _startName {
     for (final d in days) {
       if (d.stages.isNotEmpty) return d.stages.first.name;
@@ -329,8 +331,6 @@ class _Endpoint extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           textAlign: alignEnd ? TextAlign.end : TextAlign.start,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -341,12 +341,12 @@ class _Endpoint extends StatelessWidget {
 ///
 /// TACHE 569 (R2) — LE COMPTEUR DE JOURS DIT CE QU'IL COMPTE.
 ///
-/// LE RETOUR DE CHRIS, MOT POUR MOT : « faisabilite dit 11 et itineraire propose
-/// 9 ». Les deux chiffres etaient JUSTES et ne parlaient pas de la meme chose :
-/// la Faisabilite conseillait 11 jours AU TOTAL, cet en-tete affichait les 9
-/// jours du programme courant sous un libelle « Jour » qui ne disait ni marche,
-/// ni repos, ni total. Deux nombres sans unite, c'est une contradiction pour
-/// celui qui lit.
+/// LE RETOUR DE CHRIS, MOT POUR MOT : « faisabilite dit 11 et itineraire
+/// propose 9 ». Les deux chiffres etaient JUSTES et ne parlaient pas de la meme
+/// chose : la Faisabilite conseillait 11 jours AU TOTAL, cet en-tete affichait
+/// les 9 jours du programme courant sous un libelle « Jour » qui ne disait ni
+/// marche, ni repos, ni total. Deux nombres sans unite, c'est une contradiction
+/// pour celui qui lit.
 ///
 /// Ce compteur compte des TOTAUX — un jour de repos est une journee de
 /// l'itineraire — et il le dit, avec le detail marche / repos juste en dessous.
@@ -465,13 +465,13 @@ class _DayCard extends StatelessWidget {
         subtitle: Text(
           day.stageCount == 0
               ? t.itinerary.restDay
-              // PLURIEL PORTE PAR SLANG, PLUS PAR UN replaceAll (tache 560, N4).
-              // La cle etait « {count} etapes » et le nombre y etait substitue a
-              // la main : un jour a une seule etape affichait « 1 etapes ». La
-              // cle est desormais un pluriel Slang, donc chaque langue applique
-              // SA regle CLDR (en francais `one` couvre 0 et 1, en anglais 1
-              // seul) — un accord de plus a maintenir aurait ete un accord de
-              // plus a oublier.
+              // PLURIEL PORTE PAR SLANG, PLUS PAR UN replaceAll (tache 560,
+              // N4). La cle etait « {count} etapes » et le nombre y etait
+              // substitue a la main : un jour a une seule etape affichait « 1
+              // etapes ». La cle est desormais un pluriel Slang, donc chaque
+              // langue applique SA regle CLDR (en francais `one` couvre 0 et 1,
+              // en anglais 1 seul) — un accord de plus a maintenir aurait ete
+              // un accord de plus a oublier.
               : '${t.itinerary.stageCount(n: day.stageCount)}'
                     '  -  ${day.totalDistance.toStringAsFixed(1)} km'
                     '  -  D+ ${day.totalElevation} m',

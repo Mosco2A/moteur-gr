@@ -39,8 +39,8 @@ import '../../../../core/branding/stepways_icons.dart';
 /// réutilise le socle météo StepWays PAR ÉTAPE (coordonnées résolues
 /// dynamiquement depuis Drift) via l'**étape détectée par le GPS**
 /// ([localizedStageNumberProvider], dérivé du pipeline `positionStream` ->
-/// détection d'étape) — même liaison GPS -> étape que le reste du moteur, aucune
-/// nouvelle source, jamais de localité en dur (#84627/#99460).
+/// détection d'étape) — même liaison GPS -> étape que le reste du moteur,
+/// aucune nouvelle source, jamais de localité en dur (#84627/#99460).
 ///
 /// C'est le point clé de R11 : on affiche l'étape COURANTE détectée, et non
 /// l'étape de référence D-3 ([referenceStageNumberProvider], défaut 1) qui
@@ -109,8 +109,6 @@ class LocalizedConditionsBanner extends ConsumerWidget {
                 child: Text(
                   t.navPilote.weatherBannerTitle,
                   style: theme.textTheme.labelLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Text(
@@ -215,8 +213,6 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurface.withValues(alpha: 0.7),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       );
