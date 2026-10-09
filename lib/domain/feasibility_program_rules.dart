@@ -183,6 +183,13 @@ List<ProgramAdvice> programAdviceFor({
   required int suggestedWalkingDays,
   required int suggestedRestDays,
   required int currentTotalDays,
+  // Les jours de MARCHE du programme courant, REPOS NON COMPRIS (tache 750).
+  // C'est ce nombre, et jamais [currentTotalDays], que la phrase de
+  // comparaison oppose aux jours de marche conseilles : les deux moities de
+  // « vise X jours de marche au lieu des Y jours d'aujourd'hui » doivent etre
+  // dans la meme unite, sinon elle affiche « 7 au lieu de 7 » sur un programme
+  // de 7 journees a qui l'on conseille 7 journees et un repos.
+  required int currentWalkingDays,
   required int trainingWeeks,
   required Set<int> recommendedRest,
   required bool durationAdvised,
@@ -243,17 +250,51 @@ List<ProgramAdvice> programAdviceFor({
       ),
     );
   } else if (suggestedTotalDays > currentTotalDays) {
-    advice.add(
-      ProgramAdvice(
-        key: fromProgram ? 'optimalDays' : 'optimalDaysNoChoice',
-        params: {
-          'days': suggestedTotalDays,
-          'walk': suggestedWalkingDays,
-          'rest': suggestedRestDays,
-          'current': currentTotalDays,
-        },
-      ),
-    );
+    // LA GARDE DE COMPARAISON (tache 750). On ne COMPARE que si les deux
+    // conditions sont reunies, et aucune des deux ne se devine :
+    //
+    //   * le randonneur A CHOISI ([fromProgram]) — sinon « au lieu de N »
+    //     oppose le sentier a lui-meme, puisque la duree courante est
+    //     initialisee sur le programme de reference ;
+    //   * les deux nombres sont DANS LA MEME UNITE et DIFFERENTS. La phrase
+    //     dit « ${walk} jours de marche, au lieu des ${current} jours
+    //     d'aujourd'hui » : les deux moities parlent de jours de MARCHE. On y
+    //     passait `currentTotalDays`, marche ET repos confondus — un conseil a
+    //     7 jours de marche + 1 repos face a un programme de 7 jours de marche
+    //     affichait donc « vise 7 au lieu de 7 », vrai sur les totaux (8 > 7)
+    //     et faux a l'ecran. C'est le second defaut de la meme phrase.
+    final comparable =
+        fromProgram && suggestedWalkingDays != currentWalkingDays;
+    if (comparable) {
+      advice.add(
+        ProgramAdvice(
+          key: 'optimalDays',
+          params: {
+            'days': suggestedTotalDays,
+            'walk': suggestedWalkingDays,
+            'rest': suggestedRestDays,
+            'current': currentWalkingDays,
+          },
+        ),
+      );
+    } else if (!fromProgram) {
+      advice.add(
+        ProgramAdvice(
+          key: 'optimalDaysNoChoice',
+          params: {
+            'days': suggestedTotalDays,
+            'walk': suggestedWalkingDays,
+            'rest': suggestedRestDays,
+          },
+        ),
+      );
+    } else {
+      // Choix fait, meme nombre de jours de MARCHE : seuls des repos sont
+      // conseilles, et ils l'ont deja ete plus haut ([restAdvice]). Il n'existe
+      // aucune variante dediee a ce cas — on retombe donc sur la phrase
+      // generique existante plutot que d'en inventer une.
+      advice.add(const ProgramAdvice(key: 'balanced'));
+    }
   } else {
     advice.add(const ProgramAdvice(key: 'balanced'));
   }
@@ -313,8 +354,30 @@ List<ProgramAdvice> programAdviceFor({
     );
   }
 
+  // LA GARDE, TENUE A LA SORTIE (tache 750). Le choix de cle est fait a trois
+  // endroits dans cette fonction ; la regle, elle, est unique et se verifie
+  // ici, une fois, sur le resultat : AUCUNE phrase de comparaison ne sort quand
+  // le randonneur n'a rien choisi. Un `assert` et non un filtre : retirer la
+  // phrase en silence masquerait la regression au lieu de la faire voir, et le
+  // banc de tests du lot 750 couvre les memes cas en mode release.
+  assert(
+    fromProgram || !advice.any((a) => comparisonAdviceKeys.contains(a.key)),
+    'tache 750 : phrase de comparaison emise sans choix du randonneur '
+    '(${advice.map((a) => a.key).join(', ')})',
+  );
+
   return advice;
 }
+
+/// LES CLES QUI COMPARENT la valeur courante du randonneur a une autre valeur
+/// (tache 750).
+///
+/// Une phrase de cette liste oppose deux nombres — « vise X au lieu des Y
+/// d'aujourd'hui ». Elle n'a donc de sens que si le Y est un CHOIX : sans
+/// choix, la duree courante vaut le programme de reference du sentier, et la
+/// phrase compare le sentier a lui-meme. Toute nouvelle phrase de comparaison
+/// doit etre ajoutee ici — c'est ce qui la soumet a la garde.
+const comparisonAdviceKeys = <String>{'optimalDays'};
 
 /// Index (0-based) des etapes APRES lesquelles poser un jour de repos : la
 /// derniere etape de chaque bloc consecutif au-dessus du plafond (hors toute

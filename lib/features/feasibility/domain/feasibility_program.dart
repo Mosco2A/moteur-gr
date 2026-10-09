@@ -81,10 +81,23 @@ class FeasibilityProgram {
   bool get isEmpty => dayEfforts.isEmpty;
 
   /// Construit le programme depuis le PLAN editable du randonneur.
-  factory FeasibilityProgram.fromPlannedDays(List<PlannedDay> days) =>
-      FeasibilityProgram._fromDays([
-        for (final d in days) (stages: d.stages, isRestDay: d.isRestDay),
-      ], fromProgram: true);
+  ///
+  /// [chosenByUser] N'A PAS DE VALEUR PAR DEFAUT, ET C'EST LE CORRECTIF DE LA
+  /// TACHE 750. Cette fabrique posait `fromProgram: true` en dur, ce qui etait
+  /// faux une fois sur deux : `plannedDaysProvider` est AMORCE par une
+  /// repartition calculee des l'arrivee des etapes, donc sa liste n'est jamais
+  /// vide, meme quand le randonneur n'a RIEN choisi. Le drapeau disait donc
+  /// « programme du randonneur » pour un programme que personne n'avait
+  /// retenu, l'ecran prenait la formulation de COMPARAISON, et comme la duree
+  /// courante est elle-meme initialisee sur le programme de reference, il
+  /// comparait 7 a 7 — le defaut vu par Christophe le 09/10. Le drapeau est
+  /// desormais FOURNI par l'appelant, qui seul sait s'il y a eu un choix.
+  factory FeasibilityProgram.fromPlannedDays(
+    List<PlannedDay> days, {
+    required bool chosenByUser,
+  }) => FeasibilityProgram._fromDays([
+    for (final d in days) (stages: d.stages, isRestDay: d.isRestDay),
+  ], fromProgram: chosenByUser);
 
   /// Construit le programme depuis une repartition CALCULEE
   /// ([PlanningCalculator.distribute]) — le chemin que suit la recherche du
