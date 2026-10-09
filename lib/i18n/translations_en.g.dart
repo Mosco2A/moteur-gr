@@ -259,6 +259,8 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get layersSubtitle => 'Choose what to show on the map';
 	@override String stageRemaining({required Object km}) => '${km} km left';
 	@override String get offTrackChip => 'Off track';
+	@override String get perimetreEtape => 'Stage';
+	@override String get perimetreSentier => 'Whole trail';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 	@override String get pinMergedTitle => 'Several markers at the same place';
@@ -871,6 +873,10 @@ class _Translations$demo$en extends Translations$demo$fr {
 	@override String get simulerFin => 'Simulate the finish';
 	@override String get simulerRelancer => 'Restart the demo';
 	@override String marcheSimulee({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}';
+	@override String get arriveeTitre => 'Well done, you made it!';
+	@override String get arriveeTexte => 'You completed the trail in demo mode. Nothing was saved: it was a simulation.';
+	@override String get arriveeChiffres => 'Your demo';
+	@override String get arriveeFermer => 'Close';
 	@override String get sortieTitre => 'End of demo';
 	@override String get sortieEnTeteCatalogue => 'You will find the demo at the top of the trail list.';
 	@override String get sortieDansMonCompte => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.';
@@ -4370,6 +4376,8 @@ extension on TranslationsEn {
 			'map.layersSubtitle' => 'Choose what to show on the map',
 			'map.stageRemaining' => ({required Object km}) => '${km} km left',
 			'map.offTrackChip' => 'Off track',
+			'map.perimetreEtape' => 'Stage',
+			'map.perimetreSentier' => 'Whole trail',
 			'map.guide.buttonsTitle' => 'Buttons',
 			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.',
 			'map.guide.track' => 'The trail line, in its own colour. It is the reference the off-track alert uses.',
@@ -4714,10 +4722,10 @@ extension on TranslationsEn {
 			'checklist.ui.infoAddTitle' => 'Add',
 			'checklist.ui.infoAddBody' => 'The + button at the bottom of each category for your own items.',
 			'checklist.ui.infoValidateBody' => 'Validate when your pack is ready — a check appears on the home screen.',
-			'checklist.ui.infoUnderstood' => 'Got it!',
-			'checklist.ui.prepTitle' => 'Pack preparation',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoUnderstood' => 'Got it!',
+			'checklist.ui.prepTitle' => 'Pack preparation',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items packed',
 			'checklist.ui.prepAllReady' => 'All set! Enjoy your trek',
 			'checklist.ui.preDepartureTitle' => 'Pre-departure checklist',
@@ -5181,6 +5189,10 @@ extension on TranslationsEn {
 			'demo.simulerFin' => 'Simulate the finish',
 			'demo.simulerRelancer' => 'Restart the demo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}',
+			'demo.arriveeTitre' => 'Well done, you made it!',
+			'demo.arriveeTexte' => 'You completed the trail in demo mode. Nothing was saved: it was a simulation.',
+			'demo.arriveeChiffres' => 'Your demo',
+			'demo.arriveeFermer' => 'Close',
 			'demo.sortieTitre' => 'End of demo',
 			'demo.sortieEnTeteCatalogue' => 'You will find the demo at the top of the trail list.',
 			'demo.sortieDansMonCompte' => 'The button will no longer appear in the catalogue. You will find the demo in “My account”.',
@@ -5224,14 +5236,14 @@ extension on TranslationsEn {
 			'onboarding.next' => 'Next',
 			'onboarding.getStarted' => 'Get started',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.',
 			'onboarding.languageTitle' => 'Choose your language',
 			'onboarding.languageSubtitle' => 'You can change it at any time in the settings.',
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
@@ -5738,14 +5750,14 @@ extension on TranslationsEn {
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m of descent',
+			_ => null,
+		} ?? switch (path) {
 			'recap.shareAdventure' => 'Share my adventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'My adventure on the ${trail}',
 			'recap.shareError' => 'Sharing failed',
 			'recap.exportGpx' => 'Export the track as GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Track exported: ${file}',
 			'recap.gpxEmpty' => 'No GPS point to export',
-			_ => null,
-		} ?? switch (path) {
 			'recap.gpxError' => 'Export failed',
 			'recap.daysSection' => 'Day by day',
 			'recap.dayLabel' => ({required Object day}) => 'Day ${day}',

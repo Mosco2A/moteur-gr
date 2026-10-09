@@ -259,6 +259,8 @@ class _Translations$map$it extends Translations$map$fr {
 	@override String get layersSubtitle => 'Scegli cosa mostrare sulla mappa';
 	@override String stageRemaining({required Object km}) => '${km} km rimanenti';
 	@override String get offTrackChip => 'Fuori traccia';
+	@override String get perimetreEtape => 'Tappa';
+	@override String get perimetreSentier => 'Intero sentiero';
 	@override late final _Translations$map$guide$it guide = _Translations$map$guide$it._(_root);
 	@override String get supplyDismiss => 'Nascondi l\'avviso';
 	@override String get pinMergedTitle => 'Più segnaposti nello stesso punto';
@@ -871,6 +873,10 @@ class _Translations$demo$it extends Translations$demo$fr {
 	@override String get simulerFin => 'Simula l\'arrivo';
 	@override String get simulerRelancer => 'Ricomincia la demo';
 	@override String marcheSimulee({required Object facteur}) => 'Camminata simulata — tempo accelerato ×${facteur}';
+	@override String get arriveeTitre => 'Bravo, sei arrivato!';
+	@override String get arriveeTexte => 'Hai completato il sentiero in modalità demo. Nulla è stato salvato: era una simulazione.';
+	@override String get arriveeChiffres => 'La tua demo';
+	@override String get arriveeFermer => 'Chiudi';
 	@override String get sortieTitre => 'Fine della demo';
 	@override String get sortieEnTeteCatalogue => 'Ritroverai la demo in cima all\'elenco dei sentieri.';
 	@override String get sortieDansMonCompte => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.';
@@ -4370,6 +4376,8 @@ extension on TranslationsIt {
 			'map.layersSubtitle' => 'Scegli cosa mostrare sulla mappa',
 			'map.stageRemaining' => ({required Object km}) => '${km} km rimanenti',
 			'map.offTrackChip' => 'Fuori traccia',
+			'map.perimetreEtape' => 'Tappa',
+			'map.perimetreSentier' => 'Intero sentiero',
 			'map.guide.buttonsTitle' => 'Pulsanti',
 			'map.guide.position' => 'La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica che la localizzazione sia consentita all\'app.',
 			'map.guide.track' => 'Il tracciato del sentiero, nel suo colore. È il riferimento usato dall\'avviso fuori traccia.',
@@ -4714,10 +4722,10 @@ extension on TranslationsIt {
 			'checklist.ui.infoAddTitle' => 'Aggiungi',
 			'checklist.ui.infoAddBody' => 'Il pulsante + in fondo a ogni categoria per i tuoi articoli.',
 			'checklist.ui.infoValidateBody' => 'Conferma quando lo zaino è pronto — un segno di spunta appare sulla home.',
-			'checklist.ui.infoUnderstood' => 'Capito!',
-			'checklist.ui.prepTitle' => 'Preparazione dello zaino',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoUnderstood' => 'Capito!',
+			'checklist.ui.prepTitle' => 'Preparazione dello zaino',
 			'checklist.ui.prepCounter' => '{prepared} / {total} articoli preparati',
 			'checklist.ui.prepAllReady' => 'Tutto pronto! Buon trekking',
 			'checklist.ui.preDepartureTitle' => 'Checklist prima della partenza',
@@ -5181,6 +5189,10 @@ extension on TranslationsIt {
 			'demo.simulerFin' => 'Simula l\'arrivo',
 			'demo.simulerRelancer' => 'Ricomincia la demo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Camminata simulata — tempo accelerato ×${facteur}',
+			'demo.arriveeTitre' => 'Bravo, sei arrivato!',
+			'demo.arriveeTexte' => 'Hai completato il sentiero in modalità demo. Nulla è stato salvato: era una simulazione.',
+			'demo.arriveeChiffres' => 'La tua demo',
+			'demo.arriveeFermer' => 'Chiudi',
 			'demo.sortieTitre' => 'Fine della demo',
 			'demo.sortieEnTeteCatalogue' => 'Ritroverai la demo in cima all\'elenco dei sentieri.',
 			'demo.sortieDansMonCompte' => 'Il pulsante non apparirà più nel catalogo. Ritroverai la demo in “Il mio account”.',
@@ -5224,14 +5236,14 @@ extension on TranslationsIt {
 			'onboarding.next' => 'Avanti',
 			'onboarding.getStarted' => 'Inizia',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Benvenuto su ${appName}',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Il tuo compagno di trekking offline: mappa, navigazione GPS, pianificazione e diario di trek.',
 			'onboarding.languageTitle' => 'Scegli la tua lingua',
 			'onboarding.languageSubtitle' => 'Potrai modificarla in qualsiasi momento nelle impostazioni.',
 			'onboarding.downloadTitle' => 'Scarica il tuo primo sentiero',
 			'onboarding.downloadSubtitle' => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.',
 			'onboarding.browseCatalog' => 'Sfoglia il catalogo',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
@@ -5738,14 +5750,14 @@ extension on TranslationsIt {
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m di dislivello negativo',
+			_ => null,
+		} ?? switch (path) {
 			'recap.shareAdventure' => 'Condividi la mia avventura',
 			'recap.shareHeadline' => ({required Object trail}) => 'La mia avventura sul ${trail}',
 			'recap.shareError' => 'Condivisione non riuscita',
 			'recap.exportGpx' => 'Esporta la traccia in GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Traccia esportata: ${file}',
 			'recap.gpxEmpty' => 'Nessun punto GPS da esportare',
-			_ => null,
-		} ?? switch (path) {
 			'recap.gpxError' => 'Esportazione non riuscita',
 			'recap.daysSection' => 'Giorno per giorno',
 			'recap.dayLabel' => ({required Object day}) => 'Giorno ${day}',

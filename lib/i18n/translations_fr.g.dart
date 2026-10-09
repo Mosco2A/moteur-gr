@@ -439,6 +439,12 @@ class Translations$map$fr {
 	/// fr: 'Hors trace'
 	String get offTrackChip => 'Hors trace';
 
+	/// fr: 'Étape'
+	String get perimetreEtape => 'Étape';
+
+	/// fr: 'Sentier entier'
+	String get perimetreSentier => 'Sentier entier';
+
 	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
 	/// fr: 'Masquer l'alerte'
@@ -1796,6 +1802,18 @@ class Translations$demo$fr {
 
 	/// fr: 'Marche simulée — temps accéléré ×$facteur'
 	String marcheSimulee({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}';
+
+	/// fr: 'Bravo, vous êtes arrivé !'
+	String get arriveeTitre => 'Bravo, vous êtes arrivé !';
+
+	/// fr: 'Vous avez terminé le sentier en démonstration. Rien n'a été enregistré : c'était une simulation.'
+	String get arriveeTexte => 'Vous avez terminé le sentier en démonstration. Rien n\'a été enregistré : c\'était une simulation.';
+
+	/// fr: 'Votre démonstration'
+	String get arriveeChiffres => 'Votre démonstration';
+
+	/// fr: 'Fermer'
+	String get arriveeFermer => 'Fermer';
 
 	/// fr: 'Fin de la démo'
 	String get sortieTitre => 'Fin de la démo';
@@ -8477,6 +8495,8 @@ extension on Translations {
 			'map.layersSubtitle' => 'Choisissez les points affichés sur la carte',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
+			'map.perimetreEtape' => 'Étape',
+			'map.perimetreSentier' => 'Sentier entier',
 			'map.guide.buttonsTitle' => 'Boutons',
 			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.',
 			'map.guide.track' => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.',
@@ -8821,10 +8841,10 @@ extension on Translations {
 			'checklist.ui.infoAddTitle' => 'Ajouter',
 			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour vos propres items.',
 			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.',
-			'checklist.ui.infoUnderstood' => 'Compris !',
-			'checklist.ui.prepTitle' => 'Préparation du sac',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoUnderstood' => 'Compris !',
+			'checklist.ui.prepTitle' => 'Préparation du sac',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items préparés',
 			'checklist.ui.prepAllReady' => 'Tout est prêt ! Bon trek',
 			'checklist.ui.preDepartureTitle' => 'Checklist avant départ',
@@ -9288,6 +9308,10 @@ extension on Translations {
 			'demo.simulerFin' => 'Simuler l\'arrivée',
 			'demo.simulerRelancer' => 'Recommencer la démo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}',
+			'demo.arriveeTitre' => 'Bravo, vous êtes arrivé !',
+			'demo.arriveeTexte' => 'Vous avez terminé le sentier en démonstration. Rien n\'a été enregistré : c\'était une simulation.',
+			'demo.arriveeChiffres' => 'Votre démonstration',
+			'demo.arriveeFermer' => 'Fermer',
 			'demo.sortieTitre' => 'Fin de la démo',
 			'demo.sortieEnTeteCatalogue' => 'Vous retrouverez la démo en haut de la liste des sentiers.',
 			'demo.sortieDansMonCompte' => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».',
@@ -9331,14 +9355,14 @@ extension on Translations {
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
 			'onboarding.languageTitle' => 'Choisissez votre langue',
 			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
 			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
 			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.recoveryNudge' => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
 			'monetization.paywallTitle' => 'Débloquez cette randonnée',
@@ -9845,14 +9869,14 @@ extension on Translations {
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de dénivelé négatif',
+			_ => null,
+		} ?? switch (path) {
 			'recap.shareAdventure' => 'Partager mon aventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mon aventure sur ${trail}',
 			'recap.shareError' => 'Partage impossible',
 			'recap.exportGpx' => 'Exporter la trace en GPX',
 			'recap.gpxExported' => ({required Object file}) => 'Trace exportée : ${file}',
 			'recap.gpxEmpty' => 'Aucun point GPS à exporter',
-			_ => null,
-		} ?? switch (path) {
 			'recap.gpxError' => 'Export impossible',
 			'recap.daysSection' => 'Jour par jour',
 			'recap.dayLabel' => ({required Object day}) => 'Jour ${day}',
