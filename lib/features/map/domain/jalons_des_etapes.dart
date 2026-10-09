@@ -199,6 +199,39 @@ double? prochaineFinDEtape(List<JalonDEtape> jalons, double abscisseM) {
   return plusProche;
 }
 
+/// COMBIEN D'ETAPES SONT FAITES A L'ABSCISSE [abscisseM] (tache 762).
+///
+/// A QUOI ELLE SERT. La vue « sentier entier » montre le compte des etapes
+/// faites a la place de l'altitude — decision de Christophe du 09/10 16:32,
+/// forme « 3 / 7 ».
+///
+/// CE QU'ELLE NE LIT PAS, ET CE N'EST PAS UN DETAIL. Le chiffre existait DEJA
+/// ailleurs sous une autre forme : `TrekSession.completedStages`, un ENSEMBLE
+/// D'IDENTIFIANTS alimente par les evenements d'arrivee et par le bouton de
+/// saut d'etape. Le compter aurait remis dans la barre exactement ce que la
+/// tache 747 en a sorti — un compteur nourri par des EVENEMENTS a cote de
+/// chiffres nourris par l'ABSCISSE, c'est-a-dire deux sources de verite.
+///
+/// ET CET ENSEMBLE PEUT DIRE FAUX, PAR CONSTRUCTION : le bouton de saut y
+/// inscrit d'un coup TOUTES les etapes dont la borne est derriere la cible,
+/// tranches vides comprises (`simulerLEtapeSuivante`), et les evenements GPS y
+/// entrent dans l'ordre ou ils arrivent, pas dans l'ordre du sentier. Il ne
+/// diminue jamais et il ne mesure rien.
+///
+/// LA DEFINITION RETENUE EST GEOMETRIQUE : UNE ETAPE EST FAITE QUAND L'ABSCISSE
+/// DU MARCHEUR A DEPASSE SA BORNE DE FIN. Elle se lit sur la MEME source que
+/// les cinq autres chiffres de la barre, elle ne peut pas reculer tant que
+/// l'abscisse avance, et elle se reconcilie au bout : au bout exact de la
+/// trace, toutes les bornes sont derriere, donc le compte vaut le total. Elle
+/// compte du TERRAIN COUVERT, pas des evenements recus.
+int etapesFaites(List<JalonDEtape> jalons, double abscisseM) {
+  var faites = 0;
+  for (final jalon in jalons) {
+    if (abscisseM >= jalon.finM) faites++;
+  }
+  return faites;
+}
+
 /// LES CHIFFRES D'UN PERIMETRE : son total, ce qui est parcouru, ce qui reste.
 ///
 /// L'INVARIANT EST TENU PAR CONSTRUCTION, ET C'EST LA RAISON D'ETRE DE CETTE

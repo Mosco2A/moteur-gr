@@ -261,6 +261,8 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get offTrackChip => 'Off track';
 	@override String get perimetreEtape => 'Stage';
 	@override String get perimetreSentier => 'Whole trail';
+	@override String get basculerVersSentier => 'View whole trail';
+	@override String get basculerVersEtape => 'View stage';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 	@override String get pinMergedTitle => 'Several markers at the same place';
@@ -445,6 +447,7 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get altitude => 'Altitude';
 	@override String get total => 'Total';
 	@override String get covered => 'Covered';
+	@override String get stagesDone => 'Stages';
 	@override late final _Translations$tracking$backgroundRationale$en backgroundRationale = _Translations$tracking$backgroundRationale$en._(_root);
 	@override late final _Translations$tracking$stepCounting$en stepCounting = _Translations$tracking$stepCounting$en._(_root);
 }
@@ -4378,6 +4381,8 @@ extension on TranslationsEn {
 			'map.offTrackChip' => 'Off track',
 			'map.perimetreEtape' => 'Stage',
 			'map.perimetreSentier' => 'Whole trail',
+			'map.basculerVersSentier' => 'View whole trail',
+			'map.basculerVersEtape' => 'View stage',
 			'map.guide.buttonsTitle' => 'Buttons',
 			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.',
 			'map.guide.track' => 'The trail line, in its own colour. It is the reference the off-track alert uses.',
@@ -4516,6 +4521,7 @@ extension on TranslationsEn {
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
 			'tracking.covered' => 'Covered',
+			'tracking.stagesDone' => 'Stages',
 			'tracking.backgroundRationale.title' => 'Recording your track with the screen off',
 			'tracking.backgroundRationale.body' => 'While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.',
 			'tracking.backgroundRationale.ifRefused' => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.',
@@ -4719,11 +4725,11 @@ extension on TranslationsEn {
 			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
 			'checklist.ui.infoGaugeTitle' => 'Weight gauge',
 			'checklist.ui.infoGaugeBody' => 'Target: pack < 15% of your weight. Green = OK, Orange = careful, Red = too heavy.',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.infoAddTitle' => 'Add',
 			'checklist.ui.infoAddBody' => 'The + button at the bottom of each category for your own items.',
 			'checklist.ui.infoValidateBody' => 'Validate when your pack is ready — a check appears on the home screen.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoUnderstood' => 'Got it!',
 			'checklist.ui.prepTitle' => 'Pack preparation',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items packed',
@@ -5233,11 +5239,11 @@ extension on TranslationsEn {
 			'cloud.statusLocal' => 'Local mode (no cloud)',
 			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
 			'onboarding.skip' => 'Skip',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.next' => 'Next',
 			'onboarding.getStarted' => 'Get started',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.',
 			'onboarding.languageTitle' => 'Choose your language',
 			'onboarding.languageSubtitle' => 'You can change it at any time in the settings.',
@@ -5747,11 +5753,11 @@ extension on TranslationsEn {
 			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m of descent',
-			_ => null,
-		} ?? switch (path) {
 			'recap.shareAdventure' => 'Share my adventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'My adventure on the ${trail}',
 			'recap.shareError' => 'Sharing failed',

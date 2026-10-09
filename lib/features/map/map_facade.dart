@@ -48,7 +48,12 @@
 library;
 
 export 'domain/jalons_des_etapes.dart'
-    show ChiffresDuPerimetre, JalonDEtape, jalonALAbscisse, prochaineFinDEtape;
+    show
+        ChiffresDuPerimetre,
+        JalonDEtape,
+        etapesFaites,
+        jalonALAbscisse,
+        prochaineFinDEtape;
 export 'domain/off_track_detector.dart' show OffTrackDetector;
 export 'domain/stage_focus.dart' show mapFocusStage, stageTrackSegment;
 export 'providers/charnieres_provider.dart' show charnieresDuSentierProvider;
@@ -64,6 +69,7 @@ export 'providers/perimetre_de_la_barre_provider.dart'
         PerimetreDeLaBarre,
         PerimetreDeLaBarreNotifier,
         perimetreDeLaBarreProvider;
+export 'providers/relief_de_l_etape_provider.dart' show reliefDeLEtapeProvider;
 export 'providers/simplified_track_provider.dart' show simplifiedTrackProvider;
 export 'providers/stage_poi_check_provider.dart' show stagePoiChecksProvider;
 export 'providers/supply_alert_provider.dart' show supplyGapAlertProvider;
