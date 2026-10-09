@@ -222,6 +222,17 @@ class _MapContentState extends State<MapContent> {
             return FlutterMap(
               mapController: mapController,
               options: MapOptions(
+                // LA PREMIERE FRAME EST DEJA SUR LE SENTIER (tache 751).
+                //
+                // Sans `initialCenter`, la camera demarre sur le centre par
+                // DEFAUT de `flutter_map` — Kiev, zoom 13 — et c'est pour la
+                // Ukraine que la couche de tuiles fait sa premiere demande.
+                // `initialCameraFit` ne corrige la vue qu'au POST-FRAME de la
+                // frame ou la taille devient connue : la premiere image vue
+                // par le randonneur etait donc celle d'un autre endroit, ou
+                // rien du tout. Le centre du cadrage d'ouverture est connu
+                // ici, tout de suite : on le donne.
+                initialCenter: (focusBounds ?? bounds).center,
                 initialCameraFit: CameraFit.bounds(
                   bounds: focusBounds ?? bounds,
                   padding: EdgeInsets.all(focusBounds == null ? 32 : 48),
