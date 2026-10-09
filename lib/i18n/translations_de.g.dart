@@ -261,6 +261,8 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get offTrackChip => 'Abseits';
 	@override String get perimetreEtape => 'Etappe';
 	@override String get perimetreSentier => 'Gesamter Weg';
+	@override String get basculerVersSentier => 'Gesamten Weg anzeigen';
+	@override String get basculerVersEtape => 'Etappe anzeigen';
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
 	@override String get pinMergedTitle => 'Mehrere Markierungen am selben Ort';
@@ -445,6 +447,7 @@ class _Translations$tracking$de extends Translations$tracking$fr {
 	@override String get altitude => 'Höhe';
 	@override String get total => 'Gesamt';
 	@override String get covered => 'Zurückgelegt';
+	@override String get stagesDone => 'Etappen';
 	@override late final _Translations$tracking$backgroundRationale$de backgroundRationale = _Translations$tracking$backgroundRationale$de._(_root);
 	@override late final _Translations$tracking$stepCounting$de stepCounting = _Translations$tracking$stepCounting$de._(_root);
 }
@@ -4378,6 +4381,8 @@ extension on TranslationsDe {
 			'map.offTrackChip' => 'Abseits',
 			'map.perimetreEtape' => 'Etappe',
 			'map.perimetreSentier' => 'Gesamter Weg',
+			'map.basculerVersSentier' => 'Gesamten Weg anzeigen',
+			'map.basculerVersEtape' => 'Etappe anzeigen',
 			'map.guide.buttonsTitle' => 'Schaltflächen',
 			'map.guide.position' => 'Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.',
 			'map.guide.track' => 'Die Linie des Wegs, in seiner Farbe. Sie ist die Referenz für die Warnung bei Abweichung.',
@@ -4516,6 +4521,7 @@ extension on TranslationsDe {
 			'tracking.altitude' => 'Höhe',
 			'tracking.total' => 'Gesamt',
 			'tracking.covered' => 'Zurückgelegt',
+			'tracking.stagesDone' => 'Etappen',
 			'tracking.backgroundRationale.title' => 'Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen',
 			'tracking.backgroundRationale.body' => 'Während der Wanderung zeichnet StepWays deine Route durchgehend auf, auch wenn das Telefon in der Tasche steckt. Android fragt dich, ob du den Standort „Immer“ zulassen willst: genau dafür ist das, und nur während einer laufenden Wanderung.',
 			'tracking.backgroundRationale.ifRefused' => 'Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.',
@@ -4719,11 +4725,11 @@ extension on TranslationsDe {
 			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
 			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
 			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.infoAddTitle' => 'Hinzufügen',
 			'checklist.ui.infoAddBody' => 'Der +-Button unten in jeder Kategorie für eigene Artikel.',
 			'checklist.ui.infoValidateBody' => 'Bestätige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoUnderstood' => 'Verstanden!',
 			'checklist.ui.prepTitle' => 'Rucksack packen',
 			'checklist.ui.prepCounter' => '{prepared} / {total} Artikel gepackt',
@@ -5233,11 +5239,11 @@ extension on TranslationsDe {
 			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
 			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
 			'onboarding.skip' => 'Überspringen',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.next' => 'Weiter',
 			'onboarding.getStarted' => 'Los geht\'s',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Willkommen bei ${appName}',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.',
 			'onboarding.languageTitle' => 'Wähle deine Sprache',
 			'onboarding.languageSubtitle' => 'Du kannst sie jederzeit in den Einstellungen ändern.',
@@ -5747,11 +5753,11 @@ extension on TranslationsDe {
 			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
 			'recap.dates' => 'Vom {start} bis {end}',
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m Abstieg',
-			_ => null,
-		} ?? switch (path) {
 			'recap.shareAdventure' => 'Mein Abenteuer teilen',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mein Abenteuer auf dem ${trail}',
 			'recap.shareError' => 'Teilen nicht möglich',

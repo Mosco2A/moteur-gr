@@ -190,6 +190,8 @@
     "offTrackChip": "Abseits",
     "perimetreEtape": "Etappe",
     "perimetreSentier": "Gesamter Weg",
+    "basculerVersSentier": "Gesamten Weg anzeigen",
+    "basculerVersEtape": "Etappe anzeigen",
     "guide": {
       "buttonsTitle": "Schaltflächen",
       "position": "Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.",
@@ -367,6 +369,7 @@
     "altitude": "Höhe",
     "total": "Gesamt",
     "covered": "Zurückgelegt",
+    "stagesDone": "Etappen",
     "backgroundRationale": {
       "title": "Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen",
       "body": "Während der Wanderung zeichnet StepWays deine Route durchgehend auf, auch wenn das Telefon in der Tasche steckt. Android fragt dich, ob du den Standort „Immer“ zulassen willst: genau dafür ist das, und nur während einer laufenden Wanderung.",

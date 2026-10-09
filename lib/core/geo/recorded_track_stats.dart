@@ -114,6 +114,49 @@ TrackSegmentStats computeTrackStatsOnTrace({
   );
 }
 
+/// LE RELIEF D'UNE TRANCHE DE SENTIER, bornee en ABSCISSE (tache 762).
+///
+/// POURQUOI ELLE EXISTE. Christophe a tranche le 09/10 16:29, mot pour mot :
+/// « En sentier entier l altitude pure n a plus lieue d etre et le denivele +
+/// et - doit etre le total depuis le debut et en mode sentier celui de l etape,
+/// a revoir ». Le denivele de la barre venait — et vient toujours — de
+/// [computeTrackStatsOnTrace], dont le perimetre est TOUTE la session : c'est
+/// la bonne reponse pour la vue sentier, et c'est la mauvaise pour la vue
+/// etape, qui annonce par ailleurs un total et un parcouru d'etape.
+///
+/// CE N'EST PAS UN SECOND MOTEUR DE DENIVELE, et c'est la seule raison pour
+/// laquelle cette fonction est acceptable. Le lot 671-06 a pose la regle : un
+/// deuxieme calcul finirait par donner deux deniveles differents pour la meme
+/// journee. Ici il n'y a AUCUN calcul nouveau — le decoupage est celui de
+/// [TrackSlice.between], la boucle est celle de [computeTrackStatsOn], le seuil
+/// de bruit d'altimetre est le meme. Seules les BORNES changent : deux
+/// abscisses au lieu de deux releves projetes. Meme moteur, autre tranche.
+///
+/// ELLE NE REND QUE DU RELIEF. [TrackSegmentStats.duration] vaut zero et
+/// [TrackSegmentStats.averageSpeedKmh] est donc nulle : une tranche de sentier
+/// n'a pas d'horodatage (`trace_point.dart`), et la vitesse moyenne de la barre
+/// reste celle de la SESSION dans les deux perimetres — Christophe a qualifie
+/// le denivele d'« etape », pas la vitesse.
+///
+/// Tranche vide, inversee, ou trace de moins de deux points : des chiffres
+/// nuls, jamais une exception. Le marcheur juste entre dans une etape n'a
+/// encore monte ni descendu quoi que ce soit, et c'est la verite.
+TrackSegmentStats reliefDeLaTranche({
+  required List<TrackPoint>? trace,
+  required double debutM,
+  required double finM,
+}) {
+  if (trace == null || trace.length < 2 || finM <= debutM) {
+    return const TrackSegmentStats();
+  }
+  final slice = TrackSlice.between(
+    trackPoints: trace,
+    fromM: debutM,
+    toM: finM,
+  );
+  return computeTrackStatsOn(_geometryOfTrace(slice), duration: Duration.zero);
+}
+
 /// LA SOURCE DE TEMPS, UNE SEULE : l'ecart entre le premier et le dernier
 /// releve reel, nul sous deux releves.
 Duration _durationOfReadings(List<SessionTrackPoint> readings) =>

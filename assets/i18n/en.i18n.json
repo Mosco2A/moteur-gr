@@ -190,6 +190,8 @@
     "offTrackChip": "Off track",
     "perimetreEtape": "Stage",
     "perimetreSentier": "Whole trail",
+    "basculerVersSentier": "View whole trail",
+    "basculerVersEtape": "View stage",
     "guide": {
       "buttonsTitle": "Buttons",
       "position": "Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.",
@@ -367,6 +369,7 @@
     "altitude": "Altitude",
     "total": "Total",
     "covered": "Covered",
+    "stagesDone": "Stages",
     "backgroundRationale": {
       "title": "Recording your track with the screen off",
       "body": "While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.",

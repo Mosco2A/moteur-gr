@@ -190,6 +190,8 @@
     "offTrackChip": "Fuera de ruta",
     "perimetreEtape": "Etapa",
     "perimetreSentier": "Sendero completo",
+    "basculerVersSentier": "Ver sendero completo",
+    "basculerVersEtape": "Ver etapa",
     "guide": {
       "buttonsTitle": "Botones",
       "position": "Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.",
@@ -367,6 +369,7 @@
     "altitude": "Altitud",
     "total": "Total",
     "covered": "Recorrido",
+    "stagesDone": "Etapas",
     "backgroundRationale": {
       "title": "Registrar tu recorrido con la pantalla apagada",
       "body": "Durante la ruta, StepWays registra tu recorrido de forma continua, incluso con el móvil en el bolsillo. Android te pedirá permitir la ubicación «Siempre»: es solo para eso, y únicamente mientras haya una ruta en curso.",

@@ -190,6 +190,8 @@
     "offTrackChip": "Fuori traccia",
     "perimetreEtape": "Tappa",
     "perimetreSentier": "Intero sentiero",
+    "basculerVersSentier": "Vedi intero sentiero",
+    "basculerVersEtape": "Vedi tappa",
     "guide": {
       "buttonsTitle": "Pulsanti",
       "position": "La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica che la localizzazione sia consentita all'app.",
@@ -367,6 +369,7 @@
     "altitude": "Altitudine",
     "total": "Totale",
     "covered": "Percorso",
+    "stagesDone": "Tappe",
     "backgroundRationale": {
       "title": "Registrare la tua traccia anche a schermo spento",
       "body": "Durante l'escursione StepWays registra la tua traccia senza interruzioni, anche con il telefono in tasca. Android ti chiederà di consentire la posizione « Sempre »: serve solo a questo, e soltanto durante un'escursione in corso.",

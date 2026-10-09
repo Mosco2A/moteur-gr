@@ -445,6 +445,12 @@ class Translations$map$fr {
 	/// fr: 'Sentier entier'
 	String get perimetreSentier => 'Sentier entier';
 
+	/// fr: 'Voir le sentier entier'
+	String get basculerVersSentier => 'Voir le sentier entier';
+
+	/// fr: 'Voir l'étape'
+	String get basculerVersEtape => 'Voir l\'étape';
+
 	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
 	/// fr: 'Masquer l'alerte'
@@ -817,6 +823,9 @@ class Translations$tracking$fr {
 
 	/// fr: 'Parcouru'
 	String get covered => 'Parcouru';
+
+	/// fr: 'Étapes'
+	String get stagesDone => 'Étapes';
 
 	late final Translations$tracking$backgroundRationale$fr backgroundRationale = Translations$tracking$backgroundRationale$fr.internal(_root);
 	late final Translations$tracking$stepCounting$fr stepCounting = Translations$tracking$stepCounting$fr.internal(_root);
@@ -8497,6 +8506,8 @@ extension on Translations {
 			'map.offTrackChip' => 'Hors trace',
 			'map.perimetreEtape' => 'Étape',
 			'map.perimetreSentier' => 'Sentier entier',
+			'map.basculerVersSentier' => 'Voir le sentier entier',
+			'map.basculerVersEtape' => 'Voir l\'étape',
 			'map.guide.buttonsTitle' => 'Boutons',
 			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.',
 			'map.guide.track' => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.',
@@ -8635,6 +8646,7 @@ extension on Translations {
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
 			'tracking.covered' => 'Parcouru',
+			'tracking.stagesDone' => 'Étapes',
 			'tracking.backgroundRationale.title' => 'Suivre ta trace même écran éteint',
 			'tracking.backgroundRationale.body' => 'Pendant la randonnée, StepWays enregistre ta trace en continu, y compris téléphone en poche. Android va te demander d\'autoriser la localisation « Toujours » : c\'est uniquement pour ça, et seulement pendant une rando en cours.',
 			'tracking.backgroundRationale.ifRefused' => 'Si tu refuses, la randonnée démarre quand même : la trace est enregistrée tant que l\'application reste à l\'écran.',
@@ -8838,11 +8850,11 @@ extension on Translations {
 			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
 			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
 			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.infoAddTitle' => 'Ajouter',
 			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour vos propres items.',
 			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoUnderstood' => 'Compris !',
 			'checklist.ui.prepTitle' => 'Préparation du sac',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items préparés',
@@ -9352,11 +9364,11 @@ extension on Translations {
 			'cloud.statusLocal' => 'Mode local (sans cloud)',
 			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
 			'onboarding.skip' => 'Passer',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
 			'onboarding.languageTitle' => 'Choisissez votre langue',
 			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
@@ -9866,11 +9878,11 @@ extension on Translations {
 			'recap.duration' => '{days} jours au total, marche et repos compris',
 			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplôme',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de dénivelé négatif',
-			_ => null,
-		} ?? switch (path) {
 			'recap.shareAdventure' => 'Partager mon aventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mon aventure sur ${trail}',
 			'recap.shareError' => 'Partage impossible',

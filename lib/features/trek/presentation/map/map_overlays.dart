@@ -22,7 +22,6 @@ import '../../../map/map_facade.dart'
         offTrackMessagesProvider,
         supplyGapAlertProvider,
         trackPositionProvider;
-import '../../../safety/safety_facade.dart' show SosButton;
 import '../../data/calibration_du_pas.dart';
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
@@ -30,12 +29,14 @@ import '../../../../core/branding/stepways_icons.dart';
 import 'map_controller.dart';
 import 'map_photo_button.dart';
 import 'barre_d_etape.dart';
+import 'sos_du_cote_de_la_main.dart';
 
 /// Le bas de la carte : les boutons flottants et la barre d'etape.
 ///
 /// LE SEUL BOUTON QUI EN EST PARTI EST LE SOS (tache 747) : il est remonte
 /// sous les bandeaux du haut, parce que c'est LUI que Christophe a vu masquer
-/// le circuit. Voir [CommandeDUrgenceEnHaut].
+/// le circuit. Voir [SosDuCoteDeLaMain], qui porte aussi sa lateralite depuis
+/// la tache 762.
 ///
 /// LA PHOTO ET LES CALQUES RESTENT ICI, ET C'EST MESURE, PAS SUPPOSE. Les
 /// trois boutons ont d'abord ete remontes ensemble ; la garde des gestes morts
@@ -89,46 +90,8 @@ class MapBottomBar extends StatelessWidget {
   }
 }
 
-/// LE BOUTON D'URGENCE, REMONTE EN HAUT DE LA CARTE (tache 747).
-///
-/// RETOUR DE CHRISTOPHE DU 09/10 08:50, mot pour mot : « 10 le bouton SOS le
-/// mettre en hau ou en bas de la carte car la il masque le circuit ». Je l'ai
-/// vu sur sa capture : le gros bouton rouge flottait en BAS A GAUCHE,
-/// par-dessus le trace, a l'endroit meme ou le sentier passe.
-///
-/// POURQUOI EN HAUT, ET PAS SUR LA BARRE DE CHIFFRES. La barre semblait le
-/// meilleur endroit : surface opaque, bas d'ecran, donc rien de masque et le
-/// pouce dessus. ELLE A ETE ESSAYEE, ET LA GARDE DE PARITE L'A REFUSEE A
-/// RAISON (`map_screen_parite_navigation_test.dart`) : la barre ne se rend avec
-/// ses chiffres QUE lorsqu'une projection sur le trace est disponible. Le
-/// bouton d'urgence aurait donc dependu de l'arrivee d'un fix GPS — il aurait
-/// disparu exactement dans la situation ou l'on en a besoin, perdu et sans
-/// signal. UNE COMMANDE D'URGENCE NE DEPEND DE RIEN.
-///
-/// IL EST POSE SOUS LES BANDEAUX DU HAUT, dans la meme [Column] qu'eux : il ne
-/// peut pas recouvrir une alerte hors-trace, et une alerte ne peut pas le
-/// recouvrir, quelle que soit la hauteur du texte traduit.
-///
-/// CE QUE CE PLACEMENT COUTE, ET IL EST DIT : en haut d'un telephone de six
-/// pouces, le SOS ne s'atteint plus d'une seule main. Christophe a propose
-/// « en haut ou en bas » : c'est le HAUT qui est livre, parce que le bas ne
-/// peut pas a la fois degager le trace et garder le bouton independant de la
-/// barre. L'arbitrage lui revient.
-class CommandeDUrgenceEnHaut extends StatelessWidget {
-  /// Cree le SOS flottant du haut de la carte.
-  const CommandeDUrgenceEnHaut({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(left: 16, top: 8),
-      child: Row(children: [SosButton()]),
-    );
-  }
-}
-
 /// Colonne gauche du bas : Photo + Calques (le SOS est remonte, cf.
-/// [CommandeDUrgenceEnHaut] et [MapBottomBar]).
+/// [SosDuCoteDeLaMain] et [MapBottomBar]).
 class _MapLeftButtons extends StatelessWidget {
   const _MapLeftButtons({required this.onShowLayers});
 
@@ -258,8 +221,9 @@ class MapTopBanners extends StatelessWidget {
         ),
         // Alerte ravitaillement (correctif L6-1).
         const _SupplyAlertBanner(),
-        // LE SOS (747), degage du trace.
-        const CommandeDUrgenceEnHaut(),
+        // LE SOS (747), degage du trace — et depuis la tache 762 du COTE DE LA
+        // MAIN DOMINANTE, droitier par defaut.
+        const SosDuCoteDeLaMain(),
       ],
     );
   }

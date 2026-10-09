@@ -190,6 +190,8 @@
     "offTrackChip": "Hors trace",
     "perimetreEtape": "Étape",
     "perimetreSentier": "Sentier entier",
+    "basculerVersSentier": "Voir le sentier entier",
+    "basculerVersEtape": "Voir l'étape",
     "guide": {
       "buttonsTitle": "Boutons",
       "position": "Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l'application.",
@@ -367,6 +369,7 @@
     "altitude": "Altitude",
     "total": "Total",
     "covered": "Parcouru",
+    "stagesDone": "Étapes",
     "backgroundRationale": {
       "title": "Suivre ta trace même écran éteint",
       "body": "Pendant la randonnée, StepWays enregistre ta trace en continu, y compris téléphone en poche. Android va te demander d'autoriser la localisation « Toujours » : c'est uniquement pour ça, et seulement pendant une rando en cours.",
