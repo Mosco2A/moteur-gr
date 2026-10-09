@@ -230,11 +230,11 @@ class _Translations$hub$es extends Translations$hub$fr {
 	@override String get greetingFallback => 'Senderista';
 	@override String get infoTooltip => 'Acerca de este sendero';
 	@override String get profileTooltip => 'Mi perfil';
-	@override String get infoSheetBody => 'Este sendero te acompaña en cada paso: planifica tu itinerario, prepara tu mochila y luego sal con la navegación GPS. Cada función es accesible desde esta pantalla de inicio.';
+	@override String get infoSheetBody => 'Prepara tu itinerario, luego la mochila. Sal después con la navegación GPS. Todo empieza en esta pantalla.';
 	@override late final _Translations$hub$trekCard$es trekCard = _Translations$hub$trekCard$es._(_root);
 	@override late final _Translations$hub$weather$es weather = _Translations$hub$weather$es._(_root);
 	@override String get startCta => 'Iniciar el trek';
-	@override String get startGateHint => 'Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.';
+	@override String get startGateHint => 'Para empezar: Itinerario, Calendario, Programa y Ficha médica con sus consejos leídos.';
 	@override String get prepareExpand => 'Ver la preparación';
 	@override String get prepareCollapse => 'Reducir';
 	@override late final _Translations$hub$sections$es sections = _Translations$hub$sections$es._(_root);
@@ -260,7 +260,7 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String stageRemaining({required Object km}) => '${km} km restantes';
 	@override String get offTrackChip => 'Fuera de ruta';
 	@override String get perimetreEtape => 'Etapa';
-	@override String get perimetreSentier => 'Sendero completo';
+	@override String get perimetreSentier => 'Sendero';
 	@override late final _Translations$map$guide$es guide = _Translations$map$guide$es._(_root);
 	@override String get supplyDismiss => 'Ocultar el aviso';
 	@override String get pinMergedTitle => 'Varios puntos en el mismo lugar';
@@ -763,7 +763,7 @@ class _Translations$feasibility$es extends Translations$feasibility$fr {
 	// Translations
 	@override String get restart => 'Start over';
 	@override String get objectiveTitle => 'Viabilidad para este trek';
-	@override String get objectiveIntro => 'Veredicto basado en tu perfil real cruzado con las exigencias del trek.';
+	@override String get objectiveIntro => 'Este veredicto cruza tu perfil real con las exigencias del trek.';
 	@override String get openProfile => 'Mis datos';
 	@override String get openWalkTest => 'Prueba de 6 minutos';
 	@override String get openPastHikes => 'Mis últimas 5 rutas';
@@ -802,7 +802,7 @@ class _Translations$tips$es extends Translations$tips$fr {
 	@override late final _Translations$tips$seasons$es seasons = _Translations$tips$seasons$es._(_root);
 	@override String get altitude => 'Altitud mín.';
 	@override String get screenTitle => 'Fichas de consejos';
-	@override String get screenIntro => 'Todo para que tu ruta sea un éxito';
+	@override String get screenIntro => 'Preparación, material, seguridad, salud.';
 	@override String get followUs => 'Síguenos:';
 	@override String get viewOnFacebook => 'Ver en Facebook';
 	@override String get viewOnInstagram => 'Instagram';
@@ -867,19 +867,19 @@ class _Translations$demo$es extends Translations$demo$fr {
 	@override String get bandeau => 'MODO DEMO';
 	@override String get quitter => 'Salir';
 	@override String get boutonTitre => 'Probar la demo';
-	@override String get boutonSous => 'Descubra la aplicación de principio a fin, sin compromiso';
-	@override String get rienNeCompte => 'Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.';
+	@override String get boutonSous => 'Toda la aplicación. No se guarda nada.';
+	@override String get rienNeCompte => 'Está en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.';
 	@override String get simulerEtape => 'Simular la siguiente etapa';
 	@override String get simulerFin => 'Simular la llegada';
 	@override String get simulerRelancer => 'Reiniciar la demo';
 	@override String marcheSimulee({required Object facteur}) => 'Marcha simulada — tiempo acelerado ×${facteur}';
 	@override String get arriveeTitre => '¡Enhorabuena, has llegado!';
-	@override String get arriveeTexte => 'Has completado el sendero en modo demostración. No se ha guardado nada: era una simulación.';
+	@override String get arriveeTexte => 'Has completado el sendero en modo demo. No se ha guardado nada.';
 	@override String get arriveeChiffres => 'Tu demostración';
 	@override String get arriveeFermer => 'Cerrar';
 	@override String get sortieTitre => 'Fin de la demo';
-	@override String get sortieEnTeteCatalogue => 'Encontrarás la demo en la parte superior de la lista de senderos.';
-	@override String get sortieDansMonCompte => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.';
+	@override String get sortieEnTeteCatalogue => 'La demo se queda en la parte superior de la lista de senderos.';
+	@override String get sortieDansMonCompte => 'El botón deja el catálogo. La demo se queda en “Mi cuenta”.';
 	@override String get cacherLabel => 'Ocultar el modo demo';
 	@override String get sortieConfirmer => 'Salir de la demo';
 	@override String get sortieAnnuler => 'Seguir con la demo';
@@ -887,11 +887,11 @@ class _Translations$demo$es extends Translations$demo$fr {
 	@override String get departSimule => 'En demo, la salida inicia una excursión simulada: no se guarda nada.';
 	@override String get compteTitre => 'Modo demo';
 	@override String get compteRelancer => 'Ver la demo de nuevo';
-	@override String get compteRelancerSous => 'Descubre la aplicación de la A a la Z, sin compromiso';
+	@override String get compteRelancerSous => 'Toda la aplicación. No se guarda nada.';
 	@override String get compteReafficher => 'Mostrar el botón demo en el catálogo';
 	@override String get compteReafficherSous => 'El botón vuelve a la parte superior de la lista de senderos';
-	@override String get collecteTitre => 'En qué se basa la respuesta';
-	@override String get collecteIntro => 'Esta es la información que la aplicación usa para calcular la viabilidad.';
+	@override String get collecteTitre => 'Lo que ha servido al cálculo';
+	@override String get collecteIntro => 'La información usada para calcular la viabilidad.';
 	@override String get collecteProfil => 'Tu perfil';
 	@override String get collecteForme => 'Tu forma física';
 	@override String get collecteExperience => 'Tu experiencia';
@@ -1943,14 +1943,14 @@ class _Translations$systemBackup$es extends Translations$systemBackup$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Tus datos se quedan en este teléfono';
+	@override String get title => 'La copia de seguridad de tu teléfono';
 	@override String get refuseGoogle => 'Rechazo la copia de seguridad de mis datos en la nube de Google';
 	@override String get refuseApple => 'Rechazo la copia de seguridad de mis datos en iCloud';
-	@override String get explainGoogle => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
-	@override String get explainApple => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
-	@override String get cost => 'Lo que cuesta, sin adornos: si dejas esta casilla marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. Un trek completado conserva su traza y su cuaderno de por vida en este teléfono, la aplicación nunca los borra, pero no puede hacerlos reaparecer en otro dispositivo.';
-	@override String get whatComesBack => 'Si la desmarcas, una copia de tu progreso, de tu diario, de tus treks completados y de tu ficha médica va a la copia de seguridad, y vuelve en tu próximo teléfono. Tus fotos y tus ajustes no están: copiar las fotos duplicaría el espacio ocupado en tu teléfono.';
-	@override String get notOurServers => 'No hay que confundirlo: nada de lo que nos confías va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.';
+	@override String get explainGoogle => 'Tu teléfono se copia en Google. Esta casilla está marcada de antemano y guarda en este teléfono todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
+	@override String get explainApple => 'Tu teléfono se copia en iCloud. Esta casilla está marcada de antemano y guarda en este teléfono todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.';
+	@override String get cost => 'Si la dejas marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. En este teléfono no se borra nada: un trek completado conserva su traza y su cuaderno de por vida. Pero nada te sigue a otro sitio.';
+	@override String get whatComesBack => 'Si la desmarcas, tu progreso, tu diario, tus treks completados y tu ficha médica van a la copia de seguridad, y vuelven en tu próximo teléfono. Nunca tus fotos ni tus ajustes: copiar las fotos duplicaría el espacio ocupado en tu teléfono.';
+	@override String get notOurServers => 'Nada de esto va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema.';
 	@override String get confirm => 'Entendido';
 	@override String get a11yCheckbox => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono';
 }
@@ -1991,7 +1991,7 @@ class _Translations$hub$trekCard$es extends Translations$hub$trekCard$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % del sendero';
 	@override String get resume => 'Reanudar la navegación';
 	@override String get noTrekTitle => '¿Listo para salir?';
-	@override String get noTrekBody => 'Planifica tu itinerario y luego inicia tu trek cuando estés listo.';
+	@override String get noTrekBody => 'Planifica tu itinerario y luego inicia tu trek.';
 	@override String get plan => 'Planificar mi trek';
 	@override String get completedTitle => 'Ruta terminada';
 }
@@ -2029,7 +2029,7 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 
 	// Translations
 	@override String get feasibility => 'Viabilidad';
-	@override String get feasibilitySub => 'Evalúa tu nivel';
+	@override String get feasibilitySub => '¿A tu alcance?';
 	@override String get itinerary => 'Itinerario';
 	@override String get itinerarySub => 'Tus etapas en detalle';
 	@override String get programme => 'Programa';
@@ -2081,7 +2081,7 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get fire => 'Incendio';
 	@override String get fireSub => 'Riesgos y alertas';
 	@override String get adjust => 'Adaptar el itinerario';
-	@override String get adjustSub => 'Cambiar mis días por venir';
+	@override String get adjustSub => 'Cambiar tus días por venir';
 }
 
 // Path: hub.fab
@@ -2104,7 +2104,7 @@ class _Translations$hub$finishTrek$es extends Translations$hub$finishTrek$fr {
 	// Translations
 	@override String get action => 'Terminar el trek';
 	@override String get confirmTitle => '¿Terminar el trek?';
-	@override String get confirmBody => 'El trek se marcará como terminado. Las etapas no recorridas no se validarán. Podrás revisar tu aventura.';
+	@override String get confirmBody => 'El trek pasa a terminado. Las etapas no recorridas no se validarán.';
 	@override String get confirm => 'Terminar';
 	@override String get cancel => 'Cancelar';
 }
@@ -2117,14 +2117,14 @@ class _Translations$map$guide$es extends Translations$map$guide$fr {
 
 	// Translations
 	@override String get buttonsTitle => 'Botones';
-	@override String get position => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.';
-	@override String get track => 'El trazado del sendero, en su color. Es la referencia que usa el aviso de salida de ruta.';
-	@override String get centerOnMe => 'Devuelve el mapa a su posición después de haberlo movido con el dedo.';
-	@override String get photo => 'Hace una foto y la añade al diario del día, sin salir del mapa.';
+	@override String get position => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe el permiso de localización.';
+	@override String get track => 'El trazado del sendero. El aviso de salida de ruta se refiere a él.';
+	@override String get centerOnMe => 'Devuelve el mapa a su posición.';
+	@override String get photo => 'Hace una foto para el diario del día.';
 	@override String get sos => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.';
 	@override String get onlyInTrek => 'Solo visible una vez iniciada la ruta.';
-	@override String get currentStage => 'Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.';
-	@override String get offTrack => 'Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.';
+	@override String get currentStage => 'Lo que queda por andar en la etapa en curso. Un guión: la ruta no ha empezado.';
+	@override String get offTrack => 'Se enciende cuando se aleja del trazado. Vuelva sobre él para apagarlo.';
 	@override late final _Translations$map$guide$poi$es poi = _Translations$map$guide$poi$es._(_root);
 }
 
@@ -2626,12 +2626,12 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	@override String get title => 'Viabilidad para este trek';
 	@override String get answerTitle => '¿Está a su alcance?';
 	@override String answerGreen({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.';
-	@override String answerOrange({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.';
-	@override String get answerRed => 'Todavía no: una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma antes de salir, o salga fuera del verano — lo decide una jornada, no todo el sendero.';
-	@override String answerDaysNote({required Object walking, required Object rest}) => 'Es el programa del sendero tal como existe: ${walking} jornadas de marcha. Aconsejamos ${rest} día(s) de descanso además — es un consejo, no cambia el veredicto.';
-	@override String answerNoRest({required Object walking}) => 'Es el programa del sendero tal como existe: ${walking} jornadas de marcha.';
+	@override String answerOrange({required Object days}) => 'Sí, en ${days} días. Pero una jornada será dura.';
+	@override String get answerRed => 'Todavía no. Una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma, o salga fuera del verano.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'El sendero se camina en ${walking} días. Consejo: ${rest} día(s) de descanso.';
+	@override String answerNoRest({required Object walking}) => 'El sendero se camina en ${walking} días.';
 	@override String get explainToggle => 'Cómo se calcula este resultado';
-	@override String get intro => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.';
+	@override String get intro => 'Comparamos el esfuerzo de cada jornada con lo que puedes aguantar. Verde, naranja o rojo.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})';
 	@override String get stagesTitle => 'Día por día';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energía';
@@ -2650,44 +2650,44 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$limitingFactors$es limitingFactors = _Translations$feasibility$formula$limitingFactors$es._(_root);
 	@override late final _Translations$feasibility$formula$advice$es advice = _Translations$feasibility$formula$advice$es._(_root);
 	@override String retainedPlan({required Object days}) => 'Programa elegido: ${days} días en total, marcha y descanso incluidos.';
-	@override String retainedPlanNone({required Object days}) => 'Ningún programa elegido: el sendero se queda en sus ${days} días en total por defecto, marcha y descanso incluidos.';
-	@override String get energyUnitNotice => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta, no una regla de la casa.';
+	@override String retainedPlanNone({required Object days}) => 'Ningún programa elegido: el sendero se queda en sus ${days} días en total, marcha y descanso incluidos.';
+	@override String get energyUnitNotice => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta.';
 	@override String get circuitTitle => 'Veredicto del circuito';
 	@override String circuitScore({required Object value, required Object green, required Object orange}) => 'Puntuación del circuito: ${value} — verde hasta ${green}, naranja hasta ${orange}, rojo más allá.';
-	@override String get circuitIsWorstStage => 'El veredicto del circuito es el de tu jornada más dura: nada más lo endurece.';
+	@override String get circuitIsWorstStage => 'El veredicto del circuito es el de tu jornada más dura.';
 	@override String restWindowWhole({required Object days}) => 'Descanso medido sobre el trek entero (${days} días).';
 	@override String restWindowSlice({required Object start, required Object end}) => 'Descanso medido sobre la peor semana: días ${start} a ${end}.';
-	@override String get restNotApplicable => 'El descanso no se calcula en un sendero de una sola jornada: no hay encadenamiento que medir. La restricción se declara no aplicable, no se sustituye por una cifra.';
-	@override String get restExtrapolation => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo itinerante. Es un traslado, y se dice.';
-	@override String get restNotDecisive => 'Esta cifra se muestra y aconseja, nunca decide: tu veredicto sigue siendo el de tu jornada más dura.';
+	@override String get restNotApplicable => 'Un sendero de una sola jornada no tiene encadenamiento: el descanso no se calcula.';
+	@override String get restExtrapolation => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo.';
+	@override String get restNotDecisive => 'Esta cifra aconseja, no decide. El veredicto sigue tu jornada más dura.';
 	@override String restAdvisedLine({required Object days}) => 'Consejo: ${days} día(s) de descanso repartidos en tu programa devuelven esta cifra por debajo de su umbral.';
-	@override String get restTwoDays => 'En jornadas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.';
+	@override String get restTwoDays => 'Las jornadas de igual tamaño piden dos días de descanso por semana, no uno.';
 	@override String habitGap({required Object value}) => 'Diferencia con tu costumbre: ${value} (referencia 0,8 a 1,3).';
-	@override String get habitGapNotDecisive => 'Esta diferencia se muestra, nunca decide: ningún estudio demuestra que cause nada.';
+	@override String get habitGapNotDecisive => 'Esta diferencia no decide nada: ningún estudio le da un efecto.';
 	@override String get conditionsTitle => 'Lo que ha entrado en este veredicto';
-	@override String floorActive({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base. Nunca se te dirá que no puedes hacer lo que ya has hecho.';
+	@override String floorActive({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base.';
 	@override String altitudeApplied({required Object value, required Object pct}) => 'Altitud: ${value} m en el punto más alto, tu capacidad diaria baja un ${pct} %.';
-	@override String altitudeBelowThreshold({required Object value}) => 'Altitud: ${value} m en el punto más alto, por debajo de los 1 500 m a partir de los cuales cuenta. Aquí no cambia nada.';
-	@override String get altitudeMissing => 'Altitud: la traza de este sendero no la lleva. Aquí no cambia nada por falta de dato — y no porque no tuviera efecto.';
+	@override String altitudeBelowThreshold({required Object value}) => 'Altitud: ${value} m en el punto más alto. Solo cuenta a partir de 1 500 m.';
+	@override String get altitudeMissing => 'Altitud: la traza de este sendero no la lleva. Sin dato, aquí queda sin efecto.';
 	@override String get heatApplied => 'Salida en verano: la capacidad aeróbica baja un 7 %, está medido.';
-	@override String get seasonNoSource => 'Salida en primavera o en otoño: este veredicto se aplica tal cual. Solo el verano tiene una medida publicada (7 % menos de capacidad aeróbica); para estas dos estaciones no se aplica ningún coeficiente.';
-	@override String get seasonMissing => 'Este veredicto se calcula sin efecto de estación: no hay fecha de salida fijada. Vale por tanto para una salida fuera del verano; una salida en verano lo endurece un 7 %, y la fecha se fija en el Calendario.';
-	@override String get massNotCounted => 'Ni tu peso ni el de tu mochila entran en este veredicto, y es a propósito: mide lo que has demostrado aguantar. A 65 o a 95 kg, el mismo hombre obtiene el mismo veredicto.';
-	@override String get ageCounted => 'La edad, en cambio, sí entra en este veredicto: fija la distancia de referencia de tu prueba de marcha y baja un nivel el asignado a partir de los 60 años, dos a partir de los 75. La capacidad aeróbica baja con la edad, está medido — no es un juicio sobre ti.';
-	@override String get winterInvalid => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.';
+	@override String get seasonNoSource => 'Salida en primavera o en otoño: no se aplica nada. Solo el verano tiene una medida, 7 % menos de capacidad aeróbica.';
+	@override String get seasonMissing => 'No hay fecha de salida fijada: este veredicto vale para una salida fuera del verano. En verano se endurece un 7 %. La fecha se fija en el Calendario.';
+	@override String get massNotCounted => 'Ni tu peso ni el de tu mochila entran en este veredicto: mide lo que ya has aguantado. A 65 o a 95 kg, el mismo veredicto.';
+	@override String get ageCounted => 'La edad, en cambio, cuenta: fija la distancia de referencia de tu prueba de marcha y baja tu nivel un paso a los 60 años, dos a los 75. La capacidad aeróbica baja con la edad, está medido.';
+	@override String get winterInvalid => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo y terreno seco.';
 	@override String restDaysCounted({required Object count}) => 'Días de descanso contados en este veredicto: ${count}.';
-	@override String get restDaysNone => 'No hay ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.';
+	@override String get restDaysNone => 'Ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.';
 	@override String averageLoad({required Object value, required Object worst}) => 'Carga media diaria: ${value} (la peor está en ${worst}).';
-	@override String get averageLoadInfo => 'Estas dos cifras se leen juntas: lejos una de otra, el trek tiene una jornada dura; cerca, es duro todos los días. Esto se muestra, no decide.';
+	@override String get averageLoadInfo => 'Lejos una de otra: el trek tiene una jornada dura. Cerca: es duro todos los días. Esto no decide.';
 	@override String durationStatement({required Object days, required Object done}) => 'Este trek dura ${days} días de marcha; tu salida encadenada más larga es de ${done} días de marcha seguidos.';
-	@override String get durationStatementInfo => 'Esto se muestra, no decide: ninguna medida publicada dice a partir de cuántos días encadenados un senderista se descuelga. Júzgalo tú.';
+	@override String get durationStatementInfo => 'Esto no decide: ninguna medida dice a partir de cuántos días encadenados uno se descuelga. Júzgalo tú.';
 	@override String stageDominantFactor({required Object factor}) => 'Lo que más pesa en esta jornada: ${factor}';
 	@override String get verdictHowTitle => 'Cómo se calcula este veredicto';
 	@override String verdictHowStage({required Object stage, required Object distance, required Object elevation}) => 'Tu jornada más dura es ${stage}: ${distance} km y ${elevation} m de desnivel positivo.';
-	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'En km-energía: ${distance} + ${elevation} ÷ 42 = ${energy}. Los 42 m de desnivel que equivalen a 1 km de llano son el coste medido de caminar en cuesta, no una regla de la casa.';
+	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'En km-energía: ${distance} + ${elevation} ÷ 42 = ${energy}.';
 	@override String verdictHowCeiling({required Object capacity, required Object level}) => 'Tu tope del día es ${capacity} km-energía (nivel ${level}).';
 	@override String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Hasta ${green} es verde, hasta ${orange} naranja, más allá rojo.';
-	@override String get verdictHowNoBlackBox => 'Aquí nada sale de una caja negra: es esta simple razón, y la alimentan tres trabajos publicados — Minetti 2002 para la unidad de energía, MOVE 2026 para la altitud, Linsell 2020 para el calor.';
+	@override String get verdictHowNoBlackBox => 'Esta razón es todo el cálculo. La alimentan tres trabajos: Minetti 2002 para la energía, MOVE 2026 para la altitud, Linsell 2020 para el calor.';
 }
 
 // Path: feasibility.flow
@@ -2698,23 +2698,23 @@ class _Translations$feasibility$flow$es extends Translations$feasibility$flow$fr
 
 	// Translations
 	@override String get title => '¿Estás listo para este trek?';
-	@override String get intro => 'Responde 3 pasos rápidos: deducimos tu nivel real y luego te decimos si el trek es viable.';
+	@override String get intro => 'Tres pasos rápidos, y te decimos si este trek es viable.';
 	@override String progress({required Object done, required Object total}) => '${done}/${total} pasos completados';
 	@override String get stepProfile => 'Tu ficha de datos';
 	@override String get stepProfileSub => 'Edad, altura, peso (permanece en tu teléfono).';
 	@override String get stepWalkTest => 'Prueba de marcha 6 minutos';
-	@override String get stepWalkTestSub => 'Mide tu forma actual — cambia tu resultado.';
+	@override String get stepWalkTestSub => 'Mide tu forma actual: cambia tu resultado.';
 	@override String get stepPastHikes => 'Tus últimas 5 rutas';
 	@override String get stepPastHikesSub => 'Lo que ya has hecho: ritmo, distancia, desnivel.';
 	@override String get optionalTag => '(opcional)';
 	@override String get validate => 'Validar y ver mi resultado';
-	@override String get partialNotice => 'Resultado provisional: la prueba de marcha de 6 minutos no se ha hecho. Tu nivel se estima por defecto; haz la prueba para afinar el veredicto.';
+	@override String get partialNotice => 'Resultado provisional: la prueba de marcha no se ha hecho, tu nivel se estima. Haz la prueba para un veredicto de verdad.';
 	@override String get missingTitle => 'Todavía faltan datos';
-	@override String get missingIntro => 'El veredicto solo aparece cuando todos los criterios necesarios están completos. Aún falta:';
+	@override String get missingIntro => 'Aún falta:';
 	@override String get missingProfile => 'Tu ficha completa: edad, altura y peso';
 	@override String get missingPastHikes => 'Al menos una de tus 5 últimas rutas';
-	@override String get missingWalkTestNote => 'La prueba de 6 minutos sigue siendo opcional: sin ella, tu resultado se muestra como provisional.';
-	@override String get hintBlocked => 'Completa los criterios de arriba: ahí se decide tu veredicto.';
+	@override String get missingWalkTestNote => 'La prueba de 6 minutos sigue siendo opcional: sin ella, tu resultado es provisional.';
+	@override String get hintBlocked => 'Completa los criterios de arriba.';
 	@override String get hintReady => 'Todo listo: puedes ver tu resultado.';
 }
 
@@ -3306,8 +3306,8 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Número de días';
 	@override String get daysWithRest => '{total} d en total (incl. {rest} de descanso)';
-	@override String get splitNote => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.';
-	@override String get splitExhausted => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.';
+	@override String get splitNote => 'Más días = días de descanso. No hacen más fácil ninguna jornada.';
+	@override String get splitExhausted => 'Imposible repartirlo más: cada etapa ya tiene su jornada.';
 	@override String get daysTotal => '{count} d en total';
 }
 
@@ -3872,14 +3872,14 @@ class _Translations$map$guide$poi$es extends Translations$map$guide$poi$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get water => 'Manantial o fuente señalada en el sendero. Un manantial puede estar seco en verano: no cuente con él sin comprobarlo.';
-	@override String get shelter => 'Refugio o abrigo en el recorrido. Toque la marca para ver lo que se sabe: altitud, servicios, contacto.';
-	@override String get accommodation => 'Alojamiento distinto de un refugio: casa rural, habitación, hotel. La reserva se hace en el propio establecimiento.';
-	@override String get campsite => 'Zona de camping o de bivac. Las normas de bivac dependen del territorio: infórmese antes de plantar la tienda.';
-	@override String get shop => 'Comercio donde abastecerse. Los horarios no están garantizados fuera de temporada: deje margen.';
+	@override String get water => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuente con él.';
+	@override String get shelter => 'Refugio o abrigo. Toque la marca: altitud, servicios, contacto.';
+	@override String get accommodation => 'Casa rural, habitación u hotel. Reserva en el propio establecimiento.';
+	@override String get campsite => 'Camping o bivac. Las normas cambian según el territorio: infórmese antes de plantar la tienda.';
+	@override String get shop => 'Comercio donde abastecerse. Horarios no garantizados fuera de temporada.';
 	@override String get restaurant => 'Restaurante o mesa de huéspedes en el recorrido o muy cerca.';
-	@override String get viewpoint => 'Mirador destacado. Referencia para la parada, no para orientarse.';
-	@override String get danger => 'Paso señalado como delicado. Reduzca el ritmo y observe el terreno antes de entrar.';
+	@override String get viewpoint => 'Mirador destacado. Bueno para la parada.';
+	@override String get danger => 'Paso delicado. Reduzca el ritmo y observe el terreno antes de entrar.';
 	@override String get emergency => 'Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.';
 	@override String get info => 'Panel o punto de información del sendero.';
 }
@@ -3997,17 +3997,17 @@ class _Translations$feasibility$formula$advice$es extends Translations$feasibili
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get balancedOk => 'Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.';
-	@override String get balanced => 'Reparte las etapas para suavizar el esfuerzo a lo largo de los días.';
-	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Apunta a ${walk} días de marcha, en vez de los ${current} de hoy. Aconsejamos además ${rest} día(s) de descanso: es un consejo, no cambian el veredicto.';
-	@override String rest({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages} de tu programa.';
-	@override String training({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).';
-	@override String restAdvised({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso en tu programa, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.';
-	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Apunta a ${walk} días de marcha: es el programa de referencia del sendero. Aconsejamos además ${rest} día(s) de descanso — un consejo, no cambian el veredicto.';
-	@override String hardStageAlert({required Object stage}) => 'La jornada ${stage} será muy dura: supera tu tope del día. No te aconsejamos partirla en dos — una etapa termina donde hay un techo. La respuesta es el entrenamiento: subir un nivel eleva tu tope, y esta jornada vuelve a quedar debajo.';
-	@override String noViableDuration({required Object stage}) => 'Añadir días no cambiará este veredicto: la jornada ${stage} sigue por encima de tu tope, incluso en el programa más holgado del sendero. Lo que sí lo cambia es el entrenamiento — sube tu tope — o salir fuera del verano. Si no, te espera un sendero menos exigente.';
-	@override String restReference({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages} del programa de referencia del sendero — aún no has elegido el tuyo.';
-	@override String restAdvisedReference({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso, tras las jornadas ${stages} del programa de referencia del sendero — aún no has elegido el tuyo: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.';
+	@override String get balancedOk => 'Tu programa está equilibrado.';
+	@override String get balanced => 'Reparte las etapas para suavizar el esfuerzo.';
+	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Apunta a ${walk} días de marcha en vez de ${current}. Consejo: ${rest} día(s) de descanso.';
+	@override String rest({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages}.';
+	@override String training({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir.';
+	@override String restAdvised({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere.';
+	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Apunta a los ${walk} días de marcha del sendero. Consejo: ${rest} día(s) de descanso.';
+	@override String hardStageAlert({required Object stage}) => 'La jornada ${stage} supera tu tope. No se puede acortar: una etapa termina donde hay un techo. Entrena, tu tope sube y esta jornada vuelve a quedar debajo.';
+	@override String noViableDuration({required Object stage}) => 'Añadir días no cambiará nada: incluso en el programa más holgado, la jornada ${stage} sigue por encima de tu tope. Hace falta el entrenamiento, o salir fuera del verano. Si no, elige un sendero menos duro.';
+	@override String restReference({required Object stages}) => 'Aún no has elegido tu programa. En el del sendero, prevé un día de descanso tras la jornada ${stages}.';
+	@override String restAdvisedReference({required Object days, required Object stages}) => 'Aún no has elegido tu programa. En el del sendero, pon ${days} día(s) de descanso tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere.';
 }
 
 // Path: signalement.water.states
@@ -4130,7 +4130,7 @@ class _Translations$programme$info$mergeSplit$es extends Translations$programme$
 
 	// Translations
 	@override String get title => 'Agrupar / Desagrupar';
-	@override String get body => 'Agrupar une dos días en uno; Desagrupar devuelve a cada etapa unida su propia jornada. Una etapa queda entera: termina donde hay un techo. El veredicto lo fija tu jornada más dura — aliviarla pasa por la forma o la temporada, un día de descanso no cambia nada.';
+	@override String get body => 'Agrupar une dos días en uno. Desagrupar devuelve a cada etapa su jornada. Una etapa queda entera: termina donde hay un techo.';
 }
 
 // Path: programme.info.colors
@@ -4284,7 +4284,7 @@ extension on TranslationsEs {
 			'hub.greetingFallback' => 'Senderista',
 			'hub.infoTooltip' => 'Acerca de este sendero',
 			'hub.profileTooltip' => 'Mi perfil',
-			'hub.infoSheetBody' => 'Este sendero te acompaña en cada paso: planifica tu itinerario, prepara tu mochila y luego sal con la navegación GPS. Cada función es accesible desde esta pantalla de inicio.',
+			'hub.infoSheetBody' => 'Prepara tu itinerario, luego la mochila. Sal después con la navegación GPS. Todo empieza en esta pantalla.',
 			'hub.trekCard.activeTitle' => 'Trek en curso',
 			'hub.trekCard.distanceCovered' => 'Distancia recorrida',
 			'hub.trekCard.elevationGain' => 'Desnivel de hoy',
@@ -4292,14 +4292,14 @@ extension on TranslationsEs {
 			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % del sendero',
 			'hub.trekCard.resume' => 'Reanudar la navegación',
 			'hub.trekCard.noTrekTitle' => '¿Listo para salir?',
-			'hub.trekCard.noTrekBody' => 'Planifica tu itinerario y luego inicia tu trek cuando estés listo.',
+			'hub.trekCard.noTrekBody' => 'Planifica tu itinerario y luego inicia tu trek.',
 			'hub.trekCard.plan' => 'Planificar mi trek',
 			'hub.trekCard.completedTitle' => 'Ruta terminada',
 			'hub.weather.title' => 'El tiempo de hoy',
 			'hub.weather.unavailable' => 'El tiempo no está disponible ahora.',
 			'hub.weather.alertStorm' => 'Alerta de tormenta',
 			'hub.startCta' => 'Iniciar el trek',
-			'hub.startGateHint' => 'Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.',
+			'hub.startGateHint' => 'Para empezar: Itinerario, Calendario, Programa y Ficha médica con sus consejos leídos.',
 			'hub.prepareExpand' => 'Ver la preparación',
 			'hub.prepareCollapse' => 'Reducir',
 			'hub.sections.prepare' => 'Preparar',
@@ -4307,7 +4307,7 @@ extension on TranslationsEs {
 			'hub.sections.info' => 'Información',
 			'hub.sections.after' => 'Después del trek',
 			'hub.cards.feasibility' => 'Viabilidad',
-			'hub.cards.feasibilitySub' => 'Evalúa tu nivel',
+			'hub.cards.feasibilitySub' => '¿A tu alcance?',
 			'hub.cards.itinerary' => 'Itinerario',
 			'hub.cards.itinerarySub' => 'Tus etapas en detalle',
 			'hub.cards.programme' => 'Programa',
@@ -4359,12 +4359,12 @@ extension on TranslationsEs {
 			'hub.cards.fire' => 'Incendio',
 			'hub.cards.fireSub' => 'Riesgos y alertas',
 			'hub.cards.adjust' => 'Adaptar el itinerario',
-			'hub.cards.adjustSub' => 'Cambiar mis días por venir',
+			'hub.cards.adjustSub' => 'Cambiar tus días por venir',
 			'hub.fab.feedback' => 'Dar mi opinión',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Terminar el trek',
 			'hub.finishTrek.confirmTitle' => '¿Terminar el trek?',
-			'hub.finishTrek.confirmBody' => 'El trek se marcará como terminado. Las etapas no recorridas no se validarán. Podrás revisar tu aventura.',
+			'hub.finishTrek.confirmBody' => 'El trek pasa a terminado. Las etapas no recorridas no se validarán.',
 			'hub.finishTrek.confirm' => 'Terminar',
 			'hub.finishTrek.cancel' => 'Cancelar',
 			'map.title' => 'Mapa del sendero',
@@ -4377,24 +4377,24 @@ extension on TranslationsEs {
 			'map.stageRemaining' => ({required Object km}) => '${km} km restantes',
 			'map.offTrackChip' => 'Fuera de ruta',
 			'map.perimetreEtape' => 'Etapa',
-			'map.perimetreSentier' => 'Sendero completo',
+			'map.perimetreSentier' => 'Sendero',
 			'map.guide.buttonsTitle' => 'Botones',
-			'map.guide.position' => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.',
-			'map.guide.track' => 'El trazado del sendero, en su color. Es la referencia que usa el aviso de salida de ruta.',
-			'map.guide.centerOnMe' => 'Devuelve el mapa a su posición después de haberlo movido con el dedo.',
-			'map.guide.photo' => 'Hace una foto y la añade al diario del día, sin salir del mapa.',
+			'map.guide.position' => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe el permiso de localización.',
+			'map.guide.track' => 'El trazado del sendero. El aviso de salida de ruta se refiere a él.',
+			'map.guide.centerOnMe' => 'Devuelve el mapa a su posición.',
+			'map.guide.photo' => 'Hace una foto para el diario del día.',
 			'map.guide.sos' => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.',
 			'map.guide.onlyInTrek' => 'Solo visible una vez iniciada la ruta.',
-			'map.guide.currentStage' => 'Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.',
-			'map.guide.offTrack' => 'Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.',
-			'map.guide.poi.water' => 'Manantial o fuente señalada en el sendero. Un manantial puede estar seco en verano: no cuente con él sin comprobarlo.',
-			'map.guide.poi.shelter' => 'Refugio o abrigo en el recorrido. Toque la marca para ver lo que se sabe: altitud, servicios, contacto.',
-			'map.guide.poi.accommodation' => 'Alojamiento distinto de un refugio: casa rural, habitación, hotel. La reserva se hace en el propio establecimiento.',
-			'map.guide.poi.campsite' => 'Zona de camping o de bivac. Las normas de bivac dependen del territorio: infórmese antes de plantar la tienda.',
-			'map.guide.poi.shop' => 'Comercio donde abastecerse. Los horarios no están garantizados fuera de temporada: deje margen.',
+			'map.guide.currentStage' => 'Lo que queda por andar en la etapa en curso. Un guión: la ruta no ha empezado.',
+			'map.guide.offTrack' => 'Se enciende cuando se aleja del trazado. Vuelva sobre él para apagarlo.',
+			'map.guide.poi.water' => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuente con él.',
+			'map.guide.poi.shelter' => 'Refugio o abrigo. Toque la marca: altitud, servicios, contacto.',
+			'map.guide.poi.accommodation' => 'Casa rural, habitación u hotel. Reserva en el propio establecimiento.',
+			'map.guide.poi.campsite' => 'Camping o bivac. Las normas cambian según el territorio: infórmese antes de plantar la tienda.',
+			'map.guide.poi.shop' => 'Comercio donde abastecerse. Horarios no garantizados fuera de temporada.',
 			'map.guide.poi.restaurant' => 'Restaurante o mesa de huéspedes en el recorrido o muy cerca.',
-			'map.guide.poi.viewpoint' => 'Mirador destacado. Referencia para la parada, no para orientarse.',
-			'map.guide.poi.danger' => 'Paso señalado como delicado. Reduzca el ritmo y observe el terreno antes de entrar.',
+			'map.guide.poi.viewpoint' => 'Mirador destacado. Bueno para la parada.',
+			'map.guide.poi.danger' => 'Paso delicado. Reduzca el ritmo y observe el terreno antes de entrar.',
 			'map.guide.poi.emergency' => 'Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.',
 			'map.guide.poi.info' => 'Panel o punto de información del sendero.',
 			'map.supplyDismiss' => 'Ocultar el aviso',
@@ -5004,7 +5004,7 @@ extension on TranslationsEs {
 			'auth.errorTimeout' => 'La cuenta no ha respondido. Comprueba tu conexión y vuelve a intentarlo.',
 			'feasibility.restart' => 'Start over',
 			'feasibility.objectiveTitle' => 'Viabilidad para este trek',
-			'feasibility.objectiveIntro' => 'Veredicto basado en tu perfil real cruzado con las exigencias del trek.',
+			'feasibility.objectiveIntro' => 'Este veredicto cruza tu perfil real con las exigencias del trek.',
 			'feasibility.openProfile' => 'Mis datos',
 			'feasibility.openWalkTest' => 'Prueba de 6 minutos',
 			'feasibility.openPastHikes' => 'Mis últimas 5 rutas',
@@ -5021,12 +5021,12 @@ extension on TranslationsEs {
 			'feasibility.formula.title' => 'Viabilidad para este trek',
 			'feasibility.formula.answerTitle' => '¿Está a su alcance?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.',
-			'feasibility.formula.answerOrange' => ({required Object days}) => 'Sí, en ${days} días — pero una jornada será exigente para usted.',
-			'feasibility.formula.answerRed' => 'Todavía no: una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma antes de salir, o salga fuera del verano — lo decide una jornada, no todo el sendero.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Es el programa del sendero tal como existe: ${walking} jornadas de marcha. Aconsejamos ${rest} día(s) de descanso además — es un consejo, no cambia el veredicto.',
-			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Es el programa del sendero tal como existe: ${walking} jornadas de marcha.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Sí, en ${days} días. Pero una jornada será dura.',
+			'feasibility.formula.answerRed' => 'Todavía no. Una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma, o salga fuera del verano.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'El sendero se camina en ${walking} días. Consejo: ${rest} día(s) de descanso.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'El sendero se camina en ${walking} días.',
 			'feasibility.formula.explainToggle' => 'Cómo se calcula este resultado',
-			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.',
+			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada jornada con lo que puedes aguantar. Verde, naranja o rojo.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})',
 			'feasibility.formula.stagesTitle' => 'Día por día',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energía',
@@ -5053,74 +5053,74 @@ extension on TranslationsEs {
 			'feasibility.formula.limitingFactors.none' => 'ninguno',
 			'feasibility.formula.limitingFactors.altitude' => 'la altitud',
 			'feasibility.formula.limitingFactors.heat' => 'el calor de la estación',
-			'feasibility.formula.advice.balancedOk' => 'Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.',
-			'feasibility.formula.advice.balanced' => 'Reparte las etapas para suavizar el esfuerzo a lo largo de los días.',
-			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Apunta a ${walk} días de marcha, en vez de los ${current} de hoy. Aconsejamos además ${rest} día(s) de descanso: es un consejo, no cambian el veredicto.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages} de tu programa.',
-			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso en tu programa, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Apunta a ${walk} días de marcha: es el programa de referencia del sendero. Aconsejamos además ${rest} día(s) de descanso — un consejo, no cambian el veredicto.',
-			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La jornada ${stage} será muy dura: supera tu tope del día. No te aconsejamos partirla en dos — una etapa termina donde hay un techo. La respuesta es el entrenamiento: subir un nivel eleva tu tope, y esta jornada vuelve a quedar debajo.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Añadir días no cambiará este veredicto: la jornada ${stage} sigue por encima de tu tope, incluso en el programa más holgado del sendero. Lo que sí lo cambia es el entrenamiento — sube tu tope — o salir fuera del verano. Si no, te espera un sendero menos exigente.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages} del programa de referencia del sendero — aún no has elegido el tuyo.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso, tras las jornadas ${stages} del programa de referencia del sendero — aún no has elegido el tuyo: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.',
+			'feasibility.formula.advice.balancedOk' => 'Tu programa está equilibrado.',
+			'feasibility.formula.advice.balanced' => 'Reparte las etapas para suavizar el esfuerzo.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Apunta a ${walk} días de marcha en vez de ${current}. Consejo: ${rest} día(s) de descanso.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages}.',
+			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Apunta a los ${walk} días de marcha del sendero. Consejo: ${rest} día(s) de descanso.',
+			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La jornada ${stage} supera tu tope. No se puede acortar: una etapa termina donde hay un techo. Entrena, tu tope sube y esta jornada vuelve a quedar debajo.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Añadir días no cambiará nada: incluso en el programa más holgado, la jornada ${stage} sigue por encima de tu tope. Hace falta el entrenamiento, o salir fuera del verano. Si no, elige un sendero menos duro.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Aún no has elegido tu programa. En el del sendero, prevé un día de descanso tras la jornada ${stages}.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Aún no has elegido tu programa. En el del sendero, pon ${days} día(s) de descanso tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Programa elegido: ${days} días en total, marcha y descanso incluidos.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Ningún programa elegido: el sendero se queda en sus ${days} días en total por defecto, marcha y descanso incluidos.',
-			'feasibility.formula.energyUnitNotice' => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta, no una regla de la casa.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Ningún programa elegido: el sendero se queda en sus ${days} días en total, marcha y descanso incluidos.',
+			'feasibility.formula.energyUnitNotice' => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta.',
 			'feasibility.formula.circuitTitle' => 'Veredicto del circuito',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Puntuación del circuito: ${value} — verde hasta ${green}, naranja hasta ${orange}, rojo más allá.',
-			'feasibility.formula.circuitIsWorstStage' => 'El veredicto del circuito es el de tu jornada más dura: nada más lo endurece.',
+			'feasibility.formula.circuitIsWorstStage' => 'El veredicto del circuito es el de tu jornada más dura.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Descanso medido sobre el trek entero (${days} días).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Descanso medido sobre la peor semana: días ${start} a ${end}.',
-			'feasibility.formula.restNotApplicable' => 'El descanso no se calcula en un sendero de una sola jornada: no hay encadenamiento que medir. La restricción se declara no aplicable, no se sustituye por una cifra.',
-			'feasibility.formula.restExtrapolation' => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo itinerante. Es un traslado, y se dice.',
-			'feasibility.formula.restNotDecisive' => 'Esta cifra se muestra y aconseja, nunca decide: tu veredicto sigue siendo el de tu jornada más dura.',
+			'feasibility.formula.restNotApplicable' => 'Un sendero de una sola jornada no tiene encadenamiento: el descanso no se calcula.',
+			'feasibility.formula.restExtrapolation' => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo.',
+			'feasibility.formula.restNotDecisive' => 'Esta cifra aconseja, no decide. El veredicto sigue tu jornada más dura.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Consejo: ${days} día(s) de descanso repartidos en tu programa devuelven esta cifra por debajo de su umbral.',
-			'feasibility.formula.restTwoDays' => 'En jornadas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.',
+			'feasibility.formula.restTwoDays' => 'Las jornadas de igual tamaño piden dos días de descanso por semana, no uno.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Diferencia con tu costumbre: ${value} (referencia 0,8 a 1,3).',
-			'feasibility.formula.habitGapNotDecisive' => 'Esta diferencia se muestra, nunca decide: ningún estudio demuestra que cause nada.',
+			'feasibility.formula.habitGapNotDecisive' => 'Esta diferencia no decide nada: ningún estudio le da un efecto.',
 			'feasibility.formula.conditionsTitle' => 'Lo que ha entrado en este veredicto',
-			'feasibility.formula.floorActive' => ({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base. Nunca se te dirá que no puedes hacer lo que ya has hecho.',
+			'feasibility.formula.floorActive' => ({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base.',
 			'feasibility.formula.altitudeApplied' => ({required Object value, required Object pct}) => 'Altitud: ${value} m en el punto más alto, tu capacidad diaria baja un ${pct} %.',
-			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitud: ${value} m en el punto más alto, por debajo de los 1 500 m a partir de los cuales cuenta. Aquí no cambia nada.',
-			'feasibility.formula.altitudeMissing' => 'Altitud: la traza de este sendero no la lleva. Aquí no cambia nada por falta de dato — y no porque no tuviera efecto.',
+			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitud: ${value} m en el punto más alto. Solo cuenta a partir de 1 500 m.',
+			'feasibility.formula.altitudeMissing' => 'Altitud: la traza de este sendero no la lleva. Sin dato, aquí queda sin efecto.',
 			'feasibility.formula.heatApplied' => 'Salida en verano: la capacidad aeróbica baja un 7 %, está medido.',
-			'feasibility.formula.seasonNoSource' => 'Salida en primavera o en otoño: este veredicto se aplica tal cual. Solo el verano tiene una medida publicada (7 % menos de capacidad aeróbica); para estas dos estaciones no se aplica ningún coeficiente.',
-			'feasibility.formula.seasonMissing' => 'Este veredicto se calcula sin efecto de estación: no hay fecha de salida fijada. Vale por tanto para una salida fuera del verano; una salida en verano lo endurece un 7 %, y la fecha se fija en el Calendario.',
-			'feasibility.formula.massNotCounted' => 'Ni tu peso ni el de tu mochila entran en este veredicto, y es a propósito: mide lo que has demostrado aguantar. A 65 o a 95 kg, el mismo hombre obtiene el mismo veredicto.',
-			'feasibility.formula.ageCounted' => 'La edad, en cambio, sí entra en este veredicto: fija la distancia de referencia de tu prueba de marcha y baja un nivel el asignado a partir de los 60 años, dos a partir de los 75. La capacidad aeróbica baja con la edad, está medido — no es un juicio sobre ti.',
-			'feasibility.formula.winterInvalid' => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.',
+			'feasibility.formula.seasonNoSource' => 'Salida en primavera o en otoño: no se aplica nada. Solo el verano tiene una medida, 7 % menos de capacidad aeróbica.',
+			'feasibility.formula.seasonMissing' => 'No hay fecha de salida fijada: este veredicto vale para una salida fuera del verano. En verano se endurece un 7 %. La fecha se fija en el Calendario.',
+			'feasibility.formula.massNotCounted' => 'Ni tu peso ni el de tu mochila entran en este veredicto: mide lo que ya has aguantado. A 65 o a 95 kg, el mismo veredicto.',
+			'feasibility.formula.ageCounted' => 'La edad, en cambio, cuenta: fija la distancia de referencia de tu prueba de marcha y baja tu nivel un paso a los 60 años, dos a los 75. La capacidad aeróbica baja con la edad, está medido.',
+			'feasibility.formula.winterInvalid' => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo y terreno seco.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Días de descanso contados en este veredicto: ${count}.',
-			'feasibility.formula.restDaysNone' => 'No hay ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.',
+			'feasibility.formula.restDaysNone' => 'Ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Carga media diaria: ${value} (la peor está en ${worst}).',
-			'feasibility.formula.averageLoadInfo' => 'Estas dos cifras se leen juntas: lejos una de otra, el trek tiene una jornada dura; cerca, es duro todos los días. Esto se muestra, no decide.',
+			'feasibility.formula.averageLoadInfo' => 'Lejos una de otra: el trek tiene una jornada dura. Cerca: es duro todos los días. Esto no decide.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Este trek dura ${days} días de marcha; tu salida encadenada más larga es de ${done} días de marcha seguidos.',
-			'feasibility.formula.durationStatementInfo' => 'Esto se muestra, no decide: ninguna medida publicada dice a partir de cuántos días encadenados un senderista se descuelga. Júzgalo tú.',
+			'feasibility.formula.durationStatementInfo' => 'Esto no decide: ninguna medida dice a partir de cuántos días encadenados uno se descuelga. Júzgalo tú.',
 			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Lo que más pesa en esta jornada: ${factor}',
 			'feasibility.formula.verdictHowTitle' => 'Cómo se calcula este veredicto',
 			'feasibility.formula.verdictHowStage' => ({required Object stage, required Object distance, required Object elevation}) => 'Tu jornada más dura es ${stage}: ${distance} km y ${elevation} m de desnivel positivo.',
-			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-energía: ${distance} + ${elevation} ÷ 42 = ${energy}. Los 42 m de desnivel que equivalen a 1 km de llano son el coste medido de caminar en cuesta, no una regla de la casa.',
+			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-energía: ${distance} + ${elevation} ÷ 42 = ${energy}.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Tu tope del día es ${capacity} km-energía (nivel ${level}).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Hasta ${green} es verde, hasta ${orange} naranja, más allá rojo.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Aquí nada sale de una caja negra: es esta simple razón, y la alimentan tres trabajos publicados — Minetti 2002 para la unidad de energía, MOVE 2026 para la altitud, Linsell 2020 para el calor.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Esta razón es todo el cálculo. La alimentan tres trabajos: Minetti 2002 para la energía, MOVE 2026 para la altitud, Linsell 2020 para el calor.',
 			'feasibility.flow.title' => '¿Estás listo para este trek?',
-			'feasibility.flow.intro' => 'Responde 3 pasos rápidos: deducimos tu nivel real y luego te decimos si el trek es viable.',
+			'feasibility.flow.intro' => 'Tres pasos rápidos, y te decimos si este trek es viable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} pasos completados',
 			'feasibility.flow.stepProfile' => 'Tu ficha de datos',
 			'feasibility.flow.stepProfileSub' => 'Edad, altura, peso (permanece en tu teléfono).',
 			'feasibility.flow.stepWalkTest' => 'Prueba de marcha 6 minutos',
-			'feasibility.flow.stepWalkTestSub' => 'Mide tu forma actual — cambia tu resultado.',
+			'feasibility.flow.stepWalkTestSub' => 'Mide tu forma actual: cambia tu resultado.',
 			'feasibility.flow.stepPastHikes' => 'Tus últimas 5 rutas',
 			'feasibility.flow.stepPastHikesSub' => 'Lo que ya has hecho: ritmo, distancia, desnivel.',
 			'feasibility.flow.optionalTag' => '(opcional)',
 			'feasibility.flow.validate' => 'Validar y ver mi resultado',
-			'feasibility.flow.partialNotice' => 'Resultado provisional: la prueba de marcha de 6 minutos no se ha hecho. Tu nivel se estima por defecto; haz la prueba para afinar el veredicto.',
+			'feasibility.flow.partialNotice' => 'Resultado provisional: la prueba de marcha no se ha hecho, tu nivel se estima. Haz la prueba para un veredicto de verdad.',
 			'feasibility.flow.missingTitle' => 'Todavía faltan datos',
-			'feasibility.flow.missingIntro' => 'El veredicto solo aparece cuando todos los criterios necesarios están completos. Aún falta:',
+			'feasibility.flow.missingIntro' => 'Aún falta:',
 			'feasibility.flow.missingProfile' => 'Tu ficha completa: edad, altura y peso',
 			'feasibility.flow.missingPastHikes' => 'Al menos una de tus 5 últimas rutas',
-			'feasibility.flow.missingWalkTestNote' => 'La prueba de 6 minutos sigue siendo opcional: sin ella, tu resultado se muestra como provisional.',
-			'feasibility.flow.hintBlocked' => 'Completa los criterios de arriba: ahí se decide tu veredicto.',
+			'feasibility.flow.missingWalkTestNote' => 'La prueba de 6 minutos sigue siendo opcional: sin ella, tu resultado es provisional.',
+			'feasibility.flow.hintBlocked' => 'Completa los criterios de arriba.',
 			'feasibility.flow.hintReady' => 'Todo listo: puedes ver tu resultado.',
 			'tips.carouselTitle' => 'Consejos trek',
 			'tips.allCategories' => 'Todas',
@@ -5146,7 +5146,7 @@ extension on TranslationsEs {
 			'tips.seasons.autumn' => 'Otoño',
 			'tips.altitude' => 'Altitud mín.',
 			'tips.screenTitle' => 'Fichas de consejos',
-			'tips.screenIntro' => 'Todo para que tu ruta sea un éxito',
+			'tips.screenIntro' => 'Preparación, material, seguridad, salud.',
 			'tips.followUs' => 'Síguenos:',
 			'tips.viewOnFacebook' => 'Ver en Facebook',
 			'tips.viewOnInstagram' => 'Instagram',
@@ -5183,19 +5183,19 @@ extension on TranslationsEs {
 			'demo.bandeau' => 'MODO DEMO',
 			'demo.quitter' => 'Salir',
 			'demo.boutonTitre' => 'Probar la demo',
-			'demo.boutonSous' => 'Descubra la aplicación de principio a fin, sin compromiso',
-			'demo.rienNeCompte' => 'Está en modo demo: nada de lo que haga aquí se guarda. Ni etapas ganadas, ni diploma, ni compra.',
+			'demo.boutonSous' => 'Toda la aplicación. No se guarda nada.',
+			'demo.rienNeCompte' => 'Está en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.',
 			'demo.simulerEtape' => 'Simular la siguiente etapa',
 			'demo.simulerFin' => 'Simular la llegada',
 			'demo.simulerRelancer' => 'Reiniciar la demo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Marcha simulada — tiempo acelerado ×${facteur}',
 			'demo.arriveeTitre' => '¡Enhorabuena, has llegado!',
-			'demo.arriveeTexte' => 'Has completado el sendero en modo demostración. No se ha guardado nada: era una simulación.',
+			'demo.arriveeTexte' => 'Has completado el sendero en modo demo. No se ha guardado nada.',
 			'demo.arriveeChiffres' => 'Tu demostración',
 			'demo.arriveeFermer' => 'Cerrar',
 			'demo.sortieTitre' => 'Fin de la demo',
-			'demo.sortieEnTeteCatalogue' => 'Encontrarás la demo en la parte superior de la lista de senderos.',
-			'demo.sortieDansMonCompte' => 'El botón ya no aparecerá en el catálogo. Encontrarás la demo en “Mi cuenta”.',
+			'demo.sortieEnTeteCatalogue' => 'La demo se queda en la parte superior de la lista de senderos.',
+			'demo.sortieDansMonCompte' => 'El botón deja el catálogo. La demo se queda en “Mi cuenta”.',
 			'demo.cacherLabel' => 'Ocultar el modo demo',
 			'demo.sortieConfirmer' => 'Salir de la demo',
 			'demo.sortieAnnuler' => 'Seguir con la demo',
@@ -5203,11 +5203,11 @@ extension on TranslationsEs {
 			'demo.departSimule' => 'En demo, la salida inicia una excursión simulada: no se guarda nada.',
 			'demo.compteTitre' => 'Modo demo',
 			'demo.compteRelancer' => 'Ver la demo de nuevo',
-			'demo.compteRelancerSous' => 'Descubre la aplicación de la A a la Z, sin compromiso',
+			'demo.compteRelancerSous' => 'Toda la aplicación. No se guarda nada.',
 			'demo.compteReafficher' => 'Mostrar el botón demo en el catálogo',
 			'demo.compteReafficherSous' => 'El botón vuelve a la parte superior de la lista de senderos',
-			'demo.collecteTitre' => 'En qué se basa la respuesta',
-			'demo.collecteIntro' => 'Esta es la información que la aplicación usa para calcular la viabilidad.',
+			'demo.collecteTitre' => 'Lo que ha servido al cálculo',
+			'demo.collecteIntro' => 'La información usada para calcular la viabilidad.',
 			'demo.collecteProfil' => 'Tu perfil',
 			'demo.collecteForme' => 'Tu forma física',
 			'demo.collecteExperience' => 'Tu experiencia',
@@ -5769,8 +5769,8 @@ extension on TranslationsEs {
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.daysWithRest' => '{total} d en total (incl. {rest} de descanso)',
-			'programme.duration.splitNote' => 'Más días = días de DESCANSO. El descanso no cambia la dureza de una jornada de marcha, y el veredicto sigue la jornada más dura.',
-			'programme.duration.splitExhausted' => 'Cada etapa ya tiene su jornada: un día más solo añadirá descanso, y el descanso no cambiará el veredicto.',
+			'programme.duration.splitNote' => 'Más días = días de descanso. No hacen más fácil ninguna jornada.',
+			'programme.duration.splitExhausted' => 'Imposible repartirlo más: cada etapa ya tiene su jornada.',
 			'programme.duration.daysTotal' => '{count} d en total',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
@@ -5810,7 +5810,7 @@ extension on TranslationsEs {
 			'programme.info.rest.title' => 'Día de descanso',
 			'programme.info.rest.body' => 'Inserta un día de recuperación entre dos etapas.',
 			'programme.info.mergeSplit.title' => 'Agrupar / Desagrupar',
-			'programme.info.mergeSplit.body' => 'Agrupar une dos días en uno; Desagrupar devuelve a cada etapa unida su propia jornada. Una etapa queda entera: termina donde hay un techo. El veredicto lo fija tu jornada más dura — aliviarla pasa por la forma o la temporada, un día de descanso no cambia nada.',
+			'programme.info.mergeSplit.body' => 'Agrupar une dos días en uno. Desagrupar devuelve a cada etapa su jornada. Una etapa queda entera: termina donde hay un techo.',
 			'programme.info.colors.title' => 'Colores',
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
@@ -6219,14 +6219,14 @@ extension on TranslationsEs {
 			'common.retry' => 'Reintentar',
 			'common.retrying' => 'Nuevo intento…',
 			'common.retryFailed' => 'El nuevo intento no ha funcionado.',
-			'systemBackup.title' => 'Tus datos se quedan en este teléfono',
+			'systemBackup.title' => 'La copia de seguridad de tu teléfono',
 			'systemBackup.refuseGoogle' => 'Rechazo la copia de seguridad de mis datos en la nube de Google',
 			'systemBackup.refuseApple' => 'Rechazo la copia de seguridad de mis datos en iCloud',
-			'systemBackup.explainGoogle' => 'Tu teléfono copia sus datos en Google. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
-			'systemBackup.explainApple' => 'Tu teléfono copia sus datos en iCloud. Esta casilla está marcada de antemano y deja fuera todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
-			'systemBackup.cost' => 'Lo que cuesta, sin adornos: si dejas esta casilla marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. Un trek completado conserva su traza y su cuaderno de por vida en este teléfono, la aplicación nunca los borra, pero no puede hacerlos reaparecer en otro dispositivo.',
-			'systemBackup.whatComesBack' => 'Si la desmarcas, una copia de tu progreso, de tu diario, de tus treks completados y de tu ficha médica va a la copia de seguridad, y vuelve en tu próximo teléfono. Tus fotos y tus ajustes no están: copiar las fotos duplicaría el espacio ocupado en tu teléfono.',
-			'systemBackup.notOurServers' => 'No hay que confundirlo: nada de lo que nos confías va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema, que no nos pertenece.',
+			'systemBackup.explainGoogle' => 'Tu teléfono se copia en Google. Esta casilla está marcada de antemano y guarda en este teléfono todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
+			'systemBackup.explainApple' => 'Tu teléfono se copia en iCloud. Esta casilla está marcada de antemano y guarda en este teléfono todo lo que nos confías: tu perfil (edad, altura, peso), tus rutas pasadas, tu progreso, tu diario, tus fotos y tu ficha médica.',
+			'systemBackup.cost' => 'Si la dejas marcada y cambias de teléfono o reinstalas la aplicación, empiezas de cero. Tu progreso, tu diario, tus treks completados y tus fotos no volverán. En este teléfono no se borra nada: un trek completado conserva su traza y su cuaderno de por vida. Pero nada te sigue a otro sitio.',
+			'systemBackup.whatComesBack' => 'Si la desmarcas, tu progreso, tu diario, tus treks completados y tu ficha médica van a la copia de seguridad, y vuelven en tu próximo teléfono. Nunca tus fotos ni tus ajustes: copiar las fotos duplicaría el espacio ocupado en tu teléfono.',
+			'systemBackup.notOurServers' => 'Nada de esto va a nuestros servidores, esté marcada esta casilla o no. Solo afecta a la copia que hace tu teléfono con su propio sistema.',
 			'systemBackup.confirm' => 'Entendido',
 			'systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono',
 			'lieu.ouvrirDansLesCartes' => 'Abrir en mapas',

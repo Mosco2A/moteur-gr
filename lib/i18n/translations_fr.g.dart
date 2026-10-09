@@ -380,8 +380,8 @@ class Translations$hub$fr {
 	/// fr: 'Mon profil'
 	String get profileTooltip => 'Mon profil';
 
-	/// fr: 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d'accueil.'
-	String get infoSheetBody => 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d\'accueil.';
+	/// fr: 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.'
+	String get infoSheetBody => 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.';
 
 	late final Translations$hub$trekCard$fr trekCard = Translations$hub$trekCard$fr.internal(_root);
 	late final Translations$hub$weather$fr weather = Translations$hub$weather$fr.internal(_root);
@@ -389,8 +389,8 @@ class Translations$hub$fr {
 	/// fr: 'Démarrer la randonnée'
 	String get startCta => 'Démarrer la randonnée';
 
-	/// fr: 'Complète d'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.'
-	String get startGateHint => 'Complète d\'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.';
+	/// fr: 'Pour démarrer : Itinéraire, Calendrier, Programme, et Fiche médicale avec ses conseils lus.'
+	String get startGateHint => 'Pour démarrer : Itinéraire, Calendrier, Programme, et Fiche médicale avec ses conseils lus.';
 
 	/// fr: 'Voir la préparation'
 	String get prepareExpand => 'Voir la préparation';
@@ -442,8 +442,8 @@ class Translations$map$fr {
 	/// fr: 'Étape'
 	String get perimetreEtape => 'Étape';
 
-	/// fr: 'Sentier entier'
-	String get perimetreSentier => 'Sentier entier';
+	/// fr: 'Sentier'
+	String get perimetreSentier => 'Sentier';
 
 	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
@@ -1571,8 +1571,8 @@ class Translations$feasibility$fr {
 	/// fr: 'Faisabilité pour ce trek'
 	String get objectiveTitle => 'Faisabilité pour ce trek';
 
-	/// fr: 'Verdict basé sur votre profil réel croisé avec les exigences du trek.'
-	String get objectiveIntro => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.';
+	/// fr: 'Ce verdict croise votre profil réel et les exigences du trek.'
+	String get objectiveIntro => 'Ce verdict croise votre profil réel et les exigences du trek.';
 
 	/// fr: 'Ma fiche d'info'
 	String get openProfile => 'Ma fiche d\'info';
@@ -1664,8 +1664,8 @@ class Translations$tips$fr {
 	/// fr: 'Fiches conseils'
 	String get screenTitle => 'Fiches conseils';
 
-	/// fr: 'Tout savoir pour réussir votre randonnée'
-	String get screenIntro => 'Tout savoir pour réussir votre randonnée';
+	/// fr: 'Préparation, matériel, sécurité, santé.'
+	String get screenIntro => 'Préparation, matériel, sécurité, santé.';
 
 	/// fr: 'Suivez-nous :'
 	String get followUs => 'Suivez-nous :';
@@ -1785,11 +1785,11 @@ class Translations$demo$fr {
 	/// fr: 'Essayer la démo'
 	String get boutonTitre => 'Essayer la démo';
 
-	/// fr: 'Découvrez l'application de A à Z, sans rien engager'
-	String get boutonSous => 'Découvrez l\'application de A à Z, sans rien engager';
+	/// fr: 'Toute l'application. Rien n'est enregistré.'
+	String get boutonSous => 'Toute l\'application. Rien n\'est enregistré.';
 
-	/// fr: 'Vous êtes en démo : rien de ce que vous faites ici n'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.'
-	String get rienNeCompte => 'Vous êtes en démo : rien de ce que vous faites ici n\'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.';
+	/// fr: 'Vous êtes en démo : rien n'est enregistré. Ni étapes, ni diplôme, ni achat.'
+	String get rienNeCompte => 'Vous êtes en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.';
 
 	/// fr: 'Simuler l'étape suivante'
 	String get simulerEtape => 'Simuler l\'étape suivante';
@@ -1806,8 +1806,8 @@ class Translations$demo$fr {
 	/// fr: 'Bravo, vous êtes arrivé !'
 	String get arriveeTitre => 'Bravo, vous êtes arrivé !';
 
-	/// fr: 'Vous avez terminé le sentier en démonstration. Rien n'a été enregistré : c'était une simulation.'
-	String get arriveeTexte => 'Vous avez terminé le sentier en démonstration. Rien n\'a été enregistré : c\'était une simulation.';
+	/// fr: 'Vous avez terminé le sentier en démo. Rien n'a été enregistré.'
+	String get arriveeTexte => 'Vous avez terminé le sentier en démo. Rien n\'a été enregistré.';
 
 	/// fr: 'Votre démonstration'
 	String get arriveeChiffres => 'Votre démonstration';
@@ -1818,11 +1818,11 @@ class Translations$demo$fr {
 	/// fr: 'Fin de la démo'
 	String get sortieTitre => 'Fin de la démo';
 
-	/// fr: 'Vous retrouverez la démo en haut de la liste des sentiers.'
-	String get sortieEnTeteCatalogue => 'Vous retrouverez la démo en haut de la liste des sentiers.';
+	/// fr: 'La démo reste en haut de la liste des sentiers.'
+	String get sortieEnTeteCatalogue => 'La démo reste en haut de la liste des sentiers.';
 
-	/// fr: 'Le bouton ne s'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».'
-	String get sortieDansMonCompte => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».';
+	/// fr: 'Le bouton quitte le catalogue. La démo reste dans « Mon compte ».'
+	String get sortieDansMonCompte => 'Le bouton quitte le catalogue. La démo reste dans « Mon compte ».';
 
 	/// fr: 'Cacher le mode démo'
 	String get cacherLabel => 'Cacher le mode démo';
@@ -1845,8 +1845,8 @@ class Translations$demo$fr {
 	/// fr: 'Revoir la démo'
 	String get compteRelancer => 'Revoir la démo';
 
-	/// fr: 'Découvrez l'application de A à Z, sans rien engager'
-	String get compteRelancerSous => 'Découvrez l\'application de A à Z, sans rien engager';
+	/// fr: 'Toute l'application. Rien n'est enregistré.'
+	String get compteRelancerSous => 'Toute l\'application. Rien n\'est enregistré.';
 
 	/// fr: 'Afficher le bouton démo au catalogue'
 	String get compteReafficher => 'Afficher le bouton démo au catalogue';
@@ -1854,11 +1854,11 @@ class Translations$demo$fr {
 	/// fr: 'Le bouton revient en haut de la liste des sentiers'
 	String get compteReafficherSous => 'Le bouton revient en haut de la liste des sentiers';
 
-	/// fr: 'Ce sur quoi repose la réponse'
-	String get collecteTitre => 'Ce sur quoi repose la réponse';
+	/// fr: 'Ce qui a servi au calcul'
+	String get collecteTitre => 'Ce qui a servi au calcul';
 
-	/// fr: 'Voici les informations que l'application utilise pour calculer la faisabilité.'
-	String get collecteIntro => 'Voici les informations que l\'application utilise pour calculer la faisabilité.';
+	/// fr: 'Les informations utilisées pour calculer la faisabilité.'
+	String get collecteIntro => 'Les informations utilisées pour calculer la faisabilité.';
 
 	/// fr: 'Votre profil'
 	String get collecteProfil => 'Votre profil';
@@ -4156,8 +4156,8 @@ class Translations$systemBackup$fr {
 
 	// Translations
 
-	/// fr: 'Tes données restent sur ce téléphone'
-	String get title => 'Tes données restent sur ce téléphone';
+	/// fr: 'La sauvegarde de ton téléphone'
+	String get title => 'La sauvegarde de ton téléphone';
 
 	/// fr: 'Je refuse la sauvegarde de mes données sur le cloud Google'
 	String get refuseGoogle => 'Je refuse la sauvegarde de mes données sur le cloud Google';
@@ -4165,20 +4165,20 @@ class Translations$systemBackup$fr {
 	/// fr: 'Je refuse la sauvegarde de mes données sur iCloud'
 	String get refuseApple => 'Je refuse la sauvegarde de mes données sur iCloud';
 
-	/// fr: 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
-	String get explainGoogle => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
+	/// fr: 'Ton téléphone se sauvegarde chez Google. Cette case, cochée d'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
+	String get explainGoogle => 'Ton téléphone se sauvegarde chez Google. Cette case, cochée d\'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
 
-	/// fr: 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
-	String get explainApple => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
+	/// fr: 'Ton téléphone se sauvegarde sur iCloud. Cette case, cochée d'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.'
+	String get explainApple => 'Ton téléphone se sauvegarde sur iCloud. Cette case, cochée d\'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.';
 
-	/// fr: 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.'
-	String get cost => 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l\'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.';
+	/// fr: 'Si tu la laisses cochée et que tu changes de téléphone ou réinstalles l'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Sur ce téléphone, rien n'est effacé : un trek réalisé garde sa trace et son carnet à vie. Mais rien ne te suit ailleurs.'
+	String get cost => 'Si tu la laisses cochée et que tu changes de téléphone ou réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Sur ce téléphone, rien n\'est effacé : un trek réalisé garde sa trace et son carnet à vie. Mais rien ne te suit ailleurs.';
 
-	/// fr: 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n'y sont pas : copier les photos doublerait la place prise sur ton téléphone.'
-	String get whatComesBack => 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n\'y sont pas : copier les photos doublerait la place prise sur ton téléphone.';
+	/// fr: 'Si tu la décoches, ta progression, ton journal, tes treks réalisés et ta fiche médicale partent dans la sauvegarde, et reviennent sur ton prochain téléphone. Jamais tes photos ni tes réglages : copier les photos doublerait la place prise sur ton téléphone.'
+	String get whatComesBack => 'Si tu la décoches, ta progression, ton journal, tes treks réalisés et ta fiche médicale partent dans la sauvegarde, et reviennent sur ton prochain téléphone. Jamais tes photos ni tes réglages : copier les photos doublerait la place prise sur ton téléphone.';
 
-	/// fr: 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.'
-	String get notOurServers => 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.';
+	/// fr: 'Rien de tout ça ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système.'
+	String get notOurServers => 'Rien de tout ça ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système.';
 
 	/// fr: 'C'est noté'
 	String get confirm => 'C\'est noté';
@@ -4263,8 +4263,8 @@ class Translations$hub$trekCard$fr {
 	/// fr: 'Prêt à partir ?'
 	String get noTrekTitle => 'Prêt à partir ?';
 
-	/// fr: 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.'
-	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.';
+	/// fr: 'Planifiez votre itinéraire, puis lancez votre randonnée.'
+	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre randonnée.';
 
 	/// fr: 'Planifier ma randonnée'
 	String get plan => 'Planifier ma randonnée';
@@ -4323,8 +4323,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Faisabilité'
 	String get feasibility => 'Faisabilité';
 
-	/// fr: 'Évaluez votre niveau'
-	String get feasibilitySub => 'Évaluez votre niveau';
+	/// fr: 'À votre portée ?'
+	String get feasibilitySub => 'À votre portée ?';
 
 	/// fr: 'Itinéraire'
 	String get itinerary => 'Itinéraire';
@@ -4479,8 +4479,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Adapter l'itinéraire'
 	String get adjust => 'Adapter l\'itinéraire';
 
-	/// fr: 'Modifier mes jours à venir'
-	String get adjustSub => 'Modifier mes jours à venir';
+	/// fr: 'Modifier vos jours à venir'
+	String get adjustSub => 'Modifier vos jours à venir';
 }
 
 // Path: hub.fab
@@ -4512,8 +4512,8 @@ class Translations$hub$finishTrek$fr {
 	/// fr: 'Terminer le trek ?'
 	String get confirmTitle => 'Terminer le trek ?';
 
-	/// fr: 'Le trek sera marqué comme terminé. Les étapes non parcourues ne seront pas validées. Vous pourrez revoir votre aventure.'
-	String get confirmBody => 'Le trek sera marqué comme terminé. Les étapes non parcourues ne seront pas validées. Vous pourrez revoir votre aventure.';
+	/// fr: 'Le trek passe en terminé. Les étapes non parcourues ne seront pas validées.'
+	String get confirmBody => 'Le trek passe en terminé. Les étapes non parcourues ne seront pas validées.';
 
 	/// fr: 'Terminer'
 	String get confirm => 'Terminer';
@@ -4533,17 +4533,17 @@ class Translations$map$guide$fr {
 	/// fr: 'Boutons'
 	String get buttonsTitle => 'Boutons';
 
-	/// fr: 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l'application.'
-	String get position => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.';
+	/// fr: 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l'autorisation de localisation.'
+	String get position => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l\'autorisation de localisation.';
 
-	/// fr: 'Le tracé du sentier, dans sa couleur. C'est lui qui sert de référence à l'alerte hors trace.'
-	String get track => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.';
+	/// fr: 'Le tracé du sentier. L'alerte hors trace s'y réfère.'
+	String get track => 'Le tracé du sentier. L\'alerte hors trace s\'y réfère.';
 
-	/// fr: 'Ramène la carte sur votre position après l'avoir déplacée du doigt.'
-	String get centerOnMe => 'Ramène la carte sur votre position après l\'avoir déplacée du doigt.';
+	/// fr: 'Ramène la carte sur votre position.'
+	String get centerOnMe => 'Ramène la carte sur votre position.';
 
-	/// fr: 'Prend une photo pour le journal du jour, sans quitter la carte.'
-	String get photo => 'Prend une photo pour le journal du jour, sans quitter la carte.';
+	/// fr: 'Prend une photo pour le journal du jour.'
+	String get photo => 'Prend une photo pour le journal du jour.';
 
 	/// fr: 'Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.'
 	String get sos => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.';
@@ -4551,11 +4551,11 @@ class Translations$map$guide$fr {
 	/// fr: 'Visible seulement une fois la randonnée démarrée.'
 	String get onlyInTrek => 'Visible seulement une fois la randonnée démarrée.';
 
-	/// fr: 'Ce qu'il reste à marcher sur l'étape en cours. Un tiret signifie que la randonnée n'a pas encore démarré.'
-	String get currentStage => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret signifie que la randonnée n\'a pas encore démarré.';
+	/// fr: 'Ce qu'il reste à marcher sur l'étape en cours. Un tiret : la randonnée n'a pas démarré.'
+	String get currentStage => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret : la randonnée n\'a pas démarré.';
 
-	/// fr: 'S'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l'éteindre.'
-	String get offTrack => 'S\'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l\'éteindre.';
+	/// fr: 'S'allume quand vous vous éloignez du tracé. Revenez dessus pour l'éteindre.'
+	String get offTrack => 'S\'allume quand vous vous éloignez du tracé. Revenez dessus pour l\'éteindre.';
 
 	late final Translations$map$guide$poi$fr poi = Translations$map$guide$poi$fr.internal(_root);
 }
@@ -5651,23 +5651,23 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Oui. Ce sentier est à votre portée en ${days} jours.'
 	String answerGreen({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.';
 
-	/// fr: 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.'
-	String answerOrange({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.';
+	/// fr: 'Oui, en ${days} jours. Mais une journée sera dure.'
+	String answerOrange({required Object days}) => 'Oui, en ${days} jours. Mais une journée sera dure.';
 
-	/// fr: 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme d'ici le départ, ou partez hors été — c'est une journée qui décide, pas tout le sentier.'
-	String get answerRed => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.';
+	/// fr: 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme, ou partez hors été.'
+	String get answerRed => 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme, ou partez hors été.';
 
-	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.'
-	String answerDaysNote({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.';
+	/// fr: 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.'
+	String answerDaysNote({required Object walking, required Object rest}) => 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.';
 
-	/// fr: 'C'est le programme du sentier tel qu'il existe : ${walking} jours de marche.'
-	String answerNoRest({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.';
+	/// fr: 'Le sentier se marche en ${walking} jours.'
+	String answerNoRest({required Object walking}) => 'Le sentier se marche en ${walking} jours.';
 
 	/// fr: 'Comment ce résultat est calculé'
 	String get explainToggle => 'Comment ce résultat est calculé';
 
-	/// fr: 'On compare l'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.'
-	String get intro => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.';
+	/// fr: 'On compare l'effort de chaque journée à ce que tu peux tenir. Vert, orange ou rouge.'
+	String get intro => 'On compare l\'effort de chaque journée à ce que tu peux tenir. Vert, orange ou rouge.';
 
 	/// fr: 'Plafond conseillé : ${value} km-énergie/jour (${level})'
 	String ceilingLabel({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})';
@@ -5716,11 +5716,11 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Programme retenu : ${days} jours au total, marche et repos compris.'
 	String retainedPlan({required Object days}) => 'Programme retenu : ${days} jours au total, marche et repos compris.';
 
-	/// fr: 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.'
-	String retainedPlanNone({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.';
+	/// fr: 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total, marche et repos compris.'
+	String retainedPlanNone({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total, marche et repos compris.';
 
-	/// fr: '1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente, pas une règle maison.'
-	String get energyUnitNotice => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.';
+	/// fr: '1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente.'
+	String get energyUnitNotice => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente.';
 
 	/// fr: 'Verdict du circuit'
 	String get circuitTitle => 'Verdict du circuit';
@@ -5728,8 +5728,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Score du circuit : ${value} — vert jusqu'à ${green}, orange jusqu'à ${orange}, rouge au-delà.'
 	String circuitScore({required Object value, required Object green, required Object orange}) => 'Score du circuit : ${value} — vert jusqu\'à ${green}, orange jusqu\'à ${orange}, rouge au-delà.';
 
-	/// fr: 'Le verdict du circuit est celui de ta journée la plus dure : rien d'autre ne le durcit.'
-	String get circuitIsWorstStage => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.';
+	/// fr: 'Le verdict du circuit est celui de ta journée la plus dure.'
+	String get circuitIsWorstStage => 'Le verdict du circuit est celui de ta journée la plus dure.';
 
 	/// fr: 'Repos mesuré sur le trek entier (${days} jours).'
 	String restWindowWhole({required Object days}) => 'Repos mesuré sur le trek entier (${days} jours).';
@@ -5737,77 +5737,77 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Repos mesuré sur la pire semaine : jours ${start} à ${end}.'
 	String restWindowSlice({required Object start, required Object end}) => 'Repos mesuré sur la pire semaine : jours ${start} à ${end}.';
 
-	/// fr: 'Le repos ne se calcule pas sur un sentier d'une seule journée : il n'y a pas d'enchaînement à mesurer. La contrainte est déclarée non applicable, elle n'est pas remplacée par un chiffre.'
-	String get restNotApplicable => 'Le repos ne se calcule pas sur un sentier d\'une seule journée : il n\'y a pas d\'enchaînement à mesurer. La contrainte est déclarée non applicable, elle n\'est pas remplacée par un chiffre.';
+	/// fr: 'Un sentier d'une seule journée n'a pas d'enchaînement : le repos ne se calcule pas.'
+	String get restNotApplicable => 'Un sentier d\'une seule journée n\'a pas d\'enchaînement : le repos ne se calcule pas.';
 
-	/// fr: 'Le seuil de repos vient d'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C'est une transposition, et elle est dite.'
-	String get restExtrapolation => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C\'est une transposition, et elle est dite.';
+	/// fr: 'Le seuil de repos vient d'une mesure faite sur des sportifs, transposée à la randonnée.'
+	String get restExtrapolation => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée.';
 
-	/// fr: 'Ce chiffre s'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.'
-	String get restNotDecisive => 'Ce chiffre s\'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.';
+	/// fr: 'Ce chiffre conseille, il ne décide pas. Le verdict suit ta journée la plus dure.'
+	String get restNotDecisive => 'Ce chiffre conseille, il ne décide pas. Le verdict suit ta journée la plus dure.';
 
 	/// fr: 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.'
 	String restAdvisedLine({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.';
 
-	/// fr: 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.'
-	String get restTwoDays => 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.';
+	/// fr: 'Des journées de même taille demandent deux jours de repos par semaine, pas un.'
+	String get restTwoDays => 'Des journées de même taille demandent deux jours de repos par semaine, pas un.';
 
 	/// fr: 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).'
 	String habitGap({required Object value}) => 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).';
 
-	/// fr: 'Cet écart est affiché, jamais décisif : aucune étude ne démontre qu'il cause quoi que ce soit.'
-	String get habitGapNotDecisive => 'Cet écart est affiché, jamais décisif : aucune étude ne démontre qu\'il cause quoi que ce soit.';
+	/// fr: 'Cet écart ne décide de rien : aucune étude ne lui donne d'effet.'
+	String get habitGapNotDecisive => 'Cet écart ne décide de rien : aucune étude ne lui donne d\'effet.';
 
 	/// fr: 'Ce qui est entré dans ce verdict'
 	String get conditionsTitle => 'Ce qui est entré dans ce verdict';
 
-	/// fr: 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c'est lui qui sert de base. On ne te dira jamais que tu ne peux pas faire ce que tu as déjà fait.'
-	String floorActive({required Object value}) => 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c\'est lui qui sert de base. On ne te dira jamais que tu ne peux pas faire ce que tu as déjà fait.';
+	/// fr: 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c'est lui qui sert de base.'
+	String floorActive({required Object value}) => 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c\'est lui qui sert de base.';
 
 	/// fr: 'Altitude : ${value} m au point le plus haut, ta capacité du jour baisse de ${pct} %.'
 	String altitudeApplied({required Object value, required Object pct}) => 'Altitude : ${value} m au point le plus haut, ta capacité du jour baisse de ${pct} %.';
 
-	/// fr: 'Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.'
-	String altitudeBelowThreshold({required Object value}) => 'Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.';
+	/// fr: 'Altitude : ${value} m au plus haut. Elle ne compte qu'à partir de 1 500 m.'
+	String altitudeBelowThreshold({required Object value}) => 'Altitude : ${value} m au plus haut. Elle ne compte qu\'à partir de 1 500 m.';
 
-	/// fr: 'Altitude : la trace de ce sentier n'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu'elle serait sans effet.'
-	String get altitudeMissing => 'Altitude : la trace de ce sentier n\'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu\'elle serait sans effet.';
+	/// fr: 'Altitude : la trace de ce sentier n'en porte pas. Faute de donnée, elle ne change rien ici.'
+	String get altitudeMissing => 'Altitude : la trace de ce sentier n\'en porte pas. Faute de donnée, elle ne change rien ici.';
 
 	/// fr: 'Départ en été : la capacité aérobie baisse de 7 %, c'est mesuré.'
 	String get heatApplied => 'Départ en été : la capacité aérobie baisse de 7 %, c\'est mesuré.';
 
-	/// fr: 'Départ au printemps ou en automne : ce verdict s'applique tel quel. Seul l'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n'est appliqué.'
-	String get seasonNoSource => 'Départ au printemps ou en automne : ce verdict s\'applique tel quel. Seul l\'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n\'est appliqué.';
+	/// fr: 'Départ au printemps ou en automne : rien n'est appliqué. Seul l'été porte une mesure, 7 % de capacité aérobie en moins.'
+	String get seasonNoSource => 'Départ au printemps ou en automne : rien n\'est appliqué. Seul l\'été porte une mesure, 7 % de capacité aérobie en moins.';
 
-	/// fr: 'Ce verdict est calculé sans effet de saison : aucune date de départ n'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.'
-	String get seasonMissing => 'Ce verdict est calculé sans effet de saison : aucune date de départ n\'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.';
+	/// fr: 'Aucune date de départ n'est posée : ce verdict vaut pour un départ hors été. En été, il durcit de 7 %. La date se pose au Calendrier.'
+	String get seasonMissing => 'Aucune date de départ n\'est posée : ce verdict vaut pour un départ hors été. En été, il durcit de 7 %. La date se pose au Calendrier.';
 
-	/// fr: 'Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.'
-	String get massNotCounted => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.';
+	/// fr: 'Ni ton poids ni celui de ton sac n'entrent dans ce verdict : il mesure ce que tu as déjà tenu. À 65 ou à 95 kg, même verdict.'
+	String get massNotCounted => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict : il mesure ce que tu as déjà tenu. À 65 ou à 95 kg, même verdict.';
 
-	/// fr: 'L'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l'âge, c'est mesuré — ce n'est pas un jugement sur toi.'
-	String get ageCounted => 'L\'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré — ce n\'est pas un jugement sur toi.';
+	/// fr: 'L'âge, lui, compte : il fixe la distance de référence de ton test de marche, et il abaisse ton niveau d'un cran à 60 ans, de deux à 75. La capacité aérobie baisse avec l'âge, c'est mesuré.'
+	String get ageCounted => 'L\'âge, lui, compte : il fixe la distance de référence de ton test de marche, et il abaisse ton niveau d\'un cran à 60 ans, de deux à 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré.';
 
-	/// fr: 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.'
-	String get winterInvalid => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.';
+	/// fr: 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps et terrain sec.'
+	String get winterInvalid => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps et terrain sec.';
 
 	/// fr: 'Jours de repos comptés dans ce verdict : ${count}.'
 	String restDaysCounted({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.';
 
-	/// fr: 'Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.'
-	String get restDaysNone => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.';
+	/// fr: 'Aucun jour de repos dans ton programme : poses-en et ce chiffre bouge.'
+	String get restDaysNone => 'Aucun jour de repos dans ton programme : poses-en et ce chiffre bouge.';
 
 	/// fr: 'Charge moyenne des journées : ${value} (la pire est à ${worst}).'
 	String averageLoad({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire est à ${worst}).';
 
-	/// fr: 'Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.'
-	String get averageLoadInfo => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.';
+	/// fr: 'Loin l'un de l'autre : le trek a une journée dure. Proches : il est dur tous les jours. Ce constat ne décide pas.'
+	String get averageLoadInfo => 'Loin l\'un de l\'autre : le trek a une journée dure. Proches : il est dur tous les jours. Ce constat ne décide pas.';
 
 	/// fr: 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d'affilée.'
 	String durationStatement({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d\'affilée.';
 
-	/// fr: 'Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.'
-	String get durationStatementInfo => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.';
+	/// fr: 'Ce constat ne décide pas : aucune mesure ne dit à partir de combien de jours enchaînés on décroche. À toi d'en juger.'
+	String get durationStatementInfo => 'Ce constat ne décide pas : aucune mesure ne dit à partir de combien de jours enchaînés on décroche. À toi d\'en juger.';
 
 	/// fr: 'Ce qui pèse le plus sur cette journée : ${factor}'
 	String stageDominantFactor({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}';
@@ -5818,8 +5818,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.'
 	String verdictHowStage({required Object stage, required Object distance, required Object elevation}) => 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.';
 
-	/// fr: 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.'
-	String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.';
+	/// fr: 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}.'
+	String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}.';
 
 	/// fr: 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).'
 	String verdictHowCeiling({required Object capacity, required Object level}) => 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).';
@@ -5827,8 +5827,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: '${energy} ÷ ${capacity} = ${score}. Jusqu'à ${green} c'est vert, jusqu'à ${orange} c'est orange, au-delà c'est rouge.'
 	String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.';
 
-	/// fr: 'Rien ici ne sort d'une boîte noire : c'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l'unité d'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur.'
-	String get verdictHowNoBlackBox => 'Rien ici ne sort d\'une boîte noire : c\'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.';
+	/// fr: 'Ce rapport est tout le calcul. Trois travaux le nourrissent : Minetti 2002 pour l'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur.'
+	String get verdictHowNoBlackBox => 'Ce rapport est tout le calcul. Trois travaux le nourrissent : Minetti 2002 pour l\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.';
 }
 
 // Path: feasibility.flow
@@ -5842,8 +5842,8 @@ class Translations$feasibility$flow$fr {
 	/// fr: 'Es-tu prêt pour ce trek ?'
 	String get title => 'Es-tu prêt pour ce trek ?';
 
-	/// fr: 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.'
-	String get intro => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.';
+	/// fr: 'Trois étapes rapides, et on te dit si ce trek est faisable.'
+	String get intro => 'Trois étapes rapides, et on te dit si ce trek est faisable.';
 
 	/// fr: '${done}/${total} étapes remplies'
 	String progress({required Object done, required Object total}) => '${done}/${total} étapes remplies';
@@ -5857,8 +5857,8 @@ class Translations$feasibility$flow$fr {
 	/// fr: 'Test de marche 6 minutes'
 	String get stepWalkTest => 'Test de marche 6 minutes';
 
-	/// fr: 'Mesure ta forme du moment — fait bouger ton résultat.'
-	String get stepWalkTestSub => 'Mesure ta forme du moment — fait bouger ton résultat.';
+	/// fr: 'Mesure ta forme du moment : elle fait bouger ton résultat.'
+	String get stepWalkTestSub => 'Mesure ta forme du moment : elle fait bouger ton résultat.';
 
 	/// fr: 'Tes 5 dernières randos'
 	String get stepPastHikes => 'Tes 5 dernières randos';
@@ -5872,14 +5872,14 @@ class Translations$feasibility$flow$fr {
 	/// fr: 'Valider et voir mon résultat'
 	String get validate => 'Valider et voir mon résultat';
 
-	/// fr: 'Résultat provisoire : le test de marche 6 minutes n'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.'
-	String get partialNotice => 'Résultat provisoire : le test de marche 6 minutes n\'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.';
+	/// fr: 'Résultat provisoire : le test de marche n'est pas fait, ton niveau est estimé. Fais le test pour un vrai verdict.'
+	String get partialNotice => 'Résultat provisoire : le test de marche n\'est pas fait, ton niveau est estimé. Fais le test pour un vrai verdict.';
 
 	/// fr: 'Il manque des informations pour te répondre'
 	String get missingTitle => 'Il manque des informations pour te répondre';
 
-	/// fr: 'Le verdict n'apparaît qu'une fois tous les critères nécessaires renseignés. Il te reste à remplir :'
-	String get missingIntro => 'Le verdict n\'apparaît qu\'une fois tous les critères nécessaires renseignés. Il te reste à remplir :';
+	/// fr: 'Il te reste à remplir :'
+	String get missingIntro => 'Il te reste à remplir :';
 
 	/// fr: 'Ta fiche d'info complète : âge, taille et poids'
 	String get missingProfile => 'Ta fiche d\'info complète : âge, taille et poids';
@@ -5887,11 +5887,11 @@ class Translations$feasibility$flow$fr {
 	/// fr: 'Au moins une de tes 5 dernières randos'
 	String get missingPastHikes => 'Au moins une de tes 5 dernières randos';
 
-	/// fr: 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.'
-	String get missingWalkTestNote => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.';
+	/// fr: 'Le test de 6 minutes reste optionnel : sans lui, ton résultat est provisoire.'
+	String get missingWalkTestNote => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat est provisoire.';
 
-	/// fr: 'Complète les critères ci-dessus : c'est là que se décide ton verdict.'
-	String get hintBlocked => 'Complète les critères ci-dessus : c\'est là que se décide ton verdict.';
+	/// fr: 'Complète les critères ci-dessus.'
+	String get hintBlocked => 'Complète les critères ci-dessus.';
 
 	/// fr: 'Tout y est : tu peux voir ton résultat.'
 	String get hintReady => 'Tout y est : tu peux voir ton résultat.';
@@ -6915,11 +6915,11 @@ class Translations$programme$duration$fr {
 	/// fr: '{total} j au total (dont {rest} de repos)'
 	String get daysWithRest => '{total} j au total (dont {rest} de repos)';
 
-	/// fr: 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d'une journée de marche, et le verdict suit la journée la plus dure.'
-	String get splitNote => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.';
+	/// fr: 'Plus de jours = des jours de repos. Ils ne rendent aucune journée plus facile.'
+	String get splitNote => 'Plus de jours = des jours de repos. Ils ne rendent aucune journée plus facile.';
 
-	/// fr: 'Chaque étape a déjà sa journée : un jour de plus n'ajoutera que du repos, et le repos ne changera pas le verdict.'
-	String get splitExhausted => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.';
+	/// fr: 'Impossible d'étaler plus : chaque étape a déjà sa journée.'
+	String get splitExhausted => 'Impossible d\'étaler plus : chaque étape a déjà sa journée.';
 
 	/// fr: '{count} j au total'
 	String get daysTotal => '{count} j au total';
@@ -7827,29 +7827,29 @@ class Translations$map$guide$poi$fr {
 
 	// Translations
 
-	/// fr: 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l'avoir vérifiée.'
-	String get water => 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l\'avoir vérifiée.';
+	/// fr: 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.'
+	String get water => 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.';
 
-	/// fr: 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.'
-	String get shelter => 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.';
+	/// fr: 'Refuge ou abri. Touchez le repère : altitude, services, contact.'
+	String get shelter => 'Refuge ou abri. Touchez le repère : altitude, services, contact.';
 
-	/// fr: 'Hébergement autre qu'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l'établissement.'
-	String get accommodation => 'Hébergement autre qu\'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l\'établissement.';
+	/// fr: 'Gîte, chambre ou hôtel. Vous réservez auprès de l'établissement.'
+	String get accommodation => 'Gîte, chambre ou hôtel. Vous réservez auprès de l\'établissement.';
 
-	/// fr: 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.'
-	String get campsite => 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.';
+	/// fr: 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.'
+	String get campsite => 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.';
 
-	/// fr: 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.'
-	String get shop => 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.';
+	/// fr: 'Commerce où vous ravitailler. Horaires non garantis hors saison.'
+	String get shop => 'Commerce où vous ravitailler. Horaires non garantis hors saison.';
 
 	/// fr: 'Restaurant ou table d'hôtes sur le parcours ou tout près.'
 	String get restaurant => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.';
 
-	/// fr: 'Point de vue remarquable. Repère pour la halte, pas pour l'orientation.'
-	String get viewpoint => 'Point de vue remarquable. Repère pour la halte, pas pour l\'orientation.';
+	/// fr: 'Point de vue remarquable. Bon pour la halte.'
+	String get viewpoint => 'Point de vue remarquable. Bon pour la halte.';
 
-	/// fr: 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.'
-	String get danger => 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.';
+	/// fr: 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.'
+	String get danger => 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.';
 
 	/// fr: 'Point de secours : poste, héliport ou borne d'appel d'urgence.'
 	String get emergency => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.';
@@ -8022,38 +8022,38 @@ class Translations$feasibility$formula$advice$fr {
 
 	// Translations
 
-	/// fr: 'Ton programme est équilibré : garde une marge et écoute ton corps.'
-	String get balancedOk => 'Ton programme est équilibré : garde une marge et écoute ton corps.';
+	/// fr: 'Ton programme est équilibré.'
+	String get balancedOk => 'Ton programme est équilibré.';
 
-	/// fr: 'Répartis les étapes pour lisser l'effort au fil des jours.'
-	String get balanced => 'Répartis les étapes pour lisser l\'effort au fil des jours.';
+	/// fr: 'Répartis les étapes pour lisser l'effort.'
+	String get balanced => 'Répartis les étapes pour lisser l\'effort.';
 
-	/// fr: 'Vise ${walk} jours de marche, au lieu des ${current} jours d'aujourd'hui. Nous conseillons en plus ${rest} jour(s) de repos : c'est un conseil, ils ne changent pas le verdict.'
-	String optimalDays({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche, au lieu des ${current} jours d\'aujourd\'hui. Nous conseillons en plus ${rest} jour(s) de repos : c\'est un conseil, ils ne changent pas le verdict.';
+	/// fr: 'Vise ${walk} jours de marche au lieu de ${current}. Plus ${rest} jour(s) de repos conseillés.'
+	String optimalDays({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche au lieu de ${current}. Plus ${rest} jour(s) de repos conseillés.';
 
-	/// fr: 'Prévois un jour de repos après la journée ${stages} de ton programme.'
-	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.';
+	/// fr: 'Pose un jour de repos après la journée ${stages}.'
+	String rest({required Object stages}) => 'Pose un jour de repos après la journée ${stages}.';
 
-	/// fr: 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).'
-	String training({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).';
+	/// fr: 'Entraîne-toi ${weeks} semaines avant le départ.'
+	String training({required Object weeks}) => 'Entraîne-toi ${weeks} semaines avant le départ.';
 
-	/// fr: 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
-	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+	/// fr: 'Pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.'
+	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.';
 
-	/// fr: 'Vise ${walk} jours de marche : c'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.'
-	String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Vise ${walk} jours de marche : c\'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.';
+	/// fr: 'Vise les ${walk} jours de marche du sentier. Plus ${rest} jour(s) de repos conseillés.'
+	String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Vise les ${walk} jours de marche du sentier. Plus ${rest} jour(s) de repos conseillés.';
 
-	/// fr: 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s'arrête là où il y a un toit. La réponse, c'est l'entraînement : monter d'un cran relève ton plafond, et cette journée repasse dessous.'
-	String hardStageAlert({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.';
+	/// fr: 'La journée ${stage} dépasse ton plafond. On ne peut pas la raccourcir : une étape s'arrête là où il y a un toit. Entraîne-toi, ton plafond monte et cette journée repasse dessous.'
+	String hardStageAlert({required Object stage}) => 'La journée ${stage} dépasse ton plafond. On ne peut pas la raccourcir : une étape s\'arrête là où il y a un toit. Entraîne-toi, ton plafond monte et cette journée repasse dessous.';
 
-	/// fr: 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c'est l'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t'attend.'
-	String noViableDuration({required Object stage}) => 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c\'est l\'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t\'attend.';
+	/// fr: 'Ajouter des jours n'y changera rien : même sur le programme le plus étalé, la journée ${stage} reste au-dessus de ton plafond. Entraîne-toi, ou pars hors été. Sinon, choisis un sentier moins dur.'
+	String noViableDuration({required Object stage}) => 'Ajouter des jours n\'y changera rien : même sur le programme le plus étalé, la journée ${stage} reste au-dessus de ton plafond. Entraîne-toi, ou pars hors été. Sinon, choisis un sentier moins dur.';
 
-	/// fr: 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n'as pas encore choisi le tien.'
-	String restReference({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien.';
+	/// fr: 'Tu n'as pas encore choisi ton programme. Sur celui du sentier, pose un jour de repos après la journée ${stages}.'
+	String restReference({required Object stages}) => 'Tu n\'as pas encore choisi ton programme. Sur celui du sentier, pose un jour de repos après la journée ${stages}.';
 
-	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
-	String restAdvisedReference({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+	/// fr: 'Tu n'as pas encore choisi ton programme. Sur celui du sentier, pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.'
+	String restAdvisedReference({required Object days, required Object stages}) => 'Tu n\'as pas encore choisi ton programme. Sur celui du sentier, pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.';
 }
 
 // Path: signalement.water.states
@@ -8223,8 +8223,8 @@ class Translations$programme$info$mergeSplit$fr {
 	/// fr: 'Regrouper / Dégrouper'
 	String get title => 'Regrouper / Dégrouper';
 
-	/// fr: 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l'alléger passe par la forme ou la saison, un jour de repos n'y change rien.'
-	String get body => 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s\'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l\'alléger passe par la forme ou la saison, un jour de repos n\'y change rien.';
+	/// fr: 'Regrouper réunit deux jours en un. Dégrouper rend à chaque étape sa journée. Une étape reste entière : elle s'arrête là où il y a un toit.'
+	String get body => 'Regrouper réunit deux jours en un. Dégrouper rend à chaque étape sa journée. Une étape reste entière : elle s\'arrête là où il y a un toit.';
 }
 
 // Path: programme.info.colors
@@ -8403,7 +8403,7 @@ extension on Translations {
 			'hub.greetingFallback' => 'Randonneur',
 			'hub.infoTooltip' => 'À propos de ce sentier',
 			'hub.profileTooltip' => 'Mon profil',
-			'hub.infoSheetBody' => 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d\'accueil.',
+			'hub.infoSheetBody' => 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.',
 			'hub.trekCard.activeTitle' => 'Randonnée en cours',
 			'hub.trekCard.distanceCovered' => 'Distance parcourue',
 			'hub.trekCard.elevationGain' => 'Dénivelé du jour',
@@ -8411,14 +8411,14 @@ extension on Translations {
 			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % du sentier',
 			'hub.trekCard.resume' => 'Reprendre la navigation',
 			'hub.trekCard.noTrekTitle' => 'Prêt à partir ?',
-			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.',
+			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre randonnée.',
 			'hub.trekCard.plan' => 'Planifier ma randonnée',
 			'hub.trekCard.completedTitle' => 'Trek terminé',
 			'hub.weather.title' => 'Météo du jour',
 			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
 			'hub.weather.alertStorm' => 'Alerte orage',
 			'hub.startCta' => 'Démarrer la randonnée',
-			'hub.startGateHint' => 'Complète d\'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.',
+			'hub.startGateHint' => 'Pour démarrer : Itinéraire, Calendrier, Programme, et Fiche médicale avec ses conseils lus.',
 			'hub.prepareExpand' => 'Voir la préparation',
 			'hub.prepareCollapse' => 'Réduire',
 			'hub.sections.prepare' => 'Préparer',
@@ -8426,7 +8426,7 @@ extension on Translations {
 			'hub.sections.info' => 'Informations',
 			'hub.sections.after' => 'Après la randonnée',
 			'hub.cards.feasibility' => 'Faisabilité',
-			'hub.cards.feasibilitySub' => 'Évaluez votre niveau',
+			'hub.cards.feasibilitySub' => 'À votre portée ?',
 			'hub.cards.itinerary' => 'Itinéraire',
 			'hub.cards.itinerarySub' => 'Le déroulé de vos étapes',
 			'hub.cards.programme' => 'Programme',
@@ -8478,12 +8478,12 @@ extension on Translations {
 			'hub.cards.fire' => 'Incendie',
 			'hub.cards.fireSub' => 'Risques & alertes',
 			'hub.cards.adjust' => 'Adapter l\'itinéraire',
-			'hub.cards.adjustSub' => 'Modifier mes jours à venir',
+			'hub.cards.adjustSub' => 'Modifier vos jours à venir',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Terminer le trek',
 			'hub.finishTrek.confirmTitle' => 'Terminer le trek ?',
-			'hub.finishTrek.confirmBody' => 'Le trek sera marqué comme terminé. Les étapes non parcourues ne seront pas validées. Vous pourrez revoir votre aventure.',
+			'hub.finishTrek.confirmBody' => 'Le trek passe en terminé. Les étapes non parcourues ne seront pas validées.',
 			'hub.finishTrek.confirm' => 'Terminer',
 			'hub.finishTrek.cancel' => 'Annuler',
 			'map.title' => 'Carte du sentier',
@@ -8496,24 +8496,24 @@ extension on Translations {
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
 			'map.perimetreEtape' => 'Étape',
-			'map.perimetreSentier' => 'Sentier entier',
+			'map.perimetreSentier' => 'Sentier',
 			'map.guide.buttonsTitle' => 'Boutons',
-			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.',
-			'map.guide.track' => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.',
-			'map.guide.centerOnMe' => 'Ramène la carte sur votre position après l\'avoir déplacée du doigt.',
-			'map.guide.photo' => 'Prend une photo pour le journal du jour, sans quitter la carte.',
+			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l\'autorisation de localisation.',
+			'map.guide.track' => 'Le tracé du sentier. L\'alerte hors trace s\'y réfère.',
+			'map.guide.centerOnMe' => 'Ramène la carte sur votre position.',
+			'map.guide.photo' => 'Prend une photo pour le journal du jour.',
 			'map.guide.sos' => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.',
 			'map.guide.onlyInTrek' => 'Visible seulement une fois la randonnée démarrée.',
-			'map.guide.currentStage' => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret signifie que la randonnée n\'a pas encore démarré.',
-			'map.guide.offTrack' => 'S\'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l\'éteindre.',
-			'map.guide.poi.water' => 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l\'avoir vérifiée.',
-			'map.guide.poi.shelter' => 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.',
-			'map.guide.poi.accommodation' => 'Hébergement autre qu\'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l\'établissement.',
-			'map.guide.poi.campsite' => 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.',
-			'map.guide.poi.shop' => 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.',
+			'map.guide.currentStage' => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret : la randonnée n\'a pas démarré.',
+			'map.guide.offTrack' => 'S\'allume quand vous vous éloignez du tracé. Revenez dessus pour l\'éteindre.',
+			'map.guide.poi.water' => 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.',
+			'map.guide.poi.shelter' => 'Refuge ou abri. Touchez le repère : altitude, services, contact.',
+			'map.guide.poi.accommodation' => 'Gîte, chambre ou hôtel. Vous réservez auprès de l\'établissement.',
+			'map.guide.poi.campsite' => 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.',
+			'map.guide.poi.shop' => 'Commerce où vous ravitailler. Horaires non garantis hors saison.',
 			'map.guide.poi.restaurant' => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.',
-			'map.guide.poi.viewpoint' => 'Point de vue remarquable. Repère pour la halte, pas pour l\'orientation.',
-			'map.guide.poi.danger' => 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.',
+			'map.guide.poi.viewpoint' => 'Point de vue remarquable. Bon pour la halte.',
+			'map.guide.poi.danger' => 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.',
 			'map.guide.poi.emergency' => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.',
 			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
@@ -9123,7 +9123,7 @@ extension on Translations {
 			'auth.errorTimeout' => 'Le compte n\'a pas répondu. Vérifiez votre connexion, puis réessayez.',
 			'feasibility.restart' => 'Recommencer',
 			'feasibility.objectiveTitle' => 'Faisabilité pour ce trek',
-			'feasibility.objectiveIntro' => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.',
+			'feasibility.objectiveIntro' => 'Ce verdict croise votre profil réel et les exigences du trek.',
 			'feasibility.openProfile' => 'Ma fiche d\'info',
 			'feasibility.openWalkTest' => 'Test 6 minutes',
 			'feasibility.openPastHikes' => 'Mes 5 dernières randos',
@@ -9140,12 +9140,12 @@ extension on Translations {
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
 			'feasibility.formula.answerTitle' => 'Est-ce faisable pour vous ?',
 			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.',
-			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours — mais une journée sera exigeante pour vous.',
-			'feasibility.formula.answerRed' => 'Pas encore : une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme d\'ici le départ, ou partez hors été — c\'est une journée qui décide, pas tout le sentier.',
-			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche. Nous conseillons ${rest} jour(s) de repos en plus — un conseil, il ne change pas le verdict.',
-			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'C\'est le programme du sentier tel qu\'il existe : ${walking} jours de marche.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours. Mais une journée sera dure.',
+			'feasibility.formula.answerRed' => 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme, ou partez hors été.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Le sentier se marche en ${walking} jours.',
 			'feasibility.formula.explainToggle' => 'Comment ce résultat est calculé',
-			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.',
+			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée à ce que tu peux tenir. Vert, orange ou rouge.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})',
 			'feasibility.formula.stagesTitle' => 'Jour par jour',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-énergie',
@@ -9172,74 +9172,74 @@ extension on Translations {
 			'feasibility.formula.limitingFactors.none' => 'aucun',
 			'feasibility.formula.limitingFactors.altitude' => 'l\'altitude',
 			'feasibility.formula.limitingFactors.heat' => 'la chaleur de la saison',
-			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré : garde une marge et écoute ton corps.',
-			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
-			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche, au lieu des ${current} jours d\'aujourd\'hui. Nous conseillons en plus ${rest} jour(s) de repos : c\'est un conseil, ils ne changent pas le verdict.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.',
-			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
-			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Vise ${walk} jours de marche : c\'est le programme de référence du sentier. Nous conseillons en plus ${rest} jour(s) de repos — un conseil, ils ne changent pas le verdict.',
-			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.',
-			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Ajouter des jours ne changera pas ce verdict : la journée ${stage} reste au-dessus de ton plafond, même sur le programme le plus étalé du sentier. Ce qui le changera, c\'est l\'entraînement — il relève ton plafond — ou un départ hors été. Sinon, un sentier moins exigeant t\'attend.',
-			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien.',
-			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du programme de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
+			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré.',
+			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Vise ${walk} jours de marche au lieu de ${current}. Plus ${rest} jour(s) de repos conseillés.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Pose un jour de repos après la journée ${stages}.',
+			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entraîne-toi ${weeks} semaines avant le départ.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Vise les ${walk} jours de marche du sentier. Plus ${rest} jour(s) de repos conseillés.',
+			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La journée ${stage} dépasse ton plafond. On ne peut pas la raccourcir : une étape s\'arrête là où il y a un toit. Entraîne-toi, ton plafond monte et cette journée repasse dessous.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Ajouter des jours n\'y changera rien : même sur le programme le plus étalé, la journée ${stage} reste au-dessus de ton plafond. Entraîne-toi, ou pars hors été. Sinon, choisis un sentier moins dur.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Tu n\'as pas encore choisi ton programme. Sur celui du sentier, pose un jour de repos après la journée ${stages}.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Tu n\'as pas encore choisi ton programme. Sur celui du sentier, pose ${days} jour(s) de repos après les journées ${stages} : elles se ressemblent trop pour que le corps récupère.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Programme retenu : ${days} jours au total, marche et repos compris.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.',
-			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun programme retenu : le sentier reste sur ses ${days} jours au total, marche et repos compris.',
+			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente.',
 			'feasibility.formula.circuitTitle' => 'Verdict du circuit',
 			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Score du circuit : ${value} — vert jusqu\'à ${green}, orange jusqu\'à ${orange}, rouge au-delà.',
-			'feasibility.formula.circuitIsWorstStage' => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.',
+			'feasibility.formula.circuitIsWorstStage' => 'Le verdict du circuit est celui de ta journée la plus dure.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Repos mesuré sur le trek entier (${days} jours).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Repos mesuré sur la pire semaine : jours ${start} à ${end}.',
-			'feasibility.formula.restNotApplicable' => 'Le repos ne se calcule pas sur un sentier d\'une seule journée : il n\'y a pas d\'enchaînement à mesurer. La contrainte est déclarée non applicable, elle n\'est pas remplacée par un chiffre.',
-			'feasibility.formula.restExtrapolation' => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C\'est une transposition, et elle est dite.',
-			'feasibility.formula.restNotDecisive' => 'Ce chiffre s\'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.',
+			'feasibility.formula.restNotApplicable' => 'Un sentier d\'une seule journée n\'a pas d\'enchaînement : le repos ne se calcule pas.',
+			'feasibility.formula.restExtrapolation' => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée.',
+			'feasibility.formula.restNotDecisive' => 'Ce chiffre conseille, il ne décide pas. Le verdict suit ta journée la plus dure.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.',
-			'feasibility.formula.restTwoDays' => 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.',
+			'feasibility.formula.restTwoDays' => 'Des journées de même taille demandent deux jours de repos par semaine, pas un.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).',
-			'feasibility.formula.habitGapNotDecisive' => 'Cet écart est affiché, jamais décisif : aucune étude ne démontre qu\'il cause quoi que ce soit.',
+			'feasibility.formula.habitGapNotDecisive' => 'Cet écart ne décide de rien : aucune étude ne lui donne d\'effet.',
 			'feasibility.formula.conditionsTitle' => 'Ce qui est entré dans ce verdict',
-			'feasibility.formula.floorActive' => ({required Object value}) => 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c\'est lui qui sert de base. On ne te dira jamais que tu ne peux pas faire ce que tu as déjà fait.',
+			'feasibility.formula.floorActive' => ({required Object value}) => 'Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c\'est lui qui sert de base.',
 			'feasibility.formula.altitudeApplied' => ({required Object value, required Object pct}) => 'Altitude : ${value} m au point le plus haut, ta capacité du jour baisse de ${pct} %.',
-			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.',
-			'feasibility.formula.altitudeMissing' => 'Altitude : la trace de ce sentier n\'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu\'elle serait sans effet.',
+			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude : ${value} m au plus haut. Elle ne compte qu\'à partir de 1 500 m.',
+			'feasibility.formula.altitudeMissing' => 'Altitude : la trace de ce sentier n\'en porte pas. Faute de donnée, elle ne change rien ici.',
 			'feasibility.formula.heatApplied' => 'Départ en été : la capacité aérobie baisse de 7 %, c\'est mesuré.',
-			'feasibility.formula.seasonNoSource' => 'Départ au printemps ou en automne : ce verdict s\'applique tel quel. Seul l\'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n\'est appliqué.',
-			'feasibility.formula.seasonMissing' => 'Ce verdict est calculé sans effet de saison : aucune date de départ n\'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.',
-			'feasibility.formula.massNotCounted' => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.',
-			'feasibility.formula.ageCounted' => 'L\'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré — ce n\'est pas un jugement sur toi.',
-			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.',
+			'feasibility.formula.seasonNoSource' => 'Départ au printemps ou en automne : rien n\'est appliqué. Seul l\'été porte une mesure, 7 % de capacité aérobie en moins.',
+			'feasibility.formula.seasonMissing' => 'Aucune date de départ n\'est posée : ce verdict vaut pour un départ hors été. En été, il durcit de 7 %. La date se pose au Calendrier.',
+			'feasibility.formula.massNotCounted' => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict : il mesure ce que tu as déjà tenu. À 65 ou à 95 kg, même verdict.',
+			'feasibility.formula.ageCounted' => 'L\'âge, lui, compte : il fixe la distance de référence de ton test de marche, et il abaisse ton niveau d\'un cran à 60 ans, de deux à 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré.',
+			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps et terrain sec.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.',
-			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.',
+			'feasibility.formula.restDaysNone' => 'Aucun jour de repos dans ton programme : poses-en et ce chiffre bouge.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire est à ${worst}).',
-			'feasibility.formula.averageLoadInfo' => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.',
+			'feasibility.formula.averageLoadInfo' => 'Loin l\'un de l\'autre : le trek a une journée dure. Proches : il est dur tous les jours. Ce constat ne décide pas.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d\'affilée.',
-			'feasibility.formula.durationStatementInfo' => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.',
+			'feasibility.formula.durationStatementInfo' => 'Ce constat ne décide pas : aucune mesure ne dit à partir de combien de jours enchaînés on décroche. À toi d\'en juger.',
 			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}',
 			'feasibility.formula.verdictHowTitle' => 'Comment ce verdict est calculé',
 			'feasibility.formula.verdictHowStage' => ({required Object stage, required Object distance, required Object elevation}) => 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.',
-			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.',
+			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}.',
 			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).',
 			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.',
-			'feasibility.formula.verdictHowNoBlackBox' => 'Rien ici ne sort d\'une boîte noire : c\'est ce simple rapport, et trois travaux publiés le nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Ce rapport est tout le calcul. Trois travaux le nourrissent : Minetti 2002 pour l\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.',
 			'feasibility.flow.title' => 'Es-tu prêt pour ce trek ?',
-			'feasibility.flow.intro' => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.',
+			'feasibility.flow.intro' => 'Trois étapes rapides, et on te dit si ce trek est faisable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} étapes remplies',
 			'feasibility.flow.stepProfile' => 'Ta fiche d\'info',
 			'feasibility.flow.stepProfileSub' => 'Âge, taille, poids (reste sur ton téléphone).',
 			'feasibility.flow.stepWalkTest' => 'Test de marche 6 minutes',
-			'feasibility.flow.stepWalkTestSub' => 'Mesure ta forme du moment — fait bouger ton résultat.',
+			'feasibility.flow.stepWalkTestSub' => 'Mesure ta forme du moment : elle fait bouger ton résultat.',
 			'feasibility.flow.stepPastHikes' => 'Tes 5 dernières randos',
 			'feasibility.flow.stepPastHikesSub' => 'Ce que tu as déjà tenu : rythme, distance, dénivelé.',
 			'feasibility.flow.optionalTag' => '(optionnel)',
 			'feasibility.flow.validate' => 'Valider et voir mon résultat',
-			'feasibility.flow.partialNotice' => 'Résultat provisoire : le test de marche 6 minutes n\'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.',
+			'feasibility.flow.partialNotice' => 'Résultat provisoire : le test de marche n\'est pas fait, ton niveau est estimé. Fais le test pour un vrai verdict.',
 			'feasibility.flow.missingTitle' => 'Il manque des informations pour te répondre',
-			'feasibility.flow.missingIntro' => 'Le verdict n\'apparaît qu\'une fois tous les critères nécessaires renseignés. Il te reste à remplir :',
+			'feasibility.flow.missingIntro' => 'Il te reste à remplir :',
 			'feasibility.flow.missingProfile' => 'Ta fiche d\'info complète : âge, taille et poids',
 			'feasibility.flow.missingPastHikes' => 'Au moins une de tes 5 dernières randos',
-			'feasibility.flow.missingWalkTestNote' => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.',
-			'feasibility.flow.hintBlocked' => 'Complète les critères ci-dessus : c\'est là que se décide ton verdict.',
+			'feasibility.flow.missingWalkTestNote' => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat est provisoire.',
+			'feasibility.flow.hintBlocked' => 'Complète les critères ci-dessus.',
 			'feasibility.flow.hintReady' => 'Tout y est : tu peux voir ton résultat.',
 			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
@@ -9265,7 +9265,7 @@ extension on Translations {
 			'tips.seasons.autumn' => 'Automne',
 			'tips.altitude' => 'Altitude min.',
 			'tips.screenTitle' => 'Fiches conseils',
-			'tips.screenIntro' => 'Tout savoir pour réussir votre randonnée',
+			'tips.screenIntro' => 'Préparation, matériel, sécurité, santé.',
 			'tips.followUs' => 'Suivez-nous :',
 			'tips.viewOnFacebook' => 'Voir sur Facebook',
 			'tips.viewOnInstagram' => 'Instagram',
@@ -9302,19 +9302,19 @@ extension on Translations {
 			'demo.bandeau' => 'MODE DÉMO',
 			'demo.quitter' => 'Quitter',
 			'demo.boutonTitre' => 'Essayer la démo',
-			'demo.boutonSous' => 'Découvrez l\'application de A à Z, sans rien engager',
-			'demo.rienNeCompte' => 'Vous êtes en démo : rien de ce que vous faites ici n\'est enregistré. Ni étapes gagnées, ni diplôme, ni achat.',
+			'demo.boutonSous' => 'Toute l\'application. Rien n\'est enregistré.',
+			'demo.rienNeCompte' => 'Vous êtes en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.',
 			'demo.simulerEtape' => 'Simuler l\'étape suivante',
 			'demo.simulerFin' => 'Simuler l\'arrivée',
 			'demo.simulerRelancer' => 'Recommencer la démo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}',
 			'demo.arriveeTitre' => 'Bravo, vous êtes arrivé !',
-			'demo.arriveeTexte' => 'Vous avez terminé le sentier en démonstration. Rien n\'a été enregistré : c\'était une simulation.',
+			'demo.arriveeTexte' => 'Vous avez terminé le sentier en démo. Rien n\'a été enregistré.',
 			'demo.arriveeChiffres' => 'Votre démonstration',
 			'demo.arriveeFermer' => 'Fermer',
 			'demo.sortieTitre' => 'Fin de la démo',
-			'demo.sortieEnTeteCatalogue' => 'Vous retrouverez la démo en haut de la liste des sentiers.',
-			'demo.sortieDansMonCompte' => 'Le bouton ne s\'affichera plus au catalogue. Vous retrouverez la démo dans « Mon compte ».',
+			'demo.sortieEnTeteCatalogue' => 'La démo reste en haut de la liste des sentiers.',
+			'demo.sortieDansMonCompte' => 'Le bouton quitte le catalogue. La démo reste dans « Mon compte ».',
 			'demo.cacherLabel' => 'Cacher le mode démo',
 			'demo.sortieConfirmer' => 'Quitter la démo',
 			'demo.sortieAnnuler' => 'Continuer la démo',
@@ -9322,11 +9322,11 @@ extension on Translations {
 			'demo.departSimule' => 'En démo, le départ lance une randonnée simulée : rien n\'est enregistré.',
 			'demo.compteTitre' => 'Mode démo',
 			'demo.compteRelancer' => 'Revoir la démo',
-			'demo.compteRelancerSous' => 'Découvrez l\'application de A à Z, sans rien engager',
+			'demo.compteRelancerSous' => 'Toute l\'application. Rien n\'est enregistré.',
 			'demo.compteReafficher' => 'Afficher le bouton démo au catalogue',
 			'demo.compteReafficherSous' => 'Le bouton revient en haut de la liste des sentiers',
-			'demo.collecteTitre' => 'Ce sur quoi repose la réponse',
-			'demo.collecteIntro' => 'Voici les informations que l\'application utilise pour calculer la faisabilité.',
+			'demo.collecteTitre' => 'Ce qui a servi au calcul',
+			'demo.collecteIntro' => 'Les informations utilisées pour calculer la faisabilité.',
 			'demo.collecteProfil' => 'Votre profil',
 			'demo.collecteForme' => 'Votre forme',
 			'demo.collecteExperience' => 'Votre expérience',
@@ -9888,8 +9888,8 @@ extension on Translations {
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
 			'programme.duration.daysWithRest' => '{total} j au total (dont {rest} de repos)',
-			'programme.duration.splitNote' => 'Plus de jours = des jours de REPOS. Le repos ne change pas la difficulté d\'une journée de marche, et le verdict suit la journée la plus dure.',
-			'programme.duration.splitExhausted' => 'Chaque étape a déjà sa journée : un jour de plus n\'ajoutera que du repos, et le repos ne changera pas le verdict.',
+			'programme.duration.splitNote' => 'Plus de jours = des jours de repos. Ils ne rendent aucune journée plus facile.',
+			'programme.duration.splitExhausted' => 'Impossible d\'étaler plus : chaque étape a déjà sa journée.',
 			'programme.duration.daysTotal' => '{count} j au total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
@@ -9929,7 +9929,7 @@ extension on Translations {
 			'programme.info.rest.title' => 'Jour de repos',
 			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
 			'programme.info.mergeSplit.title' => 'Regrouper / Dégrouper',
-			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Dégrouper rend à chaque étape réunie sa propre journée. Une étape reste entière : elle s\'arrête là où il y a un toit. Le verdict se règle sur votre journée la plus dure — l\'alléger passe par la forme ou la saison, un jour de repos n\'y change rien.',
+			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un. Dégrouper rend à chaque étape sa journée. Une étape reste entière : elle s\'arrête là où il y a un toit.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
@@ -10338,14 +10338,14 @@ extension on Translations {
 			'common.retry' => 'Réessayer',
 			'common.retrying' => 'Nouvel essai…',
 			'common.retryFailed' => 'Le nouvel essai n\'a pas abouti.',
-			'systemBackup.title' => 'Tes données restent sur ce téléphone',
+			'systemBackup.title' => 'La sauvegarde de ton téléphone',
 			'systemBackup.refuseGoogle' => 'Je refuse la sauvegarde de mes données sur le cloud Google',
 			'systemBackup.refuseApple' => 'Je refuse la sauvegarde de mes données sur iCloud',
-			'systemBackup.explainGoogle' => 'Ton téléphone sauvegarde ses données chez Google. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
-			'systemBackup.explainApple' => 'Ton téléphone sauvegarde ses données sur iCloud. Cette case, cochée d\'avance, laisse dehors tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
-			'systemBackup.cost' => 'Ce que ça coûte, sans enjoliver : si tu laisses cette case cochée et que tu changes de téléphone ou que tu réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Un trek réalisé garde sa trace et son carnet à vie sur ce téléphone, l\'application ne les efface jamais, mais elle ne peut pas les faire réapparaître sur un autre appareil.',
-			'systemBackup.whatComesBack' => 'Si tu décoches, une copie de ta progression, de ton journal, de tes treks réalisés et de ta fiche médicale part dans la sauvegarde, et elle revient sur ton prochain téléphone. Tes photos et tes réglages n\'y sont pas : copier les photos doublerait la place prise sur ton téléphone.',
-			'systemBackup.notOurServers' => 'À ne pas confondre : rien de ce que tu nous confies ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système, qui ne nous appartient pas.',
+			'systemBackup.explainGoogle' => 'Ton téléphone se sauvegarde chez Google. Cette case, cochée d\'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
+			'systemBackup.explainApple' => 'Ton téléphone se sauvegarde sur iCloud. Cette case, cochée d\'avance, garde sur ce téléphone tout ce que tu nous confies : ton profil (âge, taille, poids), tes randonnées passées, ta progression, ton journal, tes photos et ta fiche médicale.',
+			'systemBackup.cost' => 'Si tu la laisses cochée et que tu changes de téléphone ou réinstalles l\'application, tu repars de zéro. Ta progression, ton journal, tes treks réalisés et tes photos ne reviendront pas. Sur ce téléphone, rien n\'est effacé : un trek réalisé garde sa trace et son carnet à vie. Mais rien ne te suit ailleurs.',
+			'systemBackup.whatComesBack' => 'Si tu la décoches, ta progression, ton journal, tes treks réalisés et ta fiche médicale partent dans la sauvegarde, et reviennent sur ton prochain téléphone. Jamais tes photos ni tes réglages : copier les photos doublerait la place prise sur ton téléphone.',
+			'systemBackup.notOurServers' => 'Rien de tout ça ne part vers nos serveurs, que cette case soit cochée ou non. Elle ne concerne que la sauvegarde de ton téléphone par son propre système.',
 			'systemBackup.confirm' => 'C\'est noté',
 			'systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de toutes mes données par le système du téléphone',
 			'lieu.ouvrirDansLesCartes' => 'Ouvrir dans les cartes',
