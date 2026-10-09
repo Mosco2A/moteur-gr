@@ -28,6 +28,7 @@ import '../../../map/map_facade.dart'
 import '../../../trail/trail_facade.dart'
     show currentStageNumberProvider, stagesProvider;
 import '../../../../domain/stage.dart';
+import 'cadrage_d_ouverture.dart';
 import 'layers/trace_layer.dart';
 import 'layers/trail_markers_layer.dart';
 import 'layers/user_position_layer.dart';
@@ -219,145 +220,197 @@ class _MapContentState extends State<MapContent> {
               });
             }
 
-            return FlutterMap(
-              mapController: mapController,
-              options: MapOptions(
-                // LA PREMIERE FRAME EST DEJA SUR LE SENTIER (tache 751).
-                //
-                // Sans `initialCenter`, la camera demarre sur le centre par
-                // DEFAUT de `flutter_map` — Kiev, zoom 13 — et c'est pour la
-                // Ukraine que la couche de tuiles fait sa premiere demande.
-                // `initialCameraFit` ne corrige la vue qu'au POST-FRAME de la
-                // frame ou la taille devient connue : la premiere image vue
-                // par le randonneur etait donc celle d'un autre endroit, ou
-                // rien du tout. Le centre du cadrage d'ouverture est connu
-                // ici, tout de suite : on le donne.
-                initialCenter: (focusBounds ?? bounds).center,
-                initialCameraFit: CameraFit.bounds(
-                  bounds: focusBounds ?? bounds,
-                  padding: EdgeInsets.all(focusBounds == null ? 32 : 48),
-                ),
-                onPositionChanged: (camera, hasGesture) {
-                  final newZoom = camera.zoom.round();
-                  if (newZoom != _currentZoom) {
-                    setState(() => _currentZoom = newZoom);
-                  }
-                },
-              ),
-              children: [
-                // 1. Fond de carte : le fichier telecharge du sentier s'il
-                //    est lisible, le reseau sinon (lot carte hors ligne).
-                FondDeCarte(trailId: widget.trailId),
+            final cible = focusBounds ?? bounds;
+            final marge = focusBounds == null ? 32.0 : 48.0;
 
-                // 2. Trace GPX (statique -> RepaintBoundary pour isoler
-                //    le raster du trace des rebuilds de la position GPS)
-                RepaintBoundary(
-                  child: TraceLayer(points: latLngPoints, color: trailColor),
-                ),
+            // LA PREMIERE FRAME EST DEJA A LA BONNE ECHELLE (tache 758).
+            //
+            // Le [LayoutBuilder] n'est pas decoratif : il donne la TAILLE DU
+            // CADRE AVANT que la carte soit batie, et c'est elle qui manquait
+            // pour calculer le zoom d'ouverture. `flutter_map` decouvre cette
+            // meme taille au meme instant — son propre `LayoutBuilder` recoit
+            // CES contraintes-ci — donc le cadrage calcule ici est exactement
+            // celui qu'il appliquera.
+            return LayoutBuilder(
+              builder: (context, contraintes) {
+                final ouverture = cadrageDOuverture(
+                  cible,
+                  marge,
+                  contraintes.biggest,
+                );
+                return FlutterMap(
+                  mapController: mapController,
+                  options: MapOptions(
+                    // LE ZOOM D'OUVERTURE, ET PAS SEULEMENT LE CENTRE
+                    // (tache 758).
+                    //
+                    // Le lot 751 avait donne `initialCenter` et regle le
+                    // depart sur Kiev. Il manquait le ZOOM : sans
+                    // `initialZoom`, `flutter_map` ouvre au zoom 13 par
+                    // DEFAUT, et la couche de tuiles fait sa premiere demande
+                    // A CETTE ECHELLE-LA. Le cadrage d'etape, lui, n'arrive
+                    // qu'au post-frame suivant, a une autre echelle.
+                    //
+                    // CE QUE CELA COUTAIT, MESURE SUR L'EMULATEUR LE 09/10 :
+                    // 80 tuiles de zoom 13 demandees en 72 millisecondes pour
+                    // une vue que le randonneur ne verra JAMAIS, puis 90
+                    // tuiles de zoom 12 — les vraies — mises en file DERRIERE
+                    // elles sur le meme client HTTP. Resultat : 120 demandes
+                    // en rafale, puis 37 SECONDES sans la moindre demande
+                    // nouvelle, le temps que la file se vide. Le fond restait
+                    // gris pres de cinq minutes, et c'est le mot pour mot de
+                    // Christophe du 09/10 a 16:24 : « il faut sortir de
+                    // navigation et y revenir pour avoir la carte qui
+                    // s'affiche ».
+                    //
+                    // En donnant le centre ET le zoom du cadrage, la PREMIERE
+                    // demande est deja la BONNE : plus de rafale jetee, plus
+                    // de file d'attente, et la camera n'a plus a bouger apres
+                    // coup.
+                    initialCenter: ouverture.centre,
+                    initialZoom: ouverture.zoom,
+                    // GARDE-FOU, PAS LE MECANISME. Si la taille du cadre
+                    // n'etait pas encore connue, le cadrage ci-dessus est une
+                    // approximation : `flutter_map` la corrigera. Quand elle
+                    // etait connue — le cas normal — ce cadrage retombe sur la
+                    // camera courante, `moveRaw` n'emet rien, et il ne coute
+                    // donc aucune tuile.
+                    initialCameraFit: CameraFit.bounds(
+                      bounds: cible,
+                      padding: EdgeInsets.all(marge),
+                    ),
+                    onPositionChanged: (camera, hasGesture) {
+                      final newZoom = camera.zoom.round();
+                      if (newZoom != _currentZoom) {
+                        setState(() => _currentZoom = newZoom);
+                      }
+                    },
+                  ),
+                  children: [
+                    // 1. Fond de carte : le fichier telecharge du sentier s'il
+                    //    est lisible, le reseau sinon (lot carte hors ligne).
+                    FondDeCarte(trailId: widget.trailId),
 
-                // 3. LES REPERES DU SENTIER — ETAPES ET POINTS D'INTERET DANS
-                //    UNE COUCHE UNIQUE (tache 571).
-                //
-                //    Retour de Chris, mot pour mot : « 14rando les numeros
-                //    d'etapes son caches par les refucge, il ne faut pas que
-                //    les icones se superposent ».
-                //
-                //    IL Y AVAIT ICI DEUX COUCHES : les numeros d'etape, puis
-                //    les points d'interet peints PAR-DESSUS. Une etape se
-                //    termine a un hebergement et la suivante en repart : les
-                //    deux marqueurs tombent au MEME point par construction, et
-                //    l'icone de couchage avalait le numero d'etape — soit
-                //    l'information de reperage la plus utile de la carte.
-                //
-                //    Deux couches empilees ne peuvent pas s'entendre sur un
-                //    repere commun : chacune ignore ce que l'autre dessine.
-                //    D'ou UNE couche, qui voit les deux familles de reperes,
-                //    regroupe geometriquement celles qui designent le meme
-                //    lieu au zoom courant, et pose un repere qui porte les
-                //    deux informations. Aucun decalage : on fusionne ou on
-                //    separe, on ne deplace jamais un point sur une carte.
-                //
-                //    RepaintBoundary conserve : la couche reste statique
-                //    vis-a-vis de la position GPS.
-                Consumer(
-                  builder: (context, ref, _) {
-                    final stagesAsync = ref.watch(
-                      stagesProvider(
-                        widget.trailId,
-                      ).select((async) => async.value),
-                    );
-                    final stages = stagesAsync ?? const [];
-                    final poisAsync = ref.watch(
-                      mapPoisProvider(
-                        widget.trailId,
-                      ).select((async) => async.value),
-                    );
-                    final pois = poisAsync ?? const <PoiModel>[];
+                    // 2. Trace GPX (statique -> RepaintBoundary pour isoler
+                    //    le raster du trace des rebuilds de la position GPS)
+                    RepaintBoundary(
+                      child: TraceLayer(
+                        points: latLngPoints,
+                        color: trailColor,
+                      ),
+                    ),
 
-                    if (stages.isEmpty && pois.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
+                    // 3. LES REPERES DU SENTIER — ETAPES ET POINTS
+                    //    D'INTERET DANS UNE COUCHE UNIQUE (tache 571).
+                    //
+                    //    Retour de Chris, mot pour mot : « 14rando les
+                    //    numeros d'etapes son caches par les refucge, il ne
+                    //    faut pas que les icones se superposent ».
+                    //
+                    //    IL Y AVAIT ICI DEUX COUCHES : les numeros d'etape,
+                    //    puis les points d'interet peints PAR-DESSUS. Une
+                    //    etape se termine a un hebergement et la suivante en
+                    //    repart : les deux marqueurs tombent au MEME point
+                    //    par construction, et
+                    //    l'icone de couchage avalait le numero d'etape — soit
+                    //    l'information de reperage la plus utile de la carte.
+                    //
+                    //    Deux couches empilees ne peuvent pas s'entendre sur
+                    //    un repere commun : chacune ignore ce que l'autre
+                    //    dessine. D'ou UNE couche, qui voit les deux familles
+                    //    de reperes,
+                    //    regroupe geometriquement celles qui designent le meme
+                    //    lieu au zoom courant, et pose un repere qui porte les
+                    //    deux informations. Aucun decalage : on fusionne ou on
+                    //    separe, on ne deplace jamais un point sur une carte.
+                    //
+                    //    RepaintBoundary conserve : la couche reste statique
+                    //    vis-a-vis de la position GPS.
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final stagesAsync = ref.watch(
+                          stagesProvider(
+                            widget.trailId,
+                          ).select((async) => async.value),
+                        );
+                        final stages = stagesAsync ?? const [];
+                        final poisAsync = ref.watch(
+                          mapPoisProvider(
+                            widget.trailId,
+                          ).select((async) => async.value),
+                        );
+                        final pois = poisAsync ?? const <PoiModel>[];
 
-                    // Convertir StageModel -> Stage (domain)
-                    final domainStages = stages
-                        .map(
-                          (sm) => Stage(
-                            id: '${sm.stageNumber}',
-                            nameFr: sm.name,
-                            distance: sm.distanceKm,
-                            elevationGain: sm.elevationGainM,
-                            elevationLoss: sm.elevationLossM,
-                            orderIndex: sm.stageNumber,
-                            startLat: sm.startLat,
-                            startLng: sm.startLng,
-                            endLat: sm.endLat,
-                            endLng: sm.endLng,
-                            difficulty: sm.difficulty,
+                        if (stages.isEmpty && pois.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+
+                        // Convertir StageModel -> Stage (domain)
+                        final domainStages = stages
+                            .map(
+                              (sm) => Stage(
+                                id: '${sm.stageNumber}',
+                                nameFr: sm.name,
+                                distance: sm.distanceKm,
+                                elevationGain: sm.elevationGainM,
+                                elevationLoss: sm.elevationLossM,
+                                orderIndex: sm.stageNumber,
+                                startLat: sm.startLat,
+                                startLng: sm.startLng,
+                                endLat: sm.endLat,
+                                endLng: sm.endLng,
+                                difficulty: sm.difficulty,
+                              ),
+                            )
+                            .toList();
+
+                        return RepaintBoundary(
+                          child: TrailMarkersLayer(
+                            stages: domainStages,
+                            pois: pois,
+                            // La carte ne notifie son zoom qu'ARRONDI : on
+                            // evalue le recouvrement au plus petit zoom de
+                            // la bande, donc du cote prudent (cf.
+                            // lowestZoomOfBand).
+                            zoom: MarkerOverlap.lowestZoomOfBand(_currentZoom),
+                            onPoiTap: (poi) => showMapPoiDetails(context, poi),
                           ),
-                        )
-                        .toList();
+                        );
+                      },
+                    ),
 
-                    return RepaintBoundary(
-                      child: TrailMarkersLayer(
-                        stages: domainStages,
-                        pois: pois,
-                        // La carte ne notifie son zoom qu'ARRONDI : on evalue
-                        // le recouvrement au plus petit zoom de la bande, donc
-                        // du cote prudent (cf. lowestZoomOfBand).
-                        zoom: MarkerOverlap.lowestZoomOfBand(_currentZoom),
-                        onPoiTap: (poi) => showMapPoiDetails(context, poi),
-                      ),
-                    );
-                  },
-                ),
+                    // 4. Position courante (lot 671-03) : releve, ou estime
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final positionAsync = ref.watch(
+                          currentPositionProvider.select(
+                            (async) => async.value,
+                          ),
+                        );
 
-                // 4. Position courante (lot 671-03) : releve, ou estime
-                Consumer(
-                  builder: (context, ref, _) {
-                    final positionAsync = ref.watch(
-                      currentPositionProvider.select((async) => async.value),
-                    );
+                        if (positionAsync == null) {
+                          return const SizedBox.shrink();
+                        }
 
-                    if (positionAsync == null) {
-                      return const SizedBox.shrink();
-                    }
+                        return UserPositionLayer(
+                          position: LatLng(
+                            positionAsync.latitude,
+                            positionAsync.longitude,
+                          ),
+                          accuracy: positionAsync.accuracy,
+                        );
+                      },
+                    ),
 
-                    return UserPositionLayer(
-                      position: LatLng(
-                        positionAsync.latitude,
-                        positionAsync.longitude,
-                      ),
-                      accuracy: positionAsync.accuracy,
-                    );
-                  },
-                ),
-
-                // 5. L ATTRIBUTION OPENSTREETMAP — OBLIGATION ODbL, PAS UNE
-                //    POLITESSE (integration 647). Le fond vient d OSM, en ligne
-                //    comme hors ligne (les tuiles embarquees du lot 648 sont
-                //    rendues depuis des donnees OSM) : la carte doit le dire.
-                const AttributionOsm(),
-              ],
+                    // 5. L ATTRIBUTION OPENSTREETMAP — OBLIGATION ODbL, PAS UNE
+                    //    POLITESSE (integration 647). Le fond vient d OSM, en
+                    //    ligne comme hors ligne (les tuiles embarquees du lot
+                    //    648 sont rendues depuis des donnees OSM) : la carte
+                    //    doit le dire.
+                    const AttributionOsm(),
+                  ],
+                );
+              },
             );
           },
         ),
