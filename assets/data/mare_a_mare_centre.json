@@ -10,11 +10,11 @@
       "id": "mam-centre-ew",
       "trailId": "mare-a-mare-centre",
       "code": "EW",
-      "nameFr": "Mare a Mare Centre \u2014 Est-Ouest",
-      "nameEn": "Mare a Mare Centre \u2014 East-West",
-      "nameDe": "Mare a Mare Centre \u2014 Ost-West",
-      "nameIt": "Mare a Mare Centro \u2014 Est-Ovest",
-      "nameEs": "Mare a Mare Centro \u2014 Este-Oeste",
+      "nameFr": "Mare a Mare Centre — Est-Ouest",
+      "nameEn": "Mare a Mare Centre — East-West",
+      "nameDe": "Mare a Mare Centre — Ost-West",
+      "nameIt": "Mare a Mare Centro — Est-Ovest",
+      "nameEs": "Mare a Mare Centro — Este-Oeste",
       "distanceKm": 87.3,
       "elevationGain": 4274,
       "stageCount": 7
@@ -165,14 +165,15 @@
       "nameIt": "Rifugio tappa Serra di Fiumorbu",
       "nameEs": "Albergue Serra di Fiumorbu",
       "type": "gite",
-      "lat": 41.957,
-      "lng": 9.287,
+      "lat": 41.962918,
+      "lng": 9.259836,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 20,
       "priceRange": "35-50EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM way 539005968 (tourism=hostel, « Gite d'etape de Catastaghju »)"
     },
     {
       "id": "mam-acc-02",
@@ -201,14 +202,15 @@
       "nameIt": "Rifugio di Cozzano",
       "nameEs": "Albergue de Cozzano",
       "type": "gite",
-      "lat": 41.9395,
-      "lng": 9.1985,
+      "lat": 41.9352431,
+      "lng": 9.1546064,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 16,
       "priceRange": "40-55EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM node 1280431110 (place=village, « Cozzano »)"
     },
     {
       "id": "mam-acc-04",
@@ -219,14 +221,15 @@
       "nameIt": "Rifugio tappa Guitera-les-Bains",
       "nameEs": "Albergue Guitera-les-Bains",
       "type": "gite",
-      "lat": 41.915,
-      "lng": 9.1415,
+      "lat": 41.9125784,
+      "lng": 9.0843688,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 18,
       "priceRange": "35-50EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM node 7902957832 (tourism=chalet, « Chez Paul-Antoine »), a Guitera-les-Bains"
     },
     {
       "id": "mam-acc-05",
@@ -255,14 +258,15 @@
       "nameIt": "Rifugio di Quasquara",
       "nameEs": "Albergue de Quasquara",
       "type": "gite",
-      "lat": 41.9286,
-      "lng": 9.076,
+      "lat": 41.9004613,
+      "lng": 9.0102656,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 14,
       "priceRange": "35-50EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM node 1706302935 (place=village, « Quasquara »)"
     },
     {
       "id": "mam-acc-07",
@@ -273,14 +277,15 @@
       "nameIt": "Rifugio tappa Santa Maria Siche",
       "nameEs": "Albergue Santa Maria Siche",
       "type": "gite",
-      "lat": 41.945,
-      "lng": 9.0088,
+      "lat": 41.8771458,
+      "lng": 8.983603,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 22,
       "priceRange": "35-55EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM node 1877120458 (place=hamlet, « Santa-Maria-Sicche »)"
     },
     {
       "id": "mam-acc-08",
@@ -327,14 +332,15 @@
       "nameIt": "Hotel di Porticcio",
       "nameEs": "Hotel de Porticcio",
       "type": "hotel",
-      "lat": 41.8905,
-      "lng": 8.8135,
+      "lat": 41.8883892,
+      "lng": 8.8019281,
       "phone": null,
       "email": null,
       "website": null,
       "capacity": 30,
       "priceRange": "60-120EUR",
-      "bookingUrl": null
+      "bookingUrl": null,
+      "source": "OSM node 807768409 (tourism=hotel, « Hotel de Porticcio »)"
     },
     {
       "id": "mam-acc-11",
@@ -359,20 +365,21 @@
     {
       "id": "mam-poi-01",
       "stageId": "mam-ew-s1",
-      "nameFr": "Fontaine de Puzzichellu",
-      "nameEn": "Puzzichellu Fountain",
-      "nameDe": "Brunnen Puzzichellu",
-      "nameIt": "Fontana di Puzzichellu",
-      "nameEs": "Fuente de Puzzichellu",
+      "nameFr": "Fontaine de Serra-di-Fiumorbo",
+      "nameEn": "Fontaine de Serra-di-Fiumorbo",
+      "nameDe": "Fontaine de Serra-di-Fiumorbo",
+      "nameIt": "Fontaine de Serra-di-Fiumorbo",
+      "nameEs": "Fontaine de Serra-di-Fiumorbo",
       "descriptionFr": "Point d'eau potable en bord de sentier, dernier ravitaillement avant la montee.",
       "descriptionEn": "Drinking water point along the trail, last supply before the climb.",
       "descriptionDe": "Trinkwasserstelle am Weg, letzte Versorgung vor dem Aufstieg.",
       "descriptionIt": "Punto d'acqua potabile lungo il sentiero, ultimo rifornimento prima della salita.",
       "descriptionEs": "Punto de agua potable junto al sendero, ultimo abastecimiento antes de la subida.",
       "type": "water",
-      "lat": 41.995,
-      "lng": 9.37,
-      "elevation": 280.0
+      "lat": 41.9858205,
+      "lng": 9.3368117,
+      "elevation": 450.0,
+      "source": "OSM node 5558951240 (amenity=fountain, drinking_water=yes), au village de Serra-di-Fiumorbo (OSM node 339974698, place=village)"
     },
     {
       "id": "mam-poi-02",
@@ -388,9 +395,10 @@
       "descriptionIt": "Vista aperta sulla pianura orientale e il Mar Tirreno dal passo.",
       "descriptionEs": "Vista despejada sobre el llano oriental y el mar Tirreno desde el collado.",
       "type": "viewpoint",
-      "lat": 41.978,
-      "lng": 9.33,
-      "elevation": 720.0
+      "lat": 41.9519443,
+      "lng": 9.3098885,
+      "elevation": 779.0,
+      "source": "OSM node 9537582199 (natural=saddle, ele=779, « u Cataru »)"
     },
     {
       "id": "mam-poi-03",
@@ -424,9 +432,10 @@
       "descriptionIt": "Attraversamento di una magnifica foresta di pini laricio, specie endemica corsa.",
       "descriptionEs": "Travesia de un magnifico bosque de pinos laricio, especie endemica corsa.",
       "type": "info",
-      "lat": 41.943,
-      "lng": 9.22,
-      "elevation": 1050.0
+      "lat": 41.962151,
+      "lng": 9.239395,
+      "elevation": 1050.0,
+      "source": "OSM way 42225939 (landuse=forest, leaf_type=needleleaved). OSM NE NOMME PAS l'espece : « pins laricio » reste une affirmation editoriale"
     },
     {
       "id": "mam-poi-05",
@@ -442,9 +451,10 @@
       "descriptionIt": "Sorgenti naturali di acqua calda solforosa, note dall'Antichita. Bagno possibile.",
       "descriptionEs": "Fuentes naturales de agua caliente sulfurosa, conocidas desde la Antiguedad. Bano posible.",
       "type": "water",
-      "lat": 41.9145,
-      "lng": 9.1408,
-      "elevation": 580.0
+      "lat": 41.9000724,
+      "lng": 9.0973054,
+      "elevation": 658.0,
+      "source": "OSM node 5746820140 (natural=spring, « Source Thermale des Bains de Guitera »)"
     },
     {
       "id": "mam-poi-06",
@@ -460,9 +470,10 @@
       "descriptionIt": "Autentico villaggio di montagna con alimentari e bar. Rifornimento possibile.",
       "descriptionEs": "Autentico pueblo de montana con tienda y bar. Avituallamiento posible.",
       "type": "village",
-      "lat": 41.9392,
-      "lng": 9.1978,
-      "elevation": 730.0
+      "lat": 41.9352431,
+      "lng": 9.1546064,
+      "elevation": 732.0,
+      "source": "OSM node 1280431110 (place=village, « Cozzano »)"
     },
     {
       "id": "mam-poi-07",
@@ -496,9 +507,10 @@
       "descriptionIt": "Fontana del villaggio, acqua potabile fresca.",
       "descriptionEs": "Fuente del pueblo, agua potable fresca.",
       "type": "water",
-      "lat": 41.915,
-      "lng": 9.142,
-      "elevation": 595.0
+      "lat": 41.9131154,
+      "lng": 9.0825806,
+      "elevation": 653.0,
+      "source": "OSM node 7929636052 (amenity=drinking_water), au village de Guitera / Vutera (OSM node 1280468809, place=village)"
     },
     {
       "id": "mam-poi-09",
@@ -514,27 +526,29 @@
       "descriptionIt": "Tipico villaggio arroccato con vista sulla valle del Taravo.",
       "descriptionEs": "Tipico pueblo encaramado con vistas al valle del Taravo.",
       "type": "village",
-      "lat": 41.9283,
-      "lng": 9.0756,
-      "elevation": 650.0
+      "lat": 41.9004613,
+      "lng": 9.0102656,
+      "elevation": 751.0,
+      "source": "OSM node 1706302935 (place=village, « Quasquara »)"
     },
     {
       "id": "mam-poi-10",
       "stageId": "mam-ew-s5",
-      "nameFr": "Panorama de la vallee du Taravo",
-      "nameEn": "Taravo Valley Viewpoint",
-      "nameDe": "Aussichtspunkt Taravo-Tal",
-      "nameIt": "Panorama della valle del Taravo",
-      "nameEs": "Panorama del valle del Taravo",
+      "nameFr": "Bocca di Foce",
+      "nameEn": "Bocca di Foce",
+      "nameDe": "Bocca di Foce",
+      "nameIt": "Bocca di Foce",
+      "nameEs": "Bocca di Foce",
       "descriptionFr": "Point de vue exceptionnel sur la vallee du Taravo et les montagnes environnantes.",
       "descriptionEn": "Exceptional viewpoint over the Taravo valley and surrounding mountains.",
       "descriptionDe": "Aussergewoehnlicher Aussichtspunkt ueber das Taravo-Tal und die umliegenden Berge.",
       "descriptionIt": "Punto di vista eccezionale sulla valle del Taravo e le montagne circostanti.",
       "descriptionEs": "Punto de vista excepcional sobre el valle del Taravo y las montanas circundantes.",
       "type": "viewpoint",
-      "lat": 41.936,
-      "lng": 9.042,
-      "elevation": 780.0
+      "lat": 41.9113683,
+      "lng": 8.9982713,
+      "elevation": 1159.0,
+      "source": "OSM node 1039666319 (natural=saddle, ele=1159, « Bocca di Foce »)"
     },
     {
       "id": "mam-poi-11",
@@ -550,9 +564,10 @@
       "descriptionIt": "Capoluogo di cantone con negozi e servizi. Luogo di nascita di Sampiero Corso.",
       "descriptionEs": "Cabecera de canton con comercios y servicios. Lugar de nacimiento de Sampiero Corso.",
       "type": "village",
-      "lat": 41.9447,
-      "lng": 9.0083,
-      "elevation": 450.0
+      "lat": 41.8771458,
+      "lng": 8.983603,
+      "elevation": 773.0,
+      "source": "OSM node 1877120458 (place=hamlet, « Santa-Maria-Sicche »)"
     },
     {
       "id": "mam-poi-12",
@@ -575,20 +590,21 @@
     {
       "id": "mam-poi-13",
       "stageId": "mam-ew-s7",
-      "nameFr": "Panorama du golfe d'Ajaccio",
-      "nameEn": "Gulf of Ajaccio Viewpoint",
-      "nameDe": "Aussichtspunkt Golf von Ajaccio",
-      "nameIt": "Panorama del golfo di Ajaccio",
-      "nameEs": "Panorama del golfo de Ajaccio",
+      "nameFr": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "nameEn": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "nameDe": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "nameIt": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "nameEs": "Tour de Frassu (panorama du golfe d'Ajaccio)",
       "descriptionFr": "Vue panoramique sur le golfe d'Ajaccio et les iles Sanguinaires en fin de parcours.",
       "descriptionEn": "Panoramic view over the Gulf of Ajaccio and the Sanguinaires Islands near the end.",
       "descriptionDe": "Panoramablick auf den Golf von Ajaccio und die Sanguinaires-Inseln nahe dem Ziel.",
       "descriptionIt": "Vista panoramica sul golfo di Ajaccio e le isole Sanguinarie verso la fine.",
       "descriptionEs": "Vista panoramica sobre el golfo de Ajaccio y las islas Sanguinarias al final.",
       "type": "viewpoint",
-      "lat": 41.891,
-      "lng": 8.86,
-      "elevation": 320.0
+      "lat": 41.885023,
+      "lng": 8.84168,
+      "elevation": 341.0,
+      "source": "OSM way 1064470433 (man_made=tower, tourism=viewpoint, « Tour de Frassu »)"
     },
     {
       "id": "mam-poi-14",
@@ -604,9 +620,10 @@
       "descriptionIt": "Arrivo del sentiero sulla spiaggia di Porticcio, di fronte al golfo di Ajaccio.",
       "descriptionEs": "Llegada del sendero a la playa de Porticcio, frente al golfo de Ajaccio.",
       "type": "info",
-      "lat": 41.8903,
-      "lng": 8.8128,
-      "elevation": 5.0
+      "lat": 41.89003,
+      "lng": 8.80297,
+      "elevation": 1.0,
+      "source": "dernier point de la relation OSM 10032398 (« Mare a Mare Centre Principal ») : l'arrivee du sentier sur le rivage de Porticcio"
     }
   ],
   "gpx_tracks": [],

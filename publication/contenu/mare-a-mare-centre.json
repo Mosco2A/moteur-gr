@@ -131,13 +131,13 @@
       "name_it": "Camping-Village Marina d Erba Rossa (Ghisonaccia)",
       "name_es": "Camping-Village Marina d Erba Rossa (Ghisonaccia)",
       "type": "camping",
-      "lat": 42.0156,
-      "lng": 9.4039,
+      "lat": 41.9995967,
+      "lng": 9.4466775,
       "phone": "+33442168990",
       "email": "contact@marina-erbarossa.com",
       "website": "https://www.marina-erbarossa.com",
       "address": "20240 Ghisonaccia, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Camping-Village Marina d Erba Rossa, Ghisonaccia, 04 42 16 89 90)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Camping-Village Marina d Erba Rossa, Ghisonaccia, 04 42 16 89 90) | COORDONNEE RELEVEE (tache 775) : OSM way 1559412066 (tourism=camp_site, Marina d Erba Rossa, route de la Mer, Ghisonaccia)"
     },
     {
       "id": "mam-acc-14",
@@ -148,11 +148,11 @@
       "name_it": "Da Mme Guidicelli (Serra-di-Fiumorbo)",
       "name_es": "Casa de Mme Guidicelli (Serra-di-Fiumorbo)",
       "type": "gite",
-      "lat": 41.9567,
-      "lng": 9.2864,
+      "lat": 41.9863703,
+      "lng": 9.3363062,
       "phone": "+33495567548",
       "address": "20243 Serra-di-Fiumorbo, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Mme Guidicelli, Serra di Fium obru, 04 95 56 75 48 / 06 81 04 69 49)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Mme Guidicelli, Serra di Fium obru, 04 95 56 75 48 / 06 81 04 69 49) | COORDONNEE RELEVEE (tache 775) : OSM node 339974698 (place=village, Serra-di-Fiumorbo)"
     },
     {
       "id": "mam-acc-15",
@@ -163,12 +163,12 @@
       "name_it": "Rifugio tappa Bella Vista (Cozzano)",
       "name_es": "Albergue Bella Vista (Cozzano)",
       "type": "gite",
-      "lat": 41.9392,
-      "lng": 9.1978,
+      "lat": 41.936814,
+      "lng": 9.1605962,
       "phone": "+33495244159",
       "website": "https://www.gitecozzanohebergementcorse.com",
       "address": "20148 Cozzano, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite d etape Bella Vista, Cozzano, 04 95 24 41 59 / 06 72 92 89 46)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite d etape Bella Vista, Cozzano, 04 95 24 41 59 / 06 72 92 89 46) | COORDONNEE RELEVEE (tache 775) : OSM node 1379768801 (tourism=hostel, Gite d etape Bella Vista), a Cozzano"
     },
     {
       "id": "mam-acc-16",
@@ -179,11 +179,11 @@
       "name_it": "A Filetta (Cozzano)",
       "name_es": "A Filetta (Cozzano)",
       "type": "gite",
-      "lat": 41.9392,
-      "lng": 9.1978,
+      "lat": 41.9352431,
+      "lng": 9.1546064,
       "phone": "+33495244561",
       "address": "20148 Cozzano, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (A Filetta, Cozzano, 04 95 24 45 61 / 06 79 82 37 15)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (A Filetta, Cozzano, 04 95 24 45 61 / 06 79 82 37 15) | COORDONNEE RELEVEE (tache 775) : OSM node 1280431110 (place=village, Cozzano)"
     },
     {
       "id": "mam-acc-17",
@@ -194,12 +194,12 @@
       "name_it": "Chatelet de Campo (Campo)",
       "name_es": "Chatelet de Campo (Campo)",
       "type": "gite",
-      "lat": 41.9447,
-      "lng": 9.0083,
+      "lat": 41.892072,
+      "lng": 9.0054983,
       "phone": "+33495537418",
       "website": "https://www.chatelet-de-campo.com",
       "address": "20142 Campo, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chatelet de Campo, Campo, 04 95 53 74 18). Campo est un village voisin de Santa-Maria-Sicche, desservi par la meme ligne d autocar C6."
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chatelet de Campo, Campo, 04 95 53 74 18). Campo est un village voisin de Santa-Maria-Sicche, desservi par la meme ligne d autocar C6. | COORDONNEE RELEVEE (tache 775) : OSM node 1624369843 (place=village, Campo)"
     },
     {
       "id": "mam-acc-18",
@@ -210,11 +210,11 @@
       "name_it": "Auberge du Col Saint-Georges (Grosseto-Prugna)",
       "name_es": "Auberge du Col Saint-Georges (Grosseto-Prugna)",
       "type": "gite",
-      "lat": 41.8917,
-      "lng": 8.9278,
+      "lat": 41.8798088,
+      "lng": 8.9330617,
       "phone": "+33495257006",
       "address": "Col Saint-Georges, 20128 Grosseto-Prugna",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Auberge du Col Saint Georges, Grosseto-Prugna, 04 95 25 70 06)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Auberge du Col Saint Georges, Grosseto-Prugna, 04 95 25 70 06) | COORDONNEE RELEVEE (tache 775) : OSM node 7897372511 (tourism=hotel, Auberge du Col Saint Georges)"
     }
   ],
 
