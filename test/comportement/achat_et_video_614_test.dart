@@ -197,7 +197,12 @@ void main() {
         // LE CATALOGUE EFFECTIF PORTE LE SENTIER GRATUIT DE CE TEST (tache 638) :
         // il n'est plus dans le catalogue livre, mais le modele « prix nul » doit
         // rester teste A L ECRAN.
-        availableTrailsProvider.overrideWithValue(const <TrailConfig>[
+        //
+        // PLUS `const` DEPUIS LA TACHE 793 : `TrailCatalog.all` n est plus une
+        // liste compilee mais le registre compile FILTRE de ses sentiers
+        // fictifs, et on ne peut pas etaler dans un litteral const ce qui est
+        // calcule. Le contenu de la liste, lui, est inchange.
+        availableTrailsProvider.overrideWithValue(<TrailConfig>[
           ...TrailCatalog.all,
           _sentierGratuit,
         ]),

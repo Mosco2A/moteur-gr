@@ -118,7 +118,11 @@ class TrailCatalogStateNotifier extends Notifier<TrailCatalogState> {
     // Ce n est pas un choix par defaut : c est le secours, et il est rendu en
     // premier pour qu aucun ecran ne soit vide le temps d une lecture.
     _rafraichir();
-    return const TrailCatalogState(
+    // PAS `const` : depuis la tache 793, `TrailCatalog.all` n est plus une
+    // liste compilee mais le REGISTRE compile FILTRE de ses sentiers fictifs.
+    // Les donnees restent figees a la compilation ; c est la selection qui ne
+    // peut plus l etre, et c est precisement ce qui fait la garde.
+    return TrailCatalogState(
       trails: TrailCatalog.all,
       source: SourceDuCatalogue.compile,
     );

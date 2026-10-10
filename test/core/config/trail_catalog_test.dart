@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
@@ -114,8 +115,15 @@ void main() {
     });
 
     test('byId retrouve une config connue, null sinon', () {
-      expect(TrailCatalog.byId(testTrailConfig.id), isNotNull);
+      expect(TrailCatalog.byId(mareAMareCentreTrailConfig.id), isNotNull);
       expect(TrailCatalog.byId('sentier-inexistant'), isNull);
+      // TACHE 793 — CETTE LIGNE INTERROGEAIT `testTrailConfig` ET ATTENDAIT
+      // isNotNull, PARCE QUE LE SENTIER FICTIF ETAIT ALORS AU CATALOGUE. Il
+      // n y est plus : un sentier qui se declare invente est ecarte par
+      // `TrailCatalog.all`, donc introuvable par identifiant — exactement comme
+      // un sentier qui n existe pas. L assertion n est pas retiree, elle est
+      // RETOURNEE, et c est le changement qu il fallait prouver ici.
+      expect(TrailCatalog.byId(testTrailConfig.id), isNull);
     });
 
     test('resolveOrDefault retombe sur le defaut si id invalide/null', () {
@@ -214,8 +222,15 @@ void main() {
       addTearDown(container.dispose);
 
       // Meme si la selection pointe ailleurs, l'override gagne (mono-sentier).
+      //
+      // TACHE 793 — LA SELECTION VISAIT LE SENTIER FICTIF, ET CE TEST AURAIT
+      // SURVECU EN NE PROUVANT PLUS RIEN. Depuis son retrait du catalogue,
+      // `test-trail` est un identifiant INVALIDE : la selection serait retombee
+      // sur le defaut, et l assertion aurait passe sans jamais opposer
+      // l override a une selection vivante. On vise donc le sentier par defaut,
+      // qui est bien au catalogue et bien different de l override.
       container.read(selectedTrailIdProvider.notifier).state =
-          testTrailConfig.id;
+          mareAMareCentreTrailConfig.id;
       expect(container.read(trailConfigProvider).id, pyreneesTrailConfig.id);
     });
 

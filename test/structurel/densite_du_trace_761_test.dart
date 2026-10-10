@@ -40,14 +40,21 @@
 ///     1 078,7 m — elle ROUGIT, et le troisieme test le prouve. Sans ce temoin,
 ///     la garde affirmerait quelque chose que rien ne verifie.
 ///
-/// LE SENTIER FICTIF EST EXEMPTE, ET C EST DIT. `test-trail` (« Sentier des
-/// Volcans ») est, de son propre aveu, « un sentier entierement invente pour
-/// les tests : aucune correspondance avec un lieu reel ». Sa trace est un
-/// croquis de 27 points et le restera : il n existe aucun chemin reel a
-/// relever pour un
-/// sentier qui n existe pas. La regle de densite existe pour que la ligne
-/// dessinee suive un VRAI chemin — sur un sentier invente elle n a rien a
-/// mordre. L exemption est donc nominative et motivee, jamais un `skip` muet.
+/// IL N Y A PLUS AUCUNE EXEMPTION, ET LA TACHE 793 L A RENDUE INUTILE. Ce
+/// fichier dispensait nominativement `test-trail` (« Sentier des Volcans »)
+/// de la regle de densite, au motif — juste — qu il n existe aucun chemin reel
+/// a relever pour un sentier qui n existe pas. Le raisonnement etait bon et la
+/// conclusion fausse : si un sentier n a aucun chemin a suivre, ce n est pas
+/// la GARDE qu il faut assouplir, c est le SENTIER qu il ne faut pas mettre au
+/// catalogue. Il y etait pourtant, et achetable a 4,95 EUR.
+///
+/// CETTE EXEMPTION ETAIT DONC LA DERNIERE PORTE, et elle est refermee. Le
+/// sentier fictif est sorti du catalogue (`TrailConfig.isFictional` +
+/// `TrailCatalog.all`), la boucle ci-dessous ne le rencontre plus, et la carte
+/// des dispenses est VIDE. Elle reste declaree, car c est le fait qui compte :
+/// tout sentier que le randonneur peut voir doit porter une trace relevee, sans
+/// exception nommable. Si un futur sentier devait en demander une, il faudrait
+/// d abord se demander ce qu il fait au catalogue.
 library;
 
 import 'dart:io';
@@ -59,11 +66,11 @@ import 'package:moteur_gr/features/map/domain/off_track_detector.dart';
 import 'package:moteur_gr/features/trek/data/gpx_parser.dart';
 
 /// Les sentiers dispenses de la regle, avec la raison qui les en dispense.
-const Map<String, String> kSentiersSansCheminReel = <String, String>{
-  'test-trail':
-      'sentier entierement invente pour les tests, aucune correspondance avec '
-      'un lieu reel (test_trail_config.dart)',
-};
+///
+/// VIDE DEPUIS LA TACHE 793, et ce vide est le resultat : la seule entree
+/// dispensait le sentier fictif, qui n est plus au catalogue. Aucun sentier
+/// visible par le randonneur n echappe desormais a la densite de trace.
+const Map<String, String> kSentiersSansCheminReel = <String, String>{};
 
 /// L espacement MEDIAN entre points consecutifs, en metres.
 ///
