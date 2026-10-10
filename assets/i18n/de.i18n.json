@@ -218,7 +218,8 @@
     "supplyDismiss": "Hinweis ausblenden",
     "pinMergedTitle": "Mehrere Markierungen am selben Ort",
     "attribution": {
-      "licence": "Kartendaten unter ODbL-Lizenz — Lizenz ansehen"
+      "licence": "Kartendaten unter ODbL-Lizenz — Lizenz ansehen",
+      "traces": "Wegverlaufe aus OpenStreetMap erfasst"
     }
   },
   "stage": {

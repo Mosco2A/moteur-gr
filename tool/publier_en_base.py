@@ -231,6 +231,17 @@ def commande_source(args: argparse.Namespace) -> int:
             "itinerary_id": itineraire,
             "name": contenu["fiche"]["displayName"],
         }
+        # L ORIGINE DE LA TRACE VOYAGE AVEC ELLE (tache 761). La licence ODbL
+        # exige l attribution DES QUE la donnee est redistribuee, et l ecrire en
+        # base est une redistribution. `source_url` est un champ deja prevu par
+        # l outil de publication (`SourceDeSentier._ajouterLaTraceDepuisGpx`) et
+        # il descend donc jusqu a `trails/{id}/gpx_tracks/{id}` : le credit est
+        # porte par la DONNEE, pas seulement par l ecran qui la dessine. L
+        # adresse est declaree dans le contenu editorial du sentier ; sans
+        # declaration, rien n est invente et le champ reste simplement absent.
+        source_trace = (contenu.get("trace") or {}).get("source_url")
+        if source_trace:
+            declaration_trace["source_url"] = source_trace
         # Deux sources pour la meme trace divergeraient : l outil refuse les deux
         # ensemble, on retire donc les familles vides venues de l asset.
         familles.pop("gpx_tracks", None)

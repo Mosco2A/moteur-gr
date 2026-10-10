@@ -42,12 +42,12 @@
     },
     {
       "trailId": "mare-a-mare-centre",
-      "dataVersion": "2026-09-30T10:27:44.414Z",
-      "hash": "47b51d5097c41b281c89d79c82912e12c122220c028750ba0b66fcb66a1c5718",
-      "filePath": "mare_a_mare_centre/v20260930T102744414Z.json",
-      "fileSize": 89990,
+      "dataVersion": "2026-10-10T09:47:31.804Z",
+      "hash": "2ad2fe9f45b741f57916158a31111262fd2316dbe017dadf115ce45779434986",
+      "filePath": "mare_a_mare_centre/v20261010T094731804Z.json",
+      "fileSize": 810408,
       "status": "active",
-      "lastUpdated": "2026-09-30T10:27:44.414Z",
+      "lastUpdated": "2026-10-10T09:47:31.804Z",
       "fiche": {
         "name": "Mare a Mare Centre",
         "displayName": "Mare a Mare Centre",
@@ -55,8 +55,8 @@
         "region": "Corse",
         "country": "France",
         "totalStages": 7,
-        "totalDistanceKm": 84.0,
-        "totalElevationGain": 3550,
+        "totalDistanceKm": 87.3,
+        "totalElevationGain": 4274,
         "primaryColorValue": 4281109298,
         "secondaryColorValue": 4279592384,
         "directions": [
@@ -82,7 +82,8 @@
             "name": "Parc naturel regional de Corse",
             "phone": "+33495345480"
           }
-        ]
+        ],
+        "privacyPolicyUrl": "https://only1cent.com/stepways/privacy"
       },
       "tilesPath": "mare_a_mare_centre/tuiles_z10-15_v20260930T154231Z.mbtiles",
       "tilesSize": 26955776,

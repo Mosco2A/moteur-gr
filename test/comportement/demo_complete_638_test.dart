@@ -118,7 +118,10 @@ void main() {
     test('le sentier de la demo est le sentier reel, sept etapes', () {
       expect(kSentierDeDemo, mareAMareCentreTrailConfig.id);
       expect(mareAMareCentreTrailConfig.totalStages, 7);
-      expect(mareAMareCentreTrailConfig.totalDistanceKm, 84.0);
+      // 87,3 km et non 84,0 depuis la tache 761 : les 84 km etaient la somme
+      // de sept distances d etape estimees a la main ; la longueur est
+      // desormais MESUREE sur la trace relevee dans OpenStreetMap.
+      expect(mareAMareCentreTrailConfig.totalDistanceKm, 87.3);
     });
 
     testWidgets('entrer en demo SELECTIONNE ce sentier', (tester) async {

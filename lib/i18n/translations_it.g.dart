@@ -2139,6 +2139,7 @@ class _Translations$map$attribution$it extends Translations$map$attribution$fr {
 
 	// Translations
 	@override String get licence => 'Dati cartografici con licenza ODbL — vedi la licenza';
+	@override String get traces => 'Tracciati dei sentieri rilevati in OpenStreetMap';
 }
 
 // Path: stage.difficulty
@@ -4405,6 +4406,7 @@ extension on TranslationsIt {
 			'map.supplyDismiss' => 'Nascondi l\'avviso',
 			'map.pinMergedTitle' => 'Più segnaposti nello stesso punto',
 			'map.attribution.licence' => 'Dati cartografici con licenza ODbL — vedi la licenza',
+			'map.attribution.traces' => 'Tracciati dei sentieri rilevati in OpenStreetMap',
 			'stage.distance' => 'Distanza',
 			'stage.elevation' => 'Dislivello',
 			'stage.elevationGain' => 'Dislivello positivo',
@@ -4724,9 +4726,9 @@ extension on TranslationsIt {
 			'checklist.ui.infoRequiredTitle' => 'Obbligatori',
 			'checklist.ui.infoRequiredBody' => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).',
 			'checklist.ui.infoGaugeTitle' => 'Indicatore peso',
-			'checklist.ui.infoGaugeBody' => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoGaugeBody' => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.',
 			'checklist.ui.infoAddTitle' => 'Aggiungi',
 			'checklist.ui.infoAddBody' => 'Il pulsante + in fondo a ogni categoria per i tuoi articoli.',
 			'checklist.ui.infoValidateBody' => 'Conferma quando lo zaino è pronto — un segno di spunta appare sulla home.',
@@ -5238,9 +5240,9 @@ extension on TranslationsIt {
 			'cloud.statusActiveDesc' => 'Backup e localizzazione in diretta disponibili.',
 			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
 			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
-			'onboarding.skip' => 'Salta',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.skip' => 'Salta',
 			'onboarding.next' => 'Avanti',
 			'onboarding.getStarted' => 'Inizia',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Benvenuto su ${appName}',
@@ -5752,9 +5754,9 @@ extension on TranslationsIt {
 			'recap.elevation' => '{meters} m di dislivello positivo',
 			'recap.duration' => '{days} giorni in totale, cammino e riposo compresi',
 			'recap.dates' => 'Dal {start} al {end}',
-			'recap.viewDiploma' => 'Vedi il mio diploma',
 			_ => null,
 		} ?? switch (path) {
+			'recap.viewDiploma' => 'Vedi il mio diploma',
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m di dislivello negativo',

@@ -56,8 +56,15 @@ void main() {
         '${(bytes / points.length).toStringAsFixed(1)} octets par point, '
         '${(points.last.distanceFromStart / 1000).toStringAsFixed(1)} km',
       );
-      expect(points.length, 53);
-      expect(bytes, lessThan(4 * 1024));
+      // TACHE 761 — LE SENTIER REEL EST DEVENU UN TRACE DENSE. Il comptait 53
+      // points pour 4 282 octets ; il en compte 3 590, releves dans
+      // OpenStreetMap, pour 124 824 octets (34,8 octets par point). Les 4 ko
+      // d avant n etaient pas un budget, c etait la taille d un croquis : un
+      // point tous les 1,1 km ne pouvait rien peser. Le budget retenu est donc
+      // celui qui etait DEJA justifie plus bas pour un trace dense de terrain,
+      // 200 ko, et le sentier reel y entre avec 60 % de marge.
+      expect(points.length, 3590);
+      expect(bytes, lessThan(200 * 1024));
     });
 
     test('un trace dense de 25 km a un point tous les 10 m', () {

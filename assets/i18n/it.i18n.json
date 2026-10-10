@@ -218,7 +218,8 @@
     "supplyDismiss": "Nascondi l'avviso",
     "pinMergedTitle": "Più segnaposti nello stesso punto",
     "attribution": {
-      "licence": "Dati cartografici con licenza ODbL — vedi la licenza"
+      "licence": "Dati cartografici con licenza ODbL — vedi la licenza",
+      "traces": "Tracciati dei sentieri rilevati in OpenStreetMap"
     }
   },
   "stage": {

@@ -93,11 +93,18 @@ void main() {
       expect(track, isNotNull);
       expect(track!.name, 'Mare a Mare Centre');
 
-      // GPX points inseres (simplifies, donc moins que les bruts)
+      // GPX points inseres : le semeur pose la trace ENTIERE (lot 606)
       final pointsDao = TrailGpxPointsDao(db);
       final points = await pointsDao.getByTrackId('mare-a-mare-centre');
       expect(points.length, greaterThan(0));
-      expect(points.length, lessThanOrEqualTo(63)); // 63 bruts max
+      // TACHE 761 — LA TRACE FAIT 3 590 POINTS, ET LE SEMEUR DOIT LES POSER
+      // TOUS. Le plafond de 63 datait de la trace de 53 points : il mesurait un
+      // croquis. Le semeur ne simplifie plus depuis le lot 606 (la
+      // simplification vit au rendu, par niveau de zoom), donc l egalite
+      // STRICTE avec le compte du GPX dit plus qu un plafond : si un point se
+      // perd en route, ce test le nomme — c est exactement le defaut que le lot
+      // 606 avait trouve, 48 points poses pour 53 lus.
+      expect(points.length, 3590);
 
       // TACHE 613 — PLUS AUCUN DRAPEAU EN PREFERENCES. La marque du seed est la
       // PRESENCE DES ETAPES EN BASE, et rien d'autre : une preference et une base
@@ -145,9 +152,13 @@ void main() {
           isTrue,
           reason: 'estimatedDurationMinutes alimente depuis stages.json',
         );
-        // Valeur exacte de l etape 1 (Ghisonaccia — Catastaghju = 350 min).
+        // Valeur exacte de l etape 1, Ghisonaccia — Catastaghju : 457 min.
+        // TACHE 761 — 457 et non 350 : l etape ne fait plus 15,0 km estimes
+        // mais 19,9 km mesures sur la trace relevee, pour 1 058 m de D+. La
+        // duree reste la meme regle de marche (19,9 / 4 + 1 058 / 400 heures,
+        // soit 7 h 37), appliquee a des chiffres qui, eux, sont mesures.
         final s1 = stages.firstWhere((s) => s.stageNumber == 1);
-        expect(s1.estimatedDurationMinutes, 350);
+        expect(s1.estimatedDurationMinutes, 457);
 
         await db.close();
       },

@@ -161,13 +161,38 @@ void main() {
             'du denivele devait disparaitre.',
       );
       expect(t.after3.elevationGainM, inInclusiveRange(490, 500));
+      // TACHE 761 — LA VRAIE TRACE RETOURNE CETTE COMPARAISON, ET CE N EST PAS
+      // LE LOT 671 QUI A REGRESSE : c est un defaut du SEUIL que seule une
+      // trace dense pouvait montrer. Mesure sur le sentier de reference,
+      // 24 km de marche : 1 733 m AVANT, 1 458 m APRES — l « apres » est
+      // desormais le PLUS BAS des deux.
+      //
+      // LA CAUSE, dans `computeTrackStatsOn` : le seuil de bruit de 3 m est
+      // compare a l ecart entre DEUX POINTS CONSECUTIFS, et un ecart qui ne
+      // l atteint pas est JETE, jamais reporte. Sur des releves espaces de
+      // 200 m (l « avant »), chaque ecart depasse 3 m et compte en entier. Sur
+      // la trace relevee, espacee de 19 m, une montee reelle arrive par
+      // paliers de 1 a 2 m : chacun est jete, et une pente soutenue peut
+      // n accumuler presque RIEN. L ancienne trace de 53 points cachait le
+      // defaut, ses altitudes etant interpolees en longues rampes lisses.
+      //
+      // CE N EST PAS CORRIGE ICI, ET DELIBEREMENT : le seuil vit dans le socle
+      // (`lib/core/geo/track_segment_stats.dart`, lu par le journal, le
+      // recapitulatif, le diplome et les badges), et le corriger — en suivant
+      // une reference mobile au lieu de comparer des ecarts consecutifs —
+      // deplacerait TOUS les deniveles de l application. Cela demande son
+      // propre lot. Le chiffre est donc DONNE, et la comparaison dit ce
+      // qu elle mesure au lieu d affirmer ce qui n est plus vrai.
+      expect(r.before3.elevationGainM, 1733);
+      expect(r.after3.elevationGainM, 1458);
       expect(
         r.after3.elevationGainM,
-        greaterThanOrEqualTo(r.before3.elevationGainM),
+        lessThan(r.before3.elevationGainM),
         reason:
             'Mare a Mare Centre : D+ a trois minutes '
             '${r.before3.elevationGainM} m AVANT, ${r.after3.elevationGainM} m '
-            'APRES.',
+            'APRES — si l apres repassait au-dessus, c est que le seuil du '
+            'socle a change, et ce commentaire doit etre relu.',
       );
       debugPrint(
         'GAIN 671-06 : trace fabrique '

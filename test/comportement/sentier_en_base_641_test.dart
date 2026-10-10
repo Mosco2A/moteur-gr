@@ -93,7 +93,12 @@ void main() {
       expect(fiche['displayName'], 'Mare a Mare Centre');
       expect(fiche['region'], 'Corse');
       expect(fiche['totalStages'], 7);
-      expect(fiche['totalDistanceKm'], 84.0);
+      // TACHE 761 — 87,3 km, et c est la fiche PUBLIEE qui le dit. Elle portait
+      // 84,0 : une somme de sept distances estimees a la main. La longueur est
+      // desormais mesuree sur la trace relevee dans OpenStreetMap, et le
+      // catalogue compile annonce exactement le meme chiffre.
+      expect(fiche['totalDistanceKm'], 87.3);
+      expect(fiche['totalElevationGain'], 4274);
 
       // `lastUpdated` ET `dataVersion` DESIGNENT LE MEME INSTANT (dette #X12 de
       // la tache 610). Deux valeurs, c est deux autorites, et celle qui decide

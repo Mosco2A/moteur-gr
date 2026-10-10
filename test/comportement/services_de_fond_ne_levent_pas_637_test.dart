@@ -110,7 +110,15 @@ void main() {
         ],
       );
       await allerA(tester, '/home');
-      await stabiliser(tester, coups: 20);
+      // TACHE 761 — ON ATTEND L ECRAN, ON NE LE REGARDE PLUS UNE SEULE
+      // FOIS. Meme kaizen #101267 que la porte de consentement ci-dessus,
+      // pour la meme raison : le demarrage reel seme desormais la trace du
+      // sentier, passee de 53 a 3 590 points, et ce travail d entrees-
+      // sorties avance a la vitesse REELLE de la machine entre deux pompes.
+      // Le budget fixe d `allerA` suffisait pour 53 points ; parier dessus
+      // pour 3 590 coute un rouge qui n apprend rien sur l application. Le
+      // plafond reste borne : l atteindre reste un vrai echec a rapporter.
+      await attendreLEcran(tester, find.byType(HubScreen));
 
       final cockpit = find.byType(HubScreen).evaluate().isNotEmpty;
       final erreurs = erreursQuiComptent(tester);

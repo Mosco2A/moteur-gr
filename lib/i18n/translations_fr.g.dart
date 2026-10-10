@@ -4579,6 +4579,9 @@ class Translations$map$attribution$fr {
 
 	/// fr: 'Donnees cartographiques sous licence ODbL — voir la licence'
 	String get licence => 'Donnees cartographiques sous licence ODbL — voir la licence';
+
+	/// fr: 'Traces des sentiers relevees dans OpenStreetMap'
+	String get traces => 'Traces des sentiers relevees dans OpenStreetMap';
 }
 
 // Path: stage.difficulty
@@ -8530,6 +8533,7 @@ extension on Translations {
 			'map.supplyDismiss' => 'Masquer l\'alerte',
 			'map.pinMergedTitle' => 'Plusieurs repères au même endroit',
 			'map.attribution.licence' => 'Donnees cartographiques sous licence ODbL — voir la licence',
+			'map.attribution.traces' => 'Traces des sentiers relevees dans OpenStreetMap',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
 			'stage.elevationGain' => 'Dénivelé positif',
@@ -8849,9 +8853,9 @@ extension on Translations {
 			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
 			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
 			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
-			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
 			'checklist.ui.infoAddTitle' => 'Ajouter',
 			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour vos propres items.',
 			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.',
@@ -9363,9 +9367,9 @@ extension on Translations {
 			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
 			'cloud.statusLocal' => 'Mode local (sans cloud)',
 			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
-			'onboarding.skip' => 'Passer',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.skip' => 'Passer',
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
@@ -9877,9 +9881,9 @@ extension on Translations {
 			'recap.elevation' => '{meters} m de dénivelé positif',
 			'recap.duration' => '{days} jours au total, marche et repos compris',
 			'recap.dates' => 'Du {start} au {end}',
-			'recap.viewDiploma' => 'Voir mon diplôme',
 			_ => null,
 		} ?? switch (path) {
+			'recap.viewDiploma' => 'Voir mon diplôme',
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de dénivelé négatif',

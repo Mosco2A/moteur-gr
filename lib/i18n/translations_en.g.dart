@@ -2139,6 +2139,7 @@ class _Translations$map$attribution$en extends Translations$map$attribution$fr {
 
 	// Translations
 	@override String get licence => 'Map data under ODbL licence — view the licence';
+	@override String get traces => 'Trail tracks surveyed in OpenStreetMap';
 }
 
 // Path: stage.difficulty
@@ -4405,6 +4406,7 @@ extension on TranslationsEn {
 			'map.supplyDismiss' => 'Dismiss alert',
 			'map.pinMergedTitle' => 'Several markers at the same place',
 			'map.attribution.licence' => 'Map data under ODbL licence — view the licence',
+			'map.attribution.traces' => 'Trail tracks surveyed in OpenStreetMap',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -4724,9 +4726,9 @@ extension on TranslationsEn {
 			'checklist.ui.infoRequiredTitle' => 'Required',
 			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
 			'checklist.ui.infoGaugeTitle' => 'Weight gauge',
-			'checklist.ui.infoGaugeBody' => 'Target: pack < 15% of your weight. Green = OK, Orange = careful, Red = too heavy.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoGaugeBody' => 'Target: pack < 15% of your weight. Green = OK, Orange = careful, Red = too heavy.',
 			'checklist.ui.infoAddTitle' => 'Add',
 			'checklist.ui.infoAddBody' => 'The + button at the bottom of each category for your own items.',
 			'checklist.ui.infoValidateBody' => 'Validate when your pack is ready — a check appears on the home screen.',
@@ -5238,9 +5240,9 @@ extension on TranslationsEn {
 			'cloud.statusActiveDesc' => 'Backup and live tracking available.',
 			'cloud.statusLocal' => 'Local mode (no cloud)',
 			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
-			'onboarding.skip' => 'Skip',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.skip' => 'Skip',
 			'onboarding.next' => 'Next',
 			'onboarding.getStarted' => 'Get started',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
@@ -5752,9 +5754,9 @@ extension on TranslationsEn {
 			'recap.elevation' => '{meters} m of elevation gain',
 			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
-			'recap.viewDiploma' => 'View my diploma',
 			_ => null,
 		} ?? switch (path) {
+			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m of descent',

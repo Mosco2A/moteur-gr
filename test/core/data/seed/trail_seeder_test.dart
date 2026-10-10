@@ -52,7 +52,9 @@ void main() {
       expect(itineraries.length, 1);
       expect(itineraries[0]['code'], 'EW');
       expect(itineraries[0]['stageCount'], 7);
-      expect(itineraries[0]['distanceKm'], 84.0);
+      // TACHE 761 — 87,3 km mesures sur la trace relevee dans
+      // OpenStreetMap, au lieu de 84,0 estimes a la main.
+      expect(itineraries[0]['distanceKm'], 87.3);
     });
 
     test('le JSON contient 7 etapes', () {
@@ -128,8 +130,9 @@ void main() {
       final it = await itDao.getById('mam-centre-ew');
       expect(it, isNotNull);
       expect(it!.code, 'EW');
-      expect(it.distanceKm, 84.0);
-      expect(it.elevationGain, 3550);
+      // TACHE 761 — les deux totaux sont desormais MESURES sur la trace.
+      expect(it.distanceKm, 87.3);
+      expect(it.elevationGain, 4274);
       expect(it.stageCount, 7);
     });
 
@@ -157,10 +160,16 @@ void main() {
       final stagesDao = TrailStagesDao(db);
       final s1 = await stagesDao.getById('mam-ew-s1');
       expect(s1, isNotNull);
-      expect(s1!.startLat, closeTo(42.0156, 0.001));
-      expect(s1.startLng, closeTo(9.4039, 0.001));
-      expect(s1.distanceKm, 15.0);
-      expect(s1.elevationGain, 850);
+      // TACHE 761 — LE DEPART EST DESORMAIS SUR LE CHEMIN, ET AU BORD DE
+      // L EAU. Le point declare (42,0156 / 9,4039) etait le CENTRE DU VILLAGE
+      // de Ghisonaccia, a 4,4 km du sentier ; un sentier « de la mer a la mer »
+      // part de la mer, et le premier point de la trace relevee est a 5,4 m
+      // d altitude. Les chiffres de l etape suivent : 19,9 km mesures au lieu
+      // de 15,0 estimes, 1 058 m de D+ calcules sur le profil du terrain.
+      expect(s1!.startLat, closeTo(41.9757, 0.001));
+      expect(s1.startLng, closeTo(9.3994, 0.001));
+      expect(s1.distanceKm, 19.9);
+      expect(s1.elevationGain, 1058);
       expect(s1.difficulty, 'hard');
     });
 
@@ -170,10 +179,15 @@ void main() {
       final stagesDao = TrailStagesDao(db);
       final s7 = await stagesDao.getById('mam-ew-s7');
       expect(s7, isNotNull);
-      expect(s7!.endLat, closeTo(41.8903, 0.001));
-      expect(s7.endLng, closeTo(8.8128, 0.001));
+      // TACHE 761 — L ARRIVEE EST LE DERNIER POINT DE LA TRACE, a 1,4 m
+      // d altitude : la plage de Porticcio. Le point declare tombait a 77 m de
+      // la, l ecart est donc minime ; la duree, elle, passe de 210 a 175 min
+      // parce que l etape mesure 11,1 km pour seulement 54 m de montee — c est
+      // la plus longue descente du sentier, 898 m perdus vers la mer.
+      expect(s7!.endLat, closeTo(41.8900, 0.001));
+      expect(s7.endLng, closeTo(8.8030, 0.001));
       expect(s7.difficulty, 'easy');
-      expect(s7.durationMinutes, 210);
+      expect(s7.durationMinutes, 175);
     });
 
     test('seedFromJson insere les hebergements', () async {
@@ -253,7 +267,7 @@ void main() {
       final stagesDao = TrailStagesDao(db);
       final stages = await stagesDao.getByItineraryId('mam-centre-ew');
       final totalDist = stages.fold<double>(0, (sum, s) => sum + s.distanceKm);
-      expect(totalDist, closeTo(84.0, 0.1));
+      expect(totalDist, closeTo(87.3, 0.1));
     });
 
     test('le denivele total correspond', () async {
@@ -262,7 +276,12 @@ void main() {
       final stagesDao = TrailStagesDao(db);
       final stages = await stagesDao.getByItineraryId('mam-centre-ew');
       final totalGain = stages.fold<int>(0, (sum, s) => sum + s.elevationGain);
-      expect(totalGain, 3550);
+      // TACHE 761 — LES 3 550 ET LES 3 750 SONT RECONCILIES. Les deux
+      // etaient des sommes justes de sept etapes, mais de DEUX
+      // DECOUPAGES DIFFERENTS : stages.json et mare_a_mare_centre.json ne
+      // nommaient pas les memes villages. Les deux fichiers portent
+      // maintenant le meme decoupage, mesure sur la trace.
+      expect(totalGain, 4274);
     });
   });
 }
