@@ -94,7 +94,7 @@ void main() {
       );
     });
 
-    test('les 101 noms des trois familles sont distincts', () {
+    test('les 102 noms des trois familles sont distincts', () {
       // La table de resolution est indexee par nom de fichier. Deux familles qui
       // porteraient le meme nom feraient silencieusement gagner la derniere.
       final noms = <String>[
@@ -107,7 +107,10 @@ void main() {
         noms.length,
         reason: 'nom de fichier en double',
       );
-      expect(noms.length, 101);
+      // 102 ET NON 101 DEPUIS LA TACHE 772 : la rubrique « resume » s'est
+      // ajoutee aux vingt livrees par Christophe, parce que le Resume
+      // portait le dessin du Programme.
+      expect(noms.length, 102);
     });
 
     test('un dessin hors des trois familles ne se resout pas', () {

@@ -8,7 +8,8 @@ void main() {
   group('PoiTypeConfig', () {
     test('getStyle type connu retourne le bon style', () {
       final waterStyle = PoiTypeConfig.getStyle('water');
-      expect(waterStyle.icon, StepwaysIcons.pluie);
+      // TACHE 772 : la goutte, pas l'averse.
+      expect(waterStyle.icon, StepwaysIcons.pointEau);
       expect(waterStyle.color, const Color(0xFF1565C0));
       expect(waterStyle.labelKey, 'Eau');
 

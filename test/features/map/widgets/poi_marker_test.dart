@@ -14,8 +14,10 @@ void main() {
         expect(PoiMarker.iconFor('shelter'), StepwaysIcons.hebergement);
       });
 
-      test('water retourne StepwaysIcons.pluie', () {
-        expect(PoiMarker.iconFor('water'), StepwaysIcons.pluie);
+      // TACHE 772 : un point d'eau se dessine en GOUTTE. Ce test exigeait
+      // le nuage de pluie de la meteo — il verrouillait le defaut.
+      test('water retourne StepwaysIcons.pointEau', () {
+        expect(PoiMarker.iconFor('water'), StepwaysIcons.pointEau);
       });
 
       test('viewpoint retourne StepwaysIcons.oeil', () {
@@ -101,7 +103,7 @@ void main() {
         await tester.pumpWidget(buildMarker('water'));
         expect(
           find.byWidgetPredicate(
-            (w) => w is StepIcon && w.asset == StepwaysIcons.pluie,
+            (w) => w is StepIcon && w.asset == StepwaysIcons.pointEau,
           ),
           findsOneWidget,
         );
